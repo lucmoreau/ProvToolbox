@@ -50,6 +50,8 @@ public  class MainParser {
 
             p.printTree(tree,1);
             
+            System.out.println(tree.toStringTree());
+
 
 
         }  catch(Throwable t) {

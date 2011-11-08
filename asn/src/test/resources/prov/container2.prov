@@ -1,0 +1,16 @@
+
+container(
+          entity(ex:e1, [])
+          entity(ex:e1, [ex:param="a"])
+          entity(ex:e1, [ex:param="a", ex:port="foo"])
+          activity(ex:a2, "t1",     , [ex:param="a", ex:port="foo"])
+          activity(ex:a2,     ,     , [ex:param="a", ex:port="foo"])
+          activity(ex:a2, "t1", "t2", [ex:param="a", ex:port="foo"])
+
+          activity(ex:a2, "recipe", "t1",     , [ex:param="a", ex:port="foo"])
+          activity(ex:a2, "recipe",     ,     , [ex:param="a", ex:port="foo"])
+          activity(ex:a2, "recipe", "t1", "t2", [ex:param="a", ex:port="foo"])
+
+          agent(ex:ag2)
+          )
+

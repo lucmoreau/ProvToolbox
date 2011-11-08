@@ -1,0 +1,341 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.openprovenance.prov</groupId>
+  <artifactId>specs</artifactId>
+  <name>W3C PROV Specifications</name>
+  <version>0.0.1-SNAPSHOT</version>
+  <url>http://openprovenance.org/java/site/prov1_0</url>
+  <packaging>pom</packaging>
+  <description>Some Java code related to the W3C PROV specifications.</description>
+
+
+  <scm>
+    <connection>scm:git:git://github.com/lucmoreau/ProvToolbox.git</connection>
+<!--    <developerConnection>scm:git:git://github.com/lucmoreau/OpenProvenanceModel.git</developerConnection> -->
+    <developerConnection>scm:git:git@github.com:lucmoreau/ProvToolbox.git</developerConnection>
+  </scm>   
+
+
+
+  <modules>
+    <module>asn</module>    
+<!--    <module>elmo</module>
+    <module>toolbox</module>    
+    <module>jena</module>    -->
+  </modules>
+
+
+  <developers>
+      <developer>
+         <id>lucmoreau</id>
+         <name>Luc Moreau</name>
+         <email>l.moreau@ecs.soton.ac.uk</email>
+         <roles>
+            <role>Developer</role>
+         </roles>
+         <organization>University of Southampton</organization>
+         <timezone>0</timezone>
+       </developer>         
+      <developer>
+         <id>lavm</id>
+         <name>Luc Moreau</name>
+         <email>lavm@ecs.soton.ac.uk</email>
+         <roles>
+            <role>Developer</role>
+         </roles>
+         <organization>University of Southampton</organization>
+         <timezone>0</timezone>
+       </developer>         
+   </developers>
+
+  <ciManagement>
+    <system>continuum</system>
+    <url>http://continuum.pat.ecs.soton.ac.uk/</url>
+    <notifiers>
+      <notifier>
+        <type>mail</type>
+        <sendOnError>true</sendOnError>
+        <sendOnFailure>true</sendOnFailure>
+        <sendOnSuccess>true</sendOnSuccess>
+        <sendOnWarning>fail</sendOnWarning>
+        <configuration>
+          <committers>true</committers>
+        </configuration>
+        </notifier>
+    </notifiers>
+  </ciManagement>
+
+
+   <repositories>
+    <repository>
+		<id>maven2-repository.dev.java.net</id>
+		<name>Java.net Maven 2 Repository</name>
+		<url>http://download.java.net/maven/2</url>
+	</repository>
+    <repository>
+      <id>java.net</id>
+      <name>java.net Maven Repository</name>
+      <url>http://download.java.net/maven/1</url>
+      <layout>legacy</layout>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+    <!-- use the following if you're not using a snapshot version. -->
+     <repository>
+      <id>repo</id>
+      <name>Repository Name</name>
+      <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/maven-releases</url>
+      </repository>
+
+    <!-- use the following if you ARE using a snapshot version. -->
+    <snapshotRepository>
+      <id>snapshot-repo</id>
+      <name>Snapshot Repository</name>
+      <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/maven-snapshots</url>
+    </snapshotRepository>
+
+    <site>
+      <id>public.www.site</id>
+      <name>Site Deployment location</name>
+      <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/site/1_1_7</url>
+    </site>
+
+ </distributionManagement>
+
+ <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>license.txt</url>
+    </license>
+  </licenses>
+
+ <pluginRepositories>
+	<pluginRepository>
+  		  <id>maven2-repository.dev.java.net</id>
+		  <name>Java.net Maven 2 Repository</name>
+		  <url>http://download.java.net/maven/2</url>
+	</pluginRepository>
+  </pluginRepositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.2</version>
+      <scope>test</scope>
+    </dependency>
+ </dependencies>
+
+  <build>
+
+
+
+     <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-plugin</artifactId>
+        <version>${scm.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.scm</groupId>
+            <artifactId>maven-scm-provider-gitexe</artifactId>
+            <version>${scm.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin> 
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+<!--
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+          <descriptor>src/resources/src-assembly.xml</descriptor>
+         </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <id>make-assembly</id>
+              <goals>
+               <goal>single</goal>
+              </goals>
+          </execution>
+        </executions>
+      </plugin>
+-->
+
+
+
+<!-- call by hand, mvn assembly:assembly -->
+    <plugin>
+      <artifactId>maven-assembly-plugin</artifactId>
+      <configuration>
+        <descriptors>
+          <descriptor>src/resources/assembly/assembly.xml</descriptor>
+        </descriptors>
+      </configuration>
+    </plugin>
+
+    </plugins>
+
+   <pluginManagement>
+    <plugins>
+     <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <configuration>
+       <source>1.5</source>
+       <target>1.5</target>
+      </configuration>
+     </plugin>
+
+     <plugin>
+
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.0-beta-9</version>
+
+          <configuration>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <preparationGoals>clean install</preparationGoals>
+            <releaseProfiles>release</releaseProfiles>
+          </configuration>
+
+
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.scm</groupId>
+              <artifactId>maven-scm-provider-gitexe</artifactId>
+              <version>${scm.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+
+
+    </plugins>
+   </pluginManagement>
+  </build>
+
+  <properties>
+
+    <scm.version>1.3</scm.version> 
+
+    <!-- jaxb -->
+    <jaxb.impl.version>2.1.12</jaxb.impl.version>
+    <jaxb.api.version>2.1</jaxb.api.version>
+    <jaxb.xjc.version>2.1.12</jaxb.xjc.version>
+    <jaxb.common.version>0.4.1.5</jaxb.common.version>
+    <hyperjaxb.version>0.5.0</hyperjaxb.version>
+    <maven.jaxb.plugin.version>0.6.0</maven.jaxb.plugin.version>
+    <xerces.version>2.9.1</xerces.version>
+
+    
+  </properties>
+
+
+  <reporting>
+    <plugins>
+      <plugin>
+       <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.3</version>
+         <configuration>
+
+          <aggregate>true</aggregate>
+
+           <groups>
+            <group>
+              <title>OPM Packages</title>
+              <packages>org.openprovenance.*</packages>
+            </group>
+          </groups>
+
+
+
+          <links>
+            <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+            <link>http://java.sun.com/products/servlet/2.3/javadoc/</link>
+            <link>http://www.oracle.com/technology/documentation/berkeley-db/je/java/</link>
+            <link>http://prefuse.org/doc/api/</link>
+            <link>http://ws.apache.org/axis/java/apiDocs/</link>
+            <link>http://jakarta.apache.org/commons/collections/api-3.2/</link>
+            <link>http://jakarta.apache.org/commons/io/api-1.2/</link>
+            <link>http://jakarta.apache.org/commons/lang/api-2.1/</link>
+            <link>http://jakarta.apache.org/commons/logging/commons-logging-1.0.4/docs/apidocs/</link>
+            <link>http://jakarta.apache.org/commons/pool/apidocs/</link>
+            <link>http://xerces.apache.org/xerces-j/apiDocs/</link>
+            <link>http://junit.sourceforge.net/javadoc/</link>
+            <link>http://aopalliance.sourceforge.net/doc/</link>
+          </links>
+        </configuration>
+    </plugin>
+
+
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-checkstyle-plugin</artifactId>
+    </plugin>
+
+
+<!-- not supported by git
+    <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-changelog-plugin</artifactId>
+    </plugin>
+-->
+
+    <plugin>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>jxr-maven-plugin</artifactId>
+    </plugin>      
+
+     <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-surefire-report-plugin</artifactId>
+          <configuration>
+            <forkMode>once</forkMode>
+            <argLine>-Xss1024k</argLine> 
+            <!-- <argLine>-Xmx1500m</argLine> -->
+          </configuration>
+     </plugin>
+
+     <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-pmd-plugin</artifactId>
+      <configuration>
+          <linkXref>true</linkXref>
+          <sourceEncoding>utf-8</sourceEncoding>
+          <minimumTokens>100</minimumTokens>
+          <targetJdk>1.5</targetJdk>
+      </configuration>
+    </plugin>
+    </plugins>
+  </reporting>
+
+
+
+</project>

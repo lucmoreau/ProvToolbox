@@ -253,6 +253,9 @@ CLOSE_CURLY_BRACE
 
 xsdDateTime: isoDateTime;
 
+
+/* TODO, this grammar is not right, since requires space after 'T'??? */
+
 timeZoneOffset: ('+' | '-') DIGIT DIGIT ':' DIGIT DIGIT;
 
 

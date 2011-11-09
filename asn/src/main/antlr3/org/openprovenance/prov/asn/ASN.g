@@ -6,7 +6,10 @@ grammar ASN;
 options {
   language = Java;
   output=AST;
-  k=3;
+}
+
+tokens {
+    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID;
 }
 
 @header {
@@ -22,6 +25,8 @@ container
 	:	'container' '('
 		record*
 		')'
+
+      -> ^(CONTAINER record*)
 	;
 
 record
@@ -31,40 +36,49 @@ record
 entityRecord
 	:	'entity' '(' identifier ',' '[' attributeValuePairs ']'
 		')'
+        -> ^(ENTITY identifier ^(ATTRIBUTES attributeValuePairs?))
 	;
 
 activityRecord
-	:	'activity' '('! identifier (','! recipeLink)? ','! (time)? ','! (time)? ','! '[' attributeValuePairs ']'
-		')'!
+	:	'activity' '(' identifier (',' recipeLink)? ',' (startTime)? ',' (endTime)? ',' '[' attributeValuePairs ']'
+		')'
+        -> ^(ACTIVITY identifier ^(RECIPE recipeLink?) ^(START startTime?) ^(END endTime?) ^(ATTRIBUTES attributeValuePairs?))
 	;
 
 agentRecord
-	:	'agent' '(' identifier 	')'
+	:	'agent' '(' identifier 	')' -> ^(AGENT identifier)
 	;
 
 generationRecord
 	:	'wasGeneratedBy' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ( ',' time)?	')'
+      -> ^(WGB identifier+ ^(ATTRIBUTES attributeValuePairs?)  ^(TIME time?))
 	;
 
 useRecord
 	:	'used' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ( ',' time)?	')'
+      -> ^(USED identifier+ ^(ATTRIBUTES attributeValuePairs?) ^(TIME time?))
 	;
 
+/* TODO the rewrite rule concanetas all attributes */
+
 derivationRecord
-	:	'wasDerivedFrom' '(' identifier ',' identifier (',' identifier ',' '[' attributeValuePairs ']' ',' '[' attributeValuePairs ']')?	')'
+	:	'wasDerivedFrom' '(' identifier ',' identifier (',' identifier ',' '[' dst=attributeValuePairs ']' ',' '[' src=attributeValuePairs ']')?	')'
+      -> ^(WDF identifier+  ^(ATTRIBUTES $dst?) ^(ATTRIBUTES $src?))
 	;
 
 dependenceRecord
 	:	'dependedUpon' '(' identifier ',' identifier ')'
+      -> ^(WDO identifier+)
 	;
 
 controlRecord
 	:	'wasControlledBy' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ')'
+      -> ^(WCB identifier+ ^(ATTRIBUTES attributeValuePairs?))
 	;
 
 identifier
 	:
-        QNAME
+        QNAME -> ^(ID QNAME)
 	;
 
 attribute
@@ -74,17 +88,25 @@ attribute
 
 attributeValuePairs
 	:
-        (  | attributeValuePair ( ',' attributeValuePair )* )
+        (  | attributeValuePair ( ','! attributeValuePair )* )
 	;
 
 
 attributeValuePair
 	:
-        attribute '=' literal
+        attribute '=' literal  -> ^(ATTRIBUTE attribute literal)
 	;
 
 
 time
+	:
+        xsdDateTime
+	;
+startTime
+	:
+        xsdDateTime
+	;
+endTime
 	:
         xsdDateTime
 	;
@@ -97,18 +119,21 @@ recipeLink
 /* TODO: complete grammar of Literal */
 literal
 	:
-        (STRINGLITERAL | STRINGLITERAL '%%' datatype)
+        (STRINGLITERAL -> ^(STRING STRINGLITERAL)|
+         STRINGLITERAL '%%' datatype -> ^(TYPEDLITERAL STRINGLITERAL datatype))
 	;
 
 datatype
 	:
-        (IRI_REF | QNAME)
+        (IRI_REF -> ^(IRI IRI_REF)
+        |
+         QNAME -> ^(QNAM QNAME))
 	;
 	
 QNAME	
-	:	NCNAME (':' NCNAME)?
+	:	NCNAME (':' NCNAME)?  
 	;
-	
+
 
 fragment CHAR
 	: ('\u0009' | '\u000A' | '\u000D' | '\u0020'..'\uD7FF' | '\uE000'..'\uFFFD' )

@@ -24,7 +24,7 @@ container
 	;
 
 record
-	:	(entityRecord | activityRecord | agentRecord )
+	:	(entityRecord | activityRecord | agentRecord | generationRecord  | useRecord | derivationRecord | dependenceRecord  | controlRecord )
 	;
 
 entityRecord
@@ -39,6 +39,26 @@ activityRecord
 
 agentRecord
 	:	'agent' '(' identifier 	')'
+	;
+
+generationRecord
+	:	'wasGeneratedBy' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ( ',' time)?	')'
+	;
+
+useRecord
+	:	'used' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ( ',' time)?	')'
+	;
+
+derivationRecord
+	:	'wasDerivedFrom' '(' identifier ',' identifier (',' identifier ',' '[' attributeValuePairs ']' ',' '[' attributeValuePairs ']')?	')'
+	;
+
+dependenceRecord
+	:	'dependedUpon' '(' identifier ',' identifier ')'
+	;
+
+controlRecord
+	:	'wasControlledBy' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ')'
 	;
 
 identifier
@@ -68,16 +88,20 @@ time
         STRINGLITERAL
 	;
 
-/* TODO: grammar of recipeLink */
 recipeLink
 	:
-        STRINGLITERAL
+        IRI_REF
 	;
 
-/* TODO: grammar of Literal */
+/* TODO: complete grammar of Literal */
 literal
 	:
-        STRINGLITERAL
+        (STRINGLITERAL | STRINGLITERAL '%%' datatype)
+	;
+
+datatype
+	:
+        (IRI_REF | QNAME)
 	;
 	
 QNAME	
@@ -180,3 +204,44 @@ COMMENT_CONTENTS
 WS		
 	: (' '|'\r'|'\t'|'\u000C'|'\n')+ {$channel = HIDDEN;}
 	;
+
+
+IRI_REF
+  :
+  LESS
+  ( options {greedy=false;}:
+    ~(
+      LESS
+      | GREATER
+      | '"'
+      | OPEN_CURLY_BRACE
+      | CLOSE_CURLY_BRACE
+      | '|'
+      | '^'
+      | '\\'
+      | '`'
+      | ('\u0000'..'\u0020')
+     )
+  )*
+  GREATER
+  ;
+
+
+LESS
+  :
+  '<'
+  ;
+
+GREATER
+  :
+  '>'
+  ;
+OPEN_CURLY_BRACE
+  :
+  '{'
+  ;
+
+CLOSE_CURLY_BRACE
+  :
+  '}'
+  ;

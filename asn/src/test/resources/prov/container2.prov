@@ -2,15 +2,48 @@
 container(
           entity(ex:e1, [])
           entity(ex:e1, [ex:param="a"])
+          entity(ex:e1, [ex:param="a"%%<http://example.org/type>])
+          entity(ex:e1, [ex:param="a" %% <http://example.org/type>])
+
+          entity(ex:e1, [ex:param="a" %% xsd:foo])
+
           entity(ex:e1, [ex:param="a", ex:port="foo"])
+          entity(ex:e1, [ex:param="a", ex:port="foo" %% <http://example.org/type> ])
+          entity(ex:e1, [ex:param="a", ex:port="foo" %% ex:type ])
+
           activity(ex:a2, "t1",     , [ex:param="a", ex:port="foo"])
           activity(ex:a2,     ,     , [ex:param="a", ex:port="foo"])
           activity(ex:a2, "t1", "t2", [ex:param="a", ex:port="foo"])
 
-          activity(ex:a2, "recipe", "t1",     , [ex:param="a", ex:port="foo"])
-          activity(ex:a2, "recipe",     ,     , [ex:param="a", ex:port="foo"])
-          activity(ex:a2, "recipe", "t1", "t2", [ex:param="a", ex:port="foo"])
+          activity(ex:a2, <http://example.org/plan>, "t1",     , [ex:param="a", ex:port="foo"])
+          activity(ex:a2, <http://example.org/plan>,     ,     , [ex:param="a", ex:port="foo"])
+          activity(ex:a2, <http://example.org/plan>, "t1", "t2", [ex:param="a", ex:port="foo"])
 
           agent(ex:ag2)
+
+          wasGeneratedBy(ex:e1, ex:a2, [], "t1")
+          wasGeneratedBy(ex:e1, ex:a2, [ex:param="a"], "t1")
+          wasGeneratedBy(ex:e1, ex:a2, [ex:param="a", ex:port="foo"], "t1")
+          wasGeneratedBy(ex:e1, ex:a2, [])
+          wasGeneratedBy(ex:e1, ex:a2, [ex:param="a"])
+          wasGeneratedBy(ex:e1, ex:a2, [ex:param="a", ex:port="foo"])
+
+          used(ex:e1, ex:a2, [], "t1")
+          used(ex:e1, ex:a2, [ex:param="a"], "t1")
+          used(ex:e1, ex:a2, [ex:param="a", ex:port="foo"], "t1")
+          used(ex:e1, ex:a2, [])
+          used(ex:e1, ex:a2, [ex:param="a"])
+          used(ex:e1, ex:a2, [ex:param="a", ex:port="foo"])
+
+
+          wasDerivedFrom(ex:e1, ex:a2)
+          wasDerivedFrom(ex:e1, ex:a2, ex:pe, [], [])
+          wasDerivedFrom(ex:e1, ex:a2, ex:pe, [ex:param="a"], [ex:param="a"])
+          wasDerivedFrom(ex:e1, ex:a2, ex:pe, [ex:param="a", ex:port="foo"], [ex:param="a", ex:port="foo"])
+
+
+          dependedUpon(ex:e1, ex:a2)
+
+          wasControlledBy(ex:e1, ex:a2, [])
           )
 

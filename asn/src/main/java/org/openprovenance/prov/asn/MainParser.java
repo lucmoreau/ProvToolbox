@@ -33,7 +33,7 @@ public  class MainParser {
             for ( int i = 0; i < indent; i++ )
                 sb = sb.append("   ");
             for ( int i = 0; i < t.getChildCount(); i++ ) {
-                System.out.println(sb.toString() + t.getChild(i).toString());
+                System.out.println("" + i + sb.toString() + t.getChild(i).toString());
                 printTree((CommonTree)t.getChild(i), indent+1);
             }
         }

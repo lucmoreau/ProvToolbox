@@ -34,8 +34,8 @@ entityRecord
 	;
 
 activityRecord
-	:	'activity' '(' identifier (',' recipeLink)? ',' (time)? ',' (time)? ',' '[' attributeValuePairs ']'
-		')'
+	:	'activity' '('! identifier (','! recipeLink)? ','! (time)? ','! (time)? ','! '[' attributeValuePairs ']'
+		')'!
 	;
 
 agentRecord
@@ -252,15 +252,15 @@ CLOSE_CURLY_BRACE
 
 
 
-xsdDateTime: isoDateTime;
+xsdDateTime: IsoDateTime;
 
 
 /* TODO, this grammar is not right, since requires space after 'T'??? */
 
-timeZoneOffset: ('+' | '-') DIGIT DIGIT ':' DIGIT DIGIT;
+TimeZoneOffset: ('+' | '-') DIGIT DIGIT ':' DIGIT DIGIT;
 
 
-isoDateTime: DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' DIGIT DIGIT ':' DIGIT DIGIT ':' DIGIT DIGIT ('.' DIGIT (DIGIT DIGIT?)?)? ('Z' | timeZoneOffset)?
+IsoDateTime: (DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' DIGIT DIGIT ':' DIGIT DIGIT ':' DIGIT DIGIT ('.' DIGIT (DIGIT DIGIT?)?)? ('Z' | TimeZoneOffset)?)
     ;
 
 

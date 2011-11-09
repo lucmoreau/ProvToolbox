@@ -6,6 +6,7 @@ grammar ASN;
 options {
   language = Java;
   output=AST;
+  k=3;
 }
 
 @header {

@@ -82,10 +82,10 @@ attributeValuePair
         attribute '=' literal
 	;
 
-/* TODO: grammar of xsd time */
+
 time
 	:
-        STRINGLITERAL
+        xsdDateTime
 	;
 
 recipeLink
@@ -113,9 +113,10 @@ fragment CHAR
 	: ('\u0009' | '\u000A' | '\u000D' | '\u0020'..'\uD7FF' | '\uE000'..'\uFFFD' )
 	;
 
-fragment DIGITS 	   
+/* fragment DIGITS 	   
 	: ('0'..'9')+
 	;
+*/
 
 fragment NCNAMESTARTCHAR
 	: ('A'..'Z') | '_' | ('a'..'z') | ('\u00C0'..'\u00D6') | ('\u00D8'..'\u00F6') | ('\u00F8'..'\u02FF') | ('\u0370'..'\u037D') | ('\u037F'..'\u1FFF') | ('\u200C'..'\u200D') | ('\u2070'..'\u218F') | ('\u2C00'..'\u2FEF') | ('\u3001'..'\uD7FF') | ('\uF900'..'\uFDCF') | ('\uFDF0'..'\uFFFD')
@@ -146,11 +147,12 @@ NCNAME_COLON_STAR
 STAR_COLON_NCNAME
 	: '*' ':' NCNAME;
 
+/*
 NUMERICLITERAL 	   
 	: ( ('.' DIGITS) |(DIGITS ('.' ('0'..'9')*)?)) (('e'|'E') ('+'|'-')? DIGITS)?
 	;
 		
-
+*/
 fragment QUOTE	           
 	: '"'
 	;
@@ -245,3 +247,19 @@ CLOSE_CURLY_BRACE
   :
   '}'
   ;
+
+
+
+
+xsdDateTime: isoDateTime;
+
+timeZoneOffset: ('+' | '-') DIGIT DIGIT ':' DIGIT DIGIT;
+
+
+isoDateTime: DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' DIGIT DIGIT ':' DIGIT DIGIT ':' DIGIT DIGIT ('.' DIGIT (DIGIT DIGIT?)?)? ('Z' | timeZoneOffset)?
+    ;
+
+
+
+DIGIT: '0'..'9';
+

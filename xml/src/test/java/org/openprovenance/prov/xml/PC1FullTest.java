@@ -129,8 +129,13 @@ public class PC1FullTest
         Activity p1=pFactory.newActivity("p1",
                                        black,
                                        "align_warp 1");
-        p1.setAttributes(pFactory.newAttributes(PRIMITIVE_PROPERTY,
-                                                PRIMITIVE_ALIGN_WARP));
+        Attributes res=pFactory.getObjectFactory().createAttributes();
+        
+        pFactory.addAttribute(p1,
+                              "http://openprovenance.org/eg/",
+                              "app",
+                              "type",
+                              PRIMITIVE_ALIGN_WARP);
 
         Activity p2=pFactory.newActivity("p2",
                                        black,

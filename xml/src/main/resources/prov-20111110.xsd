@@ -118,17 +118,35 @@
      <xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
 
+<!--
   <xs:complexType name="Attributes">
      <xs:sequence>
        <xs:element name="attribute" type="prov:Attribute"   minOccurs="1"    maxOccurs="unbounded"/>
      </xs:sequence>
   </xs:complexType>
-  <xs:complexType name="Attribute">
+  <xs:complexType name="Attribute0">
      <xs:sequence>
         <xs:element name="value" type="xs:anyType"/>
      </xs:sequence>
      <xs:attribute name="name" type="xs:anyURI"/>
   </xs:complexType>
+  <xs:complexType name="AttributeTestIgnore">
+    <xs:complexContent>
+      <xs:restriction base="xs:anyType">
+        <xs:attribute name="name" type="xs:anyURI"/>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+-->
+  <xs:complexType name="Attributes">
+     <xs:sequence>
+        <xs:any maxOccurs="unbounded" minOccurs="1"/>
+     </xs:sequence>
+  </xs:complexType>
+
+
 
 
   <xs:complexType name="Property">

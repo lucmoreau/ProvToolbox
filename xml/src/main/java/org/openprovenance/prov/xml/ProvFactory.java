@@ -973,23 +973,72 @@ public class ProvFactory implements CommonURIs {
     }
 
 
+    /*
     public Attributes newAttributes(String property,
                                     Object value) {
         Attributes res=of.createAttributes();
         addAttribute(res,newAttribute(property,value));
         return res;
     }
-    public Attribute newAttribute(String property,
+    
+
+    public Attribute newAttributeORIGINAL(String property,
                                 Object value) {
         Attribute res=of.createAttribute();
+        
         res.setName(property);
         res.setValue(value);
         return res;
     }
+
+
+    public Attribute newAttribute(String property,
+                                  Object value) {
+        Attribute res=of.createAttribute();
+        //QName q1=new QName(property, "test");
+
+
+        res.getAny().add(value);
+        return res;
+    }
+
+    */
+
+    public void addAttribute(Activity a,
+                             String namespace,
+                             String prefix,
+                             String localName,                                  
+                             String value) {
+        if (a.getAttributes()==null) {
+            a.setAttributes(of.createAttributes());
+        }
+        addAttribute(a.getAttributes(),
+                     namespace,
+                     prefix,
+                     localName,
+                     value);
+    }
+
+
+    public void addAttribute(Attributes attrs,
+                             String namespace,
+                                  String prefix,
+                                  String localName,                                  
+                                  String value) {
+
+        Document doc=oFactory.builder.newDocument();
+        Element el=doc.createElementNS(namespace,prefix + ":" + localName);
+        el.appendChild(doc.createTextNode(value));
+        doc.appendChild(el);
+
+        attrs.getAny().add(el);
+    }
+
+    /*
     public void addAttribute(Attributes attrs, Attribute p) {
         attrs.getAttribute().add(p);
     }
-
+    */
 
 
     public EmbeddedAnnotation newEmbeddedAnnotation(String id,

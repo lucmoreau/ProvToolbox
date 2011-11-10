@@ -170,7 +170,6 @@ public class ProvFactory implements CommonURIs {
         Agent res=of.createAgent();
         res.setId(ag);
         addAccounts(res,accounts,null);
-        if (label!=null) addAnnotation(res,newLabel(label));
         return res;
     }
 
@@ -346,9 +345,9 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public void addValue(Entity annotable, Object value, String encoding) {
-        addAnnotation(annotable,newValue(value,encoding));
-    }
+    // public void addValue(Entity annotable, Object value, String encoding) {
+    //     addAnnotation(annotable,newValue(value,encoding));
+    // }
 
     public void addAnnotation(Annotable annotable, EmbeddedAnnotation ann) {
         //annotable.getAnnotation().add(ann);
@@ -526,7 +525,6 @@ public class ProvFactory implements CommonURIs {
             ll.add(newAccount((Account)acc.getRef()));
         }
         Entity res=newEntity(a.getId(),ll);
-        addNewAnnotations(res,a.getAnnotation());
         return res;
     }
     public Activity newActivity(Activity a) {
@@ -535,7 +533,6 @@ public class ProvFactory implements CommonURIs {
             ll.add(newAccount((Account)acc.getRef()));
         }
         Activity res=newActivity(a.getId(),ll);
-        addNewAnnotations(res,a.getAnnotation());
         return res;
     }
     public Agent newAgent(Agent a) {
@@ -544,7 +541,6 @@ public class ProvFactory implements CommonURIs {
             ll.add(newAccount((Account)acc.getRef()));
         }
         Agent res=newAgent(a.getId(),ll);
-        addNewAnnotations(res,a.getAnnotation());
         return res;
     }
 

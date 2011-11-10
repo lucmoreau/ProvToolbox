@@ -164,7 +164,6 @@
 	<xs:sequence>
 	  <xs:element name="account" minOccurs="0" maxOccurs="unbounded" type="prov:AccountRef"/>
 	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
-	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
@@ -174,7 +173,6 @@
 	<xs:sequence>
 	  <xs:element name="account" minOccurs="0" maxOccurs="unbounded" type="prov:AccountRef"/>
 	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
-	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
@@ -184,7 +182,6 @@
 	<xs:sequence>
 	  <xs:element name="account" minOccurs="0" maxOccurs="unbounded" type="prov:AccountRef"/>
 	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
-	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>

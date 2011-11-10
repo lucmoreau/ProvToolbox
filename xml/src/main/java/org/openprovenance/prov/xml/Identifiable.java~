@@ -1,0 +1,6 @@
+package org.openprovenance.pix;
+
+public interface Identifiable {
+    public void setId(String s);
+    public String getId();
+} 

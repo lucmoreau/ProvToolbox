@@ -1,0 +1,7 @@
+package org.openprovenance.pix;
+
+import java.util.List;
+
+public interface HasAccounts {
+    List<AccountRef> getAccount();
+} 

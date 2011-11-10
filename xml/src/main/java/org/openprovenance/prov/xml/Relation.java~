@@ -1,0 +1,6 @@
+package org.openprovenance.prov.xml;
+
+public interface Edge extends Annotable, HasAccounts {
+    Ref getCause();
+    Ref getEffect();
+} 

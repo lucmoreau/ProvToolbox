@@ -22,6 +22,87 @@
            attributeFormDefault="unqualified"
            jxb:version="2.0">
 
+  <xs:complexType name="Activity">
+	<xs:sequence>
+	  <xs:element name="account" minOccurs="0" maxOccurs="unbounded" type="prov:AccountRef"/>
+	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	</xs:sequence>
+	<xs:attribute name="id" type="xs:ID"/>
+  </xs:complexType>
+
+
+  <xs:complexType name="Entity">
+	<xs:sequence>
+	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	</xs:sequence>
+	<xs:attribute name="id" type="xs:ID"/>
+  </xs:complexType>
+
+
+  <xs:complexType name="Agent">
+	<xs:sequence>
+	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	</xs:sequence>
+	<xs:attribute name="id" type="xs:ID"/>
+  </xs:complexType>
+
+
+  <xs:complexType name="Used">
+	<xs:sequence>
+	  <xs:element name="effect"  type="prov:ActivityRef"/>
+	  <xs:element name="cause"   type="prov:EntityRef"/>
+      <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
+	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	</xs:sequence>
+    <xs:attribute name="id" type="xs:ID"/>
+  </xs:complexType>
+
+  <xs:complexType name="WasGeneratedBy">
+	<xs:sequence>
+	  <xs:element name="effect"  type="prov:EntityRef"/>
+	  <xs:element name="cause"   type="prov:ActivityRef"/>
+      <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
+	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	</xs:sequence>
+    <xs:attribute name="id" type="xs:ID"/>
+  </xs:complexType>
+
+  <xs:complexType name="WasControlledBy">
+	<xs:sequence>
+	  <xs:element name="effect"      type="prov:ActivityRef"/>
+	  <xs:element name="cause"       type="prov:AgentRef"/>
+      <xs:element name="startTime"   type="prov:OTime" minOccurs="0"/>
+      <xs:element name="endTime"     type="prov:OTime" minOccurs="0"/>
+	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	</xs:sequence>
+    <xs:attribute name="id" type="xs:ID"/>
+  </xs:complexType>
+
+  <xs:complexType name="WasDerivedFrom">
+	<xs:sequence>
+	  <xs:element name="effect"  type="prov:EntityRef"/>
+	  <xs:element name="cause"   type="prov:EntityRef"/>
+      <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
+	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	</xs:sequence>
+	<xs:attribute name="id" type="xs:ID"/>
+  </xs:complexType>
+
+  <xs:complexType name="WasInformedBy">
+	<xs:sequence>
+	  <xs:element name="effect"  type="prov:ActivityRef"/>
+	  <xs:element name="cause"   type="prov:ActivityRef"/>
+      <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
+	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	</xs:sequence>
+	<xs:attribute name="id" type="xs:ID"/>
+  </xs:complexType>
+
+
+
+
+
+
 
   <xs:element name="container" type="prov:Container">
 	<xs:annotation>
@@ -66,9 +147,6 @@
   <xs:complexType name="AccountRef">
 	<xs:attribute name="ref" type="xs:IDREF"/>
   </xs:complexType>
-  <xs:complexType name="RoleRef">
-    <xs:attribute name="ref" type="xs:IDREF"/>
-  </xs:complexType>
   <xs:complexType name="DependencyRef">
     <xs:attribute name="ref" type="xs:IDREF"/>
   </xs:complexType>
@@ -94,92 +172,7 @@
   </xs:complexType>
 
 
-
   <xs:element name="attributes" type="prov:Attributes"/>
-
-  <xs:complexType name="Activity">
-	<xs:sequence>
-	  <xs:element name="account" minOccurs="0" maxOccurs="unbounded" type="prov:AccountRef"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
-	</xs:sequence>
-	<xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
-
-
-  <xs:complexType name="Entity">
-	<xs:sequence>
-	  <xs:element name="account" minOccurs="0" maxOccurs="unbounded" type="prov:AccountRef"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
-	</xs:sequence>
-	<xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
-
-
-  <xs:complexType name="Agent">
-	<xs:sequence>
-	  <xs:element name="account" minOccurs="0" maxOccurs="unbounded" type="prov:AccountRef"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
-	</xs:sequence>
-	<xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
-
-
-  <xs:complexType name="Used">
-	<xs:sequence>
-	  <xs:element name="effect"  type="prov:ActivityRef"/>
-	  <xs:element name="cause"   type="prov:EntityRef"/>
-	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
-      <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
-	</xs:sequence>
-    <xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
-
-  <xs:complexType name="WasGeneratedBy">
-	<xs:sequence>
-	  <xs:element name="effect"  type="prov:EntityRef"/>
-	  <xs:element name="cause"   type="prov:ActivityRef"/>
-	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
-      <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
-	</xs:sequence>
-    <xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
-
-  <xs:complexType name="WasControlledBy">
-	<xs:sequence>
-	  <xs:element name="effect"      type="prov:ActivityRef"/>
-	  <xs:element name="cause"       type="prov:AgentRef"/>
-	  <xs:element name="account"     minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
-      <xs:element name="startTime"   type="prov:OTime" minOccurs="0"/>
-      <xs:element name="endTime"     type="prov:OTime" minOccurs="0"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
-	</xs:sequence>
-    <xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
-
-  <xs:complexType name="WasDerivedFrom">
-	<xs:sequence>
-	  <xs:element name="effect"  type="prov:EntityRef"/>
-	  <xs:element name="cause"   type="prov:EntityRef"/>
-	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
-      <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
-	</xs:sequence>
-	<xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
-
-  <xs:complexType name="WasTriggeredBy">
-	<xs:sequence>
-	  <xs:element name="effect"  type="prov:ActivityRef"/>
-	  <xs:element name="cause"   type="prov:ActivityRef"/>
-	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
-      <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
-	</xs:sequence>
-	<xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
-
 
 
 
@@ -190,7 +183,7 @@
 	  <xs:choice minOccurs="0" maxOccurs="unbounded">
 		<xs:element name="used"               type="prov:Used"/>
 		<xs:element name="wasGeneratedBy"     type="prov:WasGeneratedBy"/>
-		<xs:element name="wasTriggeredBy"     type="prov:WasTriggeredBy"/>
+		<xs:element name="wasInformedBy"      type="prov:WasInformedBy"/>
 		<xs:element name="wasDerivedFrom"     type="prov:WasDerivedFrom"/>
 		<xs:element name="wasControlledBy"    type="prov:WasControlledBy"/>
 	  </xs:choice>
@@ -207,13 +200,6 @@
   <xs:complexType name="Accounts">
 	<xs:sequence>
 	  <xs:element name="account"  type="prov:Account"  minOccurs="0" maxOccurs="unbounded"/>
-	  <xs:element name="overlaps" type="prov:Overlaps" minOccurs="0" maxOccurs="unbounded"/>
-	</xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="Overlaps">
-	<xs:sequence>
-	  <xs:element name="account" type="prov:AccountRef" minOccurs="2" maxOccurs="2"/>
 	</xs:sequence>
   </xs:complexType>
 
@@ -270,7 +256,6 @@
   <xs:complexType name="EmbeddedAnnotation">
      <xs:sequence>
        <xs:element name="property" type="prov:Property"   minOccurs="1"    maxOccurs="unbounded"/>
-       <xs:element name="account"  type="prov:AccountRef" minOccurs="0"    maxOccurs="unbounded" />
        <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
      </xs:sequence>
      <xs:attribute name="id" type="xs:ID"/>

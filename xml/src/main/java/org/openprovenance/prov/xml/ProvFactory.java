@@ -125,7 +125,7 @@ public class ProvFactory implements CommonURIs {
         res.setRef(edge);
         return res;
     }
-    public DependencyRef newDependencyRef(WasTriggeredBy edge) {
+    public DependencyRef newDependencyRef(WasInformedBy edge) {
         DependencyRef res=of.createDependencyRef();
         res.setRef(edge);
         return res;
@@ -133,17 +133,14 @@ public class ProvFactory implements CommonURIs {
 
 
 
-    public Activity newActivity(String pr,
-                                Collection<Account> accounts) {
-        return newActivity(pr,accounts,null);
+    public Activity newActivity(String pr) {
+        return newActivity(pr,null);
     }
 
     public Activity newActivity(String pr,
-                              Collection<Account> accounts,
                               String label) {
         Activity res=of.createActivity();
         res.setId(pr);
-        addAccounts(res,accounts,null);
         if (label!=null)
             addAttribute(res,
                           "http://openprovenance.org/prov/xml#",
@@ -153,17 +150,15 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public Agent newAgent(String ag,
-                          Collection<Account> accounts) {
-        return newAgent(ag,accounts,null);
+    public Agent newAgent(String ag) {
+        return newAgent(ag,null);
     }
 
     public Agent newAgent(String ag,
-                          Collection<Account> accounts,
                           String label) {
         Agent res=of.createAgent();
         res.setId(ag);
-        addAccounts(res,accounts,null);
+        if (label!=null) addLabel(res,label);
         return res;
     }
 
@@ -455,25 +450,6 @@ public class ProvFactory implements CommonURIs {
 
 
 
-    public Overlaps newOverlaps(Collection<Account> accounts) {
-        Overlaps res=of.createOverlaps();
-        LinkedList ll=new LinkedList();
-        int i=0;
-        for (Account acc: accounts) {
-            if (i==2) break;
-            ll.add(newAccountRef(acc));
-            i++;
-        }
-        res.getAccount().addAll(ll);
-        return res;
-    }
-        
-    public Overlaps newOverlaps(AccountRef aid1,AccountRef aid2) {
-        Overlaps res=of.createOverlaps();
-        res.getAccount().add(aid1);
-        res.getAccount().add(aid2);
-        return res;
-    }
 
     /** By default, no auto generation of Id.  Override this behaviour if required. */
     public String autoGenerateId(String prefix) {
@@ -488,27 +464,15 @@ public class ProvFactory implements CommonURIs {
 
 
     public Entity newEntity(Entity a) {
-        LinkedList<Account> ll=new LinkedList();
-        for (AccountRef acc: a.getAccount()) {
-            ll.add(newAccount((Account)acc.getRef()));
-        }
-        Entity res=newEntity(a.getId(),ll);
+        Entity res=newEntity(a.getId());
         return res;
     }
     public Activity newActivity(Activity a) {
-        LinkedList<Account> ll=new LinkedList();
-        for (AccountRef acc: a.getAccount()) {
-            ll.add(newAccount((Account)acc.getRef()));
-        }
-        Activity res=newActivity(a.getId(),ll);
+        Activity res=newActivity(a.getId());
         return res;
     }
     public Agent newAgent(Agent a) {
-        LinkedList<Account> ll=new LinkedList();
-        for (AccountRef acc: a.getAccount()) {
-            ll.add(newAccount((Account)acc.getRef()));
-        }
-        Agent res=newAgent(a.getId(),ll);
+        Agent res=newAgent(a.getId());
         return res;
     }
 
@@ -523,22 +487,19 @@ public class ProvFactory implements CommonURIs {
 	if (ea.getId()!=null) 
             addAnnotation(res,newEmbeddedAnnotation(ea.getId(),
                                                     ea.getProperty(),
-                                                    ea.getAccount(),
+                                                    new LinkedList(),
                                                     null));
     }
 
 
-    public Entity newEntity(String id,
-                                Collection<Account> accounts) {
-        return newEntity(id,accounts,null);
+    public Entity newEntity(String id) {
+        return newEntity(id,null);
     }
 
     public Entity newEntity(String id,
-                            Collection<Account> accounts,
                             String label) {
         Entity res=of.createEntity();
         res.setId(id);
-        addAccounts(res,accounts,null);
         if (label!=null) addLabel(res,label);
         return res;
     }
@@ -562,14 +523,12 @@ public class ProvFactory implements CommonURIs {
     public Used newUsed(String id,
                         ActivityRef pid,
                         String role,
-                        EntityRef aid,
-                        Collection<AccountRef> accounts) {
+                        EntityRef aid) {
         Used res=of.createUsed();
         res.setId(autoGenerateId(usedIdPrefix,id));
         res.setEffect(pid);
         addRole(res,role);
         res.setCause(aid);
-        addAccounts(res,accounts);
         return res;
     }
 
@@ -582,30 +541,20 @@ public class ProvFactory implements CommonURIs {
                      type);
     }
 
-
-
     public Used newUsed(Activity p,
                         String role,
-                        Entity a,
-                        Collection<Account> accounts) {
-        Used res=newUsed(null,p,role,a,accounts);
+                        Entity a) {
+        Used res=newUsed(null,p,role,a);
         return res;
     }
 
     public Used newUsed(String id,
                         Activity p,
                         String role,
-                        Entity a,
-                        Collection<Account> accounts) {
+                        Entity a) {
         ActivityRef pid=newActivityRef(p);
         EntityRef aid=newEntityRef(a);
-        LinkedList ll=new LinkedList();
-        if (accounts!=null) {
-            for (Account acc: accounts) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newUsed(id,pid,role,aid,ll);
+        return newUsed(id,pid,role,aid);
     }
 
 
@@ -613,9 +562,8 @@ public class ProvFactory implements CommonURIs {
                         Activity p,
                         String role,
                         Entity a,
-                        String type,
-                        Collection<Account> accounts) {
-        Used res=newUsed(id,p,role,a,accounts);
+                        String type) {
+        Used res=newUsed(id,p,role,a);
         addType(res,type);
         return res;
     }
@@ -624,8 +572,7 @@ public class ProvFactory implements CommonURIs {
         Used u1=newUsed(u.getId(),
                         u.getEffect(),
                         null,
-                        u.getCause(),
-                        u.getAccount());
+                        u.getCause());
         u1.setAttributes(u.getAttributes());
         return u1;
     }
@@ -633,8 +580,7 @@ public class ProvFactory implements CommonURIs {
     public WasControlledBy newWasControlledBy(WasControlledBy c) {
         WasControlledBy wcb=newWasControlledBy(c.getEffect(),
                                                null,
-                                               c.getCause(),
-                                               c.getAccount());
+                                               c.getCause());
         wcb.setId(c.getId());
         wcb.setAttributes(c.getAttributes());
         return wcb;
@@ -644,8 +590,7 @@ public class ProvFactory implements CommonURIs {
         WasGeneratedBy wgb=newWasGeneratedBy(g.getId(),
                                              g.getEffect(),
                                              null,
-                                             g.getCause(),
-                                             g.getAccount());
+                                             g.getCause());
         wgb.setId(g.getId());
         wgb.setAttributes(g.getAttributes());
         return wgb;
@@ -654,17 +599,15 @@ public class ProvFactory implements CommonURIs {
     public WasDerivedFrom newWasDerivedFrom(WasDerivedFrom d) {
         WasDerivedFrom wdf=newWasDerivedFrom(d.getId(),
                                              d.getEffect(),
-                                             d.getCause(),
-                                             d.getAccount());
+                                             d.getCause());
         wdf.setAttributes(d.getAttributes());
         return wdf;
     }
 
-    public WasTriggeredBy newWasTriggeredBy(WasTriggeredBy d) {
-        WasTriggeredBy wtb=newWasTriggeredBy(d.getId(),
+    public WasInformedBy newWasInformedBy(WasInformedBy d) {
+        WasInformedBy wtb=newWasInformedBy(d.getId(),
                                              d.getEffect(),
-                                             d.getCause(),
-                                             d.getAccount());
+                                             d.getCause());
         wtb.setId(d.getId());
         wtb.setAttributes(d.getAttributes());
         return wtb;
@@ -675,37 +618,30 @@ public class ProvFactory implements CommonURIs {
     public WasGeneratedBy newWasGeneratedBy(String id,
                                             EntityRef aid,
                                             String role,
-                                            ActivityRef pid,
-                                            Collection<AccountRef> accounts) {
+                                            ActivityRef pid) {
         WasGeneratedBy res=of.createWasGeneratedBy();
         res.setId(autoGenerateId(wasGenerateByIdPrefix,id));
         res.setCause(pid);
         res.setEffect(aid);
         addRole(res,role);
-        addAccounts(res,accounts);
         return res;
     }
 
 
     public WasGeneratedBy newWasGeneratedBy(Entity a,
                                             String role,
-                                            Activity p,
-                                            Collection<Account> accounts) {
-        return newWasGeneratedBy(null,a,role,p,accounts);
+                                            Activity p) {
+        return newWasGeneratedBy(null,a,role,p);
     }
 
     public WasGeneratedBy newWasGeneratedBy(String id,
                                             Entity a,
                                             String role,
-                                            Activity p,
-                                            Collection<Account> accounts) {
+                                            Activity p) {
         EntityRef aid=newEntityRef(a);
         ActivityRef pid=newActivityRef(p);
         LinkedList ll=new LinkedList();
-        for (Account acc: accounts) {
-            ll.add(newAccountRef(acc));
-        }
-        return  newWasGeneratedBy(id,aid,role,pid,ll);
+        return  newWasGeneratedBy(id,aid,role,pid);
     }
 
 
@@ -714,30 +650,26 @@ public class ProvFactory implements CommonURIs {
                                             Entity a,
                                             String role,
                                             Activity p,
-                                            String type,
-                                            Collection<Account> accounts) {
-        WasGeneratedBy wgb=newWasGeneratedBy(id,a,role,p,accounts);
+                                            String type) {
+        WasGeneratedBy wgb=newWasGeneratedBy(id,a,role,p);
         addType(wgb,type);
         return wgb;
     }
 
     public WasControlledBy newWasControlledBy(ActivityRef pid,
                                               String role,
-                                              AgentRef agid,
-                                              Collection<AccountRef> accounts) {
-        return newWasControlledBy(null,pid,role,agid,accounts);
+                                              AgentRef agid) {
+        return newWasControlledBy(null,pid,role,agid);
     }
     
     public WasControlledBy newWasControlledBy(String id,
                                               ActivityRef pid,
                                               String role,
-                                              AgentRef agid,
-                                              Collection<AccountRef> accounts) {
+                                              AgentRef agid) {
         WasControlledBy res=of.createWasControlledBy();
         res.setId(autoGenerateId(wasControlledByIdPrefix,id));
         res.setEffect(pid);
         res.setCause(agid);
-        addAccounts(res,accounts);
         addRole(res,role);
         return res;
     }
@@ -745,32 +677,25 @@ public class ProvFactory implements CommonURIs {
 
     public WasControlledBy newWasControlledBy(Activity p,
                                               String role,
-                                              Agent ag,
-                                              Collection<Account> accounts) {
-        return newWasControlledBy(null,p,role,ag,accounts);
+                                              Agent ag) {
+        return newWasControlledBy(null,p,role,ag);
     }
 
     public WasControlledBy newWasControlledBy(String id,
                                               Activity p,
                                               String role,
-                                              Agent ag,
-                                              Collection<Account> accounts) {
+                                              Agent ag) {
         AgentRef agid=newAgentRef(ag);
         ActivityRef pid=newActivityRef(p);
-        LinkedList ll=new LinkedList();
-        for (Account acc: accounts) {
-            ll.add(newAccountRef(acc));
-        }
-        return  newWasControlledBy(id,pid,role,agid,ll);
+        return  newWasControlledBy(id,pid,role,agid);
     }
 
     public WasControlledBy newWasControlledBy(String id,
                                               Activity p,
                                               String role,
                                               Agent ag,
-                                              String type,
-                                              Collection<Account> accounts) {
-        WasControlledBy wcb=newWasControlledBy(id,p,role,ag,accounts);
+                                              String type) {
+        WasControlledBy wcb=newWasControlledBy(id,p,role,ag);
         addType(wcb,type);
         return wcb;
     }
@@ -778,87 +703,69 @@ public class ProvFactory implements CommonURIs {
 
     public WasDerivedFrom newWasDerivedFrom(String id,
                                             EntityRef aid1,
-                                            EntityRef aid2,
-                                            Collection<AccountRef> accounts) {
+                                            EntityRef aid2) {
         WasDerivedFrom res=of.createWasDerivedFrom();
         res.setId(autoGenerateId(wasDerivedFromIdPrefix,id));
         res.setCause(aid2);
         res.setEffect(aid1);
-        addAccounts(res,accounts);
         return res;
     }
 
 
     public WasDerivedFrom newWasDerivedFrom(Entity a1,
-                                            Entity a2,
-                                            Collection<Account> accounts) {
-        return newWasDerivedFrom(null,a1,a2,accounts);
+                                            Entity a2) {
+        return newWasDerivedFrom(null,a1,a2);
     }
 
     public WasDerivedFrom newWasDerivedFrom(String id,
                                             Entity a1,
-                                            Entity a2,
-                                            Collection<Account> accounts) {
+                                            Entity a2) {
         EntityRef aid1=newEntityRef(a1);
         EntityRef aid2=newEntityRef(a2);
-        LinkedList ll=new LinkedList();
-        for (Account acc: accounts) {
-            ll.add(newAccountRef(acc));
-        }
-        return  newWasDerivedFrom(id,aid1,aid2,ll);
+        return  newWasDerivedFrom(id,aid1,aid2);
     }
 
 
     public WasDerivedFrom newWasDerivedFrom(String id,
                                             Entity a1,
                                             Entity a2,
-                                            String type,
-                                            Collection<Account> accounts) {
-        WasDerivedFrom wdf=newWasDerivedFrom(id,a1,a2,accounts);
+                                            String type) {
+        WasDerivedFrom wdf=newWasDerivedFrom(id,a1,a2);
         addType(wdf,type);
         return wdf;
     }
 
 
 
-    public WasTriggeredBy newWasTriggeredBy(String id,
+    public WasInformedBy newWasInformedBy(String id,
                                             ActivityRef pid1,
-                                            ActivityRef pid2,
-                                            Collection<AccountRef> accounts) {
-        WasTriggeredBy res=of.createWasTriggeredBy();
+                                            ActivityRef pid2) {
+        WasInformedBy res=of.createWasInformedBy();
         res.setId(autoGenerateId(wasTriggeredByIdPrefix,id));
         res.setEffect(pid1);
         res.setCause(pid2);
-        addAccounts(res,accounts);
         return res;
     }
 
-    public WasTriggeredBy newWasTriggeredBy(Activity p1,
-                                            Activity p2,
-                                            Collection<Account> accounts) {
-        return newWasTriggeredBy(null,p1,p2,accounts);
+    public WasInformedBy newWasInformedBy(Activity p1,
+                                            Activity p2) {
+        return newWasInformedBy(null,p1,p2);
     }
 
-    public WasTriggeredBy newWasTriggeredBy(String id,
+    public WasInformedBy newWasInformedBy(String id,
                                             Activity p1,
-                                            Activity p2,
-                                            Collection<Account> accounts) {
+                                            Activity p2) {
         ActivityRef pid1=newActivityRef(p1);
         ActivityRef pid2=newActivityRef(p2);
-        LinkedList<AccountRef> ll=new LinkedList();
-        for (Account acc: accounts) {
-            ll.add(newAccountRef(acc));
-        }
-        return  newWasTriggeredBy(id,pid1,pid2,ll);
+        return  newWasInformedBy(id,pid1,pid2);
     }
 
 
-    public WasTriggeredBy newWasTriggeredBy(String id,
+    public WasInformedBy newWasInformedBy(String id,
                                             Activity p1,
                                             Activity p2,
-                                            String type,
-                                            Collection<Account> accounts) {
-        WasTriggeredBy wtb=newWasTriggeredBy(p1,p2,accounts);
+                                            String type) {
+        WasInformedBy wtb=newWasInformedBy(p1,p2);
         wtb.setId(id);
         addType(wtb,type);
         return wtb;
@@ -937,116 +844,61 @@ public class ProvFactory implements CommonURIs {
     public Annotation newAnnotation(String id,
                                     Entity a,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
+                                    Object value) {
         EntityRef aid=newEntityRef(a);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,aid,property,value,ll);
+        return newAnnotation(id,aid,property,value);
     }
     public Annotation newAnnotation(String id,
                                     Activity p,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
+                                    Object value) {
         ActivityRef pid=newActivityRef(p);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,pid,property,value,ll);
+        return newAnnotation(id,pid,property,value);
     }
 
     public Annotation newAnnotation(String id,
                                     Annotation a,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
+                                    Object value) {
         AnnotationRef aid=newAnnotationRef(a);
         LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,aid,property,value,ll);
+        return newAnnotation(id,aid,property,value);
     }
 
     public Annotation newAnnotation(String id,
                                     WasDerivedFrom edge,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
+                                    Object value) {
         DependencyRef cid=newDependencyRef(edge);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,cid,property,value,ll);
+        return newAnnotation(id,cid,property,value);
     }
     public Annotation newAnnotation(String id,
                                     Used edge,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
+                                    Object value) {
         DependencyRef cid=newDependencyRef(edge);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,cid,property,value,ll);
+        return newAnnotation(id,cid,property,value);
     }
     public Annotation newAnnotation(String id,
                                     WasGeneratedBy edge,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
+                                    Object value) {
         DependencyRef cid=newDependencyRef(edge);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,cid,property,value,ll);
+        return newAnnotation(id,cid,property,value);
     }
     public Annotation newAnnotation(String id,
                                     WasControlledBy edge,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
+                                    Object value) {
         DependencyRef cid=newDependencyRef(edge);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,cid,property,value,ll);
+        return newAnnotation(id,cid,property,value);
     }
     public Annotation newAnnotation(String id,
-                                    WasTriggeredBy edge,
+                                    WasInformedBy edge,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
+                                    Object value) {
         DependencyRef cid=newDependencyRef(edge);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,cid,property,value,ll);
+        return newAnnotation(id,cid,property,value);
     }
 
 
@@ -1082,35 +934,30 @@ public class ProvFactory implements CommonURIs {
     public Annotation newAnnotation(String id,
                                     Ref ref,
                                     String property,
-                                    Object value,
-                                    Collection<AccountRef> accs) {
+                                    Object value) {
         Annotation res=of.createAnnotation();
         res.setId(id);
         res.setLocalSubject(ref.getRef());
         addProperty(res,newProperty(property,value));
-        addAccounts(res,accs);
         return res;
     }
 
     public Annotation newAnnotation(String id,
                                     Object o,
-                                    List<Property> properties,
-                                    Collection<AccountRef> accs) {
+                                    List<Property> properties) {
         Annotation res=of.createAnnotation();
         res.setId(id);
         res.setLocalSubject(o);
         for (Property property: properties) {
             addProperty(res,property);
         }
-        addAccounts(res,accs);
         return res;
     }
 
     public Annotation newAnnotation(Annotation ann) {
         Annotation res=newAnnotation(ann.getId(),
                                      ann.getLocalSubject(),
-                                     ann.getProperty(),
-                                     ann.getAccount());
+                                     ann.getProperty());
         return res;
     }
 
@@ -1122,7 +969,6 @@ public class ProvFactory implements CommonURIs {
         EmbeddedAnnotation res=of.createEmbeddedAnnotation();
         res.setId(id);
         addProperty(res,newProperty(property,value));
-        addAccounts(res,accs);
         return res;
     }
     public EmbeddedAnnotation newEmbeddedAnnotation(String id,
@@ -1134,33 +980,29 @@ public class ProvFactory implements CommonURIs {
         if (properties!=null) {
             addProperty(res,properties);
         }
-        addAccounts(res,accs);
         return res;
     }
 
 
     public Container newContainer(Collection<Account> accs,
-                                Collection<Overlaps> ops,
                                 Collection<Activity> ps,
                                 Collection<Entity> as,
                                 Collection<Agent> ags,
                                 Collection<Object> lks) {
-        return newContainer(null,accs,ops,ps,as,ags,lks,null);
+        return newContainer(null,accs,ps,as,ags,lks,null);
     }
 
     public Container newContainer(Collection<Account> accs,
-                                Collection<Overlaps> ops,
                                 Collection<Activity> ps,
                                 Collection<Entity> as,
                                 Collection<Agent> ags,
                                 Collection<Object> lks,
                                 Collection<Annotation> anns) {
-        return newContainer(null,accs,ops,ps,as,ags,lks,anns);
+        return newContainer(null,accs,ps,as,ags,lks,anns);
     }
 
     public Container newContainer(String id,
                                 Collection<Account> accs,
-                                Collection<Overlaps> ops,
                                 Collection<Activity> ps,
                                 Collection<Entity> as,
                                 Collection<Agent> ags,
@@ -1172,8 +1014,6 @@ public class ProvFactory implements CommonURIs {
         if (accs!=null) {
             Accounts aaccs=of.createAccounts();
             aaccs.getAccount().addAll(accs);
-            if (ops!=null) 
-                aaccs.getOverlaps().addAll(ops);
             res.setAccounts(aaccs);
             
         }
@@ -1194,7 +1034,7 @@ public class ProvFactory implements CommonURIs {
         }
         if (lks!=null) {
             Dependencies ccls=of.createDependencies();
-            ccls.getUsedOrWasGeneratedByOrWasTriggeredBy().addAll(lks);
+            ccls.getUsedOrWasGeneratedByOrWasInformedBy().addAll(lks);
             res.setDependencies(ccls);
         }
 
@@ -1207,7 +1047,6 @@ public class ProvFactory implements CommonURIs {
     }
 
     public Container newContainer(Collection<Account> accs,
-                                Overlaps [] ovs,
                                 Activity [] ps,
                                 Entity [] as,
                                 Agent [] ags,
@@ -1215,25 +1054,22 @@ public class ProvFactory implements CommonURIs {
     {
 
         return newContainer(accs,
-                           ((ovs==null) ? null : Arrays.asList(ovs)),
                            ((ps==null) ? null : Arrays.asList(ps)),
                            ((as==null) ? null : Arrays.asList(as)),
                            ((ags==null) ? null : Arrays.asList(ags)),
                            ((lks==null) ? null : Arrays.asList(lks)));
     }
     public Container newContainer(Collection<Account> accs,
-                                Overlaps [] ovs,
                                 Activity [] ps,
                                 Entity [] as,
                                 Agent [] ags,
                                 Object [] lks,
                                 Annotation [] anns) {
-        return newContainer(null,accs,ovs,ps,as,ags,lks,anns);
+        return newContainer(null,accs,ps,as,ags,lks,anns);
     }
 
     public Container newContainer(String id,
                                 Collection<Account> accs,
-                                Overlaps [] ovs,
                                 Activity [] ps,
                                 Entity [] as,
                                 Agent [] ags,
@@ -1243,7 +1079,6 @@ public class ProvFactory implements CommonURIs {
 
         return newContainer(id,
                            accs,
-                           ((ovs==null) ? null : Arrays.asList(ovs)),
                            ((ps==null) ? null : Arrays.asList(ps)),
                            ((as==null) ? null : Arrays.asList(as)),
                            ((ags==null) ? null : Arrays.asList(ags)),
@@ -1295,14 +1130,10 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    public Accounts newAccounts(Collection<Account> accs,
-                                Collection<Overlaps> ovlps) {
+    public Accounts newAccounts(Collection<Account> accs) {
         Accounts res=of.createAccounts();
         if (accs!=null) {
             res.getAccount().addAll(accs);
-        }
-        if (ovlps!=null) {
-            res.getOverlaps().addAll(ovlps);
         }
         return res;
     }

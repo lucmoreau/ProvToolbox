@@ -247,45 +247,9 @@
   </xs:complexType>
 
 
-  <xs:complexType name="UsedStar">
-	<xs:sequence>
-	  <xs:element name="effect"  type="prov:ActivityRef"/>
-	  <xs:element name="cause"   type="prov:EntityRef"/>
-	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
-	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
-	</xs:sequence>
-    <xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
 
-  <xs:complexType name="WasGeneratedByStar">
-	<xs:sequence>
-	  <xs:element name="effect"  type="prov:EntityRef"/>
-	  <xs:element name="cause"   type="prov:ActivityRef"/>
-	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
-	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
-	</xs:sequence>
-    <xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
 
-  <xs:complexType name="WasDerivedFromStar">
-	<xs:sequence>
-	  <xs:element name="effect"  type="prov:EntityRef"/>
-	  <xs:element name="cause"   type="prov:EntityRef"/>
-	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
-	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
-	</xs:sequence>
-	<xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
 
-  <xs:complexType name="WasTriggeredByStar">
-	<xs:sequence>
-	  <xs:element name="effect"  type="prov:ActivityRef"/>
-	  <xs:element name="cause"   type="prov:ActivityRef"/>
-	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
-	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
-	</xs:sequence>
-	<xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
 
   <xs:complexType name="Dependencies">
 	<xs:sequence>
@@ -295,9 +259,6 @@
 		<xs:element name="wasTriggeredBy"     type="prov:WasTriggeredBy"/>
 		<xs:element name="wasDerivedFrom"     type="prov:WasDerivedFrom"/>
 		<xs:element name="wasControlledBy"    type="prov:WasControlledBy"/>
-		<xs:element name="usedStar"           type="prov:UsedStar"/>
-		<xs:element name="wasGeneratedByStar" type="prov:WasGeneratedByStar"/>
-		<xs:element name="wasDerivedFromStar" type="prov:WasDerivedFromStar"/>
 	  </xs:choice>
 	</xs:sequence>
   </xs:complexType>

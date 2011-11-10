@@ -607,16 +607,6 @@ public class ProvFactory implements CommonURIs {
 
 
 
-    public UsedStar newUsedStar(ActivityRef pid,
-                                EntityRef aid,
-                                Collection<AccountRef> accounts) {
-        UsedStar res=of.createUsedStar();
-        res.setEffect(pid);
-        res.setCause(aid);
-        addAccounts(res,accounts);
-        return res;
-    }
-
     public Used newUsed(Activity p,
                         Role role,
                         Entity a,
@@ -639,19 +629,6 @@ public class ProvFactory implements CommonURIs {
             }
         }
         return newUsed(id,pid,role,aid,ll);
-    }
-    public UsedStar newUsedStar(Activity p,
-                                Entity a,
-                                Collection<Account> accounts) {
-        ActivityRef pid=newActivityRef(p);
-        EntityRef aid=newEntityRef(a);
-        LinkedList ll=new LinkedList();
-        if (accounts!=null) {
-            for (Account acc: accounts) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newUsedStar(pid,aid,ll);
     }
 
 
@@ -732,15 +709,7 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public WasGeneratedByStar newWasGeneratedByStar(EntityRef aid,
-                                                    ActivityRef pid,
-                                                    Collection<AccountRef> accounts) {
-        WasGeneratedByStar res=of.createWasGeneratedByStar();
-        res.setCause(pid);
-        res.setEffect(aid);
-        addAccounts(res,accounts);
-        return res;
-    }
+
     public WasGeneratedBy newWasGeneratedBy(Entity a,
                                             Role role,
                                             Activity p,
@@ -760,19 +729,6 @@ public class ProvFactory implements CommonURIs {
             ll.add(newAccountRef(acc));
         }
         return  newWasGeneratedBy(id,aid,role,pid,ll);
-    }
-
-
-    public WasGeneratedByStar newWasGeneratedByStar(Entity a,
-                                                    Activity p,
-                                                    Collection<Account> accounts) {
-        EntityRef aid=newEntityRef(a);
-        ActivityRef pid=newActivityRef(p);
-        LinkedList ll=new LinkedList();
-        for (Account acc: accounts) {
-            ll.add(newAccountRef(acc));
-        }
-        return  newWasGeneratedByStar(aid,pid,ll);
     }
 
 
@@ -855,15 +811,6 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public WasDerivedFromStar newWasDerivedFromStar(EntityRef aid1,
-                                                    EntityRef aid2,
-                                                    Collection<AccountRef> accounts) {
-        WasDerivedFromStar res=of.createWasDerivedFromStar();
-        res.setCause(aid2);
-        res.setEffect(aid1);
-        addAccounts(res,accounts);
-        return res;
-    }
 
     public WasDerivedFrom newWasDerivedFrom(Entity a1,
                                             Entity a2,
@@ -882,18 +829,6 @@ public class ProvFactory implements CommonURIs {
             ll.add(newAccountRef(acc));
         }
         return  newWasDerivedFrom(id,aid1,aid2,ll);
-    }
-
-    public WasDerivedFromStar newWasDerivedFromStar(Entity a1,
-                                                    Entity a2,
-                                                    Collection<Account> accounts) {
-        EntityRef aid1=newEntityRef(a1);
-        EntityRef aid2=newEntityRef(a2);
-        LinkedList ll=new LinkedList();
-        for (Account acc: accounts) {
-            ll.add(newAccountRef(acc));
-        }
-        return  newWasDerivedFromStar(aid1,aid2,ll);
     }
 
 
@@ -921,16 +856,6 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public WasTriggeredByStar newWasTriggeredByStar(ActivityRef pid1,
-                                                    ActivityRef pid2,
-                                                    Collection<AccountRef> accounts) {
-        WasTriggeredByStar res=of.createWasTriggeredByStar();
-        res.setEffect(pid1);
-        res.setCause(pid2);
-        addAccounts(res,accounts);
-        return res;
-    }
-
     public WasTriggeredBy newWasTriggeredBy(Activity p1,
                                             Activity p2,
                                             Collection<Account> accounts) {
@@ -950,17 +875,6 @@ public class ProvFactory implements CommonURIs {
         return  newWasTriggeredBy(id,pid1,pid2,ll);
     }
 
-    public WasTriggeredByStar newWasTriggeredByStar(Activity p1,
-                                                    Activity p2,
-                                                    Collection<Account> accounts) {
-        ActivityRef pid1=newActivityRef(p1);
-        ActivityRef pid2=newActivityRef(p2);
-        LinkedList<AccountRef> ll=new LinkedList();
-        for (Account acc: accounts) {
-            ll.add(newAccountRef(acc));
-        }
-        return  newWasTriggeredByStar(pid1,pid2,ll);
-    }
 
     public WasTriggeredBy newWasTriggeredBy(String id,
                                             Activity p1,

@@ -140,7 +140,7 @@ public class ProvFactory implements CommonURIs {
 
 
     public Activity newActivity(String pr,
-                              Collection<Account> accounts) {
+                                Collection<Account> accounts) {
         return newActivity(pr,accounts,null);
     }
 
@@ -150,7 +150,12 @@ public class ProvFactory implements CommonURIs {
         Activity res=of.createActivity();
         res.setId(pr);
         addAccounts(res,accounts,null);
-        if (label!=null) addAnnotation(res,newLabel(label));
+        if (label!=null)
+            addAttribute(res,
+                          "http://openprovenance.org/prov/xml#",
+                          "prov",
+                          "label",
+                          label);
         return res;
     }
 
@@ -565,12 +570,12 @@ public class ProvFactory implements CommonURIs {
     }
 
     public Entity newEntity(String id,
-                                Collection<Account> accounts,
-                                String label) {
+                            Collection<Account> accounts,
+                            String label) {
         Entity res=of.createEntity();
         res.setId(id);
         addAccounts(res,accounts,null);
-        if (label!=null) addAnnotation(res,newLabel(label));
+        if (label!=null) addLabel(res,label);
         return res;
     }
 
@@ -973,38 +978,8 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    /*
-    public Attributes newAttributes(String property,
-                                    Object value) {
-        Attributes res=of.createAttributes();
-        addAttribute(res,newAttribute(property,value));
-        return res;
-    }
-    
 
-    public Attribute newAttributeORIGINAL(String property,
-                                Object value) {
-        Attribute res=of.createAttribute();
-        
-        res.setName(property);
-        res.setValue(value);
-        return res;
-    }
-
-
-    public Attribute newAttribute(String property,
-                                  Object value) {
-        Attribute res=of.createAttribute();
-        //QName q1=new QName(property, "test");
-
-
-        res.getAny().add(value);
-        return res;
-    }
-
-    */
-
-    public void addAttribute(Activity a,
+    public void addAttribute(HasAttributes a,
                              String namespace,
                              String prefix,
                              String localName,                                  
@@ -1017,6 +992,24 @@ public class ProvFactory implements CommonURIs {
                      prefix,
                      localName,
                      value);
+    }
+
+    public void addType(HasAttributes a,                                  
+                        String type) {
+        addAttribute(a,
+                     "http://openprovenance.org/prov/xml#",
+                     "prov",
+                     "type",
+                     type);
+    }
+
+    public void addLabel(HasAttributes a,                                  
+                         String label) {
+        addAttribute(a,
+                     "http://openprovenance.org/prov/xml#",
+                     "prov",
+                     "label",
+                     label);
     }
 
 

@@ -50,8 +50,8 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
      *      value will be ignored and the system will generate one.
      */
     public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
-        if (namespaceUri.equals("http://openprovenance.org/model/opmx")) {
-            return "opmx";
+        if (namespaceUri.equals("http://openprovenance.org/model/prov/xml#")) {
+            return "prov";
         }
         if (namespaceUri.equals("http://openprovenance.org/model/opmPrinterConfig")) {
             return "prn";
@@ -118,10 +118,12 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
         if (defaultNamespace!=null) {
             return new String[] { "http://www.w3.org/2001/XMLSchema-instance",
                                   "http://www.w3.org/2001/XMLSchema",
+                                  "http://openprovenance.org/model/prov/xml#",
                                   defaultNamespace};
         } else {
             return new String[] { "http://www.w3.org/2001/XMLSchema-instance",
-                                  "http://www.w3.org/2001/XMLSchema"};
+                                  "http://www.w3.org/2001/XMLSchema",
+                                  "http://openprovenance.org/model/prov/xml#"};
         }
     }
 

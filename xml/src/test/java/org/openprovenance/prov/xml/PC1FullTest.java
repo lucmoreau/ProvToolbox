@@ -70,22 +70,20 @@ public class PC1FullTest
 
 
     public Entity newFile(ProvFactory pFactory,
-                            String id,
-                            Collection<Account> accounts,
-                            String label,
-                            String file,
-                            String location) {
+                          String id,
+                          Collection<Account> accounts,
+                          String label,
+                          String file,
+                          String location) {
                             
         Entity a=pFactory.newEntity(id,
-                                          accounts,
-                                          label);
-        pFactory.addAnnotation(a,
-                               pFactory.newType("http://openprovenance.org/primitives#File"));
-        pFactory.addAnnotation(a,
-                               pFactory.newEmbeddedAnnotation("an1_" + id,
-                                                              (urlFlag) ? URL_PROPERTY : PATH_PROPERTY,
-                                                              location + file,
-                                                              null));
+                                    accounts,
+                                    label);
+        pFactory.addType(a,"http://openprovenance.org/primitives#File");
+
+        addUrl(a,location+file);
+
+
         return a;
     }
 
@@ -99,9 +97,12 @@ public class PC1FullTest
         Entity a=pFactory.newEntity(id,
                                         accounts,
                                         label);
-        pFactory.addAnnotation(a,
-                               pFactory.newType("http://openprovenance.org/primitives#String"));
-        pFactory.addValue(a,value,"mime:application/text");
+        pFactory.addType(a,"http://openprovenance.org/primitives#String");
+
+        addValue(a,value);
+
+
+
 
         return a;
     }
@@ -116,10 +117,28 @@ public class PC1FullTest
         }
     }
 
+    public void addValue(HasAttributes p1, String val) {
+        pFactory.addAttribute(p1,
+                              "http://www.ipaw.info/pc1/",
+                              "pc1",
+                              "value",
+                              val);
+    }
+
+    public void addUrl(HasAttributes p1, String val) {
+        pFactory.addAttribute(p1,
+                              "http://www.ipaw.info/pc1/",
+                              "pc1",
+                              "url",
+                              val);
+    }
+
+
     public Container makePC1FullGraph(ProvFactory pFactory, String inputLocation, String outputLocation)
     {
 
-        Collection<Account> black=Collections.singleton(pFactory.newAccount("black"));
+        //        Collection<Account> black=Collections.singleton(pFactory.newAccount("black"));
+        Collection<Account> black=new LinkedList();
         
 
         Activity p0=pFactory.newActivity("p0",
@@ -129,133 +148,86 @@ public class PC1FullTest
         Activity p1=pFactory.newActivity("p1",
                                        black,
                                        "align_warp 1");
-        Attributes res=pFactory.getObjectFactory().createAttributes();
         
-        pFactory.addAttribute(p1,
-                              "http://openprovenance.org/eg/",
-                              "app",
-                              "type",
-                              PRIMITIVE_ALIGN_WARP);
+        pFactory.addType(p1,PRIMITIVE_ALIGN_WARP);
 
         Activity p2=pFactory.newActivity("p2",
                                        black,
                                        "align_warp 2");
-        pFactory.addAnnotation(p2,
-                               pFactory.newEmbeddedAnnotation("an1_p2",
-                                                              PRIMITIVE_PROPERTY,
-                                                              PRIMITIVE_ALIGN_WARP,
-                                                              null));
+        pFactory.addType(p2,PRIMITIVE_ALIGN_WARP);
+
 
         Activity p3=pFactory.newActivity("p3",
                                        black,
                                        "align_warp 3");
-        pFactory.addAnnotation(p3,
-                               pFactory.newEmbeddedAnnotation("an1_p3",
-                                                              PRIMITIVE_PROPERTY,
-                                                              PRIMITIVE_ALIGN_WARP,
-                                                              null));
+        pFactory.addType(p3,PRIMITIVE_ALIGN_WARP);
+
         Activity p4=pFactory.newActivity("p4",
                                        black,
                                        "align_warp 4");
-        pFactory.addAnnotation(p4,
-                               pFactory.newEmbeddedAnnotation("an1_p4",
-                                                              PRIMITIVE_PROPERTY,
-                                                              PRIMITIVE_ALIGN_WARP,
-                                                              null));
+
+        pFactory.addType(p4,PRIMITIVE_ALIGN_WARP);
+
 
         Activity p5=pFactory.newActivity("p5",
                                        black,
                                        "Reslice 1");
-        pFactory.addAnnotation(p5,
-                               pFactory.newEmbeddedAnnotation("an1_p5",
-                                                              PRIMITIVE_PROPERTY,
-                                                              PRIMITIVE_RESLICE,
-                                                              null));
+        pFactory.addType(p5,PRIMITIVE_RESLICE);
 
         Activity p6=pFactory.newActivity("p6",
                                        black,
                                        "Reslice 2");
-        pFactory.addAnnotation(p6,
-                               pFactory.newEmbeddedAnnotation("an1_p6",
-                                                              PRIMITIVE_PROPERTY,
-                                                              PRIMITIVE_RESLICE,
-                                                              null));
+        pFactory.addType(p6,PRIMITIVE_RESLICE);
+
         Activity p7=pFactory.newActivity("p7",
                                        black,
                                        "Reslice 3");
-        pFactory.addAnnotation(p7,
-                               pFactory.newEmbeddedAnnotation("an1_p7",
-                                                              PRIMITIVE_PROPERTY,
-                                                              PRIMITIVE_RESLICE,
-                                                              null));
+        pFactory.addType(p7,PRIMITIVE_RESLICE);
+
         Activity p8=pFactory.newActivity("p8",
                                        black,
                                        "Reslice 4");
-        pFactory.addAnnotation(p8,
-                               pFactory.newEmbeddedAnnotation("an1_p8",
-                                                              PRIMITIVE_PROPERTY,
-                                                              PRIMITIVE_RESLICE,
-                                                              null));
+        pFactory.addType(p8,PRIMITIVE_RESLICE);
+
         Activity p9=pFactory.newActivity("p9",
                                        black,
                                        "Softmean");
-        pFactory.addAnnotation(p9,
-                               pFactory.newEmbeddedAnnotation("an1_p9",
-                                                              PRIMITIVE_PROPERTY,
-                                                              PRIMITIVE_SOFTMEAN,
-                                                              null));
+        pFactory.addType(p9,PRIMITIVE_SOFTMEAN);
+
         Activity p10=pFactory.newActivity("p10",
                                         black,
                                         "Slicer 1");
-        pFactory.addAnnotation(p10,
-                               pFactory.newEmbeddedAnnotation("an1_p10",
-                                                              PRIMITIVE_PROPERTY,
-                                                              PRIMITIVE_SLICER,
-                                                              null));
+
+        pFactory.addType(p10,PRIMITIVE_SLICER);
 
         Activity p11=pFactory.newActivity("p11",
                                         black,
                                         "Slicer 2");
-        pFactory.addAnnotation(p11,
-                               pFactory.newEmbeddedAnnotation("an1_p11",
-                                                              PRIMITIVE_PROPERTY,
-                                                              PRIMITIVE_SLICER,
-                                                              null));
+        pFactory.addType(p11,PRIMITIVE_SLICER);
 
         Activity p12=pFactory.newActivity("p12",
                                         black,
                                         "Slicer 3");
-        pFactory.addAnnotation(p12,
-                               pFactory.newEmbeddedAnnotation("an1_p12",
-                                                              PRIMITIVE_PROPERTY,
-                                                              PRIMITIVE_SLICER,
-                                                              null));
+        pFactory.addType(p12,PRIMITIVE_SLICER);
+
         Activity p13=pFactory.newActivity("p13",
                                         black,
                                         "Convert 1");
-        pFactory.addAnnotation(p13,
-                               pFactory.newEmbeddedAnnotation("an1_p13",
-                                                              PRIMITIVE_PROPERTY,
-                                                              PRIMITIVE_CONVERT,
-                                                              null));
+
+        pFactory.addType(p13,PRIMITIVE_CONVERT);
 
         Activity p14=pFactory.newActivity("p14",
                                         black,
                                         "Convert 2");
-        pFactory.addAnnotation(p14,
-                               pFactory.newEmbeddedAnnotation("an1_p14",
-                                                              PRIMITIVE_PROPERTY,
-                                                              PRIMITIVE_CONVERT,
-                                                              null));
+
+        pFactory.addType(p14,PRIMITIVE_CONVERT);
 
         Activity p15=pFactory.newActivity("p15",
                                         black,
                                         "Convert 3");
-        pFactory.addAnnotation(p15,
-                               pFactory.newEmbeddedAnnotation("an1_p15",
-                                                              PRIMITIVE_PROPERTY,
-                                                              PRIMITIVE_CONVERT,
-                                                              null));
+
+        pFactory.addType(p15,PRIMITIVE_CONVERT);
+
 
         Agent ag1=pFactory.newAgent("ag1",
                                     black,

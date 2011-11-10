@@ -450,78 +450,77 @@ public class PC1FullTest
                              "atlas-z.gif",
                              outputLocation);
 
-        Used u1=pFactory.newUsed(p1,pFactory.newRole("img"),a3,black);
-        Used u2=pFactory.newUsed(p1,pFactory.newRole("hdr"),a4,black);
-        Used u3=pFactory.newUsed(p1,pFactory.newRole("imgRef"),a1,black);
-        Used u4=pFactory.newUsed(p1,pFactory.newRole("hdrRef"),a2,black);
-        Used u5=pFactory.newUsed(p2,pFactory.newRole("img"),a5,black);
-        Used u6=pFactory.newUsed(p2,pFactory.newRole("hdr"),a6,black);
-        Used u7=pFactory.newUsed(p2,pFactory.newRole("imgRef"),a1,black);
-        Used u8=pFactory.newUsed(p2,pFactory.newRole("hdrRef"),a2,black);
-        Used u9=pFactory.newUsed(p3,pFactory.newRole("img"),a7,black);
-        Used u10=pFactory.newUsed(p3,pFactory.newRole("hdr"),a8,black);
-        Used u11=pFactory.newUsed(p3,pFactory.newRole("imgRef"),a1,black);
-        Used u12=pFactory.newUsed(p3,pFactory.newRole("hdrRef"),a2,black);
-        Used u13=pFactory.newUsed(p4,pFactory.newRole("img"),a9,black);
-        Used u14=pFactory.newUsed(p4,pFactory.newRole("hdr"),a10,black);
-        Used u15=pFactory.newUsed(p4,pFactory.newRole("imgRef"),a1,black);
-        Used u16=pFactory.newUsed(p4,pFactory.newRole("hdrRef"),a2,black);
+        Used u1=pFactory.newUsed(p1,"img",a3,black);
+        Used u2=pFactory.newUsed(p1,"hdr",a4,black);
+        Used u3=pFactory.newUsed(p1,"imgRef",a1,black);
+        Used u4=pFactory.newUsed(p1,"hdrRef",a2,black);
+        Used u5=pFactory.newUsed(p2,"img",a5,black);
+        Used u6=pFactory.newUsed(p2,"hdr",a6,black);
+        Used u7=pFactory.newUsed(p2,"imgRef",a1,black);
+        Used u8=pFactory.newUsed(p2,"hdrRef",a2,black);
+        Used u9=pFactory.newUsed(p3,"img",a7,black);
+        Used u10=pFactory.newUsed(p3,"hdr",a8,black);
+        Used u11=pFactory.newUsed(p3,"imgRef",a1,black);
+        Used u12=pFactory.newUsed(p3,"hdrRef",a2,black);
+        Used u13=pFactory.newUsed(p4,"img",a9,black);
+        Used u14=pFactory.newUsed(p4,"hdr",a10,black);
+        Used u15=pFactory.newUsed(p4,"imgRef",a1,black);
+        Used u16=pFactory.newUsed(p4,"hdrRef",a2,black);
 
-        Used u17=pFactory.newUsed(p5,pFactory.newRole("in"),a11,black);
-        Used u18=pFactory.newUsed(p6,pFactory.newRole("in"),a12,black);
-        Used u19=pFactory.newUsed(p7,pFactory.newRole("in"),a13,black);
-        Used u20=pFactory.newUsed(p8,pFactory.newRole("in"),a14,black);
+        Used u17=pFactory.newUsed(p5,"in",a11,black);
+        Used u18=pFactory.newUsed(p6,"in",a12,black);
+        Used u19=pFactory.newUsed(p7,"in",a13,black);
+        Used u20=pFactory.newUsed(p8,"in",a14,black);
 
-        Used u21=pFactory.newUsed(p9,pFactory.newRole("i1"),a15,black);
-        Used u22=pFactory.newUsed(p9,pFactory.newRole("h1"),a16,black);
-        Used u23=pFactory.newUsed(p9,pFactory.newRole("i2"),a17,black);
-        Used u24=pFactory.newUsed(p9,pFactory.newRole("h2"),a18,black);
-        Used u25=pFactory.newUsed(p9,pFactory.newRole("i3"),a19,black);
-        Used u26=pFactory.newUsed(p9,pFactory.newRole("h3"),a20,black);
-        Used u27=pFactory.newUsed(p9,pFactory.newRole("i4"),a21,black);
-        Used u28=pFactory.newUsed(p9,pFactory.newRole("h4"),a22,black);
+        Used u21=pFactory.newUsed(p9,"i1",a15,black);
+        Used u22=pFactory.newUsed(p9,"h1",a16,black);
+        Used u23=pFactory.newUsed(p9,"i2",a17,black);
+        Used u24=pFactory.newUsed(p9,"h2",a18,black);
+        Used u25=pFactory.newUsed(p9,"i3",a19,black);
+        Used u26=pFactory.newUsed(p9,"h3",a20,black);
+        Used u27=pFactory.newUsed(p9,"i4",a21,black);
+        Used u28=pFactory.newUsed(p9,"h4",a22,black);
 
-        Used u29=pFactory.newUsed(p10,pFactory.newRole("img"),a23,black);
-        Used u30=pFactory.newUsed(p10,pFactory.newRole("hdr"),a24,black);
-        Used u30p=pFactory.newUsed(p10,pFactory.newRole("param"),a25p,black);
-        Used u31=pFactory.newUsed(p11,pFactory.newRole("img"),a23,black);
-        Used u32=pFactory.newUsed(p11,pFactory.newRole("hdr"),a24,black);
-        Used u32p=pFactory.newUsed(p11,pFactory.newRole("param"),a26p,black);
-        Used u33=pFactory.newUsed(p12,pFactory.newRole("img"),a23,black);
-        Used u34=pFactory.newUsed(p12,pFactory.newRole("hdr"),a24,black);
-        Used u34p=pFactory.newUsed(p12,pFactory.newRole("param"),a27p,black);
+        Used u29=pFactory.newUsed(p10,"img",a23,black);
+        Used u30=pFactory.newUsed(p10,"hdr",a24,black);
+        Used u30p=pFactory.newUsed(p10,"param",a25p,black);
+        Used u31=pFactory.newUsed(p11,"img",a23,black);
+        Used u32=pFactory.newUsed(p11,"hdr",a24,black);
+        Used u32p=pFactory.newUsed(p11,"param",a26p,black);
+        Used u33=pFactory.newUsed(p12,"img",a23,black);
+        Used u34=pFactory.newUsed(p12,"hdr",a24,black);
+        Used u34p=pFactory.newUsed(p12,"param",a27p,black);
 
-        Used u35=pFactory.newUsed(p13,pFactory.newRole("in"),a25,black);
-        Used u36=pFactory.newUsed(p14,pFactory.newRole("in"),a26,black);
-        Used u37=pFactory.newUsed(p15,pFactory.newRole("in"),a27,black);
-
-
+        Used u35=pFactory.newUsed(p13,"in",a25,black);
+        Used u36=pFactory.newUsed(p14,"in",a26,black);
+        Used u37=pFactory.newUsed(p15,"in",a27,black);
 
 
-        WasGeneratedBy wg1=pFactory.newWasGeneratedBy(a11,pFactory.newRole("out"),p1,black);
-        WasGeneratedBy wg2=pFactory.newWasGeneratedBy(a12,pFactory.newRole("out"),p2,black);
-        WasGeneratedBy wg3=pFactory.newWasGeneratedBy(a13,pFactory.newRole("out"),p3,black);
-        WasGeneratedBy wg4=pFactory.newWasGeneratedBy(a14,pFactory.newRole("out"),p4,black);
 
-        WasGeneratedBy wg5=pFactory.newWasGeneratedBy(a15,pFactory.newRole("img"),p5,black);
-        WasGeneratedBy wg6=pFactory.newWasGeneratedBy(a16,pFactory.newRole("hdr"),p5,black);
-        WasGeneratedBy wg7=pFactory.newWasGeneratedBy(a17,pFactory.newRole("img"),p6,black);
-        WasGeneratedBy wg8=pFactory.newWasGeneratedBy(a18,pFactory.newRole("hdr"),p6,black);
-        WasGeneratedBy wg9=pFactory.newWasGeneratedBy(a19,pFactory.newRole("img"),p7,black);
-        WasGeneratedBy wg10=pFactory.newWasGeneratedBy(a20,pFactory.newRole("hdr"),p7,black);
-        WasGeneratedBy wg11=pFactory.newWasGeneratedBy(a21,pFactory.newRole("img"),p8,black);
-        WasGeneratedBy wg12=pFactory.newWasGeneratedBy(a22,pFactory.newRole("hdr"),p8,black);
+        WasGeneratedBy wg1=pFactory.newWasGeneratedBy(a11,"out",p1,black);
+        WasGeneratedBy wg2=pFactory.newWasGeneratedBy(a12,"out",p2,black);
+        WasGeneratedBy wg3=pFactory.newWasGeneratedBy(a13,"out",p3,black);
+        WasGeneratedBy wg4=pFactory.newWasGeneratedBy(a14,"out",p4,black);
 
-        WasGeneratedBy wg13=pFactory.newWasGeneratedBy(a23,pFactory.newRole("img"),p9,black);
-        WasGeneratedBy wg14=pFactory.newWasGeneratedBy(a24,pFactory.newRole("hdr"),p9,black);
+        WasGeneratedBy wg5=pFactory.newWasGeneratedBy(a15,"img",p5,black);
+        WasGeneratedBy wg6=pFactory.newWasGeneratedBy(a16,"hdr",p5,black);
+        WasGeneratedBy wg7=pFactory.newWasGeneratedBy(a17,"img",p6,black);
+        WasGeneratedBy wg8=pFactory.newWasGeneratedBy(a18,"hdr",p6,black);
+        WasGeneratedBy wg9=pFactory.newWasGeneratedBy(a19,"img",p7,black);
+        WasGeneratedBy wg10=pFactory.newWasGeneratedBy(a20,"hdr",p7,black);
+        WasGeneratedBy wg11=pFactory.newWasGeneratedBy(a21,"img",p8,black);
+        WasGeneratedBy wg12=pFactory.newWasGeneratedBy(a22,"hdr",p8,black);
 
-        WasGeneratedBy wg15=pFactory.newWasGeneratedBy(a25,pFactory.newRole("out"),p10,black);
-        WasGeneratedBy wg16=pFactory.newWasGeneratedBy(a26,pFactory.newRole("out"),p11,black);
-        WasGeneratedBy wg17=pFactory.newWasGeneratedBy(a27,pFactory.newRole("out"),p12,black);
+        WasGeneratedBy wg13=pFactory.newWasGeneratedBy(a23,"img",p9,black);
+        WasGeneratedBy wg14=pFactory.newWasGeneratedBy(a24,"hdr",p9,black);
 
-        WasGeneratedBy wg18=pFactory.newWasGeneratedBy(a28,pFactory.newRole("out"),p13,black);
-        WasGeneratedBy wg19=pFactory.newWasGeneratedBy(a29,pFactory.newRole("out"),p14,black);
-        WasGeneratedBy wg20=pFactory.newWasGeneratedBy(a30,pFactory.newRole("out"),p15,black);
+        WasGeneratedBy wg15=pFactory.newWasGeneratedBy(a25,"out",p10,black);
+        WasGeneratedBy wg16=pFactory.newWasGeneratedBy(a26,"out",p11,black);
+        WasGeneratedBy wg17=pFactory.newWasGeneratedBy(a27,"out",p12,black);
+
+        WasGeneratedBy wg18=pFactory.newWasGeneratedBy(a28,"out",p13,black);
+        WasGeneratedBy wg19=pFactory.newWasGeneratedBy(a29,"out",p14,black);
+        WasGeneratedBy wg20=pFactory.newWasGeneratedBy(a30,"out",p15,black);
 
 
         WasDerivedFrom wd1=pFactory.newWasDerivedFrom(a11,a1,black);
@@ -583,7 +582,7 @@ public class PC1FullTest
 
 
 
-        WasControlledBy wc1=pFactory.newWasControlledBy(p1,pFactory.newRole("user"),ag1,black);
+        WasControlledBy wc1=pFactory.newWasControlledBy(p1,"user",ag1,black);
 
 
 

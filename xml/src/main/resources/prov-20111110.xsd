@@ -2,6 +2,7 @@
 
 <!-- Authors: Luc Moreau
 
+     *WARNING*
      Transformation of the OPM OPMX schema into PROV compatible.
      Purely tentative at this stage. Still some OPMX legacy.
      PROV-DM not fully encoded yet.
@@ -86,47 +87,11 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="Role">
-	<xs:sequence>
-	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
-	</xs:sequence>
-	<xs:attribute name="value" type="xs:string"/>
-	<xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
-
-
-
-
-
-<!--
-  <xs:complexType name="Attributes">
-     <xs:sequence>
-       <xs:element name="attribute" type="prov:Attribute"   minOccurs="1"    maxOccurs="unbounded"/>
-     </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="Attribute0">
-     <xs:sequence>
-        <xs:element name="value" type="xs:anyType"/>
-     </xs:sequence>
-     <xs:attribute name="name" type="xs:anyURI"/>
-  </xs:complexType>
-  <xs:complexType name="AttributeTestIgnore">
-    <xs:complexContent>
-      <xs:restriction base="xs:anyType">
-        <xs:attribute name="name" type="xs:anyURI"/>
-      </xs:restriction>
-    </xs:complexContent>
-  </xs:complexType>
-
-
--->
   <xs:complexType name="Attributes">
      <xs:sequence>
         <xs:any maxOccurs="unbounded" minOccurs="1"/>
      </xs:sequence>
   </xs:complexType>
-
-
 
 
 
@@ -162,7 +127,6 @@
   <xs:complexType name="Used">
 	<xs:sequence>
 	  <xs:element name="effect"  type="prov:ActivityRef"/>
-	  <xs:element name="role"    type="prov:Role"/>
 	  <xs:element name="cause"   type="prov:EntityRef"/>
 	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
       <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
@@ -174,7 +138,6 @@
   <xs:complexType name="WasGeneratedBy">
 	<xs:sequence>
 	  <xs:element name="effect"  type="prov:EntityRef"/>
-	  <xs:element name="role"    type="prov:Role"/>
 	  <xs:element name="cause"   type="prov:ActivityRef"/>
 	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
       <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
@@ -186,7 +149,6 @@
   <xs:complexType name="WasControlledBy">
 	<xs:sequence>
 	  <xs:element name="effect"      type="prov:ActivityRef"/>
-	  <xs:element name="role"        type="prov:Role"/>
 	  <xs:element name="cause"       type="prov:AgentRef"/>
 	  <xs:element name="account"     minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
       <xs:element name="startTime"   type="prov:OTime" minOccurs="0"/>

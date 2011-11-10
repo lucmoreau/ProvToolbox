@@ -76,12 +76,6 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public RoleRef newRoleRef(Role p) {
-        RoleRef res=of.createRoleRef();
-        res.setRef(p);
-        return res;
-    }
-
     public AnnotationRef newAnnotationRef(Annotation a) {
         AnnotationRef res=of.createAnnotationRef();
         res.setRef(a);
@@ -200,18 +194,6 @@ public class ProvFactory implements CommonURIs {
 
 
 
-    public Role getRole(Relation e) {
-        if (e instanceof Used) {
-            return ((Used) e).getRole();
-        } 
-        if (e instanceof WasGeneratedBy) {
-            return ((WasGeneratedBy) e).getRole();
-        } 
-        if (e instanceof WasControlledBy) {
-            return ((WasControlledBy) e).getRole();
-        }
-        return null;
-    }
     
     public String getLabel(EmbeddedAnnotation annotation) {
 	if (annotation==null) return null;
@@ -504,20 +486,6 @@ public class ProvFactory implements CommonURIs {
         return id;
     }
 
-    public Role newRole(String value) {
-        return newRole(autoGenerateId(roleIdPrefix),value);
-    }
-
-    public Role newRole(Role role) {
-        return newRole(autoGenerateId(roleIdPrefix,role.getId()),role.getValue());
-    }
-
-    public Role newRole(String id, String value) {
-        Role res=of.createRole();
-        res.setId(id);
-        res.setValue(value);
-        return res;
-    }
 
     public Entity newEntity(Entity a) {
         LinkedList<Account> ll=new LinkedList();
@@ -593,22 +561,31 @@ public class ProvFactory implements CommonURIs {
 
     public Used newUsed(String id,
                         ActivityRef pid,
-                        Role role,
+                        String role,
                         EntityRef aid,
                         Collection<AccountRef> accounts) {
         Used res=of.createUsed();
         res.setId(autoGenerateId(usedIdPrefix,id));
         res.setEffect(pid);
-        res.setRole(role);
+        addRole(res,role);
         res.setCause(aid);
         addAccounts(res,accounts);
         return res;
     }
 
+    public void addRole(HasAttributes a,                                  
+                        String type) {
+        addAttribute(a,
+                     "http://openprovenance.org/prov/xml#",
+                     "prov",
+                     "role",
+                     type);
+    }
+
 
 
     public Used newUsed(Activity p,
-                        Role role,
+                        String role,
                         Entity a,
                         Collection<Account> accounts) {
         Used res=newUsed(null,p,role,a,accounts);
@@ -617,7 +594,7 @@ public class ProvFactory implements CommonURIs {
 
     public Used newUsed(String id,
                         Activity p,
-                        Role role,
+                        String role,
                         Entity a,
                         Collection<Account> accounts) {
         ActivityRef pid=newActivityRef(p);
@@ -634,7 +611,7 @@ public class ProvFactory implements CommonURIs {
 
     public Used newUsed(String id,
                         Activity p,
-                        Role role,
+                        String role,
                         Entity a,
                         String type,
                         Collection<Account> accounts) {
@@ -646,7 +623,7 @@ public class ProvFactory implements CommonURIs {
     public Used newUsed(Used u) {
         Used u1=newUsed(u.getId(),
                         u.getEffect(),
-                        u.getRole(),
+                        null,
                         u.getCause(),
                         u.getAccount());
         u1.setAttributes(u.getAttributes());
@@ -655,7 +632,7 @@ public class ProvFactory implements CommonURIs {
 
     public WasControlledBy newWasControlledBy(WasControlledBy c) {
         WasControlledBy wcb=newWasControlledBy(c.getEffect(),
-                                               c.getRole(),
+                                               null,
                                                c.getCause(),
                                                c.getAccount());
         wcb.setId(c.getId());
@@ -666,7 +643,7 @@ public class ProvFactory implements CommonURIs {
     public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
         WasGeneratedBy wgb=newWasGeneratedBy(g.getId(),
                                              g.getEffect(),
-                                             g.getRole(),
+                                             null,
                                              g.getCause(),
                                              g.getAccount());
         wgb.setId(g.getId());
@@ -697,21 +674,21 @@ public class ProvFactory implements CommonURIs {
 
     public WasGeneratedBy newWasGeneratedBy(String id,
                                             EntityRef aid,
-                                            Role role,
+                                            String role,
                                             ActivityRef pid,
                                             Collection<AccountRef> accounts) {
         WasGeneratedBy res=of.createWasGeneratedBy();
         res.setId(autoGenerateId(wasGenerateByIdPrefix,id));
         res.setCause(pid);
-        res.setRole(role);
         res.setEffect(aid);
+        addRole(res,role);
         addAccounts(res,accounts);
         return res;
     }
 
 
     public WasGeneratedBy newWasGeneratedBy(Entity a,
-                                            Role role,
+                                            String role,
                                             Activity p,
                                             Collection<Account> accounts) {
         return newWasGeneratedBy(null,a,role,p,accounts);
@@ -719,7 +696,7 @@ public class ProvFactory implements CommonURIs {
 
     public WasGeneratedBy newWasGeneratedBy(String id,
                                             Entity a,
-                                            Role role,
+                                            String role,
                                             Activity p,
                                             Collection<Account> accounts) {
         EntityRef aid=newEntityRef(a);
@@ -735,7 +712,7 @@ public class ProvFactory implements CommonURIs {
 
     public WasGeneratedBy newWasGeneratedBy(String id,
                                             Entity a,
-                                            Role role,
+                                            String role,
                                             Activity p,
                                             String type,
                                             Collection<Account> accounts) {
@@ -745,7 +722,7 @@ public class ProvFactory implements CommonURIs {
     }
 
     public WasControlledBy newWasControlledBy(ActivityRef pid,
-                                              Role role,
+                                              String role,
                                               AgentRef agid,
                                               Collection<AccountRef> accounts) {
         return newWasControlledBy(null,pid,role,agid,accounts);
@@ -753,21 +730,21 @@ public class ProvFactory implements CommonURIs {
     
     public WasControlledBy newWasControlledBy(String id,
                                               ActivityRef pid,
-                                              Role role,
+                                              String role,
                                               AgentRef agid,
                                               Collection<AccountRef> accounts) {
         WasControlledBy res=of.createWasControlledBy();
         res.setId(autoGenerateId(wasControlledByIdPrefix,id));
         res.setEffect(pid);
-        res.setRole(role);
         res.setCause(agid);
         addAccounts(res,accounts);
+        addRole(res,role);
         return res;
     }
 
 
     public WasControlledBy newWasControlledBy(Activity p,
-                                              Role role,
+                                              String role,
                                               Agent ag,
                                               Collection<Account> accounts) {
         return newWasControlledBy(null,p,role,ag,accounts);
@@ -775,7 +752,7 @@ public class ProvFactory implements CommonURIs {
 
     public WasControlledBy newWasControlledBy(String id,
                                               Activity p,
-                                              Role role,
+                                              String role,
                                               Agent ag,
                                               Collection<Account> accounts) {
         AgentRef agid=newAgentRef(ag);
@@ -789,7 +766,7 @@ public class ProvFactory implements CommonURIs {
 
     public WasControlledBy newWasControlledBy(String id,
                                               Activity p,
-                                              Role role,
+                                              String role,
                                               Agent ag,
                                               String type,
                                               Collection<Account> accounts) {
@@ -1072,20 +1049,6 @@ public class ProvFactory implements CommonURIs {
         return newAnnotation(id,cid,property,value,ll);
     }
 
-    public Annotation newAnnotation(String id,
-                                    Role role,
-                                    String property,
-                                    Object value,
-                                    Collection<Account> accs) {
-        RoleRef rid=newRoleRef(role);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,rid,property,value,ll);
-    }
 
     public Property newProperty(String property,
                                 Object value) {

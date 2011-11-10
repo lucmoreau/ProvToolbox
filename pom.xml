@@ -19,6 +19,7 @@
 
 
   <modules>
+    <module>xml</module>    
     <module>asn</module>    
 <!--    <module>elmo</module>
     <module>toolbox</module>    

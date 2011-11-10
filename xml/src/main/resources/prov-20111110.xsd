@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Authors: Luc Moreau -->
+<!-- Authors: Luc Moreau
+
+     Transformation of the OPM OPMX schema into PROV compatible. Purely tentative at this stage.
+  -->
 
 
 <xs:schema targetNamespace="http://openprovenance.org/prov-xml#"
@@ -30,7 +33,7 @@
     </xs:annotation> 
 	<xs:sequence>
 	  <xs:element name="accounts" type="prov:Accounts" minOccurs="0"/>
-	  <xs:element name="processExecutions" type="prov:ProcessExecutions" minOccurs="0"/>
+	  <xs:element name="activities" type="prov:Activities" minOccurs="0"/>
 	  <xs:element name="entities" type="prov:Entities" minOccurs="0"/>
 	  <xs:element name="agents" type="prov:Agents" minOccurs="0"/>
 	  <xs:element name="dependencies" type="prov:Dependencies" minOccurs="0"/>
@@ -43,7 +46,7 @@
   <xs:complexType name="ContainerRef">
     <xs:attribute name="ref" type="xs:IDREF"/>
   </xs:complexType>
-  <xs:complexType name="ProcessExecutionRef">
+  <xs:complexType name="ActivityRef">
 	<xs:attribute name="ref" type="xs:IDREF"/>
   </xs:complexType>
   <xs:complexType name="EntityRef">
@@ -119,7 +122,7 @@
 
   <xs:element name="annotation" type="prov:EmbeddedAnnotation"/>
 
-  <xs:complexType name="ProcessExecution">
+  <xs:complexType name="Activity">
 	<xs:sequence>
 	  <xs:element name="account" minOccurs="0" maxOccurs="unbounded" type="prov:AccountRef"/>
 	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
@@ -148,7 +151,7 @@
 
   <xs:complexType name="Used">
 	<xs:sequence>
-	  <xs:element name="effect"  type="prov:ProcessExecutionRef"/>
+	  <xs:element name="effect"  type="prov:ActivityRef"/>
 	  <xs:element name="role"    type="prov:Role"/>
 	  <xs:element name="cause"   type="prov:EntityRef"/>
 	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
@@ -162,7 +165,7 @@
 	<xs:sequence>
 	  <xs:element name="effect"  type="prov:EntityRef"/>
 	  <xs:element name="role"    type="prov:Role"/>
-	  <xs:element name="cause"   type="prov:ProcessExecutionRef"/>
+	  <xs:element name="cause"   type="prov:ActivityRef"/>
 	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
       <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
 	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
@@ -172,7 +175,7 @@
 
   <xs:complexType name="WasControlledBy">
 	<xs:sequence>
-	  <xs:element name="effect"      type="prov:ProcessExecutionRef"/>
+	  <xs:element name="effect"      type="prov:ActivityRef"/>
 	  <xs:element name="role"        type="prov:Role"/>
 	  <xs:element name="cause"       type="prov:AgentRef"/>
 	  <xs:element name="account"     minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
@@ -196,8 +199,8 @@
 
   <xs:complexType name="WasTriggeredBy">
 	<xs:sequence>
-	  <xs:element name="effect"  type="prov:ProcessExecutionRef"/>
-	  <xs:element name="cause"   type="prov:ProcessExecutionRef"/>
+	  <xs:element name="effect"  type="prov:ActivityRef"/>
+	  <xs:element name="cause"   type="prov:ActivityRef"/>
 	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
       <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
 	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
@@ -208,7 +211,7 @@
 
   <xs:complexType name="UsedStar">
 	<xs:sequence>
-	  <xs:element name="effect"  type="prov:ProcessExecutionRef"/>
+	  <xs:element name="effect"  type="prov:ActivityRef"/>
 	  <xs:element name="cause"   type="prov:EntityRef"/>
 	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
 	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
@@ -219,7 +222,7 @@
   <xs:complexType name="WasGeneratedByStar">
 	<xs:sequence>
 	  <xs:element name="effect"  type="prov:EntityRef"/>
-	  <xs:element name="cause"   type="prov:ProcessExecutionRef"/>
+	  <xs:element name="cause"   type="prov:ActivityRef"/>
 	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
 	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
@@ -238,8 +241,8 @@
 
   <xs:complexType name="WasTriggeredByStar">
 	<xs:sequence>
-	  <xs:element name="effect"  type="prov:ProcessExecutionRef"/>
-	  <xs:element name="cause"   type="prov:ProcessExecutionRef"/>
+	  <xs:element name="effect"  type="prov:ActivityRef"/>
+	  <xs:element name="cause"   type="prov:ActivityRef"/>
 	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
 	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
@@ -282,9 +285,9 @@
   </xs:complexType>
 
 
-  <xs:complexType name="ProcessExecutions">
+  <xs:complexType name="Activities">
 	<xs:sequence>
-	  <xs:element name="processExecution" type="prov:ProcessExecution" minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element name="activity" type="prov:Activity" minOccurs="0" maxOccurs="unbounded"/>
 	</xs:sequence>
   </xs:complexType>
 

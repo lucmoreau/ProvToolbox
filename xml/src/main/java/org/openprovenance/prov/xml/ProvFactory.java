@@ -70,8 +70,8 @@ public class ProvFactory implements CommonURIs {
         return of;
     }
 
-    public ProcessExecutionRef newProcessExecutionRef(ProcessExecution p) {
-        ProcessExecutionRef res=of.createProcessExecutionRef();
+    public ActivityRef newActivityRef(Activity p) {
+        ActivityRef res=of.createActivityRef();
         res.setRef(p);
         return res;
     }
@@ -139,15 +139,15 @@ public class ProvFactory implements CommonURIs {
 
 
 
-    public ProcessExecution newProcessExecution(String pr,
+    public Activity newActivity(String pr,
                               Collection<Account> accounts) {
-        return newProcessExecution(pr,accounts,null);
+        return newActivity(pr,accounts,null);
     }
 
-    public ProcessExecution newProcessExecution(String pr,
+    public Activity newActivity(String pr,
                               Collection<Account> accounts,
                               String label) {
-        ProcessExecution res=of.createProcessExecution();
+        Activity res=of.createActivity();
         res.setId(pr);
         addAccounts(res,accounts,null);
         if (label!=null) addAnnotation(res,newLabel(label));
@@ -524,12 +524,12 @@ public class ProvFactory implements CommonURIs {
         addNewAnnotations(res,a.getAnnotation());
         return res;
     }
-    public ProcessExecution newProcessExecution(ProcessExecution a) {
+    public Activity newActivity(Activity a) {
         LinkedList<Account> ll=new LinkedList();
         for (AccountRef acc: a.getAccount()) {
             ll.add(newAccount((Account)acc.getRef()));
         }
-        ProcessExecution res=newProcessExecution(a.getId(),ll);
+        Activity res=newActivity(a.getId(),ll);
         addNewAnnotations(res,a.getAnnotation());
         return res;
     }
@@ -591,7 +591,7 @@ public class ProvFactory implements CommonURIs {
 
 
     public Used newUsed(String id,
-                        ProcessExecutionRef pid,
+                        ActivityRef pid,
                         Role role,
                         EntityRef aid,
                         Collection<AccountRef> accounts) {
@@ -606,7 +606,7 @@ public class ProvFactory implements CommonURIs {
 
 
 
-    public UsedStar newUsedStar(ProcessExecutionRef pid,
+    public UsedStar newUsedStar(ActivityRef pid,
                                 EntityRef aid,
                                 Collection<AccountRef> accounts) {
         UsedStar res=of.createUsedStar();
@@ -616,7 +616,7 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public Used newUsed(ProcessExecution p,
+    public Used newUsed(Activity p,
                         Role role,
                         Entity a,
                         Collection<Account> accounts) {
@@ -625,11 +625,11 @@ public class ProvFactory implements CommonURIs {
     }
 
     public Used newUsed(String id,
-                        ProcessExecution p,
+                        Activity p,
                         Role role,
                         Entity a,
                         Collection<Account> accounts) {
-        ProcessExecutionRef pid=newProcessExecutionRef(p);
+        ActivityRef pid=newActivityRef(p);
         EntityRef aid=newEntityRef(a);
         LinkedList ll=new LinkedList();
         if (accounts!=null) {
@@ -639,10 +639,10 @@ public class ProvFactory implements CommonURIs {
         }
         return newUsed(id,pid,role,aid,ll);
     }
-    public UsedStar newUsedStar(ProcessExecution p,
+    public UsedStar newUsedStar(Activity p,
                                 Entity a,
                                 Collection<Account> accounts) {
-        ProcessExecutionRef pid=newProcessExecutionRef(p);
+        ActivityRef pid=newActivityRef(p);
         EntityRef aid=newEntityRef(a);
         LinkedList ll=new LinkedList();
         if (accounts!=null) {
@@ -655,7 +655,7 @@ public class ProvFactory implements CommonURIs {
 
 
     public Used newUsed(String id,
-                        ProcessExecution p,
+                        Activity p,
                         Role role,
                         Entity a,
                         String type,
@@ -720,7 +720,7 @@ public class ProvFactory implements CommonURIs {
     public WasGeneratedBy newWasGeneratedBy(String id,
                                             EntityRef aid,
                                             Role role,
-                                            ProcessExecutionRef pid,
+                                            ActivityRef pid,
                                             Collection<AccountRef> accounts) {
         WasGeneratedBy res=of.createWasGeneratedBy();
         res.setId(autoGenerateId(wasGenerateByIdPrefix,id));
@@ -732,7 +732,7 @@ public class ProvFactory implements CommonURIs {
     }
 
     public WasGeneratedByStar newWasGeneratedByStar(EntityRef aid,
-                                                    ProcessExecutionRef pid,
+                                                    ActivityRef pid,
                                                     Collection<AccountRef> accounts) {
         WasGeneratedByStar res=of.createWasGeneratedByStar();
         res.setCause(pid);
@@ -742,7 +742,7 @@ public class ProvFactory implements CommonURIs {
     }
     public WasGeneratedBy newWasGeneratedBy(Entity a,
                                             Role role,
-                                            ProcessExecution p,
+                                            Activity p,
                                             Collection<Account> accounts) {
         return newWasGeneratedBy(null,a,role,p,accounts);
     }
@@ -750,10 +750,10 @@ public class ProvFactory implements CommonURIs {
     public WasGeneratedBy newWasGeneratedBy(String id,
                                             Entity a,
                                             Role role,
-                                            ProcessExecution p,
+                                            Activity p,
                                             Collection<Account> accounts) {
         EntityRef aid=newEntityRef(a);
-        ProcessExecutionRef pid=newProcessExecutionRef(p);
+        ActivityRef pid=newActivityRef(p);
         LinkedList ll=new LinkedList();
         for (Account acc: accounts) {
             ll.add(newAccountRef(acc));
@@ -763,10 +763,10 @@ public class ProvFactory implements CommonURIs {
 
 
     public WasGeneratedByStar newWasGeneratedByStar(Entity a,
-                                                    ProcessExecution p,
+                                                    Activity p,
                                                     Collection<Account> accounts) {
         EntityRef aid=newEntityRef(a);
-        ProcessExecutionRef pid=newProcessExecutionRef(p);
+        ActivityRef pid=newActivityRef(p);
         LinkedList ll=new LinkedList();
         for (Account acc: accounts) {
             ll.add(newAccountRef(acc));
@@ -779,7 +779,7 @@ public class ProvFactory implements CommonURIs {
     public WasGeneratedBy newWasGeneratedBy(String id,
                                             Entity a,
                                             Role role,
-                                            ProcessExecution p,
+                                            Activity p,
                                             String type,
                                             Collection<Account> accounts) {
         WasGeneratedBy wgb=newWasGeneratedBy(id,a,role,p,accounts);
@@ -787,7 +787,7 @@ public class ProvFactory implements CommonURIs {
         return wgb;
     }
 
-    public WasControlledBy newWasControlledBy(ProcessExecutionRef pid,
+    public WasControlledBy newWasControlledBy(ActivityRef pid,
                                               Role role,
                                               AgentRef agid,
                                               Collection<AccountRef> accounts) {
@@ -795,7 +795,7 @@ public class ProvFactory implements CommonURIs {
     }
     
     public WasControlledBy newWasControlledBy(String id,
-                                              ProcessExecutionRef pid,
+                                              ActivityRef pid,
                                               Role role,
                                               AgentRef agid,
                                               Collection<AccountRef> accounts) {
@@ -809,7 +809,7 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    public WasControlledBy newWasControlledBy(ProcessExecution p,
+    public WasControlledBy newWasControlledBy(Activity p,
                                               Role role,
                                               Agent ag,
                                               Collection<Account> accounts) {
@@ -817,12 +817,12 @@ public class ProvFactory implements CommonURIs {
     }
 
     public WasControlledBy newWasControlledBy(String id,
-                                              ProcessExecution p,
+                                              Activity p,
                                               Role role,
                                               Agent ag,
                                               Collection<Account> accounts) {
         AgentRef agid=newAgentRef(ag);
-        ProcessExecutionRef pid=newProcessExecutionRef(p);
+        ActivityRef pid=newActivityRef(p);
         LinkedList ll=new LinkedList();
         for (Account acc: accounts) {
             ll.add(newAccountRef(acc));
@@ -831,7 +831,7 @@ public class ProvFactory implements CommonURIs {
     }
 
     public WasControlledBy newWasControlledBy(String id,
-                                              ProcessExecution p,
+                                              Activity p,
                                               Role role,
                                               Agent ag,
                                               String type,
@@ -909,8 +909,8 @@ public class ProvFactory implements CommonURIs {
 
 
     public WasTriggeredBy newWasTriggeredBy(String id,
-                                            ProcessExecutionRef pid1,
-                                            ProcessExecutionRef pid2,
+                                            ActivityRef pid1,
+                                            ActivityRef pid2,
                                             Collection<AccountRef> accounts) {
         WasTriggeredBy res=of.createWasTriggeredBy();
         res.setId(autoGenerateId(wasTriggeredByIdPrefix,id));
@@ -920,8 +920,8 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public WasTriggeredByStar newWasTriggeredByStar(ProcessExecutionRef pid1,
-                                                    ProcessExecutionRef pid2,
+    public WasTriggeredByStar newWasTriggeredByStar(ActivityRef pid1,
+                                                    ActivityRef pid2,
                                                     Collection<AccountRef> accounts) {
         WasTriggeredByStar res=of.createWasTriggeredByStar();
         res.setEffect(pid1);
@@ -930,18 +930,18 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public WasTriggeredBy newWasTriggeredBy(ProcessExecution p1,
-                                            ProcessExecution p2,
+    public WasTriggeredBy newWasTriggeredBy(Activity p1,
+                                            Activity p2,
                                             Collection<Account> accounts) {
         return newWasTriggeredBy(null,p1,p2,accounts);
     }
 
     public WasTriggeredBy newWasTriggeredBy(String id,
-                                            ProcessExecution p1,
-                                            ProcessExecution p2,
+                                            Activity p1,
+                                            Activity p2,
                                             Collection<Account> accounts) {
-        ProcessExecutionRef pid1=newProcessExecutionRef(p1);
-        ProcessExecutionRef pid2=newProcessExecutionRef(p2);
+        ActivityRef pid1=newActivityRef(p1);
+        ActivityRef pid2=newActivityRef(p2);
         LinkedList<AccountRef> ll=new LinkedList();
         for (Account acc: accounts) {
             ll.add(newAccountRef(acc));
@@ -949,11 +949,11 @@ public class ProvFactory implements CommonURIs {
         return  newWasTriggeredBy(id,pid1,pid2,ll);
     }
 
-    public WasTriggeredByStar newWasTriggeredByStar(ProcessExecution p1,
-                                                    ProcessExecution p2,
+    public WasTriggeredByStar newWasTriggeredByStar(Activity p1,
+                                                    Activity p2,
                                                     Collection<Account> accounts) {
-        ProcessExecutionRef pid1=newProcessExecutionRef(p1);
-        ProcessExecutionRef pid2=newProcessExecutionRef(p2);
+        ActivityRef pid1=newActivityRef(p1);
+        ActivityRef pid2=newActivityRef(p2);
         LinkedList<AccountRef> ll=new LinkedList();
         for (Account acc: accounts) {
             ll.add(newAccountRef(acc));
@@ -962,8 +962,8 @@ public class ProvFactory implements CommonURIs {
     }
 
     public WasTriggeredBy newWasTriggeredBy(String id,
-                                            ProcessExecution p1,
-                                            ProcessExecution p2,
+                                            Activity p1,
+                                            Activity p2,
                                             String type,
                                             Collection<Account> accounts) {
         WasTriggeredBy wtb=newWasTriggeredBy(p1,p2,accounts);
@@ -1001,11 +1001,11 @@ public class ProvFactory implements CommonURIs {
         return newAnnotation(id,aid,property,value,ll);
     }
     public Annotation newAnnotation(String id,
-                                    ProcessExecution p,
+                                    Activity p,
                                     String property,
                                     Object value,
                                     Collection<Account> accs) {
-        ProcessExecutionRef pid=newProcessExecutionRef(p);
+        ActivityRef pid=newActivityRef(p);
         LinkedList<AccountRef> ll=new LinkedList();
         if (accs!=null) {
             for (Account acc: accs) {
@@ -1207,7 +1207,7 @@ public class ProvFactory implements CommonURIs {
 
     public Container newContainer(Collection<Account> accs,
                                 Collection<Overlaps> ops,
-                                Collection<ProcessExecution> ps,
+                                Collection<Activity> ps,
                                 Collection<Entity> as,
                                 Collection<Agent> ags,
                                 Collection<Object> lks) {
@@ -1216,7 +1216,7 @@ public class ProvFactory implements CommonURIs {
 
     public Container newContainer(Collection<Account> accs,
                                 Collection<Overlaps> ops,
-                                Collection<ProcessExecution> ps,
+                                Collection<Activity> ps,
                                 Collection<Entity> as,
                                 Collection<Agent> ags,
                                 Collection<Object> lks,
@@ -1227,7 +1227,7 @@ public class ProvFactory implements CommonURIs {
     public Container newContainer(String id,
                                 Collection<Account> accs,
                                 Collection<Overlaps> ops,
-                                Collection<ProcessExecution> ps,
+                                Collection<Activity> ps,
                                 Collection<Entity> as,
                                 Collection<Agent> ags,
                                 Collection<Object> lks,
@@ -1244,9 +1244,9 @@ public class ProvFactory implements CommonURIs {
             
         }
         if (ps!=null) {
-            ProcessExecutions pps=of.createProcessExecutions();
-            pps.getProcessExecution().addAll(ps);
-            res.setProcessExecutions(pps);
+            Activities pps=of.createActivities();
+            pps.getActivity().addAll(ps);
+            res.setActivities(pps);
         }
         if (as!=null) {
             Entities aas=of.createEntities();
@@ -1274,7 +1274,7 @@ public class ProvFactory implements CommonURIs {
 
     public Container newContainer(Collection<Account> accs,
                                 Overlaps [] ovs,
-                                ProcessExecution [] ps,
+                                Activity [] ps,
                                 Entity [] as,
                                 Agent [] ags,
                                 Object [] lks) 
@@ -1289,7 +1289,7 @@ public class ProvFactory implements CommonURIs {
     }
     public Container newContainer(Collection<Account> accs,
                                 Overlaps [] ovs,
-                                ProcessExecution [] ps,
+                                Activity [] ps,
                                 Entity [] as,
                                 Agent [] ags,
                                 Object [] lks,
@@ -1300,7 +1300,7 @@ public class ProvFactory implements CommonURIs {
     public Container newContainer(String id,
                                 Collection<Account> accs,
                                 Overlaps [] ovs,
-                                ProcessExecution [] ps,
+                                Activity [] ps,
                                 Entity [] as,
                                 Agent [] ags,
                                 Object [] lks,
@@ -1318,7 +1318,7 @@ public class ProvFactory implements CommonURIs {
     }
 
     public Container newContainer(Accounts accs,
-                                ProcessExecutions ps,
+                                Activities ps,
                                 Entities as,
                                 Agents ags,
                                 Dependencies lks)
@@ -1326,7 +1326,7 @@ public class ProvFactory implements CommonURIs {
         Container res=of.createContainer();
         //res.setId(autoGenerateId(containerIdPrefix));
         res.setAccounts(accs);
-        res.setProcessExecutions(ps);
+        res.setActivities(ps);
         res.setEntities(as);
         res.setAgents(ags);
         res.setDependencies(lks);
@@ -1334,7 +1334,7 @@ public class ProvFactory implements CommonURIs {
     }
 
     public Container newContainer(Accounts accs,
-                                ProcessExecutions ps,
+                                Activities ps,
                                 Entities as,
                                 Agents ags,
                                 Dependencies lks,
@@ -1343,7 +1343,7 @@ public class ProvFactory implements CommonURIs {
         Container res=of.createContainer();
         //res.setId(autoGenerateId(containerIdPrefix));
         res.setAccounts(accs);
-        res.setProcessExecutions(ps);
+        res.setActivities(ps);
         res.setEntities(as);
         res.setAgents(ags);
         res.setDependencies(lks);
@@ -1353,7 +1353,7 @@ public class ProvFactory implements CommonURIs {
 
     public Container newContainer(Container graph) {
         return newContainer(graph.getAccounts(),
-                           graph.getProcessExecutions(),
+                           graph.getActivities(),
                            graph.getEntities(),
                            graph.getAgents(),
                            graph.getDependencies(),

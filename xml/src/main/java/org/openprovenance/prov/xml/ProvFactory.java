@@ -341,7 +341,7 @@ public class ProvFactory implements CommonURIs {
 
     public EmbeddedAnnotation newType(String type) {
         EmbeddedAnnotation res=of.createEmbeddedAnnotation();
-	res.getProperty().add(newProperty(TYPE_PROPERTY,type));
+        res.getProperty().add(newProperty(TYPE_PROPERTY,type));
         return res;
     }
 
@@ -639,7 +639,7 @@ public class ProvFactory implements CommonURIs {
                         String type,
                         Collection<Account> accounts) {
         Used res=newUsed(id,p,role,a,accounts);
-        addAnnotation(res,newType(type));
+        addType(res,type);
         return res;
     }
 
@@ -649,7 +649,7 @@ public class ProvFactory implements CommonURIs {
                         u.getRole(),
                         u.getCause(),
                         u.getAccount());
-        addAnnotation(u1,u.getAnnotation());
+        u1.setAttributes(u.getAttributes());
         return u1;
     }
 
@@ -659,7 +659,7 @@ public class ProvFactory implements CommonURIs {
                                                c.getCause(),
                                                c.getAccount());
         wcb.setId(c.getId());
-        addAnnotation(wcb,c.getAnnotation());
+        wcb.setAttributes(c.getAttributes());
         return wcb;
     }
 
@@ -670,7 +670,7 @@ public class ProvFactory implements CommonURIs {
                                              g.getCause(),
                                              g.getAccount());
         wgb.setId(g.getId());
-        addAnnotation(wgb,g.getAnnotation());
+        wgb.setAttributes(g.getAttributes());
         return wgb;
     }
 
@@ -679,7 +679,7 @@ public class ProvFactory implements CommonURIs {
                                              d.getEffect(),
                                              d.getCause(),
                                              d.getAccount());
-	addAnnotation(wdf,d.getAnnotation());
+        wdf.setAttributes(d.getAttributes());
         return wdf;
     }
 
@@ -689,7 +689,7 @@ public class ProvFactory implements CommonURIs {
                                              d.getCause(),
                                              d.getAccount());
         wtb.setId(d.getId());
-        addAnnotation(wtb,d.getAnnotation());
+        wtb.setAttributes(d.getAttributes());
         return wtb;
     }
 
@@ -740,7 +740,7 @@ public class ProvFactory implements CommonURIs {
                                             String type,
                                             Collection<Account> accounts) {
         WasGeneratedBy wgb=newWasGeneratedBy(id,a,role,p,accounts);
-        addAnnotation(wgb,newType(type));
+        addType(wgb,type);
         return wgb;
     }
 
@@ -794,7 +794,7 @@ public class ProvFactory implements CommonURIs {
                                               String type,
                                               Collection<Account> accounts) {
         WasControlledBy wcb=newWasControlledBy(id,p,role,ag,accounts);
-        addAnnotation(wcb,newType(type));
+        addType(wcb,type);
         return wcb;
     }
 
@@ -838,7 +838,7 @@ public class ProvFactory implements CommonURIs {
                                             String type,
                                             Collection<Account> accounts) {
         WasDerivedFrom wdf=newWasDerivedFrom(id,a1,a2,accounts);
-        addAnnotation(wdf,newType(type));
+        addType(wdf,type);
         return wdf;
     }
 
@@ -883,7 +883,7 @@ public class ProvFactory implements CommonURIs {
                                             Collection<Account> accounts) {
         WasTriggeredBy wtb=newWasTriggeredBy(p1,p2,accounts);
         wtb.setId(id);
-        addAnnotation(wtb,newType(type));
+        addType(wtb,type);
         return wtb;
     }
 

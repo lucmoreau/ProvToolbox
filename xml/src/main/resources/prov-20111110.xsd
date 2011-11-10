@@ -96,27 +96,7 @@
 
 
 
-  <xs:complexType name="Annotation">
-	<xs:complexContent>
-          <xs:extension base="prov:EmbeddedAnnotation">
-            <xs:sequence>
-              <xs:choice minOccurs="0" maxOccurs="1">
-                <xs:element name="externalSubject" type="xs:anyURI"/>
-                <xs:element name="localSubject"    type="xs:IDREF"/>
-              </xs:choice>
-            </xs:sequence>
-          </xs:extension>
-        </xs:complexContent>
-  </xs:complexType>
 
-  <xs:complexType name="EmbeddedAnnotation">
-     <xs:sequence>
-       <xs:element name="property" type="prov:Property"   minOccurs="1"    maxOccurs="unbounded"/>
-       <xs:element name="account"  type="prov:AccountRef" minOccurs="0"    maxOccurs="unbounded" />
-       <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
-     </xs:sequence>
-     <xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
 
 <!--
   <xs:complexType name="Attributes">
@@ -149,15 +129,7 @@
 
 
 
-  <xs:complexType name="Property">
-     <xs:sequence>
-        <xs:element name="value" type="xs:anyType"/>
-     </xs:sequence>
-     <xs:attribute name="attribute" type="xs:anyURI"/>
-  </xs:complexType>
 
-
-  <xs:element name="annotation" type="prov:EmbeddedAnnotation"/>
   <xs:element name="attributes" type="prov:Attributes"/>
 
   <xs:complexType name="Activity">
@@ -194,7 +166,7 @@
 	  <xs:element name="cause"   type="prov:EntityRef"/>
 	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
       <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
-	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
+	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
     <xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
@@ -206,7 +178,7 @@
 	  <xs:element name="cause"   type="prov:ActivityRef"/>
 	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
       <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
-	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
+	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
     <xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
@@ -219,7 +191,7 @@
 	  <xs:element name="account"     minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
       <xs:element name="startTime"   type="prov:OTime" minOccurs="0"/>
       <xs:element name="endTime"     type="prov:OTime" minOccurs="0"/>
-	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
+	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
     <xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
@@ -230,7 +202,7 @@
 	  <xs:element name="cause"   type="prov:EntityRef"/>
 	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
       <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
-	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
+	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
@@ -241,7 +213,7 @@
 	  <xs:element name="cause"   type="prov:ActivityRef"/>
 	  <xs:element name="account" minOccurs="0"    maxOccurs="unbounded" type="prov:AccountRef"/>
       <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
-	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
+	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
@@ -314,6 +286,39 @@
 	  <xs:attribute name="noEarlierThan" type="xs:dateTime" />
 	  <xs:attribute name="noLaterThan"   type="xs:dateTime" />
 	  <xs:attribute name="exactlyAt"     type="xs:dateTime" />
+  </xs:complexType>
+
+
+  <!-- Annotations, was OPMX style, need to be adapted to PROV -->
+
+  <xs:element name="annotation" type="prov:EmbeddedAnnotation"/>
+  <xs:complexType name="Annotation">
+	<xs:complexContent>
+          <xs:extension base="prov:EmbeddedAnnotation">
+            <xs:sequence>
+              <xs:choice minOccurs="0" maxOccurs="1">
+                <xs:element name="externalSubject" type="xs:anyURI"/>
+                <xs:element name="localSubject"    type="xs:IDREF"/>
+              </xs:choice>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EmbeddedAnnotation">
+     <xs:sequence>
+       <xs:element name="property" type="prov:Property"   minOccurs="1"    maxOccurs="unbounded"/>
+       <xs:element name="account"  type="prov:AccountRef" minOccurs="0"    maxOccurs="unbounded" />
+       <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
+     </xs:sequence>
+     <xs:attribute name="id" type="xs:ID"/>
+  </xs:complexType>
+
+  <xs:complexType name="Property">
+     <xs:sequence>
+        <xs:element name="value" type="xs:anyType"/>
+     </xs:sequence>
+     <xs:attribute name="attribute" type="xs:anyURI"/>
   </xs:complexType>
 
 

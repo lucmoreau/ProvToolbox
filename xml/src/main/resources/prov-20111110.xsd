@@ -2,8 +2,15 @@
 
 <!-- Authors: Luc Moreau
 
-     Transformation of the OPM OPMX schema into PROV compatible. Purely tentative at this stage.
+     Transformation of the OPM OPMX schema into PROV compatible.
+     Purely tentative at this stage. Still some OPMX legacy.
+     PROV-DM not fully encoded yet.
+     Only work in progress.
   -->
+
+<!-- Known issues:
+     use of id is not appropriate to capture prov identifiers
+     -->
 
 
 <xs:schema targetNamespace="http://openprovenance.org/prov-xml#"
@@ -111,6 +118,18 @@
      <xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
 
+  <xs:complexType name="Attributes">
+     <xs:sequence>
+       <xs:element name="attribute" type="prov:Attribute"   minOccurs="1"    maxOccurs="unbounded"/>
+     </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Attribute">
+     <xs:sequence>
+        <xs:element name="value" type="xs:anyType"/>
+     </xs:sequence>
+     <xs:attribute name="name" type="xs:anyURI"/>
+  </xs:complexType>
+
 
   <xs:complexType name="Property">
      <xs:sequence>
@@ -121,10 +140,12 @@
 
 
   <xs:element name="annotation" type="prov:EmbeddedAnnotation"/>
+  <xs:element name="attributes" type="prov:Attributes"/>
 
   <xs:complexType name="Activity">
 	<xs:sequence>
 	  <xs:element name="account" minOccurs="0" maxOccurs="unbounded" type="prov:AccountRef"/>
+	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
 	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:ID"/>

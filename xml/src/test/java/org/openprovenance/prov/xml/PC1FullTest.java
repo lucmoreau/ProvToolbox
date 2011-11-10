@@ -129,11 +129,8 @@ public class PC1FullTest
         Activity p1=pFactory.newActivity("p1",
                                        black,
                                        "align_warp 1");
-        pFactory.addAnnotation(p1,
-                               pFactory.newEmbeddedAnnotation("an1_p1",
-                                                              PRIMITIVE_PROPERTY,
-                                                              PRIMITIVE_ALIGN_WARP,
-                                                              null));
+        p1.setAttributes(pFactory.newAttributes(PRIMITIVE_PROPERTY,
+                                                PRIMITIVE_ALIGN_WARP));
 
         Activity p2=pFactory.newActivity("p2",
                                        black,

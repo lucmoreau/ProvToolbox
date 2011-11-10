@@ -973,6 +973,25 @@ public class ProvFactory implements CommonURIs {
     }
 
 
+    public Attributes newAttributes(String property,
+                                    Object value) {
+        Attributes res=of.createAttributes();
+        addAttribute(res,newAttribute(property,value));
+        return res;
+    }
+    public Attribute newAttribute(String property,
+                                Object value) {
+        Attribute res=of.createAttribute();
+        res.setName(property);
+        res.setValue(value);
+        return res;
+    }
+    public void addAttribute(Attributes attrs, Attribute p) {
+        attrs.getAttribute().add(p);
+    }
+
+
+
     public EmbeddedAnnotation newEmbeddedAnnotation(String id,
                                                     String property,
                                                     Object value,

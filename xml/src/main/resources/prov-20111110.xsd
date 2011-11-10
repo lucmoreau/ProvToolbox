@@ -10,7 +10,8 @@
   -->
 
 <!-- Known issues:
-     use of id is not appropriate to capture prov identifiers
+     - use of id is not appropriate to capture prov identifiers
+     - having an element attributes containing the attributes is not pretty and not good from an extensibility view point.
      -->
 
 
@@ -51,7 +52,7 @@
 	<xs:sequence>
 	  <xs:element name="effect"  type="prov:ActivityRef"/>
 	  <xs:element name="cause"   type="prov:EntityRef"/>
-      <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
+      <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
 	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
     <xs:attribute name="id" type="xs:ID"/>
@@ -61,7 +62,7 @@
 	<xs:sequence>
 	  <xs:element name="effect"  type="prov:EntityRef"/>
 	  <xs:element name="cause"   type="prov:ActivityRef"/>
-      <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
+      <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
 	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
     <xs:attribute name="id" type="xs:ID"/>
@@ -71,8 +72,8 @@
 	<xs:sequence>
 	  <xs:element name="effect"      type="prov:ActivityRef"/>
 	  <xs:element name="cause"       type="prov:AgentRef"/>
-      <xs:element name="startTime"   type="prov:OTime" minOccurs="0"/>
-      <xs:element name="endTime"     type="prov:OTime" minOccurs="0"/>
+      <xs:element name="startTime"   type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="endTime"     type="xs:dateTime" minOccurs="0"/>
 	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
     <xs:attribute name="id" type="xs:ID"/>
@@ -82,7 +83,7 @@
 	<xs:sequence>
 	  <xs:element name="effect"  type="prov:EntityRef"/>
 	  <xs:element name="cause"   type="prov:EntityRef"/>
-      <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
+      <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
 	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:ID"/>
@@ -92,7 +93,7 @@
 	<xs:sequence>
 	  <xs:element name="effect"  type="prov:ActivityRef"/>
 	  <xs:element name="cause"   type="prov:ActivityRef"/>
-      <xs:element name="time"    type="prov:OTime" minOccurs="0"/>
+      <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
 	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:ID"/>
@@ -223,18 +224,6 @@
   </xs:complexType>
   
 
- <!-- Observed Time allow for interval of observation. -->
-
-  <xs:complexType name="OTime">
-	<xs:annotation>
-	  <xs:documentation>Observed Time allow for interval of observation, where an event is said to occur no earlier than a given time t1 and no later than a given time t2. When the event is observed to occur at a specific time, it is not convenient to use an interval. Instead, one can use the alternate exactlyAt attribute. We note that exactlyAt is disjoint from noEarlierThan and noLaterThan.</xs:documentation>
-	</xs:annotation>
-	<xs:sequence>
-	</xs:sequence>
-	  <xs:attribute name="noEarlierThan" type="xs:dateTime" />
-	  <xs:attribute name="noLaterThan"   type="xs:dateTime" />
-	  <xs:attribute name="exactlyAt"     type="xs:dateTime" />
-  </xs:complexType>
 
 
   <!-- Annotations, was OPMX style, need to be adapted to PROV -->

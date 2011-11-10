@@ -467,6 +467,9 @@ public class PC1FullTest
         WasGeneratedBy wg18=pFactory.newWasGeneratedBy(a28,"out",p13);
         WasGeneratedBy wg19=pFactory.newWasGeneratedBy(a29,"out",p14);
         WasGeneratedBy wg20=pFactory.newWasGeneratedBy(a30,"out",p15);
+        wg18.setTime(pFactory.newTimeNow());
+        wg19.setTime(pFactory.newTimeNow());
+        wg20.setTime(pFactory.newTimeNow());
 
 
         WasDerivedFrom wd1=pFactory.newWasDerivedFrom(a11,a1);

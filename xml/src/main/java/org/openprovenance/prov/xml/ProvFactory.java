@@ -338,15 +338,6 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    public void expandAnnotation(EmbeddedAnnotation ann) {
-
-    }
-
-    // deprecated now
-    public EmbeddedAnnotation compactAnnotation(EmbeddedAnnotation ann) {
-
-        return ann;
-    }
 
     public XMLGregorianCalendar
            newXMLGregorianCalendar(GregorianCalendar gc) {
@@ -354,85 +345,15 @@ public class ProvFactory implements CommonURIs {
             }
 
 
-	public OTime newOTime (OTime time) {
-        return newOTime(time.getNoEarlierThan(),
-                        time.getNoLaterThan(),
-                        time.getExactlyAt());
-    }
 
-
-	public OTime newOTime (XMLGregorianCalendar point1,
-                           XMLGregorianCalendar point2,
-                           XMLGregorianCalendar point3) {
-        OTime time = of.createOTime();
-        time.setNoEarlierThan (point1);
-        time.setNoLaterThan (point2);
-        time.setExactlyAt (point3);
-        return time;
-    }
-
-	public OTime newOTime (XMLGregorianCalendar point1,
-                           XMLGregorianCalendar point2) {
-        OTime time = of.createOTime();
-        time.setNoEarlierThan (point1);
-        time.setNoLaterThan (point2);
-        return time;
-    }
-
-	public OTime newOTime (XMLGregorianCalendar point) {
-        OTime time = of.createOTime();
-        time.setExactlyAt (point);
-        return time;
-    }
-
-	public OTime newOTime (String value1, String value2) {
-        XMLGregorianCalendar point1 = dataFactory.newXMLGregorianCalendar (value1);
-        XMLGregorianCalendar point2 = dataFactory.newXMLGregorianCalendar (value2);
-        return newOTime(point1,point2);
-    }
-
-	public OTime newOTime (Date date1,
-                           Date date2) {
-        GregorianCalendar gc1=new GregorianCalendar();
-        gc1.setTime(date1);
-        GregorianCalendar gc2=new GregorianCalendar();
-        gc2.setTime(date2);
-        return newOTime(newXMLGregorianCalendar(gc1),
-                        newXMLGregorianCalendar(gc2));
-    }
-
-	public OTime newOTime (Date date) {
+	public XMLGregorianCalendar newTime (Date date) {
         GregorianCalendar gc=new GregorianCalendar();
         gc.setTime(date);
-        return newOTime(newXMLGregorianCalendar(gc));
+        return newXMLGregorianCalendar(gc);
     }
 
-	public OTime newInstantaneousTime (XMLGregorianCalendar point) {
-        return newOTime(point);
-    }
-
-	public OTime newInstantaneousTime (String value) {
-        XMLGregorianCalendar point = dataFactory.newXMLGregorianCalendar (value);
-        return newOTime(point);
-    }
-
-
-	public OTime newInstantaneousTime (Date date) {
-        GregorianCalendar gc=new GregorianCalendar();
-        gc.setTime(date);
-        XMLGregorianCalendar xgc=newXMLGregorianCalendar(gc);
-        return newOTime(xgc);
-    }
-
-	public OTime newInstantaneousTimeNow () {
-        return newInstantaneousTime(new Date());
-    }
-
-
-    public boolean compactId=false;
-    
-    public void setIdForCompactAnnotation(EmbeddedAnnotation ann, String id) {
-        if (compactId) ann.setId(id);
+	public XMLGregorianCalendar newTimeNow () {
+        return newTime(new Date());
     }
 
 
@@ -444,9 +365,6 @@ public class ProvFactory implements CommonURIs {
 
 
 
-    public void addCompactAnnotation(Annotable annotable, List<EmbeddedAnnotation> anns) {
-	addAnnotation(annotable,anns);
-    }
 
 
 

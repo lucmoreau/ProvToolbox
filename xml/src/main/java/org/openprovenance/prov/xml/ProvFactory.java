@@ -451,12 +451,13 @@ public class ProvFactory implements CommonURIs {
     }
 
     public void addRole(HasAttributes a,                                  
-                        String type) {
+                        String role) {
+        if (role!=null)
         addAttribute(a,
                      "http://openprovenance.org/prov/xml#",
                      "prov",
                      "role",
-                     type);
+                     role);
     }
 
     public Used newUsed(Activity p,

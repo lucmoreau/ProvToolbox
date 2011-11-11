@@ -1,6 +1,11 @@
 package org.openprovenance.prov.asn;
 
 import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.xml.ProvSerialiser;
+import org.openprovenance.prov.xml.Container;
+
+import javax.xml.bind.JAXBException;
+import java.io.File;
 
 import  org.antlr.runtime.CommonTokenStream;
 import  org.antlr.runtime.ANTLRFileStream;
@@ -58,6 +63,14 @@ public  class MainParser {
             //new ProvConstructor(ProvFactory.getFactory()).walk(tree);
 
             Object o=new ProvConstructor(ProvFactory.getFactory()).convert(tree);
+
+            try {
+                ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
+                serial.serialiseContainer(new File(args[0] + ".xml"),(Container)o,true);
+            } catch (JAXBException e) {
+                e.printStackTrace();
+            }
+
 
         }  catch(Throwable t) {
             System.out.println("exception: "+t);

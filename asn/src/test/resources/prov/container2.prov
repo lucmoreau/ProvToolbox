@@ -30,12 +30,12 @@ container(
           wasGeneratedBy(ex:e1, ex:a2, [ex:param="a"])
           wasGeneratedBy(ex:e1, ex:a2, [ex:param="a", ex:port="foo"])
 
-          used(ex:e1, ex:a2, [], 2001-10-26T21:32:52)
-          used(ex:e1, ex:a2, [ex:param="a"], 2001-10-26T21:32:52)
-          used(ex:e1, ex:a2, [ex:param="a", ex:port="foo"], 2001-10-26T21:32:52)
-          used(ex:e1, ex:a2, [])
-          used(ex:e1, ex:a2, [ex:param="a"])
-          used(ex:e1, ex:a2, [ex:param="a", ex:port="foo"])
+          used(ex:a2, ex:e1, [], 2001-10-26T21:32:52)
+          used(ex:a2, ex:e1, [ex:param="a"], 2001-10-26T21:32:52)
+          used(ex:a2, ex:e1, [ex:param="a", ex:port="foo"], 2001-10-26T21:32:52)
+          used(ex:a2, ex:e1, [])
+          used(ex:a2, ex:e1, [ex:param="a"])
+          used(ex:a2, ex:e1, [ex:param="a", ex:port="foo"])
 
 
           wasDerivedFrom(ex:e1, ex:a2)

@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID;
+    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A;
 }
 
 @header {
@@ -59,11 +59,9 @@ useRecord
       -> ^(USED identifier+ ^(ATTRIBUTES attributeValuePairs?) ^(TIME time?))
 	;
 
-/* TODO the rewrite rule concanetas all attributes */
-
 derivationRecord
-	:	'wasDerivedFrom' '(' identifier ',' identifier (',' identifier ',' '[' dst=attributeValuePairs ']' ',' '[' src=attributeValuePairs ']')?	')'
-      -> ^(WDF identifier+  ^(ATTRIBUTES $dst?) ^(ATTRIBUTES $src?))
+	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier (',' a=identifier ',' '[' dst=attributeValuePairs ']' ',' '[' src=attributeValuePairs ']')?	')'
+      -> ^(WDF $id2 $id1 ^(A $a?)  ^(ATTRIBUTES $dst?) ^(ATTRIBUTES $src?))
 	;
 
 dependenceRecord

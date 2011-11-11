@@ -1,5 +1,7 @@
 package org.openprovenance.prov.asn;
 
+import org.openprovenance.prov.xml.ProvFactory;
+
 import  org.antlr.runtime.CommonTokenStream;
 import  org.antlr.runtime.ANTLRFileStream;
 import  org.antlr.runtime.CharStream;
@@ -24,32 +26,6 @@ public  class MainParser {
         ASNParser parser = new ASNParser(tokens);
 
         return parser;
-    }
-
-    public void walk(Tree ast) {
-	switch(ast.getType()) {
-		case ASNParser.ACTIVITY:
-			System.out.print("activity ");
-			walk(ast.getChild(1));
-			walk(ast.getChild(2));
-			System.out.print(";\n\n");
-			break;
-		case ASNParser.ENTITY:
-			System.out.print("entity ");
-			walk(ast.getChild(1));
-			System.out.print(";\n\n");
-			break;
-		case ASNParser.CONTAINER:
-			System.out.print("container ");
-			for (int i=1; i< ast.getChildCount(); i++) {
-			    walk(ast.getChild(i));
-			}
-			System.out.print(";\n\n");
-			break;
-
-
-       // ...handle every other possible node type in the AST...
-	}
     }
 
     /* from http://www.antlr.org/wiki/display/ANTLR3/Interfacing+AST+with+Java */
@@ -78,7 +54,10 @@ public  class MainParser {
             
             System.out.println(tree.toStringTree());
 
-	    p.walk(tree);
+
+            //new ProvConstructor(ProvFactory.getFactory()).walk(tree);
+
+            Object o=new ProvConstructor(ProvFactory.getFactory()).convert(tree);
 
         }  catch(Throwable t) {
             System.out.println("exception: "+t);

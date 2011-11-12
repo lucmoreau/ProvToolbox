@@ -141,12 +141,7 @@ public class ProvFactory implements CommonURIs {
                               String label) {
         Activity res=of.createActivity();
         res.setId(pr);
-        if (label!=null)
-            addAttribute(res,
-                          "http://openprovenance.org/prov/xml#",
-                          "prov",
-                          "label",
-                          label);
+        if (label!=null) addLabel(res,label);
         return res;
     }
 
@@ -468,7 +463,7 @@ public class ProvFactory implements CommonURIs {
                                        String type) {
         TypedLiteral res=of.createTypedLiteral();
         res.setValue(role);
-        res.setType("xsd:string");
+        res.setType(type);
         return res;
     }
 
@@ -718,9 +713,13 @@ public class ProvFactory implements CommonURIs {
                      localName,
                      value);
     }
+    public Attributes newAttributes() {
+	return of.createAttributes();
+    }
+
     public void addAttribute(HasAttributes a, Object o) {
         if (a.getAttributes()==null) {
-            a.setAttributes(of.createAttributes());
+            a.setAttributes(newAttributes());
         }
         addAttribute(a.getAttributes(),
                      o);
@@ -728,35 +727,49 @@ public class ProvFactory implements CommonURIs {
 
     public void addType(HasAttributes a,                                  
                         String type) {
-        addAttribute(a,
+	/*        addAttribute(a,
                      "http://openprovenance.org/prov/xml#",
                      "prov",
                      "type",
-                     type);
+                     type);*/
+	JAXBElement<String> je=of.createType(type);
+	addAttribute(a,je);
+
     }
 
     public void addLabel(HasAttributes a,                                  
                          String label) {
-        addAttribute(a,
+	/*        addAttribute(a,
                      "http://openprovenance.org/prov/xml#",
                      "prov",
                      "label",
-                     label);
+                     label);*/
+	JAXBElement<String> je=of.createLabel(label);
+	addAttribute(a,je);
     }
 
 
     public void addAttribute(Attributes attrs,
                              String namespace,
-                                  String prefix,
-                                  String localName,                                  
-                                  String value) {
+			     String prefix,
+			     String localName,                                  
+			     String value) {
 
+        attrs.getAny().add(newAttribute(namespace,
+					prefix,
+					localName,
+					value));
+    }
+
+    public Element newAttribute(String namespace,
+				String prefix,
+				String localName,                                  
+				String value) {
         Document doc=oFactory.builder.newDocument();
         Element el=doc.createElementNS(namespace,prefix + ":" + localName);
         el.appendChild(doc.createTextNode(value));
         doc.appendChild(el);
-
-        attrs.getAny().add(el);
+        return el;
     }
 
     public void addAttribute(Attributes attrs, Object o) {

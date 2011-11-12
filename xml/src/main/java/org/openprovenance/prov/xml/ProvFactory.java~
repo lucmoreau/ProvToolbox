@@ -1,4 +1,4 @@
-package org.openprovenance.pix;
+package org.openprovenance.prov.xml;
 import java.util.Collection;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -17,9 +17,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 
-/** A stateless factory of OPM objects. */
+/** A stateless factory for PROV objects. */
 
-public class OPMFactory implements CommonURIs {
+public class ProvFactory implements CommonURIs {
 
     public static String roleIdPrefix="r_";
     public static String usedIdPrefix="u_";
@@ -30,15 +30,15 @@ public class OPMFactory implements CommonURIs {
     public static String containerIdPrefix="gr_";
 
     public static final String packageList=
-        "org.openprovenance.pix";
+        "org.openprovenance.prov.xml";
 
     public String getPackageList() {
         return packageList;
     }
 
-    private final static OPMFactory oFactory=new OPMFactory();
+    private final static ProvFactory oFactory=new ProvFactory();
 
-    public static OPMFactory getFactory() {
+    public static ProvFactory getFactory() {
         return oFactory;
     }
 
@@ -56,12 +56,12 @@ public class OPMFactory implements CommonURIs {
 
 
 
-    public OPMFactory() {
+    public ProvFactory() {
         of=new ObjectFactory();
         init();
     }
 
-    public OPMFactory(ObjectFactory of) {
+    public ProvFactory(ObjectFactory of) {
         this.of=of;
         init();
     }
@@ -70,14 +70,8 @@ public class OPMFactory implements CommonURIs {
         return of;
     }
 
-    public ProcessExecutionRef newProcessExecutionRef(ProcessExecution p) {
-        ProcessExecutionRef res=of.createProcessExecutionRef();
-        res.setRef(p);
-        return res;
-    }
-
-    public RoleRef newRoleRef(Role p) {
-        RoleRef res=of.createRoleRef();
+    public ActivityRef newActivityRef(Activity p) {
+        ActivityRef res=of.createActivityRef();
         res.setRef(p);
         return res;
     }
@@ -131,7 +125,7 @@ public class OPMFactory implements CommonURIs {
         res.setRef(edge);
         return res;
     }
-    public DependencyRef newDependencyRef(WasTriggeredBy edge) {
+    public DependencyRef newDependencyRef(WasInformedBy edge) {
         DependencyRef res=of.createDependencyRef();
         res.setRef(edge);
         return res;
@@ -139,33 +133,32 @@ public class OPMFactory implements CommonURIs {
 
 
 
-    public ProcessExecution newProcessExecution(String pr,
-                              Collection<Account> accounts) {
-        return newProcessExecution(pr,accounts,null);
+    public Activity newActivity(String pr) {
+        return newActivity(pr,null);
     }
 
-    public ProcessExecution newProcessExecution(String pr,
-                              Collection<Account> accounts,
+    public Activity newActivity(String pr,
                               String label) {
-        ProcessExecution res=of.createProcessExecution();
+        Activity res=of.createActivity();
         res.setId(pr);
-        addAccounts(res,accounts,null);
-        if (label!=null) addAnnotation(res,newLabel(label));
+        if (label!=null)
+            addAttribute(res,
+                          "http://openprovenance.org/prov/xml#",
+                          "prov",
+                          "label",
+                          label);
         return res;
     }
 
-    public Agent newAgent(String ag,
-                          Collection<Account> accounts) {
-        return newAgent(ag,accounts,null);
+    public Agent newAgent(String ag) {
+        return newAgent(ag,null);
     }
 
     public Agent newAgent(String ag,
-                          Collection<Account> accounts,
                           String label) {
         Agent res=of.createAgent();
         res.setId(ag);
-        addAccounts(res,accounts,null);
-        if (label!=null) addAnnotation(res,newLabel(label));
+        if (label!=null) addLabel(res,label);
         return res;
     }
 
@@ -196,18 +189,6 @@ public class OPMFactory implements CommonURIs {
 
 
 
-    public Role getRole(Edge e) {
-        if (e instanceof Used) {
-            return ((Used) e).getRole();
-        } 
-        if (e instanceof WasGeneratedBy) {
-            return ((WasGeneratedBy) e).getRole();
-        } 
-        if (e instanceof WasControlledBy) {
-            return ((WasControlledBy) e).getRole();
-        }
-        return null;
-    }
     
     public String getLabel(EmbeddedAnnotation annotation) {
 	if (annotation==null) return null;
@@ -337,13 +318,13 @@ public class OPMFactory implements CommonURIs {
 
     public EmbeddedAnnotation newType(String type) {
         EmbeddedAnnotation res=of.createEmbeddedAnnotation();
-	res.getProperty().add(newProperty(TYPE_PROPERTY,type));
+        res.getProperty().add(newProperty(TYPE_PROPERTY,type));
         return res;
     }
 
-    public void addValue(Entity annotable, Object value, String encoding) {
-        addAnnotation(annotable,newValue(value,encoding));
-    }
+    // public void addValue(Entity annotable, Object value, String encoding) {
+    //     addAnnotation(annotable,newValue(value,encoding));
+    // }
 
     public void addAnnotation(Annotable annotable, EmbeddedAnnotation ann) {
         //annotable.getAnnotation().add(ann);
@@ -357,15 +338,6 @@ public class OPMFactory implements CommonURIs {
     }
 
 
-    public void expandAnnotation(EmbeddedAnnotation ann) {
-
-    }
-
-    // deprecated now
-    public EmbeddedAnnotation compactAnnotation(EmbeddedAnnotation ann) {
-
-        return ann;
-    }
 
     public XMLGregorianCalendar
            newXMLGregorianCalendar(GregorianCalendar gc) {
@@ -373,85 +345,15 @@ public class OPMFactory implements CommonURIs {
             }
 
 
-	public OTime newOTime (OTime time) {
-        return newOTime(time.getNoEarlierThan(),
-                        time.getNoLaterThan(),
-                        time.getExactlyAt());
-    }
 
-
-	public OTime newOTime (XMLGregorianCalendar point1,
-                           XMLGregorianCalendar point2,
-                           XMLGregorianCalendar point3) {
-        OTime time = of.createOTime();
-        time.setNoEarlierThan (point1);
-        time.setNoLaterThan (point2);
-        time.setExactlyAt (point3);
-        return time;
-    }
-
-	public OTime newOTime (XMLGregorianCalendar point1,
-                           XMLGregorianCalendar point2) {
-        OTime time = of.createOTime();
-        time.setNoEarlierThan (point1);
-        time.setNoLaterThan (point2);
-        return time;
-    }
-
-	public OTime newOTime (XMLGregorianCalendar point) {
-        OTime time = of.createOTime();
-        time.setExactlyAt (point);
-        return time;
-    }
-
-	public OTime newOTime (String value1, String value2) {
-        XMLGregorianCalendar point1 = dataFactory.newXMLGregorianCalendar (value1);
-        XMLGregorianCalendar point2 = dataFactory.newXMLGregorianCalendar (value2);
-        return newOTime(point1,point2);
-    }
-
-	public OTime newOTime (Date date1,
-                           Date date2) {
-        GregorianCalendar gc1=new GregorianCalendar();
-        gc1.setTime(date1);
-        GregorianCalendar gc2=new GregorianCalendar();
-        gc2.setTime(date2);
-        return newOTime(newXMLGregorianCalendar(gc1),
-                        newXMLGregorianCalendar(gc2));
-    }
-
-	public OTime newOTime (Date date) {
+	public XMLGregorianCalendar newTime (Date date) {
         GregorianCalendar gc=new GregorianCalendar();
         gc.setTime(date);
-        return newOTime(newXMLGregorianCalendar(gc));
+        return newXMLGregorianCalendar(gc);
     }
 
-	public OTime newInstantaneousTime (XMLGregorianCalendar point) {
-        return newOTime(point);
-    }
-
-	public OTime newInstantaneousTime (String value) {
-        XMLGregorianCalendar point = dataFactory.newXMLGregorianCalendar (value);
-        return newOTime(point);
-    }
-
-
-	public OTime newInstantaneousTime (Date date) {
-        GregorianCalendar gc=new GregorianCalendar();
-        gc.setTime(date);
-        XMLGregorianCalendar xgc=newXMLGregorianCalendar(gc);
-        return newOTime(xgc);
-    }
-
-	public OTime newInstantaneousTimeNow () {
-        return newInstantaneousTime(new Date());
-    }
-
-
-    public boolean compactId=false;
-    
-    public void setIdForCompactAnnotation(EmbeddedAnnotation ann, String id) {
-        if (compactId) ann.setId(id);
+	public XMLGregorianCalendar newTimeNow () {
+        return newTime(new Date());
     }
 
 
@@ -463,31 +365,9 @@ public class OPMFactory implements CommonURIs {
 
 
 
-    public void addCompactAnnotation(Annotable annotable, List<EmbeddedAnnotation> anns) {
-	addAnnotation(annotable,anns);
-    }
 
 
 
-    public Overlaps newOverlaps(Collection<Account> accounts) {
-        Overlaps res=of.createOverlaps();
-        LinkedList ll=new LinkedList();
-        int i=0;
-        for (Account acc: accounts) {
-            if (i==2) break;
-            ll.add(newAccountRef(acc));
-            i++;
-        }
-        res.getAccount().addAll(ll);
-        return res;
-    }
-        
-    public Overlaps newOverlaps(AccountRef aid1,AccountRef aid2) {
-        Overlaps res=of.createOverlaps();
-        res.getAccount().add(aid1);
-        res.getAccount().add(aid2);
-        return res;
-    }
 
     /** By default, no auto generation of Id.  Override this behaviour if required. */
     public String autoGenerateId(String prefix) {
@@ -500,46 +380,17 @@ public class OPMFactory implements CommonURIs {
         return id;
     }
 
-    public Role newRole(String value) {
-        return newRole(autoGenerateId(roleIdPrefix),value);
-    }
-
-    public Role newRole(Role role) {
-        return newRole(autoGenerateId(roleIdPrefix,role.getId()),role.getValue());
-    }
-
-    public Role newRole(String id, String value) {
-        Role res=of.createRole();
-        res.setId(id);
-        res.setValue(value);
-        return res;
-    }
 
     public Entity newEntity(Entity a) {
-        LinkedList<Account> ll=new LinkedList();
-        for (AccountRef acc: a.getAccount()) {
-            ll.add(newAccount((Account)acc.getRef()));
-        }
-        Entity res=newEntity(a.getId(),ll);
-        addNewAnnotations(res,a.getAnnotation());
+        Entity res=newEntity(a.getId());
         return res;
     }
-    public ProcessExecution newProcessExecution(ProcessExecution a) {
-        LinkedList<Account> ll=new LinkedList();
-        for (AccountRef acc: a.getAccount()) {
-            ll.add(newAccount((Account)acc.getRef()));
-        }
-        ProcessExecution res=newProcessExecution(a.getId(),ll);
-        addNewAnnotations(res,a.getAnnotation());
+    public Activity newActivity(Activity a) {
+        Activity res=newActivity(a.getId());
         return res;
     }
     public Agent newAgent(Agent a) {
-        LinkedList<Account> ll=new LinkedList();
-        for (AccountRef acc: a.getAccount()) {
-            ll.add(newAccount((Account)acc.getRef()));
-        }
-        Agent res=newAgent(a.getId(),ll);
-        addNewAnnotations(res,a.getAnnotation());
+        Agent res=newAgent(a.getId());
         return res;
     }
 
@@ -550,27 +401,24 @@ public class OPMFactory implements CommonURIs {
     }
 
     public void addNewAnnotations(Annotable res,
-                                  org.openprovenance.pix.EmbeddedAnnotation ea) {
+                                  org.openprovenance.prov.xml.EmbeddedAnnotation ea) {
 	if (ea.getId()!=null) 
             addAnnotation(res,newEmbeddedAnnotation(ea.getId(),
                                                     ea.getProperty(),
-                                                    ea.getAccount(),
+                                                    new LinkedList(),
                                                     null));
     }
 
 
-    public Entity newEntity(String id,
-                                Collection<Account> accounts) {
-        return newEntity(id,accounts,null);
+    public Entity newEntity(String id) {
+        return newEntity(id,null);
     }
 
     public Entity newEntity(String id,
-                                Collection<Account> accounts,
-                                String label) {
+                            String label) {
         Entity res=of.createEntity();
         res.setId(id);
-        addAccounts(res,accounts,null);
-        if (label!=null) addAnnotation(res,newLabel(label));
+        if (label!=null) addLabel(res,label);
         return res;
     }
 
@@ -591,127 +439,108 @@ public class OPMFactory implements CommonURIs {
 
 
     public Used newUsed(String id,
-                        ProcessExecutionRef pid,
-                        Role role,
-                        EntityRef aid,
-                        Collection<AccountRef> accounts) {
+                        ActivityRef pid,
+                        String role,
+                        EntityRef aid) {
         Used res=of.createUsed();
         res.setId(autoGenerateId(usedIdPrefix,id));
         res.setEffect(pid);
-        res.setRole(role);
+        addRole(res,role);
         res.setCause(aid);
-        addAccounts(res,accounts);
         return res;
     }
 
-
-
-    public UsedStar newUsedStar(ProcessExecutionRef pid,
-                                EntityRef aid,
-                                Collection<AccountRef> accounts) {
-        UsedStar res=of.createUsedStar();
-        res.setEffect(pid);
-        res.setCause(aid);
-        addAccounts(res,accounts);
+    public void addRole(HasAttributes a,                                  
+                        String role) {
+        if (role!=null) {
+            // addAttribute(a,
+            //              "http://openprovenance.org/prov/xml#",
+            //              "prov",
+            //              "role",
+            //              role);
+            TypedLiteral tl=newTypedLiteral(role,"xs:string");
+            JAXBElement<TypedLiteral> je=of.createRole(tl);
+            addAttribute(a,je);
+        }
+    }
+    
+    public TypedLiteral newTypedLiteral(String role,
+                                       String type) {
+        TypedLiteral res=of.createTypedLiteral();
+        res.setValue(role);
+        res.setType("xsd:string");
         return res;
     }
 
-    public Used newUsed(ProcessExecution p,
-                        Role role,
-                        Entity a,
-                        Collection<Account> accounts) {
-        Used res=newUsed(null,p,role,a,accounts);
+    public Used newUsed(Activity p,
+                        String role,
+                        Entity a) {
+        Used res=newUsed(null,p,role,a);
         return res;
     }
 
     public Used newUsed(String id,
-                        ProcessExecution p,
-                        Role role,
-                        Entity a,
-                        Collection<Account> accounts) {
-        ProcessExecutionRef pid=newProcessExecutionRef(p);
+                        Activity p,
+                        String role,
+                        Entity a) {
+        ActivityRef pid=newActivityRef(p);
         EntityRef aid=newEntityRef(a);
-        LinkedList ll=new LinkedList();
-        if (accounts!=null) {
-            for (Account acc: accounts) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newUsed(id,pid,role,aid,ll);
-    }
-    public UsedStar newUsedStar(ProcessExecution p,
-                                Entity a,
-                                Collection<Account> accounts) {
-        ProcessExecutionRef pid=newProcessExecutionRef(p);
-        EntityRef aid=newEntityRef(a);
-        LinkedList ll=new LinkedList();
-        if (accounts!=null) {
-            for (Account acc: accounts) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newUsedStar(pid,aid,ll);
+        return newUsed(id,pid,role,aid);
     }
 
 
     public Used newUsed(String id,
-                        ProcessExecution p,
-                        Role role,
+                        Activity p,
+                        String role,
                         Entity a,
-                        String type,
-                        Collection<Account> accounts) {
-        Used res=newUsed(id,p,role,a,accounts);
-        addAnnotation(res,newType(type));
+                        String type) {
+        Used res=newUsed(id,p,role,a);
+        addType(res,type);
         return res;
     }
 
     public Used newUsed(Used u) {
         Used u1=newUsed(u.getId(),
                         u.getEffect(),
-                        u.getRole(),
-                        u.getCause(),
-                        u.getAccount());
-        addAnnotation(u1,u.getAnnotation());
+                        null,
+                        u.getCause());
+        u1.setAttributes(u.getAttributes());
         return u1;
     }
 
     public WasControlledBy newWasControlledBy(WasControlledBy c) {
         WasControlledBy wcb=newWasControlledBy(c.getEffect(),
-                                               c.getRole(),
-                                               c.getCause(),
-                                               c.getAccount());
+                                               null,
+                                               c.getCause());
         wcb.setId(c.getId());
-        addAnnotation(wcb,c.getAnnotation());
+        wcb.setAttributes(c.getAttributes());
         return wcb;
     }
 
     public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
         WasGeneratedBy wgb=newWasGeneratedBy(g.getId(),
                                              g.getEffect(),
-                                             g.getRole(),
-                                             g.getCause(),
-                                             g.getAccount());
+                                             null,
+                                             g.getCause());
         wgb.setId(g.getId());
-        addAnnotation(wgb,g.getAnnotation());
+        wgb.setAttributes(g.getAttributes());
         return wgb;
     }
 
     public WasDerivedFrom newWasDerivedFrom(WasDerivedFrom d) {
         WasDerivedFrom wdf=newWasDerivedFrom(d.getId(),
                                              d.getEffect(),
-                                             d.getCause(),
-                                             d.getAccount());
-	addAnnotation(wdf,d.getAnnotation());
+                                             d.getCause());
+        wdf.setAttributes(d.getAttributes());
         return wdf;
     }
 
-    public WasTriggeredBy newWasTriggeredBy(WasTriggeredBy d) {
-        WasTriggeredBy wtb=newWasTriggeredBy(d.getId(),
+    public WasInformedBy newWasInformedBy(WasInformedBy d) {
+        WasInformedBy wtb=newWasInformedBy(d.getId(),
                                              d.getEffect(),
-                                             d.getCause(),
-                                             d.getAccount());
+                                             d.getCause());
         wtb.setId(d.getId());
-        addAnnotation(wtb,d.getAnnotation());
+        wtb.setAttributes(d.getAttributes());
         return wtb;
     }
 
@@ -719,258 +548,227 @@ public class OPMFactory implements CommonURIs {
 
     public WasGeneratedBy newWasGeneratedBy(String id,
                                             EntityRef aid,
-                                            Role role,
-                                            ProcessExecutionRef pid,
-                                            Collection<AccountRef> accounts) {
+                                            String role,
+                                            ActivityRef pid) {
         WasGeneratedBy res=of.createWasGeneratedBy();
         res.setId(autoGenerateId(wasGenerateByIdPrefix,id));
         res.setCause(pid);
-        res.setRole(role);
         res.setEffect(aid);
-        addAccounts(res,accounts);
+        addRole(res,role);
         return res;
     }
 
-    public WasGeneratedByStar newWasGeneratedByStar(EntityRef aid,
-                                                    ProcessExecutionRef pid,
-                                                    Collection<AccountRef> accounts) {
-        WasGeneratedByStar res=of.createWasGeneratedByStar();
-        res.setCause(pid);
-        res.setEffect(aid);
-        addAccounts(res,accounts);
-        return res;
-    }
+
     public WasGeneratedBy newWasGeneratedBy(Entity a,
-                                            Role role,
-                                            ProcessExecution p,
-                                            Collection<Account> accounts) {
-        return newWasGeneratedBy(null,a,role,p,accounts);
+                                            String role,
+                                            Activity p) {
+        return newWasGeneratedBy(null,a,role,p);
     }
 
     public WasGeneratedBy newWasGeneratedBy(String id,
                                             Entity a,
-                                            Role role,
-                                            ProcessExecution p,
-                                            Collection<Account> accounts) {
+                                            String role,
+                                            Activity p) {
         EntityRef aid=newEntityRef(a);
-        ProcessExecutionRef pid=newProcessExecutionRef(p);
+        ActivityRef pid=newActivityRef(p);
         LinkedList ll=new LinkedList();
-        for (Account acc: accounts) {
-            ll.add(newAccountRef(acc));
-        }
-        return  newWasGeneratedBy(id,aid,role,pid,ll);
-    }
-
-
-    public WasGeneratedByStar newWasGeneratedByStar(Entity a,
-                                                    ProcessExecution p,
-                                                    Collection<Account> accounts) {
-        EntityRef aid=newEntityRef(a);
-        ProcessExecutionRef pid=newProcessExecutionRef(p);
-        LinkedList ll=new LinkedList();
-        for (Account acc: accounts) {
-            ll.add(newAccountRef(acc));
-        }
-        return  newWasGeneratedByStar(aid,pid,ll);
+        return  newWasGeneratedBy(id,aid,role,pid);
     }
 
 
 
     public WasGeneratedBy newWasGeneratedBy(String id,
                                             Entity a,
-                                            Role role,
-                                            ProcessExecution p,
-                                            String type,
-                                            Collection<Account> accounts) {
-        WasGeneratedBy wgb=newWasGeneratedBy(id,a,role,p,accounts);
-        addAnnotation(wgb,newType(type));
+                                            String role,
+                                            Activity p,
+                                            String type) {
+        WasGeneratedBy wgb=newWasGeneratedBy(id,a,role,p);
+        addType(wgb,type);
         return wgb;
     }
 
-    public WasControlledBy newWasControlledBy(ProcessExecutionRef pid,
-                                              Role role,
-                                              AgentRef agid,
-                                              Collection<AccountRef> accounts) {
-        return newWasControlledBy(null,pid,role,agid,accounts);
+    public WasControlledBy newWasControlledBy(ActivityRef pid,
+                                              String role,
+                                              AgentRef agid) {
+        return newWasControlledBy(null,pid,role,agid);
     }
     
     public WasControlledBy newWasControlledBy(String id,
-                                              ProcessExecutionRef pid,
-                                              Role role,
-                                              AgentRef agid,
-                                              Collection<AccountRef> accounts) {
+                                              ActivityRef pid,
+                                              String role,
+                                              AgentRef agid) {
         WasControlledBy res=of.createWasControlledBy();
         res.setId(autoGenerateId(wasControlledByIdPrefix,id));
         res.setEffect(pid);
-        res.setRole(role);
         res.setCause(agid);
-        addAccounts(res,accounts);
+        addRole(res,role);
         return res;
     }
 
 
-    public WasControlledBy newWasControlledBy(ProcessExecution p,
-                                              Role role,
-                                              Agent ag,
-                                              Collection<Account> accounts) {
-        return newWasControlledBy(null,p,role,ag,accounts);
+    public WasControlledBy newWasControlledBy(Activity p,
+                                              String role,
+                                              Agent ag) {
+        return newWasControlledBy(null,p,role,ag);
     }
 
     public WasControlledBy newWasControlledBy(String id,
-                                              ProcessExecution p,
-                                              Role role,
-                                              Agent ag,
-                                              Collection<Account> accounts) {
+                                              Activity p,
+                                              String role,
+                                              Agent ag) {
         AgentRef agid=newAgentRef(ag);
-        ProcessExecutionRef pid=newProcessExecutionRef(p);
-        LinkedList ll=new LinkedList();
-        for (Account acc: accounts) {
-            ll.add(newAccountRef(acc));
-        }
-        return  newWasControlledBy(id,pid,role,agid,ll);
+        ActivityRef pid=newActivityRef(p);
+        return  newWasControlledBy(id,pid,role,agid);
     }
 
     public WasControlledBy newWasControlledBy(String id,
-                                              ProcessExecution p,
-                                              Role role,
+                                              Activity p,
+                                              String role,
                                               Agent ag,
-                                              String type,
-                                              Collection<Account> accounts) {
-        WasControlledBy wcb=newWasControlledBy(id,p,role,ag,accounts);
-        addAnnotation(wcb,newType(type));
+                                              String type) {
+        WasControlledBy wcb=newWasControlledBy(id,p,role,ag);
+        addType(wcb,type);
         return wcb;
     }
 
 
     public WasDerivedFrom newWasDerivedFrom(String id,
                                             EntityRef aid1,
-                                            EntityRef aid2,
-                                            Collection<AccountRef> accounts) {
+                                            EntityRef aid2) {
         WasDerivedFrom res=of.createWasDerivedFrom();
         res.setId(autoGenerateId(wasDerivedFromIdPrefix,id));
         res.setCause(aid2);
         res.setEffect(aid1);
-        addAccounts(res,accounts);
         return res;
     }
 
-    public WasDerivedFromStar newWasDerivedFromStar(EntityRef aid1,
-                                                    EntityRef aid2,
-                                                    Collection<AccountRef> accounts) {
-        WasDerivedFromStar res=of.createWasDerivedFromStar();
-        res.setCause(aid2);
-        res.setEffect(aid1);
-        addAccounts(res,accounts);
-        return res;
-    }
 
     public WasDerivedFrom newWasDerivedFrom(Entity a1,
-                                            Entity a2,
-                                            Collection<Account> accounts) {
-        return newWasDerivedFrom(null,a1,a2,accounts);
+                                            Entity a2) {
+        return newWasDerivedFrom(null,a1,a2);
     }
 
     public WasDerivedFrom newWasDerivedFrom(String id,
                                             Entity a1,
-                                            Entity a2,
-                                            Collection<Account> accounts) {
+                                            Entity a2) {
         EntityRef aid1=newEntityRef(a1);
         EntityRef aid2=newEntityRef(a2);
-        LinkedList ll=new LinkedList();
-        for (Account acc: accounts) {
-            ll.add(newAccountRef(acc));
-        }
-        return  newWasDerivedFrom(id,aid1,aid2,ll);
-    }
-
-    public WasDerivedFromStar newWasDerivedFromStar(Entity a1,
-                                                    Entity a2,
-                                                    Collection<Account> accounts) {
-        EntityRef aid1=newEntityRef(a1);
-        EntityRef aid2=newEntityRef(a2);
-        LinkedList ll=new LinkedList();
-        for (Account acc: accounts) {
-            ll.add(newAccountRef(acc));
-        }
-        return  newWasDerivedFromStar(aid1,aid2,ll);
+        return  newWasDerivedFrom(id,aid1,aid2);
     }
 
 
     public WasDerivedFrom newWasDerivedFrom(String id,
                                             Entity a1,
                                             Entity a2,
-                                            String type,
-                                            Collection<Account> accounts) {
-        WasDerivedFrom wdf=newWasDerivedFrom(id,a1,a2,accounts);
-        addAnnotation(wdf,newType(type));
+                                            String type) {
+        WasDerivedFrom wdf=newWasDerivedFrom(id,a1,a2);
+        addType(wdf,type);
         return wdf;
     }
 
 
 
-    public WasTriggeredBy newWasTriggeredBy(String id,
-                                            ProcessExecutionRef pid1,
-                                            ProcessExecutionRef pid2,
-                                            Collection<AccountRef> accounts) {
-        WasTriggeredBy res=of.createWasTriggeredBy();
+    public WasInformedBy newWasInformedBy(String id,
+                                            ActivityRef pid1,
+                                            ActivityRef pid2) {
+        WasInformedBy res=of.createWasInformedBy();
         res.setId(autoGenerateId(wasTriggeredByIdPrefix,id));
         res.setEffect(pid1);
         res.setCause(pid2);
-        addAccounts(res,accounts);
         return res;
     }
 
-    public WasTriggeredByStar newWasTriggeredByStar(ProcessExecutionRef pid1,
-                                                    ProcessExecutionRef pid2,
-                                                    Collection<AccountRef> accounts) {
-        WasTriggeredByStar res=of.createWasTriggeredByStar();
-        res.setEffect(pid1);
-        res.setCause(pid2);
-        addAccounts(res,accounts);
-        return res;
+    public WasInformedBy newWasInformedBy(Activity p1,
+                                            Activity p2) {
+        return newWasInformedBy(null,p1,p2);
     }
 
-    public WasTriggeredBy newWasTriggeredBy(ProcessExecution p1,
-                                            ProcessExecution p2,
-                                            Collection<Account> accounts) {
-        return newWasTriggeredBy(null,p1,p2,accounts);
+    public WasInformedBy newWasInformedBy(String id,
+                                            Activity p1,
+                                            Activity p2) {
+        ActivityRef pid1=newActivityRef(p1);
+        ActivityRef pid2=newActivityRef(p2);
+        return  newWasInformedBy(id,pid1,pid2);
     }
 
-    public WasTriggeredBy newWasTriggeredBy(String id,
-                                            ProcessExecution p1,
-                                            ProcessExecution p2,
-                                            Collection<Account> accounts) {
-        ProcessExecutionRef pid1=newProcessExecutionRef(p1);
-        ProcessExecutionRef pid2=newProcessExecutionRef(p2);
-        LinkedList<AccountRef> ll=new LinkedList();
-        for (Account acc: accounts) {
-            ll.add(newAccountRef(acc));
-        }
-        return  newWasTriggeredBy(id,pid1,pid2,ll);
-    }
 
-    public WasTriggeredByStar newWasTriggeredByStar(ProcessExecution p1,
-                                                    ProcessExecution p2,
-                                                    Collection<Account> accounts) {
-        ProcessExecutionRef pid1=newProcessExecutionRef(p1);
-        ProcessExecutionRef pid2=newProcessExecutionRef(p2);
-        LinkedList<AccountRef> ll=new LinkedList();
-        for (Account acc: accounts) {
-            ll.add(newAccountRef(acc));
-        }
-        return  newWasTriggeredByStar(pid1,pid2,ll);
-    }
-
-    public WasTriggeredBy newWasTriggeredBy(String id,
-                                            ProcessExecution p1,
-                                            ProcessExecution p2,
-                                            String type,
-                                            Collection<Account> accounts) {
-        WasTriggeredBy wtb=newWasTriggeredBy(p1,p2,accounts);
+    public WasInformedBy newWasInformedBy(String id,
+                                            Activity p1,
+                                            Activity p2,
+                                            String type) {
+        WasInformedBy wtb=newWasInformedBy(p1,p2);
         wtb.setId(id);
-        addAnnotation(wtb,newType(type));
+        addType(wtb,type);
         return wtb;
     }
+
+
+
+    public void addAttribute(HasAttributes a,
+                             String namespace,
+                             String prefix,
+                             String localName,                                  
+                             String value) {
+        if (a.getAttributes()==null) {
+            a.setAttributes(of.createAttributes());
+        }
+        addAttribute(a.getAttributes(),
+                     namespace,
+                     prefix,
+                     localName,
+                     value);
+    }
+    public void addAttribute(HasAttributes a, Object o) {
+        if (a.getAttributes()==null) {
+            a.setAttributes(of.createAttributes());
+        }
+        addAttribute(a.getAttributes(),
+                     o);
+    }
+
+    public void addType(HasAttributes a,                                  
+                        String type) {
+        addAttribute(a,
+                     "http://openprovenance.org/prov/xml#",
+                     "prov",
+                     "type",
+                     type);
+    }
+
+    public void addLabel(HasAttributes a,                                  
+                         String label) {
+        addAttribute(a,
+                     "http://openprovenance.org/prov/xml#",
+                     "prov",
+                     "label",
+                     label);
+    }
+
+
+    public void addAttribute(Attributes attrs,
+                             String namespace,
+                                  String prefix,
+                                  String localName,                                  
+                                  String value) {
+
+        Document doc=oFactory.builder.newDocument();
+        Element el=doc.createElementNS(namespace,prefix + ":" + localName);
+        el.appendChild(doc.createTextNode(value));
+        doc.appendChild(el);
+
+        attrs.getAny().add(el);
+    }
+
+    public void addAttribute(Attributes attrs, Object o) {
+
+        attrs.getAny().add(o);
+    }
+
+    /*
+    public void addAttribute(Attributes attrs, Attribute p) {
+        attrs.getAttribute().add(p);
+    }
+    */
 
 
     public EmbeddedAnnotation newEmbeddedAnnotation(String id,
@@ -989,132 +787,63 @@ public class OPMFactory implements CommonURIs {
     public Annotation newAnnotation(String id,
                                     Entity a,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
+                                    Object value) {
         EntityRef aid=newEntityRef(a);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,aid,property,value,ll);
+        return newAnnotation(id,aid,property,value);
     }
     public Annotation newAnnotation(String id,
-                                    ProcessExecution p,
+                                    Activity p,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
-        ProcessExecutionRef pid=newProcessExecutionRef(p);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,pid,property,value,ll);
+                                    Object value) {
+        ActivityRef pid=newActivityRef(p);
+        return newAnnotation(id,pid,property,value);
     }
 
     public Annotation newAnnotation(String id,
                                     Annotation a,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
+                                    Object value) {
         AnnotationRef aid=newAnnotationRef(a);
         LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,aid,property,value,ll);
+        return newAnnotation(id,aid,property,value);
     }
 
     public Annotation newAnnotation(String id,
                                     WasDerivedFrom edge,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
+                                    Object value) {
         DependencyRef cid=newDependencyRef(edge);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,cid,property,value,ll);
+        return newAnnotation(id,cid,property,value);
     }
     public Annotation newAnnotation(String id,
                                     Used edge,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
+                                    Object value) {
         DependencyRef cid=newDependencyRef(edge);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,cid,property,value,ll);
+        return newAnnotation(id,cid,property,value);
     }
     public Annotation newAnnotation(String id,
                                     WasGeneratedBy edge,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
+                                    Object value) {
         DependencyRef cid=newDependencyRef(edge);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,cid,property,value,ll);
+        return newAnnotation(id,cid,property,value);
     }
     public Annotation newAnnotation(String id,
                                     WasControlledBy edge,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
+                                    Object value) {
         DependencyRef cid=newDependencyRef(edge);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,cid,property,value,ll);
+        return newAnnotation(id,cid,property,value);
     }
     public Annotation newAnnotation(String id,
-                                    WasTriggeredBy edge,
+                                    WasInformedBy edge,
                                     String property,
-                                    Object value,
-                                    Collection<Account> accs) {
+                                    Object value) {
         DependencyRef cid=newDependencyRef(edge);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,cid,property,value,ll);
+        return newAnnotation(id,cid,property,value);
     }
 
-    public Annotation newAnnotation(String id,
-                                    Role role,
-                                    String property,
-                                    Object value,
-                                    Collection<Account> accs) {
-        RoleRef rid=newRoleRef(role);
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newAnnotation(id,rid,property,value,ll);
-    }
 
     public Property newProperty(String property,
                                 Object value) {
@@ -1148,35 +877,30 @@ public class OPMFactory implements CommonURIs {
     public Annotation newAnnotation(String id,
                                     Ref ref,
                                     String property,
-                                    Object value,
-                                    Collection<AccountRef> accs) {
+                                    Object value) {
         Annotation res=of.createAnnotation();
         res.setId(id);
         res.setLocalSubject(ref.getRef());
         addProperty(res,newProperty(property,value));
-        addAccounts(res,accs);
         return res;
     }
 
     public Annotation newAnnotation(String id,
                                     Object o,
-                                    List<Property> properties,
-                                    Collection<AccountRef> accs) {
+                                    List<Property> properties) {
         Annotation res=of.createAnnotation();
         res.setId(id);
         res.setLocalSubject(o);
         for (Property property: properties) {
             addProperty(res,property);
         }
-        addAccounts(res,accs);
         return res;
     }
 
     public Annotation newAnnotation(Annotation ann) {
         Annotation res=newAnnotation(ann.getId(),
                                      ann.getLocalSubject(),
-                                     ann.getProperty(),
-                                     ann.getAccount());
+                                     ann.getProperty());
         return res;
     }
 
@@ -1188,7 +912,6 @@ public class OPMFactory implements CommonURIs {
         EmbeddedAnnotation res=of.createEmbeddedAnnotation();
         res.setId(id);
         addProperty(res,newProperty(property,value));
-        addAccounts(res,accs);
         return res;
     }
     public EmbeddedAnnotation newEmbeddedAnnotation(String id,
@@ -1200,34 +923,30 @@ public class OPMFactory implements CommonURIs {
         if (properties!=null) {
             addProperty(res,properties);
         }
-        addAccounts(res,accs);
         return res;
     }
 
 
     public Container newContainer(Collection<Account> accs,
-                                Collection<Overlaps> ops,
-                                Collection<ProcessExecution> ps,
+                                Collection<Activity> ps,
                                 Collection<Entity> as,
                                 Collection<Agent> ags,
                                 Collection<Object> lks) {
-        return newContainer(null,accs,ops,ps,as,ags,lks,null);
+        return newContainer(null,accs,ps,as,ags,lks,null);
     }
 
     public Container newContainer(Collection<Account> accs,
-                                Collection<Overlaps> ops,
-                                Collection<ProcessExecution> ps,
+                                Collection<Activity> ps,
                                 Collection<Entity> as,
                                 Collection<Agent> ags,
                                 Collection<Object> lks,
                                 Collection<Annotation> anns) {
-        return newContainer(null,accs,ops,ps,as,ags,lks,anns);
+        return newContainer(null,accs,ps,as,ags,lks,anns);
     }
 
     public Container newContainer(String id,
                                 Collection<Account> accs,
-                                Collection<Overlaps> ops,
-                                Collection<ProcessExecution> ps,
+                                Collection<Activity> ps,
                                 Collection<Entity> as,
                                 Collection<Agent> ags,
                                 Collection<Object> lks,
@@ -1238,15 +957,13 @@ public class OPMFactory implements CommonURIs {
         if (accs!=null) {
             Accounts aaccs=of.createAccounts();
             aaccs.getAccount().addAll(accs);
-            if (ops!=null) 
-                aaccs.getOverlaps().addAll(ops);
             res.setAccounts(aaccs);
             
         }
         if (ps!=null) {
-            ProcessExecutions pps=of.createProcessExecutions();
-            pps.getProcessExecution().addAll(ps);
-            res.setProcessExecutions(pps);
+            Activities pps=of.createActivities();
+            pps.getActivity().addAll(ps);
+            res.setActivities(pps);
         }
         if (as!=null) {
             Entities aas=of.createEntities();
@@ -1260,7 +977,7 @@ public class OPMFactory implements CommonURIs {
         }
         if (lks!=null) {
             Dependencies ccls=of.createDependencies();
-            ccls.getUsedOrWasGeneratedByOrWasTriggeredBy().addAll(lks);
+            ccls.getUsedOrWasGeneratedByOrWasInformedBy().addAll(lks);
             res.setDependencies(ccls);
         }
 
@@ -1273,34 +990,30 @@ public class OPMFactory implements CommonURIs {
     }
 
     public Container newContainer(Collection<Account> accs,
-                                Overlaps [] ovs,
-                                ProcessExecution [] ps,
+                                Activity [] ps,
                                 Entity [] as,
                                 Agent [] ags,
                                 Object [] lks) 
     {
 
         return newContainer(accs,
-                           ((ovs==null) ? null : Arrays.asList(ovs)),
                            ((ps==null) ? null : Arrays.asList(ps)),
                            ((as==null) ? null : Arrays.asList(as)),
                            ((ags==null) ? null : Arrays.asList(ags)),
                            ((lks==null) ? null : Arrays.asList(lks)));
     }
     public Container newContainer(Collection<Account> accs,
-                                Overlaps [] ovs,
-                                ProcessExecution [] ps,
+                                Activity [] ps,
                                 Entity [] as,
                                 Agent [] ags,
                                 Object [] lks,
                                 Annotation [] anns) {
-        return newContainer(null,accs,ovs,ps,as,ags,lks,anns);
+        return newContainer(null,accs,ps,as,ags,lks,anns);
     }
 
     public Container newContainer(String id,
                                 Collection<Account> accs,
-                                Overlaps [] ovs,
-                                ProcessExecution [] ps,
+                                Activity [] ps,
                                 Entity [] as,
                                 Agent [] ags,
                                 Object [] lks,
@@ -1309,7 +1022,6 @@ public class OPMFactory implements CommonURIs {
 
         return newContainer(id,
                            accs,
-                           ((ovs==null) ? null : Arrays.asList(ovs)),
                            ((ps==null) ? null : Arrays.asList(ps)),
                            ((as==null) ? null : Arrays.asList(as)),
                            ((ags==null) ? null : Arrays.asList(ags)),
@@ -1318,7 +1030,7 @@ public class OPMFactory implements CommonURIs {
     }
 
     public Container newContainer(Accounts accs,
-                                ProcessExecutions ps,
+                                Activities ps,
                                 Entities as,
                                 Agents ags,
                                 Dependencies lks)
@@ -1326,7 +1038,7 @@ public class OPMFactory implements CommonURIs {
         Container res=of.createContainer();
         //res.setId(autoGenerateId(containerIdPrefix));
         res.setAccounts(accs);
-        res.setProcessExecutions(ps);
+        res.setActivities(ps);
         res.setEntities(as);
         res.setAgents(ags);
         res.setDependencies(lks);
@@ -1334,7 +1046,7 @@ public class OPMFactory implements CommonURIs {
     }
 
     public Container newContainer(Accounts accs,
-                                ProcessExecutions ps,
+                                Activities ps,
                                 Entities as,
                                 Agents ags,
                                 Dependencies lks,
@@ -1343,7 +1055,7 @@ public class OPMFactory implements CommonURIs {
         Container res=of.createContainer();
         //res.setId(autoGenerateId(containerIdPrefix));
         res.setAccounts(accs);
-        res.setProcessExecutions(ps);
+        res.setActivities(ps);
         res.setEntities(as);
         res.setAgents(ags);
         res.setDependencies(lks);
@@ -1353,7 +1065,7 @@ public class OPMFactory implements CommonURIs {
 
     public Container newContainer(Container graph) {
         return newContainer(graph.getAccounts(),
-                           graph.getProcessExecutions(),
+                           graph.getActivities(),
                            graph.getEntities(),
                            graph.getAgents(),
                            graph.getDependencies(),
@@ -1361,14 +1073,10 @@ public class OPMFactory implements CommonURIs {
     }
 
 
-    public Accounts newAccounts(Collection<Account> accs,
-                                Collection<Overlaps> ovlps) {
+    public Accounts newAccounts(Collection<Account> accs) {
         Accounts res=of.createAccounts();
         if (accs!=null) {
             res.getAccount().addAll(accs);
-        }
-        if (ovlps!=null) {
-            res.getOverlaps().addAll(ovlps);
         }
         return res;
     }

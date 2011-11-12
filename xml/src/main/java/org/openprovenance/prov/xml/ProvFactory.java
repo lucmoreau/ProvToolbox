@@ -458,6 +458,11 @@ public class ProvFactory implements CommonURIs {
                      "prov",
                      "role",
                      role);
+        TypedLiteral tl=of.createTypedLiteral();
+        tl.setValue(role);
+        tl.setType("xsd:string");
+        JAXBElement<TypedLiteral> je=of.createRole(tl);
+        addAttribute(a,je);
     }
 
     public Used newUsed(Activity p,
@@ -706,6 +711,13 @@ public class ProvFactory implements CommonURIs {
                      localName,
                      value);
     }
+    public void addAttribute(HasAttributes a, Object o) {
+        if (a.getAttributes()==null) {
+            a.setAttributes(of.createAttributes());
+        }
+        addAttribute(a.getAttributes(),
+                     o);
+    }
 
     public void addType(HasAttributes a,                                  
                         String type) {
@@ -738,6 +750,11 @@ public class ProvFactory implements CommonURIs {
         doc.appendChild(el);
 
         attrs.getAny().add(el);
+    }
+
+    public void addAttribute(Attributes attrs, Object o) {
+
+        attrs.getAny().add(o);
     }
 
     /*

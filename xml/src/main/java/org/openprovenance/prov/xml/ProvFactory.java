@@ -459,10 +459,10 @@ public class ProvFactory implements CommonURIs {
         }
     }
     
-    public TypedLiteral newTypedLiteral(String role,
-                                       String type) {
+    public TypedLiteral newTypedLiteral(String value,
+					String type) {
         TypedLiteral res=of.createTypedLiteral();
-        res.setValue(role);
+        res.setValue(value);
         res.setType(type);
         return res;
     }

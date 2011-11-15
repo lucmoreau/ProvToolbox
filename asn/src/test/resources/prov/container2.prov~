@@ -1,5 +1,54 @@
 
 container(
+          entity(ex:e1, [])
+          entity(ex:e1, [ex:param="a"])
+          entity(ex:e1, [ex:param="a"%%<http://example.org/type>])
+          entity(ex:e1, [ex:param="a" %% <http://example.org/type>])
+
+          entity(ex:e1, [ex:param="a" %% xsd:foo])
+
           entity(ex:e1, [ex:param="a", ex:port="foo"])
+          entity(ex:e1, [ex:param="a", ex:port="foo" %% <http://example.org/type> ])
+          entity(ex:e1, [ex:param="a", ex:port="foo" %% ex:type ])
+
+          activity(ex:a2,     ,     , [ex:param="a", ex:port="foo"])
+          activity(ex:a2, 2001-10-26T21:32:52,     , [])
+          activity(ex:a2, 2001-10-26T21:32:52,     , [ex:param="a", ex:port="foo"])
+          activity(ex:a2,     ,     , [ex:param="a", ex:port="foo"])
+          activity(ex:a2, 2001-10-26T21:32:52,  2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
+
+          activity(ex:a2, <http://example.org/plan>, 2001-10-26T21:32:52,     , [ex:param="a", ex:port="foo"])
+          activity(ex:a2, <http://example.org/plan>,     ,     , [ex:param="a", ex:port="foo"])
+          activity(ex:a2, <http://example.org/plan>, 2001-10-26T21:32:52, 2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
+
+          agent(ex:ag2)
+
+          wasGeneratedBy(ex:e1, ex:a2, [], 2001-10-26T21:32:52)
+          wasGeneratedBy(ex:e1, ex:a2, [ex:param="a"], 2001-10-26T21:32:52)
+          wasGeneratedBy(ex:e1, ex:a2, [ex:param="a", ex:port="foo"], 2001-10-26T21:32:52)
+          wasGeneratedBy(ex:e1, ex:a2, [])
+          wasGeneratedBy(ex:e1, ex:a2, [ex:param="a"])
+          wasGeneratedBy(ex:e1, ex:a2, [ex:param="a", ex:port="foo"])
+
+          used(ex:a2, ex:e1, [], 2001-10-26T21:32:52)
+          used(ex:a2, ex:e1, [ex:param="a"], 2001-10-26T21:32:52)
+          used(ex:a2, ex:e1, [ex:param="a", ex:port="foo"], 2001-10-26T21:32:52)
+          used(ex:a2, ex:e1, [])
+          used(ex:a2, ex:e1, [ex:param="a"])
+          used(ex:a2, ex:e1, [ex:param="a", ex:port="foo"])
+
+
+          wasDerivedFrom(ex:e1, ex:a2)
+          wasDerivedFrom(ex:e1, ex:a2, ex:pe, [], [])
+          wasDerivedFrom(ex:e1, ex:a2, ex:pe, [ex:param="a"], [ex:param="b"])
+          wasDerivedFrom(ex:e1, ex:a2, ex:pe, [ex:param="a", ex:port="foo"], [ex:param="b", ex:port="bar"])
+
+
+          dependedUpon(ex:e1, ex:a2)
+
+          wasControlledBy(ex:e1, ex:a2, [])
+
+          activity(ex:a2, <http://example.org/plan>, 2001-10-26T22:33:55, 2001-11-66T21:32:52, [ex:param="a", ex:port="foo"])
+
           )
 

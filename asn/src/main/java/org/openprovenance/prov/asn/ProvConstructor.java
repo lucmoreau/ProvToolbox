@@ -15,6 +15,7 @@ import org.openprovenance.prov.xml.Container;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
+import org.openprovenance.prov.xml.TypedLiteral;
 
 import  org.antlr.runtime.CommonTokenStream;
 import  org.antlr.runtime.ANTLRFileStream;
@@ -24,6 +25,8 @@ import  org.antlr.runtime.tree.Tree;
 import  org.antlr.runtime.tree.CommonTree;
 import  org.antlr.runtime.tree.CommonTreeAdaptor;
 import  org.antlr.runtime.tree.TreeAdaptor;
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 
 
 public  class ProvConstructor {
@@ -49,6 +52,11 @@ public  class ProvConstructor {
         System.out.print(token);
         return token;
     }
+
+    public String unwrap (String s) {
+	return s.substring(1,s.length()-1);
+    }
+			   
     
     public void walk(Tree ast) {
         switch(ast.getType()) {
@@ -113,6 +121,12 @@ public  class ProvConstructor {
 			System.out.print("STRING ");
 			walk(ast.getChild(0));
 			System.out.print(" ");
+			break;
+		case ASNParser.TYPEDLITERAL:
+			System.out.print("TYPEDLITERAL ");
+			walk(ast.getChild(0));
+			System.out.print(" ");
+			walk(ast.getChild(1));
 			break;
 		case ASNParser.USED:
 			System.out.print("USED ");
@@ -204,11 +218,20 @@ public  class ProvConstructor {
 	    System.out.print("ATTRIBUTE ");
 	    String attr1=(String)convertToken(getTokenString(ast.getChild(0)));
 	    System.out.print(" ");
-	    String val1=(String)(convert(ast.getChild(1)));
-	    return pFactory.newAttribute("http://todo.org/soon",
-					 attr1.substring(0,attr1.indexOf(':')),
-					 attr1.substring(attr1.indexOf(':')+1,attr1.length()),
-					 (val1==null)? "TODO": val1);
+	    Object value1=convert(ast.getChild(1));
+	    if (value1 instanceof String) {
+		String val1=(String)(value1);
+		return pFactory.newAttribute("http://todo.org/soon",
+					     attr1.substring(0,attr1.indexOf(':')),
+					     attr1.substring(attr1.indexOf(':')+1,attr1.length()),
+					     unwrap(val1));
+	    } else {
+		QName attr1_QNAME = new QName("http://todo.org/soon2",
+					      attr1.substring(0,attr1.indexOf(':')),
+					      attr1.substring(attr1.indexOf(':')+1,attr1.length()));
+		
+		return new JAXBElement<TypedLiteral>(attr1_QNAME, TypedLiteral.class, null, (TypedLiteral)value1);
+	    }
 	case ASNParser.START:
 	    System.out.print("START ");
 	    convertToken(getTokenString(ast.getChild(0)));
@@ -232,6 +255,24 @@ public  class ProvConstructor {
 	    String s=convertToken(getTokenString(ast.getChild(0)));
 	    System.out.print(" ");
 	    return s;
+	case ASNParser.QNAM:
+	    System.out.print("QNAME ");
+	    s=convertToken(getTokenString(ast.getChild(0)));
+	    System.out.print(" ");
+	    return s;
+	case ASNParser.IRI:
+	    System.out.print("IRI ");
+	    s=convertToken(getTokenString(ast.getChild(0)));
+	    s=unwrap(s);
+	    System.out.print(" ");
+	    return s;
+	case ASNParser.TYPEDLITERAL:
+	    System.out.print("TYPEDLITERAL ");
+	    String v1=convertToken(getTokenString(ast.getChild(0)));
+	    String v2=(String)convert(ast.getChild(1));
+	    v1=unwrap(v1);
+
+	    return pFactory.newTypedLiteral(v1,v2);
 	case ASNParser.USED:
 	    System.out.print("USED ");
 	    String id2=(String)convert(ast.getChild(0));

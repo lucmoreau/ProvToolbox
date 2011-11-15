@@ -1,15 +1,15 @@
 
 container(
           entity(ex:e1, [])
-          entity(ex:e1, [ex:param="a"])
-          entity(ex:e1, [ex:param="a"%%<http://example.org/type>])
-          entity(ex:e1, [ex:param="a" %% <http://example.org/type>])
+          entity(ex:e2, [ex:param="a"])
+          entity(ex:e3, [ex:param="a"%%<http://example.org/type>])
+          entity(ex:e4, [ex:param="a" %% <http://example.org/type>])
 
-          entity(ex:e1, [ex:param="a" %% xsd:foo])
+          entity(ex:e5, [ex:param="a" %% xsd:foo])
 
-          entity(ex:e1, [ex:param="a", ex:port="foo"])
-          entity(ex:e1, [ex:param="a", ex:port="foo" %% <http://example.org/type> ])
-          entity(ex:e1, [ex:param="a", ex:port="foo" %% ex:type ])
+          entity(ex:e6, [ex:param="a", ex:port="foo"])
+          entity(ex:e7, [ex:param="a", ex:port="foo" %% <http://example.org/type> ])
+          entity(ex:e8, [ex:param="a", ex:port="foo" %% ex:type ])
 
           activity(ex:a2,     ,     , [ex:param="a", ex:port="foo"])
           activity(ex:a2, 2001-10-26T21:32:52,     , [])

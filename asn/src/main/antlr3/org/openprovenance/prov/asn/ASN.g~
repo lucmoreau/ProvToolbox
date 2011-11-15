@@ -1,14 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2009 Scott Stanchfield
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011 Luc Moreau
  *******************************************************************************/
 grammar ASN;
 
 options {
   language = Java;
+  output=AST;
+}
+
+tokens {
+    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A;
 }
 
 @header {
@@ -19,181 +20,273 @@ options {
   package org.openprovenance.prov.asn;
 }
 
-program
-	:	'program' IDENT '='
-		(constant | variable | function | procedure | typeDecl)*
-		'begin'
-		statement*
-		'end' IDENT '.'
+
+container
+	:	'container' '('
+		record*
+		')'
+
+      -> ^(CONTAINER record*)
 	;
 
-constant
-	:	'constant' IDENT ':' type ':=' expression ';'
+record
+	:	(entityRecord | activityRecord | agentRecord | generationRecord  | useRecord | derivationRecord | dependenceRecord  | controlRecord )
 	;
 
-variable
-	:	'var' IDENT (',' IDENT)* ':' type (':=' expression)? ';'
+entityRecord
+	:	'entity' '(' identifier ',' '[' attributeValuePairs ']'
+		')'
+        -> ^(ENTITY identifier ^(ATTRIBUTES attributeValuePairs?))
+	;
+
+activityRecord
+	:	'activity' '(' identifier (',' recipeLink)? ',' (startTime)? ',' (endTime)? ',' '[' attributeValuePairs ']'
+		')'
+        -> ^(ACTIVITY identifier ^(RECIPE recipeLink?) ^(START startTime?) ^(END endTime?) ^(ATTRIBUTES attributeValuePairs?))
+	;
+
+agentRecord
+	:	'agent' '(' identifier 	')' -> ^(AGENT identifier)
+	;
+
+generationRecord
+	:	'wasGeneratedBy' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ( ',' time)?	')'
+      -> ^(WGB identifier+ ^(ATTRIBUTES attributeValuePairs?)  ^(TIME time?))
+	;
+
+useRecord
+	:	'used' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ( ',' time)?	')'
+      -> ^(USED identifier+ ^(ATTRIBUTES attributeValuePairs?) ^(TIME time?))
+	;
+
+derivationRecord
+	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier (',' a=identifier ',' '[' dst=attributeValuePairs ']' ',' '[' src=attributeValuePairs ']')?	')'
+      -> ^(WDF $id2 $id1 ^(A $a?)  ^(ATTRIBUTES $dst?) ^(ATTRIBUTES $src?))
+	;
+
+dependenceRecord
+	:	'dependedUpon' '(' identifier ',' identifier ')'
+      -> ^(WDO identifier+)
+	;
+
+controlRecord
+	:	'wasControlledBy' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ')'
+      -> ^(WCB identifier+ ^(ATTRIBUTES attributeValuePairs?))
+	;
+
+identifier
+	:
+        QNAME -> ^(ID QNAME)
+	;
+
+attribute
+	:
+        QNAME
+	;
+
+attributeValuePairs
+	:
+        (  | attributeValuePair ( ','! attributeValuePair )* )
+	;
+
+
+attributeValuePair
+	:
+        attribute '=' literal  -> ^(ATTRIBUTE attribute literal)
+	;
+
+
+time
+	:
+        xsdDateTime
+	;
+startTime
+	:
+        xsdDateTime
+	;
+endTime
+	:
+        xsdDateTime
+	;
+
+recipeLink
+	:
+        IRI_REF
+	;
+
+/* TODO: complete grammar of Literal */
+literal
+	:
+        (STRINGLITERAL -> ^(STRING STRINGLITERAL)|
+         STRINGLITERAL '%%' datatype -> ^(TYPEDLITERAL STRINGLITERAL datatype))
+	;
+
+datatype
+	:
+        (IRI_REF -> ^(IRI IRI_REF)
+        |
+         QNAME -> ^(QNAM QNAME))
 	;
 	
-type
-	:	'Integer'
-	|	'Boolean'
-	|	'String'
-	|	'Char'
-	|	IDENT
-	|	typeSpec
+QNAME	
+	:	NCNAME (':' NCNAME)?  
+	;
+
+
+fragment CHAR
+	: ('\u0009' | '\u000A' | '\u000D' | '\u0020'..'\uD7FF' | '\uE000'..'\uFFFD' )
+	;
+
+/* fragment DIGITS 	   
+	: ('0'..'9')+
+	;
+*/
+
+fragment NCNAMESTARTCHAR
+	: ('A'..'Z') | '_' | ('a'..'z') | ('\u00C0'..'\u00D6') | ('\u00D8'..'\u00F6') | ('\u00F8'..'\u02FF') | ('\u0370'..'\u037D') | ('\u037F'..'\u1FFF') | ('\u200C'..'\u200D') | ('\u2070'..'\u218F') | ('\u2C00'..'\u2FEF') | ('\u3001'..'\uD7FF') | ('\uF900'..'\uFDCF') | ('\uFDF0'..'\uFFFD')
 	;
 	
-typeDecl
-	:	'type' IDENT '=' typeSpec ';'
+fragment NCNAMECHAR
+	:   	NCNAMESTARTCHAR | '-' | '.' | '0'..'9' | '\u00B7' | '\u0300'..'\u036F' | '\u203F'..'\u2040'
 	;
 	
-typeSpec
-	:	arrayType
-	|	recordType
-	|	enumType
+fragment NAMECHAR	   
+	:   ':' 
+	| NCNAMECHAR
 	;
 	
-arrayType
-	:	'array' '[' INTEGER '..' INTEGER ']' 'of' type
+fragment NAMESTARTCHAR
+	:  ':' 
+	| NCNAMESTARTCHAR
 	;
 	
-recordType
-	:	'record' field* 'end' 'record'
-	;
 	
-field
-	:	IDENT ':' type ';'
-	;
-	
-enumType
-	:	'<' IDENT (',' IDENT)* '>'
-	;
-	
-statement
-	:	assignmentStatement
-	|	ifStatement
-	|	loopStatement
-	|	whileStatement
-	|	procedureCallStatement
-	;
-	
-procedureCallStatement
-	:	IDENT '(' actualParameters? ')' ';'
-	;
-	
-actualParameters
-	:	expression (',' expression)*
-	;
-	
-ifStatement
-	:	'if' expression 'then' statement+
-		('elsif' expression 'then' statement+)*
-		('else' statement+)?
-		'end' 'if' ';'
-	;
-	
-assignmentStatement
-	:	IDENT ':=' expression ';'
-	;
-	
-exitStatement
-	:	'exit' 'when' expression ';'
-	;
-	
-whileStatement
-	:	'while' expression 'loop'
-		(statement|exitStatement)*
-		'end' 'loop' ';'
-	;
-	
-loopStatement
-	:	'loop' (statement|exitStatement)* 'end' 'loop' ';'
-	;
-	
-returnStatement
-	:	'return' expression ';'
-	;
-	
-procedure
-	:	'procedure' IDENT '(' parameters? ')' '='
-		(constant | variable)*
-		'begin'
-		statement*
-		'end' IDENT '.'
+fragment NCNAME	           
+	:  NCNAMESTARTCHAR NCNAMECHAR*
 	;	
-function
-	:	'function' IDENT '(' parameters? ')' ':' type '='
-		(constant | variable)*
-		'begin'
-		(statement|returnStatement)*
-		'end' IDENT '.'
-	;	
-	
-parameters
-	:	parameter (',' parameter)*
-	;
-	
-parameter
-	:	'var'? IDENT ':' type
-	;
-	
-	
-// expressions -- fun time!
 
-term
-	:	IDENT
-	|	'(' expression ')'
-	|	INTEGER
-	|	STRING_LITERAL
-	|	CHAR_LITERAL
-	|	IDENT '(' actualParameters ')'
+NCNAME_COLON_STAR
+	: NCNAME ':' '*'
 	;
-	
-negation
-	:	'not'* term
-	;
-	
-unary
-	:	('+' | '-')* negation
-	;
+STAR_COLON_NCNAME
+	: '*' ':' NCNAME;
 
-mult
-	:	unary (('*' | '/' | 'mod') unary)*
+/*
+NUMERICLITERAL 	   
+	: ( ('.' DIGITS) |(DIGITS ('.' ('0'..'9')*)?)) (('e'|'E') ('+'|'-')? DIGITS)?
+	;
+		
+*/
+fragment QUOTE	           
+	: '"'
 	;
 	
-add
-	:	mult (('+' | '-') mult)*
+fragment APOS		   
+	: '\''
+	;
+	
+fragment ESCAPEQUOTE 	   
+	: QUOTE QUOTE
+	;
+	
+	
+fragment ESCAPEAPOS 	   
+	: APOS APOS
+	;
+	
+fragment CHARNOQUOTE	   
+	: ~(~CHAR | QUOTE)
+	;
+	
+	
+fragment CHARNOAPOS	   
+	: ~(~CHAR | APOS)
 	;
 
-relation
-	:	add (('=' | '/=' | '<' | '<=' | '>=' | '>') add)*
-	;
-	
-expression
-	:	relation (('and' | 'or') relation)*
-	;
-	
 
-MULTILINE_COMMENT : '/*' .* '*/' {$channel = HIDDEN;} ;
-
-STRING_LITERAL
-	:	'"'
-		{ StringBuilder b = new StringBuilder(); }
-		(	'"' '"'				{ b.appendCodePoint('"');}
-		|	c=~('"'|'\r'|'\n')	{ b.appendCodePoint(c);}
-		)*
-		'"'
-		{ setText(b.toString()); }
+STRINGLITERAL		   
+	: (QUOTE (ESCAPEQUOTE | CHARNOQUOTE)* QUOTE) 
+	| (APOS  (ESCAPEAPOS | CHARNOAPOS)* APOS)
 	;
-	
-CHAR_LITERAL
-	:	'\'' . '\'' {setText(getText().substring(1,2));}
+			 
+
+/* 
+This lexer rule for comments handles multiline, nested comments
+*/
+COMMENT_CONTENTS
+        :       '(:'
+                {
+                        $channel=98;
+                }
+                (       ~('('|':')
+                        |       ('(' ~':') => '('
+                        |       (':' ~')') => ':'
+                        |       COMMENT_CONTENTS
+                )*
+                ':)'
+        ;
+
+
+WS		
+	: (' '|'\r'|'\t'|'\u000C'|'\n')+ {$channel = HIDDEN;}
 	;
 
-fragment LETTER : ('a'..'z' | 'A'..'Z') ;
-fragment DIGIT : '0'..'9';
-INTEGER : DIGIT+ ;
-IDENT : LETTER (LETTER | DIGIT)*;
-WS : (' ' | '\t' | '\n' | '\r' | '\f')+ {$channel = HIDDEN;};
-COMMENT : '//' .* ('\n'|'\r') {$channel = HIDDEN;};
+
+IRI_REF
+  :
+  LESS
+  ( options {greedy=false;}:
+    ~(
+      LESS
+      | GREATER
+      | '"'
+      | OPEN_CURLY_BRACE
+      | CLOSE_CURLY_BRACE
+      | '|'
+      | '^'
+      | '\\'
+      | '`'
+      | ('\u0000'..'\u0020')
+     )
+  )*
+  GREATER
+  ;
+
+
+LESS
+  :
+  '<'
+  ;
+
+GREATER
+  :
+  '>'
+  ;
+OPEN_CURLY_BRACE
+  :
+  '{'
+  ;
+
+CLOSE_CURLY_BRACE
+  :
+  '}'
+  ;
+
+
+
+
+xsdDateTime: IsoDateTime;
+
+
+/* TODO, this grammar is not right, since requires space after 'T'??? */
+
+TimeZoneOffset: ('+' | '-') DIGIT DIGIT ':' DIGIT DIGIT;
+
+
+IsoDateTime: (DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' DIGIT DIGIT ':' DIGIT DIGIT ':' DIGIT DIGIT ('.' DIGIT (DIGIT DIGIT?)?)? ('Z' | TimeZoneOffset)?)
+    ;
+
+
+
+DIGIT: '0'..'9';
+

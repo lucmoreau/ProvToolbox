@@ -38,10 +38,10 @@ container(
           used(ex:a2, ex:e1, [ex:param="a", ex:port="foo"])
 
 
-          wasDerivedFrom(ex:e1, ex:a2)
-          wasDerivedFrom(ex:e1, ex:a2, ex:pe, [], [])
-          wasDerivedFrom(ex:e1, ex:a2, ex:pe, [ex:param="a"], [ex:param="b"])
-          wasDerivedFrom(ex:e1, ex:a2, ex:pe, [ex:param="a", ex:port="foo"], [ex:param="b", ex:port="bar"])
+          wasDerivedFrom(ex:e1, ex:e2)
+          wasDerivedFrom(ex:e1, ex:e2, ex:pe, [], [])
+          wasDerivedFrom(ex:e1, ex:e2, ex:pe, [ex:param="a"], [ex:param="b"])
+          wasDerivedFrom(ex:e1, ex:e2, ex:pe, [ex:param="a", ex:port="foo"], [ex:param="b", ex:port="bar"])
 
 
           dependedUpon(ex:e1, ex:a2)

@@ -83,7 +83,6 @@
 	<xs:sequence>
 	  <xs:element name="effect"  type="prov:EntityRef"/>
 	  <xs:element name="cause"   type="prov:EntityRef"/>
-      <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
 	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:ID"/>

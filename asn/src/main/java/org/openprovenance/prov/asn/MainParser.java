@@ -66,11 +66,15 @@ public  class MainParser {
 
             Object o2=new Traversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
 
+            Object o3=new Traversal(new ASNConstructor()).convert(tree);
+
             //Object o=new OldProvConstructor(ProvFactory.getFactory()).convert(tree);
 
             try {
                 ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
                 serial.serialiseContainer(new File(args[0] + ".xml"),(Container)o2,true);
+
+                System.out.println("tree is " + o3);
             } catch (JAXBException e) {
                 e.printStackTrace();
             }

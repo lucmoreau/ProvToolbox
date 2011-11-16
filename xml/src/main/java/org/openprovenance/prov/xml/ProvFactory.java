@@ -138,7 +138,7 @@ public class ProvFactory implements CommonURIs {
     }
 
     public Activity newActivity(String pr,
-                              String label) {
+                                String label) {
         Activity res=of.createActivity();
         res.setId(pr);
         if (label!=null) addLabel(res,label);
@@ -171,14 +171,14 @@ public class ProvFactory implements CommonURIs {
 
     public EmbeddedAnnotation newLabel(String label) {
         EmbeddedAnnotation res=of.createEmbeddedAnnotation();
-	res.getProperty().add(newProperty(LABEL_PROPERTY,label));
+        res.getProperty().add(newProperty(LABEL_PROPERTY,label));
         return res;
     }
 
     public EmbeddedAnnotation newValue(Object value, String encoding) {
         EmbeddedAnnotation res=of.createEmbeddedAnnotation();
-	res.getProperty().add(newProperty(VALUE_PROPERTY,value));
-	res.getProperty().add(newProperty(ENCODING_PROPERTY,encoding));
+        res.getProperty().add(newProperty(VALUE_PROPERTY,value));
+        res.getProperty().add(newProperty(ENCODING_PROPERTY,encoding));
         return res;
     }
 
@@ -186,44 +186,44 @@ public class ProvFactory implements CommonURIs {
 
     
     public String getLabel(EmbeddedAnnotation annotation) {
-	if (annotation==null) return null;
-	for (Property prop: annotation.getProperty()) {
-	    if (prop.getAttribute().equals(LABEL_PROPERTY)) {
-		return (String) prop.getValue();
-	    }
-	}
-	return null;
+        if (annotation==null) return null;
+        for (Property prop: annotation.getProperty()) {
+            if (prop.getAttribute().equals(LABEL_PROPERTY)) {
+                return (String) prop.getValue();
+            }
+        }
+        return null;
     }
 
 
     public String getType(EmbeddedAnnotation annotation) {
-	if (annotation==null) return null;
-	for (Property prop: annotation.getProperty()) {
-	    if (prop.getAttribute().equals(TYPE_PROPERTY)) {
-		return (String) prop.getValue();
-	    }
-	}
-	return null;
+        if (annotation==null) return null;
+        for (Property prop: annotation.getProperty()) {
+            if (prop.getAttribute().equals(TYPE_PROPERTY)) {
+                return (String) prop.getValue();
+            }
+        }
+        return null;
     }
 
     public Object getValue(EmbeddedAnnotation annotation) {
-	if (annotation==null) return null;
-	for (Property prop: annotation.getProperty()) {
-	    if (prop.getAttribute().equals(VALUE_PROPERTY)) {
-		return prop.getValue();
-	    }
-	}
-	return null;
+        if (annotation==null) return null;
+        for (Property prop: annotation.getProperty()) {
+            if (prop.getAttribute().equals(VALUE_PROPERTY)) {
+                return prop.getValue();
+            }
+        }
+        return null;
     }
 
     public String getEncoding(EmbeddedAnnotation annotation) {
-	if (annotation==null) return null;
-	for (Property prop: annotation.getProperty()) {
-	    if (prop.getAttribute().equals(ENCODING_PROPERTY)) {
-		return (String) prop.getValue();
-	    }
-	}
-	return null;
+        if (annotation==null) return null;
+        for (Property prop: annotation.getProperty()) {
+            if (prop.getAttribute().equals(ENCODING_PROPERTY)) {
+                return (String) prop.getValue();
+            }
+        }
+        return null;
     }
 
 
@@ -323,21 +323,21 @@ public class ProvFactory implements CommonURIs {
 
     public void addAnnotation(Annotable annotable, EmbeddedAnnotation ann) {
         //annotable.getAnnotation().add(ann);
-	//	annotable.getAnnotation().add(ann);
-	EmbeddedAnnotation ea=annotable.getAnnotation();
-	if (ea==null) {
-	    annotable.setAnnotation(ann);
-	} else {
-	    ea.getProperty().addAll(ann.getProperty());
-	}
+        //	annotable.getAnnotation().add(ann);
+        EmbeddedAnnotation ea=annotable.getAnnotation();
+        if (ea==null) {
+            annotable.setAnnotation(ann);
+        } else {
+            ea.getProperty().addAll(ann.getProperty());
+        }
     }
 
 
 
     public XMLGregorianCalendar
-           newXMLGregorianCalendar(GregorianCalendar gc) {
-                 return dataFactory.newXMLGregorianCalendar(gc);
-            }
+        newXMLGregorianCalendar(GregorianCalendar gc) {
+        return dataFactory.newXMLGregorianCalendar(gc);
+    }
 
 
 
@@ -397,7 +397,7 @@ public class ProvFactory implements CommonURIs {
 
     public void addNewAnnotations(Annotable res,
                                   org.openprovenance.prov.xml.EmbeddedAnnotation ea) {
-	if (ea.getId()!=null) 
+        if (ea.getId()!=null) 
             addAnnotation(res,newEmbeddedAnnotation(ea.getId(),
                                                     ea.getProperty(),
                                                     new LinkedList(),
@@ -460,7 +460,7 @@ public class ProvFactory implements CommonURIs {
     }
     
     public TypedLiteral newTypedLiteral(String value,
-					String type) {
+                                        String type) {
         TypedLiteral res=of.createTypedLiteral();
         res.setValue(value);
         res.setType(type);
@@ -532,8 +532,8 @@ public class ProvFactory implements CommonURIs {
 
     public WasInformedBy newWasInformedBy(WasInformedBy d) {
         WasInformedBy wtb=newWasInformedBy(d.getId(),
-                                             d.getEffect(),
-                                             d.getCause());
+                                           d.getEffect(),
+                                           d.getCause());
         wtb.setId(d.getId());
         wtb.setAttributes(d.getAttributes());
         return wtb;
@@ -664,8 +664,8 @@ public class ProvFactory implements CommonURIs {
 
 
     public WasInformedBy newWasInformedBy(String id,
-                                            ActivityRef pid1,
-                                            ActivityRef pid2) {
+                                          ActivityRef pid1,
+                                          ActivityRef pid2) {
         WasInformedBy res=of.createWasInformedBy();
         res.setId(autoGenerateId(wasTriggeredByIdPrefix,id));
         res.setEffect(pid1);
@@ -674,13 +674,13 @@ public class ProvFactory implements CommonURIs {
     }
 
     public WasInformedBy newWasInformedBy(Activity p1,
-                                            Activity p2) {
+                                          Activity p2) {
         return newWasInformedBy(null,p1,p2);
     }
 
     public WasInformedBy newWasInformedBy(String id,
-                                            Activity p1,
-                                            Activity p2) {
+                                          Activity p1,
+                                          Activity p2) {
         ActivityRef pid1=newActivityRef(p1);
         ActivityRef pid2=newActivityRef(p2);
         return  newWasInformedBy(id,pid1,pid2);
@@ -688,9 +688,9 @@ public class ProvFactory implements CommonURIs {
 
 
     public WasInformedBy newWasInformedBy(String id,
-                                            Activity p1,
-                                            Activity p2,
-                                            String type) {
+                                          Activity p1,
+                                          Activity p2,
+                                          String type) {
         WasInformedBy wtb=newWasInformedBy(p1,p2);
         wtb.setId(id);
         addType(wtb,type);
@@ -714,7 +714,7 @@ public class ProvFactory implements CommonURIs {
                      value);
     }
     public Attributes newAttributes() {
-	return of.createAttributes();
+        return of.createAttributes();
     }
 
     public void addAttribute(HasAttributes a, Object o) {
@@ -727,44 +727,44 @@ public class ProvFactory implements CommonURIs {
 
     public void addType(HasAttributes a,                                  
                         String type) {
-	/*        addAttribute(a,
-                     "http://openprovenance.org/prov/xml#",
-                     "prov",
-                     "type",
-                     type);*/
-	JAXBElement<String> je=of.createType(type);
-	addAttribute(a,je);
+        /*        addAttribute(a,
+                  "http://openprovenance.org/prov/xml#",
+                  "prov",
+                  "type",
+                  type);*/
+        JAXBElement<String> je=of.createType(type);
+        addAttribute(a,je);
 
     }
 
     public void addLabel(HasAttributes a,                                  
                          String label) {
-	/*        addAttribute(a,
-                     "http://openprovenance.org/prov/xml#",
-                     "prov",
-                     "label",
-                     label);*/
-	JAXBElement<String> je=of.createLabel(label);
-	addAttribute(a,je);
+        /*        addAttribute(a,
+                  "http://openprovenance.org/prov/xml#",
+                  "prov",
+                  "label",
+                  label);*/
+        JAXBElement<String> je=of.createLabel(label);
+        addAttribute(a,je);
     }
 
 
     public void addAttribute(Attributes attrs,
                              String namespace,
-			     String prefix,
-			     String localName,                                  
-			     String value) {
+                             String prefix,
+                             String localName,                                  
+                             String value) {
 
         attrs.getAny().add(newAttribute(namespace,
-					prefix,
-					localName,
-					value));
+                                        prefix,
+                                        localName,
+                                        value));
     }
 
     public Element newAttribute(String namespace,
-				String prefix,
-				String localName,                                  
-				String value) {
+                                String prefix,
+                                String localName,                                  
+                                String value) {
         Document doc=oFactory.builder.newDocument();
         Element el=doc.createElementNS(namespace,prefix + ":" + localName);
         el.appendChild(doc.createTextNode(value));
@@ -778,9 +778,9 @@ public class ProvFactory implements CommonURIs {
     }
 
     /*
-    public void addAttribute(Attributes attrs, Attribute p) {
-        attrs.getAttribute().add(p);
-    }
+      public void addAttribute(Attributes attrs, Attribute p) {
+      attrs.getAttribute().add(p);
+      }
     */
 
 
@@ -941,29 +941,29 @@ public class ProvFactory implements CommonURIs {
 
 
     public Container newContainer(Collection<Account> accs,
-                                Collection<Activity> ps,
-                                Collection<Entity> as,
-                                Collection<Agent> ags,
-                                Collection<Object> lks) {
+                                  Collection<Activity> ps,
+                                  Collection<Entity> as,
+                                  Collection<Agent> ags,
+                                  Collection<Object> lks) {
         return newContainer(null,accs,ps,as,ags,lks,null);
     }
 
     public Container newContainer(Collection<Account> accs,
-                                Collection<Activity> ps,
-                                Collection<Entity> as,
-                                Collection<Agent> ags,
-                                Collection<Object> lks,
-                                Collection<Annotation> anns) {
+                                  Collection<Activity> ps,
+                                  Collection<Entity> as,
+                                  Collection<Agent> ags,
+                                  Collection<Object> lks,
+                                  Collection<Annotation> anns) {
         return newContainer(null,accs,ps,as,ags,lks,anns);
     }
 
     public Container newContainer(String id,
-                                Collection<Account> accs,
-                                Collection<Activity> ps,
-                                Collection<Entity> as,
-                                Collection<Agent> ags,
-                                Collection<Object> lks,
-                                Collection<Annotation> anns)
+                                  Collection<Account> accs,
+                                  Collection<Activity> ps,
+                                  Collection<Entity> as,
+                                  Collection<Agent> ags,
+                                  Collection<Object> lks,
+                                  Collection<Annotation> anns)
     {
         Container res=of.createContainer();
         res.setId(autoGenerateId(containerIdPrefix,id));
@@ -1003,50 +1003,50 @@ public class ProvFactory implements CommonURIs {
     }
 
     public Container newContainer(Collection<Account> accs,
-                                Activity [] ps,
-                                Entity [] as,
-                                Agent [] ags,
-                                Object [] lks) 
+                                  Activity [] ps,
+                                  Entity [] as,
+                                  Agent [] ags,
+                                  Object [] lks) 
     {
 
         return newContainer(accs,
-                           ((ps==null) ? null : Arrays.asList(ps)),
-                           ((as==null) ? null : Arrays.asList(as)),
-                           ((ags==null) ? null : Arrays.asList(ags)),
-                           ((lks==null) ? null : Arrays.asList(lks)));
+                            ((ps==null) ? null : Arrays.asList(ps)),
+                            ((as==null) ? null : Arrays.asList(as)),
+                            ((ags==null) ? null : Arrays.asList(ags)),
+                            ((lks==null) ? null : Arrays.asList(lks)));
     }
     public Container newContainer(Collection<Account> accs,
-                                Activity [] ps,
-                                Entity [] as,
-                                Agent [] ags,
-                                Object [] lks,
-                                Annotation [] anns) {
+                                  Activity [] ps,
+                                  Entity [] as,
+                                  Agent [] ags,
+                                  Object [] lks,
+                                  Annotation [] anns) {
         return newContainer(null,accs,ps,as,ags,lks,anns);
     }
 
     public Container newContainer(String id,
-                                Collection<Account> accs,
-                                Activity [] ps,
-                                Entity [] as,
-                                Agent [] ags,
-                                Object [] lks,
-                                Annotation [] anns) 
+                                  Collection<Account> accs,
+                                  Activity [] ps,
+                                  Entity [] as,
+                                  Agent [] ags,
+                                  Object [] lks,
+                                  Annotation [] anns) 
     {
 
         return newContainer(id,
-                           accs,
-                           ((ps==null) ? null : Arrays.asList(ps)),
-                           ((as==null) ? null : Arrays.asList(as)),
-                           ((ags==null) ? null : Arrays.asList(ags)),
-                           ((lks==null) ? null : Arrays.asList(lks)),
-                           ((anns==null) ? null : Arrays.asList(anns)));
+                            accs,
+                            ((ps==null) ? null : Arrays.asList(ps)),
+                            ((as==null) ? null : Arrays.asList(as)),
+                            ((ags==null) ? null : Arrays.asList(ags)),
+                            ((lks==null) ? null : Arrays.asList(lks)),
+                            ((anns==null) ? null : Arrays.asList(anns)));
     }
 
     public Container newContainer(Accounts accs,
-                                Activities ps,
-                                Entities as,
-                                Agents ags,
-                                Dependencies lks)
+                                  Activities ps,
+                                  Entities as,
+                                  Agents ags,
+                                  Dependencies lks)
     {
         Container res=of.createContainer();
         //res.setId(autoGenerateId(containerIdPrefix));
@@ -1059,11 +1059,11 @@ public class ProvFactory implements CommonURIs {
     }
 
     public Container newContainer(Accounts accs,
-                                Activities ps,
-                                Entities as,
-                                Agents ags,
-                                Dependencies lks,
-                                Annotations anns)
+                                  Activities ps,
+                                  Entities as,
+                                  Agents ags,
+                                  Dependencies lks,
+                                  Annotations anns)
     {
         Container res=of.createContainer();
         //res.setId(autoGenerateId(containerIdPrefix));
@@ -1078,11 +1078,11 @@ public class ProvFactory implements CommonURIs {
 
     public Container newContainer(Container graph) {
         return newContainer(graph.getAccounts(),
-                           graph.getActivities(),
-                           graph.getEntities(),
-                           graph.getAgents(),
-                           graph.getDependencies(),
-                           graph.getAnnotations());
+                            graph.getActivities(),
+                            graph.getEntities(),
+                            graph.getAgents(),
+                            graph.getDependencies(),
+                            graph.getAnnotations());
     }
 
 
@@ -1094,24 +1094,24 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-//     public Encoding newEncoding(String encoding) {
-//         Encoding res=of.createEncoding();
-//         res.setValue(encoding);
-//         return res;
-//     }
-//     public String getEncoding(EmbeddedAnnotation annotation) {
-//         if (annotation instanceof Encoding) {
-//             Encoding encoding=(Encoding) annotation;
-//             return encoding.getValue();
-//         } else {
-//             for (Property prop: annotation.getProperty()) {
-//                 if (prop.equals(ENCODING_PROPERTY)) {
-//                     return (String) prop.getValue();
-//                 }
-//             }
-//             return null;
-//         }
-//     }
+    //     public Encoding newEncoding(String encoding) {
+    //         Encoding res=of.createEncoding();
+    //         res.setValue(encoding);
+    //         return res;
+    //     }
+    //     public String getEncoding(EmbeddedAnnotation annotation) {
+    //         if (annotation instanceof Encoding) {
+    //             Encoding encoding=(Encoding) annotation;
+    //             return encoding.getValue();
+    //         } else {
+    //             for (Property prop: annotation.getProperty()) {
+    //                 if (prop.equals(ENCODING_PROPERTY)) {
+    //                     return (String) prop.getValue();
+    //                 }
+    //             }
+    //             return null;
+    //         }
+    //     }
 
     static {
         initBuilder();

@@ -3,8 +3,6 @@ import java.util.List;
 
 public interface TreeConstructor {
 
-
-
     public Object convertActivity(Object id,Object recipe,Object startTime,Object endTime, Object aAttrs);
     public Object convertEntity(Object id, Object attrs);
     public Object convertContainer(List<Object> records);

@@ -1,5 +1,5 @@
-Java toolbox to create and convert Provenance Interchange data Model
-representations
+Java toolbox to create and convert W3C PROV data representations
+between Java, XML, and PROV-ASN.
 
 This toolbox is used by the author to explore ideas and write examples
 as the W3C specification is being developed by the W3C Provenance

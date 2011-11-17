@@ -6,10 +6,8 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openprovenance.prov</groupId>
   <artifactId>prov-asn</artifactId>
   <name>PROV-ASN</name>
-  <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <description>A Parser for PROV-ASN.</description>
 
@@ -35,9 +33,9 @@
     </dependency>
 
     <dependency>
-    	<groupId>com.googlecode.json-simple</groupId>
-    	<artifactId>json-simple</artifactId>
-    	<version>1.1</version>
+    	<groupId>com.google.code.gson</groupId>
+    	<artifactId>gson</artifactId>
+    	<version>2.0</version>
     </dependency>
   </dependencies>
 
@@ -82,6 +80,10 @@
              <program>
                <mainClass>org.openprovenance.prov.asn.MainParser</mainClass>
                <name>asn</name>
+             </program>
+             <program>
+               <mainClass>org.openprovenance.prov.asn.JSONConstructor</mainClass>
+               <name>asn2json</name>
              </program>
            </programs>
            <repositoryLayout>default</repositoryLayout>

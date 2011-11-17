@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.json.simple.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /** For testing purpose, conversion back to ASN. */
 
@@ -33,7 +35,8 @@ public class JSONConstructor implements TreeConstructor {
             
 //            System.out.println(tree.toStringTree());
             Object provStructure = new Traversal(new JSONConstructor()).convert(tree);
-            System.out.println(JSONObject.toJSONString((Map)provStructure));
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            System.out.println(gson.toJson(provStructure));
             
         } catch(Throwable t) {
             System.out.println("exception: "+t);
@@ -51,6 +54,13 @@ public class JSONConstructor implements TreeConstructor {
 		countMap.put(type, count);
 		return "_:" + type + count;
 	}
+	
+	public static String unwrap (String s) {
+		int len = s.length();
+		if (s.charAt(0) == '\"' && s.charAt(len-1) == '\"')
+			return s.substring(1,len-1);
+		else return s;
+    }
 	
 	private Object[] tuple(Object o1, Object o2) {
 		Object[] tuple = {o1, o2};
@@ -84,7 +94,14 @@ public class JSONConstructor implements TreeConstructor {
         return id;
     }
     public Object convertAttribute(Object name, Object value) {
-    	return tuple(name, value);
+    	if (value instanceof String) {
+            String val1=(String)(value);
+            return tuple(name, unwrap(val1));
+        } else {
+        	// TODO Handling qnames
+        	return tuple(name, value);
+        }
+    	
     }
     public Object convertStart(String start) {
         return start;

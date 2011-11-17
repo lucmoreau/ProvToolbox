@@ -6,7 +6,6 @@ import java.util.Hashtable;
 
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Activity;
-import org.openprovenance.prov.xml.Attributes;
 import org.openprovenance.prov.xml.ActivityRef;
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.EntityRef;
@@ -47,10 +46,10 @@ public  class ProvConstructor implements TreeConstructor {
         String s_recipe=(String)recipe;
         String s_startTime=(String)startTime;
         String s_endTime=(String)endTime;
-        Attributes attrs=(Attributes)aAttrs;
+        List attrs=(List)aAttrs;
         Activity a=pFactory.newActivity(s_id);
         activityTable.put(s_id,a);
-        a.setAttributes(attrs);
+        a.getAny().addAll(attrs);
         return a;
     }
 
@@ -60,10 +59,10 @@ public  class ProvConstructor implements TreeConstructor {
                
     public Object convertEntity(Object id, Object eAttrs) {
         String s_id=(String)id;
-        Attributes attrs=(Attributes)eAttrs;
+        List attrs=(List)eAttrs;
         Entity e=pFactory.newEntity(s_id);
         entityTable.put(s_id,e);
-        e.setAttributes(attrs);
+        e.getAny().addAll(attrs);
         return e;
     }
 
@@ -89,11 +88,7 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
     public Object convertAttributes(List<Object> attributeList) {
-        Attributes attrs=pFactory.newAttributes();
-        for (Object o: attributeList) {
-            attrs.getAny().add(o);
-        }
-        return attrs;
+        return attributeList;
     }
     
     public Object convertId(String id) {
@@ -145,8 +140,8 @@ public  class ProvConstructor implements TreeConstructor {
                                 a2r,
                                 null,
                                 e1r);
-        Attributes attrs=(Attributes)uAttrs;
-        u.setAttributes(attrs);
+        List attrs=(List)uAttrs;
+        u.getAny().addAll(attrs);
         return u;
     }
     
@@ -162,8 +157,8 @@ public  class ProvConstructor implements TreeConstructor {
                                                     e2r,
                                                     null,
                                                     a1r);
-        Attributes attrs=(Attributes)gAttrs;
-        g.setAttributes(attrs);
+        List attrs=(List)gAttrs;
+        g.getAny().addAll(attrs);
         return g;
     }
 

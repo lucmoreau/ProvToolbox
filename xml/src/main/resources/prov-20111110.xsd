@@ -10,8 +10,7 @@
   -->
 
 <!-- Known issues:
-     - use of id is not appropriate to capture prov identifiers
-     - having an element attributes containing the attributes is not pretty and not good from an extensibility view point.
+     - use of id (xs:ID) is not appropriate to capture prov identifiers
      -->
 
 
@@ -23,26 +22,28 @@
            attributeFormDefault="unqualified"
            jxb:version="2.0">
 
+  <xs:element name="activity" type="prov:Activity"/>
   <xs:complexType name="Activity">
 	<xs:sequence>
 	  <xs:element name="account" minOccurs="0" maxOccurs="unbounded" type="prov:AccountRef"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+      <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
 
 
+  <xs:element name="entity" type="prov:Entity"/>
   <xs:complexType name="Entity">
 	<xs:sequence>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+      <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
 
-
+  <xs:element name="agent" type="prov:Agent"/>
   <xs:complexType name="Agent">
 	<xs:sequence>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+      <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
@@ -53,7 +54,7 @@
 	  <xs:element name="effect"  type="prov:ActivityRef"/>
 	  <xs:element name="cause"   type="prov:EntityRef"/>
       <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+      <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
     <xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
@@ -63,7 +64,7 @@
 	  <xs:element name="effect"  type="prov:EntityRef"/>
 	  <xs:element name="cause"   type="prov:ActivityRef"/>
       <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+      <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
     <xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
@@ -74,7 +75,7 @@
 	  <xs:element name="cause"       type="prov:AgentRef"/>
       <xs:element name="startTime"   type="xs:dateTime" minOccurs="0"/>
       <xs:element name="endTime"     type="xs:dateTime" minOccurs="0"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+      <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
     <xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
@@ -83,7 +84,7 @@
 	<xs:sequence>
 	  <xs:element name="effect"  type="prov:EntityRef"/>
 	  <xs:element name="cause"   type="prov:EntityRef"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+      <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
@@ -93,7 +94,7 @@
 	  <xs:element name="effect"  type="prov:ActivityRef"/>
 	  <xs:element name="cause"   type="prov:ActivityRef"/>
       <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+      <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
@@ -131,9 +132,9 @@
     </xs:annotation> 
 	<xs:sequence>
 	  <xs:element name="accounts" type="prov:Accounts" minOccurs="0"/>
-	  <xs:element name="activities" type="prov:Activities" minOccurs="0"/>
-	  <xs:element name="entities" type="prov:Entities" minOccurs="0"/>
-	  <xs:element name="agents" type="prov:Agents" minOccurs="0"/>
+	  <xs:element ref="prov:activity" minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:entity"   minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:agent"    minOccurs="0" maxOccurs="unbounded"/>
 	  <xs:element name="dependencies" type="prov:Dependencies" minOccurs="0"/>
 	  <xs:element name="annotations" type="prov:Annotations" minOccurs="0"/>
 	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
@@ -174,15 +175,6 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="Attributes">
-     <xs:sequence>
-        <xs:any maxOccurs="unbounded" minOccurs="1"/>
-     </xs:sequence>
-  </xs:complexType>
-
-
-  <xs:element name="attributes" type="prov:Attributes"/>
-
 
 
 
@@ -199,11 +191,6 @@
 	</xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="Entities">
-	<xs:sequence>
-	  <xs:element name="entity" type="prov:Entity" minOccurs="0" maxOccurs="unbounded"/>
-	</xs:sequence>
-  </xs:complexType>
 
 
   <xs:complexType name="Accounts">
@@ -213,17 +200,6 @@
   </xs:complexType>
 
 
-  <xs:complexType name="Activities">
-	<xs:sequence>
-	  <xs:element name="activity" type="prov:Activity" minOccurs="0" maxOccurs="unbounded"/>
-	</xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="Agents">
-	<xs:sequence>
-	  <xs:element name="agent"   type="prov:Agent" minOccurs="0" maxOccurs="unbounded"/>
-	</xs:sequence>
-  </xs:complexType>
   
   <xs:complexType name="Annotations">
     <xs:sequence>

@@ -113,7 +113,7 @@ public class PC1FullTest
         }
     }
 
-    public void addValue(HasAttributes p1, String val) {
+    public void addValue(HasExtensibility p1, String val) {
         pFactory.addAttribute(p1,
                               "http://www.ipaw.info/pc1/",
                               "pc1",
@@ -121,7 +121,7 @@ public class PC1FullTest
                               val);
     }
 
-    public void addUrl(HasAttributes p1, String val) {
+    public void addUrl(HasExtensibility p1, String val) {
         pFactory.addAttribute(p1,
                               "http://www.ipaw.info/pc1/",
                               "pc1",

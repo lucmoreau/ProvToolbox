@@ -445,7 +445,8 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public void addRole(HasAttributes a,                                  
+
+    public void addRole(HasExtensibility a,                                  
                         String role) {
         if (role!=null) {
             // addAttribute(a,
@@ -499,7 +500,7 @@ public class ProvFactory implements CommonURIs {
                         u.getEffect(),
                         null,
                         u.getCause());
-        u1.setAttributes(u.getAttributes());
+        u1.getAny().addAll(u.getAny());
         return u1;
     }
 
@@ -508,7 +509,7 @@ public class ProvFactory implements CommonURIs {
                                                null,
                                                c.getCause());
         wcb.setId(c.getId());
-        wcb.setAttributes(c.getAttributes());
+        wcb.getAny().addAll(c.getAny());
         return wcb;
     }
 
@@ -518,7 +519,7 @@ public class ProvFactory implements CommonURIs {
                                              null,
                                              g.getCause());
         wgb.setId(g.getId());
-        wgb.setAttributes(g.getAttributes());
+        wgb.getAny().addAll(g.getAny());
         return wgb;
     }
 
@@ -526,7 +527,7 @@ public class ProvFactory implements CommonURIs {
         WasDerivedFrom wdf=newWasDerivedFrom(d.getId(),
                                              d.getEffect(),
                                              d.getCause());
-        wdf.setAttributes(d.getAttributes());
+        wdf.getAny().addAll(d.getAny());
         return wdf;
     }
 
@@ -535,7 +536,7 @@ public class ProvFactory implements CommonURIs {
                                            d.getEffect(),
                                            d.getCause());
         wtb.setId(d.getId());
-        wtb.setAttributes(d.getAttributes());
+        wtb.getAny().addAll(d.getAny());
         return wtb;
     }
 
@@ -699,63 +700,32 @@ public class ProvFactory implements CommonURIs {
 
 
 
-    public void addAttribute(HasAttributes a,
-                             String namespace,
-                             String prefix,
-                             String localName,                                  
-                             String value) {
-        if (a.getAttributes()==null) {
-            a.setAttributes(of.createAttributes());
-        }
-        addAttribute(a.getAttributes(),
-                     namespace,
-                     prefix,
-                     localName,
-                     value);
-    }
-    public Attributes newAttributes() {
-        return of.createAttributes();
+    public void addAttribute(HasExtensibility a, Object o) {
+        a.getAny().add(o);
     }
 
-    public void addAttribute(HasAttributes a, Object o) {
-        if (a.getAttributes()==null) {
-            a.setAttributes(newAttributes());
-        }
-        addAttribute(a.getAttributes(),
-                     o);
-    }
 
-    public void addType(HasAttributes a,                                  
+    public void addType(HasExtensibility a,
                         String type) {
-        /*        addAttribute(a,
-                  "http://openprovenance.org/prov/xml#",
-                  "prov",
-                  "type",
-                  type);*/
         JAXBElement<String> je=of.createType(type);
         addAttribute(a,je);
 
     }
 
-    public void addLabel(HasAttributes a,                                  
+    public void addLabel(HasExtensibility a,                                  
                          String label) {
-        /*        addAttribute(a,
-                  "http://openprovenance.org/prov/xml#",
-                  "prov",
-                  "label",
-                  label);*/
         JAXBElement<String> je=of.createLabel(label);
         addAttribute(a,je);
     }
 
 
-    public void addAttribute(Attributes attrs,
+    public void addAttribute(HasExtensibility a,
                              String namespace,
                              String prefix,
                              String localName,                                  
                              String value) {
 
-        attrs.getAny().add(newAttribute(namespace,
+        a.getAny().add(newAttribute(namespace,
                                         prefix,
                                         localName,
                                         value));
@@ -771,17 +741,6 @@ public class ProvFactory implements CommonURIs {
         doc.appendChild(el);
         return el;
     }
-
-    public void addAttribute(Attributes attrs, Object o) {
-
-        attrs.getAny().add(o);
-    }
-
-    /*
-      public void addAttribute(Attributes attrs, Attribute p) {
-      attrs.getAttribute().add(p);
-      }
-    */
 
 
     public EmbeddedAnnotation newEmbeddedAnnotation(String id,
@@ -974,19 +933,13 @@ public class ProvFactory implements CommonURIs {
             
         }
         if (ps!=null) {
-            Activities pps=of.createActivities();
-            pps.getActivity().addAll(ps);
-            res.setActivities(pps);
+            res.getActivity().addAll(ps);
         }
         if (as!=null) {
-            Entities aas=of.createEntities();
-            aas.getEntity().addAll(as);
-            res.setEntities(aas);
+            res.getEntity().addAll(as);
         }
         if (ags!=null) {
-            Agents aags=of.createAgents();
-            aags.getAgent().addAll(ags);
-            res.setAgents(aags);
+            res.getAgent().addAll(ags);
         }
         if (lks!=null) {
             Dependencies ccls=of.createDependencies();
@@ -1043,44 +996,46 @@ public class ProvFactory implements CommonURIs {
     }
 
     public Container newContainer(Accounts accs,
-                                  Activities ps,
-                                  Entities as,
-                                  Agents ags,
+                                  Collection<Activity> ps,
+                                  Collection<Entity> as,
+                                  Collection<Agent> ags,
                                   Dependencies lks)
     {
         Container res=of.createContainer();
         //res.setId(autoGenerateId(containerIdPrefix));
         res.setAccounts(accs);
-        res.setActivities(ps);
-        res.setEntities(as);
-        res.setAgents(ags);
+        res.getActivity().addAll(ps);
+        res.getEntity().addAll(as);
+        res.getAgent().addAll(ags);
         res.setDependencies(lks);
         return res;
     }
 
     public Container newContainer(Accounts accs,
-                                  Activities ps,
-                                  Entities as,
-                                  Agents ags,
+                                  Collection<Activity> ps,
+                                  Collection<Entity> as,
+                                  Collection<Agent> ags,
                                   Dependencies lks,
                                   Annotations anns)
     {
         Container res=of.createContainer();
         //res.setId(autoGenerateId(containerIdPrefix));
         res.setAccounts(accs);
-        res.setActivities(ps);
-        res.setEntities(as);
-        res.setAgents(ags);
+        res.getActivity().addAll(ps);
+        res.getEntity().addAll(as);
+        res.getAgent().addAll(ags);
         res.setDependencies(lks);
         res.setAnnotations(anns);
         return res;
     }
 
+
+
     public Container newContainer(Container graph) {
         return newContainer(graph.getAccounts(),
-                            graph.getActivities(),
-                            graph.getEntities(),
-                            graph.getAgents(),
+                            graph.getActivity(),
+                            graph.getEntity(),
+                            graph.getAgent(),
                             graph.getDependencies(),
                             graph.getAnnotations());
     }

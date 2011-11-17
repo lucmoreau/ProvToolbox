@@ -115,7 +115,6 @@ public class Traversal {
             return c.convertWasGeneratedBy(id2,id1,rAttrs,time);
 
         case ASNParser.WDF:
-            System.out.print("WDF ");
             id2=convert(ast.getChild(0));
             id1=convert(ast.getChild(1));
             Object pe=convert(ast.getChild(2));

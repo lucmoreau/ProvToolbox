@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.jvnet.jaxb2_commons.lang.ToString;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,6 +21,16 @@ class ProvRecord {
 		this.type = type;
 		this.id = id;
 		this.attributes = attributes;
+	}
+	
+	public String toString() {
+		String result = type + "(" + id;
+		List<Object[]> attrs = (List<Object[]>)attributes;
+		for (Object[] tuple: attrs) {
+			result += ", " + tuple[0] + "=" + tuple[1];
+		}
+		result += ")";
+		return result;
 	}
 }
 
@@ -163,6 +174,7 @@ public class JSONConstructor implements TreeConstructor {
     public Object convertContainer(List<Object> records) {
         Map<String,Map<Object,Object>> container = new HashMap<String, Map<Object,Object>>();
         for (Object o: records) {
+        	if (o == null) continue;
             ProvRecord record = (ProvRecord)o;
             Map<Object, Object> structure = container.get(record.type);
             if (structure == null) {

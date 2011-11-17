@@ -11,6 +11,7 @@
 
 <!-- Known issues:
      - use of id (xs:ID) is not appropriate to capture prov identifiers
+     - introduce Notes and hasAnnotation, remove OPMX embedded annotations
      -->
 
 
@@ -47,6 +48,15 @@
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:ID"/>
   </xs:complexType>
+
+  <xs:element name="note" type="prov:Note"/>
+  <xs:complexType name="Note">
+	<xs:sequence>
+      <xs:any maxOccurs="unbounded" minOccurs="0"/>
+	</xs:sequence>
+	<xs:attribute name="id" type="xs:ID"/>
+  </xs:complexType>
+
 
 
   <xs:complexType name="Used">

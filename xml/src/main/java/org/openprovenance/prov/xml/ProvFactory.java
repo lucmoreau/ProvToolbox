@@ -943,10 +943,7 @@ public class ProvFactory implements CommonURIs {
         Container res=of.createContainer();
         res.setId(autoGenerateId(containerIdPrefix,id));
         if (accs!=null) {
-            Accounts aaccs=of.createAccounts();
-            aaccs.getAccount().addAll(accs);
-            res.setAccounts(aaccs);
-            
+            res.getAccount().addAll(accs);
         }
         if (ps!=null) {
             res.getActivity().addAll(ps);
@@ -1011,7 +1008,7 @@ public class ProvFactory implements CommonURIs {
                             ((anns==null) ? null : Arrays.asList(anns)));
     }
 
-    public Container newContainer(Accounts accs,
+    public Container newContainer(Collection<Account> accs,
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
@@ -1019,7 +1016,7 @@ public class ProvFactory implements CommonURIs {
     {
         Container res=of.createContainer();
         //res.setId(autoGenerateId(containerIdPrefix));
-        res.setAccounts(accs);
+        res.getAccount().addAll(accs);
         res.getActivity().addAll(ps);
         res.getEntity().addAll(as);
         res.getAgent().addAll(ags);
@@ -1027,7 +1024,7 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public Container newContainer(Accounts accs,
+    public Container newContainer(Collection<Account> accs,
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
@@ -1036,7 +1033,7 @@ public class ProvFactory implements CommonURIs {
     {
         Container res=of.createContainer();
         //res.setId(autoGenerateId(containerIdPrefix));
-        res.setAccounts(accs);
+        res.getAccount().addAll(accs);
         res.getActivity().addAll(ps);
         res.getEntity().addAll(as);
         res.getAgent().addAll(ags);
@@ -1048,7 +1045,7 @@ public class ProvFactory implements CommonURIs {
 
 
     public Container newContainer(Container graph) {
-        return newContainer(graph.getAccounts(),
+        return newContainer(graph.getAccount(),
                             graph.getActivity(),
                             graph.getEntity(),
                             graph.getAgent(),
@@ -1057,32 +1054,6 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    public Accounts newAccounts(Collection<Account> accs) {
-        Accounts res=of.createAccounts();
-        if (accs!=null) {
-            res.getAccount().addAll(accs);
-        }
-        return res;
-    }
-
-    //     public Encoding newEncoding(String encoding) {
-    //         Encoding res=of.createEncoding();
-    //         res.setValue(encoding);
-    //         return res;
-    //     }
-    //     public String getEncoding(EmbeddedAnnotation annotation) {
-    //         if (annotation instanceof Encoding) {
-    //             Encoding encoding=(Encoding) annotation;
-    //             return encoding.getValue();
-    //         } else {
-    //             for (Property prop: annotation.getProperty()) {
-    //                 if (prop.equals(ENCODING_PROPERTY)) {
-    //                     return (String) prop.getValue();
-    //                 }
-    //             }
-    //             return null;
-    //         }
-    //     }
 
     static {
         initBuilder();

@@ -132,7 +132,7 @@
 
   <xs:complexType name="Container">
 	<xs:sequence>
-	  <xs:element name="accounts" type="prov:Accounts" minOccurs="0"/>
+	  <xs:element ref="prov:account"  minOccurs="0" maxOccurs="unbounded"/>
 	  <xs:element ref="prov:activity" minOccurs="0" maxOccurs="unbounded"/>
 	  <xs:element ref="prov:entity"   minOccurs="0" maxOccurs="unbounded"/>
 	  <xs:element ref="prov:agent"    minOccurs="0" maxOccurs="unbounded"/>
@@ -168,7 +168,7 @@
     <xs:attribute name="ref" type="xs:IDREF"/>
   </xs:complexType>
   
-
+  <xs:element name="account" type="prov:Account"/>
   <xs:complexType name="Account">
     <xs:complexContent>
       <xs:extension base="prov:Container">
@@ -195,13 +195,6 @@
 	</xs:sequence>
   </xs:complexType>
 
-
-
-  <xs:complexType name="Accounts">
-	<xs:sequence>
-	  <xs:element name="account"  type="prov:Account"  minOccurs="0" maxOccurs="unbounded"/>
-	</xs:sequence>
-  </xs:complexType>
 
 
   

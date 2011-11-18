@@ -154,12 +154,6 @@
 	<xs:attribute name="ref" type="xs:string"/>
   </xs:complexType>
 
-<!-- to delete -->
-
-  <xs:complexType name="AccountRef">
-	<xs:attribute name="ref" type="xs:IDREF"/>
-  </xs:complexType>
-
   <xs:complexType name="DependencyRef">
     <xs:attribute name="ref" type="xs:IDREF"/>
   </xs:complexType>

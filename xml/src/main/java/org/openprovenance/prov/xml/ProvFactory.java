@@ -112,11 +112,7 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public AccountRef newAccountRef(Account acc) {
-        AccountRef res=of.createAccountRef();
-        res.setRef(acc);
-        return res;
-    }
+
 
 
     public DependencyRef newDependencyRef(WasGeneratedBy edge) {
@@ -416,7 +412,6 @@ public class ProvFactory implements CommonURIs {
         if (ea.getId()!=null) 
             addAnnotation(res,newEmbeddedAnnotation(ea.getId(),
                                                     ea.getProperty(),
-                                                    new LinkedList(),
                                                     null));
     }
 
@@ -433,20 +428,6 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public void addAccounts(HasAccounts element, Collection<Account> accounts, Object ignoreForErasure) {
-        if ((accounts !=null) && (accounts.size()!=0)) {
-            LinkedList ll=new LinkedList();
-            for (Account acc: accounts) {
-                ll.add(newAccountRef(acc));
-            }
-            addAccounts(element,ll);
-        }
-    }
-    public void addAccounts(HasAccounts element, Collection<AccountRef> accounts) {
-        if ((accounts !=null) && (accounts.size()!=0)) {
-            element.getAccount().addAll(accounts);
-        }
-    }
 
 
     public Used newUsed(String id,
@@ -761,15 +742,8 @@ public class ProvFactory implements CommonURIs {
 
     public EmbeddedAnnotation newEmbeddedAnnotation(String id,
                                                     String property,
-                                                    Object value,
-                                                    Collection<Account> accs) {
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newEmbeddedAnnotation(id,property,value,ll,null);
+                                                    Object value) {
+        return newEmbeddedAnnotation(id,property,value,null);
     }
 
     public Annotation newAnnotation(String id,
@@ -792,7 +766,6 @@ public class ProvFactory implements CommonURIs {
                                     String property,
                                     Object value) {
         AnnotationRef aid=newAnnotationRef(a);
-        LinkedList<AccountRef> ll=new LinkedList();
         return newAnnotation(id,aid,property,value);
     }
 
@@ -895,7 +868,6 @@ public class ProvFactory implements CommonURIs {
     public EmbeddedAnnotation newEmbeddedAnnotation(String id,
                                                     String property,
                                                     Object value,
-                                                    Collection<AccountRef> accs,
                                                     Object dummyParameterForAvoidingSameErasure) {
         EmbeddedAnnotation res=of.createEmbeddedAnnotation();
         res.setId(id);
@@ -904,7 +876,6 @@ public class ProvFactory implements CommonURIs {
     }
     public EmbeddedAnnotation newEmbeddedAnnotation(String id,
                                                     List<Property> properties,
-                                                    Collection<AccountRef> accs,
                                                     Object dummyParameterForAvoidingSameErasure) {
         EmbeddedAnnotation res=of.createEmbeddedAnnotation();
         res.setId(id);

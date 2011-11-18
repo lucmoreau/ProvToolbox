@@ -10,7 +10,7 @@
   -->
 
 <!-- Known issues:
-     - use of id (xs:ID) is not appropriate to capture prov identifiers
+
      - introduce Notes and hasAnnotation, remove OPMX embedded annotations
      - currently, no optional-predefined attribute for activity (time,recipeLink). challenge with xs:any.
      -->
@@ -29,7 +29,7 @@
 	<xs:sequence>
 	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:ID"/>
+	<xs:attribute name="id" type="xs:string"/>
   </xs:complexType>
 
 
@@ -131,15 +131,6 @@
   </xs:element>
 
   <xs:complexType name="Container">
-    <xs:annotation>
-      <xs:appinfo>
-        <jxb:class>
-         <jxb:javadoc>
-           <![CDATA[ Java class for Container complex type. See <A href="http://twiki.ipaw.info/bin/view/Challenge/OPM1-01Review">Container</A>.]]>
-         </jxb:javadoc>
-        </jxb:class>
-      </xs:appinfo>
-    </xs:annotation> 
 	<xs:sequence>
 	  <xs:element name="accounts" type="prov:Accounts" minOccurs="0"/>
 	  <xs:element ref="prov:activity" minOccurs="0" maxOccurs="unbounded"/>
@@ -149,27 +140,30 @@
 	  <xs:element name="annotations" type="prov:Annotations" minOccurs="0"/>
 	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:ID"/>
+	<xs:attribute name="id" type="xs:string"/>
   </xs:complexType>
 
-  <xs:complexType name="ContainerRef">
-    <xs:attribute name="ref" type="xs:IDREF"/>
-  </xs:complexType>
+
   <xs:complexType name="ActivityRef">
-	<xs:attribute name="ref" type="xs:IDREF"/>
+	<xs:attribute name="ref" type="xs:string"/>
   </xs:complexType>
   <xs:complexType name="EntityRef">
-	<xs:attribute name="ref" type="xs:IDREF"/>
+	<xs:attribute name="ref" type="xs:string"/>
   </xs:complexType>
   <xs:complexType name="AgentRef">
-	<xs:attribute name="ref" type="xs:IDREF"/>
+	<xs:attribute name="ref" type="xs:string"/>
   </xs:complexType>
+
+<!-- to delete -->
+
   <xs:complexType name="AccountRef">
 	<xs:attribute name="ref" type="xs:IDREF"/>
   </xs:complexType>
+
   <xs:complexType name="DependencyRef">
     <xs:attribute name="ref" type="xs:IDREF"/>
   </xs:complexType>
+
   <xs:complexType name="AnnotationRef">
     <xs:attribute name="ref" type="xs:IDREF"/>
   </xs:complexType>

@@ -72,7 +72,13 @@ public class ProvFactory implements CommonURIs {
 
     public ActivityRef newActivityRef(Activity p) {
         ActivityRef res=of.createActivityRef();
-        res.setRef(p);
+        res.setRef(p.getId());
+        return res;
+    }
+
+    public ActivityRef newActivityRef(String id) {
+        ActivityRef res=of.createActivityRef();
+        res.setRef(id);
         return res;
     }
 
@@ -84,12 +90,25 @@ public class ProvFactory implements CommonURIs {
 
     public EntityRef newEntityRef(Entity a) {
         EntityRef res=of.createEntityRef();
-        res.setRef(a);
+        res.setRef(a.getId());
         return res;
     }
+
+    public EntityRef newEntityRef(String id) {
+        EntityRef res=of.createEntityRef();
+        res.setRef(id);
+        return res;
+    }
+
     public AgentRef newAgentRef(Agent a) {
         AgentRef res=of.createAgentRef();
-        res.setRef(a);
+        res.setRef(a.getId());
+        return res;
+    }
+
+    public AgentRef newAgentRef(String id) {
+        AgentRef res=of.createAgentRef();
+        res.setRef(id);
         return res;
     }
 
@@ -98,9 +117,6 @@ public class ProvFactory implements CommonURIs {
         res.setRef(acc);
         return res;
     }
-
-
-
 
 
     public DependencyRef newDependencyRef(WasGeneratedBy edge) {

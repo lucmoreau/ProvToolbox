@@ -130,7 +130,8 @@
 	</xs:annotation>
   </xs:element>
 
-  <xs:complexType name="Container">
+  <xs:element name="record" type="prov:Record"/>
+  <xs:complexType name="Record">
 	<xs:sequence>
 	  <xs:element ref="prov:account"  minOccurs="0" maxOccurs="unbounded"/>
 	  <xs:element ref="prov:activity" minOccurs="0" maxOccurs="unbounded"/>
@@ -139,6 +140,15 @@
 	  <xs:element name="dependencies" type="prov:Dependencies" minOccurs="0"/>
 	  <xs:element name="annotations" type="prov:Annotations" minOccurs="0"/>
 	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
+	</xs:sequence>
+	<xs:attribute name="id" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Container">
+	<xs:sequence>
+	  <xs:element name="namespace" minOccurs="1" maxOccurs="1"/>
+	  <xs:element name="account" minOccurs="1" maxOccurs="1"/>
+	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:string"/>
   </xs:complexType>

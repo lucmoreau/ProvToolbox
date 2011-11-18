@@ -174,12 +174,7 @@ public class ProvFactory implements CommonURIs {
         res.setId(id);
         return res;
     }
-    public Account newAccount(String id, String label) {
-        Account res=of.createAccount();
-        res.setId(id);
-        if (label!=null) addAnnotation(res,newLabel(label));
-        return res;
-    }
+
 
     public EmbeddedAnnotation newLabel(String label) {
         EmbeddedAnnotation res=of.createEmbeddedAnnotation();
@@ -403,7 +398,6 @@ public class ProvFactory implements CommonURIs {
 
     public Account newAccount(Account acc) {
         Account res=newAccount(acc.getId());
-        addNewAnnotations(res,acc.getAnnotation());
         return res;
     }
 
@@ -912,29 +906,30 @@ public class ProvFactory implements CommonURIs {
                                   Collection<Annotation> anns)
     {
         Container res=of.createContainer();
+	res.setRecord(of.createRecord());
         res.setId(autoGenerateId(containerIdPrefix,id));
         if (accs!=null) {
-            res.getAccount().addAll(accs);
+            res.getRecord().getAccount().addAll(accs);
         }
         if (ps!=null) {
-            res.getActivity().addAll(ps);
+            res.getRecord().getActivity().addAll(ps);
         }
         if (as!=null) {
-            res.getEntity().addAll(as);
+            res.getRecord().getEntity().addAll(as);
         }
         if (ags!=null) {
-            res.getAgent().addAll(ags);
+            res.getRecord().getAgent().addAll(ags);
         }
         if (lks!=null) {
             Dependencies ccls=of.createDependencies();
             ccls.getUsedOrWasGeneratedByOrWasInformedBy().addAll(lks);
-            res.setDependencies(ccls);
+            res.getRecord().setDependencies(ccls);
         }
 
         if (anns!=null) {
             Annotations l=of.createAnnotations();
             l.getAnnotation().addAll(anns);
-            res.setAnnotations(l);
+            res.getRecord().setAnnotations(l);
         }
         return res;
     }
@@ -986,12 +981,13 @@ public class ProvFactory implements CommonURIs {
                                   Dependencies lks)
     {
         Container res=of.createContainer();
+	res.setRecord(of.createRecord());
         //res.setId(autoGenerateId(containerIdPrefix));
-        res.getAccount().addAll(accs);
-        res.getActivity().addAll(ps);
-        res.getEntity().addAll(as);
-        res.getAgent().addAll(ags);
-        res.setDependencies(lks);
+        res.getRecord().getAccount().addAll(accs);
+        res.getRecord().getActivity().addAll(ps);
+        res.getRecord().getEntity().addAll(as);
+        res.getRecord().getAgent().addAll(ags);
+        res.getRecord().setDependencies(lks);
         return res;
     }
 
@@ -1003,25 +999,26 @@ public class ProvFactory implements CommonURIs {
                                   Annotations anns)
     {
         Container res=of.createContainer();
+	res.setRecord(of.createRecord());
         //res.setId(autoGenerateId(containerIdPrefix));
-        res.getAccount().addAll(accs);
-        res.getActivity().addAll(ps);
-        res.getEntity().addAll(as);
-        res.getAgent().addAll(ags);
-        res.setDependencies(lks);
-        res.setAnnotations(anns);
+        res.getRecord().getAccount().addAll(accs);
+        res.getRecord().getActivity().addAll(ps);
+        res.getRecord().getEntity().addAll(as);
+        res.getRecord().getAgent().addAll(ags);
+        res.getRecord().setDependencies(lks);
+        res.getRecord().setAnnotations(anns);
         return res;
     }
 
 
 
     public Container newContainer(Container graph) {
-        return newContainer(graph.getAccount(),
-                            graph.getActivity(),
-                            graph.getEntity(),
-                            graph.getAgent(),
-                            graph.getDependencies(),
-                            graph.getAnnotations());
+        return newContainer(graph.getRecord().getAccount(),
+                            graph.getRecord().getActivity(),
+                            graph.getRecord().getEntity(),
+                            graph.getRecord().getAgent(),
+                            graph.getRecord().getDependencies(),
+                            graph.getRecord().getAnnotations());
     }
 
 

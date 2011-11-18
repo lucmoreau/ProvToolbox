@@ -230,13 +230,14 @@
   	              <arg value="-iBAK" />
   	              <arg value="Account.java" />
                 </exec>
--->
+
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/implements Equals, HashCode, ToString/implements Annotable, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="EmbeddedAnnotation.java" />
                 </exec>
+-->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, Equals, HashCode, ToString/" />

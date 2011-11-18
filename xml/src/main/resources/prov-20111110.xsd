@@ -213,27 +213,15 @@
 
   <!-- Annotations, was OPMX style, need to be adapted to PROV -->
 
-  <xs:element name="annotation" type="prov:EmbeddedAnnotation"/>
   <xs:complexType name="Annotation">
 	<xs:complexContent>
-          <xs:extension base="prov:EmbeddedAnnotation">
-            <xs:sequence>
-              <xs:choice minOccurs="0" maxOccurs="1">
-                <xs:element name="externalSubject" type="xs:anyURI"/>
-                <xs:element name="localSubject"    type="xs:IDREF"/>
-              </xs:choice>
-            </xs:sequence>
+          <xs:extension base="prov:Note">
           </xs:extension>
         </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="EmbeddedAnnotation">
-     <xs:sequence>
-       <xs:element name="property" type="prov:Property"   minOccurs="1"    maxOccurs="unbounded"/>
-       <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
-     </xs:sequence>
-     <xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
+  <xs:element name="annotation" type="prov:Note"/>
+
 
   <xs:complexType name="Property">
      <xs:sequence>

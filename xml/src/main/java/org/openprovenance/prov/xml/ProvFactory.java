@@ -82,9 +82,14 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public AnnotationRef newAnnotationRef(Annotation a) {
-        AnnotationRef res=of.createAnnotationRef();
-        res.setRef(a);
+    public NoteRef newNoteRef(Note a) {
+        NoteRef res=of.createNoteRef();
+        res.setRef(a.getId());
+        return res;
+    }
+    public NoteRef newNoteRef(String id) {
+        NoteRef res=of.createNoteRef();
+        res.setRef(id);
         return res;
     }
 
@@ -114,32 +119,37 @@ public class ProvFactory implements CommonURIs {
 
 
 
+    public DependencyRef newDependencyRef(String id) {
+        DependencyRef res=of.createDependencyRef();
+        res.setRef(id);
+        return res;
+    }
 
     public DependencyRef newDependencyRef(WasGeneratedBy edge) {
         DependencyRef res=of.createDependencyRef();
-        res.setRef(edge);
+        res.setRef(edge.getId());
         return res;
     }
 
     public DependencyRef newDependencyRef(Used edge) {
         DependencyRef res=of.createDependencyRef();
-        res.setRef(edge);
+        res.setRef(edge.getId());
         return res;
     }
     public DependencyRef newDependencyRef(WasDerivedFrom edge) {
         DependencyRef res=of.createDependencyRef();
-        res.setRef(edge);
+        res.setRef(edge.getId());
         return res;
     }
 
     public DependencyRef newDependencyRef(WasControlledBy edge) {
         DependencyRef res=of.createDependencyRef();
-        res.setRef(edge);
+        res.setRef(edge.getId());
         return res;
     }
     public DependencyRef newDependencyRef(WasInformedBy edge) {
         DependencyRef res=of.createDependencyRef();
-        res.setRef(edge);
+        res.setRef(edge.getId());
         return res;
     }
 
@@ -418,6 +428,21 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
+    public HasAnnotation newHasAnnotation(Identifiable i,
+					    Note n) {
+	HasAnnotation res=of.createHasAnnotation();
+	res.setThing(i.getId());
+	res.setNote(newNoteRef(n));
+	return res;
+    }
+
+    public HasAnnotation newHasAnnotation(Identifiable i,
+					  String n) {
+	HasAnnotation res=of.createHasAnnotation();
+	res.setThing(i.getId());
+	res.setNote(newNoteRef(n));
+	return res;
+    }
 
     public WasControlledBy newWasControlledBy(Activity p,
                                               String role,
@@ -573,16 +598,16 @@ public class ProvFactory implements CommonURIs {
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Collection<Object> lks) {
-        return newContainer(null,accs,ps,as,ags,lks,null);
+        return newContainer(null,accs,ps,as,ags,null,lks);
     }
 
     public Container newContainer(Collection<Account> accs,
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
-                                  Collection<Object> lks,
-                                  Collection<Annotation> anns) {
-        return newContainer(null,accs,ps,as,ags,lks,anns);
+                                  Collection<Note> ns,
+                                  Collection<Object> lks) {
+        return newContainer(null,accs,ps,as,ags,ns,lks);
     }
 
     public Container newContainer(String id,
@@ -590,8 +615,8 @@ public class ProvFactory implements CommonURIs {
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
-                                  Collection<Object> lks,
-                                  Collection<Annotation> anns)
+                                  Collection<Note> ns,
+                                  Collection<Object> lks)
     {
         Container res=of.createContainer();
 	res.setRecord(of.createRecord());
@@ -614,10 +639,8 @@ public class ProvFactory implements CommonURIs {
             res.getRecord().setDependencies(ccls);
         }
 
-        if (anns!=null) {
-            Annotations l=of.createAnnotations();
-            l.getAnnotation().addAll(anns);
-            res.getRecord().setAnnotations(l);
+        if (ns!=null) {
+            res.getRecord().getNote().addAll(ns);
         }
         return res;
     }
@@ -639,9 +662,9 @@ public class ProvFactory implements CommonURIs {
                                   Activity [] ps,
                                   Entity [] as,
                                   Agent [] ags,
-                                  Object [] lks,
-                                  Annotation [] anns) {
-        return newContainer(null,accs,ps,as,ags,lks,anns);
+                                  Note [] ns,
+                                  Object [] lks) {
+        return newContainer(null,accs,ps,as,ags,ns,lks);
     }
 
     public Container newContainer(String id,
@@ -649,8 +672,8 @@ public class ProvFactory implements CommonURIs {
                                   Activity [] ps,
                                   Entity [] as,
                                   Agent [] ags,
-                                  Object [] lks,
-                                  Annotation [] anns) 
+                                  Note [] ns,
+                                  Object [] lks) 
     {
 
         return newContainer(id,
@@ -658,8 +681,8 @@ public class ProvFactory implements CommonURIs {
                             ((ps==null) ? null : Arrays.asList(ps)),
                             ((as==null) ? null : Arrays.asList(as)),
                             ((ags==null) ? null : Arrays.asList(ags)),
-                            ((lks==null) ? null : Arrays.asList(lks)),
-                            ((anns==null) ? null : Arrays.asList(anns)));
+                            ((ns==null) ? null : Arrays.asList(ns)),
+                            ((lks==null) ? null : Arrays.asList(lks)));
     }
 
     public Container newContainer(Collection<Account> accs,
@@ -683,8 +706,8 @@ public class ProvFactory implements CommonURIs {
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
-                                  Dependencies lks,
-                                  Annotations anns)
+                                  Collection<Note> ns,
+                                  Dependencies lks)
     {
         Container res=of.createContainer();
 	res.setRecord(of.createRecord());
@@ -694,7 +717,7 @@ public class ProvFactory implements CommonURIs {
         res.getRecord().getEntity().addAll(as);
         res.getRecord().getAgent().addAll(ags);
         res.getRecord().setDependencies(lks);
-        res.getRecord().setAnnotations(anns);
+        res.getRecord().getNote().addAll(ns);
         return res;
     }
 
@@ -705,8 +728,8 @@ public class ProvFactory implements CommonURIs {
                             graph.getRecord().getActivity(),
                             graph.getRecord().getEntity(),
                             graph.getRecord().getAgent(),
-                            graph.getRecord().getDependencies(),
-                            graph.getRecord().getAnnotations());
+                            graph.getRecord().getNote(),
+                            graph.getRecord().getDependencies());
     }
 
 

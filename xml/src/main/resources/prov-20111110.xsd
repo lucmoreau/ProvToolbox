@@ -111,7 +111,7 @@
 
   <xs:complexType name="HasAnnotation">
 	<xs:sequence>
-	  <xs:element name="thing"   type="xs:string" minOccurs="1"/>
+	  <xs:element name="thing"   type="prov:NoteRef" minOccurs="1"/> <!-- note, just a ref to anything, really -->
 	  <xs:element name="note"    type="prov:NoteRef" minOccurs="1"/>
 	</xs:sequence>
     <xs:attribute name="id" type="xs:string"/>

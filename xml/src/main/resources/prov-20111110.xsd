@@ -131,6 +131,50 @@
 
 
 
+
+  <xs:complexType name="ActivityRef">
+	<xs:attribute name="ref" type="xs:string"/>
+  </xs:complexType>
+  <xs:complexType name="EntityRef">
+	<xs:attribute name="ref" type="xs:string"/>
+  </xs:complexType>
+  <xs:complexType name="AgentRef">
+	<xs:attribute name="ref" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="DependencyRef">
+    <xs:attribute name="ref" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="NoteRef">
+    <xs:attribute name="ref" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Dependencies">
+	<xs:sequence>
+	  <xs:choice minOccurs="0" maxOccurs="unbounded">
+		<xs:element name="used"               type="prov:Used"/>
+		<xs:element name="wasGeneratedBy"     type="prov:WasGeneratedBy"/>
+		<xs:element name="wasInformedBy"      type="prov:WasInformedBy"/>
+		<xs:element name="wasDerivedFrom"     type="prov:WasDerivedFrom"/>
+		<xs:element name="wasControlledBy"    type="prov:WasControlledBy"/>
+		<xs:element name="hasAnnotation"      type="prov:HasAnnotation"/>
+	  </xs:choice>
+	</xs:sequence>
+  </xs:complexType>
+
+
+  <!-- BUNDLES -->
+
+  <xs:element name="account" type="prov:Account"/>
+  <xs:complexType name="Account">
+	<xs:sequence>
+	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="1"/>
+	  <xs:element name="asserter" type="prov:AgentRef"  minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute name="id" type="xs:string"/>
+  </xs:complexType>
+
   <xs:element name="container" type="prov:Container">
 	<xs:annotation>
 	  <xs:documentation>A set of assertions about the provenance of things</xs:documentation>
@@ -153,57 +197,9 @@
   <xs:complexType name="Container">
 	<xs:sequence>
 	  <xs:element name="namespace" minOccurs="1" maxOccurs="1"/>
-	  <xs:element name="account" minOccurs="1" maxOccurs="1"/>
 	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:string"/>
-  </xs:complexType>
-
-
-  <xs:complexType name="ActivityRef">
-	<xs:attribute name="ref" type="xs:string"/>
-  </xs:complexType>
-  <xs:complexType name="EntityRef">
-	<xs:attribute name="ref" type="xs:string"/>
-  </xs:complexType>
-  <xs:complexType name="AgentRef">
-	<xs:attribute name="ref" type="xs:string"/>
-  </xs:complexType>
-
-  <xs:complexType name="DependencyRef">
-    <xs:attribute name="ref" type="xs:string"/>
-  </xs:complexType>
-
-  <xs:complexType name="NoteRef">
-    <xs:attribute name="ref" type="xs:string"/>
-  </xs:complexType>
-  
-  <xs:element name="account" type="prov:Account"/>
-  <xs:complexType name="Account">
-    <xs:complexContent>
-      <xs:extension base="prov:Container">
-	<xs:sequence>
-	  <xs:element name="asserter" type="prov:AgentRef"  minOccurs="0" maxOccurs="unbounded"/>
-	</xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-
-
-
-
-  <xs:complexType name="Dependencies">
-	<xs:sequence>
-	  <xs:choice minOccurs="0" maxOccurs="unbounded">
-		<xs:element name="used"               type="prov:Used"/>
-		<xs:element name="wasGeneratedBy"     type="prov:WasGeneratedBy"/>
-		<xs:element name="wasInformedBy"      type="prov:WasInformedBy"/>
-		<xs:element name="wasDerivedFrom"     type="prov:WasDerivedFrom"/>
-		<xs:element name="wasControlledBy"    type="prov:WasControlledBy"/>
-		<xs:element name="hasAnnotation"      type="prov:HasAnnotation"/>
-	  </xs:choice>
-	</xs:sequence>
   </xs:complexType>
 
 

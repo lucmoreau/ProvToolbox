@@ -6,7 +6,6 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openprovenance.prov</groupId>
   <artifactId>prov-xml</artifactId>
   <name>PROV-XML Representation</name>
   <version>0.0.1-SNAPSHOT</version>

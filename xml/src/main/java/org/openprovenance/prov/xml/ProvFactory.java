@@ -72,62 +72,84 @@ public class ProvFactory implements CommonURIs {
 
     public ActivityRef newActivityRef(Activity p) {
         ActivityRef res=of.createActivityRef();
-        res.setRef(p);
+        res.setRef(p.getId());
         return res;
     }
 
-    public AnnotationRef newAnnotationRef(Annotation a) {
-        AnnotationRef res=of.createAnnotationRef();
-        res.setRef(a);
+    public ActivityRef newActivityRef(String id) {
+        ActivityRef res=of.createActivityRef();
+        res.setRef(id);
+        return res;
+    }
+
+    public NoteRef newNoteRef(Note a) {
+        NoteRef res=of.createNoteRef();
+        res.setRef(a.getId());
+        return res;
+    }
+    public NoteRef newNoteRef(String id) {
+        NoteRef res=of.createNoteRef();
+        res.setRef(id);
         return res;
     }
 
     public EntityRef newEntityRef(Entity a) {
         EntityRef res=of.createEntityRef();
-        res.setRef(a);
+        res.setRef(a.getId());
         return res;
     }
+
+    public EntityRef newEntityRef(String id) {
+        EntityRef res=of.createEntityRef();
+        res.setRef(id);
+        return res;
+    }
+
     public AgentRef newAgentRef(Agent a) {
         AgentRef res=of.createAgentRef();
-        res.setRef(a);
+        res.setRef(a.getId());
         return res;
     }
 
-    public AccountRef newAccountRef(Account acc) {
-        AccountRef res=of.createAccountRef();
-        res.setRef(acc);
+    public AgentRef newAgentRef(String id) {
+        AgentRef res=of.createAgentRef();
+        res.setRef(id);
         return res;
     }
 
 
 
-
+    public DependencyRef newDependencyRef(String id) {
+        DependencyRef res=of.createDependencyRef();
+        res.setRef(id);
+        return res;
+    }
 
     public DependencyRef newDependencyRef(WasGeneratedBy edge) {
         DependencyRef res=of.createDependencyRef();
-        res.setRef(edge);
+        res.setRef(edge.getId());
         return res;
     }
 
     public DependencyRef newDependencyRef(Used edge) {
         DependencyRef res=of.createDependencyRef();
-        res.setRef(edge);
+        res.setRef(edge.getId());
         return res;
     }
     public DependencyRef newDependencyRef(WasDerivedFrom edge) {
         DependencyRef res=of.createDependencyRef();
-        res.setRef(edge);
+        res.setRef(edge.getId());
         return res;
     }
 
     public DependencyRef newDependencyRef(WasControlledBy edge) {
         DependencyRef res=of.createDependencyRef();
-        res.setRef(edge);
+        res.setRef(edge.getId());
         return res;
     }
     public DependencyRef newDependencyRef(WasInformedBy edge) {
         DependencyRef res=of.createDependencyRef();
-        res.setRef(edge);
+        res.setRef(edge.getId());
         return res;
     }
 
@@ -162,175 +184,15 @@ public class ProvFactory implements CommonURIs {
         res.setId(id);
         return res;
     }
-    public Account newAccount(String id, String label) {
-        Account res=of.createAccount();
-        res.setId(id);
-        if (label!=null) addAnnotation(res,newLabel(label));
-        return res;
-    }
-
-    public EmbeddedAnnotation newLabel(String label) {
-        EmbeddedAnnotation res=of.createEmbeddedAnnotation();
-        res.getProperty().add(newProperty(LABEL_PROPERTY,label));
-        return res;
-    }
-
-    public EmbeddedAnnotation newValue(Object value, String encoding) {
-        EmbeddedAnnotation res=of.createEmbeddedAnnotation();
-        res.getProperty().add(newProperty(VALUE_PROPERTY,value));
-        res.getProperty().add(newProperty(ENCODING_PROPERTY,encoding));
-        return res;
-    }
 
 
 
     
-    public String getLabel(EmbeddedAnnotation annotation) {
-        if (annotation==null) return null;
-        for (Property prop: annotation.getProperty()) {
-            if (prop.getAttribute().equals(LABEL_PROPERTY)) {
-                return (String) prop.getValue();
-            }
-        }
-        return null;
-    }
-
-
-    public String getType(EmbeddedAnnotation annotation) {
-        if (annotation==null) return null;
-        for (Property prop: annotation.getProperty()) {
-            if (prop.getAttribute().equals(TYPE_PROPERTY)) {
-                return (String) prop.getValue();
-            }
-        }
-        return null;
-    }
-
-    public Object getValue(EmbeddedAnnotation annotation) {
-        if (annotation==null) return null;
-        for (Property prop: annotation.getProperty()) {
-            if (prop.getAttribute().equals(VALUE_PROPERTY)) {
-                return prop.getValue();
-            }
-        }
-        return null;
-    }
-
-    public String getEncoding(EmbeddedAnnotation annotation) {
-        if (annotation==null) return null;
-        for (Property prop: annotation.getProperty()) {
-            if (prop.getAttribute().equals(ENCODING_PROPERTY)) {
-                return (String) prop.getValue();
-            }
-        }
-        return null;
-    }
-
-
-
-    /** Return the value of the value property in the first annotation. */
-
-    public Object getValue(List<EmbeddedAnnotation> annotations) {
-        for (EmbeddedAnnotation ann: annotations) {
-            Object value=getValue(ann);
-            if (value!=null) return value;
-        }
-        return null;
-    }
-
-
-
-    /** Return the value of the label property in the first annotation. */
-    public String getLabel(List<EmbeddedAnnotation> annotations) {
-        for (EmbeddedAnnotation ann: annotations) {
-            String label=getLabel(ann);
-            if (label!=null) return label;
-        }
-        return null;
-    }
-
-
-    /** Return the value of the type property in the first annotation. */
-
-    public String getType(List<EmbeddedAnnotation> annotations) {
-        for (EmbeddedAnnotation ann: annotations) {
-            String type=getType(ann);
-            if (type!=null) return type;
-        }
-        return null;
-    }
-
-
-
-    /** Return the value of the value property. */
-
-    public List<Object> getValues(List<EmbeddedAnnotation> annotations) {
-        List<Object> res=new LinkedList();
-        for (EmbeddedAnnotation ann: annotations) {
-            Object value=getValue(ann);
-            if (value!=null) res.add(value);
-        }
-        return res;
-    }
-
-
-
-    /** Return the value of the label property. */
-    public List<String> getLabels(List<EmbeddedAnnotation> annotations) {
-        List<String> res=new LinkedList();
-        for (EmbeddedAnnotation ann: annotations) {
-            String label=getLabel(ann);
-            if (label!=null) res.add(label);
-        }
-        return res;
-    }
-
-
-    /** Return the value of the type property. */
-
-    public List<String> getTypes(List<EmbeddedAnnotation> annotations) {
-        List<String> res=new LinkedList();
-        for (EmbeddedAnnotation ann: annotations) {
-            String type=getType(ann);
-            if (type!=null) res.add(type);
-        }
-        return res;
-    }
 
 
 
 
-    /** Generic accessor for annotable entities. */
-    public String getLabel(Annotable annotable) {
-        return getLabel(annotable.getAnnotation());
-    }
 
-    /** Generic accessor for annotable entities. */
-    public String getType(Annotable annotable) {
-        return getType(annotable.getAnnotation());
-    }
-
-
-    public EmbeddedAnnotation newType(String type) {
-        EmbeddedAnnotation res=of.createEmbeddedAnnotation();
-        res.getProperty().add(newProperty(TYPE_PROPERTY,type));
-        return res;
-    }
-
-    // public void addValue(Entity annotable, Object value, String encoding) {
-    //     addAnnotation(annotable,newValue(value,encoding));
-    // }
-
-    public void addAnnotation(Annotable annotable, EmbeddedAnnotation ann) {
-        //annotable.getAnnotation().add(ann);
-        //	annotable.getAnnotation().add(ann);
-        EmbeddedAnnotation ea=annotable.getAnnotation();
-        if (ea==null) {
-            annotable.setAnnotation(ann);
-        } else {
-            ea.getProperty().addAll(ann.getProperty());
-        }
-    }
 
 
 
@@ -350,17 +212,6 @@ public class ProvFactory implements CommonURIs {
 	public XMLGregorianCalendar newTimeNow () {
         return newTime(new Date());
     }
-
-
-    public void addAnnotation(Annotable annotable, List<EmbeddedAnnotation> anns) {
-        for (EmbeddedAnnotation ann: anns) {        
-            addAnnotation(annotable,ann);
-        }
-    }
-
-
-
-
 
 
 
@@ -391,17 +242,7 @@ public class ProvFactory implements CommonURIs {
 
     public Account newAccount(Account acc) {
         Account res=newAccount(acc.getId());
-        addNewAnnotations(res,acc.getAnnotation());
         return res;
-    }
-
-    public void addNewAnnotations(Annotable res,
-                                  org.openprovenance.prov.xml.EmbeddedAnnotation ea) {
-        if (ea.getId()!=null) 
-            addAnnotation(res,newEmbeddedAnnotation(ea.getId(),
-                                                    ea.getProperty(),
-                                                    new LinkedList(),
-                                                    null));
     }
 
 
@@ -417,20 +258,6 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public void addAccounts(HasAccounts element, Collection<Account> accounts, Object ignoreForErasure) {
-        if ((accounts !=null) && (accounts.size()!=0)) {
-            LinkedList ll=new LinkedList();
-            for (Account acc: accounts) {
-                ll.add(newAccountRef(acc));
-            }
-            addAccounts(element,ll);
-        }
-    }
-    public void addAccounts(HasAccounts element, Collection<AccountRef> accounts) {
-        if ((accounts !=null) && (accounts.size()!=0)) {
-            element.getAccount().addAll(accounts);
-        }
-    }
 
 
     public Used newUsed(String id,
@@ -445,7 +272,8 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public void addRole(HasAttributes a,                                  
+
+    public void addRole(HasExtensibility a,                                  
                         String role) {
         if (role!=null) {
             // addAttribute(a,
@@ -499,7 +327,7 @@ public class ProvFactory implements CommonURIs {
                         u.getEffect(),
                         null,
                         u.getCause());
-        u1.setAttributes(u.getAttributes());
+        u1.getAny().addAll(u.getAny());
         return u1;
     }
 
@@ -508,7 +336,7 @@ public class ProvFactory implements CommonURIs {
                                                null,
                                                c.getCause());
         wcb.setId(c.getId());
-        wcb.setAttributes(c.getAttributes());
+        wcb.getAny().addAll(c.getAny());
         return wcb;
     }
 
@@ -518,7 +346,7 @@ public class ProvFactory implements CommonURIs {
                                              null,
                                              g.getCause());
         wgb.setId(g.getId());
-        wgb.setAttributes(g.getAttributes());
+        wgb.getAny().addAll(g.getAny());
         return wgb;
     }
 
@@ -526,7 +354,7 @@ public class ProvFactory implements CommonURIs {
         WasDerivedFrom wdf=newWasDerivedFrom(d.getId(),
                                              d.getEffect(),
                                              d.getCause());
-        wdf.setAttributes(d.getAttributes());
+        wdf.getAny().addAll(d.getAny());
         return wdf;
     }
 
@@ -535,7 +363,7 @@ public class ProvFactory implements CommonURIs {
                                            d.getEffect(),
                                            d.getCause());
         wtb.setId(d.getId());
-        wtb.setAttributes(d.getAttributes());
+        wtb.getAny().addAll(d.getAny());
         return wtb;
     }
 
@@ -600,6 +428,21 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
+    public HasAnnotation newHasAnnotation(Identifiable i,
+					    Note n) {
+	HasAnnotation res=of.createHasAnnotation();
+	res.setThing(newNoteRef(i.getId()));
+	res.setNote(newNoteRef(n));
+	return res;
+    }
+
+    public HasAnnotation newHasAnnotation(Identifiable i,
+					  String n) {
+	HasAnnotation res=of.createHasAnnotation();
+	res.setThing(newNoteRef(i.getId())); // note, this id is not necessarily of a note
+	res.setNote(newNoteRef(n));
+	return res;
+    }
 
     public WasControlledBy newWasControlledBy(Activity p,
                                               String role,
@@ -699,63 +542,32 @@ public class ProvFactory implements CommonURIs {
 
 
 
-    public void addAttribute(HasAttributes a,
-                             String namespace,
-                             String prefix,
-                             String localName,                                  
-                             String value) {
-        if (a.getAttributes()==null) {
-            a.setAttributes(of.createAttributes());
-        }
-        addAttribute(a.getAttributes(),
-                     namespace,
-                     prefix,
-                     localName,
-                     value);
-    }
-    public Attributes newAttributes() {
-        return of.createAttributes();
+    public void addAttribute(HasExtensibility a, Object o) {
+        a.getAny().add(o);
     }
 
-    public void addAttribute(HasAttributes a, Object o) {
-        if (a.getAttributes()==null) {
-            a.setAttributes(newAttributes());
-        }
-        addAttribute(a.getAttributes(),
-                     o);
-    }
 
-    public void addType(HasAttributes a,                                  
+    public void addType(HasExtensibility a,
                         String type) {
-        /*        addAttribute(a,
-                  "http://openprovenance.org/prov/xml#",
-                  "prov",
-                  "type",
-                  type);*/
         JAXBElement<String> je=of.createType(type);
         addAttribute(a,je);
 
     }
 
-    public void addLabel(HasAttributes a,                                  
+    public void addLabel(HasExtensibility a,                                  
                          String label) {
-        /*        addAttribute(a,
-                  "http://openprovenance.org/prov/xml#",
-                  "prov",
-                  "label",
-                  label);*/
         JAXBElement<String> je=of.createLabel(label);
         addAttribute(a,je);
     }
 
 
-    public void addAttribute(Attributes attrs,
+    public void addAttribute(HasExtensibility a,
                              String namespace,
                              String prefix,
                              String localName,                                  
                              String value) {
 
-        attrs.getAny().add(newAttribute(namespace,
+        a.getAny().add(newAttribute(namespace,
                                         prefix,
                                         localName,
                                         value));
@@ -772,170 +584,11 @@ public class ProvFactory implements CommonURIs {
         return el;
     }
 
-    public void addAttribute(Attributes attrs, Object o) {
-
-        attrs.getAny().add(o);
-    }
-
-    /*
-      public void addAttribute(Attributes attrs, Attribute p) {
-      attrs.getAttribute().add(p);
-      }
-    */
 
 
-    public EmbeddedAnnotation newEmbeddedAnnotation(String id,
-                                                    String property,
-                                                    Object value,
-                                                    Collection<Account> accs) {
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newEmbeddedAnnotation(id,property,value,ll,null);
-    }
-
-    public Annotation newAnnotation(String id,
-                                    Entity a,
-                                    String property,
-                                    Object value) {
-        EntityRef aid=newEntityRef(a);
-        return newAnnotation(id,aid,property,value);
-    }
-    public Annotation newAnnotation(String id,
-                                    Activity p,
-                                    String property,
-                                    Object value) {
-        ActivityRef pid=newActivityRef(p);
-        return newAnnotation(id,pid,property,value);
-    }
-
-    public Annotation newAnnotation(String id,
-                                    Annotation a,
-                                    String property,
-                                    Object value) {
-        AnnotationRef aid=newAnnotationRef(a);
-        LinkedList<AccountRef> ll=new LinkedList();
-        return newAnnotation(id,aid,property,value);
-    }
-
-    public Annotation newAnnotation(String id,
-                                    WasDerivedFrom edge,
-                                    String property,
-                                    Object value) {
-        DependencyRef cid=newDependencyRef(edge);
-        return newAnnotation(id,cid,property,value);
-    }
-    public Annotation newAnnotation(String id,
-                                    Used edge,
-                                    String property,
-                                    Object value) {
-        DependencyRef cid=newDependencyRef(edge);
-        return newAnnotation(id,cid,property,value);
-    }
-    public Annotation newAnnotation(String id,
-                                    WasGeneratedBy edge,
-                                    String property,
-                                    Object value) {
-        DependencyRef cid=newDependencyRef(edge);
-        return newAnnotation(id,cid,property,value);
-    }
-    public Annotation newAnnotation(String id,
-                                    WasControlledBy edge,
-                                    String property,
-                                    Object value) {
-        DependencyRef cid=newDependencyRef(edge);
-        return newAnnotation(id,cid,property,value);
-    }
-    public Annotation newAnnotation(String id,
-                                    WasInformedBy edge,
-                                    String property,
-                                    Object value) {
-        DependencyRef cid=newDependencyRef(edge);
-        return newAnnotation(id,cid,property,value);
-    }
-
-
-    public Property newProperty(String property,
-                                Object value) {
-        Property res=of.createProperty();
-        res.setAttribute(property);
-        res.setValue(value);
-        return res;
-    }
-
-    public Property newProperty(Property property) {
-        return newProperty(property.getAttribute(),property.getValue());
-    }
-
-
-    public void addProperty(Annotation ann, Property p) {
-        ann.getProperty().add(p);
-    }
-
-    public void addProperty(Annotation ann, List<Property> p) {
-        ann.getProperty().addAll(p);
-    }
-
-    public void addProperty(EmbeddedAnnotation ann, Property p) {
-        ann.getProperty().add(p);
-    }
-
-    public void addProperty(EmbeddedAnnotation ann, List<Property> p) {
-        ann.getProperty().addAll(p);
-    }
-
-    public Annotation newAnnotation(String id,
-                                    Ref ref,
-                                    String property,
-                                    Object value) {
-        Annotation res=of.createAnnotation();
+    public Note newNote(String id) {
+        Note res=of.createNote();
         res.setId(id);
-        res.setLocalSubject(ref.getRef());
-        addProperty(res,newProperty(property,value));
-        return res;
-    }
-
-    public Annotation newAnnotation(String id,
-                                    Object o,
-                                    List<Property> properties) {
-        Annotation res=of.createAnnotation();
-        res.setId(id);
-        res.setLocalSubject(o);
-        for (Property property: properties) {
-            addProperty(res,property);
-        }
-        return res;
-    }
-
-    public Annotation newAnnotation(Annotation ann) {
-        Annotation res=newAnnotation(ann.getId(),
-                                     ann.getLocalSubject(),
-                                     ann.getProperty());
-        return res;
-    }
-
-    public EmbeddedAnnotation newEmbeddedAnnotation(String id,
-                                                    String property,
-                                                    Object value,
-                                                    Collection<AccountRef> accs,
-                                                    Object dummyParameterForAvoidingSameErasure) {
-        EmbeddedAnnotation res=of.createEmbeddedAnnotation();
-        res.setId(id);
-        addProperty(res,newProperty(property,value));
-        return res;
-    }
-    public EmbeddedAnnotation newEmbeddedAnnotation(String id,
-                                                    List<Property> properties,
-                                                    Collection<AccountRef> accs,
-                                                    Object dummyParameterForAvoidingSameErasure) {
-        EmbeddedAnnotation res=of.createEmbeddedAnnotation();
-        res.setId(id);
-        if (properties!=null) {
-            addProperty(res,properties);
-        }
         return res;
     }
 
@@ -945,16 +598,16 @@ public class ProvFactory implements CommonURIs {
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Collection<Object> lks) {
-        return newContainer(null,accs,ps,as,ags,lks,null);
+        return newContainer(null,accs,ps,as,ags,null,lks);
     }
 
     public Container newContainer(Collection<Account> accs,
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
-                                  Collection<Object> lks,
-                                  Collection<Annotation> anns) {
-        return newContainer(null,accs,ps,as,ags,lks,anns);
+                                  Collection<Note> ns,
+                                  Collection<Object> lks) {
+        return newContainer(null,accs,ps,as,ags,ns,lks);
     }
 
     public Container newContainer(String id,
@@ -962,42 +615,32 @@ public class ProvFactory implements CommonURIs {
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
-                                  Collection<Object> lks,
-                                  Collection<Annotation> anns)
+                                  Collection<Note> ns,
+                                  Collection<Object> lks)
     {
         Container res=of.createContainer();
+	res.setRecord(of.createRecord());
         res.setId(autoGenerateId(containerIdPrefix,id));
         if (accs!=null) {
-            Accounts aaccs=of.createAccounts();
-            aaccs.getAccount().addAll(accs);
-            res.setAccounts(aaccs);
-            
+            res.getRecord().getAccount().addAll(accs);
         }
         if (ps!=null) {
-            Activities pps=of.createActivities();
-            pps.getActivity().addAll(ps);
-            res.setActivities(pps);
+            res.getRecord().getActivity().addAll(ps);
         }
         if (as!=null) {
-            Entities aas=of.createEntities();
-            aas.getEntity().addAll(as);
-            res.setEntities(aas);
+            res.getRecord().getEntity().addAll(as);
         }
         if (ags!=null) {
-            Agents aags=of.createAgents();
-            aags.getAgent().addAll(ags);
-            res.setAgents(aags);
+            res.getRecord().getAgent().addAll(ags);
         }
         if (lks!=null) {
             Dependencies ccls=of.createDependencies();
             ccls.getUsedOrWasGeneratedByOrWasInformedBy().addAll(lks);
-            res.setDependencies(ccls);
+            res.getRecord().setDependencies(ccls);
         }
 
-        if (anns!=null) {
-            Annotations l=of.createAnnotations();
-            l.getAnnotation().addAll(anns);
-            res.setAnnotations(l);
+        if (ns!=null) {
+            res.getRecord().getNote().addAll(ns);
         }
         return res;
     }
@@ -1019,9 +662,9 @@ public class ProvFactory implements CommonURIs {
                                   Activity [] ps,
                                   Entity [] as,
                                   Agent [] ags,
-                                  Object [] lks,
-                                  Annotation [] anns) {
-        return newContainer(null,accs,ps,as,ags,lks,anns);
+                                  Note [] ns,
+                                  Object [] lks) {
+        return newContainer(null,accs,ps,as,ags,ns,lks);
     }
 
     public Container newContainer(String id,
@@ -1029,8 +672,8 @@ public class ProvFactory implements CommonURIs {
                                   Activity [] ps,
                                   Entity [] as,
                                   Agent [] ags,
-                                  Object [] lks,
-                                  Annotation [] anns) 
+                                  Note [] ns,
+                                  Object [] lks) 
     {
 
         return newContainer(id,
@@ -1038,80 +681,58 @@ public class ProvFactory implements CommonURIs {
                             ((ps==null) ? null : Arrays.asList(ps)),
                             ((as==null) ? null : Arrays.asList(as)),
                             ((ags==null) ? null : Arrays.asList(ags)),
-                            ((lks==null) ? null : Arrays.asList(lks)),
-                            ((anns==null) ? null : Arrays.asList(anns)));
+                            ((ns==null) ? null : Arrays.asList(ns)),
+                            ((lks==null) ? null : Arrays.asList(lks)));
     }
 
-    public Container newContainer(Accounts accs,
-                                  Activities ps,
-                                  Entities as,
-                                  Agents ags,
+    public Container newContainer(Collection<Account> accs,
+                                  Collection<Activity> ps,
+                                  Collection<Entity> as,
+                                  Collection<Agent> ags,
                                   Dependencies lks)
     {
         Container res=of.createContainer();
+	res.setRecord(of.createRecord());
         //res.setId(autoGenerateId(containerIdPrefix));
-        res.setAccounts(accs);
-        res.setActivities(ps);
-        res.setEntities(as);
-        res.setAgents(ags);
-        res.setDependencies(lks);
+        res.getRecord().getAccount().addAll(accs);
+        res.getRecord().getActivity().addAll(ps);
+        res.getRecord().getEntity().addAll(as);
+        res.getRecord().getAgent().addAll(ags);
+        res.getRecord().setDependencies(lks);
         return res;
     }
 
-    public Container newContainer(Accounts accs,
-                                  Activities ps,
-                                  Entities as,
-                                  Agents ags,
-                                  Dependencies lks,
-                                  Annotations anns)
+    public Container newContainer(Collection<Account> accs,
+                                  Collection<Activity> ps,
+                                  Collection<Entity> as,
+                                  Collection<Agent> ags,
+                                  Collection<Note> ns,
+                                  Dependencies lks)
     {
         Container res=of.createContainer();
+	res.setRecord(of.createRecord());
         //res.setId(autoGenerateId(containerIdPrefix));
-        res.setAccounts(accs);
-        res.setActivities(ps);
-        res.setEntities(as);
-        res.setAgents(ags);
-        res.setDependencies(lks);
-        res.setAnnotations(anns);
+        res.getRecord().getAccount().addAll(accs);
+        res.getRecord().getActivity().addAll(ps);
+        res.getRecord().getEntity().addAll(as);
+        res.getRecord().getAgent().addAll(ags);
+        res.getRecord().setDependencies(lks);
+        res.getRecord().getNote().addAll(ns);
         return res;
     }
+
+
 
     public Container newContainer(Container graph) {
-        return newContainer(graph.getAccounts(),
-                            graph.getActivities(),
-                            graph.getEntities(),
-                            graph.getAgents(),
-                            graph.getDependencies(),
-                            graph.getAnnotations());
+        return newContainer(graph.getRecord().getAccount(),
+                            graph.getRecord().getActivity(),
+                            graph.getRecord().getEntity(),
+                            graph.getRecord().getAgent(),
+                            graph.getRecord().getNote(),
+                            graph.getRecord().getDependencies());
     }
 
 
-    public Accounts newAccounts(Collection<Account> accs) {
-        Accounts res=of.createAccounts();
-        if (accs!=null) {
-            res.getAccount().addAll(accs);
-        }
-        return res;
-    }
-
-    //     public Encoding newEncoding(String encoding) {
-    //         Encoding res=of.createEncoding();
-    //         res.setValue(encoding);
-    //         return res;
-    //     }
-    //     public String getEncoding(EmbeddedAnnotation annotation) {
-    //         if (annotation instanceof Encoding) {
-    //             Encoding encoding=(Encoding) annotation;
-    //             return encoding.getValue();
-    //         } else {
-    //             for (Property prop: annotation.getProperty()) {
-    //                 if (prop.equals(ENCODING_PROPERTY)) {
-    //                     return (String) prop.getValue();
-    //                 }
-    //             }
-    //             return null;
-    //         }
-    //     }
 
     static {
         initBuilder();

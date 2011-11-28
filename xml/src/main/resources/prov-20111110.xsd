@@ -10,8 +10,9 @@
   -->
 
 <!-- Known issues:
-     - use of id is not appropriate to capture prov identifiers
-     - having an element attributes containing the attributes is not pretty and not good from an extensibility view point.
+
+     - introduce Notes and hasAnnotation, remove OPMX embedded annotations
+     - currently, no optional-predefined attribute for activity (time,recipeLink). challenge with xs:any.
      -->
 
 
@@ -23,81 +24,98 @@
            attributeFormDefault="unqualified"
            jxb:version="2.0">
 
+  <xs:element name="activity" type="prov:Activity"/>
   <xs:complexType name="Activity">
 	<xs:sequence>
-	  <xs:element name="account" minOccurs="0" maxOccurs="unbounded" type="prov:AccountRef"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:ID"/>
+	<xs:attribute name="id" type="xs:string"/>
   </xs:complexType>
 
 
+  <xs:element name="entity" type="prov:Entity"/>
   <xs:complexType name="Entity">
 	<xs:sequence>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:ID"/>
+	<xs:attribute name="id" type="xs:string"/>
   </xs:complexType>
 
-
+  <xs:element name="agent" type="prov:Agent"/>
   <xs:complexType name="Agent">
 	<xs:sequence>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:ID"/>
+	<xs:attribute name="id" type="xs:string"/>
   </xs:complexType>
+
+  <xs:element name="note" type="prov:Note"/>
+  <xs:complexType name="Note">
+	<xs:sequence>
+	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
+	</xs:sequence>
+	<xs:attribute name="id" type="xs:string"/>
+  </xs:complexType>
+
 
 
   <xs:complexType name="Used">
 	<xs:sequence>
+	  <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
 	  <xs:element name="effect"  type="prov:ActivityRef"/>
 	  <xs:element name="cause"   type="prov:EntityRef"/>
-      <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-    <xs:attribute name="id" type="xs:ID"/>
+    <xs:attribute name="id" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="WasGeneratedBy">
 	<xs:sequence>
+	  <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
 	  <xs:element name="effect"  type="prov:EntityRef"/>
 	  <xs:element name="cause"   type="prov:ActivityRef"/>
-      <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-    <xs:attribute name="id" type="xs:ID"/>
+    <xs:attribute name="id" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="WasControlledBy">
 	<xs:sequence>
+	  <xs:element name="startTime"   type="xs:dateTime" minOccurs="0"/>
+	  <xs:element name="endTime"     type="xs:dateTime" minOccurs="0"/>
 	  <xs:element name="effect"      type="prov:ActivityRef"/>
 	  <xs:element name="cause"       type="prov:AgentRef"/>
-      <xs:element name="startTime"   type="xs:dateTime" minOccurs="0"/>
-      <xs:element name="endTime"     type="xs:dateTime" minOccurs="0"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-    <xs:attribute name="id" type="xs:ID"/>
+    <xs:attribute name="id" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="WasDerivedFrom">
 	<xs:sequence>
 	  <xs:element name="effect"  type="prov:EntityRef"/>
 	  <xs:element name="cause"   type="prov:EntityRef"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:ID"/>
+	<xs:attribute name="id" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="WasInformedBy">
 	<xs:sequence>
+	  <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
 	  <xs:element name="effect"  type="prov:ActivityRef"/>
 	  <xs:element name="cause"   type="prov:ActivityRef"/>
-      <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
-	  <xs:element ref="prov:attributes"  minOccurs="1" maxOccurs="1"/>
+	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:ID"/>
+	<xs:attribute name="id" type="xs:string"/>
   </xs:complexType>
 
+  <xs:complexType name="HasAnnotation">
+	<xs:sequence>
+	  <xs:element name="thing"   type="prov:NoteRef" minOccurs="1"/> <!-- note, just a ref to anything, really -->
+	  <xs:element name="note"    type="prov:NoteRef" minOccurs="1"/>
+	</xs:sequence>
+    <xs:attribute name="id" type="xs:string"/>
+  </xs:complexType>
 
   <xs:element name="label" type="xs:string"/>
   <xs:element name="type" type="xs:string"/>
@@ -113,79 +131,24 @@
 
 
 
-  <xs:element name="container" type="prov:Container">
-	<xs:annotation>
-	  <xs:documentation>A set of assertions about the provenance of things</xs:documentation>
-	</xs:annotation>
-  </xs:element>
 
-  <xs:complexType name="Container">
-    <xs:annotation>
-      <xs:appinfo>
-        <jxb:class>
-         <jxb:javadoc>
-           <![CDATA[ Java class for Container complex type. See <A href="http://twiki.ipaw.info/bin/view/Challenge/OPM1-01Review">Container</A>.]]>
-         </jxb:javadoc>
-        </jxb:class>
-      </xs:appinfo>
-    </xs:annotation> 
-	<xs:sequence>
-	  <xs:element name="accounts" type="prov:Accounts" minOccurs="0"/>
-	  <xs:element name="activities" type="prov:Activities" minOccurs="0"/>
-	  <xs:element name="entities" type="prov:Entities" minOccurs="0"/>
-	  <xs:element name="agents" type="prov:Agents" minOccurs="0"/>
-	  <xs:element name="dependencies" type="prov:Dependencies" minOccurs="0"/>
-	  <xs:element name="annotations" type="prov:Annotations" minOccurs="0"/>
-	  <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
-	</xs:sequence>
-	<xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
-
-  <xs:complexType name="ContainerRef">
-    <xs:attribute name="ref" type="xs:IDREF"/>
-  </xs:complexType>
   <xs:complexType name="ActivityRef">
-	<xs:attribute name="ref" type="xs:IDREF"/>
+	<xs:attribute name="ref" type="xs:string"/>
   </xs:complexType>
   <xs:complexType name="EntityRef">
-	<xs:attribute name="ref" type="xs:IDREF"/>
+	<xs:attribute name="ref" type="xs:string"/>
   </xs:complexType>
   <xs:complexType name="AgentRef">
-	<xs:attribute name="ref" type="xs:IDREF"/>
+	<xs:attribute name="ref" type="xs:string"/>
   </xs:complexType>
-  <xs:complexType name="AccountRef">
-	<xs:attribute name="ref" type="xs:IDREF"/>
-  </xs:complexType>
+
   <xs:complexType name="DependencyRef">
-    <xs:attribute name="ref" type="xs:IDREF"/>
-  </xs:complexType>
-  <xs:complexType name="AnnotationRef">
-    <xs:attribute name="ref" type="xs:IDREF"/>
-  </xs:complexType>
-  
-
-  <xs:complexType name="Account">
-    <xs:complexContent>
-      <xs:extension base="prov:Container">
-	<xs:sequence>
-	  <xs:element name="asserter" type="prov:AgentRef"  minOccurs="0" maxOccurs="unbounded"/>
-	</xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
+    <xs:attribute name="ref" type="xs:string"/>
   </xs:complexType>
 
-  <xs:complexType name="Attributes">
-     <xs:sequence>
-        <xs:any maxOccurs="unbounded" minOccurs="1"/>
-     </xs:sequence>
+  <xs:complexType name="NoteRef">
+    <xs:attribute name="ref" type="xs:string"/>
   </xs:complexType>
-
-
-  <xs:element name="attributes" type="prov:Attributes"/>
-
-
-
-
 
   <xs:complexType name="Dependencies">
 	<xs:sequence>
@@ -195,75 +158,55 @@
 		<xs:element name="wasInformedBy"      type="prov:WasInformedBy"/>
 		<xs:element name="wasDerivedFrom"     type="prov:WasDerivedFrom"/>
 		<xs:element name="wasControlledBy"    type="prov:WasControlledBy"/>
+		<xs:element name="hasAnnotation"      type="prov:HasAnnotation"/>
 	  </xs:choice>
 	</xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="Entities">
+
+  <!-- BUNDLES -->
+
+  <xs:element name="account" type="prov:Account"/>
+  <xs:complexType name="Account">
 	<xs:sequence>
-	  <xs:element name="entity" type="prov:Entity" minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="1"/>
+	  <xs:element name="asserter" type="prov:AgentRef"  minOccurs="0" maxOccurs="unbounded"/>
 	</xs:sequence>
+	<xs:attribute name="id" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:element name="container" type="prov:Container">
+	<xs:annotation>
+	  <xs:documentation>A set of assertions about the provenance of things</xs:documentation>
+	</xs:annotation>
+  </xs:element>
+
+  <xs:element name="record" type="prov:Record"/>
+  <xs:complexType name="Record">
+	<xs:sequence>
+	  <xs:element ref="prov:account"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:activity" minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:entity"   minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:agent"    minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:note"     minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element name="dependencies" type="prov:Dependencies" minOccurs="0"/>
+	</xs:sequence>
+	<xs:attribute name="id" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Container">
+	<xs:sequence>
+	  <xs:element name="namespace" minOccurs="1" maxOccurs="1"/>
+	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="1"/>
+	</xs:sequence>
+	<xs:attribute name="id" type="xs:string"/>
   </xs:complexType>
 
 
-  <xs:complexType name="Accounts">
-	<xs:sequence>
-	  <xs:element name="account"  type="prov:Account"  minOccurs="0" maxOccurs="unbounded"/>
-	</xs:sequence>
-  </xs:complexType>
 
-
-  <xs:complexType name="Activities">
-	<xs:sequence>
-	  <xs:element name="activity" type="prov:Activity" minOccurs="0" maxOccurs="unbounded"/>
-	</xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="Agents">
-	<xs:sequence>
-	  <xs:element name="agent"   type="prov:Agent" minOccurs="0" maxOccurs="unbounded"/>
-	</xs:sequence>
-  </xs:complexType>
   
-  <xs:complexType name="Annotations">
-    <xs:sequence>
-      <xs:element name="annotation"   type="prov:Annotation" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-  
 
 
-
-  <!-- Annotations, was OPMX style, need to be adapted to PROV -->
-
-  <xs:element name="annotation" type="prov:EmbeddedAnnotation"/>
-  <xs:complexType name="Annotation">
-	<xs:complexContent>
-          <xs:extension base="prov:EmbeddedAnnotation">
-            <xs:sequence>
-              <xs:choice minOccurs="0" maxOccurs="1">
-                <xs:element name="externalSubject" type="xs:anyURI"/>
-                <xs:element name="localSubject"    type="xs:IDREF"/>
-              </xs:choice>
-            </xs:sequence>
-          </xs:extension>
-        </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="EmbeddedAnnotation">
-     <xs:sequence>
-       <xs:element name="property" type="prov:Property"   minOccurs="1"    maxOccurs="unbounded"/>
-       <xs:element ref="prov:annotation"  minOccurs="1" maxOccurs="1"/>
-     </xs:sequence>
-     <xs:attribute name="id" type="xs:ID"/>
-  </xs:complexType>
-
-  <xs:complexType name="Property">
-     <xs:sequence>
-        <xs:element name="value" type="xs:anyType"/>
-     </xs:sequence>
-     <xs:attribute name="attribute" type="xs:anyURI"/>
-  </xs:complexType>
 
 
 

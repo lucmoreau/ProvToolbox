@@ -105,6 +105,42 @@
          </executions>
        </plugin>
 
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+
+          <execution>
+            <id>patch.executable</id>
+            <phase>package</phase>
+            <goals>
+             <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+
+                <!-- patch the shell script to avoid changing current directory, so that
+                     relative files are understood as relative to the current directory. -->
+
+                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
+  	              <arg value="-e s/^cd/#### no CD ### Luc/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="asn" />
+                </exec>
+
+                <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
+  	              <arg value="a+x" />
+  	              <arg value="asn" />
+  	              <arg value="asn.bat" />
+                </exec>
+
+
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
     </plugins>
 
    

@@ -113,7 +113,7 @@ public class PC1FullTest
         }
     }
 
-    public void addValue(HasAttributes p1, String val) {
+    public void addValue(HasExtensibility p1, String val) {
         pFactory.addAttribute(p1,
                               "http://www.ipaw.info/pc1/",
                               "pc1",
@@ -121,7 +121,7 @@ public class PC1FullTest
                               val);
     }
 
-    public void addUrl(HasAttributes p1, String val) {
+    public void addUrl(HasExtensibility p1, String val) {
         pFactory.addAttribute(p1,
                               "http://www.ipaw.info/pc1/",
                               "pc1",
@@ -396,6 +396,14 @@ public class PC1FullTest
                              "atlas-z.gif",
                              outputLocation);
 
+	Note n1=pFactory.newNote("n1");
+        pFactory.addAttribute(n1,
+                              "http://www.ipaw.info/pc1/",
+                              "pc1",
+                              "color",
+                              "red");
+
+
         Used u1=pFactory.newUsed(p1,"img",a3);
         Used u2=pFactory.newUsed(p1,"hdr",a4);
         Used u3=pFactory.newUsed(p1,"imgRef",a1);
@@ -535,12 +543,15 @@ public class PC1FullTest
 
 
 
+	HasAnnotation ha1=pFactory.newHasAnnotation(a1,n1);
+
         Container graph=pFactory.newContainer(black,
                                             new Activity[] {p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15},
                                             new Entity[] {a1,a2,a5,a6,a3,a4,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,
                                                             a21,a22,a23,a24,a25,a25p,a26,a26p,a27,a27p,a28,a29,a30},
                                             new Agent[] { //ag1
                                                         },
+					      new Note[] { n1 },
                                             new Object[] {u1,u2,u3,u4,u5,u6,u7,u8,u9,u10,u11,u12,u13,u14,u15,u16,u17,u18,u19,u20,
                                                           u21,u22,u23,u24,u25,u26,u27,u28,u29,u30,u31,u32,u33,u34,u30p,u32p,u34p,u35,u36,u37,
                                                           wg1,wg2,wg3,wg4,wg5,wg6,wg7,wg8,wg9,wg10,wg11,wg12,wg13,wg14,
@@ -548,8 +559,9 @@ public class PC1FullTest
                                                           wd1,wd2,wd3,wd4,wd5,wd6,wd7,wd8,wd9,wd10,wd11,wd12,wd13,wd14,wd15,wd16,
                                                           wd17,wd18,wd19,wd20,wd21,wd22,wd23,wd24,wd25,wd26,wd27,wd28,wd29,wd30,wd31,
                                                           wd32,wd33,wd34,wd35,wd36,wd37,wd38,wd39,wd40,wd41,wd42,wd43,wd44,wd45,wd46,
-                                                          wd47,wd48,wd49
+                                                          wd47,wd48,wd49,
                                                           //wc1,
+							  ha1
                                             } );
 
 

@@ -406,7 +406,7 @@ public class PC1FullTest
 
         Used u1=pFactory.newUsed(p1,"img",a3);
         Used u2=pFactory.newUsed(p1,"hdr",a4);
-        Used u3=pFactory.newUsed(p1,"imgRef",a1);
+        Used u3=pFactory.newUsed("u3", p1,"imgRef",a1);
         Used u4=pFactory.newUsed(p1,"hdrRef",a2);
         Used u5=pFactory.newUsed(p2,"img",a5);
         Used u6=pFactory.newUsed(p2,"hdr",a6);
@@ -451,7 +451,7 @@ public class PC1FullTest
 
 
 
-        WasGeneratedBy wg1=pFactory.newWasGeneratedBy(a11,"out",p1);
+        WasGeneratedBy wg1=pFactory.newWasGeneratedBy("wgb1", a11,"out",p1);
         WasGeneratedBy wg2=pFactory.newWasGeneratedBy(a12,"out",p2);
         WasGeneratedBy wg3=pFactory.newWasGeneratedBy(a13,"out",p3);
         WasGeneratedBy wg4=pFactory.newWasGeneratedBy(a14,"out",p4);
@@ -480,7 +480,7 @@ public class PC1FullTest
         wg20.setTime(pFactory.newTimeNow());
 
 
-        WasDerivedFrom wd1=pFactory.newWasDerivedFrom(a11,a1);
+        WasDerivedFrom wd1=pFactory.newWasDerivedFrom(a11,a1,p1,wg1,u3);
         WasDerivedFrom wd2=pFactory.newWasDerivedFrom(a11,a2);
         WasDerivedFrom wd3=pFactory.newWasDerivedFrom(a11,a3);
         WasDerivedFrom wd4=pFactory.newWasDerivedFrom(a11,a4);

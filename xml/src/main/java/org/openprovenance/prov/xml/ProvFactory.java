@@ -481,6 +481,23 @@ public class ProvFactory implements CommonURIs {
     }
 
 
+    public WasDerivedFrom newWasDerivedFrom(String id,
+                                            EntityRef aid1,
+                                            EntityRef aid2,
+                                            ActivityRef aid,
+                                            DependencyRef did1,
+                                            DependencyRef did2) {
+        WasDerivedFrom res=of.createWasDerivedFrom();
+        res.setId(autoGenerateId(wasDerivedFromIdPrefix,id));
+        res.setCause(aid2);
+        res.setEffect(aid1);
+        res.setActivity(aid);
+        res.setGeneration(did1);
+        res.setUsage(did2);
+        return res;
+    }
+
+
     public WasDerivedFrom newWasDerivedFrom(Entity a1,
                                             Entity a2) {
         return newWasDerivedFrom(null,a1,a2);
@@ -492,6 +509,28 @@ public class ProvFactory implements CommonURIs {
         EntityRef aid1=newEntityRef(a1);
         EntityRef aid2=newEntityRef(a2);
         return  newWasDerivedFrom(id,aid1,aid2);
+    }
+
+    public WasDerivedFrom newWasDerivedFrom(Entity a1,
+                                            Entity a2,
+                                            Activity a,
+                                            WasGeneratedBy g2,
+                                            Used u1) {
+        return newWasDerivedFrom(null,a1,a2,a,g2,u1);
+    }
+
+    public WasDerivedFrom newWasDerivedFrom(String id,
+                                            Entity e2,
+                                            Entity e1,
+                                            Activity a,
+                                            WasGeneratedBy g2,
+                                            Used u1) {
+        EntityRef eid1=newEntityRef(e1);
+        EntityRef eid2=newEntityRef(e2);
+        ActivityRef aid=newActivityRef(a);
+        DependencyRef did2=newDependencyRef(g2);
+        DependencyRef did1=newDependencyRef(u1);
+        return  newWasDerivedFrom(id,eid2,eid1,aid,did2,did1);
     }
 
 

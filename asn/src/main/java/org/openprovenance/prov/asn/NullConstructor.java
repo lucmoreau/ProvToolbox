@@ -35,6 +35,12 @@ public class NullConstructor implements TreeConstructor {
     public Object convertA(Object a) {
         return null;
     }
+    public Object convertU(Object a) {
+        return null;
+    }
+    public Object convertG(Object a) {
+        return null;
+    }
     public Object convertString(String s) {
         return null;
     }

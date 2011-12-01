@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A;
+    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U;
 }
 
 @header {
@@ -59,8 +59,8 @@ useRecord
 	;
 
 derivationRecord
-	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier (',' a=identifier ',' '[' dst=attributeValuePairs ']' ',' '[' src=attributeValuePairs ']')?	')'
-      -> ^(WDF $id2 $id1 ^(A $a?)  ^(ATTRIBUTES $dst?) ^(ATTRIBUTES $src?))
+	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier (',' a=identifier ',' g2=identifier ',' u1=identifier )?	optionalAttributeValuePairs ')'
+      -> ^(WDF $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) optionalAttributeValuePairs)
 	;
 
 optionalAttributeValuePairs

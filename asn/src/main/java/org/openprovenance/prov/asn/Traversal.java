@@ -87,6 +87,18 @@ public class Traversal {
             } else {
                 return c.convertA(convert(ast.getChild(0)));
             }
+        case ASNParser.U:
+            if (ast.getChildCount()==0) {
+                return c.convertU(null);
+            } else {
+                return c.convertU(convert(ast.getChild(0)));
+            }
+        case ASNParser.G:
+            if (ast.getChildCount()==0) {
+                return c.convertG(null);
+            } else {
+                return c.convertG(convert(ast.getChild(0)));
+            }
 
         case ASNParser.STRING:
             return c.convertString(convertToken(getTokenString(ast.getChild(0))));

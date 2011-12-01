@@ -75,9 +75,9 @@ public class ASNConstructor implements TreeConstructor {
             ((time==null)? "" : (", " + time)) + ",[" + aAttrs + "]" +  ")";
         return s;
     }
-    public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object g2, Object u1) {
+    public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
         String s="wasDerivedFrom(" + id2 + "," + id1 + 
-            ((pe==null) ? "" : (", " + pe + ", " + g2 + "," + u1)) + ")";
+            ((pe==null) ? "" : (", " + pe + ", " + g2 + "," + u1)) + ",[" + aAttrs + "]" +  ")";
         return s;
     }
 

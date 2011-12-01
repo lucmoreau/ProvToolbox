@@ -70,7 +70,9 @@ container(
 
 
           wasDerivedFrom(ex:e1, ex:e2)
+          wasDerivedFrom(ex:e1, ex:e2, [ex:param="a", ex:port="foo"])
           wasDerivedFrom(ex:e1, ex:e2, ex:pe, ex:g2, ex:u1)
+          wasDerivedFrom(ex:e1, ex:e2, ex:pe, ex:g2, ex:u1, [ex:param="a", ex:port="foo"])
 
 
           dependedUpon(ex:e1, ex:a2)

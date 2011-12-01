@@ -149,7 +149,7 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
 
-    public Object convertUsed(Object id, Object id2,Object id1, Object uAttrs, Object time) {
+    public Object convertUsed(Object id, Object id2,Object id1, Object time, Object uAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
@@ -163,10 +163,14 @@ public  class ProvConstructor implements TreeConstructor {
                                 e1r);
         List attrs=(List)uAttrs;
         u.getAny().addAll(attrs);
+
+        if (time!=null) {
+            u.setTime(pFactory.newISOTime((String)time));
+        }
         return u;
     }
     
-    public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object gAttrs, Object time) {
+    public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object gAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
@@ -181,6 +185,10 @@ public  class ProvConstructor implements TreeConstructor {
                                                     a1r);
         List attrs=(List)gAttrs;
         g.getAny().addAll(attrs);
+        if (time!=null) {
+            g.setTime(pFactory.newISOTime((String)time));
+        }
+            
         return g;
     }
 

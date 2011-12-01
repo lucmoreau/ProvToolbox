@@ -48,7 +48,7 @@ public class NullConstructor implements TreeConstructor {
     public Object convertUsed(Object id, Object id2,Object id1, Object aAttrs, Object time) {
         return null;
     }
-    public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object aAttrs, Object time) {
+    public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs) {
         return null;
     }
     public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object q2, Object q1) {

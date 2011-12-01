@@ -213,6 +213,9 @@ public class ProvFactory implements CommonURIs {
         return newTime(new Date());
     }
 
+	public XMLGregorianCalendar newISOTime (String time) {
+        return newTime(javax.xml.bind.DatatypeConverter.parseDateTime(time).getTime());
+    }
 
 
     /** By default, no auto generation of Id.  Override this behaviour if required. */

@@ -65,14 +65,14 @@ public class ASNConstructor implements TreeConstructor {
     public Object convertString(String s) {
         return s;
     }
-    public Object convertUsed(Object id, Object id2,Object id1, Object aAttrs, Object time) {
-        String s="used(" + ((id==null)? "" : id + ",") + id2 + "," + id1 + ",[" + aAttrs + "]" +
-            ((time==null)? ")" : ", " + time + ")");
+    public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs) {
+        String s="used(" + ((id==null)? "" : id + ",") + id2 + "," + id1 +
+            ((time==null)? "" : (", " + time)) + ",[" + aAttrs + "]" + ")";
         return s;
     }
-    public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object aAttrs, Object time) {
-        String s="wasGeneratedBy(" + ((id==null)? "" : id + ",") + id2 + "," + id1 + ",[" + aAttrs + "]" + 
-            ((time==null)? ")" : ", " + time + ")");
+    public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
+        String s="wasGeneratedBy(" + ((id==null)? "" : id + ",") + id2 + "," + id1 +
+            ((time==null)? "" : (", " + time)) + ",[" + aAttrs + "]" +  ")";
         return s;
     }
     public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object g2, Object u1) {
@@ -90,5 +90,6 @@ public class ASNConstructor implements TreeConstructor {
     public Object convertTypedLiteral(String datatype, Object value) {
         return datatype + "%%" + value;
     }
+
 
 }

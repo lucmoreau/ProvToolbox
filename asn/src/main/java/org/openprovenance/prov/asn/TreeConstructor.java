@@ -16,8 +16,8 @@ public interface TreeConstructor {
     public Object convertU(Object a);
     public Object convertG(Object a);
     public Object convertString(String s);
-    public Object convertUsed(Object id, Object id2,Object id1, Object aAttrs, Object time);
-    public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object aAttrs, Object time);
+    public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs);
+    public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs);
     public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object q2, Object q1);
     public Object convertQNAME(String qname);
     public Object convertIRI(String iri);

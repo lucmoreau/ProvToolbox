@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U;
+    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T;
 }
 
 @header {
@@ -49,13 +49,13 @@ agentRecord
 	;
 
 generationRecord
-	:	'wasGeneratedBy' '('  optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ( ',' time)?	')'
-      -> ^(WGB optionalIdentifier identifier+ optionalAttributeValuePairs  ^(TIME time?))
+	:	'wasGeneratedBy' '('  optionalIdentifier identifier ',' identifier optionalTime optionalAttributeValuePairs ')'
+      -> ^(WGB optionalIdentifier identifier+ optionalTime optionalAttributeValuePairs)
 	;
 
 useRecord
-	:	'used' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ( ',' time)?	')'
-      -> ^(USED optionalIdentifier identifier+ optionalAttributeValuePairs ^(TIME time?))
+	:	'used' '(' optionalIdentifier identifier ',' identifier optionalTime optionalAttributeValuePairs ')'
+      -> ^(USED optionalIdentifier identifier+ optionalTime optionalAttributeValuePairs)
 	;
 
 derivationRecord
@@ -67,6 +67,12 @@ optionalAttributeValuePairs
     :
     (',' '[' attributeValuePairs ']')?
         -> ^(ATTRIBUTES attributeValuePairs?)
+    ;
+
+optionalTime
+    :
+    (',' time )?
+        -> ^(TIME time?)
     ;
 
 optionalIdentifier

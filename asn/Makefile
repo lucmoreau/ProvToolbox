@@ -8,3 +8,7 @@ go:
 	cat $(HERE)/src/test/resources/prov/container2.prov.xml
 
 
+go2:
+	sh target/appassembler/bin/asn $(HERE)/src/test/resources/prov/container3.prov 
+
+

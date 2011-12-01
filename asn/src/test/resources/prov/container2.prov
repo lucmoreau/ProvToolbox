@@ -1,5 +1,7 @@
 
 container(
+          entity(ex:e1)
+
           entity(ex:e1, [])
           entity(ex:e2, [ex:param="a"])
           entity(ex:e3, [ex:param="a"%%<http://example.org/type>])
@@ -11,8 +13,28 @@ container(
           entity(ex:e7, [ex:param="a", ex:port="foo" %% <http://example.org/type> ])
           entity(ex:e8, [ex:param="a", ex:port="foo" %% ex:type ])
 
+
+
+          agent(ex:ag1)
+
+          agent(ex:ag1, [])
+          agent(ex:ag2, [ex:param="a"])
+          agent(ex:ag3, [ex:param="a"%%<http://example.org/type>])
+          agent(ex:ag4, [ex:param="a" %% <http://example.org/type>])
+
+          agent(ex:ag5, [ex:param="a" %% xsd:foo])
+
+          agent(ex:ag6, [ex:param="a", ex:port="foo"])
+          agent(ex:ag7, [ex:param="a", ex:port="foo" %% <http://example.org/type> ])
+          agent(ex:ag8, [ex:param="a", ex:port="foo" %% ex:type ])
+
+
+          activity(ex:a2,     ,     )
+          activity(ex:a2,     ,     , [])
+
           activity(ex:a2,     ,     , [ex:param="a", ex:port="foo"])
           activity(ex:a2, 2001-10-26T21:32:52,     , [])
+          activity(ex:a2, 2001-10-26T21:32:52,     )
           activity(ex:a2, 2001-10-26T21:32:52,     , [ex:param="a", ex:port="foo"])
           activity(ex:a2,     ,     , [ex:param="a", ex:port="foo"])
           activity(ex:a2, 2001-10-26T21:32:52,  2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
@@ -23,12 +45,16 @@ container(
 
           agent(ex:ag2)
 
+          wasGeneratedBy(g1, ex:e1, ex:a2, [], 2001-10-26T21:32:52)
+
           wasGeneratedBy(ex:e1, ex:a2, [], 2001-10-26T21:32:52)
           wasGeneratedBy(ex:e1, ex:a2, [ex:param="a"], 2001-10-26T21:32:52)
           wasGeneratedBy(ex:e1, ex:a2, [ex:param="a", ex:port="foo"], 2001-10-26T21:32:52)
           wasGeneratedBy(ex:e1, ex:a2, [])
           wasGeneratedBy(ex:e1, ex:a2, [ex:param="a"])
           wasGeneratedBy(ex:e1, ex:a2, [ex:param="a", ex:port="foo"])
+
+          used(u1, ex:a2, ex:e1,     [ prov:role = "dataToAggregate"])
 
           used(ex:a2, ex:e1, [], 2001-10-26T21:32:52)
           used(ex:a2, ex:e1, [ex:param="a"], 2001-10-26T21:32:52)

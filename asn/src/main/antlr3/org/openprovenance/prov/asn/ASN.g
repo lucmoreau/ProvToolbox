@@ -34,35 +34,46 @@ record
 	;
 
 entityRecord
-	:	'entity' '(' identifier ',' '[' attributeValuePairs ']'
-		')'
-        -> ^(ENTITY identifier ^(ATTRIBUTES attributeValuePairs?))
+	:	'entity' '(' identifier optionalAttributeValuePairs ')'
+        -> ^(ENTITY identifier optionalAttributeValuePairs)
 	;
 
+
 activityRecord
-	:	'activity' '(' identifier (',' recipeLink)? ',' (startTime)? ',' (endTime)? ',' '[' attributeValuePairs ']'
-		')'
-        -> ^(ACTIVITY identifier ^(RECIPE recipeLink?) ^(START startTime?) ^(END endTime?) ^(ATTRIBUTES attributeValuePairs?))
+	:	'activity' '(' identifier (',' recipeLink)? ',' (startTime)? ',' (endTime)? optionalAttributeValuePairs ')'
+        -> ^(ACTIVITY identifier ^(RECIPE recipeLink?) ^(START startTime?) ^(END endTime?) optionalAttributeValuePairs )
 	;
 
 agentRecord
-	:	'agent' '(' identifier 	')' -> ^(AGENT identifier)
+	:	'agent' '(' identifier optionalAttributeValuePairs	')' -> ^(AGENT identifier optionalAttributeValuePairs )
 	;
 
 generationRecord
-	:	'wasGeneratedBy' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ( ',' time)?	')'
-      -> ^(WGB identifier+ ^(ATTRIBUTES attributeValuePairs?)  ^(TIME time?))
+	:	'wasGeneratedBy' '('  optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ( ',' time)?	')'
+      -> ^(WGB optionalIdentifier identifier+ optionalAttributeValuePairs  ^(TIME time?))
 	;
 
 useRecord
-	:	'used' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ( ',' time)?	')'
-      -> ^(USED identifier+ ^(ATTRIBUTES attributeValuePairs?) ^(TIME time?))
+	:	'used' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ( ',' time)?	')'
+      -> ^(USED optionalIdentifier identifier+ optionalAttributeValuePairs ^(TIME time?))
 	;
 
 derivationRecord
 	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier (',' a=identifier ',' '[' dst=attributeValuePairs ']' ',' '[' src=attributeValuePairs ']')?	')'
       -> ^(WDF $id2 $id1 ^(A $a?)  ^(ATTRIBUTES $dst?) ^(ATTRIBUTES $src?))
 	;
+
+optionalAttributeValuePairs
+    :
+    (',' '[' attributeValuePairs ']')?
+        -> ^(ATTRIBUTES attributeValuePairs?)
+    ;
+
+optionalIdentifier
+    :
+    (identifier ',')?
+        -> ^(ID identifier?)
+    ;
 
 dependenceRecord
 	:	'dependedUpon' '(' identifier ',' identifier ')'

@@ -29,6 +29,8 @@ agent(ex1:derek)
 wasControlledBy(ex1:aggregated, ex1:derek,[])
 wasControlledBy(ex1:illustrated, ex1:derek,[])
 
+used(u1, ex1:aggregated, ex1:dataSet1,     [ prov:role = "dataToAggregate"])
+
 used(ex1:aggregated, ex1:dataSet1,     [ prov:role = "dataToAggregate"])
 used(ex1:aggregated, ex1:regionList1, [ prov:role = "regionsToAggregteBy"])
 

@@ -47,6 +47,11 @@ public class Traversal {
             Object eAttrs=convert(ast.getChild(1));
             return c.convertEntity(id,eAttrs);
 
+        case ASNParser.AGENT:
+            id=convert(ast.getChild(0));
+            Object agAttrs=convert(ast.getChild(1));
+            return c.convertAgent(id,agAttrs);
+
         case ASNParser.CONTAINER:
             List<Object> records=new LinkedList();
             for (int i=0; i< ast.getChildCount(); i++) {
@@ -100,19 +105,28 @@ public class Traversal {
 
 
         case ASNParser.USED:
-            Object id2=convert(ast.getChild(0));
-            Object id1=convert(ast.getChild(1));
-            Object rAttrs=convert(ast.getChild(2));
-            Object time=convert(ast.getChild(3));
-            return c.convertUsed(id2,id1,rAttrs,time);
+            Tree uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            Object uid=convert(uidTree);
+            Object id2=convert(ast.getChild(1));
+            Object id1=convert(ast.getChild(2));
+            Object rAttrs=convert(ast.getChild(3));
+            Object time=convert(ast.getChild(4));
+            return c.convertUsed(uid, id2,id1,rAttrs,time);
 
         case ASNParser.WGB:
-
-            id2=convert(ast.getChild(0));
-            id1=(convert(ast.getChild(1)));
-            rAttrs=convert(ast.getChild(2));
-            time=convert(ast.getChild(3));
-            return c.convertWasGeneratedBy(id2,id1,rAttrs,time);
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=(convert(ast.getChild(2)));
+            rAttrs=convert(ast.getChild(3));
+            time=convert(ast.getChild(4));
+            return c.convertWasGeneratedBy(uid,id2,id1,rAttrs,time);
 
         case ASNParser.WDF:
             System.out.print("WDF ");

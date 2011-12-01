@@ -11,6 +11,9 @@ public class NullConstructor implements TreeConstructor {
     public Object convertEntity(Object id, Object attrs) {
         return null;
     }
+    public Object convertAgent(Object id, Object attrs) {
+        return null;
+    }
     public Object convertContainer(List<Object> records) {
         return null;
     }
@@ -35,10 +38,11 @@ public class NullConstructor implements TreeConstructor {
     public Object convertString(String s) {
         return null;
     }
-    public Object convertUsed(Object id2,Object id1, Object aAttrs, Object time) {
+
+    public Object convertUsed(Object id, Object id2,Object id1, Object aAttrs, Object time) {
         return null;
     }
-    public Object convertWasGeneratedBy(Object id2,Object id1, Object aAttrs, Object time) {
+    public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object aAttrs, Object time) {
         return null;
     }
     public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object q2, Object q1) {

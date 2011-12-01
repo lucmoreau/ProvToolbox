@@ -16,6 +16,10 @@ public class ASNConstructor implements TreeConstructor {
         String s="entity(" + id  + ",[" + attrs + "])";
         return s;
     }
+    public Object convertAgent(Object id, Object attrs) {
+        String s="agent(" + id  + ",[" + attrs + "])";
+        return s;
+    }
     public Object convertContainer(List<Object> records) {
         String s="container(";
         for (Object o: records) {
@@ -55,13 +59,13 @@ public class ASNConstructor implements TreeConstructor {
     public Object convertString(String s) {
         return s;
     }
-    public Object convertUsed(Object id2,Object id1, Object aAttrs, Object time) {
-        String s="used(" + id2 + "," + id1 + ",[" + aAttrs + "]" +
+    public Object convertUsed(Object id, Object id2,Object id1, Object aAttrs, Object time) {
+        String s="used(" + ((id==null)? "" : id + ",") + id2 + "," + id1 + ",[" + aAttrs + "]" +
             ((time==null)? ")" : ", " + time + ")");
         return s;
     }
-    public Object convertWasGeneratedBy(Object id2,Object id1, Object aAttrs, Object time) {
-        String s="wasGeneratedBy(" + id2 + "," + id1 + ",[" + aAttrs + "]" + 
+    public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object aAttrs, Object time) {
+        String s="wasGeneratedBy(" + ((id==null)? "" : id + ",") + id2 + "," + id1 + ",[" + aAttrs + "]" + 
             ((time==null)? ")" : ", " + time + ")");
         return s;
     }

@@ -1,5 +1,8 @@
 
-container(
+container(prefix ex <http://example.org/ex>
+          prefix ex2 <http://example.org/ex2>
+
+
           entity(ex:e1)
 
           entity(ex:e1, [])

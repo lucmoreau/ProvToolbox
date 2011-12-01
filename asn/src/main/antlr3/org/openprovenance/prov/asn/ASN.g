@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T;
+    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX;
 }
 
 @header {
@@ -23,11 +23,37 @@ tokens {
 
 container
 	:	'container' '('
+        (namespaceDeclarations ';')?
 		record*
 		')'
 
-      -> ^(CONTAINER record*)
+      -> ^(CONTAINER record* namespaceDeclarations?)
 	;
+
+
+namespaceDeclarations :
+        (defaultNamespaceDeclaration | namespaceDeclaration) namespaceDeclaration*
+        -> ^(NAMESPACES defaultNamespaceDeclaration? namespaceDeclaration*)
+    ;
+
+namespaceDeclaration :
+        'prefix' prefix namespace
+        -> ^(NAMESPACE prefix namespace)
+    ;
+
+
+prefix :
+        NCNAME -> ^(PREFIX NCNAME)
+    ;
+
+namespace :
+        IRI_REF
+    ;
+
+defaultNamespaceDeclaration :
+        'default' IRI_REF
+        ->  ^(DEFAULTNAMESPACE IRI_REF)
+    ;
 
 record
 	:	(entityRecord | activityRecord | agentRecord | generationRecord  | useRecord | derivationRecord | dependenceRecord  | controlRecord )

@@ -184,6 +184,7 @@
 	</xs:annotation>
   </xs:element>
 
+  <!-- a wrapper element for all records, used in Container or Account -->
   <xs:element name="record" type="prov:Record"/>
   <xs:complexType name="Record">
 	<xs:sequence>
@@ -199,8 +200,10 @@
 
   <xs:complexType name="Container">
 	<xs:sequence>
-	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
+    <xs:attribute name="id" type="xs:string"/>
+    <!-- tentative, this could allow us to annotate containers ... -->
   </xs:complexType>
 
 

@@ -1,0 +1,52 @@
+
+container(
+entity(ex1:dataSet1,[])
+entity(ex1:regionList1,[])
+entity(ex1:aggregate1,[])
+entity(ex1:chart1,[])
+
+
+activity(ex1:compiled,compilation_step,,,[])
+
+activity(ex1:aggregated,,,[])
+
+activity(ex1:illustrated,,,[])
+
+
+
+used(ex1:aggregated, ex1:dataSet1,[])
+used(ex1:aggregated, ex1:regionList1,[])
+wasGeneratedBy(ex1:aggregate1, ex1:aggregated,[])
+
+used(ex1:illustrated, ex1:aggregate1,[])
+wasGeneratedBy(ex1:chart1, ex1:illustrated,[])
+
+
+
+entity(ex1:derek, [ prov:type="foaf:Person", foaf:givenName = "Derek", foaf:mbox= "<mailto:derek@example.org>"])
+agent(ex1:derek)
+
+wasControlledBy(ex1:aggregated, ex1:derek,[])
+wasControlledBy(ex1:illustrated, ex1:derek,[])
+
+used(ex1:aggregated, ex1:dataSet1,     [ prov:role = "dataToAggregate"])
+used(ex1:aggregated, ex1:regionList1, [ prov:role = "regionsToAggregteBy"])
+
+
+wasRevisionOf(ex1:dataSet2, ex1:dataSet1)
+
+
+entity(ex1:dataSet, [ prov:type="ex1:DataSet", ex1:regions ="(ex1:North, ex1:NorthWest, ex1:East)", dc:creator="ex1:DataGov", dc:title="Regional incidence dataset 2011"  ])
+
+wasComplementOf(dataSet1, dataSet)
+wasComplementOf(dataSet2, dataSet)
+
+entity(ex1:dataSet1, [ prov:type="ex1:DataSet", ex1:postCodes=  "( 'N1', 'N2', 'NW1', 'E1', 'E2' ) ", ex1:totalIncidents = "141",        dc:creator =  " ex1:DataGov", dc:title = "Regional incidence dataset 2011"  ])
+
+dependedOn(ex1:chart2, ex1:dataSet2)
+wasEventuallyDerivedFrom(ex1:chart2, ex1:dataSet2)
+wasDerivedFrom(ex1:chart2, ex1:dataSet2)
+wasGeneratedBy(ex1:chart2, ex1:compiled2)
+
+)
+

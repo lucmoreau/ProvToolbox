@@ -199,10 +199,8 @@
 
   <xs:complexType name="Container">
 	<xs:sequence>
-	  <xs:element name="namespace" minOccurs="1" maxOccurs="1"/>
-	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="1"/>
+	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="unbounded"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:string"/>
   </xs:complexType>
 
 

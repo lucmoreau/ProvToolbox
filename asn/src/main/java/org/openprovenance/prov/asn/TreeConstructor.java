@@ -21,6 +21,7 @@ public interface TreeConstructor {
     public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs);
     public Object convertQNAME(String qname);
     public Object convertIRI(String iri);
+    public Object convertPrefix(String pre);
     public Object convertTypedLiteral(String datatype, Object value);
     public Object convertNamespace(Object pre, Object iri);
     public Object convertDefaultNamespace(Object iri);

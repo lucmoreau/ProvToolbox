@@ -12,6 +12,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import java.io.StringWriter;
 import java.io.File;
+import java.util.Hashtable;
 
 /** Serialiser of PROV Graphs. */
 
@@ -54,32 +55,21 @@ public class ProvSerialiser {
     }
     protected JAXBContext jc;
 
-    public static String defaultNamespace="http://example.com/";
-
-    protected final boolean usePrefixMapper;
     public ProvSerialiser () throws JAXBException {
         jc = JAXBContext.newInstance( ProvFactory.packageList );
-        usePrefixMapper=true;
-    }
-    public ProvSerialiser (boolean usePrefixMapper) throws JAXBException {
-        jc = JAXBContext.newInstance( ProvFactory.packageList );
-        this.usePrefixMapper=usePrefixMapper;
     }
 
     public ProvSerialiser (String packageList) throws JAXBException {
         jc = JAXBContext.newInstance( packageList );
-        usePrefixMapper=true;
-    }
-    public ProvSerialiser (boolean usePrefixMapper, String packageList) throws JAXBException {
-        jc = JAXBContext.newInstance( packageList );
-        this.usePrefixMapper=usePrefixMapper;
     }
 
     public void configurePrefixes(Marshaller m) throws PropertyException {
-        if (usePrefixMapper) {
-            m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
-                          new NamespacePrefixMapper(defaultNamespace));
-        }
+        configurePrefixes(m,new Hashtable<String,String>());
+    }
+
+    public void configurePrefixes(Marshaller m, Hashtable<String,String> namespaces) throws PropertyException {
+        m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
+                      new NamespacePrefixMapper(namespaces));
     }
 
     public Document serialiseContainer (Container request) throws JAXBException {
@@ -103,7 +93,7 @@ public class ProvSerialiser {
         throws JAXBException {
         Marshaller m=jc.createMarshaller();
         m.setProperty("jaxb.formatted.output",format);
-        configurePrefixes(m);
+        configurePrefixes(m,graph.getNss());
         m.marshal(of.createContainer(graph),sw);
         return sw.toString();
     }
@@ -112,7 +102,7 @@ public class ProvSerialiser {
         throws JAXBException {
         Marshaller m=jc.createMarshaller();
         m.setProperty("jaxb.formatted.output",format);
-        configurePrefixes(m);
+        configurePrefixes(m,graph.getNss());
         m.marshal(of.createContainer(graph),file);
     }
 

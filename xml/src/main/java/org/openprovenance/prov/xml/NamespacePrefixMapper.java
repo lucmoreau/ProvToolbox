@@ -1,18 +1,35 @@
 package org.openprovenance.prov.xml;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.LinkedList;
 
 /** Prefix definition for PROV serialisations. */
 
 
 public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.NamespacePrefixMapper {
+
+    static final public String PROV_NS="http://openprovenance.org/prov-xml#";
+    static final public String XSI_NS="http://www.w3.org/2001/XMLSchema-instance";
+    static final public String XSD_NS="http://www.w3.org/2001/XMLSchema";
+
+    private Hashtable<String,String> nss=null;
+
         // Must use 'internal' for Java 6
 /* This file is a modification of the NamespacePrefixMapper from docx4j,
    which was licensed under Apache License, version 2.
 */
     String defaultNamespace;
 
-    public NamespacePrefixMapper(String defaultNamespace) {
-        this.defaultNamespace=defaultNamespace;
+    public NamespacePrefixMapper(Hashtable<String,String> nss) {
+        if (nss!=null) {
+            this.defaultNamespace=nss.get("_");
+        }
+        this.nss=nss;
+        System.out.println("PREFIXES IS " + nss);
+        System.out.println("DEFAULT " + defaultNamespace);
     }
+
+
        
     /**
      * Returns a preferred prefix for the given namespace URI.
@@ -50,20 +67,27 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
      *      value will be ignored and the system will generate one.
      */
     public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
-        if (namespaceUri.equals("http://openprovenance.org/model/prov/xml#")) {
+        if (namespaceUri.equals(PROV_NS)) {
             return "prov";
         }
         if (namespaceUri.equals("http://openprovenance.org/model/opmPrinterConfig")) {
             return "prn";
         }
-        if (namespaceUri.equals("http://www.w3.org/2001/XMLSchema")) {
+        if (namespaceUri.equals(XSD_NS)) {
             return "xsd";
         }
-        if (namespaceUri.equals("http://www.w3.org/2001/XMLSchema-instance")) {
+        if (namespaceUri.equals(XSI_NS)) {
             return "xsi";
         }
         if ((defaultNamespace!=null) && (namespaceUri.equals(defaultNamespace))) {
             return "";
+        }
+        for (String k: nss.keySet()) {
+            System.out.println(" key " + k + "   " + namespaceUri);
+            if (nss.get(k).equals(namespaceUri)) {
+                System.out.println(" found key " + k + "   " + namespaceUri);
+                return k;
+            }
         }
         return suggestion;
     }
@@ -115,17 +139,16 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
      *      JAXB RI 1.0.2
      */
     public String[] getPreDeclaredNamespaceUris() {
-        if (defaultNamespace!=null) {
-            return new String[] { "http://www.w3.org/2001/XMLSchema-instance",
-                                  "http://www.w3.org/2001/XMLSchema",
-                                  "http://openprovenance.org/model/prov/xml#",
-                                  defaultNamespace};
-        } else {
-            return new String[] { "http://www.w3.org/2001/XMLSchema-instance",
-                                  "http://www.w3.org/2001/XMLSchema",
-                                  "http://openprovenance.org/model/prov/xml#"};
+        LinkedList<String> ll=new LinkedList<String>();
+        if (nss!=null) {
+            ll.addAll(nss.values());
         }
+        ll.add(XSI_NS);
+        ll.add(XSD_NS);
+        ll.add(PROV_NS);
+        System.out.println("namespaceprefixmapper " + ll);
+        String[] tmp=new String[1];
+        return ll.toArray(tmp);
     }
-
-   
+                                      
 }

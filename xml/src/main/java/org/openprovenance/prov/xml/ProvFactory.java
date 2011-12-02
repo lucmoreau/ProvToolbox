@@ -620,7 +620,12 @@ public class ProvFactory implements CommonURIs {
                                 String localName,                                  
                                 String value) {
         Document doc=oFactory.builder.newDocument();
-        Element el=doc.createElementNS(namespace,prefix + ":" + localName);
+        Element el=doc.createElementNS(namespace,
+                                       ( (prefix.equals(""))
+                                         ?
+                                         ""
+                                         :
+                                         (prefix + ":")) + localName);
         el.appendChild(doc.createTextNode(value));
         doc.appendChild(el);
         return el;

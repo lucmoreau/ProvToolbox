@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Hashtable;
 import javax.xml.bind.JAXBException;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -38,6 +39,14 @@ public class PC1FullTest
 
     static Container graph1;
 
+    static final String PC1_NS="http://www.ipaw.info/pc1/";
+
+    
+    /** Set this variable to "" if PC1_NS is default namespace, or to
+        "pc1" otherwise.  This variable affects the domain specific
+        attributes. */
+    String PC1_PREFIX="";
+
 
     public void testPC1Full() throws JAXBException
     {
@@ -47,7 +56,6 @@ public class PC1FullTest
         serial.serialiseContainer(new File("target/pc1-full.xml"),graph,true);
 
         
-        //System.out.println(sw);
 
         graph1=graph;
         System.out.println("PC1Full Test asserting True");
@@ -115,16 +123,16 @@ public class PC1FullTest
 
     public void addValue(HasExtensibility p1, String val) {
         pFactory.addAttribute(p1,
-                              "http://www.ipaw.info/pc1/",
-                              "pc1",
+                              PC1_NS,
+                              PC1_PREFIX,
                               "value",
                               val);
     }
 
     public void addUrl(HasExtensibility p1, String val) {
         pFactory.addAttribute(p1,
-                              "http://www.ipaw.info/pc1/",
-                              "pc1",
+                              PC1_NS,
+                              PC1_PREFIX,
                               "url",
                               val);
     }
@@ -398,8 +406,8 @@ public class PC1FullTest
 
 	Note n1=pFactory.newNote("n1");
         pFactory.addAttribute(n1,
-                              "http://www.ipaw.info/pc1/",
-                              "pc1",
+                              PC1_NS,
+                              PC1_PREFIX,
                               "color",
                               "red");
 
@@ -564,8 +572,13 @@ public class PC1FullTest
 							  ha1
                                             } );
 
-
-
+        Hashtable<String,String> nss=new Hashtable<String,String>();
+        if (PC1_PREFIX.equals("")) {
+            nss.put("_",PC1_NS);
+        } else {
+            nss.put(PC1_PREFIX,PC1_NS);
+        }
+        graph.setNss(nss);
         return graph;
     }
     

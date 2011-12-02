@@ -108,6 +108,9 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
- 
+    public Object convertPrefix(String pre) {
+        return pre;
+    }
+
 
 }

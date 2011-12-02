@@ -74,5 +74,8 @@ public class NullConstructor implements TreeConstructor {
     public Object convertNamespaces(List<Object> namespaces) {
         return null;
     }
+    public Object convertPrefix(String pre) {
+        return null;
+    }
 
 }

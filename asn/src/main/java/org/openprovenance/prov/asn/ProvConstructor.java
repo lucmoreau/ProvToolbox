@@ -98,6 +98,8 @@ public  class ProvConstructor implements TreeConstructor {
                                           es,
                                           ags,
                                           lks);
+        System.out.println("Container namespaces " + namespaceTable);
+        c.setNss(namespaceTable);
         return c;
     }
 
@@ -248,6 +250,10 @@ public  class ProvConstructor implements TreeConstructor {
     
     public Object convertNamespaces(List<Object> namespaces) {
         return namespaceTable;
+    }
+
+    public Object convertPrefix(String pre) {
+        return pre;
     }
 
  

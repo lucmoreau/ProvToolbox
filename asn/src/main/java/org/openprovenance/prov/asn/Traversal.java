@@ -157,13 +157,17 @@ public class Traversal {
             return getTokenString(ast.getChild(0));
 
         case ASNParser.NAMESPACE:
+            Object pre=convert(ast.getChild(0));
             Object iri1=getTokenString(ast.getChild(1));
-            Object pre=getTokenString(ast.getChild(0));
             return c.convertNamespace(pre,iri1);
 
         case ASNParser.DEFAULTNAMESPACE:
             iri1=getTokenString(ast.getChild(0));
             return c.convertDefaultNamespace(iri1);
+
+        case ASNParser.PREFIX:
+            String prefix=getTokenString(ast.getChild(0));
+            return c.convertPrefix(prefix);
 
 
         case ASNParser.NAMESPACES:

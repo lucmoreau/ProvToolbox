@@ -18,7 +18,7 @@ import junit.framework.TestSuite;
 public class PC1FullTest 
     extends TestCase
 {
-    public static ProvFactory pFactory=new ProvFactory();
+    public static ProvFactory pFactory=new ProvFactory("http://www.ipaw.info/pc1/");
 
     /**
      * Create the test case

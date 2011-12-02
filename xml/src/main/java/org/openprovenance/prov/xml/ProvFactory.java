@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Date;
 import javax.xml.bind.JAXBElement;
 import java.util.GregorianCalendar;
+import javax.xml.namespace.QName;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -36,6 +37,13 @@ public class ProvFactory implements CommonURIs {
         return packageList;
     }
 
+    /** Note, this method now makes it stateful :-( */
+    private String defaultNamespace=null;
+    public void setDefaultNamespace(String nss) {
+        defaultNamespace=nss;
+    }
+    
+
     private final static ProvFactory oFactory=new ProvFactory();
 
     public static ProvFactory getFactory() {
@@ -61,6 +69,12 @@ public class ProvFactory implements CommonURIs {
         init();
     }
 
+    public ProvFactory(String defaultNamespace) {
+        of=new ObjectFactory();
+        this.defaultNamespace=defaultNamespace;
+        init();
+    }
+
     public ProvFactory(ObjectFactory of) {
         this.of=of;
         init();
@@ -76,10 +90,28 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public ActivityRef newActivityRef(String id) {
+    public ActivityRef newActivityRef(QName id) {
         ActivityRef res=of.createActivityRef();
         res.setRef(id);
         return res;
+    }
+
+
+    QName stringToQName(String id) {
+        if (id==null) return null;
+        int index=id.indexOf(':');
+        if (index==-1) {
+            return new QName(defaultNamespace,id);
+        }
+        String prefix=id.substring(0,index);
+        String local=id.substring(index+1,id.length());
+        return new QName(defaultNamespace,
+                         local,
+                         prefix);
+    }
+
+    public ActivityRef newActivityRef(String id) {
+        return newActivityRef(stringToQName(id));
     }
 
     public NoteRef newNoteRef(Note a) {
@@ -87,10 +119,15 @@ public class ProvFactory implements CommonURIs {
         res.setRef(a.getId());
         return res;
     }
-    public NoteRef newNoteRef(String id) {
+
+    public NoteRef newNoteRef(QName id) {
         NoteRef res=of.createNoteRef();
         res.setRef(id);
         return res;
+    }
+        
+    public NoteRef newNoteRef(String id) {
+        return newNoteRef(stringToQName(id));
     }
 
     public EntityRef newEntityRef(Entity a) {
@@ -99,10 +136,13 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public EntityRef newEntityRef(String id) {
+    public EntityRef newEntityRef(QName id) {
         EntityRef res=of.createEntityRef();
         res.setRef(id);
         return res;
+    }
+    public EntityRef newEntityRef(String id) {
+        return newEntityRef(stringToQName(id));
     }
 
     public AgentRef newAgentRef(Agent a) {
@@ -112,6 +152,10 @@ public class ProvFactory implements CommonURIs {
     }
 
     public AgentRef newAgentRef(String id) {
+        return newAgentRef(stringToQName(id));
+    }
+
+    public AgentRef newAgentRef(QName id) {
         AgentRef res=of.createAgentRef();
         res.setRef(id);
         return res;
@@ -119,9 +163,15 @@ public class ProvFactory implements CommonURIs {
 
 
 
-    public DependencyRef newDependencyRef(String id) {
+    public DependencyRef newDependencyRef(QName id) {
         DependencyRef res=of.createDependencyRef();
         res.setRef(id);
+        return res;
+    }
+
+    public DependencyRef newDependencyRef(String id) {
+        DependencyRef res=of.createDependencyRef();
+        res.setRef(stringToQName(id));
         return res;
     }
 
@@ -159,7 +209,11 @@ public class ProvFactory implements CommonURIs {
         return newActivity(pr,null);
     }
 
-    public Activity newActivity(String pr,
+    public Activity newActivity(QName pr) {
+        return newActivity(pr,null);
+    }
+
+    public Activity newActivity(QName pr,
                                 String label) {
         Activity res=of.createActivity();
         res.setId(pr);
@@ -167,22 +221,37 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
+    public Activity newActivity(String pr,
+                                String label) {
+        return newActivity(stringToQName(pr),label);
+    }
+
     public Agent newAgent(String ag) {
         return newAgent(ag,null);
     }
+    public Agent newAgent(QName ag) {
+        return newAgent(ag,null);
+    }
 
-    public Agent newAgent(String ag,
+    public Agent newAgent(QName ag,
                           String label) {
         Agent res=of.createAgent();
         res.setId(ag);
         if (label!=null) addLabel(res,label);
         return res;
     }
+    public Agent newAgent(String ag,
+                          String label) {
+        return newAgent(stringToQName(ag),label);
+    }
 
-    public Account newAccount(String id) {
+    public Account newAccount(QName id) {
         Account res=of.createAccount();
         res.setId(id);
         return res;
+    }
+    public Account newAccount(String id) {
+        return newAccount(stringToQName(id));
     }
 
 
@@ -249,16 +318,25 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    public Entity newEntity(String id) {
+    public Entity newEntity(QName id) {
         return newEntity(id,null);
     }
 
-    public Entity newEntity(String id,
+    public Entity newEntity(String id) {
+        return newEntity(stringToQName(id),null);
+    }
+
+    public Entity newEntity(QName id,
                             String label) {
         Entity res=of.createEntity();
         res.setId(id);
         if (label!=null) addLabel(res,label);
         return res;
+    }
+
+    public Entity newEntity(String id,
+                            String label) {
+        return newEntity(stringToQName(id),label);
     }
 
 
@@ -268,7 +346,19 @@ public class ProvFactory implements CommonURIs {
                         String role,
                         EntityRef aid) {
         Used res=of.createUsed();
-        res.setId(autoGenerateId(usedIdPrefix,id));
+        res.setId(stringToQName(autoGenerateId(usedIdPrefix,id)));
+        res.setEffect(pid);
+        addRole(res,role);
+        res.setCause(aid);
+        return res;
+    }
+
+    public Used newUsed(QName id,
+                        ActivityRef pid,
+                        String role,
+                        EntityRef aid) {
+        Used res=of.createUsed();
+        res.setId(id);
         res.setEffect(pid);
         addRole(res,role);
         res.setCause(aid);
@@ -311,7 +401,7 @@ public class ProvFactory implements CommonURIs {
                         Entity a) {
         ActivityRef pid=newActivityRef(p);
         EntityRef aid=newEntityRef(a);
-        return newUsed(id,pid,role,aid);
+        return newUsed(stringToQName(id),pid,role,aid);
     }
 
 
@@ -372,26 +462,43 @@ public class ProvFactory implements CommonURIs {
 
 
 
-    public WasGeneratedBy newWasGeneratedBy(String id,
+    public WasGeneratedBy newWasGeneratedBy(QName id,
                                             EntityRef aid,
                                             String role,
                                             ActivityRef pid) {
         WasGeneratedBy res=of.createWasGeneratedBy();
-        res.setId(autoGenerateId(wasGenerateByIdPrefix,id));
+        res.setId(id);
         res.setCause(pid);
         res.setEffect(aid);
         addRole(res,role);
         return res;
     }
 
+    public WasGeneratedBy newWasGeneratedBy(String id,
+                                            EntityRef aid,
+                                            String role,
+                                            ActivityRef pid) {
+        return newWasGeneratedBy(stringToQName(id),aid,role,pid);
+    }
 
     public WasGeneratedBy newWasGeneratedBy(Entity a,
                                             String role,
                                             Activity p) {
-        return newWasGeneratedBy(null,a,role,p);
+        return newWasGeneratedBy((QName)null,a,role,p);
     }
 
     public WasGeneratedBy newWasGeneratedBy(String id,
+                                            Entity a,
+                                            String role,
+                                            Activity p) {
+        EntityRef aid=newEntityRef(a);
+        ActivityRef pid=newActivityRef(p);
+        LinkedList ll=new LinkedList();
+        return  newWasGeneratedBy(stringToQName(id),aid,role,pid);
+    }
+
+
+    public WasGeneratedBy newWasGeneratedBy(QName id,
                                             Entity a,
                                             String role,
                                             Activity p) {
@@ -416,20 +523,27 @@ public class ProvFactory implements CommonURIs {
     public WasControlledBy newWasControlledBy(ActivityRef pid,
                                               String role,
                                               AgentRef agid) {
-        return newWasControlledBy(null,pid,role,agid);
+        return newWasControlledBy((QName)null,pid,role,agid);
     }
     
-    public WasControlledBy newWasControlledBy(String id,
+    public WasControlledBy newWasControlledBy(QName id,
                                               ActivityRef pid,
                                               String role,
                                               AgentRef agid) {
         WasControlledBy res=of.createWasControlledBy();
-        res.setId(autoGenerateId(wasControlledByIdPrefix,id));
+        res.setId(id);
         res.setEffect(pid);
         res.setCause(agid);
         addRole(res,role);
         return res;
     }
+    public WasControlledBy newWasControlledBy(String id,
+                                              ActivityRef pid,
+                                              String role,
+                                              AgentRef agid) {
+        return newWasControlledBy(stringToQName(id),pid,role,agid);
+    }
+
 
     public HasAnnotation newHasAnnotation(Identifiable i,
 					    Note n) {
@@ -473,25 +587,30 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    public WasDerivedFrom newWasDerivedFrom(String id,
+    public WasDerivedFrom newWasDerivedFrom(QName id,
                                             EntityRef aid1,
                                             EntityRef aid2) {
         WasDerivedFrom res=of.createWasDerivedFrom();
-        res.setId(autoGenerateId(wasDerivedFromIdPrefix,id));
+        res.setId(id);
         res.setCause(aid2);
         res.setEffect(aid1);
         return res;
     }
-
-
     public WasDerivedFrom newWasDerivedFrom(String id,
+                                            EntityRef aid1,
+                                            EntityRef aid2) {
+        return newWasDerivedFrom(stringToQName(id),aid1,aid2);
+    }
+
+
+    public WasDerivedFrom newWasDerivedFrom(QName id,
                                             EntityRef aid1,
                                             EntityRef aid2,
                                             ActivityRef aid,
                                             DependencyRef did1,
                                             DependencyRef did2) {
         WasDerivedFrom res=of.createWasDerivedFrom();
-        res.setId(autoGenerateId(wasDerivedFromIdPrefix,id));
+        res.setId(id);
         res.setCause(aid2);
         res.setEffect(aid1);
         res.setActivity(aid);
@@ -499,6 +618,15 @@ public class ProvFactory implements CommonURIs {
         res.setUsage(did2);
         return res;
     }
+    public WasDerivedFrom newWasDerivedFrom(String id,
+                                            EntityRef aid1,
+                                            EntityRef aid2,
+                                            ActivityRef aid,
+                                            DependencyRef did1,
+                                            DependencyRef did2) {
+        return newWasDerivedFrom(stringToQName(id),aid1,aid2,aid,did1,did2);
+    }
+
 
 
     public WasDerivedFrom newWasDerivedFrom(Entity a1,
@@ -548,14 +676,19 @@ public class ProvFactory implements CommonURIs {
 
 
 
-    public WasInformedBy newWasInformedBy(String id,
+    public WasInformedBy newWasInformedBy(QName id,
                                           ActivityRef pid1,
                                           ActivityRef pid2) {
         WasInformedBy res=of.createWasInformedBy();
-        res.setId(autoGenerateId(wasTriggeredByIdPrefix,id));
+        res.setId(id);
         res.setEffect(pid1);
         res.setCause(pid2);
         return res;
+    }
+    public WasInformedBy newWasInformedBy(String id,
+                                          ActivityRef pid1,
+                                          ActivityRef pid2) {
+        return newWasInformedBy(stringToQName(id),pid1,pid2);
     }
 
     public WasInformedBy newWasInformedBy(Activity p1,
@@ -572,7 +705,7 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    public WasInformedBy newWasInformedBy(String id,
+    public WasInformedBy newWasInformedBy(QName id,
                                           Activity p1,
                                           Activity p2,
                                           String type) {
@@ -580,6 +713,12 @@ public class ProvFactory implements CommonURIs {
         wtb.setId(id);
         addType(wtb,type);
         return wtb;
+    }
+    public WasInformedBy newWasInformedBy(String id,
+                                          Activity p1,
+                                          Activity p2,
+                                          String type) {
+        return newWasInformedBy(stringToQName(id),p1,p2,type);
     }
 
 
@@ -633,19 +772,21 @@ public class ProvFactory implements CommonURIs {
 
 
 
-    public Note newNote(String id) {
+    public Note newNote(QName id) {
         Note res=of.createNote();
         res.setId(id);
         return res;
     }
-
+    public Note newNote(String id) {
+        return newNote(stringToQName(id));
+    }
 
     public Container newContainer(Collection<Account> accs,
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Collection<Object> lks) {
-        return newContainer(null,accs,ps,as,ags,null,lks);
+        return newContainer((QName)null,accs,ps,as,ags,null,lks);
     }
 
     public Container newContainer(Collection<Account> accs,
@@ -654,10 +795,10 @@ public class ProvFactory implements CommonURIs {
                                   Collection<Agent> ags,
                                   Collection<Note> ns,
                                   Collection<Object> lks) {
-        return newContainer(null,accs,ps,as,ags,ns,lks);
+        return newContainer((QName)null,accs,ps,as,ags,ns,lks);
     }
 
-    public Container newContainer(String id,
+    public Container newContainer(QName id,
                                   Collection<Account> accs,
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
@@ -666,8 +807,8 @@ public class ProvFactory implements CommonURIs {
                                   Collection<Object> lks)
     {
         Container res=of.createContainer();
-	res.setRecord(of.createRecord());
-        res.setId(autoGenerateId(containerIdPrefix,id));
+        res.setRecord(of.createRecord());
+        res.setId(id);
         if (accs!=null) {
             res.getRecord().getAccount().addAll(accs);
         }
@@ -690,6 +831,16 @@ public class ProvFactory implements CommonURIs {
             res.getRecord().getNote().addAll(ns);
         }
         return res;
+    }
+
+    public Container newContainer(String id,
+                                  Collection<Account> accs,
+                                  Collection<Activity> ps,
+                                  Collection<Entity> as,
+                                  Collection<Agent> ags,
+                                  Collection<Note> ns,
+                                  Collection<Object> lks) {
+        return newContainer(stringToQName(id),accs,ps,as,ags,ns,lks);
     }
 
     public Container newContainer(Collection<Account> accs,

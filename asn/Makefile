@@ -12,3 +12,18 @@ go2:
 	sh target/appassembler/bin/asn $(HERE)/src/test/resources/prov/container3.prov 
 
 
+p2:
+	sh target/appassembler/bin/asn $(HERE)/src/test/resources/prov/file-example2.asn
+	cat $(HERE)/src/test/resources/prov/file-example2.asn.xml
+
+p1:
+	sh target/appassembler/bin/asn $(HERE)/src/test/resources/prov/file-example1.asn
+	cat $(HERE)/src/test/resources/prov/file-example1.asn.xml
+
+
+p3:
+	sh target/appassembler/bin/asn $(HERE)/src/test/resources/prov/file-example3.asn
+	cat $(HERE)/src/test/resources/prov/file-example3.asn.xml
+
+
+

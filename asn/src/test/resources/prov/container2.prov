@@ -83,7 +83,7 @@ container(default <http://example.org/default>
 
           wasControlledBy(ex:e1, ex:a2, [])
 
-          activity(ex:a2, <http://example.org/plan>, 2001-10-26T22:33:55, 2001-11-66T21:32:52, [ex:param="a", ex:port="foo"])
+          activity(ex:a2, <http://example.org/plan>, 2001-10-26T22:33:55, 2001-11-12T21:32:52, [ex:param="a", ex:port="foo"])
 
           )
 

@@ -27,6 +27,9 @@
   <xs:element name="activity" type="prov:Activity"/>
   <xs:complexType name="Activity">
 	<xs:sequence>
+	  <xs:element name="startTime"    type="xs:dateTime" minOccurs="1"/>  <!-- to fix, it's mandatory here! -->
+	  <xs:element name="endTime"      type="xs:dateTime" minOccurs="1"/>  <!-- to fix, it's mandatory here! -->
+
 	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:QName"/>

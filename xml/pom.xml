@@ -219,7 +219,7 @@
                 </exec>
 <!--
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/^{/{public java.util.Hashtable namespaces=null;/" />
+  	              <arg value="-e s/public String toString/private Object nss=null; public Object getNss() { return nss;} public void setNss(Object s) { nss=s; }; public String toString/" />
   	              <arg value="-iBAK" />
   	              <arg value="Container.java" />
                 </exec>

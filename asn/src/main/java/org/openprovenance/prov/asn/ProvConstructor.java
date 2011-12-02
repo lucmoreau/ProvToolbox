@@ -8,6 +8,7 @@ import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.ActivityRef;
 import org.openprovenance.prov.xml.Entity;
+import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.EntityRef;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.Account;
@@ -53,6 +54,7 @@ public  class ProvConstructor implements TreeConstructor {
         return a;
     }
 
+
     public String unwrap (String s) {
         return s.substring(1,s.length()-1);
     }
@@ -66,6 +68,16 @@ public  class ProvConstructor implements TreeConstructor {
         return e;
     }
 
+    public Object convertAgent(Object id, Object eAttrs) {
+        String s_id=(String)id;
+        List attrs=(List)eAttrs;
+        Agent e=pFactory.newAgent(s_id);
+        entityTable.put(s_id,e);
+        agentTable.put(s_id,e);
+        e.getAny().addAll(attrs);
+        return e;
+    }
+
     public Object convertContainer(List<Object> records) {    
         Collection<Account> accs=new LinkedList();
         Collection<Entity> es=new LinkedList();
@@ -74,8 +86,8 @@ public  class ProvConstructor implements TreeConstructor {
         Collection<Object> lks=new LinkedList();
             
         for (Object o: records) {
-            if (o instanceof Entity) { es.add((Entity)o); }
-            else if (o instanceof Agent) { ags.add((Agent)o); }
+            if (o instanceof Agent) { ags.add((Agent)o); }
+            else if (o instanceof Entity) { es.add((Entity)o); }
             else if (o instanceof Activity) { acs.add((Activity)o); }
             else lks.add(o);
         }
@@ -124,28 +136,42 @@ public  class ProvConstructor implements TreeConstructor {
         return a;
     }
 
+    public Object convertG(Object a) {
+        return a;
+    }
+
+    public Object convertU(Object a) {
+        return a;
+    }
+
     public Object convertString(String s) {
         return s;
     }
 
 
-    public Object convertUsed(Object id2,Object id1, Object uAttrs, Object time) {
+    public Object convertUsed(Object id, Object id2,Object id1, Object time, Object uAttrs) {
+        String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
         Activity a2=activityTable.get(s_id2);
         ActivityRef a2r=pFactory.newActivityRef(a2);
         Entity e1=entityTable.get(s_id1);
         EntityRef e1r=pFactory.newEntityRef(e1);
-        Used u=pFactory.newUsed(null,
+        Used u=pFactory.newUsed(s_id,
                                 a2r,
                                 null,
                                 e1r);
         List attrs=(List)uAttrs;
         u.getAny().addAll(attrs);
+
+        if (time!=null) {
+            u.setTime(pFactory.newISOTime((String)time));
+        }
         return u;
     }
     
-    public Object convertWasGeneratedBy(Object id2,Object id1, Object gAttrs, Object time) {
+    public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object gAttrs) {
+        String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
         Activity a1=activityTable.get(s_id1);
@@ -153,16 +179,20 @@ public  class ProvConstructor implements TreeConstructor {
         Entity e2=entityTable.get(s_id2);
         EntityRef e2r=pFactory.newEntityRef(e2);
 
-        WasGeneratedBy g=pFactory.newWasGeneratedBy(null,
+        WasGeneratedBy g=pFactory.newWasGeneratedBy(s_id,
                                                     e2r,
                                                     null,
                                                     a1r);
         List attrs=(List)gAttrs;
         g.getAny().addAll(attrs);
+        if (time!=null) {
+            g.setTime(pFactory.newISOTime((String)time));
+        }
+            
         return g;
     }
 
-    public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object q2, Object q1) {
+    public Object convertWasDerivedFrom(Object id2,Object id1, Object a, Object g2, Object u1, Object dAttrs) {
         String s_id2=(String)id2;
         String s_id1=(String)id1;
         Entity e2=entityTable.get(s_id2);
@@ -172,6 +202,14 @@ public  class ProvConstructor implements TreeConstructor {
         WasDerivedFrom d=pFactory.newWasDerivedFrom(null,
                                                     e2r,
                                                     e1r);
+        if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
+        if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
+        if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
+
+        List attrs=(List)dAttrs;
+        d.getAny().addAll(attrs);
+
+
         return d;
     }
 

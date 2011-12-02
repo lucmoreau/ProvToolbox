@@ -92,6 +92,9 @@
 
   <xs:complexType name="WasDerivedFrom">
 	<xs:sequence>
+	  <xs:element name="generation" type="prov:DependencyRef" minOccurs="0"/>
+	  <xs:element name="usage"      type="prov:DependencyRef" minOccurs="0"/>
+	  <xs:element name="activity"   type="prov:ActivityRef" minOccurs="0"/>
 	  <xs:element name="effect"  type="prov:EntityRef"/>
 	  <xs:element name="cause"   type="prov:EntityRef"/>
 	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
@@ -181,6 +184,7 @@
 	</xs:annotation>
   </xs:element>
 
+  <!-- a wrapper element for all records, used in Container or Account -->
   <xs:element name="record" type="prov:Record"/>
   <xs:complexType name="Record">
 	<xs:sequence>
@@ -196,10 +200,10 @@
 
   <xs:complexType name="Container">
 	<xs:sequence>
-	  <xs:element name="namespace" minOccurs="1" maxOccurs="1"/>
 	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:string"/>
+    <xs:attribute name="id" type="xs:string"/>
+    <!-- tentative, this could allow us to annotate containers ... -->
   </xs:complexType>
 
 

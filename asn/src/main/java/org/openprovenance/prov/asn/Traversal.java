@@ -47,6 +47,11 @@ public class Traversal {
             Object eAttrs=convert(ast.getChild(1));
             return c.convertEntity(id,eAttrs);
 
+        case ASNParser.AGENT:
+            id=convert(ast.getChild(0));
+            Object agAttrs=convert(ast.getChild(1));
+            return c.convertAgent(id,agAttrs);
+
         case ASNParser.CONTAINER:
             List<Object> records=new LinkedList();
             for (int i=0; i< ast.getChildCount(); i++) {
@@ -82,6 +87,18 @@ public class Traversal {
             } else {
                 return c.convertA(convert(ast.getChild(0)));
             }
+        case ASNParser.U:
+            if (ast.getChildCount()==0) {
+                return c.convertU(null);
+            } else {
+                return c.convertU(convert(ast.getChild(0)));
+            }
+        case ASNParser.G:
+            if (ast.getChildCount()==0) {
+                return c.convertG(null);
+            } else {
+                return c.convertG(convert(ast.getChild(0)));
+            }
 
         case ASNParser.STRING:
             return c.convertString(convertToken(getTokenString(ast.getChild(0))));
@@ -100,19 +117,28 @@ public class Traversal {
 
 
         case ASNParser.USED:
-            Object id2=convert(ast.getChild(0));
-            Object id1=convert(ast.getChild(1));
-            Object rAttrs=convert(ast.getChild(2));
+            Tree uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            Object uid=convert(uidTree);
+            Object id2=convert(ast.getChild(1));
+            Object id1=convert(ast.getChild(2));
             Object time=convert(ast.getChild(3));
-            return c.convertUsed(id2,id1,rAttrs,time);
+            Object rAttrs=convert(ast.getChild(4));
+            return c.convertUsed(uid, id2,id1,time,rAttrs);
 
         case ASNParser.WGB:
-
-            id2=convert(ast.getChild(0));
-            id1=(convert(ast.getChild(1)));
-            rAttrs=convert(ast.getChild(2));
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=(convert(ast.getChild(2)));
             time=convert(ast.getChild(3));
-            return c.convertWasGeneratedBy(id2,id1,rAttrs,time);
+            rAttrs=convert(ast.getChild(4));
+            return c.convertWasGeneratedBy(uid,id2,id1,time,rAttrs);
 
         case ASNParser.WDF:
             id2=convert(ast.getChild(0));
@@ -120,12 +146,18 @@ public class Traversal {
             Object pe=convert(ast.getChild(2));
             Object q2=convert(ast.getChild(3));
             Object q1=convert(ast.getChild(4));
-            return c.convertWasDerivedFrom(id2,id1,pe,q2,q1);
+            Object dAttrs=convert(ast.getChild(5));
+            return c.convertWasDerivedFrom(id2,id1,pe,q2,q1,dAttrs);
 
 
 
             // ...handle every other possible node type in the AST...
+        case ASNParser.TIME:
+            if (ast.getChildCount()==0) return null;
+            if (ast.getChild(0)==null) return null;
+            return getTokenString(ast.getChild(0));
         }
+
         return null;
     }
 

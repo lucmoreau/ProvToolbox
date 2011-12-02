@@ -16,6 +16,10 @@ public class ASNConstructor implements TreeConstructor {
         String s="entity(" + id  + ",[" + attrs + "])";
         return s;
     }
+    public Object convertAgent(Object id, Object attrs) {
+        String s="agent(" + id  + ",[" + attrs + "])";
+        return s;
+    }
     public Object convertContainer(List<Object> records) {
         String s="container(";
         for (Object o: records) {
@@ -52,21 +56,28 @@ public class ASNConstructor implements TreeConstructor {
     public Object convertA(Object a) {
         return a;
     }
+    public Object convertU(Object a) {
+        return a;
+    }
+    public Object convertG(Object a) {
+        return a;
+    }
     public Object convertString(String s) {
         return s;
     }
-    public Object convertUsed(Object id2,Object id1, Object aAttrs, Object time) {
-        String s="used(" + id2 + "," + id1 + ",[" + aAttrs + "]" +
-            ((time==null)? ")" : ", " + time + ")");
+    public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs) {
+        String s="used(" + ((id==null)? "" : id + ",") + id2 + "," + id1 +
+            ((time==null)? "" : (", " + time)) + ",[" + aAttrs + "]" + ")";
         return s;
     }
-    public Object convertWasGeneratedBy(Object id2,Object id1, Object aAttrs, Object time) {
-        String s="wasGeneratedBy(" + id2 + "," + id1 + ",[" + aAttrs + "]" + 
-            ((time==null)? ")" : ", " + time + ")");
+    public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
+        String s="wasGeneratedBy(" + ((id==null)? "" : id + ",") + id2 + "," + id1 +
+            ((time==null)? "" : (", " + time)) + ",[" + aAttrs + "]" +  ")";
         return s;
     }
-    public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object q2, Object q1) {
-        String s="wasDerivedFrom(" + id2 + "," + id1 + "," + pe + ", " + q2 + "," + q1 + ")";
+    public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
+        String s="wasDerivedFrom(" + id2 + "," + id1 + 
+            ((pe==null) ? "" : (", " + pe + ", " + g2 + "," + u1)) + ",[" + aAttrs + "]" +  ")";
         return s;
     }
 
@@ -79,5 +90,6 @@ public class ASNConstructor implements TreeConstructor {
     public Object convertTypedLiteral(String datatype, Object value) {
         return datatype + "%%" + value;
     }
+
 
 }

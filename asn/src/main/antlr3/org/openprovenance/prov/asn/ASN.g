@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A;
+    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX;
 }
 
 @header {
@@ -23,46 +23,89 @@ tokens {
 
 container
 	:	'container' '('
+        (namespaceDeclarations ';')?
 		record*
 		')'
 
-      -> ^(CONTAINER record*)
+      -> ^(CONTAINER record* namespaceDeclarations?)
 	;
+
+
+namespaceDeclarations :
+        (defaultNamespaceDeclaration | namespaceDeclaration) namespaceDeclaration*
+        -> ^(NAMESPACES defaultNamespaceDeclaration? namespaceDeclaration*)
+    ;
+
+namespaceDeclaration :
+        'prefix' prefix namespace
+        -> ^(NAMESPACE prefix namespace)
+    ;
+
+
+prefix :
+        NCNAME -> ^(PREFIX NCNAME)
+    ;
+
+namespace :
+        IRI_REF
+    ;
+
+defaultNamespaceDeclaration :
+        'default' IRI_REF
+        ->  ^(DEFAULTNAMESPACE IRI_REF)
+    ;
 
 record
 	:	(entityRecord | activityRecord | agentRecord | generationRecord  | useRecord | derivationRecord | dependenceRecord  | controlRecord )
 	;
 
 entityRecord
-	:	'entity' '(' identifier ',' '[' attributeValuePairs ']'
-		')'
-        -> ^(ENTITY identifier ^(ATTRIBUTES attributeValuePairs?))
+	:	'entity' '(' identifier optionalAttributeValuePairs ')'
+        -> ^(ENTITY identifier optionalAttributeValuePairs)
 	;
 
+
 activityRecord
-	:	'activity' '(' identifier (',' recipeLink)? ',' (startTime)? ',' (endTime)? ',' '[' attributeValuePairs ']'
-		')'
-        -> ^(ACTIVITY identifier ^(RECIPE recipeLink?) ^(START startTime?) ^(END endTime?) ^(ATTRIBUTES attributeValuePairs?))
+	:	'activity' '(' identifier (',' recipeLink)? ',' (startTime)? ',' (endTime)? optionalAttributeValuePairs ')'
+        -> ^(ACTIVITY identifier ^(RECIPE recipeLink?) ^(START startTime?) ^(END endTime?) optionalAttributeValuePairs )
 	;
 
 agentRecord
-	:	'agent' '(' identifier 	')' -> ^(AGENT identifier)
+	:	'agent' '(' identifier optionalAttributeValuePairs	')' -> ^(AGENT identifier optionalAttributeValuePairs )
 	;
 
 generationRecord
-	:	'wasGeneratedBy' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ( ',' time)?	')'
-      -> ^(WGB identifier+ ^(ATTRIBUTES attributeValuePairs?)  ^(TIME time?))
+	:	'wasGeneratedBy' '('  optionalIdentifier identifier ',' identifier optionalTime optionalAttributeValuePairs ')'
+      -> ^(WGB optionalIdentifier identifier+ optionalTime optionalAttributeValuePairs)
 	;
 
 useRecord
-	:	'used' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ( ',' time)?	')'
-      -> ^(USED identifier+ ^(ATTRIBUTES attributeValuePairs?) ^(TIME time?))
+	:	'used' '(' optionalIdentifier identifier ',' identifier optionalTime optionalAttributeValuePairs ')'
+      -> ^(USED optionalIdentifier identifier+ optionalTime optionalAttributeValuePairs)
 	;
 
 derivationRecord
-	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier (',' a=identifier ',' '[' dst=attributeValuePairs ']' ',' '[' src=attributeValuePairs ']')?	')'
-      -> ^(WDF $id2 $id1 ^(A $a?)  ^(ATTRIBUTES $dst?) ^(ATTRIBUTES $src?))
+	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier (',' a=identifier ',' g2=identifier ',' u1=identifier )?	optionalAttributeValuePairs ')'
+      -> ^(WDF $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) optionalAttributeValuePairs)
 	;
+
+optionalAttributeValuePairs
+    :
+    (',' '[' attributeValuePairs ']')?
+        -> ^(ATTRIBUTES attributeValuePairs?)
+    ;
+
+optionalTime
+    :
+    (',' time )?
+        -> ^(TIME time?)
+    ;
+
+optionalIdentifier
+    :
+    (identifier ',')?
+        -> ^(ID identifier?)
+    ;
 
 dependenceRecord
 	:	'dependedUpon' '(' identifier ',' identifier ')'

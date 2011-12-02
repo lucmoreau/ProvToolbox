@@ -406,7 +406,7 @@ public class PC1FullTest
 
         Used u1=pFactory.newUsed(p1,"img",a3);
         Used u2=pFactory.newUsed(p1,"hdr",a4);
-        Used u3=pFactory.newUsed(p1,"imgRef",a1);
+        Used u3=pFactory.newUsed("u3", p1,"imgRef",a1);
         Used u4=pFactory.newUsed(p1,"hdrRef",a2);
         Used u5=pFactory.newUsed(p2,"img",a5);
         Used u6=pFactory.newUsed(p2,"hdr",a6);
@@ -451,7 +451,7 @@ public class PC1FullTest
 
 
 
-        WasGeneratedBy wg1=pFactory.newWasGeneratedBy(a11,"out",p1);
+        WasGeneratedBy wg1=pFactory.newWasGeneratedBy("wgb1", a11,"out",p1);
         WasGeneratedBy wg2=pFactory.newWasGeneratedBy(a12,"out",p2);
         WasGeneratedBy wg3=pFactory.newWasGeneratedBy(a13,"out",p3);
         WasGeneratedBy wg4=pFactory.newWasGeneratedBy(a14,"out",p4);
@@ -480,7 +480,7 @@ public class PC1FullTest
         wg20.setTime(pFactory.newTimeNow());
 
 
-        WasDerivedFrom wd1=pFactory.newWasDerivedFrom(a11,a1);
+        WasDerivedFrom wd1=pFactory.newWasDerivedFrom(a11,a1,p1,wg1,u3);
         WasDerivedFrom wd2=pFactory.newWasDerivedFrom(a11,a2);
         WasDerivedFrom wd3=pFactory.newWasDerivedFrom(a11,a3);
         WasDerivedFrom wd4=pFactory.newWasDerivedFrom(a11,a4);
@@ -549,7 +549,7 @@ public class PC1FullTest
                                             new Activity[] {p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15},
                                             new Entity[] {a1,a2,a5,a6,a3,a4,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,
                                                             a21,a22,a23,a24,a25,a25p,a26,a26p,a27,a27p,a28,a29,a30},
-                                            new Agent[] { //ag1
+                                            new Agent[] { ag1
                                                         },
 					      new Note[] { n1 },
                                             new Object[] {u1,u2,u3,u4,u5,u6,u7,u8,u9,u10,u11,u12,u13,u14,u15,u16,u17,u18,u19,u20,
@@ -560,7 +560,7 @@ public class PC1FullTest
                                                           wd17,wd18,wd19,wd20,wd21,wd22,wd23,wd24,wd25,wd26,wd27,wd28,wd29,wd30,wd31,
                                                           wd32,wd33,wd34,wd35,wd36,wd37,wd38,wd39,wd40,wd41,wd42,wd43,wd44,wd45,wd46,
                                                           wd47,wd48,wd49,
-                                                          //wc1,
+                                                          wc1,
 							  ha1
                                             } );
 

@@ -111,18 +111,38 @@ public  class ProvConstructor implements TreeConstructor {
         return id;
     }
 
+    public String getPrefix(String namespace) {
+        for (String s : namespaceTable.keySet()) {
+            if (namespaceTable.get(s).equals(namespace)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public String getNamespace(String prefix) {
+        if (prefix==null) return null;
+        if (prefix.equals("prov")) return "http://openprovenance.org/prov-xml#";
+        if (prefix.equals("xsd")) return "http://www.w3.org/2001/XMLSchema";
+        return namespaceTable.get(prefix);
+    }
+    
     public Object convertAttribute(Object name, Object value) {
         String attr1=(String)name;
+
+        String prefix=attr1.substring(0,attr1.indexOf(':'));
+        String local=attr1.substring(attr1.indexOf(':')+1,attr1.length());
+
         if (value instanceof String) {
             String val1=(String)(value);
-            return pFactory.newAttribute("http://todo.org/soon",
-                                         attr1.substring(0,attr1.indexOf(':')),
-                                         attr1.substring(attr1.indexOf(':')+1,attr1.length()),
+            return pFactory.newAttribute(getNamespace(prefix),
+                                         prefix,
+                                         local,
                                          unwrap(val1));
         } else {
-            QName attr1_QNAME = new QName("http://todo.org/soon2",
-                                          attr1.substring(0,attr1.indexOf(':')),
-                                          attr1.substring(attr1.indexOf(':')+1,attr1.length()));
+            QName attr1_QNAME = new QName(namespaceTable.get(prefix),
+                                          local,
+                                          prefix);
         
             return new JAXBElement<TypedLiteral>(attr1_QNAME, TypedLiteral.class, null, (TypedLiteral)value);
         }
@@ -236,14 +256,14 @@ public  class ProvConstructor implements TreeConstructor {
    public Object convertNamespace(Object pre, Object iri) {
        String s_pre=(String)pre;
        String s_iri=(String)iri;
-       System.out.println("Found prefix " + s_pre);
-       System.out.println("Found ns " + s_iri);
+       s_iri=unwrap(s_iri);
        namespaceTable.put(s_pre,s_iri);
        return null;
    }
 
     public Object convertDefaultNamespace(Object iri) {
        String s_iri=(String)iri;
+       s_iri=unwrap(s_iri);
        namespaceTable.put("_",s_iri);
        return null;
     }

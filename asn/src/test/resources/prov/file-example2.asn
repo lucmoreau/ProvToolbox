@@ -1,0 +1,69 @@
+
+
+container(prefix ex <http://example.org/>
+
+entity(ex:e0, [ prov:type="File", ex:path="/shared/crime.txt", ex:creator="Alice" ])
+entity(ex:e1, [ prov:type="File", ex:path="/shared/crime.txt", ex:creator="Alice", ex:content="" ])
+entity(ex:e2, [ prov:type="File", ex:path="/shared/crime.txt", ex:creator="Alice", ex:content="There was a lot of crime in London last month."])
+entity(ex:e3, [ prov:type="File", ex:path="/shared/crime.txt", ex:creator="Alice", ex:content="There was a lot of crime in London and New York last month."])
+entity(ex:e4, [ ])
+entity(ex:e5, [ ])
+entity(ex:e6, [ prov:type="File", ex:path="/shared/crime.txt", ex:creator="Alice", ex:content="There was a lot of crime in London and New York last month.", ex:spellchecked="yes"])
+
+
+activity(ex:a0, create-file,          2011-11-16T16:00:00,,[])
+activity(ex:a1, add-crime-in-london,  2011-11-16T16:05:00,,[])
+activity(ex:a2, email,                2011-11-16T17:00:00,,[])
+activity(ex:a3, edit-London-New-York, 2011-11-17T09:00:00,,[])
+activity(ex:a4, email,                2011-11-17T09:30:00,,[])
+activity(ex:a5, spellcheck,,,[])
+
+wasGeneratedBy(ex:e0, ex:a0, [])
+wasGeneratedBy(ex:e1, ex:a0, [ex:fct="create"])
+wasGeneratedBy(ex:e2, ex:a1, [ex:fct="save"])     
+wasGeneratedBy(ex:e3, ex:a3, [ex:fct="save"])     
+wasGeneratedBy(ex:g1, ex:e4, ex:a2, [ex:port="smtp", ex:section="attachment"])  
+wasGeneratedBy(ex:g2, ex:e5, ex:a4, [ex:port="smtp", ex:section="attachment"])    
+wasGeneratedBy(ex:e6, ex:a5, [ex:file="stdout"])
+
+used(ex:a1,ex:e1,[ex:fct="load"])
+used(ex:a3,ex:e2,[ex:fct="load"])
+used(ex:u1,ex:a2,ex:e2,[ex:fct="attach"])
+used(ex:u2,ex:a4,ex:e3,[ex:fct="attach"])
+used(ex:a5,ex:e3,[ex:file="stdin"])
+
+
+wasDerivedFrom(ex:e2,ex:e1)
+wasDerivedFrom(ex:e3,ex:e2)
+wasDerivedFrom(ex:e4,ex:e2,ex:a2,ex:g1,ex:u2)
+wasDerivedFrom(ex:e5,ex:e3,ex:a4,ex:g2,ex:u2)
+
+wasComplementOf(ex:e1,ex:e0)
+wasComplementOf(ex:e2,ex:e0)
+wasComplementOf(ex:e3,ex:e0)
+wasComplementOf(ex:e6,ex:e3) 
+
+agent(ex:ag1, [ prov:type="prov:Person" %% xsd:QName, ex:name="Alice" ])
+agent(ex:ag2, [ prov:type="prov:Person" %% xsd:QName, ex:name="Bob" ])
+agent(ex:ag3, [ prov:type="prov:Person" %% xsd:QName, ex:name="Charles" ])
+agent(ex:ag4, [ prov:type="prov:Person" %% xsd:QName, ex:name="David" ])
+agent(ex:ag5, [ prov:type="prov:Person" %% xsd:QName, ex:name="Edith" ])
+
+
+wasAssociatedWith(ex:a0, ex:ag1, [prov:role="creator"])
+wasAssociatedWith(ex:a1, ex:ag2, [prov:role="author"])
+wasAssociatedWith(ex:a2, ex:ag3, [prov:role="communicator"])
+wasAssociatedWith(ex:a3, ex:ag4, [prov:role="author"])
+wasAssociatedWith(ex:a4, ex:ag5, [prov:role="communicator"])
+
+
+note(ex:n1,[ex:icon="doc.png"])
+hasAnnotation(ex:e1,ex:n1)
+hasAnnotation(ex:e2,ex:n1)
+
+note(ex:n2,[ex:style="dotted"])
+hasAnnotation(ex:u1,ex:n2)
+
+                )
+
+

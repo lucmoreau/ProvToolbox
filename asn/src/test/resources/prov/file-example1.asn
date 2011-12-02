@@ -1,0 +1,69 @@
+
+
+container(default <http://example.org/>
+
+entity(e0, [ prov:type="File", path="/shared/crime.txt", creator="Alice" ])
+entity(e1, [ prov:type="File", path="/shared/crime.txt", creator="Alice", content="" ])
+entity(e2, [ prov:type="File", path="/shared/crime.txt", creator="Alice", content="There was a lot of crime in London last month."])
+entity(e3, [ prov:type="File", path="/shared/crime.txt", creator="Alice", content="There was a lot of crime in London and New York last month."])
+entity(e4, [ ])
+entity(e5, [ ])
+entity(e6, [ prov:type="File", path="/shared/crime.txt", creator="Alice", content="There was a lot of crime in London and New York last month.", spellchecked="yes"])
+
+
+activity(a0, create-file,          2011-11-16T16:00:00,,[])
+activity(a1, add-crime-in-london,  2011-11-16T16:05:00,,[])
+activity(a2, email,                2011-11-16T17:00:00,,[])
+activity(a3, edit-London-New-York, 2011-11-17T09:00:00,,[])
+activity(a4, email,                2011-11-17T09:30:00,,[])
+activity(a5, spellcheck,,,[])
+
+wasGeneratedBy(e0, a0, [])
+wasGeneratedBy(e1, a0, [fct="create"])
+wasGeneratedBy(e2, a1, [fct="save"])     
+wasGeneratedBy(e3, a3, [fct="save"])     
+wasGeneratedBy(g1, e4, a2, [port="smtp", section="attachment"])  
+wasGeneratedBy(g2, e5, a4, [port="smtp", section="attachment"])    
+wasGeneratedBy(e6, a5, [file="stdout"])
+
+used(a1,e1,[fct="load"])
+used(a3,e2,[fct="load"])
+used(u1,a2,e2,[fct="attach"])
+used(u2,a4,e3,[fct="attach"])
+used(a5,e3,[file="stdin"])
+
+
+wasDerivedFrom(e2,e1)
+wasDerivedFrom(e3,e2)
+wasDerivedFrom(e4,e2,a2,g1,u2)
+wasDerivedFrom(e5,e3,a4,g2,u2)
+
+wasComplementOf(e1,e0)
+wasComplementOf(e2,e0)
+wasComplementOf(e3,e0)
+wasComplementOf(e6,e3) 
+
+agent(ag1, [ prov:type="prov:Person" %% xsd:QName, name="Alice" ])
+agent(ag2, [ prov:type="prov:Person" %% xsd:QName, name="Bob" ])
+agent(ag3, [ prov:type="prov:Person" %% xsd:QName, name="Charles" ])
+agent(ag4, [ prov:type="prov:Person" %% xsd:QName, name="David" ])
+agent(ag5, [ prov:type="prov:Person" %% xsd:QName, name="Edith" ])
+
+
+wasAssociatedWith(a0, ag1, [prov:role="creator"])
+wasAssociatedWith(a1, ag2, [prov:role="author"])
+wasAssociatedWith(a2, ag3, [prov:role="communicator"])
+wasAssociatedWith(a3, ag4, [prov:role="author"])
+wasAssociatedWith(a4, ag5, [prov:role="communicator"])
+
+
+note(n1,[icon="doc.png"])
+hasAnnotation(e1,n1)
+hasAnnotation(e2,n1)
+
+note(n2,[style="dotted"])
+hasAnnotation(u1,n2)
+
+                )
+
+

@@ -41,10 +41,11 @@ namespaceDeclaration :
         -> ^(NAMESPACE prefix namespace)
     ;
 
-/* Problem: NCNAME is a fragment, and failed to be matched. */
+/* Problem: NCNAME is a fragment, and failed to be matched.
+Put QNAME instead, but that's not correct, it should really be a NCNAME! */
 
 prefix :
-       'prefix' NCNAME -> ^(PREFIX NCNAME)
+       'prefix' QNAME -> ^(PREFIX QNAME)
     ;
 
 

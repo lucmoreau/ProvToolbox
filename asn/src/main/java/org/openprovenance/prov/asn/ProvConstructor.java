@@ -36,6 +36,8 @@ public  class ProvConstructor implements TreeConstructor {
     Hashtable<String,Entity>   entityTable   = new Hashtable<String,Entity>();
     Hashtable<String,Activity> activityTable = new Hashtable<String,Activity>();
     Hashtable<String,Agent>    agentTable    = new Hashtable<String,Agent>();
+
+    Hashtable<String,String>  namespaceTable = new Hashtable<String,String>();
     
     public ProvConstructor(ProvFactory pFactory) {
         this.pFactory=pFactory;
@@ -78,7 +80,7 @@ public  class ProvConstructor implements TreeConstructor {
         return e;
     }
 
-    public Object convertContainer(List<Object> records) {    
+    public Object convertContainer(Object namespaces, List<Object> records) {    
         Collection<Account> accs=new LinkedList();
         Collection<Entity> es=new LinkedList();
         Collection<Agent> ags=new LinkedList();
@@ -96,6 +98,8 @@ public  class ProvConstructor implements TreeConstructor {
                                           es,
                                           ags,
                                           lks);
+        System.out.println("Container namespaces " + namespaceTable);
+        c.setNss(namespaceTable);
         return c;
     }
 
@@ -228,6 +232,31 @@ public  class ProvConstructor implements TreeConstructor {
         datatype=unwrap(datatype);
         return pFactory.newTypedLiteral(datatype,v2);
     }
+
+   public Object convertNamespace(Object pre, Object iri) {
+       String s_pre=(String)pre;
+       String s_iri=(String)iri;
+       System.out.println("Found prefix " + s_pre);
+       System.out.println("Found ns " + s_iri);
+       namespaceTable.put(s_pre,s_iri);
+       return null;
+   }
+
+    public Object convertDefaultNamespace(Object iri) {
+       String s_iri=(String)iri;
+       namespaceTable.put("_",s_iri);
+       return null;
+    }
+    
+    public Object convertNamespaces(List<Object> namespaces) {
+        return namespaceTable;
+    }
+
+    public Object convertPrefix(String pre) {
+        return pre;
+    }
+
+ 
 
 }
 

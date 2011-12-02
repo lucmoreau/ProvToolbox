@@ -6,7 +6,7 @@ public interface TreeConstructor {
     public Object convertActivity(Object id,Object recipe,Object startTime,Object endTime, Object aAttrs);
     public Object convertEntity(Object id, Object attrs);
     public Object convertAgent(Object id, Object attrs);
-    public Object convertContainer(List<Object> records);
+    public Object convertContainer(Object nss, List<Object> records);
     public Object convertAttributes(List<Object> attributes);
     public Object convertId(String id);
     public Object convertAttribute(Object name, Object value);
@@ -21,6 +21,9 @@ public interface TreeConstructor {
     public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs);
     public Object convertQNAME(String qname);
     public Object convertIRI(String iri);
+    public Object convertPrefix(String pre);
     public Object convertTypedLiteral(String datatype, Object value);
-
+    public Object convertNamespace(Object pre, Object iri);
+    public Object convertDefaultNamespace(Object iri);
+    public Object convertNamespaces(List<Object> namespaces);
 }

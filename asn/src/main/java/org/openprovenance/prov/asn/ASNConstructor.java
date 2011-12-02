@@ -20,8 +20,9 @@ public class ASNConstructor implements TreeConstructor {
         String s="agent(" + id  + ",[" + attrs + "])";
         return s;
     }
-    public Object convertContainer(List<Object> records) {
+    public Object convertContainer(Object namespaces, List<Object> records) {
         String s="container(";
+        s=s+namespaces;
         for (Object o: records) {
             s=s+o+",\n";
         }
@@ -89,6 +90,26 @@ public class ASNConstructor implements TreeConstructor {
     }
     public Object convertTypedLiteral(String datatype, Object value) {
         return datatype + "%%" + value;
+    }
+
+   public Object convertNamespace(Object pre, Object iri) {
+       return "prefix " + pre + " " + iri;
+   }
+
+   public Object convertDefaultNamespace(Object iri) {
+       return  "default " + iri;
+   }
+
+    public Object convertNamespaces(List<Object> namespaces) {
+        String s="";
+        for (Object o: namespaces) {
+            s=s+o+"\n";
+        }
+        return s;
+    }
+
+    public Object convertPrefix(String pre) {
+        return pre;
     }
 
 

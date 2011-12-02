@@ -54,11 +54,12 @@ public class Traversal {
 
         case ASNParser.CONTAINER:
             List<Object> records=new LinkedList();
-            for (int i=0; i< ast.getChildCount(); i++) {
+            Object nss=convert(ast.getChild(0));
+            for (int i=1; i< ast.getChildCount(); i++) {
                 Object o=convert(ast.getChild(i));
                 records.add(o);
             }
-            return c.convertContainer(records);
+            return c.convertContainer(nss,records);
 
         case ASNParser.ATTRIBUTES:
             List<Object> attributes=new LinkedList();
@@ -150,12 +151,33 @@ public class Traversal {
             return c.convertWasDerivedFrom(id2,id1,pe,q2,q1,dAttrs);
 
 
-
-            // ...handle every other possible node type in the AST...
         case ASNParser.TIME:
             if (ast.getChildCount()==0) return null;
             if (ast.getChild(0)==null) return null;
             return getTokenString(ast.getChild(0));
+
+        case ASNParser.NAMESPACE:
+            Object pre=convert(ast.getChild(0));
+            Object iri1=getTokenString(ast.getChild(1));
+            return c.convertNamespace(pre,iri1);
+
+        case ASNParser.DEFAULTNAMESPACE:
+            iri1=getTokenString(ast.getChild(0));
+            return c.convertDefaultNamespace(iri1);
+
+        case ASNParser.PREFIX:
+            String prefix=getTokenString(ast.getChild(0));
+            return c.convertPrefix(prefix);
+
+
+        case ASNParser.NAMESPACES:
+            List<Object> namespaces=new LinkedList();
+            for (int i=0; i< ast.getChildCount(); i++) {
+                Object o=convert(ast.getChild(i));
+                namespaces.add(o);
+            }
+            return c.convertNamespaces(namespaces);
+
         }
 
         return null;

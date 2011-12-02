@@ -47,6 +47,7 @@ prefix :
        'prefix' NCNAME -> ^(PREFIX NCNAME)
     ;
 
+
 namespace :
         IRI_REF
     ;
@@ -208,6 +209,7 @@ fragment NAMESTARTCHAR
 fragment NCNAME	           
 	:  NCNAMESTARTCHAR NCNAMECHAR*
 	;	
+
 
 NCNAME_COLON_STAR
 	: NCNAME ':' '*'

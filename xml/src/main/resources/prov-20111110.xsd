@@ -29,7 +29,7 @@
 	<xs:sequence>
 	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:string"/>
+	<xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
 
 
@@ -38,7 +38,7 @@
 	<xs:sequence>
 	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:string"/>
+	<xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
 
   <xs:element name="agent" type="prov:Agent"/>
@@ -46,7 +46,7 @@
 	<xs:sequence>
 	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:string"/>
+	<xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
 
   <xs:element name="note" type="prov:Note"/>
@@ -54,7 +54,7 @@
 	<xs:sequence>
 	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:string"/>
+	<xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
 
 
@@ -66,7 +66,7 @@
 	  <xs:element name="cause"   type="prov:EntityRef"/>
 	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-    <xs:attribute name="id" type="xs:string"/>
+    <xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
 
   <xs:complexType name="WasGeneratedBy">
@@ -76,7 +76,7 @@
 	  <xs:element name="cause"   type="prov:ActivityRef"/>
 	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-    <xs:attribute name="id" type="xs:string"/>
+    <xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
 
   <xs:complexType name="WasControlledBy">
@@ -87,7 +87,7 @@
 	  <xs:element name="cause"       type="prov:AgentRef"/>
 	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-    <xs:attribute name="id" type="xs:string"/>
+    <xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
 
   <xs:complexType name="WasDerivedFrom">
@@ -99,7 +99,7 @@
 	  <xs:element name="cause"   type="prov:EntityRef"/>
 	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:string"/>
+	<xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
 
   <xs:complexType name="WasInformedBy">
@@ -109,7 +109,7 @@
 	  <xs:element name="cause"   type="prov:ActivityRef"/>
 	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:string"/>
+	<xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
 
   <xs:complexType name="HasAnnotation">
@@ -117,7 +117,7 @@
 	  <xs:element name="thing"   type="prov:NoteRef" minOccurs="1"/> <!-- note, just a ref to anything, really -->
 	  <xs:element name="note"    type="prov:NoteRef" minOccurs="1"/>
 	</xs:sequence>
-    <xs:attribute name="id" type="xs:string"/>
+    <xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
 
   <xs:element name="label" type="xs:string"/>
@@ -136,21 +136,21 @@
 
 
   <xs:complexType name="ActivityRef">
-	<xs:attribute name="ref" type="xs:string"/>
+	<xs:attribute name="ref" type="xs:QName"/>
   </xs:complexType>
   <xs:complexType name="EntityRef">
-	<xs:attribute name="ref" type="xs:string"/>
+	<xs:attribute name="ref" type="xs:QName"/>
   </xs:complexType>
   <xs:complexType name="AgentRef">
-	<xs:attribute name="ref" type="xs:string"/>
+	<xs:attribute name="ref" type="xs:QName"/>
   </xs:complexType>
 
   <xs:complexType name="DependencyRef">
-    <xs:attribute name="ref" type="xs:string"/>
+    <xs:attribute name="ref" type="xs:QName"/>
   </xs:complexType>
 
   <xs:complexType name="NoteRef">
-    <xs:attribute name="ref" type="xs:string"/>
+    <xs:attribute name="ref" type="xs:QName"/>
   </xs:complexType>
 
   <xs:complexType name="Dependencies">
@@ -175,7 +175,7 @@
 	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="1"/>
 	  <xs:element name="asserter" type="prov:AgentRef"  minOccurs="0" maxOccurs="unbounded"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:string"/>
+	<xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
 
   <xs:element name="container" type="prov:Container">
@@ -195,14 +195,14 @@
 	  <xs:element ref="prov:note"     minOccurs="0" maxOccurs="unbounded"/>
 	  <xs:element name="dependencies" type="prov:Dependencies" minOccurs="0"/>
 	</xs:sequence>
-	<xs:attribute name="id" type="xs:string"/>
+	<xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
 
   <xs:complexType name="Container">
 	<xs:sequence>
 	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
-    <xs:attribute name="id" type="xs:string"/>
+    <xs:attribute name="id" type="xs:QName"/>
     <!-- tentative, this could allow us to annotate containers ... -->
   </xs:complexType>
 

@@ -121,7 +121,7 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
     public String getNamespace(String prefix) {
-        if (prefix==null) return null;
+        if (prefix==null) return namespaceTable.get("_");
         if (prefix.equals("prov")) return "http://openprovenance.org/prov-xml#";
         if (prefix.equals("xsd")) return "http://www.w3.org/2001/XMLSchema";
         return namespaceTable.get(prefix);
@@ -223,7 +223,7 @@ public  class ProvConstructor implements TreeConstructor {
         EntityRef e2r=pFactory.newEntityRef(e2);
         Entity e1=entityTable.get(s_id1);
         EntityRef e1r=pFactory.newEntityRef(e1);
-        WasDerivedFrom d=pFactory.newWasDerivedFrom(null,
+        WasDerivedFrom d=pFactory.newWasDerivedFrom((QName)null,
                                                     e2r,
                                                     e1r);
         if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
@@ -265,6 +265,7 @@ public  class ProvConstructor implements TreeConstructor {
        String s_iri=(String)iri;
        s_iri=unwrap(s_iri);
        namespaceTable.put("_",s_iri);
+       pFactory.setDefaultNamespace(s_iri);
        return null;
     }
     

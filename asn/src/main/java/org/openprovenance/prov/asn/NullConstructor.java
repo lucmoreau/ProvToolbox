@@ -14,7 +14,7 @@ public class NullConstructor implements TreeConstructor {
     public Object convertAgent(Object id, Object attrs) {
         return null;
     }
-    public Object convertContainer(List<Object> records) {
+    public Object convertContainer(Object nss, List<Object> records) {
         return null;
     }
     public Object convertAttributes(List<Object> attributes) {
@@ -62,7 +62,17 @@ public class NullConstructor implements TreeConstructor {
 	return null;
     }
     public Object convertTypedLiteral(String datatype, Object value) {
-	return null;
+        return null;
+    }
+    public Object convertNamespace(Object pre, Object iri) {
+        return null;
+    }
+
+    public Object convertDefaultNamespace(Object iri) {
+        return null;
+    }
+    public Object convertNamespaces(List<Object> namespaces) {
+        return null;
     }
 
 }

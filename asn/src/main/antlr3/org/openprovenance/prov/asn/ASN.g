@@ -23,11 +23,11 @@ tokens {
 
 container
 	:	'container' '('
-        (namespaceDeclarations ';')?
+        (namespaceDeclarations)?
 		record*
 		')'
 
-      -> ^(CONTAINER record* namespaceDeclarations?)
+      -> ^(CONTAINER namespaceDeclarations? record*)
 	;
 
 
@@ -37,13 +37,14 @@ namespaceDeclarations :
     ;
 
 namespaceDeclaration :
-        'prefix' prefix namespace
+        prefix namespace
         -> ^(NAMESPACE prefix namespace)
     ;
 
+/* Problem: NCNAME is a fragment, and failed to be matched. */
 
 prefix :
-        NCNAME -> ^(PREFIX NCNAME)
+       'prefix' NCNAME -> ^(PREFIX NCNAME)
     ;
 
 namespace :

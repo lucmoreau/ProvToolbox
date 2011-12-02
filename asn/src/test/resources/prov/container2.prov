@@ -1,5 +1,6 @@
 
-container(prefix ex <http://example.org/ex>
+container(default <http://example.org/default>
+          prefix ex <http://example.org/ex>
           prefix ex2 <http://example.org/ex2>
 
 

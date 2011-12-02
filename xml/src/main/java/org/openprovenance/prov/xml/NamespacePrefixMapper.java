@@ -83,9 +83,7 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
             return "";
         }
         for (String k: nss.keySet()) {
-            System.out.println(" key " + k + "   " + namespaceUri);
             if (nss.get(k).equals(namespaceUri)) {
-                System.out.println(" found key " + k + "   " + namespaceUri);
                 return k;
             }
         }

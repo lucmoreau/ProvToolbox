@@ -18,7 +18,23 @@ import junit.framework.TestSuite;
 public class PC1FullTest 
     extends TestCase
 {
-    public static ProvFactory pFactory=new ProvFactory("http://www.ipaw.info/pc1/");
+
+    static final String PC1_NS="http://www.ipaw.info/pc1/";
+    static final String PC1_PREFIX="pc1";
+    
+
+
+    static final Hashtable<String,String> namespaces;
+
+    
+    public static ProvFactory pFactory;
+
+    static {
+        namespaces=new Hashtable();
+        // currently, no prefix used, all qnames map to PC1_NS
+        namespaces.put("_",PC1_NS);
+        pFactory=new ProvFactory(namespaces);
+    }
 
     /**
      * Create the test case
@@ -39,13 +55,6 @@ public class PC1FullTest
 
     static Container graph1;
 
-    static final String PC1_NS="http://www.ipaw.info/pc1/";
-
-    
-    /** Set this variable to "" if PC1_NS is default namespace, or to
-        "pc1" otherwise.  This variable affects the domain specific
-        attributes. */
-    String PC1_PREFIX="";
 
 
     public void testPC1Full() throws JAXBException
@@ -573,11 +582,11 @@ public class PC1FullTest
                                             } );
 
         Hashtable<String,String> nss=new Hashtable<String,String>();
-        if (PC1_PREFIX.equals("")) {
-            nss.put("_",PC1_NS);
-        } else {
-            nss.put(PC1_PREFIX,PC1_NS);
-        }
+        // choose here, how serialization to xml to be made
+        // 1: default namespace for PC1_NS
+        //nss.put("_",PC1_NS);
+        // 2: use prefix PC1
+        nss.put(PC1_PREFIX,PC1_NS);
         graph.setNss(nss);
         return graph;
     }

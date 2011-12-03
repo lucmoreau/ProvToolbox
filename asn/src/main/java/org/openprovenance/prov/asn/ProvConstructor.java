@@ -284,11 +284,11 @@ public  class ProvConstructor implements TreeConstructor {
        String s_iri=(String)iri;
        s_iri=unwrap(s_iri);
        namespaceTable.put("_",s_iri);
-       pFactory.setDefaultNamespace(s_iri);
        return null;
     }
     
     public Object convertNamespaces(List<Object> namespaces) {
+        pFactory.setNamespaces(namespaceTable);
         return namespaceTable;
     }
 

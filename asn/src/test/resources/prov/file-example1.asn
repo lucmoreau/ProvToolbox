@@ -1,6 +1,8 @@
 
 
-container(default <http://example.org/>
+container
+
+default <http://example.org/>
 
 entity(e0, [ prov:type="File", path="/shared/crime.txt", creator="Alice" ])
 entity(e1, [ prov:type="File", path="/shared/crime.txt", creator="Alice", content="" ])
@@ -64,6 +66,6 @@ hasAnnotation(e2,n1)
 note(n2,[style="dotted"])
 hasAnnotation(u1,n2)
 
-                )
+endContainer
 
 

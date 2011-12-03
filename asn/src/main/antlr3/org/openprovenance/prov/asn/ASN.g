@@ -22,10 +22,10 @@ tokens {
 
 
 container
-	:	'container' '('
+	:	'container' 
         (namespaceDeclarations)?
 		record*
-		')'
+		'endContainer'
 
       -> ^(CONTAINER namespaceDeclarations? record*)
 	;

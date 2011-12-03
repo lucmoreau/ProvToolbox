@@ -6,27 +6,35 @@ import java.util.List;
 public class ASNConstructor implements TreeConstructor {
 
 
+    public String optionalAttributes(Object attrs) {
+        String s_attrs=(String)attrs;
+        if ("".equals(s_attrs)) {
+            return "";
+        } else {
+            return ",[" + attrs + "]";
+        }
+    }
 
 
     public Object convertActivity(Object id,Object recipe,Object startTime,Object endTime, Object aAttrs) {
-        String s="activity(" + id + "," + recipe + "," + startTime + "," + endTime + ",[" + aAttrs + "])";
+        String s="activity(" + id + "," + recipe + "," + startTime + "," + endTime + optionalAttributes(aAttrs) + ")";
         return s;
     }
     public Object convertEntity(Object id, Object attrs) {
-        String s="entity(" + id  + ",[" + attrs + "])";
+        String s="entity(" + id  + optionalAttributes(attrs) + ")";
         return s;
     }
     public Object convertAgent(Object id, Object attrs) {
-        String s="agent(" + id  + ",[" + attrs + "])";
+        String s="agent(" + id  + optionalAttributes(attrs) + ")";
         return s;
     }
     public Object convertContainer(Object namespaces, List<Object> records) {
-        String s="container(";
+        String s="container\n";
         s=s+namespaces;
         for (Object o: records) {
-            s=s+o+",\n";
+            s=s+o+"\n";
         }
-        s=s+")";
+        s=s+"endContainer";
         return s;
     }
     public Object convertAttributes(List<Object> attributes) {
@@ -68,17 +76,17 @@ public class ASNConstructor implements TreeConstructor {
     }
     public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs) {
         String s="used(" + ((id==null)? "" : id + ",") + id2 + "," + id1 +
-            ((time==null)? "" : (", " + time)) + ",[" + aAttrs + "]" + ")";
+            ((time==null)? "" : (", " + time)) + optionalAttributes(aAttrs) + ")";
         return s;
     }
     public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
         String s="wasGeneratedBy(" + ((id==null)? "" : id + ",") + id2 + "," + id1 +
-            ((time==null)? "" : (", " + time)) + ",[" + aAttrs + "]" +  ")";
+            ((time==null)? "" : (", " + time)) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
     public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
         String s="wasDerivedFrom(" + id2 + "," + id1 + 
-            ((pe==null) ? "" : (", " + pe + ", " + g2 + "," + u1)) + ",[" + aAttrs + "]" +  ")";
+            ((pe==null) ? "" : (", " + pe + ", " + g2 + "," + u1)) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
 

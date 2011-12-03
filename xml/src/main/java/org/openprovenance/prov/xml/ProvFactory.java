@@ -348,21 +348,21 @@ public class ProvFactory implements CommonURIs {
                         EntityRef aid) {
         Used res=of.createUsed();
         res.setId(stringToQName(autoGenerateId(usedIdPrefix,id)));
-        res.setEffect(pid);
+        res.setActivity(pid);
         addRole(res,role);
-        res.setCause(aid);
+        res.setEntity(aid);
         return res;
     }
 
     public Used newUsed(QName id,
-                        ActivityRef pid,
+                        ActivityRef aid,
                         String role,
-                        EntityRef aid) {
+                        EntityRef eid) {
         Used res=of.createUsed();
         res.setId(id);
-        res.setEffect(pid);
+        res.setActivity(aid);
         addRole(res,role);
-        res.setCause(aid);
+        res.setEntity(eid);
         return res;
     }
 
@@ -418,9 +418,9 @@ public class ProvFactory implements CommonURIs {
 
     public Used newUsed(Used u) {
         Used u1=newUsed(u.getId(),
-                        u.getEffect(),
+                        u.getActivity(),
                         null,
-                        u.getCause());
+                        u.getEntity());
         u1.getAny().addAll(u.getAny());
         return u1;
     }
@@ -436,9 +436,9 @@ public class ProvFactory implements CommonURIs {
 
     public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
         WasGeneratedBy wgb=newWasGeneratedBy(g.getId(),
-                                             g.getEffect(),
+                                             g.getEntity(),
                                              null,
-                                             g.getCause());
+                                             g.getActivity());
         wgb.setId(g.getId());
         wgb.getAny().addAll(g.getAny());
         return wgb;
@@ -469,8 +469,8 @@ public class ProvFactory implements CommonURIs {
                                             ActivityRef pid) {
         WasGeneratedBy res=of.createWasGeneratedBy();
         res.setId(id);
-        res.setCause(pid);
-        res.setEffect(aid);
+        res.setActivity(pid);
+        res.setEntity(aid);
         addRole(res,role);
         return res;
     }

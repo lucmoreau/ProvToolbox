@@ -54,14 +54,17 @@ public  class ProvConstructor implements TreeConstructor {
         activityTable.put(s_id,a);
         a.getAny().addAll(attrs);
 
-        if (endTime!=null) {
-            a.setEndTime(pFactory.newISOTime((String)endTime));
+        if (s_endTime!=null) {
+            a.setEndTime(pFactory.newISOTime(s_endTime));
         }
 
-        if (startTime!=null) {
-            a.setStartTime(pFactory.newISOTime((String)startTime));
+        if (s_startTime!=null) {
+            a.setStartTime(pFactory.newISOTime(s_startTime));
         }
 
+        if (s_recipe!=null) {
+            a.setRecipeLink(s_recipe);
+        }
         return a;
     }
 
@@ -265,6 +268,12 @@ public  class ProvConstructor implements TreeConstructor {
         iri=unwrap(iri);
         return iri;
     }
+
+    public Object convertRecipe(String recipe) {
+        recipe=unwrap(recipe);
+        return recipe;
+    }
+
 
     public Object convertTypedLiteral(String datatype, Object value) {
         String v2=(String)value;

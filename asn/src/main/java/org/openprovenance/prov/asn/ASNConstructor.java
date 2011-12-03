@@ -14,7 +14,9 @@ public class ASNConstructor implements TreeConstructor {
             return ",[" + attrs + "]";
         }
     }
-
+    public String optionalTime(Object time) {
+        return ((time==null)? "" : (", " + time));
+    }            
 
     public Object convertActivity(Object id,Object recipe,Object startTime,Object endTime, Object aAttrs) {
         String s="activity(" + id + "," + recipe + "," + startTime + "," + endTime + optionalAttributes(aAttrs) + ")";
@@ -53,6 +55,8 @@ public class ASNConstructor implements TreeConstructor {
     public Object convertId(String id) {
         return id;
     }
+
+
     public Object convertAttribute(Object name, Object value) {
         return name + "=" + value;
     }
@@ -76,12 +80,12 @@ public class ASNConstructor implements TreeConstructor {
     }
     public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs) {
         String s="used(" + ((id==null)? "" : id + ",") + id2 + "," + id1 +
-            ((time==null)? "" : (", " + time)) + optionalAttributes(aAttrs) + ")";
+            optionalTime(time) + optionalAttributes(aAttrs) + ")";
         return s;
     }
     public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
         String s="wasGeneratedBy(" + ((id==null)? "" : id + ",") + id2 + "," + id1 +
-            ((time==null)? "" : (", " + time)) + optionalAttributes(aAttrs) +  ")";
+            optionalTime(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
     public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
@@ -96,6 +100,11 @@ public class ASNConstructor implements TreeConstructor {
     public Object convertIRI(String iri) {
         return iri;
     }
+
+    public Object convertRecipe(String recipe) {
+        return recipe;
+    }
+
     public Object convertTypedLiteral(String datatype, Object value) {
         return datatype + "%%" + value;
     }

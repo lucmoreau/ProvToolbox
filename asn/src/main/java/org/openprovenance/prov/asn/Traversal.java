@@ -111,6 +111,10 @@ public class Traversal {
  	    String iri=convertToken(getTokenString(ast.getChild(0)));
  	    return c.convertIRI(iri);
 
+ 	case ASNParser.RECIPE:
+ 	    String recipe1=convertToken(getTokenString(ast.getChild(0)));
+ 	    return c.convertRecipe(recipe1);
+
  	case ASNParser.TYPEDLITERAL:
  	    String v1=convertToken(getTokenString(ast.getChild(0)));
  	    Object v2=convert(ast.getChild(1));

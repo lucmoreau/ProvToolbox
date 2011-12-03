@@ -4,15 +4,16 @@
 
      *WARNING*
      Transformation of the OPM OPMX schema into PROV compatible.
+
      Purely tentative at this stage. Still some OPMX legacy.
      PROV-DM not fully encoded yet.
      Only work in progress.
   -->
 
 <!-- Known issues:
-
-     - introduce Notes and hasAnnotation, remove OPMX embedded annotations
-     - currently, no optional-predefined attribute for activity (time,recipeLink). challenge with xs:any.
+     - challenge with xs:any:
+       - In activity: optional attributes (time,recipeLink) have to be followed by xsd:any
+       - So, optional attributes declared, and xsd:any requiring other namespace.
      -->
 
 
@@ -27,10 +28,12 @@
   <xs:element name="activity" type="prov:Activity"/>
   <xs:complexType name="Activity">
 	<xs:sequence>
-	  <xs:element name="startTime"    type="xs:dateTime" minOccurs="1"/>  <!-- to fix, it's mandatory here! -->
-	  <xs:element name="endTime"      type="xs:dateTime" minOccurs="1"/>  <!-- to fix, it's mandatory here! -->
+      <xs:element name="recipeLink"   type="xs:anyURI"   minOccurs="0"/> 
+	  <xs:element name="startTime"    type="xs:dateTime" minOccurs="0"/> 
+	  <xs:element name="endTime"      type="xs:dateTime" minOccurs="0"/> 
+	  <xs:element name="type"         type="xs:string"   minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? type ??? -->
 
-	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
+	  <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>

@@ -18,8 +18,12 @@ public class ASNConstructor implements TreeConstructor {
         return ((time==null)? "" : (", " + time));
     }            
 
+    public Object optional(Object str) {
+        return ((str==null)? "" : str);
+    }
+
     public Object convertActivity(Object id,Object recipe,Object startTime,Object endTime, Object aAttrs) {
-        String s="activity(" + id + "," + recipe + "," + startTime + "," + endTime + optionalAttributes(aAttrs) + ")";
+        String s="activity(" + id + "," + optional(recipe) + "," + optional(startTime) + "," + optional(endTime) + optionalAttributes(aAttrs) + ")";
         return s;
     }
     public Object convertEntity(Object id, Object attrs) {
@@ -78,13 +82,18 @@ public class ASNConstructor implements TreeConstructor {
     public Object convertString(String s) {
         return s;
     }
+
+    public String optionalId(Object id) {
+        return ((id==null)? "" : (id + ","));
+    }            
+
     public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs) {
-        String s="used(" + ((id==null)? "" : id + ",") + id2 + "," + id1 +
+        String s="used(" + optionalId(id) + id2 + "," + id1 +
             optionalTime(time) + optionalAttributes(aAttrs) + ")";
         return s;
     }
     public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s="wasGeneratedBy(" + ((id==null)? "" : id + ",") + id2 + "," + id1 +
+        String s="wasGeneratedBy(" + optionalId(id) + id2 + "," + id1 +
             optionalTime(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }

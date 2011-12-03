@@ -270,6 +270,7 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
     public Object convertRecipe(String recipe) {
+        if (recipe==null) return recipe;
         recipe=unwrap(recipe);
         return recipe;
     }

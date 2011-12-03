@@ -375,7 +375,7 @@ public class ProvFactory implements CommonURIs {
             //              "prov",
             //              "role",
             //              role);
-            TypedLiteral tl=newTypedLiteral(role,"xs:string");
+            TypedLiteral tl=newTypedLiteral(role,"xsd:string");
             JAXBElement<TypedLiteral> je=of.createRole(tl);
             addAttribute(a,je);
         }
@@ -385,7 +385,7 @@ public class ProvFactory implements CommonURIs {
                                         String type) {
         TypedLiteral res=of.createTypedLiteral();
         res.setValue(value);
-        res.setType(type);
+        res.setType(stringToQName(type));
         return res;
     }
 
@@ -730,10 +730,19 @@ public class ProvFactory implements CommonURIs {
 
 
     public void addType(HasExtensibility a,
-                        String type) {
-        JAXBElement<String> je=of.createType(type);
+                        String type,
+                        String typeOfType) {
+
+        TypedLiteral tl=newTypedLiteral(type,typeOfType);
+        JAXBElement<TypedLiteral> je=of.createType(tl);
         addAttribute(a,je);
 
+    }
+
+    public void addType(HasExtensibility a,
+                        String type) {
+
+        addType(a,type,"xsd:anyURI");
     }
 
     public void addLabel(HasExtensibility a,                                  

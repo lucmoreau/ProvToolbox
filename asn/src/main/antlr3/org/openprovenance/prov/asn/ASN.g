@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX;
+    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMP; WAW;
 }
 
 @header {
@@ -59,7 +59,7 @@ defaultNamespaceDeclaration :
     ;
 
 record
-	:	(entityRecord | activityRecord | agentRecord | generationRecord  | useRecord | derivationRecord | dependenceRecord  | controlRecord )
+	:	(entityRecord | activityRecord | agentRecord | generationRecord  | useRecord | derivationRecord | dependenceRecord  | controlRecord | complementarityRecord  |  associationRecord)
 	;
 
 entityRecord
@@ -118,6 +118,17 @@ dependenceRecord
 controlRecord
 	:	'wasControlledBy' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ')'
       -> ^(WCB identifier+ ^(ATTRIBUTES attributeValuePairs?))
+	;
+
+complementarityRecord
+	:	'wasComplementOf' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ')'
+      -> ^(COMP identifier+ ^(ATTRIBUTES attributeValuePairs?))
+	;
+
+
+associationRecord
+	:	'wasAssociatedWith' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ')'
+      -> ^(WAW identifier+ ^(ATTRIBUTES attributeValuePairs?))
 	;
 
 identifier

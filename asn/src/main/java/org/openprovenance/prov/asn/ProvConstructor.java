@@ -17,6 +17,7 @@ import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.TypedLiteral;
+import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
 import  org.antlr.runtime.CommonTokenStream;
 import  org.antlr.runtime.ANTLRFileStream;
@@ -41,6 +42,8 @@ public  class ProvConstructor implements TreeConstructor {
     
     public ProvConstructor(ProvFactory pFactory) {
         this.pFactory=pFactory;
+        namespaceTable.put("xsd",NamespacePrefixMapper.XSD_NS);
+        namespaceTable.put("xsi",NamespacePrefixMapper.XSI_NS);
     }
             
 
@@ -138,7 +141,9 @@ public  class ProvConstructor implements TreeConstructor {
         if (prefix.equals("xsd")) return "http://www.w3.org/2001/XMLSchema";
         return namespaceTable.get(prefix);
     }
-    
+
+    // TODO: I don't recognize the predefined attributes ...
+    //
     public Object convertAttribute(Object name, Object value) {
         String attr1=(String)name;
         
@@ -162,7 +167,7 @@ public  class ProvConstructor implements TreeConstructor {
                                          local,
                                          unwrap(val1));
         } else {
-            QName attr1_QNAME = new QName(namespaceTable.get(prefix),
+            QName attr1_QNAME = new QName(getNamespace(prefix),
                                           local,
                                           prefix);
         

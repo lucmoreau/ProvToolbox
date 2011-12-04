@@ -4,15 +4,16 @@
 
      *WARNING*
      Transformation of the OPM OPMX schema into PROV compatible.
+
      Purely tentative at this stage. Still some OPMX legacy.
      PROV-DM not fully encoded yet.
      Only work in progress.
   -->
 
 <!-- Known issues:
-
-     - introduce Notes and hasAnnotation, remove OPMX embedded annotations
-     - currently, no optional-predefined attribute for activity (time,recipeLink). challenge with xs:any.
+     - challenge with xs:any:
+       - In activity: optional attributes (time,recipeLink) have to be followed by xsd:any
+       - So, optional attributes declared, and xsd:any requiring other namespace.
      -->
 
 
@@ -27,7 +28,12 @@
   <xs:element name="activity" type="prov:Activity"/>
   <xs:complexType name="Activity">
 	<xs:sequence>
-	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
+      <xs:element name="recipeLink"   type="xs:anyURI"   minOccurs="0"/> 
+	  <xs:element name="startTime"    type="xs:dateTime" minOccurs="0"/> 
+	  <xs:element name="endTime"      type="xs:dateTime" minOccurs="0"/> 
+	  <xs:element name="type"         type="xs:string"   minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? type ??? -->
+
+	  <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
@@ -61,9 +67,9 @@
 
   <xs:complexType name="Used">
 	<xs:sequence>
-	  <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
-	  <xs:element name="effect"  type="prov:ActivityRef"/>
-	  <xs:element name="cause"   type="prov:EntityRef"/>
+	  <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
+	  <xs:element name="activity" type="prov:ActivityRef"/>
+	  <xs:element name="entity"   type="prov:EntityRef"/>
 	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -71,9 +77,9 @@
 
   <xs:complexType name="WasGeneratedBy">
 	<xs:sequence>
-	  <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
-	  <xs:element name="effect"  type="prov:EntityRef"/>
-	  <xs:element name="cause"   type="prov:ActivityRef"/>
+	  <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
+	  <xs:element name="entity"   type="prov:EntityRef"/>
+	  <xs:element name="activity" type="prov:ActivityRef"/>
 	  <xs:any maxOccurs="unbounded" minOccurs="0"/>
 	</xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -121,13 +127,13 @@
   </xs:complexType>
 
   <xs:element name="label" type="xs:string"/>
-  <xs:element name="type" type="xs:string"/>
+  <xs:element name="type" type="prov:TypedLiteral"/>
   <xs:element name="role" type="prov:TypedLiteral"/>
 
   <xs:complexType name="TypedLiteral">
 	<xs:simpleContent>
 	  <xs:extension base="xs:string">
-	    <xs:attribute name="type" type="xs:string"/>
+	    <xs:attribute name="type" type="xs:QName"/>
 	  </xs:extension>
 	</xs:simpleContent>
   </xs:complexType>

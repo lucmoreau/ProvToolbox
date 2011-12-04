@@ -67,6 +67,10 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
      *      value will be ignored and the system will generate one.
      */
     public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
+        if ((defaultNamespace!=null) && (namespaceUri.equals(defaultNamespace))) {
+            return "";
+        }
+
         if (namespaceUri.equals(PROV_NS)) {
             return "prov";
         }
@@ -78,9 +82,6 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
         }
         if (namespaceUri.equals(XSI_NS)) {
             return "xsi";
-        }
-        if ((defaultNamespace!=null) && (namespaceUri.equals(defaultNamespace))) {
-            return "";
         }
         for (String k: nss.keySet()) {
             if (nss.get(k).equals(namespaceUri)) {

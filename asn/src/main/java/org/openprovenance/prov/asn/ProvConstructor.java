@@ -17,6 +17,7 @@ import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.TypedLiteral;
+import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
 import  org.antlr.runtime.CommonTokenStream;
 import  org.antlr.runtime.ANTLRFileStream;
@@ -41,6 +42,8 @@ public  class ProvConstructor implements TreeConstructor {
     
     public ProvConstructor(ProvFactory pFactory) {
         this.pFactory=pFactory;
+        namespaceTable.put("xsd",NamespacePrefixMapper.XSD_NS);
+        namespaceTable.put("xsi",NamespacePrefixMapper.XSI_NS);
     }
             
 
@@ -53,6 +56,18 @@ public  class ProvConstructor implements TreeConstructor {
         Activity a=pFactory.newActivity(s_id);
         activityTable.put(s_id,a);
         a.getAny().addAll(attrs);
+
+        if (s_endTime!=null) {
+            a.setEndTime(pFactory.newISOTime(s_endTime));
+        }
+
+        if (s_startTime!=null) {
+            a.setStartTime(pFactory.newISOTime(s_startTime));
+        }
+
+        if (s_recipe!=null) {
+            a.setRecipeLink(s_recipe);
+        }
         return a;
     }
 
@@ -121,17 +136,29 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
     public String getNamespace(String prefix) {
-        if (prefix==null) return namespaceTable.get("_");
+        if ((prefix==null) || ("".equals(prefix))) return namespaceTable.get("_");
         if (prefix.equals("prov")) return "http://openprovenance.org/prov-xml#";
         if (prefix.equals("xsd")) return "http://www.w3.org/2001/XMLSchema";
         return namespaceTable.get(prefix);
     }
-    
+
+    // TODO: I don't recognize the predefined attributes ...
+    //
     public Object convertAttribute(Object name, Object value) {
         String attr1=(String)name;
+        
+        int index=attr1.indexOf(':');
+        String prefix;
+        String local;
 
-        String prefix=attr1.substring(0,attr1.indexOf(':'));
-        String local=attr1.substring(attr1.indexOf(':')+1,attr1.length());
+        if (index==-1) {
+            prefix="";
+            local=attr1;
+        } else {
+            prefix=attr1.substring(0,index);
+            local=attr1.substring(index+1,attr1.length());
+        }
+
 
         if (value instanceof String) {
             String val1=(String)(value);
@@ -140,7 +167,7 @@ public  class ProvConstructor implements TreeConstructor {
                                          local,
                                          unwrap(val1));
         } else {
-            QName attr1_QNAME = new QName(namespaceTable.get(prefix),
+            QName attr1_QNAME = new QName(getNamespace(prefix),
                                           local,
                                           prefix);
         
@@ -247,6 +274,13 @@ public  class ProvConstructor implements TreeConstructor {
         return iri;
     }
 
+    public Object convertRecipe(String recipe) {
+        if (recipe==null) return recipe;
+        recipe=unwrap(recipe);
+        return recipe;
+    }
+
+
     public Object convertTypedLiteral(String datatype, Object value) {
         String v2=(String)value;
         datatype=unwrap(datatype);
@@ -265,11 +299,11 @@ public  class ProvConstructor implements TreeConstructor {
        String s_iri=(String)iri;
        s_iri=unwrap(s_iri);
        namespaceTable.put("_",s_iri);
-       pFactory.setDefaultNamespace(s_iri);
        return null;
     }
     
     public Object convertNamespaces(List<Object> namespaces) {
+        pFactory.setNamespaces(namespaceTable);
         return namespaceTable;
     }
 

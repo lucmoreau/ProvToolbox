@@ -3,6 +3,7 @@ import java.util.Collection;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Hashtable;
 import java.util.Date;
 import javax.xml.bind.JAXBElement;
 import java.util.GregorianCalendar;
@@ -38,9 +39,9 @@ public class ProvFactory implements CommonURIs {
     }
 
     /** Note, this method now makes it stateful :-( */
-    private String defaultNamespace=null;
-    public void setDefaultNamespace(String nss) {
-        defaultNamespace=nss;
+    private Hashtable<String,String> namespaces=null;
+    public void setNamespaces(Hashtable<String,String> nss) {
+        namespaces=nss;
     }
     
 
@@ -69,9 +70,9 @@ public class ProvFactory implements CommonURIs {
         init();
     }
 
-    public ProvFactory(String defaultNamespace) {
+    public ProvFactory(Hashtable<String,String> namespaces) {
         of=new ObjectFactory();
-        this.defaultNamespace=defaultNamespace;
+        this.namespaces=namespaces;
         init();
     }
 
@@ -101,11 +102,11 @@ public class ProvFactory implements CommonURIs {
         if (id==null) return null;
         int index=id.indexOf(':');
         if (index==-1) {
-            return new QName(defaultNamespace,id);
+            return new QName(namespaces.get("_"),id);
         }
         String prefix=id.substring(0,index);
         String local=id.substring(index+1,id.length());
-        return new QName(defaultNamespace,
+        return new QName(namespaces.get(prefix),
                          local,
                          prefix);
     }
@@ -347,21 +348,21 @@ public class ProvFactory implements CommonURIs {
                         EntityRef aid) {
         Used res=of.createUsed();
         res.setId(stringToQName(autoGenerateId(usedIdPrefix,id)));
-        res.setEffect(pid);
+        res.setActivity(pid);
         addRole(res,role);
-        res.setCause(aid);
+        res.setEntity(aid);
         return res;
     }
 
     public Used newUsed(QName id,
-                        ActivityRef pid,
+                        ActivityRef aid,
                         String role,
-                        EntityRef aid) {
+                        EntityRef eid) {
         Used res=of.createUsed();
         res.setId(id);
-        res.setEffect(pid);
+        res.setActivity(aid);
         addRole(res,role);
-        res.setCause(aid);
+        res.setEntity(eid);
         return res;
     }
 
@@ -374,7 +375,7 @@ public class ProvFactory implements CommonURIs {
             //              "prov",
             //              "role",
             //              role);
-            TypedLiteral tl=newTypedLiteral(role,"xs:string");
+            TypedLiteral tl=newTypedLiteral(role,"xsd:string");
             JAXBElement<TypedLiteral> je=of.createRole(tl);
             addAttribute(a,je);
         }
@@ -384,7 +385,7 @@ public class ProvFactory implements CommonURIs {
                                         String type) {
         TypedLiteral res=of.createTypedLiteral();
         res.setValue(value);
-        res.setType(type);
+        res.setType(stringToQName(type));
         return res;
     }
 
@@ -417,9 +418,9 @@ public class ProvFactory implements CommonURIs {
 
     public Used newUsed(Used u) {
         Used u1=newUsed(u.getId(),
-                        u.getEffect(),
+                        u.getActivity(),
                         null,
-                        u.getCause());
+                        u.getEntity());
         u1.getAny().addAll(u.getAny());
         return u1;
     }
@@ -435,9 +436,9 @@ public class ProvFactory implements CommonURIs {
 
     public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
         WasGeneratedBy wgb=newWasGeneratedBy(g.getId(),
-                                             g.getEffect(),
+                                             g.getEntity(),
                                              null,
-                                             g.getCause());
+                                             g.getActivity());
         wgb.setId(g.getId());
         wgb.getAny().addAll(g.getAny());
         return wgb;
@@ -468,8 +469,8 @@ public class ProvFactory implements CommonURIs {
                                             ActivityRef pid) {
         WasGeneratedBy res=of.createWasGeneratedBy();
         res.setId(id);
-        res.setCause(pid);
-        res.setEffect(aid);
+        res.setActivity(pid);
+        res.setEntity(aid);
         addRole(res,role);
         return res;
     }
@@ -729,10 +730,19 @@ public class ProvFactory implements CommonURIs {
 
 
     public void addType(HasExtensibility a,
-                        String type) {
-        JAXBElement<String> je=of.createType(type);
+                        String type,
+                        String typeOfType) {
+
+        TypedLiteral tl=newTypedLiteral(type,typeOfType);
+        JAXBElement<TypedLiteral> je=of.createType(tl);
         addAttribute(a,je);
 
+    }
+
+    public void addType(HasExtensibility a,
+                        String type) {
+
+        addType(a,type,"xsd:anyURI");
     }
 
     public void addLabel(HasExtensibility a,                                  

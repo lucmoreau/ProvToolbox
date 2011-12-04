@@ -56,11 +56,16 @@ public class NullConstructor implements TreeConstructor {
     }
 
     public Object convertQNAME(String qname) {
-	return null;
+        return null;
     }
     public Object convertIRI(String iri) {
-	return null;
+        return null;
     }
+
+    public Object convertRecipe(String recipe) {
+        return null;
+    }
+    
     public Object convertTypedLiteral(String datatype, Object value) {
         return null;
     }

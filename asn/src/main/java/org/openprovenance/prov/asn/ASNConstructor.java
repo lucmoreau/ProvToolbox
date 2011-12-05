@@ -83,6 +83,10 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
+    public Object convertInt(int i) {
+        return i;
+    }
+
     public String optionalId(Object id) {
         return ((id==null)? "" : (id + ","));
     }            

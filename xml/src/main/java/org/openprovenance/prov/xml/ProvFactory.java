@@ -834,28 +834,28 @@ public class ProvFactory implements CommonURIs {
                                   Collection<Object> lks)
     {
         Container res=of.createContainer();
-        res.setRecord(of.createRecord());
+        res.setRecords(of.createRecords());
         res.setId(id);
         if (accs!=null) {
-            res.getRecord().getAccount().addAll(accs);
+            res.getRecords().getAccount().addAll(accs);
         }
         if (ps!=null) {
-            res.getRecord().getActivity().addAll(ps);
+            res.getRecords().getActivity().addAll(ps);
         }
         if (as!=null) {
-            res.getRecord().getEntity().addAll(as);
+            res.getRecords().getEntity().addAll(as);
         }
         if (ags!=null) {
-            res.getRecord().getAgent().addAll(ags);
+            res.getRecords().getAgent().addAll(ags);
         }
         if (lks!=null) {
             Dependencies ccls=of.createDependencies();
             ccls.getUsedOrWasGeneratedByOrWasInformedBy().addAll(lks);
-            res.getRecord().setDependencies(ccls);
+            res.getRecords().setDependencies(ccls);
         }
 
         if (ns!=null) {
-            res.getRecord().getNote().addAll(ns);
+            res.getRecords().getNote().addAll(ns);
         }
         return res;
     }
@@ -917,13 +917,13 @@ public class ProvFactory implements CommonURIs {
                                   Dependencies lks)
     {
         Container res=of.createContainer();
-	res.setRecord(of.createRecord());
+	res.setRecords(of.createRecords());
         //res.setId(autoGenerateId(containerIdPrefix));
-        res.getRecord().getAccount().addAll(accs);
-        res.getRecord().getActivity().addAll(ps);
-        res.getRecord().getEntity().addAll(as);
-        res.getRecord().getAgent().addAll(ags);
-        res.getRecord().setDependencies(lks);
+        res.getRecords().getAccount().addAll(accs);
+        res.getRecords().getActivity().addAll(ps);
+        res.getRecords().getEntity().addAll(as);
+        res.getRecords().getAgent().addAll(ags);
+        res.getRecords().setDependencies(lks);
         return res;
     }
 
@@ -935,26 +935,26 @@ public class ProvFactory implements CommonURIs {
                                   Dependencies lks)
     {
         Container res=of.createContainer();
-	res.setRecord(of.createRecord());
+	res.setRecords(of.createRecords());
         //res.setId(autoGenerateId(containerIdPrefix));
-        res.getRecord().getAccount().addAll(accs);
-        res.getRecord().getActivity().addAll(ps);
-        res.getRecord().getEntity().addAll(as);
-        res.getRecord().getAgent().addAll(ags);
-        res.getRecord().setDependencies(lks);
-        res.getRecord().getNote().addAll(ns);
+        res.getRecords().getAccount().addAll(accs);
+        res.getRecords().getActivity().addAll(ps);
+        res.getRecords().getEntity().addAll(as);
+        res.getRecords().getAgent().addAll(ags);
+        res.getRecords().setDependencies(lks);
+        res.getRecords().getNote().addAll(ns);
         return res;
     }
 
 
 
     public Container newContainer(Container graph) {
-        return newContainer(graph.getRecord().getAccount(),
-                            graph.getRecord().getActivity(),
-                            graph.getRecord().getEntity(),
-                            graph.getRecord().getAgent(),
-                            graph.getRecord().getNote(),
-                            graph.getRecord().getDependencies());
+        return newContainer(graph.getRecords().getAccount(),
+                            graph.getRecords().getActivity(),
+                            graph.getRecords().getEntity(),
+                            graph.getRecords().getAgent(),
+                            graph.getRecords().getNote(),
+                            graph.getRecords().getDependencies());
     }
 
 

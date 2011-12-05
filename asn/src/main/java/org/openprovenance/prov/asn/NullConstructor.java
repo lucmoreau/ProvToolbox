@@ -45,6 +45,10 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
+    public Object convertInt(int s) {
+        return null;
+    }
+
     public Object convertUsed(Object id, Object id2,Object id1, Object aAttrs, Object time) {
         return null;
     }

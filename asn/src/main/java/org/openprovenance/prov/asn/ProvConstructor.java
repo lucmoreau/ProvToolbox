@@ -3,6 +3,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Hashtable;
+import java.net.URI;
 
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Activity;
@@ -159,8 +160,14 @@ public  class ProvConstructor implements TreeConstructor {
             local=attr1.substring(index+1,attr1.length());
         }
 
+        if (value instanceof Integer) {
+            String val1=value.toString();
+            return pFactory.newAttribute(getNamespace(prefix),
+                                         prefix,
+                                         local,
+                                         unwrap(val1));
 
-        if (value instanceof String) {
+        } else if (value instanceof String) {
             String val1=(String)(value);
             return pFactory.newAttribute(getNamespace(prefix),
                                          prefix,
@@ -197,6 +204,10 @@ public  class ProvConstructor implements TreeConstructor {
 
     public Object convertString(String s) {
         return s;
+    }
+
+    public Object convertInt(int i) {
+        return i;
     }
 
 
@@ -271,7 +282,7 @@ public  class ProvConstructor implements TreeConstructor {
 
     public Object convertIRI(String iri) {
         iri=unwrap(iri);
-        return iri;
+        return URI.create(iri);
     }
 
     public Object convertRecipe(String recipe) {
@@ -282,7 +293,7 @@ public  class ProvConstructor implements TreeConstructor {
 
 
     public Object convertTypedLiteral(String datatype, Object value) {
-        String v2=(String)value;
+        String v2=value.toString();
         datatype=unwrap(datatype);
         return pFactory.newTypedLiteral(datatype,v2);
     }

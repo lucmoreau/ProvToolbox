@@ -178,8 +178,8 @@
   <xs:element name="account" type="prov:Account"/>
   <xs:complexType name="Account">
 	<xs:sequence>
-	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="1"/>
 	  <xs:element name="asserter" type="prov:AgentRef"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:records"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
@@ -191,8 +191,8 @@
   </xs:element>
 
   <!-- a wrapper element for all records, used in Container or Account -->
-  <xs:element name="record" type="prov:Record"/>
-  <xs:complexType name="Record">
+  <xs:element name="records" type="prov:Records"/>
+  <xs:complexType name="Records">
 	<xs:sequence>
 	  <xs:element ref="prov:account"  minOccurs="0" maxOccurs="unbounded"/>
 	  <xs:element ref="prov:activity" minOccurs="0" maxOccurs="unbounded"/>
@@ -206,7 +206,7 @@
 
   <xs:complexType name="Container">
 	<xs:sequence>
-	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="1"/>
+	  <xs:element ref="prov:records"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
     <!-- tentative, this could allow us to annotate containers ... -->

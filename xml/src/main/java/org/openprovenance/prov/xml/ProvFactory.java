@@ -375,15 +375,22 @@ public class ProvFactory implements CommonURIs {
             //              "prov",
             //              "role",
             //              role);
-            TypedLiteral tl=newTypedLiteral(role,"xsd:string");
+            TypedLiteral tl=newTypedLiteral(role);
+            //TypedLiteral tl=newTypedLiteral(role,"xsd:string");
             JAXBElement<TypedLiteral> je=of.createRole(tl);
             addAttribute(a,je);
         }
     }
     
-    public TypedLiteral newTypedLiteral(String value,
-                                        String type) {
+    public TypedLiteral newTypedLiteral(Object value) {
         TypedLiteral res=of.createTypedLiteral();
+        res.setValue(value);
+        return res;
+    }
+
+    public OldTypedLiteral newOldTypedLiteral(String value,
+					   String type) {
+        OldTypedLiteral res=of.createOldTypedLiteral();
         res.setValue(value);
         res.setType(stringToQName(type));
         return res;
@@ -729,21 +736,31 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    public void addType(HasExtensibility a,
+    /*    public void addType(HasExtensibility a,
                         String type,
                         String typeOfType) {
 
-        TypedLiteral tl=newTypedLiteral(type,typeOfType);
-        JAXBElement<TypedLiteral> je=of.createType(tl);
+        OldTypedLiteral tl=newOldTypedLiteral(type,typeOfType);
+        JAXBElement<OldTypedLiteral> je=of.createType(tl);
+        addAttribute(a,je);
+
+    }
+    */
+
+    public void addType(HasExtensibility a,
+                        Object type) {
+
+        //TypedLiteral tl=newTypedLiteral(type);
+        JAXBElement<Object> je=of.createType(type);
         addAttribute(a,je);
 
     }
 
-    public void addType(HasExtensibility a,
-                        String type) {
-
-        addType(a,type,"xsd:anyURI");
-    }
+    //    public void addType(HasExtensibility a,
+    //                        String type) {
+    //
+    //        addType(a,type,"xsd:anyURI");
+    //    }
 
     public void addLabel(HasExtensibility a,                                  
                          String label) {

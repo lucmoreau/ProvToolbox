@@ -127,16 +127,35 @@
   </xs:complexType>
 
   <xs:element name="label" type="xs:string"/>
-  <xs:element name="type" type="prov:TypedLiteral"/>
+  <xs:element name="type" type="xs:anyType"/>
   <xs:element name="role" type="prov:TypedLiteral"/>
 
-  <xs:complexType name="TypedLiteral">
+  <xs:complexType name="OldTypedLiteral">
 	<xs:simpleContent>
 	  <xs:extension base="xs:string">
 	    <xs:attribute name="type" type="xs:QName"/>
 	  </xs:extension>
 	</xs:simpleContent>
   </xs:complexType>
+
+  <xs:complexType name="TypedLiteral">
+	<xs:simpleContent>
+	  <xs:extension base="xs:anySimpleType">
+	  </xs:extension>
+	</xs:simpleContent>
+  </xs:complexType>
+
+  <xs:element name="jeans_size">
+    <xs:simpleType>
+      <xs:union memberTypes="xs:dateTime xs:int xs:string xs:QName xs:anyURI" />
+    </xs:simpleType>
+  </xs:element>
+
+  <xs:element name="jeans_size2" type="xs:anyType">
+  </xs:element>
+
+  <xs:element name="jeans_size3" type="xs:anySimpleType">
+  </xs:element>
 
 
 
@@ -213,7 +232,7 @@
   </xs:complexType>
 
 
-
+  
   
 
 

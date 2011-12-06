@@ -171,6 +171,7 @@ public class PC1FullTest
         pFactory.addType(p1,-10.55);
         pFactory.addType(p1,"abc");
         pFactory.addType(p1,true);
+        pFactory.addType(p1,URI.create("http://www.example.com/hi"));
 
         Activity p2=pFactory.newActivity("p2",
                                        "align_warp 2");

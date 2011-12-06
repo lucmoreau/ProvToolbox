@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Hashtable;
 import java.net.URI;
 
+import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.ActivityRef;
@@ -160,14 +161,14 @@ public  class ProvConstructor implements TreeConstructor {
             local=attr1.substring(index+1,attr1.length());
         }
 
-        if (value instanceof Integer) {
+        if (false && value instanceof Integer) {
             String val1=value.toString();
             return pFactory.newAttribute(getNamespace(prefix),
                                          prefix,
                                          local,
                                          unwrap(val1));
 
-        } else if (value instanceof String) {
+        } else if (false && value instanceof String) {
             String val1=(String)(value);
             return pFactory.newAttribute(getNamespace(prefix),
                                          prefix,
@@ -178,7 +179,11 @@ public  class ProvConstructor implements TreeConstructor {
                                           local,
                                           prefix);
         
-            return new JAXBElement<TypedLiteral>(attr1_QNAME, TypedLiteral.class, null, (TypedLiteral)value);
+            //return new JAXBElement<TypedLiteral>(attr1_QNAME, TypedLiteral.class, null, (TypedLiteral)value);
+
+	    if (value!=null)
+	    System.out.println("class " + value + "  " + value.getClass());
+	    return new JAXBElement<Object>(attr1_QNAME, Object.class, null, value);
         }
     }
 
@@ -203,6 +208,7 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
     public Object convertString(String s) {
+	s=unwrap(s);
         return s;
     }
 
@@ -291,11 +297,42 @@ public  class ProvConstructor implements TreeConstructor {
         return recipe;
     }
 
+    public Object convertToJava(String value, Object datatype) {
+	value=unwrap(value);
+	System.out.println("convertToJava: datatype " + datatype + "  " + value);
+	if (datatype.equals("xsd:string")) return value;
+	if (datatype.equals("xsd:int")) return Integer.parseInt(value);
+	if (datatype.equals("xsd:anyURI")) {
+	    URIWrapper u=new URIWrapper();
+	    u.setValue(URI.create(value));
+	    return u;
+	}
+	if (datatype.equals("xsd:QName")) {
+	    int index=value.indexOf(':');
+	    String prefix;
+	    String local;
 
-    public Object convertTypedLiteral(String datatype, Object value) {
-        String v2=value.toString();
-        datatype=unwrap(datatype);
-        return pFactory.newTypedLiteral(datatype,v2);
+	    if (index==-1) {
+		prefix="";
+		local=value;
+	    } else {
+		prefix=value.substring(0,index);
+		local=value.substring(index+1,value.length());
+	    }
+	    return new QName(getNamespace(prefix), local, prefix);
+	}
+
+	System.out.println("-------> unknown literal type " + datatype);
+	return value;
+    }
+	
+	
+
+
+    public Object convertTypedLiteral(String value, Object datatype) {
+	Object val=convertToJava(value,datatype);  // unwrap to remove the double quote
+	//pFactory.newTypedLiteral(val);
+        return val;
     }
 
    public Object convertNamespace(Object pre, Object iri) {

@@ -338,17 +338,19 @@ xsdDateTime: IsoDateTime;
 
 
 
-TimeZoneOffset: ('+' | '-') DIGIT DIGIT ':' DIGIT DIGIT;
-
 
 IsoDateTime: (DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' DIGIT DIGIT ':' DIGIT DIGIT ':' DIGIT DIGIT ('.' DIGIT (DIGIT DIGIT?)?)? ('Z' | TimeZoneOffset)?)
     ;
 
+fragment DIGIT: '0'..'9';
+
+INTLITERAL:
+    '-'? ('0'..'9')+
+    ;
 
 
-DIGIT: '0'..'9';
+TimeZoneOffset: ('+' | '-') DIGIT DIGIT ':' DIGIT DIGIT;
 
-INTLITERAL: '-'? DIGIT+;
 
 
 

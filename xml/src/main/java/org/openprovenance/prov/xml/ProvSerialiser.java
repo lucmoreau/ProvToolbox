@@ -39,6 +39,7 @@ public class ProvSerialiser {
                 try {
                     return new ProvSerialiser();
                 } catch (JAXBException jxb) {
+		    jxb.printStackTrace();
                     throw new RuntimeException("ProvSerialiser: serialiser init failure()");
                 }
             }
@@ -70,6 +71,8 @@ public class ProvSerialiser {
     public void configurePrefixes(Marshaller m, Hashtable<String,String> namespaces) throws PropertyException {
         m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
                       new NamespacePrefixMapper(namespaces));
+	//System.out.println("--------------> ");
+	//m.setAdapter(new org.w3._2001.xmlschema.Adapter1());
     }
 
     public Document serialiseContainer (Container request) throws JAXBException {

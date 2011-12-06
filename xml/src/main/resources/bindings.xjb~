@@ -7,28 +7,21 @@
 
    
 
-    <jaxb:bindings schemaLocation="pix-20110830.xsd" 
+    <jaxb:bindings schemaLocation="prov-20111110.xsd" 
                    node="/xs:schema">       
         <jaxb:schemaBindings>
-            <jaxb:package name="org.openprovenance.pix"/>
+            <jaxb:package name="org.openprovenance.prov.xml"/>
         </jaxb:schemaBindings>   
     </jaxb:bindings>
 
 
-    <jaxb:bindings schemaLocation="pix_printer_config.xsd" 
+    <jaxb:bindings schemaLocation="prov_printer_config.xsd" 
                    node="/xs:schema">       
         <jaxb:schemaBindings>
-            <jaxb:package name="org.openprovenance.pix.printer"/>
+            <jaxb:package name="org.openprovenance.prov.printer"/>
         </jaxb:schemaBindings>   
     </jaxb:bindings>
 
-
-    <jaxb:bindings schemaLocation="collections.xsd" 
-                   node="/xs:schema">       
-        <jaxb:schemaBindings>
-            <jaxb:package name="org.openprovenance.profile.collections"/>
-        </jaxb:schemaBindings>   
-    </jaxb:bindings>
 
 
 </jaxb:bindings>

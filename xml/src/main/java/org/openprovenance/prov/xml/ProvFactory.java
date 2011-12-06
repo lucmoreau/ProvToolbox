@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Hashtable;
 import java.util.Date;
+import java.net.URI;
 import javax.xml.bind.JAXBElement;
 import java.util.GregorianCalendar;
 import javax.xml.namespace.QName;
@@ -22,6 +23,10 @@ import javax.xml.parsers.ParserConfigurationException;
 /** A stateless factory for PROV objects. */
 
 public class ProvFactory implements CommonURIs {
+
+    public static String printURI(java.net.URI u) {
+	return u.toString();
+    }
 
     public static String roleIdPrefix="r_";
     public static String usedIdPrefix="u_";
@@ -746,6 +751,16 @@ public class ProvFactory implements CommonURIs {
 
     }
     */
+
+
+    public void addType(HasExtensibility a,
+                        URI type) {
+
+	URIWrapper u=new URIWrapper();
+	u.setValue(type);
+        JAXBElement<Object> je=of.createType(u);
+        addAttribute(a,je);
+    }
 
     public void addType(HasExtensibility a,
                         Object type) {

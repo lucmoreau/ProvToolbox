@@ -127,13 +127,29 @@
   </xs:complexType>
 
   <xs:element name="label" type="xs:string"/>
-  <xs:element name="type" type="prov:TypedLiteral"/>
+  <xs:element name="type" type="xs:anyType"/>
   <xs:element name="role" type="prov:TypedLiteral"/>
 
-  <xs:complexType name="TypedLiteral">
+  <xs:complexType name="OldTypedLiteral">
 	<xs:simpleContent>
 	  <xs:extension base="xs:string">
 	    <xs:attribute name="type" type="xs:QName"/>
+	  </xs:extension>
+	</xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="TypedLiteral">
+	<xs:simpleContent>
+	  <xs:extension base="xs:anySimpleType">
+	  </xs:extension>
+	</xs:simpleContent>
+  </xs:complexType>
+
+
+  <!-- Here, for helping develop the prov toolbox, it should be moved elsewhere -->
+  <xs:complexType name="URI">
+	<xs:simpleContent>
+	  <xs:extension base="xs:anySimpleType">
 	  </xs:extension>
 	</xs:simpleContent>
   </xs:complexType>
@@ -178,8 +194,8 @@
   <xs:element name="account" type="prov:Account"/>
   <xs:complexType name="Account">
 	<xs:sequence>
-	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="1"/>
 	  <xs:element name="asserter" type="prov:AgentRef"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:records"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
 	<xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
@@ -191,8 +207,8 @@
   </xs:element>
 
   <!-- a wrapper element for all records, used in Container or Account -->
-  <xs:element name="record" type="prov:Record"/>
-  <xs:complexType name="Record">
+  <xs:element name="records" type="prov:Records"/>
+  <xs:complexType name="Records">
 	<xs:sequence>
 	  <xs:element ref="prov:account"  minOccurs="0" maxOccurs="unbounded"/>
 	  <xs:element ref="prov:activity" minOccurs="0" maxOccurs="unbounded"/>
@@ -206,14 +222,14 @@
 
   <xs:complexType name="Container">
 	<xs:sequence>
-	  <xs:element ref="prov:record"  minOccurs="1" maxOccurs="1"/>
+	  <xs:element ref="prov:records"  minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
     <!-- tentative, this could allow us to annotate containers ... -->
   </xs:complexType>
 
 
-
+  
   
 
 

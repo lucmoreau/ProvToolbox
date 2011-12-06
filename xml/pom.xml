@@ -98,6 +98,7 @@
 		       </plugins>
                <schemaIncludes>
                  <schemaInclude>**/prov-20111110.xsd</schemaInclude>
+                 <schemaInclude>**/toolbox.xsd</schemaInclude>
                  <schemaInclude>**/prov_printer_config.xsd</schemaInclude>
 
                </schemaIncludes>
@@ -217,6 +218,19 @@
   	              <arg value="-iBAK" />
   	              <arg value="Agent.java" />
                 </exec>
+
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+  	              <arg value="URIWrapper.java" />
+                </exec>
+
+<!--
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+  	              <arg value="-e s/URI /Object  /" />
+  	              <arg value="-iBAK" />
+  	              <arg value="TypedLiteral.java" />
+                </exec>
+
+-->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/    public String toString/\/* added in pom.xml *\/@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable&lt;String,String&gt; nss=null; public java.util.Hashtable&lt;String,String&gt; getNss() { return nss;} public void setNss(java.util.Hashtable&lt;String,String&gt; s) { nss=s; };public String toString/" />

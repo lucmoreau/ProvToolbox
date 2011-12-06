@@ -31,7 +31,7 @@
       <xs:element name="recipeLink"   type="xs:anyURI"   minOccurs="0"/> 
       <xs:element name="startTime"    type="xs:dateTime" minOccurs="0"/> 
       <xs:element name="endTime"      type="xs:dateTime" minOccurs="0"/> 
-      <xs:element name="type"         type="xs:string"   minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? type ??? -->
+      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
       
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>

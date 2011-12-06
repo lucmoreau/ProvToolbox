@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Hashtable;
 import java.net.URI;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -151,7 +152,6 @@ public class PC1FullTest
                               val);
     }
 
-
     public Container makePC1FullGraph(ProvFactory pFactory, String inputLocation, String outputLocation)
     {
 
@@ -160,10 +160,14 @@ public class PC1FullTest
         
 
         Activity p0=pFactory.newActivity("p0",
-                                       "PC1Full Workflow");
+                                         "PC1Full Workflow");
+        
 
         Activity p1=pFactory.newActivity("p1",
-                                       "align_warp 1");
+                                         "align_warp 1");
+        List o=p1.getType();
+
+        o.add(PRIMITIVE_ALIGN_WARP);
         
         pFactory.addType(p1,PRIMITIVE_ALIGN_WARP);
         pFactory.addType(p1,10);

@@ -31,6 +31,10 @@ public class Traversal {
     public String convertToken(String token) {
         return token;
     }
+
+    public int convertInt(String token) {
+        return Integer.valueOf(token);
+    }
     
     public Object convert(Tree ast) {
         switch(ast.getType()) {
@@ -103,6 +107,9 @@ public class Traversal {
 
         case ASNParser.STRING:
             return c.convertString(convertToken(getTokenString(ast.getChild(0))));
+
+        case ASNParser.INT:
+            return c.convertInt(convertInt(getTokenString(ast.getChild(0))));
 	    
  	case ASNParser.QNAM:
  	    return c.convertQNAME(convertToken(getTokenString(ast.getChild(0))));

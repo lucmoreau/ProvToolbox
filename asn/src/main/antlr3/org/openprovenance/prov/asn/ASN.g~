@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A;
+    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMP; WAW; INT;
 }
 
 @header {
@@ -22,47 +22,93 @@ tokens {
 
 
 container
-	:	'container' '('
+	:	'container' 
+        (namespaceDeclarations)?
 		record*
-		')'
+		'endContainer'
 
-      -> ^(CONTAINER record*)
+      -> ^(CONTAINER namespaceDeclarations? record*)
 	;
 
+
+namespaceDeclarations :
+        (defaultNamespaceDeclaration | namespaceDeclaration) namespaceDeclaration*
+        -> ^(NAMESPACES defaultNamespaceDeclaration? namespaceDeclaration*)
+    ;
+
+namespaceDeclaration :
+        prefix namespace
+        -> ^(NAMESPACE prefix namespace)
+    ;
+
+/* Problem: NCNAME is a fragment, and failed to be matched.
+Put QNAME instead, but that's not correct, it should really be a NCNAME! */
+
+prefix :
+       'prefix' QNAME -> ^(PREFIX QNAME)
+    ;
+
+
+namespace :
+        IRI_REF
+    ;
+
+defaultNamespaceDeclaration :
+        'default' IRI_REF
+        ->  ^(DEFAULTNAMESPACE IRI_REF)
+    ;
+
 record
-	:	(entityRecord | activityRecord | agentRecord | generationRecord  | useRecord | derivationRecord | dependenceRecord  | controlRecord )
+	:	(entityRecord | activityRecord | agentRecord | generationRecord  | useRecord | derivationRecord | dependenceRecord  | controlRecord | complementarityRecord  |  associationRecord)
 	;
 
 entityRecord
-	:	'entity' '(' identifier ',' '[' attributeValuePairs ']'
-		')'
-        -> ^(ENTITY identifier ^(ATTRIBUTES attributeValuePairs?))
+	:	'entity' '(' identifier optionalAttributeValuePairs ')'
+        -> ^(ENTITY identifier optionalAttributeValuePairs)
 	;
 
+
 activityRecord
-	:	'activity' '(' identifier (',' recipeLink)? ',' (startTime)? ',' (endTime)? ',' '[' attributeValuePairs ']'
-		')'
-        -> ^(ACTIVITY identifier ^(RECIPE recipeLink?) ^(START startTime?) ^(END endTime?) ^(ATTRIBUTES attributeValuePairs?))
+	:	'activity' '(' identifier (',' recipeLink)? ',' (startTime)? ',' (endTime)? optionalAttributeValuePairs ')'
+        -> ^(ACTIVITY identifier ^(RECIPE recipeLink?) ^(START startTime?) ^(END endTime?) optionalAttributeValuePairs )
 	;
 
 agentRecord
-	:	'agent' '(' identifier 	')' -> ^(AGENT identifier)
+	:	'agent' '(' identifier optionalAttributeValuePairs	')' -> ^(AGENT identifier optionalAttributeValuePairs )
 	;
 
 generationRecord
-	:	'wasGeneratedBy' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ( ',' time)?	')'
-      -> ^(WGB identifier+ ^(ATTRIBUTES attributeValuePairs?)  ^(TIME time?))
+	:	'wasGeneratedBy' '('  optionalIdentifier identifier ',' identifier optionalTime optionalAttributeValuePairs ')'
+      -> ^(WGB optionalIdentifier identifier+ optionalTime optionalAttributeValuePairs)
 	;
 
 useRecord
-	:	'used' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ( ',' time)?	')'
-      -> ^(USED identifier+ ^(ATTRIBUTES attributeValuePairs?) ^(TIME time?))
+	:	'used' '(' optionalIdentifier identifier ',' identifier optionalTime optionalAttributeValuePairs ')'
+      -> ^(USED optionalIdentifier identifier+ optionalTime optionalAttributeValuePairs)
 	;
 
 derivationRecord
-	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier (',' a=identifier ',' '[' dst=attributeValuePairs ']' ',' '[' src=attributeValuePairs ']')?	')'
-      -> ^(WDF $id2 $id1 ^(A $a?)  ^(ATTRIBUTES $dst?) ^(ATTRIBUTES $src?))
+	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier (',' a=identifier ',' g2=identifier ',' u1=identifier )?	optionalAttributeValuePairs ')'
+      -> ^(WDF $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) optionalAttributeValuePairs)
 	;
+
+optionalAttributeValuePairs
+    :
+    (',' '[' attributeValuePairs ']')?
+        -> ^(ATTRIBUTES attributeValuePairs?)
+    ;
+
+optionalTime
+    :
+    (',' time )?
+        -> ^(TIME time?)
+    ;
+
+optionalIdentifier
+    :
+    (identifier ',')?
+        -> ^(ID identifier?)
+    ;
 
 dependenceRecord
 	:	'dependedUpon' '(' identifier ',' identifier ')'
@@ -72,6 +118,17 @@ dependenceRecord
 controlRecord
 	:	'wasControlledBy' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ')'
       -> ^(WCB identifier+ ^(ATTRIBUTES attributeValuePairs?))
+	;
+
+complementarityRecord
+	:	'wasComplementOf' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ')'
+      -> ^(COMP identifier+ ^(ATTRIBUTES attributeValuePairs?))
+	;
+
+
+associationRecord
+	:	'wasAssociatedWith' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ')'
+      -> ^(WAW identifier+ ^(ATTRIBUTES attributeValuePairs?))
 	;
 
 identifier
@@ -117,7 +174,8 @@ recipeLink
 /* TODO: complete grammar of Literal */
 literal
 	:
-        (STRINGLITERAL -> ^(STRING STRINGLITERAL)|
+        (STRINGLITERAL -> ^(STRING STRINGLITERAL) |
+         INTLITERAL -> ^(INT INTLITERAL) |
          STRINGLITERAL '%%' datatype -> ^(TYPEDLITERAL STRINGLITERAL datatype))
 	;
 
@@ -164,6 +222,7 @@ fragment NAMESTARTCHAR
 fragment NCNAME	           
 	:  NCNAMESTARTCHAR NCNAMECHAR*
 	;	
+
 
 NCNAME_COLON_STAR
 	: NCNAME ':' '*'
@@ -278,7 +337,6 @@ CLOSE_CURLY_BRACE
 xsdDateTime: IsoDateTime;
 
 
-/* TODO, this grammar is not right, since requires space after 'T'??? */
 
 TimeZoneOffset: ('+' | '-') DIGIT DIGIT ':' DIGIT DIGIT;
 
@@ -289,4 +347,8 @@ IsoDateTime: (DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' DIGIT 
 
 
 DIGIT: '0'..'9';
+
+INTLITERAL: '-'? DIGIT+;
+
+
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+
+
+<xs:schema targetNamespace="http://openprovenance.org/prov-xml#"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:prov="http://openprovenance.org/prov-xml#"
+           xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           jxb:version="2.0">
+
+
+
+  <!-- This type declaration is a dummy. It is deleted from the
+  generated source, and instead an overriding Java implementation is
+  provided. -->
+  
+  <xs:complexType name="URIWrapper">
+	<xs:simpleContent>
+	  <xs:extension base="xs:anySimpleType">
+	  </xs:extension>
+	</xs:simpleContent>
+  </xs:complexType>
+
+
+
+
+
+</xs:schema>

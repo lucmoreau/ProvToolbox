@@ -6,7 +6,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Hashtable;
+import java.net.URI;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -21,6 +24,8 @@ public class PC1FullTest
 
     static final String PC1_NS="http://www.ipaw.info/pc1/";
     static final String PC1_PREFIX="pc1";
+    static final String PRIM_NS="http://openprovenance.org/primitives#";
+    static final String PRIM_PREFIX="prim";
     
 
 
@@ -80,11 +85,11 @@ public class PC1FullTest
     static String FILE_LOCATION="/shomewhere/pc1/";
     static String URL_LOCATION="http://www.ipaw.info/challenge/";
 
-    static String PRIMITIVE_ALIGN_WARP="http://openprovenance.org/primitives#align_warp";
-    static String PRIMITIVE_RESLICE="http://openprovenance.org/primitives#reslice";
-    static String PRIMITIVE_SOFTMEAN="http://openprovenance.org/primitives#softmean";
-    static String PRIMITIVE_CONVERT="http://openprovenance.org/primitives#convert";
-    static String PRIMITIVE_SLICER="http://openprovenance.org/primitives#slicer";
+    static QName PRIMITIVE_ALIGN_WARP=new QName(PRIM_NS,"align_warp");
+    static URI PRIMITIVE_RESLICE=URI.create("http://openprovenance.org/primitives#reslice");
+    static URI PRIMITIVE_SOFTMEAN=URI.create("http://openprovenance.org/primitives#softmean");
+    static URI PRIMITIVE_CONVERT=URI.create("http://openprovenance.org/primitives#convert");
+    static URI PRIMITIVE_SLICER=URI.create("http://openprovenance.org/primitives#slicer");
 
 
     public Entity newFile(ProvFactory pFactory,
@@ -95,7 +100,7 @@ public class PC1FullTest
                             
         Entity a=pFactory.newEntity(id,
                                     label);
-        pFactory.addType(a,"http://openprovenance.org/primitives#File","xsd:anyURI");
+        pFactory.addType(a,URI.create("http://openprovenance.org/primitives#File"));
 
         addUrl(a,location+file);
 
@@ -111,7 +116,7 @@ public class PC1FullTest
                             
         Entity a=pFactory.newEntity(id,
                                     label);
-        pFactory.addType(a,"http://openprovenance.org/primitives#String","xsd:anyURI");
+        pFactory.addType(a,"http://openprovenance.org/primitives#String");
 
         addValue(a,value);
 
@@ -147,7 +152,6 @@ public class PC1FullTest
                               val);
     }
 
-
     public Container makePC1FullGraph(ProvFactory pFactory, String inputLocation, String outputLocation)
     {
 
@@ -156,75 +160,85 @@ public class PC1FullTest
         
 
         Activity p0=pFactory.newActivity("p0",
-                                       "PC1Full Workflow");
+                                         "PC1Full Workflow");
+        
 
         Activity p1=pFactory.newActivity("p1",
-                                       "align_warp 1");
+                                         "align_warp 1");
+        List o=p1.getType();
+
+        o.add(PRIMITIVE_ALIGN_WARP);
         
-        pFactory.addType(p1,PRIMITIVE_ALIGN_WARP,"xsd:anyURI");
+        pFactory.addType(p1,PRIMITIVE_ALIGN_WARP);
+        pFactory.addType(p1,10);
+        pFactory.addType(p1,-10);
+        pFactory.addType(p1,-10.55);
+        pFactory.addType(p1,"abc");
+        pFactory.addType(p1,true);
+        pFactory.addType(p1,URI.create("http://www.example.com/hi"));
 
         Activity p2=pFactory.newActivity("p2",
                                        "align_warp 2");
-        pFactory.addType(p2,PRIMITIVE_ALIGN_WARP,"xsd:anyURI");
+        pFactory.addType(p2,PRIMITIVE_ALIGN_WARP);
 
 
         Activity p3=pFactory.newActivity("p3",
                                        "align_warp 3");
-        pFactory.addType(p3,PRIMITIVE_ALIGN_WARP,"xsd:anyURI");
+        pFactory.addType(p3,PRIMITIVE_ALIGN_WARP);
 
         Activity p4=pFactory.newActivity("p4",
                                        "align_warp 4");
 
-        pFactory.addType(p4,PRIMITIVE_ALIGN_WARP,"xsd:anyURI");
+        pFactory.addType(p4,PRIMITIVE_ALIGN_WARP);
 
 
         Activity p5=pFactory.newActivity("p5",
                                        "Reslice 1");
-        pFactory.addType(p5,PRIMITIVE_RESLICE,"xsd:anyURI");
+        pFactory.addType(p5,PRIMITIVE_RESLICE);
 
         Activity p6=pFactory.newActivity("p6",
                                        "Reslice 2");
-        pFactory.addType(p6,PRIMITIVE_RESLICE,"xsd:anyURI");
+        pFactory.addType(p6,PRIMITIVE_RESLICE);
 
         Activity p7=pFactory.newActivity("p7",
                                        "Reslice 3");
-        pFactory.addType(p7,PRIMITIVE_RESLICE,"xsd:anyURI");
+        pFactory.addType(p7,PRIMITIVE_RESLICE);
 
         Activity p8=pFactory.newActivity("p8",
                                        "Reslice 4");
-        pFactory.addType(p8,PRIMITIVE_RESLICE,"xsd:anyURI");
+        pFactory.addType(p8,PRIMITIVE_RESLICE);
 
         Activity p9=pFactory.newActivity("p9",
                                        "Softmean");
-        pFactory.addType(p9,PRIMITIVE_SOFTMEAN,"xsd:anyURI");
+        pFactory.addType(p9,PRIMITIVE_SOFTMEAN);
 
         Activity p10=pFactory.newActivity("p10",
                                         "Slicer 1");
 
-        pFactory.addType(p10,PRIMITIVE_SLICER,"xsd:anyURI");
+        pFactory.addType(p10,PRIMITIVE_SLICER);
 
         Activity p11=pFactory.newActivity("p11",
                                         "Slicer 2");
-        pFactory.addType(p11,PRIMITIVE_SLICER,"xsd:anyURI");
+        pFactory.addType(p11,PRIMITIVE_SLICER);
 
         Activity p12=pFactory.newActivity("p12",
                                         "Slicer 3");
-        pFactory.addType(p12,PRIMITIVE_SLICER,"xsd:anyURI");
+        pFactory.addType(p12,PRIMITIVE_SLICER);
 
         Activity p13=pFactory.newActivity("p13",
                                         "Convert 1");
 
-        pFactory.addType(p13,PRIMITIVE_CONVERT,"xsd:anyURI");
+        pFactory.addType(p13,PRIMITIVE_CONVERT);
 
         Activity p14=pFactory.newActivity("p14",
                                         "Convert 2");
 
-        pFactory.addType(p14,PRIMITIVE_CONVERT,"xsd:anyURI");
+        pFactory.addType(p14,PRIMITIVE_CONVERT);
 
         Activity p15=pFactory.newActivity("p15",
                                         "Convert 3");
 
-        pFactory.addType(p15,PRIMITIVE_CONVERT,"xsd:anyURI");
+        pFactory.addType(p15,PRIMITIVE_CONVERT);
 
 
         Agent ag1=pFactory.newAgent("ag1",
@@ -588,6 +602,7 @@ public class PC1FullTest
         //nss.put("_",PC1_NS);
         // 2: use prefix PC1
         nss.put(PC1_PREFIX,PC1_NS);
+        nss.put(PRIM_PREFIX,PRIM_NS);
         graph.setNss(nss);
         return graph;
     }

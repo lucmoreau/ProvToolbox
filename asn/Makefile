@@ -1,5 +1,5 @@
-HERE=/Users/lavm/luc-svn/papers/prov-wg/git/ProvToolbox/asn
 HERE=/home/lavm/papers/papers/prov-wg/git/ProvToolbox/asn
+HERE=/Users/lavm/luc-svn/papers/prov-wg/git/ProvToolbox/asn
 
 go:
 	sh target/appassembler/bin/asn $(HERE)/src/test/resources/prov/container0.prov 
@@ -8,8 +8,9 @@ go:
 	cat $(HERE)/src/test/resources/prov/container2.prov.xml
 
 
-go2:
+go3:
 	sh target/appassembler/bin/asn $(HERE)/src/test/resources/prov/container3.prov 
+
 
 
 p2:

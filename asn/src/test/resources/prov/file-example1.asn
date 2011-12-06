@@ -4,6 +4,12 @@ container
 
 default <http://example.org/>
 
+
+entity(e0a, [ prov:type="File"%%xsd:string, path="/shared/crime.txt", creator="Alice" ])
+entity(e0b, [ prov:type="5"%%xsd:int, path="/shared/crime.txt", creator="Alice" ])
+entity(e0c, [ prov:type=-5,  prov:type=6, path="/shared/crime.txt", creator="Alice" ])
+entity(e0d, [ prov:type="http://www.example/foo"%%xsd:anyURI, path="/shared/crime.txt", creator="Alice" ])
+
 entity(e0, [ prov:type="File", path="/shared/crime.txt", creator="Alice" ])
 entity(e1, [ prov:type="File", path="/shared/crime.txt", creator="Alice", content="" ])
 entity(e2, [ prov:type="File", path="/shared/crime.txt", creator="Alice", content="There was a lot of crime in London last month."])

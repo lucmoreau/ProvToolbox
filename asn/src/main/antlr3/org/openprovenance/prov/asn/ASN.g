@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMP; WAW;
+    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMP; WAW; INT;
 }
 
 @header {
@@ -174,7 +174,8 @@ recipeLink
 /* TODO: complete grammar of Literal */
 literal
 	:
-        (STRINGLITERAL -> ^(STRING STRINGLITERAL)|
+        (STRINGLITERAL -> ^(STRING STRINGLITERAL) |
+         INTLITERAL -> ^(INT INTLITERAL) |
          STRINGLITERAL '%%' datatype -> ^(TYPEDLITERAL STRINGLITERAL datatype))
 	;
 
@@ -336,15 +337,20 @@ CLOSE_CURLY_BRACE
 xsdDateTime: IsoDateTime;
 
 
-/* TODO, this grammar is not right, since requires space after 'T'??? */
-
-TimeZoneOffset: ('+' | '-') DIGIT DIGIT ':' DIGIT DIGIT;
 
 
 IsoDateTime: (DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' DIGIT DIGIT ':' DIGIT DIGIT ':' DIGIT DIGIT ('.' DIGIT (DIGIT DIGIT?)?)? ('Z' | TimeZoneOffset)?)
     ;
 
+fragment DIGIT: '0'..'9';
+
+INTLITERAL:
+    '-'? ('0'..'9')+
+    ;
 
 
-DIGIT: '0'..'9';
+TimeZoneOffset: ('+' | '-') DIGIT DIGIT ':' DIGIT DIGIT;
+
+
+
 

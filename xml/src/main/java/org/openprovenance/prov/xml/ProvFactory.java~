@@ -3,9 +3,11 @@ import java.util.Collection;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Hashtable;
 import java.util.Date;
 import javax.xml.bind.JAXBElement;
 import java.util.GregorianCalendar;
+import javax.xml.namespace.QName;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -36,6 +38,13 @@ public class ProvFactory implements CommonURIs {
         return packageList;
     }
 
+    /** Note, this method now makes it stateful :-( */
+    private Hashtable<String,String> namespaces=null;
+    public void setNamespaces(Hashtable<String,String> nss) {
+        namespaces=nss;
+    }
+    
+
     private final static ProvFactory oFactory=new ProvFactory();
 
     public static ProvFactory getFactory() {
@@ -61,6 +70,12 @@ public class ProvFactory implements CommonURIs {
         init();
     }
 
+    public ProvFactory(Hashtable<String,String> namespaces) {
+        of=new ObjectFactory();
+        this.namespaces=namespaces;
+        init();
+    }
+
     public ProvFactory(ObjectFactory of) {
         this.of=of;
         init();
@@ -72,62 +87,120 @@ public class ProvFactory implements CommonURIs {
 
     public ActivityRef newActivityRef(Activity p) {
         ActivityRef res=of.createActivityRef();
-        res.setRef(p);
+        res.setRef(p.getId());
         return res;
     }
 
-    public AnnotationRef newAnnotationRef(Annotation a) {
-        AnnotationRef res=of.createAnnotationRef();
-        res.setRef(a);
+    public ActivityRef newActivityRef(QName id) {
+        ActivityRef res=of.createActivityRef();
+        res.setRef(id);
         return res;
+    }
+
+
+    QName stringToQName(String id) {
+        if (id==null) return null;
+        int index=id.indexOf(':');
+        if (index==-1) {
+            return new QName(namespaces.get("_"),id);
+        }
+        String prefix=id.substring(0,index);
+        String local=id.substring(index+1,id.length());
+        return new QName(namespaces.get(prefix),
+                         local,
+                         prefix);
+    }
+
+    public ActivityRef newActivityRef(String id) {
+        return newActivityRef(stringToQName(id));
+    }
+
+    public NoteRef newNoteRef(Note a) {
+        NoteRef res=of.createNoteRef();
+        res.setRef(a.getId());
+        return res;
+    }
+
+    public NoteRef newNoteRef(QName id) {
+        NoteRef res=of.createNoteRef();
+        res.setRef(id);
+        return res;
+    }
+        
+    public NoteRef newNoteRef(String id) {
+        return newNoteRef(stringToQName(id));
     }
 
     public EntityRef newEntityRef(Entity a) {
         EntityRef res=of.createEntityRef();
-        res.setRef(a);
+        res.setRef(a.getId());
         return res;
     }
+
+    public EntityRef newEntityRef(QName id) {
+        EntityRef res=of.createEntityRef();
+        res.setRef(id);
+        return res;
+    }
+    public EntityRef newEntityRef(String id) {
+        return newEntityRef(stringToQName(id));
+    }
+
     public AgentRef newAgentRef(Agent a) {
         AgentRef res=of.createAgentRef();
-        res.setRef(a);
+        res.setRef(a.getId());
         return res;
     }
 
-    public AccountRef newAccountRef(Account acc) {
-        AccountRef res=of.createAccountRef();
-        res.setRef(acc);
+    public AgentRef newAgentRef(String id) {
+        return newAgentRef(stringToQName(id));
+    }
+
+    public AgentRef newAgentRef(QName id) {
+        AgentRef res=of.createAgentRef();
+        res.setRef(id);
         return res;
     }
 
 
 
+    public DependencyRef newDependencyRef(QName id) {
+        DependencyRef res=of.createDependencyRef();
+        res.setRef(id);
+        return res;
+    }
 
+    public DependencyRef newDependencyRef(String id) {
+        DependencyRef res=of.createDependencyRef();
+        res.setRef(stringToQName(id));
+        return res;
+    }
 
     public DependencyRef newDependencyRef(WasGeneratedBy edge) {
         DependencyRef res=of.createDependencyRef();
-        res.setRef(edge);
+        res.setRef(edge.getId());
         return res;
     }
 
     public DependencyRef newDependencyRef(Used edge) {
         DependencyRef res=of.createDependencyRef();
-        res.setRef(edge);
+        res.setRef(edge.getId());
         return res;
     }
     public DependencyRef newDependencyRef(WasDerivedFrom edge) {
         DependencyRef res=of.createDependencyRef();
-        res.setRef(edge);
+        res.setRef(edge.getId());
         return res;
     }
 
     public DependencyRef newDependencyRef(WasControlledBy edge) {
         DependencyRef res=of.createDependencyRef();
-        res.setRef(edge);
+        res.setRef(edge.getId());
         return res;
     }
     public DependencyRef newDependencyRef(WasInformedBy edge) {
         DependencyRef res=of.createDependencyRef();
-        res.setRef(edge);
+        res.setRef(edge.getId());
         return res;
     }
 
@@ -137,7 +210,11 @@ public class ProvFactory implements CommonURIs {
         return newActivity(pr,null);
     }
 
-    public Activity newActivity(String pr,
+    public Activity newActivity(QName pr) {
+        return newActivity(pr,null);
+    }
+
+    public Activity newActivity(QName pr,
                                 String label) {
         Activity res=of.createActivity();
         res.setId(pr);
@@ -145,192 +222,47 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
+    public Activity newActivity(String pr,
+                                String label) {
+        return newActivity(stringToQName(pr),label);
+    }
+
     public Agent newAgent(String ag) {
         return newAgent(ag,null);
     }
+    public Agent newAgent(QName ag) {
+        return newAgent(ag,null);
+    }
 
-    public Agent newAgent(String ag,
+    public Agent newAgent(QName ag,
                           String label) {
         Agent res=of.createAgent();
         res.setId(ag);
         if (label!=null) addLabel(res,label);
         return res;
     }
+    public Agent newAgent(String ag,
+                          String label) {
+        return newAgent(stringToQName(ag),label);
+    }
 
+    public Account newAccount(QName id) {
+        Account res=of.createAccount();
+        res.setId(id);
+        return res;
+    }
     public Account newAccount(String id) {
-        Account res=of.createAccount();
-        res.setId(id);
-        return res;
-    }
-    public Account newAccount(String id, String label) {
-        Account res=of.createAccount();
-        res.setId(id);
-        if (label!=null) addAnnotation(res,newLabel(label));
-        return res;
-    }
-
-    public EmbeddedAnnotation newLabel(String label) {
-        EmbeddedAnnotation res=of.createEmbeddedAnnotation();
-        res.getProperty().add(newProperty(LABEL_PROPERTY,label));
-        return res;
-    }
-
-    public EmbeddedAnnotation newValue(Object value, String encoding) {
-        EmbeddedAnnotation res=of.createEmbeddedAnnotation();
-        res.getProperty().add(newProperty(VALUE_PROPERTY,value));
-        res.getProperty().add(newProperty(ENCODING_PROPERTY,encoding));
-        return res;
+        return newAccount(stringToQName(id));
     }
 
 
 
     
-    public String getLabel(EmbeddedAnnotation annotation) {
-        if (annotation==null) return null;
-        for (Property prop: annotation.getProperty()) {
-            if (prop.getAttribute().equals(LABEL_PROPERTY)) {
-                return (String) prop.getValue();
-            }
-        }
-        return null;
-    }
-
-
-    public String getType(EmbeddedAnnotation annotation) {
-        if (annotation==null) return null;
-        for (Property prop: annotation.getProperty()) {
-            if (prop.getAttribute().equals(TYPE_PROPERTY)) {
-                return (String) prop.getValue();
-            }
-        }
-        return null;
-    }
-
-    public Object getValue(EmbeddedAnnotation annotation) {
-        if (annotation==null) return null;
-        for (Property prop: annotation.getProperty()) {
-            if (prop.getAttribute().equals(VALUE_PROPERTY)) {
-                return prop.getValue();
-            }
-        }
-        return null;
-    }
-
-    public String getEncoding(EmbeddedAnnotation annotation) {
-        if (annotation==null) return null;
-        for (Property prop: annotation.getProperty()) {
-            if (prop.getAttribute().equals(ENCODING_PROPERTY)) {
-                return (String) prop.getValue();
-            }
-        }
-        return null;
-    }
-
-
-
-    /** Return the value of the value property in the first annotation. */
-
-    public Object getValue(List<EmbeddedAnnotation> annotations) {
-        for (EmbeddedAnnotation ann: annotations) {
-            Object value=getValue(ann);
-            if (value!=null) return value;
-        }
-        return null;
-    }
-
-
-
-    /** Return the value of the label property in the first annotation. */
-    public String getLabel(List<EmbeddedAnnotation> annotations) {
-        for (EmbeddedAnnotation ann: annotations) {
-            String label=getLabel(ann);
-            if (label!=null) return label;
-        }
-        return null;
-    }
-
-
-    /** Return the value of the type property in the first annotation. */
-
-    public String getType(List<EmbeddedAnnotation> annotations) {
-        for (EmbeddedAnnotation ann: annotations) {
-            String type=getType(ann);
-            if (type!=null) return type;
-        }
-        return null;
-    }
-
-
-
-    /** Return the value of the value property. */
-
-    public List<Object> getValues(List<EmbeddedAnnotation> annotations) {
-        List<Object> res=new LinkedList();
-        for (EmbeddedAnnotation ann: annotations) {
-            Object value=getValue(ann);
-            if (value!=null) res.add(value);
-        }
-        return res;
-    }
-
-
-
-    /** Return the value of the label property. */
-    public List<String> getLabels(List<EmbeddedAnnotation> annotations) {
-        List<String> res=new LinkedList();
-        for (EmbeddedAnnotation ann: annotations) {
-            String label=getLabel(ann);
-            if (label!=null) res.add(label);
-        }
-        return res;
-    }
-
-
-    /** Return the value of the type property. */
-
-    public List<String> getTypes(List<EmbeddedAnnotation> annotations) {
-        List<String> res=new LinkedList();
-        for (EmbeddedAnnotation ann: annotations) {
-            String type=getType(ann);
-            if (type!=null) res.add(type);
-        }
-        return res;
-    }
 
 
 
 
-    /** Generic accessor for annotable entities. */
-    public String getLabel(Annotable annotable) {
-        return getLabel(annotable.getAnnotation());
-    }
 
-    /** Generic accessor for annotable entities. */
-    public String getType(Annotable annotable) {
-        return getType(annotable.getAnnotation());
-    }
-
-
-    public EmbeddedAnnotation newType(String type) {
-        EmbeddedAnnotation res=of.createEmbeddedAnnotation();
-        res.getProperty().add(newProperty(TYPE_PROPERTY,type));
-        return res;
-    }
-
-    // public void addValue(Entity annotable, Object value, String encoding) {
-    //     addAnnotation(annotable,newValue(value,encoding));
-    // }
-
-    public void addAnnotation(Annotable annotable, EmbeddedAnnotation ann) {
-        //annotable.getAnnotation().add(ann);
-        //	annotable.getAnnotation().add(ann);
-        EmbeddedAnnotation ea=annotable.getAnnotation();
-        if (ea==null) {
-            annotable.setAnnotation(ann);
-        } else {
-            ea.getProperty().addAll(ann.getProperty());
-        }
-    }
 
 
 
@@ -351,17 +283,9 @@ public class ProvFactory implements CommonURIs {
         return newTime(new Date());
     }
 
-
-    public void addAnnotation(Annotable annotable, List<EmbeddedAnnotation> anns) {
-        for (EmbeddedAnnotation ann: anns) {        
-            addAnnotation(annotable,ann);
-        }
+	public XMLGregorianCalendar newISOTime (String time) {
+        return newTime(javax.xml.bind.DatatypeConverter.parseDateTime(time).getTime());
     }
-
-
-
-
-
 
 
     /** By default, no auto generation of Id.  Override this behaviour if required. */
@@ -391,25 +315,19 @@ public class ProvFactory implements CommonURIs {
 
     public Account newAccount(Account acc) {
         Account res=newAccount(acc.getId());
-        addNewAnnotations(res,acc.getAnnotation());
         return res;
     }
 
-    public void addNewAnnotations(Annotable res,
-                                  org.openprovenance.prov.xml.EmbeddedAnnotation ea) {
-        if (ea.getId()!=null) 
-            addAnnotation(res,newEmbeddedAnnotation(ea.getId(),
-                                                    ea.getProperty(),
-                                                    new LinkedList(),
-                                                    null));
-    }
 
-
-    public Entity newEntity(String id) {
+    public Entity newEntity(QName id) {
         return newEntity(id,null);
     }
 
-    public Entity newEntity(String id,
+    public Entity newEntity(String id) {
+        return newEntity(stringToQName(id),null);
+    }
+
+    public Entity newEntity(QName id,
                             String label) {
         Entity res=of.createEntity();
         res.setId(id);
@@ -417,20 +335,11 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public void addAccounts(HasAccounts element, Collection<Account> accounts, Object ignoreForErasure) {
-        if ((accounts !=null) && (accounts.size()!=0)) {
-            LinkedList ll=new LinkedList();
-            for (Account acc: accounts) {
-                ll.add(newAccountRef(acc));
-            }
-            addAccounts(element,ll);
-        }
+    public Entity newEntity(String id,
+                            String label) {
+        return newEntity(stringToQName(id),label);
     }
-    public void addAccounts(HasAccounts element, Collection<AccountRef> accounts) {
-        if ((accounts !=null) && (accounts.size()!=0)) {
-            element.getAccount().addAll(accounts);
-        }
-    }
+
 
 
     public Used newUsed(String id,
@@ -438,10 +347,22 @@ public class ProvFactory implements CommonURIs {
                         String role,
                         EntityRef aid) {
         Used res=of.createUsed();
-        res.setId(autoGenerateId(usedIdPrefix,id));
-        res.setEffect(pid);
+        res.setId(stringToQName(autoGenerateId(usedIdPrefix,id)));
+        res.setActivity(pid);
         addRole(res,role);
-        res.setCause(aid);
+        res.setEntity(aid);
+        return res;
+    }
+
+    public Used newUsed(QName id,
+                        ActivityRef aid,
+                        String role,
+                        EntityRef eid) {
+        Used res=of.createUsed();
+        res.setId(id);
+        res.setActivity(aid);
+        addRole(res,role);
+        res.setEntity(eid);
         return res;
     }
 
@@ -454,17 +375,24 @@ public class ProvFactory implements CommonURIs {
             //              "prov",
             //              "role",
             //              role);
-            TypedLiteral tl=newTypedLiteral(role,"xs:string");
+            TypedLiteral tl=newTypedLiteral(role);
+            //TypedLiteral tl=newTypedLiteral(role,"xsd:string");
             JAXBElement<TypedLiteral> je=of.createRole(tl);
             addAttribute(a,je);
         }
     }
     
-    public TypedLiteral newTypedLiteral(String value,
-                                        String type) {
+    public TypedLiteral newTypedLiteral(Object value) {
         TypedLiteral res=of.createTypedLiteral();
         res.setValue(value);
-        res.setType(type);
+        return res;
+    }
+
+    public OldTypedLiteral newOldTypedLiteral(String value,
+					   String type) {
+        OldTypedLiteral res=of.createOldTypedLiteral();
+        res.setValue(value);
+        res.setType(stringToQName(type));
         return res;
     }
 
@@ -481,7 +409,7 @@ public class ProvFactory implements CommonURIs {
                         Entity a) {
         ActivityRef pid=newActivityRef(p);
         EntityRef aid=newEntityRef(a);
-        return newUsed(id,pid,role,aid);
+        return newUsed(stringToQName(id),pid,role,aid);
     }
 
 
@@ -497,9 +425,9 @@ public class ProvFactory implements CommonURIs {
 
     public Used newUsed(Used u) {
         Used u1=newUsed(u.getId(),
-                        u.getEffect(),
+                        u.getActivity(),
                         null,
-                        u.getCause());
+                        u.getEntity());
         u1.getAny().addAll(u.getAny());
         return u1;
     }
@@ -515,9 +443,9 @@ public class ProvFactory implements CommonURIs {
 
     public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
         WasGeneratedBy wgb=newWasGeneratedBy(g.getId(),
-                                             g.getEffect(),
+                                             g.getEntity(),
                                              null,
-                                             g.getCause());
+                                             g.getActivity());
         wgb.setId(g.getId());
         wgb.getAny().addAll(g.getAny());
         return wgb;
@@ -542,26 +470,43 @@ public class ProvFactory implements CommonURIs {
 
 
 
-    public WasGeneratedBy newWasGeneratedBy(String id,
+    public WasGeneratedBy newWasGeneratedBy(QName id,
                                             EntityRef aid,
                                             String role,
                                             ActivityRef pid) {
         WasGeneratedBy res=of.createWasGeneratedBy();
-        res.setId(autoGenerateId(wasGenerateByIdPrefix,id));
-        res.setCause(pid);
-        res.setEffect(aid);
+        res.setId(id);
+        res.setActivity(pid);
+        res.setEntity(aid);
         addRole(res,role);
         return res;
     }
 
+    public WasGeneratedBy newWasGeneratedBy(String id,
+                                            EntityRef aid,
+                                            String role,
+                                            ActivityRef pid) {
+        return newWasGeneratedBy(stringToQName(id),aid,role,pid);
+    }
 
     public WasGeneratedBy newWasGeneratedBy(Entity a,
                                             String role,
                                             Activity p) {
-        return newWasGeneratedBy(null,a,role,p);
+        return newWasGeneratedBy((QName)null,a,role,p);
     }
 
     public WasGeneratedBy newWasGeneratedBy(String id,
+                                            Entity a,
+                                            String role,
+                                            Activity p) {
+        EntityRef aid=newEntityRef(a);
+        ActivityRef pid=newActivityRef(p);
+        LinkedList ll=new LinkedList();
+        return  newWasGeneratedBy(stringToQName(id),aid,role,pid);
+    }
+
+
+    public WasGeneratedBy newWasGeneratedBy(QName id,
                                             Entity a,
                                             String role,
                                             Activity p) {
@@ -586,21 +531,43 @@ public class ProvFactory implements CommonURIs {
     public WasControlledBy newWasControlledBy(ActivityRef pid,
                                               String role,
                                               AgentRef agid) {
-        return newWasControlledBy(null,pid,role,agid);
+        return newWasControlledBy((QName)null,pid,role,agid);
     }
     
-    public WasControlledBy newWasControlledBy(String id,
+    public WasControlledBy newWasControlledBy(QName id,
                                               ActivityRef pid,
                                               String role,
                                               AgentRef agid) {
         WasControlledBy res=of.createWasControlledBy();
-        res.setId(autoGenerateId(wasControlledByIdPrefix,id));
+        res.setId(id);
         res.setEffect(pid);
         res.setCause(agid);
         addRole(res,role);
         return res;
     }
+    public WasControlledBy newWasControlledBy(String id,
+                                              ActivityRef pid,
+                                              String role,
+                                              AgentRef agid) {
+        return newWasControlledBy(stringToQName(id),pid,role,agid);
+    }
 
+
+    public HasAnnotation newHasAnnotation(Identifiable i,
+					    Note n) {
+	HasAnnotation res=of.createHasAnnotation();
+	res.setThing(newNoteRef(i.getId()));
+	res.setNote(newNoteRef(n));
+	return res;
+    }
+
+    public HasAnnotation newHasAnnotation(Identifiable i,
+					  String n) {
+	HasAnnotation res=of.createHasAnnotation();
+	res.setThing(newNoteRef(i.getId())); // note, this id is not necessarily of a note
+	res.setNote(newNoteRef(n));
+	return res;
+    }
 
     public WasControlledBy newWasControlledBy(Activity p,
                                               String role,
@@ -628,15 +595,46 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    public WasDerivedFrom newWasDerivedFrom(String id,
+    public WasDerivedFrom newWasDerivedFrom(QName id,
                                             EntityRef aid1,
                                             EntityRef aid2) {
         WasDerivedFrom res=of.createWasDerivedFrom();
-        res.setId(autoGenerateId(wasDerivedFromIdPrefix,id));
+        res.setId(id);
         res.setCause(aid2);
         res.setEffect(aid1);
         return res;
     }
+    public WasDerivedFrom newWasDerivedFrom(String id,
+                                            EntityRef aid1,
+                                            EntityRef aid2) {
+        return newWasDerivedFrom(stringToQName(id),aid1,aid2);
+    }
+
+
+    public WasDerivedFrom newWasDerivedFrom(QName id,
+                                            EntityRef aid1,
+                                            EntityRef aid2,
+                                            ActivityRef aid,
+                                            DependencyRef did1,
+                                            DependencyRef did2) {
+        WasDerivedFrom res=of.createWasDerivedFrom();
+        res.setId(id);
+        res.setCause(aid2);
+        res.setEffect(aid1);
+        res.setActivity(aid);
+        res.setGeneration(did1);
+        res.setUsage(did2);
+        return res;
+    }
+    public WasDerivedFrom newWasDerivedFrom(String id,
+                                            EntityRef aid1,
+                                            EntityRef aid2,
+                                            ActivityRef aid,
+                                            DependencyRef did1,
+                                            DependencyRef did2) {
+        return newWasDerivedFrom(stringToQName(id),aid1,aid2,aid,did1,did2);
+    }
+
 
 
     public WasDerivedFrom newWasDerivedFrom(Entity a1,
@@ -652,6 +650,28 @@ public class ProvFactory implements CommonURIs {
         return  newWasDerivedFrom(id,aid1,aid2);
     }
 
+    public WasDerivedFrom newWasDerivedFrom(Entity a1,
+                                            Entity a2,
+                                            Activity a,
+                                            WasGeneratedBy g2,
+                                            Used u1) {
+        return newWasDerivedFrom(null,a1,a2,a,g2,u1);
+    }
+
+    public WasDerivedFrom newWasDerivedFrom(String id,
+                                            Entity e2,
+                                            Entity e1,
+                                            Activity a,
+                                            WasGeneratedBy g2,
+                                            Used u1) {
+        EntityRef eid1=newEntityRef(e1);
+        EntityRef eid2=newEntityRef(e2);
+        ActivityRef aid=newActivityRef(a);
+        DependencyRef did2=newDependencyRef(g2);
+        DependencyRef did1=newDependencyRef(u1);
+        return  newWasDerivedFrom(id,eid2,eid1,aid,did2,did1);
+    }
+
 
     public WasDerivedFrom newWasDerivedFrom(String id,
                                             Entity a1,
@@ -664,14 +684,19 @@ public class ProvFactory implements CommonURIs {
 
 
 
-    public WasInformedBy newWasInformedBy(String id,
+    public WasInformedBy newWasInformedBy(QName id,
                                           ActivityRef pid1,
                                           ActivityRef pid2) {
         WasInformedBy res=of.createWasInformedBy();
-        res.setId(autoGenerateId(wasTriggeredByIdPrefix,id));
+        res.setId(id);
         res.setEffect(pid1);
         res.setCause(pid2);
         return res;
+    }
+    public WasInformedBy newWasInformedBy(String id,
+                                          ActivityRef pid1,
+                                          ActivityRef pid2) {
+        return newWasInformedBy(stringToQName(id),pid1,pid2);
     }
 
     public WasInformedBy newWasInformedBy(Activity p1,
@@ -688,7 +713,7 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    public WasInformedBy newWasInformedBy(String id,
+    public WasInformedBy newWasInformedBy(QName id,
                                           Activity p1,
                                           Activity p2,
                                           String type) {
@@ -696,6 +721,12 @@ public class ProvFactory implements CommonURIs {
         wtb.setId(id);
         addType(wtb,type);
         return wtb;
+    }
+    public WasInformedBy newWasInformedBy(String id,
+                                          Activity p1,
+                                          Activity p2,
+                                          String type) {
+        return newWasInformedBy(stringToQName(id),p1,p2,type);
     }
 
 
@@ -705,12 +736,31 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    public void addType(HasExtensibility a,
-                        String type) {
-        JAXBElement<String> je=of.createType(type);
+    /*    public void addType(HasExtensibility a,
+                        String type,
+                        String typeOfType) {
+
+        OldTypedLiteral tl=newOldTypedLiteral(type,typeOfType);
+        JAXBElement<OldTypedLiteral> je=of.createType(tl);
         addAttribute(a,je);
 
     }
+    */
+
+    public void addType(HasExtensibility a,
+                        Object type) {
+
+        //TypedLiteral tl=newTypedLiteral(type);
+        JAXBElement<Object> je=of.createType(type);
+        addAttribute(a,je);
+
+    }
+
+    //    public void addType(HasExtensibility a,
+    //                        String type) {
+    //
+    //        addType(a,type,"xsd:anyURI");
+    //    }
 
     public void addLabel(HasExtensibility a,                                  
                          String label) {
@@ -736,184 +786,78 @@ public class ProvFactory implements CommonURIs {
                                 String localName,                                  
                                 String value) {
         Document doc=oFactory.builder.newDocument();
-        Element el=doc.createElementNS(namespace,prefix + ":" + localName);
+        Element el=doc.createElementNS(namespace,
+                                       ( (prefix.equals(""))
+                                         ?
+                                         ""
+                                         :
+                                         (prefix + ":")) + localName);
         el.appendChild(doc.createTextNode(value));
         doc.appendChild(el);
         return el;
     }
 
 
-    public EmbeddedAnnotation newEmbeddedAnnotation(String id,
-                                                    String property,
-                                                    Object value,
-                                                    Collection<Account> accs) {
-        LinkedList<AccountRef> ll=new LinkedList();
-        if (accs!=null) {
-            for (Account acc: accs) {
-                ll.add(newAccountRef(acc));
-            }
-        }
-        return newEmbeddedAnnotation(id,property,value,ll,null);
-    }
 
-    public Annotation newAnnotation(String id,
-                                    Entity a,
-                                    String property,
-                                    Object value) {
-        EntityRef aid=newEntityRef(a);
-        return newAnnotation(id,aid,property,value);
-    }
-    public Annotation newAnnotation(String id,
-                                    Activity p,
-                                    String property,
-                                    Object value) {
-        ActivityRef pid=newActivityRef(p);
-        return newAnnotation(id,pid,property,value);
-    }
-
-    public Annotation newAnnotation(String id,
-                                    Annotation a,
-                                    String property,
-                                    Object value) {
-        AnnotationRef aid=newAnnotationRef(a);
-        LinkedList<AccountRef> ll=new LinkedList();
-        return newAnnotation(id,aid,property,value);
-    }
-
-    public Annotation newAnnotation(String id,
-                                    WasDerivedFrom edge,
-                                    String property,
-                                    Object value) {
-        DependencyRef cid=newDependencyRef(edge);
-        return newAnnotation(id,cid,property,value);
-    }
-    public Annotation newAnnotation(String id,
-                                    Used edge,
-                                    String property,
-                                    Object value) {
-        DependencyRef cid=newDependencyRef(edge);
-        return newAnnotation(id,cid,property,value);
-    }
-    public Annotation newAnnotation(String id,
-                                    WasGeneratedBy edge,
-                                    String property,
-                                    Object value) {
-        DependencyRef cid=newDependencyRef(edge);
-        return newAnnotation(id,cid,property,value);
-    }
-    public Annotation newAnnotation(String id,
-                                    WasControlledBy edge,
-                                    String property,
-                                    Object value) {
-        DependencyRef cid=newDependencyRef(edge);
-        return newAnnotation(id,cid,property,value);
-    }
-    public Annotation newAnnotation(String id,
-                                    WasInformedBy edge,
-                                    String property,
-                                    Object value) {
-        DependencyRef cid=newDependencyRef(edge);
-        return newAnnotation(id,cid,property,value);
-    }
-
-
-    public Property newProperty(String property,
-                                Object value) {
-        Property res=of.createProperty();
-        res.setAttribute(property);
-        res.setValue(value);
-        return res;
-    }
-
-    public Property newProperty(Property property) {
-        return newProperty(property.getAttribute(),property.getValue());
-    }
-
-
-    public void addProperty(Annotation ann, Property p) {
-        ann.getProperty().add(p);
-    }
-
-    public void addProperty(Annotation ann, List<Property> p) {
-        ann.getProperty().addAll(p);
-    }
-
-    public void addProperty(EmbeddedAnnotation ann, Property p) {
-        ann.getProperty().add(p);
-    }
-
-    public void addProperty(EmbeddedAnnotation ann, List<Property> p) {
-        ann.getProperty().addAll(p);
-    }
-
-    public Annotation newAnnotation(String id,
-                                    Ref ref,
-                                    String property,
-                                    Object value) {
-        Annotation res=of.createAnnotation();
+    public Note newNote(QName id) {
+        Note res=of.createNote();
         res.setId(id);
-        res.setLocalSubject(ref.getRef());
-        addProperty(res,newProperty(property,value));
         return res;
     }
-
-    public Annotation newAnnotation(String id,
-                                    Object o,
-                                    List<Property> properties) {
-        Annotation res=of.createAnnotation();
-        res.setId(id);
-        res.setLocalSubject(o);
-        for (Property property: properties) {
-            addProperty(res,property);
-        }
-        return res;
+    public Note newNote(String id) {
+        return newNote(stringToQName(id));
     }
-
-    public Annotation newAnnotation(Annotation ann) {
-        Annotation res=newAnnotation(ann.getId(),
-                                     ann.getLocalSubject(),
-                                     ann.getProperty());
-        return res;
-    }
-
-    public EmbeddedAnnotation newEmbeddedAnnotation(String id,
-                                                    String property,
-                                                    Object value,
-                                                    Collection<AccountRef> accs,
-                                                    Object dummyParameterForAvoidingSameErasure) {
-        EmbeddedAnnotation res=of.createEmbeddedAnnotation();
-        res.setId(id);
-        addProperty(res,newProperty(property,value));
-        return res;
-    }
-    public EmbeddedAnnotation newEmbeddedAnnotation(String id,
-                                                    List<Property> properties,
-                                                    Collection<AccountRef> accs,
-                                                    Object dummyParameterForAvoidingSameErasure) {
-        EmbeddedAnnotation res=of.createEmbeddedAnnotation();
-        res.setId(id);
-        if (properties!=null) {
-            addProperty(res,properties);
-        }
-        return res;
-    }
-
 
     public Container newContainer(Collection<Account> accs,
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Collection<Object> lks) {
-        return newContainer(null,accs,ps,as,ags,lks,null);
+        return newContainer((QName)null,accs,ps,as,ags,null,lks);
     }
 
     public Container newContainer(Collection<Account> accs,
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
-                                  Collection<Object> lks,
-                                  Collection<Annotation> anns) {
-        return newContainer(null,accs,ps,as,ags,lks,anns);
+                                  Collection<Note> ns,
+                                  Collection<Object> lks) {
+        return newContainer((QName)null,accs,ps,as,ags,ns,lks);
+    }
+
+    public Container newContainer(QName id,
+                                  Collection<Account> accs,
+                                  Collection<Activity> ps,
+                                  Collection<Entity> as,
+                                  Collection<Agent> ags,
+                                  Collection<Note> ns,
+                                  Collection<Object> lks)
+    {
+        Container res=of.createContainer();
+        res.setRecords(of.createRecords());
+        res.setId(id);
+        if (accs!=null) {
+            res.getRecords().getAccount().addAll(accs);
+        }
+        if (ps!=null) {
+            res.getRecords().getActivity().addAll(ps);
+        }
+        if (as!=null) {
+            res.getRecords().getEntity().addAll(as);
+        }
+        if (ags!=null) {
+            res.getRecords().getAgent().addAll(ags);
+        }
+        if (lks!=null) {
+            Dependencies ccls=of.createDependencies();
+            ccls.getUsedOrWasGeneratedByOrWasInformedBy().addAll(lks);
+            res.getRecords().setDependencies(ccls);
+        }
+
+        if (ns!=null) {
+            res.getRecords().getNote().addAll(ns);
+        }
+        return res;
     }
 
     public Container newContainer(String id,
@@ -921,38 +865,9 @@ public class ProvFactory implements CommonURIs {
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
-                                  Collection<Object> lks,
-                                  Collection<Annotation> anns)
-    {
-        Container res=of.createContainer();
-        res.setId(autoGenerateId(containerIdPrefix,id));
-        if (accs!=null) {
-            Accounts aaccs=of.createAccounts();
-            aaccs.getAccount().addAll(accs);
-            res.setAccounts(aaccs);
-            
-        }
-        if (ps!=null) {
-            res.getActivity().addAll(ps);
-        }
-        if (as!=null) {
-            res.getEntity().addAll(as);
-        }
-        if (ags!=null) {
-            res.getAgent().addAll(ags);
-        }
-        if (lks!=null) {
-            Dependencies ccls=of.createDependencies();
-            ccls.getUsedOrWasGeneratedByOrWasInformedBy().addAll(lks);
-            res.setDependencies(ccls);
-        }
-
-        if (anns!=null) {
-            Annotations l=of.createAnnotations();
-            l.getAnnotation().addAll(anns);
-            res.setAnnotations(l);
-        }
-        return res;
+                                  Collection<Note> ns,
+                                  Collection<Object> lks) {
+        return newContainer(stringToQName(id),accs,ps,as,ags,ns,lks);
     }
 
     public Container newContainer(Collection<Account> accs,
@@ -972,9 +887,9 @@ public class ProvFactory implements CommonURIs {
                                   Activity [] ps,
                                   Entity [] as,
                                   Agent [] ags,
-                                  Object [] lks,
-                                  Annotation [] anns) {
-        return newContainer(null,accs,ps,as,ags,lks,anns);
+                                  Note [] ns,
+                                  Object [] lks) {
+        return newContainer(null,accs,ps,as,ags,ns,lks);
     }
 
     public Container newContainer(String id,
@@ -982,8 +897,8 @@ public class ProvFactory implements CommonURIs {
                                   Activity [] ps,
                                   Entity [] as,
                                   Agent [] ags,
-                                  Object [] lks,
-                                  Annotation [] anns) 
+                                  Note [] ns,
+                                  Object [] lks) 
     {
 
         return newContainer(id,
@@ -991,82 +906,58 @@ public class ProvFactory implements CommonURIs {
                             ((ps==null) ? null : Arrays.asList(ps)),
                             ((as==null) ? null : Arrays.asList(as)),
                             ((ags==null) ? null : Arrays.asList(ags)),
-                            ((lks==null) ? null : Arrays.asList(lks)),
-                            ((anns==null) ? null : Arrays.asList(anns)));
+                            ((ns==null) ? null : Arrays.asList(ns)),
+                            ((lks==null) ? null : Arrays.asList(lks)));
     }
 
-    public Container newContainer(Accounts accs,
+    public Container newContainer(Collection<Account> accs,
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Dependencies lks)
     {
         Container res=of.createContainer();
+	res.setRecords(of.createRecords());
         //res.setId(autoGenerateId(containerIdPrefix));
-        res.setAccounts(accs);
-        res.getActivity().addAll(ps);
-        res.getEntity().addAll(as);
-        res.getAgent().addAll(ags);
-        res.setDependencies(lks);
+        res.getRecords().getAccount().addAll(accs);
+        res.getRecords().getActivity().addAll(ps);
+        res.getRecords().getEntity().addAll(as);
+        res.getRecords().getAgent().addAll(ags);
+        res.getRecords().setDependencies(lks);
         return res;
     }
 
-    public Container newContainer(Accounts accs,
+    public Container newContainer(Collection<Account> accs,
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
-                                  Dependencies lks,
-                                  Annotations anns)
+                                  Collection<Note> ns,
+                                  Dependencies lks)
     {
         Container res=of.createContainer();
+	res.setRecords(of.createRecords());
         //res.setId(autoGenerateId(containerIdPrefix));
-        res.setAccounts(accs);
-        res.getActivity().addAll(ps);
-        res.getEntity().addAll(as);
-        res.getAgent().addAll(ags);
-        res.setDependencies(lks);
-        res.setAnnotations(anns);
+        res.getRecords().getAccount().addAll(accs);
+        res.getRecords().getActivity().addAll(ps);
+        res.getRecords().getEntity().addAll(as);
+        res.getRecords().getAgent().addAll(ags);
+        res.getRecords().setDependencies(lks);
+        res.getRecords().getNote().addAll(ns);
         return res;
     }
 
 
 
     public Container newContainer(Container graph) {
-        return newContainer(graph.getAccounts(),
-                            graph.getActivity(),
-                            graph.getEntity(),
-                            graph.getAgent(),
-                            graph.getDependencies(),
-                            graph.getAnnotations());
+        return newContainer(graph.getRecords().getAccount(),
+                            graph.getRecords().getActivity(),
+                            graph.getRecords().getEntity(),
+                            graph.getRecords().getAgent(),
+                            graph.getRecords().getNote(),
+                            graph.getRecords().getDependencies());
     }
 
 
-    public Accounts newAccounts(Collection<Account> accs) {
-        Accounts res=of.createAccounts();
-        if (accs!=null) {
-            res.getAccount().addAll(accs);
-        }
-        return res;
-    }
-
-    //     public Encoding newEncoding(String encoding) {
-    //         Encoding res=of.createEncoding();
-    //         res.setValue(encoding);
-    //         return res;
-    //     }
-    //     public String getEncoding(EmbeddedAnnotation annotation) {
-    //         if (annotation instanceof Encoding) {
-    //             Encoding encoding=(Encoding) annotation;
-    //             return encoding.getValue();
-    //         } else {
-    //             for (Property prop: annotation.getProperty()) {
-    //                 if (prop.equals(ENCODING_PROPERTY)) {
-    //                     return (String) prop.getValue();
-    //                 }
-    //             }
-    //             return null;
-    //         }
-    //     }
 
     static {
         initBuilder();

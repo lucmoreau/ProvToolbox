@@ -85,6 +85,16 @@
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
+
+
+  <xs:complexType name="WasAssociatedWith">
+    <xs:sequence>
+      <xs:element name="activity" type="prov:ActivityRef"/>
+      <xs:element name="agent"    type="prov:AgentRef"/>
+      <xs:any maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:QName"/>
+  </xs:complexType>
   
   <xs:complexType name="WasControlledBy">
     <xs:sequence>
@@ -114,6 +124,15 @@
       <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
       <xs:element name="effect"  type="prov:ActivityRef"/>
       <xs:element name="cause"   type="prov:ActivityRef"/>
+      <xs:any maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:QName"/>
+  </xs:complexType>
+
+  <xs:complexType name="WasComplementOf">
+    <xs:sequence>
+      <xs:element name="entity2"   type="prov:EntityRef"/>
+      <xs:element name="entity1"   type="prov:EntityRef"/>
       <xs:any maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -180,6 +199,8 @@
 	<xs:element name="wasInformedBy"      type="prov:WasInformedBy"/>
 	<xs:element name="wasDerivedFrom"     type="prov:WasDerivedFrom"/>
 	<xs:element name="wasControlledBy"    type="prov:WasControlledBy"/>
+	<xs:element name="wasAssociatedWith"  type="prov:WasAssociatedWith"/>
+	<xs:element name="wasComplementOf"    type="prov:WasComplementOf"/>
 	<xs:element name="hasAnnotation"      type="prov:HasAnnotation"/>
       </xs:choice>
     </xs:sequence>

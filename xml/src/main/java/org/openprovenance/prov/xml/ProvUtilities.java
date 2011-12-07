@@ -36,6 +36,10 @@ public class ProvUtilities {
         if (r instanceof WasDerivedFrom) {
             return ((WasDerivedFrom)r).getEffect().getRef();
         }
+        if (r instanceof WasControlledBy) {
+            return ((WasControlledBy)r).getEffect().getRef();
+        }
+        System.out.println("Unknow relation " + r);
         throw new NullPointerException();
     }
         
@@ -48,6 +52,9 @@ public class ProvUtilities {
         }
         if (r instanceof WasDerivedFrom) {
             return ((WasDerivedFrom)r).getCause().getRef();
+        }
+        if (r instanceof WasControlledBy) {
+            return ((WasControlledBy)r).getCause().getRef();
         }
         throw new NullPointerException();
     }

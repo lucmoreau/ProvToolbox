@@ -31,7 +31,9 @@ public class ProvToDot {
     ProvUtilities u=new ProvUtilities();
     ProvFactory of=new ProvFactory();
 
-
+    public String qnameToString(QName qName) {
+        return qName.getLocalPart();
+    }
 
     public static void main(String [] args) throws Exception {
         if ((args==null) || (args.length==0) || (args.length>4)) {
@@ -201,6 +203,7 @@ public class ProvToDot {
         }
 
         for (Relation e: edges) {
+            if (!(e instanceof HasAnnotation)) 
             emitDependency(e,out);
         }
         
@@ -394,7 +397,7 @@ public class ProvToDot {
         if (displayActivityValue) {
             return convertActivityName(""+of.getLabel(p));
         } else {
-            return p.getId().toString();
+            return qnameToString(p.getId());
         }
     }
     public String processColor(Activity p) {
@@ -422,7 +425,7 @@ public class ProvToDot {
         if (displayEntityValue) {
             return convertEntityName(""+of.getLabel(p));
         } else {
-            return p.getId().toString();
+            return qnameToString(p.getId());
         }
     }
     public String entityColor(Entity p) {
@@ -457,7 +460,7 @@ public class ProvToDot {
         if (displayAgentValue) {
             return convertAgentName(""+of.getLabel(p));
         } else {
-            return p.getId().toString();
+            return qnameToString(p.getId());
         }
     }
 
@@ -499,8 +502,8 @@ public class ProvToDot {
         // for (AccountRef acc: accounts) {
         //     String accountLabel=((Account)acc.getRef()).getId();
         //     addRelationAttributes(accountLabel,e,properties);
-        emitRelation( u.getEffect(e).toString(),
-                      u.getCause(e).toString(),
+        emitRelation( qnameToString(u.getEffect(e)),
+                      qnameToString(u.getCause(e)),
                       properties,
                       out,
                       true);
@@ -593,7 +596,7 @@ public class ProvToDot {
 
     public void emitElement(QName name, HashMap<String,String> properties, PrintStream out) {
         StringBuffer sb=new StringBuffer();
-        sb.append(""+name);
+        sb.append(""+qnameToString(name));
         emitProperties(sb,properties);
         out.println(sb.toString());
     }

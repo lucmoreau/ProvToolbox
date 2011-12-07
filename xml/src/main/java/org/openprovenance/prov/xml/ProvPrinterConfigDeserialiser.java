@@ -29,7 +29,7 @@ public class ProvPrinterConfigDeserialiser {
 
     public ProvPrinterConfigDeserialiser () throws JAXBException {
         if (jc==null) 
-            jc = JAXBContext.newInstance( "org.openprovenance.model.printer" );
+            jc = JAXBContext.newInstance( "org.openprovenance.prov.printer" );
     }
 
     public ProvPrinterConfigDeserialiser (String packageList) throws JAXBException {

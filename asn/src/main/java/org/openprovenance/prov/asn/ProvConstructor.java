@@ -12,12 +12,15 @@ import org.openprovenance.prov.xml.ActivityRef;
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.EntityRef;
+import org.openprovenance.prov.xml.AgentRef;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.Account;
 import org.openprovenance.prov.xml.Container;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
+import org.openprovenance.prov.xml.WasComplementOf;
+import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.TypedLiteral;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
@@ -181,8 +184,6 @@ public  class ProvConstructor implements TreeConstructor {
         
             //return new JAXBElement<TypedLiteral>(attr1_QNAME, TypedLiteral.class, null, (TypedLiteral)value);
 
-	    if (value!=null)
-	    System.out.println("class " + value + "  " + value.getClass());
 	    return new JAXBElement<Object>(attr1_QNAME, Object.class, null, value);
         }
     }
@@ -280,6 +281,43 @@ public  class ProvConstructor implements TreeConstructor {
 
         return d;
     }
+
+    public Object convertWasComplementOf(Object id, Object id2,Object id1, Object aAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+        Entity e1=entityTable.get(s_id1);
+        EntityRef e1r=pFactory.newEntityRef(e1);
+        WasComplementOf wco=pFactory.newWasComplementOf(s_id,
+                                                        e2r,
+                                                        e1r);
+        List attrs=(List)aAttrs;
+        wco.getAny().addAll(attrs);
+
+        return wco;
+
+    }
+
+
+    public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object aAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        Activity e2=activityTable.get(s_id2);
+        ActivityRef e2r=pFactory.newActivityRef(e2);
+        Agent e1=agentTable.get(s_id1);
+        AgentRef e1r=pFactory.newAgentRef(e1);
+        WasAssociatedWith waw=pFactory.newWasAssociatedWith(s_id,
+                                                            e2r,
+                                                            e1r);
+        List attrs=(List)aAttrs;
+        waw.getAny().addAll(attrs);
+
+        return waw;
+    }
+
 
 
     public Object convertQNAME(String qname) {

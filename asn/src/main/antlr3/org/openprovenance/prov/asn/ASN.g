@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMP; WAW; INT;
+    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; INT;
 }
 
 @header {
@@ -111,24 +111,24 @@ optionalIdentifier
     ;
 
 dependenceRecord
-	:	'dependedUpon' '(' identifier ',' identifier ')'
-      -> ^(WDO identifier+)
+	:	'dependedUpon' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
+      -> ^(WDO optionalIdentifier identifier+ optionalAttributeValuePairs)
 	;
 
 controlRecord
-	:	'wasControlledBy' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ')'
-      -> ^(WCB identifier+ ^(ATTRIBUTES attributeValuePairs?))
+	:	'wasControlledBy' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
+      -> ^(WCB optionalIdentifier identifier+ optionalAttributeValuePairs)
 	;
 
 complementarityRecord
-	:	'wasComplementOf' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ')'
-      -> ^(COMP identifier+ ^(ATTRIBUTES attributeValuePairs?))
+	:	'wasComplementOf' '('  optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
+      -> ^(COMPLEMENTARITY optionalIdentifier identifier+ optionalAttributeValuePairs)
 	;
 
 
 associationRecord
-	:	'wasAssociatedWith' '(' identifier ',' identifier ',' '[' attributeValuePairs ']' ')'
-      -> ^(WAW identifier+ ^(ATTRIBUTES attributeValuePairs?))
+	:	'wasAssociatedWith' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
+      -> ^(WAW optionalIdentifier identifier+ optionalAttributeValuePairs)
 	;
 
 identifier

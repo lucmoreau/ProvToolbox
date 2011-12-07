@@ -161,6 +161,29 @@ public class Traversal {
             Object dAttrs=convert(ast.getChild(5));
             return c.convertWasDerivedFrom(id2,id1,pe,q2,q1,dAttrs);
 
+        case ASNParser.COMPLEMENTARITY:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            rAttrs=convert(ast.getChild(3));
+            return c.convertWasComplementOf(uid,id2,id1,rAttrs);
+
+
+        case ASNParser.WAW:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            rAttrs=convert(ast.getChild(3));
+            return c.convertWasAssociatedWith(uid,id2,id1,rAttrs);
+
 
         case ASNParser.TIME:
             if (ast.getChildCount()==0) return null;

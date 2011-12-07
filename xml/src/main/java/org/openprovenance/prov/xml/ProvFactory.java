@@ -371,6 +371,48 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
+    public WasComplementOf newWasComplementOf(String id,
+                                              EntityRef eid2,
+                                              EntityRef eid1) {
+        WasComplementOf res=of.createWasComplementOf();
+        res.setId(stringToQName(id));
+        res.setEntity2(eid2);
+        res.setEntity1(eid1);
+        return res;
+    }
+
+    public WasComplementOf newWasComplementOf(QName id,
+                        EntityRef eid2,
+                        EntityRef eid1) {
+        WasComplementOf res=of.createWasComplementOf();
+        res.setId(id);
+        res.setEntity2(eid2);
+        res.setEntity1(eid1);
+        return res;
+    }
+
+
+
+    public WasAssociatedWith newWasAssociatedWith(String id,
+                                                  ActivityRef eid2,
+                                                  AgentRef eid1) {
+        WasAssociatedWith res=of.createWasAssociatedWith();
+        res.setId(stringToQName(id));
+        res.setActivity(eid2);
+        res.setAgent(eid1);
+        return res;
+    }
+
+    public WasAssociatedWith newWasAssociatedWith(QName id,
+                                                  ActivityRef eid2,
+                                                  AgentRef eid1) {
+        WasAssociatedWith res=of.createWasAssociatedWith();
+        res.setId(id);
+        res.setActivity(eid2);
+        res.setAgent(eid1);
+        return res;
+    }
+
 
     public void addRole(HasExtensibility a,                                  
                         String role) {

@@ -1014,6 +1014,26 @@ public class ProvFactory implements CommonURIs {
                             graph.getRecords().getDependencies());
     }
 
+    public String getLabel(HasExtensibility e) {
+        for (Object o: e.getAny()) {
+            
+        }
+        return "pFact: label TODO";
+    }
+
+    public String getType(HasExtensibility e) {
+        for (Object o: e.getAny()) {
+            
+        }
+        return "pFact: type TODO";
+    }
+
+    public String getRole(HasExtensibility e) {
+        for (Object o: e.getAny()) {
+            
+        }
+        return "pFact: role TODO";
+    }
 
 
     static {

@@ -14,25 +14,6 @@
   </jaxb:globalBindings>
 -->
 
-    <jaxb:bindings schemaLocation="prov-20111110.xsd" 
-                   node="/xs:schema">       
-        <jaxb:schemaBindings>
-            <jaxb:package name="org.openprovenance.prov.xml"/>
-        </jaxb:schemaBindings>
-
-	<!--
-	<jaxb:bindings node="xs:complexType[@name='TypedLiteral']">
-	  <jaxb:property><jaxb:baseType>
-	  <jaxb:javaType name="java.net.URI"
-			 parseMethod="java.net.URI.create"
-			 printMethod="org.openprovenance.prov.xml.ProvFactory.printURI"
-			 />
-	  </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	-->
-
-    </jaxb:bindings>
 
 
 
@@ -40,7 +21,7 @@
     <jaxb:bindings schemaLocation="prov_printer_config.xsd" 
                    node="/xs:schema">       
         <jaxb:schemaBindings>
-            <jaxb:package name="org.openprovenance.prov.printer"/>
+            <jaxb:package name="org.openprovenance.prov.dot"/>
         </jaxb:schemaBindings>   
     </jaxb:bindings>
 

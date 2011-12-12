@@ -22,10 +22,10 @@ public class PC1FullTest
     extends TestCase
 {
 
-    static final String PC1_NS="http://www.ipaw.info/pc1/";
-    static final String PC1_PREFIX="pc1";
-    static final String PRIM_NS="http://openprovenance.org/primitives#";
-    static final String PRIM_PREFIX="prim";
+    public static final String PC1_NS="http://www.ipaw.info/pc1/";
+    public static final String PC1_PREFIX="pc1";
+    public static final String PRIM_NS="http://openprovenance.org/primitives#";
+    public static final String PRIM_PREFIX="prim";
     
 
 
@@ -59,7 +59,7 @@ public class PC1FullTest
      */
 
 
-    static Container graph1;
+    public static Container graph1;
 
 
 
@@ -622,14 +622,6 @@ public class PC1FullTest
 
         assertTrue( "graph1 graph2 differ", graph1.equals(graph2) );        
         
-    }
-
-    /** Produces a dot representation
-     * of created graph. */
-    public void testPC1FullConversion() throws java.io.FileNotFoundException,  java.io.IOException   {
-        ProvToDot toDot=new ProvToDot(true); // with roles
-        
-        toDot.convert(graph1,"target/pc1-full.dot", "target/pc1-full.pdf");
     }
 
 }

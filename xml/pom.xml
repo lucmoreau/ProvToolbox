@@ -98,7 +98,6 @@
                <schemaIncludes>
                  <schemaInclude>**/prov-20111110.xsd</schemaInclude>
                  <schemaInclude>**/toolbox.xsd</schemaInclude>
-                 <schemaInclude>**/prov_printer_config.xsd</schemaInclude>
 
                </schemaIncludes>
                <bindingDirectory>src/main/resources</bindingDirectory>

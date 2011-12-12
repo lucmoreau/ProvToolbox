@@ -223,7 +223,7 @@ public class ProvFactory implements CommonURIs {
                                 String label) {
         Activity res=of.createActivity();
         res.setId(pr);
-        if (label!=null) addLabel(res,label);
+        if (label!=null) res.setLabel(label);
         return res;
     }
 
@@ -336,7 +336,7 @@ public class ProvFactory implements CommonURIs {
                             String label) {
         Entity res=of.createEntity();
         res.setId(id);
-        if (label!=null) addLabel(res,label);
+        if (label!=null) res.setLabel(label);
         return res;
     }
 
@@ -1015,6 +1015,10 @@ public class ProvFactory implements CommonURIs {
     }
 
     public String getLabel(HasExtensibility e) {
+        /** not good way of doing it. We should have interface for this. */
+        if (e instanceof Entity) return ((Entity)e).getLabel();
+        if (e instanceof Activity) return ((Activity)e).getLabel();
+        if (e instanceof Agent) return ((Agent)e).getLabel();
         for (Object o: e.getAny()) {
             
         }

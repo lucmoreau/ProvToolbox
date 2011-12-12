@@ -31,6 +31,7 @@
       <xs:element name="recipeLink"   type="xs:anyURI"   minOccurs="0"/> 
       <xs:element name="startTime"    type="xs:dateTime" minOccurs="0"/> 
       <xs:element name="endTime"      type="xs:dateTime" minOccurs="0"/> 
+      <xs:element name="label"        ref="prov:label" minOccurs="0"/> 
       <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
       
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
@@ -43,6 +44,7 @@
   <xs:complexType name="Entity">
     <xs:sequence>
       <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element name="label"        ref="prov:label" minOccurs="0"/> 
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -51,6 +53,7 @@
   <xs:element name="agent" type="prov:Agent"/>
   <xs:complexType name="Agent">
     <xs:sequence>
+      <xs:element name="label"        ref="prov:label" minOccurs="0"/> 
       <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>

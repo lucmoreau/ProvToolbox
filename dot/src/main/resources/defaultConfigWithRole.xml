@@ -4,30 +4,30 @@
   <graphName>OPMGraph</graphName>
 
 
-  <processes displayValue="true">
-    <process value="http://process.org/add1ToAll" display="add1ToAll"/>
-    <process value="http://process.org/split"     display="split"/>
-    <process value="http://process.org/plus1"     display="+1"/>
-    <process value="http://process.org/cons"      display="cons"/>
-    <process value="http://process.org/fry"       display="fry"/>
-    <process value="http://process.org/bake"      display="bake"/>
-    <process value="http://process.org/badBake"   display="badBake"/>
-  </processes>
+  <activities displayValue="true">
+    <activity value="http://activity.org/add1ToAll" display="add1ToAll"/>
+    <activity value="http://activity.org/split"     display="split"/>
+    <activity value="http://activity.org/plus1"     display="+1"/>
+    <activity value="http://activity.org/cons"      display="cons"/>
+    <activity value="http://activity.org/fry"       display="fry"/>
+    <activity value="http://activity.org/bake"      display="bake"/>
+    <activity value="http://activity.org/badBake"   display="badBake"/>
+  </activities>
 
-  <artifacts displayValue="true">
-    <artifact value="2 eggs"       display="two eggs"/>
-  </artifacts>
+  <entities displayValue="true">
+    <entity value="2 eggs"       display="two eggs"/>
+  </entities>
 
   <agents displayValue="true">
   </agents>
 
 
-  <edges default="filled">
-    <edge type="org.openprovenance.model.Used"            style="dotted"  printRole="true"/>
-    <edge type="org.openprovenance.model.WasGeneratedBy"  style="dotted"  printRole="true"/>
-    <edge type="org.openprovenance.model.WasControlledBy" style="dotted"  printRole="true"/>
-    <edge type="org.openprovenance.model.WasDerivedFrom"  style="bold"/>
-  </edges>
+  <relations default="filled">
+    <relation type="org.openprovenance.prov.xml.Used"            style="dotted"  printRole="true"/>
+    <relation type="org.openprovenance.prov.xml.WasGeneratedBy"  style="dotted"  printRole="true"/>
+    <relation type="org.openprovenance.prov.xml.WasControlledBy" style="dotted"  printRole="true"/>
+    <relation type="org.openprovenance.prov.xml.WasDerivedFrom"  style="bold"/>
+  </relations>
 
 
   <accounts defaultAccount="black" defaultColor="black">

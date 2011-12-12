@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Hashtable;
 import java.util.Date;
+import java.net.URI;
 import javax.xml.bind.JAXBElement;
 import java.util.GregorianCalendar;
 import javax.xml.namespace.QName;
@@ -22,6 +23,10 @@ import javax.xml.parsers.ParserConfigurationException;
 /** A stateless factory for PROV objects. */
 
 public class ProvFactory implements CommonURIs {
+
+    public static String printURI(java.net.URI u) {
+	return u.toString();
+    }
 
     public static String roleIdPrefix="r_";
     public static String usedIdPrefix="u_";
@@ -218,7 +223,7 @@ public class ProvFactory implements CommonURIs {
                                 String label) {
         Activity res=of.createActivity();
         res.setId(pr);
-        if (label!=null) addLabel(res,label);
+        if (label!=null) res.setLabel(label);
         return res;
     }
 
@@ -331,7 +336,7 @@ public class ProvFactory implements CommonURIs {
                             String label) {
         Entity res=of.createEntity();
         res.setId(id);
-        if (label!=null) addLabel(res,label);
+        if (label!=null) res.setLabel(label);
         return res;
     }
 
@@ -363,6 +368,48 @@ public class ProvFactory implements CommonURIs {
         res.setActivity(aid);
         addRole(res,role);
         res.setEntity(eid);
+        return res;
+    }
+
+    public WasComplementOf newWasComplementOf(String id,
+                                              EntityRef eid2,
+                                              EntityRef eid1) {
+        WasComplementOf res=of.createWasComplementOf();
+        res.setId(stringToQName(id));
+        res.setEntity2(eid2);
+        res.setEntity1(eid1);
+        return res;
+    }
+
+    public WasComplementOf newWasComplementOf(QName id,
+                        EntityRef eid2,
+                        EntityRef eid1) {
+        WasComplementOf res=of.createWasComplementOf();
+        res.setId(id);
+        res.setEntity2(eid2);
+        res.setEntity1(eid1);
+        return res;
+    }
+
+
+
+    public WasAssociatedWith newWasAssociatedWith(String id,
+                                                  ActivityRef eid2,
+                                                  AgentRef eid1) {
+        WasAssociatedWith res=of.createWasAssociatedWith();
+        res.setId(stringToQName(id));
+        res.setActivity(eid2);
+        res.setAgent(eid1);
+        return res;
+    }
+
+    public WasAssociatedWith newWasAssociatedWith(QName id,
+                                                  ActivityRef eid2,
+                                                  AgentRef eid1) {
+        WasAssociatedWith res=of.createWasAssociatedWith();
+        res.setId(id);
+        res.setActivity(eid2);
+        res.setAgent(eid1);
         return res;
     }
 
@@ -747,6 +794,16 @@ public class ProvFactory implements CommonURIs {
     }
     */
 
+
+    public void addType(HasExtensibility a,
+                        URI type) {
+
+	URIWrapper u=new URIWrapper();
+	u.setValue(type);
+        JAXBElement<Object> je=of.createType(u);
+        addAttribute(a,je);
+    }
+
     public void addType(HasExtensibility a,
                         Object type) {
 
@@ -957,6 +1014,30 @@ public class ProvFactory implements CommonURIs {
                             graph.getRecords().getDependencies());
     }
 
+    public String getLabel(HasExtensibility e) {
+        /** not good way of doing it. We should have interface for this. */
+        if (e instanceof Entity) return ((Entity)e).getLabel();
+        if (e instanceof Activity) return ((Activity)e).getLabel();
+        if (e instanceof Agent) return ((Agent)e).getLabel();
+        for (Object o: e.getAny()) {
+            
+        }
+        return "pFact: label TODO";
+    }
+
+    public String getType(HasExtensibility e) {
+        for (Object o: e.getAny()) {
+            
+        }
+        return "pFact: type TODO";
+    }
+
+    public String getRole(HasExtensibility e) {
+        for (Object o: e.getAny()) {
+            
+        }
+        return "pFact: role TODO";
+    }
 
 
     static {

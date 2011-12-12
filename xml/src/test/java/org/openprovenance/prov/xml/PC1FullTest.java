@@ -626,10 +626,10 @@ public class PC1FullTest
 
     /** Produces a dot representation
      * of created graph. */
-    public void testPC1FullConversion() throws java.io.FileNotFoundException,  java.io.IOException   {
+    /*    public void testPC1FullConversion() throws java.io.FileNotFoundException,  java.io.IOException   {
         ProvToDot toDot=new ProvToDot(true); // with roles
         
         toDot.convert(graph1,"target/pc1-full.dot", "target/pc1-full.pdf");
-    }
+	}*/
 
 }

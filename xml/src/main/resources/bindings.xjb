@@ -37,12 +37,6 @@
 
 
 
-    <jaxb:bindings schemaLocation="prov_printer_config.xsd" 
-                   node="/xs:schema">       
-        <jaxb:schemaBindings>
-            <jaxb:package name="org.openprovenance.prov.printer"/>
-        </jaxb:schemaBindings>   
-    </jaxb:bindings>
 
 
 

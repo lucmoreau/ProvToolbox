@@ -1,4 +1,4 @@
-package org.openprovenance.prov.printer;
+package org.openprovenance.prov.dot;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;

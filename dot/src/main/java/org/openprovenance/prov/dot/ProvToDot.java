@@ -1,4 +1,4 @@
-package org.openprovenance.prov.xml;
+package org.openprovenance.prov.dot;
 import java.util.List;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -14,13 +14,27 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBElement;
 //import org.w3c.dom.Element;
 
-import org.openprovenance.prov.printer.ProvPrinterConfiguration;
-import org.openprovenance.prov.printer.AgentMapEntry;
-import org.openprovenance.prov.printer.AccountColorMapEntry;
-import org.openprovenance.prov.printer.EntityMapEntry;
-import org.openprovenance.prov.printer.ActivityMapEntry;
-import org.openprovenance.prov.printer.RelationStyleMapEntry;
-import org.openprovenance.prov.printer.ProvPrinterConfigDeserialiser;
+import org.openprovenance.prov.xml.Entity;
+import org.openprovenance.prov.xml.Activity;
+import org.openprovenance.prov.xml.Account;
+import org.openprovenance.prov.xml.Relation;
+import org.openprovenance.prov.xml.Agent;
+import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.xml.ProvUtilities;
+import org.openprovenance.prov.xml.ProvDeserialiser;
+import org.openprovenance.prov.xml.HasAnnotation;
+import org.openprovenance.prov.xml.Note;
+import org.openprovenance.prov.xml.Container;
+import org.openprovenance.prov.xml.HasExtensibility;
+
+
+import org.openprovenance.prov.dot.ProvPrinterConfiguration;
+import org.openprovenance.prov.dot.AgentMapEntry;
+import org.openprovenance.prov.dot.AccountColorMapEntry;
+import org.openprovenance.prov.dot.EntityMapEntry;
+import org.openprovenance.prov.dot.ActivityMapEntry;
+import org.openprovenance.prov.dot.RelationStyleMapEntry;
+import org.openprovenance.prov.dot.ProvPrinterConfigDeserialiser;
 
 /** Serialisation of  Prov representation to DOT format. */
 public class ProvToDot {

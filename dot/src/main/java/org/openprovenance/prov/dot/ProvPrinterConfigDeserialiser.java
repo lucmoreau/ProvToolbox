@@ -29,7 +29,7 @@ public class ProvPrinterConfigDeserialiser {
 
     public ProvPrinterConfigDeserialiser () throws JAXBException {
         if (jc==null) 
-            jc = JAXBContext.newInstance( "org.openprovenance.prov.printer" );
+            jc = JAXBContext.newInstance( "org.openprovenance.prov.dot" );
     }
 
     public ProvPrinterConfigDeserialiser (String packageList) throws JAXBException {
@@ -44,6 +44,7 @@ public class ProvPrinterConfigDeserialiser {
                 try {
                     return new ProvPrinterConfigDeserialiser();
                 } catch (JAXBException jxb) {
+                    jxb.printStackTrace();
                     throw new RuntimeException("ProvPrinterConfigDeserialiser: deserialiser init failure()");
                 }
             }

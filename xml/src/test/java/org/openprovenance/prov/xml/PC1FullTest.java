@@ -22,10 +22,10 @@ public class PC1FullTest
     extends TestCase
 {
 
-    static final String PC1_NS="http://www.ipaw.info/pc1/";
-    static final String PC1_PREFIX="pc1";
-    static final String PRIM_NS="http://openprovenance.org/primitives#";
-    static final String PRIM_PREFIX="prim";
+    public static final String PC1_NS="http://www.ipaw.info/pc1/";
+    public static final String PC1_PREFIX="pc1";
+    public static final String PRIM_NS="http://openprovenance.org/primitives#";
+    public static final String PRIM_PREFIX="prim";
     
 
 
@@ -59,7 +59,7 @@ public class PC1FullTest
      */
 
 
-    static Container graph1;
+    public static Container graph1;
 
 
 

@@ -24,6 +24,14 @@
     </dependency>
 
     <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-xml</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>
+
+    <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
       <version>${jaxb.api.version}</version>
@@ -42,27 +50,6 @@
     </dependency>
 
 
-
-
-    <dependency>
-      <groupId>commons-jxpath</groupId>
-      <artifactId>commons-jxpath</artifactId>
-      <version>1.2</version>
-       <exclusions> 
-		<exclusion>
-			<groupId>xerces</groupId>
-			<artifactId>xerces</artifactId>
-		</exclusion>
-		<exclusion>
-			<groupId>ant</groupId>
-			<artifactId>ant-optional</artifactId>
-		</exclusion>
-		<exclusion>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-		</exclusion>
- 	   </exclusions>
-    </dependency>
 
 
 
@@ -125,135 +112,6 @@
         </executions>
       </plugin>
 
-      <!-- executable to be run as target/appassembler/bin/pim2dot
-      src/test/resources/example2.xml file.dot file.pdf -->
-
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>appassembler-maven-plugin</artifactId>
-        <configuration>
-          <programs>
-            <program>
-              <mainClass>org.openprovenance.pix.PIMToDot</mainClass>
-              <name>pim2dot</name>
-            </program>
-          </programs>
-          <repositoryLayout>default</repositoryLayout>
-          <repositoryName>lib</repositoryName>
-          <!-- Extra JVM arguments that will be included in the bin scripts 
-          <extraJvmArguments>-Xms128m</extraJvmArguments> -->
-          <platforms>
-            <platform>windows</platform>
-            <platform>unix</platform>
-          </platforms>
-
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <id>assemble</id>
-              <goals>
-               <goal>assemble</goal>
-              </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-
-<!--       <plugin> created dummy call to ant plugin, to declare the source
-                    root directory which javadoc was not picking by itself. 
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <configuration>
-              <tasks>
-              </tasks>
-              <sourceRoot>${project.build.directory}/generated-sources/xjc/</sourceRoot>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
--->
-
-
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>patch.source.files</id>
-            <phase>generate-sources</phase>
-            <goals>
-             <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                
-
-        
-              </tasks>
-              <sourceRoot>${project.build.directory}/generated-sources/xjc/</sourceRoot>
-            </configuration>
-          </execution>
-
-          <execution>
-            <id>patch.executable</id>
-            <phase>package</phase>
-            <goals>
-             <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-
-                <!-- patch the shell script to avoid changing current directory, so that
-                     relative files are understood as relative to the current directory. -->
-
-                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
-  	              <arg value="-e s/^cd/#### no CD ### Luc/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="pim2dot" />
-                </exec>
-
-                <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
-  	              <arg value="a+x" />
-  	              <arg value="pim2dot" />
-  	              <arg value="pim2dot.bat" />
-                </exec>
-
-
-              </tasks>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.3</version>
-      </plugin>
-
-
-<!--
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <descriptors>
-          <descriptor>${project.build.directory}/classes/pim2dot-assembly.xml</descriptor>
-         </descriptors>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <id>make-assembly</id>
-              <goals>
-               <goal>single</goal>
-              </goals>
-          </execution>
-        </executions>
-      </plugin>
--->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -265,18 +123,9 @@
             <goals>
               <goal>test-jar</goal>
             </goals>
-            <!-- 
-            <configuration>
-              <classifier>client</classifier>
-              <includes>
-                <include>**/service/*</include>
-              </includes>
-            </configuration>
-            -->
           </execution>
         </executions>
       </plugin>
-
     </plugins>
 
    <pluginManagement>

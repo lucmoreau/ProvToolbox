@@ -185,6 +185,18 @@ public class Traversal {
             return c.convertWasAssociatedWith(uid,id2,id1,rAttrs);
 
 
+        case ASNParser.HADPLAN:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            rAttrs=convert(ast.getChild(3));
+            return c.convertHadPlan(uid,id2,id1,rAttrs);
+
+
         case ASNParser.TIME:
             if (ast.getChildCount()==0) return null;
             if (ast.getChild(0)==null) return null;

@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; INT;
+    ATTRIBUTE; ATTRIBUTES; RECIPE; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; INT; HADPLAN;
 }
 
 @header {
@@ -59,7 +59,7 @@ defaultNamespaceDeclaration :
     ;
 
 record
-	:	(entityRecord | activityRecord | agentRecord | generationRecord  | useRecord | derivationRecord | dependenceRecord  | controlRecord | complementarityRecord  |  associationRecord)
+	:	(entityRecord | activityRecord | agentRecord | generationRecord  | useRecord | derivationRecord | dependenceRecord  | controlRecord | complementarityRecord  |  associationRecord | planLinkRecord)
 	;
 
 entityRecord
@@ -129,6 +129,11 @@ complementarityRecord
 associationRecord
 	:	'wasAssociatedWith' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
       -> ^(WAW optionalIdentifier identifier+ optionalAttributeValuePairs)
+	;
+
+planLinkRecord
+	:	'hadPlan' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
+      -> ^(HADPLAN optionalIdentifier identifier+ optionalAttributeValuePairs)
 	;
 
 identifier

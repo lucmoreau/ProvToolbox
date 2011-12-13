@@ -120,6 +120,12 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
+    public Object convertHadPlan(Object id, Object id2,Object id1, Object aAttrs) {
+        String s="convertHadPlan(" + optionalId(id) + id2 + "," + id1 +
+            optionalAttributes(aAttrs) + ")";
+        return s;
+    }
+
 
     public Object convertQNAME(String qname) {
         return qname;

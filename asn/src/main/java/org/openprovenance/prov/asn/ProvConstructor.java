@@ -17,6 +17,7 @@ import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.Account;
 import org.openprovenance.prov.xml.Container;
 import org.openprovenance.prov.xml.Used;
+import org.openprovenance.prov.xml.HadPlan;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.WasComplementOf;
@@ -316,6 +317,23 @@ public  class ProvConstructor implements TreeConstructor {
         waw.getAny().addAll(attrs);
 
         return waw;
+    }
+
+    public Object convertHadPlan(Object id, Object id2,Object id1, Object aAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        Activity a2=activityTable.get(s_id2);
+        ActivityRef a2r=pFactory.newActivityRef(a2);
+        Entity e1=entityTable.get(s_id1);
+
+	EntityRef e1r=pFactory.newEntityRef(e1);
+	HadPlan hp=pFactory.newHadPlan(s_id,
+				       a2r,
+				       e1r);
+        List attrs=(List)aAttrs;
+        hp.getAny().addAll(attrs);
+        return hp;
     }
 
 

@@ -67,6 +67,11 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
+    public Object convertHadPlan(Object id, Object id2,Object id1, Object aAttrs) {
+	return null;
+    }
+
+
     public Object convertQNAME(String qname) {
         return null;
     }

@@ -101,6 +101,17 @@
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
+
+
+  <xs:complexType name="HadPlan">
+    <xs:sequence>
+      <xs:element name="activity" type="prov:ActivityRef"/>
+      <xs:element name="entity"   type="prov:EntityRef"/>
+      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:QName"/>
+  </xs:complexType>
   
   <xs:complexType name="WasControlledBy">
     <xs:sequence>
@@ -210,6 +221,7 @@
 	<xs:element name="wasInformedBy"      type="prov:WasInformedBy"/>
 	<xs:element name="wasDerivedFrom"     type="prov:WasDerivedFrom"/>
 	<xs:element name="wasControlledBy"    type="prov:WasControlledBy"/>
+	<xs:element name="hadPlan"            type="prov:HadPlan"/>
 	<xs:element name="wasAssociatedWith"  type="prov:WasAssociatedWith"/>
 	<xs:element name="wasComplementOf"    type="prov:WasComplementOf"/>
 	<xs:element name="hasAnnotation"      type="prov:HasAnnotation"/>

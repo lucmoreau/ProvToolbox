@@ -53,9 +53,8 @@ public  class ProvConstructor implements TreeConstructor {
     }
             
 
-    public Object convertActivity(Object id,Object recipe,Object startTime,Object endTime, Object aAttrs) {
+    public Object convertActivity(Object id,Object startTime,Object endTime, Object aAttrs) {
         String s_id=(String)id;
-        String s_recipe=(String)recipe;
         String s_startTime=(String)startTime;
         String s_endTime=(String)endTime;
         List attrs=(List)aAttrs;
@@ -71,9 +70,6 @@ public  class ProvConstructor implements TreeConstructor {
             a.setStartTime(pFactory.newISOTime(s_startTime));
         }
 
-        if (s_recipe!=null) {
-            a.setRecipeLink(s_recipe);
-        }
         return a;
     }
 
@@ -347,11 +343,6 @@ public  class ProvConstructor implements TreeConstructor {
         return URI.create(iri);
     }
 
-    public Object convertRecipe(String recipe) {
-        if (recipe==null) return recipe;
-        recipe=unwrap(recipe);
-        return recipe;
-    }
 
     public Object convertToJava(String value, Object datatype) {
 	value=unwrap(value);

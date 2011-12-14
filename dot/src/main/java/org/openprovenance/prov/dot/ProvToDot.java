@@ -275,14 +275,17 @@ public class ProvToDot {
 
     public void emitAnnotations(String id, HasExtensibility ann, PrintStream out) {
 
-        System.out.println("emitAnnotation " + id);
+        if ((ann.getAny()==null) || (ann.getAny().isEmpty())) return;
+
         HashMap<String,String> properties=new HashMap();
         QName newId=annotationId(((Identifiable)ann).getId(),id);
         emitElement(newId,
                     addAnnotationShape(ann,addAnnotationColor(ann,addAnnotationLabel(ann,properties))),
                     out);
         HashMap<String,String> linkProperties=new HashMap();
-        emitRelation(qnameToString(newId),qnameToString(((Identifiable)ann).getId()),addAnnotationLinkProperties(ann,linkProperties),out,true);
+        emitRelation(qnameToString(newId),
+                     qnameToString(((Identifiable)ann).getId()),
+                     addAnnotationLinkProperties(ann,linkProperties),out,true);
     }
 
 
@@ -379,6 +382,7 @@ public class ProvToDot {
 
    public String convertValue(Object v) {
          String label=getPropertyValueFromAny(v);
+         System.out.println("Foudn value " + label);
          int i=label.lastIndexOf("#");
          int j=label.lastIndexOf("/");
          return label.substring(Math.max(i,j)+1, label.length());
@@ -407,9 +411,15 @@ public class ProvToDot {
 
     public String getPropertyValueFromAny (Object o) {
         if (o instanceof JAXBElement) {
-            return "" +  ((JAXBElement)o).getValue();
+            Object val=((JAXBElement)o).getValue();
+            if (val instanceof QName) {
+                QName q=(QName)val;
+                return q.getNamespaceURI() + q.getLocalPart();
+            } else {
+                return "" +  val;
+            }
         } else if (o instanceof org.w3c.dom.Element) {
-            return ((org.w3c.dom.Element)o).getFirstChild().toString();
+            return ((org.w3c.dom.Element)o).getFirstChild().getNodeValue();
         } else {
             return o.toString();
         }

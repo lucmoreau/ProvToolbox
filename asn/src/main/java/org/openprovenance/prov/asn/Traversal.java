@@ -40,11 +40,10 @@ public class Traversal {
         switch(ast.getType()) {
         case ASNParser.ACTIVITY:
             Object id=convert(ast.getChild(0));
-            Object recipe=convert(ast.getChild(1));
-            Object startTime=convert(ast.getChild(2));
-            Object endTime=convert(ast.getChild(3));
-            Object aAttrs=convert(ast.getChild(4));
-            return c.convertActivity(id,recipe,startTime,endTime,aAttrs);
+            Object startTime=convert(ast.getChild(1));
+            Object endTime=convert(ast.getChild(2));
+            Object aAttrs=convert(ast.getChild(3));
+            return c.convertActivity(id,startTime,endTime,aAttrs);
 
         case ASNParser.ENTITY:
             id=convert(ast.getChild(0));
@@ -118,9 +117,6 @@ public class Traversal {
  	    String iri=convertToken(getTokenString(ast.getChild(0)));
  	    return c.convertIRI(iri);
 
- 	case ASNParser.RECIPE:
- 	    String recipe1=convertToken(getTokenString(ast.getChild(0)));
- 	    return c.convertRecipe(recipe1);
 
  	case ASNParser.TYPEDLITERAL:
  	    String v1=convertToken(getTokenString(ast.getChild(0)));
@@ -183,6 +179,18 @@ public class Traversal {
             id1=convert(ast.getChild(2));
             rAttrs=convert(ast.getChild(3));
             return c.convertWasAssociatedWith(uid,id2,id1,rAttrs);
+
+
+        case ASNParser.HADPLAN:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            rAttrs=convert(ast.getChild(3));
+            return c.convertHadPlan(uid,id2,id1,rAttrs);
 
 
         case ASNParser.TIME:

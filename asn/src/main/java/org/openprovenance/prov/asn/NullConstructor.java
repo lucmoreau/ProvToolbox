@@ -5,7 +5,7 @@ public class NullConstructor implements TreeConstructor {
 
 
 
-    public Object convertActivity(Object id,Object recipe,Object startTime,Object endTime, Object aAttrs) {
+    public Object convertActivity(Object id,Object startTime,Object endTime, Object aAttrs) {
         return null;
     }
     public Object convertEntity(Object id, Object attrs) {
@@ -67,6 +67,11 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
+    public Object convertHadPlan(Object id, Object id2,Object id1, Object aAttrs) {
+	return null;
+    }
+
+
     public Object convertQNAME(String qname) {
         return null;
     }
@@ -74,10 +79,6 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
-    public Object convertRecipe(String recipe) {
-        return null;
-    }
-    
     public Object convertTypedLiteral(String datatype, Object value) {
         return null;
     }

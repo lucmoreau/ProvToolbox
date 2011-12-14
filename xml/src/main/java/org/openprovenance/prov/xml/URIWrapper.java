@@ -25,6 +25,10 @@ public class URIWrapper {
         this.value = value;
     }
 
+    public String toString() {
+        return value.toString();
+    }
+
 
 }
   

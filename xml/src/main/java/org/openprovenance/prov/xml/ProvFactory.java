@@ -243,7 +243,7 @@ public class ProvFactory implements CommonURIs {
                           String label) {
         Agent res=of.createAgent();
         res.setId(ag);
-        if (label!=null) addLabel(res,label);
+        if (label!=null) res.setLabel(label);
         return res;
     }
     public Agent newAgent(String ag,
@@ -410,6 +410,27 @@ public class ProvFactory implements CommonURIs {
         res.setId(id);
         res.setActivity(eid2);
         res.setAgent(eid1);
+        return res;
+    }
+
+
+    public HadPlan newHadPlan(String id,
+			      ActivityRef eid2,
+			      EntityRef eid1) {
+        HadPlan res=of.createHadPlan();
+        res.setId(stringToQName(id));
+        res.setActivity(eid2);
+        res.setEntity(eid1);
+        return res;
+    }
+
+    public HadPlan newHadPlan(QName id,
+			      ActivityRef aid,
+			      EntityRef eid) {
+        HadPlan res=of.createHadPlan();
+        res.setId(id);
+        res.setActivity(aid);
+        res.setEntity(eid);
         return res;
     }
 
@@ -1015,21 +1036,22 @@ public class ProvFactory implements CommonURIs {
     }
 
     public String getLabel(HasExtensibility e) {
-        /** not good way of doing it. We should have interface for this. */
-        if (e instanceof Entity) return ((Entity)e).getLabel();
-        if (e instanceof Activity) return ((Activity)e).getLabel();
-        if (e instanceof Agent) return ((Agent)e).getLabel();
+
+        if (e instanceof HasLabel) return ((HasLabel)e).getLabel();
         for (Object o: e.getAny()) {
             
         }
         return "pFact: label TODO";
     }
 
-    public String getType(HasExtensibility e) {
+    public List<Object> getType(HasExtensibility e) {
+        if (e instanceof HasType) return ((HasType)e).getType();
         for (Object o: e.getAny()) {
             
         }
-        return "pFact: type TODO";
+        List<Object> res=new LinkedList();
+        res.add("pFact: type TODO");
+        return res;
     }
 
     public String getRole(HasExtensibility e) {

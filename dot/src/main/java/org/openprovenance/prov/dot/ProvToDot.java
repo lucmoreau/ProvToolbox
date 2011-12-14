@@ -21,6 +21,7 @@ import org.openprovenance.prov.xml.Relation;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvUtilities;
+import org.openprovenance.prov.xml.Identifiable;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.HasAnnotation;
 import org.openprovenance.prov.xml.Note;
@@ -229,10 +230,10 @@ public class ProvToDot {
     boolean collapseAnnotations=true;
 
     static int embeddedAnnotationCounter=0;
-
     public void emitAnnotations(HasExtensibility node, PrintStream out) {
 
     }
+
 
 
     //////////////////////////////////////////////////////////////////////
@@ -248,7 +249,7 @@ public class ProvToDot {
                  addActivityShape(p,addActivityLabel(p, addActivityColor(p,properties))),
                  out);
 
-        emitAnnotations(p,out);
+                emitAnnotations("", p,out);
     }
 
     public void emitEntity(Entity a, PrintStream out) {
@@ -258,7 +259,7 @@ public class ProvToDot {
                  addEntityShape(a,addEntityLabel(a, addEntityColor(a,properties))),
                  out);
 
-        emitAnnotations(a,out);
+        emitAnnotations("", a,out);
     }
 
     public void emitAgent(Agent ag, PrintStream out) {
@@ -268,32 +269,34 @@ public class ProvToDot {
                  addAgentShape(ag,addAgentLabel(ag, addAgentColor(ag,properties))),
                  out);
 
-        emitAnnotations(ag,out);
+        emitAnnotations("", ag,out);
 
     }
 
-    public void emitAnnotation(String id, Object ann, PrintStream out) {
-        // HashMap<String,String> properties=new HashMap();
-        // String newId=annotationId(ann.getId(),id);
-        // emitElement(newId,
-        //          addAnnotationShape(ann,addAnnotationColor(ann,addAnnotationLabel(ann,properties))),
-        //          out);
-        // HashMap<String,String> linkProperties=new HashMap();
-        // emitRelation(newId,id,addAnnotationLinkProperties(ann,linkProperties),out,true);
+    public void emitAnnotations(String id, HasExtensibility ann, PrintStream out) {
+
+        System.out.println("emitAnnotation " + id);
+        HashMap<String,String> properties=new HashMap();
+        QName newId=annotationId(((Identifiable)ann).getId(),id);
+        emitElement(newId,
+                    addAnnotationShape(ann,addAnnotationColor(ann,addAnnotationLabel(ann,properties))),
+                    out);
+        HashMap<String,String> linkProperties=new HashMap();
+        emitRelation(qnameToString(newId),qnameToString(((Identifiable)ann).getId()),addAnnotationLinkProperties(ann,linkProperties),out,true);
     }
 
 
 
     int annotationCount=0;
-    public String annotationId(String id,String node) {
-        if (id==null) {
-            return "ann" + node + (annotationCount++);
+    public QName annotationId(QName id,String node) {
+        if (true || id==null) {
+            return new QName("http://foo/ignore","ann" + node + (annotationCount++));
         } else {
             return id;
         }
     }
 
-    public HashMap<String,String> addAnnotationLinkProperties(Note ann, HashMap<String,String> properties) {
+    public HashMap<String,String> addAnnotationLinkProperties(HasExtensibility ann, HashMap<String,String> properties) {
         properties.put("arrowhead","none");
         properties.put("style","dashed");
         properties.put("color","gray");
@@ -356,11 +359,11 @@ public class ProvToDot {
         return properties;
     }
 
-    public HashMap<String,String> addAnnotationShape(Note ann, HashMap<String,String> properties) {
+    public HashMap<String,String> addAnnotationShape(HasExtensibility ann, HashMap<String,String> properties) {
         properties.put("shape","note");
         return properties;
     }
-    public HashMap<String,String> addAnnotationLabel(Note ann, HashMap<String,String> properties) {
+    public HashMap<String,String> addAnnotationLabel(HasExtensibility ann, HashMap<String,String> properties) {
         String label="";
         label=label+"<<TABLE cellpadding=\"0\" border=\"0\">\n";
         for (Object prop: ann.getAny()) {
@@ -375,21 +378,45 @@ public class ProvToDot {
     }
 
    public String convertValue(Object v) {
-         String label=""+v;
+         String label=getPropertyValueFromAny(v);
          int i=label.lastIndexOf("#");
          int j=label.lastIndexOf("/");
          return label.substring(Math.max(i,j)+1, label.length());
      }
 
+    public String qnameToUri(QName qname) {
+        return qname.getNamespaceURI() + qname.getLocalPart();
+    }
+
     public String convertProperty(Object oLabel) {
-        String label=(String)oLabel;
+        String label=getPropertyFromAny(oLabel);
         int i=label.lastIndexOf("#");
         int j=label.lastIndexOf("/");
         return label.substring(Math.max(i,j)+1, label.length());
     }
 
+    public String getPropertyFromAny (Object o) {
+        if (o instanceof JAXBElement) {
+            return qnameToUri(((JAXBElement)o).getName());
+        } else if (o instanceof org.w3c.dom.Element) {
+            return ((org.w3c.dom.Element)o).getTagName();
+        } else {
+            return o.toString();
+        }
+    }
 
-    public HashMap<String,String> addAnnotationColor(Note ann, HashMap<String,String> properties) {
+    public String getPropertyValueFromAny (Object o) {
+        if (o instanceof JAXBElement) {
+            return "" +  ((JAXBElement)o).getValue();
+        } else if (o instanceof org.w3c.dom.Element) {
+            return ((org.w3c.dom.Element)o).getFirstChild().toString();
+        } else {
+            return o.toString();
+        }
+    }
+
+
+    public HashMap<String,String> addAnnotationColor(HasExtensibility ann, HashMap<String,String> properties) {
         if (displayAnnotationColor) {
             properties.put("color",annotationColor(ann));
             properties.put("fontcolor","black");
@@ -464,7 +491,7 @@ public class ProvToDot {
     }
 
 
-    public String annotationColor(Note ann) {
+    public String annotationColor(HasExtensibility ann) {
         List<String> colors=new LinkedList();
         colors.add("gray");
         return selectColor(colors);
@@ -539,9 +566,9 @@ public class ProvToDot {
     /* Displays type if any, role otherwise. */
     public void addRelationLabel(Relation e, HashMap<String,String> properties) {
         String label=null;
-        String type=of.getType(e);
-        if (type!=null) {
-            label=type;
+        List<Object> type=of.getType(e);
+        if ((type!=null) || (!type.isEmpty())) {
+            label=type.get(0).toString();
         } else if (getRelationPrintRole(e)) {
             String role=of.getRole(e);
             if (role!=null) {

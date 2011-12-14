@@ -22,8 +22,8 @@ public class ASNConstructor implements TreeConstructor {
         return ((str==null)? "" : str);
     }
 
-    public Object convertActivity(Object id,Object recipe,Object startTime,Object endTime, Object aAttrs) {
-        String s="activity(" + id + "," + optional(recipe) + "," + optional(startTime) + "," + optional(endTime) + optionalAttributes(aAttrs) + ")";
+    public Object convertActivity(Object id,Object startTime,Object endTime, Object aAttrs) {
+        String s="activity(" + id + "," + optional(startTime) + "," + optional(endTime) + optionalAttributes(aAttrs) + ")";
         return s;
     }
     public Object convertEntity(Object id, Object attrs) {
@@ -120,16 +120,18 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
+    public Object convertHadPlan(Object id, Object id2,Object id1, Object aAttrs) {
+        String s="convertHadPlan(" + optionalId(id) + id2 + "," + id1 +
+            optionalAttributes(aAttrs) + ")";
+        return s;
+    }
+
 
     public Object convertQNAME(String qname) {
         return qname;
     }
     public Object convertIRI(String iri) {
         return iri;
-    }
-
-    public Object convertRecipe(String recipe) {
-        return recipe;
     }
 
     public Object convertTypedLiteral(String datatype, Object value) {

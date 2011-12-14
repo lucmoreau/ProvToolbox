@@ -3,7 +3,7 @@ import java.util.List;
 
 public interface TreeConstructor {
 
-    public Object convertActivity(Object id,Object recipe,Object startTime,Object endTime, Object aAttrs);
+    public Object convertActivity(Object id,Object startTime,Object endTime, Object aAttrs);
     public Object convertEntity(Object id, Object attrs);
     public Object convertAgent(Object id, Object attrs);
     public Object convertContainer(Object nss, List<Object> records);
@@ -22,9 +22,9 @@ public interface TreeConstructor {
     public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs);
     public Object convertWasComplementOf(Object id, Object id2,Object id1, Object aAttrs);
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object aAttrs);
+    public Object convertHadPlan(Object id, Object id2,Object id1, Object aAttrs);
     public Object convertQNAME(String qname);
     public Object convertIRI(String iri);
-    public Object convertRecipe(String recipe);
     public Object convertPrefix(String pre);
     public Object convertTypedLiteral(String datatype, Object value);
     public Object convertNamespace(Object pre, Object iri);

@@ -39,6 +39,15 @@ public class ProvUtilities {
         if (r instanceof WasControlledBy) {
             return ((WasControlledBy)r).getEffect().getRef();
         }
+        if (r instanceof HadPlan) {
+            return ((HadPlan)r).getActivity().getRef();
+        }
+        if (r instanceof WasAssociatedWith) {
+            return ((WasAssociatedWith)r).getActivity().getRef();
+        }
+        if (r instanceof WasComplementOf) {
+            return ((WasComplementOf)r).getEntity2().getRef();
+        }
         System.out.println("Unknow relation " + r);
         throw new NullPointerException();
     }
@@ -56,6 +65,16 @@ public class ProvUtilities {
         if (r instanceof WasControlledBy) {
             return ((WasControlledBy)r).getCause().getRef();
         }
+        if (r instanceof HadPlan) {
+            return ((HadPlan)r).getEntity().getRef();
+        }
+        if (r instanceof WasAssociatedWith) {
+            return ((WasAssociatedWith)r).getAgent().getRef();
+        }
+        if (r instanceof WasComplementOf) {
+            return ((WasComplementOf)r).getEntity1().getRef();
+        }
+
         throw new NullPointerException();
     }
         

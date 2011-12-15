@@ -259,44 +259,44 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="Used.java" />
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasDerivedFrom.java" />
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasControlledBy.java" />
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasComplementOf.java" />
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasAssociatedWith.java" />
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="HadPlan.java" />
                 </exec>
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasGeneratedBy.java" />
                 </exec>
@@ -309,7 +309,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasInformedBy.java" />
                 </exec>

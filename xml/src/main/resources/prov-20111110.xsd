@@ -42,8 +42,8 @@
   <xs:element name="entity" type="prov:Entity"/>
   <xs:complexType name="Entity">
     <xs:sequence>
-      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
       <xs:element ref="prov:label" minOccurs="0"/> 
+      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>

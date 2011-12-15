@@ -29,6 +29,17 @@ public class URIWrapper {
         return value.toString();
     }
 
+    public boolean equals(Object object) {
+        if (!(object instanceof URIWrapper)) {
+            return false;
+        }
+        if (this == object) {
+            return true;
+        }
+        URIWrapper other=(URIWrapper)object;
+        return value.equals(other.getValue());
+    }
+
 
 }
   

@@ -648,6 +648,12 @@ public class PC1FullTest
 
         assertFalse( "graph1 and graph2 differ", graph1.equals(graph2) );        
 
+        Container c2=deserial.deserialiseContainer(new File("target/pc1-full.xml"));
+        c2.setNss(graph1.getNss());
+
+        assertFalse( "c e* and c2 e* differ", c.getRecords().getEntity().equals(c2.getRecords().getEntity()) );        
+        assertFalse( "c and c2 differ", c.equals(c2) );        
+
     }
         
 

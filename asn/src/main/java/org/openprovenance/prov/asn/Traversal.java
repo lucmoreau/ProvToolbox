@@ -21,7 +21,6 @@ public class Traversal {
     public Traversal(TreeConstructor c) {
         this.c=c;
     }
-            
 
     public String getTokenString(Tree t) {
         if (t==null) return null;

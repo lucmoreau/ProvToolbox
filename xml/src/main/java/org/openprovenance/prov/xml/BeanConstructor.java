@@ -25,9 +25,9 @@ public interface BeanConstructor {
     public Object convertWasComplementOf(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity2, Object entity1);
     public Object convertHadPlan(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity);
     public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity);
-    public Object convertTypedLiteral(Object a);
+
     public Object convertAttributeValue(org.w3c.dom.Element a);
     public Object convertAttribute(Object name, Object value);
-
+    public Object convertTypedLiteral(String datatype, String value);
 
 }

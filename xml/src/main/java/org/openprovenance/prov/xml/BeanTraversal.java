@@ -68,14 +68,14 @@ public class BeanTraversal {
     public List<Object> convertTypeAttributes(HasType e) {
         List attrs=new LinkedList();
         for (Object a: e.getType()) {
-            attrs.add(c.convertTypedLiteral(a));
+            attrs.add(convertTypedLiteral(a));
         }
         return attrs;
     }
     public Object convertLabelAttribute(HasLabel e) {
         Object a=e.getLabel();
         if (a==null) return null;
-        return c.convertTypedLiteral(a);
+        return convertTypedLiteral(a);
     }
     public List<Object> convertAttributes(HasExtensibility e) {
         List attrs=new LinkedList();
@@ -84,7 +84,32 @@ public class BeanTraversal {
         }
         return attrs;
     }
-
+    public String quoteWrap(Object b) {
+        return "\"" + b + "\"";
+    }
+    public Object convertTypedLiteral(Object a) {
+        if (a instanceof QName) {
+            QName q=(QName) a;
+            return c.convertTypedLiteral("xsd:QName",quoteWrap(c.convert(q)));
+        } if (a instanceof URIWrapper) {
+            URIWrapper u=(URIWrapper) a;
+            return c.convertTypedLiteral("xsd:anyURI",quoteWrap(u));
+        } if (a instanceof Boolean) {
+            Boolean b=(Boolean) a;
+            return c.convertTypedLiteral("xsd:boolean",quoteWrap(b));
+        } if (a instanceof String) {
+            String b=(String) a;
+            return c.convertTypedLiteral("xsd:string",quoteWrap(b));
+        } if (a instanceof Double) {
+            Double b=(Double) a;
+            return c.convertTypedLiteral("xsd:double",quoteWrap(b));
+        } if (a instanceof Integer) {
+            Integer b=(Integer) a;
+            return c.convertTypedLiteral("xsd:int",quoteWrap(b));
+        } else {
+            return "$" + a + "$(" + a.getClass() + ")";
+        }
+    }
 
     public Object convert(Entity e) {
         List tAttrs=convertTypeAttributes(e);

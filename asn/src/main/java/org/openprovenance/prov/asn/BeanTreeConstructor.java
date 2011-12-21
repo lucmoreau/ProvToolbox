@@ -25,9 +25,10 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
-public class BeanASNConstructor implements BeanConstructor{
+/** A class that implements the BeanConstructor interface and relies on a TreeConstructor to construct a data structure for a given bean. */
+public class BeanTreeConstructor implements BeanConstructor{
     private TreeConstructor c;
-    public BeanASNConstructor(TreeConstructor c) {
+    public BeanTreeConstructor(TreeConstructor c) {
         this.c=c;
     }
 
@@ -57,33 +58,34 @@ public class BeanASNConstructor implements BeanConstructor{
 
 
 
-    public String quoteWrap(Object b) {
-        return "\"" + b + "\"";
+
+    public Object convertTypedLiteral(String datatype, String value) {
+        return c.convertTypedLiteral(datatype,value);
     }
 
-    public Object convertTypedLiteral(Object a) {
-        if (a instanceof QName) {
-            QName q=(QName) a;
-            return c.convertTypedLiteral("xsd:QName",quoteWrap(convert(q)));
-        } if (a instanceof URIWrapper) {
-            URIWrapper u=(URIWrapper) a;
-            return c.convertTypedLiteral("xsd:anyURI",quoteWrap(u));
-        } if (a instanceof Boolean) {
-            Boolean b=(Boolean) a;
-            return c.convertTypedLiteral("xsd:boolean",quoteWrap(b));
-        } if (a instanceof String) {
-            String b=(String) a;
-            return c.convertTypedLiteral("xsd:string",quoteWrap(b));
-        } if (a instanceof Double) {
-            Double b=(Double) a;
-            return c.convertTypedLiteral("xsd:double",quoteWrap(b));
-        } if (a instanceof Integer) {
-            Integer b=(Integer) a;
-            return c.convertTypedLiteral("xsd:int",quoteWrap(b));
-        } else {
-            return "$" + a + "$(" + a.getClass() + ")";
-        }
-    }
+    // public Object convertTypedLiteral(Object a) {
+    //     if (a instanceof QName) {
+    //         QName q=(QName) a;
+    //         return c.convertTypedLiteral("xsd:QName",quoteWrap(convert(q)));
+    //     } if (a instanceof URIWrapper) {
+    //         URIWrapper u=(URIWrapper) a;
+    //         return c.convertTypedLiteral("xsd:anyURI",quoteWrap(u));
+    //     } if (a instanceof Boolean) {
+    //         Boolean b=(Boolean) a;
+    //         return c.convertTypedLiteral("xsd:boolean",quoteWrap(b));
+    //     } if (a instanceof String) {
+    //         String b=(String) a;
+    //         return c.convertTypedLiteral("xsd:string",quoteWrap(b));
+    //     } if (a instanceof Double) {
+    //         Double b=(Double) a;
+    //         return c.convertTypedLiteral("xsd:double",quoteWrap(b));
+    //     } if (a instanceof Integer) {
+    //         Integer b=(Integer) a;
+    //         return c.convertTypedLiteral("xsd:int",quoteWrap(b));
+    //     } else {
+    //         return "$" + a + "$(" + a.getClass() + ")";
+    //     }
+    // }
 
 
 

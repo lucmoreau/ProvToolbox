@@ -2,6 +2,8 @@ package org.openprovenance.prov.xml;
 import java.util.List;
 import java.util.LinkedList;
 import javax.xml.namespace.QName;
+import javax.xml.bind.JAXBElement;
+import org.w3c.dom.Element;
 
 
 public class BeanTraversal {
@@ -37,19 +39,81 @@ public class BeanTraversal {
                                   lnkRecords);
     }
 
+    public Object convertAttribute(Element a) {
+        return c.convertAttribute(a.getNodeName(),
+                                  c.convertAttributeValue(a));
+    }
+
+    public Object convertAttribute(Object a) {
+        if (a instanceof JAXBElement) {
+            JAXBElement je=(JAXBElement) a;
+            QName q=je.getName();
+            Object o=je.getValue();
+            String value;
+            if (o instanceof TypedLiteral) {
+                TypedLiteral tl=(TypedLiteral) o;
+                value=tl.getValue().toString();
+            } else {
+                value=o.toString();
+            }
+            return c.convertAttribute(c.convert(q),
+                                      value);
+        } if (a instanceof Element) {
+            return convertAttribute((Element) a);
+        } else {
+            System.out.println(""+a.getClass());
+            return c.convertAttribute(a.toString(), a.toString());
+        }
+    }
+    public List<Object> convertTypeAttributes(HasType e) {
+        List attrs=new LinkedList();
+        for (Object a: e.getType()) {
+            attrs.add(c.convertTypedLiteral(a));
+        }
+        return attrs;
+    }
+    public Object convertLabelAttribute(HasLabel e) {
+        Object a=e.getLabel();
+        if (a==null) return null;
+        return c.convertTypedLiteral(a);
+    }
+    public List<Object> convertAttributes(HasExtensibility e) {
+        List attrs=new LinkedList();
+        for (Object a: e.getAny()) {
+            attrs.add(convertAttribute(a));
+        }
+        return attrs;
+    }
+
+
     public Object convert(Entity e) {
-        return c.convert(c.convert(e.getId()),e);
+        List tAttrs=convertTypeAttributes(e);
+        List otherAttrs=convertAttributes(e);
+        Object lAttr=convertLabelAttribute(e);
+
+
+        return c.convertEntity(c.convert(e.getId()),tAttrs,lAttr,otherAttrs);
     }
 
     public Object convert(Activity e) {
-        return c.convert(c.convert(e.getId()),e);
+        List tAttrs=convertTypeAttributes(e);
+        List otherAttrs=convertAttributes(e);
+        Object lAttr=convertLabelAttribute(e);
+
+        return c.convertActivity(c.convert(e.getId()),tAttrs,lAttr,otherAttrs,e.getStartTime(), e.getEndTime());
     }
 
     public Object convert(Agent e) {
-        return c.convert(c.convert(e.getId()),e);
+        List tAttrs=convertTypeAttributes(e);
+        List otherAttrs=convertAttributes(e);
+        Object lAttr=convertLabelAttribute(e);
+
+        return c.convertAgent(c.convert(e.getId()),tAttrs,lAttr,otherAttrs);
     }
 
     public Object convertRelation(Object o) {
+
+
         // no visitors, so ...
         if (o instanceof WasAssociatedWith) {
             return convert((WasAssociatedWith) o);
@@ -73,30 +137,73 @@ public class BeanTraversal {
     }
 
     public Object convert(WasAssociatedWith o) {
-        return c.convert(c.convert(o.getId()),o);
+        List tAttrs=convertTypeAttributes((HasType)o);
+        List otherAttrs=convertAttributes((HasExtensibility)o);
+        return c.convertWasAssociatedWith(c.convert(o.getId()),
+                                          tAttrs,
+                                          otherAttrs,
+                                          c.convert(o.getActivity().getRef()),
+                                          c.convert(o.getAgent().getRef()));
     }
+
     public Object convert(Used o) {
-        return c.convert(c.convert(o.getId()),o);
+        List tAttrs=convertTypeAttributes((HasType)o);
+        List otherAttrs=convertAttributes((HasExtensibility)o);
+        return c.convertUsed(c.convert(o.getId()),
+                             tAttrs,
+                             otherAttrs,
+                             c.convert(o.getActivity().getRef()),
+                             c.convert(o.getEntity().getRef()));
     }
+
     public Object convert(WasDerivedFrom o) {
-        return c.convert(c.convert(o.getId()),o);
+        List tAttrs=convertTypeAttributes((HasType)o);
+        List otherAttrs=convertAttributes((HasExtensibility)o);
+        return c.convertWasDerivedFrom(c.convert(o.getId()),tAttrs,otherAttrs,
+                                       c.convert(o.getEffect().getRef()),
+                                       c.convert(o.getCause().getRef()));
     }
+
     public Object convert(WasControlledBy o) {
-        return c.convert(c.convert(o.getId()),o);
+        return new NullPointerException();
     }
+
     public Object convert(HasAnnotation o) {
-        return c.convert(c.convert(o.getId()),o);
+        List tAttrs=null;
+        List otherAttrs=convertAttributes((HasExtensibility)o);
+        return c.convertHasAnnotation(c.convert(o.getId()),tAttrs,otherAttrs);
     }
+
     public Object convert(WasInformedBy o) {
-        return c.convert(c.convert(o.getId()),o);
+        List tAttrs=convertTypeAttributes((HasType)o);
+        List otherAttrs=convertAttributes((HasExtensibility)o);
+        return c.convertWasInformedBy(c.convert(o.getId()),tAttrs,otherAttrs);
     }
+
     public Object convert(WasComplementOf o) {
-        return c.convert(c.convert(o.getId()),o);
+        List tAttrs=convertTypeAttributes((HasType)o);
+        List otherAttrs=convertAttributes((HasExtensibility)o);
+
+        return c.convertWasComplementOf(c.convert(o.getId()),tAttrs,otherAttrs,
+                                        c.convert(o.getEntity2().getRef()),
+                                        c.convert(o.getEntity1().getRef()));
     }
+
     public Object convert(HadPlan o) {
-        return c.convert(c.convert(o.getId()),o);
+        List tAttrs=convertTypeAttributes((HasType)o);
+        List otherAttrs=convertAttributes((HasExtensibility)o);
+
+        return c.convertHadPlan(c.convert(o.getId()),tAttrs,otherAttrs,
+                                c.convert(o.getActivity().getRef()),
+                                c.convert(o.getEntity().getRef()));
     }
+
     public Object convert(WasGeneratedBy o) {
-        return c.convert(c.convert(o.getId()),o);
+        List tAttrs=convertTypeAttributes((HasType)o);
+        List otherAttrs=convertAttributes((HasExtensibility)o);
+
+        return c.convertWasGeneratedBy(c.convert(o.getId()),tAttrs,otherAttrs,
+                                       c.convert(o.getEntity().getRef()),
+                                       c.convert(o.getActivity().getRef()));
     }
 }

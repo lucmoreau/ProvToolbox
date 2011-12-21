@@ -2,25 +2,32 @@ package org.openprovenance.prov.xml;
 import java.util.List;
 import javax.xml.namespace.QName;
 
+/** An interface for constructing data structures when PROV Java beans
+ * are traversed by BeanTraversal class. */
+
 public interface BeanConstructor {
     public Object convert(QName q);
-    public Object convert(Object id, Entity e);
-    public Object convert(Object id, Agent ag);
-    public Object convert(Object id, Activity a);
+    public Object convertEntity(Object id, List<Object> tAttrs, Object lAttr, List<Object> otherAttrs);
+    public Object convertAgent(Object id, List<Object> tAttrs, Object lAttr, List<Object> otherAttrs);
+    public Object convertActivity(Object id, List<Object> tAttrs, Object lAttr, List<Object> otherAttrs, Object startTime, Object endTime);
     public Object convertContainer(Object namespaces,
                                    List<Object> aRecords,
                                    List<Object> eRecords,
                                    List<Object> agRecords,
                                    List<Object> lnkRecords);
 
-    public Object convert(Object id, WasAssociatedWith o);
-    public Object convert(Object id, Used o);
-    public Object convert(Object id, WasDerivedFrom o);
-    public Object convert(Object id, WasControlledBy o);
-    public Object convert(Object id, HasAnnotation o);
-    public Object convert(Object id, WasInformedBy o);
-    public Object convert(Object id, WasComplementOf o);
-    public Object convert(Object id, HadPlan o);
-    public Object convert(Object id, WasGeneratedBy o);
+    public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object agent);
+    public Object convertUsed(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity);
+    public Object convertWasDerivedFrom(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object effect, Object cause);
+
+    public Object convertHasAnnotation(Object id, List<Object> tAttrs, List<Object> otherAttrs);
+    public Object convertWasInformedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs);
+    public Object convertWasComplementOf(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity2, Object entity1);
+    public Object convertHadPlan(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity);
+    public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity);
+    public Object convertTypedLiteral(Object a);
+    public Object convertAttributeValue(org.w3c.dom.Element a);
+    public Object convertAttribute(Object name, Object value);
+
 
 }

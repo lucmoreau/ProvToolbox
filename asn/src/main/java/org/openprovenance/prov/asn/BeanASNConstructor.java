@@ -50,10 +50,12 @@ public class BeanASNConstructor implements BeanConstructor{
         }
     }
 
-    public Object convertAttribute(Element a) {
-        return c.convertAttribute(a.getNodeName(),
-                                  convertAttributeValue(a));
+    public Object convertAttribute(Object name, Object value) {
+        return c.convertAttribute(name,value);
     }
+
+
+
 
     public String quoteWrap(Object b) {
         return "\"" + b + "\"";
@@ -83,181 +85,151 @@ public class BeanASNConstructor implements BeanConstructor{
         }
     }
 
-    public Object convertAttribute(Object a) {
-        if (a instanceof JAXBElement) {
-            JAXBElement je=(JAXBElement) a;
-            QName q=je.getName();
-            Object o=je.getValue();
-            String value;
-            if (o instanceof TypedLiteral) {
-                TypedLiteral tl=(TypedLiteral) o;
-                value=tl.getValue().toString();
-            } else {
-                value=o.toString();
-            }
-            return c.convertAttribute(convert(q),
-                                      value);
-        } if (a instanceof Element) {
-            return convertAttribute((Element) a);
-        } else {
-            System.out.println(""+a.getClass());
-            return c.convertAttribute(a.toString(), a.toString());
-        }
-    }
 
-    public List<Object> convertAttributes(HasExtensibility e) {
+
+
+
+
+
+
+    public List<Object> convertTypeAttributes(List<Object> tAttrs) {
         List attrs=new LinkedList();
-        for (Object a: e.getAny()) {
-            attrs.add(convertAttribute(a));
+        for (Object a: tAttrs) {
+            attrs.add(c.convertAttribute("prov:type",a));
         }
         return attrs;
     }
 
-    public List<Object> convertTypeAttributes(HasType e) {
-        List attrs=new LinkedList();
-        for (Object a: e.getType()) {
-            attrs.add(c.convertAttribute("prov:type",
-                                         convertTypedLiteral(a)));
-        }
-        return attrs;
-    }
-
-    public Object convertLabelAttribute(HasLabel e) {
-        Object a=e.getLabel();
+    public Object convertLabelAttribute(Object a) {
         if (a==null) return null;
-        return c.convertAttribute("prov:label",
-                                  convertTypedLiteral(a));
+        return c.convertAttribute("prov:label",a);
     }
 
-    public Object convert(Object id, Entity e) {
-        List tAttrs=convertTypeAttributes(e);
-        List otherAttrs=convertAttributes(e);
-        Object lAttr=convertLabelAttribute(e);
+
+
+    public Object convertEntity(Object id, List<Object> tAttrs, Object lAttr, List<Object> otherAttrs) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        Object lAttr2=convertLabelAttribute(lAttr);
         List attrs=new LinkedList();
-        if (lAttr!=null) attrs.add(lAttr);
-        attrs.addAll(tAttrs);
+        if (lAttr2!=null) attrs.add(lAttr2);
+        attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
+
         return c.convertEntity(id,
                                c.convertAttributes(attrs));
     }
 
-    public Object convert(Object id, Activity e) {
-        List tAttrs=convertTypeAttributes(e);
-        List otherAttrs=convertAttributes(e);
-        Object lAttr=convertLabelAttribute(e);
+    public Object convertActivity(Object id, List<Object> tAttrs, Object lAttr, List<Object> otherAttrs, Object startTime, Object endTime) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        Object lAttr2=convertLabelAttribute(lAttr);
         List attrs=new LinkedList();
-        if (lAttr!=null) attrs.add(lAttr);
-        attrs.addAll(tAttrs);
+        if (lAttr2!=null) attrs.add(lAttr2);
+        attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
+
         return c.convertActivity(id,
-                                 e.getStartTime(), 
-                                 e.getEndTime(), 
+                                 startTime, 
+                                 endTime, 
                                  c.convertAttributes(attrs));
     }
 
 
-    public Object convert(Object id, Agent e) {
-        List tAttrs=convertTypeAttributes(e);
-        List otherAttrs=convertAttributes(e);
-        Object lAttr=convertLabelAttribute(e);
+    public Object convertAgent(Object id, List<Object> tAttrs, Object lAttr, List<Object> otherAttrs) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        Object lAttr2=convertLabelAttribute(lAttr);
         List attrs=new LinkedList();
-        if (lAttr!=null) attrs.add(lAttr);
-        attrs.addAll(tAttrs);
+        if (lAttr2!=null) attrs.add(lAttr2);
+        attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
+
         return c.convertAgent(id,
                               c.convertAttributes(attrs));
     }
 
 
-    public Object convert(Object id, WasAssociatedWith o) {
-        List tAttrs=convertTypeAttributes(o);
-        List otherAttrs=convertAttributes(o);
+    public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object agent) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
-        attrs.addAll(tAttrs);
+        attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
         return c.convertWasAssociatedWith(id,
-                                          o.getActivity().getRef(),
-                                          o.getAgent().getRef(),
+                                          activity,
+                                          agent,
                                           c.convertAttributes(attrs));
     }
-    public Object convert(Object id, Used o) {
-        List tAttrs=convertTypeAttributes(o);
-        List otherAttrs=convertAttributes(o);
+    public Object convertUsed(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
-        attrs.addAll(tAttrs);
+        attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
         return c.convertUsed(id,
-                             convert(o.getActivity().getRef()),
-                             convert(o.getEntity().getRef()),
+                             activity,
+                             entity,
                              null,
                              c.convertAttributes(attrs));
     }
 
-    public Object convert(Object id, WasDerivedFrom o) {
-        List tAttrs=convertTypeAttributes(o);
-        List otherAttrs=convertAttributes(o);
+    public Object convertWasDerivedFrom(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object effect, Object cause) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
-        attrs.addAll(tAttrs);
+        attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
         return c.convertWasDerivedFrom(//id,
-                                       convert(o.getEffect().getRef()),
-                                       convert(o.getCause().getRef()),
+                                       effect,
+                                       cause,
                                        null,//pe
                                        null,//g2
                                        null,//u1
                                        c.convertAttributes(attrs));
     }
-    public Object convert(Object id, WasControlledBy o) {
-        List tAttrs=convertTypeAttributes(o);
-        List otherAttrs=convertAttributes(o);
+    
+    public Object convertHasAnnotation(Object id, List<Object> tAttrs, List<Object> otherAttrs) {
+        //List otherAttrs2=convertAttributes(otherAttrs);
+        return null;
+    }
+
+    public Object convertWasInformedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
-        attrs.addAll(tAttrs);
+        attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
         return null;
     }
-    public Object convert(Object id, HasAnnotation o) {
-        List otherAttrs=convertAttributes(o);
-        return null;
-    }
-    public Object convert(Object id, WasInformedBy o) {
-        List tAttrs=convertTypeAttributes(o);
-        List otherAttrs=convertAttributes(o);
+    public Object convertWasComplementOf(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity2, Object entity1) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
-        attrs.addAll(tAttrs);
-        attrs.addAll(otherAttrs);
-        return null;
-    }
-    public Object convert(Object id, WasComplementOf o) {
-        List tAttrs=convertTypeAttributes(o);
-        List otherAttrs=convertAttributes(o);
-        List attrs=new LinkedList();
-        attrs.addAll(tAttrs);
+        attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
         return c.convertWasComplementOf(id,
-                                        convert(o.getEntity2().getRef()),
-                                        convert(o.getEntity1().getRef()),
+                                        entity2,
+                                        entity1,
                                         attrs);
     }
-    public Object convert(Object id, HadPlan o) {
-        List tAttrs=convertTypeAttributes(o);
-        List otherAttrs=convertAttributes(o);
+    public Object convertHadPlan(Object id, List<Object> tAttrs, List<Object> otherAttrs,Object activity, Object entity) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
-        attrs.addAll(tAttrs);
+        attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
         return c.convertHadPlan(id,
-                                convert(o.getActivity().getRef()),
-                                convert(o.getEntity().getRef()),
+                                activity,
+                                entity,
                                 attrs);
     }
-    public Object convert(Object id, WasGeneratedBy o) {
-        List tAttrs=convertTypeAttributes(o);
-        List otherAttrs=convertAttributes(o);
+    public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
-        attrs.addAll(tAttrs);
+        attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
         return c.convertWasGeneratedBy(id,
-                                       convert(o.getEntity().getRef()),
-                                       convert(o.getActivity().getRef()),
+                                       entity,
+                                       activity,
                                        null,//time
                                        c.convertAttributes(attrs));
     }

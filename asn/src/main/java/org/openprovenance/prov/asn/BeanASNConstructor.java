@@ -26,8 +26,8 @@ import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
 public class BeanASNConstructor implements BeanConstructor{
-    private ASNConstructor c;
-    public BeanASNConstructor(ASNConstructor c) {
+    private TreeConstructor c;
+    public BeanASNConstructor(TreeConstructor c) {
         this.c=c;
     }
 

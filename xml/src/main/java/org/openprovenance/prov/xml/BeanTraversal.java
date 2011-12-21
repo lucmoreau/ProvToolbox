@@ -14,7 +14,6 @@ public class BeanTraversal {
     }
 
     public Object convert(Container cont) {
-        System.out.println("--> cont" );
         List lnkRecords=new LinkedList();
         List aRecords=new LinkedList();
         List eRecords=new LinkedList();
@@ -61,7 +60,6 @@ public class BeanTraversal {
         } if (a instanceof Element) {
             return convertAttribute((Element) a);
         } else {
-            System.out.println(""+a.getClass());
             return c.convertAttribute(a.toString(), a.toString());
         }
     }
@@ -107,7 +105,7 @@ public class BeanTraversal {
             Integer b=(Integer) a;
             return c.convertTypedLiteral("xsd:int",quoteWrap(b));
         } else {
-            return "$" + a + "$(" + a.getClass() + ")";
+            throw new UnsupportedOperationException("Unknown typedLiteral "+a + "(" + a.getClass() +")");
         }
     }
 
@@ -154,8 +152,10 @@ public class BeanTraversal {
             return convert((WasComplementOf) o);
         } else if (o instanceof HadPlan) {
             return convert((HadPlan) o);
-        } else {// if (o instanceof WasGeneratedBy) {
+        } else if (o instanceof WasGeneratedBy) {
             return convert((WasGeneratedBy) o);
+        } else {
+            throw new UnsupportedOperationException("Unknown relation type "+o);
         }
     }
 

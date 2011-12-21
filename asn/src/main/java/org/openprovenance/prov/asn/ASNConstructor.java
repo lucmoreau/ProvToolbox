@@ -135,7 +135,7 @@ public class ASNConstructor implements TreeConstructor {
     }
 
     public Object convertTypedLiteral(String datatype, Object value) {
-        return datatype + "%%" + value;
+        return value + "%%" + datatype;
     }
 
    public Object convertNamespace(Object pre, Object iri) {

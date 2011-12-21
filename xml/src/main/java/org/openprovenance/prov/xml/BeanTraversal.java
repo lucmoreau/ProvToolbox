@@ -137,8 +137,6 @@ public class BeanTraversal {
     }
 
     public Object convertRelation(Object o) {
-
-
         // no visitors, so ...
         if (o instanceof WasAssociatedWith) {
             return convert((WasAssociatedWith) o);

@@ -63,37 +63,6 @@ public class BeanTreeConstructor implements BeanConstructor{
         return c.convertTypedLiteral(datatype,value);
     }
 
-    // public Object convertTypedLiteral(Object a) {
-    //     if (a instanceof QName) {
-    //         QName q=(QName) a;
-    //         return c.convertTypedLiteral("xsd:QName",quoteWrap(convert(q)));
-    //     } if (a instanceof URIWrapper) {
-    //         URIWrapper u=(URIWrapper) a;
-    //         return c.convertTypedLiteral("xsd:anyURI",quoteWrap(u));
-    //     } if (a instanceof Boolean) {
-    //         Boolean b=(Boolean) a;
-    //         return c.convertTypedLiteral("xsd:boolean",quoteWrap(b));
-    //     } if (a instanceof String) {
-    //         String b=(String) a;
-    //         return c.convertTypedLiteral("xsd:string",quoteWrap(b));
-    //     } if (a instanceof Double) {
-    //         Double b=(Double) a;
-    //         return c.convertTypedLiteral("xsd:double",quoteWrap(b));
-    //     } if (a instanceof Integer) {
-    //         Integer b=(Integer) a;
-    //         return c.convertTypedLiteral("xsd:int",quoteWrap(b));
-    //     } else {
-    //         return "$" + a + "$(" + a.getClass() + ")";
-    //     }
-    // }
-
-
-
-
-
-
-
-
     public List<Object> convertTypeAttributes(List<Object> tAttrs) {
         List attrs=new LinkedList();
         for (Object a: tAttrs) {

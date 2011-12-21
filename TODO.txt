@@ -1,0 +1,14 @@
+1. Update the ASN grammar to deal with latest changes
+    - wasAssociated with Plan
+    - drop hadPlan
+    - alternates/specialization
+
+2. Likewise for the XML Schema
+
+3. Complete BeantoASN conversion
+
+4. Should ProvToDot be implemented using BeanConstructor?
+
+5. Systematic testing
+
+

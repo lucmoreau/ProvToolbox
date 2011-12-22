@@ -371,7 +371,8 @@ public  class ProvConstructor implements TreeConstructor {
 	    return new QName(getNamespace(prefix), local, prefix);
 	}
 
-	throw new UnsupportedOperationException("Unknown literal type " + datatype);
+	//throw new UnsupportedOperationException("Unknown literal type " + datatype);
+    return value;
     }
 	
 	

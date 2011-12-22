@@ -68,7 +68,7 @@ public class PC1FullTest
 
 
         String[] schemaFiles=new String[1];
-        schemaFiles[0]="src/test/resources/pc1.xsd";
+        schemaFiles[0]="../xml/src/test/resources/pc1.xsd";
         deserial.validateContainer(schemaFiles,new File("../xml/target/pc1-full.xml"));
         
         String s=u.convertBeanToASN(c);

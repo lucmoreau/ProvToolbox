@@ -656,6 +656,16 @@ public class PC1FullTest
 
     }
         
+    public void testSchemaValidateXML() throws  javax.xml.bind.JAXBException, org.xml.sax.SAXException, java.io.IOException {
+        
+        ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
+
+        String[] schemaFiles=new String[1];
+        schemaFiles[0]="src/test/resources/pc1.xsd";
+        deserial.validateContainer(schemaFiles,new File("target/pc1-full.xml"));
+        
+    }
+        
 
 
 }

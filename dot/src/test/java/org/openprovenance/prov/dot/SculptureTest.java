@@ -19,9 +19,9 @@ public class SculptureTest extends TestCase {
         throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
         Utility u=new Utility();
 
-        CommonTree tree = u.parseASNTree(asnFile);
+        CommonTree tree = u.convertASNToTree(asnFile);
 
-        Container o= (Container) u.convertToJavaBean(tree);
+        Container o= (Container) u.convertTreeToJavaBean(tree);
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         

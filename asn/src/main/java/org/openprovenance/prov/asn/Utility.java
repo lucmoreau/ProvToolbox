@@ -16,6 +16,7 @@ import  org.antlr.runtime.tree.TreeAdaptor;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.Container;
+import org.openprovenance.prov.xml.BeanTraversal;
 
 
 public  class Utility {
@@ -64,6 +65,12 @@ public  class Utility {
     public String convertASNToASN(String file) throws java.io.IOException, Throwable {
         CommonTree tree=convertASNToTree(file);
         Object o=convertTreeToASN(tree);
+        return (String)o;
+    }
+
+    public String convertBeanToASN(Container c) {
+        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(new ASNConstructor()));
+        Object o=bt.convert(c);
         return (String)o;
     }
 

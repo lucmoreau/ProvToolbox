@@ -64,9 +64,8 @@ public class PC1FullTest
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
         Container c=deserial.deserialiseContainer(new File("../xml/target/pc1-full.xml"));
         
-        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(new ASNConstructor()));
-        Object o=bt.convert(c);
-        System.out.println(""+ o);
+        String s=new Utility().convertBeanToASN(c);
+        System.out.println(s);
     }
         
 

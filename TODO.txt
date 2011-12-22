@@ -7,8 +7,10 @@
 
 3. Complete BeantoASN conversion
 
-4. Should ProvToDot be implemented using BeanConstructor?
+4. TreeTraversal: should handle known prov attributes. 
 
-5. Systematic testing
+5. Should ProvToDot be implemented using BeanConstructor?
+
+6. Systematic testing
 
 

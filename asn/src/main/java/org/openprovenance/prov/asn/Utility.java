@@ -45,24 +45,24 @@ public  class Utility {
     }
 
     public Object convertToJavaBean(CommonTree tree) {
-        Object o=new Traversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
+        Object o=new TreeTraversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
         return o;
     }
 
     public String convertToASN(CommonTree tree) {
-        Object o=new Traversal(new ASNConstructor()).convert(tree);
+        Object o=new TreeTraversal(new ASNConstructor()).convert(tree);
         return (String)o;
     }
 
     public Object convertToJavaBean(String file) throws java.io.IOException, Throwable {
         CommonTree tree=parseASNTree(file);
-        Object o=new Traversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
+        Object o=new TreeTraversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
         return o;
     }
 
     public String convertToASN(String file) throws java.io.IOException, Throwable {
         CommonTree tree=parseASNTree(file);
-        Object o=new Traversal(new ASNConstructor()).convert(tree);
+        Object o=new TreeTraversal(new ASNConstructor()).convert(tree);
         return (String)o;
     }
 

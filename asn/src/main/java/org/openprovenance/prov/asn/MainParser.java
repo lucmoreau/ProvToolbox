@@ -26,7 +26,7 @@ public  class MainParser {
             System.out.println(tree.toStringTree());
 
 
-            Object o1=new Traversal(new NullConstructor()).convert(tree);
+            Object o1=new TreeTraversal(new NullConstructor()).convert(tree);
 
             Object o2=u.convertToJavaBean(tree);
 

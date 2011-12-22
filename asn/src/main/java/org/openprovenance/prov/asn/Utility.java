@@ -61,6 +61,13 @@ public  class Utility {
         return o;
     }
 
+    /** A conversion function that copies a Java Bean deeply. */
+    public Object convertJavaBeanToJavaBean(Container c) {
+        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(new ProvConstructor(new ProvFactory(c.getNss()))));
+        Object o=bt.convert(c);
+        return o;
+    }
+
     
     public String convertASNToASN(String file) throws java.io.IOException, Throwable {
         CommonTree tree=convertASNToTree(file);

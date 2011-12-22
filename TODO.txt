@@ -13,4 +13,11 @@
 
 6. Systematic testing
 
+- Time on generation/use
+- Define roles properly, in Java use known accessor
 
+
+
+
+7. pom.xml used to add  'extends Entity' to the definition of Agent.
+   This resulted in problems when marshalling an Agent. To be revisited.

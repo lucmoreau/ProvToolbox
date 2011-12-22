@@ -91,7 +91,7 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id=(String)id;
         List attrs=(List)eAttrs;
         Agent e=pFactory.newAgent(s_id);
-        entityTable.put(s_id,e);
+        //entityTable.put(s_id,e);  
         agentTable.put(s_id,e);
         e.getAny().addAll(attrs);
         return e;

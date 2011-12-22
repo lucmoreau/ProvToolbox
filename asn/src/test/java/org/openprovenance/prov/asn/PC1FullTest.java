@@ -17,6 +17,7 @@ import junit.framework.TestSuite;
 import org.openprovenance.prov.xml.BeanTraversal;
 import org.openprovenance.prov.xml.Container;
 import org.openprovenance.prov.xml.ProvDeserialiser;
+import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
@@ -59,13 +60,28 @@ public class PC1FullTest
 
 
 
-    public void testReadXMLGraph() throws javax.xml.bind.JAXBException {
+    public void testReadXMLGraph() throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
         
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
         Container c=deserial.deserialiseContainer(new File("../xml/target/pc1-full.xml"));
+        Utility u=new Utility();
+
+
+        String[] schemaFiles=new String[1];
+        schemaFiles[0]="src/test/resources/pc1.xsd";
+        deserial.validateContainer(schemaFiles,new File("../xml/target/pc1-full.xml"));
         
-        String s=new Utility().convertBeanToASN(c);
+        String s=u.convertBeanToASN(c);
         System.out.println(s);
+
+        ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
+
+        c.setNss(namespaces);
+        Container c2=(Container)u.convertJavaBeanToJavaBean(c);
+        c2.setNss(namespaces);
+
+        serial.serialiseContainer(new File("target/pc1-full-2.xml"),c2,true);
+
     }
         
 

@@ -213,7 +213,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/extends Entity implements Element, Equals, HashCode, ToString /" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Element, Equals, HashCode, ToString /" />
   	              <arg value="-iBAK" />
   	              <arg value="Agent.java" />
                 </exec>

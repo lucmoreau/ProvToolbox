@@ -44,7 +44,7 @@ public class BeanTreeConstructor implements BeanConstructor{
     public Object convertAttributeValue(Element a) {
         String type=a.getAttributeNS(XSI_NS,"type");
         if ((type==null) || ("".equals(type))) {
-            return "\"" + a.getFirstChild().getNodeValue() + "\"";
+            return a.getFirstChild().getNodeValue();
         } else {
             return c.convertTypedLiteral(type,
                                          "\"" + a.getFirstChild().getNodeValue() + "\"");

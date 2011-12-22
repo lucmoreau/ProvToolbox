@@ -371,15 +371,14 @@ public  class ProvConstructor implements TreeConstructor {
 	    return new QName(getNamespace(prefix), local, prefix);
 	}
 
-	System.out.println("-------> unknown literal type " + datatype);
-	return value;
+	throw new UnsupportedOperationException("Unknown literal type " + datatype);
     }
 	
 	
 
 
     public Object convertTypedLiteral(String datatype, Object value) {
-        Object val=convertToJava(datatype,(String)value);  // unwrap to remove the double quote
+        Object val=convertToJava(datatype,(String)value);
 	//pFactory.newTypedLiteral(val);
         return val;
     }

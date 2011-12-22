@@ -3,6 +3,10 @@
    xml/target/pc1-full.xml
    differ because of pc1:url has xsi:type=xsd:string
 
+   Also, pc1:url has no quote
+   entity(pc1:a26,[prov:label="Atlas Y Slice"%%xsd:string,prov:type="http://openprovenance.org/primitives#File"%%xsd:anyURI,pc1:url=http://www.ipaw.info/challenge/atlas-y.pgm])
+
+
 1. Update the ASN grammar to deal with latest changes
     - wasAssociated with Plan
     - drop hadPlan

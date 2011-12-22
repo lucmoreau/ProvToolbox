@@ -19,7 +19,7 @@ public  class MainParser {
         try {
             Utility u=new Utility();
 
-            CommonTree tree = u.parseASNTree(args[0]);
+            CommonTree tree = u.convertASNToTree(args[0]);
 
             u.printTree(tree,1);
             
@@ -28,9 +28,9 @@ public  class MainParser {
 
             Object o1=new TreeTraversal(new NullConstructor()).convert(tree);
 
-            Object o2=u.convertToJavaBean(tree);
+            Object o2=u.convertTreeToJavaBean(tree);
 
-            String o3=u.convertToASN(tree);
+            String o3=u.convertTreeToASN(tree);
 
 
             try {

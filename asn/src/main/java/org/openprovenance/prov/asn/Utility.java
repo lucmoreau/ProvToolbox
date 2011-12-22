@@ -35,7 +35,7 @@ public  class Utility {
             }
         };
 
-    public CommonTree parseASNTree(String file) throws java.io.IOException, Throwable {
+    public CommonTree convertASNToTree(String file) throws java.io.IOException, Throwable {
         ASNParser parser=getParserForFile(file);
 
         parser.setTreeAdaptor(adaptor);
@@ -44,25 +44,26 @@ public  class Utility {
         return tree;
     }
 
-    public Object convertToJavaBean(CommonTree tree) {
+    public Object convertTreeToJavaBean(CommonTree tree) {
         Object o=new TreeTraversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
         return o;
     }
 
-    public String convertToASN(CommonTree tree) {
+    public String convertTreeToASN(CommonTree tree) {
         Object o=new TreeTraversal(new ASNConstructor()).convert(tree);
         return (String)o;
     }
 
-    public Object convertToJavaBean(String file) throws java.io.IOException, Throwable {
-        CommonTree tree=parseASNTree(file);
-        Object o=new TreeTraversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
+    public Object convertASNToJavaBean(String file) throws java.io.IOException, Throwable {
+        CommonTree tree=convertASNToTree(file);
+        Object o=convertTreeToJavaBean(tree);
         return o;
     }
 
-    public String convertToASN(String file) throws java.io.IOException, Throwable {
-        CommonTree tree=parseASNTree(file);
-        Object o=new TreeTraversal(new ASNConstructor()).convert(tree);
+    
+    public String convertASNToASN(String file) throws java.io.IOException, Throwable {
+        CommonTree tree=convertASNToTree(file);
+        Object o=convertTreeToASN(tree);
         return (String)o;
     }
 

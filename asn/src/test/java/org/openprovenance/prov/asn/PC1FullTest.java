@@ -42,9 +42,9 @@ public class PC1FullTest
 
     static {
         namespaces=new Hashtable();
-        // currently, no prefix used, all qnames map to PC1_NS
-        namespaces.put("_",PC1_NS);
+        namespaces.put("pc1",PC1_NS);
         namespaces.put("xsd",NamespacePrefixMapper.XSD_NS);
+        namespaces.put("prim","http://openprovenance.org/primitives#");
         pFactory=new ProvFactory(namespaces);
     }
 

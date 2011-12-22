@@ -18,7 +18,6 @@ public class BeanTraversal {
         List aRecords=new LinkedList();
         List eRecords=new LinkedList();
         List agRecords=new LinkedList();
-        System.out.println(cont.getRecords().getAgent());
         for (Entity e: cont.getRecords().getEntity() ) {
             eRecords.add(convert(e));
         }
@@ -32,8 +31,7 @@ public class BeanTraversal {
             Object o=convertRelation(lnk);
             if (o!=null) lnkRecords.add(o);
         }
-        Object namespaces=null;
-        return c.convertContainer(namespaces,
+        return c.convertContainer(cont.getNss(),
                                   aRecords,
                                   eRecords,
                                   agRecords,
@@ -133,8 +131,6 @@ public class BeanTraversal {
         List otherAttrs=convertAttributes(e);
         Object lAttr=convertLabelAttribute(e);
 
-        System.out.println("/////////////////// agent " + e.getId());
-        System.out.println("/////////////////// agent- " + c.convert(e.getId()));
         return c.convertAgent(c.convert(e.getId()),tAttrs,lAttr,otherAttrs);
     }
 

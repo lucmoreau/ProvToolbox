@@ -36,7 +36,7 @@ public class BeanTreeConstructor implements BeanConstructor{
         if (q==null) return null;
         if (q.getPrefix()!=null) {
             return q.getPrefix()+ ":" + q.getLocalPart();
-        } else {
+        } else { 
             return q.getLocalPart();
         }
     }
@@ -59,7 +59,7 @@ public class BeanTreeConstructor implements BeanConstructor{
 
 
 
-    public Object convertTypedLiteral(String datatype, String value) {
+    public Object convertTypedLiteral(String datatype, Object value) {
         return c.convertTypedLiteral(datatype,value);
     }
 

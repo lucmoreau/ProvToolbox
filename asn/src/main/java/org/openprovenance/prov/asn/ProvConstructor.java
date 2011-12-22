@@ -344,11 +344,13 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
 
-    public Object convertToJava(String value, Object datatype) {
+    public Object convertToJava(String datatype, String value) {
 	value=unwrap(value);
-	System.out.println("convertToJava: datatype " + datatype + "  " + value);
+	//System.out.println("convertToJava: datatype " + datatype + "  " + value);
 	if (datatype.equals("xsd:string")) return value;
 	if (datatype.equals("xsd:int")) return Integer.parseInt(value);
+	if (datatype.equals("xsd:double")) return Double.parseDouble(value);
+	if (datatype.equals("xsd:boolean")) return Boolean.parseBoolean(value);
 	if (datatype.equals("xsd:anyURI")) {
 	    URIWrapper u=new URIWrapper();
 	    u.setValue(URI.create(value));
@@ -376,8 +378,8 @@ public  class ProvConstructor implements TreeConstructor {
 	
 
 
-    public Object convertTypedLiteral(String value, Object datatype) {
-	Object val=convertToJava(value,datatype);  // unwrap to remove the double quote
+    public Object convertTypedLiteral(String datatype, Object value) {
+        Object val=convertToJava(datatype,(String)value);  // unwrap to remove the double quote
 	//pFactory.newTypedLiteral(val);
         return val;
     }

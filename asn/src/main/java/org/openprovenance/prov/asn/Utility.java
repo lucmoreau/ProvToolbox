@@ -63,7 +63,9 @@ public  class Utility {
 
     /** A conversion function that copies a Java Bean deeply. */
     public Object convertJavaBeanToJavaBean(Container c) {
-        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(new ProvConstructor(new ProvFactory(c.getNss()))));
+        ProvConstructor pc=new ProvConstructor(new ProvFactory(c.getNss()));
+        pc.namespaceTable.putAll(c.getNss());
+        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(pc));
         Object o=bt.convert(c);
         return o;
     }

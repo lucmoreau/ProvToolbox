@@ -1,3 +1,8 @@
+0. asn/target/pc1-full-2.xml
+   and
+   xml/target/pc1-full.xml
+   differ because of pc1:url still contains double quotes
+
 1. Update the ASN grammar to deal with latest changes
     - wasAssociated with Plan
     - drop hadPlan

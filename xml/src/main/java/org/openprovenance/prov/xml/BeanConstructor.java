@@ -28,6 +28,6 @@ public interface BeanConstructor {
 
     public Object convertAttributeValue(org.w3c.dom.Element a);
     public Object convertAttribute(Object name, Object value);
-    public Object convertTypedLiteral(String datatype, String value);
+    public Object convertTypedLiteral(String datatype, Object value);
 
 }

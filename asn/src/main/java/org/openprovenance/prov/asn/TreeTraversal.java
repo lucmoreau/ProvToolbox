@@ -119,8 +119,8 @@ public class TreeTraversal {
 
  	case ASNParser.TYPEDLITERAL:
  	    String v1=convertToken(getTokenString(ast.getChild(0)));
- 	    Object v2=convert(ast.getChild(1));
- 	    return c.convertTypedLiteral(v1,v2);
+ 	    String v2=(String)convert(ast.getChild(1));
+ 	    return c.convertTypedLiteral(v2,v1);
 
 
         case ASNParser.USED:

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema targetNamespace="http://www.ipaw.info/pc1/"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:pc1="http://www.ipaw.info/pc1/"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+<xs:element name="url" type="xs:string"/>
+<xs:element name="value" type="xs:anyType"/>
+<xs:element name="color" type="xs:string"/>
+
+</xs:schema>
+

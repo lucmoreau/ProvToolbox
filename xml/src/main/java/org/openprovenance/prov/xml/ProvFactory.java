@@ -816,7 +816,7 @@ public class ProvFactory implements CommonURIs {
     */
 
 
-    public void addType(HasExtensibility a,
+    public void addTypeOLD(HasExtensibility a,
                         URI type) {
 
 	URIWrapper u=new URIWrapper();
@@ -825,7 +825,21 @@ public class ProvFactory implements CommonURIs {
         addAttribute(a,je);
     }
 
-    public void addType(HasExtensibility a,
+    public void addType(HasType a,
+                        URI type) {
+        URIWrapper u=new URIWrapper();
+        u.setValue(type);
+        a.getType().add(u);
+    }
+
+
+    public void addType(HasType a,
+                        Object type) {
+
+        a.getType().add(type);
+    }
+
+    public void addTypeOLD(HasExtensibility a,
                         Object type) {
 
         //TypedLiteral tl=newTypedLiteral(type);

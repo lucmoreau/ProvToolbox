@@ -91,7 +91,7 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id=(String)id;
         List attrs=(List)eAttrs;
         Agent e=pFactory.newAgent(s_id);
-        entityTable.put(s_id,e);
+        //entityTable.put(s_id,e);  
         agentTable.put(s_id,e);
         e.getAny().addAll(attrs);
         return e;
@@ -344,11 +344,13 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
 
-    public Object convertToJava(String value, Object datatype) {
+    public Object convertToJava(String datatype, String value) {
 	value=unwrap(value);
-	System.out.println("convertToJava: datatype " + datatype + "  " + value);
+	//System.out.println("convertToJava: datatype " + datatype + "  " + value);
 	if (datatype.equals("xsd:string")) return value;
 	if (datatype.equals("xsd:int")) return Integer.parseInt(value);
+	if (datatype.equals("xsd:double")) return Double.parseDouble(value);
+	if (datatype.equals("xsd:boolean")) return Boolean.parseBoolean(value);
 	if (datatype.equals("xsd:anyURI")) {
 	    URIWrapper u=new URIWrapper();
 	    u.setValue(URI.create(value));
@@ -369,15 +371,15 @@ public  class ProvConstructor implements TreeConstructor {
 	    return new QName(getNamespace(prefix), local, prefix);
 	}
 
-	System.out.println("-------> unknown literal type " + datatype);
-	return value;
+	throw new UnsupportedOperationException("Unknown literal type " + datatype);
+    //return value;
     }
 	
 	
 
 
-    public Object convertTypedLiteral(String value, Object datatype) {
-	Object val=convertToJava(value,datatype);  // unwrap to remove the double quote
+    public Object convertTypedLiteral(String datatype, Object value) {
+        Object val=convertToJava(datatype,(String)value);
 	//pFactory.newTypedLiteral(val);
         return val;
     }

@@ -16,6 +16,7 @@ import  org.antlr.runtime.tree.TreeAdaptor;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.Container;
+import org.openprovenance.prov.xml.BeanTraversal;
 
 
 public  class Utility {
@@ -35,7 +36,7 @@ public  class Utility {
             }
         };
 
-    public CommonTree parseASNTree(String file) throws java.io.IOException, Throwable {
+    public CommonTree convertASNToTree(String file) throws java.io.IOException, Throwable {
         ASNParser parser=getParserForFile(file);
 
         parser.setTreeAdaptor(adaptor);
@@ -44,25 +45,41 @@ public  class Utility {
         return tree;
     }
 
-    public Object convertToJavaBean(CommonTree tree) {
-        Object o=new Traversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
+    public Object convertTreeToJavaBean(CommonTree tree) {
+        Object o=new TreeTraversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
         return o;
     }
 
-    public String convertToASN(CommonTree tree) {
-        Object o=new Traversal(new ASNConstructor()).convert(tree);
+    public String convertTreeToASN(CommonTree tree) {
+        Object o=new TreeTraversal(new ASNConstructor()).convert(tree);
         return (String)o;
     }
 
-    public Object convertToJavaBean(String file) throws java.io.IOException, Throwable {
-        CommonTree tree=parseASNTree(file);
-        Object o=new Traversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
+    public Object convertASNToJavaBean(String file) throws java.io.IOException, Throwable {
+        CommonTree tree=convertASNToTree(file);
+        Object o=convertTreeToJavaBean(tree);
         return o;
     }
 
-    public String convertToASN(String file) throws java.io.IOException, Throwable {
-        CommonTree tree=parseASNTree(file);
-        Object o=new Traversal(new ASNConstructor()).convert(tree);
+    /** A conversion function that copies a Java Bean deeply. */
+    public Object convertJavaBeanToJavaBean(Container c) {
+        ProvConstructor pc=new ProvConstructor(new ProvFactory(c.getNss()));
+        pc.namespaceTable.putAll(c.getNss());
+        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(pc));
+        Object o=bt.convert(c);
+        return o;
+    }
+
+    
+    public String convertASNToASN(String file) throws java.io.IOException, Throwable {
+        CommonTree tree=convertASNToTree(file);
+        Object o=convertTreeToASN(tree);
+        return (String)o;
+    }
+
+    public String convertBeanToASN(Container c) {
+        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(new ASNConstructor()));
+        Object o=bt.convert(c);
         return (String)o;
     }
 

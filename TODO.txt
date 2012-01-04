@@ -1,0 +1,38 @@
+0. asn/target/pc1-full-2.xml
+   and
+   xml/target/pc1-full.xml
+   differ because of pc1:url has xsi:type=xsd:string
+
+   Also, pc1:url has no quote
+   entity(pc1:a26,[prov:label="Atlas Y Slice"%%xsd:string,prov:type="http://openprovenance.org/primitives#File"%%xsd:anyURI,pc1:url=http://www.ipaw.info/challenge/atlas-y.pgm])
+
+
+  ProvConstructor: convertToJava,
+    public Object convertToJava(String datatype, String value)
+    should throw an exception
+    but adding this exception fails in the dot converter
+    problem is type value is the datatype of a qname and not its value!
+
+1. Update the ASN grammar to deal with latest changes
+    - wasAssociated with Plan
+    - drop hadPlan
+    - alternates/specialization
+
+2. Likewise for the XML Schema
+
+3. Complete BeantoASN conversion
+
+4. TreeTraversal: should handle known prov attributes. 
+
+5. Should ProvToDot be implemented using BeanConstructor?
+
+6. Systematic testing
+
+- Time on generation/use
+- Define roles properly, in Java use known accessor
+
+
+
+
+7. pom.xml used to add  'extends Entity' to the definition of Agent.
+   This resulted in problems when marshalling an Agent. To be revisited.

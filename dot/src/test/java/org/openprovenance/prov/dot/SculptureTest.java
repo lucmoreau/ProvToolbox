@@ -13,9 +13,9 @@ import java.io.File;
 import org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.asn.Utility;
 
-public class ASNTest extends TestCase {
+public class SculptureTest extends TestCase {
 
-    public void asnToDot(String asnFile, String xmlFile, String dotFile, String pdfFile)
+    public void sculptureToDot(String asnFile, String xmlFile, String dotFile, String pdfFile)
         throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
         Utility u=new Utility();
 
@@ -32,10 +32,10 @@ public class ASNTest extends TestCase {
         toDot.convert(o,dotFile,pdfFile);
     }
 
-    public void testAsnToDot1() throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
-        asnToDot("../asn/src/test/resources/prov/file-example2.asn",
-                 "target/file-example2.prov-xml",
-                 "target/file-example2.dot",
-                 "target/file-example2.pdf");
+    public void testSculptureToDot1() throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
+        sculptureToDot("../asn/src/test/resources/prov/sculpture.prov-asn",
+                       "target/sculpture.prov-xml",
+                       "target/sculpture.dot",
+                       "target/sculpture.pdf");
     }
 }

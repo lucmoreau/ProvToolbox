@@ -75,11 +75,12 @@ public class ProvDeserialiser {
     public Container validateContainer (String[] schemaFiles, File serialised)
         throws JAXBException,SAXException, IOException {
         SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Source [] sources=new Source[2+schemaFiles.length];
-        sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"opm.1_1.xsd"));
+        Source [] sources=new Source[1+schemaFiles.length];
+        sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20111110.xsd"));
+        //        sources[0]=new StreamSource(new File("../xml/src/main/resourcs/prov-20111110.xsd"));
         int i=0;
         for (String schemaFile: schemaFiles) {
-            sources[2+i]=new StreamSource(new File(schemaFile));
+            sources[1+i]=new StreamSource(new File(schemaFile));
             i++;
         }
         Schema schema = sf.newSchema(sources);  

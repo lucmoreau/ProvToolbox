@@ -42,8 +42,8 @@
   <xs:element name="entity" type="prov:Entity"/>
   <xs:complexType name="Entity">
     <xs:sequence>
-      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
       <xs:element ref="prov:label" minOccurs="0"/> 
+      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -74,6 +74,7 @@
       <xs:element name="activity" type="prov:ActivityRef"/>
       <xs:element name="entity"   type="prov:EntityRef"/>
       <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -85,6 +86,7 @@
       <xs:element name="entity"   type="prov:EntityRef"/>
       <xs:element name="activity" type="prov:ActivityRef"/>
       <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -96,6 +98,7 @@
       <xs:element name="activity" type="prov:ActivityRef"/>
       <xs:element name="agent"    type="prov:AgentRef"/>
       <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -107,6 +110,7 @@
       <xs:element name="activity" type="prov:ActivityRef"/>
       <xs:element name="entity"   type="prov:EntityRef"/>
       <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -119,6 +123,7 @@
       <xs:element name="effect"      type="prov:ActivityRef"/>
       <xs:element name="cause"       type="prov:AgentRef"/>
       <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -132,6 +137,7 @@
       <xs:element name="effect"  type="prov:EntityRef"/>
       <xs:element name="cause"   type="prov:EntityRef"/>
       <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -143,6 +149,7 @@
       <xs:element name="effect"  type="prov:ActivityRef"/>
       <xs:element name="cause"   type="prov:ActivityRef"/>
       <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -153,6 +160,7 @@
       <xs:element name="entity2"   type="prov:EntityRef"/>
       <xs:element name="entity1"   type="prov:EntityRef"/>
       <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>

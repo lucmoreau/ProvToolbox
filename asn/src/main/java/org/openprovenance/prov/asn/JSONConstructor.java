@@ -1,14 +1,19 @@
 package org.openprovenance.prov.asn;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.jvnet.jaxb2_commons.lang.ToString;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import eu.vahlas.json.schema.JSONSchema;
+import eu.vahlas.json.schema.JSONSchemaProvider;
+import eu.vahlas.json.schema.impl.JacksonSchemaProvider;
 
 /** Conversion back to PROV-JSON. */
 
@@ -40,14 +45,26 @@ class JSONConstructor implements TreeConstructor {
         try {
             Utility u=new Utility();
 
-            CommonTree tree = u.parseASNTree(args[0]);
+            CommonTree tree = u.convertASNToTree(args[0]);
 
-//            u.printTree(tree,1);
-            
-//            System.out.println(tree.toStringTree());
-            Object provStructure = new Traversal(new JSONConstructor()).convert(tree);
+            Object provStructure = new TreeTraversal(new JSONConstructor()).convert(tree);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            System.out.println(gson.toJson(provStructure));
+            String json = gson.toJson(provStructure);
+            System.out.println(json);
+            
+            ObjectMapper mapper = new ObjectMapper();
+    		JSONSchemaProvider schemaProvider = new JacksonSchemaProvider(mapper);
+    		JSONSchema schema = schemaProvider
+    				.getSchema(new URL(
+    						"https://raw.github.com/trungdong/w3-prov/master/specs/json/prov-json-schema.js"));
+    		List<String> errors = schema.validate(json);
+    		if (errors.size() > 0) {
+    			System.err.println(errors.size() + " validation error(s):");
+				for (String error : errors)
+				{
+					System.err.println(error);
+				}
+    		}
             
         } catch(Throwable t) {
             System.out.println("exception: "+t);
@@ -330,7 +347,7 @@ class JSONConstructor implements TreeConstructor {
 
 	public Object convertTypedLiteral(String datatype, Object value) {
 		// TODO: Convert typed literal
-		Object[] result = {value, unwrap(datatype)};
+		Object[] result = {unwrap((String)value), unwrap(datatype)};
     	return result;
 	}
 

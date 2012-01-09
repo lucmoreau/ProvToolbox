@@ -1,19 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
-<!-- Authors: Luc Moreau
+<!-- authors: luc moreau
 
-     *WARNING*
-     Transformation of the OPM OPMX schema into PROV compatible.
+     *warning*
+     transformation of the opm opmx schema into prov compatible.
 
-     Purely tentative at this stage. Still some OPMX legacy.
-     PROV-DM not fully encoded yet.
-     Only work in progress.
+     purely tentative at this stage. still some opmx legacy.
+     prov-dm not fully encoded yet.
+     only work in progress.
   -->
 
-   <!-- Known issues:
+   <!-- known issues:
      - challenge with xs:any:
-       - In activity: optional attributes (time) have to be followed by xsd:any
-       - So, optional attributes declared, and xsd:any requiring other namespace.
+       - in activity: optional attributes (time) have to be followed by xsd:any
+       - so, optional attributes declared, and xsd:any requiring other namespace.
    -->
 
 
@@ -26,12 +26,13 @@
            jxb:version="2.0">
 
   <xs:element name="activity" type="prov:Activity"/>
+
   <xs:complexType name="Activity">
     <xs:sequence>
       <xs:element name="startTime"    type="xs:dateTime" minOccurs="0"/> 
       <xs:element name="endTime"      type="xs:dateTime" minOccurs="0"/> 
       <xs:element ref="prov:label" minOccurs="0"/> 
-      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/> 
       
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
@@ -43,7 +44,8 @@
   <xs:complexType name="Entity">
     <xs:sequence>
       <xs:element ref="prov:label" minOccurs="0"/> 
-      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+ 
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -53,7 +55,7 @@
   <xs:complexType name="Agent">
     <xs:sequence>
       <xs:element ref="prov:label" minOccurs="0"/> 
-      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -73,8 +75,9 @@
       <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
       <xs:element name="activity" type="prov:ActivityRef"/>
       <xs:element name="entity"   type="prov:EntityRef"/>
-      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
-      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+
+      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -85,8 +88,8 @@
       <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
       <xs:element name="entity"   type="prov:EntityRef"/>
       <xs:element name="activity" type="prov:ActivityRef"/>
-      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
-      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -97,8 +100,8 @@
     <xs:sequence>
       <xs:element name="activity" type="prov:ActivityRef"/>
       <xs:element name="agent"    type="prov:AgentRef"/>
-      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
-      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -109,8 +112,8 @@
     <xs:sequence>
       <xs:element name="activity" type="prov:ActivityRef"/>
       <xs:element name="entity"   type="prov:EntityRef"/>
-      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
-      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -122,8 +125,8 @@
       <xs:element name="endTime"     type="xs:dateTime" minOccurs="0"/>
       <xs:element name="effect"      type="prov:ActivityRef"/>
       <xs:element name="cause"       type="prov:AgentRef"/>
-      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
-      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -136,8 +139,8 @@
       <xs:element name="activity"   type="prov:ActivityRef" minOccurs="0"/>
       <xs:element name="effect"  type="prov:EntityRef"/>
       <xs:element name="cause"   type="prov:EntityRef"/>
-      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
-      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -148,8 +151,8 @@
       <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
       <xs:element name="effect"  type="prov:ActivityRef"/>
       <xs:element name="cause"   type="prov:ActivityRef"/>
-      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
-      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -159,8 +162,8 @@
     <xs:sequence>
       <xs:element name="entity2"   type="prov:EntityRef"/>
       <xs:element name="entity1"   type="prov:EntityRef"/>
-      <xs:element name="type"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
-      <xs:element name="role"         type="xs:anySimpleType"  minOccurs="0" maxOccurs="unbounded"/>  <!-- ??? or prov:TypedLiteral? ??? -->
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
@@ -176,23 +179,17 @@
   </xs:complexType>
 
   <!--
-       Typed literals are tentative here.
-       I am trying to use xsi:type to encode the prov:datatype.
+       Typed literals are encoded by means
+       of xsi:type that represent the prov:datatype.
 
        -->
   
   <xs:element name="label" type="xs:string"/>
-  <xs:element name="type" type="xs:anySimpleType"/>
-  <xs:element name="role" type="prov:TypedLiteral"/>
+  <xs:element name="role"  type="xs:anySimpleType"/>
+  <xs:element name="type"  type="xs:anySimpleType"/>
+
 
   <!-- tmp, to disappear -->
-  <xs:complexType name="OldTypedLiteral">
-    <xs:simpleContent>
-      <xs:extension base="xs:string">
-	<xs:attribute name="type" type="xs:QName"/>
-      </xs:extension>
-    </xs:simpleContent>
-  </xs:complexType>
   
   <xs:complexType name="TypedLiteral">
     <xs:simpleContent>
@@ -200,6 +197,8 @@
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
+
+
   
   
   <xs:complexType name="ActivityRef">

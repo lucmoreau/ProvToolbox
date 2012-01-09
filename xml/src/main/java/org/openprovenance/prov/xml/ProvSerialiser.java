@@ -58,10 +58,12 @@ public class ProvSerialiser {
 
     public ProvSerialiser () throws JAXBException {
         jc = JAXBContext.newInstance( ProvFactory.packageList );
+        System.out.println("JAXBContext => " + jc.getClass());
     }
 
     public ProvSerialiser (String packageList) throws JAXBException {
         jc = JAXBContext.newInstance( packageList );
+        System.out.println("JAXBContext => " + jc.getClass());
     }
 
     public void configurePrefixes(Marshaller m) throws PropertyException {
@@ -70,7 +72,7 @@ public class ProvSerialiser {
 
     public void configurePrefixes(Marshaller m, Hashtable<String,String> namespaces) throws PropertyException {
         m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
-                      new NamespacePrefixMapper(namespaces));
+                             new NamespacePrefixMapper(namespaces));
 	//System.out.println("--------------> ");
 	//m.setAdapter(new org.w3._2001.xmlschema.Adapter1());
     }

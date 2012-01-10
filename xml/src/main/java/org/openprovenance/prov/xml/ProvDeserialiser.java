@@ -76,7 +76,7 @@ public class ProvDeserialiser {
         throws JAXBException,SAXException, IOException {
         SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Source [] sources=new Source[1+schemaFiles.length];
-        sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20111110.xsd"));
+        sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20120110.xsd"));
         //        sources[0]=new StreamSource(new File("../xml/src/main/resourcs/prov-20111110.xsd"));
         int i=0;
         for (String schemaFile: schemaFiles) {

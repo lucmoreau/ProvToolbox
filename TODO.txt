@@ -7,11 +7,6 @@
    entity(pc1:a26,[prov:label="Atlas Y Slice"%%xsd:string,prov:type="http://openprovenance.org/primitives#File"%%xsd:anyURI,pc1:url=http://www.ipaw.info/challenge/atlas-y.pgm])
 
 
-  ProvConstructor: convertToJava,
-    public Object convertToJava(String datatype, String value)
-    should throw an exception
-    but adding this exception fails in the dot converter
-    problem is type value is the datatype of a qname and not its value!
 
 1. Update the ASN grammar to deal with latest changes
     - wasAssociated with Plan

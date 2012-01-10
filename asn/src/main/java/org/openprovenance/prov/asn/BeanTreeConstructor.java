@@ -9,7 +9,6 @@ import org.openprovenance.prov.xml.HasAnnotation;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.HasLabel;
 import org.openprovenance.prov.xml.HasType;
-import org.openprovenance.prov.xml.TypedLiteral;
 import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasAssociatedWith;
@@ -44,8 +43,10 @@ public class BeanTreeConstructor implements BeanConstructor{
     public Object convertAttributeValue(Element a) {
         String type=a.getAttributeNS(XSI_NS,"type");
         if ((type==null) || ("".equals(type))) {
+            System.out.println("----> convertAttributeValue " + type + " " + a.getFirstChild().getNodeValue());
             return a.getFirstChild().getNodeValue();
         } else {
+            System.out.println("----> convertAttributeValue " + type);
             return c.convertTypedLiteral(type,
                                          "\"" + a.getFirstChild().getNodeValue() + "\"");
         }

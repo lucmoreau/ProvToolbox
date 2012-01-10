@@ -435,34 +435,15 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    public void addRole(HasExtensibility a,                                  
-                        String role) {
+
+    public void addRole(HasRole a,                                  
+                        Object role) {
         if (role!=null) {
-            // addAttribute(a,
-            //              "http://openprovenance.org/prov/xml#",
-            //              "prov",
-            //              "role",
-            //              role);
-            TypedLiteral tl=newTypedLiteral(role);
-            //TypedLiteral tl=newTypedLiteral(role,"xsd:string");
-            JAXBElement<TypedLiteral> je=of.createRole(tl);
-            addAttribute(a,je);
+            a.getRole().add(role);
         }
     }
-    
-    public TypedLiteral newTypedLiteral(Object value) {
-        TypedLiteral res=of.createTypedLiteral();
-        res.setValue(value);
-        return res;
-    }
 
-    public OldTypedLiteral newOldTypedLiteral(String value,
-					   String type) {
-        OldTypedLiteral res=of.createOldTypedLiteral();
-        res.setValue(value);
-        res.setType(stringToQName(type));
-        return res;
-    }
+    
 
     public Used newUsed(Activity p,
                         String role,

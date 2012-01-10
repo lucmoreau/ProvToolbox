@@ -22,7 +22,6 @@ import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.WasComplementOf;
 import org.openprovenance.prov.xml.WasAssociatedWith;
-import org.openprovenance.prov.xml.TypedLiteral;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
 import  org.antlr.runtime.CommonTokenStream;

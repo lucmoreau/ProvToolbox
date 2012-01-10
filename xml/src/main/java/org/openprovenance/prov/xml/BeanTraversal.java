@@ -49,12 +49,8 @@ public class BeanTraversal {
             QName q=je.getName();
             Object o=je.getValue();
             String value;
-            if (o instanceof TypedLiteral) {
-                TypedLiteral tl=(TypedLiteral) o;
-                value=tl.getValue().toString();
-            } else {
-                value=o.toString();
-            }
+            value=o.toString();
+                
             return c.convertAttribute(c.convert(q),
                                       value);
         } if (a instanceof Element) {

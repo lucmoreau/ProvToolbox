@@ -105,7 +105,7 @@
 			     </plugin>
 		       </plugins>
                <schemaIncludes>
-                 <schemaInclude>**/prov-20111110.xsd</schemaInclude>
+                 <schemaInclude>**/prov-20120110.xsd</schemaInclude>
                  <schemaInclude>**/curie.xsd</schemaInclude>
                  <schemaInclude>**/toolbox.xsd</schemaInclude>
 
@@ -347,11 +347,6 @@
   	              <arg value="AnnotationRef.java" />
                 </exec>
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Ref, Equals, HashCode, ToString/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="RoleRef.java" />
-                </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/implements Equals, HashCode, ToString/implements Ref, Equals, HashCode, ToString/" />

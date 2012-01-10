@@ -14,7 +14,7 @@
   </jaxb:globalBindings>
 -->
 
-    <jaxb:bindings schemaLocation="prov-20111110.xsd" 
+    <jaxb:bindings schemaLocation="prov-20120110.xsd" 
                    node="/xs:schema">       
         <jaxb:schemaBindings>
             <jaxb:package name="org.openprovenance.prov.xml"/>

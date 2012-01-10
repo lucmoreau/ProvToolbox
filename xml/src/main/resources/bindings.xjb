@@ -34,7 +34,12 @@
 
     </jaxb:bindings>
 
-
+    <jaxb:bindings schemaLocation="curie.xsd" 
+                   node="/xs:schema">       
+        <jaxb:schemaBindings>
+            <jaxb:package name="org.openprovenance.prov.xml"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
 
 
 

@@ -9,7 +9,6 @@ import org.openprovenance.prov.xml.HasAnnotation;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.HasLabel;
 import org.openprovenance.prov.xml.HasType;
-import org.openprovenance.prov.xml.TypedLiteral;
 import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasAssociatedWith;

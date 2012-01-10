@@ -106,6 +106,7 @@
 		       </plugins>
                <schemaIncludes>
                  <schemaInclude>**/prov-20111110.xsd</schemaInclude>
+                 <schemaInclude>**/curie.xsd</schemaInclude>
                  <schemaInclude>**/toolbox.xsd</schemaInclude>
 
                </schemaIncludes>

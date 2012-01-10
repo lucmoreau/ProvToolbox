@@ -4,17 +4,11 @@
 
      *warning*
      transformation of the opm opmx schema into prov compatible.
-
      purely tentative at this stage. still some opmx legacy.
+
      prov-dm not fully encoded yet.
      only work in progress.
   -->
-
-   <!-- known issues:
-     - challenge with xs:any:
-       - in activity: optional attributes (time) have to be followed by xsd:any
-       - so, optional attributes declared, and xsd:any requiring other namespace.
-   -->
 
 
 <xs:schema targetNamespace="http://openprovenance.org/prov-xml#"
@@ -50,6 +44,8 @@
     </xs:sequence>
     <xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
+
+
   
   <xs:element name="agent" type="prov:Agent"/>
   <xs:complexType name="Agent">
@@ -178,7 +174,7 @@
     <xs:attribute name="id" type="xs:QName"/>
   </xs:complexType>
 
-  <!--
+   <!--
        Typed literals are encoded by means
        of xsi:type that represent the prov:datatype.
 
@@ -187,17 +183,7 @@
   <xs:element name="label" type="xs:string"/>
   <xs:element name="role"  type="xs:anySimpleType"/>
   <xs:element name="type"  type="xs:anySimpleType"/>
-
-
-  <!-- tmp, to disappear -->
   
-  <xs:complexType name="TypedLiteral">
-    <xs:simpleContent>
-      <xs:extension base="xs:anySimpleType">
-      </xs:extension>
-    </xs:simpleContent>
-  </xs:complexType>
-
 
   
   

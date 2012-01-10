@@ -444,12 +444,6 @@ public class ProvFactory implements CommonURIs {
     }
 
     
-    public TypedLiteral newTypedLiteral(Object value) {
-        TypedLiteral res=of.createTypedLiteral();
-        res.setValue(value);
-        return res;
-    }
-
 
     public Used newUsed(Activity p,
                         String role,

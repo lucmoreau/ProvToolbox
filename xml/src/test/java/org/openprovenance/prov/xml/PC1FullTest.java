@@ -164,7 +164,7 @@ public class PC1FullTest
                                          "PC1Full Workflow");
         
 
-        Activity p1=pFactory.newActivity("p1",
+        Activity p1=pFactory.newActivity("00000p1",
                                          "align_warp 1");
         List o=p1.getType();
 
@@ -663,6 +663,24 @@ public class PC1FullTest
         String[] schemaFiles=new String[1];
         schemaFiles[0]="src/test/resources/pc1.xsd";
         deserial.validateContainer(schemaFiles,new File("target/pc1-full.xml"));
+        
+    }
+
+    public void testSchemFailaValidateXML() {
+        
+        ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
+
+        String[] schemaFiles=new String[1];
+        schemaFiles[0]="src/test/resources/pc1.xsd";
+
+        try {
+            deserial.validateContainer(schemaFiles,new File("target/pc1-full.xml"), false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(true);
+            return;
+        }
+        assertTrue(false);
         
     }
         

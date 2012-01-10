@@ -105,8 +105,8 @@
 			     </plugin>
 		       </plugins>
                <schemaIncludes>
-                 <schemaInclude>**/prov-20120110.xsd</schemaInclude>
                  <schemaInclude>**/curie.xsd</schemaInclude>
+                 <schemaInclude>**/prov-20120110.xsd</schemaInclude>
                  <schemaInclude>**/toolbox.xsd</schemaInclude>
 
                </schemaIncludes>

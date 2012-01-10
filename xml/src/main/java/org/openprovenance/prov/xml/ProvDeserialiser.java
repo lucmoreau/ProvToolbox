@@ -72,17 +72,31 @@ public class ProvDeserialiser {
     }
 
 
-    public Container validateContainer (String[] schemaFiles, File serialised)
+    public Container validateContainer (String[] schemaFiles, File serialised)         throws JAXBException,SAXException, IOException { 
+        return validateContainer (schemaFiles, serialised,true);
+    }
+
+    public Container validateContainer (String[] schemaFiles, File serialised, boolean withCurie)
         throws JAXBException,SAXException, IOException {
         SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Source [] sources=new Source[1+schemaFiles.length];
-        sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20120110.xsd"));
-        //        sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"foo.xsd"));
-        //        sources[1]=new StreamSource("/home/lavm/papers/papers/prov-wg/git/ProvToolbox/xml/src/main/resources/curie.xsd");
+        Source [] sources=new Source[2+schemaFiles.length];
+        int schemaCount;
+        if (withCurie) {
+            schemaCount=2;
+            sources=new Source[schemaCount+schemaFiles.length];
+            sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"curie.xsd"));
+            sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20120110-curie.xsd"));
+        } else {
+            schemaCount=2;
+            sources=new Source[schemaCount+schemaFiles.length];
+            sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"curie.xsd"));
+            sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20120110.xsd"));
+        }
+
 
         int i=0;
         for (String schemaFile: schemaFiles) {
-            sources[1+i]=new StreamSource(new File(schemaFile));
+            sources[schemaCount+i]=new StreamSource(new File(schemaFile));
             i++;
         }
         Schema schema = sf.newSchema(sources);  

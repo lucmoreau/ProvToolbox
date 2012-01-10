@@ -20,12 +20,12 @@
 
 
 
-  <xs:import namespace="http://www.w3.org/1999/xhtml/datatypes/"
-              />
+  <xs:import namespace="http://www.w3.org/1999/xhtml/datatypes/" />
 
-  <!-- schemaLocation="/home/lavm/papers/papers/prov-wg/git/ProvToolbox/xml/src/main/resources/curie.xsd" -->
+<!--
+             schemaLocation="/home/lavm/papers/papers/prov-wg/git/ProvToolbox/xml/src/main/resources/curie.xsd" />
 
-
+-->
   <xs:element name="activity" type="prov:Activity"/>
 
   <xs:complexType name="Activity">
@@ -191,11 +191,10 @@
   <xs:element name="role"  type="xs:anySimpleType"/>
   <xs:element name="type"  type="xs:anySimpleType"/>
 
-  <xs:attribute name="id"  type="xs:QName"/>
-  <xs:attribute name="ref" type="xs:QName"/>
 
+  <xs:attribute name="ref" type="cu:CURIE"/>
+  <xs:attribute name="id"  type="cu:CURIE"/>
 
-  <xs:attribute name="id2" type="cu:CURIE"/>
 
     <xs:simpleType name="TEST_CURIE">
         <xs:restriction base="xs:string">

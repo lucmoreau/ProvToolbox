@@ -666,7 +666,7 @@ public class PC1FullTest
         
     }
 
-    public void testSchemFailaValidateXML() {
+    public void testSchemaFailValidateXML() {
         
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
 

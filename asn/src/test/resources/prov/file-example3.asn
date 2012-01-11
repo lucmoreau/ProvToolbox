@@ -53,18 +53,15 @@ agent(ex:ag4, [ type="Person" %% xsd:QName, ex:name="David" ])
 agent(ex:ag5, [ type="Person" %% xsd:QName, ex:name="Edith" ])
 
 
-wasAssociatedWith(ex:a0, ex:ag1,, [role="creator"])
-wasAssociatedWith(ex:a1, ex:ag2,, [role="author"])
-wasAssociatedWith(ex:a2, ex:ag3,, [role="communicator"])
-wasAssociatedWith(ex:a3, ex:ag4,, [role="author"])
-wasAssociatedWith(ex:a4, ex:ag5,, [role="communicator"])
-
-
 entity(ex:s1,[type="prov:Plan"%% xsd:QName, ex:url="http://example.org/strategy1" %% xsd:anyURI])
 entity(ex:s2,[type="prov:Plan"%% xsd:QName, ex:url="http://example.org/strategy2" %% xsd:anyURI])
 wasDerivedFrom(ex:s2,ex:s1)
-hadPlan(ex:a2, ex:s1,[ex:kind="supersed"])
-hadPlan(ex:a2, ex:s2,[ex:kind="newest"])
+
+wasAssociatedWith(ex:a0, ex:ag1, [role="creator"])
+wasAssociatedWith(ex:a1, ex:ag2, [role="author"])
+wasAssociatedWith(ex:a2, ex:ag3 @ ex:s1, [role="communicator"])
+wasAssociatedWith(ex:a3, ex:ag4, [role="author"])
+wasAssociatedWith(ex:a4, ex:ag5 @ ex:s2, [role="communicator"])
 
 note(ex:n1,[ex:icon="doc.png"])
 hasAnnotation(ex:e1,ex:n1)

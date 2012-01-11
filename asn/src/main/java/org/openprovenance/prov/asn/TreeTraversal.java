@@ -186,19 +186,7 @@ public class TreeTraversal {
             id1=convert(ast.getChild(2));
             Object pl=convert(ast.getChild(3));
             rAttrs=convert(ast.getChild(4));
-            return c.convertWasAssociatedWith(uid,id2,id1,rAttrs);
-
-
-        case ASNParser.HADPLAN:
-            uidTree=ast.getChild(0);
-            if (uidTree.getChildCount()>0) {
-                uidTree=uidTree.getChild(0);
-            }
-            uid=convert(uidTree);
-            id2=convert(ast.getChild(1));
-            id1=convert(ast.getChild(2));
-            rAttrs=convert(ast.getChild(3));
-            return c.convertHadPlan(uid,id2,id1,rAttrs);
+            return c.convertWasAssociatedWith(uid,id2,id1,pl,rAttrs);
 
 
         case ASNParser.TIME:

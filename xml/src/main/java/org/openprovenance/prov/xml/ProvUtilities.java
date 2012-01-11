@@ -39,9 +39,6 @@ public class ProvUtilities {
         if (r instanceof WasControlledBy) {
             return ((WasControlledBy)r).getEffect().getRef();
         }
-        if (r instanceof HadPlan) {
-            return ((HadPlan)r).getActivity().getRef();
-        }
         if (r instanceof WasAssociatedWith) {
             return ((WasAssociatedWith)r).getActivity().getRef();
         }
@@ -65,10 +62,7 @@ public class ProvUtilities {
         if (r instanceof WasControlledBy) {
             return ((WasControlledBy)r).getCause().getRef();
         }
-        if (r instanceof HadPlan) {
-            return ((HadPlan)r).getEntity().getRef();
-        }
-        if (r instanceof WasAssociatedWith) {
+        if (r instanceof WasAssociatedWith) { // what about entity plan?
             return ((WasAssociatedWith)r).getAgent().getRef();
         }
         if (r instanceof WasComplementOf) {

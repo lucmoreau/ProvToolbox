@@ -414,27 +414,6 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    public HadPlan newHadPlan(String id,
-			      ActivityRef eid2,
-			      EntityRef eid1) {
-        HadPlan res=of.createHadPlan();
-        res.setId(stringToQName(id));
-        res.setActivity(eid2);
-        res.setEntity(eid1);
-        return res;
-    }
-
-    public HadPlan newHadPlan(QName id,
-			      ActivityRef aid,
-			      EntityRef eid) {
-        HadPlan res=of.createHadPlan();
-        res.setId(id);
-        res.setActivity(aid);
-        res.setEntity(eid);
-        return res;
-    }
-
-
 
     public void addRole(HasRole a,                                  
                         Object role) {

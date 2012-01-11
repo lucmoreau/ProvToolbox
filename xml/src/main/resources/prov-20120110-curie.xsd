@@ -110,17 +110,6 @@
   </xs:complexType>
 
 
-  <xs:complexType name="HadPlan">
-    <xs:sequence>
-      <xs:element name="activity" type="prov:ActivityRef"/>
-      <xs:element name="entity"   type="prov:EntityRef"/>
-      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-    <xs:attribute ref="prov:id"/>
-  </xs:complexType>
-  
   <xs:complexType name="WasControlledBy">
     <xs:sequence>
       <xs:element name="startTime"   type="xs:dateTime" minOccurs="0"/>
@@ -219,7 +208,6 @@
 	<xs:element name="wasInformedBy"      type="prov:WasInformedBy"/>
 	<xs:element name="wasDerivedFrom"     type="prov:WasDerivedFrom"/>
 	<xs:element name="wasControlledBy"    type="prov:WasControlledBy"/>
-	<xs:element name="hadPlan"            type="prov:HadPlan"/>
 	<xs:element name="wasAssociatedWith"  type="prov:WasAssociatedWith"/>
 	<xs:element name="wasComplementOf"    type="prov:WasComplementOf"/>
 	<xs:element name="hasAnnotation"      type="prov:HasAnnotation"/>

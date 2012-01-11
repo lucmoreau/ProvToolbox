@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; INT; HADPLAN; PLAN;
+    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; INT; PLAN;
 }
 
 @header {
@@ -59,7 +59,7 @@ defaultNamespaceDeclaration :
     ;
 
 record
-	:	(entityRecord | activityRecord | agentRecord | generationRecord  | useRecord | derivationRecord | dependenceRecord  | controlRecord | complementarityRecord  |  associationRecord | planLinkRecord)
+	:	(entityRecord | activityRecord | agentRecord | generationRecord  | useRecord | derivationRecord | dependenceRecord  | controlRecord | complementarityRecord  |  associationRecord)
 	;
 
 entityRecord
@@ -127,13 +127,8 @@ complementarityRecord
 
 
 associationRecord
-	:	'wasAssociatedWith' '(' optionalIdentifier a=identifier ',' ag=identifier ',' (pl=identifier)? optionalAttributeValuePairs ')'
+	:	'wasAssociatedWith' '('  optionalIdentifier a=identifier ',' ag=identifier  ('@' pl=identifier)? optionalAttributeValuePairs ')'
       -> ^(WAW optionalIdentifier $a $ag ^(PLAN $pl?) optionalAttributeValuePairs)
-	;
-
-planLinkRecord
-	:	'hadPlan' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
-      -> ^(HADPLAN optionalIdentifier identifier+ optionalAttributeValuePairs)
 	;
 
 identifier

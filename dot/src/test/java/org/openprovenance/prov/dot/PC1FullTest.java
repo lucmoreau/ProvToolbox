@@ -26,7 +26,13 @@ public class PC1FullTest extends org.openprovenance.prov.xml.PC1FullTest {
         toDot.convert(graph1,"target/pc1-full.dot", "target/pc1-full.pdf");
     }
 
+    @Override
     public void testSchemaValidateXML() {
+        // no need to do it here
+    }
+
+    @Override
+    public void testSchemaFailValidateXML() {
         // no need to do it here
     }
 

@@ -4,7 +4,6 @@ import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.BeanConstructor;
 import org.openprovenance.prov.xml.Entity;
-import org.openprovenance.prov.xml.HadPlan;
 import org.openprovenance.prov.xml.HasAnnotation;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.HasLabel;
@@ -119,7 +118,7 @@ public class BeanTreeConstructor implements BeanConstructor{
     }
 
 
-    public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object agent) {
+    public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object agent, Object plan) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
@@ -128,6 +127,7 @@ public class BeanTreeConstructor implements BeanConstructor{
         return c.convertWasAssociatedWith(id,
                                           activity,
                                           agent,
+                                          plan,
                                           c.convertAttributes(attrs));
     }
     public Object convertUsed(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity) {
@@ -182,17 +182,7 @@ public class BeanTreeConstructor implements BeanConstructor{
                                         entity1,
                                         attrs);
     }
-    public Object convertHadPlan(Object id, List<Object> tAttrs, List<Object> otherAttrs,Object activity, Object entity) {
-        List tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
-        List attrs=new LinkedList();
-        attrs.addAll(tAttrs2);
-        attrs.addAll(otherAttrs);
-        return c.convertHadPlan(id,
-                                activity,
-                                entity,
-                                attrs);
-    }
+
     public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);

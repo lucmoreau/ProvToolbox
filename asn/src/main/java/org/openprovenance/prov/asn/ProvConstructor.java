@@ -17,7 +17,6 @@ import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.Account;
 import org.openprovenance.prov.xml.Container;
 import org.openprovenance.prov.xml.Used;
-import org.openprovenance.prov.xml.HadPlan;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.WasComplementOf;
@@ -297,41 +296,30 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
 
-    public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object aAttrs) {
+    public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
+        String s_pl=(String)pl;
         Activity e2=activityTable.get(s_id2);
         ActivityRef e2r=pFactory.newActivityRef(e2);
         Agent e1=agentTable.get(s_id1);
         AgentRef e1r=pFactory.newAgentRef(e1);
+        Entity e3=null;
+        EntityRef e3r=null;
+        if (s_pl!=null) {
+            e3=entityTable.get(s_pl);
+            e3r=pFactory.newEntityRef(e3);
+        }
         WasAssociatedWith waw=pFactory.newWasAssociatedWith(s_id,
                                                             e2r,
                                                             e1r);
+        waw.setPlan(e3r);
         List attrs=(List)aAttrs;
         waw.getAny().addAll(attrs);
 
         return waw;
     }
-
-    public Object convertHadPlan(Object id, Object id2,Object id1, Object aAttrs) {
-        String s_id=(String)id;
-        String s_id2=(String)id2;
-        String s_id1=(String)id1;
-        Activity a2=activityTable.get(s_id2);
-        ActivityRef a2r=pFactory.newActivityRef(a2);
-        Entity e1=entityTable.get(s_id1);
-
-	EntityRef e1r=pFactory.newEntityRef(e1);
-	HadPlan hp=pFactory.newHadPlan(s_id,
-				       a2r,
-				       e1r);
-        List attrs=(List)aAttrs;
-        hp.getAny().addAll(attrs);
-        return hp;
-    }
-
-
 
     public Object convertQNAME(String qname) {
         return qname;

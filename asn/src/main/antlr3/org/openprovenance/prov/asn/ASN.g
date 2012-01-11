@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; INT; HADPLAN;
+    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; INT; HADPLAN; PLAN;
 }
 
 @header {
@@ -127,8 +127,8 @@ complementarityRecord
 
 
 associationRecord
-	:	'wasAssociatedWith' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
-      -> ^(WAW optionalIdentifier identifier+ optionalAttributeValuePairs)
+	:	'wasAssociatedWith' '(' optionalIdentifier a=identifier ',' ag=identifier ',' (pl=identifier)? optionalAttributeValuePairs ')'
+      -> ^(WAW optionalIdentifier $a $ag ^(PLAN $pl?) optionalAttributeValuePairs)
 	;
 
 planLinkRecord

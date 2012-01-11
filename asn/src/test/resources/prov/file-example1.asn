@@ -58,11 +58,11 @@ agent(ag4, [ prov:type="prov:Person" %% xsd:QName, name="David" ])
 agent(ag5, [ prov:type="prov:Person" %% xsd:QName, name="Edith" ])
 
 
-wasAssociatedWith(a0, ag1, [prov:role="creator"])
-wasAssociatedWith(a1, ag2, [prov:role="author"])
-wasAssociatedWith(a2, ag3, [prov:role="communicator"])
-wasAssociatedWith(a3, ag4, [prov:role="author"])
-wasAssociatedWith(a4, ag5, [prov:role="communicator"])
+wasAssociatedWith(a0, ag1,, [prov:role="creator"])
+wasAssociatedWith(a1, ag2,, [prov:role="author"])
+wasAssociatedWith(a2, ag3,, [prov:role="communicator"])
+wasAssociatedWith(a3, ag4,, [prov:role="author"])
+wasAssociatedWith(a4, ag5,, [prov:role="communicator"])
 
 entity(s1,[prov:type="prov:Plan"%% xsd:QName, url="http://example.org/strategy1" %% xsd:anyURI])
 entity(s2,[prov:type="prov:Plan"%% xsd:QName, url="http://example.org/strategy2" %% xsd:anyURI])

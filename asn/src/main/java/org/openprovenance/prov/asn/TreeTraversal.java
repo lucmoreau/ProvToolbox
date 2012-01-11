@@ -96,6 +96,14 @@ public class TreeTraversal {
             } else {
                 return c.convertU(convert(ast.getChild(0)));
             }
+
+        case ASNParser.PLAN:
+            if (ast.getChildCount()==0) {
+                return null;
+            } else {
+                return convert(ast.getChild(0));
+            }
+
         case ASNParser.G:
             if (ast.getChildCount()==0) {
                 return c.convertG(null);
@@ -176,7 +184,8 @@ public class TreeTraversal {
             uid=convert(uidTree);
             id2=convert(ast.getChild(1));
             id1=convert(ast.getChild(2));
-            rAttrs=convert(ast.getChild(3));
+            Object pl=convert(ast.getChild(3));
+            rAttrs=convert(ast.getChild(4));
             return c.convertWasAssociatedWith(uid,id2,id1,rAttrs);
 
 

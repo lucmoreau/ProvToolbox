@@ -22,6 +22,7 @@
     <module>xml</module>    
     <module>asn</module>    
     <module>dot</module>    
+    <module>interop</module>    
 <!--    <module>elmo</module>
     <module>toolbox</module>    
     <module>jena</module>    -->

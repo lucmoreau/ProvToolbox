@@ -149,7 +149,18 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
 
-  <xs:complexType name="WasComplementOf">
+  <xs:complexType name="AlternateOf">
+    <xs:sequence>
+      <xs:element name="entity2"   type="prov:EntityRef"/>
+      <xs:element name="entity1"   type="prov:EntityRef"/>
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute ref="prov:id"/>
+  </xs:complexType>
+
+  <xs:complexType name="SpecializationOf">
     <xs:sequence>
       <xs:element name="entity2"   type="prov:EntityRef"/>
       <xs:element name="entity1"   type="prov:EntityRef"/>
@@ -209,7 +220,8 @@
 	<xs:element name="wasDerivedFrom"     type="prov:WasDerivedFrom"/>
 	<xs:element name="wasControlledBy"    type="prov:WasControlledBy"/>
 	<xs:element name="wasAssociatedWith"  type="prov:WasAssociatedWith"/>
-	<xs:element name="wasComplementOf"    type="prov:WasComplementOf"/>
+	<xs:element name="alternateOf"        type="prov:AlternateOf"/>
+	<xs:element name="specializationOf"   type="prov:SpecializationOf"/>
 	<xs:element name="hasAnnotation"      type="prov:HasAnnotation"/>
       </xs:choice>
     </xs:sequence>

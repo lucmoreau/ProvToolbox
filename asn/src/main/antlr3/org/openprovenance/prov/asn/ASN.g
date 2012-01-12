@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; INT; PLAN;
+    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; INT; PLAN; SPECIALIZATION; ALTERNATE;
 }
 
 @header {
@@ -59,7 +59,7 @@ defaultNamespaceDeclaration :
     ;
 
 record
-	:	(entityRecord | activityRecord | agentRecord | generationRecord  | useRecord | derivationRecord | dependenceRecord  | controlRecord | complementarityRecord  |  associationRecord)
+	:	(entityRecord | activityRecord | agentRecord | generationRecord  | useRecord | derivationRecord | dependenceRecord  | controlRecord | alternateRecord | specializationRecord  |  associationRecord)
 	;
 
 entityRecord
@@ -120,9 +120,14 @@ controlRecord
       -> ^(WCB optionalIdentifier identifier+ optionalAttributeValuePairs)
 	;
 
-complementarityRecord
-	:	'wasComplementOf' '('  optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
-      -> ^(COMPLEMENTARITY optionalIdentifier identifier+ optionalAttributeValuePairs)
+alternateRecord
+	:	'alternateOf' '('  optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
+      -> ^(ALTERNATE optionalIdentifier identifier+ optionalAttributeValuePairs)
+	;
+
+specializationRecord
+	:	'specializationOf' '('  optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
+      -> ^(SPECIALIZATION optionalIdentifier identifier+ optionalAttributeValuePairs)
 	;
 
 

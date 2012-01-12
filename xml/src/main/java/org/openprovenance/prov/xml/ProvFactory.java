@@ -371,20 +371,41 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public WasComplementOf newWasComplementOf(String id,
+    public AlternateOf newAlternateOf(String id,
                                               EntityRef eid2,
                                               EntityRef eid1) {
-        WasComplementOf res=of.createWasComplementOf();
+        AlternateOf res=of.createAlternateOf();
         res.setId(stringToQName(id));
         res.setEntity2(eid2);
         res.setEntity1(eid1);
         return res;
     }
 
-    public WasComplementOf newWasComplementOf(QName id,
+    public AlternateOf newAlternateOf(QName id,
                         EntityRef eid2,
                         EntityRef eid1) {
-        WasComplementOf res=of.createWasComplementOf();
+        AlternateOf res=of.createAlternateOf();
+        res.setId(id);
+        res.setEntity2(eid2);
+        res.setEntity1(eid1);
+        return res;
+    }
+
+
+    public SpecializationOf newSpecializationOf(String id,
+                                                EntityRef eid2,
+                                                EntityRef eid1) {
+        SpecializationOf res=of.createSpecializationOf();
+        res.setId(stringToQName(id));
+        res.setEntity2(eid2);
+        res.setEntity1(eid1);
+        return res;
+    }
+
+    public SpecializationOf newSpecializationOf(QName id,
+                                                EntityRef eid2,
+                                                EntityRef eid1) {
+        SpecializationOf res=of.createSpecializationOf();
         res.setId(id);
         res.setEntity2(eid2);
         res.setEntity1(eid1);

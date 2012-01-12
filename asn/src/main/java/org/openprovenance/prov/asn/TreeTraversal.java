@@ -164,7 +164,7 @@ public class TreeTraversal {
             Object dAttrs=convert(ast.getChild(5));
             return c.convertWasDerivedFrom(id2,id1,pe,q2,q1,dAttrs);
 
-        case ASNParser.COMPLEMENTARITY:
+        case ASNParser.ALTERNATE:
             uidTree=ast.getChild(0);
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
@@ -173,7 +173,18 @@ public class TreeTraversal {
             id2=convert(ast.getChild(1));
             id1=convert(ast.getChild(2));
             rAttrs=convert(ast.getChild(3));
-            return c.convertWasComplementOf(uid,id2,id1,rAttrs);
+            return c.convertAlternateOf(uid,id2,id1,rAttrs);
+
+        case ASNParser.SPECIALIZATION:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            rAttrs=convert(ast.getChild(3));
+            return c.convertSpecializationOf(uid,id2,id1,rAttrs);
 
 
         case ASNParser.WAW:

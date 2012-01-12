@@ -19,7 +19,8 @@ import org.openprovenance.prov.xml.Container;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
-import org.openprovenance.prov.xml.WasComplementOf;
+import org.openprovenance.prov.xml.AlternateOf;
+import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
@@ -277,7 +278,7 @@ public  class ProvConstructor implements TreeConstructor {
         return d;
     }
 
-    public Object convertWasComplementOf(Object id, Object id2,Object id1, Object aAttrs) {
+    public Object convertAlternateOf(Object id, Object id2,Object id1, Object aAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
@@ -285,9 +286,27 @@ public  class ProvConstructor implements TreeConstructor {
         EntityRef e2r=pFactory.newEntityRef(e2);
         Entity e1=entityTable.get(s_id1);
         EntityRef e1r=pFactory.newEntityRef(e1);
-        WasComplementOf wco=pFactory.newWasComplementOf(s_id,
-                                                        e2r,
-                                                        e1r);
+        AlternateOf wco=pFactory.newAlternateOf(s_id,
+                                                e2r,
+                                                e1r);
+        List attrs=(List)aAttrs;
+        wco.getAny().addAll(attrs);
+
+        return wco;
+
+    }
+
+    public Object convertSpecializationOf(Object id, Object id2,Object id1, Object aAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+        Entity e1=entityTable.get(s_id1);
+        EntityRef e1r=pFactory.newEntityRef(e1);
+        SpecializationOf wco=pFactory.newSpecializationOf(s_id,
+                                                          e2r,
+                                                          e1r);
         List attrs=(List)aAttrs;
         wco.getAny().addAll(attrs);
 

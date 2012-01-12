@@ -42,8 +42,11 @@ public class ProvUtilities {
         if (r instanceof WasAssociatedWith) {
             return ((WasAssociatedWith)r).getActivity().getRef();
         }
-        if (r instanceof WasComplementOf) {
-            return ((WasComplementOf)r).getEntity2().getRef();
+        if (r instanceof AlternateOf) {
+            return ((AlternateOf)r).getEntity2().getRef();
+        }
+        if (r instanceof SpecializationOf) {
+            return ((SpecializationOf)r).getEntity2().getRef();
         }
         System.out.println("Unknow relation " + r);
         throw new NullPointerException();
@@ -65,8 +68,11 @@ public class ProvUtilities {
         if (r instanceof WasAssociatedWith) { // what about entity plan?
             return ((WasAssociatedWith)r).getAgent().getRef();
         }
-        if (r instanceof WasComplementOf) {
-            return ((WasComplementOf)r).getEntity1().getRef();
+        if (r instanceof AlternateOf) {
+            return ((AlternateOf)r).getEntity1().getRef();
+        }
+        if (r instanceof SpecializationOf) {
+            return ((SpecializationOf)r).getEntity1().getRef();
         }
 
         throw new NullPointerException();

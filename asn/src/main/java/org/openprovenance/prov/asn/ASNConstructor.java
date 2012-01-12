@@ -107,8 +107,14 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
-    public Object convertWasComplementOf(Object id, Object id2,Object id1, Object aAttrs) {
-        String s="wasComplementOf(" + optionalId(id) + id2 + "," + id1 +
+    public Object convertAlternateOf(Object id, Object id2,Object id1, Object aAttrs) {
+        String s="alternateOf(" + optionalId(id) + id2 + "," + id1 +
+            optionalAttributes(aAttrs) + ")";
+        return s;
+    }
+
+    public Object convertSpecializationOf(Object id, Object id2,Object id1, Object aAttrs) {
+        String s="specializationOf(" + optionalId(id) + id2 + "," + id1 +
             optionalAttributes(aAttrs) + ")";
         return s;
     }

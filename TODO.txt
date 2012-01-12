@@ -9,8 +9,6 @@
 
 
 1. Update the ASN grammar to deal with latest changes
-    - wasAssociated with Plan
-    - drop hadPlan
     - alternates/specialization
 
 2. Likewise for the XML Schema
@@ -32,6 +30,12 @@
 8. Conversion to Dot 
      should display plan
 
+----------------------------------------------------------------------
+
+DONE
 
 
+1. Update the ASN grammar to deal with latest changes
+    - wasAssociated with Plan
+    - drop hadPlan
 

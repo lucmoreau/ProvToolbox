@@ -84,7 +84,8 @@ public class InteropFramework
 
     public void xml2xml(String inXmlFile,
                         String outXmlFile,
-                        String[] schemaFiles) throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
+                        String[] schemaFiles,
+                        Hashtable<String,String> outNamespaces) throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
 
         File in=new File(inXmlFile);
         File out=new File(outXmlFile);
@@ -99,7 +100,9 @@ public class InteropFramework
 
         Utility u=new Utility();        
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
+        c.setNss(outNamespaces);
         Container c2=(Container)u.convertJavaBeanToJavaBean(c);
+        c2.setNss(outNamespaces);
         serial.serialiseContainer(out,c2,true);
     }
         

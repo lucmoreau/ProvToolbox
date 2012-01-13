@@ -77,6 +77,15 @@ public class ProvUtilities {
 
         throw new NullPointerException();
     }
+
+    public QName getOtherCause(Relation r) {
+        if (r instanceof WasAssociatedWith) { 
+            EntityRef e=((WasAssociatedWith)r).getPlan();
+            if (e==null) return null;
+            return e.getRef();
+        }
+        return null;
+    }
         
 
 

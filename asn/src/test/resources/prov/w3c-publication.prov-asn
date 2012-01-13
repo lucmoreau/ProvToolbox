@@ -8,8 +8,8 @@ prefix w3 <http://www.w3.org/TR/2011/>
 prefix process <http://www.w3.org/2005/10/Process-20051014/tr.html#>
 
 
-entity(w3:WD-prov-dm-20111018, [ prov:type="WD", ex:maturity="WD" ])
-entity(w3:WD-prov-dm-20111215, [ prov:type="WD", ex:maturity="WD" ])
+entity(w3:WD-prov-dm-20111018, [ prov:type="WD" ])
+entity(w3:WD-prov-dm-20111215, [ prov:type="WD" ])
 
 entity(process:rec-advance, [ prov:type="Plan" ])
 
@@ -21,21 +21,21 @@ entity(ex:req3, [ prov:type="http://www.w3.org/2005/08/01-transitions.html#pubre
 wasDerivedFrom(w3:WD-prov-dm-20111215,w3:WD-prov-dm-20111018)
 
 
-activity(ex:a1,,,[prov:type="publish"])
-activity(ex:a2,,,[prov:type="publish"])
+activity(ex:pub1,,,[prov:type="publish"])
+activity(ex:pub2,,,[prov:type="publish"])
 
 
-wasGeneratedBy(w3:WD-prov-dm-20111018, ex:a1)
-wasGeneratedBy(w3:WD-prov-dm-20111215, ex:a2)
+wasGeneratedBy(w3:WD-prov-dm-20111018, ex:pub1)
+wasGeneratedBy(w3:WD-prov-dm-20111215, ex:pub2)
 
-used(ex:a1,ex:req1)
-used(ex:a1,ex:req2)
-used(ex:a2,ex:req3)
+used(ex:pub1,ex:req1)
+used(ex:pub1,ex:req2)
+used(ex:pub2,ex:req3)
 
 agent(ex:w3c, [ prov:type="Organization" ])
 
-wasAssociatedWith(ex:a1, ex:w3c  @ process:rec-advance)
-wasAssociatedWith(ex:a2, ex:w3c  @ process:rec-advance)
+wasAssociatedWith(ex:pub1, ex:w3c  @ process:rec-advance)
+wasAssociatedWith(ex:pub2, ex:w3c  @ process:rec-advance)
 
 
 

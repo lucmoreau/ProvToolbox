@@ -559,11 +559,21 @@ public class ProvToDot {
                       out,
                       true);
             //        }
+        QName other=u.getOtherCause(e);
+        if (other !=null) {
+            emitRelation( qnameToString(u.getEffect(e)),
+                          qnameToString(other),
+                          properties,
+                          out,
+                          true);
+
+        }
     }
+    
 
     public HashMap<String,String> addRelationAttributes(String accountLabel,
-                                                    Relation e,
-                                                    HashMap<String,String> properties) {
+                                                        Relation e,
+                                                        HashMap<String,String> properties) {
         String colour=convertAccount(accountLabel);
         properties.put("color",colour);
         properties.put("fontcolor",colour);
@@ -644,10 +654,15 @@ public class ProvToDot {
     String defaultAccountLabel;
     String defaultAccountColor;
 
+    /* make name compatible with dot notation*/
+    
+    public String dotify(String name) {
+        return name.replace('-','_').replace('.','_');
+    }
 
     public void emitElement(QName name, HashMap<String,String> properties, PrintStream out) {
         StringBuffer sb=new StringBuffer();
-        sb.append(""+qnameToString(name));
+        sb.append(""+dotify(qnameToString(name)));
         emitProperties(sb,properties);
         out.println(sb.toString());
     }
@@ -655,13 +670,13 @@ public class ProvToDot {
 
     public void emitRelation(String src, String dest, HashMap<String,String> properties, PrintStream out, boolean directional) {
         StringBuffer sb=new StringBuffer();
-        sb.append(src);
+        sb.append(dotify(src));
         if (directional) {
             sb.append(" -> ");
         } else {
             sb.append(" -- ");
         }
-        sb.append(dest);
+        sb.append(dotify(dest));
         emitProperties(sb,properties);
         out.println(sb.toString());
     }

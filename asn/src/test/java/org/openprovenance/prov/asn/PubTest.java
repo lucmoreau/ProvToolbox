@@ -59,19 +59,25 @@ public class PubTest
         super( testName );
     }
 
+    static public Container graph1;
 
-
-    public void testReadASN() throws java.io.IOException, java.lang.Throwable {
-
-
+    public void testReadASNSaveXML() throws java.io.IOException, java.lang.Throwable {
         String file="src/test/resources/prov/w3c-publication.prov-asn";
+        testReadASNSaveXML(file);
+    }
+
+    public void testReadASNSaveXML(String file) throws java.io.IOException, java.lang.Throwable {
 
         Utility u=new Utility();
         CommonTree tree = u.convertASNToTree(file);
 
         Object o2=u.convertTreeToJavaBean(tree);
 
+        graph1=(Container)o2;
+
         String o3=u.convertTreeToASN(tree);
+
+        
 
         try {
             ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();

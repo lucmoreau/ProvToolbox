@@ -1,19 +1,16 @@
-package org.openprovenance.prov.asn;
-import java.net.URL;
+package org.openprovenance.prov.json;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.codehaus.jackson.map.ObjectMapper;
+import org.openprovenance.prov.asn.TreeConstructor;
+import org.openprovenance.prov.asn.TreeTraversal;
+import org.openprovenance.prov.asn.Utility;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import eu.vahlas.json.schema.JSONSchema;
-import eu.vahlas.json.schema.JSONSchemaProvider;
-import eu.vahlas.json.schema.impl.JacksonSchemaProvider;
 
 /** Conversion back to PROV-JSON. */
 
@@ -52,20 +49,16 @@ class JSONConstructor implements TreeConstructor {
             String json = gson.toJson(provStructure);
             System.out.println(json);
             
-            ObjectMapper mapper = new ObjectMapper();
-    		JSONSchemaProvider schemaProvider = new JacksonSchemaProvider(mapper);
-    		JSONSchema schema = schemaProvider
-    				.getSchema(new URL(
-    						"https://raw.github.com/trungdong/w3-prov/master/specs/json/prov-json-schema.js"));
-    		List<String> errors = schema.validate(json);
-    		if (errors.size() > 0) {
-    			System.err.println(errors.size() + " validation error(s):");
+            RhinoValidator validator = new RhinoValidator();
+			List<String> errors = validator.validate(json);
+			if (errors.size() > 0)
+			{
+				System.err.println(errors.size() + " validation error(s):");
 				for (String error : errors)
 				{
 					System.err.println(error);
 				}
-    		}
-            
+			}
         } catch(Throwable t) {
             System.out.println("exception: "+t);
             t.printStackTrace();

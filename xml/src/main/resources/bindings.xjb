@@ -5,6 +5,8 @@
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+
+
 <!--
    <jaxb:globalBindings>
     <jaxb:javaType name="java.net.URI" xmlType="xs:anyURI"
@@ -36,6 +38,7 @@
 
     <jaxb:bindings schemaLocation="curie.xsd" 
                    node="/xs:schema">       
+
         <jaxb:schemaBindings>
             <jaxb:package name="org.openprovenance.prov.xml"/>
         </jaxb:schemaBindings>

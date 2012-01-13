@@ -59,18 +59,17 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
-    public Object convertWasComplementOf(Object id, Object id2,Object id1, Object aAttrs) {
+    public Object convertAlternateOf(Object id, Object id2,Object id1, Object aAttrs) {
         return null;
     }
 
-    public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object aAttrs) {
+    public Object convertSpecializationOf(Object id, Object id2,Object id1, Object aAttrs) {
         return null;
     }
 
-    public Object convertHadPlan(Object id, Object id2,Object id1, Object aAttrs) {
-	return null;
+    public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
+        return null;
     }
-
 
     public Object convertQNAME(String qname) {
         return null;

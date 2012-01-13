@@ -84,7 +84,7 @@ prefix ex2 <http://example.org/ex2>
 
           activity(ex:a2, 2001-10-26T22:33:55, 2001-11-12T21:32:52, [ex:param="a", ex:port="foo"])
 
-	  hadPlan(ex:a2,ex:e8,[ex:execution="success"])
+
 
 endContainer
 

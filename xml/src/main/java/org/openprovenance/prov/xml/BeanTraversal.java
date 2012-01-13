@@ -144,10 +144,10 @@ public class BeanTraversal {
             return convert((HasAnnotation) o);
         } else if (o instanceof WasInformedBy) {
             return convert((WasInformedBy) o);
-        } else if (o instanceof WasComplementOf) {
-            return convert((WasComplementOf) o);
-        } else if (o instanceof HadPlan) {
-            return convert((HadPlan) o);
+        } else if (o instanceof AlternateOf) {
+            return convert((AlternateOf) o);
+        } else if (o instanceof SpecializationOf) {
+            return convert((SpecializationOf) o);
         } else if (o instanceof WasGeneratedBy) {
             return convert((WasGeneratedBy) o);
         } else {
@@ -162,7 +162,8 @@ public class BeanTraversal {
                                           tAttrs,
                                           otherAttrs,
                                           c.convert(o.getActivity().getRef()),
-                                          c.convert(o.getAgent().getRef()));
+                                          c.convert(o.getAgent().getRef()),
+                                          c.convert(o.getPlan().getRef()));
     }
 
     public Object convert(Used o) {
@@ -199,22 +200,22 @@ public class BeanTraversal {
         return c.convertWasInformedBy(c.convert(o.getId()),tAttrs,otherAttrs);
     }
 
-    public Object convert(WasComplementOf o) {
+    public Object convert(AlternateOf o) {
         List tAttrs=convertTypeAttributes((HasType)o);
         List otherAttrs=convertAttributes((HasExtensibility)o);
 
-        return c.convertWasComplementOf(c.convert(o.getId()),tAttrs,otherAttrs,
-                                        c.convert(o.getEntity2().getRef()),
-                                        c.convert(o.getEntity1().getRef()));
+        return c.convertAlternateOf(c.convert(o.getId()),tAttrs,otherAttrs,
+                                    c.convert(o.getEntity2().getRef()),
+                                    c.convert(o.getEntity1().getRef()));
     }
 
-    public Object convert(HadPlan o) {
+    public Object convert(SpecializationOf o) {
         List tAttrs=convertTypeAttributes((HasType)o);
         List otherAttrs=convertAttributes((HasExtensibility)o);
 
-        return c.convertHadPlan(c.convert(o.getId()),tAttrs,otherAttrs,
-                                c.convert(o.getActivity().getRef()),
-                                c.convert(o.getEntity().getRef()));
+        return c.convertSpecializationOf(c.convert(o.getId()),tAttrs,otherAttrs,
+                                         c.convert(o.getEntity2().getRef()),
+                                         c.convert(o.getEntity1().getRef()));
     }
 
     public Object convert(WasGeneratedBy o) {

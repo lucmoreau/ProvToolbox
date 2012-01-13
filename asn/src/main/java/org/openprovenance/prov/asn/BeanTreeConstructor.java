@@ -4,7 +4,6 @@ import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.BeanConstructor;
 import org.openprovenance.prov.xml.Entity;
-import org.openprovenance.prov.xml.HadPlan;
 import org.openprovenance.prov.xml.HasAnnotation;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.HasLabel;
@@ -12,7 +11,7 @@ import org.openprovenance.prov.xml.HasType;
 import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasAssociatedWith;
-import org.openprovenance.prov.xml.WasComplementOf;
+import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.WasControlledBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.WasGeneratedBy;
@@ -119,7 +118,7 @@ public class BeanTreeConstructor implements BeanConstructor{
     }
 
 
-    public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object agent) {
+    public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object agent, Object plan) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
@@ -128,6 +127,7 @@ public class BeanTreeConstructor implements BeanConstructor{
         return c.convertWasAssociatedWith(id,
                                           activity,
                                           agent,
+                                          plan,
                                           c.convertAttributes(attrs));
     }
     public Object convertUsed(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity) {
@@ -171,28 +171,30 @@ public class BeanTreeConstructor implements BeanConstructor{
         attrs.addAll(otherAttrs);
         return null;
     }
-    public Object convertWasComplementOf(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity2, Object entity1) {
+    public Object convertAlternateOf(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity2, Object entity1) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
         attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
-        return c.convertWasComplementOf(id,
-                                        entity2,
-                                        entity1,
-                                        attrs);
+        return c.convertAlternateOf(id,
+                                    entity2,
+                                    entity1,
+                                    attrs);
     }
-    public Object convertHadPlan(Object id, List<Object> tAttrs, List<Object> otherAttrs,Object activity, Object entity) {
+
+    public Object convertSpecializationOf(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity2, Object entity1) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
         attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
-        return c.convertHadPlan(id,
-                                activity,
-                                entity,
-                                attrs);
+        return c.convertSpecializationOf(id,
+                                         entity2,
+                                         entity1,
+                                         attrs);
     }
+
     public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);

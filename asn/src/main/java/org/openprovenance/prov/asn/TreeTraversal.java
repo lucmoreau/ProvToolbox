@@ -96,6 +96,14 @@ public class TreeTraversal {
             } else {
                 return c.convertU(convert(ast.getChild(0)));
             }
+
+        case ASNParser.PLAN:
+            if (ast.getChildCount()==0) {
+                return null;
+            } else {
+                return convert(ast.getChild(0));
+            }
+
         case ASNParser.G:
             if (ast.getChildCount()==0) {
                 return c.convertG(null);
@@ -156,7 +164,7 @@ public class TreeTraversal {
             Object dAttrs=convert(ast.getChild(5));
             return c.convertWasDerivedFrom(id2,id1,pe,q2,q1,dAttrs);
 
-        case ASNParser.COMPLEMENTARITY:
+        case ASNParser.ALTERNATE:
             uidTree=ast.getChild(0);
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
@@ -165,7 +173,18 @@ public class TreeTraversal {
             id2=convert(ast.getChild(1));
             id1=convert(ast.getChild(2));
             rAttrs=convert(ast.getChild(3));
-            return c.convertWasComplementOf(uid,id2,id1,rAttrs);
+            return c.convertAlternateOf(uid,id2,id1,rAttrs);
+
+        case ASNParser.SPECIALIZATION:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            rAttrs=convert(ast.getChild(3));
+            return c.convertSpecializationOf(uid,id2,id1,rAttrs);
 
 
         case ASNParser.WAW:
@@ -176,20 +195,9 @@ public class TreeTraversal {
             uid=convert(uidTree);
             id2=convert(ast.getChild(1));
             id1=convert(ast.getChild(2));
-            rAttrs=convert(ast.getChild(3));
-            return c.convertWasAssociatedWith(uid,id2,id1,rAttrs);
-
-
-        case ASNParser.HADPLAN:
-            uidTree=ast.getChild(0);
-            if (uidTree.getChildCount()>0) {
-                uidTree=uidTree.getChild(0);
-            }
-            uid=convert(uidTree);
-            id2=convert(ast.getChild(1));
-            id1=convert(ast.getChild(2));
-            rAttrs=convert(ast.getChild(3));
-            return c.convertHadPlan(uid,id2,id1,rAttrs);
+            Object pl=convert(ast.getChild(3));
+            rAttrs=convert(ast.getChild(4));
+            return c.convertWasAssociatedWith(uid,id2,id1,pl,rAttrs);
 
 
         case ASNParser.TIME:

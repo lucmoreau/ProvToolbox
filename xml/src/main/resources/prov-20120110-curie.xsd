@@ -9,10 +9,7 @@
      prov-dm not fully encoded yet.
      only work in progress.
 
-     In this schema, all ids are encoded as qnames. The ProvToolbox
-     implementation uses these schema in non-validating mode, so that
-     CURIEs are represented as java QName, and the xml tool properly
-     manages the prefixes occurring in the CURIEs.
+     In this schema, all ids are encoded as curies.
   -->
 
 
@@ -106,7 +103,7 @@
       <xs:element name="agent"    type="prov:AgentRef"/>
       <xs:element name="plan"     type="prov:EntityRef" minOccurs="0"/>
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:element ref="prov:role" minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
@@ -193,8 +190,8 @@
   <xs:element name="role"  type="xs:anySimpleType"/>
   <xs:element name="type"  type="xs:anySimpleType"/>
 
-  <xs:attribute name="id"  type="xs:QName"/>
-  <xs:attribute name="ref" type="xs:QName"/>
+  <xs:attribute name="ref" type="cu:CURIE"/>
+  <xs:attribute name="id"  type="cu:CURIE"/>
 
   <xs:complexType name="ActivityRef">
     <xs:attribute ref="prov:ref"/>

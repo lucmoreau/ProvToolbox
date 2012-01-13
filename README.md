@@ -13,3 +13,9 @@ Purpose
 This toolbox is used by the author to explore ideas and write examples
 as the W3C specification is being developed by the W3C Provenance
 Working Group.
+
+Contributors
+------------
+Trung Dong: JSON subpackage
+Mike Jewell: JSON subpackage validation
+

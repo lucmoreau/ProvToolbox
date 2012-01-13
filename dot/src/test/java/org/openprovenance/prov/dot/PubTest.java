@@ -21,7 +21,7 @@ public class PubTest extends org.openprovenance.prov.asn.PubTest {
     }
 
     public void testReadASNSaveXML1() throws java.io.IOException, java.lang.Throwable {
-        String file="../asn/src/test/resources/prov/w3c-publication.prov-asn";
+        String file="../asn/src/test/resources/prov/w3c-publication1.prov-asn";
         testReadASNSaveXML(file);
         co1=graph1;
     }

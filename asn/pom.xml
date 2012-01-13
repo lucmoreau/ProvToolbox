@@ -6,10 +6,8 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openprovenance.prov</groupId>
   <artifactId>prov-asn</artifactId>
   <name>PROV-ASN</name>
-  <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <description>A Parser for PROV-ASN.</description>
 

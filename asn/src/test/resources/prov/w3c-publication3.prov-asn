@@ -8,7 +8,7 @@ prefix rec <http://example.org/record>
 prefix w3 <http://www.w3.org/TR/2011/>
 
 
-entity(w3:WD-prov-dm-20111215, [ prov:type="WD" ])
+entity(w3:WD-prov-dm-20111215, [ prov:type="document", ex:version="2" ])
 
 
 agent(ex:Luc, [ prov:type="Person" ])

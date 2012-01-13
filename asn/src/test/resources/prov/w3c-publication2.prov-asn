@@ -13,7 +13,7 @@ prefix process <http://www.w3.org/2005/10/Process-20051014/tr.html#>
 
 entity(hg:Overview.html, [ prov:type="file in hg" ])
 
-entity(w3:WD-prov-dm-20111215, [ prov:type="WD" ])
+entity(w3:WD-prov-dm-20111215, [ prov:type="html4" ])
 
 
 

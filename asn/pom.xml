@@ -76,10 +76,6 @@
                <mainClass>org.openprovenance.prov.asn.MainParser</mainClass>
                <name>asn</name>
              </program>
-             <program>
-               <mainClass>org.openprovenance.prov.asn.JSONConstructor</mainClass>
-               <name>asn2json</name>
-             </program>
            </programs>
            <repositoryLayout>default</repositoryLayout>
            <repositoryName>repo</repositoryName>

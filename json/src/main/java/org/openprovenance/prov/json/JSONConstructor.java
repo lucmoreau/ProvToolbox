@@ -287,23 +287,14 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasDerivedFrom", id, attrs);
 	}
 
-	public Object convertWasComplementOf(Object id, Object id2, Object id1, Object aAttrs) {
-		List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:newer", id2));
-    	attrs.add(tuple("prov:older", id1));
-    	if (aAttrs != null) {
-    		attrs.addAll((List<Object>)aAttrs);
-    	}
-    	if (id == null)
-    		id = getBlankID("wCO");
-
-    	return new ProvRecord("wasComplementOf", id, attrs);
-	}
-
-	public Object convertWasAssociatedWith(Object id, Object id2, Object id1, Object aAttrs) {
+	public Object convertWasAssociatedWith(Object id, Object id2, Object id1,
+			Object pl, Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:agent", id2));
     	attrs.add(tuple("prov:activity", id1));
+    	if (pl != null) {
+    		attrs.add(tuple("prov:plan", pl));
+    	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
     	}
@@ -313,17 +304,32 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasAssociatedWith", id, attrs);
 	}
 
-	public Object convertHadPlan(Object id, Object id2, Object id1, Object aAttrs) {
+	public Object convertAlternateOf(Object id, Object id2, Object id1,
+			Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:plan", id1));
-    	attrs.add(tuple("prov:activity", id2));
+    	attrs.add(tuple("prov:entity", id1));
+    	attrs.add(tuple("prov:alternate", id2));
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
     	}
     	if (id == null)
-    		id = getBlankID("hP");
+    		id = getBlankID("aO");
 
-    	return new ProvRecord("hadPlan", id, attrs);
+    	return new ProvRecord("alternateOf", id, attrs);
+	}
+
+	public Object convertSpecializationOf(Object id, Object id2, Object id1,
+			Object aAttrs) {
+		List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:entity", id1));
+    	attrs.add(tuple("prov:specialization", id2));
+    	if (aAttrs != null) {
+    		attrs.addAll((List<Object>)aAttrs);
+    	}
+    	if (id == null)
+    		id = getBlankID("aO");
+
+    	return new ProvRecord("specializationOf", id, attrs);
 	}
 
 	public Object convertQNAME(String qname) {

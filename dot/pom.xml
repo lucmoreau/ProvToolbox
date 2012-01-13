@@ -38,6 +38,18 @@
       <scope>test</scope>
     </dependency>
 
+
+
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-asn</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>
+
+
+
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>

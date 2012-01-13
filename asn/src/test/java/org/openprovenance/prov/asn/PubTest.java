@@ -62,7 +62,7 @@ public class PubTest
     static public Container graph1;
 
     public void testReadASNSaveXML() throws java.io.IOException, java.lang.Throwable {
-        String file="src/test/resources/prov/w3c-publication.prov-asn";
+        String file="src/test/resources/prov/w3c-publication1.prov-asn";
         testReadASNSaveXML(file);
     }
 

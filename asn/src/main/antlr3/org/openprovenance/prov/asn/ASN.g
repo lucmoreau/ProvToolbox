@@ -78,7 +78,7 @@ agentRecord
 	;
 
 generationRecord
-	:	'wasGeneratedBy' '('  optionalIdentifier identifier ',' identifier optionalTime optionalAttributeValuePairs ')'
+	:	'wasGeneratedBy' '('  optionalIdentifier identifier ',' (identifier)? optionalTime optionalAttributeValuePairs ')'
       -> ^(WGB optionalIdentifier identifier+ optionalTime optionalAttributeValuePairs)
 	;
 

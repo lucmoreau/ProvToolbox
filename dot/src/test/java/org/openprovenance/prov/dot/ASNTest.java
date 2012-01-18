@@ -24,8 +24,10 @@ public class ASNTest extends TestCase {
         Container o= (Container) u.convertTreeToJavaBean(tree);
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-        
-        serial.serialiseContainer(new File(xmlFile),o,true);
+
+        System.out.println(" " + o);
+
+        //serial.serialiseContainer(new File(xmlFile),o,true);
 
         ProvToDot toDot=new ProvToDot("src/main/resources/defaultConfigWithRoleNoLabel.xml"); 
         

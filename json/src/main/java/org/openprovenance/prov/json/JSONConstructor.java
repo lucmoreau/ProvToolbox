@@ -265,7 +265,7 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasGeneratedBy", id, attrs);
 	}
 
-	public Object convertWasDerivedFrom(Object id2, Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
+	public Object convertWasDerivedFrom(Object id2, Object id1, Object pe, Object q2, Object q1, Object time, Object dAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:usedEntity", id2));
     	attrs.add(tuple("prov:generatedEntity", id1));
@@ -277,6 +277,9 @@ class JSONConstructor implements TreeConstructor {
     	}
     	if (q1 != null) {
     		attrs.add(tuple("prov:generation", q1));
+    	}
+    	if (time != null) {
+    		attrs.add(tuple("prov:time", time));
     	}
     	if (dAttrs != null) {
     		attrs.addAll((List<Object>)dAttrs);

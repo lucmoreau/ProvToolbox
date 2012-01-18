@@ -161,8 +161,9 @@ public class TreeTraversal {
             Object pe=convert(ast.getChild(2));
             Object q2=convert(ast.getChild(3));
             Object q1=convert(ast.getChild(4));
-            Object dAttrs=convert(ast.getChild(5));
-            return c.convertWasDerivedFrom(id2,id1,pe,q2,q1,dAttrs);
+            time=convert(ast.getChild(5));
+            Object dAttrs=convert(ast.getChild(6));
+            return c.convertWasDerivedFrom(id2,id1,pe,q2,q1,time,dAttrs);
 
         case ASNParser.ALTERNATE:
             uidTree=ast.getChild(0);

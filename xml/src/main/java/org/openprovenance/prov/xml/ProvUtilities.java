@@ -21,6 +21,7 @@ public class ProvUtilities {
         List<Relation> res=new LinkedList();
         Dependencies dep=g.getRecords().getDependencies();
         for (Object o:dep.getUsedOrWasGeneratedByOrWasInformedBy()) {
+            System.out.println("relation is " + o);
             res.add((Relation)o);
         }
         return res;

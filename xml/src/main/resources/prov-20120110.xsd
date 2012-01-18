@@ -131,6 +131,7 @@
       <xs:element name="generation" type="prov:DependencyRef" minOccurs="0"/>
       <xs:element name="usage"      type="prov:DependencyRef" minOccurs="0"/>
       <xs:element name="activity"   type="prov:ActivityRef" minOccurs="0"/>
+      <xs:element name="time"       type="xs:dateTime" minOccurs="0"/> <!-- for imprecise only -->
       <xs:element name="effect"  type="prov:EntityRef"/>
       <xs:element name="cause"   type="prov:EntityRef"/>
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>

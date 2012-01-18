@@ -257,7 +257,7 @@ public  class ProvConstructor implements TreeConstructor {
         return g;
     }
 
-    public Object convertWasDerivedFrom(Object id2,Object id1, Object a, Object g2, Object u1, Object dAttrs) {
+    public Object convertWasDerivedFrom(Object id2,Object id1, Object a, Object g2, Object u1, Object time, Object dAttrs) {
         String s_id2=(String)id2;
         String s_id1=(String)id1;
         Entity e2=entityTable.get(s_id2);
@@ -270,6 +270,11 @@ public  class ProvConstructor implements TreeConstructor {
         if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
         if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
         if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
+
+        if (time!=null) {
+            d.setTime(pFactory.newISOTime((String)time));
+        }
+
 
         List attrs=(List)dAttrs;
         d.getAny().addAll(attrs);

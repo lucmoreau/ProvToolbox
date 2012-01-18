@@ -155,6 +155,7 @@ public class BeanTreeConstructor implements BeanConstructor{
                                        null,//pe
                                        null,//g2
                                        null,//u1
+                                       null,//time
                                        c.convertAttributes(attrs));
     }
     

@@ -87,9 +87,18 @@ useRecord
       -> ^(USED optionalIdentifier identifier+ optionalTime optionalAttributeValuePairs)
 	;
 
-derivationRecord
+derivationRecord2
 	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier (',' a=identifier ',' g2=identifier ',' u1=identifier )?	optionalAttributeValuePairs ')'
       -> ^(WDF $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) optionalAttributeValuePairs)
+	;
+
+
+derivationRecord
+	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier ',' a=identifier ',' g2=identifier ',' u1=identifier optionalAttributeValuePairs ')'
+      -> ^(WDF $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) ^(TIME) optionalAttributeValuePairs)
+ |
+        'wasDerivedFrom' '(' id2=identifier ',' id1=identifier optionalTime	optionalAttributeValuePairs ')'
+      -> ^(WDF $id2 $id1 ^(A)  ^(G) ^(U) optionalTime optionalAttributeValuePairs)
 	;
 
 optionalAttributeValuePairs

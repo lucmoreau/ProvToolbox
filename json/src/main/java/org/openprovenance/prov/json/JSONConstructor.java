@@ -267,8 +267,8 @@ class JSONConstructor implements TreeConstructor {
 
 	public Object convertWasDerivedFrom(Object id2, Object id1, Object pe, Object q2, Object q1, Object time, Object dAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:usedEntity", id2));
-    	attrs.add(tuple("prov:generatedEntity", id1));
+    	attrs.add(tuple("prov:usedEntity", id1));
+    	attrs.add(tuple("prov:generatedEntity", id2));
     	if (pe != null) {
     		attrs.add(tuple("prov:activity", pe));
     	}

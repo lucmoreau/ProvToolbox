@@ -436,6 +436,32 @@ public class ProvFactory implements CommonURIs {
 
 
 
+    public ActedOnBehalfOf newActedOnBehalfOf(String id,
+                                              AgentRef subordinate,
+                                              AgentRef responsible,
+                                              ActivityRef eid2) {
+        ActedOnBehalfOf res=of.createActedOnBehalfOf();
+        res.setId(stringToQName(id));
+        res.setActivity(eid2);
+        res.setSubordinate(subordinate);
+        res.setResponsible(responsible);
+        return res;
+    }
+
+    public ActedOnBehalfOf newActedOnBehalfOf(QName id,
+                                              AgentRef subordinate,
+                                              AgentRef responsible,
+                                              ActivityRef eid2) {
+        ActedOnBehalfOf res=of.createActedOnBehalfOf();
+        res.setId(id);
+        res.setActivity(eid2);
+        res.setSubordinate(subordinate);
+        res.setResponsible(responsible);
+        return res;
+    }
+
+
+
     public void addRole(HasRole a,                                  
                         Object role) {
         if (role!=null) {

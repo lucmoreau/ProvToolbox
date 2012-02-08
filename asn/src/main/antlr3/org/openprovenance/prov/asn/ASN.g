@@ -200,8 +200,10 @@ datatype
          QNAME -> ^(QNAM QNAME))
 	;
 	
+/** QNAME Syntax to be agreed, here allows all digits in the local part. */
+
 QNAME	
-	:	NCNAME (':' NCNAME)?  
+	:	NCNAME (':' (NCNAME | POSINTLITERAL))?  
 	;
 
 
@@ -232,9 +234,11 @@ fragment NAMESTARTCHAR
 	| NCNAMESTARTCHAR
 	;
 	
+
+
 	
 fragment NCNAME	           
-	:  NCNAMESTARTCHAR NCNAMECHAR*
+ 	:  NCNAMESTARTCHAR NCNAMECHAR* 
 	;	
 
 
@@ -358,8 +362,12 @@ IsoDateTime: (DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' DIGIT 
 
 fragment DIGIT: '0'..'9';
 
+POSINTLITERAL:
+    ('0'..'9')+
+    ;
+
 INTLITERAL:
-    '-'? ('0'..'9')+
+    '-'? POSINTLITERAL
     ;
 
 

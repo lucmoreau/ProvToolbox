@@ -30,6 +30,10 @@
 8. Conversion to Dot 
      should display plan
 
+9. W3C tech report example:
+   asn parser does not set label in the java representation, but adds a Jaxb element prov:label.
+   
+
 ----------------------------------------------------------------------
 
 DONE

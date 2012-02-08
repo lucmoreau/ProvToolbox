@@ -63,10 +63,10 @@ public class PubTest
 
     public void testReadASNSaveXML() throws java.io.IOException, java.lang.Throwable {
         String file="src/test/resources/prov/w3c-publication1.prov-asn";
-        testReadASNSaveXML(file);
+        testReadASNSaveXML(file,"target/w3c-publication.prov-xml");
     }
 
-    public void testReadASNSaveXML(String file) throws java.io.IOException, java.lang.Throwable {
+    public void testReadASNSaveXML(String file, String file2) throws java.io.IOException, java.lang.Throwable {
 
         Utility u=new Utility();
         CommonTree tree = u.convertASNToTree(file);
@@ -81,7 +81,7 @@ public class PubTest
 
         try {
             ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-            serial.serialiseContainer(new File("target/w3c-publication.prov-xml"),(Container)o2,true);
+            serial.serialiseContainer(new File(file2),(Container)o2,true);
 
             System.out.println("tree is " + o3);
         } catch (JAXBException e) {

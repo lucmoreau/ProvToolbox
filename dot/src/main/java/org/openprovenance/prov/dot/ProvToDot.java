@@ -476,6 +476,7 @@ public class ProvToDot {
         if (displayEntityValue) {
             return convertEntityName(""+of.getLabel(p));
         } else {
+            System.out.println(" ----> " + qnameToString(p.getId()) + "    " + of.getLabel(p));
             return qnameToString(p.getId());
         }
     }

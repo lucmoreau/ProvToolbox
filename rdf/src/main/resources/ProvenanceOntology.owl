@@ -111,6 +111,15 @@ If you wish to make comments regarding this document, please send them to public
     
 
 
+    <!-- http://www.w3.org/ns/prov-o/hadQualifiedAssociation -->
+
+    <owl:ObjectProperty rdf:about="hadQualifiedAssociation">
+        <rdfs:domain rdf:resource="Activity"/>
+        <rdfs:range rdf:resource="Association"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.w3.org/ns/prov-o/hadQualifiedControl -->
 
     <owl:ObjectProperty rdf:about="hadQualifiedControl">
@@ -122,6 +131,7 @@ If you wish to make comments regarding this document, please send them to public
     <!-- http://www.w3.org/ns/prov-o/hadQualifiedEntity -->
 
     <owl:ObjectProperty rdf:about="hadQualifiedEntity">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
         <rdfs:range rdf:resource="Entity"/>
         <rdfs:domain rdf:resource="QualifiedInvolvement"/>
     </owl:ObjectProperty>
@@ -140,6 +150,7 @@ If you wish to make comments regarding this document, please send them to public
     <!-- http://www.w3.org/ns/prov-o/hadQualifiedUsage -->
 
     <owl:ObjectProperty rdf:about="hadQualifiedUsage">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
         <rdfs:domain rdf:resource="Activity"/>
         <rdfs:range rdf:resource="Usage"/>
     </owl:ObjectProperty>
@@ -344,20 +355,6 @@ If you wish to make comments regarding this document, please send them to public
         <rdfs:domain rdf:resource="Entity"/>
         <rdfs:range rdf:resource="Entity"/>
     </owl:ObjectProperty>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Data properties
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
-
-
     
 
 

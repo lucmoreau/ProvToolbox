@@ -23,19 +23,25 @@ public class RdfConstructor implements TreeConstructor {
 
     public Object convertActivity(Object id,Object startTime,Object endTime, Object aAttrs) {
         QName qname = getQName(id);
-        org.openprovenance.prov.rdf.Activity a = (org.openprovenance.prov.rdf.Activity) manager.designate(qname, org.openprovenance.prov.rdf.Activity.class);
+        Activity a = (Activity) manager.designate(qname, Activity.class);
         return a;
     }
 
     public Object convertEntity(Object id, Object attrs) {
         QName qname = getQName(id);
-        org.openprovenance.prov.rdf.Entity e = (org.openprovenance.prov.rdf.Entity) manager.designate(qname, org.openprovenance.prov.rdf.Entity.class);
+        Entity e;
+        if (qname.getLocalPart().equals("rec-advance")) {
+            //Hack, I need to part the attributes
+            e = (Entity) manager.designate(qname, Plan.class);
+        } else {
+            e = (Entity) manager.designate(qname, Entity.class);
+        }
         return e;
     }
 
     public Object convertAgent(Object id, Object attrs) {
         QName qname = getQName(id);
-        org.openprovenance.prov.rdf.Agent ag = (org.openprovenance.prov.rdf.Agent) manager.designate(qname, org.openprovenance.prov.rdf.Agent.class);
+        Agent ag = (Agent) manager.designate(qname, Agent.class);
         return ag;
     }
 
@@ -80,11 +86,17 @@ public class RdfConstructor implements TreeConstructor {
         QName qname = getQName(id);
         QName qn2 = getQName(id2);
         QName qn1 = getQName(id1);
+        java.lang.System.out.print("--> usage " + qname);
         Usage u = (Usage) manager.designate(qname, Usage.class);
         QualifiedInvolvement qi=(QualifiedInvolvement) u;
 
         Entity e1=(Entity)manager.find(qn1);
         Activity a2=(Activity)manager.find(qn2);
+        qi.setHadQualifiedEntity(e1);
+
+        HashSet<Usage> su=new HashSet<Usage>();
+        su.add(u);
+        a2.setHadQualifiedUsage(su);
 
 
         return u;
@@ -98,9 +110,7 @@ public class RdfConstructor implements TreeConstructor {
         QualifiedInvolvement qi=(QualifiedInvolvement) g;
         Entity e2=(Entity)manager.find(qn2);
         Activity a1=(Activity)manager.find(qn1);
-        HashSet<Entity> se=new HashSet<Entity>();
-        se.add(e2);
-        qi.setHadQualifiedEntity(se);
+        qi.setHadQualifiedEntity(e2);
 
         HashSet<Generation> sg=new HashSet<Generation>();
         sg.add(g);
@@ -122,7 +132,31 @@ public class RdfConstructor implements TreeConstructor {
     }
 
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
-        return null;
+        QName qname = getQName(id);
+        QName qn2 = getQName(id2);
+        QName qn1 = getQName(id1);
+        QName qnpl = getQName(pl);
+        java.lang.System.out.println("convertWasAssociatedWith " + qname);
+        java.lang.System.out.println("convertWasAssociatedWith " + qnpl);
+        Association a = (Association) manager.designate(qname, Association.class);
+        QualifiedInvolvement qi=(QualifiedInvolvement) a;
+
+        Activity a2=(Activity)manager.find(qn2);
+        Agent ag1=(Agent)manager.find(qn1);
+        qi.setHadQualifiedEntity(ag1);
+
+        HashSet<Association> sa=new HashSet<Association>();
+        sa.add(a);
+        a2.setHadQualifiedAssociation(sa);
+
+        Plan plan=(Plan)manager.find(qnpl);
+        HashSet<Plan> sp=new HashSet<Plan>();
+        sp.add(plan);
+        a.setAdoptedPlan(sp);
+
+
+        return a;
+
     }
 
     public Object convertQNAME(String qname) {

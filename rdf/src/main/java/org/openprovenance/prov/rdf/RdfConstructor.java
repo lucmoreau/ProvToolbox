@@ -5,6 +5,8 @@ import org.openrdf.elmo.ElmoManager;
 import javax.xml.namespace.QName;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.net.URI;
 
 public class RdfConstructor implements TreeConstructor {
@@ -75,11 +77,38 @@ public class RdfConstructor implements TreeConstructor {
     }
 
     public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs) {
-        return null;
+        QName qname = getQName(id);
+        QName qn2 = getQName(id2);
+        QName qn1 = getQName(id1);
+        Usage u = (Usage) manager.designate(qname, Usage.class);
+        QualifiedInvolvement qi=(QualifiedInvolvement) u;
+
+        Entity e1=(Entity)manager.find(qn1);
+        Activity a2=(Activity)manager.find(qn2);
+
+
+        return u;
     }
+
     public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs) {
-        return null;
+        QName qname = getQName(id);
+        QName qn2 = getQName(id2);
+        QName qn1 = getQName(id1);
+        Generation g = (Generation) manager.designate(Generation.class);
+        QualifiedInvolvement qi=(QualifiedInvolvement) g;
+        Entity e2=(Entity)manager.find(qn2);
+        Activity a1=(Activity)manager.find(qn1);
+        HashSet<Entity> se=new HashSet<Entity>();
+        se.add(e2);
+        qi.setHadQualifiedEntity(se);
+
+        HashSet<Generation> sg=new HashSet<Generation>();
+        sg.add(g);
+        a1.setHadQualifiedGeneration(sg);
+
+        return g;
     }
+
     public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object q2, Object q1, Object time, Object dAttrs) {
         return null;
     }

@@ -103,7 +103,7 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    QName stringToQName(String id) {
+    public QName stringToQName(String id) {
         if (id==null) return null;
         int index=id.indexOf(':');
         if (index==-1) {

@@ -6,6 +6,7 @@ import javax.xml.namespace.QName;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.LinkedList;
 import java.net.URI;
 
@@ -86,17 +87,30 @@ public class RdfConstructor implements TreeConstructor {
         QName qname = getQName(id);
         QName qn2 = getQName(id2);
         QName qn1 = getQName(id1);
-        java.lang.System.out.print("--> usage " + qname);
-        Usage u = (Usage) manager.designate(qname, Usage.class);
-        QualifiedInvolvement qi=(QualifiedInvolvement) u;
 
         Entity e1=(Entity)manager.find(qn1);
         Activity a2=(Activity)manager.find(qn2);
-        qi.setHadQualifiedEntity(e1);
+        Usage u=null;
 
-        HashSet<Usage> su=new HashSet<Usage>();
-        su.add(u);
-        a2.setHadQualifiedUsage(su);
+        /** Creates instance of Usage class, only if required. */
+
+        java.lang.System.out.println("used -> " + qn1);
+
+        if ((id!=null)  || (time!=null) || (aAttrs!=null)) {
+
+            u = (Usage) manager.designate(qname, Usage.class);
+            QualifiedInvolvement qi=(QualifiedInvolvement) u;
+
+            qi.setHadQualifiedEntity(e1);
+
+            HashSet<Usage> su=new HashSet<Usage>();
+            su.add(u);
+            a2.setHadQualifiedUsage(su);
+
+        }
+
+        Set<Entity> se=a2.getUsed();
+        se.add(e1);
 
 
         return u;
@@ -106,20 +120,39 @@ public class RdfConstructor implements TreeConstructor {
         QName qname = getQName(id);
         QName qn2 = getQName(id2);
         QName qn1 = getQName(id1);
-        Generation g = (Generation) manager.designate(Generation.class);
-        QualifiedInvolvement qi=(QualifiedInvolvement) g;
+
         Entity e2=(Entity)manager.find(qn2);
         Activity a1=(Activity)manager.find(qn1);
-        qi.setHadQualifiedEntity(e2);
 
-        HashSet<Generation> sg=new HashSet<Generation>();
-        sg.add(g);
-        a1.setHadQualifiedGeneration(sg);
+        Generation g=null;
+
+        if ((id!=null)  || (time!=null) || (aAttrs!=null)) {
+
+            g = (Generation) manager.designate(Generation.class);
+            QualifiedInvolvement qi=(QualifiedInvolvement) g;
+
+            qi.setHadQualifiedEntity(e2);
+
+            HashSet<Generation> sg=new HashSet<Generation>();
+            sg.add(g);
+            a1.setHadQualifiedGeneration(sg);
+        }
+
+        e2.setWasGeneratedBy(a1);
 
         return g;
     }
 
     public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object q2, Object q1, Object time, Object dAttrs) {
+        QName qn2 = getQName(id2);
+        QName qn1 = getQName(id1);
+        Entity e2=(Entity)manager.find(qn2);
+        Entity e1=(Entity)manager.find(qn1);
+
+        HashSet<Entity> se=new HashSet<Entity>();
+        se.add(e1);
+        e2.setWasDerivedFrom(se);
+        
         return null;
     }
 

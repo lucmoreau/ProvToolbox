@@ -2,7 +2,7 @@
 
 container
 
-prefix ex </http://example.org/>
+prefix ex  <http://example.org/>
 
 prefix w3  <http://www.w3.org/>
 prefix tr  <http://www.w3.org/TR/2011/>

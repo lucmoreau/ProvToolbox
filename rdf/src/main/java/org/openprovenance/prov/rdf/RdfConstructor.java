@@ -149,9 +149,9 @@ public class RdfConstructor implements TreeConstructor {
         Entity e2=(Entity)manager.find(qn2);
         Entity e1=(Entity)manager.find(qn1);
 
-        HashSet<Entity> se=new HashSet<Entity>();
+        Set<Entity> se=e2.getWasDerivedFrom();
         se.add(e1);
-        e2.setWasDerivedFrom(se);
+
         
         return null;
     }

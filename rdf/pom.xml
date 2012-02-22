@@ -136,7 +136,7 @@ imported before converting.
                     <pathelement path="." />   <!-- add this path element to pick up log4.properties in the classpath -->
                   </classpath>
                   <arg value="-b" />
-                  <arg value="org.openprovenance.prov.rdf=http://www.w3.org/ns/prov-o/" />
+                  <arg value="org.openprovenance.prov.rdf=http://www.w3.org/ns/prov#" />
                   <arg value="-b" />
                   <arg value="org.openprovenance.dc=http://purl.org/dc/elements/1.1/" />
                   <arg value="-j" />

@@ -99,13 +99,13 @@ public class RdfConstructor implements TreeConstructor {
         if ((id!=null)  || (time!=null) || (aAttrs!=null)) {
 
             u = (Usage) manager.designate(qname, Usage.class);
-            QualifiedInvolvement qi=(QualifiedInvolvement) u;
+            EntityInvolvement qi=(EntityInvolvement) u;
 
-            qi.setHadQualifiedEntity(e1);
+            qi.getEntities().add(e1);
 
-            HashSet<Usage> su=new HashSet<Usage>();
-            su.add(u);
-            a2.setHadQualifiedUsage(su);
+            //HashSet<Usage> su=new HashSet<Usage>();
+            //su.add(u);
+            a2.getQualified().add(u);
 
         }
 
@@ -129,13 +129,11 @@ public class RdfConstructor implements TreeConstructor {
         if ((id!=null)  || (time!=null) || (aAttrs!=null)) {
 
             g = (Generation) manager.designate(Generation.class);
-            QualifiedInvolvement qi=(QualifiedInvolvement) g;
+            ActivityInvolvement qi=(ActivityInvolvement) g;
 
-            qi.setHadQualifiedEntity(e2);
+            qi.getActivities().add(a1);
 
-            HashSet<Generation> sg=new HashSet<Generation>();
-            sg.add(g);
-            a1.setHadQualifiedGeneration(sg);
+            e2.getQualified().add(g);
         }
 
         e2.setWasGeneratedBy(a1);
@@ -172,15 +170,13 @@ public class RdfConstructor implements TreeConstructor {
         java.lang.System.out.println("convertWasAssociatedWith " + qname);
         java.lang.System.out.println("convertWasAssociatedWith " + qnpl);
         Association a = (Association) manager.designate(qname, Association.class);
-        QualifiedInvolvement qi=(QualifiedInvolvement) a;
+        AgentInvolvement qi=(AgentInvolvement) a;
 
         Activity a2=(Activity)manager.find(qn2);
         Agent ag1=(Agent)manager.find(qn1);
-        qi.setHadQualifiedEntity(ag1);
+        qi.getEntities().add(ag1);
 
-        HashSet<Association> sa=new HashSet<Association>();
-        sa.add(a);
-        a2.setHadQualifiedAssociation(sa);
+        a2.getQualified().add(a);
 
         Plan plan=(Plan)manager.find(qnpl);
         HashSet<Plan> sp=new HashSet<Plan>();

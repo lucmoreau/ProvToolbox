@@ -167,8 +167,7 @@ public class RdfConstructor implements TreeConstructor {
         QName qn2 = getQName(id2);
         QName qn1 = getQName(id1);
         QName qnpl = getQName(pl);
-        java.lang.System.out.println("convertWasAssociatedWith " + qname);
-        java.lang.System.out.println("convertWasAssociatedWith " + qnpl);
+
         Association a = (Association) manager.designate(qname, Association.class);
         AgentInvolvement qi=(AgentInvolvement) a;
 
@@ -179,10 +178,9 @@ public class RdfConstructor implements TreeConstructor {
         a2.getQualified().add(a);
 
         Plan plan=(Plan)manager.find(qnpl);
-        HashSet<Plan> sp=new HashSet<Plan>();
-        sp.add(plan);
-        a.setAdoptedPlan(sp);
+        a.getAdoptedPlan().add(plan);
 
+	a2.getWasAssociatedWith().add(ag1);
 
         return a;
 

@@ -1,0 +1,551 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY time "http://www.w3.org/2006/time#" >
+    <!ENTITY prov-o "http://www.w3.org/ns/prov-o/" >
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<rdf:RDF xmlns="http://www.w3.org/ns/prov-o/"
+     xml:base="http://www.w3.org/ns/prov-o/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:time="http://www.w3.org/2006/time#"
+     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+     xmlns:prov-o="http://www.w3.org/ns/prov-o/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <owl:Ontology rdf:about="">
+        <rdfs:comment rdf:datatype="&xsd;string">0.2</rdfs:comment>
+        <rdfs:comment xml:lang="en"
+            >This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). 
+
+If you wish to make comments regarding this document, please send them to public-prov-wg@w3.org (subscribe, archives). All feedback is welcome.</rdfs:comment>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/actedOnBehalfOf -->
+
+    <owl:ObjectProperty rdf:about="actedOnBehalfOf">
+        <rdfs:range rdf:resource="Agent"/>
+        <rdfs:domain rdf:resource="Agent"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/adoptedPlan -->
+
+    <owl:ObjectProperty rdf:about="adoptedPlan">
+        <rdf:type rdf:resource="&owl;AsymmetricProperty"/>
+        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
+        <rdfs:label xml:lang="en">had recipe</rdfs:label>
+        <rdfs:comment xml:lang="en"
+            >The ProcessExecution activity performed was described by
+            the given recipe resource. Process specifications, as
+            referred to by recipe links, are out of scope of this
+            specification</rdfs:comment>
+        <rdfs:domain rdf:resource="Association"/>
+        <rdfs:range rdf:resource="Plan"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/alternateOf -->
+
+    <owl:ObjectProperty rdf:about="alternateOf">
+        <rdfs:range rdf:resource="Entity"/>
+        <rdfs:domain rdf:resource="Entity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/endedAt -->
+
+    <owl:ObjectProperty rdf:about="endedAt">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="Activity"/>
+        <rdfs:range rdf:resource="Instant"/>
+        <rdfs:subPropertyOf rdf:resource="hadTemporalValue"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/hadLocation -->
+
+    <owl:ObjectProperty rdf:about="hadLocation">
+        <rdf:type rdf:resource="&owl;AsymmetricProperty"/>
+        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
+        <rdfs:label xml:lang="en">had location</rdfs:label>
+        <rdfs:domain rdf:resource="&owl;Thing"/>
+        <rdfs:range rdf:resource="Location"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/hadOriginalSource -->
+
+    <owl:ObjectProperty rdf:about="hadOriginalSource">
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >how is this different from wasDerivedFrom?</rdfs:comment>
+        <rdfs:range rdf:resource="Entity"/>
+        <rdfs:domain rdf:resource="Entity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/hadQualifiedAssociation -->
+
+    <owl:ObjectProperty rdf:about="hadQualifiedAssociation">
+        <rdfs:domain rdf:resource="Activity"/>
+        <rdfs:range rdf:resource="Association"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/hadQualifiedControl -->
+
+    <owl:ObjectProperty rdf:about="hadQualifiedControl">
+        <rdfs:domain rdf:resource="Activity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/hadQualifiedEntity -->
+
+    <owl:ObjectProperty rdf:about="hadQualifiedEntity">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="Entity"/>
+        <rdfs:domain rdf:resource="QualifiedInvolvement"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/hadQualifiedGeneration -->
+
+    <owl:ObjectProperty rdf:about="hadQualifiedGeneration">
+        <rdfs:domain rdf:resource="Activity"/>
+        <rdfs:range rdf:resource="Generation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/hadQualifiedUsage -->
+
+    <owl:ObjectProperty rdf:about="hadQualifiedUsage">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <rdfs:domain rdf:resource="Activity"/>
+        <rdfs:range rdf:resource="Usage"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/hadRole -->
+
+    <owl:ObjectProperty rdf:about="hadRole">
+        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
+        <rdfs:domain rdf:resource="QualifiedInvolvement"/>
+        <rdfs:range rdf:resource="Role"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/hadTemporalValue -->
+
+    <owl:ObjectProperty rdf:about="hadTemporalValue">
+        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
+        <rdfs:label xml:lang="en"
+            >has temporal value</rdfs:label>
+        <rdfs:range rdf:resource="Time"/>
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="Activity"/>
+                    <rdf:Description rdf:about="Entity"/>
+                    <rdf:Description rdf:about="QualifiedInvolvement"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/hasAnnotation -->
+
+    <owl:ObjectProperty rdf:about="hasAnnotation">
+        <rdfs:range rdf:resource="Note"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/specializationOf -->
+
+    <owl:ObjectProperty rdf:about="specializationOf">
+        <rdfs:domain rdf:resource="Entity"/>
+        <rdfs:range rdf:resource="Entity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/startedAt -->
+
+    <owl:ObjectProperty rdf:about="startedAt">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="Activity"/>
+        <rdfs:range rdf:resource="Instant"/>
+        <rdfs:subPropertyOf rdf:resource="hadTemporalValue"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/tracedTo -->
+
+    <owl:ObjectProperty rdf:about="tracedTo">
+        <rdfs:range rdf:resource="Entity"/>
+        <rdfs:domain rdf:resource="Entity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/used -->
+
+    <owl:ObjectProperty rdf:about="used">
+        <rdf:type rdf:resource="&owl;AsymmetricProperty"/>
+        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
+        <rdfs:label xml:lang="en">used</rdfs:label>
+        <rdfs:domain rdf:resource="Activity"/>
+        <rdfs:range rdf:resource="Entity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/wasAssociatedWith -->
+
+    <owl:ObjectProperty rdf:about="wasAssociatedWith">
+        <rdfs:domain rdf:resource="Activity"/>
+        <rdfs:range rdf:resource="Agent"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/wasAttributedTo -->
+
+    <owl:ObjectProperty rdf:about="wasAttributedTo">
+        <rdfs:range rdf:resource="Agent"/>
+        <rdfs:domain rdf:resource="Entity"/>
+        <rdfs:subPropertyOf rdf:resource="tracedTo"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/wasDerivedFrom -->
+
+    <owl:ObjectProperty rdf:about="wasDerivedFrom">
+        <rdf:type rdf:resource="&owl;AsymmetricProperty"/>
+        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
+        <rdfs:label xml:lang="en"
+            >was derived from</rdfs:label>
+        <rdfs:comment xml:lang="en"
+            >wasDerivedFrom links two distinct characterized entities, where &quot;some characterized entity is transformed from, created from, or affected by another characterized entity.&quot;</rdfs:comment>
+        <rdfs:range rdf:resource="Entity"/>
+        <rdfs:domain rdf:resource="Entity"/>
+        <rdfs:subPropertyOf rdf:resource="tracedTo"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/wasEndedBy -->
+
+    <owl:ObjectProperty rdf:about="wasEndedBy">
+        <rdfs:subPropertyOf rdf:resource="wasAssociatedWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/wasGeneratedAt -->
+
+    <owl:ObjectProperty rdf:about="wasGeneratedAt">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="Entity"/>
+        <rdfs:range rdf:resource="Instant"/>
+        <rdfs:subPropertyOf rdf:resource="hadTemporalValue"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/wasGeneratedBy -->
+
+    <owl:ObjectProperty rdf:about="wasGeneratedBy">
+        <rdf:type rdf:resource="&owl;AsymmetricProperty"/>
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
+        <rdfs:label xml:lang="en"
+            >was generated by</rdfs:label>
+        <rdfs:comment xml:lang="en"
+            >wasGeneratedBy links Entitites with ProcessExecution representing that entity was generated as a result of ProcessExecution</rdfs:comment>
+        <rdfs:range rdf:resource="Activity"/>
+        <rdfs:domain rdf:resource="Entity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/wasInformedBy -->
+
+    <owl:ObjectProperty rdf:about="wasInformedBy">
+        <rdfs:label xml:lang="en">was informed by</rdfs:label>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >Proposal to change the name to &quot;Dependencies amongst Process Executions&quot; to avoid ambiguities</rdfs:comment>
+        <rdfs:domain rdf:resource="Activity"/>
+        <rdfs:range rdf:resource="Activity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/wasQuotedFrom -->
+
+    <owl:ObjectProperty rdf:about="wasQuotedFrom">
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >Different from wasAttributedTo?</rdfs:comment>
+        <rdfs:range rdf:resource="Entity"/>
+        <rdfs:domain rdf:resource="Entity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/wasRevisionOf -->
+
+    <owl:ObjectProperty rdf:about="wasRevisionOf">
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >How is this property distinct from wasDerivedFrom?</rdfs:comment>
+        <rdfs:domain rdf:resource="Entity"/>
+        <rdfs:range rdf:resource="Entity"/>
+        <rdfs:subPropertyOf rdf:resource="wasDerivedFrom"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/wasStartedBy -->
+
+    <owl:ObjectProperty rdf:about="wasStartedBy">
+        <rdfs:subPropertyOf rdf:resource="wasAssociatedWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/wasSummaryOf -->
+
+    <owl:ObjectProperty rdf:about="wasSummaryOf">
+        <rdfs:domain rdf:resource="Entity"/>
+        <rdfs:range rdf:resource="Entity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.w3.org/2002/07/owl#Thing -->
+
+    <owl:Class rdf:about="&owl;Thing"/>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Activity -->
+
+    <owl:Class rdf:about="Activity">
+        <rdfs:label xml:lang="en">Activity</rdfs:label>
+        <rdfs:comment xml:lang="en"
+            >Activity is defined to be &quot;an identifiable activity, which performs a piece of work.&quot;</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Agent -->
+
+    <owl:Class rdf:about="Agent">
+        <rdfs:label xml:lang="en">Agent</rdfs:label>
+        <rdfs:subClassOf rdf:resource="Entity"/>
+        <rdfs:comment xml:lang="en"
+            >An agent represents a characterized entity capable of activity.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Association -->
+
+    <owl:Class rdf:about="Association">
+        <rdfs:subClassOf rdf:resource="QualifiedInvolvement"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Bundle -->
+
+    <owl:Class rdf:about="Bundle">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Delegation -->
+
+    <owl:Class rdf:about="Delegation">
+        <rdfs:subClassOf rdf:resource="QualifiedInvolvement"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Entity -->
+
+    <owl:Class rdf:about="Entity">
+        <rdfs:label xml:lang="en">Entity</rdfs:label>
+        <rdfs:comment xml:lang="en"
+            >An identifiable characterized entity.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Generation -->
+
+    <owl:Class rdf:about="Generation">
+        <rdfs:subClassOf rdf:resource="QualifiedInvolvement"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Instant -->
+
+    <owl:Class rdf:about="Instant">
+        <rdfs:subClassOf rdf:resource="Time"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >&quot;Instants are, intuitively, point-like in that they have no interior points&quot;
+from the W3C OWL-Time Working Draft (http://www.w3.org/TR/owl-time/).</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Interval -->
+
+    <owl:Class rdf:about="Interval">
+        <rdfs:subClassOf rdf:resource="Time"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >&quot;Intervals are, intuitively, things with extent&quot; from W3C OWL-Time Working Draft (http://www.w3.org/TR/owl-time/).</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Location -->
+
+    <owl:Class rdf:about="Location">
+        <rdfs:label xml:lang="en">Location</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Note -->
+
+    <owl:Class rdf:about="Note">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Organization -->
+
+    <owl:Class rdf:about="Organization">
+        <rdfs:subClassOf rdf:resource="Agent"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Person -->
+
+    <owl:Class rdf:about="Person">
+        <rdfs:subClassOf rdf:resource="Agent"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Plan -->
+
+    <owl:Class rdf:about="Plan">
+        <rdfs:label xml:lang="en">Plan</rdfs:label>
+        <rdfs:subClassOf rdf:resource="Entity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/QualifiedInvolvement -->
+
+    <owl:Class rdf:about="QualifiedInvolvement"/>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Role -->
+
+    <owl:Class rdf:about="Role"/>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/System -->
+
+    <owl:Class rdf:about="System">
+        <rdfs:subClassOf rdf:resource="Agent"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Time -->
+
+    <owl:Class rdf:about="Time">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="Instant"/>
+                    <rdf:Description rdf:about="Interval"/>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >TemporalEntity represents time information, both time instant (having 0 time duration) and interval (having a non-zero duration).</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov-o/Usage -->
+
+    <owl:Class rdf:about="Usage">
+        <rdfs:subClassOf rdf:resource="QualifiedInvolvement"/>
+    </owl:Class>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 2.2.1.1138) http://owlapi.sourceforge.net -->
+

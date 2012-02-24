@@ -3,31 +3,26 @@ provconvert
 --------
 
 An executable to:
-- convert PROV representations represented as ASN into RDF Turtle, 
-- convert PROV representations represented as XML into RDF Turtl, 
+- convert PROV representations from ASN into RDF Turtle, XML, and ASN
+- convert PROV representations from XML into RDF Turtle, XML, and ASN
 
-The program uses Sesame's elmo to create or naviguate the RDF representation of PROV graphs.
 
-The program assumes that all XML IDs in the XML representation can be
-converted into a URI by providing a namespace NS, and vice-versa that
-all URIs identifying PROV entities in the RDF representation have a
-common namespace.
+
  
 USAGE:
 
-  provconvert -xml2rdf fileIn fileOut NS [yes]
-  provconvert -xml2n3  fileIn fileOut NS [yes]
-  provconvert -rdf2xml fileIn fileOut NS [gid]
-
+     provconvert -asn2rdf fileIn fileOut
+     provconvert -asn2xml fileIn fileOut
+     provconvert -asn2asn fileIn fileOut
+     provconvert -xml2xml fileIn fileOut
+     provconvert -xml2asn fileIn fileOut
 
 
 The arguments are the following:
 
  fileIn:  the name of a file from which to read the input representation
-          of an PROV graph
  fileOut: the name of a file in which to write an output representation
-          of an PROV graph
- NS: namespace
+
 
 
 
@@ -36,8 +31,27 @@ The arguments are the following:
 
 EXAMPLE
 
- bin/provconvert -rdf2xml examples/bad-cake.rdf bad-cake2.xml
- bin/provconvert -xml2n3  examples/bad-cake.xml bad-cake2.n3 http://example.com/
+ bin/provconvert -xml2rdf  examples/bad-cake.xml bad-cake2.ttl
+
+
+----------------------------------------------------------------------
+
+NOTES
+
+- This is purely experimental, and relying on XML schemas, OWL
+  ontologies, and ASN grammars that are still evolving.
+
+- The conversions do not support all the PROV terms yet
+
+- There are a number of assumptions underpinning the ASN parser and converter:
+   - Entities, agents, activities always have to be declared
+     In other words, if one writes 
+       wasGeneratedBy(e2,a1)
+     there must be
+       entity(e2)
+       activity(a1)
+
+   - Declarations should occur before use (due to a 1 pass conversion)
 
 
 

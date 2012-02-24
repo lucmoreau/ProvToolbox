@@ -1,0 +1,241 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>specs</artifactId>
+    <groupId>org.openprovenance.prov</groupId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openprovenance.prov</groupId>
+  <artifactId>toolbox</artifactId>
+  <name>PROV Toolbox</name>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <description>A series of tools to manipulate PROV representations from the command line.</description>
+
+
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-xml</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-rdf</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-asn</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-interop</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
+ </dependencies>
+
+  <build>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+
+
+     <plugins>
+
+      <!-- executable to be run as target/appassembler/bin/opm2dot src/test/resources/example2.xml file.dot file.pdf -->
+
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>appassembler-maven-plugin</artifactId>
+        <configuration>
+          <programs>
+<!--            <program>
+              <mainClass>org.openprovenance.prov.xml.OPMDeserialiser</mainClass>
+              <name>provxml-validate</name>
+            </program>
+-->
+            <program>
+              <mainClass>org.openprovenance.prov.interop.InteropFramework</mainClass>
+              <name>provconvert</name>
+            </program>
+
+          </programs>
+          <repositoryLayout>default</repositoryLayout>
+          <repositoryName>repo</repositoryName>
+          <platforms>
+            <platform>windows</platform>
+            <platform>unix</platform>
+          </platforms>
+
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <id>assemble</id>
+              <goals>
+               <goal>assemble</goal>
+              </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeArtifactIds>opm-xml</includeArtifactIds>
+              <outputDirectory>${project.build.directory}/appassembler/repo/org/openprovenance/opm-xml/${project.version}</outputDirectory>
+              <overWriteReleases>true</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <excludeTransitive>true</excludeTransitive>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
+
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+
+          <execution>
+            <id>patch.executable</id>
+            <phase>package</phase>
+            <goals>
+             <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+
+                <!-- patch the shell script to avoid changing current directory, so that
+                     relative files are understood as relative to the current directory. -->
+<!--
+
+                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
+  	              <arg value="-e s/^cd/#### no CD ### Luc/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="opm2dot" />
+                </exec>
+
+
+                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
+  	              <arg value="-e s/^cd/#### no CD ### Luc/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="opmconvert" />
+                </exec>
+
+
+                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
+  	              <arg value="-e s/^cd/#### no CD ### Luc/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="opmxml2rdf" />
+                </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
+  	              <arg value="-e s/^cd/#### no CD ### Luc/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="opmrdf2xml" />
+                </exec>
+
+
+                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
+  	              <arg value="-e s/^cd/#### no CD ### Luc/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="opmxml-validate" />
+                </exec>
+
+-->
+                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
+  	              <arg value="-e s/^cd/#### no CD ### Luc/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="provconvert" />
+                </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
+  	              <arg value="-e s/exit 1/#### no exit ### Luc/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="provconvert" />
+                </exec>
+
+
+                <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
+  	              <arg value="a+x" />
+  	              <arg value="prov2dot" />
+  	              <arg value="prov2dot.bat" />
+                </exec>
+
+
+                <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
+  	              <arg value="a+x" />
+  	              <arg value="provxml-validate" />
+  	              <arg value="provxml-validate.bat" />
+                </exec>
+
+                <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
+  	              <arg value="a+x" />
+  	              <arg value="provconvert" />
+  	              <arg value="provconvert.bat" />
+                </exec>
+
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+          <descriptor>${project.build.directory}/classes/toolbox-assembly.xml</descriptor>
+         </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <id>make-assembly</id>
+              <goals>
+               <goal>single</goal>
+              </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+
+
+    </plugins>
+   
+    <testResources>
+       <testResource>
+         <directory>src/test/resources</directory>
+         <filtering>true</filtering>
+       </testResource>
+    </testResources>
+  </build>
+
+
+
+</project>

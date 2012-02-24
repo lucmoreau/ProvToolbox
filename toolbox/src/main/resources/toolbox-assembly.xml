@@ -1,0 +1,74 @@
+<assembly>
+  <id>release</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+  <files>
+    <file>
+      <source>../license.txt</source>
+      <outputDirectory>/provToolbox/</outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+    
+    <file>
+      <source>target/classes/README-prov2dot.txt</source>
+      <outputDirectory>/provToolbox</outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+    <file>
+      <source>target/classes/8-prov-toolbox.pdf</source>
+      <outputDirectory>/provToolbox</outputDirectory>
+      <destName>prov-toolbox-tutorial.pdf</destName>
+      <fileMode>644</fileMode>
+    </file>
+    <file>
+      <source>target/classes/README-provconvert.txt</source>
+      <outputDirectory>/provToolbox</outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+    <file>
+      <source>target/classes/README-provxml-validate.txt</source>
+      <outputDirectory>/provToolbox</outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+    <file>
+      <source>target/classes/README-licenses.txt</source>
+      <outputDirectory>/provToolbox</outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+
+  </files>
+
+  <fileSets>
+    <fileSet>
+      <directory>${project.build.directory}/appassembler/bin</directory>
+      <outputDirectory>/provToolbox/bin</outputDirectory>
+      <fileMode>755</fileMode>
+      <excludes>
+        <exclude>prov2dotBAK</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.build.directory}/appassembler/repo</directory>
+      <outputDirectory>/provToolbox/repo</outputDirectory>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>${project.build.directory}/classes/licenses</directory>
+      <outputDirectory>/provToolbox/repo/licenses</outputDirectory>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>../prov/src/test/resources/</directory>
+      <outputDirectory>/provToolbox/examples</outputDirectory>
+      <includes>
+        <include>*Config.xml</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+
+
+</assembly>
+

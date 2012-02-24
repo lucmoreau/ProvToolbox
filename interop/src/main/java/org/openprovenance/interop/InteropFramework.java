@@ -183,4 +183,57 @@ public class InteropFramework
 
     }
 
+    public static void main(String [] args) throws Exception { //TODO: finalize signatures
+        if ((args==null) || (!((args.length==3) || (args.length==3)))) {
+            System.out.println("Usage: provconvert -asn2rdf fileIn fileOut");
+            System.out.println("Usage: provconvert -asn2xml fileIn fileOut");
+            System.out.println("Usage: provconvert -asn2asn fileIn fileOut");
+            System.out.println("Usage: provconvert -xml2xml fileIn fileOut");
+            System.out.println("Usage: provconvert -xml2asn fileIn fileOut");
+            
+            return;
+        }
+
+        try {
+            InteropFramework me=new InteropFramework();
+            String fileIn=args[1];
+            String fileOut=args[2];
+            if (args[0].equals("-asn2rdf")) {
+                me.asn2rdf(fileIn,fileOut);
+                return;
+            }
+            if (args[0].equals("-asn2asn")) {
+                me.asn2asn(fileIn,fileOut);
+                return;
+            }
+
+            if (args[0].equals("-asn2asn")) {
+                me.asn2asn(fileIn,fileOut);
+                return;
+            }
+
+
+            if (args[0].equals("-asn2xml")) {
+                me.asn2xml(fileIn,fileOut);
+                return;
+            }
+
+            if (args[0].equals("-xml2xml")) {
+                me.xml2xml(fileIn,fileOut,null,null);
+                return;
+            }
+
+            if (args[0].equals("-xml2asn")) {
+                me.xml2xml(fileIn,fileOut,null,null);
+                return;
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+        //TODO: other options here
+
+
+    }
+
 }

@@ -63,6 +63,8 @@ public class RepositoryHelper {
             serialiser=new RDFXMLWriter(writer);
         } else if  (format.equals(RDFFormat.NTRIPLES)) {
             serialiser=new NTriplesWriter (writer);
+        } else if (format.equals(RDFFormat.TURTLE)) {
+            serialiser=new org.openrdf.rio.turtle.TurtleWriter(writer);
         }
         setPrefixes(serialiser,prefixes);
         manager.getConnection().export(serialiser);

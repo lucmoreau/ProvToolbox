@@ -26,10 +26,8 @@
     <module>json</module>
 
     <module>interop</module>    
-<!--    <module>elmo</module>
+    <module>rdf</module>    
     <module>toolbox</module>    
-    <module>jena</module>    -->
-    
 
   </modules>
 

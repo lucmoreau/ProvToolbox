@@ -22,7 +22,21 @@ import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
+import org.openprovenance.prov.asn.TreeTraversal;
 import org.openprovenance.prov.asn.Utility;
+
+import  org.antlr.runtime.tree.CommonTree;
+
+import org.openrdf.elmo.ElmoManager;
+import org.openrdf.elmo.ElmoManagerFactory;
+import org.openrdf.elmo.ElmoModule;
+import org.openrdf.elmo.sesame.SesameManager;
+import org.openrdf.elmo.sesame.SesameManagerFactory;
+import org.openrdf.rio.RDFFormat;
+
+import org.openprovenance.prov.rdf.RdfConstructor;
+import org.openprovenance.prov.rdf.RepositoryHelper;
+
 
 /**
  * The interoperability framework for PROV.
@@ -107,5 +121,66 @@ public class InteropFramework
     }
         
 
+    public void asn2xml(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+
+        Utility u=new Utility();
+        CommonTree tree = u.convertASNToTree(file);
+
+        Object o2=u.convertTreeToJavaBean(tree);
+
+        String o3=u.convertTreeToASN(tree);
+
+        
+
+        ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
+        serial.serialiseContainer(new File(file2),(Container)o2,true);
+
+    }
+
+
+    public void asn2asn(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+
+        Utility u=new Utility();
+        CommonTree tree = u.convertASNToTree(file);
+
+
+        String s=u.convertTreeToASN(tree);
+
+        writeTextToFile(s,file2);        
+
+    }
+
+
+    public void asn2rdf(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+
+        Utility u=new Utility();
+
+        ProvFactory pFactory=ProvFactory.getFactory();
+
+
+        RepositoryHelper rHelper=new RepositoryHelper();
+        ElmoModule module = new ElmoModule();
+        rHelper.registerConcepts(module);
+        ElmoManagerFactory factory=new SesameManagerFactory(module);
+        ElmoManager manager = factory.createElmoManager();
+
+        CommonTree tree = u.convertASNToTree(file);
+        Container c=(Container)u.convertTreeToJavaBean(tree);
+        
+        new TreeTraversal(new RdfConstructor(pFactory, manager)).convert(tree);
+
+        LinkedList prefixes=new LinkedList();
+
+        Hashtable<String,String>  namespaceTable = c.getNss();
+        for (String k: namespaceTable.keySet()) {
+            String [] ss=new String[2];
+            ss[0]=k;
+            ss[1]=namespaceTable.get(k);
+            prefixes.add(ss);  // why not take a hashtable in dumpToRDF?
+        }
+
+        rHelper.dumpToRDF(new File(file2),(SesameManager)manager,RDFFormat.TURTLE,prefixes);
+
+    }
 
 }

@@ -34,7 +34,7 @@ public class RepositoryHelper {
         module.addConcept(org.openprovenance.prov.rdf.Usage.class);
         module.addConcept(org.openprovenance.prov.rdf.Generation.class);
         module.addConcept(org.openprovenance.prov.rdf.Association.class);
-        module.addConcept(org.openprovenance.prov.rdf.Delegation.class);
+        module.addConcept(org.openprovenance.prov.rdf.Responsibility.class);
         module.addConcept(org.openprovenance.prov.rdf.Plan.class);
         module.addConcept(org.openprovenance.prov.rdf.Location.class);
         module.addConcept(org.openprovenance.prov.rdf.System.class);
@@ -44,7 +44,7 @@ public class RepositoryHelper {
 
     public void setPrefixes(RDFHandler serialiser,
                             Collection<String[]> prefixes) throws org.openrdf.rio.RDFHandlerException {
-            serialiser.handleNamespace("prov","http://www.w3.org/ns/prov-o/");
+            serialiser.handleNamespace("prov","http://www.w3.org/ns/prov#");
             for (String[] prefix: prefixes) {
                 serialiser.handleNamespace(prefix[0],prefix[1]);
             }
@@ -63,6 +63,8 @@ public class RepositoryHelper {
             serialiser=new RDFXMLWriter(writer);
         } else if  (format.equals(RDFFormat.NTRIPLES)) {
             serialiser=new NTriplesWriter (writer);
+        } else if (format.equals(RDFFormat.TURTLE)) {
+            serialiser=new org.openrdf.rio.turtle.TurtleWriter(writer);
         }
         setPrefixes(serialiser,prefixes);
         manager.getConnection().export(serialiser);

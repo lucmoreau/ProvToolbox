@@ -94,7 +94,7 @@ public class RdfConstructor implements TreeConstructor {
 
         /** Creates instance of Usage class, only if required. */
 
-	//        java.lang.System.out.println("used -> " + qn1);
+	//         java.lang.System.out.println("used -> " + qn1);
 
         if ((id!=null)  || (time!=null) || (aAttrs!=null)) {
 

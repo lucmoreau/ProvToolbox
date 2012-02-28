@@ -32,7 +32,7 @@ public class RdfConstructor implements TreeConstructor {
         QName qname = getQName(id);
         Entity e;
         if (qname.getLocalPart().equals("rec-advance")) {
-            //Hack, I need to part the attributes
+            //Hack, I need to parse the attributes
             e = (Entity) manager.designate(qname, Plan.class);
         } else {
             e = (Entity) manager.designate(qname, Entity.class);
@@ -177,8 +177,10 @@ public class RdfConstructor implements TreeConstructor {
 
         a2.getQualified().add(a);
 
-        Plan plan=(Plan)manager.find(qnpl);
-        a.getAdoptedPlan().add(plan);
+	if (qnpl!=null) {
+	    Plan plan=(Plan)manager.find(qnpl);
+	    a.getAdoptedPlan().add(plan);
+	}
 
 	a2.getWasAssociatedWith().add(ag1);
 

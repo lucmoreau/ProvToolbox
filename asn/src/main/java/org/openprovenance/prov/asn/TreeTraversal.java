@@ -196,7 +196,7 @@ public class TreeTraversal {
             uid=convert(uidTree);
             id2=convert(ast.getChild(1));
             id1=convert(ast.getChild(2));
-            Object pl=convert(ast.getChild(3));
+            Object pl=((ast.getChild(3)==null)?null : convert(ast.getChild(3)));
             rAttrs=convert(ast.getChild(4));
             return c.convertWasAssociatedWith(uid,id2,id1,pl,rAttrs);
 

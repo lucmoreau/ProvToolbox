@@ -37,6 +37,8 @@ import org.openrdf.rio.RDFFormat;
 import org.openprovenance.prov.rdf.RdfConstructor;
 import org.openprovenance.prov.rdf.RepositoryHelper;
 
+import org.openprovenance.prov.dot.ProvToDot;
+
 
 /**
  * The interoperability framework for PROV.
@@ -183,13 +185,31 @@ public class InteropFramework
 
     }
 
+    public void asn2dot(String file, String dotFileOut, String pdfFileOut, String configFile)
+	throws java.io.IOException, JAXBException, Throwable {
+
+        Utility u=new Utility();
+        CommonTree tree = u.convertASNToTree(file);
+
+        Object o=u.convertTreeToJavaBean(tree);
+
+        Container container=(Container)o;
+
+        ProvToDot toDot=new ProvToDot((configFile==null)? "src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
+
+        toDot.convert(container, dotFileOut, pdfFileOut);
+
+    }
+
+
     public static void main(String [] args) throws Exception { //TODO: finalize signatures
-        if ((args==null) || (!((args.length==3) || (args.length==3)))) {
+        if ((args==null) || (!((args.length>=3) || (args.length<=5)))) {
             System.out.println("Usage: provconvert -asn2rdf fileIn fileOut");
             System.out.println("Usage: provconvert -asn2xml fileIn fileOut");
             System.out.println("Usage: provconvert -asn2asn fileIn fileOut");
             System.out.println("Usage: provconvert -xml2xml fileIn fileOut");
             System.out.println("Usage: provconvert -xml2asn fileIn fileOut");
+            System.out.println("Usage: provconvert -asn2dot fileIn dotFileOut pdfFileOut [configFile]");
             
             return;
         }
@@ -225,6 +245,15 @@ public class InteropFramework
 
             if (args[0].equals("-xml2asn")) {
                 me.xml2xml(fileIn,fileOut,null,null);
+                return;
+            }
+
+
+            if (args[0].equals("-asn2dot")) {
+		String pdfFileOut=args[3];
+		String configFile;
+		configFile= ((args.length==5)? args[4] : null);
+                me.asn2dot(fileIn,fileOut,pdfFileOut,configFile);
                 return;
             }
         } catch (Throwable e) {

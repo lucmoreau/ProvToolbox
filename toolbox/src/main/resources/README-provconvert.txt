@@ -16,14 +16,16 @@ USAGE:
      provconvert -asn2asn fileIn fileOut
      provconvert -xml2xml fileIn fileOut
      provconvert -xml2asn fileIn fileOut
-
+     provconvert -asn2dot fileIn dotFileOut pdfFileOut [configFile]
 
 The arguments are the following:
 
  fileIn:  the name of a file from which to read the input representation
  fileOut: the name of a file in which to write an output representation
 
-
+ dotFileOut: the name of an output dot file
+ pdfFileOut: the name of an output pdf file
+ configFile: the name of a configuration file for dot conversion
 
 
 ----------------------------------------------------------------------

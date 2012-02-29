@@ -32,7 +32,7 @@ public class RdfConstructor implements TreeConstructor {
         QName qname = getQName(id);
         Entity e;
         if (qname.getLocalPart().equals("rec-advance")) {
-            //Hack, I need to part the attributes
+            //Hack, I need to parse the attributes
             e = (Entity) manager.designate(qname, Plan.class);
         } else {
             e = (Entity) manager.designate(qname, Entity.class);
@@ -94,7 +94,7 @@ public class RdfConstructor implements TreeConstructor {
 
         /** Creates instance of Usage class, only if required. */
 
-        java.lang.System.out.println("used -> " + qn1);
+	//         java.lang.System.out.println("used -> " + qn1);
 
         if ((id!=null)  || (time!=null) || (aAttrs!=null)) {
 
@@ -177,8 +177,10 @@ public class RdfConstructor implements TreeConstructor {
 
         a2.getQualified().add(a);
 
-        Plan plan=(Plan)manager.find(qnpl);
-        a.getAdoptedPlan().add(plan);
+	if (qnpl!=null) {
+	    Plan plan=(Plan)manager.find(qnpl);
+	    a.getAdoptedPlan().add(plan);
+	}
 
 	a2.getWasAssociatedWith().add(ag1);
 

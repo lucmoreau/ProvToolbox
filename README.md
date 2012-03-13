@@ -16,7 +16,6 @@ Working Group.
 
 Contributors
 ------------
-Trung Dong: JSON subpackage
-
+Trung Dong: JSON subpackage.
 Mike Jewell: JSON subpackage validation
 

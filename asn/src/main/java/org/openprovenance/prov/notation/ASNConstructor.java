@@ -18,8 +18,13 @@ public class ASNConstructor implements TreeConstructor {
         return ((time==null)? "" : (", " + time));
     }            
 
-    public Object optional(Object str) {
+    public Object optional2(Object str) {
         return ((str==null)? "" : str);
+    }
+
+
+    public Object optional(Object str) {
+        return ((str==null)? "-" : str);
     }
 
     public Object convertActivity(Object id,Object startTime,Object endTime, Object aAttrs) {
@@ -103,7 +108,7 @@ public class ASNConstructor implements TreeConstructor {
     }
     public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object g2, Object u1, Object time, Object aAttrs) {
         String s="wasDerivedFrom(" + id2 + "," + id1 + 
-            ((pe==null) ? "" : (", " + pe + ", " + g2 + "," + u1)) + optional(time) + optionalAttributes(aAttrs) +  ")";
+            ((pe==null) ? "" : (", " + pe + ", " + g2 + "," + u1)) + optional2(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
 

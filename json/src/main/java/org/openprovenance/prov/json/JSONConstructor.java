@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.openprovenance.prov.asn.TreeConstructor;
-import org.openprovenance.prov.asn.TreeTraversal;
-import org.openprovenance.prov.asn.Utility;
+import org.openprovenance.prov.notation.TreeConstructor;
+import org.openprovenance.prov.notation.TreeTraversal;
+import org.openprovenance.prov.notation.Utility;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

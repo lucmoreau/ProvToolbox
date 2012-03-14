@@ -1,4 +1,4 @@
-package org.openprovenance.prov.asn;
+package org.openprovenance.prov.notation;
 import java.util.List;
 
 /** For testing purpose, conversion back to ASN. */

@@ -5,7 +5,7 @@ import org.openprovenance.prov.xml.Container;
 /**
  * 
  */
-public class PubTest extends org.openprovenance.prov.asn.PubTest {
+public class PubTest extends org.openprovenance.prov.notation.PubTest {
 
     public PubTest( String testName ) {
          super(testName);

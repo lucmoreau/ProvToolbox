@@ -1,4 +1,4 @@
-package org.openprovenance.prov.asn;
+package org.openprovenance.prov.notation;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.Collection;
@@ -20,11 +20,12 @@ import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
+import  org.antlr.runtime.tree.CommonTree;
 
 /**
- * Unit test for simple Provenance Challenge 1 like workflow.
+ * Provenance of a w3c tech report
  */
-public class PC1FullTest 
+public class PubTest 
     extends TestCase
 {
 
@@ -53,37 +54,40 @@ public class PC1FullTest
      *
      * @param testName name of the test case
      */
-    public PC1FullTest( String testName )
+    public PubTest( String testName )
     {
         super( testName );
     }
 
+    static public Container graph1;
 
-
-    public void testReadXMLGraph() throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
-        
-        ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-        Container c=deserial.deserialiseContainer(new File("../xml/target/pc1-full.xml"));
-        Utility u=new Utility();
-
-
-        String[] schemaFiles=new String[1];
-        schemaFiles[0]="../xml/src/test/resources/pc1.xsd";
-        deserial.validateContainer(schemaFiles,new File("../xml/target/pc1-full.xml"));
-        
-        String s=u.convertBeanToASN(c);
-        System.out.println(s);
-
-        ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-
-        c.setNss(namespaces);
-        Container c2=(Container)u.convertJavaBeanToJavaBean(c);
-        c2.setNss(namespaces);
-
-        serial.serialiseContainer(new File("target/pc1-full-2.xml"),c2,true);
-
+    public void testReadASNSaveXML() throws java.io.IOException, java.lang.Throwable {
+        String file="src/test/resources/prov/w3c-publication1.prov-asn";
+        testReadASNSaveXML(file,"target/w3c-publication.prov-xml");
     }
+
+    public void testReadASNSaveXML(String file, String file2) throws java.io.IOException, java.lang.Throwable {
+
+        Utility u=new Utility();
+        CommonTree tree = u.convertASNToTree(file);
+
+        Object o2=u.convertTreeToJavaBean(tree);
+
+        graph1=(Container)o2;
+
+        String o3=u.convertTreeToASN(tree);
+
         
 
+        try {
+            ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
+            serial.serialiseContainer(new File(file2),(Container)o2,true);
+
+            System.out.println("tree is " + o3);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
+

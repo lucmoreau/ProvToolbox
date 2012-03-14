@@ -1,5 +1,5 @@
 package org.openprovenance.prov.rdf;
-import org.openprovenance.prov.asn.TreeConstructor;
+import org.openprovenance.prov.notation.TreeConstructor;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openrdf.elmo.ElmoManager;
 import javax.xml.namespace.QName;

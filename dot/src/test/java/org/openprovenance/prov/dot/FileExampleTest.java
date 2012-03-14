@@ -11,7 +11,7 @@ import javax.xml.bind.JAXBException;
 import java.io.File;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.openprovenance.prov.asn.Utility;
+import org.openprovenance.prov.notation.Utility;
 
 public class FileExampleTest extends TestCase {
 

@@ -26,8 +26,8 @@ entity(ar3:0111, [ prov:type="http://www.w3.org/2005/08/01-transitions.html#pubr
 wasDerivedFrom(tr:WD-prov-dm-20111215,tr:WD-prov-dm-20111018)
 
 
-activity(ex:pub1,,,[prov:type="publish"])
-activity(ex:pub2,,,[prov:type="publish"])
+activity(ex:pub1,-,-,[prov:type="publish"])
+activity(ex:pub2,-,-,[prov:type="publish"])
 
 
 wasGeneratedBy(tr:WD-prov-dm-20111018, ex:pub1)

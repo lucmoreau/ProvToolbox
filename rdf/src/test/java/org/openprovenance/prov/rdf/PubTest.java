@@ -1,10 +1,10 @@
 package org.openprovenance.prov.rdf;
 import org.openprovenance.prov.xml.Container;
-import org.openprovenance.prov.asn.Utility;
+import org.openprovenance.prov.notation.Utility;
 import  org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openrdf.elmo.ElmoManager;
-import org.openprovenance.prov.asn.TreeTraversal;
+import org.openprovenance.prov.notation.TreeTraversal;
 import org.openrdf.elmo.ElmoManager;
 import org.openrdf.elmo.ElmoManagerFactory;
 import org.openrdf.elmo.ElmoModule;
@@ -18,7 +18,7 @@ import java.io.File;
 /**
  * 
  */
-public class PubTest extends org.openprovenance.prov.asn.PubTest {
+public class PubTest extends org.openprovenance.prov.notation.PubTest {
     ProvFactory pFactory=ProvFactory.getFactory();
 
     public PubTest( String testName ) {

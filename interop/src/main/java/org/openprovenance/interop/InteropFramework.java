@@ -22,8 +22,8 @@ import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
-import org.openprovenance.prov.asn.TreeTraversal;
-import org.openprovenance.prov.asn.Utility;
+import org.openprovenance.prov.notation.TreeTraversal;
+import org.openprovenance.prov.notation.Utility;
 
 import  org.antlr.runtime.tree.CommonTree;
 

@@ -1,6 +1,6 @@
 package org.openprovenance.prov.datalog;
-import  org.openprovenance.prov.asn.Utility;
-import  org.openprovenance.prov.asn.TreeTraversal;
+import  org.openprovenance.prov.notation.Utility;
+import  org.openprovenance.prov.notation.TreeTraversal;
 
 
 import java.util.Collection;

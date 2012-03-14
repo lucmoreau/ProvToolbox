@@ -1,4 +1,4 @@
-package org.openprovenance.prov.asn;
+package org.openprovenance.prov.notation;
 
 import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.Agent;

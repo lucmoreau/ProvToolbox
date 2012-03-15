@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; WSB; WEB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; INT; PLAN; SPECIALIZATION; ALTERNATE;
+    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; WSB; WEB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; WAT; INT; PLAN; SPECIALIZATION; ALTERNATE;
 }
 
 @header {
@@ -59,7 +59,7 @@ defaultNamespaceDeclaration :
     ;
 
 record
-	:	(entityExpression | activityExpression | agentExpression | generationExpression  | useExpression | startExpression | endExpression | derivationExpression | dependenceExpression  | controlExpression | alternateExpression | specializationExpression  |  associationExpression)
+	:	(entityExpression | activityExpression | agentExpression | generationExpression  | useExpression | startExpression | endExpression | derivationExpression | dependenceExpression  | controlExpression | alternateExpression | specializationExpression  |  associationExpression | attributionExpression)
 	;
 
 entityExpression
@@ -193,6 +193,11 @@ specializationExpression
 associationExpression
 	:	'wasAssociatedWith' '('  optionalIdentifier a=identifier ',' ag=identifier  ('@' pl=identifier)? optionalAttributeValuePairs ')'
       -> ^(WAW optionalIdentifier $a $ag ^(PLAN $pl?) optionalAttributeValuePairs)
+	;
+
+attributionExpression
+	:	'wasAttributedTo' '('  optionalIdentifier e=identifier ',' ag=identifier optionalAttributeValuePairs ')'
+      -> ^(WAT optionalIdentifier $e $ag optionalAttributeValuePairs)
 	;
 
 identifier

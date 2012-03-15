@@ -136,6 +136,18 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
 
+
+  <xs:complexType name="WasAttributedTo">
+    <xs:sequence>
+      <xs:element name="entity" type="prov:EntityRef"/>
+      <xs:element name="agent"    type="prov:AgentRef"/>
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute ref="prov:id"/>
+  </xs:complexType>
+
   <xs:complexType name="ActedOnBehalfOf">
     <xs:sequence>
       <xs:element name="subordinate" type="prov:AgentRef"/>
@@ -262,6 +274,7 @@
 	<xs:element name="wasAssociatedWith"  type="prov:WasAssociatedWith"/>
 	<xs:element name="wasStartedBy"       type="prov:WasStartedBy"/>
 	<xs:element name="wasEndedBy"         type="prov:WasEndedBy"/>
+	<xs:element name="wasAttributedTo"    type="prov:WasAttributedTo"/>
 	<xs:element name="actedOnBehalfOf"    type="prov:ActedOnBehalfOf"/>
 	<xs:element name="alternateOf"        type="prov:AlternateOf"/>
 	<xs:element name="specializationOf"   type="prov:SpecializationOf"/>

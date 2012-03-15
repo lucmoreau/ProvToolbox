@@ -122,6 +122,12 @@ public class DataLogConstructor implements TreeConstructor {
         return s;
     }
 
+    public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object gAttrs) {
+        String s="wasAttributedTo(" + optionalId(id) + id2 + "," + id1 +
+            optionalAttributes(aAttrs) +  ")";
+        return s;
+    }
+
     public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object g2, Object u1, Object time, Object aAttrs) {
         String s="wasDerivedFrom(" + id2 + "," + id1 + 
             ((pe==null) ? ", nil " : (", " + pe + ", " + g2 + "," + u1)) + optional(time) + optionalAttributes(aAttrs) +  ")";

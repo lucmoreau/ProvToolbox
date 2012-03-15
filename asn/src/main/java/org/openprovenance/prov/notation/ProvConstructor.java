@@ -21,6 +21,7 @@ import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasStartedBy;
 import org.openprovenance.prov.xml.WasEndedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
+import org.openprovenance.prov.xml.WasAttributedTo;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.WasAssociatedWith;
@@ -302,6 +303,23 @@ public  class ProvConstructor implements TreeConstructor {
             s.setTime(pFactory.newISOTime((String)time));
         }
             
+        return s;
+    }
+
+
+    public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object gAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        Agent ag1=agentTable.get(s_id1);
+        AgentRef ag1r=pFactory.newAgentRef(ag1);
+
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+
+        WasAttributedTo s=pFactory.newWasAttributedTo(s_id,
+                                                      e2r,
+                                                      ag1r);
         return s;
     }
 

@@ -590,6 +590,23 @@ public class ProvFactory implements CommonURIs {
     }
 
 
+    public WasAttributedTo newWasAttributedTo(QName id,
+                                              EntityRef eid,
+                                              AgentRef agid) {
+        WasAttributedTo res=of.createWasAttributedTo();
+        res.setId(id);
+        res.setEntity(eid);
+        res.setAgent(agid);
+        return res;
+    }
+
+    public WasAttributedTo newWasAttributedTo(String id,
+                                              EntityRef eid,
+                                              AgentRef agid) {
+        return newWasAttributedTo(stringToQName(id),eid,agid);
+    }
+
+
     public WasGeneratedBy newWasGeneratedBy(String id,
                                             EntityRef aid,
                                             String role,

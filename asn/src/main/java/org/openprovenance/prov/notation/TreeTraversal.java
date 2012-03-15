@@ -155,6 +155,31 @@ public class TreeTraversal {
             rAttrs=convert(ast.getChild(4));
             return c.convertWasGeneratedBy(uid,id2,id1,time,rAttrs);
 
+        case PROV_NParser.WSB:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            time=convert(ast.getChild(3));
+            rAttrs=convert(ast.getChild(4));
+            return c.convertWasStartedBy(uid,id2,id1,time,rAttrs);
+
+
+        case PROV_NParser.WEB:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            time=convert(ast.getChild(3));
+            rAttrs=convert(ast.getChild(4));
+            return c.convertWasEndedBy(uid,id2,id1,time,rAttrs);
+
         case PROV_NParser.WDF:
             id2=convert(ast.getChild(0));
             id1=convert(ast.getChild(1));

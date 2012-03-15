@@ -106,6 +106,16 @@ public class ASNConstructor implements TreeConstructor {
             optionalTime(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
+    public Object convertWasStartedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
+        String s="wasStartedBy(" + optionalId(id) + id2 + "," + optional(id1) +
+            optionalTime(time) + optionalAttributes(aAttrs) +  ")";
+        return s;
+    }
+    public Object convertWasEndedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
+        String s="wasEndedBy(" + optionalId(id) + id2 + "," + optional(id1) +
+            optionalTime(time) + optionalAttributes(aAttrs) +  ")";
+        return s;
+    }
     public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object g2, Object u1, Object time, Object aAttrs) {
         String s="wasDerivedFrom(" + id2 + "," + id1 + 
             ((pe==null) ? "" : (", " + pe + ", " + g2 + "," + u1)) + optional2(time) + optionalAttributes(aAttrs) +  ")";

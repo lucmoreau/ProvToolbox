@@ -1,7 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2011 Luc Moreau
+ * Copyright (c) 2011-2012 Luc Moreau
  *******************************************************************************/
-grammar ASN;
+grammar PROV_N;
 
 options {
   language = Java;
@@ -13,11 +13,11 @@ tokens {
 }
 
 @header {
-  package org.openprovenance.prov.asn;
+package org.openprovenance.prov.notation;
 }
 
 @lexer::header {
-  package org.openprovenance.prov.asn;
+package org.openprovenance.prov.notation;
 }
 
 
@@ -69,7 +69,7 @@ entityRecord
 
 
 activityRecord
-	:	'activity' '(' identifier ',' (startTime)? ',' (endTime)? optionalAttributeValuePairs ')'
+	:	'activity' '(' identifier (',' (startTime | '-' ) ',' (endTime | '-'))? optionalAttributeValuePairs ')'
         -> ^(ACTIVITY identifier ^(START startTime?) ^(END endTime?) optionalAttributeValuePairs )
 	;
 

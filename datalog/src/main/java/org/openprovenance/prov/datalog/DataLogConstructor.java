@@ -1,6 +1,6 @@
 package org.openprovenance.prov.datalog;
 
-import  org.openprovenance.prov.asn.TreeConstructor;
+import  org.openprovenance.prov.notation.TreeConstructor;
 import  org.antlr.runtime.tree.CommonTree;
 
 import java.util.List;

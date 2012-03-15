@@ -10,7 +10,7 @@ wasDerivedFrom(ex:s,ex:l, [ prov:type="contained" ])
 
 entity(ex:s_2, [ prov:type="sculpture" ])
 entity(ex:h_2, [ prov:type="hand" ])
-activity(ex:a1, ,, [ prov:type="sculptHand" ])
+activity(ex:a1,- ,-, [ prov:type="sculptHand" ])
 
 wasDerivedFrom(ex:s_2,ex:h_2, [ prov:type="contained" ])
 wasDerivedFrom(ex:s_2,ex:l,   [ prov:type="contained" ])
@@ -20,7 +20,7 @@ wasGeneratedBy(ex:h_2,ex:a1)
 
 entity(ex:s_3, [ prov:type="sculpture" ])
 entity(ex:l_3, [ prov:type="leg" ])
-activity(ex:a2, ,, [ prov:type="sculptLeg" ])
+activity(ex:a2,-,-, [ prov:type="sculptLeg" ])
 
 wasDerivedFrom(ex:s_3,ex:h_2, [ prov:type="contained" ])
 wasDerivedFrom(ex:s_3,ex:l_3, [ prov:type="contained" ])

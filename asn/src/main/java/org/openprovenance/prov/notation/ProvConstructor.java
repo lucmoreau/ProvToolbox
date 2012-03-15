@@ -1,4 +1,4 @@
-package org.openprovenance.prov.asn;
+package org.openprovenance.prov.notation;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.openprovenance.prov.asn;
+package org.openprovenance.prov.notation;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,11 +21,11 @@ import org.openprovenance.prov.xml.BeanTraversal;
 
 public  class Utility {
 
-    public ASNParser getParserForFile(String file) throws java.io.IOException, Throwable {
+    public PROV_NParser getParserForFile(String file) throws java.io.IOException, Throwable {
         CharStream input = new ANTLRFileStream(file);
-        ASNLexer lex = new ASNLexer(input);
+        PROV_NLexer lex = new PROV_NLexer(input);
         CommonTokenStream tokens = new  CommonTokenStream(lex);
-        ASNParser parser = new ASNParser(tokens);
+        PROV_NParser parser = new PROV_NParser(tokens);
 
         return parser;
     }
@@ -37,10 +37,10 @@ public  class Utility {
         };
 
     public CommonTree convertASNToTree(String file) throws java.io.IOException, Throwable {
-        ASNParser parser=getParserForFile(file);
+        PROV_NParser parser=getParserForFile(file);
 
         parser.setTreeAdaptor(adaptor);
-        ASNParser.container_return ret = parser.container();
+        PROV_NParser.container_return ret = parser.container();
         CommonTree tree = (CommonTree)ret.getTree();
         return tree;
     }

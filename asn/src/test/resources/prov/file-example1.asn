@@ -19,12 +19,12 @@ entity(e5)
 entity(e6, [ prov:type="File", path="/shared/crime.txt", creator="Alice", content="There was a lot of crime in London and New York last month.", spellchecked="yes"])
 
 
-activity(a0,2011-11-16T16:00:00,)
-activity(a1,2011-11-16T16:05:00,)
-activity(a2,2011-11-16T17:00:00,)
-activity(a3,,2011-11-17T09:00:00)
-activity(a4,,2011-11-17T09:30:00)
-activity(a5,,)
+activity(a0,2011-11-16T16:00:00,-)
+activity(a1,2011-11-16T16:05:00,-)
+activity(a2,2011-11-16T17:00:00,-)
+activity(a3,-,2011-11-17T09:00:00)
+activity(a4,-,2011-11-17T09:30:00)
+activity(a5)
 
 wasGeneratedBy(e0, a0, [])
 wasGeneratedBy(e1, a0, [fct="create"])

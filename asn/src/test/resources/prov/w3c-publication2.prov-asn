@@ -20,7 +20,7 @@ entity(w3:WD-prov-dm-20111215, [ prov:type="html4" ])
 
 
 
-activity(ex:rcp,,,[prov:type="copy directory"])
+activity(ex:rcp,-,-,[prov:type="copy directory"])
 
 
 wasGeneratedBy(rec:g,w3:WD-prov-dm-20111215, ex:rcp)
@@ -40,6 +40,6 @@ wasAssociatedWith(ex:rcp, ex:webmaster)
 endContainer
 
 
-#activity(ex:a5,,,[prov:type="grammarcheck"])
+#activity(ex:a5,-,-,[prov:type="grammarcheck"])
 #ex:version="1", 
 #ex:version="2"

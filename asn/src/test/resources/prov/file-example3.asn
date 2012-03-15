@@ -14,12 +14,12 @@ entity(ex:e5)
 entity(ex:e6, [ type="File", ex:path="/shared/crime.txt", ex:creator="Alice", ex:content="There was a lot of crime in London and New York last month.", ex:spellchecked="yes"])
 
 
-activity(ex:a0,           2011-11-16T16:00:00)
-activity(ex:a1,   2011-11-16T16:05:00)
-activity(ex:a2,                 2011-11-16T17:00:00)
-activity(ex:a3,  2011-11-17T09:00:00)
+activity(ex:a0,           2011-11-16T16:00:00, -)
+activity(ex:a1,   2011-11-16T16:05:00, -)
+activity(ex:a2,                 2011-11-16T17:00:00, -)
+activity(ex:a3,  2011-11-17T09:00:00, -)
 activity(ex:a4,                 2011-11-17T09:30:00, 2011-11-17T10:30:00)
-activity(ex:a5, ,)
+activity(ex:a5,- ,-)
 
 wasGeneratedBy(ex:e0, ex:a0, 2011-11-17T09:30:00)
 wasGeneratedBy(ex:e1, ex:a0, [ex:fct="create"])

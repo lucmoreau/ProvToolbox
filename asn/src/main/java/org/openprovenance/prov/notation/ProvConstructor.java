@@ -1,4 +1,4 @@
-package org.openprovenance.prov.asn;
+package org.openprovenance.prov.notation;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -234,13 +234,15 @@ public  class ProvConstructor implements TreeConstructor {
         }
         return u;
     }
+
     
     public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object gAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        Activity a1=activityTable.get(s_id1);
-        ActivityRef a1r=pFactory.newActivityRef(a1);
+        Activity a1=(s_id1==null)? null: activityTable.get(s_id1);  //id1 may be null
+        ActivityRef a1r=null;
+        if (a1!=null) a1r=pFactory.newActivityRef(a1);
         Entity e2=entityTable.get(s_id2);
         EntityRef e2r=pFactory.newEntityRef(e2);
 

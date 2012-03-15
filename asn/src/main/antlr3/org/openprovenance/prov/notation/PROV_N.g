@@ -1,7 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2011 Luc Moreau
+ * Copyright (c) 2011-2012 Luc Moreau
  *******************************************************************************/
-grammar ASN;
+grammar PROV_N;
 
 options {
   language = Java;
@@ -13,11 +13,11 @@ tokens {
 }
 
 @header {
-  package org.openprovenance.prov.asn;
+package org.openprovenance.prov.notation;
 }
 
 @lexer::header {
-  package org.openprovenance.prov.asn;
+package org.openprovenance.prov.notation;
 }
 
 
@@ -59,41 +59,51 @@ defaultNamespaceDeclaration :
     ;
 
 record
-	:	(entityRecord | activityRecord | agentRecord | generationRecord  | useRecord | derivationRecord | dependenceRecord  | controlRecord | alternateRecord | specializationRecord  |  associationRecord)
+	:	(entityExpression | activityExpression | agentExpression | generationExpression  | useExpression | derivationExpression | dependenceExpression  | controlExpression | alternateExpression | specializationExpression  |  associationExpression)
 	;
 
-entityRecord
+entityExpression
 	:	'entity' '(' identifier optionalAttributeValuePairs ')'
         -> ^(ENTITY identifier optionalAttributeValuePairs)
 	;
 
 
-activityRecord
-	:	'activity' '(' identifier ',' (startTime)? ',' (endTime)? optionalAttributeValuePairs ')'
+activityExpression
+	:	'activity' '(' identifier (',' (startTime | '-' ) ',' (endTime | '-'))? optionalAttributeValuePairs ')'
         -> ^(ACTIVITY identifier ^(START startTime?) ^(END endTime?) optionalAttributeValuePairs )
 	;
 
-agentRecord
+agentExpression
 	:	'agent' '(' identifier optionalAttributeValuePairs	')' -> ^(AGENT identifier optionalAttributeValuePairs )
 	;
 
-generationRecord
-	:	'wasGeneratedBy' '('  optionalIdentifier identifier ',' (identifier)? optionalTime optionalAttributeValuePairs ')'
-      -> ^(WGB optionalIdentifier identifier+ optionalTime optionalAttributeValuePairs)
+/**
+Grammar is:
+'wasGeneratedBy' '('  optionalIdentifier id2=identifier ',' ((id1=identifier) | '-') optionalTime optionalAttributeValuePairs ')'
+
+It is split into two rules to allow for tree reconstruction.
+*/
+generationExpression
+	:	'wasGeneratedBy' '('  optionalIdentifier id2=identifier ',' '-' optionalTime optionalAttributeValuePairs ')'
+      -> ^(WGB optionalIdentifier $id2 ^(ID) optionalTime optionalAttributeValuePairs)
+    |
+
+		'wasGeneratedBy' '('  optionalIdentifier id2=identifier ',' (id1=identifier) optionalTime optionalAttributeValuePairs ')'
+      -> ^(WGB optionalIdentifier $id2 $id1 optionalTime optionalAttributeValuePairs)
 	;
 
-useRecord
+useExpression
 	:	'used' '(' optionalIdentifier identifier ',' identifier optionalTime optionalAttributeValuePairs ')'
       -> ^(USED optionalIdentifier identifier+ optionalTime optionalAttributeValuePairs)
 	;
 
-derivationRecord2
+derivationExpression2
 	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier (',' a=identifier ',' g2=identifier ',' u1=identifier )?	optionalAttributeValuePairs ')'
       -> ^(WDF $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) optionalAttributeValuePairs)
 	;
 
 
-derivationRecord
+derivationExpression
 	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier ',' a=identifier ',' g2=identifier ',' u1=identifier optionalAttributeValuePairs ')'
       -> ^(WDF $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) ^(TIME) optionalAttributeValuePairs)
  |
@@ -119,28 +129,35 @@ optionalIdentifier
         -> ^(ID identifier?)
     ;
 
-dependenceRecord
+
+optionalIdentifier2
+    :
+    (',' identifier )?
+        -> ^(ID identifier?)
+    ;
+
+dependenceExpression
 	:	'dependedUpon' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
       -> ^(WDO optionalIdentifier identifier+ optionalAttributeValuePairs)
 	;
 
-controlRecord
+controlExpression
 	:	'wasControlledBy' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
       -> ^(WCB optionalIdentifier identifier+ optionalAttributeValuePairs)
 	;
 
-alternateRecord
+alternateExpression
 	:	'alternateOf' '('  optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
       -> ^(ALTERNATE optionalIdentifier identifier+ optionalAttributeValuePairs)
 	;
 
-specializationRecord
+specializationExpression
 	:	'specializationOf' '('  optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
       -> ^(SPECIALIZATION optionalIdentifier identifier+ optionalAttributeValuePairs)
 	;
 
 
-associationRecord
+associationExpression
 	:	'wasAssociatedWith' '('  optionalIdentifier a=identifier ',' ag=identifier  ('@' pl=identifier)? optionalAttributeValuePairs ')'
       -> ^(WAW optionalIdentifier $a $ag ^(PLAN $pl?) optionalAttributeValuePairs)
 	;

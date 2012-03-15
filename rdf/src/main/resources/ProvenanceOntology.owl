@@ -2,16 +2,20 @@
 
 
 <!DOCTYPE rdf:RDF [
+    <!ENTITY prov "http://www.w3.org/ns/prov#" >
     <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
     <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
     <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
     <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
 ]>
 
 
-<rdf:RDF xmlns="http://www.w3.org/ns/prov#"
-     xml:base="http://www.w3.org/ns/prov"
+<rdf:RDF xmlns="http://example.com/"
+     xml:base="http://example.com/"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:prov="http://www.w3.org/ns/prov#"
+     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
      xmlns:owl="http://www.w3.org/2002/07/owl#"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -27,18 +31,6 @@
     //
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Datatypes
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
 
 
     <!-- 
@@ -52,73 +44,66 @@
     
 
 
+    <!-- http://www.w3.org/2002/07/owl#topObjectProperty -->
+
     
 
 
     <!-- http://www.w3.org/ns/prov#actedOnBehalfOf -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#actedOnBehalfOf">
+    <owl:ObjectProperty rdf:about="&prov;actedOnBehalfOf">
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Responsibility"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Agent"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Agent"/>
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#involved"/>
+        <rdfs:domain rdf:resource="&prov;Agent"/>
+        <rdfs:range rdf:resource="&prov;Agent"/>
+        <prov:qualifiedForm rdf:resource="&prov;Responsibility"/>
+        <rdfs:subPropertyOf rdf:resource="&prov;involved"/>
+        <prov:qualifiedForm rdf:resource="&prov;qualifiedResponsibility"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#activity -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#activity">
+    <owl:ObjectProperty rdf:about="&prov;activity">
+        <prov:category>qualified</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Activity_Ordering"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Responsibility"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Starting_again"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#not_in_DM:_consolidated_derivation_signature"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Activity"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#ActivityInvolvement"/>
+        <rdfs:range rdf:resource="&prov;Activity"/>
+        <rdfs:domain rdf:resource="&prov;ActivityInvolvement"/>
     </owl:ObjectProperty>
     
 
 
-    <!-- http://www.w3.org/ns/prov#adoptedPlan -->
+    <!-- http://www.w3.org/ns/prov#agent -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#adoptedPlan">
-        <rdf:type rdf:resource="&owl;AsymmetricProperty"/>
-        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
-        <rdfs:label xml:lang="en">had plan</rdfs:label>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Agent_Association"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Association"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Plan"/>
+    <owl:ObjectProperty rdf:about="&prov;agent">
+        <prov:category>qualified</prov:category>
+        <rdfs:range rdf:resource="&prov;Agent"/>
+        <rdfs:domain rdf:resource="&prov;AgentInvolvement"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#alternateOf -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#alternateOf">
+    <owl:ObjectProperty rdf:about="&prov;alternateOf">
+        <prov:category>simple</prov:category>
         <rdfs:subPropertyOf rdf:resource="&owl;topObjectProperty"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#AlternateOf"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/ns/prov#specializationOf"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.w3.org/ns/prov#endedAt -->
-
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#endedAt">
-        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:subPropertyOf rdf:resource="&owl;topObjectProperty"/>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Activity"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Activity"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#TimeInstant"/>
+        <rdfs:domain rdf:resource="&prov;Entity"/>
+        <rdfs:range rdf:resource="&prov;Entity"/>
+        <rdfs:seeAlso rdf:resource="&prov;specializationOf"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#entity -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#entity">
+    <owl:ObjectProperty rdf:about="&prov;entity">
+        <prov:category>qualified</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Agent_Association"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Attribution"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Generation"/>
@@ -126,278 +111,476 @@
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Responsibility"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Usage"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#not_in_DM:_consolidated_derivation_signature"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#EntityInvolvement"/>
+        <rdfs:range rdf:resource="&prov;Entity"/>
+        <rdfs:domain rdf:resource="&prov;EntityInvolvement"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#generated -->
+
+    <owl:ObjectProperty rdf:about="&prov;generated">
+        <prov:category>simple</prov:category>
+        <rdfs:subPropertyOf rdf:resource="&prov;involved"/>
+        <owl:inverseOf rdf:resource="&prov;wasGeneratedBy"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#hadLocation -->
+
+    <owl:ObjectProperty rdf:about="&prov;hadLocation">
+        <rdf:type rdf:resource="&owl;AsymmetricProperty"/>
+        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
+        <prov:category>simple</prov:category>
+        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Location"/>
+        <rdfs:range rdf:resource="&prov;Location"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#hadOriginalSource -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#hadOriginalSource">
+    <owl:ObjectProperty rdf:about="&prov;hadOriginalSource">
+        <prov:category>additional</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Original_Source"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#wasDerivedFrom"/>
+        <rdfs:range rdf:resource="&prov;Entity"/>
+        <rdfs:domain rdf:resource="&prov;Entity"/>
+        <prov:qualifiedForm rdf:resource="&prov;Source"/>
+        <prov:qualifiedForm rdf:resource="&prov;qualifiedSource"/>
+        <rdfs:subPropertyOf rdf:resource="&prov;wasDerivedFrom"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#hadPlan -->
+
+    <owl:ObjectProperty rdf:about="&prov;hadPlan">
+        <rdf:type rdf:resource="&owl;AsymmetricProperty"/>
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
+        <prov:category>qualified</prov:category>
+        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Agent_Association"/>
+        <rdfs:domain rdf:resource="&prov;Association"/>
+        <rdfs:range rdf:resource="&prov;Plan"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#hadQuotedAgent -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#hadQuotedAgent">
+    <owl:ObjectProperty rdf:about="&prov;hadQuotedAgent">
+        <prov:category>additional</prov:category>
         <rdfs:subPropertyOf rdf:resource="&owl;topObjectProperty"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Quotation"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Agent"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Quotation"/>
+        <rdfs:range rdf:resource="&prov;Agent"/>
+        <rdfs:domain rdf:resource="&prov;Quotation"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#hadQuoterAgent -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#hadQuoterAgent">
+    <owl:ObjectProperty rdf:about="&prov;hadQuoterAgent">
+        <prov:category>additional</prov:category>
         <rdfs:subPropertyOf rdf:resource="&owl;topObjectProperty"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Quotation"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Agent"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Quotation"/>
+        <rdfs:range rdf:resource="&prov;Agent"/>
+        <rdfs:domain rdf:resource="&prov;Quotation"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#hadRole -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#hadRole">
+    <owl:ObjectProperty rdf:about="&prov;hadRole">
         <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
+        <prov:category>qualified</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Attribute"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Involvement"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Role"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.w3.org/ns/prov#hadSpatialExtent -->
-
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#hadSpatialExtent">
-        <rdf:type rdf:resource="&owl;AsymmetricProperty"/>
-        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
-        <rdfs:label xml:lang="en">had spatial extent</rdfs:label>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Location"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Location"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.w3.org/ns/prov#hadTemporalExtent -->
-
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#hadTemporalExtent">
-        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
-        <rdfs:label xml:lang="en">had temporal extent</rdfs:label>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Usage"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Involvement"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#TimeInstant"/>
+        <rdfs:range rdf:resource="&prov;Role"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#hasAnnotation -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#hasAnnotation">
+    <owl:ObjectProperty rdf:about="&prov;hasAnnotation">
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Annotation"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Note"/>
+        <rdfs:range rdf:resource="&prov;Note"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#involved -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#involved">
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Element"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Element"/>
+    <owl:ObjectProperty rdf:about="&prov;involved">
+        <prov:category>additional</prov:category>
     </owl:ObjectProperty>
     
 
 
-    <!-- http://www.w3.org/ns/prov#qualified -->
+    <!-- http://www.w3.org/ns/prov#qualifiedAssociation -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#qualified">
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Element"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Involvement"/>
+    <owl:ObjectProperty rdf:about="&prov;qualifiedAssociation">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <prov:category>qualified</prov:category>
+        <rdfs:domain rdf:resource="&prov;Activity"/>
+        <rdfs:range rdf:resource="&prov;Association"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasAssociatedWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#qualifiedAttribution -->
+
+    <owl:ObjectProperty rdf:about="&prov;qualifiedAttribution">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <prov:category>qualified</prov:category>
+        <rdfs:range rdf:resource="&prov;Attribution"/>
+        <rdfs:domain rdf:resource="&prov;Entity"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasAttributedTo"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#qualifiedDerivation -->
+
+    <owl:ObjectProperty rdf:about="&prov;qualifiedDerivation">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <prov:category>qualified</prov:category>
+        <rdfs:range rdf:resource="&prov;Derivation"/>
+        <rdfs:domain rdf:resource="&prov;Entity"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasDerivedFrom"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#qualifiedEnd -->
+
+    <owl:ObjectProperty rdf:about="&prov;qualifiedEnd">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <prov:category>qualified</prov:category>
+        <rdfs:domain rdf:resource="&prov;Activity"/>
+        <rdfs:range rdf:resource="&prov;End"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasEndedBy"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#qualifiedGeneration -->
+
+    <owl:ObjectProperty rdf:about="&prov;qualifiedGeneration">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <prov:category>qualified</prov:category>
+        <rdfs:domain rdf:resource="&prov;Entity"/>
+        <rdfs:range rdf:resource="&prov;Generation"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasGeneratedBy"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#qualifiedInform -->
+
+    <owl:ObjectProperty rdf:about="&prov;qualifiedInform">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <prov:category>qualified</prov:category>
+        <rdfs:domain rdf:resource="&prov;Activity"/>
+        <rdfs:range rdf:resource="&prov;Inform"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasInformedBy"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#qualifiedQuotation -->
+
+    <owl:ObjectProperty rdf:about="&prov;qualifiedQuotation">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <prov:category>qualified</prov:category>
+        <rdfs:domain rdf:resource="&prov;Entity"/>
+        <rdfs:range rdf:resource="&prov;Quotation"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasQuotedFrom"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#qualifiedResponsibility -->
+
+    <owl:ObjectProperty rdf:about="&prov;qualifiedResponsibility">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <prov:category>qualified</prov:category>
+        <rdfs:domain rdf:resource="&prov;Agent"/>
+        <rdfs:range rdf:resource="&prov;Responsibility"/>
+        <prov:unqualifiedForm rdf:resource="&prov;actedOnBehalfOf"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#qualifiedRevision -->
+
+    <owl:ObjectProperty rdf:about="&prov;qualifiedRevision">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <prov:category>qualified</prov:category>
+        <rdfs:domain rdf:resource="&prov;Entity"/>
+        <rdfs:range rdf:resource="&prov;Revision"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasRevisionOf"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#qualifiedSource -->
+
+    <owl:ObjectProperty rdf:about="&prov;qualifiedSource">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <prov:category>qualified</prov:category>
+        <rdfs:domain rdf:resource="&prov;Entity"/>
+        <rdfs:range rdf:resource="&prov;Source"/>
+        <prov:unqualifiedForm rdf:resource="&prov;hadOriginalSource"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#qualifiedStart -->
+
+    <owl:ObjectProperty rdf:about="&prov;qualifiedStart">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <prov:category>qualified</prov:category>
+        <rdfs:domain rdf:resource="&prov;Activity"/>
+        <rdfs:range rdf:resource="&prov;Start"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasStartedBy"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#qualifiedStartByActivity -->
+
+    <owl:ObjectProperty rdf:about="&prov;qualifiedStartByActivity">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <prov:category>qualified</prov:category>
+        <rdfs:domain rdf:resource="&prov;Activity"/>
+        <rdfs:range rdf:resource="&prov;StartByActivity"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasStartedByActivity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#qualifiedTrace -->
+
+    <owl:ObjectProperty rdf:about="&prov;qualifiedTrace">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <prov:category>qualified</prov:category>
+        <prov:unqualifiedForm rdf:resource="&prov;tracedTo"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#qualifiedUsage -->
+
+    <owl:ObjectProperty rdf:about="&prov;qualifiedUsage">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <prov:category>qualified</prov:category>
+        <rdfs:domain rdf:resource="&prov;Activity"/>
+        <rdfs:range rdf:resource="&prov;Usage"/>
+        <prov:unqualifiedForm rdf:resource="&prov;used"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#specializationOf -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#specializationOf">
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#SpecializationOf"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/ns/prov#alternateOf"/>
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#tracedTo"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.w3.org/ns/prov#startedAt -->
-
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#startedAt">
-        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+    <owl:ObjectProperty rdf:about="&prov;specializationOf">
+        <prov:category>simple</prov:category>
         <rdfs:subPropertyOf rdf:resource="&owl;topObjectProperty"/>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Activity"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Activity"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#TimeInstant"/>
+        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#SpecializationOf"/>
+        <rdfs:domain rdf:resource="&prov;Entity"/>
+        <rdfs:range rdf:resource="&prov;Entity"/>
+        <rdfs:seeAlso rdf:resource="&prov;alternateOf"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#tracedTo -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#tracedTo">
+    <owl:ObjectProperty rdf:about="&prov;tracedTo">
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Attribution"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Traceability"/>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#imprecise-1"/>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#imprecise-n"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#not_in_DM:_consolidated_derivation_signature"/>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#precise-1"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#involved"/>
+        <rdfs:range rdf:resource="&prov;Entity"/>
+        <rdfs:domain rdf:resource="&prov;Entity"/>
+        <prov:qualifiedForm rdf:resource="&prov;Trace"/>
+        <rdfs:subPropertyOf rdf:resource="&prov;involved"/>
+        <prov:qualifiedForm rdf:resource="&prov;qualifiedTrace"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#used -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#used">
+    <owl:ObjectProperty rdf:about="&prov;used">
         <rdf:type rdf:resource="&owl;AsymmetricProperty"/>
         <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
-        <rdfs:label xml:lang="en">used</rdfs:label>
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Usage"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#not_in_DM:_consolidated_derivation_signature"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Activity"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/ns/prov#Usage"/>
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#involved"/>
+        <rdfs:domain rdf:resource="&prov;Activity"/>
+        <rdfs:range rdf:resource="&prov;Entity"/>
+        <rdfs:seeAlso rdf:resource="&prov;Usage"/>
+        <prov:qualifiedForm rdf:resource="&prov;Usage"/>
+        <rdfs:subPropertyOf rdf:resource="&prov;involved"/>
+        <prov:qualifiedForm rdf:resource="&prov;qualifiedUsage"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#wasAssociatedWith -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#wasAssociatedWith">
+    <owl:ObjectProperty rdf:about="&prov;wasAssociatedWith">
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Agent_Association"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Activity"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Agent"/>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/ns/prov#Association"/>
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#involved"/>
+        <rdfs:domain rdf:resource="&prov;Activity"/>
+        <rdfs:range rdf:resource="&prov;Agent"/>
+        <rdfs:seeAlso rdf:resource="&prov;Association"/>
+        <prov:qualifiedForm rdf:resource="&prov;Association"/>
+        <rdfs:subPropertyOf rdf:resource="&prov;involved"/>
+        <prov:qualifiedForm rdf:resource="&prov;qualifiedAssociation"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#wasAttributedTo -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#wasAttributedTo">
+    <owl:ObjectProperty rdf:about="&prov;wasAttributedTo">
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Attribution"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Agent"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#tracedTo"/>
+        <rdfs:range rdf:resource="&prov;Agent"/>
+        <prov:qualifiedForm rdf:resource="&prov;Attribution"/>
+        <rdfs:domain rdf:resource="&prov;Entity"/>
+        <prov:qualifiedForm rdf:resource="&prov;qualifiedAttribution"/>
+        <rdfs:subPropertyOf rdf:resource="&prov;tracedTo"/>
     </owl:ObjectProperty>
+    <owl:Axiom>
+        <owl:annotatedProperty rdf:resource="&rdfs;subPropertyOf"/>
+        <owl:annotatedTarget rdf:resource="&prov;tracedTo"/>
+        <owl:annotatedSource rdf:resource="&prov;wasAttributedTo"/>
+    </owl:Axiom>
     
 
 
     <!-- http://www.w3.org/ns/prov#wasDerivedFrom -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#wasDerivedFrom">
+    <owl:ObjectProperty rdf:about="&prov;wasDerivedFrom">
         <rdf:type rdf:resource="&owl;AsymmetricProperty"/>
         <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
-        <rdfs:label xml:lang="en">was derived from</rdfs:label>
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#imprecise-1"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#imprecise-n"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#not_in_DM:_consolidated_derivation_signature"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#precise-1"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#tracedTo"/>
+        <prov:qualifiedForm rdf:resource="&prov;Derivation"/>
+        <rdfs:range rdf:resource="&prov;Entity"/>
+        <rdfs:domain rdf:resource="&prov;Entity"/>
+        <prov:qualifiedForm rdf:resource="&prov;qualifiedDerivation"/>
+        <rdfs:subPropertyOf rdf:resource="&prov;tracedTo"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#wasEndedBy -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#wasEndedBy">
+    <owl:ObjectProperty rdf:about="&prov;wasEndedBy">
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Ending"/>
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#wasAssociatedWith"/>
+        <prov:qualifiedForm rdf:resource="&prov;End"/>
+        <prov:qualifiedForm rdf:resource="&prov;qualifiedEnd"/>
+        <rdfs:subPropertyOf rdf:resource="&prov;wasAssociatedWith"/>
     </owl:ObjectProperty>
+    
 
 
     <!-- http://www.w3.org/ns/prov#wasGeneratedBy -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#wasGeneratedBy">
+    <owl:ObjectProperty rdf:about="&prov;wasGeneratedBy">
         <rdf:type rdf:resource="&owl;AsymmetricProperty"/>
         <rdf:type rdf:resource="&owl;FunctionalProperty"/>
         <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
-        <rdfs:label xml:lang="en">was generated by</rdfs:label>
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Generation"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#not_in_DM:_consolidated_derivation_signature"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Activity"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#involved"/>
+        <rdfs:range rdf:resource="&prov;Activity"/>
+        <rdfs:domain rdf:resource="&prov;Entity"/>
+        <prov:qualifiedForm rdf:resource="&prov;Generation"/>
+        <rdfs:subPropertyOf rdf:resource="&prov;involved"/>
+        <prov:qualifiedForm rdf:resource="&prov;qualifiedGeneration"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#wasInformedBy -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#wasInformedBy">
-        <rdfs:label xml:lang="en">was informed by</rdfs:label>
+    <owl:ObjectProperty rdf:about="&prov;wasInformedBy">
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Activity_Ordering"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Starting_again"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Activity"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Activity"/>
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#involved"/>
+        <rdfs:domain rdf:resource="&prov;Activity"/>
+        <rdfs:range rdf:resource="&prov;Activity"/>
+        <prov:qualifiedForm rdf:resource="&prov;Inform"/>
+        <rdfs:subPropertyOf rdf:resource="&prov;involved"/>
+        <prov:qualifiedForm rdf:resource="&prov;qualifiedInform"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#wasQuotedFrom -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#wasQuotedFrom">
+    <owl:ObjectProperty rdf:about="&prov;wasQuotedFrom">
+        <prov:category>additional</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Quotation"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#involved"/>
+        <rdfs:domain rdf:resource="&prov;Entity"/>
+        <rdfs:range rdf:resource="&prov;Entity"/>
+        <prov:qualifiedForm rdf:resource="&prov;Quotation"/>
+        <prov:qualifiedForm rdf:resource="&prov;qualifiedQuotation"/>
+        <rdfs:subPropertyOf rdf:resource="&prov;wasDerivedFrom"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#wasRevisionOf -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#wasRevisionOf">
+    <owl:ObjectProperty rdf:about="&prov;wasRevisionOf">
+        <prov:category>additional</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Revision"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#wasDerivedFrom"/>
+        <rdfs:range rdf:resource="&prov;Entity"/>
+        <rdfs:domain rdf:resource="&prov;Entity"/>
+        <prov:qualifiedForm rdf:resource="&prov;Revision"/>
+        <prov:qualifiedForm rdf:resource="&prov;qualifiedRevision"/>
+        <rdfs:subPropertyOf rdf:resource="&prov;wasDerivedFrom"/>
     </owl:ObjectProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#wasStartedBy -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#wasStartedBy">
+    <owl:ObjectProperty rdf:about="&prov;wasStartedBy">
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Starting"/>
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#wasAssociatedWith"/>
+        <prov:qualifiedForm rdf:resource="&prov;Start"/>
+        <prov:qualifiedForm rdf:resource="&prov;qualifiedStart"/>
+        <rdfs:subPropertyOf rdf:resource="&prov;wasAssociatedWith"/>
     </owl:ObjectProperty>
     
 
 
-    <!-- http://www.w3.org/ns/prov#wasSummaryOf -->
+    <!-- http://www.w3.org/ns/prov#wasStartedByActivity -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/ns/prov#wasSummaryOf">
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Summary"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Entity"/>
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#involved"/>
+    <owl:ObjectProperty rdf:about="&prov;wasStartedByActivity">
+        <prov:category>simple</prov:category>
+        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Started_by_activity"/>
+        <rdfs:range rdf:resource="&prov;Activity"/>
+        <rdfs:domain rdf:resource="&prov;Activity"/>
+        <prov:qualifiedForm rdf:resource="&prov;StartByActivity"/>
+        <rdfs:subPropertyOf rdf:resource="&prov;involved"/>
+        <prov:qualifiedForm rdf:resource="&prov;qualifiedStartByActivity"/>
     </owl:ObjectProperty>
     
 
@@ -413,11 +596,43 @@
     
 
 
+    <!-- http://www.w3.org/ns/prov#atTime -->
+
+    <owl:DatatypeProperty rdf:about="&prov;atTime">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <prov:category>qualified</prov:category>
+        <rdfs:range rdf:resource="&xsd;dateTime"/>
+        <rdfs:domain rdf:resource="&prov;InstantaneousEvent"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#endedAtTime -->
+
+    <owl:DatatypeProperty rdf:about="&prov;endedAtTime">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <prov:category>simple</prov:category>
+        <rdfs:range rdf:resource="&xsd;dateTime"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://www.w3.org/ns/prov#inXSDDateTime -->
 
-    <owl:DatatypeProperty rdf:about="http://www.w3.org/ns/prov#inXSDDateTime">
+    <owl:DatatypeProperty rdf:about="&prov;inXSDDateTime">
+        <prov:category>simple</prov:category>
         <rdfs:range rdf:resource="&xsd;dateTime"/>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#TimeInstant"/>
+        <rdfs:domain rdf:resource="&prov;TimeInstant"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#startedAtTime -->
+
+    <owl:DatatypeProperty rdf:about="&prov;startedAtTime">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <prov:category>simple</prov:category>
+        <rdfs:range rdf:resource="&xsd;dateTime"/>
     </owl:DatatypeProperty>
     
 
@@ -433,15 +648,18 @@
     
 
 
+    <!-- http://www.w3.org/2002/07/owl#Thing -->
 
+    <owl:Class rdf:about="&owl;Thing"/>
     
 
 
     <!-- http://www.w3.org/ns/prov#Activity -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Activity">
-        <rdfs:label xml:lang="en">Activity</rdfs:label>
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Element"/>
+    <owl:Class rdf:about="&prov;Activity">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+        <owl:disjointWith rdf:resource="&prov;Entity"/>
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Activity"/>
     </owl:Class>
     
@@ -449,18 +667,19 @@
 
     <!-- http://www.w3.org/ns/prov#ActivityInvolvement -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#ActivityInvolvement">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Involvement"/>
-        <owl:disjointWith rdf:resource="http://www.w3.org/ns/prov#EntityInvolvement"/>
+    <owl:Class rdf:about="&prov;ActivityInvolvement">
+        <rdfs:subClassOf rdf:resource="&prov;Involvement"/>
+        <owl:disjointWith rdf:resource="&prov;EntityInvolvement"/>
+        <prov:category>qualified</prov:category>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Agent -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Agent">
-        <rdfs:label xml:lang="en">Agent</rdfs:label>
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Entity"/>
+    <owl:Class rdf:about="&prov;Agent">
+        <rdfs:subClassOf rdf:resource="&prov;Entity"/>
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Agent"/>
     </owl:Class>
     
@@ -468,33 +687,40 @@
 
     <!-- http://www.w3.org/ns/prov#AgentInvolvement -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#AgentInvolvement">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#EntityInvolvement"/>
+    <owl:Class rdf:about="&prov;AgentInvolvement">
+        <rdfs:subClassOf rdf:resource="&prov;EntityInvolvement"/>
+        <prov:category>qualified</prov:category>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Association -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Association">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#AgentInvolvement"/>
+    <owl:Class rdf:about="&prov;Association">
+        <rdfs:subClassOf rdf:resource="&prov;AgentInvolvement"/>
+        <prov:category>qualified</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Agent_Association"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasAssociatedWith"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Attribution -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Attribution">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#AgentInvolvement"/>
+    <owl:Class rdf:about="&prov;Attribution">
+        <rdfs:subClassOf rdf:resource="&prov;AgentInvolvement"/>
+        <prov:category>qualified</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Attribution"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasAttributedTo"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Bundle -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Bundle">
+    <owl:Class rdf:about="&prov;Bundle">
+        <rdfs:subClassOf rdf:resource="&prov;Entity"/>
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Bundle"/>
     </owl:Class>
     
@@ -502,36 +728,34 @@
 
     <!-- http://www.w3.org/ns/prov#Derivation -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Derivation">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#EntityInvolvement"/>
+    <owl:Class rdf:about="&prov;Derivation">
+        <rdfs:subClassOf rdf:resource="&prov;EntityInvolvement"/>
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Revision"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Traceability"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#not_in_DM:_consolidated_derivation_signature"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.w3.org/ns/prov#Element -->
-
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Element">
+        <prov:unqualifiedForm rdf:resource="&prov;wasDerivedFrom"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#End -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#End">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Association"/>
+    <owl:Class rdf:about="&prov;End">
+        <rdfs:subClassOf rdf:resource="&prov;Association"/>
+        <rdfs:subClassOf rdf:resource="&prov;InstantaneousEvent"/>
+        <prov:category>qualified</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Ending"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasEndedBy"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Entity -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Entity">
-        <rdfs:label xml:lang="en">Entity</rdfs:label>
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Element"/>
+    <owl:Class rdf:about="&prov;Entity">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Entity"/>
     </owl:Class>
     
@@ -539,64 +763,83 @@
 
     <!-- http://www.w3.org/ns/prov#EntityInvolvement -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#EntityInvolvement">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Involvement"/>
+    <owl:Class rdf:about="&prov;EntityInvolvement">
+        <rdfs:subClassOf rdf:resource="&prov;Involvement"/>
+        <prov:category>qualified</prov:category>
+        <prov:category>simple</prov:category>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Generation -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Generation">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#ActivityInvolvement"/>
+    <owl:Class rdf:about="&prov;Generation">
+        <rdfs:subClassOf rdf:resource="&prov;ActivityInvolvement"/>
+        <rdfs:subClassOf rdf:resource="&prov;InstantaneousEvent"/>
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Generation"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasGeneratedBy"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Inform -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Inform">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#ActivityInvolvement"/>
+    <owl:Class rdf:about="&prov;Inform">
+        <rdfs:subClassOf rdf:resource="&prov;ActivityInvolvement"/>
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Activity_Ordering"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasInformedBy"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#InstantaneousEvent -->
+
+    <owl:Class rdf:about="&prov;InstantaneousEvent">
+        <prov:category>simple</prov:category>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Involvement -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Involvement">
+    <owl:Class rdf:about="&prov;Involvement">
+        <prov:category>qualified</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Agent_Association"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Generation"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Responsibility"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Usage"/>
+        <prov:unqualifiedForm rdf:resource="&prov;involved"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Location -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Location">
-        <rdfs:label xml:lang="en">Location</rdfs:label>
+    <owl:Class rdf:about="&prov;Location">
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Location"/>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/ns/prov#hadSpatialExtent"/>
+        <rdfs:seeAlso rdf:resource="&prov;hadSpatialExtent"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Note -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Note">
+    <owl:Class rdf:about="&prov;Note">
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Note"/>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/ns/prov#hadNote"/>
+        <rdfs:seeAlso rdf:resource="&prov;hadNote"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Organization -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Organization">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Agent"/>
+    <owl:Class rdf:about="&prov;Organization">
+        <rdfs:subClassOf rdf:resource="&prov;Agent"/>
+        <prov:category>additional</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Organization"/>
     </owl:Class>
     
@@ -604,8 +847,9 @@
 
     <!-- http://www.w3.org/ns/prov#Person -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Person">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Agent"/>
+    <owl:Class rdf:about="&prov;Person">
+        <rdfs:subClassOf rdf:resource="&prov;Agent"/>
+        <prov:category>additional</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Person"/>
     </owl:Class>
     
@@ -613,9 +857,9 @@
 
     <!-- http://www.w3.org/ns/prov#Plan -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Plan">
-        <rdfs:label xml:lang="en">Plan</rdfs:label>
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Entity"/>
+    <owl:Class rdf:about="&prov;Plan">
+        <rdfs:subClassOf rdf:resource="&prov;Entity"/>
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Agent_Association"/>
     </owl:Class>
     
@@ -623,103 +867,124 @@
 
     <!-- http://www.w3.org/ns/prov#Quotation -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Quotation">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#EntityInvolvement"/>
+    <owl:Class rdf:about="&prov;Quotation">
+        <rdfs:subClassOf rdf:resource="&prov;EntityInvolvement"/>
+        <prov:category>additional</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Quotation"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasQuotedFrom"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Responsibility -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Responsibility">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#AgentInvolvement"/>
+    <owl:Class rdf:about="&prov;Responsibility">
+        <rdfs:subClassOf rdf:resource="&prov;AgentInvolvement"/>
+        <prov:category>qualified</prov:category>
+        <prov:unqualifiedForm rdf:resource="&prov;actedOnBehalfOf"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Revision -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Revision">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Derivation"/>
+    <owl:Class rdf:about="&prov;Revision">
+        <rdfs:subClassOf rdf:resource="&prov;Source"/>
+        <prov:category>additional</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Revision"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasRevisionOf"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Role -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Role">
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/ns/prov#hadRole"/>
+    <owl:Class rdf:about="&prov;Role">
+        <prov:category>simple</prov:category>
+        <rdfs:seeAlso rdf:resource="&prov;hadRole"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/ns/prov#SoftwareAgent -->
+
+    <owl:Class rdf:about="&prov;SoftwareAgent">
+        <rdfs:subClassOf rdf:resource="&prov;Agent"/>
+        <prov:category>additional</prov:category>
+        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#SoftwareAgent"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Source -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Source">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Derivation"/>
+    <owl:Class rdf:about="&prov;Source">
+        <rdfs:subClassOf rdf:resource="&prov;Derivation"/>
+        <prov:category>additional</prov:category>
+        <prov:unqualifiedForm rdf:resource="&prov;hadOriginalSource"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Start -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Start">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Inform"/>
+    <owl:Class rdf:about="&prov;Start">
+        <rdfs:subClassOf rdf:resource="&prov;Association"/>
+        <rdfs:subClassOf rdf:resource="&prov;InstantaneousEvent"/>
+        <prov:category>qualified</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Starting"/>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Starting_again"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasStartedBy"/>
     </owl:Class>
     
 
 
-    <!-- http://www.w3.org/ns/prov#Summarization -->
+    <!-- http://www.w3.org/ns/prov#StartByActivity -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Summarization">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#EntityInvolvement"/>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Summary"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.w3.org/ns/prov#System -->
-
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#System">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Agent"/>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#SoftwareAgent"/>
+    <owl:Class rdf:about="&prov;StartByActivity">
+        <rdfs:subClassOf rdf:resource="&prov;ActivityInvolvement"/>
+        <prov:category>simple</prov:category>
+        <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Started_by_activity"/>
+        <prov:unqualifiedForm rdf:resource="&prov;wasStartedByActivity"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#TimeInstant -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#TimeInstant">
+    <owl:Class rdf:about="&prov;TimeInstant">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Activity"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Generation"/>
-        <rdfs:seeAlso rdf:resource="http://www.w3.org/ns/prov#hadTemporalExtent"/>
+        <rdfs:seeAlso rdf:resource="&prov;hadTemporalExtent"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Trace -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Trace">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#EntityInvolvement"/>
+    <owl:Class rdf:about="&prov;Trace">
+        <rdfs:subClassOf rdf:resource="&prov;EntityInvolvement"/>
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Revision"/>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Traceability"/>
+        <prov:unqualifiedForm rdf:resource="&prov;tracedTo"/>
     </owl:Class>
     
 
 
     <!-- http://www.w3.org/ns/prov#Usage -->
 
-    <owl:Class rdf:about="http://www.w3.org/ns/prov#Usage">
-        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#EntityInvolvement"/>
+    <owl:Class rdf:about="&prov;Usage">
+        <rdfs:subClassOf rdf:resource="&prov;EntityInvolvement"/>
+        <rdfs:subClassOf rdf:resource="&prov;InstantaneousEvent"/>
+        <prov:category>simple</prov:category>
         <rdfs:seeAlso rdf:resource="http://www.w3.org/2011/prov/wiki/ProvRDF#Usage"/>
+        <prov:unqualifiedForm rdf:resource="&prov;used"/>
     </owl:Class>
 </rdf:RDF>
 
 
 
-<!-- Generated by the OWL API (version 3.2.3.1824) http://owlapi.sourceforge.net -->
+<!-- Generated by the OWL API (version 3.1.0.20069) http://owlapi.sourceforge.net -->
 

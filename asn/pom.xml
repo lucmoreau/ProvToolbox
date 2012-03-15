@@ -6,10 +6,10 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>prov-asn</artifactId>
-  <name>PROV-ASN</name>
+  <artifactId>prov-n</artifactId>
+  <name>PROV-N</name>
   <packaging>jar</packaging>
-  <description>A Parser for PROV-ASN.</description>
+  <description>A Parser for PROV-N Provenance Notation.</description>
 
 
 
@@ -73,7 +73,7 @@
          <configuration>
            <programs>
              <program>
-               <mainClass>org.openprovenance.prov.asn.MainParser</mainClass>
+               <mainClass>org.openprovenance.prov.notation.MainParser</mainClass>
                <name>asn</name>
              </program>
            </programs>

@@ -22,7 +22,7 @@ agent(ex:Simon,   [ prov:type="Person" ])
 agent(ex:James,   [ prov:type="Person" ])
 agent(ex:Satya,   [ prov:type="Person" ])
 
-activity(ex:edit1,,,[prov:type="edit"])
+activity(ex:edit1,-,-,[prov:type="edit"])
 
 wasGeneratedBy(tr:WD-prov-dm-20111215, ex:edit1)
 

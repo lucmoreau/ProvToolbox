@@ -102,7 +102,7 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
     public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s="wasGeneratedBy(" + optionalId(id) + id2 + "," + id1 +
+        String s="wasGeneratedBy(" + optionalId(id) + id2 + "," + optional(id1) +
             optionalTime(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }

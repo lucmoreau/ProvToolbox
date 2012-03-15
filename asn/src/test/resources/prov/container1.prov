@@ -1,6 +1,9 @@
 
 container
 prefix ex <http://example>
+          activity(ex:a1, [ex:param="a"])
           entity(ex:e1, [ex:param="a"])
+          wasGeneratedBy(ex:e1, ex:a1, [ex:param="a", ex:port="foo"])
+          wasGeneratedBy(ex:e1, -, [ex:param="a", ex:port="foo"])
 endContainer
 

@@ -63,6 +63,8 @@ prefix ex2 <http://example.org/ex2>
           wasGeneratedBy(ex:e1, ex:a2, [ex:param="a"])
           wasGeneratedBy(ex:e1, ex:a2, [ex:param="a", ex:port="foo"])
 
+          wasGeneratedBy(ex:e1, -, [ex:param="a", ex:port="foo"])
+
           used(u1, ex:a2, ex:e1,     [ prov:role = "dataToAggregate"])
 
           used(ex:a2, ex:e1, 2001-10-26T21:32:52)

@@ -13,11 +13,6 @@
     </file>
     
     <file>
-      <source>target/classes/README-prov2dot.txt</source>
-      <outputDirectory>/provToolbox</outputDirectory>
-      <fileMode>644</fileMode>
-    </file>
-    <file>
       <source>target/classes/8-prov-toolbox.pdf</source>
       <outputDirectory>/provToolbox</outputDirectory>
       <destName>prov-toolbox-tutorial.pdf</destName>

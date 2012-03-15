@@ -105,7 +105,7 @@ public class RdfConstructor implements TreeConstructor {
 
             //HashSet<Usage> su=new HashSet<Usage>();
             //su.add(u);
-            a2.getQualified().add(u);
+            a2.getQualifiedUsage().add(u);
 
         }
 
@@ -133,7 +133,7 @@ public class RdfConstructor implements TreeConstructor {
 
             qi.getActivities().add(a1);
 
-            e2.getQualified().add(g);
+            e2.getQualifiedGeneration().add(g);
         }
 
         e2.setWasGeneratedBy(a1);
@@ -175,11 +175,11 @@ public class RdfConstructor implements TreeConstructor {
         Agent ag1=(Agent)manager.find(qn1);
         qi.getEntities().add(ag1);
 
-        a2.getQualified().add(a);
+        a2.getQualifiedAssociation().add(a);
 
 	if (qnpl!=null) {
 	    Plan plan=(Plan)manager.find(qnpl);
-	    a.getAdoptedPlan().add(plan);
+	    a.setHadPlan(plan);
 	}
 
 	a2.getWasAssociatedWith().add(ag1);

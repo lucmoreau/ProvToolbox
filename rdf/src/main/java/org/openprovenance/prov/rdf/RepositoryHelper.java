@@ -37,7 +37,7 @@ public class RepositoryHelper {
         module.addConcept(org.openprovenance.prov.rdf.Responsibility.class);
         module.addConcept(org.openprovenance.prov.rdf.Plan.class);
         module.addConcept(org.openprovenance.prov.rdf.Location.class);
-        module.addConcept(org.openprovenance.prov.rdf.System.class);
+        module.addConcept(org.openprovenance.prov.rdf.SoftwareAgent.class);
         // module.addDatatype(org.openprovenance.elmo.XMLLiteral.class,
         //                    "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");
     }

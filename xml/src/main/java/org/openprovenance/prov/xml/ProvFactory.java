@@ -557,6 +557,56 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
+    public WasStartedBy newWasStartedBy(QName id,
+                                        ActivityRef aid,
+                                        EntityRef eid) {
+        WasStartedBy res=of.createWasStartedBy();
+        res.setId(id);
+        res.setActivity(aid);
+        res.setTrigger(eid);
+        return res;
+    }
+
+    public WasStartedBy newWasStartedBy(String id,
+                                        ActivityRef aid,
+                                        EntityRef eid) {
+        return newWasStartedBy(stringToQName(id),aid,eid);
+    }
+
+    public WasEndedBy newWasEndedBy(QName id,
+                                    ActivityRef aid,
+                                    EntityRef eid) {
+        WasEndedBy res=of.createWasEndedBy();
+        res.setId(id);
+        res.setActivity(aid);
+        res.setTrigger(eid);
+        return res;
+    }
+
+    public WasEndedBy newWasEndedBy(String id,
+                                    ActivityRef aid,
+                                    EntityRef eid) {
+        return newWasEndedBy(stringToQName(id),aid,eid);
+    }
+
+
+    public WasAttributedTo newWasAttributedTo(QName id,
+                                              EntityRef eid,
+                                              AgentRef agid) {
+        WasAttributedTo res=of.createWasAttributedTo();
+        res.setId(id);
+        res.setEntity(eid);
+        res.setAgent(agid);
+        return res;
+    }
+
+    public WasAttributedTo newWasAttributedTo(String id,
+                                              EntityRef eid,
+                                              AgentRef agid) {
+        return newWasAttributedTo(stringToQName(id),eid,agid);
+    }
+
+
     public WasGeneratedBy newWasGeneratedBy(String id,
                                             EntityRef aid,
                                             String role,

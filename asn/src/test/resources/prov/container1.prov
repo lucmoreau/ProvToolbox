@@ -3,7 +3,53 @@ container
 prefix ex <http://example>
           activity(ex:a1, [ex:param="a"])
           entity(ex:e1, [ex:param="a"])
+          agent(ex:ag1, [ex:param="a"])
+
           wasGeneratedBy(ex:e1, ex:a1, [ex:param="a", ex:port="foo"])
+          wasGeneratedBy(ex:e1, -)
           wasGeneratedBy(ex:e1, -, [ex:param="a", ex:port="foo"])
+          wasGeneratedBy(ex:e1, ex:a1, 2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
+          wasGeneratedBy(ex:e1, -, 2001-10-26T21:32:52)
+          wasGeneratedBy(ex:e1, -, 2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
+          wasGeneratedBy(g1, ex:e1, ex:a1, [ex:param="a", ex:port="foo"])
+          wasGeneratedBy(g1, ex:e1, -)
+          wasGeneratedBy(g1, ex:e1, -, [ex:param="a", ex:port="foo"])
+          wasGeneratedBy(g1, ex:e1, ex:a1, 2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
+          wasGeneratedBy(g1, ex:e1, -, 2001-10-26T21:32:52)
+          wasGeneratedBy(g1, ex:e1, -, 2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
+
+          wasStartedBy(ex:a1, ex:e1, [ex:param="a", ex:port="foo"])
+          wasStartedBy(ex:a1, -)
+          wasStartedBy(ex:a1, -, [ex:param="a", ex:port="foo"])
+          wasStartedBy(ex:a1, ex:e1, 2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
+          wasStartedBy(ex:a1, -, 2001-10-26T21:32:52)
+          wasStartedBy(ex:a1, -, 2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
+          wasStartedBy(s1, ex:a1, ex:e1, [ex:param="a", ex:port="foo"])
+          wasStartedBy(s1, ex:a1, -)
+          wasStartedBy(s1, ex:a1, -, [ex:param="a", ex:port="foo"])
+          wasStartedBy(s1, ex:a1, ex:e1, 2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
+          wasStartedBy(s1, ex:a1, -, 2001-10-26T21:32:52)
+          wasStartedBy(s1, ex:a1, -, 2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
+
+
+          wasEndedBy(ex:a1, ex:e1, [ex:param="a", ex:port="foo"])
+          wasEndedBy(ex:a1, -)
+          wasEndedBy(ex:a1, -, [ex:param="a", ex:port="foo"])
+          wasEndedBy(ex:a1, ex:e1, 2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
+          wasEndedBy(ex:a1, -, 2001-10-26T21:32:52)
+          wasEndedBy(ex:a1, -, 2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
+          wasEndedBy(_e1, ex:a1, ex:e1, [ex:param="a", ex:port="foo"])
+          wasEndedBy(_e1, ex:a1, -)
+          wasEndedBy(_e1, ex:a1, -, [ex:param="a", ex:port="foo"])
+          wasEndedBy(_e1, ex:a1, ex:e1, 2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
+          wasEndedBy(_e1, ex:a1, -, 2001-10-26T21:32:52)
+          wasEndedBy(_e1, ex:a1, -, 2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
+
+
+          wasAttributedTo(ex:e1, ex:ag1)
+          wasAttributedTo(ex:e1, ex:ag1, [ex:param="a", ex:port="foo"])
+          wasAttributedTo(_a,ex:e1, ex:ag1)
+          wasAttributedTo(_a,ex:e1, ex:ag1, [ex:param="a", ex:port="foo"])
+
 endContainer
 

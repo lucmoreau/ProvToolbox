@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; INT; PLAN; SPECIALIZATION; ALTERNATE;
+    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; WSB; WEB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; WAT; INT; PLAN; SPECIALIZATION; ALTERNATE;
 }
 
 @header {
@@ -59,7 +59,7 @@ defaultNamespaceDeclaration :
     ;
 
 record
-	:	(entityExpression | activityExpression | agentExpression | generationExpression  | useExpression | derivationExpression | dependenceExpression  | controlExpression | alternateExpression | specializationExpression  |  associationExpression)
+	:	(entityExpression | activityExpression | agentExpression | generationExpression  | useExpression | startExpression | endExpression | derivationExpression | dependenceExpression  | controlExpression | alternateExpression | specializationExpression  |  associationExpression | attributionExpression)
 	;
 
 entityExpression
@@ -78,10 +78,10 @@ agentExpression
 	;
 
 /**
-Grammar is:
-'wasGeneratedBy' '('  optionalIdentifier id2=identifier ',' ((id1=identifier) | '-') optionalTime optionalAttributeValuePairs ')'
+Production is split into two rules to allow for tree reconstruction.
 
-It is split into two rules to allow for tree reconstruction.
+'wasGeneratedBy' '('  optionalIdentifier identifier ',' ((identifier) | '-') optionalTime optionalAttributeValuePairs ')'
+
 */
 generationExpression
 	:	'wasGeneratedBy' '('  optionalIdentifier id2=identifier ',' '-' optionalTime optionalAttributeValuePairs ')'
@@ -101,6 +101,39 @@ derivationExpression2
 	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier (',' a=identifier ',' g2=identifier ',' u1=identifier )?	optionalAttributeValuePairs ')'
       -> ^(WDF $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) optionalAttributeValuePairs)
 	;
+
+/**
+Production is split into two rules to allow for tree reconstruction.
+
+'wasStartedBy' '('  optionalIdentifier identifier ',' ((identifier) | '-') optionalTime optionalAttributeValuePairs ')'
+
+*/
+startExpression
+	:	'wasStartedBy' '('  optionalIdentifier id2=identifier ',' '-' optionalTime optionalAttributeValuePairs ')'
+      -> ^(WSB optionalIdentifier $id2 ^(ID) optionalTime optionalAttributeValuePairs)
+    |
+
+		'wasStartedBy' '('  optionalIdentifier id2=identifier ',' (id1=identifier) optionalTime optionalAttributeValuePairs ')'
+      -> ^(WSB optionalIdentifier $id2 $id1 optionalTime optionalAttributeValuePairs)
+	;
+
+
+
+/**
+Production is split into two rules to allow for tree reconstruction.
+
+'wasEndedBy' '('  optionalIdentifier identifier ',' ((identifier) | '-') optionalTime optionalAttributeValuePairs ')'
+
+*/
+endExpression
+	:	'wasEndedBy' '('  optionalIdentifier id2=identifier ',' '-' optionalTime optionalAttributeValuePairs ')'
+      -> ^(WEB optionalIdentifier $id2 ^(ID) optionalTime optionalAttributeValuePairs)
+    |
+
+		'wasEndedBy' '('  optionalIdentifier id2=identifier ',' (id1=identifier) optionalTime optionalAttributeValuePairs ')'
+      -> ^(WEB optionalIdentifier $id2 $id1 optionalTime optionalAttributeValuePairs)
+	;
+
 
 
 derivationExpression
@@ -160,6 +193,11 @@ specializationExpression
 associationExpression
 	:	'wasAssociatedWith' '('  optionalIdentifier a=identifier ',' ag=identifier  ('@' pl=identifier)? optionalAttributeValuePairs ')'
       -> ^(WAW optionalIdentifier $a $ag ^(PLAN $pl?) optionalAttributeValuePairs)
+	;
+
+attributionExpression
+	:	'wasAttributedTo' '('  optionalIdentifier e=identifier ',' ag=identifier optionalAttributeValuePairs ')'
+      -> ^(WAT optionalIdentifier $e $ag optionalAttributeValuePairs)
 	;
 
 identifier

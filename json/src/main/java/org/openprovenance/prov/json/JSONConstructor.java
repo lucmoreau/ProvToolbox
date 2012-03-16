@@ -265,6 +265,23 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasGeneratedBy", id, attrs);
 	}
 
+	public Object convertWasStartedBy(Object id, Object id2, Object id1,
+			Object time, Object aAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
+	public Object convertWasEndedBy(Object id, Object id2, Object id1,
+			Object time, Object aAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
+    public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object gAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
 	public Object convertWasDerivedFrom(Object id2, Object id1, Object pe, Object q2, Object q1, Object time, Object dAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:usedEntity", id1));

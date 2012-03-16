@@ -18,7 +18,10 @@ import org.openprovenance.prov.xml.Account;
 import org.openprovenance.prov.xml.Container;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasGeneratedBy;
+import org.openprovenance.prov.xml.WasStartedBy;
+import org.openprovenance.prov.xml.WasEndedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
+import org.openprovenance.prov.xml.WasAttributedTo;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.WasAssociatedWith;
@@ -257,6 +260,67 @@ public  class ProvConstructor implements TreeConstructor {
         }
             
         return g;
+    }
+
+    public Object convertWasStartedBy(Object id, Object id2,Object id1, Object time, Object gAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        Entity e1=(s_id1==null)? null: entityTable.get(s_id1);  //id1 may be null
+        EntityRef e1r=null;
+        if (e1!=null) e1r=pFactory.newEntityRef(e1);
+        Activity a2=activityTable.get(s_id2);
+        ActivityRef a2r=pFactory.newActivityRef(a2);
+
+        WasStartedBy s=pFactory.newWasStartedBy(s_id,
+                                                a2r,
+                                                e1r);
+        List attrs=(List)gAttrs;
+        s.getAny().addAll(attrs);
+        if (time!=null) {
+            s.setTime(pFactory.newISOTime((String)time));
+        }
+            
+        return s;
+    }
+
+    public Object convertWasEndedBy(Object id, Object id2,Object id1, Object time, Object gAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        Entity e1=(s_id1==null)? null: entityTable.get(s_id1);  //id1 may be null
+        EntityRef e1r=null;
+        if (e1!=null) e1r=pFactory.newEntityRef(e1);
+        Activity a2=activityTable.get(s_id2);
+        ActivityRef a2r=pFactory.newActivityRef(a2);
+
+        WasEndedBy s=pFactory.newWasEndedBy(s_id,
+                                            a2r,
+                                            e1r);
+        List attrs=(List)gAttrs;
+        s.getAny().addAll(attrs);
+        if (time!=null) {
+            s.setTime(pFactory.newISOTime((String)time));
+        }
+            
+        return s;
+    }
+
+
+    public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object gAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        Agent ag1=agentTable.get(s_id1);
+        AgentRef ag1r=pFactory.newAgentRef(ag1);
+
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+
+        WasAttributedTo s=pFactory.newWasAttributedTo(s_id,
+                                                      e2r,
+                                                      ag1r);
+        return s;
     }
 
     public Object convertWasDerivedFrom(Object id2,Object id1, Object a, Object g2, Object u1, Object time, Object dAttrs) {

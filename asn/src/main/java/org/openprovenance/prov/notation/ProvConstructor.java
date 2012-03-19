@@ -254,7 +254,7 @@ public  class ProvConstructor implements TreeConstructor {
                                                     null,
                                                     a1r);
         List attrs=(List)gAttrs;
-        g.getAny().addAll(attrs);
+        if (attrs!=null) g.getAny().addAll(attrs);
         if (time!=null) {
             g.setTime(pFactory.newISOTime((String)time));
         }

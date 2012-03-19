@@ -88,17 +88,11 @@ useExpression
       -> ^(USED optionalIdentifier identifier+ optionalTime optionalAttributeValuePairs)
 	;
 
-derivationExpression2
-	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier (',' a=identifier ',' g2=identifier ',' u1=identifier )?	optionalAttributeValuePairs ')'
-      -> ^(WDF $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) optionalAttributeValuePairs)
-	;
-
 startExpression
 	:	'wasStartedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( '-' | time) optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WSB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WSB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
-
 
 
 endExpression
@@ -109,9 +103,14 @@ endExpression
 
 
 
-
-
 derivationExpression
+	:	'wasDerivedFrom' '(' optionalIdentifier id2=identifier ',' id1=identifier (',' (a=identifier | '-') ',' (g2=identifier  | '-') ',' (u1=identifier | '-') )?	optionalAttributeValuePairs ')'
+      -> ^(WDF optionalIdentifier $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) optionalAttributeValuePairs)
+	;
+
+
+
+derivationExpressionOLD
 	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier ',' a=identifier ',' g2=identifier ',' u1=identifier optionalAttributeValuePairs ')'
       -> ^(WDF $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) ^(TIME) optionalAttributeValuePairs)
  |

@@ -323,24 +323,20 @@ public  class ProvConstructor implements TreeConstructor {
         return s;
     }
 
-    public Object convertWasDerivedFrom(Object id2,Object id1, Object a, Object g2, Object u1, Object time, Object dAttrs) {
+    public Object convertWasDerivedFrom(Object id, Object id2,Object id1, Object a, Object g2, Object u1, Object dAttrs) {
+        String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
         Entity e2=entityTable.get(s_id2);
         EntityRef e2r=pFactory.newEntityRef(e2);
         Entity e1=entityTable.get(s_id1);
         EntityRef e1r=pFactory.newEntityRef(e1);
-        WasDerivedFrom d=pFactory.newWasDerivedFrom((QName)null,
+        WasDerivedFrom d=pFactory.newWasDerivedFrom(s_id,
                                                     e2r,
                                                     e1r);
         if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
         if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
         if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
-
-        if (time!=null) {
-            d.setTime(pFactory.newISOTime((String)time));
-        }
-
 
         List attrs=(List)dAttrs;
         d.getAny().addAll(attrs);

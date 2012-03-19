@@ -193,14 +193,18 @@ public class TreeTraversal {
             return c.convertWasAttributedTo(uid,id2,id1,rAttrs);
 
         case PROV_NParser.WDF:
-            id2=convert(ast.getChild(0));
-            id1=convert(ast.getChild(1));
-            Object pe=convert(ast.getChild(2));
-            Object q2=convert(ast.getChild(3));
-            Object q1=convert(ast.getChild(4));
-            time=convert(ast.getChild(5));
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            Object pe=convert(ast.getChild(3));
+            Object q2=convert(ast.getChild(4));
+            Object q1=convert(ast.getChild(5));
             Object dAttrs=convert(ast.getChild(6));
-            return c.convertWasDerivedFrom(id2,id1,pe,q2,q1,time,dAttrs);
+            return c.convertWasDerivedFrom(uid,id2,id1,pe,q2,q1,dAttrs);
 
         case PROV_NParser.ALTERNATE:
             uidTree=ast.getChild(0);

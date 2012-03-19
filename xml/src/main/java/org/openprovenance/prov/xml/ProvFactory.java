@@ -528,8 +528,8 @@ public class ProvFactory implements CommonURIs {
 
     public WasDerivedFrom newWasDerivedFrom(WasDerivedFrom d) {
         WasDerivedFrom wdf=newWasDerivedFrom(d.getId(),
-                                             d.getEffect(),
-                                             d.getCause());
+                                             d.getGeneratedEntity(),
+                                             d.getUsedEntity());
         wdf.getAny().addAll(d.getAny());
         return wdf;
     }
@@ -725,8 +725,8 @@ public class ProvFactory implements CommonURIs {
                                             EntityRef aid2) {
         WasDerivedFrom res=of.createWasDerivedFrom();
         res.setId(id);
-        res.setCause(aid2);
-        res.setEffect(aid1);
+        res.setUsedEntity(aid2);
+        res.setGeneratedEntity(aid1);
         return res;
     }
     public WasDerivedFrom newWasDerivedFrom(String id,
@@ -744,8 +744,8 @@ public class ProvFactory implements CommonURIs {
                                             DependencyRef did2) {
         WasDerivedFrom res=of.createWasDerivedFrom();
         res.setId(id);
-        res.setCause(aid2);
-        res.setEffect(aid1);
+        res.setUsedEntity(aid2);
+        res.setGeneratedEntity(aid1);
         res.setActivity(aid);
         res.setGeneration(did1);
         res.setUsage(did2);

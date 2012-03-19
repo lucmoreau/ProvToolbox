@@ -180,8 +180,8 @@ public class BeanTraversal {
         List tAttrs=convertTypeAttributes((HasType)o);
         List otherAttrs=convertAttributes((HasExtensibility)o);
         return c.convertWasDerivedFrom(c.convert(o.getId()),tAttrs,otherAttrs,
-                                       c.convert(o.getEffect().getRef()),
-                                       c.convert(o.getCause().getRef()));
+                                       c.convert(o.getGeneratedEntity().getRef()),
+                                       c.convert(o.getUsedEntity().getRef()));
     }
 
     public Object convert(WasControlledBy o) {

@@ -157,7 +157,7 @@ public class RdfConstructor implements TreeConstructor {
         //todo
         throw new UnsupportedOperationException();
     }
-    public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object q2, Object q1, Object time, Object dAttrs) {
+    public Object convertWasDerivedFrom(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
         QName qn2 = getQName(id2);
         QName qn1 = getQName(id1);
         Entity e2=(Entity)manager.find(qn2);

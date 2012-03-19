@@ -35,7 +35,7 @@ public class ProvUtilities {
             return ((WasGeneratedBy)r).getEntity().getRef();
         }
         if (r instanceof WasDerivedFrom) {
-            return ((WasDerivedFrom)r).getEffect().getRef();
+            return ((WasDerivedFrom)r).getGeneratedEntity().getRef();
         }
         if (r instanceof WasControlledBy) {
             return ((WasControlledBy)r).getEffect().getRef();
@@ -61,7 +61,7 @@ public class ProvUtilities {
             return ((WasGeneratedBy)r).getActivity().getRef();
         }
         if (r instanceof WasDerivedFrom) {
-            return ((WasDerivedFrom)r).getCause().getRef();
+            return ((WasDerivedFrom)r).getUsedEntity().getRef();
         }
         if (r instanceof WasControlledBy) {
             return ((WasControlledBy)r).getCause().getRef();

@@ -149,13 +149,12 @@ public class BeanTreeConstructor implements BeanConstructor{
         List attrs=new LinkedList();
         attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
-        return c.convertWasDerivedFrom(//id,
+        return c.convertWasDerivedFrom(id,
                                        effect,
                                        cause,
                                        null,//pe
                                        null,//g2
                                        null,//u1
-                                       null,//time
                                        c.convertAttributes(attrs));
     }
     

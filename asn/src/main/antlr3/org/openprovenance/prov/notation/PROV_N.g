@@ -102,21 +102,13 @@ endExpression
 	;
 
 
+/* Use conditional test in order to remove ^(A ), ^(G ), ^(U ) */
 
 derivationExpression
 	:	'wasDerivedFrom' '(' optionalIdentifier id2=identifier ',' id1=identifier (',' (a=identifier | '-') ',' (g2=identifier  | '-') ',' (u1=identifier | '-') )?	optionalAttributeValuePairs ')'
       -> ^(WDF optionalIdentifier $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) optionalAttributeValuePairs)
 	;
 
-
-
-derivationExpressionOLD
-	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier ',' a=identifier ',' g2=identifier ',' u1=identifier optionalAttributeValuePairs ')'
-      -> ^(WDF $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) ^(TIME) optionalAttributeValuePairs)
- |
-        'wasDerivedFrom' '(' id2=identifier ',' id1=identifier optionalTime	optionalAttributeValuePairs ')'
-      -> ^(WDF $id2 $id1 ^(A)  ^(G) ^(U) optionalTime optionalAttributeValuePairs)
-	;
 
 optionalAttributeValuePairs
     :
@@ -165,8 +157,9 @@ specializationExpression
 
 
 associationExpression
-	:	'wasAssociatedWith' '('  optionalIdentifier a=identifier ',' ag=identifier  ('@' pl=identifier)? optionalAttributeValuePairs ')'
-      -> ^(WAW optionalIdentifier $a $ag ^(PLAN $pl?) optionalAttributeValuePairs)
+	:	'wasAssociatedWith' '('  ((id0=identifier | '-') ',')? a=identifier ',' (ag=identifier | '-') ',' (pl=identifier | '-') optionalAttributeValuePairs ')'
+      -> {$ag.tree==null}? ^(WAW ^(ID $id0?) $a ^(ID) ^(PLAN $pl?) optionalAttributeValuePairs)
+      -> ^(WAW ^(ID $id0?) $a $ag? ^(PLAN $pl?) optionalAttributeValuePairs)
 	;
 
 attributionExpression

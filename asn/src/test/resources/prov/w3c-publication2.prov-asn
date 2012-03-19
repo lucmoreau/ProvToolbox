@@ -35,7 +35,7 @@ wasDerivedFrom(w3:WD-prov-dm-20111215,hg:Overview.html, ex:rcp, rec:g, rec:u)
 
 agent(ex:webmaster, [ prov:type="Person" ])
 
-wasAssociatedWith(ex:rcp, ex:webmaster)
+wasAssociatedWith(ex:rcp, ex:webmaster, -)
 
 endContainer
 

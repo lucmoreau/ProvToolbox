@@ -1,6 +1,7 @@
 
 container
 prefix ex <http://example>
+
           activity(ex:a1, [ex:param="a"])
           entity(ex:e1, [ex:param="a"])
           entity(ex:e2, [ex:param="a"])
@@ -157,6 +158,53 @@ prefix ex <http://example>
           wasDerivedFrom(d0, ex:e1, ex:e2, ex:a1, ex:g2, -, [ex:param="a", ex:port="foo"])
           wasDerivedFrom(d0, ex:e1, ex:e2, ex:a1, ex:g2, ex:u1, [ex:param="a", ex:port="foo"])
 
+          wasDerivedFrom(-, ex:e1, ex:e2)
+          wasDerivedFrom(-, ex:e1, ex:e2, -, -, -)
+          wasDerivedFrom(-, ex:e1, ex:e2, -, -, -, [ex:param="a", ex:port="foo"])
+          wasDerivedFrom(-, ex:e1, ex:e2, [ex:param="a", ex:port="foo"])
+          wasDerivedFrom(-, ex:e1, ex:e2, ex:a1, ex:g2, ex:u1)
+          wasDerivedFrom(-, ex:e1, ex:e2, ex:a1, ex:g2, ex:u1, [ex:param="a", ex:port="foo"])
+
+          wasDerivedFrom(-, ex:e1, ex:e2, -, -, -)
+          wasDerivedFrom(-, ex:e1, ex:e2, -, -, ex:u1)
+          wasDerivedFrom(-, ex:e1, ex:e2, -, ex:g2, -)
+          wasDerivedFrom(-, ex:e1, ex:e2, -, ex:g2, ex:u1)
+          wasDerivedFrom(-, ex:e1, ex:e2, ex:a1, -, -)
+          wasDerivedFrom(-, ex:e1, ex:e2, ex:a1, -, ex:u1)
+          wasDerivedFrom(-, ex:e1, ex:e2, ex:a1, ex:g2, -)
+          wasDerivedFrom(-, ex:e1, ex:e2, ex:a1, ex:g2, ex:u1)
+
+          wasDerivedFrom(-, ex:e1, ex:e2, -, -, -, [ex:param="a", ex:port="foo"])
+          wasDerivedFrom(-, ex:e1, ex:e2, -, -, ex:u1, [ex:param="a", ex:port="foo"])
+          wasDerivedFrom(-, ex:e1, ex:e2, -, ex:g2, -, [ex:param="a", ex:port="foo"])
+          wasDerivedFrom(-, ex:e1, ex:e2, -, ex:g2, ex:u1, [ex:param="a", ex:port="foo"])
+          wasDerivedFrom(-, ex:e1, ex:e2, ex:a1, -, -, [ex:param="a", ex:port="foo"])
+          wasDerivedFrom(-, ex:e1, ex:e2, ex:a1, -, ex:u1, [ex:param="a", ex:port="foo"])
+          wasDerivedFrom(-, ex:e1, ex:e2, ex:a1, ex:g2, -, [ex:param="a", ex:port="foo"])
+          wasDerivedFrom(-, ex:e1, ex:e2, ex:a1, ex:g2, ex:u1, [ex:param="a", ex:port="foo"])
+
+
+          wasAssociatedWith(ex:a1, -, ex:e1)
+          wasAssociatedWith(ex:a1, -, ex:e1, [ex:param="a", ex:port="foo"])
+          wasAssociatedWith(ex:a1, ex:ag1, -)
+          wasAssociatedWith(ex:a1, ex:ag1, -, [ex:param="a", ex:port="foo"])
+          wasAssociatedWith(ex:a1, ex:ag1, ex:e1)
+          wasAssociatedWith(ex:a1, ex:ag1, ex:e1, [ex:param="a", ex:port="foo"])
+
+
+          wasAssociatedWith(a, ex:a1, -, ex:e1)
+          wasAssociatedWith(a, ex:a1, -, ex:e1, [ex:param="a", ex:port="foo"])
+          wasAssociatedWith(a, ex:a1, ex:ag1, -)
+          wasAssociatedWith(a, ex:a1, ex:ag1, -, [ex:param="a", ex:port="foo"])
+          wasAssociatedWith(a, ex:a1, ex:ag1, ex:e1)
+          wasAssociatedWith(a, ex:a1, ex:ag1, ex:e1, [ex:param="a", ex:port="foo"])
+
+          wasAssociatedWith(-, ex:a1, -, ex:e1)
+          wasAssociatedWith(-, ex:a1, -, ex:e1, [ex:param="a", ex:port="foo"])
+          wasAssociatedWith(-, ex:a1, ex:ag1, -)
+          wasAssociatedWith(-, ex:a1, ex:ag1, -, [ex:param="a", ex:port="foo"])
+          wasAssociatedWith(-, ex:a1, ex:ag1, ex:e1)
+          wasAssociatedWith(-, ex:a1, ex:ag1, ex:e1, [ex:param="a", ex:port="foo"])
 
 endContainer
 

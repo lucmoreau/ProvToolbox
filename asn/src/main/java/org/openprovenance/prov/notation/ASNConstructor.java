@@ -145,8 +145,8 @@ public class ASNConstructor implements TreeConstructor {
 
 
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
-        String s="wasAssociatedWith(" + optionalId(id) + id2 + "," + id1 
-            + ((pl==null)? "" : " @ " + pl) +
+        String s="wasAssociatedWith(" + optionalId(id) + id2 + "," + optional(id1) + "," +
+            optional(pl) +
             optionalAttributes(aAttrs) + ")";
         return s;
     }

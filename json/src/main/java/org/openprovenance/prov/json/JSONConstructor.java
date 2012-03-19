@@ -322,6 +322,22 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasAssociatedWith", id, attrs);
 	}
 
+	public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
+		List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:subordinate", id2));
+    	attrs.add(tuple("prov:responsible", id1));
+    	if (a != null) {
+    		attrs.add(tuple("prov:activity", a));
+    	}
+    	if (aAttrs != null) {
+    		attrs.addAll((List<Object>)aAttrs);
+    	}
+    	if (id == null)
+    		id = getBlankID("aOBO");
+
+    	return new ProvRecord("wasAssociatedWith", id, attrs);
+	}
+
 	public Object convertAlternateOf(Object id, Object id2, Object id1,
 			Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();

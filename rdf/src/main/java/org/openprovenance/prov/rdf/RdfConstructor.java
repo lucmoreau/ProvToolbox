@@ -177,6 +177,9 @@ public class RdfConstructor implements TreeConstructor {
     public Object convertSpecializationOf(Object id, Object id2,Object id1, Object aAttrs) {
         return null;
     }
+	public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
+        return null;
+    }
 
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
         QName qname = getQName(id);

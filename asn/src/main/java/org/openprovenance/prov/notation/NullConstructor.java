@@ -84,6 +84,9 @@ public class NullConstructor implements TreeConstructor {
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
         return null;
     }
+    public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
+        return null;
+    }
 
     public Object convertQNAME(String qname) {
         return null;

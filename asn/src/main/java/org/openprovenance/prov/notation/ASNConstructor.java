@@ -151,6 +151,13 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
+    public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
+        String s="actedOnBehalfOf(" + optionalId(id) + id2 + "," + id1 + "," +
+            optional(a) +
+            optionalAttributes(aAttrs) + ")";
+        return s;
+    }
+
 
     public Object convertQNAME(String qname) {
         return qname;

@@ -242,6 +242,19 @@ public class TreeTraversal {
             return c.convertWasAssociatedWith(uid,id2,id1,pl,rAttrs);
 
 
+        case PROV_NParser.AOBO:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            Object a=((ast.getChild(3)==null)?null : convert(ast.getChild(3)));
+            rAttrs=convert(ast.getChild(4));
+            return c.convertActedOnBehalfOf(uid,id2,id1,a,rAttrs);
+
+
         case PROV_NParser.TIME:
             if (ast.getChildCount()==0) return null;
             if (ast.getChild(0)==null) return null;

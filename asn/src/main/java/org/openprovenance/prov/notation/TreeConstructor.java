@@ -26,6 +26,7 @@ public interface TreeConstructor {
     public Object convertAlternateOf(Object id, Object id2,Object id1, Object aAttrs);
     public Object convertSpecializationOf(Object id, Object id2,Object id1, Object aAttrs);
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs);
+    public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs);
     public Object convertQNAME(String qname);
     public Object convertIRI(String iri);
     public Object convertPrefix(String pre);

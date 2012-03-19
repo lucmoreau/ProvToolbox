@@ -19,6 +19,7 @@ import org.openprovenance.prov.xml.Container;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasStartedBy;
+import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.WasEndedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.WasAttributedTo;
@@ -409,6 +410,32 @@ public  class ProvConstructor implements TreeConstructor {
         waw.getAny().addAll(attrs);
 
         return waw;
+    }
+
+    public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        String s_a=(String)a;
+        Agent e2=agentTable.get(s_id2);
+        AgentRef e2r=pFactory.newAgentRef(e2);
+        Agent e1=agentTable.get(s_id1);
+        AgentRef e1r=pFactory.newAgentRef(e1);
+
+        Activity e3=null;
+        ActivityRef e3r=null;
+        if (a!=null) {
+            e3=activityTable.get(s_a);
+            e3r=pFactory.newActivityRef(e3);
+        }
+        ActedOnBehalfOf aobo=pFactory.newActedOnBehalfOf(s_id,
+                                                         e2r,
+                                                         e1r,
+                                                         e3r);
+        List attrs=(List)aAttrs;
+        aobo.getAny().addAll(attrs);
+
+        return aobo;
     }
 
     public Object convertQNAME(String qname) {

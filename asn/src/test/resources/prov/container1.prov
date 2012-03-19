@@ -6,6 +6,7 @@ prefix ex <http://example>
           entity(ex:e1, [ex:param="a"])
           entity(ex:e2, [ex:param="a"])
           agent(ex:ag1, [ex:param="a"])
+          agent(ex:ag2, [ex:param="a"])
 
           wasGeneratedBy(ex:e1, ex:a1, -)
           wasGeneratedBy(ex:e1, ex:a1, -, [ex:param="a", ex:port="foo"])
@@ -205,6 +206,22 @@ prefix ex <http://example>
           wasAssociatedWith(-, ex:a1, ex:ag1, -, [ex:param="a", ex:port="foo"])
           wasAssociatedWith(-, ex:a1, ex:ag1, ex:e1)
           wasAssociatedWith(-, ex:a1, ex:ag1, ex:e1, [ex:param="a", ex:port="foo"])
+
+          actedOnBehalfOf(ex:ag1,ex:ag2, -)
+          actedOnBehalfOf(ex:ag1,ex:ag2, -,[prov:type="delegation"])
+          actedOnBehalfOf(ex:ag1,ex:ag2,ex:a1)
+          actedOnBehalfOf(ex:ag1,ex:ag2,ex:a1,[prov:type="delegation"])
+
+          actedOnBehalfOf(a,ex:ag1,ex:ag2, -)
+          actedOnBehalfOf(a,ex:ag1,ex:ag2, -,[prov:type="delegation"])
+          actedOnBehalfOf(a,ex:ag1,ex:ag2,ex:a1)
+          actedOnBehalfOf(a,ex:ag1,ex:ag2,ex:a1,[prov:type="delegation"])
+
+          actedOnBehalfOf(-,ex:ag1,ex:ag2, -)
+          actedOnBehalfOf(-,ex:ag1,ex:ag2, -,[prov:type="delegation"])
+          actedOnBehalfOf(-,ex:ag1,ex:ag2,ex:a1)
+          actedOnBehalfOf(-,ex:ag1,ex:ag2,ex:a1,[prov:type="delegation"])
+
 
 endContainer
 

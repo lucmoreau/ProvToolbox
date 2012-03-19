@@ -200,6 +200,18 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
 
+  <xs:complexType name="WasStartedByActivity">
+    <xs:sequence>
+      <xs:element name="started" type="prov:ActivityRef"/>
+      <xs:element name="starter" type="prov:ActivityRef"/>
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute ref="prov:id"/>
+  </xs:complexType>
+
+
   <xs:complexType name="AlternateOf">
     <xs:sequence>
       <xs:element name="entity2"   type="prov:EntityRef"/>
@@ -265,19 +277,20 @@
   <xs:complexType name="Dependencies">
     <xs:sequence>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-	<xs:element name="used"               type="prov:Used"/>
-	<xs:element name="wasGeneratedBy"     type="prov:WasGeneratedBy"/>
-	<xs:element name="wasInformedBy"      type="prov:WasInformedBy"/>
-	<xs:element name="wasDerivedFrom"     type="prov:WasDerivedFrom"/>
-	<xs:element name="wasControlledBy"    type="prov:WasControlledBy"/>
-	<xs:element name="wasAssociatedWith"  type="prov:WasAssociatedWith"/>
-	<xs:element name="wasStartedBy"       type="prov:WasStartedBy"/>
-	<xs:element name="wasEndedBy"         type="prov:WasEndedBy"/>
-	<xs:element name="wasAttributedTo"    type="prov:WasAttributedTo"/>
-	<xs:element name="actedOnBehalfOf"    type="prov:ActedOnBehalfOf"/>
-	<xs:element name="alternateOf"        type="prov:AlternateOf"/>
-	<xs:element name="specializationOf"   type="prov:SpecializationOf"/>
-	<xs:element name="hasAnnotation"      type="prov:HasAnnotation"/>
+	<xs:element name="used"                 type="prov:Used"/>
+	<xs:element name="wasGeneratedBy"       type="prov:WasGeneratedBy"/>
+	<xs:element name="wasInformedBy"        type="prov:WasInformedBy"/>
+	<xs:element name="wasDerivedFrom"       type="prov:WasDerivedFrom"/>
+	<xs:element name="wasControlledBy"      type="prov:WasControlledBy"/>
+	<xs:element name="wasAssociatedWith"    type="prov:WasAssociatedWith"/>
+	<xs:element name="wasStartedBy"         type="prov:WasStartedBy"/>
+	<xs:element name="wasEndedBy"           type="prov:WasEndedBy"/>
+	<xs:element name="wasAttributedTo"      type="prov:WasAttributedTo"/>
+	<xs:element name="actedOnBehalfOf"      type="prov:ActedOnBehalfOf"/>
+	<xs:element name="wasStartedByActivity" type="prov:WasStartedByActivity"/>
+	<xs:element name="alternateOf"          type="prov:AlternateOf"/>
+	<xs:element name="specializationOf"     type="prov:SpecializationOf"/>
+	<xs:element name="hasAnnotation"        type="prov:HasAnnotation"/>
       </xs:choice>
     </xs:sequence>
   </xs:complexType>

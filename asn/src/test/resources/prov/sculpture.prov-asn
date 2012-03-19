@@ -16,7 +16,7 @@ wasDerivedFrom(ex:s_2,ex:h_2, [ prov:type="contained" ])
 wasDerivedFrom(ex:s_2,ex:l,   [ prov:type="contained" ])
 wasDerivedFrom(ex:h_2,ex:h,   [ prov:type="refinementOf" ])
 wasDerivedFrom(ex:s_2,ex:s,   [ prov:type="refinementOf" ])
-wasGeneratedBy(ex:h_2,ex:a1)
+wasGeneratedBy(ex:h_2,ex:a1,-)
 
 entity(ex:s_3, [ prov:type="sculpture" ])
 entity(ex:l_3, [ prov:type="leg" ])
@@ -26,6 +26,6 @@ wasDerivedFrom(ex:s_3,ex:h_2, [ prov:type="contained" ])
 wasDerivedFrom(ex:s_3,ex:l_3, [ prov:type="contained" ])
 wasDerivedFrom(ex:l_3,ex:l,   [ prov:type="refinementOf" ])
 wasDerivedFrom(ex:s_3,ex:s_2, [ prov:type="refinementOf" ])
-wasGeneratedBy(ex:l_3,ex:a2)
+wasGeneratedBy(ex:l_3,ex:a2,-)
 
 endContainer

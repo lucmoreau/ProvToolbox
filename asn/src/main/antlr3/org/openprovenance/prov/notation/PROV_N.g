@@ -93,37 +93,21 @@ derivationExpression2
       -> ^(WDF $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) optionalAttributeValuePairs)
 	;
 
-/**
-Production is split into two rules to allow for tree reconstruction.
-
-'wasStartedBy' '('  optionalIdentifier identifier ',' ((identifier) | '-') optionalTime optionalAttributeValuePairs ')'
-
-*/
 startExpression
-	:	'wasStartedBy' '('  optionalIdentifier id2=identifier ',' '-' optionalTime optionalAttributeValuePairs ')'
-      -> ^(WSB optionalIdentifier $id2 ^(ID) optionalTime optionalAttributeValuePairs)
-    |
-
-		'wasStartedBy' '('  optionalIdentifier id2=identifier ',' (id1=identifier) optionalTime optionalAttributeValuePairs ')'
-      -> ^(WSB optionalIdentifier $id2 $id1 optionalTime optionalAttributeValuePairs)
+	:	'wasStartedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( '-' | time) optionalAttributeValuePairs ')'
+      -> {$id1.tree==null}? ^(WSB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
+      -> ^(WSB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 
 
-/**
-Production is split into two rules to allow for tree reconstruction.
-
-'wasEndedBy' '('  optionalIdentifier identifier ',' ((identifier) | '-') optionalTime optionalAttributeValuePairs ')'
-
-*/
 endExpression
-	:	'wasEndedBy' '('  optionalIdentifier id2=identifier ',' '-' optionalTime optionalAttributeValuePairs ')'
-      -> ^(WEB optionalIdentifier $id2 ^(ID) optionalTime optionalAttributeValuePairs)
-    |
-
-		'wasEndedBy' '('  optionalIdentifier id2=identifier ',' (id1=identifier) optionalTime optionalAttributeValuePairs ')'
-      -> ^(WEB optionalIdentifier $id2 $id1 optionalTime optionalAttributeValuePairs)
+	:	'wasEndedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( '-' | time) optionalAttributeValuePairs ')'
+      -> {$id1.tree==null}? ^(WEB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
+      -> ^(WEB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
+
+
 
 
 

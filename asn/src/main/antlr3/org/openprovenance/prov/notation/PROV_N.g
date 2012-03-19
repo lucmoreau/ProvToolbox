@@ -77,19 +77,10 @@ agentExpression
 	:	'agent' '(' identifier optionalAttributeValuePairs	')' -> ^(AGENT identifier optionalAttributeValuePairs )
 	;
 
-/**
-Production is split into two rules to allow for tree reconstruction.
-
-'wasGeneratedBy' '('  optionalIdentifier identifier ',' ((identifier) | '-') optionalTime optionalAttributeValuePairs ')'
-
-*/
 generationExpression
-	:	'wasGeneratedBy' '('  optionalIdentifier id2=identifier ',' '-' optionalTime optionalAttributeValuePairs ')'
-      -> ^(WGB optionalIdentifier $id2 ^(ID) optionalTime optionalAttributeValuePairs)
-    |
-
-		'wasGeneratedBy' '('  optionalIdentifier id2=identifier ',' (id1=identifier) optionalTime optionalAttributeValuePairs ')'
-      -> ^(WGB optionalIdentifier $id2 $id1 optionalTime optionalAttributeValuePairs)
+	:	'wasGeneratedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( '-' | time) optionalAttributeValuePairs ')'
+      -> {$id1.tree==null}? ^(WGB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
+      -> ^(WGB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 useExpression

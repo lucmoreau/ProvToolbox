@@ -146,7 +146,7 @@ responsibilityExpression
 */
 
 
-/* Use conditional test in order to remove ^(A ), ^(G ), ^(U ) */
+/* TODO: Use conditional test in order to remove ^(A ), ^(G ), ^(U ) */
 
 derivationExpression
 	:	'wasDerivedFrom' '(' ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier (',' (a=identifier | '-') ',' (g2=identifier  | '-') ',' (u1=identifier | '-') )?	optionalAttributeValuePairs ')'
@@ -164,6 +164,8 @@ derivationExpression
 
 */
 
+/* TODO: fix signatures */
+
 alternateExpression
 	:	'alternateOf' '('  optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
       -> ^(ALTERNATE optionalIdentifier identifier+ optionalAttributeValuePairs)
@@ -179,10 +181,14 @@ specializationExpression
 
 */
 
+/* TODO */
+
 /*
         Component 6: Annotations
 
 */
+
+/* TODO */
 
 /*
         OLD STUFF

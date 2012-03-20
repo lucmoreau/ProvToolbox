@@ -9,10 +9,12 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; IRI; QNAM; TIME; STRING; TYPEDLITERAL; CONTAINER; ID; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; INT; 
+    ID; ATTRIBUTE; ATTRIBUTES; IRI; QNAM; STRING; TYPEDLITERAL; INT; 
+    CONTAINER; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; 
+
     /* Component 1 */
     ENTITY; ACTIVITY; WGB; USED; WSB; WEB; WIB; WSBA;
-    START; END;
+    TIME; START; END;
 
     /* Component 2 */
     AGENT; PLAN; WAT; WAW; AOBO; 
@@ -158,8 +160,8 @@ agentExpression
 	;
 
 attributionExpression
-	:	'wasAttributedTo' '('  optionalIdentifier e=identifier ',' ag=identifier optionalAttributeValuePairs ')'
-      -> ^(WAT optionalIdentifier $e $ag optionalAttributeValuePairs)
+	:	'wasAttributedTo' '('  ((id0=identifier | '-') ',')? e=identifier ',' ag=identifier optionalAttributeValuePairs ')'
+      -> ^(WAT  ^(ID $id0?) $e $ag optionalAttributeValuePairs)
 	;
 
 associationExpression
@@ -275,13 +277,6 @@ optionalAttributeValuePairs
     (',' '[' attributeValuePairs ']')?
         -> ^(ATTRIBUTES attributeValuePairs?)
     ;
-
-optionalIdentifier
-    :
-    (identifier ',')?
-        -> ^(ID identifier?)
-    ;
-
 
 
 identifier

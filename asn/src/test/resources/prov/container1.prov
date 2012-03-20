@@ -114,6 +114,8 @@ prefix ex <http://example>
           wasAttributedTo(ex:e1, ex:ag1, [ex:param1="a", ex:param2="b"])
           wasAttributedTo(_a,ex:e1, ex:ag1)
           wasAttributedTo(_a,ex:e1, ex:ag1, [ex:param1="a", ex:param2="b"])
+          wasAttributedTo(-,ex:e1, ex:ag1)
+          wasAttributedTo(-,ex:e1, ex:ag1, [ex:param1="a", ex:param2="b"])
 
 
           wasDerivedFrom(ex:e1, ex:e2)

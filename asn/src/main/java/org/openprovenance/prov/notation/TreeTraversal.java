@@ -193,36 +193,75 @@ public class TreeTraversal {
             return c.convertWasAttributedTo(uid,id2,id1,rAttrs);
 
         case PROV_NParser.WDF:
-            id2=convert(ast.getChild(0));
-            id1=convert(ast.getChild(1));
-            Object pe=convert(ast.getChild(2));
-            Object q2=convert(ast.getChild(3));
-            Object q1=convert(ast.getChild(4));
-            time=convert(ast.getChild(5));
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            Object pe=convert(ast.getChild(3));
+            Object q2=convert(ast.getChild(4));
+            Object q1=convert(ast.getChild(5));
             Object dAttrs=convert(ast.getChild(6));
-            return c.convertWasDerivedFrom(id2,id1,pe,q2,q1,time,dAttrs);
+            return c.convertWasDerivedFrom(uid,id2,id1,pe,q2,q1,dAttrs);
+
+        case PROV_NParser.WRO:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            Object ag=convert(ast.getChild(3));
+            dAttrs=convert(ast.getChild(4));
+            return c.convertWasRevisionOf(uid,id2,id1,ag,dAttrs);
+
+        case PROV_NParser.WQF:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            Object ag2=(ast.getChild(3)==null)?null:convert(ast.getChild(3));
+            Object ag1=(ast.getChild(4)==null)?null:convert(ast.getChild(4));
+            dAttrs=convert(ast.getChild(5));
+            return c.convertWasQuotedFrom(uid,id2,id1,ag2,ag1,dAttrs);
+
+        case PROV_NParser.ORIGINALSOURCE:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            dAttrs=convert(ast.getChild(3));
+            return c.convertHadOriginalSource(uid,id2,id1,dAttrs);
+
+        case PROV_NParser.TRACEDTO:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            dAttrs=convert(ast.getChild(3));
+            return c.convertTracedTo(uid,id2,id1,dAttrs);
 
         case PROV_NParser.ALTERNATE:
-            uidTree=ast.getChild(0);
-            if (uidTree.getChildCount()>0) {
-                uidTree=uidTree.getChild(0);
-            }
-            uid=convert(uidTree);
-            id2=convert(ast.getChild(1));
-            id1=convert(ast.getChild(2));
-            rAttrs=convert(ast.getChild(3));
-            return c.convertAlternateOf(uid,id2,id1,rAttrs);
+            id2=convert(ast.getChild(0));
+            id1=convert(ast.getChild(1));
+            return c.convertAlternateOf(id2,id1);
 
         case PROV_NParser.SPECIALIZATION:
-            uidTree=ast.getChild(0);
-            if (uidTree.getChildCount()>0) {
-                uidTree=uidTree.getChild(0);
-            }
-            uid=convert(uidTree);
-            id2=convert(ast.getChild(1));
-            id1=convert(ast.getChild(2));
-            rAttrs=convert(ast.getChild(3));
-            return c.convertSpecializationOf(uid,id2,id1,rAttrs);
+            id2=convert(ast.getChild(0));
+            id1=convert(ast.getChild(1));
+            return c.convertSpecializationOf(id2,id1);
 
 
         case PROV_NParser.WAW:
@@ -232,10 +271,23 @@ public class TreeTraversal {
             }
             uid=convert(uidTree);
             id2=convert(ast.getChild(1));
-            id1=convert(ast.getChild(2));
+            id1=(ast.getChild(2)==null)?null : convert(ast.getChild(2));
             Object pl=((ast.getChild(3)==null)?null : convert(ast.getChild(3)));
             rAttrs=convert(ast.getChild(4));
             return c.convertWasAssociatedWith(uid,id2,id1,pl,rAttrs);
+
+
+        case PROV_NParser.AOBO:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            Object a=((ast.getChild(3)==null)?null : convert(ast.getChild(3)));
+            rAttrs=convert(ast.getChild(4));
+            return c.convertActedOnBehalfOf(uid,id2,id1,a,rAttrs);
 
 
         case PROV_NParser.TIME:

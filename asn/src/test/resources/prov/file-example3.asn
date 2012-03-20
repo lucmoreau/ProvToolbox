@@ -57,11 +57,11 @@ entity(ex:s1,[type="prov:Plan"%% xsd:QName, ex:url="http://example.org/strategy1
 entity(ex:s2,[type="prov:Plan"%% xsd:QName, ex:url="http://example.org/strategy2" %% xsd:anyURI])
 wasDerivedFrom(ex:s2,ex:s1)
 
-wasAssociatedWith(ex:a0, ex:ag1, [role="creator"])
-wasAssociatedWith(ex:a1, ex:ag2, [role="author"])
-wasAssociatedWith(ex:a2, ex:ag3 @ ex:s1, [role="communicator"])
-wasAssociatedWith(ex:a3, ex:ag4, [role="author"])
-wasAssociatedWith(ex:a4, ex:ag5 @ ex:s2, [role="communicator"])
+wasAssociatedWith(ex:a0, ex:ag1, -, [role="creator"])
+wasAssociatedWith(ex:a1, ex:ag2, -, [role="author"])
+wasAssociatedWith(ex:a2, ex:ag3, ex:s1, [role="communicator"])
+wasAssociatedWith(ex:a3, ex:ag4, -,  [role="author"])
+wasAssociatedWith(ex:a4, ex:ag5, ex:s2, [role="communicator"])
 
 note(ex:n1,[ex:icon="doc.png"])
 hasAnnotation(ex:e1,ex:n1)

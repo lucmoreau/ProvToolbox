@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; WSB; WEB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; WAT; INT; PLAN; SPECIALIZATION; ALTERNATE;
+    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; WSB; WEB; USED; WDF; TIME; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; WAT; INT; PLAN; SPECIALIZATION; ALTERNATE; AOBO; WIB; WSBA; TRACEDTO; ORIGINALSOURCE; WQF; WRO;
 }
 
 @header {
@@ -59,8 +59,31 @@ defaultNamespaceDeclaration :
     ;
 
 record
-	:	(entityExpression | activityExpression | agentExpression | generationExpression  | useExpression | startExpression | endExpression | derivationExpression | dependenceExpression  | controlExpression | alternateExpression | specializationExpression  |  associationExpression | attributionExpression)
+	:	(   /* component 1 */
+
+           entityExpression | activityExpression | generationExpression  | usageExpression
+         | startExpression | endExpression | informExpression | wasStartedByActivityExpression
+
+            /* component 2 */
+        
+        | agentExpression |  associationExpression | attributionExpression | responsibilityExpression
+
+            /* component 3 */
+
+        | derivationExpression | tracedToExpression | hadOriginalSourceExpression | quotationExpression | revisionExpression
+
+            /* component 4 */
+
+        | alternateExpression | specializationExpression
+
+            /* component 5 */
+            /* component 6 */ )
 	;
+
+/*
+        Component 1: Entities/Activities
+
+*/
 
 entityExpression
 	:	'entity' '(' identifier optionalAttributeValuePairs ')'
@@ -73,67 +96,138 @@ activityExpression
         -> ^(ACTIVITY identifier ^(START startTime?) ^(END endTime?) optionalAttributeValuePairs )
 	;
 
-agentExpression
-	:	'agent' '(' identifier optionalAttributeValuePairs	')' -> ^(AGENT identifier optionalAttributeValuePairs )
-	;
-
 generationExpression
 	:	'wasGeneratedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( '-' | time) optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WGB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WGB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
-useExpression
+usageExpression
 	:	'used' '(' optionalIdentifier identifier ',' identifier optionalTime optionalAttributeValuePairs ')'
       -> ^(USED optionalIdentifier identifier+ optionalTime optionalAttributeValuePairs)
 	;
 
-derivationExpression2
-	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier (',' a=identifier ',' g2=identifier ',' u1=identifier )?	optionalAttributeValuePairs ')'
-      -> ^(WDF $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) optionalAttributeValuePairs)
-	;
-
-/**
-Production is split into two rules to allow for tree reconstruction.
-
-'wasStartedBy' '('  optionalIdentifier identifier ',' ((identifier) | '-') optionalTime optionalAttributeValuePairs ')'
-
-*/
 startExpression
-	:	'wasStartedBy' '('  optionalIdentifier id2=identifier ',' '-' optionalTime optionalAttributeValuePairs ')'
-      -> ^(WSB optionalIdentifier $id2 ^(ID) optionalTime optionalAttributeValuePairs)
-    |
+	:	'wasStartedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( '-' | time) optionalAttributeValuePairs ')'
+      -> {$id1.tree==null}? ^(WSB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
+      -> ^(WSB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
+	;
 
-		'wasStartedBy' '('  optionalIdentifier id2=identifier ',' (id1=identifier) optionalTime optionalAttributeValuePairs ')'
-      -> ^(WSB optionalIdentifier $id2 $id1 optionalTime optionalAttributeValuePairs)
+endExpression
+	:	'wasEndedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( '-' | time) optionalAttributeValuePairs ')'
+      -> {$id1.tree==null}? ^(WEB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
+      -> ^(WEB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
+	;
+
+informExpression
+	:	'wasInformedBy' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
+      -> ^(WIB optionalIdentifier identifier+ optionalAttributeValuePairs)
+	;
+
+wasStartedByActivityExpression
+	:	'wasStartedByActivity' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
+      -> ^(WSBA optionalIdentifier identifier+ optionalAttributeValuePairs)
 	;
 
 
-
-/**
-Production is split into two rules to allow for tree reconstruction.
-
-'wasEndedBy' '('  optionalIdentifier identifier ',' ((identifier) | '-') optionalTime optionalAttributeValuePairs ')'
+/*
+        Component 2: Agents and Responsibility
 
 */
-endExpression
-	:	'wasEndedBy' '('  optionalIdentifier id2=identifier ',' '-' optionalTime optionalAttributeValuePairs ')'
-      -> ^(WEB optionalIdentifier $id2 ^(ID) optionalTime optionalAttributeValuePairs)
-    |
 
-		'wasEndedBy' '('  optionalIdentifier id2=identifier ',' (id1=identifier) optionalTime optionalAttributeValuePairs ')'
-      -> ^(WEB optionalIdentifier $id2 $id1 optionalTime optionalAttributeValuePairs)
+agentExpression
+	:	'agent' '(' identifier optionalAttributeValuePairs	')' -> ^(AGENT identifier optionalAttributeValuePairs )
+	;
+
+attributionExpression
+	:	'wasAttributedTo' '('  optionalIdentifier e=identifier ',' ag=identifier optionalAttributeValuePairs ')'
+      -> ^(WAT optionalIdentifier $e $ag optionalAttributeValuePairs)
+	;
+
+associationExpression
+	:	'wasAssociatedWith' '('  ((id0=identifier | '-') ',')? a=identifier ',' (ag=identifier | '-') ',' (pl=identifier | '-') optionalAttributeValuePairs ')'
+      -> {$ag.tree==null}? ^(WAW ^(ID $id0?) $a ^(ID) ^(PLAN $pl?) optionalAttributeValuePairs)
+      -> ^(WAW ^(ID $id0?) $a $ag? ^(PLAN $pl?) optionalAttributeValuePairs)
+	;
+
+responsibilityExpression
+	:	'actedOnBehalfOf' '('   ((id0=identifier | '-') ',')? ag2=identifier ',' ag1=identifier ','  (a=identifier | '-') optionalAttributeValuePairs ')'
+      -> {$a.tree==null}? ^(AOBO  ^(ID $id0?) $ag2 $ag1 ^(ID) optionalAttributeValuePairs)
+      -> ^(AOBO  ^(ID $id0?) $ag2 $ag1 $a? optionalAttributeValuePairs)
 	;
 
 
+
+/*
+        Component 3: Derivations
+
+*/
+
+
+/* TODO: Use conditional test in order to remove ^(A ), ^(G ), ^(U ) */
 
 derivationExpression
-	:	'wasDerivedFrom' '(' id2=identifier ',' id1=identifier ',' a=identifier ',' g2=identifier ',' u1=identifier optionalAttributeValuePairs ')'
-      -> ^(WDF $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) ^(TIME) optionalAttributeValuePairs)
- |
-        'wasDerivedFrom' '(' id2=identifier ',' id1=identifier optionalTime	optionalAttributeValuePairs ')'
-      -> ^(WDF $id2 $id1 ^(A)  ^(G) ^(U) optionalTime optionalAttributeValuePairs)
+	:	'wasDerivedFrom' '(' ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier (',' (a=identifier | '-') ',' (g2=identifier  | '-') ',' (u1=identifier | '-') )?	optionalAttributeValuePairs ')'
+      -> ^(WDF ^(ID $id0?) $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) optionalAttributeValuePairs)
 	;
+
+
+revisionExpression
+	:	'wasRevisionOf' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier ',' (ag=identifier | '-')optionalAttributeValuePairs ')'
+      -> {$ag.tree==null}? ^(WRO ^(ID $id0?) $id2 $id1 ^(ID) optionalAttributeValuePairs)
+      -> ^(WRO ^(ID $id0?) $id2 $id1 $ag optionalAttributeValuePairs)
+	;
+
+
+quotationExpression
+	:	'wasQuotedFrom' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier (',' (ag2=identifier | '-')',' (ag1=identifier | '-'))? optionalAttributeValuePairs ')'
+      -> {$ag1.tree==null && $ag2.tree==null}? ^(WQF ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) optionalAttributeValuePairs)
+      -> {$ag1.tree!=null && $ag2.tree==null}? ^(WQF ^(ID $id0?) $id2 $id1 $ag1 ^(ID) optionalAttributeValuePairs)
+      -> {$ag1.tree==null && $ag2.tree!=null}? ^(WQF ^(ID $id0?) $id2 $id1 ^(ID) $ag2 optionalAttributeValuePairs)
+      -> ^(WQF ^(ID $id0?) $id2 $id1 $ag2? $ag1? optionalAttributeValuePairs)
+	;
+
+hadOriginalSourceExpression
+	:	'hadOriginalSource' '('   ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
+      -> ^(ORIGINALSOURCE  ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
+	;
+
+tracedToExpression
+	:	'tracedTo' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
+      -> ^(TRACEDTO ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
+	;
+
+
+/*
+        Component 4: Alternate entities
+
+*/
+
+alternateExpression
+	:	'alternateOf' '('  identifier ',' identifier ')'
+      -> ^(ALTERNATE identifier+)
+	;
+
+specializationExpression
+	:	'specializationOf' '('  identifier ',' identifier ')'
+      -> ^(SPECIALIZATION identifier+)
+	;
+
+/*
+        Component 5: Collections
+
+*/
+
+/* TODO */
+
+/*
+        Component 6: Annotations
+
+*/
+
+/* TODO */
+
+
 
 optionalAttributeValuePairs
     :
@@ -154,42 +248,6 @@ optionalIdentifier
     ;
 
 
-optionalIdentifier2
-    :
-    (',' identifier )?
-        -> ^(ID identifier?)
-    ;
-
-dependenceExpression
-	:	'dependedUpon' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
-      -> ^(WDO optionalIdentifier identifier+ optionalAttributeValuePairs)
-	;
-
-controlExpression
-	:	'wasControlledBy' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
-      -> ^(WCB optionalIdentifier identifier+ optionalAttributeValuePairs)
-	;
-
-alternateExpression
-	:	'alternateOf' '('  optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
-      -> ^(ALTERNATE optionalIdentifier identifier+ optionalAttributeValuePairs)
-	;
-
-specializationExpression
-	:	'specializationOf' '('  optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
-      -> ^(SPECIALIZATION optionalIdentifier identifier+ optionalAttributeValuePairs)
-	;
-
-
-associationExpression
-	:	'wasAssociatedWith' '('  optionalIdentifier a=identifier ',' ag=identifier  ('@' pl=identifier)? optionalAttributeValuePairs ')'
-      -> ^(WAW optionalIdentifier $a $ag ^(PLAN $pl?) optionalAttributeValuePairs)
-	;
-
-attributionExpression
-	:	'wasAttributedTo' '('  optionalIdentifier e=identifier ',' ag=identifier optionalAttributeValuePairs ')'
-      -> ^(WAT optionalIdentifier $e $ag optionalAttributeValuePairs)
-	;
 
 identifier
 	:

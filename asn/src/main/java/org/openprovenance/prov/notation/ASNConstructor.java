@@ -107,45 +107,69 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
     public Object convertWasStartedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s="wasStartedBy(" + optionalId(id) + id2 + "," + optional(id1) +
-            optionalTime(time) + optionalAttributes(aAttrs) +  ")";
+        String s="wasStartedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," +
+            optional(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
     public Object convertWasEndedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s="wasEndedBy(" + optionalId(id) + id2 + "," + optional(id1) +
-            optionalTime(time) + optionalAttributes(aAttrs) +  ")";
+        String s="wasEndedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," +
+            optional(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
 
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object aAttrs ) {
-        String s="wasAttributedTo(" + optionalId(id) + id2 + "," + optional(id1) +
+        String s="wasAttributedTo(" + optionalId(id) + id2 + ", " + optional(id1) +
             optionalAttributes(aAttrs) +  ")";
         return s;
     }
 
 
-    public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object g2, Object u1, Object time, Object aAttrs) {
-        String s="wasDerivedFrom(" + id2 + "," + id1 + 
-            ((pe==null) ? "" : (", " + pe + ", " + g2 + "," + u1)) + optional2(time) + optionalAttributes(aAttrs) +  ")";
+    public Object convertWasDerivedFrom(Object id, Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
+        String s="wasDerivedFrom(" + optionalId(id) + id2 + ", " + id1 + 
+            ((pe==null && g2==null && u1==null) ?
+             "" : ", " + optional(pe) + ", " + optional(g2) + ", " + optional(u1)) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
 
-    public Object convertAlternateOf(Object id, Object id2,Object id1, Object aAttrs) {
-        String s="alternateOf(" + optionalId(id) + id2 + "," + id1 +
-            optionalAttributes(aAttrs) + ")";
+    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
+        String s="wasRevisionOf(" + optionalId(id) + id2 + ", " + id1 + ", " + optional(ag) + optionalAttributes(dAttrs) +  ")";
+        return s;
+    }
+    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object ag2, Object ag1, Object dAttrs) {
+        String s="wasQuotedFrom(" + optionalId(id) + id2 + ", " + id1 + ", " + optional(ag2) + ", " + optional(ag1) + optionalAttributes(dAttrs) +  ")";
+        return s;
+    }
+    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs) {
+        String s="hadOriginalSource(" + optionalId(id) + id2 + ", " + id1 + optionalAttributes(dAttrs) +  ")";
+        return s;
+    }
+    public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs) {
+        String s="tracedTo(" + optionalId(id) + id2 + ", " + id1 + optionalAttributes(dAttrs) +  ")";
         return s;
     }
 
-    public Object convertSpecializationOf(Object id, Object id2,Object id1, Object aAttrs) {
-        String s="specializationOf(" + optionalId(id) + id2 + "," + id1 +
-            optionalAttributes(aAttrs) + ")";
+
+    public Object convertAlternateOf(Object id2,Object id1) {
+        String s="alternateOf(" + id2 + "," + id1 + ")";
+        return s;
+    }
+
+    public Object convertSpecializationOf(Object id2, Object id1) {
+        String s="specializationOf(" + id2 + "," + id1 + ")";
         return s;
     }
 
 
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
-        String s="wasAssociatedWith(" + optionalId(id) + id2 + "," + id1 
-            + ((pl==null)? "" : " @ " + pl) +
+        String s="wasAssociatedWith(" + optionalId(id) + id2 + "," + optional(id1) + "," +
+            optional(pl) +
+            optionalAttributes(aAttrs) + ")";
+        return s;
+    }
+
+    public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
+        String s="actedOnBehalfOf(" + optionalId(id) + id2 + "," + id1 + "," +
+            optional(a) +
             optionalAttributes(aAttrs) + ")";
         return s;
     }

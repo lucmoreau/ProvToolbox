@@ -69,21 +69,38 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
-    public Object convertWasDerivedFrom(Object id2,Object id1, Object pe, Object q2, Object q1, Object time, Object dAttrs) {
+    public Object convertWasDerivedFrom(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
         return null;
     }
 
-    public Object convertAlternateOf(Object id, Object id2,Object id1, Object aAttrs) {
+    public Object convertAlternateOf(Object id2, Object id1) {
         return null;
     }
 
-    public Object convertSpecializationOf(Object id, Object id2,Object id1, Object aAttrs) {
+    public Object convertSpecializationOf(Object id2,Object id1) {
         return null;
     }
 
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
         return null;
     }
+    public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
+        return null;
+    }
+
+    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
+        return null;
+    }
+    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object ag2, Object ag1, Object dAttrs) {
+        return null;
+    }
+    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs) {
+        return null;
+    }
+    public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs) {
+        return null;
+    }
+
 
     public Object convertQNAME(String qname) {
         return null;

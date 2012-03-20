@@ -22,8 +22,8 @@ public interface BeanConstructor {
 
     public Object convertHasAnnotation(Object id, List<Object> tAttrs, List<Object> otherAttrs);
     public Object convertWasInformedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs);
-    public Object convertAlternateOf(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity2, Object entity1);
-    public Object convertSpecializationOf(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity2, Object entity1);
+    public Object convertAlternateOf(Object entity2, Object entity1);
+    public Object convertSpecializationOf(Object entity2, Object entity1);
     public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity);
 
     public Object convertAttributeValue(org.w3c.dom.Element a);

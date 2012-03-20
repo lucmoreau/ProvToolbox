@@ -29,8 +29,8 @@ wasDerivedFrom(tr:WD-prov-dm-20111215,tr:WD-prov-dm-20111018)
 activity(ex:act1,-,-,[prov:type="publish"])
 activity(ex:act2,-,-,[prov:type="publish"])
 
-wasGeneratedBy(tr:WD-prov-dm-20111018, ex:act1)
-wasGeneratedBy(tr:WD-prov-dm-20111215, ex:act2)
+wasGeneratedBy(tr:WD-prov-dm-20111018, ex:act1, -)
+wasGeneratedBy(tr:WD-prov-dm-20111215, ex:act2, -)
 
 used(ex:act1,ar1:0004)
 used(ex:act1,ar2:0141)
@@ -38,8 +38,8 @@ used(ex:act2,ar3:0111)
 
 agent(w3:Consortium, [ prov:type="Organization" ])
 
-wasAssociatedWith(ex:act1, w3:Consortium  @ pr:rec-advance)
-wasAssociatedWith(ex:act2, w3:Consortium  @ pr:rec-advance)
+wasAssociatedWith(ex:act1, w3:Consortium, pr:rec-advance)
+wasAssociatedWith(ex:act2, w3:Consortium, pr:rec-advance)
 
 
 

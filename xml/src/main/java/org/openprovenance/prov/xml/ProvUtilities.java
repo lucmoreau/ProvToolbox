@@ -17,17 +17,17 @@ public class ProvUtilities {
         return res;
     }
 
-    public List<Relation> getRelations(Container g) {
-        List<Relation> res=new LinkedList();
+    public List<Relation0> getRelations(Container g) {
+        List<Relation0> res=new LinkedList();
         Dependencies dep=g.getRecords().getDependencies();
         for (Object o:dep.getUsedOrWasGeneratedByOrWasInformedBy()) {
             System.out.println("relation is " + o);
-            res.add((Relation)o);
+            res.add((Relation0)o);
         }
         return res;
     }
 
-    public QName getEffect(Relation r) {
+    public QName getEffect(Relation0 r) {
         if (r instanceof Used) {
             return ((Used)r).getActivity().getRef();
         }
@@ -35,7 +35,7 @@ public class ProvUtilities {
             return ((WasGeneratedBy)r).getEntity().getRef();
         }
         if (r instanceof WasDerivedFrom) {
-            return ((WasDerivedFrom)r).getEffect().getRef();
+            return ((WasDerivedFrom)r).getGeneratedEntity().getRef();
         }
         if (r instanceof WasControlledBy) {
             return ((WasControlledBy)r).getEffect().getRef();
@@ -47,13 +47,13 @@ public class ProvUtilities {
             return ((AlternateOf)r).getEntity2().getRef();
         }
         if (r instanceof SpecializationOf) {
-            return ((SpecializationOf)r).getEntity2().getRef();
+            return ((SpecializationOf)r).getGeneralEntity().getRef();
         }
         System.out.println("Unknow relation " + r);
         throw new NullPointerException();
     }
         
-    public QName getCause(Relation r) {
+    public QName getCause(Relation0 r) {
         if (r instanceof Used) {
             return ((Used)r).getEntity().getRef();
         }
@@ -61,7 +61,7 @@ public class ProvUtilities {
             return ((WasGeneratedBy)r).getActivity().getRef();
         }
         if (r instanceof WasDerivedFrom) {
-            return ((WasDerivedFrom)r).getCause().getRef();
+            return ((WasDerivedFrom)r).getUsedEntity().getRef();
         }
         if (r instanceof WasControlledBy) {
             return ((WasControlledBy)r).getCause().getRef();
@@ -73,13 +73,13 @@ public class ProvUtilities {
             return ((AlternateOf)r).getEntity1().getRef();
         }
         if (r instanceof SpecializationOf) {
-            return ((SpecializationOf)r).getEntity1().getRef();
+            return ((SpecializationOf)r).getSpecializedEntity().getRef();
         }
 
         throw new NullPointerException();
     }
 
-    public QName getOtherCause(Relation r) {
+    public QName getOtherCause(Relation0 r) {
         if (r instanceof WasAssociatedWith) { 
             EntityRef e=((WasAssociatedWith)r).getPlan();
             if (e==null) return null;

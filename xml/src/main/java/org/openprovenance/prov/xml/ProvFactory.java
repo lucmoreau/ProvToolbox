@@ -371,44 +371,18 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public AlternateOf newAlternateOf(String id,
-                                              EntityRef eid2,
-                                              EntityRef eid1) {
+    public AlternateOf newAlternateOf(EntityRef eid2,
+                                      EntityRef eid1) {
         AlternateOf res=of.createAlternateOf();
-        res.setId(stringToQName(id));
         res.setEntity2(eid2);
         res.setEntity1(eid1);
         return res;
     }
-
-    public AlternateOf newAlternateOf(QName id,
-                        EntityRef eid2,
-                        EntityRef eid1) {
-        AlternateOf res=of.createAlternateOf();
-        res.setId(id);
-        res.setEntity2(eid2);
-        res.setEntity1(eid1);
-        return res;
-    }
-
-
-    public SpecializationOf newSpecializationOf(String id,
-                                                EntityRef eid2,
+    public SpecializationOf newSpecializationOf(EntityRef eid2,
                                                 EntityRef eid1) {
         SpecializationOf res=of.createSpecializationOf();
-        res.setId(stringToQName(id));
-        res.setEntity2(eid2);
-        res.setEntity1(eid1);
-        return res;
-    }
-
-    public SpecializationOf newSpecializationOf(QName id,
-                                                EntityRef eid2,
-                                                EntityRef eid1) {
-        SpecializationOf res=of.createSpecializationOf();
-        res.setId(id);
-        res.setEntity2(eid2);
-        res.setEntity1(eid1);
+        res.setSpecializedEntity(eid2);
+        res.setGeneralEntity(eid1);
         return res;
     }
 
@@ -460,6 +434,99 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
+    public WasRevisionOf newWasRevisionOf(String id,
+                                          EntityRef newer,
+                                          EntityRef older,
+                                          AgentRef eid2) {
+        WasRevisionOf res=of.createWasRevisionOf();
+        res.setId(stringToQName(id));
+        res.setResponsibility(eid2);
+        res.setNewer(newer);
+        res.setOlder(older);
+        return res;
+    }
+
+    public WasRevisionOf newWasRevisionOf(QName id,
+                                          EntityRef newer,
+                                          EntityRef older,
+                                          AgentRef eid2) {
+        WasRevisionOf res=of.createWasRevisionOf();
+        res.setId(id);
+        res.setResponsibility(eid2);
+        res.setNewer(newer);
+        res.setOlder(older);
+        return res;
+    }
+
+
+    public WasQuotedFrom newWasQuotedFrom(String id,
+                                          EntityRef quote,
+                                          EntityRef original,
+                                          AgentRef quoterAgent,
+                                          AgentRef quotedAgent) {
+        WasQuotedFrom res=of.createWasQuotedFrom();
+        res.setId(stringToQName(id));
+        res.setQuote(quote);
+        res.setOriginal(original);
+        res.setQuoterAgent(quoterAgent);
+        res.setQuotedAgent(quotedAgent);
+        return res;
+    }
+
+    public WasQuotedFrom newWasQuotedFrom(QName id,
+                                          EntityRef quote,
+                                          EntityRef original,
+                                          AgentRef quoterAgent,
+                                          AgentRef quotedAgent) {
+        WasQuotedFrom res=of.createWasQuotedFrom();
+        res.setId(id);
+        res.setQuote(quote);
+        res.setOriginal(original);
+        res.setQuoterAgent(quoterAgent);
+        res.setQuotedAgent(quotedAgent);
+        return res;
+    }
+
+
+    public TracedTo newTracedTo(String id,
+                                EntityRef entity,
+                                EntityRef ancestor) {
+        TracedTo res=of.createTracedTo();
+        res.setId(stringToQName(id));
+        res.setEntity(entity);
+        res.setAncestor(ancestor);
+        return res;
+    }
+
+    public TracedTo newTracedTo(QName id,
+                                EntityRef entity,
+                                EntityRef ancestor) {
+        TracedTo res=of.createTracedTo();
+        res.setId(id);
+        res.setEntity(entity);
+        res.setAncestor(ancestor);
+        return res;
+    }
+
+    public HadOriginalSource newHadOriginalSource(String id,
+                                                  EntityRef derived,
+                                                  EntityRef source) {
+        HadOriginalSource res=of.createHadOriginalSource();
+        res.setId(stringToQName(id));
+        res.setDerived(derived);
+        res.setSource(source);
+        return res;
+    }
+
+    public HadOriginalSource newHadOriginalSource(QName id,
+                                                  EntityRef derived,
+                                                  EntityRef source) {
+        HadOriginalSource res=of.createHadOriginalSource();
+        res.setId(id);
+        res.setDerived(derived);
+        res.setSource(source);
+        return res;
+    }
 
 
     public void addRole(HasRole a,                                  
@@ -528,8 +595,8 @@ public class ProvFactory implements CommonURIs {
 
     public WasDerivedFrom newWasDerivedFrom(WasDerivedFrom d) {
         WasDerivedFrom wdf=newWasDerivedFrom(d.getId(),
-                                             d.getEffect(),
-                                             d.getCause());
+                                             d.getGeneratedEntity(),
+                                             d.getUsedEntity());
         wdf.getAny().addAll(d.getAny());
         return wdf;
     }
@@ -725,8 +792,8 @@ public class ProvFactory implements CommonURIs {
                                             EntityRef aid2) {
         WasDerivedFrom res=of.createWasDerivedFrom();
         res.setId(id);
-        res.setCause(aid2);
-        res.setEffect(aid1);
+        res.setUsedEntity(aid2);
+        res.setGeneratedEntity(aid1);
         return res;
     }
     public WasDerivedFrom newWasDerivedFrom(String id,
@@ -744,8 +811,8 @@ public class ProvFactory implements CommonURIs {
                                             DependencyRef did2) {
         WasDerivedFrom res=of.createWasDerivedFrom();
         res.setId(id);
-        res.setCause(aid2);
-        res.setEffect(aid1);
+        res.setUsedEntity(aid2);
+        res.setGeneratedEntity(aid1);
         res.setActivity(aid);
         res.setGeneration(did1);
         res.setUsage(did2);

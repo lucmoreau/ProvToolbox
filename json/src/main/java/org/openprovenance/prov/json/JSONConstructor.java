@@ -282,7 +282,7 @@ class JSONConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
 
-	public Object convertWasDerivedFrom(Object id2, Object id1, Object pe, Object q2, Object q1, Object time, Object dAttrs) {
+	public Object convertWasDerivedFrom(Object id, Object id2, Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:usedEntity", id1));
     	attrs.add(tuple("prov:generatedEntity", id2));
@@ -295,14 +295,12 @@ class JSONConstructor implements TreeConstructor {
     	if (q1 != null) {
     		attrs.add(tuple("prov:generation", q1));
     	}
-    	if (time != null) {
-    		attrs.add(tuple("prov:time", time));
-    	}
     	if (dAttrs != null) {
     		attrs.addAll((List<Object>)dAttrs);
     	}
     	
-    	String id = getBlankID("wDF");
+    	if (id == null)
+    		id = getBlankID("wDF");
 
     	return new ProvRecord("wasDerivedFrom", id, attrs);
 	}
@@ -324,30 +322,53 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasAssociatedWith", id, attrs);
 	}
 
-	public Object convertAlternateOf(Object id, Object id2, Object id1,
-			Object aAttrs) {
+    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object ag2, Object ag1, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+    public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
+	public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:entity", id1));
-    	attrs.add(tuple("prov:alternate", id2));
+    	attrs.add(tuple("prov:subordinate", id2));
+    	attrs.add(tuple("prov:responsible", id1));
+    	if (a != null) {
+    		attrs.add(tuple("prov:activity", a));
+    	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
     	}
     	if (id == null)
-    		id = getBlankID("aO");
+    		id = getBlankID("aOBO");
+
+    	return new ProvRecord("wasAssociatedWith", id, attrs);
+	}
+
+	public Object convertAlternateOf(Object id2, Object id1) {
+		List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:entity", id1));
+    	attrs.add(tuple("prov:alternate", id2));
+    	Object id = getBlankID("aO");
 
     	return new ProvRecord("alternateOf", id, attrs);
 	}
 
-	public Object convertSpecializationOf(Object id, Object id2, Object id1,
-			Object aAttrs) {
+	public Object convertSpecializationOf(Object id2, Object id1) {
 		List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:entity", id1));
     	attrs.add(tuple("prov:specialization", id2));
-    	if (aAttrs != null) {
-    		attrs.addAll((List<Object>)aAttrs);
-    	}
-    	if (id == null)
-    		id = getBlankID("aO");
+        Object id = getBlankID("sO");
 
     	return new ProvRecord("specializationOf", id, attrs);
 	}

@@ -149,13 +149,12 @@ public class BeanTreeConstructor implements BeanConstructor{
         List attrs=new LinkedList();
         attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
-        return c.convertWasDerivedFrom(//id,
+        return c.convertWasDerivedFrom(id,
                                        effect,
                                        cause,
                                        null,//pe
                                        null,//g2
                                        null,//u1
-                                       null,//time
                                        c.convertAttributes(attrs));
     }
     
@@ -172,28 +171,14 @@ public class BeanTreeConstructor implements BeanConstructor{
         attrs.addAll(otherAttrs);
         return null;
     }
-    public Object convertAlternateOf(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity2, Object entity1) {
-        List tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
-        List attrs=new LinkedList();
-        attrs.addAll(tAttrs2);
-        attrs.addAll(otherAttrs);
-        return c.convertAlternateOf(id,
-                                    entity2,
-                                    entity1,
-                                    attrs);
+    public Object convertAlternateOf(Object entity2, Object entity1) {
+        return c.convertAlternateOf(entity2,
+                                    entity1);
     }
 
-    public Object convertSpecializationOf(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity2, Object entity1) {
-        List tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
-        List attrs=new LinkedList();
-        attrs.addAll(tAttrs2);
-        attrs.addAll(otherAttrs);
-        return c.convertSpecializationOf(id,
-                                         entity2,
-                                         entity1,
-                                         attrs);
+    public Object convertSpecializationOf(Object entity2, Object entity1) {
+        return c.convertSpecializationOf(entity2,
+                                         entity1);
     }
 
     public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity) {

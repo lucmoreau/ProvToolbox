@@ -19,9 +19,14 @@ import org.openprovenance.prov.xml.Container;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasStartedBy;
+import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.WasEndedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.WasAttributedTo;
+import org.openprovenance.prov.xml.WasRevisionOf;
+import org.openprovenance.prov.xml.WasQuotedFrom;
+import org.openprovenance.prov.xml.HadOriginalSource;
+import org.openprovenance.prov.xml.TracedTo;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.WasAssociatedWith;
@@ -323,24 +328,20 @@ public  class ProvConstructor implements TreeConstructor {
         return s;
     }
 
-    public Object convertWasDerivedFrom(Object id2,Object id1, Object a, Object g2, Object u1, Object time, Object dAttrs) {
+    public Object convertWasDerivedFrom(Object id, Object id2,Object id1, Object a, Object g2, Object u1, Object dAttrs) {
+        String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
         Entity e2=entityTable.get(s_id2);
         EntityRef e2r=pFactory.newEntityRef(e2);
         Entity e1=entityTable.get(s_id1);
         EntityRef e1r=pFactory.newEntityRef(e1);
-        WasDerivedFrom d=pFactory.newWasDerivedFrom((QName)null,
+        WasDerivedFrom d=pFactory.newWasDerivedFrom(s_id,
                                                     e2r,
                                                     e1r);
         if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
         if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
         if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
-
-        if (time!=null) {
-            d.setTime(pFactory.newISOTime((String)time));
-        }
-
 
         List attrs=(List)dAttrs;
         d.getAny().addAll(attrs);
@@ -349,7 +350,52 @@ public  class ProvConstructor implements TreeConstructor {
         return d;
     }
 
-    public Object convertAlternateOf(Object id, Object id2,Object id1, Object aAttrs) {
+    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        String s_ag=(String)ag;
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+        Entity e1=entityTable.get(s_id1);
+        EntityRef e1r=pFactory.newEntityRef(e1);
+
+        AgentRef agr=(s_ag==null)? null : pFactory.newAgentRef(s_ag);
+
+        WasRevisionOf d=pFactory.newWasRevisionOf(s_id,
+                                                  e2r,
+                                                  e1r,
+                                                  agr);
+        List attrs=(List)dAttrs;
+        d.getAny().addAll(attrs);
+        return d;
+    }
+
+    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object ag2, Object ag1, Object dAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        String s_ag2=(String)ag2;
+        String s_ag1=(String)ag1;
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+        Entity e1=entityTable.get(s_id1);
+        EntityRef e1r=pFactory.newEntityRef(e1);
+
+        AgentRef agr2=(s_ag2==null)? null : pFactory.newAgentRef(s_ag2);
+        AgentRef agr1=(s_ag1==null)? null : pFactory.newAgentRef(s_ag1);
+
+        WasQuotedFrom d=pFactory.newWasQuotedFrom(s_id,
+                                                  e2r,
+                                                  e1r,
+                                                  agr2,
+                                                  agr1);
+        List attrs=(List)dAttrs;
+        d.getAny().addAll(attrs);
+        return d;
+    }
+
+    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
@@ -357,30 +403,54 @@ public  class ProvConstructor implements TreeConstructor {
         EntityRef e2r=pFactory.newEntityRef(e2);
         Entity e1=entityTable.get(s_id1);
         EntityRef e1r=pFactory.newEntityRef(e1);
-        AlternateOf wco=pFactory.newAlternateOf(s_id,
-                                                e2r,
-                                                e1r);
-        List attrs=(List)aAttrs;
-        wco.getAny().addAll(attrs);
 
+        HadOriginalSource d=pFactory.newHadOriginalSource(s_id,
+                                                          e2r,
+                                                          e1r);
+        List attrs=(List)dAttrs;
+        d.getAny().addAll(attrs);
+        return d;
+    }
+    public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+        Entity e1=entityTable.get(s_id1);
+        EntityRef e1r=pFactory.newEntityRef(e1);
+
+        TracedTo d=pFactory.newTracedTo(s_id,
+                                        e2r,
+                                        e1r);
+        List attrs=(List)dAttrs;
+        d.getAny().addAll(attrs);
+        return d;
+    }
+
+
+    public Object convertAlternateOf(Object id2,Object id1) {
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+        Entity e1=entityTable.get(s_id1);
+        EntityRef e1r=pFactory.newEntityRef(e1);
+        AlternateOf wco=pFactory.newAlternateOf(e2r,
+                                                e1r);
         return wco;
 
     }
 
-    public Object convertSpecializationOf(Object id, Object id2,Object id1, Object aAttrs) {
-        String s_id=(String)id;
+    public Object convertSpecializationOf(Object id2,Object id1) {
         String s_id2=(String)id2;
         String s_id1=(String)id1;
         Entity e2=entityTable.get(s_id2);
         EntityRef e2r=pFactory.newEntityRef(e2);
         Entity e1=entityTable.get(s_id1);
         EntityRef e1r=pFactory.newEntityRef(e1);
-        SpecializationOf wco=pFactory.newSpecializationOf(s_id,
-                                                          e2r,
+        SpecializationOf wco=pFactory.newSpecializationOf(e2r,
                                                           e1r);
-        List attrs=(List)aAttrs;
-        wco.getAny().addAll(attrs);
-
         return wco;
 
     }
@@ -393,8 +463,12 @@ public  class ProvConstructor implements TreeConstructor {
         String s_pl=(String)pl;
         Activity e2=activityTable.get(s_id2);
         ActivityRef e2r=pFactory.newActivityRef(e2);
-        Agent e1=agentTable.get(s_id1);
-        AgentRef e1r=pFactory.newAgentRef(e1);
+        Agent e1=null;
+        AgentRef e1r=null;
+        if (s_id1!=null) {
+            e1=agentTable.get(s_id1);
+            e1r=pFactory.newAgentRef(e1);
+        }
         Entity e3=null;
         EntityRef e3r=null;
         if (s_pl!=null) {
@@ -409,6 +483,32 @@ public  class ProvConstructor implements TreeConstructor {
         waw.getAny().addAll(attrs);
 
         return waw;
+    }
+
+    public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        String s_a=(String)a;
+        Agent e2=agentTable.get(s_id2);
+        AgentRef e2r=pFactory.newAgentRef(e2);
+        Agent e1=agentTable.get(s_id1);
+        AgentRef e1r=pFactory.newAgentRef(e1);
+
+        Activity e3=null;
+        ActivityRef e3r=null;
+        if (a!=null) {
+            e3=activityTable.get(s_a);
+            e3r=pFactory.newActivityRef(e3);
+        }
+        ActedOnBehalfOf aobo=pFactory.newActedOnBehalfOf(s_id,
+                                                         e2r,
+                                                         e1r,
+                                                         e3r);
+        List attrs=(List)aAttrs;
+        aobo.getAny().addAll(attrs);
+
+        return aobo;
     }
 
     public Object convertQNAME(String qname) {

@@ -64,15 +64,7 @@ public class RdfConstructor implements TreeConstructor {
     public Object convertEnd(String end) {
         return null;
     }
-    public Object convertA(Object a) {
-        return null;
-    }
-    public Object convertU(Object a) {
-        return null;
-    }
-    public Object convertG(Object a) {
-        return null;
-    }
+
     public Object convertString(String s) {
         s=unwrap(s);
         return s;
@@ -264,6 +256,17 @@ public class RdfConstructor implements TreeConstructor {
 
     public String unwrap (String s) {
         return s.substring(1,s.length()-1);
+    }
+
+   /* Component 6 */
+
+    public Object convertNote(Object id, Object attrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+    public Object convertHasAnnotation(Object something, Object note) {
+        //todo
+        throw new UnsupportedOperationException();
     }
 
         

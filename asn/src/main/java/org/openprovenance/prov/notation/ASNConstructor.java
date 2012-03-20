@@ -75,15 +75,6 @@ public class ASNConstructor implements TreeConstructor {
     public Object convertEnd(String end) {
         return end;
     }
-    public Object convertA(Object a) {
-        return a;
-    }
-    public Object convertU(Object a) {
-        return a;
-    }
-    public Object convertG(Object a) {
-        return a;
-    }
     public Object convertString(String s) {
         return s;
     }

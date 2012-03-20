@@ -211,18 +211,6 @@ class JSONConstructor implements TreeConstructor {
 		return end;
 	}
 
-	public Object convertA(Object a) {
-		return a;
-	}
-
-	public Object convertU(Object a) {
-		return a;
-	}
-
-	public Object convertG(Object a) {
-		return a;
-	}
-
 	public Object convertString(String s) {
 		return s;
 	}
@@ -407,6 +395,19 @@ class JSONConstructor implements TreeConstructor {
 		}
 		return nss;
 	}
+
+   /* Component 6 */
+
+    public Object convertNote(Object id, Object attrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+    public Object convertHasAnnotation(Object something, Object note) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
+
 
 }
 	

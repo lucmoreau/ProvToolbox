@@ -201,6 +201,17 @@ public class DataLogConstructor implements TreeConstructor {
         return pre;
     }
 
+   /* Component 6 */
+
+    public Object convertNote(Object id, Object attrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+    public Object convertHasAnnotation(Object something, Object note) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
 
 
 }

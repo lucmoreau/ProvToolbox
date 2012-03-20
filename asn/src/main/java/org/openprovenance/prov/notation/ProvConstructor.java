@@ -113,18 +113,21 @@ public  class ProvConstructor implements TreeConstructor {
         Collection<Entity> es=new LinkedList();
         Collection<Agent> ags=new LinkedList();
         Collection<Activity> acs=new LinkedList();
+        Collection<Note> ns=new LinkedList();
         Collection<Object> lks=new LinkedList();
             
         for (Object o: records) {
             if (o instanceof Agent) { ags.add((Agent)o); }
             else if (o instanceof Entity) { es.add((Entity)o); }
             else if (o instanceof Activity) { acs.add((Activity)o); }
+            else if (o instanceof Note) { ns.add((Note)o); }
             else lks.add(o);
         }
         Container c=pFactory.newContainer(accs,
                                           acs,
                                           es,
                                           ags,
+                                          ns,
                                           lks);
         System.out.println("Container namespaces " + namespaceTable);
         c.setNss(namespaceTable);
@@ -204,17 +207,6 @@ public  class ProvConstructor implements TreeConstructor {
         return end;
     }
     
-    public Object convertA(Object a) {
-        return a;
-    }
-
-    public Object convertG(Object a) {
-        return a;
-    }
-
-    public Object convertU(Object a) {
-        return a;
-    }
 
     public Object convertString(String s) {
 	s=unwrap(s);

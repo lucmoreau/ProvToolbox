@@ -4,8 +4,8 @@ import java.util.List;
 public interface TreeConstructor {
     /* Component 1 */
 
-    public Object convertActivity(Object id,Object startTime,Object endTime, Object aAttrs);
     public Object convertEntity(Object id, Object attrs);
+    public Object convertActivity(Object id,Object startTime,Object endTime, Object aAttrs);
     public Object convertStart(String start);
     public Object convertEnd(String end);
     public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs);
@@ -26,9 +26,7 @@ public interface TreeConstructor {
     public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object ag2, Object ag1, Object dAttrs);
     public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs);
     public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs);
-    public Object convertA(Object a);
-    public Object convertU(Object a);
-    public Object convertG(Object a);
+
 
     /* Component 4 */
     public Object convertAlternateOf(Object id2,Object id1);

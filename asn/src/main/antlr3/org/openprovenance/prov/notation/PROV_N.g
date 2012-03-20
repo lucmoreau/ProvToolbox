@@ -116,8 +116,8 @@ generationExpression
 	;
 
 usageExpression
-	:	'used' '(' optionalIdentifier identifier ',' identifier optionalTime optionalAttributeValuePairs ')'
-      -> ^(USED optionalIdentifier identifier+ optionalTime optionalAttributeValuePairs)
+	:	'used' '(' ((id0=identifier | '-') ',')?  id2=identifier ',' id1=identifier (',' ( '-' | time))? optionalAttributeValuePairs ')'
+      -> ^(USED ^(ID $id0?)  $id2 $id1 ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 startExpression

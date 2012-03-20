@@ -8,6 +8,13 @@ prefix ex <http://example>
           agent(ex:ag1, [ex:param="a"])
           agent(ex:ag2, [ex:param="a"])
 
+          used(ex:a1, ex:e1)
+          used(ex:a1, ex:e1, -)
+          used(ex:a1, ex:e1, -, [ex:param1="a", ex:param2="b"])
+          used(ex:a1, ex:e1, 2001-10-26T21:32:52)
+          used(ex:a1, ex:e1, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+          used(ex:a1, ex:e1, [ex:param1="a", ex:param2="b"])
+
           wasGeneratedBy(ex:e1, ex:a1, -)
           wasGeneratedBy(ex:e1, ex:a1, -, [ex:param1="a", ex:param2="b"])
           wasGeneratedBy(ex:e1, ex:a1, 2001-10-26T21:32:52)

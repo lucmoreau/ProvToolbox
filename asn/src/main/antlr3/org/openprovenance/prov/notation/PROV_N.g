@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; WSB; WEB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; WAT; INT; PLAN; SPECIALIZATION; ALTERNATE; AOBO; WIB; WSBA; TRACEDTO; ORIGINALSOURCE; WQF; WRO;
+    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; WSB; WEB; USED; WDF; TIME; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; WAT; INT; PLAN; SPECIALIZATION; ALTERNATE; AOBO; WIB; WSBA; TRACEDTO; ORIGINALSOURCE; WQF; WRO;
 }
 
 @header {
@@ -59,7 +59,25 @@ defaultNamespaceDeclaration :
     ;
 
 record
-	:	(entityExpression | activityExpression | agentExpression | generationExpression  | usageExpression | startExpression | endExpression | derivationExpression | dependenceExpression  | controlExpression | alternateExpression | specializationExpression  |  associationExpression | attributionExpression | responsibilityExpression | informExpression | wasStartedByActivityExpression | tracedToExpression | hadOriginalSourceExpression | quotationExpression | revisionExpression )
+	:	(   /* component 1 */
+
+           entityExpression | activityExpression | generationExpression  | usageExpression
+         | startExpression | endExpression | informExpression | wasStartedByActivityExpression
+
+            /* component 2 */
+        
+        | agentExpression |  associationExpression | attributionExpression | responsibilityExpression
+
+            /* component 3 */
+
+        | derivationExpression | tracedToExpression | hadOriginalSourceExpression | quotationExpression | revisionExpression
+
+            /* component 4 */
+
+        | alternateExpression | specializationExpression
+
+            /* component 5 */
+            /* component 6 */ )
 	;
 
 /*
@@ -208,22 +226,6 @@ specializationExpression
 */
 
 /* TODO */
-
-/*
-        OLD STUFF
-
-*/
-
-
-dependenceExpression
-	:	'dependedUpon' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
-      -> ^(WDO optionalIdentifier identifier+ optionalAttributeValuePairs)
-	;
-
-controlExpression
-	:	'wasControlledBy' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
-      -> ^(WCB optionalIdentifier identifier+ optionalAttributeValuePairs)
-	;
 
 
 

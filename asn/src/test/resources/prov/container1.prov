@@ -117,6 +117,43 @@ prefix ex <http://example>
           wasAttributedTo(-,ex:e1, ex:ag1)
           wasAttributedTo(-,ex:e1, ex:ag1, [ex:param1="a", ex:param2="b"])
 
+          wasAssociatedWith(ex:a1, -, ex:e1)
+          wasAssociatedWith(ex:a1, -, ex:e1, [ex:param1="a", ex:param2="b"])
+          wasAssociatedWith(ex:a1, ex:ag1, -)
+          wasAssociatedWith(ex:a1, ex:ag1, -, [ex:param1="a", ex:param2="b"])
+          wasAssociatedWith(ex:a1, ex:ag1, ex:e1)
+          wasAssociatedWith(ex:a1, ex:ag1, ex:e1, [ex:param1="a", ex:param2="b"])
+
+
+          wasAssociatedWith(a, ex:a1, -, ex:e1)
+          wasAssociatedWith(a, ex:a1, -, ex:e1, [ex:param1="a", ex:param2="b"])
+          wasAssociatedWith(a, ex:a1, ex:ag1, -)
+          wasAssociatedWith(a, ex:a1, ex:ag1, -, [ex:param1="a", ex:param2="b"])
+          wasAssociatedWith(a, ex:a1, ex:ag1, ex:e1)
+          wasAssociatedWith(a, ex:a1, ex:ag1, ex:e1, [ex:param1="a", ex:param2="b"])
+
+          wasAssociatedWith(-, ex:a1, -, ex:e1)
+          wasAssociatedWith(-, ex:a1, -, ex:e1, [ex:param1="a", ex:param2="b"])
+          wasAssociatedWith(-, ex:a1, ex:ag1, -)
+          wasAssociatedWith(-, ex:a1, ex:ag1, -, [ex:param1="a", ex:param2="b"])
+          wasAssociatedWith(-, ex:a1, ex:ag1, ex:e1)
+          wasAssociatedWith(-, ex:a1, ex:ag1, ex:e1, [ex:param1="a", ex:param2="b"])
+
+          actedOnBehalfOf(ex:ag1,ex:ag2, -)
+          actedOnBehalfOf(ex:ag1,ex:ag2, -,[prov:type="delegation"])
+          actedOnBehalfOf(ex:ag1,ex:ag2,ex:a1)
+          actedOnBehalfOf(ex:ag1,ex:ag2,ex:a1,[prov:type="delegation"])
+
+          actedOnBehalfOf(a,ex:ag1,ex:ag2, -)
+          actedOnBehalfOf(a,ex:ag1,ex:ag2, -,[prov:type="delegation"])
+          actedOnBehalfOf(a,ex:ag1,ex:ag2,ex:a1)
+          actedOnBehalfOf(a,ex:ag1,ex:ag2,ex:a1,[prov:type="delegation"])
+
+          actedOnBehalfOf(-,ex:ag1,ex:ag2, -)
+          actedOnBehalfOf(-,ex:ag1,ex:ag2, -,[prov:type="delegation"])
+          actedOnBehalfOf(-,ex:ag1,ex:ag2,ex:a1)
+          actedOnBehalfOf(-,ex:ag1,ex:ag2,ex:a1,[prov:type="delegation"])
+
 
           wasDerivedFrom(ex:e1, ex:e2)
           wasDerivedFrom(ex:e1, ex:e2, -, -, -)
@@ -195,47 +232,12 @@ prefix ex <http://example>
           wasDerivedFrom(-, ex:e1, ex:e2, ex:a1, ex:g2, ex:u1, [ex:param1="a", ex:param2="b"])
 
 
-          wasAssociatedWith(ex:a1, -, ex:e1)
-          wasAssociatedWith(ex:a1, -, ex:e1, [ex:param1="a", ex:param2="b"])
-          wasAssociatedWith(ex:a1, ex:ag1, -)
-          wasAssociatedWith(ex:a1, ex:ag1, -, [ex:param1="a", ex:param2="b"])
-          wasAssociatedWith(ex:a1, ex:ag1, ex:e1)
-          wasAssociatedWith(ex:a1, ex:ag1, ex:e1, [ex:param1="a", ex:param2="b"])
-
-
-          wasAssociatedWith(a, ex:a1, -, ex:e1)
-          wasAssociatedWith(a, ex:a1, -, ex:e1, [ex:param1="a", ex:param2="b"])
-          wasAssociatedWith(a, ex:a1, ex:ag1, -)
-          wasAssociatedWith(a, ex:a1, ex:ag1, -, [ex:param1="a", ex:param2="b"])
-          wasAssociatedWith(a, ex:a1, ex:ag1, ex:e1)
-          wasAssociatedWith(a, ex:a1, ex:ag1, ex:e1, [ex:param1="a", ex:param2="b"])
-
-          wasAssociatedWith(-, ex:a1, -, ex:e1)
-          wasAssociatedWith(-, ex:a1, -, ex:e1, [ex:param1="a", ex:param2="b"])
-          wasAssociatedWith(-, ex:a1, ex:ag1, -)
-          wasAssociatedWith(-, ex:a1, ex:ag1, -, [ex:param1="a", ex:param2="b"])
-          wasAssociatedWith(-, ex:a1, ex:ag1, ex:e1)
-          wasAssociatedWith(-, ex:a1, ex:ag1, ex:e1, [ex:param1="a", ex:param2="b"])
-
-          actedOnBehalfOf(ex:ag1,ex:ag2, -)
-          actedOnBehalfOf(ex:ag1,ex:ag2, -,[prov:type="delegation"])
-          actedOnBehalfOf(ex:ag1,ex:ag2,ex:a1)
-          actedOnBehalfOf(ex:ag1,ex:ag2,ex:a1,[prov:type="delegation"])
-
-          actedOnBehalfOf(a,ex:ag1,ex:ag2, -)
-          actedOnBehalfOf(a,ex:ag1,ex:ag2, -,[prov:type="delegation"])
-          actedOnBehalfOf(a,ex:ag1,ex:ag2,ex:a1)
-          actedOnBehalfOf(a,ex:ag1,ex:ag2,ex:a1,[prov:type="delegation"])
-
-          actedOnBehalfOf(-,ex:ag1,ex:ag2, -)
-          actedOnBehalfOf(-,ex:ag1,ex:ag2, -,[prov:type="delegation"])
-          actedOnBehalfOf(-,ex:ag1,ex:ag2,ex:a1)
-          actedOnBehalfOf(-,ex:ag1,ex:ag2,ex:a1,[prov:type="delegation"])
-
-
-
           hadOriginalSource(ex:e1, ex:e2)
           hadOriginalSource(ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
+          hadOriginalSource(o,ex:e1, ex:e2)
+          hadOriginalSource(o,ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
+          hadOriginalSource(-,ex:e1, ex:e2)
+          hadOriginalSource(-,ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
 
           tracedTo(ex:e1, ex:e2)
           tracedTo(ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
@@ -243,7 +245,6 @@ prefix ex <http://example>
           tracedTo(t, ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
           tracedTo(-, ex:e1, ex:e2)
           tracedTo(-, ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
-
 
           wasRevisionOf(ex:e1, ex:e2, -)
           wasRevisionOf(ex:e1, ex:e2, -, [ex:param1="a", ex:param2="b"])
@@ -257,7 +258,6 @@ prefix ex <http://example>
           wasRevisionOf(-,ex:e1, ex:e2, -, [ex:param1="a", ex:param2="b"])
           wasRevisionOf(-,ex:e1, ex:e2, ex:ag1)
           wasRevisionOf(-,ex:e1, ex:e2, ex:ag1, [ex:param1="a", ex:param2="b"])
-
 
 
           wasQuotedFrom(ex:e1, ex:e2)

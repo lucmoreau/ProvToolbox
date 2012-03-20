@@ -178,11 +178,24 @@ responsibilityExpression
 */
 
 
-/* TODO: Use conditional test in order to remove ^(A ), ^(G ), ^(U ) */
-
 derivationExpression
 	:	'wasDerivedFrom' '(' ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier (',' (a=identifier | '-') ',' (g2=identifier  | '-') ',' (u1=identifier | '-') )?	optionalAttributeValuePairs ')'
-      -> ^(WDF ^(ID $id0?) $id2 $id1 ^(A $a?)  ^(G $g2?) ^(U $u1?) optionalAttributeValuePairs)
+      -> {$a.tree==null && $g2.tree==null && $u1.tree==null}?
+          ^(WDF ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) ^(ID) optionalAttributeValuePairs)
+      -> {$a.tree!=null && $g2.tree==null && $u1.tree==null}?
+          ^(WDF ^(ID $id0?) $id2 $id1 $a ^(ID) ^(ID) optionalAttributeValuePairs)
+      -> {$a.tree==null && $g2.tree!=null && $u1.tree==null}?
+          ^(WDF ^(ID $id0?) $id2 $id1 ^(ID) $g2 ^(ID) optionalAttributeValuePairs)
+      -> {$a.tree!=null && $g2.tree!=null && $u1.tree==null}?
+          ^(WDF ^(ID $id0?) $id2 $id1 $a $g2 ^(ID) optionalAttributeValuePairs)
+
+      -> {$a.tree==null && $g2.tree==null && $u1.tree!=null}?
+          ^(WDF ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) $u1 optionalAttributeValuePairs)
+      -> {$a.tree!=null && $g2.tree==null && $u1.tree!=null}?
+          ^(WDF ^(ID $id0?) $id2 $id1 $a ^(ID) $u1 optionalAttributeValuePairs)
+      -> {$a.tree==null && $g2.tree!=null && $u1.tree!=null}?
+          ^(WDF ^(ID $id0?) $id2 $id1 ^(ID) $g2 $u1 optionalAttributeValuePairs)
+      -> ^(WDF ^(ID $id0?) $id2 $id1 $a $g2 $u1 optionalAttributeValuePairs)
 	;
 
 

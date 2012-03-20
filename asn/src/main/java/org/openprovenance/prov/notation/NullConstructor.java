@@ -126,4 +126,14 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
+    /* Component 6 */
+
+    public Object convertNote(Object id, Object attrs) {
+        return null;
+    }
+    public Object convertHasAnnotation(Object something, Object note) {
+        return null;
+    }
+
+
 }

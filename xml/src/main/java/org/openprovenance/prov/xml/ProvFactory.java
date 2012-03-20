@@ -746,7 +746,7 @@ public class ProvFactory implements CommonURIs {
 
 
     public HasAnnotation newHasAnnotation(Identifiable i,
-					    Note n) {
+                                          Note n) {
 	HasAnnotation res=of.createHasAnnotation();
 	res.setThing(newNoteRef(i.getId()));
 	res.setNote(newNoteRef(n));
@@ -754,9 +754,17 @@ public class ProvFactory implements CommonURIs {
     }
 
     public HasAnnotation newHasAnnotation(Identifiable i,
-					  String n) {
+                                          String n) {
 	HasAnnotation res=of.createHasAnnotation();
 	res.setThing(newNoteRef(i.getId())); // note, this id is not necessarily of a note
+	res.setNote(newNoteRef(n));
+	return res;
+    }
+
+    public HasAnnotation newHasAnnotation(String n1,
+                                          String n) {
+	HasAnnotation res=of.createHasAnnotation();
+	res.setThing(newNoteRef(n1));
 	res.setNote(newNoteRef(n));
 	return res;
     }

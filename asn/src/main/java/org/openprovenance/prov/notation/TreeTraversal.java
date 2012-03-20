@@ -317,9 +317,21 @@ public class TreeTraversal {
             }
             return c.convertNamespaces(namespaces);
 
+        case PROV_NParser.NOTE:
+            id=convert(ast.getChild(0));
+            Object nAttrs=convert(ast.getChild(1));
+            return c.convertNote(id,nAttrs);
+
+
+        case PROV_NParser.HAN:
+            id2=convert(ast.getChild(0));
+            id1=convert(ast.getChild(1));
+            return c.convertHasAnnotation(id2,id1);
+
         }
 
         return null;
+
     }
 
 

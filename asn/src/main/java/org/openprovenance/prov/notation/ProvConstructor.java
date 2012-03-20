@@ -13,6 +13,7 @@ import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.EntityRef;
 import org.openprovenance.prov.xml.AgentRef;
+import org.openprovenance.prov.xml.NoteRef;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.Account;
 import org.openprovenance.prov.xml.Container;
@@ -28,6 +29,8 @@ import org.openprovenance.prov.xml.WasQuotedFrom;
 import org.openprovenance.prov.xml.HadOriginalSource;
 import org.openprovenance.prov.xml.TracedTo;
 import org.openprovenance.prov.xml.AlternateOf;
+import org.openprovenance.prov.xml.Note;
+import org.openprovenance.prov.xml.HasAnnotation;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
@@ -50,6 +53,7 @@ public  class ProvConstructor implements TreeConstructor {
     Hashtable<String,Entity>   entityTable   = new Hashtable<String,Entity>();
     Hashtable<String,Activity> activityTable = new Hashtable<String,Activity>();
     Hashtable<String,Agent>    agentTable    = new Hashtable<String,Agent>();
+    Hashtable<String,Note>     noteTable     = new Hashtable<String,Note>();
 
     Hashtable<String,String>  namespaceTable = new Hashtable<String,String>();
     
@@ -585,6 +589,23 @@ public  class ProvConstructor implements TreeConstructor {
         return pre;
     }
 
+    public Object convertNote(Object id, Object attrs) {
+        String s_id=(String)id;
+        List nAttrs=(List)attrs;
+        Note n=pFactory.newNote(s_id);
+        noteTable.put(s_id,n);
+        n.getAny().addAll(nAttrs);
+        return n;
+    }
+
+    public Object convertHasAnnotation(Object something, Object note) {
+        String s_id2=(String)something;
+        String s_id1=(String)note;
+
+        HasAnnotation han=pFactory.newHasAnnotation(s_id2,
+                                                    s_id1);
+        return han;
+    }
  
 
 }

@@ -206,5 +206,16 @@ public class ASNConstructor implements TreeConstructor {
         return pre;
     }
 
+    /* Component 6 */
+
+    public Object convertNote(Object id, Object attrs) {
+        String s="note(" + id  + optionalAttributes(attrs) + ")";
+        return s;
+    }
+
+    public Object convertHasAnnotation(Object something, Object note) {
+        String s="hasAnnotation(" + something  + "," + note + ")";
+        return s;
+    }
 
 }

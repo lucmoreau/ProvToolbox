@@ -9,7 +9,18 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; WSB; WEB; USED; WDF; TIME; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; WAT; INT; PLAN; SPECIALIZATION; ALTERNATE; AOBO; WIB; WSBA; TRACEDTO; ORIGINALSOURCE; WQF; WRO;
+    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; TIME; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; INT; 
+    /* Component 1 */
+    ENTITY; ACTIVITY; WGB; USED; WSB; WEB; WIB; WSBA; 
+    /* Component 2 */
+    AGENT; PLAN; WAT; WAW; AOBO; 
+    /* Component 3 */
+    WDF; WRO; ORIGINALSOURCE; WQF; TRACEDTO; 
+    /* Component 4 */
+    SPECIALIZATION; ALTERNATE; 
+    /* Component 5 */
+    /* Component 6 */
+    NOTE; HAN;
 }
 
 @header {
@@ -77,7 +88,9 @@ record
         | alternateExpression | specializationExpression
 
             /* component 5 */
-            /* component 6 */ )
+            /* component 6 */ 
+        | noteExpression | hasAnnotationExpression
+        )
 	;
 
 /*
@@ -136,7 +149,8 @@ wasStartedByActivityExpression
 */
 
 agentExpression
-	:	'agent' '(' identifier optionalAttributeValuePairs	')' -> ^(AGENT identifier optionalAttributeValuePairs )
+	:	'agent' '(' identifier optionalAttributeValuePairs	')' 
+        -> ^(AGENT identifier optionalAttributeValuePairs )
 	;
 
 attributionExpression
@@ -225,7 +239,17 @@ specializationExpression
 
 */
 
-/* TODO */
+noteExpression
+	:	'note' '(' identifier optionalAttributeValuePairs	')' 
+        -> ^(NOTE identifier optionalAttributeValuePairs )
+	;
+
+hasAnnotationExpression
+	:	'hasAnnotation' '(' identifier ',' identifier	')' 
+        -> ^(HAN identifier+ )
+	;
+
+
 
 
 

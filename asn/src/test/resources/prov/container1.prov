@@ -272,5 +272,11 @@ prefix ex <http://example>
           alternateOf(ex:e1, ex:e2)
           specializationOf(ex:e1, ex:e2)
 
+
+          note(ex:n1, [ex:param="a"])
+          hasAnnotation(ex:ag1, ex:n1)
+          hasAnnotation(ex:e1, ex:n1)
+          hasAnnotation(ex:n1, ex:n1)
+
 endContainer
 

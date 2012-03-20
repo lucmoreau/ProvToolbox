@@ -572,11 +572,11 @@ public class PC1FullTest
 
 
 
-        WasControlledBy wc1=pFactory.newWasControlledBy(p1,"user",ag1);
+        WasAssociatedWith waw1=pFactory.newWasAssociatedWith("waw1",p1,ag1);
 
 
 
-	HasAnnotation ha1=pFactory.newHasAnnotation(a1,n1);
+        HasAnnotation ha1=pFactory.newHasAnnotation(a1,n1);
 
         Container graph=pFactory.newContainer(black,
                                             new Activity[] {p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15},
@@ -593,7 +593,7 @@ public class PC1FullTest
                                                           wd17,wd18,wd19,wd20,wd21,wd22,wd23,wd24,wd25,wd26,wd27,wd28,wd29,wd30,wd31,
                                                           wd32,wd33,wd34,wd35,wd36,wd37,wd38,wd39,wd40,wd41,wd42,wd43,wd44,wd45,wd46,
                                                           wd47,wd48,wd49,
-                                                          wc1,
+                                                          waw1,
 							  ha1
                                             } );
 

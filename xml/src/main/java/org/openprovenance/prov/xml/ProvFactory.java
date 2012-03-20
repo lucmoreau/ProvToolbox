@@ -28,13 +28,6 @@ public class ProvFactory implements CommonURIs {
 	return u.toString();
     }
 
-    public static String roleIdPrefix="r_";
-    public static String usedIdPrefix="u_";
-    public static String wasGenerateByIdPrefix="g_";
-    public static String wasDerivedFromIdPrefix="d_";
-    public static String wasTriggeredByIdPrefix="t_";
-    public static String wasControlledByIdPrefix="c_";
-    public static String containerIdPrefix="gr_";
 
     public static final String packageList=
         "org.openprovenance.prov.xml";
@@ -198,11 +191,6 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public DependencyRef newDependencyRef(WasControlledBy edge) {
-        DependencyRef res=of.createDependencyRef();
-        res.setRef(edge.getId());
-        return res;
-    }
     public DependencyRef newDependencyRef(WasInformedBy edge) {
         DependencyRef res=of.createDependencyRef();
         res.setRef(edge.getId());
@@ -352,7 +340,7 @@ public class ProvFactory implements CommonURIs {
                         String role,
                         EntityRef aid) {
         Used res=of.createUsed();
-        res.setId(stringToQName(autoGenerateId(usedIdPrefix,id)));
+        res.setId(stringToQName(id));
         res.setActivity(pid);
         addRole(res,role);
         res.setEntity(aid);
@@ -406,6 +394,19 @@ public class ProvFactory implements CommonURIs {
         res.setActivity(eid2);
         res.setAgent(eid1);
         return res;
+    }
+
+
+    public WasAssociatedWith newWasAssociatedWith(String id,
+                                                  Activity eid2,
+                                                  Agent eid1) {
+        return newWasAssociatedWith(id,newActivityRef(eid2.getId()),newAgentRef(eid1.getId()));
+    }
+
+    public WasAssociatedWith newWasAssociatedWith(QName id,
+                                                  Activity eid2,
+                                                  Agent eid1) {
+        return newWasAssociatedWith(id,newActivityRef(eid2.getId()),newAgentRef(eid1.getId()));
     }
 
 
@@ -574,15 +575,6 @@ public class ProvFactory implements CommonURIs {
         return u1;
     }
 
-    public WasControlledBy newWasControlledBy(WasControlledBy c) {
-        WasControlledBy wcb=newWasControlledBy(c.getEffect(),
-                                               null,
-                                               c.getCause());
-        wcb.setId(c.getId());
-        wcb.getAny().addAll(c.getAny());
-        return wcb;
-    }
-
     public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
         WasGeneratedBy wgb=newWasGeneratedBy(g.getId(),
                                              g.getEntity(),
@@ -720,30 +712,6 @@ public class ProvFactory implements CommonURIs {
         return wgb;
     }
 
-    public WasControlledBy newWasControlledBy(ActivityRef pid,
-                                              String role,
-                                              AgentRef agid) {
-        return newWasControlledBy((QName)null,pid,role,agid);
-    }
-    
-    public WasControlledBy newWasControlledBy(QName id,
-                                              ActivityRef pid,
-                                              String role,
-                                              AgentRef agid) {
-        WasControlledBy res=of.createWasControlledBy();
-        res.setId(id);
-        res.setEffect(pid);
-        res.setCause(agid);
-        addRole(res,role);
-        return res;
-    }
-    public WasControlledBy newWasControlledBy(String id,
-                                              ActivityRef pid,
-                                              String role,
-                                              AgentRef agid) {
-        return newWasControlledBy(stringToQName(id),pid,role,agid);
-    }
-
 
     public HasAnnotation newHasAnnotation(Identifiable i,
                                           Note n) {
@@ -767,31 +735,6 @@ public class ProvFactory implements CommonURIs {
 	res.setThing(newNoteRef(n1));
 	res.setNote(newNoteRef(n));
 	return res;
-    }
-
-    public WasControlledBy newWasControlledBy(Activity p,
-                                              String role,
-                                              Agent ag) {
-        return newWasControlledBy(null,p,role,ag);
-    }
-
-    public WasControlledBy newWasControlledBy(String id,
-                                              Activity p,
-                                              String role,
-                                              Agent ag) {
-        AgentRef agid=newAgentRef(ag);
-        ActivityRef pid=newActivityRef(p);
-        return  newWasControlledBy(id,pid,role,agid);
-    }
-
-    public WasControlledBy newWasControlledBy(String id,
-                                              Activity p,
-                                              String role,
-                                              Agent ag,
-                                              String type) {
-        WasControlledBy wcb=newWasControlledBy(id,p,role,ag);
-        addType(wcb,type);
-        return wcb;
     }
 
 
@@ -1074,7 +1017,7 @@ public class ProvFactory implements CommonURIs {
         }
         if (lks!=null) {
             Dependencies ccls=of.createDependencies();
-            ccls.getUsedOrWasGeneratedByOrWasInformedBy().addAll(lks);
+            ccls.getUsedOrWasGeneratedByOrWasStartedBy().addAll(lks);
             res.getRecords().setDependencies(ccls);
         }
 

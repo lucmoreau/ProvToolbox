@@ -3,6 +3,7 @@ container
 prefix ex <http://example>
 
           activity(ex:a1, [ex:param="a"])
+          activity(ex:a2, [ex:param="a"])
           entity(ex:e1, [ex:param="a"])
           entity(ex:e2, [ex:param="a"])
           agent(ex:ag1, [ex:param="a"])
@@ -285,5 +286,7 @@ prefix ex <http://example>
           hasAnnotation(ex:e1, ex:n1)
           hasAnnotation(ex:n1, ex:n1)
 
+          wasInformedBy(ex:a1, ex:a2)
+          wasStartedByActivity(ex:a1, ex:a2)
 endContainer
 

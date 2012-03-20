@@ -27,7 +27,7 @@ public class BeanTraversal {
         for (Agent ag: cont.getRecords().getAgent() ) {
             agRecords.add(convert(ag));
         }
-        for (Object lnk: cont.getRecords().getDependencies().getUsedOrWasGeneratedByOrWasInformedBy() ) {
+        for (Object lnk: cont.getRecords().getDependencies().getUsedOrWasGeneratedByOrWasStartedBy() ) {
             Object o=convertRelation(lnk);
             if (o!=null) lnkRecords.add(o);
         }
@@ -138,8 +138,6 @@ public class BeanTraversal {
             return convert((Used) o);
         } else if (o instanceof WasDerivedFrom) {
             return convert((WasDerivedFrom) o);
-        } else if (o instanceof WasControlledBy) {
-            return convert((WasControlledBy) o);
         } else if (o instanceof HasAnnotation) {
             return convert((HasAnnotation) o);
         } else if (o instanceof WasInformedBy) {
@@ -162,8 +160,8 @@ public class BeanTraversal {
                                           tAttrs,
                                           otherAttrs,
                                           c.convert(o.getActivity().getRef()),
-                                          c.convert(o.getAgent().getRef()),
-                                          c.convert(o.getPlan().getRef()));
+                                          (o.getAgent()==null)? null: c.convert(o.getAgent().getRef()),
+                                          (o.getPlan()==null)? null: c.convert(o.getPlan().getRef()));
     }
 
     public Object convert(Used o) {
@@ -182,10 +180,6 @@ public class BeanTraversal {
         return c.convertWasDerivedFrom(c.convert(o.getId()),tAttrs,otherAttrs,
                                        c.convert(o.getGeneratedEntity().getRef()),
                                        c.convert(o.getUsedEntity().getRef()));
-    }
-
-    public Object convert(WasControlledBy o) {
-        return null;
     }
 
     public Object convert(HasAnnotation o) {

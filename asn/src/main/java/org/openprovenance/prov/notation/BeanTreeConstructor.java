@@ -12,7 +12,6 @@ import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.AlternateOf;
-import org.openprovenance.prov.xml.WasControlledBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasInformedBy;

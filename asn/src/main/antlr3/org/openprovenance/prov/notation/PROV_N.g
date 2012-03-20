@@ -107,8 +107,8 @@ entityExpression
 
 
 activityExpression
-	:	'activity' '(' identifier (',' (startTime | '-' ) ',' (endTime | '-'))? optionalAttributeValuePairs ')'
-        -> ^(ACTIVITY identifier ^(START startTime?) ^(END endTime?) optionalAttributeValuePairs )
+	:	'activity' '(' identifier (',' (s=time | '-' ) ',' (e=time | '-'))? optionalAttributeValuePairs ')'
+        -> ^(ACTIVITY identifier ^(START $s?) ^(END $e?) optionalAttributeValuePairs )
 	;
 
 generationExpression
@@ -134,14 +134,16 @@ endExpression
       -> ^(WEB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
+/* TODO: write traversers */
+
 informExpression
-	:	'wasInformedBy' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
-      -> ^(WIB optionalIdentifier identifier+ optionalAttributeValuePairs)
+	:	'wasInformedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
+      -> ^(WIB ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
 	;
 
 wasStartedByActivityExpression
-	:	'wasStartedByActivity' '(' optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
-      -> ^(WSBA optionalIdentifier identifier+ optionalAttributeValuePairs)
+	:	'wasStartedByActivity' '(' ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
+      -> ^(WSBA ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
 	;
 
 
@@ -274,12 +276,6 @@ optionalAttributeValuePairs
         -> ^(ATTRIBUTES attributeValuePairs?)
     ;
 
-optionalTime
-    :
-    (',' time )?
-        -> ^(TIME time?)
-    ;
-
 optionalIdentifier
     :
     (identifier ',')?
@@ -313,19 +309,6 @@ attributeValuePair
 time
 	:
         xsdDateTime
-	;
-startTime
-	:
-        xsdDateTime
-	;
-endTime
-	:
-        xsdDateTime
-	;
-
-recipeLink
-	:
-        IRI_REF
 	;
 
 /* TODO: complete grammar of Literal */
@@ -391,12 +374,6 @@ NCNAME_COLON_STAR
 STAR_COLON_NCNAME
 	: '*' ':' NCNAME;
 
-/*
-NUMERICLITERAL 	   
-	: ( ('.' DIGITS) |(DIGITS ('.' ('0'..'9')*)?)) (('e'|'E') ('+'|'-')? DIGITS)?
-	;
-		
-*/
 fragment QUOTE	           
 	: '"'
 	;
@@ -496,7 +473,6 @@ CLOSE_CURLY_BRACE
 
 
 xsdDateTime: IsoDateTime;
-
 
 
 

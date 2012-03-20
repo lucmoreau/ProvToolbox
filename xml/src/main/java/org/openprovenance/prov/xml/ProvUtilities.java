@@ -20,7 +20,7 @@ public class ProvUtilities {
     public List<Relation0> getRelations(Container g) {
         List<Relation0> res=new LinkedList();
         Dependencies dep=g.getRecords().getDependencies();
-        for (Object o:dep.getUsedOrWasGeneratedByOrWasInformedBy()) {
+        for (Object o:dep.getUsedOrWasGeneratedByOrWasStartedBy()) {
             System.out.println("relation is " + o);
             res.add((Relation0)o);
         }
@@ -36,9 +36,6 @@ public class ProvUtilities {
         }
         if (r instanceof WasDerivedFrom) {
             return ((WasDerivedFrom)r).getGeneratedEntity().getRef();
-        }
-        if (r instanceof WasControlledBy) {
-            return ((WasControlledBy)r).getEffect().getRef();
         }
         if (r instanceof WasAssociatedWith) {
             return ((WasAssociatedWith)r).getActivity().getRef();
@@ -63,10 +60,7 @@ public class ProvUtilities {
         if (r instanceof WasDerivedFrom) {
             return ((WasDerivedFrom)r).getUsedEntity().getRef();
         }
-        if (r instanceof WasControlledBy) {
-            return ((WasControlledBy)r).getCause().getRef();
-        }
-        if (r instanceof WasAssociatedWith) { // what about entity plan?
+        if (r instanceof WasAssociatedWith) {
             return ((WasAssociatedWith)r).getAgent().getRef();
         }
         if (r instanceof AlternateOf) {

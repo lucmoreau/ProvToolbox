@@ -149,15 +149,13 @@ public class ASNConstructor implements TreeConstructor {
     }
 
 
-    public Object convertAlternateOf(Object id, Object id2,Object id1, Object aAttrs) {
-        String s="alternateOf(" + optionalId(id) + id2 + "," + id1 +
-            optionalAttributes(aAttrs) + ")";
+    public Object convertAlternateOf(Object id2,Object id1) {
+        String s="alternateOf(" + id2 + "," + id1 + ")";
         return s;
     }
 
-    public Object convertSpecializationOf(Object id, Object id2,Object id1, Object aAttrs) {
-        String s="specializationOf(" + optionalId(id) + id2 + "," + id1 +
-            optionalAttributes(aAttrs) + ")";
+    public Object convertSpecializationOf(Object id2, Object id1) {
+        String s="specializationOf(" + id2 + "," + id1 + ")";
         return s;
     }
 

@@ -17,6 +17,7 @@ import javax.xml.bind.JAXBElement;
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.Account;
+import org.openprovenance.prov.xml.Relation0;
 import org.openprovenance.prov.xml.Relation;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -195,7 +196,7 @@ public class ProvToDot {
     }
 
     public void convert(Container graph, PrintStream out) {
-        List<Relation> edges=u.getRelations(graph);
+        List<Relation0> edges=u.getRelations(graph);
 
         prelude(out);
 
@@ -217,7 +218,7 @@ public class ProvToDot {
             }
         }
 
-        for (Relation e: edges) {
+        for (Relation0 e: edges) {
             if (!(e instanceof HasAnnotation)) 
             emitDependency(e,out);
         }
@@ -542,7 +543,7 @@ public class ProvToDot {
     ///
     //////////////////////////////////////////////////////////////////////
 
-    public void emitDependency(Relation e, PrintStream out) {
+    public void emitDependency(Relation0 e, PrintStream out) {
         HashMap<String,String> properties=new HashMap();
 
         // List<AccountRef> accounts=e.getAccount();
@@ -573,7 +574,7 @@ public class ProvToDot {
     
 
     public HashMap<String,String> addRelationAttributes(String accountLabel,
-                                                        Relation e,
+                                                        Relation0 e,
                                                         HashMap<String,String> properties) {
         String colour=convertAccount(accountLabel);
         properties.put("color",colour);
@@ -585,8 +586,10 @@ public class ProvToDot {
 
 
     /* Displays type if any, role otherwise. */
-    public void addRelationLabel(Relation e, HashMap<String,String> properties) {
+    public void addRelationLabel(Relation0 e0, HashMap<String,String> properties) {
         String label=null;
+        if (!(e0 instanceof Relation)) return;
+        Relation e=(Relation)e0;
         List<Object> type=of.getType(e);
         if ((type!=null) || (!type.isEmpty())) {
             label=type.get(0).toString();
@@ -624,14 +627,14 @@ public class ProvToDot {
     String defaultRelationStyle;
     HashMap<String,RelationStyleMapEntry> edgeStyleMap=new HashMap<String,RelationStyleMapEntry>();
     
-    public String getRelationStyle(Relation edge) {
+    public String getRelationStyle(Relation0 edge) {
         String name=edge.getClass().getName();
         RelationStyleMapEntry style=edgeStyleMap.get(name);
         if (style!=null) return style.getStyle();
         return defaultRelationStyle;
     }
 
-    public boolean getRelationPrintRole(Relation edge) {
+    public boolean getRelationPrintRole(Relation0 edge) {
         String name=edge.getClass().getName();
         RelationStyleMapEntry style=edgeStyleMap.get(name);
         if (style!=null) {

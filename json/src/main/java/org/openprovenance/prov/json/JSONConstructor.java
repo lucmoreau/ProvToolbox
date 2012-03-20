@@ -355,30 +355,20 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasAssociatedWith", id, attrs);
 	}
 
-	public Object convertAlternateOf(Object id, Object id2, Object id1,
-			Object aAttrs) {
+	public Object convertAlternateOf(Object id2, Object id1) {
 		List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:entity", id1));
     	attrs.add(tuple("prov:alternate", id2));
-    	if (aAttrs != null) {
-    		attrs.addAll((List<Object>)aAttrs);
-    	}
-    	if (id == null)
-    		id = getBlankID("aO");
+    	Object id = getBlankID("aO");
 
     	return new ProvRecord("alternateOf", id, attrs);
 	}
 
-	public Object convertSpecializationOf(Object id, Object id2, Object id1,
-			Object aAttrs) {
+	public Object convertSpecializationOf(Object id2, Object id1) {
 		List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:entity", id1));
     	attrs.add(tuple("prov:specialization", id2));
-    	if (aAttrs != null) {
-    		attrs.addAll((List<Object>)aAttrs);
-    	}
-    	if (id == null)
-    		id = getBlankID("aO");
+        Object id = getBlankID("sO");
 
     	return new ProvRecord("specializationOf", id, attrs);
 	}

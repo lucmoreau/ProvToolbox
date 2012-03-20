@@ -269,5 +269,8 @@ prefix ex <http://example>
           wasQuotedFrom(-,ex:e1, ex:e2, ex:ag1, ex:ag2)
           wasQuotedFrom(-,ex:e1, ex:e2, ex:ag1, ex:ag2, [ex:param1="a", ex:param2="b"])
 
+          alternateOf(ex:e1, ex:e2)
+          specializationOf(ex:e1, ex:e2)
+
 endContainer
 

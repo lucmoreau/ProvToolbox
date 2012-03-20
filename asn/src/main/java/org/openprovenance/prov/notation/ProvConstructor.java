@@ -429,38 +429,28 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
 
-    public Object convertAlternateOf(Object id, Object id2,Object id1, Object aAttrs) {
-        String s_id=(String)id;
+    public Object convertAlternateOf(Object id2,Object id1) {
         String s_id2=(String)id2;
         String s_id1=(String)id1;
         Entity e2=entityTable.get(s_id2);
         EntityRef e2r=pFactory.newEntityRef(e2);
         Entity e1=entityTable.get(s_id1);
         EntityRef e1r=pFactory.newEntityRef(e1);
-        AlternateOf wco=pFactory.newAlternateOf(s_id,
-                                                e2r,
+        AlternateOf wco=pFactory.newAlternateOf(e2r,
                                                 e1r);
-        List attrs=(List)aAttrs;
-        wco.getAny().addAll(attrs);
-
         return wco;
 
     }
 
-    public Object convertSpecializationOf(Object id, Object id2,Object id1, Object aAttrs) {
-        String s_id=(String)id;
+    public Object convertSpecializationOf(Object id2,Object id1) {
         String s_id2=(String)id2;
         String s_id1=(String)id1;
         Entity e2=entityTable.get(s_id2);
         EntityRef e2r=pFactory.newEntityRef(e2);
         Entity e1=entityTable.get(s_id1);
         EntityRef e1r=pFactory.newEntityRef(e1);
-        SpecializationOf wco=pFactory.newSpecializationOf(s_id,
-                                                          e2r,
+        SpecializationOf wco=pFactory.newSpecializationOf(e2r,
                                                           e1r);
-        List attrs=(List)aAttrs;
-        wco.getAny().addAll(attrs);
-
         return wco;
 
     }

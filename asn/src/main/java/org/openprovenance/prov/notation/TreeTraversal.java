@@ -254,26 +254,14 @@ public class TreeTraversal {
             return c.convertTracedTo(uid,id2,id1,dAttrs);
 
         case PROV_NParser.ALTERNATE:
-            uidTree=ast.getChild(0);
-            if (uidTree.getChildCount()>0) {
-                uidTree=uidTree.getChild(0);
-            }
-            uid=convert(uidTree);
-            id2=convert(ast.getChild(1));
-            id1=convert(ast.getChild(2));
-            rAttrs=convert(ast.getChild(3));
-            return c.convertAlternateOf(uid,id2,id1,rAttrs);
+            id2=convert(ast.getChild(0));
+            id1=convert(ast.getChild(1));
+            return c.convertAlternateOf(id2,id1);
 
         case PROV_NParser.SPECIALIZATION:
-            uidTree=ast.getChild(0);
-            if (uidTree.getChildCount()>0) {
-                uidTree=uidTree.getChild(0);
-            }
-            uid=convert(uidTree);
-            id2=convert(ast.getChild(1));
-            id1=convert(ast.getChild(2));
-            rAttrs=convert(ast.getChild(3));
-            return c.convertSpecializationOf(uid,id2,id1,rAttrs);
+            id2=convert(ast.getChild(0));
+            id1=convert(ast.getChild(1));
+            return c.convertSpecializationOf(id2,id1);
 
 
         case PROV_NParser.WAW:

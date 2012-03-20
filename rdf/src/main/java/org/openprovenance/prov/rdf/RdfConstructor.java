@@ -186,11 +186,11 @@ public class RdfConstructor implements TreeConstructor {
         //todo
         throw new UnsupportedOperationException();
     }
-    public Object convertAlternateOf(Object id, Object id2,Object id1, Object aAttrs) {
+    public Object convertAlternateOf(Object id2, Object id1) {
         return null;
     }
 
-    public Object convertSpecializationOf(Object id, Object id2,Object id1, Object aAttrs) {
+    public Object convertSpecializationOf(Object id2,Object id1) {
         return null;
     }
 	public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {

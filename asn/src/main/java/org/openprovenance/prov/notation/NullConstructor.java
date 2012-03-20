@@ -73,11 +73,11 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
-    public Object convertAlternateOf(Object id, Object id2,Object id1, Object aAttrs) {
+    public Object convertAlternateOf(Object id2, Object id1) {
         return null;
     }
 
-    public Object convertSpecializationOf(Object id, Object id2,Object id1, Object aAttrs) {
+    public Object convertSpecializationOf(Object id2,Object id1) {
         return null;
     }
 

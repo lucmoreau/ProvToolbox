@@ -123,29 +123,29 @@ public class DataLogConstructor implements TreeConstructor {
     }
 
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object gAttrs) {
-        String s="wasAttributedTo(" + optionalId(id) + id2 + "," + id1 +
-            optionalAttributes(aAttrs) +  ")";
+        String s="wasAttributedTo(" + optionalId(id) + id2 + "," + id1 + optionalAttributes(gAttrs) +  ")";
         return s;
     }
 
     public Object convertWasDerivedFrom(Object id, Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
         String s="wasDerivedFrom(" + optionalId(id) + id2 + "," + id1 + 
-            ((pe==null) ? ", nil " : (", " + pe + ", " + g2 + "," + u1)) + optional(time) + optionalAttributes(aAttrs) +  ")";
+            ((pe==null) ? ", nil " : (", " + pe + ", " + g2 + "," + u1)) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
 
-    public Object convertAlternateOf(Object id, Object id2,Object id1, Object aAttrs) {
-        String s="alternateOf(" + optionalId(id) + id2 + "," + id1 +
-            optionalAttributes(aAttrs) + ")";
+    public Object convertAlternateOf(Object id2, Object id1) {
+        String s="alternateOf(" + id2 + "," + id1 + ")";
         return s;
     }
 
-    public Object convertSpecializationOf(Object id, Object id2,Object id1, Object aAttrs) {
-        String s="specializationOf(" + optionalId(id) + id2 + "," + id1 +
-            optionalAttributes(aAttrs) + ")";
+    public Object convertSpecializationOf(Object id2, Object id1) {
+        String s="specializationOf(" + id2 + "," + id1 + ")";
         return s;
     }
 
+	public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
+        throw new UnsupportedOperationException();
+    }
 
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
         String s="wasAssociatedWith(" + optionalId(id) + id2 + "," + id1 

@@ -201,21 +201,14 @@ public class BeanTraversal {
     }
 
     public Object convert(AlternateOf o) {
-        List tAttrs=convertTypeAttributes((HasType)o);
-        List otherAttrs=convertAttributes((HasExtensibility)o);
 
-        return c.convertAlternateOf(c.convert(o.getId()),tAttrs,otherAttrs,
-                                    c.convert(o.getEntity2().getRef()),
+        return c.convertAlternateOf(c.convert(o.getEntity2().getRef()),
                                     c.convert(o.getEntity1().getRef()));
     }
 
     public Object convert(SpecializationOf o) {
-        List tAttrs=convertTypeAttributes((HasType)o);
-        List otherAttrs=convertAttributes((HasExtensibility)o);
-
-        return c.convertSpecializationOf(c.convert(o.getId()),tAttrs,otherAttrs,
-                                         c.convert(o.getEntity2().getRef()),
-                                         c.convert(o.getEntity1().getRef()));
+        return c.convertSpecializationOf(c.convert(o.getSpecializedEntity().getRef()),
+                                         c.convert(o.getGeneralEntity().getRef()));
     }
 
     public Object convert(WasGeneratedBy o) {

@@ -185,16 +185,14 @@ tracedToExpression
 
 */
 
-/* TODO: fix signatures */
-
 alternateExpression
-	:	'alternateOf' '('  optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
-      -> ^(ALTERNATE optionalIdentifier identifier+ optionalAttributeValuePairs)
+	:	'alternateOf' '('  identifier ',' identifier ')'
+      -> ^(ALTERNATE identifier+)
 	;
 
 specializationExpression
-	:	'specializationOf' '('  optionalIdentifier identifier ',' identifier optionalAttributeValuePairs ')'
-      -> ^(SPECIALIZATION optionalIdentifier identifier+ optionalAttributeValuePairs)
+	:	'specializationOf' '('  identifier ',' identifier ')'
+      -> ^(SPECIALIZATION identifier+)
 	;
 
 /*

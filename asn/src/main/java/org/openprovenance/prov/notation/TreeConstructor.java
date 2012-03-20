@@ -27,8 +27,8 @@ public interface TreeConstructor {
     public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object ag2, Object ag1, Object dAttrs);
     public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs);
     public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs);
-    public Object convertAlternateOf(Object id, Object id2,Object id1, Object aAttrs);
-    public Object convertSpecializationOf(Object id, Object id2,Object id1, Object aAttrs);
+    public Object convertAlternateOf(Object id2,Object id1);
+    public Object convertSpecializationOf(Object id2,Object id1);
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs);
     public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs);
     public Object convertQNAME(String qname);

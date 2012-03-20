@@ -153,7 +153,22 @@ public class DataLogConstructor implements TreeConstructor {
             optionalAttributes(aAttrs) + ")";
         return s;
     }
-
+    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object ag2, Object ag1, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+    public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
 
     public Object convertQNAME(String qname) {
         return qname;

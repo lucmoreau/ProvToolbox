@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; WSB; WEB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; WAT; INT; PLAN; SPECIALIZATION; ALTERNATE; AOBO; WIB; WSBA;
+    ATTRIBUTE; ATTRIBUTES; START; END; IRI; QNAM; AGENT; ENTITY; ACTIVITY; WGB; WSB; WEB; USED; WDF; TIME; WDO; WCB; STRING; TYPEDLITERAL; CONTAINER; ID; A; G; U; T; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; COMPLEMENTARITY; WAW; WAT; INT; PLAN; SPECIALIZATION; ALTERNATE; AOBO; WIB; WSBA; TRACEDTO; ORIGINALSOURCE; WQF; WRO;
 }
 
 @header {
@@ -59,11 +59,11 @@ defaultNamespaceDeclaration :
     ;
 
 record
-	:	(entityExpression | activityExpression | agentExpression | generationExpression  | usageExpression | startExpression | endExpression | derivationExpression | dependenceExpression  | controlExpression | alternateExpression | specializationExpression  |  associationExpression | attributionExpression | responsibilityExpression | informExpression | wasStartedByActivityExpression)
+	:	(entityExpression | activityExpression | agentExpression | generationExpression  | usageExpression | startExpression | endExpression | derivationExpression | dependenceExpression  | controlExpression | alternateExpression | specializationExpression  |  associationExpression | attributionExpression | responsibilityExpression | informExpression | wasStartedByActivityExpression | tracedToExpression | hadOriginalSourceExpression | quotationExpression | revisionExpression )
 	;
 
 /*
-        Component 2: Agents and Responsibility
+        Component 1: Entities/Activities
 
 */
 
@@ -154,10 +154,31 @@ derivationExpression
 	;
 
 
-/* TODO: wasRevisionOf(id,e2,e1,ag,attrs) */
-/* TODO: wasQuotedFrom(id,e2,e1,ag2,ag1,attrs) */
-/* TODO: hadOriginalSource(id,e2,e1,attrs) */
-/* TODO: tracedTo(id,e2,e1,attrs) */
+revisionExpression
+	:	'wasRevisionOf' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier ',' (ag=identifier | '-')optionalAttributeValuePairs ')'
+      -> {$ag.tree==null}? ^(WRO ^(ID $id0?) $id2 $id1 ^(ID) optionalAttributeValuePairs)
+      -> ^(WRO ^(ID $id0?) $id2 $id1 $ag optionalAttributeValuePairs)
+	;
+
+
+quotationExpression
+	:	'wasQuotedFrom' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier (',' (ag2=identifier | '-')',' (ag1=identifier | '-'))? optionalAttributeValuePairs ')'
+      -> {$ag1.tree==null && $ag2.tree==null}? ^(WQF ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) optionalAttributeValuePairs)
+      -> {$ag1.tree!=null && $ag2.tree==null}? ^(WQF ^(ID $id0?) $id2 $id1 $ag1 ^(ID) optionalAttributeValuePairs)
+      -> {$ag1.tree==null && $ag2.tree!=null}? ^(WQF ^(ID $id0?) $id2 $id1 ^(ID) $ag2 optionalAttributeValuePairs)
+      -> ^(WQF ^(ID $id0?) $id2 $id1 $ag2? $ag1? optionalAttributeValuePairs)
+	;
+
+hadOriginalSourceExpression
+	:	'hadOriginalSource' '('   ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
+      -> ^(ORIGINALSOURCE  ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
+	;
+
+tracedToExpression
+	:	'tracedTo' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
+      -> ^(TRACEDTO ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
+	;
+
 
 /*
         Component 4: Alternate entities

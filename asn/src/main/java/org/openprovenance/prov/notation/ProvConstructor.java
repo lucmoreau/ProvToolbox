@@ -23,6 +23,10 @@ import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.WasEndedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.WasAttributedTo;
+import org.openprovenance.prov.xml.WasRevisionOf;
+import org.openprovenance.prov.xml.WasQuotedFrom;
+import org.openprovenance.prov.xml.HadOriginalSource;
+import org.openprovenance.prov.xml.TracedTo;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.WasAssociatedWith;
@@ -345,6 +349,85 @@ public  class ProvConstructor implements TreeConstructor {
 
         return d;
     }
+
+    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        String s_ag=(String)ag;
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+        Entity e1=entityTable.get(s_id1);
+        EntityRef e1r=pFactory.newEntityRef(e1);
+
+        AgentRef agr=(s_ag==null)? null : pFactory.newAgentRef(s_ag);
+
+        WasRevisionOf d=pFactory.newWasRevisionOf(s_id,
+                                                  e2r,
+                                                  e1r,
+                                                  agr);
+        List attrs=(List)dAttrs;
+        d.getAny().addAll(attrs);
+        return d;
+    }
+
+    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object ag2, Object ag1, Object dAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        String s_ag2=(String)ag2;
+        String s_ag1=(String)ag1;
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+        Entity e1=entityTable.get(s_id1);
+        EntityRef e1r=pFactory.newEntityRef(e1);
+
+        AgentRef agr2=(s_ag2==null)? null : pFactory.newAgentRef(s_ag2);
+        AgentRef agr1=(s_ag1==null)? null : pFactory.newAgentRef(s_ag1);
+
+        WasQuotedFrom d=pFactory.newWasQuotedFrom(s_id,
+                                                  e2r,
+                                                  e1r,
+                                                  agr2,
+                                                  agr1);
+        List attrs=(List)dAttrs;
+        d.getAny().addAll(attrs);
+        return d;
+    }
+
+    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+        Entity e1=entityTable.get(s_id1);
+        EntityRef e1r=pFactory.newEntityRef(e1);
+
+        HadOriginalSource d=pFactory.newHadOriginalSource(s_id,
+                                                          e2r,
+                                                          e1r);
+        List attrs=(List)dAttrs;
+        d.getAny().addAll(attrs);
+        return d;
+    }
+    public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+        Entity e1=entityTable.get(s_id1);
+        EntityRef e1r=pFactory.newEntityRef(e1);
+
+        TracedTo d=pFactory.newTracedTo(s_id,
+                                        e2r,
+                                        e1r);
+        List attrs=(List)dAttrs;
+        d.getAny().addAll(attrs);
+        return d;
+    }
+
 
     public Object convertAlternateOf(Object id, Object id2,Object id1, Object aAttrs) {
         String s_id=(String)id;

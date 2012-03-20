@@ -131,6 +131,24 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
+    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
+        String s="wasRevisionOf(" + optionalId(id) + id2 + ", " + id1 + ", " + optional(ag) + optionalAttributes(dAttrs) +  ")";
+        return s;
+    }
+    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object ag2, Object ag1, Object dAttrs) {
+        String s="wasQuotedFrom(" + optionalId(id) + id2 + ", " + id1 + ", " + optional(ag2) + ", " + optional(ag1) + optionalAttributes(dAttrs) +  ")";
+        return s;
+    }
+    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs) {
+        String s="hadOriginalSource(" + optionalId(id) + id2 + ", " + id1 + optionalAttributes(dAttrs) +  ")";
+        return s;
+    }
+    public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs) {
+        String s="tracedTo(" + optionalId(id) + id2 + ", " + id1 + optionalAttributes(dAttrs) +  ")";
+        return s;
+    }
+
+
     public Object convertAlternateOf(Object id, Object id2,Object id1, Object aAttrs) {
         String s="alternateOf(" + optionalId(id) + id2 + "," + id1 +
             optionalAttributes(aAttrs) + ")";

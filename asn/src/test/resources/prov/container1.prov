@@ -2,12 +2,12 @@
 container
 prefix ex <http://example>
 
+/* component 1 */
+
           activity(ex:a1, [ex:param="a"])
           activity(ex:a2, [ex:param="a"])
           entity(ex:e1, [ex:param="a"])
           entity(ex:e2, [ex:param="a"])
-          agent(ex:ag1, [ex:param="a"])
-          agent(ex:ag2, [ex:param="a"])
 
           used(ex:a1, ex:e1)
           used(ex:a1, ex:e1, -)
@@ -108,7 +108,24 @@ prefix ex <http://example>
           wasEndedBy(-, ex:a1, ex:e1, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
 
+          wasInformedBy(ex:a1, ex:a2)
+          wasInformedBy(ex:a1, ex:a2, [ex:param1="a", ex:param2="b"])
+          wasInformedBy(i, ex:a1, ex:a2)
+          wasInformedBy(i, ex:a1, ex:a2, [ex:param1="a", ex:param2="b"])
+          wasInformedBy(-, ex:a1, ex:a2)
+          wasInformedBy(-, ex:a1, ex:a2, [ex:param1="a", ex:param2="b"])
 
+          wasStartedByActivity(ex:a1, ex:a2)
+          wasStartedByActivity(ex:a1, ex:a2, [ex:param1="a", ex:param2="b"])
+          wasStartedByActivity(s,ex:a1, ex:a2)
+          wasStartedByActivity(s,ex:a1, ex:a2, [ex:param1="a", ex:param2="b"])
+          wasStartedByActivity(-,ex:a1, ex:a2)
+          wasStartedByActivity(-,ex:a1, ex:a2, [ex:param1="a", ex:param2="b"])
+
+/* component 2 */
+
+          agent(ex:ag1, [ex:param="a"])
+          agent(ex:ag2, [ex:param="a"])
 
           wasAttributedTo(ex:e1, ex:ag1)
           wasAttributedTo(ex:e1, ex:ag1, [ex:param1="a", ex:param2="b"])
@@ -154,6 +171,7 @@ prefix ex <http://example>
           actedOnBehalfOf(-,ex:ag1,ex:ag2,ex:a1)
           actedOnBehalfOf(-,ex:ag1,ex:ag2,ex:a1,[prov:type="delegation"])
 
+/* component 3 */
 
           wasDerivedFrom(ex:e1, ex:e2)
           wasDerivedFrom(ex:e1, ex:e2, -, -, -)
@@ -232,19 +250,6 @@ prefix ex <http://example>
           wasDerivedFrom(-, ex:e1, ex:e2, ex:a1, ex:g2, ex:u1, [ex:param1="a", ex:param2="b"])
 
 
-          hadOriginalSource(ex:e1, ex:e2)
-          hadOriginalSource(ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
-          hadOriginalSource(o,ex:e1, ex:e2)
-          hadOriginalSource(o,ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
-          hadOriginalSource(-,ex:e1, ex:e2)
-          hadOriginalSource(-,ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
-
-          tracedTo(ex:e1, ex:e2)
-          tracedTo(ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
-          tracedTo(t, ex:e1, ex:e2)
-          tracedTo(t, ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
-          tracedTo(-, ex:e1, ex:e2)
-          tracedTo(-, ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
 
           wasRevisionOf(ex:e1, ex:e2, -)
           wasRevisionOf(ex:e1, ex:e2, -, [ex:param1="a", ex:param2="b"])
@@ -279,16 +284,33 @@ prefix ex <http://example>
           wasQuotedFrom(-,ex:e1, ex:e2, ex:ag1, ex:ag2)
           wasQuotedFrom(-,ex:e1, ex:e2, ex:ag1, ex:ag2, [ex:param1="a", ex:param2="b"])
 
+          hadOriginalSource(ex:e1, ex:e2)
+          hadOriginalSource(ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
+          hadOriginalSource(o,ex:e1, ex:e2)
+          hadOriginalSource(o,ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
+          hadOriginalSource(-,ex:e1, ex:e2)
+          hadOriginalSource(-,ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
+
+          tracedTo(ex:e1, ex:e2)
+          tracedTo(ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
+          tracedTo(t, ex:e1, ex:e2)
+          tracedTo(t, ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
+          tracedTo(-, ex:e1, ex:e2)
+          tracedTo(-, ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
+
+/* component 4 */
+
           alternateOf(ex:e1, ex:e2)
           specializationOf(ex:e1, ex:e2)
 
+/* component 5 */
+
+/* component 6 */
 
           note(ex:n1, [ex:param="a"])
           hasAnnotation(ex:ag1, ex:n1)
           hasAnnotation(ex:e1, ex:n1)
           hasAnnotation(ex:n1, ex:n1)
 
-          wasInformedBy(ex:a1, ex:a2)
-          wasStartedByActivity(ex:a1, ex:a2)
 endContainer
 

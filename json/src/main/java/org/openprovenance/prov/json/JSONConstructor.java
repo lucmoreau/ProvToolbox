@@ -265,6 +265,16 @@ class JSONConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
 
+    public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
+    public Object convertWasStartedByActivity(Object id, Object id2, Object id1, Object aAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object gAttrs) {
         //todo
         throw new UnsupportedOperationException();

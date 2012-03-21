@@ -39,7 +39,7 @@ package org.openprovenance.prov.notation;
 container
 	:	'container' 
         (namespaceDeclarations)?
-		record*
+		(record | ML_COMMENT)*
 		'endContainer'
 
       -> ^(CONTAINER namespaceDeclarations? record*)
@@ -401,6 +401,12 @@ STRINGLITERAL
 	| (APOS  (ESCAPEAPOS | CHARNOAPOS)* APOS)
 	;
 			 
+
+// ANTLR 3
+ML_COMMENT
+    :   '/*' (options {greedy=false;} : .)* '*/' {$channel=HIDDEN;}
+    ;
+
 
 /* 
 This lexer rule for comments handles multiline, nested comments

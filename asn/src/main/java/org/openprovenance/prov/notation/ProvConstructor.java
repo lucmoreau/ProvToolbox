@@ -20,6 +20,8 @@ import org.openprovenance.prov.xml.Container;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasStartedBy;
+import org.openprovenance.prov.xml.WasStartedByActivity;
+import org.openprovenance.prov.xml.WasInformedBy;
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.WasEndedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
@@ -306,6 +308,43 @@ public  class ProvConstructor implements TreeConstructor {
             
         return s;
     }
+
+    public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        Activity e1=activityTable.get(s_id1); 
+        ActivityRef e1r=pFactory.newActivityRef(e1);
+        Activity a2=activityTable.get(s_id2);
+        ActivityRef a2r=pFactory.newActivityRef(a2);
+
+        WasInformedBy s=pFactory.newWasInformedBy(s_id,
+                                                  a2r,
+                                                  e1r);
+        List attrs=(List)aAttrs;
+        s.getAny().addAll(attrs);
+
+        return s;
+    }
+
+    public Object convertWasStartedByActivity(Object id, Object id2, Object id1, Object aAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        Activity e1=activityTable.get(s_id1); 
+        ActivityRef e1r=pFactory.newActivityRef(e1);
+        Activity a2=activityTable.get(s_id2);
+        ActivityRef a2r=pFactory.newActivityRef(a2);
+
+        WasStartedByActivity s=pFactory.newWasStartedByActivity(s_id,
+                                                                a2r,
+                                                                e1r);
+        List attrs=(List)aAttrs;
+        s.getAny().addAll(attrs);
+
+        return s;
+    }
+
 
 
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object gAttrs) {

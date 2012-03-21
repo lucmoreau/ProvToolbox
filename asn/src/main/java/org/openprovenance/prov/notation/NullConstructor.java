@@ -5,25 +5,12 @@ public class NullConstructor implements TreeConstructor {
 
 
 
-    public Object convertActivity(Object id,Object startTime,Object endTime, Object aAttrs) {
-        return null;
-    }
+    /* Component 1 */
     public Object convertEntity(Object id, Object attrs) {
         return null;
     }
-    public Object convertAgent(Object id, Object attrs) {
-        return null;
-    }
-    public Object convertContainer(Object nss, List<Object> records) {
-        return null;
-    }
-    public Object convertAttributes(List<Object> attributes) {
-        return null;
-    }
-    public Object convertId(String id) {
-        return null;
-    }
-    public Object convertAttribute(Object name, Object value) {
+
+    public Object convertActivity(Object id,Object startTime,Object endTime, Object aAttrs) {
         return null;
     }
     public Object convertStart(String start) {
@@ -32,15 +19,6 @@ public class NullConstructor implements TreeConstructor {
     public Object convertEnd(String end) {
         return null;
     }
-
-    public Object convertString(String s) {
-        return null;
-    }
-
-    public Object convertInt(int s) {
-        return null;
-    }
-
     public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs) {
         return null;
     }
@@ -56,23 +34,23 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
+    public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {
+        return null;
+    }
 
+    public Object convertWasStartedByActivity(Object id, Object id2, Object id1, Object aAttrs) {
+        return null;
+    }
+
+
+    /* Component 2 */
+
+    public Object convertAgent(Object id, Object attrs) {
+        return null;
+    }
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object aAttrs) {
         return null;
     }
-
-    public Object convertWasDerivedFrom(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
-        return null;
-    }
-
-    public Object convertAlternateOf(Object id2, Object id1) {
-        return null;
-    }
-
-    public Object convertSpecializationOf(Object id2,Object id1) {
-        return null;
-    }
-
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
         return null;
     }
@@ -80,6 +58,11 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
+    /* Component 3 */
+
+    public Object convertWasDerivedFrom(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
+        return null;
+    }
     public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
         return null;
     }
@@ -93,6 +76,49 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
+
+    /* Component 4 */
+
+    public Object convertAlternateOf(Object id2, Object id1) {
+        return null;
+    }
+
+    public Object convertSpecializationOf(Object id2,Object id1) {
+        return null;
+    }
+    /* Component 5 */
+    /* Component 6 */
+
+    public Object convertNote(Object id, Object attrs) {
+        return null;
+    }
+    public Object convertHasAnnotation(Object something, Object note) {
+        return null;
+    }
+
+
+    /* Others */
+
+    public Object convertContainer(Object nss, List<Object> records) {
+        return null;
+    }
+    public Object convertAttributes(List<Object> attributes) {
+        return null;
+    }
+    public Object convertId(String id) {
+        return null;
+    }
+    public Object convertAttribute(Object name, Object value) {
+        return null;
+    }
+
+    public Object convertString(String s) {
+        return null;
+    }
+
+    public Object convertInt(int s) {
+        return null;
+    }
 
     public Object convertQNAME(String qname) {
         return null;
@@ -118,14 +144,6 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
-    /* Component 6 */
-
-    public Object convertNote(Object id, Object attrs) {
-        return null;
-    }
-    public Object convertHasAnnotation(Object something, Object note) {
-        return null;
-    }
 
 
 }

@@ -122,6 +122,16 @@ public class DataLogConstructor implements TreeConstructor {
         return s;
     }
 
+    public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
+    public Object convertWasStartedByActivity(Object id, Object id2, Object id1, Object aAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object gAttrs) {
         String s="wasAttributedTo(" + optionalId(id) + id2 + "," + id1 + optionalAttributes(gAttrs) +  ")";
         return s;

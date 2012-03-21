@@ -112,6 +112,27 @@ public class TreeTraversal {
             if (ast.getChild(0)==null) return null;
             return getTokenString(ast.getChild(0));
 
+        case PROV_NParser.WIB:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            rAttrs=convert(ast.getChild(3));
+            return c.convertWasInformedBy(uid,id2,id1,rAttrs);
+
+        case PROV_NParser.WSBA:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            rAttrs=convert(ast.getChild(3));
+            return c.convertWasStartedByActivity(uid,id2,id1,rAttrs);
 
 
             /* Component 2 */

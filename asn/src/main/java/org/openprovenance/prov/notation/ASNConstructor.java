@@ -108,6 +108,20 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
+    public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {
+        String s="wasInformedBy(" + optionalId(id) + id2 + "," + optional(id1)
+            + optionalAttributes(aAttrs) +  ")";
+        return s;
+    }
+
+    public Object convertWasStartedByActivity(Object id, Object id2, Object id1, Object aAttrs) {
+        String s="wasStartedByActivity(" + optionalId(id) + id2 + "," + optional(id1)
+            + optionalAttributes(aAttrs) +  ")";
+        return s;
+    }
+
+
+
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object aAttrs ) {
         String s="wasAttributedTo(" + optionalId(id) + id2 + ", " + optional(id1) +
             optionalAttributes(aAttrs) +  ")";

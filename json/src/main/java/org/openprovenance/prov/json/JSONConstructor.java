@@ -14,6 +14,7 @@ import com.google.gson.GsonBuilder;
 
 /** Conversion back to PROV-JSON. */
 
+@SuppressWarnings("unchecked")
 class ProvRecord {
 	String type;
 	Object id;
@@ -36,8 +37,8 @@ class ProvRecord {
 	}
 }
 
+@SuppressWarnings("unchecked")
 class JSONConstructor implements TreeConstructor {
-	
 	public static void main(String[] args)  {
         try {
             Utility u=new Utility();
@@ -234,8 +235,8 @@ class JSONConstructor implements TreeConstructor {
 
 	public Object convertUsed(Object id, Object id2, Object id1, Object time, Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:entity", id1));
     	attrs.add(tuple("prov:activity", id2));
+    	attrs.add(tuple("prov:entity", id1));
     	if (time != null) {
     		attrs.add(tuple("prov:time", time));
     	}
@@ -251,8 +252,10 @@ class JSONConstructor implements TreeConstructor {
 	public Object convertWasGeneratedBy(Object id, Object id2, Object id1,
 			Object time, Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:activity", id1));
     	attrs.add(tuple("prov:entity", id2));
+    	if (id2 != null) {
+    		attrs.add(tuple("prov:activity", id1));
+    	}
     	if (time != null) {
     		attrs.add(tuple("prov:time", time));
     	}
@@ -267,33 +270,67 @@ class JSONConstructor implements TreeConstructor {
 
 	public Object convertWasStartedBy(Object id, Object id2, Object id1,
 			Object time, Object aAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+		List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:activity", id2));
+    	if (id1 != null) {
+    		attrs.add(tuple("prov:trigger", id1));
+    	}
+    	if (time != null) {
+    		attrs.add(tuple("prov:time", time));
+    	}
+    	if (aAttrs != null) {
+    		attrs.addAll((List<Object>)aAttrs);
+    	}
+    	if (id == null)
+    		id = getBlankID("wSB");
+
+    	return new ProvRecord("wasStartedBy", id, attrs);
     }
 
 	public Object convertWasEndedBy(Object id, Object id2, Object id1,
 			Object time, Object aAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+		List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:activity", id2));
+    	if (id1 != null) {
+    		attrs.add(tuple("prov:trigger", id1));
+    	}
+    	if (time != null) {
+    		attrs.add(tuple("prov:time", time));
+    	}
+    	if (aAttrs != null) {
+    		attrs.addAll((List<Object>)aAttrs);
+    	}
+    	if (id == null)
+    		id = getBlankID("wEB");
+
+    	return new ProvRecord("wasEndedBy", id, attrs);
     }
 
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object gAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+    	List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:entity", id2));
+    	attrs.add(tuple("prov:agent", id1));
+    	if (gAttrs != null) {
+    		attrs.addAll((List<Object>)gAttrs);
+    	}
+    	if (id == null)
+    		id = getBlankID("wAT");
+
+    	return new ProvRecord("wasAttributedTo", id, attrs);
     }
 
 	public Object convertWasDerivedFrom(Object id, Object id2, Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:usedEntity", id1));
     	attrs.add(tuple("prov:generatedEntity", id2));
+    	attrs.add(tuple("prov:usedEntity", id1));
     	if (pe != null) {
     		attrs.add(tuple("prov:activity", pe));
     	}
     	if (q2 != null) {
-    		attrs.add(tuple("prov:usage", q2));
+    		attrs.add(tuple("prov:generation", q2));
     	}
     	if (q1 != null) {
-    		attrs.add(tuple("prov:generation", q1));
+    		attrs.add(tuple("prov:usage", q1));
     	}
     	if (dAttrs != null) {
     		attrs.addAll((List<Object>)dAttrs);
@@ -308,8 +345,10 @@ class JSONConstructor implements TreeConstructor {
 	public Object convertWasAssociatedWith(Object id, Object id2, Object id1,
 			Object pl, Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:agent", id2));
-    	attrs.add(tuple("prov:activity", id1));
+    	attrs.add(tuple("prov:activity", id2));
+    	if (id1 != null) {
+    		attrs.add(tuple("prov:agent", id1));
+    	}
     	if (pl != null) {
     		attrs.add(tuple("prov:plan", pl));
     	}
@@ -323,20 +362,68 @@ class JSONConstructor implements TreeConstructor {
 	}
 
     public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+    	List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:newer", id2));
+    	attrs.add(tuple("prov:older", id1));
+    	if (ag != null) {
+    		attrs.add(tuple("prov:responsibility", ag));
+    	}
+    	if (dAttrs != null) {
+    		attrs.addAll((List<Object>)dAttrs);
+    	}
+    	
+    	if (id == null)
+    		id = getBlankID("wRO");
+
+    	return new ProvRecord("wasRevisionOf", id, attrs);
     }
+
     public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object ag2, Object ag1, Object dAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+    	List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:quote", id2));
+    	attrs.add(tuple("prov:original", id1));
+    	if (ag2 != null) {
+    		attrs.add(tuple("prov:quotedAgent", ag2));
+    	}
+    	if (ag1 != null) {
+    		attrs.add(tuple("prov:originalAgent", ag1));
+    	}
+    	if (dAttrs != null) {
+    		attrs.addAll((List<Object>)dAttrs);
+    	}
+    	
+    	if (id == null)
+    		id = getBlankID("wQF");
+
+    	return new ProvRecord("wasQuotedFrom", id, attrs);
     }
-    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+    
+	public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs) {
+    	List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:derived", id2));
+    	attrs.add(tuple("prov:source", id1));
+    	if (dAttrs != null) {
+    		attrs.addAll((List<Object>)dAttrs);
+    	}
+    	
+    	if (id == null)
+    		id = getBlankID("hOS");
+
+    	return new ProvRecord("hadOriginalSource", id, attrs);
     }
-    public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+
+	public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs) {
+		List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:entity", id2));
+    	attrs.add(tuple("prov:ancestor", id1));
+    	if (dAttrs != null) {
+    		attrs.addAll((List<Object>)dAttrs);
+    	}
+    	
+    	if (id == null)
+    		id = getBlankID("tT");
+
+    	return new ProvRecord("tracedTo", id, attrs);
     }
 
 	public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
@@ -352,7 +439,7 @@ class JSONConstructor implements TreeConstructor {
     	if (id == null)
     		id = getBlankID("aOBO");
 
-    	return new ProvRecord("wasAssociatedWith", id, attrs);
+    	return new ProvRecord("actedOnBehalfOf", id, attrs);
 	}
 
 	public Object convertAlternateOf(Object id2, Object id1) {
@@ -386,7 +473,6 @@ class JSONConstructor implements TreeConstructor {
 	}
 
 	public Object convertTypedLiteral(String datatype, Object value) {
-		// TODO: Convert typed literal
 		Object[] result = {unwrap((String)value), unwrap(datatype)};
     	return result;
 	}

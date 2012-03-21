@@ -37,7 +37,7 @@ package org.openprovenance.prov.notation;
 
 
 container
-	:	'container' 
+	:	ML_COMMENT* 'container' 
         (namespaceDeclarations)?
 		(record | ML_COMMENT)*
 		'endContainer'
@@ -402,7 +402,7 @@ STRINGLITERAL
 	;
 			 
 
-// ANTLR 3
+/* Multiline comment */
 ML_COMMENT
     :   '/*' (options {greedy=false;} : .)* '*/' {$channel=HIDDEN;}
     ;

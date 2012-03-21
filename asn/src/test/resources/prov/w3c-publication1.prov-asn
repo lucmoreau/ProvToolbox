@@ -32,9 +32,9 @@ activity(ex:act2,-,-,[prov:type="publish"])
 wasGeneratedBy(tr:WD-prov-dm-20111018, ex:act1, -)
 wasGeneratedBy(tr:WD-prov-dm-20111215, ex:act2, -)
 
-used(ex:act1,ar1:0004)
-used(ex:act1,ar2:0141)
-used(ex:act2,ar3:0111)
+used(ex:act1,ar1:0004,-)
+used(ex:act1,ar2:0141,-)
+used(ex:act2,ar3:0111,-)
 
 agent(w3:Consortium, [ prov:type="Organization" ])
 

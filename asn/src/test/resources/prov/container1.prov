@@ -6,10 +6,23 @@ prefix ex <http://example>
 
 /* component 1 */
 
-          activity(ex:a1, [ex:param="a"])
-          activity(ex:a2, [ex:param="a"])
           entity(ex:e1, [ex:param="a"])
           entity(ex:e2, [ex:param="a"])
+          entity(tr:WD-prov-dm-20111215)
+          entity(tr:WD-prov-dm-20111215, [ prov:type="document" ])
+          entity(tr:WD-prov-dm-20111215, [ prov:type="document", ex:version=2 ])
+
+          activity(ex:a1, [ex:param="a"])
+          activity(ex:a2, [ex:param="a"])
+
+          activity(ex:a10)
+          activity(ex:a10, -, -)
+          activity(ex:a10, -, -, [prov:type="edit"])
+          activity(ex:a10, -, 2011-11-16T16:00:00)
+          activity(ex:a10, 2011-11-16T16:00:00, -)
+          activity(ex:a10, 2011-11-16T16:00:00, -, [prov:type="createFile"])
+          activity(ex:a10, 2011-11-16T16:00:00, 2011-11-16T16:00:01, [prov:type="createFile"])
+          activity(ex:a10, [prov:type="edit"])
 
           used(ex:a1, ex:e1, -)
           used(ex:a1, ex:e1, -, [ex:param1="a", ex:param2="b"])
@@ -321,6 +334,7 @@ prefix ex <http://example>
           hasAnnotation(ex:ag1, ex:n1)
           hasAnnotation(ex:e1, ex:n1)
           hasAnnotation(ex:n1, ex:n1)
+
 
 endContainer
 

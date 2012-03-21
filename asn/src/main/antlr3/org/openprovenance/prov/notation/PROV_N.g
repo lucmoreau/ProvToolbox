@@ -77,7 +77,7 @@ record
 	:	(   /* component 1 */
 
            entityExpression | activityExpression | generationExpression  | usageExpression
-         | startExpression | endExpression | informExpression | wasStartedByActivityExpression
+         | startExpression | endExpression | communicationExpression | startByActivityExpression
 
             /* component 2 */
         
@@ -114,36 +114,35 @@ activityExpression
 	;
 
 generationExpression
-	:	'wasGeneratedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( '-' | time) optionalAttributeValuePairs ')'
+	:	'wasGeneratedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WGB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WGB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 usageExpression
-	:	'used' '(' ((id0=identifier | '-') ',')?  id2=identifier ',' id1=identifier (',' ( '-' | time))? optionalAttributeValuePairs ')'
+	:	'used' '(' ((id0=identifier | '-') ',')?  id2=identifier ',' id1=identifier ',' ( time | '-' ) optionalAttributeValuePairs ')'
       -> ^(USED ^(ID $id0?)  $id2 $id1 ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 startExpression
-	:	'wasStartedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( '-' | time) optionalAttributeValuePairs ')'
+	:	'wasStartedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WSB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WSB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 endExpression
-	:	'wasEndedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( '-' | time) optionalAttributeValuePairs ')'
+	:	'wasEndedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WEB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WEB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
-/* TODO: write traversers */
 
-informExpression
+communicationExpression
 	:	'wasInformedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
       -> ^(WIB ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
 	;
 
-wasStartedByActivityExpression
+startByActivityExpression
 	:	'wasStartedByActivity' '(' ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
       -> ^(WSBA ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
 	;

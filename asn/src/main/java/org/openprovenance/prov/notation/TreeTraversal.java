@@ -24,6 +24,7 @@ public class TreeTraversal {
 
     public String getTokenString(Tree t) {
         if (t==null) return null;
+        if (((CommonTree)t).getToken()==null) return null;
         return ((CommonTree)t).getToken().getText();
     }
 

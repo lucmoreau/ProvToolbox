@@ -600,6 +600,7 @@ public  class ProvConstructor implements TreeConstructor {
        String s_pre=(String)pre;
        String s_iri=(String)iri;
        s_iri=unwrap(s_iri);
+       if (s_pre!=null) // should not occur
        namespaceTable.put(s_pre,s_iri);
        return null;
    }

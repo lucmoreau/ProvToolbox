@@ -35,6 +35,7 @@ package org.openprovenance.prov.notation;
 package org.openprovenance.prov.notation;
 }
 
+@members{ public static boolean inDeclaration=false; }
 
 container
 	:	ML_COMMENT* 'container' 
@@ -51,14 +52,26 @@ namespaceDeclarations :
         -> ^(NAMESPACES defaultNamespaceDeclaration? namespaceDeclaration*)
     ;
 
-/* Incorrect declaration: I should use a PN_PREFIX here instead of a QNAME, but ... it's a fragment .... */
 
-namespaceDeclaration :
-        'prefix' QNAME namespace
-        -> ^(NAMESPACE ^(PREFIX QNAME) namespace)
+/**
+  The following production uses ANTLR directives to disactivate the
+  production QNAME to guarantee that ensure that PREFX token is
+  generated in this context only.
+
+  A global static boolean variable (inDeclaration) is declared in the
+  parser, set to true when entering this production and set to false
+  on exit.  This variable is use in the lexer to disable the QNAME
+  production.
+
+  Sorry, that's the only way I have found to do this. Obviously, this
+  prevents concurrent execution of the parser/lexer. */
+
+namespaceDeclaration 
+@init { inDeclaration = true; }
+@after { inDeclaration = false; } :
+        'prefix' PREFX namespace
+        -> ^(NAMESPACE ^(PREFIX PREFX) namespace)
     ;
-
-
 namespace :
         IRI_REF
     ;
@@ -69,7 +82,8 @@ defaultNamespaceDeclaration :
     ;
 
 record
-	:	(   /* component 1 */
+@init { inDeclaration = false; } :
+        (   /* component 1 */
 
            entityExpression | activityExpression | generationExpression  | usageExpression
          | startExpression | endExpression | communicationExpression | startByActivityExpression
@@ -330,13 +344,30 @@ Put QNAME instead, but that's not correct, it should really be a NCNAME! */
 
 
 
-QNAME:
-    (PN_PREFIX ':')? PN_LOCAL
-  ;
 
-
+INTLITERAL:
+    '-'? DIGIT+
+    ;
 
 STRINGLITERAL : '"' (options {greedy=false;} : ~('"' | '\\' | EOL) | ECHAR)* '"';
+
+
+/* This production uses a "Disambiguating Semantic Predicates"
+   checking whether we are inscope of a declaration or not. If so,
+   rule QNAME is disabled, to the benefit of PREFX. */
+
+QNAME:
+  { !PROV_NParser.inDeclaration }?
+    (PN_PREFIX ':')? PN_LOCAL
+        
+  ;
+
+/* The order of these two rules is crucial. By default, QNAME should be used
+   unless we are in the context of a declaration. */
+PREFX:
+    PN_PREFIX
+  ;
+
 
 
 fragment
@@ -359,6 +390,7 @@ PN_CHARS
 fragment
 PN_PREFIX : PN_CHARS_BASE ((PN_CHARS|DOT)* PN_CHARS)?;
 
+
 fragment
 PN_LOCAL : (PN_CHARS_U|DIGIT)  ((PN_CHARS|{    
                     	                       if (input.LA(1)=='.') {
@@ -367,7 +399,8 @@ PN_LOCAL : (PN_CHARS_U|DIGIT)  ((PN_CHARS|{
                     	       	                     return;
                     	       	                  }
                     	                       }
-                                           } DOT)* PN_CHARS)?;
+                                           } DOT)* PN_CHARS)?
+;
 
 fragment
 PN_CHARS_BASE
@@ -545,10 +578,6 @@ IsoDateTime: (DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' DIGIT 
     ;
 
 
-
-INTLITERAL:
-    '-'? DIGIT+
-    ;
 
 
 TimeZoneOffset: ('+' | '-') DIGIT DIGIT ':' DIGIT DIGIT;

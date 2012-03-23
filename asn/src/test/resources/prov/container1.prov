@@ -346,5 +346,6 @@ prefix ex <http://example>
           entity(ex:abc0000, [ex:param="a"]) 
           entity(ex:abc0001, [ex:param="a"]) 
           entity(ex:abc, [ex:param="a"]) 
+          entity(ex:abc.html, [ex:param="a"]) 
 endContainer
 

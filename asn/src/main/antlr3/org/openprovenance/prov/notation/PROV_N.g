@@ -36,7 +36,7 @@ package org.openprovenance.prov.notation;
 }
 
 @members{
- public static boolean inDeclaration=false; }
+ public static boolean qnameDisabled=false; }
 
 container
 	:	ML_COMMENT* 'container' 
@@ -59,7 +59,7 @@ namespaceDeclarations :
   production QNAME to guarantee that ensure that PREFX token is
   generated in this context only.
 
-  A global static boolean variable (inDeclaration) is declared in the
+  A global static boolean variable (qnameDisabled) is declared in the
   parser, set to true when entering this production and set to false
   on exit.  This variable is use in the lexer to disable the QNAME
   production.
@@ -68,8 +68,8 @@ namespaceDeclarations :
   prevents concurrent execution of the parser/lexer. */
 
 namespaceDeclaration 
-@init { inDeclaration = true; }
-@after { inDeclaration = false; } :
+@init { qnameDisabled = true; }
+@after { qnameDisabled = false; } :
         'prefix' PREFX namespace
         -> ^(NAMESPACE ^(PREFIX PREFX) namespace)
     ;
@@ -83,7 +83,7 @@ defaultNamespaceDeclaration :
     ;
 
 record
-@init { inDeclaration = false; } :
+@init { qnameDisabled = false; } :
         (   /* component 1 */
 
            entityExpression | activityExpression | generationExpression  | usageExpression
@@ -281,6 +281,7 @@ hasAnnotationExpression
 
 
 
+
 optionalAttributeValuePairs
     :
     (',' '[' attributeValuePairs ']')?
@@ -304,9 +305,17 @@ attributeValuePairs
 	;
 
 
+/*
+QNAME and INTLITERAL are conflicting.  To avoid the conflict in
+literal, QNAME rule is disabled once an attribute has been parsed, to
+give priority to INTLITERAL.
+  */
+
 attributeValuePair
+@after { qnameDisabled = false; }
+
 	:
-        attribute '=' literal  -> ^(ATTRIBUTE attribute literal)
+        attribute { qnameDisabled = true; } '='  literal  -> ^(ATTRIBUTE attribute literal)
 	;
 
 
@@ -315,18 +324,15 @@ time
         xsdDateTime
 	;
 
-/* TODO: complete grammar of Literal
 
-   TODO: attribute of the form cannot be parsed an INT
-      ex:version=2
-   since 2 is parse
+/* TODO: complete grammar of Literal
 */
 
 
 literal :
         (STRINGLITERAL -> ^(STRING STRINGLITERAL) |
          INTLITERAL -> ^(INT INTLITERAL) |
-         STRINGLITERAL '%%' datatype -> ^(TYPEDLITERAL STRINGLITERAL datatype))
+         STRINGLITERAL { qnameDisabled = false; } '%%' datatype -> ^(TYPEDLITERAL STRINGLITERAL datatype))
 	;
 
 datatype:
@@ -354,13 +360,12 @@ STRINGLITERAL : '"' (options {greedy=false;} : ~('"' | '\\' | EOL) | ECHAR)* '"'
 
 
 /* This production uses a "Disambiguating Semantic Predicates"
-   checking whether we are inscope of a declaration or not. If so,
-   rule QNAME is disabled, to the benefit of PREFX. */
+   checking whether we are in scope of a declaration/literal or not. If so,
+   rule QNAME is disabled, to the benefit of PREFX/INTLITERAL. */
 
 QNAME:
-  { !PROV_NParser.inDeclaration }?
+  { !PROV_NParser.qnameDisabled }?
     (PN_PREFIX ':')? PN_LOCAL
-//        { System.out.println("Found QNAME: "+getText()); }
         
   ;
 

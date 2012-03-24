@@ -386,5 +386,8 @@ prefix ex <http://example>
           entity(ex:a----, [ex:param=22])       
           entity(ex:a----, [ex:param=2222])       
           entity(ex:a----, [ex:param=-2222])       
+
+
+          entity(ex:a----, [ex:param="2222"%%xsd:int])       
 endContainer
 

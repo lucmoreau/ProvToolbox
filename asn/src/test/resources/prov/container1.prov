@@ -339,13 +339,52 @@ prefix ex <http://example>
 
 /* Identifiers */
 
-          entity(ex:0000, [ex:param="a"]) 
+          entity(ex:0000, [ex:param="a"])          //prefix + local name formed of digits
           entity(ex:0001, [ex:param="a"]) 
-          entity(ex:0000abc, [ex:param="a"]) 
+          entity(ex:0000abc, [ex:param="a"])       //prefix + local name starting with digits
           entity(ex:0001abc, [ex:param="a"]) 
-          entity(ex:abc0000, [ex:param="a"]) 
+          entity(ex:abc0000, [ex:param="a"])       //prefix + local name containing with digits
           entity(ex:abc0001, [ex:param="a"]) 
-          entity(ex:abc, [ex:param="a"]) 
-          entity(ex:abc.html, [ex:param="a"]) 
+          entity(ex:abc, [ex:param="a"])           //prefix + local name without digits
+          entity(ex:abc.html, [ex:param="a"])      //prefix + local name with a dot
+          entity(ex:abc.000, [ex:param="a"])       //prefix + local name with a dot and digits
+          entity(ex:abc-000, [ex:param="a"])       //prefix + local name with a dash
+          entity(ex:abc-000, [ex:param="a"])       //prefix + local name with a dash and digits
+
+
+          entity(0000, [ex:param="a"])          //local name formed of digits
+          entity(0001, [ex:param="a"]) 
+          entity(0000abc, [ex:param="a"])       //local name starting with digits
+          entity(0001abc, [ex:param="a"]) 
+          entity(abc0000, [ex:param="a"])       //local name containing with digits
+          entity(abc0001, [ex:param="a"]) 
+          entity(abc, [ex:param="a"])           //local name without digits
+          entity(abc.html, [ex:param="a"])      //local name with a dot
+          entity(abc.000, [ex:param="a"])       //local name with a dot and digits
+
+          entity(abc-000, [ex:param="a"])       //local name with a dash
+          entity(abc-000, [ex:param="a"])       //local name with a dash and digits
+
+
+          entity(_abc_000, [ex:param="a"])       //local name with a underscore
+          entity(_abc_000, [ex:param="a"])       //local name with a underscore and digits
+
+//          entity(-abc-000, [ex:param="a"])       //PROBLEM: - is not parsed ..
+//          entity(-abc-000, [ex:param="a"])       //PROBLEM: - is not parsed ..
+
+          entity(ex-:abc-000, [ex:param="a"])       //prefix + local name with a dash and digits
+//          entity(-ex-:abc-000, [ex:param="a"])       //PROBLEM prefix + local name with a dash and digits
+//          entity(-:abc-000, [ex:param="a"])       // PROBLEM prefix + local name with a dash and digits
+
+          entity(ex:a----, [ex:param="a"])       
+
+
+
+//          entity(-abc-000, [ex:param="a"])       //PROBLEM: - is not parsed ..
+
+          entity(ex:a----, [ex:param=2])       
+          entity(ex:a----, [ex:param=22])       
+          entity(ex:a----, [ex:param=2222])       
+          entity(ex:a----, [ex:param=-2222])       
 endContainer
 

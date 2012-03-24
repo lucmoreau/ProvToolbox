@@ -35,12 +35,13 @@ package org.openprovenance.prov.notation;
 package org.openprovenance.prov.notation;
 }
 
-@members{ public static boolean inDeclaration=false; }
+@members{
+ public static boolean inDeclaration=false; }
 
 container
 	:	ML_COMMENT* 'container' 
         (namespaceDeclarations)?
-		(record | ML_COMMENT)*
+		(record | ML_COMMENT | SL_COMMENT)*
 		'endContainer'
 
       -> ^(CONTAINER namespaceDeclarations? record*)
@@ -314,32 +315,32 @@ time
         xsdDateTime
 	;
 
-/* TODO: complete grammar of Literal */
-literal
-	:
+/* TODO: complete grammar of Literal
+
+   TODO: attribute of the form cannot be parsed an INT
+      ex:version=2
+   since 2 is parse
+*/
+
+
+literal :
         (STRINGLITERAL -> ^(STRING STRINGLITERAL) |
          INTLITERAL -> ^(INT INTLITERAL) |
          STRINGLITERAL '%%' datatype -> ^(TYPEDLITERAL STRINGLITERAL datatype))
 	;
 
-datatype
-	:
+datatype:
         (IRI_REF -> ^(IRI IRI_REF)
         |
          QNAME -> ^(QNAM QNAME))
 	;
 	
 
-/* http://antlr.org/grammar/1200929755392/Sparql.g */
-/* Problem: NCNAME is a fragment, and failed to be matched.
-Put QNAME instead, but that's not correct, it should really be a NCNAME! */
+/* 
+The production here are based on the SPARQL grammar availabe from:
 
+http://antlr.org/grammar/1200929755392/Sparql.g 
 
-/** QNAME Syntax to be agreed, here allows all digits in the local part. */
-
-/*QNAME	
-	:	NCNAME (':' (NCNAME | POSINTLITERAL))?  
-	;
 */
 
 
@@ -359,6 +360,7 @@ STRINGLITERAL : '"' (options {greedy=false;} : ~('"' | '\\' | EOL) | ECHAR)* '"'
 QNAME:
   { !PROV_NParser.inDeclaration }?
     (PN_PREFIX ':')? PN_LOCAL
+//        { System.out.println("Found QNAME: "+getText()); }
         
   ;
 
@@ -392,7 +394,8 @@ PN_PREFIX : PN_CHARS_BASE ((PN_CHARS|DOT)* PN_CHARS)?;
 
 
 fragment
-PN_LOCAL : (PN_CHARS_U|DIGIT)  ((PN_CHARS|{    
+PN_LOCAL:
+  (PN_CHARS_U|DIGIT)  ((PN_CHARS|{    
                     	                       if (input.LA(1)=='.') {
                     	                          int LA2 = input.LA(2);
                     	       	                  if (!((LA2>='-' && LA2<='.')||(LA2>='0' && LA2<='9')||(LA2>='A' && LA2<='Z')||LA2=='_'||(LA2>='a' && LA2<='z')||LA2=='\u00B7'||(LA2>='\u00C0' && LA2<='\u00D6')||(LA2>='\u00D8' && LA2<='\u00F6')||(LA2>='\u00F8' && LA2<='\u037D')||(LA2>='\u037F' && LA2<='\u1FFF')||(LA2>='\u200C' && LA2<='\u200D')||(LA2>='\u203F' && LA2<='\u2040')||(LA2>='\u2070' && LA2<='\u218F')||(LA2>='\u2C00' && LA2<='\u2FEF')||(LA2>='\u3001' && LA2<='\uD7FF')||(LA2>='\uF900' && LA2<='\uFDCF')||(LA2>='\uFDF0' && LA2<='\uFFFD'))) {
@@ -429,81 +432,13 @@ DOT : '.';
 MINUS : '-';
 
 
-/*
-fragment CHAR
-	: ('\u0009' | '\u000A' | '\u000D' | '\u0020'..'\uD7FF' | '\uE000'..'\uFFFD' )
-	;
-
-
-fragment NCNAMESTARTCHAR
-	: ('A'..'Z') | '_' | ('a'..'z') | ('\u00C0'..'\u00D6') | ('\u00D8'..'\u00F6') | ('\u00F8'..'\u02FF') | ('\u0370'..'\u037D') | ('\u037F'..'\u1FFF') | ('\u200C'..'\u200D') | ('\u2070'..'\u218F') | ('\u2C00'..'\u2FEF') | ('\u3001'..'\uD7FF') | ('\uF900'..'\uFDCF') | ('\uFDF0'..'\uFFFD')
-	;
-	
-fragment NCNAMECHAR
-	:   	NCNAMESTARTCHAR | '-' | '.' | '0'..'9' | '\u00B7' | '\u0300'..'\u036F' | '\u203F'..'\u2040'
-	;
-	
-fragment NAMECHAR	   
-	:   ':' 
-	| NCNAMECHAR
-	;
-	
-fragment NAMESTARTCHAR
-	:  ':' 
-	| NCNAMESTARTCHAR
-	;
-	
-
-
-
-fragment NCNAME	           
- 	:  NCNAMESTARTCHAR NCNAMECHAR* 
-	;	
-
-
-NCNAME_COLON_STAR
-	: NCNAME ':' '*'
-	;
-STAR_COLON_NCNAME
-	: '*' ':' NCNAME;
-
-fragment QUOTE	           
-	: '"'
-	;
-	
-fragment APOS		   
-	: '\''
-	;
-	
-fragment ESCAPEQUOTE 	   
-	: QUOTE QUOTE
-	;
-	
-	
-fragment ESCAPEAPOS 	   
-	: APOS APOS
-	;
-	
-fragment CHARNOQUOTE	   
-	: ~(~CHAR | QUOTE)
-	;
-	
-	
-fragment CHARNOAPOS	   
-	: ~(~CHAR | APOS)
-	;
-
-
-STRINGLITERAL		   
-	: (QUOTE (ESCAPEQUOTE | CHARNOQUOTE)* QUOTE) 
-	| (APOS  (ESCAPEAPOS | CHARNOAPOS)* APOS)
-	;
-			 
-*/
 /* Multiline comment */
 ML_COMMENT
     :   '/*' (options {greedy=false;} : .)* '*/' {$channel=HIDDEN;}
     ;
+
+/* Singleline comment */
+SL_COMMENT : '//' (options{greedy=false;} : .)* EOL { $channel=HIDDEN; };
 
 
 /* 

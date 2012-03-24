@@ -387,8 +387,37 @@ prefix ex <http://example>
           entity(ex:a----, [ex:param=2222])       
           entity(ex:a----, [ex:param=-2222])       
 
+/* Testing literals */
 
-          entity(ex:a----, [ex:param="2222"%%xsd:int])       
+          
+          entity(ex:a, [ex:param="2222"%% xsd:int])       
+          entity(ex:a, [ex:param="2222"%% xsd:long])
+          entity(ex:a, [ex:param="2222"%% xsd:short])
+          entity(ex:a, [ex:param="2222"%% xsd:integer])
+          entity(ex:a, [ex:param="2222.22"%% xsd:double])
+          entity(ex:a, [ex:param="2222.22"%% xsd:float])
+          entity(ex:a, [ex:param="2222.22"%% xsd:decimal])
+          entity(ex:a, [ex:param="true"%% xsd:boolean])
+          entity(ex:a, [ex:param="false"%% xsd:boolean])
+
+          entity(ex:a, [ex:param="-128"%% xsd:byte])
+          entity(ex:a, [ex:param="127"%% xsd:byte])
+
+          entity(ex:a, [ex:param="2222"%% xsd:unsignedInt])
+          entity(ex:a, [ex:param="2222"%% xsd:unsignedShort])
+          entity(ex:a, [ex:param="255"%% xsd:unsignedByte])
+
+          entity(ex:a, [ex:param="-777255"%% xsd:integer])
+          entity(ex:a, [ex:param="777255"%% xsd:nonNegativeInteger])
+          entity(ex:a, [ex:param="0"%% xsd:nonNegativeInteger])
+          entity(ex:a, [ex:param="-777255"%% xsd:nonPositiveInteger])
+          entity(ex:a, [ex:param="0"%% xsd:nonPositiveInteger])
+          entity(ex:a, [ex:param="0"%% xsd:positiveInteger])
+
+
+          entity(ex:a, [ex:param="http://example.com/"%% xsd:anyURI])
+
+          entity(ex:a, [ex:param="ex:foo"%% xsd:QName])
 
 endContainer
 

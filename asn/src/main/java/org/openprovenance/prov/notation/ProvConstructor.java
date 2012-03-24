@@ -197,7 +197,7 @@ public  class ProvConstructor implements TreeConstructor {
         
             //return new JAXBElement<TypedLiteral>(attr1_QNAME, TypedLiteral.class, null, (TypedLiteral)value);
 
-	    return new JAXBElement<Object>(attr1_QNAME, Object.class, null, value);
+            return new JAXBElement<Object>(attr1_QNAME, Object.class, null, value);
         }
     }
 
@@ -211,7 +211,7 @@ public  class ProvConstructor implements TreeConstructor {
     
 
     public Object convertString(String s) {
-	s=unwrap(s);
+        s=unwrap(s);
         return s;
     }
 
@@ -555,61 +555,92 @@ public  class ProvConstructor implements TreeConstructor {
         return URI.create(iri);
     }
 
+    /* Uses the xsd:type to java:type mapping of JAXB */
 
     public Object convertToJava(String datatype, String value) {
-	value=unwrap(value);
-	//System.out.println("convertToJava: datatype " + datatype + "  " + value);
-	if (datatype.equals("xsd:string")) return value;
-	if (datatype.equals("xsd:int")) return Integer.parseInt(value);
-	if (datatype.equals("xsd:double")) return Double.parseDouble(value);
-	if (datatype.equals("xsd:boolean")) return Boolean.parseBoolean(value);
-	if (datatype.equals("xsd:anyURI")) {
-	    URIWrapper u=new URIWrapper();
-	    u.setValue(URI.create(value));
-	    return u;
-	}
-	if (datatype.equals("xsd:QName")) {
-	    int index=value.indexOf(':');
-	    String prefix;
-	    String local;
+        value=unwrap(value);
+        //System.out.println("convertToJava: datatype " + datatype + "  " + value);
+        if (datatype.equals("xsd:string"))  return value;
 
-	    if (index==-1) {
-		prefix="";
-		local=value;
-	    } else {
-		prefix=value.substring(0,index);
-		local=value.substring(index+1,value.length());
-	    }
-	    return new QName(getNamespace(prefix), local, prefix);
-	}
+        if (datatype.equals("xsd:int"))     return Integer.parseInt(value);
+        if (datatype.equals("xsd:long"))    return Long.parseLong(value);
+        if (datatype.equals("xsd:short"))   return Short.parseShort(value);
+        if (datatype.equals("xsd:double"))  return Double.parseDouble(value);
+        if (datatype.equals("xsd:float"))   return Float.parseFloat(value);
+        if (datatype.equals("xsd:decimal")) return new java.math.BigDecimal(value);
+        if (datatype.equals("xsd:boolean")) return Boolean.parseBoolean(value);
+        if (datatype.equals("xsd:byte"))    return Byte.parseByte(value);
+        if (datatype.equals("xsd:unsignedInt"))   return Long.parseLong(value);
+        if (datatype.equals("xsd:unsignedShort")) return Integer.parseInt(value);
+        if (datatype.equals("xsd:unsignedByte"))  return Short.parseShort(value);
+        if (datatype.equals("xsd:unsignedLong"))  return new java.math.BigInteger(value);
+        if (datatype.equals("xsd:integer"))             return new java.math.BigInteger(value);
+        if (datatype.equals("xsd:nonNegativeInteger"))  return new java.math.BigInteger(value);
+        if (datatype.equals("xsd:nonPositiveInteger"))  return new java.math.BigInteger(value);
+        if (datatype.equals("xsd:positiveInteger"))     return new java.math.BigInteger(value);
 
-	throw new UnsupportedOperationException("Unknown literal type " + datatype);
-    //return value;
+        if (datatype.equals("xsd:anyURI")) {
+            URIWrapper u=new URIWrapper();
+            u.setValue(URI.create(value));
+            return u;
+        }
+        if (datatype.equals("xsd:QName")) {
+            int index=value.indexOf(':');
+            String prefix;
+            String local;
+
+            if (index==-1) {
+                prefix="";
+                local=value;
+            } else {
+                prefix=value.substring(0,index);
+                local=value.substring(index+1,value.length());
+            }
+            return new QName(getNamespace(prefix), local, prefix);
+        }
+
+
+
+        if ((datatype.equals("xsd:dateTime"))
+            || (datatype.equals("rdf:XMLLiteral"))
+            || (datatype.equals("xsd:normalizedString"))
+            || (datatype.equals("xsd:token"))
+            || (datatype.equals("xsd:language"))
+            || (datatype.equals("xsd:Name"))
+            || (datatype.equals("xsd:NCName"))
+            || (datatype.equals("xsd:NMTOKEN"))
+            || (datatype.equals("xsd:hexBinary"))
+            || (datatype.equals("xsd:base64Binary"))) {
+
+            throw new UnsupportedOperationException("KNOWN literal type but conversion not supported yet " + datatype);
+        }
+
+        throw new UnsupportedOperationException("UNKNOWN literal type " + datatype);
     }
-	
-	
+    
+    
 
 
     public Object convertTypedLiteral(String datatype, Object value) {
         Object val=convertToJava(datatype,(String)value);
-	//pFactory.newTypedLiteral(val);
+        //pFactory.newTypedLiteral(val);
         return val;
     }
 
-   public Object convertNamespace(Object pre, Object iri) {
-       String s_pre=(String)pre;
-       String s_iri=(String)iri;
-       s_iri=unwrap(s_iri);
-       if (s_pre!=null) // should not occur
-       namespaceTable.put(s_pre,s_iri);
-       return null;
-   }
+    public Object convertNamespace(Object pre, Object iri) {
+        String s_pre=(String)pre;
+        String s_iri=(String)iri;
+        s_iri=unwrap(s_iri);
+        if (s_pre!=null) // should not occur
+            namespaceTable.put(s_pre,s_iri);
+        return null;
+    }
 
     public Object convertDefaultNamespace(Object iri) {
-       String s_iri=(String)iri;
-       s_iri=unwrap(s_iri);
-       namespaceTable.put("_",s_iri);
-       return null;
+        String s_iri=(String)iri;
+        s_iri=unwrap(s_iri);
+        namespaceTable.put("_",s_iri);
+        return null;
     }
     
     public Object convertNamespaces(List<Object> namespaces) {

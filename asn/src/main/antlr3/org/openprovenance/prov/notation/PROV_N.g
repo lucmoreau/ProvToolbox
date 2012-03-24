@@ -340,6 +340,7 @@ datatype:
         |
          QNAME -> ^(QNAM QNAME))
 	;
+
 	
 
 /* 
@@ -369,7 +370,7 @@ QNAME:
         
   ;
 
-/* The order of these two rules is crucial. By default, QNAME should be used
+/* The order of the two rules (QNAME/PREFX) is crucial. By default, QNAME should be used
    unless we are in the context of a declaration. */
 PREFX:
     PN_PREFIX
@@ -381,9 +382,11 @@ fragment
 ECHAR : '\\' ('t' | 'b' | 'n' | 'r' | 'f' | '\\' | '"' | '\'');
  
 
+/* Note PN_CHARS_BASE is same as NCNAMESTARTCHAR (XML Schema) */
 fragment
 PN_CHARS_U : PN_CHARS_BASE | '_';
 
+/* Note: this is the same as NCNAMECHAR (XML Schema) except for '.' */
 fragment
 PN_CHARS
     : PN_CHARS_U
@@ -397,7 +400,7 @@ PN_CHARS
 fragment
 PN_PREFIX : PN_CHARS_BASE ((PN_CHARS|DOT)* PN_CHARS)?;
 
-
+/* Note PN_LOCAL allows for start with a digit */
 fragment
 PN_LOCAL:
   (PN_CHARS_U|DIGIT)  ((PN_CHARS|{    
@@ -410,6 +413,7 @@ PN_LOCAL:
                                            } DOT)* PN_CHARS)?
 ;
 
+/* Note PN_CHARS_BASE is same as NCNAMESTARTCHAR (XML Schema) except for '_' */
 fragment
 PN_CHARS_BASE
     : 'A'..'Z'

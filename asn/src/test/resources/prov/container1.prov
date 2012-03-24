@@ -369,18 +369,18 @@ prefix ex <http://example>
           entity(_abc_000, [ex:param="a"])       //local name with a underscore
           entity(_abc_000, [ex:param="a"])       //local name with a underscore and digits
 
-//          entity(-abc-000, [ex:param="a"])       //PROBLEM: - is not parsed ..
-//          entity(-abc-000, [ex:param="a"])       //PROBLEM: - is not parsed ..
+//          entity(-abc-000, [ex:param="a"])       //INVALID
+//          entity(-abc-000, [ex:param="a"])       //INVALID
 
           entity(ex-:abc-000, [ex:param="a"])       //prefix + local name with a dash and digits
-//          entity(-ex-:abc-000, [ex:param="a"])       //PROBLEM prefix + local name with a dash and digits
-//          entity(-:abc-000, [ex:param="a"])       // PROBLEM prefix + local name with a dash and digits
+//          entity(-ex-:abc-000, [ex:param="a"])    // INVALID prefix + local name with a dash and digits
+//          entity(-:abc-000, [ex:param="a"])       // INVALID prefix + local name with a dash and digits
 
           entity(ex:a----, [ex:param="a"])       
 
 
 
-//          entity(-abc-000, [ex:param="a"])       //PROBLEM: - is not parsed ..
+//          entity(-abc-000, [ex:param="a"])       //INVALID: - is not parsed ..
 
           entity(ex:a----, [ex:param=2])       
           entity(ex:a----, [ex:param=22])       
@@ -389,5 +389,6 @@ prefix ex <http://example>
 
 
           entity(ex:a----, [ex:param="2222"%%xsd:int])       
+
 endContainer
 

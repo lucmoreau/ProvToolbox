@@ -419,5 +419,13 @@ prefix ex <http://example>
 
           entity(ex:a, [ex:param="ex:foo"%% xsd:QName])
 
+
+          entity(ex:, [ex:param=-2222])       
+          entity(ex:a/b/c, [ex:param=-2222])       
+          entity(ex:a/b/c/, [ex:param=-2222])       
+//          entity(ex:a/b/c#, [ex:param=-2222])       
+//          entity(ex:a/b:c, [ex:param=-2222])       
+          entity(ex:user@example.com, [ex:param=-2222])       
+
 endContainer
 

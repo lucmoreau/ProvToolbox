@@ -7,8 +7,6 @@ prefix rec <http://example.org/record>
 
 prefix w3 <http://www.w3.org/TR/2011/>
 prefix hg <http://dvcs.w3.org/hg/prov/raw-file/9628aaff6e20/model/releases/WD-prov-dm-20111215/>
-prefix process <http://www.w3.org/2005/10/Process-20051014/tr.html#>
-
 
 
 entity(hg:Overview.html, [ prov:type="file in hg" ])

@@ -4,23 +4,23 @@ container
 
 prefix ex  <http://example.org/>
 
-prefix w3  <http://www.w3.org/>
-prefix tr  <http://www.w3.org/TR/2011/>
-prefix pr  <http://www.w3.org/2005/10/Process-20051014/tr.html#>
-
-prefix ar1 <https://lists.w3.org/Archives/Member/chairs/2011OctDec/>
-prefix ar2 <https://lists.w3.org/Archives/Member/w3c-archive/2011Oct/>
-prefix ar3 <https://lists.w3.org/Archives/Member/w3c-archive/2011Dec/>
-
-
-entity(tr:WD-prov-dm-20111018, [ prov:type="pr:RecsWD" %% xsd:QName ])
-entity(tr:WD-prov-dm-20111215, [ prov:type="pr:RecsWD" %% xsd:QName ])
-entity(pr:rec-advance,         [ prov:type="prov:Plan" %% xsd:QName ])
+prefix w3      <http://www.w3.org/>
+prefix tr      <http://www.w3.org/TR/2011/>
+prefix process <http://www.w3.org/2005/10/Process-20051014/tr.html#>
+prefix email   <https://lists.w3.org/Archives/Member/w3c-archive/>
+prefix chairs  <https://lists.w3.org/Archives/Member/chairs/>
+prefix trans   <http://www.w3.org/2005/08/01-transitions.html#>
 
 
-entity(ar1:0004, [ prov:type="http://www.w3.org/2005/08/01-transitions.html#transreq" %% xsd:anyURI ])
-entity(ar2:0141, [ prov:type="http://www.w3.org/2005/08/01-transitions.html#pubreq" %% xsd:anyURI ])
-entity(ar3:0111, [ prov:type="http://www.w3.org/2005/08/01-transitions.html#pubreq" %% xsd:anyURI ])
+
+entity(tr:WD-prov-dm-20111018, [ prov:type="process:RecsWD" %% xsd:QName ])
+entity(tr:WD-prov-dm-20111215, [ prov:type="process:RecsWD" %% xsd:QName ])
+entity(process:rec-advance,    [ prov:type="prov:Plan"      %% xsd:QName ])
+
+
+entity(chairs:2011OctDec/0004, [ prov:type="trans:transreq" %% xsd:QName ])
+entity(email:2011Oct/0141,     [ prov:type="trans:pubreq"   %% xsd:QName ])
+entity(email:2011Dec/0111,     [ prov:type="trans:pubreq"   %% xsd:QName ])
 
 
 wasDerivedFrom(tr:WD-prov-dm-20111215,tr:WD-prov-dm-20111018)
@@ -32,16 +32,14 @@ activity(ex:act2,-,-,[prov:type="publish"])
 wasGeneratedBy(tr:WD-prov-dm-20111018, ex:act1, -)
 wasGeneratedBy(tr:WD-prov-dm-20111215, ex:act2, -)
 
-used(ex:act1,ar1:0004,-)
-used(ex:act1,ar2:0141,-)
-used(ex:act2,ar3:0111,-)
+used(ex:act1,chairs:2011OctDec/0004,-)
+used(ex:act1,email:2011Oct/0141,-)
+used(ex:act2,email:2011Dec/0111,-)
 
 agent(w3:Consortium, [ prov:type="Organization" ])
 
-wasAssociatedWith(ex:act1, w3:Consortium, pr:rec-advance)
-wasAssociatedWith(ex:act2, w3:Consortium, pr:rec-advance)
-
-
+wasAssociatedWith(ex:act1, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:act2, w3:Consortium, process:rec-advance)
 
 endContainer
 

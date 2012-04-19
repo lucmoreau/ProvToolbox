@@ -35,6 +35,7 @@
     <xs:sequence>
       <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
  
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -48,6 +49,7 @@
       <xs:element name="endTime"      type="xs:dateTime" minOccurs="0"/> 
       <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
       
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -61,7 +63,7 @@
       <xs:element name="activity" type="prov:ActivityRef"/>
       <xs:element name="entity"   type="prov:EntityRef"/>
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
-
+      <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -74,7 +76,9 @@
       <xs:element name="entity"   type="prov:EntityRef"/>
       <xs:element name="activity" type="prov:ActivityRef" minOccurs="0"/>
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
+
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
@@ -103,6 +107,19 @@
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
+
+  <xs:complexType name="WasInvalidatedBy">
+    <xs:sequence>
+      <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="entity"   type="prov:EntityRef"/>
+      <xs:element name="activity" type="prov:ActivityRef" minOccurs="0"/>
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute ref="prov:id"/>
+  </xs:complexType>
+
 
   <xs:complexType name="WasInformedBy">
     <xs:sequence>
@@ -284,6 +301,7 @@
   <xs:element name="label" type="xs:string"/>
   <xs:element name="role"  type="xs:anySimpleType"/>
   <xs:element name="type"  type="xs:anySimpleType"/>
+  <xs:element name="location" type="xs:anySimpleType"/>
 
   <xs:attribute name="id"  type="xs:QName"/>
   <xs:attribute name="ref" type="xs:QName"/>

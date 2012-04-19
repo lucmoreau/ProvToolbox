@@ -13,7 +13,7 @@ tokens {
     CONTAINER; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; 
 
     /* Component 1 */
-    ENTITY; ACTIVITY; WGB; USED; WSB; WEB; WIB; WSBA;
+    ENTITY; ACTIVITY; WGB; USED; WSB; WEB; WINVB; WIB; WSBA;
     TIME; START; END;
 
     /* Component 2 */
@@ -144,6 +144,12 @@ endExpression
 	:	'wasEndedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WEB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WEB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
+	;
+
+invalidationExpression
+	:	'wasInvalidatedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
+      -> {$id1.tree==null}? ^(WINVB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
+      -> ^(WINVB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 

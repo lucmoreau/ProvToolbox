@@ -291,6 +291,13 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, HasRole, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="WasInvalidatedBy.java" />
+                </exec>
+
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="HasAnnotation.java" />

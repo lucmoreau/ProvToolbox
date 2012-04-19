@@ -431,5 +431,6 @@ prefix ex <http://example>
           entity(ex:a, [ex:param="ex:foo"%% xsd:QName])
           entity(ex:a, [ex:param='ex:foobar'])
 
+
 endContainer
 

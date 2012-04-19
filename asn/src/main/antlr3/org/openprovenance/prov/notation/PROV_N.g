@@ -332,7 +332,8 @@ time
 literal :
         (STRINGLITERAL -> ^(STRING STRINGLITERAL) |
          INTLITERAL -> ^(INT INTLITERAL) |
-         STRINGLITERAL { qnameDisabled = false; } '%%' datatype -> ^(TYPEDLITERAL STRINGLITERAL datatype))
+         STRINGLITERAL { qnameDisabled = false; } '%%' datatype -> ^(TYPEDLITERAL STRINGLITERAL datatype) |
+         { qnameDisabled = false; } '\'' QNAME '\'' -> ^(TYPEDLITERAL QNAME) | )
 	;
 
 datatype:

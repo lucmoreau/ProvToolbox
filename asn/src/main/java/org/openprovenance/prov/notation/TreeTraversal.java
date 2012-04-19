@@ -302,6 +302,7 @@ public class TreeTraversal {
         case PROV_NParser.ATTRIBUTE:
             Object attr1=convertToken(getTokenString(ast.getChild(0)));
             Object val1=convert(ast.getChild(1));
+
             return c.convertAttribute(attr1,val1);
 
         case PROV_NParser.STRING:
@@ -319,7 +320,15 @@ public class TreeTraversal {
 
         case PROV_NParser.TYPEDLITERAL:
             String v1=convertToken(getTokenString(ast.getChild(0)));
-            String v2=(String)convert(ast.getChild(1));
+            String v2;
+            
+            if (ast.getChild(1)==null) {
+                v2="xsd:QName";
+                v1="\"" + v1 + "\"";
+            } else {
+                v2=(String)convert(ast.getChild(1));
+            }
+
             return c.convertTypedLiteral(v2,v1);
 
         case PROV_NParser.NAMESPACE:

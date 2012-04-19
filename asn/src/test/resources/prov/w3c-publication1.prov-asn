@@ -13,14 +13,14 @@ prefix trans   <http://www.w3.org/2005/08/01-transitions.html#>
 
 
 
-entity(tr:WD-prov-dm-20111018, [ prov:type="process:RecsWD" %% xsd:QName ])
-entity(tr:WD-prov-dm-20111215, [ prov:type="process:RecsWD" %% xsd:QName ])
-entity(process:rec-advance,    [ prov:type="prov:Plan"      %% xsd:QName ])
+entity(tr:WD-prov-dm-20111018, [ prov:type='process:RecsWD' ])
+entity(tr:WD-prov-dm-20111215, [ prov:type='process:RecsWD' ])
+entity(process:rec-advance,    [ prov:type='prov:Plan' ])
 
 
-entity(chairs:2011OctDec/0004, [ prov:type="trans:transreq" %% xsd:QName ])
-entity(email:2011Oct/0141,     [ prov:type="trans:pubreq"   %% xsd:QName ])
-entity(email:2011Dec/0111,     [ prov:type="trans:pubreq"   %% xsd:QName ])
+entity(chairs:2011OctDec/0004, [ prov:type='trans:transreq' ])
+entity(email:2011Oct/0141,     [ prov:type='trans:pubreq' ])
+entity(email:2011Dec/0111,     [ prov:type='trans:pubreq' ])
 
 
 wasDerivedFrom(tr:WD-prov-dm-20111215,tr:WD-prov-dm-20111018)

@@ -188,7 +188,12 @@ public class ASNConstructor implements TreeConstructor {
     }
 
     public Object convertTypedLiteral(String datatype, Object value) {
-        return value + "%%" + datatype;
+        if ("xsd:QName".equals(datatype)) {
+            String val=(String)value;
+            return "'" + val.substring(1, val.length() -1 ) + "'";
+        } else {
+            return value + "%%" + datatype;
+        }
     }
 
    public Object convertNamespace(Object pre, Object iri) {

@@ -63,7 +63,7 @@ public class PubTest
 
     public void testReadASNSaveXML() throws java.io.IOException, java.lang.Throwable {
         String file="src/test/resources/prov/w3c-publication1.prov-asn";
-        testReadASNSaveXML(file,"target/w3c-publication.prov-xml");
+        testReadASNSaveXML(file,"target/w3c-publication1.prov-xml");
     }
 
     public void testReadASNSaveXML(String file, String file2) throws java.io.IOException, java.lang.Throwable {

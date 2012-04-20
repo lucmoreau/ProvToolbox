@@ -8,7 +8,7 @@ import java.util.LinkedList;
 
 public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.NamespacePrefixMapper {
 
-    static final public String PROV_NS="http://openprovenance.org/prov-xml#";
+    static final public String PROV_NS="http://www.w3.org/ns/prov#";
     static final public String XSI_NS="http://www.w3.org/2001/XMLSchema-instance";
     static final public String XSD_NS="http://www.w3.org/2001/XMLSchema";
 

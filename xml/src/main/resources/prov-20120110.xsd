@@ -16,9 +16,9 @@
   -->
 
 
-<xs:schema targetNamespace="http://openprovenance.org/prov-xml#"
+<xs:schema targetNamespace="http://www.w3.org/ns/prov#"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:prov="http://openprovenance.org/prov-xml#"
+           xmlns:prov="http://www.w3.org/ns/prov#"
            xmlns:cu="http://www.w3.org/1999/xhtml/datatypes/"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
@@ -332,6 +332,7 @@
             <xs:element name="wasGeneratedBy"       type="prov:WasGeneratedBy"/>
             <xs:element name="wasStartedBy"         type="prov:WasStartedBy"/>
             <xs:element name="wasEndedBy"           type="prov:WasEndedBy"/>
+            <xs:element name="wasInvalidatedBy"     type="prov:WasInvalidatedBy"/>
             <xs:element name="wasInformedBy"        type="prov:WasInformedBy"/>
             <xs:element name="wasStartedByActivity" type="prov:WasStartedByActivity"/>
 

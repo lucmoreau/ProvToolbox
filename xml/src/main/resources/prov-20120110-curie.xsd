@@ -13,9 +13,9 @@
   -->
 
 
-<xs:schema targetNamespace="http://openprovenance.org/prov-xml#"
+<xs:schema targetNamespace="http://www.w3.org/ns/prov#"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:prov="http://openprovenance.org/prov-xml#"
+           xmlns:prov="http://www.w3.org/ns/prov#"
            xmlns:cu="http://www.w3.org/1999/xhtml/datatypes/"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
@@ -137,6 +137,18 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
   
+  <xs:complexType name="WasInvalidatedBy">
+    <xs:sequence>
+      <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="entity"   type="prov:EntityRef"/>
+      <xs:element name="activity" type="prov:ActivityRef" minOccurs="0"/>
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute ref="prov:id"/>
+  </xs:complexType>
+
   <xs:complexType name="WasInformedBy">
     <xs:sequence>
       <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
@@ -217,6 +229,7 @@
 	<xs:element name="used"               type="prov:Used"/>
 	<xs:element name="wasGeneratedBy"     type="prov:WasGeneratedBy"/>
 	<xs:element name="wasInformedBy"      type="prov:WasInformedBy"/>
+    <xs:element name="wasInvalidatedBy"     type="prov:WasInvalidatedBy"/>
 	<xs:element name="wasDerivedFrom"     type="prov:WasDerivedFrom"/>
 	<xs:element name="wasControlledBy"    type="prov:WasControlledBy"/>
 	<xs:element name="wasAssociatedWith"  type="prov:WasAssociatedWith"/>

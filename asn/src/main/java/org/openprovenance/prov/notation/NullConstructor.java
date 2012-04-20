@@ -34,6 +34,10 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
+    public Object convertWasInvalidatedBy(Object id, Object id2,Object id1, Object time, Object aAttrs) {
+        return null;
+    }
+
     public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {
         return null;
     }

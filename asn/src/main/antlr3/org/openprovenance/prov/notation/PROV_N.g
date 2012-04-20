@@ -87,7 +87,7 @@ record
         (   /* component 1 */
 
            entityExpression | activityExpression | generationExpression  | usageExpression
-         | startExpression | endExpression | communicationExpression | startByActivityExpression
+         | startExpression | endExpression | invalidationExpression | communicationExpression | startByActivityExpression
 
             /* component 2 */
         

@@ -131,6 +131,37 @@ prefix ex <http://example>
           wasEndedBy(-, ex:a1, ex:e1, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
 
+          wasInvalidatedBy(ex:e1, ex:a1, -)
+          wasInvalidatedBy(ex:e1, ex:a1, -, [ex:param1="a", ex:param2="b"])
+          wasInvalidatedBy(ex:e1, ex:a1, 2001-10-26T21:32:52)
+          wasInvalidatedBy(ex:e1, ex:a1, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+          wasInvalidatedBy(ex:e1, -, -)
+          wasInvalidatedBy(ex:e1, -, -, [ex:param1="a", ex:param2="b"])
+          wasInvalidatedBy(ex:e1, -, 2001-10-26T21:32:52)
+          wasInvalidatedBy(ex:e1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasInvalidatedBy(g1, ex:e1, ex:a1, -)
+          wasInvalidatedBy(g1, ex:e1, ex:a1, -, [ex:param1="a", ex:param2="b"])
+          wasInvalidatedBy(g1, ex:e1, ex:a1, 2001-10-26T21:32:52)
+          wasInvalidatedBy(g1, ex:e1, ex:a1, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasInvalidatedBy(g1, ex:e1, -, -)
+          wasInvalidatedBy(g1, ex:e1, -, -, [ex:param1="a", ex:param2="b"])
+          wasInvalidatedBy(g1, ex:e1, -, 2001-10-26T21:32:52)
+          wasInvalidatedBy(g1, ex:e1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+
+          wasInvalidatedBy(-, ex:e1, ex:a1, -)
+          wasInvalidatedBy(-, ex:e1, ex:a1, -, [ex:param1="a", ex:param2="b"])
+          wasInvalidatedBy(-, ex:e1, ex:a1, 2001-10-26T21:32:52)
+          wasInvalidatedBy(-, ex:e1, ex:a1, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasInvalidatedBy(-, ex:e1, -, -)
+          wasInvalidatedBy(-, ex:e1, -, -, [ex:param1="a", ex:param2="b"])
+          wasInvalidatedBy(-, ex:e1, -, 2001-10-26T21:32:52)
+          wasInvalidatedBy(-, ex:e1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+
           wasInformedBy(ex:a1, ex:a2)
           wasInformedBy(ex:a1, ex:a2, [ex:param1="a", ex:param2="b"])
           wasInformedBy(i, ex:a1, ex:a2)

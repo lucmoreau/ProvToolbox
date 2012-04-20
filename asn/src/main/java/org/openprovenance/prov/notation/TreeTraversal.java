@@ -113,6 +113,20 @@ public class TreeTraversal {
             if (ast.getChild(0)==null) return null;
             return getTokenString(ast.getChild(0));
 
+        case PROV_NParser.WINVB:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            time=convert(ast.getChild(3));
+            rAttrs=convert(ast.getChild(4));
+            return c.convertWasInvalidatedBy(uid,id2,id1,time,rAttrs);
+
+
+
         case PROV_NParser.WIB:
             uidTree=ast.getChild(0);
             if (uidTree.getChildCount()>0) {

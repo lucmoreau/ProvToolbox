@@ -120,6 +120,11 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
+    public Object convertWasInvalidatedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
+        String s="wasInvalidatedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," +
+            optional(time) + optionalAttributes(aAttrs) +  ")";
+        return s;
+    }
 
 
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object aAttrs ) {

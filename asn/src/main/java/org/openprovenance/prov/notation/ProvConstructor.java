@@ -19,6 +19,7 @@ import org.openprovenance.prov.xml.Account;
 import org.openprovenance.prov.xml.Container;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasGeneratedBy;
+import org.openprovenance.prov.xml.WasInvalidatedBy;
 import org.openprovenance.prov.xml.WasStartedBy;
 import org.openprovenance.prov.xml.WasStartedByActivity;
 import org.openprovenance.prov.xml.WasInformedBy;
@@ -308,6 +309,29 @@ public  class ProvConstructor implements TreeConstructor {
             
         return s;
     }
+
+    public Object convertWasInvalidatedBy(Object id, Object id2,Object id1, Object time, Object gAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+        Activity a1=(s_id1==null)? null: activityTable.get(s_id1);  //id1 may be null
+        ActivityRef a1r=null;
+        if (a1!=null) a1r=pFactory.newActivityRef(a1);
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+
+        WasInvalidatedBy g=pFactory.newWasInvalidatedBy(s_id,
+                                                        e2r,
+                                                        a1r);
+        List attrs=(List)gAttrs;
+        if (attrs!=null) g.getAny().addAll(attrs);
+        if (time!=null) {
+            g.setTime(pFactory.newISOTime((String)time));
+        }
+            
+        return g;
+    }
+
 
     public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {
         String s_id=(String)id;

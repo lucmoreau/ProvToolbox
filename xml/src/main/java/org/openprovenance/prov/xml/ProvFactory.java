@@ -632,6 +632,22 @@ public class ProvFactory implements CommonURIs {
         return newWasStartedBy(stringToQName(id),aid,eid);
     }
 
+    public WasInvalidatedBy newWasInvalidatedBy(QName id,
+                                                EntityRef eid,
+                                                ActivityRef aid) {
+        WasInvalidatedBy res=of.createWasInvalidatedBy();
+        res.setId(id);
+        res.setEntity(eid);
+        res.setActivity(aid);
+        return res;
+    }
+
+    public WasInvalidatedBy newWasInvalidatedBy(String id,
+                                                EntityRef eid,
+                                                ActivityRef aid) {
+        return newWasInvalidatedBy(stringToQName(id),eid,aid);
+    }
+
 
     public WasStartedByActivity newWasStartedByActivity(QName id,
                                                         ActivityRef started,

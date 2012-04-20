@@ -110,6 +110,12 @@ public class DataLogConstructor implements TreeConstructor {
         return s;
     }
 
+    public Object convertWasInvalidatedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
+        String s="wasInvalidatedBy(" + optionalId(id) + id2 + "," + id1 +
+            optionalTime(time) + optionalAttributes(aAttrs) +  ")";
+        return s;
+    }
+
     public Object convertWasStartedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
         String s="wasStartedBy(" + optionalId(id) + id2 + "," + id1 +
             optionalTime(time) + optionalAttributes(aAttrs) +  ")";

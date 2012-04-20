@@ -294,6 +294,27 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasEndedBy", id, attrs);
     }
 
+	public Object convertWasInvalidatedBy(Object id, Object id2, Object id1,
+			Object time, Object aAttrs) {
+		List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:entity", id2));
+    	if (id2 != null) {
+    		attrs.add(tuple("prov:activity", id1));
+    	}
+    	if (time != null) {
+    		attrs.add(tuple("prov:time", time));
+    	}
+    	if (aAttrs != null) {
+    		attrs.addAll((List<Object>)aAttrs);
+    	}
+    	if (id == null)
+    		id = getBlankID("wINVB");
+
+    	return new ProvRecord("wasInvalidatedBy", id, attrs);
+	}
+
+
+
     public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {
         //todo
         throw new UnsupportedOperationException();

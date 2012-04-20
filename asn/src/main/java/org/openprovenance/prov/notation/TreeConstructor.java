@@ -12,6 +12,7 @@ public interface TreeConstructor {
     public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs);
     public Object convertWasStartedBy(Object id, Object id2,Object id1, Object time, Object aAttrs);
     public Object convertWasEndedBy(Object id, Object id2,Object id1, Object time, Object aAttrs);
+    public Object convertWasInvalidatedBy(Object id, Object id2,Object id1, Object time, Object aAttrs);
     public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs);
     public Object convertWasStartedByActivity(Object id, Object id2, Object id1, Object aAttrs);
 

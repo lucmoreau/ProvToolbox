@@ -193,6 +193,19 @@ public class BeanTreeConstructor implements BeanConstructor{
                                        c.convertAttributes(attrs));
     }
 
+    public Object convertWasInvalidatedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
+        List attrs=new LinkedList();
+        attrs.addAll(tAttrs2);
+        attrs.addAll(otherAttrs);
+        return c.convertWasInvalidatedBy(id,
+                                         entity,
+                                         activity,
+                                         null,//time
+                                         c.convertAttributes(attrs));
+    }
+
 
     public Object convertContainer(Object namespaces,
                                    List<Object> aRecords,

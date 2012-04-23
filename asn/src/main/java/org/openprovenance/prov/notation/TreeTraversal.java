@@ -313,7 +313,7 @@ public class TreeTraversal {
             uid=convert(uidTree);
             id2=convert(ast.getChild(1));
             keymap=convert(ast.getChild(2));
-            Object complete=ast.getChild(3); // no convert();
+            Object complete=convert(ast.getChild(3));
             dAttrs=convert(ast.getChild(4));
             return c.convertMemberOf(uid,id2,keymap,complete,dAttrs);
 
@@ -440,7 +440,15 @@ public class TreeTraversal {
             return c.convertNamespaces(namespaces);
 
 
+        case PROV_NParser.TRUE:
+            return true;
+        case PROV_NParser.FALSE:
+            return false;
+        case PROV_NParser.UNKNOWN:
+            return null;
+
         }
+
 
         return null;
 

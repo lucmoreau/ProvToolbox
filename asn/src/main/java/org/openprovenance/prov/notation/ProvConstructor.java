@@ -737,7 +737,7 @@ public  class ProvConstructor implements TreeConstructor {
 					   e2r,
 					   null);
 	List attrs=(List)dAttrs;
-        mo.getAny().addAll(attrs);
+        if (attrs!=null) mo.getAny().addAll(attrs);
 
 	return mo;
     }

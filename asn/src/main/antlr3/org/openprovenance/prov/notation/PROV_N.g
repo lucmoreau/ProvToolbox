@@ -23,7 +23,7 @@ tokens {
     /* Component 4 */
     SPECIALIZATION; ALTERNATE; 
     /* Component 5 */
-    DBIF; DBRF; KES; KEYS; VALUES; MEM;
+    DBIF; DBRF; KES; KEYS; VALUES; MEM; TRUE; FALSE; UNKNOWN;
     /* Component 6 */
     NOTE; HAN;
 }
@@ -285,8 +285,15 @@ removalExpression
 
 /* TODO: specify complete as optional boolean */
 membershipExpression
-	:	'memberOf' '('  ((id0=identifier | '-') ',')?  id1=identifier ',' keyEntitySet (id2=identifier)? optionalAttributeValuePairs ')'
-      -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(ID $id2?) optionalAttributeValuePairs)
+	:	( 'memberOf' '('  ((id0=identifier | '-') ',')?  id1=identifier ',' keyEntitySet ',' 'true' optionalAttributeValuePairs ')'
+      -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(TRUE) optionalAttributeValuePairs)
+         |          
+          'memberOf' '('  ((id0=identifier | '-') ',')?  id1=identifier ',' keyEntitySet ',' 'false' optionalAttributeValuePairs ')'
+      -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(FALSE) optionalAttributeValuePairs)
+         |          
+          'memberOf' '('  ((id0=identifier | '-') ',')?  id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
+      -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(UNKNOWN) optionalAttributeValuePairs)
+        )
 	;
 
 keyEntitySet

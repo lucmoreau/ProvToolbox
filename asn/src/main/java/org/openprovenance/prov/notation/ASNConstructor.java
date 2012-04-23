@@ -239,7 +239,7 @@ public class ASNConstructor implements TreeConstructor {
     public Object convertMemberOf(Object id, Object id2, Object kes, Object complete, Object mAttrs) {
 
         String s="memberOf(" + optionalId(id) + id2 + ", "
-	    + kes + optional(complete) + optionalAttributes(mAttrs) +  ")";
+	    + kes + ((complete==null)? "" : ", "+complete) + optionalAttributes(mAttrs) +  ")";
 	return s;
 
     }

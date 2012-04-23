@@ -28,13 +28,6 @@ public class ProvFactory implements CommonURIs {
 	return u.toString();
     }
 
-    public static String roleIdPrefix="r_";
-    public static String usedIdPrefix="u_";
-    public static String wasGenerateByIdPrefix="g_";
-    public static String wasDerivedFromIdPrefix="d_";
-    public static String wasTriggeredByIdPrefix="t_";
-    public static String wasControlledByIdPrefix="c_";
-    public static String containerIdPrefix="gr_";
 
     public static final String packageList=
         "org.openprovenance.prov.xml";
@@ -103,7 +96,7 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    QName stringToQName(String id) {
+    public QName stringToQName(String id) {
         if (id==null) return null;
         int index=id.indexOf(':');
         if (index==-1) {
@@ -198,11 +191,6 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public DependencyRef newDependencyRef(WasControlledBy edge) {
-        DependencyRef res=of.createDependencyRef();
-        res.setRef(edge.getId());
-        return res;
-    }
     public DependencyRef newDependencyRef(WasInformedBy edge) {
         DependencyRef res=of.createDependencyRef();
         res.setRef(edge.getId());
@@ -243,7 +231,7 @@ public class ProvFactory implements CommonURIs {
                           String label) {
         Agent res=of.createAgent();
         res.setId(ag);
-        if (label!=null) addLabel(res,label);
+        if (label!=null) res.setLabel(label);
         return res;
     }
     public Agent newAgent(String ag,
@@ -352,7 +340,7 @@ public class ProvFactory implements CommonURIs {
                         String role,
                         EntityRef aid) {
         Used res=of.createUsed();
-        res.setId(stringToQName(autoGenerateId(usedIdPrefix,id)));
+        res.setId(stringToQName(id));
         res.setActivity(pid);
         addRole(res,role);
         res.setEntity(aid);
@@ -371,23 +359,18 @@ public class ProvFactory implements CommonURIs {
         return res;
     }
 
-    public WasComplementOf newWasComplementOf(String id,
-                                              EntityRef eid2,
-                                              EntityRef eid1) {
-        WasComplementOf res=of.createWasComplementOf();
-        res.setId(stringToQName(id));
+    public AlternateOf newAlternateOf(EntityRef eid2,
+                                      EntityRef eid1) {
+        AlternateOf res=of.createAlternateOf();
         res.setEntity2(eid2);
         res.setEntity1(eid1);
         return res;
     }
-
-    public WasComplementOf newWasComplementOf(QName id,
-                        EntityRef eid2,
-                        EntityRef eid1) {
-        WasComplementOf res=of.createWasComplementOf();
-        res.setId(id);
-        res.setEntity2(eid2);
-        res.setEntity1(eid1);
+    public SpecializationOf newSpecializationOf(EntityRef eid2,
+                                                EntityRef eid1) {
+        SpecializationOf res=of.createSpecializationOf();
+        res.setSpecializedEntity(eid2);
+        res.setGeneralEntity(eid1);
         return res;
     }
 
@@ -414,34 +397,147 @@ public class ProvFactory implements CommonURIs {
     }
 
 
-    public void addRole(HasExtensibility a,                                  
-                        String role) {
-        if (role!=null) {
-            // addAttribute(a,
-            //              "http://openprovenance.org/prov/xml#",
-            //              "prov",
-            //              "role",
-            //              role);
-            TypedLiteral tl=newTypedLiteral(role);
-            //TypedLiteral tl=newTypedLiteral(role,"xsd:string");
-            JAXBElement<TypedLiteral> je=of.createRole(tl);
-            addAttribute(a,je);
-        }
+    public WasAssociatedWith newWasAssociatedWith(String id,
+                                                  Activity eid2,
+                                                  Agent eid1) {
+        return newWasAssociatedWith(id,newActivityRef(eid2.getId()),newAgentRef(eid1.getId()));
     }
-    
-    public TypedLiteral newTypedLiteral(Object value) {
-        TypedLiteral res=of.createTypedLiteral();
-        res.setValue(value);
+
+    public WasAssociatedWith newWasAssociatedWith(QName id,
+                                                  Activity eid2,
+                                                  Agent eid1) {
+        return newWasAssociatedWith(id,newActivityRef(eid2.getId()),newAgentRef(eid1.getId()));
+    }
+
+
+
+    public ActedOnBehalfOf newActedOnBehalfOf(String id,
+                                              AgentRef subordinate,
+                                              AgentRef responsible,
+                                              ActivityRef eid2) {
+        ActedOnBehalfOf res=of.createActedOnBehalfOf();
+        res.setId(stringToQName(id));
+        res.setActivity(eid2);
+        res.setSubordinate(subordinate);
+        res.setResponsible(responsible);
         return res;
     }
 
-    public OldTypedLiteral newOldTypedLiteral(String value,
-					   String type) {
-        OldTypedLiteral res=of.createOldTypedLiteral();
-        res.setValue(value);
-        res.setType(stringToQName(type));
+    public ActedOnBehalfOf newActedOnBehalfOf(QName id,
+                                              AgentRef subordinate,
+                                              AgentRef responsible,
+                                              ActivityRef eid2) {
+        ActedOnBehalfOf res=of.createActedOnBehalfOf();
+        res.setId(id);
+        res.setActivity(eid2);
+        res.setSubordinate(subordinate);
+        res.setResponsible(responsible);
         return res;
     }
+
+    public WasRevisionOf newWasRevisionOf(String id,
+                                          EntityRef newer,
+                                          EntityRef older,
+                                          AgentRef eid2) {
+        WasRevisionOf res=of.createWasRevisionOf();
+        res.setId(stringToQName(id));
+        res.setResponsibility(eid2);
+        res.setNewer(newer);
+        res.setOlder(older);
+        return res;
+    }
+
+    public WasRevisionOf newWasRevisionOf(QName id,
+                                          EntityRef newer,
+                                          EntityRef older,
+                                          AgentRef eid2) {
+        WasRevisionOf res=of.createWasRevisionOf();
+        res.setId(id);
+        res.setResponsibility(eid2);
+        res.setNewer(newer);
+        res.setOlder(older);
+        return res;
+    }
+
+
+    public WasQuotedFrom newWasQuotedFrom(String id,
+                                          EntityRef quote,
+                                          EntityRef original,
+                                          AgentRef quoterAgent,
+                                          AgentRef quotedAgent) {
+        WasQuotedFrom res=of.createWasQuotedFrom();
+        res.setId(stringToQName(id));
+        res.setQuote(quote);
+        res.setOriginal(original);
+        res.setQuoterAgent(quoterAgent);
+        res.setQuotedAgent(quotedAgent);
+        return res;
+    }
+
+    public WasQuotedFrom newWasQuotedFrom(QName id,
+                                          EntityRef quote,
+                                          EntityRef original,
+                                          AgentRef quoterAgent,
+                                          AgentRef quotedAgent) {
+        WasQuotedFrom res=of.createWasQuotedFrom();
+        res.setId(id);
+        res.setQuote(quote);
+        res.setOriginal(original);
+        res.setQuoterAgent(quoterAgent);
+        res.setQuotedAgent(quotedAgent);
+        return res;
+    }
+
+
+    public TracedTo newTracedTo(String id,
+                                EntityRef entity,
+                                EntityRef ancestor) {
+        TracedTo res=of.createTracedTo();
+        res.setId(stringToQName(id));
+        res.setEntity(entity);
+        res.setAncestor(ancestor);
+        return res;
+    }
+
+    public TracedTo newTracedTo(QName id,
+                                EntityRef entity,
+                                EntityRef ancestor) {
+        TracedTo res=of.createTracedTo();
+        res.setId(id);
+        res.setEntity(entity);
+        res.setAncestor(ancestor);
+        return res;
+    }
+
+    public HadOriginalSource newHadOriginalSource(String id,
+                                                  EntityRef derived,
+                                                  EntityRef source) {
+        HadOriginalSource res=of.createHadOriginalSource();
+        res.setId(stringToQName(id));
+        res.setDerived(derived);
+        res.setSource(source);
+        return res;
+    }
+
+    public HadOriginalSource newHadOriginalSource(QName id,
+                                                  EntityRef derived,
+                                                  EntityRef source) {
+        HadOriginalSource res=of.createHadOriginalSource();
+        res.setId(id);
+        res.setDerived(derived);
+        res.setSource(source);
+        return res;
+    }
+
+
+    public void addRole(HasRole a,                                  
+                        Object role) {
+        if (role!=null) {
+            a.getRole().add(role);
+        }
+    }
+
+    
 
     public Used newUsed(Activity p,
                         String role,
@@ -479,15 +575,6 @@ public class ProvFactory implements CommonURIs {
         return u1;
     }
 
-    public WasControlledBy newWasControlledBy(WasControlledBy c) {
-        WasControlledBy wcb=newWasControlledBy(c.getEffect(),
-                                               null,
-                                               c.getCause());
-        wcb.setId(c.getId());
-        wcb.getAny().addAll(c.getAny());
-        return wcb;
-    }
-
     public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
         WasGeneratedBy wgb=newWasGeneratedBy(g.getId(),
                                              g.getEntity(),
@@ -500,8 +587,8 @@ public class ProvFactory implements CommonURIs {
 
     public WasDerivedFrom newWasDerivedFrom(WasDerivedFrom d) {
         WasDerivedFrom wdf=newWasDerivedFrom(d.getId(),
-                                             d.getEffect(),
-                                             d.getCause());
+                                             d.getGeneratedEntity(),
+                                             d.getUsedEntity());
         wdf.getAny().addAll(d.getAny());
         return wdf;
     }
@@ -528,6 +615,89 @@ public class ProvFactory implements CommonURIs {
         addRole(res,role);
         return res;
     }
+
+    public WasStartedBy newWasStartedBy(QName id,
+                                        ActivityRef aid,
+                                        EntityRef eid) {
+        WasStartedBy res=of.createWasStartedBy();
+        res.setId(id);
+        res.setActivity(aid);
+        res.setTrigger(eid);
+        return res;
+    }
+
+    public WasStartedBy newWasStartedBy(String id,
+                                        ActivityRef aid,
+                                        EntityRef eid) {
+        return newWasStartedBy(stringToQName(id),aid,eid);
+    }
+
+    public WasInvalidatedBy newWasInvalidatedBy(QName id,
+                                                EntityRef eid,
+                                                ActivityRef aid) {
+        WasInvalidatedBy res=of.createWasInvalidatedBy();
+        res.setId(id);
+        res.setEntity(eid);
+        res.setActivity(aid);
+        return res;
+    }
+
+    public WasInvalidatedBy newWasInvalidatedBy(String id,
+                                                EntityRef eid,
+                                                ActivityRef aid) {
+        return newWasInvalidatedBy(stringToQName(id),eid,aid);
+    }
+
+
+    public WasStartedByActivity newWasStartedByActivity(QName id,
+                                                        ActivityRef started,
+                                                        ActivityRef starter) {
+        WasStartedByActivity res=of.createWasStartedByActivity();
+        res.setId(id);
+        res.setStarted(started);
+        res.setStarter(starter);
+        return res;
+    }
+
+    public WasStartedByActivity newWasStartedByActivity(String id,
+                                                        ActivityRef started,
+                                                        ActivityRef starter) {
+        return newWasStartedByActivity(stringToQName(id),started,starter);
+    }
+
+    public WasEndedBy newWasEndedBy(QName id,
+                                    ActivityRef aid,
+                                    EntityRef eid) {
+        WasEndedBy res=of.createWasEndedBy();
+        res.setId(id);
+        res.setActivity(aid);
+        res.setTrigger(eid);
+        return res;
+    }
+
+    public WasEndedBy newWasEndedBy(String id,
+                                    ActivityRef aid,
+                                    EntityRef eid) {
+        return newWasEndedBy(stringToQName(id),aid,eid);
+    }
+
+
+    public WasAttributedTo newWasAttributedTo(QName id,
+                                              EntityRef eid,
+                                              AgentRef agid) {
+        WasAttributedTo res=of.createWasAttributedTo();
+        res.setId(id);
+        res.setEntity(eid);
+        res.setAgent(agid);
+        return res;
+    }
+
+    public WasAttributedTo newWasAttributedTo(String id,
+                                              EntityRef eid,
+                                              AgentRef agid) {
+        return newWasAttributedTo(stringToQName(id),eid,agid);
+    }
+
 
     public WasGeneratedBy newWasGeneratedBy(String id,
                                             EntityRef aid,
@@ -575,33 +745,9 @@ public class ProvFactory implements CommonURIs {
         return wgb;
     }
 
-    public WasControlledBy newWasControlledBy(ActivityRef pid,
-                                              String role,
-                                              AgentRef agid) {
-        return newWasControlledBy((QName)null,pid,role,agid);
-    }
-    
-    public WasControlledBy newWasControlledBy(QName id,
-                                              ActivityRef pid,
-                                              String role,
-                                              AgentRef agid) {
-        WasControlledBy res=of.createWasControlledBy();
-        res.setId(id);
-        res.setEffect(pid);
-        res.setCause(agid);
-        addRole(res,role);
-        return res;
-    }
-    public WasControlledBy newWasControlledBy(String id,
-                                              ActivityRef pid,
-                                              String role,
-                                              AgentRef agid) {
-        return newWasControlledBy(stringToQName(id),pid,role,agid);
-    }
-
 
     public HasAnnotation newHasAnnotation(Identifiable i,
-					    Note n) {
+                                          Note n) {
 	HasAnnotation res=of.createHasAnnotation();
 	res.setThing(newNoteRef(i.getId()));
 	res.setNote(newNoteRef(n));
@@ -609,36 +755,19 @@ public class ProvFactory implements CommonURIs {
     }
 
     public HasAnnotation newHasAnnotation(Identifiable i,
-					  String n) {
+                                          String n) {
 	HasAnnotation res=of.createHasAnnotation();
 	res.setThing(newNoteRef(i.getId())); // note, this id is not necessarily of a note
 	res.setNote(newNoteRef(n));
 	return res;
     }
 
-    public WasControlledBy newWasControlledBy(Activity p,
-                                              String role,
-                                              Agent ag) {
-        return newWasControlledBy(null,p,role,ag);
-    }
-
-    public WasControlledBy newWasControlledBy(String id,
-                                              Activity p,
-                                              String role,
-                                              Agent ag) {
-        AgentRef agid=newAgentRef(ag);
-        ActivityRef pid=newActivityRef(p);
-        return  newWasControlledBy(id,pid,role,agid);
-    }
-
-    public WasControlledBy newWasControlledBy(String id,
-                                              Activity p,
-                                              String role,
-                                              Agent ag,
-                                              String type) {
-        WasControlledBy wcb=newWasControlledBy(id,p,role,ag);
-        addType(wcb,type);
-        return wcb;
+    public HasAnnotation newHasAnnotation(String n1,
+                                          String n) {
+	HasAnnotation res=of.createHasAnnotation();
+	res.setThing(newNoteRef(n1));
+	res.setNote(newNoteRef(n));
+	return res;
     }
 
 
@@ -647,8 +776,8 @@ public class ProvFactory implements CommonURIs {
                                             EntityRef aid2) {
         WasDerivedFrom res=of.createWasDerivedFrom();
         res.setId(id);
-        res.setCause(aid2);
-        res.setEffect(aid1);
+        res.setUsedEntity(aid2);
+        res.setGeneratedEntity(aid1);
         return res;
     }
     public WasDerivedFrom newWasDerivedFrom(String id,
@@ -666,8 +795,8 @@ public class ProvFactory implements CommonURIs {
                                             DependencyRef did2) {
         WasDerivedFrom res=of.createWasDerivedFrom();
         res.setId(id);
-        res.setCause(aid2);
-        res.setEffect(aid1);
+        res.setUsedEntity(aid2);
+        res.setGeneratedEntity(aid1);
         res.setActivity(aid);
         res.setGeneration(did1);
         res.setUsage(did2);
@@ -795,7 +924,7 @@ public class ProvFactory implements CommonURIs {
     */
 
 
-    public void addType(HasExtensibility a,
+    public void addTypeOLD(HasExtensibility a,
                         URI type) {
 
 	URIWrapper u=new URIWrapper();
@@ -804,7 +933,21 @@ public class ProvFactory implements CommonURIs {
         addAttribute(a,je);
     }
 
-    public void addType(HasExtensibility a,
+    public void addType(HasType a,
+                        URI type) {
+        URIWrapper u=new URIWrapper();
+        u.setValue(type);
+        a.getType().add(u);
+    }
+
+
+    public void addType(HasType a,
+                        Object type) {
+
+        a.getType().add(type);
+    }
+
+    public void addTypeOLD(HasExtensibility a,
                         Object type) {
 
         //TypedLiteral tl=newTypedLiteral(type);
@@ -907,7 +1050,7 @@ public class ProvFactory implements CommonURIs {
         }
         if (lks!=null) {
             Dependencies ccls=of.createDependencies();
-            ccls.getUsedOrWasGeneratedByOrWasInformedBy().addAll(lks);
+            ccls.getUsedOrWasGeneratedByOrWasStartedBy().addAll(lks);
             res.getRecords().setDependencies(ccls);
         }
 
@@ -1015,21 +1158,22 @@ public class ProvFactory implements CommonURIs {
     }
 
     public String getLabel(HasExtensibility e) {
-        /** not good way of doing it. We should have interface for this. */
-        if (e instanceof Entity) return ((Entity)e).getLabel();
-        if (e instanceof Activity) return ((Activity)e).getLabel();
-        if (e instanceof Agent) return ((Agent)e).getLabel();
+
+        if (e instanceof HasLabel) return ((HasLabel)e).getLabel();
         for (Object o: e.getAny()) {
             
         }
         return "pFact: label TODO";
     }
 
-    public String getType(HasExtensibility e) {
+    public List<Object> getType(HasExtensibility e) {
+        if (e instanceof HasType) return ((HasType)e).getType();
         for (Object o: e.getAny()) {
             
         }
-        return "pFact: type TODO";
+        List<Object> res=new LinkedList();
+        res.add("pFact: type TODO");
+        return res;
     }
 
     public String getRole(HasExtensibility e) {

@@ -23,7 +23,7 @@ tokens {
     /* Component 4 */
     SPECIALIZATION; ALTERNATE; 
     /* Component 5 */
-    DBIF; DBRF; MAP; KEYS; VALUES; MEM;
+    DBIF; DBRF; KES; KEYS; VALUES; MEM;
     /* Component 6 */
     NOTE; HAN;
 }
@@ -274,8 +274,8 @@ TODO: literal used in these production needs to disable qname, to allow for intl
 */
 
 insertionExpression
-	:	'derivedByInsertionFrom' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier ',' keyEntityMap optionalAttributeValuePairs ')'
-      -> ^(DBIF ^(ID $id0?) $id2 $id1 keyEntityMap  optionalAttributeValuePairs)
+	:	'derivedByInsertionFrom' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
+      -> ^(DBIF ^(ID $id0?) $id2 $id1 keyEntitySet  optionalAttributeValuePairs)
 	;
 
 removalExpression
@@ -284,13 +284,13 @@ removalExpression
 	;
 
 membershipExpression
-	:	'memberOf' '('  ((id0=identifier | '-') ',')?  id1=identifier ',' keyEntityMap optionalAttributeValuePairs ')'
-      -> ^(MEM ^(ID $id0?) $id1 keyEntityMap  optionalAttributeValuePairs)
+	:	'memberOf' '('  ((id0=identifier | '-') ',')?  id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
+      -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  optionalAttributeValuePairs)
 	;
 
-keyEntityMap
+keyEntitySet
     : '{'  '(' literal ',' val=identifier  ')' ( ','  '(' literal ',' val=identifier  ')' )* '}'
-      -> ^(MAP ^(KEYS literal+) ^(VALUES identifier+))
+      -> ^(KES ^(KEYS literal+) ^(VALUES identifier+))
     ;
 
 /* TODO */

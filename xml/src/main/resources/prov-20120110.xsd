@@ -272,6 +272,27 @@
   
   <!-- Component 5 -->
 
+  <xs:complexType name="DerivedByInsertionFrom">
+    <xs:sequence>
+      <xs:element name="after"           type="prov:EntityRef"/>
+      <xs:element name="before"          type="prov:EntityRef"/>
+      <xs:element name="complete"        type="xs:boolean"/>
+      <xs:element name="key-entity-set"  type="prov:Entry" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute ref="prov:id"/>
+  </xs:complexType>
+
+  <xs:element name="key"  type="xs:anySimpleType"/>
+
+  <xs:complexType name="Entry">
+    <xs:sequence>
+      <xs:element ref="prov:key"  minOccurs="1" maxOccurs="1"/>
+      <xs:element name="entity"   type="prov:EntityRef" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
 
   <!-- Component 6 -->
   
@@ -348,6 +369,9 @@
 
             <xs:element name="alternateOf"          type="prov:AlternateOf"/>
             <xs:element name="specializationOf"     type="prov:SpecializationOf"/>
+
+
+            <xs:element name="derivedByInsertionFrom" type="prov:DerivedByInsertionFrom"/>
 
             <xs:element name="hasAnnotation"        type="prov:HasAnnotation"/>
       </xs:choice>

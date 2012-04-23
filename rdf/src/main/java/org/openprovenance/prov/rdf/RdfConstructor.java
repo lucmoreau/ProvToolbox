@@ -273,6 +273,35 @@ public class RdfConstructor implements TreeConstructor {
         return s.substring(1,s.length()-1);
     }
 
+
+   /* Component 5 */
+
+    public Object convertInsertion(Object id, Object id2, Object id1, Object map, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
+    public Object convertEntry(Object o1, Object o2) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
+    public Object convertKeyEntitySet(List<Object> o) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
+    public Object convertRemoval(Object id, Object id2, Object id1, Object keys, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
+    public Object convertMembership(Object id, Object id2, Object keys, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
+
    /* Component 6 */
 
     public Object convertNote(Object id, Object attrs) {

@@ -91,6 +91,19 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
     /* Component 5 */
+
+    public Object convertInsertion(Object id, Object id2, Object id1, Object map, Object dAttrs) {
+	return null;
+    }
+
+    public Object convertEntry(Object o1, Object o2) {
+	return null;
+    }
+
+    public Object convertKeyEntitySet(List<Object> o) {
+	return null;
+    }
+
     /* Component 6 */
 
     public Object convertNote(Object id, Object attrs) {

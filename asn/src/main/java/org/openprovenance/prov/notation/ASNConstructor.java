@@ -221,6 +221,44 @@ public class ASNConstructor implements TreeConstructor {
         return pre;
     }
 
+    /* Component 5 */
+
+    public Object convertInsertion(Object id, Object id2, Object id1, Object kes, Object iAttrs) {
+        String s="derivedByInsertionFrom(" + optionalId(id) + id2 + ", " + id1 + ", "
+	    + kes + optionalAttributes(iAttrs) +  ")";
+	return s;
+    }
+
+
+
+    public Object convertEntry(Object o1, Object o2) {
+        String s="{" + o1 + ", " + o2 + "}";
+	return s;
+    }
+
+    public Object convertKeyEntitySet(List<Object> entries) {
+        String s="{";
+
+	boolean first=true;
+
+	for (Object entry: entries) {
+	    if (!first) {
+		s=s+", ";
+	    } else {
+		first=false;
+	    }
+
+
+	    s=s + entry;
+	}
+	s=s+"}";
+	return s;
+    }
+
+
+
+
+
     /* Component 6 */
 
     public Object convertNote(Object id, Object attrs) {

@@ -530,6 +530,39 @@ public class ProvFactory implements CommonURIs {
     }
 
 
+    public Entry newEntry(Object key,
+			  EntityRef entity) {
+        Entry res=of.createEntry();
+        res.setKey(key);
+        res.setEntity(entity);
+        return res;
+    }
+
+    public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
+							    EntityRef after,
+							    EntityRef before,
+							    List<Entry> keyEntitySet) {
+        DerivedByInsertionFrom res=of.createDerivedByInsertionFrom();
+        res.setId(id);
+        res.setAfter(after);
+        res.setBefore(before);
+	if (keyEntitySet!=null) res.getKeyEntitySet().addAll(keyEntitySet);
+        return res;
+    }
+
+
+    public DerivedByInsertionFrom newDerivedByInsertionFrom(String id,
+							    EntityRef after,
+							    EntityRef before,
+							    List<Entry> keyEntitySet) {
+        return newDerivedByInsertionFrom(stringToQName(id),
+					 after,
+					 before,
+					 keyEntitySet);
+    }
+
+
+
     public void addRole(HasRole a,                                  
                         Object role) {
         if (role!=null) {

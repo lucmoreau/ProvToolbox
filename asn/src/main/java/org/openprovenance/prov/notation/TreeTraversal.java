@@ -279,6 +279,52 @@ public class TreeTraversal {
 
             /* Component 5 */
 
+        case PROV_NParser.DBIF:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            Object keymap=convert(ast.getChild(3));
+            dAttrs=convert(ast.getChild(4));
+            return c.convertInsertion(uid,id2,id1,keymap,dAttrs);
+
+        case PROV_NParser.KEYS:
+            List<Object> keys=new LinkedList();
+            for (int i=0; i< ast.getChildCount(); i++) {
+                Object o=convert(ast.getChild(i));
+                keys.add(o);
+            }
+            return keys;
+
+
+        case PROV_NParser.VALUES:
+            List<Object> values=new LinkedList();
+            for (int i=0; i< ast.getChildCount(); i++) {
+                Object o=convert(ast.getChild(i));
+                values.add(o);
+            }
+            return values;
+
+        case PROV_NParser.KES:
+            Object keys1=convert(ast.getChild(0));
+            Object entities=convert(ast.getChild(1));
+
+	    keys=(List)keys1;
+	    values=(List)entities;
+	    List entries=new LinkedList();
+	    int ii=0;
+	    for (Object key : keys) {
+		Object value=values.get(ii);
+		entries.add(c.convertEntry(key,value));
+		ii++;
+	    }
+
+            return c.convertKeyEntitySet(entries);
+
+
             /* Component 6 */
 
         case PROV_NParser.NOTE:

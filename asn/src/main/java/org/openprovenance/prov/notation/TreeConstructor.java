@@ -1,6 +1,7 @@
 package org.openprovenance.prov.notation;
 import java.util.List;
 
+
 public interface TreeConstructor {
     /* Component 1 */
 
@@ -37,6 +38,11 @@ public interface TreeConstructor {
     public Object convertSpecializationOf(Object id2,Object id1);
 
     /* Component 5 */
+    public Object convertInsertion(Object id, Object id2, Object id1, Object map, Object dAttrs);
+    public Object convertEntry(Object o1, Object o2);
+    public Object convertKeyEntitySet(List<Object> o);
+
+
     /* Component 6 */
 
     public Object convertNote(Object id, Object attrs);

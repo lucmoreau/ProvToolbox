@@ -29,6 +29,8 @@ import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.WasAttributedTo;
 import org.openprovenance.prov.xml.WasRevisionOf;
 import org.openprovenance.prov.xml.WasQuotedFrom;
+import org.openprovenance.prov.xml.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.Entry;
 import org.openprovenance.prov.xml.HadOriginalSource;
 import org.openprovenance.prov.xml.TracedTo;
 import org.openprovenance.prov.xml.AlternateOf;
@@ -675,6 +677,46 @@ public  class ProvConstructor implements TreeConstructor {
     public Object convertPrefix(String pre) {
         return pre;
     }
+
+
+    /* Component 5 */
+
+    public Object convertInsertion(Object id, Object id2, Object id1, Object map, Object dAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+        Entity e1=entityTable.get(s_id1);
+        EntityRef e1r=pFactory.newEntityRef(e1);
+
+	DerivedByInsertionFrom dbif=pFactory.newDerivedByInsertionFrom(s_id,
+								       e2r,
+								       e1r,
+								       null);
+	List attrs=(List)dAttrs;
+        dbif.getAny().addAll(attrs);
+
+	return dbif;
+    }
+
+
+    public Object convertEntry(Object o1, Object o2) {
+        String s_id=(String)o2;
+
+        Entity e=entityTable.get(s_id);
+        EntityRef er=pFactory.newEntityRef(e);
+	
+	return pFactory.newEntry(o1,er);
+    }
+
+
+    public Object convertKeyEntitySet(List<Object> entries) {
+	return entries;
+    }
+
+    /* Component 6 */
 
     public Object convertNote(Object id, Object attrs) {
         String s_id=(String)id;

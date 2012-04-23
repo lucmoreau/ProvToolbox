@@ -310,6 +310,12 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="DerivedByInsertionFrom.java" />
+                </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/implements Equals, HashCode, ToString/implements Ref, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="EntityRef.java" />

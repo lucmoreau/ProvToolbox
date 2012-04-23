@@ -244,6 +244,10 @@ public class DataLogConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
 
+    public Object convertKeys(List<Object> keys) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
 
 
    /* Component 6 */

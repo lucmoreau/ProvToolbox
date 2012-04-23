@@ -291,6 +291,20 @@ public class TreeTraversal {
             dAttrs=convert(ast.getChild(4));
             return c.convertInsertion(uid,id2,id1,keymap,dAttrs);
 
+
+        case PROV_NParser.DBRF:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            id1=convert(ast.getChild(2));
+            Object keyset=convert(ast.getChild(3));
+	    Object keylist=c.convertKeys((List)keyset);
+            dAttrs=convert(ast.getChild(4));
+            return c.convertRemoval(uid,id2,id1,keylist,dAttrs);
+
         case PROV_NParser.KEYS:
             List<Object> keys=new LinkedList();
             for (int i=0; i< ast.getChildCount(); i++) {

@@ -30,6 +30,8 @@ import org.openprovenance.prov.xml.WasAttributedTo;
 import org.openprovenance.prov.xml.WasRevisionOf;
 import org.openprovenance.prov.xml.WasQuotedFrom;
 import org.openprovenance.prov.xml.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.DerivedByRemovalFrom;
+import org.openprovenance.prov.xml.MemberOf;
 import org.openprovenance.prov.xml.Entry;
 import org.openprovenance.prov.xml.HadOriginalSource;
 import org.openprovenance.prov.xml.TracedTo;
@@ -702,6 +704,28 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
 
+    public Object convertRemoval(Object id, Object id2, Object id1, Object keyset, Object dAttrs) {
+
+	String s_id=(String)id;
+        String s_id2=(String)id2;
+        String s_id1=(String)id1;
+
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+        Entity e1=entityTable.get(s_id1);
+        EntityRef e1r=pFactory.newEntityRef(e1);
+
+	DerivedByRemovalFrom dbrf=pFactory.newDerivedByRemovalFrom(s_id,
+								   e2r,
+								   e1r,
+								   null);
+	List attrs=(List)dAttrs;
+        dbrf.getAny().addAll(attrs);
+
+	return dbrf;
+    }
+
+
     public Object convertEntry(Object o1, Object o2) {
         String s_id=(String)o2;
 
@@ -714,6 +738,10 @@ public  class ProvConstructor implements TreeConstructor {
 
     public Object convertKeyEntitySet(List<Object> entries) {
 	return entries;
+    }
+
+    public Object convertKeys(List<Object> keys) {
+	return keys;
     }
 
     /* Component 6 */

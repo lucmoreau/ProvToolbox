@@ -277,12 +277,35 @@
       <xs:element name="after"           type="prov:EntityRef"/>
       <xs:element name="before"          type="prov:EntityRef"/>
       <xs:element name="complete"        type="xs:boolean"/>
-      <xs:element name="key-entity-set"  type="prov:Entry" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element name="entry"           type="prov:Entry" minOccurs="1" maxOccurs="unbounded"/>
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
+
+  <xs:complexType name="DerivedByRemovalFrom">
+    <xs:sequence>
+      <xs:element name="after"    type="prov:EntityRef"/>
+      <xs:element name="before"   type="prov:EntityRef"/>
+      <xs:element name="key"      type="xs:anySimpleType" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute ref="prov:id"/>
+  </xs:complexType>
+
+  <xs:complexType name="MemberOf">
+    <xs:sequence>
+      <xs:element name="entity"          type="prov:EntityRef"/>
+      <xs:element name="complete"        type="xs:boolean"/>
+      <xs:element name="entry"           type="prov:Entry" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute ref="prov:id"/>
+  </xs:complexType>
+
 
   <xs:element name="key"  type="xs:anySimpleType"/>
 
@@ -372,6 +395,8 @@
 
 
             <xs:element name="derivedByInsertionFrom" type="prov:DerivedByInsertionFrom"/>
+            <xs:element name="derivedByRemovalFrom"   type="prov:DerivedByRemovalFrom"/>
+            <xs:element name="memberOf"               type="prov:MemberOf"/>
 
             <xs:element name="hasAnnotation"        type="prov:HasAnnotation"/>
       </xs:choice>

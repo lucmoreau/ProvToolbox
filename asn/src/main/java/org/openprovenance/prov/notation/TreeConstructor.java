@@ -39,8 +39,10 @@ public interface TreeConstructor {
 
     /* Component 5 */
     public Object convertInsertion(Object id, Object id2, Object id1, Object map, Object dAttrs);
+    public Object convertRemoval(Object id, Object id2, Object id1, Object keyset, Object dAttrs);
     public Object convertEntry(Object o1, Object o2);
     public Object convertKeyEntitySet(List<Object> o);
+    public Object convertKeys(List<Object> o);
 
 
     /* Component 6 */

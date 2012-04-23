@@ -229,6 +229,12 @@ public class ASNConstructor implements TreeConstructor {
 	return s;
     }
 
+    public Object convertRemoval(Object id, Object id2, Object id1, Object keyset, Object rAttrs) {
+        String s="derivedByRemovalFrom(" + optionalId(id) + id2 + ", " + id1 + ", "
+	    + keyset + optionalAttributes(rAttrs) +  ")";
+	return s;
+
+    }
 
 
     public Object convertEntry(Object o1, Object o2) {
@@ -256,6 +262,24 @@ public class ASNConstructor implements TreeConstructor {
     }
 
 
+    public Object convertKeys(List<Object> keys) {
+        String s="{";
+
+	boolean first=true;
+
+	for (Object key: keys) {
+	    if (!first) {
+		s=s+", ";
+	    } else {
+		first=false;
+	    }
+
+
+	    s=s + key;
+	}
+	s=s+"}";
+	return s;
+    }
 
 
 

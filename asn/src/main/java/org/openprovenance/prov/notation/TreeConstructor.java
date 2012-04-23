@@ -43,6 +43,7 @@ public interface TreeConstructor {
     public Object convertEntry(Object o1, Object o2);
     public Object convertKeyEntitySet(List<Object> o);
     public Object convertKeys(List<Object> o);
+    public Object convertMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs);
 
 
     /* Component 6 */

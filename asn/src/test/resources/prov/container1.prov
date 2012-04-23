@@ -476,7 +476,6 @@ prefix ex <http://example>
           derivedByRemovalFrom(ex:e1, ex:e2, {"k1", "k2", "222" %% xsd:int})
 
 
-
 	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)})
 
 endContainer

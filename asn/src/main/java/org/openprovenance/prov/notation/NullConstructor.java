@@ -99,6 +99,10 @@ public class NullConstructor implements TreeConstructor {
     public Object convertRemoval(Object id, Object id2, Object id1, Object keyset, Object dAttrs) {
 	return null;
     }
+
+    public Object convertMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
+	return null;
+    }
     
     public Object convertEntry(Object o1, Object o2) {
 	return null;

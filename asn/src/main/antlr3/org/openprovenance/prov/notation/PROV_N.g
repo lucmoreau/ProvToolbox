@@ -283,9 +283,10 @@ removalExpression
       -> ^(DBRF ^(ID $id0?) $id2 $id1 ^(KEYS literal*)  optionalAttributeValuePairs)
 	;
 
+/* TODO: specify complete as optional boolean */
 membershipExpression
-	:	'memberOf' '('  ((id0=identifier | '-') ',')?  id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
-      -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  optionalAttributeValuePairs)
+	:	'memberOf' '('  ((id0=identifier | '-') ',')?  id1=identifier ',' keyEntitySet (id2=identifier)? optionalAttributeValuePairs ')'
+      -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(ID $id2?) optionalAttributeValuePairs)
 	;
 
 keyEntitySet

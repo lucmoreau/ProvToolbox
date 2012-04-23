@@ -726,6 +726,24 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
 
+    public Object convertMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+
+	MemberOf mo=pFactory.newMemberOf(s_id,
+					   e2r,
+					   null);
+	List attrs=(List)dAttrs;
+        mo.getAny().addAll(attrs);
+
+	return mo;
+    }
+
+
+
     public Object convertEntry(Object o1, Object o2) {
         String s_id=(String)o2;
 

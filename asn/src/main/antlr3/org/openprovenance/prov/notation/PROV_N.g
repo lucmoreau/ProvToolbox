@@ -23,6 +23,7 @@ tokens {
     /* Component 4 */
     SPECIALIZATION; ALTERNATE; 
     /* Component 5 */
+    DBIF; DBRF; MAP; KEYS; VALUES; MEM;
     /* Component 6 */
     NOTE; HAN;
 }
@@ -102,6 +103,10 @@ record
         | alternateExpression | specializationExpression
 
             /* component 5 */
+
+        | insertionExpression | removalExpression | membershipExpression 
+
+
             /* component 6 */ 
         | noteExpression | hasAnnotationExpression
         )
@@ -264,7 +269,29 @@ specializationExpression
 /*
         Component 5: Collections
 
+TODO: literal used in these production needs to disable qname, to allow for intliteral
+
 */
+
+insertionExpression
+	:	'derivedByInsertionFrom' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier ',' keyEntityMap optionalAttributeValuePairs ')'
+      -> ^(DBIF ^(ID $id0?) $id2 $id1 keyEntityMap  optionalAttributeValuePairs)
+	;
+
+removalExpression
+	:	'derivedByRemovalFrom' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier ',' '{' literal (',' literal)* '}' optionalAttributeValuePairs ')'
+      -> ^(DBRF ^(ID $id0?) $id2 $id1 ^(KEYS literal*)  optionalAttributeValuePairs)
+	;
+
+membershipExpression
+	:	'memberOf' '('  ((id0=identifier | '-') ',')?  id1=identifier ',' keyEntityMap optionalAttributeValuePairs ')'
+      -> ^(MEM ^(ID $id0?) $id1 keyEntityMap  optionalAttributeValuePairs)
+	;
+
+keyEntityMap
+    : '{'  '(' literal ',' val=identifier  ')' ( ','  '(' literal ',' val=identifier  ')' )* '}'
+      -> ^(MAP ^(KEYS literal+) ^(VALUES identifier+))
+    ;
 
 /* TODO */
 

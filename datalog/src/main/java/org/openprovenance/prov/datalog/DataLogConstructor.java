@@ -239,12 +239,12 @@ public class DataLogConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
 
-    public Object convertMembership(Object id, Object id2, Object keys, Object dAttrs) {
+    public Object convertKeys(List<Object> keys) {
         //todo
         throw new UnsupportedOperationException();
     }
 
-    public Object convertKeys(List<Object> keys) {
+    public Object convertMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
         //todo
         throw new UnsupportedOperationException();
     }

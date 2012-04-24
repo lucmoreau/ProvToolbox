@@ -545,6 +545,11 @@ class JSONConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
 
+    public Object convertMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
    /* Component 6 */
 
     public Object convertNote(Object id, Object attrs) {

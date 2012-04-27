@@ -88,22 +88,21 @@ public class ProvUtilities {
     
     public List<QName> getOtherCauses(Relation0 r) {
         if (r instanceof WasAssociatedWith) {
-	    List<QName> res=new LinkedList<QName>();
+            List<QName> res=new LinkedList<QName>();
             EntityRef e=((WasAssociatedWith)r).getPlan();
             if (e==null) return null;
             res.add(e.getRef());
-	    return res;
-        } else {
+            return res;
+        }
         if (r instanceof DerivedByInsertionFrom) {
-	    List<QName> res=new LinkedList<QName>();
+            List<QName> res=new LinkedList<QName>();
             DerivedByInsertionFrom dbif=((DerivedByInsertionFrom)r);
-	    for (Entry entry: dbif.getEntry()) {
-		res.add(entry.getEntity().getRef());
-	    }
-	    return res;
-	}
+            for (Entry entry: dbif.getEntry()) {
+                res.add(entry.getEntity().getRef());
+            }
+            return res;
+        }
         return null;
-	}
     }
         
 

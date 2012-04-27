@@ -693,20 +693,26 @@ public  class ProvConstructor implements TreeConstructor {
         Entity e1=entityTable.get(s_id1);
         EntityRef e1r=pFactory.newEntityRef(e1);
 
-	DerivedByInsertionFrom dbif=pFactory.newDerivedByInsertionFrom(s_id,
-								       e2r,
-								       e1r,
-								       null);
-	List attrs=(List)dAttrs;
+        DerivedByInsertionFrom dbif=pFactory.newDerivedByInsertionFrom(s_id,
+                                                                       e2r,
+                                                                       e1r,
+                                                                       null);
+        List attrs=(List)dAttrs;
         dbif.getAny().addAll(attrs);
 
-	return dbif;
+        List entries=(List)map;
+        for (Object o: entries) {
+            Entry entry=(Entry) o;
+            dbif.getEntry().add(entry);
+        }
+
+        return dbif;
     }
 
 
     public Object convertRemoval(Object id, Object id2, Object id1, Object keyset, Object dAttrs) {
 
-	String s_id=(String)id;
+    String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
 
@@ -715,14 +721,14 @@ public  class ProvConstructor implements TreeConstructor {
         Entity e1=entityTable.get(s_id1);
         EntityRef e1r=pFactory.newEntityRef(e1);
 
-	DerivedByRemovalFrom dbrf=pFactory.newDerivedByRemovalFrom(s_id,
-								   e2r,
-								   e1r,
-								   null);
-	List attrs=(List)dAttrs;
+    DerivedByRemovalFrom dbrf=pFactory.newDerivedByRemovalFrom(s_id,
+                                   e2r,
+                                   e1r,
+                                   null);
+    List attrs=(List)dAttrs;
         dbrf.getAny().addAll(attrs);
 
-	return dbrf;
+    return dbrf;
     }
 
 
@@ -733,13 +739,13 @@ public  class ProvConstructor implements TreeConstructor {
         Entity e2=entityTable.get(s_id2);
         EntityRef e2r=pFactory.newEntityRef(e2);
 
-	MemberOf mo=pFactory.newMemberOf(s_id,
-					   e2r,
-					   null);
-	List attrs=(List)dAttrs;
+    MemberOf mo=pFactory.newMemberOf(s_id,
+                       e2r,
+                       null);
+    List attrs=(List)dAttrs;
         if (attrs!=null) mo.getAny().addAll(attrs);
 
-	return mo;
+    return mo;
     }
 
 
@@ -749,17 +755,17 @@ public  class ProvConstructor implements TreeConstructor {
 
         Entity e=entityTable.get(s_id);
         EntityRef er=pFactory.newEntityRef(e);
-	
-	return pFactory.newEntry(o1,er);
+    
+    return pFactory.newEntry(o1,er);
     }
 
 
     public Object convertKeyEntitySet(List<Object> entries) {
-	return entries;
+    return entries;
     }
 
     public Object convertKeys(List<Object> keys) {
-	return keys;
+    return keys;
     }
 
     /* Component 6 */

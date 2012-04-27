@@ -5,6 +5,7 @@ container
 prefix ex  <http://example.org/>
 
 prefix w3      <http://www.w3.org/>
+prefix tr      <http://www.w3.org/TR/>
 prefix tr2011  <http://www.w3.org/TR/2011/>
 prefix tr2012  <http://www.w3.org/TR/2012/>
 prefix process <http://www.w3.org/2005/10/Process-20051014/tr.html#>
@@ -118,15 +119,27 @@ wasInformedBy(ex:act4,ex:act3)
 wasInformedBy(ex:act5,ex:act4)
 wasInformedBy(ex:act6,ex:act5)
 
-entity(ex:fam0, [ prov:type='prov:EmptyDictionary' ])
-entity(ex:fam1, [ prov:type='prov:Dictionary' ])
-entity(ex:fam2, [ prov:type='prov:Dictionary' ])
-entity(ex:fam3, [ prov:type='prov:Dictionary' ])
-entity(ex:fam4, [ prov:type='prov:Dictionary' ])
-entity(ex:fam5, [ prov:type='prov:Dictionary' ])
+entity(ex:family0, [ prov:type='prov:EmptyDictionary' ])
+entity(ex:family1, [ prov:type='prov:Dictionary' ])
+entity(ex:family2, [ prov:type='prov:Dictionary' ])
+entity(ex:family3, [ prov:type='prov:Dictionary' ])
+entity(ex:family4, [ prov:type='prov:Dictionary' ])
+entity(ex:family5, [ prov:type='prov:Dictionary' ])
+entity(ex:family6, [ prov:type='prov:Dictionary' ])
 
-derivedByInsertionFrom(ex:fam1, ex:fam0, {('prov:dm', tr2011:WD-prov-dm-20111018)})
+derivedByInsertionFrom(ex:family1, ex:family0, {('tr:prov-dm',     tr2011:WD-prov-dm-20111018)})
+derivedByInsertionFrom(ex:family2, ex:family1, {('tr:prov-o',      tr2011:WD-prov-o-20111213)})
+derivedByInsertionFrom(ex:family3, ex:family2, {('tr:prov-dm',     tr2011:WD-prov-dm-20111215)})
+derivedByInsertionFrom(ex:family4, ex:family3, {('tr:prov-primer', tr2012:WD-prov-primer-20120110),
+                                                ('tr:prov-aq',     tr2012:WD-prov-aq-20120110)})
+derivedByInsertionFrom(ex:family5, ex:family4, {('tr:prov-dm',     tr2012:WD-prov-dm-20120202)})
+derivedByInsertionFrom(ex:family6, ex:family5, {('tr:prov-dm',     tr2012:WD-prov-dm-20120503),
+                                                ('tr:prov-o',      tr2012:WD-prov-o-20120503),            
+                                                ('tr:prov-n',      tr2012:WD-prov-n-20120503),            
+                                                ('tr:prov-primer', tr2012:WD-prov-primer-20120503),            
+                                                ('tr:prov-constraints', tr2012:WD-prov-constraints-20120503)})
 
 
 endContainer
+
 

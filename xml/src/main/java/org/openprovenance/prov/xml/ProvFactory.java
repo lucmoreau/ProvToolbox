@@ -22,7 +22,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 /** A stateless factory for PROV objects. */
 
-public class ProvFactory implements CommonURIs {
+public class ProvFactory {
 
     public static String printURI(java.net.URI u) {
 	return u.toString();

@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.net.URI;
 
 import org.openprovenance.prov.xml.URIWrapper;
+import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.ActivityRef;
@@ -80,7 +81,7 @@ public  class ProvConstructor implements TreeConstructor {
         List attrs=(List)aAttrs;
         Activity a=pFactory.newActivity(s_id);
         activityTable.put(s_id,a);
-        a.getAny().addAll(attrs);
+        addAllAttributes(a,(List)attrs);
 
         if (s_endTime!=null) {
             a.setEndTime(pFactory.newISOTime(s_endTime));
@@ -133,7 +134,7 @@ public  class ProvConstructor implements TreeConstructor {
         Agent e=pFactory.newAgent(s_id);
         //entityTable.put(s_id,e);  
         agentTable.put(s_id,e);
-        e.getAny().addAll(attrs);
+        addAllAttributes(e,(List)attrs);
         return e;
     }
 
@@ -182,8 +183,8 @@ public  class ProvConstructor implements TreeConstructor {
 
     public String getNamespace(String prefix) {
         if ((prefix==null) || ("".equals(prefix))) return namespaceTable.get("_");
-        if (prefix.equals("prov")) return "http://openprovenance.org/prov-xml#";
-        if (prefix.equals("xsd")) return "http://www.w3.org/2001/XMLSchema";
+        if (prefix.equals("prov")) return NamespacePrefixMapper.PROV_NS;
+        if (prefix.equals("xsd")) return NamespacePrefixMapper.XSD_NS;
         return namespaceTable.get(prefix);
     }
 

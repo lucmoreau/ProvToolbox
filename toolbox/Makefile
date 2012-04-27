@@ -19,7 +19,9 @@ t3:
 
 
 fam:
-	target/appassembler/bin/provconvert -asn2dot ../asn/src/test/resources/prov/prov-family.pn target/prov-family.dot target/prov-family.pdf ../dot/src/main/resources/defaultConfigWithRoleNoLabel.xml
+	target/appassembler/bin/provconvert -asn2dot ../asn/src/test/resources/prov/prov-family.pn target/prov-family.dot target/prov-family.pdf ../dot/src/main/resources/configFamily.xml
+	target/appassembler/bin/provconvert -asn2xml ../asn/src/test/resources/prov/prov-family.pn target/prov-family.xml
+
 
 # provide absolute arguments
 note:

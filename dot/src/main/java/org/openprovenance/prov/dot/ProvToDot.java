@@ -21,6 +21,7 @@ import org.openprovenance.prov.xml.Relation0;
 import org.openprovenance.prov.xml.Relation;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.Used;
+import org.openprovenance.prov.xml.HasType;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.WasAttributedTo;
@@ -282,7 +283,9 @@ public class ProvToDot {
 
     public void emitAnnotations(String id, HasExtensibility ann, PrintStream out) {
 
-        if ((ann.getAny()==null) || (ann.getAny().isEmpty())) return;
+        if ((ann.getAny()==null) || (ann.getAny().isEmpty())
+            &&
+            (((HasType)ann).getType().isEmpty())) return;
 
         HashMap<String,String> properties=new HashMap();
         QName newId=annotationId(((Identifiable)ann).getId(),id);
@@ -396,6 +399,12 @@ public class ProvToDot {
     public HashMap<String,String> addAnnotationLabel(HasExtensibility ann, HashMap<String,String> properties) {
         String label="";
         label=label+"<<TABLE cellpadding=\"0\" border=\"0\">\n";
+        for (Object type: ((HasType)ann).getType()) {
+            label=label+"	<TR>\n";
+            label=label+"	    <TD align=\"left\">" + "type" + ":</TD>\n";
+            label=label+"	    <TD align=\"left\">" + convertValue(type) + "</TD>\n";
+            label=label+"	</TR>\n";
+        }
         for (Object prop: ann.getAny()) {
             label=label+"	<TR>\n";
             label=label+"	    <TD align=\"left\">" + convertProperty(prop) + ":</TD>\n";
@@ -409,12 +418,16 @@ public class ProvToDot {
     }
 
    public String convertValue(Object v) {
-         String label=getPropertyValueFromAny(v);
-         System.out.println("Foudn value " + label);
-         int i=label.lastIndexOf("#");
-         int j=label.lastIndexOf("/");
-         return label.substring(Math.max(i,j)+1, label.length());
-     }
+       if (v instanceof QName) {
+           QName name=(QName) v;
+           return name.getLocalPart();
+       }
+       String label=getPropertyValueFromAny(v);
+       System.out.println("Foudn value " + label);
+       int i=label.lastIndexOf("#");
+       int j=label.lastIndexOf("/");
+       return label.substring(Math.max(i,j)+1, label.length());
+   }
 
     public String qnameToUri(QName qname) {
         return qname.getNamespaceURI() + qname.getLocalPart();

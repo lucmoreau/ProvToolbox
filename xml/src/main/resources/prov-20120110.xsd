@@ -276,7 +276,6 @@
     <xs:sequence>
       <xs:element name="after"           type="prov:EntityRef"/>
       <xs:element name="before"          type="prov:EntityRef"/>
-      <xs:element name="complete"        type="xs:boolean"/>
       <xs:element name="entry"           type="prov:Entry" minOccurs="1" maxOccurs="unbounded"/>
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>

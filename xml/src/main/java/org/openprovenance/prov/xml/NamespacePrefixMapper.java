@@ -11,6 +11,7 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
     static final public String PROV_NS="http://www.w3.org/ns/prov#";
     static final public String XSI_NS="http://www.w3.org/2001/XMLSchema-instance";
     static final public String XSD_NS="http://www.w3.org/2001/XMLSchema";
+    static final public String PRINTER_NS="http://openprovenance.org/model/opmPrinterConfig";
 
     private Hashtable<String,String> nss=null;
 
@@ -74,7 +75,7 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
         if (namespaceUri.equals(PROV_NS)) {
             return "prov";
         }
-        if (namespaceUri.equals("http://openprovenance.org/model/opmPrinterConfig")) {
+        if (namespaceUri.equals(PRINTER_NS)) {
             return "prn";
         }
         if (namespaceUri.equals(XSD_NS)) {

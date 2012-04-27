@@ -46,6 +46,9 @@ public class ProvUtilities {
         if (r instanceof SpecializationOf) {
             return ((SpecializationOf)r).getGeneralEntity().getRef();
         }
+        if (r instanceof WasInformedBy) {
+            return ((WasInformedBy)r).getEffect().getRef();
+        }
         System.out.println("Unknow relation " + r);
         throw new NullPointerException();
     }
@@ -69,7 +72,9 @@ public class ProvUtilities {
         if (r instanceof SpecializationOf) {
             return ((SpecializationOf)r).getSpecializedEntity().getRef();
         }
-
+        if (r instanceof WasInformedBy) {
+            return ((WasInformedBy)r).getCause().getRef();
+        }
         throw new NullPointerException();
     }
 

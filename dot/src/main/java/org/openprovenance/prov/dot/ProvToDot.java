@@ -25,6 +25,7 @@ import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.WasAttributedTo;
 import org.openprovenance.prov.xml.WasAssociatedWith;
+import org.openprovenance.prov.xml.DerivedByInsertionFrom;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.xml.Identifiable;
@@ -340,6 +341,19 @@ public class ProvToDot {
 
     public HashMap<String,String> addEntityShape(Entity p, HashMap<String,String> properties) {
         // default is good for entity
+        List<Object> types=p.getType();
+        for (Object type: types) {
+            if (type instanceof QName) {
+                QName name=(QName) type;
+                if (("Dictionary".equals(name.getLocalPart()))
+                    ||
+                    ("EmptyDictionary".equals(name.getLocalPart()))) {
+                    properties.put("shape","folder");
+                    properties.put("style","filled");
+                    properties.put("fillcolor","darkseagreen");
+                }
+            }
+        }
         return properties;
     }
 
@@ -357,8 +371,8 @@ public class ProvToDot {
     }
 
     public HashMap<String,String> addAgentShape(Agent p, HashMap<String,String> properties) {
-        properties.put("shape","polygon");
-        properties.put("sides","8");
+        properties.put("shape","house");
+        //properties.put("sides","8");
         return properties;
     }
 
@@ -570,53 +584,58 @@ public class ProvToDot {
         // for (AccountRef acc: accounts) {
         //     String accountLabel=((Account)acc.getRef()).getId();
         //     addRelationAttributes(accountLabel,e,properties);
-            //        }
+        //        }
         List<QName> others=u.getOtherCauses(e);
         if (others !=null) { // n-ary case
-	    String bnid="bn" + (bncounter++);
+            String bnid="bn" + (bncounter++);
 
 	    
-	    emitBlankNode(dotify(bnid), addBlankNodeShape(properties), out);
+            emitBlankNode(dotify(bnid), addBlankNodeShape(properties), out);
 
-	    HashMap<String,String> properties2=new HashMap();
-	    properties2.put("arrowhead","none");
+            HashMap<String,String> properties2=new HashMap();
+            properties2.put("arrowhead","none");
 
-	    HashMap<String,String> properties3=new HashMap();
+            HashMap<String,String> properties3=new HashMap();
 
 
-	    emitRelation( qnameToString(u.getEffect(e)),
-			  bnid,
-			  properties2,
-			  out,
-			  true);
+            emitRelation( qnameToString(u.getEffect(e)),
+                          bnid,
+                          properties2,
+                          out,
+                          true);
 
-	    relationName(e, properties3);
-	    emitRelation( bnid,
-			  qnameToString(u.getCause(e)),
-			  properties3,
-			  out,
-			  true);
+            relationName(e, properties3);
 
-	    HashMap<String,String> properties4=new HashMap();
+            if (e instanceof DerivedByInsertionFrom) {
+                properties3.put("arrowhead","onormal");
+            }
+            
+            emitRelation( bnid,
+                          qnameToString(u.getCause(e)),
+                          properties3,
+                          out,
+                          true);
 
-	    for (QName other: others) {
-		emitRelation( bnid,
-			      qnameToString(other),
-			      properties4,
-			      out,
-			      true);
-	    }
+            HashMap<String,String> properties4=new HashMap();
+
+            for (QName other: others) {
+                emitRelation( bnid,
+                              qnameToString(other),
+                              properties4,
+                              out,
+                              true);
+            }
 
         } else { // binary case
-	    relationName(e, properties);
+            relationName(e, properties);
 
-	    emitRelation( qnameToString(u.getEffect(e)),
-			  qnameToString(u.getCause(e)),
-			  properties,
-			  out,
-			  true);
+            emitRelation( qnameToString(u.getEffect(e)),
+                          qnameToString(u.getCause(e)),
+                          properties,
+                          out,
+                          true);
 
-	}
+        }
     }
 
     void relationName(Relation0 e, HashMap<String,String> properties) {

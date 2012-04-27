@@ -12,6 +12,8 @@ import org.openprovenance.prov.xml.ActivityRef;
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.EntityRef;
+import org.openprovenance.prov.xml.HasExtensibility;
+import org.openprovenance.prov.xml.HasType;
 import org.openprovenance.prov.xml.AgentRef;
 import org.openprovenance.prov.xml.NoteRef;
 import org.openprovenance.prov.xml.Agent;
@@ -101,8 +103,28 @@ public  class ProvConstructor implements TreeConstructor {
         List attrs=(List)eAttrs;
         Entity e=pFactory.newEntity(s_id);
         entityTable.put(s_id,e);
-        e.getAny().addAll(attrs);
+        addAllAttributes(e,(List)attrs);
         return e;
+    }
+
+    /* Recognize prov attributes and insert them in the appropriate fields.
+     TODO: done for type, only*/
+    
+    public void addAllAttributes(HasExtensibility e, List attributes) {
+        for (Object o: attributes) {
+            if (o instanceof JAXBElement) {
+                JAXBElement je=(JAXBElement) o;
+                QName q=je.getName();
+                if ("type".equals(q.getLocalPart())) {
+                    HasType eWithType=(HasType) e;
+                    eWithType.getType().add(je.getValue());
+                } else {
+                    e.getAny().add(o);
+                }
+            } else {
+                e.getAny().add(o);
+            }
+        }
     }
 
     public Object convertAgent(Object id, Object eAttrs) {

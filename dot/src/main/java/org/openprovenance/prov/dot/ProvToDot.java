@@ -339,8 +339,30 @@ public class ProvToDot {
             properties.put("color",processColor(p));
             properties.put("fontcolor",processColor(p));
         }
+        addColors(p,properties);
         return properties;
     }
+
+    public  HashMap<String,String> addColors(HasExtensibility e, HashMap<String,String> properties) {
+        for (Object prop: e.getAny()) {
+            if (prop instanceof JAXBElement) {
+                JAXBElement je=(JAXBElement) prop;
+                QName attribute=je.getName();
+                if ("fillcolor".equals(attribute.getLocalPart())) {
+                    properties.put("fillcolor", je.getValue().toString());
+                    properties.put("style", "filled");
+                    break;
+                }
+                if ("color".equals(attribute.getLocalPart())) {
+                    properties.put("color", je.getValue().toString());
+                    break;
+                }
+            }
+        }
+        return properties;
+    }
+
+
 
     public HashMap<String,String> addEntityShape(Entity p, HashMap<String,String> properties) {
         // default is good for entity
@@ -352,8 +374,6 @@ public class ProvToDot {
                     ||
                     ("EmptyDictionary".equals(name.getLocalPart()))) {
                     properties.put("shape","folder");
-                    properties.put("style","filled");
-                    properties.put("fillcolor","darkseagreen");
                 }
             }
         }
@@ -365,6 +385,7 @@ public class ProvToDot {
             properties.put("color",entityColor(a));
             properties.put("fontcolor",entityColor(a));
         }
+        addColors(a,properties);
         return properties;
     }
 
@@ -389,6 +410,7 @@ public class ProvToDot {
             properties.put("color",agentColor(a));
             properties.put("fontcolor",agentColor(a));
         }
+        addColors(a,properties);
         return properties;
     }
 
@@ -406,6 +428,16 @@ public class ProvToDot {
             label=label+"	</TR>\n";
         }
         for (Object prop: ann.getAny()) {
+
+            if (prop instanceof JAXBElement) {
+                JAXBElement je=(JAXBElement) prop;
+                QName attribute=je.getName();
+                if ("fillcolor".equals(attribute.getLocalPart())) {
+                    // no need to display this attribute
+                    break;
+                }
+            } 
+
             label=label+"	<TR>\n";
             label=label+"	    <TD align=\"left\">" + convertProperty(prop) + ":</TD>\n";
             label=label+"	    <TD align=\"left\">" + convertValue(prop) + "</TD>\n";
@@ -641,6 +673,9 @@ public class ProvToDot {
 
         } else { // binary case
             relationName(e, properties);
+            if (e instanceof Relation) {
+                addColors((Relation)e,properties);
+            }
 
             emitRelation( qnameToString(u.getEffect(e)),
                           qnameToString(u.getCause(e)),

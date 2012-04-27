@@ -1,0 +1,112 @@
+
+
+container
+
+prefix ex  <http://example.org/>
+
+prefix w3      <http://www.w3.org/>
+prefix tr2011  <http://www.w3.org/TR/2011/>
+prefix tr2012  <http://www.w3.org/TR/2012/>
+prefix process <http://www.w3.org/2005/10/Process-20051014/tr.html#>
+prefix email   <https://lists.w3.org/Archives/Member/w3c-archive/>
+prefix chairs  <https://lists.w3.org/Archives/Member/chairs/>
+prefix trans   <http://www.w3.org/2005/08/01-transitions.html#>
+
+
+
+
+entity(tr2011:WD-prov-dm-20111018, [ prov:type='process:RecsWD' ])
+entity(tr2011:WD-prov-o-20111213, [ prov:type='process:RecsWD' ])
+entity(tr2011:WD-prov-dm-20111215, [ prov:type='process:RecsWD' ])
+entity(tr2012:WD-prov-aq-20120110, [ prov:type='process:WGNote' ])
+entity(tr2012:WD-prov-primer-20120110, [ prov:type='process:WGNote' ])
+entity(tr2012:WD-prov-dm-20120202, [ prov:type='process:RecsWD' ])
+entity(tr2012:WD-prov-dm-20120503, [ prov:type='process:RecsWD' ])
+entity(tr2012:WD-prov-o-20120503, [ prov:type='process:RecsWD' ])
+entity(tr2012:WD-prov-n-20120503, [ prov:type='process:RecsWD' ])
+entity(tr2012:WD-prov-constraints-20120503, [ prov:type='process:RecsWD' ])
+entity(tr2012:WD-prov-primer-20120503, [ prov:type='process:WGNote' ])
+
+entity(process:rec-advance,    [ prov:type='prov:Plan' ])
+
+
+entity(chairs:2011OctDec/0004, [ prov:type='trans:transreq' ]) // for prov-dm
+entity(email:2011Oct/0141,     [ prov:type='trans:pubreq' ])
+
+entity(chairs:2011OctDec/0152, [ prov:type='trans:transreq' ]) // for prov-o
+
+entity(chairs:2011OctDec/0171, [ prov:type='trans:transreq' ]) // for prov-aq
+
+entity(email:2011Dec/0111,     [ prov:type='trans:pubreq' ])
+
+entity(chairs:2012JanMar/0000, [ prov:type='trans:transreq' ]) // for prov-primer
+
+entity(chairs:2012AprJun/0037, [ prov:type='trans:transreq' ]) // for prov-n, prov-constraitns
+
+
+// prov-dm revisions
+wasDerivedFrom(tr2011:WD-prov-dm-20111215,tr2011:WD-prov-dm-20111018)
+wasDerivedFrom(tr2012:WD-prov-dm-20120202,tr2011:WD-prov-dm-20111215)
+wasDerivedFrom(tr2012:WD-prov-dm-20120503,tr2012:WD-prov-dm-20120202)
+// prov-n revisions
+wasDerivedFrom(tr2012:WD-prov-n-20120503,tr2012:WD-prov-dm-20120202)
+// prov-constraints revisions
+wasDerivedFrom(tr2012:WD-prov-constraints-20120503,tr2012:WD-prov-dm-20120202)
+// prov-primer
+wasDerivedFrom(tr2012:WD-prov-primer-20120503, tr2012:WD-prov-primer-20120110)
+// prov-o
+wasDerivedFrom(tr2012:WD-prov-o-20120503, tr2011:WD-prov-o-20111213)
+
+
+activity(ex:act1,-,-,[prov:type="publish"])
+activity(ex:act2,-,-,[prov:type="publish"])
+activity(ex:act3,-,-,[prov:type="publish"])
+activity(ex:act4,-,-,[prov:type="publish"])
+activity(ex:act5,-,-,[prov:type="publish"])
+activity(ex:act6,-,-,[prov:type="publish"])
+
+wasGeneratedBy(tr2011:WD-prov-dm-20111018, ex:act1, -)
+
+wasGeneratedBy(tr2011:WD-prov-o-20111213, ex:act2, -)
+
+wasGeneratedBy(tr2011:WD-prov-dm-20111215, ex:act3, -)
+
+wasGeneratedBy(tr2012:WD-prov-primer-20120110, ex:act4, -)
+wasGeneratedBy(tr2012:WD-prov-aq-20120110, ex:act4, -)
+
+wasGeneratedBy(tr2012:WD-prov-dm-20120202, ex:act5, -)
+
+wasGeneratedBy(tr2012:WD-prov-dm-20120503, ex:act6, -)
+wasGeneratedBy(tr2012:WD-prov-o-20120503, ex:act6, -)
+wasGeneratedBy(tr2012:WD-prov-n-20120503, ex:act6, -)
+wasGeneratedBy(tr2012:WD-prov-constraints-20120503, ex:act6, -)
+wasGeneratedBy(tr2012:WD-prov-primer-20120503,  ex:act6, -)
+
+
+used(ex:act1,chairs:2011OctDec/0004,-)
+used(ex:act1,email:2011Oct/0141,-)
+used(ex:act2,chairs:2011OctDec/0152,-)
+used(ex:act3,email:2011Dec/0111,-)
+used(ex:act4,chairs:2011OctDec/0171,-)
+used(ex:act4,chairs:2012JanMar/0000,-)
+used(ex:act6,chairs:2012AprJun/0037,-)
+
+agent(w3:Consortium, [ prov:type="Organization" ])
+
+wasAssociatedWith(ex:act1, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:act2, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:act3, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:act4, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:act5, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:act6, w3:Consortium, process:rec-advance)
+
+// uses these edges to for layout, but it's really time orderign I mean here
+
+wasInformedBy(ex:act2,ex:act1)
+wasInformedBy(ex:act3,ex:act2)
+wasInformedBy(ex:act4,ex:act3)
+wasInformedBy(ex:act5,ex:act4)
+wasInformedBy(ex:act6,ex:act5)
+
+endContainer
+

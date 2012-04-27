@@ -18,6 +18,8 @@ t3:
 	target/appassembler/bin/provconvert -asn2dot ../asn/src/test/resources/prov/w3c-publication3.prov-asn target/w3c-publication3.dot target/w3c-publication3.pdf ../dot/src/main/resources/defaultConfigWithRoleNoLabel.xml
 
 
+fam:
+	target/appassembler/bin/provconvert -asn2dot ../asn/src/test/resources/prov/prov-family.pn target/prov-family.dot target/prov-family.pdf ../dot/src/main/resources/defaultConfigWithRoleNoLabel.xml
 
 # provide absolute arguments
 note:

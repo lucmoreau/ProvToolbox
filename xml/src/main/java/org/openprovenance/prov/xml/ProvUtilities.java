@@ -85,13 +85,25 @@ public class ProvUtilities {
         throw new NullPointerException();
     }
 
-    public QName getOtherCause(Relation0 r) {
-        if (r instanceof WasAssociatedWith) { 
+    
+    public List<QName> getOtherCauses(Relation0 r) {
+        if (r instanceof WasAssociatedWith) {
+	    List<QName> res=new LinkedList<QName>();
             EntityRef e=((WasAssociatedWith)r).getPlan();
             if (e==null) return null;
-            return e.getRef();
-        }
+            res.add(e.getRef());
+	    return res;
+        } else {
+        if (r instanceof DerivedByInsertionFrom) {
+	    List<QName> res=new LinkedList<QName>();
+            DerivedByInsertionFrom dbif=((DerivedByInsertionFrom)r);
+	    for (Entry entry: dbif.getEntry()) {
+		res.add(entry.getEntity().getRef());
+	    }
+	    return res;
+	}
         return null;
+	}
     }
         
 

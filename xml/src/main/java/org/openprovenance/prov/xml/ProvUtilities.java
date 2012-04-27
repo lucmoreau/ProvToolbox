@@ -49,6 +49,10 @@ public class ProvUtilities {
         if (r instanceof WasInformedBy) {
             return ((WasInformedBy)r).getEffect().getRef();
         }
+
+        if (r instanceof DerivedByInsertionFrom) {
+            return ((DerivedByInsertionFrom)r).getAfter().getRef();
+        }
         System.out.println("Unknow relation " + r);
         throw new NullPointerException();
     }
@@ -74,6 +78,9 @@ public class ProvUtilities {
         }
         if (r instanceof WasInformedBy) {
             return ((WasInformedBy)r).getCause().getRef();
+        }
+        if (r instanceof DerivedByInsertionFrom) {
+            return ((DerivedByInsertionFrom)r).getBefore().getRef();
         }
         throw new NullPointerException();
     }

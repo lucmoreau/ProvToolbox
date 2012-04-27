@@ -34,8 +34,12 @@ entity(chairs:2011OctDec/0004, [ prov:type='trans:transreq' ]) // for prov-dm
 entity(email:2011Oct/0141,     [ prov:type='trans:pubreq' ])
 
 entity(chairs:2011OctDec/0152, [ prov:type='trans:transreq' ]) // for prov-o
+entity(email:2011Dec/0075,     [ prov:type='trans:pubreq' ])
+
 
 entity(chairs:2011OctDec/0171, [ prov:type='trans:transreq' ]) // for prov-aq
+entity(email:2012Jan/0043,     [ prov:type='trans:pubreq' ])
+
 
 entity(email:2011Dec/0111,     [ prov:type='trans:pubreq' ])
 
@@ -65,33 +69,38 @@ activity(ex:act4,-,-,[prov:type="publish"])
 activity(ex:act5,-,-,[prov:type="publish"])
 activity(ex:act6,-,-,[prov:type="publish"])
 
-wasGeneratedBy(tr2011:WD-prov-dm-20111018, ex:act1, -)
+wasGeneratedBy(tr2011:WD-prov-dm-20111018,          ex:act1, -)
 
-wasGeneratedBy(tr2011:WD-prov-o-20111213, ex:act2, -)
+wasGeneratedBy(tr2011:WD-prov-o-20111213,           ex:act2, -)
 
-wasGeneratedBy(tr2011:WD-prov-dm-20111215, ex:act3, -)
+wasGeneratedBy(tr2011:WD-prov-dm-20111215,          ex:act3, -)
 
-wasGeneratedBy(tr2012:WD-prov-primer-20120110, ex:act4, -)
-wasGeneratedBy(tr2012:WD-prov-aq-20120110, ex:act4, -)
+wasGeneratedBy(tr2012:WD-prov-primer-20120110,      ex:act4, -)
+wasGeneratedBy(tr2012:WD-prov-aq-20120110,          ex:act4, -)
 
-wasGeneratedBy(tr2012:WD-prov-dm-20120202, ex:act5, -)
+wasGeneratedBy(tr2012:WD-prov-dm-20120202,          ex:act5, -)
 
-wasGeneratedBy(tr2012:WD-prov-dm-20120503, ex:act6, -)
-wasGeneratedBy(tr2012:WD-prov-o-20120503, ex:act6, -)
-wasGeneratedBy(tr2012:WD-prov-n-20120503, ex:act6, -)
+wasGeneratedBy(tr2012:WD-prov-dm-20120503,          ex:act6, -)
+wasGeneratedBy(tr2012:WD-prov-o-20120503,           ex:act6, -)
+wasGeneratedBy(tr2012:WD-prov-n-20120503,           ex:act6, -)
 wasGeneratedBy(tr2012:WD-prov-constraints-20120503, ex:act6, -)
-wasGeneratedBy(tr2012:WD-prov-primer-20120503,  ex:act6, -)
+wasGeneratedBy(tr2012:WD-prov-primer-20120503,      ex:act6, -)
 
 
 used(ex:act1,chairs:2011OctDec/0004,-)
 used(ex:act1,email:2011Oct/0141,-)
+
 used(ex:act2,chairs:2011OctDec/0152,-)
+used(ex:act2,email:2011Dec/0075,-)
 used(ex:act3,email:2011Dec/0111,-)
+
 used(ex:act4,chairs:2011OctDec/0171,-)
 used(ex:act4,chairs:2012JanMar/0000,-)
+used(ex:act4,email:2012Jan/0043,-)
+
 used(ex:act6,chairs:2012AprJun/0037,-)
 
-agent(w3:Consortium, [ prov:type="Organization" ])
+agent(w3:Consortium, [ prov:type='prov:Organization' ])
 
 wasAssociatedWith(ex:act1, w3:Consortium, process:rec-advance)
 wasAssociatedWith(ex:act2, w3:Consortium, process:rec-advance)
@@ -100,13 +109,24 @@ wasAssociatedWith(ex:act4, w3:Consortium, process:rec-advance)
 wasAssociatedWith(ex:act5, w3:Consortium, process:rec-advance)
 wasAssociatedWith(ex:act6, w3:Consortium, process:rec-advance)
 
-// uses these edges to for layout, but it's really time orderign I mean here
+
+// I introduce these edges for layout only, but it's really time orderign I mean here
 
 wasInformedBy(ex:act2,ex:act1)
 wasInformedBy(ex:act3,ex:act2)
 wasInformedBy(ex:act4,ex:act3)
 wasInformedBy(ex:act5,ex:act4)
 wasInformedBy(ex:act6,ex:act5)
+
+entity(ex:fam0, [ prov:type='prov:EmptyDictionary' ])
+entity(ex:fam1, [ prov:type='prov:Dictionary' ])
+entity(ex:fam2, [ prov:type='prov:Dictionary' ])
+entity(ex:fam3, [ prov:type='prov:Dictionary' ])
+entity(ex:fam4, [ prov:type='prov:Dictionary' ])
+entity(ex:fam5, [ prov:type='prov:Dictionary' ])
+
+derivedByInsertionFrom(ex:fam1, ex:fam0, {('prov:dm', tr2011:WD-prov-dm-20111018)})
+
 
 endContainer
 

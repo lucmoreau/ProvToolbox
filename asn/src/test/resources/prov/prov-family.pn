@@ -114,7 +114,7 @@ used(ex:act5,email:2012Jan/0422,-)
 used(ex:act6, email:2012Apr/0583, -)
 used(ex:act6, chairs:2012AprJun/0037, -)
 
-agent(w3:Consortium, [ prov:type='prov:Organization', dot:fillcolor="thistle3"  ])
+agent(w3:Consortium, [ prov:type='prov:Organization', dot:fillcolor="thistle3", dot:url="http://www.w3.org/Consortium"   ])
 
 wasAssociatedWith(ex:act1, w3:Consortium, process:rec-advance)
 wasAssociatedWith(ex:act2, w3:Consortium, process:rec-advance)

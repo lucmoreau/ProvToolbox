@@ -49,7 +49,13 @@ entity(email:2011Dec/0111,     [ prov:type='trans:pubreq',  dot:fillcolor="gold"
 
 entity(chairs:2012JanMar/0000, [ prov:type='trans:transreq', dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2012JanMar/0000"  ]) // for prov-primer
 
+
+
+entity(email:2012Jan/0422,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Jan/0422" ]) //for prov-dm wd3
+
+
 entity(chairs:2012AprJun/0037, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2012AprJun/0037" ]) // for prov-n, prov-constraitns
+entity(email:2012Apr/0583,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Apr/0583" ])
 
 
 // prov-dm revisions
@@ -102,7 +108,11 @@ used(ex:act4,chairs:2011OctDec/0171,-)
 used(ex:act4,chairs:2012JanMar/0000,-)
 used(ex:act4,email:2012Jan/0043,-)
 
-used(ex:act6,chairs:2012AprJun/0037,-)
+
+used(ex:act5,email:2012Jan/0422,-)
+
+used(ex:act6, email:2012Apr/0583, -)
+used(ex:act6, chairs:2012AprJun/0037, -)
 
 agent(w3:Consortium, [ prov:type='prov:Organization', dot:fillcolor="thistle3"  ])
 

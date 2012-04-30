@@ -351,10 +351,10 @@ public class ProvToDot {
                 if ("fillcolor".equals(attribute.getLocalPart())) {
                     properties.put("fillcolor", je.getValue().toString());
                     properties.put("style", "filled");
-                    break;
-                }
-                if ("color".equals(attribute.getLocalPart())) {
+                } else if ("color".equals(attribute.getLocalPart())) {
                     properties.put("color", je.getValue().toString());
+                } else if ("url".equals(attribute.getLocalPart())) {
+                    properties.put("URL", je.getValue().toString());
                     break;
                 }
             }

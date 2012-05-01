@@ -10,7 +10,7 @@ options {
 
 tokens {
     ID; ATTRIBUTE; ATTRIBUTES; IRI; QNAM; STRING; TYPEDLITERAL; INT; 
-    CONTAINER; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; 
+    BUNDLE; NAMEDBUNDLE; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; 
 
     /* Component 1 */
     ENTITY; ACTIVITY; WGB; USED; WSB; WEB; WINVB; WIB; WSBA;
@@ -39,13 +39,23 @@ package org.openprovenance.prov.notation;
 @members{
  public static boolean qnameDisabled=false; }
 
-container
-	:	ML_COMMENT* 'container' 
+bundle
+	:	ML_COMMENT* 'bundle' 
         (namespaceDeclarations)?
-		(record | ML_COMMENT | SL_COMMENT)*
-		'endContainer'
+		(expression | ML_COMMENT | SL_COMMENT)*
+        (namedBundle (namedBundle | ML_COMMENT | SL_COMMENT)*)?
+		'endBundle'
 
-      -> ^(CONTAINER namespaceDeclarations? record*)
+      -> ^(BUNDLE namespaceDeclarations? expression* namedBundle*)
+    ;
+
+namedBundle
+ 	:	'bundle' identifier
+        (namespaceDeclarations)?
+		(expression | ML_COMMENT | SL_COMMENT)*
+		'endBundle'
+
+      -> ^(NAMEDBUNDLE identifier namespaceDeclarations? expression*)
 	;
 
 
@@ -83,7 +93,7 @@ defaultNamespaceDeclaration :
         ->  ^(DEFAULTNAMESPACE IRI_REF)
     ;
 
-record
+expression
 @init { qnameDisabled = false; } :
         (   /* component 1 */
 

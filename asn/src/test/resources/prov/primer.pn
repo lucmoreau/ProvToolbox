@@ -1,6 +1,6 @@
 
 
-container
+bundle
 
    prefix ex <http://example/>
 
@@ -45,4 +45,4 @@ container
    wasRevisionOf(ex:dataSet2, ex:dataSet1, -)
    wasDerivedFrom(ex:chart2, ex:dataSet2)
 
-end
+endBundle

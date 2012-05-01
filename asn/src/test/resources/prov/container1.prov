@@ -1,7 +1,7 @@
 
 /* Test Suite for PROV-N notation */
 
-container
+bundle
 prefix ex <http://example>
 
 /* component 1 */
@@ -488,5 +488,5 @@ prefix ex <http://example>
 	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)}, true, [ex:param="a"])
 	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)}, false, [ex:param="a"])
 
-endContainer
+endBundle
 

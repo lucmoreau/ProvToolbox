@@ -1,4 +1,4 @@
-container
+bundle
 
 prefix ex <http://example.org/>
 
@@ -28,4 +28,4 @@ wasDerivedFrom(ex:l_3,ex:l,   [ prov:type="refinementOf" ])
 wasDerivedFrom(ex:s_3,ex:s_2, [ prov:type="refinementOf" ])
 wasGeneratedBy(ex:l_3,ex:a2,-)
 
-endContainer
+endBundle

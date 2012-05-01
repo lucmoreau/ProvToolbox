@@ -40,7 +40,7 @@ public  class Utility {
         PROV_NParser parser=getParserForFile(file);
 
         parser.setTreeAdaptor(adaptor);
-        PROV_NParser.container_return ret = parser.container();
+        PROV_NParser.bundle_return ret = parser.bundle();
         CommonTree tree = (CommonTree)ret.getTree();
         return tree;
     }

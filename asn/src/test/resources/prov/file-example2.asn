@@ -1,6 +1,6 @@
 
 
-container
+bundle
 
 prefix ex <http://example.org/>
 
@@ -69,6 +69,6 @@ hasAnnotation(ex:e2,ex:n1)
 note(ex:n2,[ex:style="dotted"])
 hasAnnotation(ex:u1,ex:n2)
 
-endContainer
+endBundle
 
 

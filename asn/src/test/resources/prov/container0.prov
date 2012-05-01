@@ -1,6 +1,7 @@
 
-container
+bundle
 prefix ex <http://example>
           entity(ex:e1, [])
-endContainer
+endBundle
+
 

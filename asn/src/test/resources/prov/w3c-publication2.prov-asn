@@ -1,6 +1,6 @@
 
 
-container
+bundle
 
 prefix ex <http://example.org/>
 prefix rec <http://example.org/record>
@@ -35,7 +35,7 @@ agent(ex:webmaster, [ prov:type="Person" ])
 
 wasAssociatedWith(ex:rcp, ex:webmaster, -)
 
-endContainer
+endBundle
 
 
 #activity(ex:a5,-,-,[prov:type="grammarcheck"])

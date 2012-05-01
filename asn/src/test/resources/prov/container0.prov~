@@ -1,5 +1,6 @@
 
-container(
-          entity(ex:e1, [ex:param="a", ex:port="foo"])
-          )
+container
+prefix ex <http://example>
+          entity(ex:e1, [])
+endContainer
 

@@ -1,6 +1,6 @@
 
 
-container
+bundle
 
 prefix ex  <http://example.org/>
 
@@ -157,6 +157,6 @@ wasInformedBy(ex:act6,ex:act5, [dot:color="none"])
 
 
 
-endContainer
+endBundle
 
 

@@ -2,8 +2,8 @@
 container
 
 default <http://example.org/default>
-prefix ex <http://example.org/ex>
-prefix ex2 <http://example.org/ex2>
+prefix ex <http://example.org/ex/>
+prefix ex2 <http://example.org/ex2/>
 
 
           entity(ex:e1)
@@ -65,16 +65,16 @@ prefix ex2 <http://example.org/ex2>
 
           wasGeneratedBy(ex:e1, -, -, [ex:param="a", ex:port="foo"])
 
-          used(u1, ex:a2, ex:e1,     [ prov:role = "dataToAggregate"])
+          used(u1, ex:a2, ex:e1, -,    [ prov:role = "dataToAggregate"])
 
           used(ex:a2, ex:e1, 2001-10-26T21:32:52)
           used(ex:a2, ex:e1, 2001-10-26T21:32:52, [])
           used(ex:a2, ex:e1, 2001-10-26T21:32:52, [ex:param="a"])
           used(ex:a2, ex:e1, 2001-10-26T21:32:52, [ex:param="a", ex:port="foo"])
-          used(ex:a2, ex:e1)
-          used(ex:a2, ex:e1, [])
-          used(ex:a2, ex:e1, [ex:param="a"])
-          used(ex:a2, ex:e1, [ex:param="a", ex:port="foo"])
+          used(ex:a2, ex:e1, -)
+          used(ex:a2, ex:e1, -, [])
+          used(ex:a2, ex:e1, -, [ex:param="a"])
+          used(ex:a2, ex:e1, -, [ex:param="a", ex:port="foo"])
 
 
           wasDerivedFrom(ex:e1, ex:e2)

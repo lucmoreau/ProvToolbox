@@ -19,7 +19,7 @@ public class ParserTest extends TestCase
 
     public void testContainer(String file) {
         try {
-            new Utility().getParserForFile(file).container();
+            new Utility().getParserForFile(file).bundle();
         } catch (Throwable t) {
             System.out.println("exception: "+t);
             t.printStackTrace();

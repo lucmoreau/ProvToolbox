@@ -127,8 +127,13 @@ class JSONConstructor implements TreeConstructor {
 		result.add(attr);
 		return result;
 	}
-
-	public Object convertActivity(Object id, Object startTime, Object endTime, Object aAttrs) {
+	
+	/* Component 1 */
+    public Object convertEntity(Object id, Object attrs) {
+		return new ProvRecord("entity", id, attrs);
+	}
+	
+    public Object convertActivity(Object id, Object startTime, Object endTime, Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
     	if (startTime != null) {
     		attrs.add(tuple("prov:startTime", startTime));
@@ -141,91 +146,8 @@ class JSONConstructor implements TreeConstructor {
     	}
     	return new ProvRecord("activity", id, attrs);
 	}
-
-	public Object convertEntity(Object id, Object attrs) {
-		return new ProvRecord("entity", id, attrs);
-	}
-
-	public Object convertAgent(Object id, Object attrs) {
-		return new ProvRecord("entity", id, addAttribute(attrs, tuple("prov:type", "prov:agent")));
-	}
-
-    public Object convertNamedBundle(Object id, Object nss, List<Object> records) {
-        return null;
-    }
-
-    public Object convertBundle(Object nss, List<Object> records, List<Object> bundles) {
-		Map<String,Object> bundle = new HashMap<String, Object>();
-		bundle.put("prefix", nss);
-		List<Object> agents = new ArrayList<Object>();
-        for (Object o: records) {
-        	if (o == null) continue;
-            ProvRecord record = (ProvRecord)o;
-            String type = record.type;
-            if (type == "agent") {
-            	agents.add(record.id);
-            	if (record.attributes == null)
-            		continue;
-            	type = "entity";
-            }
-            Map<Object, Object> structure = (Map<Object, Object>)bundle.get(type);
-            if (structure == null) {
-            	structure = new HashMap<Object, Object>();
-            	bundle.put(type, structure);
-            }
-            Map<Object,Object> hash = new HashMap<Object, Object>();
-            List<Object[]> tuples = (List<Object[]>)record.attributes;
-            for (Object[] tuple : tuples) {
-            	if (hash.containsKey(tuple[0])) {
-            		// TODO: Deal with duplicated keys
-            	}
-            	else {
-            		hash.put(tuple[0], tuple[1]);
-            	}
-            }
-            structure.put(record.id, hash);
-        }
-        if (!agents.isEmpty())
-        	bundle.put("agent", agents);
-        return bundle;
-	}
-
-	public Object convertAttributes(List<Object> attributes) {
-		return attributes;
-	}
-
-	public Object convertId(String id) {
-		return id;
-	}
-
-	public Object convertAttribute(Object name, Object value) {
-		if (value instanceof String) {
-            String val1=(String)(value);
-            return tuple(name, unwrap(val1));
-        } else {
-        	// TODO Handling qnames
-        	return tuple(name, value);
-        }
-	}
-
-	public Object convertStart(String start) {
-		return start;
-	}
-
-	public Object convertEnd(String end) {
-		return end;
-	}
-
-	public Object convertString(String s) {
-		return s;
-	}
-
-	public Object convertInt(int i) {
-		String[] value = {Integer.toString(i), "xsd:int"};
-		return value;
-	}
-
-	public Object convertUsed(Object id, Object id2, Object id1, Object time, Object aAttrs) {
+    
+    public Object convertUsed(Object id, Object id2, Object id1, Object time, Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:activity", id2));
     	attrs.add(tuple("prov:entity", id1));
@@ -245,7 +167,7 @@ class JSONConstructor implements TreeConstructor {
 			Object time, Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:entity", id2));
-    	if (id2 != null) {
+    	if (id1 != null) {
     		attrs.add(tuple("prov:activity", id1));
     	}
     	if (time != null) {
@@ -302,7 +224,7 @@ class JSONConstructor implements TreeConstructor {
 			Object time, Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:entity", id2));
-    	if (id2 != null) {
+    	if (id1 != null) {
     		attrs.add(tuple("prov:activity", id1));
     	}
     	if (time != null) {
@@ -316,18 +238,39 @@ class JSONConstructor implements TreeConstructor {
 
     	return new ProvRecord("wasInvalidatedBy", id, attrs);
 	}
+	
+	public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {
+		List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:informed", id2));
+    	attrs.add(tuple("prov:informant", id1));
+    	if (aAttrs != null) {
+    		attrs.addAll((List<Object>)aAttrs);
+    	}
+    	if (id == null)
+    		id = getBlankID("wIB");
 
-
-
-    public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+    	return new ProvRecord("wasInformedBy", id, attrs);
     }
 
     public Object convertWasStartedByActivity(Object id, Object id2, Object id1, Object aAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+    	List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:started", id2));
+    	attrs.add(tuple("prov:starter", id1));
+    	if (aAttrs != null) {
+    		attrs.addAll((List<Object>)aAttrs);
+    	}
+    	if (id == null)
+    		id = getBlankID("wSBA");
+
+    	return new ProvRecord("wasStartedByActivity", id, attrs);
     }
+
+
+	
+    /* Component 2 */
+    public Object convertAgent(Object id, Object attrs) {
+		return new ProvRecord("agent", id, attrs);
+	}
 
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object gAttrs) {
     	List<Object> attrs = new ArrayList<Object>();
@@ -342,7 +285,44 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasAttributedTo", id, attrs);
     }
 
-	public Object convertWasDerivedFrom(Object id, Object id2, Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
+    public Object convertWasAssociatedWith(Object id, Object id2, Object id1,
+			Object pl, Object aAttrs) {
+		List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:activity", id2));
+    	if (id1 != null) {
+    		attrs.add(tuple("prov:agent", id1));
+    	}
+    	if (pl != null) {
+    		attrs.add(tuple("prov:plan", pl));
+    	}
+    	if (aAttrs != null) {
+    		attrs.addAll((List<Object>)aAttrs);
+    	}
+    	if (id == null)
+    		id = getBlankID("wAW");
+
+    	return new ProvRecord("wasAssociatedWith", id, attrs);
+	}
+
+    public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
+		List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:subordinate", id2));
+    	attrs.add(tuple("prov:responsible", id1));
+    	if (a != null) {
+    		attrs.add(tuple("prov:activity", a));
+    	}
+    	if (aAttrs != null) {
+    		attrs.addAll((List<Object>)aAttrs);
+    	}
+    	if (id == null)
+    		id = getBlankID("aOBO");
+
+    	return new ProvRecord("actedOnBehalfOf", id, attrs);
+	}
+
+
+    /* Component 3 */
+    public Object convertWasDerivedFrom(Object id, Object id2, Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:generatedEntity", id2));
     	attrs.add(tuple("prov:usedEntity", id1));
@@ -365,26 +345,7 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasDerivedFrom", id, attrs);
 	}
 
-	public Object convertWasAssociatedWith(Object id, Object id2, Object id1,
-			Object pl, Object aAttrs) {
-		List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:activity", id2));
-    	if (id1 != null) {
-    		attrs.add(tuple("prov:agent", id1));
-    	}
-    	if (pl != null) {
-    		attrs.add(tuple("prov:plan", pl));
-    	}
-    	if (aAttrs != null) {
-    		attrs.addAll((List<Object>)aAttrs);
-    	}
-    	if (id == null)
-    		id = getBlankID("wAW");
-
-    	return new ProvRecord("wasAssociatedWith", id, attrs);
-	}
-
-    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
+	public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
     	List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:newer", id2));
     	attrs.add(tuple("prov:older", id1));
@@ -406,7 +367,7 @@ class JSONConstructor implements TreeConstructor {
     	attrs.add(tuple("prov:quote", id2));
     	attrs.add(tuple("prov:original", id1));
     	if (ag2 != null) {
-    		attrs.add(tuple("prov:quotedAgent", ag2));
+    		attrs.add(tuple("prov:quoterAgent", ag2));
     	}
     	if (ag1 != null) {
     		attrs.add(tuple("prov:originalAgent", ag1));
@@ -449,26 +410,11 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("tracedTo", id, attrs);
     }
 
-	public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
-		List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:subordinate", id2));
-    	attrs.add(tuple("prov:responsible", id1));
-    	if (a != null) {
-    		attrs.add(tuple("prov:activity", a));
-    	}
-    	if (aAttrs != null) {
-    		attrs.addAll((List<Object>)aAttrs);
-    	}
-    	if (id == null)
-    		id = getBlankID("aOBO");
-
-    	return new ProvRecord("actedOnBehalfOf", id, attrs);
-	}
-
+	/* Component 4 */
 	public Object convertAlternateOf(Object id2, Object id1) {
 		List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:entity", id1));
-    	attrs.add(tuple("prov:alternate", id2));
+    	attrs.add(tuple("prov:alternate1", id1));
+    	attrs.add(tuple("prov:alternate2", id2));
     	Object id = getBlankID("aO");
 
     	return new ProvRecord("alternateOf", id, attrs);
@@ -476,49 +422,14 @@ class JSONConstructor implements TreeConstructor {
 
 	public Object convertSpecializationOf(Object id2, Object id1) {
 		List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:entity", id1));
-    	attrs.add(tuple("prov:specialization", id2));
+    	attrs.add(tuple("prov:specializedEntity", id2));
+    	attrs.add(tuple("prov:generalEntity", id1));
         Object id = getBlankID("sO");
 
     	return new ProvRecord("specializationOf", id, attrs);
 	}
 
-	public Object convertQNAME(String qname) {
-		return unwrap(qname);
-	}
-
-	public Object convertIRI(String iri) {
-		return unwrap(iri);
-	}
-
-	public Object convertPrefix(String pre) {
-		return pre;
-	}
-
-	public Object convertTypedLiteral(String datatype, Object value) {
-		Object[] result = {unwrap((String)value), unwrap(datatype)};
-    	return result;
-	}
-
-	public Object convertNamespace(Object pre, Object iri) {
-		return tuple(pre, unwrap((String)iri));
-	}
-
-	public Object convertDefaultNamespace(Object iri) {
-		return tuple("default", unwrap((String)iri));
-	}
-
-	public Object convertNamespaces(List<Object> namespaces) {
-		Map<Object,Object> nss = new HashMap<Object, Object>();
-		for (Object o : namespaces) {
-			Object[] ns = (Object[])o;
-			nss.put(ns[0], ns[1]);
-		}
-		return nss;
-	}
-
-   /* Component 5 */
-
+	/* Component 5 */
     public Object convertInsertion(Object id, Object id2, Object id1, Object map, Object dAttrs) {
         //todo
         throw new UnsupportedOperationException();
@@ -555,17 +466,126 @@ class JSONConstructor implements TreeConstructor {
     }
 
    /* Component 6 */
-
     public Object convertNote(Object id, Object attrs) {
-        //todo
-        throw new UnsupportedOperationException();
+    	return new ProvRecord("note", id, attrs);
     }
     public Object convertHasAnnotation(Object something, Object note) {
-        //todo
-        throw new UnsupportedOperationException();
+    	List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:something", something));
+    	attrs.add(tuple("prov:note", note));
+        Object id = getBlankID("sO");
+
+    	return new ProvRecord("specializationOf", id, attrs);
     }
 
 
+    /* Other conversions */
+	public Object convertBundle(Object nss, List<Object> records, List<Object> bundles) {
+		Map<String,Object> bundle = new HashMap<String, Object>();
+		bundle.put("prefix", nss);
+		List<Object> agents = new ArrayList<Object>();
+        for (Object o: records) {
+        	if (o == null) continue;
+            ProvRecord record = (ProvRecord)o;
+            String type = record.type;
+            if (type == "agent") {
+            	agents.add(record.id);
+            	if (record.attributes == null)
+            		continue;
+            	type = "entity";
+            }
+            Map<Object, Object> structure = (Map<Object, Object>)bundle.get(type);
+            if (structure == null) {
+            	structure = new HashMap<Object, Object>();
+            	bundle.put(type, structure);
+            }
+            Map<Object,Object> hash = new HashMap<Object, Object>();
+            List<Object[]> tuples = (List<Object[]>)record.attributes;
+            for (Object[] tuple : tuples) {
+            	if (hash.containsKey(tuple[0])) {
+            		// TODO: Deal with duplicated keys
+            	}
+            	else {
+            		hash.put(tuple[0], tuple[1]);
+            	}
+            }
+            structure.put(record.id, hash);
+        }
+        if (!agents.isEmpty())
+        	bundle.put("agent", agents);
+        return bundle;
+	}
 
+	public Object convertNamedBundle(Object id, Object nss, List<Object> records) {
+        return null;
+    }
+	public Object convertAttributes(List<Object> attributes) {
+		return attributes;
+	}
+
+	public Object convertId(String id) {
+		return id;
+	}
+
+	public Object convertAttribute(Object name, Object value) {
+		if (value instanceof String) {
+            String val1=(String)(value);
+            return tuple(name, unwrap(val1));
+        } else {
+        	// TODO Handling qnames
+        	return tuple(name, value);
+        }
+	}
+
+	public Object convertStart(String start) {
+		return start;
+	}
+
+	public Object convertEnd(String end) {
+		return end;
+	}
+
+	public Object convertString(String s) {
+		return s;
+	}
+
+	public Object convertInt(int i) {
+		String[] value = {Integer.toString(i), "xsd:int"};
+		return value;
+	}
+
+	public Object convertQNAME(String qname) {
+		return unwrap(qname);
+	}
+
+	public Object convertIRI(String iri) {
+		return unwrap(iri);
+	}
+
+	public Object convertPrefix(String pre) {
+		return pre;
+	}
+
+	public Object convertTypedLiteral(String datatype, Object value) {
+		Object[] result = {unwrap((String)value), unwrap(datatype)};
+    	return result;
+	}
+
+	public Object convertNamespace(Object pre, Object iri) {
+		return tuple(pre, unwrap((String)iri));
+	}
+
+	public Object convertDefaultNamespace(Object iri) {
+		return tuple("default", unwrap((String)iri));
+	}
+
+	public Object convertNamespaces(List<Object> namespaces) {
+		Map<Object,Object> nss = new HashMap<Object, Object>();
+		for (Object o : namespaces) {
+			Object[] ns = (Object[])o;
+			nss.put(ns[0], ns[1]);
+		}
+		return nss;
+	}
 }
 	

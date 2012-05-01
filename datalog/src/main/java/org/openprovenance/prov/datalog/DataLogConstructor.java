@@ -44,7 +44,7 @@ public class DataLogConstructor implements TreeConstructor {
         String s="agent(" + id  + optionalAttributes(attrs) + ")";
         return s;
     }
-    public Object convertContainer(Object namespaces, List<Object> records) {
+    public Object convertBundle(Object namespaces, List<Object> records) {
         String s="";
         for (Object o: records) {
             s=s+o+".\n";

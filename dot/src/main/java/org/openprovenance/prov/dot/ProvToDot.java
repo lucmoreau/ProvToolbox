@@ -33,7 +33,7 @@ import org.openprovenance.prov.xml.Identifiable;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.HasAnnotation;
 import org.openprovenance.prov.xml.Note;
-import org.openprovenance.prov.xml.Container;
+import org.openprovenance.prov.xml.Bundle;
 import org.openprovenance.prov.xml.HasExtensibility;
 
 
@@ -187,22 +187,22 @@ public class ProvToDot {
 
     public void convert(String opmFile, String dotFile, String pdfFile)
         throws java.io.FileNotFoundException, java.io.IOException, JAXBException {
-        convert (ProvDeserialiser.getThreadProvDeserialiser().deserialiseContainer(new File(opmFile)),dotFile,pdfFile);
+        convert (ProvDeserialiser.getThreadProvDeserialiser().deserialiseBundle(new File(opmFile)),dotFile,pdfFile);
     }
 
-    public void convert(Container graph, String dotFile, String pdfFile)
+    public void convert(Bundle graph, String dotFile, String pdfFile)
         throws java.io.FileNotFoundException, java.io.IOException {
         convert(graph,new File(dotFile));
         Runtime runtime = Runtime.getRuntime();
         java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
     }
 
-    public void convert(Container graph, File file) throws java.io.FileNotFoundException{
+    public void convert(Bundle graph, File file) throws java.io.FileNotFoundException{
         OutputStream os=new FileOutputStream(file);
         convert(graph, new PrintStream(os));
     }
 
-    public void convert(Container graph, PrintStream out) {
+    public void convert(Bundle graph, PrintStream out) {
         List<Relation0> edges=u.getRelations(graph);
 
         prelude(out);

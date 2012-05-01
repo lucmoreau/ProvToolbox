@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.openprovenance.prov.xml.BeanTraversal;
-import org.openprovenance.prov.xml.Container;
+import org.openprovenance.prov.xml.Bundle;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -59,7 +59,7 @@ public class PubTest
         super( testName );
     }
 
-    static public Container graph1;
+    static public Bundle graph1;
 
     public void testReadASNSaveXML() throws java.io.IOException, java.lang.Throwable {
         String file="src/test/resources/prov/w3c-publication1.prov-asn";
@@ -73,7 +73,7 @@ public class PubTest
 
         Object o2=u.convertTreeToJavaBean(tree);
 
-        graph1=(Container)o2;
+        graph1=(Bundle)o2;
 
         String o3=u.convertTreeToASN(tree);
 
@@ -81,7 +81,7 @@ public class PubTest
 
         try {
             ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-            serial.serialiseContainer(new File(file2),(Container)o2,true);
+            serial.serialiseBundle(new File(file2),(Bundle)o2,true);
 
             System.out.println("tree is " + o3);
         } catch (JAXBException e) {

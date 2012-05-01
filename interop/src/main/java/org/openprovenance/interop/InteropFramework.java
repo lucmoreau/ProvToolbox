@@ -16,7 +16,7 @@ import javax.xml.namespace.QName;
 
 
 import org.openprovenance.prov.xml.BeanTraversal;
-import org.openprovenance.prov.xml.Container;
+import org.openprovenance.prov.xml.Bundle;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -83,9 +83,9 @@ public class InteropFramework
 
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
 
-        deserial.validateContainer(schemaFiles,in);
+        deserial.validateBundle(schemaFiles,in);
 
-        Container c=deserial.deserialiseContainer(in);
+        Bundle c=deserial.deserialiseBundle(in);
 
         Utility u=new Utility();
         String s=u.convertBeanToASN(c);
@@ -108,18 +108,18 @@ public class InteropFramework
 
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
 
-        deserial.validateContainer(schemaFiles,in);
+        deserial.validateBundle(schemaFiles,in);
         
-        Container c=deserial.deserialiseContainer(in);
+        Bundle c=deserial.deserialiseBundle(in);
 
-        deserial.validateContainer(schemaFiles,in);
+        deserial.validateBundle(schemaFiles,in);
 
         Utility u=new Utility();        
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         c.setNss(outNamespaces);
-        Container c2=(Container)u.convertJavaBeanToJavaBean(c);
+        Bundle c2=(Bundle)u.convertJavaBeanToJavaBean(c);
         c2.setNss(outNamespaces);
-        serial.serialiseContainer(out,c2,true);
+        serial.serialiseBundle(out,c2,true);
     }
         
 
@@ -135,7 +135,7 @@ public class InteropFramework
         
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-        serial.serialiseContainer(new File(file2),(Container)o2,true);
+        serial.serialiseBundle(new File(file2),(Bundle)o2,true);
 
     }
 
@@ -167,7 +167,7 @@ public class InteropFramework
         ElmoManager manager = factory.createElmoManager();
 
         CommonTree tree = u.convertASNToTree(file);
-        Container c=(Container)u.convertTreeToJavaBean(tree);
+        Bundle c=(Bundle)u.convertTreeToJavaBean(tree);
         
         new TreeTraversal(new RdfConstructor(pFactory, manager)).convert(tree);
 
@@ -193,11 +193,11 @@ public class InteropFramework
 
         Object o=u.convertTreeToJavaBean(tree);
 
-        Container container=(Container)o;
+        Bundle bundle=(Bundle)o;
 
         ProvToDot toDot=new ProvToDot((configFile==null)? "src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
 
-        toDot.convert(container, dotFileOut, pdfFileOut);
+        toDot.convert(bundle, dotFileOut, pdfFileOut);
 
     }
 

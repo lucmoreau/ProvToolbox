@@ -207,7 +207,7 @@ public class BeanTreeConstructor implements BeanConstructor{
     }
 
 
-    public Object convertContainer(Object namespaces,
+    public Object convertBundle(Object namespaces,
                                    List<Object> aRecords,
                                    List<Object> eRecords,
                                    List<Object> agRecords,
@@ -217,7 +217,7 @@ public class BeanTreeConstructor implements BeanConstructor{
         if (eRecords!=null) ll.addAll(eRecords);
         if (agRecords!=null) ll.addAll(agRecords);
         if (lnkRecords!=null) ll.addAll(lnkRecords);
-        return c.convertContainer(namespaces,ll);
+        return c.convertBundle(namespaces,ll);
     }
 
 }

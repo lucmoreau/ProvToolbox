@@ -9,7 +9,7 @@ public class ProvUtilities {
 
     private ProvFactory of=new ProvFactory();
 
-    public List<Element> getElements(Container g) {
+    public List<Element> getElements(Bundle g) {
         List<Element> res=new LinkedList();
         res.addAll(g.getRecords().getEntity());
         res.addAll(g.getRecords().getActivity());
@@ -17,7 +17,7 @@ public class ProvUtilities {
         return res;
     }
 
-    public List<Relation0> getRelations(Container g) {
+    public List<Relation0> getRelations(Bundle g) {
         List<Relation0> res=new LinkedList();
         Dependencies dep=g.getRecords().getDependencies();
         for (Object o:dep.getUsedOrWasGeneratedByOrWasStartedBy()) {

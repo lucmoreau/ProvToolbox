@@ -150,9 +150,9 @@ class JSONConstructor implements TreeConstructor {
 		return new ProvRecord("entity", id, addAttribute(attrs, tuple("prov:type", "prov:agent")));
 	}
 
-	public Object convertContainer(Object nss, List<Object> records) {
-		Map<String,Object> container = new HashMap<String, Object>();
-		container.put("prefix", nss);
+	public Object convertBundle(Object nss, List<Object> records) {
+		Map<String,Object> bundle = new HashMap<String, Object>();
+		bundle.put("prefix", nss);
 		List<Object> agents = new ArrayList<Object>();
         for (Object o: records) {
         	if (o == null) continue;
@@ -164,10 +164,10 @@ class JSONConstructor implements TreeConstructor {
             		continue;
             	type = "entity";
             }
-            Map<Object, Object> structure = (Map<Object, Object>)container.get(type);
+            Map<Object, Object> structure = (Map<Object, Object>)bundle.get(type);
             if (structure == null) {
             	structure = new HashMap<Object, Object>();
-            	container.put(type, structure);
+            	bundle.put(type, structure);
             }
             Map<Object,Object> hash = new HashMap<Object, Object>();
             List<Object[]> tuples = (List<Object[]>)record.attributes;
@@ -182,8 +182,8 @@ class JSONConstructor implements TreeConstructor {
             structure.put(record.id, hash);
         }
         if (!agents.isEmpty())
-        	container.put("agent", agents);
-        return container;
+        	bundle.put("agent", agents);
+        return bundle;
 	}
 
 	public Object convertAttributes(List<Object> attributes) {

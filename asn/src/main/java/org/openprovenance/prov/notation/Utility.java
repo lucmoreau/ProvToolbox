@@ -15,7 +15,7 @@ import  org.antlr.runtime.tree.TreeAdaptor;
 
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
-import org.openprovenance.prov.xml.Container;
+import org.openprovenance.prov.xml.Bundle;
 import org.openprovenance.prov.xml.BeanTraversal;
 
 
@@ -62,7 +62,7 @@ public  class Utility {
     }
 
     /** A conversion function that copies a Java Bean deeply. */
-    public Object convertJavaBeanToJavaBean(Container c) {
+    public Object convertJavaBeanToJavaBean(Bundle c) {
         ProvConstructor pc=new ProvConstructor(new ProvFactory(c.getNss()));
         pc.namespaceTable.putAll(c.getNss());
         BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(pc));
@@ -77,7 +77,7 @@ public  class Utility {
         return (String)o;
     }
 
-    public String convertBeanToASN(Container c) {
+    public String convertBeanToASN(Bundle c) {
         BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(new ASNConstructor()));
         Object o=bt.convert(c);
         return (String)o;

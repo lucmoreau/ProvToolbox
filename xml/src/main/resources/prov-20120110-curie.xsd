@@ -252,13 +252,13 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
   
-  <xs:element name="container" type="prov:Container">
+  <xs:element name="bundle" type="prov:Bundle">
     <xs:annotation>
       <xs:documentation>A set of assertions about the provenance of things</xs:documentation>
     </xs:annotation>
   </xs:element>
   
-  <!-- a wrapper element for all records, used in Container or Account -->
+  <!-- a wrapper element for all records, used in Bundle or Account -->
   <xs:element name="records" type="prov:Records"/>
   <xs:complexType name="Records">
     <xs:sequence>
@@ -272,12 +272,12 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
   
-  <xs:complexType name="Container">
+  <xs:complexType name="Bundle">
     <xs:sequence>
       <xs:element ref="prov:records"  minOccurs="1" maxOccurs="1"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
-    <!-- tentative, this could allow us to annotate containers ... -->
+    <!-- tentative, this could allow us to annotate bundles ... -->
   </xs:complexType>
   
   

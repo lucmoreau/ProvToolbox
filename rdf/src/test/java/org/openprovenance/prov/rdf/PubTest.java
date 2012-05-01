@@ -1,5 +1,5 @@
 package org.openprovenance.prov.rdf;
-import org.openprovenance.prov.xml.Container;
+import org.openprovenance.prov.xml.Bundle;
 import org.openprovenance.prov.notation.Utility;
 import  org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -25,9 +25,9 @@ public class PubTest extends org.openprovenance.prov.notation.PubTest {
         super(testName);
     }
     
-    static Container co1;
-    static Container co2;
-    static Container co3;
+    static Bundle co1;
+    static Bundle co2;
+    static Bundle co3;
 
     @Override
         public void testReadASNSaveXML() {

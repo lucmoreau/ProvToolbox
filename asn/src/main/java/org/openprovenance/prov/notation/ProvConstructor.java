@@ -19,7 +19,7 @@ import org.openprovenance.prov.xml.AgentRef;
 import org.openprovenance.prov.xml.NoteRef;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.Account;
-import org.openprovenance.prov.xml.Container;
+import org.openprovenance.prov.xml.Bundle;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasInvalidatedBy;
@@ -138,7 +138,7 @@ public  class ProvConstructor implements TreeConstructor {
         return e;
     }
 
-    public Object convertContainer(Object namespaces, List<Object> records) {    
+    public Object convertBundle(Object namespaces, List<Object> records) {    
         Collection<Account> accs=new LinkedList();
         Collection<Entity> es=new LinkedList();
         Collection<Agent> ags=new LinkedList();
@@ -153,13 +153,13 @@ public  class ProvConstructor implements TreeConstructor {
             else if (o instanceof Note) { ns.add((Note)o); }
             else lks.add(o);
         }
-        Container c=pFactory.newContainer(accs,
+        Bundle c=pFactory.newBundle(accs,
                                           acs,
                                           es,
                                           ags,
                                           ns,
                                           lks);
-        System.out.println("Container namespaces " + namespaceTable);
+        System.out.println("Bundle namespaces " + namespaceTable);
         c.setNss(namespaceTable);
         return c;
     }

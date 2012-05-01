@@ -77,38 +77,38 @@ public class ProvSerialiser {
 	//m.setAdapter(new org.w3._2001.xmlschema.Adapter1());
     }
 
-    public Document serialiseContainer (Container request) throws JAXBException {
-        return (Document) serialiseContainer (defaultEmptyDocument(), request);
+    public Document serialiseBundle (Bundle request) throws JAXBException {
+        return (Document) serialiseBundle (defaultEmptyDocument(), request);
     }
     
-    public Node serialiseContainer (Node addTo, Container graph)
+    public Node serialiseBundle (Node addTo, Bundle graph)
         throws JAXBException {
         Marshaller m=jc.createMarshaller();
-        m.marshal(of.createContainer(graph),addTo);
+        m.marshal(of.createBundle(graph),addTo);
         return addTo;
     }
-    public String serialiseContainer (StringWriter sw, Container graph)
+    public String serialiseBundle (StringWriter sw, Bundle graph)
         throws JAXBException {
         Marshaller m=jc.createMarshaller();
-        m.marshal(of.createContainer(graph),sw);
+        m.marshal(of.createBundle(graph),sw);
         return sw.toString();
     }
 
-    public String serialiseContainer (StringWriter sw, Container graph, boolean format)
+    public String serialiseBundle (StringWriter sw, Bundle graph, boolean format)
         throws JAXBException {
         Marshaller m=jc.createMarshaller();
         m.setProperty("jaxb.formatted.output",format);
         configurePrefixes(m,graph.getNss());
-        m.marshal(of.createContainer(graph),sw);
+        m.marshal(of.createBundle(graph),sw);
         return sw.toString();
     }
 
-    public void serialiseContainer (File file, Container graph, boolean format)
+    public void serialiseBundle (File file, Bundle graph, boolean format)
         throws JAXBException {
         Marshaller m=jc.createMarshaller();
         m.setProperty("jaxb.formatted.output",format);
         configurePrefixes(m,graph.getNss());
-        m.marshal(of.createContainer(graph),file);
+        m.marshal(of.createBundle(graph),file);
     }
 
     /** By default we use a document provided by the DocumentBuilder

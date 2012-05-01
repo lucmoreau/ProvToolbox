@@ -59,17 +59,17 @@ public class PC1FullTest
      */
 
 
-    public static Container graph1;
-    public static Container graph2;
+    public static Bundle graph1;
+    public static Bundle graph2;
 
 
 
     public void testPC1Full() throws JAXBException
     {
-        Container graph=makePC1FullGraph(pFactory);
+        Bundle graph=makePC1FullGraph(pFactory);
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-        serial.serialiseContainer(new File("target/pc1-full.xml"),graph,true);
+        serial.serialiseBundle(new File("target/pc1-full.xml"),graph,true);
 
         
 
@@ -129,7 +129,7 @@ public class PC1FullTest
 
 
 
-    public Container makePC1FullGraph(ProvFactory pFactory) {
+    public Bundle makePC1FullGraph(ProvFactory pFactory) {
         if (urlFlag) {
             return makePC1FullGraph(pFactory,URL_LOCATION,URL_LOCATION);
         } else {
@@ -153,7 +153,7 @@ public class PC1FullTest
                               val);
     }
 
-    public Container makePC1FullGraph(ProvFactory pFactory, String inputLocation, String outputLocation)
+    public Bundle makePC1FullGraph(ProvFactory pFactory, String inputLocation, String outputLocation)
     {
 
         //        Collection<Account> black=Collections.singleton(pFactory.newAccount("black"));
@@ -578,7 +578,7 @@ public class PC1FullTest
 
         HasAnnotation ha1=pFactory.newHasAnnotation(a1,n1);
 
-        Container graph=pFactory.newContainer(black,
+        Bundle graph=pFactory.newBundle(black,
                                             new Activity[] {p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15},
                                             new Entity[] {a1,a2,a5,a6,a3,a4,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,
                                                             a21,a22,a23,a24,a25,a25p,a26,a26p,a27,a27p,a28,a29,a30},
@@ -615,7 +615,7 @@ public class PC1FullTest
     public void testCopyPC1Full() throws java.io.FileNotFoundException,  java.io.IOException   {
         ProvFactory pFactory=new ProvFactory();
 
-        Container c=pFactory.newContainer(graph1);
+        Bundle c=pFactory.newBundle(graph1);
 
         assertTrue( "self graph1 differ", graph1.equals(graph1) );        
 
@@ -628,12 +628,12 @@ public class PC1FullTest
     public void testReadXMLGraph() throws javax.xml.bind.JAXBException {
         
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-        Container c=deserial.deserialiseContainer(new File("target/pc1-full.xml"));
+        Bundle c=deserial.deserialiseBundle(new File("target/pc1-full.xml"));
         graph2=c;
 
         graph2.setNss(graph1.getNss());
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-        serial.serialiseContainer(new File("target/pc1-full2.xml"),graph2,true);
+        serial.serialiseBundle(new File("target/pc1-full2.xml"),graph2,true);
 
         //System.out.println("a0" +  graph1.getRecords().getActivity().get(0));
         //        System.out.println("a0" +  graph2.getRecords().getActivity().get(0));
@@ -648,7 +648,7 @@ public class PC1FullTest
 
         assertFalse( "graph1 and graph2 differ", graph1.equals(graph2) );        
 
-        Container c2=deserial.deserialiseContainer(new File("target/pc1-full.xml"));
+        Bundle c2=deserial.deserialiseBundle(new File("target/pc1-full.xml"));
         c2.setNss(graph1.getNss());
 
         assertFalse( "c e* and c2 e* differ", c.getRecords().getEntity().equals(c2.getRecords().getEntity()) );        
@@ -662,7 +662,7 @@ public class PC1FullTest
 
         String[] schemaFiles=new String[1];
         schemaFiles[0]="src/test/resources/pc1.xsd";
-        deserial.validateContainer(schemaFiles,new File("target/pc1-full.xml"));
+        deserial.validateBundle(schemaFiles,new File("target/pc1-full.xml"));
         
     }
 
@@ -674,7 +674,7 @@ public class PC1FullTest
         schemaFiles[0]="src/test/resources/pc1.xsd";
 
         try {
-            deserial.validateContainer(schemaFiles,new File("target/pc1-full.xml"), false);
+            deserial.validateBundle(schemaFiles,new File("target/pc1-full.xml"), false);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(true);

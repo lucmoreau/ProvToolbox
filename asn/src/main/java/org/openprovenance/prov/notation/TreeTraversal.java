@@ -374,7 +374,7 @@ public class TreeTraversal {
                 Object o=convert(ast.getChild(i));
                 records.add(o);
             }
-            return c.convertContainer(nss,records);
+            return c.convertBundle(nss,records);
 
         case PROV_NParser.ATTRIBUTES:
             List<Object> attributes=new LinkedList();

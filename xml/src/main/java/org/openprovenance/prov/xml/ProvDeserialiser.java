@@ -55,28 +55,28 @@ public class ProvDeserialiser {
         return threadDeserialiser.get();
     }
 
-    public Container deserialiseContainer (Element serialised)
+    public Bundle deserialiseBundle (Element serialised)
         throws JAXBException {
         Unmarshaller u=jc.createUnmarshaller();
-        JAXBElement<Container> root= u.unmarshal(serialised,Container.class);
-        Container res=root.getValue();
+        JAXBElement<Bundle> root= u.unmarshal(serialised,Bundle.class);
+        Bundle res=root.getValue();
         return res;
     }
 
-    public Container deserialiseContainer (File serialised)
+    public Bundle deserialiseBundle (File serialised)
         throws JAXBException {
         Unmarshaller u=jc.createUnmarshaller();
         Object root= u.unmarshal(serialised);
-        Container res=(Container)((JAXBElement<Container>) root).getValue();
+        Bundle res=(Bundle)((JAXBElement<Bundle>) root).getValue();
         return res;
     }
 
 
-    public Container validateContainer (String[] schemaFiles, File serialised)         throws JAXBException,SAXException, IOException { 
-        return validateContainer (schemaFiles, serialised,true);
+    public Bundle validateBundle (String[] schemaFiles, File serialised)         throws JAXBException,SAXException, IOException { 
+        return validateBundle (schemaFiles, serialised,true);
     }
 
-    public Container validateContainer (String[] schemaFiles, File serialised, boolean withCurie)
+    public Bundle validateBundle (String[] schemaFiles, File serialised, boolean withCurie)
         throws JAXBException,SAXException, IOException {
         SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Source [] sources=new Source[2+schemaFiles.length];
@@ -104,7 +104,7 @@ public class ProvDeserialiser {
         //u.setValidating(true); was jaxb1.0
         u.setSchema(schema);
         Object root= u.unmarshal(serialised);
-        Container res=(Container)((JAXBElement<Container>) root).getValue();
+        Bundle res=(Bundle)((JAXBElement<Bundle>) root).getValue();
         return res;
     }
 
@@ -120,7 +120,7 @@ public class ProvDeserialiser {
             schemas[i-1]=args[i];
         }
         try {
-            deserial.validateContainer(schemas,f);
+            deserial.validateBundle(schemas,f);
             System.out.println(args[0] + " IS a valid OPM graph");
             return ;
         } catch (JAXBException je) {

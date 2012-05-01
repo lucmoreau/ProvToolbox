@@ -13,7 +13,7 @@ public class BeanTraversal {
         this.c=c;
     }
 
-    public Object convert(Container cont) {
+    public Object convert(Bundle cont) {
         List lnkRecords=new LinkedList();
         List aRecords=new LinkedList();
         List eRecords=new LinkedList();
@@ -31,7 +31,7 @@ public class BeanTraversal {
             Object o=convertRelation(lnk);
             if (o!=null) lnkRecords.add(o);
         }
-        return c.convertContainer(cont.getNss(),
+        return c.convertBundle(cont.getNss(),
                                   aRecords,
                                   eRecords,
                                   agRecords,

@@ -10,7 +10,7 @@ public interface BeanConstructor {
     public Object convertEntity(Object id, List<Object> tAttrs, Object lAttr, List<Object> otherAttrs);
     public Object convertAgent(Object id, List<Object> tAttrs, Object lAttr, List<Object> otherAttrs);
     public Object convertActivity(Object id, List<Object> tAttrs, Object lAttr, List<Object> otherAttrs, Object startTime, Object endTime);
-    public Object convertContainer(Object namespaces,
+    public Object convertBundle(Object namespaces,
                                    List<Object> aRecords,
                                    List<Object> eRecords,
                                    List<Object> agRecords,

@@ -5,7 +5,7 @@ import junit.framework.TestSuite;
 
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
-import org.openprovenance.prov.xml.Container;
+import org.openprovenance.prov.xml.Bundle;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -21,11 +21,11 @@ public class FileExampleTest extends TestCase {
 
         CommonTree tree = u.convertASNToTree(asnFile);
 
-        Container o= (Container) u.convertTreeToJavaBean(tree);
+        Bundle o= (Bundle) u.convertTreeToJavaBean(tree);
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         
-        serial.serialiseContainer(new File(xmlFile),o,true);
+        serial.serialiseBundle(new File(xmlFile),o,true);
 
         ProvToDot toDot=new ProvToDot("src/main/resources/defaultConfigWithRoleNoLabel.xml"); 
         

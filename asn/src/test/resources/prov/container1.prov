@@ -498,6 +498,15 @@ prefix ex <http://example>
           entity(ex:e3, [ex:param="a"])
 
  endBundle
+
+
+/* bundles */
+ bundle ex:b2
+          entity(ex:e1, [ex:param="a"])
+          entity(ex:e2, [ex:param="a"])
+          entity(ex:e3, [ex:param="a"])
+
+ endBundle
  
 
 endBundle

@@ -45,7 +45,7 @@ bundle
 		(expression | ML_COMMENT | SL_COMMENT)*
         (namedBundle (namedBundle | ML_COMMENT | SL_COMMENT)*)?
 		'endBundle'
-
+      -> {$namespaceDeclarations.tree==null}? ^(BUNDLE ^(NAMESPACES) ^(EXPRESSIONS expression*) ^(BUNDLES namedBundle*))
       -> ^(BUNDLE namespaceDeclarations? ^(EXPRESSIONS expression*) ^(BUNDLES namedBundle*))
     ;
 
@@ -54,7 +54,7 @@ namedBundle
         (namespaceDeclarations)?
 		(expression | ML_COMMENT | SL_COMMENT)*
 		'endBundle'
-
+      -> {$namespaceDeclarations.tree==null}? ^(NAMEDBUNDLE identifier ^(NAMESPACES) ^(EXPRESSIONS expression*))
       -> ^(NAMEDBUNDLE identifier namespaceDeclarations? ^(EXPRESSIONS expression*))
 	;
 

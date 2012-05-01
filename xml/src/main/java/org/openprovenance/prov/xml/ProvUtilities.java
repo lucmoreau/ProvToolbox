@@ -1,9 +1,11 @@
 package org.openprovenance.prov.xml;
 import java.util.List;
 import java.util.LinkedList;
+
 import javax.xml.namespace.QName;
 
-/** Utilities for manipulating OPM Graphs. */
+
+/** Utilities for manipulating PROV Descriptions. */
 
 public class ProvUtilities {
 
@@ -104,7 +106,6 @@ public class ProvUtilities {
         }
         return null;
     }
-        
 
 
 }

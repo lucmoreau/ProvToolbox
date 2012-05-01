@@ -1,6 +1,7 @@
 package org.openprovenance.prov.dot;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.io.File;
 import java.io.InputStream;
@@ -34,6 +35,7 @@ import org.openprovenance.prov.xml.HasAnnotation;
 import org.openprovenance.prov.xml.Note;
 import org.openprovenance.prov.xml.Bundle;
 import org.openprovenance.prov.xml.HasExtensibility;
+import org.openprovenance.prov.xml.HasExtensibility2;
 
 
 import org.openprovenance.prov.dot.ProvPrinterConfiguration;
@@ -343,21 +345,28 @@ public class ProvToDot {
     }
 
     public  HashMap<String,String> addColors(HasExtensibility e, HashMap<String,String> properties) {
-        for (Object prop: e.getAny()) {
-            if (prop instanceof JAXBElement) {
-                JAXBElement je=(JAXBElement) prop;
-                QName attribute=je.getName();
-                if ("fillcolor".equals(attribute.getLocalPart())) {
-                    properties.put("fillcolor", je.getValue().toString());
-                    properties.put("style", "filled");
-                } else if ("color".equals(attribute.getLocalPart())) {
-                    properties.put("color", je.getValue().toString());
-                } else if ("url".equals(attribute.getLocalPart())) {
-                    properties.put("URL", je.getValue().toString());
-                    break;
-                }
+        if (e instanceof HasExtensibility2) {
+            HasExtensibility2 ee=(HasExtensibility2)e;
+            Hashtable<String,List<Object>> table=ee.attributesWithNamespace("http://openprovenance.org/Toolbox/dot#");
+
+            List<Object> o=table.get("fillcolor");
+            if (o!=null && !o.isEmpty()) {
+                properties.put("fillcolor", o.get(0).toString());
+                properties.put("style", "filled");
             }
+            o=table.get("color");
+            if (o!=null && !o.isEmpty()) {
+                properties.put("color", o.get(0).toString());
+            }
+            o=table.get("url");
+            if (o!=null && !o.isEmpty()) {
+                properties.put("URL", o.get(0).toString());
+            }
+            return properties;
         }
+
+        System.out.println("+++++++++++++++ NOT HERE (HasExtensibility2)" + e.getClass());
+        
         return properties;
     }
 

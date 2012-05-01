@@ -128,9 +128,13 @@ public class NullConstructor implements TreeConstructor {
 
     /* Others */
 
-    public Object convertBundle(Object nss, List<Object> records) {
+    public Object convertBundle(Object nss, List<Object> records, List<Object> bundles) {
         return null;
     }
+    public Object convertNamedBundle(Object id, Object nss, List<Object> records) {
+        return null;
+    }
+
     public Object convertAttributes(List<Object> attributes) {
         return null;
     }

@@ -367,14 +367,30 @@ public class TreeTraversal {
 
             /* Miscellaneous Constructs */
 
-        case PROV_NParser.BUNDLE:
+        case PROV_NParser.EXPRESSIONS:
+        case PROV_NParser.BUNDLES:
             List<Object> records=new LinkedList();
-            Object nss=convert(ast.getChild(0));
-            for (int i=1; i< ast.getChildCount(); i++) {
+            for (int i=0; i< ast.getChildCount(); i++) {
                 Object o=convert(ast.getChild(i));
                 records.add(o);
             }
-            return c.convertBundle(nss,records);
+            return records;
+
+        case PROV_NParser.BUNDLE:
+            Object nss=convert(ast.getChild(0));
+	    records=(List<Object>)convert(ast.getChild(1));
+	    List<Object> bundles=null;
+	    if (ast.getChild(2)!=null)
+		bundles=(List<Object>)convert(ast.getChild(2));
+            return c.convertBundle(nss,records, bundles);
+
+        case PROV_NParser.NAMEDBUNDLE:
+            id=convert(ast.getChild(0));
+            nss=convert(ast.getChild(1));
+	    records=null;
+	    if (ast.getChild(2)!=null)
+		records=(List<Object>)convert(ast.getChild(2));
+            return c.convertNamedBundle(id,nss,records);
 
         case PROV_NParser.ATTRIBUTES:
             List<Object> attributes=new LinkedList();

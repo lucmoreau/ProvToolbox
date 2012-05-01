@@ -156,9 +156,6 @@ public class PC1FullTest
     public Bundle makePC1FullGraph(ProvFactory pFactory, String inputLocation, String outputLocation)
     {
 
-        //        Collection<Account> black=Collections.singleton(pFactory.newAccount("black"));
-        Collection<Account> black=new LinkedList();
-        
 
         Activity p0=pFactory.newActivity("p0",
                                          "PC1Full Workflow");
@@ -578,8 +575,7 @@ public class PC1FullTest
 
         HasAnnotation ha1=pFactory.newHasAnnotation(a1,n1);
 
-        Bundle graph=pFactory.newBundle(black,
-                                            new Activity[] {p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15},
+        Bundle graph=pFactory.newBundle(    new Activity[] {p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15},
                                             new Entity[] {a1,a2,a5,a6,a3,a4,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,
                                                             a21,a22,a23,a24,a25,a25p,a26,a26p,a27,a27p,a28,a29,a30},
                                             new Agent[] { ag1

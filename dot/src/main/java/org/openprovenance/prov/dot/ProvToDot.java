@@ -16,7 +16,6 @@ import javax.xml.bind.JAXBElement;
 
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.Activity;
-import org.openprovenance.prov.xml.Account;
 import org.openprovenance.prov.xml.Relation0;
 import org.openprovenance.prov.xml.Relation;
 import org.openprovenance.prov.xml.Agent;

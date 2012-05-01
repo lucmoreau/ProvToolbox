@@ -10,7 +10,7 @@ options {
 
 tokens {
     ID; ATTRIBUTE; ATTRIBUTES; IRI; QNAM; STRING; TYPEDLITERAL; INT; 
-    BUNDLE; NAMEDBUNDLE; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; 
+    BUNDLE; BUNDLES; NAMEDBUNDLE; EXPRESSIONS; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; 
 
     /* Component 1 */
     ENTITY; ACTIVITY; WGB; USED; WSB; WEB; WINVB; WIB; WSBA;
@@ -46,7 +46,7 @@ bundle
         (namedBundle (namedBundle | ML_COMMENT | SL_COMMENT)*)?
 		'endBundle'
 
-      -> ^(BUNDLE namespaceDeclarations? expression* namedBundle*)
+      -> ^(BUNDLE namespaceDeclarations? ^(EXPRESSIONS expression*) ^(BUNDLES namedBundle*))
     ;
 
 namedBundle
@@ -55,7 +55,7 @@ namedBundle
 		(expression | ML_COMMENT | SL_COMMENT)*
 		'endBundle'
 
-      -> ^(NAMEDBUNDLE identifier namespaceDeclarations? expression*)
+      -> ^(NAMEDBUNDLE identifier namespaceDeclarations? ^(EXPRESSIONS expression*))
 	;
 
 

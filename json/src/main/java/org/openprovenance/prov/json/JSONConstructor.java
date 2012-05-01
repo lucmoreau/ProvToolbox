@@ -150,7 +150,11 @@ class JSONConstructor implements TreeConstructor {
 		return new ProvRecord("entity", id, addAttribute(attrs, tuple("prov:type", "prov:agent")));
 	}
 
-	public Object convertBundle(Object nss, List<Object> records) {
+    public Object convertNamedBundle(Object id, Object nss, List<Object> records) {
+        return null;
+    }
+
+    public Object convertBundle(Object nss, List<Object> records, List<Object> bundles) {
 		Map<String,Object> bundle = new HashMap<String, Object>();
 		bundle.put("prefix", nss);
 		List<Object> agents = new ArrayList<Object>();

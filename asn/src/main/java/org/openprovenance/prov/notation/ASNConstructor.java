@@ -39,15 +39,34 @@ public class ASNConstructor implements TreeConstructor {
         String s="agent(" + id  + optionalAttributes(attrs) + ")";
         return s;
     }
-    public Object convertBundle(Object namespaces, List<Object> records) {
+    public Object convertBundle(Object namespaces, List<Object> records, List<Object> bundles) {
         String s="bundle\n";
         s=s+namespaces;
         for (Object o: records) {
             s=s+o+"\n";
         }
+	if (bundles!=null) {
+	    for (Object o: bundles) {
+		s=s+o+"\n";
+	    }
+	}
         s=s+"endBundle";
         return s;
     }
+
+    public Object convertNamedBundle(Object id, Object namespaces, List<Object> records) {
+        String s="bundle " + id + "\n";
+        s=s+namespaces;
+	if (records!=null) 
+	    for (Object o: records) {
+		s=s+o+"\n";
+	    }
+        s=s+"endBundle";
+        return s;
+    }
+
+
+
     public Object convertAttributes(List<Object> attributes) {
         String s="";
         boolean first=true;

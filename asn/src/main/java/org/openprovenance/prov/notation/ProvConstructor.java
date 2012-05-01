@@ -18,8 +18,8 @@ import org.openprovenance.prov.xml.HasType;
 import org.openprovenance.prov.xml.AgentRef;
 import org.openprovenance.prov.xml.NoteRef;
 import org.openprovenance.prov.xml.Agent;
-import org.openprovenance.prov.xml.Account;
 import org.openprovenance.prov.xml.Bundle;
+import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasInvalidatedBy;
@@ -138,8 +138,7 @@ public  class ProvConstructor implements TreeConstructor {
         return e;
     }
 
-    public Object convertBundle(Object namespaces, List<Object> records) {    
-        Collection<Account> accs=new LinkedList();
+    public Object convertBundle(Object namespaces, List<Object> records, List<Object> bundles) {    
         Collection<Entity> es=new LinkedList();
         Collection<Agent> ags=new LinkedList();
         Collection<Activity> acs=new LinkedList();
@@ -153,12 +152,40 @@ public  class ProvConstructor implements TreeConstructor {
             else if (o instanceof Note) { ns.add((Note)o); }
             else lks.add(o);
         }
-        Bundle c=pFactory.newBundle(accs,
-                                          acs,
+        Bundle c=pFactory.newBundle(      acs,
                                           es,
                                           ags,
                                           ns,
                                           lks);
+        System.out.println("Bundle namespaces " + namespaceTable);
+        c.setNss(namespaceTable);
+        return c;
+    }
+
+    public Object convertNamedBundle(Object id, Object namespaces, List<Object> records) {    
+        Collection<Entity> es=new LinkedList();
+        Collection<Agent> ags=new LinkedList();
+        Collection<Activity> acs=new LinkedList();
+        Collection<Note> ns=new LinkedList();
+        Collection<Object> lks=new LinkedList();
+            
+	if (records!=null) 
+	    for (Object o: records) {
+		if (o instanceof Agent) { ags.add((Agent)o); }
+		else if (o instanceof Entity) { es.add((Entity)o); }
+		else if (o instanceof Activity) { acs.add((Activity)o); }
+		else if (o instanceof Note) { ns.add((Note)o); }
+		else lks.add(o);
+	    }
+        String s_id=(String)id;
+
+        NamedBundle c=pFactory.newNamedBundle(s_id,
+					      acs,
+					      es,
+					      ags,
+					      ns,
+					      lks);
+
         System.out.println("Bundle namespaces " + namespaceTable);
         c.setNss(namespaceTable);
         return c;

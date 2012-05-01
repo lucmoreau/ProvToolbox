@@ -239,15 +239,6 @@ public class ProvFactory {
         return newAgent(stringToQName(ag),label);
     }
 
-    public Account newAccount(QName id) {
-        Account res=of.createAccount();
-        res.setId(id);
-        return res;
-    }
-    public Account newAccount(String id) {
-        return newAccount(stringToQName(id));
-    }
-
 
 
     
@@ -303,11 +294,6 @@ public class ProvFactory {
     }
     public Agent newAgent(Agent a) {
         Agent res=newAgent(a.getId());
-        return res;
-    }
-
-    public Account newAccount(Account acc) {
-        Account res=newAccount(acc.getId());
         return res;
     }
 
@@ -1085,26 +1071,23 @@ public class ProvFactory {
         return newNote(stringToQName(id));
     }
 
-    public Bundle newBundle(Collection<Account> accs,
-                                  Collection<Activity> ps,
+    public Bundle newBundle(      Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Collection<Object> lks) {
-        return newBundle((QName)null,accs,ps,as,ags,null,lks);
+        return newBundle((QName)null,ps,as,ags,null,lks);
     }
 
-    public Bundle newBundle(Collection<Account> accs,
-                                  Collection<Activity> ps,
+    public Bundle newBundle(      Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Collection<Note> ns,
                                   Collection<Object> lks) {
-        return newBundle((QName)null,accs,ps,as,ags,ns,lks);
+        return newBundle((QName)null,ps,as,ags,ns,lks);
     }
 
-    public Bundle newBundle(QName id,
-                                  Collection<Account> accs,
-                                  Collection<Activity> ps,
+    public Bundle newBundle(      QName ignore,
+				  Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Collection<Note> ns,
@@ -1112,10 +1095,52 @@ public class ProvFactory {
     {
         Bundle res=of.createBundle();
         res.setRecords(of.createRecords());
-        res.setId(id);
-        if (accs!=null) {
-            res.getRecords().getAccount().addAll(accs);
+        if (ps!=null) {
+            res.getRecords().getActivity().addAll(ps);
         }
+        if (as!=null) {
+            res.getRecords().getEntity().addAll(as);
+        }
+        if (ags!=null) {
+            res.getRecords().getAgent().addAll(ags);
+        }
+        if (lks!=null) {
+            Dependencies ccls=of.createDependencies();
+            ccls.getUsedOrWasGeneratedByOrWasStartedBy().addAll(lks);
+            res.getRecords().setDependencies(ccls);
+        }
+
+        if (ns!=null) {
+            res.getRecords().getNote().addAll(ns);
+        }
+        return res;
+    }
+
+    public NamedBundle newNamedBundle(String id,
+                                  Collection<Activity> ps,
+                                  Collection<Entity> as,
+                                  Collection<Agent> ags,
+                                  Collection<Note> ns,
+                                  Collection<Object> lks)
+    {
+	return newNamedBundle(stringToQName(id),
+			      ps,
+			      as,
+			      ags,
+			      ns,
+			      lks);
+    }
+
+    public NamedBundle newNamedBundle(QName id,
+                                  Collection<Activity> ps,
+                                  Collection<Entity> as,
+                                  Collection<Agent> ags,
+                                  Collection<Note> ns,
+                                  Collection<Object> lks)
+    {
+        NamedBundle res=of.createNamedBundle();
+        res.setRecords(of.createRecords());
+        res.setId(id);
         if (ps!=null) {
             res.getRecords().getActivity().addAll(ps);
         }
@@ -1138,39 +1163,34 @@ public class ProvFactory {
     }
 
     public Bundle newBundle(String id,
-                                  Collection<Account> accs,
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Collection<Note> ns,
                                   Collection<Object> lks) {
-        return newBundle(stringToQName(id),accs,ps,as,ags,ns,lks);
+        return newBundle(stringToQName(id),ps,as,ags,ns,lks);
     }
 
-    public Bundle newBundle(Collection<Account> accs,
-                                  Activity [] ps,
+    public Bundle newBundle(      Activity [] ps,
                                   Entity [] as,
                                   Agent [] ags,
                                   Object [] lks) 
     {
 
-        return newBundle(accs,
-                            ((ps==null) ? null : Arrays.asList(ps)),
+        return newBundle(   ((ps==null) ? null : Arrays.asList(ps)),
                             ((as==null) ? null : Arrays.asList(as)),
                             ((ags==null) ? null : Arrays.asList(ags)),
                             ((lks==null) ? null : Arrays.asList(lks)));
     }
-    public Bundle newBundle(Collection<Account> accs,
-                                  Activity [] ps,
+    public Bundle newBundle(      Activity [] ps,
                                   Entity [] as,
                                   Agent [] ags,
                                   Note [] ns,
                                   Object [] lks) {
-        return newBundle(null,accs,ps,as,ags,ns,lks);
+        return newBundle(null,ps,as,ags,ns,lks);
     }
 
     public Bundle newBundle(String id,
-                                  Collection<Account> accs,
                                   Activity [] ps,
                                   Entity [] as,
                                   Agent [] ags,
@@ -1179,7 +1199,6 @@ public class ProvFactory {
     {
 
         return newBundle(id,
-                            accs,
                             ((ps==null) ? null : Arrays.asList(ps)),
                             ((as==null) ? null : Arrays.asList(as)),
                             ((ags==null) ? null : Arrays.asList(ags)),
@@ -1187,8 +1206,7 @@ public class ProvFactory {
                             ((lks==null) ? null : Arrays.asList(lks)));
     }
 
-    public Bundle newBundle(Collection<Account> accs,
-                                  Collection<Activity> ps,
+    public Bundle newBundle(      Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Dependencies lks)
@@ -1196,7 +1214,6 @@ public class ProvFactory {
         Bundle res=of.createBundle();
 	res.setRecords(of.createRecords());
         //res.setId(autoGenerateId(bundleIdPrefix));
-        res.getRecords().getAccount().addAll(accs);
         res.getRecords().getActivity().addAll(ps);
         res.getRecords().getEntity().addAll(as);
         res.getRecords().getAgent().addAll(ags);
@@ -1204,8 +1221,7 @@ public class ProvFactory {
         return res;
     }
 
-    public Bundle newBundle(Collection<Account> accs,
-                                  Collection<Activity> ps,
+    public Bundle newBundle(      Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Collection<Note> ns,
@@ -1214,7 +1230,6 @@ public class ProvFactory {
         Bundle res=of.createBundle();
 	res.setRecords(of.createRecords());
         //res.setId(autoGenerateId(bundleIdPrefix));
-        res.getRecords().getAccount().addAll(accs);
         res.getRecords().getActivity().addAll(ps);
         res.getRecords().getEntity().addAll(as);
         res.getRecords().getAgent().addAll(ags);
@@ -1226,8 +1241,7 @@ public class ProvFactory {
 
 
     public Bundle newBundle(Bundle graph) {
-        return newBundle(graph.getRecords().getAccount(),
-                            graph.getRecords().getActivity(),
+        return newBundle(   graph.getRecords().getActivity(),
                             graph.getRecords().getEntity(),
                             graph.getRecords().getAgent(),
                             graph.getRecords().getNote(),

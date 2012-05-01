@@ -405,26 +405,16 @@
   
   <!-- BUNDLES -->
   
-  <xs:element name="account" type="prov:Account"/>
-  <xs:complexType name="Account">
-    <xs:sequence>
-      <xs:element name="asserter" type="prov:AgentRef"  minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:records"  minOccurs="1" maxOccurs="1"/>
-    </xs:sequence>
-    <xs:attribute ref="prov:id"/>
-  </xs:complexType>
-  
   <xs:element name="bundle" type="prov:Bundle">
     <xs:annotation>
       <xs:documentation>A set of assertions about the provenance of things</xs:documentation>
     </xs:annotation>
   </xs:element>
   
-  <!-- a wrapper element for all records, used in Bundle or Account -->
+  <!-- a wrapper element for all records, used in Bundle or NamedBundle -->
   <xs:element name="records" type="prov:Records"/>
   <xs:complexType name="Records">
     <xs:sequence>
-      <xs:element ref="prov:account"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:activity" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:entity"   minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:agent"    minOccurs="0" maxOccurs="unbounded"/>
@@ -437,9 +427,15 @@
   <xs:complexType name="Bundle">
     <xs:sequence>
       <xs:element ref="prov:records"  minOccurs="1" maxOccurs="1"/>
+      <xs:element name="bundle" type="prov:NamedBundle" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="NamedBundle">
+    <xs:sequence>
+      <xs:element ref="prov:records"  minOccurs="1" maxOccurs="1"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
-    <!-- tentative, this could allow us to annotate bundles ... -->
   </xs:complexType>
   
   

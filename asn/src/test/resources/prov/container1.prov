@@ -488,5 +488,17 @@ prefix ex <http://example>
 	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)}, true, [ex:param="a"])
 	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)}, false, [ex:param="a"])
 
+
+/* bundles */
+ bundle ex:b1
+   prefix ex <http://example2>
+
+          entity(ex:e1, [ex:param="a"])
+          entity(ex:e2, [ex:param="a"])
+          entity(ex:e3, [ex:param="a"])
+
+ endBundle
+ 
+
 endBundle
 

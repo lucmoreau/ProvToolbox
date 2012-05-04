@@ -431,38 +431,74 @@ class JSONConstructor implements TreeConstructor {
 
 	/* Component 5 */
     public Object convertInsertion(Object id, Object id2, Object id1, Object map, Object dAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+    	List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:after", id2));
+    	attrs.add(tuple("prov:before", id1));
+    	attrs.add(tuple("prov:key-entity-set", map));
+    	if (dAttrs != null) {
+    		attrs.addAll((List<Object>)dAttrs);
+    	}
+    	
+    	if (id == null)
+        	id = getBlankID("dBIF");
+
+    	return new ProvRecord("derivedByInsertionFrom", id, attrs);
     }
 
     public Object convertEntry(Object o1, Object o2) {
-        //todo
-        throw new UnsupportedOperationException();
+        return tuple(o1, o2);
     }
 
     public Object convertKeyEntitySet(List<Object> o) {
-        //todo
-        throw new UnsupportedOperationException();
+        return o;
     }
 
     public Object convertRemoval(Object id, Object id2, Object id1, Object keys, Object dAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+    	List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:after", id2));
+    	attrs.add(tuple("prov:before", id1));
+    	attrs.add(tuple("prov:key-set", keys));
+    	if (dAttrs != null) {
+    		attrs.addAll((List<Object>)dAttrs);
+    	}
+    	
+    	if (id == null)
+        	id = getBlankID("dBIF");
+
+    	return new ProvRecord("derivedByRemovalFrom", id, attrs);
     }
 
     public Object convertMembership(Object id, Object id2, Object keys, Object dAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+    	List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:after", id2));
+    	attrs.add(tuple("prov:key-entity-set", keys));
+    	if (dAttrs != null) {
+    		attrs.addAll((List<Object>)dAttrs);
+    	}
+    	
+    	if (id == null)
+        	id = getBlankID("mO");
+
+    	return new ProvRecord("memberOf", id, attrs);
     }
 
     public Object convertKeys(List<Object> keys) {
-        //todo
-        throw new UnsupportedOperationException();
+        return keys;
     }
 
     public Object convertMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+    	List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:after", id2));
+    	attrs.add(tuple("prov:key-entity-set", map));
+    	attrs.add(tuple("prov:complete", complete));
+    	if (dAttrs != null) {
+    		attrs.addAll((List<Object>)dAttrs);
+    	}
+    	
+    	if (id == null)
+        	id = getBlankID("mO");
+
+    	return new ProvRecord("memberOf", id, attrs);
     }
 
    /* Component 6 */
@@ -479,7 +515,7 @@ class JSONConstructor implements TreeConstructor {
     }
 
 
-    /* Other conversions */
+    /* Other conversions */    
 	public Object convertBundle(Object nss, List<Object> records, List<Object> bundles) {
 		Map<String,Object> bundle = new HashMap<String, Object>();
 		bundle.put("prefix", nss);

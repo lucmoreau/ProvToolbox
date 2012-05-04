@@ -36,62 +36,85 @@
         "additionalProperties":{}
       }
     },
-    "agent":{
-      "type":"array",
-      "description":"List of ids of entities that are assert as agents",
-      "items":{
-        "type":"string",
-        "format": "uri"
-      }
-    },
-    "note":{
-      "type":"object",
-      "description":"Map of notes by ids",
-      "additionalProperties":{
-        "type":"object",
-        "title":"note",
+    "wasGeneratedBy": {
+       "type":"object",
+       "additionalProperties":{
+         "type":"object",
+         "properties":{
+           "prov:entity": {"type": "string", "format": "uri", "required":true},
+           "prov:activity": {"type": "string", "format": "uri", "required":true},
+           "prov:time": {"type": "string", "format": "date-time"}
+         },
         "additionalProperties":{}
       }
     },
-    "account": {
-      "type":"object",
-      "description":"Map of accounts by ids",
-      "additionalProperties": {
-        "type":"object",
-        "title":"account",
-        "properties":{
-          "asserter": {"type": "string", "format": "uri", "required": true},
-          "entity":{"$ref":"#/properties/entity"},
-          "activity":{"$ref":"#/properties/activity"},
-          "agent":{"$ref":"#/properties/agent"},
-          "note":{"$ref":"#/properties/note"},
-          "wasGeneratedBy":{"$ref":"#/properties/wasGeneratedBy"},
-          "used":{"$ref":"#/properties/used"},
-          "wasAssociatedWith":{"$ref":"#/properties/wasAssociatedWith"},
-          "wasStartedBy":{"$ref":"#/properties/wasStartedBy"},
-          "wasEndedby":{"$ref":"#/properties/wasEndedby"},
-          "actedOnBehalfOf":{"$ref":"#/properties/actedOnBehalfOf"},
-          "wasDerivedFrom":{"$ref":"#/properties/wasDerivedFrom"},
-          "alternateOf":{"$ref":"#/properties/alternateOf"},
-          "specializationOf":{"$ref":"#/properties/specializationOf"},
-          "hasAnnotation":{"$ref":"#/properties/hasAnnotation"}
-        },
-        "additionalProperties": false
-      }
-    },
-    "wasGeneratedBy": {
+    "used": {"$ref":"#/properties/wasGeneratedBy"},
+    "wasStartedBy": {
       "type":"object",
       "additionalProperties":{
         "type":"object",
         "properties":{
-          "prov:entity": {"type": "string", "format": "uri", "required":true},
           "prov:activity": {"type": "string", "format": "uri", "required":true},
+          "prov:trigger": {"type": "string", "format": "uri", "required":false},
           "prov:time": {"type": "string", "format": "date-time"}
         },
         "additionalProperties":{}
       }
     },
-    "used": {"$ref":"#/properties/wasGeneratedBy"},
+    "wasEndedBy": {"$ref":"#/properties/wasStartedBy"},
+    "wasInvalidatedBy": {
+      "type":"object",
+      "additionalProperties":{
+        "type":"object",
+        "properties":{
+          "prov:started": {"type": "string", "format": "uri", "required":true},
+          "prov:starter": {"type": "string", "format": "uri", "required":true},
+        },
+        "additionalProperties":{}
+      }
+    },
+    "wasInformedBy": {
+      "type":"object",
+      "additionalProperties":{
+        "type":"object",
+        "properties":{
+          "prov:informed": {"type": "string", "format": "uri", "required":true},
+          "prov:informant": {"type": "string", "format": "uri", "required":true},
+        },
+        "additionalProperties":{}
+      }
+    },
+    "wasStartedByActivity": {
+      "type":"object",
+      "additionalProperties":{
+        "type":"object",
+        "properties":{
+          "prov:informed": {"type": "string", "format": "uri", "required":true},
+          "prov:informant": {"type": "string", "format": "uri", "required":true},
+        },
+        "additionalProperties":{}
+      }
+    },
+    "agent":{
+      "type":"object",
+      "description":"Map of ids of agents",
+      "additionalProperties":{
+        "type":"object",
+        "title":"entity",
+        "additionalProperties":{}
+      }
+    },
+    "wasAttributedTo": {
+      "type":"object",
+      "additionalProperties":{
+        "type":"object",
+        "properties":{
+          "prov:entity": {"type": "string", "format": "uri", "required":true},
+          "prov:agent": {"type": "string", "format": "uri", "required":true},
+        },
+        "additionalProperties":{}
+      }
+    },
     "wasAssociatedWith": {
       "type":"object",
       "additionalProperties":{
@@ -104,18 +127,6 @@
         "additionalProperties":{}
       }
     },
-    "wasStartedBy": {
-      "type":"object",
-      "additionalProperties":{
-        "type":"object",
-        "properties":{
-          "prov:activity": {"type": "string", "format": "uri", "required":true},
-          "prov:agent": {"type": "string", "format": "uri", "required":true}
-        },
-        "additionalProperties":{}
-      }
-    },
-    "wasEndedby": {"$ref":"#/properties/wasStartedBy"},
     "actedOnBehalfOf": {
       "type":"object",
       "additionalProperties":{
@@ -140,23 +151,54 @@
           "prov:generation": {"type": "string", "format": "uri"},
           "prov:usage": {"type": "string", "format": "uri"}
         },
-        "additionalProperties":{},
-        "dependencies": {
-          "prov:activity": ["prov:generation", "prov:usage"],
-          "prov:generation": ["prov:activity", "prov:usage"],
-          "prov:usage": ["prov:activity", "prov:generation"]
-        }
+        "additionalProperties":{}
       }
     },
-    "alternateOf": {
+    "wasRevisionOf": {
+      "type":"object",
+      "additionalProperties":{
+        "type":"object",
+        "properties":{
+          "prov:newer": {"type": "string", "format": "uri", "required":true},
+          "prov:older": {"type": "string", "format": "uri", "required":true},
+          "prov:responsibility": {"type": "string", "format": "uri"}
+        },
+        "additionalProperties":{}
+      }
+    },
+    "wasQuotedFrom": {
+      "type":"object",
+      "additionalProperties":{
+        "type":"object",
+        "properties":{
+          "prov:quote": {"type": "string", "format": "uri", "required":true},
+          "prov:original": {"type": "string", "format": "uri", "required":true},
+          "prov:quoterAgent": {"type": "string", "format": "uri"},
+          "prov:originalAgent": {"type": "string", "format": "uri"}
+        },
+        "additionalProperties":{}
+      }
+    },
+    "hadOriginalSource": {
+      "type":"object",
+      "additionalProperties":{
+        "type":"object",
+        "properties":{
+          "prov:derived": {"type": "string", "format": "uri", "required":true},
+          "prov:source": {"type": "string", "format": "uri", "required":true}
+        },
+        "additionalProperties":{}
+      }
+    },
+    "tracedTo": {
       "type":"object",
       "additionalProperties":{
         "type":"object",
         "properties":{
           "prov:entity": {"type": "string", "format": "uri", "required":true},
-          "prov:alternate": {"type": "string", "format": "uri", "required":true}
+          "prov:ancestor": {"type": "string", "format": "uri", "required":true}
         },
-        "additionalProperties": {}
+        "additionalProperties":{}
       }
     },
     "specializationOf": {
@@ -164,10 +206,66 @@
       "additionalProperties":{
         "type":"object",
         "properties":{
-          "prov:entity": {"type": "string", "format": "uri", "required":true},
-          "prov:specialization": {"type": "string", "format": "uri", "required":true}
+          "prov:specializedEntity": {"type": "string", "format": "uri", "required":true},
+          "prov:generalEntity": {"type": "string", "format": "uri", "required":true}
         },
         "additionalProperties": {}
+      }
+    },
+    "alternateOf": {
+      "type":"object",
+      "additionalProperties":{
+        "type":"object",
+        "properties":{
+          "prov:alternate1": {"type": "string", "format": "uri", "required":true},
+          "prov:alternate2": {"type": "string", "format": "uri", "required":true}
+        },
+        "additionalProperties": {}
+      }
+    },
+    "derivedByInsertionFrom": {
+      "type":"object",
+      "additionalProperties":{
+        "type":"object",
+        "properties":{
+          "prov:after": {"type": "string", "format": "uri", "required":true},
+          "prov:before": {"type": "string", "format": "uri", "required":true},
+          "prov:key-entity-set": {"type": "array", "items":{}, "required":true}
+        },
+        "additionalProperties":{}
+      }
+    },
+    "derivedByRemovalFrom": {
+      "type":"object",
+      "additionalProperties":{
+        "type":"object",
+        "properties":{
+          "prov:after": {"type": "string", "format": "uri", "required":true},
+          "prov:before": {"type": "string", "format": "uri", "required":true},
+          "prov:key-set": {"type": "array", "items":{}, "required":true}
+        },
+        "additionalProperties": {}
+      }
+    },
+    "memberOf": {
+      "type":"object",
+      "additionalProperties":{
+        "type":"object",
+        "properties":{
+          "prov:after": {"type": "string", "format": "uri", "required":true},
+          "prov:key-entity-set": {"type": "array", "items":{}, "required":true},
+          "prov:complete": {"type": "boolean", "required":false}
+        },
+        "additionalProperties": {}
+      }
+    },
+    "note":{
+      "type":"object",
+      "description":"Map of notes by ids",
+      "additionalProperties":{
+        "type":"object",
+        "title":"note",
+        "additionalProperties":{}
       }
     },
     "hasAnnotation": {

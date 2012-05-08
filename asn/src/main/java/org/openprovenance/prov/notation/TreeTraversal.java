@@ -240,10 +240,11 @@ public class TreeTraversal {
             uid=convert(uidTree);
             id2=convert(ast.getChild(1));
             id1=convert(ast.getChild(2));
-            Object ag2=(ast.getChild(3)==null)?null:convert(ast.getChild(3));
-            Object ag1=(ast.getChild(4)==null)?null:convert(ast.getChild(4));
-            dAttrs=convert(ast.getChild(5));
-            return c.convertWasQuotedFrom(uid,id2,id1,ag2,ag1,dAttrs);
+            pe=convert(ast.getChild(3));
+            q2=convert(ast.getChild(4));
+            q1=convert(ast.getChild(5));
+            dAttrs=convert(ast.getChild(6));
+            return c.convertWasQuotedFrom(uid,id2,id1,pe,q2,q1,dAttrs);
 
         case PROV_NParser.ORIGINALSOURCE:
             uidTree=ast.getChild(0);
@@ -253,8 +254,11 @@ public class TreeTraversal {
             uid=convert(uidTree);
             id2=convert(ast.getChild(1));
             id1=convert(ast.getChild(2));
-            dAttrs=convert(ast.getChild(3));
-            return c.convertHadOriginalSource(uid,id2,id1,dAttrs);
+            pe=convert(ast.getChild(3));
+            q2=convert(ast.getChild(4));
+            q1=convert(ast.getChild(5));
+            dAttrs=convert(ast.getChild(6));
+            return c.convertHadOriginalSource(uid,id2,id1,pe,q2,q1,dAttrs);
 
         case PROV_NParser.TRACEDTO:
             uidTree=ast.getChild(0);

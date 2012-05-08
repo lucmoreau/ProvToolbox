@@ -486,31 +486,31 @@ public  class ProvConstructor implements TreeConstructor {
         return d;
     }
 
-    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object ag2, Object ag1, Object dAttrs) {
+    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object a, Object g2, Object u1, Object dAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        String s_ag2=(String)ag2;
-        String s_ag1=(String)ag1;
+
         Entity e2=entityTable.get(s_id2);
         EntityRef e2r=pFactory.newEntityRef(e2);
         Entity e1=entityTable.get(s_id1);
         EntityRef e1r=pFactory.newEntityRef(e1);
 
-        AgentRef agr2=(s_ag2==null)? null : pFactory.newAgentRef(s_ag2);
-        AgentRef agr1=(s_ag1==null)? null : pFactory.newAgentRef(s_ag1);
-
         WasQuotedFrom d=pFactory.newWasQuotedFrom(s_id,
                                                   e2r,
-                                                  e1r,
-                                                  agr2,
-                                                  agr1);
+                                                  e1r);
+
+        if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
+        if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
+        if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
+
+
         List attrs=(List)dAttrs;
         d.getAny().addAll(attrs);
         return d;
     }
 
-    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs) {
+    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object a, Object g2, Object u1, Object dAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
@@ -522,6 +522,11 @@ public  class ProvConstructor implements TreeConstructor {
         HadOriginalSource d=pFactory.newHadOriginalSource(s_id,
                                                           e2r,
                                                           e1r);
+
+        if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
+        if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
+        if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
+
         List attrs=(List)dAttrs;
         d.getAny().addAll(attrs);
         return d;

@@ -227,10 +227,11 @@
 
   <xs:complexType name="WasQuotedFrom">
     <xs:sequence>
+      <xs:element name="generation"       type="prov:DependencyRef" minOccurs="0"/>
+      <xs:element name="usage"            type="prov:DependencyRef" minOccurs="0"/>
+      <xs:element name="activity"         type="prov:ActivityRef" minOccurs="0"/>
       <xs:element name="quote"        type="prov:EntityRef"/>
       <xs:element name="original"     type="prov:EntityRef"/>
-      <xs:element name="quoterAgent"  type="prov:AgentRef" minOccurs="0"/>
-      <xs:element name="quotedAgent"  type="prov:AgentRef" minOccurs="0"/>
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -239,6 +240,9 @@
 
   <xs:complexType name="HadOriginalSource">
     <xs:sequence>
+      <xs:element name="generation"       type="prov:DependencyRef" minOccurs="0"/>
+      <xs:element name="usage"            type="prov:DependencyRef" minOccurs="0"/>
+      <xs:element name="activity"         type="prov:ActivityRef" minOccurs="0"/>
       <xs:element name="derived"     type="prov:EntityRef"/>
       <xs:element name="source"      type="prov:EntityRef"/>
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>

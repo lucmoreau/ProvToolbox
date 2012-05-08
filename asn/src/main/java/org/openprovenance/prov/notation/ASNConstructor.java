@@ -166,14 +166,19 @@ public class ASNConstructor implements TreeConstructor {
              "" : ", " + optional(pe) + ", " + optional(g2) + ", " + optional(u1)) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
-    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object ag2, Object ag1, Object dAttrs) {
-        String s="wasQuotedFrom(" + optionalId(id) + id2 + ", " + id1 + ", " + optional(ag2) + ", " + optional(ag1) + optionalAttributes(dAttrs) +  ")";
+    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
+        String s="wasQuotedFrom(" + optionalId(id) + id2 + ", " + id1 + 
+            ((pe==null && g2==null && u1==null) ?
+             "" : ", " + optional(pe) + ", " + optional(g2) + ", " + optional(u1)) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
-    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs) {
-        String s="hadOriginalSource(" + optionalId(id) + id2 + ", " + id1 + optionalAttributes(dAttrs) +  ")";
+    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
+        String s="hadOriginalSource(" + optionalId(id) + id2 + ", " + id1 + 
+            ((pe==null && g2==null && u1==null) ?
+             "" : ", " + optional(pe) + ", " + optional(g2) + ", " + optional(u1)) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
+
     public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs) {
         String s="tracedTo(" + optionalId(id) + id2 + ", " + id1 + optionalAttributes(dAttrs) +  ")";
         return s;

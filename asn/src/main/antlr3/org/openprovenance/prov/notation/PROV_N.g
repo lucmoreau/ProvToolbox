@@ -139,42 +139,42 @@ activityExpression
 	;
 
 generationExpression
-	:	'wasGeneratedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
+	:	'wasGeneratedBy' '(' ((id0=identifier | '-') ';')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WGB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WGB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 usageExpression
-	:	'used' '(' ((id0=identifier | '-') ',')?  id2=identifier ',' id1=identifier ',' ( time | '-' ) optionalAttributeValuePairs ')'
+	:	'used' '(' ((id0=identifier | '-') ';')?  id2=identifier ',' id1=identifier ',' ( time | '-' ) optionalAttributeValuePairs ')'
       -> ^(USED ^(ID $id0?)  $id2 $id1 ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 startExpression
-	:	'wasStartedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
+	:	'wasStartedBy' '(' ((id0=identifier | '-') ';')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WSB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WSB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 endExpression
-	:	'wasEndedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
+	:	'wasEndedBy' '(' ((id0=identifier | '-') ';')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WEB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WEB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 invalidationExpression
-	:	'wasInvalidatedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
+	:	'wasInvalidatedBy' '(' ((id0=identifier | '-') ';')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WINVB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WINVB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 
 communicationExpression
-	:	'wasInformedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
+	:	'wasInformedBy' '(' ((id0=identifier | '-') ';')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
       -> ^(WIB ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
 	;
 
 startByActivityExpression
-	:	'wasStartedByActivity' '(' ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
+	:	'wasStartedByActivity' '(' ((id0=identifier | '-') ';')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
       -> ^(WSBA ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
 	;
 
@@ -190,18 +190,18 @@ agentExpression
 	;
 
 attributionExpression
-	:	'wasAttributedTo' '('  ((id0=identifier | '-') ',')? e=identifier ',' ag=identifier optionalAttributeValuePairs ')'
+	:	'wasAttributedTo' '('  ((id0=identifier | '-') ';')? e=identifier ',' ag=identifier optionalAttributeValuePairs ')'
       -> ^(WAT  ^(ID $id0?) $e $ag optionalAttributeValuePairs)
 	;
 
 associationExpression
-	:	'wasAssociatedWith' '('  ((id0=identifier | '-') ',')? a=identifier ',' (ag=identifier | '-') ',' (pl=identifier | '-') optionalAttributeValuePairs ')'
+	:	'wasAssociatedWith' '('  ((id0=identifier | '-') ';')? a=identifier ',' (ag=identifier | '-') ',' (pl=identifier | '-') optionalAttributeValuePairs ')'
       -> {$ag.tree==null}? ^(WAW ^(ID $id0?) $a ^(ID) ^(PLAN $pl?) optionalAttributeValuePairs)
       -> ^(WAW ^(ID $id0?) $a $ag? ^(PLAN $pl?) optionalAttributeValuePairs)
 	;
 
 responsibilityExpression
-	:	'actedOnBehalfOf' '('   ((id0=identifier | '-') ',')? ag2=identifier ',' ag1=identifier ','  (a=identifier | '-') optionalAttributeValuePairs ')'
+	:	'actedOnBehalfOf' '('   ((id0=identifier | '-') ';')? ag2=identifier ',' ag1=identifier ','  (a=identifier | '-') optionalAttributeValuePairs ')'
       -> {$a.tree==null}? ^(AOBO  ^(ID $id0?) $ag2 $ag1 ^(ID) optionalAttributeValuePairs)
       -> ^(AOBO  ^(ID $id0?) $ag2 $ag1 $a? optionalAttributeValuePairs)
 	;
@@ -215,7 +215,7 @@ responsibilityExpression
 
 
 derivationExpression
-	:	'wasDerivedFrom' '(' ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier (',' (a=identifier | '-') ',' (g2=identifier  | '-') ',' (u1=identifier | '-') )?	optionalAttributeValuePairs ')'
+	:	'wasDerivedFrom' '(' ((id0=identifier | '-') ';')? id2=identifier ',' id1=identifier (',' (a=identifier | '-') ',' (g2=identifier  | '-') ',' (u1=identifier | '-') )?	optionalAttributeValuePairs ')'
       -> {$a.tree==null && $g2.tree==null && $u1.tree==null}?
           ^(WDF ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) ^(ID) optionalAttributeValuePairs)
       -> {$a.tree!=null && $g2.tree==null && $u1.tree==null}?
@@ -236,14 +236,14 @@ derivationExpression
 
 
 revisionExpression
-	:	'wasRevisionOf' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier ',' (ag=identifier | '-')optionalAttributeValuePairs ')'
+	:	'wasRevisionOf' '('  ((id0=identifier | '-') ';')? id2=identifier ',' id1=identifier ',' (ag=identifier | '-')optionalAttributeValuePairs ')'
       -> {$ag.tree==null}? ^(WRO ^(ID $id0?) $id2 $id1 ^(ID) optionalAttributeValuePairs)
       -> ^(WRO ^(ID $id0?) $id2 $id1 $ag optionalAttributeValuePairs)
 	;
 
 
 quotationExpression
-	:	'wasQuotedFrom' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier (',' (ag2=identifier | '-')',' (ag1=identifier | '-'))? optionalAttributeValuePairs ')'
+	:	'wasQuotedFrom' '('  ((id0=identifier | '-') ';')? id2=identifier ',' id1=identifier (',' (ag2=identifier | '-')',' (ag1=identifier | '-'))? optionalAttributeValuePairs ')'
       -> {$ag1.tree==null && $ag2.tree==null}? ^(WQF ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) optionalAttributeValuePairs)
       -> {$ag1.tree!=null && $ag2.tree==null}? ^(WQF ^(ID $id0?) $id2 $id1 $ag1 ^(ID) optionalAttributeValuePairs)
       -> {$ag1.tree==null && $ag2.tree!=null}? ^(WQF ^(ID $id0?) $id2 $id1 ^(ID) $ag2 optionalAttributeValuePairs)
@@ -251,12 +251,12 @@ quotationExpression
 	;
 
 hadOriginalSourceExpression
-	:	'hadOriginalSource' '('   ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
+	:	'hadOriginalSource' '('   ((id0=identifier | '-') ';')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
       -> ^(ORIGINALSOURCE  ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
 	;
 
 tracedToExpression
-	:	'tracedTo' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
+	:	'tracedTo' '('  ((id0=identifier | '-') ';')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
       -> ^(TRACEDTO ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
 	;
 
@@ -284,24 +284,24 @@ TODO: literal used in these production needs to disable qname, to allow for intl
 */
 
 insertionExpression
-	:	'derivedByInsertionFrom' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
+	:	'derivedByInsertionFrom' '('  ((id0=identifier | '-') ';')? id2=identifier ',' id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
       -> ^(DBIF ^(ID $id0?) $id2 $id1 keyEntitySet  optionalAttributeValuePairs)
 	;
 
 removalExpression
-	:	'derivedByRemovalFrom' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier ',' '{' literal (',' literal)* '}' optionalAttributeValuePairs ')'
+	:	'derivedByRemovalFrom' '('  ((id0=identifier | '-') ';')? id2=identifier ',' id1=identifier ',' '{' literal (',' literal)* '}' optionalAttributeValuePairs ')'
       -> ^(DBRF ^(ID $id0?) $id2 $id1 ^(KEYS literal*)  optionalAttributeValuePairs)
 	;
 
 /* TODO: specify complete as optional boolean */
 membershipExpression
-	:	( 'memberOf' '('  ((id0=identifier | '-') ',')?  id1=identifier ',' keyEntitySet ',' 'true' optionalAttributeValuePairs ')'
+	:	( 'memberOf' '('  ((id0=identifier | '-') ';')?  id1=identifier ',' keyEntitySet ',' 'true' optionalAttributeValuePairs ')'
       -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(TRUE) optionalAttributeValuePairs)
          |          
-          'memberOf' '('  ((id0=identifier | '-') ',')?  id1=identifier ',' keyEntitySet ',' 'false' optionalAttributeValuePairs ')'
+          'memberOf' '('  ((id0=identifier | '-') ';')?  id1=identifier ',' keyEntitySet ',' 'false' optionalAttributeValuePairs ')'
       -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(FALSE) optionalAttributeValuePairs)
          |          
-          'memberOf' '('  ((id0=identifier | '-') ',')?  id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
+          'memberOf' '('  ((id0=identifier | '-') ';')?  id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
       -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(UNKNOWN) optionalAttributeValuePairs)
         )
 	;

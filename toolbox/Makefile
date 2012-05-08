@@ -21,7 +21,7 @@ t3:
 fam:
 	target/appassembler/bin/provconvert -asn2dot ../asn/src/test/resources/prov/prov-family.pn target/prov-family.dot target/prov-family.pdf ../dot/src/main/resources/configFamily.xml
 	target/appassembler/bin/provconvert -asn2xml ../asn/src/test/resources/prov/prov-family.pn target/prov-family.xml
-	cat target/prov-family.dot | sed -e 's/rankdir/size="8.5,11"; label="The PROV Family of specifications"; labelloc="top"; labeljust="left"; rankdir/' | sed -e 's/OPMGraph/ProvFamily/' > target/prov-family2.dot
+	cat target/prov-family.dot | sed -e 's/rankdir/size="8.5,11"; label="The PROV Family of Specifications\\nLuc Moreau\\nWeST Spring Mindswap Workshop 2012"; labelloc="top"; labeljust="left"; fontsize="36"; rankdir/' | sed -e 's/OPMGraph/ProvFamily/' > target/prov-family2.dot
 	dot -Tps2 target/prov-family2.dot -o target/prov-family2.ps
 	epstopdf target/prov-family2.ps  -o=target/prov-family2.pdf
 

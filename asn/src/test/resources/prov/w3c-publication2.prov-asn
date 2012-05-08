@@ -21,17 +21,17 @@ entity(w3:WD-prov-dm-20111215, [ prov:type="html4" ])
 activity(ex:rcp,-,-,[prov:type="copy directory"])
 
 
-wasGeneratedBy(rec:g,w3:WD-prov-dm-20111215, ex:rcp, -)
+wasGeneratedBy(rec:g; w3:WD-prov-dm-20111215, ex:rcp, -)
 
 entity(ex:req3, [ prov:type="http://www.w3.org/2005/08/01-transitions.html#pubreq" %% xsd:anyURI ])
 
-used(rec:u, ex:rcp,hg:Overview.html,-)
-used(ex:rcp,ex:req3,-)
+used(rec:u; ex:rcp,hg:Overview.html,-)
+used(ex:rcp, ex:req3, -)
 
 
-wasDerivedFrom(w3:WD-prov-dm-20111215,hg:Overview.html, ex:rcp, rec:g, rec:u)
+wasDerivedFrom(w3:WD-prov-dm-20111215, hg:Overview.html, ex:rcp, rec:g, rec:u)
 
-agent(ex:webmaster, [ prov:type="Person" ])
+agent(ex:webmaster, [ prov:type='prov:Person' ])
 
 wasAssociatedWith(ex:rcp, ex:webmaster, -)
 

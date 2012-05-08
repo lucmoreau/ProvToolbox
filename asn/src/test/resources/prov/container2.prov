@@ -52,8 +52,8 @@ prefix ex2 <http://example.org/ex2/>
           agent(ex:ag2)
 
 
-          wasGeneratedBy(g1, ex:e1, ex:a2, 2001-10-26T21:32:51)
-          wasGeneratedBy(g1, ex:e1, ex:a2, 2001-10-26T21:32:52Z, [])
+          wasGeneratedBy(g1; ex:e1, ex:a2, 2001-10-26T21:32:51)
+          wasGeneratedBy(g1; ex:e1, ex:a2, 2001-10-26T21:32:52Z, [])
 
           wasGeneratedBy(ex:e1, ex:a2, 2011-12-01T14:52:35Z, [])
           wasGeneratedBy(ex:e1, ex:a2, 2011-12-01T14:52:35Z, [ex:param="a"])
@@ -65,7 +65,7 @@ prefix ex2 <http://example.org/ex2/>
 
           wasGeneratedBy(ex:e1, -, -, [ex:param="a", ex:port="foo"])
 
-          used(u1, ex:a2, ex:e1, -,    [ prov:role = "dataToAggregate"])
+          used(u1; ex:a2, ex:e1, -,    [ prov:role = "dataToAggregate"])
 
           used(ex:a2, ex:e1, 2001-10-26T21:32:52)
           used(ex:a2, ex:e1, 2001-10-26T21:32:52, [])

@@ -139,30 +139,30 @@ activityExpression
 	;
 
 generationExpression
-	:	'wasGeneratedBy' '(' ((id0=identifier | '-') ';')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
+	:	'wasGeneratedBy' '(' ((id0=identifier | '-') ';')? id2=identifier (',' ((id1=identifier) | '-') ',' ( time | '-' ))? optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WGB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WGB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 usageExpression
-	:	'used' '(' ((id0=identifier | '-') ';')?  id2=identifier ',' id1=identifier ',' ( time | '-' ) optionalAttributeValuePairs ')'
+	:	'used' '(' ((id0=identifier | '-') ';')?  id2=identifier ',' id1=identifier (',' ( time | '-' ))? optionalAttributeValuePairs ')'
       -> ^(USED ^(ID $id0?)  $id2 $id1 ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 startExpression
-	:	'wasStartedBy' '(' ((id0=identifier | '-') ';')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
+	:	'wasStartedBy' '(' ((id0=identifier | '-') ';')? id2=identifier (',' ((id1=identifier) | '-') ',' ( time | '-' ))? optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WSB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WSB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 endExpression
-	:	'wasEndedBy' '(' ((id0=identifier | '-') ';')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
+	:	'wasEndedBy' '(' ((id0=identifier | '-') ';')? id2=identifier (',' ((id1=identifier) | '-') ',' ( time | '-' ))? optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WEB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WEB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 invalidationExpression
-	:	'wasInvalidatedBy' '(' ((id0=identifier | '-') ';')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
+	:	'wasInvalidatedBy' '(' ((id0=identifier | '-') ';')? id2=identifier (',' ((id1=identifier) | '-') ',' ( time | '-' ))? optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WINVB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WINVB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
@@ -195,13 +195,13 @@ attributionExpression
 	;
 
 associationExpression
-	:	'wasAssociatedWith' '('  ((id0=identifier | '-') ';')? a=identifier ',' (ag=identifier | '-') ',' (pl=identifier | '-') optionalAttributeValuePairs ')'
+	:	'wasAssociatedWith' '('  ((id0=identifier | '-') ';')? a=identifier ',' (ag=identifier | '-') (',' (pl=identifier | '-'))? optionalAttributeValuePairs ')'
       -> {$ag.tree==null}? ^(WAW ^(ID $id0?) $a ^(ID) ^(PLAN $pl?) optionalAttributeValuePairs)
       -> ^(WAW ^(ID $id0?) $a $ag? ^(PLAN $pl?) optionalAttributeValuePairs)
 	;
 
 responsibilityExpression
-	:	'actedOnBehalfOf' '('   ((id0=identifier | '-') ';')? ag2=identifier ',' ag1=identifier ','  (a=identifier | '-') optionalAttributeValuePairs ')'
+	:	'actedOnBehalfOf' '('   ((id0=identifier | '-') ';')? ag2=identifier ',' ag1=identifier (','  (a=identifier | '-'))? optionalAttributeValuePairs ')'
       -> {$a.tree==null}? ^(AOBO  ^(ID $id0?) $ag2 $ag1 ^(ID) optionalAttributeValuePairs)
       -> ^(AOBO  ^(ID $id0?) $ag2 $ag1 $a? optionalAttributeValuePairs)
 	;

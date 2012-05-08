@@ -384,12 +384,19 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasAssociatedWith", id, attrs);
 	}
 
-    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
+    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs)
+         {
     	List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:newer", id2));
     	attrs.add(tuple("prov:older", id1));
-    	if (ag != null) {
-    		attrs.add(tuple("prov:responsibility", ag));
+    	if (pe != null) {
+    		attrs.add(tuple("prov:activity", pe));
+    	}
+    	if (q2 != null) {
+    		attrs.add(tuple("prov:generation", q2));
+    	}
+    	if (q1 != null) {
+    		attrs.add(tuple("prov:usage", q1));
     	}
     	if (dAttrs != null) {
     		attrs.addAll((List<Object>)dAttrs);

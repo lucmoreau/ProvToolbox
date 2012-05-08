@@ -180,7 +180,7 @@ public class RdfConstructor implements TreeConstructor {
         return null;
     }
 
-    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
+    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
         //todo
         throw new UnsupportedOperationException();
     }

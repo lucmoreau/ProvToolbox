@@ -463,24 +463,26 @@ public  class ProvConstructor implements TreeConstructor {
         return d;
     }
 
-    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
+    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object a, Object g2, Object u1, Object dAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        String s_ag=(String)ag;
+
         Entity e2=entityTable.get(s_id2);
         EntityRef e2r=pFactory.newEntityRef(e2);
         Entity e1=entityTable.get(s_id1);
         EntityRef e1r=pFactory.newEntityRef(e1);
 
-        AgentRef agr=(s_ag==null)? null : pFactory.newAgentRef(s_ag);
-
         WasRevisionOf d=pFactory.newWasRevisionOf(s_id,
                                                   e2r,
-                                                  e1r,
-                                                  agr);
+                                                  e1r);
+
+        if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
+        if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
+        if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
         List attrs=(List)dAttrs;
         d.getAny().addAll(attrs);
+
         return d;
     }
 

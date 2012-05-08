@@ -226,9 +226,11 @@ public class TreeTraversal {
             uid=convert(uidTree);
             id2=convert(ast.getChild(1));
             id1=convert(ast.getChild(2));
-            Object ag=convert(ast.getChild(3));
-            dAttrs=convert(ast.getChild(4));
-            return c.convertWasRevisionOf(uid,id2,id1,ag,dAttrs);
+            pe=convert(ast.getChild(3));
+            q2=convert(ast.getChild(4));
+            q1=convert(ast.getChild(5));
+            dAttrs=convert(ast.getChild(6));
+            return c.convertWasRevisionOf(uid,id2,id1,pe,q2,q1,dAttrs);
 
         case PROV_NParser.WQF:
             uidTree=ast.getChild(0);

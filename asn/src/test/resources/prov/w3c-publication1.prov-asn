@@ -10,11 +10,11 @@ prefix process <http://www.w3.org/2005/10/Process-20051014/tr.html#>
 prefix email   <https://lists.w3.org/Archives/Member/w3c-archive/>
 prefix chairs  <https://lists.w3.org/Archives/Member/chairs/>
 prefix trans   <http://www.w3.org/2005/08/01-transitions.html#>
+prefix rec54   <http://www.w3.org/2001/02pd/rec54#>
 
 
-
-  entity(tr:WD-prov-dm-20111018, [ prov:type='process:RecsWD' ])
-  entity(tr:WD-prov-dm-20111215, [ prov:type='process:RecsWD' ])
+  entity(tr:WD-prov-dm-20111018, [ prov:type='rec54:WD' ])
+  entity(tr:WD-prov-dm-20111215, [ prov:type='rec54:WD' ])
   entity(process:rec-advance,    [ prov:type='prov:Plan' ])
 
 

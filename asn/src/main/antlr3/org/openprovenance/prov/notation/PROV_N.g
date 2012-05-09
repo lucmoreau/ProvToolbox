@@ -418,8 +418,7 @@ time
 	;
 
 
-/* TODO: complete grammar of Literal
-*/
+/* TODO: complete grammar of Literal */
 
 
 literal :
@@ -437,12 +436,8 @@ datatype:
 
 	
 
-/* 
-The production here are based on the SPARQL grammar availabe from:
-
-http://antlr.org/grammar/1200929755392/Sparql.g 
-
-*/
+/* The production here are based on the SPARQL grammar availabe from:
+   http://antlr.org/grammar/1200929755392/Sparql.g */
 
 
 
@@ -476,11 +471,20 @@ fragment
 ECHAR : '\\' ('t' | 'b' | 'n' | 'r' | 'f' | '\\' | '"' | '\'');
  
 
-/* Note PN_CHARS_BASE is same as NCNAMESTARTCHAR (XML Schema) */
+/* Note PN_CHARS_BASE is same as NCNAMESTARTCHAR (XML Schema)
+   http://www.w3.org/TR/rdf-sparql-query/#rPN_CHARS_U
+   http://www.w3.org/2010/01/Turtle/#prod-turtle2-PN_CHARS_U
+ */
+
 fragment
 PN_CHARS_U : PN_CHARS_BASE | '_';
 
-/* Note: this is the same as NCNAMECHAR (XML Schema) except for '.' */
+/* Note: this is the same as NCNAMECHAR (XML Schema) except for '.' 
+   http://www.w3.org/TR/rdf-sparql-query/#rPN_CHARS 
+   http://www.w3.org/2010/01/Turtle/#prod-turtle2-PN_CHARS
+
+*/
+
 fragment
 PN_CHARS
     : PN_CHARS_U
@@ -491,23 +495,38 @@ PN_CHARS
     | '\u203F'..'\u2040'
     ;
 
+/* 
+http://www.w3.org/TR/rdf-sparql-query/#rPN_PREFIX
+http://www.w3.org/2010/01/Turtle/#prod-turtle2-PN_PREFIX
+*/
+
 fragment
 PN_PREFIX : PN_CHARS_BASE ((PN_CHARS|DOT)* PN_CHARS)?;
 
-/* Note PN_LOCAL allows for start with a digit */
+/* Note PN_LOCAL allows for start with a digit 
+
+  same as http://www.w3.org/TR/rdf-sparql-query/#rPN_LOCAL, except that here we accept '/', '@'
+  same http://www.w3.org/2010/01/Turtle/#prod-turtle2-PN_LOCAL, except that here we accept '/', '@'
+*/
 fragment
 PN_LOCAL:
-  (PN_CHARS_U|DIGIT)  ((PN_CHARS|'/'|{    
+  (PN_CHARS_U|DIGIT)  ((PN_CHARS|'/'| '@' |{    
                     	                       if (input.LA(1)=='.') {
                     	                          int LA2 = input.LA(2);
                     	       	                  if (!((LA2>='-' && LA2<='.')||(LA2>='0' && LA2<='9')||(LA2>='A' && LA2<='Z')||LA2=='_'||(LA2>='a' && LA2<='z')||LA2=='\u00B7'||(LA2>='\u00C0' && LA2<='\u00D6')||(LA2>='\u00D8' && LA2<='\u00F6')||(LA2>='\u00F8' && LA2<='\u037D')||(LA2>='\u037F' && LA2<='\u1FFF')||(LA2>='\u200C' && LA2<='\u200D')||(LA2>='\u203F' && LA2<='\u2040')||(LA2>='\u2070' && LA2<='\u218F')||(LA2>='\u2C00' && LA2<='\u2FEF')||(LA2>='\u3001' && LA2<='\uD7FF')||(LA2>='\uF900' && LA2<='\uFDCF')||(LA2>='\uFDF0' && LA2<='\uFFFD'))) {
                     	       	                     return;
                     	       	                  }
                     	                       }
-                                           } DOT)* (PN_CHARS | '/'))?
+                                           } DOT)* (PN_CHARS | '/' | '@' ))?
 ;
 
-/* Note PN_CHARS_BASE is same as NCNAMESTARTCHAR (XML Schema) except for '_' */
+/* 
+   same as http://www.w3.org/TR/rdf-sparql-query/#rPN_CHARS_BASE  except for [#10000-#EFFFF], which Java doesn't seem to support
+   same as http://www.w3.org/2010/01/Turtle/#prod-turtle2-PN_CHARS_BASE except for [#10000-#EFFFF], which Java doesn't seem to support
+
+   Note PN_CHARS_BASE is same as NCNAMESTARTCHAR (XML Schema) except for '_' and ':' 
+   http://www.w3.org/TR/REC-xml/#NT-NameStartChar
+*/
 fragment
 PN_CHARS_BASE
     : 'A'..'Z'

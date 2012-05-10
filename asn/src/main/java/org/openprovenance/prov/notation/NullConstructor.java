@@ -67,13 +67,13 @@ public class NullConstructor implements TreeConstructor {
     public Object convertWasDerivedFrom(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
         return null;
     }
-    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
+    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
         return null;
     }
-    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object ag2, Object ag1, Object dAttrs) {
+    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
         return null;
     }
-    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs) {
+    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
         return null;
     }
     public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs) {
@@ -153,7 +153,7 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
-    public Object convertQNAME(String qname) {
+    public Object convertQualifiedName(String qname) {
         return null;
     }
     public Object convertIRI(String iri) {

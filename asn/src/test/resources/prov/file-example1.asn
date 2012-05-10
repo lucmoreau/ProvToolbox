@@ -30,14 +30,14 @@ wasGeneratedBy(e0, a0, -, [])
 wasGeneratedBy(e1, a0, -, [fct="create"])
 wasGeneratedBy(e2, a1, -, [fct="save"])     
 wasGeneratedBy(e3, a3, -, [fct="save"])     
-wasGeneratedBy(g1, e4, a2, -, [port="smtp", section="attachment"])  
-wasGeneratedBy(g2, e5, a4, -, [port="smtp", section="attachment"])    
+wasGeneratedBy(g1; e4, a2, -, [port="smtp", section="attachment"])  
+wasGeneratedBy(g2; e5, a4, -, [port="smtp", section="attachment"])    
 wasGeneratedBy(e6, a5, -, [file="stdout"])
 
 used(a1,e1,-, [fct="load"])
 used(a3,e2,-, [fct="load"])
-used(u1,a2,e2,-, [fct="attach"])
-used(u2,a4,e3,-, [fct="attach"])
+used(u1;a2,e2,-, [fct="attach"])
+used(u2;a4,e3,-, [fct="attach"])
 used(a5,e3,-, [file="stdin"])
 
 

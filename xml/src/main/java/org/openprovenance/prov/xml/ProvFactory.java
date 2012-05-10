@@ -423,11 +423,9 @@ public class ProvFactory {
 
     public WasRevisionOf newWasRevisionOf(String id,
                                           EntityRef newer,
-                                          EntityRef older,
-                                          AgentRef eid2) {
+                                          EntityRef older) {
         WasRevisionOf res=of.createWasRevisionOf();
         res.setId(stringToQName(id));
-        res.setResponsibility(eid2);
         res.setNewer(newer);
         res.setOlder(older);
         return res;
@@ -435,11 +433,9 @@ public class ProvFactory {
 
     public WasRevisionOf newWasRevisionOf(QName id,
                                           EntityRef newer,
-                                          EntityRef older,
-                                          AgentRef eid2) {
+                                          EntityRef older) {
         WasRevisionOf res=of.createWasRevisionOf();
         res.setId(id);
-        res.setResponsibility(eid2);
         res.setNewer(newer);
         res.setOlder(older);
         return res;
@@ -448,29 +444,21 @@ public class ProvFactory {
 
     public WasQuotedFrom newWasQuotedFrom(String id,
                                           EntityRef quote,
-                                          EntityRef original,
-                                          AgentRef quoterAgent,
-                                          AgentRef quotedAgent) {
+                                          EntityRef original) {
         WasQuotedFrom res=of.createWasQuotedFrom();
         res.setId(stringToQName(id));
         res.setQuote(quote);
         res.setOriginal(original);
-        res.setQuoterAgent(quoterAgent);
-        res.setQuotedAgent(quotedAgent);
         return res;
     }
 
     public WasQuotedFrom newWasQuotedFrom(QName id,
                                           EntityRef quote,
-                                          EntityRef original,
-                                          AgentRef quoterAgent,
-                                          AgentRef quotedAgent) {
+                                          EntityRef original) {
         WasQuotedFrom res=of.createWasQuotedFrom();
         res.setId(id);
         res.setQuote(quote);
         res.setOriginal(original);
-        res.setQuoterAgent(quoterAgent);
-        res.setQuotedAgent(quotedAgent);
         return res;
     }
 

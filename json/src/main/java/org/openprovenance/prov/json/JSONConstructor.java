@@ -345,12 +345,20 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasDerivedFrom", id, attrs);
 	}
 
-	public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs) {
+
+    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs)
+    {
     	List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:newer", id2));
     	attrs.add(tuple("prov:older", id1));
-    	if (ag != null) {
-    		attrs.add(tuple("prov:responsibility", ag));
+    	if (pe != null) {
+    		attrs.add(tuple("prov:activity", pe));
+    	}
+    	if (q2 != null) {
+    		attrs.add(tuple("prov:generation", q2));
+    	}
+    	if (q1 != null) {
+    		attrs.add(tuple("prov:usage", q1));
     	}
     	if (dAttrs != null) {
     		attrs.addAll((List<Object>)dAttrs);
@@ -362,30 +370,44 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasRevisionOf", id, attrs);
     }
 
-    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object ag2, Object ag1, Object dAttrs) {
+    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
     	List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:quote", id2));
     	attrs.add(tuple("prov:original", id1));
-    	if (ag2 != null) {
-    		attrs.add(tuple("prov:quoterAgent", ag2));
+    	if (pe != null) {
+    		attrs.add(tuple("prov:activity", pe));
     	}
-    	if (ag1 != null) {
-    		attrs.add(tuple("prov:originalAgent", ag1));
+    	if (q2 != null) {
+    		attrs.add(tuple("prov:generation", q2));
+    	}
+    	if (q1 != null) {
+    		attrs.add(tuple("prov:usage", q1));
     	}
     	if (dAttrs != null) {
     		attrs.addAll((List<Object>)dAttrs);
     	}
-    	
     	if (id == null)
     		id = getBlankID("wQF");
 
     	return new ProvRecord("wasQuotedFrom", id, attrs);
     }
     
-	public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs) {
+	public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
     	List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:derived", id2));
     	attrs.add(tuple("prov:source", id1));
+    	if (pe != null) {
+    		attrs.add(tuple("prov:activity", pe));
+    	}
+    	if (q2 != null) {
+    		attrs.add(tuple("prov:generation", q2));
+    	}
+    	if (q1 != null) {
+    		attrs.add(tuple("prov:usage", q1));
+    	}
+    	if (dAttrs != null) {
+    		attrs.addAll((List<Object>)dAttrs);
+    	}
     	if (dAttrs != null) {
     		attrs.addAll((List<Object>)dAttrs);
     	}
@@ -590,7 +612,7 @@ class JSONConstructor implements TreeConstructor {
 		return value;
 	}
 
-	public Object convertQNAME(String qname) {
+	public Object convertQualifiedName(String qname) {
 		return unwrap(qname);
 	}
 

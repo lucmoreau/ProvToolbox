@@ -27,9 +27,9 @@ public interface TreeConstructor {
 
     /* Component 3 */
     public Object convertWasDerivedFrom(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs);
-    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object ag, Object dAttrs);
-    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object ag2, Object ag1, Object dAttrs);
-    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object dAttrs);
+    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs);
+    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs);
+    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs);
     public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs);
 
 
@@ -60,7 +60,7 @@ public interface TreeConstructor {
     public Object convertAttribute(Object name, Object value);
     public Object convertString(String s);
     public Object convertInt(int i);
-    public Object convertQNAME(String qname);
+    public Object convertQualifiedName(String qname);
     public Object convertIRI(String iri);
     public Object convertPrefix(String pre);
     public Object convertTypedLiteral(String datatype, Object value);

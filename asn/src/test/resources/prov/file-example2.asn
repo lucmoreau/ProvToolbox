@@ -24,14 +24,14 @@ wasGeneratedBy(ex:e0, ex:a0, -)
 wasGeneratedBy(ex:e1, ex:a0, -, [ex:fct="create"])
 wasGeneratedBy(ex:e2, ex:a1, -, [ex:fct="save"])     
 wasGeneratedBy(ex:e3, ex:a3, -, [ex:fct="save"])     
-wasGeneratedBy(ex:g1, ex:e4, ex:a2, -, [ex:port="smtp", ex:section="attachment"])  
-wasGeneratedBy(ex:g2, ex:e5, ex:a4, -, [ex:port="smtp", ex:section="attachment"])    
+wasGeneratedBy(ex:g1; ex:e4, ex:a2, -, [ex:port="smtp", ex:section="attachment"])  
+wasGeneratedBy(ex:g2; ex:e5, ex:a4, -, [ex:port="smtp", ex:section="attachment"])    
 wasGeneratedBy(ex:e6, ex:a5, -, [ex:file="stdout"])
 
 used(ex:a1,ex:e1,-, [ex:fct="load"])
 used(ex:a3,ex:e2,-, [ex:fct="load"])
-used(ex:u1,ex:a2,ex:e2,-,[ex:fct="attach"])
-used(ex:u2,ex:a4,ex:e3,-,[ex:fct="attach"])
+used(ex:u1;ex:a2,ex:e2,-,[ex:fct="attach"])
+used(ex:u2;ex:a4,ex:e3,-,[ex:fct="attach"])
 used(ex:a5,ex:e3,-,[ex:file="stdin"])
 
 

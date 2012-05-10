@@ -67,12 +67,12 @@ namespaceDeclarations :
 
 /**
   The following production uses ANTLR directives to disactivate the
-  production QNAME to guarantee that ensure that PREFX token is
+  production QUALNAME to guarantee that ensure that PREFX token is
   generated in this context only.
 
   A global static boolean variable (qnameDisabled) is declared in the
   parser, set to true when entering this production and set to false
-  on exit.  This variable is use in the lexer to disable the QNAME
+  on exit.  This variable is use in the lexer to disable the QUALNAME
   production.
 
   Sorry, that's the only way I have found to do this. Obviously, this
@@ -139,42 +139,53 @@ activityExpression
 	;
 
 generationExpression
-	:	'wasGeneratedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
+	:	'wasGeneratedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' ( time | '-' ))? optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WGB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WGB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
+optionalIdentifier
+    : ((id0=identifier | '-') ';')?
+     -> identifier?
+    ;
+
+identifierOrMarker
+    : ((identifier) | '-')
+     -> identifier?
+    ;
+
+
 usageExpression
-	:	'used' '(' ((id0=identifier | '-') ',')?  id2=identifier ',' id1=identifier ',' ( time | '-' ) optionalAttributeValuePairs ')'
+	:	'used' '(' id0=optionalIdentifier  id2=identifier ',' id1=identifier (',' ( time | '-' ))? optionalAttributeValuePairs ')'
       -> ^(USED ^(ID $id0?)  $id2 $id1 ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 startExpression
-	:	'wasStartedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
+	:	'wasStartedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' ( time | '-' ))? optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WSB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WSB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 endExpression
-	:	'wasEndedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
+	:	'wasEndedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' ( time | '-' ))? optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WEB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WEB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 invalidationExpression
-	:	'wasInvalidatedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' ((id1=identifier) | '-') ',' ( time | '-' ) optionalAttributeValuePairs ')'
+	:	'wasInvalidatedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' ( time | '-' ))? optionalAttributeValuePairs ')'
       -> {$id1.tree==null}? ^(WINVB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
       -> ^(WINVB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 
 communicationExpression
-	:	'wasInformedBy' '(' ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
+	:	'wasInformedBy' '(' id0=optionalIdentifier id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
       -> ^(WIB ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
 	;
 
 startByActivityExpression
-	:	'wasStartedByActivity' '(' ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
+	:	'wasStartedByActivity' '(' id0=optionalIdentifier id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
       -> ^(WSBA ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
 	;
 
@@ -190,18 +201,18 @@ agentExpression
 	;
 
 attributionExpression
-	:	'wasAttributedTo' '('  ((id0=identifier | '-') ',')? e=identifier ',' ag=identifier optionalAttributeValuePairs ')'
+	:	'wasAttributedTo' '('  id0=optionalIdentifier e=identifier ',' ag=identifier optionalAttributeValuePairs ')'
       -> ^(WAT  ^(ID $id0?) $e $ag optionalAttributeValuePairs)
 	;
 
 associationExpression
-	:	'wasAssociatedWith' '('  ((id0=identifier | '-') ',')? a=identifier ',' (ag=identifier | '-') ',' (pl=identifier | '-') optionalAttributeValuePairs ')'
+	:	'wasAssociatedWith' '('  id0=optionalIdentifier a=identifier ',' ag=identifierOrMarker (',' pl=identifierOrMarker)? optionalAttributeValuePairs ')'
       -> {$ag.tree==null}? ^(WAW ^(ID $id0?) $a ^(ID) ^(PLAN $pl?) optionalAttributeValuePairs)
       -> ^(WAW ^(ID $id0?) $a $ag? ^(PLAN $pl?) optionalAttributeValuePairs)
 	;
 
 responsibilityExpression
-	:	'actedOnBehalfOf' '('   ((id0=identifier | '-') ',')? ag2=identifier ',' ag1=identifier ','  (a=identifier | '-') optionalAttributeValuePairs ')'
+	:	'actedOnBehalfOf' '('   id0=optionalIdentifier ag2=identifier ',' ag1=identifier (','  a=identifierOrMarker)? optionalAttributeValuePairs ')'
       -> {$a.tree==null}? ^(AOBO  ^(ID $id0?) $ag2 $ag1 ^(ID) optionalAttributeValuePairs)
       -> ^(AOBO  ^(ID $id0?) $ag2 $ag1 $a? optionalAttributeValuePairs)
 	;
@@ -211,11 +222,11 @@ responsibilityExpression
 /*
         Component 3: Derivations
 
-*/
+*/ 
 
 
 derivationExpression
-	:	'wasDerivedFrom' '(' ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier (',' (a=identifier | '-') ',' (g2=identifier  | '-') ',' (u1=identifier | '-') )?	optionalAttributeValuePairs ')'
+	:	'wasDerivedFrom' '(' id0=optionalIdentifier id2=identifier ',' id1=identifier (',' a=identifierOrMarker ',' g2=identifierOrMarker ',' u1=identifierOrMarker )?	optionalAttributeValuePairs ')'
       -> {$a.tree==null && $g2.tree==null && $u1.tree==null}?
           ^(WDF ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) ^(ID) optionalAttributeValuePairs)
       -> {$a.tree!=null && $g2.tree==null && $u1.tree==null}?
@@ -236,27 +247,69 @@ derivationExpression
 
 
 revisionExpression
-	:	'wasRevisionOf' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier ',' (ag=identifier | '-')optionalAttributeValuePairs ')'
-      -> {$ag.tree==null}? ^(WRO ^(ID $id0?) $id2 $id1 ^(ID) optionalAttributeValuePairs)
-      -> ^(WRO ^(ID $id0?) $id2 $id1 $ag optionalAttributeValuePairs)
+	:	'wasRevisionOf' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier (',' a=identifierOrMarker ',' g2=identifierOrMarker ',' u1=identifierOrMarker )?	optionalAttributeValuePairs ')'
+      -> {$a.tree==null && $g2.tree==null && $u1.tree==null}?
+          ^(WRO ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) ^(ID) optionalAttributeValuePairs)
+      -> {$a.tree!=null && $g2.tree==null && $u1.tree==null}?
+          ^(WRO ^(ID $id0?) $id2 $id1 $a ^(ID) ^(ID) optionalAttributeValuePairs)
+      -> {$a.tree==null && $g2.tree!=null && $u1.tree==null}?
+          ^(WRO ^(ID $id0?) $id2 $id1 ^(ID) $g2 ^(ID) optionalAttributeValuePairs)
+      -> {$a.tree!=null && $g2.tree!=null && $u1.tree==null}?
+          ^(WRO ^(ID $id0?) $id2 $id1 $a $g2 ^(ID) optionalAttributeValuePairs)
+      -> {$a.tree==null && $g2.tree==null && $u1.tree!=null}?
+          ^(WRO ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) $u1 optionalAttributeValuePairs)
+      -> {$a.tree!=null && $g2.tree==null && $u1.tree!=null}?
+          ^(WRO ^(ID $id0?) $id2 $id1 $a ^(ID) $u1 optionalAttributeValuePairs)
+      -> {$a.tree==null && $g2.tree!=null && $u1.tree!=null}?
+          ^(WRO ^(ID $id0?) $id2 $id1 ^(ID) $g2 $u1 optionalAttributeValuePairs)
+      -> ^(WRO ^(ID $id0?) $id2 $id1 $a $g2 $u1 optionalAttributeValuePairs)
 	;
+
 
 
 quotationExpression
-	:	'wasQuotedFrom' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier (',' (ag2=identifier | '-')',' (ag1=identifier | '-'))? optionalAttributeValuePairs ')'
-      -> {$ag1.tree==null && $ag2.tree==null}? ^(WQF ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) optionalAttributeValuePairs)
-      -> {$ag1.tree!=null && $ag2.tree==null}? ^(WQF ^(ID $id0?) $id2 $id1 $ag1 ^(ID) optionalAttributeValuePairs)
-      -> {$ag1.tree==null && $ag2.tree!=null}? ^(WQF ^(ID $id0?) $id2 $id1 ^(ID) $ag2 optionalAttributeValuePairs)
-      -> ^(WQF ^(ID $id0?) $id2 $id1 $ag2? $ag1? optionalAttributeValuePairs)
+	:	'wasQuotedFrom' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier (',' a=identifierOrMarker ',' g2=identifierOrMarker ',' u1=identifierOrMarker )?	optionalAttributeValuePairs ')'
+      -> {$a.tree==null && $g2.tree==null && $u1.tree==null}?
+          ^(WQF ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) ^(ID) optionalAttributeValuePairs)
+      -> {$a.tree!=null && $g2.tree==null && $u1.tree==null}?
+          ^(WQF ^(ID $id0?) $id2 $id1 $a ^(ID) ^(ID) optionalAttributeValuePairs)
+      -> {$a.tree==null && $g2.tree!=null && $u1.tree==null}?
+          ^(WQF ^(ID $id0?) $id2 $id1 ^(ID) $g2 ^(ID) optionalAttributeValuePairs)
+      -> {$a.tree!=null && $g2.tree!=null && $u1.tree==null}?
+          ^(WQF ^(ID $id0?) $id2 $id1 $a $g2 ^(ID) optionalAttributeValuePairs)
+      -> {$a.tree==null && $g2.tree==null && $u1.tree!=null}?
+          ^(WQF ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) $u1 optionalAttributeValuePairs)
+      -> {$a.tree!=null && $g2.tree==null && $u1.tree!=null}?
+          ^(WQF ^(ID $id0?) $id2 $id1 $a ^(ID) $u1 optionalAttributeValuePairs)
+      -> {$a.tree==null && $g2.tree!=null && $u1.tree!=null}?
+          ^(WQF ^(ID $id0?) $id2 $id1 ^(ID) $g2 $u1 optionalAttributeValuePairs)
+      -> ^(WQF ^(ID $id0?) $id2 $id1 $a $g2 $u1 optionalAttributeValuePairs)
 	;
+
 
 hadOriginalSourceExpression
-	:	'hadOriginalSource' '('   ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
-      -> ^(ORIGINALSOURCE  ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
+	:	'hadOriginalSource' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier (',' a=identifierOrMarker ',' g2=identifierOrMarker ',' u1=identifierOrMarker )?	optionalAttributeValuePairs ')'
+      -> {$a.tree==null && $g2.tree==null && $u1.tree==null}?
+          ^(ORIGINALSOURCE ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) ^(ID) optionalAttributeValuePairs)
+      -> {$a.tree!=null && $g2.tree==null && $u1.tree==null}?
+          ^(ORIGINALSOURCE ^(ID $id0?) $id2 $id1 $a ^(ID) ^(ID) optionalAttributeValuePairs)
+      -> {$a.tree==null && $g2.tree!=null && $u1.tree==null}?
+          ^(ORIGINALSOURCE ^(ID $id0?) $id2 $id1 ^(ID) $g2 ^(ID) optionalAttributeValuePairs)
+      -> {$a.tree!=null && $g2.tree!=null && $u1.tree==null}?
+          ^(ORIGINALSOURCE ^(ID $id0?) $id2 $id1 $a $g2 ^(ID) optionalAttributeValuePairs)
+      -> {$a.tree==null && $g2.tree==null && $u1.tree!=null}?
+          ^(ORIGINALSOURCE ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) $u1 optionalAttributeValuePairs)
+      -> {$a.tree!=null && $g2.tree==null && $u1.tree!=null}?
+          ^(ORIGINALSOURCE ^(ID $id0?) $id2 $id1 $a ^(ID) $u1 optionalAttributeValuePairs)
+      -> {$a.tree==null && $g2.tree!=null && $u1.tree!=null}?
+          ^(ORIGINALSOURCE ^(ID $id0?) $id2 $id1 ^(ID) $g2 $u1 optionalAttributeValuePairs)
+      -> ^(ORIGINALSOURCE ^(ID $id0?) $id2 $id1 $a $g2 $u1 optionalAttributeValuePairs)
 	;
 
+
+
 tracedToExpression
-	:	'tracedTo' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
+	:	'tracedTo' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
       -> ^(TRACEDTO ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
 	;
 
@@ -284,24 +337,24 @@ TODO: literal used in these production needs to disable qname, to allow for intl
 */
 
 insertionExpression
-	:	'derivedByInsertionFrom' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
+	:	'derivedByInsertionFrom' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
       -> ^(DBIF ^(ID $id0?) $id2 $id1 keyEntitySet  optionalAttributeValuePairs)
 	;
 
 removalExpression
-	:	'derivedByRemovalFrom' '('  ((id0=identifier | '-') ',')? id2=identifier ',' id1=identifier ',' '{' literal (',' literal)* '}' optionalAttributeValuePairs ')'
+	:	'derivedByRemovalFrom' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier ',' '{' literal (',' literal)* '}' optionalAttributeValuePairs ')'
       -> ^(DBRF ^(ID $id0?) $id2 $id1 ^(KEYS literal*)  optionalAttributeValuePairs)
 	;
 
 /* TODO: specify complete as optional boolean */
 membershipExpression
-	:	( 'memberOf' '('  ((id0=identifier | '-') ',')?  id1=identifier ',' keyEntitySet ',' 'true' optionalAttributeValuePairs ')'
+	:	( 'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' keyEntitySet ',' 'true' optionalAttributeValuePairs ')'
       -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(TRUE) optionalAttributeValuePairs)
          |          
-          'memberOf' '('  ((id0=identifier | '-') ',')?  id1=identifier ',' keyEntitySet ',' 'false' optionalAttributeValuePairs ')'
+          'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' keyEntitySet ',' 'false' optionalAttributeValuePairs ')'
       -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(FALSE) optionalAttributeValuePairs)
          |          
-          'memberOf' '('  ((id0=identifier | '-') ',')?  id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
+          'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
       -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(UNKNOWN) optionalAttributeValuePairs)
         )
 	;
@@ -342,12 +395,12 @@ optionalAttributeValuePairs
 
 identifier
 	:
-        QNAME -> ^(ID QNAME)
+        QUALNAME -> ^(ID QUALNAME)
 	;
 
 attribute
 	:
-        QNAME
+        QUALNAME
 	;
 
 attributeValuePairs
@@ -357,8 +410,8 @@ attributeValuePairs
 
 
 /*
-QNAME and INTLITERAL are conflicting.  To avoid the conflict in
-literal, QNAME rule is disabled once an attribute has been parsed, to
+QUALNAME and INTLITERAL are conflicting.  To avoid the conflict in
+literal, QUALNAME rule is disabled once an attribute has been parsed, to
 give priority to INTLITERAL.
   */
 
@@ -376,31 +429,26 @@ time
 	;
 
 
-/* TODO: complete grammar of Literal
-*/
+/* TODO: complete grammar of Literal */
 
 
 literal :
         (STRINGLITERAL -> ^(STRING STRINGLITERAL) |
          INTLITERAL -> ^(INT INTLITERAL) |
          STRINGLITERAL { qnameDisabled = false; } '%%' datatype -> ^(TYPEDLITERAL STRINGLITERAL datatype) |
-         { qnameDisabled = false; } '\'' QNAME '\'' -> ^(TYPEDLITERAL QNAME) | )
+         { qnameDisabled = false; } '\'' QUALNAME '\'' -> ^(TYPEDLITERAL QUALNAME) | )
 	;
 
 datatype:
         (IRI_REF -> ^(IRI IRI_REF)
         |
-         QNAME -> ^(QNAM QNAME))
+         QUALNAME -> ^(QNAM QUALNAME))
 	;
 
 	
 
-/* 
-The production here are based on the SPARQL grammar availabe from:
-
-http://antlr.org/grammar/1200929755392/Sparql.g 
-
-*/
+/* The production here are based on the SPARQL grammar availabe from:
+   http://antlr.org/grammar/1200929755392/Sparql.g */
 
 
 
@@ -414,15 +462,15 @@ STRINGLITERAL : '"' (options {greedy=false;} : ~('"' | '\\' | EOL) | ECHAR)* '"'
 
 /* This production uses a "Disambiguating Semantic Predicates"
    checking whether we are in scope of a declaration/literal or not. If so,
-   rule QNAME is disabled, to the benefit of PREFX/INTLITERAL. */
+   rule QUALNAME is disabled, to the benefit of PREFX/INTLITERAL. */
 
-QNAME:
+QUALNAME:
   { !PROV_NParser.qnameDisabled }?
     (PN_PREFIX ':')? PN_LOCAL | PN_PREFIX ':'
         
   ;
 
-/* The order of the two rules (QNAME/PREFX) is crucial. By default, QNAME should be used
+/* The order of the two rules (QUALNAME/PREFX) is crucial. By default, QUALNAME should be used
    unless we are in the context of a declaration. */
 PREFX:
     PN_PREFIX
@@ -434,11 +482,20 @@ fragment
 ECHAR : '\\' ('t' | 'b' | 'n' | 'r' | 'f' | '\\' | '"' | '\'');
  
 
-/* Note PN_CHARS_BASE is same as NCNAMESTARTCHAR (XML Schema) */
+/* Note PN_CHARS_BASE is same as NCNAMESTARTCHAR (XML Schema)
+   http://www.w3.org/TR/rdf-sparql-query/#rPN_CHARS_U
+   http://www.w3.org/2010/01/Turtle/#prod-turtle2-PN_CHARS_U
+ */
+
 fragment
 PN_CHARS_U : PN_CHARS_BASE | '_';
 
-/* Note: this is the same as NCNAMECHAR (XML Schema) except for '.' */
+/* Note: this is the same as NCNAMECHAR (XML Schema) except for '.' 
+   http://www.w3.org/TR/rdf-sparql-query/#rPN_CHARS 
+   http://www.w3.org/2010/01/Turtle/#prod-turtle2-PN_CHARS
+
+*/
+
 fragment
 PN_CHARS
     : PN_CHARS_U
@@ -449,23 +506,51 @@ PN_CHARS
     | '\u203F'..'\u2040'
     ;
 
+/* 
+http://www.w3.org/TR/rdf-sparql-query/#rPN_PREFIX
+http://www.w3.org/2010/01/Turtle/#prod-turtle2-PN_PREFIX
+*/
+
 fragment
 PN_PREFIX : PN_CHARS_BASE ((PN_CHARS|DOT)* PN_CHARS)?;
 
-/* Note PN_LOCAL allows for start with a digit */
+/* Note PN_LOCAL allows for start with a digit 
+
+  same as http://www.w3.org/TR/rdf-sparql-query/#rPN_LOCAL, except that here we accept '/', '@'
+  same http://www.w3.org/2010/01/Turtle/#prod-turtle2-PN_LOCAL, except that here we accept '/', '@'
+*/
 fragment
 PN_LOCAL:
-  (PN_CHARS_U|DIGIT)  ((PN_CHARS|'/'|{    
+  (PN_CHARS_U | DIGIT | PN_CHARS_OTHERS)  ((PN_CHARS| PN_CHARS_OTHERS |{    
                     	                       if (input.LA(1)=='.') {
                     	                          int LA2 = input.LA(2);
                     	       	                  if (!((LA2>='-' && LA2<='.')||(LA2>='0' && LA2<='9')||(LA2>='A' && LA2<='Z')||LA2=='_'||(LA2>='a' && LA2<='z')||LA2=='\u00B7'||(LA2>='\u00C0' && LA2<='\u00D6')||(LA2>='\u00D8' && LA2<='\u00F6')||(LA2>='\u00F8' && LA2<='\u037D')||(LA2>='\u037F' && LA2<='\u1FFF')||(LA2>='\u200C' && LA2<='\u200D')||(LA2>='\u203F' && LA2<='\u2040')||(LA2>='\u2070' && LA2<='\u218F')||(LA2>='\u2C00' && LA2<='\u2FEF')||(LA2>='\u3001' && LA2<='\uD7FF')||(LA2>='\uF900' && LA2<='\uFDCF')||(LA2>='\uFDF0' && LA2<='\uFFFD'))) {
                     	       	                     return;
                     	       	                  }
                     	                       }
-                                           } DOT)* (PN_CHARS | '/'))?
+                                           } DOT)* (PN_CHARS | PN_CHARS_OTHERS ))?
 ;
 
-/* Note PN_CHARS_BASE is same as NCNAMESTARTCHAR (XML Schema) except for '_' */
+fragment PN_CHARS_OTHERS 
+    : 
+      PERCENT | '/' | '@' | '~' | '&' | '+' | '?' | '#' | '$'
+    ;
+
+fragment PERCENT
+     :
+     '%' HEX HEX
+    ;
+
+fragment HEX 
+     : DIGIT | 'A' .. 'F' | 'a' .. 'f' 
+    ;
+/* 
+   same as http://www.w3.org/TR/rdf-sparql-query/#rPN_CHARS_BASE  except for [#10000-#EFFFF], which Java doesn't seem to support
+   same as http://www.w3.org/2010/01/Turtle/#prod-turtle2-PN_CHARS_BASE except for [#10000-#EFFFF], which Java doesn't seem to support
+
+   Note PN_CHARS_BASE is same as NCNAMESTARTCHAR (XML Schema) except for '_' and ':' 
+   http://www.w3.org/TR/REC-xml/#NT-NameStartChar
+*/
 fragment
 PN_CHARS_BASE
     : 'A'..'Z'

@@ -153,7 +153,7 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
-    public Object convertQNAME(String qname) {
+    public Object convertQualifiedName(String qname) {
         return null;
     }
     public Object convertIRI(String iri) {

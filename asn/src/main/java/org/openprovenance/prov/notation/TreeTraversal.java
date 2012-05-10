@@ -421,7 +421,7 @@ public class TreeTraversal {
             return c.convertInt(convertInt(getTokenString(ast.getChild(0))));
         
         case PROV_NParser.QNAM:
-            return c.convertQNAME(convertToken(getTokenString(ast.getChild(0))));
+            return c.convertQualifiedName(convertToken(getTokenString(ast.getChild(0))));
 
         case PROV_NParser.IRI:
             String iri=convertToken(getTokenString(ast.getChild(0)));

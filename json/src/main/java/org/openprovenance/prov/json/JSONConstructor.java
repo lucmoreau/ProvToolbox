@@ -504,7 +504,7 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("specializationOf", id, attrs);
 	}
 
-	public Object convertQNAME(String qname) {
+	public Object convertQualifiedName(String qname) {
 		return unwrap(qname);
 	}
 

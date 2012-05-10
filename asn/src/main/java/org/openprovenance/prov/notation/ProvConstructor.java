@@ -631,7 +631,7 @@ public  class ProvConstructor implements TreeConstructor {
         return aobo;
     }
 
-    public Object convertQNAME(String qname) {
+    public Object convertQualifiedName(String qname) {
         return qname;
     }
 

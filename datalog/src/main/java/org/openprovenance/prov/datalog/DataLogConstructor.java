@@ -192,7 +192,7 @@ public class DataLogConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
 
-    public Object convertQNAME(String qname) {
+    public Object convertQualifiedName(String qname) {
         return qname;
     }
     public Object convertIRI(String iri) {

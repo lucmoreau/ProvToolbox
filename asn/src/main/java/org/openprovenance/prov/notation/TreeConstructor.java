@@ -60,7 +60,7 @@ public interface TreeConstructor {
     public Object convertAttribute(Object name, Object value);
     public Object convertString(String s);
     public Object convertInt(int i);
-    public Object convertQNAME(String qname);
+    public Object convertQualifiedName(String qname);
     public Object convertIRI(String iri);
     public Object convertPrefix(String pre);
     public Object convertTypedLiteral(String datatype, Object value);

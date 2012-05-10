@@ -1,7 +1,13 @@
 
 bundle
-prefix ex <http://example>
-          entity(ex:e1, [])
+prefix ex <http://example/>
+          entity(ex:~+?/&#$/@_, [])
+          entity(ex:, [])
+
+          wasGeneratedBy(-; ex:~+?/&#$/@_, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasGeneratedBy(-; ex:, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
 endBundle
 
 

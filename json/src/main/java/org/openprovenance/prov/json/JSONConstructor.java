@@ -456,7 +456,12 @@ class JSONConstructor implements TreeConstructor {
     	List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:after", id2));
     	attrs.add(tuple("prov:before", id1));
-    	attrs.add(tuple("prov:key-entity-set", map));
+    	List<Object[]> tuples = (List<Object[]>)map;
+    	Map<Object, Object> key_entities = new HashMap<Object, Object>(); 
+    	for (Object[] t : tuples) {
+    		key_entities.put(t[0], t[1]);
+    	}
+    	attrs.add(tuple("prov:key-entity-set", key_entities));
     	if (dAttrs != null) {
     		attrs.addAll((List<Object>)dAttrs);
     	}
@@ -541,17 +546,11 @@ class JSONConstructor implements TreeConstructor {
 	public Object convertBundle(Object nss, List<Object> records, List<Object> bundles) {
 		Map<String,Object> bundle = new HashMap<String, Object>();
 		bundle.put("prefix", nss);
-		List<Object> agents = new ArrayList<Object>();
-        for (Object o: records) {
+		for (Object o: records) {
         	if (o == null) continue;
             ProvRecord record = (ProvRecord)o;
             String type = record.type;
-            if (type == "agent") {
-            	agents.add(record.id);
-            	if (record.attributes == null)
-            		continue;
-            	type = "entity";
-            }
+            
             Map<Object, Object> structure = (Map<Object, Object>)bundle.get(type);
             if (structure == null) {
             	structure = new HashMap<Object, Object>();
@@ -560,17 +559,29 @@ class JSONConstructor implements TreeConstructor {
             Map<Object,Object> hash = new HashMap<Object, Object>();
             List<Object[]> tuples = (List<Object[]>)record.attributes;
             for (Object[] tuple : tuples) {
-            	if (hash.containsKey(tuple[0])) {
-            		// TODO: Deal with duplicated keys
+            	Object attribute = tuple[0];
+            	Object value = tuple[1];
+            	if (hash.containsKey(attribute)) {
+            		Object existing = hash.get(attribute);
+            		if (existing instanceof List) {
+            			// Already a multi-value attribute
+            			List<Object> values = (List<Object>)existing;
+            			values.add(value);
+            		}
+            		else {
+            			// A multi-value list needs to be created
+            			List<Object> values = new ArrayList<Object>();
+            			values.add(existing);
+            			values.add(value);
+            			hash.put(attribute, values);
+            		}
             	}
             	else {
-            		hash.put(tuple[0], tuple[1]);
+            		hash.put(attribute, value);
             	}
             }
             structure.put(record.id, hash);
         }
-        if (!agents.isEmpty())
-        	bundle.put("agent", agents);
         return bundle;
 	}
 
@@ -608,8 +619,9 @@ class JSONConstructor implements TreeConstructor {
 	}
 
 	public Object convertInt(int i) {
-		String[] value = {Integer.toString(i), "xsd:int"};
-		return value;
+//		String[] value = {Integer.toString(i), "xsd:int"};
+//		return value;
+		return new Integer(i);
 	}
 
 	public Object convertQualifiedName(String qname) {
@@ -625,7 +637,8 @@ class JSONConstructor implements TreeConstructor {
 	}
 
 	public Object convertTypedLiteral(String datatype, Object value) {
-		Object[] result = {unwrap((String)value), unwrap(datatype)};
+//		Object[] result = {unwrap((String)value), unwrap(datatype)};
+		String result = unwrap((String)value) + "^^" + unwrap(datatype);
     	return result;
 	}
 

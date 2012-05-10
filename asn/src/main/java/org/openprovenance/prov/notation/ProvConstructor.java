@@ -24,7 +24,6 @@ import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasInvalidatedBy;
 import org.openprovenance.prov.xml.WasStartedBy;
-import org.openprovenance.prov.xml.WasStartedByActivity;
 import org.openprovenance.prov.xml.WasInformedBy;
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.WasEndedBy;
@@ -320,10 +319,11 @@ public  class ProvConstructor implements TreeConstructor {
         return g;
     }
 
-    public Object convertWasStartedBy(Object id, Object id2,Object id1, Object time, Object gAttrs) {
+    public Object convertWasStartedBy(Object id, Object id2,Object id1, Object id3, Object time, Object gAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
+        String s_id3=(String)id3;
         Entity e1=(s_id1==null)? null: entityTable.get(s_id1);  //id1 may be null
         EntityRef e1r=null;
         if (e1!=null) e1r=pFactory.newEntityRef(e1);
@@ -333,19 +333,28 @@ public  class ProvConstructor implements TreeConstructor {
         WasStartedBy s=pFactory.newWasStartedBy(s_id,
                                                 a2r,
                                                 e1r);
+
+        Activity a3=(s_id3==null)? null: activityTable.get(s_id3);  //id3 may be null
+        ActivityRef a3r=null;
+        if (a3!=null) a3r=pFactory.newActivityRef(a3);
+
         List attrs=(List)gAttrs;
         s.getAny().addAll(attrs);
         if (time!=null) {
             s.setTime(pFactory.newISOTime((String)time));
         }
+
+        s.setStarter(a3r);
             
         return s;
     }
 
-    public Object convertWasEndedBy(Object id, Object id2,Object id1, Object time, Object gAttrs) {
+    public Object convertWasEndedBy(Object id, Object id2,Object id1, Object id3, Object time, Object gAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
+        String s_id3=(String)id3;
+
         Entity e1=(s_id1==null)? null: entityTable.get(s_id1);  //id1 may be null
         EntityRef e1r=null;
         if (e1!=null) e1r=pFactory.newEntityRef(e1);
@@ -355,11 +364,17 @@ public  class ProvConstructor implements TreeConstructor {
         WasEndedBy s=pFactory.newWasEndedBy(s_id,
                                             a2r,
                                             e1r);
+        Activity a3=(s_id3==null)? null: activityTable.get(s_id3);  //id3 may be null
+        ActivityRef a3r=null;
+        if (a3!=null) a3r=pFactory.newActivityRef(a3);
+
         List attrs=(List)gAttrs;
         s.getAny().addAll(attrs);
         if (time!=null) {
             s.setTime(pFactory.newISOTime((String)time));
         }
+
+        s.setEnder(a3r);
             
         return s;
     }
@@ -399,24 +414,6 @@ public  class ProvConstructor implements TreeConstructor {
         WasInformedBy s=pFactory.newWasInformedBy(s_id,
                                                   a2r,
                                                   e1r);
-        List attrs=(List)aAttrs;
-        s.getAny().addAll(attrs);
-
-        return s;
-    }
-
-    public Object convertWasStartedByActivity(Object id, Object id2, Object id1, Object aAttrs) {
-        String s_id=(String)id;
-        String s_id2=(String)id2;
-        String s_id1=(String)id1;
-        Activity e1=activityTable.get(s_id1); 
-        ActivityRef e1r=pFactory.newActivityRef(e1);
-        Activity a2=activityTable.get(s_id2);
-        ActivityRef a2r=pFactory.newActivityRef(a2);
-
-        WasStartedByActivity s=pFactory.newWasStartedByActivity(s_id,
-                                                                a2r,
-                                                                e1r);
         List attrs=(List)aAttrs;
         s.getAny().addAll(attrs);
 

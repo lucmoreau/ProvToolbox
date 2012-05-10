@@ -13,7 +13,7 @@ tokens {
     BUNDLE; BUNDLES; NAMEDBUNDLE; EXPRESSIONS; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; 
 
     /* Component 1 */
-    ENTITY; ACTIVITY; WGB; USED; WSB; WEB; WINVB; WIB; WSBA;
+    ENTITY; ACTIVITY; WGB; USED; WSB; WEB; WINVB; WIB; 
     TIME; START; END;
 
     /* Component 2 */
@@ -98,7 +98,7 @@ expression
         (   /* component 1 */
 
            entityExpression | activityExpression | generationExpression  | usageExpression
-         | startExpression | endExpression | invalidationExpression | communicationExpression | startByActivityExpression
+         | startExpression | endExpression | invalidationExpression | communicationExpression
 
             /* component 2 */
         
@@ -161,16 +161,21 @@ usageExpression
 	;
 
 startExpression
-	:	'wasStartedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' ( time | '-' ))? optionalAttributeValuePairs ')'
-      -> {$id1.tree==null}? ^(WSB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
-      -> ^(WSB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
+	:	'wasStartedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' id3=identifierOrMarker ',' ( time | '-' ))? optionalAttributeValuePairs ')'
+      -> {$id1.tree==null && $id3.tree==null}? ^(WSB ^(ID $id0?) $id2 ^(ID) ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
+      -> {$id1.tree==null && $id3.tree!=null}? ^(WSB ^(ID $id0?) $id2 ^(ID) $id3 ^(TIME time?) optionalAttributeValuePairs)
+      -> {$id3.tree==null}? ^(WSB ^(ID $id0?) $id2 $id1 ^(ID) ^(TIME time?) optionalAttributeValuePairs)
+      -> ^(WSB ^(ID $id0?) $id2 $id1 $id3 ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 endExpression
-	:	'wasEndedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' ( time | '-' ))? optionalAttributeValuePairs ')'
-      -> {$id1.tree==null}? ^(WEB ^(ID $id0?) $id2 ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
-      -> ^(WEB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
+	:	'wasEndedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' id3=identifierOrMarker ',' ( time | '-' ))? optionalAttributeValuePairs ')'
+      -> {$id1.tree==null && $id3.tree==null}? ^(WEB ^(ID $id0?) $id2 ^(ID) ^(ID)  ^(TIME time?) optionalAttributeValuePairs)
+      -> {$id1.tree==null && $id3.tree!=null}? ^(WEB ^(ID $id0?) $id2 ^(ID) $id3 ^(TIME time?) optionalAttributeValuePairs)
+      -> {$id3.tree==null}? ^(WEB ^(ID $id0?) $id2 $id1 ^(ID) ^(TIME time?) optionalAttributeValuePairs)
+      -> ^(WEB ^(ID $id0?) $id2 $id1 $id3 ^(TIME time?) optionalAttributeValuePairs)
 	;
+
 
 invalidationExpression
 	:	'wasInvalidatedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' ( time | '-' ))? optionalAttributeValuePairs ')'
@@ -184,10 +189,6 @@ communicationExpression
       -> ^(WIB ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
 	;
 
-startByActivityExpression
-	:	'wasStartedByActivity' '(' id0=optionalIdentifier id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
-      -> ^(WSBA ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
-	;
 
 
 /*

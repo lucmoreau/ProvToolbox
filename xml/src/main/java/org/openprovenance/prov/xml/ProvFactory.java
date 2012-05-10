@@ -700,22 +700,6 @@ public class ProvFactory {
     }
 
 
-    public WasStartedByActivity newWasStartedByActivity(QName id,
-                                                        ActivityRef started,
-                                                        ActivityRef starter) {
-        WasStartedByActivity res=of.createWasStartedByActivity();
-        res.setId(id);
-        res.setStarted(started);
-        res.setStarter(starter);
-        return res;
-    }
-
-    public WasStartedByActivity newWasStartedByActivity(String id,
-                                                        ActivityRef started,
-                                                        ActivityRef starter) {
-        return newWasStartedByActivity(stringToQName(id),started,starter);
-    }
-
     public WasEndedBy newWasEndedBy(QName id,
                                     ActivityRef aid,
                                     EntityRef eid) {

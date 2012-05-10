@@ -116,13 +116,13 @@ public class ASNConstructor implements TreeConstructor {
             optional(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
-    public Object convertWasStartedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s="wasStartedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," +
+    public Object convertWasStartedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs ) {
+        String s="wasStartedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," + optional(id3) + "," +
             optional(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
-    public Object convertWasEndedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s="wasEndedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," +
+    public Object convertWasEndedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs ) {
+        String s="wasEndedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," + optional(id3) + "," +
             optional(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
@@ -133,11 +133,6 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
-    public Object convertWasStartedByActivity(Object id, Object id2, Object id1, Object aAttrs) {
-        String s="wasStartedByActivity(" + optionalId(id) + id2 + "," + optional(id1)
-            + optionalAttributes(aAttrs) +  ")";
-        return s;
-    }
 
     public Object convertWasInvalidatedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
         String s="wasInvalidatedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," +

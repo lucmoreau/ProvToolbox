@@ -26,11 +26,11 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
-    public Object convertWasStartedBy(Object id, Object id2,Object id1, Object time, Object aAttrs) {
+    public Object convertWasStartedBy(Object id, Object id2,Object id1,Object id3, Object time, Object aAttrs) {
         return null;
     }
 
-    public Object convertWasEndedBy(Object id, Object id2,Object id1, Object time, Object aAttrs) {
+    public Object convertWasEndedBy(Object id, Object id2,Object id1,Object id3, Object time, Object aAttrs) {
         return null;
     }
 
@@ -42,9 +42,6 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
-    public Object convertWasStartedByActivity(Object id, Object id2, Object id1, Object aAttrs) {
-        return null;
-    }
 
 
     /* Component 2 */

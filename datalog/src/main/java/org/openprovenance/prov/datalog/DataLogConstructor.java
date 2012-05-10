@@ -122,14 +122,14 @@ public class DataLogConstructor implements TreeConstructor {
         return s;
     }
 
-    public Object convertWasStartedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s="wasStartedBy(" + optionalId(id) + id2 + "," + id1 +
+    public Object convertWasStartedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs ) {
+        String s="wasStartedBy(" + optionalId(id) + id2 + "," + id1 + "," + id3 +
             optionalTime(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
 
-    public Object convertWasEndedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s="wasEndedBy(" + optionalId(id) + id2 + "," + id1 +
+    public Object convertWasEndedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs ) {
+        String s="wasEndedBy(" + optionalId(id) + id2 + "," + id1 + "," + id3 +
             optionalTime(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
@@ -139,10 +139,7 @@ public class DataLogConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
 
-    public Object convertWasStartedByActivity(Object id, Object id2, Object id1, Object aAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
-    }
+
 
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object gAttrs) {
         String s="wasAttributedTo(" + optionalId(id) + id2 + "," + id1 + optionalAttributes(gAttrs) +  ")";

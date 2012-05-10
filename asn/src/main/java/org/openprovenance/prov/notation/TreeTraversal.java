@@ -91,9 +91,10 @@ public class TreeTraversal {
             uid=convert(uidTree);
             id2=convert(ast.getChild(1));
             id1=convert(ast.getChild(2));
-            time=convert(ast.getChild(3));
-            rAttrs=convert(ast.getChild(4));
-            return c.convertWasStartedBy(uid,id2,id1,time,rAttrs);
+            Object id3=convert(ast.getChild(3));
+            time=convert(ast.getChild(4));
+            rAttrs=convert(ast.getChild(5));
+            return c.convertWasStartedBy(uid,id2,id1,id3,time,rAttrs);
 
 
         case PROV_NParser.WEB:
@@ -104,9 +105,10 @@ public class TreeTraversal {
             uid=convert(uidTree);
             id2=convert(ast.getChild(1));
             id1=convert(ast.getChild(2));
-            time=convert(ast.getChild(3));
-            rAttrs=convert(ast.getChild(4));
-            return c.convertWasEndedBy(uid,id2,id1,time,rAttrs);
+            id3=convert(ast.getChild(3));
+            time=convert(ast.getChild(4));
+            rAttrs=convert(ast.getChild(5));
+            return c.convertWasEndedBy(uid,id2,id1,id3,time,rAttrs);
 
         case PROV_NParser.TIME:
             if (ast.getChildCount()==0) return null;
@@ -137,17 +139,6 @@ public class TreeTraversal {
             id1=convert(ast.getChild(2));
             rAttrs=convert(ast.getChild(3));
             return c.convertWasInformedBy(uid,id2,id1,rAttrs);
-
-        case PROV_NParser.WSBA:
-            uidTree=ast.getChild(0);
-            if (uidTree.getChildCount()>0) {
-                uidTree=uidTree.getChild(0);
-            }
-            uid=convert(uidTree);
-            id2=convert(ast.getChild(1));
-            id1=convert(ast.getChild(2));
-            rAttrs=convert(ast.getChild(3));
-            return c.convertWasStartedByActivity(uid,id2,id1,rAttrs);
 
 
             /* Component 2 */

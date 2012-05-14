@@ -103,7 +103,7 @@ public class ASNConstructor implements TreeConstructor {
     }
 
     public String optionalId(Object id) {
-        return ((id==null)? "" : (id + ","));
+        return ((id==null)? "" : (id + ";"));
     }            
 
     public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs) {

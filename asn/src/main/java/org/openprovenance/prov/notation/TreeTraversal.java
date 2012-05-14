@@ -148,12 +148,6 @@ public class TreeTraversal {
             Object agAttrs=convert(ast.getChild(1));
             return c.convertAgent(id,agAttrs);
 
-        case PROV_NParser.PLAN:
-            if (ast.getChildCount()==0) {
-                return null;
-            } else {
-                return convert(ast.getChild(0));
-            }
 
         case PROV_NParser.WAT:
             uidTree=ast.getChild(0);

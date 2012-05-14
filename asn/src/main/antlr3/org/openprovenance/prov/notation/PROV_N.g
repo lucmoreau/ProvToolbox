@@ -17,7 +17,7 @@ tokens {
     TIME; START; END;
 
     /* Component 2 */
-    AGENT; PLAN; WAT; WAW; AOBO; 
+    AGENT; WAT; WAW; AOBO; 
     /* Component 3 */
     WDF; WRO; ORIGINALSOURCE; WQF; TRACEDTO; 
     /* Component 4 */
@@ -143,7 +143,9 @@ activityExpression
 	;
 
 generationExpression
-	:	'wasGeneratedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' ( time | '-' ))? optionalAttributeValuePairs ')'
+	:	'wasGeneratedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' ( tt=time | '-' ))? optionalAttributeValuePairs ')'
+      -> {$id1.tree==null && $tt.tree==null}?
+         ^(WGB ^(ID $id0?) $id2 ^(ID)  ^(TIME) optionalAttributeValuePairs)
       -> ^(WGB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
 	;
 
@@ -165,15 +167,20 @@ usageExpression
 	;
 
 startExpression
-	:	'wasStartedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' id3=identifierOrMarker ',' ( time | '-' ))? optionalAttributeValuePairs ')'
+	:	'wasStartedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' id3=identifierOrMarker ',' ( tt=time | '-' ))? optionalAttributeValuePairs ')'
+      -> {$id1.tree==null && $id3.tree==null && $tt.tree==null}?
+         ^(WSB ^(ID $id0?) $id2 ^(ID) ^(ID) ^(TIME) optionalAttributeValuePairs)
       -> ^(WSB ^(ID $id0?) $id2 $id1 $id3 ^(TIME time?) optionalAttributeValuePairs)
 	;
 
 endExpression
-	:	'wasEndedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' id3=identifierOrMarker ',' ( time | '-' ))? optionalAttributeValuePairs ')'
+	:	'wasEndedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' id3=identifierOrMarker ',' ( tt=time | '-' ))? optionalAttributeValuePairs ')'
+      -> {$id1.tree==null && $id3.tree==null && $tt.tree==null}?
+        ^(WEB ^(ID $id0?) $id2 ^(ID) ^(ID) ^(TIME) optionalAttributeValuePairs)
       -> ^(WEB ^(ID $id0?) $id2 $id1 $id3 ^(TIME time?) optionalAttributeValuePairs)
 	;
 
+/*TODO handle no optional everywhere */
 
 invalidationExpression
 	:	'wasInvalidatedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' ( time | '-' ))? optionalAttributeValuePairs ')'
@@ -204,7 +211,8 @@ attributionExpression
 
 associationExpression
 	:	'wasAssociatedWith' '('  id0=optionalIdentifier a=identifier ',' ag=identifierOrMarker (',' pl=identifierOrMarker)? optionalAttributeValuePairs ')'
-      -> ^(WAW ^(ID $id0?) $a $ag? ^(PLAN $pl?) optionalAttributeValuePairs)
+      -> {$pl.tree==null}? ^(WAW ^(ID $id0?) $a $ag? ^(ID) optionalAttributeValuePairs)
+      -> ^(WAW ^(ID $id0?) $a $ag? $pl optionalAttributeValuePairs)
 	;
 
 responsibilityExpression

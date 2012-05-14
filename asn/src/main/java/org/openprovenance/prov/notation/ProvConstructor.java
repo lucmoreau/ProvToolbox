@@ -159,6 +159,13 @@ public  class ProvConstructor implements TreeConstructor {
                                           lks);
         System.out.println("Bundle namespaces " + namespaceTable);
         c.setNss(namespaceTable);
+
+        if (bundles!=null) {
+            List<NamedBundle> nbs=c.getBundle();
+            for (Object o: bundles) {
+                nbs.add((NamedBundle) o);
+            }
+        }
         return c;
     }
 
@@ -169,22 +176,22 @@ public  class ProvConstructor implements TreeConstructor {
         Collection<Note> ns=new LinkedList();
         Collection<Object> lks=new LinkedList();
             
-	if (records!=null) 
-	    for (Object o: records) {
-		if (o instanceof Agent) { ags.add((Agent)o); }
-		else if (o instanceof Entity) { es.add((Entity)o); }
-		else if (o instanceof Activity) { acs.add((Activity)o); }
-		else if (o instanceof Note) { ns.add((Note)o); }
-		else lks.add(o);
-	    }
+        if (records!=null) 
+            for (Object o: records) {
+                if (o instanceof Agent) { ags.add((Agent)o); }
+                else if (o instanceof Entity) { es.add((Entity)o); }
+                else if (o instanceof Activity) { acs.add((Activity)o); }
+                else if (o instanceof Note) { ns.add((Note)o); }
+                else lks.add(o);
+            }
         String s_id=(String)id;
 
         NamedBundle c=pFactory.newNamedBundle(s_id,
-					      acs,
-					      es,
-					      ags,
-					      ns,
-					      lks);
+                                              acs,
+                                              es,
+                                              ags,
+                                              ns,
+                                              lks);
 
         System.out.println("Bundle namespaces " + namespaceTable);
         c.setNss(namespaceTable);

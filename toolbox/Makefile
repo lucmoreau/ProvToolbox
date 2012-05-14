@@ -26,6 +26,12 @@ fam:
 	epstopdf target/prov-family2.ps  -o=target/prov-family2.pdf
 
 
+b1:
+	target/appassembler/bin/provconvert -asn2xml ../asn/src/test/resources/prov/bundles1.pn target/bundles1.xml
+
+
+
+
 
 
 

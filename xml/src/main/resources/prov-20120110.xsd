@@ -88,7 +88,8 @@
     <xs:sequence>
       <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
       <xs:element name="activity" type="prov:ActivityRef"/>
-      <xs:element name="trigger"  type="prov:EntityRef"  minOccurs="0"/>
+      <xs:element name="trigger"  type="prov:EntityRef" minOccurs="0"/>
+      <xs:element name="starter"  type="prov:ActivityRef" minOccurs="0"/>
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
@@ -101,6 +102,7 @@
       <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
       <xs:element name="activity" type="prov:ActivityRef"/>
       <xs:element name="trigger"  type="prov:EntityRef"  minOccurs="0"/>
+      <xs:element name="ender"    type="prov:ActivityRef" minOccurs="0"/>
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
@@ -132,18 +134,6 @@
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
-
-  <xs:complexType name="WasStartedByActivity">
-    <xs:sequence>
-      <xs:element name="started" type="prov:ActivityRef"/>
-      <xs:element name="starter" type="prov:ActivityRef"/>
-      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-    <xs:attribute ref="prov:id"/>
-  </xs:complexType>
-
 
   <!-- Component 2 -->
   
@@ -384,7 +374,6 @@
             <xs:element name="wasEndedBy"           type="prov:WasEndedBy"/>
             <xs:element name="wasInvalidatedBy"     type="prov:WasInvalidatedBy"/>
             <xs:element name="wasInformedBy"        type="prov:WasInformedBy"/>
-            <xs:element name="wasStartedByActivity" type="prov:WasStartedByActivity"/>
 
             <xs:element name="wasAttributedTo"      type="prov:WasAttributedTo"/>
             <xs:element name="wasAssociatedWith"    type="prov:WasAssociatedWith"/>

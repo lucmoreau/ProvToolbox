@@ -50,6 +50,8 @@ public interface TreeConstructor {
 
     public Object convertNote(Object id, Object attrs);
     public Object convertHasAnnotation(Object something, Object note);
+    public Object convertHasProvenanceIn(Object uid,Object su, Object bu, Object ta, Object se, Object pr, Object dAttrs);
+
 
     /* Other conversions */
 

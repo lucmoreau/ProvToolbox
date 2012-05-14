@@ -298,7 +298,7 @@ public class TreeTraversal {
             id2=convert(ast.getChild(1));
             id1=convert(ast.getChild(2));
             Object keyset=convert(ast.getChild(3));
-	    Object keylist=c.convertKeys((List)keyset);
+        Object keylist=c.convertKeys((List)keyset);
             dAttrs=convert(ast.getChild(4));
             return c.convertRemoval(uid,id2,id1,keylist,dAttrs);
 
@@ -336,15 +336,15 @@ public class TreeTraversal {
             Object keys1=convert(ast.getChild(0));
             Object entities=convert(ast.getChild(1));
 
-	    keys=(List)keys1;
-	    values=(List)entities;
-	    List entries=new LinkedList();
-	    int ii=0;
-	    for (Object key : keys) {
-		Object value=values.get(ii);
-		entries.add(c.convertEntry(key,value));
-		ii++;
-	    }
+            keys=(List)keys1;
+            values=(List)entities;
+            List entries=new LinkedList();
+            int ii=0;
+            for (Object key : keys) {
+                Object value=values.get(ii);
+                entries.add(c.convertEntry(key,value));
+                ii++;
+            }
 
             return c.convertKeyEntitySet(entries);
 
@@ -361,6 +361,22 @@ public class TreeTraversal {
             id2=convert(ast.getChild(0));
             id1=convert(ast.getChild(1));
             return c.convertHasAnnotation(id2,id1);
+
+
+        case PROV_NParser.HPI:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            Object su=convert(ast.getChild(1));
+            Object bu=convert(ast.getChild(2));
+            Object ta=convert(ast.getChild(3));
+            Object se=convert(ast.getChild(4));
+            Object pr=convert(ast.getChild(5));
+            dAttrs=convert(ast.getChild(6));
+            return c.convertHasProvenanceIn(uid,su,bu,ta,se,pr,dAttrs);
+
 
             /* Miscellaneous Constructs */
 
@@ -385,9 +401,9 @@ public class TreeTraversal {
         case PROV_NParser.NAMEDBUNDLE:
             Object bundleId=convert(ast.getChild(0));
             System.out.println("Named bunded " + bundleId);
-            nss=convert(ast.getChild(1));
+            Object nss2=convert(ast.getChild(1));
             List<Object> records3=(List<Object>)convert(ast.getChild(2));
-            return c.convertNamedBundle(bundleId,nss,records3);
+            return c.convertNamedBundle(bundleId,nss2,records3);
             
         case PROV_NParser.ATTRIBUTES:
             List<Object> attributes=new LinkedList();

@@ -529,6 +529,11 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("specializationOf", id, attrs);
     }
 
+    public Object convertHasProvenanceIn(Object uid,Object su, Object bu, Object ta, Object se, Object pr, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
 
     /* Other conversions */    
 	public Object convertBundle(Object nss, List<Object> records, List<Object> bundles) {

@@ -619,6 +619,12 @@ prefix ex <http://example>
           hasAnnotation(ex:e1, ex:n1)
           hasAnnotation(ex:n1, ex:n1)
 
+          hasProvenanceIn(ex:e1, ex:bundle4, -, -, -)
+          hasProvenanceIn(ex:e1, ex:bundle4, ex:e1, -, -)
+          hasProvenanceIn(ex:e1, ex:bundle4, ex:e1, <http://service/endpoint>, -)
+          hasProvenanceIn(ex:e1, ex:bundle4, ex:e1, -, <http://service/location.pn>)
+
+
 /* Other testing of grammar */
 
 /* Identifiers */
@@ -738,22 +744,22 @@ prefix ex <http://example>
 	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)}, false, [ex:param="a"])
 
 
-/* bundles */
+/* bundles  What is the scope of ex:? Problem, with XML Convertion. Namespace declaration lost? */
  bundle ex:b1
-   prefix ex <http://example2>
+   prefix ex2 <http://example2>
 
-          entity(ex:e1, [ex:param="a"])
-          entity(ex:e2, [ex:param="a"])
-          entity(ex:e3, [ex:param="a"])
+          entity(ex2:e1, [ex2:param="a"])
+          entity(ex2:e2, [ex2:param="a"])
+          entity(ex2:e3, [ex2:param="a"])
 
  endBundle
 
 
 /* bundles */
- bundle ex:b2
-          entity(ex:e1, [ex:param="a"])
-          entity(ex:e2, [ex:param="a"])
-          entity(ex:e3, [ex:param="a"])
+ bundle ex3:b2
+          entity(ex3:e1, [ex3:param="a"])
+          entity(ex3:e2, [ex3:param="a"])
+          entity(ex3:e3, [ex3:param="a"])
 
  endBundle
  

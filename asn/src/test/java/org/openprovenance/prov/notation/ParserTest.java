@@ -22,6 +22,11 @@ public class ParserTest extends TestCase
         testBundle("src/test/resources/prov/bundles1.pn");
     }
 
+
+    public void testBundle4() {
+        testBundle("src/test/resources/prov/bundles2.pn");
+    }
+
     public void testBundle(String file) {
         try {
             new Utility().getParserForFile(file).bundle();

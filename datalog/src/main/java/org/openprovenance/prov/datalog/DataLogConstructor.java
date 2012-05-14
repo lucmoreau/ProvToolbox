@@ -264,6 +264,10 @@ public class DataLogConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
 
+    public Object convertHasProvenanceIn(Object uid,Object su, Object bu, Object ta, Object se, Object pr, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
 
 
 }

@@ -323,4 +323,10 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
+    public Object convertHasProvenanceIn(Object uid,Object su, Object bu, Object ta, Object se, Object pr, Object dAttrs) {
+        String s="hasProvenanceIn(" + optionalId(uid) + "," + su + optional(bu) + optional(ta) + optional(se) + optional(pr) + optionalAttributes(dAttrs) + ")";
+        return s;
+    }
+
+
 }

@@ -40,6 +40,7 @@ import org.openprovenance.prov.xml.TracedTo;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Note;
 import org.openprovenance.prov.xml.HasAnnotation;
+import org.openprovenance.prov.xml.HasProvenanceIn;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
@@ -168,6 +169,7 @@ public  class ProvConstructor implements TreeConstructor {
         return c;
     }
 
+    
     public Object convertNamedBundle(Object id, Object namespaces, List<Object> records) {    
         Collection<Entity> es=new LinkedList();
         Collection<Agent> ags=new LinkedList();
@@ -640,6 +642,7 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
     public Object convertIRI(String iri) {
+        if (iri==null) return null;
         iri=unwrap(iri);
         return URI.create(iri);
     }
@@ -849,6 +852,23 @@ public  class ProvConstructor implements TreeConstructor {
         return han;
     }
  
+    public Object convertHasProvenanceIn(Object uid,Object su, Object bu, Object ta, Object se, Object pr, Object attrs) {
+
+        String s_id=(String)uid;
+        String s_su=(String)su;
+        String s_bu=(String)bu;
+        String s_ta=(String)ta;
+        URI s_se=(URI)se;
+        URI s_pr=(URI)pr;
+
+        
+
+        HasProvenanceIn hip=pFactory.newHasProvenanceIn(s_id,s_su,s_bu,s_ta,((se==null)? null : s_se.toString()), ((pr==null)? null: s_pr.toString()));
+        List nAttrs=(List)attrs;
+        
+        hip.getAny().addAll(nAttrs);
+        return hip;
+    }
 
 }
 

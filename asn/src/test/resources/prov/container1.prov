@@ -770,6 +770,9 @@ prefix ex <http://example>  /* a single prefix declaration */
           entity(ex3:e1, [ex3:param="a"])
           entity(ex3:e2, [ex3:param="a"])
           entity(ex3:e3, [ex3:param="a"])
+          entity(ex3:e3, // this is an entity
+                [ex3:param="a", /* with some comments*/
+                 ex3:param="b"  /* Interleaved!! */              ])
 
  endBundle
  

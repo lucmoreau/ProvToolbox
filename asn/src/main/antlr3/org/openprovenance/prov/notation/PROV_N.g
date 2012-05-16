@@ -71,12 +71,12 @@ namespaceDeclarations :
 
 /**
   The following production uses ANTLR directives to disactivate the
-  production QUALNAME to guarantee that ensure that PREFX token is
+  production QUALIFIED_NAME to guarantee that ensure that PREFX token is
   generated in this context only.
 
   A global static boolean variable (qnameDisabled) is declared in the
   parser, set to true when entering this production and set to false
-  on exit.  This variable is use in the lexer to disable the QUALNAME
+  on exit.  This variable is use in the lexer to disable the QUALIFIED_NAME
   production.
 
   Sorry, that's the only way I have found to do this. Obviously, this
@@ -364,12 +364,12 @@ optionalAttributeValuePairs
 
 identifier
 	:
-        QUALNAME -> ^(ID QUALNAME)
+        QUALIFIED_NAME -> ^(ID QUALIFIED_NAME)
 	;
 
 attribute
 	:
-        QUALNAME
+        QUALIFIED_NAME
 	;
 
 attributeValuePairs
@@ -379,8 +379,8 @@ attributeValuePairs
 
 
 /*
-QUALNAME and INTLITERAL are conflicting.  To avoid the conflict in
-literal, QUALNAME rule is disabled once an attribute has been parsed, to
+QUALIFIED_NAME and INTLITERAL are conflicting.  To avoid the conflict in
+literal, QUALIFIED_NAME rule is disabled once an attribute has been parsed, to
 give priority to INTLITERAL.
   */
 
@@ -405,13 +405,13 @@ literal :
         (STRINGLITERAL -> ^(STRING STRINGLITERAL) |
          INTLITERAL -> ^(INT INTLITERAL) |
          STRINGLITERAL { qnameDisabled = false; } '%%' datatype -> ^(TYPEDLITERAL STRINGLITERAL datatype) |
-         { qnameDisabled = false; } '\'' QUALNAME '\'' -> ^(TYPEDLITERAL QUALNAME) | )
+         { qnameDisabled = false; } '\'' QUALIFIED_NAME '\'' -> ^(TYPEDLITERAL QUALIFIED_NAME) | )
 	;
 
 datatype:
         (IRI_REF -> ^(IRI IRI_REF)
         |
-         QUALNAME -> ^(QNAM QUALNAME))
+         QUALIFIED_NAME -> ^(QNAM QUALIFIED_NAME))
 	;
 
 	
@@ -431,15 +431,15 @@ STRINGLITERAL : '"' (options {greedy=false;} : ~('"' | '\\' | EOL) | ECHAR)* '"'
 
 /* This production uses a "Disambiguating Semantic Predicates"
    checking whether we are in scope of a declaration/literal or not. If so,
-   rule QUALNAME is disabled, to the benefit of PREFX/INTLITERAL. */
+   rule QUALIFIED_NAME is disabled, to the benefit of PREFX/INTLITERAL. */
 
-QUALNAME:
+QUALIFIED_NAME:
   { !PROV_NParser.qnameDisabled }?
     (PN_PREFIX ':')? PN_LOCAL | PN_PREFIX ':'
         
   ;
 
-/* The order of the two rules (QUALNAME/PREFX) is crucial. By default, QUALNAME should be used
+/* The order of the two rules (QUALIFIED_NAME/PREFX) is crucial. By default, QUALIFIED_NAME should be used
    unless we are in the context of a declaration. */
 PREFX:
     PN_PREFIX

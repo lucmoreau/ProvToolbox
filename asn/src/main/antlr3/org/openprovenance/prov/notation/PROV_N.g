@@ -379,9 +379,9 @@ attributeValuePairs
 
 
 /*
-QUALIFIED_NAME and INTLITERAL are conflicting.  To avoid the conflict in
+QUALIFIED_NAME and INT_LITERAL are conflicting.  To avoid the conflict in
 literal, QUALIFIED_NAME rule is disabled once an attribute has been parsed, to
-give priority to INTLITERAL.
+give priority to INT_LITERAL.
   */
 
 attributeValuePair
@@ -402,9 +402,9 @@ time
 
 
 literal :
-        (STRINGLITERAL -> ^(STRING STRINGLITERAL) |
-         INTLITERAL -> ^(INT INTLITERAL) |
-         STRINGLITERAL { qnameDisabled = false; } '%%' datatype -> ^(TYPEDLITERAL STRINGLITERAL datatype) |
+        (STRING_LITERAL -> ^(STRING STRING_LITERAL) |
+         INT_LITERAL -> ^(INT INT_LITERAL) |
+         STRING_LITERAL { qnameDisabled = false; } '%%' datatype -> ^(TYPEDLITERAL STRING_LITERAL datatype) |
          { qnameDisabled = false; } '\'' QUALIFIED_NAME '\'' -> ^(TYPEDLITERAL QUALIFIED_NAME) | )
 	;
 
@@ -422,16 +422,16 @@ datatype:
 
 
 
-INTLITERAL:
+INT_LITERAL:
     '-'? DIGIT+
     ;
 
-STRINGLITERAL : '"' (options {greedy=false;} : ~('"' | '\\' | EOL) | ECHAR)* '"';
+STRING_LITERAL : '"' (options {greedy=false;} : ~('"' | '\\' | EOL) | ECHAR)* '"';
 
 
 /* This production uses a "Disambiguating Semantic Predicates"
    checking whether we are in scope of a declaration/literal or not. If so,
-   rule QUALIFIED_NAME is disabled, to the benefit of PREFX/INTLITERAL. */
+   rule QUALIFIED_NAME is disabled, to the benefit of PREFX/INT_LITERAL. */
 
 QUALIFIED_NAME:
   { !PROV_NParser.qnameDisabled }?

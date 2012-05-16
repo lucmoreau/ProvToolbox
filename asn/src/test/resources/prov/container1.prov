@@ -1,8 +1,8 @@
 
 /* Test Suite for PROV-N notation */
 
-bundle
-prefix ex <http://example>
+bundle  // toplevel bundle
+prefix ex <http://example>  /* a single prefix declaration */
 
 /* component 1 */
 

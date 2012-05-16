@@ -44,10 +44,10 @@ package org.openprovenance.prov.notation;
  public static boolean qnameDisabled=false; }
 
 bundle
-	:	ML_COMMENT* 'bundle' 
+	:	 'bundle' 
         (namespaceDeclarations)?
-		(expression | ML_COMMENT | SL_COMMENT)*
-        (namedBundle (namedBundle | ML_COMMENT | SL_COMMENT)*)?
+		(expression )*
+        (namedBundle (namedBundle)*)?
 		'endBundle'
       -> {$namespaceDeclarations.tree==null}? ^(BUNDLE ^(NAMESPACES) ^(EXPRESSIONS expression*) ^(BUNDLES namedBundle*))
       -> ^(BUNDLE namespaceDeclarations? ^(EXPRESSIONS expression*) ^(BUNDLES namedBundle*))
@@ -56,7 +56,7 @@ bundle
 namedBundle
  	:	'bundle' identifier
         (namespaceDeclarations)?
-		(expression | ML_COMMENT | SL_COMMENT)*
+		(expression)*
 		'endBundle'
       -> {$namespaceDeclarations.tree==null}? ^(NAMEDBUNDLE identifier ^(NAMESPACES) ^(EXPRESSIONS expression*))
       -> ^(NAMEDBUNDLE identifier namespaceDeclarations? ^(EXPRESSIONS expression*))
@@ -547,30 +547,18 @@ DOT : '.';
 MINUS : '-';
 
 
-/* Multiline comment */
-ML_COMMENT
-    :   '/*' (options {greedy=false;} : .)* '*/' {$channel=HIDDEN;}
-    ;
 
-/* Singleline comment */
-SL_COMMENT : '//' (options{greedy=false;} : .)* EOL { $channel=HIDDEN; };
+/* Single and multiline comments. Comments are handle at the lexical
+ * layer, and regarded as whitespace. */
 
+COMMENT
+     :
+    (
+    '/*' (options {greedy=false;} : .)* '*/' {$channel=HIDDEN;}
+    |
+     '//' (options{greedy=false;} : .)* EOL { $channel=HIDDEN; }
+    );
 
-/* 
-This lexer rule for comments handles multiline, nested comments
-*/
-COMMENT_CONTENTS
-        :       '(:'
-                {
-                        $channel=98;
-                }
-                (       ~('('|':')
-                        |       ('(' ~':') => '('
-                        |       (':' ~')') => ':'
-                        |       COMMENT_CONTENTS
-                )*
-                ':)'
-        ;
 
 
 

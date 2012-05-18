@@ -136,13 +136,13 @@ public class RdfConstructor implements TreeConstructor {
         return g;
     }
 
-	public Object convertWasStartedBy(Object id, Object id2, Object id1,
+	public Object convertWasStartedBy(Object id, Object id2, Object id1, Object id3,
 			Object time, Object aAttrs) {
         //todo
         throw new UnsupportedOperationException();
     }
 
-	public Object convertWasEndedBy(Object id, Object id2, Object id1,
+	public Object convertWasEndedBy(Object id, Object id2, Object id1, Object id3,
 			Object time, Object aAttrs) {
         //todo
         throw new UnsupportedOperationException();
@@ -158,10 +158,6 @@ public class RdfConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
 
-    public Object convertWasStartedByActivity(Object id, Object id2, Object id1, Object aAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
-    }
 
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object gAttrs) {
         //todo
@@ -316,6 +312,12 @@ public class RdfConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
     public Object convertHasAnnotation(Object something, Object note) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
+
+    public Object convertHasProvenanceIn(Object uid,Object su, Object bu, Object ta, Object se, Object pr, Object dAttrs) {
         //todo
         throw new UnsupportedOperationException();
     }

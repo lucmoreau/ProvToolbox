@@ -103,7 +103,7 @@ public class ASNConstructor implements TreeConstructor {
     }
 
     public String optionalId(Object id) {
-        return ((id==null)? "" : (id + ","));
+        return ((id==null)? "" : (id + ";"));
     }            
 
     public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs) {
@@ -116,13 +116,13 @@ public class ASNConstructor implements TreeConstructor {
             optional(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
-    public Object convertWasStartedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s="wasStartedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," +
+    public Object convertWasStartedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs ) {
+        String s="wasStartedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," + optional(id3) + "," +
             optional(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
-    public Object convertWasEndedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s="wasEndedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," +
+    public Object convertWasEndedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs ) {
+        String s="wasEndedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," + optional(id3) + "," +
             optional(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
@@ -133,11 +133,6 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
-    public Object convertWasStartedByActivity(Object id, Object id2, Object id1, Object aAttrs) {
-        String s="wasStartedByActivity(" + optionalId(id) + id2 + "," + optional(id1)
-            + optionalAttributes(aAttrs) +  ")";
-        return s;
-    }
 
     public Object convertWasInvalidatedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
         String s="wasInvalidatedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," +
@@ -327,5 +322,11 @@ public class ASNConstructor implements TreeConstructor {
         String s="hasAnnotation(" + something  + "," + note + ")";
         return s;
     }
+
+    public Object convertHasProvenanceIn(Object uid,Object su, Object bu, Object ta, Object se, Object pr, Object dAttrs) {
+        String s="hasProvenanceIn(" + optionalId(uid) + "," + su + optional(bu) + optional(ta) + optional(se) + optional(pr) + optionalAttributes(dAttrs) + ")";
+        return s;
+    }
+
 
 }

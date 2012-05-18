@@ -221,4 +221,18 @@ public class BeanTreeConstructor implements BeanConstructor{
     }
 
 
+    public Object convertNamedBundle(Object namespaces,
+                                     List<Object> aRecords,
+                                     List<Object> eRecords,
+                                     List<Object> agRecords,
+                                     List<Object> lnkRecords) {
+        List<Object> ll=new LinkedList();
+        if (aRecords!=null) ll.addAll(aRecords);
+        if (eRecords!=null) ll.addAll(eRecords);
+        if (agRecords!=null) ll.addAll(agRecords);
+        if (lnkRecords!=null) ll.addAll(lnkRecords);
+        return c.convertNamedBundle(namespaces,ll,null);
+    }
+
+
 }

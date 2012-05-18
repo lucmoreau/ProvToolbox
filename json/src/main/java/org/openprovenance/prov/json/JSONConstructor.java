@@ -182,7 +182,7 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasGeneratedBy", id, attrs);
 	}
 
-	public Object convertWasStartedBy(Object id, Object id2, Object id1,
+	public Object convertWasStartedBy(Object id, Object id2, Object id1, Object id3,
 			Object time, Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:activity", id2));
@@ -191,6 +191,9 @@ class JSONConstructor implements TreeConstructor {
     	}
     	if (time != null) {
     		attrs.add(tuple("prov:time", time));
+    	}
+    	if (id3 != null) {
+    		attrs.add(tuple("prov:starter", id3));
     	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
@@ -201,7 +204,7 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasStartedBy", id, attrs);
     }
 
-	public Object convertWasEndedBy(Object id, Object id2, Object id1,
+	public Object convertWasEndedBy(Object id, Object id2, Object id1, Object id3,
 			Object time, Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:activity", id2));
@@ -210,6 +213,9 @@ class JSONConstructor implements TreeConstructor {
     	}
     	if (time != null) {
     		attrs.add(tuple("prov:time", time));
+    	}
+    	if (id3 != null) {
+    		attrs.add(tuple("prov:ender", id3));
     	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
@@ -250,19 +256,6 @@ class JSONConstructor implements TreeConstructor {
     		id = getBlankID("wIB");
 
     	return new ProvRecord("wasInformedBy", id, attrs);
-    }
-
-    public Object convertWasStartedByActivity(Object id, Object id2, Object id1, Object aAttrs) {
-    	List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:started", id2));
-    	attrs.add(tuple("prov:starter", id1));
-    	if (aAttrs != null) {
-    		attrs.addAll((List<Object>)aAttrs);
-    	}
-    	if (id == null)
-    		id = getBlankID("wSBA");
-
-    	return new ProvRecord("wasStartedByActivity", id, attrs);
     }
 
 
@@ -539,6 +532,11 @@ class JSONConstructor implements TreeConstructor {
         Object id = getBlankID("sO");
 
     	return new ProvRecord("specializationOf", id, attrs);
+    }
+
+    public Object convertHasProvenanceIn(Object uid,Object su, Object bu, Object ta, Object se, Object pr, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
     }
 
 

@@ -129,6 +129,28 @@ public class ProvFactory {
         return newNoteRef(stringToQName(id));
     }
 
+
+    public BundleRef newBundleRef(QName id) {
+        BundleRef res=of.createBundleRef();
+        res.setRef(id);
+        return res;
+    }
+        
+    public BundleRef newBundleRef(String id) {
+        return newBundleRef(stringToQName(id));
+    }
+
+
+    public AnyRef newAnyRef(QName id) {
+        AnyRef res=of.createAnyRef();
+        res.setRef(id);
+        return res;
+    }
+        
+    public AnyRef newAnyRef(String id) {
+        return newAnyRef(stringToQName(id));
+    }
+
     public EntityRef newEntityRef(Entity a) {
         EntityRef res=of.createEntityRef();
         res.setRef(a.getId());
@@ -700,22 +722,6 @@ public class ProvFactory {
     }
 
 
-    public WasStartedByActivity newWasStartedByActivity(QName id,
-                                                        ActivityRef started,
-                                                        ActivityRef starter) {
-        WasStartedByActivity res=of.createWasStartedByActivity();
-        res.setId(id);
-        res.setStarted(started);
-        res.setStarter(starter);
-        return res;
-    }
-
-    public WasStartedByActivity newWasStartedByActivity(String id,
-                                                        ActivityRef started,
-                                                        ActivityRef starter) {
-        return newWasStartedByActivity(stringToQName(id),started,starter);
-    }
-
     public WasEndedBy newWasEndedBy(QName id,
                                     ActivityRef aid,
                                     EntityRef eid) {
@@ -819,6 +825,38 @@ public class ProvFactory {
 	res.setThing(newNoteRef(n1));
 	res.setNote(newNoteRef(n));
 	return res;
+    }
+
+    public HasProvenanceIn newHasProvenanceIn(QName id,
+                                              String subject,
+                                              String bundle,
+                                              String target,
+                                              String service,
+                                              String provenance) {
+        HasProvenanceIn res=of.createHasProvenanceIn();
+        res.setId(id);
+        res.setSubject(newAnyRef(subject));
+        res.setBundle(newBundleRef(bundle));
+        res.setTarget(newAnyRef(target));
+        res.setService(service);
+        res.setProvenance(provenance);
+        return res;
+    }
+
+    public HasProvenanceIn newHasProvenanceIn(String id,
+                                              String subject,
+                                              String bundle,
+                                              String target,
+                                              String service,
+                                              String provenance) {
+        HasProvenanceIn res=of.createHasProvenanceIn();
+        res.setId(stringToQName(id));
+        res.setSubject(newAnyRef(subject));
+        if (bundle!=null) res.setBundle(newBundleRef(bundle));
+        if (target!=null) res.setTarget(newAnyRef(target));
+        if (service!=null) res.setService(service);
+        if (provenance!=null) res.setProvenance(provenance);
+        return res;
     }
 
 

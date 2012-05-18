@@ -1,8 +1,8 @@
 
 /* Test Suite for PROV-N notation */
 
-bundle
-prefix ex <http://example>
+bundle  // toplevel bundle
+prefix ex <http://example>  /* a single prefix declaration */
 
 /* component 1 */
 
@@ -40,10 +40,14 @@ prefix ex <http://example>
           used(-; ex:a1, ex:e1, 2001-10-26T21:32:52)
           used(-; ex:a1, ex:e1, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
+          wasGeneratedBy(ex:e1)  //note: syntactically correct, but semantically incorrect
+          wasGeneratedBy(ex:e1, [ex:param1="a", ex:param2="b"])
+
           wasGeneratedBy(ex:e1, ex:a1, -)
           wasGeneratedBy(ex:e1, ex:a1, -, [ex:param1="a", ex:param2="b"])
           wasGeneratedBy(ex:e1, ex:a1, 2001-10-26T21:32:52)
           wasGeneratedBy(ex:e1, ex:a1, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
           wasGeneratedBy(ex:e1, -, -)
           wasGeneratedBy(ex:e1, -, -, [ex:param1="a", ex:param2="b"])
           wasGeneratedBy(ex:e1, -, 2001-10-26T21:32:52)
@@ -53,6 +57,9 @@ prefix ex <http://example>
           wasGeneratedBy(g1; ex:e1, ex:a1, -, [ex:param1="a", ex:param2="b"])
           wasGeneratedBy(g1; ex:e1, ex:a1, 2001-10-26T21:32:52)
           wasGeneratedBy(g1; ex:e1, ex:a1, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasGeneratedBy(g1; ex:e1)
+          wasGeneratedBy(g1; ex:e1, [ex:param1="a", ex:param2="b"])
 
           wasGeneratedBy(g1; ex:e1, -, -)
           wasGeneratedBy(g1; ex:e1, -, -, [ex:param1="a", ex:param2="b"])
@@ -70,66 +77,133 @@ prefix ex <http://example>
           wasGeneratedBy(-; ex:e1, -, 2001-10-26T21:32:52)
           wasGeneratedBy(-; ex:e1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
-          wasStartedBy(ex:a1, -, -)
-          wasStartedBy(ex:a1, -, -, [ex:param1="a", ex:param2="b"])
-          wasStartedBy(ex:a1, -, 2001-10-26T21:32:52)
-          wasStartedBy(ex:a1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(ex:a1)
+          wasStartedBy(ex:a1, [ex:param1="a", ex:param2="b"])
 
-          wasStartedBy(ex:a1, ex:e1, -)
-          wasStartedBy(ex:a1, ex:e1, -, [ex:param1="a", ex:param2="b"])
-          wasStartedBy(ex:a1, ex:e1, 2001-10-26T21:32:52)
-          wasStartedBy(ex:a1, ex:e1, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(ex:a1, -, -, -)
+          wasStartedBy(ex:a1, -, -, -, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(ex:a1, -, -, 2001-10-26T21:32:52)
+          wasStartedBy(ex:a1, -, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
-          wasStartedBy(s1; ex:a1, -, -)
-          wasStartedBy(s1; ex:a1, -, -, [ex:param1="a", ex:param2="b"])
-          wasStartedBy(s1; ex:a1, -, 2001-10-26T21:32:52)
-          wasStartedBy(s1; ex:a1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(ex:a1, ex:e1, -, -)
+          wasStartedBy(ex:a1, ex:e1, -, -, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(ex:a1, ex:e1, -, 2001-10-26T21:32:52)
+          wasStartedBy(ex:a1, ex:e1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
-          wasStartedBy(s1; ex:a1, ex:e1, -)
-          wasStartedBy(s1; ex:a1, ex:e1, -, [ex:param1="a", ex:param2="b"])
-          wasStartedBy(s1; ex:a1, ex:e1, 2001-10-26T21:32:52)
-          wasStartedBy(s1; ex:a1, ex:e1, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(s1; ex:a1, -, -, -)
+          wasStartedBy(s1; ex:a1, -, -, -, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(s1; ex:a1, -, -, 2001-10-26T21:32:52)
+          wasStartedBy(s1; ex:a1, -, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
-          wasStartedBy(-; ex:a1, -, -)
-          wasStartedBy(-; ex:a1, -, -, [ex:param1="a", ex:param2="b"])
-          wasStartedBy(-; ex:a1, -, 2001-10-26T21:32:52)
-          wasStartedBy(-; ex:a1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(s1; ex:a1, ex:e1, -, -)
+          wasStartedBy(s1; ex:a1, ex:e1, -, -, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(s1; ex:a1, ex:e1, -, 2001-10-26T21:32:52)
+          wasStartedBy(s1; ex:a1, ex:e1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
-          wasStartedBy(-; ex:a1, ex:e1, -)
-          wasStartedBy(-; ex:a1, ex:e1, -, [ex:param1="a", ex:param2="b"])
-          wasStartedBy(-; ex:a1, ex:e1, 2001-10-26T21:32:52)
-          wasStartedBy(-; ex:a1, ex:e1, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(-; ex:a1, -, -, -)
+          wasStartedBy(-; ex:a1, -, -, -, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(-; ex:a1, -, -, 2001-10-26T21:32:52)
+          wasStartedBy(-; ex:a1, -, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasStartedBy(-; ex:a1, ex:e1, -, -)
+          wasStartedBy(-; ex:a1, ex:e1, -, -, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(-; ex:a1, ex:e1, -, 2001-10-26T21:32:52)
+          wasStartedBy(-; ex:a1, ex:e1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
 
-          wasEndedBy(ex:a1, -, -)
-          wasEndedBy(ex:a1, -, -, [ex:param1="a", ex:param2="b"])
-          wasEndedBy(ex:a1, -, 2001-10-26T21:32:52)
-          wasEndedBy(ex:a1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(ex:a1, -, ex:a2, -)
+          wasStartedBy(ex:a1, -, ex:a2, -, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(ex:a1, -, ex:a2, 2001-10-26T21:32:52)
+          wasStartedBy(ex:a1, -, ex:a2, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
-          wasEndedBy(ex:a1, ex:e1, -)
-          wasEndedBy(ex:a1, ex:e1, -, [ex:param1="a", ex:param2="b"])
-          wasEndedBy(ex:a1, ex:e1, 2001-10-26T21:32:52)
-          wasEndedBy(ex:a1, ex:e1, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(ex:a1, ex:e1, ex:a2, -)
+          wasStartedBy(ex:a1, ex:e1, ex:a2, -, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(ex:a1, ex:e1, ex:a2, 2001-10-26T21:32:52)
+          wasStartedBy(ex:a1, ex:e1, ex:a2, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
-          wasEndedBy(s1; ex:a1, -, -)
-          wasEndedBy(s1; ex:a1, -, -, [ex:param1="a", ex:param2="b"])
-          wasEndedBy(s1; ex:a1, -, 2001-10-26T21:32:52)
-          wasEndedBy(s1; ex:a1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(s1; ex:a1, -, ex:a2, -)
+          wasStartedBy(s1; ex:a1, -, ex:a2, -, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(s1; ex:a1, -, ex:a2, 2001-10-26T21:32:52)
+          wasStartedBy(s1; ex:a1, -, ex:a2, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
-          wasEndedBy(s1; ex:a1, ex:e1, -)
-          wasEndedBy(s1; ex:a1, ex:e1, -, [ex:param1="a", ex:param2="b"])
-          wasEndedBy(s1; ex:a1, ex:e1, 2001-10-26T21:32:52)
-          wasEndedBy(s1; ex:a1, ex:e1, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(s1; ex:a1, ex:e1, ex:a2, -)
+          wasStartedBy(s1; ex:a1, ex:e1, ex:a2, -, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(s1; ex:a1, ex:e1, ex:a2, 2001-10-26T21:32:52)
+          wasStartedBy(s1; ex:a1, ex:e1, ex:a2, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
-          wasEndedBy(-; ex:a1, -, -)
-          wasEndedBy(-; ex:a1, -, -, [ex:param1="a", ex:param2="b"])
-          wasEndedBy(-; ex:a1, -, 2001-10-26T21:32:52)
-          wasEndedBy(-; ex:a1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(-; ex:a1, -, ex:a2, -)
+          wasStartedBy(-; ex:a1, -, ex:a2, -, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(-; ex:a1, -, ex:a2, 2001-10-26T21:32:52)
+          wasStartedBy(-; ex:a1, -, ex:a2, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
-          wasEndedBy(-; ex:a1, ex:e1, -)
-          wasEndedBy(-; ex:a1, ex:e1, -, [ex:param1="a", ex:param2="b"])
-          wasEndedBy(-; ex:a1, ex:e1, 2001-10-26T21:32:52)
-          wasEndedBy(-; ex:a1, ex:e1, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(-; ex:a1, ex:e1, ex:a2, -)
+          wasStartedBy(-; ex:a1, ex:e1, ex:a2, -, [ex:param1="a", ex:param2="b"])
+          wasStartedBy(-; ex:a1, ex:e1, ex:a2, 2001-10-26T21:32:52)
+          wasStartedBy(-; ex:a1, ex:e1, ex:a2, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+
+          wasEndedBy(ex:a1, -, -, -)
+          wasEndedBy(ex:a1, -, -, -, [ex:param1="a", ex:param2="b"])
+          wasEndedBy(ex:a1, -, -, 2001-10-26T21:32:52)
+          wasEndedBy(ex:a1, -, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasEndedBy(ex:a1, ex:e1, -, -)
+          wasEndedBy(ex:a1, ex:e1, -, -, [ex:param1="a", ex:param2="b"])
+          wasEndedBy(ex:a1, ex:e1, -, 2001-10-26T21:32:52)
+          wasEndedBy(ex:a1, ex:e1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasEndedBy(s1; ex:a1, -, -, -)
+          wasEndedBy(s1; ex:a1, -, -, -, [ex:param1="a", ex:param2="b"])
+          wasEndedBy(s1; ex:a1, -, -, 2001-10-26T21:32:52)
+          wasEndedBy(s1; ex:a1, -, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasEndedBy(s1; ex:a1, ex:e1, -, -)
+          wasEndedBy(s1; ex:a1, ex:e1, -, -, [ex:param1="a", ex:param2="b"])
+          wasEndedBy(s1; ex:a1, ex:e1, -, 2001-10-26T21:32:52)
+          wasEndedBy(s1; ex:a1, ex:e1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasEndedBy(-; ex:a1, -, -, -)
+          wasEndedBy(-; ex:a1, -, -, -, [ex:param1="a", ex:param2="b"])
+          wasEndedBy(-; ex:a1, -, -, 2001-10-26T21:32:52)
+          wasEndedBy(-; ex:a1, -, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasEndedBy(-; ex:a1, ex:e1, -, -)
+          wasEndedBy(-; ex:a1, ex:e1, -, -, [ex:param1="a", ex:param2="b"])
+          wasEndedBy(-; ex:a1, ex:e1, -, 2001-10-26T21:32:52)
+          wasEndedBy(-; ex:a1, ex:e1, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+
+          wasEndedBy(ex:a1, -, ex:a2, -)
+          wasEndedBy(ex:a1, -, ex:a2, -, [ex:param1="a", ex:param2="b"])
+          wasEndedBy(ex:a1, -, ex:a2, 2001-10-26T21:32:52)
+          wasEndedBy(ex:a1, -, ex:a2, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasEndedBy(ex:a1, ex:e1, ex:a2, -)
+          wasEndedBy(ex:a1, ex:e1, ex:a2, -, [ex:param1="a", ex:param2="b"])
+          wasEndedBy(ex:a1, ex:e1, ex:a2, 2001-10-26T21:32:52)
+          wasEndedBy(ex:a1, ex:e1, ex:a2, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasEndedBy(s1; ex:a1, -, ex:a2, -)
+          wasEndedBy(s1; ex:a1, -, ex:a2, -, [ex:param1="a", ex:param2="b"])
+          wasEndedBy(s1; ex:a1, -, ex:a2, 2001-10-26T21:32:52)
+          wasEndedBy(s1; ex:a1, -, ex:a2, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasEndedBy(s1; ex:a1, ex:e1, ex:a2, -)
+          wasEndedBy(s1; ex:a1, ex:e1, ex:a2, -, [ex:param1="a", ex:param2="b"])
+          wasEndedBy(s1; ex:a1, ex:e1, ex:a2, 2001-10-26T21:32:52)
+          wasEndedBy(s1; ex:a1, ex:e1, ex:a2, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasEndedBy(-; ex:a1, -, ex:a2, -)
+          wasEndedBy(-; ex:a1, -, ex:a2, -, [ex:param1="a", ex:param2="b"])
+          wasEndedBy(-; ex:a1, -, ex:a2, 2001-10-26T21:32:52)
+          wasEndedBy(-; ex:a1, -, ex:a2, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+          wasEndedBy(-; ex:a1, ex:e1, ex:a2, -)
+          wasEndedBy(-; ex:a1, ex:e1, ex:a2, -, [ex:param1="a", ex:param2="b"])
+          wasEndedBy(-; ex:a1, ex:e1, ex:a2, 2001-10-26T21:32:52)
+          wasEndedBy(-; ex:a1, ex:e1, ex:a2, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
+
 
 
           wasInvalidatedBy(ex:e1, ex:a1, -)
@@ -170,12 +244,6 @@ prefix ex <http://example>
           wasInformedBy(-; ex:a1, ex:a2)
           wasInformedBy(-; ex:a1, ex:a2, [ex:param1="a", ex:param2="b"])
 
-          wasStartedByActivity(ex:a1, ex:a2)
-          wasStartedByActivity(ex:a1, ex:a2, [ex:param1="a", ex:param2="b"])
-          wasStartedByActivity(s; ex:a1, ex:a2)
-          wasStartedByActivity(s; ex:a1, ex:a2, [ex:param1="a", ex:param2="b"])
-          wasStartedByActivity(-; ex:a1, ex:a2)
-          wasStartedByActivity(-; ex:a1, ex:a2, [ex:param1="a", ex:param2="b"])
 
 /* component 2 */
 
@@ -561,6 +629,12 @@ prefix ex <http://example>
           hasAnnotation(ex:e1, ex:n1)
           hasAnnotation(ex:n1, ex:n1)
 
+          hasProvenanceIn(ex:e1, ex:bundle4, -, -, -)
+          hasProvenanceIn(ex:e1, ex:bundle4, ex:e1, -, -)
+          hasProvenanceIn(ex:e1, ex:bundle4, ex:e1, <http://service/endpoint>, -)
+          hasProvenanceIn(ex:e1, ex:bundle4, ex:e1, -, <http://service/location.pn>)
+
+
 /* Other testing of grammar */
 
 /* Identifiers */
@@ -680,22 +754,25 @@ prefix ex <http://example>
 	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)}, false, [ex:param="a"])
 
 
-/* bundles */
+/* bundles  What is the scope of ex:? Problem, with XML Convertion. Namespace declaration lost? */
  bundle ex:b1
-   prefix ex <http://example2>
+   prefix ex2 <http://example2>
 
-          entity(ex:e1, [ex:param="a"])
-          entity(ex:e2, [ex:param="a"])
-          entity(ex:e3, [ex:param="a"])
+          entity(ex2:e1, [ex2:param="a"])
+          entity(ex2:e2, [ex2:param="a"])
+          entity(ex2:e3, [ex2:param="a"])
 
  endBundle
 
 
 /* bundles */
- bundle ex:b2
-          entity(ex:e1, [ex:param="a"])
-          entity(ex:e2, [ex:param="a"])
-          entity(ex:e3, [ex:param="a"])
+ bundle ex3:b2
+          entity(ex3:e1, [ex3:param="a"])
+          entity(ex3:e2, [ex3:param="a"])
+          entity(ex3:e3, [ex3:param="a"])
+          entity(ex3:e3, // this is an entity
+                [ex3:param="a", /* with some comments*/
+                 ex3:param="b"  /* Interleaved!! */              ])
 
  endBundle
  

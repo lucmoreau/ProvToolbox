@@ -348,6 +348,20 @@
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, HasRole, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
+  	              <arg value="WasAttributedTo.java" />
+                </exec>
+
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+  	              <arg value="-e s/    public List&lt;Object&gt; getAny()/    @javax.xml.bind.annotation.XmlTransient  private AttributeProcessor _attrs=new AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;Object&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace);  } public List&lt;Object&gt; getAny()/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="WasAttributedTo.java" />
+                </exec>
+
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, HasRole, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-iBAK" />
   	              <arg value="ActedOnBehalfOf.java" />
                 </exec>
 

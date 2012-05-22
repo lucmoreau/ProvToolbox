@@ -155,8 +155,8 @@ wasInformedBy(ex:act5,ex:act4, [dot:color="none"])
 wasInformedBy(ex:act6,ex:act5, [dot:color="none"])
 
 
-
-
+wasAttributedTo(tr2011:WD-prov-dm-20111018,w3:Consortium)
+wasAttributedTo(tr2012:WD-prov-dm-20120503,w3:Consortium)
 endBundle
 
 

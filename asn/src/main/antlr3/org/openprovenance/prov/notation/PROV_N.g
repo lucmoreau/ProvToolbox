@@ -217,7 +217,8 @@ associationExpression
 
 responsibilityExpression
 	:	'actedOnBehalfOf' '('   id0=optionalIdentifier ag2=identifier ',' ag1=identifier (','  a=identifierOrMarker)? optionalAttributeValuePairs ')'
-      -> ^(AOBO  ^(ID $id0?) $ag2 $ag1 $a? optionalAttributeValuePairs)
+      -> {$a.tree==null}? ^(AOBO  ^(ID $id0?) $ag2 $ag1 ^(ID) optionalAttributeValuePairs)
+      -> ^(AOBO  ^(ID $id0?) $ag2 $ag1 $a optionalAttributeValuePairs)
 	;
 
 

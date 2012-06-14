@@ -279,6 +279,9 @@ prefix ex <http://example>  /* a single prefix declaration */
           wasAssociatedWith(-; ex:a1, ex:ag1, ex:e1)
           wasAssociatedWith(-; ex:a1, ex:ag1, ex:e1, [ex:param1="a", ex:param2="b"])
 
+          actedOnBehalfOf(ex:ag1,ex:ag2)
+          actedOnBehalfOf(ex:ag1,ex:ag2,[prov:type="delegation"])
+
           actedOnBehalfOf(ex:ag1,ex:ag2, -)
           actedOnBehalfOf(ex:ag1,ex:ag2, -,[prov:type="delegation"])
           actedOnBehalfOf(ex:ag1,ex:ag2,ex:a1)

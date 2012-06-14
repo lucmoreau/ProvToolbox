@@ -25,5 +25,8 @@ p3:
 	sh target/appassembler/bin/asn $(HERE)/src/test/resources/prov/file-example3.asn
 	cat $(HERE)/src/test/resources/prov/file-example3.asn.xml
 
+paolo:
+	sh target/appassembler/bin/asn $(HERE)/src/test/resources/prov/paolo-test.pn
+	cat $(HERE)/src/test/resources/prov/paolo-test.xml
 
 

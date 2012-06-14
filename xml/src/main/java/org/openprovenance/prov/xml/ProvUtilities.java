@@ -45,6 +45,10 @@ public class ProvUtilities {
         if (r instanceof WasAssociatedWith) {
             return ((WasAssociatedWith)r).getActivity().getRef();
         }
+
+        if (r instanceof WasAttributedTo) {
+            return ((WasAttributedTo)r).getEntity().getRef();
+        }
         if (r instanceof AlternateOf) {
             return ((AlternateOf)r).getEntity2().getRef();
         }
@@ -77,6 +81,9 @@ public class ProvUtilities {
         }
         if (r instanceof WasAssociatedWith) {
             return ((WasAssociatedWith)r).getAgent().getRef();
+        }
+        if (r instanceof WasAttributedTo) {
+            return ((WasAttributedTo)r).getAgent().getRef();
         }
         if (r instanceof AlternateOf) {
             return ((AlternateOf)r).getEntity1().getRef();

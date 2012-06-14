@@ -23,7 +23,7 @@ tokens {
     /* Component 4 */
     SPECIALIZATION; ALTERNATE; 
     /* Component 5 */
-    DBIF; DBRF; KES; KEYS; VALUES; MEM; TRUE; FALSE; UNKNOWN;
+    DBIF; DBRF; KES; ES; KEYS; VALUES; MEM; CMEM; TRUE; FALSE; UNKNOWN;
     /* Component 6 */
     NOTE; HAN; HPI; BUNDLE; BUNDLES; NAMEDBUNDLE;
 
@@ -310,12 +310,28 @@ membershipExpression
          |          
           'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
       -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(UNKNOWN) optionalAttributeValuePairs)
+         |
+         'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' entitySet ',' 'true' optionalAttributeValuePairs ')'
+      -> ^(CMEM ^(ID $id0?) $id1 entitySet  ^(TRUE) optionalAttributeValuePairs)
+         |
+         'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' entitySet ',' 'false' optionalAttributeValuePairs ')'
+      -> ^(CMEM ^(ID $id0?) $id1 entitySet  ^(FALSE) optionalAttributeValuePairs)
+         |
+         'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' entitySet optionalAttributeValuePairs ')'
+      -> ^(CMEM ^(ID $id0?) $id1 entitySet  ^(UNKNOWN) optionalAttributeValuePairs)
+
         )
 	;
 
 keyEntitySet
     : '{'  '(' literal ',' val=identifier  ')' ( ','  '(' literal ',' val=identifier  ')' )* '}'
       -> ^(KES ^(KEYS literal+) ^(VALUES identifier+))
+    ;
+
+
+entitySet
+    : '{'  identifier* '}'
+      -> ^(ES  identifier?)
     ;
 
 /* TODO */

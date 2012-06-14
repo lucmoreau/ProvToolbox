@@ -97,7 +97,11 @@ public class NullConstructor implements TreeConstructor {
 	return null;
     }
 
-    public Object convertMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
+    public Object convertCollectionMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
+	return null;
+    }
+
+    public Object convertDictionaryMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
 	return null;
     }
     

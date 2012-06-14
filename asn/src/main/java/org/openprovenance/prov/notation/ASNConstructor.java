@@ -257,7 +257,16 @@ public class ASNConstructor implements TreeConstructor {
 
     }
 
-    public Object convertMemberOf(Object id, Object id2, Object kes, Object complete, Object mAttrs) {
+    public Object convertCollectionMemberOf(Object id, Object id2, Object es, Object complete, Object mAttrs) {
+
+        String s="memberOf(" + optionalId(id) + id2 + ", "
+	    + es + ((complete==null)? "" : ", "+complete) + optionalAttributes(mAttrs) +  ")";
+	return s;
+
+    }
+
+
+    public Object convertDictionaryMemberOf(Object id, Object id2, Object kes, Object complete, Object mAttrs) {
 
         String s="memberOf(" + optionalId(id) + id2 + ", "
 	    + kes + ((complete==null)? "" : ", "+complete) + optionalAttributes(mAttrs) +  ")";

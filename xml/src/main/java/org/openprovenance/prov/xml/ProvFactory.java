@@ -527,7 +527,7 @@ public class ProvFactory {
 
 
     public Entry newEntry(Object key,
-			  EntityRef entity) {
+                          EntityRef entity) {
         Entry res=of.createEntry();
         res.setKey(key);
         res.setEntity(entity);
@@ -583,10 +583,29 @@ public class ProvFactory {
     }
 
 
-    public MemberOf newMemberOf(QName id,
-				EntityRef after,
-				List<Entry> keyEntitySet) {
-        MemberOf res=of.createMemberOf();
+    public CollectionMemberOf newCollectionMemberOf(QName id,
+                                                    EntityRef after,
+                                                    List<Entity> entitySet) {
+        CollectionMemberOf res=of.createCollectionMemberOf();
+        res.setId(id);
+        res.setEntity(after);
+        if (entitySet!=null) res.getMember().addAll(entitySet);
+        return res;
+    }
+
+
+    public CollectionMemberOf newCollectionMemberOf(String id,
+                                                    EntityRef after,
+                                                    List<Entity> entitySet) {
+        return newCollectionMemberOf(stringToQName(id),
+                                     after,
+                                     entitySet);
+    }
+
+    public DictionaryMemberOf newDictionaryMemberOf(QName id,
+                                                    EntityRef after,
+                                                    List<Entry> keyEntitySet) {
+        DictionaryMemberOf res=of.createDictionaryMemberOf();
         res.setId(id);
         res.setEntity(after);
 	if (keyEntitySet!=null) res.getEntry().addAll(keyEntitySet);
@@ -594,10 +613,10 @@ public class ProvFactory {
     }
 
 
-    public MemberOf newMemberOf(String id,
+    public DictionaryMemberOf newDictionaryMemberOf(String id,
 				EntityRef after,
 				List<Entry> keyEntitySet) {
-        return newMemberOf(stringToQName(id),
+        return newDictionaryMemberOf(stringToQName(id),
 					 after,
 					 keyEntitySet);
     }

@@ -23,7 +23,7 @@ tokens {
     /* Component 4 */
     SPECIALIZATION; ALTERNATE; 
     /* Component 5 */
-    DBIF; DBRF; KES; ES; KEYS; VALUES; MEM; CMEM; TRUE; FALSE; UNKNOWN;
+    DBIF; DBRF; KES; ES; KEYS; VALUES; DMEM; CMEM; TRUE; FALSE; UNKNOWN;
     /* Component 6 */
     NOTE; HAN; HPI; BUNDLE; BUNDLES; NAMEDBUNDLE;
 
@@ -304,13 +304,13 @@ removalExpression
 /* TODO: specify complete as optional boolean */
 membershipExpression
 	:	( 'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' keyEntitySet ',' 'true' optionalAttributeValuePairs ')'
-      -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(TRUE) optionalAttributeValuePairs)
+      -> ^(DMEM ^(ID $id0?) $id1 keyEntitySet  ^(TRUE) optionalAttributeValuePairs)
          |          
           'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' keyEntitySet ',' 'false' optionalAttributeValuePairs ')'
-      -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(FALSE) optionalAttributeValuePairs)
+      -> ^(DMEM ^(ID $id0?) $id1 keyEntitySet  ^(FALSE) optionalAttributeValuePairs)
          |          
           'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
-      -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(UNKNOWN) optionalAttributeValuePairs)
+      -> ^(DMEM ^(ID $id0?) $id1 keyEntitySet  ^(UNKNOWN) optionalAttributeValuePairs)
          |
          'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' entitySet ',' 'true' optionalAttributeValuePairs ')'
       -> ^(CMEM ^(ID $id0?) $id1 entitySet  ^(TRUE) optionalAttributeValuePairs)

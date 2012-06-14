@@ -33,7 +33,8 @@ import org.openprovenance.prov.xml.WasRevisionOf;
 import org.openprovenance.prov.xml.WasQuotedFrom;
 import org.openprovenance.prov.xml.DerivedByInsertionFrom;
 import org.openprovenance.prov.xml.DerivedByRemovalFrom;
-import org.openprovenance.prov.xml.MemberOf;
+import org.openprovenance.prov.xml.CollectionMemberOf;
+import org.openprovenance.prov.xml.DictionaryMemberOf;
 import org.openprovenance.prov.xml.Entry;
 import org.openprovenance.prov.xml.HadOriginalSource;
 import org.openprovenance.prov.xml.TracedTo;
@@ -796,20 +797,36 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
 
-    public Object convertMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
+    public Object convertDictionaryMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;
 
         Entity e2=entityTable.get(s_id2);
         EntityRef e2r=pFactory.newEntityRef(e2);
 
-    MemberOf mo=pFactory.newMemberOf(s_id,
-                       e2r,
-                       null);
-    List attrs=(List)dAttrs;
+        DictionaryMemberOf mo=pFactory.newDictionaryMemberOf(s_id,
+                                                             e2r,
+                                                             null);
+        List attrs=(List)dAttrs;
         if (attrs!=null) mo.getAny().addAll(attrs);
+        
+        return mo;
+    }
 
-    return mo;
+    public Object convertCollectionMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+
+        CollectionMemberOf mo=pFactory.newCollectionMemberOf(s_id,
+                                                             e2r,
+                                                             null);
+        List attrs=(List)dAttrs;
+        if (attrs!=null) mo.getAny().addAll(attrs);
+        
+        return mo;
     }
 
 

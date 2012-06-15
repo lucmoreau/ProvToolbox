@@ -1,0 +1,176 @@
+
+
+bundle
+
+prefix ex  <http://example.org/>
+
+prefix w3      <http://www.w3.org/>
+prefix tr      <http://www.w3.org/TR/>
+prefix tr2011  <http://www.w3.org/TR/2011/>
+prefix tr2012  <http://www.w3.org/TR/2012/>
+prefix process <http://www.w3.org/2005/10/Process-20051014/tr.html#>
+prefix email   <https://lists.w3.org/Archives/Member/w3c-archive/>
+prefix chairs  <https://lists.w3.org/Archives/Member/chairs/>
+prefix trans   <http://www.w3.org/2005/08/01-transitions.html#>
+
+
+prefix dot   <http://openprovenance.org/Toolbox/dot#>
+
+
+
+
+entity(tr2011:WD-prov-dm-20111018,          [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2011/WD-prov-dm-20111018" ])
+entity(tr2011:WD-prov-o-20111213,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2011/WD-prov-o-20111213" ])
+entity(tr2011:WD-prov-dm-20111215,          [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2011/WD-prov-dm-20111215"  ])
+entity(tr2012:WD-prov-aq-20120110,          [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-aq-20120110"  ])
+entity(tr2012:WD-prov-primer-20120110,      [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-primer-20120110"  ])
+entity(tr2012:WD-prov-dm-20120202,          [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-dm-20120202"  ])
+entity(tr2012:WD-prov-dm-20120503,          [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-dm-20120503"  ])
+entity(tr2012:WD-prov-o-20120503,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-o-20120503"  ])
+entity(tr2012:WD-prov-n-20120503,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-n-20120503"  ])
+entity(tr2012:WD-prov-constraints-20120503, [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-constraints-20120503"  ])
+entity(tr2012:WD-prov-primer-20120503,      [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-primer-20120503"  ])
+entity(tr2012:WD-prov-aq-20120619,          [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-aq-20120619"  ])
+
+
+entity(process:rec-advance,    [ prov:type='prov:Plan', dot:fillcolor="lightblue", dot:url="http://www.w3.org/2005/10/Process-20051014/tr.html#rec-advance"  ])
+  
+
+entity(chairs:2011OctDec/0004, [ prov:type='trans:transreq', dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2011OctDec/0004" ]) // for prov-dm
+entity(email:2011Oct/0141,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2011Oct/0141"  ])
+
+entity(chairs:2011OctDec/0152, [ prov:type='trans:transreq', dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2011OctDec/0152"  ]) // for prov-o
+entity(email:2011Dec/0075,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2011Dec/0075" ])
+
+
+entity(chairs:2011OctDec/0171, [ prov:type='trans:transreq', dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2011OctDec/0171"  ]) // for prov-aq
+entity(email:2012Jan/0043,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Jan/0043" ])
+
+
+entity(email:2011Dec/0111,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2011Dec/0111" ])
+
+entity(chairs:2012JanMar/0000, [ prov:type='trans:transreq', dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2012JanMar/0000"  ]) // for prov-primer
+
+
+
+entity(email:2012Jan/0422,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Jan/0422" ]) //for prov-dm wd3
+
+
+entity(chairs:2012AprJun/0037, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2012AprJun/0037" ]) // for prov-n, prov-constraitns
+
+entity(email:2012Apr/0583,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Apr/0583" ])
+
+entity(email:2012Jun/0164,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Jun/0164" ])
+
+
+// prov-dm revisions
+wasDerivedFrom(tr2011:WD-prov-dm-20111215,tr2011:WD-prov-dm-20111018)
+wasDerivedFrom(tr2012:WD-prov-dm-20120202,tr2011:WD-prov-dm-20111215)
+wasDerivedFrom(tr2012:WD-prov-dm-20120503,tr2012:WD-prov-dm-20120202)
+// prov-n revisions
+wasDerivedFrom(tr2012:WD-prov-n-20120503,tr2012:WD-prov-dm-20120202)
+// prov-constraints revisions
+wasDerivedFrom(tr2012:WD-prov-constraints-20120503,tr2012:WD-prov-dm-20120202)
+// prov-primer
+wasDerivedFrom(tr2012:WD-prov-primer-20120503, tr2012:WD-prov-primer-20120110)
+// prov-o
+wasDerivedFrom(tr2012:WD-prov-o-20120503, tr2011:WD-prov-o-20111213)
+// prov-aq
+wasDerivedFrom(tr2012:WD-prov-aq-20120619, tr2012:WD-prov-aq-20120110)
+
+
+activity(ex:act1,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
+activity(ex:act2,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
+activity(ex:act3,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
+activity(ex:act4,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
+activity(ex:act5,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
+activity(ex:act6,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
+activity(ex:act7,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
+
+wasGeneratedBy(tr2011:WD-prov-dm-20111018,          ex:act1, -)
+
+wasGeneratedBy(tr2011:WD-prov-o-20111213,           ex:act2, -)
+
+wasGeneratedBy(tr2011:WD-prov-dm-20111215,          ex:act3, -)
+
+wasGeneratedBy(tr2012:WD-prov-primer-20120110,      ex:act4, -)
+wasGeneratedBy(tr2012:WD-prov-aq-20120110,          ex:act4, -)
+
+wasGeneratedBy(tr2012:WD-prov-dm-20120202,          ex:act5, -)
+
+wasGeneratedBy(tr2012:WD-prov-dm-20120503,          ex:act6, -)
+wasGeneratedBy(tr2012:WD-prov-o-20120503,           ex:act6, -)
+wasGeneratedBy(tr2012:WD-prov-n-20120503,           ex:act6, -)
+wasGeneratedBy(tr2012:WD-prov-constraints-20120503, ex:act6, -)
+wasGeneratedBy(tr2012:WD-prov-primer-20120503,      ex:act6, -)
+
+wasGeneratedBy(tr2012:WD-prov-aq-20120619,          ex:act7, -)
+
+
+used(ex:act1,chairs:2011OctDec/0004,-)
+used(ex:act1,email:2011Oct/0141,-)
+
+used(ex:act2,chairs:2011OctDec/0152,-)
+used(ex:act2,email:2011Dec/0075,-)
+used(ex:act3,email:2011Dec/0111,-)
+
+used(ex:act4,chairs:2011OctDec/0171,-)
+used(ex:act4,chairs:2012JanMar/0000,-)
+used(ex:act4,email:2012Jan/0043,-)
+
+
+used(ex:act5,email:2012Jan/0422,-)
+
+used(ex:act6, email:2012Apr/0583, -)
+used(ex:act6, chairs:2012AprJun/0037, -)
+
+used(ex:act7, email:2012Jun/0164, -)
+
+agent(w3:Consortium, [ prov:type='prov:Organization', dot:fillcolor="thistle3", dot:url="http://www.w3.org/Consortium"   ])
+
+wasAssociatedWith(ex:act1, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:act2, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:act3, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:act4, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:act5, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:act6, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:act7, w3:Consortium, process:rec-advance)
+
+entity(ex:family0, [ prov:type='prov:EmptyDictionary', dot:fillcolor="bisque2"  ])
+entity(ex:family1, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(ex:family2, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(ex:family3, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(ex:family4, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(ex:family5, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(ex:family6, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(ex:family7, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+
+derivedByInsertionFrom(ex:family1, ex:family0, {('tr:prov-dm',     tr2011:WD-prov-dm-20111018)})
+derivedByInsertionFrom(ex:family2, ex:family1, {('tr:prov-o',      tr2011:WD-prov-o-20111213)})
+derivedByInsertionFrom(ex:family3, ex:family2, {('tr:prov-dm',     tr2011:WD-prov-dm-20111215)})
+derivedByInsertionFrom(ex:family4, ex:family3, {('tr:prov-primer', tr2012:WD-prov-primer-20120110),
+                                                ('tr:prov-aq',     tr2012:WD-prov-aq-20120110)})
+derivedByInsertionFrom(ex:family5, ex:family4, {('tr:prov-dm',     tr2012:WD-prov-dm-20120202)})
+derivedByInsertionFrom(ex:family6, ex:family5, {('tr:prov-dm',     tr2012:WD-prov-dm-20120503),
+                                                ('tr:prov-o',      tr2012:WD-prov-o-20120503),            
+                                                ('tr:prov-n',      tr2012:WD-prov-n-20120503),            
+                                                ('tr:prov-primer', tr2012:WD-prov-primer-20120503),            
+                                                ('tr:prov-constraints', tr2012:WD-prov-constraints-20120503)})
+derivedByInsertionFrom(ex:family7, ex:family6, {('tr:prov-aq',     tr2012:WD-prov-aq-20120619)})
+
+
+
+// I introduce these edges for layout only, but it's really time orderign I mean here
+
+wasInformedBy(ex:act2,ex:act1, [dot:color="none"] )
+wasInformedBy(ex:act3,ex:act2, [dot:color="none"])
+wasInformedBy(ex:act4,ex:act3, [dot:color="none"])
+wasInformedBy(ex:act5,ex:act4, [dot:color="none"])
+wasInformedBy(ex:act6,ex:act5, [dot:color="none"])
+
+
+wasAttributedTo(tr2011:WD-prov-dm-20111018,w3:Consortium)
+wasAttributedTo(tr2012:WD-prov-dm-20120503,w3:Consortium)
+endBundle
+
+

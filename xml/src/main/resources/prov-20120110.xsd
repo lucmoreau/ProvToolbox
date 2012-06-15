@@ -344,7 +344,7 @@
     <xs:sequence>
       <xs:element name="local"    type="prov:EntityRef" minOccurs="1"/>
       <xs:element name="entity"   type="prov:EntityRef" minOccurs="1"/>
-      <xs:element name="bundle"   type="prov:BundleRef" minOccurs="1"/>
+      <xs:element name="bundle"   type="prov:EntityRef" minOccurs="1"/>
     </xs:sequence>
   </xs:complexType>
 

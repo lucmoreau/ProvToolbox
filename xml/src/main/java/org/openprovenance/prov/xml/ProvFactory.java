@@ -848,13 +848,31 @@ public class ProvFactory {
 
     public ContextualizationOf newContextualizationOf(
                                               String local,
-                                              String bundle,
-                                              String entity) {
+                                              String entity,
+                                              String bundle) {
         ContextualizationOf res=of.createContextualizationOf();
         res.setLocal(newEntityRef(local));
-        res.setBundle(newBundleRef(bundle));
+        res.setBundle(newEntityRef(bundle));
         res.setEntity(newEntityRef(entity));
         return res;
+    }
+
+    public ContextualizationOf newContextualizationOf(EntityRef local,
+                                                      EntityRef entity,
+                                                      EntityRef bundle) {
+        ContextualizationOf res=of.createContextualizationOf();
+        res.setLocal(local);
+        res.setBundle(bundle);
+        res.setEntity(entity);
+        return res;
+    }
+
+    public ContextualizationOf newContextualizationOf(Entity local,
+                                                      Entity entity,
+                                                      Entity bundle) {
+        return newContextualizationOf(newEntityRef(local),
+                                      newEntityRef(entity),
+                                      newEntityRef(bundle));
     }
 
     public WasDerivedFrom newWasDerivedFrom(QName id,

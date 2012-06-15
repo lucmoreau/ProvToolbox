@@ -26,6 +26,10 @@ public class ContextualizationPC1Test
     public static final String PC1_PREFIX="pc1";
     public static final String PRIM_NS="http://openprovenance.org/primitives#";
     public static final String PRIM_PREFIX="prim";
+    public static final String DOT_NS="http://openprovenance.org/Toolbox/dot#";
+    public static final String DOT_PREFIX="dot";
+    public static final String EX_NS="http://example.com/";
+    public static final String EX_PREFIX="ex";
     
 
 
@@ -67,6 +71,9 @@ public class ContextualizationPC1Test
     public void testPC1SpecFull() throws JAXBException
     {
         Bundle graph=makePC1GraphAndSpecialization(pFactory);
+
+
+
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         serial.serialiseBundle(new File("target/pc1-spec.xml"),graph,true);
@@ -129,7 +136,7 @@ public class ContextualizationPC1Test
 
 
 
-
+    static Entity globalA1=null;
     public Bundle makePC1GraphAndSpecialization(ProvFactory pFactory) {
         Bundle graph=pFactory.newBundle(new Activity[] {},
                                         new Entity[] {},
@@ -139,7 +146,31 @@ public class ContextualizationPC1Test
 
         String bName="b123";  // needs to be generated 
 
-        graph.getBundle().add(makePC1FullGraph(pFactory,bName));
+        NamedBundle bun=makePC1FullGraph(pFactory,bName);
+        graph.getBundle().add(bun);
+
+        Hashtable namespaces=new Hashtable();
+        // currently, no prefix used, all qnames map to PC1_NS
+        namespaces.put("_",EX_NS);  // new default namespace
+        namespaces.put("xsd",NamespacePrefixMapper.XSD_NS);
+        namespaces.put(EX_PREFIX,EX_NS);
+        namespaces.put(DOT_PREFIX,DOT_NS);
+        pFactory.setNamespaces(namespaces);
+
+
+        Entity bunEntity=pFactory.newEntity(bun.getId());
+        Entity a=pFactory.newEntity(globalA1.getId().getLocalPart());
+        ContextualizationOf ctx=pFactory.newContextualizationOf(a,globalA1,bunEntity);
+        pFactory.addAttribute(a,
+                              DOT_NS,
+                              DOT_PREFIX,
+                              "color",
+                              "blue");
+
+
+        graph.getRecords().getEntity().add(bunEntity);
+        graph.getRecords().getEntity().add(a);
+        graph.getRecords().getDependencies().getUsedOrWasGeneratedByOrWasStartedBy().add(ctx);
 
         Hashtable<String,String> nss=new Hashtable<String,String>();
         // choose here, how serialization to xml to be made
@@ -148,6 +179,8 @@ public class ContextualizationPC1Test
         // 2: use prefix PC1
         nss.put(PC1_PREFIX,PC1_NS);
         nss.put(PRIM_PREFIX,PRIM_NS);
+        nss.put("ex","http://example.com/");
+        nss.put(DOT_PREFIX,DOT_NS);
         graph.setNss(nss);
 
         
@@ -273,6 +306,8 @@ public class ContextualizationPC1Test
                              "Reference Image",
                              "reference.img",
                              inputLocation);
+
+        globalA1=a1;
 
         Entity a2=newFile(pFactory,
                              "a2",

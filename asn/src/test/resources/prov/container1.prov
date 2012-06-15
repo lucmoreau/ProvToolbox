@@ -615,12 +615,14 @@ prefix ex <http://example>  /* a single prefix declaration */
           tracedTo(-; ex:e1, ex:e2)
           tracedTo(-; ex:e1, ex:e2, [ex:param1="a", ex:param2="b"])
 
-/* component 4 */
+/* component 5 */
 
           alternateOf(ex:e1, ex:e2)
           specializationOf(ex:e1, ex:e2)
 
-/* component 5 */
+          contextualizationOf(ex:e1, ex:b1, ex2:e1)
+
+/* component 6 */
 
           derivedByInsertionFrom(ex:e1, ex:e2, {("k1", ex:e2)})
 
@@ -632,10 +634,7 @@ prefix ex <http://example>  /* a single prefix declaration */
           hasAnnotation(ex:e1, ex:n1)
           hasAnnotation(ex:n1, ex:n1)
 
-          hasProvenanceIn(ex:e1, ex:bundle4, -, -, -)
-          hasProvenanceIn(ex:e1, ex:bundle4, ex:e1, -, -)
-          hasProvenanceIn(ex:e1, ex:bundle4, ex:e1, <http://service/endpoint>, -)
-          hasProvenanceIn(ex:e1, ex:bundle4, ex:e1, -, <http://service/location.pn>)
+
 
 
 /* Other testing of grammar */
@@ -755,6 +754,8 @@ prefix ex <http://example>  /* a single prefix declaration */
 	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)}, [ex:param="a"])
 	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)}, true, [ex:param="a"])
 	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)}, false, [ex:param="a"])
+
+
 
 
 /* bundles  What is the scope of ex:? Problem, with XML Convertion. Namespace declaration lost? */

@@ -33,11 +33,13 @@ public interface TreeConstructor {
     public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs);
 
 
-    /* Component 4 */
+    /* Component 5 */
     public Object convertAlternateOf(Object id2,Object id1);
     public Object convertSpecializationOf(Object id2,Object id1);
+    public Object convertContextualizationOf(Object su, Object bu, Object ta);
 
-    /* Component 5 */
+
+    /* Component 6 */
     public Object convertInsertion(Object id, Object id2, Object id1, Object map, Object dAttrs);
     public Object convertRemoval(Object id, Object id2, Object id1, Object keyset, Object dAttrs);
     public Object convertEntry(Object o1, Object o2);
@@ -51,7 +53,6 @@ public interface TreeConstructor {
 
     public Object convertNote(Object id, Object attrs);
     public Object convertHasAnnotation(Object something, Object note);
-    public Object convertHasProvenanceIn(Object uid,Object su, Object bu, Object ta, Object se, Object pr, Object dAttrs);
 
 
     /* Other conversions */

@@ -340,16 +340,12 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
 
-  <xs:complexType name="HasProvenanceIn">
+  <xs:complexType name="ContextualizationOf">
     <xs:sequence>
-      <xs:element name="subject"    type="prov:AnyRef" minOccurs="1"/>
-      <xs:element name="bundle"     type="prov:BundleRef" minOccurs="0"/>
-      <xs:element name="target"     type="prov:AnyRef" minOccurs="0"/>
-      <xs:element name="service"    type="xs:anyURI" minOccurs="0"/>
-      <xs:element name="provenance" type="xs:anyURI" minOccurs="0"/>
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="local"    type="prov:EntityRef" minOccurs="1"/>
+      <xs:element name="bundle"   type="prov:BundleRef" minOccurs="1"/>
+      <xs:element name="entity"   type="prov:EntityRef" minOccurs="1"/>
     </xs:sequence>
-    <xs:attribute ref="prov:id"/>
   </xs:complexType>
 
 
@@ -425,7 +421,7 @@
             <xs:element name="dictionaryMemberOf"     type="prov:DictionaryMemberOf"/>
 
             <xs:element name="hasAnnotation"         type="prov:HasAnnotation"/>
-            <xs:element name="hasProvenanceIn"        type="prov:HasProvenanceIn"/>
+            <xs:element name="contextualizationOf"        type="prov:ContextualizationOf"/>
       </xs:choice>
     </xs:sequence>
   </xs:complexType>

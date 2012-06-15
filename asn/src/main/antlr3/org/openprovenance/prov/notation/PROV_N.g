@@ -21,11 +21,11 @@ tokens {
     /* Component 3 */
     WDF; WRO; ORIGINALSOURCE; WQF; TRACEDTO; 
     /* Component 4 */
-    SPECIALIZATION; ALTERNATE; 
+    SPECIALIZATION; ALTERNATE; CTX;
     /* Component 5 */
     DBIF; DBRF; KES; ES; KEYS; VALUES; DMEM; CMEM; TRUE; FALSE; UNKNOWN;
     /* Component 6 */
-    NOTE; HAN; HPI; BUNDLE; BUNDLES; NAMEDBUNDLE;
+    NOTE; HAN; BUNDLE; BUNDLES; NAMEDBUNDLE;
 
 
 
@@ -122,7 +122,7 @@ expression
 
 
             /* component 6 */ 
-        | noteExpression | hasAnnotationExpression | hasProvenanceInExpression
+        | noteExpression | hasAnnotationExpression | contextualizationExpression
         )
 	;
 
@@ -353,10 +353,9 @@ hasAnnotationExpression
 	;
 
 
-hasProvenanceInExpression
-	:	'hasProvenanceIn' '(' id0=optionalIdentifier  su=identifier ',' bu=identifierOrMarker ',' ta=identifierOrMarker
-         ',' se=iriOrMarker ',' pr=iriOrMarker   optionalAttributeValuePairs ')' 
-        -> ^(HPI ^(ID $id0?) $su $bu $ta $se $pr  optionalAttributeValuePairs )
+contextualizationExpression
+	:	'contextualizationOf' '(' su=identifier ',' bu=identifier ',' en=identifier ')' 
+        -> ^(CTX $su $bu $en)
 	;
 
 

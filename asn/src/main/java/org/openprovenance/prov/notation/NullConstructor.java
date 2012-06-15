@@ -126,7 +126,7 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
-    public Object convertHasProvenanceIn(Object uid,Object su, Object bu, Object ta, Object se, Object pr, Object dAttrs) {
+    public Object convertContextualizationOf(Object su, Object bu, Object ta) {
         return null;
     }
 

@@ -376,19 +376,11 @@ public class TreeTraversal {
             return c.convertHasAnnotation(id2,id1);
 
 
-        case PROV_NParser.HPI:
-            uidTree=ast.getChild(0);
-            if (uidTree.getChildCount()>0) {
-                uidTree=uidTree.getChild(0);
-            }
-            uid=convert(uidTree);
-            Object su=convert(ast.getChild(1));
-            Object bu=convert(ast.getChild(2));
-            Object ta=convert(ast.getChild(3));
-            Object se=convert(ast.getChild(4));
-            Object pr=convert(ast.getChild(5));
-            dAttrs=convert(ast.getChild(6));
-            return c.convertHasProvenanceIn(uid,su,bu,ta,se,pr,dAttrs);
+        case PROV_NParser.CTX:
+            Object su=convert(ast.getChild(0));
+            Object bu=convert(ast.getChild(1));
+            Object ta=convert(ast.getChild(2));
+            return c.convertContextualizationOf(su,bu,ta);
 
 
             /* Miscellaneous Constructs */

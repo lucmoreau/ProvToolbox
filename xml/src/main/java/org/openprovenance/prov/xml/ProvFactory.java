@@ -846,38 +846,16 @@ public class ProvFactory {
 	return res;
     }
 
-    public HasProvenanceIn newHasProvenanceIn(QName id,
-                                              String subject,
+    public ContextualizationOf newContextualizationOf(
+                                              String local,
                                               String bundle,
-                                              String target,
-                                              String service,
-                                              String provenance) {
-        HasProvenanceIn res=of.createHasProvenanceIn();
-        res.setId(id);
-        res.setSubject(newAnyRef(subject));
+                                              String entity) {
+        ContextualizationOf res=of.createContextualizationOf();
+        res.setLocal(newEntityRef(local));
         res.setBundle(newBundleRef(bundle));
-        res.setTarget(newAnyRef(target));
-        res.setService(service);
-        res.setProvenance(provenance);
+        res.setEntity(newEntityRef(entity));
         return res;
     }
-
-    public HasProvenanceIn newHasProvenanceIn(String id,
-                                              String subject,
-                                              String bundle,
-                                              String target,
-                                              String service,
-                                              String provenance) {
-        HasProvenanceIn res=of.createHasProvenanceIn();
-        res.setId(stringToQName(id));
-        res.setSubject(newAnyRef(subject));
-        if (bundle!=null) res.setBundle(newBundleRef(bundle));
-        if (target!=null) res.setTarget(newAnyRef(target));
-        if (service!=null) res.setService(service);
-        if (provenance!=null) res.setProvenance(provenance);
-        return res;
-    }
-
 
     public WasDerivedFrom newWasDerivedFrom(QName id,
                                             EntityRef aid1,

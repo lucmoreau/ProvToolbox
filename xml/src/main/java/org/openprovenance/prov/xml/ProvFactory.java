@@ -1185,6 +1185,23 @@ public class ProvFactory {
         return res;
     }
 
+    public NamedBundle newNamedBundle(String id,
+                                      Activity[] ps,
+                                      Entity [] es,
+                                      Agent [] ags,
+                                      Note [] ns,
+                                      Object [] lks)
+    {
+
+        return newNamedBundle(id,
+                            ((ps==null) ? null : Arrays.asList(ps)),
+                            ((es==null) ? null : Arrays.asList(es)),
+                            ((ags==null) ? null : Arrays.asList(ags)),
+                            ((ns==null) ? null : Arrays.asList(ns)),
+                            ((lks==null) ? null : Arrays.asList(lks)));
+    }
+
+
     public Bundle newBundle(String id,
                                   Collection<Activity> ps,
                                   Collection<Entity> as,

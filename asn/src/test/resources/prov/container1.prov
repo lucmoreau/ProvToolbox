@@ -620,7 +620,7 @@ prefix ex <http://example>  /* a single prefix declaration */
           alternateOf(ex:e1, ex:e2)
           specializationOf(ex:e1, ex:e2)
 
-          contextualizationOf(ex:e1, ex:b1, ex2:e1)
+          contextualizationOf(ex:e1, ex2:e1, ex:b1 )
 
 /* component 6 */
 

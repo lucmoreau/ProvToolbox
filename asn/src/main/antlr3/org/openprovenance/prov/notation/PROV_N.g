@@ -354,7 +354,7 @@ hasAnnotationExpression
 
 
 contextualizationExpression
-	:	'contextualizationOf' '(' su=identifier ',' bu=identifier ',' en=identifier ')' 
+	:	'contextualizationOf' '(' su=identifier ',' en=identifier ',' bu=identifier ')' 
         -> ^(CTX $su $bu $en)
 	;
 

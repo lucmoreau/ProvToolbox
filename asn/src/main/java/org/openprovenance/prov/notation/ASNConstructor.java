@@ -5,13 +5,19 @@ import java.util.List;
 
 public class ASNConstructor implements TreeConstructor {
 
+    public String symbol(String s) {
+	return s;
+    }
+    public String showprefix(String s) {
+	return s;
+    }
 
     public String optionalAttributes(Object attrs) {
         String s_attrs=(String)attrs;
         if ("".equals(s_attrs)) {
             return "";
         } else {
-            return ",[" + attrs + "]";
+            return symbol(",[") + attrs + symbol("]");
         }
     }
     public String optionalTime(Object time) {
@@ -28,38 +34,48 @@ public class ASNConstructor implements TreeConstructor {
     }
 
     public Object convertActivity(Object id,Object startTime,Object endTime, Object aAttrs) {
-        String s="activity(" + id + "," + optional(startTime) + "," + optional(endTime) + optionalAttributes(aAttrs) + ")";
+        String s=keyword("activity") + "(" + id + "," + optional(startTime) + "," + optional(endTime) + optionalAttributes(aAttrs) + ")";
         return s;
     }
     public Object convertEntity(Object id, Object attrs) {
-        String s="entity(" + id  + optionalAttributes(attrs) + ")";
+        String s=keyword("entity") + "(" + id  + optionalAttributes(attrs) + ")";
         return s;
     }
     public Object convertAgent(Object id, Object attrs) {
-        String s="agent(" + id  + optionalAttributes(attrs) + ")";
+        String s=keyword("agent") + "(" + id  + optionalAttributes(attrs) + ")";
         return s;
     }
+    public String keyword(String s) {
+	return s;
+    }
+    public String breakline() {
+	return "\\";
+    }
+    public String showuri(String s) {
+	return  s;
+    }
+
     public Object convertBundle(Object namespaces, List<Object> records, List<Object> bundles) {
-        String s="bundle\n";
+        String s=keyword("bundle") + breakline();
         s=s+namespaces;
         for (Object o: records) {
-            s=s+o+"\n";
+            s=s+o+breakline();
         }
 	if (bundles!=null) {
 	    for (Object o: bundles) {
-		s=s+o+"\n";
+		s=s+o+breakline();
 	    }
 	}
-        s=s+"endBundle";
+        s=s+keyword("endBundle");
         return s;
     }
 
     public Object convertNamedBundle(Object id, Object namespaces, List<Object> records) {
-        String s="bundle " + id + "\n";
+        String s="bundle " + id + breakline();
         s=s+namespaces;
 	if (records!=null) 
 	    for (Object o: records) {
-		s=s+o+"\n";
+		s=s+o+breakline();
 	    }
         s=s+"endBundle";
         return s;
@@ -75,7 +91,7 @@ public class ASNConstructor implements TreeConstructor {
                 first=false;
                 s=s+o;
             } else {
-                s=s+","+o;
+                s=s+symbol(",")+ " " +o;
             }
         }
         return s;
@@ -107,12 +123,12 @@ public class ASNConstructor implements TreeConstructor {
     }            
 
     public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs) {
-        String s="used(" + optionalId(id) + id2 + "," + id1 +
+        String s=keyword("used") + "(" + optionalId(id) + id2 + "," + id1 +
             optionalTime(time) + optionalAttributes(aAttrs) + ")";
         return s;
     }
     public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s="wasGeneratedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," +
+        String s=keyword("wasGeneratedBy") + "(" + optionalId(id) + id2 + "," + optional(id1) + "," +
             optional(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
@@ -135,21 +151,21 @@ public class ASNConstructor implements TreeConstructor {
 
 
     public Object convertWasInvalidatedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s="wasInvalidatedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," +
+        String s=keyword("wasInvalidatedBy") + "(" + optionalId(id) + id2 + "," + optional(id1) + "," +
             optional(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
 
 
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object aAttrs ) {
-        String s="wasAttributedTo(" + optionalId(id) + id2 + ", " + optional(id1) +
+        String s=keyword("wasAttributedTo") + "(" + optionalId(id) + id2 + ", " + optional(id1) +
             optionalAttributes(aAttrs) +  ")";
         return s;
     }
 
 
     public Object convertWasDerivedFrom(Object id, Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
-        String s="wasDerivedFrom(" + optionalId(id) + id2 + ", " + id1 + 
+        String s=keyword("wasDerivedFrom") + "(" + optionalId(id) + id2 + ", " + id1 + 
             ((pe==null && g2==null && u1==null) ?
              "" : ", " + optional(pe) + ", " + optional(g2) + ", " + optional(u1)) + optionalAttributes(aAttrs) +  ")";
         return s;
@@ -192,14 +208,14 @@ public class ASNConstructor implements TreeConstructor {
 
 
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
-        String s="wasAssociatedWith(" + optionalId(id) + id2 + "," + optional(id1) + "," +
+        String s=keyword("wasAssociatedWith") + "(" + optionalId(id) + id2 + "," + optional(id1) + "," +
             optional(pl) +
             optionalAttributes(aAttrs) + ")";
         return s;
     }
 
     public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
-        String s="actedOnBehalfOf(" + optionalId(id) + id2 + "," + id1 + "," +
+        String s=keyword("actedOnBehalfOf") + "(" + optionalId(id) + id2 + "," + id1 + "," +
             optional(a) +
             optionalAttributes(aAttrs) + ")";
         return s;
@@ -223,17 +239,17 @@ public class ASNConstructor implements TreeConstructor {
     }
 
    public Object convertNamespace(Object pre, Object iri) {
-       return "prefix " + pre + " " + iri;
+       return keyword("prefix") + " " + showprefix((String)pre) + " " + showuri((String)iri);
    }
 
    public Object convertDefaultNamespace(Object iri) {
-       return  "default " + iri;
+       return  keyword("default") + " " + showuri((String)iri);
    }
 
     public Object convertNamespaces(List<Object> namespaces) {
         String s="";
         for (Object o: namespaces) {
-            s=s+o+"\n";
+            s=s+o+breakline();
         }
         return s;
     }

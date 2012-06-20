@@ -33,6 +33,12 @@ fam2:
 	dot -Tps2 target/prov-family2-key.dot -o target/prov-family2-key.ps
 	epstopdf target/prov-family2-key.ps  -o=target/prov-family2-key.pdf
 
+html:
+	target/appassembler/bin/provconvert -asn2html ../asn/src/test/resources/prov/w3c-publication1.prov-asn target/w3c-publication1.html
+	cat src/main/resources/header.html > target/foo.html
+	cat target/w3c-publication1.html >> target/foo.html
+	cat src/main/resources/footer.html >> target/foo.html
+
 
 
 b1:

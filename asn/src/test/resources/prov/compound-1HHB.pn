@@ -1,0 +1,14 @@
+
+bundle
+  prefix pdb http://www.rcsb.org/pdb/explore/obsolete.do?obsoleteId=
+  prefix doi http://dx.doi.org/
+  wasInvalidated(-; pdb:1HHB,-,-,"1984-07-18T00:00:00")  //1HHB was obsoleted on 1984-07-18
+  wasRevisionOf(doi:10.2210/pdb4hhb/pdb, pbd:1HHB) //ENTRY 4HHB SUPERSEDES 1HHB
+endBundle
+ 
+// http://www.rcsb.org/pdb/explore/obsolete.do?obsoleteId=1HHB
+//Mentioned by Philip Bourne in today's invited talk at ipaw.
+//http://www.rcsb.org/pdb/explore/obsolete.do?obsoleteId=1HHB
+//wasInvalidated(-; pdb:1HHB,-,-,"1984-07-18T00:00:00")
+
+

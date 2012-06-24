@@ -1,6 +1,6 @@
 
 bundle
-  prefix pdb http://www.rcsb.org/pdb
+  prefix pdb http://example.org/pdb
   prefix doi http://dx.doi.org/
   entity(pdb:1HHB, [prov:location="http://www.rcsb.org/pdb/files/1hhb.pdb"])
   entity(pdb:4HHB, [prov:location="http://www.rcsb.org/pdb/files/4hhb.pdb"])

@@ -228,14 +228,20 @@ public class ASNConstructor implements TreeConstructor {
     public Object convertIRI(String iri) {
         return iri;
     }
+    //TODO should not use xsd:QName
 
     public Object convertTypedLiteral(String datatype, Object value) {
         if ("xsd:QName".equals(datatype)) {
             String val=(String)value;
             return "'" + val.substring(1, val.length() -1 ) + "'";
         } else {
-            return value + "%%" + datatype;
-        }
+	    if ("prov:Qualified_Name".equals(datatype)) {
+		String val=(String)value;
+		return "'" + val.substring(1, val.length() -1 ) + "'";
+	    } else {
+		return value + "%%" + datatype;
+	    }
+	}
     }
 
    public Object convertNamespace(Object pre, Object iri) {

@@ -30,6 +30,8 @@ entity(tr2012:WD-prov-o-20120503,           [ prov:type='process:RecsWD', dot:fi
 entity(tr2012:WD-prov-n-20120503,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-n-20120503"  ])
 entity(tr2012:WD-prov-constraints-20120503, [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-constraints-20120503"  ])
 entity(tr2012:WD-prov-primer-20120503,      [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-primer-20120503"  ])
+entity(tr2012:WD-prov-aq-20120619,          [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-aq-20120619"  ])
+
 
 entity(process:rec-advance,    [ prov:type='prov:Plan', dot:fillcolor="lightblue", dot:url="http://www.w3.org/2005/10/Process-20051014/tr.html#rec-advance"  ])
   
@@ -55,7 +57,10 @@ entity(email:2012Jan/0422,     [ prov:type='trans:pubreq',  dot:fillcolor="gold"
 
 
 entity(chairs:2012AprJun/0037, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2012AprJun/0037" ]) // for prov-n, prov-constraitns
+
 entity(email:2012Apr/0583,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Apr/0583" ])
+
+entity(email:2012Jun/0164,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Jun/0164" ])
 
 
 // prov-dm revisions
@@ -70,6 +75,8 @@ wasDerivedFrom(tr2012:WD-prov-constraints-20120503,tr2012:WD-prov-dm-20120202)
 wasDerivedFrom(tr2012:WD-prov-primer-20120503, tr2012:WD-prov-primer-20120110)
 // prov-o
 wasDerivedFrom(tr2012:WD-prov-o-20120503, tr2011:WD-prov-o-20111213)
+// prov-aq
+wasDerivedFrom(tr2012:WD-prov-aq-20120619, tr2012:WD-prov-aq-20120110)
 
 
 activity(ex:act1,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
@@ -78,6 +85,7 @@ activity(ex:act3,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
 activity(ex:act4,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
 activity(ex:act5,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
 activity(ex:act6,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
+activity(ex:act7,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
 
 wasGeneratedBy(tr2011:WD-prov-dm-20111018,          ex:act1, -)
 
@@ -95,6 +103,8 @@ wasGeneratedBy(tr2012:WD-prov-o-20120503,           ex:act6, -)
 wasGeneratedBy(tr2012:WD-prov-n-20120503,           ex:act6, -)
 wasGeneratedBy(tr2012:WD-prov-constraints-20120503, ex:act6, -)
 wasGeneratedBy(tr2012:WD-prov-primer-20120503,      ex:act6, -)
+
+wasGeneratedBy(tr2012:WD-prov-aq-20120619,          ex:act7, -)
 
 
 used(ex:act1,chairs:2011OctDec/0004,-)
@@ -114,6 +124,8 @@ used(ex:act5,email:2012Jan/0422,-)
 used(ex:act6, email:2012Apr/0583, -)
 used(ex:act6, chairs:2012AprJun/0037, -)
 
+used(ex:act7, email:2012Jun/0164, -)
+
 agent(w3:Consortium, [ prov:type='prov:Organization', dot:fillcolor="thistle3", dot:url="http://www.w3.org/Consortium"   ])
 
 wasAssociatedWith(ex:act1, w3:Consortium, process:rec-advance)
@@ -122,6 +134,7 @@ wasAssociatedWith(ex:act3, w3:Consortium, process:rec-advance)
 wasAssociatedWith(ex:act4, w3:Consortium, process:rec-advance)
 wasAssociatedWith(ex:act5, w3:Consortium, process:rec-advance)
 wasAssociatedWith(ex:act6, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:act7, w3:Consortium, process:rec-advance)
 
 entity(ex:family0, [ prov:type='prov:EmptyDictionary', dot:fillcolor="bisque2"  ])
 entity(ex:family1, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
@@ -130,6 +143,7 @@ entity(ex:family3, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 entity(ex:family4, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 entity(ex:family5, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 entity(ex:family6, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(ex:family7, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 derivedByInsertionFrom(ex:family1, ex:family0, {('tr:prov-dm',     tr2011:WD-prov-dm-20111018)})
 derivedByInsertionFrom(ex:family2, ex:family1, {('tr:prov-o',      tr2011:WD-prov-o-20111213)})
@@ -142,7 +156,7 @@ derivedByInsertionFrom(ex:family6, ex:family5, {('tr:prov-dm',     tr2012:WD-pro
                                                 ('tr:prov-n',      tr2012:WD-prov-n-20120503),            
                                                 ('tr:prov-primer', tr2012:WD-prov-primer-20120503),            
                                                 ('tr:prov-constraints', tr2012:WD-prov-constraints-20120503)})
-
+derivedByInsertionFrom(ex:family7, ex:family6, {('tr:prov-aq',     tr2012:WD-prov-aq-20120619)})
 
 
 
@@ -153,10 +167,11 @@ wasInformedBy(ex:act3,ex:act2, [dot:color="none"])
 wasInformedBy(ex:act4,ex:act3, [dot:color="none"])
 wasInformedBy(ex:act5,ex:act4, [dot:color="none"])
 wasInformedBy(ex:act6,ex:act5, [dot:color="none"])
+wasInformedBy(ex:act7,ex:act6, [dot:color="none"])
 
 
-
-
+wasAttributedTo(tr2011:WD-prov-dm-20111018,w3:Consortium)
+wasAttributedTo(tr2012:WD-prov-dm-20120503,w3:Consortium)
 endBundle
 
 

@@ -33,14 +33,15 @@ import org.openprovenance.prov.xml.WasRevisionOf;
 import org.openprovenance.prov.xml.WasQuotedFrom;
 import org.openprovenance.prov.xml.DerivedByInsertionFrom;
 import org.openprovenance.prov.xml.DerivedByRemovalFrom;
-import org.openprovenance.prov.xml.MemberOf;
+import org.openprovenance.prov.xml.CollectionMemberOf;
+import org.openprovenance.prov.xml.DictionaryMemberOf;
 import org.openprovenance.prov.xml.Entry;
 import org.openprovenance.prov.xml.HadOriginalSource;
 import org.openprovenance.prov.xml.TracedTo;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Note;
 import org.openprovenance.prov.xml.HasAnnotation;
-import org.openprovenance.prov.xml.HasProvenanceIn;
+import org.openprovenance.prov.xml.ContextualizationOf;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
@@ -796,20 +797,36 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
 
-    public Object convertMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
+    public Object convertDictionaryMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;
 
         Entity e2=entityTable.get(s_id2);
         EntityRef e2r=pFactory.newEntityRef(e2);
 
-    MemberOf mo=pFactory.newMemberOf(s_id,
-                       e2r,
-                       null);
-    List attrs=(List)dAttrs;
+        DictionaryMemberOf mo=pFactory.newDictionaryMemberOf(s_id,
+                                                             e2r,
+                                                             null);
+        List attrs=(List)dAttrs;
         if (attrs!=null) mo.getAny().addAll(attrs);
+        
+        return mo;
+    }
 
-    return mo;
+    public Object convertCollectionMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
+        String s_id=(String)id;
+        String s_id2=(String)id2;
+
+        Entity e2=entityTable.get(s_id2);
+        EntityRef e2r=pFactory.newEntityRef(e2);
+
+        CollectionMemberOf mo=pFactory.newCollectionMemberOf(s_id,
+                                                             e2r,
+                                                             null);
+        List attrs=(List)dAttrs;
+        if (attrs!=null) mo.getAny().addAll(attrs);
+        
+        return mo;
     }
 
 
@@ -852,22 +869,16 @@ public  class ProvConstructor implements TreeConstructor {
         return han;
     }
  
-    public Object convertHasProvenanceIn(Object uid,Object su, Object bu, Object ta, Object se, Object pr, Object attrs) {
+    public Object convertContextualizationOf(Object su, Object bu, Object ta) {
 
-        String s_id=(String)uid;
         String s_su=(String)su;
         String s_bu=(String)bu;
         String s_ta=(String)ta;
-        URI s_se=(URI)se;
-        URI s_pr=(URI)pr;
-
         
 
-        HasProvenanceIn hip=pFactory.newHasProvenanceIn(s_id,s_su,s_bu,s_ta,((se==null)? null : s_se.toString()), ((pr==null)? null: s_pr.toString()));
-        List nAttrs=(List)attrs;
-        
-        hip.getAny().addAll(nAttrs);
-        return hip;
+        ContextualizationOf conOf=pFactory.newContextualizationOf(s_su,s_bu,s_ta);
+
+        return conOf;
     }
 
 }

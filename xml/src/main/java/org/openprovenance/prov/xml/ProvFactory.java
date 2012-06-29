@@ -527,7 +527,7 @@ public class ProvFactory {
 
 
     public Entry newEntry(Object key,
-			  EntityRef entity) {
+                          EntityRef entity) {
         Entry res=of.createEntry();
         res.setKey(key);
         res.setEntity(entity);
@@ -583,10 +583,29 @@ public class ProvFactory {
     }
 
 
-    public MemberOf newMemberOf(QName id,
-				EntityRef after,
-				List<Entry> keyEntitySet) {
-        MemberOf res=of.createMemberOf();
+    public CollectionMemberOf newCollectionMemberOf(QName id,
+                                                    EntityRef after,
+                                                    List<Entity> entitySet) {
+        CollectionMemberOf res=of.createCollectionMemberOf();
+        res.setId(id);
+        res.setEntity(after);
+        if (entitySet!=null) res.getMember().addAll(entitySet);
+        return res;
+    }
+
+
+    public CollectionMemberOf newCollectionMemberOf(String id,
+                                                    EntityRef after,
+                                                    List<Entity> entitySet) {
+        return newCollectionMemberOf(stringToQName(id),
+                                     after,
+                                     entitySet);
+    }
+
+    public DictionaryMemberOf newDictionaryMemberOf(QName id,
+                                                    EntityRef after,
+                                                    List<Entry> keyEntitySet) {
+        DictionaryMemberOf res=of.createDictionaryMemberOf();
         res.setId(id);
         res.setEntity(after);
 	if (keyEntitySet!=null) res.getEntry().addAll(keyEntitySet);
@@ -594,10 +613,10 @@ public class ProvFactory {
     }
 
 
-    public MemberOf newMemberOf(String id,
+    public DictionaryMemberOf newDictionaryMemberOf(String id,
 				EntityRef after,
 				List<Entry> keyEntitySet) {
-        return newMemberOf(stringToQName(id),
+        return newDictionaryMemberOf(stringToQName(id),
 					 after,
 					 keyEntitySet);
     }
@@ -827,38 +846,34 @@ public class ProvFactory {
 	return res;
     }
 
-    public HasProvenanceIn newHasProvenanceIn(QName id,
-                                              String subject,
-                                              String bundle,
-                                              String target,
-                                              String service,
-                                              String provenance) {
-        HasProvenanceIn res=of.createHasProvenanceIn();
-        res.setId(id);
-        res.setSubject(newAnyRef(subject));
-        res.setBundle(newBundleRef(bundle));
-        res.setTarget(newAnyRef(target));
-        res.setService(service);
-        res.setProvenance(provenance);
+    public ContextualizationOf newContextualizationOf(
+                                              String local,
+                                              String entity,
+                                              String bundle) {
+        ContextualizationOf res=of.createContextualizationOf();
+        res.setLocal(newEntityRef(local));
+        res.setBundle(newEntityRef(bundle));
+        res.setEntity(newEntityRef(entity));
         return res;
     }
 
-    public HasProvenanceIn newHasProvenanceIn(String id,
-                                              String subject,
-                                              String bundle,
-                                              String target,
-                                              String service,
-                                              String provenance) {
-        HasProvenanceIn res=of.createHasProvenanceIn();
-        res.setId(stringToQName(id));
-        res.setSubject(newAnyRef(subject));
-        if (bundle!=null) res.setBundle(newBundleRef(bundle));
-        if (target!=null) res.setTarget(newAnyRef(target));
-        if (service!=null) res.setService(service);
-        if (provenance!=null) res.setProvenance(provenance);
+    public ContextualizationOf newContextualizationOf(EntityRef local,
+                                                      EntityRef entity,
+                                                      EntityRef bundle) {
+        ContextualizationOf res=of.createContextualizationOf();
+        res.setLocal(local);
+        res.setBundle(bundle);
+        res.setEntity(entity);
         return res;
     }
 
+    public ContextualizationOf newContextualizationOf(Entity local,
+                                                      Entity entity,
+                                                      Entity bundle) {
+        return newContextualizationOf(newEntityRef(local),
+                                      newEntityRef(entity),
+                                      newEntityRef(bundle));
+    }
 
     public WasDerivedFrom newWasDerivedFrom(QName id,
                                             EntityRef aid1,
@@ -1187,6 +1202,23 @@ public class ProvFactory {
         }
         return res;
     }
+
+    public NamedBundle newNamedBundle(String id,
+                                      Activity[] ps,
+                                      Entity [] es,
+                                      Agent [] ags,
+                                      Note [] ns,
+                                      Object [] lks)
+    {
+
+        return newNamedBundle(id,
+                            ((ps==null) ? null : Arrays.asList(ps)),
+                            ((es==null) ? null : Arrays.asList(es)),
+                            ((ags==null) ? null : Arrays.asList(ags)),
+                            ((ns==null) ? null : Arrays.asList(ns)),
+                            ((lks==null) ? null : Arrays.asList(lks)));
+    }
+
 
     public Bundle newBundle(String id,
                                   Collection<Activity> ps,

@@ -55,6 +55,12 @@ public  class Utility {
         return (String)o;
     }
 
+
+    public String convertTreeToHTML(CommonTree tree) {
+        Object o=new TreeTraversal(new HTMLConstructor()).convert(tree);
+        return (String)o;
+    }
+
     public Object convertASNToJavaBean(String file) throws java.io.IOException, Throwable {
         CommonTree tree=convertASNToTree(file);
         Object o=convertTreeToJavaBean(tree);

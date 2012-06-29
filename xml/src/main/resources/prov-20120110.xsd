@@ -129,7 +129,6 @@
       <xs:element name="effect"  type="prov:ActivityRef"/>
       <xs:element name="cause"   type="prov:ActivityRef"/>
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:role" minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
@@ -165,7 +164,6 @@
       <xs:element name="entity" type="prov:EntityRef"/>
       <xs:element name="agent"    type="prov:AgentRef"/>
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
@@ -177,7 +175,6 @@
       <xs:element name="responsible" type="prov:AgentRef"/>
       <xs:element name="activity"    type="prov:ActivityRef"/>
       <xs:element ref="prov:type"   minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:role"   minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other"   minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
@@ -195,7 +192,6 @@
       <xs:element name="generatedEntity"  type="prov:EntityRef"/>
       <xs:element name="usedEntity"       type="prov:EntityRef"/>
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:role" minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
@@ -209,7 +205,6 @@
       <xs:element name="newer"           type="prov:EntityRef"/>
       <xs:element name="older"           type="prov:EntityRef"/>
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:role" minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
@@ -291,7 +286,18 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
 
-  <xs:complexType name="MemberOf">
+  <xs:complexType name="CollectionMemberOf">
+    <xs:sequence>
+      <xs:element name="entity"          type="prov:EntityRef"/>
+      <xs:element name="complete"        type="xs:boolean"/>
+      <xs:element name="member"          type="prov:Entity" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute ref="prov:id"/>
+  </xs:complexType>
+
+  <xs:complexType name="DictionaryMemberOf">
     <xs:sequence>
       <xs:element name="entity"          type="prov:EntityRef"/>
       <xs:element name="complete"        type="xs:boolean"/>
@@ -334,16 +340,12 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
 
-  <xs:complexType name="HasProvenanceIn">
+  <xs:complexType name="ContextualizationOf">
     <xs:sequence>
-      <xs:element name="subject"    type="prov:AnyRef" minOccurs="1"/>
-      <xs:element name="bundle"     type="prov:BundleRef" minOccurs="0"/>
-      <xs:element name="target"     type="prov:AnyRef" minOccurs="0"/>
-      <xs:element name="service"    type="xs:anyURI" minOccurs="0"/>
-      <xs:element name="provenance" type="xs:anyURI" minOccurs="0"/>
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="local"    type="prov:EntityRef" minOccurs="1"/>
+      <xs:element name="entity"   type="prov:EntityRef" minOccurs="1"/>
+      <xs:element name="bundle"   type="prov:EntityRef" minOccurs="1"/>
     </xs:sequence>
-    <xs:attribute ref="prov:id"/>
   </xs:complexType>
 
 
@@ -415,10 +417,11 @@
 
             <xs:element name="derivedByInsertionFrom" type="prov:DerivedByInsertionFrom"/>
             <xs:element name="derivedByRemovalFrom"   type="prov:DerivedByRemovalFrom"/>
-            <xs:element name="memberOf"               type="prov:MemberOf"/>
+            <xs:element name="collectionMemberOf"     type="prov:CollectionMemberOf"/>
+            <xs:element name="dictionaryMemberOf"     type="prov:DictionaryMemberOf"/>
 
             <xs:element name="hasAnnotation"         type="prov:HasAnnotation"/>
-            <xs:element name="hasProvenanceIn"        type="prov:HasProvenanceIn"/>
+            <xs:element name="contextualizationOf"        type="prov:ContextualizationOf"/>
       </xs:choice>
     </xs:sequence>
   </xs:complexType>

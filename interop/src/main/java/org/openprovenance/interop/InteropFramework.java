@@ -153,6 +153,19 @@ public class InteropFramework
     }
 
 
+    public void asn2html(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+
+        Utility u=new Utility();
+        CommonTree tree = u.convertASNToTree(file);
+
+
+        String s=u.convertTreeToHTML(tree);
+
+        writeTextToFile(s,file2);        
+
+    }
+
+
     public void asn2rdf(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
 
         Utility u=new Utility();
@@ -207,6 +220,7 @@ public class InteropFramework
             System.out.println("Usage: provconvert -asn2rdf fileIn fileOut");
             System.out.println("Usage: provconvert -asn2xml fileIn fileOut");
             System.out.println("Usage: provconvert -asn2asn fileIn fileOut");
+            System.out.println("Usage: provconvert -asn2html fileIn fileOut");
             System.out.println("Usage: provconvert -xml2xml fileIn fileOut");
             System.out.println("Usage: provconvert -xml2asn fileIn fileOut");
             System.out.println("Usage: provconvert -asn2dot fileIn dotFileOut pdfFileOut [configFile]");
@@ -229,6 +243,12 @@ public class InteropFramework
 
             if (args[0].equals("-asn2asn")) {
                 me.asn2asn(fileIn,fileOut);
+                return;
+            }
+
+
+            if (args[0].equals("-asn2html")) {
+                me.asn2html(fileIn,fileOut);
                 return;
             }
 

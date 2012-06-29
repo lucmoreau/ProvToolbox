@@ -45,6 +45,10 @@ public class ProvUtilities {
         if (r instanceof WasAssociatedWith) {
             return ((WasAssociatedWith)r).getActivity().getRef();
         }
+
+        if (r instanceof WasAttributedTo) {
+            return ((WasAttributedTo)r).getEntity().getRef();
+        }
         if (r instanceof AlternateOf) {
             return ((AlternateOf)r).getEntity2().getRef();
         }
@@ -78,6 +82,9 @@ public class ProvUtilities {
         if (r instanceof WasAssociatedWith) {
             return ((WasAssociatedWith)r).getAgent().getRef();
         }
+        if (r instanceof WasAttributedTo) {
+            return ((WasAttributedTo)r).getAgent().getRef();
+        }
         if (r instanceof AlternateOf) {
             return ((AlternateOf)r).getEntity1().getRef();
         }
@@ -109,6 +116,54 @@ public class ProvUtilities {
                 res.add(entry.getEntity().getRef());
             }
             return res;
+        }
+        return null;
+    }
+
+    public ContextualizationOf getContextualizationOfForRemoteEntity(Bundle local, Entity remoteEntity, NamedBundle remote) {
+        return getContextualizationOfForRemoteEntity(local.getRecords(),remoteEntity,remote);
+    }
+
+    public ContextualizationOf getContextualizationOfForRemoteEntity(NamedBundle local, Entity remoteEntity, NamedBundle remote) {
+        return getContextualizationOfForRemoteEntity(local.getRecords(),remoteEntity,remote);
+    }
+
+    ContextualizationOf getContextualizationOfForRemoteEntity(Records local, Entity remoteEntity, NamedBundle remote) {
+        Dependencies dep=local.getDependencies();
+        for (Object o:dep.getUsedOrWasGeneratedByOrWasStartedBy()) {
+            if (o instanceof ContextualizationOf) {
+                ContextualizationOf ctxt=(ContextualizationOf) o;
+                QName id1=remoteEntity.getId();
+                QName id2=remote.getId();
+                if (ctxt.getEntity().getRef().equals(id1)
+                    &&
+                    ctxt.getBundle().getRef().equals(id2))
+                    return ctxt;
+            }
+        }
+        return null;
+    }
+
+    public ContextualizationOf getContextualizationOfForLocalEntity(Bundle local, Entity localEntity, NamedBundle remote) {
+        return getContextualizationOfForLocalEntity(local.getRecords(),localEntity,remote);
+    }
+
+    public ContextualizationOf getContextualizationOfForLocalEntity(NamedBundle local, Entity localEntity, NamedBundle remote) {
+        return getContextualizationOfForLocalEntity(local.getRecords(),localEntity,remote);
+    }
+
+    ContextualizationOf getContextualizationOfForLocalEntity(Records local, Entity localEntity, NamedBundle remote) {
+        Dependencies dep=local.getDependencies();
+        for (Object o:dep.getUsedOrWasGeneratedByOrWasStartedBy()) {
+            if (o instanceof ContextualizationOf) {
+                ContextualizationOf ctxt=(ContextualizationOf) o;
+                QName id1=localEntity.getId();
+                QName id2=remote.getId();
+                if (ctxt.getLocal().getRef().equals(id1)
+                    &&
+                    ctxt.getBundle().getRef().equals(id2))
+                    return ctxt;
+            }
         }
         return null;
     }

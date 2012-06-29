@@ -296,7 +296,7 @@ public class TreeTraversal {
             dAttrs=convert(ast.getChild(4));
             return c.convertRemoval(uid,id2,id1,keylist,dAttrs);
 
-        case PROV_NParser.MEM:
+        case PROV_NParser.DMEM:
             uidTree=ast.getChild(0);
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
@@ -306,7 +306,19 @@ public class TreeTraversal {
             keymap=convert(ast.getChild(2));
             Object complete=convert(ast.getChild(3));
             dAttrs=convert(ast.getChild(4));
-            return c.convertMemberOf(uid,id2,keymap,complete,dAttrs);
+            return c.convertDictionaryMemberOf(uid,id2,keymap,complete,dAttrs);
+
+        case PROV_NParser.CMEM:
+            uidTree=ast.getChild(0);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+            id2=convert(ast.getChild(1));
+            Object cmemEntities=convert(ast.getChild(2));
+            complete=convert(ast.getChild(3));
+            dAttrs=convert(ast.getChild(4));
+            return c.convertCollectionMemberOf(uid,id2,cmemEntities,complete,dAttrs);
 
 
         case PROV_NParser.KEYS:
@@ -342,6 +354,13 @@ public class TreeTraversal {
 
             return c.convertKeyEntitySet(entries);
 
+        case PROV_NParser.ES:
+            List<Object> listOfEntities=new LinkedList();
+            for (int i=0; i< ast.getChildCount(); i++) {
+                Object o=convert(ast.getChild(i));
+                listOfEntities.add(o);
+            }
+            return listOfEntities;
 
             /* Component 6 */
 
@@ -357,19 +376,11 @@ public class TreeTraversal {
             return c.convertHasAnnotation(id2,id1);
 
 
-        case PROV_NParser.HPI:
-            uidTree=ast.getChild(0);
-            if (uidTree.getChildCount()>0) {
-                uidTree=uidTree.getChild(0);
-            }
-            uid=convert(uidTree);
-            Object su=convert(ast.getChild(1));
-            Object bu=convert(ast.getChild(2));
-            Object ta=convert(ast.getChild(3));
-            Object se=convert(ast.getChild(4));
-            Object pr=convert(ast.getChild(5));
-            dAttrs=convert(ast.getChild(6));
-            return c.convertHasProvenanceIn(uid,su,bu,ta,se,pr,dAttrs);
+        case PROV_NParser.CTX:
+            Object su=convert(ast.getChild(0));
+            Object bu=convert(ast.getChild(1));
+            Object ta=convert(ast.getChild(2));
+            return c.convertContextualizationOf(su,bu,ta);
 
 
             /* Miscellaneous Constructs */

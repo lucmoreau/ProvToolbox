@@ -21,11 +21,11 @@ tokens {
     /* Component 3 */
     WDF; WRO; ORIGINALSOURCE; WQF; TRACEDTO; 
     /* Component 4 */
-    SPECIALIZATION; ALTERNATE; 
+    SPECIALIZATION; ALTERNATE; CTX;
     /* Component 5 */
-    DBIF; DBRF; KES; KEYS; VALUES; MEM; TRUE; FALSE; UNKNOWN;
+    DBIF; DBRF; KES; ES; KEYS; VALUES; DMEM; CMEM; TRUE; FALSE; UNKNOWN;
     /* Component 6 */
-    NOTE; HAN; HPI; BUNDLE; BUNDLES; NAMEDBUNDLE;
+    NOTE; HAN; BUNDLE; BUNDLES; NAMEDBUNDLE;
 
 
 
@@ -122,7 +122,7 @@ expression
 
 
             /* component 6 */ 
-        | noteExpression | hasAnnotationExpression | hasProvenanceInExpression
+        | noteExpression | hasAnnotationExpression | contextualizationExpression
         )
 	;
 
@@ -217,7 +217,8 @@ associationExpression
 
 responsibilityExpression
 	:	'actedOnBehalfOf' '('   id0=optionalIdentifier ag2=identifier ',' ag1=identifier (','  a=identifierOrMarker)? optionalAttributeValuePairs ')'
-      -> ^(AOBO  ^(ID $id0?) $ag2 $ag1 $a? optionalAttributeValuePairs)
+      -> {$a.tree==null}? ^(AOBO  ^(ID $id0?) $ag2 $ag1 ^(ID) optionalAttributeValuePairs)
+      -> ^(AOBO  ^(ID $id0?) $ag2 $ag1 $a optionalAttributeValuePairs)
 	;
 
 
@@ -303,19 +304,35 @@ removalExpression
 /* TODO: specify complete as optional boolean */
 membershipExpression
 	:	( 'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' keyEntitySet ',' 'true' optionalAttributeValuePairs ')'
-      -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(TRUE) optionalAttributeValuePairs)
+      -> ^(DMEM ^(ID $id0?) $id1 keyEntitySet  ^(TRUE) optionalAttributeValuePairs)
          |          
           'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' keyEntitySet ',' 'false' optionalAttributeValuePairs ')'
-      -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(FALSE) optionalAttributeValuePairs)
+      -> ^(DMEM ^(ID $id0?) $id1 keyEntitySet  ^(FALSE) optionalAttributeValuePairs)
          |          
           'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
-      -> ^(MEM ^(ID $id0?) $id1 keyEntitySet  ^(UNKNOWN) optionalAttributeValuePairs)
+      -> ^(DMEM ^(ID $id0?) $id1 keyEntitySet  ^(UNKNOWN) optionalAttributeValuePairs)
+         |
+         'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' entitySet ',' 'true' optionalAttributeValuePairs ')'
+      -> ^(CMEM ^(ID $id0?) $id1 entitySet  ^(TRUE) optionalAttributeValuePairs)
+         |
+         'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' entitySet ',' 'false' optionalAttributeValuePairs ')'
+      -> ^(CMEM ^(ID $id0?) $id1 entitySet  ^(FALSE) optionalAttributeValuePairs)
+         |
+         'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' entitySet optionalAttributeValuePairs ')'
+      -> ^(CMEM ^(ID $id0?) $id1 entitySet  ^(UNKNOWN) optionalAttributeValuePairs)
+
         )
 	;
 
 keyEntitySet
     : '{'  '(' literal ',' val=identifier  ')' ( ','  '(' literal ',' val=identifier  ')' )* '}'
       -> ^(KES ^(KEYS literal+) ^(VALUES identifier+))
+    ;
+
+
+entitySet
+    : '{'  identifier* '}'
+      -> ^(ES  identifier?)
     ;
 
 /* TODO */
@@ -336,10 +353,9 @@ hasAnnotationExpression
 	;
 
 
-hasProvenanceInExpression
-	:	'hasProvenanceIn' '(' id0=optionalIdentifier  su=identifier ',' bu=identifierOrMarker ',' ta=identifierOrMarker
-         ',' se=iriOrMarker ',' pr=iriOrMarker   optionalAttributeValuePairs ')' 
-        -> ^(HPI ^(ID $id0?) $su $bu $ta $se $pr  optionalAttributeValuePairs )
+contextualizationExpression
+	:	'contextualizationOf' '(' su=identifier ',' en=identifier ',' bu=identifier ')' 
+        -> ^(CTX $su $bu $en)
 	;
 
 

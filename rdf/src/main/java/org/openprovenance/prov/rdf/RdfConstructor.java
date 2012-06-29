@@ -295,7 +295,12 @@ public class RdfConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
 
-    public Object convertMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
+    public Object convertDictionaryMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+
+    public Object convertCollectionMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
         //todo
         throw new UnsupportedOperationException();
     }
@@ -317,7 +322,7 @@ public class RdfConstructor implements TreeConstructor {
     }
 
 
-    public Object convertHasProvenanceIn(Object uid,Object su, Object bu, Object ta, Object se, Object pr, Object dAttrs) {
+    public Object convertContextualizationOf(Object su, Object bu, Object ta) {
         //todo
         throw new UnsupportedOperationException();
     }

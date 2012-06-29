@@ -506,7 +506,22 @@ class JSONConstructor implements TreeConstructor {
         return keys;
     }
 
-    public Object convertMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
+    public Object convertCollectionMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
+    	List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:after", id2));
+    	attrs.add(tuple("prov:entity-set", map));
+    	attrs.add(tuple("prov:complete", complete));
+    	if (dAttrs != null) {
+    		attrs.addAll((List<Object>)dAttrs);
+    	}
+    	
+    	if (id == null)
+        	id = getBlankID("mO");
+
+    	return new ProvRecord("memberOf", id, attrs);
+    }
+
+    public Object convertDictionaryMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
     	List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:after", id2));
     	attrs.add(tuple("prov:key-entity-set", map));
@@ -534,7 +549,7 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("specializationOf", id, attrs);
     }
 
-    public Object convertHasProvenanceIn(Object uid,Object su, Object bu, Object ta, Object se, Object pr, Object dAttrs) {
+    public Object convertContextualizationOf(Object su, Object bu, Object ta) {
         //todo
         throw new UnsupportedOperationException();
     }

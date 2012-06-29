@@ -46,13 +46,13 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
     public String keyword(String s) {
-	return s;
+        return s;
     }
     public String breakline() {
-	return "\\";
+        return "\n";
     }
     public String showuri(String s) {
-	return  s;
+        return  s;
     }
 
     public Object convertBundle(Object namespaces, List<Object> records, List<Object> bundles) {

@@ -421,7 +421,6 @@
       <xs:element ref="prov:agent"    minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="dependencies" type="prov:Dependencies" minOccurs="0"/>
     </xs:sequence>
-    <xs:attribute ref="prov:id"/>
   </xs:complexType>
   
   <xs:complexType name="Bundle">

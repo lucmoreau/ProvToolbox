@@ -119,10 +119,10 @@
       <xs:element name="entity"   type="prov:EntityRef"/>
       <xs:element name="activity" type="prov:ActivityRef" minOccurs="0"/>
       <xs:element ref="prov:label" minOccurs="0"/> 
-      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:role"      minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other"      minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -159,11 +159,11 @@
 
   <xs:complexType name="WasRevisionOf">
     <xs:sequence>
-      <xs:element name="generation"       type="prov:DependencyRef" minOccurs="0"/>
-      <xs:element name="usage"            type="prov:DependencyRef" minOccurs="0"/>
-      <xs:element name="activity"         type="prov:ActivityRef" minOccurs="0"/>
-      <xs:element name="newer"           type="prov:EntityRef"/>
-      <xs:element name="older"           type="prov:EntityRef"/>
+      <xs:element name="generation" type="prov:DependencyRef" minOccurs="0"/>
+      <xs:element name="usage"      type="prov:DependencyRef" minOccurs="0"/>
+      <xs:element name="activity"   type="prov:ActivityRef" minOccurs="0"/>
+      <xs:element name="newer"      type="prov:EntityRef"/>
+      <xs:element name="older"      type="prov:EntityRef"/>
       <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
@@ -173,11 +173,11 @@
 
   <xs:complexType name="WasQuotedFrom">
     <xs:sequence>
-      <xs:element name="generation"       type="prov:DependencyRef" minOccurs="0"/>
-      <xs:element name="usage"            type="prov:DependencyRef" minOccurs="0"/>
-      <xs:element name="activity"         type="prov:ActivityRef" minOccurs="0"/>
-      <xs:element name="quote"        type="prov:EntityRef"/>
-      <xs:element name="original"     type="prov:EntityRef"/>
+      <xs:element name="generation" type="prov:DependencyRef" minOccurs="0"/>
+      <xs:element name="usage"      type="prov:DependencyRef" minOccurs="0"/>
+      <xs:element name="activity"   type="prov:ActivityRef" minOccurs="0"/>
+      <xs:element name="quote"      type="prov:EntityRef"/>
+      <xs:element name="original"   type="prov:EntityRef"/>
       <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
@@ -187,14 +187,14 @@
 
   <xs:complexType name="HadPrimarySource">
     <xs:sequence>
-      <xs:element name="generation"       type="prov:DependencyRef" minOccurs="0"/>
-      <xs:element name="usage"            type="prov:DependencyRef" minOccurs="0"/>
-      <xs:element name="activity"         type="prov:ActivityRef" minOccurs="0"/>
-      <xs:element name="derived"     type="prov:EntityRef"/>
-      <xs:element name="source"      type="prov:EntityRef"/>
+      <xs:element name="generation" type="prov:DependencyRef" minOccurs="0"/>
+      <xs:element name="usage"      type="prov:DependencyRef" minOccurs="0"/>
+      <xs:element name="activity"   type="prov:ActivityRef" minOccurs="0"/>
+      <xs:element name="derived"    type="prov:EntityRef"/>
+      <xs:element name="source"     type="prov:EntityRef"/>
       <xs:element ref="prov:label" minOccurs="0"/> 
-      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -206,7 +206,7 @@
     <xs:sequence>
       <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -217,9 +217,9 @@
       <xs:element name="agent"    type="prov:AgentRef"/>
       <xs:element name="plan"     type="prov:EntityRef" minOccurs="0"/>
       <xs:element ref="prov:label" minOccurs="0"/> 
-      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -230,8 +230,8 @@
       <xs:element name="entity" type="prov:EntityRef"/>
       <xs:element name="agent"    type="prov:AgentRef"/>
       <xs:element ref="prov:label" minOccurs="0"/> 
-      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -242,8 +242,8 @@
       <xs:element name="responsible" type="prov:AgentRef"/>
       <xs:element name="activity"    type="prov:ActivityRef"/>
       <xs:element ref="prov:label" minOccurs="0"/> 
-      <xs:element ref="prov:type"   minOccurs="0" maxOccurs="unbounded"/>
-      <xs:any namespace="##other"   minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -280,9 +280,9 @@
 
   <xs:complexType name="MentionOf">
     <xs:sequence>
-      <xs:element name="specializedEntity"   type="prov:EntityRef"/>
-      <xs:element name="generalEntity"   type="prov:EntityRef"/>
-      <xs:element name="bundle"   type="prov:EntityRef" minOccurs="1"/>
+      <xs:element name="specializedEntity" type="prov:EntityRef"/>
+      <xs:element name="generalEntity"     type="prov:EntityRef"/>
+      <xs:element name="bundle"            type="prov:EntityRef" minOccurs="1"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -295,8 +295,8 @@
       <xs:element name="before"          type="prov:EntityRef"/>
       <xs:element name="entry"           type="prov:Entry" minOccurs="1" maxOccurs="unbounded"/>
       <xs:element ref="prov:label" minOccurs="0"/> 
-      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -307,8 +307,8 @@
       <xs:element name="before"   type="prov:EntityRef"/>
       <xs:element name="key"      type="xs:anySimpleType" minOccurs="1" maxOccurs="unbounded"/>
       <xs:element ref="prov:label" minOccurs="0"/> 
-      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -319,8 +319,8 @@
       <xs:element name="complete"        type="xs:boolean"/>
       <xs:element name="member"          type="prov:Entity" minOccurs="1" maxOccurs="unbounded"/>
       <xs:element ref="prov:label" minOccurs="0"/> 
-      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -331,8 +331,8 @@
       <xs:element name="complete"        type="xs:boolean"/>
       <xs:element name="entry"           type="prov:Entry" minOccurs="1" maxOccurs="unbounded"/>
       <xs:element ref="prov:label" minOccurs="0"/> 
-      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -364,7 +364,7 @@
 
   <!-- See comment in preamble.
        These should be prov:QualifiedName
-       but xsd:QName for tools to process them -->
+       but instead are xsd:QName for tools to process them -->
 
   <xs:attribute name="id"  type="xs:QName"/>
   <xs:attribute name="ref" type="xs:QName"/>
@@ -398,14 +398,15 @@
             <xs:element name="wasInvalidatedBy"     type="prov:WasInvalidatedBy"/>
             <xs:element name="wasInformedBy"        type="prov:WasInformedBy"/>
 
-            <xs:element name="wasAttributedTo"      type="prov:WasAttributedTo"/>
-            <xs:element name="wasAssociatedWith"    type="prov:WasAssociatedWith"/>
-            <xs:element name="actedOnBehalfOf"      type="prov:ActedOnBehalfOf"/>
 
             <xs:element name="wasDerivedFrom"       type="prov:WasDerivedFrom"/>
             <xs:element name="wasRevisionOf"        type="prov:WasRevisionOf"/>
             <xs:element name="wasQuotedFrom"        type="prov:WasQuotedFrom"/>
             <xs:element name="hadPrimarySource"     type="prov:HadPrimarySource"/>
+
+            <xs:element name="wasAttributedTo"      type="prov:WasAttributedTo"/>
+            <xs:element name="wasAssociatedWith"    type="prov:WasAssociatedWith"/>
+            <xs:element name="actedOnBehalfOf"      type="prov:ActedOnBehalfOf"/>
             <xs:element name="wasInfluencedBy"      type="prov:WasInfluencedBy"/>
 
             <xs:element name="alternateOf"          type="prov:AlternateOf"/>

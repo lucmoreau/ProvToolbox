@@ -115,16 +115,6 @@ public class ProvFactory {
 
 
 
-    public BundleRef newBundleRef(QName id) {
-        BundleRef res=of.createBundleRef();
-        res.setRef(id);
-        return res;
-    }
-        
-    public BundleRef newBundleRef(String id) {
-        return newBundleRef(stringToQName(id));
-    }
-
 
     public AnyRef newAnyRef(QName id) {
         AnyRef res=of.createAnyRef();

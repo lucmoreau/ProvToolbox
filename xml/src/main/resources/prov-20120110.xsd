@@ -59,6 +59,7 @@
       <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
       <xs:element name="activity" type="prov:ActivityRef"/>
       <xs:element name="entity"   type="prov:EntityRef"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
@@ -72,6 +73,7 @@
       <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
       <xs:element name="entity"   type="prov:EntityRef"/>
       <xs:element name="activity" type="prov:ActivityRef" minOccurs="0"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
@@ -87,6 +89,7 @@
       <xs:element name="activity" type="prov:ActivityRef"/>
       <xs:element name="trigger"  type="prov:EntityRef" minOccurs="0"/>
       <xs:element name="starter"  type="prov:ActivityRef" minOccurs="0"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
@@ -101,6 +104,7 @@
       <xs:element name="activity" type="prov:ActivityRef"/>
       <xs:element name="trigger"  type="prov:EntityRef"  minOccurs="0"/>
       <xs:element name="ender"    type="prov:ActivityRef" minOccurs="0"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
@@ -114,6 +118,7 @@
       <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
       <xs:element name="entity"   type="prov:EntityRef"/>
       <xs:element name="activity" type="prov:ActivityRef" minOccurs="0"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
@@ -128,6 +133,7 @@
       <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
       <xs:element name="effect"  type="prov:ActivityRef"/>
       <xs:element name="cause"   type="prov:ActivityRef"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -144,6 +150,7 @@
       <xs:element name="activity"         type="prov:ActivityRef" minOccurs="0"/>
       <xs:element name="generatedEntity"  type="prov:EntityRef"/>
       <xs:element name="usedEntity"       type="prov:EntityRef"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -157,6 +164,7 @@
       <xs:element name="activity"         type="prov:ActivityRef" minOccurs="0"/>
       <xs:element name="newer"           type="prov:EntityRef"/>
       <xs:element name="older"           type="prov:EntityRef"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -170,6 +178,7 @@
       <xs:element name="activity"         type="prov:ActivityRef" minOccurs="0"/>
       <xs:element name="quote"        type="prov:EntityRef"/>
       <xs:element name="original"     type="prov:EntityRef"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -183,6 +192,7 @@
       <xs:element name="activity"         type="prov:ActivityRef" minOccurs="0"/>
       <xs:element name="derived"     type="prov:EntityRef"/>
       <xs:element name="source"      type="prov:EntityRef"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -206,6 +216,7 @@
       <xs:element name="activity" type="prov:ActivityRef"/>
       <xs:element name="agent"    type="prov:AgentRef"/>
       <xs:element name="plan"     type="prov:EntityRef" minOccurs="0"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
@@ -218,6 +229,7 @@
     <xs:sequence>
       <xs:element name="entity" type="prov:EntityRef"/>
       <xs:element name="agent"    type="prov:AgentRef"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -229,6 +241,7 @@
       <xs:element name="subordinate" type="prov:AgentRef"/>
       <xs:element name="responsible" type="prov:AgentRef"/>
       <xs:element name="activity"    type="prov:ActivityRef"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type"   minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other"   minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -240,6 +253,7 @@
     <xs:sequence>
       <xs:element name="influencee"     type="prov:AnyRef"/>
       <xs:element name="influencer"     type="prov:AnyRef"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -280,6 +294,7 @@
       <xs:element name="after"           type="prov:EntityRef"/>
       <xs:element name="before"          type="prov:EntityRef"/>
       <xs:element name="entry"           type="prov:Entry" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -291,6 +306,7 @@
       <xs:element name="after"    type="prov:EntityRef"/>
       <xs:element name="before"   type="prov:EntityRef"/>
       <xs:element name="key"      type="xs:anySimpleType" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -302,6 +318,7 @@
       <xs:element name="entity"          type="prov:EntityRef"/>
       <xs:element name="complete"        type="xs:boolean"/>
       <xs:element name="member"          type="prov:Entity" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -313,6 +330,7 @@
       <xs:element name="entity"          type="prov:EntityRef"/>
       <xs:element name="complete"        type="xs:boolean"/>
       <xs:element name="entry"           type="prov:Entry" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element ref="prov:label" minOccurs="0"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>

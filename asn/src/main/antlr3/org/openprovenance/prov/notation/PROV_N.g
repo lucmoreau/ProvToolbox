@@ -616,7 +616,10 @@ CLOSE_CURLY_BRACE
 
 /* Need to implement fully http://www.w3.org/TR/xmlschema11-2/#nt-dateTimeRep */
 
-xsdDateTime: (DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' DIGIT DIGIT ':' DIGIT DIGIT ':' DIGIT DIGIT ('.' DIGIT+)? ('Z' | TimeZoneOffset)?)
+xsdDateTime: DateTime;
+
+DateTime: 
+(DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' DIGIT DIGIT ':' DIGIT DIGIT ':' DIGIT DIGIT ('.' DIGIT DIGIT*)? ('Z' | TimeZoneOffset)?)
     ;
 
 

@@ -31,8 +31,6 @@ import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.xml.Identifiable;
 import org.openprovenance.prov.xml.ProvDeserialiser;
-import org.openprovenance.prov.xml.HasAnnotation;
-import org.openprovenance.prov.xml.Note;
 import org.openprovenance.prov.xml.Bundle;
 import org.openprovenance.prov.xml.HasExtensibility;
 
@@ -227,7 +225,6 @@ public class ProvToDot {
         }
 
         for (Relation0 e: edges) {
-            if (!(e instanceof HasAnnotation)) 
             emitDependency(e,out);
         }
         

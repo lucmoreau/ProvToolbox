@@ -4,7 +4,6 @@ import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.BeanConstructor;
 import org.openprovenance.prov.xml.Entity;
-import org.openprovenance.prov.xml.HasAnnotation;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.HasLabel;
 import org.openprovenance.prov.xml.HasType;
@@ -12,6 +11,7 @@ import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.AlternateOf;
+import org.openprovenance.prov.xml.MentionOf;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasInformedBy;
@@ -157,11 +157,6 @@ public class BeanTreeConstructor implements BeanConstructor{
                                        c.convertAttributes(attrs));
     }
     
-    public Object convertHasAnnotation(Object id, List<Object> tAttrs, List<Object> otherAttrs) {
-        //List otherAttrs2=convertAttributes(otherAttrs);
-        return null;
-    }
-
     public Object convertWasInformedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);
@@ -178,6 +173,13 @@ public class BeanTreeConstructor implements BeanConstructor{
     public Object convertSpecializationOf(Object entity2, Object entity1) {
         return c.convertSpecializationOf(entity2,
                                          entity1);
+    }
+
+
+    public Object convertMentionOf(Object entity2, Object entity1, Object bundle) {
+        return c.convertMentionOf(entity2,
+				  entity1,
+				  bundle);
     }
 
     public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity) {

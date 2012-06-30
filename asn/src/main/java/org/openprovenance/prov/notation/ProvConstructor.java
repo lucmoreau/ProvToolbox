@@ -16,7 +16,6 @@ import org.openprovenance.prov.xml.EntityRef;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.HasType;
 import org.openprovenance.prov.xml.AgentRef;
-import org.openprovenance.prov.xml.NoteRef;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.Bundle;
 import org.openprovenance.prov.xml.NamedBundle;
@@ -36,12 +35,10 @@ import org.openprovenance.prov.xml.DerivedByRemovalFrom;
 import org.openprovenance.prov.xml.CollectionMemberOf;
 import org.openprovenance.prov.xml.DictionaryMemberOf;
 import org.openprovenance.prov.xml.Entry;
-import org.openprovenance.prov.xml.HadOriginalSource;
-import org.openprovenance.prov.xml.TracedTo;
+import org.openprovenance.prov.xml.HadPrimarySource;
+import org.openprovenance.prov.xml.WasInfluencedBy;
 import org.openprovenance.prov.xml.AlternateOf;
-import org.openprovenance.prov.xml.Note;
-import org.openprovenance.prov.xml.HasAnnotation;
-import org.openprovenance.prov.xml.ContextualizationOf;
+import org.openprovenance.prov.xml.MentionOf;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
@@ -64,7 +61,6 @@ public  class ProvConstructor implements TreeConstructor {
     Hashtable<String,Entity>   entityTable   = new Hashtable<String,Entity>();
     Hashtable<String,Activity> activityTable = new Hashtable<String,Activity>();
     Hashtable<String,Agent>    agentTable    = new Hashtable<String,Agent>();
-    Hashtable<String,Note>     noteTable     = new Hashtable<String,Note>();
 
     Hashtable<String,String>  namespaceTable = new Hashtable<String,String>();
     
@@ -143,20 +139,17 @@ public  class ProvConstructor implements TreeConstructor {
         Collection<Entity> es=new LinkedList();
         Collection<Agent> ags=new LinkedList();
         Collection<Activity> acs=new LinkedList();
-        Collection<Note> ns=new LinkedList();
         Collection<Object> lks=new LinkedList();
             
         for (Object o: records) {
             if (o instanceof Agent) { ags.add((Agent)o); }
             else if (o instanceof Entity) { es.add((Entity)o); }
             else if (o instanceof Activity) { acs.add((Activity)o); }
-            else if (o instanceof Note) { ns.add((Note)o); }
             else lks.add(o);
         }
         Bundle c=pFactory.newBundle(      acs,
                                           es,
                                           ags,
-                                          ns,
                                           lks);
         System.out.println("Bundle namespaces " + namespaceTable);
         c.setNss(namespaceTable);
@@ -175,7 +168,6 @@ public  class ProvConstructor implements TreeConstructor {
         Collection<Entity> es=new LinkedList();
         Collection<Agent> ags=new LinkedList();
         Collection<Activity> acs=new LinkedList();
-        Collection<Note> ns=new LinkedList();
         Collection<Object> lks=new LinkedList();
             
         if (records!=null) 
@@ -183,7 +175,6 @@ public  class ProvConstructor implements TreeConstructor {
                 if (o instanceof Agent) { ags.add((Agent)o); }
                 else if (o instanceof Entity) { es.add((Entity)o); }
                 else if (o instanceof Activity) { acs.add((Activity)o); }
-                else if (o instanceof Note) { ns.add((Note)o); }
                 else lks.add(o);
             }
         String s_id=(String)id;
@@ -192,7 +183,6 @@ public  class ProvConstructor implements TreeConstructor {
                                               acs,
                                               es,
                                               ags,
-                                              ns,
                                               lks);
 
         System.out.println("Bundle namespaces " + namespaceTable);
@@ -517,7 +507,7 @@ public  class ProvConstructor implements TreeConstructor {
         return d;
     }
 
-    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object a, Object g2, Object u1, Object dAttrs) {
+    public Object convertHadPrimarySource(Object id, Object id2,Object id1, Object a, Object g2, Object u1, Object dAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
@@ -526,9 +516,9 @@ public  class ProvConstructor implements TreeConstructor {
         Entity e1=entityTable.get(s_id1);
         EntityRef e1r=pFactory.newEntityRef(e1);
 
-        HadOriginalSource d=pFactory.newHadOriginalSource(s_id,
-                                                          e2r,
-                                                          e1r);
+        HadPrimarySource d=pFactory.newHadPrimarySource(s_id,
+							e2r,
+							e1r);
 
         if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
         if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
@@ -538,18 +528,18 @@ public  class ProvConstructor implements TreeConstructor {
         d.getAny().addAll(attrs);
         return d;
     }
-    public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs) {
+    public Object convertWasInfluencedBy(Object id, Object id2, Object id1, Object dAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        Entity e2=entityTable.get(s_id2);
-        EntityRef e2r=pFactory.newEntityRef(e2);
-        Entity e1=entityTable.get(s_id1);
-        EntityRef e1r=pFactory.newEntityRef(e1);
+        //Entity e2=entityTable.get(s_id2);
+        //EntityRef e2r=pFactory.newEntityRef(e2);
+        //Entity e1=entityTable.get(s_id1);
+        //EntityRef e1r=pFactory.newEntityRef(e1);
 
-        TracedTo d=pFactory.newTracedTo(s_id,
-                                        e2r,
-                                        e1r);
+        WasInfluencedBy d=pFactory.newWasInfluencedBy(s_id,
+						      s_id2,
+						      s_id1);
         List attrs=(List)dAttrs;
         d.getAny().addAll(attrs);
         return d;
@@ -581,6 +571,20 @@ public  class ProvConstructor implements TreeConstructor {
         return wco;
 
     }
+
+
+    public Object convertMentionOf(Object su, Object bu, Object ta) {
+
+        String s_su=(String)su;
+        String s_bu=(String)bu;
+        String s_ta=(String)ta;
+        
+
+        MentionOf conOf=pFactory.newMentionOf(s_su,s_bu,s_ta);
+
+        return conOf;
+    }
+
 
 
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
@@ -851,35 +855,7 @@ public  class ProvConstructor implements TreeConstructor {
 
     /* Component 6 */
 
-    public Object convertNote(Object id, Object attrs) {
-        String s_id=(String)id;
-        List nAttrs=(List)attrs;
-        Note n=pFactory.newNote(s_id);
-        noteTable.put(s_id,n);
-        n.getAny().addAll(nAttrs);
-        return n;
-    }
-
-    public Object convertHasAnnotation(Object something, Object note) {
-        String s_id2=(String)something;
-        String s_id1=(String)note;
-
-        HasAnnotation han=pFactory.newHasAnnotation(s_id2,
-                                                    s_id1);
-        return han;
-    }
  
-    public Object convertContextualizationOf(Object su, Object bu, Object ta) {
-
-        String s_su=(String)su;
-        String s_bu=(String)bu;
-        String s_ta=(String)ta;
-        
-
-        ContextualizationOf conOf=pFactory.newContextualizationOf(s_su,s_bu,s_ta);
-
-        return conOf;
-    }
 
 }
 

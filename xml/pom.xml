@@ -246,11 +246,6 @@
                 </exec>
 
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Identifiable, HasExtensibility, Equals, HashCode, ToString/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Note.java" />
-                </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/    public String toString/\/* added in pom.xml *\/@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable&lt;String,String&gt; nss=null; public java.util.Hashtable&lt;String,String&gt; getNss() { return nss;} public void setNss(java.util.Hashtable&lt;String,String&gt; s) { nss=s; };public String toString/" />
@@ -267,16 +262,6 @@
                 </exec>
 
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Identifiable, HasExtensibility, Equals, HashCode, ToString/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Note.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/    public List&lt;Object&gt; getAny()/    @javax.xml.bind.annotation.XmlTransient  private AttributeProcessor _attrs=new AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;Object&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace);  } public List&lt;Object&gt; getAny()/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Note.java" />
-                </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, HasType, HasRole, Equals, HashCode, ToString/" />
@@ -332,6 +317,12 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation0, Equals, HashCode, ToString/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="MentionOf.java" />
+                </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, HasRole, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasAssociatedWith.java" />
@@ -400,19 +391,6 @@
                 </exec>
 
 
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation, Equals, HashCode, ToString/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="HasAnnotation.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/    public List&lt;Object&gt; getAny()/    @javax.xml.bind.annotation.XmlTransient  private AttributeProcessor _attrs=new AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;Object&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace);  } public List&lt;Object&gt; getAny()/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="HasAnnotation.java" />
-                </exec>
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">

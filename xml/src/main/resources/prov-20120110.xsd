@@ -387,10 +387,6 @@
     <xs:attribute ref="prov:ref"/>
   </xs:complexType>
 
-  <xs:complexType name="BundleRef">
-    <xs:attribute ref="prov:ref"/>
-  </xs:complexType>
-  
   <xs:complexType name="Dependencies">
     <xs:sequence>
       <xs:choice minOccurs="0" maxOccurs="unbounded">

@@ -218,7 +218,7 @@ public  class ProvConstructor implements TreeConstructor {
     //
     public Object convertAttribute(Object name, Object value) {
         String attr1=(String)name;
-        
+
         int index=attr1.indexOf(':');
         String prefix;
         String local;

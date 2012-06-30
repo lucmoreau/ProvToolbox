@@ -362,6 +362,10 @@
   <xs:element name="location" type="xs:anySimpleType"/>
   <xs:element name="value" type="xs:anySimpleType"/>
 
+  <!-- See comment in preamble.
+       These should be prov:QualifiedName
+       but xsd:QName for tools to process them -->
+
   <xs:attribute name="id"  type="xs:QName"/>
   <xs:attribute name="ref" type="xs:QName"/>
 

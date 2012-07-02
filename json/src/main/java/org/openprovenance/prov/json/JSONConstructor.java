@@ -366,7 +366,7 @@ class JSONConstructor implements TreeConstructor {
     public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
     	List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:quote", id2));
-    	attrs.add(tuple("prov:original", id1));
+    	attrs.add(tuple("prov:primary", id1));
     	if (pe != null) {
     		attrs.add(tuple("prov:activity", pe));
     	}
@@ -385,7 +385,7 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasQuotedFrom", id, attrs);
     }
     
-	public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
+	public Object convertHadPrimarySource(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
     	List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:derived", id2));
     	attrs.add(tuple("prov:source", id1));
@@ -408,10 +408,10 @@ class JSONConstructor implements TreeConstructor {
     	if (id == null)
     		id = getBlankID("hOS");
 
-    	return new ProvRecord("hadOriginalSource", id, attrs);
+    	return new ProvRecord("hadPrimarySource", id, attrs);
     }
 
-	public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs) {
+	public Object convertWasInfluencedBy(Object id, Object id2, Object id1, Object dAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:entity", id2));
     	attrs.add(tuple("prov:ancestor", id1));
@@ -422,7 +422,7 @@ class JSONConstructor implements TreeConstructor {
     	if (id == null)
     		id = getBlankID("tT");
 
-    	return new ProvRecord("tracedTo", id, attrs);
+    	return new ProvRecord("wasInfluencedBy", id, attrs);
     }
 
 	/* Component 4 */
@@ -537,19 +537,9 @@ class JSONConstructor implements TreeConstructor {
     }
 
    /* Component 6 */
-    public Object convertNote(Object id, Object attrs) {
-    	return new ProvRecord("note", id, attrs);
-    }
-    public Object convertHasAnnotation(Object something, Object note) {
-    	List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:something", something));
-    	attrs.add(tuple("prov:note", note));
-        Object id = getBlankID("sO");
 
-    	return new ProvRecord("specializationOf", id, attrs);
-    }
 
-    public Object convertContextualizationOf(Object su, Object bu, Object ta) {
+    public Object convertMentionOf(Object su, Object bu, Object ta) {
         //todo
         throw new UnsupportedOperationException();
     }

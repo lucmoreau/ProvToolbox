@@ -138,14 +138,14 @@ public class BeanTraversal {
             return convert((Used) o);
         } else if (o instanceof WasDerivedFrom) {
             return convert((WasDerivedFrom) o);
-        } else if (o instanceof HasAnnotation) {
-            return convert((HasAnnotation) o);
         } else if (o instanceof WasInformedBy) {
             return convert((WasInformedBy) o);
         } else if (o instanceof AlternateOf) {
             return convert((AlternateOf) o);
         } else if (o instanceof SpecializationOf) {
             return convert((SpecializationOf) o);
+        } else if (o instanceof MentionOf) {
+            return convert((MentionOf) o);
         } else if (o instanceof WasGeneratedBy) {
             return convert((WasGeneratedBy) o);
         } else {
@@ -182,11 +182,6 @@ public class BeanTraversal {
                                        c.convert(o.getUsedEntity().getRef()));
     }
 
-    public Object convert(HasAnnotation o) {
-        List tAttrs=null;
-        List otherAttrs=convertAttributes((HasExtensibility)o);
-        return c.convertHasAnnotation(c.convert(o.getId()),tAttrs,otherAttrs);
-    }
 
     public Object convert(WasInformedBy o) {
         List tAttrs=convertTypeAttributes((HasType)o);
@@ -203,6 +198,13 @@ public class BeanTraversal {
     public Object convert(SpecializationOf o) {
         return c.convertSpecializationOf(c.convert(o.getSpecializedEntity().getRef()),
                                          c.convert(o.getGeneralEntity().getRef()));
+    }
+
+
+    public Object convert(MentionOf o) {
+        return c.convertMentionOf(c.convert(o.getSpecializedEntity().getRef()),
+				  c.convert(o.getGeneralEntity().getRef()),
+				  c.convert(o.getBundle().getRef()));
     }
 
     public Object convert(WasGeneratedBy o) {

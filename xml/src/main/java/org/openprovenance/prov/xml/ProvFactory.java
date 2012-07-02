@@ -113,32 +113,7 @@ public class ProvFactory {
         return newActivityRef(stringToQName(id));
     }
 
-    public NoteRef newNoteRef(Note a) {
-        NoteRef res=of.createNoteRef();
-        res.setRef(a.getId());
-        return res;
-    }
 
-    public NoteRef newNoteRef(QName id) {
-        NoteRef res=of.createNoteRef();
-        res.setRef(id);
-        return res;
-    }
-        
-    public NoteRef newNoteRef(String id) {
-        return newNoteRef(stringToQName(id));
-    }
-
-
-    public BundleRef newBundleRef(QName id) {
-        BundleRef res=of.createBundleRef();
-        res.setRef(id);
-        return res;
-    }
-        
-    public BundleRef newBundleRef(String id) {
-        return newBundleRef(stringToQName(id));
-    }
 
 
     public AnyRef newAnyRef(QName id) {
@@ -484,41 +459,49 @@ public class ProvFactory {
         return res;
     }
 
+    public WasInfluencedBy newWasInfluencedBy(String id,
+					      String influencee,
+					      String influencer) {
+        WasInfluencedBy res=of.createWasInfluencedBy();
+	return newWasInfluencedBy(id,
+				  newAnyRef(influencee),
+				  newAnyRef(influencer));
+    }
 
-    public TracedTo newTracedTo(String id,
-                                EntityRef entity,
-                                EntityRef ancestor) {
-        TracedTo res=of.createTracedTo();
+    public WasInfluencedBy newWasInfluencedBy(String id,
+					      AnyRef influencee,
+					      AnyRef influencer) {
+        WasInfluencedBy res=of.createWasInfluencedBy();
         res.setId(stringToQName(id));
-        res.setEntity(entity);
-        res.setAncestor(ancestor);
+        res.setInfluencee(influencee);
+        res.setInfluencer(influencer);
         return res;
     }
 
-    public TracedTo newTracedTo(QName id,
-                                EntityRef entity,
-                                EntityRef ancestor) {
-        TracedTo res=of.createTracedTo();
+    public WasInfluencedBy newWasInfluencedBy(QName id,
+					      AnyRef influencee,
+					      AnyRef influencer) {
+        WasInfluencedBy res=of.createWasInfluencedBy();
         res.setId(id);
-        res.setEntity(entity);
-        res.setAncestor(ancestor);
+        res.setInfluencee(influencee);
+        res.setInfluencer(influencer);
         return res;
     }
 
-    public HadOriginalSource newHadOriginalSource(String id,
+    public HadPrimarySource newHadPrimarySource(String id,
                                                   EntityRef derived,
                                                   EntityRef source) {
-        HadOriginalSource res=of.createHadOriginalSource();
+        HadPrimarySource res=of.createHadPrimarySource();
         res.setId(stringToQName(id));
         res.setDerived(derived);
         res.setSource(source);
         return res;
     }
 
-    public HadOriginalSource newHadOriginalSource(QName id,
+    public HadPrimarySource newHadPrimarySource(QName id,
                                                   EntityRef derived,
                                                   EntityRef source) {
-        HadOriginalSource res=of.createHadOriginalSource();
+        HadPrimarySource res=of.createHadPrimarySource();
         res.setId(id);
         res.setDerived(derived);
         res.setSource(source);
@@ -822,57 +805,33 @@ public class ProvFactory {
     }
 
 
-    public HasAnnotation newHasAnnotation(Identifiable i,
-                                          Note n) {
-	HasAnnotation res=of.createHasAnnotation();
-	res.setThing(newNoteRef(i.getId()));
-	res.setNote(newNoteRef(n));
-	return res;
-    }
 
-    public HasAnnotation newHasAnnotation(Identifiable i,
-                                          String n) {
-	HasAnnotation res=of.createHasAnnotation();
-	res.setThing(newNoteRef(i.getId())); // note, this id is not necessarily of a note
-	res.setNote(newNoteRef(n));
-	return res;
-    }
-
-    public HasAnnotation newHasAnnotation(String n1,
-                                          String n) {
-	HasAnnotation res=of.createHasAnnotation();
-	res.setThing(newNoteRef(n1));
-	res.setNote(newNoteRef(n));
-	return res;
-    }
-
-    public ContextualizationOf newContextualizationOf(
-                                              String local,
-                                              String entity,
-                                              String bundle) {
-        ContextualizationOf res=of.createContextualizationOf();
-        res.setLocal(newEntityRef(local));
+    public MentionOf newMentionOf(String infra,
+				  String supra,
+				  String bundle) {
+        MentionOf res=of.createMentionOf();
+        res.setSpecializedEntity(newEntityRef(infra));
         res.setBundle(newEntityRef(bundle));
-        res.setEntity(newEntityRef(entity));
+        res.setGeneralEntity(newEntityRef(supra));
         return res;
     }
 
-    public ContextualizationOf newContextualizationOf(EntityRef local,
-                                                      EntityRef entity,
-                                                      EntityRef bundle) {
-        ContextualizationOf res=of.createContextualizationOf();
-        res.setLocal(local);
+    public MentionOf newMentionOf(EntityRef infra,
+				  EntityRef supra,
+				  EntityRef bundle) {
+        MentionOf res=of.createMentionOf();
+        res.setSpecializedEntity(infra);
         res.setBundle(bundle);
-        res.setEntity(entity);
+        res.setGeneralEntity(supra);
         return res;
     }
 
-    public ContextualizationOf newContextualizationOf(Entity local,
-                                                      Entity entity,
-                                                      Entity bundle) {
-        return newContextualizationOf(newEntityRef(local),
-                                      newEntityRef(entity),
-                                      newEntityRef(bundle));
+    public MentionOf newMentionOf(Entity infra,
+				  Entity supra,
+				  Entity bundle) {
+        return newMentionOf(newEntityRef(infra),
+			    newEntityRef(supra),
+			    newEntityRef(bundle));
     }
 
     public WasDerivedFrom newWasDerivedFrom(QName id,
@@ -1103,35 +1062,19 @@ public class ProvFactory {
 
 
 
-    public Note newNote(QName id) {
-        Note res=of.createNote();
-        res.setId(id);
-        return res;
-    }
-    public Note newNote(String id) {
-        return newNote(stringToQName(id));
-    }
 
     public Bundle newBundle(      Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Collection<Object> lks) {
-        return newBundle((QName)null,ps,as,ags,null,lks);
+        return newBundle((QName)null,ps,as,ags,lks);
     }
 
-    public Bundle newBundle(      Collection<Activity> ps,
-                                  Collection<Entity> as,
-                                  Collection<Agent> ags,
-                                  Collection<Note> ns,
-                                  Collection<Object> lks) {
-        return newBundle((QName)null,ps,as,ags,ns,lks);
-    }
 
     public Bundle newBundle(      QName ignore,
 				  Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
-                                  Collection<Note> ns,
                                   Collection<Object> lks)
     {
         Bundle res=of.createBundle();
@@ -1151,9 +1094,6 @@ public class ProvFactory {
             res.getRecords().setDependencies(ccls);
         }
 
-        if (ns!=null) {
-            res.getRecords().getNote().addAll(ns);
-        }
         return res;
     }
 
@@ -1161,14 +1101,12 @@ public class ProvFactory {
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
-                                  Collection<Note> ns,
                                   Collection<Object> lks)
     {
 	return newNamedBundle(stringToQName(id),
 			      ps,
 			      as,
 			      ags,
-			      ns,
 			      lks);
     }
 
@@ -1176,7 +1114,6 @@ public class ProvFactory {
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
-                                  Collection<Note> ns,
                                   Collection<Object> lks)
     {
         NamedBundle res=of.createNamedBundle();
@@ -1196,10 +1133,6 @@ public class ProvFactory {
             ccls.getUsedOrWasGeneratedByOrWasStartedBy().addAll(lks);
             res.getRecords().setDependencies(ccls);
         }
-
-        if (ns!=null) {
-            res.getRecords().getNote().addAll(ns);
-        }
         return res;
     }
 
@@ -1207,7 +1140,6 @@ public class ProvFactory {
                                       Activity[] ps,
                                       Entity [] es,
                                       Agent [] ags,
-                                      Note [] ns,
                                       Object [] lks)
     {
 
@@ -1215,7 +1147,6 @@ public class ProvFactory {
                             ((ps==null) ? null : Arrays.asList(ps)),
                             ((es==null) ? null : Arrays.asList(es)),
                             ((ags==null) ? null : Arrays.asList(ags)),
-                            ((ns==null) ? null : Arrays.asList(ns)),
                             ((lks==null) ? null : Arrays.asList(lks)));
     }
 
@@ -1224,35 +1155,21 @@ public class ProvFactory {
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
-                                  Collection<Note> ns,
                                   Collection<Object> lks) {
-        return newBundle(stringToQName(id),ps,as,ags,ns,lks);
+        return newBundle(stringToQName(id),ps,as,ags,lks);
     }
 
     public Bundle newBundle(      Activity [] ps,
                                   Entity [] as,
                                   Agent [] ags,
-                                  Object [] lks) 
-    {
-
-        return newBundle(   ((ps==null) ? null : Arrays.asList(ps)),
-                            ((as==null) ? null : Arrays.asList(as)),
-                            ((ags==null) ? null : Arrays.asList(ags)),
-                            ((lks==null) ? null : Arrays.asList(lks)));
-    }
-    public Bundle newBundle(      Activity [] ps,
-                                  Entity [] as,
-                                  Agent [] ags,
-                                  Note [] ns,
                                   Object [] lks) {
-        return newBundle(null,ps,as,ags,ns,lks);
+        return newBundle(null,ps,as,ags,lks);
     }
 
     public Bundle newBundle(String id,
                                   Activity [] ps,
                                   Entity [] as,
                                   Agent [] ags,
-                                  Note [] ns,
                                   Object [] lks) 
     {
 
@@ -1260,7 +1177,6 @@ public class ProvFactory {
                             ((ps==null) ? null : Arrays.asList(ps)),
                             ((as==null) ? null : Arrays.asList(as)),
                             ((ags==null) ? null : Arrays.asList(ags)),
-                            ((ns==null) ? null : Arrays.asList(ns)),
                             ((lks==null) ? null : Arrays.asList(lks)));
     }
 
@@ -1276,23 +1192,6 @@ public class ProvFactory {
         res.getRecords().getEntity().addAll(as);
         res.getRecords().getAgent().addAll(ags);
         res.getRecords().setDependencies(lks);
-        return res;
-    }
-
-    public Bundle newBundle(      Collection<Activity> ps,
-                                  Collection<Entity> as,
-                                  Collection<Agent> ags,
-                                  Collection<Note> ns,
-                                  Dependencies lks)
-    {
-        Bundle res=of.createBundle();
-	res.setRecords(of.createRecords());
-        //res.setId(autoGenerateId(bundleIdPrefix));
-        res.getRecords().getActivity().addAll(ps);
-        res.getRecords().getEntity().addAll(as);
-        res.getRecords().getAgent().addAll(ags);
-        res.getRecords().setDependencies(lks);
-        res.getRecords().getNote().addAll(ns);
         return res;
     }
 
@@ -1302,7 +1201,6 @@ public class ProvFactory {
         return newBundle(   graph.getRecords().getActivity(),
                             graph.getRecords().getEntity(),
                             graph.getRecords().getAgent(),
-                            graph.getRecords().getNote(),
                             graph.getRecords().getDependencies());
     }
 

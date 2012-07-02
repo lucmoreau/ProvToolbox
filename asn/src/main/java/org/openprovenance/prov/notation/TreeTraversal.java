@@ -231,7 +231,7 @@ public class TreeTraversal {
             dAttrs=convert(ast.getChild(6));
             return c.convertWasQuotedFrom(uid,id2,id1,pe,q2,q1,dAttrs);
 
-        case PROV_NParser.ORIGINALSOURCE:
+        case PROV_NParser.PRIMARYSOURCE:
             uidTree=ast.getChild(0);
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
@@ -243,9 +243,9 @@ public class TreeTraversal {
             q2=convert(ast.getChild(4));
             q1=convert(ast.getChild(5));
             dAttrs=convert(ast.getChild(6));
-            return c.convertHadOriginalSource(uid,id2,id1,pe,q2,q1,dAttrs);
+            return c.convertHadPrimarySource(uid,id2,id1,pe,q2,q1,dAttrs);
 
-        case PROV_NParser.TRACEDTO:
+        case PROV_NParser.INFL:
             uidTree=ast.getChild(0);
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
@@ -254,9 +254,11 @@ public class TreeTraversal {
             id2=convert(ast.getChild(1));
             id1=convert(ast.getChild(2));
             dAttrs=convert(ast.getChild(3));
-            return c.convertTracedTo(uid,id2,id1,dAttrs);
+            return c.convertWasInfluencedBy(uid,id2,id1,dAttrs);
 
             /* Component 4 */
+
+            /* Component 5 */
 
         case PROV_NParser.ALTERNATE:
             id2=convert(ast.getChild(0));
@@ -268,7 +270,15 @@ public class TreeTraversal {
             id1=convert(ast.getChild(1));
             return c.convertSpecializationOf(id2,id1);
 
-            /* Component 5 */
+        case PROV_NParser.CTX:
+            Object su=convert(ast.getChild(0));
+            Object bu=convert(ast.getChild(1));
+            Object ta=convert(ast.getChild(2));
+            return c.convertMentionOf(su,bu,ta);
+
+
+
+            /* Component 6 */
 
         case PROV_NParser.DBIF:
             uidTree=ast.getChild(0);
@@ -364,23 +374,6 @@ public class TreeTraversal {
 
             /* Component 6 */
 
-        case PROV_NParser.NOTE:
-            id=convert(ast.getChild(0));
-            Object nAttrs=convert(ast.getChild(1));
-            return c.convertNote(id,nAttrs);
-
-
-        case PROV_NParser.HAN:
-            id2=convert(ast.getChild(0));
-            id1=convert(ast.getChild(1));
-            return c.convertHasAnnotation(id2,id1);
-
-
-        case PROV_NParser.CTX:
-            Object su=convert(ast.getChild(0));
-            Object bu=convert(ast.getChild(1));
-            Object ta=convert(ast.getChild(2));
-            return c.convertContextualizationOf(su,bu,ta);
 
 
             /* Miscellaneous Constructs */

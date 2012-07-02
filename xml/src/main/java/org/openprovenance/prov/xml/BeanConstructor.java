@@ -15,10 +15,10 @@ public interface BeanConstructor {
     public Object convertUsed(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity);
     public Object convertWasDerivedFrom(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object effect, Object cause);
 
-    public Object convertHasAnnotation(Object id, List<Object> tAttrs, List<Object> otherAttrs);
     public Object convertWasInformedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs);
     public Object convertAlternateOf(Object entity2, Object entity1);
     public Object convertSpecializationOf(Object entity2, Object entity1);
+    public Object convertMentionOf(Object entity2, Object entity1, Object bundle);
     public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity);
 
 

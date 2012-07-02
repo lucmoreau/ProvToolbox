@@ -17,19 +17,20 @@ tokens {
     TIME; START; END;
 
     /* Component 2 */
-    AGENT; WAT; WAW; AOBO; 
+    WDF; WRO; PRIMARYSOURCE; WQF; INFL; 
+
     /* Component 3 */
-    WDF; WRO; ORIGINALSOURCE; WQF; TRACEDTO; 
+    AGENT; WAT; WAW; AOBO; 
+
     /* Component 4 */
-    SPECIALIZATION; ALTERNATE; CTX;
+    BUNDLE; BUNDLES; NAMEDBUNDLE;
+
     /* Component 5 */
-    DBIF; DBRF; KES; ES; KEYS; VALUES; DMEM; CMEM; TRUE; FALSE; UNKNOWN;
+    SPECIALIZATION; ALTERNATE; CTX;
+
     /* Component 6 */
-    NOTE; HAN; BUNDLE; BUNDLES; NAMEDBUNDLE;
-
-
-
-                   
+    DBIF; DBRF; KES; ES; KEYS; VALUES; DMEM; CMEM; TRUE; FALSE; UNKNOWN;
+    
 }
 
 @header {
@@ -110,7 +111,7 @@ expression
 
             /* component 3 */
 
-        | derivationExpression | tracedToExpression | hadOriginalSourceExpression | quotationExpression | revisionExpression
+        | derivationExpression | influenceExpression | hadPrimarySourceExpression | quotationExpression | revisionExpression
 
             /* component 4 */
 
@@ -122,7 +123,7 @@ expression
 
 
             /* component 6 */ 
-        | noteExpression | hasAnnotationExpression | contextualizationExpression
+         | mentionExpression
         )
 	;
 
@@ -254,18 +255,18 @@ quotationExpression
 	;
 
 
-hadOriginalSourceExpression
-	:	'hadOriginalSource' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier (',' a=identifierOrMarker ',' g2=identifierOrMarker ',' u1=identifierOrMarker )?	optionalAttributeValuePairs ')'
+hadPrimarySourceExpression
+	:	'hadPrimarySource' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier (',' a=identifierOrMarker ',' g2=identifierOrMarker ',' u1=identifierOrMarker )?	optionalAttributeValuePairs ')'
       -> {$a.tree==null && $g2.tree==null && $u1.tree==null}?
-          ^(ORIGINALSOURCE ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) ^(ID) optionalAttributeValuePairs)
-      -> ^(ORIGINALSOURCE ^(ID $id0?) $id2 $id1 $a $g2 $u1 optionalAttributeValuePairs)
+          ^(PRIMARYSOURCE ^(ID $id0?) $id2 $id1 ^(ID) ^(ID) ^(ID) optionalAttributeValuePairs)
+      -> ^(PRIMARYSOURCE ^(ID $id0?) $id2 $id1 $a $g2 $u1 optionalAttributeValuePairs)
 	;
 
 
 
-tracedToExpression
-	:	'tracedTo' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
-      -> ^(TRACEDTO ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
+influenceExpression
+	:	'wasInfluencedBy' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier optionalAttributeValuePairs ')'
+      -> ^(INFL ^(ID $id0?) $id2 $id1 optionalAttributeValuePairs)
 	;
 
 
@@ -342,19 +343,9 @@ entitySet
 
 */
 
-noteExpression
-	:	'note' '(' identifier optionalAttributeValuePairs	')' 
-        -> ^(NOTE identifier optionalAttributeValuePairs )
-	;
 
-hasAnnotationExpression
-	:	'hasAnnotation' '(' identifier ',' identifier	')' 
-        -> ^(HAN identifier+ )
-	;
-
-
-contextualizationExpression
-	:	'contextualizationOf' '(' su=identifier ',' en=identifier ',' bu=identifier ')' 
+mentionExpression
+	:	'mentionOf' '(' su=identifier ',' en=identifier ',' bu=identifier ')' 
         -> ^(CTX $su $bu $en)
 	;
 
@@ -623,12 +614,12 @@ CLOSE_CURLY_BRACE
 
 
 
+/* Need to implement fully http://www.w3.org/TR/xmlschema11-2/#nt-dateTimeRep */
 
-xsdDateTime: IsoDateTime;
+xsdDateTime: DateTime;
 
-
-
-IsoDateTime: (DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' DIGIT DIGIT ':' DIGIT DIGIT ':' DIGIT DIGIT ('.' DIGIT (DIGIT DIGIT?)?)? ('Z' | TimeZoneOffset)?)
+DateTime: 
+(DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' DIGIT DIGIT ':' DIGIT DIGIT ':' DIGIT DIGIT ('.' DIGIT DIGIT*)? ('Z' | TimeZoneOffset)?)
     ;
 
 

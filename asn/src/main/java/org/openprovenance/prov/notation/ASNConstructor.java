@@ -46,13 +46,13 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
     public String keyword(String s) {
-	return s;
+        return s;
     }
     public String breakline() {
-	return "\\";
+        return "\n";
     }
     public String showuri(String s) {
-	return  s;
+        return  s;
     }
 
     public Object convertBundle(Object namespaces, List<Object> records, List<Object> bundles) {
@@ -183,15 +183,15 @@ public class ASNConstructor implements TreeConstructor {
              "" : ", " + optional(pe) + ", " + optional(g2) + ", " + optional(u1)) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
-    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
-        String s="hadOriginalSource(" + optionalId(id) + id2 + ", " + id1 + 
+    public Object convertHadPrimarySource(Object id, Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
+        String s="hadPrimarySource(" + optionalId(id) + id2 + ", " + id1 + 
             ((pe==null && g2==null && u1==null) ?
              "" : ", " + optional(pe) + ", " + optional(g2) + ", " + optional(u1)) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
 
-    public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs) {
-        String s="tracedTo(" + optionalId(id) + id2 + ", " + id1 + optionalAttributes(dAttrs) +  ")";
+    public Object convertWasInfluencedBy(Object id, Object id2, Object id1, Object dAttrs) {
+        String s="wasInfluencedBy(" + optionalId(id) + id2 + ", " + id1 + optionalAttributes(dAttrs) +  ")";
         return s;
     }
 
@@ -206,6 +206,10 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
+    public Object convertMentionOf(Object su, Object bu, Object ta) {
+        String s="mentionOf(" + su + ", " + bu + ", " + ta + ")";
+        return s;
+    }
 
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
         String s=keyword("wasAssociatedWith") + "(" + optionalId(id) + id2 + "," + optional(id1) + "," +
@@ -344,20 +348,8 @@ public class ASNConstructor implements TreeConstructor {
 
     /* Component 6 */
 
-    public Object convertNote(Object id, Object attrs) {
-        String s="note(" + id  + optionalAttributes(attrs) + ")";
-        return s;
-    }
 
-    public Object convertHasAnnotation(Object something, Object note) {
-        String s="hasAnnotation(" + something  + "," + note + ")";
-        return s;
-    }
 
-    public Object convertContextualizationOf(Object su, Object bu, Object ta) {
-        String s="contextualizationOf(" + su + ", " + bu + ", " + ta + ")";
-        return s;
-    }
 
 
 }

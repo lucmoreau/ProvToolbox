@@ -180,11 +180,11 @@ public class DataLogConstructor implements TreeConstructor {
         //todo
         throw new UnsupportedOperationException();
     }
-    public Object convertHadOriginalSource(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
+    public Object convertHadPrimarySource(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
         //todo
         throw new UnsupportedOperationException();
     }
-    public Object convertTracedTo(Object id, Object id2, Object id1, Object dAttrs) {
+    public Object convertWasInfluencedBy(Object id, Object id2, Object id1, Object dAttrs) {
         //todo
         throw new UnsupportedOperationException();
     }
@@ -259,16 +259,9 @@ public class DataLogConstructor implements TreeConstructor {
 
    /* Component 6 */
 
-    public Object convertNote(Object id, Object attrs) {
-        //todo
-        throw new UnsupportedOperationException();
-    }
-    public Object convertHasAnnotation(Object something, Object note) {
-        //todo
-        throw new UnsupportedOperationException();
-    }
 
-    public Object convertContextualizationOf(Object su, Object bu, Object ta) {
+
+    public Object convertMentionOf(Object su, Object bu, Object ta) {
         //todo
         throw new UnsupportedOperationException();
     }

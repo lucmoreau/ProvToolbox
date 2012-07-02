@@ -225,6 +225,11 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
+    public Object convertExtension(Object name, Object args, Object dAttrs) {
+        String s=keyword(name.toString()) + "(" + args +
+            optionalAttributes(dAttrs) + ")";
+	return s;
+    }
 
     public Object convertQualifiedName(String qname) {
         return qname;

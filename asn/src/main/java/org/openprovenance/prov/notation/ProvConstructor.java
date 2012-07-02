@@ -855,6 +855,9 @@ public  class ProvConstructor implements TreeConstructor {
 
     /* Component 6 */
 
+    public Object convertExtension(Object name, Object args, Object dAttrs) {
+	return null;
+    }
  
 
 }

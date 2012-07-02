@@ -374,6 +374,15 @@ public class TreeTraversal {
 
             /* Component 6 */
 
+        case PROV_NParser.EXT:
+	    Object extName=ast.getChild(0);
+	    Object optionalAttributes=ast.getChild(ast.getChildCount()-1);
+            List<Object> args=new LinkedList();
+            for (int i=1; i< ast.getChildCount()-1; i++) {
+                Object o=convert(ast.getChild(i));
+                args.add(o);
+            }
+            return c.convertExtension(extName, args, optionalAttributes);
 
 
             /* Miscellaneous Constructs */

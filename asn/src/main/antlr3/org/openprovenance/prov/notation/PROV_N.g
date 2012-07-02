@@ -30,7 +30,9 @@ tokens {
 
     /* Component 6 */
     DBIF; DBRF; KES; ES; KEYS; VALUES; DMEM; CMEM; TRUE; FALSE; UNKNOWN;
-    
+
+    /* Extensibility */
+    EXT;
 }
 
 @header {
@@ -274,7 +276,12 @@ influenceExpression
 
 
 /*
-        Component 4: Alternate entities
+        Component 4: 
+
+*/
+
+/*
+        Component 5: Alternate entities
 
 */
 
@@ -288,8 +295,14 @@ specializationExpression
       -> ^(SPECIALIZATION identifier+)
 	;
 
+mentionExpression
+	:	'mentionOf' '(' su=identifier ',' en=identifier ',' bu=identifier ')' 
+        -> ^(CTX $su $bu $en)
+	;
+
+
 /*
-        Component 5: Collections
+        Component 6: Collections
 
 TODO: literal used in these production needs to disable qname, to allow for intliteral
 
@@ -339,26 +352,30 @@ entitySet
       -> ^(ES  identifier?)
     ;
 
-/* TODO */
+
 
 /*
-        Component 6: Annotations
+        Component: Extensibility
 
 */
 
 
-mentionExpression
-	:	'mentionOf' '(' su=identifier ',' en=identifier ',' bu=identifier ')' 
-        -> ^(CTX $su $bu $en)
-	;
 
 
 extensibilityExpression
-	:	QUALIFIED_NAME '(' extensibilityArgument ( (',' | ';') extensibilityArgument)* optionalAttributeValuePairs ')' 
+	:	name=QUALIFIED_NAME '(' extensibilityArgument ( (',' | ';') extensibilityArgument)* attr=optionalAttributeValuePairs ')'
+      -> {$attr.tree==null}?
+         ^(EXT $name extensibilityArgument* ^(ATTRIBUTES))
+      -> ^(EXT $name extensibilityArgument* optionalAttributeValuePairs)
 	;
 
 extensibilityArgument
-    : ( identifierOrMarker | literal | time  | extensibilityExpression) ;
+    : ( identifierOrMarker | literal | time  | extensibilityExpression | extensibilityRecord ) 
+;
+
+extensibilityRecord:
+ '{' extensibilityArgument (',' extensibilityArgument)* '}'
+;
 
 
 

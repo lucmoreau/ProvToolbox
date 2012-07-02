@@ -124,6 +124,9 @@ expression
 
             /* component 6 */ 
          | mentionExpression
+
+            /* extensibility */
+         | extensibilityExpression
         )
 	;
 
@@ -350,6 +353,15 @@ mentionExpression
 	;
 
 
+extensibilityExpression
+	:	QUALIFIED_NAME '(' extensibilityArgument ( (',' | ';') extensibilityArgument)* optionalAttributeValuePairs ')' 
+	;
+
+extensibilityArgument
+    : ( identifierOrMarker | literal | time  | extensibilityExpression) ;
+
+
+
 iriOrMarker
     :
       ( IRI_REF -> ^(IRI IRI_REF)
@@ -410,6 +422,8 @@ time
 
 literal :
         (STRING_LITERAL -> ^(STRING STRING_LITERAL) |
+         STRING_LITERAL LANGTAG -> ^(STRING STRING_LITERAL LANGTAG) |
+         STRING_LITERAL_LONG2 -> ^(STRING STRING_LITERAL_LONG2) |
          INT_LITERAL -> ^(INT INT_LITERAL) |
          STRING_LITERAL { qnameDisabled = false; } '%%' datatype -> ^(TYPEDLITERAL STRING_LITERAL datatype) |
          { qnameDisabled = false; } '\'' QUALIFIED_NAME '\'' -> ^(TYPEDLITERAL QUALIFIED_NAME) | )
@@ -435,6 +449,9 @@ INT_LITERAL:
 
 STRING_LITERAL : '"' (options {greedy=false;} : ~('"' | '\\' | EOL) | ECHAR)* '"';
 
+STRING_LITERAL_LONG2 : '"""' (options {greedy=false;} : ('"' | '""')? (~('"'|'\\') | ECHAR))* '"""';
+
+
 
 /* This production uses a "Disambiguating Semantic Predicates"
    checking whether we are in scope of a declaration/literal or not. If so,
@@ -445,6 +462,8 @@ QUALIFIED_NAME:
     (PN_PREFIX ':')? PN_LOCAL | PN_PREFIX ':'
         
   ;
+
+
 
 /* The order of the two rules (QUALIFIED_NAME/PREFX) is crucial. By default, QUALIFIED_NAME should be used
    unless we are in the context of a declaration. */
@@ -549,6 +568,10 @@ fragment DIGIT: '0'..'9';
 fragment
 EOL : '\n' | '\r';
 	
+
+LANGTAG : '@' ('A'..'Z'|'a'..'z')+ (MINUS ('A'..'Z'|'a'..'z'|DIGIT)+)*;
+
+
 DOT : '.';
 
 MINUS : '-';

@@ -374,7 +374,7 @@ extensibilityArgument
 ;
 
 extensibilityRecord:
- '{' extensibilityArgument (',' extensibilityArgument)* '}'
+ '{' extensibilityArgument (',' extensibilityArgument)* '}' |  '(' extensibilityArgument (',' extensibilityArgument)* ')'
 ;
 
 

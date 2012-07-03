@@ -123,6 +123,9 @@ public class NullConstructor implements TreeConstructor {
         return null;
     }
 
+    public Object convertExtension(Object name, Object args, Object dAttrs) {
+	return null;
+    }
 
     /* Others */
 

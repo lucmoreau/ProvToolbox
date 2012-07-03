@@ -544,6 +544,9 @@ class JSONConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
 
+    public Object convertExtension(Object name, Object args, Object dAttrs) {
+	return null;
+    }
 
     /* Other conversions */    
 	public Object convertBundle(Object nss, List<Object> records, List<Object> bundles) {

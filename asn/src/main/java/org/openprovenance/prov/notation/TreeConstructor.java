@@ -52,6 +52,7 @@ public interface TreeConstructor {
 
 
 
+    public Object convertExtension(Object name, Object args, Object dAttrs);
 
 
     /* Other conversions */

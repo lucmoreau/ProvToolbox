@@ -229,6 +229,9 @@ public class RdfConstructor implements TreeConstructor {
 
     }
 
+    public Object convertExtension(Object name, Object args, Object dAttrs) {
+	return null;
+    }
     public Object convertQualifiedName(String qname) {
         return qname;
     }

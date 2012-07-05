@@ -216,8 +216,9 @@ attributionExpression
 	;
 
 associationExpression
-	:	'wasAssociatedWith' '('  id0=optionalIdentifier a=identifier ',' ag=identifierOrMarker (',' pl=identifierOrMarker)? optionalAttributeValuePairs ')'
+	:	'wasAssociatedWith' '('  id0=optionalIdentifier a=identifier (',' ag=identifierOrMarker ',' pl=identifierOrMarker)? optionalAttributeValuePairs ')'
       -> {$pl.tree==null}? ^(WAW ^(ID $id0?) $a $ag? ^(ID) optionalAttributeValuePairs)
+      -> {$ag.tree==null}? ^(WAW ^(ID $id0?) $a ^(ID) $pl  optionalAttributeValuePairs)
       -> ^(WAW ^(ID $id0?) $a $ag? $pl optionalAttributeValuePairs)
 	;
 
@@ -363,10 +364,10 @@ entitySet
 
 
 extensibilityExpression
-	:	name=QUALIFIED_NAME '(' extensibilityArgument ( (',' | ';') extensibilityArgument)* attr=optionalAttributeValuePairs ')'
+	:	name=QUALIFIED_NAME '(' id0=optionalIdentifier extensibilityArgument ( ','  extensibilityArgument)* attr=optionalAttributeValuePairs ')'
       -> {$attr.tree==null}?
-         ^(EXT $name extensibilityArgument* ^(ATTRIBUTES))
-      -> ^(EXT $name extensibilityArgument* optionalAttributeValuePairs)
+         ^(EXT $name ^(ID $id0?) extensibilityArgument* ^(ATTRIBUTES))
+      -> ^(EXT $name ^(ID $id0?) extensibilityArgument* optionalAttributeValuePairs)
 	;
 
 extensibilityArgument
@@ -374,7 +375,7 @@ extensibilityArgument
 ;
 
 extensibilityRecord:
- '{' extensibilityArgument (',' extensibilityArgument)* '}'
+ '{' extensibilityArgument (',' extensibilityArgument)* '}' |  '(' extensibilityArgument (',' extensibilityArgument)* ')'
 ;
 
 

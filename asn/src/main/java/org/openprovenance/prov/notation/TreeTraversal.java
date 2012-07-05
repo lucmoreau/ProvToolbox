@@ -35,7 +35,11 @@ public class TreeTraversal {
     public int convertInt(String token) {
         return Integer.valueOf(token);
     }
-    
+
+    public String stripAmpersand(String token) {
+        return token.substring(1);
+    }
+
     public Object convert(Tree ast) {
         switch(ast.getType()) {
 
@@ -375,14 +379,20 @@ public class TreeTraversal {
             /* Component 6 */
 
         case PROV_NParser.EXT:
-	    Object extName=ast.getChild(0);
-	    Object optionalAttributes=ast.getChild(ast.getChildCount()-1);
+            Object extName=ast.getChild(0);
+            uidTree=ast.getChild(1);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+
+            Object optionalAttributes=ast.getChild(ast.getChildCount()-1);
             List<Object> args=new LinkedList();
-            for (int i=1; i< ast.getChildCount()-1; i++) {
+            for (int i=2; i< ast.getChildCount()-1; i++) {
                 Object o=convert(ast.getChild(i));
                 args.add(o);
             }
-            return c.convertExtension(extName, args, optionalAttributes);
+            return c.convertExtension(extName, uid, args, optionalAttributes);
 
 
             /* Miscellaneous Constructs */
@@ -429,7 +439,12 @@ public class TreeTraversal {
             return c.convertAttribute(attr1,val1);
 
         case PROV_NParser.STRING:
-            return c.convertString(convertToken(getTokenString(ast.getChild(0))));
+            if (ast.getChildCount()==1) {
+                return c.convertString(convertToken(getTokenString(ast.getChild(0))));
+            } else {
+                return c.convertString(convertToken(getTokenString(ast.getChild(0))),
+                                       stripAmpersand(convertToken(getTokenString(ast.getChild(1)))));
+            }
 
         case PROV_NParser.INT:
             return c.convertInt(convertInt(getTokenString(ast.getChild(0))));

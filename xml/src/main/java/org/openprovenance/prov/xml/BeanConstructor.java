@@ -7,9 +7,9 @@ import javax.xml.namespace.QName;
 
 public interface BeanConstructor {
     public Object convert(QName q);
-    public Object convertEntity(Object id, List<Object> tAttrs, Object lAttr, List<Object> otherAttrs);
-    public Object convertAgent(Object id, List<Object> tAttrs, Object lAttr, List<Object> otherAttrs);
-    public Object convertActivity(Object id, List<Object> tAttrs, Object lAttr, List<Object> otherAttrs, Object startTime, Object endTime);
+    public Object convertEntity(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> otherAttrs);
+    public Object convertAgent(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> otherAttrs);
+    public Object convertActivity(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> otherAttrs, Object startTime, Object endTime);
 
     public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object agent, Object plan);
     public Object convertUsed(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity);

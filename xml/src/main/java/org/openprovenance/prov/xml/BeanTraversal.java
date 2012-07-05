@@ -66,10 +66,13 @@ public class BeanTraversal {
         }
         return attrs;
     }
-    public Object convertLabelAttribute(HasLabel e) {
-        Object a=e.getLabel();
-        if (a==null) return null;
-        return convertTypedLiteral(a);
+    public List<Object> convertLabelAttribute(HasLabel e) {
+        List<InternationalizedString> labels=e.getLabel();
+        List res=new LinkedList();
+        for (InternationalizedString label: labels) {
+            res.add(convertTypedLiteral(label));
+        }
+        return res;
     }
     public List<Object> convertAttributes(HasExtensibility e) {
         List attrs=new LinkedList();
@@ -94,6 +97,10 @@ public class BeanTraversal {
         } if (a instanceof String) {
             String b=(String) a;
             return c.convertTypedLiteral("xsd:string",quoteWrap(b));
+        } if (a instanceof InternationalizedString) {
+            String b=((InternationalizedString) a).getValue();
+            String l=((InternationalizedString) a).getLang();
+            return c.convertTypedLiteral("xsd:string",a);
         } if (a instanceof Double) {
             Double b=(Double) a;
             return c.convertTypedLiteral("xsd:double",quoteWrap(b));
@@ -108,26 +115,26 @@ public class BeanTraversal {
     public Object convert(Entity e) {
         List tAttrs=convertTypeAttributes(e);
         List otherAttrs=convertAttributes(e);
-        Object lAttr=convertLabelAttribute(e);
+        List lAttrs=convertLabelAttribute(e);
 
 
-        return c.convertEntity(c.convert(e.getId()),tAttrs,lAttr,otherAttrs);
+        return c.convertEntity(c.convert(e.getId()),tAttrs,lAttrs,otherAttrs);
     }
 
     public Object convert(Activity e) {
         List tAttrs=convertTypeAttributes(e);
         List otherAttrs=convertAttributes(e);
-        Object lAttr=convertLabelAttribute(e);
+        List lAttrs=convertLabelAttribute(e);
 
-        return c.convertActivity(c.convert(e.getId()),tAttrs,lAttr,otherAttrs,e.getStartTime(), e.getEndTime());
+        return c.convertActivity(c.convert(e.getId()),tAttrs,lAttrs,otherAttrs,e.getStartTime(), e.getEndTime());
     }
 
     public Object convert(Agent e) {
         List tAttrs=convertTypeAttributes(e);
         List otherAttrs=convertAttributes(e);
-        Object lAttr=convertLabelAttribute(e);
+        List lAttrs=convertLabelAttribute(e);
 
-        return c.convertAgent(c.convert(e.getId()),tAttrs,lAttr,otherAttrs);
+        return c.convertAgent(c.convert(e.getId()),tAttrs,lAttrs,otherAttrs);
     }
 
     public Object convertRelation(Object o) {

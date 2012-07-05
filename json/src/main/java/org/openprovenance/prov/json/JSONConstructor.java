@@ -544,7 +544,7 @@ class JSONConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
 
-    public Object convertExtension(Object name, Object args, Object dAttrs) {
+    public Object convertExtension(Object name, Object id, Object args, Object dAttrs) {
 	return null;
     }
 
@@ -622,6 +622,10 @@ class JSONConstructor implements TreeConstructor {
 
 	public Object convertString(String s) {
 		return s;
+	}
+
+	public Object convertString(String s, String lang) {
+		return s + "@" + lang;
 	}
 
 	public Object convertInt(int i) {

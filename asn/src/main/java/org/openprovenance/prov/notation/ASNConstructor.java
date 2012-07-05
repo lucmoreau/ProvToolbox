@@ -114,6 +114,10 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
+    public Object convertString(String s, String lang) {
+        return s + "@" + lang;
+    }
+
     public Object convertInt(int i) {
         return i;
     }
@@ -225,8 +229,8 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
-    public Object convertExtension(Object name, Object args, Object dAttrs) {
-        String s=keyword(name.toString()) + "(" + args +
+    public Object convertExtension(Object name, Object id, Object args, Object dAttrs) {
+        String s=keyword(name.toString()) + "(" + optionalId(id) + args +
             optionalAttributes(dAttrs) + ")";
 	return s;
     }

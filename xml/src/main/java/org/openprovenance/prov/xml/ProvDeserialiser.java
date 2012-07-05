@@ -82,15 +82,17 @@ public class ProvDeserialiser {
         Source [] sources=new Source[2+schemaFiles.length];
         int schemaCount;
         if (withCurie) {
-            schemaCount=2;
+            schemaCount=3;
             sources=new Source[schemaCount+schemaFiles.length];
             sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"curie.xsd"));
-            sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20120110-curie.xsd"));
+            sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"xml.xsd"));
+            sources[2]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20120110-curie.xsd"));
         } else {
-            schemaCount=2;
+            schemaCount=3;
             sources=new Source[schemaCount+schemaFiles.length];
             sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"curie.xsd"));
-            sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20120110.xsd"));
+            sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"xml.xsd"));
+            sources[2]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20120110.xsd"));
         }
 
 

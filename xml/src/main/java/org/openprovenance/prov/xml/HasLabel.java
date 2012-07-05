@@ -1,5 +1,6 @@
 package org.openprovenance.prov.xml;
+import java.util.List;
 
 public interface HasLabel {
-    public String getLabel();
+    public List<InternationalizedString> getLabel();
 } 

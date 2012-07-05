@@ -52,7 +52,7 @@ public interface TreeConstructor {
 
 
 
-    public Object convertExtension(Object name, Object args, Object dAttrs);
+    public Object convertExtension(Object name, Object id, Object args, Object dAttrs);
 
 
     /* Other conversions */
@@ -64,6 +64,7 @@ public interface TreeConstructor {
     public Object convertId(String id);
     public Object convertAttribute(Object name, Object value);
     public Object convertString(String s);
+    public Object convertString(String s, String lang);
     public Object convertInt(int i);
     public Object convertQualifiedName(String qname);
     public Object convertIRI(String iri);

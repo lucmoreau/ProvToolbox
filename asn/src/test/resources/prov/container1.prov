@@ -7,6 +7,10 @@ prefix ex <http://example>  /* a single prefix declaration */
 /* component 1 */
 
           entity(ex:e1, [ex:param="a"])
+          entity(ex:e1, [ex:param="a", prov:label="foo"])
+          entity(ex:e1, [ex:param="a", prov:label="hello"@EN])
+          entity(ex:e1, [ex:param="a", prov:label="bonjour"@FR])
+          entity(ex:e1, [ex:param="a", prov:label="hello"@EN, prov:label="bonjour"@FR])
           entity(ex:e2, [ex:param="a"])
           entity(ex:e3, [ex:param="a"])
           entity(ex:e3, [ex:param="aWithTag" @ENGLISHTAG ])

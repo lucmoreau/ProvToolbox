@@ -364,10 +364,10 @@ entitySet
 
 
 extensibilityExpression
-	:	name=QUALIFIED_NAME '(' extensibilityArgument ( (',' | ';') extensibilityArgument)* attr=optionalAttributeValuePairs ')'
+	:	name=QUALIFIED_NAME '(' id0=optionalIdentifier extensibilityArgument ( ','  extensibilityArgument)* attr=optionalAttributeValuePairs ')'
       -> {$attr.tree==null}?
-         ^(EXT $name extensibilityArgument* ^(ATTRIBUTES))
-      -> ^(EXT $name extensibilityArgument* optionalAttributeValuePairs)
+         ^(EXT $name ^(ID $id0?) extensibilityArgument* ^(ATTRIBUTES))
+      -> ^(EXT $name ^(ID $id0?) extensibilityArgument* optionalAttributeValuePairs)
 	;
 
 extensibilityArgument

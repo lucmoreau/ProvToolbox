@@ -70,18 +70,21 @@ public class BeanTreeConstructor implements BeanConstructor{
         return attrs;
     }
 
-    public Object convertLabelAttribute(Object a) {
-        if (a==null) return null;
-        return c.convertAttribute("prov:label",a);
+    public List<Object> convertLabelAttributes(List<Object> lAttrs) {
+        List attrs=new LinkedList();
+        for (Object a: lAttrs) {
+            attrs.add(c.convertAttribute("prov:label",a));
+        }
+        return attrs;
     }
 
 
 
-    public Object convertEntity(Object id, List<Object> tAttrs, Object lAttr, List<Object> otherAttrs) {
+    public Object convertEntity(Object id, List<Object> tAttrs, List<Object> lAttrs, List<Object> otherAttrs) {
         List tAttrs2=convertTypeAttributes(tAttrs);
-        Object lAttr2=convertLabelAttribute(lAttr);
+        List lAttrs2=convertLabelAttributes(lAttrs);
         List attrs=new LinkedList();
-        if (lAttr2!=null) attrs.add(lAttr2);
+        attrs.addAll(lAttrs2);
         attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
 
@@ -89,11 +92,11 @@ public class BeanTreeConstructor implements BeanConstructor{
                                c.convertAttributes(attrs));
     }
 
-    public Object convertActivity(Object id, List<Object> tAttrs, Object lAttr, List<Object> otherAttrs, Object startTime, Object endTime) {
+    public Object convertActivity(Object id, List<Object> tAttrs, List<Object> lAttrs, List<Object> otherAttrs, Object startTime, Object endTime) {
         List tAttrs2=convertTypeAttributes(tAttrs);
-        Object lAttr2=convertLabelAttribute(lAttr);
+        List lAttrs2=convertLabelAttributes(lAttrs);
         List attrs=new LinkedList();
-        if (lAttr2!=null) attrs.add(lAttr2);
+        attrs.addAll(lAttrs2);
         attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
 
@@ -104,11 +107,11 @@ public class BeanTreeConstructor implements BeanConstructor{
     }
 
 
-    public Object convertAgent(Object id, List<Object> tAttrs, Object lAttr, List<Object> otherAttrs) {
+    public Object convertAgent(Object id, List<Object> tAttrs, List<Object> lAttrs, List<Object> otherAttrs) {
         List tAttrs2=convertTypeAttributes(tAttrs);
-        Object lAttr2=convertLabelAttribute(lAttr);
+        List lAttrs2=convertLabelAttributes(lAttrs);
         List attrs=new LinkedList();
-        if (lAttr2!=null) attrs.add(lAttr2);
+        attrs.addAll(lAttrs2);
         attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
 

@@ -12,6 +12,12 @@ prefix comma <http://example/e,g,>
 
           wasGeneratedBy(-; ex:%65, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
+
+
+          other.wasGeneratedBy (ex:%65, 2001-10-26T21:32:52)
+
+//          other.wasGeneratedBy (-; ex:%65, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
+
 endBundle
 
 

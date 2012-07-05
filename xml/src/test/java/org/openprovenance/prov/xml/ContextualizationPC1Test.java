@@ -18,7 +18,7 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple Provenance Challenge 1 like workflow.
  */
-public class PC1FullTest 
+public class ContextualizationPC1Test 
     extends TestCase
 {
 
@@ -26,6 +26,10 @@ public class PC1FullTest
     public static final String PC1_PREFIX="pc1";
     public static final String PRIM_NS="http://openprovenance.org/primitives#";
     public static final String PRIM_PREFIX="prim";
+    public static final String DOT_NS="http://openprovenance.org/Toolbox/dot#";
+    public static final String DOT_PREFIX="dot";
+    public static final String EX_NS="http://example.com/";
+    public static final String EX_PREFIX="ex";
     
 
 
@@ -47,7 +51,7 @@ public class PC1FullTest
      *
      * @param testName name of the test case
      */
-    public PC1FullTest( String testName )
+    public ContextualizationPC1Test( String testName )
     {
         super( testName );
     }
@@ -64,12 +68,15 @@ public class PC1FullTest
 
 
 
-    public void testPC1Full() throws JAXBException
+    public void testPC1SpecFull() throws JAXBException
     {
-        Bundle graph=makePC1FullGraph(pFactory);
+        Bundle graph=makePC1GraphAndSpecialization(pFactory);
+
+
+
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-        serial.serialiseBundle(new File("target/pc1-full.xml"),graph,true);
+        serial.serialiseBundle(new File("target/pc1-spec.xml"),graph,true);
 
         
 
@@ -129,11 +136,61 @@ public class PC1FullTest
 
 
 
-    public Bundle makePC1FullGraph(ProvFactory pFactory) {
+    static Entity globalA1=null;
+    public Bundle makePC1GraphAndSpecialization(ProvFactory pFactory) {
+        Bundle graph=pFactory.newBundle(new Activity[] {},
+                                        new Entity[] {},
+                                        new Agent[] {},
+                                        new Object[] {} );
+
+        String bName="b123";  // needs to be generated 
+
+        NamedBundle bun=makePC1FullGraph(pFactory,bName);
+        graph.getBundle().add(bun);
+
+        Hashtable namespaces=new Hashtable();
+        // currently, no prefix used, all qnames map to PC1_NS
+        namespaces.put("_",EX_NS);  // new default namespace
+        namespaces.put("xsd",NamespacePrefixMapper.XSD_NS);
+        namespaces.put(EX_PREFIX,EX_NS);
+        namespaces.put(DOT_PREFIX,DOT_NS);
+        pFactory.setNamespaces(namespaces);
+
+
+        Entity bunEntity=pFactory.newEntity(bun.getId());
+        Entity a=pFactory.newEntity(globalA1.getId().getLocalPart());
+        MentionOf ctx=pFactory.newMentionOf(a,globalA1,bunEntity);
+        pFactory.addAttribute(a,
+                              DOT_NS,
+                              DOT_PREFIX,
+                              "color",
+                              "blue");
+
+
+        graph.getRecords().getEntity().add(bunEntity);
+        graph.getRecords().getEntity().add(a);
+        graph.getRecords().getDependencies().getUsedOrWasGeneratedByOrWasStartedBy().add(ctx);
+
+        Hashtable<String,String> nss=new Hashtable<String,String>();
+        // choose here, how serialization to xml to be made
+        // 1: default namespace for PC1_NS
+        //nss.put("_",PC1_NS);
+        // 2: use prefix PC1
+        nss.put(PC1_PREFIX,PC1_NS);
+        nss.put(PRIM_PREFIX,PRIM_NS);
+        nss.put("ex","http://example.com/");
+        nss.put(DOT_PREFIX,DOT_NS);
+        graph.setNss(nss);
+
+        
+        return graph;
+    }
+
+    public NamedBundle makePC1FullGraph(ProvFactory pFactory, String bName) {
         if (urlFlag) {
-            return makePC1FullGraph(pFactory,URL_LOCATION,URL_LOCATION);
+            return makePC1FullGraph(pFactory,URL_LOCATION,URL_LOCATION,bName);
         } else {
-            return makePC1FullGraph(pFactory,FILE_LOCATION,"./");
+            return makePC1FullGraph(pFactory,FILE_LOCATION,"./",bName);
         }
     }
 
@@ -153,7 +210,7 @@ public class PC1FullTest
                               val);
     }
 
-    public Bundle makePC1FullGraph(ProvFactory pFactory, String inputLocation, String outputLocation)
+    public NamedBundle makePC1FullGraph(ProvFactory pFactory, String inputLocation, String outputLocation, String bName)
     {
 
 
@@ -161,7 +218,7 @@ public class PC1FullTest
                                          "PC1Full Workflow");
         
 
-        Activity p1=pFactory.newActivity("00000p1",
+        Activity p1=pFactory.newActivity("p1",
                                          "align_warp 1");
         List o=p1.getType();
 
@@ -248,6 +305,8 @@ public class PC1FullTest
                              "Reference Image",
                              "reference.img",
                              inputLocation);
+
+        globalA1=a1;
 
         Entity a2=newFile(pFactory,
                              "a2",
@@ -568,7 +627,8 @@ public class PC1FullTest
 
 
 
-        Bundle graph=pFactory.newBundle(    new Activity[] {p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15},
+        NamedBundle graph=pFactory.newNamedBundle(bName,
+                                                  new Activity[] {p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15},
                                             new Entity[] {a1,a2,a5,a6,a3,a4,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,
                                                             a21,a22,a23,a24,a25,a25p,a26,a26p,a27,a27p,a28,a29,a30},
                                             new Agent[] { ag1
@@ -584,22 +644,13 @@ public class PC1FullTest
                                                           waw1
                                             } );
 
-        Hashtable<String,String> nss=new Hashtable<String,String>();
-        // choose here, how serialization to xml to be made
-        // 1: default namespace for PC1_NS
-        //nss.put("_",PC1_NS);
-        // 2: use prefix PC1
-        nss.put(PC1_PREFIX,PC1_NS);
-        nss.put(PRIM_PREFIX,PRIM_NS);
-        graph.setNss(nss);
         return graph;
     }
     
 
 
 
-
-    public void testCopyPC1Full() throws java.io.FileNotFoundException,  java.io.IOException   {
+    public void NOtestCopyPC1SpecFull() throws java.io.FileNotFoundException,  java.io.IOException   {
         ProvFactory pFactory=new ProvFactory();
 
         Bundle c=pFactory.newBundle(graph1);
@@ -612,15 +663,15 @@ public class PC1FullTest
         
     }
 
-    public void testReadXMLGraph() throws javax.xml.bind.JAXBException {
+    public void NOtestReadXMLGraph2() throws javax.xml.bind.JAXBException {
         
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-        Bundle c=deserial.deserialiseBundle(new File("target/pc1-full.xml"));
+        Bundle c=deserial.deserialiseBundle(new File("target/pc1-spec.xml"));
         graph2=c;
 
         graph2.setNss(graph1.getNss());
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-        serial.serialiseBundle(new File("target/pc1-full2.xml"),graph2,true);
+        serial.serialiseBundle(new File("target/pc1-spec2.xml"),graph2,true);
 
         //System.out.println("a0" +  graph1.getRecords().getActivity().get(0));
         //        System.out.println("a0" +  graph2.getRecords().getActivity().get(0));
@@ -635,7 +686,7 @@ public class PC1FullTest
 
         assertFalse( "graph1 and graph2 differ", graph1.equals(graph2) );        
 
-        Bundle c2=deserial.deserialiseBundle(new File("target/pc1-full.xml"));
+        Bundle c2=deserial.deserialiseBundle(new File("target/pc1-spec.xml"));
         c2.setNss(graph1.getNss());
 
         assertFalse( "c e* and c2 e* differ", c.getRecords().getEntity().equals(c2.getRecords().getEntity()) );        
@@ -643,17 +694,17 @@ public class PC1FullTest
 
     }
         
-    public void testSchemaValidateXML() throws  javax.xml.bind.JAXBException, org.xml.sax.SAXException, java.io.IOException {
+    public void NOtestSchemaValidateXML2() throws  javax.xml.bind.JAXBException, org.xml.sax.SAXException, java.io.IOException {
         
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
 
         String[] schemaFiles=new String[1];
         schemaFiles[0]="src/test/resources/pc1.xsd";
-        deserial.validateBundle(schemaFiles,new File("target/pc1-full.xml"));
+        deserial.validateBundle(schemaFiles,new File("target/pc1-spec.xml"));
         
     }
 
-    public void testSchemaFailValidateXML() {
+    public void NOtestSchemaFailValidateXML2() {
         
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
 
@@ -661,7 +712,7 @@ public class PC1FullTest
         schemaFiles[0]="src/test/resources/pc1.xsd";
 
         try {
-            deserial.validateBundle(schemaFiles,new File("target/pc1-full.xml"), false);
+            deserial.validateBundle(schemaFiles,new File("target/pc1-spec.xml"), false);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(true);

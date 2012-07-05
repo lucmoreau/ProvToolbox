@@ -129,6 +129,28 @@ public class ProvFactory {
         return newNoteRef(stringToQName(id));
     }
 
+
+    public BundleRef newBundleRef(QName id) {
+        BundleRef res=of.createBundleRef();
+        res.setRef(id);
+        return res;
+    }
+        
+    public BundleRef newBundleRef(String id) {
+        return newBundleRef(stringToQName(id));
+    }
+
+
+    public AnyRef newAnyRef(QName id) {
+        AnyRef res=of.createAnyRef();
+        res.setRef(id);
+        return res;
+    }
+        
+    public AnyRef newAnyRef(String id) {
+        return newAnyRef(stringToQName(id));
+    }
+
     public EntityRef newEntityRef(Entity a) {
         EntityRef res=of.createEntityRef();
         res.setRef(a.getId());
@@ -239,15 +261,6 @@ public class ProvFactory {
         return newAgent(stringToQName(ag),label);
     }
 
-    public Account newAccount(QName id) {
-        Account res=of.createAccount();
-        res.setId(id);
-        return res;
-    }
-    public Account newAccount(String id) {
-        return newAccount(stringToQName(id));
-    }
-
 
 
     
@@ -303,11 +316,6 @@ public class ProvFactory {
     }
     public Agent newAgent(Agent a) {
         Agent res=newAgent(a.getId());
-        return res;
-    }
-
-    public Account newAccount(Account acc) {
-        Account res=newAccount(acc.getId());
         return res;
     }
 
@@ -437,11 +445,9 @@ public class ProvFactory {
 
     public WasRevisionOf newWasRevisionOf(String id,
                                           EntityRef newer,
-                                          EntityRef older,
-                                          AgentRef eid2) {
+                                          EntityRef older) {
         WasRevisionOf res=of.createWasRevisionOf();
         res.setId(stringToQName(id));
-        res.setResponsibility(eid2);
         res.setNewer(newer);
         res.setOlder(older);
         return res;
@@ -449,11 +455,9 @@ public class ProvFactory {
 
     public WasRevisionOf newWasRevisionOf(QName id,
                                           EntityRef newer,
-                                          EntityRef older,
-                                          AgentRef eid2) {
+                                          EntityRef older) {
         WasRevisionOf res=of.createWasRevisionOf();
         res.setId(id);
-        res.setResponsibility(eid2);
         res.setNewer(newer);
         res.setOlder(older);
         return res;
@@ -462,29 +466,21 @@ public class ProvFactory {
 
     public WasQuotedFrom newWasQuotedFrom(String id,
                                           EntityRef quote,
-                                          EntityRef original,
-                                          AgentRef quoterAgent,
-                                          AgentRef quotedAgent) {
+                                          EntityRef original) {
         WasQuotedFrom res=of.createWasQuotedFrom();
         res.setId(stringToQName(id));
         res.setQuote(quote);
         res.setOriginal(original);
-        res.setQuoterAgent(quoterAgent);
-        res.setQuotedAgent(quotedAgent);
         return res;
     }
 
     public WasQuotedFrom newWasQuotedFrom(QName id,
                                           EntityRef quote,
-                                          EntityRef original,
-                                          AgentRef quoterAgent,
-                                          AgentRef quotedAgent) {
+                                          EntityRef original) {
         WasQuotedFrom res=of.createWasQuotedFrom();
         res.setId(id);
         res.setQuote(quote);
         res.setOriginal(original);
-        res.setQuoterAgent(quoterAgent);
-        res.setQuotedAgent(quotedAgent);
         return res;
     }
 
@@ -531,7 +527,7 @@ public class ProvFactory {
 
 
     public Entry newEntry(Object key,
-			  EntityRef entity) {
+                          EntityRef entity) {
         Entry res=of.createEntry();
         res.setKey(key);
         res.setEntity(entity);
@@ -587,10 +583,29 @@ public class ProvFactory {
     }
 
 
-    public MemberOf newMemberOf(QName id,
-				EntityRef after,
-				List<Entry> keyEntitySet) {
-        MemberOf res=of.createMemberOf();
+    public CollectionMemberOf newCollectionMemberOf(QName id,
+                                                    EntityRef after,
+                                                    List<Entity> entitySet) {
+        CollectionMemberOf res=of.createCollectionMemberOf();
+        res.setId(id);
+        res.setEntity(after);
+        if (entitySet!=null) res.getMember().addAll(entitySet);
+        return res;
+    }
+
+
+    public CollectionMemberOf newCollectionMemberOf(String id,
+                                                    EntityRef after,
+                                                    List<Entity> entitySet) {
+        return newCollectionMemberOf(stringToQName(id),
+                                     after,
+                                     entitySet);
+    }
+
+    public DictionaryMemberOf newDictionaryMemberOf(QName id,
+                                                    EntityRef after,
+                                                    List<Entry> keyEntitySet) {
+        DictionaryMemberOf res=of.createDictionaryMemberOf();
         res.setId(id);
         res.setEntity(after);
 	if (keyEntitySet!=null) res.getEntry().addAll(keyEntitySet);
@@ -598,10 +613,10 @@ public class ProvFactory {
     }
 
 
-    public MemberOf newMemberOf(String id,
+    public DictionaryMemberOf newDictionaryMemberOf(String id,
 				EntityRef after,
 				List<Entry> keyEntitySet) {
-        return newMemberOf(stringToQName(id),
+        return newDictionaryMemberOf(stringToQName(id),
 					 after,
 					 keyEntitySet);
     }
@@ -726,22 +741,6 @@ public class ProvFactory {
     }
 
 
-    public WasStartedByActivity newWasStartedByActivity(QName id,
-                                                        ActivityRef started,
-                                                        ActivityRef starter) {
-        WasStartedByActivity res=of.createWasStartedByActivity();
-        res.setId(id);
-        res.setStarted(started);
-        res.setStarter(starter);
-        return res;
-    }
-
-    public WasStartedByActivity newWasStartedByActivity(String id,
-                                                        ActivityRef started,
-                                                        ActivityRef starter) {
-        return newWasStartedByActivity(stringToQName(id),started,starter);
-    }
-
     public WasEndedBy newWasEndedBy(QName id,
                                     ActivityRef aid,
                                     EntityRef eid) {
@@ -847,6 +846,34 @@ public class ProvFactory {
 	return res;
     }
 
+    public MentionOf newMentionOf(
+                                              String local,
+                                              String entity,
+                                              String bundle) {
+        MentionOf res=of.createMentionOf();
+        res.setLocal(newEntityRef(local));
+        res.setBundle(newEntityRef(bundle));
+        res.setEntity(newEntityRef(entity));
+        return res;
+    }
+
+    public MentionOf newMentionOf(EntityRef local,
+                                                      EntityRef entity,
+                                                      EntityRef bundle) {
+        MentionOf res=of.createMentionOf();
+        res.setLocal(local);
+        res.setBundle(bundle);
+        res.setEntity(entity);
+        return res;
+    }
+
+    public MentionOf newMentionOf(Entity local,
+				  Entity entity,
+				  Entity bundle) {
+        return newMentionOf(newEntityRef(local),
+                                      newEntityRef(entity),
+                                      newEntityRef(bundle));
+    }
 
     public WasDerivedFrom newWasDerivedFrom(QName id,
                                             EntityRef aid1,
@@ -1085,37 +1112,30 @@ public class ProvFactory {
         return newNote(stringToQName(id));
     }
 
-    public Container newContainer(Collection<Account> accs,
-                                  Collection<Activity> ps,
+    public Bundle newBundle(      Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Collection<Object> lks) {
-        return newContainer((QName)null,accs,ps,as,ags,null,lks);
+        return newBundle((QName)null,ps,as,ags,null,lks);
     }
 
-    public Container newContainer(Collection<Account> accs,
-                                  Collection<Activity> ps,
+    public Bundle newBundle(      Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Collection<Note> ns,
                                   Collection<Object> lks) {
-        return newContainer((QName)null,accs,ps,as,ags,ns,lks);
+        return newBundle((QName)null,ps,as,ags,ns,lks);
     }
 
-    public Container newContainer(QName id,
-                                  Collection<Account> accs,
-                                  Collection<Activity> ps,
+    public Bundle newBundle(      QName ignore,
+				  Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Collection<Note> ns,
                                   Collection<Object> lks)
     {
-        Container res=of.createContainer();
+        Bundle res=of.createBundle();
         res.setRecords(of.createRecords());
-        res.setId(id);
-        if (accs!=null) {
-            res.getRecords().getAccount().addAll(accs);
-        }
         if (ps!=null) {
             res.getRecords().getActivity().addAll(ps);
         }
@@ -1137,40 +1157,98 @@ public class ProvFactory {
         return res;
     }
 
-    public Container newContainer(String id,
-                                  Collection<Account> accs,
+    public NamedBundle newNamedBundle(String id,
+                                  Collection<Activity> ps,
+                                  Collection<Entity> as,
+                                  Collection<Agent> ags,
+                                  Collection<Note> ns,
+                                  Collection<Object> lks)
+    {
+	return newNamedBundle(stringToQName(id),
+			      ps,
+			      as,
+			      ags,
+			      ns,
+			      lks);
+    }
+
+    public NamedBundle newNamedBundle(QName id,
+                                  Collection<Activity> ps,
+                                  Collection<Entity> as,
+                                  Collection<Agent> ags,
+                                  Collection<Note> ns,
+                                  Collection<Object> lks)
+    {
+        NamedBundle res=of.createNamedBundle();
+        res.setRecords(of.createRecords());
+        res.setId(id);
+        if (ps!=null) {
+            res.getRecords().getActivity().addAll(ps);
+        }
+        if (as!=null) {
+            res.getRecords().getEntity().addAll(as);
+        }
+        if (ags!=null) {
+            res.getRecords().getAgent().addAll(ags);
+        }
+        if (lks!=null) {
+            Dependencies ccls=of.createDependencies();
+            ccls.getUsedOrWasGeneratedByOrWasStartedBy().addAll(lks);
+            res.getRecords().setDependencies(ccls);
+        }
+
+        if (ns!=null) {
+            res.getRecords().getNote().addAll(ns);
+        }
+        return res;
+    }
+
+    public NamedBundle newNamedBundle(String id,
+                                      Activity[] ps,
+                                      Entity [] es,
+                                      Agent [] ags,
+                                      Note [] ns,
+                                      Object [] lks)
+    {
+
+        return newNamedBundle(id,
+                            ((ps==null) ? null : Arrays.asList(ps)),
+                            ((es==null) ? null : Arrays.asList(es)),
+                            ((ags==null) ? null : Arrays.asList(ags)),
+                            ((ns==null) ? null : Arrays.asList(ns)),
+                            ((lks==null) ? null : Arrays.asList(lks)));
+    }
+
+
+    public Bundle newBundle(String id,
                                   Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Collection<Note> ns,
                                   Collection<Object> lks) {
-        return newContainer(stringToQName(id),accs,ps,as,ags,ns,lks);
+        return newBundle(stringToQName(id),ps,as,ags,ns,lks);
     }
 
-    public Container newContainer(Collection<Account> accs,
-                                  Activity [] ps,
+    public Bundle newBundle(      Activity [] ps,
                                   Entity [] as,
                                   Agent [] ags,
                                   Object [] lks) 
     {
 
-        return newContainer(accs,
-                            ((ps==null) ? null : Arrays.asList(ps)),
+        return newBundle(   ((ps==null) ? null : Arrays.asList(ps)),
                             ((as==null) ? null : Arrays.asList(as)),
                             ((ags==null) ? null : Arrays.asList(ags)),
                             ((lks==null) ? null : Arrays.asList(lks)));
     }
-    public Container newContainer(Collection<Account> accs,
-                                  Activity [] ps,
+    public Bundle newBundle(      Activity [] ps,
                                   Entity [] as,
                                   Agent [] ags,
                                   Note [] ns,
                                   Object [] lks) {
-        return newContainer(null,accs,ps,as,ags,ns,lks);
+        return newBundle(null,ps,as,ags,ns,lks);
     }
 
-    public Container newContainer(String id,
-                                  Collection<Account> accs,
+    public Bundle newBundle(String id,
                                   Activity [] ps,
                                   Entity [] as,
                                   Agent [] ags,
@@ -1178,8 +1256,7 @@ public class ProvFactory {
                                   Object [] lks) 
     {
 
-        return newContainer(id,
-                            accs,
+        return newBundle(id,
                             ((ps==null) ? null : Arrays.asList(ps)),
                             ((as==null) ? null : Arrays.asList(as)),
                             ((ags==null) ? null : Arrays.asList(ags)),
@@ -1187,16 +1264,14 @@ public class ProvFactory {
                             ((lks==null) ? null : Arrays.asList(lks)));
     }
 
-    public Container newContainer(Collection<Account> accs,
-                                  Collection<Activity> ps,
+    public Bundle newBundle(      Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Dependencies lks)
     {
-        Container res=of.createContainer();
+        Bundle res=of.createBundle();
 	res.setRecords(of.createRecords());
-        //res.setId(autoGenerateId(containerIdPrefix));
-        res.getRecords().getAccount().addAll(accs);
+        //res.setId(autoGenerateId(bundleIdPrefix));
         res.getRecords().getActivity().addAll(ps);
         res.getRecords().getEntity().addAll(as);
         res.getRecords().getAgent().addAll(ags);
@@ -1204,17 +1279,15 @@ public class ProvFactory {
         return res;
     }
 
-    public Container newContainer(Collection<Account> accs,
-                                  Collection<Activity> ps,
+    public Bundle newBundle(      Collection<Activity> ps,
                                   Collection<Entity> as,
                                   Collection<Agent> ags,
                                   Collection<Note> ns,
                                   Dependencies lks)
     {
-        Container res=of.createContainer();
+        Bundle res=of.createBundle();
 	res.setRecords(of.createRecords());
-        //res.setId(autoGenerateId(containerIdPrefix));
-        res.getRecords().getAccount().addAll(accs);
+        //res.setId(autoGenerateId(bundleIdPrefix));
         res.getRecords().getActivity().addAll(ps);
         res.getRecords().getEntity().addAll(as);
         res.getRecords().getAgent().addAll(ags);
@@ -1225,9 +1298,8 @@ public class ProvFactory {
 
 
 
-    public Container newContainer(Container graph) {
-        return newContainer(graph.getRecords().getAccount(),
-                            graph.getRecords().getActivity(),
+    public Bundle newBundle(Bundle graph) {
+        return newBundle(   graph.getRecords().getActivity(),
                             graph.getRecords().getEntity(),
                             graph.getRecords().getAgent(),
                             graph.getRecords().getNote(),

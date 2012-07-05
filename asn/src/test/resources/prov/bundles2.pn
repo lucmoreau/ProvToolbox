@@ -22,11 +22,11 @@ bundle
   endBundle
 
   bundle alice:bundle5
-    entity(ex:report1)
-    hasProvenanceIn(ex:report1, bob:bundle4, -, -, -)
+    entity(ex:report1bis)
+    mentionOf(ex:report1bis, ex:report1, bob:bundle4)
     entity(ex:report2, [ prov:type="report", ex:version=2 ])
     wasGeneratedBy(ex:report2, -, 2012-05-25T11:00:01)
-    wasDerivedFrom(ex:report2, ex:report1)
+    wasDerivedFrom(ex:report2, ex:report1bis)
   endBundle
 
 

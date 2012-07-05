@@ -62,12 +62,6 @@ wasAssociatedWith(ex:a3, ex:ag4, -,  [prov:role="author"])
 wasAssociatedWith(ex:a4, ex:ag5, -, [prov:role="communicator"])
 
 
-note(ex:n1,[ex:icon="doc.png"])
-hasAnnotation(ex:e1,ex:n1)
-hasAnnotation(ex:e2,ex:n1)
-
-note(ex:n2,[ex:style="dotted"])
-hasAnnotation(ex:u1,ex:n2)
 
 endBundle
 

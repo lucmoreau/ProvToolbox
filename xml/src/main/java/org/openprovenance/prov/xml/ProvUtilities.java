@@ -120,6 +120,54 @@ public class ProvUtilities {
         return null;
     }
 
+    public MentionOf getMentionForRemoteEntity(Bundle local, Entity remoteEntity, NamedBundle remote) {
+        return getMentionForRemoteEntity(local.getRecords(),remoteEntity,remote);
+    }
+
+    public MentionOf getMentionForRemoteEntity(NamedBundle local, Entity remoteEntity, NamedBundle remote) {
+        return getMentionForRemoteEntity(local.getRecords(),remoteEntity,remote);
+    }
+
+    MentionOf getMentionForRemoteEntity(Records local, Entity remoteEntity, NamedBundle remote) {
+        Dependencies dep=local.getDependencies();
+        for (Object o:dep.getUsedOrWasGeneratedByOrWasStartedBy()) {
+            if (o instanceof MentionOf) {
+                MentionOf ctxt=(MentionOf) o;
+                QName id1=remoteEntity.getId();
+                QName id2=remote.getId();
+                if (ctxt.getGeneralEntity().getRef().equals(id1)
+                    &&
+                    ctxt.getBundle().getRef().equals(id2))
+                    return ctxt;
+            }
+        }
+        return null;
+    }
+
+    public MentionOf getMentionForLocalEntity(Bundle local, Entity localEntity, NamedBundle remote) {
+        return getMentionForLocalEntity(local.getRecords(),localEntity,remote);
+    }
+
+    public MentionOf getMentionForLocalEntity(NamedBundle local, Entity localEntity, NamedBundle remote) {
+        return getMentionForLocalEntity(local.getRecords(),localEntity,remote);
+    }
+
+    MentionOf getMentionForLocalEntity(Records local, Entity localEntity, NamedBundle remote) {
+        Dependencies dep=local.getDependencies();
+        for (Object o:dep.getUsedOrWasGeneratedByOrWasStartedBy()) {
+            if (o instanceof MentionOf) {
+                MentionOf ctxt=(MentionOf) o;
+                QName id1=localEntity.getId();
+                QName id2=remote.getId();
+                if (ctxt.getSpecializedEntity().getRef().equals(id1)
+                    &&
+                    ctxt.getBundle().getRef().equals(id2))
+                    return ctxt;
+            }
+        }
+        return null;
+    }
+
 
 }
 

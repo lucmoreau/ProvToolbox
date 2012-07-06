@@ -20,6 +20,9 @@ prefix ex <http://example>  /* a single prefix declaration */
           entity(ex:e3, [ex:param="""c
                                      c
                                      c"""])
+          entity(ex:e3, [ex:param="""une
+                                     longue
+                                     chaine de caracteres""" @fr])
           entity(tr:WD-prov-dm-20111215)
           entity(tr:WD-prov-dm-20111215, [ prov:type="document" ])
           entity(tr:WD-prov-dm-20111215, [ prov:type="document", ex:version=2 ])

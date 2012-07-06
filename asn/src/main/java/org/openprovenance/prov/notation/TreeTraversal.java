@@ -40,6 +40,10 @@ public class TreeTraversal {
         return token.substring(1);
     }
 
+    public String unquoteTwice(String token) {
+        return token.substring(2,token.length()-2);
+    }
+
     public Object convert(Tree ast) {
         switch(ast.getType()) {
 
@@ -443,6 +447,13 @@ public class TreeTraversal {
                 return c.convertString(convertToken(getTokenString(ast.getChild(0))));
             } else {
                 return c.convertString(convertToken(getTokenString(ast.getChild(0))),
+                                       stripAmpersand(convertToken(getTokenString(ast.getChild(1)))));
+            }
+        case PROV_NParser.STRING_LONG:
+            if (ast.getChildCount()==1) {
+                return c.convertString(unquoteTwice(convertToken(getTokenString(ast.getChild(0)))));
+            } else {
+                return c.convertString(unquoteTwice(convertToken(getTokenString(ast.getChild(0)))),
                                        stripAmpersand(convertToken(getTokenString(ast.getChild(1)))));
             }
 

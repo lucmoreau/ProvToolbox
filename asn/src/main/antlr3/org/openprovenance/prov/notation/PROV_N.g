@@ -439,11 +439,11 @@ time
 
 
 literal :
-        (STRING_LITERAL -> ^(STRING STRING_LITERAL) |
-         STRING_LITERAL LANGTAG -> ^(STRING STRING_LITERAL LANGTAG) |
+        ( //STRING_LITERAL -> ^(STRING STRING_LITERAL) |
+         STRING_LITERAL LANGTAG? -> ^(STRING STRING_LITERAL LANGTAG?) |
          STRING_LITERAL_LONG2 -> ^(STRING STRING_LITERAL_LONG2) |
          INT_LITERAL -> ^(INT INT_LITERAL) |
-         STRING_LITERAL { qnameDisabled = false; } '%%' datatype -> ^(TYPEDLITERAL STRING_LITERAL datatype) |
+         STRING_LITERAL LANGTAG? { qnameDisabled = false; } '%%' datatype -> ^(TYPEDLITERAL STRING_LITERAL datatype LANGTAG?) |
          { qnameDisabled = false; } '\'' QUALIFIED_NAME '\'' -> ^(TYPEDLITERAL QUALIFIED_NAME) | )
 	;
 

@@ -5,21 +5,31 @@ import junit.framework.TestSuite;
 
 public class ParserTest extends TestCase
 {
-    public void testContainer0() {
-        testContainer("src/test/resources/prov/container0.prov");
+    public void testBundle0() {
+        testBundle("src/test/resources/prov/container0.prov");
     }
 
-    public void testContainer1() {
-        testContainer("src/test/resources/prov/container1.prov");
+    public void testBundle1() {
+        testBundle("src/test/resources/prov/container1.prov");
     }
 
-    public void testContainer2() {
-        testContainer("src/test/resources/prov/container2.prov");
+    public void testBundle2() {
+        testBundle("src/test/resources/prov/container2.prov");
     }
 
-    public void testContainer(String file) {
+
+    public void testBundle3() {
+        testBundle("src/test/resources/prov/bundles1.pn");
+    }
+
+
+    public void testBundle4() {
+        testBundle("src/test/resources/prov/bundles2.pn");
+    }
+
+    public void testBundle(String file) {
         try {
-            new Utility().getParserForFile(file).container();
+            new Utility().getParserForFile(file).bundle();
         } catch (Throwable t) {
             System.out.println("exception: "+t);
             t.printStackTrace();

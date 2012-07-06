@@ -465,7 +465,7 @@ public class TreeTraversal {
                 v1="\"" + v1 + "\"";
             } else {
                 v2=(String)convert(ast.getChild(1));
-                if (ast.getChild(2)==null) {
+                if (ast.getChild(2)!=null) {
                     Object iv1=c.convertString(v1,
                                                stripAmpersand(convertToken(getTokenString(ast.getChild(2)))));
                     return c.convertTypedLiteral(v2,iv1);

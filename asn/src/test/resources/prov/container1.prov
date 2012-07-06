@@ -9,7 +9,7 @@ prefix ex <http://example>  /* a single prefix declaration */
           entity(ex:e1, [ex:param="a"])
           entity(ex:e1, [ex:param="a", prov:label="foo"])
           entity(ex:e1, [ex:param="a", prov:label="hello"@EN])
-//          entity(ex:e1, [ex:param="a", prov:label="hello2"@EN %% xsd:string]) NOTSUPPORTED???
+          entity(ex:e1, [ex:param="a", prov:label="hello2"@EN %% xsd:string]) 
           entity(ex:e1, [ex:param="a", prov:label="bonjour"@FR])
           entity(ex:e1, [ex:param="a", prov:label="bonjour a nouveau"@FR %% xsd:string])
           entity(ex:e1, [ex:param="a", prov:label="hello"@EN, prov:label="bonjour"@FR])

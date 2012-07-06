@@ -62,10 +62,16 @@ public class TreeTraversal {
             return c.convertActivity(id,startTime,endTime,aAttrs);
 
         case PROV_NParser.START:
-            return c.convertStart(convertToken(getTokenString(ast.getChild(0))));
+            if (ast.getChildCount()==0) return null;
+            if (ast.getChild(0)==null) return null;
+	    return c.convertStart((String) convert (ast.getChild(0))); //TODO change signature of convertEnd to Object
+	    //            return c.convertStart(convertToken(getTokenString(ast.getChild(0))));
 
         case PROV_NParser.END:
-            return c.convertEnd(convertToken(getTokenString  (ast.getChild(0))));
+            if (ast.getChildCount()==0) return null;
+            if (ast.getChild(0)==null) return null;
+	    return c.convertEnd((String) convert (ast.getChild(0))); //TODO change signature of convertEnd to Object
+            //return c.convertEnd(convertToken(getTokenString  (ast.getChild(0))));
 
         case PROV_NParser.USED:
             Tree uidTree=ast.getChild(0);
@@ -383,14 +389,14 @@ public class TreeTraversal {
             /* Component 6 */
 
         case PROV_NParser.EXT:
-            Object extName=ast.getChild(0);
+            Object extName=convert(ast.getChild(0));
             uidTree=ast.getChild(1);
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
             uid=convert(uidTree);
 
-            Object optionalAttributes=ast.getChild(ast.getChildCount()-1);
+            Object optionalAttributes=convert(ast.getChild(ast.getChildCount()-1));
             List<Object> args=new LinkedList();
             for (int i=2; i< ast.getChildCount()-1; i++) {
                 Object o=convert(ast.getChild(i));

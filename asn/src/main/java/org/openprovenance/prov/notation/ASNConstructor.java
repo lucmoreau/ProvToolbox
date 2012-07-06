@@ -230,7 +230,11 @@ public class ASNConstructor implements TreeConstructor {
     }
 
     public Object convertExtension(Object name, Object id, Object args, Object dAttrs) {
-        String s=keyword(name.toString()) + "(" + optionalId(id) + args +
+	System.out.println("Name @" + name);
+	System.out.println("Name @" + id);
+	System.out.println("Name @" + args);
+	System.out.println("Name @" + dAttrs);
+        String s=keyword((String)name) + "(" + optionalId(id) + args +
             optionalAttributes(dAttrs) + ")";
 	return s;
     }

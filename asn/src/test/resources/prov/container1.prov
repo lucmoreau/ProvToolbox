@@ -9,7 +9,9 @@ prefix ex <http://example>  /* a single prefix declaration */
           entity(ex:e1, [ex:param="a"])
           entity(ex:e1, [ex:param="a", prov:label="foo"])
           entity(ex:e1, [ex:param="a", prov:label="hello"@EN])
+          entity(ex:e1, [ex:param="a", prov:label="hello2"@EN %% xsd:string]) 
           entity(ex:e1, [ex:param="a", prov:label="bonjour"@FR])
+          entity(ex:e1, [ex:param="a", prov:label="bonjour a nouveau"@FR %% xsd:string])
           entity(ex:e1, [ex:param="a", prov:label="hello"@EN, prov:label="bonjour"@FR])
           entity(ex:e2, [ex:param="a"])
           entity(ex:e3, [ex:param="a"])
@@ -18,6 +20,9 @@ prefix ex <http://example>  /* a single prefix declaration */
           entity(ex:e3, [ex:param="""c
                                      c
                                      c"""])
+          entity(ex:e3, [ex:param="""une
+                                     longue
+                                     chaine de caracteres""" @fr])
           entity(tr:WD-prov-dm-20111215)
           entity(tr:WD-prov-dm-20111215, [ prov:type="document" ])
           entity(tr:WD-prov-dm-20111215, [ prov:type="document", ex:version=2 ])

@@ -540,12 +540,12 @@ PN_LOCAL:
                     	       	                     return;
                     	       	                  }
                     	                       }
-                                           } DOT)* (PN_CHARS | PN_CHARS_OTHERS ))?
+                                           } DOT )* (PN_CHARS | PN_CHARS_OTHERS ))?
 ;
 
 fragment PN_CHARS_OTHERS 
     : 
-      PERCENT | '/' | '@' | '~' | '&' | '+' | '?' | '#' | '$'
+      PERCENT | '/' | '@' | '~' | '&' | '+' | '*' | '?' | '#' | '$' | '!'
     ;
 
 fragment PERCENT

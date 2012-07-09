@@ -12,6 +12,7 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
     static final public String XSI_NS="http://www.w3.org/2001/XMLSchema-instance";
     static final public String XSD_NS="http://www.w3.org/2001/XMLSchema";
     static final public String PRINTER_NS="http://openprovenance.org/model/opmPrinterConfig";
+    static final public String XML_NS="http://www.w3.org/XML/1998/namespace";
 
     private Hashtable<String,String> nss=null;
 
@@ -81,6 +82,9 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
         if (namespaceUri.equals(XSD_NS)) {
             return "xsd";
         }
+        if (namespaceUri.equals(XML_NS)) {
+            return "xml";
+        }
         if (namespaceUri.equals(XSI_NS)) {
             return "xsi";
         }
@@ -145,6 +149,7 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
         }
         ll.add(XSI_NS);
         ll.add(XSD_NS);
+        ll.add(XML_NS);
         ll.add(PROV_NS);
         System.out.println("namespaceprefixmapper " + ll);
         String[] tmp=new String[1];

@@ -35,7 +35,15 @@ public class TreeTraversal {
     public int convertInt(String token) {
         return Integer.valueOf(token);
     }
-    
+
+    public String stripAmpersand(String token) {
+        return token.substring(1);
+    }
+
+    public String unquoteTwice(String token) {
+        return token.substring(2,token.length()-2);
+    }
+
     public Object convert(Tree ast) {
         switch(ast.getType()) {
 
@@ -54,10 +62,16 @@ public class TreeTraversal {
             return c.convertActivity(id,startTime,endTime,aAttrs);
 
         case PROV_NParser.START:
-            return c.convertStart(convertToken(getTokenString(ast.getChild(0))));
+            if (ast.getChildCount()==0) return null;
+            if (ast.getChild(0)==null) return null;
+	    return c.convertStart((String) convert (ast.getChild(0))); //TODO change signature of convertEnd to Object
+	    //            return c.convertStart(convertToken(getTokenString(ast.getChild(0))));
 
         case PROV_NParser.END:
-            return c.convertEnd(convertToken(getTokenString  (ast.getChild(0))));
+            if (ast.getChildCount()==0) return null;
+            if (ast.getChild(0)==null) return null;
+	    return c.convertEnd((String) convert (ast.getChild(0))); //TODO change signature of convertEnd to Object
+            //return c.convertEnd(convertToken(getTokenString  (ast.getChild(0))));
 
         case PROV_NParser.USED:
             Tree uidTree=ast.getChild(0);
@@ -375,14 +389,20 @@ public class TreeTraversal {
             /* Component 6 */
 
         case PROV_NParser.EXT:
-	    Object extName=ast.getChild(0);
-	    Object optionalAttributes=ast.getChild(ast.getChildCount()-1);
+            Object extName=convert(ast.getChild(0));
+            uidTree=ast.getChild(1);
+            if (uidTree.getChildCount()>0) {
+                uidTree=uidTree.getChild(0);
+            }
+            uid=convert(uidTree);
+
+            Object optionalAttributes=convert(ast.getChild(ast.getChildCount()-1));
             List<Object> args=new LinkedList();
-            for (int i=1; i< ast.getChildCount()-1; i++) {
+            for (int i=2; i< ast.getChildCount()-1; i++) {
                 Object o=convert(ast.getChild(i));
                 args.add(o);
             }
-            return c.convertExtension(extName, args, optionalAttributes);
+            return c.convertExtension(extName, uid, args, optionalAttributes);
 
 
             /* Miscellaneous Constructs */
@@ -429,7 +449,19 @@ public class TreeTraversal {
             return c.convertAttribute(attr1,val1);
 
         case PROV_NParser.STRING:
-            return c.convertString(convertToken(getTokenString(ast.getChild(0))));
+            if (ast.getChildCount()==1) {
+                return c.convertString(convertToken(getTokenString(ast.getChild(0))));
+            } else {
+                return c.convertString(convertToken(getTokenString(ast.getChild(0))),
+                                       stripAmpersand(convertToken(getTokenString(ast.getChild(1)))));
+            }
+        case PROV_NParser.STRING_LONG:
+            if (ast.getChildCount()==1) {
+                return c.convertString(unquoteTwice(convertToken(getTokenString(ast.getChild(0)))));
+            } else {
+                return c.convertString(unquoteTwice(convertToken(getTokenString(ast.getChild(0)))),
+                                       stripAmpersand(convertToken(getTokenString(ast.getChild(1)))));
+            }
 
         case PROV_NParser.INT:
             return c.convertInt(convertInt(getTokenString(ast.getChild(0))));
@@ -450,8 +482,12 @@ public class TreeTraversal {
                 v1="\"" + v1 + "\"";
             } else {
                 v2=(String)convert(ast.getChild(1));
+                if (ast.getChild(2)!=null) {
+                    Object iv1=c.convertString(v1,
+                                               stripAmpersand(convertToken(getTokenString(ast.getChild(2)))));
+                    return c.convertTypedLiteral(v2,iv1);
+                }
             }
-
             return c.convertTypedLiteral(v2,v1);
 
         case PROV_NParser.NAMESPACE:

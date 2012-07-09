@@ -9,7 +9,7 @@ options {
 }
 
 tokens {
-    ID; ATTRIBUTE; ATTRIBUTES; IRI; QNAM; STRING; TYPEDLITERAL; INT; 
+    ID; ATTRIBUTE; ATTRIBUTES; IRI; QNAM; STRING; STRING_LONG; TYPEDLITERAL; INT; 
     EXPRESSIONS; NAMESPACE; DEFAULTNAMESPACE; NAMESPACES; PREFIX; 
 
     /* Component 1 */
@@ -145,14 +145,18 @@ entityExpression
 
 activityExpression
 	:	'activity' '(' identifier (',' (s=time | '-' ) ',' (e=time | '-'))? optionalAttributeValuePairs ')'
+
+
         -> ^(ACTIVITY identifier ^(START $s?) ^(END $e?) optionalAttributeValuePairs )
 	;
 
 generationExpression
 	:	'wasGeneratedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' ( tt=time | '-' ))? optionalAttributeValuePairs ')'
-      -> {$id1.tree==null && $tt.tree==null}?
+      -> {$id1.tree==null }?  // both are absent
          ^(WGB ^(ID $id0?) $id2 ^(ID)  ^(TIME) optionalAttributeValuePairs)
-      -> ^(WGB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
+      -> {$id1.tree!=null && $tt.tree==null}?
+         ^(WGB ^(ID $id0?) $id2 $id1 ^(TIME) optionalAttributeValuePairs)
+      -> ^(WGB ^(ID $id0?) $id2 $id1 $tt optionalAttributeValuePairs)
 	;
 
 /* TODO: ensure that optionalIdentifier always returns an ID??? */
@@ -168,29 +172,40 @@ identifierOrMarker
     ;
 
 usageExpression
-	:	'used' '(' id0=optionalIdentifier  id2=identifier ',' id1=identifier (',' ( time | '-' ))? optionalAttributeValuePairs ')'
-      -> ^(USED ^(ID $id0?)  $id2 $id1 ^(TIME time?) optionalAttributeValuePairs)
+	:	'used' '(' id0=optionalIdentifier  id2=identifier (',' id1=identifierOrMarker ',' ( tt=time | '-' ))? optionalAttributeValuePairs ')'
+      -> {$id1.tree==null }?  // both are absent
+         ^(USED ^(ID $id0?)  $id2 ^(ID) ^(TIME) optionalAttributeValuePairs)
+      -> {$id1.tree!=null && $tt.tree==null}?
+         ^(USED ^(ID $id0?)  $id2 $id1 ^(TIME) optionalAttributeValuePairs)
+      -> ^(USED ^(ID $id0?)  $id2 $id1 time optionalAttributeValuePairs)
 	;
-
 startExpression
 	:	'wasStartedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' id3=identifierOrMarker ',' ( tt=time | '-' ))? optionalAttributeValuePairs ')'
-      -> {$id1.tree==null && $id3.tree==null && $tt.tree==null}?
+      -> {$id1.tree==null}?  // all are absent
          ^(WSB ^(ID $id0?) $id2 ^(ID) ^(ID) ^(TIME) optionalAttributeValuePairs)
-      -> ^(WSB ^(ID $id0?) $id2 $id1 $id3 ^(TIME time?) optionalAttributeValuePairs)
+      -> {$id1.tree!=null && $tt.tree==null}?  
+         ^(WSB ^(ID $id0?) $id2 $id1 $id3 ^(TIME) optionalAttributeValuePairs)
+      -> ^(WSB ^(ID $id0?) $id2 $id1 $id3  time optionalAttributeValuePairs)
 	;
 
 endExpression
 	:	'wasEndedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' id3=identifierOrMarker ',' ( tt=time | '-' ))? optionalAttributeValuePairs ')'
-      -> {$id1.tree==null && $id3.tree==null && $tt.tree==null}?
+      -> {$id1.tree==null}? // all are absent
         ^(WEB ^(ID $id0?) $id2 ^(ID) ^(ID) ^(TIME) optionalAttributeValuePairs)
-      -> ^(WEB ^(ID $id0?) $id2 $id1 $id3 ^(TIME time?) optionalAttributeValuePairs)
+      -> {$id1.tree!=null && $tt.tree==null}?  
+        ^(WEB ^(ID $id0?) $id2 $id1 $id3 ^(TIME) optionalAttributeValuePairs)
+      -> ^(WEB ^(ID $id0?) $id2 $id1 $id3  time optionalAttributeValuePairs)
 	;
 
 /*TODO handle no optional everywhere */
 
 invalidationExpression
-	:	'wasInvalidatedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' ( time | '-' ))? optionalAttributeValuePairs ')'
-      -> ^(WINVB ^(ID $id0?) $id2 $id1  ^(TIME time?) optionalAttributeValuePairs)
+	:	'wasInvalidatedBy' '(' id0=optionalIdentifier id2=identifier (',' id1=identifierOrMarker ',' ( tt=time | '-' ))? optionalAttributeValuePairs ')'
+      -> {$id1.tree==null }?  // both are absent
+         ^(WINVB ^(ID $id0?) $id2 ^(ID)  ^(TIME) optionalAttributeValuePairs)
+      -> {$id1.tree!=null && $tt.tree==null}?
+         ^(WINVB ^(ID $id0?) $id2 $id1  ^(TIME) optionalAttributeValuePairs)
+      -> ^(WINVB ^(ID $id0?) $id2 $id1  time optionalAttributeValuePairs)
 	;
 
 
@@ -216,8 +231,9 @@ attributionExpression
 	;
 
 associationExpression
-	:	'wasAssociatedWith' '('  id0=optionalIdentifier a=identifier ',' ag=identifierOrMarker (',' pl=identifierOrMarker)? optionalAttributeValuePairs ')'
+	:	'wasAssociatedWith' '('  id0=optionalIdentifier a=identifier (',' ag=identifierOrMarker ',' pl=identifierOrMarker)? optionalAttributeValuePairs ')'
       -> {$pl.tree==null}? ^(WAW ^(ID $id0?) $a $ag? ^(ID) optionalAttributeValuePairs)
+      -> {$ag.tree==null}? ^(WAW ^(ID $id0?) $a ^(ID) $pl  optionalAttributeValuePairs)
       -> ^(WAW ^(ID $id0?) $a $ag? $pl optionalAttributeValuePairs)
 	;
 
@@ -363,10 +379,10 @@ entitySet
 
 
 extensibilityExpression
-	:	name=QUALIFIED_NAME '(' extensibilityArgument ( (',' | ';') extensibilityArgument)* attr=optionalAttributeValuePairs ')'
+	:	QUALIFIED_NAME '(' id0=optionalIdentifier extensibilityArgument ( ','  extensibilityArgument)* attr=optionalAttributeValuePairs ')'
       -> {$attr.tree==null}?
-         ^(EXT $name extensibilityArgument* ^(ATTRIBUTES))
-      -> ^(EXT $name extensibilityArgument* optionalAttributeValuePairs)
+         ^(EXT ^(ID QUALIFIED_NAME) ^(ID $id0?) extensibilityArgument* ^(ATTRIBUTES))
+      -> ^(EXT ^(ID QUALIFIED_NAME) ^(ID $id0?) extensibilityArgument* optionalAttributeValuePairs)
 	;
 
 extensibilityArgument
@@ -430,7 +446,7 @@ attributeValuePair
 
 time
 	:
-        xsdDateTime
+        xsdDateTime -> ^(TIME xsdDateTime)
 	;
 
 
@@ -438,11 +454,11 @@ time
 
 
 literal :
-        (STRING_LITERAL -> ^(STRING STRING_LITERAL) |
-         STRING_LITERAL LANGTAG -> ^(STRING STRING_LITERAL LANGTAG) |
-         STRING_LITERAL_LONG2 -> ^(STRING STRING_LITERAL_LONG2) |
+        (
+         STRING_LITERAL LANGTAG? -> ^(STRING STRING_LITERAL LANGTAG?) |
+         STRING_LITERAL_LONG2  LANGTAG? -> ^(STRING_LONG STRING_LITERAL_LONG2 LANGTAG?) |
          INT_LITERAL -> ^(INT INT_LITERAL) |
-         STRING_LITERAL { qnameDisabled = false; } '%%' datatype -> ^(TYPEDLITERAL STRING_LITERAL datatype) |
+         STRING_LITERAL LANGTAG? { qnameDisabled = false; } '%%' datatype -> ^(TYPEDLITERAL STRING_LITERAL datatype LANGTAG?) |
          { qnameDisabled = false; } '\'' QUALIFIED_NAME '\'' -> ^(TYPEDLITERAL QUALIFIED_NAME) | )
 	;
 

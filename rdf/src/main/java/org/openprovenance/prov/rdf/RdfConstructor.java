@@ -73,6 +73,12 @@ public class RdfConstructor implements TreeConstructor {
         return s;
     }
 
+	public Object convertString(String s, String lang) {
+        s=unwrap(s);
+		return s + "@" + lang;
+	}
+
+
 
     public Object convertInt(int s) {
         return null;
@@ -229,7 +235,7 @@ public class RdfConstructor implements TreeConstructor {
 
     }
 
-    public Object convertExtension(Object name, Object args, Object dAttrs) {
+    public Object convertExtension(Object name, Object id, Object args, Object dAttrs) {
 	return null;
     }
     public Object convertQualifiedName(String qname) {

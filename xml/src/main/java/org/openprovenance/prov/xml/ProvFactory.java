@@ -194,7 +194,18 @@ public class ProvFactory {
         return res;
     }
 
+    public InternationalizedString newInternationalizedString(String s) {
+        InternationalizedString res=of.createInternationalizedString();
+        res.setValue(s);
+        return res;
+    }
 
+    public InternationalizedString newInternationalizedString(String s, String lang) {
+        InternationalizedString res=of.createInternationalizedString();
+        res.setValue(s);
+        res.setLang(lang);
+        return res;
+    }
 
     public Activity newActivity(String pr) {
         return newActivity(pr,null);
@@ -208,7 +219,7 @@ public class ProvFactory {
                                 String label) {
         Activity res=of.createActivity();
         res.setId(pr);
-        if (label!=null) res.setLabel(label);
+        if (label!=null) res.getLabel().add(newInternationalizedString(label));
         return res;
     }
 
@@ -228,7 +239,7 @@ public class ProvFactory {
                           String label) {
         Agent res=of.createAgent();
         res.setId(ag);
-        if (label!=null) res.setLabel(label);
+        if (label!=null) res.getLabel().add(newInternationalizedString(label));
         return res;
     }
     public Agent newAgent(String ag,
@@ -307,7 +318,7 @@ public class ProvFactory {
                             String label) {
         Entity res=of.createEntity();
         res.setId(id);
-        if (label!=null) res.setLabel(label);
+        if (label!=null) res.getLabel().add(newInternationalizedString(label));
         return res;
     }
 
@@ -1027,7 +1038,14 @@ public class ProvFactory {
 
     public void addLabel(HasExtensibility a,                                  
                          String label) {
-        JAXBElement<String> je=of.createLabel(label);
+        JAXBElement<InternationalizedString> je=of.createLabel(newInternationalizedString(label));
+        addAttribute(a,je);
+    }
+
+    public void addLabel(HasExtensibility a,                                  
+                         String label,
+                         String language) {
+        JAXBElement<InternationalizedString> je=of.createLabel(newInternationalizedString(label,language));
         addAttribute(a,je);
     }
 
@@ -1204,9 +1222,12 @@ public class ProvFactory {
                             graph.getRecords().getDependencies());
     }
 
+    /* Return the first label, it it exists */
     public String getLabel(HasExtensibility e) {
 
-        if (e instanceof HasLabel) return ((HasLabel)e).getLabel();
+        List<InternationalizedString> labels=((HasLabel)e).getLabel();
+        if ((labels==null) || (labels.isEmpty())) return null;
+        if (e instanceof HasLabel) return labels.get(0).getValue();
         for (Object o: e.getAny()) {
             
         }

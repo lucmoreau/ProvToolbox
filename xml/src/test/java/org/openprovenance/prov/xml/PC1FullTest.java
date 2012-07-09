@@ -175,6 +175,9 @@ public class PC1FullTest
         pFactory.addType(p1,true);
         pFactory.addType(p1,URI.create("http://www.example.com/hi"));
 
+        p1.getLabel().add(pFactory.newInternationalizedString("bonjour","fr"));
+        p1.getLabel().add(pFactory.newInternationalizedString("hello","en"));
+
         Activity p2=pFactory.newActivity("p2",
                                        "align_warp 2");
         pFactory.addType(p2,PRIMITIVE_ALIGN_WARP);
@@ -591,6 +594,7 @@ public class PC1FullTest
         // 2: use prefix PC1
         nss.put(PC1_PREFIX,PC1_NS);
         nss.put(PRIM_PREFIX,PRIM_NS);
+        nss.put("xml","http://www.w3.org/XML/1998/namespace");
         graph.setNss(nss);
         return graph;
     }

@@ -106,7 +106,7 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
     /* Recognize prov attributes and insert them in the appropriate fields.
-     TODO: done for type, only*/
+       TODO: done for type, only*/
     
     public void addAllAttributes(HasExtensibility e, List attributes) {
         for (Object o: attributes) {
@@ -267,6 +267,12 @@ public  class ProvConstructor implements TreeConstructor {
     public Object convertString(String s) {
         s=unwrap(s);
         return s;
+    }
+
+
+    public Object convertString(String s, String lang) {
+        s=unwrap(s);
+        return pFactory.newInternationalizedString(s,lang);
     }
 
     public Object convertInt(int i) {
@@ -517,8 +523,8 @@ public  class ProvConstructor implements TreeConstructor {
         EntityRef e1r=pFactory.newEntityRef(e1);
 
         HadPrimarySource d=pFactory.newHadPrimarySource(s_id,
-							e2r,
-							e1r);
+                                                        e2r,
+                                                        e1r);
 
         if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
         if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
@@ -538,8 +544,8 @@ public  class ProvConstructor implements TreeConstructor {
         //EntityRef e1r=pFactory.newEntityRef(e1);
 
         WasInfluencedBy d=pFactory.newWasInfluencedBy(s_id,
-						      s_id2,
-						      s_id1);
+                                                      s_id2,
+                                                      s_id1);
         List attrs=(List)dAttrs;
         d.getAny().addAll(attrs);
         return d;
@@ -652,6 +658,7 @@ public  class ProvConstructor implements TreeConstructor {
         return URI.create(iri);
     }
 
+
     /* Uses the xsd:type to java:type mapping of JAXB */
 
     public Object convertToJava(String datatype, String value) {
@@ -719,9 +726,13 @@ public  class ProvConstructor implements TreeConstructor {
 
 
     public Object convertTypedLiteral(String datatype, Object value) {
-        Object val=convertToJava(datatype,(String)value);
-        //pFactory.newTypedLiteral(val);
-        return val;
+        if (value instanceof String) {
+            Object val=convertToJava(datatype,(String)value);
+            //pFactory.newTypedLiteral(val);
+            return val;
+        } else {
+            return value;
+        }
     }
 
     public Object convertNamespace(Object pre, Object iri) {
@@ -781,7 +792,7 @@ public  class ProvConstructor implements TreeConstructor {
 
     public Object convertRemoval(Object id, Object id2, Object id1, Object keyset, Object dAttrs) {
 
-    String s_id=(String)id;
+        String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
 
@@ -790,14 +801,14 @@ public  class ProvConstructor implements TreeConstructor {
         Entity e1=entityTable.get(s_id1);
         EntityRef e1r=pFactory.newEntityRef(e1);
 
-    DerivedByRemovalFrom dbrf=pFactory.newDerivedByRemovalFrom(s_id,
-                                   e2r,
-                                   e1r,
-                                   null);
-    List attrs=(List)dAttrs;
+        DerivedByRemovalFrom dbrf=pFactory.newDerivedByRemovalFrom(s_id,
+                                                                   e2r,
+                                                                   e1r,
+                                                                   null);
+        List attrs=(List)dAttrs;
         dbrf.getAny().addAll(attrs);
 
-    return dbrf;
+        return dbrf;
     }
 
 
@@ -841,22 +852,22 @@ public  class ProvConstructor implements TreeConstructor {
         Entity e=entityTable.get(s_id);
         EntityRef er=pFactory.newEntityRef(e);
     
-    return pFactory.newEntry(o1,er);
+        return pFactory.newEntry(o1,er);
     }
 
 
     public Object convertKeyEntitySet(List<Object> entries) {
-    return entries;
+        return entries;
     }
 
     public Object convertKeys(List<Object> keys) {
-    return keys;
+        return keys;
     }
 
     /* Component 6 */
 
-    public Object convertExtension(Object name, Object args, Object dAttrs) {
-	return null;
+    public Object convertExtension(Object name, Object id, Object args, Object dAttrs) {
+        return null;
     }
  
 

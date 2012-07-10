@@ -564,7 +564,7 @@ fragment PN_CHARS_OTHERS
       PERCENT | '/' | '@' | '~' | '&' | '+' | '*' | '?' | '#' | '$' | '!'  | PN_CHARS_ESC
     ;
 
-fragment PN_CHARS_ESC: '\\=' | '\\\'' | '\\(' | '\\)' | '\\,' | '\\-'| '\\:'| '\\;' | '\\[' | '\\]' ;
+fragment PN_CHARS_ESC: '\\=' | '\\\'' | '\\(' | '\\)' | '\\,' | '\\-'| '\\:'| '\\;' | '\\[' | '\\]'  | '\\.' ;
 
 fragment PERCENT
      :

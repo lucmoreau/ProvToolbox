@@ -2,7 +2,14 @@
 bundle
 prefix ex <http://example/>
 prefix comma <http://example/e,g,>
+prefix sparqluri <http://example/!#$&'()*+,-./:;=?@[]_~>
           entity(ex:~+?/&#$/@_, [])
+          entity(ex:*!, [])
+
+          entity(ex:\=, [sparqluri:\==10])
+          entity(ex:\=, [sparqluri:\= =10])
+          entity(ex:\=, [sparqluri:\=a =10])
+          entity(ex:!#$&\'\(\)*+\,\-.a/\:\;\=?@\[\]_~)
           entity(comma:, [])
           entity(ex:%65, [])
 

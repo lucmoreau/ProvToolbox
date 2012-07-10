@@ -162,7 +162,7 @@ generationExpression
 /* TODO: ensure that optionalIdentifier always returns an ID??? */
 
 optionalIdentifier
-    : ((id0=identifier | '-') ';')?
+    : ((id0=identifier | '-') SEMICOLON)?
      -> identifier?
     ;
 
@@ -409,7 +409,7 @@ iriOrMarker
 
 optionalAttributeValuePairs
     :
-    (',' '[' attributeValuePairs ']')?
+    (',' OPEN_SQUARE_BRACE attributeValuePairs CLOSE_SQUARE_BRACE)?
         -> ^(ATTRIBUTES attributeValuePairs?)
     ;
 
@@ -440,7 +440,7 @@ attributeValuePair
 @after { qnameDisabled = false; }
 
 	:
-        attribute { qnameDisabled = true; } '='  literal  -> ^(ATTRIBUTE attribute literal)
+        attribute { qnameDisabled = true; } EQUAL  literal  -> ^(ATTRIBUTE attribute literal)
 	;
 
 
@@ -561,8 +561,10 @@ PN_LOCAL:
 
 fragment PN_CHARS_OTHERS 
     : 
-      PERCENT | '/' | '@' | '~' | '&' | '+' | '*' | '?' | '#' | '$' | '!'
+      PERCENT | '/' | '@' | '~' | '&' | '+' | '*' | '?' | '#' | '$' | '!'  | PN_CHARS_ESC
     ;
+
+fragment PN_CHARS_ESC: '\\=' | '\\\'' | '\\(' | '\\)' | '\\,' | '\\-'| '\\:'| '\\;' | '\\[' | '\\]' ;
 
 fragment PERCENT
      :
@@ -604,10 +606,13 @@ EOL : '\n' | '\r';
 
 LANGTAG : '@' ('A'..'Z'|'a'..'z')+ (MINUS ('A'..'Z'|'a'..'z'|DIGIT)+)*;
 
+EQUAL : '=';
 
 DOT : '.';
 
 MINUS : '-';
+
+SEMICOLON : ';';
 
 
 
@@ -666,6 +671,16 @@ OPEN_CURLY_BRACE
 CLOSE_CURLY_BRACE
   :
   '}'
+  ;
+
+OPEN_SQUARE_BRACE
+  :
+  '['
+  ;
+
+CLOSE_SQUARE_BRACE
+  :
+  ']'
   ;
 
 

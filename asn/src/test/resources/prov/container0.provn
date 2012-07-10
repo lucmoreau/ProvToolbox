@@ -9,6 +9,7 @@ prefix sparqluri <http://example/!#$&'()*+,-./:;=?@[]_~>
           entity(ex:\=, [sparqluri:\==10])
           entity(ex:\=, [sparqluri:\= =10])
           entity(ex:\=, [sparqluri:\=a =10])
+          entity(ex:\))
           entity(ex:!#$&\'\(\)*+\,\-.a/\:\;\=?@\[\]_~)
           entity(comma:, [])
           entity(ex:%65, [])

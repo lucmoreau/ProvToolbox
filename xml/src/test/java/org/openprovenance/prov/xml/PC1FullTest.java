@@ -157,7 +157,7 @@ public class PC1FullTest
     {
 
 
-        Activity p0=pFactory.newActivity("p0",
+        Activity p0=pFactory.newActivity("a0",
                                          "PC1Full Workflow");
         
 
@@ -178,65 +178,65 @@ public class PC1FullTest
         p1.getLabel().add(pFactory.newInternationalizedString("bonjour","fr"));
         p1.getLabel().add(pFactory.newInternationalizedString("hello","en"));
 
-        Activity p2=pFactory.newActivity("p2",
+        Activity p2=pFactory.newActivity("a2",
                                        "align_warp 2");
         pFactory.addType(p2,PRIMITIVE_ALIGN_WARP);
 
 
-        Activity p3=pFactory.newActivity("p3",
+        Activity p3=pFactory.newActivity("a3",
                                        "align_warp 3");
         pFactory.addType(p3,PRIMITIVE_ALIGN_WARP);
 
-        Activity p4=pFactory.newActivity("p4",
+        Activity p4=pFactory.newActivity("a4",
                                        "align_warp 4");
 
         pFactory.addType(p4,PRIMITIVE_ALIGN_WARP);
 
 
-        Activity p5=pFactory.newActivity("p5",
+        Activity p5=pFactory.newActivity("a5",
                                        "Reslice 1");
         pFactory.addType(p5,PRIMITIVE_RESLICE);
 
-        Activity p6=pFactory.newActivity("p6",
+        Activity p6=pFactory.newActivity("a6",
                                        "Reslice 2");
         pFactory.addType(p6,PRIMITIVE_RESLICE);
 
-        Activity p7=pFactory.newActivity("p7",
+        Activity p7=pFactory.newActivity("a7",
                                        "Reslice 3");
         pFactory.addType(p7,PRIMITIVE_RESLICE);
 
-        Activity p8=pFactory.newActivity("p8",
+        Activity p8=pFactory.newActivity("a8",
                                        "Reslice 4");
         pFactory.addType(p8,PRIMITIVE_RESLICE);
 
-        Activity p9=pFactory.newActivity("p9",
+        Activity p9=pFactory.newActivity("a9",
                                        "Softmean");
         pFactory.addType(p9,PRIMITIVE_SOFTMEAN);
 
-        Activity p10=pFactory.newActivity("p10",
+        Activity p10=pFactory.newActivity("a10",
                                         "Slicer 1");
 
         pFactory.addType(p10,PRIMITIVE_SLICER);
 
-        Activity p11=pFactory.newActivity("p11",
+        Activity p11=pFactory.newActivity("a11",
                                         "Slicer 2");
         pFactory.addType(p11,PRIMITIVE_SLICER);
 
-        Activity p12=pFactory.newActivity("p12",
+        Activity p12=pFactory.newActivity("a12",
                                         "Slicer 3");
         pFactory.addType(p12,PRIMITIVE_SLICER);
 
-        Activity p13=pFactory.newActivity("p13",
+        Activity p13=pFactory.newActivity("a13",
                                         "Convert 1");
 
         pFactory.addType(p13,PRIMITIVE_CONVERT);
 
-        Activity p14=pFactory.newActivity("p14",
+        Activity p14=pFactory.newActivity("a14",
                                         "Convert 2");
 
         pFactory.addType(p14,PRIMITIVE_CONVERT);
 
-        Activity p15=pFactory.newActivity("p15",
+        Activity p15=pFactory.newActivity("a15",
                                         "Convert 3");
 
         pFactory.addType(p15,PRIMITIVE_CONVERT);
@@ -247,184 +247,184 @@ public class PC1FullTest
 
 
         Entity a1=newFile(pFactory,
-                             "a1",
+                             "e1",
                              "Reference Image",
                              "reference.img",
                              inputLocation);
 
         Entity a2=newFile(pFactory,
-                             "a2",
+                             "e2",
                              "Reference Header",
                              "reference.hdr",
                              inputLocation);
 
         Entity a3=newFile(pFactory,
-                             "a3",
+                             "e3",
                              "Anatomy I1",
                              "anatomy1.img",
                              inputLocation);
 
         Entity a4=newFile(pFactory,
-                             "a4",
+                             "e4",
                              "Anatomy H1",
                              "anatomy1.hdr",
                              inputLocation);
 
         Entity a5=newFile(pFactory,
-                             "a5",
+                             "e5",
                              "Anatomy I2",
                              "anatomy2.img",
                              inputLocation);
 
         Entity a6=newFile(pFactory,
-                             "a6",
+                             "e6",
                              "Anatomy H2",
                              "anatomy2.hdr",
                              inputLocation);
 
         Entity a7=newFile(pFactory,
-                             "a7",
+                             "e7",
                              "Anatomy I3",
                              "anatomy3.img",
                              inputLocation);
 
         Entity a8=newFile(pFactory,
-                             "a8",
+                             "e8",
                              "Anatomy H3",
                              "anatomy3.hdr",
                              inputLocation);
 
         Entity a9=newFile(pFactory,
-                             "a9",
+                             "e9",
                              "Anatomy I4",
                              "anatomy4.img",
                              inputLocation);
 
         Entity a10=newFile(pFactory,
-                              "a10",
+                              "e10",
                               "Anatomy H4",
                               "anatomy4.hdr",
                               inputLocation);
 
         Entity a11=newFile(pFactory,
-                             "a11",
+                             "e11",
                              "Warp Params1",
                              "warp1.warp",
                              outputLocation);
 
         Entity a12=newFile(pFactory,
-                             "a12",
+                             "e12",
                              "Warp Params2",
                              "warp2.warp",
                              outputLocation);
 
         Entity a13=newFile(pFactory,
-                             "a13",
+                             "e13",
                              "Warp Params3",
                              "warp3.warp",
                              outputLocation);
 
         Entity a14=newFile(pFactory,
-                             "a14",
+                             "e14",
                              "Warp Params4",
                              "warp4.warp",
                              outputLocation);
 
         Entity a15=newFile(pFactory,
-                             "a15",
+                             "e15",
                              "Resliced I1",
                              "resliced1.img",
                              outputLocation);
 
         Entity a16=newFile(pFactory,
-                             "a16",
+                             "e16",
                              "Resliced H1",
                              "resliced1.hdr",
                              outputLocation);
         Entity a17=newFile(pFactory,
-                             "a17",
+                             "e17",
                              "Resliced I2",
                              "resliced2.img",
                              outputLocation);
         Entity a18=newFile(pFactory,
-                             "a18",
+                             "e18",
                              "Resliced H2",
                              "resliced2.hdr",
                              outputLocation);
         Entity a19=newFile(pFactory,
-                             "a19",
+                             "e19",
                              "Resliced I3",
                              "resliced3.img",
                              outputLocation);
         Entity a20=newFile(pFactory,
-                             "a20",
+                             "e20",
                              "Resliced H3",
                              "resliced3.hdr",
                              outputLocation);
         Entity a21=newFile(pFactory,
-                             "a21",
+                             "e21",
                              "Resliced I4",
                              "resliced4.img",
                              outputLocation);
         Entity a22=newFile(pFactory,
-                             "a22",
+                             "e22",
                              "Resliced H4",
                              "resliced4.hdr",
                              outputLocation);
 
 
         Entity a23=newFile(pFactory,
-                             "a23",
+                             "e23",
                              "Atlas Image",
                              "atlas.img",
                              outputLocation);
         Entity a24=newFile(pFactory,
-                             "a24",
+                             "e24",
                              "Atlas Header",
                              "atlas.hdr",
                              outputLocation);
 
 
         Entity a25=newFile(pFactory,
-                             "a25",
+                             "e25",
                              "Atlas X Slice",
                              "atlas-x.pgm",
                              outputLocation);
         Entity a25p=newParameter(pFactory,
-                                   "a25p",
+                                   "e25p",
                                    "slicer param 1",
                                    "-x .5");
 
         Entity a26=newFile(pFactory,
-                             "a26",
+                             "e26",
                              "Atlas Y Slice",
                              "atlas-y.pgm",
                              outputLocation);
         Entity a26p=newParameter(pFactory,
-                                   "a26p",
+                                   "e26p",
                                    "slicer param 2",
                                    "-y .5");
         Entity a27=newFile(pFactory,
-                             "a27",
+                             "e27",
                              "Atlas Z Slice",
                              "atlas-z.pgm",
                              outputLocation);
         Entity a27p=newParameter(pFactory,
-                                   "a27p",
+                                   "e27p",
                                    "slicer param 3",
                                    "-z .5");
         Entity a28=newFile(pFactory,
-                             "a28",
+                             "e28",
                              "Atlas X Graphic",
                              "atlas-x.gif",
                              outputLocation);
         Entity a29=newFile(pFactory,
-                             "a29",
+                             "e29",
                              "Atlas Y Graphic",
                              "atlas-y.gif",
                              outputLocation);
         Entity a30=newFile(pFactory,
-                             "a30",
+                             "e30",
                              "Atlas Z Graphic",
                              "atlas-z.gif",
                              outputLocation);

@@ -168,6 +168,11 @@ public class ProvUtilities {
         return null;
     }
 
+    /** TODO: should \-unescape local part */
+    public String toURI(QName qname) {
+	return qname.getNamespaceURI() + qname.getLocalPart();
+    }
+
 
 }
 

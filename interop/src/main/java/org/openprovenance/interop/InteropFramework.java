@@ -214,6 +214,28 @@ public class InteropFramework
 
     }
 
+    /** Reads a file into java bean. */
+    public Object loadProvGraph(String filename)
+	throws java.io.IOException, JAXBException, Throwable {
+	
+	if (filename.endsWith(".provn")) {
+	    Utility u=new Utility();
+	    CommonTree tree = u.convertASNToTree(filename);
+	    Object o=u.convertTreeToJavaBean(tree);
+	    return o;
+	} else if (filename.endsWith(".provx") || filename.endsWith(".xml")) {
+	    File in=new File(filename);
+	    ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
+	    Bundle c=deserial.deserialiseBundle(in);
+	    return c;
+	} else if (filename.endsWith(".rdf") || filename.endsWith(".prov-rdf")) {
+	    throw new UnsupportedOperationException();
+	} else {
+	    System.out.println("Unkownn format " + filename);
+	    throw new UnsupportedOperationException();
+	}
+    }
+
 
     public static void main(String [] args) throws Exception { //TODO: finalize signatures
         if ((args==null) || (!((args.length>=3) || (args.length<=5)))) {

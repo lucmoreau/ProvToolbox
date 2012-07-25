@@ -73,10 +73,10 @@ public class RdfConstructor implements TreeConstructor {
         return s;
     }
 
-	public Object convertString(String s, String lang) {
+    public Object convertString(String s, String lang) {
         s=unwrap(s);
-		return s + "@" + lang;
-	}
+	return s + "@" + lang;
+    }
 
 
 
@@ -84,7 +84,7 @@ public class RdfConstructor implements TreeConstructor {
         return null;
     }
 
-    public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs) {
+    public Object convertUsed(Object id, Object id2, Object id1, Object time, Object aAttrs) {
         QName qname = getQName(id);
         QName qn2 = getQName(id2);
         QName qn1 = getQName(id1);
@@ -93,63 +93,47 @@ public class RdfConstructor implements TreeConstructor {
         Activity a2=(Activity)manager.find(qn2);
         Usage u=null;
 
-        /** Creates instance of Usage class, only if required. */
-
-	//         java.lang.System.out.println("used -> " + qn1);
-
         if ((id!=null)  || (time!=null) || (aAttrs!=null)) {
-
             u = (Usage) manager.designate(qname, Usage.class);
             EntityInfluence qi=(EntityInfluence) u;
-
             qi.getEntities().add(e1);
-
-            //HashSet<Usage> su=new HashSet<Usage>();
-            //su.add(u);
             a2.getQualifiedUsage().add(u);
-
         }
 
-        Set<Entity> se=a2.getUsed();
-        se.add(e1);
+	a2.getUsed().add(e1);
 
 
         return u;
     }
 
-    public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs) {
+    public Object convertWasGeneratedBy(Object id, Object id2, Object id1, Object time, Object aAttrs) {
         QName qname = getQName(id);
         QName qn2 = getQName(id2);
         QName qn1 = getQName(id1);
 
         Entity e2=(Entity)manager.find(qn2);
         Activity a1=(Activity)manager.find(qn1);
-
         Generation g=null;
 
         if ((id!=null)  || (time!=null) || (aAttrs!=null)) {
-
-            g = (Generation) manager.designate(Generation.class);
+            g = (Generation) manager.designate(qname, Generation.class);
             ActivityInfluence qi=(ActivityInfluence) g;
-
             qi.getActivities().add(a1);
-
             e2.getQualifiedGeneration().add(g);
         }
 
         e2.getWasGeneratedBy().add(a1);
-
         return g;
     }
 
-	public Object convertWasStartedBy(Object id, Object id2, Object id1, Object id3,
-			Object time, Object aAttrs) {
+    public Object convertWasStartedBy(Object id, Object id2, Object id1, Object id3,
+				      Object time, Object aAttrs) {
         //todo
         throw new UnsupportedOperationException();
     }
 
-	public Object convertWasEndedBy(Object id, Object id2, Object id1, Object id3,
-			Object time, Object aAttrs) {
+    public Object convertWasEndedBy(Object id, Object id2, Object id1, Object id3,
+				    Object time, Object aAttrs) {
         //todo
         throw new UnsupportedOperationException();
     }
@@ -175,8 +159,7 @@ public class RdfConstructor implements TreeConstructor {
         Entity e2=(Entity)manager.find(qn2);
         Entity e1=(Entity)manager.find(qn1);
 
-        Set<Entity> se=e2.getWasDerivedFrom();
-        se.add(e1);
+        e2.getWasDerivedFrom().add(e1);
 
         
         return null;
@@ -205,7 +188,7 @@ public class RdfConstructor implements TreeConstructor {
     public Object convertSpecializationOf(Object id2,Object id1) {
         return null;
     }
-	public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
+    public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
         return null;
     }
 
@@ -250,18 +233,18 @@ public class RdfConstructor implements TreeConstructor {
         return null;
     }
     public Object convertNamespace(Object pre, Object iri) {
-       String s_pre=(String)pre;
-       String s_iri=(String)iri;
-       s_iri=unwrap(s_iri);
-       namespaceTable.put(s_pre,s_iri);
-       return null;
+	String s_pre=(String)pre;
+	String s_iri=(String)iri;
+	s_iri=unwrap(s_iri);
+	namespaceTable.put(s_pre,s_iri);
+	return null;
     }
 
     public Object convertDefaultNamespace(Object iri) {
-       String s_iri=(String)iri;
-       s_iri=unwrap(s_iri);
-       namespaceTable.put("_",s_iri);
-       return null;
+	String s_iri=(String)iri;
+	s_iri=unwrap(s_iri);
+	namespaceTable.put("_",s_iri);
+	return null;
     }
     public Object convertNamespaces(List<Object> namespaces) {
         pFactory.setNamespaces(namespaceTable);
@@ -282,7 +265,7 @@ public class RdfConstructor implements TreeConstructor {
     }
 
 
-   /* Component 5 */
+    /* Component 5 */
 
     public Object convertInsertion(Object id, Object id2, Object id1, Object map, Object dAttrs) {
         //todo
@@ -319,7 +302,7 @@ public class RdfConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
 
-   /* Component 6 */
+    /* Component 6 */
 
 
 

@@ -140,7 +140,6 @@
 
   <xs:complexType name="WasInformedBy">
     <xs:sequence>
-      <xs:element name="time"    type="xs:dateTime" minOccurs="0"/>
       <xs:element name="effect"  type="prov:ActivityRef"/>
       <xs:element name="cause"   type="prov:ActivityRef"/>
       <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 

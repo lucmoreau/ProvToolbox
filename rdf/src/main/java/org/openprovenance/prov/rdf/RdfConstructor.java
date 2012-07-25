@@ -100,7 +100,7 @@ public class RdfConstructor implements TreeConstructor {
         if ((id!=null)  || (time!=null) || (aAttrs!=null)) {
 
             u = (Usage) manager.designate(qname, Usage.class);
-            EntityInvolvement qi=(EntityInvolvement) u;
+            EntityInfluence qi=(EntityInfluence) u;
 
             qi.getEntities().add(e1);
 
@@ -130,14 +130,14 @@ public class RdfConstructor implements TreeConstructor {
         if ((id!=null)  || (time!=null) || (aAttrs!=null)) {
 
             g = (Generation) manager.designate(Generation.class);
-            ActivityInvolvement qi=(ActivityInvolvement) g;
+            ActivityInfluence qi=(ActivityInfluence) g;
 
             qi.getActivities().add(a1);
 
             e2.getQualifiedGeneration().add(g);
         }
 
-        e2.setWasGeneratedBy(a1);
+        e2.getWasGeneratedBy().add(a1);
 
         return g;
     }
@@ -216,17 +216,17 @@ public class RdfConstructor implements TreeConstructor {
         QName qnpl = getQName(pl);
 
         Association a = (Association) manager.designate(qname, Association.class);
-        AgentInvolvement qi=(AgentInvolvement) a;
+        AgentInfluence qi=(AgentInfluence) a;
 
         Activity a2=(Activity)manager.find(qn2);
         Agent ag1=(Agent)manager.find(qn1);
-        qi.getEntities().add(ag1);
+        qi.getAgents().add(ag1);
 
         a2.getQualifiedAssociation().add(a);
 
 	if (qnpl!=null) {
 	    Plan plan=(Plan)manager.find(qnpl);
-	    a.setHadPlan(plan);
+	    a.getHadPlan().add(plan);
 	}
 
 	a2.getWasAssociatedWith().add(ag1);

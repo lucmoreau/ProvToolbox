@@ -144,7 +144,7 @@ imported before converting.
                   <arg value="-p" />
                   <arg value="" />
 
-                  <arg value="src/main/resources/ProvenanceOntology.owl" />
+                  <arg value="src/main/resources/prov-20120724.owl" />
                 </java>
                 
                 

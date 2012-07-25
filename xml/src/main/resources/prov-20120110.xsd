@@ -472,6 +472,17 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
   
+
+<!-- To support validator, this is not part of prov xml! -->
+
+  <xs:element name="validationReport" type="prov:ValidationReport"/>
+
+
+  <xs:complexType name="ValidationReport">
+    <xs:sequence>
+      <xs:element name="cycle" type="prov:Dependencies" minOccurs="0"  maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
   
   
   

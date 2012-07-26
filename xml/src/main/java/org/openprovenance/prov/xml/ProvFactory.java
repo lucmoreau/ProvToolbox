@@ -291,6 +291,37 @@ public class ProvFactory {
         return id;
     }
 
+    public Entity addAttributes(Entity from, Entity to) {
+	to.getLabel().addAll(from.getLabel());
+	to.getType().addAll(from.getType());
+	to.getLocation().addAll(from.getLocation());
+	to.getAny().addAll(from.getAny());
+	return to;
+    }
+
+    public Activity addAttributes(Activity from, Activity to) {
+	to.getLabel().addAll(from.getLabel());
+	to.getType().addAll(from.getType());
+	to.getLocation().addAll(from.getLocation());
+	to.getAny().addAll(from.getAny());
+	return to;
+    }
+    public Agent addAttributes(Agent from, Agent to) {
+	to.getLabel().addAll(from.getLabel());
+	to.getType().addAll(from.getType());
+	//	to.getLocation().addAll(from.getLocation());
+	to.getAny().addAll(from.getAny());
+	return to;
+    }
+
+    public Used addAttributes(Used from, Used to) {
+	to.getLabel().addAll(from.getLabel());
+	to.getType().addAll(from.getType());
+	to.getLocation().addAll(from.getLocation());
+	to.getRole().addAll(from.getRole());
+	to.getAny().addAll(from.getAny());
+	return to;
+    }
 
     public Entity newEntity(Entity a) {
         Entity res=newEntity(a.getId());
@@ -997,6 +1028,18 @@ public class ProvFactory {
     }
     */
 
+    public JAXBElement<Entity> newElement(Entity u) {
+	return of.createEntity(u);
+    }
+    public JAXBElement<Activity> newElement(Activity u) {
+	return of.createActivity(u);
+    }
+    public JAXBElement<Agent> newElement(Agent u) {
+	return of.createAgent(u);
+    }
+    public JAXBElement<Used> newElement(Used u) {
+	return of.createUsed(u);
+    }
 
     public void addTypeOLD(HasExtensibility a,
                         URI type) {

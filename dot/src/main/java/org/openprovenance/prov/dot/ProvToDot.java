@@ -618,16 +618,6 @@ public class ProvToDot {
     public void emitDependency(Relation0 e, PrintStream out) {
         HashMap<String,String> properties=new HashMap();
 
-        // List<AccountRef> accounts=e.getAccount();
-        // if (accounts.isEmpty()) {
-        //     accounts=new LinkedList();
-        //     accounts.add(of.newAccountRef(of.newAccount(defaultAccountLabel)));
-        // }
-            
-        // for (AccountRef acc: accounts) {
-        //     String accountLabel=((Account)acc.getRef()).getId();
-        //     addRelationAttributes(accountLabel,e,properties);
-        //        }
         List<QName> others=u.getOtherCauses(e);
         if (others !=null) { // n-ary case
             String bnid="bn" + (bncounter++);

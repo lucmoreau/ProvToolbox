@@ -323,6 +323,22 @@ public class ProvFactory {
 	return to;
     }
 
+    public WasGeneratedBy addAttributes(WasGeneratedBy from, WasGeneratedBy to) {
+	to.getLabel().addAll(from.getLabel());
+	to.getType().addAll(from.getType());
+	to.getLocation().addAll(from.getLocation());
+	to.getRole().addAll(from.getRole());
+	to.getAny().addAll(from.getAny());
+	return to;
+    }
+
+    public WasDerivedFrom addAttributes(WasDerivedFrom from, WasDerivedFrom to) {
+	to.getLabel().addAll(from.getLabel());
+	to.getType().addAll(from.getType());
+	to.getAny().addAll(from.getAny());
+	return to;
+    }
+
     public Entity newEntity(Entity a) {
         Entity res=newEntity(a.getId());
         return res;
@@ -1040,6 +1056,25 @@ public class ProvFactory {
     public JAXBElement<Used> newElement(Used u) {
 	return of.createUsed(u);
     }
+    public JAXBElement<WasGeneratedBy> newElement(WasGeneratedBy u) {
+	return of.createWasGeneratedBy(u);
+    }
+    public JAXBElement<WasStartedBy> newElement(WasStartedBy u) {
+	return of.createWasStartedBy(u);
+    }
+    public JAXBElement<WasEndedBy> newElement(WasEndedBy u) {
+	return of.createWasEndedBy(u);
+    }
+    public JAXBElement<WasInvalidatedBy> newElement(WasInvalidatedBy u) {
+	return of.createWasInvalidatedBy(u);
+    }
+    public JAXBElement<WasInformedBy> newElement(WasInformedBy u) {
+	return of.createWasInformedBy(u);
+    }
+    public JAXBElement<WasDerivedFrom> newElement(WasDerivedFrom u) {
+	return of.createWasDerivedFrom(u);
+    }
+
 
     public void addTypeOLD(HasExtensibility a,
                         URI type) {

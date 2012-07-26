@@ -670,17 +670,18 @@ public class ProvToDot {
             }
 
         } else { // binary case
-            relationName(e, properties);
-            if (e instanceof Relation) {
-                addColors((Relation)e,properties);
-            }
-
-            emitRelation( qnameToString(u.getEffect(e)),
-                          qnameToString(u.getCause(e)),
-                          properties,
-                          out,
-                          true);
-
+	    if (u.getCause(e)!=null) { // make sure there is a cuase
+		relationName(e, properties);
+		if (e instanceof Relation) {
+		    addColors((Relation)e,properties);
+		}
+		
+		emitRelation( qnameToString(u.getEffect(e)),
+			      qnameToString(u.getCause(e)),
+			      properties,
+			      out,
+			      true);
+	    }
         }
     }
 

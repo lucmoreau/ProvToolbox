@@ -662,11 +662,13 @@ public class ProvToDot {
             HashMap<String,String> properties4=new HashMap();
 
             for (QName other: others) {
-                emitRelation( bnid,
-                              qnameToString(other),
-                              properties4,
-                              out,
-                              true);
+		if (other!=null) {
+		    emitRelation( bnid,
+				  qnameToString(other),
+				  properties4,
+				  out,
+				  true);
+		}
             }
 
         } else { // binary case

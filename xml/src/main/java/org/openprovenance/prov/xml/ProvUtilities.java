@@ -71,7 +71,24 @@ public class ProvUtilities {
             return ((Used)r).getEntity().getRef();
         }
         if (r instanceof WasGeneratedBy) {
-            return ((WasGeneratedBy)r).getActivity().getRef();
+	    ActivityRef ref=((WasGeneratedBy)r).getActivity();
+	    if (ref==null) return null;
+            return ref.getRef();
+        }
+        if (r instanceof WasInvalidatedBy) {
+	    ActivityRef ref=((WasInvalidatedBy)r).getActivity();
+	    if (ref==null) return null;
+            return ref.getRef();
+        }
+        if (r instanceof WasStartedBy) {
+	    EntityRef ref=((WasStartedBy)r).getTrigger();
+	    if (ref==null) return null;
+            return ref.getRef();
+        }
+        if (r instanceof WasEndedBy) {
+	    EntityRef ref=((WasEndedBy)r).getTrigger();
+	    if (ref==null) return null;
+            return ref.getRef();
         }
         if (r instanceof WasDerivedFrom) {
             return ((WasDerivedFrom)r).getUsedEntity().getRef();

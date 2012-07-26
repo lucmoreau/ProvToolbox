@@ -374,6 +374,12 @@ public class ProvFactory {
         return newEntity(stringToQName(id),label);
     }
 
+    public Used newUsed(QName id) {
+        return newUsed(id,null,null,null);
+    }
+    public WasGeneratedBy newWasGeneratedBy(QName id) {
+        return newWasGeneratedBy(id,null,null,(org.openprovenance.prov.xml.ActivityRef)null);
+    }
 
 
     public Used newUsed(String id,

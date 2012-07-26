@@ -341,6 +341,24 @@ public class ProvFactory {
 	return to;
     }
 
+
+    public WasStartedBy addAttributes(WasStartedBy from, WasStartedBy to) {
+	to.getLabel().addAll(from.getLabel());
+	to.getType().addAll(from.getType());
+	to.getLocation().addAll(from.getLocation());
+	to.getRole().addAll(from.getRole());
+	to.getAny().addAll(from.getAny());
+	return to;
+    }
+    public WasEndedBy addAttributes(WasEndedBy from, WasEndedBy to) {
+	to.getLabel().addAll(from.getLabel());
+	to.getType().addAll(from.getType());
+	to.getLocation().addAll(from.getLocation());
+	to.getRole().addAll(from.getRole());
+	to.getAny().addAll(from.getAny());
+	return to;
+    }
+
     public WasDerivedFrom addAttributes(WasDerivedFrom from, WasDerivedFrom to) {
 	to.getLabel().addAll(from.getLabel());
 	to.getType().addAll(from.getType());

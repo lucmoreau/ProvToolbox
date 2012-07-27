@@ -395,6 +395,7 @@ public class ProvFactory {
 	return to;
     }
 
+
     public Entity newEntity(Entity a) {
         Entity res=newEntity(a.getId());
         return res;

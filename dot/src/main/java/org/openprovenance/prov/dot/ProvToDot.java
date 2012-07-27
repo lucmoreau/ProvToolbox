@@ -459,7 +459,6 @@ public class ProvToDot {
            return name.getLocalPart();
        }
        String label=getPropertyValueFromAny(v);
-       System.out.println("Foudn value " + label);
        int i=label.lastIndexOf("#");
        int j=label.lastIndexOf("/");
        return label.substring(Math.max(i,j)+1, label.length());
@@ -553,7 +552,6 @@ public class ProvToDot {
         if (displayEntityValue) {
             return convertEntityName(""+of.getLabel(p));
         } else {
-            System.out.println(" ----> " + qnameToString(p.getId()) + "    " + of.getLabel(p));
             return qnameToString(p.getId());
         }
     }

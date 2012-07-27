@@ -505,6 +505,7 @@
   <xs:element name="wasAssociatedWith"  type="prov:WasAssociatedWith"/>
   <xs:element name="actedOnBehalfOf"    type="prov:ActedOnBehalfOf"/>
   <xs:element name="wasAttributedTo"    type="prov:WasAttributedTo"/>
+  <xs:element name="wasInfluencedBy"    type="prov:WasInfluencedBy"/>
   
   
 </xs:schema>

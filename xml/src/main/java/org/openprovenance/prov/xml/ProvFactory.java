@@ -395,6 +395,13 @@ public class ProvFactory {
 	return to;
     }
 
+    public WasInfluencedBy addAttributes(WasInfluencedBy from, WasInfluencedBy to) {
+	to.getLabel().addAll(from.getLabel());
+	to.getType().addAll(from.getType());
+	to.getAny().addAll(from.getAny());
+	return to;
+    }
+
 
     public Entity newEntity(Entity a) {
         Entity res=newEntity(a.getId());
@@ -1145,6 +1152,9 @@ public class ProvFactory {
     }
     public JAXBElement<WasAssociatedWith> newElement(WasAssociatedWith u) {
 	return of.createWasAssociatedWith(u);
+    }
+    public JAXBElement<WasInfluencedBy> newElement(WasInfluencedBy u) {
+	return of.createWasInfluencedBy(u);
     }
 
 

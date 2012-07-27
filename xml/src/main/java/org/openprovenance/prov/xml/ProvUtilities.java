@@ -58,6 +58,13 @@ public class ProvUtilities {
         if (r instanceof WasInformedBy) {
             return ((WasInformedBy)r).getEffect().getRef();
         }
+        if (r instanceof WasInfluencedBy) {
+            return ((WasInfluencedBy)r).getInfluencee().getRef();
+        }
+
+        if (r instanceof ActedOnBehalfOf) {
+            return ((ActedOnBehalfOf)r).getSubordinate().getRef();
+        }
 
         if (r instanceof DerivedByInsertionFrom) {
             return ((DerivedByInsertionFrom)r).getAfter().getRef();
@@ -93,6 +100,10 @@ public class ProvUtilities {
         if (r instanceof WasDerivedFrom) {
             return ((WasDerivedFrom)r).getUsedEntity().getRef();
         }
+
+        if (r instanceof WasInfluencedBy) {
+            return ((WasInfluencedBy)r).getInfluencer().getRef();
+        }
         if (r instanceof WasRevisionOf) {
             return ((WasRevisionOf)r).getOlder().getRef();
         }
@@ -111,6 +122,9 @@ public class ProvUtilities {
         if (r instanceof WasInformedBy) {
             return ((WasInformedBy)r).getCause().getRef();
         }
+        if (r instanceof ActedOnBehalfOf) {
+            return ((ActedOnBehalfOf)r).getResponsible().getRef();
+        }
         if (r instanceof DerivedByInsertionFrom) {
             return ((DerivedByInsertionFrom)r).getBefore().getRef();
         }
@@ -124,6 +138,13 @@ public class ProvUtilities {
             EntityRef e=((WasAssociatedWith)r).getPlan();
             if (e==null) return null;
             res.add(e.getRef());
+            return res;
+        }
+        if (r instanceof ActedOnBehalfOf) {
+            List<QName> res=new LinkedList<QName>();
+            ActivityRef a=((ActedOnBehalfOf)r).getActivity();
+            if (a==null) return null;
+            res.add(a.getRef());
             return res;
         }
         if (r instanceof DerivedByInsertionFrom) {

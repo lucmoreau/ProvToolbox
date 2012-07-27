@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <configuration xmlns="http://openprovenance.org/model/opmPrinterConfig">
 
-  <graphName>OPMGraph</graphName>
+  <graphName>PROV</graphName>
 
 
   <activities displayValue="false">

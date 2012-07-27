@@ -365,6 +365,35 @@ public class ProvFactory {
 	to.getAny().addAll(from.getAny());
 	return to;
     }
+    public WasInformedBy addAttributes(WasInformedBy from, WasInformedBy to) {
+	to.getLabel().addAll(from.getLabel());
+	to.getType().addAll(from.getType());
+	to.getAny().addAll(from.getAny());
+	return to;
+    }
+
+    public ActedOnBehalfOf addAttributes(ActedOnBehalfOf from, ActedOnBehalfOf to) {
+	to.getLabel().addAll(from.getLabel());
+	to.getType().addAll(from.getType());
+	to.getAny().addAll(from.getAny());
+	return to;
+    }
+
+
+    public WasAssociatedWith addAttributes(WasAssociatedWith from, WasAssociatedWith to) {
+	to.getLabel().addAll(from.getLabel());
+	to.getType().addAll(from.getType());
+	to.getRole().addAll(from.getRole());
+	to.getAny().addAll(from.getAny());
+	return to;
+    }
+
+    public WasAttributedTo addAttributes(WasAttributedTo from, WasAttributedTo to) {
+	to.getLabel().addAll(from.getLabel());
+	to.getType().addAll(from.getType());
+	to.getAny().addAll(from.getAny());
+	return to;
+    }
 
     public Entity newEntity(Entity a) {
         Entity res=newEntity(a.getId());
@@ -1106,6 +1135,15 @@ public class ProvFactory {
     }
     public JAXBElement<WasDerivedFrom> newElement(WasDerivedFrom u) {
 	return of.createWasDerivedFrom(u);
+    }
+    public JAXBElement<ActedOnBehalfOf> newElement(ActedOnBehalfOf u) {
+	return of.createActedOnBehalfOf(u);
+    }
+    public JAXBElement<WasAttributedTo> newElement(WasAttributedTo u) {
+	return of.createWasAttributedTo(u);
+    }
+    public JAXBElement<WasAssociatedWith> newElement(WasAssociatedWith u) {
+	return of.createWasAssociatedWith(u);
     }
 
 

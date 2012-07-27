@@ -494,13 +494,17 @@
     </xs:sequence>
     <xs:attribute name="key" type="xs:string"/>
   </xs:complexType>
-  <xs:element name="used"     type="prov:Used"/>
+
+  <xs:element name="used"               type="prov:Used"/>
   <xs:element name="wasGeneratedBy"     type="prov:WasGeneratedBy"/>
-  <xs:element name="wasStartedBy"     type="prov:WasStartedBy"/>
-  <xs:element name="wasEndedBy"     type="prov:WasEndedBy"/>
-  <xs:element name="wasInvalidatedBy"     type="prov:WasInvalidatedBy"/>
-  <xs:element name="wasInformedBy"     type="prov:WasInformedBy"/>
+  <xs:element name="wasStartedBy"       type="prov:WasStartedBy"/>
+  <xs:element name="wasEndedBy"         type="prov:WasEndedBy"/>
+  <xs:element name="wasInvalidatedBy"   type="prov:WasInvalidatedBy"/>
+  <xs:element name="wasInformedBy"      type="prov:WasInformedBy"/>
   <xs:element name="wasDerivedFrom"     type="prov:WasDerivedFrom"/>
+  <xs:element name="wasAssociatedWith"  type="prov:WasAssociatedWith"/>
+  <xs:element name="actedOnBehalfOf"    type="prov:ActedOnBehalfOf"/>
+  <xs:element name="wasAttributedTo"    type="prov:WasAttributedTo"/>
   
   
   

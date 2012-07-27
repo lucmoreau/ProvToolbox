@@ -507,10 +507,4 @@
   <xs:element name="wasAttributedTo"    type="prov:WasAttributedTo"/>
   
   
-  
-  
-  
-  
-  
-  
 </xs:schema>

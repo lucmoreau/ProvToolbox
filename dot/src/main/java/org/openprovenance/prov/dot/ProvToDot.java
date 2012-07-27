@@ -24,6 +24,12 @@ import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.HasType;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
+import org.openprovenance.prov.xml.WasInvalidatedBy;
+import org.openprovenance.prov.xml.WasInformedBy;
+import org.openprovenance.prov.xml.WasInfluencedBy;
+import org.openprovenance.prov.xml.WasStartedBy;
+import org.openprovenance.prov.xml.WasEndedBy;
+import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.WasAttributedTo;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.DerivedByInsertionFrom;
@@ -689,21 +695,34 @@ public class ProvToDot {
     }
 
     String getLabelForRelation(Relation0 e) {
-	if (e instanceof Used) return "used";
-	if (e instanceof WasGeneratedBy) return "wasGeneratedBy";
-	if (e instanceof WasDerivedFrom) return "wasDerivedFrom";
+	if (e instanceof Used)              return "used";
+	if (e instanceof WasGeneratedBy)    return "wasGeneratedBy";
+	if (e instanceof WasDerivedFrom)    return "wasDerivedFrom";
+	if (e instanceof WasStartedBy)      return "wasStartedBy";
+	if (e instanceof WasEndedBy)        return "wasEndedBy";
+	if (e instanceof WasInvalidatedBy)  return "wasInvalidatedBy";
+	if (e instanceof WasInformedBy)     return "wasInformedBy";
 	if (e instanceof WasAssociatedWith) return "wasAssociatedWith";
-	if (e instanceof WasAttributedTo) return "wasAttributedTo";
+	if (e instanceof WasAttributedTo)   return "wasAttributedTo";
+	if (e instanceof WasInfluencedBy)   return "wasInfluencedBy";
+	if (e instanceof ActedOnBehalfOf)   return "actedOnBehalfOf";
 	return null;
     }
     String getShortLabelForRelation(Relation0 e) {
-	if (e instanceof Used) return "used";
-	if (e instanceof WasGeneratedBy) return "wgb";
-	if (e instanceof WasDerivedFrom) return "wdf";
-	if (e instanceof WasAssociatedWith) return "waw";
-	if (e instanceof WasAttributedTo) return "wat";
+	if (e instanceof Used)              return "use";
+	if (e instanceof WasGeneratedBy)    return "gen";
+	if (e instanceof WasDerivedFrom)    return "der";
+	if (e instanceof WasStartedBy)      return "start";
+	if (e instanceof WasEndedBy)        return "end";
+	if (e instanceof WasInvalidatedBy)  return "inv";
+	if (e instanceof WasInformedBy)     return "inf";
+	if (e instanceof WasAssociatedWith) return "assoc";
+	if (e instanceof WasAttributedTo)   return "att";
+	if (e instanceof WasInfluencedBy)   return "inf";
+	if (e instanceof ActedOnBehalfOf)   return "del";
 	return null;
     }
+
     
 
     public HashMap<String,String> addRelationAttributes(String accountLabel,

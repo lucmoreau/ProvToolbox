@@ -155,6 +155,8 @@ public class BeanTraversal {
             return convert((MentionOf) o);
         } else if (o instanceof WasGeneratedBy) {
             return convert((WasGeneratedBy) o);
+        } else if (o instanceof WasAttributedTo) {
+            return convert((WasAttributedTo) o);
         } else {
             throw new UnsupportedOperationException("Unknown relation type "+o);
         }
@@ -169,6 +171,16 @@ public class BeanTraversal {
                                           c.convert(o.getActivity().getRef()),
                                           (o.getAgent()==null)? null: c.convert(o.getAgent().getRef()),
                                           (o.getPlan()==null)? null: c.convert(o.getPlan().getRef()));
+    }
+
+    public Object convert(WasAttributedTo o) {
+        List tAttrs=convertTypeAttributes((HasType)o);
+        List otherAttrs=convertAttributes((HasExtensibility)o);
+        return c.convertWasAttributedTo(c.convert(o.getId()),
+                                          tAttrs,
+                                          otherAttrs,
+                                          c.convert(o.getEntity().getRef()),
+                                          (o.getAgent()==null)? null: c.convert(o.getAgent().getRef()));
     }
 
     public Object convert(Used o) {

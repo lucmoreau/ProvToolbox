@@ -1,3 +1,23 @@
+
+java.lang.UnsupportedOperationException: Unknown relation type org.openprovenance.prov.xml.WasAttributedTo@d0f56e[
+  entity=org.openprovenance.prov.xml.EntityRef@cc926e[
+  ref=UpVote31291.0
+]
+  agent=org.openprovenance.prov.xml.AgentRef@49c8e5[
+  ref=User118
+]
+  label=[]
+  type=[]
+  any=[[pp:source: null]]
+  id=d16c3145-b6aa-44c6-8fcb-aae18cf9f83f
+]
+	at org.openprovenance.prov.xml.BeanTraversal.convertRelation(BeanTraversal.java:159)
+	at org.openprovenance.prov.xml.BeanTraversal.convert(BeanTraversal.java:31)
+	at org.openprovenance.prov.notation.Utility.convertBeanToASN(Utility.java:88)
+	at org.openprovenance.prov.interop.InteropFramework.xml2asn(InteropFramework.java:91)
+	at org.openprovenance.prov.interop.InteropFramework.main(InteropFramework.java:289)
+
+
 0. asn/target/pc1-full-2.xml
    and
    xml/target/pc1-full.xml

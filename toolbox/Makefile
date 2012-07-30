@@ -45,7 +45,8 @@ b1:
 	target/appassembler/bin/provconvert -asn2xml ../asn/src/test/resources/prov/bundles1.pn target/bundles1.xml
 
 
-
+pc1:
+	target/appassembler/bin/provconvert -xml2asn ../xml/target/pc1-full.xml target/pc1-full.provn
 
 
 

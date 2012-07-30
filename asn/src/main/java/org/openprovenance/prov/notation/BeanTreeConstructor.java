@@ -132,6 +132,19 @@ public class BeanTreeConstructor implements BeanConstructor{
                                           plan,
                                           c.convertAttributes(attrs));
     }
+
+    public Object convertWasAttributedTo(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object agent) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
+        List attrs=new LinkedList();
+        attrs.addAll(tAttrs2);
+        attrs.addAll(otherAttrs);
+        return c.convertWasAttributedTo(id,
+					entity,
+					agent,
+					c.convertAttributes(attrs));
+    }
+
     public Object convertUsed(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);

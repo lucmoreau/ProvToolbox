@@ -83,7 +83,7 @@ public class InteropFramework
 
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
 
-        deserial.validateBundle(schemaFiles,in);
+	//        deserial.validateBundle(schemaFiles,in);
 
         Bundle c=deserial.deserialiseBundle(in);
 
@@ -286,7 +286,7 @@ public class InteropFramework
             }
 
             if (args[0].equals("-xml2asn")) {
-                me.xml2xml(fileIn,fileOut,null,null);
+                me.xml2asn(fileIn,fileOut,null);
                 return;
             }
 

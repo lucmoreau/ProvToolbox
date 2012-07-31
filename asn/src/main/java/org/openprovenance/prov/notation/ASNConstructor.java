@@ -58,7 +58,9 @@ public class ASNConstructor implements TreeConstructor {
 
     public Object convertBundle(Object namespaces, List<Object> records, List<Object> bundles) {
         String s=keyword("bundle") + breakline();
-        s=s+namespaces;
+	if (namespaces!=null) {
+	    s=s+namespaces + breakline();
+	}
         for (Object o: records) {
             s=s+o+breakline();
         }
@@ -73,7 +75,9 @@ public class ASNConstructor implements TreeConstructor {
 
     public Object convertNamedBundle(Object id, Object namespaces, List<Object> records) {
         String s="bundle " + id + breakline();
-        s=s+namespaces;
+	if (namespaces!=null) {
+	    s=s+namespaces + breakline();
+	}
 	if (records!=null) 
 	    for (Object o: records) {
 		s=s+o+breakline();
@@ -261,7 +265,7 @@ public class ASNConstructor implements TreeConstructor {
 		    InternationalizedString is=(InternationalizedString) value;
 		    value=convertInternationalizedString(is);
 		}
-		return value + "%%" + datatype;
+		return value + " %% " + datatype;
 	    }
 	}
     }

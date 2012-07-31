@@ -178,7 +178,7 @@ public  class ProvConstructor implements TreeConstructor {
                 else lks.add(o);
             }
         String s_id=(String)id;
-
+        System.out.println("NamedBundle name " + s_id);
         NamedBundle c=pFactory.newNamedBundle(s_id,
                                               acs,
                                               es,

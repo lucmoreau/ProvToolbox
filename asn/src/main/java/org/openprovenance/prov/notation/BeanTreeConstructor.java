@@ -41,10 +41,10 @@ public class BeanTreeConstructor implements BeanConstructor{
     public Object convertAttributeValue(Element a) {
         String type=a.getAttributeNS(XSI_NS,"type");
         if ((type==null) || ("".equals(type))) {
-            System.out.println("----> convertAttributeValue " + type + " " + a.getFirstChild().getNodeValue());
+            //System.out.println("----> convertAttributeValue " + type + " " + a.getFirstChild().getNodeValue());
             return a.getFirstChild().getNodeValue();
         } else {
-            System.out.println("----> convertAttributeValue " + type);
+            //System.out.println("----> convertAttributeValue " + type);
             return c.convertTypedLiteral(type,
                                          "\"" + a.getFirstChild().getNodeValue() + "\"");
         }
@@ -120,30 +120,6 @@ public class BeanTreeConstructor implements BeanConstructor{
     }
 
 
-    public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object agent, Object plan) {
-        List tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
-        List attrs=new LinkedList();
-        attrs.addAll(tAttrs2);
-        attrs.addAll(otherAttrs);
-        return c.convertWasAssociatedWith(id,
-                                          activity,
-                                          agent,
-                                          plan,
-                                          c.convertAttributes(attrs));
-    }
-
-    public Object convertWasAttributedTo(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object agent) {
-        List tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
-        List attrs=new LinkedList();
-        attrs.addAll(tAttrs2);
-        attrs.addAll(otherAttrs);
-        return c.convertWasAttributedTo(id,
-					entity,
-					agent,
-					c.convertAttributes(attrs));
-    }
 
     public Object convertUsed(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity) {
         List tAttrs2=convertTypeAttributes(tAttrs);
@@ -157,6 +133,33 @@ public class BeanTreeConstructor implements BeanConstructor{
                              null,
                              c.convertAttributes(attrs));
     }
+
+    public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
+        List attrs=new LinkedList();
+        attrs.addAll(tAttrs2);
+        attrs.addAll(otherAttrs);
+        return c.convertWasGeneratedBy(id,
+                                       entity,
+                                       activity,
+                                       null,//time
+                                       c.convertAttributes(attrs));
+    }
+
+    public Object convertWasInvalidatedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
+        List attrs=new LinkedList();
+        attrs.addAll(tAttrs2);
+        attrs.addAll(otherAttrs);
+        return c.convertWasInvalidatedBy(id,
+                                         entity,
+                                         activity,
+                                         null,//time
+                                         c.convertAttributes(attrs));
+    }
+
     public Object convertWasStartedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity, Object starter) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);
@@ -185,6 +188,19 @@ public class BeanTreeConstructor implements BeanConstructor{
 				   c.convertAttributes(attrs));
     }
 
+    
+    public Object convertWasInformedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object effect, Object cause) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
+        List attrs=new LinkedList();
+        attrs.addAll(tAttrs2);
+        attrs.addAll(otherAttrs);
+        return c.convertWasInformedBy(id,
+				      effect,
+				      cause,
+				      c.convertAttributes(attrs));
+    }
+
     public Object convertWasDerivedFrom(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object effect, Object cause) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);
@@ -199,15 +215,58 @@ public class BeanTreeConstructor implements BeanConstructor{
                                        null,//u1
                                        c.convertAttributes(attrs));
     }
-    
-    public Object convertWasInformedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs) {
+
+    public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object agent, Object plan) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
         attrs.addAll(tAttrs2);
         attrs.addAll(otherAttrs);
-        return null;
+        return c.convertWasAssociatedWith(id,
+                                          activity,
+                                          agent,
+                                          plan,
+                                          c.convertAttributes(attrs));
     }
+
+    public Object convertWasAttributedTo(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object agent) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
+        List attrs=new LinkedList();
+        attrs.addAll(tAttrs2);
+        attrs.addAll(otherAttrs);
+        return c.convertWasAttributedTo(id,
+					entity,
+					agent,
+					c.convertAttributes(attrs));
+    }
+
+    public Object convertActedOnBehalfOf(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object subordinate, Object responsible, Object activity) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
+        List attrs=new LinkedList();
+        attrs.addAll(tAttrs2);
+        attrs.addAll(otherAttrs);
+        return c.convertActedOnBehalfOf(id,
+					subordinate,
+					responsible,
+					activity,
+					c.convertAttributes(attrs));
+    }
+
+    public Object convertWasInfluencedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object effect, Object cause) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
+        List attrs=new LinkedList();
+        attrs.addAll(tAttrs2);
+        attrs.addAll(otherAttrs);
+        return c.convertWasInfluencedBy(id,
+					effect,
+					cause,
+					c.convertAttributes(attrs));
+    }
+
+
     public Object convertAlternateOf(Object entity2, Object entity1) {
         return c.convertAlternateOf(entity2,
                                     entity1);
@@ -225,31 +284,6 @@ public class BeanTreeConstructor implements BeanConstructor{
 				  bundle);
     }
 
-    public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity) {
-        List tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
-        List attrs=new LinkedList();
-        attrs.addAll(tAttrs2);
-        attrs.addAll(otherAttrs);
-        return c.convertWasGeneratedBy(id,
-                                       entity,
-                                       activity,
-                                       null,//time
-                                       c.convertAttributes(attrs));
-    }
-
-    public Object convertWasInvalidatedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity) {
-        List tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
-        List attrs=new LinkedList();
-        attrs.addAll(tAttrs2);
-        attrs.addAll(otherAttrs);
-        return c.convertWasInvalidatedBy(id,
-                                         entity,
-                                         activity,
-                                         null,//time
-                                         c.convertAttributes(attrs));
-    }
 
 
     public Object convertBundle(Object namespaces,

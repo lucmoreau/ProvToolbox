@@ -32,6 +32,12 @@ public class ProvUtilities {
         if (r instanceof Used) {
             return ((Used)r).getActivity().getRef();
         }
+        if (r instanceof WasStartedBy) {
+            return ((WasStartedBy)r).getActivity().getRef();
+        }
+        if (r instanceof WasEndedBy) {
+            return ((WasEndedBy)r).getActivity().getRef();
+        }
         if (r instanceof WasGeneratedBy) {
             return ((WasGeneratedBy)r).getEntity().getRef();
         }
@@ -43,6 +49,9 @@ public class ProvUtilities {
         }
         if (r instanceof WasAssociatedWith) {
             return ((WasAssociatedWith)r).getActivity().getRef();
+        }
+        if (r instanceof WasInvalidatedBy) {
+            return ((WasInvalidatedBy)r).getEntity().getRef();
         }
 
         if (r instanceof WasAttributedTo) {
@@ -137,6 +146,20 @@ public class ProvUtilities {
             EntityRef e=((WasAssociatedWith)r).getPlan();
             if (e==null) return null;
             res.add(e.getRef());
+            return res;
+        }
+        if (r instanceof WasStartedBy) {
+            List<QName> res=new LinkedList<QName>();
+            ActivityRef a=((WasStartedBy)r).getStarter();
+            if (a==null) return null;
+            res.add(a.getRef());
+            return res;
+        }
+        if (r instanceof WasEndedBy) {
+            List<QName> res=new LinkedList<QName>();
+            ActivityRef a=((WasEndedBy)r).getEnder();
+            if (a==null) return null;
+            res.add(a.getRef());
             return res;
         }
         if (r instanceof ActedOnBehalfOf) {

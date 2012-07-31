@@ -103,15 +103,6 @@ public class ASNConstructor implements TreeConstructor {
 
 
     public Object convertAttribute(Object name, Object value) {
-	if (value instanceof InternationalizedString) {
-	    InternationalizedString is=(InternationalizedString) value;
-	    String lang=is.getLang();
-	    if (lang==null) {
-		value= "\""+ is.getValue() + "\"";
-	    } else { 
-		value= "\""+ is.getValue()+"\""+"@"+lang;
-	    }
-	}
         return name + "=" + value;
     }
     public Object convertStart(String start) {
@@ -266,10 +257,27 @@ public class ASNConstructor implements TreeConstructor {
 		String val=(String)value;
 		return "'" + val.substring(1, val.length() -1 ) + "'";
 	    } else {
+		if (value instanceof InternationalizedString) {
+		    InternationalizedString is=(InternationalizedString) value;
+		    value=convertInternationalizedString(is);
+		}
 		return value + "%%" + datatype;
 	    }
 	}
     }
+
+
+    public Object convertInternationalizedString (InternationalizedString is) {
+	String value;
+	String lang=is.getLang();
+	if (lang==null) {
+	    value= "\""+ is.getValue() + "\"";
+	} else { 
+	    value= "\""+ is.getValue()+"\""+"@"+lang;
+	}
+	return value;
+    }
+
 
    public Object convertNamespace(Object pre, Object iri) {
        return keyword("prefix") + " " + showprefix((String)pre) + " " + showuri((String)iri);

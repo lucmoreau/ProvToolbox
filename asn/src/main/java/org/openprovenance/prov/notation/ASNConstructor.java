@@ -1,5 +1,6 @@
 package org.openprovenance.prov.notation;
 import java.util.List;
+import org.openprovenance.prov.xml.InternationalizedString;
 
 /** For testing purpose, conversion back to ASN. */
 
@@ -102,6 +103,15 @@ public class ASNConstructor implements TreeConstructor {
 
 
     public Object convertAttribute(Object name, Object value) {
+	if (value instanceof InternationalizedString) {
+	    InternationalizedString is=(InternationalizedString) value;
+	    String lang=is.getLang();
+	    if (lang==null) {
+		value= "\""+ is.getValue() + "\"";
+	    } else { 
+		value= "\""+ is.getValue()+"\""+"@"+lang;
+	    }
+	}
         return name + "=" + value;
     }
     public Object convertStart(String start) {

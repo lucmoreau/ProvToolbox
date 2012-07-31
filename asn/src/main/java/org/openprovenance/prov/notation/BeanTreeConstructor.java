@@ -157,6 +157,33 @@ public class BeanTreeConstructor implements BeanConstructor{
                              null,
                              c.convertAttributes(attrs));
     }
+    public Object convertWasStartedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity, Object starter) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
+        List attrs=new LinkedList();
+        attrs.addAll(tAttrs2);
+        attrs.addAll(otherAttrs);
+        return c.convertWasStartedBy(id,
+				     activity,
+				     entity,
+				     starter,
+				     null,
+				     c.convertAttributes(attrs));
+    }
+
+    public Object convertWasEndedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity, Object ender) {
+        List tAttrs2=convertTypeAttributes(tAttrs);
+        //List otherAttrs2=convertAttributes(otherAttrs);
+        List attrs=new LinkedList();
+        attrs.addAll(tAttrs2);
+        attrs.addAll(otherAttrs);
+        return c.convertWasEndedBy(id,
+				   activity,
+				   entity,
+				   ender,
+				   null,
+				   c.convertAttributes(attrs));
+    }
 
     public Object convertWasDerivedFrom(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object effect, Object cause) {
         List tAttrs2=convertTypeAttributes(tAttrs);
@@ -226,21 +253,23 @@ public class BeanTreeConstructor implements BeanConstructor{
 
 
     public Object convertBundle(Object namespaces,
-                                   List<Object> aRecords,
-                                   List<Object> eRecords,
-                                   List<Object> agRecords,
-                                   List<Object> lnkRecords) {
+				List<Object> aRecords,
+				List<Object> eRecords,
+				List<Object> agRecords,
+				List<Object> lnkRecords,
+				List<Object> bRecords) {
         List<Object> ll=new LinkedList();
         if (aRecords!=null) ll.addAll(aRecords);
         if (eRecords!=null) ll.addAll(eRecords);
         if (agRecords!=null) ll.addAll(agRecords);
         if (lnkRecords!=null) ll.addAll(lnkRecords);
-        return c.convertBundle(namespaces,ll,null);
+        return c.convertBundle(namespaces,ll,bRecords);
     }
 
 
-    public Object convertNamedBundle(Object namespaces,
-                                     List<Object> aRecords,
+    public Object convertNamedBundle(Object id,
+                                     Object namespaces,
+				     List<Object> aRecords,
                                      List<Object> eRecords,
                                      List<Object> agRecords,
                                      List<Object> lnkRecords) {
@@ -249,7 +278,7 @@ public class BeanTreeConstructor implements BeanConstructor{
         if (eRecords!=null) ll.addAll(eRecords);
         if (agRecords!=null) ll.addAll(agRecords);
         if (lnkRecords!=null) ll.addAll(lnkRecords);
-        return c.convertNamedBundle(namespaces,ll,null);
+        return c.convertNamedBundle(id,namespaces,ll);
     }
 
 

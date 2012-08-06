@@ -78,7 +78,7 @@ public class ProvUtilities {
             return ((DerivedByInsertionFrom)r).getAfter().getRef();
         }
         System.out.println("Unknow relation " + r);
-        throw new NullPointerException();
+        throw new UnsupportedOperationException();
     }
         
     public QName getCause(Relation0 r) {
@@ -136,7 +136,8 @@ public class ProvUtilities {
         if (r instanceof DerivedByInsertionFrom) {
             return ((DerivedByInsertionFrom)r).getBefore().getRef();
         }
-        throw new NullPointerException();
+	System.out.println("Unknown relation " + r);
+        throw new UnsupportedOperationException();
     }
 
     
@@ -177,7 +178,7 @@ public class ProvUtilities {
             }
             return res;
         }
-        return null;
+	return null;
     }
 
     public MentionOf getMentionForRemoteEntity(Bundle local, Entity remoteEntity, NamedBundle remote) {

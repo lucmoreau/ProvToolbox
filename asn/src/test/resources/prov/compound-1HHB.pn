@@ -1,16 +1,17 @@
 
 bundle
-  prefix pdb http://example.org/pdb
-  prefix doi http://dx.doi.org/
+  prefix pdb <http://example.org/pdb/>
+  prefix doi <http://dx.doi.org/>
   entity(pdb:1HHB, [prov:location="http://www.rcsb.org/pdb/files/1hhb.pdb"])
   entity(pdb:4HHB, [prov:location="http://www.rcsb.org/pdb/files/4hhb.pdb"])
+  entity(doi:10.2210/pdb4hhb/pdb)
   alternateOf(pdb:4HHB, doi:10.2210/pdb4hhb/pdb)
-  wasInvalidated(-; pdb:1HHB,-,-,"1984-07-18T00:00:00")  //1HHB was obsoleted on 1984-07-18
-  wasRevisionOf(pdb:4HHB, pdb:1HHB) //ENTRY 4HHB SUPERSEDES 1HHB
+  wasInvalidatedBy(-; pdb:1HHB,-,1984-07-18T00:00:00)  //1HHB was obsoleted on 1984-07-18
+  wasDerivedFrom(pdb:4HHB, pdb:1HHB,[prov:type='prov:Revision']) //ENTRY 4HHB SUPERSEDES 1HHB
 endBundle
  
 // http://www.rcsb.org/pdb/explore/obsolete.do?obsoleteId=1HHB
-//Mentioned by Philip Bourne in today's invited talk at ipaw.
+//Mentioned by Philip Bourne in ipaw's invited talk.
 //http://www.rcsb.org/pdb/explore/obsolete.do?obsoleteId=1HHB
 //wasInvalidated(-; pdb:1HHB,-,-,"1984-07-18T00:00:00")
 

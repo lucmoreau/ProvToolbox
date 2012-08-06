@@ -13,6 +13,5 @@ endBundle
 // http://www.rcsb.org/pdb/explore/obsolete.do?obsoleteId=1HHB
 //Mentioned by Philip Bourne in ipaw's invited talk.
 //http://www.rcsb.org/pdb/explore/obsolete.do?obsoleteId=1HHB
-//wasInvalidated(-; pdb:1HHB,-,-,"1984-07-18T00:00:00")
-
+//wasInvalidated(-; pdb:1HHB,-,-,1984-07-18T00:00:00)
 

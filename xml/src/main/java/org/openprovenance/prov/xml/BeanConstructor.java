@@ -12,11 +12,11 @@ public interface BeanConstructor {
     public Object convertAgent(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> otherAttrs);
     public Object convertActivity(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> otherAttrs, Object startTime, Object endTime);
 
-    public Object convertUsed(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity);
-    public Object convertWasStartedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity, Object starter);
-    public Object convertWasEndedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity, Object ender);
-    public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity);
-    public Object convertWasInvalidatedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity);
+    public Object convertUsed(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity, Object time);
+    public Object convertWasStartedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity, Object starter, Object time);
+    public Object convertWasEndedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity, Object ender, Object time);
+    public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity, Object time);
+    public Object convertWasInvalidatedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity, Object time);
 
     public Object convertWasInformedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object effect, Object cause);
     public Object convertWasInfluencedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object effect, Object cause);

@@ -219,7 +219,8 @@ public class BeanTraversal {
                              tAttrs,
                              otherAttrs,
                              c.convert(o.getActivity().getRef()),
-                             c.convert(o.getEntity().getRef()));
+                             c.convert(o.getEntity().getRef()),
+			     o.getTime());
     }
 
     public Object convert(WasStartedBy o) {
@@ -233,7 +234,8 @@ public class BeanTraversal {
 				     otherAttrs,
 				     ((a=o.getActivity())==null)? null: c.convert(a.getRef()),
 				     ((e=o.getTrigger())==null)? null: c.convert(e.getRef()),
-				     ((s=o.getStarter())==null)? null: c.convert(s.getRef()));
+				     ((s=o.getStarter())==null)? null: c.convert(s.getRef()),
+				     o.getTime());
     }
     public Object convert(WasEndedBy o) {
         List tAttrs=convertTypeAttributes((HasType)o);
@@ -246,7 +248,8 @@ public class BeanTraversal {
 				   otherAttrs,
 				     ((a=o.getActivity())==null)? null: c.convert(a.getRef()),
 				     ((e=o.getTrigger())==null)? null: c.convert(e.getRef()),
-				     ((s=o.getEnder())==null)? null: c.convert(s.getRef()));
+				   ((s=o.getEnder())==null)? null: c.convert(s.getRef()),
+				   o.getTime());
     }
 
     public Object convert(WasGeneratedBy o) {
@@ -257,7 +260,8 @@ public class BeanTraversal {
 				       tAttrs,
 				       otherAttrs,
                                        c.convert(o.getEntity().getRef()),
-                                       ((a=o.getActivity())==null)? null: c.convert(a.getRef()));
+                                       ((a=o.getActivity())==null)? null: c.convert(a.getRef()),
+				       o.getTime());
     }
     public Object convert(WasInvalidatedBy o) {
         List tAttrs=convertTypeAttributes((HasType)o);
@@ -267,7 +271,8 @@ public class BeanTraversal {
 					 tAttrs,
 					 otherAttrs,
 					 c.convert(o.getEntity().getRef()),
-					 ((a=o.getActivity())==null)? null: c.convert(a.getRef()));
+					 ((a=o.getActivity())==null)? null: c.convert(a.getRef()),
+					 o.getTime());
     }
     public Object convert(WasInformedBy o) {
         List tAttrs=convertTypeAttributes((HasType)o);

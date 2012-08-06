@@ -121,7 +121,7 @@ public class BeanTreeConstructor implements BeanConstructor{
 
 
 
-    public Object convertUsed(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity) {
+    public Object convertUsed(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity, Object time) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
@@ -130,11 +130,11 @@ public class BeanTreeConstructor implements BeanConstructor{
         return c.convertUsed(id,
                              activity,
                              entity,
-                             null,
+                             time,
                              c.convertAttributes(attrs));
     }
 
-    public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity) {
+    public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity, Object time) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
@@ -143,11 +143,11 @@ public class BeanTreeConstructor implements BeanConstructor{
         return c.convertWasGeneratedBy(id,
                                        entity,
                                        activity,
-                                       null,//time
+                                       time,
                                        c.convertAttributes(attrs));
     }
 
-    public Object convertWasInvalidatedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity) {
+    public Object convertWasInvalidatedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object entity, Object activity, Object time) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
@@ -156,11 +156,11 @@ public class BeanTreeConstructor implements BeanConstructor{
         return c.convertWasInvalidatedBy(id,
                                          entity,
                                          activity,
-                                         null,//time
+                                         time,
                                          c.convertAttributes(attrs));
     }
 
-    public Object convertWasStartedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity, Object starter) {
+    public Object convertWasStartedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity, Object starter, Object time) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
@@ -170,11 +170,11 @@ public class BeanTreeConstructor implements BeanConstructor{
 				     activity,
 				     entity,
 				     starter,
-				     null,
+				     time,
 				     c.convertAttributes(attrs));
     }
 
-    public Object convertWasEndedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity, Object ender) {
+    public Object convertWasEndedBy(Object id, List<Object> tAttrs, List<Object> otherAttrs, Object activity, Object entity, Object ender, Object time) {
         List tAttrs2=convertTypeAttributes(tAttrs);
         //List otherAttrs2=convertAttributes(otherAttrs);
         List attrs=new LinkedList();
@@ -184,7 +184,7 @@ public class BeanTreeConstructor implements BeanConstructor{
 				   activity,
 				   entity,
 				   ender,
-				   null,
+				   time,
 				   c.convertAttributes(attrs));
     }
 

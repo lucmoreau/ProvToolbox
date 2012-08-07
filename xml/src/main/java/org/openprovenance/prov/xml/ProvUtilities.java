@@ -61,7 +61,7 @@ public class ProvUtilities {
             return ((AlternateOf)r).getEntity2().getRef();
         }
         if (r instanceof SpecializationOf) {
-            return ((SpecializationOf)r).getGeneralEntity().getRef();
+            return ((SpecializationOf)r).getSpecializedEntity().getRef();
         }
         if (r instanceof WasInformedBy) {
             return ((WasInformedBy)r).getEffect().getRef();
@@ -125,7 +125,7 @@ public class ProvUtilities {
             return ((AlternateOf)r).getEntity1().getRef();
         }
         if (r instanceof SpecializationOf) {
-            return ((SpecializationOf)r).getSpecializedEntity().getRef();
+            return ((SpecializationOf)r).getGeneralEntity().getRef();
         }
         if (r instanceof WasInformedBy) {
             return ((WasInformedBy)r).getCause().getRef();

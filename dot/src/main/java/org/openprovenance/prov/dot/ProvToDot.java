@@ -101,6 +101,11 @@ public class ProvToDot {
         init(configurationFile);
     }
 
+    public ProvToDot(String configurationFile, String other) {
+        InputStream is=this.getClass().getClassLoader().getResourceAsStream(configurationFile);
+        init(is);
+    }
+
     public ProvPrinterConfigDeserialiser getDeserialiser() {
         return ProvPrinterConfigDeserialiser.getThreadProvPrinterConfigDeserialiser();
     }

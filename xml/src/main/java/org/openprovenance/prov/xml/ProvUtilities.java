@@ -262,9 +262,9 @@ public class ProvUtilities {
 	fields.put(WasInvalidatedBy.class,  new String[] {"Id","Entity","Activity","Time","Any"});
 	fields.put(WasStartedBy.class,      new String[] {"Id","Activity","Trigger","Starter","Time","Any"});
 	fields.put(WasEndedBy.class,        new String[] {"Id","Activity","Trigger","Ender","Time","Any"});
-	fields.put(WasInformedBy.class,     new String[] {"Id","Informed","Informant","Any"});
+	fields.put(WasInformedBy.class,     new String[] {"Id","Effect","Cause","Any"});
 	fields.put(WasDerivedFrom.class,    new String[] {"Id","GeneratedEntity", "UsedEntity","Activity","Generation","Usage","Any"});
-	fields.put(WasInfluencedBy.class,   new String[] {"Id","Influenced","Influencer","Any"});
+	fields.put(WasInfluencedBy.class,   new String[] {"Id","Influencee","Influencer","Any"});
 	fields.put(WasAttributedTo.class,   new String[] {"Id","Entity","Agent","Any"});
 	fields.put(WasAssociatedWith.class, new String[] {"Id","Activity","Agent", "Plan", "Any"});
 	fields.put(ActedOnBehalfOf.class,   new String[] {"Id","Subordinate","Responsible", "Activity", "Any"});

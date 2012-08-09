@@ -274,8 +274,8 @@ public class ProvUtilities {
 	types.put(Used.class,              new Class[] {QName.class,ActivityRef.class,EntityRef.class,XMLGregorianCalendar.class,Object.class});
 	types.put(WasGeneratedBy.class,    new Class[] {QName.class,EntityRef.class,ActivityRef.class,XMLGregorianCalendar.class,Object.class});
 	types.put(WasInvalidatedBy.class,  new Class[] {QName.class,EntityRef.class,ActivityRef.class,XMLGregorianCalendar.class,Object.class});
-	types.put(WasStartedBy.class,      new Class[] {QName.class,ActivityRef.class,Entity.class,ActivityRef.class,XMLGregorianCalendar.class,Object.class});
-	types.put(WasEndedBy.class,        new Class[] {QName.class,ActivityRef.class,Entity.class,ActivityRef.class,XMLGregorianCalendar.class,Object.class});
+	types.put(WasStartedBy.class,      new Class[] {QName.class,ActivityRef.class,EntityRef.class,ActivityRef.class,XMLGregorianCalendar.class,Object.class});
+	types.put(WasEndedBy.class,        new Class[] {QName.class,ActivityRef.class,EntityRef.class,ActivityRef.class,XMLGregorianCalendar.class,Object.class});
 	types.put(WasInformedBy.class,     new Class[] {QName.class,ActivityRef.class,ActivityRef.class,Object.class});
 	types.put(WasDerivedFrom.class,    new Class[] {QName.class,EntityRef.class, EntityRef.class,ActivityRef.class,WasGeneratedBy.class,Used.class,Object.class});
 	types.put(WasInfluencedBy.class,   new Class[] {QName.class,AnyRef.class,AnyRef.class,Object.class});

@@ -2,6 +2,7 @@ package org.openprovenance.prov.xml;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Hashtable;
+import javax.xml.bind.JAXBElement;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
@@ -272,6 +273,64 @@ public class ProvUtilities {
 	types.put(WasDerivedFrom.class,   new Class[] {QName.class,Entity.class, Entity.class,ActivityRef.class,WasGeneratedBy.class,Used.class,Object.class});
 
     }
+
+    public <T> JAXBElement<T> newElement(T r) {
+        if (r instanceof Used) {
+            return (JAXBElement<T>)of.newElement((Used)r);
+        }
+        if (r instanceof WasStartedBy) {
+            return (JAXBElement<T>)of.newElement((WasStartedBy)r);
+        }
+        if (r instanceof WasEndedBy) {
+            return (JAXBElement<T>)of.newElement((WasEndedBy)r);
+        }
+        if (r instanceof WasGeneratedBy) {
+            return (JAXBElement<T>)of.newElement((WasGeneratedBy)r);
+        }
+        if (r instanceof WasDerivedFrom) {
+            return (JAXBElement<T>)of.newElement((WasDerivedFrom)r);
+        }
+        if (r instanceof WasAssociatedWith) {
+            return (JAXBElement<T>)of.newElement((WasAssociatedWith)r);
+        }
+        if (r instanceof WasInvalidatedBy) {
+            return (JAXBElement<T>)of.newElement((WasInvalidatedBy)r);
+        }
+
+        if (r instanceof WasAttributedTo) {
+            return (JAXBElement<T>)of.newElement((WasAttributedTo)r);
+        }
+	/*
+        if (r instanceof WasRevisionOf) {
+            return (JAXBElement<T>)of.newElement((WasRevisionOf)r);
+        }
+        if (r instanceof AlternateOf) {
+            return (JAXBElement<T>)of.newElement((AlternateOf)r);
+        }
+        if (r instanceof SpecializationOf) {
+            return (JAXBElement<T>)of.newElement((SpecializationOf)r);
+        }
+	*/
+        if (r instanceof WasInformedBy) {
+            return (JAXBElement<T>)of.newElement((WasInformedBy)r);
+        }
+        if (r instanceof WasInfluencedBy) {
+            return (JAXBElement<T>)of.newElement((WasInfluencedBy)r);
+        }
+
+        if (r instanceof ActedOnBehalfOf) {
+            return (JAXBElement<T>)of.newElement((ActedOnBehalfOf)r);
+        }
+
+	/*
+        if (r instanceof DerivedByInsertionFrom) {
+            return (JAXBElement<T>)of.newElement((DerivedByInsertionFrom)r);
+        }
+	*/
+        System.out.println("newElement Unknow relation " + r);
+        throw new UnsupportedOperationException();
+    }
+
 
 
 }

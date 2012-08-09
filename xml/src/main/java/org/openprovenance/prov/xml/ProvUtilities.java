@@ -312,15 +312,15 @@ public class ProvUtilities {
             return (JAXBElement<T>)of.newElement((WasAttributedTo)r);
         }
 	/*
-        if (r instanceof WasRevisionOf) {
-            return (JAXBElement<T>)of.newElement((WasRevisionOf)r);
-        }
-        if (r instanceof AlternateOf) {
-            return (JAXBElement<T>)of.newElement((AlternateOf)r);
-        }
-        if (r instanceof SpecializationOf) {
-            return (JAXBElement<T>)of.newElement((SpecializationOf)r);
-        }
+	  if (r instanceof WasRevisionOf) {
+	  return (JAXBElement<T>)of.newElement((WasRevisionOf)r);
+	  }
+	  if (r instanceof AlternateOf) {
+	  return (JAXBElement<T>)of.newElement((AlternateOf)r);
+	  }
+	  if (r instanceof SpecializationOf) {
+	  return (JAXBElement<T>)of.newElement((SpecializationOf)r);
+	  }
 	*/
         if (r instanceof WasInformedBy) {
             return (JAXBElement<T>)of.newElement((WasInformedBy)r);
@@ -334,14 +334,44 @@ public class ProvUtilities {
         }
 
 	/*
-        if (r instanceof DerivedByInsertionFrom) {
-            return (JAXBElement<T>)of.newElement((DerivedByInsertionFrom)r);
-        }
+	  if (r instanceof DerivedByInsertionFrom) {
+	  return (JAXBElement<T>)of.newElement((DerivedByInsertionFrom)r);
+	  }
 	*/
         System.out.println("newElement Unknow relation " + r);
         throw new UnsupportedOperationException();
     }
 
+    /** Indicates whether object has no time field.
+	@TODO: introduce an interface to do this. */
+
+    public boolean hasNoTime(Object o) {
+	return (o instanceof WasDerivedFrom)
+	    || (o instanceof ActedOnBehalfOf)
+	    || (o instanceof WasInformedBy)
+	    || (o instanceof WasAttributedTo)
+	    || (o instanceof WasAssociatedWith)
+	    || (o instanceof WasInfluencedBy)
+	    || (o instanceof SpecializationOf)
+	    || (o instanceof AlternateOf);
+    }
+
+
+    public int getFirstTimeIndex(Object o) {
+	String [] types=getTypes(o);
+	if (o instanceof Activity) {
+	    return types.length-3;
+	} else if (hasNoTime(o)) {
+	    return types.length-1;
+	} else {
+	    return types.length-2;
+	}
+    }
+
+    public int getLastIndex(Object o) {
+	String [] types=getTypes(o);
+	return types.length-1;
+    }
 
 
 }

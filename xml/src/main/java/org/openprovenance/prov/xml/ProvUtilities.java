@@ -1,9 +1,11 @@
 package org.openprovenance.prov.xml;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Hashtable;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
-
+import java.lang.reflect.Method;
 
 /** Utilities for manipulating PROV Descriptions. */
 
@@ -232,6 +234,43 @@ public class ProvUtilities {
     /** TODO: should \-unescape local part */
     public String toURI(QName qname) {
 	return qname.getNamespaceURI() + qname.getLocalPart();
+    }
+
+    final static private Hashtable<Class,String[]> fields=new  Hashtable<Class,String[]> ();
+    final static private Hashtable<Class,Class[]> types=new  Hashtable<Class,Class[]> ();
+
+    public Object getter(Object o, int i) throws java.lang.NoSuchMethodException, java.lang.IllegalAccessException, java.lang.reflect.InvocationTargetException{
+	String field=fields.get(o.getClass())[i];
+	Method method=o.getClass().getDeclaredMethod("get"+field);
+	return method.invoke(o);
+    }
+
+
+    public Object setter(Object o, int i, Object val) throws java.lang.NoSuchMethodException, java.lang.IllegalAccessException, java.lang.reflect.InvocationTargetException{
+	String field=fields.get(o.getClass())[i];
+	Method method=o.getClass().getDeclaredMethod("set"+field,types.get(o.getClass())[i]);
+	return method.invoke(o,val);
+    }
+	
+
+    static {
+	fields.put(Used.class,             new String[] {"Id","Activity","Entity","Time","Any"});
+	fields.put(WasGeneratedBy.class,   new String[] {"Id","Entity","Activity","Time","Any"});
+	fields.put(WasInvalidatedBy.class, new String[] {"Id","Entity","Activity","Time","Any"});
+	fields.put(WasStartedBy.class,     new String[] {"Id","Activity","Trigger","Starter","Time","Any"});
+	fields.put(WasEndedBy.class,       new String[] {"Id","Activity","Trigger","Ender","Time","Any"});
+	fields.put(WasInformedBy.class,    new String[] {"Id","Informed","Informant","Any"});
+	fields.put(WasDerivedFrom.class,   new String[] {"Id","GeneratedEntity", "UsedEntity","Activity","Generation","Usage","Any"});
+
+
+	types.put(Used.class,             new Class[] {QName.class,ActivityRef.class,EntityRef.class,XMLGregorianCalendar.class,Object.class});
+	types.put(WasGeneratedBy.class,   new Class[] {QName.class,EntityRef.class,ActivityRef.class,XMLGregorianCalendar.class,Object.class});
+	types.put(WasInvalidatedBy.class, new Class[] {QName.class,EntityRef.class,ActivityRef.class,XMLGregorianCalendar.class,Object.class});
+	types.put(WasStartedBy.class,     new Class[] {QName.class,ActivityRef.class,Entity.class,ActivityRef.class,XMLGregorianCalendar.class,Object.class});
+	types.put(WasEndedBy.class,       new Class[] {QName.class,ActivityRef.class,Entity.class,ActivityRef.class,XMLGregorianCalendar.class,Object.class});
+	types.put(WasInformedBy.class,    new Class[] {QName.class,ActivityRef.class,ActivityRef.class,Object.class});
+	types.put(WasDerivedFrom.class,   new Class[] {QName.class,Entity.class, Entity.class,ActivityRef.class,WasGeneratedBy.class,Used.class,Object.class});
+
     }
 
 

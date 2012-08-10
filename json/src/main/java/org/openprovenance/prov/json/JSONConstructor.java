@@ -92,7 +92,18 @@ class JSONConstructor implements TreeConstructor {
         return tuple;
 	}
 	
-	private static final String PROVJS_ARRAY = "provjs:array";
+	private Map<String, String> typedLiteral(String value, String datatype, String lang) {
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("$", value);
+		if (datatype != null) {
+			result.put("type", datatype);
+		}
+		if (lang != null) {
+			result.put("lang", lang);
+		}
+		return result;
+	}
+	
 	private List<Object[]> addAttribute(Object attrs, Object[] attr) {
 		List<Object []> result;
 		Object key = attr[0];
@@ -563,7 +574,22 @@ class JSONConstructor implements TreeConstructor {
             		hash.put(attribute, value);
             	}
             }
-            structure.put(record.id, hash);
+            if (structure.containsKey(record.id)) {
+            	Object existing = structure.get(record.id);
+            	if (existing instanceof List) {
+        			List<Object> values = (List<Object>)existing;
+        			values.add(hash);
+        		}
+        		else {
+        			// A multi-value list needs to be created
+        			List<Object> values = new ArrayList<Object>();
+        			values.add(existing);
+        			values.add(hash);
+        			structure.put(record.id, values);
+        		}
+            }
+            else
+            	structure.put(record.id, hash);
         }
         return bundle;
     }
@@ -611,7 +637,7 @@ class JSONConstructor implements TreeConstructor {
 	}
 
 	public Object convertString(String s, String lang) {
-		return "\"" + s + "\"" + "@" + lang;
+		return typedLiteral(s, null, lang);
 	}
 
 	public Object convertInt(int i) {
@@ -631,8 +657,15 @@ class JSONConstructor implements TreeConstructor {
 	}
 
 	public Object convertTypedLiteral(String datatype, Object value) {
-		String result = "\"" + unwrap((String)value) + "\"" + "^^" + unwrap(datatype);
-    	return result;
+		if (value instanceof Map) {
+			// TODO: Hack to deal with the case of string@lang, which
+			// is already converted into a map
+			((Map<String, String>) value).put("type", datatype);
+			return value;
+		}
+		else {
+			return typedLiteral(unwrap((String)value), datatype, null);
+		}
 	}
 
 	public Object convertNamespace(Object pre, Object iri) {

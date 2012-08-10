@@ -342,6 +342,65 @@ public class ProvUtilities {
         throw new UnsupportedOperationException();
     }
 
+
+    public <T> T addAttributes(T from, T to) {
+        if (from instanceof Used) {
+            return (T) of.addAttributes((Used)from, (Used)to);
+        }
+        if (from instanceof WasStartedBy) {
+            return (T) of.addAttributes((WasStartedBy)from, (WasStartedBy)to);
+        }
+        if (from instanceof WasEndedBy) {
+            return (T) of.addAttributes((WasEndedBy)from, (WasEndedBy)to);
+        }
+        if (from instanceof WasGeneratedBy) {
+            return (T) of.addAttributes((WasGeneratedBy)from, (WasGeneratedBy)to);
+        }
+        if (from instanceof WasDerivedFrom) {
+            return (T) of.addAttributes((WasDerivedFrom)from, (WasDerivedFrom)to);
+        }
+        if (from instanceof WasAssociatedWith) {
+            return (T) of.addAttributes((WasAssociatedWith)from, (WasAssociatedWith)to);
+        }
+        if (from instanceof WasInvalidatedBy) {
+            return (T) of.addAttributes((WasInvalidatedBy)from, (WasInvalidatedBy)to);
+        }
+
+        if (from instanceof WasAttributedTo) {
+            return (T) of.addAttributes((WasAttributedTo)from, (WasAttributedTo)to);
+        }
+	/*
+	  if (from instanceof WasRevisionOf) {
+	  return (T) of.addAttributes((WasRevisionOf)from, (WasRevisionOf)to);
+	  }
+	  if (from instanceof AlternateOf) {
+	  return (T) of.addAttributes((AlternateOf)from, (AlternateOf)to);
+	  }
+	  if (from instanceof SpecializationOf) {
+	  return (T) of.addAttributes((SpecializationOf)from, (SpecializationOf)to);
+	  }
+	*/
+        if (from instanceof WasInformedBy) {
+            return (T) of.addAttributes((WasInformedBy)from, (WasInformedBy)to);
+        }
+        if (from instanceof WasInfluencedBy) {
+            return (T) of.addAttributes((WasInfluencedBy)from, (WasInfluencedBy)to);
+        }
+
+        if (from instanceof ActedOnBehalfOf) {
+            return (T) of.addAttributes((ActedOnBehalfOf)from, (ActedOnBehalfOf)to);
+        }
+
+	/*
+	  if (from instanceof DerivedByInsertionFrom) {
+	  return T of.addAttributes((DerivedByInsertionFrom)from, (DerivedByInsertionFrom)to);
+	  }
+	*/
+        System.out.println("addAttributes Unknow relation " + from);
+        throw new UnsupportedOperationException();
+    }
+
+
     /** Indicates whether object has no time field.
 	@TODO: introduce an interface to do this. */
 

@@ -43,6 +43,7 @@
       <xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/> 
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="prov:value" minOccurs="0" maxOccurs="1"/>
  
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>

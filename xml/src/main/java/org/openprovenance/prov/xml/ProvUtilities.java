@@ -261,6 +261,10 @@ public class ProvUtilities {
 	fields.put(WasGeneratedBy.class,    new String[] {"Id","Entity","Activity","Time","Any"});
 	fields.put(WasInvalidatedBy.class,  new String[] {"Id","Entity","Activity","Time","Any"});
 	fields.put(WasStartedBy.class,      new String[] {"Id","Activity","Trigger","Starter","Time","Any"});
+	//                                                0   , 1        , 2       , 3       , 4    , 5
+	//                                length=6
+        //                                firstTimeIndex=4
+        //                                last index=5
 	fields.put(WasEndedBy.class,        new String[] {"Id","Activity","Trigger","Ender","Time","Any"});
 	fields.put(WasInformedBy.class,     new String[] {"Id","Effect","Cause","Any"});
 	fields.put(WasDerivedFrom.class,    new String[] {"Id","GeneratedEntity", "UsedEntity","Activity","Generation","Usage","Any"});

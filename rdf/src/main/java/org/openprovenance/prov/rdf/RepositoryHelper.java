@@ -33,11 +33,19 @@ public class RepositoryHelper {
         module.addConcept(org.openprovenance.prov.rdf.Agent.class);
         module.addConcept(org.openprovenance.prov.rdf.Usage.class);
         module.addConcept(org.openprovenance.prov.rdf.Generation.class);
+        module.addConcept(org.openprovenance.prov.rdf.Invalidation.class);
+        module.addConcept(org.openprovenance.prov.rdf.Start.class);
+        module.addConcept(org.openprovenance.prov.rdf.End.class);
+        module.addConcept(org.openprovenance.prov.rdf.Derivation.class);
+        module.addConcept(org.openprovenance.prov.rdf.Communication.class);
         module.addConcept(org.openprovenance.prov.rdf.Association.class);
         module.addConcept(org.openprovenance.prov.rdf.Delegation.class);
+        module.addConcept(org.openprovenance.prov.rdf.Attribution.class);
         module.addConcept(org.openprovenance.prov.rdf.Plan.class);
         module.addConcept(org.openprovenance.prov.rdf.Location.class);
         module.addConcept(org.openprovenance.prov.rdf.SoftwareAgent.class);
+        module.addConcept(org.openprovenance.prov.rdf.Person.class);
+        module.addConcept(org.openprovenance.prov.rdf.Organization.class);
         // module.addDatatype(org.openprovenance.elmo.XMLLiteral.class,
         //                    "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");
     }

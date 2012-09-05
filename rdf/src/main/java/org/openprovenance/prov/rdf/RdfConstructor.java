@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.LinkedList;
 import java.net.URI;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 public class RdfConstructor implements TreeConstructor {
     final ProvFactory pFactory;
@@ -106,7 +107,71 @@ public class RdfConstructor implements TreeConstructor {
         return u;
     }
 
+
+    public <INFLUENCE,TYPE1> INFLUENCE test(INFLUENCE foo, TYPE1 foo1) {
+	return foo;
+    }
+
+
+    // not pretty
+
+    public <INFLUENCE,EFFECT> void addQualifiedInfluence(EFFECT e2, INFLUENCE g) {
+	if (g!=null) {
+	    if (g instanceof Generation) {
+		((Entity)e2).getQualifiedGeneration().add((Generation)g);
+	    } else if  (g instanceof Invalidation) {
+		((Entity)e2).getQualifiedInvalidation().add((Invalidation)g);
+	    } else if  (g instanceof Communication) {
+		((Activity)e2).getQualifiedCommunication().add((Communication)g);
+	    } else {
+		throw new UnsupportedOperationException();
+	    }
+	}
+    }
+
+
+    public <INFLUENCE,TYPE> INFLUENCE addActivityInfluence(Object id,
+							   TYPE e2,
+							   Activity a1,
+							   Object time, 
+							   Object aAttrs,
+							   Class<INFLUENCE> cl) {
+	
+        INFLUENCE infl=null;
+
+        if ((id!=null)  || (time!=null) || (aAttrs!=null)) {
+	    QName qname = getQName(id);
+	    System.out.println("------- " + qname);
+	    System.out.println("------- " + cl);
+	    infl = manager.designate(qname, cl);
+	    System.out.println("------- " + infl);
+            ActivityInfluence qi=(ActivityInfluence) infl;
+            qi.getActivities().add(a1);
+            addQualifiedInfluence(e2,infl);  
+
+	    if (time!=null) {
+		String s=(String)time;
+		XMLGregorianCalendar t=pFactory.newISOTime(s);
+		((InstantaneousEvent)infl).getAtTime().add(t);
+	    }
+        }
+        return infl;
+    }
+
     public Object convertWasGeneratedBy(Object id, Object id2, Object id1, Object time, Object aAttrs) {
+        QName qn2 = getQName(id2);
+        QName qn1 = getQName(id1);
+
+        Entity e2=(Entity)manager.find(qn2);
+        Activity a1=(Activity)manager.find(qn1);
+
+        Generation g=addActivityInfluence(id,e2, a1, time,aAttrs,Generation.class);
+
+        e2.getWasGeneratedBy().add(a1);
+        return g;
+    }
+
+    public Object convertWasGeneratedByOLD(Object id, Object id2, Object id1, Object time, Object aAttrs) {
         QName qname = getQName(id);
         QName qn2 = getQName(id2);
         QName qn1 = getQName(id1);
@@ -120,6 +185,8 @@ public class RdfConstructor implements TreeConstructor {
             ActivityInfluence qi=(ActivityInfluence) g;
             qi.getActivities().add(a1);
             e2.getQualifiedGeneration().add(g);
+
+	    //TODO deal with attributes
         }
 
         e2.getWasGeneratedBy().add(a1);
@@ -138,15 +205,34 @@ public class RdfConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
 
-    public Object convertWasInvalidatedBy(Object id, Object id2,Object id1, Object time, Object aAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+    public Object convertWasInvalidatedBy(Object id, Object id2, Object id1, Object time, Object aAttrs) {
+        QName qn2 = getQName(id2);
+        QName qn1 = getQName(id1);
+
+        Entity e2=(Entity)manager.find(qn2);
+        Activity a1=(Activity)manager.find(qn1);
+
+        Invalidation g=addActivityInfluence(id,e2, a1, time,aAttrs,Invalidation.class);
+
+
+
+        e2.getWasInvalidatedBy().add(a1);
+        return g;
     }
 
     public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+        QName qn2 = getQName(id2);
+        QName qn1 = getQName(id1);
+
+        Activity e2=(Activity)manager.find(qn2);
+        Activity a1=(Activity)manager.find(qn1);
+
+        Communication g=addActivityInfluence(id,e2, a1, null, aAttrs,Communication.class);
+
+        e2.getWasInformedBy().add(a1);
+        return g;
     }
+
 
 
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object gAttrs) {

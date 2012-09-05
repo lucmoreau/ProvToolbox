@@ -104,9 +104,19 @@ public class ProvFactory {
         }
         String prefix=id.substring(0,index);
         String local=id.substring(index+1,id.length());
-        return new QName(namespaces.get(prefix),
-                         local,
-                         prefix);
+	if ("prov".equals(prefix)) {
+	    return new QName(NamespacePrefixMapper.PROV_NS,
+			     local,
+			     prefix);
+	} else if ("xsd".equals(prefix)) {
+	    return new QName(NamespacePrefixMapper.XSD_NS + "#", //xsd namespace for rdf URIs
+			     local,
+			     prefix);
+	} else {
+	    return new QName(namespaces.get(prefix),
+			     local,
+			     prefix);
+	}
     }
 
     public ActivityRef newActivityRef(String id) {

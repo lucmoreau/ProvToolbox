@@ -25,7 +25,7 @@
     <module>prov-dot</module>    
     <module>prov-json</module>
 
-    <module>interop</module>    
+    <module>prov-interop</module>    
     <module>prov-rdf</module>    
     <module>toolbox</module>    
 

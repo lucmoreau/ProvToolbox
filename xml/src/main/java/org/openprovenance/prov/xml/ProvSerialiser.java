@@ -134,6 +134,13 @@ public class ProvSerialiser {
         return addTo;
     }
     
+    public void serialiseValidationReport (File file, ValidationReport graph, boolean format)
+        throws JAXBException {
+        Marshaller m=jc.createMarshaller();
+        m.setProperty("jaxb.formatted.output",format);
+        //configurePrefixes(m,graph.getNss());
+        m.marshal(of.createValidationReport(graph),file);
+    }
 
 }
 

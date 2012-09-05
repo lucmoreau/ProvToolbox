@@ -1,5 +1,6 @@
 package org.openprovenance.prov.notation;
 import java.util.List;
+import org.openprovenance.prov.xml.InternationalizedString;
 
 /** For testing purpose, conversion back to ASN. */
 
@@ -57,7 +58,9 @@ public class ASNConstructor implements TreeConstructor {
 
     public Object convertBundle(Object namespaces, List<Object> records, List<Object> bundles) {
         String s=keyword("bundle") + breakline();
-        s=s+namespaces;
+	if (namespaces!=null) {
+	    s=s+namespaces + breakline();
+	}
         for (Object o: records) {
             s=s+o+breakline();
         }
@@ -72,7 +75,9 @@ public class ASNConstructor implements TreeConstructor {
 
     public Object convertNamedBundle(Object id, Object namespaces, List<Object> records) {
         String s="bundle " + id + breakline();
-        s=s+namespaces;
+	if (namespaces!=null) {
+	    s=s+namespaces + breakline();
+	}
 	if (records!=null) 
 	    for (Object o: records) {
 		s=s+o+breakline();
@@ -256,10 +261,27 @@ public class ASNConstructor implements TreeConstructor {
 		String val=(String)value;
 		return "'" + val.substring(1, val.length() -1 ) + "'";
 	    } else {
-		return value + "%%" + datatype;
+		if (value instanceof InternationalizedString) {
+		    InternationalizedString is=(InternationalizedString) value;
+		    value=convertInternationalizedString(is);
+		}
+		return value + " %% " + datatype;
 	    }
 	}
     }
+
+
+    public Object convertInternationalizedString (InternationalizedString is) {
+	String value;
+	String lang=is.getLang();
+	if (lang==null) {
+	    value= "\""+ is.getValue() + "\"";
+	} else { 
+	    value= "\""+ is.getValue()+"\""+"@"+lang;
+	}
+	return value;
+    }
+
 
    public Object convertNamespace(Object pre, Object iri) {
        return keyword("prefix") + " " + showprefix((String)pre) + " " + showuri((String)iri);

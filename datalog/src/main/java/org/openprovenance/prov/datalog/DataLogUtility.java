@@ -19,7 +19,6 @@ import  org.antlr.runtime.tree.TreeAdaptor;
 
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
-import org.openprovenance.prov.xml.Container;
 import org.openprovenance.prov.xml.BeanTraversal;
 
 

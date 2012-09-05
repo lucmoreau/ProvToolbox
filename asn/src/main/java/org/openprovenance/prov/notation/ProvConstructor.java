@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Hashtable;
 import java.net.URI;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
@@ -178,7 +179,7 @@ public  class ProvConstructor implements TreeConstructor {
                 else lks.add(o);
             }
         String s_id=(String)id;
-
+        System.out.println("NamedBundle name " + s_id);
         NamedBundle c=pFactory.newNamedBundle(s_id,
                                               acs,
                                               es,
@@ -296,7 +297,11 @@ public  class ProvConstructor implements TreeConstructor {
         u.getAny().addAll(attrs);
 
         if (time!=null) {
-            u.setTime(pFactory.newISOTime((String)time));
+	    if (time instanceof XMLGregorianCalendar) {
+		u.setTime((XMLGregorianCalendar)time);
+	    } else {
+		u.setTime(pFactory.newISOTime((String)time));
+	    }
         }
         return u;
     }
@@ -319,7 +324,11 @@ public  class ProvConstructor implements TreeConstructor {
         List attrs=(List)gAttrs;
         if (attrs!=null) g.getAny().addAll(attrs);
         if (time!=null) {
-            g.setTime(pFactory.newISOTime((String)time));
+	    if (time instanceof XMLGregorianCalendar) {
+		g.setTime((XMLGregorianCalendar)time);
+	    } else {
+		g.setTime(pFactory.newISOTime((String)time));
+	    }
         }
             
         return g;
@@ -347,7 +356,12 @@ public  class ProvConstructor implements TreeConstructor {
         List attrs=(List)gAttrs;
         s.getAny().addAll(attrs);
         if (time!=null) {
-            s.setTime(pFactory.newISOTime((String)time));
+	    if (time instanceof XMLGregorianCalendar) {
+		s.setTime((XMLGregorianCalendar)time);
+	    } else {
+		s.setTime(pFactory.newISOTime((String)time));
+	    }
+
         }
 
         s.setStarter(a3r);
@@ -377,7 +391,11 @@ public  class ProvConstructor implements TreeConstructor {
         List attrs=(List)gAttrs;
         s.getAny().addAll(attrs);
         if (time!=null) {
-            s.setTime(pFactory.newISOTime((String)time));
+	    if (time instanceof XMLGregorianCalendar) {
+		s.setTime((XMLGregorianCalendar)time);
+	    } else {
+		s.setTime(pFactory.newISOTime((String)time));
+	    }
         }
 
         s.setEnder(a3r);
@@ -401,7 +419,11 @@ public  class ProvConstructor implements TreeConstructor {
         List attrs=(List)gAttrs;
         if (attrs!=null) g.getAny().addAll(attrs);
         if (time!=null) {
-            g.setTime(pFactory.newISOTime((String)time));
+	    if (time instanceof XMLGregorianCalendar) {
+		g.setTime((XMLGregorianCalendar)time);
+	    } else {
+		g.setTime(pFactory.newISOTime((String)time));
+	    }
         }
             
         return g;

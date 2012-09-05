@@ -22,6 +22,8 @@ import org.openprovenance.prov.xml.Relation;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.HasType;
+import org.openprovenance.prov.xml.AlternateOf;
+import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.WasInvalidatedBy;
@@ -97,6 +99,11 @@ public class ProvToDot {
     public ProvToDot(String configurationFile) {
         this();
         init(configurationFile);
+    }
+
+    public ProvToDot(String configurationFile, String other) {
+        InputStream is=this.getClass().getClassLoader().getResourceAsStream(configurationFile);
+        init(is);
     }
 
     public ProvPrinterConfigDeserialiser getDeserialiser() {
@@ -704,6 +711,8 @@ public class ProvToDot {
 	if (e instanceof WasAttributedTo)   return "wasAttributedTo";
 	if (e instanceof WasInfluencedBy)   return "wasInfluencedBy";
 	if (e instanceof ActedOnBehalfOf)   return "actedOnBehalfOf";
+	if (e instanceof SpecializationOf)  return "specializationOf";
+	if (e instanceof AlternateOf)       return "alternateOf";
 	return null;
     }
     String getShortLabelForRelation(Relation0 e) {
@@ -718,6 +727,8 @@ public class ProvToDot {
 	if (e instanceof WasAttributedTo)   return "att";
 	if (e instanceof WasInfluencedBy)   return "inf";
 	if (e instanceof ActedOnBehalfOf)   return "del";
+	if (e instanceof SpecializationOf)  return "spe";
+	if (e instanceof AlternateOf)       return "alt";
 	return null;
     }
 

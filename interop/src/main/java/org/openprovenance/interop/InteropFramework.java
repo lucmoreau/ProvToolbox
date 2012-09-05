@@ -83,7 +83,7 @@ public class InteropFramework
 
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
 
-        deserial.validateBundle(schemaFiles,in);
+	//        deserial.validateBundle(schemaFiles,in);
 
         Bundle c=deserial.deserialiseBundle(in);
 
@@ -215,7 +215,15 @@ public class InteropFramework
     }
 
     /** Reads a file into java bean. */
-    public Object loadProvGraph(String filename)
+    public Object loadProvGraph(String filename) throws java.io.IOException, JAXBException, Throwable {
+	try {
+	    return loadProvKnownGraph(filename);
+	} catch (Throwable e) {
+	    return loadProvUnknownGraph(filename);
+	}
+    }
+
+    public Object loadProvKnownGraph(String filename)
 	throws java.io.IOException, JAXBException, Throwable {
 	
 	if (filename.endsWith(".provn")) {
@@ -230,9 +238,32 @@ public class InteropFramework
 	    return c;
 	} else if (filename.endsWith(".rdf") || filename.endsWith(".prov-rdf")) {
 	    throw new UnsupportedOperationException();
-	} else {
-	    System.out.println("Unkownn format " + filename);
+	} else if (filename.endsWith(".json")) {
 	    throw new UnsupportedOperationException();
+	} else {
+	    System.out.println("Unkown format " + filename);
+	    throw new UnsupportedOperationException();
+	}
+    }
+
+    public Object loadProvUnknownGraph(String filename)
+	throws java.io.IOException, JAXBException, Throwable {
+	
+	try {
+	    Utility u=new Utility();
+	    CommonTree tree = u.convertASNToTree(filename);
+	    Object o=u.convertTreeToJavaBean(tree);
+	    return o;
+	} catch (Throwable t1) {
+	    try {
+		File in=new File(filename);
+		ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
+		Bundle c=deserial.deserialiseBundle(in);
+		return c;
+	    } catch (Throwable t2) {
+		System.out.println("Unparseable format " + filename);
+		throw new UnsupportedOperationException();
+	    }
 	}
     }
 
@@ -286,7 +317,7 @@ public class InteropFramework
             }
 
             if (args[0].equals("-xml2asn")) {
-                me.xml2xml(fileIn,fileOut,null,null);
+                me.xml2asn(fileIn,fileOut,null);
                 return;
             }
 

@@ -3,19 +3,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.util.Collection;
-import java.util.Collections;
-
-
-
-import javax.xml.namespace.QName;
-// import org.openprovenance.model.OPMDeserialiser;
-// import org.openprovenance.model.OPMGraph;
-// import org.openprovenance.model.OPMSerialiser;
-import org.openrdf.elmo.ElmoManager;
-import org.openrdf.elmo.ElmoManagerFactory;
 import org.openrdf.elmo.ElmoModule;
 import org.openrdf.elmo.sesame.SesameManager;
-import org.openrdf.elmo.sesame.SesameManagerFactory;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.n3.N3Writer;

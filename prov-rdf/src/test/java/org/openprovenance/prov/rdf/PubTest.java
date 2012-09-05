@@ -5,13 +5,11 @@ import  org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openrdf.elmo.ElmoManager;
 import org.openprovenance.prov.notation.TreeTraversal;
-import org.openrdf.elmo.ElmoManager;
 import org.openrdf.elmo.ElmoManagerFactory;
 import org.openrdf.elmo.ElmoModule;
 import org.openrdf.elmo.sesame.SesameManager;
 import org.openrdf.elmo.sesame.SesameManagerFactory;
 import org.openrdf.rio.RDFFormat;
-import java.util.List;
 import java.util.LinkedList;
 import java.io.File;
 
@@ -66,7 +64,7 @@ public class PubTest extends org.openprovenance.prov.notation.PubTest {
         convertTreeToRdf(t,pFactory,manager);
 
         
-        rHelper.dumpToRDF(new File(fileOut),(SesameManager)manager,RDFFormat.N3,new LinkedList());
+        rHelper.dumpToRDF(new File(fileOut),(SesameManager)manager,RDFFormat.N3,new LinkedList<String[]>());
         
         //ProvToDot toDot=new ProvToDot("src/main/resources/defaultConfigWithRoleNoLabel.xml"); 
         

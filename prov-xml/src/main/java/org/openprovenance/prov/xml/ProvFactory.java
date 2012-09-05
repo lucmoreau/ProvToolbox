@@ -600,10 +600,9 @@ public class ProvFactory {
     public WasInfluencedBy newWasInfluencedBy(String id,
 					      String influencee,
 					      String influencer) {
-        WasInfluencedBy res=of.createWasInfluencedBy();
-	return newWasInfluencedBy(id,
-				  newAnyRef(influencee),
-				  newAnyRef(influencer));
+        return newWasInfluencedBy(id,
+        		                  newAnyRef(influencee),
+        		                  newAnyRef(influencer));
     }
 
     public WasInfluencedBy newWasInfluencedBy(String id,
@@ -915,7 +914,6 @@ public class ProvFactory {
                                             Activity p) {
         EntityRef aid=newEntityRef(a);
         ActivityRef pid=newActivityRef(p);
-        LinkedList ll=new LinkedList();
         return  newWasGeneratedBy(stringToQName(id),aid,role,pid);
     }
 
@@ -926,7 +924,6 @@ public class ProvFactory {
                                             Activity p) {
         EntityRef aid=newEntityRef(a);
         ActivityRef pid=newActivityRef(p);
-        LinkedList ll=new LinkedList();
         return  newWasGeneratedBy(id,aid,role,pid);
     }
 

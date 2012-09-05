@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>specs</artifactId>
+    <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>

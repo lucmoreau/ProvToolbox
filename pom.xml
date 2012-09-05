@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.openprovenance.prov</groupId>
-  <artifactId>specs</artifactId>
+  <artifactId>ProvToolbox</artifactId>
   <name>W3C PROV Specifications</name>
   <version>0.0.1-SNAPSHOT</version>
   <url>http://openprovenance.org/java/site/prov1_0</url>

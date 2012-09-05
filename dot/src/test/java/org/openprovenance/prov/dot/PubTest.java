@@ -40,7 +40,7 @@ public class PubTest extends org.openprovenance.prov.notation.PubTest {
 
     /** Produces a dot representation
      * of created graph. */
-    public void testPubToDot() throws java.io.FileNotFoundException,  java.io.IOException   {
+    public void testReadASNSaveXML4() throws java.io.FileNotFoundException,  java.io.IOException   {
         ProvToDot toDot=new ProvToDot("src/main/resources/defaultConfigWithRoleNoLabel.xml"); 
         
         toDot.convert(co1,"target/w3c-publication1.dot", "target/w3c-publication1.pdf");

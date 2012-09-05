@@ -12,17 +12,21 @@ public class PC1FullTest extends org.openprovenance.prov.xml.PC1FullTest {
          super(testName);
     }
 
+    @Override
     public void testPC1Full() throws JAXBException {
-        super.testPC1Full();
     }
 
+    @Override
     public void testCopyPC1Full() throws java.io.FileNotFoundException,  java.io.IOException   {
-        super.testCopyPC1Full();
     }
 
-    /** Produces a dot representation
-     * of created graph. */
-    public void testPC1FullConversion() throws java.io.FileNotFoundException,  java.io.IOException   {
+    public void testPC1Full_A() throws JAXBException, java.io.FileNotFoundException,  java.io.IOException   {
+        super.testPC1Full();
+        super.testCopyPC1Full();
+
+	/** Produces a dot representation
+	 * of created graph. */
+
         ProvToDot toDot=new ProvToDot(true); // with roles
         
         toDot.convert(graph1,"target/pc1-full.dot", "target/pc1-full.pdf");

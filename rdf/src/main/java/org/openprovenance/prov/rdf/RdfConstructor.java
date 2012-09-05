@@ -85,50 +85,31 @@ public class RdfConstructor implements TreeConstructor {
         return null;
     }
 
-    public Object convertUsed(Object id, Object id2, Object id1, Object time, Object aAttrs) {
-        QName qname = getQName(id);
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
 
-        Entity e1=(Entity)manager.find(qn1);
-        Activity a2=(Activity)manager.find(qn2);
-        Usage u=null;
+    public <INFLUENCE,TYPE> INFLUENCE addEntityInfluence(Object id,
+							 TYPE e2,
+							 Entity e1,
+							 Object time, 
+							 Object aAttrs,
+							 Class<INFLUENCE> cl) {
+	
+        INFLUENCE infl=null;
 
         if ((id!=null)  || (time!=null) || (aAttrs!=null)) {
-            u = (Usage) manager.designate(qname, Usage.class);
-            EntityInfluence qi=(EntityInfluence) u;
+	    QName qname = getQName(id);
+	    infl = manager.designate(qname, cl);
+            EntityInfluence qi=(EntityInfluence) infl;
             qi.getEntities().add(e1);
-            a2.getQualifiedUsage().add(u);
-        }
+            addQualifiedInfluence(e2,infl);  
 
-	a2.getUsed().add(e1);
-
-
-        return u;
-    }
-
-
-    public <INFLUENCE,TYPE1> INFLUENCE test(INFLUENCE foo, TYPE1 foo1) {
-	return foo;
-    }
-
-
-    // not pretty
-
-    public <INFLUENCE,EFFECT> void addQualifiedInfluence(EFFECT e2, INFLUENCE g) {
-	if (g!=null) {
-	    if (g instanceof Generation) {
-		((Entity)e2).getQualifiedGeneration().add((Generation)g);
-	    } else if  (g instanceof Invalidation) {
-		((Entity)e2).getQualifiedInvalidation().add((Invalidation)g);
-	    } else if  (g instanceof Communication) {
-		((Activity)e2).getQualifiedCommunication().add((Communication)g);
-	    } else {
-		throw new UnsupportedOperationException();
+	    if (time!=null) {
+		String s=(String)time;
+		XMLGregorianCalendar t=pFactory.newISOTime(s);
+		((InstantaneousEvent)infl).getAtTime().add(t);
 	    }
-	}
+        }
+        return infl;
     }
-
 
     public <INFLUENCE,TYPE> INFLUENCE addActivityInfluence(Object id,
 							   TYPE e2,
@@ -158,6 +139,49 @@ public class RdfConstructor implements TreeConstructor {
         return infl;
     }
 
+    public Object convertUsed(Object id, Object id2, Object id1, Object time, Object aAttrs) {
+        QName qn2 = getQName(id2);
+        QName qn1 = getQName(id1);
+
+        Entity e1=(Entity)manager.find(qn1);
+        Activity a2=(Activity)manager.find(qn2);
+        Usage u=addEntityInfluence(id, a2, e1, time, aAttrs,Usage.class);
+
+	a2.getUsed().add(e1);
+
+        return u;
+    }
+
+
+    public <INFLUENCE,TYPE1> INFLUENCE test(INFLUENCE foo, TYPE1 foo1) {
+	return foo;
+    }
+
+
+    // not pretty
+
+    public <INFLUENCE,EFFECT> void addQualifiedInfluence(EFFECT e2, INFLUENCE g) {
+	if (g!=null) {
+	    if (g instanceof Generation) {
+		((Entity)e2).getQualifiedGeneration().add((Generation)g);
+	    } else if  (g instanceof Invalidation) {
+		((Entity)e2).getQualifiedInvalidation().add((Invalidation)g);
+	    } else if  (g instanceof Communication) {
+		((Activity)e2).getQualifiedCommunication().add((Communication)g);
+	    } else if  (g instanceof Usage) {
+		((Activity)e2).getQualifiedUsage().add((Usage)g);
+	    } else if  (g instanceof Start) {
+		((Activity)e2).getQualifiedStart().add((Start)g);
+	    } else if  (g instanceof End) {
+		((Activity)e2).getQualifiedEnd().add((End)g);
+	    } else {
+		throw new UnsupportedOperationException();
+	    }
+	}
+    }
+
+
+
     public Object convertWasGeneratedBy(Object id, Object id2, Object id1, Object time, Object aAttrs) {
         QName qn2 = getQName(id2);
         QName qn1 = getQName(id1);
@@ -171,38 +195,44 @@ public class RdfConstructor implements TreeConstructor {
         return g;
     }
 
-    public Object convertWasGeneratedByOLD(Object id, Object id2, Object id1, Object time, Object aAttrs) {
-        QName qname = getQName(id);
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
-
-        Entity e2=(Entity)manager.find(qn2);
-        Activity a1=(Activity)manager.find(qn1);
-        Generation g=null;
-
-        if ((id!=null)  || (time!=null) || (aAttrs!=null)) {
-            g = (Generation) manager.designate(qname, Generation.class);
-            ActivityInfluence qi=(ActivityInfluence) g;
-            qi.getActivities().add(a1);
-            e2.getQualifiedGeneration().add(g);
-
-	    //TODO deal with attributes
-        }
-
-        e2.getWasGeneratedBy().add(a1);
-        return g;
-    }
-
     public Object convertWasStartedBy(Object id, Object id2, Object id1, Object id3,
 				      Object time, Object aAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+        QName qn2 = getQName(id2);
+        QName qn1 = getQName(id1);
+        QName qn3 = getQName(id3);
+
+        Entity e1=(Entity)manager.find(qn1);
+        Activity a2=(Activity)manager.find(qn2);
+        Start s=addEntityInfluence(id, a2, e1, time, aAttrs, Start.class);
+
+	if (qn3!=null) {
+	    Activity a3=(Activity)manager.find(qn3);
+	    s.getHadActivity().add(a3);
+	}
+
+	a2.getWasStartedBy().add(e1);
+
+        return s;
     }
 
     public Object convertWasEndedBy(Object id, Object id2, Object id1, Object id3,
-				    Object time, Object aAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+				      Object time, Object aAttrs) {
+        QName qn2 = getQName(id2);
+        QName qn1 = getQName(id1);
+        QName qn3 = getQName(id3);
+
+        Entity e1=(Entity)manager.find(qn1);
+        Activity a2=(Activity)manager.find(qn2);
+        End s=addEntityInfluence(id, a2, e1, time, aAttrs, End.class);
+
+	if (qn3!=null) {
+	    Activity a3=(Activity)manager.find(qn3);
+	    s.getHadActivity().add(a3);
+	}
+
+	a2.getWasEndedBy().add(e1);
+
+        return s;
     }
 
     public Object convertWasInvalidatedBy(Object id, Object id2, Object id1, Object time, Object aAttrs) {

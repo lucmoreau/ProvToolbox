@@ -122,12 +122,34 @@ public class RdfConstructor implements TreeConstructor {
 
         if ((id!=null)  || (time!=null) || (aAttrs!=null)) {
 	    QName qname = getQName(id);
-	    System.out.println("------- " + qname);
-	    System.out.println("------- " + cl);
 	    infl = manager.designate(qname, cl);
-	    System.out.println("------- " + infl);
             ActivityInfluence qi=(ActivityInfluence) infl;
             qi.getActivities().add(a1);
+            addQualifiedInfluence(e2,infl);  
+
+	    if (time!=null) {
+		String s=(String)time;
+		XMLGregorianCalendar t=pFactory.newISOTime(s);
+		((InstantaneousEvent)infl).getAtTime().add(t);
+	    }
+        }
+        return infl;
+    }
+
+    public <INFLUENCE,TYPE> INFLUENCE addAgentInfluence(Object id,
+							   TYPE e2,
+							   Agent a1,
+							   Object time, 
+							   Object aAttrs,
+							   Class<INFLUENCE> cl) {
+	
+        INFLUENCE infl=null;
+
+        if ((id!=null)  || (time!=null) || (aAttrs!=null)) {
+	    QName qname = getQName(id);
+	    infl = manager.designate(qname, cl);
+            AgentInfluence qi=(AgentInfluence) infl;
+            qi.getAgents().add(a1);
             addQualifiedInfluence(e2,infl);  
 
 	    if (time!=null) {

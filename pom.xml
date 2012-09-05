@@ -20,13 +20,13 @@
 
 
   <modules>
-    <module>xml</module>    
-    <module>asn</module>    
-    <module>dot</module>    
-    <module>json</module>
+    <module>prov-xml</module>    
+    <module>prov-n</module>    
+    <module>prov-dot</module>    
+    <module>prov-json</module>
 
     <module>interop</module>    
-    <module>rdf</module>    
+    <module>prov-rdf</module>    
     <module>toolbox</module>    
 
   </modules>

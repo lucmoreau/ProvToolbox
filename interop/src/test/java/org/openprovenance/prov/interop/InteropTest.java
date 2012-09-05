@@ -48,13 +48,13 @@ public class InteropTest
         InteropFramework interop=new InteropFramework();
 
         String[] schemaFiles=new String[1];
-        schemaFiles[0]="../xml/src/test/resources/pc1.xsd";
+        schemaFiles[0]="../prov-xml/src/test/resources/pc1.xsd";
 
         Hashtable<String,String> namespaces;
         namespaces=new Hashtable();
         namespaces.put("pc1",PC1_NS);
 
-        interop.xml2xml("../xml/target/pc1-full.xml",
+        interop.xml2xml("../prov-xml/target/pc1-full.xml",
                         "target/pc1-full.prov-xml",
                         schemaFiles,
                         namespaces);
@@ -67,10 +67,10 @@ public class InteropTest
         InteropFramework interop=new InteropFramework();
 
         String[] schemaFiles=new String[1];
-        schemaFiles[0]="../xml/src/test/resources/pc1.xsd";
+        schemaFiles[0]="../prov-xml/src/test/resources/pc1.xsd";
 
 
-        interop.xml2asn("../xml/target/pc1-full.xml",
+        interop.xml2asn("../prov-xml/target/pc1-full.xml",
                         "target/pc1-full.prov-asn",
                         schemaFiles);
         
@@ -81,7 +81,7 @@ public class InteropTest
 
         InteropFramework interop=new InteropFramework();
 
-        interop.asn2rdf("../asn/src/test/resources/prov/w3c-publication1.prov-asn",
+        interop.asn2rdf("../prov-n/src/test/resources/prov/w3c-publication1.prov-asn",
                         "target/w3c-publication1.ttl");
         
     }

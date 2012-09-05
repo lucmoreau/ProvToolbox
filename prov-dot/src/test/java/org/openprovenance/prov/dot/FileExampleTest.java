@@ -13,9 +13,9 @@ import java.io.File;
 import org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.notation.Utility;
 
-public class ASNTest extends TestCase {
+public class FileExampleTest extends TestCase {
 
-    public void asnToDot(String asnFile, String xmlFile, String dotFile, String pdfFile)
+    public void fileToDot(String asnFile, String xmlFile, String dotFile, String pdfFile)
         throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
         Utility u=new Utility();
 
@@ -24,20 +24,18 @@ public class ASNTest extends TestCase {
         Bundle o= (Bundle) u.convertTreeToJavaBean(tree);
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-
-        System.out.println(" " + o);
-
-        //serial.serialiseBundle(new File(xmlFile),o,true);
+        
+        serial.serialiseBundle(new File(xmlFile),o,true);
 
         ProvToDot toDot=new ProvToDot("src/main/resources/defaultConfigWithRoleNoLabel.xml"); 
         
         toDot.convert(o,dotFile,pdfFile);
     }
 
-    public void testAsnToDot1() throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
-        asnToDot("../asn/src/test/resources/prov/file-example2.asn",
-                 "target/file-example2.prov-xml",
-                 "target/file-example2.dot",
-                 "target/file-example2.pdf");
+    public void testFileExampleToDot1() throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
+        fileToDot("../prov-n/src/test/resources/prov/prov-dm-example1.prov-asn",
+                  "target/file.prov-xml",
+                  "target/file.dot",
+                  "target/file.pdf");
     }
 }

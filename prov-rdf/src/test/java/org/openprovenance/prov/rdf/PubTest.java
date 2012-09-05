@@ -35,7 +35,7 @@ public class PubTest extends org.openprovenance.prov.notation.PubTest {
     }
 
     public void testReadASNSaveXML1() throws java.io.IOException, java.lang.Throwable {
-        String file="../asn/src/test/resources/prov/w3c-publication1.prov-asn";
+        String file="../prov-n/src/test/resources/prov/w3c-publication1.prov-asn";
         testReadASNSaveXML(file,"target/w3c-publication1.prov-xml");
         co1=graph1;
     }
@@ -51,7 +51,7 @@ public class PubTest extends org.openprovenance.prov.notation.PubTest {
     /** Produces a dot representation
      * of created graph. */
     public void testPubToRdf() throws java.io.FileNotFoundException,  java.io.IOException, java.lang.Throwable  {
-        String file="../asn/src/test/resources/prov/w3c-publication1.prov-asn";
+        String file="../prov-n/src/test/resources/prov/w3c-publication1.prov-asn";
         String fileOut="target/w3c-publication1.prov-rdf";
 
         RepositoryHelper rHelper=new RepositoryHelper();

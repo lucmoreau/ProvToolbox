@@ -63,13 +63,13 @@ public class PC1FullTest
     public void testReadXMLGraph() throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
         
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-        Bundle c=deserial.deserialiseBundle(new File("../xml/target/pc1-full.xml"));
+        Bundle c=deserial.deserialiseBundle(new File("../prov-xml/target/pc1-full.xml"));
         Utility u=new Utility();
 
 
         String[] schemaFiles=new String[1];
-        schemaFiles[0]="../xml/src/test/resources/pc1.xsd";
-        deserial.validateBundle(schemaFiles,new File("../xml/target/pc1-full.xml"));
+        schemaFiles[0]="../prov-xml/src/test/resources/pc1.xsd";
+        deserial.validateBundle(schemaFiles,new File("../prov-xml/target/pc1-full.xml"));
         
         String s=u.convertBeanToASN(c);
         System.out.println(s);

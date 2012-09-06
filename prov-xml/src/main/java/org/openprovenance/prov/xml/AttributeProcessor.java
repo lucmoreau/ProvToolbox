@@ -37,7 +37,7 @@ public class AttributeProcessor {
                 if (namespace.equals(name.getNamespaceURI())) {
                     List<Object> ll=result.get(name.getLocalPart());
                     if (ll==null) {
-                        List tmp=new LinkedList();
+                        List<Object> tmp=new LinkedList<Object>();
                         tmp.add(je.getValue());
                         result.put(name.getLocalPart(),tmp);
                     } else {

@@ -63,5 +63,9 @@ prefix rec54   <http://www.w3.org/2001/02pd/rec54#>
   wasInfluencedBy(ex:infl1; tr:WD-prov-dm-20111018, tr:WD-prov-dm-20111215)
 
 
+  entity(ex:bundle1,    [ prov:type='prov:Bundle' ])
+  mentionOf(tr:WD-prov-dm-20111215, tr:WD-prov-dm-20111215, ex:bundle1)
+
+
 endBundle
 

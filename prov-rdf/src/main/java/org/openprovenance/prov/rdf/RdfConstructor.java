@@ -13,6 +13,18 @@ import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.StatementImpl;
 
+/** Initial convertor to rdf.
+    It does not handle subtypes (plan, bundle, etc) properly.
+
+    Indeed, to do so, elmo requires the resource to
+    be created with the write type:
+    
+      manager.designate(qname, Plan.class);
+
+      To do so, one needs to parse all the attributes before creating the resource.
+
+    
+*/
 public class RdfConstructor implements TreeConstructor {
     final ProvFactory pFactory;
     final ElmoManager manager;
@@ -38,8 +50,11 @@ public class RdfConstructor implements TreeConstructor {
         QName qname = getQName(id);
         Entity e;
         if (qname.getLocalPart().equals("rec-advance")) {
-            //Hack, I need to parse the attributes
+            //TODO: Hack, I need to parse the attributes
             e = (Entity) manager.designate(qname, Plan.class);
+	} else if (qname.getLocalPart().equals("bundle1")) {
+            //TODO: Hack, I need to parse the attributes
+            e = (Entity) manager.designate(qname, Bundle.class);
         } else {
             e = (Entity) manager.designate(qname, Entity.class);
         }
@@ -610,9 +625,20 @@ public class RdfConstructor implements TreeConstructor {
 
 
 
-    public Object convertMentionOf(Object su, Object bu, Object ta) {
-        //todo
-        throw new UnsupportedOperationException();
+    public Object convertMentionOf(Object id2, Object bu, Object id1) {
+        QName qn2 = getQName(id2);
+        QName qn1 = getQName(id1);
+
+        QName qn3 = getQName(bu);
+
+        Entity e2=(Entity)manager.find(qn2);
+        Entity e1=(Entity)manager.find(qn1);
+        Bundle e3=(Bundle)manager.find(qn3);
+
+	e2.getMentionOf().add(e1);
+	e2.getAsInBundle().add(e3);
+
+	return null;
     }
 
         

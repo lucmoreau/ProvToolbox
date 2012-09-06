@@ -9,8 +9,6 @@ import java.io.PrintStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import javax.xml.namespace.QName;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBElement;
 //import org.w3c.dom.Element;
@@ -206,7 +204,8 @@ public class ProvToDot {
         throws java.io.FileNotFoundException, java.io.IOException {
         convert(graph,new File(dotFile));
         Runtime runtime = Runtime.getRuntime();
-        java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
+        @SuppressWarnings("unused")
+		java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
     }
 
     public void convert(Bundle graph, File file) throws java.io.FileNotFoundException{
@@ -262,7 +261,7 @@ public class ProvToDot {
     //////////////////////////////////////////////////////////////////////
 
     public void emitActivity(Activity p, PrintStream out) {
-        HashMap<String,String> properties=new HashMap();
+        HashMap<String,String> properties=new HashMap<String, String>();
 
         emitElement(p.getId(),
                  addActivityShape(p,addActivityLabel(p, addActivityColor(p,properties))),
@@ -272,7 +271,7 @@ public class ProvToDot {
     }
 
     public void emitEntity(Entity a, PrintStream out) {
-        HashMap<String,String> properties=new HashMap();
+        HashMap<String,String> properties=new HashMap<String, String>();
 
         emitElement(a.getId(),
                  addEntityShape(a,addEntityLabel(a, addEntityColor(a,properties))),
@@ -282,7 +281,7 @@ public class ProvToDot {
     }
 
     public void emitAgent(Agent ag, PrintStream out) {
-        HashMap<String,String> properties=new HashMap();
+        HashMap<String,String> properties=new HashMap<String, String>();
 
         emitElement(ag.getId(),
                  addAgentShape(ag,addAgentLabel(ag, addAgentColor(ag,properties))),
@@ -298,12 +297,12 @@ public class ProvToDot {
             &&
             (((HasType)ann).getType().isEmpty())) return;
 
-        HashMap<String,String> properties=new HashMap();
+        HashMap<String,String> properties=new HashMap<String, String>();
         QName newId=annotationId(((Identifiable)ann).getId(),id);
         emitElement(newId,
                     addAnnotationShape(ann,addAnnotationColor(ann,addAnnotationLabel(ann,properties))),
                     out);
-        HashMap<String,String> linkProperties=new HashMap();
+        HashMap<String,String> linkProperties=new HashMap<String, String>();
         emitRelation(qnameToString(newId),
                      qnameToString(((Identifiable)ann).getId()),
                      addAnnotationLinkProperties(ann,linkProperties),out,true);
@@ -441,7 +440,7 @@ public class ProvToDot {
         for (Object prop: ann.getAny()) {
 
             if (prop instanceof JAXBElement) {
-                JAXBElement je=(JAXBElement) prop;
+                JAXBElement<?> je=(JAXBElement<?>) prop;
                 QName attribute=je.getName();
                 if ("fillcolor".equals(attribute.getLocalPart())) {
                     // no need to display this attribute
@@ -484,7 +483,7 @@ public class ProvToDot {
 
     public String getPropertyFromAny (Object o) {
         if (o instanceof JAXBElement) {
-            return qnameToUri(((JAXBElement)o).getName());
+            return qnameToUri(((JAXBElement<?>)o).getName());
         } else if (o instanceof org.w3c.dom.Element) {
             return ((org.w3c.dom.Element)o).getTagName();
         } else {
@@ -494,7 +493,7 @@ public class ProvToDot {
 
     public String getPropertyValueFromAny (Object o) {
         if (o instanceof JAXBElement) {
-            Object val=((JAXBElement)o).getValue();
+            Object val=((JAXBElement<?>)o).getValue();
             if (val instanceof QName) {
                 QName q=(QName)val;
                 return q.getNamespaceURI() + q.getLocalPart();
@@ -536,7 +535,7 @@ public class ProvToDot {
     }
     public String processColor(Activity p) {
         // Note, I should compute effective account membership
-        List<String> colors=new LinkedList();
+        List<String> colors=new LinkedList<String>();
         // for (AccountRef acc: p.getAccount()) {
         //     String accountLabel=((Account)acc.getRef()).getId();
         //     String colour=convertAccount(accountLabel);
@@ -564,7 +563,7 @@ public class ProvToDot {
     }
     public String entityColor(Entity p) {
         // Note, I should compute effective account membership
-        List<String> colors=new LinkedList();
+        List<String> colors=new LinkedList<String>();
         // for (AccountRef acc: p.getAccount()) {
         //     String accountLabel=((Account)acc.getRef()).getId();
         //     String colour=convertAccount(accountLabel);
@@ -574,7 +573,7 @@ public class ProvToDot {
     }
     public String agentColor(Agent p) {
         // Note, I should compute effective account membership
-        List<String> colors=new LinkedList();
+        List<String> colors=new LinkedList<String>();
         // for (AccountRef acc: p.getAccount()) {
         //     String accountLabel=((Account)acc.getRef()).getId();
         //     String colour=convertAccount(accountLabel);
@@ -585,7 +584,7 @@ public class ProvToDot {
 
 
     public String annotationColor(HasExtensibility ann) {
-        List<String> colors=new LinkedList();
+        List<String> colors=new LinkedList<String>();
         colors.add("gray");
         return selectColor(colors);
     }
@@ -627,7 +626,7 @@ public class ProvToDot {
     //////////////////////////////////////////////////////////////////////
 
     public void emitDependency(Relation0 e, PrintStream out) {
-        HashMap<String,String> properties=new HashMap();
+        HashMap<String,String> properties=new HashMap<String, String>();
 
         List<QName> others=u.getOtherCauses(e);
         if (others !=null) { // n-ary case
@@ -636,10 +635,10 @@ public class ProvToDot {
 	    
             emitBlankNode(dotify(bnid), addBlankNodeShape(properties), out);
 
-            HashMap<String,String> properties2=new HashMap();
+            HashMap<String,String> properties2=new HashMap<String, String>();
             properties2.put("arrowhead","none");
 
-            HashMap<String,String> properties3=new HashMap();
+            HashMap<String,String> properties3=new HashMap<String, String>();
 
 
             emitRelation( qnameToString(u.getEffect(e)),
@@ -660,7 +659,7 @@ public class ProvToDot {
                           out,
                           true);
 
-            HashMap<String,String> properties4=new HashMap();
+            HashMap<String,String> properties4=new HashMap<String, String>();
 
             for (QName other: others) {
 		if (other!=null) {

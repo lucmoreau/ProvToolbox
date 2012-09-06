@@ -253,6 +253,12 @@ public class RdfConstructor implements TreeConstructor {
     			((Activity)e2).getQualifiedStart().add((Start)g);
     		} else if  (g instanceof End) {
     			((Activity)e2).getQualifiedEnd().add((End)g);
+    		} else if  (g instanceof Attribution) {
+    			((Entity)e2).getQualifiedAttribution().add((Attribution)g);
+    		} else if  (g instanceof Association) {
+    			((Activity)e2).getQualifiedAssociation().add((Association)g);
+    		} else if  (g instanceof Delegation) {
+    			((Agent)e2).getQualifiedDelegation().add((Delegation)g);
     		} else {
     			throw new UnsupportedOperationException();
     		}
@@ -395,34 +401,45 @@ public class RdfConstructor implements TreeConstructor {
         return null;
     }
     public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
-        return null;
+        QName qn2 = getQName(id2);
+        QName qn1 = getQName(id1);
+        QName qn3 = getQName(a);
+
+        Agent ag2=(Agent)manager.find(qn2);
+        Agent ag1=(Agent)manager.find(qn1);
+
+        Delegation g=addAgentInfluence(id,ag2, ag1, null,aAttrs,Delegation.class);
+
+	if (qn3!=null) {
+	    Activity a3=(Activity)manager.find(qn3);
+	    g.getHadActivity().add(a3);
+	}
+
+        ag2.getActedOnBehalfOf().add(ag1);
+
+        return g;
     }
 
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
-        QName qname = getQName(id);
         QName qn2 = getQName(id2);
         QName qn1 = getQName(id1);
-        QName qnpl = getQName(pl);
-
-        Association a = (Association) manager.designate(qname, Association.class);
-        AgentInfluence qi=(AgentInfluence) a;
+        QName qn3 = getQName(pl);
 
         Activity a2=(Activity)manager.find(qn2);
         Agent ag1=(Agent)manager.find(qn1);
-        qi.getAgents().add(ag1);
 
-        a2.getQualifiedAssociation().add(a);
+        Association ass=addAgentInfluence(id, a2, ag1, null, aAttrs,Association.class);
 
-	if (qnpl!=null) {
-	    Plan plan=(Plan)manager.find(qnpl);
-	    a.getHadPlan().add(plan);
+	if (qn3!=null) {
+	    Plan plan=(Plan)manager.find(qn3);
+	    ass.getHadPlan().add(plan);
 	}
 
-	a2.getWasAssociatedWith().add(ag1);
+        a2.getWasAssociatedWith().add(ag1);
 
-        return a;
-
+        return ass;
     }
+
 
     public Object convertExtension(Object name, Object id, Object args, Object dAttrs) {
 	return null;

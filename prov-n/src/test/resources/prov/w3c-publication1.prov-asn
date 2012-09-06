@@ -33,13 +33,6 @@ prefix rec54   <http://www.w3.org/2001/02pd/rec54#>
   wasGeneratedBy(tr:WD-prov-dm-20111018, ex:act1, -)
   wasGeneratedBy(tr:WD-prov-dm-20111215, ex:act2, -)
 
-  //for purpose of testing rdf conversion for now
-  wasGeneratedBy(ex:gen1; tr:WD-prov-dm-20111018, ex:act1, 2011-11-16T16:00:00.000Z)
-  wasInvalidatedBy(ex:inv1; tr:WD-prov-dm-20111018, ex:act1, 2011-11-16T16:00:00.000Z)
-  used(ex:u1; ex:act1, chairs:2011OctDec/0004, -)
-  wasInformedBy(ex:inf1; ex:act1, ex:act1)
-  wasStartedBy(ex:start1; ex:act1, chairs:2011OctDec/0004, ex:act1, -)
-  wasEndedBy(ex:end1; ex:act1, chairs:2011OctDec/0004, ex:act1, -)
 
   used(ex:act1, chairs:2011OctDec/0004, -)
   used(ex:act1, email:2011Oct/0141, -)
@@ -49,6 +42,19 @@ prefix rec54   <http://www.w3.org/2001/02pd/rec54#>
 
   wasAssociatedWith(ex:act1, w3:Consortium, process:rec-advance)
   wasAssociatedWith(ex:act2, w3:Consortium, process:rec-advance)
+
+
+  //for purpose of testing rdf conversion for now
+  wasGeneratedBy(ex:gen1; tr:WD-prov-dm-20111018, ex:act1, 2011-11-16T16:00:00.000Z)
+  wasInvalidatedBy(ex:inv1; tr:WD-prov-dm-20111018, ex:act1, 2011-11-16T16:00:00.000Z)
+  used(ex:u1; ex:act1, chairs:2011OctDec/0004, -)
+  wasInformedBy(ex:inf1; ex:act1, ex:act1)
+  wasStartedBy(ex:start1; ex:act1, chairs:2011OctDec/0004, ex:act1, -)
+  wasEndedBy(ex:end1; ex:act1, chairs:2011OctDec/0004, ex:act1, -)
+  wasAttributedTo(ex:att1; tr:WD-prov-dm-20111018, w3:Consortium)
+  wasAssociatedWith(ex:ass1; ex:act1, w3:Consortium, process:rec-advance)
+  actedOnBehalfOf(ex:del1; w3:Consortium, w3:Consortium, ex:act1)
+
 
 endBundle
 

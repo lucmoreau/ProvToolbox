@@ -69,6 +69,9 @@ public class ProvUtilities {
         if (r instanceof WasInformedBy) {
             return ((WasInformedBy)r).getEffect().getRef();
         }
+        if (r instanceof MentionOf) {
+            return ((MentionOf)r).getSpecializedEntity().getRef();
+        }
         if (r instanceof WasInfluencedBy) {
             return ((WasInfluencedBy)r).getInfluencee().getRef();
         }
@@ -130,6 +133,9 @@ public class ProvUtilities {
         if (r instanceof SpecializationOf) {
             return ((SpecializationOf)r).getGeneralEntity().getRef();
         }
+        if (r instanceof MentionOf) {
+            return ((MentionOf)r).getGeneralEntity().getRef();
+        }
         if (r instanceof WasInformedBy) {
             return ((WasInformedBy)r).getCause().getRef();
         }
@@ -155,6 +161,13 @@ public class ProvUtilities {
         if (r instanceof WasStartedBy) {
             List<QName> res=new LinkedList<QName>();
             ActivityRef a=((WasStartedBy)r).getStarter();
+            if (a==null) return null;
+            res.add(a.getRef());
+            return res;
+        }
+        if (r instanceof MentionOf) {
+            List<QName> res=new LinkedList<QName>();
+            EntityRef a=((MentionOf)r).getBundle();
             if (a==null) return null;
             res.add(a.getRef());
             return res;

@@ -609,7 +609,15 @@ These two properties are used to encode the PROV-DM&#39;s Mention construct (htt
         <category>qualified</category>
         <inverse>qualifiedInfluenceOf</inverse>
         <component>derivations</component>
-        <rdfs:domain rdf:resource="http://www.w3.org/ns/prov#Entity"/>
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.w3.org/ns/prov#Activity"/>
+                    <rdf:Description rdf:about="http://www.w3.org/ns/prov#Agent"/>
+                    <rdf:Description rdf:about="http://www.w3.org/ns/prov#Entity"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
         <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Influence"/>
         <sharesDefinitionWith rdf:resource="http://www.w3.org/ns/prov#Influence"/>
         <unqualifiedForm rdf:resource="http://www.w3.org/ns/prov#wasInfluencedBy"/>

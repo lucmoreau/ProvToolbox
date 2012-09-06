@@ -32,6 +32,7 @@ public class RepositoryHelper {
         module.addConcept(org.openprovenance.prov.rdf.Attribution.class);
         module.addConcept(org.openprovenance.prov.rdf.Plan.class);
         module.addConcept(org.openprovenance.prov.rdf.Location.class);
+        module.addConcept(org.openprovenance.prov.rdf.Influence.class);
         module.addConcept(org.openprovenance.prov.rdf.SoftwareAgent.class);
         module.addConcept(org.openprovenance.prov.rdf.Person.class);
         module.addConcept(org.openprovenance.prov.rdf.Organization.class);

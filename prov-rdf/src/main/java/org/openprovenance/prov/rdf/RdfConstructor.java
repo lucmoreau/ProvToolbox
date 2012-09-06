@@ -167,6 +167,27 @@ public class RdfConstructor implements TreeConstructor {
     	}
     	return infl;
     }
+
+
+    public <INFLUENCE> INFLUENCE addUnknownInfluence(Object id,
+						     ActivityOrAgentOrEntity e2,
+						     ActivityOrAgentOrEntity e1,
+						     Object aAttrs,
+						     Class<INFLUENCE> cl) {
+	
+    	INFLUENCE infl=null;
+    	
+    	if ((id!=null) || ((aAttrs!=null) && !(((List<?>)aAttrs).isEmpty()))) {
+    		QName qname = getQName(id);
+    		infl = manager.designate(qname,cl);
+    		Influence qi=(Influence) infl;
+    		qi.getInfluencers().add(e1);
+    		addQualifiedInfluence(e2,infl);  
+    		
+    		processAttributes(qname,(List<?>)aAttrs);
+    	}
+    	return infl;
+    }
     
     public <INFLUENCE,TYPE> INFLUENCE addActivityInfluence(Object id,
     		                                               TYPE e2,
@@ -265,6 +286,8 @@ public class RdfConstructor implements TreeConstructor {
     			((Agent)e2).getQualifiedDelegation().add((Delegation)g);
     		} else if  (g instanceof Derivation) {
     			((Entity)e2).getQualifiedDerivation().add((Derivation)g);
+		} else if  (g instanceof Influence) {
+		    ((ActivityOrAgentOrEntity)e2).getQualifiedInfluence().add((Influence)g);
     		} else {
     			throw new UnsupportedOperationException();
     		}
@@ -417,10 +440,21 @@ public class RdfConstructor implements TreeConstructor {
         throw new UnsupportedOperationException();
     }
 
-    public Object convertWasInfluencedBy(Object id, Object id2, Object id1, Object dAttrs) {
-        //todo
-        throw new UnsupportedOperationException();
+    public Object convertWasInfluencedBy(Object id, Object id2, Object id1, Object aAttrs) {
+    	QName qn2 = getQName(id2);
+    	QName qn1 = getQName(id1);
+    	
+    	ActivityOrAgentOrEntity e1=(ActivityOrAgentOrEntity)manager.find(qn1);
+    	ActivityOrAgentOrEntity e2=(ActivityOrAgentOrEntity)manager.find(qn2);
+
+    	Influence u=addUnknownInfluence(id, e2, e1, aAttrs, Influence.class);
+    	
+    	e2.getWasInfluencedBy().add(e1);
+    	
+    	return u;
+
     }
+
     public Object convertAlternateOf(Object id2, Object id1) {
         QName qn2 = getQName(id2);
         QName qn1 = getQName(id1);

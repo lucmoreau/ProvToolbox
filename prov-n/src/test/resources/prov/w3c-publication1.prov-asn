@@ -54,6 +54,10 @@ prefix rec54   <http://www.w3.org/2001/02pd/rec54#>
   wasAttributedTo(ex:att1; tr:WD-prov-dm-20111018, w3:Consortium)
   wasAssociatedWith(ex:ass1; ex:act1, w3:Consortium, process:rec-advance)
   actedOnBehalfOf(ex:del1; w3:Consortium, w3:Consortium, ex:act1)
+  wasDerivedFrom(tr:WD-prov-dm-20111215, tr:WD-prov-dm-20111215)
+  wasDerivedFrom(ex:d2; tr:WD-prov-dm-20111215, tr:WD-prov-dm-20111215)
+  specializationOf(tr:WD-prov-dm-20111215, tr:WD-prov-dm-20111215)
+  alternateOf(tr:WD-prov-dm-20111215, tr:WD-prov-dm-20111215)
 
 
 endBundle

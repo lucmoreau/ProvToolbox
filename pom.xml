@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.openprovenance.prov</groupId>
-  <artifactId>specs</artifactId>
+  <artifactId>ProvToolbox</artifactId>
   <name>W3C PROV Specifications</name>
   <version>0.0.1-SNAPSHOT</version>
   <url>http://openprovenance.org/java/site/prov1_0</url>
@@ -20,13 +20,13 @@
 
 
   <modules>
-    <module>xml</module>    
-    <module>asn</module>    
-    <module>dot</module>    
-    <module>json</module>
+    <module>prov-xml</module>    
+    <module>prov-n</module>    
+    <module>prov-dot</module>    
+    <module>prov-json</module>
 
-    <module>interop</module>    
-    <module>rdf</module>    
+    <module>prov-interop</module>    
+    <module>prov-rdf</module>    
     <module>toolbox</module>    
 
   </modules>
@@ -240,8 +240,8 @@
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-compiler-plugin</artifactId>
       <configuration>
-       <source>1.5</source>
-       <target>1.5</target>
+       <source>1.6</source>
+       <target>1.6</target>
       </configuration>
      </plugin>
 

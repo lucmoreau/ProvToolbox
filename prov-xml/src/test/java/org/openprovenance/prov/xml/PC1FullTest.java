@@ -1,5 +1,7 @@
 package org.openprovenance.prov.xml;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,6 +12,9 @@ import java.net.URI;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
+
+import org.xml.sax.SAXException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -62,9 +67,14 @@ public class PC1FullTest
     public static Bundle graph1;
     public static Bundle graph2;
 
-
-
-    public void testPC1Full() throws JAXBException
+    public void testPC1() throws JAXBException, FileNotFoundException, IOException, SAXException {
+    	subtestPC1Full();
+    	subtestCopyPC1Full();
+    	subtestSchemaValidateXML();
+    	subtestSchemaFailValidateXML();
+    }
+    
+    public void subtestPC1Full() throws JAXBException
     {
         Bundle graph=makePC1FullGraph(pFactory);
 
@@ -603,7 +613,7 @@ public class PC1FullTest
 
 
 
-    public void testCopyPC1Full() throws java.io.FileNotFoundException,  java.io.IOException   {
+    public void subtestCopyPC1Full() throws java.io.FileNotFoundException,  java.io.IOException   {
         ProvFactory pFactory=new ProvFactory();
 
         Bundle c=pFactory.newBundle(graph1);
@@ -616,7 +626,7 @@ public class PC1FullTest
         
     }
 
-    public void testReadXMLGraph() throws javax.xml.bind.JAXBException {
+    public void subtestReadXMLGraph() throws javax.xml.bind.JAXBException {
         
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
         Bundle c=deserial.deserialiseBundle(new File("target/pc1-full.xml"));
@@ -647,7 +657,7 @@ public class PC1FullTest
 
     }
         
-    public void testSchemaValidateXML() throws  javax.xml.bind.JAXBException, org.xml.sax.SAXException, java.io.IOException {
+    public void subtestSchemaValidateXML() throws  javax.xml.bind.JAXBException, org.xml.sax.SAXException, java.io.IOException {
         
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
 
@@ -657,7 +667,7 @@ public class PC1FullTest
         
     }
 
-    public void testSchemaFailValidateXML() {
+    public void subtestSchemaFailValidateXML() {
         
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
 

@@ -1,5 +1,10 @@
 package org.openprovenance.prov.dot;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import javax.xml.bind.JAXBException;
+
+import org.xml.sax.SAXException;
 
 /**
  * 
@@ -13,17 +18,19 @@ public class PC1FullTest extends org.openprovenance.prov.xml.PC1FullTest {
     }
 
     @Override
-    public void testPC1Full() throws JAXBException {
+    public void subtestPC1Full() throws JAXBException {
     }
 
     @Override
-    public void testCopyPC1Full() throws java.io.FileNotFoundException,  java.io.IOException   {
+    public void subtestCopyPC1Full() throws java.io.FileNotFoundException,  java.io.IOException   {
     }
 
-    public void testPC1Full_A() throws JAXBException, java.io.FileNotFoundException,  java.io.IOException   {
-        super.testPC1Full();
-        super.testCopyPC1Full();
-
+    public void testPC1() throws JAXBException, java.io.FileNotFoundException,  java.io.IOException, SAXException   {
+        super.testPC1();
+        subtestToDot();
+    }
+    
+    public void subtestToDot() throws FileNotFoundException, IOException {
 	/** Produces a dot representation
 	 * of created graph. */
 
@@ -33,12 +40,12 @@ public class PC1FullTest extends org.openprovenance.prov.xml.PC1FullTest {
     }
 
     @Override
-    public void testSchemaValidateXML() {
+    public void subtestSchemaValidateXML() {
         // no need to do it here
     }
 
     @Override
-    public void testSchemaFailValidateXML() {
+    public void subtestSchemaFailValidateXML() {
         // no need to do it here
     }
 

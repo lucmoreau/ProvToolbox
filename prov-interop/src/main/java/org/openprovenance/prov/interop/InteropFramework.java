@@ -79,7 +79,6 @@ public class InteropFramework
                         String[] schemaFiles) throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
 
         File in=new File(inXmlFile);
-        File out=new File(outAsnFile);
 
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
 
@@ -129,11 +128,7 @@ public class InteropFramework
         CommonTree tree = u.convertASNToTree(file);
 
         Object o2=u.convertTreeToJavaBean(tree);
-
-        String o3=u.convertTreeToASN(tree);
-
-        
-
+       
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         serial.serialiseBundle(new File(file2),(Bundle)o2,true);
 
@@ -165,8 +160,33 @@ public class InteropFramework
 
     }
 
+    public static final String RDF_TURTLE="turtle";
+    public static final String RDF_XML="rdf/xml";
+    public static final String RDF_TRIG="trig";
+    public static final String RDF_N3="n3";
+    
+    public RDFFormat convert(String type) {
+    	if (RDF_TURTLE.equals(type)) return RDFFormat.TURTLE;
+    	if (RDF_XML.equals(type)) return RDFFormat.RDFXML;
+    	if (RDF_N3.equals(type)) return RDFFormat.N3;
+    	if (RDF_TRIG.equals(type)) return RDFFormat.TRIG;
+	    return null;
+     }
 
-    public void asn2rdf(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    public void asn2turtle(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    	asn2rdf(file,file2,RDF_TURTLE);
+    }
+    public void asn2rdfxml(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    	asn2rdf(file,file2,RDF_XML);
+    }
+    public void asn2trig(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    	asn2rdf(file,file2,RDF_TRIG);
+    }
+    public void asn2n3(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    	asn2rdf(file,file2,RDF_N3);
+    }
+
+    public void asn2rdf(String file, String file2, String type) throws java.io.IOException, JAXBException, Throwable {
 
         Utility u=new Utility();
 
@@ -194,7 +214,7 @@ public class InteropFramework
             prefixes.add(ss);  // why not take a hashtable in dumpToRDF?
         }
 
-        rHelper.dumpToRDF(new File(file2),(SesameManager)manager,RDFFormat.TURTLE,prefixes);
+        rHelper.dumpToRDF(new File(file2),(SesameManager)manager,convert(type),prefixes);
 
     }
 
@@ -270,7 +290,10 @@ public class InteropFramework
 
     public static void main(String [] args) throws Exception { //TODO: finalize signatures
         if ((args==null) || (!((args.length>=3) || (args.length<=5)))) {
-            System.out.println("Usage: provconvert -asn2rdf fileIn fileOut");
+            System.out.println("Usage: provconvert -asn2turtle fileIn fileOut");
+            System.out.println("Usage: provconvert -asn2rdfxml fileIn fileOut");
+            System.out.println("Usage: provconvert -asn2trig fileIn fileOut");
+            System.out.println("Usage: provconvert -asn2n3 fileIn fileOut");
             System.out.println("Usage: provconvert -asn2xml fileIn fileOut");
             System.out.println("Usage: provconvert -asn2asn fileIn fileOut");
             System.out.println("Usage: provconvert -asn2html fileIn fileOut");
@@ -285,8 +308,21 @@ public class InteropFramework
             InteropFramework me=new InteropFramework();
             String fileIn=args[1];
             String fileOut=args[2];
-            if (args[0].equals("-asn2rdf")) {
-                me.asn2rdf(fileIn,fileOut);
+            
+            if (args[0].equals("-asn2turtle")) {
+                me.asn2turtle(fileIn,fileOut);
+                return;
+            }
+            if (args[0].equals("-asn2rdfxml")) {
+                me.asn2rdfxml(fileIn,fileOut);
+                return;
+            }
+            if (args[0].equals("-asn2trig")) {
+                me.asn2trig(fileIn,fileOut);
+                return;
+            }
+            if (args[0].equals("-asn2n3")) {
+                me.asn2n3(fileIn,fileOut);
                 return;
             }
             if (args[0].equals("-asn2asn")) {

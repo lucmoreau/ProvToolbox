@@ -273,7 +273,10 @@
    </pluginManagement>
   </build>
 
-  <properties>
+  <properties>  
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
 
     <scm.version>1.3</scm.version> 
 

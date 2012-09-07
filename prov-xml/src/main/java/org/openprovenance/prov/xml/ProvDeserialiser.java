@@ -66,6 +66,7 @@ public class ProvDeserialiser {
         throws JAXBException {
         Unmarshaller u=jc.createUnmarshaller();
         Object root= u.unmarshal(serialised);
+        @SuppressWarnings("unchecked")
         Bundle res=(Bundle)((JAXBElement<Bundle>) root).getValue();
         return res;
     }
@@ -105,6 +106,7 @@ public class ProvDeserialiser {
         //u.setValidating(true); was jaxb1.0
         u.setSchema(schema);
         Object root= u.unmarshal(serialised);
+        @SuppressWarnings("unchecked")
         Bundle res=(Bundle)((JAXBElement<Bundle>) root).getValue();
         return res;
     }

@@ -1080,7 +1080,7 @@ public class ProvFactory {
 
     public Element newAttribute(String namespace, String prefix,
 				String localName, String value) {
-	Document doc = oFactory.builder.newDocument();
+	Document doc = builder.newDocument();
 	Element el = doc.createElementNS(namespace, ((prefix.equals("")) ? ""
 		: (prefix + ":")) + localName);
 	el.appendChild(doc.createTextNode(value));

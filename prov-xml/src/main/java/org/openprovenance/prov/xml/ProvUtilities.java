@@ -268,7 +268,9 @@ public class ProvUtilities {
 	return qname.getNamespaceURI() + qname.getLocalPart();
     }
 
+    @SuppressWarnings("rawtypes")
     final static private Hashtable<Class, String[]> fields = new Hashtable<Class, String[]>();
+    @SuppressWarnings("rawtypes")
     final static private Hashtable<Class, Class[]> types = new Hashtable<Class, Class[]>();
 
     public Object getter(Object o, int i)
@@ -355,6 +357,7 @@ public class ProvUtilities {
 
     }
 
+    @SuppressWarnings("unchecked")
     public <T> JAXBElement<T> newElement(T r) {
 	if (r instanceof Used) {
 	    return (JAXBElement<T>) of.newElement((Used) r);
@@ -377,36 +380,23 @@ public class ProvUtilities {
 	if (r instanceof WasInvalidatedBy) {
 	    return (JAXBElement<T>) of.newElement((WasInvalidatedBy) r);
 	}
-
 	if (r instanceof WasAttributedTo) {
 	    return (JAXBElement<T>) of.newElement((WasAttributedTo) r);
 	}
-	/*
-	 * if (r instanceof WasRevisionOf) { return
-	 * (JAXBElement<T>)of.newElement((WasRevisionOf)r); } if (r instanceof
-	 * AlternateOf) { return (JAXBElement<T>)of.newElement((AlternateOf)r);
-	 * } if (r instanceof SpecializationOf) { return
-	 * (JAXBElement<T>)of.newElement((SpecializationOf)r); }
-	 */
 	if (r instanceof WasInformedBy) {
 	    return (JAXBElement<T>) of.newElement((WasInformedBy) r);
 	}
 	if (r instanceof WasInfluencedBy) {
 	    return (JAXBElement<T>) of.newElement((WasInfluencedBy) r);
 	}
-
 	if (r instanceof ActedOnBehalfOf) {
 	    return (JAXBElement<T>) of.newElement((ActedOnBehalfOf) r);
 	}
-
-	/*
-	 * if (r instanceof DerivedByInsertionFrom) { return
-	 * (JAXBElement<T>)of.newElement((DerivedByInsertionFrom)r); }
-	 */
 	System.out.println("newElement Unknow relation " + r);
 	throw new UnsupportedOperationException();
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T addAttributes(T from, T to) {
 	if (from instanceof Used) {
 	    return (T) of.addAttributes((Used) from, (Used) to);

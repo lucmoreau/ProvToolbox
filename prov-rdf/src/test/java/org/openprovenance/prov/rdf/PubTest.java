@@ -9,7 +9,9 @@ import org.openrdf.elmo.ElmoManagerFactory;
 import org.openrdf.elmo.ElmoModule;
 import org.openrdf.elmo.sesame.SesameManager;
 import org.openrdf.elmo.sesame.SesameManagerFactory;
+import org.openrdf.model.Resource;
 import org.openrdf.model.impl.URIImpl;
+import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.contextaware.ContextAwareRepository;
 import org.openrdf.rio.RDFFormat;
 import java.util.LinkedList;
@@ -74,11 +76,15 @@ public class PubTest extends org.openprovenance.prov.notation.PubTest {
 
         
         org.openrdf.repository.RepositoryConnection repo= ((SesameManager)manager).getConnection().getRepository().getConnection();
-        System.out.println("---> contexts " + repo.getContextIDs());
+        RepositoryResult<Resource> res=repo.getContextIDs();
+
         
-        //ProvToDot toDot=new ProvToDot("src/main/resources/defaultConfigWithRoleNoLabel.xml"); 
+        LinkedList<Resource> ll=new LinkedList<Resource>();
+        res.addTo(ll);
         
-        //toDot.convert(co1,"target/w3c-publication1.dot", "target/w3c-publication1.pdf");
+        System.out.println("---> contexts " + ll);     
+        assertTrue(ll.size()==2); // two bundles provided!
+        
 
     }
 

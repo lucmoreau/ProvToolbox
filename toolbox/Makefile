@@ -47,6 +47,7 @@ b1:
 
 pc1:
 	target/appassembler/bin/provconvert -xml2provn ../prov-xml/target/pc1-full.xml target/pc1-full.provn
+	target/appassembler/bin/provconvert -xml2turtle  ../prov-xml/target/pc1-full.xml target/pc1-full.ttl
 
 
 

@@ -62,6 +62,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>appassembler-maven-plugin</artifactId>
+        <version>1.2.2</version>        
         <configuration>
           <programs>
 <!--            <program>
@@ -181,7 +182,7 @@
   	              <arg value="provconvert" />
                 </exec>
 
-
+<!--
                 <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
   	              <arg value="a+x" />
   	              <arg value="prov2dot" />
@@ -194,7 +195,7 @@
   	              <arg value="provxml-validate" />
   	              <arg value="provxml-validate.bat" />
                 </exec>
-
+-->
                 <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
   	              <arg value="a+x" />
   	              <arg value="provconvert" />

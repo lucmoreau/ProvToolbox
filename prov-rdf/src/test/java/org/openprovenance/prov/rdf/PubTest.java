@@ -63,14 +63,7 @@ public class PubTest extends org.openprovenance.prov.notation.PubTest {
 
         ElmoManagerFactory factory=new SesameManagerFactory(module);
         ElmoManager manager = factory.createElmoManager();
-        //org.openrdf.repository.RepositoryConnection repo= ((SesameManager)manager).getConnection().getRepository().getConnection();
-        
- //       ((SesameManager)manager).getConnection().setAddContexts(new URIImpl("http://foo/"),
- //                                                               new URIImpl("http://far/"));
-        
-        
-
-        //System.out.println("---> contexts " + repo.getContextIDs());
+        //
 
         CommonTree t=new Utility().convertASNToTree(file);
         convertTreeToRdf(t,pFactory,manager);
@@ -79,6 +72,9 @@ public class PubTest extends org.openprovenance.prov.notation.PubTest {
         rHelper.dumpToRDF(new File(fileOut1),(SesameManager)manager,RDFFormat.TURTLE,new LinkedList<String[]>());
         rHelper.dumpToRDF(new File(fileOut2),(SesameManager)manager,RDFFormat.TRIG,new LinkedList<String[]>());
 
+        
+        org.openrdf.repository.RepositoryConnection repo= ((SesameManager)manager).getConnection().getRepository().getConnection();
+        System.out.println("---> contexts " + repo.getContextIDs());
         
         //ProvToDot toDot=new ProvToDot("src/main/resources/defaultConfigWithRoleNoLabel.xml"); 
         

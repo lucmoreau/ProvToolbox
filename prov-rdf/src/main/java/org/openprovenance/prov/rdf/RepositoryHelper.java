@@ -10,6 +10,7 @@ import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.n3.N3Writer;
 import org.openrdf.rio.ntriples.NTriplesWriter;
 import org.openrdf.rio.rdfxml.RDFXMLWriter;
+import org.openrdf.rio.trig.TriGWriter;
 
 /** Utility class (straight from OPMToolbox) */
 
@@ -62,6 +63,8 @@ public class RepositoryHelper {
             serialiser=new RDFXMLWriter(writer);
         } else if  (format.equals(RDFFormat.NTRIPLES)) {
             serialiser=new NTriplesWriter (writer);
+        } else if  (format.equals(RDFFormat.TRIG)) {
+            serialiser=new TriGWriter (writer);
         } else if (format.equals(RDFFormat.TURTLE)) {
             serialiser=new org.openrdf.rio.turtle.TurtleWriter(writer);
         }

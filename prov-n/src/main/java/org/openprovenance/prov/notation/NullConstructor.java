@@ -135,6 +135,10 @@ public class NullConstructor implements TreeConstructor {
     public Object convertNamedBundle(Object id, Object nss, List<Object> records) {
         return null;
     }
+    
+    public void startBundle(Object bundleId) {
+    }
+
 
     public Object convertAttributes(List<Object> attributes) {
         return null;
@@ -181,6 +185,7 @@ public class NullConstructor implements TreeConstructor {
     public Object convertPrefix(String pre) {
         return null;
     }
+
 
 
 

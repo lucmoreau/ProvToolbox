@@ -651,5 +651,11 @@ class JSONConstructor implements TreeConstructor {
 		}
 		return nss;
 	}
+
+	@Override
+        public void startBundle(Object bundleId) {
+	    // TODO Auto-generated method stub
+	    
+        }
 }
 	

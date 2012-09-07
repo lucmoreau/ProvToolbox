@@ -86,7 +86,8 @@ public class ASNConstructor implements TreeConstructor {
         return s;
     }
 
-
+    public void startBundle(Object bundleId) {
+    }
 
     public Object convertAttributes(List<Object> attributes) {
         String s="";

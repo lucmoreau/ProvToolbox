@@ -346,7 +346,7 @@ public class TreeTraversal {
 
 
         case PROV_NParser.KEYS:
-            List<Object> keys=new LinkedList();
+            List<Object> keys=new LinkedList<Object>();
             for (int i=0; i< ast.getChildCount(); i++) {
                 Object o=convert(ast.getChild(i));
                 keys.add(o);
@@ -355,7 +355,7 @@ public class TreeTraversal {
 
 
         case PROV_NParser.VALUES:
-            List<Object> values=new LinkedList();
+            List<Object> values=new LinkedList<Object>();
             for (int i=0; i< ast.getChildCount(); i++) {
                 Object o=convert(ast.getChild(i));
                 values.add(o);
@@ -418,6 +418,7 @@ public class TreeTraversal {
 
         case PROV_NParser.BUNDLE:
             Object nss=convert(ast.getChild(0));
+            c.startBundle(null);
             System.out.println("UnNamed bunded ");
             List<Object> records2=(List<Object>)convert(ast.getChild(1));
             List<Object> bundles=null;
@@ -427,6 +428,7 @@ public class TreeTraversal {
 
         case PROV_NParser.NAMEDBUNDLE:
             Object bundleId=convert(ast.getChild(0));
+            c.startBundle(bundleId);
             System.out.println("Named bunded " + bundleId);
             Object nss2=convert(ast.getChild(1));
             List<Object> records3=(List<Object>)convert(ast.getChild(2));

@@ -59,7 +59,8 @@ public interface TreeConstructor {
 
     public Object convertBundle(Object nss, List<Object> records, List<Object> bundles);
     public Object convertNamedBundle(Object id, Object nss, List<Object> records);
-
+    public void startBundle(Object bundleId);
+    
     public Object convertAttributes(List<Object> attributes);
     public Object convertId(String id);
     public Object convertAttribute(Object name, Object value);
@@ -73,4 +74,5 @@ public interface TreeConstructor {
     public Object convertNamespace(Object pre, Object iri);
     public Object convertDefaultNamespace(Object iri);
     public Object convertNamespaces(List<Object> namespaces);
+
 }

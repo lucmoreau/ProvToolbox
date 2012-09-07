@@ -191,6 +191,9 @@ public  class ProvConstructor implements TreeConstructor {
         return c;
     }
 
+    public void startBundle(Object bundleId) {
+    }
+    
     public Object convertAttributes(List<Object> attributeList) {
         return attributeList;
     }

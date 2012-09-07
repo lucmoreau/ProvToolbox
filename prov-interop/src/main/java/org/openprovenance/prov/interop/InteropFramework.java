@@ -72,6 +72,7 @@ public class InteropFramework
 
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
 
+	//TODO: should do xml validation (conditionally?)
 	//        deserial.validateBundle(schemaFiles,in);
 
         Bundle c=deserial.deserialiseBundle(in);
@@ -100,6 +101,7 @@ public class InteropFramework
         
         Bundle c=deserial.deserialiseBundle(in);
 
+	//TODO: should do xml validation (conditionally?)
         deserial.validateBundle(schemaFiles,in);
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
@@ -132,7 +134,8 @@ public class InteropFramework
 
 
     	ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-    	
+
+	//TODO: should do xml validation (conditionally?)
 	//    	deserial.validateBundle(schemaFiles,in);
     	
     	Bundle c=deserial.deserialiseBundle(in);

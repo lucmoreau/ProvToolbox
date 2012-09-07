@@ -275,20 +275,22 @@ public class InteropFramework
 	}
     }
 
+    public static void help() {
+        System.out.println("Usage: provconvert -asn2turtle fileIn fileOut");
+        System.out.println("Usage: provconvert -asn2rdfxml fileIn fileOut");
+        System.out.println("Usage: provconvert -asn2trig fileIn fileOut");
+        System.out.println("Usage: provconvert -asn2n3 fileIn fileOut");
+        System.out.println("Usage: provconvert -asn2xml fileIn fileOut");
+        System.out.println("Usage: provconvert -asn2asn fileIn fileOut");
+        System.out.println("Usage: provconvert -asn2html fileIn fileOut");
+        System.out.println("Usage: provconvert -xml2xml fileIn fileOut");
+        System.out.println("Usage: provconvert -xml2asn fileIn fileOut");
+        System.out.println("Usage: provconvert -asn2dot fileIn dotFileOut pdfFileOut [configFile]");
+    }
 
     public static void main(String [] args) throws Exception { //TODO: finalize signatures
-        if ((args==null) || (!((args.length>=3) || (args.length<=5)))) {
-            System.out.println("Usage: provconvert -asn2turtle fileIn fileOut");
-            System.out.println("Usage: provconvert -asn2rdfxml fileIn fileOut");
-            System.out.println("Usage: provconvert -asn2trig fileIn fileOut");
-            System.out.println("Usage: provconvert -asn2n3 fileIn fileOut");
-            System.out.println("Usage: provconvert -asn2xml fileIn fileOut");
-            System.out.println("Usage: provconvert -asn2asn fileIn fileOut");
-            System.out.println("Usage: provconvert -asn2html fileIn fileOut");
-            System.out.println("Usage: provconvert -xml2xml fileIn fileOut");
-            System.out.println("Usage: provconvert -xml2asn fileIn fileOut");
-            System.out.println("Usage: provconvert -asn2dot fileIn dotFileOut pdfFileOut [configFile]");
-            
+        if ((args==null) || (!((args.length>=3) && (args.length<=5)))) {
+            help();
             return;
         }
 
@@ -356,6 +358,8 @@ public class InteropFramework
         } catch (Throwable e) {
             e.printStackTrace();
         }
+        
+        help();
 
         //TODO: other options here
 

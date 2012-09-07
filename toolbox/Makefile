@@ -2,7 +2,7 @@
 
 
 t1:
-	target/appassembler/bin/provconvert -asn2n3 ../prov-n/src/test/resources/prov/w3c-publication1.prov-asn target/w3c-publication1.ttl
+	target/appassembler/bin/provconvert -asn2turtle ../prov-n/src/test/resources/prov/w3c-publication1.prov-asn target/w3c-publication1.ttl
 	target/appassembler/bin/provconvert -asn2xml ../prov-n/src/test/resources/prov/w3c-publication1.prov-asn target/w3c-publication1.xml
 	target/appassembler/bin/provconvert -asn2dot ../prov-n/src/test/resources/prov/w3c-publication1.prov-asn target/w3c-publication1.dot target/w3c-publication1.pdf ../prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml
 

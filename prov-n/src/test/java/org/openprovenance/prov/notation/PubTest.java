@@ -1,22 +1,9 @@
 package org.openprovenance.prov.notation;
 import java.io.File;
-import java.io.StringWriter;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Hashtable;
-import java.net.URI;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.openprovenance.prov.xml.BeanTraversal;
 import org.openprovenance.prov.xml.Bundle;
-import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
@@ -42,7 +29,7 @@ public class PubTest
     public static ProvFactory pFactory;
 
     static {
-        namespaces=new Hashtable();
+        namespaces=new Hashtable<String, String>();
         namespaces.put("pc1",PC1_NS);
         namespaces.put("xsd",NamespacePrefixMapper.XSD_NS);
         namespaces.put("prim","http://openprovenance.org/primitives#");

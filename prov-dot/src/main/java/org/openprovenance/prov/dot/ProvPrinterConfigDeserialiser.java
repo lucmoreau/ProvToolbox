@@ -1,18 +1,10 @@
 package org.openprovenance.prov.dot;
 import java.io.File;
 import java.io.InputStream;
-import java.io.IOException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBElement;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Schema;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.Source;
 
 
 /** Deserialiser of Prov Graphs. */
@@ -59,6 +51,7 @@ public class ProvPrinterConfigDeserialiser {
         throws JAXBException {
         Unmarshaller u=jc.createUnmarshaller();
         Object root= u.unmarshal(serialised);
+        @SuppressWarnings("unchecked")
         ProvPrinterConfiguration res=(ProvPrinterConfiguration)((JAXBElement<ProvPrinterConfiguration>) root).getValue();
         return res;
     }
@@ -67,6 +60,7 @@ public class ProvPrinterConfigDeserialiser {
         throws JAXBException {
         Unmarshaller u=jc.createUnmarshaller();
         Object root= u.unmarshal(serialised);
+        @SuppressWarnings("unchecked")
         ProvPrinterConfiguration res=(ProvPrinterConfiguration)((JAXBElement<ProvPrinterConfiguration>) root).getValue();
         return res;
     }

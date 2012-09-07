@@ -1,6 +1,5 @@
 package org.openprovenance.prov.notation;
 
-import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.Bundle;
 
@@ -26,6 +25,7 @@ public  class MainParser {
             System.out.println(tree.toStringTree());
 
 
+            @SuppressWarnings("unused")
             Object o1=new TreeTraversal(new NullConstructor()).convert(tree);
 
             Object o2=u.convertTreeToJavaBean(tree);

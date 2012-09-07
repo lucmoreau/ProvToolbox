@@ -311,7 +311,9 @@ public class ProvToDot {
 
 
     int annotationCount=0;
+    @SuppressWarnings("unused")
     public QName annotationId(QName id,String node) {
+	
         if (true || id==null) {
             return new QName("http://foo/ignore","ann" + node + (annotationCount++));
         } else {
@@ -751,7 +753,7 @@ public class ProvToDot {
         if (!(e0 instanceof Relation)) return;
         Relation e=(Relation)e0;
         List<Object> type=of.getType(e);
-        if ((type!=null) || (!type.isEmpty())) {
+        if ((type!=null) && (!type.isEmpty())) {
             label=type.get(0).toString();
         } else if (getRelationPrintRole(e)) {
             String role=of.getRole(e);

@@ -17,7 +17,6 @@ import org.openprovenance.prov.xml.EntityRef;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.HasType;
 import org.openprovenance.prov.xml.AgentRef;
-import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.Bundle;
 import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.Used;
@@ -42,16 +41,6 @@ import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.MentionOf;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.WasAssociatedWith;
-import org.openprovenance.prov.xml.NamespacePrefixMapper;
-
-import  org.antlr.runtime.CommonTokenStream;
-import  org.antlr.runtime.ANTLRFileStream;
-import  org.antlr.runtime.CharStream;
-import  org.antlr.runtime.Token;
-import  org.antlr.runtime.tree.Tree;
-import  org.antlr.runtime.tree.CommonTree;
-import  org.antlr.runtime.tree.CommonTreeAdaptor;
-import  org.antlr.runtime.tree.TreeAdaptor;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
@@ -76,10 +65,11 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id=(String)id;
         String s_startTime=(String)startTime;
         String s_endTime=(String)endTime;
-        List attrs=(List)aAttrs;
+        @SuppressWarnings("unchecked")
+        List<Object> attrs=(List<Object>)aAttrs;
         Activity a=pFactory.newActivity(s_id);
         activityTable.put(s_id,a);
-        addAllAttributes(a,(List)attrs);
+        addAllAttributes(a,(List<Object>)attrs);
 
         if (s_endTime!=null) {
             a.setEndTime(pFactory.newISOTime(s_endTime));
@@ -99,20 +89,21 @@ public  class ProvConstructor implements TreeConstructor {
                
     public Object convertEntity(Object id, Object eAttrs) {
         String s_id=(String)id;
-        List attrs=(List)eAttrs;
+        @SuppressWarnings("unchecked")
+        List<Object> attrs=(List<Object>)eAttrs;
         Entity e=pFactory.newEntity(s_id);
         entityTable.put(s_id,e);
-        addAllAttributes(e,(List)attrs);
+        addAllAttributes(e,(List<Object>)attrs);
         return e;
     }
 
     /* Recognize prov attributes and insert them in the appropriate fields.
        TODO: done for type, only*/
     
-    public void addAllAttributes(HasExtensibility e, List attributes) {
+    public void addAllAttributes(HasExtensibility e, List<Object> attributes) {
         for (Object o: attributes) {
             if (o instanceof JAXBElement) {
-                JAXBElement je=(JAXBElement) o;
+                JAXBElement<?> je=(JAXBElement<?>) o;
                 QName q=je.getName();
                 if ("type".equals(q.getLocalPart())) {
                     HasType eWithType=(HasType) e;
@@ -128,19 +119,20 @@ public  class ProvConstructor implements TreeConstructor {
 
     public Object convertAgent(Object id, Object eAttrs) {
         String s_id=(String)id;
-        List attrs=(List)eAttrs;
+        @SuppressWarnings("unchecked")
+        List<Object> attrs=(List<Object>)eAttrs;
         Agent e=pFactory.newAgent(s_id);
         //entityTable.put(s_id,e);  
         agentTable.put(s_id,e);
-        addAllAttributes(e,(List)attrs);
+        addAllAttributes(e,(List<Object>)attrs);
         return e;
     }
 
     public Object convertBundle(Object namespaces, List<Object> records, List<Object> bundles) {    
-        Collection<Entity> es=new LinkedList();
-        Collection<Agent> ags=new LinkedList();
-        Collection<Activity> acs=new LinkedList();
-        Collection<Object> lks=new LinkedList();
+        Collection<Entity> es=new LinkedList<Entity>();
+        Collection<Agent> ags=new LinkedList<Agent>();
+        Collection<Activity> acs=new LinkedList<Activity>();
+        Collection<Object> lks=new LinkedList<Object>();
             
         for (Object o: records) {
             if (o instanceof Agent) { ags.add((Agent)o); }
@@ -166,10 +158,10 @@ public  class ProvConstructor implements TreeConstructor {
 
     
     public Object convertNamedBundle(Object id, Object namespaces, List<Object> records) {    
-        Collection<Entity> es=new LinkedList();
-        Collection<Agent> ags=new LinkedList();
-        Collection<Activity> acs=new LinkedList();
-        Collection<Object> lks=new LinkedList();
+        Collection<Entity> es=new LinkedList<Entity>();
+        Collection<Agent> ags=new LinkedList<Agent>();
+        Collection<Activity> acs=new LinkedList<Activity>();
+        Collection<Object> lks=new LinkedList<Object>();
             
         if (records!=null) 
             for (Object o: records) {
@@ -234,6 +226,8 @@ public  class ProvConstructor implements TreeConstructor {
             prefix=attr1.substring(0,index);
             local=attr1.substring(index+1,attr1.length());
         }
+        
+        /*
 
         if (false && value instanceof Integer) {
             String val1=value.toString();
@@ -248,7 +242,9 @@ public  class ProvConstructor implements TreeConstructor {
                                          prefix,
                                          local,
                                          unwrap(val1));
-        } else {
+        } else
+        */
+         {
             QName attr1_QNAME = new QName(getNamespace(prefix),
                                           local,
                                           prefix);
@@ -296,7 +292,7 @@ public  class ProvConstructor implements TreeConstructor {
                                 a2r,
                                 null,
                                 e1r);
-        List attrs=(List)uAttrs;
+        List<?> attrs=(List<?>)uAttrs;
         u.getAny().addAll(attrs);
 
         if (time!=null) {
@@ -324,7 +320,7 @@ public  class ProvConstructor implements TreeConstructor {
                                                     e2r,
                                                     null,
                                                     a1r);
-        List attrs=(List)gAttrs;
+        List<?> attrs=(List<?>)gAttrs;
         if (attrs!=null) g.getAny().addAll(attrs);
         if (time!=null) {
 	    if (time instanceof XMLGregorianCalendar) {
@@ -356,7 +352,7 @@ public  class ProvConstructor implements TreeConstructor {
         ActivityRef a3r=null;
         if (a3!=null) a3r=pFactory.newActivityRef(a3);
 
-        List attrs=(List)gAttrs;
+        List<?> attrs=(List<?>)gAttrs;
         s.getAny().addAll(attrs);
         if (time!=null) {
 	    if (time instanceof XMLGregorianCalendar) {
@@ -391,7 +387,7 @@ public  class ProvConstructor implements TreeConstructor {
         ActivityRef a3r=null;
         if (a3!=null) a3r=pFactory.newActivityRef(a3);
 
-        List attrs=(List)gAttrs;
+        List<?> attrs=(List<?>)gAttrs;
         s.getAny().addAll(attrs);
         if (time!=null) {
 	    if (time instanceof XMLGregorianCalendar) {
@@ -419,7 +415,7 @@ public  class ProvConstructor implements TreeConstructor {
         WasInvalidatedBy g=pFactory.newWasInvalidatedBy(s_id,
                                                         e2r,
                                                         a1r);
-        List attrs=(List)gAttrs;
+        List<?> attrs=(List<?>)gAttrs;
         if (attrs!=null) g.getAny().addAll(attrs);
         if (time!=null) {
 	    if (time instanceof XMLGregorianCalendar) {
@@ -445,7 +441,7 @@ public  class ProvConstructor implements TreeConstructor {
         WasInformedBy s=pFactory.newWasInformedBy(s_id,
                                                   a2r,
                                                   e1r);
-        List attrs=(List)aAttrs;
+        List<?> attrs=(List<?>)aAttrs;
         s.getAny().addAll(attrs);
 
         return s;
@@ -484,7 +480,7 @@ public  class ProvConstructor implements TreeConstructor {
         if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
         if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
 
-        List attrs=(List)dAttrs;
+        List<?> attrs=(List<?>)dAttrs;
         d.getAny().addAll(attrs);
 
 
@@ -508,7 +504,7 @@ public  class ProvConstructor implements TreeConstructor {
         if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
         if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
         if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
-        List attrs=(List)dAttrs;
+        List<?> attrs=(List<?>)dAttrs;
         d.getAny().addAll(attrs);
 
         return d;
@@ -533,7 +529,7 @@ public  class ProvConstructor implements TreeConstructor {
         if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
 
 
-        List attrs=(List)dAttrs;
+        List<?> attrs=(List<?>)dAttrs;
         d.getAny().addAll(attrs);
         return d;
     }
@@ -555,7 +551,7 @@ public  class ProvConstructor implements TreeConstructor {
         if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
         if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
 
-        List attrs=(List)dAttrs;
+        List<?> attrs=(List<?>)dAttrs;
         d.getAny().addAll(attrs);
         return d;
     }
@@ -571,7 +567,7 @@ public  class ProvConstructor implements TreeConstructor {
         WasInfluencedBy d=pFactory.newWasInfluencedBy(s_id,
                                                       s_id2,
                                                       s_id1);
-        List attrs=(List)dAttrs;
+        List<?> attrs=(List<?>)dAttrs;
         d.getAny().addAll(attrs);
         return d;
     }
@@ -641,7 +637,7 @@ public  class ProvConstructor implements TreeConstructor {
                                                             e2r,
                                                             e1r);
         waw.setPlan(e3r);
-        List attrs=(List)aAttrs;
+        List<?> attrs=(List<?>)aAttrs;
         waw.getAny().addAll(attrs);
 
         return waw;
@@ -667,7 +663,7 @@ public  class ProvConstructor implements TreeConstructor {
                                                          e2r,
                                                          e1r,
                                                          e3r);
-        List attrs=(List)aAttrs;
+        List<?> attrs=(List<?>)aAttrs;
         aobo.getAny().addAll(attrs);
 
         return aobo;
@@ -802,10 +798,10 @@ public  class ProvConstructor implements TreeConstructor {
                                                                        e2r,
                                                                        e1r,
                                                                        null);
-        List attrs=(List)dAttrs;
+        List<?> attrs=(List<?>)dAttrs;
         dbif.getAny().addAll(attrs);
 
-        List entries=(List)map;
+        List<?> entries=(List<?>)map;
         for (Object o: entries) {
             Entry entry=(Entry) o;
             dbif.getEntry().add(entry);
@@ -830,7 +826,7 @@ public  class ProvConstructor implements TreeConstructor {
                                                                    e2r,
                                                                    e1r,
                                                                    null);
-        List attrs=(List)dAttrs;
+        List<?> attrs=(List<?>)dAttrs;
         dbrf.getAny().addAll(attrs);
 
         return dbrf;
@@ -847,7 +843,7 @@ public  class ProvConstructor implements TreeConstructor {
         DictionaryMemberOf mo=pFactory.newDictionaryMemberOf(s_id,
                                                              e2r,
                                                              null);
-        List attrs=(List)dAttrs;
+        List<?> attrs=(List<?>)dAttrs;
         if (attrs!=null) mo.getAny().addAll(attrs);
         
         return mo;
@@ -863,7 +859,7 @@ public  class ProvConstructor implements TreeConstructor {
         CollectionMemberOf mo=pFactory.newCollectionMemberOf(s_id,
                                                              e2r,
                                                              null);
-        List attrs=(List)dAttrs;
+        List<?> attrs=(List<?>)dAttrs;
         if (attrs!=null) mo.getAny().addAll(attrs);
         
         return mo;

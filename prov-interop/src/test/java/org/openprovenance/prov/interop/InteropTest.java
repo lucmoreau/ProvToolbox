@@ -70,7 +70,7 @@ public class InteropTest
         schemaFiles[0]="../prov-xml/src/test/resources/pc1.xsd";
 
 
-        interop.xml2asn("../prov-xml/target/pc1-full.xml",
+        interop.xml2provn("../prov-xml/target/pc1-full.xml",
                         "target/pc1-full.prov-asn",
                         schemaFiles);
         
@@ -81,7 +81,7 @@ public class InteropTest
 
         InteropFramework interop=new InteropFramework();
 
-        interop.asn2turtle("../prov-n/src/test/resources/prov/w3c-publication1.prov-asn",
+        interop.provn2turtle("../prov-n/src/test/resources/prov/w3c-publication1.prov-asn",
                            "target/w3c-publication1.ttl");
         
     }

@@ -58,12 +58,12 @@ public class InteropFramework
         }
     }
     
-    /** Validates an input xml file, reads into a Bean instance, saves it as an asnFile.
-        TODO: then compare with another asn files? */
+    /** Validates an input xml file, reads into a Bean instance, saves it as an provnFile.
+        TODO: then compare with another provn files? */
 
 
-    public void xml2asn(String inXmlFile,
-                        String outAsnFile,
+    public void xml2provn(String inXmlFile,
+                        String outprovnFile,
                         String[] schemaFiles) throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
 
         File in=new File(inXmlFile);
@@ -76,7 +76,7 @@ public class InteropFramework
 
         Utility u=new Utility();
         String s=u.convertBeanToASN(c);
-        writeTextToFile(s,outAsnFile);
+        writeTextToFile(s,outprovnFile);
 
     }
         
@@ -110,7 +110,7 @@ public class InteropFramework
     }
         
 
-    public void asn2xml(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    public void provn2xml(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
 
         Utility u=new Utility();
         CommonTree tree = u.convertASNToTree(file);
@@ -123,7 +123,7 @@ public class InteropFramework
     }
 
 
-    public void asn2asn(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    public void provn2provn(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
 
         Utility u=new Utility();
         CommonTree tree = u.convertASNToTree(file);
@@ -136,7 +136,7 @@ public class InteropFramework
     }
 
 
-    public void asn2html(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    public void provn2html(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
 
         Utility u=new Utility();
         CommonTree tree = u.convertASNToTree(file);
@@ -161,20 +161,20 @@ public class InteropFramework
 	    return null;
      }
 
-    public void asn2turtle(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
-    	asn2rdf(file,file2,RDF_TURTLE);
+    public void provn2turtle(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    	provn2rdf(file,file2,RDF_TURTLE);
     }
-    public void asn2rdfxml(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
-    	asn2rdf(file,file2,RDF_XML);
+    public void provn2rdfxml(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    	provn2rdf(file,file2,RDF_XML);
     }
-    public void asn2trig(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
-    	asn2rdf(file,file2,RDF_TRIG);
+    public void provn2trig(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    	provn2rdf(file,file2,RDF_TRIG);
     }
-    public void asn2n3(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
-    	asn2rdf(file,file2,RDF_N3);
+    public void provn2n3(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    	provn2rdf(file,file2,RDF_N3);
     }
 
-    public void asn2rdf(String file, String file2, String type) throws java.io.IOException, JAXBException, Throwable {
+    public void provn2rdf(String file, String file2, String type) throws java.io.IOException, JAXBException, Throwable {
 
         Utility u=new Utility();
 
@@ -206,7 +206,7 @@ public class InteropFramework
 
     }
 
-    public void asn2dot(String file, String dotFileOut, String pdfFileOut, String configFile)
+    public void provn2dot(String file, String dotFileOut, String pdfFileOut, String configFile)
 	throws java.io.IOException, JAXBException, Throwable {
 
         Utility u=new Utility();
@@ -276,16 +276,16 @@ public class InteropFramework
     }
 
     public static void help() {
-        System.out.println("Usage: provconvert -asn2turtle fileIn fileOut");
-        System.out.println("Usage: provconvert -asn2rdfxml fileIn fileOut");
-        System.out.println("Usage: provconvert -asn2trig fileIn fileOut");
-        System.out.println("Usage: provconvert -asn2n3 fileIn fileOut");
-        System.out.println("Usage: provconvert -asn2xml fileIn fileOut");
-        System.out.println("Usage: provconvert -asn2asn fileIn fileOut");
-        System.out.println("Usage: provconvert -asn2html fileIn fileOut");
+        System.out.println("Usage: provconvert -provn2turtle fileIn fileOut");
+        System.out.println("Usage: provconvert -provn2rdfxml fileIn fileOut");
+        System.out.println("Usage: provconvert -provn2trig fileIn fileOut");
+        System.out.println("Usage: provconvert -provn2n3 fileIn fileOut");
+        System.out.println("Usage: provconvert -provn2xml fileIn fileOut");
+        System.out.println("Usage: provconvert -provn2provn fileIn fileOut");
+        System.out.println("Usage: provconvert -provn2html fileIn fileOut");
         System.out.println("Usage: provconvert -xml2xml fileIn fileOut");
-        System.out.println("Usage: provconvert -xml2asn fileIn fileOut");
-        System.out.println("Usage: provconvert -asn2dot fileIn dotFileOut pdfFileOut [configFile]");
+        System.out.println("Usage: provconvert -xml2provn fileIn fileOut");
+        System.out.println("Usage: provconvert -provn2dot fileIn dotFileOut pdfFileOut [configFile]");
     }
 
     public static void main(String [] args) throws Exception { //TODO: finalize signatures
@@ -299,41 +299,41 @@ public class InteropFramework
             String fileIn=args[1];
             String fileOut=args[2];
             
-            if (args[0].equals("-asn2turtle")) {
-                me.asn2turtle(fileIn,fileOut);
+            if (args[0].equals("-provn2turtle")) {
+                me.provn2turtle(fileIn,fileOut);
                 return;
             }
-            if (args[0].equals("-asn2rdfxml")) {
-                me.asn2rdfxml(fileIn,fileOut);
+            if (args[0].equals("-provn2rdfxml")) {
+                me.provn2rdfxml(fileIn,fileOut);
                 return;
             }
-            if (args[0].equals("-asn2trig")) {
-                me.asn2trig(fileIn,fileOut);
+            if (args[0].equals("-provn2trig")) {
+                me.provn2trig(fileIn,fileOut);
                 return;
             }
-            if (args[0].equals("-asn2n3")) {
-                me.asn2n3(fileIn,fileOut);
+            if (args[0].equals("-provn2n3")) {
+                me.provn2n3(fileIn,fileOut);
                 return;
             }
-            if (args[0].equals("-asn2asn")) {
-                me.asn2asn(fileIn,fileOut);
-                return;
-            }
-
-            if (args[0].equals("-asn2asn")) {
-                me.asn2asn(fileIn,fileOut);
+            if (args[0].equals("-provn2provn")) {
+                me.provn2provn(fileIn,fileOut);
                 return;
             }
 
-
-            if (args[0].equals("-asn2html")) {
-                me.asn2html(fileIn,fileOut);
+            if (args[0].equals("-provn2provn")) {
+                me.provn2provn(fileIn,fileOut);
                 return;
             }
 
 
-            if (args[0].equals("-asn2xml")) {
-                me.asn2xml(fileIn,fileOut);
+            if (args[0].equals("-provn2html")) {
+                me.provn2html(fileIn,fileOut);
+                return;
+            }
+
+
+            if (args[0].equals("-provn2xml")) {
+                me.provn2xml(fileIn,fileOut);
                 return;
             }
 
@@ -342,17 +342,17 @@ public class InteropFramework
                 return;
             }
 
-            if (args[0].equals("-xml2asn")) {
-                me.xml2asn(fileIn,fileOut,null);
+            if (args[0].equals("-xml2provn")) {
+                me.xml2provn(fileIn,fileOut,null);
                 return;
             }
 
 
-            if (args[0].equals("-asn2dot")) {
+            if (args[0].equals("-provn2dot")) {
 		String pdfFileOut=args[3];
 		String configFile;
 		configFile= ((args.length==5)? args[4] : null);
-                me.asn2dot(fileIn,fileOut,pdfFileOut,configFile);
+                me.provn2dot(fileIn,fileOut,pdfFileOut,configFile);
                 return;
             }
         } catch (Throwable e) {

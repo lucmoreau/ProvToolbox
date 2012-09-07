@@ -1,5 +1,4 @@
 package org.openprovenance.prov.xml;
-import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedList;
 

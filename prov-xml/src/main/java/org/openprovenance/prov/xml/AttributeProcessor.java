@@ -32,7 +32,8 @@ public class AttributeProcessor {
 
         for (Object attribute: attributes) {
             if (attribute instanceof JAXBElement) {
-                JAXBElement je=(JAXBElement) attribute;
+                @SuppressWarnings("rawtypes")
+				JAXBElement je=(JAXBElement) attribute;
                 QName name=je.getName();
                 if (namespace.equals(name.getNamespaceURI())) {
                     List<Object> ll=result.get(name.getLocalPart());

@@ -1,27 +1,15 @@
 package org.openprovenance.prov.interop;
 import java.io.File;
-import java.io.StringWriter;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Hashtable;
-import java.net.URI;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
-
-
-import org.openprovenance.prov.xml.BeanTraversal;
 import org.openprovenance.prov.xml.Bundle;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.xml.NamespacePrefixMapper;
-
 import org.openprovenance.prov.notation.TreeTraversal;
 import org.openprovenance.prov.notation.Utility;
 
@@ -204,7 +192,7 @@ public class InteropFramework
         
         new TreeTraversal(new RdfConstructor(pFactory, manager)).convert(tree);
 
-        LinkedList prefixes=new LinkedList();
+        LinkedList<String[]> prefixes=new LinkedList<String[]>();
 
         Hashtable<String,String>  namespaceTable = c.getNss();
         for (String k: namespaceTable.keySet()) {

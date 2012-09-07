@@ -133,12 +133,10 @@ public class InteropFramework
 
     	ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
     	
-    	deserial.validateBundle(schemaFiles,in);
+	//    	deserial.validateBundle(schemaFiles,in);
     	
     	Bundle c=deserial.deserialiseBundle(in);
     	
-    	deserial.validateBundle(schemaFiles,in);
-    
 
         RepositoryHelper rHelper=new RepositoryHelper();
         ElmoModule module = new ElmoModule();

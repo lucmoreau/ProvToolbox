@@ -1,19 +1,6 @@
 package org.openprovenance.prov.xml;
-import java.io.File;
-import java.io.StringWriter;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Hashtable;
-import java.net.URI;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import java.lang.reflect.Method;
         
 
 
@@ -32,7 +19,7 @@ public class GettersTest
 
     
     static {
-        namespaces=new Hashtable();
+        namespaces=new Hashtable<String, String>();
         // currently, no prefix used, all qnames map to PC1_NS
         namespaces.put("_","http://example.com/");
 
@@ -71,8 +58,7 @@ public class GettersTest
         Used u1=pFactory.newUsed("u1", a3,"in",e1);
         WasGeneratedBy wg1=pFactory.newWasGeneratedBy("wgb1", e1,"out",a3);
 
-        WasDerivedFrom wd1=pFactory.newWasDerivedFrom(e2,e1,a3,wg1,u1);
-
+        
 	System.out.println(" method " + pUtil.getter(wg1,0));
 	System.out.println(" method " + pUtil.getter(wg1,1));
 	System.out.println(" method " + pUtil.getter(wg1,2));
@@ -93,6 +79,15 @@ public class GettersTest
 
 	System.out.println(" wgb " + wg1);
 
+	WasDerivedFrom wd1=pFactory.newWasDerivedFrom(e2,e1,a3,wg1,u1);
+
+	assertTrue(pUtil.getter(wd1,0) == wd1.getId());
+	assertTrue(pUtil.getter(wd1,1) == wd1.getGeneratedEntity());
+	assertTrue(pUtil.getter(wd1,2) == wd1.getUsedEntity());
+	assertTrue(pUtil.getter(wd1,3) == wd1.getActivity());
+	assertTrue(pUtil.getter(wd1,4) == wd1.getGeneration());
+	assertTrue(pUtil.getter(wd1,5) == wd1.getUsage());
+	assertTrue(pUtil.getter(wd1,6) == wd1.getAny());
 
 
     }

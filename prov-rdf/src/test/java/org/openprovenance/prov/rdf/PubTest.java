@@ -10,13 +10,10 @@ import org.openrdf.elmo.ElmoModule;
 import org.openrdf.elmo.sesame.SesameManager;
 import org.openrdf.elmo.sesame.SesameManagerFactory;
 import org.openrdf.model.Resource;
-import org.openrdf.model.impl.URIImpl;
 import org.openrdf.repository.RepositoryResult;
-import org.openrdf.repository.contextaware.ContextAwareRepository;
 import org.openrdf.rio.RDFFormat;
 import java.util.LinkedList;
 import java.io.File;
-import java.net.URI;
 
 /**
  * 

@@ -6,10 +6,8 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openprovenance.prov</groupId>
   <artifactId>toolbox</artifactId>
   <name>PROV Toolbox</name>
-  <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <description>A series of tools to manipulate PROV representations from the command line.</description>
 

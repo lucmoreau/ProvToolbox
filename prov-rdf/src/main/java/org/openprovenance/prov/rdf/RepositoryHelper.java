@@ -3,6 +3,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.util.Collection;
+import java.util.Hashtable;
+
 import org.openrdf.elmo.ElmoModule;
 import org.openrdf.elmo.sesame.SesameManager;
 import org.openrdf.rio.RDFFormat;
@@ -49,12 +51,20 @@ public class RepositoryHelper {
                 serialiser.handleNamespace(prefix[0],prefix[1]);
             }
     }
+    public void setPrefixes(RDFHandler serialiser,
+                            Hashtable<String,String> prefixes) throws org.openrdf.rio.RDFHandlerException {
+            serialiser.handleNamespace("prov","http://www.w3.org/ns/prov#");
+            for (String key: prefixes.keySet()) {
+                serialiser.handleNamespace(key,prefixes.get(key));
+            }
+    }
 
+    
 
     public void dumpToRDF(File file,
                           SesameManager manager,
                           RDFFormat format,
-                          Collection<String[]> prefixes) throws Exception {
+                          Hashtable<String,String> prefixes) throws Exception {
         Writer writer = new FileWriter(file);
         RDFHandler serialiser=null;
         if (format.equals(RDFFormat.N3)) {

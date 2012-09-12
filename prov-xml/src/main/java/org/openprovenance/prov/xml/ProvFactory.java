@@ -720,6 +720,7 @@ public class ProvFactory {
     public Used newUsed(Used u) {
 	Used u1 = newUsed(u.getId(), u.getActivity(), null, u.getEntity());
 	u1.getAny().addAll(u.getAny());
+	u1.setTime(u.getTime());
 	return u1;
     }
 
@@ -727,6 +728,7 @@ public class ProvFactory {
 	WasGeneratedBy wgb = newWasGeneratedBy(g.getId(), g.getEntity(), null,
 					       g.getActivity());
 	wgb.setId(g.getId());
+	wgb.setTime(g.getTime());
 	wgb.getAny().addAll(g.getAny());
 	return wgb;
     }
@@ -775,6 +777,7 @@ public class ProvFactory {
     public WasStartedBy newWasStartedBy(WasStartedBy u) {
 	WasStartedBy u1 = newWasStartedBy(u.getId(), u.getActivity(), u.getTrigger());
 	u1.setStarter(u.getStarter());
+	u1.setTime(u.getTime());
 	u1.getAny().addAll(u.getAny());
 	return u1;
     }
@@ -797,6 +800,7 @@ public class ProvFactory {
 
     public WasInvalidatedBy newWasInvalidatedBy(WasInvalidatedBy u) {
 	WasInvalidatedBy u1 = newWasInvalidatedBy(u.getId(), u.getEntity(), u.getActivity());
+	u1.setTime(u.getTime());
 	u1.getAny().addAll(u.getAny());
 	return u1;
     }
@@ -816,6 +820,7 @@ public class ProvFactory {
     public WasEndedBy newWasEndedBy(WasEndedBy u) {
 	WasEndedBy u1 = newWasEndedBy(u.getId(), u.getActivity(), u.getTrigger());
 	u1.setEnder(u.getEnder());
+	u1.setTime(u.getTime());
 	u1.getAny().addAll(u.getAny());
 	return u1;
     }

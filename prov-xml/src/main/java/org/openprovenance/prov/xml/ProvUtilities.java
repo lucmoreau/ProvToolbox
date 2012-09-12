@@ -272,6 +272,10 @@ public class ProvUtilities {
     final static private Hashtable<Class, String[]> fields = new Hashtable<Class, String[]>();
     @SuppressWarnings("rawtypes")
     final static private Hashtable<Class, Class[]> types = new Hashtable<Class, Class[]>();
+    @SuppressWarnings("rawtypes")
+    static public Hashtable<Class, Class[]> getTypes() {
+        return types;
+    }
 
     public Object getter(Object o, int i)
 	    throws java.lang.NoSuchMethodException,
@@ -360,37 +364,37 @@ public class ProvUtilities {
     @SuppressWarnings("unchecked")
     public <T> JAXBElement<T> newElement(T r) {
 	if (r instanceof Used) {
-	    return (JAXBElement<T>) of.newElement((Used) r);
+	    return (JAXBElement<T>) of.newElement(of.newUsed((Used) r));
 	}
 	if (r instanceof WasStartedBy) {
-	    return (JAXBElement<T>) of.newElement((WasStartedBy) r);
+	    return (JAXBElement<T>) of.newElement(of.newWasStartedBy((WasStartedBy) r));
 	}
 	if (r instanceof WasEndedBy) {
-	    return (JAXBElement<T>) of.newElement((WasEndedBy) r);
+	    return (JAXBElement<T>) of.newElement(of.newWasEndedBy((WasEndedBy) r));
 	}
 	if (r instanceof WasGeneratedBy) {
-	    return (JAXBElement<T>) of.newElement((WasGeneratedBy) r);
+	    return (JAXBElement<T>) of.newElement(of.newWasGeneratedBy((WasGeneratedBy) r));
 	}
 	if (r instanceof WasDerivedFrom) {
-	    return (JAXBElement<T>) of.newElement((WasDerivedFrom) r);
+	    return (JAXBElement<T>) of.newElement((WasDerivedFrom) r);//TODO: clone
 	}
 	if (r instanceof WasAssociatedWith) {
-	    return (JAXBElement<T>) of.newElement((WasAssociatedWith) r);
+	    return (JAXBElement<T>) of.newElement((WasAssociatedWith) r);//TODO: clone
 	}
 	if (r instanceof WasInvalidatedBy) {
-	    return (JAXBElement<T>) of.newElement((WasInvalidatedBy) r);
+	    return (JAXBElement<T>) of.newElement(of.newWasInvalidatedBy((WasInvalidatedBy) r));
 	}
 	if (r instanceof WasAttributedTo) {
-	    return (JAXBElement<T>) of.newElement((WasAttributedTo) r);
+	    return (JAXBElement<T>) of.newElement((WasAttributedTo) r); //TODO: clone
 	}
 	if (r instanceof WasInformedBy) {
-	    return (JAXBElement<T>) of.newElement((WasInformedBy) r);
+	    return (JAXBElement<T>) of.newElement(of.newWasInformedBy((WasInformedBy) r));
 	}
 	if (r instanceof WasInfluencedBy) {
-	    return (JAXBElement<T>) of.newElement((WasInfluencedBy) r);
+	    return (JAXBElement<T>) of.newElement(of.newWasInfluencedBy((WasInfluencedBy) r));
 	}
 	if (r instanceof ActedOnBehalfOf) {
-	    return (JAXBElement<T>) of.newElement((ActedOnBehalfOf) r);
+	    return (JAXBElement<T>) of.newElement((ActedOnBehalfOf) r);//TODO: clone
 	}
 	System.out.println("newElement Unknow relation " + r);
 	throw new UnsupportedOperationException();

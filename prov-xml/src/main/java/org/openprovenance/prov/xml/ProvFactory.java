@@ -588,6 +588,15 @@ public class ProvFactory {
 	return res;
     }
 
+    public WasInfluencedBy newWasInfluencedBy(WasInfluencedBy d) {
+	WasInfluencedBy wtb = newWasInfluencedBy(d.getId(), d.getInfluencee(),
+					     d.getInfluencer());
+	wtb.setId(d.getId());
+	wtb.getAny().addAll(d.getAny());
+	return wtb;
+    }
+
+
     public HadPrimarySource newHadPrimarySource(String id, EntityRef derived,
 						EntityRef source) {
 	HadPrimarySource res = of.createHadPrimarySource();
@@ -748,6 +757,8 @@ public class ProvFactory {
 	return res;
     }
 
+
+
     public WasStartedBy newWasStartedBy(QName id, ActivityRef aid, EntityRef eid) {
 	WasStartedBy res = of.createWasStartedBy();
 	res.setId(id);
@@ -760,6 +771,14 @@ public class ProvFactory {
 					EntityRef eid) {
 	return newWasStartedBy(stringToQName(id), aid, eid);
     }
+
+    public WasStartedBy newWasStartedBy(WasStartedBy u) {
+	WasStartedBy u1 = newWasStartedBy(u.getId(), u.getActivity(), u.getTrigger());
+	u1.setStarter(u.getStarter());
+	u1.getAny().addAll(u.getAny());
+	return u1;
+    }
+
 
     public WasInvalidatedBy newWasInvalidatedBy(QName id, EntityRef eid,
 						ActivityRef aid) {
@@ -775,6 +794,13 @@ public class ProvFactory {
 	return newWasInvalidatedBy(stringToQName(id), eid, aid);
     }
 
+
+    public WasInvalidatedBy newWasInvalidatedBy(WasInvalidatedBy u) {
+	WasInvalidatedBy u1 = newWasInvalidatedBy(u.getId(), u.getEntity(), u.getActivity());
+	u1.getAny().addAll(u.getAny());
+	return u1;
+    }
+
     public WasEndedBy newWasEndedBy(QName id, ActivityRef aid, EntityRef eid) {
 	WasEndedBy res = of.createWasEndedBy();
 	res.setId(id);
@@ -786,6 +812,14 @@ public class ProvFactory {
     public WasEndedBy newWasEndedBy(String id, ActivityRef aid, EntityRef eid) {
 	return newWasEndedBy(stringToQName(id), aid, eid);
     }
+
+    public WasEndedBy newWasEndedBy(WasEndedBy u) {
+	WasEndedBy u1 = newWasEndedBy(u.getId(), u.getActivity(), u.getTrigger());
+	u1.setEnder(u.getEnder());
+	u1.getAny().addAll(u.getAny());
+	return u1;
+    }
+
 
     public WasAttributedTo newWasAttributedTo(QName id, EntityRef eid,
 					      AgentRef agid) {

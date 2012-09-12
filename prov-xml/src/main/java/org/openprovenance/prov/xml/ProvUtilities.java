@@ -491,4 +491,96 @@ public class ProvUtilities {
 	return types.length - 1;
     }
 
+    public void forAllRecords(Records recs, RecordAction action) {
+	Dependencies deps = recs.getDependencies();
+	List<Entity> entities = recs.getEntity();
+	List<Activity> activities = recs.getActivity();
+	List<Agent> agents = recs.getAgent();
+
+	for (Entity e : entities) {
+	    action.run(e);
+	}
+
+	for (Activity a : activities) {
+	    action.run(a);
+	}
+
+	for (Agent ag : agents) {
+	    action.run(ag);
+	}
+
+	for (Object o : deps.getUsedOrWasGeneratedByOrWasStartedBy()) {
+	    if (o instanceof Used) {
+		action.run((Used)o);
+	    }
+
+	    else if (o instanceof WasGeneratedBy) {
+		WasGeneratedBy tmp = (WasGeneratedBy) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof WasInvalidatedBy) {
+		WasInvalidatedBy tmp = (WasInvalidatedBy) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof WasStartedBy) {
+		WasStartedBy tmp = (WasStartedBy) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof WasEndedBy) {
+		WasEndedBy tmp = (WasEndedBy) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof WasInformedBy) {
+		WasInformedBy tmp = (WasInformedBy) o;
+		action.run(tmp);
+	    }
+	    
+	    else if (o instanceof WasDerivedFrom) {
+		WasDerivedFrom tmp = (WasDerivedFrom) o;
+		action.run(tmp);
+	    }
+
+
+	    else if (o instanceof WasAssociatedWith) {
+		WasAssociatedWith tmp = (WasAssociatedWith) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof WasAttributedTo) {
+		WasAttributedTo tmp = (WasAttributedTo) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof ActedOnBehalfOf) {
+		ActedOnBehalfOf tmp = (ActedOnBehalfOf) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof WasInfluencedBy) {
+		WasInfluencedBy tmp = (WasInfluencedBy) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof AlternateOf) {
+		AlternateOf tmp = (AlternateOf) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof MentionOf) {
+		MentionOf tmp = (MentionOf) o;
+		action.run(tmp);
+	    }
+	    
+	    else if (o instanceof SpecializationOf) {
+		SpecializationOf tmp = (SpecializationOf) o;
+		action.run(tmp);
+	    }
+	    
+	}
+
+    } 
 }

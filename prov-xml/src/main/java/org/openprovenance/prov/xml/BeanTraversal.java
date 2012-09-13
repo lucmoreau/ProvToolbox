@@ -34,6 +34,7 @@ public class BeanTraversal {
 	    if (o != null)
 		lnkRecords.add(o);
 	}
+	
 	for (NamedBundle bu : b.getBundle()) {
 	    Object o = convert(bu);
 	    if (o != null)

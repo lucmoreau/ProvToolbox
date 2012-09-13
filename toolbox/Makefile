@@ -47,8 +47,12 @@ b1:
 
 pc1:
 	target/appassembler/bin/provconvert -xml2provn ../prov-xml/target/pc1-full.xml target/pc1-full.provn
+	target/appassembler/bin/provconvert -xml2turtle  ../prov-xml/target/pc1-full.xml target/pc1-full.ttl
 
 
+blog:
+	target/appassembler/bin/provconvert -provn2dot ../prov-n/src/test/resources/prov/example-blog1.provn target/blog1.dot target/blog1.pdf ../prov-dot/src/main/resources/configFamily.xml 
+	target/appassembler/bin/provconvert -provn2dot ../prov-n/src/test/resources/prov/example-blog2.provn target/blog2.dot target/blog2.pdf ../prov-dot/src/main/resources/configFamily.xml 
 
 
 

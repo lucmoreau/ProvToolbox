@@ -6,10 +6,8 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openprovenance.prov</groupId>
   <artifactId>toolbox</artifactId>
   <name>PROV Toolbox</name>
-  <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <description>A series of tools to manipulate PROV representations from the command line.</description>
 
@@ -62,6 +60,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>appassembler-maven-plugin</artifactId>
+        <version>1.2.2</version>        
         <configuration>
           <programs>
 <!--            <program>
@@ -181,7 +180,7 @@
   	              <arg value="provconvert" />
                 </exec>
 
-
+<!--
                 <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
   	              <arg value="a+x" />
   	              <arg value="prov2dot" />
@@ -194,7 +193,7 @@
   	              <arg value="provxml-validate" />
   	              <arg value="provxml-validate.bat" />
                 </exec>
-
+-->
                 <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
   	              <arg value="a+x" />
   	              <arg value="provconvert" />

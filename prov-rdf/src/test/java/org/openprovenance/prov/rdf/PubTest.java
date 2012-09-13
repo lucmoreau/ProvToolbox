@@ -12,6 +12,8 @@ import org.openrdf.elmo.sesame.SesameManagerFactory;
 import org.openrdf.model.Resource;
 import org.openrdf.repository.RepositoryResult;
 import org.openrdf.rio.RDFFormat;
+
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.io.File;
 
@@ -41,11 +43,8 @@ public class PubTest extends org.openprovenance.prov.notation.PubTest {
     }
 
 
-    public void convertTreeToRdf(CommonTree tree,
-                                 ProvFactory pFactory,
-                                 ElmoManager manager) {
-        new TreeTraversal(new RdfConstructor(pFactory, manager)).convert(tree);
-    }
+  
+
 
 
     /** Produces a dot representation
@@ -65,11 +64,16 @@ public class PubTest extends org.openprovenance.prov.notation.PubTest {
         //
 
         CommonTree t=new Utility().convertASNToTree(file);
-        convertTreeToRdf(t,pFactory,manager);
+        RdfConstructor rdfc=new RdfConstructor(pFactory, manager);
+
+        new TreeTraversal(rdfc).convert(t);
+        Hashtable<String,String>  allNamespaceTable = rdfc.getNamespaceTable();
+        
+
 
         
-        rHelper.dumpToRDF(new File(fileOut1),(SesameManager)manager,RDFFormat.TURTLE,new LinkedList<String[]>());
-        rHelper.dumpToRDF(new File(fileOut2),(SesameManager)manager,RDFFormat.TRIG,new LinkedList<String[]>());
+        rHelper.dumpToRDF(new File(fileOut1),(SesameManager)manager,RDFFormat.TURTLE,allNamespaceTable);
+        rHelper.dumpToRDF(new File(fileOut2),(SesameManager)manager,RDFFormat.TRIG,allNamespaceTable);
 
         
         org.openrdf.repository.RepositoryConnection repo= ((SesameManager)manager).getConnection().getRepository().getConnection();

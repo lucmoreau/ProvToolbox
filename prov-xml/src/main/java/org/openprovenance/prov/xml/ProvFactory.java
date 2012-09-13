@@ -493,12 +493,34 @@ public class ProvFactory {
 	res.setAgent(eid1);
 	return res;
     }
+    
+    public WasAssociatedWith newWasAssociatedWith(WasAssociatedWith u) {
+    	WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(), u.getAgent());
+    	u1.getAny().addAll(u.getAny());
+    	u1.setPlan(u.getPlan());
+    	return u1;
+        }
+
+    
+    public WasAttributedTo newWasAttributedTo(WasAttributedTo u) {
+    	WasAttributedTo u1 = newWasAttributedTo(u.getId(), u.getEntity(), u.getAgent());
+    	u1.getAny().addAll(u.getAny());
+    	return u1;
+        }
 
     public WasAssociatedWith newWasAssociatedWith(String id, Activity eid2,
 						  Agent eid1) {
 	return newWasAssociatedWith(id, newActivityRef(eid2.getId()),
 				    newAgentRef(eid1.getId()));
     }
+    
+    public ActedOnBehalfOf newActedOnBehalfOf(ActedOnBehalfOf u) {
+    	ActedOnBehalfOf u1 = newActedOnBehalfOf(u.getId(), u.getSubordinate(), u.getResponsible(), u.getActivity());
+    	u1.getAny().addAll(u.getAny());
+    	return u1;
+        }
+
+ 
 
     public WasAssociatedWith newWasAssociatedWith(QName id, Activity eid2,
 						  Agent eid1) {
@@ -718,11 +740,11 @@ public class ProvFactory {
     }
 
     public Used newUsed(Used u) {
-	Used u1 = newUsed(u.getId(), u.getActivity(), null, u.getEntity());
-	u1.getAny().addAll(u.getAny());
-	u1.setTime(u.getTime());
-	return u1;
-    }
+    	Used u1 = newUsed(u.getId(), u.getActivity(), null, u.getEntity());
+    	u1.getAny().addAll(u.getAny());
+    	u1.setTime(u.getTime());
+    	return u1;
+        }
 
     public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
 	WasGeneratedBy wgb = newWasGeneratedBy(g.getId(), g.getEntity(), null,

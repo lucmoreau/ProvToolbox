@@ -376,16 +376,16 @@ public class ProvUtilities {
 	    return (JAXBElement<T>) of.newElement(of.newWasGeneratedBy((WasGeneratedBy) r));
 	}
 	if (r instanceof WasDerivedFrom) {
-	    return (JAXBElement<T>) of.newElement((WasDerivedFrom) r);//TODO: clone
+	    return (JAXBElement<T>) of.newElement(of.newWasDerivedFrom((WasDerivedFrom) r));
 	}
 	if (r instanceof WasAssociatedWith) {
-	    return (JAXBElement<T>) of.newElement((WasAssociatedWith) r);//TODO: clone
+	    return (JAXBElement<T>) of.newElement(of.newWasAssociatedWith((WasAssociatedWith) r));
 	}
 	if (r instanceof WasInvalidatedBy) {
 	    return (JAXBElement<T>) of.newElement(of.newWasInvalidatedBy((WasInvalidatedBy) r));
 	}
 	if (r instanceof WasAttributedTo) {
-	    return (JAXBElement<T>) of.newElement((WasAttributedTo) r); //TODO: clone
+	    return (JAXBElement<T>) of.newElement(of.newWasAttributedTo((WasAttributedTo) r));
 	}
 	if (r instanceof WasInformedBy) {
 	    return (JAXBElement<T>) of.newElement(of.newWasInformedBy((WasInformedBy) r));
@@ -394,7 +394,7 @@ public class ProvUtilities {
 	    return (JAXBElement<T>) of.newElement(of.newWasInfluencedBy((WasInfluencedBy) r));
 	}
 	if (r instanceof ActedOnBehalfOf) {
-	    return (JAXBElement<T>) of.newElement((ActedOnBehalfOf) r);//TODO: clone
+	    return (JAXBElement<T>) of.newElement(of.newActedOnBehalfOf((ActedOnBehalfOf) r));
 	}
 	System.out.println("newElement Unknow relation " + r);
 	throw new UnsupportedOperationException();

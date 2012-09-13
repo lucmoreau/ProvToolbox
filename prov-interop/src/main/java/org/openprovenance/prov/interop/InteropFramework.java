@@ -63,8 +63,8 @@ public class InteropFramework
 
 
     public void xml2provn(String inXmlFile,
-                        String outprovnFile,
-                        String[] schemaFiles) throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
+			  String outprovnFile,
+			  String[] schemaFiles) throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
 
         File in=new File(inXmlFile);
 

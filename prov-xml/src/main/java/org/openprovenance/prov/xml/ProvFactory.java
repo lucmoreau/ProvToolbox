@@ -759,8 +759,8 @@ public class ProvFactory {
 	WasDerivedFrom wdf = newWasDerivedFrom(d.getId(),
 					       d.getGeneratedEntity(),
 					       d.getUsedEntity());
-	wdf.setGeneratedEntity(d.getGeneratedEntity());
-	wdf.setUsedEntity(d.getUsedEntity());
+	wdf.setGeneration(d.getGeneration());
+	wdf.setUsage(d.getUsage());
 	wdf.getAny().addAll(d.getAny());
 	return wdf;
     }

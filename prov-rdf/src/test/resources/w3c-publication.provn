@@ -1,0 +1,120 @@
+
+
+bundle
+
+prefix ex  <http://otherdomain.org/>
+
+
+bundle  ex:b1
+
+prefix ex  <http://example.org/>
+
+prefix w3      <http://www.w3.org/>
+prefix tr      <http://www.w3.org/TR/2011/>
+prefix process <http://www.w3.org/2005/10/Process-20051014/tr.html#>
+prefix email <https://lists.w3.org/Archives/Member/w3c-archive/>
+prefix chairs  <https://lists.w3.org/Archives/Member/chairs/>
+prefix trans   <http://www.w3.org/2005/08/01-transitions.html#>
+prefix rec54   <http://www.w3.org/2001/02pd/rec54#>
+
+
+  entity(tr:WD-prov-dm-20111018, [ prov:type='rec54:WD' ])
+  entity(tr:WD-prov-dm-20111215, [ prov:type='rec54:WD' ])
+  entity(process:rec-advance,    [ prov:type='prov:Plan' ])
+
+
+  entity(chairs:2011OctDec/0004, [ prov:type='trans:transreq' ])
+  entity(email:2011Oct/0141,     [ prov:type='trans:pubreq' ])
+  entity(email:2011Dec/0111,     [ prov:type='trans:pubreq' ])
+
+
+  wasDerivedFrom(tr:WD-prov-dm-20111215, tr:WD-prov-dm-20111018)
+
+
+  activity(ex:act1,-,-,[prov:type="publish"])
+  activity(ex:act2,-,-,[prov:type="publish"])
+
+
+  wasGeneratedBy(tr:WD-prov-dm-20111018, ex:act1, -)
+  wasGeneratedBy(tr:WD-prov-dm-20111215, ex:act2, -)
+
+
+  used(ex:act1, chairs:2011OctDec/0004, -)
+  used(ex:act1, email:2011Oct/0141, -)
+  used(ex:act2, email:2011Dec/0111, -)
+
+  agent(w3:Consortium, [ prov:type='prov:Organization' ])
+
+  wasAssociatedWith(ex:act1, w3:Consortium, process:rec-advance)
+  wasAssociatedWith(ex:act2, w3:Consortium, process:rec-advance)
+
+
+  //for purpose of testing rdf conversion for now
+  wasGeneratedBy(ex:gen1; tr:WD-prov-dm-20111018, ex:act1, 2011-11-16T16:00:00.000Z)
+  wasInvalidatedBy(ex:inv1; tr:WD-prov-dm-20111018, ex:act1, 2011-11-16T16:00:00.000Z)
+  used(ex:u1; ex:act1, chairs:2011OctDec/0004, -)
+  wasInformedBy(ex:inf1; ex:act1, ex:act1)
+  wasStartedBy(ex:start1; ex:act1, chairs:2011OctDec/0004, ex:act1, -)
+  wasEndedBy(ex:end1; ex:act1, chairs:2011OctDec/0004, ex:act1, -)
+  wasAttributedTo(ex:att1; tr:WD-prov-dm-20111018, w3:Consortium)
+  wasAssociatedWith(ex:ass1; ex:act1, w3:Consortium, process:rec-advance)
+  actedOnBehalfOf(ex:del1; w3:Consortium, w3:Consortium, ex:act1)
+  wasDerivedFrom(tr:WD-prov-dm-20111215, tr:WD-prov-dm-20111215)
+  wasDerivedFrom(ex:d2; tr:WD-prov-dm-20111215, tr:WD-prov-dm-20111215)
+  specializationOf(tr:WD-prov-dm-20111215, tr:WD-prov-dm-20111215)
+
+  alternateOf(tr:WD-prov-dm-20111215, tr:WD-prov-dm-20111215)
+  wasInfluencedBy(tr:WD-prov-dm-20111215, tr:WD-prov-dm-20111215)
+  wasInfluencedBy(ex:infl1; tr:WD-prov-dm-20111018, tr:WD-prov-dm-20111215)
+
+
+  entity(ex:bundle1,    [ prov:type='prov:Bundle' ])
+  mentionOf(tr:WD-prov-dm-20111215, tr:WD-prov-dm-20111215, ex:bundle1)
+
+endBundle
+
+
+bundle ex:b2
+
+prefix ex <http://example.org/>
+
+prefix w3  <http://www.w3.org/>
+prefix tr  <http://www.w3.org/TR/2011/>
+
+entity(tr:WD-prov-dm-20111215, [ prov:type="document", ex:version="2" ])
+
+agent(ex:Luc,     [ prov:type='prov:Person' ])
+agent(ex:Paolo,   [ prov:type='prov:Person' ])
+agent(ex:Khalid,  [ prov:type='prov:Person' ])
+agent(ex:Stephen, [ prov:type='prov:Person' ])
+agent(ex:Yolanda, [ prov:type='prov:Person' ])
+agent(ex:Ryan,    [ prov:type='prov:Person' ])
+agent(ex:Paul,    [ prov:type='prov:Person' ])
+agent(ex:Graham,  [ prov:type='prov:Person' ])
+agent(ex:Jim,     [ prov:type='prov:Person' ])
+agent(ex:Simon,   [ prov:type='prov:Person' ])
+agent(ex:James,   [ prov:type='prov:Person' ])
+agent(ex:Satya,   [ prov:type='prov:Person' ])
+
+activity(ex:edit1,-,-,[prov:type="edit"])
+
+wasGeneratedBy(tr:WD-prov-dm-20111215, ex:edit1, -)
+
+wasAssociatedWith(ex:edit1, ex:Luc, -,     [prov:role="editor"])
+wasAssociatedWith(ex:edit1, ex:Paolo, -,   [prov:role="editor"])
+wasAssociatedWith(ex:edit1, ex:Khalid, -,  [prov:role="contributor"])
+wasAssociatedWith(ex:edit1, ex:Stephen, -, [prov:role="contributor"])
+wasAssociatedWith(ex:edit1, ex:Yolanda, -, [prov:role="contributor"])
+wasAssociatedWith(ex:edit1, ex:Ryan, -,    [prov:role="contributor"])
+wasAssociatedWith(ex:edit1, ex:Paul, -,    [prov:role="contributor"])
+wasAssociatedWith(ex:edit1, ex:Graham, -,  [prov:role="contributor"])
+wasAssociatedWith(ex:edit1, ex:Jim, -,     [prov:role="contributor"])
+wasAssociatedWith(ex:edit1, ex:Simon, -,   [prov:role="contributor"])
+wasAssociatedWith(ex:edit1, ex:James, -,   [prov:role="contributor"])
+wasAssociatedWith(ex:edit1, ex:Satya, -,   [prov:role="contributor"])
+
+endBundle
+
+
+endBundle
+

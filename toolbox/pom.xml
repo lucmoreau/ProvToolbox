@@ -1,15 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
-    <artifactId>specs</artifactId>
+    <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openprovenance.prov</groupId>
   <artifactId>toolbox</artifactId>
   <name>PROV Toolbox</name>
-  <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <description>A series of tools to manipulate PROV representations from the command line.</description>
 
@@ -62,6 +60,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>appassembler-maven-plugin</artifactId>
+        <version>1.2.2</version>        
         <configuration>
           <programs>
 <!--            <program>
@@ -93,7 +92,8 @@
           </execution>
         </executions>
       </plugin>
-
+<!-- 
+ 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -114,7 +114,7 @@
           </execution>
         </executions>
       </plugin>
-
+-->
 
 
       <plugin>
@@ -180,7 +180,7 @@
   	              <arg value="provconvert" />
                 </exec>
 
-
+<!--
                 <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
   	              <arg value="a+x" />
   	              <arg value="prov2dot" />
@@ -193,7 +193,7 @@
   	              <arg value="provxml-validate" />
   	              <arg value="provxml-validate.bat" />
                 </exec>
-
+-->
                 <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
   	              <arg value="a+x" />
   	              <arg value="provconvert" />

@@ -328,6 +328,8 @@ public class ProvUtilities {
 	        "Agent", "Plan", "Any" });
 	fields.put(ActedOnBehalfOf.class, new String[] { "Id", "Subordinate",
 	        "Responsible", "Activity", "Any" });
+	fields.put(SpecializationOf.class, new String[] { "SpecializedEntity",
+	        "GeneralEntity" });
 
 	types.put(Used.class, new Class[] { QName.class, ActivityRef.class,
 	        EntityRef.class, XMLGregorianCalendar.class, Object.class });
@@ -358,7 +360,7 @@ public class ProvUtilities {
 	types.put(ActedOnBehalfOf.class,
 	          new Class[] { QName.class, AgentRef.class, AgentRef.class,
 	                  ActivityRef.class, Object.class });
-
+	types.put(SpecializationOf.class, new Class[] { EntityRef.class, Entity.class });
     }
 
     @SuppressWarnings("unchecked")

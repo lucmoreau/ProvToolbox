@@ -21,6 +21,11 @@ Trung Dong: JSON subpackage.
 
 Mike Jewell: JSON subpackage validation.
 
+Version
+------------
+
+Using schema preceding work of WG on prov-xml
+
 =======
 
 

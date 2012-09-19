@@ -518,6 +518,7 @@
             </configuration>
           </execution>
 
+<!--
           <execution>
             <id>patch.executable</id>
             <phase>package</phase>
@@ -526,10 +527,6 @@
             </goals>
             <configuration>
               <tasks>
-
-                <!-- patch the shell script to avoid changing current directory, so that
-                     relative files are understood as relative to the current directory. -->
-
                 <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
   	              <arg value="-e s/^cd/#### no CD ### Luc/" />
   	              <arg value="-iBAK" />
@@ -546,6 +543,7 @@
               </tasks>
             </configuration>
           </execution>
+-->
         </executions>
       </plugin>
 

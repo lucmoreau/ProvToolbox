@@ -344,8 +344,8 @@
 
            <groups>
             <group>
-              <title>OPM Packages</title>
-              <packages>org.openprovenance.*</packages>
+              <title>PROV Packages</title>
+              <packages>org.openprovenance.prov.*</packages>
             </group>
           </groups>
 

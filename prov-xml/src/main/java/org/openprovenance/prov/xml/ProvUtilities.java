@@ -272,6 +272,10 @@ public class ProvUtilities {
     final static private Hashtable<Class, String[]> fields = new Hashtable<Class, String[]>();
     @SuppressWarnings("rawtypes")
     final static private Hashtable<Class, Class[]> types = new Hashtable<Class, Class[]>();
+    @SuppressWarnings("rawtypes")
+    static public Hashtable<Class, Class[]> getTypes() {
+        return types;
+    }
 
     public Object getter(Object o, int i)
 	    throws java.lang.NoSuchMethodException,
@@ -324,6 +328,8 @@ public class ProvUtilities {
 	        "Agent", "Plan", "Any" });
 	fields.put(ActedOnBehalfOf.class, new String[] { "Id", "Subordinate",
 	        "Responsible", "Activity", "Any" });
+	fields.put(SpecializationOf.class, new String[] { "SpecializedEntity",
+	        "GeneralEntity" });
 
 	types.put(Used.class, new Class[] { QName.class, ActivityRef.class,
 	        EntityRef.class, XMLGregorianCalendar.class, Object.class });
@@ -343,7 +349,7 @@ public class ProvUtilities {
 	        ActivityRef.class, ActivityRef.class, Object.class });
 	types.put(WasDerivedFrom.class, new Class[] { QName.class,
 	        EntityRef.class, EntityRef.class, ActivityRef.class,
-	        WasGeneratedBy.class, Used.class, Object.class });
+	        DependencyRef.class, DependencyRef.class, Object.class });
 	types.put(WasInfluencedBy.class, new Class[] { QName.class,
 	        AnyRef.class, AnyRef.class, Object.class });
 	types.put(WasAttributedTo.class, new Class[] { QName.class,
@@ -354,43 +360,43 @@ public class ProvUtilities {
 	types.put(ActedOnBehalfOf.class,
 	          new Class[] { QName.class, AgentRef.class, AgentRef.class,
 	                  ActivityRef.class, Object.class });
-
+	types.put(SpecializationOf.class, new Class[] { EntityRef.class, Entity.class });
     }
 
     @SuppressWarnings("unchecked")
     public <T> JAXBElement<T> newElement(T r) {
 	if (r instanceof Used) {
-	    return (JAXBElement<T>) of.newElement((Used) r);
+	    return (JAXBElement<T>) of.newElement(of.newUsed((Used) r));
 	}
 	if (r instanceof WasStartedBy) {
-	    return (JAXBElement<T>) of.newElement((WasStartedBy) r);
+	    return (JAXBElement<T>) of.newElement(of.newWasStartedBy((WasStartedBy) r));
 	}
 	if (r instanceof WasEndedBy) {
-	    return (JAXBElement<T>) of.newElement((WasEndedBy) r);
+	    return (JAXBElement<T>) of.newElement(of.newWasEndedBy((WasEndedBy) r));
 	}
 	if (r instanceof WasGeneratedBy) {
-	    return (JAXBElement<T>) of.newElement((WasGeneratedBy) r);
+	    return (JAXBElement<T>) of.newElement(of.newWasGeneratedBy((WasGeneratedBy) r));
 	}
 	if (r instanceof WasDerivedFrom) {
-	    return (JAXBElement<T>) of.newElement((WasDerivedFrom) r);
+	    return (JAXBElement<T>) of.newElement(of.newWasDerivedFrom((WasDerivedFrom) r));
 	}
 	if (r instanceof WasAssociatedWith) {
-	    return (JAXBElement<T>) of.newElement((WasAssociatedWith) r);
+	    return (JAXBElement<T>) of.newElement(of.newWasAssociatedWith((WasAssociatedWith) r));
 	}
 	if (r instanceof WasInvalidatedBy) {
-	    return (JAXBElement<T>) of.newElement((WasInvalidatedBy) r);
+	    return (JAXBElement<T>) of.newElement(of.newWasInvalidatedBy((WasInvalidatedBy) r));
 	}
 	if (r instanceof WasAttributedTo) {
-	    return (JAXBElement<T>) of.newElement((WasAttributedTo) r);
+	    return (JAXBElement<T>) of.newElement(of.newWasAttributedTo((WasAttributedTo) r));
 	}
 	if (r instanceof WasInformedBy) {
-	    return (JAXBElement<T>) of.newElement((WasInformedBy) r);
+	    return (JAXBElement<T>) of.newElement(of.newWasInformedBy((WasInformedBy) r));
 	}
 	if (r instanceof WasInfluencedBy) {
-	    return (JAXBElement<T>) of.newElement((WasInfluencedBy) r);
+	    return (JAXBElement<T>) of.newElement(of.newWasInfluencedBy((WasInfluencedBy) r));
 	}
 	if (r instanceof ActedOnBehalfOf) {
-	    return (JAXBElement<T>) of.newElement((ActedOnBehalfOf) r);
+	    return (JAXBElement<T>) of.newElement(of.newActedOnBehalfOf((ActedOnBehalfOf) r));
 	}
 	System.out.println("newElement Unknow relation " + r);
 	throw new UnsupportedOperationException();
@@ -491,4 +497,96 @@ public class ProvUtilities {
 	return types.length - 1;
     }
 
+    public void forAllRecords(Records recs, RecordAction action) {
+	Dependencies deps = recs.getDependencies();
+	List<Entity> entities = recs.getEntity();
+	List<Activity> activities = recs.getActivity();
+	List<Agent> agents = recs.getAgent();
+
+	for (Entity e : entities) {
+	    action.run(e);
+	}
+
+	for (Activity a : activities) {
+	    action.run(a);
+	}
+
+	for (Agent ag : agents) {
+	    action.run(ag);
+	}
+
+	for (Object o : deps.getUsedOrWasGeneratedByOrWasStartedBy()) {
+	    if (o instanceof Used) {
+		action.run((Used)o);
+	    }
+
+	    else if (o instanceof WasGeneratedBy) {
+		WasGeneratedBy tmp = (WasGeneratedBy) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof WasInvalidatedBy) {
+		WasInvalidatedBy tmp = (WasInvalidatedBy) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof WasStartedBy) {
+		WasStartedBy tmp = (WasStartedBy) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof WasEndedBy) {
+		WasEndedBy tmp = (WasEndedBy) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof WasInformedBy) {
+		WasInformedBy tmp = (WasInformedBy) o;
+		action.run(tmp);
+	    }
+	    
+	    else if (o instanceof WasDerivedFrom) {
+		WasDerivedFrom tmp = (WasDerivedFrom) o;
+		action.run(tmp);
+	    }
+
+
+	    else if (o instanceof WasAssociatedWith) {
+		WasAssociatedWith tmp = (WasAssociatedWith) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof WasAttributedTo) {
+		WasAttributedTo tmp = (WasAttributedTo) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof ActedOnBehalfOf) {
+		ActedOnBehalfOf tmp = (ActedOnBehalfOf) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof WasInfluencedBy) {
+		WasInfluencedBy tmp = (WasInfluencedBy) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof AlternateOf) {
+		AlternateOf tmp = (AlternateOf) o;
+		action.run(tmp);
+	    }
+
+	    else if (o instanceof MentionOf) {
+		MentionOf tmp = (MentionOf) o;
+		action.run(tmp);
+	    }
+	    
+	    else if (o instanceof SpecializationOf) {
+		SpecializationOf tmp = (SpecializationOf) o;
+		action.run(tmp);
+	    }
+	    
+	}
+
+    } 
 }

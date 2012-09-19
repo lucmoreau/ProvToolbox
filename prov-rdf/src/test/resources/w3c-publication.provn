@@ -2,7 +2,7 @@
 
 bundle
 
-prefix ex  <http://example.org/>
+prefix ex  <http://otherdomain.org/>
 
 
 bundle  ex:b1
@@ -12,7 +12,7 @@ prefix ex  <http://example.org/>
 prefix w3      <http://www.w3.org/>
 prefix tr      <http://www.w3.org/TR/2011/>
 prefix process <http://www.w3.org/2005/10/Process-20051014/tr.html#>
-prefix email   <https://lists.w3.org/Archives/Member/w3c-archive/>
+prefix email <https://lists.w3.org/Archives/Member/w3c-archive/>
 prefix chairs  <https://lists.w3.org/Archives/Member/chairs/>
 prefix trans   <http://www.w3.org/2005/08/01-transitions.html#>
 prefix rec54   <http://www.w3.org/2001/02pd/rec54#>

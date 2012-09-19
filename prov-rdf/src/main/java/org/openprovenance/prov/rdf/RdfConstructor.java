@@ -23,7 +23,11 @@ public class RdfConstructor implements TreeConstructor {
     final ElmoManager manager;
     final ProvUtilities pUtil;
 
-    Hashtable<String, String> namespaceTable = new Hashtable<String, String>();
+    private Hashtable<String, String> namespaceTable = new Hashtable<String, String>();
+    public Hashtable<String, String> getNamespaceTable() {
+ 	return namespaceTable;
+     }
+
 
     public RdfConstructor(ProvFactory pFactory, ElmoManager manager) {
 	this.pFactory = pFactory;
@@ -694,5 +698,6 @@ public class RdfConstructor implements TreeConstructor {
 
 	return null;
     }
+
 
 }

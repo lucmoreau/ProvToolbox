@@ -493,12 +493,34 @@ public class ProvFactory {
 	res.setAgent(eid1);
 	return res;
     }
+    
+    public WasAssociatedWith newWasAssociatedWith(WasAssociatedWith u) {
+    	WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(), u.getAgent());
+    	u1.getAny().addAll(u.getAny());
+    	u1.setPlan(u.getPlan());
+    	return u1;
+        }
+
+    
+    public WasAttributedTo newWasAttributedTo(WasAttributedTo u) {
+    	WasAttributedTo u1 = newWasAttributedTo(u.getId(), u.getEntity(), u.getAgent());
+    	u1.getAny().addAll(u.getAny());
+    	return u1;
+        }
 
     public WasAssociatedWith newWasAssociatedWith(String id, Activity eid2,
 						  Agent eid1) {
 	return newWasAssociatedWith(id, newActivityRef(eid2.getId()),
 				    newAgentRef(eid1.getId()));
     }
+    
+    public ActedOnBehalfOf newActedOnBehalfOf(ActedOnBehalfOf u) {
+    	ActedOnBehalfOf u1 = newActedOnBehalfOf(u.getId(), u.getSubordinate(), u.getResponsible(), u.getActivity());
+    	u1.getAny().addAll(u.getAny());
+    	return u1;
+        }
+
+ 
 
     public WasAssociatedWith newWasAssociatedWith(QName id, Activity eid2,
 						  Agent eid1) {
@@ -587,6 +609,15 @@ public class ProvFactory {
 	res.setInfluencer(influencer);
 	return res;
     }
+
+    public WasInfluencedBy newWasInfluencedBy(WasInfluencedBy d) {
+	WasInfluencedBy wtb = newWasInfluencedBy(d.getId(), d.getInfluencee(),
+					     d.getInfluencer());
+	wtb.setId(d.getId());
+	wtb.getAny().addAll(d.getAny());
+	return wtb;
+    }
+
 
     public HadPrimarySource newHadPrimarySource(String id, EntityRef derived,
 						EntityRef source) {
@@ -709,15 +740,17 @@ public class ProvFactory {
     }
 
     public Used newUsed(Used u) {
-	Used u1 = newUsed(u.getId(), u.getActivity(), null, u.getEntity());
-	u1.getAny().addAll(u.getAny());
-	return u1;
-    }
+    	Used u1 = newUsed(u.getId(), u.getActivity(), null, u.getEntity());
+    	u1.getAny().addAll(u.getAny());
+    	u1.setTime(u.getTime());
+    	return u1;
+        }
 
     public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
 	WasGeneratedBy wgb = newWasGeneratedBy(g.getId(), g.getEntity(), null,
 					       g.getActivity());
 	wgb.setId(g.getId());
+	wgb.setTime(g.getTime());
 	wgb.getAny().addAll(g.getAny());
 	return wgb;
     }
@@ -726,6 +759,8 @@ public class ProvFactory {
 	WasDerivedFrom wdf = newWasDerivedFrom(d.getId(),
 					       d.getGeneratedEntity(),
 					       d.getUsedEntity());
+	wdf.setGeneration(d.getGeneration());
+	wdf.setUsage(d.getUsage());
 	wdf.getAny().addAll(d.getAny());
 	return wdf;
     }
@@ -748,6 +783,8 @@ public class ProvFactory {
 	return res;
     }
 
+
+
     public WasStartedBy newWasStartedBy(QName id, ActivityRef aid, EntityRef eid) {
 	WasStartedBy res = of.createWasStartedBy();
 	res.setId(id);
@@ -760,6 +797,15 @@ public class ProvFactory {
 					EntityRef eid) {
 	return newWasStartedBy(stringToQName(id), aid, eid);
     }
+
+    public WasStartedBy newWasStartedBy(WasStartedBy u) {
+	WasStartedBy u1 = newWasStartedBy(u.getId(), u.getActivity(), u.getTrigger());
+	u1.setStarter(u.getStarter());
+	u1.setTime(u.getTime());
+	u1.getAny().addAll(u.getAny());
+	return u1;
+    }
+
 
     public WasInvalidatedBy newWasInvalidatedBy(QName id, EntityRef eid,
 						ActivityRef aid) {
@@ -775,6 +821,14 @@ public class ProvFactory {
 	return newWasInvalidatedBy(stringToQName(id), eid, aid);
     }
 
+
+    public WasInvalidatedBy newWasInvalidatedBy(WasInvalidatedBy u) {
+	WasInvalidatedBy u1 = newWasInvalidatedBy(u.getId(), u.getEntity(), u.getActivity());
+	u1.setTime(u.getTime());
+	u1.getAny().addAll(u.getAny());
+	return u1;
+    }
+
     public WasEndedBy newWasEndedBy(QName id, ActivityRef aid, EntityRef eid) {
 	WasEndedBy res = of.createWasEndedBy();
 	res.setId(id);
@@ -786,6 +840,15 @@ public class ProvFactory {
     public WasEndedBy newWasEndedBy(String id, ActivityRef aid, EntityRef eid) {
 	return newWasEndedBy(stringToQName(id), aid, eid);
     }
+
+    public WasEndedBy newWasEndedBy(WasEndedBy u) {
+	WasEndedBy u1 = newWasEndedBy(u.getId(), u.getActivity(), u.getTrigger());
+	u1.setEnder(u.getEnder());
+	u1.setTime(u.getTime());
+	u1.getAny().addAll(u.getAny());
+	return u1;
+    }
+
 
     public WasAttributedTo newWasAttributedTo(QName id, EntityRef eid,
 					      AgentRef agid) {

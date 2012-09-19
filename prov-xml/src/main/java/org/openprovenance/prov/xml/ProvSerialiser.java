@@ -10,6 +10,8 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.File;
 import java.util.Hashtable;
@@ -103,13 +105,20 @@ public class ProvSerialiser {
         return sw.toString();
     }
 
-    public void serialiseBundle (File file, Bundle graph, boolean format)
+    public void serialiseBundle (OutputStream out, Bundle graph, boolean format)
         throws JAXBException {
         Marshaller m=jc.createMarshaller();
         m.setProperty("jaxb.formatted.output",format);
         configurePrefixes(m,graph.getNss());
-        m.marshal(of.createBundle(graph),file);
+        m.marshal(of.createBundle(graph),out);
     }
+    public void serialiseBundle (File file, Bundle graph, boolean format)
+	        throws JAXBException {
+	        Marshaller m=jc.createMarshaller();
+	        m.setProperty("jaxb.formatted.output",format);
+	        configurePrefixes(m,graph.getNss());
+	        m.marshal(of.createBundle(graph),file);
+	    }
 
     /** By default we use a document provided by the DocumentBuilder
         factory. If this functionality is required,

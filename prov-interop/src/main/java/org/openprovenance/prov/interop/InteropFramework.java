@@ -65,8 +65,8 @@ public class InteropFramework
 
 
     public void xml2provn(String inXmlFile,
-                        String outprovnFile,
-                        String[] schemaFiles) throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
+			  String outprovnFile,
+			  String[] schemaFiles) throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
 
         File in=new File(inXmlFile);
 
@@ -236,23 +236,20 @@ public class InteropFramework
         Bundle c=(Bundle)u.convertTreeToJavaBean(tree);
         Hashtable<String,String>  namespaceTable = c.getNss();
 
-        new TreeTraversal(new RdfConstructor(pFactory, manager)).convert(tree);
+        RdfConstructor rdfc=new RdfConstructor(pFactory, manager);
         
-        repository2rdf(manager, rHelper, type, file2, namespaceTable);
+        new TreeTraversal(rdfc).convert(tree);
+        
+        Hashtable<String,String>  allNamespaceTable = rdfc.getNamespaceTable();
+
+        
+        
+        repository2rdf(manager, rHelper, type, file2, allNamespaceTable);
     }
     
     public void repository2rdf(ElmoManager manager, RepositoryHelper rHelper, String type, String file2, Hashtable<String,String>  namespaceTable ) throws Exception {
 
-        LinkedList<String[]> prefixes=new LinkedList<String[]>();
-
-        for (String k: namespaceTable.keySet()) {
-            String [] ss=new String[2];
-            ss[0]=k;
-            ss[1]=namespaceTable.get(k);
-            prefixes.add(ss);  // why not take a hashtable in dumpToRDF?
-        }
-
-        rHelper.dumpToRDF(new File(file2),(SesameManager)manager,convert(type),prefixes);
+	rHelper.dumpToRDF(new File(file2),(SesameManager)manager,convert(type),namespaceTable);
 
     }
 

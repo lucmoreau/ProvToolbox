@@ -485,6 +485,7 @@
       <xs:element name="failedMerge" type="prov:MergeReport" minOccurs="0"  maxOccurs="unbounded"/>
       <xs:element name="successfulMerge" type="prov:MergeReport" minOccurs="0"  maxOccurs="unbounded"/>
       <xs:element name="qualifiedNameMismatch" type="prov:MergeReport" minOccurs="0"  maxOccurs="unbounded"/>
+      <xs:element name="specializationReport" type="prov:SpecializationReport"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -495,7 +496,13 @@
     </xs:sequence>
     <xs:attribute name="key" type="xs:string"/>
   </xs:complexType>
-
+  
+  <xs:complexType name="SpecializationReport">
+    <xs:sequence>
+     <xs:element ref="prov:specializationOf" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  
   <xs:element name="used"               type="prov:Used"/>
   <xs:element name="wasGeneratedBy"     type="prov:WasGeneratedBy"/>
   <xs:element name="wasStartedBy"       type="prov:WasStartedBy"/>
@@ -507,6 +514,7 @@
   <xs:element name="actedOnBehalfOf"    type="prov:ActedOnBehalfOf"/>
   <xs:element name="wasAttributedTo"    type="prov:WasAttributedTo"/>
   <xs:element name="wasInfluencedBy"    type="prov:WasInfluencedBy"/>
+  <xs:element name="specializationOf"   type="prov:SpecializationOf"/>
   
   
 </xs:schema>

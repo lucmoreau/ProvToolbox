@@ -314,7 +314,7 @@ public class ProvUtilities {
 	fields.put(WasInformedBy.class, new String[] { "Id", "Effect", "Cause",
 	        "Any" });
 	fields.put(WasDerivedFrom.class, new String[] { "Id",
-	        "GeneratedEntity", "UsedEntity", "Activity", "Generation",
+	        "Effect", "Used", "Activity", "Generation",
 	        "Usage", "Any" });
 	fields.put(WasInfluencedBy.class, new String[] { "Id", "Influencee",
 	        "Influencer", "Any" });

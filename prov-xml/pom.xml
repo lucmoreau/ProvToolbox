@@ -132,6 +132,7 @@
       src/test/resources/example2.xml file.dot file.pdf -->
 
 
+      <!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>appassembler-maven-plugin</artifactId>
@@ -144,8 +145,6 @@
           </programs>
           <repositoryLayout>default</repositoryLayout>
           <repositoryName>lib</repositoryName>
-          <!-- Extra JVM arguments that will be included in the bin scripts 
-          <extraJvmArguments>-Xms128m</extraJvmArguments> -->
           <platforms>
             <platform>windows</platform>
             <platform>unix</platform>
@@ -162,6 +161,7 @@
           </execution>
         </executions>
       </plugin>
+-->
 
 
 <!--       <plugin> created dummy call to ant plugin, to declare the source

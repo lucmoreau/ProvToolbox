@@ -62,21 +62,29 @@ public class ProvDeserialiser {
         return res;
     }
 
-    public Bundle deserialiseBundle (File serialised)
+    public Document deserialiseDocument (File serialised)
         throws JAXBException {
         Unmarshaller u=jc.createUnmarshaller();
         Object root= u.unmarshal(serialised);
         @SuppressWarnings("unchecked")
-        Bundle res=(Bundle)((JAXBElement<Bundle>) root).getValue();
+        Document res=(Document)((JAXBElement<Document>) root).getValue();
         return res;
     }
 
+    public Bundle deserialiseBundle (File serialised)
+            throws JAXBException {
+            Unmarshaller u=jc.createUnmarshaller();
+            Object root= u.unmarshal(serialised);
+            @SuppressWarnings("unchecked")
+            Bundle res=(Bundle)((JAXBElement<Bundle>) root).getValue();
+            return res;
+        }
 
-    public Bundle validateBundle (String[] schemaFiles, File serialised)         throws JAXBException,SAXException, IOException { 
-        return validateBundle (schemaFiles, serialised,true);
+    public Document validateDocument (String[] schemaFiles, File serialised)         throws JAXBException,SAXException, IOException { 
+        return validateDocument (schemaFiles, serialised,true);
     }
 
-    public Bundle validateBundle (String[] schemaFiles, File serialised, boolean withCurie)
+    public Document validateDocument (String[] schemaFiles, File serialised, boolean withCurie)
         throws JAXBException,SAXException, IOException {
         SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Source [] sources=new Source[2+schemaFiles.length];
@@ -86,13 +94,13 @@ public class ProvDeserialiser {
             sources=new Source[schemaCount+schemaFiles.length];
             sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"curie.xsd"));
             sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"xml.xsd"));
-            sources[2]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20120110-curie.xsd"));
+            sources[2]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20120920-curie.xsd"));
         } else {
             schemaCount=3;
             sources=new Source[schemaCount+schemaFiles.length];
             sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"curie.xsd"));
             sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"xml.xsd"));
-            sources[2]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20120110.xsd"));
+            sources[2]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20120920.xsd"));
         }
 
 
@@ -107,7 +115,7 @@ public class ProvDeserialiser {
         u.setSchema(schema);
         Object root= u.unmarshal(serialised);
         @SuppressWarnings("unchecked")
-        Bundle res=(Bundle)((JAXBElement<Bundle>) root).getValue();
+        Document res=(Document)((JAXBElement<Document>) root).getValue();
         return res;
     }
 
@@ -123,7 +131,7 @@ public class ProvDeserialiser {
             schemas[i-1]=args[i];
         }
         try {
-            deserial.validateBundle(schemas,f);
+            deserial.validateDocument(schemas,f);
             System.out.println(args[0] + " IS a valid OPM graph");
             return ;
         } catch (JAXBException je) {

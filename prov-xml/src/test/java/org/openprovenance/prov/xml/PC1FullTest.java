@@ -22,6 +22,9 @@ public class PC1FullTest extends TestCase {
     public static final String PC1_PREFIX = "pc1";
     public static final String PRIM_NS = "http://openprovenance.org/primitives#";
     public static final String PRIM_PREFIX = "prim";
+    
+    static final ProvUtilities util=new ProvUtilities();
+
 
     static final Hashtable<String, String> namespaces;
 
@@ -51,8 +54,8 @@ public class PC1FullTest extends TestCase {
      * @return the suite of tests being tested
      */
 
-    public static Bundle graph1;
-    public static Bundle graph2;
+    public static Document graph1;
+    public static Document graph2;
 
     public void testPC1() throws JAXBException, FileNotFoundException,
 	    IOException, SAXException {
@@ -63,10 +66,10 @@ public class PC1FullTest extends TestCase {
     }
 
     public void subtestPC1Full() throws JAXBException {
-	Bundle graph = makePC1FullGraph(pFactory);
+	Document graph = makePC1FullGraph(pFactory);
 
 	ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
-	serial.serialiseBundle(new File("target/pc1-full.xml"), graph, true);
+	serial.serialiseDocument(new File("target/pc1-full.xml"), graph, true);
 
 	graph1 = graph;
 	System.out.println("PC1Full Test asserting True");
@@ -113,7 +116,7 @@ public class PC1FullTest extends TestCase {
 	return a;
     }
 
-    public Bundle makePC1FullGraph(ProvFactory pFactory) {
+    public Document makePC1FullGraph(ProvFactory pFactory) {
 	if (urlFlag) {
 	    return makePC1FullGraph(pFactory, URL_LOCATION, URL_LOCATION);
 	} else {
@@ -129,7 +132,7 @@ public class PC1FullTest extends TestCase {
 	pFactory.addAttribute(p1, PC1_NS, PC1_PREFIX, "url", val);
     }
 
-    public Bundle makePC1FullGraph(ProvFactory pFactory, String inputLocation,
+    public Document makePC1FullGraph(ProvFactory pFactory, String inputLocation,
 	                           String outputLocation) {
 
 	//Activity p0 = pFactory.newActivity("a0", "PC1Full Workflow");
@@ -411,8 +414,8 @@ public class PC1FullTest extends TestCase {
 
 	WasAssociatedWith waw1 = pFactory.newWasAssociatedWith("waw1", p1, ag1);
 
-	Bundle graph = pFactory
-	        .newBundle(new Activity[] { p1, p2, p3, p4, p5, p6, p7, p8, p9,
+	Document graph = pFactory
+	        .newDocument(new Activity[] { p1, p2, p3, p4, p5, p6, p7, p8, p9,
 	                                   p10, p11, p12, p13, p14, p15 },
 	                   new Entity[] { a1, a2, a5, a6, a3, a4, a7, a8, a9,
 	                                 a10, a11, a12, a13, a14, a15, a16,
@@ -453,7 +456,7 @@ public class PC1FullTest extends TestCase {
 	    java.io.IOException {
 	ProvFactory pFactory = new ProvFactory();
 
-	Bundle c = pFactory.newBundle(graph1);
+	Document c = pFactory.newDocument(graph1);
 
 	assertTrue("self graph1 differ", graph1.equals(graph1));
 
@@ -467,31 +470,29 @@ public class PC1FullTest extends TestCase {
 
 	ProvDeserialiser deserial = ProvDeserialiser
 	        .getThreadProvDeserialiser();
-	Bundle c = deserial.deserialiseBundle(new File("target/pc1-full.xml"));
+	Document c = deserial.deserialiseDocument(new File("target/pc1-full.xml"));
 	graph2 = c;
 
 	graph2.setNss(graph1.getNss());
 	ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
-	serial.serialiseBundle(new File("target/pc1-full2.xml"), graph2, true);
+	serial.serialiseDocument(new File("target/pc1-full2.xml"), graph2, true);
 
 	// System.out.println("a0" + graph1.getRecords().getActivity().get(0));
 	// System.out.println("a0" + graph2.getRecords().getActivity().get(0));
 
-	assertTrue("graph1 a* and graph2 a* differ", graph1.getRecords()
-	        .getActivity().equals(graph2.getRecords().getActivity()));
+	assertTrue("graph1 a* and graph2 a* differ", util.getActivity(graph1).equals(util.getActivity(graph2)));
 
 	// failing because of comparison of Elements <pc1:url>...</pc1:url>
-	assertFalse("graph1 e* and graph2 e* differ", graph1.getRecords()
-	        .getEntity().equals(graph2.getRecords().getEntity()));
+	assertFalse("graph1 e* and graph2 e* differ", util.getEntity(graph1).equals(util.getEntity(graph2)));
 
 	assertFalse("graph1 and graph2 differ", graph1.equals(graph2));
 
-	Bundle c2 = deserial.deserialiseBundle(new File("target/pc1-full.xml"));
+	Document c2 = deserial.deserialiseDocument(new File("target/pc1-full.xml"));
 	c2.setNss(graph1.getNss());
 
 	assertFalse("c e* and c2 e* differ",
-	            c.getRecords().getEntity()
-	                    .equals(c2.getRecords().getEntity()));
+	            util.getEntity(c)
+	                    .equals(util.getEntity(c2)));
 	assertFalse("c and c2 differ", c.equals(c2));
 
     }
@@ -504,7 +505,7 @@ public class PC1FullTest extends TestCase {
 
 	String[] schemaFiles = new String[1];
 	schemaFiles[0] = "src/test/resources/pc1.xsd";
-	deserial.validateBundle(schemaFiles, new File("target/pc1-full.xml"));
+	deserial.validateDocument(schemaFiles, new File("target/pc1-full.xml"));
 
     }
 
@@ -517,7 +518,7 @@ public class PC1FullTest extends TestCase {
 	schemaFiles[0] = "src/test/resources/pc1.xsd";
 
 	try {
-	    deserial.validateBundle(schemaFiles,
+	    deserial.validateDocument(schemaFiles,
 		                    new File("target/pc1-full.xml"), false);
 	} catch (Exception e) {
 	    e.printStackTrace();

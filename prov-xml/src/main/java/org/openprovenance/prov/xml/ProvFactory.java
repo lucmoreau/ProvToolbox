@@ -14,7 +14,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import org.w3c.dom.Document;
+
 import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -1159,7 +1159,7 @@ public class ProvFactory {
 
     public Element newAttribute(String namespace, String prefix,
 				String localName, String value) {
-	Document doc = builder.newDocument();
+    	org.w3c.dom.Document doc = builder.newDocument();
 	Element el = doc.createElementNS(namespace, ((prefix.equals("")) ? ""
 		: (prefix + ":")) + localName);
 	el.appendChild(doc.createTextNode(value));
@@ -1235,6 +1235,7 @@ public class ProvFactory {
 			      ((lks == null) ? null : Arrays.asList(lks)));
     }
 
+    /*
     public Bundle newBundle(String id, Collection<Activity> ps,
 			    Collection<Entity> as, Collection<Agent> ags,
 			    Collection<Object> lks) {
@@ -1246,31 +1247,36 @@ public class ProvFactory {
 	return newBundle(null, ps, as, ags, lks);
     }
 
-    public Bundle newBundle(String id, Activity[] ps, Entity[] as, Agent[] ags,
+*/
+    public Document newDocument(Activity[] ps, Entity[] as, Agent[] ags,
 			    Object[] lks) {
 
-	return newBundle(id, ((ps == null) ? null : Arrays.asList(ps)),
+	return newDocument(((ps == null) ? null : Arrays.asList(ps)),
 			 ((as == null) ? null : Arrays.asList(as)),
 			 ((ags == null) ? null : Arrays.asList(ags)),
 			 ((lks == null) ? null : Arrays.asList(lks)));
     }
 
-    public Bundle newBundle(Collection<Activity> ps, Collection<Entity> as,
-			    Collection<Agent> ags, Dependencies lks) {
-	Bundle res = of.createBundle();
-	res.setRecords(of.createRecords());
-	// res.setId(autoGenerateId(bundleIdPrefix));
-	res.getRecords().getActivity().addAll(ps);
-	res.getRecords().getEntity().addAll(as);
-	res.getRecords().getAgent().addAll(ags);
-	res.getRecords().setDependencies(lks);
+
+    public Document newDocument() {
+Document res = of.createDocument();
+return res;
+    }
+
+    public Document newDocument(Collection<Activity> ps, Collection<Entity> as,
+			    Collection<Agent> ags, Collection<Object> lks) {
+	Document res = of.createDocument();
+	res.getEntityOrActivityOrWasGeneratedBy().addAll(ps);
+	res.getEntityOrActivityOrWasGeneratedBy().addAll(as);
+	res.getEntityOrActivityOrWasGeneratedBy().addAll(ags);
+	res.getEntityOrActivityOrWasGeneratedBy().addAll(lks);
 	return res;
     }
 
-    public Bundle newBundle(Bundle graph) {
-	return newBundle(graph.getRecords().getActivity(), graph.getRecords()
-		.getEntity(), graph.getRecords().getAgent(), graph.getRecords()
-		.getDependencies());
+    public Document newDocument(Document graph) {
+	Document res=of.createDocument();	
+	res.getEntityOrActivityOrWasGeneratedBy().addAll(graph.getEntityOrActivityOrWasGeneratedBy());
+		return res;
     }
 
     /* Return the first label, it it exists */

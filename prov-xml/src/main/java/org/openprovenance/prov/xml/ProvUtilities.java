@@ -349,7 +349,7 @@ public class ProvUtilities {
 	        ActivityRef.class, ActivityRef.class, Object.class });
 	types.put(WasDerivedFrom.class, new Class[] { QName.class,
 	        EntityRef.class, EntityRef.class, ActivityRef.class,
-	        DependencyRef.class, DependencyRef.class, Object.class });
+	        GenerationRef.class, UsageRef.class, Object.class });
 	types.put(WasInfluencedBy.class, new Class[] { QName.class,
 	        AnyRef.class, AnyRef.class, Object.class });
 	types.put(WasAttributedTo.class, new Class[] { QName.class,

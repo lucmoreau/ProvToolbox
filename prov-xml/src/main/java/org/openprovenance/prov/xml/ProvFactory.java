@@ -158,30 +158,45 @@ public class ProvFactory {
 	return res;
     }
 
-    public DependencyRef newDependencyRef(QName id) {
-	DependencyRef res = of.createDependencyRef();
-	res.setRef(id);
-	return res;
-    }
 
-    public DependencyRef newDependencyRef(String id) {
-	DependencyRef res = of.createDependencyRef();
-	res.setRef(stringToQName(id));
-	return res;
-    }
+    public UsageRef newUsageRef(QName id) {
+    	UsageRef res = of.createUsageRef();
+    	res.setRef(id);
+    	return res;
+        }
 
-    public DependencyRef newDependencyRef(WasGeneratedBy edge) {
-	DependencyRef res = of.createDependencyRef();
+        public UsageRef newUsageRef(String id) {
+    	UsageRef res = of.createUsageRef();
+    	res.setRef(stringToQName(id));
+    	return res;
+        }
+
+
+    public GenerationRef newGenerationRef(QName id) {
+    	GenerationRef res = of.createGenerationRef();
+    	res.setRef(id);
+    	return res;
+        }
+
+        public GenerationRef newGenerationRef(String id) {
+    	GenerationRef res = of.createGenerationRef();
+    	res.setRef(stringToQName(id));
+    	return res;
+        }
+
+    public GenerationRef newGenerationRef(WasGeneratedBy edge) {
+	GenerationRef res = of.createGenerationRef();
 	res.setRef(edge.getId());
 	return res;
     }
 
-    public DependencyRef newDependencyRef(Used edge) {
-	DependencyRef res = of.createDependencyRef();
+    public UsageRef newUsageRef(Used edge) {
+	UsageRef res = of.createUsageRef();
 	res.setRef(edge.getId());
 	return res;
     }
 
+    /*
     public DependencyRef newDependencyRef(WasDerivedFrom edge) {
 	DependencyRef res = of.createDependencyRef();
 	res.setRef(edge.getId());
@@ -193,6 +208,7 @@ public class ProvFactory {
 	res.setRef(edge.getId());
 	return res;
     }
+    */
 
     public InternationalizedString newInternationalizedString(String s) {
 	InternationalizedString res = of.createInternationalizedString();
@@ -932,8 +948,8 @@ public class ProvFactory {
 
     public WasDerivedFrom newWasDerivedFrom(QName id, EntityRef aid1,
 					    EntityRef aid2, ActivityRef aid,
-					    DependencyRef did1,
-					    DependencyRef did2) {
+					    GenerationRef did1,
+					    UsageRef did2) {
 	WasDerivedFrom res = of.createWasDerivedFrom();
 	res.setId(id);
 	res.setUsedEntity(aid2);
@@ -946,8 +962,8 @@ public class ProvFactory {
 
     public WasDerivedFrom newWasDerivedFrom(String id, EntityRef aid1,
 					    EntityRef aid2, ActivityRef aid,
-					    DependencyRef did1,
-					    DependencyRef did2) {
+					    GenerationRef did1,
+					    UsageRef did2) {
 	return newWasDerivedFrom(stringToQName(id), aid1, aid2, aid, did1, did2);
     }
 
@@ -972,8 +988,8 @@ public class ProvFactory {
 	EntityRef eid1 = newEntityRef(e1);
 	EntityRef eid2 = newEntityRef(e2);
 	ActivityRef aid = newActivityRef(a);
-	DependencyRef did2 = newDependencyRef(g2);
-	DependencyRef did1 = newDependencyRef(u1);
+	GenerationRef did2 = newGenerationRef(g2);
+	UsageRef did1 = newUsageRef(u1);
 	return newWasDerivedFrom(id, eid2, eid1, aid, did2, did1);
     }
 

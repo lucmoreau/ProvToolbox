@@ -477,8 +477,8 @@ public  class ProvConstructor implements TreeConstructor {
                                                     e2r,
                                                     e1r);
         if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
-        if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
-        if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
+        if (g2!=null) d.setGeneration(pFactory.newGenerationRef((String)g2));
+        if (u1!=null) d.setUsage(pFactory.newUsageRef((String)u1));
 
         List<?> attrs=(List<?>)dAttrs;
         d.getAny().addAll(attrs);
@@ -502,8 +502,8 @@ public  class ProvConstructor implements TreeConstructor {
                                                   e1r);
 
         if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
-        if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
-        if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
+        if (g2!=null) d.setGeneration(pFactory.newGenerationRef((String)g2));
+        if (u1!=null) d.setUsage(pFactory.newUsageRef((String)u1));
         List<?> attrs=(List<?>)dAttrs;
         d.getAny().addAll(attrs);
 
@@ -525,8 +525,8 @@ public  class ProvConstructor implements TreeConstructor {
                                                   e1r);
 
         if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
-        if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
-        if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
+        if (g2!=null) d.setGeneration(pFactory.newGenerationRef((String)g2));
+        if (u1!=null) d.setUsage(pFactory.newUsageRef((String)u1));
 
 
         List<?> attrs=(List<?>)dAttrs;
@@ -548,8 +548,8 @@ public  class ProvConstructor implements TreeConstructor {
                                                         e1r);
 
         if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
-        if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
-        if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
+        if (g2!=null) d.setGeneration(pFactory.newGenerationRef((String)g2));
+        if (u1!=null) d.setUsage(pFactory.newUsageRef((String)u1));
 
         List<?> attrs=(List<?>)dAttrs;
         d.getAny().addAll(attrs);

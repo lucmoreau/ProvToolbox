@@ -56,7 +56,7 @@ public class ASNConstructor implements TreeConstructor {
         return  s;
     }
 
-    public Object convertBundle(Object namespaces, List<Object> records, List<Object> bundles) {
+    public Object convertDocument(Object namespaces, List<Object> records, List<Object> bundles) {
         String s=keyword("bundle") + breakline();
 	if (namespaces!=null) {
 	    s=s+namespaces + breakline();

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Hashtable;
 import javax.xml.bind.JAXBException;
-import org.openprovenance.prov.xml.Bundle;
+import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -73,9 +73,9 @@ public class InteropFramework
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
 
 	//TODO: should do xml validation (conditionally?)
-	//        deserial.validateBundle(schemaFiles,in);
+	//        deserial.validateDocument(schemaFiles,in);
 
-        Bundle c=deserial.deserialiseBundle(in);
+        Document c=deserial.deserialiseDocument(in);
 
         String s=u.convertBeanToASN(c);
         writeTextToFile(s,outprovnFile);
@@ -97,18 +97,18 @@ public class InteropFramework
 
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
 
-        deserial.validateBundle(schemaFiles,in);
+        deserial.validateDocument(schemaFiles,in);
         
-        Bundle c=deserial.deserialiseBundle(in);
+        Document c=deserial.deserialiseDocument(in);
 
 	//TODO: should do xml validation (conditionally?)
-        deserial.validateBundle(schemaFiles,in);
+        deserial.validateDocument(schemaFiles,in);
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         c.setNss(outNamespaces);
-        Bundle c2=(Bundle)u.convertJavaBeanToJavaBean(c);
+        Document c2=(Document)u.convertJavaBeanToJavaBean(c);
         c2.setNss(outNamespaces);
-        serial.serialiseBundle(out,c2,true);
+        serial.serialiseDocument(out,c2,true);
     }
         
     
@@ -136,9 +136,9 @@ public class InteropFramework
     	ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
 
 	//TODO: should do xml validation (conditionally?)
-	//    	deserial.validateBundle(schemaFiles,in);
+	//    	deserial.validateDocument(schemaFiles,in);
     	
-    	Bundle c=deserial.deserialiseBundle(in);
+    	Document c=deserial.deserialiseDocument(in);
     	
 
         RepositoryHelper rHelper=new RepositoryHelper();
@@ -164,7 +164,7 @@ public class InteropFramework
         Object o2=u.convertTreeToJavaBean(tree);
        
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-        serial.serialiseBundle(new File(file2),(Bundle)o2,true);
+        serial.serialiseDocument(new File(file2),(Document)o2,true);
 
     }
 
@@ -233,7 +233,7 @@ public class InteropFramework
         ElmoManager manager = factory.createElmoManager();
 
     	
-        Bundle c=(Bundle)u.convertTreeToJavaBean(tree);
+        Document c=(Document)u.convertTreeToJavaBean(tree);
         Hashtable<String,String>  namespaceTable = c.getNss();
 
         RdfConstructor rdfc=new RdfConstructor(pFactory, manager);
@@ -261,7 +261,7 @@ public class InteropFramework
 
         Object o=u.convertTreeToJavaBean(tree);
 
-        Bundle bundle=(Bundle)o;
+        Document bundle=(Document)o;
 
         ProvToDot toDot=new ProvToDot((configFile==null)? "src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
 
@@ -289,7 +289,7 @@ public class InteropFramework
 	} else if (filename.endsWith(".provx") || filename.endsWith(".xml")) {
 	    File in=new File(filename);
 	    ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-	    Bundle c=deserial.deserialiseBundle(in);
+	    Document c=deserial.deserialiseDocument(in);
 	    return c;
 	} else if (filename.endsWith(".rdf") || filename.endsWith(".prov-rdf")) {
 	    throw new UnsupportedOperationException();
@@ -313,7 +313,7 @@ public class InteropFramework
 	    try {
 		File in=new File(filename);
 		ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-		Bundle c=deserial.deserialiseBundle(in);
+		Document c=deserial.deserialiseDocument(in);
 		return c;
 	    } catch (Throwable t2) {
 		System.out.println("Unparseable format " + filename);

@@ -128,7 +128,7 @@ public  class ProvConstructor implements TreeConstructor {
         return e;
     }
 
-    public Object convertBundle(Object namespaces, List<Object> records, List<Object> bundles) {    
+    public Object convertDocument(Object namespaces, List<Object> records, List<Object> bundles) {    
         Collection<Entity> es=new LinkedList<Entity>();
         Collection<Agent> ags=new LinkedList<Agent>();
         Collection<Activity> acs=new LinkedList<Activity>();

@@ -369,4 +369,9 @@ public class BeanTraversal {
 	                          c.convert(o.getBundle().getRef()));
     }
 
+	public Object convert(Document c2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

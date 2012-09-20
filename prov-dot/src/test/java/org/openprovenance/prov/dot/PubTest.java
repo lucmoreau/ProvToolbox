@@ -1,6 +1,6 @@
 package org.openprovenance.prov.dot;
 import javax.xml.bind.JAXBException;
-import org.openprovenance.prov.xml.Bundle;
+import org.openprovenance.prov.xml.Document;
 
 /**
  * 
@@ -11,9 +11,9 @@ public class PubTest extends org.openprovenance.prov.notation.PubTest {
          super(testName);
     }
     
-    static Bundle co1;
-    static Bundle co2;
-    static Bundle co3;
+    static Document co1;
+    static Document co2;
+    static Document co3;
 
     @Override
     public void testReadASNSaveXML() {

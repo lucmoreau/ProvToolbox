@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import javax.xml.bind.JAXBException;
 import junit.framework.TestCase;
 import org.openprovenance.prov.xml.Bundle;
+import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
@@ -46,7 +47,7 @@ public class PubTest
         super( testName );
     }
 
-    static public Bundle graph1;
+    static public Document graph1;
 
     public void testReadASNSaveXML() throws java.io.IOException, java.lang.Throwable {
         String file="src/test/resources/prov/w3c-publication1.prov-asn";
@@ -60,7 +61,7 @@ public class PubTest
 
         Object o2=u.convertTreeToJavaBean(tree);
 
-        graph1=(Bundle)o2;
+        graph1=(Document)o2;
 
         String o3=u.convertTreeToASN(tree);
 

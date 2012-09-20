@@ -6,6 +6,8 @@ import java.util.Hashtable;
 import java.net.URI;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -17,7 +19,6 @@ import org.openprovenance.prov.xml.EntityRef;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.HasType;
 import org.openprovenance.prov.xml.AgentRef;
-import org.openprovenance.prov.xml.Bundle;
 import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasGeneratedBy;
@@ -47,6 +48,7 @@ import javax.xml.namespace.QName;
 
 public  class ProvConstructor implements TreeConstructor {
     private ProvFactory pFactory;
+    private ProvUtilities u=new ProvUtilities();
 
     Hashtable<String,Entity>   entityTable   = new Hashtable<String,Entity>();
     Hashtable<String,Activity> activityTable = new Hashtable<String,Activity>();
@@ -140,7 +142,7 @@ public  class ProvConstructor implements TreeConstructor {
             else if (o instanceof Activity) { acs.add((Activity)o); }
             else lks.add(o);
         }
-        Bundle c=pFactory.newBundle(      acs,
+        Document c=pFactory.newDocument(      acs,
                                           es,
                                           ags,
                                           lks);
@@ -148,7 +150,7 @@ public  class ProvConstructor implements TreeConstructor {
         c.setNss(namespaceTable);
 
         if (bundles!=null) {
-            List<NamedBundle> nbs=c.getBundle();
+            List<NamedBundle> nbs=u.getNamedBundle(c);
             for (Object o: bundles) {
                 nbs.add((NamedBundle) o);
             }

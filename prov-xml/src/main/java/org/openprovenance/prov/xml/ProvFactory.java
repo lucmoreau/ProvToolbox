@@ -1167,34 +1167,6 @@ public class ProvFactory {
 	return el;
     }
 
-    public Bundle newBundle(Collection<Activity> ps, Collection<Entity> as,
-			    Collection<Agent> ags, Collection<Object> lks) {
-	return newBundle((QName) null, ps, as, ags, lks);
-    }
-
-    public Bundle newBundle(QName ignore, Collection<Activity> ps,
-			    Collection<Entity> as, Collection<Agent> ags,
-			    Collection<Object> lks) {
-	Bundle res = of.createBundle();
-	res.setRecords(of.createRecords());
-	if (ps != null) {
-	    res.getRecords().getActivity().addAll(ps);
-	}
-	if (as != null) {
-	    res.getRecords().getEntity().addAll(as);
-	}
-	if (ags != null) {
-	    res.getRecords().getAgent().addAll(ags);
-	}
-	if (lks != null) {
-	    Dependencies ccls = of.createDependencies();
-	    ccls.getUsedOrWasGeneratedByOrWasStartedBy().addAll(lks);
-	    res.getRecords().setDependencies(ccls);
-	}
-
-	return res;
-    }
-
     public NamedBundle newNamedBundle(String id, Collection<Activity> ps,
 				      Collection<Entity> as,
 				      Collection<Agent> ags,

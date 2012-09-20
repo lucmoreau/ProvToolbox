@@ -15,19 +15,19 @@ public class ProvUtilities {
 
     private ProvFactory of = new ProvFactory();
 
+    /*
     public List<Element> getElements(Bundle g) {
 	List<Element> res = new LinkedList<Element>();
 	res.addAll(g.getRecords().getEntity());
 	res.addAll(g.getRecords().getActivity());
 	res.addAll(g.getRecords().getAgent());
 	return res;
-    }
+    }*/
 
-    public List<Relation0> getRelations(Bundle g) {
+    public List<Relation0> getRelations(Document g) {
 	List<Relation0> res = new LinkedList<Relation0>();
-	Dependencies dep = g.getRecords().getDependencies();
-	for (Object o : dep.getUsedOrWasGeneratedByOrWasStartedBy()) {
-	    res.add((Relation0) o);
+	for (Object o : g.getEntityOrActivityOrWasGeneratedBy()) {
+		if (o instanceof Relation0) res.add((Relation0) o);
 	}
 	return res;
     }
@@ -41,8 +41,9 @@ public class ProvUtilities {
     public List<Agent> getAgent(Document d) {
     	return getObject(Agent.class,d);
     }
-    public List<Relation0> getRelations(Document d) {
-    	return getObject(Relation0.class,d);
+    
+    public List<NamedBundle> getNamedBundle(Document d) {
+    	return getObject(NamedBundle.class,d);
     }
     public <T> List<T> getObject(Class<T> cl, Document d) {
         List<T> res=new LinkedList<T>();
@@ -230,13 +231,14 @@ public class ProvUtilities {
 	return null;
     }
 
+    /*
     public MentionOf getMentionForRemoteEntity(Bundle local,
 	                                       Entity remoteEntity,
 	                                       NamedBundle remote) {
 	return getMentionForRemoteEntity(local.getRecords(), remoteEntity,
 	                                 remote);
     }
-
+*/
     public MentionOf getMentionForRemoteEntity(NamedBundle local,
 	                                       Entity remoteEntity,
 	                                       NamedBundle remote) {
@@ -260,10 +262,11 @@ public class ProvUtilities {
 	return null;
     }
 
+    /*
     public MentionOf getMentionForLocalEntity(Bundle local, Entity localEntity,
 	                                      NamedBundle remote) {
 	return getMentionForLocalEntity(local.getRecords(), localEntity, remote);
-    }
+    }*/
 
     public MentionOf getMentionForLocalEntity(NamedBundle local,
 	                                      Entity localEntity,

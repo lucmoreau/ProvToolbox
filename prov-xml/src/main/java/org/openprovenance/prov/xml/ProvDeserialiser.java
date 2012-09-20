@@ -5,7 +5,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBElement;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import javax.xml.validation.SchemaFactory;
@@ -54,13 +53,6 @@ public class ProvDeserialiser {
         return threadDeserialiser.get();
     }
 
-    public Bundle deserialiseBundle (Element serialised)
-        throws JAXBException {
-        Unmarshaller u=jc.createUnmarshaller();
-        JAXBElement<Bundle> root= u.unmarshal(serialised,Bundle.class);
-        Bundle res=root.getValue();
-        return res;
-    }
 
     public Document deserialiseDocument (File serialised)
         throws JAXBException {
@@ -70,15 +62,6 @@ public class ProvDeserialiser {
         Document res=(Document)((JAXBElement<Document>) root).getValue();
         return res;
     }
-
-    public Bundle deserialiseBundle (File serialised)
-            throws JAXBException {
-            Unmarshaller u=jc.createUnmarshaller();
-            Object root= u.unmarshal(serialised);
-            @SuppressWarnings("unchecked")
-            Bundle res=(Bundle)((JAXBElement<Bundle>) root).getValue();
-            return res;
-        }
 
     public Document validateDocument (String[] schemaFiles, File serialised)         throws JAXBException,SAXException, IOException { 
         return validateDocument (schemaFiles, serialised,true);

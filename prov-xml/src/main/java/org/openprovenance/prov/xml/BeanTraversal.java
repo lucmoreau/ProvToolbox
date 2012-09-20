@@ -8,34 +8,35 @@ import org.w3c.dom.Element;
 
 public class BeanTraversal {
     private BeanConstructor c;
+    
+    ProvUtilities u=new ProvUtilities();
 
     public BeanTraversal(BeanConstructor c) {
 	this.c = c;
     }
 
-    public Object convert(Bundle b) {
+    public Object convert(Document b) {
 	List<Object> lnkRecords = new LinkedList<Object>();
 	List<Object> aRecords = new LinkedList<Object>();
 	List<Object> eRecords = new LinkedList<Object>();
 	List<Object> agRecords = new LinkedList<Object>();
 	List<Object> bRecords = new LinkedList<Object>();
-	for (Entity e : b.getRecords().getEntity()) {
+	for (Entity e : u.getEntity(b)) {
 	    eRecords.add(convert(e));
 	}
-	for (Activity a : b.getRecords().getActivity()) {
+	for (Activity a : u.getActivity(b)) {
 	    aRecords.add(convert(a));
 	}
-	for (Agent ag : b.getRecords().getAgent()) {
+	for (Agent ag : u.getAgent(b)) {
 	    agRecords.add(convert(ag));
 	}
-	for (Object lnk : b.getRecords().getDependencies()
-	        .getUsedOrWasGeneratedByOrWasStartedBy()) {
+	for (Object lnk : u.getRelations(b)) {
 	    Object o = convertRelation(lnk);
 	    if (o != null)
 		lnkRecords.add(o);
 	}
 	
-	for (NamedBundle bu : b.getBundle()) {
+	for (NamedBundle bu : u.getNamedBundle(b)) {
 	    Object o = convert(bu);
 	    if (o != null)
 		bRecords.add(o);
@@ -369,9 +370,5 @@ public class BeanTraversal {
 	                          c.convert(o.getBundle().getRef()));
     }
 
-	public Object convert(Document c2) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 }

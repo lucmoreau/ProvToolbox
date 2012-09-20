@@ -3,7 +3,6 @@ import java.io.File;
 import java.util.Hashtable;
 import javax.xml.bind.JAXBException;
 import junit.framework.TestCase;
-import org.openprovenance.prov.xml.Bundle;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -69,7 +68,7 @@ public class PubTest
 
         try {
             ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-            serial.serialiseBundle(new File(file2),(Bundle)o2,true);
+            serial.serialiseDocument(new File(file2),(Document)o2,true);
 
             System.out.println("tree is " + o3);
         } catch (JAXBException e) {

@@ -31,6 +31,30 @@ public class ProvUtilities {
 	}
 	return res;
     }
+    
+    public List<Entity> getEntity(Document d) {
+    	return getObject(Entity.class,d);
+    }
+    public List<Activity> getActivity(Document d) {
+    	return getObject(Activity.class,d);
+    }
+    public List<Agent> getAgent(Document d) {
+    	return getObject(Agent.class,d);
+    }
+    public List<Relation0> getRelations(Document d) {
+    	return getObject(Relation0.class,d);
+    }
+    public <T> List<T> getObject(Class<T> cl, Document d) {
+        List<T> res=new LinkedList<T>();
+        for (Object o: d.getEntityOrActivityOrWasGeneratedBy()) {
+        	if (cl.isInstance(o)) {
+   		      @SuppressWarnings("unchecked")
+			  T o2 = (T) o;
+		      res.add(o2);
+   	   }
+        }
+        return res;
+       }
 
     public QName getEffect(Relation0 r) {
 	if (r instanceof Used) {

@@ -408,6 +408,46 @@
     <xs:attribute ref="prov:ref"/>
   </xs:complexType>
 
+
+   <xs:group name="documentElements">
+     <xs:sequence>
+       <xs:choice minOccurs="0" maxOccurs="unbounded">
+         <xs:element name="entity"               type="prov:Entity"/>
+         <xs:element name="activity"             type="prov:Activity"/>
+         <xs:element name="wasGeneratedBy"       type="prov:WasGeneratedBy"/>
+         <xs:element name="used"                 type="prov:Used"/>
+         <xs:element name="wasInformedBy"        type="prov:WasInformedBy"/>
+         <xs:element name="wasStartedBy"         type="prov:WasStartedBy"/>
+         <xs:element name="wasEndedBy"           type="prov:WasEndedBy"/>
+         <xs:element name="wasInvalidatedBy"     type="prov:WasInvalidatedBy"/>
+ 
+         <xs:element name="wasDerivedFrom"       type="prov:WasDerivedFrom"/>
+ 
+         <xs:element name="agent"                type="prov:Agent"/>
+         <xs:element name="wasAttributedTo"      type="prov:WasAttributedTo"/>
+         <xs:element name="wasAssociatedWith"    type="prov:WasAssociatedWith"/>
+         <xs:element name="actedOnBehalfOf"      type="prov:ActedOnBehalfOf"/>
+         <xs:element name="wasInfluencedBy"      type="prov:WasInfluencedBy"/>
+         
+         <xs:element name="specializationOf"     type="prov:SpecializationOf"/>
+         <xs:element name="alternateOf"          type="prov:AlternateOf"/>
+         <xs:element name="mentionOf"            type="prov:MentionOf"/>
+ 
+         <xs:element name="collectionMemberOf"   type="prov:CollectionMemberOf"/>
+       </xs:choice>
+     </xs:sequence>
+   </xs:group>
+ 
+   <xs:element name="document" type="prov:Document" />
+   <xs:complexType name="Document">
+     <xs:sequence>
+       <xs:choice maxOccurs="unbounded">
+         <xs:group ref="prov:documentElements"/>
+         <xs:element name="bundle" type="prov:Bundle"/>
+       </xs:choice>
+     </xs:sequence>
+   </xs:complexType>
+   
   <xs:complexType name="Dependencies">
     <xs:sequence>
       <xs:choice minOccurs="0" maxOccurs="unbounded">

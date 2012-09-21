@@ -1,9 +1,5 @@
 package org.openprovenance.prov.dot;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.Document;
 

@@ -24,30 +24,50 @@ public class ProvUtilities {
 	return res;
     }*/
 
-    public List<Relation0> getRelations(Document g) {
-	List<Relation0> res = new LinkedList<Relation0>();
-	for (Object o : g.getEntityOrActivityOrWasGeneratedBy()) {
-		if (o instanceof Relation0) res.add((Relation0) o);
-	}
-	return res;
-    }
+
     
+    public List<Relation0> getRelations(Document d) {
+    	return getObject(Relation0.class,d.getEntityOrActivityOrWasGeneratedBy());
+    }
     public List<Entity> getEntity(Document d) {
-    	return getObject(Entity.class,d);
+    	return getObject(Entity.class,d.getEntityOrActivityOrWasGeneratedBy());
     }
     public List<Activity> getActivity(Document d) {
-    	return getObject(Activity.class,d);
+    	return getObject(Activity.class,d.getEntityOrActivityOrWasGeneratedBy());
     }
     public List<Agent> getAgent(Document d) {
-    	return getObject(Agent.class,d);
+    	return getObject(Agent.class,d.getEntityOrActivityOrWasGeneratedBy());
+    }
+    
+    public List<Relation0> getRelations(NamedBundle d) {
+    	return getObject(Relation0.class,d.getEntityOrActivityOrWasGeneratedBy());
+    }
+    public List<Entity> getEntity(NamedBundle d) {
+    	return getObject(Entity.class,d.getEntityOrActivityOrWasGeneratedBy());
+    }
+    public List<Activity> getActivity(NamedBundle d) {
+    	return getObject(Activity.class,d.getEntityOrActivityOrWasGeneratedBy());
+    }
+    public List<Agent> getAgent(NamedBundle d) {
+    	return getObject(Agent.class,d.getEntityOrActivityOrWasGeneratedBy());
     }
     
     public List<NamedBundle> getNamedBundle(Document d) {
-    	return getObject(NamedBundle.class,d);
+    	return getObject(NamedBundle.class,d.getEntityOrActivityOrWasGeneratedBy());
     }
-    public <T> List<T> getObject(Class<T> cl, Document d) {
+    @SuppressWarnings("unchecked")
+	public List<Statement> getStatement(Document d) {
+    	List<?> res=d.getEntityOrActivityOrWasGeneratedBy();
+    	return (List<Statement>) res;
+    }
+    @SuppressWarnings("unchecked")
+	public List<Statement> getStatement(NamedBundle d) {
+    	List<?> res=d.getEntityOrActivityOrWasGeneratedBy();
+    	return (List<Statement>) res;
+    }
+    public <T> List<T> getObject(Class<T> cl, List<Object> ll) {
         List<T> res=new LinkedList<T>();
-        for (Object o: d.getEntityOrActivityOrWasGeneratedBy()) {
+        for (Object o: ll) {
         	if (cl.isInstance(o)) {
    		      @SuppressWarnings("unchecked")
 			  T o2 = (T) o;
@@ -231,25 +251,17 @@ public class ProvUtilities {
 	return null;
     }
 
-    /*
-    public MentionOf getMentionForRemoteEntity(Bundle local,
-	                                       Entity remoteEntity,
-	                                       NamedBundle remote) {
-	return getMentionForRemoteEntity(local.getRecords(), remoteEntity,
-	                                 remote);
-    }
-*/
+    
     public MentionOf getMentionForRemoteEntity(NamedBundle local,
 	                                       Entity remoteEntity,
 	                                       NamedBundle remote) {
-	return getMentionForRemoteEntity(local.getRecords(), remoteEntity,
+	return getMentionForRemoteEntity(local.getEntityOrActivityOrWasGeneratedBy(), remoteEntity,
 	                                 remote);
     }
 
-    MentionOf getMentionForRemoteEntity(Records local, Entity remoteEntity,
+    MentionOf getMentionForRemoteEntity(List<Object> objects, Entity remoteEntity,
 	                                NamedBundle remote) {
-	Dependencies dep = local.getDependencies();
-	for (Object o : dep.getUsedOrWasGeneratedByOrWasStartedBy()) {
+	for (Object o : objects) {
 	    if (o instanceof MentionOf) {
 		MentionOf ctxt = (MentionOf) o;
 		QName id1 = remoteEntity.getId();
@@ -271,13 +283,12 @@ public class ProvUtilities {
     public MentionOf getMentionForLocalEntity(NamedBundle local,
 	                                      Entity localEntity,
 	                                      NamedBundle remote) {
-	return getMentionForLocalEntity(local.getRecords(), localEntity, remote);
+	return getMentionForLocalEntity(local.getEntityOrActivityOrWasGeneratedBy(), localEntity, remote);
     }
 
-    MentionOf getMentionForLocalEntity(Records local, Entity localEntity,
+    MentionOf getMentionForLocalEntity(List<Object> records, Entity localEntity,
 	                               NamedBundle remote) {
-	Dependencies dep = local.getDependencies();
-	for (Object o : dep.getUsedOrWasGeneratedByOrWasStartedBy()) {
+	for (Object o : records) {
 	    if (o instanceof MentionOf) {
 		MentionOf ctxt = (MentionOf) o;
 		QName id1 = localEntity.getId();
@@ -524,29 +535,18 @@ public class ProvUtilities {
 	return types.length - 1;
     }
 
-    public void forAllRecords(Records recs, RecordAction action) {
-	Dependencies deps = recs.getDependencies();
-	List<Entity> entities = recs.getEntity();
-	List<Activity> activities = recs.getActivity();
-	List<Agent> agents = recs.getAgent();
-
-	for (Entity e : entities) {
-	    action.run(e);
-	}
-
-	for (Activity a : activities) {
-	    action.run(a);
-	}
-
-	for (Agent ag : agents) {
-	    action.run(ag);
-	}
-
-	for (Object o : deps.getUsedOrWasGeneratedByOrWasStartedBy()) {
-	    if (o instanceof Used) {
+    public void forAllRecords(List<Statement> records, RecordAction action) {
+    	for (Statement o: records) {
+	
+	 	if (o instanceof Entity) {
+	 		action.run((Entity)o);	
+	    } else if (o instanceof Activity) {
+	    	action.run((Activity)o);
+	    } else if (o instanceof Agent) {
+	    	action.run((Agent)o);	
+	    } else if (o instanceof Used) {
 		action.run((Used)o);
 	    }
-
 	    else if (o instanceof WasGeneratedBy) {
 		WasGeneratedBy tmp = (WasGeneratedBy) o;
 		action.run(tmp);

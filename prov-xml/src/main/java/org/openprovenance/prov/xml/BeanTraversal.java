@@ -52,17 +52,16 @@ public class BeanTraversal {
 	List<Object> eRecords = new LinkedList<Object>();
 	List<Object> agRecords = new LinkedList<Object>();
 
-	for (Entity e : b.getRecords().getEntity()) {
+	for (Entity e : u.getEntity(b)) {
 	    eRecords.add(convert(e));
 	}
-	for (Activity a : b.getRecords().getActivity()) {
+	for (Activity a : u.getActivity(b)) {
 	    aRecords.add(convert(a));
 	}
-	for (Agent ag : b.getRecords().getAgent()) {
+	for (Agent ag : u.getAgent(b)) {
 	    agRecords.add(convert(ag));
 	}
-	for (Object lnk : b.getRecords().getDependencies()
-	        .getUsedOrWasGeneratedByOrWasStartedBy()) {
+	for (Object lnk : u.getRelations(b)) {
 	    Object o = convertRelation(lnk);
 	    if (o != null)
 		lnkRecords.add(o);

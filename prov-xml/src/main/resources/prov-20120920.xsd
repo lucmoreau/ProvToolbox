@@ -484,18 +484,6 @@
   </xs:complexType>
   
   
-  <!-- a wrapper element for all records, used in Bundle or NamedBundle -->
-  <xs:element name="records" type="prov:Records"/>
-  <xs:complexType name="Records">
-    <xs:sequence>
-      <xs:element ref="prov:activity" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:entity"   minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:agent"    minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="dependencies" type="prov:Dependencies" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-
-
   <xs:complexType name="NamedBundle">
     <xs:sequence>
       <xs:group ref="prov:documentElements"/>

@@ -17,7 +17,7 @@ import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.Relation0;
-import org.openprovenance.prov.xml.Relation;
+import org.openprovenance.prov.xml.Influence;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.HasType;
@@ -676,8 +676,8 @@ public class ProvToDot {
         } else { // binary case
 	    if (u.getCause(e)!=null) { // make sure there is a cuase
 		relationName(e, properties);
-		if (e instanceof Relation) {
-		    addColors((Relation)e,properties);
+		if (e instanceof Influence) {
+		    addColors((Influence)e,properties);
 		}
 		
 		emitRelation( qnameToString(u.getEffect(e)),
@@ -750,8 +750,8 @@ public class ProvToDot {
     /* Displays type if any, role otherwise. */
     public void addRelationLabel(Relation0 e0, HashMap<String,String> properties) {
         String label=null;
-        if (!(e0 instanceof Relation)) return;
-        Relation e=(Relation)e0;
+        if (!(e0 instanceof Influence)) return;
+        Influence e=(Influence)e0;
         List<Object> type=of.getType(e);
         if ((type!=null) && (!type.isEmpty())) {
             label=type.get(0).toString();

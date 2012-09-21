@@ -1179,21 +1179,17 @@ public class ProvFactory {
 				      Collection<Agent> ags,
 				      Collection<Object> lks) {
 	NamedBundle res = of.createNamedBundle();
-	res.setRecords(of.createRecords());
-	res.setId(id);
-	if (ps != null) {
-	    res.getRecords().getActivity().addAll(ps);
+	if (ps!=null) {
+	  res.getEntityOrActivityOrWasGeneratedBy().addAll(ps);
 	}
 	if (as != null) {
-	    res.getRecords().getEntity().addAll(as);
+	    res.getEntityOrActivityOrWasGeneratedBy().addAll(as);
 	}
 	if (ags != null) {
-	    res.getRecords().getAgent().addAll(ags);
+	    res.getEntityOrActivityOrWasGeneratedBy().addAll(ags);
 	}
 	if (lks != null) {
-	    Dependencies ccls = of.createDependencies();
-	    ccls.getUsedOrWasGeneratedByOrWasStartedBy().addAll(lks);
-	    res.getRecords().setDependencies(ccls);
+	    res.getEntityOrActivityOrWasGeneratedBy().addAll(lks);
 	}
 	return res;
     }

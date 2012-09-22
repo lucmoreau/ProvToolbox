@@ -50,6 +50,7 @@ class JSONConstructor implements TreeConstructor {
             String json = gson.toJson(provStructure);
             System.out.println(json);
             
+            
             RhinoValidator validator = new RhinoValidator();
 			List<String> errors = validator.validate(json);
 			if (errors.size() > 0)

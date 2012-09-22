@@ -27,6 +27,7 @@ public class PubTest extends org.openprovenance.prov.notation.PubTest {
         super(testName);
     }
     
+    
     static Document co1;
     static Document co2;
     static Document co3;

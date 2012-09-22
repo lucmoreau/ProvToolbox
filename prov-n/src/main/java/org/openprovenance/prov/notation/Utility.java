@@ -44,7 +44,7 @@ public  class Utility {
     }
 
     public String convertTreeToASN(CommonTree tree) {
-        Object o=new TreeTraversal(new ASNConstructor()).convert(tree);
+        Object o=new TreeTraversal(new NotationConstructor()).convert(tree);
         return (String)o;
     }
 
@@ -77,7 +77,7 @@ public  class Utility {
     }
 
     public String convertBeanToASN(Document c) {
-        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(new ASNConstructor()));
+        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(new NotationConstructor()));
         Object o=bt.convert(c);
         return (String)o;
     }

@@ -45,7 +45,15 @@
     </jaxb:bindings>
 
 
+<!--
+    <jaxb:bindings schemaLocation="validation.xsd" 
+                   node="/xs:schema">       
 
+        <jaxb:schemaBindings>
+            <jaxb:package name="org.openprovenance.prov.xml.validation"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+-->
 
 
 </jaxb:bindings>

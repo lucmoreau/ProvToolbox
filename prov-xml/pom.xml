@@ -104,8 +104,10 @@
 		       </plugins>
                <schemaIncludes>
                  <schemaInclude>**/curie.xsd</schemaInclude>
-                 <schemaInclude>**/prov-20120920.xsd</schemaInclude>
                  <schemaInclude>**/toolbox.xsd</schemaInclude>
+                 <schemaInclude>**/prov-20120920.xsd</schemaInclude>
+<!--
+                 <schemaInclude>**/validation.xsd</schemaInclude> -->
 
                </schemaIncludes>
                <bindingDirectory>src/main/resources</bindingDirectory>

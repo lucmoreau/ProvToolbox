@@ -57,7 +57,7 @@ public interface TreeConstructor {
 
     /* Other conversions */
 
-    public Object convertBundle(Object nss, List<Object> records, List<Object> bundles);
+    public Object convertDocument(Object nss, List<Object> records, List<Object> bundles);
     public Object convertNamedBundle(Object id, Object nss, List<Object> records);
     public void startBundle(Object bundleId);
     

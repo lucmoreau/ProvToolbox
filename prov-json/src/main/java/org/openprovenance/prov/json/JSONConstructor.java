@@ -50,6 +50,7 @@ class JSONConstructor implements TreeConstructor {
             String json = gson.toJson(provStructure);
             System.out.println(json);
             
+            
             RhinoValidator validator = new RhinoValidator();
 			List<String> errors = validator.validate(json);
 			if (errors.size() > 0)
@@ -594,7 +595,7 @@ class JSONConstructor implements TreeConstructor {
         return bundle;
     }
     
-	public Object convertBundle(Object nss, List<Object> records, List<Object> bundles) {
+	public Object convertDocument(Object nss, List<Object> records, List<Object> bundles) {
 		// constructing a normal bundle 
 		Map<String,Object> bundle = buildBundle(nss, records);
 		Map<Object, Object> bundleStructure = new HashMap<Object, Object>();

@@ -4,7 +4,7 @@ import org.openprovenance.prov.xml.InternationalizedString;
 
 /** For testing purpose, conversion back to ASN. */
 
-public class ASNConstructor implements TreeConstructor {
+public class NotationConstructor implements TreeConstructor {
 
     public String symbol(String s) {
 	return s;
@@ -56,7 +56,7 @@ public class ASNConstructor implements TreeConstructor {
         return  s;
     }
 
-    public Object convertBundle(Object namespaces, List<Object> records, List<Object> bundles) {
+    public Object convertDocument(Object namespaces, List<Object> records, List<Object> bundles) {
         String s=keyword("bundle") + breakline();
 	if (namespaces!=null) {
 	    s=s+namespaces + breakline();

@@ -6,6 +6,8 @@ import java.util.Hashtable;
 import java.net.URI;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -17,7 +19,6 @@ import org.openprovenance.prov.xml.EntityRef;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.HasType;
 import org.openprovenance.prov.xml.AgentRef;
-import org.openprovenance.prov.xml.Bundle;
 import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasGeneratedBy;
@@ -47,6 +48,7 @@ import javax.xml.namespace.QName;
 
 public  class ProvConstructor implements TreeConstructor {
     private ProvFactory pFactory;
+    private ProvUtilities u=new ProvUtilities();
 
     Hashtable<String,Entity>   entityTable   = new Hashtable<String,Entity>();
     Hashtable<String,Activity> activityTable = new Hashtable<String,Activity>();
@@ -128,7 +130,7 @@ public  class ProvConstructor implements TreeConstructor {
         return e;
     }
 
-    public Object convertBundle(Object namespaces, List<Object> records, List<Object> bundles) {    
+    public Object convertDocument(Object namespaces, List<Object> records, List<Object> bundles) {    
         Collection<Entity> es=new LinkedList<Entity>();
         Collection<Agent> ags=new LinkedList<Agent>();
         Collection<Activity> acs=new LinkedList<Activity>();
@@ -140,7 +142,7 @@ public  class ProvConstructor implements TreeConstructor {
             else if (o instanceof Activity) { acs.add((Activity)o); }
             else lks.add(o);
         }
-        Bundle c=pFactory.newBundle(      acs,
+        Document c=pFactory.newDocument(      acs,
                                           es,
                                           ags,
                                           lks);
@@ -148,7 +150,7 @@ public  class ProvConstructor implements TreeConstructor {
         c.setNss(namespaceTable);
 
         if (bundles!=null) {
-            List<NamedBundle> nbs=c.getBundle();
+            List<NamedBundle> nbs=u.getNamedBundle(c);
             for (Object o: bundles) {
                 nbs.add((NamedBundle) o);
             }
@@ -477,8 +479,8 @@ public  class ProvConstructor implements TreeConstructor {
                                                     e2r,
                                                     e1r);
         if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
-        if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
-        if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
+        if (g2!=null) d.setGeneration(pFactory.newGenerationRef((String)g2));
+        if (u1!=null) d.setUsage(pFactory.newUsageRef((String)u1));
 
         List<?> attrs=(List<?>)dAttrs;
         d.getAny().addAll(attrs);
@@ -502,8 +504,8 @@ public  class ProvConstructor implements TreeConstructor {
                                                   e1r);
 
         if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
-        if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
-        if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
+        if (g2!=null) d.setGeneration(pFactory.newGenerationRef((String)g2));
+        if (u1!=null) d.setUsage(pFactory.newUsageRef((String)u1));
         List<?> attrs=(List<?>)dAttrs;
         d.getAny().addAll(attrs);
 
@@ -525,8 +527,8 @@ public  class ProvConstructor implements TreeConstructor {
                                                   e1r);
 
         if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
-        if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
-        if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
+        if (g2!=null) d.setGeneration(pFactory.newGenerationRef((String)g2));
+        if (u1!=null) d.setUsage(pFactory.newUsageRef((String)u1));
 
 
         List<?> attrs=(List<?>)dAttrs;
@@ -548,8 +550,8 @@ public  class ProvConstructor implements TreeConstructor {
                                                         e1r);
 
         if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
-        if (g2!=null) d.setGeneration(pFactory.newDependencyRef((String)g2));
-        if (u1!=null) d.setUsage(pFactory.newDependencyRef((String)u1));
+        if (g2!=null) d.setGeneration(pFactory.newGenerationRef((String)g2));
+        if (u1!=null) d.setUsage(pFactory.newUsageRef((String)u1));
 
         List<?> attrs=(List<?>)dAttrs;
         d.getAny().addAll(attrs);

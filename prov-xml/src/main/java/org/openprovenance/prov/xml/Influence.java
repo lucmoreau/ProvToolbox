@@ -1,6 +1,6 @@
 package org.openprovenance.prov.xml;
 
-public interface Relation extends Identifiable, HasExtensibility, Relation0  {
+public interface Influence extends Identifiable, HasExtensibility, Relation0  {
     //    Ref getCause();
     //    Ref getEffect();
 } 

@@ -14,7 +14,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import org.w3c.dom.Document;
+
 import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -158,30 +158,45 @@ public class ProvFactory {
 	return res;
     }
 
-    public DependencyRef newDependencyRef(QName id) {
-	DependencyRef res = of.createDependencyRef();
-	res.setRef(id);
-	return res;
-    }
 
-    public DependencyRef newDependencyRef(String id) {
-	DependencyRef res = of.createDependencyRef();
-	res.setRef(stringToQName(id));
-	return res;
-    }
+    public UsageRef newUsageRef(QName id) {
+    	UsageRef res = of.createUsageRef();
+    	res.setRef(id);
+    	return res;
+        }
 
-    public DependencyRef newDependencyRef(WasGeneratedBy edge) {
-	DependencyRef res = of.createDependencyRef();
+        public UsageRef newUsageRef(String id) {
+    	UsageRef res = of.createUsageRef();
+    	res.setRef(stringToQName(id));
+    	return res;
+        }
+
+
+    public GenerationRef newGenerationRef(QName id) {
+    	GenerationRef res = of.createGenerationRef();
+    	res.setRef(id);
+    	return res;
+        }
+
+        public GenerationRef newGenerationRef(String id) {
+    	GenerationRef res = of.createGenerationRef();
+    	res.setRef(stringToQName(id));
+    	return res;
+        }
+
+    public GenerationRef newGenerationRef(WasGeneratedBy edge) {
+	GenerationRef res = of.createGenerationRef();
 	res.setRef(edge.getId());
 	return res;
     }
 
-    public DependencyRef newDependencyRef(Used edge) {
-	DependencyRef res = of.createDependencyRef();
+    public UsageRef newUsageRef(Used edge) {
+	UsageRef res = of.createUsageRef();
 	res.setRef(edge.getId());
 	return res;
     }
 
+    /*
     public DependencyRef newDependencyRef(WasDerivedFrom edge) {
 	DependencyRef res = of.createDependencyRef();
 	res.setRef(edge.getId());
@@ -193,6 +208,7 @@ public class ProvFactory {
 	res.setRef(edge.getId());
 	return res;
     }
+    */
 
     public InternationalizedString newInternationalizedString(String s) {
 	InternationalizedString res = of.createInternationalizedString();
@@ -932,8 +948,8 @@ public class ProvFactory {
 
     public WasDerivedFrom newWasDerivedFrom(QName id, EntityRef aid1,
 					    EntityRef aid2, ActivityRef aid,
-					    DependencyRef did1,
-					    DependencyRef did2) {
+					    GenerationRef did1,
+					    UsageRef did2) {
 	WasDerivedFrom res = of.createWasDerivedFrom();
 	res.setId(id);
 	res.setUsedEntity(aid2);
@@ -946,8 +962,8 @@ public class ProvFactory {
 
     public WasDerivedFrom newWasDerivedFrom(String id, EntityRef aid1,
 					    EntityRef aid2, ActivityRef aid,
-					    DependencyRef did1,
-					    DependencyRef did2) {
+					    GenerationRef did1,
+					    UsageRef did2) {
 	return newWasDerivedFrom(stringToQName(id), aid1, aid2, aid, did1, did2);
     }
 
@@ -972,8 +988,8 @@ public class ProvFactory {
 	EntityRef eid1 = newEntityRef(e1);
 	EntityRef eid2 = newEntityRef(e2);
 	ActivityRef aid = newActivityRef(a);
-	DependencyRef did2 = newDependencyRef(g2);
-	DependencyRef did1 = newDependencyRef(u1);
+	GenerationRef did2 = newGenerationRef(g2);
+	UsageRef did1 = newUsageRef(u1);
 	return newWasDerivedFrom(id, eid2, eid1, aid, did2, did1);
     }
 
@@ -1143,40 +1159,12 @@ public class ProvFactory {
 
     public Element newAttribute(String namespace, String prefix,
 				String localName, String value) {
-	Document doc = builder.newDocument();
+    	org.w3c.dom.Document doc = builder.newDocument();
 	Element el = doc.createElementNS(namespace, ((prefix.equals("")) ? ""
 		: (prefix + ":")) + localName);
 	el.appendChild(doc.createTextNode(value));
 	doc.appendChild(el);
 	return el;
-    }
-
-    public Bundle newBundle(Collection<Activity> ps, Collection<Entity> as,
-			    Collection<Agent> ags, Collection<Object> lks) {
-	return newBundle((QName) null, ps, as, ags, lks);
-    }
-
-    public Bundle newBundle(QName ignore, Collection<Activity> ps,
-			    Collection<Entity> as, Collection<Agent> ags,
-			    Collection<Object> lks) {
-	Bundle res = of.createBundle();
-	res.setRecords(of.createRecords());
-	if (ps != null) {
-	    res.getRecords().getActivity().addAll(ps);
-	}
-	if (as != null) {
-	    res.getRecords().getEntity().addAll(as);
-	}
-	if (ags != null) {
-	    res.getRecords().getAgent().addAll(ags);
-	}
-	if (lks != null) {
-	    Dependencies ccls = of.createDependencies();
-	    ccls.getUsedOrWasGeneratedByOrWasStartedBy().addAll(lks);
-	    res.getRecords().setDependencies(ccls);
-	}
-
-	return res;
     }
 
     public NamedBundle newNamedBundle(String id, Collection<Activity> ps,
@@ -1191,21 +1179,17 @@ public class ProvFactory {
 				      Collection<Agent> ags,
 				      Collection<Object> lks) {
 	NamedBundle res = of.createNamedBundle();
-	res.setRecords(of.createRecords());
-	res.setId(id);
-	if (ps != null) {
-	    res.getRecords().getActivity().addAll(ps);
+	if (ps!=null) {
+	  res.getEntityOrActivityOrWasGeneratedBy().addAll(ps);
 	}
 	if (as != null) {
-	    res.getRecords().getEntity().addAll(as);
+	    res.getEntityOrActivityOrWasGeneratedBy().addAll(as);
 	}
 	if (ags != null) {
-	    res.getRecords().getAgent().addAll(ags);
+	    res.getEntityOrActivityOrWasGeneratedBy().addAll(ags);
 	}
 	if (lks != null) {
-	    Dependencies ccls = of.createDependencies();
-	    ccls.getUsedOrWasGeneratedByOrWasStartedBy().addAll(lks);
-	    res.getRecords().setDependencies(ccls);
+	    res.getEntityOrActivityOrWasGeneratedBy().addAll(lks);
 	}
 	return res;
     }
@@ -1219,6 +1203,7 @@ public class ProvFactory {
 			      ((lks == null) ? null : Arrays.asList(lks)));
     }
 
+    /*
     public Bundle newBundle(String id, Collection<Activity> ps,
 			    Collection<Entity> as, Collection<Agent> ags,
 			    Collection<Object> lks) {
@@ -1230,31 +1215,36 @@ public class ProvFactory {
 	return newBundle(null, ps, as, ags, lks);
     }
 
-    public Bundle newBundle(String id, Activity[] ps, Entity[] as, Agent[] ags,
+*/
+    public Document newDocument(Activity[] ps, Entity[] as, Agent[] ags,
 			    Object[] lks) {
 
-	return newBundle(id, ((ps == null) ? null : Arrays.asList(ps)),
+	return newDocument(((ps == null) ? null : Arrays.asList(ps)),
 			 ((as == null) ? null : Arrays.asList(as)),
 			 ((ags == null) ? null : Arrays.asList(ags)),
 			 ((lks == null) ? null : Arrays.asList(lks)));
     }
 
-    public Bundle newBundle(Collection<Activity> ps, Collection<Entity> as,
-			    Collection<Agent> ags, Dependencies lks) {
-	Bundle res = of.createBundle();
-	res.setRecords(of.createRecords());
-	// res.setId(autoGenerateId(bundleIdPrefix));
-	res.getRecords().getActivity().addAll(ps);
-	res.getRecords().getEntity().addAll(as);
-	res.getRecords().getAgent().addAll(ags);
-	res.getRecords().setDependencies(lks);
+
+    public Document newDocument() {
+Document res = of.createDocument();
+return res;
+    }
+
+    public Document newDocument(Collection<Activity> ps, Collection<Entity> as,
+			    Collection<Agent> ags, Collection<Object> lks) {
+	Document res = of.createDocument();
+	res.getEntityOrActivityOrWasGeneratedBy().addAll(ps);
+	res.getEntityOrActivityOrWasGeneratedBy().addAll(as);
+	res.getEntityOrActivityOrWasGeneratedBy().addAll(ags);
+	res.getEntityOrActivityOrWasGeneratedBy().addAll(lks);
 	return res;
     }
 
-    public Bundle newBundle(Bundle graph) {
-	return newBundle(graph.getRecords().getActivity(), graph.getRecords()
-		.getEntity(), graph.getRecords().getAgent(), graph.getRecords()
-		.getDependencies());
+    public Document newDocument(Document graph) {
+	Document res=of.createDocument();	
+	res.getEntityOrActivityOrWasGeneratedBy().addAll(graph.getEntityOrActivityOrWasGeneratedBy());
+		return res;
     }
 
     /* Return the first label, it it exists */

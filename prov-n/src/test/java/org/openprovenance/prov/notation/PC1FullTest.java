@@ -2,7 +2,7 @@ package org.openprovenance.prov.notation;
 import java.io.File;
 import java.util.Hashtable;
 import junit.framework.TestCase;
-import org.openprovenance.prov.xml.Bundle;
+import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -46,17 +46,18 @@ public class PC1FullTest
     }
 
 
+    
 
     public void testReadXMLGraph() throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
         
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-        Bundle c=deserial.deserialiseBundle(new File("../prov-xml/target/pc1-full.xml"));
+        Document c=deserial.deserialiseDocument(new File("../prov-xml/target/pc1-full.xml"));
         Utility u=new Utility();
 
 
         String[] schemaFiles=new String[1];
         schemaFiles[0]="../prov-xml/src/test/resources/pc1.xsd";
-        deserial.validateBundle(schemaFiles,new File("../prov-xml/target/pc1-full.xml"));
+        deserial.validateDocument(schemaFiles,new File("../prov-xml/target/pc1-full.xml"));
         
         String s=u.convertBeanToASN(c);
         System.out.println(s);
@@ -64,10 +65,10 @@ public class PC1FullTest
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
 
         c.setNss(namespaces);
-        Bundle c2=(Bundle)u.convertJavaBeanToJavaBean(c);
+        Document c2=(Document)u.convertJavaBeanToJavaBean(c);
         c2.setNss(namespaces);
 
-        serial.serialiseBundle(new File("target/pc1-full-2.xml"),c2,true);
+        serial.serialiseDocument(new File("target/pc1-full-2.xml"),c2,true);
 
     }
         

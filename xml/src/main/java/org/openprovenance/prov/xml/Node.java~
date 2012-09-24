@@ -1,6 +1,0 @@
-package org.openprovenance.pix;
-
-import java.util.List;
-
-public interface Node extends Annotable, HasAccounts {
-} 

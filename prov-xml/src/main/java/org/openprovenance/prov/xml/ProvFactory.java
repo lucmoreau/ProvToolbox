@@ -875,6 +875,9 @@ return res;
     	Used u1 = newUsed(u.getId(), u.getActivity(), null, u.getEntity());
     	u1.getAny().addAll(u.getAny());
     	u1.setTime(u.getTime());
+    	u1.getType().addAll(u.getType()); 
+        u1.getLabel().addAll(u.getLabel());
+        u1.getLocation().addAll(u.getLocation());
     	return u1;
         }
 
@@ -912,6 +915,8 @@ return res;
     	WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(), u.getAgent());
     	u1.getAny().addAll(u.getAny());
     	u1.setPlan(u.getPlan());
+    	u1.getType().addAll(u.getType()); 
+        u1.getLabel().addAll(u.getLabel());
     	return u1;
         }
 
@@ -932,6 +937,8 @@ return res;
     public WasAttributedTo newWasAttributedTo(WasAttributedTo u) {
     	WasAttributedTo u1 = newWasAttributedTo(u.getId(), u.getEntity(), u.getAgent());
     	u1.getAny().addAll(u.getAny());
+    	u1.getType().addAll(u.getType()); 
+        u1.getLabel().addAll(u.getLabel());
     	return u1;
         }
 
@@ -1010,6 +1017,8 @@ return res;
 	wdf.setGeneration(d.getGeneration());
 	wdf.setUsage(d.getUsage());
 	wdf.getAny().addAll(d.getAny());
+	wdf.getType().addAll(d.getType()); 
+        wdf.getLabel().addAll(d.getLabel());
 	return wdf;
     }
 
@@ -1038,6 +1047,9 @@ return res;
 	WasEndedBy u1 = newWasEndedBy(u.getId(), u.getActivity(), u.getTrigger());
 	u1.setEnder(u.getEnder());
 	u1.setTime(u.getTime());
+	u1.getType().addAll(u.getType()); 
+        u1.getLabel().addAll(u.getLabel());
+        u1.getLocation().addAll(u.getLocation());
 	u1.getAny().addAll(u.getAny());
 	return u1;
     }
@@ -1093,6 +1105,9 @@ return res;
 	wgb.setId(g.getId());
 	wgb.setTime(g.getTime());
 	wgb.getAny().addAll(g.getAny());
+	wgb.getType().addAll(g.getType()); 
+        wgb.getLabel().addAll(g.getLabel());
+        wgb.getLocation().addAll(g.getLocation());
 	return wgb;
     }
 
@@ -1120,12 +1135,14 @@ return res;
 				  newAnyRef(influencer));
     }
 
-    public WasInfluencedBy newWasInfluencedBy(WasInfluencedBy d) {
-	WasInfluencedBy wtb = newWasInfluencedBy(d.getId(), d.getInfluencee(),
-					     d.getInfluencer());
-	wtb.setId(d.getId());
-	wtb.getAny().addAll(d.getAny());
-	return wtb;
+    public WasInfluencedBy newWasInfluencedBy(WasInfluencedBy in) {
+	WasInfluencedBy out = newWasInfluencedBy(in.getId(), in.getInfluencee(),
+					     in.getInfluencer());
+	out.setId(in.getId());
+	out.getAny().addAll(in.getAny());
+	out.getType().addAll(in.getType()); 
+        out.getLabel().addAll(in.getLabel());
+	return out;
     }
 
     public WasInformedBy newWasInformedBy(Activity p1, Activity p2) {
@@ -1176,6 +1193,8 @@ return res;
 					     d.getCause());
 	wtb.setId(d.getId());
 	wtb.getAny().addAll(d.getAny());
+	wtb.getType().addAll(d.getType()); 
+        wtb.getLabel().addAll(d.getLabel());
 	return wtb;
     }
 
@@ -1197,6 +1216,9 @@ return res;
 	WasInvalidatedBy u1 = newWasInvalidatedBy(u.getId(), u.getEntity(), u.getActivity());
 	u1.setTime(u.getTime());
 	u1.getAny().addAll(u.getAny());
+	u1.getType().addAll(u.getType()); 
+        u1.getLabel().addAll(u.getLabel());
+        u1.getLocation().addAll(u.getLocation());
 	return u1;
     }
 
@@ -1254,7 +1276,7 @@ return res;
 	WasStartedBy u1 = newWasStartedBy(u.getId(), u.getActivity(), u.getTrigger());
 	u1.setStarter(u.getStarter());
 	u1.setTime(u.getTime());
-        u1.getType().addAll(u.getType()); //TODO: copy for all!
+        u1.getType().addAll(u.getType()); 
         u1.getLabel().addAll(u.getLabel());
         u1.getLocation().addAll(u.getLocation());
 	u1.getAny().addAll(u.getAny());

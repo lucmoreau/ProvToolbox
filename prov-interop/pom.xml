@@ -6,10 +6,8 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openprovenance.prov</groupId>
   <artifactId>prov-interop</artifactId>
   <name>PROV-INTEROP</name>
-  <version>0.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
   <description>A package aimed at systematic testing convertibility of prov representations.</description>
 

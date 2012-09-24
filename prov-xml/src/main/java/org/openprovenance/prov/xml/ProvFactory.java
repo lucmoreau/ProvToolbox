@@ -349,6 +349,9 @@ public class ProvFactory {
 
     public Activity newActivity(Activity a) {
 	Activity res = newActivity(a.getId());
+	res.getType().addAll(a.getType()); 
+	res.getLabel().addAll(a.getLabel());
+	res.getLocation().addAll(a.getLocation());
 	return res;
     }
 
@@ -390,6 +393,8 @@ public class ProvFactory {
 
     public Agent newAgent(Agent a) {
 	Agent res = newAgent(a.getId());
+	res.getType().addAll(a.getType()); 
+        res.getLabel().addAll(a.getLabel());
 	return res;
     }
 
@@ -630,8 +635,11 @@ return res;
 	return of.createWasStartedBy(u);
     }
 
-    public Entity newEntity(Entity a) {
-	Entity res = newEntity(a.getId());
+    public Entity newEntity(Entity e) {
+	Entity res = newEntity(e.getId());
+	res.getType().addAll(e.getType()); 
+        res.getLabel().addAll(e.getLabel());
+        res.getLocation().addAll(e.getLocation());
 	return res;
     }
 
@@ -875,7 +883,7 @@ return res;
     	Used u1 = newUsed(u.getId(), u.getActivity(), null, u.getEntity());
     	u1.getAny().addAll(u.getAny());
     	u1.setTime(u.getTime());
-    	u1.getType().addAll(u.getType()); 
+        u1.getType().addAll(u.getType()); 
         u1.getLabel().addAll(u.getLabel());
         u1.getLocation().addAll(u.getLocation());
     	return u1;

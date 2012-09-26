@@ -99,10 +99,31 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testEntity2() throws JAXBException  {
    	Entity a = pFactory.newEntity("ex:e2", "entity2");
    	makeDocAndTest(a,"target/entity2.xml");
-       }
+    }
 
+    
     public void testEntity3() throws JAXBException  {
-   	Entity a = pFactory.newEntity("ex:e3", "entity3");
+   	Entity a = pFactory.newEntity("ex:e2", "entity2");
+   	a.getLabel().add(pFactory.newInternationalizedString("hello"));
+   	makeDocAndTest(a,"target/entity3.xml");
+    }
+    public void testEntity4() throws JAXBException  {
+   	Entity a = pFactory.newEntity("ex:e2", "entity2");
+   	a.getLabel().add(pFactory.newInternationalizedString("hello"));
+   	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
+   	makeDocAndTest(a,"target/entity4.xml");
+    }
+    public void testEntity5() throws JAXBException  {
+   	Entity a = pFactory.newEntity("ex:e2", "entity2");
+   	a.getLabel().add(pFactory.newInternationalizedString("hello"));
+   	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
+   	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
+   	makeDocAndTest(a,"target/entity5.xml");
+    }
+   
+    
+    public void testEntity6() throws JAXBException  {
+   	Entity a = pFactory.newEntity("ex:e6", "entity6");
    	a.getType().add("a");
    	a.getType().add(1);
    	a.getType().add(1.0);
@@ -111,7 +132,23 @@ public class RoundTripFromJavaTest extends TestCase {
    	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"hello"));
    	a.getType().add(w);
-   	makeDocAndTest(a,"target/entity3.xml");
+   	makeDocAndTest(a,"target/entity6.xml");
+       }
+
+    public void testEntity7() throws JAXBException  {
+   	Entity a = pFactory.newEntity("ex:e7", "entity7");
+   	a.getType().add("a");
+   	a.getType().add(1);
+   	a.getType().add(1.0);
+   	a.getType().add(true);
+   	a.getType().add(new QName(EX_NS, "abc", EX_PREFIX));
+   	URIWrapper w=new URIWrapper();
+   	w.setValue(URI.create(EX_NS+"hello"));
+   	a.getType().add(w);
+   	a.getLabel().add(pFactory.newInternationalizedString("hello"));
+   	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
+   	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
+   	makeDocAndTest(a,"target/entity7.xml");
        }
 
 

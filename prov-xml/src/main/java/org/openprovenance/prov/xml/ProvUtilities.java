@@ -454,6 +454,9 @@ public class ProvUtilities {
 
     @SuppressWarnings("unchecked")
     public <T> JAXBElement<T> newElement(T r) {
+        if (r instanceof Activity) {
+            return (JAXBElement<T>) of.newElement(of.newActivity((Activity) r));
+        }
         if (r instanceof Used) {
             return (JAXBElement<T>) of.newElement(of.newUsed((Used) r));
         }

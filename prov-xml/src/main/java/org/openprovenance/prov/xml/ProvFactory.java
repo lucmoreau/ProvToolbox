@@ -352,6 +352,8 @@ public class ProvFactory {
 	res.getType().addAll(a.getType()); 
 	res.getLabel().addAll(a.getLabel());
 	res.getLocation().addAll(a.getLocation());
+	res.setStartTime(a.getStartTime());
+	res.setEndTime(a.getEndTime());
 	return res;
     }
 

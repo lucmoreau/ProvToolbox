@@ -129,6 +129,7 @@ public class RoundTripFromJavaTest extends TestCase {
    	a.getType().add(1.0);
    	a.getType().add(true);
    	a.getType().add(new QName(EX_NS, "abc", EX_PREFIX));
+   	a.getType().add(pFactory.newTimeNow());
    	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"hello"));
    	a.getType().add(w);
@@ -136,20 +137,47 @@ public class RoundTripFromJavaTest extends TestCase {
        }
 
     public void testEntity7() throws JAXBException  {
-   	Entity a = pFactory.newEntity("ex:e7", "entity7");
-   	a.getType().add("a");
-   	a.getType().add(1);
-   	a.getType().add(1.0);
-   	a.getType().add(true);
-   	a.getType().add(new QName(EX_NS, "abc", EX_PREFIX));
-   	URIWrapper w=new URIWrapper();
-   	w.setValue(URI.create(EX_NS+"hello"));
-   	a.getType().add(w);
-   	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-   	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-   	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
-   	makeDocAndTest(a,"target/entity7.xml");
-       }
+       	Entity a = pFactory.newEntity("ex:e7", "entity7");
+       	a.getType().add("a");
+       	a.getType().add(1);
+       	a.getType().add(1.0);
+       	a.getType().add(true);
+       	a.getType().add(new QName(EX_NS, "abc", EX_PREFIX));
+       	a.getType().add(pFactory.newTimeNow());
+       	URIWrapper w=new URIWrapper();
+       	w.setValue(URI.create(EX_NS+"hello"));
+       	a.getType().add(w);
+       	a.getLabel().add(pFactory.newInternationalizedString("hello"));
+       	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
+       	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
+       	makeDocAndTest(a,"target/entity7.xml");
+           }
+    public void testEntity8() throws JAXBException  {
+       	Entity a = pFactory.newEntity("ex:e8", "entity8");
+       	a.getType().add("a");
+       	a.getType().add("a");
+       	a.getType().add(1);
+       	a.getType().add(1);
+       	a.getType().add(1.0);
+       	a.getType().add(1.0);
+       	a.getType().add(true);
+       	a.getType().add(true);
+       	a.getType().add(new QName(EX_NS, "abc", EX_PREFIX));
+       	a.getType().add(new QName(EX_NS, "abc", EX_PREFIX));
+       	a.getType().add(pFactory.newTimeNow());
+       	a.getType().add(pFactory.newTimeNow());
+       	URIWrapper w=new URIWrapper();
+       	w.setValue(URI.create(EX_NS+"hello"));
+       	a.getType().add(w);
+       	a.getType().add(w);
+       	a.getLabel().add(pFactory.newInternationalizedString("hello"));
+       	a.getLabel().add(pFactory.newInternationalizedString("hello"));
+       	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
+       	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
+       	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
+       	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
+       	makeDocAndTest(a,"target/entity8.xml");
+           }
 
 
 }

@@ -350,6 +350,8 @@ public class ProvUtilities {
     }
 
     static {
+        fields.put(Activity.class, new String[] { "Id", "StartTime", "EndTime", "Any" });
+
         fields.put(Used.class, new String[] { "Id", "Activity", "Entity",
                                              "Time", "Any" });
         fields.put(WasGeneratedBy.class, new String[] { "Id", "Entity",
@@ -389,6 +391,10 @@ public class ProvUtilities {
         fields.put(SpecializationOf.class, new String[] { "SpecializedEntity",
                                                          "GeneralEntity" });
 
+        types.put(Activity.class, new Class[] { QName.class, 
+                                           XMLGregorianCalendar.class,
+                                           XMLGregorianCalendar.class,
+                                           Object.class });
         types.put(Used.class, new Class[] { QName.class, ActivityRef.class,
                                            EntityRef.class,
                                            XMLGregorianCalendar.class,

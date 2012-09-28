@@ -58,7 +58,7 @@ public class RdfConstructor implements TreeConstructor {
 	return ag;
     }
 
-    public Object convertBundle(Object nss, List<Object> records,
+    public Object convertDocument(Object nss, List<Object> records,
 	                        List<Object> bundles) {
 	((SesameManager)manager).getConnection().setAddContexts();
 	return null;

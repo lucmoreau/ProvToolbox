@@ -1,7 +1,7 @@
 package org.openprovenance.prov.notation;
 
 import org.openprovenance.prov.xml.ProvSerialiser;
-import org.openprovenance.prov.xml.Bundle;
+import org.openprovenance.prov.xml.Document;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -35,7 +35,7 @@ public  class MainParser {
 
             try {
                 ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-                serial.serialiseBundle(new File(args[0] + ".xml"),(Bundle)o2,true);
+                serial.serialiseDocument(new File(args[0] + ".xml"),(Document)o2,true);
 
                 System.out.println("tree is " + o3);
             } catch (JAXBException e) {

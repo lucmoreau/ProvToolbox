@@ -8,7 +8,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import java.io.OutputStream;
@@ -79,61 +78,20 @@ public class ProvSerialiser {
 	//m.setAdapter(new org.w3._2001.xmlschema.Adapter1());
     }
 
-    public Document serialiseBundle (Bundle request) throws JAXBException {
-        return (Document) serialiseBundle (defaultEmptyDocument(), request);
-    }
-    
-    public Node serialiseBundle (Node addTo, Bundle graph)
-        throws JAXBException {
-        Marshaller m=jc.createMarshaller();
-        m.marshal(of.createBundle(graph),addTo);
-        return addTo;
-    }
-    public String serialiseBundle (StringWriter sw, Bundle graph)
-        throws JAXBException {
-        Marshaller m=jc.createMarshaller();
-        m.marshal(of.createBundle(graph),sw);
-        return sw.toString();
-    }
-
-    public String serialiseBundle (StringWriter sw, Bundle graph, boolean format)
-        throws JAXBException {
-        Marshaller m=jc.createMarshaller();
-        m.setProperty("jaxb.formatted.output",format);
-        configurePrefixes(m,graph.getNss());
-        m.marshal(of.createBundle(graph),sw);
-        return sw.toString();
-    }
-
-    public void serialiseBundle (OutputStream out, Bundle graph, boolean format)
-        throws JAXBException {
-        Marshaller m=jc.createMarshaller();
-        m.setProperty("jaxb.formatted.output",format);
-        configurePrefixes(m,graph.getNss());
-        m.marshal(of.createBundle(graph),out);
-    }
-    public void serialiseBundle (File file, Bundle graph, boolean format)
-	        throws JAXBException {
-	        Marshaller m=jc.createMarshaller();
-	        m.setProperty("jaxb.formatted.output",format);
-	        configurePrefixes(m,graph.getNss());
-	        m.marshal(of.createBundle(graph),file);
-	    }
-
     /** By default we use a document provided by the DocumentBuilder
         factory. If this functionality is required,
         PStructureSerialiser needs to be subclassed and the
         defaultEmptyDocument method overriden. */
 
-    public Document defaultEmptyDocument () {
+    public org.w3c.dom.Document defaultEmptyDocument () {
         return docBuilder.newDocument();
     }
 
 
     /** This code is to be moved to the validator */
 
-    public Document serialiseValidationReport (ValidationReport request) throws JAXBException {
-        return (Document) serialiseValidationReport (defaultEmptyDocument(), request);
+    public org.w3c.dom.Document serialiseValidationReport (ValidationReport request) throws JAXBException {
+        return (org.w3c.dom.Document) serialiseValidationReport (defaultEmptyDocument(), request);
     }
     
     public Node serialiseValidationReport (Node addTo, ValidationReport graph)
@@ -150,6 +108,51 @@ public class ProvSerialiser {
         //configurePrefixes(m,graph.getNss());
         m.marshal(of.createValidationReport(graph),file);
     }
+    
+    
+
+   
+    public org.w3c.dom.Document serialiseDocument (Document request) throws JAXBException {
+        return (org.w3c.dom.Document) serialiseDocument (defaultEmptyDocument(), request);
+    }
+    
+    public Node serialiseDocument (Node addTo, Document graph)
+        throws JAXBException {
+        Marshaller m=jc.createMarshaller();
+        m.marshal(of.createDocument(graph),addTo);
+        return addTo;
+    }
+    public String serialiseDocument (StringWriter sw, Document graph)
+        throws JAXBException {
+        Marshaller m=jc.createMarshaller();
+        m.marshal(of.createDocument(graph),sw);
+        return sw.toString();
+    }
+
+    public String serialiseDocument (StringWriter sw, Document graph, boolean format)
+        throws JAXBException {
+        Marshaller m=jc.createMarshaller();
+        m.setProperty("jaxb.formatted.output",format);
+        configurePrefixes(m,graph.getNss());
+        m.marshal(of.createDocument(graph),sw);
+        return sw.toString();
+    }
+
+    public void serialiseDocument (OutputStream out, Document graph, boolean format)
+        throws JAXBException {
+        Marshaller m=jc.createMarshaller();
+        m.setProperty("jaxb.formatted.output",format);
+        configurePrefixes(m,graph.getNss());
+        m.marshal(of.createDocument(graph),out);
+    }
+    public void serialiseDocument (File file, Document graph, boolean format)
+	        throws JAXBException {
+	        Marshaller m=jc.createMarshaller();
+	        m.setProperty("jaxb.formatted.output",format);
+	        configurePrefixes(m,graph.getNss());
+	        m.marshal(of.createDocument(graph),file);
+	    }
+
 
 }
 

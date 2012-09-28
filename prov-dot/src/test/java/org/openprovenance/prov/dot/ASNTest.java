@@ -1,15 +1,8 @@
 package org.openprovenance.prov.dot;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.xml.ProvSerialiser;
-import org.openprovenance.prov.xml.Bundle;
+import org.openprovenance.prov.xml.Document;
 
 import javax.xml.bind.JAXBException;
-import java.io.File;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.notation.Utility;
 
@@ -21,13 +14,11 @@ public class ASNTest extends TestCase {
 
         CommonTree tree = u.convertASNToTree(asnFile);
 
-        Bundle o= (Bundle) u.convertTreeToJavaBean(tree);
-
-        ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
+        Document o= (Document) u.convertTreeToJavaBean(tree);
 
         System.out.println(" " + o);
 
-        //serial.serialiseBundle(new File(xmlFile),o,true);
+        //serial.serialiseDocument(new File(xmlFile),o,true);
 
         ProvToDot toDot=new ProvToDot("src/main/resources/defaultConfigWithRoleNoLabel.xml"); 
         

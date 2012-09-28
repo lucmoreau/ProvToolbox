@@ -13,10 +13,11 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBElement;
 //import org.w3c.dom.Element;
 
+import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.Relation0;
-import org.openprovenance.prov.xml.Relation;
+import org.openprovenance.prov.xml.Influence;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.HasType;
@@ -37,7 +38,6 @@ import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.xml.Identifiable;
 import org.openprovenance.prov.xml.ProvDeserialiser;
-import org.openprovenance.prov.xml.Bundle;
 import org.openprovenance.prov.xml.HasExtensibility;
 
 
@@ -197,10 +197,10 @@ public class ProvToDot {
 
     public void convert(String opmFile, String dotFile, String pdfFile)
         throws java.io.FileNotFoundException, java.io.IOException, JAXBException {
-        convert (ProvDeserialiser.getThreadProvDeserialiser().deserialiseBundle(new File(opmFile)),dotFile,pdfFile);
+        convert (ProvDeserialiser.getThreadProvDeserialiser().deserialiseDocument(new File(opmFile)),dotFile,pdfFile);
     }
 
-    public void convert(Bundle graph, String dotFile, String pdfFile)
+    public void convert(Document graph, String dotFile, String pdfFile)
         throws java.io.FileNotFoundException, java.io.IOException {
         convert(graph,new File(dotFile));
         Runtime runtime = Runtime.getRuntime();
@@ -208,30 +208,30 @@ public class ProvToDot {
 		java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
     }
 
-    public void convert(Bundle graph, File file) throws java.io.FileNotFoundException{
+    public void convert(Document graph, File file) throws java.io.FileNotFoundException{
         OutputStream os=new FileOutputStream(file);
         convert(graph, new PrintStream(os));
     }
 
-    public void convert(Bundle graph, PrintStream out) {
+    public void convert(Document graph, PrintStream out) {
         List<Relation0> edges=u.getRelations(graph);
 
         prelude(out);
 
-        if (graph.getRecords().getActivity()!=null) {
-            for (Activity p: graph.getRecords().getActivity()) {
+        if (u.getActivity(graph)!=null) {
+            for (Activity p: u.getActivity(graph)) {
                 emitActivity(p,out);
             }
         }
 
-        if (graph.getRecords().getEntity()!=null) {
-            for (Entity p: graph.getRecords().getEntity()) {
+        if (u.getEntity(graph)!=null) {
+            for (Entity p: u.getEntity(graph)) {
                 emitEntity(p,out);
             }
         }
 
-        if (graph.getRecords().getAgent()!=null) {
-            for (Agent p: graph.getRecords().getAgent()) {
+        if (u.getAgent(graph)!=null) {
+            for (Agent p: u.getAgent(graph)) {
                 emitAgent(p,out);
             }
         }
@@ -676,8 +676,8 @@ public class ProvToDot {
         } else { // binary case
 	    if (u.getCause(e)!=null) { // make sure there is a cuase
 		relationName(e, properties);
-		if (e instanceof Relation) {
-		    addColors((Relation)e,properties);
+		if (e instanceof Influence) {
+		    addColors((Influence)e,properties);
 		}
 		
 		emitRelation( qnameToString(u.getEffect(e)),
@@ -750,8 +750,8 @@ public class ProvToDot {
     /* Displays type if any, role otherwise. */
     public void addRelationLabel(Relation0 e0, HashMap<String,String> properties) {
         String label=null;
-        if (!(e0 instanceof Relation)) return;
-        Relation e=(Relation)e0;
+        if (!(e0 instanceof Influence)) return;
+        Influence e=(Influence)e0;
         List<Object> type=of.getType(e);
         if ((type!=null) && (!type.isEmpty())) {
             label=type.get(0).toString();

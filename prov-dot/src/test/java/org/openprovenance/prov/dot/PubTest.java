@@ -1,6 +1,5 @@
 package org.openprovenance.prov.dot;
-import javax.xml.bind.JAXBException;
-import org.openprovenance.prov.xml.Bundle;
+import org.openprovenance.prov.xml.Document;
 
 /**
  * 
@@ -11,10 +10,7 @@ public class PubTest extends org.openprovenance.prov.notation.PubTest {
          super(testName);
     }
     
-    static Bundle co1;
-    static Bundle co2;
-    static Bundle co3;
-
+   
     @Override
     public void testReadASNSaveXML() {
         // ignore
@@ -23,30 +19,30 @@ public class PubTest extends org.openprovenance.prov.notation.PubTest {
     public void testReadASNSaveXML1() throws java.io.IOException, java.lang.Throwable {
         String file="../prov-n/src/test/resources/prov/w3c-publication1.prov-asn";
         testReadASNSaveXML(file,"target/w3c-publication1.prov-xml");
-        co1=graph1;
+        Document co1=graph1;
+        ProvToDot toDot=new ProvToDot("src/main/resources/defaultConfigWithRoleNoLabel.xml"); 
+        toDot.convert(co1,"target/w3c-publication1.dot", "target/w3c-publication1.pdf");
+
     }
 
     public void testReadASNSaveXML2() throws java.io.IOException, java.lang.Throwable {
         String file="../prov-n/src/test/resources/prov/w3c-publication2.prov-asn";
         testReadASNSaveXML(file,"target/w3c-publication2.prov-xml");
-        co2=graph1;
+        Document co2=graph1;
+        ProvToDot toDot=new ProvToDot("src/main/resources/defaultConfigWithRoleNoLabel.xml"); 
+        toDot.convert(co2,"target/w3c-publication2.dot", "target/w3c-publication2.pdf");
+
+
     }
 
     public void testReadASNSaveXML3() throws java.io.IOException, java.lang.Throwable {
         String file="../prov-n/src/test/resources/prov/w3c-publication3.prov-asn";
         testReadASNSaveXML(file,"target/w3c-publication3.prov-xml");
-        co3=graph1;
-    }
-
-    /** Produces a dot representation
-     * of created graph. */
-    public void testReadASNSaveXML4() throws java.io.FileNotFoundException,  java.io.IOException   {
+        Document co3=graph1;
         ProvToDot toDot=new ProvToDot("src/main/resources/defaultConfigWithRoleNoLabel.xml"); 
-        
-        toDot.convert(co1,"target/w3c-publication1.dot", "target/w3c-publication1.pdf");
-        toDot.convert(co2,"target/w3c-publication2.dot", "target/w3c-publication2.pdf");
         toDot.convert(co3,"target/w3c-publication3.dot", "target/w3c-publication3.pdf");
     }
+
 
 
 }

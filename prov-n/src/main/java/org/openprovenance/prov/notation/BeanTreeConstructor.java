@@ -282,7 +282,7 @@ public class BeanTreeConstructor implements BeanConstructor{
         if (eRecords!=null) ll.addAll(eRecords);
         if (agRecords!=null) ll.addAll(agRecords);
         if (lnkRecords!=null) ll.addAll(lnkRecords);
-        return c.convertBundle(namespaces,ll,bRecords);
+        return c.convertDocument(namespaces,ll,bRecords);
     }
 
 

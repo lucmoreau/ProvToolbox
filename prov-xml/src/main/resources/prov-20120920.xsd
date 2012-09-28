@@ -358,6 +358,15 @@
   </xs:complexType>
 
 
+  <xs:complexType name="Membership">
+    <xs:sequence>
+      <xs:element name="collection"          type="prov:EntityRef"/>
+      <xs:element name="complete"        type="xs:boolean" minOccurs="0"/>
+      <xs:element name="entity"          type="prov:EntityRef" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+
   <xs:complexType name="InternationalizedString">
     <xs:simpleContent>
       <xs:extension base="xs:string">
@@ -432,6 +441,8 @@
          <xs:element name="specializationOf"     type="prov:SpecializationOf"/>
          <xs:element name="alternateOf"          type="prov:AlternateOf"/>
          <xs:element name="mentionOf"            type="prov:MentionOf"/>
+ 
+         <xs:element name="hadMember"            type="prov:Membership" />
  
          <xs:element name="collectionMemberOf"   type="prov:CollectionMemberOf"/>
        </xs:choice>

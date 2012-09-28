@@ -122,6 +122,9 @@ public class ProvUtilities {
         if (r instanceof SpecializationOf) {
             return ((SpecializationOf) r).getSpecializedEntity().getRef();
         }
+        if (r instanceof Membership) {
+            return ((Membership) r).getCollection().getRef();
+        }
         if (r instanceof WasInformedBy) {
             return ((WasInformedBy) r).getEffect().getRef();
         }
@@ -193,6 +196,9 @@ public class ProvUtilities {
         if (r instanceof SpecializationOf) {
             return ((SpecializationOf) r).getGeneralEntity().getRef();
         }
+        if (r instanceof Membership) {
+            return ((Membership) r).getEntity().get(0).getRef();
+        }
         if (r instanceof MentionOf) {
             return ((MentionOf) r).getGeneralEntity().getRef();
         }
@@ -232,6 +238,17 @@ public class ProvUtilities {
             if (a == null)
                 return null;
             res.add(a.getRef());
+            return res;
+        }
+        if (r instanceof Membership) {
+            List<QName> res = new LinkedList<QName>();
+            List<EntityRef> entities=((Membership) r).getEntity();
+            if ((entities==null) || (entities.size()<=1)) return null;
+            boolean first=true;
+            for (EntityRef ee: entities) {
+                if (!first) res.add(ee.getRef());
+                first=false;
+            }
             return res;
         }
         if (r instanceof WasEndedBy) {
@@ -389,7 +406,8 @@ public class ProvUtilities {
                                                         "Responsible",
                                                         "Activity", "Any" });
         fields.put(SpecializationOf.class, new String[] { "SpecializedEntity",
-                                                         "GeneralEntity" });
+                                                          "GeneralEntity" });
+        
 
         types.put(Activity.class, new Class[] { QName.class, 
                                            XMLGregorianCalendar.class,

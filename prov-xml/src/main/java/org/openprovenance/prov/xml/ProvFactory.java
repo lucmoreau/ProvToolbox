@@ -1321,4 +1321,12 @@ return res;
 	}
     }
 
+    public Membership newMembership(EntityRef collection, EntityRef entity) {
+        Membership res = of.createMembership();
+        res.setCollection(collection);
+        if (entity!=null)
+            res.getEntity().add(entity);
+        return res;
+    }
+
 }

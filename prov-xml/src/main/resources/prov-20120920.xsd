@@ -489,6 +489,9 @@
             <xs:element name="derivedByRemovalFrom"   type="prov:DerivedByRemovalFrom"/>
             <xs:element name="collectionMemberOf"     type="prov:CollectionMemberOf"/>
             <xs:element name="dictionaryMemberOf"     type="prov:DictionaryMemberOf"/>
+            
+                     <xs:element name="hadMember"            type="prov:Membership" />
+            
 
       </xs:choice>
     </xs:sequence>

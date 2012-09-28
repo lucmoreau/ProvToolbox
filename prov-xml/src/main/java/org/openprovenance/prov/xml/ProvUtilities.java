@@ -698,6 +698,11 @@ public class ProvUtilities {
             action.run(tmp);
         }
 
+        else if (o instanceof Membership) {
+            Membership tmp = (Membership) o;
+            action.run(tmp);
+        }
+
     }
     
     public Object run(Statement o, RecordValue action) {

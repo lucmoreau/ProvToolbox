@@ -358,6 +358,15 @@
   </xs:complexType>
 
 
+  <xs:complexType name="Membership">
+    <xs:sequence>
+      <xs:element name="collection"          type="prov:EntityRef"/>
+      <xs:element name="complete"        type="xs:boolean" minOccurs="0"/>
+      <xs:element name="entity"          type="prov:EntityRef" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+
   <xs:complexType name="InternationalizedString">
     <xs:simpleContent>
       <xs:extension base="xs:string">
@@ -433,6 +442,8 @@
          <xs:element name="alternateOf"          type="prov:AlternateOf"/>
          <xs:element name="mentionOf"            type="prov:MentionOf"/>
  
+         <xs:element name="hadMember"            type="prov:Membership" />
+ 
          <xs:element name="collectionMemberOf"   type="prov:CollectionMemberOf"/>
        </xs:choice>
      </xs:sequence>
@@ -478,6 +489,9 @@
             <xs:element name="derivedByRemovalFrom"   type="prov:DerivedByRemovalFrom"/>
             <xs:element name="collectionMemberOf"     type="prov:CollectionMemberOf"/>
             <xs:element name="dictionaryMemberOf"     type="prov:DictionaryMemberOf"/>
+            
+                     <xs:element name="hadMember"            type="prov:Membership" />
+            
 
       </xs:choice>
     </xs:sequence>
@@ -504,6 +518,8 @@
       <xs:element name="successfulMerge" type="prov:MergeReport" minOccurs="0"  maxOccurs="unbounded"/>
       <xs:element name="qualifiedNameMismatch" type="prov:MergeReport" minOccurs="0"  maxOccurs="unbounded"/>
       <xs:element name="specializationReport" type="prov:SpecializationReport"/>
+      <xs:element name="typeReport" type="prov:TypeReport" />
+      <xs:element name="typeOverlap" type="prov:TypeOverlap" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -511,6 +527,20 @@
   <xs:complexType name="MergeReport">
     <xs:sequence>
       <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="key" type="xs:string"/>
+  </xs:complexType>
+  
+   <xs:complexType name="TypeReport">
+    <xs:sequence>
+       <xs:group ref="prov:documentElements"/>
+    </xs:sequence>
+    <xs:attribute name="key" type="xs:string"/>
+  </xs:complexType>
+  
+  <xs:complexType name="TypeOverlap">
+    <xs:sequence>
+     <xs:element name="type"     type="xs:string" minOccurs="0" maxOccurs="unbounded"/>       
     </xs:sequence>
     <xs:attribute name="key" type="xs:string"/>
   </xs:complexType>

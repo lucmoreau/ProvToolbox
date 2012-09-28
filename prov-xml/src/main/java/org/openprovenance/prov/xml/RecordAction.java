@@ -18,5 +18,6 @@ public interface RecordAction {
     public void run(AlternateOf alt);
     public void run(MentionOf men);
     public void run(SpecializationOf spec);
+    public void run(Membership mem);
 
 }

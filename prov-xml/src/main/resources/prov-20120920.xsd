@@ -520,6 +520,7 @@
       <xs:element name="specializationReport" type="prov:SpecializationReport"/>
       <xs:element name="typeReport" type="prov:TypeReport" />
       <xs:element name="typeOverlap" type="prov:TypeOverlap" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="validationReport" type="prov:ValidationReport" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 

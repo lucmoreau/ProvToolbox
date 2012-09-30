@@ -65,8 +65,8 @@ public class ProvUtilities {
 
     @SuppressWarnings("unchecked")
     public List<Statement> getStatement(Document d) {
-        List<?> res = d.getEntityOrActivityOrWasGeneratedBy();
-        return (List<Statement>) res;
+	return getObject(Statement.class,
+	                 d.getEntityOrActivityOrWasGeneratedBy());
     }
 
     @SuppressWarnings("unchecked")

@@ -563,6 +563,7 @@
   <xs:element name="wasAttributedTo"    type="prov:WasAttributedTo"/>
   <xs:element name="wasInfluencedBy"    type="prov:WasInfluencedBy"/>
   <xs:element name="specializationOf"   type="prov:SpecializationOf"/>
+  <xs:element name="mentionOf"          type="prov:MentionOf"/>
   
   
 </xs:schema>

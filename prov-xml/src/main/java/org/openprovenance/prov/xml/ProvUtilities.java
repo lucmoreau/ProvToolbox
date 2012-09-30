@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 
 public class ProvUtilities {
 
-    private ProvFactory of = new ProvFactory();
+    private ProvFactory p = new ProvFactory();
 
     /*
      * public List<Element> getElements(Bundle g) { List<Element> res = new
@@ -408,6 +408,15 @@ public class ProvUtilities {
         fields.put(SpecializationOf.class, new String[] { "SpecializedEntity",
                                                           "GeneralEntity" });
         
+	// never use the accessor id for Mention, since it is not defined.
+	// However, this allows iterations over this data structure to be performed
+	//  like others.
+
+        fields.put(MentionOf.class, new String[] { "Id", 
+						   "SpecializedEntity",
+						   "GeneralEntity",
+						   "Bundle" });
+        
 
         types.put(Activity.class, new Class[] { QName.class, 
                                            XMLGregorianCalendar.class,
@@ -467,57 +476,66 @@ public class ProvUtilities {
                                                       ActivityRef.class,
                                                       Object.class });
         types.put(SpecializationOf.class, new Class[] { EntityRef.class,
-                                                       Entity.class });
+                                                       EntityRef.class });
+        types.put(MentionOf.class, new Class[] { QName.class,
+						 EntityRef.class,
+						 EntityRef.class,
+						 EntityRef.class });
     }
 
     @SuppressWarnings("unchecked")
     public <T> JAXBElement<T> newElement(T r) {
         if (r instanceof Activity) {
-            return (JAXBElement<T>) of.newElement(of.newActivity((Activity) r));
+            return (JAXBElement<T>) p.newElement(p.newActivity((Activity) r));
         }
         if (r instanceof Used) {
-            return (JAXBElement<T>) of.newElement(of.newUsed((Used) r));
+            return (JAXBElement<T>) p.newElement(p.newUsed((Used) r));
         }
         if (r instanceof WasStartedBy) {
-            return (JAXBElement<T>) of.newElement(of
+            return (JAXBElement<T>) p.newElement(p
                     .newWasStartedBy((WasStartedBy) r));
         }
         if (r instanceof WasEndedBy) {
-            return (JAXBElement<T>) of.newElement(of
+            return (JAXBElement<T>) p.newElement(p
                     .newWasEndedBy((WasEndedBy) r));
         }
         if (r instanceof WasGeneratedBy) {
-            return (JAXBElement<T>) of.newElement(of
+            return (JAXBElement<T>) p.newElement(p
                     .newWasGeneratedBy((WasGeneratedBy) r));
         }
         if (r instanceof WasDerivedFrom) {
-            return (JAXBElement<T>) of.newElement(of
+            return (JAXBElement<T>) p.newElement(p
                     .newWasDerivedFrom((WasDerivedFrom) r));
         }
         if (r instanceof WasAssociatedWith) {
-            return (JAXBElement<T>) of.newElement(of
+            return (JAXBElement<T>) p.newElement(p
                     .newWasAssociatedWith((WasAssociatedWith) r));
         }
         if (r instanceof WasInvalidatedBy) {
-            return (JAXBElement<T>) of.newElement(of
+            return (JAXBElement<T>) p.newElement(p
                     .newWasInvalidatedBy((WasInvalidatedBy) r));
         }
         if (r instanceof WasAttributedTo) {
-            return (JAXBElement<T>) of.newElement(of
+            return (JAXBElement<T>) p.newElement(p
                     .newWasAttributedTo((WasAttributedTo) r));
         }
         if (r instanceof WasInformedBy) {
-            return (JAXBElement<T>) of.newElement(of
+            return (JAXBElement<T>) p.newElement(p
                     .newWasInformedBy((WasInformedBy) r));
         }
         if (r instanceof WasInfluencedBy) {
-            return (JAXBElement<T>) of.newElement(of
+            return (JAXBElement<T>) p.newElement(p
                     .newWasInfluencedBy((WasInfluencedBy) r));
         }
+        if (r instanceof MentionOf) {
+            return (JAXBElement<T>) p.newElement(p.newMentionOf((MentionOf) r));
+        }
         if (r instanceof ActedOnBehalfOf) {
-            return (JAXBElement<T>) of.newElement(of
+            return (JAXBElement<T>) p.newElement(p
                     .newActedOnBehalfOf((ActedOnBehalfOf) r));
         }
+
+        
         System.out.println("newElement Unknow relation " + r);
         throw new UnsupportedOperationException();
     }
@@ -525,33 +543,33 @@ public class ProvUtilities {
     @SuppressWarnings("unchecked")
     public <T> T addAttributes(T from, T to) {
         if (from instanceof Used) {
-            return (T) of.addAttributes((Used) from, (Used) to);
+            return (T) p.addAttributes((Used) from, (Used) to);
         }
         if (from instanceof WasStartedBy) {
-            return (T) of.addAttributes((WasStartedBy) from, (WasStartedBy) to);
+            return (T) p.addAttributes((WasStartedBy) from, (WasStartedBy) to);
         }
         if (from instanceof WasEndedBy) {
-            return (T) of.addAttributes((WasEndedBy) from, (WasEndedBy) to);
+            return (T) p.addAttributes((WasEndedBy) from, (WasEndedBy) to);
         }
         if (from instanceof WasGeneratedBy) {
-            return (T) of.addAttributes((WasGeneratedBy) from,
+            return (T) p.addAttributes((WasGeneratedBy) from,
                                         (WasGeneratedBy) to);
         }
         if (from instanceof WasDerivedFrom) {
-            return (T) of.addAttributes((WasDerivedFrom) from,
+            return (T) p.addAttributes((WasDerivedFrom) from,
                                         (WasDerivedFrom) to);
         }
         if (from instanceof WasAssociatedWith) {
-            return (T) of.addAttributes((WasAssociatedWith) from,
+            return (T) p.addAttributes((WasAssociatedWith) from,
                                         (WasAssociatedWith) to);
         }
         if (from instanceof WasInvalidatedBy) {
-            return (T) of.addAttributes((WasInvalidatedBy) from,
+            return (T) p.addAttributes((WasInvalidatedBy) from,
                                         (WasInvalidatedBy) to);
         }
 
         if (from instanceof WasAttributedTo) {
-            return (T) of.addAttributes((WasAttributedTo) from,
+            return (T) p.addAttributes((WasAttributedTo) from,
                                         (WasAttributedTo) to);
         }
         /*
@@ -563,16 +581,16 @@ public class ProvUtilities {
          * of.addAttributes((SpecializationOf)from, (SpecializationOf)to); }
          */
         if (from instanceof WasInformedBy) {
-            return (T) of.addAttributes((WasInformedBy) from,
+            return (T) p.addAttributes((WasInformedBy) from,
                                         (WasInformedBy) to);
         }
         if (from instanceof WasInfluencedBy) {
-            return (T) of.addAttributes((WasInfluencedBy) from,
+            return (T) p.addAttributes((WasInfluencedBy) from,
                                         (WasInfluencedBy) to);
         }
 
         if (from instanceof ActedOnBehalfOf) {
-            return (T) of.addAttributes((ActedOnBehalfOf) from,
+            return (T) p.addAttributes((ActedOnBehalfOf) from,
                                         (ActedOnBehalfOf) to);
         }
 
@@ -598,7 +616,9 @@ public class ProvUtilities {
                 || (o instanceof WasAssociatedWith)
                 || (o instanceof WasInfluencedBy)
                 || (o instanceof SpecializationOf)
-                || (o instanceof AlternateOf);
+                || (o instanceof AlternateOf)
+                || (o instanceof MentionOf)
+                || (o instanceof Membership);
     }
 
     public int getFirstTimeIndex(Object o) {

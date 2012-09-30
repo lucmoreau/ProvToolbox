@@ -632,9 +632,11 @@ return res;
 	return of.createWasInvalidatedBy(u);
     }
 
-
     public JAXBElement<WasStartedBy> newElement(WasStartedBy u) {
 	return of.createWasStartedBy(u);
+    }
+    public JAXBElement<MentionOf> newElement(MentionOf u) {
+	return of.createMentionOf(u);
     }
 
     public Entity newEntity(Entity e) {
@@ -766,6 +768,16 @@ return res;
 	res.setGeneralEntity(newEntityRef(supra));
 	return res;
     }
+    
+    public MentionOf newMentionOf(MentionOf r) {
+	MentionOf res = of.createMentionOf();
+	res.setSpecializedEntity(r.getSpecializedEntity());
+	res.setBundle(r.getBundle());
+	res.setGeneralEntity(r.getGeneralEntity());
+	return res;
+    }
+
+    
 
     public NamedBundle newNamedBundle(QName id, Collection<Activity> ps,
 				      Collection<Entity> as,
@@ -1329,4 +1341,5 @@ return res;
         return res;
     }
 
+    
 }

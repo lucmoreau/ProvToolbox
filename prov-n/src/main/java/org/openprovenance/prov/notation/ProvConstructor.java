@@ -8,6 +8,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvUtilities;
+import org.openprovenance.prov.xml.Statement;
 import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -163,14 +164,14 @@ public  class ProvConstructor implements TreeConstructor {
         Collection<Entity> es=new LinkedList<Entity>();
         Collection<Agent> ags=new LinkedList<Agent>();
         Collection<Activity> acs=new LinkedList<Activity>();
-        Collection<Object> lks=new LinkedList<Object>();
+        Collection<Statement> lks=new LinkedList<Statement>();
             
         if (records!=null) 
             for (Object o: records) {
                 if (o instanceof Agent) { ags.add((Agent)o); }
                 else if (o instanceof Entity) { es.add((Entity)o); }
                 else if (o instanceof Activity) { acs.add((Activity)o); }
-                else lks.add(o);
+                else lks.add((Statement)o);
             }
         String s_id=(String)id;
         System.out.println("NamedBundle name " + s_id);

@@ -41,21 +41,21 @@ public class ProvUtilities {
     }
 
     public List<Relation0> getRelations(NamedBundle d) {
-        return getObject(Relation0.class,
+        return getObject2(Relation0.class,
                          d.getEntityOrActivityOrWasGeneratedBy());
     }
 
     public List<Entity> getEntity(NamedBundle d) {
-        return getObject(Entity.class, d.getEntityOrActivityOrWasGeneratedBy());
+        return getObject2(Entity.class, d.getEntityOrActivityOrWasGeneratedBy());
     }
 
     public List<Activity> getActivity(NamedBundle d) {
-        return getObject(Activity.class,
+        return getObject2(Activity.class,
                          d.getEntityOrActivityOrWasGeneratedBy());
     }
 
     public List<Agent> getAgent(NamedBundle d) {
-        return getObject(Agent.class, d.getEntityOrActivityOrWasGeneratedBy());
+        return getObject2(Agent.class, d.getEntityOrActivityOrWasGeneratedBy());
     }
 
     public List<NamedBundle> getNamedBundle(Document d) {
@@ -75,7 +75,7 @@ public class ProvUtilities {
         return (List<Statement>) res;
     }
 
-    public <T> List<T> getObject(Class<T> cl, List<Object> ll) {
+    public <T> List<T> getObject(Class<T> cl, List<StatementOrBundle> ll) {
         List<T> res = new LinkedList<T>();
         for (Object o : ll) {
             if (cl.isInstance(o)) {
@@ -86,6 +86,18 @@ public class ProvUtilities {
         }
         return res;
     }
+    public <T> List<T> getObject2(Class<T> cl, List<Statement> ll) {
+        List<T> res = new LinkedList<T>();
+        for (Object o : ll) {
+            if (cl.isInstance(o)) {
+                @SuppressWarnings("unchecked")
+                T o2 = (T) o;
+                res.add(o2);
+            }
+        }
+        return res;
+    }
+ 
 
     public QName getEffect(Relation0 r) {
         if (r instanceof Used) {
@@ -281,7 +293,7 @@ public class ProvUtilities {
     public MentionOf getMentionForRemoteEntity(NamedBundle local,
                                                Entity remoteEntity,
                                                NamedBundle remote) {
-        return getMentionForRemoteEntity(local.getEntityOrActivityOrWasGeneratedBy(),
+        return getMentionForLocalEntity(local.getEntityOrActivityOrWasGeneratedBy(),
                                          remoteEntity, remote);
     }
 
@@ -313,9 +325,9 @@ public class ProvUtilities {
                                         localEntity, remote);
     }
 
-    MentionOf getMentionForLocalEntity(List<Object> records,
+    MentionOf getMentionForLocalEntity(List<Statement> records,
                                        Entity localEntity, NamedBundle remote) {
-        for (Object o : records) {
+        for (Statement o : records) {
             if (o instanceof MentionOf) {
                 MentionOf ctxt = (MentionOf) o;
                 QName id1 = localEntity.getId();

@@ -782,7 +782,7 @@ return res;
     public NamedBundle newNamedBundle(QName id, Collection<Activity> ps,
 				      Collection<Entity> as,
 				      Collection<Agent> ags,
-				      Collection<Object> lks) {
+				      Collection<Statement> lks) {
 	NamedBundle res = of.createNamedBundle();
 	if (ps!=null) {
 	  res.getEntityOrActivityOrWasGeneratedBy().addAll(ps);
@@ -800,7 +800,7 @@ return res;
     }
 
     public NamedBundle newNamedBundle(String id, Activity[] ps, Entity[] es,
-				      Agent[] ags, Object[] lks) {
+				      Agent[] ags, Statement[] lks) {
 
 	return newNamedBundle(id, ((ps == null) ? null : Arrays.asList(ps)),
 			      ((es == null) ? null : Arrays.asList(es)),
@@ -812,7 +812,7 @@ return res;
     public NamedBundle newNamedBundle(String id, Collection<Activity> ps,
 				      Collection<Entity> as,
 				      Collection<Agent> ags,
-				      Collection<Object> lks) {
+				      Collection<Statement> lks) {
 	return newNamedBundle(stringToQName(id), ps, as, ags, lks);
     }
 

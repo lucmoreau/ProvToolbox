@@ -135,13 +135,13 @@ public  class ProvConstructor implements TreeConstructor {
         Collection<Entity> es=new LinkedList<Entity>();
         Collection<Agent> ags=new LinkedList<Agent>();
         Collection<Activity> acs=new LinkedList<Activity>();
-        Collection<Object> lks=new LinkedList<Object>();
+        Collection<Statement> lks=new LinkedList<Statement>();
             
         for (Object o: records) {
             if (o instanceof Agent) { ags.add((Agent)o); }
             else if (o instanceof Entity) { es.add((Entity)o); }
             else if (o instanceof Activity) { acs.add((Activity)o); }
-            else lks.add(o);
+            else if (o instanceof Statement) { lks.add((Statement)o); }
         }
         Document c=pFactory.newDocument(      acs,
                                           es,

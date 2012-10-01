@@ -15,6 +15,11 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 
+import org.openprovenance.prov.xml.collection.CollectionMemberOf;
+import org.openprovenance.prov.xml.collection.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.collection.DerivedByRemovalFrom;
+import org.openprovenance.prov.xml.collection.DictionaryMemberOf;
+import org.openprovenance.prov.xml.collection.Entry;
 import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,7 +29,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class ProvFactory {
 
-    public static final String packageList = "org.openprovenance.prov.xml";
+    public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.collection:org.openprovenance.prov.xml.validation";
 
     static {
 	initBuilder();
@@ -57,6 +62,8 @@ public class ProvFactory {
     }
 
     protected ObjectFactory of;
+    protected org.openprovenance.prov.xml.collection.ObjectFactory cof;
+    protected org.openprovenance.prov.xml.validation.ObjectFactory vof;
 
     protected DatatypeFactory dataFactory;
 
@@ -66,7 +73,9 @@ public class ProvFactory {
     }
 
     public ProvFactory(Hashtable<String, String> namespaces) {
-	of = new ObjectFactory();
+    	of = new ObjectFactory();
+    	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
+    	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	this.namespaces = namespaces;
 	init();
     }
@@ -76,6 +85,14 @@ public class ProvFactory {
 	init();
     }
 
+    
+
+    public org.openprovenance.prov.xml.validation.ObjectFactory getValidationObjectFactory() {
+		return vof;
+	}public org.openprovenance.prov.xml.collection.ObjectFactory getCollectionObjectFactory() {
+		return cof;
+	}
+	
     public void addAttribute(HasExtensibility a, Object o) {
 	a.getAny().add(o);
     }
@@ -465,7 +482,7 @@ public class ProvFactory {
 
     public CollectionMemberOf newCollectionMemberOf(QName id, EntityRef after,
 						    List<Entity> entitySet) {
-	CollectionMemberOf res = of.createCollectionMemberOf();
+	CollectionMemberOf res = cof.createCollectionMemberOf();
 	res.setId(id);
 	res.setEntity(after);
 	if (entitySet != null)
@@ -482,7 +499,7 @@ public class ProvFactory {
 							    EntityRef after,
 							    EntityRef before,
 							    List<Entry> keyEntitySet) {
-	DerivedByInsertionFrom res = of.createDerivedByInsertionFrom();
+	DerivedByInsertionFrom res = cof.createDerivedByInsertionFrom();
 	res.setId(id);
 	res.setAfter(after);
 	res.setBefore(before);
@@ -503,7 +520,7 @@ public class ProvFactory {
 							EntityRef after,
 							EntityRef before,
 							List<Object> keys) {
-	DerivedByRemovalFrom res = of.createDerivedByRemovalFrom();
+	DerivedByRemovalFrom res = cof.createDerivedByRemovalFrom();
 	res.setId(id);
 	res.setAfter(after);
 	res.setBefore(before);
@@ -521,7 +538,7 @@ public class ProvFactory {
 
     public DictionaryMemberOf newDictionaryMemberOf(QName id, EntityRef after,
 						    List<Entry> keyEntitySet) {
-	DictionaryMemberOf res = of.createDictionaryMemberOf();
+	DictionaryMemberOf res = cof.createDictionaryMemberOf();
 	res.setId(id);
 	res.setEntity(after);
 	if (keyEntitySet != null)
@@ -684,7 +701,7 @@ return res;
     }
 
     public Entry newEntry(Object key, EntityRef entity) {
-	Entry res = of.createEntry();
+	Entry res = cof.createEntry();
 	res.setKey(key);
 	res.setEntity(entity);
 	return res;
@@ -1340,6 +1357,7 @@ return res;
             res.getEntity().add(entity);
         return res;
     }
+
 
     
 }

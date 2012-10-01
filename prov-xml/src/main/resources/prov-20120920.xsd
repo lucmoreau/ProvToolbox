@@ -298,7 +298,7 @@
 
   
   <!-- Component 6 -->
-
+<!-- 
   <xs:complexType name="DerivedByInsertionFrom">
     <xs:sequence>
       <xs:element name="after"           type="prov:EntityRef"/>
@@ -357,6 +357,7 @@
     </xs:sequence>
   </xs:complexType>
 
+-->
 
   <xs:complexType name="Membership">
     <xs:sequence>
@@ -366,7 +367,7 @@
     </xs:sequence>
   </xs:complexType>
 
-
+ 
   <xs:complexType name="InternationalizedString">
     <xs:simpleContent>
       <xs:extension base="xs:string">
@@ -444,7 +445,6 @@
  
          <xs:element name="hadMember"            type="prov:Membership" />
  
-         <xs:element name="collectionMemberOf"   type="prov:CollectionMemberOf"/>
        </xs:choice>
      </xs:sequence>
    </xs:group>
@@ -484,12 +484,12 @@
             <xs:element name="alternateOf"          type="prov:AlternateOf"/>
             <xs:element name="specializationOf"     type="prov:SpecializationOf"/>
             <xs:element name="mentionOf"            type="prov:MentionOf"/>
-
+<!--  
             <xs:element name="derivedByInsertionFrom" type="prov:DerivedByInsertionFrom"/>
             <xs:element name="derivedByRemovalFrom"   type="prov:DerivedByRemovalFrom"/>
             <xs:element name="collectionMemberOf"     type="prov:CollectionMemberOf"/>
             <xs:element name="dictionaryMemberOf"     type="prov:DictionaryMemberOf"/>
-            
+           --> 
                      <xs:element name="hadMember"            type="prov:Membership" />
             
 
@@ -516,6 +516,7 @@
 
 <!-- To support validator, this is not part of prov xml! -->
 
+<!-- 
   <xs:element name="validationReport" type="prov:ValidationReport"/>
 
 
@@ -569,6 +570,7 @@
     </xs:sequence>
   </xs:complexType>
   
+   -->
   <xs:element name="used"               type="prov:Used"/>
   <xs:element name="wasGeneratedBy"     type="prov:WasGeneratedBy"/>
   <xs:element name="wasStartedBy"       type="prov:WasStartedBy"/>

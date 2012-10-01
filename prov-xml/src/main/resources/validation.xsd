@@ -5,14 +5,72 @@
 <xs:schema targetNamespace="http://openprovenance.org/validation#" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:val="http://openprovenance.org/validation#" xmlns:prov="http://www.w3.org/ns/prov#">
 
 
+	<xs:import schemaLocation="prov-20120920.xsd" namespace="http://www.w3.org/ns/prov#"></xs:import>
+	
 
 
+<!-- To support validator, this is not part of prov xml! -->
 
+  <xs:element name="validationReport" type="val:ValidationReport"/>
+
+
+  <xs:complexType name="ValidationReport">
+    <xs:sequence>
+      <xs:element name="cycle" type="prov:Dependencies" minOccurs="0"  maxOccurs="unbounded"/>
+      <xs:element name="failedMerge" type="val:MergeReport" minOccurs="0"  maxOccurs="unbounded"/>
+      <xs:element name="successfulMerge" type="val:MergeReport" minOccurs="0"  maxOccurs="unbounded"/>
+      <xs:element name="qualifiedNameMismatch" type="val:MergeReport" minOccurs="0"  maxOccurs="unbounded"/>
+      <xs:element name="specializationReport" type="val:SpecializationReport"/>
+      <xs:element name="typeReport" type="val:TypeReport" />
+      <xs:element name="typeOverlap" type="val:TypeOverlap" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="validationReport" type="val:ValidationReport" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+
+  <xs:complexType name="MergeReport">
+    <xs:complexContent>
+      <xs:extension base="prov:Statements">
+       <xs:attribute name="key" type="xs:string"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+      
+  <xs:complexType name="MergeReportOLD">
+ 
+    <xs:sequence>
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="key" type="xs:string"/>
+  </xs:complexType>
+  
+   <xs:complexType name="TypeReport">
+    <xs:sequence>
+       <xs:group ref="prov:documentElements"/>
+    </xs:sequence>
+    <xs:attribute name="key" type="xs:string"/>
+  </xs:complexType>
+  
+  <xs:complexType name="TypeOverlap">
+    <xs:sequence>
+     <xs:element name="type"     type="xs:string" minOccurs="0" maxOccurs="unbounded"/>       
+    </xs:sequence>
+    <xs:attribute name="key" type="xs:string"/>
+  </xs:complexType>
+  
+  <xs:complexType name="SpecializationReport">
+    <xs:sequence>
+     <xs:element ref="prov:specializationOf" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  
 
 
 	<!-- Component 6 -->
 
-	<xs:import schemaLocation="prov-20120920.xsd" namespace="http://www.w3.org/ns/prov#"></xs:import>
+	
+	<!-- 
+	
 	<xs:complexType name="DerivedByInsertionFrom">
 		<xs:sequence>
 			<xs:element name="after" type="prov:EntityRef" />
@@ -75,10 +133,10 @@
 		</xs:sequence>
 	</xs:complexType>
 
+ -->
 
 
-
-	<xs:complexType name="Dependencies">
+	<xs:complexType name="Dependencies2">
 		<xs:sequence>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 
@@ -104,17 +162,14 @@
 				<xs:element name="specializationOf" type="prov:SpecializationOf" />
 				<xs:element name="mentionOf" type="prov:MentionOf" />
 
-				<xs:element name="derivedByInsertionFrom" type="val:DerivedByInsertionFrom" />
-				<xs:element name="derivedByRemovalFrom" type="val:DerivedByRemovalFrom" />
-				<xs:element name="collectionMemberOf" type="val:CollectionMemberOf" />
-				<xs:element name="dictionaryMemberOf" type="val:DictionaryMemberOf" />
-
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
 
 
 	<!-- To support validator, this is not part of prov xml! -->
+	
+	<!-- 
 
 	<xs:element name="validationReport" type="prov:ValidationReport" />
 
@@ -144,6 +199,6 @@
 	</xs:complexType>
 
 	<xs:element name="specializationOf" type="prov:SpecializationOf" />
-
+ -->
 
 </xs:schema>

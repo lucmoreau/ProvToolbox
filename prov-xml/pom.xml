@@ -345,6 +345,13 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+  	              <arg value="-e s/List&lt;Object&gt;/List&lt;Statement&gt;/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Statements.java" />
+                </exec>
+
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasAttributedTo.java" />

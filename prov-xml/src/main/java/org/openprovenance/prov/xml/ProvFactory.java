@@ -553,7 +553,7 @@ return res;
 
 */
     public Document newDocument(Activity[] ps, Entity[] as, Agent[] ags,
-			    Object[] lks) {
+			    Statement[] lks) {
 
 	return newDocument(((ps == null) ? null : Arrays.asList(ps)),
 			 ((as == null) ? null : Arrays.asList(as)),
@@ -562,7 +562,7 @@ return res;
     }
     
     public Document newDocument(Collection<Activity> ps, Collection<Entity> as,
-			    Collection<Agent> ags, Collection<Object> lks) {
+			    Collection<Agent> ags, Collection<Statement> lks) {
 	Document res = of.createDocument();
 	res.getEntityOrActivityOrWasGeneratedBy().addAll(ps);
 	res.getEntityOrActivityOrWasGeneratedBy().addAll(as);

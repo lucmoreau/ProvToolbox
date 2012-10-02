@@ -86,6 +86,7 @@
       <plugin>
         <groupId>org.jvnet.jaxb2.maven2</groupId>
 	    <artifactId>maven-jaxb2-plugin</artifactId>
+	    <version>0.8.2</version>
         <executions>
           <execution>
             <id>go1</id>
@@ -103,7 +104,8 @@
 			     </plugin>
 		       </plugins>
                <schemaIncludes>
-                 <schemaInclude>**/curie.xsd</schemaInclude>
+                 <!--
+                 <schemaInclude>**/curie.xsd</schemaInclude> -->
                  <schemaInclude>**/toolbox.xsd</schemaInclude>
                  <schemaInclude>**/prov-20120920.xsd</schemaInclude>
                  <schemaInclude>**/validation.xsd</schemaInclude>
@@ -114,10 +116,11 @@
                <bindingIncludes>
                   <bindingInclude>bindings.xjb</bindingInclude>
                </bindingIncludes> 
+               <debug>true</debug> 
                <strict>true</strict> 
                <verbose>true</verbose>     
                <extension>true</extension>     
-	       <catalog>catalog.cat</catalog>
+	       <catalog>src/main/resources/catalog.cat</catalog>
                <args>
                  <arg>-npa</arg>
 			     <arg>-Xequals</arg>

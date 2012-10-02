@@ -5,8 +5,9 @@
 <xs:schema targetNamespace="http://openprovenance.org/collection#" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:col="http://openprovenance.org/collection#" xmlns:prov="http://www.w3.org/ns/prov#">
 
 
-	<xs:import schemaLocation="prov-20120920.xsd" namespace="http://www.w3.org/ns/prov#"></xs:import>
-	
+  	<xs:import schemaLocation="prov-20120920.xsd" namespace="http://www.w3.org/ns/prov#"></xs:import> 
+		
+	<!-- 	<xs:import namespace="http://www.w3.org/ns/prov#"></xs:import> -->
 
 
 

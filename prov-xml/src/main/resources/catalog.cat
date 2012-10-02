@@ -1,0 +1,9 @@
+
+--
+  sample catalog file.
+  
+  double hyphens are used to begin and end a comment section.
+--
+
+
+PUBLIC "http://www.w3.org/ns/prov#" "prov-20120920.xsd"

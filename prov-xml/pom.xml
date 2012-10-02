@@ -117,6 +117,7 @@
                <strict>true</strict> 
                <verbose>true</verbose>     
                <extension>true</extension>     
+	       <catalog>catalog.cat</catalog>
                <args>
                  <arg>-npa</arg>
 			     <arg>-Xequals</arg>

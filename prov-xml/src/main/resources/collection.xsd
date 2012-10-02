@@ -7,8 +7,6 @@
 
   	<xs:import schemaLocation="prov-20120920.xsd" namespace="http://www.w3.org/ns/prov#"></xs:import> 
 		
-	<!-- 	<xs:import namespace="http://www.w3.org/ns/prov#"></xs:import> -->
-
 
 
 	

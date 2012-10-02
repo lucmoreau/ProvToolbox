@@ -4,15 +4,7 @@
 
 <xs:schema targetNamespace="http://openprovenance.org/validation#" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:val="http://openprovenance.org/validation#" xmlns:prov="http://www.w3.org/ns/prov#">
 
-<!-- 
-
-	<xs:import schemaLocation="https://raw.github.com/lucmoreau/ProvToolbox/master/prov-xml/src/main/resources/prov-20120920.xsd" 
-	namespace="http://www.w3.org/ns/prov#"></xs:import>
-	
- -->
- 
- <xs:import schemaLocation="file:/Users/lavm/Documents/workspace/ProvToolbox/prov-xml/src/main/resources/prov-20120920.xsd" 
-	namespace="http://www.w3.org/ns/prov#"></xs:import>
+  <xs:import schemaLocation="prov-20120920.xsd" namespace="http://www.w3.org/ns/prov#"></xs:import> 
 
 <!-- To support validator, this is not part of prov xml! -->
 

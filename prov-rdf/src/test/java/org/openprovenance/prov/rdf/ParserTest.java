@@ -15,22 +15,25 @@ import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFParser;
+import org.openrdf.rio.Rio;
 import org.openrdf.rio.trig.TriGParser;
 
 public class ParserTest extends TestCase {
 	
 	ProvFactory pFactory=ProvFactory.getFactory();
 	
-	public void testRDF() throws IOException, RDFParseException, RDFHandlerException, JAXBException {
-		URL documentURL = new File("src/test/resources/ex10.ttl").toURI().toURL();
+	private Document parseRDF(String filename) throws RDFParseException, RDFHandlerException, IOException {
+		RDFParser rdfParser = Rio.createParser(Rio.getParserFormatForFileName(filename));
+		URL documentURL = new File(filename).toURI().toURL();
 		InputStream inputStream = documentURL.openStream();
-		RDFParser rdfParser = new TriGParser();
 		RdfCollector rdfCollector = new RdfCollector(pFactory);
 		rdfParser.setRDFHandler(rdfCollector);
 		rdfParser.parse(inputStream, documentURL.toString());
-		
-		Document document = rdfCollector.getDocument();
-		
+		return rdfCollector.getDocument();
+	}
+	
+	public void testRDF() throws IOException, RDFParseException, RDFHandlerException, JAXBException {
+		Document document = parseRDF("src/test/resources/ex2.trig");
 		ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         serial.serialiseDocument(System.out,document,true);
 	}

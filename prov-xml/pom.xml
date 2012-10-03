@@ -22,11 +22,14 @@
       <version>${jaxb.api.version}</version>
     </dependency>
 
+<!--
     <dependency>
      <groupId>com.sun.xml.bind</groupId>
      <artifactId>jaxb-impl</artifactId>
      <version>${jaxb.impl.version}</version>
     </dependency>
+-->
+
 
 
     <dependency>
@@ -45,6 +48,7 @@
 
 -->
 
+<!--
     <dependency>
       <groupId>commons-jxpath</groupId>
       <artifactId>commons-jxpath</artifactId>
@@ -65,7 +69,7 @@
  	   </exclusions>
     </dependency>
 
-
+-->
 
 
  </dependencies>

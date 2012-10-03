@@ -1,0 +1,20 @@
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix sioc: <http://rdfs.org/sioc/ns#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix ex:     <http://example.org#> .
+@prefix :     <http://foo.org#> .
+
+:e1 
+   a prov:Entity;
+   prov:wasGeneratedBy      :a1;
+   prov:qualifiedGeneration :e1Gen; # Add the qualification
+.
+
+:a1 a prov:Activity .
+
+:e1Gen 
+   a prov:Generation;
+   prov:activity :a1;               # Cite the influencing Activity.
+   ex:foo :bar;                     # Add additional attributes about the influence relation.
+.

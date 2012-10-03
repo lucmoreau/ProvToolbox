@@ -8,7 +8,7 @@
 	xmlns:val="http://openprovenance.org/validation#"
 	xmlns:prov="http://www.w3.org/ns/prov#">
 
-	<xs:import schemaLocation="prov-20120920.xsd"
+	<xs:import schemaLocation="prov-20121003.xsd"
 		namespace="http://www.w3.org/ns/prov#">
 	</xs:import>
 	
@@ -17,7 +17,7 @@
 
 	<xs:complexType name="ValidationReport">
 		<xs:sequence>
-			<xs:element name="cycle" type="prov:Dependencies"
+			<xs:element name="cycle" type="val:Dependencies"
 				minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="failedMerge" type="val:MergeReport"
 				minOccurs="0" maxOccurs="unbounded" />
@@ -80,149 +80,45 @@
 	<!-- Component 6 -->
 
 
-	<!-- 
-		
-		<xs:complexType name="DerivedByInsertionFrom">
-		<xs:sequence>
-		<xs:element name="after" type="prov:EntityRef" />
-		<xs:element name="before" type="prov:EntityRef" />
-		<xs:element name="entry" type="val:Entry" minOccurs="1"
-		maxOccurs="unbounded" />
-		<xs:element ref="prov:label" minOccurs="0"
-		maxOccurs="unbounded" />
-		<xs:element ref="prov:type" minOccurs="0"
-		maxOccurs="unbounded" />
-		<xs:any namespace="##other" minOccurs="0"
-		maxOccurs="unbounded" />
-		</xs:sequence>
-		<xs:attribute ref="prov:id" />
-		</xs:complexType>
-		
-		<xs:complexType name="DerivedByRemovalFrom">
-		<xs:sequence>
-		<xs:element name="after" type="prov:EntityRef" />
-		<xs:element name="before" type="prov:EntityRef" />
-		<xs:element name="key" type="xs:anySimpleType" minOccurs="1" maxOccurs="unbounded" />
-		<xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded" />
-		<xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded" />
-		<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-		<xs:attribute ref="prov:id" />
-		</xs:complexType>
-		
-		<xs:complexType name="CollectionMemberOf">
-		<xs:sequence>
-		<xs:element name="entity" type="prov:EntityRef" />
-		<xs:element name="complete" type="xs:boolean" />
-		<xs:element name="member" type="prov:Entity" minOccurs="1" maxOccurs="unbounded" />
-		<xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded" />
-		<xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded" />
-		<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-		<xs:attribute ref="prov:id" />
-		</xs:complexType>
-		
-		<xs:complexType name="DictionaryMemberOf">
-		<xs:sequence>
-		<xs:element name="entity" type="prov:EntityRef" />
-		<xs:element name="complete" type="xs:boolean" />
-		<xs:element name="entry" type="val:Entry" minOccurs="1" maxOccurs="unbounded" />
-		<xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded" />
-		<xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded" />
-		<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-		<xs:attribute ref="prov:id" />
-		</xs:complexType>
-		
-		
-		<xs:element name="key" type="xs:anySimpleType" />
-		
-		<xs:complexType name="Entry">
-		<xs:sequence>
-		<xs:element ref="prov:key" minOccurs="1" maxOccurs="1" />
-		<xs:element name="entity" type="prov:EntityRef" minOccurs="1" maxOccurs="1" />
-		</xs:sequence>
-		</xs:complexType>
-		
-	-->
 
 
-	<xs:complexType name="Dependencies2">
+	<xs:complexType name="Dependencies">
 		<xs:sequence>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 
-				<xs:element name="used" type="prov:Used" />
+				<xs:element name="used" type="prov:Usage" />
 				<xs:element name="wasGeneratedBy"
-					type="prov:WasGeneratedBy" />
+					type="prov:Generation" />
 				<xs:element name="wasStartedBy"
-					type="prov:WasStartedBy" />
-				<xs:element name="wasEndedBy" type="prov:WasEndedBy" />
+					type="prov:Start" />
+				<xs:element name="wasEndedBy" type="prov:End" />
 				<xs:element name="wasInvalidatedBy"
-					type="prov:WasInvalidatedBy" />
+					type="prov:Invalidation" />
 				<xs:element name="wasInformedBy"
-					type="prov:WasInformedBy" />
+					type="prov:Communication" />
 
 
 				<xs:element name="wasDerivedFrom"
-					type="prov:WasDerivedFrom" />
-				<xs:element name="wasRevisionOf"
-					type="prov:WasRevisionOf" />
-				<xs:element name="wasQuotedFrom"
-					type="prov:WasQuotedFrom" />
-				<xs:element name="hadPrimarySource"
-					type="prov:HadPrimarySource" />
-
+					type="prov:Derivation" />
 				<xs:element name="wasAttributedTo"
-					type="prov:WasAttributedTo" />
+					type="prov:Attribution" />
 				<xs:element name="wasAssociatedWith"
-					type="prov:WasAssociatedWith" />
+					type="prov:Association" />
 				<xs:element name="actedOnBehalfOf"
-					type="prov:ActedOnBehalfOf" />
+					type="prov:Delegation" />
 				<xs:element name="wasInfluencedBy"
-					type="prov:WasInfluencedBy" />
+					type="prov:Influence" />
 
-				<xs:element name="alternateOf" type="prov:AlternateOf" />
+				<xs:element name="alternateOf" type="prov:Alternate" />
 				<xs:element name="specializationOf"
-					type="prov:SpecializationOf" />
-				<xs:element name="mentionOf" type="prov:MentionOf" />
+					type="prov:Specialization" />
+				<xs:element name="mentionOf" type="prov:Mention" />
 
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
 
 
-	<!-- To support validator, this is not part of prov xml! -->
 
-	<!-- 
-		
-		<xs:element name="validationReport" type="prov:ValidationReport" />
-		
-		
-		<xs:complexType name="ValidationReport">
-		<xs:sequence>
-		<xs:element name="cycle" type="val:Dependencies" minOccurs="0" maxOccurs="unbounded" />
-		<xs:element name="failedMerge" type="val:MergeReport" minOccurs="0" maxOccurs="unbounded" />
-		<xs:element name="successfulMerge" type="val:MergeReport" minOccurs="0" maxOccurs="unbounded" />
-		<xs:element name="qualifiedNameMismatch" type="val:MergeReport" minOccurs="0" maxOccurs="unbounded" />
-		<xs:element name="specializationReport" type="val:SpecializationReport" />
-		</xs:sequence>
-		</xs:complexType>
-		
-		
-		<xs:complexType name="SpecializationReport">
-		<xs:sequence>
-		<xs:element ref="val:specializationOf" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-		</xs:complexType>
-		
-		<xs:complexType name="MergeReport">
-		<xs:sequence>
-		<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-		<xs:attribute name="key" type="xs:string" />
-		</xs:complexType>
-		
-		<xs:element name="specializationOf" type="prov:SpecializationOf" />
-	-->
 
 </xs:schema>

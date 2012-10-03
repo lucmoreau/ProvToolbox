@@ -729,24 +729,6 @@ return res;
 	return res;
     }
 
-    public HadPrimarySource newHadPrimarySource(QName id, EntityRef derived,
-						EntityRef source) {
-	HadPrimarySource res = of.createHadPrimarySource();
-	res.setId(id);
-	res.setDerived(derived);
-	res.setSource(source);
-	return res;
-    }
-
-    public HadPrimarySource newHadPrimarySource(String id, EntityRef derived,
-						EntityRef source) {
-	HadPrimarySource res = of.createHadPrimarySource();
-	res.setId(stringToQName(id));
-	res.setDerived(derived);
-	res.setSource(source);
-	return res;
-    }
-
     public InternationalizedString newInternationalizedString(String s) {
 	InternationalizedString res = of.createInternationalizedString();
 	res.setValue(s);
@@ -1263,43 +1245,6 @@ return res;
         u1.getLabel().addAll(u.getLabel());
         u1.getLocation().addAll(u.getLocation());
 	return u1;
-    }
-
-    public WasQuotedFrom newWasQuotedFrom(QName id, EntityRef quote,
-					  EntityRef original) {
-	WasQuotedFrom res = of.createWasQuotedFrom();
-	res.setId(id);
-	res.setQuote(quote);
-	res.setOriginal(original);
-	return res;
-    }
-
-
-    public WasQuotedFrom newWasQuotedFrom(String id, EntityRef quote,
-					  EntityRef original) {
-	WasQuotedFrom res = of.createWasQuotedFrom();
-	res.setId(stringToQName(id));
-	res.setQuote(quote);
-	res.setOriginal(original);
-	return res;
-    }
-
-    public WasRevisionOf newWasRevisionOf(QName id, EntityRef newer,
-					  EntityRef older) {
-	WasRevisionOf res = of.createWasRevisionOf();
-	res.setId(id);
-	res.setNewer(newer);
-	res.setOlder(older);
-	return res;
-    }
-
-    public WasRevisionOf newWasRevisionOf(String id, EntityRef newer,
-					  EntityRef older) {
-	WasRevisionOf res = of.createWasRevisionOf();
-	res.setId(stringToQName(id));
-	res.setNewer(newer);
-	res.setOlder(older);
-	return res;
     }
 
     public WasStartedBy newWasStartedBy(QName id, ActivityRef aid, EntityRef eid) {

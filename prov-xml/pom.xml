@@ -111,7 +111,7 @@
                  <!--
                  <schemaInclude>**/curie.xsd</schemaInclude> -->
                  <schemaInclude>**/toolbox.xsd</schemaInclude>
-                 <schemaInclude>**/prov-20120920.xsd</schemaInclude>
+                 <schemaInclude>**/prov-20121003.xsd</schemaInclude>
                  <schemaInclude>**/validation.xsd</schemaInclude>
                  <schemaInclude>**/collection.xsd</schemaInclude>
 

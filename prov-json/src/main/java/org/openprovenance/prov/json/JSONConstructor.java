@@ -270,7 +270,7 @@ class JSONConstructor implements TreeConstructor {
     	return new ProvRecord("wasDerivedFrom", id, attrs);
 	}
 
-
+/*
 	@Override
     public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs)
     {
@@ -347,7 +347,7 @@ class JSONConstructor implements TreeConstructor {
 
     	return new ProvRecord("hadPrimarySource", id, attrs);
     }
-
+*/
 
 	/* Component 3 */
 	@Override

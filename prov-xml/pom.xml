@@ -296,7 +296,7 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasType, HasRole, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasType, HasLocation, HasRole, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="Used.java" />
                 </exec>
@@ -405,7 +405,7 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasLocation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasGeneratedBy.java" />
                 </exec>
@@ -419,14 +419,14 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasLocation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasInvalidatedBy.java" />
                 </exec>
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasLocation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasStartedBy.java" />
                 </exec>
@@ -440,7 +440,7 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasLocation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasEndedBy.java" />
                 </exec>

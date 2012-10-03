@@ -67,7 +67,6 @@ public class ProvUtilities {
                          d.getEntityOrActivityOrWasGeneratedBy());
     }
 
-    @SuppressWarnings("unchecked")
     public List<Statement> getStatement(Document d) {
 	return getObject(Statement.class,
 	                 d.getEntityOrActivityOrWasGeneratedBy());

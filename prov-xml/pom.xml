@@ -100,7 +100,7 @@
 			     <plugin>
 				   <groupId>org.jvnet.hyperjaxb3</groupId>
 				   <artifactId>hyperjaxb3-ejb-plugin</artifactId>
-				   <version>0.2.RC1</version>
+				   <version>0.5.4</version>
 			     </plugin>
 		       </plugins>
                <schemaIncludes>
@@ -120,13 +120,14 @@
                <strict>true</strict> 
                <verbose>true</verbose>     
                <extension>true</extension>     
-	       <catalog>src/main/resources/catalog.cat</catalog>
+	       <!-- <catalog>src/main/resources/catalog.cat</catalog> -->
                <args>
                  <arg>-npa</arg>
 			     <arg>-Xequals</arg>
   			     <arg>-XhashCode</arg>
 			     <arg>-XtoString</arg>
- 			     <!-- <arg>-Xhyperjaxb3-ejb</arg>
+			     <!--  
+ 			      <arg>-Xhyperjaxb3-ejb</arg>
 			          <arg>-Xhyperjaxb3-ejb-roundtripTestClassName=RoundtripTest</arg> -->
                </args>
             </configuration>

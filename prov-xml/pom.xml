@@ -121,7 +121,7 @@
                   <bindingInclude>bindings.xjb</bindingInclude>
                </bindingIncludes> 
                <debug>true</debug> 
-               <strict>true</strict> 
+               <strict>false</strict> 
                <verbose>true</verbose>     
                <extension>true</extension>     
 	       <!-- <catalog>src/main/resources/catalog.cat</catalog> -->

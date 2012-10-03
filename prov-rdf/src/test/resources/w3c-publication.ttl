@@ -1,0 +1,270 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix email: <https://lists.w3.org/Archives/Member/w3c-archive/> .
+@prefix trans: <http://www.w3.org/2005/08/01-transitions.html#> .
+@prefix ex: <http://example.org/> .
+@prefix rec54: <http://www.w3.org/2001/02pd/rec54#> .
+@prefix chairs: <https://lists.w3.org/Archives/Member/chairs/> .
+@prefix tr: <http://www.w3.org/TR/2011/> .
+@prefix process: <http://www.w3.org/2005/10/Process-20051014/tr.html#> .
+@prefix w3: <http://www.w3.org/> .
+
+
+tr:WD-prov-dm-20111018 a prov:Entity ;
+	prov:type "rec54:WD"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+tr:WD-prov-dm-20111215 a prov:Entity ;
+	prov:type "rec54:WD"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+process:rec-advance a prov:Entity , prov:Plan ;
+	prov:type "prov:Plan"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+<https://lists.w3.org/Archives/Member/chairs/2011OctDec/0004> a prov:Entity ;
+	prov:type "trans:transreq"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+<https://lists.w3.org/Archives/Member/w3c-archive/2011Oct/0141> a prov:Entity ;
+	prov:type "trans:pubreq"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+<https://lists.w3.org/Archives/Member/w3c-archive/2011Dec/0111> a prov:Entity ;
+	prov:type "trans:pubreq"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+tr:WD-prov-dm-20111215 prov:wasDerivedFrom tr:WD-prov-dm-20111018 .
+
+ex:act1 a prov:Activity ;
+	prov:type "publish"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+ex:act2 a prov:Activity ;
+	prov:type "publish"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+tr:WD-prov-dm-20111018 prov:wasGeneratedBy ex:act1 .
+
+tr:WD-prov-dm-20111215 prov:wasGeneratedBy ex:act2 .
+
+ex:act1 prov:used <https://lists.w3.org/Archives/Member/chairs/2011OctDec/0004> , <https://lists.w3.org/Archives/Member/w3c-archive/2011Oct/0141> .
+
+ex:act2 prov:used <https://lists.w3.org/Archives/Member/w3c-archive/2011Dec/0111> .
+
+w3:Consortium a prov:Agent , prov:Organization ;
+	prov:type "prov:Organization"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+_:node178e342tpx1 a prov:Association ;
+	prov:agent w3:Consortium .
+
+ex:act1 prov:qualifiedAssociation _:node178e342tpx1 .
+
+_:node178e342tpx1 prov:hadPlan process:rec-advance .
+
+ex:act1 prov:wasAssociatedWith w3:Consortium .
+
+_:node178e342tpx2 a prov:Association ;
+	prov:agent w3:Consortium .
+
+ex:act2 prov:qualifiedAssociation _:node178e342tpx2 .
+
+_:node178e342tpx2 prov:hadPlan process:rec-advance .
+
+ex:act2 prov:wasAssociatedWith w3:Consortium .
+
+ex:gen1 a prov:Generation ;
+	prov:activity ex:act1 .
+
+tr:WD-prov-dm-20111018 prov:qualifiedGeneration ex:gen1 .
+
+ex:gen1 prov:atTime "2011-11-16T16:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+ex:inv1 a prov:Invalidation ;
+	prov:activity ex:act1 .
+
+tr:WD-prov-dm-20111018 prov:qualifiedInvalidation ex:inv1 .
+
+ex:inv1 prov:atTime "2011-11-16T16:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+tr:WD-prov-dm-20111018 prov:wasInvalidatedBy ex:act1 .
+
+ex:u1 a prov:Usage ;
+	prov:entity <https://lists.w3.org/Archives/Member/chairs/2011OctDec/0004> .
+
+ex:act1 prov:qualifiedUsage ex:u1 .
+
+ex:inf1 a prov:Communication ;
+	prov:activity ex:act1 .
+
+ex:act1 prov:qualifiedCommunication ex:inf1 ;
+	prov:wasInformedBy ex:act1 .
+
+ex:start1 a prov:Start ;
+	prov:entity <https://lists.w3.org/Archives/Member/chairs/2011OctDec/0004> .
+
+ex:act1 prov:qualifiedStart ex:start1 .
+
+ex:start1 prov:hadActivity ex:act1 .
+
+ex:act1 prov:wasStartedBy <https://lists.w3.org/Archives/Member/chairs/2011OctDec/0004> .
+
+ex:end1 a prov:End ;
+	prov:entity <https://lists.w3.org/Archives/Member/chairs/2011OctDec/0004> .
+
+ex:act1 prov:qualifiedEnd ex:end1 .
+
+ex:end1 prov:hadActivity ex:act1 .
+
+ex:act1 prov:wasEndedBy <https://lists.w3.org/Archives/Member/chairs/2011OctDec/0004> .
+
+ex:att1 a prov:Attribution ;
+	prov:agent w3:Consortium .
+
+tr:WD-prov-dm-20111018 prov:qualifiedAttribution ex:att1 ;
+	prov:wasAttributedTo w3:Consortium .
+
+ex:ass1 a prov:Association ;
+	prov:agent w3:Consortium .
+
+ex:act1 prov:qualifiedAssociation ex:ass1 .
+
+ex:ass1 prov:hadPlan process:rec-advance .
+
+ex:del1 a prov:Delegation ;
+	prov:agent w3:Consortium .
+
+w3:Consortium prov:qualifiedDelegation ex:del1 .
+
+ex:del1 prov:hadActivity ex:act1 .
+
+w3:Consortium prov:actedOnBehalfOf w3:Consortium .
+
+tr:WD-prov-dm-20111215 prov:wasDerivedFrom tr:WD-prov-dm-20111215 .
+
+ex:d2 a prov:Derivation ;
+	prov:entity tr:WD-prov-dm-20111215 .
+
+tr:WD-prov-dm-20111215 prov:qualifiedDerivation ex:d2 ;
+	prov:specializationOf tr:WD-prov-dm-20111215 ;
+	prov:alternateOf tr:WD-prov-dm-20111215 ;
+	prov:wasInfluencedBy tr:WD-prov-dm-20111215 .
+
+ex:infl1 a prov:Influence ;
+	prov:influencer tr:WD-prov-dm-20111215 .
+
+tr:WD-prov-dm-20111018 prov:qualifiedInfluence ex:infl1 ;
+	prov:wasInfluencedBy tr:WD-prov-dm-20111215 .
+
+ex:bundle1 a prov:Entity , prov:Bundle ;
+	prov:type "prov:Bundle"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+tr:WD-prov-dm-20111215 prov:mentionOf tr:WD-prov-dm-20111215 ;
+	prov:asInBundle ex:bundle1 ;
+	a prov:Entity ;
+	prov:type "document"^^<http://www.w3.org/2001/XMLSchema#string> ;
+	ex:version "2"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+ex:Luc a prov:Agent , prov:Person ;
+	prov:type "prov:Person"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+ex:Paolo a prov:Agent , prov:Person ;
+	prov:type "prov:Person"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+ex:Khalid a prov:Agent , prov:Person ;
+	prov:type "prov:Person"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+ex:Stephen a prov:Agent , prov:Person ;
+	prov:type "prov:Person"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+ex:Yolanda a prov:Agent , prov:Person ;
+	prov:type "prov:Person"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+ex:Ryan a prov:Agent , prov:Person ;
+	prov:type "prov:Person"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+ex:Paul a prov:Agent , prov:Person ;
+	prov:type "prov:Person"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+ex:Graham a prov:Agent , prov:Person ;
+	prov:type "prov:Person"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+ex:Jim a prov:Agent , prov:Person ;
+	prov:type "prov:Person"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+ex:Simon a prov:Agent , prov:Person ;
+	prov:type "prov:Person"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+ex:James a prov:Agent , prov:Person ;
+	prov:type "prov:Person"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+ex:Satya a prov:Agent , prov:Person ;
+	prov:type "prov:Person"^^<http://www.w3.org/2001/XMLSchema#QName> .
+
+ex:edit1 a prov:Activity ;
+	prov:type "edit"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+tr:WD-prov-dm-20111215 prov:wasGeneratedBy ex:edit1 .
+
+_:node178e342tpx3 a prov:Association ;
+	prov:agent ex:Luc .
+
+ex:edit1 prov:qualifiedAssociation _:node178e342tpx3 ;
+	prov:wasAssociatedWith ex:Luc .
+
+_:node178e342tpx4 a prov:Association ;
+	prov:agent ex:Paolo .
+
+ex:edit1 prov:qualifiedAssociation _:node178e342tpx4 ;
+	prov:wasAssociatedWith ex:Paolo .
+
+_:node178e342tpx5 a prov:Association ;
+	prov:agent ex:Khalid .
+
+ex:edit1 prov:qualifiedAssociation _:node178e342tpx5 ;
+	prov:wasAssociatedWith ex:Khalid .
+
+_:node178e342tpx6 a prov:Association ;
+	prov:agent ex:Stephen .
+
+ex:edit1 prov:qualifiedAssociation _:node178e342tpx6 ;
+	prov:wasAssociatedWith ex:Stephen .
+
+_:node178e342tpx7 a prov:Association ;
+	prov:agent ex:Yolanda .
+
+ex:edit1 prov:qualifiedAssociation _:node178e342tpx7 ;
+	prov:wasAssociatedWith ex:Yolanda .
+
+_:node178e342tpx8 a prov:Association ;
+	prov:agent ex:Ryan .
+
+ex:edit1 prov:qualifiedAssociation _:node178e342tpx8 ;
+	prov:wasAssociatedWith ex:Ryan .
+
+_:node178e342tpx9 a prov:Association ;
+	prov:agent ex:Paul .
+
+ex:edit1 prov:qualifiedAssociation _:node178e342tpx9 ;
+	prov:wasAssociatedWith ex:Paul .
+
+_:node178e342tpx10 a prov:Association ;
+	prov:agent ex:Graham .
+
+ex:edit1 prov:qualifiedAssociation _:node178e342tpx10 ;
+	prov:wasAssociatedWith ex:Graham .
+
+_:node178e342tpx11 a prov:Association ;
+	prov:agent ex:Jim .
+
+ex:edit1 prov:qualifiedAssociation _:node178e342tpx11 ;
+	prov:wasAssociatedWith ex:Jim .
+
+_:node178e342tpx12 a prov:Association ;
+	prov:agent ex:Simon .
+
+ex:edit1 prov:qualifiedAssociation _:node178e342tpx12 ;
+	prov:wasAssociatedWith ex:Simon .
+
+_:node178e342tpx13 a prov:Association ;
+	prov:agent ex:James .
+
+ex:edit1 prov:qualifiedAssociation _:node178e342tpx13 ;
+	prov:wasAssociatedWith ex:James .
+
+_:node178e342tpx14 a prov:Association ;
+	prov:agent ex:Satya .
+
+ex:edit1 prov:qualifiedAssociation _:node178e342tpx14 ;
+	prov:wasAssociatedWith ex:Satya .

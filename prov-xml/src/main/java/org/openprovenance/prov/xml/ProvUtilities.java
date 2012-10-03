@@ -7,6 +7,10 @@ import javax.xml.bind.JAXBElement;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
+
+import org.openprovenance.prov.xml.collection.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.collection.Entry;
+
 import java.lang.reflect.Method;
 
 /** Utilities for manipulating PROV Descriptions. */
@@ -63,7 +67,6 @@ public class ProvUtilities {
                          d.getEntityOrActivityOrWasGeneratedBy());
     }
 
-    @SuppressWarnings("unchecked")
     public List<Statement> getStatement(Document d) {
 	return getObject(Statement.class,
 	                 d.getEntityOrActivityOrWasGeneratedBy());
@@ -282,6 +285,7 @@ public class ProvUtilities {
         if (r instanceof DerivedByInsertionFrom) {
             List<QName> res = new LinkedList<QName>();
             DerivedByInsertionFrom dbif = ((DerivedByInsertionFrom) r);
+            
             for (Entry entry : dbif.getEntry()) {
                 res.add(entry.getEntity().getRef());
             }

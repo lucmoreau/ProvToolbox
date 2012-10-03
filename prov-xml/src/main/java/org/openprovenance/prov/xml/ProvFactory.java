@@ -62,13 +62,15 @@ public class ProvFactory {
     }
 
     protected ObjectFactory of;
-    protected org.openprovenance.prov.xml.collection.ObjectFactory cof;
-    protected org.openprovenance.prov.xml.validation.ObjectFactory vof;
+    final protected org.openprovenance.prov.xml.collection.ObjectFactory cof;
+    final protected org.openprovenance.prov.xml.validation.ObjectFactory vof;
 
     protected DatatypeFactory dataFactory;
 
     public ProvFactory() {
 	of = new ObjectFactory();
+	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
+    	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	init();
     }
 
@@ -82,6 +84,8 @@ public class ProvFactory {
 
     public ProvFactory(ObjectFactory of) {
 	this.of = of;
+	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
+    	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	init();
     }
 

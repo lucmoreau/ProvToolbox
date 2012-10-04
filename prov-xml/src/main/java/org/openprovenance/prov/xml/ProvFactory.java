@@ -15,6 +15,11 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 
+import org.openprovenance.prov.xml.collection.CollectionMemberOf;
+import org.openprovenance.prov.xml.collection.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.collection.DerivedByRemovalFrom;
+import org.openprovenance.prov.xml.collection.DictionaryMemberOf;
+import org.openprovenance.prov.xml.collection.Entry;
 import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,7 +29,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class ProvFactory {
 
-    public static final String packageList = "org.openprovenance.prov.xml";
+    public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.collection:org.openprovenance.prov.xml.validation";
 
     static {
 	initBuilder();
@@ -57,25 +62,41 @@ public class ProvFactory {
     }
 
     protected ObjectFactory of;
+    final protected org.openprovenance.prov.xml.collection.ObjectFactory cof;
+    final protected org.openprovenance.prov.xml.validation.ObjectFactory vof;
 
     protected DatatypeFactory dataFactory;
 
     public ProvFactory() {
 	of = new ObjectFactory();
+	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
+    	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	init();
     }
 
     public ProvFactory(Hashtable<String, String> namespaces) {
-	of = new ObjectFactory();
+    	of = new ObjectFactory();
+    	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
+    	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	this.namespaces = namespaces;
 	init();
     }
 
     public ProvFactory(ObjectFactory of) {
 	this.of = of;
+	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
+    	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	init();
     }
 
+    
+
+    public org.openprovenance.prov.xml.validation.ObjectFactory getValidationObjectFactory() {
+		return vof;
+	}public org.openprovenance.prov.xml.collection.ObjectFactory getCollectionObjectFactory() {
+		return cof;
+	}
+	
     public void addAttribute(HasExtensibility a, Object o) {
 	a.getAny().add(o);
     }
@@ -465,7 +486,7 @@ public class ProvFactory {
 
     public CollectionMemberOf newCollectionMemberOf(QName id, EntityRef after,
 						    List<Entity> entitySet) {
-	CollectionMemberOf res = of.createCollectionMemberOf();
+	CollectionMemberOf res = cof.createCollectionMemberOf();
 	res.setId(id);
 	res.setEntity(after);
 	if (entitySet != null)
@@ -482,7 +503,7 @@ public class ProvFactory {
 							    EntityRef after,
 							    EntityRef before,
 							    List<Entry> keyEntitySet) {
-	DerivedByInsertionFrom res = of.createDerivedByInsertionFrom();
+	DerivedByInsertionFrom res = cof.createDerivedByInsertionFrom();
 	res.setId(id);
 	res.setAfter(after);
 	res.setBefore(before);
@@ -503,7 +524,7 @@ public class ProvFactory {
 							EntityRef after,
 							EntityRef before,
 							List<Object> keys) {
-	DerivedByRemovalFrom res = of.createDerivedByRemovalFrom();
+	DerivedByRemovalFrom res = cof.createDerivedByRemovalFrom();
 	res.setId(id);
 	res.setAfter(after);
 	res.setBefore(before);
@@ -521,7 +542,7 @@ public class ProvFactory {
 
     public DictionaryMemberOf newDictionaryMemberOf(QName id, EntityRef after,
 						    List<Entry> keyEntitySet) {
-	DictionaryMemberOf res = of.createDictionaryMemberOf();
+	DictionaryMemberOf res = cof.createDictionaryMemberOf();
 	res.setId(id);
 	res.setEntity(after);
 	if (keyEntitySet != null)
@@ -684,7 +705,7 @@ return res;
     }
 
     public Entry newEntry(Object key, EntityRef entity) {
-	Entry res = of.createEntry();
+	Entry res = cof.createEntry();
 	res.setKey(key);
 	res.setEntity(entity);
 	return res;
@@ -705,24 +726,6 @@ return res;
     public GenerationRef newGenerationRef(WasGeneratedBy edge) {
 	GenerationRef res = of.createGenerationRef();
 	res.setRef(edge.getId());
-	return res;
-    }
-
-    public HadPrimarySource newHadPrimarySource(QName id, EntityRef derived,
-						EntityRef source) {
-	HadPrimarySource res = of.createHadPrimarySource();
-	res.setId(id);
-	res.setDerived(derived);
-	res.setSource(source);
-	return res;
-    }
-
-    public HadPrimarySource newHadPrimarySource(String id, EntityRef derived,
-						EntityRef source) {
-	HadPrimarySource res = of.createHadPrimarySource();
-	res.setId(stringToQName(id));
-	res.setDerived(derived);
-	res.setSource(source);
 	return res;
     }
 
@@ -1244,43 +1247,6 @@ return res;
 	return u1;
     }
 
-    public WasQuotedFrom newWasQuotedFrom(QName id, EntityRef quote,
-					  EntityRef original) {
-	WasQuotedFrom res = of.createWasQuotedFrom();
-	res.setId(id);
-	res.setQuote(quote);
-	res.setOriginal(original);
-	return res;
-    }
-
-
-    public WasQuotedFrom newWasQuotedFrom(String id, EntityRef quote,
-					  EntityRef original) {
-	WasQuotedFrom res = of.createWasQuotedFrom();
-	res.setId(stringToQName(id));
-	res.setQuote(quote);
-	res.setOriginal(original);
-	return res;
-    }
-
-    public WasRevisionOf newWasRevisionOf(QName id, EntityRef newer,
-					  EntityRef older) {
-	WasRevisionOf res = of.createWasRevisionOf();
-	res.setId(id);
-	res.setNewer(newer);
-	res.setOlder(older);
-	return res;
-    }
-
-    public WasRevisionOf newWasRevisionOf(String id, EntityRef newer,
-					  EntityRef older) {
-	WasRevisionOf res = of.createWasRevisionOf();
-	res.setId(stringToQName(id));
-	res.setNewer(newer);
-	res.setOlder(older);
-	return res;
-    }
-
     public WasStartedBy newWasStartedBy(QName id, ActivityRef aid, EntityRef eid) {
 	WasStartedBy res = of.createWasStartedBy();
 	res.setId(id);
@@ -1340,6 +1306,7 @@ return res;
             res.getEntity().add(entity);
         return res;
     }
+
 
     
 }

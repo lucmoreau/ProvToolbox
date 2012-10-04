@@ -24,15 +24,12 @@
 <xs:schema targetNamespace="http://www.w3.org/ns/prov#"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:prov="http://www.w3.org/ns/prov#"
-           xmlns:cu="http://www.w3.org/1999/xhtml/datatypes/"
            xmlns:xml="http://www.w3.org/XML/1998/namespace"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
 
 
 
-  <xs:import namespace="http://www.w3.org/1999/xhtml/datatypes/"
-             schemaLocation="curie.xsd"/>
   <xs:import namespace="http://www.w3.org/XML/1998/namespace" 
              schemaLocation="xml.xsd"/>
 
@@ -45,7 +42,6 @@
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:value" minOccurs="0" maxOccurs="1"/>
- 
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
@@ -66,7 +62,7 @@
   </xs:complexType>
   
 
-  <xs:complexType name="Used">
+  <xs:complexType name="Usage">
     <xs:sequence>
       <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
       <xs:element name="activity" type="prov:ActivityRef"/>
@@ -80,7 +76,7 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
   
-  <xs:complexType name="WasGeneratedBy">
+  <xs:complexType name="Generation">
     <xs:sequence>
       <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
       <xs:element name="entity"   type="prov:EntityRef"/>
@@ -95,7 +91,7 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
 
-  <xs:complexType name="WasStartedBy">
+  <xs:complexType name="Start">
     <xs:sequence>
       <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
       <xs:element name="activity" type="prov:ActivityRef"/>
@@ -110,7 +106,7 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
 
-  <xs:complexType name="WasEndedBy">
+  <xs:complexType name="End">
     <xs:sequence>
       <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
       <xs:element name="activity" type="prov:ActivityRef"/>
@@ -125,7 +121,7 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
 
-  <xs:complexType name="WasInvalidatedBy">
+  <xs:complexType name="Invalidation">
     <xs:sequence>
       <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
       <xs:element name="entity"   type="prov:EntityRef"/>
@@ -140,7 +136,7 @@
   </xs:complexType>
 
 
-  <xs:complexType name="WasInformedBy">
+  <xs:complexType name="Communication">
     <xs:sequence>
       <xs:element name="effect"  type="prov:ActivityRef"/>
       <xs:element name="cause"   type="prov:ActivityRef"/>
@@ -154,7 +150,7 @@
   <!-- Component 2 -->
 
   
-  <xs:complexType name="WasDerivedFrom">
+  <xs:complexType name="Derivation">
     <xs:sequence>
       <xs:element name="generation"       type="prov:GenerationRef" minOccurs="0"/>
       <xs:element name="usage"            type="prov:UsageRef" minOccurs="0"/>
@@ -168,48 +164,6 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
 
-  <xs:complexType name="WasRevisionOf">
-    <xs:sequence>
-      <xs:element name="generation" type="prov:GenerationRef" minOccurs="0"/>
-      <xs:element name="usage"      type="prov:UsageRef" minOccurs="0"/>
-      <xs:element name="activity"   type="prov:ActivityRef" minOccurs="0"/>
-      <xs:element name="newer"      type="prov:EntityRef"/>
-      <xs:element name="older"      type="prov:EntityRef"/>
-      <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
-      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-    <xs:attribute ref="prov:id"/>
-  </xs:complexType>
-
-  <xs:complexType name="WasQuotedFrom">
-    <xs:sequence>
-      <xs:element name="generation" type="prov:GenerationRef" minOccurs="0"/>
-      <xs:element name="usage"      type="prov:UsageRef" minOccurs="0"/>
-      <xs:element name="activity"   type="prov:ActivityRef" minOccurs="0"/>
-      <xs:element name="quote"      type="prov:EntityRef"/>
-      <xs:element name="original"   type="prov:EntityRef"/>
-      <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
-      <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-    <xs:attribute ref="prov:id"/>
-  </xs:complexType>
-
-  <xs:complexType name="HadPrimarySource">
-    <xs:sequence>
-      <xs:element name="generation" type="prov:GenerationRef" minOccurs="0"/>
-      <xs:element name="usage"      type="prov:UsageRef" minOccurs="0"/>
-      <xs:element name="activity"   type="prov:ActivityRef" minOccurs="0"/>
-      <xs:element name="derived"    type="prov:EntityRef"/>
-      <xs:element name="source"     type="prov:EntityRef"/>
-      <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
-      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
-      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-    <xs:attribute ref="prov:id"/>
-  </xs:complexType>
-
   <!-- Component 3 -->
   
   <xs:element name="agent" type="prov:Agent"/>
@@ -217,12 +171,13 @@
     <xs:sequence>
       <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>		
       <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
 
-  <xs:complexType name="WasAssociatedWith">
+  <xs:complexType name="Association">
     <xs:sequence>
       <xs:element name="activity" type="prov:ActivityRef"/>
       <xs:element name="agent"    type="prov:AgentRef"/>
@@ -236,7 +191,7 @@
   </xs:complexType>
 
 
-  <xs:complexType name="WasAttributedTo">
+  <xs:complexType name="Attribution">
     <xs:sequence>
       <xs:element name="entity" type="prov:EntityRef"/>
       <xs:element name="agent"    type="prov:AgentRef"/>
@@ -247,7 +202,7 @@
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
 
-  <xs:complexType name="ActedOnBehalfOf">
+  <xs:complexType name="Delegation">
     <xs:sequence>
       <xs:element name="subordinate" type="prov:AgentRef"/>
       <xs:element name="responsible" type="prov:AgentRef"/>
@@ -260,7 +215,7 @@
   </xs:complexType>
 
 
-  <xs:complexType name="WasInfluencedBy">
+  <xs:complexType name="Influence">
     <xs:sequence>
       <xs:element name="influencee"     type="prov:AnyRef"/>
       <xs:element name="influencer"     type="prov:AnyRef"/>
@@ -275,21 +230,21 @@
 
   <!-- Component 5 -->
 
-  <xs:complexType name="AlternateOf">
+  <xs:complexType name="Alternate">
     <xs:sequence>
       <xs:element name="entity2"   type="prov:EntityRef"/>
       <xs:element name="entity1"   type="prov:EntityRef"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="SpecializationOf">
+  <xs:complexType name="Specialization">
     <xs:sequence>
       <xs:element name="specializedEntity"   type="prov:EntityRef"/>
       <xs:element name="generalEntity"   type="prov:EntityRef"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="MentionOf">
+  <xs:complexType name="Mention">
     <xs:sequence>
       <xs:element name="specializedEntity" type="prov:EntityRef"/>
       <xs:element name="generalEntity"     type="prov:EntityRef"/>
@@ -299,7 +254,7 @@
 
   
   <!-- Component 6 -->
-
+<!-- 
   <xs:complexType name="DerivedByInsertionFrom">
     <xs:sequence>
       <xs:element name="after"           type="prov:EntityRef"/>
@@ -358,7 +313,16 @@
     </xs:sequence>
   </xs:complexType>
 
+-->
 
+  <xs:complexType name="Membership">
+    <xs:sequence>
+      <xs:element name="collection"          type="prov:EntityRef"/>
+      <xs:element name="entity"          type="prov:EntityRef" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+ 
   <xs:complexType name="InternationalizedString">
     <xs:simpleContent>
       <xs:extension base="xs:string">
@@ -384,8 +348,8 @@
        These should be prov:QualifiedName
        but instead are xsd:QName for tools to process them -->
 
-  <xs:attribute name="id"  type="cu:CURIE"/>
-  <xs:attribute name="ref" type="cu:CURIE"/>
+  <xs:attribute name="id"  type="xs:QName"/>
+  <xs:attribute name="ref" type="xs:QName"/>
 
   <xs:complexType name="ActivityRef">
     <xs:attribute ref="prov:ref"/>
@@ -410,110 +374,60 @@
   </xs:complexType>
 
 
-   <xs:group name="documentElements">
-     <xs:sequence>
-       <xs:choice minOccurs="0" maxOccurs="unbounded">
-         <xs:element name="entity"               type="prov:Entity"/>
-         <xs:element name="activity"             type="prov:Activity"/>
-         <xs:element name="wasGeneratedBy"       type="prov:WasGeneratedBy"/>
-         <xs:element name="used"                 type="prov:Used"/>
-         <xs:element name="wasInformedBy"        type="prov:WasInformedBy"/>
-         <xs:element name="wasStartedBy"         type="prov:WasStartedBy"/>
-         <xs:element name="wasEndedBy"           type="prov:WasEndedBy"/>
-         <xs:element name="wasInvalidatedBy"     type="prov:WasInvalidatedBy"/>
- 
-         <xs:element name="wasDerivedFrom"       type="prov:WasDerivedFrom"/>
- 
-         <xs:element name="agent"                type="prov:Agent"/>
-         <xs:element name="wasAttributedTo"      type="prov:WasAttributedTo"/>
-         <xs:element name="wasAssociatedWith"    type="prov:WasAssociatedWith"/>
-         <xs:element name="actedOnBehalfOf"      type="prov:ActedOnBehalfOf"/>
-         <xs:element name="wasInfluencedBy"      type="prov:WasInfluencedBy"/>
-         
-         <xs:element name="specializationOf"     type="prov:SpecializationOf"/>
-         <xs:element name="alternateOf"          type="prov:AlternateOf"/>
-         <xs:element name="mentionOf"            type="prov:MentionOf"/>
- 
-         <xs:element name="collectionMemberOf"   type="prov:CollectionMemberOf"/>
-       </xs:choice>
-     </xs:sequence>
-   </xs:group>
+  <xs:group name="documentElements">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="entity"               type="prov:Entity"/>
+        <xs:element name="activity"             type="prov:Activity"/>
+        <xs:element name="wasGeneratedBy"       type="prov:Generation"/>
+        <xs:element name="used"                 type="prov:Usage"/>
+        <xs:element name="wasInformedBy"        type="prov:Communication"/>
+        <xs:element name="wasStartedBy"         type="prov:Start"/>
+        <xs:element name="wasEndedBy"           type="prov:End"/>
+        <xs:element name="wasInvalidatedBy"     type="prov:Invalidation"/>
+
+        <xs:element name="wasDerivedFrom"       type="prov:Derivation"/>
+
+        <xs:element name="agent"                type="prov:Agent"/>
+        <xs:element name="wasAttributedTo"      type="prov:Attribution"/>
+        <xs:element name="wasAssociatedWith"    type="prov:Association"/>
+        <xs:element name="actedOnBehalfOf"      type="prov:Delegation"/>
+        <xs:element name="wasInfluencedBy"      type="prov:Influence"/>
+        
+        <xs:element name="specializationOf"     type="prov:Specialization"/>
+        <xs:element name="alternateOf"          type="prov:Alternate"/>
+        <xs:element name="mentionOf"            type="prov:Mention"/>
+
+        <xs:element name="hadMember"   			type="prov:Membership"/>
+
+<!-- not nice for jaxb conversion 		<xs:any namespace="##other"/>  -->
+      </xs:choice>
+    </xs:sequence>
+  </xs:group>
  
    <xs:element name="document" type="prov:Document" />
    <xs:complexType name="Document">
      <xs:sequence>
        <xs:choice maxOccurs="unbounded">
          <xs:group ref="prov:documentElements"/>
-         <xs:element name="bundle" type="prov:Bundle"/>
+         <xs:element name="bundle" type="prov:NamedBundle"/>
        </xs:choice>
      </xs:sequence>
    </xs:complexType>
    
-  <xs:complexType name="Dependencies">
+  
+  <xs:complexType name="Statements">
     <xs:sequence>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-
-            <xs:element name="used"                 type="prov:Used"/>
-            <xs:element name="wasGeneratedBy"       type="prov:WasGeneratedBy"/>
-            <xs:element name="wasStartedBy"         type="prov:WasStartedBy"/>
-            <xs:element name="wasEndedBy"           type="prov:WasEndedBy"/>
-            <xs:element name="wasInvalidatedBy"     type="prov:WasInvalidatedBy"/>
-            <xs:element name="wasInformedBy"        type="prov:WasInformedBy"/>
-
-
-            <xs:element name="wasDerivedFrom"       type="prov:WasDerivedFrom"/>
-            <xs:element name="wasRevisionOf"        type="prov:WasRevisionOf"/>
-            <xs:element name="wasQuotedFrom"        type="prov:WasQuotedFrom"/>
-            <xs:element name="hadPrimarySource"     type="prov:HadPrimarySource"/>
-
-            <xs:element name="wasAttributedTo"      type="prov:WasAttributedTo"/>
-            <xs:element name="wasAssociatedWith"    type="prov:WasAssociatedWith"/>
-            <xs:element name="actedOnBehalfOf"      type="prov:ActedOnBehalfOf"/>
-            <xs:element name="wasInfluencedBy"      type="prov:WasInfluencedBy"/>
-
-            <xs:element name="alternateOf"          type="prov:AlternateOf"/>
-            <xs:element name="specializationOf"     type="prov:SpecializationOf"/>
-            <xs:element name="mentionOf"            type="prov:MentionOf"/>
-
-            <xs:element name="derivedByInsertionFrom" type="prov:DerivedByInsertionFrom"/>
-            <xs:element name="derivedByRemovalFrom"   type="prov:DerivedByRemovalFrom"/>
-            <xs:element name="collectionMemberOf"     type="prov:CollectionMemberOf"/>
-            <xs:element name="dictionaryMemberOf"     type="prov:DictionaryMemberOf"/>
-
+       <xs:group ref="prov:documentElements"/>
       </xs:choice>
     </xs:sequence>
   </xs:complexType>
   
   
-  <!-- BUNDLES -->
-  
-  <xs:element name="bundle" type="prov:Bundle">
-    <xs:annotation>
-      <xs:documentation>A set of assertions about the provenance of things</xs:documentation>
-    </xs:annotation>
-  </xs:element>
-  
-  <!-- a wrapper element for all records, used in Bundle or NamedBundle -->
-  <xs:element name="records" type="prov:Records"/>
-  <xs:complexType name="Records">
-    <xs:sequence>
-      <xs:element ref="prov:activity" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:entity"   minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:agent"    minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="dependencies" type="prov:Dependencies" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-  
-  <xs:complexType name="Bundle">
-    <xs:sequence>
-      <xs:element ref="prov:records"  minOccurs="1" maxOccurs="1"/>
-      <xs:element name="bundle" type="prov:NamedBundle" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-
   <xs:complexType name="NamedBundle">
     <xs:sequence>
-      <xs:element ref="prov:records"  minOccurs="1" maxOccurs="1"/>
+      <xs:group ref="prov:documentElements"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -521,45 +435,20 @@
 
 <!-- To support validator, this is not part of prov xml! -->
 
-  <xs:element name="validationReport" type="prov:ValidationReport"/>
 
-
-  <xs:complexType name="ValidationReport">
-    <xs:sequence>
-      <xs:element name="cycle" type="prov:Dependencies" minOccurs="0"  maxOccurs="unbounded"/>
-      <xs:element name="failedMerge" type="prov:MergeReport" minOccurs="0"  maxOccurs="unbounded"/>
-      <xs:element name="successfulMerge" type="prov:MergeReport" minOccurs="0"  maxOccurs="unbounded"/>
-      <xs:element name="qualifiedNameMismatch" type="prov:MergeReport" minOccurs="0"  maxOccurs="unbounded"/>
-      <xs:element name="specializationReport" type="prov:SpecializationReport"/>
-    </xs:sequence>
-  </xs:complexType>
-
-
-  <xs:complexType name="MergeReport">
-    <xs:sequence>
-      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-    <xs:attribute name="key" type="xs:string"/>
-  </xs:complexType>
-  
-  <xs:complexType name="SpecializationReport">
-    <xs:sequence>
-     <xs:element ref="prov:specializationOf" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-  
-  <xs:element name="used"               type="prov:Used"/>
-  <xs:element name="wasGeneratedBy"     type="prov:WasGeneratedBy"/>
-  <xs:element name="wasStartedBy"       type="prov:WasStartedBy"/>
-  <xs:element name="wasEndedBy"         type="prov:WasEndedBy"/>
-  <xs:element name="wasInvalidatedBy"   type="prov:WasInvalidatedBy"/>
-  <xs:element name="wasInformedBy"      type="prov:WasInformedBy"/>
-  <xs:element name="wasDerivedFrom"     type="prov:WasDerivedFrom"/>
-  <xs:element name="wasAssociatedWith"  type="prov:WasAssociatedWith"/>
-  <xs:element name="actedOnBehalfOf"    type="prov:ActedOnBehalfOf"/>
-  <xs:element name="wasAttributedTo"    type="prov:WasAttributedTo"/>
-  <xs:element name="wasInfluencedBy"    type="prov:WasInfluencedBy"/>
-  <xs:element name="specializationOf"   type="prov:SpecializationOf"/>
+  <xs:element name="used"               type="prov:Usage"/>
+  <xs:element name="wasGeneratedBy"     type="prov:Generation"/>
+  <xs:element name="wasStartedBy"       type="prov:Start"/>
+  <xs:element name="wasEndedBy"         type="prov:End"/>
+  <xs:element name="wasInvalidatedBy"   type="prov:Invalidation"/>
+  <xs:element name="wasInformedBy"      type="prov:Communication"/>
+  <xs:element name="wasDerivedFrom"     type="prov:Derivation"/>
+  <xs:element name="wasAssociatedWith"  type="prov:Association"/>
+  <xs:element name="actedOnBehalfOf"    type="prov:Delegation"/>
+  <xs:element name="wasAttributedTo"    type="prov:Attribution"/>
+  <xs:element name="wasInfluencedBy"    type="prov:Influence"/>
+  <xs:element name="specializationOf"   type="prov:Specialization"/>
+  <xs:element name="mentionOf"          type="prov:Mention"/>
   
   
 </xs:schema>

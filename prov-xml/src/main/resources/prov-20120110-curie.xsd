@@ -19,7 +19,9 @@
 
 
 
-  <xs:import namespace="http://www.w3.org/1999/xhtml/datatypes/" />
+  <xs:import namespace="http://www.w3.org/1999/xhtml/datatypes/"
+             schemaLocation="curie.xsd"/>
+             
   <xs:import namespace="http://www.w3.org/XML/1998/namespace" 
              schemaLocation="xml.xsd"/>
 

@@ -22,11 +22,14 @@
       <version>${jaxb.api.version}</version>
     </dependency>
 
+<!--
     <dependency>
      <groupId>com.sun.xml.bind</groupId>
      <artifactId>jaxb-impl</artifactId>
      <version>${jaxb.impl.version}</version>
     </dependency>
+-->
+
 
 
     <dependency>
@@ -45,6 +48,7 @@
 
 -->
 
+<!--
     <dependency>
       <groupId>commons-jxpath</groupId>
       <artifactId>commons-jxpath</artifactId>
@@ -65,7 +69,7 @@
  	   </exclusions>
     </dependency>
 
-
+-->
 
 
  </dependencies>
@@ -86,6 +90,7 @@
       <plugin>
         <groupId>org.jvnet.jaxb2.maven2</groupId>
 	    <artifactId>maven-jaxb2-plugin</artifactId>
+	    <version>0.8.2</version>
         <executions>
           <execution>
             <id>go1</id>
@@ -99,30 +104,34 @@
 			     <plugin>
 				   <groupId>org.jvnet.hyperjaxb3</groupId>
 				   <artifactId>hyperjaxb3-ejb-plugin</artifactId>
-				   <version>0.2.RC1</version>
+				   <version>0.5.4</version>
 			     </plugin>
 		       </plugins>
                <schemaIncludes>
-                 <schemaInclude>**/curie.xsd</schemaInclude>
+                 <!--
+                 <schemaInclude>**/curie.xsd</schemaInclude> -->
                  <schemaInclude>**/toolbox.xsd</schemaInclude>
-                 <schemaInclude>**/prov-20120920.xsd</schemaInclude>
-<!--
-                 <schemaInclude>**/validation.xsd</schemaInclude> -->
+                 <schemaInclude>**/prov-20121003.xsd</schemaInclude>
+                 <schemaInclude>**/validation.xsd</schemaInclude>
+                 <schemaInclude>**/collection.xsd</schemaInclude>
 
                </schemaIncludes>
                <bindingDirectory>src/main/resources</bindingDirectory>
                <bindingIncludes>
                   <bindingInclude>bindings.xjb</bindingInclude>
                </bindingIncludes> 
-               <strict>true</strict> 
+               <debug>true</debug> 
+               <strict>false</strict> 
                <verbose>true</verbose>     
                <extension>true</extension>     
+	       <!-- <catalog>src/main/resources/catalog.cat</catalog> -->
                <args>
                  <arg>-npa</arg>
 			     <arg>-Xequals</arg>
   			     <arg>-XhashCode</arg>
 			     <arg>-XtoString</arg>
- 			     <!-- <arg>-Xhyperjaxb3-ejb</arg>
+			     <!--  
+ 			      <arg>-Xhyperjaxb3-ejb</arg>
 			          <arg>-Xhyperjaxb3-ejb-roundtripTestClassName=RoundtripTest</arg> -->
                </args>
             </configuration>
@@ -291,7 +300,7 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasType, HasRole, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasType, HasLocation, HasRole, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="Used.java" />
                 </exec>
@@ -400,7 +409,7 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasLocation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasGeneratedBy.java" />
                 </exec>
@@ -414,14 +423,14 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasLocation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasInvalidatedBy.java" />
                 </exec>
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasLocation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasStartedBy.java" />
                 </exec>
@@ -435,7 +444,7 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasLocation, HasType, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasEndedBy.java" />
                 </exec>

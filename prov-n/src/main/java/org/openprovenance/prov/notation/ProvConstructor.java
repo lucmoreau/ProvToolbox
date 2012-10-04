@@ -30,14 +30,11 @@ import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.WasEndedBy;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.WasAttributedTo;
-import org.openprovenance.prov.xml.WasRevisionOf;
-import org.openprovenance.prov.xml.WasQuotedFrom;
-import org.openprovenance.prov.xml.DerivedByInsertionFrom;
-import org.openprovenance.prov.xml.DerivedByRemovalFrom;
-import org.openprovenance.prov.xml.CollectionMemberOf;
-import org.openprovenance.prov.xml.DictionaryMemberOf;
-import org.openprovenance.prov.xml.Entry;
-import org.openprovenance.prov.xml.HadPrimarySource;
+import org.openprovenance.prov.xml.collection.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.collection.DerivedByRemovalFrom;
+import org.openprovenance.prov.xml.collection.CollectionMemberOf;
+import org.openprovenance.prov.xml.collection.DictionaryMemberOf;
+import org.openprovenance.prov.xml.collection.Entry;
 import org.openprovenance.prov.xml.WasInfluencedBy;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.MentionOf;
@@ -490,74 +487,9 @@ public  class ProvConstructor implements TreeConstructor {
         return d;
     }
 
-    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object a, Object g2, Object u1, Object dAttrs) {
-        String s_id=(String)id;
-        String s_id2=(String)id2;
-        String s_id1=(String)id1;
+ 
+   
 
-        Entity e2=entityTable.get(s_id2);
-        EntityRef e2r=pFactory.newEntityRef(e2);
-        Entity e1=entityTable.get(s_id1);
-        EntityRef e1r=pFactory.newEntityRef(e1);
-
-        WasRevisionOf d=pFactory.newWasRevisionOf(s_id,
-                                                  e2r,
-                                                  e1r);
-
-        if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
-        if (g2!=null) d.setGeneration(pFactory.newGenerationRef((String)g2));
-        if (u1!=null) d.setUsage(pFactory.newUsageRef((String)u1));
-        List<?> attrs=(List<?>)dAttrs;
-        d.getAny().addAll(attrs);
-
-        return d;
-    }
-
-    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object a, Object g2, Object u1, Object dAttrs) {
-        String s_id=(String)id;
-        String s_id2=(String)id2;
-        String s_id1=(String)id1;
-
-        Entity e2=entityTable.get(s_id2);
-        EntityRef e2r=pFactory.newEntityRef(e2);
-        Entity e1=entityTable.get(s_id1);
-        EntityRef e1r=pFactory.newEntityRef(e1);
-
-        WasQuotedFrom d=pFactory.newWasQuotedFrom(s_id,
-                                                  e2r,
-                                                  e1r);
-
-        if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
-        if (g2!=null) d.setGeneration(pFactory.newGenerationRef((String)g2));
-        if (u1!=null) d.setUsage(pFactory.newUsageRef((String)u1));
-
-
-        List<?> attrs=(List<?>)dAttrs;
-        d.getAny().addAll(attrs);
-        return d;
-    }
-
-    public Object convertHadPrimarySource(Object id, Object id2,Object id1, Object a, Object g2, Object u1, Object dAttrs) {
-        String s_id=(String)id;
-        String s_id2=(String)id2;
-        String s_id1=(String)id1;
-        Entity e2=entityTable.get(s_id2);
-        EntityRef e2r=pFactory.newEntityRef(e2);
-        Entity e1=entityTable.get(s_id1);
-        EntityRef e1r=pFactory.newEntityRef(e1);
-
-        HadPrimarySource d=pFactory.newHadPrimarySource(s_id,
-                                                        e2r,
-                                                        e1r);
-
-        if (a!=null) d.setActivity(pFactory.newActivityRef((String)a));
-        if (g2!=null) d.setGeneration(pFactory.newGenerationRef((String)g2));
-        if (u1!=null) d.setUsage(pFactory.newUsageRef((String)u1));
-
-        List<?> attrs=(List<?>)dAttrs;
-        d.getAny().addAll(attrs);
-        return d;
-    }
     public Object convertWasInfluencedBy(Object id, Object id2, Object id1, Object dAttrs) {
         String s_id=(String)id;
         String s_id2=(String)id2;

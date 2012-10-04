@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<xs:schema targetNamespace="http://openprovenance.org/collection#" 
+           elementFormDefault="qualified" 
+           attributeFormDefault="unqualified" 
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:col="http://openprovenance.org/collection#" 
+           xmlns:prov="http://www.w3.org/ns/prov#">
+
+
+       <xs:import schemaLocation="prov-20121003.xsd" namespace="http://www.w3.org/ns/prov#"></xs:import> 
+
+	
+	<xs:complexType name="DerivedByInsertionFrom">
+		<xs:sequence>
+			<xs:element name="after" type="prov:EntityRef" />
+			<xs:element name="before" type="prov:EntityRef" />
+			<xs:element ref="prov:label" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element ref="prov:type" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="entry" type="col:Entry" minOccurs="1"
+				maxOccurs="unbounded" />
+			<xs:any namespace="##other" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute ref="prov:id" />
+	</xs:complexType>
+
+	<xs:complexType name="DerivedByRemovalFrom">
+		<xs:sequence>
+			<xs:element name="after" type="prov:EntityRef" />
+			<xs:element name="before" type="prov:EntityRef" />
+			<xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="key" type="xs:anySimpleType" minOccurs="1" maxOccurs="unbounded" />
+			<xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute ref="prov:id" />
+	</xs:complexType>
+
+	<xs:complexType name="CollectionMemberOf">
+		<xs:sequence>
+			<xs:element name="entity" type="prov:EntityRef" />
+			<xs:element name="member" type="prov:Entity" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="complete" type="xs:boolean" />
+			<xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute ref="prov:id" />
+	</xs:complexType>
+
+	<xs:complexType name="DictionaryMemberOf">
+		<xs:sequence>
+			<xs:element name="entity" type="prov:EntityRef" />
+			<xs:element name="entry" type="col:Entry" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="complete" type="xs:boolean" />
+			<xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute ref="prov:id" />
+	</xs:complexType>
+
+
+	<xs:element name="key" type="xs:anySimpleType" />
+
+	<xs:complexType name="Entry">
+		<xs:sequence>
+			<xs:element ref="col:key" minOccurs="1" maxOccurs="1" />
+			<xs:element name="entity" type="prov:EntityRef" minOccurs="1" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+ 
+</xs:schema>

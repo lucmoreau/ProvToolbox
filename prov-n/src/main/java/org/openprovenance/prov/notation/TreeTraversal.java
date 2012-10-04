@@ -208,6 +208,7 @@ public class TreeTraversal {
             Object dAttrs=convert(ast.getChild(6));
             return c.convertWasDerivedFrom(uid,id2,id1,pe,q2,q1,dAttrs);
 
+            /*
         case PROV_NParser.WRO:
             uidTree=ast.getChild(0);
             if (uidTree.getChildCount()>0) {
@@ -249,7 +250,8 @@ public class TreeTraversal {
             q1=convert(ast.getChild(5));
             dAttrs=convert(ast.getChild(6));
             return c.convertHadPrimarySource(uid,id2,id1,pe,q2,q1,dAttrs);
-
+*/
+            
         case PROV_NParser.INFL:
             uidTree=ast.getChild(0);
             if (uidTree.getChildCount()>0) {

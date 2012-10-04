@@ -10,7 +10,7 @@
            xmlns:prov="http://www.w3.org/ns/prov#">
 
 
-       <xs:import schemaLocation="prov-20120920.xsd" namespace="http://www.w3.org/ns/prov#"></xs:import> 
+       <xs:import schemaLocation="prov-20121003.xsd" namespace="http://www.w3.org/ns/prov#"></xs:import> 
 
 	
 	<xs:complexType name="DerivedByInsertionFrom">

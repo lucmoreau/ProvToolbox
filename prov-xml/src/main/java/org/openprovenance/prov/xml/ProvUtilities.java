@@ -118,9 +118,7 @@ public class ProvUtilities {
         if (r instanceof WasDerivedFrom) {
             return ((WasDerivedFrom) r).getGeneratedEntity().getRef();
         }
-        if (r instanceof WasRevisionOf) {
-            return ((WasRevisionOf) r).getNewer().getRef();
-        }
+       
         if (r instanceof WasAssociatedWith) {
             return ((WasAssociatedWith) r).getActivity().getRef();
         }
@@ -196,10 +194,7 @@ public class ProvUtilities {
         if (r instanceof WasInfluencedBy) {
             return ((WasInfluencedBy) r).getInfluencer().getRef();
         }
-        if (r instanceof WasRevisionOf) {
-            return ((WasRevisionOf) r).getOlder().getRef();
-        }
-        if (r instanceof WasAssociatedWith) {
+          if (r instanceof WasAssociatedWith) {
             return ((WasAssociatedWith) r).getAgent().getRef();
         }
         if (r instanceof WasAttributedTo) {

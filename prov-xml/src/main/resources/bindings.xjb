@@ -5,6 +5,7 @@
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+        <jaxb:globalBindings choiceContentProperty="true"/> 
 
 
 <!--
@@ -16,11 +17,60 @@
   </jaxb:globalBindings>
 -->
 
-    <jaxb:bindings schemaLocation="prov-20120920.xsd" 
-                   node="/xs:schema">       
+    <jaxb:bindings schemaLocation="prov-20121003.xsd" 
+                   node="/xs:schema">    
+
+
+
         <jaxb:schemaBindings>
+
             <jaxb:package name="org.openprovenance.prov.xml"/>
         </jaxb:schemaBindings>
+
+	<jaxb:bindings node="xs:complexType[@name='Association']">
+	  <jaxb:class name="WasAssociatedWith"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Usage']">
+	  <jaxb:class name="Used"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Generation']">
+	  <jaxb:class name="WasGeneratedBy"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Invalidation']">
+	  <jaxb:class name="WasInvalidatedBy"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Start']">
+	  <jaxb:class name="WasStartedBy"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='End']">
+	  <jaxb:class name="WasEndedBy"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Communication']">
+	  <jaxb:class name="WasInformedBy"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Derivation']">
+	  <jaxb:class name="WasDerivedFrom"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Influence']">
+	  <jaxb:class name="WasInfluencedBy"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Attribution']">
+	  <jaxb:class name="WasAttributedTo"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Delegation']">
+	  <jaxb:class name="ActedOnBehalfOf"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Specialization']">
+	  <jaxb:class name="SpecializationOf"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Alternate']">
+	  <jaxb:class name="AlternateOf"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Mention']">
+	  <jaxb:class name="MentionOf"/>
+	</jaxb:bindings>
+
+
 
 	<!--
 	<jaxb:bindings node="xs:complexType[@name='TypedLiteral']">

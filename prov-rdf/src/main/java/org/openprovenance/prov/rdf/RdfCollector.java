@@ -16,7 +16,6 @@ import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Element;
-import org.openprovenance.prov.xml.HadPrimarySource;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.HasLabel;
 import org.openprovenance.prov.xml.HasRole;
@@ -34,9 +33,8 @@ import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasInfluencedBy;
 import org.openprovenance.prov.xml.WasInformedBy;
 import org.openprovenance.prov.xml.WasInvalidatedBy;
-import org.openprovenance.prov.xml.WasQuotedFrom;
-import org.openprovenance.prov.xml.WasRevisionOf;
 import org.openprovenance.prov.xml.WasStartedBy;
+import org.openrdf.model.BNode;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
@@ -49,8 +47,8 @@ import org.openrdf.rio.helpers.RDFHandlerBase;
 
 public class RdfCollector extends RDFHandlerBase {
 
-	private static String PROV = "http://www.w3.org/ns/prov#";
-	private static String XMLS = "http://www.w3.org/2001/XMLSchema#";
+	public static String PROV = "http://www.w3.org/ns/prov#";
+	public static String XMLS = "http://www.w3.org/2001/XMLSchema#";
 
 	enum ProvType
 	{
@@ -114,8 +112,8 @@ public class RdfCollector extends RDFHandlerBase {
 
 	}
 
-	private ProvFactory pFactory;
-	private HashMap<QName, Set<Statement>> collator;
+	protected ProvFactory pFactory;
+	protected HashMap<QName, Set<Statement>> collator;
 	private Hashtable<QName, BundleHolder> bundles;
 	private Document document;
 	private Hashtable<String, String> revnss;
@@ -137,9 +135,18 @@ public class RdfCollector extends RDFHandlerBase {
 		this.revnss.put(namespace, prefix);
 	}
 
-	private QName qNameFromURI(URI uri)
-	{
-		return new QName(uri.getNamespace(), uri.getLocalName());
+	protected QName qNameFromResource(Resource resource) {
+		if(resource instanceof URI) {
+
+			return new QName(((URI)resource).getNamespace(), ((URI)(resource)).getLocalName());
+		}
+		else if(resource instanceof BNode) {
+			return new QName(((BNode)(resource)).getID());
+		}
+		else {
+			System.err.println("Unknown type");
+			return null;
+		}
 	}
 
 	private boolean isProvURI(URI uri)
@@ -156,9 +163,9 @@ public class RdfCollector extends RDFHandlerBase {
 		QName key = new QName("");
 		if (context != null && context instanceof URI)
 		{
-			key = qNameFromURI((URI) context);
+			key = qNameFromResource(context);
 		}
-		
+
 		if (!bundles.containsKey(key))
 		{
 			bundles.put(key, new BundleHolder());
@@ -166,33 +173,62 @@ public class RdfCollector extends RDFHandlerBase {
 		return bundles.get(key);
 	}
 
-	private void store(Resource context,
-			org.openprovenance.prov.xml.Activity activity)
+	protected void store(Resource context,
+			org.openprovenance.prov.xml.Element element)
 	{
-		getBundleHolder(context).addActivity(activity);
+		if (element instanceof org.openprovenance.prov.xml.Activity)
+		{
+			getBundleHolder(context).addActivity(
+					(org.openprovenance.prov.xml.Activity) element);
+		} else if (element instanceof org.openprovenance.prov.xml.Entity)
+		{
+
+			getBundleHolder(context).addEntity(
+					(org.openprovenance.prov.xml.Entity) element);
+		} else if (element instanceof org.openprovenance.prov.xml.Agent)
+		{
+
+			getBundleHolder(context).addAgent(
+					(org.openprovenance.prov.xml.Agent) element);
+		}
 	}
 
-	private void store(Resource context, org.openprovenance.prov.xml.Agent agent)
+	protected void store(Resource context,
+			org.openprovenance.prov.xml.Relation0 relation0)
 	{
-		getBundleHolder(context).addAgent(agent);
-
+		getBundleHolder(context).addStatement(
+				(org.openprovenance.prov.xml.Statement) relation0);
 	}
 
-	private void store(Resource context,
-			org.openprovenance.prov.xml.Entity entity)
-	{
-		getBundleHolder(context).addEntity(entity);
+	/* Utility functions */
 
+	protected List<Statement> getStatementsForPredicate(QName qname, String uri)
+	{
+		ArrayList<Statement> statements = new ArrayList<Statement>();
+		for (Statement statement : collator.get(qname))
+		{
+			if (statement.getPredicate().stringValue().equals(uri))
+			{
+				statements.add(statement);
+			}
+		}
+		return statements;
 	}
 
-	private void store(Resource context,
-			org.openprovenance.prov.xml.Statement statement)
+	protected Statement getSingleStatementForPredicate(QName qname, String uri)
 	{
-		getBundleHolder(context).addStatement(statement);
+		List<Statement> statements = getStatementsForPredicate(qname, uri);
+		assert (statements.size() <= 1);
 
+		Statement statement = null;
+		if (statements.size() == 1)
+		{
+			statement = statements.get(0);
+		}
+		return statement;
 	}
 
-	private ProvType getResourceType(QName qname)
+	protected ProvType getResourceType(QName qname)
 	{
 		Set<Statement> statements = collator.get(qname);
 		ProvType currentType = null;
@@ -219,7 +255,7 @@ public class RdfCollector extends RDFHandlerBase {
 		return currentType;
 	}
 
-	private Object decodeLiteral(Literal literal)
+	protected Object decodeLiteral(Literal literal)
 	{
 		String dataType = XMLS + "string";
 		if (literal.getDatatype() != null)
@@ -241,6 +277,8 @@ public class RdfCollector extends RDFHandlerBase {
 			return null;
 		}
 	}
+
+	/* Prov-specific functions */
 
 	private Set<Statement> handleBaseStatements(Element element, QName qname)
 	{
@@ -313,8 +351,7 @@ public class RdfCollector extends RDFHandlerBase {
 		return statements;
 	}
 
-	@Override
-	public void endRDF()
+	protected void buildGraph()
 	{
 		for (QName qname : collator.keySet())
 		{
@@ -335,6 +372,10 @@ public class RdfCollector extends RDFHandlerBase {
 				System.out.println("Unhandled type: " + type);
 			}
 		}
+	}
+
+	protected void buildBundles()
+	{
 
 		// Add 'default' bundle
 		if (bundles.containsKey(new QName("")))
@@ -379,6 +420,14 @@ public class RdfCollector extends RDFHandlerBase {
 			document.getEntityOrActivityOrWasGeneratedBy().add(bundle);
 		}
 
+	}
+
+	@Override
+	public void endRDF()
+	{
+		buildGraph();
+		buildBundles();
+
 		for (QName qname : collator.keySet())
 		{
 			if (collator.get(qname).size() > 0)
@@ -393,32 +442,6 @@ public class RdfCollector extends RDFHandlerBase {
 				}
 			}
 		}
-	}
-
-	private List<Statement> getStatementsForPredicate(QName qname, String uri)
-	{
-		ArrayList<Statement> statements = new ArrayList<Statement>();
-		for (Statement statement : collator.get(qname))
-		{
-			if (statement.getPredicate().stringValue().equals(uri))
-			{
-				statements.add(statement);
-			}
-		}
-		return statements;
-	}
-
-	private Statement getSingleStatementForPredicate(QName qname, String uri)
-	{
-		List<Statement> statements = getStatementsForPredicate(qname, uri);
-		assert (statements.size() <= 1);
-
-		Statement statement = null;
-		if (statements.size() == 1)
-		{
-			statement = statements.get(0);
-		}
-		return statement;
 	}
 
 	private void createEntity(QName qname)
@@ -440,57 +463,52 @@ public class RdfCollector extends RDFHandlerBase {
 			Value value = statement.getObject();
 			if (value instanceof Resource)
 			{
+				QName valueQ = qNameFromResource((Resource)value);
 				if (predS.equals(PROV + "wasDerivedFrom"))
 				{
-					QName entityQ = new QName(value.stringValue());
 					WasDerivedFrom wdf = pFactory.newWasDerivedFrom(
 							(QName) null, pFactory.newEntityRef(qname),
-							pFactory.newEntityRef(entityQ));
+							pFactory.newEntityRef(valueQ));
 
 					store(statement.getContext(), wdf);
 					removedStatements.add(statement);
 				} else if (predS.equals(PROV + "wasGeneratedBy"))
 				{
-					QName activityQ = new QName(value.stringValue());
 					WasGeneratedBy wgb = pFactory.newWasGeneratedBy(
 							(QName) null, pFactory.newEntityRef(qname), null,
-							pFactory.newActivityRef(activityQ));
+							pFactory.newActivityRef(valueQ));
 
 					store(statement.getContext(), wgb);
 					removedStatements.add(statement);
 				} else if (predS.equals(PROV + "alternateOf"))
 				{
-					QName entityQ = new QName(value.stringValue());
 					AlternateOf ao = pFactory.newAlternateOf(
 							pFactory.newEntityRef(qname),
-							pFactory.newEntityRef(entityQ));
+							pFactory.newEntityRef(valueQ));
 
 					store(statement.getContext(), ao);
 					removedStatements.add(statement);
 				} else if (predS.equals(PROV + "specializationOf"))
 				{
-					QName entityQ = new QName(value.stringValue());
 					SpecializationOf so = pFactory.newSpecializationOf(
 							pFactory.newEntityRef(qname),
-							pFactory.newEntityRef(entityQ));
+							pFactory.newEntityRef(valueQ));
 
 					store(statement.getContext(), so);
 					removedStatements.add(statement);
 				} else if (predS.equals(PROV + "wasInvalidatedBy"))
 				{
-					QName activityQ = new QName(value.stringValue());
 					WasInvalidatedBy wib = pFactory.newWasInvalidatedBy(
 							(QName) null, pFactory.newEntityRef(qname),
-							pFactory.newActivityRef(activityQ));
+							pFactory.newActivityRef(valueQ));
 
 					store(statement.getContext(), wib);
 					removedStatements.add(statement);
 				} else if (predS.equals(PROV + "wasAttributedTo"))
 				{
-					QName agentQ = new QName(value.stringValue());
 					WasAttributedTo wit = pFactory.newWasAttributedTo(
 							(QName) null, pFactory.newEntityRef(qname),
-							pFactory.newAgentRef(agentQ));
+							pFactory.newAgentRef(valueQ));
 
 					store(statement.getContext(), wit);
 					removedStatements.add(statement);
@@ -510,31 +528,6 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newEntityRef(bundleQ));
 
 					store(statement.getContext(), nmo);
-					removedStatements.add(statement);
-				} // The following might be deprecated?
-				else if (predS.equals(PROV + "hadPrimarySource"))
-				{
-					QName entityQ = new QName(value.stringValue());
-					HadPrimarySource hps = pFactory.newHadPrimarySource(
-							(QName) null, pFactory.newEntityRef(qname),
-							pFactory.newEntityRef(entityQ));
-					// TODO: Can't add to document yet.
-					removedStatements.add(statement);
-				} else if (predS.equals(PROV + "wasRevisionOf"))
-				{
-					QName entityQ = new QName(value.stringValue());
-					WasRevisionOf wro = pFactory.newWasRevisionOf((QName) null,
-							pFactory.newEntityRef(qname),
-							pFactory.newEntityRef(entityQ));
-					store(statement.getContext(), wro);
-					removedStatements.add(statement);
-				} else if (predS.equals(PROV + "wasQuotedFrom"))
-				{
-					QName entityQ = new QName(value.stringValue());
-					WasQuotedFrom wqf = pFactory.newWasQuotedFrom((QName) null,
-							pFactory.newEntityRef(qname),
-							pFactory.newEntityRef(entityQ));
-					// TODO: Can't add to document yet.
 					removedStatements.add(statement);
 				}
 			} else if (value instanceof Literal)
@@ -585,7 +578,7 @@ public class RdfCollector extends RDFHandlerBase {
 			{
 				if (predS.equals(PROV + "actedOnBehalfOf"))
 				{
-					QName agentQ = new QName(value.stringValue());
+					QName agentQ = qNameFromResource((Resource)value);
 					ActedOnBehalfOf aobo = pFactory.newActedOnBehalfOf(
 							(QName) null, pFactory.newAgentRef(qname),
 							pFactory.newAgentRef(agentQ), null);
@@ -619,55 +612,50 @@ public class RdfCollector extends RDFHandlerBase {
 			Value value = statement.getObject();
 			if (value instanceof Resource)
 			{
+				QName valueQ = qNameFromResource((Resource)value);
 				if (predS.equals(PROV + "wasAssociatedWith"))
 				{
-					QName agentQ = new QName(value.stringValue());
 					WasAssociatedWith waw = pFactory.newWasAssociatedWith(
 							(QName) null, pFactory.newActivityRef(qname),
-							pFactory.newAgentRef(agentQ));
+							pFactory.newAgentRef(valueQ));
 
 					store(statement.getContext(), waw);
 					removedStatements.add(statement);
 
 				} else if (predS.equals(PROV + "used"))
 				{
-					QName entityQ = new QName(value.stringValue());
 					Used used = pFactory.newUsed((QName) null,
 							pFactory.newActivityRef(qname), null,
-							pFactory.newEntityRef(entityQ));
+							pFactory.newEntityRef(valueQ));
 					store(statement.getContext(), used);
 					removedStatements.add(statement);
 
 				} else if (predS.equals(PROV + "wasStartedBy"))
 				{
-					QName entityQ = new QName(value.stringValue());
 					WasStartedBy wsb = pFactory.newWasStartedBy((QName) null,
 							pFactory.newActivityRef(qname),
-							pFactory.newEntityRef(entityQ));
+							pFactory.newEntityRef(valueQ));
 					store(statement.getContext(), wsb);
 					removedStatements.add(statement);
 
 				} else if (predS.equals(PROV + "generated"))
 				{
 					// TODO: Not in ProvFactory.
-					QName entityQ = new QName(value.stringValue());
 					removedStatements.add(statement);
 
 				} else if (predS.equals(PROV + "wasEndedBy"))
 				{
-					QName entityQ = new QName(value.stringValue());
 					WasEndedBy web = pFactory.newWasEndedBy((QName) null,
 							pFactory.newActivityRef(qname),
-							pFactory.newEntityRef(entityQ));
+							pFactory.newEntityRef(valueQ));
 					store(statement.getContext(), web);
 					removedStatements.add(statement);
 
 				} else if (predS.equals(PROV + "wasInformedBy"))
 				{
-					QName activityQ = new QName(value.stringValue());
 					WasInformedBy wib = pFactory.newWasInformedBy((QName) null,
 							pFactory.newActivityRef(qname),
-							pFactory.newActivityRef(activityQ));
+							pFactory.newActivityRef(valueQ));
 					store(statement.getContext(), wib);
 					removedStatements.add(statement);
 				}
@@ -690,6 +678,8 @@ public class RdfCollector extends RDFHandlerBase {
 		statements.removeAll(removedStatements);
 	}
 
+	
+	
 	@Override
 	public void handleStatement(Statement statement)
 	{

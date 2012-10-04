@@ -26,14 +26,14 @@ public class ParserTest extends TestCase {
 		RDFParser rdfParser = Rio.createParser(Rio.getParserFormatForFileName(filename));
 		URL documentURL = new File(filename).toURI().toURL();
 		InputStream inputStream = documentURL.openStream();
-		RdfCollector rdfCollector = new RdfCollector(pFactory);
+		RdfCollector rdfCollector = new QualifiedCollector(pFactory);
 		rdfParser.setRDFHandler(rdfCollector);
 		rdfParser.parse(inputStream, documentURL.toString());
 		return rdfCollector.getDocument();
 	}
 	
 	public void testRDF() throws IOException, RDFParseException, RDFHandlerException, JAXBException {
-		Document document = parseRDF("src/test/resources/ex2.trig");
+		Document document = parseRDF("src/test/resources/ex11.ttl");
 		ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         serial.serialiseDocument(System.out,document,true);
 	}

@@ -3,18 +3,17 @@
 @prefix sioc: <http://rdfs.org/sioc/ns#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix ex:     <http://example.org#> .
-@prefix :     <http://foo.org#> .
 
-:e1 
+ex:e1 
    a prov:Entity;
-   prov:wasGeneratedBy      :a1;
-   prov:qualifiedGeneration :e1Gen; # Add the qualification
+   prov:wasGeneratedBy      ex:a1;
+   prov:qualifiedGeneration ex:e1Gen; # Add the qualification
 .
 
-:a1 a prov:Activity .
+ex:a1 a prov:Activity .
 
-:e1Gen 
+ex:e1Gen 
    a prov:Generation;
-   prov:activity :a1;               # Cite the influencing Activity.
-   ex:foo :bar;                     # Add additional attributes about the influence relation.
+   prov:activity ex:a1;               # Cite the influencing Activity.
+   ex:foo ex:bar;                     # Add additional attributes about the influence relation.
 .

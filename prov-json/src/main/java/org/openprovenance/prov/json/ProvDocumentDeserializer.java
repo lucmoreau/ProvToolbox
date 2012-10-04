@@ -428,7 +428,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         		throw new UnsupportedOperationException("Only one instance of prov:value is allowed in a statement - id: " + idStr);
         	}
         	if (statement instanceof HasValue) {
-        		// TODO set the value of the statement
+        		((HasValue)statement).setValue(decodeAttributeValue(values.get(0)));
         	}
         	else {
         		throw new UnsupportedOperationException("prov:value is not allowed in a " + statementType + "statement - id: " + idStr);

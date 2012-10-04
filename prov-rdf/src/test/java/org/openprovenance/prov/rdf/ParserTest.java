@@ -20,9 +20,11 @@ import org.openrdf.rio.trig.TriGParser;
 
 public class ParserTest extends TestCase {
 	
-	ProvFactory pFactory=ProvFactory.getFactory();
 	
 	private Document parseRDF(String filename) throws RDFParseException, RDFHandlerException, IOException {
+
+		ProvFactory pFactory = new ProvFactory();
+		
 		RDFParser rdfParser = Rio.createParser(Rio.getParserFormatForFileName(filename));
 		URL documentURL = new File(filename).toURI().toURL();
 		InputStream inputStream = documentURL.openStream();
@@ -33,8 +35,17 @@ public class ParserTest extends TestCase {
 	}
 	
 	public void testRDF() throws IOException, RDFParseException, RDFHandlerException, JAXBException {
-		Document document = parseRDF("src/test/resources/ex11.ttl");
+
+		String[] filenames = new String[]{"activityInfluence", "agentInfluence", "association", "attribution", "communication", "delegation", "derivation", "end", "entityInfluence", "generation", "influence", "instantaneousEvent", "invalidation", "start", "usage"};
+		
+		String filename = filenames[1];
+		//for(String filename: filenames) {
+			System.out.println("----------------");
+			System.out.println("Parse "+filename);
+		Document document = parseRDF("src/test/resources/influence/ex_"+filename+".ttl");
+		
 		ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         serial.serialiseDocument(System.out,document,true);
+		//}
 	}
 }

@@ -1,0 +1,32 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix ex:   <http://example.com/vocab#> .
+@prefix :     <http://example.com/> .
+
+<http://dbpedia.org/resource/Fallingwater>
+   a prov:Entity;
+   prov:wasAttributedTo <http://dbpedia.org/resource/Edgar_J._Kaufmann>,
+                        <http://dbpedia.org/resource/Frank_Lloyd_Wright>,
+                        :western-Pennsylvania-Conservancy;
+   prov:qualifiedAttribution [
+      a prov:Attribution;
+      prov:agent <http://dbpedia.org/resource/Edgar_J._Kaufmann>;
+      ex:hadRole :owner;
+   ];
+   prov:qualifiedAttribution [
+      a prov:Attribution;
+      prov:agent <http://dbpedia.org/resource/Frank_Lloyd_Wright>;
+      ex:hadRole :architect;
+   ];
+   prov:qualifiedAttribution [
+      a prov:Attribution;
+      prov:agent :western-Pennsylvania-Conservancy;
+      ex:hadRole :conserver;
+   ];
+.
+
+<http://dbpedia.org/resource/Edgar_J._Kaufmann>  a prov:Person, prov:Agent .
+<http://dbpedia.org/resource/Frank_Lloyd_Wright> a prov:Person, prov:Agent .
+:western-Pennsylvania-Conservancy a prov:Organization, prov:Agent . 

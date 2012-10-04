@@ -1,0 +1,31 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix :     <http://example.com/> .
+
+:illustrating
+    a prov:Activity; 
+    prov:wasAssociatedWith :derek, 
+                           :steve;
+    prov:qualifiedAssociation [
+        a prov:Association;
+        prov:agent   :derek;
+        prov:hadRole :illustrationist;
+    ];
+    prov:qualifiedAssociation [
+        a prov:Association;
+        prov:agent   :steve;
+        prov:hadRole :stylist;
+        prov:hadPlan :style-guide;
+        rdfs:comment "Steve helped Derek conform with the publisher's style guide."@en;
+    ];
+.
+
+:derek a prov:Person, prov:Agent, prov:Entity .
+:steve a prov:Person, prov:Agent, prov:Entity .
+
+:illustratonist a prov:Role .
+:stylist        a prov:Role .
+
+:style-guide a prov:Plan, prov:Entity .

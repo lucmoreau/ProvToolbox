@@ -62,8 +62,10 @@ public class RoundTripFromJavaTest extends TestCase {
 	doc.setNss(nss);
     }
    
-    
     public void makeDocAndTest(Statement stment, String file) throws JAXBException {
+	makeDocAndTest(stment, file,true);
+    }
+    public void makeDocAndTest(Statement stment, String file, boolean check) throws JAXBException {
 	Document doc = pFactory.newDocument();
 	doc.getEntityOrActivityOrWasGeneratedBy().add(stment);
 	updateNamespaces(doc);
@@ -73,7 +75,11 @@ public class RoundTripFromJavaTest extends TestCase {
 	Document doc2=readXMLDocument(file);
 	assertTrue("self doc differ", doc.equals(doc));
 	assertTrue("self doc2 differ", doc2.equals(doc2));
-	assertTrue("doc differs doc2", doc.equals(doc2));
+	if (check) {
+	    assertTrue("doc differs doc2", doc.equals(doc2));
+	} else {
+	    assertFalse("doc differs doc2", doc.equals(doc2));
+	}
     }
 
     public Document readXMLDocument(String file) throws javax.xml.bind.JAXBException {
@@ -88,6 +94,46 @@ public class RoundTripFromJavaTest extends TestCase {
 	ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
 	serial.serialiseDocument(new File(file), doc, true);
     }
+
+    ///////////////////////////////////////////////////////////////////////
+
+
+    public void addLabel(HasLabel hl) {
+   	hl.getLabel().add(pFactory.newInternationalizedString("hello"));
+    }
+
+    public void addLabels(HasLabel hl) {
+   	hl.getLabel().add(pFactory.newInternationalizedString("hello"));
+   	hl.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
+   	hl.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
+    }
+
+    public void addTypes(HasType ht) {
+   	ht.getType().add("a");
+   	ht.getType().add(1);
+   	ht.getType().add(1.0);
+   	ht.getType().add(true);
+   	ht.getType().add(new QName(EX_NS, "abc", EX_PREFIX));
+   	ht.getType().add(pFactory.newTimeNow());
+   	URIWrapper w=new URIWrapper();
+   	w.setValue(URI.create(EX_NS+"hello"));
+   	ht.getType().add(w);
+    }
+    public void addLocations(HasLocation hl) {
+   	hl.getLocation().add("London");
+   	hl.getLocation().add(1);
+   	hl.getLocation().add(1.0);
+   	hl.getLocation().add(true);
+   	hl.getLocation().add(new QName(EX_NS, "london", EX_PREFIX));
+   	hl.getLocation().add(pFactory.newTimeNow());
+   	URIWrapper w=new URIWrapper();
+   	w.setValue(URI.create(EX_NS+"london"));
+   	hl.getLocation().add(w);
+    }
+
+    public void addFurtherLabels(HasExtensibility he) {
+	pFactory.addAttribute(he,EX_NS,EX_PREFIX,"myAttr", "myValue");
+    }
     
     ///////////////////////////////////////////////////////////////////////
     
@@ -96,112 +142,63 @@ public class RoundTripFromJavaTest extends TestCase {
 	Entity a = pFactory.newEntity("ex:e1");
 	makeDocAndTest(a,"target/entity1.xml");
     }
+
     public void testEntity2() throws JAXBException  {
    	Entity a = pFactory.newEntity("ex:e2", "entity2");
    	makeDocAndTest(a,"target/entity2.xml");
     }
 
-    
     public void testEntity3() throws JAXBException  {
-   	Entity a = pFactory.newEntity("ex:e2", "entity2");
-   	a.getLabel().add(pFactory.newInternationalizedString("hello"));
+   	Entity a = pFactory.newEntity("ex:e3", "entity3");
+   	addLabel(a);
    	makeDocAndTest(a,"target/entity3.xml");
     }
+
     public void testEntity4() throws JAXBException  {
-   	Entity a = pFactory.newEntity("ex:e2", "entity2");
-   	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-   	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
+   	Entity a = pFactory.newEntity("ex:e4", "entity4");
+	addLabels(a);
    	makeDocAndTest(a,"target/entity4.xml");
-    }
-    public void testEntity5() throws JAXBException  {
-   	Entity a = pFactory.newEntity("ex:e2", "entity2");
-   	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-   	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-   	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
-   	makeDocAndTest(a,"target/entity5.xml");
     }
    
     
-    public void testEntity6() throws JAXBException  {
-   	Entity a = pFactory.newEntity("ex:e6", "entity6");
-   	a.getType().add("a");
-   	a.getType().add(1);
-   	a.getType().add(1.0);
-   	a.getType().add(true);
-   	a.getType().add(new QName(EX_NS, "abc", EX_PREFIX));
-   	a.getType().add(pFactory.newTimeNow());
-   	URIWrapper w=new URIWrapper();
-   	w.setValue(URI.create(EX_NS+"hello"));
-   	a.getType().add(w);
-   	makeDocAndTest(a,"target/entity6.xml");
+    public void testEntity5() throws JAXBException  {
+   	Entity a = pFactory.newEntity("ex:e5", "entity5");
+	addTypes(a);
+   	makeDocAndTest(a,"target/entity5.xml");
     }
 
+    public void testEntity6() throws JAXBException  {
+       	Entity a = pFactory.newEntity("ex:e6", "entity6");
+	addLocations(a);
+       	makeDocAndTest(a,"target/entity6.xml");
+    }
     public void testEntity7() throws JAXBException  {
        	Entity a = pFactory.newEntity("ex:e7", "entity7");
-       	pFactory.addType(a,"a");
-       	pFactory.addType(a,1);
-       	pFactory.addType(a,1.0);
-       	pFactory.addType(a,true);
-       	pFactory.addType(a,new QName(EX_NS, "abc", EX_PREFIX));
-       	pFactory.addType(a,pFactory.newTimeNow());
-       	pFactory.addType(a,URI.create(EX_NS+"hello"));
-       	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
-   	a.getLocation().add("London");
-   	a.getLocation().add(1);
-   	a.getLocation().add(1.0);
-   	a.getLocation().add(true);
-   	a.getLocation().add(new QName(EX_NS, "london", EX_PREFIX));
-   	a.getLocation().add(pFactory.newTimeNow());
-   	URIWrapper w=new URIWrapper();
-   	w.setValue(URI.create(EX_NS+"london"));
-   	a.getLocation().add(w);
+	addTypes(a);
+	addLocations(a);
+	addLabels(a);
        	makeDocAndTest(a,"target/entity7.xml");
     }
     public void testEntity8() throws JAXBException  {
        	Entity a = pFactory.newEntity("ex:e8", "entity8");
-       	a.getType().add("a");
-       	a.getType().add("a");
-       	a.getType().add(1);
-       	a.getType().add(1);
-       	a.getType().add(1.0);
-       	a.getType().add(1.0);
-       	a.getType().add(true);
-       	a.getType().add(true);
-       	a.getType().add(new QName(EX_NS, "abc", EX_PREFIX));
-       	a.getType().add(new QName(EX_NS, "abc", EX_PREFIX));
-       	a.getType().add(pFactory.newTimeNow());
-       	a.getType().add(pFactory.newTimeNow());
-       	URIWrapper w=new URIWrapper();
-       	w.setValue(URI.create(EX_NS+"hello"));
-       	a.getType().add(w);
-       	a.getType().add(w);
-       	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-       	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
-   	a.getLocation().add("London");
-   	a.getLocation().add("London");
-   	a.getLocation().add(1);
-   	a.getLocation().add(1);
-   	a.getLocation().add(1.0);
-   	a.getLocation().add(1.0);
-   	a.getLocation().add(true);
-   	a.getLocation().add(true);
-   	a.getLocation().add(new QName(EX_NS, "london", EX_PREFIX));
-   	a.getLocation().add(new QName(EX_NS, "london", EX_PREFIX));
-   	a.getLocation().add(pFactory.newTimeNow());
-   	a.getLocation().add(pFactory.newTimeNow());
-   	URIWrapper w2=new URIWrapper();
-   	w2.setValue(URI.create(EX_NS+"london"));
-   	a.getLocation().add(w2);
-   	a.getLocation().add(w2);
-
+	addTypes(a);
+	addTypes(a);
+	addLocations(a);
+	addLocations(a);
+	addLabels(a);
+	addLabels(a);
        	makeDocAndTest(a,"target/entity8.xml");
     }
+
+    public void testEntity9() throws JAXBException  {
+       	Entity a = pFactory.newEntity("ex:e9", "entity9");
+	addTypes(a);
+	addLocations(a);
+	addLabels(a);
+	addFurtherLabels(a);  //FAILING TEST
+       	makeDocAndTest(a,"target/entity9.xml",false);
+    }
+
 
     ///////////////////////////////////////////////////////////////////////
     
@@ -224,101 +221,51 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testActivity4() throws JAXBException  {
    	Activity a = pFactory.newActivity("ex:a2", "activity2");
-   	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-   	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
+	addLabels(a);
    	makeDocAndTest(a,"target/activity4.xml");
     }
     public void testActivity5() throws JAXBException  {
    	Activity a = pFactory.newActivity("ex:a2", "activity2");
-   	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-   	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-   	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
+	addTypes(a);
    	makeDocAndTest(a,"target/activity5.xml");
     }
    
     
     public void testActivity6() throws JAXBException  {
    	Activity a = pFactory.newActivity("ex:a6", "activity6");
-   	a.getType().add("a");
-   	a.getType().add(1);
-   	a.getType().add(1.0);
-   	a.getType().add(true);
-   	a.getType().add(new QName(EX_NS, "abc", EX_PREFIX));
-   	a.getType().add(pFactory.newTimeNow());
-   	URIWrapper w=new URIWrapper();
-   	w.setValue(URI.create(EX_NS+"hello"));
-   	a.getType().add(w);
+	addLocations(a);
    	makeDocAndTest(a,"target/activity6.xml");
     }
 
     public void testActivity7() throws JAXBException  {
        	Activity a = pFactory.newActivity("ex:a7", "activity7");
-       	pFactory.addType(a,"a");
-       	pFactory.addType(a,1);
-       	pFactory.addType(a,1.0);
-       	pFactory.addType(a,true);
-       	pFactory.addType(a,new QName(EX_NS, "abc", EX_PREFIX));
-       	pFactory.addType(a,pFactory.newTimeNow());
-       	pFactory.addType(a,URI.create(EX_NS+"hello"));
-       	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
-   	a.getLocation().add("London");
-   	a.getLocation().add(1);
-   	a.getLocation().add(1.0);
-   	a.getLocation().add(true);
-   	a.getLocation().add(new QName(EX_NS, "london", EX_PREFIX));
-   	a.getLocation().add(pFactory.newTimeNow());
-   	URIWrapper w=new URIWrapper();
-   	w.setValue(URI.create(EX_NS+"london"));
-   	a.getLocation().add(w);
+	addTypes(a);
+	addLocations(a);
+	addLabels(a);
        	makeDocAndTest(a,"target/activity7.xml");
     }
     public void testActivity8() throws JAXBException  {
        	Activity a = pFactory.newActivity("ex:a8", "activity8");
 	a.setStartTime(pFactory.newTimeNow());
 	a.setEndTime(pFactory.newTimeNow());
-       	a.getType().add("a");
-       	a.getType().add("a");
-       	a.getType().add(1);
-       	a.getType().add(1);
-       	a.getType().add(1.0);
-       	a.getType().add(1.0);
-       	a.getType().add(true);
-       	a.getType().add(true);
-       	a.getType().add(new QName(EX_NS, "abc", EX_PREFIX));
-       	a.getType().add(new QName(EX_NS, "abc", EX_PREFIX));
-       	a.getType().add(pFactory.newTimeNow());
-       	a.getType().add(pFactory.newTimeNow());
-       	URIWrapper w=new URIWrapper();
-       	w.setValue(URI.create(EX_NS+"hello"));
-       	a.getType().add(w);
-       	a.getType().add(w);
-       	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-       	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
-   	a.getLocation().add("London");
-   	a.getLocation().add("London");
-   	a.getLocation().add(1);
-   	a.getLocation().add(1);
-   	a.getLocation().add(1.0);
-   	a.getLocation().add(1.0);
-   	a.getLocation().add(true);
-   	a.getLocation().add(true);
-   	a.getLocation().add(new QName(EX_NS, "london", EX_PREFIX));
-   	a.getLocation().add(new QName(EX_NS, "london", EX_PREFIX));
-   	a.getLocation().add(pFactory.newTimeNow());
-   	a.getLocation().add(pFactory.newTimeNow());
-   	URIWrapper w2=new URIWrapper();
-   	w2.setValue(URI.create(EX_NS+"london"));
-   	a.getLocation().add(w2);
-   	a.getLocation().add(w2);
-
+	addTypes(a);
+	addTypes(a);
+	addLocations(a);
+	addLocations(a);
+	addLabels(a);
+	addLabels(a);
        	makeDocAndTest(a,"target/activity8.xml");
     }
+
+    public void testActivity9() throws JAXBException  {
+       	Activity a = pFactory.newActivity("ex:a9", "activity9");
+	addTypes(a);
+	addLocations(a);
+	addLabels(a);
+	addFurtherLabels(a); //FAILING TEST
+       	makeDocAndTest(a,"target/activity9.xml",false);
+    }
+
 
     ///////////////////////////////////////////////////////////////////////
     

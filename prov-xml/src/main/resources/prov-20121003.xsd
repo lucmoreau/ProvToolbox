@@ -38,10 +38,10 @@
   <xs:element name="entity" type="prov:Entity"/>
   <xs:complexType name="Entity">
     <xs:sequence>
-      <xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/> 
-      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element ref="prov:value" minOccurs="0" maxOccurs="1"/>
+       <xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/> 
+       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
+       <xs:element ref="prov:value" minOccurs="0" maxOccurs="1"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
@@ -434,7 +434,6 @@
   
 
 <!-- To support validator, this is not part of prov xml! -->
-
 
   <xs:element name="used"               type="prov:Usage"/>
   <xs:element name="wasGeneratedBy"     type="prov:Generation"/>

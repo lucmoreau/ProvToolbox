@@ -42,7 +42,7 @@ public class ParserTest extends TestCase {
 		//for(String filename: filenames) {
 		//	System.out.println("----------------");
 		//	System.out.println("Parse "+filename);
-		Document document = parseRDF("src/test/resources/influence/ex_generation.ttl");
+		Document document = parseRDF("src/test/resources/ex_location.ttl");
 		
 		ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         serial.serialiseDocument(System.out,document,true);

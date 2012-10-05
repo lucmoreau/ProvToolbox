@@ -98,6 +98,7 @@ public class QualifiedCollector extends RdfCollector {
 						createInfluence(contextQ, qname);
 						break;
 					default:
+						System.out.println("Unhandled class: "+type);
 						break;
 					}
 				}

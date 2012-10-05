@@ -296,8 +296,6 @@ public class RdfCollector extends RDFHandlerBase {
 			}
 		}
 		
-		System.out.println("Options: "+options);
-		
 		if (options.size() > 1)
 		{
 			List<ProvType> cloned = new ArrayList<ProvType>(options);
@@ -390,7 +388,6 @@ public class RdfCollector extends RDFHandlerBase {
 				{
 					QName anyQ = qNameFromResource((Resource) (statement
 							.getObject()));
-					String role = statement.getObject().stringValue();
 					((HasLocation) element).getLocation().add(
 							pFactory.newAnyRef(anyQ));
 					removedStatements.add(statement);

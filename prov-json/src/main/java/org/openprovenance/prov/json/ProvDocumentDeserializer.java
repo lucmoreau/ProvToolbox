@@ -209,7 +209,6 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         return statements;
     }
     
-    @SuppressWarnings("unchecked")
     private StatementOrBundle decodeStatement(String statementType, String idStr, JsonObject attributeMap) {
         StatementOrBundle statement;
         QName id;
@@ -262,7 +261,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = pf.newWasAttributedTo(id, entity, agent);
             break;
         case BUNDLE:
-            List<StatementOrBundle> statements = decodeBundle(attributeMap);
+            @SuppressWarnings("rawtypes")
+			Collection statements = decodeBundle(attributeMap);
             NamedBundle namedBundle = new NamedBundle(); 
             namedBundle.setId(id);
             namedBundle.getEntityOrActivityOrWasGeneratedBy().addAll((Collection<? extends Statement>)statements);

@@ -295,6 +295,9 @@ public class RdfCollector extends RDFHandlerBase {
 				options.add(provType);
 			}
 		}
+		
+		System.out.println("Options: "+options);
+		
 		if (options.size() > 1)
 		{
 			List<ProvType> cloned = new ArrayList<ProvType>(options);
@@ -450,9 +453,14 @@ public class RdfCollector extends RDFHandlerBase {
 						createActivity(contextQ, qname);
 						break;
 					case AGENT:
+					case PERSON:
+					case ORGANIZATION:
+					case SOFTWAREAGENT:
 						createAgent(contextQ, qname);
 						break;
 					case ENTITY:
+					case PLAN:
+					case BUNDLE:
 						createEntity(contextQ, qname);
 						break;
 					default:

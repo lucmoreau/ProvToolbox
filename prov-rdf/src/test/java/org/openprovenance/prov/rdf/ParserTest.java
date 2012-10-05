@@ -36,9 +36,9 @@ public class ParserTest extends TestCase {
 	
 	public void testRDF() throws IOException, RDFParseException, RDFHandlerException, JAXBException {
 
-		String[] filenames = new String[]{"activityInfluence", "agentInfluence", "association", "attribution", "communication", "delegation", "derivation", "end", "entityInfluence", "generation", "influence", "instantaneousEvent", "invalidation", "start", "usage"};
+		String[] filenames = new String[]{"activityInfluence", "agentInfluence", "association", "attribution", "communication", "delegation", "derivation", "end", "entityInfluence", "generation", "influence", "instantaneousEvent", "invalidation", "start", "usage", "qualifiedInfluence"};
 		
-		String filename = filenames[1];
+		String filename = filenames[15];
 		//for(String filename: filenames) {
 			System.out.println("----------------");
 			System.out.println("Parse "+filename);

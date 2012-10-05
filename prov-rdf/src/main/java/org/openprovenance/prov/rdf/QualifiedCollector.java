@@ -8,16 +8,20 @@ import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.HasLocation;
 import org.openprovenance.prov.xml.HasRole;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasAssociatedWith;
+import org.openprovenance.prov.xml.WasAttributedTo;
 import org.openprovenance.prov.xml.WasDerivedFrom;
 import org.openprovenance.prov.xml.WasEndedBy;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasInfluencedBy;
-import org.openrdf.model.BNode;
+import org.openprovenance.prov.xml.WasInformedBy;
+import org.openprovenance.prov.xml.WasInvalidatedBy;
+import org.openprovenance.prov.xml.WasStartedBy;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
@@ -53,6 +57,7 @@ public class QualifiedCollector extends RdfCollector {
 				ProvType[] types = getResourceTypes(contextQ, qname);
 				for (ProvType type : types)
 				{
+					System.out.println("Handle type: "+type);
 					switch (type)
 					{
 					case GENERATION:
@@ -64,14 +69,32 @@ public class QualifiedCollector extends RdfCollector {
 					case ASSOCIATION:
 						createAssociation(contextQ, qname);
 						break;
+					case ATTRIBUTION:
+						createAttribution(contextQ, qname);
+						break;
+					case COMMUNICATION:
+						createCommunication(contextQ, qname);
+						break;
+					case DELEGATION:
+						createDelegation(contextQ, qname);
+						break;
 					case DERIVATION:
 						createDerivation(contextQ, qname);
 						break;
 					case END:
-						createWasEndedBy(contextQ, qname);
+						createEnd(contextQ, qname);
 						break;
 					case ENTITYINFLUENCE:
 						createEntityInfluence(contextQ, qname);
+						break;
+					case INVALIDATION:
+						createInvalidation(contextQ, qname);
+						break;
+					case START:
+						createStart(contextQ, qname);
+						break;
+					case INFLUENCE:
+						createInfluence(contextQ, qname);
 						break;
 					default:
 						break;
@@ -229,48 +252,6 @@ public class QualifiedCollector extends RdfCollector {
 		wib.setId(qname);
 		List<Statement> statements = collators.get(context).get(qname);
 		handleEntityInfluence(context, wib, statements);
-		// TODO Auto-generated method stub
-
-	}
-
-	private void createWasEndedBy(QName context, QName qname)
-	{
-		WasEndedBy web = new WasEndedBy();
-		web.setId(qname);
-
-		List<Statement> statements = collators.get(context).get(qname);
-		List<Statement> removedStatements = new ArrayList<Statement>();
-
-		for (Statement statement : statements)
-		{
-
-			String predS = statement.getPredicate().stringValue();
-			Value value = statement.getObject();
-
-			if (value instanceof Resource)
-			{
-				QName valueQ = qNameFromResource((Resource) value);
-
-				if (predS.equals(PROV + "hadActivity"))
-				{
-					web.setActivity(pFactory.newActivityRef(valueQ));
-					removedStatements.add(statement);
-				}
-
-				if (predS.equals(PROV + "entity"))
-				{
-					QName entityQ = qNameFromResource((Resource) value);
-					web.setTrigger(pFactory.newEntityRef(entityQ));
-				}
-			}
-		}
-		statements.removeAll(removedStatements);
-
-		handleEntityInfluence(context, web, statements);
-		handleInstantaneousEvent(context, web, statements);
-
-		store(context, web);
-		this.influenceMap.put(qname, web);
 	}
 
 	private void createDerivation(QName context, QName qname)
@@ -323,7 +304,182 @@ public class QualifiedCollector extends RdfCollector {
 		store(context, wdf);
 		this.influenceMap.put(qname, wdf);
 	}
+	
+	private void createInfluence(QName context, QName qname) {
+		System.out.println("Create an influence");
+		WasInfluencedBy wib = new WasInfluencedBy();
+		wib.setId(qname);
+		System.out.println("ID: "+qname);
+		List<Statement> statements = collators.get(context).get(qname);
+		handleInfluence(context, wib, statements);
+		this.influenceMap.put(qname, wib);
+		
+	}
+	
+	private void createEnd(QName context, QName qname) {
+		WasEndedBy web = new WasEndedBy();
+		web.setId(qname);
+		
+		List<Statement> statements = collators.get(context).get(qname);
+		List<Statement> removedStatements = new ArrayList<Statement>();
+		for (Statement statement : statements)
+		{
+			String predS = statement.getPredicate().stringValue();
+			Value value = statement.getObject();
+			
+			if (predS.equals(PROV + "entity"))
+			{
+				QName entityQ = qNameFromResource((Resource) value);
+				web.setTrigger(pFactory.newEntityRef(entityQ));
+			}
+			
+		}
+		statements.removeAll(removedStatements);
 
+		handleEntityInfluence(context, web, statements);
+		handleInstantaneousEvent(context, web, statements);
+
+		store(context, web);
+		this.influenceMap.put(qname, web);
+	}
+	
+	private void createStart(QName context, QName qname) {
+		WasStartedBy wsb = new WasStartedBy();
+		wsb.setId(qname);
+		
+		List<Statement> statements = collators.get(context).get(qname);
+		List<Statement> removedStatements = new ArrayList<Statement>();
+		for (Statement statement : statements)
+		{
+			String predS = statement.getPredicate().stringValue();
+			Value value = statement.getObject();
+			
+			if (predS.equals(PROV + "entity"))
+			{
+				QName entityQ = qNameFromResource((Resource) value);
+				wsb.setTrigger(pFactory.newEntityRef(entityQ));
+			}
+			
+		}
+		statements.removeAll(removedStatements);
+
+		handleEntityInfluence(context, wsb, statements);
+		handleInstantaneousEvent(context, wsb, statements);
+
+		store(context, wsb);
+		this.influenceMap.put(qname, wsb);
+	}
+	
+	private void createInvalidation(QName context, QName qname) {
+		WasInvalidatedBy wib = new WasInvalidatedBy();
+		wib.setId(qname);
+		
+
+		List<Statement> statements = collators.get(context).get(qname);
+		List<Statement> removedStatements = new ArrayList<Statement>();
+		for (Statement statement : statements)
+		{
+			String predS = statement.getPredicate().stringValue();
+			Value value = statement.getObject();
+			
+			if (predS.equals(PROV + "activity"))
+			{
+				QName activityQ = qNameFromResource((Resource) value);
+				wib.setActivity(pFactory.newActivityRef(activityQ));
+			}
+			
+		}
+		statements.removeAll(removedStatements);
+
+		handleActivityInfluence(context, wib, statements);
+		handleInstantaneousEvent(context, wib, statements);
+
+		store(context, wib);
+		this.influenceMap.put(qname, wib);
+	}
+	
+	private void createDelegation(QName context, QName qname) {
+		ActedOnBehalfOf aobo = new ActedOnBehalfOf();
+		aobo.setId(qname);
+
+		List<Statement> statements = collators.get(context).get(qname);
+		List<Statement> removedStatements = new ArrayList<Statement>();
+		for (Statement statement : statements)
+		{
+			String predS = statement.getPredicate().stringValue();
+			Value value = statement.getObject();
+
+			if (predS.equals(PROV + "agent"))
+			{
+				QName agentQ = qNameFromResource((Resource) value);
+				aobo.setResponsible(pFactory.newAgentRef(agentQ));
+			}
+			
+			if (predS.equals(PROV + "hadActivity"))
+			{
+				QName activityQ = qNameFromResource((Resource) value);
+				aobo.setActivity(pFactory.newActivityRef(activityQ));
+				removedStatements.add(statement);
+			}
+		}
+		statements.removeAll(removedStatements);
+
+		handleAgentInfluence(context, aobo, statements);
+
+		store(context, aobo);
+		this.influenceMap.put(qname, aobo);
+	}
+	
+	private void createCommunication(QName context, QName qname) {
+		WasInformedBy wib = new WasInformedBy();
+		wib.setId(qname);
+
+		List<Statement> statements = collators.get(context).get(qname);
+		List<Statement> removedStatements = new ArrayList<Statement>();
+		for (Statement statement : statements)
+		{
+			String predS = statement.getPredicate().stringValue();
+			Value value = statement.getObject();
+
+			if (predS.equals(PROV + "activity"))
+			{
+				QName activityQ = qNameFromResource((Resource) value);
+				wib.setCause(pFactory.newActivityRef(activityQ));
+			}
+		}
+		statements.removeAll(removedStatements);
+
+		handleActivityInfluence(context, wib, statements);
+
+		store(context, wib);
+		this.influenceMap.put(qname, wib);
+	}
+	
+	private void createAttribution(QName context, QName qname) {
+		WasAttributedTo wat = new WasAttributedTo();
+		wat.setId(qname);
+
+		List<Statement> statements = collators.get(context).get(qname);
+		List<Statement> removedStatements = new ArrayList<Statement>();
+		for (Statement statement : statements)
+		{
+			String predS = statement.getPredicate().stringValue();
+			Value value = statement.getObject();
+
+			if (predS.equals(PROV + "agent"))
+			{
+				QName agentQ = qNameFromResource((Resource) value);
+				wat.setAgent(pFactory.newAgentRef(agentQ));
+			}
+		}
+		statements.removeAll(removedStatements);
+
+		handleAgentInfluence(context, wat, statements);
+
+		store(context, wat);
+		this.influenceMap.put(qname, wat);
+	}
+	
 	private void createAssociation(QName context, QName qname)
 	{
 		WasAssociatedWith waw = new WasAssociatedWith();
@@ -443,22 +599,29 @@ public class QualifiedCollector extends RdfCollector {
 						if (predS.equals(RdfCollector.PROV
 								+ "qualifiedAssociation"))
 						{
-							System.out.println("Bind assoc");
+							WasAssociatedWith waw = (WasAssociatedWith) influenceMap
+									.get(refQ);
+							waw.setActivity(pFactory.newActivityRef(qname));
+							removedStatements.add(statement);
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedAttribution"))
 						{
-
-							System.out.println("Bind attr");
+							WasAttributedTo wat = (WasAttributedTo) influenceMap
+									.get(refQ);
+							wat.setEntity(pFactory.newEntityRef(qname));
+							removedStatements.add(statement);
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedCommunication"))
 						{
-
-							System.out.println("Bind com");
+							WasInformedBy wib = (WasInformedBy) influenceMap.get(refQ);
+							wib.setEffect(pFactory.newActivityRef(qname));
+							removedStatements.add(statement);
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedDelegation"))
 						{
-
-							System.out.println("Bind del");
+							ActedOnBehalfOf aobo = (ActedOnBehalfOf) influenceMap.get(refQ);
+							aobo.setSubordinate(pFactory.newAgentRef(qname));
+							removedStatements.add(statement);
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedDerivation"))
 						{
@@ -485,23 +648,25 @@ public class QualifiedCollector extends RdfCollector {
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedInfluence"))
 						{
-
-							System.out.println("Bind inf");
+							WasInfluencedBy wib = (WasInfluencedBy) influenceMap.get(refQ);
+							System.out.println(influenceMap.keySet());
+							wib.setInfluencee(pFactory.newAnyRef(qname));
+							removedStatements.add(statement);
+							
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedInvalidation"))
 						{
 
-							System.out.println("Bind inv");
-						} else if (predS.equals(RdfCollector.PROV
-								+ "qualifiedRevision"))
-						{
-
-							System.out.println("Bind rev");
+							WasInvalidatedBy wib = (WasInvalidatedBy) influenceMap
+									.get(refQ);
+							wib.setEntity(pFactory.newEntityRef(qname));
+							removedStatements.add(statement);
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedStart"))
 						{
-
-							System.out.println("Bind start");
+							WasStartedBy wsb = (WasStartedBy)influenceMap.get(refQ);
+							wsb.setActivity(pFactory.newActivityRef(qname));
+							removedStatements.add(statement);
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedUsage"))
 						{

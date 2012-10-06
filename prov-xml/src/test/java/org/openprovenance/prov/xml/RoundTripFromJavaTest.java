@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 public class RoundTripFromJavaTest extends TestCase {
 
     public static final String EX_NS = "http://example.org/";
+    public static final String EX2_NS = "http://example2.org/";
     public static final String EX_PREFIX = "ex";
      
     static final ProvUtilities util=new ProvUtilities();
@@ -76,6 +77,8 @@ public class RoundTripFromJavaTest extends TestCase {
 	assertTrue("self doc differ", doc.equals(doc));
 	assertTrue("self doc2 differ", doc2.equals(doc2));
 	if (check) {
+	    System.out.println("Found " + doc2);
+
 	    assertTrue("doc differs doc2", doc.equals(doc2));
 	} else {
 	    assertFalse("doc differs doc2", doc.equals(doc2));
@@ -132,7 +135,23 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void addFurtherLabels(HasExtensibility he) {
-	pFactory.addAttribute(he,EX_NS,EX_PREFIX,"myAttr", "myValue");
+	he.getAny().add(pFactory.newAttribute(EX_NS,"tag1",EX_PREFIX,"hello"));
+	he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "bye"));
+	he.getAny().add(pFactory.newAttribute(EX2_NS,"tag3",EX_PREFIX, "hi"));
+	
+	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Integer(1)));
+	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Long(1)));
+	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Short((short) 1)));
+	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Double(1.0)));
+	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Float(1.0)));
+	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new java.math.BigDecimal(1.0)));
+	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Boolean(true)));
+	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Byte((byte) 250)));
+	URIWrapper w=new URIWrapper();
+   	w.setValue(URI.create(EX_NS+"london"));
+   	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, w));
+   	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new QName(EX_NS, "london", EX_PREFIX)));
+	
     }
     
     ///////////////////////////////////////////////////////////////////////
@@ -195,8 +214,8 @@ public class RoundTripFromJavaTest extends TestCase {
 	addTypes(a);
 	addLocations(a);
 	addLabels(a);
-	addFurtherLabels(a);  //FAILING TEST
-       	makeDocAndTest(a,"target/entity9.xml",false);
+	addFurtherLabels(a); 
+       	makeDocAndTest(a,"target/entity9.xml");
     }
 
 
@@ -262,8 +281,8 @@ public class RoundTripFromJavaTest extends TestCase {
 	addTypes(a);
 	addLocations(a);
 	addLabels(a);
-	addFurtherLabels(a); //FAILING TEST
-       	makeDocAndTest(a,"target/activity9.xml",false);
+	addFurtherLabels(a);
+       	makeDocAndTest(a,"target/activity9.xml");
     }
 
 

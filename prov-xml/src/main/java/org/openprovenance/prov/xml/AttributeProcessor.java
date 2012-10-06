@@ -14,11 +14,10 @@ public class AttributeProcessor {
     
     final private List<Object> attributes;
 
-    public AttributeProcessor(List<Object> attributes) {
+    public AttributeProcessor(List attributes) {
         this.attributes=attributes;
     }
-                                                     
-
+              
     /* Processing of attributes */
     
     Hashtable<String,List<Object>> attributesWithNamespace(String namespace) {

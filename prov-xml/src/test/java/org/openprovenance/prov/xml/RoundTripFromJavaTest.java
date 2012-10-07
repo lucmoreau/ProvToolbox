@@ -77,7 +77,10 @@ public class RoundTripFromJavaTest extends TestCase {
 	assertTrue("self doc differ", doc.equals(doc));
 	assertTrue("self doc2 differ", doc2.equals(doc2));
 	if (check) {
+	    System.out.println("Found " + doc);
 	    System.out.println("Found " + doc2);
+	    //System.out.println("Found " + util.getEntity(doc).get(0).getAny());
+	    //System.out.println("Found " + util.getEntity(doc2).get(0).getAny());
 
 	    assertTrue("doc differs doc2", doc.equals(doc2));
 	} else {
@@ -146,10 +149,15 @@ public class RoundTripFromJavaTest extends TestCase {
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Float(1.0)));
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new java.math.BigDecimal(1.0)));
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Boolean(true)));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Byte((byte) 250)));
+	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Byte((byte) 123)));
 	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"london"));
    	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, w));
+	
+    }
+    
+    public void addFurtherLabelsPROBLEM(HasExtensibility he) {
+	
    	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new QName(EX_NS, "london", EX_PREFIX)));
 	
     }
@@ -216,6 +224,16 @@ public class RoundTripFromJavaTest extends TestCase {
 	addLabels(a);
 	addFurtherLabels(a); 
        	makeDocAndTest(a,"target/entity9.xml");
+    }
+
+    public void testEntity10() throws JAXBException  {
+       	Entity a = pFactory.newEntity("ex:e10", "entity10");
+	addTypes(a);
+	addLocations(a);
+	addLabels(a);
+	addFurtherLabels(a); 
+	addFurtherLabelsPROBLEM(a);
+       	makeDocAndTest(a,"target/entity10.xml",false);
     }
 
 

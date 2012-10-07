@@ -23,12 +23,16 @@ public class Attribute {
 	return elementName;
     }
     
+    public String getXsdType() {
+	return xsdType;
+    }
     public boolean equals(Object o) {
 	if (o instanceof Attribute) {
 	    Attribute other=(Attribute)o;
 	    return elementName.getLocalPart().equals(other.elementName.getLocalPart())
 		    && elementName.getNamespaceURI().equals(other.elementName.getNamespaceURI())
-		    && val.equals(other.val);
+		    && val.equals(other.val)
+		    && xsdType.equals(other.xsdType);
 		    
 	}
 	return false;

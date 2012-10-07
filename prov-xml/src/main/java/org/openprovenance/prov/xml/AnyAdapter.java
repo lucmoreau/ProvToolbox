@@ -8,15 +8,8 @@
 
 package org.openprovenance.prov.xml;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.namespace.QName;
 
 public class AnyAdapter
     extends XmlAdapter<Object,Attribute>
@@ -33,7 +26,9 @@ public class AnyAdapter
             String namespace=el.getNamespaceURI();
             String local=el.getLocalName();
             String child=el.getTextContent();
-            return pFactory.newAttribute(namespace,local,prefix, child);
+            String type=el.getAttributeNS(NamespacePrefixMapper.XSI_NS, "type");
+            type=(type==null) ? "xsd:string" : type;
+            return pFactory.newAttribute(namespace,local,prefix, pFactory.convertToJava(type, child), type);
         } 
         if (value instanceof JAXBElement) {
             JAXBElement<?> je=(JAXBElement<?>) value;
@@ -42,12 +37,14 @@ public class AnyAdapter
         return null;
     }
 
-    public Object marshal(Attribute value) {
-        System.out.println("AnyAdapter2 marshalling for " + value);
-        System.out.println("AnyAdapter2 marshalling for " + value
+    public Object marshal(Attribute attribute) {
+        System.out.println("AnyAdapter2 marshalling for " + attribute);
+        System.out.println("AnyAdapter2 marshalling for " + attribute
                         .getClass());
         //TODO: this call creates a DOM but does not encode the type as xsi:type
-	return pFactory.newElement(value.getElementName(), value.getValue().toString());
+	return pFactory.newElement(attribute.getElementName(), 
+	                           attribute.getValue().toString(),
+	                           attribute.getXsdType());
         //JAXBElement<?> je=new JAXBElement(value.getElementName(),value.getValue().getClass(),value.getValue());
         //return je;
     }

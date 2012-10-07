@@ -480,6 +480,12 @@ public class ProvFactory {
 	return res;
     }
 
+    public Attribute newAttribute(String namespace, String localName,
+				  String prefix, Object value, String type) {
+	Attribute res=new Attribute(new QName(namespace, localName, prefix), value, type);
+	return res;
+    }
+
     public Attribute newAttribute(QName qname, Object value) {
 	Attribute res=new Attribute(qname, value, getXsdType(value));
 	return res;
@@ -495,12 +501,13 @@ public class ProvFactory {
 	return el;
     }
 
-    public Element newElement(QName qname, String value) {
+    public Element newElement(QName qname, String value, String type) {
     	org.w3c.dom.Document doc = builder.newDocument();
 	Element el = doc.createElementNS(qname.getNamespaceURI(), 
 	                                 ((qname.getPrefix().equals("")) 
 	                                	 ? ""
 	                                	 : (qname.getPrefix() + ":")) + qname.getLocalPart());
+	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", type);
 	el.appendChild(doc.createTextNode(value));
 	doc.appendChild(el);
 	return el;
@@ -1332,6 +1339,7 @@ return res;
     public String getXsdType(Object o) {
 	if (o instanceof Integer) return "xsd:int";
 	if (o instanceof String) return "xsd:string";
+	if (o instanceof Long) return "xsd:long";
 	if (o instanceof Short) return "xsd:short";
 	if (o instanceof Double) return "xsd:double";
 	if (o instanceof Float) return "xsd:float";

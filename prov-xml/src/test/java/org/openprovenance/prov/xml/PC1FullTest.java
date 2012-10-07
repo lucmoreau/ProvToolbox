@@ -125,11 +125,11 @@ public class PC1FullTest extends TestCase {
     }
 
     public void addValue(HasExtensibility p1, String val) {
-	pFactory.addAttribute(p1, PC1_NS, PC1_PREFIX, "value", val);
+	pFactory.addAttribute(p1, PC1_NS, "value", PC1_PREFIX, val);
     }
 
     public void addUrl(HasExtensibility p1, String val) {
-	pFactory.addAttribute(p1, PC1_NS, PC1_PREFIX, "url", val);
+	pFactory.addAttribute(p1, PC1_NS, "url", PC1_PREFIX, val);
     }
 
     public Document makePC1FullGraph(ProvFactory pFactory, String inputLocation,

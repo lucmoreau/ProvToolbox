@@ -57,12 +57,16 @@ public class RoundTripFromJavaTest extends TestCase {
      * @return the suite of tests being tested
      */
 
-    void updateNamespaces(Document doc) {
+    public void updateNamespaces(Document doc) {
 	Hashtable<String, String> nss = new Hashtable<String, String>();
 	updateNamespaces(nss);
 	doc.setNss(nss);
     }
    
+    public String extension() {
+	return ".xml";
+    }
+
     public void makeDocAndTest(Statement stment, String file) throws JAXBException {
 	makeDocAndTest(stment, file,true);
     }
@@ -70,10 +74,15 @@ public class RoundTripFromJavaTest extends TestCase {
 	Document doc = pFactory.newDocument();
 	doc.getEntityOrActivityOrWasGeneratedBy().add(stment);
 	updateNamespaces(doc);
+	file=file+extension();
 
 	writeXMLDocument(doc, file);
 	
 	Document doc2=readXMLDocument(file);
+	compareDocuments(doc, doc2, check);
+    }
+
+    public void compareDocuments(Document doc, Document doc2, boolean check) {
 	assertTrue("self doc differ", doc.equals(doc));
 	assertTrue("self doc2 differ", doc2.equals(doc2));
 	if (check) {
@@ -137,6 +146,7 @@ public class RoundTripFromJavaTest extends TestCase {
    	hl.getLocation().add(w);
     }
 
+    
     public void addFurtherLabels(HasExtensibility he) {
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag1",EX_PREFIX,"hello"));
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "bye"));
@@ -167,44 +177,44 @@ public class RoundTripFromJavaTest extends TestCase {
     
     public void testEntity1() throws JAXBException  {
 	Entity a = pFactory.newEntity("ex:e1");
-	makeDocAndTest(a,"target/entity1.xml");
+	makeDocAndTest(a,"target/entity1");
     }
 
     public void testEntity2() throws JAXBException  {
    	Entity a = pFactory.newEntity("ex:e2", "entity2");
-   	makeDocAndTest(a,"target/entity2.xml");
+   	makeDocAndTest(a,"target/entity2");
     }
 
     public void testEntity3() throws JAXBException  {
    	Entity a = pFactory.newEntity("ex:e3", "entity3");
    	addLabel(a);
-   	makeDocAndTest(a,"target/entity3.xml");
+   	makeDocAndTest(a,"target/entity3");
     }
 
     public void testEntity4() throws JAXBException  {
    	Entity a = pFactory.newEntity("ex:e4", "entity4");
 	addLabels(a);
-   	makeDocAndTest(a,"target/entity4.xml");
+   	makeDocAndTest(a,"target/entity4");
     }
    
     
     public void testEntity5() throws JAXBException  {
    	Entity a = pFactory.newEntity("ex:e5", "entity5");
 	addTypes(a);
-   	makeDocAndTest(a,"target/entity5.xml");
+   	makeDocAndTest(a,"target/entity5");
     }
 
     public void testEntity6() throws JAXBException  {
        	Entity a = pFactory.newEntity("ex:e6", "entity6");
 	addLocations(a);
-       	makeDocAndTest(a,"target/entity6.xml");
+       	makeDocAndTest(a,"target/entity6");
     }
     public void testEntity7() throws JAXBException  {
        	Entity a = pFactory.newEntity("ex:e7", "entity7");
 	addTypes(a);
 	addLocations(a);
 	addLabels(a);
-       	makeDocAndTest(a,"target/entity7.xml");
+       	makeDocAndTest(a,"target/entity7");
     }
     public void testEntity8() throws JAXBException  {
        	Entity a = pFactory.newEntity("ex:e8", "entity8");
@@ -214,7 +224,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	addLocations(a);
 	addLabels(a);
 	addLabels(a);
-       	makeDocAndTest(a,"target/entity8.xml");
+       	makeDocAndTest(a,"target/entity8");
     }
 
     public void testEntity9() throws JAXBException  {
@@ -223,7 +233,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	addLocations(a);
 	addLabels(a);
 	addFurtherLabels(a); 
-       	makeDocAndTest(a,"target/entity9.xml");
+       	makeDocAndTest(a,"target/entity9");
     }
 
     public void testEntity10() throws JAXBException  {
@@ -233,7 +243,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	addLabels(a);
 	addFurtherLabels(a); 
 	addFurtherLabelsPROBLEM(a);
-       	makeDocAndTest(a,"target/entity10.xml",false);
+       	makeDocAndTest(a,"target/entity10",false);
     }
 
 
@@ -242,36 +252,36 @@ public class RoundTripFromJavaTest extends TestCase {
     
     public void testActivity1() throws JAXBException  {
 	Activity a = pFactory.newActivity("ex:a1");
-	makeDocAndTest(a,"target/activity1.xml");
+	makeDocAndTest(a,"target/activity1");
     }
     public void testActivity2() throws JAXBException  {
    	Activity a = pFactory.newActivity("ex:a2", "activity2");
-   	makeDocAndTest(a,"target/activity2.xml");
+   	makeDocAndTest(a,"target/activity2");
     }
 
     public void testActivity3() throws JAXBException  {
 	Activity a = pFactory.newActivity("ex:a1");
 	a.setStartTime(pFactory.newTimeNow());
 	a.setEndTime(pFactory.newTimeNow());
-	makeDocAndTest(a,"target/activity3.xml");
+	makeDocAndTest(a,"target/activity3");
     }
 
     public void testActivity4() throws JAXBException  {
    	Activity a = pFactory.newActivity("ex:a2", "activity2");
 	addLabels(a);
-   	makeDocAndTest(a,"target/activity4.xml");
+   	makeDocAndTest(a,"target/activity4");
     }
     public void testActivity5() throws JAXBException  {
    	Activity a = pFactory.newActivity("ex:a2", "activity2");
 	addTypes(a);
-   	makeDocAndTest(a,"target/activity5.xml");
+   	makeDocAndTest(a,"target/activity5");
     }
    
     
     public void testActivity6() throws JAXBException  {
    	Activity a = pFactory.newActivity("ex:a6", "activity6");
 	addLocations(a);
-   	makeDocAndTest(a,"target/activity6.xml");
+   	makeDocAndTest(a,"target/activity6");
     }
 
     public void testActivity7() throws JAXBException  {
@@ -279,7 +289,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	addTypes(a);
 	addLocations(a);
 	addLabels(a);
-       	makeDocAndTest(a,"target/activity7.xml");
+       	makeDocAndTest(a,"target/activity7");
     }
     public void testActivity8() throws JAXBException  {
        	Activity a = pFactory.newActivity("ex:a8", "activity8");
@@ -291,7 +301,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	addLocations(a);
 	addLabels(a);
 	addLabels(a);
-       	makeDocAndTest(a,"target/activity8.xml");
+       	makeDocAndTest(a,"target/activity8");
     }
 
     public void testActivity9() throws JAXBException  {
@@ -300,7 +310,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	addLocations(a);
 	addLabels(a);
 	addFurtherLabels(a);
-       	makeDocAndTest(a,"target/activity9.xml");
+       	makeDocAndTest(a,"target/activity9");
     }
 
 
@@ -309,31 +319,31 @@ public class RoundTripFromJavaTest extends TestCase {
     
     public void testAgent1() throws JAXBException  {
 	Agent a = pFactory.newAgent("ex:ag1");
-	makeDocAndTest(a,"target/agent1.xml");
+	makeDocAndTest(a,"target/agent1");
     }
     public void testAgent2() throws JAXBException  {
    	Agent a = pFactory.newAgent("ex:ag2", "agent2");
-   	makeDocAndTest(a,"target/agent2.xml");
+   	makeDocAndTest(a,"target/agent2");
     }
 
     
     public void testAgent3() throws JAXBException  {
    	Agent a = pFactory.newAgent("ex:ag2", "agent2");
    	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-   	makeDocAndTest(a,"target/agent3.xml");
+   	makeDocAndTest(a,"target/agent3");
     }
     public void testAgent4() throws JAXBException  {
    	Agent a = pFactory.newAgent("ex:ag2", "agent2");
    	a.getLabel().add(pFactory.newInternationalizedString("hello"));
    	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-   	makeDocAndTest(a,"target/agent4.xml");
+   	makeDocAndTest(a,"target/agent4");
     }
     public void testAgent5() throws JAXBException  {
    	Agent a = pFactory.newAgent("ex:ag2", "agent2");
    	a.getLabel().add(pFactory.newInternationalizedString("hello"));
    	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
    	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
-   	makeDocAndTest(a,"target/agent5.xml");
+   	makeDocAndTest(a,"target/agent5");
     }
    
     
@@ -348,7 +358,7 @@ public class RoundTripFromJavaTest extends TestCase {
    	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"hello"));
    	a.getType().add(w);
-   	makeDocAndTest(a,"target/agent6.xml");
+   	makeDocAndTest(a,"target/agent6");
     }
 
     public void testAgent7() throws JAXBException  {
@@ -372,7 +382,7 @@ public class RoundTripFromJavaTest extends TestCase {
    	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"london"));
    	a.getLocation().add(w);
-       	makeDocAndTest(a,"target/agent7.xml");
+       	makeDocAndTest(a,"target/agent7");
     }
     public void testAgent8() throws JAXBException  {
        	Agent a = pFactory.newAgent("ex:ag8", "agent8");
@@ -415,7 +425,7 @@ public class RoundTripFromJavaTest extends TestCase {
    	a.getLocation().add(w2);
    	a.getLocation().add(w2);
 
-       	makeDocAndTest(a,"target/agent8.xml");
+       	makeDocAndTest(a,"target/agent8");
     }
 
 
@@ -430,7 +440,7 @@ public class RoundTripFromJavaTest extends TestCase {
 							pFactory.newEntityRef(q("e1")),
 							null,
 							null);
-	makeDocAndTest(gen,"target/generation1.xml");
+	makeDocAndTest(gen,"target/generation1");
     }
 
 
@@ -439,7 +449,7 @@ public class RoundTripFromJavaTest extends TestCase {
 							pFactory.newEntityRef(q("e1")),
 							null,
 							pFactory.newActivityRef(q("a1")));
-	makeDocAndTest(gen,"target/generation2.xml");
+	makeDocAndTest(gen,"target/generation2");
     }
 
 
@@ -448,7 +458,7 @@ public class RoundTripFromJavaTest extends TestCase {
 							pFactory.newEntityRef(q("e1")),
 							"role",
 							pFactory.newActivityRef(q("a1")));
-	makeDocAndTest(gen,"target/generation3.xml");
+	makeDocAndTest(gen,"target/generation3");
     }
 
 
@@ -458,6 +468,6 @@ public class RoundTripFromJavaTest extends TestCase {
 							"role",
 							pFactory.newActivityRef(q("a1")));
 	gen.setTime(pFactory.newTimeNow());
-	makeDocAndTest(gen,"target/generation4.xml");
+	makeDocAndTest(gen,"target/generation4");
     }
 }

@@ -6,7 +6,10 @@ import java.util.Hashtable;
 import java.net.URI;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.xml.HasLabel;
+import org.openprovenance.prov.xml.InternationalizedString;
 import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.xml.Statement;
 import org.openprovenance.prov.xml.URIWrapper;
@@ -101,20 +104,21 @@ public  class ProvConstructor implements TreeConstructor {
        TODO: done for type, only*/
     
     public void addAllAttributes(HasExtensibility e, List<Object> attributes) {
-        for (Object o: attributes) {
-            if (o instanceof JAXBElement) {
-                JAXBElement<?> je=(JAXBElement<?>) o;
-                QName q=je.getName();
-                if ("type".equals(q.getLocalPart())) {
-                    HasType eWithType=(HasType) e;
-                    eWithType.getType().add(je.getValue());
-                } else {
-                    e.getAny().add(o);
-                }
+	List<?> attrs=(List<?>) attributes;
+	List<Attribute> attributes1=(List<Attribute>) attrs;
+	
+        for (Attribute o: attributes1) {
+            QName q=o.getElementName();
+            if ("type".equals(q.getLocalPart())) {
+        	HasType eWithType=(HasType) e;
+        	eWithType.getType().add(o.getValue());
+            } else if ("label".equals(q.getLocalPart())) {
+        	HasLabel eWithLabel=(HasLabel) e;
+        	eWithLabel.getLabel().add((InternationalizedString)o.getValue());
             } else {
-                e.getAny().add(o);
+        	e.getAny().add(o);
             }
-        }
+        } 
     }
 
     public Object convertAgent(Object id, Object eAttrs) {
@@ -251,7 +255,8 @@ public  class ProvConstructor implements TreeConstructor {
         
             //return new JAXBElement<TypedLiteral>(attr1_QNAME, TypedLiteral.class, null, (TypedLiteral)value);
 
-            return new JAXBElement<Object>(attr1_QNAME, Object.class, null, value);
+            //return new JAXBElement<Object>(attr1_QNAME, Object.class, null, value);
+            return pFactory.newAttribute(attr1_QNAME, value);
         }
     }
 
@@ -293,7 +298,7 @@ public  class ProvConstructor implements TreeConstructor {
                                 null,
                                 e1r);
         List<?> attrs=(List<?>)uAttrs;
-        u.getAny().addAll(attrs);
+        addAllAttributes(u, (List<Object>)attrs);
 
         if (time!=null) {
 	    if (time instanceof XMLGregorianCalendar) {
@@ -321,7 +326,7 @@ public  class ProvConstructor implements TreeConstructor {
                                                     null,
                                                     a1r);
         List<?> attrs=(List<?>)gAttrs;
-        if (attrs!=null) g.getAny().addAll(attrs);
+        if (attrs!=null) addAllAttributes(g, (List<Object>)attrs);
         if (time!=null) {
 	    if (time instanceof XMLGregorianCalendar) {
 		g.setTime((XMLGregorianCalendar)time);
@@ -353,7 +358,7 @@ public  class ProvConstructor implements TreeConstructor {
         if (a3!=null) a3r=pFactory.newActivityRef(a3);
 
         List<?> attrs=(List<?>)gAttrs;
-        s.getAny().addAll(attrs);
+        addAllAttributes(s, (List<Object>)attrs);
         if (time!=null) {
 	    if (time instanceof XMLGregorianCalendar) {
 		s.setTime((XMLGregorianCalendar)time);
@@ -388,7 +393,7 @@ public  class ProvConstructor implements TreeConstructor {
         if (a3!=null) a3r=pFactory.newActivityRef(a3);
 
         List<?> attrs=(List<?>)gAttrs;
-        s.getAny().addAll(attrs);
+        addAllAttributes(s, (List<Object>)attrs);
         if (time!=null) {
 	    if (time instanceof XMLGregorianCalendar) {
 		s.setTime((XMLGregorianCalendar)time);
@@ -416,7 +421,8 @@ public  class ProvConstructor implements TreeConstructor {
                                                         e2r,
                                                         a1r);
         List<?> attrs=(List<?>)gAttrs;
-        if (attrs!=null) g.getAny().addAll(attrs);
+        
+        addAllAttributes(g, (List<Object>)attrs);
         if (time!=null) {
 	    if (time instanceof XMLGregorianCalendar) {
 		g.setTime((XMLGregorianCalendar)time);
@@ -442,7 +448,8 @@ public  class ProvConstructor implements TreeConstructor {
                                                   a2r,
                                                   e1r);
         List<?> attrs=(List<?>)aAttrs;
-        s.getAny().addAll(attrs);
+        addAllAttributes(s, (List<Object>)attrs);
+        
 
         return s;
     }
@@ -481,9 +488,7 @@ public  class ProvConstructor implements TreeConstructor {
         if (u1!=null) d.setUsage(pFactory.newUsageRef((String)u1));
 
         List<?> attrs=(List<?>)dAttrs;
-        d.getAny().addAll(attrs);
-
-
+        addAllAttributes(d, (List<Object>)attrs);
         return d;
     }
 
@@ -503,7 +508,8 @@ public  class ProvConstructor implements TreeConstructor {
                                                       s_id2,
                                                       s_id1);
         List<?> attrs=(List<?>)dAttrs;
-        d.getAny().addAll(attrs);
+        addAllAttributes(d, (List<Object>)attrs);
+        
         return d;
     }
 
@@ -573,7 +579,8 @@ public  class ProvConstructor implements TreeConstructor {
                                                             e1r);
         waw.setPlan(e3r);
         List<?> attrs=(List<?>)aAttrs;
-        waw.getAny().addAll(attrs);
+        
+        addAllAttributes(waw, (List<Object>)attrs);
 
         return waw;
     }
@@ -599,7 +606,8 @@ public  class ProvConstructor implements TreeConstructor {
                                                          e1r,
                                                          e3r);
         List<?> attrs=(List<?>)aAttrs;
-        aobo.getAny().addAll(attrs);
+        
+        addAllAttributes(aobo, (List<Object>)attrs);
 
         return aobo;
     }

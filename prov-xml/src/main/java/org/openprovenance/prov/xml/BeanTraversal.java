@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.LinkedList;
 import javax.xml.namespace.QName;
 import javax.xml.bind.JAXBElement;
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.w3c.dom.Element;
 
 public class BeanTraversal {
@@ -150,6 +152,10 @@ public class BeanTraversal {
 	if (a instanceof Integer) {
 	    Integer b = (Integer) a;
 	    return c.convertTypedLiteral("xsd:int", quoteWrap(b));
+	} 
+	if (a instanceof XMLGregorianCalendar) {
+	    XMLGregorianCalendar ti=(XMLGregorianCalendar) a;
+	    return c.convertTypedLiteral("xsd:dateTime", quoteWrap(ti));
 	} else {
 	    throw new UnsupportedOperationException("Unknown typedLiteral " + a
 		    + "(" + a.getClass() + ")");

@@ -9,6 +9,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.HasLabel;
+import org.openprovenance.prov.xml.HasLocation;
 import org.openprovenance.prov.xml.InternationalizedString;
 import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.xml.Statement;
@@ -112,9 +113,16 @@ public  class ProvConstructor implements TreeConstructor {
             if ("type".equals(q.getLocalPart())) {
         	HasType eWithType=(HasType) e;
         	eWithType.getType().add(o.getValue());
+            } else if ("location".equals(q.getLocalPart())) {
+        	HasLocation eWithLocation=(HasLocation) e;
+        	eWithLocation.getLocation().add(o.getValue());
             } else if ("label".equals(q.getLocalPart())) {
         	HasLabel eWithLabel=(HasLabel) e;
-        	eWithLabel.getLabel().add((InternationalizedString)o.getValue());
+        	if (o.getValue() instanceof String) {
+        	    eWithLabel.getLabel().add(pFactory.newInternationalizedString((String)o.getValue()));
+        	} else {
+        	    eWithLabel.getLabel().add((InternationalizedString)o.getValue());
+        	}
             } else {
         	e.getAny().add(o);
             }
@@ -666,11 +674,12 @@ public  class ProvConstructor implements TreeConstructor {
             }
             return new QName(getNamespace(prefix), local, prefix);
         }
+        if (datatype.equals("xsd:dateTime")) {
+            return pFactory.newISOTime(value);  //TODO: use value!
+        }
 
 
-
-        if ((datatype.equals("xsd:dateTime"))
-            || (datatype.equals("rdf:XMLLiteral"))
+        if ((datatype.equals("rdf:XMLLiteral"))
             || (datatype.equals("xsd:normalizedString"))
             || (datatype.equals("xsd:token"))
             || (datatype.equals("xsd:language"))

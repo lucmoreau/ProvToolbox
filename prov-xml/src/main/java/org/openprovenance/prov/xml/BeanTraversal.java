@@ -3,10 +3,8 @@ package org.openprovenance.prov.xml;
 import java.util.List;
 import java.util.LinkedList;
 import javax.xml.namespace.QName;
-import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.w3c.dom.Element;
 
 public class BeanTraversal {
     private BeanConstructor c;

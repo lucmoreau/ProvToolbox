@@ -36,9 +36,9 @@
     <dependency>
     	<groupId>org.openprovenance.prov</groupId>
     	<artifactId>prov-xml</artifactId>
-    	<type>test-jar</type>
     	<scope>test</scope>
     	<version>0.0.2-SNAPSHOT</version>
+    	<classifier>tests</classifier>
     </dependency>
   </dependencies>
   <build>

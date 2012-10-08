@@ -10,7 +10,6 @@ import java.io.IOException;
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.RoundTripFromJavaTest;
 import org.openprovenance.prov.xml.Statement;
 
 import com.google.gson.Gson;
@@ -21,7 +20,7 @@ import com.google.gson.JsonSyntaxException;
 /**
  * Round trip testing JavaBean -> PROV-JSON -> JavaBean
  */
-public class JavaJsonJavaTest extends RoundTripFromJavaTest
+public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTripFromJavaTest
 {
 	private Gson gson = new GsonBuilder()
 							.registerTypeAdapter(Document.class, new ProvDocumentDeserializer())
@@ -29,7 +28,7 @@ public class JavaJsonJavaTest extends RoundTripFromJavaTest
 							.setPrettyPrinting()
 							.create();
 	
-	public JavaJsonJavaTest(String testName) {
+	public RoundTripFromJavaTest(String testName) {
 		super(testName);
 	}
 
@@ -47,8 +46,8 @@ public class JavaJsonJavaTest extends RoundTripFromJavaTest
 		file = file + extension();
 
 		try {
-			writeDocument(doc, file);
-			Document doc2=readDocument(file);
+			writeJSONDocument(doc, file);
+			Document doc2=readJSONDocument(file);
 			compareDocuments(doc, doc2, check);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -56,12 +55,12 @@ public class JavaJsonJavaTest extends RoundTripFromJavaTest
 		}
 	}
 	
-	protected Document readDocument(String file) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
+	protected Document readJSONDocument(String file) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
 		Document doc = gson.fromJson(new BufferedReader(new FileReader(file)), Document.class);
 		return doc;
 	}
 	
-	protected void writeDocument(Document doc, String file) throws IOException {
+	protected void writeJSONDocument(Document doc, String file) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 		gson.toJson(doc, writer);
 		writer.close();

@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.notation.TreeConstructor;
 import org.openprovenance.prov.notation.TreeTraversal;
 import org.openprovenance.prov.notation.Utility;
+import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.InternationalizedString;
 
 import com.google.gson.Gson;
@@ -112,14 +115,19 @@ class JSONConstructor implements TreeConstructor {
 		return new ProvRecord("entity", id, attrs);
 	}
 	
+	
+	private String convertTime(Object time) {
+		return time.toString();
+	}
+	
 	@Override
     public Object convertActivity(Object id, Object startTime, Object endTime, Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
     	if (startTime != null) {
-    		attrs.add(tuple("prov:startTime", startTime));
+    		attrs.add(tuple("prov:startTime", convertTime(startTime)));
     	}
     	if (endTime != null) {
-    		attrs.add(tuple("prov:endTime", endTime));
+    		attrs.add(tuple("prov:endTime", convertTime(endTime)));
     	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
@@ -134,7 +142,7 @@ class JSONConstructor implements TreeConstructor {
     	if (id1 != null)
     		attrs.add(tuple("prov:entity", id1));
     	if (time != null) {
-    		attrs.add(tuple("prov:time", time));
+    		attrs.add(tuple("prov:time", convertTime(time)));
     	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
@@ -154,7 +162,7 @@ class JSONConstructor implements TreeConstructor {
     		attrs.add(tuple("prov:activity", id1));
     	}
     	if (time != null) {
-    		attrs.add(tuple("prov:time", time));
+    		attrs.add(tuple("prov:time", convertTime(time)));
     	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
@@ -177,7 +185,7 @@ class JSONConstructor implements TreeConstructor {
     		attrs.add(tuple("prov:starter", id3));
     	}
     	if (time != null) {
-    		attrs.add(tuple("prov:time", time));
+    		attrs.add(tuple("prov:time", convertTime(time)));
     	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
@@ -200,7 +208,7 @@ class JSONConstructor implements TreeConstructor {
     		attrs.add(tuple("prov:ender", id3));
     	}
     	if (time != null) {
-    		attrs.add(tuple("prov:time", time));
+    		attrs.add(tuple("prov:time", convertTime(time)));
     	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
@@ -220,7 +228,7 @@ class JSONConstructor implements TreeConstructor {
     		attrs.add(tuple("prov:activity", id1));
     	}
     	if (time != null) {
-    		attrs.add(tuple("prov:time", time));
+    		attrs.add(tuple("prov:time", convertTime(time)));
     	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
@@ -638,10 +646,25 @@ class JSONConstructor implements TreeConstructor {
 	}
 
 
+	private Object convertAttribute(Attribute attr) {
+		return tuple(attr.getElementName().toString(), 
+					typedLiteral(attr.getValue().toString(), attr.getXsdType(), null));
+	}
 	
 	@Override
 	public Object convertAttributes(List<Object> attributes) {
-		return attributes;
+		if (attributes != null && !attributes.isEmpty()) {
+			List<Object> results = new ArrayList<Object>(attributes.size());
+			for (Object attr: attributes) {
+				if (attr instanceof Attribute) {
+					results.add(convertAttribute((Attribute)attr));
+				}
+				else results.add(attr);
+			}
+			return results;
+		}
+		else 
+			return attributes;
 	}
 
 	@Override

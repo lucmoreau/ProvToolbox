@@ -545,8 +545,11 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             	String datatype = struct.get("type").getAsString();
             	return decodeXSDType(value, datatype);
             } else {
-            	// if no type or lang information, decode as a JSON primitive
-            	return decodeJSONPrimitive(value);
+            	// if no type or lang information, decode as an Internationalized string without lang
+            	InternationalizedString iString = new InternationalizedString();
+                iString.setValue(value);
+                return iString;
+//            	return decodeJSONPrimitive(value);
             }
         }
     }

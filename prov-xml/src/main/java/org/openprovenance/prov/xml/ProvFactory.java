@@ -29,6 +29,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class ProvFactory {
 
+    private static final String DEFAULT_NS = "_";
+
     public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.collection:org.openprovenance.prov.xml.validation";
 
     static {
@@ -97,14 +99,14 @@ public class ProvFactory {
 		return cof;
 	}
 	
-    public void addAttribute(HasExtensibility a, Object o) {
+    public void addAttribute(HasExtensibility a, Attribute o) {
 	a.getAny().add(o);
     }
 
     public void addAttribute(HasExtensibility a, String namespace,
-			     String prefix, String localName, String value) {
+			     String localName, String prefix, String value) {
 
-	a.getAny().add(newAttribute(namespace, prefix, localName, value));
+	a.getAny().add(newAttribute(namespace, localName, prefix, value));
     }
 
     public ActedOnBehalfOf addAttributes(ActedOnBehalfOf from,
@@ -226,16 +228,12 @@ public class ProvFactory {
 	return to;
     }
 
-        public void addLabel(HasExtensibility a, String label) {
-        JAXBElement<InternationalizedString> je = of
-        	.createLabel(newInternationalizedString(label));
-        addAttribute(a, je);
-        }
+    public void addLabel(HasLabel a, String label) {
+	a.getLabel().add(newInternationalizedString(label));
+    }
 
-    public void addLabel(HasExtensibility a, String label, String language) {
-	JAXBElement<InternationalizedString> je = of
-		.createLabel(newInternationalizedString(label, language));
-	addAttribute(a, je);
+    public void addLabel(HasLabel a, String label, String language) {
+	a.getLabel().add(newInternationalizedString(label, language));
     }
 
     public void addRole(HasRole a, Object role) {
@@ -269,6 +267,7 @@ public class ProvFactory {
 	a.getType().add(u);
     }
 
+    /*
     public void addTypeOLD(HasExtensibility a, Object type) {
 
 	// TypedLiteral tl=newTypedLiteral(type);
@@ -284,6 +283,7 @@ public class ProvFactory {
 	JAXBElement<Object> je = of.createType(u);
 	addAttribute(a, je);
     }
+    */
 
     /**
      * By default, no auto generation of Id. Override this behaviour if
@@ -474,11 +474,40 @@ public class ProvFactory {
 	return newAnyRef(stringToQName(id));
     }
 
-    public Element newAttribute(String namespace, String prefix,
+    public Attribute newAttribute(String namespace, String localName,
+				  String prefix, Object value) {
+	Attribute res=new Attribute(new QName(namespace, localName, prefix), value, getXsdType(value));
+	return res;
+    }
+
+    public Attribute newAttribute(String namespace, String localName,
+				  String prefix, Object value, String type) {
+	Attribute res=new Attribute(new QName(namespace, localName, prefix), value, type);
+	return res;
+    }
+
+    public Attribute newAttribute(QName qname, Object value) {
+	Attribute res=new Attribute(qname, value, getXsdType(value));
+	return res;
+    }
+
+    public Element OLDnewAttribute(String namespace, String prefix,
 				String localName, String value) {
     	org.w3c.dom.Document doc = builder.newDocument();
 	Element el = doc.createElementNS(namespace, ((prefix.equals("")) ? ""
 		: (prefix + ":")) + localName);
+	el.appendChild(doc.createTextNode(value));
+	doc.appendChild(el);
+	return el;
+    }
+
+    public Element newElement(QName qname, String value, String type) {
+    	org.w3c.dom.Document doc = builder.newDocument();
+	Element el = doc.createElementNS(qname.getNamespaceURI(), 
+	                                 ((qname.getPrefix().equals("")) 
+	                                	 ? ""
+	                                	 : (qname.getPrefix() + ":")) + qname.getLocalPart());
+	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", type);
 	el.appendChild(doc.createTextNode(value));
 	doc.appendChild(el);
 	return el;
@@ -1283,7 +1312,7 @@ return res;
 	    return null;
 	int index = id.indexOf(':');
 	if (index == -1) {
-	    return new QName(namespaces.get("_"), id);
+	    return new QName(namespaces.get(DEFAULT_NS), id);
 	}
 	String prefix = id.substring(0, index);
 	String local = id.substring(index + 1, id.length());
@@ -1305,6 +1334,94 @@ return res;
         if (entity!=null)
             res.getEntity().add(entity);
         return res;
+    }
+    
+    public String getXsdType(Object o) {
+	if (o instanceof Integer) return "xsd:int";
+	if (o instanceof String) return "xsd:string";
+	if (o instanceof Long) return "xsd:long";
+	if (o instanceof Short) return "xsd:short";
+	if (o instanceof Double) return "xsd:double";
+	if (o instanceof Float) return "xsd:float";
+	if (o instanceof java.math.BigDecimal) return "xsd:decimal";
+	if (o instanceof Boolean) return "xsd:boolean";
+	if (o instanceof Byte) return "xsd:byte";
+	if (o instanceof URIWrapper) return "xsd:anyURI";
+	if (o instanceof QName) return "xsd:QName";
+	return "xsd:UNKNOWN";
+    }
+
+    /* Uses the xsd:type to java:type mapping of JAXB */
+
+    public Object convertToJava(String datatype, String value) {
+        if (datatype.equals("xsd:string"))  return value;
+
+        if (datatype.equals("xsd:int"))     return Integer.parseInt(value);
+        if (datatype.equals("xsd:long"))    return Long.parseLong(value);
+        if (datatype.equals("xsd:short"))   return Short.parseShort(value);
+        if (datatype.equals("xsd:double"))  return Double.parseDouble(value);
+        if (datatype.equals("xsd:float"))   return Float.parseFloat(value);
+        if (datatype.equals("xsd:decimal")) return new java.math.BigDecimal(value);
+        if (datatype.equals("xsd:boolean")) return Boolean.parseBoolean(value);
+        if (datatype.equals("xsd:byte"))    return Byte.parseByte(value);
+        if (datatype.equals("xsd:unsignedInt"))   return Long.parseLong(value);
+        if (datatype.equals("xsd:unsignedShort")) return Integer.parseInt(value);
+        if (datatype.equals("xsd:unsignedByte"))  return Short.parseShort(value);
+        if (datatype.equals("xsd:unsignedLong"))  return new java.math.BigInteger(value);
+        if (datatype.equals("xsd:integer"))             return new java.math.BigInteger(value);
+        if (datatype.equals("xsd:nonNegativeInteger"))  return new java.math.BigInteger(value);
+        if (datatype.equals("xsd:nonPositiveInteger"))  return new java.math.BigInteger(value);
+        if (datatype.equals("xsd:positiveInteger"))     return new java.math.BigInteger(value);
+
+        if (datatype.equals("xsd:anyURI")) {
+            URIWrapper u=new URIWrapper();
+            u.setValue(URI.create(value));
+            return u;
+        }
+        if (datatype.equals("xsd:QName")) {
+            return newQName(value);
+        }
+
+
+
+        if ((datatype.equals("xsd:dateTime"))
+            || (datatype.equals("rdf:XMLLiteral"))
+            || (datatype.equals("xsd:normalizedString"))
+            || (datatype.equals("xsd:token"))
+            || (datatype.equals("xsd:language"))
+            || (datatype.equals("xsd:Name"))
+            || (datatype.equals("xsd:NCName"))
+            || (datatype.equals("xsd:NMTOKEN"))
+            || (datatype.equals("xsd:hexBinary"))
+            || (datatype.equals("xsd:base64Binary"))) {
+
+            throw new UnsupportedOperationException("KNOWN literal type but conversion not supported yet " + datatype);
+        }
+
+        throw new UnsupportedOperationException("UNKNOWN literal type " + datatype);
+    }
+
+    public Object newQName(String qnameAsString) {
+	int index=qnameAsString.indexOf(':');
+	String prefix;
+	String local;
+
+	if (index==-1) {
+	    prefix="";
+	    local=qnameAsString;
+	} else {
+	    prefix=qnameAsString.substring(0,index);
+	    local=qnameAsString.substring(index+1,qnameAsString.length());
+	}
+	return new QName(getNamespace(prefix), local, prefix);
+    }
+    
+
+    public String getNamespace(String prefix) {
+        if ((prefix==null) || ("".equals(prefix))) return namespaces.get(DEFAULT_NS);
+        if (prefix.equals(NamespacePrefixMapper.PROV_PREFIX)) return NamespacePrefixMapper.PROV_NS;
+        if (prefix.equals(NamespacePrefixMapper.XSD_PREFIX)) return NamespacePrefixMapper.XSD_NS;
+        return namespaces.get(prefix);
     }
 
 

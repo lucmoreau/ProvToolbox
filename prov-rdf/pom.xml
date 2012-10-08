@@ -72,12 +72,24 @@
       <scope>test</scope>
       <classifier>tests</classifier>
     </dependency>
+    <dependency>
+      <groupId>org.jvnet.jaxb2_commons</groupId>
+	  <artifactId>runtime</artifactId>
+   	  <version>${jaxb.common.version}</version>
+    </dependency>
 
 
     <dependency>
     	<groupId>org.openrdf.sesame</groupId>
     	<artifactId>sesame-rio-trig</artifactId>
     	<version>2.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-xml</artifactId>
+      <version>0.0.2-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

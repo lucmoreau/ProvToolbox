@@ -1,0 +1,29 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix bbc:  <http://www.bbc.co.uk/> .
+@prefix eg:   <http://example.com/vocab#> .
+@prefix :     <http://example.com/> .
+
+:bbcNews2012-04-03 
+   a prov:Entity, eg:DailyNews;
+   rdfs:comment """The BBC news home page on 2012-04-03 contained a reference 
+                   to a given news item, but the BBC news home page on 
+                   the next day did not.""";
+
+   prov:wasGeneratedBy :publishingActivity;
+   prov:qualifiedGeneration [
+      a prov:Generation, prov:InstantaneousEvent;
+      prov:atTime "2012-04-03T00:00:01Z"^^xsd:dateTime;
+      prov:activity :publishingActivity;
+   ];
+   prov:qualifiedInvalidation [
+      a prov:Invalidation, prov:InstantaneousEvent;
+      prov:atTime "2012-04-03T23:59:59Z"^^xsd:dateTime;
+   ];
+.
+
+:publishingActivity 
+   a prov:Activity;
+.

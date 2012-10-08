@@ -1,0 +1,20 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix :     <http://example.com/> .
+
+:making-bar-chart
+   a prov:Generation, 
+     prov:ActivityInfluence;
+   prov:activity :illustrating;
+   rdfs:comment "Ended up with bar chart as line chart looked ugly."@en;
+.
+
+:illustrating a prov:Activity .
+
+:bar_chart 
+   a prov:Entity;
+   prov:wasGeneratedBy :illustrating;
+   prov:qualifiedGeneration :making-bar-chart;
+.

@@ -1,0 +1,60 @@
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix :     <http://example.org#> .
+
+:bar_chart
+   a prov:Entity;
+   prov:wasGeneratedBy :illustrationActivity;
+   prov:wasDerivedFrom :aggregatedByRegions;
+.
+
+:illustrationActivity 
+   a prov:Activity; 
+   prov:used              :aggregatedByRegions;
+   prov:wasAssociatedWith :derek;
+   prov:wasInformedBy     :aggregationActivity;
+.
+
+:aggregatedByRegions
+   a prov:Entity;
+   prov:wasGeneratedBy :aggregationActivity;
+.
+
+:aggregationActivity
+   a prov:Activity;
+   prov:startedAtTime    "2011-07-14T01:01:01Z"^^xsd:dateTime;
+   prov:wasAssociatedWith :derek;
+   prov:used              :crimeData;
+   prov:used              :nationalRegionsList;
+   prov:endedAtTime      "2011-07-14T02:02:02Z"^^xsd:dateTime;
+.
+
+:crimeData
+   a prov:Entity;
+   prov:wasAttributedTo :government;
+.
+:nationalRegionsList 
+   a prov:Entity;
+   prov:wasAttributedTo :civil_action_group;
+.
+
+:aggregatedByRegions prov:wasAttributedTo :derek .
+:bar_chart           prov:wasAttributedTo :derek .
+
+:derek
+   a prov:Agent;
+   a foaf:Person;
+   foaf:givenName "Derek"^^xsd:string;
+   foaf:mbox      <mailto:derek@example.org>;
+   prov:actedOnBehalfOf :natonal_newspaper_inc;
+.
+
+:national_newspaper_inc 
+   a prov:Agent;
+   a prov:Organization;
+   foaf:name "National Newspaper, Inc.";
+. 
+
+:government         a prov:Organization, foaf:Organization .
+:civil_action_group a prov:Organization, foaf:Organization .

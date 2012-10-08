@@ -111,16 +111,13 @@ public class QualifiedCollector extends RdfCollector {
 	{
 		super.endRDF();
 		this.bindQualifiedProperties();
-		dumpUnhandled();
+		//dumpUnhandled();
 	}
 
 	private void handleInfluence(QName context,
 			org.openprovenance.prov.xml.Influence target,
 			List<Statement> statements)
 	{
-
-		List<Statement> removedStatements = new ArrayList<Statement>();
-
 		WasInfluencedBy wib = new WasInfluencedBy();
 		wib.setInfluencee(pFactory.newAnyRef(target.getId()));
 
@@ -137,12 +134,10 @@ public class QualifiedCollector extends RdfCollector {
 								PROV + "influencer"))
 				{
 					wib.setInfluencer(pFactory.newAnyRef(valueQ));
-					removedStatements.add(statement);
 				}
 			}
 		}
 
-		statements.removeAll(removedStatements);
 		store(context, wib);
 	}
 
@@ -171,8 +166,6 @@ public class QualifiedCollector extends RdfCollector {
 			org.openprovenance.prov.xml.Influence target,
 			List<Statement> statements)
 	{
-		List<Statement> removedStatements = new ArrayList<Statement>();
-
 		for (Statement statement : statements)
 		{
 			String predS = statement.getPredicate().stringValue();
@@ -185,7 +178,6 @@ public class QualifiedCollector extends RdfCollector {
 					XMLGregorianCalendar time = (XMLGregorianCalendar) super
 							.decodeLiteral((Literal) value);
 					((HasTime) target).setTime(time);
-					removedStatements.add(statement);
 				}
 			}
 
@@ -198,17 +190,14 @@ public class QualifiedCollector extends RdfCollector {
 					// TODO: Not really clarified as to what 'Role' is here.
 					((HasRole) (target)).getRole().add(
 							pFactory.newAnyRef(valueQ));
-					removedStatements.add(statement);
 				} else if (predS.equals(PROV + "atLocation")
 						&& target instanceof HasLocation)
 				{
 					((HasLocation) target).getLocation().add(
 							pFactory.newAnyRef(valueQ));
-					removedStatements.add(statement);
 				}
 			}
 		}
-		statements.removeAll(removedStatements);
 	}
 
 	private void createEntityInfluence(QName context, QName qname)
@@ -225,7 +214,6 @@ public class QualifiedCollector extends RdfCollector {
 		wdf.setId(qname);
 
 		List<Statement> statements = collators.get(context).get(qname);
-		List<Statement> removedStatements = new ArrayList<Statement>();
 
 		for (Statement statement : statements)
 		{
@@ -240,19 +228,16 @@ public class QualifiedCollector extends RdfCollector {
 				if (predS.equals(PROV + "hadActivity"))
 				{
 					wdf.setActivity(pFactory.newActivityRef(valueQ));
-					removedStatements.add(statement);
 				}
 
 				if (predS.equals(PROV + "hadGeneration"))
 				{
 					wdf.setGeneration(pFactory.newGenerationRef(valueQ));
-					removedStatements.add(statement);
 				}
 
 				if (predS.equals(PROV + "hadUsage"))
 				{
 					wdf.setUsage(pFactory.newUsageRef(valueQ));
-					removedStatements.add(statement);
 				}
 
 				if (predS.equals(PROV + "entity"))
@@ -262,8 +247,6 @@ public class QualifiedCollector extends RdfCollector {
 				}
 			}
 		}
-		statements.removeAll(removedStatements);
-
 		handleEntityInfluence(context, wdf, statements);
 
 		store(context, wdf);
@@ -272,10 +255,8 @@ public class QualifiedCollector extends RdfCollector {
 
 	private void createInfluence(QName context, QName qname)
 	{
-		System.out.println("Create an influence");
 		WasInfluencedBy wib = new WasInfluencedBy();
 		wib.setId(qname);
-		System.out.println("ID: " + qname);
 		List<Statement> statements = collators.get(context).get(qname);
 		handleInfluence(context, wib, statements);
 		this.influenceMap.put(qname, wib);
@@ -288,7 +269,6 @@ public class QualifiedCollector extends RdfCollector {
 		web.setId(qname);
 
 		List<Statement> statements = collators.get(context).get(qname);
-		List<Statement> removedStatements = new ArrayList<Statement>();
 		for (Statement statement : statements)
 		{
 			String predS = statement.getPredicate().stringValue();
@@ -301,7 +281,6 @@ public class QualifiedCollector extends RdfCollector {
 			}
 
 		}
-		statements.removeAll(removedStatements);
 
 		handleEntityInfluence(context, web, statements);
 		handleInstantaneousEvent(context, web, statements);
@@ -316,7 +295,6 @@ public class QualifiedCollector extends RdfCollector {
 		wsb.setId(qname);
 
 		List<Statement> statements = collators.get(context).get(qname);
-		List<Statement> removedStatements = new ArrayList<Statement>();
 		for (Statement statement : statements)
 		{
 			String predS = statement.getPredicate().stringValue();
@@ -329,7 +307,6 @@ public class QualifiedCollector extends RdfCollector {
 			}
 
 		}
-		statements.removeAll(removedStatements);
 
 		handleEntityInfluence(context, wsb, statements);
 		handleInstantaneousEvent(context, wsb, statements);
@@ -344,7 +321,6 @@ public class QualifiedCollector extends RdfCollector {
 		wib.setId(qname);
 
 		List<Statement> statements = collators.get(context).get(qname);
-		List<Statement> removedStatements = new ArrayList<Statement>();
 		for (Statement statement : statements)
 		{
 			String predS = statement.getPredicate().stringValue();
@@ -357,7 +333,6 @@ public class QualifiedCollector extends RdfCollector {
 			}
 
 		}
-		statements.removeAll(removedStatements);
 
 		handleActivityInfluence(context, wib, statements);
 		handleInstantaneousEvent(context, wib, statements);
@@ -372,7 +347,6 @@ public class QualifiedCollector extends RdfCollector {
 		aobo.setId(qname);
 
 		List<Statement> statements = collators.get(context).get(qname);
-		List<Statement> removedStatements = new ArrayList<Statement>();
 		for (Statement statement : statements)
 		{
 			String predS = statement.getPredicate().stringValue();
@@ -388,10 +362,8 @@ public class QualifiedCollector extends RdfCollector {
 			{
 				QName activityQ = qNameFromResource((Resource) value);
 				aobo.setActivity(pFactory.newActivityRef(activityQ));
-				removedStatements.add(statement);
 			}
 		}
-		statements.removeAll(removedStatements);
 
 		handleAgentInfluence(context, aobo, statements);
 
@@ -405,7 +377,6 @@ public class QualifiedCollector extends RdfCollector {
 		wib.setId(qname);
 
 		List<Statement> statements = collators.get(context).get(qname);
-		List<Statement> removedStatements = new ArrayList<Statement>();
 		for (Statement statement : statements)
 		{
 			String predS = statement.getPredicate().stringValue();
@@ -417,7 +388,6 @@ public class QualifiedCollector extends RdfCollector {
 				wib.setCause(pFactory.newActivityRef(activityQ));
 			}
 		}
-		statements.removeAll(removedStatements);
 
 		handleActivityInfluence(context, wib, statements);
 
@@ -431,7 +401,6 @@ public class QualifiedCollector extends RdfCollector {
 		wat.setId(qname);
 
 		List<Statement> statements = collators.get(context).get(qname);
-		List<Statement> removedStatements = new ArrayList<Statement>();
 		for (Statement statement : statements)
 		{
 			String predS = statement.getPredicate().stringValue();
@@ -443,7 +412,6 @@ public class QualifiedCollector extends RdfCollector {
 				wat.setAgent(pFactory.newAgentRef(agentQ));
 			}
 		}
-		statements.removeAll(removedStatements);
 
 		handleAgentInfluence(context, wat, statements);
 
@@ -457,7 +425,6 @@ public class QualifiedCollector extends RdfCollector {
 		waw.setId(qname);
 
 		List<Statement> statements = collators.get(context).get(qname);
-		List<Statement> removedStatements = new ArrayList<Statement>();
 
 		for (Statement statement : statements)
 		{
@@ -479,7 +446,6 @@ public class QualifiedCollector extends RdfCollector {
 				}
 			}
 		}
-		statements.removeAll(removedStatements);
 
 		handleAgentInfluence(context, waw, statements);
 
@@ -492,7 +458,6 @@ public class QualifiedCollector extends RdfCollector {
 		Used used = new Used();
 		used.setId(qname);
 		List<Statement> statements = collators.get(context).get(qname);
-		List<Statement> removedStatements = new ArrayList<Statement>();
 
 		for (Statement statement : statements)
 		{
@@ -508,7 +473,6 @@ public class QualifiedCollector extends RdfCollector {
 				}
 			}
 		}
-		statements.removeAll(removedStatements);
 
 		handleEntityInfluence(context, used, statements);
 		handleInstantaneousEvent(context, used, statements);
@@ -523,7 +487,6 @@ public class QualifiedCollector extends RdfCollector {
 		WasGeneratedBy wgb = pFactory.newWasGeneratedBy(qname);
 
 		List<Statement> statements = collators.get(context).get(qname);
-		List<Statement> removedStatements = new ArrayList<Statement>();
 
 		for (Statement statement : statements)
 		{
@@ -539,7 +502,6 @@ public class QualifiedCollector extends RdfCollector {
 				}
 			}
 		}
-		statements.removeAll(removedStatements);
 		handleActivityInfluence(context, wgb, statements);
 		handleInstantaneousEvent(context, wgb, statements);
 
@@ -556,7 +518,6 @@ public class QualifiedCollector extends RdfCollector {
 			HashMap<QName, List<Statement>> collator = collators.get(contextQ);
 			for (QName qname : collator.keySet())
 			{
-				List<Statement> removedStatements = new ArrayList<Statement>();
 				List<Statement> statements = collator.get(qname);
 				for (Statement statement : statements)
 				{
@@ -573,36 +534,30 @@ public class QualifiedCollector extends RdfCollector {
 							WasAssociatedWith waw = (WasAssociatedWith) influenceMap
 									.get(refQ);
 							waw.setActivity(pFactory.newActivityRef(qname));
-							removedStatements.add(statement);
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedAttribution"))
 						{
 							WasAttributedTo wat = (WasAttributedTo) influenceMap
 									.get(refQ);
 							wat.setEntity(pFactory.newEntityRef(qname));
-							removedStatements.add(statement);
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedCommunication"))
 						{
 							WasInformedBy wib = (WasInformedBy) influenceMap
 									.get(refQ);
 							wib.setEffect(pFactory.newActivityRef(qname));
-							removedStatements.add(statement);
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedDelegation"))
 						{
 							ActedOnBehalfOf aobo = (ActedOnBehalfOf) influenceMap
 									.get(refQ);
 							aobo.setSubordinate(pFactory.newAgentRef(qname));
-							removedStatements.add(statement);
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedDerivation"))
 						{
 							WasDerivedFrom wdf = (WasDerivedFrom) influenceMap
 									.get(refQ);
 							wdf.setGeneratedEntity(pFactory.newEntityRef(qname));
-							removedStatements.add(statement);
-
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedEnd"))
 						{
@@ -610,14 +565,12 @@ public class QualifiedCollector extends RdfCollector {
 							WasEndedBy web = (WasEndedBy) influenceMap
 									.get(refQ);
 							web.setActivity(pFactory.newActivityRef(qname));
-							removedStatements.add(statement);
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedGeneration"))
 						{
 							WasGeneratedBy wgb = (WasGeneratedBy) influenceMap
 									.get(refQ);
 							wgb.setEntity(pFactory.newEntityRef(qname));
-							removedStatements.add(statement);
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedInfluence"))
 						{
@@ -625,7 +578,6 @@ public class QualifiedCollector extends RdfCollector {
 									.get(refQ);
 							System.out.println(influenceMap.keySet());
 							wib.setInfluencee(pFactory.newAnyRef(qname));
-							removedStatements.add(statement);
 
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedInvalidation"))
@@ -634,24 +586,20 @@ public class QualifiedCollector extends RdfCollector {
 							WasInvalidatedBy wib = (WasInvalidatedBy) influenceMap
 									.get(refQ);
 							wib.setEntity(pFactory.newEntityRef(qname));
-							removedStatements.add(statement);
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedStart"))
 						{
 							WasStartedBy wsb = (WasStartedBy) influenceMap
 									.get(refQ);
 							wsb.setActivity(pFactory.newActivityRef(qname));
-							removedStatements.add(statement);
 						} else if (predS.equals(RdfCollector.PROV
 								+ "qualifiedUsage"))
 						{
 							Used used = (Used) influenceMap.get(refQ);
 							used.setActivity(pFactory.newActivityRef(qname));
-							removedStatements.add(statement);
 						}
 					}
 				}
-				statements.removeAll(removedStatements);
 			}
 		}
 	}

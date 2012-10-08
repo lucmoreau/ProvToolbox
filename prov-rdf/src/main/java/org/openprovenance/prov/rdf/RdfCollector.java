@@ -25,6 +25,7 @@ import org.openprovenance.prov.xml.MentionOf;
 import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.SpecializationOf;
+import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.WasAttributedTo;
@@ -43,7 +44,6 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.BNodeImpl;
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.rio.helpers.RDFHandlerBase;
 
 public class RdfCollector extends RDFHandlerBase {
@@ -183,6 +183,7 @@ public class RdfCollector extends RDFHandlerBase {
 	public void handleNamespace(String prefix, String namespace)
 	{
 		this.document.getNss().put(prefix, namespace);
+		pFactory.setNamespaces(this.document.getNss());
 		this.revnss.put(namespace, prefix);
 	}
 
@@ -317,6 +318,11 @@ public class RdfCollector extends RDFHandlerBase {
 	protected Object decodeLiteral(Literal literal)
 	{
 		String dataType = XMLS + "string";
+		if (literal.getLanguage() != null)
+		{
+			return pFactory.newInternationalizedString(literal.stringValue(), literal.getLanguage());
+		}
+
 		if (literal.getDatatype() != null)
 		{
 			dataType = literal.getDatatype().stringValue();
@@ -324,13 +330,30 @@ public class RdfCollector extends RDFHandlerBase {
 
 		if (dataType.equals(XMLS + "QName"))
 		{
-			return new QName(literal.stringValue());
+			return pFactory.newQName(literal.stringValue());
 		} else if (dataType.equals(XMLS + "string"))
 		{
 			return literal.stringValue();
 		} else if (dataType.equals(XMLS + "dateTime"))
 		{
 			return literal.calendarValue();
+		} else if (dataType.equals(XMLS + "int"))
+		{
+			return literal.intValue();
+		} else if (dataType.equals(XMLS + "integer"))
+		{
+			return literal.integerValue();
+		} else if (dataType.equals(XMLS + "boolean"))
+		{
+			return literal.booleanValue();
+		} else if (dataType.equals(XMLS + "double"))
+		{
+			return literal.doubleValue();
+		} else if (dataType.equals(XMLS + "anyURI"))
+		{
+			URIWrapper uw = new URIWrapper();
+			uw.setValue(java.net.URI.create(literal.stringValue()));
+			return uw;
 		} else
 		{
 			return null;
@@ -340,15 +363,14 @@ public class RdfCollector extends RDFHandlerBase {
 	/* Prov-specific functions */
 
 	private List<Statement> handleBaseStatements(Element element,
-			QName context, QName qname)
+			QName context, QName qname, ProvType type)
 	{
 
 		List<Statement> statements = collators.get(context).get(qname);
-		List<Statement> removedStatements = new ArrayList<Statement>();
 		for (Statement statement : statements)
 		{
 			String predS = statement.getPredicate().stringValue();
-			
+
 			if (element instanceof HasType)
 			{
 				if (statement.getPredicate().stringValue()
@@ -363,9 +385,7 @@ public class RdfCollector extends RDFHandlerBase {
 							System.out
 									.println("Null :( " + value.stringValue());
 						}
-						pFactory.addType((HasType) element,
-								decodeLiteral((Literal) value));
-						removedStatements.add(statement);
+						pFactory.addType((HasType) element, literalValue);
 					} else
 					{
 						System.out.println(value);
@@ -380,7 +400,6 @@ public class RdfCollector extends RDFHandlerBase {
 				{
 					String role = statement.getObject().stringValue();
 					pFactory.addRole((HasRole) element, role);
-					removedStatements.add(statement);
 				}
 			}
 
@@ -392,17 +411,28 @@ public class RdfCollector extends RDFHandlerBase {
 							.getObject()));
 					((HasLocation) element).getLocation().add(
 							pFactory.newAnyRef(anyQ));
-					removedStatements.add(statement);
+				}				
+				
+				if (predS.equals(PROV + "location"))
+				{
+					((HasLocation)element).getLocation().add(decodeLiteral((Literal)statement.getObject()));
 				}
 			}
 
 			if (element instanceof HasLabel)
 			{
-				if (predS.equals(RDFS.LABEL.toString()))
+				if (predS.equals(PROV + "label"))
 				{
-					String label = statement.getObject().stringValue();
-					pFactory.addLabel((HasLabel) element, label);
-					removedStatements.add(statement);
+					Literal lit = (Literal) (statement.getObject());
+					if (lit.getLanguage() != null)
+					{
+						pFactory.addLabel((HasLabel) element,
+								lit.stringValue(), lit.getLanguage()
+										.toUpperCase());
+					} else
+					{
+						pFactory.addLabel((HasLabel) element, lit.stringValue());
+					}
 				}
 			}
 
@@ -414,25 +444,35 @@ public class RdfCollector extends RDFHandlerBase {
 				{
 					if (uri.equals(RDF.TYPE))
 					{
+						System.out.println("In RDF a part");
 						// Add prov:type
-						if (val instanceof URI && element instanceof HasType)
+						if (element instanceof HasType)
 						{
-							try
+							if (val instanceof URI)
 							{
-								java.net.URI jURI = new java.net.URI(
-										val.stringValue());
+								if (!val.toString().equals(type.getURI()))
+								{
+									try
+									{
+										java.net.URI jURI = new java.net.URI(
+												val.stringValue());
 
-								pFactory.addType((HasType) element, jURI);
-								removedStatements.add(statement);
-							} catch (URISyntaxException use)
-							{
-								System.err.println("Invalid URI");
+										pFactory.addType((HasType) element,
+												jURI);
+									} catch (URISyntaxException use)
+									{
+										System.err.println("Invalid URI");
+									}
+								}
+							}
+							else if(val instanceof Literal) {
+								pFactory.addType((HasType)element, decodeLiteral((Literal)val));
 							}
 						}
+
 					} else
 					{
-						QName predQ = new QName(uri.getNamespace(),
-								uri.getLocalName());
+						QName predQ = pFactory.stringToQName(uri.stringValue());
 						Attribute attr = null;
 						if (val instanceof Literal)
 						{
@@ -456,12 +496,13 @@ public class RdfCollector extends RDFHandlerBase {
 						if (attr != null)
 						{
 							pFactory.addAttribute(element, attr);
-							removedStatements.add(statement);
 						}
 
 					}
 				}
 			}
+
+			
 
 			if (predS.equals(PROV + "wasInfluencedBy"))
 			{
@@ -471,7 +512,6 @@ public class RdfCollector extends RDFHandlerBase {
 						pFactory.newAnyRef(qname), pFactory.newAnyRef(anyQ));
 
 				store(qNameFromResource(statement.getContext()), wib);
-				removedStatements.add(statement);
 			}
 
 			if (predS.equals(PROV + "influenced"))
@@ -483,11 +523,8 @@ public class RdfCollector extends RDFHandlerBase {
 						pFactory.newAnyRef(anyQ), pFactory.newAnyRef(qname));
 
 				store(qNameFromResource(statement.getContext()), wib);
-				removedStatements.add(statement);
 			}
 		}
-
-		statements.removeAll(removedStatements);
 
 		return statements;
 	}
@@ -608,9 +645,9 @@ public class RdfCollector extends RDFHandlerBase {
 		org.openprovenance.prov.xml.Entity entity = pFactory.newEntity(qname);
 
 		List<Statement> statements = collators.get(context).get(qname);
-		statements = handleBaseStatements(entity, context, qname);
+		statements = handleBaseStatements(entity, context, qname,
+				ProvType.ENTITY);
 
-		List<Statement> removedStatements = new ArrayList<Statement>();
 		for (Statement statement : statements)
 		{
 			String predS = statement.getPredicate().stringValue();
@@ -625,7 +662,6 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newEntityRef(valueQ));
 
 					store(context, wdf);
-					removedStatements.add(statement);
 				} else if (predS.equals(PROV + "wasGeneratedBy"))
 				{
 					WasGeneratedBy wgb = pFactory.newWasGeneratedBy(
@@ -633,7 +669,6 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newActivityRef(valueQ));
 
 					store(context, wgb);
-					removedStatements.add(statement);
 				} else if (predS.equals(PROV + "alternateOf"))
 				{
 					AlternateOf ao = pFactory.newAlternateOf(
@@ -641,7 +676,6 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newEntityRef(valueQ));
 
 					store(context, ao);
-					removedStatements.add(statement);
 				} else if (predS.equals(PROV + "specializationOf"))
 				{
 					SpecializationOf so = pFactory.newSpecializationOf(
@@ -649,7 +683,6 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newEntityRef(valueQ));
 
 					store(context, so);
-					removedStatements.add(statement);
 				} else if (predS.equals(PROV + "wasInvalidatedBy"))
 				{
 					WasInvalidatedBy wib = pFactory.newWasInvalidatedBy(
@@ -657,7 +690,6 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newActivityRef(valueQ));
 
 					store(context, wib);
-					removedStatements.add(statement);
 				} else if (predS.equals(PROV + "wasAttributedTo"))
 				{
 					WasAttributedTo wit = pFactory.newWasAttributedTo(
@@ -665,12 +697,10 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newAgentRef(valueQ));
 
 					store(context, wit);
-					removedStatements.add(statement);
 				} else if (predS.equals(PROV + "mentionOf"))
 				{
 					Statement asInBundleStatement = getSingleStatementForPredicate(
 							context, qname, PROV + "asInBundle");
-					removedStatements.add(asInBundleStatement);
 
 					QName bundleQ = new QName(asInBundleStatement.getObject()
 							.stringValue());
@@ -682,7 +712,6 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newEntityRef(bundleQ));
 
 					store(context, nmo);
-					removedStatements.add(statement);
 				}
 			} else if (value instanceof Literal)
 			{
@@ -690,25 +719,19 @@ public class RdfCollector extends RDFHandlerBase {
 				{
 					// TODO: Unable to implement this.
 					Object literal = decodeLiteral((Literal) value);
-					removedStatements.add(statement);
 				}
 				if (predS.equals(PROV + "invalidatedAtTime"))
 				{
 					// TODO: Unable to implement this.
 					Object literal = decodeLiteral((Literal) value);
-					removedStatements.add(statement);
 				} else if (predS.equals(PROV + "value"))
 				{
 					Object literal = decodeLiteral((Literal) value);
 					entity.setValue(literal);
-					removedStatements.add(statement);
 				}
 			}
 		}
 		store(context, entity);
-		statements.removeAll(removedStatements);
-
-		// decodeAttributes(entity, statements)
 	}
 
 	private void createAgent(QName context, QName qname)
@@ -716,9 +739,8 @@ public class RdfCollector extends RDFHandlerBase {
 		org.openprovenance.prov.xml.Agent agent = pFactory.newAgent(qname);
 
 		List<Statement> statements = collators.get(context).get(qname);
-		statements = handleBaseStatements(agent, context, qname);
+		statements = handleBaseStatements(agent, context, qname, ProvType.AGENT);
 
-		List<Statement> removedStatements = new ArrayList<Statement>();
 		for (Statement statement : statements)
 		{
 			String predS = statement.getPredicate().stringValue();
@@ -733,12 +755,10 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newAgentRef(agentQ), null);
 
 					store(context, aobo);
-					removedStatements.add(statement);
 				}
 			}
 		}
 		store(context, agent);
-		statements.removeAll(removedStatements);
 	}
 
 	private void createActivity(QName context, QName qname)
@@ -747,9 +767,9 @@ public class RdfCollector extends RDFHandlerBase {
 				.newActivity(qname);
 		List<Statement> statements = collators.get(context).get(qname);
 
-		statements = handleBaseStatements(activity, context, qname);
+		statements = handleBaseStatements(activity, context, qname,
+				ProvType.ACTIVITY);
 
-		List<Statement> removedStatements = new ArrayList<Statement>();
 		for (Statement statement : statements)
 		{
 			String predS = statement.getPredicate().stringValue();
@@ -764,7 +784,6 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newAgentRef(valueQ));
 
 					store(context, waw);
-					removedStatements.add(statement);
 
 				} else if (predS.equals(PROV + "used"))
 				{
@@ -772,7 +791,6 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newActivityRef(qname), null,
 							pFactory.newEntityRef(valueQ));
 					store(context, used);
-					removedStatements.add(statement);
 
 				} else if (predS.equals(PROV + "wasStartedBy"))
 				{
@@ -780,7 +798,6 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newActivityRef(qname),
 							pFactory.newEntityRef(valueQ));
 					store(context, wsb);
-					removedStatements.add(statement);
 
 				} else if (predS.equals(PROV + "generated"))
 				{
@@ -788,7 +805,6 @@ public class RdfCollector extends RDFHandlerBase {
 							(QName) null, pFactory.newEntityRef(valueQ), null,
 							pFactory.newActivityRef(qname));
 					store(context, wgb);
-					removedStatements.add(statement);
 
 				} else if (predS.equals(PROV + "wasEndedBy"))
 				{
@@ -796,7 +812,6 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newActivityRef(qname),
 							pFactory.newEntityRef(valueQ));
 					store(context, web);
-					removedStatements.add(statement);
 
 				} else if (predS.equals(PROV + "wasInformedBy"))
 				{
@@ -804,7 +819,6 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newActivityRef(qname),
 							pFactory.newActivityRef(valueQ));
 					store(context, wib);
-					removedStatements.add(statement);
 				}
 			} else if (value instanceof Literal)
 			{
@@ -812,18 +826,14 @@ public class RdfCollector extends RDFHandlerBase {
 				{
 					Object literal = decodeLiteral((Literal) value);
 					activity.setStartTime((XMLGregorianCalendar) literal);
-					removedStatements.add(statement);
 				} else if (predS.equals(PROV + "endedAtTime"))
 				{
 					Object literal = decodeLiteral((Literal) value);
 					activity.setEndTime((XMLGregorianCalendar) literal);
-					removedStatements.add(statement);
 				}
 			}
 		}
 		store(context, activity);
-
-		statements.removeAll(removedStatements);
 	}
 
 	@Override

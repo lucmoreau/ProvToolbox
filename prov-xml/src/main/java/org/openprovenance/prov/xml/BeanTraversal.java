@@ -334,9 +334,15 @@ public class BeanTraversal {
 
     public Object convert(WasInvalidatedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Object> locAttrs = convertLocationAttribute(o);
+	List<Object> roleAttrs = convertRoleAttribute(o);
+	
 	ActivityRef a;
-	return c.convertWasInvalidatedBy(c.convert(o.getId()), tAttrs,
+	return c.convertWasInvalidatedBy(c.convert(o.getId()), tAttrs,labAttrs,
+	                                 locAttrs,
+	                                 roleAttrs,
 	                                 otherAttrs, c.convert(o.getEntity()
 	                                         .getRef()),
 	                                 ((a = o.getActivity()) == null) ? null

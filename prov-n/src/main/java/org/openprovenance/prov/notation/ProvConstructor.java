@@ -423,11 +423,8 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        Activity a1=(s_id1==null)? null: activityTable.get(s_id1);  //id1 may be null
-        ActivityRef a1r=null;
-        if (a1!=null) a1r=pFactory.newActivityRef(a1);
-        Entity e2=entityTable.get(s_id2);
-        EntityRef e2r=pFactory.newEntityRef(e2);
+        ActivityRef a1r=(s_id1==null)? null: pFactory.newActivityRef(s_id1);
+        EntityRef e2r=(s_id2==null) ? null : pFactory.newEntityRef(s_id2);
 
         WasInvalidatedBy g=pFactory.newWasInvalidatedBy(s_id,
                                                         e2r,

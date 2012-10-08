@@ -1,5 +1,6 @@
 package org.openprovenance.prov.rdf;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.AlternateOf;
+import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Element;
 import org.openprovenance.prov.xml.HasExtensibility;
@@ -295,7 +297,7 @@ public class RdfCollector extends RDFHandlerBase {
 				options.add(provType);
 			}
 		}
-		
+
 		if (options.size() > 1)
 		{
 			List<ProvType> cloned = new ArrayList<ProvType>(options);
@@ -309,7 +311,7 @@ public class RdfCollector extends RDFHandlerBase {
 			options = cloned;
 		}
 
-		return options.toArray(new ProvType[]{});
+		return options.toArray(new ProvType[] {});
 	}
 
 	protected Object decodeLiteral(Literal literal)
@@ -346,7 +348,7 @@ public class RdfCollector extends RDFHandlerBase {
 		for (Statement statement : statements)
 		{
 			String predS = statement.getPredicate().stringValue();
-
+			
 			if (element instanceof HasType)
 			{
 				if (statement.getPredicate().stringValue()
@@ -399,8 +401,65 @@ public class RdfCollector extends RDFHandlerBase {
 				if (predS.equals(RDFS.LABEL.toString()))
 				{
 					String label = statement.getObject().stringValue();
-					pFactory.addLabel((HasExtensibility) element, label);
+					pFactory.addLabel((HasLabel) element, label);
 					removedStatements.add(statement);
+				}
+			}
+
+			if (element instanceof HasExtensibility)
+			{
+				URI uri = (URI) statement.getPredicate();
+				Value val = statement.getObject();
+				if (!isProvURI(uri))
+				{
+					if (uri.equals(RDF.TYPE))
+					{
+						// Add prov:type
+						if (val instanceof URI && element instanceof HasType)
+						{
+							try
+							{
+								java.net.URI jURI = new java.net.URI(
+										val.stringValue());
+
+								pFactory.addType((HasType) element, jURI);
+								removedStatements.add(statement);
+							} catch (URISyntaxException use)
+							{
+								System.err.println("Invalid URI");
+							}
+						}
+					} else
+					{
+						QName predQ = new QName(uri.getNamespace(),
+								uri.getLocalName());
+						Attribute attr = null;
+						if (val instanceof Literal)
+						{
+							Literal lit = (Literal) val;
+							String xsdType = "http://www.w3.org/2001/XMLSchema#string";
+							if (lit.getDatatype() != null)
+							{
+								xsdType = lit.getDatatype().stringValue();
+							}
+							attr = new Attribute(predQ, lit.stringValue(),
+									xsdType);
+						} else if (val instanceof Resource)
+						{
+							attr = new Attribute(predQ, val.stringValue(),
+									"http://www.w3.org/2001/XMLSchema#anyURI");
+						} else
+						{
+							System.err.println("Invalid value");
+						}
+
+						if (attr != null)
+						{
+							pFactory.addAttribute(element, attr);
+							removedStatements.add(statement);
+						}
+
+					}
 				}
 			}
 
@@ -513,8 +572,9 @@ public class RdfCollector extends RDFHandlerBase {
 		}
 
 	}
-	
-	protected void dumpUnhandled() {
+
+	protected void dumpUnhandled()
+	{
 
 		for (QName contextQ : collators.keySet())
 		{

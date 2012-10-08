@@ -433,8 +433,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn1 = getQName(id1);
 
 		System.out.println("Entity is with " + qn2);
-		Entity e2 = (Entity) manager.find(qn2);
-		Activity a1 = (Activity) manager.find(qn1);
+		Entity e2 =  manager.designate(qn2, Entity.class);
+		Activity a1 = manager.designate(qn1,Activity.class);
 
 		Generation g = addActivityInfluence(id, e2, a1, time, aAttrs,
 				Generation.class);

@@ -357,20 +357,20 @@ public class ProvToDot {
     }
 
     public  HashMap<String,String> addColors(HasExtensibility e, HashMap<String,String> properties) {
-        Hashtable<String,List<Object>> table=e.attributesWithNamespace("http://openprovenance.org/Toolbox/dot#");
+        Hashtable<String,List<Attribute>> table=e.attributesWithNamespace("http://openprovenance.org/Toolbox/dot#");
 
-        List<Object> o=table.get("fillcolor");
+        List<Attribute> o=table.get("fillcolor");
         if (o!=null && !o.isEmpty()) {
-            properties.put("fillcolor", o.get(0).toString());
+            properties.put("fillcolor", o.get(0).getValue().toString());
             properties.put("style", "filled");
         }
         o=table.get("color");
         if (o!=null && !o.isEmpty()) {
-            properties.put("color", o.get(0).toString());
+            properties.put("color", o.get(0).getValue().toString());
         }
         o=table.get("url");
         if (o!=null && !o.isEmpty()) {
-            properties.put("URL", o.get(0).toString());
+            properties.put("URL", o.get(0).getValue().toString());
         }
         return properties;
     }

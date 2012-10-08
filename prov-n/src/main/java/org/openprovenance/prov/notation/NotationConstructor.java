@@ -2,8 +2,6 @@ package org.openprovenance.prov.notation;
 import java.util.Hashtable;
 import java.util.List;
 import org.openprovenance.prov.xml.InternationalizedString;
-import org.openprovenance.prov.xml.NamespacePrefixMapper;
-import org.openprovenance.prov.xml.ProvFactory;
 
 /** For testing purpose, conversion back to ASN. */
 

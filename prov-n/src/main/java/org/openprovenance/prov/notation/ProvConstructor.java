@@ -45,7 +45,6 @@ import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.MentionOf;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.WasAssociatedWith;
-import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 

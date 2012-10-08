@@ -116,7 +116,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
 
     public void addLabel(HasLabel hl) {
-   	hl.getLabel().add(pFactory.newInternationalizedString("hello"));
+        hl.getLabel().add(pFactory.newInternationalizedString("hello"));
     }
 
     public void addLabels(HasLabel hl) {
@@ -147,6 +147,11 @@ public class RoundTripFromJavaTest extends TestCase {
    	w.setValue(URI.create(EX_NS+"london"));
    	hl.getLocation().add(w);
     }
+    public void addValue(HasValue hl) {
+        hl.setValue(new QName(EX_NS, "avalue", EX_PREFIX));
+    }
+
+    
 
     
     public void addFurtherLabels(HasExtensibility he) {
@@ -189,7 +194,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testEntity3() throws JAXBException  {
    	Entity a = pFactory.newEntity("ex:e3", "entity3");
-   	addLabel(a);
+   	addValue(a);
    	makeDocAndTest(a,"target/entity3");
     }
 
@@ -308,10 +313,10 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testActivity9() throws JAXBException  {
        	Activity a = pFactory.newActivity("ex:a9", "activity9");
-	addTypes(a);
-	addLocations(a);
-	addLabels(a);
-	addFurtherLabels(a);
+        addTypes(a);
+        addLocations(a);
+        addLabels(a);
+        addFurtherLabels(a);
        	makeDocAndTest(a,"target/activity9");
     }
 
@@ -458,18 +463,87 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testGeneration3() throws JAXBException  {
 	WasGeneratedBy gen = pFactory.newWasGeneratedBy(q("gen3"),
 							pFactory.newEntityRef(q("e1")),
-							"role",
+							"somerole",
 							pFactory.newActivityRef(q("a1")));
+        gen.getRole().add("otherRole");
 	makeDocAndTest(gen,"target/generation3");
     }
 
 
     public void testGeneration4() throws JAXBException  {
-	WasGeneratedBy gen = pFactory.newWasGeneratedBy(q("gen4"),
-							pFactory.newEntityRef(q("e1")),
-							"role",
-							pFactory.newActivityRef(q("a1")));
-	gen.setTime(pFactory.newTimeNow());
-	makeDocAndTest(gen,"target/generation4");
+        WasGeneratedBy gen = pFactory.newWasGeneratedBy(q("gen4"),
+                                                        pFactory.newEntityRef(q("e1")),
+                                                        "somerole",
+                                                        pFactory.newActivityRef(q("a1")));
+        gen.setTime(pFactory.newTimeNow());
+        makeDocAndTest(gen,"target/generation4");
     }
+    
+    public void testGeneration5() throws JAXBException  {
+        WasGeneratedBy gen = pFactory.newWasGeneratedBy(q("gen4"),
+                                                        pFactory.newEntityRef(q("e1")),
+                                                        "somerole",
+                                                        pFactory.newActivityRef(q("a1")));
+        gen.setTime(pFactory.newTimeNow());
+        addTypes(gen);
+        addLocations(gen);
+        addLabels(gen);
+        addFurtherLabels(gen);
+        
+        makeDocAndTest(gen,"target/generation5");
+    }
+    
+    
+    //////////////////////////////////
+    
+    public void testUsage1() throws JAXBException  {
+        Used use = pFactory.newUsed(q("use1"),
+                                    null,
+                                    null,
+                                    pFactory.newEntityRef(q("e1")));
+        makeDocAndTest(use,"target/usage1");
+    }
+
+    public void testUsage2() throws JAXBException  {
+        Used use = pFactory.newUsed(q("use2"),
+                                    pFactory.newActivityRef(q("a1")),
+                                    null,
+                                    pFactory.newEntityRef(q("e1")));
+        makeDocAndTest(use,"target/usage2");
+    }
+
+    public void testUsage3() throws JAXBException  {
+        Used use = pFactory.newUsed(q("use3"),
+                                    pFactory.newActivityRef(q("a1")),
+                                    "somerole",
+                                    pFactory.newEntityRef(q("e1")));
+        use.getRole().add("otherRole");
+        makeDocAndTest(use,"target/usage3");
+    }
+    
+    public void testUsage4() throws JAXBException  {
+        Used use = pFactory.newUsed(q("use4"),
+                                    pFactory.newActivityRef(q("a1")),
+                                    "somerole",
+                                    pFactory.newEntityRef(q("e1")));
+        use.setTime(pFactory.newTimeNow());
+
+        makeDocAndTest(use,"target/usage4");
+    }
+
+    public void testUsage5() throws JAXBException  {
+        Used use = pFactory.newUsed(q("use4"),
+                                    pFactory.newActivityRef(q("a1")),
+                                    "somerole",
+                                    pFactory.newEntityRef(q("e1")));
+        use.setTime(pFactory.newTimeNow());
+        addTypes(use);
+        addLocations(use);
+        addLabels(use);
+        addFurtherLabels(use);
+        makeDocAndTest(use,"target/usage5");
+    }
+
+    
+    
 }

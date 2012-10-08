@@ -147,8 +147,8 @@ public class NotationConstructor implements TreeConstructor {
     }            
 
     public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs) {
-        String s=keyword("used") + "(" + optionalId(id) + id2 + "," + id1 +
-            optionalTime(time) + optionalAttributes(aAttrs) + ")";
+        String s=keyword("used") + "(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," +
+            optional(time) + optionalAttributes(aAttrs) + ")";
         return s;
     }
     public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {

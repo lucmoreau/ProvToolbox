@@ -11,6 +11,7 @@ import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.HasLabel;
 import org.openprovenance.prov.xml.HasLocation;
 import org.openprovenance.prov.xml.HasRole;
+import org.openprovenance.prov.xml.HasValue;
 import org.openprovenance.prov.xml.InternationalizedString;
 import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.xml.Statement;
@@ -119,6 +120,9 @@ public  class ProvConstructor implements TreeConstructor {
             } else if ("role".equals(q.getLocalPart())) {
                 HasRole eWithRole=(HasRole) e;
                 eWithRole.getRole().add(o.getValue());
+            } else if ("value".equals(q.getLocalPart())) {
+                HasValue eWithValue=(HasValue) e;
+                eWithValue.setValue(o.getValue());
             } else if ("label".equals(q.getLocalPart())) {
         	HasLabel eWithLabel=(HasLabel) e;
         	if (o.getValue() instanceof String) {
@@ -300,10 +304,8 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        Activity a2=activityTable.get(s_id2);
-        ActivityRef a2r=pFactory.newActivityRef(a2);
-        Entity e1=entityTable.get(s_id1);
-        EntityRef e1r=pFactory.newEntityRef(e1);
+        ActivityRef a2r=(s_id2==null)? null: pFactory.newActivityRef(s_id2);
+        EntityRef e1r=(s_id1==null)? null: pFactory.newEntityRef(s_id1);
         Used u=pFactory.newUsed(s_id,
                                 a2r,
                                 null,

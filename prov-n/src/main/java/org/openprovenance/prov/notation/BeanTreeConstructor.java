@@ -77,17 +77,24 @@ public class BeanTreeConstructor implements BeanConstructor{
         }
         return attrs;
     }
+    public Object convertValueAttribute(Object value) {
+        if (value==null) return null;
+        return c.convertAttribute("prov:value",value);
+
+    }
 
 
 
-    public Object convertEntity(Object id, List<Object> tAttrs, List<Object> lAttrs, List<Object> locAttrs, List<Attribute> otherAttrs) {
+    public Object convertEntity(Object id, List<Object> tAttrs, List<Object> lAttrs, List<Object> locAttrs, Object value, List<Attribute> otherAttrs) {
         List<?> tAttrs2=convertTypeAttributes(tAttrs);
         List<?> lAttrs2=convertLabelAttributes(lAttrs);
         List<?> locAttrs2=convertLocationAttributes(locAttrs);
+        Object value2=convertValueAttribute(value);
         List<Object> attrs=new LinkedList<Object>();
         attrs.addAll(tAttrs2);
         attrs.addAll(lAttrs2);
         attrs.addAll(locAttrs2);
+        if (value2!=null) attrs.add(value2);
         attrs.addAll(otherAttrs);
 
         return c.convertEntity(id,
@@ -127,11 +134,18 @@ public class BeanTreeConstructor implements BeanConstructor{
 
 
 
-    public Object convertUsed(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object activity, Object entity, Object time) {
+    public Object convertUsed(Object id, List<Object> tAttrs, List<Object> lAttrs, List<Object> locAttrs, List<Object> roleAttrs, List<Attribute> otherAttrs, Object activity, Object entity, Object time) {
         List<?> tAttrs2=convertTypeAttributes(tAttrs);
+        List<?> lAttrs2=convertLabelAttributes(lAttrs);
+        List<?> locAttrs2=convertLocationAttributes(locAttrs);
+        List<?> roleAttrs2=convertRoleAttributes(roleAttrs);
+
         //List otherAttrs2=convertAttributes(otherAttrs);
         List<Object> attrs=new LinkedList<Object>();
         attrs.addAll(tAttrs2);
+        attrs.addAll(lAttrs2);
+        attrs.addAll(locAttrs2);
+        attrs.addAll(roleAttrs2);
         attrs.addAll(otherAttrs);
         return c.convertUsed(id,
                              activity,
@@ -140,14 +154,15 @@ public class BeanTreeConstructor implements BeanConstructor{
                              c.convertAttributes(attrs));
     }
 
-    public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> locAttrs, List<Object> roleAttrs, List<Attribute> otherAttrs, Object entity, Object activity, Object time) {
+    public Object convertWasGeneratedBy(Object id, List<Object> tAttrs, List<Object> lAttrs, List<Object> locAttrs, List<Object> roleAttrs, List<Attribute> otherAttrs, Object entity, Object activity, Object time) {
         List<?> tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
+        List<?> lAttrs2=convertLabelAttributes(lAttrs);
         List<?> locAttrs2=convertLocationAttributes(locAttrs);
         List<?> roleAttrs2=convertRoleAttributes(roleAttrs);
 
         List<Object> attrs=new LinkedList<Object>();
         attrs.addAll(tAttrs2);
+        attrs.addAll(lAttrs2);
         attrs.addAll(locAttrs2);
         attrs.addAll(roleAttrs2);
         attrs.addAll(otherAttrs);

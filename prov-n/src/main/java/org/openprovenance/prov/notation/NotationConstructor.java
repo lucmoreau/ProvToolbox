@@ -1,6 +1,9 @@
 package org.openprovenance.prov.notation;
+import java.util.Hashtable;
 import java.util.List;
 import org.openprovenance.prov.xml.InternationalizedString;
+import org.openprovenance.prov.xml.NamespacePrefixMapper;
+import org.openprovenance.prov.xml.ProvFactory;
 
 /** For testing purpose, conversion back to ASN. */
 
@@ -59,7 +62,20 @@ public class NotationConstructor implements TreeConstructor {
     public Object convertDocument(Object namespaces, List<Object> records, List<Object> bundles) {
         String s=keyword("bundle") + breakline();
 	if (namespaces!=null) {
-	    s=s+namespaces + breakline();
+	    if (namespaces instanceof Hashtable) {
+		Hashtable<String,String> nss=(Hashtable<String,String>) namespaces;
+		for (String key : nss.keySet()) {
+		    String uri=nss.get(key);
+		    if (key.equals("_")) {
+			s=s+convertDefaultNamespace("<"+uri+">")+breakline();
+		    } else {
+			s=s+convertNamespace(key, "<"+uri+">")+breakline();
+		    }
+		}
+		
+	    } else {
+		s=s+namespaces + breakline();
+	    }
 	}
         for (Object o: records) {
             s=s+o+breakline();

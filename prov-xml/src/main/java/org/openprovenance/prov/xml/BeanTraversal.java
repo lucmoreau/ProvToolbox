@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.LinkedList;
 import javax.xml.namespace.QName;
 import javax.xml.bind.JAXBElement;
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.w3c.dom.Element;
 
 public class BeanTraversal {
@@ -70,11 +72,20 @@ public class BeanTraversal {
 	                            eRecords, agRecords, lnkRecords);
     }
 
-    public Object convertAttribute(Element a) {
-	return c.convertAttribute(a.getNodeName(), c.convertAttributeValue(a));
-    }
+   // public Object convertAttribute(Element a) {
+//	return c.convertAttribute(a.getNodeName(), c.convertAttributeValue(a));
+    //}
 
-    public Object convertAttribute(Object a) {
+    public Attribute convertAttribute(Attribute a) {
+	 return a;
+	/*
+	if (a instanceof Attribute) {
+	    // TODO: what is it here
+	    return a;
+	} else {
+	    throw new UnsupportedOperationException();
+	}
+	
 	if (a instanceof JAXBElement) {
 	    JAXBElement<?> je = (JAXBElement<?>) a;
 	    QName q = je.getName();
@@ -88,7 +99,7 @@ public class BeanTraversal {
 	    return convertAttribute((Element) a);
 	} else {
 	    return c.convertAttribute(a.toString(), a.toString());
-	}
+	}*/
     }
 
     public List<Object> convertTypeAttributes(HasType e) {
@@ -107,10 +118,18 @@ public class BeanTraversal {
 	}
 	return res;
     }
+    public List<Object> convertLocationAttribute(HasLocation e) {
+	List<Object> locations = e.getLocation();
+	List<Object> res = new LinkedList<Object>();
+	for (Object location : locations) {
+	    res.add(convertTypedLiteral(location));
+	}
+	return res;
+    }
 
-    public List<Object> convertAttributes(HasExtensibility e) {
-	List<Object> attrs = new LinkedList<Object>();
-	for (Object a : e.getAny()) {
+    public List<Attribute> convertAttributes(HasExtensibility e) {
+	List<Attribute> attrs = new LinkedList<Attribute>();
+	for (Attribute a : e.getAny()) {
 	    attrs.add(convertAttribute(a));
 	}
 	return attrs;
@@ -150,6 +169,10 @@ public class BeanTraversal {
 	if (a instanceof Integer) {
 	    Integer b = (Integer) a;
 	    return c.convertTypedLiteral("xsd:int", quoteWrap(b));
+	} 
+	if (a instanceof XMLGregorianCalendar) {
+	    XMLGregorianCalendar ti=(XMLGregorianCalendar) a;
+	    return c.convertTypedLiteral("xsd:dateTime", quoteWrap(ti));
 	} else {
 	    throw new UnsupportedOperationException("Unknown typedLiteral " + a
 		    + "(" + a.getClass() + ")");
@@ -158,15 +181,16 @@ public class BeanTraversal {
 
     public Object convert(Entity e) {
 	List<Object> tAttrs = convertTypeAttributes(e);
-	List<Object> otherAttrs = convertAttributes(e);
+	List<Attribute> otherAttrs = convertAttributes(e);
 	List<Object> lAttrs = convertLabelAttribute(e);
+	List<Object> locAttrs = convertLocationAttribute(e);
 
-	return c.convertEntity(c.convert(e.getId()), tAttrs, lAttrs, otherAttrs);
+	return c.convertEntity(c.convert(e.getId()), tAttrs, lAttrs, locAttrs, otherAttrs);
     }
 
     public Object convert(Activity e) {
 	List<Object> tAttrs = convertTypeAttributes(e);
-	List<Object> otherAttrs = convertAttributes(e);
+	List<Attribute> otherAttrs = convertAttributes(e);
 	List<Object> lAttrs = convertLabelAttribute(e);
 
 	return c.convertActivity(c.convert(e.getId()), tAttrs, lAttrs,
@@ -175,7 +199,7 @@ public class BeanTraversal {
 
     public Object convert(Agent e) {
 	List<Object> tAttrs = convertTypeAttributes(e);
-	List<Object> otherAttrs = convertAttributes(e);
+	List<Attribute> otherAttrs = convertAttributes(e);
 	List<Object> lAttrs = convertLabelAttribute(e);
 
 	return c.convertAgent(c.convert(e.getId()), tAttrs, lAttrs, otherAttrs);
@@ -223,7 +247,7 @@ public class BeanTraversal {
 
     public Object convert(Used o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertUsed(c.convert(o.getId()), tAttrs, otherAttrs,
 	                     c.convert(o.getActivity().getRef()),
 	                     c.convert(o.getEntity().getRef()), o.getTime());
@@ -231,7 +255,7 @@ public class BeanTraversal {
 
     public Object convert(WasStartedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	EntityRef e;
 	ActivityRef a;
 	ActivityRef s;
@@ -248,7 +272,7 @@ public class BeanTraversal {
 
     public Object convert(WasEndedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	EntityRef e;
 	ActivityRef a;
 	ActivityRef s;
@@ -265,7 +289,7 @@ public class BeanTraversal {
 
     public Object convert(WasGeneratedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	ActivityRef a;
 	return c.convertWasGeneratedBy(c.convert(o.getId()), tAttrs,
 	                               otherAttrs, c.convert(o.getEntity()
@@ -277,7 +301,7 @@ public class BeanTraversal {
 
     public Object convert(WasInvalidatedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	ActivityRef a;
 	return c.convertWasInvalidatedBy(c.convert(o.getId()), tAttrs,
 	                                 otherAttrs, c.convert(o.getEntity()
@@ -289,7 +313,7 @@ public class BeanTraversal {
 
     public Object convert(WasInformedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertWasInformedBy(c.convert(o.getId()), tAttrs, otherAttrs,
 	                              c.convert(o.getEffect().getRef()),
 	                              c.convert(o.getCause().getRef()));
@@ -297,7 +321,7 @@ public class BeanTraversal {
 
     public Object convert(WasInfluencedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertWasInfluencedBy(c.convert(o.getId()), tAttrs,
 	                                otherAttrs,
 	                                c.convert(o.getInfluencee().getRef()),
@@ -306,7 +330,7 @@ public class BeanTraversal {
 
     public Object convert(WasDerivedFrom o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertWasDerivedFrom(c.convert(o.getId()), tAttrs,
 	                               otherAttrs, c.convert(o
 	                                       .getGeneratedEntity().getRef()),
@@ -315,7 +339,7 @@ public class BeanTraversal {
 
     public Object convert(WasAssociatedWith o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertWasAssociatedWith(c.convert(o.getId()),
 	                                  tAttrs,
 	                                  otherAttrs,
@@ -330,7 +354,7 @@ public class BeanTraversal {
 
     public Object convert(WasAttributedTo o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertWasAttributedTo(c.convert(o.getId()),
 	                                tAttrs,
 	                                otherAttrs,
@@ -341,7 +365,7 @@ public class BeanTraversal {
 
     public Object convert(ActedOnBehalfOf o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertActedOnBehalfOf(c.convert(o.getId()),
 	                                tAttrs,
 	                                otherAttrs,

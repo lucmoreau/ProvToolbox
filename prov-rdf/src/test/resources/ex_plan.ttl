@@ -1,0 +1,22 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix :     <http://example.com/> .
+
+:illustrating 
+   a prov:Activity;
+   prov:qualifiedAssociation :steve-checking-style-guide;
+.
+
+:steve-checking-style-guide
+   a prov:Association;
+   prov:agent   :steve;
+   prov:hadPlan :style-guide;
+   rdfs:comment "Steve followed the publisher's style guide"@en;
+. 
+
+:style-guide
+   a prov:Plan, prov:Entity;
+   rdfs:comment "Use blue graphs for positive spin, red for negative"@en;
+.

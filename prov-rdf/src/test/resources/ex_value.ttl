@@ -1,0 +1,14 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix :     <http://example.com/> .
+
+:copied-string
+   a prov:Entity;
+   prov:value 
+      """2010–present: A. Scalia A. Kennedy C. Thomas R.B. Ginsburg 
+         S. Breyer S. Alito S. Sotomayor E. Kagan""";
+   prov:wasQuotedFrom 
+      <http://purl.org/twc/page/wikipedia/us-supreme-court-by-composition>;
+.

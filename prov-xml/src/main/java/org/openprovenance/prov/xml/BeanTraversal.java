@@ -77,6 +77,10 @@ public class BeanTraversal {
     }
 
     public Object convertAttribute(Object a) {
+	if (a instanceof Attribute) {
+	    // TODO: what is it here
+	    return a;
+	}
 	if (a instanceof JAXBElement) {
 	    JAXBElement<?> je = (JAXBElement<?>) a;
 	    QName q = je.getName();

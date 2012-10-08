@@ -109,6 +109,14 @@ public class BeanTraversal {
 	}
 	return res;
     }
+    public List<Object> convertLocationAttribute(HasLocation e) {
+	List<Object> locations = e.getLocation();
+	List<Object> res = new LinkedList<Object>();
+	for (Object location : locations) {
+	    res.add(convertTypedLiteral(location));
+	}
+	return res;
+    }
 
     public List<Object> convertAttributes(HasExtensibility e) {
 	List<Object> attrs = new LinkedList<Object>();
@@ -166,8 +174,9 @@ public class BeanTraversal {
 	List<Object> tAttrs = convertTypeAttributes(e);
 	List<Object> otherAttrs = convertAttributes(e);
 	List<Object> lAttrs = convertLabelAttribute(e);
+	List<Object> locAttrs = convertLocationAttribute(e);
 
-	return c.convertEntity(c.convert(e.getId()), tAttrs, lAttrs, otherAttrs);
+	return c.convertEntity(c.convert(e.getId()), tAttrs, lAttrs, locAttrs, otherAttrs);
     }
 
     public Object convert(Activity e) {

@@ -8,7 +8,7 @@ import javax.xml.namespace.QName;
 public interface BeanConstructor {
     public Object convert(QName q);
 
-    public Object convertEntity(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> otherAttrs);
+    public Object convertEntity(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> locAttr, List<Object> otherAttrs);
     public Object convertAgent(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> otherAttrs);
     public Object convertActivity(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> otherAttrs, Object startTime, Object endTime);
 

@@ -62,15 +62,24 @@ public class BeanTreeConstructor implements BeanConstructor{
         }
         return attrs;
     }
+    public List<Object> convertLocationAttributes(List<Object> lAttrs) {
+        List<Object> attrs=new LinkedList<Object>();
+        for (Object a: lAttrs) {
+            attrs.add(c.convertAttribute("prov:location",a));
+        }
+        return attrs;
+    }
 
 
 
-    public Object convertEntity(Object id, List<Object> tAttrs, List<Object> lAttrs, List<Object> otherAttrs) {
+    public Object convertEntity(Object id, List<Object> tAttrs, List<Object> lAttrs, List<Object> locAttrs, List<Object> otherAttrs) {
         List<?> tAttrs2=convertTypeAttributes(tAttrs);
         List<?> lAttrs2=convertLabelAttributes(lAttrs);
+        List<?> locAttrs2=convertLocationAttributes(locAttrs);
         List<Object> attrs=new LinkedList<Object>();
-        attrs.addAll(lAttrs2);
         attrs.addAll(tAttrs2);
+        attrs.addAll(lAttrs2);
+        attrs.addAll(locAttrs2);
         attrs.addAll(otherAttrs);
 
         return c.convertEntity(id,

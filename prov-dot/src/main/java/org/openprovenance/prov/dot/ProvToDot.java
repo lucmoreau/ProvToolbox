@@ -13,6 +13,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBElement;
 //import org.w3c.dom.Element;
 
+import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.Activity;
@@ -436,19 +437,15 @@ public class ProvToDot {
         for (Object type: ((HasType)ann).getType()) {
             label=label+"	<TR>\n";
             label=label+"	    <TD align=\"left\">" + "type" + ":</TD>\n";
-            label=label+"	    <TD align=\"left\">" + convertValue(type) + "</TD>\n";
+            label=label+"	    <TD align=\"left\">" + getPropertyValueFromAny(type) + "</TD>\n";
             label=label+"	</TR>\n";
         }
-        for (Object prop: ann.getAny()) {
+        for (Attribute prop: ann.getAny()) {
 
-            if (prop instanceof JAXBElement) {
-                JAXBElement<?> je=(JAXBElement<?>) prop;
-                QName attribute=je.getName();
-                if ("fillcolor".equals(attribute.getLocalPart())) {
+            if ("fillcolor".equals(prop.getElementName().getLocalPart())) {
                     // no need to display this attribute
                     break;
-                }
-            } 
+            }
 
             label=label+"	<TR>\n";
             label=label+"	    <TD align=\"left\">" + convertProperty(prop) + ":</TD>\n";
@@ -461,9 +458,9 @@ public class ProvToDot {
         return properties;
     }
 
-   public String convertValue(Object v) {
-       if (v instanceof QName) {
-           QName name=(QName) v;
+   public String convertValue(Attribute v) {
+       if (v.getValue() instanceof QName) {
+           QName name=(QName) v.getValue();
            return name.getLocalPart();
        }
        String label=getPropertyValueFromAny(v);
@@ -476,36 +473,40 @@ public class ProvToDot {
         return qname.getNamespaceURI() + qname.getLocalPart();
     }
 
-    public String convertProperty(Object oLabel) {
+    public String convertProperty(Attribute oLabel) {
         String label=getPropertyFromAny(oLabel);
         int i=label.lastIndexOf("#");
         int j=label.lastIndexOf("/");
         return label.substring(Math.max(i,j)+1, label.length());
     }
 
-    public String getPropertyFromAny (Object o) {
+    public String getPropertyFromAny (Attribute o) {
+        return qnameToUri(o.getElementName());
+        /*
         if (o instanceof JAXBElement) {
             return qnameToUri(((JAXBElement<?>)o).getName());
         } else if (o instanceof org.w3c.dom.Element) {
             return ((org.w3c.dom.Element)o).getTagName();
         } else {
             return o.toString();
-        }
+        }*/
     }
 
-    public String getPropertyValueFromAny (Object o) {
-        if (o instanceof JAXBElement) {
-            Object val=((JAXBElement<?>)o).getValue();
-            if (val instanceof QName) {
-                QName q=(QName)val;
-                return q.getNamespaceURI() + q.getLocalPart();
-            } else {
-                return "" +  val;
-            }
-        } else if (o instanceof org.w3c.dom.Element) {
-            return ((org.w3c.dom.Element)o).getFirstChild().getNodeValue();
+    public String getPropertyValueFromAny (Object val) {
+        if (val instanceof QName) {
+            QName q=(QName)val;
+            return q.getNamespaceURI() + q.getLocalPart();
         } else {
-            return o.toString();
+                return "" +  val;
+        }
+    }
+    public String getPropertyValueFromAny (Attribute o) {
+        Object val=o.getValue();
+        if (val instanceof QName) {
+            QName q=(QName)val;
+            return q.getNamespaceURI() + q.getLocalPart();
+        } else {
+                return "" +  val;
         }
     }
 

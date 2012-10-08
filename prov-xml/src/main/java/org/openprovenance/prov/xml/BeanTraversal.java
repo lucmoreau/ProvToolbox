@@ -119,12 +119,21 @@ public class BeanTraversal {
 	return res;
     }
     public List<Object> convertLocationAttribute(HasLocation e) {
-	List<Object> locations = e.getLocation();
-	List<Object> res = new LinkedList<Object>();
-	for (Object location : locations) {
-	    res.add(convertTypedLiteral(location));
-	}
-	return res;
+        List<Object> locations = e.getLocation();
+        List<Object> res = new LinkedList<Object>();
+        for (Object location : locations) {
+            res.add(convertTypedLiteral(location));
+        }
+        return res;
+    }
+
+    public List<Object> convertRoleAttribute(HasRole e) {
+        List<Object> roles = e.getRole();
+        List<Object> res = new LinkedList<Object>();
+        for (Object role : roles) {
+            res.add(convertTypedLiteral(role));
+        }
+        return res;
     }
 
     public List<Attribute> convertAttributes(HasExtensibility e) {
@@ -192,8 +201,10 @@ public class BeanTraversal {
 	List<Object> tAttrs = convertTypeAttributes(e);
 	List<Attribute> otherAttrs = convertAttributes(e);
 	List<Object> lAttrs = convertLabelAttribute(e);
+	List<Object> locAttrs = convertLocationAttribute(e);
 
-	return c.convertActivity(c.convert(e.getId()), tAttrs, lAttrs,
+
+	return c.convertActivity(c.convert(e.getId()), tAttrs, lAttrs, locAttrs,
 	                         otherAttrs, e.getStartTime(), e.getEndTime());
     }
 
@@ -201,8 +212,10 @@ public class BeanTraversal {
 	List<Object> tAttrs = convertTypeAttributes(e);
 	List<Attribute> otherAttrs = convertAttributes(e);
 	List<Object> lAttrs = convertLabelAttribute(e);
+	List<Object> locAttrs = convertLocationAttribute(e);
 
-	return c.convertAgent(c.convert(e.getId()), tAttrs, lAttrs, otherAttrs);
+
+	return c.convertAgent(c.convert(e.getId()), tAttrs, lAttrs, locAttrs, otherAttrs);
     }
 
     public Object convertRelation(Object o) {
@@ -290,8 +303,13 @@ public class BeanTraversal {
     public Object convert(WasGeneratedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Object> locAttrs = convertLocationAttribute(o);
+	List<Object> roleAttrs = convertRoleAttribute(o);
+
 	ActivityRef a;
 	return c.convertWasGeneratedBy(c.convert(o.getId()), tAttrs,
+	                               locAttrs,
+	                               roleAttrs,
 	                               otherAttrs, c.convert(o.getEntity()
 	                                       .getRef()),
 	                               ((a = o.getActivity()) == null) ? null

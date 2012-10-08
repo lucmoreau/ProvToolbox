@@ -21,6 +21,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public static final String EX_NS = "http://example.org/";
     public static final String EX2_NS = "http://example2.org/";
     public static final String EX_PREFIX = "ex";
+    public static final String EX2_PREFIX = "ex2";
      
     static final ProvUtilities util=new ProvUtilities();
 
@@ -30,7 +31,8 @@ public class RoundTripFromJavaTest extends TestCase {
     public static ProvFactory pFactory;
     
     static Hashtable<String, String> updateNamespaces (Hashtable<String, String> nss) {
-	nss.put(EX_PREFIX, EX_NS);
+        nss.put(EX_PREFIX, EX_NS);
+        nss.put(EX2_PREFIX, EX2_NS);
 	nss.put("xml", "http://www.w3.org/XML/1998/namespace");
 	return nss;
     }
@@ -150,7 +152,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void addFurtherLabels(HasExtensibility he) {
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag1",EX_PREFIX,"hello"));
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "bye"));
-	he.getAny().add(pFactory.newAttribute(EX2_NS,"tag3",EX_PREFIX, "hi"));
+	he.getAny().add(pFactory.newAttribute(EX2_NS,"tag3",EX2_PREFIX, "hi"));
 	
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Integer(1)));
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Long(1)));

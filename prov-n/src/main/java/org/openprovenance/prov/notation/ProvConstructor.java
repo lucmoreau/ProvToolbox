@@ -10,6 +10,7 @@ import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.HasLabel;
 import org.openprovenance.prov.xml.HasLocation;
+import org.openprovenance.prov.xml.HasRole;
 import org.openprovenance.prov.xml.InternationalizedString;
 import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.xml.Statement;
@@ -114,8 +115,11 @@ public  class ProvConstructor implements TreeConstructor {
         	HasType eWithType=(HasType) e;
         	eWithType.getType().add(o.getValue());
             } else if ("location".equals(q.getLocalPart())) {
-        	HasLocation eWithLocation=(HasLocation) e;
-        	eWithLocation.getLocation().add(o.getValue());
+                HasLocation eWithLocation=(HasLocation) e;
+                eWithLocation.getLocation().add(o.getValue());
+            } else if ("role".equals(q.getLocalPart())) {
+                HasRole eWithRole=(HasRole) e;
+                eWithRole.getRole().add(o.getValue());
             } else if ("label".equals(q.getLocalPart())) {
         	HasLabel eWithLabel=(HasLabel) e;
         	if (o.getValue() instanceof String) {
@@ -323,11 +327,10 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        Activity a1=(s_id1==null)? null: activityTable.get(s_id1);  //id1 may be null
+        //Activity a1=(s_id1==null)? null: activityTable.get(s_id1);  //id1 may be null
         ActivityRef a1r=null;
-        if (a1!=null) a1r=pFactory.newActivityRef(a1);
-        Entity e2=entityTable.get(s_id2);
-        EntityRef e2r=pFactory.newEntityRef(e2);
+        if (s_id1!=null) a1r=pFactory.newActivityRef(s_id1);
+        EntityRef e2r=pFactory.newEntityRef(s_id2);
 
         WasGeneratedBy g=pFactory.newWasGeneratedBy(s_id,
                                                     e2r,

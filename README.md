@@ -18,8 +18,8 @@ Contributors
 ------------
 
 Trung Dong: JSON subpackage.
-
-Mike Jewell: JSON subpackage validation.
+Mike Jewell: JSON subpackage validation, RDF Conversion
+Amir Sezavar Keshavarz: JSON subpackage.
 
 =======
 

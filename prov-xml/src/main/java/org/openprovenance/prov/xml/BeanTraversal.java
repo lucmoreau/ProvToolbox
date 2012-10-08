@@ -383,11 +383,25 @@ public class BeanTraversal {
 
     public Object convert(WasDerivedFrom o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
+
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	return c.convertWasDerivedFrom(c.convert(o.getId()), tAttrs,
-	                               otherAttrs, c.convert(o
-	                                       .getGeneratedEntity().getRef()),
-	                               c.convert(o.getUsedEntity().getRef()));
+	return c.convertWasDerivedFrom(c.convert(o.getId()), 
+	                               tAttrs,
+	                               labAttrs,
+	                               otherAttrs, 
+	                               (o.getGeneratedEntity()==null)? null:
+	                        	   c.convert(o
+	                        	             .getGeneratedEntity().getRef()),
+	                               (o.getUsedEntity()==null)?null:
+	                        	   c.convert(o.getUsedEntity().getRef()),
+	                               (o.getActivity()==null)? null:
+		                        	   c.convert(o.getActivity().getRef()),
+		                       (o.getGeneration()==null)? null:
+		                	   c.convert(o.getGeneration().getRef()),
+		                       (o.getUsage()==null)? null:
+		                	   c.convert(o.getUsage().getRef()));
+	                        	   
     }
 
     public Object convert(WasAssociatedWith o) {

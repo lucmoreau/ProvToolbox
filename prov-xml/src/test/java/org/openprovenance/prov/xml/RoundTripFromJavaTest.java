@@ -840,5 +840,94 @@ public class RoundTripFromJavaTest extends TestCase {
 
 	makeDocAndTest(end, "target/end10");
     }
+    
+    
+    // ////////////////////////////////
+
+    public void testDerivation1() throws JAXBException {
+	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der1"), 
+	                                                null,
+	                                                pFactory.newEntityRef(q("e1")));
+	makeDocAndTest(der, "target/derivation1");
+    }
+
+    public void testDerivation2() throws JAXBException {
+   	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der2"), 
+   	                                                pFactory.newEntityRef(q("e2")),
+   	                                                null);
+   	makeDocAndTest(der, "target/derivation2");
+    }
+    
+    public void testDerivation3() throws JAXBException {
+   	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der3"), 
+   	                                                pFactory.newEntityRef(q("e2")),
+   	                                                pFactory.newEntityRef(q("e1")));
+   	makeDocAndTest(der, "target/derivation3");
+    }
+
+    public void testDerivation4() throws JAXBException {
+   	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der4"), 
+   	                                                pFactory.newEntityRef(q("e2")),
+   	                                                pFactory.newEntityRef(q("e1")));
+   	addLabel(der);
+   	makeDocAndTest(der, "target/derivation4");
+    }
+    
+    public void testDerivation5() throws JAXBException {
+   	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der5"), 
+   	                                                pFactory.newEntityRef(q("e2")),
+   	                                                pFactory.newEntityRef(q("e1")));
+   	der.setActivity(pFactory.newActivityRef(q("a")));
+   	makeDocAndTest(der, "target/derivation5");
+    }
+    
+    
+    public void testDerivation6() throws JAXBException {
+   	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der6"), 
+   	                                                pFactory.newEntityRef(q("e2")),
+   	                                                pFactory.newEntityRef(q("e1")));
+   	der.setActivity(pFactory.newActivityRef(q("a")));
+   	der.setUsage(pFactory.newUsageRef(q("u")));
+   	makeDocAndTest(der, "target/derivation6");
+    }
+    
+    public void testDerivation7() throws JAXBException {
+   	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der7"), 
+   	                                                pFactory.newEntityRef(q("e2")),
+   	                                                pFactory.newEntityRef(q("e1")));
+   	der.setActivity(pFactory.newActivityRef(q("a")));
+   	der.setUsage(pFactory.newUsageRef(q("u")));
+   	der.setGeneration(pFactory.newGenerationRef(q("g")));
+   	makeDocAndTest(der, "target/derivation7");
+    }
+    
+    
+    
+    public void testDerivation8() throws JAXBException {
+   	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der8"), 
+   	                                                pFactory.newEntityRef(q("e2")),
+   	                                                pFactory.newEntityRef(q("e1")));
+   	addLabel(der);
+   	addTypes(der);
+   	addFurtherLabels(der);
+   	makeDocAndTest(der, "target/derivation8");
+    }
+    
+    public void testDerivation9() throws JAXBException {
+   	WasDerivedFrom der = pFactory.newWasDerivedFrom((QName)null, 
+   	                                                pFactory.newEntityRef(q("e2")),
+   	                                                null);
+   	makeDocAndTest(der, "target/derivation9");
+    }
+    
+    public void testDerivation10() throws JAXBException {
+   	WasDerivedFrom der = pFactory.newWasDerivedFrom((QName)null, 
+   	                                                pFactory.newEntityRef(q("e2")),
+   	                                                pFactory.newEntityRef(q("e1")));
+   	der.setActivity(pFactory.newActivityRef(q("a")));
+   	der.setUsage(pFactory.newUsageRef(q("u")));
+   	der.setGeneration(pFactory.newGenerationRef(q("g")));
+   	makeDocAndTest(der, "target/derivation10");
+    }
 
 }

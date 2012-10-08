@@ -22,7 +22,7 @@ public interface BeanConstructor {
     public Object convertWasInfluencedBy(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object effect, Object cause);
  
 
-    public Object convertWasDerivedFrom(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object effect, Object cause);
+    public Object convertWasDerivedFrom(Object id, List<Object> tAttrs, List<Object> lAttr, List<Attribute> otherAttrs, Object effect, Object cause, Object activity, Object generation, Object usage);
 
     public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object activity, Object agent, Object plan);
     public Object convertWasAttributedTo(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object entity, Object agent);

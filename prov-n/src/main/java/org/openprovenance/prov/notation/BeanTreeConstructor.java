@@ -249,18 +249,22 @@ public class BeanTreeConstructor implements BeanConstructor{
 				      c.convertAttributes(attrs));
     }
 
-    public Object convertWasDerivedFrom(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object effect, Object cause) {
+    public Object convertWasDerivedFrom(Object id, List<Object> tAttrs, List<Object> lAttrs,  List<Attribute> otherAttrs, 
+                                        Object effect, Object cause,
+                                        Object activity, Object generation, Object usage) {
         List<?> tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
+        List<?> lAttrs2=convertLabelAttributes(lAttrs);
+
         List<Object> attrs=new LinkedList<Object>();
         attrs.addAll(tAttrs2);
+        attrs.addAll(lAttrs2);
         attrs.addAll(otherAttrs);
         return c.convertWasDerivedFrom(id,
                                        effect,
                                        cause,
-                                       null,//pe
-                                       null,//g2
-                                       null,//u1
+                                       activity,
+                                       generation,
+                                       usage,
                                        c.convertAttributes(attrs));
     }
 

@@ -462,8 +462,7 @@ public  class ProvConstructor implements TreeConstructor {
         Agent ag1=agentTable.get(s_id1);
         AgentRef ag1r=pFactory.newAgentRef(ag1);
 
-        Entity e2=entityTable.get(s_id2);
-        EntityRef e2r=pFactory.newEntityRef(e2);
+        EntityRef e2r=(s_id2==null)? null: pFactory.newEntityRef(s_id2);
 
         WasAttributedTo s=pFactory.newWasAttributedTo(s_id,
                                                       e2r,
@@ -475,10 +474,8 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        Entity e2=entityTable.get(s_id2);
-        EntityRef e2r=pFactory.newEntityRef(e2);
-        Entity e1=entityTable.get(s_id1);
-        EntityRef e1r=pFactory.newEntityRef(e1);
+        EntityRef e2r=(s_id2==null)? null: pFactory.newEntityRef(s_id2);
+        EntityRef e1r=(s_id1==null)? null: pFactory.newEntityRef(s_id1);
         WasDerivedFrom d=pFactory.newWasDerivedFrom(s_id,
                                                     e2r,
                                                     e1r);
@@ -516,10 +513,8 @@ public  class ProvConstructor implements TreeConstructor {
     public Object convertAlternateOf(Object id2,Object id1) {
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        Entity e2=entityTable.get(s_id2);
-        EntityRef e2r=pFactory.newEntityRef(e2);
-        Entity e1=entityTable.get(s_id1);
-        EntityRef e1r=pFactory.newEntityRef(e1);
+        EntityRef e2r=(s_id2==null)? null: pFactory.newEntityRef(s_id2);
+        EntityRef e1r=(s_id1==null)? null: pFactory.newEntityRef(s_id1);
         AlternateOf wco=pFactory.newAlternateOf(e2r,
                                                 e1r);
         return wco;
@@ -529,10 +524,8 @@ public  class ProvConstructor implements TreeConstructor {
     public Object convertSpecializationOf(Object id2,Object id1) {
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        Entity e2=entityTable.get(s_id2);
-        EntityRef e2r=pFactory.newEntityRef(e2);
-        Entity e1=entityTable.get(s_id1);
-        EntityRef e1r=pFactory.newEntityRef(e1);
+        EntityRef e2r=(s_id2==null)? null: pFactory.newEntityRef(s_id2);
+        EntityRef e1r=(s_id1==null)? null: pFactory.newEntityRef(s_id1);
         SpecializationOf wco=pFactory.newSpecializationOf(e2r,
                                                           e1r);
         return wco;
@@ -567,11 +560,9 @@ public  class ProvConstructor implements TreeConstructor {
             e1=agentTable.get(s_id1);
             e1r=pFactory.newAgentRef(e1);
         }
-        Entity e3=null;
         EntityRef e3r=null;
         if (s_pl!=null) {
-            e3=entityTable.get(s_pl);
-            e3r=pFactory.newEntityRef(e3);
+            e3r=pFactory.newEntityRef(s_pl);
         }
         WasAssociatedWith waw=pFactory.newWasAssociatedWith(s_id,
                                                             e2r,

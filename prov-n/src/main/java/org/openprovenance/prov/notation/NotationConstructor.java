@@ -189,7 +189,7 @@ public class NotationConstructor implements TreeConstructor {
 
 
     public Object convertWasDerivedFrom(Object id, Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
-        String s=keyword("wasDerivedFrom") + "(" + optionalId(id) + id2 + ", " + id1 + 
+        String s=keyword("wasDerivedFrom") + "(" + optionalId(id) + optional(id2) + ", " + optional(id1) + 
             ((pe==null && g2==null && u1==null) ?
              "" : ", " + optional(pe) + ", " + optional(g2) + ", " + optional(u1)) + optionalAttributes(aAttrs) +  ")";
         return s;

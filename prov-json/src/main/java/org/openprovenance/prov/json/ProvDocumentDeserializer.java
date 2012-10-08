@@ -27,6 +27,7 @@ import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.ActivityRef;
 import org.openprovenance.prov.xml.AgentRef;
 import org.openprovenance.prov.xml.AnyRef;
+import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.EntityRef;
 import org.openprovenance.prov.xml.GenerationRef;
@@ -438,14 +439,14 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         // arbitrary attribute decoding
         if (provStatement != ProvStatement.BUNDLE && !attributeMap.entrySet().isEmpty()) {
         	if (statement instanceof HasExtensibility) {
-	            List<Object> attributes = ((HasExtensibility)statement).getAny();
+	            List<Attribute> attributes = ((HasExtensibility)statement).getAny();
 	            for (Map.Entry<String, JsonElement> aPair: attributeMap.entrySet()) {
 	                QName attributeName = pf.stringToQName(aPair.getKey());
 	                JsonElement element = aPair.getValue();
 	                values = pickMultiValues(element);
 	                for (JsonElement value: values) {
-	                    Object attributeValue = decodeAttributeValue(value);
-	                    attributes.add(new JAXBElement<Object>(attributeName, Object.class, null, attributeValue));
+	                    Attribute attr = decodeAttribute(attributeName, value);
+	                    attributes.add(attr);
 	                }
 	            }
         	}
@@ -485,6 +486,23 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             }
         }
         return iString;
+    }
+    
+    private Attribute decodeAttribute(QName attributeName, JsonElement element) {
+    	Object value;
+    	String xsdType;
+    	
+    	if (element.isJsonPrimitive()) {
+            value = decodeJSONPrimitive(element.getAsString());
+            xsdType = pf.getXsdType(value);
+        } else {
+            JsonObject struct = element.getAsJsonObject();
+            // Note: Internationalized strings are ignored here!!!
+            // The following implicitly assume the type is one of XSD types
+            xsdType = struct.get("type").getAsString();
+            value = decodeXSDType(struct.get("$").getAsString(), xsdType);
+        }    	
+    	return new Attribute(attributeName, value, xsdType);
     }
     
     private Object decodeAttributeValue(JsonElement element) {
@@ -687,7 +705,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     
 }
 
-
+// TODO: Implement a namespace management system to create proper QNames 
+// (to replace the one provided by ProvFactory)
 class NamespaceContextMap implements NamespaceContext {
     private String defaultNamespaceURI = null;
     private Map<String, String> namespaces = new Hashtable<String, String>();

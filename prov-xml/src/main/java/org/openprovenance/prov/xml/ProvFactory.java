@@ -104,9 +104,14 @@ public class ProvFactory {
     }
 
     public void addAttribute(HasExtensibility a, String namespace,
-			     String localName, String prefix, String value) {
+                             String localName, String prefix, Object value) {
 
-	a.getAny().add(newAttribute(namespace, localName, prefix, value));
+        a.getAny().add(newAttribute(namespace, localName, prefix, value));
+    }
+    public void addAttribute(HasExtensibility a, String namespace,
+                             String localName, String prefix, Object value, String type) {
+
+        a.getAny().add(newAttribute(namespace, localName, prefix, value, type));
     }
 
     public ActedOnBehalfOf addAttributes(ActedOnBehalfOf from,

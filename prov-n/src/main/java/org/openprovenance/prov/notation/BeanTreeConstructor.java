@@ -193,12 +193,20 @@ public class BeanTreeConstructor implements BeanConstructor{
                                          c.convertAttributes(attrs));
     }
 
-    public Object convertWasStartedBy(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object activity, Object entity, Object starter, Object time) {
-        List<?> tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
+    public Object convertWasStartedBy(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> locAttr, List<Object> roleAttr, List<Attribute> otherAttrs, Object activity, Object entity, Object starter, Object time) {
+	List<?> tAttrs2=convertTypeAttributes(tAttrs);
+        List<?> lAttrs2=convertLabelAttributes(lAttr);
+        List<?> locAttrs2=convertLocationAttributes(locAttr);
+        List<?> roleAttrs2=convertRoleAttributes(roleAttr);
+
+	
         List<Object> attrs=new LinkedList<Object>();
         attrs.addAll(tAttrs2);
+        attrs.addAll(lAttrs2);
+        attrs.addAll(locAttrs2);
+        attrs.addAll(roleAttrs2);
         attrs.addAll(otherAttrs);
+        
         return c.convertWasStartedBy(id,
 				     activity,
 				     entity,
@@ -207,12 +215,19 @@ public class BeanTreeConstructor implements BeanConstructor{
 				     c.convertAttributes(attrs));
     }
 
-    public Object convertWasEndedBy(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object activity, Object entity, Object ender, Object time) {
-        List<?> tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
+    public Object convertWasEndedBy(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> locAttr, List<Object> roleAttr, List<Attribute> otherAttrs, Object activity, Object entity, Object ender, Object time) {
+	List<?> tAttrs2=convertTypeAttributes(tAttrs);
+        List<?> lAttrs2=convertLabelAttributes(lAttr);
+        List<?> locAttrs2=convertLocationAttributes(locAttr);
+        List<?> roleAttrs2=convertRoleAttributes(roleAttr);
+
         List<Object> attrs=new LinkedList<Object>();
         attrs.addAll(tAttrs2);
+        attrs.addAll(lAttrs2);
+        attrs.addAll(locAttrs2);
+        attrs.addAll(roleAttrs2);
         attrs.addAll(otherAttrs);
+        
         return c.convertWasEndedBy(id,
 				   activity,
 				   entity,

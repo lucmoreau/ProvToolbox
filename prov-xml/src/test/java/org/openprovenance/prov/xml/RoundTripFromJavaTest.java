@@ -652,5 +652,193 @@ public class RoundTripFromJavaTest extends TestCase {
 	makeDocAndTest(inv, "target/invalidation7");
     }
     
+//////////////////////////////////
+
+    public void testStart1() throws JAXBException {
+	WasStartedBy start = pFactory.newWasStartedBy(q("start1"),
+						      null,
+						      pFactory.newEntityRef(q("e1")));
+	makeDocAndTest(start, "target/start1");
+    }
+
+    public void testStart2() throws JAXBException {
+	WasStartedBy start = pFactory.newWasStartedBy(q("start2"),
+						      pFactory.newActivityRef(q("a1")),
+						      pFactory.newEntityRef(q("e1")));
+	makeDocAndTest(start, "target/start2");
+    }
+
+    public void testStart3() throws JAXBException {
+	WasStartedBy start = pFactory.newWasStartedBy(q("start3"),
+						      pFactory.newActivityRef(q("a1")),
+						      null);
+	makeDocAndTest(start, "target/start3");
+    }
+
+    public void testStart4() throws JAXBException {
+	WasStartedBy start = pFactory.newWasStartedBy(q("start4"),
+						      null,
+						      pFactory.newEntityRef(q("e1")));
+	start.setStarter(pFactory.newActivityRef(q("a2")));
+	makeDocAndTest(start, "target/start4");
+    }
+
+    public void testStart5() throws JAXBException {
+	WasStartedBy start = pFactory.newWasStartedBy(q("start5"),
+						      pFactory.newActivityRef(q("a1")),
+						      pFactory.newEntityRef(q("e1")));
+	start.setStarter(pFactory.newActivityRef(q("a2")));
+	makeDocAndTest(start, "target/start5");
+    }
+
+    public void testStart6() throws JAXBException {
+	WasStartedBy start = pFactory.newWasStartedBy(q("start6"),
+						      pFactory.newActivityRef(q("a1")),
+						      null);
+	start.setStarter(pFactory.newActivityRef(q("a2")));
+	makeDocAndTest(start, "target/start6");
+    }
+
     
+    public void testStart7() throws JAXBException {
+   	WasStartedBy start = pFactory.newWasStartedBy(q("start7"),
+   						      pFactory.newActivityRef(q("a1")),
+   						      null);
+   	start.setStarter(pFactory.newActivityRef(q("a2")));
+   	start.setTime(pFactory.newTimeNow());
+   	makeDocAndTest(start, "target/start7");
+    }
+    
+    public void testStart8() throws JAXBException {
+   	WasStartedBy start = pFactory.newWasStartedBy(q("start8"),
+   						      pFactory.newActivityRef(q("a1")),
+   						      null);
+   	start.setStarter(pFactory.newActivityRef(q("a2")));
+   	start.setTime(pFactory.newTimeNow());
+   	start.getRole().add("someRole");
+   	start.getRole().add("otherRole");
+   	addTypes(start);
+	addLocations(start);
+	addLabels(start);
+	addFurtherLabels(start);
+   	
+   	makeDocAndTest(start, "target/start8");
+    }
+    
+    public void testStart9() throws JAXBException {
+   	WasStartedBy start = pFactory.newWasStartedBy((QName)null,
+   						      pFactory.newActivityRef(q("a1")),
+   						      pFactory.newEntityRef(q("e1")));
+   	makeDocAndTest(start, "target/start9");
+       }
+    
+    public void testStart10() throws JAXBException {
+   	WasStartedBy start = pFactory.newWasStartedBy((QName)null,
+   						      pFactory.newActivityRef(q("a1")),
+   						      null);
+   	start.setStarter(pFactory.newActivityRef(q("a2")));
+   	start.setTime(pFactory.newTimeNow());
+   	start.getRole().add("someRole");
+   	start.getRole().add("otherRole");
+   	addTypes(start);
+	addLocations(start);
+	addLabels(start);
+	addFurtherLabels(start);
+   	
+   	makeDocAndTest(start, "target/start10");
+    }
+    
+    // ////////////////////////////////
+
+    public void testEnd1() throws JAXBException {
+	WasEndedBy end = pFactory.newWasEndedBy(q("end1"), null,
+						pFactory.newEntityRef(q("e1")));
+	makeDocAndTest(end, "target/end1");
+    }
+
+    public void testEnd2() throws JAXBException {
+	WasEndedBy end = pFactory.newWasEndedBy(q("end2"),
+						pFactory.newActivityRef(q("a1")),
+						pFactory.newEntityRef(q("e1")));
+	makeDocAndTest(end, "target/end2");
+    }
+
+    public void testEnd3() throws JAXBException {
+	WasEndedBy end = pFactory.newWasEndedBy(q("end3"),
+						pFactory.newActivityRef(q("a1")),
+						null);
+	makeDocAndTest(end, "target/end3");
+    }
+
+    public void testEnd4() throws JAXBException {
+	WasEndedBy end = pFactory.newWasEndedBy(q("end4"), null,
+						pFactory.newEntityRef(q("e1")));
+	end.setEnder(pFactory.newActivityRef(q("a2")));
+	makeDocAndTest(end, "target/end4");
+    }
+
+    public void testEnd5() throws JAXBException {
+	WasEndedBy end = pFactory.newWasEndedBy(q("end5"),
+						pFactory.newActivityRef(q("a1")),
+						pFactory.newEntityRef(q("e1")));
+	end.setEnder(pFactory.newActivityRef(q("a2")));
+	makeDocAndTest(end, "target/end5");
+    }
+
+    public void testEnd6() throws JAXBException {
+	WasEndedBy end = pFactory.newWasEndedBy(q("end6"),
+						pFactory.newActivityRef(q("a1")),
+						null);
+	end.setEnder(pFactory.newActivityRef(q("a2")));
+	makeDocAndTest(end, "target/end6");
+    }
+
+    public void testEnd7() throws JAXBException {
+	WasEndedBy end = pFactory.newWasEndedBy(q("end7"),
+						pFactory.newActivityRef(q("a1")),
+						null);
+	end.setEnder(pFactory.newActivityRef(q("a2")));
+	end.setTime(pFactory.newTimeNow());
+	makeDocAndTest(end, "target/end7");
+    }
+
+    public void testEnd8() throws JAXBException {
+	WasEndedBy end = pFactory.newWasEndedBy(q("end8"),
+						pFactory.newActivityRef(q("a1")),
+						null);
+	end.setEnder(pFactory.newActivityRef(q("a2")));
+	end.setTime(pFactory.newTimeNow());
+	end.getRole().add("someRole");
+	end.getRole().add("otherRole");
+	addTypes(end);
+	addLocations(end);
+	addLabels(end);
+	addFurtherLabels(end);
+
+	makeDocAndTest(end, "target/end8");
+    }
+
+    public void testEnd9() throws JAXBException {
+	WasEndedBy end = pFactory.newWasEndedBy((QName) null,
+						pFactory.newActivityRef(q("a1")),
+						pFactory.newEntityRef(q("e1")));
+	makeDocAndTest(end, "target/end9");
+    }
+
+    public void testEnd10() throws JAXBException {
+	WasEndedBy end = pFactory.newWasEndedBy((QName) null,
+						pFactory.newActivityRef(q("a1")),
+						null);
+	end.setEnder(pFactory.newActivityRef(q("a2")));
+	end.setTime(pFactory.newTimeNow());
+	end.getRole().add("someRole");
+	end.getRole().add("otherRole");
+	addTypes(end);
+	addLocations(end);
+	addLabels(end);
+	addFurtherLabels(end);
+
+	makeDocAndTest(end, "target/end10");
+    }
+
 }

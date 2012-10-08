@@ -355,20 +355,15 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id2=(String)id2;
         String s_id1=(String)id1;
         String s_id3=(String)id3;
-        Entity e1=(s_id1==null)? null: entityTable.get(s_id1);  //id1 may be null
-        EntityRef e1r=null;
-        if (e1!=null) e1r=pFactory.newEntityRef(e1);
-        Activity a2=activityTable.get(s_id2);
-        ActivityRef a2r=pFactory.newActivityRef(a2);
+        EntityRef e1r=(s_id1==null)? null: pFactory.newEntityRef(s_id1);  //id1 may be null
+        ActivityRef a2r=(s_id2==null)? null: pFactory.newActivityRef(s_id2);
 
         WasStartedBy s=pFactory.newWasStartedBy(s_id,
                                                 a2r,
                                                 e1r);
 
-        Activity a3=(s_id3==null)? null: activityTable.get(s_id3);  //id3 may be null
-        ActivityRef a3r=null;
-        if (a3!=null) a3r=pFactory.newActivityRef(a3);
-
+        ActivityRef a3r=(s_id3==null)? null : pFactory.newActivityRef(s_id3);  //id3 may be null
+        
         List<?> attrs=(List<?>)gAttrs;
         addAllAttributes(s, (List<Object>)attrs);
         if (time!=null) {
@@ -391,19 +386,14 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id1=(String)id1;
         String s_id3=(String)id3;
 
-        Entity e1=(s_id1==null)? null: entityTable.get(s_id1);  //id1 may be null
-        EntityRef e1r=null;
-        if (e1!=null) e1r=pFactory.newEntityRef(e1);
-        Activity a2=activityTable.get(s_id2);
-        ActivityRef a2r=pFactory.newActivityRef(a2);
+        EntityRef e1r=(s_id1==null)? null: pFactory.newEntityRef(s_id1);  //id1 may be null
+        ActivityRef a2r=(s_id2==null) ? null: pFactory.newActivityRef(s_id2);
 
         WasEndedBy s=pFactory.newWasEndedBy(s_id,
                                             a2r,
                                             e1r);
-        Activity a3=(s_id3==null)? null: activityTable.get(s_id3);  //id3 may be null
-        ActivityRef a3r=null;
-        if (a3!=null) a3r=pFactory.newActivityRef(a3);
-
+        ActivityRef a3r=(s_id3==null)? null: pFactory.newActivityRef(s_id3);  //id3 may be null
+        
         List<?> attrs=(List<?>)gAttrs;
         addAllAttributes(s, (List<Object>)attrs);
         if (time!=null) {

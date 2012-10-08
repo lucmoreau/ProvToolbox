@@ -282,12 +282,19 @@ public class BeanTraversal {
 
     public Object convert(WasStartedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Object> locAttrs = convertLocationAttribute(o);
+	List<Object> roleAttrs = convertRoleAttribute(o);
+	
 	EntityRef e;
 	ActivityRef a;
 	ActivityRef s;
 	return c.convertWasStartedBy(c.convert(o.getId()),
 	                             tAttrs,
+	                             labAttrs,
+	                             locAttrs,
+	                             roleAttrs,
 	                             otherAttrs,
 	                             ((a = o.getActivity()) == null) ? null : c
 	                                     .convert(a.getRef()),
@@ -299,12 +306,19 @@ public class BeanTraversal {
 
     public Object convert(WasEndedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Object> locAttrs = convertLocationAttribute(o);
+	List<Object> roleAttrs = convertRoleAttribute(o);
+	
 	EntityRef e;
 	ActivityRef a;
 	ActivityRef s;
 	return c.convertWasEndedBy(c.convert(o.getId()),
 	                           tAttrs,
+	                           labAttrs,
+	                           locAttrs,
+	                           roleAttrs,
 	                           otherAttrs,
 	                           ((a = o.getActivity()) == null) ? null : c
 	                                   .convert(a.getRef()),

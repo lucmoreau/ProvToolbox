@@ -10,6 +10,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +18,6 @@ import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.DatatypeConverter;
-import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
@@ -541,7 +541,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
                 iString.setValue(value);
                 iString.setLang(lang);
                 return iString;
-            } else if (struct.has("lang")) {
+            } else if (struct.has("type")) {
             	String datatype = struct.get("type").getAsString();
             	return decodeXSDType(value, datatype);
             } else {
@@ -607,7 +607,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         if (datatype.equals("xsd:nonNegativeInteger"))  return DatatypeConverter.parseInteger(value);
         if (datatype.equals("xsd:nonPositiveInteger"))  return DatatypeConverter.parseInteger(value);
         if (datatype.equals("xsd:positiveInteger"))     return DatatypeConverter.parseInteger(value);
-        if (datatype.equals("xsd:dateTime"))            return DatatypeConverter.parseDateTime(value);
+        if (datatype.equals("xsd:dateTime"))            return pf.newXMLGregorianCalendar((GregorianCalendar)DatatypeConverter.parseDateTime(value));
 
         if (datatype.equals("xsd:anyURI")) {
             URIWrapper u=new URIWrapper();

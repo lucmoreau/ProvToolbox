@@ -97,7 +97,13 @@ class JSONConstructor implements TreeConstructor {
         return tuple;
 	}
 	
-	private Map<String, String> typedLiteral(String value, String datatype, String lang) {
+	private Object typedLiteral(String value, String datatype, String lang) {
+		// TODO: Converting default types to JSON primitives
+//		if (datatype == "xsd:string" && lang == null) return value;
+//		if (datatype == "xsd:double") return Double.parseDouble(value);
+//		if (datatype == "xsd:int") return Integer.parseInt(value);
+//		if (datatype == "xsd:boolean") return Boolean.parseBoolean(value);
+		
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("$", value);
 		if (datatype != null) {
@@ -647,8 +653,8 @@ class JSONConstructor implements TreeConstructor {
 
 
 	private Object convertAttribute(Attribute attr) {
-		return tuple(attr.getElementName().toString(), 
-					typedLiteral(attr.getValue().toString(), attr.getXsdType(), null));
+		String attr_name = attr.getElementName().getPrefix() + ":" + attr.getElementName().getLocalPart();  
+		return tuple(attr_name, typedLiteral(attr.getValue().toString(), attr.getXsdType(), null));
 	}
 	
 	@Override

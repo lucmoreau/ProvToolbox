@@ -545,8 +545,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn4 = getQName(use1);
 		QName qn5 = getQName(gen2);
 
-		Entity e2 = (Entity) manager.find(qn2);
-		Entity e1 = (Entity) manager.find(qn1);
+		Entity e2 = manager.designate(qn2, Entity.class);
+		Entity e1 = manager.designate(qn1, Entity.class);
 
 		Object other = a;
 		if (qn4 != null)
@@ -565,7 +565,7 @@ public class RdfConstructor implements TreeConstructor {
 		{
 			if (qn3 != null)
 			{
-				Activity a3 = (Activity) manager.find(qn3);
+				Activity a3 =  manager.designate(qn3,Activity.class);
 				d.getHadActivity().add(a3);
 			}
 		}

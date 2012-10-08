@@ -34,6 +34,7 @@ import org.openprovenance.prov.xml.GenerationRef;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.HasLabel;
 import org.openprovenance.prov.xml.HasLocation;
+import org.openprovenance.prov.xml.HasRole;
 import org.openprovenance.prov.xml.HasType;
 import org.openprovenance.prov.xml.HasValue;
 import org.openprovenance.prov.xml.InternationalizedString;
@@ -421,6 +422,19 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         		throw new UnsupportedOperationException("prov:location is not allowed in a " + statementType + "statement - id: " + idStr);
         	}
         }
+        // prov:role decoding
+        values = popMultiValAttribute("prov:role", attributeMap);
+        if (!values.isEmpty()) {
+        	if (statement instanceof HasRole) {
+	            List<Object> roles = ((HasRole)statement).getRole();
+	            for (JsonElement value: values) {
+	                roles.add(decodeAttributeValue(value));
+	            }
+        	}
+        	else {
+        		throw new UnsupportedOperationException("prov:role is not allowed in a " + statementType + "statement - id: " + idStr);
+        	}
+        }
         // prov:value decoding
         values = popMultiValAttribute("prov:value", attributeMap);
         if (!values.isEmpty()) {
@@ -497,10 +511,19 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             xsdType = pf.getXsdType(value);
         } else {
             JsonObject struct = element.getAsJsonObject();
-            // Note: Internationalized strings are ignored here!!!
-            // The following implicitly assume the type is one of XSD types
-            xsdType = struct.get("type").getAsString();
-            value = decodeXSDType(struct.get("$").getAsString(), xsdType);
+            if (struct.has("lang")) {
+                // Internationalized strings
+                String lang = struct.get("lang").getAsString();
+                InternationalizedString iString = new InternationalizedString();
+                iString.setValue(struct.get("$").getAsString());
+                iString.setLang(lang);
+                value = iString;
+                xsdType = "prov:InternationalizedString";
+            } else {
+	            // The following implicitly assume the type is one of XSD types
+	            xsdType = struct.get("type").getAsString();
+	            value = decodeXSDType(struct.get("$").getAsString(), xsdType);
+            }
         }    	
     	return new Attribute(attributeName, value, xsdType);
     }

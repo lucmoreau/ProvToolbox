@@ -541,10 +541,13 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
                 iString.setValue(value);
                 iString.setLang(lang);
                 return iString;
+            } else if (struct.has("lang")) {
+            	String datatype = struct.get("type").getAsString();
+            	return decodeXSDType(value, datatype);
+            } else {
+            	// if no type or lang information, decode as a JSON primitive
+            	return decodeJSONPrimitive(value);
             }
-            String datatype = struct.get("type").getAsString();
-            // TODO: decode typed literals that are not of XSD types
-            return decodeXSDType(value, datatype);
         }
     }
     

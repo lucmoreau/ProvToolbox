@@ -8,6 +8,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.notation.TreeConstructor;
 import org.openprovenance.prov.notation.TreeTraversal;
 import org.openprovenance.prov.notation.Utility;
+import org.openprovenance.prov.xml.InternationalizedString;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -611,14 +612,17 @@ class JSONConstructor implements TreeConstructor {
     
 	@Override
 	public Object convertDocument(Object nss, List<Object> records, List<Object> bundles) {
-		// constructing a normal bundle 
+		// constructing the top-level bundle (i.e. the document) 
 		Map<String,Object> bundle = buildBundle(nss, records);
-		Map<Object, Object> bundleStructure = new HashMap<Object, Object>();
-    	bundle.put("bundle", bundleStructure);
-    	for (Object obj : bundles) {
-    		Object[] tuple = (Object[])obj;
-    		bundleStructure.put(tuple[0], tuple[1]);
-    	}
+		if (bundles != null && !bundles.isEmpty()) {
+			// adding sub-bundles
+			Map<Object, Object> bundleStructure = new HashMap<Object, Object>();
+	    	bundle.put("bundle", bundleStructure);
+	    	for (Object obj : bundles) {
+	    		Object[] tuple = (Object[])obj;
+	    		bundleStructure.put(tuple[0], tuple[1]);
+	    	}
+		}
 		return bundle;
 	}
 
@@ -703,6 +707,10 @@ class JSONConstructor implements TreeConstructor {
 			// is already converted into a map
 			((Map<String, String>) value).put("type", datatype);
 			return value;
+		}
+		else if (value instanceof InternationalizedString) {
+			InternationalizedString iString = (InternationalizedString)value;
+			return typedLiteral(iString.getValue(), null, iString.getLang());
 		}
 		else {
 			return typedLiteral(unwrap((String)value), datatype, null);

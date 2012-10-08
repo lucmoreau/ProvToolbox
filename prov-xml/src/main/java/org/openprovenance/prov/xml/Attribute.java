@@ -39,7 +39,7 @@ public class Attribute {
     }
 
     public String toString() {
-	return "[" + elementName.getPrefix() + ":" + elementName.getLocalPart() + " = \"" + val + "\" %% " + xsdType + "]";
+	return elementName.getPrefix() + ":" + elementName.getLocalPart() + " = \"" + val + "\" %% " + xsdType;
     }
 
 }

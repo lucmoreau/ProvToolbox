@@ -1,0 +1,34 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix :     <http://example.com/> .
+
+:world_flight_1937
+   a prov:Activity;
+
+   prov:wasAssociatedWith <http://dbpedia.org/resource/Amelia_Earhart>,
+                          <http://dbpedia.org/resource/Purdue_University>,
+                          <http://dbpedia.org/resource/Lockheed_Aircraft_Company>;
+   prov:qualifiedAssociation [
+      a prov:Association;
+      prov:agent   <http://dbpedia.org/resource/Amelia_Earhart>;
+      prov:hadRole :pilot;
+   ];
+   prov:qualifiedAssociation [
+      a prov:Association;
+      prov:agent   <http://dbpedia.org/resource/Purdue_University>;
+      prov:hadRole :financer;
+   ];
+   prov:qualifiedAssociation [
+      a prov:Association;
+      prov:agent   <http://dbpedia.org/resource/Lockheed_Aircraft_Company>;
+      prov:hadRole :plane_builder;
+   ];
+
+   rdfs:seeAlso <http://en.wikipedia.org/wiki/Amelia_Earhart#1937_world_flight>;
+.
+
+<http://dbpedia.org/resource/Amelia_Earhart>            a prov:Person,       prov:Agent .
+<http://dbpedia.org/resource/Purdue_University>         a prov:Organization, prov:Agent .
+<http://dbpedia.org/resource/Lockheed_Aircraft_Company> a prov:Organization, prov:Agent .

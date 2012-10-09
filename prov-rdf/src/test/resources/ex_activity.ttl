@@ -1,0 +1,15 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix :     <http://example.com/> .
+
+:graduation
+   a prov:Activity, :Graduation;
+   prov:startedAtTime "2012-04-15T13:00:00-04:00"^^xsd:dateTime;
+   prov:used          :ms_smith;
+   prov:generated     :doctor_smith;
+   prov:endedAtTime   "2012-04-15T14:30:00-04:00"^^xsd:dateTime;
+.
+:ms_smith     a prov:Entity .
+:doctor_smith a prov:Entity .

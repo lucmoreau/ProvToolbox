@@ -1,0 +1,35 @@
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix sioc: <http://rdfs.org/sioc/ns#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix my:   <http://example.org#my> .
+@prefix :     <http://example.org#> .
+
+:bundlePost1 {
+
+   :bundlePost1 a prov:Bundle, prov:Entity ;
+      prov:wasAttributedTo :postEditor;
+     prov:generatedAtTime "2011-07-16T20:52:02Z"^^xsd:dateTime;
+     :involvedUser        :monica .
+
+   :monica
+      a prov:Person, prov:Agent, foaf:Person;
+      foaf:givenName "Monica"^^xsd:string;
+      foaf:mbox      <mailto:monica@example.org>
+   .
+
+   ## Rephrasing of the post in a new resource for a different audience
+
+   :post9822
+      a prov:Entity, sioc:Post;
+      prov:atLocation       :more-crime-happens-in-cities-for-dummies; ## PERMALINK to the (latest revision of the) post
+      my:snapshotContent    :postContent2;                             ## Snapshot with the content of this version
+      prov:alternateOf      :post9821v2;                               ## This post is an alternate of the second version modified by Derek.
+      prov:specializationOf :more-crime-happens-in-cities;             ## This post is an specialization of the post initially created by Derek.
+      prov:wasInfluencedBy  :aggregatedByRegions;                      ## If the file hadn't existed, Monica would have not written the post. 
+                                                                       ## However the file is not what Monica used as primary source for writting the new post,
+                                                                       ## so we can't consider the post to have "been derived from" it.
+      sioc:title "More crime happens in cities (for dummies)"^^xsd:string;
+      prov:wasAttributedTo :monica;
+   .
+}

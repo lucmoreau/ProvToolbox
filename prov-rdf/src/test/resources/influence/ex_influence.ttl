@@ -1,0 +1,36 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix my:   <http://example.com/ontology#> .
+@prefix :     <http://example.com/> .
+
+# Although a domain extension (e.g. ':wasConductedBy') is not defined by PROV-O,
+# the relation between a surgery and an agent can still be qualified
+# by reusing prov:Influence and one of its three subclasses 
+# (depending on the type of influencer):
+# AgentInfluence, EntityInfluence, and ActivityInfluence.
+
+my:wasConductedBy rdfs:subPropertyOf prov:wasAssociatedWith .
+
+:conductingSurgery_1
+   a prov:Activity;
+   
+   # This unqualified influence is unknown in PROV, 
+   # but would be a subproperty of wasAssociatedWith.
+   my:wasConductedBy :bob;     
+   
+   # Even though PROV systems do not understand my:wasConductedBy, 
+   prov:qualifiedAssociation [ 
+      # they can recognize that the unknown relation 
+      # is being qualified with a prov:hadRole.
+      a prov:Association,     
+        prov:AgentInfluence,   # Inferred
+        prov:Influence;        # Inferred
+      prov:agent   :bob;       # The object of my:wasConductedBy
+      prov:hadRole :surgeon;
+   ];
+.
+
+:bob       a prov:Agent .
+my:surgeon a prov:Role .

@@ -147,8 +147,8 @@ public class NotationConstructor implements TreeConstructor {
     }            
 
     public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs) {
-        String s=keyword("used") + "(" + optionalId(id) + id2 + "," + id1 +
-            optionalTime(time) + optionalAttributes(aAttrs) + ")";
+        String s=keyword("used") + "(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," +
+            optional(time) + optionalAttributes(aAttrs) + ")";
         return s;
     }
     public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
@@ -157,12 +157,12 @@ public class NotationConstructor implements TreeConstructor {
         return s;
     }
     public Object convertWasStartedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs ) {
-        String s="wasStartedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," + optional(id3) + "," +
+        String s="wasStartedBy(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," + optional(id3) + "," +
             optional(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
     public Object convertWasEndedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs ) {
-        String s="wasEndedBy(" + optionalId(id) + id2 + "," + optional(id1) + "," + optional(id3) + "," +
+        String s="wasEndedBy(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," + optional(id3) + "," +
             optional(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
@@ -189,7 +189,7 @@ public class NotationConstructor implements TreeConstructor {
 
 
     public Object convertWasDerivedFrom(Object id, Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
-        String s=keyword("wasDerivedFrom") + "(" + optionalId(id) + id2 + ", " + id1 + 
+        String s=keyword("wasDerivedFrom") + "(" + optionalId(id) + optional(id2) + ", " + optional(id1) + 
             ((pe==null && g2==null && u1==null) ?
              "" : ", " + optional(pe) + ", " + optional(g2) + ", " + optional(u1)) + optionalAttributes(aAttrs) +  ")";
         return s;

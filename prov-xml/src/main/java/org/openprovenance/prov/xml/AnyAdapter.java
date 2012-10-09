@@ -18,8 +18,8 @@ public class AnyAdapter
     ProvFactory pFactory=new ProvFactory();
 
     public Attribute unmarshal(Object value) {
-        System.out.println("AnyAdapter2 unmarshalling for " + value);
-        System.out.println("AnyAdapter2 unmarshalling for " + value.getClass());
+        //System.out.println("AnyAdapter2 unmarshalling for " + value);
+        //System.out.println("AnyAdapter2 unmarshalling for " + value.getClass());
         if (value instanceof org.w3c.dom.Element) {
             org.w3c.dom.Element el=(org.w3c.dom.Element)value;
             String prefix=el.getPrefix();
@@ -38,9 +38,9 @@ public class AnyAdapter
     }
 
     public Object marshal(Attribute attribute) {
-        System.out.println("AnyAdapter2 marshalling for " + attribute);
-        System.out.println("AnyAdapter2 marshalling for " + attribute
-                        .getClass());
+        //System.out.println("AnyAdapter2 marshalling for " + attribute);
+        //System.out.println("AnyAdapter2 marshalling for " + attribute
+        //                .getClass());
         //TODO: this call creates a DOM but does not encode the type as xsi:type
 	return pFactory.newElement(attribute.getElementName(), 
 	                           attribute.getValue().toString(),

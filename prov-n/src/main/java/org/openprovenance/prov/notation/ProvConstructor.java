@@ -11,6 +11,7 @@ import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.HasLabel;
 import org.openprovenance.prov.xml.HasLocation;
 import org.openprovenance.prov.xml.HasRole;
+import org.openprovenance.prov.xml.HasValue;
 import org.openprovenance.prov.xml.InternationalizedString;
 import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.xml.Statement;
@@ -119,6 +120,9 @@ public  class ProvConstructor implements TreeConstructor {
             } else if ("role".equals(q.getLocalPart())) {
                 HasRole eWithRole=(HasRole) e;
                 eWithRole.getRole().add(o.getValue());
+            } else if ("value".equals(q.getLocalPart())) {
+                HasValue eWithValue=(HasValue) e;
+                eWithValue.setValue(o.getValue());
             } else if ("label".equals(q.getLocalPart())) {
         	HasLabel eWithLabel=(HasLabel) e;
         	if (o.getValue() instanceof String) {
@@ -300,10 +304,8 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        Activity a2=activityTable.get(s_id2);
-        ActivityRef a2r=pFactory.newActivityRef(a2);
-        Entity e1=entityTable.get(s_id1);
-        EntityRef e1r=pFactory.newEntityRef(e1);
+        ActivityRef a2r=(s_id2==null)? null: pFactory.newActivityRef(s_id2);
+        EntityRef e1r=(s_id1==null)? null: pFactory.newEntityRef(s_id1);
         Used u=pFactory.newUsed(s_id,
                                 a2r,
                                 null,
@@ -353,20 +355,15 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id2=(String)id2;
         String s_id1=(String)id1;
         String s_id3=(String)id3;
-        Entity e1=(s_id1==null)? null: entityTable.get(s_id1);  //id1 may be null
-        EntityRef e1r=null;
-        if (e1!=null) e1r=pFactory.newEntityRef(e1);
-        Activity a2=activityTable.get(s_id2);
-        ActivityRef a2r=pFactory.newActivityRef(a2);
+        EntityRef e1r=(s_id1==null)? null: pFactory.newEntityRef(s_id1);  //id1 may be null
+        ActivityRef a2r=(s_id2==null)? null: pFactory.newActivityRef(s_id2);
 
         WasStartedBy s=pFactory.newWasStartedBy(s_id,
                                                 a2r,
                                                 e1r);
 
-        Activity a3=(s_id3==null)? null: activityTable.get(s_id3);  //id3 may be null
-        ActivityRef a3r=null;
-        if (a3!=null) a3r=pFactory.newActivityRef(a3);
-
+        ActivityRef a3r=(s_id3==null)? null : pFactory.newActivityRef(s_id3);  //id3 may be null
+        
         List<?> attrs=(List<?>)gAttrs;
         addAllAttributes(s, (List<Object>)attrs);
         if (time!=null) {
@@ -389,19 +386,14 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id1=(String)id1;
         String s_id3=(String)id3;
 
-        Entity e1=(s_id1==null)? null: entityTable.get(s_id1);  //id1 may be null
-        EntityRef e1r=null;
-        if (e1!=null) e1r=pFactory.newEntityRef(e1);
-        Activity a2=activityTable.get(s_id2);
-        ActivityRef a2r=pFactory.newActivityRef(a2);
+        EntityRef e1r=(s_id1==null)? null: pFactory.newEntityRef(s_id1);  //id1 may be null
+        ActivityRef a2r=(s_id2==null) ? null: pFactory.newActivityRef(s_id2);
 
         WasEndedBy s=pFactory.newWasEndedBy(s_id,
                                             a2r,
                                             e1r);
-        Activity a3=(s_id3==null)? null: activityTable.get(s_id3);  //id3 may be null
-        ActivityRef a3r=null;
-        if (a3!=null) a3r=pFactory.newActivityRef(a3);
-
+        ActivityRef a3r=(s_id3==null)? null: pFactory.newActivityRef(s_id3);  //id3 may be null
+        
         List<?> attrs=(List<?>)gAttrs;
         addAllAttributes(s, (List<Object>)attrs);
         if (time!=null) {
@@ -421,11 +413,8 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        Activity a1=(s_id1==null)? null: activityTable.get(s_id1);  //id1 may be null
-        ActivityRef a1r=null;
-        if (a1!=null) a1r=pFactory.newActivityRef(a1);
-        Entity e2=entityTable.get(s_id2);
-        EntityRef e2r=pFactory.newEntityRef(e2);
+        ActivityRef a1r=(s_id1==null)? null: pFactory.newActivityRef(s_id1);
+        EntityRef e2r=(s_id2==null) ? null : pFactory.newEntityRef(s_id2);
 
         WasInvalidatedBy g=pFactory.newWasInvalidatedBy(s_id,
                                                         e2r,
@@ -473,8 +462,7 @@ public  class ProvConstructor implements TreeConstructor {
         Agent ag1=agentTable.get(s_id1);
         AgentRef ag1r=pFactory.newAgentRef(ag1);
 
-        Entity e2=entityTable.get(s_id2);
-        EntityRef e2r=pFactory.newEntityRef(e2);
+        EntityRef e2r=(s_id2==null)? null: pFactory.newEntityRef(s_id2);
 
         WasAttributedTo s=pFactory.newWasAttributedTo(s_id,
                                                       e2r,
@@ -486,10 +474,8 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        Entity e2=entityTable.get(s_id2);
-        EntityRef e2r=pFactory.newEntityRef(e2);
-        Entity e1=entityTable.get(s_id1);
-        EntityRef e1r=pFactory.newEntityRef(e1);
+        EntityRef e2r=(s_id2==null)? null: pFactory.newEntityRef(s_id2);
+        EntityRef e1r=(s_id1==null)? null: pFactory.newEntityRef(s_id1);
         WasDerivedFrom d=pFactory.newWasDerivedFrom(s_id,
                                                     e2r,
                                                     e1r);
@@ -527,10 +513,8 @@ public  class ProvConstructor implements TreeConstructor {
     public Object convertAlternateOf(Object id2,Object id1) {
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        Entity e2=entityTable.get(s_id2);
-        EntityRef e2r=pFactory.newEntityRef(e2);
-        Entity e1=entityTable.get(s_id1);
-        EntityRef e1r=pFactory.newEntityRef(e1);
+        EntityRef e2r=(s_id2==null)? null: pFactory.newEntityRef(s_id2);
+        EntityRef e1r=(s_id1==null)? null: pFactory.newEntityRef(s_id1);
         AlternateOf wco=pFactory.newAlternateOf(e2r,
                                                 e1r);
         return wco;
@@ -540,10 +524,8 @@ public  class ProvConstructor implements TreeConstructor {
     public Object convertSpecializationOf(Object id2,Object id1) {
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        Entity e2=entityTable.get(s_id2);
-        EntityRef e2r=pFactory.newEntityRef(e2);
-        Entity e1=entityTable.get(s_id1);
-        EntityRef e1r=pFactory.newEntityRef(e1);
+        EntityRef e2r=(s_id2==null)? null: pFactory.newEntityRef(s_id2);
+        EntityRef e1r=(s_id1==null)? null: pFactory.newEntityRef(s_id1);
         SpecializationOf wco=pFactory.newSpecializationOf(e2r,
                                                           e1r);
         return wco;
@@ -578,11 +560,9 @@ public  class ProvConstructor implements TreeConstructor {
             e1=agentTable.get(s_id1);
             e1r=pFactory.newAgentRef(e1);
         }
-        Entity e3=null;
         EntityRef e3r=null;
         if (s_pl!=null) {
-            e3=entityTable.get(s_pl);
-            e3r=pFactory.newEntityRef(e3);
+            e3r=pFactory.newEntityRef(s_pl);
         }
         WasAssociatedWith waw=pFactory.newWasAssociatedWith(s_id,
                                                             e2r,

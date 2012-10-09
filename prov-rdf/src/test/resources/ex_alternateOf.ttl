@@ -1,0 +1,36 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix :     <http://example.com/> .
+
+:london_forecast_0412 
+   a prov:Entity;
+   prov:wasAttributedTo :bbc;
+   prov:wasGeneratedBy [
+      a prov:Activity;
+      prov:endedAtTime "2012-04-12T00:00:00-04:00"^^xsd:dateTime;
+   ];
+.
+
+:london_forecast_0413 
+   a prov:Entity;
+   prov:wasAttributedTo :bbc;
+   prov:wasGeneratedBy [
+      a prov:Activity;
+      prov:endedAtTime "2012-04-13T00:00:00-04:00"^^xsd:dateTime;
+   ];
+.
+
+:london_forecast 
+   a prov:Entity;
+   prov:wasAttributedTo :bbc;
+.
+
+## :london_forecast_0412 and :london_forecast_0413 are both 
+## specialization of the more general entity :london_forecast
+
+:london_forecast_0412  
+   prov:alternateOf      :london_forecast_0413;
+   prov:specializationOf :london_forecast;
+.

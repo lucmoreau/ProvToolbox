@@ -1,0 +1,24 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix sioc: <http://rdfs.org/sioc/ns#> .
+@prefix :     <http://example.com/> .
+
+# A Location can be a path or a geographical location.
+
+:post9821 
+   a prov:Entity, sioc:Post;   
+   prov:wasGeneratedBy :publicationActivity1123;
+   prov:atLocation     :more-crime-happens-in-cities;
+   prov:qualifiedGeneration [
+      a prov:Generation;
+      prov:activity    :publicationActivity1123;
+      prov:atTime     "2011-07-16T01:52:02Z"^^xsd:dateTime; 
+      prov:atLocation <http://dbpedia.org/resource/Madrid>;
+   ];
+.
+
+:publicationActivity1123      a prov:Activity.
+:more-crime-happens-in-cities a prov:Location.
+<http://dbpedia.org/resource/Madrid> a prov:Location. 

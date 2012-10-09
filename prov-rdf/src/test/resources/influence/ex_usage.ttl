@@ -1,0 +1,30 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix :     <http://example.com/> .
+
+:sortActivity 
+   a prov:Activity;
+   prov:startedAtTime  "2011-07-16T01:52:02Z"^^xsd:dateTime; 
+   prov:qualifiedUsage [
+      a prov:Usage;
+      prov:entity    :datasetA;         ## The entity used by the prov:Usage
+      prov:hadRole   :inputToBeSorted;  ## the role of the entity in this prov:Usage        
+   ];
+   prov:generated :datasetB;
+.
+
+:datasetA        a prov:Entity .
+:datasetB        a prov:Entity .
+:inputToBeSorted a prov:Role .
+
+## Expressing the above using starting-point terms
+## the role of :datasetA cannot be expressed
+
+:sortActivity
+   a prov:Activity;
+   prov:startedAtTime     "2011-07-16T01:52:02Z"^^xsd:dateTime;
+   prov:used       :datasetA;
+   prov:generated  :datasetB;
+.

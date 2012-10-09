@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Statement;

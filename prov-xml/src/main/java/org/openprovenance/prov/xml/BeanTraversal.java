@@ -3,10 +3,8 @@ package org.openprovenance.prov.xml;
 import java.util.List;
 import java.util.LinkedList;
 import javax.xml.namespace.QName;
-import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.w3c.dom.Element;
 
 public class BeanTraversal {
     private BeanConstructor c;
@@ -135,6 +133,13 @@ public class BeanTraversal {
         }
         return res;
     }
+    
+    public Object convertValueAttribute(HasValue e) {
+        Object value = e.getValue();
+        if (value==null) return null;
+        return convertTypedLiteral(value);
+       
+    }
 
     public List<Attribute> convertAttributes(HasExtensibility e) {
 	List<Attribute> attrs = new LinkedList<Attribute>();
@@ -193,8 +198,9 @@ public class BeanTraversal {
 	List<Attribute> otherAttrs = convertAttributes(e);
 	List<Object> lAttrs = convertLabelAttribute(e);
 	List<Object> locAttrs = convertLocationAttribute(e);
+	Object value=convertValueAttribute(e);
 
-	return c.convertEntity(c.convert(e.getId()), tAttrs, lAttrs, locAttrs, otherAttrs);
+	return c.convertEntity(c.convert(e.getId()), tAttrs, lAttrs, locAttrs, value, otherAttrs);
     }
 
     public Object convert(Activity e) {
@@ -259,21 +265,36 @@ public class BeanTraversal {
     }
 
     public Object convert(Used o) {
-	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	return c.convertUsed(c.convert(o.getId()), tAttrs, otherAttrs,
-	                     c.convert(o.getActivity().getRef()),
+        List<Object> tAttrs = convertTypeAttributes((HasType) o);
+        List<Object> labAttrs = convertLabelAttribute(o);
+        List<Object> locAttrs = convertLocationAttribute(o);
+        List<Object> roleAttrs = convertRoleAttribute(o);
+        List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
+	ActivityRef a;
+	return c.convertUsed(c.convert(o.getId()), tAttrs, 
+	                     labAttrs,
+	                     locAttrs, roleAttrs,
+	                     otherAttrs,
+	                     ((a = o.getActivity()) == null) ? null : c
+                                     .convert(a.getRef()),
 	                     c.convert(o.getEntity().getRef()), o.getTime());
     }
 
     public Object convert(WasStartedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Object> locAttrs = convertLocationAttribute(o);
+	List<Object> roleAttrs = convertRoleAttribute(o);
+	
 	EntityRef e;
 	ActivityRef a;
 	ActivityRef s;
 	return c.convertWasStartedBy(c.convert(o.getId()),
 	                             tAttrs,
+	                             labAttrs,
+	                             locAttrs,
+	                             roleAttrs,
 	                             otherAttrs,
 	                             ((a = o.getActivity()) == null) ? null : c
 	                                     .convert(a.getRef()),
@@ -285,12 +306,19 @@ public class BeanTraversal {
 
     public Object convert(WasEndedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Object> locAttrs = convertLocationAttribute(o);
+	List<Object> roleAttrs = convertRoleAttribute(o);
+	
 	EntityRef e;
 	ActivityRef a;
 	ActivityRef s;
 	return c.convertWasEndedBy(c.convert(o.getId()),
 	                           tAttrs,
+	                           labAttrs,
+	                           locAttrs,
+	                           roleAttrs,
 	                           otherAttrs,
 	                           ((a = o.getActivity()) == null) ? null : c
 	                                   .convert(a.getRef()),
@@ -302,12 +330,13 @@ public class BeanTraversal {
 
     public Object convert(WasGeneratedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	List<Object> locAttrs = convertLocationAttribute(o);
 	List<Object> roleAttrs = convertRoleAttribute(o);
 
 	ActivityRef a;
-	return c.convertWasGeneratedBy(c.convert(o.getId()), tAttrs,
+	return c.convertWasGeneratedBy(c.convert(o.getId()), tAttrs, labAttrs,
 	                               locAttrs,
 	                               roleAttrs,
 	                               otherAttrs, c.convert(o.getEntity()
@@ -319,9 +348,15 @@ public class BeanTraversal {
 
     public Object convert(WasInvalidatedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
+	List<Object> locAttrs = convertLocationAttribute(o);
+	List<Object> roleAttrs = convertRoleAttribute(o);
+	
 	ActivityRef a;
-	return c.convertWasInvalidatedBy(c.convert(o.getId()), tAttrs,
+	return c.convertWasInvalidatedBy(c.convert(o.getId()), tAttrs,labAttrs,
+	                                 locAttrs,
+	                                 roleAttrs,
 	                                 otherAttrs, c.convert(o.getEntity()
 	                                         .getRef()),
 	                                 ((a = o.getActivity()) == null) ? null
@@ -348,11 +383,25 @@ public class BeanTraversal {
 
     public Object convert(WasDerivedFrom o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
+
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	return c.convertWasDerivedFrom(c.convert(o.getId()), tAttrs,
-	                               otherAttrs, c.convert(o
-	                                       .getGeneratedEntity().getRef()),
-	                               c.convert(o.getUsedEntity().getRef()));
+	return c.convertWasDerivedFrom(c.convert(o.getId()), 
+	                               tAttrs,
+	                               labAttrs,
+	                               otherAttrs, 
+	                               (o.getGeneratedEntity()==null)? null:
+	                        	   c.convert(o
+	                        	             .getGeneratedEntity().getRef()),
+	                               (o.getUsedEntity()==null)?null:
+	                        	   c.convert(o.getUsedEntity().getRef()),
+	                               (o.getActivity()==null)? null:
+		                        	   c.convert(o.getActivity().getRef()),
+		                       (o.getGeneration()==null)? null:
+		                	   c.convert(o.getGeneration().getRef()),
+		                       (o.getUsage()==null)? null:
+		                	   c.convert(o.getUsage().getRef()));
+	                        	   
     }
 
     public Object convert(WasAssociatedWith o) {

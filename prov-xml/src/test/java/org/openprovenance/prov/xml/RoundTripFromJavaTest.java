@@ -28,7 +28,6 @@ public class RoundTripFromJavaTest extends TestCase {
     static Hashtable<String, String> updateNamespaces (Hashtable<String, String> nss) {
         nss.put(EX_PREFIX, EX_NS);
         nss.put(EX2_PREFIX, EX2_NS);
-	nss.put("xml", "http://www.w3.org/XML/1998/namespace");
 	return nss;
     }
     
@@ -149,7 +148,7 @@ public class RoundTripFromJavaTest extends TestCase {
     
 
     
-    public void addFurtherLabels(HasExtensibility he) {
+    public void addFurtherAttributes(HasExtensibility he) {
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag1",EX_PREFIX,"hello"));
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "bye"));
 	he.getAny().add(pFactory.newAttribute(EX2_NS,"tag3",EX2_PREFIX, "hi"));
@@ -234,7 +233,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	addTypes(a);
 	addLocations(a);
 	addLabels(a);
-	addFurtherLabels(a); 
+	addFurtherAttributes(a); 
        	makeDocAndTest(a,"target/entity9");
     }
 
@@ -243,7 +242,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	addTypes(a);
 	addLocations(a);
 	addLabels(a);
-	addFurtherLabels(a); 
+	addFurtherAttributes(a); 
 	addFurtherLabelsPROBLEM(a);
        	makeDocAndTest(a,"target/entity10",false);
     }
@@ -311,7 +310,7 @@ public class RoundTripFromJavaTest extends TestCase {
         addTypes(a);
         addLocations(a);
         addLabels(a);
-        addFurtherLabels(a);
+        addFurtherAttributes(a);
        	makeDocAndTest(a,"target/activity9");
     }
 
@@ -483,7 +482,7 @@ public class RoundTripFromJavaTest extends TestCase {
         addTypes(gen);
         addLocations(gen);
         addLabels(gen);
-        addFurtherLabels(gen);
+        addFurtherAttributes(gen);
         
         makeDocAndTest(gen,"target/generation5");
     }
@@ -506,7 +505,7 @@ public class RoundTripFromJavaTest extends TestCase {
         addTypes(gen);
         addLocations(gen);
         addLabels(gen);
-        addFurtherLabels(gen);
+        addFurtherAttributes(gen);
         
         makeDocAndTest(gen,"target/generation7");
     }
@@ -557,7 +556,7 @@ public class RoundTripFromJavaTest extends TestCase {
         addTypes(use);
         addLocations(use);
         addLabels(use);
-        addFurtherLabels(use);
+        addFurtherAttributes(use);
         makeDocAndTest(use,"target/usage5");
     }
 
@@ -578,7 +577,7 @@ public class RoundTripFromJavaTest extends TestCase {
         addTypes(use);
         addLocations(use);
         addLabels(use);
-        addFurtherLabels(use);
+        addFurtherAttributes(use);
         makeDocAndTest(use,"target/usage7");
     }
     
@@ -626,7 +625,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	addLocations(inv);
 
 	addLabels(inv);
-	addFurtherLabels(inv);
+	addFurtherAttributes(inv);
 
 	makeDocAndTest(inv, "target/invalidation5");
     }
@@ -647,7 +646,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	addTypes(inv);
 	addLocations(inv);
 	addLabels(inv);
-	addFurtherLabels(inv);
+	addFurtherAttributes(inv);
 
 	makeDocAndTest(inv, "target/invalidation7");
     }
@@ -720,7 +719,7 @@ public class RoundTripFromJavaTest extends TestCase {
    	addTypes(start);
 	addLocations(start);
 	addLabels(start);
-	addFurtherLabels(start);
+	addFurtherAttributes(start);
    	
    	makeDocAndTest(start, "target/start8");
     }
@@ -743,7 +742,7 @@ public class RoundTripFromJavaTest extends TestCase {
    	addTypes(start);
 	addLocations(start);
 	addLabels(start);
-	addFurtherLabels(start);
+	addFurtherAttributes(start);
    	
    	makeDocAndTest(start, "target/start10");
     }
@@ -813,7 +812,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	addTypes(end);
 	addLocations(end);
 	addLabels(end);
-	addFurtherLabels(end);
+	addFurtherAttributes(end);
 
 	makeDocAndTest(end, "target/end8");
     }
@@ -836,7 +835,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	addTypes(end);
 	addLocations(end);
 	addLabels(end);
-	addFurtherLabels(end);
+	addFurtherAttributes(end);
 
 	makeDocAndTest(end, "target/end10");
     }
@@ -909,7 +908,7 @@ public class RoundTripFromJavaTest extends TestCase {
    	                                                pFactory.newEntityRef(q("e1")));
    	addLabel(der);
    	addTypes(der);
-   	addFurtherLabels(der);
+   	addFurtherAttributes(der);
    	makeDocAndTest(der, "target/derivation8");
     }
     
@@ -921,13 +920,131 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void testDerivation10() throws JAXBException {
-   	WasDerivedFrom der = pFactory.newWasDerivedFrom((QName)null, 
-   	                                                pFactory.newEntityRef(q("e2")),
-   	                                                pFactory.newEntityRef(q("e1")));
-   	der.setActivity(pFactory.newActivityRef(q("a")));
-   	der.setUsage(pFactory.newUsageRef(q("u")));
-   	der.setGeneration(pFactory.newGenerationRef(q("g")));
-   	makeDocAndTest(der, "target/derivation10");
+        WasDerivedFrom der = pFactory.newWasDerivedFrom((QName)null, 
+                                                        pFactory.newEntityRef(q("e2")),
+                                                        pFactory.newEntityRef(q("e1")));
+        der.setActivity(pFactory.newActivityRef(q("a")));
+        der.setUsage(pFactory.newUsageRef(q("u")));
+        der.setGeneration(pFactory.newGenerationRef(q("g")));
+        makeDocAndTest(der, "target/derivation10");
+    }
+    
+    public void testDerivation11() throws JAXBException {
+        WasDerivedFrom der = pFactory.newWasDerivedFrom(q("rev1"), 
+                                                        pFactory.newEntityRef(q("e2")),
+                                                        pFactory.newEntityRef(q("e1")));
+        der.setActivity(pFactory.newActivityRef(q("a")));
+        der.setUsage(pFactory.newUsageRef(q("u")));
+        der.setGeneration(pFactory.newGenerationRef(q("g")));
+        pFactory.addRevisionType(der);
+        makeDocAndTest(der, "target/derivation11");
     }
 
+    public void testDerivation12() throws JAXBException {
+        WasDerivedFrom der = pFactory.newWasDerivedFrom(q("quo1"), 
+                                                        pFactory.newEntityRef(q("e2")),
+                                                        pFactory.newEntityRef(q("e1")));
+        der.setActivity(pFactory.newActivityRef(q("a")));
+        der.setUsage(pFactory.newUsageRef(q("u")));
+        der.setGeneration(pFactory.newGenerationRef(q("g")));
+        pFactory.addQuotationType(der);
+        makeDocAndTest(der, "target/derivation12");
+    }
+
+    public void testDerivation13() throws JAXBException {
+        WasDerivedFrom der = pFactory.newWasDerivedFrom(q("prim1"), 
+                                                        pFactory.newEntityRef(q("e2")),
+                                                        pFactory.newEntityRef(q("e1")));
+        der.setActivity(pFactory.newActivityRef(q("a")));
+        der.setUsage(pFactory.newUsageRef(q("u")));
+        der.setGeneration(pFactory.newGenerationRef(q("g")));
+        pFactory.addPrimarySourceType(der);
+        makeDocAndTest(der, "target/derivation13");
+    }
+    
+    // ////////////////////////////////
+
+    public void testAssociation1() throws JAXBException {
+        WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc1"), 
+                                                                pFactory.newActivityRef(q("a1")),
+                                                                null);
+        makeDocAndTest(assoc, "target/association1");
+    }
+
+    public void testAssociation2() throws JAXBException {
+        WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc2"), 
+                                                                null,
+                                                                pFactory.newAgentRef(q("ag1")));
+        makeDocAndTest(assoc, "target/association2");
+    }
+
+    public void testAssociation3() throws JAXBException {
+        WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc3"), 
+                                                                pFactory.newActivityRef(q("a1")),
+                                                                pFactory.newAgentRef(q("ag1")));
+        makeDocAndTest(assoc, "target/association3");
+    }
+
+
+    public void testAssociation4() throws JAXBException {
+        WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc4"), 
+                                                                pFactory.newActivityRef(q("a1")),
+                                                                pFactory.newAgentRef(q("ag1")));
+        assoc.setPlan(pFactory.newEntityRef(q("plan1")));
+        makeDocAndTest(assoc, "target/association4");
+    }
+
+    
+    public void testAssociation5() throws JAXBException {
+        WasAssociatedWith assoc = pFactory.newWasAssociatedWith((QName)null, 
+                                                                pFactory.newActivityRef(q("a1")),
+                                                                pFactory.newAgentRef(q("ag1")));
+        makeDocAndTest(assoc, "target/association5");
+    }
+    
+    
+
+    public void testAssociation6() throws JAXBException {
+        WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc6"), 
+                                                                pFactory.newActivityRef(q("a1")),
+                                                                pFactory.newAgentRef(q("ag1")));
+        assoc.setPlan(pFactory.newEntityRef(q("plan1")));
+        addLabels(assoc);
+        makeDocAndTest(assoc, "target/association6");
+    }
+
+    public void testAssociation7() throws JAXBException {
+        WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc7"), 
+                                                                pFactory.newActivityRef(q("a1")),
+                                                                pFactory.newAgentRef(q("ag1")));
+        assoc.setPlan(pFactory.newEntityRef(q("plan1")));
+        addLabels(assoc);
+        addTypes(assoc);
+        makeDocAndTest(assoc, "target/association7");
+    }
+
+
+    public void testAssociation8() throws JAXBException {
+        WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc8"), 
+                                                                pFactory.newActivityRef(q("a1")),
+                                                                pFactory.newAgentRef(q("ag1")));
+        assoc.setPlan(pFactory.newEntityRef(q("plan1")));
+        assoc.getRole().add("someRole");
+        assoc.getRole().add("someOtherRole");
+        makeDocAndTest(assoc, "target/association8");
+    }
+    
+
+    public void testAssociation9() throws JAXBException {
+        WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc9"), 
+                                                                pFactory.newActivityRef(q("a1")),
+                                                                pFactory.newAgentRef(q("ag1")));
+        assoc.setPlan(pFactory.newEntityRef(q("plan1")));
+        addLabels(assoc);
+        addTypes(assoc);
+        addFurtherAttributes(assoc);
+        makeDocAndTest(assoc, "target/association9");
+    }
+
+    
 }

@@ -24,9 +24,9 @@ public interface BeanConstructor {
 
     public Object convertWasDerivedFrom(Object id, List<Object> tAttrs, List<Object> lAttr, List<Attribute> otherAttrs, Object effect, Object cause, Object activity, Object generation, Object usage);
 
-    public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object activity, Object agent, Object plan);
-    public Object convertWasAttributedTo(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object entity, Object agent);
-    public Object convertActedOnBehalfOf(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object subordinate, Object responsible, Object activity);
+    public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> rAttr, List<Attribute> otherAttrs, Object activity, Object agent, Object plan);
+    public Object convertWasAttributedTo(Object id, List<Object> tAttrs, List<Object> lAttr, List<Attribute> otherAttrs, Object entity, Object agent);
+    public Object convertActedOnBehalfOf(Object id, List<Object> tAttrs, List<Object> lAttr, List<Attribute> otherAttrs, Object subordinate, Object responsible, Object activity);
 
 
 

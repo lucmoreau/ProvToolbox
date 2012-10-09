@@ -265,6 +265,17 @@ public class ProvFactory {
 
 	a.getType().add(type);
     }
+    
+    public void addRevisionType(HasType a) {
+        a.getType().add(newQName("prov:Revision"));
+    }
+    public void addPrimarySourceType(HasType a) {
+        a.getType().add(newQName("prov:PrimarySource"));
+    }
+    public void addQuotationType(HasType a) {
+        a.getType().add(newQName("prov:Quotation"));
+    }
+    
 
     public void addType(HasType a, URI type) {
 	URIWrapper u = new URIWrapper();

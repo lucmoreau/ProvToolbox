@@ -552,18 +552,11 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id2=(String)id2;
         String s_id1=(String)id1;
         String s_pl=(String)pl;
-        Activity e2=activityTable.get(s_id2);
-        ActivityRef e2r=pFactory.newActivityRef(e2);
-        Agent e1=null;
-        AgentRef e1r=null;
-        if (s_id1!=null) {
-            e1=agentTable.get(s_id1);
-            e1r=pFactory.newAgentRef(e1);
-        }
-        EntityRef e3r=null;
-        if (s_pl!=null) {
-            e3r=pFactory.newEntityRef(s_pl);
-        }
+        ActivityRef e2r=(s_id2==null) ? null : pFactory.newActivityRef(s_id2);
+        AgentRef e1r=(s_id1==null) ? null: pFactory.newAgentRef(s_id1);
+        
+        EntityRef e3r=(s_pl==null) ? null: pFactory.newEntityRef(s_pl);
+        
         WasAssociatedWith waw=pFactory.newWasAssociatedWith(s_id,
                                                             e2r,
                                                             e1r);

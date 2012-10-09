@@ -318,12 +318,17 @@ public class RdfConstructor implements TreeConstructor {
 			qi.getActivities().add(a1);
 			addQualifiedInfluence(e2, infl);
 
-			if (time != null)
-			{
-				String s = (String) time;
-				XMLGregorianCalendar t = pFactory.newISOTime(s);
-				((InstantaneousEvent) infl).getAtTime().add(t);
+			if (time != null) {
+			    if (time instanceof XMLGregorianCalendar) {
+                                XMLGregorianCalendar t = (XMLGregorianCalendar) time;
+                                ((InstantaneousEvent) infl).getAtTime().add(t);
+			    } else {
+			        String s = (String) time;
+                                XMLGregorianCalendar t = pFactory.newISOTime(s);
+                                ((InstantaneousEvent) infl).getAtTime().add(t);
+			    }
 			}
+			
 			processAttributes(qname, (List<?>) aAttrs);
 		}
 		return infl;
@@ -525,8 +530,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Entity e2 = (Entity) manager.find(qn2);
-		Agent a1 = (Agent) manager.find(qn1);
+		Entity e2 =  manager.designate(qn2, Entity.class);
+		Agent a1 =  manager.designate(qn1, Agent.class);
 
 		Attribution g = addAgentInfluence(id, e2, a1, null, aAttrs, null,
 				Attribution.class);
@@ -576,26 +581,7 @@ public class RdfConstructor implements TreeConstructor {
 
 	}
 
-	public Object convertWasRevisionOf(Object id, Object id2, Object id1,
-			Object pe, Object q2, Object q1, Object dAttrs)
-	{
-		// todo
-		throw new UnsupportedOperationException();
-	}
 
-	public Object convertWasQuotedFrom(Object id, Object id2, Object id1,
-			Object pe, Object q2, Object q1, Object dAttrs)
-	{
-		// todo
-		throw new UnsupportedOperationException();
-	}
-
-	public Object convertHadPrimarySource(Object id, Object id2, Object id1,
-			Object pe, Object q2, Object q1, Object dAttrs)
-	{
-		// todo
-		throw new UnsupportedOperationException();
-	}
 
 	public Object convertWasInfluencedBy(Object id, Object id2, Object id1,
 			Object aAttrs)
@@ -603,10 +589,10 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		ActivityOrAgentOrEntity e1 = (ActivityOrAgentOrEntity) manager
-				.find(qn1);
-		ActivityOrAgentOrEntity e2 = (ActivityOrAgentOrEntity) manager
-				.find(qn2);
+		ActivityOrAgentOrEntity e1 = manager
+				.designate(qn1, ActivityOrAgentOrEntity.class);
+		ActivityOrAgentOrEntity e2 = manager
+				.designate(qn2, ActivityOrAgentOrEntity.class);
 
 		Influence u = addUnknownInfluence(id, e2, e1, aAttrs, Influence.class);
 
@@ -621,8 +607,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Entity e2 = (Entity) manager.find(qn2);
-		Entity e1 = (Entity) manager.find(qn1);
+		Entity e2 =  manager.designate(qn2, Entity.class);
+		Entity e1 =  manager.designate(qn1, Entity.class);
 
 		e2.getAlternateOf().add(e1);
 		return null;
@@ -633,8 +619,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Entity e2 = (Entity) manager.find(qn2);
-		Entity e1 = (Entity) manager.find(qn1);
+		Entity e2 = manager.designate(qn2, Entity.class);
+		Entity e1 = manager.designate(qn1, Entity.class);
 
 		e2.getSpecializationOf().add(e1);
 		return null;
@@ -647,15 +633,15 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn1 = getQName(id1);
 		QName qn3 = getQName(a);
 
-		Agent ag2 = (Agent) manager.find(qn2);
-		Agent ag1 = (Agent) manager.find(qn1);
+		Agent ag2 = manager.designate(qn2, Agent.class);
+		Agent ag1 = manager.designate(qn1, Agent.class);
 
 		Delegation g = addAgentInfluence(id, ag2, ag1, null, aAttrs, a,
 				Delegation.class);
 
 		if (qn3 != null)
 		{
-			Activity a3 = (Activity) manager.find(qn3);
+			Activity a3 =  manager.designate(qn3, Activity.class);
 			g.getHadActivity().add(a3);
 		}
 
@@ -671,8 +657,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn1 = getQName(id1);
 		QName qn3 = getQName(pl);
 
-		Activity a2 = (Activity) manager.find(qn2);
-		Agent ag1 = (Agent) manager.find(qn1);
+		Activity a2 =  manager.designate(qn2, Activity.class);
+		Agent ag1 =  manager.designate(qn1, Agent.class);
 
 		Association ass = addAgentInfluence(id, a2, ag1, null, aAttrs, pl,
 				Association.class);
@@ -812,9 +798,9 @@ public class RdfConstructor implements TreeConstructor {
 
 		QName qn3 = getQName(bu);
 
-		Entity e2 = (Entity) manager.find(qn2);
-		Entity e1 = (Entity) manager.find(qn1);
-		Bundle e3 = (Bundle) manager.designate(qn3, Bundle.class); // will
+		Entity e2 =  manager.designate(qn2, Entity.class);
+		Entity e1 =  manager.designate(qn1, Entity.class);
+		Bundle e3 =  manager.designate(qn3, Bundle.class); // will
 		// declare it
 		// as plan if
 		// not

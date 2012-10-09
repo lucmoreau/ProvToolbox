@@ -406,11 +406,16 @@ public class BeanTraversal {
 
     public Object convert(WasAssociatedWith o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
+        List<Object> roleAttrs = convertRoleAttribute(o);
+
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertWasAssociatedWith(c.convert(o.getId()),
 	                                  tAttrs,
+	                                  labAttrs,
+	                                  roleAttrs,
 	                                  otherAttrs,
-	                                  c.convert(o.getActivity().getRef()),
+	                                  (o.getActivity()==null) ? null : c.convert(o.getActivity().getRef()),
 	                                  (o.getAgent() == null) ? null : c
 	                                          .convert(o.getAgent()
 	                                                  .getRef()),
@@ -421,9 +426,12 @@ public class BeanTraversal {
 
     public Object convert(WasAttributedTo o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
+
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertWasAttributedTo(c.convert(o.getId()),
 	                                tAttrs,
+	                                labAttrs,
 	                                otherAttrs,
 	                                c.convert(o.getEntity().getRef()),
 	                                (o.getAgent() == null) ? null : c
@@ -432,9 +440,12 @@ public class BeanTraversal {
 
     public Object convert(ActedOnBehalfOf o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
+
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertActedOnBehalfOf(c.convert(o.getId()),
 	                                tAttrs,
+	                                labAttrs,
 	                                otherAttrs,
 	                                c.convert(o.getSubordinate().getRef()),
 	                                c.convert(o.getResponsible().getRef()),

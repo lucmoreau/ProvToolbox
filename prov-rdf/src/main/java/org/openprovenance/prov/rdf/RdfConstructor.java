@@ -45,7 +45,7 @@ public class RdfConstructor implements TreeConstructor {
 			Object aAttrs)
 	{
 		QName qname = getQName(id);
-		Activity a = (Activity) manager.designate(qname, Activity.class);
+		Activity a = (Activity) designate(qname, Activity.class);
 		if (startTime != null && startTime instanceof XMLGregorianCalendar)
 		{
 			a.getStartedAtTime().add((XMLGregorianCalendar) startTime);
@@ -61,7 +61,7 @@ public class RdfConstructor implements TreeConstructor {
 	public Object convertEntity(Object id, Object attrs)
 	{
 		QName qname = getQName(id);
-		Entity e = (Entity) manager.designate(qname, Entity.class);
+		Entity e = (Entity) designate(qname, Entity.class);
 		processAttributes(qname, (List<?>) attrs);
 		return e;
 	}
@@ -69,7 +69,7 @@ public class RdfConstructor implements TreeConstructor {
 	public Object convertAgent(Object id, Object attrs)
 	{
 		QName qname = getQName(id);
-		Agent ag = (Agent) manager.designate(qname, Agent.class);
+		Agent ag = (Agent) designate(qname, Agent.class);
 		processAttributes(qname, (List<?>) attrs);
 		return ag;
 	}
@@ -216,7 +216,7 @@ public class RdfConstructor implements TreeConstructor {
 				// System.out.println("----> " + value);
 				// Class<?> cl = reservedClass(value);
 				// if (cl != null)
-				// manager.designate(a, cl);
+				// designate(a, cl);
 				//
 				// }
 				// }
@@ -266,7 +266,7 @@ public class RdfConstructor implements TreeConstructor {
 				|| (other != null))
 		{
 			QName qname = getQName(id);
-			infl = manager.designate(qname, cl);
+			infl = designate(qname, cl);
 			EntityInfluence qi = (EntityInfluence) infl;
 			qi.getEntities().add(e1);
 			addQualifiedInfluence(e2, infl);
@@ -293,7 +293,7 @@ public class RdfConstructor implements TreeConstructor {
 				|| ((aAttrs != null) && !(((List<?>) aAttrs).isEmpty())))
 		{
 			QName qname = getQName(id);
-			infl = manager.designate(qname, cl);
+			infl = designate(qname, cl);
 			Influence qi = (Influence) infl;
 			qi.getInfluencers().add(e1);
 			addQualifiedInfluence(e2, infl);
@@ -313,7 +313,7 @@ public class RdfConstructor implements TreeConstructor {
 				|| ((aAttrs != null) && !(((List<?>) aAttrs).isEmpty())))
 		{
 			QName qname = getQName(id);
-			infl = manager.designate(qname, cl);
+			infl = designate(qname, cl);
 			ActivityInfluence qi = (ActivityInfluence) infl;
 			qi.getActivities().add(a1);
 			addQualifiedInfluence(e2, infl);
@@ -346,7 +346,7 @@ public class RdfConstructor implements TreeConstructor {
 				|| (other != null))
 		{
 			QName qname = getQName(id);
-			infl = manager.designate(qname, cl);
+			infl = designate(qname, cl);
 			AgentInfluence qi = (AgentInfluence) infl;
 			qi.getAgents().add(a1);
 			addQualifiedInfluence(e2, infl);
@@ -368,12 +368,12 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Entity e1 = (Entity) manager.find(qn1);
-		Activity a2 = (Activity) manager.find(qn2);
+		Entity e1 = designate(qn1,Entity.class);
+		Activity a2 = designate(qn2, Activity.class);
 		Usage u = addEntityInfluence(id, a2, e1, time, aAttrs, null,
 				Usage.class);
 
-		a2.getUsed().add(e1);
+		if (binaryProp(id)) a2.getUsed().add(e1);
 
 		return u;
 	}
@@ -438,13 +438,13 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn1 = getQName(id1);
 
 		System.out.println("Entity is with " + qn2);
-		Entity e2 =  manager.designate(qn2, Entity.class);
-		Activity a1 = manager.designate(qn1,Activity.class);
+		Entity e2 =  designate(qn2, Entity.class);
+		Activity a1 = designate(qn1,Activity.class);
 
 		Generation g = addActivityInfluence(id, e2, a1, time, aAttrs,
 				Generation.class);
 
-		e2.getWasGeneratedBy().add(a1);
+		if (binaryProp(id)) e2.getWasGeneratedBy().add(a1);
 		return g;
 	}
 
@@ -455,17 +455,17 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn1 = getQName(id1);
 		QName qn3 = getQName(id3);
 
-		Entity e1 = (Entity) manager.find(qn1);
-		Activity a2 = (Activity) manager.find(qn2);
+		Entity e1 =  designate(qn1, Entity.class);
+		Activity a2 =  designate(qn2, Activity.class);
 		Start s = addEntityInfluence(id, a2, e1, time, aAttrs, id3, Start.class);
 
 		if (qn3 != null)
 		{
-			Activity a3 = (Activity) manager.find(qn3);
+			Activity a3 = designate(qn3, Activity.class);
 			s.getHadActivity().add(a3);
 		}
 
-		a2.getWasStartedBy().add(e1);
+		if (binaryProp(id)) a2.getWasStartedBy().add(e1);
 
 		return s;
 	}
@@ -477,17 +477,17 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn1 = getQName(id1);
 		QName qn3 = getQName(id3);
 
-		Entity e1 = (Entity) manager.find(qn1);
-		Activity a2 = (Activity) manager.find(qn2);
+		Entity e1 = designate(qn1, Entity.class);
+		Activity a2 = designate(qn2, Activity.class);
 		End s = addEntityInfluence(id, a2, e1, time, aAttrs, id3, End.class);
 
 		if (qn3 != null)
 		{
-			Activity a3 = (Activity) manager.find(qn3);
+			Activity a3 = designate(qn3,Activity.class);
 			s.getHadActivity().add(a3);
 		}
 
-		a2.getWasEndedBy().add(e1);
+		if (binaryProp(id)) a2.getWasEndedBy().add(e1);
 
 		return s;
 	}
@@ -498,13 +498,13 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Entity e2 = (Entity) manager.find(qn2);
-		Activity a1 = (Activity) manager.find(qn1);
+		Entity e2 = designate(qn2, Entity.class);
+		Activity a1 = designate(qn1, Activity.class);
 
 		Invalidation g = addActivityInfluence(id, e2, a1, time, aAttrs,
 				Invalidation.class);
 
-		e2.getWasInvalidatedBy().add(a1);
+		if (binaryProp(id)) e2.getWasInvalidatedBy().add(a1);
 		return g;
 	}
 
@@ -514,13 +514,13 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Activity e2 = (Activity) manager.find(qn2);
-		Activity a1 = (Activity) manager.find(qn1);
+		Activity e2 = designate(qn2, Activity.class);
+		Activity a1 = designate(qn1, Activity.class);
 
 		Communication g = addActivityInfluence(id, e2, a1, null, aAttrs,
 				Communication.class);
 
-		e2.getWasInformedBy().add(a1);
+		if (binaryProp(id)) e2.getWasInformedBy().add(a1);
 		return g;
 	}
 
@@ -530,13 +530,13 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Entity e2 =  manager.designate(qn2, Entity.class);
-		Agent a1 =  manager.designate(qn1, Agent.class);
+		Entity e2 =  designate(qn2, Entity.class);
+		Agent a1 =  designate(qn1, Agent.class);
 
 		Attribution g = addAgentInfluence(id, e2, a1, null, aAttrs, null,
 				Attribution.class);
 
-		e2.getWasAttributedTo().add(a1);
+		if (binaryProp(id)) e2.getWasAttributedTo().add(a1);
 		return g;
 	}
 
@@ -550,8 +550,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn4 = getQName(use1);
 		QName qn5 = getQName(gen2);
 
-		Entity e2 = manager.designate(qn2, Entity.class);
-		Entity e1 = manager.designate(qn1, Entity.class);
+		Entity e2 = designate(qn2, Entity.class);
+		Entity e1 = designate(qn1, Entity.class);
 
 		Object other = a;
 		if (qn4 != null)
@@ -570,12 +570,12 @@ public class RdfConstructor implements TreeConstructor {
 		{
 			if (qn3 != null)
 			{
-				Activity a3 =  manager.designate(qn3,Activity.class);
+				Activity a3 =  designate(qn3,Activity.class);
 				d.getHadActivity().add(a3);
 			}
 		}
 
-		e2.getWasDerivedFrom().add(e1);
+		if (binaryProp(id)) e2.getWasDerivedFrom().add(e1);
 
 		return d;
 
@@ -596,7 +596,7 @@ public class RdfConstructor implements TreeConstructor {
 
 		Influence u = addUnknownInfluence(id, e2, e1, aAttrs, Influence.class);
 
-		e2.getWasInfluencedBy().add(e1);
+		if (binaryProp(id)) e2.getWasInfluencedBy().add(e1);
 
 		return u;
 
@@ -607,8 +607,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Entity e2 =  manager.designate(qn2, Entity.class);
-		Entity e1 =  manager.designate(qn1, Entity.class);
+		Entity e2 =  designate(qn2, Entity.class);
+		Entity e1 =  designate(qn1, Entity.class);
 
 		e2.getAlternateOf().add(e1);
 		return null;
@@ -619,8 +619,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Entity e2 = manager.designate(qn2, Entity.class);
-		Entity e1 = manager.designate(qn1, Entity.class);
+		Entity e2 = designate(qn2, Entity.class);
+		Entity e1 = designate(qn1, Entity.class);
 
 		e2.getSpecializationOf().add(e1);
 		return null;
@@ -633,19 +633,19 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn1 = getQName(id1);
 		QName qn3 = getQName(a);
 
-		Agent ag2 = manager.designate(qn2, Agent.class);
-		Agent ag1 = manager.designate(qn1, Agent.class);
+		Agent ag2 = designate(qn2, Agent.class);
+		Agent ag1 = designate(qn1, Agent.class);
 
 		Delegation g = addAgentInfluence(id, ag2, ag1, null, aAttrs, a,
 				Delegation.class);
 
 		if (qn3 != null)
 		{
-			Activity a3 =  manager.designate(qn3, Activity.class);
+			Activity a3 =  designate(qn3, Activity.class);
 			g.getHadActivity().add(a3);
 		}
 
-		ag2.getActedOnBehalfOf().add(ag1);
+		if (binaryProp(id)) ag2.getActedOnBehalfOf().add(ag1);
 
 		return g;
 	}
@@ -657,21 +657,21 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn1 = getQName(id1);
 		QName qn3 = getQName(pl);
 
-		Activity a2 =  manager.designate(qn2, Activity.class);
-		Agent ag1 =  manager.designate(qn1, Agent.class);
+		Activity a2 =  designate(qn2, Activity.class);
+		Agent ag1 =  designate(qn1, Agent.class);
 
 		Association ass = addAgentInfluence(id, a2, ag1, null, aAttrs, pl,
 				Association.class);
 
 		if (qn3 != null)
 		{
-			Plan plan = (Plan) manager.designate(qn3, Plan.class);
+			Plan plan = (Plan) designate(qn3, Plan.class);
 			// will declare it as Plan if
 			// not alreadydone
 			ass.getHadPlan().add(plan);
 		}
 
-		a2.getWasAssociatedWith().add(ag1);
+		if (binaryProp(id)) a2.getWasAssociatedWith().add(ag1);
 
 		return ass;
 	}
@@ -798,9 +798,9 @@ public class RdfConstructor implements TreeConstructor {
 
 		QName qn3 = getQName(bu);
 
-		Entity e2 =  manager.designate(qn2, Entity.class);
-		Entity e1 =  manager.designate(qn1, Entity.class);
-		Bundle e3 =  manager.designate(qn3, Bundle.class); // will
+		Entity e2 =  designate(qn2, Entity.class);
+		Entity e1 =  designate(qn1, Entity.class);
+		Bundle e3 =  designate(qn3, Bundle.class); // will
 		// declare it
 		// as plan if
 		// not
@@ -812,5 +812,14 @@ public class RdfConstructor implements TreeConstructor {
 
 		return null;
 	}
+	
+	public <T> T designate(QName qname, Class<T> cl) {
+	    return manager.designate(qname,cl);
+	}
+	
+	public boolean binaryProp(Object id) {
+	    return id==null;
+	}
+	
 
 }

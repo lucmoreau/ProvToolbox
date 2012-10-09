@@ -1,6 +1,7 @@
 package org.openprovenance.prov.xml;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.net.URI;
 import javax.xml.bind.JAXBException;
@@ -64,18 +65,33 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void makeDocAndTest(Statement stment, String file) throws JAXBException {
-	makeDocAndTest(stment, file,true);
+	makeDocAndTest(stment, file, null, true);
     }
     public void makeDocAndTest(Statement stment, String file, boolean check) throws JAXBException {
+	makeDocAndTest(stment, file, null, check);
+    }
+    public void makeDocAndTest(Statement stment, Statement[] opt, String file) throws JAXBException {
+	makeDocAndTest(stment, file, opt, true);
+    }
+    public void makeDocAndTest(Statement stment, String file, Statement[] opt, boolean check) throws JAXBException {
 	Document doc = pFactory.newDocument();
 	doc.getEntityOrActivityOrWasGeneratedBy().add(stment);
 	updateNamespaces(doc);
-	file=file+extension();
-
-	writeXMLDocument(doc, file);
 	
-	Document doc2=readXMLDocument(file);
-	compareDocuments(doc, doc2, check && checkTest(file));
+	String file1=(opt==null) ? file : file+"-S";
+	file1=file1+extension();
+	writeXMLDocument(doc, file1);
+	Document doc2=readXMLDocument(file1);
+	compareDocuments(doc, doc2, check && checkTest(file1));
+	
+	if (opt!=null) {
+	    doc.getEntityOrActivityOrWasGeneratedBy().addAll(Arrays.asList(opt));
+	    String file2=file+"-M";
+	    file2=file2+extension();
+	    writeXMLDocument(doc, file2);
+	    Document doc3=readXMLDocument(file2);
+	    compareDocuments(doc, doc3, check && checkTest(file2));
+	}
     }
 
     public void compareDocuments(Document doc, Document doc2, boolean check) {
@@ -455,7 +471,11 @@ public class RoundTripFromJavaTest extends TestCase {
 							pFactory.newEntityRef(q("e1")),
 							null,
 							pFactory.newActivityRef(q("a1")));
-	makeDocAndTest(gen,"target/generation2");
+	Entity e1=pFactory.newEntity(q("e1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	Statement [] opt=new Statement[] { e1, a1 };
+
+	makeDocAndTest(gen, opt, "target/generation2");
     }
 
 

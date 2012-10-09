@@ -149,21 +149,13 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
     public Object convertDocument(Object namespaces, List<Object> records, List<Object> bundles) {    
-        Collection<Entity> es=new LinkedList<Entity>();
-        Collection<Agent> ags=new LinkedList<Agent>();
-        Collection<Activity> acs=new LinkedList<Activity>();
-        Collection<Statement> lks=new LinkedList<Statement>();
-            
+	Collection<Statement> stments=new LinkedList<Statement>();
         for (Object o: records) {
-            if (o instanceof Agent) { ags.add((Agent)o); }
-            else if (o instanceof Entity) { es.add((Entity)o); }
-            else if (o instanceof Activity) { acs.add((Activity)o); }
-            else if (o instanceof Statement) { lks.add((Statement)o); }
+           stments.add((Statement)o); 
         }
-        Document c=pFactory.newDocument(      acs,
-                                          es,
-                                          ags,
-                                          lks);
+        Document c=pFactory.newDocument();
+        c.getEntityOrActivityOrWasGeneratedBy().addAll(stments);
+        
         //System.out.println("Bundle namespaces " + namespaceTable);
         c.setNss(namespaceTable);
 
@@ -329,9 +321,7 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        //Activity a1=(s_id1==null)? null: activityTable.get(s_id1);  //id1 may be null
-        ActivityRef a1r=null;
-        if (s_id1!=null) a1r=pFactory.newActivityRef(s_id1);
+        ActivityRef a1r= (s_id1==null) ? null: pFactory.newActivityRef(s_id1);
         EntityRef e2r=pFactory.newEntityRef(s_id2);
 
         WasGeneratedBy g=pFactory.newWasGeneratedBy(s_id,
@@ -497,10 +487,6 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        //Entity e2=entityTable.get(s_id2);
-        //EntityRef e2r=pFactory.newEntityRef(e2);
-        //Entity e1=entityTable.get(s_id1);
-        //EntityRef e1r=pFactory.newEntityRef(e1);
 
         WasInfluencedBy d=pFactory.newWasInfluencedBy(s_id,
                                                       s_id2,

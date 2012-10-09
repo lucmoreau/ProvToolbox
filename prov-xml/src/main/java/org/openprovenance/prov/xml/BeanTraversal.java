@@ -16,34 +16,31 @@ public class BeanTraversal {
     }
 
     public Object convert(Document b) {
-	List<Object> lnkRecords = new LinkedList<Object>();
-	List<Object> aRecords = new LinkedList<Object>();
-	List<Object> eRecords = new LinkedList<Object>();
-	List<Object> agRecords = new LinkedList<Object>();
+
 	List<Object> bRecords = new LinkedList<Object>();
-	for (Entity e : u.getEntity(b)) {
-	    eRecords.add(convert(e));
+
+	List<Object> sRecords = new LinkedList<Object>();
+
+	for (Statement s : u.getStatement(b)) {
+	    if (s instanceof Entity) {
+		sRecords.add(convert((Entity)s));
+	    } else if (s instanceof Activity) {
+		sRecords.add(convert((Activity)s));
+	    } else if (s instanceof Agent) {
+		sRecords.add(convert((Agent)s));
+	    } else {
+		sRecords.add(convertRelation((Relation0)s));
+	    }
+
 	}
-	for (Activity a : u.getActivity(b)) {
-	    aRecords.add(convert(a));
-	}
-	for (Agent ag : u.getAgent(b)) {
-	    agRecords.add(convert(ag));
-	}
-	for (Object lnk : u.getRelations(b)) {
-	    Object o = convertRelation(lnk);
-	    if (o != null)
-		lnkRecords.add(o);
-	}
-	
+
 	for (NamedBundle bu : u.getNamedBundle(b)) {
 	    Object o = convert(bu);
 	    if (o != null)
 		bRecords.add(o);
 
 	}
-	return c.convertBundle(b.getNss(), aRecords, eRecords, agRecords,
-	                       lnkRecords, bRecords);
+	return c.convertBundle(b.getNss(), sRecords, bRecords);
     }
 
     public Object convert(NamedBundle b) {

@@ -41,10 +41,7 @@ public interface BeanConstructor {
     public Object convertTypedLiteral(String datatype, Object value);
 
     public Object convertBundle(Object namespaces,
-				List<Object> aRecords,
-				List<Object> eRecords,
-				List<Object> agRecords,
-				List<Object> lnkRecords,
+				List<Object> sRecords,
 				List<Object> bRecords);
     public Object convertNamedBundle(Object id,
 				     Object namespaces,

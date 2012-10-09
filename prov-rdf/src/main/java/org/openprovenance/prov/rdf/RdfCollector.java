@@ -161,7 +161,7 @@ public class RdfCollector extends RDFHandlerBase {
 	protected ProvFactory pFactory;
 	protected HashMap<QName, HashMap<QName, List<Statement>>> collators;
 	private Hashtable<QName, BundleHolder> bundles;
-	private Document document;
+	protected Document document;
 	private Hashtable<String, String> revnss;
 
 	public RdfCollector(ProvFactory pFactory)

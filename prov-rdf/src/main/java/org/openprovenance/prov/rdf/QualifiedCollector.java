@@ -1,6 +1,7 @@
 package org.openprovenance.prov.rdf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -13,6 +14,8 @@ import org.openprovenance.prov.xml.HasLocation;
 import org.openprovenance.prov.xml.HasRole;
 import org.openprovenance.prov.xml.HasTime;
 import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.xml.Ref;
+import org.openprovenance.prov.xml.StatementOrBundle;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.WasAttributedTo;
@@ -98,7 +101,7 @@ public class QualifiedCollector extends RdfCollector {
 						createInfluence(contextQ, qname);
 						break;
 					default:
-						System.out.println("Unhandled class: "+type);
+						System.out.println("Unhandled class: " + type);
 						break;
 					}
 				}
@@ -111,34 +114,74 @@ public class QualifiedCollector extends RdfCollector {
 	{
 		super.endRDF();
 		this.bindQualifiedProperties();
-		//dumpUnhandled();
+		this.optimize();
+		// dumpUnhandled();
+	}
+	
+	private List<Ref> getSignature(org.openprovenance.prov.xml.Influence influence) {
+		List<Ref> signature = null;
+		if (influence instanceof WasGeneratedBy)
+		{
+			WasGeneratedBy wgb = (WasGeneratedBy) influence;
+			signature = Arrays.asList(new Ref[]{wgb.getEntity(), wgb.getActivity()});
+		}
+		return signature;
+	}
+	
+	private void optimize()
+	{
+		HashMap<List<Ref>, WasGeneratedBy> wgbCollisions = new HashMap<List<Ref>, WasGeneratedBy>();
+		
+		List<StatementOrBundle> toRemove = new ArrayList<StatementOrBundle>();
+		for (StatementOrBundle sob : document
+				.getEntityOrActivityOrWasGeneratedBy())
+		{
+			if (sob instanceof org.openprovenance.prov.xml.Influence)
+			{
+				List<Ref> signature = getSignature((org.openprovenance.prov.xml.Influence)sob);
+				WasGeneratedBy wgb = (WasGeneratedBy) sob;
+				if (wgbCollisions.containsKey(signature))
+				{
+					WasGeneratedBy collision = wgbCollisions.get(signature);
+					if(wgb.getId() != null) {
+						// We have a qualified wgb, so remove the collision.
+						toRemove.add(collision);
+					}
+					else if(collision.getId() != null) {
+						// We have an unqualified wgb, so remove the wgb if the collision is qualified.
+						toRemove.add(wgb);
+					}
+				}
+				else {
+					wgbCollisions.put(signature, wgb);
+				}
+			}
+		}
+		
+		document.getEntityOrActivityOrWasGeneratedBy().removeAll(toRemove);
+
 	}
 
 	private void handleInfluence(QName context,
 			org.openprovenance.prov.xml.Influence target,
 			List<Statement> statements)
 	{
-		WasInfluencedBy wib = new WasInfluencedBy();
-		wib.setInfluencee(pFactory.newAnyRef(target.getId()));
-
-		for (Statement statement : statements)
-		{
-			String predS = statement.getPredicate().stringValue();
-			Value value = statement.getObject();
-
-			if (value instanceof Resource)
-			{
-				QName valueQ = qNameFromResource((Resource) value);
-				if (this.baseProperties.containsKey(predS)
-						&& this.baseProperties.get(predS).equals(
-								PROV + "influencer"))
-				{
-					wib.setInfluencer(pFactory.newAnyRef(valueQ));
-				}
-			}
-		}
-
-		store(context, wib);
+		/*
+		 * WasInfluencedBy wib = new WasInfluencedBy();
+		 * wib.setInfluencee(pFactory.newAnyRef(target.getId()));
+		 * 
+		 * for (Statement statement : statements) { String predS =
+		 * statement.getPredicate().stringValue(); Value value =
+		 * statement.getObject();
+		 * 
+		 * if (value instanceof Resource) { QName valueQ =
+		 * qNameFromResource((Resource) value); if
+		 * (this.baseProperties.containsKey(predS) &&
+		 * this.baseProperties.get(predS).equals( PROV + "influencer")) {
+		 * wib.setInfluencer(pFactory.newAnyRef(valueQ)); } } }
+		 * 
+		 * store(context, wib);
+		 */
 	}
 
 	private void handleAgentInfluence(QName context,

@@ -222,9 +222,6 @@ public class RdfConstructor implements TreeConstructor {
 				// }
 			}
 
-			System.out.println(">> Add new statement: "
-					+ pred.getNamespaceURI() + pred.getLocalPart() + " "
-					+ literalImpl.stringValue());
 			org.openrdf.model.Statement stmnt = new StatementImpl(r,
 					new URIImpl(pred.getNamespaceURI() + pred.getLocalPart()),
 					literalImpl);
@@ -363,8 +360,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Entity e1 = (Entity) manager.find(qn1);
-		Activity a2 = (Activity) manager.find(qn2);
+		Entity e1 = (Entity) manager.designate(qn1, Entity.class);
+		Activity a2 = (Activity) manager.designate(qn2, Activity.class);
 		Usage u = addEntityInfluence(id, a2, e1, time, aAttrs, null,
 				Usage.class);
 

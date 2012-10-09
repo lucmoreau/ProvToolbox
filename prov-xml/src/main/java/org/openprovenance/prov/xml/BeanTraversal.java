@@ -425,7 +425,7 @@ public class BeanTraversal {
     }
 
     public Object convert(WasAttributedTo o) {
-	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> tAttrs = convertTypeAttributes(o);
 	List<Object> labAttrs = convertLabelAttribute(o);
 
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
@@ -433,13 +433,13 @@ public class BeanTraversal {
 	                                tAttrs,
 	                                labAttrs,
 	                                otherAttrs,
-	                                c.convert(o.getEntity().getRef()),
+	                                (o.getEntity()==null)? null: c.convert(o.getEntity().getRef()),
 	                                (o.getAgent() == null) ? null : c
 	                                        .convert(o.getAgent().getRef()));
     }
 
     public Object convert(ActedOnBehalfOf o) {
-	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> tAttrs = convertTypeAttributes(o);
 	List<Object> labAttrs = convertLabelAttribute(o);
 
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);

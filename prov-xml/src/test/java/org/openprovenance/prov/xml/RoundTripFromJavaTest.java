@@ -1046,5 +1046,73 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(assoc, "target/association9");
     }
 
+ // ////////////////////////////////
+
+    public void testAttribution1() throws JAXBException {
+        WasAttributedTo attr = pFactory.newWasAttributedTo(q("attr1"), 
+                                                           pFactory.newEntityRef(q("e1")),
+                                                           null);
+        makeDocAndTest(attr, "target/attribution1");
+    }
     
+    public void testAttribution2() throws JAXBException {
+        WasAttributedTo attr = pFactory.newWasAttributedTo(q("attr2"), 
+                                                           null,
+                                                           pFactory.newAgentRef(q("ag1")));
+        makeDocAndTest(attr, "target/attribution2");
+    }
+    
+    public void testAttribution3() throws JAXBException {
+        WasAttributedTo attr = pFactory.newWasAttributedTo(q("attr3"), 
+                                                           pFactory.newEntityRef(q("e1")),
+                                                           pFactory.newAgentRef(q("ag1")));
+        makeDocAndTest(attr, "target/attribution3");
+    }
+
+
+    public void testAttribution4() throws JAXBException {
+        WasAttributedTo attr = pFactory.newWasAttributedTo(q("attr4"), 
+                                                           pFactory.newEntityRef(q("e1")),
+                                                           pFactory.newAgentRef(q("ag1")));
+        makeDocAndTest(attr, "target/attribution4");
+    }
+
+    
+    public void testAttribution5() throws JAXBException {
+        WasAttributedTo attr = pFactory.newWasAttributedTo((QName)null, 
+                                                           pFactory.newEntityRef(q("e1")),
+                                                           pFactory.newAgentRef(q("ag1")));
+        makeDocAndTest(attr, "target/attribution5");
+    }
+    
+    
+
+    public void testAttribution6() throws JAXBException {
+        WasAttributedTo attr = pFactory.newWasAttributedTo(q("attr6"), 
+                                                           pFactory.newEntityRef(q("e1")),
+                                                           pFactory.newAgentRef(q("ag1")));
+        addLabels(attr);
+        makeDocAndTest(attr, "target/attribution6");
+    }
+
+    public void testAttribution7() throws JAXBException {
+        WasAttributedTo attr = pFactory.newWasAttributedTo(q("attr7"), 
+                                                           pFactory.newEntityRef(q("e1")),
+                                                           pFactory.newAgentRef(q("ag1")));
+        addLabels(attr);
+        addTypes(attr);
+        makeDocAndTest(attr, "target/attribution7");
+    }
+
+
+    public void testAttribution8() throws JAXBException {
+        WasAttributedTo attr = pFactory.newWasAttributedTo(q("attr8"), 
+                                                           pFactory.newEntityRef(q("e1")),
+                                                           pFactory.newAgentRef(q("ag1")));
+        addLabels(attr);
+        addTypes(attr);
+        addFurtherAttributes(attr);
+        makeDocAndTest(attr, "target/attribution8");
+    }
+
 }

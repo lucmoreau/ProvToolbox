@@ -366,19 +366,22 @@ public class BeanTraversal {
 
     public Object convert(WasInformedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	return c.convertWasInformedBy(c.convert(o.getId()), tAttrs, otherAttrs,
-	                              c.convert(o.getEffect().getRef()),
-	                              c.convert(o.getCause().getRef()));
+	return c.convertWasInformedBy(c.convert(o.getId()), tAttrs, labAttrs, otherAttrs,
+	                              (o.getEffect()==null) ? null : c.convert(o.getEffect().getRef()),
+	                              (o.getCause()==null) ? null: c.convert(o.getCause().getRef()));
     }
 
     public Object convert(WasInfluencedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
+
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	return c.convertWasInfluencedBy(c.convert(o.getId()), tAttrs,
+	return c.convertWasInfluencedBy(c.convert(o.getId()), tAttrs, labAttrs,
 	                                otherAttrs,
-	                                c.convert(o.getInfluencee().getRef()),
-	                                c.convert(o.getInfluencer().getRef()));
+	                                (o.getInfluencee()==null) ? null: c.convert(o.getInfluencee().getRef()),
+	                                (o.getInfluencer()==null) ? null: c.convert(o.getInfluencer().getRef()));
     }
 
     public Object convert(WasDerivedFrom o) {
@@ -406,11 +409,16 @@ public class BeanTraversal {
 
     public Object convert(WasAssociatedWith o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
+        List<Object> roleAttrs = convertRoleAttribute(o);
+
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertWasAssociatedWith(c.convert(o.getId()),
 	                                  tAttrs,
+	                                  labAttrs,
+	                                  roleAttrs,
 	                                  otherAttrs,
-	                                  c.convert(o.getActivity().getRef()),
+	                                  (o.getActivity()==null) ? null : c.convert(o.getActivity().getRef()),
 	                                  (o.getAgent() == null) ? null : c
 	                                          .convert(o.getAgent()
 	                                                  .getRef()),
@@ -420,24 +428,30 @@ public class BeanTraversal {
     }
 
     public Object convert(WasAttributedTo o) {
-	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> tAttrs = convertTypeAttributes(o);
+	List<Object> labAttrs = convertLabelAttribute(o);
+
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertWasAttributedTo(c.convert(o.getId()),
 	                                tAttrs,
+	                                labAttrs,
 	                                otherAttrs,
-	                                c.convert(o.getEntity().getRef()),
+	                                (o.getEntity()==null)? null: c.convert(o.getEntity().getRef()),
 	                                (o.getAgent() == null) ? null : c
 	                                        .convert(o.getAgent().getRef()));
     }
 
     public Object convert(ActedOnBehalfOf o) {
-	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> tAttrs = convertTypeAttributes(o);
+	List<Object> labAttrs = convertLabelAttribute(o);
+
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertActedOnBehalfOf(c.convert(o.getId()),
 	                                tAttrs,
+	                                labAttrs,
 	                                otherAttrs,
-	                                c.convert(o.getSubordinate().getRef()),
-	                                c.convert(o.getResponsible().getRef()),
+	                                (o.getSubordinate()==null) ? null : c.convert(o.getSubordinate().getRef()),
+	                                (o.getResponsible()==null) ? null: c.convert(o.getResponsible().getRef()),
 	                                (o.getActivity() == null) ? null : c
 	                                        .convert(o.getActivity()
 	                                                .getRef()));

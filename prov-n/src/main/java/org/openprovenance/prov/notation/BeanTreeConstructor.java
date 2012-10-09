@@ -237,11 +237,13 @@ public class BeanTreeConstructor implements BeanConstructor{
     }
 
     
-    public Object convertWasInformedBy(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object effect, Object cause) {
+    public Object convertWasInformedBy(Object id, List<Object> tAttrs, List<Object> lAttrs, List<Attribute> otherAttrs, Object effect, Object cause) {
         List<?> tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
+        List<?> lAttrs2=convertLabelAttributes(lAttrs);
+
         List<Object> attrs=new LinkedList<Object>();
         attrs.addAll(tAttrs2);
+        attrs.addAll(lAttrs2);
         attrs.addAll(otherAttrs);
         return c.convertWasInformedBy(id,
 				      effect,
@@ -268,12 +270,18 @@ public class BeanTreeConstructor implements BeanConstructor{
                                        c.convertAttributes(attrs));
     }
 
-    public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object activity, Object agent, Object plan) {
+    public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Object> lAttrs, List<Object> rAttrs, List<Attribute> otherAttrs, Object activity, Object agent, Object plan) {
         List<?> tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
+        List<?> lAttrs2=convertLabelAttributes(lAttrs);
+        List<?> roleAttrs2=convertRoleAttributes(rAttrs);
+
         List<Object> attrs=new LinkedList<Object>();
         attrs.addAll(tAttrs2);
+        attrs.addAll(lAttrs2);
+        attrs.addAll(roleAttrs2);
         attrs.addAll(otherAttrs);
+        
+      
         return c.convertWasAssociatedWith(id,
                                           activity,
                                           agent,
@@ -281,11 +289,14 @@ public class BeanTreeConstructor implements BeanConstructor{
                                           c.convertAttributes(attrs));
     }
 
-    public Object convertWasAttributedTo(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object entity, Object agent) {
+    public Object convertWasAttributedTo(Object id, List<Object> tAttrs,  List<Object> lAttrs, List<Attribute> otherAttrs, Object entity, Object agent) {
         List<?> tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
+        List<?> lAttrs2=convertLabelAttributes(lAttrs);
+
+
         List<Object> attrs=new LinkedList<Object>();
         attrs.addAll(tAttrs2);
+        attrs.addAll(lAttrs2);
         attrs.addAll(otherAttrs);
         return c.convertWasAttributedTo(id,
 					entity,
@@ -293,11 +304,15 @@ public class BeanTreeConstructor implements BeanConstructor{
 					c.convertAttributes(attrs));
     }
 
-    public Object convertActedOnBehalfOf(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object subordinate, Object responsible, Object activity) {
+    public Object convertActedOnBehalfOf(Object id, List<Object> tAttrs, List<Object> lAttrs, List<Attribute> otherAttrs, Object subordinate, Object responsible, Object activity) {
         List<?> tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
+        List<?> lAttrs2=convertLabelAttributes(lAttrs);
+
+
         List<Object> attrs=new LinkedList<Object>();
         attrs.addAll(tAttrs2);
+        attrs.addAll(lAttrs2);
+
         attrs.addAll(otherAttrs);
         return c.convertActedOnBehalfOf(id,
 					subordinate,
@@ -306,11 +321,15 @@ public class BeanTreeConstructor implements BeanConstructor{
 					c.convertAttributes(attrs));
     }
 
-    public Object convertWasInfluencedBy(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object effect, Object cause) {
+    public Object convertWasInfluencedBy(Object id, List<Object> tAttrs, List<Object> lAttrs, List<Attribute> otherAttrs, Object effect, Object cause) {
         List<?> tAttrs2=convertTypeAttributes(tAttrs);
-        //List otherAttrs2=convertAttributes(otherAttrs);
+        List<?> lAttrs2=convertLabelAttributes(lAttrs);
+
+
         List<Object> attrs=new LinkedList<Object>();
         attrs.addAll(tAttrs2);
+        attrs.addAll(lAttrs2);
+
         attrs.addAll(otherAttrs);
         return c.convertWasInfluencedBy(id,
 					effect,

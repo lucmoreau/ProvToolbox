@@ -431,6 +431,14 @@
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
+
+  <xs:simpleType name="QualifiedName">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(([\i-[:]][\c-[:]]*)?:)?.+" />
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType> 
+
   
 
 <!-- To support validator, this is not part of prov xml! -->

@@ -1201,8 +1201,9 @@ return res;
 
     public WasInfluencedBy newWasInfluencedBy(String id, String influencee,
 					      String influencer) {
-	return newWasInfluencedBy(id, newAnyRef(influencee),
-				  newAnyRef(influencer));
+	return newWasInfluencedBy(id, 
+	                          (influencee==null)? null: newAnyRef(influencee),
+				  (influencer==null)? null: newAnyRef(influencer));
     }
 
     public WasInfluencedBy newWasInfluencedBy(WasInfluencedBy in) {

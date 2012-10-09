@@ -9,7 +9,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 /**
- * Unit test for simple Provenance Challenge 1 like workflow.
+ * Unit test for PROV roundtrip conversion between Java and XML
  */
 public class RoundTripFromJavaTest extends TestCase {
 

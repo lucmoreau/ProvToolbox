@@ -447,8 +447,8 @@ public class BeanTraversal {
 	                                tAttrs,
 	                                labAttrs,
 	                                otherAttrs,
-	                                c.convert(o.getSubordinate().getRef()),
-	                                c.convert(o.getResponsible().getRef()),
+	                                (o.getSubordinate()==null) ? null : c.convert(o.getSubordinate().getRef()),
+	                                (o.getResponsible()==null) ? null: c.convert(o.getResponsible().getRef()),
 	                                (o.getActivity() == null) ? null : c
 	                                        .convert(o.getActivity()
 	                                                .getRef()));

@@ -225,7 +225,7 @@ public class NotationConstructor implements TreeConstructor {
     }
 
     public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
-        String s=keyword("actedOnBehalfOf") + "(" + optionalId(id) + id2 + "," + id1 + "," +
+        String s=keyword("actedOnBehalfOf") + "(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," +
             optional(a) +
             optionalAttributes(aAttrs) + ")";
         return s;

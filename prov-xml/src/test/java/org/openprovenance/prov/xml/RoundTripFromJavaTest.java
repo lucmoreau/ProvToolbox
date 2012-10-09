@@ -1115,4 +1115,83 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(attr, "target/attribution8");
     }
 
+
+    // ////////////////////////////////
+
+       public void testDelegation1() throws JAXBException {
+           ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del1"), 
+                                                              pFactory.newAgentRef(q("e1")),
+                                                              null,
+                                                              null);
+           makeDocAndTest(del, "target/delegation1");
+       }
+       
+       public void testDelegation2() throws JAXBException {
+           ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del2"), 
+                                                              null,
+                                                              pFactory.newAgentRef(q("ag1")),
+                                                              null);
+           makeDocAndTest(del, "target/delegation2");
+       }
+       
+       public void testDelegation3() throws JAXBException {
+           ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del3"), 
+                                                              pFactory.newAgentRef(q("e1")),
+                                                              pFactory.newAgentRef(q("ag1")),
+                                                              null);
+           makeDocAndTest(del, "target/delegation3");
+       }
+
+
+       public void testDelegation4() throws JAXBException {
+           ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del4"), 
+                                                              pFactory.newAgentRef(q("e1")),
+                                                              pFactory.newAgentRef(q("ag1")),
+                                                              pFactory.newActivityRef(q("a")));
+           makeDocAndTest(del, "target/delegation4");
+       }
+
+       
+       public void testDelegation5() throws JAXBException {
+           ActedOnBehalfOf del = pFactory.newActedOnBehalfOf((QName)null, 
+                                                              pFactory.newAgentRef(q("e1")),
+                                                              pFactory.newAgentRef(q("ag1")),
+                                                              null);
+           makeDocAndTest(del, "target/delegation5");
+       }
+       
+       
+
+       public void testDelegation6() throws JAXBException {
+           ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del6"), 
+                                                              pFactory.newAgentRef(q("e1")),
+                                                              pFactory.newAgentRef(q("ag1")),
+                                                              pFactory.newActivityRef(q("a")));
+           addLabels(del);
+           makeDocAndTest(del, "target/delegation6");
+       }
+
+       public void testDelegation7() throws JAXBException {
+           ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del7"), 
+                                                              pFactory.newAgentRef(q("e1")),
+                                                              pFactory.newAgentRef(q("ag1")),
+                                                              pFactory.newActivityRef(q("a")));
+           addLabels(del);
+           addTypes(del);
+           makeDocAndTest(del, "target/delegation7");
+       }
+
+
+       public void testDelegation8() throws JAXBException {
+           ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del8"), 
+                                                              pFactory.newAgentRef(q("e1")),
+                                                              pFactory.newAgentRef(q("ag1")),
+                                                              pFactory.newActivityRef(q("a")));
+           addLabels(del);
+           addTypes(del);
+           addFurtherAttributes(del);
+           makeDocAndTest(del, "target/delegation8");
+       }
+
+    
 }

@@ -53,5 +53,7 @@ public interface BeanConstructor {
                                      List<Object> agRecords,
                                      List<Object> lnkRecords);
 
+    public Object convertHadMember(Object collection, Object entity);
+
 
 }

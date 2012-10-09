@@ -29,7 +29,7 @@ tokens {
     SPECIALIZATION; ALTERNATE; CTX;
 
     /* Component 6 */
-    DBIF; DBRF; KES; ES; KEYS; VALUES; DMEM; CMEM; TRUE; FALSE; UNKNOWN;
+    MEM; DBIF; DBRF; KES; ES; KEYS; VALUES; DMEM; CMEM; TRUE; FALSE; UNKNOWN;
 
     /* Extensibility */
     EXT;
@@ -121,7 +121,7 @@ expression
 
             /* component 5 */
 
-        | insertionExpression | removalExpression | membershipExpression 
+        | insertionExpression | removalExpression | membershipExpression  | membershipExpression2
 
 
             /* component 6 */ 
@@ -313,7 +313,7 @@ specializationExpression
 
 mentionExpression
 	:	'mentionOf' '(' su=identifier ',' en=identifier ',' bu=identifier ')' 
-        -> ^(CTX $su $bu $en)
+        -> ^(CTX $su $en $bu)
 	;
 
 
@@ -334,8 +334,9 @@ removalExpression
       -> ^(DBRF ^(ID $id0?) $id2 $id1 ^(KEYS literal*)  optionalAttributeValuePairs)
 	;
 
+
 /* TODO: specify complete as optional boolean */
-membershipExpression
+membershipExpression2
 	:	( 'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' keyEntitySet ',' 'true' optionalAttributeValuePairs ')'
       -> ^(DMEM ^(ID $id0?) $id1 keyEntitySet  ^(TRUE) optionalAttributeValuePairs)
          |          
@@ -356,6 +357,13 @@ membershipExpression
 
         )
 	;
+
+
+membershipExpression
+	:	 'hadMember' '('  id2=identifier ',' id1=identifier ')'
+      -> ^(MEM $id2 $id1)
+  ; 
+
 
 keyEntitySet
     : '{'  '(' literal ',' val=identifier  ')' ( ','  '(' literal ',' val=identifier  ')' )* '}'

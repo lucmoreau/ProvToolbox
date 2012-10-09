@@ -429,7 +429,7 @@
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation0, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
-  	              <arg value="Membership.java" />
+  	              <arg value="HadMember.java" />
                 </exec>
 
 

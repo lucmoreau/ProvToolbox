@@ -257,12 +257,16 @@ public class BeanTraversal {
 	    return convert((SpecializationOf) o);
 	} else if (o instanceof MentionOf) {
 	    return convert((MentionOf) o);
+	} else if (o instanceof HadMember) {
+	    return convert((HadMember) o);
 
 	} else {
 	    throw new UnsupportedOperationException("Unknown relation type "
 		    + o);
 	}
     }
+
+    
 
     public Object convert(Used o) {
         List<Object> tAttrs = convertTypeAttributes((HasType) o);
@@ -469,10 +473,15 @@ public class BeanTraversal {
     }
 
     public Object convert(MentionOf o) {
-	return c.convertMentionOf(c.convert(o.getSpecializedEntity().getRef()),
-	                          c.convert(o.getGeneralEntity().getRef()),
-	                          c.convert(o.getBundle().getRef()));
+	return c.convertMentionOf(c.convert((o.getSpecializedEntity()==null) ? null: o.getSpecializedEntity().getRef()),
+	                          c.convert((o.getGeneralEntity()==null) ? null : o.getGeneralEntity().getRef()),
+	                          c.convert((o.getBundle()==null) ? null: o.getBundle().getRef()));
     }
 
+    public Object convert(HadMember o) {
+	return c.convertHadMember(c.convert(o.getCollection().getRef()),
+	                          c.convert(o.getEntity().get(0).getRef()));
+    }
+    
 	
 }

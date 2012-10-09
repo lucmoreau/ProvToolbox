@@ -28,8 +28,8 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
             this.defaultNamespace=nss.get("_");
         }
         this.nss=nss;
-        System.out.println("PREFIXES IS " + nss);
-        System.out.println("DEFAULT " + defaultNamespace);
+        //System.out.println("PREFIXES IS " + nss);
+        //System.out.println("DEFAULT " + defaultNamespace);
     }
 
 
@@ -152,7 +152,7 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
         ll.add(XSD_NS);
         ll.add(XML_NS);
         ll.add(PROV_NS);
-        System.out.println("namespaceprefixmapper " + ll);
+        //System.out.println("namespaceprefixmapper " + ll);
         String[] tmp=new String[1];
         return ll.toArray(tmp);
     }

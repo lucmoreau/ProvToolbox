@@ -356,6 +356,12 @@ public class BeanTreeConstructor implements BeanConstructor{
     }
 
 
+    
+    public Object convertHadMember(Object collection, Object entity) {
+	return c.convertHadMember(collection,entity);
+    }
+
+
 
     public Object convertBundle(Object namespaces,
 				List<Object> aRecords,
@@ -385,6 +391,5 @@ public class BeanTreeConstructor implements BeanConstructor{
         if (lnkRecords!=null) ll.addAll(lnkRecords);
         return c.convertNamedBundle(id,namespaces,ll);
     }
-
 
 }

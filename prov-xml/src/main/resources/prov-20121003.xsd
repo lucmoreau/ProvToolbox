@@ -398,7 +398,7 @@
         <xs:element name="alternateOf"          type="prov:Alternate"/>
         <xs:element name="mentionOf"            type="prov:Mention"/>
 
-        <xs:element name="hadMember"   			type="prov:Membership"/>
+        <xs:element name="hadMember"   		type="prov:Membership"/>
 
 <!-- not nice for jaxb conversion 		<xs:any namespace="##other"/>  -->
       </xs:choice>

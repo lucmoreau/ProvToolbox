@@ -87,6 +87,11 @@ public class NullConstructor implements TreeConstructor {
     public Object convertSpecializationOf(Object id2,Object id1) {
         return null;
     }
+
+    public Object convertHadMember(Object collection, Object entity) {
+	return null;
+    }
+    
     /* Component 5 */
 
     public Object convertInsertion(Object id, Object id2, Object id1, Object map, Object dAttrs) {
@@ -185,6 +190,7 @@ public class NullConstructor implements TreeConstructor {
     public Object convertPrefix(String pre) {
         return null;
     }
+
 
 
 

@@ -84,6 +84,9 @@
 	<jaxb:bindings node="xs:complexType[@name='Mention']">
 	  <jaxb:class name="MentionOf"/>
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Membership']">
+	  <jaxb:class name="HadMember"/>
+	</jaxb:bindings>
 
 
 

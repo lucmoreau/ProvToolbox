@@ -213,7 +213,7 @@ public class NotationConstructor implements TreeConstructor {
     }
 
     public Object convertMentionOf(Object su, Object bu, Object ta) {
-        String s="mentionOf(" + su + ", " + bu + ", " + ta + ")";
+        String s="mentionOf(" + su + ", " + bu + ", " + optional(ta) + ")";
         return s;
     }
 
@@ -230,6 +230,12 @@ public class NotationConstructor implements TreeConstructor {
             optionalAttributes(aAttrs) + ")";
         return s;
     }
+
+    public Object convertHadMember(Object collection, Object entity) {
+	String s=keyword("hadMember") + "(" + collection + "," + entity + ")";
+	return s;
+    }
+
 
     public Object convertExtension(Object name, Object id, Object args, Object dAttrs) {
 	System.out.println("Name @" + name);
@@ -375,8 +381,7 @@ public class NotationConstructor implements TreeConstructor {
 	s=s+"}";
 	return s;
     }
-
-
+    
 
     /* Component 6 */
 

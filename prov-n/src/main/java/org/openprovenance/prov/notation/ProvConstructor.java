@@ -438,10 +438,9 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        Activity e1=activityTable.get(s_id1); 
-        ActivityRef e1r=pFactory.newActivityRef(e1);
-        Activity a2=activityTable.get(s_id2);
-        ActivityRef a2r=pFactory.newActivityRef(a2);
+        ActivityRef e1r=(s_id1==null) ? null : pFactory.newActivityRef(s_id1);
+
+        ActivityRef a2r=(s_id2==null) ? null: pFactory.newActivityRef(s_id2);
 
         WasInformedBy s=pFactory.newWasInformedBy(s_id,
                                                   a2r,

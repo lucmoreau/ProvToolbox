@@ -1193,5 +1193,129 @@ public class RoundTripFromJavaTest extends TestCase {
            makeDocAndTest(del, "target/delegation8");
        }
 
-    
+       // ////////////////////////////////
+
+       public void testCommunication1() throws JAXBException {
+           WasInformedBy inf = pFactory.newWasInformedBy(q("inf1"), 
+                                                         pFactory.newActivityRef(q("a2")),
+                                                         null);
+           makeDocAndTest(inf, "target/communication1");
+       }
+       
+       public void testCommunication2() throws JAXBException {
+           WasInformedBy inf = pFactory.newWasInformedBy(q("inf2"), 
+                                                              null,
+                                                              pFactory.newActivityRef(q("a1")));
+           makeDocAndTest(inf, "target/communication2");
+       }
+       
+       public void testCommunication3() throws JAXBException {
+           WasInformedBy inf = pFactory.newWasInformedBy(q("inf3"), 
+                                                         pFactory.newActivityRef(q("a2")),
+                                                         pFactory.newActivityRef(q("a1")));
+           makeDocAndTest(inf, "target/communication3");
+       }
+
+
+       
+       public void testCommunication4() throws JAXBException {
+           WasInformedBy inf = pFactory.newWasInformedBy((QName)null, 
+                                                         pFactory.newActivityRef(q("a2")),
+                                                         pFactory.newActivityRef(q("a1")));
+           makeDocAndTest(inf, "target/communication4");
+       }
+       
+       
+
+       public void testCommunication5() throws JAXBException {
+           WasInformedBy inf = pFactory.newWasInformedBy(q("inf5"), 
+                                                         pFactory.newActivityRef(q("a2")),
+                                                         pFactory.newActivityRef(q("a1")));
+           addLabels(inf);
+           makeDocAndTest(inf, "target/communication5");
+       }
+
+       public void testCommunication6() throws JAXBException {
+           WasInformedBy inf = pFactory.newWasInformedBy(q("inf6"), 
+                                                         pFactory.newActivityRef(q("a2")),
+                                                         pFactory.newActivityRef(q("a1")));
+           addLabels(inf);
+           addTypes(inf);
+           makeDocAndTest(inf, "target/communication6");
+       }
+
+
+       public void testCommunication7() throws JAXBException {
+           WasInformedBy inf = pFactory.newWasInformedBy(q("inf7"), 
+                                                         pFactory.newActivityRef(q("a2")),
+                                                         pFactory.newActivityRef(q("a1")));
+           addLabels(inf);
+           addTypes(inf);
+           addFurtherAttributes(inf);
+           makeDocAndTest(inf, "target/communication7");
+       }
+
+
+       // ////////////////////////////////
+
+       public void testInfluence1() throws JAXBException {
+           WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf1"), 
+                                                             pFactory.newAnyRef(q("a2")),
+                                                             null);
+           makeDocAndTest(inf, "target/influence1");
+       }
+       
+       public void testInfluence2() throws JAXBException {
+           WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf2"), 
+                                                             null,
+                                                             pFactory.newAnyRef(q("a1")));
+           makeDocAndTest(inf, "target/influence2");
+       }
+       
+       public void testInfluence3() throws JAXBException {
+           WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf3"), 
+                                                             pFactory.newAnyRef(q("a2")),
+                                                             pFactory.newAnyRef(q("a1")));
+           makeDocAndTest(inf, "target/influence3");
+       }
+
+
+       
+       public void testInfluence4() throws JAXBException {
+           WasInfluencedBy inf = pFactory.newWasInfluencedBy((QName)null, 
+                                                             pFactory.newAnyRef(q("a2")),
+                                                             pFactory.newAnyRef(q("a1")));
+           makeDocAndTest(inf, "target/influence4");
+       }
+       
+       
+
+       public void testInfluence5() throws JAXBException {
+           WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf5"), 
+                                                             pFactory.newAnyRef(q("a2")),
+                                                             pFactory.newAnyRef(q("a1")));
+           addLabels(inf);
+           makeDocAndTest(inf, "target/influence5");
+       }
+
+       public void testInfluence6() throws JAXBException {
+           WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf6"), 
+                                                             pFactory.newAnyRef(q("a2")),
+                                                             pFactory.newAnyRef(q("a1")));
+           addLabels(inf);
+           addTypes(inf);
+           makeDocAndTest(inf, "target/influence6");
+       }
+
+
+       public void testInfluence7() throws JAXBException {
+           WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf7"), 
+                                                             pFactory.newAnyRef(q("a2")),
+                                                             pFactory.newAnyRef(q("a1")));
+           addLabels(inf);
+           addTypes(inf);
+           addFurtherAttributes(inf);
+           makeDocAndTest(inf, "target/influence7");
+       }
+
 }

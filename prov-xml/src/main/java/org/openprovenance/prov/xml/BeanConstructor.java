@@ -18,8 +18,8 @@ public interface BeanConstructor {
     public Object convertWasGeneratedBy  (Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> locAttr, List<Object> roleAttr, List<Attribute> otherAttrs, Object entity, Object activity, Object time);
     public Object convertWasInvalidatedBy(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> locAttr, List<Object> roleAttr, List<Attribute> otherAttrs, Object entity, Object activity, Object time);
 
-    public Object convertWasInformedBy(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object effect, Object cause);
-    public Object convertWasInfluencedBy(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object effect, Object cause);
+    public Object convertWasInformedBy(Object id, List<Object> tAttrs, List<Object> lAttr,List<Attribute> otherAttrs, Object effect, Object cause);
+    public Object convertWasInfluencedBy(Object id, List<Object> tAttrs,List<Object> lAttr, List<Attribute> otherAttrs, Object effect, Object cause);
  
 
     public Object convertWasDerivedFrom(Object id, List<Object> tAttrs, List<Object> lAttr, List<Attribute> otherAttrs, Object effect, Object cause, Object activity, Object generation, Object usage);

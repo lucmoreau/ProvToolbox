@@ -366,19 +366,22 @@ public class BeanTraversal {
 
     public Object convert(WasInformedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	return c.convertWasInformedBy(c.convert(o.getId()), tAttrs, otherAttrs,
-	                              c.convert(o.getEffect().getRef()),
-	                              c.convert(o.getCause().getRef()));
+	return c.convertWasInformedBy(c.convert(o.getId()), tAttrs, labAttrs, otherAttrs,
+	                              (o.getEffect()==null) ? null : c.convert(o.getEffect().getRef()),
+	                              (o.getCause()==null) ? null: c.convert(o.getCause().getRef()));
     }
 
     public Object convert(WasInfluencedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
+
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	return c.convertWasInfluencedBy(c.convert(o.getId()), tAttrs,
+	return c.convertWasInfluencedBy(c.convert(o.getId()), tAttrs, labAttrs,
 	                                otherAttrs,
-	                                c.convert(o.getInfluencee().getRef()),
-	                                c.convert(o.getInfluencer().getRef()));
+	                                (o.getInfluencee()==null) ? null: c.convert(o.getInfluencee().getRef()),
+	                                (o.getInfluencer()==null) ? null: c.convert(o.getInfluencer().getRef()));
     }
 
     public Object convert(WasDerivedFrom o) {

@@ -197,7 +197,7 @@ public class NotationConstructor implements TreeConstructor {
 
     
     public Object convertWasInfluencedBy(Object id, Object id2, Object id1, Object dAttrs) {
-        String s="wasInfluencedBy(" + optionalId(id) + id2 + ", " + id1 + optionalAttributes(dAttrs) +  ")";
+        String s="wasInfluencedBy(" + optionalId(id) + optional(id2) + ", " + optional(id1) + optionalAttributes(dAttrs) +  ")";
         return s;
     }
 

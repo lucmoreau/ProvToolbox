@@ -373,7 +373,7 @@ public class RdfConstructor implements TreeConstructor {
 		Usage u = addEntityInfluence(id, a2, e1, time, aAttrs, null,
 				Usage.class);
 
-		if (binaryProp(id)) a2.getUsed().add(e1);
+		if (binaryProp(id,a2)) a2.getUsed().add(e1);
 
 		return u;
 	}
@@ -814,11 +814,12 @@ public class RdfConstructor implements TreeConstructor {
 	}
 	
 	public <T> T designate(QName qname, Class<T> cl) {
+	    if (qname==null) return null;
 	    return manager.designate(qname,cl);
 	}
 	
-	public boolean binaryProp(Object id) {
-	    return id==null;
+	public boolean binaryProp(Object id, Object subject) {
+	    return id==null && subject!=null;
 	}
 
 	@Override

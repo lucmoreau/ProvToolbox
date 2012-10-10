@@ -462,7 +462,9 @@ public class RoundTripFromJavaTest extends TestCase {
 							pFactory.newEntityRef(q("e1")),
 							null,
 							null);
-	makeDocAndTest(gen,"target/generation1");
+	Entity e1=pFactory.newEntity(q("e1"));
+	Statement [] opt=new Statement[] { e1 };
+	makeDocAndTest(gen, opt , "target/generation1");
     }
 
 
@@ -485,7 +487,10 @@ public class RoundTripFromJavaTest extends TestCase {
 							"somerole",
 							pFactory.newActivityRef(q("a1")));
         gen.getRole().add("otherRole");
-	makeDocAndTest(gen,"target/generation3");
+    	Entity e1=pFactory.newEntity(q("e1"));
+    	Activity a1=pFactory.newActivity(q("a1"));
+    	Statement [] opt=new Statement[] { e1, a1 };
+	makeDocAndTest(gen,opt,"target/generation3");
     }
 
 
@@ -495,7 +500,10 @@ public class RoundTripFromJavaTest extends TestCase {
                                                         "somerole",
                                                         pFactory.newActivityRef(q("a1")));
         gen.setTime(pFactory.newTimeNow());
-        makeDocAndTest(gen,"target/generation4");
+    	Entity e1=pFactory.newEntity(q("e1"));
+    	Activity a1=pFactory.newActivity(q("a1"));
+    	Statement [] opt=new Statement[] { e1, a1 };
+        makeDocAndTest(gen,opt,"target/generation4");
     }
     
     public void testGeneration5() throws JAXBException  {
@@ -508,8 +516,11 @@ public class RoundTripFromJavaTest extends TestCase {
         addLocations(gen);
         addLabels(gen);
         addFurtherAttributes(gen);
-        
-        makeDocAndTest(gen,"target/generation5");
+
+    	Entity e1=pFactory.newEntity(q("e1"));
+    	Activity a1=pFactory.newActivity(q("a1"));
+    	Statement [] opt=new Statement[] { e1, a1 };
+        makeDocAndTest(gen,opt,"target/generation5");
     }
     
     
@@ -518,7 +529,10 @@ public class RoundTripFromJavaTest extends TestCase {
   							pFactory.newEntityRef(q("e1")),
   							null,
   							pFactory.newActivityRef(q("a1")));
-  	makeDocAndTest(gen,"target/generation6");
+	Entity e1=pFactory.newEntity(q("e1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	Statement [] opt=new Statement[] { e1, a1 };
+  	makeDocAndTest(gen,opt,"target/generation6");
       }
 
     public void testGeneration7() throws JAXBException  {
@@ -531,8 +545,11 @@ public class RoundTripFromJavaTest extends TestCase {
         addLocations(gen);
         addLabels(gen);
         addFurtherAttributes(gen);
-        
-        makeDocAndTest(gen,"target/generation7");
+
+    	Entity e1=pFactory.newEntity(q("e1"));
+    	Activity a1=pFactory.newActivity(q("a1"));
+    	Statement [] opt=new Statement[] { e1, a1 };
+        makeDocAndTest(gen,opt,"target/generation7");
     }
     
     //////////////////////////////////
@@ -542,7 +559,9 @@ public class RoundTripFromJavaTest extends TestCase {
                                     null,
                                     null,
                                     pFactory.newEntityRef(q("e1")));
-        makeDocAndTest(use,"target/usage1");
+    	Entity e1=pFactory.newEntity(q("e1"));
+    	Statement [] opt=new Statement[] { e1 };
+        makeDocAndTest(use,opt,"target/usage1");
     }
 
     public void testUsage2() throws JAXBException  {
@@ -550,7 +569,11 @@ public class RoundTripFromJavaTest extends TestCase {
                                     pFactory.newActivityRef(q("a1")),
                                     null,
                                     pFactory.newEntityRef(q("e1")));
-        makeDocAndTest(use,"target/usage2");
+        
+    	Entity e1=pFactory.newEntity(q("e1"));
+    	Activity a1=pFactory.newActivity(q("a1"));
+    	Statement [] opt=new Statement[] { e1, a1 };
+        makeDocAndTest(use,opt,"target/usage2");
     }
 
     public void testUsage3() throws JAXBException  {
@@ -559,7 +582,11 @@ public class RoundTripFromJavaTest extends TestCase {
                                     "somerole",
                                     pFactory.newEntityRef(q("e1")));
         use.getRole().add("otherRole");
-        makeDocAndTest(use,"target/usage3");
+        
+    	Entity e1=pFactory.newEntity(q("e1"));
+    	Activity a1=pFactory.newActivity(q("a1"));
+    	Statement [] opt=new Statement[] { e1, a1 };
+        makeDocAndTest(use,opt,"target/usage3");
     }
     
     public void testUsage4() throws JAXBException  {
@@ -569,7 +596,10 @@ public class RoundTripFromJavaTest extends TestCase {
                                     pFactory.newEntityRef(q("e1")));
         use.setTime(pFactory.newTimeNow());
 
-        makeDocAndTest(use,"target/usage4");
+    	Entity e1=pFactory.newEntity(q("e1"));
+    	Activity a1=pFactory.newActivity(q("a1"));
+    	Statement [] opt=new Statement[] { e1, a1 };
+        makeDocAndTest(use,opt,"target/usage4");
     }
 
     public void testUsage5() throws JAXBException  {
@@ -582,7 +612,11 @@ public class RoundTripFromJavaTest extends TestCase {
         addLocations(use);
         addLabels(use);
         addFurtherAttributes(use);
-        makeDocAndTest(use,"target/usage5");
+        
+    	Entity e1=pFactory.newEntity(q("e1"));
+    	Activity a1=pFactory.newActivity(q("a1"));
+    	Statement [] opt=new Statement[] { e1, a1 };
+        makeDocAndTest(use,opt,"target/usage5");
     }
 
     public void testUsage6() throws JAXBException  {
@@ -590,7 +624,11 @@ public class RoundTripFromJavaTest extends TestCase {
                                     pFactory.newActivityRef(q("a1")),
                                     null,
                                     pFactory.newEntityRef(q("e1")));
-        makeDocAndTest(use,"target/usage6");
+
+    	Entity e1=pFactory.newEntity(q("e1"));
+    	Activity a1=pFactory.newActivity(q("a1"));
+    	Statement [] opt=new Statement[] { e1, a1 };
+        makeDocAndTest(use,opt,"target/usage6");
     }
 
     public void testUsage7() throws JAXBException  {
@@ -603,7 +641,11 @@ public class RoundTripFromJavaTest extends TestCase {
         addLocations(use);
         addLabels(use);
         addFurtherAttributes(use);
-        makeDocAndTest(use,"target/usage7");
+        
+    	Entity e1=pFactory.newEntity(q("e1"));
+    	Activity a1=pFactory.newActivity(q("a1"));
+    	Statement [] opt=new Statement[] { e1, a1 };
+        makeDocAndTest(use,opt,"target/usage7");
     }
     
     // //////////////////////////////////////////////

@@ -265,7 +265,7 @@ public class RdfConstructor implements TreeConstructor {
 			QName qname = getQName(id);
 			infl = designate(qname, cl);
 			EntityInfluence qi = (EntityInfluence) infl;
-			qi.getEntities().add(e1);
+			if(e1 != null) qi.getEntities().add(e1);
 			addQualifiedInfluence(e2, infl);
 
 			if (time != null) {
@@ -298,6 +298,7 @@ public class RdfConstructor implements TreeConstructor {
 	}
 
 	private void setTime(InstantaneousEvent infl, Object time) {
+		if(infl != null) {
 	    if (time instanceof XMLGregorianCalendar) {
                         XMLGregorianCalendar t = (XMLGregorianCalendar) time;
                         infl.getAtTime().add(t);
@@ -306,6 +307,7 @@ public class RdfConstructor implements TreeConstructor {
                         XMLGregorianCalendar t = pFactory.newISOTime(s);
                         infl.getAtTime().add(t);
 	    }
+		}
 	}
 	
 	public <INFLUENCE, TYPE> INFLUENCE addActivityInfluence(Object id, TYPE e2,

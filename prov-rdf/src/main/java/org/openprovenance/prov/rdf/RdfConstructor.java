@@ -222,9 +222,6 @@ public class RdfConstructor implements TreeConstructor {
 				// }
 			}
 
-			System.out.println(">> Add new statement: "
-					+ pred.getNamespaceURI() + pred.getLocalPart() + " "
-					+ literalImpl.stringValue());
 			org.openrdf.model.Statement stmnt = new StatementImpl(r,
 					new URIImpl(pred.getNamespaceURI() + pred.getLocalPart()),
 					literalImpl);
@@ -271,11 +268,8 @@ public class RdfConstructor implements TreeConstructor {
 			qi.getEntities().add(e1);
 			addQualifiedInfluence(e2, infl);
 
-			if (time != null)
-			{
-				String s = (String) time;
-				XMLGregorianCalendar t = pFactory.newISOTime(s);
-				((InstantaneousEvent) infl).getAtTime().add(t);
+			if (time != null) {
+				setTime((InstantaneousEvent)infl, time);
 			}
 			processAttributes(qname, (List<?>) aAttrs);
 		}
@@ -303,6 +297,17 @@ public class RdfConstructor implements TreeConstructor {
 		return infl;
 	}
 
+	private void setTime(InstantaneousEvent infl, Object time) {
+	    if (time instanceof XMLGregorianCalendar) {
+                        XMLGregorianCalendar t = (XMLGregorianCalendar) time;
+                        infl.getAtTime().add(t);
+	    } else {
+	        String s = (String) time;
+                        XMLGregorianCalendar t = pFactory.newISOTime(s);
+                        infl.getAtTime().add(t);
+	    }
+	}
+	
 	public <INFLUENCE, TYPE> INFLUENCE addActivityInfluence(Object id, TYPE e2,
 			Activity a1, Object time, Object aAttrs, Class<INFLUENCE> cl)
 	{
@@ -319,14 +324,7 @@ public class RdfConstructor implements TreeConstructor {
 			addQualifiedInfluence(e2, infl);
 
 			if (time != null) {
-			    if (time instanceof XMLGregorianCalendar) {
-                                XMLGregorianCalendar t = (XMLGregorianCalendar) time;
-                                ((InstantaneousEvent) infl).getAtTime().add(t);
-			    } else {
-			        String s = (String) time;
-                                XMLGregorianCalendar t = pFactory.newISOTime(s);
-                                ((InstantaneousEvent) infl).getAtTime().add(t);
-			    }
+				setTime((InstantaneousEvent)infl, time);
 			}
 			
 			processAttributes(qname, (List<?>) aAttrs);
@@ -351,11 +349,8 @@ public class RdfConstructor implements TreeConstructor {
 			if (a1!=null) qi.getAgents().add(a1);
 			addQualifiedInfluence(e2, infl);
 
-			if (time != null)
-			{
-				String s = (String) time;
-				XMLGregorianCalendar t = pFactory.newISOTime(s);
-				((InstantaneousEvent) infl).getAtTime().add(t);
+			if (time != null) {
+				setTime((InstantaneousEvent)infl, time);
 			}
 			processAttributes(qname, (List<?>) aAttrs);
 		}

@@ -24,7 +24,6 @@ public  class MainParser {
             
             System.out.println(tree.toStringTree());
 
-
             @SuppressWarnings("unused")
             Object o1=new TreeTraversal(new NullConstructor()).convert(tree);
 

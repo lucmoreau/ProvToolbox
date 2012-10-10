@@ -794,8 +794,9 @@ return res;
     }
 
     public MentionOf newMentionOf(Entity infra, Entity supra, Entity bundle) {
-	return newMentionOf(newEntityRef(infra), newEntityRef(supra),
-			    newEntityRef(bundle));
+	return newMentionOf((infra==null) ? null : newEntityRef(infra), 
+	                    (supra==null) ? null : newEntityRef(supra),
+	                    (bundle==null)? null : newEntityRef(bundle));
     }
 
     public MentionOf newMentionOf(EntityRef infra, EntityRef supra,
@@ -811,9 +812,9 @@ return res;
 
     public MentionOf newMentionOf(String infra, String supra, String bundle) {
 	MentionOf res = of.createMentionOf();
-	res.setSpecializedEntity(newEntityRef(infra));
-	res.setBundle(newEntityRef(bundle));
-	res.setGeneralEntity(newEntityRef(supra));
+	if (supra!=null) res.setSpecializedEntity(newEntityRef(infra));
+	if (bundle!=null) res.setBundle(newEntityRef(bundle));
+	if (supra!=null) res.setGeneralEntity(newEntityRef(supra));
 	return res;
     }
     
@@ -1201,8 +1202,9 @@ return res;
 
     public WasInfluencedBy newWasInfluencedBy(String id, String influencee,
 					      String influencer) {
-	return newWasInfluencedBy(id, newAnyRef(influencee),
-				  newAnyRef(influencer));
+	return newWasInfluencedBy(id, 
+	                          (influencee==null)? null: newAnyRef(influencee),
+				  (influencer==null)? null: newAnyRef(influencer));
     }
 
     public WasInfluencedBy newWasInfluencedBy(WasInfluencedBy in) {
@@ -1344,14 +1346,19 @@ return res;
 	}
     }
 
-    public Membership newMembership(EntityRef collection, EntityRef entity) {
-        Membership res = of.createMembership();
-        res.setCollection(collection);
-        if (entity!=null)
-            res.getEntity().add(entity);
-        return res;
-    }
     
+
+    public HadMember newHadMember(EntityRef collection,
+				  EntityRef ... entities) {
+	HadMember res=of.createHadMember();
+	res.setCollection(collection);
+	if (entities!=null) {
+	    res.getEntity().addAll(Arrays.asList(entities));
+	}
+	return res;
+    }
+
+
     public String getXsdType(Object o) {
 	if (o instanceof Integer) return "xsd:int";
 	if (o instanceof String) return "xsd:string";
@@ -1439,7 +1446,6 @@ return res;
         if (prefix.equals(NamespacePrefixMapper.XSD_PREFIX)) return NamespacePrefixMapper.XSD_NS;
         return namespaces.get(prefix);
     }
-
 
     
 }

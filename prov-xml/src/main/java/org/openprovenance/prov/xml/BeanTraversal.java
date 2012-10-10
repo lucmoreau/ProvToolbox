@@ -16,34 +16,31 @@ public class BeanTraversal {
     }
 
     public Object convert(Document b) {
-	List<Object> lnkRecords = new LinkedList<Object>();
-	List<Object> aRecords = new LinkedList<Object>();
-	List<Object> eRecords = new LinkedList<Object>();
-	List<Object> agRecords = new LinkedList<Object>();
+
 	List<Object> bRecords = new LinkedList<Object>();
-	for (Entity e : u.getEntity(b)) {
-	    eRecords.add(convert(e));
+
+	List<Object> sRecords = new LinkedList<Object>();
+
+	for (Statement s : u.getStatement(b)) {
+	    if (s instanceof Entity) {
+		sRecords.add(convert((Entity)s));
+	    } else if (s instanceof Activity) {
+		sRecords.add(convert((Activity)s));
+	    } else if (s instanceof Agent) {
+		sRecords.add(convert((Agent)s));
+	    } else {
+		sRecords.add(convertRelation((Relation0)s));
+	    }
+
 	}
-	for (Activity a : u.getActivity(b)) {
-	    aRecords.add(convert(a));
-	}
-	for (Agent ag : u.getAgent(b)) {
-	    agRecords.add(convert(ag));
-	}
-	for (Object lnk : u.getRelations(b)) {
-	    Object o = convertRelation(lnk);
-	    if (o != null)
-		lnkRecords.add(o);
-	}
-	
+
 	for (NamedBundle bu : u.getNamedBundle(b)) {
 	    Object o = convert(bu);
 	    if (o != null)
 		bRecords.add(o);
 
 	}
-	return c.convertBundle(b.getNss(), aRecords, eRecords, agRecords,
-	                       lnkRecords, bRecords);
+	return c.convertBundle(b.getNss(), sRecords, bRecords);
     }
 
     public Object convert(NamedBundle b) {
@@ -257,12 +254,16 @@ public class BeanTraversal {
 	    return convert((SpecializationOf) o);
 	} else if (o instanceof MentionOf) {
 	    return convert((MentionOf) o);
+	} else if (o instanceof HadMember) {
+	    return convert((HadMember) o);
 
 	} else {
 	    throw new UnsupportedOperationException("Unknown relation type "
 		    + o);
 	}
     }
+
+    
 
     public Object convert(Used o) {
         List<Object> tAttrs = convertTypeAttributes((HasType) o);
@@ -469,10 +470,15 @@ public class BeanTraversal {
     }
 
     public Object convert(MentionOf o) {
-	return c.convertMentionOf(c.convert(o.getSpecializedEntity().getRef()),
-	                          c.convert(o.getGeneralEntity().getRef()),
-	                          c.convert(o.getBundle().getRef()));
+	return c.convertMentionOf(c.convert((o.getSpecializedEntity()==null) ? null: o.getSpecializedEntity().getRef()),
+	                          c.convert((o.getGeneralEntity()==null) ? null : o.getGeneralEntity().getRef()),
+	                          c.convert((o.getBundle()==null) ? null: o.getBundle().getRef()));
     }
 
+    public Object convert(HadMember o) {
+	return c.convertHadMember(c.convert(o.getCollection().getRef()),
+	                          c.convert(o.getEntity().get(0).getRef()));
+    }
+    
 	
 }

@@ -729,5 +729,11 @@ class JSONConstructor implements TreeConstructor {
 		return nss;
 	}
 
+	@Override
+	public Object convertHadMember(Object collection, Object entity) {
+	    // TODO Auto-generated method stub
+	    return new UnsupportedOperationException();
+	}
+
 }
 	

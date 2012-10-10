@@ -1,6 +1,7 @@
 package org.openprovenance.prov.xml;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.net.URI;
 import javax.xml.bind.JAXBException;
@@ -9,7 +10,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 /**
- * Unit test for simple Provenance Challenge 1 like workflow.
+ * Unit test for PROV roundtrip conversion between Java and XML
  */
 public class RoundTripFromJavaTest extends TestCase {
 
@@ -64,33 +65,53 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void makeDocAndTest(Statement stment, String file) throws JAXBException {
-	makeDocAndTest(stment, file,true);
+	makeDocAndTest(stment, file, null, true);
     }
     public void makeDocAndTest(Statement stment, String file, boolean check) throws JAXBException {
+	makeDocAndTest(stment, file, null, check);
+    }
+    public void makeDocAndTest(Statement stment, Statement[] opt, String file) throws JAXBException {
+	makeDocAndTest(stment, file, opt, true);
+    }
+    public void makeDocAndTest(Statement stment, String file, Statement[] opt, boolean check) throws JAXBException {
 	Document doc = pFactory.newDocument();
 	doc.getEntityOrActivityOrWasGeneratedBy().add(stment);
 	updateNamespaces(doc);
-	file=file+extension();
-
-	writeXMLDocument(doc, file);
 	
-	Document doc2=readXMLDocument(file);
-	compareDocuments(doc, doc2, check);
+	String file1=(opt==null) ? file : file+"-S";
+	file1=file1+extension();
+	writeXMLDocument(doc, file1);
+	Document doc2=readXMLDocument(file1);
+	compareDocuments(doc, doc2, check && checkTest(file1));
+	
+	if (opt!=null) {
+	    doc.getEntityOrActivityOrWasGeneratedBy().addAll(Arrays.asList(opt));
+	    String file2=file+"-M";
+	    file2=file2+extension();
+	    writeXMLDocument(doc, file2);
+	    Document doc3=readXMLDocument(file2);
+	    compareDocuments(doc, doc3, check && checkTest(file2));
+	}
     }
 
     public void compareDocuments(Document doc, Document doc2, boolean check) {
 	assertTrue("self doc differ", doc.equals(doc));
 	assertTrue("self doc2 differ", doc2.equals(doc2));
 	if (check) {
-	    System.out.println("Found " + doc);
-	    System.out.println("Found " + doc2);
-	    //System.out.println("Found " + util.getEntity(doc).get(0).getAny());
-	    //System.out.println("Found " + util.getEntity(doc2).get(0).getAny());
-
-	    assertTrue("doc differs doc2", doc.equals(doc2));
+	    boolean result=doc.equals(doc2);
+	    if (!result) {
+		System.out.println("Found " + doc);
+		System.out.println("Found " + doc2);
+	    }
+	    assertTrue("doc differs doc2", result);
 	} else {
 	    assertFalse("doc differs doc2", doc.equals(doc2));
 	}
+    }
+    
+    public boolean checkTest(String name) {
+	// all tests successful in this file
+	return true;
     }
 
     public Document readXMLDocument(String file) throws javax.xml.bind.JAXBException {
@@ -450,7 +471,11 @@ public class RoundTripFromJavaTest extends TestCase {
 							pFactory.newEntityRef(q("e1")),
 							null,
 							pFactory.newActivityRef(q("a1")));
-	makeDocAndTest(gen,"target/generation2");
+	Entity e1=pFactory.newEntity(q("e1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	Statement [] opt=new Statement[] { e1, a1 };
+
+	makeDocAndTest(gen, opt, "target/generation2");
     }
 
 
@@ -1318,4 +1343,59 @@ public class RoundTripFromJavaTest extends TestCase {
            makeDocAndTest(inf, "target/influence7");
        }
 
+       
+
+       // ////////////////////////////////
+
+       public void testAlternate1() throws JAXBException {
+           AlternateOf alt = pFactory.newAlternateOf(pFactory.newEntityRef(q("e2")),
+                                                     pFactory.newEntityRef(q("e1")));
+           makeDocAndTest(alt, "target/alternate1");
+       }
+       
+
+       public void testSpecialization1() throws JAXBException {
+           SpecializationOf spe = pFactory.newSpecializationOf(pFactory.newEntityRef(q("e2")),
+                                                               pFactory.newEntityRef(q("e1")));
+           makeDocAndTest(spe, "target/specialization1");
+       }
+       
+       
+       public void testMention1() throws JAXBException {
+           MentionOf men = pFactory.newMentionOf(pFactory.newEntityRef(q("e2")),
+                                                 pFactory.newEntityRef(q("e1")),
+                                                 null);
+           makeDocAndTest(men, "target/mention1");
+       }
+       
+       public void testMention2() throws JAXBException {
+           MentionOf men = pFactory.newMentionOf(pFactory.newEntityRef(q("e2")),
+                                                 pFactory.newEntityRef(q("e1")),
+                                                 pFactory.newEntityRef(q("b")));
+           makeDocAndTest(men, "target/mention2");
+       }
+       
+
+       public void testMembership1() throws JAXBException {
+           HadMember mem = pFactory.newHadMember(pFactory.newEntityRef(q("c")),
+                                                 pFactory.newEntityRef(q("e1")));
+           makeDocAndTest(mem, "target/member1");
+       }
+       public void testMembership2() throws JAXBException {
+           HadMember mem = pFactory.newHadMember(pFactory.newEntityRef(q("c")),
+                                                 pFactory.newEntityRef(q("e1")),
+                                                 pFactory.newEntityRef(q("e2")));
+           //TODO: multiple arguments not supported by toolbox
+           makeDocAndTest(mem, "target/member2");
+       }
+       public void testMembership3() throws JAXBException {
+           HadMember mem = pFactory.newHadMember(pFactory.newEntityRef(q("c")),
+                                                 pFactory.newEntityRef(q("e1")),
+                                                 pFactory.newEntityRef(q("e2")),
+                                                 pFactory.newEntityRef(q("e3")));
+           //TODO: multiple arguments not supported by toolbox
+           makeDocAndTest(mem, "target/member3");
+       }
+     
+    
 }

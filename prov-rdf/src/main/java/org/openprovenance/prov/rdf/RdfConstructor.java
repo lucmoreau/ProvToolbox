@@ -817,6 +817,12 @@ public class RdfConstructor implements TreeConstructor {
 	public boolean binaryProp(Object id) {
 	    return id==null;
 	}
+
+	@Override
+	public Object convertHadMember(Object collection, Object entity) {
+	    // TODO Auto-generated method stub
+	    throw new UnsupportedOperationException();
+	}
 	
 
 }

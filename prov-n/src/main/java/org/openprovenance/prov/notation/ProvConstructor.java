@@ -8,6 +8,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.xml.HadMember;
 import org.openprovenance.prov.xml.HasLabel;
 import org.openprovenance.prov.xml.HasLocation;
 import org.openprovenance.prov.xml.HasRole;
@@ -148,22 +149,14 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
     public Object convertDocument(Object namespaces, List<Object> records, List<Object> bundles) {    
-        Collection<Entity> es=new LinkedList<Entity>();
-        Collection<Agent> ags=new LinkedList<Agent>();
-        Collection<Activity> acs=new LinkedList<Activity>();
-        Collection<Statement> lks=new LinkedList<Statement>();
-            
+	Collection<Statement> stments=new LinkedList<Statement>();
         for (Object o: records) {
-            if (o instanceof Agent) { ags.add((Agent)o); }
-            else if (o instanceof Entity) { es.add((Entity)o); }
-            else if (o instanceof Activity) { acs.add((Activity)o); }
-            else if (o instanceof Statement) { lks.add((Statement)o); }
+           stments.add((Statement)o); 
         }
-        Document c=pFactory.newDocument(      acs,
-                                          es,
-                                          ags,
-                                          lks);
-        System.out.println("Bundle namespaces " + namespaceTable);
+        Document c=pFactory.newDocument();
+        c.getEntityOrActivityOrWasGeneratedBy().addAll(stments);
+        
+        //System.out.println("Bundle namespaces " + namespaceTable);
         c.setNss(namespaceTable);
 
         if (bundles!=null) {
@@ -190,14 +183,14 @@ public  class ProvConstructor implements TreeConstructor {
                 else lks.add((Statement)o);
             }
         String s_id=(String)id;
-        System.out.println("NamedBundle name " + s_id);
+        //System.out.println("NamedBundle name " + s_id);
         NamedBundle c=pFactory.newNamedBundle(s_id,
                                               acs,
                                               es,
                                               ags,
                                               lks);
 
-        System.out.println("Bundle namespaces " + namespaceTable);
+        //System.out.println("Bundle namespaces " + namespaceTable);
         c.setNss(namespaceTable);
         return c;
     }
@@ -328,9 +321,7 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        //Activity a1=(s_id1==null)? null: activityTable.get(s_id1);  //id1 may be null
-        ActivityRef a1r=null;
-        if (s_id1!=null) a1r=pFactory.newActivityRef(s_id1);
+        ActivityRef a1r= (s_id1==null) ? null: pFactory.newActivityRef(s_id1);
         EntityRef e2r=pFactory.newEntityRef(s_id2);
 
         WasGeneratedBy g=pFactory.newWasGeneratedBy(s_id,
@@ -496,10 +487,6 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id=(String)id;
         String s_id2=(String)id2;
         String s_id1=(String)id1;
-        //Entity e2=entityTable.get(s_id2);
-        //EntityRef e2r=pFactory.newEntityRef(e2);
-        //Entity e1=entityTable.get(s_id1);
-        //EntityRef e1r=pFactory.newEntityRef(e1);
 
         WasInfluencedBy d=pFactory.newWasInfluencedBy(s_id,
                                                       s_id2,
@@ -589,6 +576,20 @@ public  class ProvConstructor implements TreeConstructor {
 
         return aobo;
     }
+    
+
+    @Override
+    public Object convertHadMember(Object id2, Object id1) {
+	String s_id2=(String)id2;
+	String s_id1=(String)id1;
+	EntityRef e2r=(s_id2==null)? null: pFactory.newEntityRef(s_id2);
+	EntityRef e1r=(s_id1==null)? null: pFactory.newEntityRef(s_id1);
+	HadMember hm=pFactory.newHadMember(e2r, new EntityRef[] {e1r});
+
+	return hm;
+    }
+ 
+    
 
     public Object convertQualifiedName(String qname) {
         return qname;
@@ -812,7 +813,8 @@ public  class ProvConstructor implements TreeConstructor {
     public Object convertExtension(Object name, Object id, Object args, Object dAttrs) {
         return null;
     }
- 
+
+
 
 }
 

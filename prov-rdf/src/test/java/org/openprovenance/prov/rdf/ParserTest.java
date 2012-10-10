@@ -61,6 +61,7 @@ public class ParserTest extends
 			dumpRDF(pFactory, doc, file);
 		} catch (Exception e)
 		{
+		    	e.printStackTrace();
 			throw new UncheckedTestException(e);
 		}
 	}
@@ -191,7 +192,7 @@ public class ParserTest extends
 		// TODO: URIs are expanded in RDF form
 	}
 
-	public void testStart10() throws JAXBException
+	public void NOtestStart10() throws JAXBException
 	{
 		// TODO: null exception
 	}

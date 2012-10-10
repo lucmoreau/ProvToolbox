@@ -444,7 +444,7 @@ public class RdfConstructor implements TreeConstructor {
 		Generation g = addActivityInfluence(id, e2, a1, time, aAttrs,
 				Generation.class);
 
-		if (binaryProp(id)) e2.getWasGeneratedBy().add(a1);
+		if (binaryProp(id,e2)) e2.getWasGeneratedBy().add(a1);
 		return g;
 	}
 
@@ -465,7 +465,7 @@ public class RdfConstructor implements TreeConstructor {
 			s.getHadActivity().add(a3);
 		}
 
-		if (binaryProp(id)) a2.getWasStartedBy().add(e1);
+		if (binaryProp(id,a2)) a2.getWasStartedBy().add(e1);
 
 		return s;
 	}
@@ -487,7 +487,7 @@ public class RdfConstructor implements TreeConstructor {
 			s.getHadActivity().add(a3);
 		}
 
-		if (binaryProp(id)) a2.getWasEndedBy().add(e1);
+		if (binaryProp(id,a2)) a2.getWasEndedBy().add(e1);
 
 		return s;
 	}
@@ -504,7 +504,7 @@ public class RdfConstructor implements TreeConstructor {
 		Invalidation g = addActivityInfluence(id, e2, a1, time, aAttrs,
 				Invalidation.class);
 
-		if (binaryProp(id)) e2.getWasInvalidatedBy().add(a1);
+		if (binaryProp(id,e2)) e2.getWasInvalidatedBy().add(a1);
 		return g;
 	}
 
@@ -520,7 +520,7 @@ public class RdfConstructor implements TreeConstructor {
 		Communication g = addActivityInfluence(id, e2, a1, null, aAttrs,
 				Communication.class);
 
-		if (binaryProp(id)) e2.getWasInformedBy().add(a1);
+		if (binaryProp(id,e2)) e2.getWasInformedBy().add(a1);
 		return g;
 	}
 
@@ -536,7 +536,7 @@ public class RdfConstructor implements TreeConstructor {
 		Attribution g = addAgentInfluence(id, e2, a1, null, aAttrs, null,
 				Attribution.class);
 
-		if (binaryProp(id)) e2.getWasAttributedTo().add(a1);
+		if (binaryProp(id,e2)) e2.getWasAttributedTo().add(a1);
 		return g;
 	}
 
@@ -575,7 +575,7 @@ public class RdfConstructor implements TreeConstructor {
 			}
 		}
 
-		if (binaryProp(id)) e2.getWasDerivedFrom().add(e1);
+		if (binaryProp(id,e2)) e2.getWasDerivedFrom().add(e1);
 
 		return d;
 
@@ -596,7 +596,7 @@ public class RdfConstructor implements TreeConstructor {
 
 		Influence u = addUnknownInfluence(id, e2, e1, aAttrs, Influence.class);
 
-		if (binaryProp(id)) e2.getWasInfluencedBy().add(e1);
+		if (binaryProp(id,e2)) e2.getWasInfluencedBy().add(e1);
 
 		return u;
 
@@ -645,7 +645,7 @@ public class RdfConstructor implements TreeConstructor {
 			g.getHadActivity().add(a3);
 		}
 
-		if (binaryProp(id)) ag2.getActedOnBehalfOf().add(ag1);
+		if (binaryProp(id,ag2)) ag2.getActedOnBehalfOf().add(ag1);
 
 		return g;
 	}
@@ -671,7 +671,7 @@ public class RdfConstructor implements TreeConstructor {
 			ass.getHadPlan().add(plan);
 		}
 
-		if (binaryProp(id)) a2.getWasAssociatedWith().add(ag1);
+		if (binaryProp(id,a2)) a2.getWasAssociatedWith().add(ag1);
 
 		return ass;
 	}

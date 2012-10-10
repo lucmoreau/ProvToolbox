@@ -295,7 +295,7 @@ public class RdfConstructor implements TreeConstructor {
 			QName qname = getQName(id);
 			infl = designate(qname, cl);
 			Influence qi = (Influence) infl;
-			qi.getInfluencers().add(e1);
+			if (e1!=null) qi.getInfluencers().add(e1);
 			addQualifiedInfluence(e2, infl);
 
 			processAttributes(qname, (List<?>) aAttrs);
@@ -315,7 +315,7 @@ public class RdfConstructor implements TreeConstructor {
 			QName qname = getQName(id);
 			infl = designate(qname, cl);
 			ActivityInfluence qi = (ActivityInfluence) infl;
-			qi.getActivities().add(a1);
+			if (a1!=null) qi.getActivities().add(a1);
 			addQualifiedInfluence(e2, infl);
 
 			if (time != null) {
@@ -348,7 +348,7 @@ public class RdfConstructor implements TreeConstructor {
 			QName qname = getQName(id);
 			infl = designate(qname, cl);
 			AgentInfluence qi = (AgentInfluence) infl;
-			qi.getAgents().add(a1);
+			if (a1!=null) qi.getAgents().add(a1);
 			addQualifiedInfluence(e2, infl);
 
 			if (time != null)
@@ -439,7 +439,7 @@ public class RdfConstructor implements TreeConstructor {
 
 		System.out.println("Entity is with " + qn2);
 		Entity e2 =  designate(qn2, Entity.class);
-		Activity a1 = designate(qn1,Activity.class);
+		Activity a1 = designate(qn1, Activity.class);
 
 		Generation g = addActivityInfluence(id, e2, a1, time, aAttrs,
 				Generation.class);

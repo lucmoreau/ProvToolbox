@@ -228,7 +228,6 @@ public class RdfCollector extends RDFHandlerBase {
 	{
 		if (element instanceof org.openprovenance.prov.xml.Activity)
 		{
-			System.out.println("Add to bundle "+context);
 			getBundleHolder(context).addActivity(
 					(org.openprovenance.prov.xml.Activity) element);
 		} else if (element instanceof org.openprovenance.prov.xml.Entity)
@@ -370,7 +369,6 @@ public class RdfCollector extends RDFHandlerBase {
 		List<Statement> statements = collators.get(context).get(qname);
 		for (Statement statement : statements)
 		{
-			System.out.println("Base statement: "+statement);
 			String predS = statement.getPredicate().stringValue();
 
 			if (element instanceof HasType)
@@ -446,7 +444,6 @@ public class RdfCollector extends RDFHandlerBase {
 				{
 					if (uri.equals(RDF.TYPE))
 					{
-						System.out.println("In RDF a part");
 						// Add prov:type
 						if (element instanceof HasType)
 						{
@@ -545,7 +542,6 @@ public class RdfCollector extends RDFHandlerBase {
 					switch (type)
 					{
 					case ACTIVITY:
-						System.out.println("Create activity "+qname);
 						createActivity(contextQ, qname);
 						break;
 					case AGENT:
@@ -610,9 +606,6 @@ public class RdfCollector extends RDFHandlerBase {
 			bundle.setId(key);
 			document.getEntityOrActivityOrWasGeneratedBy().add(bundle);
 		}
-		
-		System.out.println("Post-bundle:");
-		System.out.println(document);
 
 	}
 
@@ -771,7 +764,6 @@ public class RdfCollector extends RDFHandlerBase {
 	{
 		org.openprovenance.prov.xml.Activity activity = pFactory
 				.newActivity(qname);
-		System.out.println("Create new activity: "+qname);
 		List<Statement> statements = collators.get(context).get(qname);
 
 		statements = handleBaseStatements(activity, context, qname,

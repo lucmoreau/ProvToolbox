@@ -15,6 +15,7 @@ import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.Statement;
+import org.openprovenance.prov.xml.UncheckedTestException;
 import org.openrdf.elmo.ElmoManager;
 import org.openrdf.elmo.ElmoManagerFactory;
 import org.openrdf.elmo.ElmoModule;
@@ -39,86 +40,39 @@ public class ParserTest extends
 		return ".trig";
 	}
 
-	public void makeDocAndTest(Statement statement, String file)
+	@Override
+	public Document readDocument(String file)
 	{
-		makeDocAndTest(statement, file, true);
+		try
+		{
+			Document doc2 = parseRDF(file);
+			return doc2;
+		} catch (Exception e)
+		{
+			throw new UncheckedTestException(e);
+		}
 	}
 
 	@Override
-	public void makeDocAndTest(Statement stment, String file, Statement[] opt,
-			boolean check) throws JAXBException
+	public void writeDocument(Document doc, String file)
 	{
-		Document doc = pFactory.newDocument();
-		doc.getEntityOrActivityOrWasGeneratedBy().add(stment);
-		updateNamespaces(doc);
-		try
-		{
-
-			if (opt != null)
-			{
-				doc.getEntityOrActivityOrWasGeneratedBy().addAll(
-						Arrays.asList(opt));
-
-				String file2 = file + "-M";
-				file2 = file2 + extension();
-				dumpRDF(pFactory, doc, file2);
-				Document doc3 = parseRDF(file2);
-				System.out.println("-----------Comparing [internal]");
-				System.out.println(doc);
-
-				System.out.println("-----------Comparing [dumped&parsed]");
-				System.out.println(doc3);
-				System.out.println("--------------------------------");
-
-				compareDocuments(doc, doc3, check && checkTest(file2));
-			} else
-			{
-
-				String file1 = (opt == null) ? file : file + "-S";
-				file1 = file1 + extension();
-				dumpRDF(pFactory, doc, file1);
-				Document doc2 = parseRDF(file1);
-				compareDocuments(doc, doc2, check && checkTest(file1));
-			}
-		} catch (Exception e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void makeDocAndTest(Statement statement, String file, boolean check)
-	{
-		Document doc = pFactory.newDocument();
-		doc.getEntityOrActivityOrWasGeneratedBy().add(statement);
-		updateNamespaces(doc);
-
-		// Dump to file
-		file = file + extension();
-
 		try
 		{
 			dumpRDF(pFactory, doc, file);
-
-			Document doc2;
-			doc2 = parseRDF(file);
-
-			// System.out.println(dumpXML(pFactory, doc2));
-			compareDocuments(doc, doc2, check);
-			return;
-		} catch (IOException e)
+		} catch (Exception e)
 		{
-			System.out.println("IO Exception");
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Throwable e)
-		{
-			System.out.println("Throwable");
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new UncheckedTestException(e);
 		}
-		assertTrue(false);
+	}
 
+	@Override
+	public boolean checkTest(String name)
+	{
+		if (name.endsWith("-S" + extension()))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	private Document parseRDF(String filename) throws RDFParseException,
@@ -165,34 +119,6 @@ public class ParserTest extends
 		return sw.toString();
 	}
 
-	public void testEntity1() throws JAXBException
-	{
-	}
-
-	public void testEntity2() throws JAXBException
-	{
-	}
-
-	public void testEntity3() throws JAXBException
-	{
-	}
-
-	public void testEntity4() throws JAXBException
-	{
-	}
-
-	public void testEntity5() throws JAXBException
-	{
-	}
-
-	public void testEntity6() throws JAXBException
-	{
-	}
-
-	public void testEntity7() throws JAXBException
-	{
-	}
-
 	public void testEntity8() throws JAXBException
 	{
 		// TODO: Don't yet handle duplicates
@@ -203,38 +129,6 @@ public class ParserTest extends
 	{
 		// TODO: URIs are expanded in RDF form
 		assertTrue(true);
-	}
-
-	public void testEntity10() throws JAXBException
-	{
-	}
-
-	public void testActivity1() throws JAXBException
-	{
-	}
-
-	public void testActivity2() throws JAXBException
-	{
-	}
-
-	public void testActivity3() throws JAXBException
-	{
-	}
-
-	public void testActivity4() throws JAXBException
-	{
-	}
-
-	public void testActivity5() throws JAXBException
-	{
-	}
-
-	public void testActivity6() throws JAXBException
-	{
-	}
-
-	public void testActivity7() throws JAXBException
-	{
 	}
 
 	// /////////////////////////////////////////////////////////////////////
@@ -252,33 +146,6 @@ public class ParserTest extends
 	}
 
 	// /////////////////////////////////////////////////////////////////////
-	public void testAgent1() throws JAXBException
-	{
-	}
-
-	public void testAgent2() throws JAXBException
-	{
-	}
-
-	public void testAgent3() throws JAXBException
-	{
-	}
-
-	public void testAgent4() throws JAXBException
-	{
-	}
-
-	public void testAgent5() throws JAXBException
-	{
-	}
-
-	public void testAgent6() throws JAXBException
-	{
-	}
-
-	public void testAgent7() throws JAXBException
-	{
-	}
 
 	public void testAgent8() throws JAXBException
 	{
@@ -286,40 +153,9 @@ public class ParserTest extends
 		assertTrue(true);
 	}
 
-	public void testGeneration1() throws JAXBException
-	{
-		// TODO: Ordering
-		assertTrue(true);
-	}
-
-	public void testGeneration2() throws JAXBException
-	{
-		// TODO: Should pass once ordering is sorted.
-		assertTrue(true);
-	}
-
-	public void testGeneration3() throws JAXBException
-	{
-		// TODO: Should pass once ordering is sorted.
-		assertTrue(true);
-	}
-
-	public void testGeneration4() throws JAXBException
-	{
-		// TODO: Should pass once ordering is sorted.
-		assertTrue(true);
-	}
-
 	public void testGeneration5() throws JAXBException
 	{
-		// TODO: Should pass once ordering is sorted.
 		// TODO: URIs are expanded in RDF form
-		assertTrue(true);
-	}
-
-	public void testGeneration6() throws JAXBException
-	{
-		// TODO: Should pass once ordering is sorted.
 		assertTrue(true);
 	}
 
@@ -329,111 +165,40 @@ public class ParserTest extends
 		assertTrue(true);
 	}
 
-	public void testUsage1() throws JAXBException
-	{
-		// null Activity issue again
-		assertTrue(true);
-	}
-
-	public void testUsage2() throws JAXBException
-	{
-		// TODO: Should pass once ordering is sorted.
-		assertTrue(true);
-	}
-
-	public void testUsage3() throws JAXBException
-	{
-		// TODO: Should pass once ordering is sorted.
-		assertTrue(true);
-	}
-
-//	public void testUsage4() throws JAXBException
-//	{
-//	}
-
 	public void testUsage5() throws JAXBException
 	{
-	}
-
-	public void testUsage6() throws JAXBException
-	{
+		// TODO: URIs are expanded in RDF form
 	}
 
 	public void testUsage7() throws JAXBException
 	{
+		// TODO: null exception
 	}
 
-	public void testInvalidation1() throws JAXBException
-	{
-	}
-
-	public void testInvalidation2() throws JAXBException
-	{
-	}
-
-	public void testInvalidation3() throws JAXBException
-	{
-	}
-
-	public void testInvalidation4() throws JAXBException
-	{
-	}
 
 	public void testInvalidation5() throws JAXBException
 	{
-	}
-
-	public void testInvalidation6() throws JAXBException
-	{
+		// TODO: URIs are expanded in RDF form
 	}
 
 	public void testInvalidation7() throws JAXBException
 	{
-	}
-
-	public void testStart1() throws JAXBException
-	{
-	}
-
-	public void testStart2() throws JAXBException
-	{
-	}
-
-	public void testStart3() throws JAXBException
-	{
-	}
-
-	public void testStart4() throws JAXBException
-	{
-	}
-
-	public void testStart5() throws JAXBException
-	{
-	}
-
-	public void testStart6() throws JAXBException
-	{
-	}
-
-	public void testStart7() throws JAXBException
-	{
+		// TODO: null exception
 	}
 
 	public void testStart8() throws JAXBException
 	{
-	}
-
-	public void testStart9() throws JAXBException
-	{
+		// TODO: URIs are expanded in RDF form
 	}
 
 	public void testStart10() throws JAXBException
 	{
+		// TODO: null exception
 	}
 
-	public void testEnd1() throws JAXBException
-	{
-	}
+//	public void testEnd1() throws JAXBException
+//	{
+//	}
 
 	public void testEnd2() throws JAXBException
 	{
@@ -471,9 +236,9 @@ public class ParserTest extends
 	{
 	}
 
-	public void testDerivation1() throws JAXBException
-	{
-	}
+//	public void testDerivation1() throws JAXBException
+//	{
+//	}
 
 	public void testDerivation2() throws JAXBException
 	{
@@ -523,9 +288,9 @@ public class ParserTest extends
 	{
 	}
 
-	public void testAssociation1() throws JAXBException
-	{
-	}
+//	public void testAssociation1() throws JAXBException
+//	{
+//	}
 
 	public void testAssociation2() throws JAXBException
 	{
@@ -559,9 +324,9 @@ public class ParserTest extends
 	{
 	}
 
-	public void testAttribution1() throws JAXBException
-	{
-	}
+//	public void testAttribution1() throws JAXBException
+//	{
+//	}
 
 	public void testAttribution2() throws JAXBException
 	{
@@ -591,9 +356,9 @@ public class ParserTest extends
 	{
 	}
 
-	public void testDelegation1() throws JAXBException
-	{
-	}
+//	public void testDelegation1() throws JAXBException
+//	{
+//	}
 
 	public void testDelegation2() throws JAXBException
 	{
@@ -623,9 +388,9 @@ public class ParserTest extends
 	{
 	}
 
-	public void testCommunication1() throws JAXBException
-	{
-	}
+//	public void testCommunication1() throws JAXBException
+//	{
+//	}
 
 	public void testCommunication2() throws JAXBException
 	{

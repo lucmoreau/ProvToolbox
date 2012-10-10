@@ -39,7 +39,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	}
 
 	@Override
-	public void makeDocAndTest(Statement stment, String file, boolean check)
+	public void makeDocAndTest(Statement stment, String file, Statement[] opt, boolean check)
 			throws JAXBException {
 		Document d1 = pFactory.newDocument();
 		d1.getEntityOrActivityOrWasGeneratedBy().add(stment);

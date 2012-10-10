@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.notation.TreeConstructor;
@@ -652,9 +653,17 @@ class JSONConstructor implements TreeConstructor {
 	}
 
 
+	private String jsonRepresentation(Object value) {
+		if (value instanceof QName) {
+			QName qname = (QName)value;
+			return qname.getPrefix() + ":" + qname.getLocalPart();
+		}
+		return value.toString();
+	}
+	
 	private Object convertAttribute(Attribute attr) {
-		String attr_name = attr.getElementName().getPrefix() + ":" + attr.getElementName().getLocalPart();  
-		return tuple(attr_name, typedLiteral(attr.getValue().toString(), attr.getXsdType(), null));
+		String attr_name = jsonRepresentation(attr.getElementName());
+		return tuple(attr_name, typedLiteral(jsonRepresentation(attr.getValue()), attr.getXsdType(), null));
 	}
 	
 	@Override

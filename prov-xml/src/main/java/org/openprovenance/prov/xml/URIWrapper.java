@@ -40,6 +40,11 @@ public class URIWrapper {
         return value.equals(other.getValue());
     }
 
+	@Override
+	public int hashCode() {
+		return value.hashCode();
+	}
+
 
 }
   

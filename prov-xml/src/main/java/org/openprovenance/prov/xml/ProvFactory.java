@@ -29,7 +29,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class ProvFactory {
 
-    private static final String DEFAULT_NS = "_";
+    public static final String DEFAULT_NS = "_";
 
     public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.collection:org.openprovenance.prov.xml.validation";
 

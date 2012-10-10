@@ -10,6 +10,7 @@ import java.io.IOException;
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.xml.DocumentEquality;
 import org.openprovenance.prov.xml.Statement;
 
 import com.google.gson.Gson;
@@ -40,15 +41,17 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	@Override
 	public void makeDocAndTest(Statement stment, String file, boolean check)
 			throws JAXBException {
-		Document doc = pFactory.newDocument();
-		doc.getEntityOrActivityOrWasGeneratedBy().add(stment);
-		updateNamespaces(doc);
+		Document d1 = pFactory.newDocument();
+		d1.getEntityOrActivityOrWasGeneratedBy().add(stment);
+		updateNamespaces(d1);
 		file = file + extension();
 
 		try {
-			writeJSONDocument(doc, file);
-			Document doc2=readJSONDocument(file);
-			compareDocuments(doc, doc2, check);
+			writeJSONDocument(d1, file);
+			Document d2 = readJSONDocument(file);
+			if (check) {
+				assertTrue(DocumentEquality.check(d1, d2));
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

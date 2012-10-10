@@ -387,7 +387,7 @@ public class RdfConstructor implements TreeConstructor {
 
 	public <INFLUENCE, EFFECT> void addQualifiedInfluence(EFFECT e2, INFLUENCE g)
 	{
-		if (g != null)
+		if ((g != null) && (e2 !=null))
 		{
 			if (g instanceof Generation)
 			{

@@ -64,48 +64,65 @@ public class RoundTripFromJavaTest extends TestCase {
 	return ".xml";
     }
 
-    public void makeDocAndTest(Statement stment, String file) throws JAXBException {
+    public void makeDocAndTest(Statement stment, String file) {
 	makeDocAndTest(stment, file, null, true);
     }
-    public void makeDocAndTest(Statement stment, String file, boolean check) throws JAXBException {
+    public void makeDocAndTest(Statement stment, String file, boolean check) {
 	makeDocAndTest(stment, file, null, check);
     }
-    public void makeDocAndTest(Statement stment, Statement[] opt, String file) throws JAXBException {
+    public void makeDocAndTest(Statement stment, Statement[] opt, String file) {
 	makeDocAndTest(stment, file, opt, true);
     }
-    public void makeDocAndTest(Statement stment, String file, Statement[] opt, boolean check) throws JAXBException {
+    public void makeDocAndTest(Statement stment, String file, Statement[] opt, boolean check) {
 	Document doc = pFactory.newDocument();
 	doc.getEntityOrActivityOrWasGeneratedBy().add(stment);
 	updateNamespaces(doc);
 	
 	String file1=(opt==null) ? file : file+"-S";
-	file1=file1+extension();
-	writeXMLDocument(doc, file1);
-	Document doc2=readXMLDocument(file1);
-	compareDocuments(doc, doc2, check && checkTest(file1));
+	compareDocAndFile(doc, file1, check);
 	
 	if (opt!=null) {
-	    doc.getEntityOrActivityOrWasGeneratedBy().addAll(Arrays.asList(opt));
 	    String file2=file+"-M";
-	    file2=file2+extension();
-	    writeXMLDocument(doc, file2);
-	    Document doc3=readXMLDocument(file2);
-	    compareDocuments(doc, doc3, check && checkTest(file2));
+            doc.getEntityOrActivityOrWasGeneratedBy().addAll(Arrays.asList(opt));
+	    compareDocAndFile(doc, file2, check);
 	}
     }
 
+    public void compareDocAndFile(Document doc, String file, boolean check) {
+        file=file+extension();
+        writeDocument(doc, file);
+        Document doc3=readDocument(file);
+        compareDocuments(doc, doc3, check && checkTest(file));
+    }
+
+    public Document readDocument(String file1) {
+        try {
+            return readXMLDocument(file1);
+        } catch (JAXBException e) {
+            throw new UncheckedTestException(e);
+        }
+    }
+
+    public void writeDocument(Document doc, String file2) {
+        try {
+            writeXMLDocument(doc, file2);
+        } catch (JAXBException e) {
+            throw new UncheckedTestException(e);
+        }
+    }
+
     public void compareDocuments(Document doc, Document doc2, boolean check) {
-	assertTrue("self doc differ", doc.equals(doc));
-	assertTrue("self doc2 differ", doc2.equals(doc2));
+	assertTrue("self doc equality", doc.equals(doc));
+	assertTrue("self doc2 equality", doc2.equals(doc2));
 	if (check) {
 	    boolean result=doc.equals(doc2);
 	    if (!result) {
 		System.out.println("Found " + doc);
 		System.out.println("Found " + doc2);
 	    }
-	    assertTrue("doc differs doc2", result);
+	    assertTrue("doc equals doc2", result);
 	} else {
-	    assertFalse("doc differs doc2", doc.equals(doc2));
+	    assertFalse("doc distinct from doc2", doc.equals(doc2));
 	}
     }
     

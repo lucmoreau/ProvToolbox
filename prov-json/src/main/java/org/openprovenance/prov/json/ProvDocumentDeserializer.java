@@ -31,6 +31,7 @@ import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.EntityRef;
 import org.openprovenance.prov.xml.GenerationRef;
+import org.openprovenance.prov.xml.HadMember;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.HasLabel;
 import org.openprovenance.prov.xml.HasLocation;
@@ -338,7 +339,11 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         case MEMBERSHIP:
             EntityRef collection = optionalEntityRef("prov:collection", attributeMap);
             entity = optionalEntityRef("prov:entity", attributeMap);
-            statement = pf.newMembership(collection, entity);
+            HadMember membership = new HadMember();
+            membership.setCollection(collection);
+            if (entity != null)
+            	membership.getEntity().add(entity);
+            statement = membership;
             break;
         case MENTION:
             EntityRef specificEntity = optionalEntityRef("prov:specificEntity", attributeMap);

@@ -434,7 +434,6 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		System.out.println("Entity is with " + qn2);
 		Entity e2 =  designateIfNotNull(qn2, Entity.class);
 		Activity a1 = designateIfNotNull(qn1, Activity.class);
 

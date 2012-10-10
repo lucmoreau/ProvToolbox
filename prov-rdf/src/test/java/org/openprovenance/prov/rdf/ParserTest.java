@@ -192,7 +192,7 @@ public class ParserTest extends
 		// TODO: URIs are expanded in RDF form
 	}
 
-	public void NOtestStart10() throws JAXBException
+	public void testStart10() throws JAXBException
 	{
 		// TODO: null exception
 	}

@@ -135,8 +135,8 @@ public class ProvUtilities {
         if (r instanceof SpecializationOf) {
             return ((SpecializationOf) r).getSpecializedEntity().getRef();
         }
-        if (r instanceof Membership) {
-            return ((Membership) r).getCollection().getRef();
+        if (r instanceof HadMember) {
+            return ((HadMember) r).getCollection().getRef();
         }
         if (r instanceof WasInformedBy) {
             return ((WasInformedBy) r).getEffect().getRef();
@@ -206,8 +206,8 @@ public class ProvUtilities {
         if (r instanceof SpecializationOf) {
             return ((SpecializationOf) r).getGeneralEntity().getRef();
         }
-        if (r instanceof Membership) {
-            return ((Membership) r).getEntity().get(0).getRef();
+        if (r instanceof HadMember) {
+            return ((HadMember) r).getEntity().get(0).getRef();
         }
         if (r instanceof MentionOf) {
             return ((MentionOf) r).getGeneralEntity().getRef();
@@ -250,9 +250,9 @@ public class ProvUtilities {
             res.add(a.getRef());
             return res;
         }
-        if (r instanceof Membership) {
+        if (r instanceof HadMember) {
             List<QName> res = new LinkedList<QName>();
-            List<EntityRef> entities=((Membership) r).getEntity();
+            List<EntityRef> entities=((HadMember) r).getEntity();
             if ((entities==null) || (entities.size()<=1)) return null;
             boolean first=true;
             for (EntityRef ee: entities) {
@@ -629,7 +629,7 @@ public class ProvUtilities {
                 || (o instanceof SpecializationOf)
                 || (o instanceof AlternateOf)
                 || (o instanceof MentionOf)
-                || (o instanceof Membership);
+                || (o instanceof HadMember);
     }
 
     public int getFirstTimeIndex(Object o) {
@@ -729,8 +729,8 @@ public class ProvUtilities {
             action.run(tmp);
         }
 
-        else if (o instanceof Membership) {
-            Membership tmp = (Membership) o;
+        else if (o instanceof HadMember) {
+            HadMember tmp = (HadMember) o;
             action.run(tmp);
         }
 

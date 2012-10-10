@@ -34,10 +34,14 @@
 
 
         <jaxb:schemaBindings>
-
             <jaxb:package name="org.openprovenance.prov.xml"/>
         </jaxb:schemaBindings>
 
+<!--
+	<jaxb:bindings node="xs:simpleType[@name='QualifiedName']">
+	  <jaxb:globalBindings mapSimpleTypeDef="true"/>
+	</jaxb:bindings>
+-->
 	<jaxb:bindings node="xs:complexType[@name='Association']">
 	  <jaxb:class name="WasAssociatedWith"/>
 	</jaxb:bindings>
@@ -79,6 +83,9 @@
 	</jaxb:bindings>
 	<jaxb:bindings node="xs:complexType[@name='Mention']">
 	  <jaxb:class name="MentionOf"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Membership']">
+	  <jaxb:class name="HadMember"/>
 	</jaxb:bindings>
 
 

@@ -168,21 +168,21 @@ public class NotationConstructor implements TreeConstructor {
     }
 
     public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {
-        String s="wasInformedBy(" + optionalId(id) + id2 + "," + optional(id1)
+        String s="wasInformedBy(" + optionalId(id) + optional(id2) + "," + optional(id1)
             + optionalAttributes(aAttrs) +  ")";
         return s;
     }
 
 
     public Object convertWasInvalidatedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s=keyword("wasInvalidatedBy") + "(" + optionalId(id) + id2 + "," + optional(id1) + "," +
+        String s=keyword("wasInvalidatedBy") + "(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," +
             optional(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }
 
 
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object aAttrs ) {
-        String s=keyword("wasAttributedTo") + "(" + optionalId(id) + id2 + ", " + optional(id1) +
+        String s=keyword("wasAttributedTo") + "(" + optionalId(id) + optional(id2) + ", " + optional(id1) +
             optionalAttributes(aAttrs) +  ")";
         return s;
     }
@@ -195,27 +195,9 @@ public class NotationConstructor implements TreeConstructor {
         return s;
     }
 
-    public Object convertWasRevisionOf(Object id, Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
-        String s="wasRevisionOf(" + optionalId(id) + id2 + ", " + id1 + 
-            ((pe==null && g2==null && u1==null) ?
-             "" : ", " + optional(pe) + ", " + optional(g2) + ", " + optional(u1)) + optionalAttributes(aAttrs) +  ")";
-        return s;
-    }
-    public Object convertWasQuotedFrom(Object id, Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
-        String s="wasQuotedFrom(" + optionalId(id) + id2 + ", " + id1 + 
-            ((pe==null && g2==null && u1==null) ?
-             "" : ", " + optional(pe) + ", " + optional(g2) + ", " + optional(u1)) + optionalAttributes(aAttrs) +  ")";
-        return s;
-    }
-    public Object convertHadPrimarySource(Object id, Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
-        String s="hadPrimarySource(" + optionalId(id) + id2 + ", " + id1 + 
-            ((pe==null && g2==null && u1==null) ?
-             "" : ", " + optional(pe) + ", " + optional(g2) + ", " + optional(u1)) + optionalAttributes(aAttrs) +  ")";
-        return s;
-    }
-
+    
     public Object convertWasInfluencedBy(Object id, Object id2, Object id1, Object dAttrs) {
-        String s="wasInfluencedBy(" + optionalId(id) + id2 + ", " + id1 + optionalAttributes(dAttrs) +  ")";
+        String s="wasInfluencedBy(" + optionalId(id) + optional(id2) + ", " + optional(id1) + optionalAttributes(dAttrs) +  ")";
         return s;
     }
 
@@ -231,23 +213,29 @@ public class NotationConstructor implements TreeConstructor {
     }
 
     public Object convertMentionOf(Object su, Object bu, Object ta) {
-        String s="mentionOf(" + su + ", " + bu + ", " + ta + ")";
+        String s="mentionOf(" + su + ", " + bu + ", " + optional(ta) + ")";
         return s;
     }
 
     public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
-        String s=keyword("wasAssociatedWith") + "(" + optionalId(id) + id2 + "," + optional(id1) + "," +
+        String s=keyword("wasAssociatedWith") + "(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," +
             optional(pl) +
             optionalAttributes(aAttrs) + ")";
         return s;
     }
 
     public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
-        String s=keyword("actedOnBehalfOf") + "(" + optionalId(id) + id2 + "," + id1 + "," +
+        String s=keyword("actedOnBehalfOf") + "(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," +
             optional(a) +
             optionalAttributes(aAttrs) + ")";
         return s;
     }
+
+    public Object convertHadMember(Object collection, Object entity) {
+	String s=keyword("hadMember") + "(" + collection + "," + entity + ")";
+	return s;
+    }
+
 
     public Object convertExtension(Object name, Object id, Object args, Object dAttrs) {
 	System.out.println("Name @" + name);
@@ -393,8 +381,7 @@ public class NotationConstructor implements TreeConstructor {
 	s=s+"}";
 	return s;
     }
-
-
+    
 
     /* Component 6 */
 

@@ -18,7 +18,7 @@ public interface RecordValue {
     public Object run(AlternateOf alt);
     public Object run(MentionOf men);
     public Object run(SpecializationOf spec);
-    public Object run(Membership mem);
+    public Object run(HadMember mem);
 
 
 }

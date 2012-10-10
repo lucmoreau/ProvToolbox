@@ -18,15 +18,15 @@ public interface BeanConstructor {
     public Object convertWasGeneratedBy  (Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> locAttr, List<Object> roleAttr, List<Attribute> otherAttrs, Object entity, Object activity, Object time);
     public Object convertWasInvalidatedBy(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> locAttr, List<Object> roleAttr, List<Attribute> otherAttrs, Object entity, Object activity, Object time);
 
-    public Object convertWasInformedBy(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object effect, Object cause);
-    public Object convertWasInfluencedBy(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object effect, Object cause);
+    public Object convertWasInformedBy(Object id, List<Object> tAttrs, List<Object> lAttr,List<Attribute> otherAttrs, Object effect, Object cause);
+    public Object convertWasInfluencedBy(Object id, List<Object> tAttrs,List<Object> lAttr, List<Attribute> otherAttrs, Object effect, Object cause);
  
 
     public Object convertWasDerivedFrom(Object id, List<Object> tAttrs, List<Object> lAttr, List<Attribute> otherAttrs, Object effect, Object cause, Object activity, Object generation, Object usage);
 
-    public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object activity, Object agent, Object plan);
-    public Object convertWasAttributedTo(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object entity, Object agent);
-    public Object convertActedOnBehalfOf(Object id, List<Object> tAttrs, List<Attribute> otherAttrs, Object subordinate, Object responsible, Object activity);
+    public Object convertWasAssociatedWith(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> rAttr, List<Attribute> otherAttrs, Object activity, Object agent, Object plan);
+    public Object convertWasAttributedTo(Object id, List<Object> tAttrs, List<Object> lAttr, List<Attribute> otherAttrs, Object entity, Object agent);
+    public Object convertActedOnBehalfOf(Object id, List<Object> tAttrs, List<Object> lAttr, List<Attribute> otherAttrs, Object subordinate, Object responsible, Object activity);
 
 
 
@@ -41,10 +41,7 @@ public interface BeanConstructor {
     public Object convertTypedLiteral(String datatype, Object value);
 
     public Object convertBundle(Object namespaces,
-				List<Object> aRecords,
-				List<Object> eRecords,
-				List<Object> agRecords,
-				List<Object> lnkRecords,
+				List<Object> sRecords,
 				List<Object> bRecords);
     public Object convertNamedBundle(Object id,
 				     Object namespaces,
@@ -52,6 +49,8 @@ public interface BeanConstructor {
                                      List<Object> eRecords,
                                      List<Object> agRecords,
                                      List<Object> lnkRecords);
+
+    public Object convertHadMember(Object collection, Object entity);
 
 
 }

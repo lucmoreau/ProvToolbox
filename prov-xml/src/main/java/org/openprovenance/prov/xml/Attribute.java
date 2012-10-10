@@ -42,4 +42,13 @@ public class Attribute {
 	return elementName.getPrefix() + ":" + elementName.getLocalPart() + " = \"" + val + "\" %% " + xsdType;
     }
 
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		if (val != null) hash ^= val.hashCode();
+		if (elementName != null) hash ^= elementName.toString().hashCode();
+		if (xsdType != null) hash ^= xsdType.hashCode();
+		return hash;
+	}
+
 }

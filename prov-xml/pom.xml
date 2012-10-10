@@ -72,7 +72,12 @@
 -->
 
 
- </dependencies>
+  	<dependency>
+  		<groupId>commons-collections</groupId>
+  		<artifactId>commons-collections</artifactId>
+  		<version>3.2.1</version>
+  	</dependency>
+  </dependencies>
 
   <build>
 
@@ -429,7 +434,7 @@
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/implements Equals, HashCode, ToString/implements Relation0, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
-  	              <arg value="Membership.java" />
+  	              <arg value="HadMember.java" />
                 </exec>
 
 
@@ -446,7 +451,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasRole, HasType, HasLabel, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasAssociatedWith.java" />
                 </exec>
@@ -482,7 +487,7 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasType, HasLabel, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasAttributedTo.java" />
                 </exec>
@@ -516,7 +521,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasType, HasLabel, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="ActedOnBehalfOf.java" />
                 </exec>
@@ -689,7 +694,7 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasType, HasLabel, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasInformedBy.java" />
                 </exec>
@@ -723,7 +728,7 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasType, Equals, HashCode, ToString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Influence, HasType, HasLabel, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasInfluencedBy.java" />
                 </exec>

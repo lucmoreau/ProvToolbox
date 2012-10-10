@@ -16,34 +16,31 @@ public class BeanTraversal {
     }
 
     public Object convert(Document b) {
-	List<Object> lnkRecords = new LinkedList<Object>();
-	List<Object> aRecords = new LinkedList<Object>();
-	List<Object> eRecords = new LinkedList<Object>();
-	List<Object> agRecords = new LinkedList<Object>();
+
 	List<Object> bRecords = new LinkedList<Object>();
-	for (Entity e : u.getEntity(b)) {
-	    eRecords.add(convert(e));
+
+	List<Object> sRecords = new LinkedList<Object>();
+
+	for (Statement s : u.getStatement(b)) {
+	    if (s instanceof Entity) {
+		sRecords.add(convert((Entity)s));
+	    } else if (s instanceof Activity) {
+		sRecords.add(convert((Activity)s));
+	    } else if (s instanceof Agent) {
+		sRecords.add(convert((Agent)s));
+	    } else {
+		sRecords.add(convertRelation((Relation0)s));
+	    }
+
 	}
-	for (Activity a : u.getActivity(b)) {
-	    aRecords.add(convert(a));
-	}
-	for (Agent ag : u.getAgent(b)) {
-	    agRecords.add(convert(ag));
-	}
-	for (Object lnk : u.getRelations(b)) {
-	    Object o = convertRelation(lnk);
-	    if (o != null)
-		lnkRecords.add(o);
-	}
-	
+
 	for (NamedBundle bu : u.getNamedBundle(b)) {
 	    Object o = convert(bu);
 	    if (o != null)
 		bRecords.add(o);
 
 	}
-	return c.convertBundle(b.getNss(), aRecords, eRecords, agRecords,
-	                       lnkRecords, bRecords);
+	return c.convertBundle(b.getNss(), sRecords, bRecords);
     }
 
     public Object convert(NamedBundle b) {
@@ -257,12 +254,16 @@ public class BeanTraversal {
 	    return convert((SpecializationOf) o);
 	} else if (o instanceof MentionOf) {
 	    return convert((MentionOf) o);
+	} else if (o instanceof HadMember) {
+	    return convert((HadMember) o);
 
 	} else {
 	    throw new UnsupportedOperationException("Unknown relation type "
 		    + o);
 	}
     }
+
+    
 
     public Object convert(Used o) {
         List<Object> tAttrs = convertTypeAttributes((HasType) o);
@@ -366,19 +367,22 @@ public class BeanTraversal {
 
     public Object convert(WasInformedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	return c.convertWasInformedBy(c.convert(o.getId()), tAttrs, otherAttrs,
-	                              c.convert(o.getEffect().getRef()),
-	                              c.convert(o.getCause().getRef()));
+	return c.convertWasInformedBy(c.convert(o.getId()), tAttrs, labAttrs, otherAttrs,
+	                              (o.getEffect()==null) ? null : c.convert(o.getEffect().getRef()),
+	                              (o.getCause()==null) ? null: c.convert(o.getCause().getRef()));
     }
 
     public Object convert(WasInfluencedBy o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
+
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	return c.convertWasInfluencedBy(c.convert(o.getId()), tAttrs,
+	return c.convertWasInfluencedBy(c.convert(o.getId()), tAttrs, labAttrs,
 	                                otherAttrs,
-	                                c.convert(o.getInfluencee().getRef()),
-	                                c.convert(o.getInfluencer().getRef()));
+	                                (o.getInfluencee()==null) ? null: c.convert(o.getInfluencee().getRef()),
+	                                (o.getInfluencer()==null) ? null: c.convert(o.getInfluencer().getRef()));
     }
 
     public Object convert(WasDerivedFrom o) {
@@ -406,11 +410,16 @@ public class BeanTraversal {
 
     public Object convert(WasAssociatedWith o) {
 	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> labAttrs = convertLabelAttribute(o);
+        List<Object> roleAttrs = convertRoleAttribute(o);
+
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertWasAssociatedWith(c.convert(o.getId()),
 	                                  tAttrs,
+	                                  labAttrs,
+	                                  roleAttrs,
 	                                  otherAttrs,
-	                                  c.convert(o.getActivity().getRef()),
+	                                  (o.getActivity()==null) ? null : c.convert(o.getActivity().getRef()),
 	                                  (o.getAgent() == null) ? null : c
 	                                          .convert(o.getAgent()
 	                                                  .getRef()),
@@ -420,24 +429,30 @@ public class BeanTraversal {
     }
 
     public Object convert(WasAttributedTo o) {
-	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> tAttrs = convertTypeAttributes(o);
+	List<Object> labAttrs = convertLabelAttribute(o);
+
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertWasAttributedTo(c.convert(o.getId()),
 	                                tAttrs,
+	                                labAttrs,
 	                                otherAttrs,
-	                                c.convert(o.getEntity().getRef()),
+	                                (o.getEntity()==null)? null: c.convert(o.getEntity().getRef()),
 	                                (o.getAgent() == null) ? null : c
 	                                        .convert(o.getAgent().getRef()));
     }
 
     public Object convert(ActedOnBehalfOf o) {
-	List<Object> tAttrs = convertTypeAttributes((HasType) o);
+	List<Object> tAttrs = convertTypeAttributes(o);
+	List<Object> labAttrs = convertLabelAttribute(o);
+
 	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	return c.convertActedOnBehalfOf(c.convert(o.getId()),
 	                                tAttrs,
+	                                labAttrs,
 	                                otherAttrs,
-	                                c.convert(o.getSubordinate().getRef()),
-	                                c.convert(o.getResponsible().getRef()),
+	                                (o.getSubordinate()==null) ? null : c.convert(o.getSubordinate().getRef()),
+	                                (o.getResponsible()==null) ? null: c.convert(o.getResponsible().getRef()),
 	                                (o.getActivity() == null) ? null : c
 	                                        .convert(o.getActivity()
 	                                                .getRef()));
@@ -455,10 +470,15 @@ public class BeanTraversal {
     }
 
     public Object convert(MentionOf o) {
-	return c.convertMentionOf(c.convert(o.getSpecializedEntity().getRef()),
-	                          c.convert(o.getGeneralEntity().getRef()),
-	                          c.convert(o.getBundle().getRef()));
+	return c.convertMentionOf(c.convert((o.getSpecializedEntity()==null) ? null: o.getSpecializedEntity().getRef()),
+	                          c.convert((o.getGeneralEntity()==null) ? null : o.getGeneralEntity().getRef()),
+	                          c.convert((o.getBundle()==null) ? null: o.getBundle().getRef()));
     }
 
+    public Object convert(HadMember o) {
+	return c.convertHadMember(c.convert(o.getCollection().getRef()),
+	                          c.convert(o.getEntity().get(0).getRef()));
+    }
+    
 	
 }

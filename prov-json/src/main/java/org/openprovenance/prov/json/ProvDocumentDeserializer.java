@@ -260,7 +260,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             break;
         case ATTRIBUTION:
             EntityRef entity = optionalEntityRef("prov:entity", attributeMap);
-            agent = agentRef("prov:agent", attributeMap);
+            agent = optionalAgentRef("prov:agent", attributeMap);
             statement = pf.newWasAttributedTo(id, entity, agent);
             break;
         case BUNDLE:
@@ -478,16 +478,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     }
     
     private Object decodeTypeRef(JsonElement element) {
-        if (element.isJsonPrimitive()) {
-            return decodeQNameOrURI(element.getAsString());
-        }
-        else {
-            JsonObject struct = element.getAsJsonObject(); 
-            String value = struct.get("$").getAsString();
-            String datatype = struct.get("type").getAsString();
-            // TODO: Should be accepting only xsd:anyURI or xsd:QName
-            return decodeXSDType(value, datatype);
-        }
+    	return decodeAttributeValue(element);
     }
     
     private InternationalizedString decodeInternationalizedString(JsonElement element) {

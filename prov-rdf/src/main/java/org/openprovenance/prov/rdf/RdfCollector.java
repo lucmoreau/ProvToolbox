@@ -161,7 +161,7 @@ public class RdfCollector extends RDFHandlerBase {
 	protected ProvFactory pFactory;
 	protected HashMap<QName, HashMap<QName, List<Statement>>> collators;
 	private Hashtable<QName, BundleHolder> bundles;
-	private Document document;
+	protected Document document;
 	private Hashtable<String, String> revnss;
 
 	public RdfCollector(ProvFactory pFactory)
@@ -362,7 +362,7 @@ public class RdfCollector extends RDFHandlerBase {
 
 	/* Prov-specific functions */
 
-	private List<Statement> handleBaseStatements(Element element,
+	protected List<Statement> handleBaseStatements(org.openprovenance.prov.xml.Statement element,
 			QName context, QName qname, ProvType type)
 	{
 
@@ -444,7 +444,6 @@ public class RdfCollector extends RDFHandlerBase {
 				{
 					if (uri.equals(RDF.TYPE))
 					{
-						System.out.println("In RDF a part");
 						// Add prov:type
 						if (element instanceof HasType)
 						{
@@ -495,7 +494,7 @@ public class RdfCollector extends RDFHandlerBase {
 
 						if (attr != null)
 						{
-							pFactory.addAttribute(element, attr);
+							pFactory.addAttribute((HasExtensibility)element, attr);
 						}
 
 					}

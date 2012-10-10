@@ -8,9 +8,11 @@ import java.util.Arrays;
 
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Statement;
+import org.openprovenance.prov.xml.UncheckedTestException;
 
 
 public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTripFromJavaTest {
+    final Utility u=new Utility();
 
     public RoundTripFromJavaTest(String name) {
 	super(name);
@@ -18,23 +20,36 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
     
     public String extension() {
 	return ".provn";
+    }  
+    
+    public boolean checkTest(String name) {
+	return !(name.contains("member2") 
+		|| name.contains("member3"));
+    }
+    
+    public void writeDocument(Document doc, String file) {
+        String s=u.convertBeanToASN(doc);
+        writeTextToFile(s, file);
+    }
+    public Document readDocument(String file1) {
+
+        try {
+            return (Document) u.convertASNToJavaBean(file1);
+        } catch (IOException e) {
+           throw new UncheckedTestException(e);
+        } catch (Throwable e) {
+            throw new UncheckedTestException(e);
+        }
     }
 
     
-    public void makeDocAndTest(Statement statement, String file)  {
-	makeDocAndTest(statement, file, null, true);
-    }
-    
-    public boolean checkTest(String name) {
-	return !(name.equals("target/member2") 
-		|| name.equals("target/member3"));
-    }
-    
-    public void makeDocAndTest(Statement statement, String file, Statement [] opt, boolean check) {
+        
+
+    /*
+    public void makeDocAndTestOLD(Statement statement, String file, Statement [] opt, boolean check) {
 	Document doc = pFactory.newDocument();
 	doc.getEntityOrActivityOrWasGeneratedBy().add(statement);
 	updateNamespaces(doc);
-	Utility u=new Utility();
 	
 	check= check && checkTest(file);
 	
@@ -74,7 +89,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	
 
     }
-    
+    */
 
     public void writeTextToFile(String text,
                                 String filename) {

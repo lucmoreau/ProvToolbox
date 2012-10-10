@@ -45,7 +45,7 @@ public class RdfConstructor implements TreeConstructor {
 			Object aAttrs)
 	{
 		QName qname = getQName(id);
-		Activity a = (Activity) designate(qname, Activity.class);
+		Activity a = (Activity) designateIfNotNull(qname, Activity.class);
 		if (startTime != null && startTime instanceof XMLGregorianCalendar)
 		{
 			a.getStartedAtTime().add((XMLGregorianCalendar) startTime);
@@ -61,7 +61,7 @@ public class RdfConstructor implements TreeConstructor {
 	public Object convertEntity(Object id, Object attrs)
 	{
 		QName qname = getQName(id);
-		Entity e = (Entity) designate(qname, Entity.class);
+		Entity e = (Entity) designateIfNotNull(qname, Entity.class);
 		processAttributes(qname, (List<?>) attrs);
 		return e;
 	}
@@ -69,7 +69,7 @@ public class RdfConstructor implements TreeConstructor {
 	public Object convertAgent(Object id, Object attrs)
 	{
 		QName qname = getQName(id);
-		Agent ag = (Agent) designate(qname, Agent.class);
+		Agent ag = (Agent) designateIfNotNull(qname, Agent.class);
 		processAttributes(qname, (List<?>) attrs);
 		return ag;
 	}
@@ -222,9 +222,6 @@ public class RdfConstructor implements TreeConstructor {
 				// }
 			}
 
-			System.out.println(">> Add new statement: "
-					+ pred.getNamespaceURI() + pred.getLocalPart() + " "
-					+ literalImpl.stringValue());
 			org.openrdf.model.Statement stmnt = new StatementImpl(r,
 					new URIImpl(pred.getNamespaceURI() + pred.getLocalPart()),
 					literalImpl);
@@ -266,16 +263,13 @@ public class RdfConstructor implements TreeConstructor {
 				|| (other != null))
 		{
 			QName qname = getQName(id);
-			infl = designate(qname, cl);
+			infl = designate(qname, cl);  // if qname is null, create an blank node
 			EntityInfluence qi = (EntityInfluence) infl;
-			qi.getEntities().add(e1);
+			if (e1 != null) qi.getEntities().add(e1);
 			addQualifiedInfluence(e2, infl);
 
-			if (time != null)
-			{
-				String s = (String) time;
-				XMLGregorianCalendar t = pFactory.newISOTime(s);
-				((InstantaneousEvent) infl).getAtTime().add(t);
+			if (time != null) {
+				setTime((InstantaneousEvent)infl, time);
 			}
 			processAttributes(qname, (List<?>) aAttrs);
 		}
@@ -303,6 +297,19 @@ public class RdfConstructor implements TreeConstructor {
 		return infl;
 	}
 
+	private void setTime(InstantaneousEvent infl, Object time) {
+		if(infl != null) {
+	    if (time instanceof XMLGregorianCalendar) {
+                        XMLGregorianCalendar t = (XMLGregorianCalendar) time;
+                        infl.getAtTime().add(t);
+	    } else {
+	        String s = (String) time;
+                        XMLGregorianCalendar t = pFactory.newISOTime(s);
+                        infl.getAtTime().add(t);
+	    }
+		}
+	}
+	
 	public <INFLUENCE, TYPE> INFLUENCE addActivityInfluence(Object id, TYPE e2,
 			Activity a1, Object time, Object aAttrs, Class<INFLUENCE> cl)
 	{
@@ -319,14 +326,7 @@ public class RdfConstructor implements TreeConstructor {
 			addQualifiedInfluence(e2, infl);
 
 			if (time != null) {
-			    if (time instanceof XMLGregorianCalendar) {
-                                XMLGregorianCalendar t = (XMLGregorianCalendar) time;
-                                ((InstantaneousEvent) infl).getAtTime().add(t);
-			    } else {
-			        String s = (String) time;
-                                XMLGregorianCalendar t = pFactory.newISOTime(s);
-                                ((InstantaneousEvent) infl).getAtTime().add(t);
-			    }
+				setTime((InstantaneousEvent)infl, time);
 			}
 			
 			processAttributes(qname, (List<?>) aAttrs);
@@ -351,11 +351,8 @@ public class RdfConstructor implements TreeConstructor {
 			if (a1!=null) qi.getAgents().add(a1);
 			addQualifiedInfluence(e2, infl);
 
-			if (time != null)
-			{
-				String s = (String) time;
-				XMLGregorianCalendar t = pFactory.newISOTime(s);
-				((InstantaneousEvent) infl).getAtTime().add(t);
+			if (time != null) {
+				setTime((InstantaneousEvent)infl, time);
 			}
 			processAttributes(qname, (List<?>) aAttrs);
 		}
@@ -368,8 +365,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Entity e1 = designate(qn1,Entity.class);
-		Activity a2 = designate(qn2, Activity.class);
+		Entity e1 = designateIfNotNull(qn1,Entity.class);
+		Activity a2 = designateIfNotNull(qn2, Activity.class);
 		Usage u = addEntityInfluence(id, a2, e1, time, aAttrs, null,
 				Usage.class);
 
@@ -387,7 +384,7 @@ public class RdfConstructor implements TreeConstructor {
 
 	public <INFLUENCE, EFFECT> void addQualifiedInfluence(EFFECT e2, INFLUENCE g)
 	{
-		if (g != null)
+		if ((g != null) && (e2 !=null))
 		{
 			if (g instanceof Generation)
 			{
@@ -437,9 +434,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		System.out.println("Entity is with " + qn2);
-		Entity e2 =  designate(qn2, Entity.class);
-		Activity a1 = designate(qn1, Activity.class);
+		Entity e2 =  designateIfNotNull(qn2, Entity.class);
+		Activity a1 = designateIfNotNull(qn1, Activity.class);
 
 		Generation g = addActivityInfluence(id, e2, a1, time, aAttrs,
 				Generation.class);
@@ -455,17 +451,17 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn1 = getQName(id1);
 		QName qn3 = getQName(id3);
 
-		Entity e1 =  designate(qn1, Entity.class);
-		Activity a2 =  designate(qn2, Activity.class);
+		Entity e1 =  designateIfNotNull(qn1, Entity.class);
+		Activity a2 =  designateIfNotNull(qn2, Activity.class);
 		Start s = addEntityInfluence(id, a2, e1, time, aAttrs, id3, Start.class);
 
 		if (qn3 != null)
 		{
-			Activity a3 = designate(qn3, Activity.class);
+			Activity a3 = designateIfNotNull(qn3, Activity.class);
 			s.getHadActivity().add(a3);
 		}
 
-		if (binaryProp(id,a2)) a2.getWasStartedBy().add(e1);
+		if ((binaryProp(id,a2)) && (e1!=null)) a2.getWasStartedBy().add(e1);
 
 		return s;
 	}
@@ -477,13 +473,13 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn1 = getQName(id1);
 		QName qn3 = getQName(id3);
 
-		Entity e1 = designate(qn1, Entity.class);
-		Activity a2 = designate(qn2, Activity.class);
+		Entity e1 = designateIfNotNull(qn1, Entity.class);
+		Activity a2 = designateIfNotNull(qn2, Activity.class);
 		End s = addEntityInfluence(id, a2, e1, time, aAttrs, id3, End.class);
 
 		if (qn3 != null)
 		{
-			Activity a3 = designate(qn3,Activity.class);
+			Activity a3 = designateIfNotNull(qn3,Activity.class);
 			s.getHadActivity().add(a3);
 		}
 
@@ -498,8 +494,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Entity e2 = designate(qn2, Entity.class);
-		Activity a1 = designate(qn1, Activity.class);
+		Entity e2 = designateIfNotNull(qn2, Entity.class);
+		Activity a1 = designateIfNotNull(qn1, Activity.class);
 
 		Invalidation g = addActivityInfluence(id, e2, a1, time, aAttrs,
 				Invalidation.class);
@@ -514,8 +510,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Activity e2 = designate(qn2, Activity.class);
-		Activity a1 = designate(qn1, Activity.class);
+		Activity e2 = designateIfNotNull(qn2, Activity.class);
+		Activity a1 = designateIfNotNull(qn1, Activity.class);
 
 		Communication g = addActivityInfluence(id, e2, a1, null, aAttrs,
 				Communication.class);
@@ -530,8 +526,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Entity e2 =  designate(qn2, Entity.class);
-		Agent a1 =  designate(qn1, Agent.class);
+		Entity e2 =  designateIfNotNull(qn2, Entity.class);
+		Agent a1 =  designateIfNotNull(qn1, Agent.class);
 
 		Attribution g = addAgentInfluence(id, e2, a1, null, aAttrs, null,
 				Attribution.class);
@@ -550,8 +546,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn4 = getQName(use1);
 		QName qn5 = getQName(gen2);
 
-		Entity e2 = designate(qn2, Entity.class);
-		Entity e1 = designate(qn1, Entity.class);
+		Entity e2 = designateIfNotNull(qn2, Entity.class);
+		Entity e1 = designateIfNotNull(qn1, Entity.class);
 
 		Object other = a;
 		if (qn4 != null)
@@ -570,7 +566,7 @@ public class RdfConstructor implements TreeConstructor {
 		{
 			if (qn3 != null)
 			{
-				Activity a3 =  designate(qn3,Activity.class);
+				Activity a3 =  designateIfNotNull(qn3,Activity.class);
 				d.getHadActivity().add(a3);
 			}
 		}
@@ -607,8 +603,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Entity e2 =  designate(qn2, Entity.class);
-		Entity e1 =  designate(qn1, Entity.class);
+		Entity e2 =  designateIfNotNull(qn2, Entity.class);
+		Entity e1 =  designateIfNotNull(qn1, Entity.class);
 
 		e2.getAlternateOf().add(e1);
 		return null;
@@ -619,8 +615,8 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		Entity e2 = designate(qn2, Entity.class);
-		Entity e1 = designate(qn1, Entity.class);
+		Entity e2 = designateIfNotNull(qn2, Entity.class);
+		Entity e1 = designateIfNotNull(qn1, Entity.class);
 
 		e2.getSpecializationOf().add(e1);
 		return null;
@@ -633,15 +629,15 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn1 = getQName(id1);
 		QName qn3 = getQName(a);
 
-		Agent ag2 = designate(qn2, Agent.class);
-		Agent ag1 = designate(qn1, Agent.class);
+		Agent ag2 = designateIfNotNull(qn2, Agent.class);
+		Agent ag1 = designateIfNotNull(qn1, Agent.class);
 
 		Delegation g = addAgentInfluence(id, ag2, ag1, null, aAttrs, a,
 				Delegation.class);
 
 		if (qn3 != null)
 		{
-			Activity a3 =  designate(qn3, Activity.class);
+			Activity a3 =  designateIfNotNull(qn3, Activity.class);
 			g.getHadActivity().add(a3);
 		}
 
@@ -657,23 +653,23 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn1 = getQName(id1);
 		QName qn3 = getQName(pl);
 
-		Activity a2 =  designate(qn2, Activity.class);
-		Agent ag1 =  designate(qn1, Agent.class);
+		Activity a2 =  designateIfNotNull(qn2, Activity.class);
+		Agent ag1 =  designateIfNotNull(qn1, Agent.class);
 
-		Association ass = addAgentInfluence(id, a2, ag1, null, aAttrs, pl,
+		Association assoc = addAgentInfluence(id, a2, ag1, null, aAttrs, pl,
 				Association.class);
 
-		if (qn3 != null)
+		if ((qn3 != null) && (assoc!=null))
 		{
-			Plan plan = (Plan) designate(qn3, Plan.class);
+			Plan plan = (Plan) designateIfNotNull(qn3, Plan.class);
 			// will declare it as Plan if
 			// not alreadydone
-			ass.getHadPlan().add(plan);
+			assoc.getHadPlan().add(plan);
 		}
 
 		if (binaryProp(id,a2)) a2.getWasAssociatedWith().add(ag1);
 
-		return ass;
+		return assoc;
 	}
 
 	public Object convertExtension(Object name, Object id, Object args,
@@ -798,9 +794,9 @@ public class RdfConstructor implements TreeConstructor {
 
 		QName qn3 = getQName(bu);
 
-		Entity e2 =  designate(qn2, Entity.class);
-		Entity e1 =  designate(qn1, Entity.class);
-		Bundle e3 =  designate(qn3, Bundle.class); // will
+		Entity e2 =  designateIfNotNull(qn2, Entity.class);
+		Entity e1 =  designateIfNotNull(qn1, Entity.class);
+		Bundle e3 =  designateIfNotNull(qn3, Bundle.class); // will
 		// declare it
 		// as plan if
 		// not
@@ -813,8 +809,12 @@ public class RdfConstructor implements TreeConstructor {
 		return null;
 	}
 	
-	public <T> T designate(QName qname, Class<T> cl) {
+	
+	public <T> T designateIfNotNull(QName qname, Class<T> cl) {
 	    if (qname==null) return null;
+	    return manager.designate(qname,cl);
+	}
+	public <T> T designate(QName qname, Class<T> cl) {
 	    return manager.designate(qname,cl);
 	}
 	

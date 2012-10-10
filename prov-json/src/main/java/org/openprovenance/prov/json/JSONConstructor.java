@@ -777,8 +777,12 @@ class JSONConstructor implements TreeConstructor {
 
 	@Override
 	public Object convertHadMember(Object collection, Object entity) {
-	    // TODO Auto-generated method stub
-	    return new UnsupportedOperationException();
+		List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:collection", collection));
+    	attrs.add(tuple("prov:entity", entity));
+        Object id = getBlankID("hM");
+
+    	return new ProvRecord("hadMember", id, attrs);
 	}
 
 }

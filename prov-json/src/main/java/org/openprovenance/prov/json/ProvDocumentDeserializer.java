@@ -124,7 +124,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     private static final String PROV_JSON_ALTERNATE =           "alternateOf";
     private static final String PROV_JSON_SPECIALIZATION =      "specializationOf";
     private static final String PROV_JSON_MENTION =             "mentionOf";
-    private static final String PROV_JSON_MEMBERSHIP =          "memberOf";
+    private static final String PROV_JSON_MEMBERSHIP =          "hadMember";
     private static final String PROV_JSON_BUNDLE =              "bundle";
     
     private static final Map<String, ProvStatement> provTypeMap;

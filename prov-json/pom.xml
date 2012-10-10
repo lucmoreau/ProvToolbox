@@ -33,6 +33,13 @@
     	<artifactId>gson</artifactId>
     	<version>2.1</version>
     </dependency>
+    <dependency>
+    	<groupId>org.openprovenance.prov</groupId>
+    	<artifactId>prov-xml</artifactId>
+    	<scope>test</scope>
+    	<version>0.0.2-SNAPSHOT</version>
+    	<classifier>tests</classifier>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

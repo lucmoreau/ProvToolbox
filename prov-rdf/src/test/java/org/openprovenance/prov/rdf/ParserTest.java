@@ -196,9 +196,9 @@ public class ParserTest extends
 		// TODO: null exception
 	}
 
-	public void testEnd1() throws JAXBException
-	{
-	}
+//	public void testEnd1() throws JAXBException
+//	{
+//	}
 
 	public void testEnd2() throws JAXBException
 	{
@@ -236,9 +236,9 @@ public class ParserTest extends
 	{
 	}
 
-	public void testDerivation1() throws JAXBException
-	{
-	}
+//	public void testDerivation1() throws JAXBException
+//	{
+//	}
 
 	public void testDerivation2() throws JAXBException
 	{
@@ -288,9 +288,9 @@ public class ParserTest extends
 	{
 	}
 
-	public void testAssociation1() throws JAXBException
-	{
-	}
+//	public void testAssociation1() throws JAXBException
+//	{
+//	}
 
 	public void testAssociation2() throws JAXBException
 	{
@@ -324,9 +324,9 @@ public class ParserTest extends
 	{
 	}
 
-	public void testAttribution1() throws JAXBException
-	{
-	}
+//	public void testAttribution1() throws JAXBException
+//	{
+//	}
 
 	public void testAttribution2() throws JAXBException
 	{
@@ -356,9 +356,9 @@ public class ParserTest extends
 	{
 	}
 
-	public void testDelegation1() throws JAXBException
-	{
-	}
+//	public void testDelegation1() throws JAXBException
+//	{
+//	}
 
 	public void testDelegation2() throws JAXBException
 	{
@@ -388,9 +388,9 @@ public class ParserTest extends
 	{
 	}
 
-	public void testCommunication1() throws JAXBException
-	{
-	}
+//	public void testCommunication1() throws JAXBException
+//	{
+//	}
 
 	public void testCommunication2() throws JAXBException
 	{

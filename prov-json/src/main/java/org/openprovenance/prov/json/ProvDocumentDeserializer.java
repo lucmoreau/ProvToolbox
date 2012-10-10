@@ -46,6 +46,7 @@ import org.openprovenance.prov.xml.StatementOrBundle;
 import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.UsageRef;
 import org.openprovenance.prov.xml.Used;
+import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.WasEndedBy;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasInvalidatedBy;
@@ -256,7 +257,10 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         case ASSOCIATION:
             ActivityRef activity = optionalActivityRef("prov:activity", attributeMap);
             AgentRef agent = optionalAgentRef("prov:agent", attributeMap); 
-            statement = pf.newWasAssociatedWith(id, activity, agent);
+            EntityRef plan = optionalEntityRef("prov:plan", attributeMap);
+            WasAssociatedWith wAW = pf.newWasAssociatedWith(id, activity, agent);
+            if (plan != null) wAW.setPlan(plan);
+            statement = wAW;
             break;
         case ATTRIBUTION:
             EntityRef entity = optionalEntityRef("prov:entity", attributeMap);

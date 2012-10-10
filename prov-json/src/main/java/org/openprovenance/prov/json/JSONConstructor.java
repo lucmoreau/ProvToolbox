@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 import org.antlr.runtime.tree.CommonTree;
@@ -408,7 +407,7 @@ class JSONConstructor implements TreeConstructor {
 	@Override
     public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:subordinate", id2));
+    	attrs.add(tuple("prov:delegate", id2));
     	attrs.add(tuple("prov:responsible", id1));
     	if (a != null) {
     		attrs.add(tuple("prov:activity", a));
@@ -463,9 +462,9 @@ class JSONConstructor implements TreeConstructor {
 	public Object convertMentionOf(Object su, Object bu, Object ta) {
     	List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:specificEntity", su));
-    	attrs.add(tuple("prov:generalEntity", ta));
+    	attrs.add(tuple("prov:generalEntity", bu));
     	if (bu != null) {
-    		attrs.add(tuple("prov:bundle", bu));
+    		attrs.add(tuple("prov:bundle", ta));
     	}
     	
     	String id = getBlankID("mO");

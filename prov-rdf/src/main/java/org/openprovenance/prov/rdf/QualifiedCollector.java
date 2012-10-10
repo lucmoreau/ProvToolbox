@@ -63,7 +63,6 @@ public class QualifiedCollector extends RdfCollector {
 				ProvType[] types = getResourceTypes(contextQ, qname);
 				for (ProvType type : types)
 				{
-					System.out.println("Handle type: " + type);
 					switch (type)
 					{
 					case GENERATION:
@@ -103,7 +102,6 @@ public class QualifiedCollector extends RdfCollector {
 						createInfluence(contextQ, qname);
 						break;
 					default:
-						System.out.println("Unhandled class: " + type);
 						break;
 					}
 				}
@@ -140,7 +138,6 @@ public class QualifiedCollector extends RdfCollector {
 		{
 			if (sob instanceof org.openprovenance.prov.xml.Influence)
 			{
-				System.out.println("Handle conflicts for "+sob);
 				Identifiable hasid = (Identifiable) sob;
 				List<Ref> signature = getSignature((org.openprovenance.prov.xml.Influence)hasid);
 				if (collisions.containsKey(signature))
@@ -352,7 +349,11 @@ public class QualifiedCollector extends RdfCollector {
 				QName entityQ = qNameFromResource((Resource) value);
 				wsb.setTrigger(pFactory.newEntityRef(entityQ));
 			}
-
+			if (predS.equals(PROV + "hadActivity"))
+			{
+				QName activityQ = qNameFromResource((Resource) value);
+				wsb.setStarter(pFactory.newActivityRef(activityQ));
+			}
 		}
 
 		handleEntityInfluence(context, wsb, statements, ProvType.START);
@@ -623,7 +624,6 @@ public class QualifiedCollector extends RdfCollector {
 						{
 							WasInfluencedBy wib = (WasInfluencedBy) influenceMap
 									.get(refQ);
-							System.out.println(influenceMap.keySet());
 							wib.setInfluencee(pFactory.newAnyRef(qname));
 
 						} else if (predS.equals(RdfCollector.PROV

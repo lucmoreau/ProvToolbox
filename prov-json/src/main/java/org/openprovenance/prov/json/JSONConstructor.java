@@ -100,10 +100,10 @@ class JSONConstructor implements TreeConstructor {
 	
 	private Object typedLiteral(String value, String datatype, String lang) {
 		// TODO: Converting default types to JSON primitives
-//		if (datatype == "xsd:string" && lang == null) return value;
-//		if (datatype == "xsd:double") return Double.parseDouble(value);
-//		if (datatype == "xsd:int") return Integer.parseInt(value);
-//		if (datatype == "xsd:boolean") return Boolean.parseBoolean(value);
+		if (datatype == "xsd:string" && lang == null) return value;
+		if (datatype == "xsd:double") return Double.parseDouble(value);
+		if (datatype == "xsd:int") return Integer.parseInt(value);
+		if (datatype == "xsd:boolean") return Boolean.parseBoolean(value);
 		
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("$", value);

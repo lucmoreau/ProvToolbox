@@ -45,7 +45,7 @@ public class ParserTest extends
 	{
 		try
 		{
-			Document doc2 = parseRDF(file);
+			Document doc2 = u.parseRDF(file);
 			return doc2;
 		} catch (Exception e)
 		{
@@ -58,7 +58,7 @@ public class ParserTest extends
 	{
 		try
 		{
-			dumpRDF(pFactory, doc, file);
+			u.dumpRDF(pFactory, doc, RDFFormat.TRIG, file);
 		} catch (Exception e)
 		{
 		    	e.printStackTrace();
@@ -76,40 +76,9 @@ public class ParserTest extends
 		return true;
 	}
 
-	private Document parseRDF(String filename) throws RDFParseException,
-			RDFHandlerException, IOException, JAXBException
-	{
-		ProvFactory pFactory = new ProvFactory();
-		File file = new File(filename);
-		RDFParser rdfParser = Rio.createParser(Rio
-				.getParserFormatForFileName(file.getName()));
-		URL documentURL = file.toURI().toURL();
-		InputStream inputStream = documentURL.openStream();
-		RdfCollector rdfCollector = new QualifiedCollector(pFactory);
-		rdfParser.setRDFHandler(rdfCollector);
-		rdfParser.parse(inputStream, documentURL.toString());
-		return rdfCollector.getDocument();
-	}
+	final Utility u=new Utility();
 
-	private void dumpRDF(ProvFactory pFactory, Document document,
-			String filename) throws Exception
-	{
-
-		RepositoryHelper rHelper = new RepositoryHelper();
-		ElmoModule module = new ElmoModule();
-		rHelper.registerConcepts(module);
-		ElmoManagerFactory factory = new SesameManagerFactory(module);
-		ElmoManager manager = factory.createElmoManager();
-
-		RdfConstructor rdfc = new RdfConstructor(pFactory, manager);
-		rdfc.getNamespaceTable().putAll(document.getNss());
-		BeanTraversal bt = new BeanTraversal(new BeanTreeConstructor(rdfc));
-		bt.convert(document);
-
-		rHelper.dumpToRDF(new File(filename), (SesameManager) manager,
-				RDFFormat.TRIG, rdfc.getNamespaceTable());
-	}
-
+	
 	private String dumpXML(ProvFactory pFactory, Document document)
 			throws JAXBException
 	{
@@ -471,5 +440,15 @@ public class ParserTest extends
 
 	public void testMembership3() throws JAXBException
 	{
+	}
+	
+	public void IGNOREtestExtraFilesOutsideRepository() {
+	    Document doc=readDocument("/home/lavm/Downloads/index-cloudsat_airs.aqua-v3.1-2006.09.01.001429.rdf");
+	    try {
+		System.out.println(" xml " + dumpXML(pFactory, doc));
+	    } catch (JAXBException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
 	}
 }

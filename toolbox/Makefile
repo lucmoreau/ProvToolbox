@@ -60,3 +60,8 @@ blog:
 note:
 	target/appassembler/bin/provconvert -provn2turtle `pwd`/../prov-n/src/test/resources/prov/w3c-publication1.prov-asn `pwd`/target/w3c-publication1.ttl
 
+
+jpl:
+	target/appassembler/bin/provconvert -rdfxml2xml /home/lavm/Downloads/index-cloudsat_airs.aqua-v3.1-2006.09.01.001429.rdf target/jpl.xml
+	target/appassembler/bin/provconvert -xml2dot target/jpl.xml target/jpl.dot target/jpl.pdf ../prov-dot/src/main/resources/configFamily.xml 
+

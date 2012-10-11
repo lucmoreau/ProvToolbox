@@ -1,6 +1,7 @@
 package org.openprovenance.prov.interop;
 import java.io.File;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Hashtable;
@@ -20,6 +21,8 @@ import org.openrdf.elmo.ElmoModule;
 import org.openrdf.elmo.sesame.SesameManager;
 import org.openrdf.elmo.sesame.SesameManagerFactory;
 import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
 
 import org.openprovenance.prov.rdf.RdfConstructor;
 import org.openprovenance.prov.rdf.RepositoryHelper;
@@ -268,6 +271,41 @@ public class InteropFramework
 
     }
 
+    
+    public void xml2dot(String fileIn, String dotFileOut, String pdfFileOut,
+			 String configFile) throws JAXBException, FileNotFoundException, IOException {
+	
+    	File in=new File(fileIn);
+
+
+    	ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
+
+	//TODO: should do xml validation (conditionally?)
+	//    	deserial.validateDocument(schemaFiles,in);
+    	
+    	Document doc=deserial.deserialiseDocument(in);
+
+
+	ProvToDot toDot=new ProvToDot((configFile==null)? "src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
+
+        toDot.convert(doc, dotFileOut, pdfFileOut);
+	
+    }
+
+
+
+    public void rdfxml2xml(String fileIn, String fileOut, Object object) throws RDFParseException, RDFHandlerException, IOException, JAXBException {
+	// TODO Auto-generated method stub
+	org.openprovenance.prov.rdf.Utility rdfU=new org.openprovenance.prov.rdf.Utility();
+	Document doc=rdfU.parseRDF(fileIn);
+	
+	ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
+        serial.serialiseDocument(new File(fileOut),doc,true);
+	
+	
+    }
+
+    
     /** Reads a file into java bean. */
     public Object loadProvGraph(String filename) throws java.io.IOException, JAXBException, Throwable {
 	try {
@@ -337,6 +375,10 @@ public class InteropFramework
         System.out.println("Usage: provconvert -xml2provn fileIn fileOut");
         
         System.out.println("Usage: provconvert -xml2html fileIn fileOut");
+        
+        System.out.println("Usage: provconvert -rdfxml2xml fileIn fileOut");
+        
+	System.out.println("Usage: provconvert -xml2dot fileIn dotFileOut pdfFileOut [configFile]");
         System.out.println("Usage: provconvert -provn2dot fileIn dotFileOut pdfFileOut [configFile]");
     }
 
@@ -411,6 +453,12 @@ public class InteropFramework
                 return;
             }
 
+            if (args[0].equals("-rdfxml2xml")) {
+                me.rdfxml2xml(fileIn,fileOut,null);
+                return;
+            }
+
+
 
             if (args[0].equals("-provn2dot")) {
 		String pdfFileOut=args[3];
@@ -419,6 +467,15 @@ public class InteropFramework
                 me.provn2dot(fileIn,fileOut,pdfFileOut,configFile);
                 return;
             }
+
+            if (args[0].equals("-xml2dot")) {
+		String pdfFileOut=args[3];
+		String configFile;
+		configFile= ((args.length==5)? args[4] : null);
+                me.xml2dot(fileIn,fileOut,pdfFileOut,configFile);
+                return;
+            }
+
         } catch (Throwable e) {
             e.printStackTrace();
         }

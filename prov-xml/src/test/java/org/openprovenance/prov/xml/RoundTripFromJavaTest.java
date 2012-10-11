@@ -37,6 +37,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	namespaces = updateNamespaces(new Hashtable<String, String>());
 	pFactory = new ProvFactory(namespaces);
     }
+	private DocumentEquality documentEquality;
 
     /**
      * Create the test case
@@ -46,6 +47,7 @@ public class RoundTripFromJavaTest extends TestCase {
      */
     public RoundTripFromJavaTest(String testName) {
 	super(testName);
+	this.documentEquality = new DocumentEquality(mergeDuplicateProperties());
     }
 
     public boolean urlFlag = true;
@@ -63,6 +65,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public String extension() {
 	return ".xml";
     }
+    
 
     public void makeDocAndTest(Statement stment, String file) {
 	makeDocAndTest(stment, file, null, true);
@@ -115,7 +118,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	assertTrue("self doc equality", doc.equals(doc));
 	assertTrue("self doc2 equality", doc2.equals(doc2));
 	if (check) {
-	    boolean result=DocumentEquality.check(doc,  doc2);
+	    boolean result=this.documentEquality.check(doc,  doc2);
 	    if (!result) {
 		System.out.println("Found " + doc);
 		System.out.println("Found " + doc2);
@@ -131,6 +134,10 @@ public class RoundTripFromJavaTest extends TestCase {
 	return true;
     }
 
+    public boolean mergeDuplicateProperties() {
+    	return false;
+    }
+    
     public Document readXMLDocument(String file) throws javax.xml.bind.JAXBException {
 
 	ProvDeserialiser deserial = ProvDeserialiser

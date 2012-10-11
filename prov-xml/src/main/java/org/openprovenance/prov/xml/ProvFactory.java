@@ -1337,7 +1337,7 @@ return res;
 	if ("prov".equals(prefix)) {
 	    return new QName(NamespacePrefixMapper.PROV_NS, local, prefix);
 	} else if ("xsd".equals(prefix)) {
-	    return new QName(NamespacePrefixMapper.XSD_NS,
+	    return new QName(NamespacePrefixMapper.XSD_NS+"#", // RDF ns ends in #, not XML ns.
 		    local, prefix);
 	} else {
 	    return new QName(namespaces.get(prefix), local, prefix);

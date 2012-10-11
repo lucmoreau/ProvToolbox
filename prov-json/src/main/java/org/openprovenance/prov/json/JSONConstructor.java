@@ -4,10 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.notation.TreeConstructor;
 import org.openprovenance.prov.notation.TreeTraversal;
 import org.openprovenance.prov.notation.Utility;
+import org.openprovenance.prov.xml.Attribute;
+import org.openprovenance.prov.xml.InternationalizedString;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -93,7 +97,13 @@ class JSONConstructor implements TreeConstructor {
         return tuple;
 	}
 	
-	private Map<String, String> typedLiteral(String value, String datatype, String lang) {
+	private Object typedLiteral(String value, String datatype, String lang) {
+		// TODO: Converting default types to JSON primitives
+		if (datatype == "xsd:string" && lang == null) return value;
+		if (datatype == "xsd:double") return Double.parseDouble(value);
+		if (datatype == "xsd:int") return Integer.parseInt(value);
+		if (datatype == "xsd:boolean") return Boolean.parseBoolean(value);
+		
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("$", value);
 		if (datatype != null) {
@@ -111,14 +121,19 @@ class JSONConstructor implements TreeConstructor {
 		return new ProvRecord("entity", id, attrs);
 	}
 	
+	
+	private String convertTime(Object time) {
+		return time.toString();
+	}
+	
 	@Override
     public Object convertActivity(Object id, Object startTime, Object endTime, Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
     	if (startTime != null) {
-    		attrs.add(tuple("prov:startTime", startTime));
+    		attrs.add(tuple("prov:startTime", convertTime(startTime)));
     	}
     	if (endTime != null) {
-    		attrs.add(tuple("prov:endTime", endTime));
+    		attrs.add(tuple("prov:endTime", convertTime(endTime)));
     	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
@@ -133,7 +148,7 @@ class JSONConstructor implements TreeConstructor {
     	if (id1 != null)
     		attrs.add(tuple("prov:entity", id1));
     	if (time != null) {
-    		attrs.add(tuple("prov:time", time));
+    		attrs.add(tuple("prov:time", convertTime(time)));
     	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
@@ -153,7 +168,7 @@ class JSONConstructor implements TreeConstructor {
     		attrs.add(tuple("prov:activity", id1));
     	}
     	if (time != null) {
-    		attrs.add(tuple("prov:time", time));
+    		attrs.add(tuple("prov:time", convertTime(time)));
     	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
@@ -176,7 +191,7 @@ class JSONConstructor implements TreeConstructor {
     		attrs.add(tuple("prov:starter", id3));
     	}
     	if (time != null) {
-    		attrs.add(tuple("prov:time", time));
+    		attrs.add(tuple("prov:time", convertTime(time)));
     	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
@@ -199,7 +214,7 @@ class JSONConstructor implements TreeConstructor {
     		attrs.add(tuple("prov:ender", id3));
     	}
     	if (time != null) {
-    		attrs.add(tuple("prov:time", time));
+    		attrs.add(tuple("prov:time", convertTime(time)));
     	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
@@ -219,7 +234,7 @@ class JSONConstructor implements TreeConstructor {
     		attrs.add(tuple("prov:activity", id1));
     	}
     	if (time != null) {
-    		attrs.add(tuple("prov:time", time));
+    		attrs.add(tuple("prov:time", convertTime(time)));
     	}
     	if (aAttrs != null) {
     		attrs.addAll((List<Object>)aAttrs);
@@ -392,7 +407,7 @@ class JSONConstructor implements TreeConstructor {
 	@Override
     public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
 		List<Object> attrs = new ArrayList<Object>();
-    	attrs.add(tuple("prov:subordinate", id2));
+    	attrs.add(tuple("prov:delegate", id2));
     	attrs.add(tuple("prov:responsible", id1));
     	if (a != null) {
     		attrs.add(tuple("prov:activity", a));
@@ -447,9 +462,9 @@ class JSONConstructor implements TreeConstructor {
 	public Object convertMentionOf(Object su, Object bu, Object ta) {
     	List<Object> attrs = new ArrayList<Object>();
     	attrs.add(tuple("prov:specificEntity", su));
-    	attrs.add(tuple("prov:generalEntity", ta));
+    	attrs.add(tuple("prov:generalEntity", bu));
     	if (bu != null) {
-    		attrs.add(tuple("prov:bundle", bu));
+    		attrs.add(tuple("prov:bundle", ta));
     	}
     	
     	String id = getBlankID("mO");
@@ -611,14 +626,17 @@ class JSONConstructor implements TreeConstructor {
     
 	@Override
 	public Object convertDocument(Object nss, List<Object> records, List<Object> bundles) {
-		// constructing a normal bundle 
+		// constructing the top-level bundle (i.e. the document) 
 		Map<String,Object> bundle = buildBundle(nss, records);
-		Map<Object, Object> bundleStructure = new HashMap<Object, Object>();
-    	bundle.put("bundle", bundleStructure);
-    	for (Object obj : bundles) {
-    		Object[] tuple = (Object[])obj;
-    		bundleStructure.put(tuple[0], tuple[1]);
-    	}
+		if (bundles != null && !bundles.isEmpty()) {
+			// adding sub-bundles
+			Map<Object, Object> bundleStructure = new HashMap<Object, Object>();
+	    	bundle.put("bundle", bundleStructure);
+	    	for (Object obj : bundles) {
+	    		Object[] tuple = (Object[])obj;
+	    		bundleStructure.put(tuple[0], tuple[1]);
+	    	}
+		}
 		return bundle;
 	}
 
@@ -634,10 +652,33 @@ class JSONConstructor implements TreeConstructor {
 	}
 
 
+	private String jsonRepresentation(Object value) {
+		if (value instanceof QName) {
+			QName qname = (QName)value;
+			return qname.getPrefix() + ":" + qname.getLocalPart();
+		}
+		return value.toString();
+	}
+	
+	private Object convertAttribute(Attribute attr) {
+		String attr_name = jsonRepresentation(attr.getElementName());
+		return tuple(attr_name, typedLiteral(jsonRepresentation(attr.getValue()), attr.getXsdType(), null));
+	}
 	
 	@Override
 	public Object convertAttributes(List<Object> attributes) {
-		return attributes;
+		if (attributes != null && !attributes.isEmpty()) {
+			List<Object> results = new ArrayList<Object>(attributes.size());
+			for (Object attr: attributes) {
+				if (attr instanceof Attribute) {
+					results.add(convertAttribute((Attribute)attr));
+				}
+				else results.add(attr);
+			}
+			return results;
+		}
+		else 
+			return attributes;
 	}
 
 	@Override
@@ -704,6 +745,10 @@ class JSONConstructor implements TreeConstructor {
 			((Map<String, String>) value).put("type", datatype);
 			return value;
 		}
+		else if (value instanceof InternationalizedString) {
+			InternationalizedString iString = (InternationalizedString)value;
+			return typedLiteral(iString.getValue(), null, iString.getLang());
+		}
 		else {
 			return typedLiteral(unwrap((String)value), datatype, null);
 		}
@@ -731,8 +776,12 @@ class JSONConstructor implements TreeConstructor {
 
 	@Override
 	public Object convertHadMember(Object collection, Object entity) {
-	    // TODO Auto-generated method stub
-	    return new UnsupportedOperationException();
+		List<Object> attrs = new ArrayList<Object>();
+    	attrs.add(tuple("prov:collection", collection));
+    	attrs.add(tuple("prov:entity", entity));
+        Object id = getBlankID("hM");
+
+    	return new ProvRecord("hadMember", id, attrs);
 	}
 
 }

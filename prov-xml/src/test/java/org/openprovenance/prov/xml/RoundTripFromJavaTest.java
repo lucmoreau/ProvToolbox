@@ -900,21 +900,32 @@ public class RoundTripFromJavaTest extends TestCase {
 	WasEndedBy end = pFactory.newWasEndedBy(q("end2"),
 						pFactory.newActivityRef(q("a1")),
 						pFactory.newEntityRef(q("e1")));
-	makeDocAndTest(end, "target/end2");
+
+	Activity a1=pFactory.newActivity(q("a1"));
+	Entity e1=pFactory.newEntity(q("e1"));
+	Statement [] opt=new Statement[] { a1, e1 };
+	
+	makeDocAndTest(end, opt, "target/end2");
     }
 
     public void testEnd3() throws JAXBException {
 	WasEndedBy end = pFactory.newWasEndedBy(q("end3"),
 						pFactory.newActivityRef(q("a1")),
 						null);
-	makeDocAndTest(end, "target/end3");
+	Activity a1=pFactory.newActivity(q("a1"));
+	Statement [] opt=new Statement[] { a1 };
+	makeDocAndTest(end, opt, "target/end3");
     }
 
     public void testEnd4() throws JAXBException {
 	WasEndedBy end = pFactory.newWasEndedBy(q("end4"), null,
 						pFactory.newEntityRef(q("e1")));
 	end.setEnder(pFactory.newActivityRef(q("a2")));
-	makeDocAndTest(end, "target/end4");
+	
+	Activity a2=pFactory.newActivity(q("a2"));
+	Entity e1=pFactory.newEntity(q("e1"));
+	Statement [] opt=new Statement[] { a2, e1 };
+	makeDocAndTest(end, opt, "target/end4");
     }
 
     public void testEnd5() throws JAXBException {
@@ -922,7 +933,12 @@ public class RoundTripFromJavaTest extends TestCase {
 						pFactory.newActivityRef(q("a1")),
 						pFactory.newEntityRef(q("e1")));
 	end.setEnder(pFactory.newActivityRef(q("a2")));
-	makeDocAndTest(end, "target/end5");
+
+	Activity a1=pFactory.newActivity(q("a1"));
+	Activity a2=pFactory.newActivity(q("a2"));
+	Entity e1=pFactory.newEntity(q("e1"));
+	Statement [] opt=new Statement[] { a2, e1, a1 };
+	makeDocAndTest(end, opt, "target/end5");
     }
 
     public void testEnd6() throws JAXBException {
@@ -930,7 +946,11 @@ public class RoundTripFromJavaTest extends TestCase {
 						pFactory.newActivityRef(q("a1")),
 						null);
 	end.setEnder(pFactory.newActivityRef(q("a2")));
-	makeDocAndTest(end, "target/end6");
+	
+	Activity a1=pFactory.newActivity(q("a1"));
+	Activity a2=pFactory.newActivity(q("a2"));
+	Statement [] opt=new Statement[] { a2, a1 };
+	makeDocAndTest(end, opt, "target/end6");
     }
 
     public void testEnd7() throws JAXBException {
@@ -939,7 +959,11 @@ public class RoundTripFromJavaTest extends TestCase {
 						null);
 	end.setEnder(pFactory.newActivityRef(q("a2")));
 	end.setTime(pFactory.newTimeNow());
-	makeDocAndTest(end, "target/end7");
+	
+	Activity a1=pFactory.newActivity(q("a1"));
+	Activity a2=pFactory.newActivity(q("a2"));
+	Statement [] opt=new Statement[] { a2, a1 };
+	makeDocAndTest(end, opt, "target/end7");
     }
 
     public void testEnd8() throws JAXBException {
@@ -955,14 +979,21 @@ public class RoundTripFromJavaTest extends TestCase {
 	addLabels(end);
 	addFurtherAttributes(end);
 
-	makeDocAndTest(end, "target/end8");
+	Activity a1=pFactory.newActivity(q("a1"));
+	Activity a2=pFactory.newActivity(q("a2"));
+	Statement [] opt=new Statement[] { a2, a1 };
+	makeDocAndTest(end, opt, "target/end8");
     }
 
     public void testEnd9() throws JAXBException {
 	WasEndedBy end = pFactory.newWasEndedBy((QName) null,
 						pFactory.newActivityRef(q("a1")),
 						pFactory.newEntityRef(q("e1")));
-	makeDocAndTest(end, "target/end9");
+	
+	Activity a1=pFactory.newActivity(q("a1"));
+	Entity e1=pFactory.newEntity(q("e1"));
+	Statement [] opt=new Statement[] { e1, a1 };
+	makeDocAndTest(end, opt, "target/end9");
     }
 
     public void testEnd10() throws JAXBException {
@@ -978,7 +1009,11 @@ public class RoundTripFromJavaTest extends TestCase {
 	addLabels(end);
 	addFurtherAttributes(end);
 
-	makeDocAndTest(end, "target/end10");
+
+	Activity a1=pFactory.newActivity(q("a1"));
+	Activity a2=pFactory.newActivity(q("a2"));
+	Statement [] opt=new Statement[] { a2, a1 };
+	makeDocAndTest(end, opt, "target/end10");
     }
     
     
@@ -1478,14 +1513,22 @@ public class RoundTripFromJavaTest extends TestCase {
        public void testAlternate1() throws JAXBException {
            AlternateOf alt = pFactory.newAlternateOf(pFactory.newEntityRef(q("e2")),
                                                      pFactory.newEntityRef(q("e1")));
-           makeDocAndTest(alt, "target/alternate1");
+           Entity e1=pFactory.newEntity(q("e1")); 
+           Entity e2=pFactory.newEntity(q("e2"));
+        	Statement [] opt=new Statement[] { e1, e2 };
+        	
+        	
+           makeDocAndTest(alt, opt, "target/alternate1");
        }
        
 
        public void testSpecialization1() throws JAXBException {
            SpecializationOf spe = pFactory.newSpecializationOf(pFactory.newEntityRef(q("e2")),
                                                                pFactory.newEntityRef(q("e1")));
-           makeDocAndTest(spe, "target/specialization1");
+           Entity e1=pFactory.newEntity(q("e1")); 
+           Entity e2=pFactory.newEntity(q("e2"));
+        	Statement [] opt=new Statement[] { e1, e2 };
+           makeDocAndTest(spe, opt, "target/specialization1");
        }
        
        
@@ -1493,7 +1536,10 @@ public class RoundTripFromJavaTest extends TestCase {
            MentionOf men = pFactory.newMentionOf(pFactory.newEntityRef(q("e2")),
                                                  pFactory.newEntityRef(q("e1")),
                                                  null);
-           makeDocAndTest(men, "target/mention1");
+           Entity e1=pFactory.newEntity(q("e1")); 
+           Entity e2=pFactory.newEntity(q("e2"));
+        	Statement [] opt=new Statement[] { e1, e2 };
+           makeDocAndTest(men, opt, "target/mention1");
        }
        
        public void testMention2() throws JAXBException {

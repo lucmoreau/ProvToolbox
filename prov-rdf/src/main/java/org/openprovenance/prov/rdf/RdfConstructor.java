@@ -804,7 +804,8 @@ public class RdfConstructor implements TreeConstructor {
 		// not
 		// already
 		// done
-
+		System.out.println("e2: "+e2);
+		System.out.println("e1: "+e1);
 		e2.getMentionOf().add(e1);
 		e2.getAsInBundle().add(e3);
 

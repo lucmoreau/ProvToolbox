@@ -323,7 +323,11 @@ public class QualifiedCollector extends RdfCollector {
 				QName entityQ = qNameFromResource((Resource) value);
 				web.setTrigger(pFactory.newEntityRef(entityQ));
 			}
-
+			if (predS.equals(PROV + "hadActivity"))
+			{
+				QName activityQ = qNameFromResource((Resource) value);
+				web.setEnder(pFactory.newActivityRef(activityQ));
+			}
 		}
 
 		handleEntityInfluence(context, web, statements, ProvType.END);

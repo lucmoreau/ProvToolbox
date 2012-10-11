@@ -166,44 +166,14 @@ public class ParserTest extends
 		// TODO: null exception
 	}
 
-//	public void testEnd1() throws JAXBException
+//	public void testEnd8() throws JAXBException
 //	{
 //	}
-
-	public void testEnd2() throws JAXBException
-	{
-	}
-
-	public void testEnd3() throws JAXBException
-	{
-	}
-
-	public void testEnd4() throws JAXBException
-	{
-	}
-
-	public void testEnd5() throws JAXBException
-	{
-	}
-
-	public void testEnd6() throws JAXBException
-	{
-	}
-
-	public void testEnd7() throws JAXBException
-	{
-	}
-
-	public void testEnd8() throws JAXBException
-	{
-	}
-
-	public void testEnd9() throws JAXBException
-	{
-	}
+//
 
 	public void testEnd10() throws JAXBException
 	{
+		// TODO: null exception
 	}
 
 //	public void testDerivation1() throws JAXBException
@@ -414,13 +384,13 @@ public class ParserTest extends
 	{
 	}
 
-	public void testAlternate1() throws JAXBException
+	/*public void testAlternate1() throws JAXBException
 	{
 	}
 
 	public void testSpecialization1() throws JAXBException
 	{
-	}
+	}*/
 
 	public void testMention1() throws JAXBException
 	{

@@ -83,75 +83,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             e.printStackTrace();
         }
     }
-	
-	enum ProvStatement {
-	    ENTITY,
-	    ACTIVITY,
-	    GENERATION,
-	    USAGE,
-	    COMMUNICATION,
-	    START,
-	    END,
-	    INVALIDATION,
-	    AGENT,
-	    ATTRIBUTION,
-	    ASSOCIATION,
-	    DERIVATION,
-	    DELEGATION,
-	    INFLUENCE,
-	    ALTERNATE,
-	    SPECIALIZATION,
-	    MENTION,
-	    MEMBERSHIP,
-	    BUNDLE
-	}
 
-	
-    private static final String PROV_JSON_PREFIX =              "prefix";
-    private static final String PROV_JSON_ENTITY =              "entity";
-    private static final String PROV_JSON_ACTIVITY =            "activity";
-    private static final String PROV_JSON_GENERATION =          "wasGeneratedBy";
-    private static final String PROV_JSON_USAGE =               "used";
-    private static final String PROV_JSON_COMMUNICATION =       "wasInformedBy";
-    private static final String PROV_JSON_START =               "wasStartedBy";
-    private static final String PROV_JSON_END =                 "wasEndedBy";
-    private static final String PROV_JSON_INVALIDATION =        "wasInvalidatedBy";
-    private static final String PROV_JSON_DERIVATION =          "wasDerivedFrom";
-    private static final String PROV_JSON_AGENT =               "agent";
-    private static final String PROV_JSON_ATTRIBUTION =         "wasAttributedTo";
-    private static final String PROV_JSON_ASSOCIATION =         "wasAssociatedWith";
-    private static final String PROV_JSON_DELEGATION =          "actedOnBehalfOf";
-    private static final String PROV_JSON_INFLUENCE =           "wasInfluencedBy";
-    private static final String PROV_JSON_ALTERNATE =           "alternateOf";
-    private static final String PROV_JSON_SPECIALIZATION =      "specializationOf";
-    private static final String PROV_JSON_MENTION =             "mentionOf";
-    private static final String PROV_JSON_MEMBERSHIP =          "hadMember";
-    private static final String PROV_JSON_BUNDLE =              "bundle";
-    
-    private static final Map<String, ProvStatement> provTypeMap;
-    static {
-        Map<String, ProvStatement> map = new Hashtable<String, ProvStatement>();
-        map.put(PROV_JSON_ENTITY, ProvStatement.ENTITY);
-        map.put(PROV_JSON_ACTIVITY, ProvStatement.ACTIVITY);
-        map.put(PROV_JSON_GENERATION, ProvStatement.GENERATION);
-        map.put(PROV_JSON_USAGE, ProvStatement.USAGE);
-        map.put(PROV_JSON_COMMUNICATION, ProvStatement.COMMUNICATION);
-        map.put(PROV_JSON_START, ProvStatement.START);
-        map.put(PROV_JSON_END, ProvStatement.END);
-        map.put(PROV_JSON_INVALIDATION, ProvStatement.INVALIDATION);
-        map.put(PROV_JSON_DERIVATION, ProvStatement.DERIVATION);
-        map.put(PROV_JSON_AGENT, ProvStatement.AGENT);
-        map.put(PROV_JSON_ATTRIBUTION, ProvStatement.ATTRIBUTION);
-        map.put(PROV_JSON_ASSOCIATION, ProvStatement.ASSOCIATION);
-        map.put(PROV_JSON_DELEGATION, ProvStatement.DELEGATION);
-        map.put(PROV_JSON_INFLUENCE, ProvStatement.INFLUENCE);
-        map.put(PROV_JSON_ALTERNATE, ProvStatement.ALTERNATE);
-        map.put(PROV_JSON_SPECIALIZATION, ProvStatement.SPECIALIZATION);
-        map.put(PROV_JSON_MENTION, ProvStatement.MENTION);
-        map.put(PROV_JSON_MEMBERSHIP, ProvStatement.MEMBERSHIP);
-        map.put(PROV_JSON_BUNDLE, ProvStatement.BUNDLE);
-        provTypeMap = Collections.unmodifiableMap(map);
-    }
+	private static final String PROV_JSON_PREFIX =              "prefix";
     
     private final ProvFactory pf = new ProvFactory();
     
@@ -223,18 +156,14 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         else {
             id = pf.stringToQName(idStr);
         }
+
         // Decoding attributes
-        
-        ProvStatement provStatement = provTypeMap.get(statementType);
-        if (provStatement == null) {
-            throw new UnsupportedOperationException("Unsupported statement type: " + statementType);
-        }
-            
+        ProvJSONStatement provStatement = ProvJSONStatement.valueOf(statementType);
         switch (provStatement) {
-        case ENTITY:
+        case entity:
             statement = pf.newEntity(id);
             break;
-        case ACTIVITY:
+        case activity:
             XMLGregorianCalendar startTime = optionalTime("prov:startTime", attributeMap);
             XMLGregorianCalendar endTime = optionalTime("prov:endTime", attributeMap);
             Activity a = pf.newActivity(id);
@@ -246,15 +175,15 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             }
             statement = a;
             break;
-        case AGENT:
+        case agent:
             statement = pf.newAgent(id);
             break;            
-        case ALTERNATE:
+        case alternateOf:
             EntityRef alternate1 = optionalEntityRef("prov:alternate1", attributeMap);
             EntityRef alternate2 = optionalEntityRef("prov:alternate2", attributeMap);
             statement = pf.newAlternateOf(alternate2, alternate1);
             break;
-        case ASSOCIATION:
+        case wasAssociatedWith:
             ActivityRef activity = optionalActivityRef("prov:activity", attributeMap);
             AgentRef agent = optionalAgentRef("prov:agent", attributeMap); 
             EntityRef plan = optionalEntityRef("prov:plan", attributeMap);
@@ -262,12 +191,12 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             if (plan != null) wAW.setPlan(plan);
             statement = wAW;
             break;
-        case ATTRIBUTION:
+        case wasAttributedTo:
             EntityRef entity = optionalEntityRef("prov:entity", attributeMap);
             agent = optionalAgentRef("prov:agent", attributeMap);
             statement = pf.newWasAttributedTo(id, entity, agent);
             break;
-        case BUNDLE:
+        case bundle:
             @SuppressWarnings("rawtypes")
 			Collection statements = decodeBundle(attributeMap);
             NamedBundle namedBundle = new NamedBundle(); 
@@ -275,31 +204,26 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             namedBundle.getEntityOrActivityOrWasGeneratedBy().addAll((Collection<? extends Statement>)statements);
             statement = namedBundle;
             break;
-        case COMMUNICATION:
+        case wasInformedBy:
             ActivityRef informed = optionalActivityRef("prov:informed", attributeMap);
             ActivityRef informant = optionalActivityRef("prov:informant", attributeMap);
             statement = pf.newWasInformedBy(id, informed, informant);
             break;
-        case DELEGATION:
+        case actedOnBehalfOf:
             AgentRef delegate = optionalAgentRef("prov:delegate", attributeMap);
             AgentRef responsible = optionalAgentRef("prov:responsible", attributeMap);
             activity = optionalActivityRef("prov:activity", attributeMap);
             statement = pf.newActedOnBehalfOf(id, delegate, responsible, activity);
             break;
-        case DERIVATION:
+        case wasDerivedFrom:
             EntityRef generatedEntity = optionalEntityRef("prov:generatedEntity", attributeMap);
             EntityRef usedEntity = optionalEntityRef("prov:usedEntity", attributeMap);
             activity = optionalActivityRef("prov:activity", attributeMap);
             GenerationRef generation = optionalGenerationRef("prov:generation", attributeMap);
             UsageRef usage = optionalUsageRef("prov:usage", attributeMap);
-            switch (provStatement) {
-            default:
-            case DERIVATION:
-                statement = pf.newWasDerivedFrom(id, generatedEntity, usedEntity, activity, generation, usage);
-                break;
-            }
+            statement = pf.newWasDerivedFrom(id, generatedEntity, usedEntity, activity, generation, usage);
             break;
-        case END:
+        case wasEndedBy:
             activity = optionalActivityRef("prov:activity", attributeMap);
             EntityRef trigger = optionalEntityRef("prov:trigger", attributeMap);
             ActivityRef ender = optionalActivityRef("prov:ender", attributeMap);
@@ -312,7 +236,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             }
             statement = wEB;
             break;
-        case GENERATION:
+        case wasGeneratedBy:
             entity = optionalEntityRef("prov:entity", attributeMap);
             activity = optionalActivityRef("prov:activity", attributeMap);
             time = optionalTime("prov:time", attributeMap);
@@ -325,12 +249,12 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             }
             statement = wGB;
             break;
-        case INFLUENCE:
+        case wasInfluencedBy:
             AnyRef influencee = anyRef("prov:influencee", attributeMap);
             AnyRef influencer = anyRef("prov:influencer", attributeMap);
             statement = pf.newWasInfluencedBy(id, influencee, influencer);
             break;
-        case INVALIDATION:
+        case wasInvalidatedBy:
             entity = optionalEntityRef("prov:entity", attributeMap);
             activity = optionalActivityRef("prov:activity", attributeMap);
             time = optionalTime("prov:time", attributeMap);
@@ -340,7 +264,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             }
             statement = wIB;
             break;
-        case MEMBERSHIP:
+        case hadMember:
             EntityRef collection = optionalEntityRef("prov:collection", attributeMap);
             entity = optionalEntityRef("prov:entity", attributeMap);
             HadMember membership = new HadMember();
@@ -349,18 +273,18 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             	membership.getEntity().add(entity);
             statement = membership;
             break;
-        case MENTION:
+        case mentionOf:
             EntityRef specificEntity = optionalEntityRef("prov:specificEntity", attributeMap);
             EntityRef generalEntity = optionalEntityRef("prov:generalEntity", attributeMap);
             EntityRef bundle = optionalEntityRef("prov:bundle", attributeMap);
             statement = pf.newMentionOf(specificEntity, generalEntity, bundle);
             break;
-        case SPECIALIZATION:
+        case specializationOf:
             specificEntity = optionalEntityRef("prov:specificEntity", attributeMap);
             generalEntity = optionalEntityRef("prov:generalEntity", attributeMap);
             statement = pf.newSpecializationOf(specificEntity, generalEntity);
             break;
-        case START:
+        case wasStartedBy:
             activity = optionalActivityRef("prov:activity", attributeMap);
             trigger = optionalEntityRef("prov:trigger", attributeMap);
             ActivityRef starter = optionalActivityRef("prov:starter", attributeMap);
@@ -373,7 +297,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             }
             statement = wSB;
             break;
-        case USAGE:
+        case used:
             activity = optionalActivityRef("prov:activity", attributeMap);
             entity = optionalEntityRef("prov:entity", attributeMap);
             time = optionalTime("prov:time", attributeMap);
@@ -391,7 +315,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             break;
         
         }
-        // All the remaining attributes can have multiple values
+        
+        // All the remaining attributes can have multiple values, except prov:value
         // prov:type decoding
         List<JsonElement> values = popMultiValAttribute("prov:type", attributeMap);
         if (!values.isEmpty()) {
@@ -460,7 +385,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         }
         
         // arbitrary attribute decoding
-        if (provStatement != ProvStatement.BUNDLE && !attributeMap.entrySet().isEmpty()) {
+        if (provStatement != ProvJSONStatement.bundle && !attributeMap.entrySet().isEmpty()) {
         	if (statement instanceof HasExtensibility) {
 	            List<Attribute> attributes = ((HasExtensibility)statement).getAny();
 	            for (Map.Entry<String, JsonElement> aPair: attributeMap.entrySet()) {

@@ -155,10 +155,10 @@ public class RdfConstructor implements TreeConstructor {
 		if (aAttrs == null)
 			return;
 		if (a == null) {
-		    new NullPointerException(); //should never be here, really
+		    //throw new NullPointerException(); //should never be here, really
+		    return;
 		}
 
-		
 		org.openrdf.model.Resource r = new URIImpl(a.getNamespaceURI()
 				+ a.getLocalPart());
 

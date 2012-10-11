@@ -68,7 +68,7 @@
             </program>
 -->
             <program>
-              <mainClass>org.openprovenance.prov.interop.InteropFramework</mainClass>
+              <mainClass>org.openprovenance.prov.interop.CommandLineArguments</mainClass>
               <name>provconvert</name>
             </program>
 

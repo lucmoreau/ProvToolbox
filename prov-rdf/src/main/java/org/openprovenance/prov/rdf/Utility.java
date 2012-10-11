@@ -58,10 +58,11 @@ public class Utility {
 	ElmoManager manager = factory.createElmoManager();
 
 	RdfConstructor rdfc = new RdfConstructor(pFactory, manager);
-	rdfc.getNamespaceTable().putAll(document.getNss());
+	if (document.getNss()!=null) rdfc.getNamespaceTable().putAll(document.getNss());
 	BeanTraversal bt = new BeanTraversal(new BeanTreeConstructor(rdfc));
 	bt.convert(document);
 
+	System.out.println("namespaces " + rdfc.getNamespaceTable());
 	rHelper.dumpToRDF(new File(filename), (SesameManager) manager, format,
 			  rdfc.getNamespaceTable());
     }

@@ -3,6 +3,7 @@ package org.openprovenance.prov.interop;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
@@ -10,6 +11,8 @@ import org.apache.commons.cli.ParseException;
 
 public class CommandLineArguments {
     
+    public static final String OUTFILE = "outfile";
+    public static final String VERBOSE = "verbose";
     public static final String NAMESPACES = "namespaces";
     public static final String DEBUG = "debug";
     public static final String VERSION = "version";
@@ -23,7 +26,7 @@ public class CommandLineArguments {
         Option help = new Option(HELP, "print this message");
         Option version = new Option(VERSION,
                 "print the version information and exit");
-        Option verbose = new Option("verbose", "be verbose");
+        Option verbose = new Option(VERBOSE, "be verbose");
         Option debug = new Option(DEBUG, "print debugging information");
 
         Option logfile = OptionBuilder
@@ -36,6 +39,12 @@ public class CommandLineArguments {
                 .hasArg()
                 .withDescription("use given file as input")
                 .create(INFILE);
+
+        Option outfile = OptionBuilder
+                .withArgName("file")
+                .hasArg()
+                .withDescription("use given file as output")
+                .create(OUTFILE);
 
         Option namespaces = OptionBuilder
                 .withArgName("file")
@@ -51,6 +60,7 @@ public class CommandLineArguments {
         options.addOption(debug);
         options.addOption(logfile);
         options.addOption(infile);
+        options.addOption(outfile);
         options.addOption(namespaces);
 
         return options;
@@ -60,19 +70,50 @@ public class CommandLineArguments {
     public static void main(String[] args) {
         // create the parser
         CommandLineParser parser = new GnuParser();
-        String infile;
+        String help = null;      
+        String version = null;
+        String verbose = null;
+        String debug = null;
+        String logfile = null;
+        String infile = null;
+        String outfile = null;
+        String namespaces = null;
+
+
         try {
             // parse the command line arguments
-            CommandLine line = parser.parse( buildOptions(), args );
-            
-            
+            Options options=buildOptions();
+            CommandLine line = parser.parse( options, args );
 
-            if (line.hasOption(HELP)) infile = line.getOptionValue(HELP);
-            if (line.hasOption(VERSION)) infile = line.getOptionValue(VERSION);
-            if (line.hasOption(DEBUG)) infile = line.getOptionValue(DEBUG);
-            if (line.hasOption(LOGFILE)) infile = line.getOptionValue(LOGFILE);
-            if (line.hasOption(INFILE)) infile = line.getOptionValue(INFILE);
-            if (line.hasOption(NAMESPACES)) infile = line.getOptionValue(NAMESPACES);
+	    if (line.hasOption(HELP))       help       = HELP;
+	    if (line.hasOption(VERSION))    version    = VERSION;
+	    if (line.hasOption(VERBOSE))    verbose    = VERBOSE;
+	    if (line.hasOption(DEBUG))      debug      = DEBUG;
+	    if (line.hasOption(LOGFILE))    logfile    = line.getOptionValue(LOGFILE);
+            if (line.hasOption(INFILE))     infile     = line.getOptionValue(INFILE);
+	    if (line.hasOption(OUTFILE))    outfile    = line.getOptionValue(OUTFILE);
+	    if (line.hasOption(NAMESPACES)) namespaces = line.getOptionValue(NAMESPACES);
+	    
+	    if (help!=null) {
+		HelpFormatter formatter = new HelpFormatter();
+		formatter.printHelp( "prov-convert", options, true );
+		return;
+	    }
+	    
+	    if (version!=null) {
+		System.out.println("prov-convert:  version x.y.z");
+		return;
+	    }
+	    
+	    
+            InteropFramework interop=new InteropFramework(verbose,
+                                                          debug,
+                                                          logfile,
+                                                          infile,
+                                                          outfile,
+                                                          namespaces);
+            interop.run();
+
         }
 
         catch (ParseException exp) {

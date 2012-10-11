@@ -254,6 +254,7 @@ public class QualifiedCollector extends RdfCollector {
 
 	private void createDerivation(QName context, QName qname)
 	{
+		System.out.println("Create new Derivation: "+qname);
 		WasDerivedFrom wdf = new WasDerivedFrom();
 		wdf.setId(qname);
 
@@ -261,7 +262,6 @@ public class QualifiedCollector extends RdfCollector {
 
 		for (Statement statement : statements)
 		{
-
 			String predS = statement.getPredicate().stringValue();
 			Value value = statement.getObject();
 
@@ -293,6 +293,8 @@ public class QualifiedCollector extends RdfCollector {
 		}
 		handleEntityInfluence(context, wdf, statements, ProvType.DERIVATION);
 
+		System.out.println("Done:");
+		System.out.println(wdf);
 		store(context, wdf);
 		this.influenceMap.put(qname, wdf);
 	}

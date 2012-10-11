@@ -59,6 +59,7 @@ public class Utility {
 
 	RdfConstructor rdfc = new RdfConstructor(pFactory, manager);
 	rdfc.getNamespaceTable().putAll(document.getNss());
+	rdfc.getNamespaceTable().put("xsd", "http://www.w3.org/2001/XMLSchema#");
 	BeanTraversal bt = new BeanTraversal(new BeanTreeConstructor(rdfc));
 	bt.convert(document);
 

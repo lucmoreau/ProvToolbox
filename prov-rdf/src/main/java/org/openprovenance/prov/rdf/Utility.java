@@ -30,7 +30,7 @@ public class Utility {
 										 Throwable {
 	RdfConstructor rdfc = new RdfConstructor(pFactory, manager);
 
-	BeanTraversal bt = new BeanTraversal(new BeanTreeConstructor(rdfc));
+	BeanTraversal bt = new BeanTraversal(new BeanTreeConstructor(pFactory, rdfc));
 	Object o = bt.convert(c);
 	return o;
     }
@@ -58,10 +58,13 @@ public class Utility {
 	ElmoManager manager = factory.createElmoManager();
 
 	RdfConstructor rdfc = new RdfConstructor(pFactory, manager);
-	if (document.getNss()!=null) rdfc.getNamespaceTable().putAll(document.getNss());
 	rdfc.getNamespaceTable().putAll(document.getNss());
 	rdfc.getNamespaceTable().put("xsd", "http://www.w3.org/2001/XMLSchema#");
-	BeanTraversal bt = new BeanTraversal(new BeanTreeConstructor(rdfc));
+	
+	//rdfc.getNamespaceTable().put("", "http://x.org/foo#"); //TODO: this is hack, I need to retrieve this value somewhere
+	//rdfc.getNamespaceTable().put("_", "http://x.org/bar#");
+
+	BeanTraversal bt = new BeanTraversal(new BeanTreeConstructor(pFactory, rdfc));
 	bt.convert(document);
 
 	//System.out.println("namespaces " + rdfc.getNamespaceTable());

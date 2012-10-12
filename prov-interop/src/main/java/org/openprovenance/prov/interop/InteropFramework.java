@@ -412,31 +412,57 @@ public class InteropFramework
 
     }
 
-    public Object loadProvKnownGraph(String filename)
-	throws java.io.IOException, JAXBException, Throwable {
-	
-	if ((filename.endsWith(".provn"))||(filename.endsWith(".pn")))  {
-	    Utility u=new Utility();
-	    CommonTree tree = u.convertASNToTree(filename);
-	    Object o=u.convertTreeToJavaBean(tree);
-	    return o;
-	} else if (filename.endsWith(".provx") || filename.endsWith(".xml")) {
-	    File in=new File(filename);
-	    ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-	    Document c=deserial.deserialiseDocument(in);
-	    return c;
-	} else if (filename.endsWith(".rdf") || filename.endsWith(".prov-rdf")) {
-	    org.openprovenance.prov.rdf.Utility rdfU=new org.openprovenance.prov.rdf.Utility();
-	    Document doc=rdfU.parseRDF(filename);
-	    return doc;
-	} else if (filename.endsWith(".json")) {
-	    throw new UnsupportedOperationException();
-	} else {
-	    System.out.println("Unkown format " + filename);
-	    throw new UnsupportedOperationException();
-	}
+    public Object loadProvKnownGraph(String filename) {
+        try {
+        
+        ProvFormat format = getTypeForFile(filename);
+        if (format == null) {
+            System.err.println("Unknown output file format: " + filename);
+            return null;
+        }
+        
+        switch (format) {
+        case DOT:
+        case JPEG:
+        case SVG:
+            throw new UnsupportedOperationException(); //TODO
+        case JSON:
+            throw new UnsupportedOperationException(); //TODO
+        case PROVN: {
+            Utility u=new Utility();
+            CommonTree tree = u.convertASNToTree(filename);
+            Object o=u.convertTreeToJavaBean(tree);
+            return o;
+        }
+        case RDFXML:
+        case TRIG:
+        case TURTLE:{
+            org.openprovenance.prov.rdf.Utility rdfU=new org.openprovenance.prov.rdf.Utility();
+            Document doc=rdfU.parseRDF(filename);
+            return doc;
+        }    
+        case XML: {
+            File in=new File(filename);
+            ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
+            Document c=deserial.deserialiseDocument(in);
+            return c;
+        }
+        default: {
+            System.out.println("Unknown format " + filename);
+            throw new UnsupportedOperationException();
+        }
+        }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (Throwable e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+	 
     }
-    
+
     
 
     public Object IGNOREloadProvUnknownGraph(String filename)
@@ -600,6 +626,7 @@ public class InteropFramework
 	    doc.getNss().put("xsd","http://www.w3.org/2001/XMLSchema");
 	    doc.getNss().put("xsi","http://www.w3.org/2001/XMLSchema-instance");
 	    
+	    System.out.println("InteropFramework run() -> " + doc.getNss());
 	    writeDocument(outfile, doc);
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block

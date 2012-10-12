@@ -74,6 +74,7 @@ public class ProvFactory {
 	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
     	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	init();
+	setNamespaces(new Hashtable<String, String>());
     }
 
     public ProvFactory(Hashtable<String, String> namespaces) {
@@ -89,6 +90,7 @@ public class ProvFactory {
 	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
     	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	init();
+	setNamespaces(new Hashtable<String, String>());
     }
 
     
@@ -1443,6 +1445,10 @@ return res;
         if (prefix.equals(NamespacePrefixMapper.PROV_PREFIX)) return NamespacePrefixMapper.PROV_NS;
         if (prefix.equals(NamespacePrefixMapper.XSD_PREFIX)) return NamespacePrefixMapper.XSD_NS;
         return namespaces.get(prefix);
+    }
+
+    public Hashtable<String, String> getNss() {
+        return namespaces;
     }
 
     

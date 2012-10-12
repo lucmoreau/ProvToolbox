@@ -40,7 +40,7 @@ html:
 	cat src/main/resources/footer.html >> target/foo.html
 
 
-# bundle missing
+# TODO: bundle missing
 b1:
 	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/bundles1.provn -outfile target/bundles1.xml
 	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/bundles1.provn -outfile target/bundles1.trig
@@ -49,6 +49,7 @@ b1:
 pc1:
 	target/appassembler/bin/provconvert -infile ../prov-xml/target/pc1-full.xml -outfile target/pc1-full.provn
 	target/appassembler/bin/provconvert -infile  ../prov-xml/target/pc1-full.xml -outfile target/pc1-full.ttl
+	target/appassembler/bin/provconvert -infile  ../prov-xml/target/pc1-full.xml -outfile target/pc1-full.xml
 
 
 blog:
@@ -63,8 +64,14 @@ note:
 
 
 jpl:
+	@echo "------"
 	target/appassembler/bin/provconvert -infile /home/lavm/Downloads/index-cloudsat_airs.aqua-v3.1-2006.09.01.001429.rdf -outfile target/jpl.xml
+	@echo "------"
+	target/appassembler/bin/provconvert -infile /home/lavm/Downloads/index-cloudsat_airs.aqua-v3.1-2006.09.01.001429.rdf -outfile target/jpl.provn
+	@echo "------"
+	target/appassembler/bin/provconvert -infile /home/lavm/Downloads/index-cloudsat_airs.aqua-v3.1-2006.09.01.001429.rdf -outfile target/jpl.ttl
+	@echo "------"
 #
-	target/appassembler/bin/provconvert -rdfxml2xml /home/lavm/Downloads/index-cloudsat_airs.aqua-v3.1-2006.09.01.001429.rdf target/jpl.xml
-	target/appassembler/bin/provconvert -xml2dot target/jpl.xml target/jpl.dot target/jpl.pdf ../prov-dot/src/main/resources/configFamily.xml 
+# TODO
+#	target/appassembler/bin/provconvert -xml2dot target/jpl.xml target/jpl.dot target/jpl.pdf ../prov-dot/src/main/resources/configFamily.xml 
 

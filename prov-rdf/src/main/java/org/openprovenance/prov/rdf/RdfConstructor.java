@@ -77,12 +77,18 @@ public class RdfConstructor implements TreeConstructor {
 	public Object convertDocument(Object nss, List<Object> records,
 			List<Object> bundles)
 	{
-		((SesameManager) manager).getConnection().setAddContexts();
-		return null;
+	    if (nss!=null) {
+	        Hashtable<String,String> nss2=(Hashtable<String,String>) nss;
+	        getNamespaceTable().putAll(nss2);
+	    }
+	    //System.out.println("convertDocument -> " + nss);
+	    ((SesameManager) manager).getConnection().setAddContexts();
+	    return null;
 	}
 
 	public Object convertNamedBundle(Object id, Object nss, List<Object> records)
 	{
+	    //TODO, where are the namespaces stored?
 		((SesameManager) manager).getConnection().setAddContexts();
 		return null;
 	}
@@ -817,9 +823,10 @@ public class RdfConstructor implements TreeConstructor {
 	
 	public <T> T designateIfNotNull(QName qname, Class<T> cl) {
 	    if (qname==null) return null;
-	    return manager.designate(qname,cl);
+	    return designate(qname,cl);
 	}
 	public <T> T designate(QName qname, Class<T> cl) {
+	   
 	    return manager.designate(qname,cl);
 	}
 	

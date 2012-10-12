@@ -185,10 +185,16 @@ public class BeanTraversal {
 	    XMLGregorianCalendar ti=(XMLGregorianCalendar) a;
 	    return c.convertTypedLiteral("xsd:dateTime", quoteWrap(ti));
 	} else {
-	    throw new UnsupportedOperationException("Unknown typedLiteral " + a
-		    + "(" + a.getClass() + ")");
+	    if (strict) {
+	        throw new UnsupportedOperationException("Unknown typedLiteral " + a
+	                                                + "(" + a.getClass() + ")");
+	    } else {
+	        return c.convertTypedLiteral("prov:unknownLiteral", quoteWrap(a.toString()));
+	    }
 	}
     }
+    
+    boolean strict =false;
 
     public Object convert(Entity e) {
 	List<Object> tAttrs = convertTypeAttributes(e);

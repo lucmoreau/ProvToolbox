@@ -2,7 +2,11 @@ package org.openprovenance.prov.notation;
 
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.BeanConstructor;
+import org.openprovenance.prov.xml.ProvFactory;
+
 import static org.openprovenance.prov.xml.NamespacePrefixMapper.XSI_NS;
+
+import java.util.Hashtable;
 import java.util.List;
 import java.util.LinkedList;
 import javax.xml.namespace.QName;
@@ -11,18 +15,39 @@ import org.w3c.dom.Element;
 /** A class that implements the BeanConstructor interface and relies on a TreeConstructor to construct a data structure for a given bean. */
 public class BeanTreeConstructor implements BeanConstructor{
     private TreeConstructor c;
-    public BeanTreeConstructor(TreeConstructor c) {
+    final ProvFactory pFactory;
+    public BeanTreeConstructor(ProvFactory pFactory, TreeConstructor c) {
+        this.pFactory=pFactory;
         this.c=c;
+        this.namespaces=pFactory.getNss();
     }
 
+    
+    
     public Object convert(QName q) {
         if (q==null) return null;
+        registerPrefix(q);
         if (q.getPrefix()!=null) {
             return q.getPrefix()+ ":" + q.getLocalPart();
         } else { 
             return q.getLocalPart();
         }
     }
+
+    final Hashtable<String,String> namespaces;
+    
+    public void registerPrefix(QName q) {
+        //System.out.println("registeringPrefix " + q);
+        String prefix=q.getPrefix();
+        if (prefix==null) {
+            namespaces.put("_", q.getNamespaceURI());
+        } else {
+           String old=namespaces.put(q.getPrefix(), q.getNamespaceURI());
+           //if (old==null) System.out.println("registeringPrefix " + q.getPrefix() + " " + q.getNamespaceURI());
+        }
+    }
+    
+
 
     public Object convertAttributeValue(Element a) {
         String type=a.getAttributeNS(XSI_NS,"type");
@@ -366,6 +391,16 @@ public class BeanTreeConstructor implements BeanConstructor{
     public Object convertBundle(Object namespaces,
 				List<Object> sRecords,
 				List<Object> bRecords) {
+        //System.out.println("namespaces in BeanTreeConstructor " + namespaces);
+        if (namespaces==null) {
+            namespaces=this.namespaces;
+        } else {
+            Hashtable<String,String> nss=(Hashtable<String,String>) namespaces;
+            nss.putAll(this.namespaces);
+        }
+        
+        //System.out.println("namespaces in BeanTreeConstructor  " + namespaces);
+
         return c.convertDocument(namespaces,sRecords,bRecords);
     }
 

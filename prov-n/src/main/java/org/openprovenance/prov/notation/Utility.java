@@ -62,9 +62,10 @@ public  class Utility {
 
     /** A conversion function that copies a Java Bean deeply. */
     public Object convertJavaBeanToJavaBean(Document c) {
-        ProvConstructor pc=new ProvConstructor(new ProvFactory(c.getNss()));
+        ProvFactory pFactory=new ProvFactory(c.getNss());
+        ProvConstructor pc=new ProvConstructor(pFactory);
         pc.namespaceTable.putAll(c.getNss());
-        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(pc));
+        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(pFactory,pc));
         Object o=bt.convert(c);
         return o;
     }
@@ -77,7 +78,7 @@ public  class Utility {
     }
 
     public String convertBeanToASN(Document c) {
-        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(new NotationConstructor()));
+        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(ProvFactory.getFactory(), new NotationConstructor()));
         Object o=bt.convert(c);
         return (String)o;
     }

@@ -1,24 +1,23 @@
-xml.beanConstructor: doesnot convert time!
 
+- Support for bundles
+- HadMember conversion to rdf
+- Influence to rdf
 
-java.lang.UnsupportedOperationException: Unknown relation type org.openprovenance.prov.xml.WasAttributedTo@d0f56e[
-  entity=org.openprovenance.prov.xml.EntityRef@cc926e[
-  ref=UpVote31291.0
-]
-  agent=org.openprovenance.prov.xml.AgentRef@49c8e5[
-  ref=User118
-]
-  label=[]
-  type=[]
-  any=[[pp:source: null]]
-  id=d16c3145-b6aa-44c6-8fcb-aae18cf9f83f
-]
-	at org.openprovenance.prov.xml.BeanTraversal.convertRelation(BeanTraversal.java:159)
-	at org.openprovenance.prov.xml.BeanTraversal.convert(BeanTraversal.java:31)
-	at org.openprovenance.prov.notation.Utility.convertBeanToASN(Utility.java:88)
-	at org.openprovenance.prov.interop.InteropFramework.xml2asn(InteropFramework.java:91)
-	at org.openprovenance.prov.interop.InteropFramework.main(InteropFramework.java:289)
+----------------------------------------------------------------------
 
+Refactoring
+1. prov-interop
+   define generic interface, with read/write Document, and dispatch by type.
+
+2. Revise converters to rely on beans only
+
+3. Handling of namespaces, qnames, uri, conversion and utility functions.
+   Maybe create a class "NamespaceManager", 
+   Register there common prov:qnames, etc
+
+4. Drop dependency on help, assert triples directly. 
+
+----------------------------------------------------------------------
 
 0. asn/target/pc1-full-2.xml
    and
@@ -29,22 +28,13 @@ java.lang.UnsupportedOperationException: Unknown relation type org.openprovenanc
    entity(pc1:a26,[prov:label="Atlas Y Slice"%%xsd:string,prov:type="http://openprovenance.org/primitives#File"%%xsd:anyURI,pc1:url=http://www.ipaw.info/challenge/atlas-y.pgm])
 
 
+1. Update the ASN grammar to have Document
 
-1. Update the ASN grammar to deal with latest changes
-    - alternates/specialization
+2. Likewise update to latest  the XML Schema
 
-2. Likewise for the XML Schema
-
-3. Complete BeantoASN conversion
-
-4. TreeTraversal: should handle known prov attributes. 
+3. TreeTraversal: should handle known prov attributes. 
 
 5. Should ProvToDot be implemented using BeanConstructor?
-
-6. Systematic testing
-
-- Time on generation/use
-- Define roles properly, in Java use known accessor
 
 7. pom.xml used to add  'extends Entity' to the definition of Agent.
    This resulted in problems when marshalling an Agent. To be revisited.

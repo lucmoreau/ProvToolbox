@@ -17,11 +17,16 @@ bundle
   wasAttributedTo(alice:bundle2, ex:Alice)
 
   bundle bob:bundle1
+    prefix bob  <http://example.org/bob/>
+    prefix ex  <http://example.org/example/>
     entity(ex:report1, [ prov:type="report", ex:version=1 ])
     wasGeneratedBy(ex:report1, -, 2012-05-24T10:00:01)
   endBundle
 
   bundle alice:bundle2
+    prefix alice  <http://example.org/alice/>
+    prefix ex  <http://example.org/example/>
+
     entity(ex:report1)
     entity(ex:report2, [ prov:type="report", ex:version=2 ])
     wasGeneratedBy(ex:report2, -, 2012-05-25T11:00:01)

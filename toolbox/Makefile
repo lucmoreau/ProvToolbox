@@ -2,18 +2,18 @@
 
 
 t1:
-	target/appassembler/bin/provconvert -provn2turtle ../prov-n/src/test/resources/prov/w3c-publication1.prov-asn target/w3c-publication1.ttl
+	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/w3c-publication1.prov-asn -outfile target/w3c-publication1.ttl
 	target/appassembler/bin/provconvert -provn2xml ../prov-n/src/test/resources/prov/w3c-publication1.prov-asn target/w3c-publication1.xml
 	target/appassembler/bin/provconvert -provn2dot ../prov-n/src/test/resources/prov/w3c-publication1.prov-asn target/w3c-publication1.dot target/w3c-publication1.pdf ../prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml
 
 
 t2:
-	target/appassembler/bin/provconvert -provn2turtle ../prov-n/src/test/resources/prov/w3c-publication2.prov-asn target/w3c-publication2.ttl
+	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/w3c-publication2.prov-asn -outfile target/w3c-publication2.ttl
 	target/appassembler/bin/provconvert -provn2xml ../prov-n/src/test/resources/prov/w3c-publication2.prov-asn target/w3c-publication2.xml
 	target/appassembler/bin/provconvert -provn2dot ../prov-n/src/test/resources/prov/w3c-publication2.prov-asn target/w3c-publication2.dot target/w3c-publication2.pdf ../prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml
 
 t3:
-	target/appassembler/bin/provconvert -provn2turtle ../prov-n/src/test/resources/prov/w3c-publication3.prov-asn target/w3c-publication3.ttl
+	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/w3c-publication3.prov-asn -outfile target/w3c-publication3.ttl
 	target/appassembler/bin/provconvert -provn2xml ../prov-n/src/test/resources/prov/w3c-publication3.prov-asn target/w3c-publication3.xml
 	target/appassembler/bin/provconvert -provn2dot ../prov-n/src/test/resources/prov/w3c-publication3.prov-asn target/w3c-publication3.dot target/w3c-publication3.pdf ../prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml
 
@@ -40,14 +40,15 @@ html:
 	cat src/main/resources/footer.html >> target/foo.html
 
 
-
+# bundle missing
 b1:
-	target/appassembler/bin/provconvert -provn2xml ../prov-n/src/test/resources/prov/bundles1.pn target/bundles1.xml
+	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/bundles1.provn -outfile target/bundles1.xml
+	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/bundles1.provn -outfile target/bundles1.trig
 
 
 pc1:
-	target/appassembler/bin/provconvert -xml2provn ../prov-xml/target/pc1-full.xml target/pc1-full.provn
-	target/appassembler/bin/provconvert -xml2turtle  ../prov-xml/target/pc1-full.xml target/pc1-full.ttl
+	target/appassembler/bin/provconvert -infile ../prov-xml/target/pc1-full.xml -outfile target/pc1-full.provn
+	target/appassembler/bin/provconvert -infile  ../prov-xml/target/pc1-full.xml -outfile target/pc1-full.ttl
 
 
 blog:
@@ -59,4 +60,11 @@ blog:
 # provide absolute arguments
 note:
 	target/appassembler/bin/provconvert -provn2turtle `pwd`/../prov-n/src/test/resources/prov/w3c-publication1.prov-asn `pwd`/target/w3c-publication1.ttl
+
+
+jpl:
+	target/appassembler/bin/provconvert -infile /home/lavm/Downloads/index-cloudsat_airs.aqua-v3.1-2006.09.01.001429.rdf -outfile target/jpl.xml
+#
+	target/appassembler/bin/provconvert -rdfxml2xml /home/lavm/Downloads/index-cloudsat_airs.aqua-v3.1-2006.09.01.001429.rdf target/jpl.xml
+	target/appassembler/bin/provconvert -xml2dot target/jpl.xml target/jpl.dot target/jpl.pdf ../prov-dot/src/main/resources/configFamily.xml 
 

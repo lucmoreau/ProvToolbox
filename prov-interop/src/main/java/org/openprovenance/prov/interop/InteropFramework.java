@@ -1,6 +1,7 @@
 package org.openprovenance.prov.interop;
 import java.io.File;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Hashtable;
@@ -20,6 +21,8 @@ import org.openrdf.elmo.ElmoModule;
 import org.openrdf.elmo.sesame.SesameManager;
 import org.openrdf.elmo.sesame.SesameManagerFactory;
 import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
 
 import org.openprovenance.prov.rdf.RdfConstructor;
 import org.openprovenance.prov.rdf.RepositoryHelper;
@@ -40,6 +43,27 @@ public class InteropFramework
     
     final Utility u=new Utility();
     final ProvFactory pFactory=ProvFactory.getFactory();
+    final private String verbose;
+    final private String debug;
+    final private String logfile;
+    final private String infile;
+    final private String outfile;
+    final private String namespaces;
+
+    public InteropFramework(String verbose,
+	    String debug, String logfile, String infile, String outfile,
+	    String namespaces) {
+	this.verbose=verbose;
+	this.debug=debug;
+	this.logfile=logfile;
+	this.infile=infile;
+	this.outfile=outfile;
+	this.namespaces=namespaces;
+    }
+    
+    public InteropFramework() {
+	this(null, null, null, null, null, null);
+    }
 
     public void writeTextToFile(String text,
                                 String filename) {
@@ -268,19 +292,130 @@ public class InteropFramework
 
     }
 
+    
+    public void xml2dot(String fileIn, String dotFileOut, String pdfFileOut,
+			 String configFile) throws JAXBException, FileNotFoundException, IOException {
+	
+    	File in=new File(fileIn);
+
+
+    	ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
+
+	//TODO: should do xml validation (conditionally?)
+	//    	deserial.validateDocument(schemaFiles,in);
+    	
+    	Document doc=deserial.deserialiseDocument(in);
+
+
+	ProvToDot toDot=new ProvToDot((configFile==null)? "src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
+
+        toDot.convert(doc, dotFileOut, pdfFileOut);
+	
+    }
+
+
+
+    public void rdfxml2xml(String fileIn, String fileOut, Object object) throws RDFParseException, RDFHandlerException, IOException, JAXBException {
+	// TODO Auto-generated method stub
+	org.openprovenance.prov.rdf.Utility rdfU=new org.openprovenance.prov.rdf.Utility();
+	Document doc=rdfU.parseRDF(fileIn);
+	
+	ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
+        serial.serialiseDocument(new File(fileOut),doc,true);
+	
+	
+    }
+
+    
     /** Reads a file into java bean. */
     public Object loadProvGraph(String filename) throws java.io.IOException, JAXBException, Throwable {
 	try {
 	    return loadProvKnownGraph(filename);
 	} catch (Throwable e) {
-	    return loadProvUnknownGraph(filename);
+	    e.printStackTrace();
+	    return null;
+	    //return loadProvUnknownGraph(filename);
 	}
+    }
+    
+
+    public enum ProvFormat {  PROVN, XML, TURTLE, RDFXML, TRIG,  JSON, DOT, JPEG, SVG }
+    
+    public ProvFormat getTypeForFile(String filename) {
+	if ((filename.endsWith(".provn"))  || filename.endsWith(".prov-asn") || filename.endsWith(".pn")) {  //legacy extensions
+	    return ProvFormat.PROVN;
+	} else if (filename.endsWith(".provx") || filename.endsWith(".xml")) {
+	    return ProvFormat.XML;
+	} else if (filename.endsWith(".rdf")) {
+	    return ProvFormat.RDFXML;
+	} else if (filename.endsWith(".json")) {
+	    return ProvFormat.JSON;
+	} else if (filename.endsWith(".trig")) {
+	    return ProvFormat.TRIG;
+	} else if (filename.endsWith(".ttl")) {
+	    return ProvFormat.TURTLE;
+	} else if (filename.endsWith(".svg")) {
+	    return ProvFormat.SVG;
+	} else if (filename.endsWith(".dot")) {
+	    return ProvFormat.DOT;
+	} else if ((filename.endsWith(".jpeg")) ||  (filename.endsWith(".jpg"))) {
+	    return ProvFormat.JPEG;
+	} else {
+	    return null;
+	}
+    }
+
+    public void writeDocument(String filename, Document doc) {
+	try {
+	    ProvFormat format = getTypeForFile(filename);
+	    if (format == null) {
+		System.err.println("Unknown output file format: " + filename);
+		return;
+	    }
+	    System.err.println("writing " + format);
+	    System.err.println("writing " + filename);
+	    switch (format) {
+	    case PROVN: {
+		String s=u.convertBeanToASN(doc);
+	        writeTextToFile(s,filename);
+	        break;
+	    }
+	    case XML: {
+		ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
+		serial.serialiseDocument(new File(filename), doc, true);
+		break;
+	    }
+	    case TURTLE: {
+		new org.openprovenance.prov.rdf.Utility().dumpRDF(pFactory, doc, RDFFormat.TURTLE, filename);
+		break;
+	    }
+	    case RDFXML: {
+		new org.openprovenance.prov.rdf.Utility().dumpRDF(pFactory, doc, RDFFormat.RDFXML, filename);
+		break;
+	    }
+	    case TRIG: {
+		new org.openprovenance.prov.rdf.Utility().dumpRDF(pFactory, doc, RDFFormat.TRIG, filename);
+		break;
+	    }
+	    case JSON: {
+		throw new UnsupportedOperationException();
+	    }
+	    }
+	} catch (JAXBException e) {
+	    if (verbose!=null) e.printStackTrace();
+	    throw new InteropException(e);
+	    
+	} catch (Exception e) {
+	    if (verbose!=null) e.printStackTrace();
+	    throw new InteropException(e);
+	}
+
     }
 
     public Object loadProvKnownGraph(String filename)
 	throws java.io.IOException, JAXBException, Throwable {
 	
-	if (filename.endsWith(".provn")) {
+	if ((filename.endsWith(".provn"))||(filename.endsWith(".pn")))  {
 	    Utility u=new Utility();
 	    CommonTree tree = u.convertASNToTree(filename);
 	    Object o=u.convertTreeToJavaBean(tree);
@@ -291,7 +426,9 @@ public class InteropFramework
 	    Document c=deserial.deserialiseDocument(in);
 	    return c;
 	} else if (filename.endsWith(".rdf") || filename.endsWith(".prov-rdf")) {
-	    throw new UnsupportedOperationException();
+	    org.openprovenance.prov.rdf.Utility rdfU=new org.openprovenance.prov.rdf.Utility();
+	    Document doc=rdfU.parseRDF(filename);
+	    return doc;
 	} else if (filename.endsWith(".json")) {
 	    throw new UnsupportedOperationException();
 	} else {
@@ -299,8 +436,10 @@ public class InteropFramework
 	    throw new UnsupportedOperationException();
 	}
     }
+    
+    
 
-    public Object loadProvUnknownGraph(String filename)
+    public Object IGNOREloadProvUnknownGraph(String filename)
 	throws java.io.IOException, JAXBException, Throwable {
 	
 	try {
@@ -337,10 +476,14 @@ public class InteropFramework
         System.out.println("Usage: provconvert -xml2provn fileIn fileOut");
         
         System.out.println("Usage: provconvert -xml2html fileIn fileOut");
+        
+        System.out.println("Usage: provconvert -rdfxml2xml fileIn fileOut");
+        
+	System.out.println("Usage: provconvert -xml2dot fileIn dotFileOut pdfFileOut [configFile]");
         System.out.println("Usage: provconvert -provn2dot fileIn dotFileOut pdfFileOut [configFile]");
     }
 
-    public static void main(String [] args) throws Exception { //TODO: finalize signatures
+    public static void IGNOREmain(String [] args) throws Exception { //TODO: finalize signatures
         if ((args==null) || (!((args.length>=3) && (args.length<=5)))) {
             help();
             return;
@@ -411,6 +554,12 @@ public class InteropFramework
                 return;
             }
 
+            if (args[0].equals("-rdfxml2xml")) {
+                me.rdfxml2xml(fileIn,fileOut,null);
+                return;
+            }
+
+
 
             if (args[0].equals("-provn2dot")) {
 		String pdfFileOut=args[3];
@@ -419,6 +568,15 @@ public class InteropFramework
                 me.provn2dot(fileIn,fileOut,pdfFileOut,configFile);
                 return;
             }
+
+            if (args[0].equals("-xml2dot")) {
+		String pdfFileOut=args[3];
+		String configFile;
+		configFile= ((args.length==5)? args[4] : null);
+                me.xml2dot(fileIn,fileOut,pdfFileOut,configFile);
+                return;
+            }
+
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -428,6 +586,32 @@ public class InteropFramework
         //TODO: other options here
 
 
+    }
+
+    public void run() {
+	if (infile==null) return;
+	if (outfile==null) return;
+	try {
+	    Document doc=(Document) loadProvGraph(infile);
+	    doc.setNss(new Hashtable<String, String>());
+	    doc.getNss().put("pc1",PC1_NS);
+	    doc.getNss().put("prim",PRIM_NS);
+	    doc.getNss().put("prov","http://www.w3.org/ns/prov#");
+	    doc.getNss().put("xsd","http://www.w3.org/2001/XMLSchema");
+	    doc.getNss().put("xsi","http://www.w3.org/2001/XMLSchema-instance");
+	    
+	    writeDocument(outfile, doc);
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	} catch (JAXBException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	} catch (Throwable e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	
     }
 
 }

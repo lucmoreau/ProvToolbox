@@ -77,7 +77,7 @@ public class InteropTest
     }
 
 
-    public void testASN2RDF() throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException, Throwable {
+    public void NOtestASN2RDF() throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException, Throwable {
 
         InteropFramework interop=new InteropFramework();
 

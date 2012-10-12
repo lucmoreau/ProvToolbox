@@ -322,7 +322,7 @@ public  class ProvConstructor implements TreeConstructor {
         String s_id2=(String)id2;
         String s_id1=(String)id1;
         ActivityRef a1r= (s_id1==null) ? null: pFactory.newActivityRef(s_id1);
-        EntityRef e2r=pFactory.newEntityRef(s_id2);
+        EntityRef e2r=(s_id2==null)? null: pFactory.newEntityRef(s_id2);
 
         WasGeneratedBy g=pFactory.newWasGeneratedBy(s_id,
                                                     e2r,

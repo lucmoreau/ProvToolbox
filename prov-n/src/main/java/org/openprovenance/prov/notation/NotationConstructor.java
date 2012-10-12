@@ -152,7 +152,7 @@ public class NotationConstructor implements TreeConstructor {
         return s;
     }
     public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s=keyword("wasGeneratedBy") + "(" + optionalId(id) + id2 + "," + optional(id1) + "," +
+        String s=keyword("wasGeneratedBy") + "(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," +
             optional(time) + optionalAttributes(aAttrs) +  ")";
         return s;
     }

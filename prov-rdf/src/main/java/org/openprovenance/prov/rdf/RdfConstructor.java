@@ -290,8 +290,6 @@ public class RdfConstructor implements TreeConstructor {
 			if (time != null) {
 				setTime((InstantaneousEvent)infl, time);
 			}
-			System.out.println("addEntityInfluence (infl) " + infl);
-			System.out.println("addEntityInfluence (qn)" + qi.getQName());
 			processAttributes(qi, (List<?>) aAttrs);
 		}
 		return infl;

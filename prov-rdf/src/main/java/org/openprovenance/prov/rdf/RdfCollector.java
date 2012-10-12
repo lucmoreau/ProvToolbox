@@ -685,7 +685,10 @@ public class RdfCollector extends RDFHandlerBase {
 	}
 	
 	private QName convertURIToQName(URI uri) {
-		QName qname = new QName(uri.getNamespace(), uri.getLocalName(), revnss.get(uri.getNamespace()));
+//		QName qname = new QName(uri.getNamespace(), uri.getLocalName(), revnss.get(uri.getNamespace()));
+	    // It is not necessary to specify a prefix for a QName. This code was breaking on the jpl trace.
+		QName qname = new QName(uri.getNamespace(), uri.getLocalName());
+
 		return qname;
 	}
 

@@ -339,7 +339,7 @@ public class InteropFramework
     }
     
 
-    public enum ProvFormat {  PROVN, XML, TURTLE, RDFXML, TRIG,  JSON, DOT, JPEG, SVG }
+    public enum ProvFormat {  PROVN, XML, TURTLE, RDFXML, TRIG,  JSON, DOT, JPEG, SVG, PDF }
     
     public ProvFormat getTypeForFile(String filename) {
 	if ((filename.endsWith(".provn"))  || filename.endsWith(".prov-asn") || filename.endsWith(".pn")) {  //legacy extensions
@@ -356,6 +356,8 @@ public class InteropFramework
 	    return ProvFormat.TURTLE;
 	} else if (filename.endsWith(".svg")) {
 	    return ProvFormat.SVG;
+	} else if (filename.endsWith(".pdf")) {
+	    return ProvFormat.PDF;
 	} else if (filename.endsWith(".dot")) {
 	    return ProvFormat.DOT;
 	} else if ((filename.endsWith(".jpeg")) ||  (filename.endsWith(".jpg"))) {
@@ -398,9 +400,14 @@ public class InteropFramework
 		break;
 	    }
 	    case JSON: {
-		throw new UnsupportedOperationException();
+		new org.openprovenance.prov.json.Utility().writeDocument(doc, filename);
 	    }
-	    }
+	    case PDF: {
+		String configFile=null; // give it as option
+		String dotFileOut="target/foo.dot"; //give it as option, if not available create tmp file
+		ProvToDot toDot=new ProvToDot((configFile==null)? "../prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
+	        toDot.convert(doc, dotFileOut, filename);       
+	    }}
 	} catch (JAXBException e) {
 	    if (verbose!=null) e.printStackTrace();
 	    throw new InteropException(e);
@@ -425,9 +432,10 @@ public class InteropFramework
         case DOT:
         case JPEG:
         case SVG:
-            throw new UnsupportedOperationException(); //TODO
-        case JSON:
-            throw new UnsupportedOperationException(); //TODO
+            throw new UnsupportedOperationException(); //we don't load PROV from these formats
+        case JSON: {
+            return new org.openprovenance.prov.json.Utility().readDocument(filename);
+        }
         case PROVN: {
             Utility u=new Utility();
             CommonTree tree = u.convertASNToTree(filename);

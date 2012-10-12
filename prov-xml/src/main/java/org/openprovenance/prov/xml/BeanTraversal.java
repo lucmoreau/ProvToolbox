@@ -279,12 +279,14 @@ public class BeanTraversal {
         List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
 	ActivityRef a;
 	EntityRef e;
-	return c.convertUsed(
-			c.convert(o.getId()),
-			tAttrs, labAttrs, locAttrs, roleAttrs, otherAttrs,
-			(((a = o.getActivity()) == null) ? null : c.convert(a.getRef())),
-			(((e = o.getEntity()) == null) ? null : c.convert(e.getRef())),
-			o.getTime());
+	return c.convertUsed(c.convert(o.getId()), tAttrs, 
+	                     labAttrs,
+	                     locAttrs, roleAttrs,
+	                     otherAttrs,
+	                     ((a = o.getActivity()) == null) ? null : c
+                                     .convert(a.getRef()),
+	                     ((e = o.getEntity()) == null) ? null : c.convert(e.getRef()), 
+	                     o.getTime());
     }
 
     public Object convert(WasStartedBy o) {
@@ -343,11 +345,13 @@ public class BeanTraversal {
 	List<Object> roleAttrs = convertRoleAttribute(o);
 
 	ActivityRef a;
+	EntityRef e;
 	return c.convertWasGeneratedBy(c.convert(o.getId()), tAttrs, labAttrs,
 	                               locAttrs,
 	                               roleAttrs,
-	                               otherAttrs, c.convert(o.getEntity()
-	                                       .getRef()),
+	                               otherAttrs, 
+	                               ((e = o.getEntity()) == null) ? null 
+	                            	       : c.convert(e.getRef()),
 	                               ((a = o.getActivity()) == null) ? null
 	                                       : c.convert(a.getRef()), o
 	                                       .getTime());

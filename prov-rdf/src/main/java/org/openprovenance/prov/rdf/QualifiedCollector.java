@@ -125,6 +125,9 @@ public class QualifiedCollector extends RdfCollector {
 			WasGeneratedBy wgb = (WasGeneratedBy) influence;
 			signature = Arrays.asList(new Ref[]{wgb.getEntity(), wgb.getActivity()});
 		}
+		else {
+		//	System.out.println("Couldn't get signature for "+influence.getId());
+		}
 		return signature;
 	}
 	
@@ -138,8 +141,10 @@ public class QualifiedCollector extends RdfCollector {
 		{
 			if (sob instanceof org.openprovenance.prov.xml.Influence)
 			{
+				
 				Identifiable hasid = (Identifiable) sob;
 				List<Ref> signature = getSignature((org.openprovenance.prov.xml.Influence)hasid);
+				if(signature == null) continue;
 				if (collisions.containsKey(signature))
 				{
 					Identifiable collision = collisions.get(signature);
@@ -227,7 +232,7 @@ public class QualifiedCollector extends RdfCollector {
 			
 			if (value instanceof Resource)
 			{
-				QName valueQ = qNameFromResource((Resource) value);
+				QName valueQ = convertResourceToQName((Resource) value);
 
 				if (predS.equals(PROV + "hadRole") && target instanceof HasRole)
 				{
@@ -267,7 +272,7 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (value instanceof Resource)
 			{
-				QName valueQ = qNameFromResource((Resource) value);
+				QName valueQ = convertResourceToQName((Resource) value);
 
 				if (predS.equals(PROV + "hadActivity"))
 				{
@@ -286,15 +291,12 @@ public class QualifiedCollector extends RdfCollector {
 
 				if (predS.equals(PROV + "entity"))
 				{
-					QName entityQ = qNameFromResource((Resource) value);
+					QName entityQ = convertResourceToQName((Resource) value);
 					wdf.setUsedEntity(pFactory.newEntityRef(entityQ));
 				}
 			}
 		}
 		handleEntityInfluence(context, wdf, statements, ProvType.DERIVATION);
-
-		System.out.println("Done:");
-		System.out.println(wdf);
 		store(context, wdf);
 		this.influenceMap.put(qname, wdf);
 	}
@@ -322,12 +324,12 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (predS.equals(PROV + "entity"))
 			{
-				QName entityQ = qNameFromResource((Resource) value);
+				QName entityQ = convertResourceToQName((Resource) value);
 				web.setTrigger(pFactory.newEntityRef(entityQ));
 			}
 			if (predS.equals(PROV + "hadActivity"))
 			{
-				QName activityQ = qNameFromResource((Resource) value);
+				QName activityQ = convertResourceToQName((Resource) value);
 				web.setEnder(pFactory.newActivityRef(activityQ));
 			}
 		}
@@ -352,12 +354,12 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (predS.equals(PROV + "entity"))
 			{
-				QName entityQ = qNameFromResource((Resource) value);
+				QName entityQ = convertResourceToQName((Resource) value);
 				wsb.setTrigger(pFactory.newEntityRef(entityQ));
 			}
 			if (predS.equals(PROV + "hadActivity"))
 			{
-				QName activityQ = qNameFromResource((Resource) value);
+				QName activityQ = convertResourceToQName((Resource) value);
 				wsb.setStarter(pFactory.newActivityRef(activityQ));
 			}
 		}
@@ -382,7 +384,7 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (predS.equals(PROV + "activity"))
 			{
-				QName activityQ = qNameFromResource((Resource) value);
+				QName activityQ = convertResourceToQName((Resource) value);
 				wib.setActivity(pFactory.newActivityRef(activityQ));
 			}
 
@@ -408,13 +410,13 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (predS.equals(PROV + "agent"))
 			{
-				QName agentQ = qNameFromResource((Resource) value);
+				QName agentQ = convertResourceToQName((Resource) value);
 				aobo.setResponsible(pFactory.newAgentRef(agentQ));
 			}
 
 			if (predS.equals(PROV + "hadActivity"))
 			{
-				QName activityQ = qNameFromResource((Resource) value);
+				QName activityQ = convertResourceToQName((Resource) value);
 				aobo.setActivity(pFactory.newActivityRef(activityQ));
 			}
 		}
@@ -438,7 +440,7 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (predS.equals(PROV + "activity"))
 			{
-				QName activityQ = qNameFromResource((Resource) value);
+				QName activityQ = convertResourceToQName((Resource) value);
 				wib.setCause(pFactory.newActivityRef(activityQ));
 			}
 		}
@@ -462,7 +464,7 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (predS.equals(PROV + "agent"))
 			{
-				QName agentQ = qNameFromResource((Resource) value);
+				QName agentQ = convertResourceToQName((Resource) value);
 				wat.setAgent(pFactory.newAgentRef(agentQ));
 			}
 		}
@@ -489,13 +491,13 @@ public class QualifiedCollector extends RdfCollector {
 			{
 				if (predS.equals(PROV + "hadPlan"))
 				{
-					QName entityQ = qNameFromResource((Resource) value);
+					QName entityQ = convertResourceToQName((Resource) value);
 					waw.setPlan(pFactory.newEntityRef(entityQ));
 				}
 
 				if (predS.equals(PROV + "agent"))
 				{
-					QName agentQ = qNameFromResource((Resource) value);
+					QName agentQ = convertResourceToQName((Resource) value);
 					waw.setAgent(pFactory.newAgentRef(agentQ));
 				}
 			}
@@ -522,7 +524,7 @@ public class QualifiedCollector extends RdfCollector {
 			{
 				if (predS.equals(PROV + "entity"))
 				{
-					QName entityQ = qNameFromResource((Resource) value);
+					QName entityQ = convertResourceToQName((Resource) value);
 					used.setEntity(pFactory.newEntityRef(entityQ));
 				}
 			}
@@ -551,7 +553,7 @@ public class QualifiedCollector extends RdfCollector {
 			{
 				if (predS.equals(PROV + "activity"))
 				{
-					QName activityQ = qNameFromResource((Resource) value);
+					QName activityQ = convertResourceToQName((Resource) value);
 					wgb.setActivity(pFactory.newActivityRef(activityQ));
 				}
 			}
@@ -580,7 +582,7 @@ public class QualifiedCollector extends RdfCollector {
 					Value value = statement.getObject();
 					if (value instanceof Resource)
 					{
-						QName refQ = qNameFromResource((Resource) value);
+						QName refQ = convertResourceToQName((Resource) value);
 
 						if (predS.equals(RdfCollector.PROV
 								+ "qualifiedAssociation"))

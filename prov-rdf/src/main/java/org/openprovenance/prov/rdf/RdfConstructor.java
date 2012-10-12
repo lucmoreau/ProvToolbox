@@ -12,6 +12,7 @@ import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.InternationalizedString;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvUtilities;
+import org.openprovenance.prov.xml.Used;
 import org.openrdf.elmo.ElmoManager;
 import org.openrdf.elmo.sesame.SesameManager;
 import org.openrdf.model.impl.LiteralImpl;
@@ -572,8 +573,19 @@ public class RdfConstructor implements TreeConstructor {
 		Derivation d = addEntityInfluence(id, e2, e1, null, dAttrs, other,
 				Derivation.class);
 
+		
 		if (d != null)
 		{
+			if (qn5 != null) 
+			{
+				Generation g5 = designateIfNotNull(qn5, Generation.class);
+				d.getHadGeneration().add(g5);
+			}
+			if (qn4 != null) 
+			{
+				Usage u4 = designateIfNotNull(qn4, Usage.class);
+				d.getHadUsage().add(u4);
+			}
 			if (qn3 != null)
 			{
 				Activity a3 =  designateIfNotNull(qn3,Activity.class);
@@ -797,7 +809,7 @@ public class RdfConstructor implements TreeConstructor {
 
 	/* Component 6 */
 
-	public Object convertMentionOf(Object id2, Object bu, Object id1)
+	public Object convertMentionOf(Object id2, Object id1, Object bu)
 	{
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);

@@ -97,10 +97,10 @@ public class ParserTest extends
 		// TODO: missing labels, types, etc
 	}
 
-//	public void testEnd10() throws JAXBException
-//	{
-//		// TODO: null exception
-//	}
+	public void testEnd10() throws JAXBException
+	{
+		// TODO: null exception
+	}
 
 	public void testDerivation9() throws JAXBException
 	{
@@ -154,17 +154,17 @@ public class ParserTest extends
 
 	public void testMembership1() throws JAXBException
 	{
-		// TODO: Not tested yet!
+		// TODO: Unsupported
 	}
 
 	public void testMembership2() throws JAXBException
 	{
-		// TODO: Not tested yet!
+		// TODO: Unsupported
 	}
 
 	public void testMembership3() throws JAXBException
 	{
-		// TODO: Not tested yet!
+		// TODO: Unsupported
 	}
 
 	public void IGNOREtestExtraFilesOutsideRepository()

@@ -1750,22 +1750,34 @@ public class RoundTripFromJavaTest extends TestCase {
        public void testMembership1() throws JAXBException {
            HadMember mem = pFactory.newHadMember(pFactory.newEntityRef(q("c")),
                                                  pFactory.newEntityRef(q("e1")));
-           makeDocAndTest(mem, "target/member1");
+           Entity c=pFactory.newEntity(q("c")); 
+           Entity e1=pFactory.newEntity(q("e1"));
+       	   Statement [] opt=new Statement[] { c, e1 };
+           makeDocAndTest(mem, opt, "target/member1");
        }
        public void testMembership2() throws JAXBException {
            HadMember mem = pFactory.newHadMember(pFactory.newEntityRef(q("c")),
                                                  pFactory.newEntityRef(q("e1")),
                                                  pFactory.newEntityRef(q("e2")));
-           //TODO: multiple arguments not supported by toolbox
-           makeDocAndTest(mem, "target/member2");
+           //TODO: multiple arguments not supported by toolbox 
+           Entity c=pFactory.newEntity(q("c")); 
+           Entity e1=pFactory.newEntity(q("e1"));
+           Entity e2=pFactory.newEntity(q("e2"));
+       	   Statement [] opt=new Statement[] { c, e1, e2 };
+           makeDocAndTest(mem, opt, "target/member2");
        }
        public void testMembership3() throws JAXBException {
            HadMember mem = pFactory.newHadMember(pFactory.newEntityRef(q("c")),
                                                  pFactory.newEntityRef(q("e1")),
                                                  pFactory.newEntityRef(q("e2")),
                                                  pFactory.newEntityRef(q("e3")));
-           //TODO: multiple arguments not supported by toolbox
-           makeDocAndTest(mem, "target/member3");
+           //TODO: multiple arguments not supported by toolbox 
+           Entity c=pFactory.newEntity(q("c")); 
+           Entity e1=pFactory.newEntity(q("e1"));
+           Entity e2=pFactory.newEntity(q("e2"));
+           Entity e3=pFactory.newEntity(q("e3"));
+       	   Statement [] opt=new Statement[] { c, e1, e2, e3 };
+           makeDocAndTest(mem, opt, "target/member3");
        }
      
     

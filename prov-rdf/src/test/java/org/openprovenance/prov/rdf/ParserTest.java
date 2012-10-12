@@ -123,10 +123,10 @@ public class ParserTest extends
 	{
 	}
 
-//	public void testDerivation6() throws JAXBException
-//	{
-//	}
-//
+	public void testDerivation6() throws JAXBException
+	{
+	}
+
 	public void testDerivation7() throws JAXBException
 	{
 	}

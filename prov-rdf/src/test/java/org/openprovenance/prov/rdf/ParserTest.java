@@ -57,7 +57,6 @@ public class ParserTest extends
 		{
 			return false;
 		}
-		System.out.println("--- "+name);
 		return true;
 	}
 
@@ -81,7 +80,6 @@ public class ParserTest extends
 	public void testGeneration7() throws JAXBException
 	{
 		// TODO: missing labels, types, etc
-		assertTrue(true);
 	}
 
 	public void testUsage7() throws JAXBException
@@ -99,22 +97,10 @@ public class ParserTest extends
 		// TODO: missing labels, types, etc
 	}
 
-	public void testEnd10() throws JAXBException
-	{
-		// TODO: null exception
-	}
-	
-	public void testDerivation6() throws JAXBException
-	{
-	}
-
-	public void testDerivation7() throws JAXBException
-	{
-	}
-
-	public void testDerivation8() throws JAXBException
-	{
-	}
+//	public void testEnd10() throws JAXBException
+//	{
+//		// TODO: null exception
+//	}
 
 	public void testDerivation9() throws JAXBException
 	{
@@ -123,183 +109,62 @@ public class ParserTest extends
 
 	public void testDerivation10() throws JAXBException
 	{
-		// TODO: Null
-	}
-
-	public void testDerivation11() throws JAXBException
-	{
-	}
-
-	public void testDerivation12() throws JAXBException
-	{
-	}
-
-	public void testDerivation13() throws JAXBException
-	{
-	}
-	
-	public void testAssociation4() throws JAXBException
-	{
-		// RDFCollector adds in 'Plan' type.
-	}
-	
-	public void testAssociation5() throws JAXBException
-	{
-		// RDFCollector adds in 'Plan' type.
-	}
-
-	public void testAssociation6() throws JAXBException
-	{
-		// RDFCollector adds in 'Plan' type.
-	}
-
-	public void testAssociation7() throws JAXBException
-	{
-		// RDFCollector adds in 'Plan' type.
-	}
-
-	public void testAssociation8() throws JAXBException
-	{
-		// RDFCollector adds in 'Plan' type.
-	}
-
-	public void testAssociation9() throws JAXBException
-	{
-		// RDFCollector adds in 'Plan' type.
-	}
-
-	public void testAttribution2() throws JAXBException
-	{
-	}
-
-	public void testAttribution3() throws JAXBException
-	{
-	}
-
-	public void testAttribution4() throws JAXBException
-	{
-	}
-
-	public void testAttribution5() throws JAXBException
-	{
-	}
-
-	public void testAttribution6() throws JAXBException
-	{
-	}
-
-	public void testAttribution7() throws JAXBException
-	{
-	}
-
-	public void testAttribution8() throws JAXBException
-	{
-	}
-
-	public void testDelegation2() throws JAXBException
-	{
-	}
-
-	public void testDelegation3() throws JAXBException
-	{
-	}
-
-	public void testDelegation4() throws JAXBException
-	{
-	}
-
-	public void testDelegation5() throws JAXBException
-	{
-	}
-
-	public void testDelegation6() throws JAXBException
-	{
-	}
-
-	public void testDelegation7() throws JAXBException
-	{
-	}
-
-	public void testDelegation8() throws JAXBException
-	{
-	}
-
-	public void testCommunication2() throws JAXBException
-	{
-	}
-
-	public void testCommunication3() throws JAXBException
-	{
-	}
-
-	public void testCommunication4() throws JAXBException
-	{
-	}
-
-	public void testCommunication5() throws JAXBException
-	{
-	}
-
-	public void testCommunication6() throws JAXBException
-	{
-	}
-
-	public void testCommunication7() throws JAXBException
-	{
+		// TODO: Get a wasDerivedFrom as well as a Derivation.
 	}
 
 	public void testInfluence1() throws JAXBException
 	{
+		// Class cast errors (ActivityOrAgentOrEntity)
 	}
 
 	public void testInfluence2() throws JAXBException
 	{
+		// Class cast errors (ActivityOrAgentOrEntity)
 	}
 
 	public void testInfluence3() throws JAXBException
 	{
+		// Class cast errors (ActivityOrAgentOrEntity)
 	}
 
 	public void testInfluence4() throws JAXBException
 	{
+		// Class cast errors (ActivityOrAgentOrEntity)
 	}
 
 	public void testInfluence5() throws JAXBException
 	{
+		// Class cast errors (ActivityOrAgentOrEntity)
 	}
 
 	public void testInfluence6() throws JAXBException
 	{
+		// Class cast errors (ActivityOrAgentOrEntity)
 	}
 
 	public void testInfluence7() throws JAXBException
 	{
+		// Class cast errors (ActivityOrAgentOrEntity)
 	}
-
-	/*
-	 * public void testAlternate1() throws JAXBException { }
-	 * 
-	 * public void testSpecialization1() throws JAXBException { }
-	 */
 
 	public void testMention1() throws JAXBException
 	{
-	}
-
-	public void testMention2() throws JAXBException
-	{
+		// TODO: Null
 	}
 
 	public void testMembership1() throws JAXBException
 	{
+		// TODO: Not tested yet!
 	}
 
 	public void testMembership2() throws JAXBException
 	{
+		// TODO: Not tested yet!
 	}
 
 	public void testMembership3() throws JAXBException
 	{
+		// TODO: Not tested yet!
 	}
 
 	public void IGNOREtestExtraFilesOutsideRepository()

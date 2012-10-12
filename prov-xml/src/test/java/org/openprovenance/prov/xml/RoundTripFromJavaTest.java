@@ -1039,14 +1039,19 @@ public class RoundTripFromJavaTest extends TestCase {
    	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der2"), 
    	                                                pFactory.newEntityRef(q("e2")),
    	                                                null);
-   	makeDocAndTest(der, "target/derivation2");
+   	Entity e2=pFactory.newEntity(q("e2"));
+   	Statement [] opt=new Statement[] { e2 };
+   	makeDocAndTest(der, opt, "target/derivation2");
     }
     
     public void testDerivation3() throws JAXBException {
    	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der3"), 
    	                                                pFactory.newEntityRef(q("e2")),
-   	                                                pFactory.newEntityRef(q("e1")));
-   	makeDocAndTest(der, "target/derivation3");
+   	                                                pFactory.newEntityRef(q("e1")));   	
+   	Entity e1=pFactory.newEntity(q("e1"));
+   	Entity e2=pFactory.newEntity(q("e2"));
+   	Statement [] opt=new Statement[] { e1, e2 };
+   	makeDocAndTest(der, opt, "target/derivation3");
     }
 
     public void testDerivation4() throws JAXBException {
@@ -1054,7 +1059,10 @@ public class RoundTripFromJavaTest extends TestCase {
    	                                                pFactory.newEntityRef(q("e2")),
    	                                                pFactory.newEntityRef(q("e1")));
    	addLabel(der);
-   	makeDocAndTest(der, "target/derivation4");
+   	Entity e1=pFactory.newEntity(q("e1"));
+   	Entity e2=pFactory.newEntity(q("e2"));
+   	Statement [] opt=new Statement[] { e1, e2 };
+   	makeDocAndTest(der, opt, "target/derivation4");
     }
     
     public void testDerivation5() throws JAXBException {
@@ -1062,7 +1070,11 @@ public class RoundTripFromJavaTest extends TestCase {
    	                                                pFactory.newEntityRef(q("e2")),
    	                                                pFactory.newEntityRef(q("e1")));
    	der.setActivity(pFactory.newActivityRef(q("a")));
-   	makeDocAndTest(der, "target/derivation5");
+   	Entity e1=pFactory.newEntity(q("e1"));
+   	Entity e2=pFactory.newEntity(q("e2"));
+	Activity a=pFactory.newActivity(q("a"));
+   	Statement [] opt=new Statement[] { e1, e2, a };
+   	makeDocAndTest(der, opt, "target/derivation5");
     }
     
     
@@ -1072,7 +1084,12 @@ public class RoundTripFromJavaTest extends TestCase {
    	                                                pFactory.newEntityRef(q("e1")));
    	der.setActivity(pFactory.newActivityRef(q("a")));
    	der.setUsage(pFactory.newUsageRef(q("u")));
-   	makeDocAndTest(der, "target/derivation6");
+   	Entity e1=pFactory.newEntity(q("e1"));
+   	Entity e2=pFactory.newEntity(q("e2"));
+	Activity a=pFactory.newActivity(q("a"));
+	Used u=pFactory.newUsed(q("u"));
+   	Statement [] opt=new Statement[] { e1, e2, a, u };
+   	makeDocAndTest(der, opt, "target/derivation6");
     }
     
     public void testDerivation7() throws JAXBException {
@@ -1162,14 +1179,19 @@ public class RoundTripFromJavaTest extends TestCase {
         WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc2"), 
                                                                 null,
                                                                 pFactory.newAgentRef(q("ag1")));
-        makeDocAndTest(assoc, "target/association2");
+        Agent ag1=pFactory.newAgent(q("ag1"));
+        Statement [] opt = new Statement[] { ag1 };
+        makeDocAndTest(assoc, opt, "target/association2");
     }
 
     public void testAssociation3() throws JAXBException {
         WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc3"), 
                                                                 pFactory.newActivityRef(q("a1")),
                                                                 pFactory.newAgentRef(q("ag1")));
-        makeDocAndTest(assoc, "target/association3");
+        Agent ag1=pFactory.newAgent(q("ag1"));
+        Activity a1=pFactory.newActivity(q("a1"));
+        Statement [] opt = new Statement[] { ag1, a1 };
+        makeDocAndTest(assoc, opt, "target/association3");
     }
 
 
@@ -1178,7 +1200,11 @@ public class RoundTripFromJavaTest extends TestCase {
                                                                 pFactory.newActivityRef(q("a1")),
                                                                 pFactory.newAgentRef(q("ag1")));
         assoc.setPlan(pFactory.newEntityRef(q("plan1")));
-        makeDocAndTest(assoc, "target/association4");
+        Agent ag1=pFactory.newAgent(q("ag1"));
+        Activity a1=pFactory.newActivity(q("a1"));
+        Entity plan1=pFactory.newEntity(q("plan1"));
+        Statement [] opt = new Statement[] { ag1, a1, plan1 };
+        makeDocAndTest(assoc, opt, "target/association4");
     }
 
     
@@ -1186,7 +1212,10 @@ public class RoundTripFromJavaTest extends TestCase {
         WasAssociatedWith assoc = pFactory.newWasAssociatedWith((QName)null, 
                                                                 pFactory.newActivityRef(q("a1")),
                                                                 pFactory.newAgentRef(q("ag1")));
-        makeDocAndTest(assoc, "target/association5");
+        Agent ag1=pFactory.newAgent(q("ag1"));
+        Activity a1=pFactory.newActivity(q("a1"));
+        Statement [] opt = new Statement[] { ag1, a1 };
+        makeDocAndTest(assoc, opt, "target/association5");
     }
     
     
@@ -1197,7 +1226,13 @@ public class RoundTripFromJavaTest extends TestCase {
                                                                 pFactory.newAgentRef(q("ag1")));
         assoc.setPlan(pFactory.newEntityRef(q("plan1")));
         addLabels(assoc);
-        makeDocAndTest(assoc, "target/association6");
+        
+        Agent ag1=pFactory.newAgent(q("ag1"));
+        Activity a1=pFactory.newActivity(q("a1"));
+        Entity plan1=pFactory.newEntity(q("plan1"));
+        Statement [] opt = new Statement[] { ag1, a1, plan1 };
+        
+        makeDocAndTest(assoc, opt, "target/association6");
     }
 
     public void testAssociation7() throws JAXBException {
@@ -1206,8 +1241,14 @@ public class RoundTripFromJavaTest extends TestCase {
                                                                 pFactory.newAgentRef(q("ag1")));
         assoc.setPlan(pFactory.newEntityRef(q("plan1")));
         addLabels(assoc);
-        addTypes(assoc);
-        makeDocAndTest(assoc, "target/association7");
+        addTypes(assoc);        
+        
+        Agent ag1=pFactory.newAgent(q("ag1"));
+        Activity a1=pFactory.newActivity(q("a1"));
+        Entity plan1=pFactory.newEntity(q("plan1"));
+        Statement [] opt = new Statement[] { ag1, a1, plan1 };
+        
+        makeDocAndTest(assoc, opt, "target/association7");
     }
 
 
@@ -1218,7 +1259,13 @@ public class RoundTripFromJavaTest extends TestCase {
         assoc.setPlan(pFactory.newEntityRef(q("plan1")));
         assoc.getRole().add("someRole");
         assoc.getRole().add("someOtherRole");
-        makeDocAndTest(assoc, "target/association8");
+        
+        Agent ag1=pFactory.newAgent(q("ag1"));
+        Activity a1=pFactory.newActivity(q("a1"));
+        Entity plan1=pFactory.newEntity(q("plan1"));
+        Statement [] opt = new Statement[] { ag1, a1, plan1 };
+        
+        makeDocAndTest(assoc, opt, "target/association8");
     }
     
 
@@ -1230,7 +1277,13 @@ public class RoundTripFromJavaTest extends TestCase {
         addLabels(assoc);
         addTypes(assoc);
         addFurtherAttributes(assoc);
-        makeDocAndTest(assoc, "target/association9");
+        
+        Agent ag1=pFactory.newAgent(q("ag1"));
+        Activity a1=pFactory.newActivity(q("a1"));
+        Entity plan1=pFactory.newEntity(q("plan1"));
+        Statement [] opt = new Statement[] { ag1, a1, plan1 };
+        
+        makeDocAndTest(assoc, opt, "target/association9");
     }
 
  // ////////////////////////////////

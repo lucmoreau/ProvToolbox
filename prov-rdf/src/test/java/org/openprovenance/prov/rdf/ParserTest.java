@@ -1,34 +1,18 @@
 package org.openprovenance.prov.rdf;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.URL;
-import java.util.Arrays;
 
 import javax.xml.bind.JAXBException;
 
-import org.openprovenance.prov.notation.BeanTreeConstructor;
-import org.openprovenance.prov.xml.BeanTraversal;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
-import org.openprovenance.prov.xml.Statement;
 import org.openprovenance.prov.xml.UncheckedTestException;
-import org.openrdf.elmo.ElmoManager;
-import org.openrdf.elmo.ElmoManagerFactory;
-import org.openrdf.elmo.ElmoModule;
-import org.openrdf.elmo.sesame.SesameManager;
-import org.openrdf.elmo.sesame.SesameManagerFactory;
 import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
-import org.openrdf.rio.RDFParser;
-import org.openrdf.rio.Rio;
 
 public class ParserTest extends
-		org.openprovenance.prov.xml.RoundTripFromJavaTest {
+		org.openprovenance.prov.xml.RoundTripFromJavaTest
+{
 
 	public ParserTest(String name)
 	{
@@ -61,7 +45,7 @@ public class ParserTest extends
 			u.dumpRDF(pFactory, doc, RDFFormat.TRIG, file);
 		} catch (Exception e)
 		{
-		    	e.printStackTrace();
+			e.printStackTrace();
 			throw new UncheckedTestException(e);
 		}
 	}
@@ -76,9 +60,8 @@ public class ParserTest extends
 		return true;
 	}
 
-	final Utility u=new Utility();
+	final Utility u = new Utility();
 
-	
 	private String dumpXML(ProvFactory pFactory, Document document)
 			throws JAXBException
 	{
@@ -89,44 +72,9 @@ public class ParserTest extends
 		return sw.toString();
 	}
 
-	public void testEntity8() throws JAXBException
+	public boolean mergeDuplicateProperties()
 	{
-		// TODO: Don't yet handle duplicates
-		assertTrue(true);
-	}
-
-	public void testEntity9() throws JAXBException
-	{
-		// TODO: URIs are expanded in RDF form
-		assertTrue(true);
-	}
-
-	// /////////////////////////////////////////////////////////////////////
-
-	public void testActivity8() throws JAXBException
-	{
-		// TODO: Location and duplicate attrs
-		assertTrue(true);
-	}
-
-	public void testActivity9() throws JAXBException
-	{
-		// TODO: URIs are expanded in RDF form
-		assertTrue(true);
-	}
-
-	// /////////////////////////////////////////////////////////////////////
-
-	public void testAgent8() throws JAXBException
-	{
-		// TODO: duplicate attrs
-		assertTrue(true);
-	}
-
-	public void testGeneration5() throws JAXBException
-	{
-		// TODO: URIs are expanded in RDF form
-		assertTrue(true);
+		return true;
 	}
 
 	public void testGeneration7() throws JAXBException
@@ -135,20 +83,9 @@ public class ParserTest extends
 		assertTrue(true);
 	}
 
-	public void testUsage5() throws JAXBException
-	{
-		// TODO: URIs are expanded in RDF form
-	}
-
 	public void testUsage7() throws JAXBException
 	{
 		// TODO: null exception
-	}
-
-
-	public void testInvalidation5() throws JAXBException
-	{
-		// TODO: URIs are expanded in RDF form
 	}
 
 	public void testInvalidation7() throws JAXBException
@@ -156,59 +93,19 @@ public class ParserTest extends
 		// TODO: null exception
 	}
 
-	public void testStart8() throws JAXBException
-	{
-		// TODO: URIs are expanded in RDF form
-	}
-
 	public void testStart10() throws JAXBException
 	{
 		// TODO: null exception
 	}
 
-//	public void testEnd1() throws JAXBException
-//	{
-//	}
-
-	public void testEnd2() throws JAXBException
-	{
-	}
-
-	public void testEnd3() throws JAXBException
-	{
-	}
-
-	public void testEnd4() throws JAXBException
-	{
-	}
-
-	public void testEnd5() throws JAXBException
-	{
-	}
-
-	public void testEnd6() throws JAXBException
-	{
-	}
-
-	public void testEnd7() throws JAXBException
-	{
-	}
-
-	public void testEnd8() throws JAXBException
-	{
-	}
-
-	public void testEnd9() throws JAXBException
-	{
-	}
-
 	public void testEnd10() throws JAXBException
 	{
+		// TODO: null exception
 	}
-
-//	public void testDerivation1() throws JAXBException
-//	{
-//	}
+	
+	public void testDerivation1() throws JAXBException
+	{
+	}
 
 	public void testDerivation2() throws JAXBException
 	{
@@ -240,10 +137,12 @@ public class ParserTest extends
 
 	public void testDerivation9() throws JAXBException
 	{
+		// TODO: Null
 	}
 
 	public void testDerivation10() throws JAXBException
 	{
+		// TODO: Null
 	}
 
 	public void testDerivation11() throws JAXBException
@@ -258,9 +157,9 @@ public class ParserTest extends
 	{
 	}
 
-//	public void testAssociation1() throws JAXBException
-//	{
-//	}
+	// public void testAssociation1() throws JAXBException
+	// {
+	// }
 
 	public void testAssociation2() throws JAXBException
 	{
@@ -294,9 +193,9 @@ public class ParserTest extends
 	{
 	}
 
-//	public void testAttribution1() throws JAXBException
-//	{
-//	}
+	// public void testAttribution1() throws JAXBException
+	// {
+	// }
 
 	public void testAttribution2() throws JAXBException
 	{
@@ -326,9 +225,9 @@ public class ParserTest extends
 	{
 	}
 
-//	public void testDelegation1() throws JAXBException
-//	{
-//	}
+	// public void testDelegation1() throws JAXBException
+	// {
+	// }
 
 	public void testDelegation2() throws JAXBException
 	{
@@ -358,9 +257,9 @@ public class ParserTest extends
 	{
 	}
 
-//	public void testCommunication1() throws JAXBException
-//	{
-//	}
+	// public void testCommunication1() throws JAXBException
+	// {
+	// }
 
 	public void testCommunication2() throws JAXBException
 	{
@@ -414,13 +313,11 @@ public class ParserTest extends
 	{
 	}
 
-	public void testAlternate1() throws JAXBException
-	{
-	}
-
-	public void testSpecialization1() throws JAXBException
-	{
-	}
+	/*
+	 * public void testAlternate1() throws JAXBException { }
+	 * 
+	 * public void testSpecialization1() throws JAXBException { }
+	 */
 
 	public void testMention1() throws JAXBException
 	{
@@ -441,14 +338,17 @@ public class ParserTest extends
 	public void testMembership3() throws JAXBException
 	{
 	}
-	
-	public void IGNOREtestExtraFilesOutsideRepository() {
-	    Document doc=readDocument("/home/lavm/Downloads/index-cloudsat_airs.aqua-v3.1-2006.09.01.001429.rdf");
-	    try {
-		System.out.println(" xml " + dumpXML(pFactory, doc));
-	    } catch (JAXBException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    }
+
+	public void IGNOREtestExtraFilesOutsideRepository()
+	{
+		Document doc = readDocument("/home/lavm/Downloads/index-cloudsat_airs.aqua-v3.1-2006.09.01.001429.rdf");
+		try
+		{
+			System.out.println(" xml " + dumpXML(pFactory, doc));
+		} catch (JAXBException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

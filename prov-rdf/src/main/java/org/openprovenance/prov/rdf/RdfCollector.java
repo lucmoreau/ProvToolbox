@@ -46,7 +46,8 @@ import org.openrdf.model.impl.BNodeImpl;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.rio.helpers.RDFHandlerBase;
 
-public class RdfCollector extends RDFHandlerBase {
+public class RdfCollector extends RDFHandlerBase
+{
 
 	public static String PROV = "http://www.w3.org/ns/prov#";
 	public static String XMLS = "http://www.w3.org/2001/XMLSchema#";
@@ -93,20 +94,20 @@ public class RdfCollector extends RDFHandlerBase {
 
 		DERIVATION("Derivation", ProvType.ENTITYINFLUENCE),
 
-		END("End", new ProvType[] { ProvType.INSTANTANEOUSEVENT,
-				ProvType.ENTITYINFLUENCE }),
+		END("End", new ProvType[]
+		{ ProvType.INSTANTANEOUSEVENT, ProvType.ENTITYINFLUENCE }),
 
-		START("Start", new ProvType[] { ProvType.INSTANTANEOUSEVENT,
-				ProvType.ENTITYINFLUENCE }),
+		START("Start", new ProvType[]
+		{ ProvType.INSTANTANEOUSEVENT, ProvType.ENTITYINFLUENCE }),
 
-		GENERATION("Generation", new ProvType[] { ProvType.INSTANTANEOUSEVENT,
-				ProvType.ACTIVITYINFLUENCE }),
+		GENERATION("Generation", new ProvType[]
+		{ ProvType.INSTANTANEOUSEVENT, ProvType.ACTIVITYINFLUENCE }),
 
-		INVALIDATION("Invalidation", new ProvType[] {
-				ProvType.INSTANTANEOUSEVENT, ProvType.ACTIVITYINFLUENCE }),
+		INVALIDATION("Invalidation", new ProvType[]
+		{ ProvType.INSTANTANEOUSEVENT, ProvType.ACTIVITYINFLUENCE }),
 
-		USAGE("Usage", new ProvType[] { ProvType.INSTANTANEOUSEVENT,
-				ProvType.ENTITYINFLUENCE });
+		USAGE("Usage", new ProvType[]
+		{ ProvType.INSTANTANEOUSEVENT, ProvType.ENTITYINFLUENCE });
 
 		private static final Map<String, ProvType> lookup = new HashMap<String, ProvType>();
 		static
@@ -121,13 +122,15 @@ public class RdfCollector extends RDFHandlerBase {
 		private ProvType(String localName)
 		{
 			this.uri = PROV + localName;
-			this.extendsTypes = new ProvType[] {};
+			this.extendsTypes = new ProvType[]
+			{};
 		}
 
 		private ProvType(String localName, ProvType extendsType)
 		{
 			this(localName);
-			this.extendsTypes = new ProvType[] { extendsType };
+			this.extendsTypes = new ProvType[]
+			{ extendsType };
 		}
 
 		private ProvType(String localName, ProvType[] extendsTypes)
@@ -172,6 +175,7 @@ public class RdfCollector extends RDFHandlerBase {
 		this.document = pFactory.newDocument();
 		this.bundles = new Hashtable<QName, BundleHolder>();
 		document.setNss(new Hashtable<String, String>());
+		handleNamespace("xsd", XMLS);
 	}
 
 	private HashMap<QName, List<Statement>> getCollator(Resource context)
@@ -191,7 +195,6 @@ public class RdfCollector extends RDFHandlerBase {
 	{
 		if (resource instanceof URI)
 		{
-
 			return new QName(((URI) resource).getNamespace(),
 					((URI) (resource)).getLocalName());
 		} else if (resource instanceof BNode)
@@ -312,7 +315,8 @@ public class RdfCollector extends RDFHandlerBase {
 			options = cloned;
 		}
 
-		return options.toArray(new ProvType[] {});
+		return options.toArray(new ProvType[]
+		{});
 	}
 
 	protected Object decodeLiteral(Literal literal)
@@ -320,12 +324,21 @@ public class RdfCollector extends RDFHandlerBase {
 		String dataType = XMLS + "string";
 		if (literal.getLanguage() != null)
 		{
-			return pFactory.newInternationalizedString(literal.stringValue(), literal.getLanguage());
+			return pFactory.newInternationalizedString(literal.stringValue(),
+					literal.getLanguage());
 		}
 
 		if (literal.getDatatype() != null)
 		{
-			dataType = literal.getDatatype().stringValue();
+			if (literal instanceof URI)
+			{
+				QName qname = (QName) pFactory.newQName(literal.getDatatype()
+						.stringValue());
+				dataType = qname.getNamespaceURI() + qname.getLocalPart();
+			} else
+			{
+				dataType = literal.getDatatype().stringValue();
+			}
 		}
 
 		if (dataType.equals(XMLS + "QName"))
@@ -349,6 +362,21 @@ public class RdfCollector extends RDFHandlerBase {
 		} else if (dataType.equals(XMLS + "double"))
 		{
 			return literal.doubleValue();
+		} else if (dataType.equals(XMLS + "float"))
+		{
+			return literal.floatValue();
+		} else if (dataType.equals(XMLS + "long"))
+		{
+			return literal.longValue();
+		} else if (dataType.equals(XMLS + "short"))
+		{
+			return literal.shortValue();
+		} else if (dataType.equals(XMLS + "byte"))
+		{
+			return literal.byteValue();
+		} else if (dataType.equals(XMLS + "decimal"))
+		{
+			return literal.decimalValue();
 		} else if (dataType.equals(XMLS + "anyURI"))
 		{
 			URIWrapper uw = new URIWrapper();
@@ -356,14 +384,29 @@ public class RdfCollector extends RDFHandlerBase {
 			return uw;
 		} else
 		{
-			return null;
+			// System.out.println("Unhandled::: "+literal.getDatatype());
+			return literal.stringValue();
 		}
+	}
+
+	private String getXsdType(String shorttype)
+	{
+		String xsdType = "";
+		if (revnss.containsKey(XMLS))
+		{
+			xsdType = revnss.get(XMLS) + ":" + shorttype;
+		} else
+		{
+			xsdType = XMLS + shorttype;
+		}
+		return xsdType;
 	}
 
 	/* Prov-specific functions */
 
-	protected List<Statement> handleBaseStatements(org.openprovenance.prov.xml.Statement element,
-			QName context, QName qname, ProvType type)
+	protected List<Statement> handleBaseStatements(
+			org.openprovenance.prov.xml.Statement element, QName context,
+			QName qname, ProvType type)
 	{
 
 		List<Statement> statements = collators.get(context).get(qname);
@@ -411,11 +454,12 @@ public class RdfCollector extends RDFHandlerBase {
 							.getObject()));
 					((HasLocation) element).getLocation().add(
 							pFactory.newAnyRef(anyQ));
-				}				
-				
+				}
+
 				if (predS.equals(PROV + "location"))
 				{
-					((HasLocation)element).getLocation().add(decodeLiteral((Literal)statement.getObject()));
+					((HasLocation) element).getLocation().add(
+							decodeLiteral((Literal) statement.getObject()));
 				}
 			}
 
@@ -463,30 +507,38 @@ public class RdfCollector extends RDFHandlerBase {
 										System.err.println("Invalid URI");
 									}
 								}
-							}
-							else if(val instanceof Literal) {
-								pFactory.addType((HasType)element, decodeLiteral((Literal)val));
+							} else if (val instanceof Literal)
+							{
+								pFactory.addType((HasType) element,
+										decodeLiteral((Literal) val));
 							}
 						}
 
 					} else
 					{
-						QName predQ = pFactory.stringToQName(uri.stringValue());
+						// Retrieve the prefix
+						String prefix = this.revnss.get(uri.getNamespace());
 						Attribute attr = null;
 						if (val instanceof Literal)
 						{
 							Literal lit = (Literal) val;
-							String xsdType = "http://www.w3.org/2001/XMLSchema#string";
+
+							String shortType = "string";
 							if (lit.getDatatype() != null)
 							{
-								xsdType = lit.getDatatype().stringValue();
+								shortType = lit.getDatatype().getLocalName();
 							}
-							attr = new Attribute(predQ, lit.stringValue(),
-									xsdType);
+
+							String xsdType = getXsdType(shortType);
+							attr = pFactory.newAttribute(uri.getNamespace(),
+									uri.getLocalName(), prefix,
+									decodeLiteral(lit), xsdType);
+
 						} else if (val instanceof Resource)
 						{
-							attr = new Attribute(predQ, val.stringValue(),
-									"http://www.w3.org/2001/XMLSchema#anyURI");
+							attr = pFactory.newAttribute(uri.getNamespace(),
+									uri.getLocalName(), prefix,
+									val.stringValue(), getXsdType("anyURI"));
 						} else
 						{
 							System.err.println("Invalid value");
@@ -494,14 +546,13 @@ public class RdfCollector extends RDFHandlerBase {
 
 						if (attr != null)
 						{
-							pFactory.addAttribute((HasExtensibility)element, attr);
+							pFactory.addAttribute((HasExtensibility) element,
+									attr);
 						}
 
 					}
 				}
 			}
-
-			
 
 			if (predS.equals(PROV + "wasInfluencedBy"))
 			{

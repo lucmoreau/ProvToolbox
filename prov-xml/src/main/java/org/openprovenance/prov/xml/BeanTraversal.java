@@ -283,8 +283,7 @@ public class BeanTraversal {
 	                     labAttrs,
 	                     locAttrs, roleAttrs,
 	                     otherAttrs,
-	                     ((a = o.getActivity()) == null) ? null : c
-                                     .convert(a.getRef()),
+	                     ((a = o.getActivity()) == null) ? null : c.convert(a.getRef()),
 	                     ((e = o.getEntity()) == null) ? null : c.convert(e.getRef()), 
 	                     o.getTime());
     }

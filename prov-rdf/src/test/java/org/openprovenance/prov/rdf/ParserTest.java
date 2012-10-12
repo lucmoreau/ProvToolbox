@@ -79,47 +79,50 @@ public class ParserTest extends
 
 	public void testGeneration7() throws JAXBException
 	{
-		// TODO: missing labels, types, etc
+		// TODO: fails on comparison on a statement with id=<null> (Originally asserted) and a statement with id =blank node (retrieved from triple store). 
+
 	}
 
 	public void testUsage7() throws JAXBException
 	{
-		// TODO: missing labels, types, etc
+		// TODO: fails on comparison on a statement with id=<null> (Originally asserted) and a statement with id =blank node (retrieved from triple store). 
 	}
 
 	public void testInvalidation7() throws JAXBException
 	{
-		// TODO: missing labels, types, etc
+		// TODO: fails on comparison on a statement with id=<null> (Originally asserted) and a statement with id =blank node (retrieved from triple store). 
 	}
 
 	public void testStart10() throws JAXBException
 	{
-		// TODO: missing labels, types, etc
-	}
+		// TODO: fails on comparison on a statement with id=<null> (Originally asserted) and a statement with id =blank node (retrieved from triple store). 
+    	}
 
 	public void testEnd10() throws JAXBException
 	{
-		// TODO: null exception
+		// TODO: fails on comparison on a statement with id=<null> (Originally asserted) and a statement with id =blank node (retrieved from triple store). 
 	}
 
 	public void testDerivation9() throws JAXBException
 	{
-		// TODO: Null
+	        // note, the original assertion was wasDerivedFrom(-,e1) which we could not translate into rdf at all. So, I added types to it.
+		// TODO: fails on comparison on a statement with id=<null> (Originally asserted) and a statement with id =blank node (retrieved from triple store). 
 	}
 
 	public void testDerivation10() throws JAXBException
 	{
-		// TODO: Get a wasDerivedFrom as well as a Derivation.
+		// TODO: fails on comparison on a statement with id=<null> (Originally asserted) and a statement with id =blank node (retrieved from triple store). 
+		// TODO: Get a wasDerivedFrom as well as a Derivation. <- I don't think it's the case
 	}
 
 	public void testInfluence1() throws JAXBException
 	{
-		// Class cast errors (ActivityOrAgentOrEntity)
+		// Class cast errors (ActivityOrAgentOrEntity)   Limitation of Elmo, I think this can be fixed by asserting triples without Elmo
 	}
 
 	public void testInfluence2() throws JAXBException
 	{
-		// Class cast errors (ActivityOrAgentOrEntity)
+		// Class cast errors (ActivityOrAgentOrEntity)    Limitation of Elmo, I think this can be fixed by asserting triples without Elmo
 	}
 
 	public void testInfluence3() throws JAXBException
@@ -147,13 +150,11 @@ public class ParserTest extends
 		// Class cast errors (ActivityOrAgentOrEntity)
 	}
 
-	public void testMention1() throws JAXBException
-	{
-		// TODO: Null
-	}
-
+	
 	public void testMembership1() throws JAXBException
 	{
+	    
+	    //Problem with RDFConstructor: I don't seem to be able to generate a resource of type prov:Collection
 		// TODO: Unsupported
 	}
 

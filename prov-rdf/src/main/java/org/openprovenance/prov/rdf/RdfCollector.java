@@ -750,12 +750,13 @@ public class RdfCollector extends RDFHandlerBase {
 				{
 					Statement asInBundleStatement = getSingleStatementForPredicate(
 							context, qname, PROV + "asInBundle");
-					QName bundleQ = convertURIToQName((URI)(asInBundleStatement.getObject()));					
-					QName entityQ = convertURIToQName((URI)value);
+					Object o=(asInBundleStatement==null) ? null: asInBundleStatement.getObject();
+					QName bundleQ = (o==null)? null: convertURIToQName((URI)o);					
+					QName entityQ = (value==null)? null: convertURIToQName((URI)value);
 					MentionOf nmo = pFactory.newMentionOf(
-							pFactory.newEntityRef(qname),
-							pFactory.newEntityRef(entityQ),
-							pFactory.newEntityRef(bundleQ));
+							(qname==null)? null: pFactory.newEntityRef(qname),
+							(entityQ==null)? null: pFactory.newEntityRef(entityQ),
+							(bundleQ==null)? null: pFactory.newEntityRef(bundleQ));
 
 					store(context, nmo);
 				}

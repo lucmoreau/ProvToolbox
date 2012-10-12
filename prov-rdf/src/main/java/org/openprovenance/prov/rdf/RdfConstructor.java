@@ -9,6 +9,7 @@ import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.notation.TreeConstructor;
 import org.openprovenance.prov.xml.Attribute;
+import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.InternationalizedString;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvUtilities;
@@ -55,7 +56,7 @@ public class RdfConstructor implements TreeConstructor {
 		{
 			a.getEndedAtTime().add((XMLGregorianCalendar) endTime);
 		}
-		processAttributes(qname, (List<?>) aAttrs);
+		processAttributes(a, (List<?>) aAttrs);
 		return a;
 	}
 
@@ -63,7 +64,7 @@ public class RdfConstructor implements TreeConstructor {
 	{
 		QName qname = getQName(id);
 		Entity e = (Entity) designateIfNotNull(qname, Entity.class);
-		processAttributes(qname, (List<?>) attrs);
+		processAttributes(e, (List<?>) attrs);
 		return e;
 	}
 
@@ -71,7 +72,7 @@ public class RdfConstructor implements TreeConstructor {
 	{
 		QName qname = getQName(id);
 		Agent ag = (Agent) designateIfNotNull(qname, Agent.class);
-		processAttributes(qname, (List<?>) attrs);
+		processAttributes(ag, (List<?>) attrs);
 		return ag;
 	}
 
@@ -157,18 +158,23 @@ public class RdfConstructor implements TreeConstructor {
 		return new URIImpl(qname.getNamespaceURI() + qname.getLocalPart());
 	}
 
-	public void processAttributes(QName a, List<?> aAttrs)
+	public void processAttributes(Object infl, List<?> aAttrs)
 	{
 		if (aAttrs == null)
 			return;
-		if (a == null) {
-		    //throw new NullPointerException(); //should never be here, really
-		    return;
+		if (infl == null) {
+		    throw new NullPointerException(); //should never be here, really
 		}
 
-		org.openrdf.model.Resource r = new URIImpl(a.getNamespaceURI()
-				+ a.getLocalPart());
+		
+		
+	//	QName a=null;
+	//	org.openrdf.model.Resource r = new URIImpl(a.getNamespaceURI()
+	//			+ a.getLocalPart());
 
+		org.openrdf.model.Resource r=((org.openrdf.elmo.sesame.roles.SesameEntity)infl).getSesameResource();
+		
+		
 		for (Object entry : aAttrs)
 		{
 
@@ -259,6 +265,8 @@ public class RdfConstructor implements TreeConstructor {
 			return Organization.class;
 		if (value.equals("prov:Bundle"))
 			return Bundle.class;
+		if (value.equals("prov:Collection"))
+			return Collection.class;
 		return null;
 	}
 
@@ -282,7 +290,9 @@ public class RdfConstructor implements TreeConstructor {
 			if (time != null) {
 				setTime((InstantaneousEvent)infl, time);
 			}
-			processAttributes(qi.getQName(), (List<?>) aAttrs);
+			System.out.println("addEntityInfluence (infl) " + infl);
+			System.out.println("addEntityInfluence (qn)" + qi.getQName());
+			processAttributes(qi, (List<?>) aAttrs);
 		}
 		return infl;
 	}
@@ -303,7 +313,7 @@ public class RdfConstructor implements TreeConstructor {
 			if (e1!=null) qi.getInfluencers().add(e1);
 			addQualifiedInfluence(e2, infl);
 
-			processAttributes(qi.getQName(), (List<?>) aAttrs);
+			processAttributes(qi, (List<?>) aAttrs);
 		}
 		return infl;
 	}
@@ -340,7 +350,7 @@ public class RdfConstructor implements TreeConstructor {
 				setTime((InstantaneousEvent)infl, time);
 			}
 			
-			processAttributes(qi.getQName(), (List<?>) aAttrs);
+			processAttributes(qi, (List<?>) aAttrs);
 		}
 		return infl;
 	}
@@ -365,7 +375,7 @@ public class RdfConstructor implements TreeConstructor {
 			if (time != null) {
 				setTime((InstantaneousEvent)infl, time);
 			}
-			processAttributes(qi.getQName(), (List<?>) aAttrs);
+			processAttributes(qi, (List<?>) aAttrs);
 		}
 		return infl;
 	}
@@ -381,7 +391,7 @@ public class RdfConstructor implements TreeConstructor {
 		Usage u = addEntityInfluence(id, a2, e1, time, aAttrs, null,
 				Usage.class);
 
-		if (binaryProp(id,a2)) a2.getUsed().add(e1);
+		if ((binaryProp(id,a2)) && (e1!=null)) a2.getUsed().add(e1);
 
 		return u;
 	}
@@ -451,7 +461,7 @@ public class RdfConstructor implements TreeConstructor {
 		Generation g = addActivityInfluence(id, e2, a1, time, aAttrs,
 				Generation.class);
 
-		if (binaryProp(id,e2)) e2.getWasGeneratedBy().add(a1);
+		if ((binaryProp(id,e2)) && (a1!=null)) e2.getWasGeneratedBy().add(a1);
 		return g;
 	}
 
@@ -494,7 +504,7 @@ public class RdfConstructor implements TreeConstructor {
 			s.getHadActivity().add(a3);
 		}
 
-		if (binaryProp(id,a2)) a2.getWasEndedBy().add(e1);
+		if ((binaryProp(id,a2)) && (e1!=null)) a2.getWasEndedBy().add(e1);
 
 		return s;
 	}
@@ -511,7 +521,7 @@ public class RdfConstructor implements TreeConstructor {
 		Invalidation g = addActivityInfluence(id, e2, a1, time, aAttrs,
 				Invalidation.class);
 
-		if (binaryProp(id,e2)) e2.getWasInvalidatedBy().add(a1);
+		if ((binaryProp(id,e2))&&(a1!=null)) e2.getWasInvalidatedBy().add(a1);
 		return g;
 	}
 
@@ -527,7 +537,7 @@ public class RdfConstructor implements TreeConstructor {
 		Communication g = addActivityInfluence(id, e2, a1, null, aAttrs,
 				Communication.class);
 
-		if (binaryProp(id,e2)) e2.getWasInformedBy().add(a1);
+		if ((binaryProp(id,e2)) && (a1!=null)) e2.getWasInformedBy().add(a1);
 		return g;
 	}
 
@@ -543,7 +553,7 @@ public class RdfConstructor implements TreeConstructor {
 		Attribution g = addAgentInfluence(id, e2, a1, null, aAttrs, null,
 				Attribution.class);
 
-		if (binaryProp(id,e2)) e2.getWasAttributedTo().add(a1);
+		if ((binaryProp(id,e2)) && (a1!=null)) e2.getWasAttributedTo().add(a1);
 		return g;
 	}
 
@@ -593,7 +603,7 @@ public class RdfConstructor implements TreeConstructor {
 			}
 		}
 
-		if (binaryProp(id,e2)) e2.getWasDerivedFrom().add(e1);
+		if ((binaryProp(id,e2)) && (e1!=null)) e2.getWasDerivedFrom().add(e1);
 
 		return d;
 
@@ -614,7 +624,7 @@ public class RdfConstructor implements TreeConstructor {
 
 		Influence u = addUnknownInfluence(id, e2, e1, aAttrs, Influence.class);
 
-		if (binaryProp(id,e2)) e2.getWasInfluencedBy().add(e1);
+		if ((binaryProp(id,e2)) && (e1!=null)) e2.getWasInfluencedBy().add(e1);
 
 		return u;
 
@@ -663,7 +673,7 @@ public class RdfConstructor implements TreeConstructor {
 			g.getHadActivity().add(a3);
 		}
 
-		if (binaryProp(id,ag2)) ag2.getActedOnBehalfOf().add(ag1);
+		if ((binaryProp(id,ag2)) && (ag1!=null)) ag2.getActedOnBehalfOf().add(ag1);
 
 		return g;
 	}
@@ -689,7 +699,7 @@ public class RdfConstructor implements TreeConstructor {
 			assoc.getHadPlan().add(plan);
 		}
 
-		if (binaryProp(id,a2)) a2.getWasAssociatedWith().add(ag1);
+		if ((binaryProp(id,a2)) && (ag1!=null)) a2.getWasAssociatedWith().add(ag1);
 
 		return assoc;
 	}
@@ -826,8 +836,10 @@ public class RdfConstructor implements TreeConstructor {
 		// done
 		System.out.println("e2: "+e2);
 		System.out.println("e1: "+e1);
-		e2.getMentionOf().add(e1);
-		e2.getAsInBundle().add(e3);
+		if (e2!=null) {
+		    if (e1!=null) e2.getMentionOf().add(e1);
+		    if (e3!=null) e2.getAsInBundle().add(e3);
+		}
 
 		return null;
 	}
@@ -848,8 +860,14 @@ public class RdfConstructor implements TreeConstructor {
 
 	@Override
 	public Object convertHadMember(Object collection, Object entity) {
-	    // TODO Auto-generated method stub
-	    throw new UnsupportedOperationException();
+	    QName qnc = getQName(collection);
+	    QName qne = getQName(entity);
+
+	    Collection c =  designateIfNotNull(qnc, Collection.class);
+	    Entity e =  designateIfNotNull(qne, Entity.class);
+
+	    c.getHadMember().add(e);
+	    return null;
 	}
 	
 

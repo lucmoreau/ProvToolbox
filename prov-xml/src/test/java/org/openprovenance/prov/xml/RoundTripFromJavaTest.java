@@ -1135,7 +1135,7 @@ public class RoundTripFromJavaTest extends TestCase {
    	WasDerivedFrom der = pFactory.newWasDerivedFrom((QName)null, 
    	                                                pFactory.newEntityRef(q("e2")),
    	                                                null);
-
+   	addTypes(der);
    	Entity e2=pFactory.newEntity(q("e2"));
    	Statement [] opt=new Statement[] { e2 };
    	
@@ -1751,6 +1751,7 @@ public class RoundTripFromJavaTest extends TestCase {
            HadMember mem = pFactory.newHadMember(pFactory.newEntityRef(q("c")),
                                                  pFactory.newEntityRef(q("e1")));
            Entity c=pFactory.newEntity(q("c")); 
+          
            Entity e1=pFactory.newEntity(q("e1"));
        	   Statement [] opt=new Statement[] { c, e1 };
            makeDocAndTest(mem, opt, "target/member1");

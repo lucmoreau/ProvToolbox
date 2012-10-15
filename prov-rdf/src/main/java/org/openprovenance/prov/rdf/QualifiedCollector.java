@@ -115,54 +115,88 @@ public class QualifiedCollector extends RdfCollector {
 		super.endRDF();
 		this.bindQualifiedProperties();
 		this.optimize();
-		// dumpUnhandled();
+		this.nullBNodes();
 	}
-	
-	private List<Ref> getSignature(org.openprovenance.prov.xml.Influence influence) {
+
+	private List<Ref> getSignature(
+			org.openprovenance.prov.xml.Influence influence)
+	{
 		List<Ref> signature = null;
 		if (influence instanceof WasGeneratedBy)
 		{
 			WasGeneratedBy wgb = (WasGeneratedBy) influence;
-			signature = Arrays.asList(new Ref[]{wgb.getEntity(), wgb.getActivity()});
-		}
-		else {
-		//	System.out.println("Couldn't get signature for "+influence.getId());
+			if (wgb.getEntity() != null && wgb.getActivity() != null)
+			{
+				signature = Arrays.asList(new Ref[] { wgb.getEntity(),
+						wgb.getActivity() });
+			}
+		} else if (influence instanceof WasInvalidatedBy)
+		{
+			WasInvalidatedBy wib = (WasInvalidatedBy) influence;
+			if (wib.getActivity() != null && wib.getEntity() != null)
+			{
+				signature = Arrays.asList(new Ref[] { wib.getActivity(),
+						wib.getEntity() });
+			}
+		} else if (influence instanceof Used)
+		{
+			Used u = (Used) influence;
+			if (u.getActivity() != null && u.getEntity() != null)
+			{
+				signature = Arrays.asList(new Ref[] { u.getActivity(),
+						u.getEntity() });
+			}
+		} else if (influence instanceof WasDerivedFrom)
+		{
+			WasDerivedFrom wdf = (WasDerivedFrom) influence;
+			if (wdf.getGeneratedEntity() != null && wdf.getUsedEntity() != null)
+			{
+				signature = Arrays.asList(new Ref[] { wdf.getGeneratedEntity(),
+						wdf.getUsedEntity() });
+			}
+		} else
+		{
+			// System.out.println("Couldn't get signature for "
+			// + influence.getId());
 		}
 		return signature;
 	}
-	
+
 	private void optimize()
 	{
 		HashMap<List<Ref>, Identifiable> collisions = new HashMap<List<Ref>, Identifiable>();
-		
+
 		List<Identifiable> toRemove = new ArrayList<Identifiable>();
 		for (StatementOrBundle sob : document
 				.getEntityOrActivityOrWasGeneratedBy())
 		{
 			if (sob instanceof org.openprovenance.prov.xml.Influence)
 			{
-				
+
 				Identifiable hasid = (Identifiable) sob;
-				List<Ref> signature = getSignature((org.openprovenance.prov.xml.Influence)hasid);
-				if(signature == null) continue;
+				List<Ref> signature = getSignature((org.openprovenance.prov.xml.Influence) hasid);
+				if (signature == null)
+					continue;
 				if (collisions.containsKey(signature))
 				{
 					Identifiable collision = collisions.get(signature);
-					if(hasid.getId() != null) {
+					if (hasid.getId() != null)
+					{
 						// We have a qualified wgb, so remove the collision.
 						toRemove.add(collision);
-					}
-					else if(collision.getId() != null) {
-						// We have an unqualified wgb, so remove the wgb if the collision is qualified.
+					} else if (collision.getId() != null)
+					{
+						// We have an unqualified wgb, so remove the wgb if the
+						// collision is qualified.
 						toRemove.add(hasid);
 					}
-				}
-				else {
+				} else
+				{
 					collisions.put(signature, hasid);
 				}
 			}
 		}
-		
+
 		document.getEntityOrActivityOrWasGeneratedBy().removeAll(toRemove);
 
 	}
@@ -229,7 +263,7 @@ public class QualifiedCollector extends RdfCollector {
 					((HasTime) target).setTime(time);
 				}
 			}
-			
+
 			if (value instanceof Resource)
 			{
 				QName valueQ = convertResourceToQName((Resource) value);
@@ -254,12 +288,12 @@ public class QualifiedCollector extends RdfCollector {
 		WasInfluencedBy wib = new WasInfluencedBy();
 		wib.setId(qname);
 		List<Statement> statements = collators.get(context).get(qname);
-		handleEntityInfluence(context, wib, statements, ProvType.ENTITYINFLUENCE);
+		handleEntityInfluence(context, wib, statements,
+				ProvType.ENTITYINFLUENCE);
 	}
 
 	private void createDerivation(QName context, QName qname)
 	{
-		System.out.println("Create new Derivation: "+qname);
 		WasDerivedFrom wdf = new WasDerivedFrom();
 		wdf.setId(qname);
 
@@ -391,7 +425,8 @@ public class QualifiedCollector extends RdfCollector {
 		}
 
 		handleActivityInfluence(context, wib, statements, ProvType.INVALIDATION);
-		handleInstantaneousEvent(context, wib, statements, ProvType.INVALIDATION);
+		handleInstantaneousEvent(context, wib, statements,
+				ProvType.INVALIDATION);
 
 		store(context, wib);
 		this.influenceMap.put(qname, wib);
@@ -445,7 +480,8 @@ public class QualifiedCollector extends RdfCollector {
 			}
 		}
 
-		handleActivityInfluence(context, wib, statements, ProvType.COMMUNICATION);
+		handleActivityInfluence(context, wib, statements,
+				ProvType.COMMUNICATION);
 
 		store(context, wib);
 		this.influenceMap.put(qname, wib);
@@ -563,6 +599,17 @@ public class QualifiedCollector extends RdfCollector {
 
 		store(context, wgb);
 		this.influenceMap.put(qname, wgb);
+	}
+
+	private void nullBNodes()
+	{
+		for (QName key : influenceMap.keySet())
+		{
+			if (key.getNamespaceURI() == "")
+			{
+				influenceMap.get(key).setId(null);
+			}
+		}
 	}
 
 	public void bindQualifiedProperties()

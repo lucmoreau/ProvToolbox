@@ -615,10 +615,12 @@ public class RdfConstructor implements TreeConstructor {
 		QName qn2 = getQName(id2);
 		QName qn1 = getQName(id1);
 
-		ActivityOrAgentOrEntity e1 = (ActivityOrAgentOrEntity) manager
-				.find(qn1);
-		ActivityOrAgentOrEntity e2 = manager
-				.designate(qn2, ActivityOrAgentOrEntity.class);
+		ActivityOrAgentOrEntity e1 = designateIfNotNull(qn1, ActivityOrAgentOrEntity.class);
+		ActivityOrAgentOrEntity e2 = designateIfNotNull(qn2, ActivityOrAgentOrEntity.class);
+		//(ActivityOrAgentOrEntity) manager
+		//		.find(qn1);
+		//ActivityOrAgentOrEntity e2 = manager
+		//		.designate(qn2, ActivityOrAgentOrEntity.class);
 
 		Influence u = addUnknownInfluence(id, e2, e1, aAttrs, Influence.class);
 

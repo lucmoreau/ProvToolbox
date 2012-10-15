@@ -1139,7 +1139,7 @@ public class RoundTripFromJavaTest extends TestCase {
    	Entity e2=pFactory.newEntity(q("e2"));
    	Statement [] opt=new Statement[] { e2 };
    	
-   	makeDocAndTest(der, "target/derivation9");
+   	makeDocAndTest(der, opt, "target/derivation9");
     }
     
     public void testDerivation10() throws JAXBException {

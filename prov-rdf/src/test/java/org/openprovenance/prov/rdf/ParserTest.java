@@ -77,44 +77,6 @@ public class ParserTest extends
 		return true;
 	}
 
-	public void testGeneration7() throws JAXBException
-	{
-		// TODO: fails on comparison on a statement with id=<null> (Originally asserted) and a statement with id =blank node (retrieved from triple store). 
-
-	}
-
-	public void testUsage7() throws JAXBException
-	{
-		// TODO: fails on comparison on a statement with id=<null> (Originally asserted) and a statement with id =blank node (retrieved from triple store). 
-	}
-
-	public void testInvalidation7() throws JAXBException
-	{
-		// TODO: fails on comparison on a statement with id=<null> (Originally asserted) and a statement with id =blank node (retrieved from triple store). 
-	}
-
-	public void testStart10() throws JAXBException
-	{
-		// TODO: fails on comparison on a statement with id=<null> (Originally asserted) and a statement with id =blank node (retrieved from triple store). 
-    	}
-
-	public void testEnd10() throws JAXBException
-	{
-		// TODO: fails on comparison on a statement with id=<null> (Originally asserted) and a statement with id =blank node (retrieved from triple store). 
-	}
-
-	public void testDerivation9() throws JAXBException
-	{
-	        // note, the original assertion was wasDerivedFrom(-,e1) which we could not translate into rdf at all. So, I added types to it.
-		// TODO: fails on comparison on a statement with id=<null> (Originally asserted) and a statement with id =blank node (retrieved from triple store). 
-	}
-
-	public void testDerivation10() throws JAXBException
-	{
-		// TODO: fails on comparison on a statement with id=<null> (Originally asserted) and a statement with id =blank node (retrieved from triple store). 
-		// TODO: Get a wasDerivedFrom as well as a Derivation. <- I don't think it's the case
-	}
-
 	public void testInfluence1() throws JAXBException
 	{
 		// Class cast errors (ActivityOrAgentOrEntity)   Limitation of Elmo, I think this can be fixed by asserting triples without Elmo

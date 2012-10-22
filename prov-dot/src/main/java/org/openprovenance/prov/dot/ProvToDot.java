@@ -206,9 +206,20 @@ public class ProvToDot {
         convert(graph,new File(dotFile));
         Runtime runtime = Runtime.getRuntime();
         @SuppressWarnings("unused")
-		java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
+        java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
     }
-
+    
+    public void convert(Document graph, String dotFile, String aFile, String type)
+	        throws java.io.FileNotFoundException, java.io.IOException {
+	        convert(graph,new File(dotFile));
+	        Runtime runtime = Runtime.getRuntime();
+	        @SuppressWarnings("unused")
+	        java.lang.Process proc = runtime.exec("dot -o " + aFile + " -T" + type + " " + dotFile);
+	        try {
+		    proc.waitFor();
+		} catch (InterruptedException e){};
+    }
+    
     public void convert(Document graph, File file) throws java.io.FileNotFoundException{
         OutputStream os=new FileOutputStream(file);
         convert(graph, new PrintStream(os));

@@ -29,12 +29,16 @@ import org.openprovenance.prov.rdf.RepositoryHelper;
 
 import org.openprovenance.prov.dot.ProvToDot;
 
+import org.apache.log4j.Logger;
 
 /**
  * The interoperability framework for PROV.
  */
 public class InteropFramework 
 {
+    
+    static Logger logger = Logger.getLogger(InteropFramework.class);
+
 
     public static final String UNKNOWN = "unknown";
     public static final String PC1_NS="http://www.ipaw.info/pc1/";
@@ -139,6 +143,7 @@ public class InteropFramework
 	this(null, null, null, null, null, null);
     }
 
+    
     public void writeTextToFile(String text,
                                 String filename) {
         BufferedWriter writer = null;
@@ -160,7 +165,7 @@ public class InteropFramework
     /** Validates an input xml file, reads into a Bean instance, saves it as an provnFile.
         TODO: then compare with another provn files? */
 
-
+/*
     public void xml2provn(String inXmlFile,
 			  String outprovnFile,
 			  String[] schemaFiles) throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
@@ -177,13 +182,12 @@ public class InteropFramework
         String s=u.convertBeanToASN(c);
         writeTextToFile(s,outprovnFile);
 
-    }
+    }*/
         
 
 
     /** Validates an input xml file, reads into a Bean instance, saves it as an xmlFile.
-        TODO: then compare xml files. */
-
+        TODO: then compare xml files. *//*
     public void xml2xml(String inXmlFile,
                         String outXmlFile,
                         String[] schemaFiles,
@@ -207,7 +211,9 @@ public class InteropFramework
         c2.setNss(outNamespaces);
         serial.serialiseDocument(out,c2,true);
     }
-        
+        */
+    
+    /*
     
     public void xml2turtle(String file, String file2, String[] schemaFiles) throws java.io.IOException, JAXBException, Throwable {
     	xml2rdf(file,file2,RDF_TURTLE, schemaFiles);
@@ -287,7 +293,7 @@ public class InteropFramework
 
         writeTextToFile(s,file2);        
 
-    }
+    }*/
 
     public static final String RDF_TURTLE="turtle";
     public static final String RDF_XML="rdf/xml";
@@ -301,26 +307,27 @@ public class InteropFramework
     	if (RDF_TRIG.equals(type)) return RDFFormat.TRIG;
 	    return null;
      }
+    /*
 
-    public void provn2turtle(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    public void OLDprovn2turtle(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
     	provn2rdf(file,file2,RDF_TURTLE);
     }
-    public void provn2rdfxml(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    public void OLDprovn2rdfxml(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
     	provn2rdf(file,file2,RDF_XML);
     }
-    public void provn2trig(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    public void OLDprovn2trig(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
     	provn2rdf(file,file2,RDF_TRIG);
     }
-    public void provn2n3(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
+    public void OLDprovn2n3(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
     	provn2rdf(file,file2,RDF_N3);
     }
     
-    public void provn2rdf(String file, String file2, String type) throws java.io.IOException, JAXBException, Throwable {
+    public void OLDprovn2rdf(String file, String file2, String type) throws java.io.IOException, JAXBException, Throwable {
         CommonTree tree = u.convertASNToTree(file);
         tree2rdf(tree, file2, type);
     }
     
-    public void tree2rdf(CommonTree tree, String file2, String type) throws java.io.IOException, JAXBException, Throwable {
+    public void LDtree2rdf(CommonTree tree, String file2, String type) throws java.io.IOException, JAXBException, Throwable {
 
 
         RepositoryHelper rHelper=new RepositoryHelper();
@@ -343,14 +350,14 @@ public class InteropFramework
         
         repository2rdf(manager, rHelper, type, file2, allNamespaceTable);
     }
-    
-    public void repository2rdf(ElmoManager manager, RepositoryHelper rHelper, String type, String file2, Hashtable<String,String>  namespaceTable ) throws Exception {
+    */
+    public void OLDrepository2rdf(ElmoManager manager, RepositoryHelper rHelper, String type, String file2, Hashtable<String,String>  namespaceTable ) throws Exception {
 
 	rHelper.dumpToRDF(new File(file2),(SesameManager)manager,convert(type),namespaceTable);
 
     }
 
-    public void provn2dot(String file, String dotFileOut, String pdfFileOut, String configFile)
+    public void OLDprovn2dot(String file, String dotFileOut, String pdfFileOut, String configFile)
 	throws java.io.IOException, JAXBException, Throwable {
 
         Utility u=new Utility();
@@ -367,7 +374,7 @@ public class InteropFramework
     }
 
     
-    public void xml2dot(String fileIn, String dotFileOut, String pdfFileOut,
+    public void OLDxml2dot(String fileIn, String dotFileOut, String pdfFileOut,
 			 String configFile) throws JAXBException, FileNotFoundException, IOException {
 	
     	File in=new File(fileIn);
@@ -389,7 +396,7 @@ public class InteropFramework
 
 
 
-    public void rdfxml2xml(String fileIn, String fileOut, Object object) throws RDFParseException, RDFHandlerException, IOException, JAXBException {
+    public void OLDrdfxml2xml(String fileIn, String fileOut, Object object) throws RDFParseException, RDFHandlerException, IOException, JAXBException {
 	// TODO Auto-generated method stub
 	org.openprovenance.prov.rdf.Utility rdfU=new org.openprovenance.prov.rdf.Utility();
 	Document doc=rdfU.parseRDF(fileIn);
@@ -429,8 +436,8 @@ public class InteropFramework
 		System.err.println("Unknown output file format: " + filename);
 		return;
 	    }
-	    System.err.println("writing " + format);
-	    System.err.println("writing " + filename);
+	    logger.debug("writing " + format);
+	    logger.debug("writing " + filename);
 	    switch (format) {
 	    case PROVN: {
 		String s=u.convertBeanToASN(doc);
@@ -456,16 +463,23 @@ public class InteropFramework
 	    }
 	    case JSON: {
 		new org.openprovenance.prov.json.Converter().writeDocument(doc, filename);
+		break;
 	    }
 	    case PDF: {
 		String configFile=null; // give it as option
 		String dotFileOut="target/foo.dot"; //give it as option, if not available create tmp file
-		ProvToDot toDot=new ProvToDot((configFile==null)? "../prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
+		ProvToDot toDot=new ProvToDot((configFile==null)? "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
 	        toDot.convert(doc, dotFileOut, filename);       
 	    }
 	    case DOT:
 	    case JPEG:
-	    case SVG:
+	    case SVG:{
+		String configFile=null; // give it as option
+		String dotFileOut="target/foo.dot"; //give it as option, if not available create tmp file
+		ProvToDot toDot=new ProvToDot((configFile==null)? "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
+	        toDot.convert(doc, dotFileOut, filename, "svg");       
+	    }
+		
 	    default:
 		break;}
 	} catch (JAXBException e) {
@@ -577,133 +591,6 @@ public class InteropFramework
 	    
     }
 
-    public static void help() {
-        System.out.println("Usage: provconvert -provn2turtle fileIn fileOut");
-        System.out.println("Usage: provconvert -provn2rdfxml fileIn fileOut");
-        System.out.println("Usage: provconvert -provn2trig fileIn fileOut");
-        System.out.println("Usage: provconvert -provn2n3 fileIn fileOut");
-        System.out.println("Usage: provconvert -provn2xml fileIn fileOut");
-        System.out.println("Usage: provconvert -provn2provn fileIn fileOut");
-        
-        System.out.println("Usage: provconvert -xml2turtle fileIn fileOut");
-        System.out.println("Usage: provconvert -xml2rdfxml fileIn fileOut");
-        System.out.println("Usage: provconvert -xml2trig fileIn fileOut");
-        System.out.println("Usage: provconvert -xml2n3 fileIn fileOut");     
-        System.out.println("Usage: provconvert -xml2xml fileIn fileOut");
-        System.out.println("Usage: provconvert -xml2provn fileIn fileOut");
-        
-        System.out.println("Usage: provconvert -xml2html fileIn fileOut");
-        
-        System.out.println("Usage: provconvert -rdfxml2xml fileIn fileOut");
-        
-	System.out.println("Usage: provconvert -xml2dot fileIn dotFileOut pdfFileOut [configFile]");
-        System.out.println("Usage: provconvert -provn2dot fileIn dotFileOut pdfFileOut [configFile]");
-    }
-
-    public static void IGNOREmain(String [] args) throws Exception { //TODO: finalize signatures
-        if ((args==null) || (!((args.length>=3) && (args.length<=5)))) {
-            help();
-            return;
-        }
-
-        try {
-            InteropFramework me=new InteropFramework();
-            String fileIn=args[1];
-            String fileOut=args[2];
-            
-            if (args[0].equals("-provn2turtle")) {
-                me.provn2turtle(fileIn,fileOut);
-                return;
-            }
-            if (args[0].equals("-provn2rdfxml")) {
-                me.provn2rdfxml(fileIn,fileOut);
-                return;
-            }
-            if (args[0].equals("-provn2trig")) {
-                me.provn2trig(fileIn,fileOut);
-                return;
-            }
-            if (args[0].equals("-provn2n3")) {
-                me.provn2n3(fileIn,fileOut);
-                return;
-            }
-            if (args[0].equals("-provn2provn")) {
-                me.provn2provn(fileIn,fileOut);
-                return;
-            }
-
-            if (args[0].equals("-provn2provn")) {
-                me.provn2provn(fileIn,fileOut);
-                return;
-            }
-
-
-            if (args[0].equals("-provn2html")) {
-                me.provn2html(fileIn,fileOut);
-                return;
-            }
-
-
-            if (args[0].equals("-xml2turtle")) {
-                me.xml2turtle(fileIn,fileOut,null);
-                return;
-            }
-            if (args[0].equals("-xml2rdfxml")) {
-                me.xml2rdfxml(fileIn,fileOut,null);
-                return;
-            }
-            if (args[0].equals("-xml2trig")) {
-                me.xml2trig(fileIn,fileOut,null);
-                return;
-            }
-            if (args[0].equals("-xml2n3")) {
-                me.xml2n3(fileIn,fileOut,null);
-                return;
-            }
-  
-            if (args[0].equals("-xml2xml")) {
-                me.xml2xml(fileIn,fileOut,null,null);
-                return;
-            }
-
-            if (args[0].equals("-xml2provn")) {
-                me.xml2provn(fileIn,fileOut,null);
-                return;
-            }
-
-            if (args[0].equals("-rdfxml2xml")) {
-                me.rdfxml2xml(fileIn,fileOut,null);
-                return;
-            }
-
-
-
-            if (args[0].equals("-provn2dot")) {
-		String pdfFileOut=args[3];
-		String configFile;
-		configFile= ((args.length==5)? args[4] : null);
-                me.provn2dot(fileIn,fileOut,pdfFileOut,configFile);
-                return;
-            }
-
-            if (args[0].equals("-xml2dot")) {
-		String pdfFileOut=args[3];
-		String configFile;
-		configFile= ((args.length==5)? args[4] : null);
-                me.xml2dot(fileIn,fileOut,pdfFileOut,configFile);
-                return;
-            }
-
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-        
-        help();
-
-        //TODO: other options here
-
-
-    }
 
     public void run() {
 	if (infile==null) return;

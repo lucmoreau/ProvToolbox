@@ -36,6 +36,7 @@ import org.openprovenance.prov.dot.ProvToDot;
 public class InteropFramework 
 {
 
+    public static final String UNKNOWN = "unknown";
     public static final String PC1_NS="http://www.ipaw.info/pc1/";
     public static final String PC1_PREFIX="pc1";
     public static final String PRIM_NS="http://openprovenance.org/primitives#";
@@ -49,18 +50,91 @@ public class InteropFramework
     final private String infile;
     final private String outfile;
     final private String namespaces;
+    public final Hashtable<ProvFormat,String> extensionMap;
+    public final Hashtable<String,ProvFormat> extensionRevMap;
 
     public InteropFramework(String verbose,
-	    String debug, String logfile, String infile, String outfile,
-	    String namespaces) {
+                            String debug, String logfile, String infile, String outfile,
+                            String namespaces) {
 	this.verbose=verbose;
 	this.debug=debug;
 	this.logfile=logfile;
 	this.infile=infile;
 	this.outfile=outfile;
 	this.namespaces=namespaces;
+	extensionMap=new Hashtable<InteropFramework.ProvFormat, String>();
+	extensionRevMap=new Hashtable<String, InteropFramework.ProvFormat>();
+
+	initializeExtensionMap(extensionMap, extensionRevMap);
     }
     
+    public void initializeExtensionMap(Hashtable<ProvFormat,String> extensionMap,
+                                       Hashtable<String, InteropFramework.ProvFormat> extensionRevMap) {
+        for (ProvFormat f: ProvFormat.values()) {
+            switch (f) {
+            case DOT:
+                extensionMap.put(ProvFormat.DOT,"dot");
+                extensionRevMap.put("dot", ProvFormat.DOT);
+                break;
+            case JPEG:
+                extensionMap.put(ProvFormat.JPEG,"jpg");
+                extensionRevMap.put("jpeg", ProvFormat.JPEG);
+                extensionRevMap.put("jpg", ProvFormat.JPEG);
+                break;
+            case JSON:
+                extensionMap.put(ProvFormat.JSON,"json");
+                extensionRevMap.put("json", ProvFormat.JSON);
+                break;
+            case PDF:
+                extensionMap.put(ProvFormat.PDF,"pdf");
+                extensionRevMap.put("pdf", ProvFormat.PDF);
+                break;
+            case PROVN:
+                extensionMap.put(ProvFormat.PROVN,"provn");
+                extensionRevMap.put("provn", ProvFormat.PROVN);
+                extensionRevMap.put("pn", ProvFormat.PROVN);
+                extensionRevMap.put("asn", ProvFormat.PROVN);
+                extensionRevMap.put("prov-asn", ProvFormat.PROVN);
+
+                break;
+            case RDFXML:
+                extensionMap.put(ProvFormat.RDFXML,"rdf");
+                extensionRevMap.put("rdf", ProvFormat.RDFXML);
+                break;
+            case SVG:
+                extensionMap.put(ProvFormat.SVG,"svg");
+                extensionRevMap.put("svg", ProvFormat.SVG);
+                break;
+            case TRIG:
+                extensionMap.put(ProvFormat.TRIG,"trig");
+                extensionRevMap.put("trig", ProvFormat.TRIG);
+                break;
+            case TURTLE:
+                extensionMap.put(ProvFormat.TURTLE,"ttl");
+                extensionRevMap.put("ttl", ProvFormat.TURTLE);               
+                break;
+            case XML:
+                extensionMap.put(ProvFormat.XML,"provx");
+                extensionRevMap.put("provx", ProvFormat.XML);             
+                extensionRevMap.put("xml", ProvFormat.XML);             
+                break;
+            default:
+                break;
+       
+            }
+        }
+        
+    }
+    
+    public String getExtension(ProvFormat format) {
+        String extension=UNKNOWN;
+        if (format!=null) {
+            extension=extensionMap.get(format);
+        }
+        return extension;
+    }
+    
+
     public InteropFramework() {
 	this(null, null, null, null, null, null);
     }
@@ -342,6 +416,11 @@ public class InteropFramework
     public enum ProvFormat {  PROVN, XML, TURTLE, RDFXML, TRIG,  JSON, DOT, JPEG, SVG, PDF }
     
     public ProvFormat getTypeForFile(String filename) {
+        int count=filename.lastIndexOf(".");
+        if (count==-1) return null;
+        String extension=filename.substring(count+1);
+        return extensionRevMap.get(extension);
+        /*
 	if ((filename.endsWith(".provn"))  || filename.endsWith(".prov-asn") || filename.endsWith(".pn")) {  //legacy extensions
 	    return ProvFormat.PROVN;
 	} else if (filename.endsWith(".provx") || filename.endsWith(".xml")) {
@@ -365,6 +444,7 @@ public class InteropFramework
 	} else {
 	    return null;
 	}
+	*/
     }
 
     public void writeDocument(String filename, Document doc) {

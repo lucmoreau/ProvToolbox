@@ -420,31 +420,6 @@ public class InteropFramework
         if (count==-1) return null;
         String extension=filename.substring(count+1);
         return extensionRevMap.get(extension);
-        /*
-	if ((filename.endsWith(".provn"))  || filename.endsWith(".prov-asn") || filename.endsWith(".pn")) {  //legacy extensions
-	    return ProvFormat.PROVN;
-	} else if (filename.endsWith(".provx") || filename.endsWith(".xml")) {
-	    return ProvFormat.XML;
-	} else if (filename.endsWith(".rdf")) {
-	    return ProvFormat.RDFXML;
-	} else if (filename.endsWith(".json")) {
-	    return ProvFormat.JSON;
-	} else if (filename.endsWith(".trig")) {
-	    return ProvFormat.TRIG;
-	} else if (filename.endsWith(".ttl")) {
-	    return ProvFormat.TURTLE;
-	} else if (filename.endsWith(".svg")) {
-	    return ProvFormat.SVG;
-	} else if (filename.endsWith(".pdf")) {
-	    return ProvFormat.PDF;
-	} else if (filename.endsWith(".dot")) {
-	    return ProvFormat.DOT;
-	} else if ((filename.endsWith(".jpeg")) ||  (filename.endsWith(".jpg"))) {
-	    return ProvFormat.JPEG;
-	} else {
-	    return null;
-	}
-	*/
     }
 
     public void writeDocument(String filename, Document doc) {
@@ -487,7 +462,12 @@ public class InteropFramework
 		String dotFileOut="target/foo.dot"; //give it as option, if not available create tmp file
 		ProvToDot toDot=new ProvToDot((configFile==null)? "../prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
 	        toDot.convert(doc, dotFileOut, filename);       
-	    }}
+	    }
+	    case DOT:
+	    case JPEG:
+	    case SVG:
+	    default:
+		break;}
 	} catch (JAXBException e) {
 	    if (verbose!=null) e.printStackTrace();
 	    throw new InteropException(e);
@@ -504,8 +484,7 @@ public class InteropFramework
         
         ProvFormat format = getTypeForFile(filename);
         if (format == null) {
-            System.err.println("Unknown output file format: " + filename);
-            return null;
+            throw new InteropException("Unknown output file format: " + filename);
         }
         
         switch (format) {
@@ -541,37 +520,61 @@ public class InteropFramework
         }
         }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new InteropException(e);
         } catch (Throwable e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new InteropException(e);
+
         }
-        return null;
-	 
+ 
     }
 
     
 
-    public Object IGNOREloadProvUnknownGraph(String filename)
+    public Object loadProvUnknownGraph(String filename)
 	throws java.io.IOException, JAXBException, Throwable {
 	
 	try {
 	    Utility u=new Utility();
 	    CommonTree tree = u.convertASNToTree(filename);
 	    Object o=u.convertTreeToJavaBean(tree);
-	    return o;
-	} catch (Throwable t1) {
-	    try {
-		File in=new File(filename);
-		ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-		Document c=deserial.deserialiseDocument(in);
-		return c;
-	    } catch (Throwable t2) {
-		System.out.println("Unparseable format " + filename);
-		throw new UnsupportedOperationException();
+	    if (o!=null) {
+		return o;
 	    }
+	} catch (Throwable t1) {
+	    // OK, we failed, let's try next format.
 	}
+	try {
+	    File in=new File(filename);
+	    ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
+	    Document c=deserial.deserialiseDocument(in);
+	    if (c!=null) {
+		return c;
+	    } 
+	} catch (Throwable t2) {
+	    // OK, we failed, let's try next format.
+	}
+	
+	try {
+	    Object o=new org.openprovenance.prov.json.Converter().readDocument(filename);
+	    if (o!=null) {
+		return o;
+	    }
+	} catch (RuntimeException e) {
+	    // OK, we failed, let's try next format.
+
+	}
+	try {
+	    org.openprovenance.prov.rdf.Utility rdfU=new org.openprovenance.prov.rdf.Utility();
+	    Document doc=rdfU.parseRDF(filename);
+	    if (doc!=null) {
+		return doc;
+	    }
+	} catch (RuntimeException e) {
+	    //OK, we failed, let's try next format
+	}
+	System.out.println("Unparseable format " + filename);
+	throw new UnsupportedOperationException();
+	    
     }
 
     public static void help() {
@@ -706,7 +709,7 @@ public class InteropFramework
 	if (infile==null) return;
 	if (outfile==null) return;
 	try {
-	    Document doc=(Document) loadProvGraph(infile);
+	    Document doc=(Document) loadProvKnownGraph(infile);
 	    doc.setNss(new Hashtable<String, String>());
 	    doc.getNss().put("pc1",PC1_NS);
 	    doc.getNss().put("prim",PRIM_NS);
@@ -716,12 +719,6 @@ public class InteropFramework
 	    
 	    System.out.println("InteropFramework run() -> " + doc.getNss());
 	    writeDocument(outfile, doc);
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (JAXBException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
 	} catch (Throwable e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();

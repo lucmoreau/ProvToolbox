@@ -14,7 +14,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
-public class Utility {
+public class Converter {
 	private Gson gson = new GsonBuilder()
 	                       .registerTypeAdapter(Document.class, new ProvDocumentDeserializer())
 	                       .registerTypeAdapter(Document.class, new ProvDocumentSerializer())

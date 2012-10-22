@@ -400,7 +400,7 @@ public class InteropFramework
 		break;
 	    }
 	    case JSON: {
-		new org.openprovenance.prov.json.Utility().writeDocument(doc, filename);
+		new org.openprovenance.prov.json.Converter().writeDocument(doc, filename);
 	    }
 	    case PDF: {
 		String configFile=null; // give it as option
@@ -434,7 +434,7 @@ public class InteropFramework
         case SVG:
             throw new UnsupportedOperationException(); //we don't load PROV from these formats
         case JSON: {
-            return new org.openprovenance.prov.json.Utility().readDocument(filename);
+            return new org.openprovenance.prov.json.Converter().readDocument(filename);
         }
         case PROVN: {
             Utility u=new Utility();

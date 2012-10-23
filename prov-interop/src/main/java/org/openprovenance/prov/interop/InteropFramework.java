@@ -98,7 +98,7 @@ public class InteropFramework
             case JSON:
                 extensionMap.put(ProvFormat.JSON,"json");
                 extensionRevMap.put("json", ProvFormat.JSON);
-                mimeTypeMap.put(ProvFormat.JSON,"text/json");
+                mimeTypeMap.put(ProvFormat.JSON,"application/json");
                 break;
             case PDF:
                 extensionMap.put(ProvFormat.PDF,"pdf");
@@ -121,7 +121,7 @@ public class InteropFramework
             case SVG:
                 extensionMap.put(ProvFormat.SVG,"svg");
                 extensionRevMap.put("svg", ProvFormat.SVG);
-                mimeTypeMap.put(ProvFormat.SVG,"text/svg+xml");
+                mimeTypeMap.put(ProvFormat.SVG,"image/svg+xml");
                 break;
             case TRIG:
                 extensionMap.put(ProvFormat.TRIG,"trig");
@@ -240,6 +240,7 @@ public class InteropFramework
 	    }
 	    logger.debug("writing " + format);
 	    logger.debug("writing " + filename);
+	    setNamespaces(doc);
 	    switch (format) {
 	    case PROVN: {
 		String s=u.convertBeanToASN(doc);
@@ -248,6 +249,7 @@ public class InteropFramework
 	    }
 	    case XML: {
 		ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
+		logger.debug("namespaces " + doc.getNss());
 		serial.serialiseDocument(new File(filename), doc, true);
 		break;
 	    }
@@ -294,6 +296,13 @@ public class InteropFramework
 	}
 
     }
+
+    public void setNamespaces(Document doc) {
+        if (doc.getNss()==null) doc.setNss(new Hashtable<String, String>());
+
+        
+    }
+
 
     public Object loadProvKnownGraph(String filename) {
         try {

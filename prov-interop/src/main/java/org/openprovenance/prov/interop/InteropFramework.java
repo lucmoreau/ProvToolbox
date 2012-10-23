@@ -279,9 +279,12 @@ public class InteropFramework
 	    case JPEG:
 	    case SVG:{
                 String configFile=null; // give it as option
-                String dotFileOut="target/foo.dot"; //give it as option, if not available create tmp file
+                File tmp=File.createTempFile("viz-", ".dot",new File("/tmp"));
+                
+                String dotFileOut=tmp.getAbsolutePath(); //give it as option, if not available create tmp file
                 ProvToDot toDot=new ProvToDot((configFile==null)? "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
-                toDot.convert(doc, dotFileOut, filename, "svg");       
+                toDot.convert(doc, dotFileOut, filename, "svg");     
+                tmp.delete();
             }
 		
 	    default:

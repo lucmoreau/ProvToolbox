@@ -56,7 +56,14 @@ public class InteropFramework
     final private String namespaces;
     public final Hashtable<ProvFormat,String> extensionMap;
     public final Hashtable<String,ProvFormat> extensionRevMap;
+    public final Hashtable<ProvFormat,String> mimeTypeMap;
 
+
+    public InteropFramework() {
+        this(null, null, null, null, null, null);
+    }
+
+    
     public InteropFramework(String verbose,
                             String debug, String logfile, String infile, String outfile,
                             String namespaces) {
@@ -68,6 +75,8 @@ public class InteropFramework
 	this.namespaces=namespaces;
 	extensionMap=new Hashtable<InteropFramework.ProvFormat, String>();
 	extensionRevMap=new Hashtable<String, InteropFramework.ProvFormat>();
+	mimeTypeMap=new Hashtable<InteropFramework.ProvFormat, String>();
+
 
 	initializeExtensionMap(extensionMap, extensionRevMap);
     }
@@ -84,14 +93,17 @@ public class InteropFramework
                 extensionMap.put(ProvFormat.JPEG,"jpg");
                 extensionRevMap.put("jpeg", ProvFormat.JPEG);
                 extensionRevMap.put("jpg", ProvFormat.JPEG);
+                mimeTypeMap.put(ProvFormat.JPEG,"image/jpeg");
                 break;
             case JSON:
                 extensionMap.put(ProvFormat.JSON,"json");
                 extensionRevMap.put("json", ProvFormat.JSON);
+                mimeTypeMap.put(ProvFormat.JSON,"text/json");
                 break;
             case PDF:
                 extensionMap.put(ProvFormat.PDF,"pdf");
                 extensionRevMap.put("pdf", ProvFormat.PDF);
+                mimeTypeMap.put(ProvFormat.PDF,"application/pdf");
                 break;
             case PROVN:
                 extensionMap.put(ProvFormat.PROVN,"provn");
@@ -99,28 +111,33 @@ public class InteropFramework
                 extensionRevMap.put("pn", ProvFormat.PROVN);
                 extensionRevMap.put("asn", ProvFormat.PROVN);
                 extensionRevMap.put("prov-asn", ProvFormat.PROVN);
-
+                mimeTypeMap.put(ProvFormat.PROVN,"text/provenance-notation");
                 break;
             case RDFXML:
                 extensionMap.put(ProvFormat.RDFXML,"rdf");
                 extensionRevMap.put("rdf", ProvFormat.RDFXML);
+                mimeTypeMap.put(ProvFormat.RDFXML,"application/rdf+xml");
                 break;
             case SVG:
                 extensionMap.put(ProvFormat.SVG,"svg");
                 extensionRevMap.put("svg", ProvFormat.SVG);
+                mimeTypeMap.put(ProvFormat.SVG,"text/svg+xml");
                 break;
             case TRIG:
                 extensionMap.put(ProvFormat.TRIG,"trig");
                 extensionRevMap.put("trig", ProvFormat.TRIG);
+                mimeTypeMap.put(ProvFormat.TURTLE,"application/x-trig");
                 break;
             case TURTLE:
                 extensionMap.put(ProvFormat.TURTLE,"ttl");
-                extensionRevMap.put("ttl", ProvFormat.TURTLE);               
+                extensionRevMap.put("ttl", ProvFormat.TURTLE);    
+                mimeTypeMap.put(ProvFormat.TURTLE,"text/turtle");
                 break;
             case XML:
                 extensionMap.put(ProvFormat.XML,"provx");
                 extensionRevMap.put("provx", ProvFormat.XML);             
-                extensionRevMap.put("xml", ProvFormat.XML);             
+                extensionRevMap.put("xml", ProvFormat.XML);    
+                mimeTypeMap.put(ProvFormat.XML,"text/xml");
                 break;
             default:
                 break;
@@ -139,11 +156,14 @@ public class InteropFramework
     }
     
 
-    public InteropFramework() {
-	this(null, null, null, null, null, null);
+    public String convertToMimeType(String type) {
+        ProvFormat format=extensionRevMap.get(type);
+        if (format==null) return null;
+        return mimeTypeMap.get(format);
     }
 
     
+
     public void writeTextToFile(String text,
                                 String filename) {
         BufferedWriter writer = null;
@@ -162,127 +182,7 @@ public class InteropFramework
         }
     }
     
-    /** Validates an input xml file, reads into a Bean instance, saves it as an provnFile.
-        TODO: then compare with another provn files? */
-
-/*
-    public void xml2provn(String inXmlFile,
-			  String outprovnFile,
-			  String[] schemaFiles) throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
-
-        File in=new File(inXmlFile);
-
-        ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-
-	//TODO: should do xml validation (conditionally?)
-	//        deserial.validateDocument(schemaFiles,in);
-
-        Document c=deserial.deserialiseDocument(in);
-
-        String s=u.convertBeanToASN(c);
-        writeTextToFile(s,outprovnFile);
-
-    }*/
-        
-
-
-    /** Validates an input xml file, reads into a Bean instance, saves it as an xmlFile.
-        TODO: then compare xml files. *//*
-    public void xml2xml(String inXmlFile,
-                        String outXmlFile,
-                        String[] schemaFiles,
-                        Hashtable<String,String> outNamespaces) throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
-
-        File in=new File(inXmlFile);
-        File out=new File(outXmlFile);
-
-        ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-
-        deserial.validateDocument(schemaFiles,in);
-        
-        Document c=deserial.deserialiseDocument(in);
-
-	//TODO: should do xml validation (conditionally?)
-        deserial.validateDocument(schemaFiles,in);
-
-        ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-        c.setNss(outNamespaces);
-        Document c2=(Document)u.convertJavaBeanToJavaBean(c);
-        c2.setNss(outNamespaces);
-        serial.serialiseDocument(out,c2,true);
-    }
-        */
-    
-    /*
-    
-    public void xml2turtle(String file, String file2, String[] schemaFiles) throws java.io.IOException, JAXBException, Throwable {
-    	xml2rdf(file,file2,RDF_TURTLE, schemaFiles);
-    }
-    public void xml2rdfxml(String file, String file2, String[] schemaFiles) throws java.io.IOException, JAXBException, Throwable {
-    	xml2rdf(file,file2,RDF_XML, schemaFiles);
-    }
-    public void xml2trig(String file, String file2, String[] schemaFiles) throws java.io.IOException, JAXBException, Throwable {
-    	xml2rdf(file,file2,RDF_TRIG, schemaFiles);
-    }
-    public void xml2n3(String file, String file2, String[] schemaFiles) throws java.io.IOException, JAXBException, Throwable {
-    	xml2rdf(file,file2,RDF_N3, schemaFiles);
-    }
-    
-    public void xml2rdf(String inXmlFile,
-    		            String outXmlFile,
-    		            String type,
-                        String[] schemaFiles) throws Throwable {
-
-    	File in=new File(inXmlFile);
-
-
-    	ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-
-	//TODO: should do xml validation (conditionally?)
-	//    	deserial.validateDocument(schemaFiles,in);
-    	
-    	Document c=deserial.deserialiseDocument(in);
-    	
-
-        RepositoryHelper rHelper=new RepositoryHelper();
-        ElmoModule module = new ElmoModule();
-        rHelper.registerConcepts(module);
-        ElmoManagerFactory factory=new SesameManagerFactory(module);
-        ElmoManager manager = factory.createElmoManager();
-
-    	
-    	
-    	org.openprovenance.prov.rdf.Utility rdfU=new org.openprovenance.prov.rdf.Utility();
-    	rdfU.convertTreeToJavaRdf(c, pFactory, manager);
-    	
-   	
-    }
-
-    
-
-    public void provn2xml(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
-
-        CommonTree tree = u.convertASNToTree(file);
-
-        Object o2=u.convertTreeToJavaBean(tree);
-       
-        ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-        serial.serialiseDocument(new File(file2),(Document)o2,true);
-
-    }
-
-
-    public void provn2provn(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
-
-        CommonTree tree = u.convertASNToTree(file);
-
-
-        String s=u.convertTreeToASN(tree);
-
-        writeTextToFile(s,file2);        
-
-    }
-
+   
 
     public void provn2html(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
 
@@ -293,8 +193,8 @@ public class InteropFramework
 
         writeTextToFile(s,file2);        
 
-    }*/
-
+    }
+    
     public static final String RDF_TURTLE="turtle";
     public static final String RDF_XML="rdf/xml";
     public static final String RDF_TRIG="trig";
@@ -307,106 +207,8 @@ public class InteropFramework
     	if (RDF_TRIG.equals(type)) return RDFFormat.TRIG;
 	    return null;
      }
-    /*
-
-    public void OLDprovn2turtle(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
-    	provn2rdf(file,file2,RDF_TURTLE);
-    }
-    public void OLDprovn2rdfxml(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
-    	provn2rdf(file,file2,RDF_XML);
-    }
-    public void OLDprovn2trig(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
-    	provn2rdf(file,file2,RDF_TRIG);
-    }
-    public void OLDprovn2n3(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
-    	provn2rdf(file,file2,RDF_N3);
-    }
-    
-    public void OLDprovn2rdf(String file, String file2, String type) throws java.io.IOException, JAXBException, Throwable {
-        CommonTree tree = u.convertASNToTree(file);
-        tree2rdf(tree, file2, type);
-    }
-    
-    public void LDtree2rdf(CommonTree tree, String file2, String type) throws java.io.IOException, JAXBException, Throwable {
-
-
-        RepositoryHelper rHelper=new RepositoryHelper();
-        ElmoModule module = new ElmoModule();
-        rHelper.registerConcepts(module);
-        ElmoManagerFactory factory=new SesameManagerFactory(module);
-        ElmoManager manager = factory.createElmoManager();
-
-    	
-        Document c=(Document)u.convertTreeToJavaBean(tree);
-        Hashtable<String,String>  namespaceTable = c.getNss();
-
-        RdfConstructor rdfc=new RdfConstructor(pFactory, manager);
-        
-        new TreeTraversal(rdfc).convert(tree);
-        
-        Hashtable<String,String>  allNamespaceTable = rdfc.getNamespaceTable();
-
-        
-        
-        repository2rdf(manager, rHelper, type, file2, allNamespaceTable);
-    }
-    */
-    public void OLDrepository2rdf(ElmoManager manager, RepositoryHelper rHelper, String type, String file2, Hashtable<String,String>  namespaceTable ) throws Exception {
-
-	rHelper.dumpToRDF(new File(file2),(SesameManager)manager,convert(type),namespaceTable);
-
-    }
-
-    public void OLDprovn2dot(String file, String dotFileOut, String pdfFileOut, String configFile)
-	throws java.io.IOException, JAXBException, Throwable {
-
-        Utility u=new Utility();
-        CommonTree tree = u.convertASNToTree(file);
-
-        Object o=u.convertTreeToJavaBean(tree);
-
-        Document bundle=(Document)o;
-
-        ProvToDot toDot=new ProvToDot((configFile==null)? "src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
-
-        toDot.convert(bundle, dotFileOut, pdfFileOut);
-
-    }
-
-    
-    public void OLDxml2dot(String fileIn, String dotFileOut, String pdfFileOut,
-			 String configFile) throws JAXBException, FileNotFoundException, IOException {
-	
-    	File in=new File(fileIn);
-
-
-    	ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-
-	//TODO: should do xml validation (conditionally?)
-	//    	deserial.validateDocument(schemaFiles,in);
-    	
-    	Document doc=deserial.deserialiseDocument(in);
-
-
-	ProvToDot toDot=new ProvToDot((configFile==null)? "src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
-
-        toDot.convert(doc, dotFileOut, pdfFileOut);
-	
-    }
-
-
-
-    public void OLDrdfxml2xml(String fileIn, String fileOut, Object object) throws RDFParseException, RDFHandlerException, IOException, JAXBException {
-	// TODO Auto-generated method stub
-	org.openprovenance.prov.rdf.Utility rdfU=new org.openprovenance.prov.rdf.Utility();
-	Document doc=rdfU.parseRDF(fileIn);
-	
-	ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-        serial.serialiseDocument(new File(fileOut),doc,true);
-	
-	
-    }
-
+  
+   
     
     /** Reads a file into java bean. */
     public Object loadProvGraph(String filename) throws java.io.IOException, JAXBException, Throwable {
@@ -474,11 +276,11 @@ public class InteropFramework
 	    case DOT:
 	    case JPEG:
 	    case SVG:{
-		String configFile=null; // give it as option
-		String dotFileOut="target/foo.dot"; //give it as option, if not available create tmp file
-		ProvToDot toDot=new ProvToDot((configFile==null)? "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
-	        toDot.convert(doc, dotFileOut, filename, "svg");       
-	    }
+                String configFile=null; // give it as option
+                String dotFileOut="target/foo.dot"; //give it as option, if not available create tmp file
+                ProvToDot toDot=new ProvToDot((configFile==null)? "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
+                toDot.convert(doc, dotFileOut, filename, "svg");       
+            }
 		
 	    default:
 		break;}

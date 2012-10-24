@@ -270,9 +270,10 @@ public class InteropFramework
 		break;
 	    }
 	    case PDF: {
-		String configFile=null; // give it as option
+		String configFile=null; // TODO: get it as option
 		String dotFileOut="target/foo.dot"; //give it as option, if not available create tmp file
-		ProvToDot toDot=new ProvToDot((configFile==null)? "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
+		ProvToDot toDot=
+		        (configFile==null)? new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot (configFile);
 	        toDot.convert(doc, dotFileOut, filename);       
 	    }
 	    case DOT:

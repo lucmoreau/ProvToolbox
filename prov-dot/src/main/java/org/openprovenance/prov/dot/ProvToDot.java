@@ -55,6 +55,8 @@ import org.openprovenance.prov.dot.ProvPrinterConfigDeserialiser;
 public class ProvToDot {
     public final static String DEFAULT_CONFIGURATION_FILE="defaultConfig.xml";
     public final static String DEFAULT_CONFIGURATION_FILE_WITH_ROLE="defaultConfigWithRole.xml";
+    public final static String DEFAULT_CONFIGURATION_FILE_WITH_ROLE_NO_LABEL="defaultConfigWithRoleNoLabel.xml";
+
     public final static String USAGE="prov2dot provFile.xml out.dot out.pdf [configuration.xml]";
 
     ProvUtilities u=new ProvUtilities();
@@ -64,6 +66,8 @@ public class ProvToDot {
         return qName.getLocalPart();
     }
 
+    public enum Config { DEFAULT, ROLE, ROLE_NO_LABEL };
+    
     public static void main(String [] args) throws Exception {
         if ((args==null) || (args.length==0) || (args.length>4)) {
             System.out.println(USAGE);
@@ -91,6 +95,21 @@ public class ProvToDot {
             is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE_WITH_ROLE);
         } else {
             is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE);
+        }
+        init(is);
+    }
+    public ProvToDot(Config config) {
+        InputStream is=null;
+        switch (config) {
+        case DEFAULT:
+            is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE);
+            break;
+        case ROLE:
+            is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE_WITH_ROLE);
+            break;
+        case ROLE_NO_LABEL:
+            is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE_WITH_ROLE_NO_LABEL);
+            break;
         }
         init(is);
     }

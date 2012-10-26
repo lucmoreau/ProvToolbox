@@ -96,4 +96,32 @@
         </prov:activity>
 
 
+	<!-- failed unification  -->
+
+        <prov:wasGeneratedBy prov:id="ex:gen44">
+          <prov:entity prov:ref="ex:e44"/>
+          <prov:activity prov:ref="ex:a"/>
+        </prov:wasGeneratedBy>
+
+        <prov:wasGeneratedBy prov:id="ex:gen44">
+          <prov:entity prov:ref="ex:e44"/>
+          <prov:activity prov:ref="ex:a2"/>
+        </prov:wasGeneratedBy>
+	
+
+
+	<!-- warning: duplicate  -->
+
+        <prov:wasGeneratedBy prov:id="ex:gen50">
+          <prov:entity prov:ref="ex:e50"/>
+          <prov:activity prov:ref="ex:a"/>
+        </prov:wasGeneratedBy>
+
+        <prov:wasGeneratedBy prov:id="ex:gen50">
+          <prov:entity prov:ref="ex:e50"/>
+          <prov:activity prov:ref="ex:a"/>
+        </prov:wasGeneratedBy>
+	
+
+
 </prov:document>

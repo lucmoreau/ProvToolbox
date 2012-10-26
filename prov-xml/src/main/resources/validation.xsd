@@ -19,6 +19,8 @@
 		<xs:sequence>
 			<xs:element name="cycle" type="val:Dependencies"
 				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="nonStrictCycle" type="val:Dependencies"
+				minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="failedMerge" type="val:MergeReport"
 				minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="successfulMerge" type="val:MergeReport"

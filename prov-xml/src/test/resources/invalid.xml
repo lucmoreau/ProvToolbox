@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<prov:document xmlns:prov="http://www.w3.org/ns/prov#" xmlns:prim="http://openprovenance.org/primitives#" xmlns:ex="http://example.org/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<prov:document xmlns:prov="http://www.w3.org/ns/prov#" xmlns:prim="http://openprovenance.org/primitives#" xmlns:ex="http://example.org/" xmlns:ex2="http://example.org/e" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
         <!-- strict cycle due to one derivation and one specialization -->
 
@@ -122,6 +122,23 @@
           <prov:activity prov:ref="ex:a"/>
         </prov:wasGeneratedBy>
 	
+
+	<!-- warning: misleading qualified names  -->
+
+        <prov:entity prov:id="ex:ee100">
+        </prov:entity>
+
+        <prov:entity prov:id="ex2:e100">
+        </prov:entity>
+
+
+
+	<!-- malformed expression  -->
+
+        <prov:wasGeneratedBy prov:id="ex:gen100">
+          <prov:activity prov:ref="ex:a"/>
+        </prov:wasGeneratedBy>
+
 
 
 </prov:document>

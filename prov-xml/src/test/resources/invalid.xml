@@ -125,17 +125,21 @@
 
 	<!-- warning: misleading qualified names  -->
 
-        <prov:entity prov:id="ex:ee100">
-        </prov:entity>
+        <prov:wasGeneratedBy prov:id="ex:egen100">
+          <prov:entity prov:ref="ex:e100"/>
+          <prov:activity prov:ref="ex:a100"/>
+        </prov:wasGeneratedBy>
 
-        <prov:entity prov:id="ex2:e100">
-        </prov:entity>
+        <prov:wasGeneratedBy prov:id="ex2:gen100">
+          <prov:entity prov:ref="ex:e100"/>
+          <prov:activity prov:ref="ex:a100"/>
+        </prov:wasGeneratedBy>
 
 
 
 	<!-- malformed expression  -->
 
-        <prov:wasGeneratedBy prov:id="ex:gen100">
+        <prov:wasGeneratedBy prov:id="ex:gen200">
           <prov:activity prov:ref="ex:a"/>
         </prov:wasGeneratedBy>
 

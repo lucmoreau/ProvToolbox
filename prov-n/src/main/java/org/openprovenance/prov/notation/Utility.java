@@ -39,6 +39,7 @@ public  class Utility {
     }
 
     public Object convertTreeToJavaBean(CommonTree tree) {
+	if (tree==null) return null;
         Object o=new TreeTraversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
         return o;
     }

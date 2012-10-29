@@ -15,27 +15,28 @@
 	<xs:element name="validationReport" type="val:ValidationReport" />
 
 
-	<xs:complexType name="ValidationReport">
-		<xs:sequence>
-			<xs:element name="cycle" type="val:Dependencies"
-				minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="nonStrictCycle" type="val:Dependencies"
-				minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="failedMerge" type="val:MergeReport"
-				minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="successfulMerge" type="val:MergeReport"
-				minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="qualifiedNameMismatch"
-				type="val:MergeReport" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="specializationReport"
-				type="val:SpecializationReport" />
-			<xs:element name="typeReport" type="val:TypeReport" />
-			<xs:element name="typeOverlap" type="val:TypeOverlap"
-				minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="validationReport"
-                type="val:ValidationReport" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="malformedStatements" type="val:MalformedStatements"
-	            minOccurs="0" maxOccurs="1" />
+        <xs:complexType name="ValidationReport">
+                <xs:sequence>
+                        <xs:element name="cycle" type="val:Dependencies"
+                                minOccurs="0" maxOccurs="unbounded" />
+                        <xs:element name="nonStrictCycle" type="val:Dependencies"
+                                minOccurs="0" maxOccurs="unbounded" />
+                        <xs:element name="failedMerge" type="val:MergeReport"
+                                minOccurs="0" maxOccurs="unbounded" />
+                        <xs:element name="successfulMerge" type="val:MergeReport"
+                                minOccurs="0" maxOccurs="unbounded" />
+                        <xs:element name="qualifiedNameMismatch"
+                                type="val:MergeReport" minOccurs="0" maxOccurs="unbounded" />
+                        <xs:element name="specializationReport"
+                                type="val:SpecializationReport" />
+                        <xs:element name="typeReport" type="val:TypeReport" />
+                        <xs:element name="typeOverlap" type="val:TypeOverlap"
+                                minOccurs="0" maxOccurs="unbounded" />
+                        <xs:element name="validationReport"
+                                    type="val:ValidationReport" minOccurs="0" maxOccurs="unbounded" />
+                        <xs:element name="malformedStatements" type="val:MalformedStatements"
+				    minOccurs="0" maxOccurs="1" />
+			<xs:element ref="prov:document"/>
 		</xs:sequence>
 		<xs:attribute ref="prov:id" />	
 	</xs:complexType>

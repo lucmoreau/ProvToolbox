@@ -912,7 +912,7 @@ public class ProvToDot {
     }
 
     void prelude(PrintStream out) {
-        out.println("digraph " + name + " { rankdir=\"BT\"; ");
+        out.println("digraph " + name + " { size=\"16,12\"; rankdir=\"BT\"; ");
     }
 
     void postlude(PrintStream out) {

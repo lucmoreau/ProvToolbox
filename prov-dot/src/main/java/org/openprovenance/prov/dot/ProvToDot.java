@@ -102,12 +102,18 @@ public class ProvToDot {
         InputStream is=null;
         switch (config) {
         case DEFAULT:
+	    System.out.println("ProvToDot DEFAULT");
             is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE);
             break;
         case ROLE:
+	    System.out.println("ProvToDot role");
             is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE_WITH_ROLE);
             break;
+
         case ROLE_NO_LABEL:
+	    System.out.println("ProvToDot role no label");
+        default:
+	    System.out.println("ProvToDot role no label (by default)");
             is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE_WITH_ROLE_NO_LABEL);
             break;
         }

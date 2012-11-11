@@ -283,7 +283,14 @@ public class InteropFramework
                 File tmp=File.createTempFile("viz-", ".dot",new File("/tmp"));
                 
                 String dotFileOut=tmp.getAbsolutePath(); //give it as option, if not available create tmp file
-                ProvToDot toDot=new ProvToDot((configFile==null)? "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
+                //ProvToDot toDot=new ProvToDot((configFile==null)? "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 
+                ProvToDot toDot;
+                if (configFile!=null) {
+                	toDot=new ProvToDot(configFile);	
+                } else {
+                	toDot=new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
+                }
+                
                 toDot.convert(doc, dotFileOut, filename, "svg");     
                 tmp.delete();
             }

@@ -388,7 +388,8 @@ public class ProvToDot {
             properties.put("color",processColor(p));
             properties.put("fontcolor",processColor(p));
         } else {
-            properties.put("fillcolor","#9FB1FC"); //blue
+        	properties.put("fillcolor","#9FB1FC"); //blue
+        	properties.put("color","#0000FF"); //blue
             properties.put("style", "filled");
         }
         addColors(p,properties);
@@ -438,6 +439,7 @@ public class ProvToDot {
             properties.put("fontcolor",entityColor(a));
         } else {
             properties.put("fillcolor","#FFFC87");//yellow
+            properties.put("color","#808080"); //gray
             properties.put("style", "filled");
         }
         addColors(a,properties);
@@ -465,7 +467,7 @@ public class ProvToDot {
             properties.put("color",agentColor(a));
             properties.put("fontcolor",agentColor(a));
         } else {
-           properties.put("fillcolor","#FED37F"); //orange
+           properties.put("fillcolor","#FDB266"); //orange
            properties.put("style", "filled");
         }
         addColors(a,properties);

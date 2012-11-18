@@ -2,41 +2,37 @@
 provconvert
 --------
 
-An executable to:
-- convert PROV representations from ASN into RDF Turtle, XML, and ASN
-- convert PROV representations from XML into RDF Turtle, XML, and ASN
+An executable to convert between PROV representations.
 
 
+USAGE
 
- 
-USAGE:
-
-     provconvert -asn2rdf fileIn fileOut
-     provconvert -asn2xml fileIn fileOut
-     provconvert -asn2asn fileIn fileOut
-     provconvert -xml2xml fileIn fileOut
-     provconvert -xml2asn fileIn fileOut
-     provconvert -asn2dot fileIn dotFileOut pdfFileOut [configFile]
-
-The arguments are the following:
-
- fileIn:  the name of a file from which to read the input representation
- fileOut: the name of a file in which to write an output representation
-
- dotFileOut: the name of an output dot file
- pdfFileOut: the name of an output pdf file
- configFile: the name of a configuration file for dot conversion
+ prov-convert [-namespaces file] [-infile file] [-verbose]
+       [-version] [-debug] [-help] [-logfile file] [-outfile file]
+ -debug               print debugging information
+ -help                print this message
+ -infile <file>       use given file as input
+ -logfile <file>      use given file for log
+ -namespaces <file>   use given file as declaration of prefix namespaces
+ -outfile <file>      use given file as output
+ -verbose             be verbose
+ -version             print the version information and exit
 
 
-----------------------------------------------------------------------
+RECOGNIZED FILE EXTENSIONS
+
+ - prov-n notation:   .provn
+ - prov-o ttl:        .ttl
+ - prov-xml:          .provx or .xml
+ - pdf:               .pdf
+ - svg:               .svg
 
 
 EXAMPLE
 
- bin/provconvert -xml2rdf  examples/bad-cake.xml bad-cake2.ttl
+  provconvert -infile  ../prov-xml/target/pc1-full.xml -outfile target/pc1-full.pdf
 
 
-----------------------------------------------------------------------
 
 NOTES
 

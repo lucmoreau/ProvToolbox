@@ -1,6 +1,7 @@
 package org.openprovenance.prov.xml;
 
 import java.io.File;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.net.URI;
@@ -120,8 +121,8 @@ public class RoundTripFromJavaTest extends TestCase {
 	if (check) {
 	    boolean result=this.documentEquality.check(doc,  doc2);
 	    if (!result) {
-		System.out.println("Found " + doc);
-		System.out.println("Found " + doc2);
+	    System.out.println("Pre-write graph: "+doc);
+		System.out.println("Read graph: "+doc2);
 	    }
 	    assertTrue("doc equals doc2", result);
 	} else {
@@ -149,6 +150,9 @@ public class RoundTripFromJavaTest extends TestCase {
     public void writeXMLDocument(Document doc, String file) throws JAXBException {
 	ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
 	serial.serialiseDocument(new File(file), doc, true);
+	StringWriter sw = new StringWriter();
+	serial.serialiseDocument(sw, doc, true);
+	System.out.println(sw.toString());
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -1256,6 +1260,7 @@ public class RoundTripFromJavaTest extends TestCase {
         Agent ag1=pFactory.newAgent(q("ag1"));
         Activity a1=pFactory.newActivity(q("a1"));
         Entity plan1=pFactory.newEntity(q("plan1"));
+        pFactory.addType(plan1, pFactory.newQName("prov:Plan"));
         Statement [] opt = new Statement[] { ag1, a1, plan1 };
         makeDocAndTest(assoc, opt, "target/association4");
     }
@@ -1283,6 +1288,7 @@ public class RoundTripFromJavaTest extends TestCase {
         Agent ag1=pFactory.newAgent(q("ag1"));
         Activity a1=pFactory.newActivity(q("a1"));
         Entity plan1=pFactory.newEntity(q("plan1"));
+        pFactory.addType(plan1, pFactory.newQName("prov:Plan"));
         Statement [] opt = new Statement[] { ag1, a1, plan1 };
         
         makeDocAndTest(assoc, opt, "target/association6");
@@ -1299,6 +1305,7 @@ public class RoundTripFromJavaTest extends TestCase {
         Agent ag1=pFactory.newAgent(q("ag1"));
         Activity a1=pFactory.newActivity(q("a1"));
         Entity plan1=pFactory.newEntity(q("plan1"));
+        pFactory.addType(plan1, pFactory.newQName("prov:Plan"));
         Statement [] opt = new Statement[] { ag1, a1, plan1 };
         
         makeDocAndTest(assoc, opt, "target/association7");
@@ -1316,6 +1323,7 @@ public class RoundTripFromJavaTest extends TestCase {
         Agent ag1=pFactory.newAgent(q("ag1"));
         Activity a1=pFactory.newActivity(q("a1"));
         Entity plan1=pFactory.newEntity(q("plan1"));
+        pFactory.addType(plan1, pFactory.newQName("prov:Plan"));
         Statement [] opt = new Statement[] { ag1, a1, plan1 };
         
         makeDocAndTest(assoc, opt, "target/association8");
@@ -1334,6 +1342,7 @@ public class RoundTripFromJavaTest extends TestCase {
         Agent ag1=pFactory.newAgent(q("ag1"));
         Activity a1=pFactory.newActivity(q("a1"));
         Entity plan1=pFactory.newEntity(q("plan1"));
+        pFactory.addType(plan1, pFactory.newQName("prov:Plan"));
         Statement [] opt = new Statement[] { ag1, a1, plan1 };
         
         makeDocAndTest(assoc, opt, "target/association9");
@@ -1741,7 +1750,7 @@ public class RoundTripFromJavaTest extends TestCase {
            Entity e1=pFactory.newEntity(q("e1")); 
            Entity e2=pFactory.newEntity(q("e2"));
            Entity b=pFactory.newEntity(q("b"));
-           e1.getType().add(pFactory.newQName("prov:Bundle"));
+           pFactory.addType(b, pFactory.newQName("prov:Bundle"));
         	Statement [] opt=new Statement[] { e1, e2, b };
            makeDocAndTest(men, opt, "target/mention2");
        }

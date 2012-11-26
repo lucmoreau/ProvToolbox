@@ -1,0 +1,4 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+<urn:uuid:17f9e058-3579-11e2-9291-003048bfdea2> a prov:Entity,
+        <http://example/Foo>, prov:Bundle.

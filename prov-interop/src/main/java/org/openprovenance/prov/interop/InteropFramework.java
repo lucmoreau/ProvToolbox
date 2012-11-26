@@ -164,23 +164,6 @@ public class InteropFramework
 
     
 
-    public void writeTextToFile(String text,
-                                String filename) {
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new FileWriter(filename));
-            writer.write(text);
-        }
-        catch (IOException e) {
-        }
-        finally {
-            try {
-                if (writer != null)
-                    writer.close( );
-            }
-            catch (IOException e) {}
-        }
-    }
     
    
 
@@ -191,7 +174,7 @@ public class InteropFramework
 
         String s=u.convertTreeToHTML(tree);
 
-        writeTextToFile(s,file2);        
+        u.writeTextToFile(s,file2);        
 
     }
     
@@ -243,8 +226,7 @@ public class InteropFramework
 	    setNamespaces(doc);
 	    switch (format) {
 	    case PROVN: {
-		String s=u.convertBeanToASN(doc);
-	        writeTextToFile(s,filename);
+		u.writeDocument(doc,filename);
 	        break;
 	    }
 	    case XML: {

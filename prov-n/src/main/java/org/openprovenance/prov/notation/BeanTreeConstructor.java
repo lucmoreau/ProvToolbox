@@ -27,7 +27,7 @@ public class BeanTreeConstructor implements BeanConstructor{
     public Object convert(QName q) {
         if (q==null) return null;
         registerPrefix(q);
-        if (q.getPrefix()!=null) {
+        if (q.getPrefix()!=null && (!q.getPrefix().isEmpty())) {
             return q.getPrefix()+ ":" + q.getLocalPart();
         } else { 
             return q.getLocalPart();
@@ -39,7 +39,7 @@ public class BeanTreeConstructor implements BeanConstructor{
     public void registerPrefix(QName q) {
         //System.out.println("registeringPrefix " + q);
         String prefix=q.getPrefix();
-        if (prefix==null) {
+        if ((prefix==null) || (prefix.isEmpty())) {
             namespaces.put("_", q.getNamespaceURI());
         } else {
            String old=namespaces.put(q.getPrefix(), q.getNamespaceURI());

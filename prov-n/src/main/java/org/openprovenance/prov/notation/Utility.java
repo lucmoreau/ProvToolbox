@@ -1,4 +1,8 @@
 package org.openprovenance.prov.notation;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import  org.antlr.runtime.CommonTokenStream;
 import  org.antlr.runtime.ANTLRFileStream;
 import  org.antlr.runtime.CharStream;
@@ -96,7 +100,30 @@ public  class Utility {
             }
         }
     }
-
+    
+    public void writeTextToFile(String text,
+                                String filename) {
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(filename));
+            writer.write(text);
+        }
+        catch (IOException e) {
+        }
+        finally {
+            try {
+                if (writer != null)
+                    writer.close( );
+            }
+            catch (IOException e) {}
+        }
+    }
+    
+    public void writeDocument(Document doc, String filename){
+	String s=convertBeanToASN(doc);
+        writeTextToFile(s,filename);
+    }
+    
 
 }
 

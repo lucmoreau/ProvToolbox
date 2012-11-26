@@ -62,6 +62,11 @@ public class NotationConstructor implements TreeConstructor {
 	if (namespaces!=null) {
 	    if (namespaces instanceof Hashtable) {
 		Hashtable<String,String> nss=(Hashtable<String,String>) namespaces;
+	    // FIXME TODO: Should not be getting blank keys here.
+        if(nss.containsKey("")) {
+        	nss.put("_",  nss.get(""));
+        	nss.remove("");
+        }
 		for (String key : nss.keySet()) {
 		    String uri=nss.get(key);
 		    if (key.equals("_")) {

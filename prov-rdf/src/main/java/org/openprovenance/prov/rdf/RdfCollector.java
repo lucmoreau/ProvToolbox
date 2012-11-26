@@ -1,6 +1,5 @@
 package org.openprovenance.prov.rdf;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -15,7 +14,6 @@ import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.Element;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.HasLabel;
 import org.openprovenance.prov.xml.HasLocation;
@@ -43,6 +41,7 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.BNodeImpl;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.rio.helpers.RDFHandlerBase;
 
@@ -188,19 +187,6 @@ public class RdfCollector extends RDFHandlerBase {
 		this.revnss.put(namespace, prefix);
 	}
 
-	protected QName convertResourceToQName(Resource resource)
-	{
-		if (resource instanceof URI)
-		{
-			return convertURIToQName((URI)resource);
-		} else if (resource instanceof BNode)
-		{
-			return new QName(((BNode) (resource)).getID());
-		} else
-		{
-			return null;
-		}
-	}
 
 	private boolean isProvURI(URI uri)
 	{
@@ -314,6 +300,40 @@ public class RdfCollector extends RDFHandlerBase {
 		return options.toArray(new ProvType[] {});
 	}
 
+	protected Object valueToObject(Value value) {
+		if (value instanceof Literal)
+		{
+			return decodeLiteral((Literal)value);
+		} else if (value instanceof URI)
+		{
+			URI uri = (URI) (value);
+			URIWrapper uw = new URIWrapper();
+			uw.setValue(java.net.URI.create(uri.toString()));
+			return uw;
+		}
+		else if (value instanceof BNode)
+		{
+			return new QName(((BNode) (value)).getID());
+		}
+		else {
+			return null;
+		}
+	}
+	
+	protected QName convertResourceToQName(Resource resource)
+	{
+		if (resource instanceof URI)
+		{
+			return convertURIToQName((URI) resource);
+		} else if (resource instanceof BNode)
+		{
+			return new QName(((BNode) (resource)).getID());
+		} else
+		{
+			return null;
+		}
+	}
+	
 	protected Object decodeLiteral(Literal literal)
 	{
 		String dataType = XMLS + "string";
@@ -415,17 +435,11 @@ public class RdfCollector extends RDFHandlerBase {
 						.equals(PROV + "type"))
 				{
 					Value value = statement.getObject();
-					if (value instanceof Literal)
-					{
-						Object literalValue = decodeLiteral((Literal) (value));
-						if (literalValue == null)
-						{
-							System.out
-									.println("Null :( " + value.stringValue());
-						}
-						pFactory.addType((HasType) element, literalValue);
-					} else
-					{
+					Object obj = valueToObject(statement.getObject());
+					if(obj != null) {
+						pFactory.addType((HasType) element, obj);
+					}
+					else {
 						System.out.println(value);
 						System.out.println("Value wasn't a suitable type");
 					}
@@ -443,18 +457,12 @@ public class RdfCollector extends RDFHandlerBase {
 
 			if (element instanceof HasLocation)
 			{
-				if (predS.equals(PROV + "atLocation"))
+				if (predS.equals(PROV + "atLocation") || predS.equals(PROV+"location"))
 				{
-					QName anyQ = convertResourceToQName((Resource) (statement
-							.getObject()));
-					((HasLocation) element).getLocation().add(
-							pFactory.newAnyRef(anyQ));
-				}
-
-				if (predS.equals(PROV + "location"))
-				{
-					((HasLocation) element).getLocation().add(
-							decodeLiteral((Literal) statement.getObject()));
+					Object obj = valueToObject(statement.getObject());
+					if(obj != null) {
+						((HasLocation) element).getLocation().add(obj);
+					}
 				}
 			}
 
@@ -491,14 +499,37 @@ public class RdfCollector extends RDFHandlerBase {
 								if (!val.toString().equals(type.getURI()))
 								{
 									URI valURI = (URI) (val);
-									QName valQ = new QName(
-											valURI.getNamespace(),
-											valURI.getLocalName(), this.revnss.get(valURI.getNamespace()));
-									if (((HasType) element).getType().contains(
-											valQ))
+
+									String prefix = this.revnss.get(valURI
+											.getNamespace());
+									Object typeVal = null;
+									if (prefix == null)
+									{
+										URIWrapper uriWrapper = new URIWrapper();
+										java.net.URI jURI = java.net.URI
+												.create(valURI.toString());
+										uriWrapper.setValue(jURI);
+										typeVal = uriWrapper;
+										//
+										// System.out.println("info: "+valURI.getNamespace()+" "+valURI.getLocalName());
+										// valQ = new
+										// QName(valURI.getNamespace(),
+										// valURI.getLocalName());
+									} else
+									{
+
+										typeVal = new QName(
+												valURI.getNamespace(),
+												valURI.getLocalName(), prefix);
+									}
+
+									// Avoid adding duplicate types
+									if (typeVal != null
+											&& !((HasType) element).getType()
+													.contains(typeVal))
 									{
 										pFactory.addType((HasType) element,
-												valQ);
+												typeVal);
 									}
 								}
 							} else if (val instanceof Literal)
@@ -683,10 +714,11 @@ public class RdfCollector extends RDFHandlerBase {
 		buildGraph();
 		buildBundles();
 	}
-	
-	private QName convertURIToQName(URI uri) {
-//		QName qname = new QName(uri.getNamespace(), uri.getLocalName(), revnss.get(uri.getNamespace()));
-	    // It is not necessary to specify a prefix for a QName. This code was breaking on the jpl trace.
+
+	private QName convertURIToQName(URI uri)
+	{
+		// It is not necessary to specify a prefix for a QName. This code was
+		// breaking on the jpl trace.
 		QName qname = new QName(uri.getNamespace(), uri.getLocalName());
 
 		return qname;
@@ -753,13 +785,19 @@ public class RdfCollector extends RDFHandlerBase {
 				{
 					Statement asInBundleStatement = getSingleStatementForPredicate(
 							context, qname, PROV + "asInBundle");
-					Object o=(asInBundleStatement==null) ? null: asInBundleStatement.getObject();
-					QName bundleQ = (o==null)? null: convertURIToQName((URI)o);					
-					QName entityQ = (value==null)? null: convertURIToQName((URI)value);
+					Object o = (asInBundleStatement == null) ? null
+							: asInBundleStatement.getObject();
+					QName bundleQ = (o == null) ? null
+							: convertURIToQName((URI) o);
+					QName entityQ = (value == null) ? null
+							: convertURIToQName((URI) value);
 					MentionOf nmo = pFactory.newMentionOf(
-							(qname==null)? null: pFactory.newEntityRef(qname),
-							(entityQ==null)? null: pFactory.newEntityRef(entityQ),
-							(bundleQ==null)? null: pFactory.newEntityRef(bundleQ));
+							(qname == null) ? null : pFactory
+									.newEntityRef(qname),
+							(entityQ == null) ? null : pFactory
+									.newEntityRef(entityQ),
+							(bundleQ == null) ? null : pFactory
+									.newEntityRef(bundleQ));
 
 					store(context, nmo);
 				}

@@ -719,8 +719,13 @@ public class RdfCollector extends RDFHandlerBase {
 	{
 		// It is not necessary to specify a prefix for a QName. This code was
 		// breaking on the jpl trace.
-		QName qname = new QName(uri.getNamespace(), uri.getLocalName());
-
+		QName qname;
+		if(revnss.containsKey(uri.getNamespace())) {
+			String prefix = revnss.get(uri.getNamespace());
+			qname = new QName(uri.getNamespace(), uri.getLocalName(), prefix);
+		}else {
+			qname = new QName(uri.getNamespace(), uri.getLocalName());
+		}
 		return qname;
 	}
 
@@ -937,7 +942,7 @@ public class RdfCollector extends RDFHandlerBase {
 		} else if (subject instanceof URI)
 		{
 			URI uri = (URI) subject;
-			subjectQ = new QName(uri.getNamespace(), uri.getLocalName());
+			subjectQ = convertURIToQName(uri);
 		} else
 		{
 			System.err.println("Invalid subject resource");

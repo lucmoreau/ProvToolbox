@@ -273,12 +273,7 @@ public class QualifiedCollector extends RdfCollector {
 					// TODO: Not really clarified as to what 'Role' is here.
 					((HasRole) (target)).getRole().add(
 							pFactory.newAnyRef(valueQ));
-				} else if (predS.equals(PROV + "atLocation")
-						&& target instanceof HasLocation)
-				{
-					((HasLocation) target).getLocation().add(
-							pFactory.newAnyRef(valueQ));
-				}
+				} 
 			}
 		}
 	}

@@ -1,8 +1,7 @@
 package org.openprovenance.prov.notation;
 import junit.framework.TestCase;
 
-public class ParserTest extends TestCase
-{
+public class ParserTest extends TestCase {
     public void testBundle0() {
         testBundle("src/test/resources/prov/container0.provn");
     }

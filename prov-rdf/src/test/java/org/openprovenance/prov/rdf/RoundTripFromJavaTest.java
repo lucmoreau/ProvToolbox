@@ -10,11 +10,11 @@ import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.UncheckedTestException;
 import org.openrdf.rio.RDFFormat;
 
-public class ParserTest extends
+public class RoundTripFromJavaTest extends
 		org.openprovenance.prov.xml.RoundTripFromJavaTest
 {
 
-	public ParserTest(String name)
+	public RoundTripFromJavaTest(String name)
 	{
 		super(name);
 	}

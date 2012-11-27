@@ -20,8 +20,9 @@ public class RoundTripFromRdfTest extends TestCase {
 	Document doc1 = u.parseRDF("src/test/resources/" + file);
 	u.dumpRDF(pFactory, doc1, RDFFormat.TURTLE, "target/" + file);
 	Document doc2 = u.parseRDF("target/test.ttl");
-	boolean result = de.check(doc1, doc2);
 	
+	
+	boolean result = de.check(doc1, doc2);	// TODO: we want assertTrue(result);
 	System.out.println("result is " + result);
 
 	ProvSerialiser.getThreadProvSerialiser()

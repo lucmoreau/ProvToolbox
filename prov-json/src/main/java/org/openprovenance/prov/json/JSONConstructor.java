@@ -641,7 +641,7 @@ class JSONConstructor implements TreeConstructor {
 	}
 
 	@Override
-	public Object convertNamedBundle(Object id, Object nss, List<Object> records) {
+	public Object convertBundle(Object id, Object nss, List<Object> records) {
 		Map<String,Object> bundle = buildBundle(nss, records);
 		return tuple(id, bundle);
     }

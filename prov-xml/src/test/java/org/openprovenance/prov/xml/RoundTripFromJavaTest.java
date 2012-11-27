@@ -152,7 +152,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	serial.serialiseDocument(new File(file), doc, true);
 	StringWriter sw = new StringWriter();
 	serial.serialiseDocument(sw, doc, true);
-	System.out.println(sw.toString());
+	//System.out.println(sw.toString());
     }
 
     ///////////////////////////////////////////////////////////////////////

@@ -169,7 +169,7 @@ public  class ProvConstructor implements TreeConstructor {
     }
 
     
-    public Object convertNamedBundle(Object id, Object namespaces, List<Object> records) {    
+    public Object convertBundle(Object id, Object namespaces, List<Object> records) {    
         Collection<Entity> es=new LinkedList<Entity>();
         Collection<Agent> ags=new LinkedList<Agent>();
         Collection<Activity> acs=new LinkedList<Activity>();

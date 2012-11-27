@@ -92,7 +92,7 @@ public class NotationConstructor implements TreeConstructor {
         return s;
     }
 
-    public Object convertNamedBundle(Object id, Object namespaces, List<Object> records) {
+    public Object convertBundle(Object id, Object namespaces, List<Object> records) {
         String s="bundle " + id + breakline();
 	if (namespaces!=null) {
 	    s=s+namespaces + breakline();

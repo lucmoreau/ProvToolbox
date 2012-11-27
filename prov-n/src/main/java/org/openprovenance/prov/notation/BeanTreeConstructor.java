@@ -416,7 +416,7 @@ public class BeanTreeConstructor implements BeanConstructor{
         if (eRecords!=null) ll.addAll(eRecords);
         if (agRecords!=null) ll.addAll(agRecords);
         if (lnkRecords!=null) ll.addAll(lnkRecords);
-        return c.convertNamedBundle(id,namespaces,ll);
+        return c.convertBundle(id,namespaces,ll);
     }
 
 }

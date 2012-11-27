@@ -23,7 +23,7 @@ tokens {
     AGENT; WAT; WAW; AOBO; 
 
     /* Component 4 */
-    BUNDLE; BUNDLES; NAMEDBUNDLE;
+    DOCUMENT; BUNDLES; BUNDLE;
 
     /* Component 5 */
     SPECIALIZATION; ALTERNATE; CTX;
@@ -46,23 +46,23 @@ package org.openprovenance.prov.notation;
 @members{
  public static boolean qnameDisabled=false; }
 
-bundle
+document
 	:	 'document' 
         (namespaceDeclarations)?
 		(expression )*
-        (namedBundle (namedBundle)*)?
+        (bundle (bundle)*)?
 		'endDocument'
-      -> {$namespaceDeclarations.tree==null}? ^(BUNDLE ^(NAMESPACES) ^(EXPRESSIONS expression*) ^(BUNDLES namedBundle*))
-      -> ^(BUNDLE namespaceDeclarations? ^(EXPRESSIONS expression*) ^(BUNDLES namedBundle*))
+      -> {$namespaceDeclarations.tree==null}? ^(DOCUMENT ^(NAMESPACES) ^(EXPRESSIONS expression*) ^(BUNDLES bundle*))
+      -> ^(DOCUMENT namespaceDeclarations? ^(EXPRESSIONS expression*) ^(BUNDLES bundle*))
     ;
 
-namedBundle
+bundle
  	:	'bundle' identifier
         (namespaceDeclarations)?
 		(expression)*
 		'endBundle'
-      -> {$namespaceDeclarations.tree==null}? ^(NAMEDBUNDLE identifier ^(NAMESPACES) ^(EXPRESSIONS expression*))
-      -> ^(NAMEDBUNDLE identifier namespaceDeclarations? ^(EXPRESSIONS expression*))
+      -> {$namespaceDeclarations.tree==null}? ^(BUNDLE identifier ^(NAMESPACES) ^(EXPRESSIONS expression*))
+      -> ^(BUNDLE identifier namespaceDeclarations? ^(EXPRESSIONS expression*))
 	;
 
 

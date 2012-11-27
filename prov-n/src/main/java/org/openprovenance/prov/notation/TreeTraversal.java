@@ -421,7 +421,7 @@ public class TreeTraversal {
             }
             return records;
 
-        case PROV_NParser.BUNDLE:
+        case PROV_NParser.DOCUMENT:
             Object nss=convert(ast.getChild(0));
             c.startBundle(null);
             //System.out.println("Document (UnNamed bunded) ");
@@ -435,7 +435,7 @@ public class TreeTraversal {
             }
             return c.convertDocument(nss,records2, bundles);
 
-        case PROV_NParser.NAMEDBUNDLE:
+        case PROV_NParser.BUNDLE:
             Object bundleId=convert(ast.getChild(0));
             //System.out.println("Named bunded " + bundleId);
             Object nss2=convert(ast.getChild(1));
@@ -444,7 +444,7 @@ public class TreeTraversal {
 
             @SuppressWarnings("unchecked")
             List<Object> records3=(List<Object>)convert(ast.getChild(2));
-            return c.convertNamedBundle(bundleId,nss2,records3);
+            return c.convertBundle(bundleId,nss2,records3);
             
         case PROV_NParser.ATTRIBUTES:
             List<Object> attributes=new LinkedList<Object>();

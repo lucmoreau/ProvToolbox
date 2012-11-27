@@ -88,7 +88,7 @@ public class RdfConstructor implements TreeConstructor {
 	    return null;
 	}
 
-	public Object convertNamedBundle(Object id, Object nss, List<Object> records)
+	public Object convertBundle(Object id, Object nss, List<Object> records)
 	{
 	    //TODO, where are the namespaces stored?
 		((SesameManager) manager).getConnection().setAddContexts();

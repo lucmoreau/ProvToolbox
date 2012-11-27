@@ -751,6 +751,27 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newEntityRef(valueQ));
 
 					store(context, wdf);
+				} else if(predS.equals(PROV + "hadPrimarySource"))
+				{
+					WasDerivedFrom wdf = pFactory.newWasDerivedFrom(
+							(QName) null, pFactory.newEntityRef(qname),
+							pFactory.newEntityRef(valueQ));
+					pFactory.addPrimarySourceType(wdf);
+					store(context, wdf);
+				} else if(predS.equals(PROV + "wasQuotedFrom"))
+				{
+					WasDerivedFrom wdf = pFactory.newWasDerivedFrom(
+							(QName) null, pFactory.newEntityRef(qname),
+							pFactory.newEntityRef(valueQ));
+					pFactory.addQuotationType(wdf);
+					store(context, wdf);
+				} else if(predS.equals(PROV + "wasRevisionOf"))
+				{
+					WasDerivedFrom wdf = pFactory.newWasDerivedFrom(
+							(QName) null, pFactory.newEntityRef(qname),
+							pFactory.newEntityRef(valueQ));
+					pFactory.addRevisionType(wdf);
+					store(context, wdf);
 				} else if (predS.equals(PROV + "wasGeneratedBy"))
 				{
 					WasGeneratedBy wgb = pFactory.newWasGeneratedBy(
@@ -824,6 +845,7 @@ public class RdfCollector extends RDFHandlerBase {
 				}
 			}
 		}
+
 		store(context, entity);
 	}
 

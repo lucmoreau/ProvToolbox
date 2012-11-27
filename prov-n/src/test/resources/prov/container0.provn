@@ -1,5 +1,5 @@
 
-bundle
+document
 prefix ex <http://example/>
 prefix comma <http://example/e,g,>
 prefix sparqluri <http://example/!#$&'()*+,-./:;=?@[]_~>
@@ -39,6 +39,6 @@ prefix sparqluri <http://example/!#$&'()*+,-./:;=?@[]_~>
           other.foo (id;a,b,c,[attr=3])
 //          other.wasGeneratedBy (-; ex:%65, -, 2001-10-26T21:32:52, [ex:param1="a", ex:param2="b"])
 
-endBundle
+endDocument
 
 

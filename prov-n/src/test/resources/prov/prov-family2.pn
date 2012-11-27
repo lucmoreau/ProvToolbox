@@ -1,5 +1,5 @@
 
-bundle 
+document 
 
 bundle prov-family
 
@@ -294,4 +294,4 @@ wasInformedBy(tool:act6,tool:act5, [dot:color="none"])
 endBundle
 
 
-endBundle
+endDocument

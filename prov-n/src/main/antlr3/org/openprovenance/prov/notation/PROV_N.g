@@ -47,11 +47,11 @@ package org.openprovenance.prov.notation;
  public static boolean qnameDisabled=false; }
 
 bundle
-	:	 'bundle' 
+	:	 'document' 
         (namespaceDeclarations)?
 		(expression )*
         (namedBundle (namedBundle)*)?
-		'endBundle'
+		'endDocument'
       -> {$namespaceDeclarations.tree==null}? ^(BUNDLE ^(NAMESPACES) ^(EXPRESSIONS expression*) ^(BUNDLES namedBundle*))
       -> ^(BUNDLE namespaceDeclarations? ^(EXPRESSIONS expression*) ^(BUNDLES namedBundle*))
     ;

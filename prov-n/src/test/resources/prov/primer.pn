@@ -1,6 +1,6 @@
 
 
-bundle
+document
 
    prefix ex <http://example/>
    prefix dcterms <http://purl.org/dc/terms/>
@@ -67,4 +67,4 @@ bundle
    alternateOf(ex:articleV2, ex:articleV1)
 
 
-endBundle
+endDocument

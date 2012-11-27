@@ -1,5 +1,5 @@
 
-bundle
+document
 
   prefix ex  <http://example.org/example/>
 
@@ -35,5 +35,5 @@ bundle
 
 
 
-endBundle
+endDocument
 

@@ -16,8 +16,6 @@ public class ASNTest extends TestCase {
 
         Document o= (Document) u.convertTreeToJavaBean(tree);
 
-        System.out.println(" " + o);
-
         //serial.serialiseDocument(new File(xmlFile),o,true);
 
         ProvToDot toDot=new ProvToDot("src/main/resources/defaultConfigWithRoleNoLabel.xml"); 

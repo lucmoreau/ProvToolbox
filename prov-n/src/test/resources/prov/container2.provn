@@ -1,5 +1,5 @@
 
-bundle
+document
 
 default <http://example.org/default>
 prefix ex <http://example.org/ex/>
@@ -86,5 +86,5 @@ prefix ex2 <http://example.org/ex2/>
 
 
 
-endBundle
+endDocument
 

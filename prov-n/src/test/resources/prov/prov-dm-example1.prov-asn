@@ -1,6 +1,6 @@
 
 
-bundle
+document
 
 prefix ex <http://example.org/>
 
@@ -66,6 +66,6 @@ wasAssociatedWith(ex:a3, ex:ag4, -, [prov:role="author"])
 wasAssociatedWith(ex:a4, ex:ag5, ex:s2, [prov:role="communicator"])
 wasAssociatedWith(ex:a5, ex:ag6, ex:gr1, [prov:role="grammarcheck"])
 
-endBundle
+endDocument
 
 

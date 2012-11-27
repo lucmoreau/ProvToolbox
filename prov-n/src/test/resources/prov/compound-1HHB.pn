@@ -1,5 +1,5 @@
 
-bundle
+document
   prefix pdb <http://example.org/pdb/>
   prefix doi <http://dx.doi.org/>
   entity(pdb:1HHB, [prov:location="http://www.rcsb.org/pdb/files/1hhb.pdb"])
@@ -8,7 +8,7 @@ bundle
   alternateOf(pdb:4HHB, doi:10.2210/pdb4hhb/pdb)
   wasInvalidatedBy(-; pdb:1HHB,-,1984-07-18T00:00:00)  //1HHB was obsoleted on 1984-07-18
   wasDerivedFrom(pdb:4HHB, pdb:1HHB,[prov:type='prov:Revision']) //ENTRY 4HHB SUPERSEDES 1HHB
-endBundle
+endDocument
  
 // http://www.rcsb.org/pdb/explore/obsolete.do?obsoleteId=1HHB
 //Mentioned by Philip Bourne in ipaw's invited talk.

@@ -1,7 +1,7 @@
 
 /* Test Suite for PROV-N notation */
 
-bundle  // toplevel bundle
+document  // toplevel document
 prefix ex <http://example>  /* a single prefix declaration */
 
 /* component 1 */
@@ -799,5 +799,5 @@ prefix ex <http://example>  /* a single prefix declaration */
  endBundle
  
 
-endBundle
+endDocument
 

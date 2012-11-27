@@ -1,5 +1,5 @@
 
-bundle
+document
 
 prefix ex1 <http://example.org/ex1>
 prefix ex2 <http://example.org/ex2>
@@ -55,5 +55,5 @@ wasEventuallyDerivedFrom(ex1:chart2, ex1:dataSet2)
 wasDerivedFrom(ex1:chart2, ex1:dataSet2)
 wasGeneratedBy(ex1:chart2, ex1:compiled2)
 
-endBundle
+endDocument
 

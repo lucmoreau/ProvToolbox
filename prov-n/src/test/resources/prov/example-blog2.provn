@@ -1,5 +1,5 @@
 
-bundle 
+document 
 
   default <http://example.com/>
 
@@ -13,4 +13,4 @@ bundle
   wasDerivedFrom(d2; e1,e2,-,-,-)
 
 
-endBundle
+endDocument

@@ -1,6 +1,6 @@
 
 
-bundle
+document
 
 default <http://example.org/>
 
@@ -74,6 +74,6 @@ hasAnnotation(e2,n1)
 note(n2,[style="dotted"])
 hasAnnotation(u1,n2)
 
-endBundle
+endDocument
 
 

@@ -58,12 +58,12 @@ public class NotationConstructor implements TreeConstructor {
     }
 
     public Object convertDocument(Object namespaces, List<Object> records, List<Object> bundles) {
-        String s=keyword("bundle") + breakline();
+        String s=keyword("document") + breakline();
 	if (namespaces!=null) {
 	    if (namespaces instanceof Hashtable) {
 		Hashtable<String,String> nss=(Hashtable<String,String>) namespaces;
 	    // FIXME TODO: Should not be getting blank keys here.
-        if(nss.containsKey("")) {
+             if(nss.containsKey("")) {
         	nss.put("_",  nss.get(""));
         	nss.remove("");
         }
@@ -88,7 +88,7 @@ public class NotationConstructor implements TreeConstructor {
 		s=s+o+breakline();
 	    }
 	}
-        s=s+keyword("endBundle");
+        s=s+keyword("endDocument");
         return s;
     }
 

@@ -1,5 +1,5 @@
-bundle
+document
  agent(bob)
  agent(alice)
  actedOnBehalfOf(bob, alice)
-endBundle
+endDocument

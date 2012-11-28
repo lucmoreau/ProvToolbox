@@ -1,0 +1,32 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix my:   <http://example.com/vocab/my#> .
+@prefix :     <http://example.com/> .
+
+:bl-dagstuhl
+   a prov:Entity;
+   prov:value """During the workshop, it became clear to me that the consensus
+	based models (which are often graphical in nature) can not only be
+	formalized but also be directly connected to these database focused
+	formalizations. I just needed to get over the differences in syntax.
+	This could imply that we could have nice way to trace provenance across
+	systems and through databases and be able to understand the
+	mathematical properties of this interconnection.""";
+   prov:wasQuotedFrom <http://purl.org/twc/page/thoughts-from-the-dagstuhl-workshop>;
+   prov:qualifiedQuotation [
+      a prov:Quotation;
+      prov:entity <http://purl.org/twc/page/thoughts-from-the-dagstuhl-workshop>;
+      my:fromSection 1;
+   ];
+.
+
+<http://purl.org/twc/page/thoughts-from-the-dagstuhl-workshop>
+   a prov:Entity;
+   prov:wasAttributedTo <http://data.semanticweb.org/person/paul-groth>;
+.
+
+<http://data.semanticweb.org/person/luc-moreau> a prov:Person, prov:Agent .
+<http://data.semanticweb.org/person/paul-groth> a prov:Person, prov:Agent .
+

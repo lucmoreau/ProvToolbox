@@ -1,0 +1,19 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix :     <http://example.com/> .
+
+:myPost 
+   a prov:Entity;
+   prov:hadPrimarySource :donQuixote;
+   prov:qualifiedPrimarySource [
+      a prov:PrimarySource;
+      prov:entity :donQuixote;
+      :confidenceValue "6"^^xsd:integer;
+      rdfs:comment """Not sure if Don Quixote was the original source, 
+                      so asserting a confidence value of 6 out of 10.""";
+   ];
+.
+
+:donQuixote a prov:Entity.

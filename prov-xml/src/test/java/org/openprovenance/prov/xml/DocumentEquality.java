@@ -59,8 +59,9 @@ public class DocumentEquality {
 		}
 		// Two normal statements
 		Class<?> class1 = r1.getClass();
-		if (class1 != r2.getClass())
+		if (class1 != r2.getClass()) {
 			return false;
+		}
 		Method[] allMethods = class1.getDeclaredMethods();
 		for (Method m : allMethods) {
 			if (m.getName().startsWith("get")) {
@@ -92,8 +93,9 @@ public class DocumentEquality {
 
 	private boolean statementListEqual(List<StatementOrBundle> stmts1,
 			List<StatementOrBundle> stmts2) {
-		if (stmts1.size() != stmts2.size())
+		if (stmts1.size() != stmts2.size()) {
 			return false;
+		}
 		// Cloning the lists to avoid modification of the originals
 		List<StatementOrBundle> list1 = new ArrayList<StatementOrBundle>(stmts1);
 		List<StatementOrBundle> list2 = new ArrayList<StatementOrBundle>(stmts2);

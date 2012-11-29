@@ -16,10 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.XMLConstants;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.notation.Utility;
@@ -146,7 +144,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         return statements;
     }
     
-    private StatementOrBundle decodeStatement(String statementType, String idStr, JsonObject attributeMap) {
+    @SuppressWarnings("unchecked")
+	private StatementOrBundle decodeStatement(String statementType, String idStr, JsonObject attributeMap) {
         StatementOrBundle statement;
         QName id;
         if (idStr.startsWith("_:")) {
@@ -443,7 +442,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
                 iString.setValue(struct.get("$").getAsString());
                 iString.setLang(lang);
                 value = iString;
-                xsdType = "prov:InternationalizedString";
+                xsdType = "xsd:string";
             } else {
 	            // The following implicitly assume the type is one of XSD types
 	            xsdType = struct.get("type").getAsString();
@@ -477,18 +476,6 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 //            	return decodeJSONPrimitive(value);
             }
         }
-    }
-    
-    private Object decodeQNameOrURI(String ref) {
-        QName qname = pf.stringToQName(ref);
-        if (qname.getNamespaceURI() == XMLConstants.NULL_NS_URI) {
-            // No valid namespace, expect the ref as an URI
-            URI uri = URI.create(ref);
-            URIWrapper u = new URIWrapper();
-            u.setValue(uri);
-            return u;
-        }
-        return qname;
     }
     
     private Object decodeJSONPrimitive(String value) {
@@ -657,48 +644,6 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             return result;
         }
         else return null;
-    }
-    
-}
-
-// TODO: Implement a namespace management system to create proper QNames 
-// (to replace the one provided by ProvFactory)
-class NamespaceContextMap implements NamespaceContext {
-    private String defaultNamespaceURI = null;
-    private Map<String, String> namespaces = new Hashtable<String, String>();
-    
-    public NamespaceContextMap(Map<String, String> namespaces) {
-        this.namespaces.putAll(namespaces);
-    }
-    
-    public NamespaceContextMap(Map<String, String> namespaces, String defaultNamespaceURI) {
-        this.namespaces.putAll(namespaces);
-        this.defaultNamespaceURI = defaultNamespaceURI;
-    }
-    
-    @Override
-    public String getNamespaceURI(String prefix) {
-        if (prefix == null) {
-            throw new IllegalArgumentException();
-        }
-        if (prefix == XMLConstants.DEFAULT_NS_PREFIX && defaultNamespaceURI != null) return defaultNamespaceURI; 
-        if (prefix == XMLConstants.XML_NS_PREFIX) return XMLConstants.XML_NS_URI;
-        if (prefix == XMLConstants.XMLNS_ATTRIBUTE) return XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
-        if (namespaces.containsKey(prefix)) return namespaces.get(prefix);
-        
-        return XMLConstants.NULL_NS_URI;
-    }
-
-    @Override
-    public String getPrefix(String namespaceURI) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator getPrefixes(String namespaceURI) {
-        // TODO Auto-generated method stub
-        return null;
     }
     
 }

@@ -42,6 +42,7 @@ public class AnyAdapter
         //System.out.println("AnyAdapter2 marshalling for " + attribute
         //                .getClass());
         //TODO: this call creates a DOM but does not encode the type as xsi:type
+	//FIXME: bug #28, need to support internationalize string
 	return pFactory.newElement(attribute.getElementName(), 
 	                           attribute.getValue().toString(),
 	                           attribute.getXsdType());

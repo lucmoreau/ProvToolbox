@@ -1375,6 +1375,7 @@ return res;
     public String getXsdType(Object o) {
 	if (o instanceof Integer) return "xsd:int";
 	if (o instanceof String) return "xsd:string";
+	if (o instanceof InternationalizedString) return "xsd:string";
 	if (o instanceof Long) return "xsd:long";
 	if (o instanceof Short) return "xsd:short";
 	if (o instanceof Double) return "xsd:double";

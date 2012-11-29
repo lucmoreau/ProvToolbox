@@ -1,0 +1,29 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix :     <http://example.com/> .
+
+### End can be used to qualify wasEndedBy with time and location information
+
+:experiment 
+   a prov:Activity;
+   prov:wasEndedBy :inconsistentResult;
+   prov:qualifiedEnd [
+      a prov:End;
+      prov:entity       :inconsistentResult;
+      prov:atTime       "2011-07-16T01:52:02Z"^^xsd:dateTime;
+      prov:atLocation   :scienceLab_003;
+      prov:hadActivity  :analyse_intermediate_result ; 
+   ];
+.
+   
+:inconsistentResult a prov:Entity .
+
+### An implicit process of analysing the intermediate result to confirm its expected consistency
+
+:analyse_intermediate_result
+   a   prov:Activity ;
+   prov:startedAtTime   "2011-07-15T12:52:02Z"^^xsd:dateTime;
+   prov:endedAtTime     "2011-07-16T01:52:02Z"^^xsd:dateTime;
+.

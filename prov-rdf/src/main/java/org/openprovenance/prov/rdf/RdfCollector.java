@@ -92,6 +92,10 @@ public class RdfCollector extends RDFHandlerBase {
 
 		DERIVATION("Derivation", ProvType.ENTITYINFLUENCE),
 
+		QUOTATION("Quotation", ProvType.ENTITYINFLUENCE), REVISION("Revision",
+				ProvType.ENTITYINFLUENCE), PRIMARYSOURCE("PrimarySource",
+				ProvType.ENTITYINFLUENCE),
+
 		END("End", new ProvType[] { ProvType.INSTANTANEOUSEVENT,
 				ProvType.ENTITYINFLUENCE }),
 
@@ -186,7 +190,6 @@ public class RdfCollector extends RDFHandlerBase {
 		pFactory.setNamespaces(this.document.getNss());
 		this.revnss.put(namespace, prefix);
 	}
-
 
 	private boolean isProvURI(URI uri)
 	{
@@ -300,26 +303,26 @@ public class RdfCollector extends RDFHandlerBase {
 		return options.toArray(new ProvType[] {});
 	}
 
-	protected Object valueToObject(Value value) {
+	protected Object valueToObject(Value value)
+	{
 		if (value instanceof Literal)
 		{
-			return decodeLiteral((Literal)value);
+			return decodeLiteral((Literal) value);
 		} else if (value instanceof URI)
 		{
 			URI uri = (URI) (value);
 			URIWrapper uw = new URIWrapper();
 			uw.setValue(java.net.URI.create(uri.toString()));
 			return uw;
-		}
-		else if (value instanceof BNode)
+		} else if (value instanceof BNode)
 		{
 			return new QName(((BNode) (value)).getID());
-		}
-		else {
+		} else
+		{
 			return null;
 		}
 	}
-	
+
 	protected QName convertResourceToQName(Resource resource)
 	{
 		if (resource instanceof URI)
@@ -333,7 +336,7 @@ public class RdfCollector extends RDFHandlerBase {
 			return null;
 		}
 	}
-	
+
 	protected Object decodeLiteral(Literal literal)
 	{
 		String dataType = XMLS + "string";
@@ -355,7 +358,7 @@ public class RdfCollector extends RDFHandlerBase {
 				dataType = literal.getDatatype().stringValue();
 			}
 		}
-
+		
 		if (dataType.equals(XMLS + "QName"))
 		{
 			return pFactory.newQName(literal.stringValue());
@@ -423,7 +426,6 @@ public class RdfCollector extends RDFHandlerBase {
 			org.openprovenance.prov.xml.Statement element, QName context,
 			QName qname, ProvType type)
 	{
-
 		List<Statement> statements = collators.get(context).get(qname);
 		for (Statement statement : statements)
 		{
@@ -436,10 +438,22 @@ public class RdfCollector extends RDFHandlerBase {
 				{
 					Value value = statement.getObject();
 					Object obj = valueToObject(statement.getObject());
-					if(obj != null) {
-						pFactory.addType((HasType) element, obj);
-					}
-					else {
+					if (obj != null)
+					{
+						
+						Boolean sameAsType = false;
+						if(obj instanceof QName) {
+							// TODO: Nasty.
+							String uriVal = ((QName)(obj)).getNamespaceURI()+((QName)(obj)).getLocalPart();
+							sameAsType = uriVal.equals(type.toString());
+						}
+						
+						if (!sameAsType && !((HasType) element).getType().contains(obj))
+						{
+							pFactory.addType((HasType) element, obj);
+						}
+					} else
+					{
 						System.out.println(value);
 						System.out.println("Value wasn't a suitable type");
 					}
@@ -448,7 +462,8 @@ public class RdfCollector extends RDFHandlerBase {
 
 			if (element instanceof HasRole)
 			{
-				if (predS.equals(PROV + "role"))
+				if (predS.equals(PROV + "role")
+						|| predS.equals(PROV + "hadRole"))
 				{
 					String role = statement.getObject().stringValue();
 					pFactory.addRole((HasRole) element, role);
@@ -457,10 +472,12 @@ public class RdfCollector extends RDFHandlerBase {
 
 			if (element instanceof HasLocation)
 			{
-				if (predS.equals(PROV + "atLocation") || predS.equals(PROV+"location"))
+				if (predS.equals(PROV + "atLocation")
+						|| predS.equals(PROV + "location"))
 				{
 					Object obj = valueToObject(statement.getObject());
-					if(obj != null) {
+					if (obj != null)
+					{
 						((HasLocation) element).getLocation().add(obj);
 					}
 				}
@@ -534,8 +551,13 @@ public class RdfCollector extends RDFHandlerBase {
 								}
 							} else if (val instanceof Literal)
 							{
-								pFactory.addType((HasType) element,
-										decodeLiteral((Literal) val));
+								Object typeVal = decodeLiteral((Literal) val);
+								if (typeVal != null
+										&& !((HasType) element).getType()
+												.contains(typeVal))
+								{
+									pFactory.addType((HasType) element, typeVal);
+								}
 							}
 						}
 
@@ -553,7 +575,8 @@ public class RdfCollector extends RDFHandlerBase {
 							{
 								shortType = lit.getDatatype().getLocalName();
 							}
-
+							
+							// FIXME: Bug 3 occurs here.
 							String xsdType = getXsdType(shortType);
 							attr = pFactory.newAttribute(uri.getNamespace(),
 									uri.getLocalName(), prefix,
@@ -561,9 +584,14 @@ public class RdfCollector extends RDFHandlerBase {
 
 						} else if (val instanceof Resource)
 						{
+							URIWrapper uw = new URIWrapper();
+							java.net.URI jURI = java.net.URI
+									.create(val.stringValue());
+							uw.setValue(jURI);
+							
 							attr = pFactory.newAttribute(uri.getNamespace(),
 									uri.getLocalName(), prefix,
-									val.stringValue(), getXsdType("anyURI"));
+									uw, getXsdType("anyURI"));
 						} else
 						{
 							System.err.println("Invalid value");
@@ -612,7 +640,6 @@ public class RdfCollector extends RDFHandlerBase {
 			for (QName qname : collator.keySet())
 			{
 				ProvType[] types = getResourceTypes(contextQ, qname);
-
 				for (ProvType type : types)
 				{
 					switch (type)
@@ -720,10 +747,12 @@ public class RdfCollector extends RDFHandlerBase {
 		// It is not necessary to specify a prefix for a QName. This code was
 		// breaking on the jpl trace.
 		QName qname;
-		if(revnss.containsKey(uri.getNamespace())) {
+		if (revnss.containsKey(uri.getNamespace()))
+		{
 			String prefix = revnss.get(uri.getNamespace());
 			qname = new QName(uri.getNamespace(), uri.getLocalName(), prefix);
-		}else {
+		} else
+		{
 			qname = new QName(uri.getNamespace(), uri.getLocalName());
 		}
 		return qname;
@@ -736,11 +765,11 @@ public class RdfCollector extends RDFHandlerBase {
 		List<Statement> statements = collators.get(context).get(qname);
 		statements = handleBaseStatements(entity, context, qname,
 				ProvType.ENTITY);
-
 		for (Statement statement : statements)
 		{
 			String predS = statement.getPredicate().stringValue();
 			Value value = statement.getObject();
+						
 			if (value instanceof Resource)
 			{
 				QName valueQ = convertResourceToQName((Resource) value);
@@ -751,21 +780,22 @@ public class RdfCollector extends RDFHandlerBase {
 							pFactory.newEntityRef(valueQ));
 
 					store(context, wdf);
-				} else if(predS.equals(PROV + "hadPrimarySource"))
+				} else if (predS.equals(PROV + "hadPrimarySource"))
 				{
 					WasDerivedFrom wdf = pFactory.newWasDerivedFrom(
 							(QName) null, pFactory.newEntityRef(qname),
 							pFactory.newEntityRef(valueQ));
+
 					pFactory.addPrimarySourceType(wdf);
 					store(context, wdf);
-				} else if(predS.equals(PROV + "wasQuotedFrom"))
+				} else if (predS.equals(PROV + "wasQuotedFrom"))
 				{
 					WasDerivedFrom wdf = pFactory.newWasDerivedFrom(
 							(QName) null, pFactory.newEntityRef(qname),
 							pFactory.newEntityRef(valueQ));
 					pFactory.addQuotationType(wdf);
 					store(context, wdf);
-				} else if(predS.equals(PROV + "wasRevisionOf"))
+				} else if (predS.equals(PROV + "wasRevisionOf"))
 				{
 					WasDerivedFrom wdf = pFactory.newWasDerivedFrom(
 							(QName) null, pFactory.newEntityRef(qname),

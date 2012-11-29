@@ -86,6 +86,15 @@ public class QualifiedCollector extends RdfCollector {
 					case DERIVATION:
 						createDerivation(contextQ, qname);
 						break;
+					case PRIMARYSOURCE:
+						createPrimarySource(contextQ, qname);
+						break;
+					case QUOTATION:
+						createQuotation(contextQ, qname);
+						break;
+					case REVISION:
+						createRevision(contextQ, qname);
+						break;
 					case END:
 						createEnd(contextQ, qname);
 						break;
@@ -273,7 +282,7 @@ public class QualifiedCollector extends RdfCollector {
 					// TODO: Not really clarified as to what 'Role' is here.
 					((HasRole) (target)).getRole().add(
 							pFactory.newAnyRef(valueQ));
-				} 
+				}
 			}
 		}
 	}
@@ -287,7 +296,34 @@ public class QualifiedCollector extends RdfCollector {
 				ProvType.ENTITYINFLUENCE);
 	}
 
-	private void createDerivation(QName context, QName qname)
+	private void createRevision(QName contextQ, QName qname)
+	{
+		WasDerivedFrom wdf = createDerivation(contextQ, qname);
+		Object q = pFactory.newQName("prov:Revision");
+		if(!wdf.getType().contains(q)) {
+			wdf.getType().add(q);
+		}
+	}
+
+	private void createQuotation(QName contextQ, QName qname)
+	{
+		WasDerivedFrom wdf = createDerivation(contextQ, qname);
+		Object q = pFactory.newQName("prov:Quotation");
+		if(!wdf.getType().contains(q)) {
+			wdf.getType().add(q);
+		}
+	}
+
+	private void createPrimarySource(QName contextQ, QName qname)
+	{
+		WasDerivedFrom wdf = createDerivation(contextQ, qname);
+		Object q = pFactory.newQName("prov:PrimarySource");
+		if(!wdf.getType().contains(q)) {
+			wdf.getType().add(q);
+		}
+	}
+
+	private WasDerivedFrom createDerivation(QName context, QName qname)
 	{
 		WasDerivedFrom wdf = new WasDerivedFrom();
 		wdf.setId(qname);
@@ -328,6 +364,7 @@ public class QualifiedCollector extends RdfCollector {
 		handleEntityInfluence(context, wdf, statements, ProvType.DERIVATION);
 		store(context, wdf);
 		this.influenceMap.put(qname, wdf);
+		return wdf;
 	}
 
 	private void createInfluence(QName context, QName qname)
@@ -651,7 +688,13 @@ public class QualifiedCollector extends RdfCollector {
 									.get(refQ);
 							aobo.setSubordinate(pFactory.newAgentRef(qname));
 						} else if (predS.equals(RdfCollector.PROV
-								+ "qualifiedDerivation"))
+								+ "qualifiedDerivation")
+								|| predS.equals(RdfCollector.PROV
+										+ "qualifiedPrimarySource")
+								|| predS.equals(RdfCollector.PROV
+										+ "qualifiedRevision")
+								|| predS.equals(RdfCollector.PROV
+										+ "qualifiedQuotation"))
 						{
 							WasDerivedFrom wdf = (WasDerivedFrom) influenceMap
 									.get(refQ);

@@ -20,6 +20,7 @@ public class AnyAdapter
     public Attribute unmarshal(Object value) {
         //System.out.println("AnyAdapter2 unmarshalling for " + value);
         //System.out.println("AnyAdapter2 unmarshalling for " + value.getClass());
+	//FIXME: bug #28, need to support internationalize string
         if (value instanceof org.w3c.dom.Element) {
             org.w3c.dom.Element el=(org.w3c.dom.Element)value;
             String prefix=el.getPrefix();
@@ -42,10 +43,19 @@ public class AnyAdapter
         //System.out.println("AnyAdapter2 marshalling for " + attribute
         //                .getClass());
         //TODO: this call creates a DOM but does not encode the type as xsi:type
-	//FIXME: bug #28, need to support internationalize string
-	return pFactory.newElement(attribute.getElementName(), 
-	                           attribute.getValue().toString(),
-	                           attribute.getXsdType());
+	Object value=attribute.getValue();
+	if (value instanceof InternationalizedString) {
+	    InternationalizedString istring=((InternationalizedString)value);
+	    return pFactory.newElement(attribute.getElementName(), 
+				       istring.getValue(),
+				       attribute.getXsdType(),
+				       istring.getLang());
+
+	} else {
+	    return pFactory.newElement(attribute.getElementName(), 
+				       value.toString(),
+				       attribute.getXsdType());
+	}
         //JAXBElement<?> je=new JAXBElement(value.getElementName(),value.getValue().getClass(),value.getValue());
         //return je;
     }

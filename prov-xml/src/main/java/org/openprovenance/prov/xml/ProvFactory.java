@@ -531,6 +531,19 @@ public class ProvFactory {
 	return el;
     }
 
+    public Element newElement(QName qname, String value, String type, String lang) {
+    	org.w3c.dom.Document doc = builder.newDocument();
+	Element el = doc.createElementNS(qname.getNamespaceURI(), 
+	                                 ((qname.getPrefix().equals("")) 
+	                                	 ? ""
+	                                	 : (qname.getPrefix() + ":")) + qname.getLocalPart());
+	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", type);
+	el.setAttributeNS(NamespacePrefixMapper. XML_NS, "xml:lang", lang);
+	el.appendChild(doc.createTextNode(value));
+	doc.appendChild(el);
+	return el;
+    }
+
     public CollectionMemberOf newCollectionMemberOf(QName id, EntityRef after,
 						    List<Entity> entitySet) {
 	CollectionMemberOf res = cof.createCollectionMemberOf();

@@ -1,0 +1,27 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix ex:   <http://example.com/vocab#> .
+@prefix :     <http://example.com/> .
+
+:dagstuhl-quote
+   a prov:Entity;
+   prov:value   "why would people record and share provenance in the first place?";
+   prov:wasQuotedFrom <http://purl.org/twc/page/thoughts-from-the-dagstuhl-workshop>;
+   prov:qualifiedQuotation [
+      a prov:Quotation;
+      prov:entity     <http://purl.org/twc/page/thoughts-from-the-dagstuhl-workshop>;
+      ex:fromSection 2;
+   ];
+   prov:wasAttributedTo <http://data.semanticweb.org/person/luc-moreau>;
+.
+
+<http://purl.org/twc/page/thoughts-from-the-dagstuhl-workshop> 
+   a prov:Entity;
+   prov:wasAttributedTo <http://data.semanticweb.org/person/paul-groth>;
+.
+
+<http://data.semanticweb.org/person/luc-moreau> a prov:Person, prov:Agent .
+<http://data.semanticweb.org/person/paul-groth> a prov:Person, prov:Agent .
+

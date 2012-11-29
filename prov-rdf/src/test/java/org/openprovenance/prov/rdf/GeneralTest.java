@@ -25,9 +25,12 @@ public class GeneralTest extends TestCase {
 		org.openprovenance.prov.xml.Entity e2 = (org.openprovenance.prov.xml.Entity)(doc2.getEntityOrActivityOrWasGeneratedBy().get(0));
 		assertEquals(e2.getType().size(), 2);
 		assertTrue(result);
-		
-		ProvSerialiser.getThreadProvSerialiser().serialiseDocument(new File("target/test.xml"),doc2,true);
-		u2.writeDocument(doc2, "target/test.provn");
-
+	}
+	
+	public void testActivity() throws Exception
+	{
+		Document doc2 = u.parseRDF("src/test/resources/class_Activity.ttl");
+		//Document doc2 = u.parseRDF("/tmp/test.ttl");
+		System.out.println(u2.convertBeanToASN(doc2));
 	}
 }

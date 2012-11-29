@@ -23,12 +23,14 @@ public class RoundTripFromRdfTest extends TestCase {
 		file = file.replace('/', '_');
 		u.dumpRDF(pFactory, doc1, RDFFormat.TURTLE, "target/" + file);
 		Document doc2 = u.parseRDF("target/" + file);
-		System.out.println(doc1);
-		System.out.println("------------------");
-		System.out.println(doc2);
 //		System.out.println("Equality check:");
 		boolean result = de.check(doc1, doc2); // TODO: we want
 												// assertTrue(result);
+		if(!result && compare) {
+			System.out.println(doc1);
+			System.out.println("------------------");
+			System.out.println(doc2);
+		}
 //		System.out.println("-----------------");
 //		
 //		System.out.println(doc1.getEntityOrActivityOrWasGeneratedBy());
@@ -63,6 +65,10 @@ public class RoundTripFromRdfTest extends TestCase {
 	public void testFile2() throws Exception
 	{
 		loadFromRdfSaveAndReload("prov-o-ex2-PASS.ttl", true);
+	}
+	
+	public void testFile3() throws Exception {
+		loadFromRdfSaveAndReload("class_Activity.ttl", true);
 	}
 
 	public void testClassInvalidation() throws Exception

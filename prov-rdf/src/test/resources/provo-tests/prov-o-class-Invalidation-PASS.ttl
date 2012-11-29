@@ -9,7 +9,7 @@
 :the-Painter 
    a prov:Entity;#, :Painting;
    rdfs:label "Le Peintre"@fr, "The Painter"@en;
-#   prov:wasAttributedTo <http://dbpedia.org/resource/Pablo_Picasso>;
+   prov:wasAttributedTo <http://dbpedia.org/resource/Pablo_Picasso>;
 
    prov:wasInvalidatedBy :swissair_Flight_111_crash;
    prov:qualifiedInvalidation [
@@ -33,7 +33,10 @@
 
 :swissair_Flight_111_crash 
    a prov:Activity;
-#   prov:used          <http://dbpedia.org/resource/Swissair_Flight_111>;
+   prov:used          <http://dbpedia.org/resource/Swissair_Flight_111>;
    prov:startedAtTime "1998-09-02T01:31:00Z"^^xsd:dateTime;
    prov:atLocation    <http://dbpedia.org/resource/Atlantic_ocean>;
 .
+
+# This is created in doc2.
+<http://dbpedia.org/resource/Swissair_Flight_111> a prov:Entity.

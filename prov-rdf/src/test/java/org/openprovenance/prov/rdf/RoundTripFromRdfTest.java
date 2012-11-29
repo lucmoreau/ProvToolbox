@@ -62,13 +62,17 @@ public class RoundTripFromRdfTest extends TestCase {
 		loadFromRdfSaveAndReload("test_multiple_types.ttl", true);
 	}
 
-	public void testFile2() throws Exception
-	{
-		loadFromRdfSaveAndReload("prov-o-ex2-PASS.ttl", true);
-	}
+//	public void testFile2() throws Exception
+//	{
+//		loadFromRdfSaveAndReload("prov-o-ex2-PASS.ttl", true);
+//	}
 	
 	public void testFile3() throws Exception {
 		loadFromRdfSaveAndReload("class_Activity.ttl", true);
+	}
+	
+	public void testFile4() throws Exception {
+		loadFromRdfSaveAndReload("provo-tests/test_attributed.ttl", true);
 	}
 
 	public void testClassInvalidation() throws Exception

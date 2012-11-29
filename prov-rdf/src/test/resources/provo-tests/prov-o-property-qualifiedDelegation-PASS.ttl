@@ -25,6 +25,7 @@
    ];
 .
 
+
 :chauffeur       
    a prov:Person;
    prov:actedOnBehalfOf :celebrity-in-car;
@@ -55,5 +56,3 @@
       prov:hadActivity	    :control-city-traffic ;
    ];
 .
-
-:control-city-traffic   a   prov:Activity .

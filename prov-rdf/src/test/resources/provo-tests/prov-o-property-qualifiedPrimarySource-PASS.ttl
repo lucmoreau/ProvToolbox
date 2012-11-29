@@ -19,5 +19,8 @@
 
 :sensorReading20120510 
    a prov:Entity;
-   #prov:wasGeneratedBy :temperatureSensor;
+   prov:wasGeneratedBy :temperatureSensor;
 .
+
+# NB: Added to satisfy tests (otherwise Activity is present in doc2 but not doc1)
+:temperatureSensor a prov:Activity.

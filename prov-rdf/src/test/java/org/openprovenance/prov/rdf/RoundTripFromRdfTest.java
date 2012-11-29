@@ -23,12 +23,14 @@ public class RoundTripFromRdfTest extends TestCase {
 		file = file.replace('/', '_');
 		u.dumpRDF(pFactory, doc1, RDFFormat.TURTLE, "target/" + file);
 		Document doc2 = u.parseRDF("target/" + file);
-		System.out.println(doc1);
-		System.out.println("------------------");
-		System.out.println(doc2);
 //		System.out.println("Equality check:");
 		boolean result = de.check(doc1, doc2); // TODO: we want
 												// assertTrue(result);
+		if(!result && compare) {
+			System.out.println(doc1);
+			System.out.println("------------------");
+			System.out.println(doc2);
+		}
 //		System.out.println("-----------------");
 //		
 //		System.out.println(doc1.getEntityOrActivityOrWasGeneratedBy());
@@ -55,64 +57,60 @@ public class RoundTripFromRdfTest extends TestCase {
 	}
 	
 	
-//	public void testFile1() throws Exception
-//	{
-//		loadFromRdfSaveAndReload("test_multiple_types.ttl", true);
-//	}
+	public void testFile1() throws Exception
+	{
+		loadFromRdfSaveAndReload("test_multiple_types.ttl", true);
+	}
 
 	public void testFile2() throws Exception
 	{
 		loadFromRdfSaveAndReload("prov-o-ex2-PASS.ttl", true);
 	}
+	
+	public void testFile3() throws Exception {
+		loadFromRdfSaveAndReload("class_Activity.ttl", true);
+	}
 
-	
-	/*public void testClassEnd() throws Exception
+	public void testClassInvalidation() throws Exception
 	{
-		testClass("End", true);
-	}*/	
+		testClass("Invalidation", true);
+	}
 	
+	public void testClassPrimarySource() throws Exception
+	{
+		testClass("PrimarySource", true);
+	}
 	
+	public void testClassQuotation() throws Exception
+	{
+		testClass("Quotation", true);
+	}
+
+	public void testClassRevision() throws Exception
+	{
+		testClass("Revision", true);
+	}
 	
-//	public void testClassInvalidation() throws Exception
-//	{
-//		testClass("Invalidation", true);
-//	}
-//	
-//	public void testClassPrimarySource() throws Exception
-//	{
-//		testClass("PrimarySource", true);
-//	}
+	public void testPropertyEntity() throws Exception {
+		testProperty("entity", true);
+	}
 	
-//	public void testClassQuotation() throws Exception
-//	{
-//		testClass("Quotation", true);
-//	}
-//
-//	public void testClassRevision() throws Exception
-//	{
-//		testClass("Revision", true);
-//	}
-//	
-//	public void testPropertyEntity() throws Exception {
-//		testProperty("entity", true);
-//	}
-//	
-//	public void testPropertyQualifiedDelegation() throws Exception {
-//		testProperty("qualifiedDelegation", true);
-//	}
-//	
-//	public void testPropertyQualifiedEnd() throws Exception {
-//		testProperty("qualifiedEnd", true);
-//	}
-//	
-//	public void testPropertyQualifiedPrimarySource() throws Exception {
-//		testProperty("qualifiedPrimarySource", true);
-//	}
+	public void testPropertyQualifiedDelegation() throws Exception {
+		testProperty("qualifiedDelegation", false);
+	}
 	
-//	public void testPropertyQualifiedQuotation() throws Exception {
-//		testProperty("qualifiedQuotation", true);
-//	}
-//	
+	public void testPropertyQualifiedEnd() throws Exception {
+		testProperty("qualifiedEnd", true);
+	}
+	
+	public void testPropertyQualifiedPrimarySource() throws Exception {
+		testProperty("qualifiedPrimarySource", true);
+	}
+	
+	public void testPropertyQualifiedQuotation() throws Exception {
+		testProperty("qualifiedQuotation", true);
+	}
+	
 	public void testPropertyQualifiedRevision() throws Exception {
 		testProperty("qualifiedRevision", true);
 	}

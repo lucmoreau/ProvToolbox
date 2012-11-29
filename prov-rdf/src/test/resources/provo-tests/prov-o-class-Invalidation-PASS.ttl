@@ -8,7 +8,7 @@
 
 :the-Painter 
    a prov:Entity;#, :Painting;
-#   rdfs:label "Le Peintre"@fr, "The Painter"@en;
+   rdfs:label "Le Peintre"@fr, "The Painter"@en;
 #   prov:wasAttributedTo <http://dbpedia.org/resource/Pablo_Picasso>;
 
    prov:wasInvalidatedBy :swissair_Flight_111_crash;
@@ -28,7 +28,7 @@
 
 <http://dbpedia.org/resource/Pablo_Picasso> 
    a prov:Agent;
-#   foaf:depiction <http://upload.wikimedia.org/wikipedia/commons/9/98/Pablo_picasso_1.jpg>;
+   foaf:depiction <http://upload.wikimedia.org/wikipedia/commons/9/98/Pablo_picasso_1.jpg>;
 .
 
 :swissair_Flight_111_crash 

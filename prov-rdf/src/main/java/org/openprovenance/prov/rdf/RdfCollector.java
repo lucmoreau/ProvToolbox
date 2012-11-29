@@ -575,7 +575,8 @@ public class RdfCollector extends RDFHandlerBase {
 							{
 								shortType = lit.getDatatype().getLocalName();
 							}
-
+							
+							// FIXME: Bug 3 occurs here.
 							String xsdType = getXsdType(shortType);
 							attr = pFactory.newAttribute(uri.getNamespace(),
 									uri.getLocalName(), prefix,
@@ -759,7 +760,6 @@ public class RdfCollector extends RDFHandlerBase {
 		List<Statement> statements = collators.get(context).get(qname);
 		statements = handleBaseStatements(entity, context, qname,
 				ProvType.ENTITY);
-
 		for (Statement statement : statements)
 		{
 			String predS = statement.getPredicate().stringValue();

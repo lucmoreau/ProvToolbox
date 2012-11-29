@@ -127,7 +127,7 @@ public class NotationConstructor implements TreeConstructor {
 
 
     public Object convertAttribute(Object name, Object value) {
-        return name + "=" + value;
+	return name + "=" + value;
     }
     public Object convertStart(String start) {
         return start;

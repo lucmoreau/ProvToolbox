@@ -39,7 +39,12 @@ public class Attribute {
     }
 
     public String toString() {
-	return elementName.getPrefix() + ":" + elementName.getLocalPart() + " = \"" + val + "\" %% " + xsdType;
+	if (val instanceof InternationalizedString) {
+	    InternationalizedString istring=(InternationalizedString) val;
+	    return elementName.getPrefix() + ":" + elementName.getLocalPart() + " = \"" + istring.getValue() + "\"@" + istring.getLang() + " %% " + xsdType;
+	} else {
+	    return elementName.getPrefix() + ":" + elementName.getLocalPart() + " = \"" + val + "\" %% " + xsdType;
+	}
     }
 
 	@Override

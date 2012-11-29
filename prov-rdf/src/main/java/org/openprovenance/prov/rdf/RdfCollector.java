@@ -186,6 +186,10 @@ public class RdfCollector extends RDFHandlerBase {
 	@Override
 	public void handleNamespace(String prefix, String namespace)
 	{
+		if (prefix.equals(""))
+		{
+			prefix = "def";
+		}
 		this.document.getNss().put(prefix, namespace);
 		pFactory.setNamespaces(this.document.getNss());
 		this.revnss.put(namespace, prefix);
@@ -358,7 +362,7 @@ public class RdfCollector extends RDFHandlerBase {
 				dataType = literal.getDatatype().stringValue();
 			}
 		}
-		
+
 		if (dataType.equals(XMLS + "QName"))
 		{
 			return pFactory.newQName(literal.stringValue());
@@ -440,15 +444,18 @@ public class RdfCollector extends RDFHandlerBase {
 					Object obj = valueToObject(statement.getObject());
 					if (obj != null)
 					{
-						
+
 						Boolean sameAsType = false;
-						if(obj instanceof QName) {
+						if (obj instanceof QName)
+						{
 							// TODO: Nasty.
-							String uriVal = ((QName)(obj)).getNamespaceURI()+((QName)(obj)).getLocalPart();
+							String uriVal = ((QName) (obj)).getNamespaceURI()
+									+ ((QName) (obj)).getLocalPart();
 							sameAsType = uriVal.equals(type.toString());
 						}
-						
-						if (!sameAsType && !((HasType) element).getType().contains(obj))
+
+						if (!sameAsType
+								&& !((HasType) element).getType().contains(obj))
 						{
 							pFactory.addType((HasType) element, obj);
 						}
@@ -575,7 +582,7 @@ public class RdfCollector extends RDFHandlerBase {
 							{
 								shortType = lit.getDatatype().getLocalName();
 							}
-							
+
 							// FIXME: Bug 3 occurs here.
 							String xsdType = getXsdType(shortType);
 							attr = pFactory.newAttribute(uri.getNamespace(),
@@ -585,13 +592,13 @@ public class RdfCollector extends RDFHandlerBase {
 						} else if (val instanceof Resource)
 						{
 							URIWrapper uw = new URIWrapper();
-							java.net.URI jURI = java.net.URI
-									.create(val.stringValue());
+							java.net.URI jURI = java.net.URI.create(val
+									.stringValue());
 							uw.setValue(jURI);
-							
+
 							attr = pFactory.newAttribute(uri.getNamespace(),
-									uri.getLocalName(), prefix,
-									uw, getXsdType("anyURI"));
+									uri.getLocalName(), prefix, uw,
+									getXsdType("anyURI"));
 						} else
 						{
 							System.err.println("Invalid value");
@@ -753,7 +760,10 @@ public class RdfCollector extends RDFHandlerBase {
 			qname = new QName(uri.getNamespace(), uri.getLocalName(), prefix);
 		} else
 		{
-			qname = new QName(uri.getNamespace(), uri.getLocalName());
+			// Ugly!
+			String prefix = uri.getNamespace().hashCode()+"";
+			handleNamespace(prefix, uri.getNamespace());
+			qname = new QName(uri.getNamespace(), uri.getLocalName(), prefix);
 		}
 		return qname;
 	}
@@ -769,7 +779,7 @@ public class RdfCollector extends RDFHandlerBase {
 		{
 			String predS = statement.getPredicate().stringValue();
 			Value value = statement.getObject();
-						
+
 			if (value instanceof Resource)
 			{
 				QName valueQ = convertResourceToQName((Resource) value);
@@ -805,8 +815,8 @@ public class RdfCollector extends RDFHandlerBase {
 				} else if (predS.equals(PROV + "wasGeneratedBy"))
 				{
 					WasGeneratedBy wgb = pFactory.newWasGeneratedBy(
-							(QName) null, pFactory.newEntityRef(qname), null,
-							pFactory.newActivityRef(valueQ));
+							(QName) null, pFactory.newEntityRef(qname),
+							null, pFactory.newActivityRef(valueQ));
 
 					store(context, wgb);
 				} else if (predS.equals(PROV + "alternateOf"))

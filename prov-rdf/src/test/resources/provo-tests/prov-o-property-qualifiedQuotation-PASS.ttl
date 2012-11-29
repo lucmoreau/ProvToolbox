@@ -14,17 +14,17 @@
 	This could imply that we could have nice way to trace provenance across
 	systems and through databases and be able to understand the
 	mathematical properties of this interconnection.""";
-#   prov:wasQuotedFrom <http://purl.org/twc/page/thoughts-from-the-dagstuhl-workshop>;
-#   prov:qualifiedQuotation [
-#      a prov:Quotation;
-#      prov:entity <http://purl.org/twc/page/thoughts-from-the-dagstuhl-workshop>;
-#      my:fromSection 1;
-#   ];
+   prov:wasQuotedFrom <http://purl.org/twc/page/thoughts-from-the-dagstuhl-workshop>;
+   prov:qualifiedQuotation [
+      a prov:Quotation;
+      prov:entity <http://purl.org/twc/page/thoughts-from-the-dagstuhl-workshop>;
+      my:fromSection 1;
+   ];
 .
 
 <http://purl.org/twc/page/thoughts-from-the-dagstuhl-workshop>
    a prov:Entity;
-#   prov:wasAttributedTo <http://data.semanticweb.org/person/paul-groth>;
+   prov:wasAttributedTo <http://data.semanticweb.org/person/paul-groth>;
 .
 
 <http://data.semanticweb.org/person/luc-moreau> a prov:Person, prov:Agent .

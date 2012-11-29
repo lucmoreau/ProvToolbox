@@ -8,12 +8,12 @@
 
    ex:prov-o-ex2-PASS a prov:Bundle, prov:Entity ;
      prov:wasAttributedTo ex:postEditor;
-#     ex:involvedUser        ex:derek
+     ex:involvedUser        ex:derek
 .
    ex:derek
-      a prov:Person, prov:Agent, foaf:Person; ## Typically prov:Agent will be inferred from prov:Person
+      a prov:Person, prov:Agent, foaf:Person, prov:Entity; ## Typically prov:Agent will be inferred from prov:Person
       foaf:givenName      "Derek"^^xsd:string;
-#      foaf:mbox           <mailto:derek@example.org>;
+      foaf:mbox           <mailto:derek@example.org>;
       prov:actedOnBehalfOf ex:national_newspaper_inc;
    .
 
@@ -39,45 +39,45 @@
      prov:wasAttributedTo ex:government;
    .
    
-#   ex:more-crime-happens-in-cities
-#    a prov:Location, sioc:Post, prov:Entity;
-#    sioc:latest_version ex:post9821v2;
-#    sioc:previous_version ex:post9821v1;
-#   .
+   ex:more-crime-happens-in-cities
+    a prov:Location, sioc:Post, prov:Entity;
+    sioc:latest_version ex:post9821v2;
+    sioc:previous_version ex:post9821v1;
+   .
 
    ## Version 1 of the post
    
-#   ex:post9821v1
-#      a prov:Entity, sioc:Post;   
-#      prov:wasGeneratedBy ex:publicationActivity1123;
-#      prov:atLocation     ex:more-crime-happens-in-cities;  ## PERMALINK to the (latest revision of the) post
-#      my:snapshotContent  ex:postContent0;                  ## Snapshot with the content of this version
-#      sioc:title "More crime happens in cities"^^xsd:string;
-#      prov:hadPrimarySource ex:crimeData;               ## This version of the post used the file "crimeData" as a primary source. 
-#                                                          ## The author stated that he based his post in the aggregatedByRegions file, 
-#                                                          ## but the primary source is the file created by the government.
-#      prov:wasAttributedTo   ex:derek;
-#   .
+   ex:post9821v1
+      a prov:Entity, sioc:Post;   
+      prov:wasGeneratedBy ex:publicationActivity1123;
+      prov:atLocation     ex:more-crime-happens-in-cities;  ## PERMALINK to the (latest revision of the) post
+      my:snapshotContent  ex:postContent0;                  ## Snapshot with the content of this version
+      sioc:title "More crime happens in cities"^^xsd:string;
+      prov:hadPrimarySource ex:crimeData;               ## This version of the post used the file "crimeData" as a primary source. 
+                                                          ## The author stated that he based his post in the aggregatedByRegions file, 
+                                                          ## but the primary source is the file created by the government.
+      prov:wasAttributedTo   ex:derek;
+   .
 
    ## Version 2 of the post
 
-#   ex:post9821v2
-#      a prov:Entity, sioc:Post;
-#      prov:atLocation       ex:more-crime-happens-in-cities;  ## PERMALINK to the (latest revision of the) post
-#      my:snapshotContent    ex:postContent1;                  ## Snapshot with the content of this version
-#      prov:wasRevisionOf    ex:post9821v1;
-#      prov:alternateOf      ex:post9821v1;
-#      prov:wasAttributedTo  ex:derek;
-#   .
+   ex:post9821v2
+      a prov:Entity, sioc:Post;
+      prov:atLocation       ex:more-crime-happens-in-cities;  ## PERMALINK to the (latest revision of the) post
+      my:snapshotContent    ex:postContent1;                  ## Snapshot with the content of this version
+      prov:wasRevisionOf    ex:post9821v1;
+      prov:alternateOf      ex:post9821v1;
+      prov:wasAttributedTo  ex:derek;
+   .
 
-#   ex:publicationActivity1123 
-#      a prov:Activity;
-#      prov:startedAtTime     "2011-07-16T01:01:01Z"^^xsd:dateTime;
-#      prov:endedAtTime       "2011-07-16T01:52:02Z"^^xsd:dateTime;
-#      prov:wasAssociatedWith ex:derek,
-#                             ex:postEditor;
-#      prov:used              ex:aggregatedByRegions;   
-#      prov:generated         ex:post9821v1;
-#      prov:wasStartedBy      ex:derek;
-#      prov:wasEndedBy        ex:derek
-#   .
+   ex:publicationActivity1123 
+      a prov:Activity;
+      prov:startedAtTime     "2011-07-16T01:01:01Z"^^xsd:dateTime;
+      prov:endedAtTime       "2011-07-16T01:52:02Z"^^xsd:dateTime;
+      prov:wasAssociatedWith ex:derek,
+                             ex:postEditor;
+      prov:used              ex:aggregatedByRegions;   
+      prov:generated         ex:post9821v1;
+      prov:wasStartedBy      ex:derek;
+      prov:wasEndedBy        ex:derek
+   .

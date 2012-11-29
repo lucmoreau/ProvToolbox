@@ -28,8 +28,13 @@ public class AnyAdapter
             String local=el.getLocalName();
             String child=el.getTextContent();
             String type=el.getAttributeNS(NamespacePrefixMapper.XSI_NS, "type");
+            String lang=el.getAttributeNS(NamespacePrefixMapper.XML_NS, "lang");
             type=(type==null) ? "xsd:string" : type;
-            return pFactory.newAttribute(namespace,local,prefix, pFactory.convertToJava(type, child), type);
+	    if ((lang==null) || (lang.equals(""))) {
+		return pFactory.newAttribute(namespace,local,prefix, pFactory.convertToJava(type, child), type);
+	    } else {
+		return pFactory.newAttribute(namespace,local,prefix, pFactory.newInternationalizedString(child,lang), type);
+	    }
         } 
         if (value instanceof JAXBElement) {
             JAXBElement<?> je=(JAXBElement<?>) value;

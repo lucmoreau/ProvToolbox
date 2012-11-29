@@ -200,7 +200,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void addFurtherAttributes(HasExtensibility he) {
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag1",EX_PREFIX,"hello"));
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "bye"));
-	//he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","FR"), "xsd:string"));
+	//	he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","FR"), "xsd:string"));
 	he.getAny().add(pFactory.newAttribute(EX2_NS,"tag3",EX2_PREFIX, "hi"));
 	
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Integer(1)));
@@ -225,6 +225,13 @@ public class RoundTripFromJavaTest extends TestCase {
     
     ///////////////////////////////////////////////////////////////////////
     
+    public void testEntity0() throws JAXBException  {
+	Entity a = pFactory.newEntity("ex:e0");
+	//	a.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","FR"), "xsd:string"));
+	makeDocAndTest(a,"target/entity0");
+    }
+
+
     
     public void testEntity1() throws JAXBException  {
 	Entity a = pFactory.newEntity("ex:e1");

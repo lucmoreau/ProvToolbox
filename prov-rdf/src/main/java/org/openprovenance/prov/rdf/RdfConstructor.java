@@ -188,9 +188,18 @@ public class RdfConstructor implements TreeConstructor {
 				Attribute attr = ((Attribute) entry);
 				String typeAsString = attr.getXsdType();
 				type = getQName(typeAsString);
-				String value = attr.getValue().toString();
+				
+				String value;
+				if (attr.getValue() instanceof InternationalizedString) {
+				    InternationalizedString iString=(InternationalizedString)attr.getValue();
+				    value=iString.getValue();
+				    literalImpl = new LiteralImpl(value, iString.getLang());
+				} else {
+				    value= attr.getValue().toString();
+				    literalImpl = new LiteralImpl(value, uriFromQName(type));
+				}
 				pred = ((Attribute) entry).getElementName();
-				literalImpl = new LiteralImpl(value, uriFromQName(type));
+
 			} else if (entry instanceof Object[])
 			{
 				Object[] pair = (Object[]) entry;

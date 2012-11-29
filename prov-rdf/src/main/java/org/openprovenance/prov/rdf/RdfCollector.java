@@ -358,7 +358,7 @@ public class RdfCollector extends RDFHandlerBase {
 				dataType = literal.getDatatype().stringValue();
 			}
 		}
-
+		
 		if (dataType.equals(XMLS + "QName"))
 		{
 			return pFactory.newQName(literal.stringValue());
@@ -584,9 +584,14 @@ public class RdfCollector extends RDFHandlerBase {
 
 						} else if (val instanceof Resource)
 						{
+							URIWrapper uw = new URIWrapper();
+							java.net.URI jURI = java.net.URI
+									.create(val.stringValue());
+							uw.setValue(jURI);
+							
 							attr = pFactory.newAttribute(uri.getNamespace(),
 									uri.getLocalName(), prefix,
-									val.stringValue(), getXsdType("anyURI"));
+									uw, getXsdType("anyURI"));
 						} else
 						{
 							System.err.println("Invalid value");

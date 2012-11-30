@@ -1,0 +1,5 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix :     <http://example.com/> .
+
+:graduation a prov:Activity, :Graduation.
+

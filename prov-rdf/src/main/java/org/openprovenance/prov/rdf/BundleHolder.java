@@ -58,21 +58,37 @@ public class BundleHolder {
 	{
 		this.statements = statements;
 	}
-	
-	public void addAgent(org.openprovenance.prov.xml.Agent agent) {
-		this.agents.add(agent);
+
+	public void addAgent(org.openprovenance.prov.xml.Agent agent)
+	{
+		if (!this.agents.contains(agent))
+		{
+			this.agents.add(agent);
+		}
 	}
-	
-	public void addActivity(org.openprovenance.prov.xml.Activity activity) {
-		this.activities.add(activity);
+
+	public void addActivity(org.openprovenance.prov.xml.Activity activity)
+	{
+		if (!this.activities.contains(activity))
+		{
+			this.activities.add(activity);
+		}
 	}
-	
-	public void addEntity(org.openprovenance.prov.xml.Entity entity) {
-		this.entities.add(entity);
+
+	public void addEntity(org.openprovenance.prov.xml.Entity entity)
+	{
+		if (!this.entities.contains(entity))
+		{
+			this.entities.add(entity);
+		}
 	}
-	
-	public void addStatement(org.openprovenance.prov.xml.Statement statement) {
-		this.statements.add(statement);
+
+	public void addStatement(org.openprovenance.prov.xml.Statement statement)
+	{
+		if (!this.statements.contains(statement))
+		{
+			this.statements.add(statement);
+		}
 	}
 
 }

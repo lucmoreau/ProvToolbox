@@ -1,0 +1,16 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix ex:   <http://example.org#> .
+
+   ex:entity
+      a prov:Entity;   
+      prov:influenced ex:activity;
+      prov:wasInvalidatedBy ex:activity;
+      prov:wasGeneratedBy ex:activity;
+   .
+
+   ex:activity 
+      a prov:Activity;
+      prov:influenced ex:entity;
+      prov:generated ex:entity;
+      prov:wasInfluencedBy ex:entity;
+   .

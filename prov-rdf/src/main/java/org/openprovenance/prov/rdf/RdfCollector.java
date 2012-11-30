@@ -761,7 +761,7 @@ public class RdfCollector extends RDFHandlerBase {
 		} else
 		{
 			// Ugly!
-			String prefix = uri.getNamespace().hashCode()+"";
+			String prefix = uri.getNamespace().hashCode() + "";
 			handleNamespace(prefix, uri.getNamespace());
 			qname = new QName(uri.getNamespace(), uri.getLocalName(), prefix);
 		}
@@ -815,8 +815,8 @@ public class RdfCollector extends RDFHandlerBase {
 				} else if (predS.equals(PROV + "wasGeneratedBy"))
 				{
 					WasGeneratedBy wgb = pFactory.newWasGeneratedBy(
-							(QName) null, pFactory.newEntityRef(qname),
-							null, pFactory.newActivityRef(valueQ));
+							(QName) null, pFactory.newEntityRef(qname), null,
+							pFactory.newActivityRef(valueQ));
 
 					store(context, wgb);
 				} else if (predS.equals(PROV + "alternateOf"))

@@ -1,0 +1,9 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+<http://purl.org/twc/page/thoughts-from-the-dagstuhl-workshop>
+   a prov:Entity;
+   prov:wasAttributedTo <http://data.semanticweb.org/person/paul-groth>;
+.
+
+<http://data.semanticweb.org/person/paul-groth> a prov:Person, prov:Agent .
+

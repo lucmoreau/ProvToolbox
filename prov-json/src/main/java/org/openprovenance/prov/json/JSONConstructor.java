@@ -651,18 +651,34 @@ class JSONConstructor implements TreeConstructor {
 		// TODO Auto-generated method stub	
 	}
 
-
-	private String jsonRepresentation(Object value) {
+	private String jsonStringRepresentation(Object value) {
 		if (value instanceof QName) {
 			QName qname = (QName)value;
 			return qname.getPrefix() + ":" + qname.getLocalPart();
 		}
+		// default catch-all
 		return value.toString();
 	}
 	
+	private Object jsonRepresentation(Object value) {
+		if (value instanceof InternationalizedString) {
+			InternationalizedString intStr = (InternationalizedString)value;
+			return typedLiteral(intStr.getValue(), "xsd:string", intStr.getLang());
+		}
+		return jsonStringRepresentation(value);
+	}
+	
 	private Object convertAttribute(Attribute attr) {
-		String attr_name = jsonRepresentation(attr.getElementName());
-		return tuple(attr_name, typedLiteral(jsonRepresentation(attr.getValue()), attr.getXsdType(), null));
+		String attr_name = jsonStringRepresentation(attr.getElementName());
+		String datatype = attr.getXsdType();
+		Object value = attr.getValue();
+		Object attr_value;
+		if (datatype == null || value instanceof InternationalizedString)
+			attr_value = jsonRepresentation(attr.getValue());
+		else {
+			attr_value = typedLiteral(jsonStringRepresentation(value), datatype, null);
+		}
+		return tuple(attr_name, attr_value);
 	}
 	
 	@Override

@@ -75,11 +75,20 @@ public class RoundTripFromJavaTest extends TestCase {
 	makeDocAndTest(stment, file, null, check);
     }
     public void makeDocAndTest(Statement stment, Statement[] opt, String file) {
-	makeDocAndTest(stment, file, opt, true);
-    }
+    	makeDocAndTest(stment, file, opt, true);
+        }
+    public void makeDocAndTest(Statement [] stment, Statement[] opt, String file) {
+    	makeDocAndTest(stment, file, opt, true);
+        }
+    
     public void makeDocAndTest(Statement stment, String file, Statement[] opt, boolean check) {
+    	makeDocAndTest(new Statement[] {stment}, file, opt, check);
+    }
+    public void makeDocAndTest(Statement []stment, String file, Statement[] opt, boolean check) {
 	Document doc = pFactory.newDocument();
-	doc.getEntityOrActivityOrWasGeneratedBy().add(stment);
+	for (int i=0; i< stment.length; i++) {
+	   doc.getEntityOrActivityOrWasGeneratedBy().add(stment[i]);
+	}
 	updateNamespaces(doc);
 	
 	String file1=(opt==null) ? file : file+"-S";
@@ -1798,5 +1807,294 @@ public class RoundTripFromJavaTest extends TestCase {
            makeDocAndTest(mem, opt, "target/member3");
        }
      
-    
+       public void testScruffyGeneration1() throws JAXBException  {
+    	   WasGeneratedBy gen1 = pFactory.newWasGeneratedBy(q("gen1"),
+					pFactory.newEntityRef(q("e1")),
+					null,
+					pFactory.newActivityRef(q("a1")));
+	       gen1.setTime(pFactory.newTimeNow());
+	       WasGeneratedBy gen2 = pFactory.newWasGeneratedBy(q("gen1"),
+			          pFactory.newEntityRef(q("e1")),
+			        	null,
+			          pFactory.newActivityRef(q("a1")));
+	  	   gen2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
+   		   Entity e1=pFactory.newEntity(q("e1"));
+		   Activity a1=pFactory.newActivity(q("a1"));
+		   Statement [] opt=new Statement[] { e1, a1 };
+		   Statement [] statements=new Statement[] { gen1, gen2 };
+    	   makeDocAndTest(statements, opt , "target/scruffy-generation1");
+       }
+       
+       public void testScruffyGeneration2() throws JAXBException  {
+    	   WasGeneratedBy gen1 = pFactory.newWasGeneratedBy(q("gen1"),
+					pFactory.newEntityRef(q("e1")),
+					null,
+					pFactory.newActivityRef(q("a1")));
+	       gen1.setTime(pFactory.newTimeNow());
+	   	   gen1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", "xsd:string"));
+
+	       WasGeneratedBy gen2 = pFactory.newWasGeneratedBy(q("gen1"),
+			          pFactory.newEntityRef(q("e1")),
+			        	null,
+			          pFactory.newActivityRef(q("a1")));
+	  	   gen2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
+		   gen2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", "xsd:string"));
+   		   Entity e1=pFactory.newEntity(q("e1"));
+		   Activity a1=pFactory.newActivity(q("a1"));
+		   Statement [] opt=new Statement[] { e1, a1 };
+		   Statement [] statements=new Statement[] { gen1, gen2 };
+    	   makeDocAndTest(statements, opt , "target/scruffy-generation2");
+       }
+       
+       public void testScruffyInvalidation1() throws JAXBException  {
+    	   WasInvalidatedBy inv1 = pFactory.newWasInvalidatedBy(q("inv1"),
+					pFactory.newEntityRef(q("e1")),
+					pFactory.newActivityRef(q("a1")));
+	       inv1.setTime(pFactory.newTimeNow());
+	       WasInvalidatedBy inv2 = pFactory.newWasInvalidatedBy(q("inv1"),
+			          pFactory.newEntityRef(q("e1")),
+			          pFactory.newActivityRef(q("a1")));
+	  	   inv2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
+   		   Entity e1=pFactory.newEntity(q("e1"));
+		   Activity a1=pFactory.newActivity(q("a1"));
+		   Statement [] opt=new Statement[] { e1, a1 };
+		   Statement [] statements=new Statement[] { inv1, inv2 };
+    	   makeDocAndTest(statements, opt , "target/scruffy-invalidation1");
+       }
+       
+       public void testScruffyInvalidation2() throws JAXBException  {
+    	   WasInvalidatedBy inv1 = pFactory.newWasInvalidatedBy(q("inv1"),
+					pFactory.newEntityRef(q("e1")),
+					pFactory.newActivityRef(q("a1")));
+	       inv1.setTime(pFactory.newTimeNow());
+	   	   inv1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", "xsd:string"));
+
+	       WasInvalidatedBy inv2 = pFactory.newWasInvalidatedBy(q("inv1"),
+			          pFactory.newEntityRef(q("e1")),
+			          pFactory.newActivityRef(q("a1")));
+	  	   inv2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
+		   inv2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", "xsd:string"));
+
+   		   Entity e1=pFactory.newEntity(q("e1"));
+		   Activity a1=pFactory.newActivity(q("a1"));
+		   Statement [] opt=new Statement[] { e1, a1 };
+		   Statement [] statements=new Statement[] { inv1, inv2 };
+    	   makeDocAndTest(statements, opt , "target/scruffy-invalidation2");
+       }
+       
+       public void testScruffyUsage1() throws JAXBException  {
+    	   Used use1 = pFactory.newUsed(q("use1"),
+					pFactory.newActivityRef(q("a1")),
+					null,
+					pFactory.newEntityRef(q("e1")));
+	       use1.setTime(pFactory.newTimeNow());
+	       Used use2 = pFactory.newUsed(q("use1"),
+			          pFactory.newActivityRef(q("a1")),
+			        	null,
+			          pFactory.newEntityRef(q("e1")));
+	  	   use2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
+   		   Entity e1=pFactory.newEntity(q("e1"));
+		   Activity a1=pFactory.newActivity(q("a1"));
+		   Statement [] opt=new Statement[] { e1, a1 };
+		   Statement [] statements=new Statement[] { use1, use2 };
+    	   makeDocAndTest(statements, opt , "target/scruffy-usage1");
+       }
+       
+       public void testScruffyUsage2() throws JAXBException  {
+    	   Used use1 = pFactory.newUsed(q("use1"),
+					pFactory.newActivityRef(q("a1")),
+					null,
+					pFactory.newEntityRef(q("e1")));
+	       use1.setTime(pFactory.newTimeNow());
+	   	   use1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", "xsd:string"));
+
+	       Used use2 = pFactory.newUsed(q("use1"),
+			          pFactory.newActivityRef(q("a1")),
+			        	null,
+			          pFactory.newEntityRef(q("e1")));
+	  	   use2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
+		   use2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", "xsd:string"));
+
+   		   Entity e1=pFactory.newEntity(q("e1"));
+		   Activity a1=pFactory.newActivity(q("a1"));
+		   Statement [] opt=new Statement[] { e1, a1 };
+		   Statement [] statements=new Statement[] { use1, use2 };
+    	   makeDocAndTest(statements, opt , "target/scruffy-usage2");
+       }
+       
+       public void testScruffyStart1() throws JAXBException  {
+    	   WasStartedBy start1 = pFactory.newWasStartedBy(q("start1"),
+					pFactory.newActivityRef(q("a1")),
+					pFactory.newEntityRef(q("e1")));
+	       start1.setTime(pFactory.newTimeNow());
+
+	       WasStartedBy start2 = pFactory.newWasStartedBy(q("start1"),
+			          pFactory.newActivityRef(q("a1")),
+			          pFactory.newEntityRef(q("e1")));
+	  	   start2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
+
+   		   Entity e1=pFactory.newEntity(q("e1"));
+		   Activity a1=pFactory.newActivity(q("a1"));
+		   Statement [] opt=new Statement[] { e1, a1 };
+		   Statement [] statements=new Statement[] { start1, start2 };
+    	   makeDocAndTest(statements, opt , "target/scruffy-start1");
+       }
+       
+       public void testScruffyStart2() throws JAXBException  {
+    	   WasStartedBy start1 = pFactory.newWasStartedBy(q("start1"),
+					pFactory.newActivityRef(q("a1")),
+					pFactory.newEntityRef(q("e1")));
+	       start1.setTime(pFactory.newTimeNow());
+	   	   start1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", "xsd:string"));
+
+	       WasStartedBy start2 = pFactory.newWasStartedBy(q("start1"),
+			          pFactory.newActivityRef(q("a1")),
+			          pFactory.newEntityRef(q("e1")));
+	  	   start2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
+		   start2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", "xsd:string"));
+
+   		   Entity e1=pFactory.newEntity(q("e1"));
+		   Activity a1=pFactory.newActivity(q("a1"));
+		   Statement [] opt=new Statement[] { e1, a1 };
+		   Statement [] statements=new Statement[] { start1, start2 };
+    	   makeDocAndTest(statements, opt , "target/scruffy-start2");
+       }
+       
+       public void testScruffyStart3() throws JAXBException  {
+    	   WasStartedBy start1 = pFactory.newWasStartedBy(q("start1"),
+					pFactory.newActivityRef(q("a1")),
+					pFactory.newEntityRef(q("e1")));
+	       start1.setTime(pFactory.newTimeNow());
+	   	   start1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", "xsd:string"));
+	   	   start1.setStarter(pFactory.newActivityRef(q("a1s")));	
+
+	       WasStartedBy start2 = pFactory.newWasStartedBy(q("start1"),
+			          pFactory.newActivityRef(q("a1")),
+			          pFactory.newEntityRef(q("e1")));
+	  	   start2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
+		   start2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", "xsd:string"));
+		   start2.setStarter(pFactory.newActivityRef(q("a2s")));
+		   
+   		   Entity e1=pFactory.newEntity(q("e1"));
+		   Activity a1=pFactory.newActivity(q("a1"));
+		   Activity a2=pFactory.newActivity(q("a2"));
+		   Activity a2s=pFactory.newActivity(q("a2s"));
+		   Statement [] opt=new Statement[] { e1, a1, a2, a2s };
+		   Statement [] statements=new Statement[] { start1, start2 };
+    	   makeDocAndTest(statements, opt , "target/scruffy-start3");
+       }
+       
+       public void testScruffyStart4() throws JAXBException  {
+    	   WasStartedBy start1 = pFactory.newWasStartedBy(q("start1"),
+					pFactory.newActivityRef(q("a1")),
+					pFactory.newEntityRef(q("e1")));
+	       start1.setTime(pFactory.newTimeNow());
+	   	   start1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", "xsd:string"));
+	   	   start1.setStarter(pFactory.newActivityRef(q("a1s")));	
+
+	       WasStartedBy start2 = pFactory.newWasStartedBy(q("start1"),
+			          pFactory.newActivityRef(q("a2")),
+			          pFactory.newEntityRef(q("e2")));
+	  	   start2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
+		   start2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", "xsd:string"));
+		   start2.setStarter(pFactory.newActivityRef(q("a2s")));
+		   
+		   Entity e1=pFactory.newEntity(q("e1"));
+		   Activity a1=pFactory.newActivity(q("a1"));
+		   Activity a1s=pFactory.newActivity(q("a1s"));
+		   Entity e2=pFactory.newEntity(q("e2"));
+		   Activity a2=pFactory.newActivity(q("a2"));
+		   Activity a2s=pFactory.newActivity(q("a2s"));
+		   Statement [] opt=new Statement[] { e1, a1, a1s, e2, a2, a2s };
+		   Statement [] statements=new Statement[] { start1, start2 };
+    	   makeDocAndTest(statements, opt , "target/scruffy-start4");
+       }
+       
+       public void testScruffyEnd1() throws JAXBException  {
+    	   WasEndedBy end1 = pFactory.newWasEndedBy(q("end1"),
+					pFactory.newActivityRef(q("a1")),
+					pFactory.newEntityRef(q("e1")));
+	       end1.setTime(pFactory.newTimeNow());
+
+	       WasEndedBy end2 = pFactory.newWasEndedBy(q("end1"),
+			          pFactory.newActivityRef(q("a1")),
+			          pFactory.newEntityRef(q("e1")));
+	  	   end2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
+
+   		   Entity e1=pFactory.newEntity(q("e1"));
+		   Activity a1=pFactory.newActivity(q("a1"));
+		   Statement [] opt=new Statement[] { e1, a1 };
+		   Statement [] statements=new Statement[] { end1, end2 };
+    	   makeDocAndTest(statements, opt , "target/scruffy-end1");
+       }
+       
+       public void testScruffyEnd2() throws JAXBException  {
+    	   WasEndedBy end1 = pFactory.newWasEndedBy(q("end1"),
+					pFactory.newActivityRef(q("a1")),
+					pFactory.newEntityRef(q("e1")));
+	       end1.setTime(pFactory.newTimeNow());
+	   	   end1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", "xsd:string"));
+
+	       WasEndedBy end2 = pFactory.newWasEndedBy(q("end1"),
+			          pFactory.newActivityRef(q("a1")),
+			          pFactory.newEntityRef(q("e1")));
+	  	   end2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
+		   end2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", "xsd:string"));
+
+   		   Entity e1=pFactory.newEntity(q("e1"));
+		   Activity a1=pFactory.newActivity(q("a1"));
+		   Statement [] opt=new Statement[] { e1, a1 };
+		   Statement [] statements=new Statement[] { end1, end2 };
+    	   makeDocAndTest(statements, opt , "target/scruffy-end2");
+       }
+       
+       public void testScruffyEnd3() throws JAXBException  {
+    	   WasEndedBy end1 = pFactory.newWasEndedBy(q("end1"),
+					pFactory.newActivityRef(q("a1")),
+					pFactory.newEntityRef(q("e1")));
+	       end1.setTime(pFactory.newTimeNow());
+	   	   end1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", "xsd:string"));
+	   	   end1.setEnder(pFactory.newActivityRef(q("a1s")));	
+
+	       WasEndedBy end2 = pFactory.newWasEndedBy(q("end1"),
+			          pFactory.newActivityRef(q("a1")),
+			          pFactory.newEntityRef(q("e1")));
+	  	   end2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
+		   end2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", "xsd:string"));
+		   end2.setEnder(pFactory.newActivityRef(q("a2s")));
+		   
+   		   Entity e1=pFactory.newEntity(q("e1"));
+		   Activity a1=pFactory.newActivity(q("a1"));
+		   Activity a2=pFactory.newActivity(q("a2"));
+		   Activity a2s=pFactory.newActivity(q("a2s"));
+		   Statement [] opt=new Statement[] { e1, a1, a2, a2s };
+		   Statement [] statements=new Statement[] { end1, end2 };
+    	   makeDocAndTest(statements, opt , "target/scruffy-end3");
+       }
+       
+       public void testScruffyEnd4() throws JAXBException  {
+    	   WasEndedBy end1 = pFactory.newWasEndedBy(q("end1"),
+					pFactory.newActivityRef(q("a1")),
+					pFactory.newEntityRef(q("e1")));
+	       end1.setTime(pFactory.newTimeNow());
+	   	   end1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", "xsd:string"));
+	   	   end1.setEnder(pFactory.newActivityRef(q("a1s")));	
+
+	       WasEndedBy end2 = pFactory.newWasEndedBy(q("end1"),
+			          pFactory.newActivityRef(q("a2")),
+			          pFactory.newEntityRef(q("e2")));
+	  	   end2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
+		   end2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", "xsd:string"));
+		   end2.setEnder(pFactory.newActivityRef(q("a2s")));
+		   
+		   Entity e1=pFactory.newEntity(q("e1"));
+		   Activity a1=pFactory.newActivity(q("a1"));
+		   Activity a1s=pFactory.newActivity(q("a1s"));
+		   Entity e2=pFactory.newEntity(q("e2"));
+		   Activity a2=pFactory.newActivity(q("a2"));
+		   Activity a2s=pFactory.newActivity(q("a2s"));
+		   Statement [] opt=new Statement[] { e1, a1, a1s, e2, a2, a2s };
+		   Statement [] statements=new Statement[] { end1, end2 };
+    	   makeDocAndTest(statements, opt , "target/scruffy-end4");
+       }
 }

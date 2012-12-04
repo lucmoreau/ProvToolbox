@@ -129,6 +129,51 @@ public class RoundTripFromJavaTest extends
 	{
 		// TODO: Unsupported
 	}
+	
+	
+	public void testScruffyGeneration1() {
+		// TODO: Unsupported
+
+	}
+	  public void testScruffyGeneration2(){
+			// TODO: Unsupported  
+	  }
+	  public void testScruffyInvalidation1(){
+			// TODO: Unsupported  
+	  }
+	  public void testScruffyInvalidation2() {
+			// TODO: Unsupported  
+	  }
+	  public void testScruffyUsage1() {
+			// TODO: Unsupported  
+	  }
+	  public void testScruffyUsage2() {
+			// TODO: Unsupported    
+	  }
+	  public void testScruffyStart1() {
+			// TODO: Unsupported    		  
+	  }
+	  public void testScruffyStart2() {
+			// TODO: Unsupported    		  
+	  }
+	  public void testScruffyStart3() {
+			// TODO: Unsupported    		  
+	  }
+	  public void testScruffyStart4() {
+			// TODO: Unsupported    		  
+	  }
+	  public void testScruffyEnd1() {
+			// TODO: Unsupported    		  
+	  }
+	  public void testScruffyEnd2() {
+			// TODO: Unsupported    		  
+	  }
+	  public void testScruffyEnd3() {
+			// TODO: Unsupported    		  
+	  }
+	  public void testScruffyEnd4() {
+			// TODO: Unsupported    		  
+	  }
 
 	public void IGNOREtestExtraFilesOutsideRepository()
 	{

@@ -1784,7 +1784,8 @@ public class RoundTripFromJavaTest extends TestCase {
            HadMember mem = pFactory.newHadMember(pFactory.newEntityRef(q("c")),
                                                  pFactory.newEntityRef(q("e1")));
            Entity c=pFactory.newEntity(q("c")); 
-          
+           pFactory.addType(c, pFactory.newQName("prov:Collection"));
+
            Entity e1=pFactory.newEntity(q("e1"));
        	   Statement [] opt=new Statement[] { c, e1 };
            makeDocAndTest(mem, opt, "target/member1");

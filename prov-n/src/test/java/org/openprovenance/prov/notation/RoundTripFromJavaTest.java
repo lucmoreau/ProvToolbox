@@ -1,7 +1,5 @@
 package org.openprovenance.prov.notation;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -23,14 +21,12 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
     }  
     
     public boolean checkTest(String name) {
+	//TODO: prov-n does not support hadMember with multiple entities
 	return !(name.contains("member2") 
 		|| name.contains("member3"));
     }
     
-    public void writeDocument(Document doc, String file) {
-        String s=u.convertBeanToASN(doc);
-        writeTextToFile(s, file);
-    }
+    @Override
     public Document readDocument(String file1) {
 
         try {
@@ -42,13 +38,19 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
         }
     }
 
-    
-        
+    @Override
+    public void writeDocument(Document doc, String file) {
+	String s=u.convertBeanToASN(doc);
+	u.writeTextToFile(s, file);
+    }
+ 
 
-    /*
-    public void makeDocAndTestOLD(Statement statement, String file, Statement [] opt, boolean check) {
+
+    public void NOmakeDocAndTest(Statement [] statements, String file, Statement [] opt, boolean check) {
 	Document doc = pFactory.newDocument();
-	doc.getEntityOrActivityOrWasGeneratedBy().add(statement);
+	for (int i=0; i< statements.length; i++) {
+	    doc.getEntityOrActivityOrWasGeneratedBy().add(statements[i]);
+	}
 	updateNamespaces(doc);
 	
 	check= check && checkTest(file);
@@ -58,7 +60,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	file1=file1+extension();
 	
 	String s=u.convertBeanToASN(doc);
-	writeTextToFile(s, file1);
+	u.writeTextToFile(s, file1);
 	
 	Document doc2;
 	try {
@@ -71,7 +73,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 		file2=file2+extension();
 		
 		String s2=u.convertBeanToASN(doc);
-		writeTextToFile(s2, file2);
+		u.writeTextToFile(s2, file2);
 		
 		Document doc3=(Document) u.convertASNToJavaBean(file2);
 		compareDocuments(doc, doc3, check && checkTest(file2));
@@ -89,25 +91,8 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	
 
     }
-    */
+    
 
-    public void writeTextToFile(String text,
-                                String filename) {
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new FileWriter(filename));
-            writer.write(text);
-        }
-        catch (IOException e) {
-        }
-        finally {
-            try {
-                if (writer != null)
-                    writer.close( );
-            }
-            catch (IOException e) {}
-        }
-    }
     
 
  }

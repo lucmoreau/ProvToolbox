@@ -485,7 +485,7 @@ public class BeanTraversal {
 	                          c.convert((o.getGeneralEntity()==null) ? null : o.getGeneralEntity().getRef()),
 	                          c.convert((o.getBundle()==null) ? null: o.getBundle().getRef()));
     }
-
+    //TODO: only supporting one member in the relation
     // note: lots of test to support scruffy provenance
     public Object convert(HadMember o) {
 	return c.convertHadMember(c.convert((o.getCollection()==null) ? null: 	                                    

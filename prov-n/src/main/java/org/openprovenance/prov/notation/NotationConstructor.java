@@ -244,7 +244,7 @@ public class NotationConstructor implements TreeConstructor {
     }
 
     public Object convertHadMember(Object collection, Object entity) {
-	String s=keyword("hadMember") + "(" + collection + "," + entity + ")";
+	String s=keyword("hadMember") + "(" + optional(collection) + "," + optional(entity) + ")";
 	return s;
     }
 

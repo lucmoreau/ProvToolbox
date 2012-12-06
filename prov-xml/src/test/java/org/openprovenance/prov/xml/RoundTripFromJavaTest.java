@@ -309,7 +309,6 @@ public class RoundTripFromJavaTest extends TestCase {
 	addLabels(a);
 	addFurtherAttributes(a); 
        	makeDocAndTest(a,"target/entity9");
-       	System.out.println("entity9 test finishing normally");
     }
 
     public void testEntity10() throws JAXBException  {

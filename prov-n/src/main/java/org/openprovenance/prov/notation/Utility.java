@@ -124,6 +124,12 @@ public  class Utility {
         writeTextToFile(s,filename);
     }
     
+    public Document readDocument(String filename) throws IOException, Throwable {
+	 CommonTree tree = convertASNToTree(filename);
+         Object o=convertTreeToJavaBean(tree);
+         return (Document)o;
+    }
+    
 
 }
 

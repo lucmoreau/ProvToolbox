@@ -475,18 +475,26 @@ public class BeanTraversal {
 
     public Object convert(SpecializationOf o) {
 	return c.convertSpecializationOf(c.convert(o.getSpecializedEntity()
-	        .getRef()), c.convert(o.getGeneralEntity().getRef()));
+						    .getRef()),
+					 c.convert(o.getGeneralEntity()
+						    .getRef()));
     }
 
-    public Object convert(MentionOf o) {
+  public Object convert(MentionOf o) {
 	return c.convertMentionOf(c.convert((o.getSpecializedEntity()==null) ? null: o.getSpecializedEntity().getRef()),
 	                          c.convert((o.getGeneralEntity()==null) ? null : o.getGeneralEntity().getRef()),
 	                          c.convert((o.getBundle()==null) ? null: o.getBundle().getRef()));
     }
 
+    // note: lots of test to support scruffy provenance
     public Object convert(HadMember o) {
-	return c.convertHadMember(c.convert(o.getCollection().getRef()),
-	                          c.convert(o.getEntity().get(0).getRef()));
+	return c.convertHadMember(c.convert((o.getCollection()==null) ? null: 	                                    
+	                                      o.getCollection().getRef()),
+	                          ((o.getEntity()==null || (o.getEntity().isEmpty())) ?
+	                        	  c.convert(null) :
+	                        	  c.convert((o.getEntity().get(0)==null) ? 
+	                        		     null :
+	                        	             o.getEntity().get(0).getRef())));
     }
     
 	

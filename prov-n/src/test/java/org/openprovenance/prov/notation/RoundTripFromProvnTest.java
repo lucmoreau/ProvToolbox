@@ -1,21 +1,16 @@
 package org.openprovenance.prov.notation;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Arrays;
+import junit.framework.TestCase;
 
 
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.DocumentEquality;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
-import org.openprovenance.prov.xml.Statement;
-import org.openprovenance.prov.xml.UncheckedTestException;
 
 
-public class RoundTripFromProvnTest extends org.openprovenance.prov.xml.RoundTripFromJavaTest {
+public class RoundTripFromProvnTest extends TestCase {
     final Utility u=new Utility();
 
     public RoundTripFromProvnTest(String name) {

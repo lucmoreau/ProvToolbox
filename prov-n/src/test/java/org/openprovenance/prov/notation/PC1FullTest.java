@@ -60,7 +60,7 @@ public class PC1FullTest
         deserial.validateDocument(schemaFiles,new File("../prov-xml/target/pc1-full.xml"));
         
         String s=u.convertBeanToASN(c);
-        System.out.println(s);
+        //System.out.println(s);
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
 

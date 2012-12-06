@@ -59,9 +59,9 @@ public class GettersTest
         WasGeneratedBy wg1=pFactory.newWasGeneratedBy("wgb1", e1,"out",a3);
 
         
-	System.out.println(" method " + pUtil.getter(wg1,0));
-	System.out.println(" method " + pUtil.getter(wg1,1));
-	System.out.println(" method " + pUtil.getter(wg1,2));
+	// System.out.println(" method " + pUtil.getter(wg1,0));
+	// System.out.println(" method " + pUtil.getter(wg1,1));
+	// System.out.println(" method " + pUtil.getter(wg1,2));
 
 	assertTrue(pUtil.getter(wg1,0) == wg1.getId());
 	assertTrue(pUtil.getter(wg1,1) == wg1.getEntity());
@@ -69,15 +69,15 @@ public class GettersTest
 	assertEquals(pUtil.getter(wg1,3),wg1.getTime());
 	assertTrue(pUtil.getter(wg1,4) == wg1.getAny());
 
-	System.out.println(" wgb " + wg1);
+	// System.out.println(" wgb " + wg1);
 
-	System.out.println(" method " + pUtil.setter(wg1,0,a3.getId()));
-	System.out.println(" method " + pUtil.setter(wg1,1,pFactory.newEntityRef(e2.getId())));
-	System.out.println(" method " + pUtil.setter(wg1,2,wg1.getActivity()));
+	// System.out.println(" method " + pUtil.setter(wg1,0,a3.getId()));
+	// System.out.println(" method " + pUtil.setter(wg1,1,pFactory.newEntityRef(e2.getId())));
+	// System.out.println(" method " + pUtil.setter(wg1,2,wg1.getActivity()));
 
-	System.out.println(" method " + pUtil.setter(wg1,3,pFactory.newTimeNow()));
+	// System.out.println(" method " + pUtil.setter(wg1,3,pFactory.newTimeNow()));
 
-	System.out.println(" wgb " + wg1);
+	// System.out.println(" wgb " + wg1);
 
 	WasDerivedFrom wd1=pFactory.newWasDerivedFrom(e2,e1,a3,wg1,u1);
 

@@ -57,38 +57,45 @@ public class NotationConstructor implements TreeConstructor {
         return  s;
     }
 
-    public Object convertDocument(Object namespaces, List<Object> records, List<Object> bundles) {
-        String s=keyword("document") + breakline();
-	if (namespaces!=null) {
-	    if (namespaces instanceof Hashtable) {
-		Hashtable<String,String> nss=(Hashtable<String,String>) namespaces;
-	    // FIXME TODO: Should not be getting blank keys here.
-             if(nss.containsKey("")) {
-        	nss.put("_",  nss.get(""));
-        	nss.remove("");
+    public Object convertDocument(Object namespaces, List<Object> records,
+                                  List<Object> bundles) {
+        String s = keyword("document") + breakline();
+        if (namespaces != null) {
+            if (namespaces instanceof Hashtable) {
+                Hashtable<String, String> nss = (Hashtable<String, String>) namespaces;
+                // FIXME TODO: Should not be getting blank keys here.
+                if (nss.containsKey("")) {
+                    nss.put("_", nss.get(""));
+                    nss.remove("");
+                }
+                String def;
+                if ((def=nss.get("_"))!=null) {
+                    s = s + convertDefaultNamespace("<" + def + ">") + breakline();
+                }
+                 
+                for (String key : nss.keySet()) {
+                    String uri = nss.get(key);
+                    if (key.equals("_")) {
+                       // IGNORE, we have just handled it
+                    } else {
+                        s = s + convertNamespace(key, "<" + uri + ">")
+                                + breakline();
+                    }
+                }
+
+            } else {
+                s = s + namespaces + breakline();
+            }
         }
-		for (String key : nss.keySet()) {
-		    String uri=nss.get(key);
-		    if (key.equals("_")) {
-			s=s+convertDefaultNamespace("<"+uri+">")+breakline();
-		    } else {
-			s=s+convertNamespace(key, "<"+uri+">")+breakline();
-		    }
-		}
-		
-	    } else {
-		s=s+namespaces + breakline();
-	    }
-	}
-        for (Object o: records) {
-            s=s+o+breakline();
+        for (Object o : records) {
+            s = s + o + breakline();
         }
-	if (bundles!=null) {
-	    for (Object o: bundles) {
-		s=s+o+breakline();
-	    }
-	}
-        s=s+keyword("endDocument");
+        if (bundles != null) {
+            for (Object o : bundles) {
+                s = s + o + breakline();
+            }
+        }
+        s = s + keyword("endDocument");
         return s;
     }
 

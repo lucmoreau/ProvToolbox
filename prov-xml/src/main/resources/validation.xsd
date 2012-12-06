@@ -36,6 +36,7 @@
                                     type="val:ValidationReport" minOccurs="0" maxOccurs="unbounded" />
                         <xs:element name="malformedStatements" type="val:MalformedStatements"
 				    minOccurs="0" maxOccurs="1" />
+				        <xs:element name="deposited" type="xs:boolean"/>
 			<xs:element ref="prov:document"/>
 		</xs:sequence>
 		<xs:attribute ref="prov:id" />	

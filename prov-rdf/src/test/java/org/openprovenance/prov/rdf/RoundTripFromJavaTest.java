@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.UncheckedTestException;
@@ -71,6 +72,12 @@ public class RoundTripFromJavaTest extends
 		serial.serialiseDocument(sw, document, true);
 		return sw.toString();
 	}
+	
+	@Override
+	public void addFurtherAttributesWithQNames(HasExtensibility he) {
+	    //TODO: qnames not supported here, yet
+	}
+
 
 	public boolean mergeDuplicateProperties()
 	{

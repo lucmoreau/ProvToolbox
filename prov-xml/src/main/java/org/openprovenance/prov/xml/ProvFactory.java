@@ -544,6 +544,22 @@ public class ProvFactory {
 	return el;
     }
 
+    String qnameToString(QName qname) {
+        return ((qname.getPrefix().equals("")) 
+                ? ""
+                : (qname.getPrefix() + ":")) + qname.getLocalPart();
+    }
+    
+    public Element newElement(QName qname, QName value) {
+        org.w3c.dom.Document doc = builder.newDocument();
+        Element el = doc.createElementNS(qname.getNamespaceURI(), 
+                                         qnameToString(qname));
+        el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", "xsd:QName");
+        // add xmlns for prefix?
+        el.appendChild(doc.createTextNode(qnameToString(value)));
+        doc.appendChild(el);
+        return el;
+    }
     public CollectionMemberOf newCollectionMemberOf(QName id, EntityRef after,
 						    List<Entity> entitySet) {
 	CollectionMemberOf res = cof.createCollectionMemberOf();

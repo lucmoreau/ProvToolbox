@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.UncheckedTestException;
 
 import com.google.gson.Gson;
@@ -56,5 +57,11 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 			throw new UncheckedTestException(e);
 		}
 	}
+	
+	@Override
+        public void addFurtherAttributesWithQNames(HasExtensibility he) {
+            //TODO: qnames not supported here, yet
+        }
+
 
 }

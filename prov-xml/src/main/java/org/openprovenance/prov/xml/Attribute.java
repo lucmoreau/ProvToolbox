@@ -39,9 +39,18 @@ public class Attribute {
     }
 
     public String toString() {
-	if (val instanceof InternationalizedString) {
-	    InternationalizedString istring=(InternationalizedString) val;
-	    return elementName.getPrefix() + ":" + elementName.getLocalPart() + " = \"" + istring.getValue() + "\"@" + istring.getLang() + " %% " + xsdType;
+        if (val instanceof InternationalizedString) {
+            InternationalizedString istring=(InternationalizedString) val;
+            return elementName.getPrefix() + ":" + elementName.getLocalPart() + " = \"" + istring.getValue() + "\"@" + istring.getLang() + " %% " + xsdType;
+        } else if (val instanceof QName) {
+                QName qn=(QName) val;
+                String qnAsString;
+                if ((qn.getPrefix()==null) || (qn.getPrefix().equals(""))) {
+                    qnAsString=qn.getLocalPart();
+                } else {
+                    qnAsString=qn.getPrefix()+ ":" + qn.getLocalPart();
+                }
+                return elementName.getPrefix() + ":" + elementName.getLocalPart() + " = '" + qnAsString + "'";
 	} else {
 	    return elementName.getPrefix() + ":" + elementName.getLocalPart() + " = \"" + val + "\" %% " + xsdType;
 	}

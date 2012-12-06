@@ -19,7 +19,8 @@ public class RoundTripFromJavaTest extends TestCase {
     public static final String EX2_NS = "http://example2.org/";
     public static final String EX_PREFIX = "ex";
     public static final String EX2_PREFIX = "ex2";
-     
+    public static final String EX3_NS = "http://example3.org/";
+
     static final ProvUtilities util=new ProvUtilities();
 
 
@@ -30,6 +31,7 @@ public class RoundTripFromJavaTest extends TestCase {
     static Hashtable<String, String> updateNamespaces (Hashtable<String, String> nss) {
         nss.put(EX_PREFIX, EX_NS);
         nss.put(EX2_PREFIX, EX2_NS);
+        nss.put("_", EX3_NS);
 	return nss;
     }
     
@@ -220,20 +222,26 @@ public class RoundTripFromJavaTest extends TestCase {
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new java.math.BigDecimal(1.0)));
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Boolean(true)));
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Byte((byte) 123)));
+	
+	addFurtherAttributesWithQNames(he);
+	
 	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"london"));
    	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, w));
 	
     }
     
-    public void addFurtherLabelsPROBLEM(HasExtensibility he) {
-	
-   	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new QName(EX_NS, "london", EX_PREFIX)));
-	
-    }
+   
     
     ///////////////////////////////////////////////////////////////////////
     
+    public void addFurtherAttributesWithQNames(HasExtensibility he) {
+        he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new QName(EX2_NS,"newyork", EX2_PREFIX)));
+        he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new QName(EX_NS, "london", EX_PREFIX)));
+        he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new QName(EX3_NS, "london")));
+
+    }
+
     public void testEntity0() throws JAXBException  {
 	Entity a = pFactory.newEntity("ex:e0");
 	a.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), "xsd:string"));
@@ -301,6 +309,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	addLabels(a);
 	addFurtherAttributes(a); 
        	makeDocAndTest(a,"target/entity9");
+       	System.out.println("entity9 test finishing normally");
     }
 
     public void testEntity10() throws JAXBException  {
@@ -309,8 +318,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	addLocations(a);
 	addLabels(a);
 	addFurtherAttributes(a); 
-	addFurtherLabelsPROBLEM(a);
-       	makeDocAndTest(a,"target/entity10",false);
+       	makeDocAndTest(a,"target/entity10");
     }
 
 

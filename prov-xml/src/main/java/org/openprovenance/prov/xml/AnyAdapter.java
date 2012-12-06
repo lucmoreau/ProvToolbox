@@ -10,12 +10,31 @@ package org.openprovenance.prov.xml;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.namespace.QName;
 
 public class AnyAdapter
     extends XmlAdapter<Object,Attribute>
 {
 
     ProvFactory pFactory=new ProvFactory();
+    
+    public QName stringToQName(String id, org.w3c.dom.Element el) {
+        if (id == null)
+            return null;
+        int index = id.indexOf(':');
+        if (index == -1) {
+            QName qn= new QName(el.getAttribute("xmlns"), //what's the default?
+                                id);
+            return qn;
+        }
+        String prefix = id.substring(0, index);
+        String local = id.substring(index + 1, id.length());
+        QName qn= new QName(el.getAttributeNS("http://www.w3.org/2000/xmlns/", prefix),
+                         local,
+                         prefix);
+        return qn;
+    } 
+
 
     public Attribute unmarshal(Object value) {
         //System.out.println("AnyAdapter2 unmarshalling for " + value);
@@ -30,7 +49,10 @@ public class AnyAdapter
             String type=el.getAttributeNS(NamespacePrefixMapper.XSI_NS, "type");
             String lang=el.getAttributeNS(NamespacePrefixMapper.XML_NS, "lang");
             type=(type==null) ? "xsd:string" : type;
-	    if ((lang==null) || (lang.equals(""))) {
+            if (type.equals("xsd:QName")) {
+                QName qn=stringToQName(child,el);  // TODO: not robust to prefix not predeclared 
+                return pFactory.newAttribute(namespace,local,prefix, qn, type);
+            } else if ((lang==null) || (lang.equals(""))) {
 		return pFactory.newAttribute(namespace,local,prefix, pFactory.convertToJava(type, child), type);
 	    } else {
 		return pFactory.newAttribute(namespace,local,prefix, pFactory.newInternationalizedString(child,lang), type);
@@ -55,6 +77,9 @@ public class AnyAdapter
 				       istring.getValue(),
 				       attribute.getXsdType(),
 				       istring.getLang());
+	} else if (value instanceof QName) {
+            return pFactory.newElement(attribute.getElementName(), 
+                                       (QName)value);
 
 	} else {
 	    return pFactory.newElement(attribute.getElementName(), 

@@ -194,6 +194,16 @@ public class RdfConstructor implements TreeConstructor {
 				    InternationalizedString iString=(InternationalizedString)attr.getValue();
 				    value=iString.getValue();
 				    literalImpl = new LiteralImpl(value, iString.getLang());
+				} else if (attr.getValue() instanceof QName) {
+				    QName qn=(QName)attr.getValue();
+				    String qnAsString;
+				    if ((qn.getPrefix()==null) || (qn.getPrefix().equals(""))) {
+				        qnAsString=qn.getLocalPart();
+				    } else {
+				        qnAsString=qn.getPrefix()+ ":" + qn.getLocalPart();
+				    }
+				    literalImpl = new LiteralImpl(qnAsString, uriFromQName(type));
+
 				} else {
 				    value= attr.getValue().toString();
 				    literalImpl = new LiteralImpl(value, uriFromQName(type));

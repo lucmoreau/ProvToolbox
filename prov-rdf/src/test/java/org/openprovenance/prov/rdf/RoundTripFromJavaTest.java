@@ -123,18 +123,17 @@ public class RoundTripFromJavaTest extends
 	public void testMembership1() throws JAXBException
 	{
 	    
-	    //Problem with RDFConstructor: I don't seem to be able to generate a resource of type prov:Collection
-		// TODO: Unsupported
+		// TODO: RDF Collector doesn't support hadMember
 	}
 
 	public void testMembership2() throws JAXBException
 	{
-		// TODO: Unsupported
+		// TODO: Unsupported, no multiple members supported by toolbox
 	}
 
 	public void testMembership3() throws JAXBException
 	{
-		// TODO: Unsupported
+		// TODO: Unsupported, no multiple members supported by toolbox
 	}
 	
 	
@@ -181,6 +180,12 @@ public class RoundTripFromJavaTest extends
 	  public void testScruffyEnd4() {
 			// TODO: Unsupported    		  
 	  }
+	  public void testBundle1() {
+              // TODO: Rdf converter should generate multiple files                      
+          }
+	  public void testBundle2() {
+              // TODO: Rdf converter should generate multiple files                      
+          }
 
 	public void IGNOREtestExtraFilesOutsideRepository()
 	{

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
 import java.net.URI;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
@@ -87,9 +89,18 @@ public class RoundTripFromJavaTest extends TestCase {
     	makeDocAndTest(new Statement[] {stment}, file, opt, check);
     }
     public void makeDocAndTest(Statement []stment, String file, Statement[] opt, boolean check) {
+        makeDocAndTest(stment, null, file, opt, check);
+    }
+
+    public void makeDocAndTest(Statement []stment, NamedBundle[] bundles, String file, Statement[] opt, boolean check) {
 	Document doc = pFactory.newDocument();
 	for (int i=0; i< stment.length; i++) {
 	   doc.getEntityOrActivityOrWasGeneratedBy().add(stment[i]);
+	}
+	if (bundles!=null) {
+	    for (int j=0; j<bundles.length; j++) {
+	        doc.getEntityOrActivityOrWasGeneratedBy().add(bundles[j]);
+	    }
 	}
 	updateNamespaces(doc);
 	
@@ -1784,7 +1795,8 @@ public class RoundTripFromJavaTest extends TestCase {
            HadMember mem = pFactory.newHadMember(pFactory.newEntityRef(q("c")),
                                                  pFactory.newEntityRef(q("e1")));
            Entity c=pFactory.newEntity(q("c")); 
-          
+           pFactory.addType(c, pFactory.newQName("prov:Collection"));
+
            Entity e1=pFactory.newEntity(q("e1"));
        	   Statement [] opt=new Statement[] { c, e1 };
            makeDocAndTest(mem, opt, "target/member1");
@@ -2104,4 +2116,85 @@ public class RoundTripFromJavaTest extends TestCase {
 		   Statement [] statements=new Statement[] { end1, end2 };
     	   makeDocAndTest(statements, opt , "target/scruffy-end4");
        }
+       
+       public void testBundle1 () throws JAXBException {
+           Used use1 = pFactory.newUsed(q("use1"),
+                                        pFactory.newActivityRef(q("a1")),
+                                        null,
+                                        pFactory.newEntityRef(q("e1")));
+           Entity e1=pFactory.newEntity(q("e1"));
+           Activity a1=pFactory.newActivity(q("a1"));
+           List<Statement> st1=new LinkedList<Statement>(); 
+           st1.add(a1);
+           st1.add(e1);
+           st1.add(use1);
+
+           NamedBundle b1=pFactory.newNamedBundle(q("bundle1"), st1);
+           
+           Used use2 = pFactory.newUsed(q("use2"),
+                                        pFactory.newActivityRef(q("aa1")),
+                                        null,
+                                        pFactory.newEntityRef(q("ee1")));
+           Entity ee1=pFactory.newEntity(q("ee1"));
+           Activity aa1=pFactory.newActivity(q("aa1"));
+           List<Statement> st2=new LinkedList<Statement>(); 
+           st2.add(aa1);
+           st2.add(ee1);
+           st2.add(use1);
+
+           NamedBundle b2=pFactory.newNamedBundle(q("bundle2"), st2);
+           
+           Entity eb1=pFactory.newEntity(q("bundle1"));
+           pFactory.addType(eb1, pFactory.newQName("prov:Bundle"));
+           
+           Entity eb2=pFactory.newEntity(q("bundle2"));
+           pFactory.addType(eb2, pFactory.newQName("prov:Bundle"));
+
+           Statement [] statements=new Statement[] { eb1, eb2,};
+           NamedBundle [] bundles=new NamedBundle[] {  b1, b2 };
+
+           makeDocAndTest(statements, bundles, "target/bundle1", null, true);
+
+       }
+       
+       public void testBundle2 () throws JAXBException {
+           Used use1 = pFactory.newUsed(q("use1"),
+                                        pFactory.newActivityRef(q("a1")),
+                                        null,
+                                        pFactory.newEntityRef(q("e1")));
+           Entity e1=pFactory.newEntity(q("e1"));
+           Activity a1=pFactory.newActivity(q("a1"));
+           List<Statement> st1=new LinkedList<Statement>(); 
+           st1.add(a1);
+           st1.add(e1);
+           st1.add(use1);
+
+           NamedBundle b1=pFactory.newNamedBundle(q("bundle1"), st1);
+           
+           Used use2 = pFactory.newUsed(q("use2"),
+                                        pFactory.newActivityRef(q("e1")),
+                                        null,
+                                        pFactory.newEntityRef(q("a1")));
+           Entity ee1=pFactory.newEntity(q("a1"));
+           Activity aa1=pFactory.newActivity(q("e1"));
+           List<Statement> st2=new LinkedList<Statement>(); 
+           st2.add(aa1);
+           st2.add(ee1);
+           st2.add(use1);
+
+           NamedBundle b2=pFactory.newNamedBundle(q("bundle2"), st2);
+           
+           Entity eb1=pFactory.newEntity(q("bundle1"));
+           pFactory.addType(eb1, pFactory.newQName("prov:Bundle"));
+           
+           Entity eb2=pFactory.newEntity(q("bundle2"));
+           pFactory.addType(eb2, pFactory.newQName("prov:Bundle"));
+
+           Statement [] statements=new Statement[] { eb1, eb2,};
+           NamedBundle [] bundles=new NamedBundle[] {  b1, b2 };
+
+           makeDocAndTest(statements, bundles, "target/bundle2", null, true);
+
+       }
+
 }

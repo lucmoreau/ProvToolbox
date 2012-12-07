@@ -2,11 +2,15 @@ package org.openprovenance.prov.notation;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import  org.antlr.runtime.CommonTokenStream;
 import  org.antlr.runtime.ANTLRFileStream;
 import  org.antlr.runtime.CharStream;
+import org.antlr.runtime.RecognitionException;
 import  org.antlr.runtime.Token;
+import org.antlr.runtime.TokenStream;
 import  org.antlr.runtime.tree.CommonTree;
 import  org.antlr.runtime.tree.CommonTreeAdaptor;
 import  org.antlr.runtime.tree.TreeAdaptor;
@@ -17,12 +21,27 @@ import org.openprovenance.prov.xml.BeanTraversal;
 
 
 public  class Utility {
+    
+    class ParserWithErrorHandling extends PROV_NParser {
+	public void reportError(RecognitionException re) {
+	    super.reportError(re);
+	    errors.add(re);
+	}
+	
+	public List<RecognitionException> errors=new LinkedList<RecognitionException>();
+
+	public ParserWithErrorHandling(TokenStream input) {
+	    super(input);
+	}
+	
+    }
 
     public PROV_NParser getParserForFile(String file) throws java.io.IOException, Throwable {
         CharStream input = new ANTLRFileStream(file);
         PROV_NLexer lex = new PROV_NLexer(input);
         CommonTokenStream tokens = new  CommonTokenStream(lex);
-        PROV_NParser parser = new PROV_NParser(tokens);
+        //PROV_NParser parser = new PROV_NParser(tokens);
+        PROV_NParser parser = new ParserWithErrorHandling(tokens);
 
         return parser;
     }

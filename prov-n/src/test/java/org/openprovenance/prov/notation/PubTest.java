@@ -70,7 +70,8 @@ public class PubTest
             ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
             serial.serialiseDocument(new File(file2),(Document)o2,true);
 
-            System.out.println("tree is " + o3);
+            //System.out.println("tree is " + o3);
+            assertTrue(true);
         } catch (JAXBException e) {
             e.printStackTrace();
         }

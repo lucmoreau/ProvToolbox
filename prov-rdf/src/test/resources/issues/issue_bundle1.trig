@@ -1,0 +1,20 @@
+
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix ex: <http://example.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+ex:top
+{ ex:e2 rdf:type prov:Entity . 
+  ex:bundle1 rdf:type prov:Bundle .
+  ex:bundle2 rdf:type prov:Bundle .
+}
+
+ex:bundle1 
+{ ex:a1 rdf:type prov:Activity. 
+  ex:e2 rdf:type prov:Entity .
+  ex:a1 prov:used ex:e1  }
+
+ex:bundle2 
+{ ex:aa1 rdf:type prov:Entity. 
+  ex:ee2 rdf:type prov:Activity .
+  ex:ee2 prov:used ex:aa1  }

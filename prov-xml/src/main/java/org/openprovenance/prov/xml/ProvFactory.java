@@ -636,7 +636,7 @@ Document res = of.createDocument();
 return res;
     }
 
-    /*
+   /*
     public Bundle newBundle(String id, Collection<Activity> ps,
 			    Collection<Entity> as, Collection<Agent> ags,
 			    Collection<Object> lks) {
@@ -857,13 +857,24 @@ return res;
 	return res;
     }
 
-    
+    public NamedBundle newNamedBundle(QName id, 
+                                      Collection<Statement> lks) {
+        NamedBundle res = of.createNamedBundle();
+        res.setId(id);
+       
+        if (lks != null) {
+            res.getEntityOrActivityOrWasGeneratedBy().addAll(lks);
+        }
+        return res;
+    }
 
     public NamedBundle newNamedBundle(QName id, Collection<Activity> ps,
 				      Collection<Entity> as,
 				      Collection<Agent> ags,
 				      Collection<Statement> lks) {
 	NamedBundle res = of.createNamedBundle();
+        res.setId(id);
+
 	if (ps!=null) {
 	  res.getEntityOrActivityOrWasGeneratedBy().addAll(ps);
 	}

@@ -180,6 +180,12 @@ public class RoundTripFromJavaTest extends
 	  public void testScruffyEnd4() {
 			// TODO: Unsupported    		  
 	  }
+	  public void testBundle1() {
+              // TODO: Rdf converter should generate multiple files                      
+          }
+	  public void testBundle2() {
+              // TODO: Rdf converter should generate multiple files                      
+          }
 
 	public void IGNOREtestExtraFilesOutsideRepository()
 	{

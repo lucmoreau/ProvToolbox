@@ -153,19 +153,18 @@ public  class ProvConstructor implements TreeConstructor {
         for (Object o: records) {
            stments.add((Statement)o); 
         }
-        Document c=pFactory.newDocument();
-        c.getEntityOrActivityOrWasGeneratedBy().addAll(stments);
+        Document doc=pFactory.newDocument();
+        doc.getEntityOrActivityOrWasGeneratedBy().addAll(stments);
         
         //System.out.println("Bundle namespaces " + namespaceTable);
-        c.setNss(namespaceTable);
+        doc.setNss(namespaceTable);
 
         if (bundles!=null) {
-            List<NamedBundle> nbs=u.getNamedBundle(c);
             for (Object o: bundles) {
-                nbs.add((NamedBundle) o);
+                doc.getEntityOrActivityOrWasGeneratedBy().add((NamedBundle) o);
             }
         }
-        return c;
+        return doc;
     }
 
     

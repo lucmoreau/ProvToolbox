@@ -141,4 +141,19 @@ public class RoundTripFromRdfTest extends TestCase {
 	{
 		testProperty("qualifiedRevision", true);
 	}
+	private void testBundleWithTrig(String issueName) throws Exception
+	{
+		loadFromRdfSaveAndReload("issues/issue_" + issueName + ".trig", true);
+	}
+	public void testBundle() throws Exception
+	{
+	    try {
+		testBundleWithTrig("bundle1");
+	    } catch (Exception e) {
+	        assertTrue(true);
+	    }
+	}
+
+
+
 }

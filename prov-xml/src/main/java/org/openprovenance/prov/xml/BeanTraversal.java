@@ -49,6 +49,8 @@ public class BeanTraversal {
 	List<Object> eRecords = new LinkedList<Object>();
 	List<Object> agRecords = new LinkedList<Object>();
 
+	Object bundleId=c.convert(b.getId());
+	c.startBundle(bundleId);
 	for (Entity e : u.getEntity(b)) {
 	    eRecords.add(convert(e));
 	}
@@ -63,7 +65,7 @@ public class BeanTraversal {
 	    if (o != null)
 		lnkRecords.add(o);
 	}
-	return c.convertNamedBundle(c.convert(b.getId()), b.getNss(), aRecords,
+	return c.convertNamedBundle(bundleId, b.getNss(), aRecords,
 	                            eRecords, agRecords, lnkRecords);
     }
 

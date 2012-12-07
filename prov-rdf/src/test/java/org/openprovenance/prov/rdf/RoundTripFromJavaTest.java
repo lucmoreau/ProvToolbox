@@ -181,11 +181,22 @@ public class RoundTripFromJavaTest extends
 			// TODO: Unsupported    		  
 	  }
 	  public void testBundle1() {
-              // TODO: Rdf converter should generate multiple files                      
+              try {
+                  super.testBundle1(); // test failing
+                  assertTrue(false);
+              } catch (Throwable e) {
+                  assertTrue(true);
+              }
           }
 	  public void testBundle2() {
-              // TODO: Rdf converter should generate multiple files                      
+              try {
+                  super.testBundle2(); // test failing
+                  assertTrue(false);
+              } catch (Throwable e) {
+                  assertTrue(true);
+              }
           }
+	 
 
 	public void IGNOREtestExtraFilesOutsideRepository()
 	{

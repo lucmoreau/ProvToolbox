@@ -2,6 +2,7 @@ package org.openprovenance.prov.rdf;
 
 import java.net.URI;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -16,6 +17,7 @@ import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.xml.Used;
 import org.openrdf.elmo.ElmoManager;
 import org.openrdf.elmo.sesame.SesameManager;
+import org.openrdf.model.Resource;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.StatementImpl;
 import org.openrdf.model.impl.URIImpl;
@@ -95,18 +97,24 @@ public class RdfConstructor implements TreeConstructor {
 		return null;
 	}
 
+        public List<Resource> contexts=new LinkedList<Resource>();
+        
+
 	public void startBundle(Object bundleId)
 	{
+	    System.out.println("$$$$$$$$$$$$ in startBundle");
 		// TODO: bundle name does not seem to be interpreted according to the
 		// prefix declared in bundle.
 		// TODO: handle prefix declarations
 		QName qname = getQName(bundleId);
+		URIImpl uri=new URIImpl(qname.getNamespaceURI()
+                                    + qname.getLocalPart());
+		contexts.add(uri);
 		if (qname != null)
 		{
 			((SesameManager) manager).getConnection()
 					.setAddContexts(
-							new URIImpl(qname.getNamespaceURI()
-									+ qname.getLocalPart()));
+							uri);
 		}
 
 	}

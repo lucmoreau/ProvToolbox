@@ -39,7 +39,7 @@ public interface BeanConstructor {
     public Object convertAttributeValue(org.w3c.dom.Element a);
     public Object convertAttribute(Object name, Object value);
     public Object convertTypedLiteral(String datatype, Object value);
-
+    public void startBundle(Object bundleId);
     public Object convertBundle(Object namespaces,
 				List<Object> sRecords,
 				List<Object> bRecords);

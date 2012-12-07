@@ -419,4 +419,11 @@ public class BeanTreeConstructor implements BeanConstructor{
         return c.convertBundle(id,namespaces,ll);
     }
 
+
+
+    @Override
+    public void startBundle(Object bundleId) {
+        c.startBundle(bundleId);   
+    }
+
 }

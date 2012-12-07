@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
@@ -16,6 +17,7 @@ import org.openrdf.elmo.ElmoManagerFactory;
 import org.openrdf.elmo.ElmoModule;
 import org.openrdf.elmo.sesame.SesameManager;
 import org.openrdf.elmo.sesame.SesameManagerFactory;
+import org.openrdf.model.Resource;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -67,9 +69,11 @@ public class Utility {
 
 	BeanTraversal bt = new BeanTraversal(new BeanTreeConstructor(pFactory, rdfc));
 	bt.convert(document);
+	
+        List<Resource> contexts=rdfc.contexts;
 
 	//System.out.println("namespaces " + rdfc.getNamespaceTable());
-	rHelper.dumpToRDF(new File(filename), (SesameManager) manager, format,
+	rHelper.dumpToRDF(filename, (SesameManager) manager, format, contexts,
 			  rdfc.getNamespaceTable());
     }
 

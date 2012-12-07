@@ -180,22 +180,8 @@ public class RoundTripFromJavaTest extends
 	  public void testScruffyEnd4() {
 			// TODO: Unsupported    		  
 	  }
-	  public void testBundle1() {
-              try {
-                  super.testBundle1(); // test failing
-                  assertTrue(false);
-              } catch (Throwable e) {
-                  assertTrue(true);
-              }
-          }
-	  public void testBundle2() {
-              try {
-                  super.testBundle2(); // test failing
-                  assertTrue(false);
-              } catch (Throwable e) {
-                  assertTrue(true);
-              }
-          }
+
+	  
 	 
 
 	public void IGNOREtestExtraFilesOutsideRepository()

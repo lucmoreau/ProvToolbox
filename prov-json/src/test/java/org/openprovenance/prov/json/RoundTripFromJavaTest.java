@@ -58,10 +58,4 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 		}
 	}
 	
-	@Override
-        public void addFurtherAttributesWithQNames(HasExtensibility he) {
-            //TODO: qnames not supported here, yet
-        }
-
-
 }

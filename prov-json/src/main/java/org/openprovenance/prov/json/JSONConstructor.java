@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.apache.log4j.Logger;
 import org.openprovenance.prov.notation.TreeConstructor;
 import org.openprovenance.prov.notation.TreeTraversal;
 import org.openprovenance.prov.notation.Utility;
@@ -43,6 +44,8 @@ class ProvRecord {
 
 @SuppressWarnings("unchecked")
 class JSONConstructor implements TreeConstructor {
+	static Logger logger = Logger.getLogger(JSONConstructor.class);
+	
 	public static void main(String[] args)  {
         try {
             Utility u=new Utility();
@@ -72,6 +75,8 @@ class JSONConstructor implements TreeConstructor {
 	}
 
 	private static final Map<String,Integer> countMap = new HashMap<String, Integer>();
+	private String defaultNamespace = null;
+	
 	private static String getBlankID(String type) {
 		if (!countMap.containsKey(type)) {
 			countMap.put(type, 0);
@@ -654,7 +659,23 @@ class JSONConstructor implements TreeConstructor {
 	private String jsonStringRepresentation(Object value) {
 		if (value instanceof QName) {
 			QName qname = (QName)value;
-			return qname.getPrefix() + ":" + qname.getLocalPart();
+			String prefix = qname.getPrefix();
+			String localPart = qname.getLocalPart();
+			String namespaceURI = qname.getNamespaceURI();
+			if (prefix == null || prefix.isEmpty()) {
+				// Assuming the default namespace is use
+				if (defaultNamespace == null) {
+					logger.warn("No default namespace defined. The encoding for the following QName will be ambiguous: " + qname.toString());
+					logger.warn("Use the QName's namepsace as the default one: " + namespaceURI);
+					assignDefaultNamespace(namespaceURI);
+				}
+				// Check if the defaultNamespace is actually used in the QName
+				else if (!defaultNamespace.equals(qname.getNamespaceURI())) {
+					logger.warn("The following QName has a different namespace URI than the current default namespace: " + qname.toString());
+				}
+				return localPart;
+			}
+			return  prefix + ":" + localPart;
 		}
 		// default catch-all
 		return value.toString();
@@ -770,13 +791,26 @@ class JSONConstructor implements TreeConstructor {
 		}
 	}
 
+	private void assignDefaultNamespace(String iri) {
+		if (defaultNamespace != null) {
+			logger.warn("A default namespace is already defined: " + defaultNamespace);
+			logger.warn("Overwriting the default namespace with " + iri);
+		}
+		this.defaultNamespace = (String)iri;
+	}
+	
 	@Override
 	public Object convertNamespace(Object pre, Object iri) {
+		// Temporary hack to deal with _ prefix for the default namespace
+		if (pre.equals('_')) {
+			assignDefaultNamespace((String)iri);
+		}
 		return tuple(pre, unwrap((String)iri));
 	}
 
 	@Override
 	public Object convertDefaultNamespace(Object iri) {
+		assignDefaultNamespace((String)iri);
 		return tuple("default", unwrap((String)iri));
 	}
 

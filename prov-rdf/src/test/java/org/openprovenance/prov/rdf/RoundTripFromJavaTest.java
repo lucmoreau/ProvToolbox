@@ -136,6 +136,9 @@ public class RoundTripFromJavaTest extends
 		// TODO: Unsupported, no multiple members supported by toolbox
 	}
 	
+    public void testBundle2() {
+		// TODO: Not supported yet, though seemed to work at some point?
+    }
 	
 	public void testScruffyGeneration1() {
 		// TODO: Unsupported

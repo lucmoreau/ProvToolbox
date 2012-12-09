@@ -14,7 +14,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-
 import org.openprovenance.prov.xml.collection.CollectionMemberOf;
 import org.openprovenance.prov.xml.collection.DerivedByInsertionFrom;
 import org.openprovenance.prov.xml.collection.DerivedByRemovalFrom;
@@ -27,9 +26,13 @@ import javax.xml.parsers.ParserConfigurationException;
 
 /** A stateless factory for PROV objects. */
 
-public class ProvFactory {
+public class ProvFactory implements BeanConstructor {
+
+    static public DocumentBuilder builder;
 
     public static final String DEFAULT_NS = "_";
+
+    private final static ProvFactory oFactory = new ProvFactory();
 
     public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.collection:org.openprovenance.prov.xml.validation";
 
@@ -37,25 +40,13 @@ public class ProvFactory {
 	initBuilder();
     }
 
-    public static String printURI(java.net.URI u) {
-	return u.toString();
-    }
-
-    /** Note, this method now makes it stateful :-( */
-    private Hashtable<String, String> namespaces = null;
-
-    private final static ProvFactory oFactory = new ProvFactory();
-
-    static public DocumentBuilder builder;
-
     public static ProvFactory getFactory() {
 	return oFactory;
     }
 
     static void initBuilder() {
 	try {
-	    DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
-		    .newInstance();
+	    DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 	    docBuilderFactory.setNamespaceAware(true);
 	    builder = docBuilderFactory.newDocumentBuilder();
 	} catch (ParserConfigurationException ex) {
@@ -63,24 +54,31 @@ public class ProvFactory {
 	}
     }
 
-    protected ObjectFactory of;
+    public static String printURI(java.net.URI u) {
+	return u.toString();
+    }
+
     final protected org.openprovenance.prov.xml.collection.ObjectFactory cof;
-    final protected org.openprovenance.prov.xml.validation.ObjectFactory vof;
 
     protected DatatypeFactory dataFactory;
+    /** Note, this method now makes it stateful :-( */
+    private Hashtable<String, String> namespaces = null;
+    protected ObjectFactory of;
+
+    final protected org.openprovenance.prov.xml.validation.ObjectFactory vof;
 
     public ProvFactory() {
 	of = new ObjectFactory();
 	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
-    	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
+	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	init();
 	setNamespaces(new Hashtable<String, String>());
     }
 
     public ProvFactory(Hashtable<String, String> namespaces) {
-    	of = new ObjectFactory();
-    	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
-    	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
+	of = new ObjectFactory();
+	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
+	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	this.namespaces = namespaces;
 	init();
     }
@@ -88,32 +86,26 @@ public class ProvFactory {
     public ProvFactory(ObjectFactory of) {
 	this.of = of;
 	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
-    	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
+	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	init();
 	setNamespaces(new Hashtable<String, String>());
     }
 
-    
-
-    public org.openprovenance.prov.xml.validation.ObjectFactory getValidationObjectFactory() {
-		return vof;
-	}public org.openprovenance.prov.xml.collection.ObjectFactory getCollectionObjectFactory() {
-		return cof;
-	}
-	
     public void addAttribute(HasExtensibility a, Attribute o) {
 	a.getAny().add(o);
     }
 
     public void addAttribute(HasExtensibility a, String namespace,
-                             String localName, String prefix, Object value) {
+			     String localName, String prefix, Object value) {
 
-        a.getAny().add(newAttribute(namespace, localName, prefix, value));
+	a.getAny().add(newAttribute(namespace, localName, prefix, value));
     }
-    public void addAttribute(HasExtensibility a, String namespace,
-                             String localName, String prefix, Object value, String type) {
 
-        a.getAny().add(newAttribute(namespace, localName, prefix, value, type));
+    public void addAttribute(HasExtensibility a, String namespace,
+			     String localName, String prefix, Object value,
+			     String type) {
+
+	a.getAny().add(newAttribute(namespace, localName, prefix, value, type));
     }
 
     public ActedOnBehalfOf addAttributes(ActedOnBehalfOf from,
@@ -207,7 +199,6 @@ public class ProvFactory {
 	return to;
     }
 
-
     public WasInformedBy addAttributes(WasInformedBy from, WasInformedBy to) {
 	to.getLabel().addAll(from.getLabel());
 	to.getType().addAll(from.getType());
@@ -215,16 +206,15 @@ public class ProvFactory {
 	return to;
     }
 
-        public WasInvalidatedBy addAttributes(WasInvalidatedBy from,
-        				  WasInvalidatedBy to) {
-        to.getLabel().addAll(from.getLabel());
-        to.getType().addAll(from.getType());
-        to.getLocation().addAll(from.getLocation());
-        to.getRole().addAll(from.getRole());
-        to.getAny().addAll(from.getAny());
-        return to;
-        }
-
+    public WasInvalidatedBy addAttributes(WasInvalidatedBy from,
+					  WasInvalidatedBy to) {
+	to.getLabel().addAll(from.getLabel());
+	to.getType().addAll(from.getType());
+	to.getLocation().addAll(from.getLocation());
+	to.getRole().addAll(from.getRole());
+	to.getAny().addAll(from.getAny());
+	return to;
+    }
 
     public WasStartedBy addAttributes(WasStartedBy from, WasStartedBy to) {
 	to.getLabel().addAll(from.getLabel());
@@ -243,65 +233,35 @@ public class ProvFactory {
 	a.getLabel().add(newInternationalizedString(label, language));
     }
 
+    public void addPrimarySourceType(HasType a) {
+	a.getType().add(newQName("prov:PrimarySource"));
+    }
+
+    public void addQuotationType(HasType a) {
+	a.getType().add(newQName("prov:Quotation"));
+    }
+
+    public void addRevisionType(HasType a) {
+	a.getType().add(newQName("prov:Revision"));
+    }
+
+ 
     public void addRole(HasRole a, Object role) {
 	if (role != null) {
 	    a.getRole().add(role);
 	}
     }
 
-    /*
-    public DependencyRef newDependencyRef(WasDerivedFrom edge) {
-	DependencyRef res = of.createDependencyRef();
-	res.setRef(edge.getId());
-	return res;
-    }
-
-    public DependencyRef newDependencyRef(WasInformedBy edge) {
-	DependencyRef res = of.createDependencyRef();
-	res.setRef(edge.getId());
-	return res;
-    }
-    */
-
     public void addType(HasType a, Object type) {
 
 	a.getType().add(type);
     }
-    
-    public void addRevisionType(HasType a) {
-        a.getType().add(newQName("prov:Revision"));
-    }
-    public void addPrimarySourceType(HasType a) {
-        a.getType().add(newQName("prov:PrimarySource"));
-    }
-    public void addQuotationType(HasType a) {
-        a.getType().add(newQName("prov:Quotation"));
-    }
-    
 
     public void addType(HasType a, URI type) {
 	URIWrapper u = new URIWrapper();
 	u.setValue(type);
 	a.getType().add(u);
     }
-
-    /*
-    public void addTypeOLD(HasExtensibility a, Object type) {
-
-	// TypedLiteral tl=newTypedLiteral(type);
-	JAXBElement<Object> je = of.createType(type);
-	addAttribute(a, je);
-
-    }
-
-    public void addTypeOLD(HasExtensibility a, URI type) {
-
-	URIWrapper u = new URIWrapper();
-	u.setValue(type);
-	JAXBElement<Object> je = of.createType(u);
-	addAttribute(a, je);
-    }
-    */
 
     /**
      * By default, no auto generation of Id. Override this behaviour if
@@ -319,6 +279,90 @@ public class ProvFactory {
 	return id;
     }
 
+    /*
+     * public void addTypeOLD(HasExtensibility a, Object type) {
+     * 
+     * // TypedLiteral tl=newTypedLiteral(type); JAXBElement<Object> je =
+     * of.createType(type); addAttribute(a, je);
+     * 
+     * }
+     * 
+     * public void addTypeOLD(HasExtensibility a, URI type) {
+     * 
+     * URIWrapper u = new URIWrapper(); u.setValue(type); JAXBElement<Object> je
+     * = of.createType(u); addAttribute(a, je); }
+     */
+
+    public Object convertToJava(String datatype, String value) {
+	if (datatype.equals("xsd:string"))
+	    return value;
+
+	if (datatype.equals("xsd:int"))
+	    return Integer.parseInt(value);
+	if (datatype.equals("xsd:long"))
+	    return Long.parseLong(value);
+	if (datatype.equals("xsd:short"))
+	    return Short.parseShort(value);
+	if (datatype.equals("xsd:double"))
+	    return Double.parseDouble(value);
+	if (datatype.equals("xsd:float"))
+	    return Float.parseFloat(value);
+	if (datatype.equals("xsd:decimal"))
+	    return new java.math.BigDecimal(value);
+	if (datatype.equals("xsd:boolean"))
+	    return Boolean.parseBoolean(value);
+	if (datatype.equals("xsd:byte"))
+	    return Byte.parseByte(value);
+	if (datatype.equals("xsd:unsignedInt"))
+	    return Long.parseLong(value);
+	if (datatype.equals("xsd:unsignedShort"))
+	    return Integer.parseInt(value);
+	if (datatype.equals("xsd:unsignedByte"))
+	    return Short.parseShort(value);
+	if (datatype.equals("xsd:unsignedLong"))
+	    return new java.math.BigInteger(value);
+	if (datatype.equals("xsd:integer"))
+	    return new java.math.BigInteger(value);
+	if (datatype.equals("xsd:nonNegativeInteger"))
+	    return new java.math.BigInteger(value);
+	if (datatype.equals("xsd:nonPositiveInteger"))
+	    return new java.math.BigInteger(value);
+	if (datatype.equals("xsd:positiveInteger"))
+	    return new java.math.BigInteger(value);
+
+	if (datatype.equals("xsd:anyURI")) {
+	    URIWrapper u = new URIWrapper();
+	    u.setValue(URI.create(value));
+	    return u;
+	}
+	if (datatype.equals("xsd:QName")) {
+	    return newQName(value);
+	}
+
+	if ((datatype.equals("xsd:dateTime"))
+		|| (datatype.equals("rdf:XMLLiteral"))
+		|| (datatype.equals("xsd:normalizedString"))
+		|| (datatype.equals("xsd:token"))
+		|| (datatype.equals("xsd:language"))
+		|| (datatype.equals("xsd:Name"))
+		|| (datatype.equals("xsd:NCName"))
+		|| (datatype.equals("xsd:NMTOKEN"))
+		|| (datatype.equals("xsd:hexBinary"))
+		|| (datatype.equals("xsd:base64Binary"))) {
+
+	    throw new UnsupportedOperationException(
+						    "KNOWN literal type but conversion not supported yet "
+							    + datatype);
+	}
+
+	throw new UnsupportedOperationException("UNKNOWN literal type "
+		+ datatype);
+    }
+
+    public org.openprovenance.prov.xml.collection.ObjectFactory getCollectionObjectFactory() {
+	return cof;
+    }
+
     /* Return the first label, it it exists */
     public String getLabel(HasExtensibility e) {
 
@@ -328,6 +372,20 @@ public class ProvFactory {
 	if (e instanceof HasLabel)
 	    return labels.get(0).getValue();
 	return "pFact: label TODO";
+    }
+
+    public String getNamespace(String prefix) {
+	if ((prefix == null) || ("".equals(prefix)))
+	    return namespaces.get(DEFAULT_NS);
+	if (prefix.equals(NamespacePrefixMapper.PROV_PREFIX))
+	    return NamespacePrefixMapper.PROV_NS;
+	if (prefix.equals(NamespacePrefixMapper.XSD_PREFIX))
+	    return NamespacePrefixMapper.XSD_NS;
+	return namespaces.get(prefix);
+    }
+
+    public Hashtable<String, String> getNss() {
+	return namespaces;
     }
 
     public ObjectFactory getObjectFactory() {
@@ -350,6 +408,38 @@ public class ProvFactory {
 	return res;
     }
 
+    public org.openprovenance.prov.xml.validation.ObjectFactory getValidationObjectFactory() {
+	return vof;
+    }
+
+    public String getXsdType(Object o) {
+	if (o instanceof Integer)
+	    return "xsd:int";
+	if (o instanceof String)
+	    return "xsd:string";
+	if (o instanceof InternationalizedString)
+	    return "xsd:string";
+	if (o instanceof Long)
+	    return "xsd:long";
+	if (o instanceof Short)
+	    return "xsd:short";
+	if (o instanceof Double)
+	    return "xsd:double";
+	if (o instanceof Float)
+	    return "xsd:float";
+	if (o instanceof java.math.BigDecimal)
+	    return "xsd:decimal";
+	if (o instanceof Boolean)
+	    return "xsd:boolean";
+	if (o instanceof Byte)
+	    return "xsd:byte";
+	if (o instanceof URIWrapper)
+	    return "xsd:anyURI";
+	if (o instanceof QName)
+	    return "xsd:QName";
+	return "xsd:UNKNOWN";
+    }
+
     void init() {
 	try {
 	    dataFactory = DatatypeFactory.newInstance();
@@ -359,10 +449,12 @@ public class ProvFactory {
     }
 
     public ActedOnBehalfOf newActedOnBehalfOf(ActedOnBehalfOf u) {
-    	ActedOnBehalfOf u1 = newActedOnBehalfOf(u.getId(), u.getSubordinate(), u.getResponsible(), u.getActivity());
-    	u1.getAny().addAll(u.getAny());
-    	return u1;
-        }
+	ActedOnBehalfOf u1 = newActedOnBehalfOf(u.getId(), u.getSubordinate(),
+						u.getResponsible(),
+						u.getActivity());
+	u1.getAny().addAll(u.getAny());
+	return u1;
+    }
 
     public ActedOnBehalfOf newActedOnBehalfOf(QName id, AgentRef subordinate,
 					      AgentRef responsible,
@@ -388,7 +480,7 @@ public class ProvFactory {
 
     public Activity newActivity(Activity a) {
 	Activity res = newActivity(a.getId());
-	res.getType().addAll(a.getType()); 
+	res.getType().addAll(a.getType());
 	res.getLabel().addAll(a.getLabel());
 	res.getLocation().addAll(a.getLocation());
 	res.setStartTime(a.getStartTime());
@@ -396,20 +488,33 @@ public class ProvFactory {
 	return res;
     }
 
-    public Activity newActivity(QName pr) {
-	return newActivity(pr, null);
+    public Activity newActivity(QName a) {
+	Activity res = of.createActivity();
+	res.setId(a);
+	return res;
     }
 
-    public Activity newActivity(QName pr, String label) {
-	Activity res = of.createActivity();
-	res.setId(pr);
+    public Activity newActivity(QName q, String label) {
+	Activity res = newActivity(q);
 	if (label != null)
 	    res.getLabel().add(newInternationalizedString(label));
 	return res;
     }
 
+    public Activity newActivity(QName id, 
+                                XMLGregorianCalendar startTime,
+				XMLGregorianCalendar endTime,
+				List<Attribute> attributes) {
+	Activity res = newActivity(id);
+	res.setStartTime(startTime);
+	res.setEndTime(endTime);
+	setAttributes(res, attributes);
+	return res;
+
+    }
+
     public Activity newActivity(String pr) {
-	return newActivity(pr, null);
+	return newActivity(stringToQName(pr));
     }
 
     public Activity newActivity(String pr, String label) {
@@ -434,18 +539,25 @@ public class ProvFactory {
 
     public Agent newAgent(Agent a) {
 	Agent res = newAgent(a.getId());
-	res.getType().addAll(a.getType()); 
-        res.getLabel().addAll(a.getLabel());
+	res.getType().addAll(a.getType());
+	res.getLabel().addAll(a.getLabel());
 	return res;
     }
 
     public Agent newAgent(QName ag) {
-	return newAgent(ag, null);
+	Agent res = of.createAgent();
+	res.setId(ag);
+	return res;
+    }
+
+    public Agent newAgent(QName id, List<Attribute> attributes) {
+	Agent res = newAgent(id);
+	setAttributes(res, attributes);
+	return res;
     }
 
     public Agent newAgent(QName ag, String label) {
-	Agent res = of.createAgent();
-	res.setId(ag);
+	Agent res = newAgent(ag);
 	if (label != null)
 	    res.getLabel().add(newInternationalizedString(label));
 	return res;
@@ -492,74 +604,25 @@ public class ProvFactory {
 	return newAnyRef(stringToQName(id));
     }
 
+    public Attribute newAttribute(QName qname, Object value) {
+	Attribute res = new Attribute(qname, value, getXsdType(value));
+	return res;
+    }
+
     public Attribute newAttribute(String namespace, String localName,
 				  String prefix, Object value) {
-	Attribute res=new Attribute(new QName(namespace, localName, prefix), value, getXsdType(value));
+	Attribute res = new Attribute(new QName(namespace, localName, prefix),
+				      value, getXsdType(value));
 	return res;
     }
 
     public Attribute newAttribute(String namespace, String localName,
 				  String prefix, Object value, String type) {
-	Attribute res=new Attribute(new QName(namespace, localName, prefix), value, type);
+	Attribute res = new Attribute(new QName(namespace, localName, prefix),
+				      value, type);
 	return res;
     }
 
-    public Attribute newAttribute(QName qname, Object value) {
-	Attribute res=new Attribute(qname, value, getXsdType(value));
-	return res;
-    }
-
-    public Element OLDnewAttribute(String namespace, String prefix,
-				String localName, String value) {
-    	org.w3c.dom.Document doc = builder.newDocument();
-	Element el = doc.createElementNS(namespace, ((prefix.equals("")) ? ""
-		: (prefix + ":")) + localName);
-	el.appendChild(doc.createTextNode(value));
-	doc.appendChild(el);
-	return el;
-    }
-
-    public Element newElement(QName qname, String value, String type) {
-    	org.w3c.dom.Document doc = builder.newDocument();
-	Element el = doc.createElementNS(qname.getNamespaceURI(), 
-	                                 ((qname.getPrefix().equals("")) 
-	                                	 ? ""
-	                                	 : (qname.getPrefix() + ":")) + qname.getLocalPart());
-	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", type);
-	el.appendChild(doc.createTextNode(value));
-	doc.appendChild(el);
-	return el;
-    }
-
-    public Element newElement(QName qname, String value, String type, String lang) {
-    	org.w3c.dom.Document doc = builder.newDocument();
-	Element el = doc.createElementNS(qname.getNamespaceURI(), 
-	                                 ((qname.getPrefix().equals("")) 
-	                                	 ? ""
-	                                	 : (qname.getPrefix() + ":")) + qname.getLocalPart());
-	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", type);
-	el.setAttributeNS(NamespacePrefixMapper. XML_NS, "xml:lang", lang);
-	el.appendChild(doc.createTextNode(value));
-	doc.appendChild(el);
-	return el;
-    }
-
-    String qnameToString(QName qname) {
-        return ((qname.getPrefix().equals("")) 
-                ? ""
-                : (qname.getPrefix() + ":")) + qname.getLocalPart();
-    }
-    
-    public Element newElement(QName qname, QName value) {
-        org.w3c.dom.Document doc = builder.newDocument();
-        Element el = doc.createElementNS(qname.getNamespaceURI(), 
-                                         qnameToString(qname));
-        el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", "xsd:QName");
-        // add xmlns for prefix?
-        el.appendChild(doc.createTextNode(qnameToString(value)));
-        doc.appendChild(el);
-        return el;
-    }
     public CollectionMemberOf newCollectionMemberOf(QName id, EntityRef after,
 						    List<Entity> entitySet) {
 	CollectionMemberOf res = cof.createCollectionMemberOf();
@@ -632,34 +695,29 @@ public class ProvFactory {
     }
 
     public Document newDocument() {
-Document res = of.createDocument();
-return res;
+	Document res = of.createDocument();
+	return res;
     }
 
-   /*
-    public Bundle newBundle(String id, Collection<Activity> ps,
-			    Collection<Entity> as, Collection<Agent> ags,
-			    Collection<Object> lks) {
-	return newBundle(stringToQName(id), ps, as, ags, lks);
-    }
-
-    public Bundle newBundle(Activity[] ps, Entity[] as, Agent[] ags,
-			    Object[] lks) {
-	return newBundle(null, ps, as, ags, lks);
-    }
-
-*/
+    /*
+     * public Bundle newBundle(String id, Collection<Activity> ps,
+     * Collection<Entity> as, Collection<Agent> ags, Collection<Object> lks) {
+     * return newBundle(stringToQName(id), ps, as, ags, lks); }
+     * 
+     * public Bundle newBundle(Activity[] ps, Entity[] as, Agent[] ags, Object[]
+     * lks) { return newBundle(null, ps, as, ags, lks); }
+     */
     public Document newDocument(Activity[] ps, Entity[] as, Agent[] ags,
-			    Statement[] lks) {
+				Statement[] lks) {
 
 	return newDocument(((ps == null) ? null : Arrays.asList(ps)),
-			 ((as == null) ? null : Arrays.asList(as)),
-			 ((ags == null) ? null : Arrays.asList(ags)),
-			 ((lks == null) ? null : Arrays.asList(lks)));
+			   ((as == null) ? null : Arrays.asList(as)),
+			   ((ags == null) ? null : Arrays.asList(ags)),
+			   ((lks == null) ? null : Arrays.asList(lks)));
     }
-    
+
     public Document newDocument(Collection<Activity> ps, Collection<Entity> as,
-			    Collection<Agent> ags, Collection<Statement> lks) {
+				Collection<Agent> ags, Collection<Statement> lks) {
 	Document res = of.createDocument();
 	res.getEntityOrActivityOrWasGeneratedBy().addAll(ps);
 	res.getEntityOrActivityOrWasGeneratedBy().addAll(as);
@@ -668,22 +726,20 @@ return res;
 	return res;
     }
 
-    
     public Document newDocument(Document graph) {
-	Document res=of.createDocument();	
-	res.getEntityOrActivityOrWasGeneratedBy().addAll(graph.getEntityOrActivityOrWasGeneratedBy());
-		return res;
+	Document res = of.createDocument();
+	res.getEntityOrActivityOrWasGeneratedBy()
+	   .addAll(graph.getEntityOrActivityOrWasGeneratedBy());
+	return res;
     }
 
     public JAXBElement<ActedOnBehalfOf> newElement(ActedOnBehalfOf u) {
 	return of.createActedOnBehalfOf(u);
     }
-    
+
     public JAXBElement<Activity> newElement(Activity u) {
 	return of.createActivity(u);
     }
-
- 
 
     public JAXBElement<Agent> newElement(Agent u) {
 	return of.createAgent(u);
@@ -691,6 +747,47 @@ return res;
 
     public JAXBElement<Entity> newElement(Entity u) {
 	return of.createEntity(u);
+    }
+
+    public JAXBElement<MentionOf> newElement(MentionOf u) {
+	return of.createMentionOf(u);
+    }
+
+    public Element newElement(QName qname, QName value) {
+	org.w3c.dom.Document doc = builder.newDocument();
+	Element el = doc.createElementNS(qname.getNamespaceURI(),
+					 qnameToString(qname));
+	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", "xsd:QName");
+	// add xmlns for prefix?
+	el.appendChild(doc.createTextNode(qnameToString(value)));
+	doc.appendChild(el);
+	return el;
+    }
+
+    public Element newElement(QName qname, String value, String type) {
+	org.w3c.dom.Document doc = builder.newDocument();
+	Element el = doc.createElementNS(qname.getNamespaceURI(),
+					 ((qname.getPrefix().equals("")) ? ""
+						 : (qname.getPrefix() + ":"))
+						 + qname.getLocalPart());
+	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", type);
+	el.appendChild(doc.createTextNode(value));
+	doc.appendChild(el);
+	return el;
+    }
+
+    public Element newElement(QName qname, String value, String type,
+			      String lang) {
+	org.w3c.dom.Document doc = builder.newDocument();
+	Element el = doc.createElementNS(qname.getNamespaceURI(),
+					 ((qname.getPrefix().equals("")) ? ""
+						 : (qname.getPrefix() + ":"))
+						 + qname.getLocalPart());
+	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", type);
+	el.setAttributeNS(NamespacePrefixMapper.XML_NS, "xml:lang", lang);
+	el.appendChild(doc.createTextNode(value));
+	doc.appendChild(el);
+	return el;
     }
 
     public JAXBElement<Used> newElement(Used u) {
@@ -732,32 +829,36 @@ return res;
     public JAXBElement<WasStartedBy> newElement(WasStartedBy u) {
 	return of.createWasStartedBy(u);
     }
-    public JAXBElement<MentionOf> newElement(MentionOf u) {
-	return of.createMentionOf(u);
-    }
 
     public Entity newEntity(Entity e) {
 	Entity res = newEntity(e.getId());
-	res.getType().addAll(e.getType()); 
-        res.getLabel().addAll(e.getLabel());
-        res.getLocation().addAll(e.getLocation());
+	res.getType().addAll(e.getType());
+	res.getLabel().addAll(e.getLabel());
+	res.getLocation().addAll(e.getLocation());
 	return res;
     }
 
     public Entity newEntity(QName id) {
-	return newEntity(id, null);
+	Entity res = of.createEntity();
+	res.setId(id);
+	return res;
+    }
+
+    public Entity newEntity(QName id, List<Attribute> attributes) {
+	Entity res = newEntity(id);
+	setAttributes(res, attributes);
+	return res;
     }
 
     public Entity newEntity(QName id, String label) {
-	Entity res = of.createEntity();
-	res.setId(id);
+	Entity res = newEntity(id);
 	if (label != null)
 	    res.getLabel().add(newInternationalizedString(label));
 	return res;
     }
 
     public Entity newEntity(String id) {
-	return newEntity(stringToQName(id), null);
+	return newEntity(stringToQName(id));
     }
 
     public Entity newEntity(String id, String label) {
@@ -788,20 +889,29 @@ return res;
     }
 
     public GenerationRef newGenerationRef(QName id) {
-    	GenerationRef res = of.createGenerationRef();
-    	res.setRef(id);
-    	return res;
-        }
+	GenerationRef res = of.createGenerationRef();
+	res.setRef(id);
+	return res;
+    }
 
     public GenerationRef newGenerationRef(String id) {
-    GenerationRef res = of.createGenerationRef();
-    res.setRef(stringToQName(id));
-    return res;
+	GenerationRef res = of.createGenerationRef();
+	res.setRef(stringToQName(id));
+	return res;
     }
 
     public GenerationRef newGenerationRef(WasGeneratedBy edge) {
 	GenerationRef res = of.createGenerationRef();
 	res.setRef(edge.getId());
+	return res;
+    }
+
+    public HadMember newHadMember(EntityRef collection, EntityRef... entities) {
+	HadMember res = of.createHadMember();
+	res.setCollection(collection);
+	if (entities != null) {
+	    res.getEntity().addAll(Arrays.asList(entities));
+	}
 	return res;
     }
 
@@ -821,13 +931,13 @@ return res;
 
     public XMLGregorianCalendar newISOTime(String time) {
 	return newTime(javax.xml.bind.DatatypeConverter.parseDateTime(time)
-		.getTime());
+						       .getTime());
     }
 
     public MentionOf newMentionOf(Entity infra, Entity supra, Entity bundle) {
-	return newMentionOf((infra==null) ? null : newEntityRef(infra), 
-	                    (supra==null) ? null : newEntityRef(supra),
-	                    (bundle==null)? null : newEntityRef(bundle));
+	return newMentionOf((infra == null) ? null : newEntityRef(infra),
+			    (supra == null) ? null : newEntityRef(supra),
+			    (bundle == null) ? null : newEntityRef(bundle));
     }
 
     public MentionOf newMentionOf(EntityRef infra, EntityRef supra,
@@ -839,16 +949,6 @@ return res;
 	return res;
     }
 
-
-
-    public MentionOf newMentionOf(String infra, String supra, String bundle) {
-	MentionOf res = of.createMentionOf();
-	if (supra!=null) res.setSpecializedEntity(newEntityRef(infra));
-	if (bundle!=null) res.setBundle(newEntityRef(bundle));
-	if (supra!=null) res.setGeneralEntity(newEntityRef(supra));
-	return res;
-    }
-    
     public MentionOf newMentionOf(MentionOf r) {
 	MentionOf res = of.createMentionOf();
 	res.setSpecializedEntity(r.getSpecializedEntity());
@@ -857,15 +957,15 @@ return res;
 	return res;
     }
 
-    public NamedBundle newNamedBundle(QName id, 
-                                      Collection<Statement> lks) {
-        NamedBundle res = of.createNamedBundle();
-        res.setId(id);
-       
-        if (lks != null) {
-            res.getEntityOrActivityOrWasGeneratedBy().addAll(lks);
-        }
-        return res;
+    public MentionOf newMentionOf(String infra, String supra, String bundle) {
+	MentionOf res = of.createMentionOf();
+	if (supra != null)
+	    res.setSpecializedEntity(newEntityRef(infra));
+	if (bundle != null)
+	    res.setBundle(newEntityRef(bundle));
+	if (supra != null)
+	    res.setGeneralEntity(newEntityRef(supra));
+	return res;
     }
 
     public NamedBundle newNamedBundle(QName id, Collection<Activity> ps,
@@ -873,10 +973,10 @@ return res;
 				      Collection<Agent> ags,
 				      Collection<Statement> lks) {
 	NamedBundle res = of.createNamedBundle();
-        res.setId(id);
+	res.setId(id);
 
-	if (ps!=null) {
-	  res.getEntityOrActivityOrWasGeneratedBy().addAll(ps);
+	if (ps != null) {
+	    res.getEntityOrActivityOrWasGeneratedBy().addAll(ps);
 	}
 	if (as != null) {
 	    res.getEntityOrActivityOrWasGeneratedBy().addAll(as);
@@ -884,6 +984,16 @@ return res;
 	if (ags != null) {
 	    res.getEntityOrActivityOrWasGeneratedBy().addAll(ags);
 	}
+	if (lks != null) {
+	    res.getEntityOrActivityOrWasGeneratedBy().addAll(lks);
+	}
+	return res;
+    }
+
+    public NamedBundle newNamedBundle(QName id, Collection<Statement> lks) {
+	NamedBundle res = of.createNamedBundle();
+	res.setId(id);
+
 	if (lks != null) {
 	    res.getEntityOrActivityOrWasGeneratedBy().addAll(lks);
 	}
@@ -899,12 +1009,26 @@ return res;
 			      ((lks == null) ? null : Arrays.asList(lks)));
     }
 
-
     public NamedBundle newNamedBundle(String id, Collection<Activity> ps,
 				      Collection<Entity> as,
 				      Collection<Agent> ags,
 				      Collection<Statement> lks) {
 	return newNamedBundle(stringToQName(id), ps, as, ags, lks);
+    }
+
+    public Object newQName(String qnameAsString) {
+	int index = qnameAsString.indexOf(':');
+	String prefix;
+	String local;
+
+	if (index == -1) {
+	    prefix = "";
+	    local = qnameAsString;
+	} else {
+	    prefix = qnameAsString.substring(0, index);
+	    local = qnameAsString.substring(index + 1, qnameAsString.length());
+	}
+	return new QName(getNamespace(prefix), local, prefix);
     }
 
     public SpecializationOf newSpecializationOf(EntityRef eid2, EntityRef eid1) {
@@ -913,7 +1037,6 @@ return res;
 	res.setGeneralEntity(eid1);
 	return res;
     }
-
 
     public XMLGregorianCalendar newTime(Date date) {
 	GregorianCalendar gc = new GregorianCalendar();
@@ -926,17 +1049,16 @@ return res;
     }
 
     public UsageRef newUsageRef(QName id) {
-    	UsageRef res = of.createUsageRef();
-    	res.setRef(id);
-    	return res;
-        }
-
-    public UsageRef newUsageRef(String id) {
-    UsageRef res = of.createUsageRef();
-    res.setRef(stringToQName(id));
-    return res;
+	UsageRef res = of.createUsageRef();
+	res.setRef(id);
+	return res;
     }
 
+    public UsageRef newUsageRef(String id) {
+	UsageRef res = of.createUsageRef();
+	res.setRef(stringToQName(id));
+	return res;
+    }
 
     public UsageRef newUsageRef(Used edge) {
 	UsageRef res = of.createUsageRef();
@@ -985,14 +1107,14 @@ return res;
     }
 
     public Used newUsed(Used u) {
-    	Used u1 = newUsed(u.getId(), u.getActivity(), null, u.getEntity());
-    	u1.getAny().addAll(u.getAny());
-    	u1.setTime(u.getTime());
-        u1.getType().addAll(u.getType()); 
-        u1.getLabel().addAll(u.getLabel());
-        u1.getLocation().addAll(u.getLocation());
-    	return u1;
-        }
+	Used u1 = newUsed(u.getId(), u.getActivity(), null, u.getEntity());
+	u1.getAny().addAll(u.getAny());
+	u1.setTime(u.getTime());
+	u1.getType().addAll(u.getType());
+	u1.getLabel().addAll(u.getLabel());
+	u1.getLocation().addAll(u.getLocation());
+	return u1;
+    }
 
     public WasAssociatedWith newWasAssociatedWith(QName id, Activity eid2,
 						  Agent eid1) {
@@ -1025,13 +1147,14 @@ return res;
     }
 
     public WasAssociatedWith newWasAssociatedWith(WasAssociatedWith u) {
-    	WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(), u.getAgent());
-    	u1.getAny().addAll(u.getAny());
-    	u1.setPlan(u.getPlan());
-    	u1.getType().addAll(u.getType()); 
-        u1.getLabel().addAll(u.getLabel());
-    	return u1;
-        }
+	WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(),
+						    u.getAgent());
+	u1.getAny().addAll(u.getAny());
+	u1.setPlan(u.getPlan());
+	u1.getType().addAll(u.getType());
+	u1.getLabel().addAll(u.getLabel());
+	return u1;
+    }
 
     public WasAttributedTo newWasAttributedTo(QName id, EntityRef eid,
 					      AgentRef agid) {
@@ -1048,12 +1171,13 @@ return res;
     }
 
     public WasAttributedTo newWasAttributedTo(WasAttributedTo u) {
-    	WasAttributedTo u1 = newWasAttributedTo(u.getId(), u.getEntity(), u.getAgent());
-    	u1.getAny().addAll(u.getAny());
-    	u1.getType().addAll(u.getType()); 
-        u1.getLabel().addAll(u.getLabel());
-    	return u1;
-        }
+	WasAttributedTo u1 = newWasAttributedTo(u.getId(), u.getEntity(),
+						u.getAgent());
+	u1.getAny().addAll(u.getAny());
+	u1.getType().addAll(u.getType());
+	u1.getLabel().addAll(u.getLabel());
+	return u1;
+    }
 
     public WasDerivedFrom newWasDerivedFrom(Entity a1, Entity a2) {
 	return newWasDerivedFrom(null, a1, a2);
@@ -1075,8 +1199,7 @@ return res;
 
     public WasDerivedFrom newWasDerivedFrom(QName id, EntityRef aid1,
 					    EntityRef aid2, ActivityRef aid,
-					    GenerationRef did1,
-					    UsageRef did2) {
+					    GenerationRef did1, UsageRef did2) {
 	WasDerivedFrom res = of.createWasDerivedFrom();
 	res.setId(id);
 	res.setUsedEntity(aid2);
@@ -1111,6 +1234,15 @@ return res;
 	return wdf;
     }
 
+    /*
+     * public void addType(HasExtensibility a, String type, String typeOfType) {
+     * 
+     * OldTypedLiteral tl=newOldTypedLiteral(type,typeOfType);
+     * JAXBElement<OldTypedLiteral> je=of.createType(tl); addAttribute(a,je);
+     * 
+     * }
+     */
+
     public WasDerivedFrom newWasDerivedFrom(String id, EntityRef aid1,
 					    EntityRef aid2) {
 	return newWasDerivedFrom(stringToQName(id), aid1, aid2);
@@ -1118,8 +1250,7 @@ return res;
 
     public WasDerivedFrom newWasDerivedFrom(String id, EntityRef aid1,
 					    EntityRef aid2, ActivityRef aid,
-					    GenerationRef did1,
-					    UsageRef did2) {
+					    GenerationRef did1, UsageRef did2) {
 	return newWasDerivedFrom(stringToQName(id), aid1, aid2, aid, did1, did2);
     }
 
@@ -1130,19 +1261,10 @@ return res;
 	wdf.setGeneration(d.getGeneration());
 	wdf.setUsage(d.getUsage());
 	wdf.getAny().addAll(d.getAny());
-	wdf.getType().addAll(d.getType()); 
-        wdf.getLabel().addAll(d.getLabel());
+	wdf.getType().addAll(d.getType());
+	wdf.getLabel().addAll(d.getLabel());
 	return wdf;
     }
-
-    /*
-     * public void addType(HasExtensibility a, String type, String typeOfType) {
-     * 
-     * OldTypedLiteral tl=newOldTypedLiteral(type,typeOfType);
-     * JAXBElement<OldTypedLiteral> je=of.createType(tl); addAttribute(a,je);
-     * 
-     * }
-     */
 
     public WasEndedBy newWasEndedBy(QName id, ActivityRef aid, EntityRef eid) {
 	WasEndedBy res = of.createWasEndedBy();
@@ -1157,12 +1279,13 @@ return res;
     }
 
     public WasEndedBy newWasEndedBy(WasEndedBy u) {
-	WasEndedBy u1 = newWasEndedBy(u.getId(), u.getActivity(), u.getTrigger());
+	WasEndedBy u1 = newWasEndedBy(u.getId(), u.getActivity(),
+				      u.getTrigger());
 	u1.setEnder(u.getEnder());
 	u1.setTime(u.getTime());
-	u1.getType().addAll(u.getType()); 
-        u1.getLabel().addAll(u.getLabel());
-        u1.getLocation().addAll(u.getLocation());
+	u1.getType().addAll(u.getType());
+	u1.getLabel().addAll(u.getLabel());
+	u1.getLocation().addAll(u.getLocation());
 	u1.getAny().addAll(u.getAny());
 	return u1;
     }
@@ -1218,9 +1341,9 @@ return res;
 	wgb.setId(g.getId());
 	wgb.setTime(g.getTime());
 	wgb.getAny().addAll(g.getAny());
-	wgb.getType().addAll(g.getType()); 
-        wgb.getLabel().addAll(g.getLabel());
-        wgb.getLocation().addAll(g.getLocation());
+	wgb.getType().addAll(g.getType());
+	wgb.getLabel().addAll(g.getLabel());
+	wgb.getLocation().addAll(g.getLocation());
 	return wgb;
     }
 
@@ -1244,20 +1367,27 @@ return res;
 
     public WasInfluencedBy newWasInfluencedBy(String id, String influencee,
 					      String influencer) {
-	return newWasInfluencedBy(id, 
-	                          (influencee==null)? null: newAnyRef(influencee),
-				  (influencer==null)? null: newAnyRef(influencer));
+	return newWasInfluencedBy(id, (influencee == null) ? null
+		: newAnyRef(influencee), (influencer == null) ? null
+		: newAnyRef(influencer));
     }
 
     public WasInfluencedBy newWasInfluencedBy(WasInfluencedBy in) {
-	WasInfluencedBy out = newWasInfluencedBy(in.getId(), in.getInfluencee(),
-					     in.getInfluencer());
+	WasInfluencedBy out = newWasInfluencedBy(in.getId(),
+						 in.getInfluencee(),
+						 in.getInfluencer());
 	out.setId(in.getId());
 	out.getAny().addAll(in.getAny());
-	out.getType().addAll(in.getType()); 
-        out.getLabel().addAll(in.getLabel());
+	out.getType().addAll(in.getType());
+	out.getLabel().addAll(in.getLabel());
 	return out;
     }
+
+    // public void addType(HasExtensibility a,
+    // String type) {
+    //
+    // addType(a,type,"xsd:anyURI");
+    // }
 
     public WasInformedBy newWasInformedBy(Activity p1, Activity p2) {
 	return newWasInformedBy(null, p1, p2);
@@ -1280,12 +1410,6 @@ return res;
 	return res;
     }
 
-    // public void addType(HasExtensibility a,
-    // String type) {
-    //
-    // addType(a,type,"xsd:anyURI");
-    // }
-
     public WasInformedBy newWasInformedBy(String id, Activity p1, Activity p2) {
 	ActivityRef pid1 = newActivityRef(p1);
 	ActivityRef pid2 = newActivityRef(p2);
@@ -1307,8 +1431,8 @@ return res;
 					     d.getCause());
 	wtb.setId(d.getId());
 	wtb.getAny().addAll(d.getAny());
-	wtb.getType().addAll(d.getType()); 
-        wtb.getLabel().addAll(d.getLabel());
+	wtb.getType().addAll(d.getType());
+	wtb.getLabel().addAll(d.getLabel());
 	return wtb;
     }
 
@@ -1327,12 +1451,13 @@ return res;
     }
 
     public WasInvalidatedBy newWasInvalidatedBy(WasInvalidatedBy u) {
-	WasInvalidatedBy u1 = newWasInvalidatedBy(u.getId(), u.getEntity(), u.getActivity());
+	WasInvalidatedBy u1 = newWasInvalidatedBy(u.getId(), u.getEntity(),
+						  u.getActivity());
 	u1.setTime(u.getTime());
 	u1.getAny().addAll(u.getAny());
-	u1.getType().addAll(u.getType()); 
-        u1.getLabel().addAll(u.getLabel());
-        u1.getLocation().addAll(u.getLocation());
+	u1.getType().addAll(u.getType());
+	u1.getLabel().addAll(u.getLabel());
+	u1.getLocation().addAll(u.getLocation());
 	return u1;
     }
 
@@ -1350,12 +1475,13 @@ return res;
     }
 
     public WasStartedBy newWasStartedBy(WasStartedBy u) {
-	WasStartedBy u1 = newWasStartedBy(u.getId(), u.getActivity(), u.getTrigger());
+	WasStartedBy u1 = newWasStartedBy(u.getId(), u.getActivity(),
+					  u.getTrigger());
 	u1.setStarter(u.getStarter());
 	u1.setTime(u.getTime());
-        u1.getType().addAll(u.getType()); 
-        u1.getLabel().addAll(u.getLabel());
-        u1.getLocation().addAll(u.getLocation());
+	u1.getType().addAll(u.getType());
+	u1.getLabel().addAll(u.getLabel());
+	u1.getLocation().addAll(u.getLocation());
 	u1.getAny().addAll(u.getAny());
 	return u1;
     }
@@ -1363,6 +1489,29 @@ return res;
     public XMLGregorianCalendar newXMLGregorianCalendar(GregorianCalendar gc) {
 	return dataFactory.newXMLGregorianCalendar(gc);
     }
+
+    public Element OLDnewAttribute(String namespace, String prefix,
+				   String localName, String value) {
+	org.w3c.dom.Document doc = builder.newDocument();
+	Element el = doc.createElementNS(namespace, ((prefix.equals("")) ? ""
+		: (prefix + ":")) + localName);
+	el.appendChild(doc.createTextNode(value));
+	doc.appendChild(el);
+	return el;
+    }
+
+    /* Uses the xsd:type to java:type mapping of JAXB */
+
+    String qnameToString(QName qname) {
+	return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
+		+ qname.getLocalPart();
+    }
+
+    public void setAttributes(HasExtensibility res, List<Attribute> attributes) {
+	// FIXME attributes need to be filtered
+	res.getAny().addAll(attributes);
+    }
+
     public void setNamespaces(Hashtable<String, String> nss) {
 	namespaces = nss;
     }
@@ -1379,118 +1528,13 @@ return res;
 	if ("prov".equals(prefix)) {
 	    return new QName(NamespacePrefixMapper.PROV_NS, local, prefix);
 	} else if ("xsd".equals(prefix)) {
-	    return new QName(NamespacePrefixMapper.XSD_NS+"#", // RDF ns ends in #, not XML ns.
-		    local, prefix);
+	    return new QName(NamespacePrefixMapper.XSD_NS + "#", // RDF ns ends
+								 // in #, not
+								 // XML ns.
+			     local, prefix);
 	} else {
 	    return new QName(namespaces.get(prefix), local, prefix);
 	}
     }
 
-    
-
-    public HadMember newHadMember(EntityRef collection,
-				  EntityRef ... entities) {
-	HadMember res=of.createHadMember();
-	res.setCollection(collection);
-	if (entities!=null) {
-	    res.getEntity().addAll(Arrays.asList(entities));
-	}
-	return res;
-    }
-
-
-    public String getXsdType(Object o) {
-	if (o instanceof Integer) return "xsd:int";
-	if (o instanceof String) return "xsd:string";
-	if (o instanceof InternationalizedString) return "xsd:string";
-	if (o instanceof Long) return "xsd:long";
-	if (o instanceof Short) return "xsd:short";
-	if (o instanceof Double) return "xsd:double";
-	if (o instanceof Float) return "xsd:float";
-	if (o instanceof java.math.BigDecimal) return "xsd:decimal";
-	if (o instanceof Boolean) return "xsd:boolean";
-	if (o instanceof Byte) return "xsd:byte";
-	if (o instanceof URIWrapper) return "xsd:anyURI";
-	if (o instanceof QName) return "xsd:QName";
-	return "xsd:UNKNOWN";
-    }
-
-    /* Uses the xsd:type to java:type mapping of JAXB */
-
-    public Object convertToJava(String datatype, String value) {
-        if (datatype.equals("xsd:string"))  return value;
-
-        if (datatype.equals("xsd:int"))     return Integer.parseInt(value);
-        if (datatype.equals("xsd:long"))    return Long.parseLong(value);
-        if (datatype.equals("xsd:short"))   return Short.parseShort(value);
-        if (datatype.equals("xsd:double"))  return Double.parseDouble(value);
-        if (datatype.equals("xsd:float"))   return Float.parseFloat(value);
-        if (datatype.equals("xsd:decimal")) return new java.math.BigDecimal(value);
-        if (datatype.equals("xsd:boolean")) return Boolean.parseBoolean(value);
-        if (datatype.equals("xsd:byte"))    return Byte.parseByte(value);
-        if (datatype.equals("xsd:unsignedInt"))   return Long.parseLong(value);
-        if (datatype.equals("xsd:unsignedShort")) return Integer.parseInt(value);
-        if (datatype.equals("xsd:unsignedByte"))  return Short.parseShort(value);
-        if (datatype.equals("xsd:unsignedLong"))  return new java.math.BigInteger(value);
-        if (datatype.equals("xsd:integer"))             return new java.math.BigInteger(value);
-        if (datatype.equals("xsd:nonNegativeInteger"))  return new java.math.BigInteger(value);
-        if (datatype.equals("xsd:nonPositiveInteger"))  return new java.math.BigInteger(value);
-        if (datatype.equals("xsd:positiveInteger"))     return new java.math.BigInteger(value);
-
-        if (datatype.equals("xsd:anyURI")) {
-            URIWrapper u=new URIWrapper();
-            u.setValue(URI.create(value));
-            return u;
-        }
-        if (datatype.equals("xsd:QName")) {
-            return newQName(value);
-        }
-
-
-
-        if ((datatype.equals("xsd:dateTime"))
-            || (datatype.equals("rdf:XMLLiteral"))
-            || (datatype.equals("xsd:normalizedString"))
-            || (datatype.equals("xsd:token"))
-            || (datatype.equals("xsd:language"))
-            || (datatype.equals("xsd:Name"))
-            || (datatype.equals("xsd:NCName"))
-            || (datatype.equals("xsd:NMTOKEN"))
-            || (datatype.equals("xsd:hexBinary"))
-            || (datatype.equals("xsd:base64Binary"))) {
-
-            throw new UnsupportedOperationException("KNOWN literal type but conversion not supported yet " + datatype);
-        }
-
-        throw new UnsupportedOperationException("UNKNOWN literal type " + datatype);
-    }
-
-    public Object newQName(String qnameAsString) {
-	int index=qnameAsString.indexOf(':');
-	String prefix;
-	String local;
-
-	if (index==-1) {
-	    prefix="";
-	    local=qnameAsString;
-	} else {
-	    prefix=qnameAsString.substring(0,index);
-	    local=qnameAsString.substring(index+1,qnameAsString.length());
-	}
-	return new QName(getNamespace(prefix), local, prefix);
-    }
-    
-
-    public String getNamespace(String prefix) {
-        if ((prefix==null) || ("".equals(prefix))) return namespaces.get(DEFAULT_NS);
-        if (prefix.equals(NamespacePrefixMapper.PROV_PREFIX)) return NamespacePrefixMapper.PROV_NS;
-        if (prefix.equals(NamespacePrefixMapper.XSD_PREFIX)) return NamespacePrefixMapper.XSD_NS;
-        return namespaces.get(prefix);
-    }
-
-    public Hashtable<String, String> getNss() {
-        return namespaces;
-    }
-
-    
 }

@@ -7,11 +7,11 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 
 public class BeanTraversal {
-    private BeanConstructor c;
+    private OldBeanConstructor c;
     
     ProvUtilities u=new ProvUtilities();
 
-    public BeanTraversal(BeanConstructor c) {
+    public BeanTraversal(OldBeanConstructor c) {
 	this.c = c;
     }
 

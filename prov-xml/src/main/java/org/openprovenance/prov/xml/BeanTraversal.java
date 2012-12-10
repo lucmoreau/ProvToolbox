@@ -262,8 +262,17 @@ public class BeanTraversal {
  	                           attrs);
     }
 
-    public WasAssociatedWith convert(WasAssociatedWith o) {
-	throw new UnsupportedOperationException();
+    public WasAssociatedWith convert(WasAssociatedWith assoc) {
+	List<Attribute> attrs=new LinkedList<Attribute>();	
+ 	convertTypeAttributes(assoc,attrs);
+ 	convertLabelAttributes(assoc,attrs);
+ 	convertRoleAttributes(assoc,attrs);
+ 	convertAttributes(assoc,attrs);
+ 	return c.newWasAssociatedWith(assoc.getId(),
+ 	                              q(assoc.getActivity()), 
+ 	                              q(assoc.getAgent()), 
+ 	                              q(assoc.getPlan()), 
+ 	                              attrs);
     }
 
     public WasAttributedTo convert(WasAttributedTo o) {

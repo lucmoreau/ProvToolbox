@@ -1184,6 +1184,21 @@ public class ProvFactory implements BeanConstructor {
 	res.setAgent(eid1);
 	return res;
     }
+    
+    public WasAssociatedWith  newWasAssociatedWith(QName id, 
+                                                   QName a, 
+                                                   QName ag, 
+                                                   QName plan, 
+                                                   List<Attribute> attributes) {
+	ActivityRef aid=(a==null)? null: newActivityRef(a);
+	EntityRef eid=(plan==null)? null: newEntityRef(plan);
+	AgentRef agid=(ag==null)? null: newAgentRef(ag);
+	WasAssociatedWith res= newWasAssociatedWith(id,aid,agid);
+	res.setPlan(eid);
+	setAttributes(res, attributes);
+	return res;
+    }
+
 
     public WasAssociatedWith newWasAssociatedWith(WasAssociatedWith u) {
 	WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(),

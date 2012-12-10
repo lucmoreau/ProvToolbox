@@ -227,25 +227,33 @@ public class BeanTraversal {
      }
 
     public WasEndedBy convert(WasEndedBy end) {
- 	List<Attribute> attrs=new LinkedList<Attribute>();	
- 	convertTypeAttributes(end,attrs);
- 	convertLabelAttributes(end,attrs);
- 	convertLocationAttributes(end,attrs);	
- 	convertRoleAttributes(end,attrs);
- 	convertAttributes(end,attrs);
- 	return c.newWasEndedBy(end.getId(), q(end.getActivity()), q(end.getTrigger()), q(end.getEnder()), end.getTime(), attrs);
+        List<Attribute> attrs=new LinkedList<Attribute>();    
+        convertTypeAttributes(end,attrs);
+        convertLabelAttributes(end,attrs);
+        convertLocationAttributes(end,attrs);   
+        convertRoleAttributes(end,attrs);
+        convertAttributes(end,attrs);
+        return c.newWasEndedBy(end.getId(), q(end.getActivity()), q(end.getTrigger()), q(end.getEnder()), end.getTime(), attrs);
      }
 
 
    
 
-   
-    public WasInformedBy convert(WasInformedBy o) {
-	throw new UnsupportedOperationException();
+
+    public WasInformedBy convert(WasInformedBy inf) {
+        List<Attribute> attrs=new LinkedList<Attribute>();      
+        convertTypeAttributes(inf,attrs);
+        convertLabelAttributes(inf,attrs);
+        convertAttributes(inf,attrs);
+        return c.newWasInformedBy(inf.getId(), q(inf.getEffect()), q(inf.getCause()), attrs);
     }
 
-    public WasInfluencedBy convert(WasInfluencedBy o) {
-	throw new UnsupportedOperationException();
+    public WasInfluencedBy convert(WasInfluencedBy infl) {
+        List<Attribute> attrs=new LinkedList<Attribute>();      
+        convertTypeAttributes(infl,attrs);
+        convertLabelAttributes(infl,attrs);
+        convertAttributes(infl,attrs);
+        return c.newWasInfluencedBy(infl.getId(), q(infl.getInfluencee()), q(infl.getInfluencer()), attrs);
     }
 
     public WasDerivedFrom convert(WasDerivedFrom deriv) {
@@ -263,11 +271,11 @@ public class BeanTraversal {
     }
 
     public WasAssociatedWith convert(WasAssociatedWith assoc) {
-	List<Attribute> attrs=new LinkedList<Attribute>();	
- 	convertTypeAttributes(assoc,attrs);
- 	convertLabelAttributes(assoc,attrs);
- 	convertRoleAttributes(assoc,attrs);
- 	convertAttributes(assoc,attrs);
+        List<Attribute> attrs=new LinkedList<Attribute>();      
+        convertTypeAttributes(assoc,attrs);
+        convertLabelAttributes(assoc,attrs);
+        convertRoleAttributes(assoc,attrs);
+        convertAttributes(assoc,attrs);
  	return c.newWasAssociatedWith(assoc.getId(),
  	                              q(assoc.getActivity()), 
  	                              q(assoc.getAgent()), 
@@ -275,12 +283,20 @@ public class BeanTraversal {
  	                              attrs);
     }
 
-    public WasAttributedTo convert(WasAttributedTo o) {
-	throw new UnsupportedOperationException();
+    public WasAttributedTo convert(WasAttributedTo att) {
+        List<Attribute> attrs=new LinkedList<Attribute>();      
+        convertTypeAttributes(att,attrs);
+        convertLabelAttributes(att,attrs);
+        convertAttributes(att,attrs);
+        return c.newWasAttributedTo(att.getId(), q(att.getEntity()), q(att.getAgent()), attrs);
     }
 
-    public ActedOnBehalfOf convert(ActedOnBehalfOf o) {
-	throw new UnsupportedOperationException();
+    public ActedOnBehalfOf convert(ActedOnBehalfOf del) {
+        List<Attribute> attrs=new LinkedList<Attribute>();      
+        convertTypeAttributes(del,attrs);
+        convertLabelAttributes(del,attrs);
+        convertAttributes(del,attrs);
+        return c.newActedOnBehalfOf(del.getId(), q(del.getSubordinate()), q(del.getResponsible()), q(del.getActivity()), attrs);
     }
 
     public AlternateOf convert(AlternateOf o) {

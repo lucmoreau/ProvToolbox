@@ -20,6 +20,11 @@ public interface BeanConstructor {
     public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger, QName ender, XMLGregorianCalendar time, List<Attribute> attributes);
     public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1, QName activity, QName generation, QName usage,  List<Attribute> attributes);
     public WasAssociatedWith newWasAssociatedWith(QName id, QName a, QName ag, QName plan, List<Attribute> attributes);
+    public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,  List<Attribute> attributes);
+    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1, QName a, List<Attribute> attributes);
+    public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1, List<Attribute> attributes);
+    public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1, List<Attribute> attributes);
+    
     public Document newDocument(Hashtable<String, String> namespaces,
                                 Collection<Statement> statements,
                                 Collection<NamedBundle> bundles);

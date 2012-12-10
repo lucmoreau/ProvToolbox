@@ -477,7 +477,17 @@ public class ProvFactory implements BeanConstructor {
 	res.setResponsible(responsible);
 	return res;
     }
+    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1, QName a, List<Attribute> attributes) {
+        AgentRef agid2=(ag2==null)? null : newAgentRef(ag2);
+        AgentRef agid1=(ag1==null)? null : newAgentRef(ag1);
+        ActivityRef aid=(a==null)? null : newActivityRef(a);
+        ActedOnBehalfOf res=newActedOnBehalfOf(id, agid2, agid1, aid);
+        setAttributes(res, attributes);
+        return res;
+    }
 
+    
+    
     public Activity newActivity(Activity a) {
 	Activity res = newActivity(a.getId());
 	res.getType().addAll(a.getType());
@@ -1224,6 +1234,15 @@ public class ProvFactory implements BeanConstructor {
 	return newWasAttributedTo(stringToQName(id), eid, agid);
     }
 
+    
+    public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,  List<Attribute> attributes) {
+        EntityRef eid=(e==null)? null : newEntityRef(e);
+        AgentRef agid=(ag==null)? null : newAgentRef(ag);
+        WasAttributedTo res=newWasAttributedTo(id, eid, agid);
+        setAttributes(res, attributes);
+        return res;
+    }
+
     public WasAttributedTo newWasAttributedTo(WasAttributedTo u) {
 	WasAttributedTo u1 = newWasAttributedTo(u.getId(), u.getEntity(),
 						u.getAgent());
@@ -1456,6 +1475,15 @@ public class ProvFactory implements BeanConstructor {
 		: newAnyRef(influencee), (influencer == null) ? null
 		: newAnyRef(influencer));
     }
+    
+    
+    public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1, List<Attribute> attributes) {
+        AnyRef aid2 = (a2==null) ? null: newAnyRef(a2);
+        AnyRef aid1 = (a1==null) ? null: newAnyRef(a1);
+        WasInfluencedBy res=newWasInfluencedBy(id,aid2,aid1);   
+        setAttributes(res, attributes);
+        return res;
+    }
 
     public WasInfluencedBy newWasInfluencedBy(WasInfluencedBy in) {
 	WasInfluencedBy out = newWasInfluencedBy(in.getId(),
@@ -1511,6 +1539,14 @@ public class ProvFactory implements BeanConstructor {
 	return newWasInformedBy(stringToQName(id), pid1, pid2);
     }
 
+    public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1, List<Attribute> attributes) {
+        ActivityRef aid2 = (a2==null) ? null: newActivityRef(a2);
+        ActivityRef aid1 = (a1==null) ? null: newActivityRef(a1);
+        WasInformedBy res=newWasInformedBy(id,aid2,aid1);   
+        setAttributes(res, attributes);
+        return res;
+    }
+    
     public WasInformedBy newWasInformedBy(WasInformedBy d) {
 	WasInformedBy wtb = newWasInformedBy(d.getId(), d.getEffect(),
 					     d.getCause());

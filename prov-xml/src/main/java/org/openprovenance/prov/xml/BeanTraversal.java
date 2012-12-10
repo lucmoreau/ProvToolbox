@@ -63,7 +63,8 @@ public class BeanTraversal {
 
    
     public List<Attribute> convertTypeAttributes(HasType e, List<Attribute> acc) {
-	for (Object type : e.getType()) {
+	List<Object> types=e.getType();
+	for (Object type : types) {
 	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_TYPE, type));
 	}
 	return acc;

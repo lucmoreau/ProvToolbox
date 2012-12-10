@@ -1612,35 +1612,35 @@ public class ProvFactory implements BeanConstructor {
 	HasRole rol=(res instanceof HasRole)? (HasRole)res : null;
 
 	for (Attribute attr: attributes) {
-	    Object val=attr.getValue();
+	    Object aValue=attr.getValue();
 	    switch (attr.getKind()) {
 	    case PROV_LABEL:
 		if (lab!=null) {
-		    if (val instanceof InternationalizedString) {
-			lab.getLabel().add((InternationalizedString) val);		
+		    if (aValue instanceof InternationalizedString) {
+			lab.getLabel().add((InternationalizedString) aValue);		
 		    } else {
-			lab.getLabel().add(newInternationalizedString(val.toString()));
+			lab.getLabel().add(newInternationalizedString(aValue.toString()));
 		    }
 		}
 		break;
 	    case PROV_LOCATION:
 		if (loc!=null) {
-		    loc.getLocation().add(val);
+		    loc.getLocation().add(aValue);
 		}
 		break;
 	    case PROV_ROLE:
 		if (rol!=null) {
-		    rol.getRole().add(val);
+		    rol.getRole().add(aValue);
 		}
 		break;
 	    case PROV_TYPE: 
 		if (typ!=null) {
-		    typ.getType().add(typ);
+		    typ.getType().add(aValue);
 		}
 		break;
 	    case PROV_VALUE:
 		if (aval!=null) {
-		    aval.setValue(val);
+		    aval.setValue(aValue);
 		}
 		break;
 	    case OTHER:

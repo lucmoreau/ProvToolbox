@@ -189,6 +189,7 @@ public class RoundTripFromJavaTest extends TestCase {
    	hl.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
    	hl.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
     }
+   
 
     public void addTypes(HasType ht) {
    	ht.getType().add("a");

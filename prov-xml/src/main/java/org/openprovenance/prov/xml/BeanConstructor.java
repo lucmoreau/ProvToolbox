@@ -24,7 +24,10 @@ public interface BeanConstructor {
     public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1, QName a, List<Attribute> attributes);
     public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1, List<Attribute> attributes);
     public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1, List<Attribute> attributes);
-    
+    public AlternateOf newAlternateOf(QName e2, QName e1);
+    public SpecializationOf newSpecializationOf(QName e2, QName e1);
+    public MentionOf newMentionOf(QName e2, QName e1, QName b);
+
     public Document newDocument(Hashtable<String, String> namespaces,
                                 Collection<Statement> statements,
                                 Collection<NamedBundle> bundles);

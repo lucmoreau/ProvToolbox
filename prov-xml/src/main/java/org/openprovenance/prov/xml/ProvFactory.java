@@ -603,6 +603,14 @@ public class ProvFactory implements BeanConstructor {
 	res.setEntity1(eid1);
 	return res;
     }
+    
+
+    public AlternateOf newAlternateOf(QName e2, QName e1) {
+        EntityRef eid2 = (e2==null)? null: newEntityRef(e2);
+        EntityRef eid1 = (e1==null)? null: newEntityRef(e1);
+        return newAlternateOf(eid2, eid1);
+    }
+  
 
     public AnyRef newAnyRef(QName id) {
 	AnyRef res = of.createAnyRef();
@@ -965,7 +973,14 @@ public class ProvFactory implements BeanConstructor {
 			    (supra == null) ? null : newEntityRef(supra),
 			    (bundle == null) ? null : newEntityRef(bundle));
     }
+    public MentionOf newMentionOf(QName e2, QName e1, QName b) {
+        EntityRef eid2 = (e2==null)? null: newEntityRef(e2);
+        EntityRef eid1 = (e1==null)? null: newEntityRef(e1);
+        EntityRef bid = (b==null)? null: newEntityRef(b);
+        return newMentionOf(eid2, eid1, bid);
+    }
 
+    
     public MentionOf newMentionOf(EntityRef infra, EntityRef supra,
 				  EntityRef bundle) {
 	MentionOf res = of.createMentionOf();
@@ -1074,6 +1089,16 @@ public class ProvFactory implements BeanConstructor {
 	return res;
     }
 
+    public SpecializationOf newSpecializationOf(QName e2, QName e1) {
+        EntityRef eid2 = (e2==null)? null: newEntityRef(e2);
+        EntityRef eid1 = (e1==null)? null: newEntityRef(e1);
+        return newSpecializationOf(eid2, eid1);
+    }
+  
+    
+
+    
+
     public XMLGregorianCalendar newTime(Date date) {
 	GregorianCalendar gc = new GregorianCalendar();
 	gc.setTime(date);
@@ -1145,7 +1170,7 @@ public class ProvFactory implements BeanConstructor {
     
     public Used newUsed(QName id, QName activity, QName entity, XMLGregorianCalendar time, List<Attribute> attributes) {
    	ActivityRef aid = (activity==null)? null: newActivityRef(activity);
-   	EntityRef eid = (entity==null)? null: newEntityRef(entity);
+        EntityRef eid = (entity==null)? null: newEntityRef(entity);
    	Used res=newUsed(id,aid,null,eid);	
    	res.setTime(time);
 	setAttributes(res, attributes);

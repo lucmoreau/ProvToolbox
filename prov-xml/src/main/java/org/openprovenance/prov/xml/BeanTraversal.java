@@ -300,16 +300,19 @@ public class BeanTraversal {
     }
 
     public AlternateOf convert(AlternateOf o) {
-	throw new UnsupportedOperationException();
+        return c.newAlternateOf(q(o.getEntity2()), q(o.getEntity1()));
     }
 
     public SpecializationOf convert(SpecializationOf o) {
-	throw new UnsupportedOperationException();
+        return c.newSpecializationOf(q(o.getSpecializedEntity()), q(o.getGeneralEntity()));
     }
 
     public MentionOf convert(MentionOf o) {
-	throw new UnsupportedOperationException();
+        return c.newMentionOf(q(o.getSpecializedEntity()),
+                              q(o.getGeneralEntity()),
+                              q(o.getBundle()));
     }
+    
     //TODO: only supporting one member in the relation
     // note: lots of test to support scruffy provenance
     public HadMember convert(HadMember o) {

@@ -12,7 +12,7 @@ public class RoundTripJavaToJavaTest extends RoundTripFromJavaTest {
     ProvFactory pFactory=new ProvFactory();
     
     public void compareDocAndFile(Document doc, String file, boolean check) {
-	BeanTraversal bc=new BeanTraversal(null, pFactory, pFactory);
+	BeanTraversal bc=new BeanTraversal(pFactory, pFactory);
 	
         Document doc2=bc.convert(doc);
         compareDocuments(doc, doc2, check && checkTest(file));

@@ -3,17 +3,14 @@ package org.openprovenance.prov.xml;
 import java.util.List;
 import java.util.LinkedList;
 import javax.xml.namespace.QName;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 
 public class BeanTraversal {
-    final private OldBeanConstructor deprecated;
     final private BeanConstructor c;
     final private ProvFactory pFactory;
     ProvUtilities u=new ProvUtilities();
 
-    public BeanTraversal(OldBeanConstructor old, BeanConstructor c, ProvFactory pFactory) {
-	this.deprecated = old;
+    public BeanTraversal(BeanConstructor c, ProvFactory pFactory) {
 	this.c=c;
 	this.pFactory=pFactory;
     }

@@ -316,7 +316,14 @@ public class BeanTraversal {
     //TODO: only supporting one member in the relation
     // note: lots of test to support scruffy provenance
     public HadMember convert(HadMember o) {
-	throw new UnsupportedOperationException();
+        List<QName> qq=new LinkedList<QName>();
+        if (o.getEntity()!=null) {
+            for (EntityRef eid:o.getEntity()) {
+                qq.add(q(eid));
+            }
+        }
+        return c.newHadMember(q(o.getCollection()), qq);
+        
 /*remember, scruffy hadmember in provn, has a null in get(0)!!
 	return deprecated.convertHadMember(deprecated.convert((o.getCollection()==null) ? null: 	                                    
 	                                      o.getCollection().getRef()),

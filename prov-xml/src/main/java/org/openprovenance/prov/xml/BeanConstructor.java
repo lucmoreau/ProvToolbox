@@ -28,6 +28,8 @@ public interface BeanConstructor {
     public SpecializationOf newSpecializationOf(QName e2, QName e1);
     public MentionOf newMentionOf(QName e2, QName e1, QName b);
 
+    public HadMember newHadMember(QName c, List<QName> e);
+
     public Document newDocument(Hashtable<String, String> namespaces,
                                 Collection<Statement> statements,
                                 Collection<NamedBundle> bundles);

@@ -948,6 +948,20 @@ public class ProvFactory implements BeanConstructor {
 	}
 	return res;
     }
+    public HadMember newHadMember(QName c, List<QName> e) {
+        EntityRef cid=(c==null)? null: newEntityRef(c);
+        List<EntityRef> ll=new LinkedList<EntityRef>();
+        for (QName q: e) {
+            EntityRef eid=(e==null)? null: newEntityRef(q);
+            ll.add(eid);
+        }
+        HadMember res = of.createHadMember();
+        res.setCollection(cid);
+        res.getEntity().addAll(ll);
+        return res;
+    }
+
+    
 
     public InternationalizedString newInternationalizedString(String s) {
 	InternationalizedString res = of.createInternationalizedString();

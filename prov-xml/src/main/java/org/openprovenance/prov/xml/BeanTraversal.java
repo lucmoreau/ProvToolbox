@@ -7,19 +7,22 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 
 public class BeanTraversal {
-    private OldBeanConstructor c;
-    
+    final private OldBeanConstructor deprecated;
+    final private BeanConstructor c;
+    final private ProvFactory pFactory;
     ProvUtilities u=new ProvUtilities();
 
-    public BeanTraversal(OldBeanConstructor c) {
-	this.c = c;
+    public BeanTraversal(OldBeanConstructor old, BeanConstructor c, ProvFactory pFactory) {
+	this.deprecated = old;
+	this.c=c;
+	this.pFactory=pFactory;
     }
 
-    public Object convert(Document b) {
+    public Document convert(Document b) {
 
-	List<Object> bRecords = new LinkedList<Object>();
+	List<NamedBundle> bRecords = new LinkedList<NamedBundle>();
 
-	List<Object> sRecords = new LinkedList<Object>();
+	List<Statement> sRecords = new LinkedList<Statement>();
 
 	for (Statement s : u.getStatement(b)) {
 	    if (s instanceof Entity) {
@@ -35,201 +38,110 @@ public class BeanTraversal {
 	}
 
 	for (NamedBundle bu : u.getNamedBundle(b)) {
-	    Object o = convert(bu);
+	    NamedBundle o = convert(bu);
 	    if (o != null)
 		bRecords.add(o);
 
 	}
-	return c.convertBundle(b.getNss(), sRecords, bRecords);
+	return c.newDocument(b.getNss(), sRecords, bRecords);
     }
 
-    public Object convert(NamedBundle b) {
-	List<Object> lnkRecords = new LinkedList<Object>();
-	List<Object> aRecords = new LinkedList<Object>();
-	List<Object> eRecords = new LinkedList<Object>();
-	List<Object> agRecords = new LinkedList<Object>();
+    public NamedBundle convert(NamedBundle b) {
+	List<Statement> sRecords = new LinkedList<Statement>();
 
-	Object bundleId=c.convert(b.getId());
-	c.startBundle(bundleId);
-	for (Entity e : u.getEntity(b)) {
-	    eRecords.add(convert(e));
-	}
-	for (Activity a : u.getActivity(b)) {
-	    aRecords.add(convert(a));
-	}
-	for (Agent ag : u.getAgent(b)) {
-	    agRecords.add(convert(ag));
-	}
-	for (Object lnk : u.getRelations(b)) {
-	    Object o = convertRelation(lnk);
-	    if (o != null)
-		lnkRecords.add(o);
-	}
-	return c.convertNamedBundle(bundleId, b.getNss(), aRecords,
-	                            eRecords, agRecords, lnkRecords);
-    }
-
-   // public Object convertAttribute(Element a) {
-//	return c.convertAttribute(a.getNodeName(), c.convertAttributeValue(a));
-    //}
-
-    public Attribute convertAttribute(Attribute a) {
-	 return a;
-	/*
-	if (a instanceof Attribute) {
-	    // TODO: what is it here
-	    return a;
-	} else {
-	    throw new UnsupportedOperationException();
-	}
-	
-	if (a instanceof JAXBElement) {
-	    JAXBElement<?> je = (JAXBElement<?>) a;
-	    QName q = je.getName();
-	    Object o = je.getValue();
-	    String value;
-	    value = o.toString();
-
-	    return c.convertAttribute(c.convert(q), value);
-	}
-	if (a instanceof Element) {
-	    return convertAttribute((Element) a);
-	} else {
-	    return c.convertAttribute(a.toString(), a.toString());
-	}*/
-    }
-
-    public List<Object> convertTypeAttributes(HasType e) {
-	List<Object> attrs = new LinkedList<Object>();
-	for (Object a : e.getType()) {
-	    attrs.add(convertTypedLiteral(a));
-	}
-	return attrs;
-    }
-
-    public List<Object> convertLabelAttribute(HasLabel e) {
-	List<InternationalizedString> labels = e.getLabel();
-	List<Object> res = new LinkedList<Object>();
-	for (InternationalizedString label : labels) {
-	    res.add(convertTypedLiteral(label));
-	}
-	return res;
-    }
-    public List<Object> convertLocationAttribute(HasLocation e) {
-        List<Object> locations = e.getLocation();
-        List<Object> res = new LinkedList<Object>();
-        for (Object location : locations) {
-            res.add(convertTypedLiteral(location));
-        }
-        return res;
-    }
-
-    public List<Object> convertRoleAttribute(HasRole e) {
-        List<Object> roles = e.getRole();
-        List<Object> res = new LinkedList<Object>();
-        for (Object role : roles) {
-            res.add(convertTypedLiteral(role));
-        }
-        return res;
-    }
-    
-    public Object convertValueAttribute(HasValue e) {
-        Object value = e.getValue();
-        if (value==null) return null;
-        return convertTypedLiteral(value);
-       
-    }
-
-    public List<Attribute> convertAttributes(HasExtensibility e) {
-	List<Attribute> attrs = new LinkedList<Attribute>();
-	for (Attribute a : e.getAny()) {
-	    attrs.add(convertAttribute(a));
-	}
-	return attrs;
-    }
-
-    public String quoteWrap(Object b) {
-	return "\"" + b + "\"";
-    }
-
-    public Object convertTypedLiteral(Object a) {
-	if (a instanceof QName) {
-	    QName q = (QName) a;
-	    return c.convertTypedLiteral("xsd:QName", quoteWrap(c.convert(q)));
-	}
-	if (a instanceof URIWrapper) {
-	    URIWrapper u = (URIWrapper) a;
-	    return c.convertTypedLiteral("xsd:anyURI", quoteWrap(u));
-	}
-	if (a instanceof Boolean) {
-	    Boolean b = (Boolean) a;
-	    return c.convertTypedLiteral("xsd:boolean", quoteWrap(b));
-	}
-	if (a instanceof String) {
-	    String b = (String) a;
-	    return c.convertTypedLiteral("xsd:string", quoteWrap(b));
-	}
-	if (a instanceof InternationalizedString) {
-	    //String b = ((InternationalizedString) a).getValue();
-	    //String l = ((InternationalizedString) a).getLang();
-	    
-	    return c.convertTypedLiteral("xsd:string", a);
-	}
-	if (a instanceof Double) {
-	    Double b = (Double) a;
-	    return c.convertTypedLiteral("xsd:double", quoteWrap(b));
-	}
-	if (a instanceof Integer) {
-	    Integer b = (Integer) a;
-	    return c.convertTypedLiteral("xsd:int", quoteWrap(b));
-	} 
-	if (a instanceof XMLGregorianCalendar) {
-	    XMLGregorianCalendar ti=(XMLGregorianCalendar) a;
-	    return c.convertTypedLiteral("xsd:dateTime", quoteWrap(ti));
-	} else {
-	    if (strict) {
-	        throw new UnsupportedOperationException("Unknown typedLiteral " + a
-	                                                + "(" + a.getClass() + ")");
+	for (Statement s : u.getStatement(b)) {
+	    if (s instanceof Entity) {
+		sRecords.add(convert((Entity)s));
+	    } else if (s instanceof Activity) {
+		sRecords.add(convert((Activity)s));
+	    } else if (s instanceof Agent) {
+		sRecords.add(convert((Agent)s));
 	    } else {
-	        return c.convertTypedLiteral("prov:unknownLiteral", quoteWrap(a.toString()));
+		sRecords.add(convertRelation((Relation0)s));
 	    }
+
 	}
+	return c.newNamedBundle(b.getId(), b.getNss(), sRecords);
+    }
+
+   
+    public List<Attribute> convertTypeAttributes(HasType e, List<Attribute> acc) {
+	for (Object type : e.getType()) {
+	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_TYPE, type));
+	}
+	return acc;
+    }
+
+    public List<Attribute> convertLabelAttributes(HasLabel e, List<Attribute> acc) {
+   	List<InternationalizedString> labels = e.getLabel();
+   	for (InternationalizedString label : labels) {
+   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LABEL,label));
+   	}
+   	return acc;
     }
     
-    boolean strict =false;
-
-    public Object convert(Entity e) {
-	List<Object> tAttrs = convertTypeAttributes(e);
-	List<Attribute> otherAttrs = convertAttributes(e);
-	List<Object> lAttrs = convertLabelAttribute(e);
-	List<Object> locAttrs = convertLocationAttribute(e);
-	Object value=convertValueAttribute(e);
-
-	return c.convertEntity(c.convert(e.getId()), tAttrs, lAttrs, locAttrs, value, otherAttrs);
+    public List<Attribute> convertRoleAttributes(HasRole e, List<Attribute> acc) {
+   	List<Object> roles = e.getRole();
+   	for (Object role : roles) {
+   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_ROLE,role));
+   	}
+   	return acc;
+    }
+    
+    public List<Attribute> convertLocationAttributes(HasLocation e, List<Attribute> acc) {
+        List<Object> locations = e.getLocation();
+        for (Object location : locations) {
+            acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LOCATION,location));
+        }
+        return acc;
     }
 
-    public Object convert(Activity e) {
-	List<Object> tAttrs = convertTypeAttributes(e);
-	List<Attribute> otherAttrs = convertAttributes(e);
-	List<Object> lAttrs = convertLabelAttribute(e);
-	List<Object> locAttrs = convertLocationAttribute(e);
-
-
-	return c.convertActivity(c.convert(e.getId()), tAttrs, lAttrs, locAttrs,
-	                         otherAttrs, e.getStartTime(), e.getEndTime());
+    
+    public Object convertValueAttributes(HasValue e, List<Attribute> acc) {
+        Object value = e.getValue();
+        if (value==null) return acc;
+        acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_VALUE,value));
+        return acc;     
     }
 
-    public Object convert(Agent e) {
-	List<Object> tAttrs = convertTypeAttributes(e);
-	List<Attribute> otherAttrs = convertAttributes(e);
-	List<Object> lAttrs = convertLabelAttribute(e);
-	List<Object> locAttrs = convertLocationAttribute(e);
-
-
-	return c.convertAgent(c.convert(e.getId()), tAttrs, lAttrs, locAttrs, otherAttrs);
+    public List<Attribute> convertAttributes(HasExtensibility e, List<Attribute> acc) {
+	acc.addAll(e.getAny());
+	return acc;
     }
 
-    public Object convertRelation(Object o) {
+
+       
+
+    public Entity convert(Entity e) {
+	List<Attribute> attrs=new LinkedList<Attribute>();	
+	convertTypeAttributes(e,attrs);
+	convertLabelAttributes(e,attrs);
+	convertLocationAttributes(e,attrs);	
+	convertValueAttributes(e,attrs);
+	convertAttributes(e,attrs);
+	return c.newEntity(e.getId(), attrs);
+    }
+
+    public Activity convert(Activity e) {
+	List<Attribute> attrs=new LinkedList<Attribute>();	
+	convertTypeAttributes(e,attrs);
+	convertLabelAttributes(e,attrs);
+	convertLocationAttributes(e,attrs);	
+	convertAttributes(e,attrs);
+	return c.newActivity(e.getId(), e.getStartTime(), e.getEndTime(), attrs);
+    }
+    
+
+    public Agent convert(Agent e) {
+	List<Attribute> attrs=new LinkedList<Attribute>();	
+	convertTypeAttributes(e,attrs);
+	convertLabelAttributes(e,attrs);
+	convertLocationAttributes(e,attrs);	
+	convertAttributes(e,attrs);
+	return c.newAgent(e.getId(), attrs);
+    }
+
+    public Relation0 convertRelation(Relation0 o) {
 	// no visitors, so ...
 	if (o instanceof Used) {
 	    return convert((Used) o);
@@ -271,232 +183,122 @@ public class BeanTraversal {
 	}
     }
 
+    final private QName q(Ref id) {
+	return (id==null) ? null: id.getRef();
+    }
+
+    public Used convert(Used use) {
+	List<Attribute> attrs=new LinkedList<Attribute>();	
+	convertTypeAttributes(use,attrs);
+	convertLabelAttributes(use,attrs);
+	convertLocationAttributes(use,attrs);	
+ 	convertRoleAttributes(use,attrs);
+	convertAttributes(use,attrs);
+	return c.newUsed(use.getId(), q(use.getActivity()), q(use.getEntity()), use.getTime(), attrs);
+    }
     
+    public WasGeneratedBy convert(WasGeneratedBy gen) {
+ 	List<Attribute> attrs=new LinkedList<Attribute>();	
+ 	convertTypeAttributes(gen,attrs);
+ 	convertLabelAttributes(gen,attrs);
+ 	convertLocationAttributes(gen,attrs);	
+ 	convertRoleAttributes(gen,attrs);
+ 	convertAttributes(gen,attrs);
+ 	return c.newWasGeneratedBy(gen.getId(), q(gen.getEntity()), q(gen.getActivity()), gen.getTime(), attrs);
+     }
 
-    public Object convert(Used o) {
-        List<Object> tAttrs = convertTypeAttributes((HasType) o);
-        List<Object> labAttrs = convertLabelAttribute(o);
-        List<Object> locAttrs = convertLocationAttribute(o);
-        List<Object> roleAttrs = convertRoleAttribute(o);
-        List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	ActivityRef a;
-	EntityRef e;
-	return c.convertUsed(c.convert(o.getId()), tAttrs, 
-	                     labAttrs,
-	                     locAttrs, roleAttrs,
-	                     otherAttrs,
-	                     ((a = o.getActivity()) == null) ? null : c.convert(a.getRef()),
-	                     ((e = o.getEntity()) == null) ? null : c.convert(e.getRef()), 
-	                     o.getTime());
+    
+    public WasInvalidatedBy convert(WasInvalidatedBy inv) {
+ 	List<Attribute> attrs=new LinkedList<Attribute>();	
+ 	convertTypeAttributes(inv,attrs);
+ 	convertLabelAttributes(inv,attrs);
+ 	convertLocationAttributes(inv,attrs);	
+ 	convertRoleAttributes(inv,attrs);
+ 	convertAttributes(inv,attrs);
+ 	return c.newWasInvalidatedBy(inv.getId(), q(inv.getEntity()), q(inv.getActivity()), inv.getTime(), attrs);
+     }
+
+    public WasStartedBy convert(WasStartedBy start) {
+ 	List<Attribute> attrs=new LinkedList<Attribute>();	
+ 	convertTypeAttributes(start,attrs);
+ 	convertLabelAttributes(start,attrs);
+ 	convertLocationAttributes(start,attrs);	
+ 	convertRoleAttributes(start,attrs);
+ 	convertAttributes(start,attrs);
+ 	return c.newWasStartedBy(start.getId(), q(start.getActivity()), q(start.getTrigger()), q(start.getStarter()), start.getTime(), attrs);
+     }
+
+    public WasEndedBy convert(WasEndedBy end) {
+ 	List<Attribute> attrs=new LinkedList<Attribute>();	
+ 	convertTypeAttributes(end,attrs);
+ 	convertLabelAttributes(end,attrs);
+ 	convertLocationAttributes(end,attrs);	
+ 	convertRoleAttributes(end,attrs);
+ 	convertAttributes(end,attrs);
+ 	return c.newWasEndedBy(end.getId(), q(end.getActivity()), q(end.getTrigger()), q(end.getEnder()), end.getTime(), attrs);
+     }
+
+
+   
+
+   
+    public WasInformedBy convert(WasInformedBy o) {
+	throw new UnsupportedOperationException();
     }
 
-    public Object convert(WasStartedBy o) {
-	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> labAttrs = convertLabelAttribute(o);
-	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	List<Object> locAttrs = convertLocationAttribute(o);
-	List<Object> roleAttrs = convertRoleAttribute(o);
-	
-	EntityRef e;
-	ActivityRef a;
-	ActivityRef s;
-	return c.convertWasStartedBy(c.convert(o.getId()),
-	                             tAttrs,
-	                             labAttrs,
-	                             locAttrs,
-	                             roleAttrs,
-	                             otherAttrs,
-	                             ((a = o.getActivity()) == null) ? null : c
-	                                     .convert(a.getRef()),
-	                             ((e = o.getTrigger()) == null) ? null : c
-	                                     .convert(e.getRef()),
-	                             ((s = o.getStarter()) == null) ? null : c
-	                                     .convert(s.getRef()), o.getTime());
+    public WasInfluencedBy convert(WasInfluencedBy o) {
+	throw new UnsupportedOperationException();
     }
 
-    public Object convert(WasEndedBy o) {
-	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> labAttrs = convertLabelAttribute(o);
-	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	List<Object> locAttrs = convertLocationAttribute(o);
-	List<Object> roleAttrs = convertRoleAttribute(o);
-	
-	EntityRef e;
-	ActivityRef a;
-	ActivityRef s;
-	return c.convertWasEndedBy(c.convert(o.getId()),
-	                           tAttrs,
-	                           labAttrs,
-	                           locAttrs,
-	                           roleAttrs,
-	                           otherAttrs,
-	                           ((a = o.getActivity()) == null) ? null : c
-	                                   .convert(a.getRef()),
-	                           ((e = o.getTrigger()) == null) ? null : c
-	                                   .convert(e.getRef()),
-	                           ((s = o.getEnder()) == null) ? null : c
-	                                   .convert(s.getRef()), o.getTime());
+    public WasDerivedFrom convert(WasDerivedFrom deriv) {
+	List<Attribute> attrs=new LinkedList<Attribute>();	
+ 	convertTypeAttributes(deriv,attrs);
+ 	convertLabelAttributes(deriv,attrs);
+ 	convertAttributes(deriv,attrs);
+ 	return c.newWasDerivedFrom(deriv.getId(), 
+ 	                           q(deriv.getGeneratedEntity()), 
+ 	                           q(deriv.getUsedEntity()), 
+ 	                           q(deriv.getActivity()), 
+ 	                           q(deriv.getGeneration()), 
+ 	                           q(deriv.getUsage()), 
+ 	                           attrs);
     }
 
-    public Object convert(WasGeneratedBy o) {
-	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> labAttrs = convertLabelAttribute(o);
-	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	List<Object> locAttrs = convertLocationAttribute(o);
-	List<Object> roleAttrs = convertRoleAttribute(o);
-
-	ActivityRef a;
-	EntityRef e;
-	return c.convertWasGeneratedBy(c.convert(o.getId()), tAttrs, labAttrs,
-	                               locAttrs,
-	                               roleAttrs,
-	                               otherAttrs, 
-	                               ((e = o.getEntity()) == null) ? null 
-	                            	       : c.convert(e.getRef()),
-	                               ((a = o.getActivity()) == null) ? null
-	                                       : c.convert(a.getRef()), o
-	                                       .getTime());
+    public WasAssociatedWith convert(WasAssociatedWith o) {
+	throw new UnsupportedOperationException();
     }
 
-    public Object convert(WasInvalidatedBy o) {
-	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> labAttrs = convertLabelAttribute(o);
-	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	List<Object> locAttrs = convertLocationAttribute(o);
-	List<Object> roleAttrs = convertRoleAttribute(o);
-	
-	ActivityRef a;
-	return c.convertWasInvalidatedBy(c.convert(o.getId()), tAttrs,labAttrs,
-	                                 locAttrs,
-	                                 roleAttrs,
-	                                 otherAttrs, c.convert(o.getEntity()
-	                                         .getRef()),
-	                                 ((a = o.getActivity()) == null) ? null
-	                                         : c.convert(a.getRef()), o
-	                                         .getTime());
+    public WasAttributedTo convert(WasAttributedTo o) {
+	throw new UnsupportedOperationException();
     }
 
-    public Object convert(WasInformedBy o) {
-	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> labAttrs = convertLabelAttribute(o);
-	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	return c.convertWasInformedBy(c.convert(o.getId()), tAttrs, labAttrs, otherAttrs,
-	                              (o.getEffect()==null) ? null : c.convert(o.getEffect().getRef()),
-	                              (o.getCause()==null) ? null: c.convert(o.getCause().getRef()));
+    public ActedOnBehalfOf convert(ActedOnBehalfOf o) {
+	throw new UnsupportedOperationException();
     }
 
-    public Object convert(WasInfluencedBy o) {
-	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> labAttrs = convertLabelAttribute(o);
-
-	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	return c.convertWasInfluencedBy(c.convert(o.getId()), tAttrs, labAttrs,
-	                                otherAttrs,
-	                                (o.getInfluencee()==null) ? null: c.convert(o.getInfluencee().getRef()),
-	                                (o.getInfluencer()==null) ? null: c.convert(o.getInfluencer().getRef()));
+    public AlternateOf convert(AlternateOf o) {
+	throw new UnsupportedOperationException();
     }
 
-    public Object convert(WasDerivedFrom o) {
-	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> labAttrs = convertLabelAttribute(o);
-
-	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	return c.convertWasDerivedFrom(c.convert(o.getId()), 
-	                               tAttrs,
-	                               labAttrs,
-	                               otherAttrs, 
-	                               (o.getGeneratedEntity()==null)? null:
-	                        	   c.convert(o
-	                        	             .getGeneratedEntity().getRef()),
-	                               (o.getUsedEntity()==null)?null:
-	                        	   c.convert(o.getUsedEntity().getRef()),
-	                               (o.getActivity()==null)? null:
-		                        	   c.convert(o.getActivity().getRef()),
-		                       (o.getGeneration()==null)? null:
-		                	   c.convert(o.getGeneration().getRef()),
-		                       (o.getUsage()==null)? null:
-		                	   c.convert(o.getUsage().getRef()));
-	                        	   
+    public SpecializationOf convert(SpecializationOf o) {
+	throw new UnsupportedOperationException();
     }
 
-    public Object convert(WasAssociatedWith o) {
-	List<Object> tAttrs = convertTypeAttributes((HasType) o);
-	List<Object> labAttrs = convertLabelAttribute(o);
-        List<Object> roleAttrs = convertRoleAttribute(o);
-
-	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	return c.convertWasAssociatedWith(c.convert(o.getId()),
-	                                  tAttrs,
-	                                  labAttrs,
-	                                  roleAttrs,
-	                                  otherAttrs,
-	                                  (o.getActivity()==null) ? null : c.convert(o.getActivity().getRef()),
-	                                  (o.getAgent() == null) ? null : c
-	                                          .convert(o.getAgent()
-	                                                  .getRef()),
-	                                  (o.getPlan() == null) ? null
-	                                          : c.convert(o.getPlan()
-	                                                  .getRef()));
-    }
-
-    public Object convert(WasAttributedTo o) {
-	List<Object> tAttrs = convertTypeAttributes(o);
-	List<Object> labAttrs = convertLabelAttribute(o);
-
-	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	return c.convertWasAttributedTo(c.convert(o.getId()),
-	                                tAttrs,
-	                                labAttrs,
-	                                otherAttrs,
-	                                (o.getEntity()==null)? null: c.convert(o.getEntity().getRef()),
-	                                (o.getAgent() == null) ? null : c
-	                                        .convert(o.getAgent().getRef()));
-    }
-
-    public Object convert(ActedOnBehalfOf o) {
-	List<Object> tAttrs = convertTypeAttributes(o);
-	List<Object> labAttrs = convertLabelAttribute(o);
-
-	List<Attribute> otherAttrs = convertAttributes((HasExtensibility) o);
-	return c.convertActedOnBehalfOf(c.convert(o.getId()),
-	                                tAttrs,
-	                                labAttrs,
-	                                otherAttrs,
-	                                (o.getSubordinate()==null) ? null : c.convert(o.getSubordinate().getRef()),
-	                                (o.getResponsible()==null) ? null: c.convert(o.getResponsible().getRef()),
-	                                (o.getActivity() == null) ? null : c
-	                                        .convert(o.getActivity()
-	                                                .getRef()));
-    }
-
-    public Object convert(AlternateOf o) {
-
-	return c.convertAlternateOf(c.convert(o.getEntity2().getRef()),
-	                            c.convert(o.getEntity1().getRef()));
-    }
-
-    public Object convert(SpecializationOf o) {
-	return c.convertSpecializationOf(c.convert(o.getSpecializedEntity()
-						    .getRef()),
-					 c.convert(o.getGeneralEntity()
-						    .getRef()));
-    }
-
-  public Object convert(MentionOf o) {
-	return c.convertMentionOf(c.convert((o.getSpecializedEntity()==null) ? null: o.getSpecializedEntity().getRef()),
-	                          c.convert((o.getGeneralEntity()==null) ? null : o.getGeneralEntity().getRef()),
-	                          c.convert((o.getBundle()==null) ? null: o.getBundle().getRef()));
+    public MentionOf convert(MentionOf o) {
+	throw new UnsupportedOperationException();
     }
     //TODO: only supporting one member in the relation
     // note: lots of test to support scruffy provenance
-    public Object convert(HadMember o) {
-	return c.convertHadMember(c.convert((o.getCollection()==null) ? null: 	                                    
+    public HadMember convert(HadMember o) {
+	throw new UnsupportedOperationException();
+/*remember, scruffy hadmember in provn, has a null in get(0)!!
+	return deprecated.convertHadMember(deprecated.convert((o.getCollection()==null) ? null: 	                                    
 	                                      o.getCollection().getRef()),
 	                          ((o.getEntity()==null || (o.getEntity().isEmpty())) ?
-	                        	  c.convert(null) :
-	                        	  c.convert((o.getEntity().get(0)==null) ? 
+	                        	  deprecated.convert(null) :
+	                        	  deprecated.convert((o.getEntity().get(0)==null) ? 
 	                        		     null :
-	                        	             o.getEntity().get(0).getRef())));
+	                        	             o.getEntity().get(0).getRef()))); */
     }
     
 	

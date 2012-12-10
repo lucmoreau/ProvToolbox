@@ -605,9 +605,14 @@ public class ProvFactory implements BeanConstructor {
     }
 
     public Attribute newAttribute(QName qname, Object value) {
-	Attribute res = new Attribute(qname, value, getXsdType(value));
-	return res;
-    }
+  	Attribute res = new Attribute(qname, value, getXsdType(value));
+  	return res;
+      }
+
+    public Attribute newAttribute(Attribute.AttributeKind kind, Object value) {
+  	Attribute res = new Attribute(kind, value, getXsdType(value));
+  	return res;
+      }
 
     public Attribute newAttribute(String namespace, String localName,
 				  String prefix, Object value) {
@@ -723,6 +728,17 @@ public class ProvFactory implements BeanConstructor {
 	res.getEntityOrActivityOrWasGeneratedBy().addAll(as);
 	res.getEntityOrActivityOrWasGeneratedBy().addAll(ags);
 	res.getEntityOrActivityOrWasGeneratedBy().addAll(lks);
+	return res;
+    }
+    public Document newDocument(Hashtable<String, String> namespaces,
+                                Collection<Statement> statements,
+                                Collection<NamedBundle> bundles) {
+	Document res = of.createDocument();
+	res.setNss(namespaces);
+	res.getEntityOrActivityOrWasGeneratedBy()
+	   .addAll(statements);
+	res.getEntityOrActivityOrWasGeneratedBy()
+	   .addAll(bundles);
 	return res;
     }
 
@@ -1000,6 +1016,16 @@ public class ProvFactory implements BeanConstructor {
 	return res;
     }
 
+    public NamedBundle newNamedBundle(QName id, Hashtable<String,String> namespaces, Collection<Statement> statements) {
+	NamedBundle res = of.createNamedBundle();
+	res.setId(id);
+	res.setNss(namespaces);
+	if (statements != null) {
+	    res.getEntityOrActivityOrWasGeneratedBy().addAll(statements);
+	}
+	return res;
+    }
+
     public NamedBundle newNamedBundle(String id, Activity[] ps, Entity[] es,
 				      Agent[] ags, Statement[] lks) {
 
@@ -1072,12 +1098,13 @@ public class ProvFactory implements BeanConstructor {
     }
 
     public Used newUsed(QName id) {
-	return newUsed(id, null, null, null);
+	Used res = of.createUsed();
+	res.setId(id);
+	return res;
     }
 
     public Used newUsed(QName id, ActivityRef aid, String role, EntityRef eid) {
-	Used res = of.createUsed();
-	res.setId(id);
+	Used res = newUsed(id);
 	res.setActivity(aid);
 	addRole(res, role);
 	res.setEntity(eid);
@@ -1105,6 +1132,18 @@ public class ProvFactory implements BeanConstructor {
 	res.setEntity(aid);
 	return res;
     }
+    
+    public Used newUsed(QName id, QName activity, QName entity, XMLGregorianCalendar time, List<Attribute> attributes) {
+   	ActivityRef aid = (activity==null)? null: newActivityRef(activity);
+   	EntityRef eid = (entity==null)? null: newEntityRef(entity);
+   	Used res=newUsed(id,aid,null,eid);	
+   	res.setTime(time);
+	setAttributes(res, attributes);
+   	return res;
+       }
+
+    
+    
 
     public Used newUsed(Used u) {
 	Used u1 = newUsed(u.getId(), u.getActivity(), null, u.getEntity());
@@ -1234,14 +1273,6 @@ public class ProvFactory implements BeanConstructor {
 	return wdf;
     }
 
-    /*
-     * public void addType(HasExtensibility a, String type, String typeOfType) {
-     * 
-     * OldTypedLiteral tl=newOldTypedLiteral(type,typeOfType);
-     * JAXBElement<OldTypedLiteral> je=of.createType(tl); addAttribute(a,je);
-     * 
-     * }
-     */
 
     public WasDerivedFrom newWasDerivedFrom(String id, EntityRef aid1,
 					    EntityRef aid2) {
@@ -1252,6 +1283,17 @@ public class ProvFactory implements BeanConstructor {
 					    EntityRef aid2, ActivityRef aid,
 					    GenerationRef did1, UsageRef did2) {
 	return newWasDerivedFrom(stringToQName(id), aid1, aid2, aid, did1, did2);
+    }
+
+    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1, QName a, QName g, QName u,  List<Attribute> attributes) {
+	EntityRef eid1 = (e1==null)? null: newEntityRef(e1);
+	EntityRef eid2 = (e2==null)? null: newEntityRef(e2);
+	ActivityRef aid = (a==null)? null : newActivityRef(a);
+	GenerationRef gid = (g==null)? null: newGenerationRef(g);
+	UsageRef uid = (u==null) ? null : newUsageRef(u);
+	WasDerivedFrom res=newWasDerivedFrom(id, eid2, eid1, aid, gid, uid);
+	setAttributes(res, attributes);
+	return res;
     }
 
     public WasDerivedFrom newWasDerivedFrom(WasDerivedFrom d) {
@@ -1265,7 +1307,13 @@ public class ProvFactory implements BeanConstructor {
 	wdf.getLabel().addAll(d.getLabel());
 	return wdf;
     }
-
+    
+    public WasEndedBy newWasEndedBy(QName id) {
+	WasEndedBy res = of.createWasEndedBy();
+	res.setId(id);
+	return res;
+    }
+    
     public WasEndedBy newWasEndedBy(QName id, ActivityRef aid, EntityRef eid) {
 	WasEndedBy res = of.createWasEndedBy();
 	res.setId(id);
@@ -1276,6 +1324,17 @@ public class ProvFactory implements BeanConstructor {
 
     public WasEndedBy newWasEndedBy(String id, ActivityRef aid, EntityRef eid) {
 	return newWasEndedBy(stringToQName(id), aid, eid);
+    }
+    
+    public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger, QName ender, XMLGregorianCalendar time, List<Attribute> attributes) {
+   	ActivityRef aid = (activity==null)? null: newActivityRef(activity);
+      	EntityRef eid = (trigger==null)? null: newEntityRef(trigger);
+      	ActivityRef sid = (ender==null)? null: newActivityRef(ender);
+      	WasEndedBy res=newWasEndedBy(id,aid,eid);	
+      	res.setTime(time);
+      	res.setEnder(sid);
+	setAttributes(res, attributes);
+      	return res;
     }
 
     public WasEndedBy newWasEndedBy(WasEndedBy u) {
@@ -1295,8 +1354,10 @@ public class ProvFactory implements BeanConstructor {
     }
 
     public WasGeneratedBy newWasGeneratedBy(QName id) {
-	return newWasGeneratedBy(id, null, null,
-				 (org.openprovenance.prov.xml.ActivityRef) null);
+	WasGeneratedBy res = of.createWasGeneratedBy();
+	res.setId(id);
+	return res;
+	
     }
 
     public WasGeneratedBy newWasGeneratedBy(QName id, Entity a, String role,
@@ -1334,6 +1395,15 @@ public class ProvFactory implements BeanConstructor {
 					    String role, ActivityRef pid) {
 	return newWasGeneratedBy(stringToQName(id), aid, role, pid);
     }
+    
+    public WasGeneratedBy newWasGeneratedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, List<Attribute> attributes) {
+   	ActivityRef aid = (activity==null)? null: newActivityRef(activity);
+   	EntityRef eid = (entity==null)? null: newEntityRef(entity);
+   	WasGeneratedBy res=newWasGeneratedBy(id,eid,null,aid);	
+   	res.setTime(time);
+	setAttributes(res, attributes);
+   	return res;
+       }
 
     public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
 	WasGeneratedBy wgb = newWasGeneratedBy(g.getId(), g.getEntity(), null,
@@ -1449,6 +1519,16 @@ public class ProvFactory implements BeanConstructor {
 						ActivityRef aid) {
 	return newWasInvalidatedBy(stringToQName(id), eid, aid);
     }
+    
+    public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, List<Attribute> attributes) {
+   	ActivityRef aid = (activity==null) ? null: newActivityRef(activity);
+   	EntityRef eid = (entity==null)? null: newEntityRef(entity);
+   	WasInvalidatedBy res=newWasInvalidatedBy(id,eid,aid);	
+   	res.setTime(time);
+	setAttributes(res, attributes);
+   	return res;
+       }
+
 
     public WasInvalidatedBy newWasInvalidatedBy(WasInvalidatedBy u) {
 	WasInvalidatedBy u1 = newWasInvalidatedBy(u.getId(), u.getEntity(),
@@ -1460,7 +1540,12 @@ public class ProvFactory implements BeanConstructor {
 	u1.getLocation().addAll(u.getLocation());
 	return u1;
     }
-
+    public WasStartedBy newWasStartedBy(QName id) {
+   	WasStartedBy res = of.createWasStartedBy();
+   	res.setId(id);
+   	return res;
+    }
+    
     public WasStartedBy newWasStartedBy(QName id, ActivityRef aid, EntityRef eid) {
 	WasStartedBy res = of.createWasStartedBy();
 	res.setId(id);
@@ -1473,6 +1558,18 @@ public class ProvFactory implements BeanConstructor {
 					EntityRef eid) {
 	return newWasStartedBy(stringToQName(id), aid, eid);
     }
+    
+    public WasStartedBy newWasStartedBy(QName id, QName activity, QName trigger, QName starter, XMLGregorianCalendar time, List<Attribute> attributes) {
+   	ActivityRef aid = (activity==null)? null: newActivityRef(activity);
+      	EntityRef eid = (trigger==null)? null: newEntityRef(trigger);
+      	ActivityRef sid = (starter==null)? null: newActivityRef(starter);
+      	WasStartedBy res=newWasStartedBy(id,aid,eid);	
+      	res.setTime(time);
+      	res.setStarter(sid);
+	setAttributes(res, attributes);
+      	return res;
+       }
+
 
     public WasStartedBy newWasStartedBy(WasStartedBy u) {
 	WasStartedBy u1 = newWasStartedBy(u.getId(), u.getActivity(),
@@ -1508,8 +1605,57 @@ public class ProvFactory implements BeanConstructor {
     }
 
     public void setAttributes(HasExtensibility res, List<Attribute> attributes) {
-	// FIXME attributes need to be filtered
-	res.getAny().addAll(attributes);
+	HasType typ=(res instanceof HasType)? (HasType)res : null;
+	HasLocation loc=(res instanceof HasLocation)? (HasLocation)res : null;
+	HasLabel lab=(res instanceof HasLabel)? (HasLabel)res : null;
+	HasValue aval=(res instanceof HasValue)? (HasValue)res : null;
+	HasRole rol=(res instanceof HasRole)? (HasRole)res : null;
+
+	for (Attribute attr: attributes) {
+	    Object val=attr.getValue();
+	    switch (attr.getKind()) {
+	    case PROV_LABEL:
+		if (lab!=null) {
+		    if (val instanceof InternationalizedString) {
+			lab.getLabel().add((InternationalizedString) val);		
+		    } else {
+			lab.getLabel().add(newInternationalizedString(val.toString()));
+		    }
+		}
+		break;
+	    case PROV_LOCATION:
+		if (loc!=null) {
+		    loc.getLocation().add(val);
+		}
+		break;
+	    case PROV_ROLE:
+		if (rol!=null) {
+		    rol.getRole().add(val);
+		}
+		break;
+	    case PROV_TYPE: 
+		if (typ!=null) {
+		    typ.getType().add(typ);
+		}
+		break;
+	    case PROV_VALUE:
+		if (aval!=null) {
+		    aval.setValue(val);
+		}
+		break;
+	    case OTHER:
+		res.getAny().add(attr);
+		break;
+	    case UNKNOWN:
+		//FIXME: need to check qname here
+		res.getAny().add(attr);
+		break;
+	    default:
+		break;
+	    
+	    }
+	    
+	}
     }
 
     public void setNamespaces(Hashtable<String, String> nss) {

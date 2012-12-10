@@ -17,7 +17,7 @@ import  org.antlr.runtime.tree.TreeAdaptor;
 
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.BeanTraversal;
+import org.openprovenance.prov.xml.OldBeanTraversal;
 
 
 public  class Utility {
@@ -89,7 +89,7 @@ public  class Utility {
         ProvFactory pFactory=new ProvFactory(c.getNss());
         ProvConstructor pc=new ProvConstructor(pFactory);
         pc.namespaceTable.putAll(c.getNss());
-        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(pFactory,pc));
+        OldBeanTraversal bt=new OldBeanTraversal(new BeanTreeConstructor(pFactory,pc));
         Object o=bt.convert(c);
         return o;
     }
@@ -102,7 +102,7 @@ public  class Utility {
     }
 
     public String convertBeanToASN(Document c) {
-        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(ProvFactory.getFactory(), new NotationConstructor()));
+        OldBeanTraversal bt=new OldBeanTraversal(new BeanTreeConstructor(ProvFactory.getFactory(), new NotationConstructor()));
         Object o=bt.convert(c);
         return (String)o;
     }

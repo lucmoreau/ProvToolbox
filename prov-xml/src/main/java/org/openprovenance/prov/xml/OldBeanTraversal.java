@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import javax.xml.namespace.QName;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-
+@Deprecated
 public class OldBeanTraversal {
     private OldBeanConstructor c;
     

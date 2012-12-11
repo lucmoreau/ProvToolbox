@@ -1,7 +1,7 @@
 package org.openprovenance.prov.notation;
 import java.util.List;
 
-
+@Deprecated
 public interface OldTreeConstructor {
     /* Component 1 */
 

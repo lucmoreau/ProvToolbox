@@ -4,7 +4,7 @@ import javax.xml.namespace.QName;
 
 /** An interface for constructing data structures when PROV Java beans
  * are traversed by BeanTraversal class. */
-
+@Deprecated
 public interface OldBeanConstructor {
     public Object convert(QName q);
 

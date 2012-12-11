@@ -2,6 +2,7 @@ package org.openprovenance.prov.notation;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,9 +16,12 @@ import  org.antlr.runtime.tree.CommonTree;
 import  org.antlr.runtime.tree.CommonTreeAdaptor;
 import  org.antlr.runtime.tree.TreeAdaptor;
 
+import org.openprovenance.prov.xml.BeanTraversal;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.OldBeanTraversal;
+import org.openprovenance.prov.xml.UncheckedException;
+import org.openprovenance.prov.xml.ValueConverter;
 
 
 public  class Utility {
@@ -75,7 +79,7 @@ public  class Utility {
       }
 
     public String convertTreeToASN(CommonTree tree) {
-        Object o=new OldTreeTraversal(new NotationConstructor()).convert(tree);
+        Object o=new OldTreeTraversal(new OldNotationConstructor()).convert(tree);
         return (String)o;
     }
 
@@ -108,10 +112,24 @@ public  class Utility {
         return (String)o;
     }
 
-    public String convertBeanToASN(Document c) {
-        OldBeanTraversal bt=new OldBeanTraversal(new BeanTreeConstructor(ProvFactory.getFactory(), new NotationConstructor()));
+    @Deprecated
+    public String oldConvertBeanToASN(Document c) {
+        OldBeanTraversal bt=new OldBeanTraversal(new BeanTreeConstructor(ProvFactory.getFactory(), new OldNotationConstructor()));
         Object o=bt.convert(c);
         return (String)o;
+    }
+
+
+    public String convertBeanToASN(Document doc) {
+	ProvFactory pFactory=new ProvFactory();
+	StringWriter writer=new StringWriter();
+	NotationConstructor nc=new NotationConstructor(writer, pFactory);
+        BeanTraversal bt=new BeanTraversal(nc, pFactory, new ValueConverter(pFactory));
+        bt.convert(doc);
+        nc.flush();
+        String s=writer.toString();
+        nc.close();
+        return s;
     }
 
     /* from http://www.antlr.org/wiki/display/ANTLR3/Interfacing+AST+with+Java */
@@ -147,6 +165,7 @@ public  class Utility {
     
     public void writeDocument(Document doc, String filename){
 	String s=convertBeanToASN(doc);
+	System.out.println("printing" + s);
         writeTextToFile(s,filename);
     }
     

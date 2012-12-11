@@ -1551,13 +1551,7 @@ public class ProvFactory implements BeanConstructor {
 	return el;
     }
 
-    /* Uses the xsd:type to java:type mapping of JAXB */
-
-    String qnameToString(QName qname) {
-	return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
-		+ qname.getLocalPart();
-    }
-
+ 
     public void setAttributes(HasExtensibility res, List<Attribute> attributes) {
 	if (attributes==null) return;
 	HasType typ=(res instanceof HasType)? (HasType)res : null;
@@ -1654,5 +1648,15 @@ public class ProvFactory implements BeanConstructor {
 	    return new QName(namespaces.get(prefix), local, prefix);
 	}
     }
+    
+    /* Uses the xsd:type to java:type mapping of JAXB */
+    
+    ///TODO: should use the prefix definition of nss, as opposed to the one in qname
+
+    public String qnameToString(QName qname) {
+	return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
+		+ qname.getLocalPart();
+    }
+
 
 }

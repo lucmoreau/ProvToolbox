@@ -12,6 +12,7 @@ import org.openprovenance.prov.notation.OldTreeConstructor;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.InternationalizedString;
+import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.xml.Used;
@@ -163,7 +164,12 @@ public class RdfConstructor implements OldTreeConstructor {
 
 	private URIImpl uriFromQName(QName qname)
 	{
+	    if (qname.getNamespaceURI().equals(NamespacePrefixMapper.XSD_NS)) {
+		return new URIImpl(NamespacePrefixMapper.XSD_HASH_NS + qname.getLocalPart());
+	    } else {
 		return new URIImpl(qname.getNamespaceURI() + qname.getLocalPart());
+
+	    }
 	}
 
 	public void processAttributes(Object infl, List<?> aAttrs)
@@ -267,8 +273,8 @@ public class RdfConstructor implements OldTreeConstructor {
 			}
 
 			org.openrdf.model.Statement stmnt = new StatementImpl(r,
-					new URIImpl(pred.getNamespaceURI() + pred.getLocalPart()),
-					literalImpl);
+			                                                      new URIImpl(pred.getNamespaceURI() + pred.getLocalPart()),
+			                                                      literalImpl);
 
 			try
 			{

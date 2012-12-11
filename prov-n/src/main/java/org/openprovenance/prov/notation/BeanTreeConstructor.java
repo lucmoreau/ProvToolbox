@@ -14,9 +14,9 @@ import org.w3c.dom.Element;
 
 /** A class that implements the BeanConstructor interface and relies on a TreeConstructor to construct a data structure for a given bean. */
 public class BeanTreeConstructor implements OldBeanConstructor{
-    private TreeConstructor c;
+    private OldTreeConstructor c;
     final ProvFactory pFactory;
-    public BeanTreeConstructor(ProvFactory pFactory, TreeConstructor c) {
+    public BeanTreeConstructor(ProvFactory pFactory, OldTreeConstructor c) {
         this.pFactory=pFactory;
         this.c=c;
         this.namespaces=pFactory.getNss();

@@ -10,6 +10,7 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
     static final public String PROV_NS="http://www.w3.org/ns/prov#";
     static final public String XSI_NS="http://www.w3.org/2001/XMLSchema-instance";
     static final public String XSD_NS="http://www.w3.org/2001/XMLSchema";
+    static final public String XSD_HASH_NS="http://www.w3.org/2001/XMLSchema#";
     static final public String PRINTER_NS="http://openprovenance.org/model/opmPrinterConfig";
     static final public String XML_NS="http://www.w3.org/XML/1998/namespace";
     static final public String PROV_PREFIX = "prov";
@@ -81,6 +82,9 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
             return "prn";
         }
         if (namespaceUri.equals(XSD_NS)) {
+            return "xsd";
+        }
+        if (namespaceUri.equals(XSD_HASH_NS)) {
             return "xsd";
         }
         if (namespaceUri.equals(XML_NS)) {

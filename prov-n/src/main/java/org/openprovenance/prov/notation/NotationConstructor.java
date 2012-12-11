@@ -5,7 +5,7 @@ import org.openprovenance.prov.xml.InternationalizedString;
 
 /** For testing purpose, conversion back to ASN. */
 
-public class NotationConstructor implements TreeConstructor {
+public class NotationConstructor implements OldTreeConstructor {
 
     public String symbol(String s) {
 	return s;

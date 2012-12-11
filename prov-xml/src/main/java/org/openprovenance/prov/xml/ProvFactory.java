@@ -96,9 +96,9 @@ public class ProvFactory implements BeanConstructor {
     }
 
     public void addAttribute(HasExtensibility a, String namespace,
-			     String localName, String prefix, Object value) {
+			     String localName, String prefix, Object value, ValueConverter vconv) {
 
-	a.getAny().add(newAttribute(namespace, localName, prefix, value));
+	a.getAny().add(newAttribute(namespace, localName, prefix, value, vconv));
     }
 
     public void addAttribute(HasExtensibility a, String namespace,
@@ -263,102 +263,8 @@ public class ProvFactory implements BeanConstructor {
 	a.getType().add(u);
     }
 
-    /**
-     * By default, no auto generation of Id. Override this behaviour if
-     * required.
-     */
-    public String autoGenerateId(String prefix) {
-	return null;
-    }
-
-    /**
-     * Conditional autogeneration of Id. By default, no auto generation of Id.
-     * Override this behaviour if required.
-     */
-    public String autoGenerateId(String prefix, String id) {
-	return id;
-    }
-
-    /*
-     * public void addTypeOLD(HasExtensibility a, Object type) {
-     * 
-     * // TypedLiteral tl=newTypedLiteral(type); JAXBElement<Object> je =
-     * of.createType(type); addAttribute(a, je);
-     * 
-     * }
-     * 
-     * public void addTypeOLD(HasExtensibility a, URI type) {
-     * 
-     * URIWrapper u = new URIWrapper(); u.setValue(type); JAXBElement<Object> je
-     * = of.createType(u); addAttribute(a, je); }
-     */
-
-    public Object convertToJava(String datatype, String value) {
-	if (datatype.equals("xsd:string"))
-	    return value;
-
-	if (datatype.equals("xsd:int"))
-	    return Integer.parseInt(value);
-	if (datatype.equals("xsd:long"))
-	    return Long.parseLong(value);
-	if (datatype.equals("xsd:short"))
-	    return Short.parseShort(value);
-	if (datatype.equals("xsd:double"))
-	    return Double.parseDouble(value);
-	if (datatype.equals("xsd:float"))
-	    return Float.parseFloat(value);
-	if (datatype.equals("xsd:decimal"))
-	    return new java.math.BigDecimal(value);
-	if (datatype.equals("xsd:boolean"))
-	    return Boolean.parseBoolean(value);
-	if (datatype.equals("xsd:byte"))
-	    return Byte.parseByte(value);
-	if (datatype.equals("xsd:unsignedInt"))
-	    return Long.parseLong(value);
-	if (datatype.equals("xsd:unsignedShort"))
-	    return Integer.parseInt(value);
-	if (datatype.equals("xsd:unsignedByte"))
-	    return Short.parseShort(value);
-	if (datatype.equals("xsd:unsignedLong"))
-	    return new java.math.BigInteger(value);
-	if (datatype.equals("xsd:integer"))
-	    return new java.math.BigInteger(value);
-	if (datatype.equals("xsd:nonNegativeInteger"))
-	    return new java.math.BigInteger(value);
-	if (datatype.equals("xsd:nonPositiveInteger"))
-	    return new java.math.BigInteger(value);
-	if (datatype.equals("xsd:positiveInteger"))
-	    return new java.math.BigInteger(value);
-
-	if (datatype.equals("xsd:anyURI")) {
-	    URIWrapper u = new URIWrapper();
-	    u.setValue(URI.create(value));
-	    return u;
-	}
-	if (datatype.equals("xsd:QName")) {
-	    return newQName(value);
-	}
-
-	if ((datatype.equals("xsd:dateTime"))
-		|| (datatype.equals("rdf:XMLLiteral"))
-		|| (datatype.equals("xsd:normalizedString"))
-		|| (datatype.equals("xsd:token"))
-		|| (datatype.equals("xsd:language"))
-		|| (datatype.equals("xsd:Name"))
-		|| (datatype.equals("xsd:NCName"))
-		|| (datatype.equals("xsd:NMTOKEN"))
-		|| (datatype.equals("xsd:hexBinary"))
-		|| (datatype.equals("xsd:base64Binary"))) {
-
-	    throw new UnsupportedOperationException(
-						    "KNOWN literal type but conversion not supported yet "
-							    + datatype);
-	}
-
-	throw new UnsupportedOperationException("UNKNOWN literal type "
-		+ datatype);
-    }
-
+ 
+ 
     public org.openprovenance.prov.xml.collection.ObjectFactory getCollectionObjectFactory() {
 	return cof;
     }
@@ -410,34 +316,6 @@ public class ProvFactory implements BeanConstructor {
 
     public org.openprovenance.prov.xml.validation.ObjectFactory getValidationObjectFactory() {
 	return vof;
-    }
-
-    public String getXsdType(Object o) {
-	if (o instanceof Integer)
-	    return "xsd:int";
-	if (o instanceof String)
-	    return "xsd:string";
-	if (o instanceof InternationalizedString)
-	    return "xsd:string";
-	if (o instanceof Long)
-	    return "xsd:long";
-	if (o instanceof Short)
-	    return "xsd:short";
-	if (o instanceof Double)
-	    return "xsd:double";
-	if (o instanceof Float)
-	    return "xsd:float";
-	if (o instanceof java.math.BigDecimal)
-	    return "xsd:decimal";
-	if (o instanceof Boolean)
-	    return "xsd:boolean";
-	if (o instanceof Byte)
-	    return "xsd:byte";
-	if (o instanceof URIWrapper)
-	    return "xsd:anyURI";
-	if (o instanceof QName)
-	    return "xsd:QName";
-	return "xsd:UNKNOWN";
     }
 
     void init() {
@@ -622,20 +500,20 @@ public class ProvFactory implements BeanConstructor {
 	return newAnyRef(stringToQName(id));
     }
 
-    public Attribute newAttribute(QName qname, Object value) {
-  	Attribute res = new Attribute(qname, value, getXsdType(value));
+    public Attribute newAttribute(QName qname, Object value, ValueConverter vconv) {
+  	Attribute res = new Attribute(qname, value, vconv.getXsdType(value));
   	return res;
       }
 
-    public Attribute newAttribute(Attribute.AttributeKind kind, Object value) {
-  	Attribute res = new Attribute(kind, value, getXsdType(value));
+    public Attribute newAttribute(Attribute.AttributeKind kind, Object value, ValueConverter vconv) {
+  	Attribute res = new Attribute(kind, value, vconv.getXsdType(value));
   	return res;
       }
 
     public Attribute newAttribute(String namespace, String localName,
-				  String prefix, Object value) {
+				  String prefix, Object value, ValueConverter vconv) {
 	Attribute res = new Attribute(new QName(namespace, localName, prefix),
-				      value, getXsdType(value));
+				      value, vconv.getXsdType(value));
 	return res;
     }
 
@@ -1081,20 +959,6 @@ public class ProvFactory implements BeanConstructor {
 	return newNamedBundle(stringToQName(id), ps, as, ags, lks);
     }
 
-    public Object newQName(String qnameAsString) {
-	int index = qnameAsString.indexOf(':');
-	String prefix;
-	String local;
-
-	if (index == -1) {
-	    prefix = "";
-	    local = qnameAsString;
-	} else {
-	    prefix = qnameAsString.substring(0, index);
-	    local = qnameAsString.substring(index + 1, qnameAsString.length());
-	}
-	return new QName(getNamespace(prefix), local, prefix);
-    }
 
     public SpecializationOf newSpecializationOf(EntityRef eid2, EntityRef eid1) {
 	SpecializationOf res = of.createSpecializationOf();
@@ -1695,6 +1559,7 @@ public class ProvFactory implements BeanConstructor {
     }
 
     public void setAttributes(HasExtensibility res, List<Attribute> attributes) {
+	if (attributes==null) return;
 	HasType typ=(res instanceof HasType)? (HasType)res : null;
 	HasLocation loc=(res instanceof HasLocation)? (HasLocation)res : null;
 	HasLabel lab=(res instanceof HasLabel)? (HasLabel)res : null;
@@ -1736,10 +1601,7 @@ public class ProvFactory implements BeanConstructor {
 	    case OTHER:
 		res.getAny().add(attr);
 		break;
-	    case UNKNOWN:
-		//FIXME: need to check qname here
-		res.getAny().add(attr);
-		break;
+	    
 	    default:
 		break;
 	    
@@ -1750,6 +1612,26 @@ public class ProvFactory implements BeanConstructor {
 
     public void setNamespaces(Hashtable<String, String> nss) {
 	namespaces = nss;
+    }
+
+    public void resetNamespaces() {
+	namespaces = new Hashtable<String, String>();
+    }
+
+    // What's the difference with stringToQName?
+    public Object newQName(String qnameAsString) {
+	int index = qnameAsString.indexOf(':');
+	String prefix;
+	String local;
+
+	if (index == -1) {
+	    prefix = "";
+	    local = qnameAsString;
+	} else {
+	    prefix = qnameAsString.substring(0, index);
+	    local = qnameAsString.substring(index + 1, qnameAsString.length());
+	}
+	return new QName(getNamespace(prefix), local, prefix);
     }
 
     public QName stringToQName(String id) {
@@ -1764,7 +1646,7 @@ public class ProvFactory implements BeanConstructor {
 	if ("prov".equals(prefix)) {
 	    return new QName(NamespacePrefixMapper.PROV_NS, local, prefix);
 	} else if ("xsd".equals(prefix)) {
-	    return new QName(NamespacePrefixMapper.XSD_NS + "#", // RDF ns ends
+	    return new QName(NamespacePrefixMapper.XSD_NS, // + "#", // RDF ns ends
 								 // in #, not
 								 // XML ns.
 			     local, prefix);

@@ -61,20 +61,27 @@ public  class Utility {
         return tree;
     }
 
+    public Object oldConvertTreeToJavaBean(CommonTree tree) {
+  	if (tree==null) return null;
+          Object o=new OldTreeTraversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
+          return o;
+      }
+
     public Object convertTreeToJavaBean(CommonTree tree) {
-	if (tree==null) return null;
-        Object o=new TreeTraversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
-        return o;
-    }
+  	if (tree==null) return null;
+  	ProvFactory pFactory=new ProvFactory();
+          Object o=new TreeTraversal(pFactory,pFactory).convert(tree);
+          return o;
+      }
 
     public String convertTreeToASN(CommonTree tree) {
-        Object o=new TreeTraversal(new NotationConstructor()).convert(tree);
+        Object o=new OldTreeTraversal(new NotationConstructor()).convert(tree);
         return (String)o;
     }
 
 
     public String convertTreeToHTML(CommonTree tree) {
-        Object o=new TreeTraversal(new HTMLConstructor()).convert(tree);
+        Object o=new OldTreeTraversal(new HTMLConstructor()).convert(tree);
         return (String)o;
     }
 
@@ -145,7 +152,7 @@ public  class Utility {
     
     public Document readDocument(String filename) throws IOException, Throwable {
 	 CommonTree tree = convertASNToTree(filename);
-         Object o=convertTreeToJavaBean(tree);
+         Object o=oldConvertTreeToJavaBean(tree);
          return (Document)o;
     }
     

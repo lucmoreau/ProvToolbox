@@ -18,7 +18,6 @@ public class Attribute {
 	PROV_ROLE,
 	PROV_LOCATION,
 	PROV_VALUE,
-	UNKNOWN,
 	OTHER
     }
 
@@ -29,14 +28,15 @@ public class Attribute {
     
     
     public Attribute(QName elementName, Object val, String xsdType) {
+ 	if (elementName==null) throw new IllegalArgumentException("Attribute elementName is null ");
  	this.val = val;
  	this.elementName = elementName;
  	this.xsdType = xsdType;
- 	this.kind=AttributeKind.UNKNOWN;
+ 	this.kind=getAttributeKind(elementName);
      }
 
    
-    /** Short cut, for PROV attribute, raises exceptoin otherwise. */
+    /** Short cut, for PROV attribute, raises exception otherwise. */
     
     public Attribute(AttributeKind kind, Object val, String xsdType) {
  	this.val = val;
@@ -46,7 +46,7 @@ public class Attribute {
  	this.kind=kind;
      }
 
-   
+    
     public QName getQName(AttributeKind kind) {
 	switch (kind) {
 	case  PROV_TYPE: return PROV_TYPE_QNAME;
@@ -55,10 +55,18 @@ public class Attribute {
 	case  PROV_LOCATION: return PROV_LOCATION_QNAME;
 	case  PROV_ROLE: return PROV_ROLE_QNAME;
 	case OTHER:
-	case UNKNOWN:
         default: 
 		return null;
 	}
+    }
+    
+    public AttributeKind getAttributeKind(QName q) {
+	if (q.equals(PROV_TYPE_QNAME)) return AttributeKind.PROV_TYPE;
+	if (q.equals(PROV_LABEL_QNAME)) return AttributeKind.PROV_LABEL;
+	if (q.equals(PROV_VALUE_QNAME)) return AttributeKind.PROV_VALUE;
+	if (q.equals(PROV_LOCATION_QNAME)) return AttributeKind.PROV_LOCATION;
+	if (q.equals(PROV_ROLE_QNAME)) return AttributeKind.PROV_ROLE;
+	return AttributeKind.OTHER;
     }
 
 
@@ -103,7 +111,16 @@ public class Attribute {
 	return hash;
     }
 
-    public String toString() {
+    public String toString() { 
+	return toNotationString();
+	//return toStringDebug();
+    }
+
+    public String toStringDebug() { 
+	return "[" + elementName + " " + val + " " + xsdType + "]";
+    }
+
+    public String toNotationString() {
 	if (val instanceof InternationalizedString) {
 	    InternationalizedString istring = (InternationalizedString) val;
 	    return elementName.getPrefix() + ":" + elementName.getLocalPart()
@@ -121,7 +138,7 @@ public class Attribute {
 		    + " = '" + qnAsString + "'";
 	} else {
 	    return elementName.getPrefix() + ":" + elementName.getLocalPart()
-		    + " = \"" + val + "\" %% " + xsdType;
+		   + " = \"" + val + "\" %% " + xsdType;
 	}
     }
 

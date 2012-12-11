@@ -8,7 +8,7 @@ import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.notation.TreeConstructor;
+import org.openprovenance.prov.notation.OldTreeConstructor;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.InternationalizedString;
@@ -25,7 +25,7 @@ import org.openrdf.model.impl.URIImpl;
 /**
  * Initial convertor to rdf.
  */
-public class RdfConstructor implements TreeConstructor {
+public class RdfConstructor implements OldTreeConstructor {
 	final ProvFactory pFactory;
 	final ElmoManager manager;
 	final ProvUtilities pUtil;

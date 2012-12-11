@@ -29,6 +29,7 @@ import org.openprovenance.prov.xml.HasType;
 import org.openprovenance.prov.xml.AgentRef;
 import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.Used;
+import org.openprovenance.prov.xml.ValueConverter;
 import org.openprovenance.prov.xml.WasGeneratedBy;
 import org.openprovenance.prov.xml.WasInvalidatedBy;
 import org.openprovenance.prov.xml.WasStartedBy;
@@ -50,7 +51,7 @@ import org.openprovenance.prov.xml.WasAssociatedWith;
 import javax.xml.namespace.QName;
 
 
-public  class ProvConstructor implements TreeConstructor {
+public  class ProvConstructor implements OldTreeConstructor {
     private ProvFactory pFactory;
     private ProvUtilities u=new ProvUtilities();
 
@@ -59,11 +60,13 @@ public  class ProvConstructor implements TreeConstructor {
     Hashtable<String,Agent>    agentTable    = new Hashtable<String,Agent>();
 
     Hashtable<String,String>  namespaceTable = new Hashtable<String,String>();
+    private ValueConverter vconv;
     
     public ProvConstructor(ProvFactory pFactory) {
         this.pFactory=pFactory;
         namespaceTable.put("xsd",NamespacePrefixMapper.XSD_NS);
         namespaceTable.put("xsi",NamespacePrefixMapper.XSI_NS);
+        this.vconv=new ValueConverter(pFactory);
     }
             
 
@@ -263,7 +266,7 @@ public  class ProvConstructor implements TreeConstructor {
             //return new JAXBElement<TypedLiteral>(attr1_QNAME, TypedLiteral.class, null, (TypedLiteral)value);
 
             //return new JAXBElement<Object>(attr1_QNAME, Object.class, null, value);
-            return pFactory.newAttribute(attr1_QNAME, value);
+            return pFactory.newAttribute(attr1_QNAME, value,vconv);
         }
     }
 

@@ -8,8 +8,8 @@ import javax.xml.namespace.QName;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.log4j.Logger;
-import org.openprovenance.prov.notation.TreeConstructor;
-import org.openprovenance.prov.notation.TreeTraversal;
+import org.openprovenance.prov.notation.OldTreeConstructor;
+import org.openprovenance.prov.notation.OldTreeTraversal;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.InternationalizedString;
@@ -43,7 +43,7 @@ class ProvRecord {
 }
 
 @SuppressWarnings("unchecked")
-class JSONConstructor implements TreeConstructor {
+class JSONConstructor implements OldTreeConstructor {
 	static Logger logger = Logger.getLogger(JSONConstructor.class);
 	
 	public static void main(String[] args)  {
@@ -52,7 +52,7 @@ class JSONConstructor implements TreeConstructor {
 
             CommonTree tree = u.convertASNToTree(args[0]);
 
-            Object provStructure = new TreeTraversal(new JSONConstructor()).convert(tree);
+            Object provStructure = new OldTreeTraversal(new JSONConstructor()).convert(tree);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String json = gson.toJson(provStructure);
             System.out.println(json);

@@ -44,6 +44,7 @@ import org.openprovenance.prov.xml.StatementOrBundle;
 import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.UsageRef;
 import org.openprovenance.prov.xml.Used;
+import org.openprovenance.prov.xml.ValueConverter;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.WasEndedBy;
 import org.openprovenance.prov.xml.WasGeneratedBy;
@@ -85,6 +86,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	private static final String PROV_JSON_PREFIX =              "prefix";
     
     private final ProvFactory pf = new ProvFactory();
+    private final ValueConverter vconv=new ValueConverter(pf);
     
     @Override
     public Document deserialize(JsonElement json, Type typeOfT,
@@ -432,7 +434,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     	
     	if (element.isJsonPrimitive()) {
             value = decodeJSONPrimitive(element.getAsString());
-            xsdType = pf.getXsdType(value);
+            xsdType = vconv.getXsdType(value);
         } else {
             JsonObject struct = element.getAsJsonObject();
             if (struct.has("lang")) {

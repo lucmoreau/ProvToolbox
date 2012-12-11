@@ -9,10 +9,12 @@ public class BeanTraversal {
     final private BeanConstructor c;
     final private ProvFactory pFactory;
     ProvUtilities u=new ProvUtilities();
+    final private ValueConverter vconv;
 
-    public BeanTraversal(BeanConstructor c, ProvFactory pFactory) {
+    public BeanTraversal(BeanConstructor c, ProvFactory pFactory, ValueConverter vconv) {
 	this.c=c;
 	this.pFactory=pFactory;
+	this.vconv=vconv;
     }
 
     public Document convert(Document b) {
@@ -65,7 +67,7 @@ public class BeanTraversal {
     public List<Attribute> convertTypeAttributes(HasType e, List<Attribute> acc) {
 	List<Object> types=e.getType();
 	for (Object type : types) {
-	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_TYPE, type));
+	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_TYPE, type, vconv));
 	}
 	return acc;
     }
@@ -73,7 +75,7 @@ public class BeanTraversal {
     public List<Attribute> convertLabelAttributes(HasLabel e, List<Attribute> acc) {
    	List<InternationalizedString> labels = e.getLabel();
    	for (InternationalizedString label : labels) {
-   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LABEL,label));
+   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LABEL,label, vconv));
    	}
    	return acc;
     }
@@ -81,7 +83,7 @@ public class BeanTraversal {
     public List<Attribute> convertRoleAttributes(HasRole e, List<Attribute> acc) {
    	List<Object> roles = e.getRole();
    	for (Object role : roles) {
-   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_ROLE,role));
+   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_ROLE,role, vconv));
    	}
    	return acc;
     }
@@ -89,7 +91,7 @@ public class BeanTraversal {
     public List<Attribute> convertLocationAttributes(HasLocation e, List<Attribute> acc) {
         List<Object> locations = e.getLocation();
         for (Object location : locations) {
-            acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LOCATION,location));
+            acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LOCATION,location, vconv));
         }
         return acc;
     }
@@ -98,7 +100,7 @@ public class BeanTraversal {
     public Object convertValueAttributes(HasValue e, List<Attribute> acc) {
         Object value = e.getValue();
         if (value==null) return acc;
-        acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_VALUE,value));
+        acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_VALUE,value, vconv));
         return acc;     
     }
 

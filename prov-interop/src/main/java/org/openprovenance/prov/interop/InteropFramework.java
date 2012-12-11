@@ -10,7 +10,7 @@ import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.notation.TreeTraversal;
+import org.openprovenance.prov.notation.OldTreeTraversal;
 import org.openprovenance.prov.notation.Utility;
 
 import  org.antlr.runtime.tree.CommonTree;
@@ -316,7 +316,7 @@ public class InteropFramework
         case PROVN: {
             Utility u=new Utility();
             CommonTree tree = u.convertASNToTree(filename);
-            Object o=u.convertTreeToJavaBean(tree);
+            Object o=u.oldConvertTreeToJavaBean(tree);
             return o;
         }
         case RDFXML:
@@ -354,7 +354,7 @@ public class InteropFramework
 	try {
 	    Utility u=new Utility();
 	    CommonTree tree = u.convertASNToTree(filename);
-	    Object o=u.convertTreeToJavaBean(tree);
+	    Object o=u.oldConvertTreeToJavaBean(tree);
 	    if (o!=null) {
 		return o;
 	    }

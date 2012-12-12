@@ -187,11 +187,44 @@ public class RdfConstructor implements BeanConstructor {
     }
 
     @Override
-    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1,
+    public WasDerivedFrom newWasDerivedFrom(QName id, QName entity2, QName entity1,
                                             QName activity, QName generation,
                                             QName usage,
                                             List<Attribute> attributes) {
-        // TODO Auto-generated method stub
+
+        Entity e2 = designateIfNotNull(entity2, Entity.class);
+        Entity e1 = designateIfNotNull(entity1, Entity.class);
+
+        QName other = activity;
+        if (usage != null) {
+            other = usage;
+        } else {
+            if (generation != null)
+                other = generation;
+        }
+
+        Derivation d = addEntityInfluence(id, e2, e1, null, attributes, other,
+                                          Derivation.class);
+
+        if (d != null) {
+            if (generation != null) {
+                Generation g5 = designateIfNotNull(generation, Generation.class);
+                d.getHadGeneration().add(g5);
+            }
+            if (usage != null) {
+                Usage u4 = designateIfNotNull(usage, Usage.class);
+                d.getHadUsage().add(u4);
+            }
+            if (activity != null) {
+                Activity a3 = designateIfNotNull(activity, Activity.class);
+                d.getHadActivity().add(a3);
+            }
+        }
+
+        if ((binaryProp(id, e2)) && (e1 != null))
+            e2.getWasDerivedFrom().add(e1);
+
+   
         return null;
     }
 
@@ -199,22 +232,60 @@ public class RdfConstructor implements BeanConstructor {
     public WasAssociatedWith newWasAssociatedWith(QName id, QName a, QName ag,
                                                   QName plan,
                                                   List<Attribute> attributes) {
-        // TODO Auto-generated method stub
+        
+
+        Activity a2 = designateIfNotNull(a, Activity.class);
+        Agent ag1 = designateIfNotNull(ag, Agent.class);
+
+        Association assoc = addAgentInfluence(id, a2, ag1, null, attributes, plan,
+                                              Association.class);
+
+        if ((plan != null) && (assoc != null)) {
+            Plan pl = (Plan) designateIfNotNull(plan, Plan.class);
+            // will declare it as Plan if
+            // not alreadydone
+            assoc.getHadPlan().add(pl);
+        }
+
+        if ((binaryProp(id, a2)) && (ag1 != null))
+            a2.getWasAssociatedWith().add(ag1);
+
         return null;
     }
 
     @Override
     public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,
                                               List<Attribute> attributes) {
-        // TODO Auto-generated method stub
+
+        Entity e2 = designateIfNotNull(e, Entity.class);
+        Agent a1 = designateIfNotNull(ag, Agent.class);
+
+        Attribution g = addAgentInfluence(id, e2, a1, null, attributes, null,
+                                          Attribution.class);
+
+        if ((binaryProp(id, e2)) && (a1 != null))
+            e2.getWasAttributedTo().add(a1);
         return null;
     }
 
     @Override
-    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1,
+    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName agent2, QName agent1,
                                               QName a,
                                               List<Attribute> attributes) {
-        // TODO Auto-generated method stub
+
+        Agent ag2 = designateIfNotNull(agent2, Agent.class);
+        Agent ag1 = designateIfNotNull(agent1, Agent.class);
+
+        Delegation g = addAgentInfluence(id, ag2, ag1, null, attributes, a,
+                                         Delegation.class);
+
+        if (a != null) {
+            Activity a3 = designateIfNotNull(a, Activity.class);
+            g.getHadActivity().add(a3);
+        }
+
+        if ((binaryProp(id, ag2)) && (ag1 != null))
+            ag2.getActedOnBehalfOf().add(ag1);
         return null;
     }
 
@@ -630,6 +701,32 @@ public class RdfConstructor implements BeanConstructor {
            return infl;
        }
 
+    public <INFLUENCE, TYPE> INFLUENCE addAgentInfluence(QName qname, TYPE e2,
+                                                         Agent a1, XMLGregorianCalendar time,
+                                                         List<Attribute> aAttrs,
+                                                         Object other,
+                                                         Class<INFLUENCE> cl) {
+
+        INFLUENCE infl = null;
+
+        if ((qname != null) || (time != null)
+                || ((aAttrs != null) && !(((List<?>) aAttrs).isEmpty()))
+                || (other != null)) {
+            infl = designate(qname, cl);
+            AgentInfluence qi = (AgentInfluence) infl;
+            if (a1 != null)
+                qi.getAgents().add(a1);
+            addQualifiedInfluence(e2, infl);
+
+            if (time != null) {
+                setTime((InstantaneousEvent) infl, time);
+            }
+            processAttributes(qi,  aAttrs);
+        }
+        return infl;
+    }
+    
+    @Deprecated
     public <INFLUENCE, TYPE> INFLUENCE addAgentInfluence(Object id, TYPE e2,
                                                          Agent a1, Object time,
                                                          Object aAttrs,
@@ -691,63 +788,7 @@ public class RdfConstructor implements BeanConstructor {
     }
 
 
-    public Object convertWasStartedBy(Object id, Object id2, Object id1,
-                                      Object id3, Object time, Object aAttrs) {
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
-        QName qn3 = getQName(id3);
 
-        Entity e1 = designateIfNotNull(qn1, Entity.class);
-        Activity a2 = designateIfNotNull(qn2, Activity.class);
-        Start s = addEntityInfluence(id, a2, e1, time, aAttrs, id3, Start.class);
-
-        if (qn3 != null) {
-            Activity a3 = designateIfNotNull(qn3, Activity.class);
-            s.getHadActivity().add(a3);
-        }
-
-        if ((binaryProp(id, a2)) && (e1 != null))
-            a2.getWasStartedBy().add(e1);
-
-        return s;
-    }
-
-    public Object convertWasEndedBy(Object id, Object id2, Object id1,
-                                    Object id3, Object time, Object aAttrs) {
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
-        QName qn3 = getQName(id3);
-
-        Entity e1 = designateIfNotNull(qn1, Entity.class);
-        Activity a2 = designateIfNotNull(qn2, Activity.class);
-        End s = addEntityInfluence(id, a2, e1, time, aAttrs, id3, End.class);
-
-        if (qn3 != null) {
-            Activity a3 = designateIfNotNull(qn3, Activity.class);
-            s.getHadActivity().add(a3);
-        }
-
-        if ((binaryProp(id, a2)) && (e1 != null))
-            a2.getWasEndedBy().add(e1);
-
-        return s;
-    }
-
-    public Object convertWasInvalidatedBy(Object id, Object id2, Object id1,
-                                          Object time, Object aAttrs) {
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
-
-        Entity e2 = designateIfNotNull(qn2, Entity.class);
-        Activity a1 = designateIfNotNull(qn1, Activity.class);
-
-        Invalidation g = oldAddActivityInfluence(id, e2, a1, time, aAttrs,
-                                              Invalidation.class);
-
-        if ((binaryProp(id, e2)) && (a1 != null))
-            e2.getWasInvalidatedBy().add(a1);
-        return g;
-    }
 
     public Object convertWasInformedBy(Object id, Object id2, Object id1,
                                        Object aAttrs) {
@@ -779,52 +820,6 @@ public class RdfConstructor implements BeanConstructor {
         if ((binaryProp(id, e2)) && (a1 != null))
             e2.getWasAttributedTo().add(a1);
         return g;
-    }
-
-    public Object convertWasDerivedFrom(Object id, Object id2, Object id1,
-                                        Object a, Object gen2, Object use1,
-                                        Object dAttrs) {
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
-        QName qn3 = getQName(a);
-
-        QName qn4 = getQName(use1);
-        QName qn5 = getQName(gen2);
-
-        Entity e2 = designateIfNotNull(qn2, Entity.class);
-        Entity e1 = designateIfNotNull(qn1, Entity.class);
-
-        Object other = a;
-        if (qn4 != null) {
-            other = qn4;
-        } else {
-            if (qn5 != null)
-                other = qn5;
-        }
-
-        Derivation d = addEntityInfluence(id, e2, e1, null, dAttrs, other,
-                                          Derivation.class);
-
-        if (d != null) {
-            if (qn5 != null) {
-                Generation g5 = designateIfNotNull(qn5, Generation.class);
-                d.getHadGeneration().add(g5);
-            }
-            if (qn4 != null) {
-                Usage u4 = designateIfNotNull(qn4, Usage.class);
-                d.getHadUsage().add(u4);
-            }
-            if (qn3 != null) {
-                Activity a3 = designateIfNotNull(qn3, Activity.class);
-                d.getHadActivity().add(a3);
-            }
-        }
-
-        if ((binaryProp(id, e2)) && (e1 != null))
-            e2.getWasDerivedFrom().add(e1);
-
-        return d;
-
     }
 
     public Object convertWasInfluencedBy(Object id, Object id2, Object id1,
@@ -893,31 +888,6 @@ public class RdfConstructor implements BeanConstructor {
             ag2.getActedOnBehalfOf().add(ag1);
 
         return g;
-    }
-
-    public Object convertWasAssociatedWith(Object id, Object id2, Object id1,
-                                           Object pl, Object aAttrs) {
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
-        QName qn3 = getQName(pl);
-
-        Activity a2 = designateIfNotNull(qn2, Activity.class);
-        Agent ag1 = designateIfNotNull(qn1, Agent.class);
-
-        Association assoc = addAgentInfluence(id, a2, ag1, null, aAttrs, pl,
-                                              Association.class);
-
-        if ((qn3 != null) && (assoc != null)) {
-            Plan plan = (Plan) designateIfNotNull(qn3, Plan.class);
-            // will declare it as Plan if
-            // not alreadydone
-            assoc.getHadPlan().add(plan);
-        }
-
-        if ((binaryProp(id, a2)) && (ag1 != null))
-            a2.getWasAssociatedWith().add(ag1);
-
-        return assoc;
     }
 
     public Object convertExtension(Object name, Object id, Object args,

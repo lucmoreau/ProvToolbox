@@ -153,12 +153,8 @@ public class InteropFramework
    
 
     public void provn2html(String file, String file2) throws java.io.IOException, JAXBException, Throwable {
-
         CommonTree tree = u.convertASNToTree(file);
-
-
         String s=u.convertTreeToHTML(tree);
-
         u.writeTextToFile(s,file2);        
 
     }

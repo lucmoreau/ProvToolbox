@@ -20,7 +20,7 @@ import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.HadMember;
 import org.openprovenance.prov.xml.MentionOf;
 import org.openprovenance.prov.xml.NamedBundle;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.xml.QNameExport;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.Statement;
 import org.openprovenance.prov.xml.UncheckedException;
@@ -40,12 +40,12 @@ import org.openprovenance.prov.xml.WasStartedBy;
 public class NotationConstructor implements ModelConstructor {
     
     public static final String MARKER = "-";
-    final private ProvFactory pFactory;
+    final private QNameExport qnExport;
     final private BufferedWriter buffer;
 
-    public NotationConstructor(Writer writer, ProvFactory pFactory) {
+    public NotationConstructor(Writer writer, QNameExport qnExport) {
 	this.buffer=new BufferedWriter(writer);
-	this.pFactory=pFactory;
+	this.qnExport=qnExport;
     }
     
     boolean standaloneExpression=false;
@@ -86,7 +86,7 @@ public class NotationConstructor implements ModelConstructor {
 
 
     public String idOrMarker(QName qn) {
-        return ((qn==null)? MARKER : pFactory.qnameToString(qn));
+        return ((qn==null)? MARKER : qnExport.qnameToString(qn));
     }
 
     public String timeOrMarker(XMLGregorianCalendar time) {
@@ -94,7 +94,7 @@ public class NotationConstructor implements ModelConstructor {
     }
 
     private String optionalId(QName id) {
-        return ((id==null)? "" : (pFactory.qnameToString(id) + ";"));
+        return ((id==null)? "" : (qnExport.qnameToString(id) + ";"));
     }            
 
     
@@ -318,7 +318,7 @@ public class NotationConstructor implements ModelConstructor {
 
     @Override
     public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
-        String s = keyword("bundle") + " " + pFactory.qnameToString(bundleId);
+        String s = keyword("bundle") + " " + qnExport.qnameToString(bundleId);
         s = s+ processNamespaces(namespaces);
         writeln(s);
  
@@ -372,8 +372,8 @@ public class NotationConstructor implements ModelConstructor {
     
   
    
-
-    private Object convertExtension(Object name, Object id, Object args, Object dAttrs) {
+    //TODO
+    public Object convertExtension(Object name, QName id, Object args, Object dAttrs) {
 	System.out.println("Name @" + name);
 	System.out.println("Name @" + id);
 	System.out.println("Name @" + args);

@@ -42,9 +42,7 @@ import org.openrdf.model.impl.URIImpl;
  * A Converter to RDF
  */
 public class RdfConstructor implements ModelConstructor {
-    final ProvFactory pFactory;
     final ElmoManager manager;
-    final ProvUtilities pUtil;
 
     private Hashtable<String, String> namespaceTable = new Hashtable<String, String>();
 
@@ -52,11 +50,8 @@ public class RdfConstructor implements ModelConstructor {
         return namespaceTable;
     }
 
-    public RdfConstructor(ProvFactory pFactory, ElmoManager manager) {
-        this.pFactory = pFactory;
-        this.pUtil = new ProvUtilities();
+    public RdfConstructor(ElmoManager manager) {
         this.manager = manager;
-        pFactory.setNamespaces(namespaceTable);
     }
 
     @Override
@@ -515,7 +510,7 @@ public class RdfConstructor implements ModelConstructor {
     }
 
 
-    public <INFLUENCE> INFLUENCE addUnknownInfluence(QName id,
+    public <INFLUENCE> INFLUENCE addUnknownInfluence(QName qname,
                                                      ActivityOrAgentOrEntity e2,
                                                      ActivityOrAgentOrEntity e1,
                                                      List<Attribute> aAttrs,
@@ -523,9 +518,8 @@ public class RdfConstructor implements ModelConstructor {
 
         INFLUENCE infl = null;
 
-        if ((id != null)
+        if ((qname != null)
                 || ((aAttrs != null) && !(((List<?>) aAttrs).isEmpty()))) {
-            QName qname = getQName(id);
             infl = designate(qname, cl);
             Influence qi = (Influence) infl;
             if (e1 != null)
@@ -537,16 +531,10 @@ public class RdfConstructor implements ModelConstructor {
         return infl;
     }
 
-    private void setTime(InstantaneousEvent infl, Object time) {
+    private void setTime(InstantaneousEvent infl, XMLGregorianCalendar time) {
         if (infl != null) {
-            if (time instanceof XMLGregorianCalendar) {
-                XMLGregorianCalendar t = (XMLGregorianCalendar) time;
-                infl.getAtTime().add(t);
-            } else {
-                String s = (String) time;
-                XMLGregorianCalendar t = pFactory.newISOTime(s);
-                infl.getAtTime().add(t);
-            }
+            XMLGregorianCalendar t = (XMLGregorianCalendar) time;
+            infl.getAtTime().add(t);
         }
     }
 
@@ -647,13 +635,6 @@ public class RdfConstructor implements ModelConstructor {
 
   
 
-    public QName getQName(Object id) {
-        if (id == null) {
-            return null;
-        }
-        String idAsString = (String) id;
-        return pFactory.stringToQName(idAsString);
-    }
 
     /* Component 5 */
 

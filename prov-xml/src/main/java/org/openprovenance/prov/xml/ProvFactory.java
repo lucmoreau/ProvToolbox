@@ -26,7 +26,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 /** A stateless factory for PROV objects. */
 
-public class ProvFactory implements ModelConstructor {
+//TODO: move the QNameExport capability outside the factory, and make it purely stateless, without namespace. 
+
+public class ProvFactory implements ModelConstructor, QNameExport {
 
     static public DocumentBuilder builder;
 

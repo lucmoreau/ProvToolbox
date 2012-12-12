@@ -8,9 +8,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
-import org.openprovenance.prov.notation.OldBeanTreeConstructor;
 import org.openprovenance.prov.xml.BeanTraversal;
-import org.openprovenance.prov.xml.OldBeanTraversal;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ValueConverter;
@@ -28,13 +26,13 @@ import org.openrdf.rio.Rio;
 
 public class Utility {
 
-    public Object convertTreeToJavaRdf(org.openprovenance.prov.xml.Document c,
+    public Object convertTreeToJavaRdf(org.openprovenance.prov.xml.Document doc,
 				       ProvFactory pFactory, ElmoManager manager)
 										 throws java.io.IOException,
 										 Throwable {
-	RdfConstructor rdfc = new RdfConstructor(pFactory, manager);
+	RdfConstructor rdfc = new RdfConstructor(manager);
 	BeanTraversal bt = new BeanTraversal(rdfc,pFactory, new ValueConverter(pFactory));
-	Object o = bt.convert(c);
+	Object o = bt.convert(doc);
 	return o;
     }
 
@@ -61,7 +59,7 @@ public class Utility {
 	ElmoManagerFactory factory = new SesameManagerFactory(module);
 	ElmoManager manager = factory.createElmoManager();
 
-	RdfConstructor rdfc = new RdfConstructor(pFactory, manager);
+	RdfConstructor rdfc = new RdfConstructor(manager);
 	rdfc.getNamespaceTable().putAll(document.getNss());
 	rdfc.getNamespaceTable().put("xsd", "http://www.w3.org/2001/XMLSchema#");
 	

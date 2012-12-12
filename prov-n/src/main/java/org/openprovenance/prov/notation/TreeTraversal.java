@@ -12,7 +12,6 @@ import  org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.BeanConstructor;
 import org.openprovenance.prov.xml.NamedBundle;
-import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Statement;
 import org.openprovenance.prov.xml.ValueConverter;

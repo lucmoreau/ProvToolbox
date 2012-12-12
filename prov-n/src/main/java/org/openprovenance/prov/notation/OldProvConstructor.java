@@ -51,7 +51,8 @@ import org.openprovenance.prov.xml.WasAssociatedWith;
 import javax.xml.namespace.QName;
 
 
-public  class ProvConstructor implements OldTreeConstructor {
+@Deprecated
+public  class OldProvConstructor implements OldTreeConstructor {
     private ProvFactory pFactory;
     private ProvUtilities u=new ProvUtilities();
 
@@ -62,7 +63,7 @@ public  class ProvConstructor implements OldTreeConstructor {
     Hashtable<String,String>  namespaceTable = new Hashtable<String,String>();
     private ValueConverter vconv;
     
-    public ProvConstructor(ProvFactory pFactory) {
+    public OldProvConstructor(ProvFactory pFactory) {
         this.pFactory=pFactory;
         namespaceTable.put("xsd",NamespacePrefixMapper.XSD_NS);
         namespaceTable.put("xsi",NamespacePrefixMapper.XSI_NS);

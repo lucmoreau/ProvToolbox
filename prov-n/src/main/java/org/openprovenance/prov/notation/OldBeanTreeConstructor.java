@@ -12,11 +12,12 @@ import java.util.LinkedList;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
+@Deprecated
 /** A class that implements the BeanConstructor interface and relies on a TreeConstructor to construct a data structure for a given bean. */
-public class BeanTreeConstructor implements OldBeanConstructor{
+public class OldBeanTreeConstructor implements OldBeanConstructor{
     private OldTreeConstructor c;
     final ProvFactory pFactory;
-    public BeanTreeConstructor(ProvFactory pFactory, OldTreeConstructor c) {
+    public OldBeanTreeConstructor(ProvFactory pFactory, OldTreeConstructor c) {
         this.pFactory=pFactory;
         this.c=c;
         this.namespaces=pFactory.getNss();

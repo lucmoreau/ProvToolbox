@@ -1,7 +1,8 @@
 package org.openprovenance.prov.notation;
 import java.util.List;
 
-public class NullConstructor implements OldTreeConstructor {
+@Deprecated
+public class OldNullConstructor implements OldTreeConstructor {
 
 
 

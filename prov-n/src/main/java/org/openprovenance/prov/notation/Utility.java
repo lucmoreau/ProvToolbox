@@ -88,8 +88,6 @@ public  class Utility {
     /** A conversion function that copies a Java Bean deeply. */
     public Object convertJavaBeanToJavaBean(Document doc) {
         ProvFactory pFactory=new ProvFactory(doc.getNss());
-        ProvConstructor pc=new ProvConstructor(pFactory);
-        pc.namespaceTable.putAll(doc.getNss());
         BeanTraversal bt=new BeanTraversal(pFactory, pFactory, new ValueConverter(pFactory));
         Document o=bt.convert(doc);
         return o;
@@ -156,7 +154,7 @@ public  class Utility {
     @Deprecated
     public Object oldConvertTreeToJavaBean(CommonTree tree) {
         if (tree==null) return null;
-          Object o=new OldTreeTraversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
+          Object o=new OldTreeTraversal(new OldProvConstructor(ProvFactory.getFactory())).convert(tree);
           return o;
       }
     @Deprecated
@@ -174,7 +172,7 @@ public  class Utility {
 
     @Deprecated
     public String oldConvertBeanToASN(Document c) {
-        OldBeanTraversal bt=new OldBeanTraversal(new BeanTreeConstructor(ProvFactory.getFactory(), new OldNotationConstructor()));
+        OldBeanTraversal bt=new OldBeanTraversal(new OldBeanTreeConstructor(ProvFactory.getFactory(), new OldNotationConstructor()));
         Object o=bt.convert(c);
         return (String)o;
     }

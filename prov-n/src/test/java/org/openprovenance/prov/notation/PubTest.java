@@ -58,7 +58,7 @@ public class PubTest
         Utility u=new Utility();
         CommonTree tree = u.convertASNToTree(file);
 
-        Object o2=u.oldConvertTreeToJavaBean(tree);
+        Object o2=u.convertTreeToJavaBean(tree);
 
         graph1=(Document)o2;
 

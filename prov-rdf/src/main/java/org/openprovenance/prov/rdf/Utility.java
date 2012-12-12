@@ -8,7 +8,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
-import org.openprovenance.prov.notation.BeanTreeConstructor;
+import org.openprovenance.prov.notation.OldBeanTreeConstructor;
 import org.openprovenance.prov.xml.OldBeanTraversal;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -32,7 +32,7 @@ public class Utility {
 										 Throwable {
 	RdfConstructor rdfc = new RdfConstructor(pFactory, manager);
 
-	OldBeanTraversal bt = new OldBeanTraversal(new BeanTreeConstructor(pFactory, rdfc));
+	OldBeanTraversal bt = new OldBeanTraversal(new OldBeanTreeConstructor(pFactory, rdfc));
 	Object o = bt.convert(c);
 	return o;
     }
@@ -67,7 +67,7 @@ public class Utility {
 	//rdfc.getNamespaceTable().put("", "http://x.org/foo#"); //TODO: this is hack, I need to retrieve this value somewhere
 	//rdfc.getNamespaceTable().put("_", "http://x.org/bar#");
 
-	OldBeanTraversal bt = new OldBeanTraversal(new BeanTreeConstructor(pFactory, rdfc));
+	OldBeanTraversal bt = new OldBeanTraversal(new OldBeanTreeConstructor(pFactory, rdfc));
 	bt.convert(document);
 	
         List<Resource> contexts=rdfc.contexts;

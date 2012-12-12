@@ -10,7 +10,7 @@ import javax.xml.namespace.QName;
 import  org.antlr.runtime.tree.Tree;
 import  org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.xml.Attribute;
-import org.openprovenance.prov.xml.BeanConstructor;
+import org.openprovenance.prov.xml.ModelConstructor;
 import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Statement;
@@ -20,11 +20,11 @@ import org.openprovenance.prov.xml.ValueConverter;
 
 public class TreeTraversal {
 
-    final private BeanConstructor c;
+    final private ModelConstructor c;
     final private ProvFactory pFactory;
     final private ValueConverter vconv;
     
-    public TreeTraversal(BeanConstructor c, ProvFactory pFactory) {
+    public TreeTraversal(ModelConstructor c, ProvFactory pFactory) {
         this.c=c;
         this.pFactory=pFactory;
         this.vconv=new ValueConverter(pFactory);

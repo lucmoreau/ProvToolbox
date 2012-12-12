@@ -26,7 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 /** A stateless factory for PROV objects. */
 
-public class ProvFactory implements BeanConstructor {
+public class ProvFactory implements ModelConstructor {
 
     static public DocumentBuilder builder;
 

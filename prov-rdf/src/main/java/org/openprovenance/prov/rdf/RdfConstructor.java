@@ -1,6 +1,5 @@
 package org.openprovenance.prov.rdf;
 
-import java.net.URI;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,7 +10,7 @@ import javax.xml.namespace.QName;
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
-import org.openprovenance.prov.xml.BeanConstructor;
+import org.openprovenance.prov.xml.ModelConstructor;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.HadMember;
 import org.openprovenance.prov.xml.InternationalizedString;
@@ -42,7 +41,7 @@ import org.openrdf.model.impl.URIImpl;
 /**
  * A Converter to RDF
  */
-public class RdfConstructor implements BeanConstructor {
+public class RdfConstructor implements ModelConstructor {
     final ProvFactory pFactory;
     final ElmoManager manager;
     final ProvUtilities pUtil;

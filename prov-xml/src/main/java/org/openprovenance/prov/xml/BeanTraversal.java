@@ -6,12 +6,12 @@ import javax.xml.namespace.QName;
 
 
 public class BeanTraversal {
-    final private BeanConstructor c;
+    final private ModelConstructor c;
     final private ProvFactory pFactory;
     ProvUtilities u=new ProvUtilities();
     final private ValueConverter vconv;
 
-    public BeanTraversal(BeanConstructor c, ProvFactory pFactory, ValueConverter vconv) {
+    public BeanTraversal(ModelConstructor c, ProvFactory pFactory, ValueConverter vconv) {
 	this.c=c;
 	this.pFactory=pFactory;
 	this.vconv=vconv;

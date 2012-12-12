@@ -14,7 +14,7 @@ import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
-import org.openprovenance.prov.xml.BeanConstructor;
+import org.openprovenance.prov.xml.ModelConstructor;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.HadMember;
@@ -37,7 +37,7 @@ import org.openprovenance.prov.xml.WasStartedBy;
 
 /** For testing purpose, conversion back to ASN. */
 
-public class NotationConstructor implements BeanConstructor {
+public class NotationConstructor implements ModelConstructor {
     
     public static final String MARKER = "-";
     final private ProvFactory pFactory;

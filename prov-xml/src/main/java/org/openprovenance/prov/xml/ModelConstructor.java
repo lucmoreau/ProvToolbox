@@ -8,7 +8,7 @@ import javax.xml.namespace.QName;
 
 /** An interface for constructing Java Beans for the PROV data model */
 
-public interface BeanConstructor {
+public interface ModelConstructor {
     
     public Entity newEntity(QName id, List<Attribute> attributes);
     public Activity newActivity(QName id, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, List<Attribute> attributes);

@@ -407,7 +407,6 @@ public class RdfConstructor implements ModelConstructor {
         System.out.println("$$$$$$$$$$$$ in startBundle");
         // TODO: bundle name does not seem to be interpreted according to the
         // prefix declared in bundle.
-        // TODO: handle prefix declarations
         URIImpl uri = new URIImpl(bundleId.getNamespaceURI()
                                   + bundleId.getLocalPart());
         contexts.add(uri);
@@ -452,8 +451,7 @@ public class RdfConstructor implements ModelConstructor {
 
             LiteralImpl literalImpl = null;
 
-            String typeAsString = attr.getXsdType();
-            type = getQName(typeAsString);
+            type = attr.getXsdType();
 
             String value;
             if (attr.getValue() instanceof InternationalizedString) {

@@ -6,11 +6,15 @@ import javax.xml.namespace.QName;
 @XmlJavaTypeAdapter(AnyAdapter.class)
 public class Attribute {
     
-    public static QName PROV_TYPE_QNAME=new QName(NamespacePrefixMapper.PROV_NS, "type", NamespacePrefixMapper.PROV_PREFIX);
-    public static QName PROV_LABEL_QNAME=new QName(NamespacePrefixMapper.PROV_NS, "label", NamespacePrefixMapper.PROV_PREFIX);
-    public static QName PROV_ROLE_QNAME=new QName(NamespacePrefixMapper.PROV_NS, "role", NamespacePrefixMapper.PROV_PREFIX);
-    public static QName PROV_LOCATION_QNAME=new QName(NamespacePrefixMapper.PROV_NS, "location", NamespacePrefixMapper.PROV_PREFIX);
-    public static QName PROV_VALUE_QNAME=new QName(NamespacePrefixMapper.PROV_NS, "value", NamespacePrefixMapper.PROV_PREFIX);
+    public static QName provQName(String s) {
+	return new QName(NamespacePrefixMapper.PROV_NS, s, NamespacePrefixMapper.PROV_PREFIX);
+    }
+    
+    public static QName PROV_TYPE_QNAME=provQName("type"); 
+    public static QName PROV_LABEL_QNAME=provQName("label"); 
+    public static QName PROV_ROLE_QNAME=provQName("role");
+    public static QName PROV_LOCATION_QNAME=provQName("location");
+    public static QName PROV_VALUE_QNAME=provQName("value");
     
     enum AttributeKind {
 	PROV_TYPE,
@@ -23,11 +27,11 @@ public class Attribute {
 
     final private QName elementName;
     final private Object val;
-    final private String xsdType;
+    final private QName xsdType;
     private AttributeKind kind;
     
     
-    public Attribute(QName elementName, Object val, String xsdType) {
+    public Attribute(QName elementName, Object val, QName xsdType) {
  	if (elementName==null) throw new IllegalArgumentException("Attribute elementName is null ");
  	this.val = val;
  	this.elementName = elementName;
@@ -38,7 +42,7 @@ public class Attribute {
    
     /** Short cut, for PROV attribute, raises exception otherwise. */
     
-    public Attribute(AttributeKind kind, Object val, String xsdType) {
+    public Attribute(AttributeKind kind, Object val, QName xsdType) {
  	this.val = val;
  	this.elementName = getQName(kind);
  	if (this.elementName==null) throw new IllegalArgumentException("Attribute kind is not PROV " + kind);
@@ -95,7 +99,7 @@ public class Attribute {
 	return val;
     }
 
-    public String getXsdType() {
+    public QName getXsdType() {
 	return xsdType;
     }
 
@@ -120,26 +124,28 @@ public class Attribute {
 	return "[" + elementName + " " + val + " " + xsdType + "]";
     }
 
+    /** Method replicated from ProvFactory. */
+    public String qnameToString(QName qname) {
+	return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
+		+ qname.getLocalPart();
+    }
+    
+    /** A method to generate the prov-n representation of an attribute  ex:attr="value" %% xsd:type */
+    
     public String toNotationString() {
 	if (val instanceof InternationalizedString) {
 	    InternationalizedString istring = (InternationalizedString) val;
-	    return elementName.getPrefix() + ":" + elementName.getLocalPart()
+	    return qnameToString(elementName)
 		    + " = \"" + istring.getValue() + 
 		    ((istring.getLang()==null) ? "\"" : "\"@" + istring.getLang())
-		    + " %% " + xsdType;
+		    + " %% " + qnameToString(xsdType);
 	} else if (val instanceof QName) {
-	    QName qn = (QName) val;
-	    String qnAsString;
-	    if ((qn.getPrefix() == null) || (qn.getPrefix().equals(""))) {
-		qnAsString = qn.getLocalPart();
-	    } else {
-		qnAsString = qn.getPrefix() + ":" + qn.getLocalPart();
-	    }
-	    return elementName.getPrefix() + ":" + elementName.getLocalPart()
-		    + " = '" + qnAsString + "'";
+	    QName qn = (QName) val;	    
+	    return qnameToString(elementName)
+		    + " = '" + qnameToString(qn) + "'";
 	} else {
-	    return elementName.getPrefix() + ":" + elementName.getLocalPart()
-		   + " = \"" + val + "\" %% " + xsdType;
+	    return qnameToString(elementName)
+		   + " = \"" + val + "\" %% " + qnameToString(xsdType);
 	}
     }
 

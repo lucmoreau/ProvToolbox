@@ -39,19 +39,17 @@ public class AnyAdapter
 
 
     public Attribute unmarshal(Object value) {
-        //System.out.println("AnyAdapter2 unmarshalling for " + value);
-        //System.out.println("AnyAdapter2 unmarshalling for " + value.getClass());
-	//FIXME: bug #28, need to support internationalize string
         if (value instanceof org.w3c.dom.Element) {
             org.w3c.dom.Element el=(org.w3c.dom.Element)value;
             String prefix=el.getPrefix();
             String namespace=el.getNamespaceURI();
             String local=el.getLocalName();
             String child=el.getTextContent();
-            String type=el.getAttributeNS(NamespacePrefixMapper.XSI_NS, "type");
+            String typeAsString=el.getAttributeNS(NamespacePrefixMapper.XSI_NS, "type");
             String lang=el.getAttributeNS(NamespacePrefixMapper.XML_NS, "lang");
-            type=(type==null) ? "xsd:string" : type;
-            if (type.equals("xsd:QName")) {
+            QName type=stringToQName(typeAsString, el);
+            if (type==null) type=ValueConverter.QNAME_XSD_STRING;
+            if (type.equals(ValueConverter.QNAME_XSD_QNAME)) {
                 QName qn=stringToQName(child,el);  // TODO: not robust to prefix not predeclared 
                 return pFactory.newAttribute(namespace,local,prefix, qn, type);
             } else if ((lang==null) || (lang.equals(""))) {

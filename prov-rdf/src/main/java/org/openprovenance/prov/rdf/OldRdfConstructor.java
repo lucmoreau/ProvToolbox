@@ -202,8 +202,7 @@ public class OldRdfConstructor implements OldTreeConstructor {
 			{
 
 				Attribute attr = ((Attribute) entry);
-				String typeAsString = attr.getXsdType();
-				type = getQName(typeAsString);
+				type = attr.getXsdType();
 				
 				String value;
 				if (attr.getValue() instanceof InternationalizedString) {

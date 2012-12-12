@@ -13,6 +13,7 @@ import org.openprovenance.prov.notation.OldTreeTraversal;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.InternationalizedString;
+import org.openprovenance.prov.xml.ProvFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -688,10 +689,10 @@ class JSONConstructor implements OldTreeConstructor {
 		}
 		return jsonStringRepresentation(value);
 	}
-	
+	ProvFactory pFactory=ProvFactory.getFactory();
 	private Object convertAttribute(Attribute attr) {
 		String attr_name = jsonStringRepresentation(attr.getElementName());
-		String datatype = attr.getXsdType();
+		String datatype = pFactory.qnameToString(attr.getXsdType());  //FIXME: I introduced a convertsion to string here
 		Object value = attr.getValue();
 		Object attr_value;
 		if (datatype == null || value instanceof InternationalizedString)

@@ -103,7 +103,7 @@ public class ProvFactory implements ModelConstructor {
 
     public void addAttribute(HasExtensibility a, String namespace,
 			     String localName, String prefix, Object value,
-			     String type) {
+			     QName type) {
 
 	a.getAny().add(newAttribute(namespace, localName, prefix, value, type));
     }
@@ -518,7 +518,7 @@ public class ProvFactory implements ModelConstructor {
     }
 
     public Attribute newAttribute(String namespace, String localName,
-				  String prefix, Object value, String type) {
+				  String prefix, Object value, QName type) {
 	Attribute res = new Attribute(new QName(namespace, localName, prefix),
 				      value, type);
 	return res;
@@ -676,26 +676,22 @@ public class ProvFactory implements ModelConstructor {
 	return el;
     }
 
-    public Element newElement(QName qname, String value, String type) {
+    public Element newElement(QName qname, String value, QName type) {
 	org.w3c.dom.Document doc = builder.newDocument();
 	Element el = doc.createElementNS(qname.getNamespaceURI(),
-					 ((qname.getPrefix().equals("")) ? ""
-						 : (qname.getPrefix() + ":"))
-						 + qname.getLocalPart());
-	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", type);
+	                                 qnameToString(qname));
+	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qnameToString(type));
 	el.appendChild(doc.createTextNode(value));
 	doc.appendChild(el);
 	return el;
     }
 
-    public Element newElement(QName qname, String value, String type,
+    public Element newElement(QName qname, String value, QName type,
 			      String lang) {
 	org.w3c.dom.Document doc = builder.newDocument();
 	Element el = doc.createElementNS(qname.getNamespaceURI(),
-					 ((qname.getPrefix().equals("")) ? ""
-						 : (qname.getPrefix() + ":"))
-						 + qname.getLocalPart());
-	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", type);
+	                                 qnameToString(qname));				 
+	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qnameToString(type));
 	el.setAttributeNS(NamespacePrefixMapper.XML_NS, "xml:lang", lang);
 	el.appendChild(doc.createTextNode(value));
 	doc.appendChild(el);
@@ -1541,15 +1537,6 @@ public class ProvFactory implements ModelConstructor {
 	return dataFactory.newXMLGregorianCalendar(gc);
     }
 
-    public Element OLDnewAttribute(String namespace, String prefix,
-				   String localName, String value) {
-	org.w3c.dom.Document doc = builder.newDocument();
-	Element el = doc.createElementNS(namespace, ((prefix.equals("")) ? ""
-		: (prefix + ":")) + localName);
-	el.appendChild(doc.createTextNode(value));
-	doc.appendChild(el);
-	return el;
-    }
 
  
     public void setAttributes(HasExtensibility res, List<Attribute> attributes) {

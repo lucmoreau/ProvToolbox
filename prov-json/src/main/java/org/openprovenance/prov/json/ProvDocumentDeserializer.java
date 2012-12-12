@@ -430,7 +430,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     
     private Attribute decodeAttribute(QName attributeName, JsonElement element) {
     	Object value;
-    	String xsdType;
+    	QName xsdType;
     	
     	if (element.isJsonPrimitive()) {
             value = decodeJSONPrimitive(element.getAsString());
@@ -444,11 +444,12 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
                 iString.setValue(struct.get("$").getAsString());
                 iString.setLang(lang);
                 value = iString;
-                xsdType = "xsd:string";
+                xsdType = ValueConverter.QNAME_XSD_STRING;
             } else {
 	            // The following implicitly assume the type is one of XSD types
-	            xsdType = struct.get("type").getAsString();
-	            value = decodeXSDType(struct.get("$").getAsString(), xsdType);
+	            String xsdTypeAsString = struct.get("type").getAsString();
+	            value = decodeXSDType(struct.get("$").getAsString(), xsdTypeAsString);
+	            xsdType=pf.stringToQName(xsdTypeAsString); //FIXME: is the right way to go?
             }
         }    	
     	return new Attribute(attributeName, value, xsdType);
@@ -502,6 +503,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         }
     }
     
+    //FIXME: use ValueConverter
     private Object decodeXSDType(String value, String datatype) {
         
         if (datatype.equals("xsd:string"))  return value;

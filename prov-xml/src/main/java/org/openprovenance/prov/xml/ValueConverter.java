@@ -57,77 +57,16 @@ public class ValueConverter {
     public static QName QNAME_XSD_HASH_QNAME=newXsdHashQName("QName");
     public static QName QNAME_XSD_HASH_DATETIME=newXsdHashQName("dateTime");
     
+    
+    public static QName QNAME_UNKNOWN=newXsdQName("UNKNOWN");
+
+    
     final private ProvFactory pFactory;
     
     public ValueConverter(ProvFactory pFactory) {
 	this.pFactory=pFactory;
     }
     
-
-    @Deprecated
-    public Object convertToJava(String datatype, String value) {
-	if (datatype.equals("xsd:string"))
-	    return value;
-	if (datatype.equals("xsd:int"))
-	    return Integer.parseInt(value);
-	if (datatype.equals("xsd:long"))
-	    return Long.parseLong(value);
-	if (datatype.equals("xsd:short"))
-	    return Short.parseShort(value);
-	if (datatype.equals("xsd:double"))
-	    return Double.parseDouble(value);
-	if (datatype.equals("xsd:float"))
-	    return Float.parseFloat(value);
-	if (datatype.equals("xsd:decimal"))
-	    return new java.math.BigDecimal(value);
-	if (datatype.equals("xsd:boolean"))
-	    return Boolean.parseBoolean(value);
-	if (datatype.equals("xsd:byte"))
-	    return Byte.parseByte(value);
-	if (datatype.equals("xsd:unsignedInt"))
-	    return Long.parseLong(value);
-	if (datatype.equals("xsd:unsignedShort"))
-	    return Integer.parseInt(value);
-	if (datatype.equals("xsd:unsignedByte"))
-	    return Short.parseShort(value);
-	if (datatype.equals("xsd:unsignedLong"))
-	    return new java.math.BigInteger(value);
-	if (datatype.equals("xsd:integer"))
-	    return new java.math.BigInteger(value);
-	if (datatype.equals("xsd:nonNegativeInteger"))
-	    return new java.math.BigInteger(value);
-	if (datatype.equals("xsd:nonPositiveInteger"))
-	    return new java.math.BigInteger(value);
-	if (datatype.equals("xsd:positiveInteger"))
-	    return new java.math.BigInteger(value);
-	if (datatype.equals("xsd:anyURI")) {
-	    URIWrapper u = new URIWrapper();
-	    u.setValue(URI.create(value));
-	    return u;
-	}
-	if (datatype.equals("xsd:QName")) {
-	    return pFactory.newQName(value);
-	}
-	if ((datatype.equals("xsd:dateTime"))
-		|| (datatype.equals("rdf:XMLLiteral"))
-		|| (datatype.equals("xsd:normalizedString"))
-		|| (datatype.equals("xsd:token"))
-		|| (datatype.equals("xsd:language"))
-		|| (datatype.equals("xsd:Name"))
-		|| (datatype.equals("xsd:NCName"))
-		|| (datatype.equals("xsd:NMTOKEN"))
-		|| (datatype.equals("xsd:hexBinary"))
-		|| (datatype.equals("xsd:base64Binary"))) {
-
-	    throw new UnsupportedOperationException(
-						    "KNOWN literal type but conversion not supported yet "
-							    + datatype);
-	}
-
-	throw new UnsupportedOperationException("UNKNOWN literal type "
-		+ datatype);
-    }
-
     
     // should be implemented with a hash table of converters
     
@@ -199,34 +138,34 @@ public class ValueConverter {
     
     
 
-    public String getXsdType(Object o) {
+    public QName getXsdType(Object o) {
 	if (o instanceof Integer)
-	    return "xsd:int";
+	    return QNAME_XSD_INT; //"xsd:int";
 	if (o instanceof String)
-	    return "xsd:string";
+	    return QNAME_XSD_STRING; //"xsd:string";
 	if (o instanceof InternationalizedString)
-	    return "xsd:string";
+	    return QNAME_XSD_STRING; //"xsd:string";
 	if (o instanceof Long)
-	    return "xsd:long";
+	    return QNAME_XSD_LONG; //"xsd:long";
 	if (o instanceof Short)
-	    return "xsd:short";
+	    return QNAME_XSD_SHORT; //"xsd:short";
 	if (o instanceof Double)
-	    return "xsd:double";
+	    return QNAME_XSD_DOUBLE; //"xsd:double";
 	if (o instanceof Float)
-	    return "xsd:float";
+	    return QNAME_XSD_FLOAT; //"xsd:float";
 	if (o instanceof java.math.BigDecimal)
-	    return "xsd:decimal";
+	    return QNAME_XSD_DECIMAL; //"xsd:decimal";
 	if (o instanceof Boolean)
-	    return "xsd:boolean";
+	    return QNAME_XSD_BOOLEAN; //"xsd:boolean";
 	if (o instanceof Byte)
-	    return "xsd:byte";
+	    return QNAME_XSD_BYTE; //"xsd:byte";
 	if (o instanceof URIWrapper)
-	    return "xsd:anyURI";
+	    return QNAME_XSD_ANY_URI; //"xsd:anyURI";
 	if (o instanceof QName)
-	    return "xsd:QName";
+	    return QNAME_XSD_QNAME; //"xsd:QName";
 	if (o instanceof XMLGregorianCalendar) 
-	    return "xsd:dateTime";
-	return "xsd:UNKNOWN";
+	    return QNAME_XSD_DATETIME; //"xsd:dateTime";
+	return QNAME_UNKNOWN;
     }
 
 

@@ -9,9 +9,11 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.notation.OldBeanTreeConstructor;
+import org.openprovenance.prov.xml.BeanTraversal;
 import org.openprovenance.prov.xml.OldBeanTraversal;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.xml.ValueConverter;
 import org.openrdf.elmo.ElmoManager;
 import org.openrdf.elmo.ElmoManagerFactory;
 import org.openrdf.elmo.ElmoModule;
@@ -31,8 +33,7 @@ public class Utility {
 										 throws java.io.IOException,
 										 Throwable {
 	RdfConstructor rdfc = new RdfConstructor(pFactory, manager);
-
-	OldBeanTraversal bt = new OldBeanTraversal(new OldBeanTreeConstructor(pFactory, rdfc));
+	BeanTraversal bt = new BeanTraversal(rdfc,pFactory, new ValueConverter(pFactory));
 	Object o = bt.convert(c);
 	return o;
     }
@@ -67,7 +68,8 @@ public class Utility {
 	//rdfc.getNamespaceTable().put("", "http://x.org/foo#"); //TODO: this is hack, I need to retrieve this value somewhere
 	//rdfc.getNamespaceTable().put("_", "http://x.org/bar#");
 
-	OldBeanTraversal bt = new OldBeanTraversal(new OldBeanTreeConstructor(pFactory, rdfc));
+	BeanTraversal bt = new BeanTraversal(rdfc,pFactory, new ValueConverter(pFactory));
+
 	bt.convert(document);
 	
         List<Resource> contexts=rdfc.contexts;

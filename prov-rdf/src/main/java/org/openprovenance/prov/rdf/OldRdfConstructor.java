@@ -9,31 +9,13 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.notation.OldTreeConstructor;
-import org.openprovenance.prov.xml.ActedOnBehalfOf;
-import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
-import org.openprovenance.prov.xml.BeanConstructor;
-import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.HadMember;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.InternationalizedString;
-import org.openprovenance.prov.xml.MentionOf;
-import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvUtilities;
-import org.openprovenance.prov.xml.SpecializationOf;
-import org.openprovenance.prov.xml.Statement;
 import org.openprovenance.prov.xml.Used;
-import org.openprovenance.prov.xml.WasAssociatedWith;
-import org.openprovenance.prov.xml.WasAttributedTo;
-import org.openprovenance.prov.xml.WasDerivedFrom;
-import org.openprovenance.prov.xml.WasEndedBy;
-import org.openprovenance.prov.xml.WasGeneratedBy;
-import org.openprovenance.prov.xml.WasInfluencedBy;
-import org.openprovenance.prov.xml.WasInformedBy;
-import org.openprovenance.prov.xml.WasInvalidatedBy;
-import org.openprovenance.prov.xml.WasStartedBy;
 import org.openrdf.elmo.ElmoManager;
 import org.openrdf.elmo.sesame.SesameManager;
 import org.openrdf.model.Resource;
@@ -41,10 +23,12 @@ import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.StatementImpl;
 import org.openrdf.model.impl.URIImpl;
 
+
+@Deprecated
 /**
  * Initial convertor to rdf.
  */
-public class RdfConstructor implements BeanConstructor {
+public class OldRdfConstructor implements OldTreeConstructor {
 	final ProvFactory pFactory;
 	final ElmoManager manager;
 	final ProvUtilities pUtil;
@@ -56,185 +40,13 @@ public class RdfConstructor implements BeanConstructor {
 		return namespaceTable;
 	}
 
-	public RdfConstructor(ProvFactory pFactory, ElmoManager manager)
+	public OldRdfConstructor(ProvFactory pFactory, ElmoManager manager)
 	{
 		this.pFactory = pFactory;
 		this.pUtil = new ProvUtilities();
 		this.manager = manager;
 		pFactory.setNamespaces(namespaceTable);
 	}
-	
-	
-	   @Override
-	    public org.openprovenance.prov.xml.Entity newEntity(QName id,
-	                                                        List<Attribute> attributes) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public org.openprovenance.prov.xml.Activity newActivity(QName id,
-	                                                            XMLGregorianCalendar startTime,
-	                                                            XMLGregorianCalendar endTime,
-	                                                            List<Attribute> attributes) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public org.openprovenance.prov.xml.Agent newAgent(QName id,
-	                                                      List<Attribute> attributes) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public Used newUsed(QName id, QName activity, QName entity,
-	                        XMLGregorianCalendar time, List<Attribute> attributes) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public WasGeneratedBy newWasGeneratedBy(QName id, QName entity,
-	                                            QName activity,
-	                                            XMLGregorianCalendar time,
-	                                            List<Attribute> attributes) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity,
-	                                                QName activity,
-	                                                XMLGregorianCalendar time,
-	                                                List<Attribute> attributes) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public WasStartedBy newWasStartedBy(QName id, QName activity,
-	                                        QName trigger, QName starter,
-	                                        XMLGregorianCalendar time,
-	                                        List<Attribute> attributes) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger,
-	                                    QName ender, XMLGregorianCalendar time,
-	                                    List<Attribute> attributes) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1,
-	                                            QName activity, QName generation,
-	                                            QName usage,
-	                                            List<Attribute> attributes) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public WasAssociatedWith newWasAssociatedWith(QName id, QName a, QName ag,
-	                                                  QName plan,
-	                                                  List<Attribute> attributes) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,
-	                                              List<Attribute> attributes) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1,
-	                                              QName a,
-	                                              List<Attribute> attributes) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1,
-	                                          List<Attribute> attributes) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1,
-	                                              List<Attribute> attributes) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public AlternateOf newAlternateOf(QName e2, QName e1) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public SpecializationOf newSpecializationOf(QName e2, QName e1) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public MentionOf newMentionOf(QName e2, QName e1, QName b) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public HadMember newHadMember(QName c, List<QName> e) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public Document newDocument(Hashtable<String, String> namespaces,
-	                                java.util.Collection<Statement> statements,
-	                                java.util.Collection<NamedBundle> bundles) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public NamedBundle newNamedBundle(QName id,
-	                                      Hashtable<String, String> namespaces,
-	                                      java.util.Collection<Statement> statements) {
-	        // TODO Auto-generated method stub
-	        return null;
-	    }
-
-	    @Override
-	    public void startDocument(Hashtable<String, String> hashtable) {
-	        // TODO Auto-generated method stub
-	        
-	    }
-
-	    @Override
-	    public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
-	        // TODO Auto-generated method stub
-	        
-	    }
-	        	
-	
-	
-	
-	
-	
-	
-	
 
 	public Object convertActivity(Object id, Object startTime, Object endTime,
 			Object aAttrs)
@@ -1081,6 +893,7 @@ public class RdfConstructor implements BeanConstructor {
 	    return id==null && subject!=null;
 	}
 
+	@Override
 	public Object convertHadMember(Object collection, Object entity) {
 	    QName qnc = getQName(collection);
 	    QName qne = getQName(entity);
@@ -1091,7 +904,6 @@ public class RdfConstructor implements BeanConstructor {
 	    c.getHadMember().add(e);
 	    return null;
 	}
-
- 
+	
 
 }

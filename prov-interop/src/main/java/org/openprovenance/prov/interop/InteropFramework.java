@@ -24,7 +24,7 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 
-import org.openprovenance.prov.rdf.RdfConstructor;
+import org.openprovenance.prov.rdf.OldRdfConstructor;
 import org.openprovenance.prov.rdf.RepositoryHelper;
 
 import org.openprovenance.prov.dot.ProvToDot;

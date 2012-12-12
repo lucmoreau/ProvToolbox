@@ -1,8 +1,5 @@
 package org.openprovenance.prov.interop;
 import java.io.File;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Hashtable;
 import javax.xml.bind.JAXBException;
@@ -10,23 +7,11 @@ import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.notation.OldTreeTraversal;
 import org.openprovenance.prov.notation.Utility;
 
 import  org.antlr.runtime.tree.CommonTree;
 
-import org.openrdf.elmo.ElmoManager;
-import org.openrdf.elmo.ElmoManagerFactory;
-import org.openrdf.elmo.ElmoModule;
-import org.openrdf.elmo.sesame.SesameManager;
-import org.openrdf.elmo.sesame.SesameManagerFactory;
 import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
-
-import org.openprovenance.prov.rdf.OldRdfConstructor;
-import org.openprovenance.prov.rdf.RepositoryHelper;
-
 import org.openprovenance.prov.dot.ProvToDot;
 
 import org.apache.log4j.Logger;
@@ -316,7 +301,7 @@ public class InteropFramework
         case PROVN: {
             Utility u=new Utility();
             CommonTree tree = u.convertASNToTree(filename);
-            Object o=u.oldConvertTreeToJavaBean(tree);
+            Object o=u.convertTreeToJavaBean(tree);
             return o;
         }
         case RDFXML:
@@ -354,7 +339,7 @@ public class InteropFramework
 	try {
 	    Utility u=new Utility();
 	    CommonTree tree = u.convertASNToTree(filename);
-	    Object o=u.oldConvertTreeToJavaBean(tree);
+	    Object o=u.convertTreeToJavaBean(tree);
 	    if (o!=null) {
 		return o;
 	    }

@@ -4,9 +4,11 @@ import java.io.FileWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.openrdf.elmo.ElmoModule;
 import org.openrdf.elmo.sesame.SesameManager;
+import org.openrdf.model.Resource;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.n3.N3Writer;
@@ -61,11 +63,12 @@ public class RepositoryHelper {
 
     
 
-    public void dumpToRDF(File file,
+    public void dumpToRDF(String file,
                           SesameManager manager,
                           RDFFormat format,
+                          List<Resource> contexts,
                           Hashtable<String,String> prefixes) throws Exception {
-        Writer writer = new FileWriter(file);
+        Writer writer = new FileWriter(file); 
         RDFHandler serialiser=null;
         if (format.equals(RDFFormat.N3)) {
             serialiser=new N3Writer(writer);
@@ -80,6 +83,7 @@ public class RepositoryHelper {
         }
         setPrefixes(serialiser,prefixes);
         manager.getConnection().export(serialiser);
+
         writer.close();
     }
 

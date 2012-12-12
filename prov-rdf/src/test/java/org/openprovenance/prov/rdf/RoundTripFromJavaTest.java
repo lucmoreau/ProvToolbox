@@ -136,6 +136,9 @@ public class RoundTripFromJavaTest extends
 		// TODO: Unsupported, no multiple members supported by toolbox
 	}
 	
+    public void testBundle2() {
+		// TODO: Not supported yet, though seemed to work at some point?
+    }
 	
 	public void testScruffyGeneration1() {
 		// TODO: Unsupported
@@ -180,12 +183,9 @@ public class RoundTripFromJavaTest extends
 	  public void testScruffyEnd4() {
 			// TODO: Unsupported    		  
 	  }
-	  public void testBundle1() {
-              // TODO: Rdf converter should generate multiple files                      
-          }
-	  public void testBundle2() {
-              // TODO: Rdf converter should generate multiple files                      
-          }
+
+	  
+	 
 
 	public void IGNOREtestExtraFilesOutsideRepository()
 	{

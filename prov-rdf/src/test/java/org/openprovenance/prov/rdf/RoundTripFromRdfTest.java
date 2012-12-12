@@ -147,11 +147,19 @@ public class RoundTripFromRdfTest extends TestCase {
 	}
 	public void testBundle() throws Exception
 	{
-	    try {
-		testBundleWithTrig("bundle1");
-	    } catch (Exception e) {
-	        assertTrue(true);
-	    }
+            try {
+                testBundleWithTrig("bundle1");
+                System.out.println("never here");
+            } catch (Throwable e) {
+                assertTrue(true);
+            }
+
+            try {
+                testBundleWithTrig("bundle2");
+                assertTrue(false);
+            } catch (Throwable e) {
+                assertTrue(true);
+            }
 	}
 
 

@@ -2140,7 +2140,7 @@ public class RoundTripFromJavaTest extends TestCase {
            List<Statement> st2=new LinkedList<Statement>(); 
            st2.add(aa1);
            st2.add(ee1);
-           st2.add(use1);
+           st2.add(use2);
 
            NamedBundle b2=pFactory.newNamedBundle(q("bundle2"), st2);
            
@@ -2180,7 +2180,7 @@ public class RoundTripFromJavaTest extends TestCase {
            List<Statement> st2=new LinkedList<Statement>(); 
            st2.add(aa1);
            st2.add(ee1);
-           st2.add(use1);
+           st2.add(use2);
 
            NamedBundle b2=pFactory.newNamedBundle(q("bundle2"), st2);
            

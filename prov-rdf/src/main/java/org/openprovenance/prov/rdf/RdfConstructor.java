@@ -8,14 +8,12 @@ import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.notation.OldTreeConstructor;
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.BeanConstructor;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.HadMember;
-import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.InternationalizedString;
 import org.openprovenance.prov.xml.MentionOf;
 import org.openprovenance.prov.xml.NamedBundle;
@@ -42,7 +40,7 @@ import org.openrdf.model.impl.StatementImpl;
 import org.openrdf.model.impl.URIImpl;
 
 /**
- * Initial convertor to rdf.
+ * A Converter to RDF
  */
 public class RdfConstructor implements BeanConstructor {
     final ProvFactory pFactory;
@@ -100,6 +98,7 @@ public class RdfConstructor implements BeanConstructor {
        
         Entity e1 = designateIfNotNull(entity, Entity.class);
         Activity a2 = designateIfNotNull(activity, Activity.class);
+        @SuppressWarnings("unused")
         Usage u = addEntityInfluence(id, a2, e1, time, attributes, null,
                                      Usage.class);
 
@@ -117,6 +116,7 @@ public class RdfConstructor implements BeanConstructor {
         Entity e2 = designateIfNotNull(entity, Entity.class);
         Activity a1 = designateIfNotNull(activity, Activity.class);
 
+        @SuppressWarnings("unused")
         Generation g = addActivityInfluence(id, e2, a1, time, attributes,
                                             Generation.class);
 
@@ -133,6 +133,7 @@ public class RdfConstructor implements BeanConstructor {
         Entity e2 = designateIfNotNull(entity, Entity.class);
         Activity a1 = designateIfNotNull(activity, Activity.class);
 
+        @SuppressWarnings("unused")
         Invalidation g = addActivityInfluence(id, e2, a1, time, attributes,
                                             Invalidation.class);
 
@@ -182,7 +183,6 @@ public class RdfConstructor implements BeanConstructor {
         
 
 
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -260,6 +260,7 @@ public class RdfConstructor implements BeanConstructor {
         Entity e2 = designateIfNotNull(e, Entity.class);
         Agent a1 = designateIfNotNull(ag, Agent.class);
 
+        @SuppressWarnings("unused")
         Attribution g = addAgentInfluence(id, e2, a1, null, attributes, null,
                                           Attribution.class);
 
@@ -290,40 +291,91 @@ public class RdfConstructor implements BeanConstructor {
     }
 
     @Override
-    public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1,
+    public WasInformedBy newWasInformedBy(QName id, QName activity2, QName activity1,
                                           List<Attribute> attributes) {
-        // TODO Auto-generated method stub
+
+        Activity a2 = designateIfNotNull(activity2, Activity.class);
+        Activity a1 = designateIfNotNull(activity1, Activity.class);
+
+        @SuppressWarnings("unused")
+        Communication g = addActivityInfluence(id, a2, a1, null, attributes,
+                                               Communication.class);
+
+        if ((binaryProp(id, a2)) && (a1 != null))
+            a2.getWasInformedBy().add(a1);
+
         return null;
     }
 
     @Override
-    public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1,
+    public WasInfluencedBy newWasInfluencedBy(QName id, QName qn2, QName qn1,
                                               List<Attribute> attributes) {
-        // TODO Auto-generated method stub
+
+
+        ActivityOrAgentOrEntity e1 = designateIfNotNull(qn1,
+                                                        ActivityOrAgentOrEntity.class);
+        ActivityOrAgentOrEntity e2 = designateIfNotNull(qn2,
+                                                        ActivityOrAgentOrEntity.class);
+        // (ActivityOrAgentOrEntity) manager
+        // .find(qn1);
+        // ActivityOrAgentOrEntity e2 = manager
+        // .designate(qn2, ActivityOrAgentOrEntity.class);
+
+        @SuppressWarnings("unused")
+        Influence u = addUnknownInfluence(id, e2, e1, attributes, Influence.class);
+
+        if ((binaryProp(id, e2)) && (e1 != null))
+            e2.getWasInfluencedBy().add(e1);
+
         return null;
     }
 
     @Override
-    public AlternateOf newAlternateOf(QName e2, QName e1) {
-        // TODO Auto-generated method stub
+    public AlternateOf newAlternateOf(QName entity2, QName entity1) {
+
+        Entity e2 = designateIfNotNull(entity2, Entity.class);
+        Entity e1 = designateIfNotNull(entity1, Entity.class);
+
+        e2.getAlternateOf().add(e1);
         return null;
     }
 
     @Override
-    public SpecializationOf newSpecializationOf(QName e2, QName e1) {
-        // TODO Auto-generated method stub
+    public SpecializationOf newSpecializationOf(QName entity2, QName entity1) {
+        Entity e2 = designateIfNotNull(entity2, Entity.class);
+        Entity e1 = designateIfNotNull(entity1, Entity.class);
+
+        e2.getSpecializationOf().add(e1);
         return null;
     }
 
     @Override
-    public MentionOf newMentionOf(QName e2, QName e1, QName b) {
-        // TODO Auto-generated method stub
+    public MentionOf newMentionOf(QName entity2, QName entity1, QName b) {
+
+
+        Entity e2 = designateIfNotNull(entity2, Entity.class);
+        Entity e1 = designateIfNotNull(entity1, Entity.class);
+        Bundle e3 = designateIfNotNull(b, Bundle.class); // will
+       
+        if (e2 != null) {
+            if (e1 != null)
+                e2.getMentionOf().add(e1);
+            if (e3 != null)
+                e2.getAsInBundle().add(e3);
+        }
+
         return null;
     }
 
     @Override
-    public HadMember newHadMember(QName c, List<QName> e) {
-        // TODO Auto-generated method stub
+    public HadMember newHadMember(QName collection, List<QName> ll) {
+        for (QName entity: ll) {
+
+            Collection c = designateIfNotNull(collection, Collection.class);
+            Entity e = designateIfNotNull(entity, Entity.class);
+
+            c.getHadMember().add(e);
+        }
         return null;
     }
 
@@ -331,7 +383,7 @@ public class RdfConstructor implements BeanConstructor {
     public Document newDocument(Hashtable<String, String> namespaces,
                                 java.util.Collection<Statement> statements,
                                 java.util.Collection<NamedBundle> bundles) {
-        // TODO Auto-generated method stub
+        //At this stage nothing left to do
         return null;
     }
 
@@ -339,7 +391,7 @@ public class RdfConstructor implements BeanConstructor {
     public NamedBundle newNamedBundle(QName id,
                                       Hashtable<String, String> namespaces,
                                       java.util.Collection<Statement> statements) {
-        // TODO Auto-generated method stub
+        //At this stage nothing left to do
         return null;
     }
 
@@ -438,125 +490,6 @@ public class RdfConstructor implements BeanConstructor {
         }
     }
 
-    private void oldProcessAttributes(Object infl, List<?> aAttrs) {
-        if (aAttrs == null)
-            return;
-        if (infl == null) {
-            throw new NullPointerException(); // should never be here, really
-        }
-
-        // QName a=null;
-        // org.openrdf.model.Resource r = new URIImpl(a.getNamespaceURI()
-        // + a.getLocalPart());
-
-        org.openrdf.model.Resource r = ((org.openrdf.elmo.sesame.roles.SesameEntity) infl)
-                .getSesameResource();
-
-        for (Object entry : aAttrs) {
-
-            QName pred = null;
-            QName type = null;
-
-            LiteralImpl literalImpl = null;
-            if (entry instanceof Attribute) {
-
-                Attribute attr = ((Attribute) entry);
-                String typeAsString = attr.getXsdType();
-                type = getQName(typeAsString);
-
-                String value;
-                if (attr.getValue() instanceof InternationalizedString) {
-                    InternationalizedString iString = (InternationalizedString) attr
-                            .getValue();
-                    value = iString.getValue();
-                    literalImpl = new LiteralImpl(value, iString.getLang());
-                } else if (attr.getValue() instanceof QName) {
-                    QName qn = (QName) attr.getValue();
-                    String qnAsString;
-                    if ((qn.getPrefix() == null) || (qn.getPrefix().equals(""))) {
-                        qnAsString = qn.getLocalPart();
-                    } else {
-                        qnAsString = qn.getPrefix() + ":" + qn.getLocalPart();
-                    }
-                    literalImpl = new LiteralImpl(qnAsString,
-                            uriFromQName(type));
-
-                } else {
-                    value = attr.getValue().toString();
-                    literalImpl = new LiteralImpl(value, uriFromQName(type));
-                }
-                pred = ((Attribute) entry).getElementName();
-
-            } else if (entry instanceof Object[]) {
-                Object[] pair = (Object[]) entry;
-
-                if (pair[1] instanceof Object[]) {
-                    Object[] typedLit = (Object[]) pair[1];
-
-                    if (typedLit[0] instanceof InternationalizedString) {
-                        // We have a language - so string & language.
-                        InternationalizedString is = (InternationalizedString) (typedLit[0]);
-                        literalImpl = new LiteralImpl(is.getValue(),
-                                is.getLang());
-                    } else {
-                        // We won't have a language, so typedLit[1] is the type.
-                        String typeAsString = (String) (typedLit[1]);
-                        type = getQName(typeAsString);
-                        String value = unwrap((String) typedLit[0]);
-                        literalImpl = new LiteralImpl(value, uriFromQName(type));
-                    }
-                } else if (pair[1] instanceof String) {
-                    literalImpl = new LiteralImpl((String) pair[1],
-                            uriFromQName(getQName("xsd:string")));
-                } else {
-                    throw new UnsupportedOperationException();
-                }
-
-                pred = getQName(pair[0]);
-
-                // if (pair[0].equals("prov:type"))
-                // {
-                // if (typeAsString.equals("xsd:QName"))
-                // { // TODO: this should
-                // // become prov:qualified
-                // // name
-                // System.out.println("----> " + value);
-                // Class<?> cl = reservedClass(value);
-                // if (cl != null)
-                // designate(a, cl);
-                //
-                // }
-                // }
-            }
-
-            org.openrdf.model.Statement stmnt = new StatementImpl(r,
-                    new URIImpl(pred.getNamespaceURI() + pred.getLocalPart()),
-                    literalImpl);
-
-            try {
-                ((org.openrdf.elmo.sesame.SesameManager) manager)
-                        .getConnection().add(stmnt);
-            } catch (org.openrdf.repository.RepositoryException e) {
-            }
-        }
-    }
-
-    private Class<?> reservedClass(String value) {
-        if (value.equals("prov:Plan"))
-            return Plan.class;
-        if (value.equals("prov:SoftwareAgent"))
-            return SoftwareAgent.class;
-        if (value.equals("prov:Person"))
-            return Person.class;
-        if (value.equals("prov:Organization"))
-            return Organization.class;
-        if (value.equals("prov:Bundle"))
-            return Bundle.class;
-        if (value.equals("prov:Collection"))
-            return Collection.class;
-        return null;
-    }
-
     public <INFLUENCE, TYPE> INFLUENCE addEntityInfluence(QName qname, TYPE e2,
                                                           Entity e1,
                                                           XMLGregorianCalendar time,
@@ -585,39 +518,10 @@ public class RdfConstructor implements BeanConstructor {
     }
 
 
-     @Deprecated
-    private <INFLUENCE, TYPE> INFLUENCE addEntityInfluence(Object id, TYPE e2,
-                                                          Entity e1,
-                                                          Object time,
-                                                          Object aAttrs,
-                                                          Object other,
-                                                          Class<INFLUENCE> cl) {
-
-        INFLUENCE infl = null;
-
-        if ((id != null) || (time != null)
-                || ((aAttrs != null) && !(((List<?>) aAttrs).isEmpty()))
-                || (other != null)) {
-            QName qname = getQName(id);
-            infl = designate(qname, cl); // if qname is null, create an blank
-                                         // node
-            EntityInfluence qi = (EntityInfluence) infl;
-            if (e1 != null)
-                qi.getEntities().add(e1);
-            addQualifiedInfluence(e2, infl);
-
-            if (time != null) {
-                setTime((InstantaneousEvent) infl, time);
-            }
-            oldProcessAttributes(qi, (List<?>) aAttrs);
-        }
-        return infl;
-    }
-
-    public <INFLUENCE> INFLUENCE addUnknownInfluence(Object id,
+    public <INFLUENCE> INFLUENCE addUnknownInfluence(QName id,
                                                      ActivityOrAgentOrEntity e2,
                                                      ActivityOrAgentOrEntity e1,
-                                                     Object aAttrs,
+                                                     List<Attribute> aAttrs,
                                                      Class<INFLUENCE> cl) {
 
         INFLUENCE infl = null;
@@ -631,7 +535,7 @@ public class RdfConstructor implements BeanConstructor {
                 qi.getInfluencers().add(e1);
             addQualifiedInfluence(e2, infl);
 
-            oldProcessAttributes(qi, (List<?>) aAttrs);
+            processAttributes(qi, aAttrs);
         }
         return infl;
     }
@@ -649,7 +553,7 @@ public class RdfConstructor implements BeanConstructor {
         }
     }
 
-    public <INFLUENCE, TYPE> INFLUENCE addActivityInfluence(QName qname, TYPE e2,
+    public <INFLUENCE, TYPE> INFLUENCE addActivityInfluence(QName qname, TYPE a2,
                                                                Activity a1,
                                                                XMLGregorianCalendar time,
                                                                List<Attribute> aAttrs,
@@ -663,7 +567,7 @@ public class RdfConstructor implements BeanConstructor {
                ActivityInfluence qi = (ActivityInfluence) infl;
                if (a1 != null)
                    qi.getActivities().add(a1);
-               addQualifiedInfluence(e2, infl);
+               addQualifiedInfluence(a2, infl);
 
                if (time != null) {
                    setTime((InstantaneousEvent) infl, time);
@@ -674,32 +578,7 @@ public class RdfConstructor implements BeanConstructor {
            return infl;
        }
     
-    @Deprecated
-    private <INFLUENCE, TYPE> INFLUENCE oldAddActivityInfluence(Object id, TYPE e2,
-                                                               Activity a1,
-                                                               Object time,
-                                                               Object aAttrs,
-                                                               Class<INFLUENCE> cl) {
-
-           INFLUENCE infl = null;
-
-           if ((id != null) || (time != null)
-                   || ((aAttrs != null) && !(((List<?>) aAttrs).isEmpty()))) {
-               QName qname = getQName(id);
-               infl = designate(qname, cl);
-               ActivityInfluence qi = (ActivityInfluence) infl;
-               if (a1 != null)
-                   qi.getActivities().add(a1);
-               addQualifiedInfluence(e2, infl);
-
-               if (time != null) {
-                   setTime((InstantaneousEvent) infl, time);
-               }
-
-               oldProcessAttributes(qi, (List<?>) aAttrs);
-           }
-           return infl;
-       }
+    
 
     public <INFLUENCE, TYPE> INFLUENCE addAgentInfluence(QName qname, TYPE e2,
                                                          Agent a1, XMLGregorianCalendar time,
@@ -726,33 +605,7 @@ public class RdfConstructor implements BeanConstructor {
         return infl;
     }
     
-    @Deprecated
-    public <INFLUENCE, TYPE> INFLUENCE addAgentInfluence(Object id, TYPE e2,
-                                                         Agent a1, Object time,
-                                                         Object aAttrs,
-                                                         Object other,
-                                                         Class<INFLUENCE> cl) {
-
-        INFLUENCE infl = null;
-
-        if ((id != null) || (time != null)
-                || ((aAttrs != null) && !(((List<?>) aAttrs).isEmpty()))
-                || (other != null)) {
-            QName qname = getQName(id);
-            infl = designate(qname, cl);
-            AgentInfluence qi = (AgentInfluence) infl;
-            if (a1 != null)
-                qi.getAgents().add(a1);
-            addQualifiedInfluence(e2, infl);
-
-            if (time != null) {
-                setTime((InstantaneousEvent) infl, time);
-            }
-            oldProcessAttributes(qi, (List<?>) aAttrs);
-        }
-        return infl;
-    }
-
+   
     // not pretty
 
     public <INFLUENCE, EFFECT> void addQualifiedInfluence(EFFECT e2, INFLUENCE g) {
@@ -788,149 +641,14 @@ public class RdfConstructor implements BeanConstructor {
     }
 
 
-
-
-    public Object convertWasInformedBy(Object id, Object id2, Object id1,
-                                       Object aAttrs) {
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
-
-        Activity e2 = designateIfNotNull(qn2, Activity.class);
-        Activity a1 = designateIfNotNull(qn1, Activity.class);
-
-        Communication g = oldAddActivityInfluence(id, e2, a1, null, aAttrs,
-                                               Communication.class);
-
-        if ((binaryProp(id, e2)) && (a1 != null))
-            e2.getWasInformedBy().add(a1);
-        return g;
-    }
-
-    public Object convertWasAttributedTo(Object id, Object id2, Object id1,
-                                         Object aAttrs) {
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
-
-        Entity e2 = designateIfNotNull(qn2, Entity.class);
-        Agent a1 = designateIfNotNull(qn1, Agent.class);
-
-        Attribution g = addAgentInfluence(id, e2, a1, null, aAttrs, null,
-                                          Attribution.class);
-
-        if ((binaryProp(id, e2)) && (a1 != null))
-            e2.getWasAttributedTo().add(a1);
-        return g;
-    }
-
-    public Object convertWasInfluencedBy(Object id, Object id2, Object id1,
-                                         Object aAttrs) {
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
-
-        ActivityOrAgentOrEntity e1 = designateIfNotNull(qn1,
-                                                        ActivityOrAgentOrEntity.class);
-        ActivityOrAgentOrEntity e2 = designateIfNotNull(qn2,
-                                                        ActivityOrAgentOrEntity.class);
-        // (ActivityOrAgentOrEntity) manager
-        // .find(qn1);
-        // ActivityOrAgentOrEntity e2 = manager
-        // .designate(qn2, ActivityOrAgentOrEntity.class);
-
-        Influence u = addUnknownInfluence(id, e2, e1, aAttrs, Influence.class);
-
-        if ((binaryProp(id, e2)) && (e1 != null))
-            e2.getWasInfluencedBy().add(e1);
-
-        return u;
-
-    }
-
-    public Object convertAlternateOf(Object id2, Object id1) {
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
-
-        Entity e2 = designateIfNotNull(qn2, Entity.class);
-        Entity e1 = designateIfNotNull(qn1, Entity.class);
-
-        e2.getAlternateOf().add(e1);
-        return null;
-    }
-
-    public Object convertSpecializationOf(Object id2, Object id1) {
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
-
-        Entity e2 = designateIfNotNull(qn2, Entity.class);
-        Entity e1 = designateIfNotNull(qn1, Entity.class);
-
-        e2.getSpecializationOf().add(e1);
-        return null;
-    }
-
-    public Object convertActedOnBehalfOf(Object id, Object id2, Object id1,
-                                         Object a, Object aAttrs) {
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
-        QName qn3 = getQName(a);
-
-        Agent ag2 = designateIfNotNull(qn2, Agent.class);
-        Agent ag1 = designateIfNotNull(qn1, Agent.class);
-
-        Delegation g = addAgentInfluence(id, ag2, ag1, null, aAttrs, a,
-                                         Delegation.class);
-
-        if (qn3 != null) {
-            Activity a3 = designateIfNotNull(qn3, Activity.class);
-            g.getHadActivity().add(a3);
-        }
-
-        if ((binaryProp(id, ag2)) && (ag1 != null))
-            ag2.getActedOnBehalfOf().add(ag1);
-
-        return g;
-    }
+   
 
     public Object convertExtension(Object name, Object id, Object args,
                                    Object dAttrs) {
         return null;
     }
 
-    public Object convertQualifiedName(String qname) {
-        return qname;
-    }
-
-    public Object convertIRI(String iri) {
-        iri = unwrap(iri);
-        return URI.create(iri);
-    }
-
-    public Object convertTypedLiteral(String datatype, Object value) {
-        return new Object[] { value, datatype };
-    }
-
-    public Object convertNamespace(Object pre, Object iri) {
-        String s_pre = (String) pre;
-        String s_iri = (String) iri;
-        s_iri = unwrap(s_iri);
-        namespaceTable.put(s_pre, s_iri);
-        return null;
-    }
-
-    public Object convertDefaultNamespace(Object iri) {
-        String s_iri = (String) iri;
-        s_iri = unwrap(s_iri);
-        namespaceTable.put("_", s_iri);
-        return null;
-    }
-
-    public Object convertNamespaces(List<Object> namespaces) {
-        pFactory.setNamespaces(namespaceTable);
-        return namespaceTable;
-    }
-
-    public Object convertPrefix(String pre) {
-        return pre;
-    }
+  
 
     public QName getQName(Object id) {
         if (id == null) {
@@ -938,10 +656,6 @@ public class RdfConstructor implements BeanConstructor {
         }
         String idAsString = (String) id;
         return pFactory.stringToQName(idAsString);
-    }
-
-    public String unwrap(String s) {
-        return s.substring(1, s.length() - 1);
     }
 
     /* Component 5 */
@@ -985,33 +699,7 @@ public class RdfConstructor implements BeanConstructor {
         throw new UnsupportedOperationException();
     }
 
-    /* Component 6 */
-
-    public Object convertMentionOf(Object id2, Object id1, Object bu) {
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
-
-        QName qn3 = getQName(bu);
-
-        Entity e2 = designateIfNotNull(qn2, Entity.class);
-        Entity e1 = designateIfNotNull(qn1, Entity.class);
-        Bundle e3 = designateIfNotNull(qn3, Bundle.class); // will
-        // declare it
-        // as plan if
-        // not
-        // already
-        // done
-        System.out.println("e2: " + e2);
-        System.out.println("e1: " + e1);
-        if (e2 != null) {
-            if (e1 != null)
-                e2.getMentionOf().add(e1);
-            if (e3 != null)
-                e2.getAsInBundle().add(e3);
-        }
-
-        return null;
-    }
+  
 
     public <T> T designateIfNotNull(QName qname, Class<T> cl) {
         if (qname == null)
@@ -1028,15 +716,5 @@ public class RdfConstructor implements BeanConstructor {
         return id == null && subject != null;
     }
 
-    public Object convertHadMember(Object collection, Object entity) {
-        QName qnc = getQName(collection);
-        QName qne = getQName(entity);
-
-        Collection c = designateIfNotNull(qnc, Collection.class);
-        Entity e = designateIfNotNull(qne, Entity.class);
-
-        c.getHadMember().add(e);
-        return null;
-    }
-
+  
 }

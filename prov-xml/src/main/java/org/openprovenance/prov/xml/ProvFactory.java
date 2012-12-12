@@ -1658,5 +1658,15 @@ public class ProvFactory implements BeanConstructor {
 		+ qname.getLocalPart();
     }
 
+    @Override
+    public void startDocument(Hashtable<String, String> hashtable) {
+        
+    }
+
+    @Override
+    public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
+      
+    }
+
 
 }

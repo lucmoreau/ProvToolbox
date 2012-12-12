@@ -2,6 +2,7 @@
 package org.openprovenance.prov.xml;
 import java.net.URI;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 public class ValueConverter {
@@ -223,6 +224,8 @@ public class ValueConverter {
 	    return "xsd:anyURI";
 	if (o instanceof QName)
 	    return "xsd:QName";
+	if (o instanceof XMLGregorianCalendar) 
+	    return "xsd:dateTime";
 	return "xsd:UNKNOWN";
     }
 

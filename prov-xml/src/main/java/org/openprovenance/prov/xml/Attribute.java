@@ -124,7 +124,8 @@ public class Attribute {
 	if (val instanceof InternationalizedString) {
 	    InternationalizedString istring = (InternationalizedString) val;
 	    return elementName.getPrefix() + ":" + elementName.getLocalPart()
-		    + " = \"" + istring.getValue() + "\"@" + istring.getLang()
+		    + " = \"" + istring.getValue() + 
+		    ((istring.getLang()==null) ? "\"" : "\"@" + istring.getLang())
 		    + " %% " + xsdType;
 	} else if (val instanceof QName) {
 	    QName qn = (QName) val;

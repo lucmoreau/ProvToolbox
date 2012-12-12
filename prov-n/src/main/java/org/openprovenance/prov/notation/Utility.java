@@ -20,7 +20,6 @@ import org.openprovenance.prov.xml.BeanTraversal;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.OldBeanTraversal;
-import org.openprovenance.prov.xml.UncheckedException;
 import org.openprovenance.prov.xml.ValueConverter;
 
 
@@ -65,12 +64,7 @@ public  class Utility {
         return tree;
     }
 
-    public Object oldConvertTreeToJavaBean(CommonTree tree) {
-  	if (tree==null) return null;
-          Object o=new OldTreeTraversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
-          return o;
-      }
-
+   
     public Object convertTreeToJavaBean(CommonTree tree) {
   	if (tree==null) return null;
   	ProvFactory pFactory=new ProvFactory();
@@ -78,12 +72,8 @@ public  class Utility {
           return o;
       }
 
-    public String convertTreeToASN(CommonTree tree) {
-        Object o=new OldTreeTraversal(new OldNotationConstructor()).convert(tree);
-        return (String)o;
-    }
 
-
+    //TODO
     public String convertTreeToHTML(CommonTree tree) {
         Object o=new OldTreeTraversal(new HTMLConstructor()).convert(tree);
         return (String)o;
@@ -96,28 +86,15 @@ public  class Utility {
     }
 
     /** A conversion function that copies a Java Bean deeply. */
-    public Object convertJavaBeanToJavaBean(Document c) {
-        ProvFactory pFactory=new ProvFactory(c.getNss());
+    public Object convertJavaBeanToJavaBean(Document doc) {
+        ProvFactory pFactory=new ProvFactory(doc.getNss());
         ProvConstructor pc=new ProvConstructor(pFactory);
-        pc.namespaceTable.putAll(c.getNss());
-        OldBeanTraversal bt=new OldBeanTraversal(new BeanTreeConstructor(pFactory,pc));
-        Object o=bt.convert(c);
+        pc.namespaceTable.putAll(doc.getNss());
+        BeanTraversal bt=new BeanTraversal(pFactory, pFactory, new ValueConverter(pFactory));
+        Document o=bt.convert(doc);
         return o;
     }
 
-    
-    public String convertASNToASN(String file) throws java.io.IOException, Throwable {
-        CommonTree tree=convertASNToTree(file);
-        Object o=convertTreeToASN(tree);
-        return (String)o;
-    }
-
-    @Deprecated
-    public String oldConvertBeanToASN(Document c) {
-        OldBeanTraversal bt=new OldBeanTraversal(new BeanTreeConstructor(ProvFactory.getFactory(), new OldNotationConstructor()));
-        Object o=bt.convert(c);
-        return (String)o;
-    }
 
 
     public String convertBeanToASN(Document doc) {
@@ -171,10 +148,37 @@ public  class Utility {
     
     public Document readDocument(String filename) throws IOException, Throwable {
 	 CommonTree tree = convertASNToTree(filename);
-         Object o=oldConvertTreeToJavaBean(tree);
-         return (Document)o;
+         Object doc=convertTreeToJavaBean(tree);
+         return (Document)doc;
     }
     
+    
+    @Deprecated
+    public Object oldConvertTreeToJavaBean(CommonTree tree) {
+        if (tree==null) return null;
+          Object o=new OldTreeTraversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
+          return o;
+      }
+    @Deprecated
+    public String convertTreeToASN(CommonTree tree) {
+        Object o=new OldTreeTraversal(new OldNotationConstructor()).convert(tree);
+        return (String)o;
+    }
+    
+    @Deprecated
+    public String convertASNToASN(String file) throws java.io.IOException, Throwable {
+        CommonTree tree=convertASNToTree(file);
+        Object o=convertTreeToASN(tree);
+        return (String)o;
+    }
+
+    @Deprecated
+    public String oldConvertBeanToASN(Document c) {
+        OldBeanTraversal bt=new OldBeanTraversal(new BeanTreeConstructor(ProvFactory.getFactory(), new OldNotationConstructor()));
+        Object o=bt.convert(c);
+        return (String)o;
+    }
+
 
 }
 

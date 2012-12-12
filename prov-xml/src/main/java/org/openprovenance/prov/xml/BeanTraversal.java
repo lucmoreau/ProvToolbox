@@ -22,6 +22,9 @@ public class BeanTraversal {
 	List<NamedBundle> bRecords = new LinkedList<NamedBundle>();
 
 	List<Statement> sRecords = new LinkedList<Statement>();
+	
+        c.startDocument(b.getNss());
+
 
 	for (Statement s : u.getStatement(b)) {
 	    if (s instanceof Entity) {
@@ -47,6 +50,8 @@ public class BeanTraversal {
 
     public NamedBundle convert(NamedBundle b) {
 	List<Statement> sRecords = new LinkedList<Statement>();
+	QName bundleId=b.getId();
+        c.startBundle(bundleId, b.getNss());
 
 	for (Statement s : u.getStatement(b)) {
 	    if (s instanceof Entity) {
@@ -60,7 +65,7 @@ public class BeanTraversal {
 	    }
 
 	}
-	return c.newNamedBundle(b.getId(), b.getNss(), sRecords);
+	return c.newNamedBundle(bundleId, b.getNss(), sRecords);
     }
 
    

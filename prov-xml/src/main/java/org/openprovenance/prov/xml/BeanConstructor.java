@@ -36,5 +36,7 @@ public interface BeanConstructor {
     public NamedBundle newNamedBundle(QName id, 
                                       Hashtable<String,String> namespaces, 
                                       Collection<Statement> statements);
+    public void startDocument(Hashtable<String, String> hashtable);
+    public void startBundle(QName bundleId, Hashtable<String, String> namespaces);
 
 }

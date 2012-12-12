@@ -40,6 +40,7 @@ import org.openprovenance.prov.xml.WasStartedBy;
 
 public class NotationConstructor implements BeanConstructor {
     
+    public static final String MARKER = "-";
     final private ProvFactory pFactory;
     final private BufferedWriter buffer;
 
@@ -48,13 +49,24 @@ public class NotationConstructor implements BeanConstructor {
 	this.pFactory=pFactory;
     }
     
+    boolean standaloneExpression=false;
        
     public void write(String s) {
-	try {
-	    buffer.write(s);
-	} catch (IOException e) {
-	    throw new UncheckedException("NotationConstructor.write() failed", e);
-	}
+        try {
+            buffer.write(s);
+        } catch (IOException e) {
+            throw new UncheckedException("NotationConstructor.write() failed", e);
+        }
+    }
+    
+    public void writeln(String s) {
+        try {
+            buffer.write(s);
+            if (!standaloneExpression)
+            buffer.newLine();
+        } catch (IOException e) {
+            throw new UncheckedException("NotationConstructor.write() failed", e);
+        }
     }
     
     public void close() {
@@ -75,33 +87,44 @@ public class NotationConstructor implements BeanConstructor {
 
 
     public String idOrMarker(QName qn) {
-        return ((qn==null)? "-" : pFactory.qnameToString(qn));
+        return ((qn==null)? MARKER : pFactory.qnameToString(qn));
     }
+
+    public String timeOrMarker(XMLGregorianCalendar time) {
+        return ((time==null)? MARKER : time.toString());
+    }
+
+    private String optionalId(QName id) {
+        return ((id==null)? "" : (pFactory.qnameToString(id) + ";"));
+    }            
 
     
     @Override
     public Entity newEntity(QName id, List<Attribute> attributes) {
         String s=keyword("entity") + "(" + idOrMarker(id)  + optionalAttributes(attributes) + ")";
-        write(s);
-        System.out.println("s" +s);
+        writeln(s);
 	return null;
     }
     @Override
     public Activity newActivity(QName id, XMLGregorianCalendar startTime,
 				XMLGregorianCalendar endTime,
 				List<Attribute> attributes) {
-	// TODO Auto-generated method stub
+        String s=keyword("activity") + "(" + idOrMarker(id) + "," + timeOrMarker(startTime) + "," + timeOrMarker(endTime) + optionalAttributes(attributes) + ")";
+        writeln(s);
 	return null;
     }
     @Override
     public Agent newAgent(QName id, List<Attribute> attributes) {
-	// TODO Auto-generated method stub
+        String s=keyword("agent") + "(" + idOrMarker(id)  + optionalAttributes(attributes) + ")";
+        writeln(s);
 	return null;
     }
     @Override
     public Used newUsed(QName id, QName activity, QName entity,
 			XMLGregorianCalendar time, List<Attribute> attributes) {
-	// TODO Auto-generated method stub
+        String s=keyword("used") + "(" + optionalId(id) + idOrMarker(activity) + "," + idOrMarker(entity) + "," +
+                timeOrMarker(time) + optionalAttributes(attributes) + ")";
+        writeln(s);
 	return null;
     }
     @Override
@@ -109,7 +132,9 @@ public class NotationConstructor implements BeanConstructor {
 					    QName activity,
 					    XMLGregorianCalendar time,
 					    List<Attribute> attributes) {
-	// TODO Auto-generated method stub
+        String s=keyword("wasGeneratedBy") + "(" + optionalId(id) + idOrMarker(entity) + "," + idOrMarker(activity) + "," +
+                timeOrMarker(time) + optionalAttributes(attributes) +  ")";
+        writeln(s);
 	return null;
     }
     @Override
@@ -117,22 +142,28 @@ public class NotationConstructor implements BeanConstructor {
 						QName activity,
 						XMLGregorianCalendar time,
 						List<Attribute> attributes) {
-	// TODO Auto-generated method stub
-	return null;
+        String s=keyword("wasInvalidatedBy") + "(" + optionalId(id) + idOrMarker(entity) + "," + idOrMarker(activity) + "," +
+                timeOrMarker(time) + optionalAttributes(attributes) +  ")";
+        writeln(s);
+        return null;
     }
     @Override
     public WasStartedBy newWasStartedBy(QName id, QName activity,
 					QName trigger, QName starter,
 					XMLGregorianCalendar time,
 					List<Attribute> attributes) {
-	// TODO Auto-generated method stub
+        String s="wasStartedBy(" + optionalId(id) + idOrMarker(activity) + "," + idOrMarker(trigger) + "," + idOrMarker(starter) + "," +
+                timeOrMarker(time) + optionalAttributes(attributes) +  ")";
+        writeln(s);
 	return null;
     }
     @Override
     public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger,
 				    QName ender, XMLGregorianCalendar time,
 				    List<Attribute> attributes) {
-	// TODO Auto-generated method stub
+        String s="wasEndedBy(" + optionalId(id) + idOrMarker(activity) + "," + idOrMarker(trigger) + "," + idOrMarker(ender) + "," +
+                timeOrMarker(time) + optionalAttributes(attributes) +  ")";
+        writeln(s);
 	return null;
     }
     @Override
@@ -140,66 +171,92 @@ public class NotationConstructor implements BeanConstructor {
 					    QName activity, QName generation,
 					    QName usage,
 					    List<Attribute> attributes) {
-	// TODO Auto-generated method stub
+        String s=keyword("wasDerivedFrom") + "(" + optionalId(id) + idOrMarker(e2) + ", " + idOrMarker(e1) + 
+                ((activity==null && generation==null && usage==null) ?
+                 "" : ", " + idOrMarker(activity) + ", " + idOrMarker(generation) + ", " + idOrMarker(usage)) + optionalAttributes(attributes) +  ")";
+        writeln(s);
 	return null;
     }
     @Override
     public WasAssociatedWith newWasAssociatedWith(QName id, QName a, QName ag,
 						  QName plan,
 						  List<Attribute> attributes) {
-	// TODO Auto-generated method stub
-	return null;
+        String s=keyword("wasAssociatedWith") + "(" + optionalId(id) + idOrMarker(a) + "," + idOrMarker(ag) + "," +
+                idOrMarker(plan) +
+                optionalAttributes(attributes) + ")";        
+        writeln(s);
+        return null;
     }
     @Override
     public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,
 					      List<Attribute> attributes) {
-	// TODO Auto-generated method stub
+        String s=keyword("wasAttributedTo") + "(" + optionalId(id) + idOrMarker(e) + ", " + idOrMarker(ag) +
+                optionalAttributes(attributes) +  ")";
+        writeln(s);
 	return null;
     }
     @Override
     public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1,
 					      QName a,
 					      List<Attribute> attributes) {
-	// TODO Auto-generated method stub
+        String s=keyword("actedOnBehalfOf") + "(" + optionalId(id) + idOrMarker(ag2) + "," + idOrMarker(ag1) + "," +
+                idOrMarker(a) +
+                optionalAttributes(attributes) + ")";
+        writeln(s);
 	return null;
     }
+    
     @Override
     public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1,
 					  List<Attribute> attributes) {
-	// TODO Auto-generated method stub
+        String s="wasInformedBy(" + optionalId(id) + idOrMarker(a2) + "," + idOrMarker(a1)
+                + optionalAttributes(attributes) +  ")";
+        writeln(s);
 	return null;
     }
     @Override
     public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1,
 					      List<Attribute> attributes) {
-	// TODO Auto-generated method stub
+        String s="wasInfluencedBy(" + optionalId(id) + idOrMarker(a2) + "," + idOrMarker(a1)
+                + optionalAttributes(attributes) +  ")";
+        writeln(s);
 	return null;
     }
     @Override
     public AlternateOf newAlternateOf(QName e2, QName e1) {
-	write("alternateOf(" + idOrMarker(e2) + "," + idOrMarker(e1) + ")");
+	writeln("alternateOf(" + idOrMarker(e2) + "," + idOrMarker(e1) + ")");
 	return null;
    }
     @Override
     public SpecializationOf newSpecializationOf(QName e2, QName e1) {
-	write("specializationOf(" + idOrMarker(e2) + "," + idOrMarker(e1) + ")");
+	writeln("specializationOf(" + idOrMarker(e2) + "," + idOrMarker(e1) + ")");
 	return null;
     }
     @Override
     public MentionOf newMentionOf(QName e2, QName e1, QName b) {
-	// TODO Auto-generated method stub
+        String s="mentionOf(" + idOrMarker(e2) + ", " + idOrMarker(e1) + ", " + idOrMarker(b) + ")";
+        writeln(s);
 	return null;
     }
     @Override
-    public HadMember newHadMember(QName c, List<QName> e) {
-	// TODO Auto-generated method stub
+    public HadMember newHadMember(QName c, List<QName> ll) {
+        for (QName e: ll) {
+            String s=keyword("hadMember") + "(" + idOrMarker(c) + "," + idOrMarker(e) + ")";
+            writeln(s);
+        }
 	return null;
     }
+    
     @Override
-    public Document newDocument(Hashtable<String, String> namespaces,
-				Collection<Statement> statements,
-				Collection<NamedBundle> bundles) {
+    public void startDocument(Hashtable<String, String> namespaces) {
         String s = keyword("document") + breakline();
+        s = s+ processNamespaces(namespaces);
+        write(s);
+    }
+
+
+    public String processNamespaces(Hashtable<String, String> namespaces) {
+        String s="";
         if (namespaces != null) {
             if (namespaces instanceof Hashtable) {
                 Hashtable<String, String> nss = (Hashtable<String, String>) namespaces;
@@ -227,24 +284,40 @@ public class NotationConstructor implements BeanConstructor {
                 s = s + namespaces + breakline();
             }
         }
-        for (Statement o : statements) {
-            s = s + o + breakline();
-        }
-        if (bundles != null) {
-            for (Object o : bundles) {
-                s = s + o + breakline();
-            }
-        }
+        return s;
+    }
+
+    
+    @Override
+    public Document newDocument(Hashtable<String, String> namespaces,
+				Collection<Statement> statements,
+				Collection<NamedBundle> bundles) {
+        String s="";
+        
         s = s + keyword("endDocument");
 	
         write(s);
 	return null;
     }
+    
+
+    @Override
+    public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
+        String s = keyword("bundle") + " " + pFactory.qnameToString(bundleId);
+        s = s+ processNamespaces(namespaces);
+        writeln(s);
+ 
+    }
+    
+    
+    
     @Override
     public NamedBundle newNamedBundle(QName id,
 				      Hashtable<String, String> namespaces,
 				      Collection<Statement> statements) {
-	// TODO Auto-generated method stub
+        String s="";    
+        s = s + keyword("endBundle");
+        writeln(s);
 	return null;
     }
     
@@ -292,7 +365,7 @@ public class NotationConstructor implements BeanConstructor {
 
 
     private Object oldOptional(Object str) {
-        return ((str==null)? "-" : str);
+        return ((str==null)? MARKER : str);
     }
 
     private Object convertActivity(Object id,Object startTime,Object endTime, Object aAttrs) {
@@ -372,7 +445,7 @@ public class NotationConstructor implements BeanConstructor {
         return s;
     }
 
-    private void startBundle(Object bundleId) {
+    private void oldStartBundle(Object bundleId) {
     }
 
     private Object convertAttributes(List<Object> attributes) {
@@ -414,62 +487,62 @@ public class NotationConstructor implements BeanConstructor {
         return i;
     }
 
-    private String optionalId(Object id) {
+    private String oldOptionalId(Object id) {
         return ((id==null)? "" : (id + ";"));
     }            
 
     private Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs) {
-        String s=keyword("used") + "(" + optionalId(id) + oldOptional(id2) + "," + oldOptional(id1) + "," +
-            oldOptional(time) + oldOptionalAttributes(aAttrs) + ")";
+        String s=keyword("used") + "(" + oldOptionalId(id) + oldOptional(id2) + "," + oldOptional(id1) + "," +
+                oldOptional(time) + oldOptionalAttributes(aAttrs) + ")";
         return s;
     }
     private Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s=keyword("wasGeneratedBy") + "(" + optionalId(id) + oldOptional(id2) + "," + oldOptional(id1) + "," +
-            oldOptional(time) + oldOptionalAttributes(aAttrs) +  ")";
+        String s=keyword("wasGeneratedBy") + "(" + oldOptionalId(id) + oldOptional(id2) + "," + oldOptional(id1) + "," +
+                oldOptional(time) + oldOptionalAttributes(aAttrs) +  ")";
         return s;
     }
     private Object convertWasStartedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs ) {
-        String s="wasStartedBy(" + optionalId(id) + oldOptional(id2) + "," + oldOptional(id1) + "," + oldOptional(id3) + "," +
-            oldOptional(time) + oldOptionalAttributes(aAttrs) +  ")";
-        return s;
+        String s="wasStartedBy(" + oldOptionalId(id) + oldOptional(id2) + "," + oldOptional(id1) + "," + oldOptional(id3) + "," +
+                oldOptional(time) + oldOptionalAttributes(aAttrs) +  ")";
+            return s;
     }
     private Object convertWasEndedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs ) {
-        String s="wasEndedBy(" + optionalId(id) + oldOptional(id2) + "," + oldOptional(id1) + "," + oldOptional(id3) + "," +
+        String s="wasEndedBy(" + oldOptionalId(id) + oldOptional(id2) + "," + oldOptional(id1) + "," + oldOptional(id3) + "," +
             oldOptional(time) + oldOptionalAttributes(aAttrs) +  ")";
         return s;
     }
 
     private Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {
-        String s="wasInformedBy(" + optionalId(id) + oldOptional(id2) + "," + oldOptional(id1)
-            + oldOptionalAttributes(aAttrs) +  ")";
+        String s="wasInformedBy(" + oldOptionalId(id) + oldOptional(id2) + "," + oldOptional(id1)
+                + oldOptionalAttributes(aAttrs) +  ")";
         return s;
     }
 
 
     private Object convertWasInvalidatedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s=keyword("wasInvalidatedBy") + "(" + optionalId(id) + oldOptional(id2) + "," + oldOptional(id1) + "," +
+        String s=keyword("wasInvalidatedBy") + "(" + oldOptionalId(id) + oldOptional(id2) + "," + oldOptional(id1) + "," +
             oldOptional(time) + oldOptionalAttributes(aAttrs) +  ")";
         return s;
     }
 
 
     private Object convertWasAttributedTo(Object id, Object id2,Object id1, Object aAttrs ) {
-        String s=keyword("wasAttributedTo") + "(" + optionalId(id) + oldOptional(id2) + ", " + oldOptional(id1) +
-            oldOptionalAttributes(aAttrs) +  ")";
+        String s=keyword("wasAttributedTo") + "(" + oldOptionalId(id) + oldOptional(id2) + ", " + oldOptional(id1) +
+                oldOptionalAttributes(aAttrs) +  ")";
         return s;
     }
 
 
     private Object convertWasDerivedFrom(Object id, Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
-        String s=keyword("wasDerivedFrom") + "(" + optionalId(id) + oldOptional(id2) + ", " + oldOptional(id1) + 
-            ((pe==null && g2==null && u1==null) ?
-             "" : ", " + oldOptional(pe) + ", " + oldOptional(g2) + ", " + oldOptional(u1)) + oldOptionalAttributes(aAttrs) +  ")";
+        String s=keyword("wasDerivedFrom") + "(" + oldOptionalId(id) + oldOptional(id2) + ", " + oldOptional(id1) + 
+                ((pe==null && g2==null && u1==null) ?
+                 "" : ", " + oldOptional(pe) + ", " + oldOptional(g2) + ", " + oldOptional(u1)) + oldOptionalAttributes(aAttrs) +  ")";
         return s;
     }
 
     
     private Object convertWasInfluencedBy(Object id, Object id2, Object id1, Object dAttrs) {
-        String s="wasInfluencedBy(" + optionalId(id) + oldOptional(id2) + ", " + oldOptional(id1) + oldOptionalAttributes(dAttrs) +  ")";
+        String s="wasInfluencedBy(" + oldOptionalId(id) + oldOptional(id2) + ", " + oldOptional(id1) + oldOptionalAttributes(dAttrs) +  ")";
         return s;
     }
 
@@ -490,21 +563,21 @@ public class NotationConstructor implements BeanConstructor {
     }
 
     private Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
-        String s=keyword("wasAssociatedWith") + "(" + optionalId(id) + oldOptional(id2) + "," + oldOptional(id1) + "," +
-            oldOptional(pl) +
-            oldOptionalAttributes(aAttrs) + ")";
+        String s=keyword("wasAssociatedWith") + "(" + oldOptionalId(id) + oldOptional(id2) + "," + oldOptional(id1) + "," +
+                oldOptional(pl) +
+                oldOptionalAttributes(aAttrs) + ")";
         return s;
     }
 
     private Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
-        String s=keyword("actedOnBehalfOf") + "(" + optionalId(id) + oldOptional(id2) + "," + oldOptional(id1) + "," +
-            oldOptional(a) +
-            oldOptionalAttributes(aAttrs) + ")";
-        return s;
+        String s=keyword("actedOnBehalfOf") + "(" + oldOptionalId(id) + oldOptional(id2) + "," + oldOptional(id1) + "," +
+                oldOptional(a) +
+                oldOptionalAttributes(aAttrs) + ")";
+            return s;
     }
 
     private Object convertHadMember(Object collection, Object entity) {
-	String s=keyword("hadMember") + "(" + oldOptional(collection) + "," + oldOptional(entity) + ")";
+        String s=keyword("hadMember") + "(" + oldOptional(collection) + "," + oldOptional(entity) + ")";
 	return s;
     }
 
@@ -514,7 +587,7 @@ public class NotationConstructor implements BeanConstructor {
 	System.out.println("Name @" + id);
 	System.out.println("Name @" + args);
 	System.out.println("Name @" + dAttrs);
-        String s=keyword((String)name) + "(" + optionalId(id) + args +
+        String s=keyword((String)name) + "(" + oldOptionalId(id) + args +
             oldOptionalAttributes(dAttrs) + ")";
 	return s;
     }
@@ -581,13 +654,13 @@ public class NotationConstructor implements BeanConstructor {
     /* Component 5 */
 
     private Object convertInsertion(Object id, Object id2, Object id1, Object kes, Object iAttrs) {
-        String s="derivedByInsertionFrom(" + optionalId(id) + id2 + ", " + id1 + ", "
+        String s="derivedByInsertionFrom(" + oldOptionalId(id) + id2 + ", " + id1 + ", "
 	    + kes + oldOptionalAttributes(iAttrs) +  ")";
 	return s;
     }
 
     private Object convertRemoval(Object id, Object id2, Object id1, Object keyset, Object rAttrs) {
-        String s="derivedByRemovalFrom(" + optionalId(id) + id2 + ", " + id1 + ", "
+        String s="derivedByRemovalFrom(" + oldOptionalId(id) + id2 + ", " + id1 + ", "
 	    + keyset + oldOptionalAttributes(rAttrs) +  ")";
 	return s;
 
@@ -595,7 +668,7 @@ public class NotationConstructor implements BeanConstructor {
 
     private Object convertCollectionMemberOf(Object id, Object id2, Object es, Object complete, Object mAttrs) {
 
-        String s="memberOf(" + optionalId(id) + id2 + ", "
+        String s="memberOf(" + oldOptionalId(id) + id2 + ", "
 	    + es + ((complete==null)? "" : ", "+complete) + oldOptionalAttributes(mAttrs) +  ")";
 	return s;
 
@@ -604,7 +677,7 @@ public class NotationConstructor implements BeanConstructor {
 
     private Object convertDictionaryMemberOf(Object id, Object id2, Object kes, Object complete, Object mAttrs) {
 
-        String s="memberOf(" + optionalId(id) + id2 + ", "
+        String s="memberOf(" + oldOptionalId(id) + id2 + ", "
 	    + kes + ((complete==null)? "" : ", "+complete) + oldOptionalAttributes(mAttrs) +  ")";
 	return s;
 
@@ -653,9 +726,8 @@ public class NotationConstructor implements BeanConstructor {
 	s=s+"}";
 	return s;
     }
-    
-    
-    
+
+
 
     /* Component 6 */
 

@@ -97,7 +97,14 @@ public class RdfConstructor implements BeanConstructor {
     @Override
     public Used newUsed(QName id, QName activity, QName entity,
                         XMLGregorianCalendar time, List<Attribute> attributes) {
-        // TODO Auto-generated method stub
+       
+        Entity e1 = designateIfNotNull(entity, Entity.class);
+        Activity a2 = designateIfNotNull(activity, Activity.class);
+        Usage u = addEntityInfluence(id, a2, e1, time, attributes, null,
+                                     Usage.class);
+
+        if ((binaryProp(id, a2)) && (e1 != null))
+            a2.getUsed().add(e1);
         return null;
     }
 
@@ -123,7 +130,14 @@ public class RdfConstructor implements BeanConstructor {
                                                 QName activity,
                                                 XMLGregorianCalendar time,
                                                 List<Attribute> attributes) {
-        // TODO Auto-generated method stub
+        Entity e2 = designateIfNotNull(entity, Entity.class);
+        Activity a1 = designateIfNotNull(activity, Activity.class);
+
+        Invalidation g = addActivityInfluence(id, e2, a1, time, attributes,
+                                            Invalidation.class);
+
+        if ((binaryProp(id, e2)) && (a1 != null))
+            e2.getWasInvalidatedBy().add(a1);
         return null;
     }
 
@@ -132,7 +146,20 @@ public class RdfConstructor implements BeanConstructor {
                                         QName trigger, QName starter,
                                         XMLGregorianCalendar time,
                                         List<Attribute> attributes) {
-        // TODO Auto-generated method stub
+
+        Entity e1 = designateIfNotNull(trigger, Entity.class);
+        Activity a2 = designateIfNotNull(activity, Activity.class);
+        Start s = addEntityInfluence(id, a2, e1, time, attributes, starter, Start.class);
+        
+        if (starter != null) {
+            Activity a3 = designateIfNotNull(starter, Activity.class);
+            s.getHadActivity().add(a3);
+        }
+        
+        if ((binaryProp(id, a2)) && (e1 != null))
+            a2.getWasStartedBy().add(e1);
+        
+
         return null;
     }
 
@@ -140,6 +167,21 @@ public class RdfConstructor implements BeanConstructor {
     public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger,
                                     QName ender, XMLGregorianCalendar time,
                                     List<Attribute> attributes) {
+
+        Entity e1 = designateIfNotNull(trigger, Entity.class);
+        Activity a2 = designateIfNotNull(activity, Activity.class);
+        End s = addEntityInfluence(id, a2, e1, time, attributes, ender, End.class);
+        
+        if (ender != null) {
+            Activity a3 = designateIfNotNull(ender, Activity.class);
+            s.getHadActivity().add(a3);
+        }
+        
+        if ((binaryProp(id, a2)) && (e1 != null))
+            a2.getWasEndedBy().add(e1);
+        
+
+
         // TODO Auto-generated method stub
         return null;
     }
@@ -444,7 +486,36 @@ public class RdfConstructor implements BeanConstructor {
         return null;
     }
 
-    public <INFLUENCE, TYPE> INFLUENCE addEntityInfluence(Object id, TYPE e2,
+    public <INFLUENCE, TYPE> INFLUENCE addEntityInfluence(QName qname, TYPE e2,
+                                                          Entity e1,
+                                                          XMLGregorianCalendar time,
+                                                          List<Attribute> aAttrs,
+                                                          Object other,
+                                                          Class<INFLUENCE> cl) {
+
+        INFLUENCE infl = null;
+
+        if ((qname != null) || (time != null)
+                || ((aAttrs != null) && !(((List<?>) aAttrs).isEmpty()))
+                || (other != null)) {
+            infl = designate(qname, cl); // if qname is null, create an blank
+                                         // node
+            EntityInfluence qi = (EntityInfluence) infl;
+            if (e1 != null)
+                qi.getEntities().add(e1);
+            addQualifiedInfluence(e2, infl);
+
+            if (time != null) {
+                setTime((InstantaneousEvent) infl, time);
+            }
+            processAttributes(qi,  aAttrs);
+        }
+        return infl;
+    }
+
+
+     @Deprecated
+    private <INFLUENCE, TYPE> INFLUENCE addEntityInfluence(Object id, TYPE e2,
                                                           Entity e1,
                                                           Object time,
                                                           Object aAttrs,
@@ -585,26 +656,6 @@ public class RdfConstructor implements BeanConstructor {
         return infl;
     }
 
-    public Object convertUsed(Object id, Object id2, Object id1, Object time,
-                              Object aAttrs) {
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
-
-        Entity e1 = designateIfNotNull(qn1, Entity.class);
-        Activity a2 = designateIfNotNull(qn2, Activity.class);
-        Usage u = addEntityInfluence(id, a2, e1, time, aAttrs, null,
-                                     Usage.class);
-
-        if ((binaryProp(id, a2)) && (e1 != null))
-            a2.getUsed().add(e1);
-
-        return u;
-    }
-
-    public <INFLUENCE, TYPE1> INFLUENCE test(INFLUENCE foo, TYPE1 foo1) {
-        return foo;
-    }
-
     // not pretty
 
     public <INFLUENCE, EFFECT> void addQualifiedInfluence(EFFECT e2, INFLUENCE g) {
@@ -639,21 +690,6 @@ public class RdfConstructor implements BeanConstructor {
         }
     }
 
-    public Object convertWasGeneratedBy(Object id, Object id2, Object id1,
-                                        Object time, Object aAttrs) {
-        QName qn2 = getQName(id2);
-        QName qn1 = getQName(id1);
-
-        Entity e2 = designateIfNotNull(qn2, Entity.class);
-        Activity a1 = designateIfNotNull(qn1, Activity.class);
-
-        Generation g = oldAddActivityInfluence(id, e2, a1, time, aAttrs,
-                                            Generation.class);
-
-        if ((binaryProp(id, e2)) && (a1 != null))
-            e2.getWasGeneratedBy().add(a1);
-        return g;
-    }
 
     public Object convertWasStartedBy(Object id, Object id2, Object id1,
                                       Object id3, Object time, Object aAttrs) {

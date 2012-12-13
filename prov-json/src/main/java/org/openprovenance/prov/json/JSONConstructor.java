@@ -3,12 +3,12 @@
  */
 package org.openprovenance.prov.json;
 
-import java.io.BufferedWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
@@ -21,6 +21,7 @@ import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.HadMember;
+import org.openprovenance.prov.xml.InternationalizedString;
 import org.openprovenance.prov.xml.MentionOf;
 import org.openprovenance.prov.xml.ModelConstructor;
 import org.openprovenance.prov.xml.NamedBundle;
@@ -48,9 +49,9 @@ public class JSONConstructor implements ModelConstructor {
 	private class JsonProvRecord {
 		String type;
 		Object id;
-		List<Attribute>  attributes;
+		List<Object[]>  attributes;
 		
-		public JsonProvRecord(String type, QName id, List<Attribute>  attributes) {
+		public JsonProvRecord(String type, QName id, List<Object[]>  attributes) {
 			this.type = type;
 			this.id = id;
 			this.attributes = attributes;
@@ -70,12 +71,89 @@ public class JSONConstructor implements ModelConstructor {
 		return null;
 	}
 
+	private static final Map<String,Integer> countMap = new HashMap<String, Integer>();
+	
+	private static String getBlankID(String type) {
+		if (!countMap.containsKey(type)) {
+			countMap.put(type, 0);
+		}
+		int count = countMap.get(type);
+		count += 1;
+		countMap.put(type, count);
+		return "_:" + type + count;
+	}
+
+	private Object[] tuple(Object o1, Object o2) {
+		Object[] tuple = {o1, o2};
+        return tuple;
+	}
+	
+	private Object typedLiteral(String value, String datatype, String lang) {
+		// TODO: Converting default types to JSON primitives
+		if (datatype == "xsd:string" && lang == null) return value;
+		if (datatype == "xsd:double") return Double.parseDouble(value);
+		if (datatype == "xsd:int") return Integer.parseInt(value);
+		if (datatype == "xsd:boolean") return Boolean.parseBoolean(value);
+		
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("$", value);
+		if (datatype != null) {
+			result.put("type", datatype);
+		}
+		if (lang != null) {
+			result.put("lang", lang);
+		}
+		return result;
+	}
+	
+	private Object convertTypedLiteral(String datatype, Object value) {
+		if (value instanceof InternationalizedString) {
+			InternationalizedString iString = (InternationalizedString)value;
+			return typedLiteral(iString.getValue(), null, iString.getLang());
+		}
+		else {
+			return typedLiteral((String)value, datatype, null);
+		}
+	}
+	
+	private Object[] convertAttribute(Attribute attr) {
+		String attrName = qnExport.qnameToString(attr.getElementName());
+		Object value = attr.getValue();
+		Object attrValue;
+		if (value instanceof InternationalizedString) {
+			InternationalizedString iStr = (InternationalizedString)value;
+			String lang = iStr.getLang(); 
+			if (lang != null) {
+				// If 'lang' is defined
+				attrValue = typedLiteral(iStr.getValue(), "xsd:string", lang); 
+			}
+			else {
+				// Otherwise, just return the string
+				attrValue = iStr.getValue();
+			}
+		}
+		else {
+			String datatype = qnExport.qnameToString(attr.getXsdType());
+			attrValue = typedLiteral(value, datatype, null);
+		}
+		return tuple(attrName, attrValue);
+	}
+	
+	private List<Object[]> convertAttributes(List<Attribute> attrs) {
+		List<Object[]> result = new ArrayList<Object[]>();
+		for (Attribute attr: attrs) {
+			result.add(convertAttribute(attr));
+		}
+		return result;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.openprovenance.prov.xml.ModelConstructor#newEntity(javax.xml.namespace.QName, java.util.List)
 	 */
 	@Override
 	public Entity newEntity(QName id, List<Attribute> attributes) {
-		JsonProvRecord record = new JsonProvRecord("entity", id, attributes);
+		List<Object[]> attrs = convertAttributes(attributes);
+		JsonProvRecord record = new JsonProvRecord("entity", id, attrs);
 		this.records.add(record);
 		return null;
 	}
@@ -86,7 +164,10 @@ public class JSONConstructor implements ModelConstructor {
 	@Override
 	public Activity newActivity(QName id, XMLGregorianCalendar startTime,
 			XMLGregorianCalendar endTime, List<Attribute> attributes) {
-		// TODO Auto-generated method stub
+		if (startTime != null || endTime !=null) {
+			List<Attribute> attrs = new ArrayList<Attribute>(attributes);
+			
+		}
 		return null;
 	}
 
@@ -287,5 +368,4 @@ public class JSONConstructor implements ModelConstructor {
 		// TODO Auto-generated method stub
 
 	}
-
 }

@@ -3,6 +3,7 @@ package org.openprovenance.prov.rdf;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Collection;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
@@ -56,7 +57,7 @@ public class RdfConstructor implements ModelConstructor {
 
     @Override
     public org.openprovenance.prov.xml.Entity newEntity(QName id,
-                                                        List<Attribute> attributes) {
+                                                        Collection<Attribute> attributes) {
         Entity e = (Entity) designateIfNotNull(id, Entity.class);
         processAttributes(e, attributes);
         return null;
@@ -66,7 +67,7 @@ public class RdfConstructor implements ModelConstructor {
     public org.openprovenance.prov.xml.Activity newActivity(QName id,
                                                             XMLGregorianCalendar startTime,
                                                             XMLGregorianCalendar endTime,
-                                                            List<Attribute> attributes) {
+                                                            Collection<Attribute> attributes) {
         Activity a = (Activity) designateIfNotNull(id, Activity.class);
         if (startTime != null) {
             a.getStartedAtTime().add(startTime);
@@ -80,7 +81,7 @@ public class RdfConstructor implements ModelConstructor {
 
     @Override
     public org.openprovenance.prov.xml.Agent newAgent(QName id,
-                                                      List<Attribute> attributes) {
+                                                      Collection<Attribute> attributes) {
         Agent ag = (Agent) designateIfNotNull(id, Agent.class);
         processAttributes(ag, attributes);
         return null;
@@ -88,7 +89,7 @@ public class RdfConstructor implements ModelConstructor {
 
     @Override
     public Used newUsed(QName id, QName activity, QName entity,
-                        XMLGregorianCalendar time, List<Attribute> attributes) {
+                        XMLGregorianCalendar time, Collection<Attribute> attributes) {
        
         Entity e1 = designateIfNotNull(entity, Entity.class);
         Activity a2 = designateIfNotNull(activity, Activity.class);
@@ -105,7 +106,7 @@ public class RdfConstructor implements ModelConstructor {
     public WasGeneratedBy newWasGeneratedBy(QName id, QName entity,
                                             QName activity,
                                             XMLGregorianCalendar time,
-                                            List<Attribute> attributes) {
+                                            Collection<Attribute> attributes) {
 
         Entity e2 = designateIfNotNull(entity, Entity.class);
         Activity a1 = designateIfNotNull(activity, Activity.class);
@@ -123,7 +124,7 @@ public class RdfConstructor implements ModelConstructor {
     public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity,
                                                 QName activity,
                                                 XMLGregorianCalendar time,
-                                                List<Attribute> attributes) {
+                                                Collection<Attribute> attributes) {
         Entity e2 = designateIfNotNull(entity, Entity.class);
         Activity a1 = designateIfNotNull(activity, Activity.class);
 
@@ -140,7 +141,7 @@ public class RdfConstructor implements ModelConstructor {
     public WasStartedBy newWasStartedBy(QName id, QName activity,
                                         QName trigger, QName starter,
                                         XMLGregorianCalendar time,
-                                        List<Attribute> attributes) {
+                                        Collection<Attribute> attributes) {
 
         Entity e1 = designateIfNotNull(trigger, Entity.class);
         Activity a2 = designateIfNotNull(activity, Activity.class);
@@ -161,7 +162,7 @@ public class RdfConstructor implements ModelConstructor {
     @Override
     public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger,
                                     QName ender, XMLGregorianCalendar time,
-                                    List<Attribute> attributes) {
+                                    Collection<Attribute> attributes) {
 
         Entity e1 = designateIfNotNull(trigger, Entity.class);
         Activity a2 = designateIfNotNull(activity, Activity.class);
@@ -184,7 +185,7 @@ public class RdfConstructor implements ModelConstructor {
     public WasDerivedFrom newWasDerivedFrom(QName id, QName entity2, QName entity1,
                                             QName activity, QName generation,
                                             QName usage,
-                                            List<Attribute> attributes) {
+                                            Collection<Attribute> attributes) {
 
         Entity e2 = designateIfNotNull(entity2, Entity.class);
         Entity e1 = designateIfNotNull(entity1, Entity.class);
@@ -225,7 +226,7 @@ public class RdfConstructor implements ModelConstructor {
     @Override
     public WasAssociatedWith newWasAssociatedWith(QName id, QName a, QName ag,
                                                   QName plan,
-                                                  List<Attribute> attributes) {
+                                                  Collection<Attribute> attributes) {
         
 
         Activity a2 = designateIfNotNull(a, Activity.class);
@@ -249,7 +250,7 @@ public class RdfConstructor implements ModelConstructor {
 
     @Override
     public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,
-                                              List<Attribute> attributes) {
+                                              Collection<Attribute> attributes) {
 
         Entity e2 = designateIfNotNull(e, Entity.class);
         Agent a1 = designateIfNotNull(ag, Agent.class);
@@ -266,7 +267,7 @@ public class RdfConstructor implements ModelConstructor {
     @Override
     public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName agent2, QName agent1,
                                               QName a,
-                                              List<Attribute> attributes) {
+                                              Collection<Attribute> attributes) {
 
         Agent ag2 = designateIfNotNull(agent2, Agent.class);
         Agent ag1 = designateIfNotNull(agent1, Agent.class);
@@ -286,7 +287,7 @@ public class RdfConstructor implements ModelConstructor {
 
     @Override
     public WasInformedBy newWasInformedBy(QName id, QName activity2, QName activity1,
-                                          List<Attribute> attributes) {
+                                          Collection<Attribute> attributes) {
 
         Activity a2 = designateIfNotNull(activity2, Activity.class);
         Activity a1 = designateIfNotNull(activity1, Activity.class);
@@ -303,7 +304,7 @@ public class RdfConstructor implements ModelConstructor {
 
     @Override
     public WasInfluencedBy newWasInfluencedBy(QName id, QName qn2, QName qn1,
-                                              List<Attribute> attributes) {
+                                              Collection<Attribute> attributes) {
 
 
         ActivityOrAgentOrEntity e1 = designateIfNotNull(qn1,
@@ -362,10 +363,10 @@ public class RdfConstructor implements ModelConstructor {
     }
 
     @Override
-    public HadMember newHadMember(QName collection, List<QName> ll) {
+    public HadMember newHadMember(QName collection, Collection<QName> ll) {
         for (QName entity: ll) {
 
-            Collection c = designateIfNotNull(collection, Collection.class);
+            org.openprovenance.prov.rdf.Collection c = designateIfNotNull(collection, org.openprovenance.prov.rdf.Collection.class);
             Entity e = designateIfNotNull(entity, Entity.class);
 
             c.getHadMember().add(e);
@@ -375,8 +376,8 @@ public class RdfConstructor implements ModelConstructor {
 
     @Override
     public Document newDocument(Hashtable<String, String> namespaces,
-                                java.util.Collection<Statement> statements,
-                                java.util.Collection<NamedBundle> bundles) {
+                                Collection<Statement> statements,
+                                Collection<NamedBundle> bundles) {
         //At this stage nothing left to do
         return null;
     }
@@ -384,7 +385,7 @@ public class RdfConstructor implements ModelConstructor {
     @Override
     public NamedBundle newNamedBundle(QName id,
                                       Hashtable<String, String> namespaces,
-                                      java.util.Collection<Statement> statements) {
+                                      Collection<Statement> statements) {
         //At this stage nothing left to do
         return null;
     }
@@ -425,7 +426,7 @@ public class RdfConstructor implements ModelConstructor {
         }
     }
 
-    public void processAttributes(Object infl, List<Attribute> aAttrs) {
+    public void processAttributes(Object infl, Collection<Attribute> aAttrs) {
         if (aAttrs == null)
             return;
         if (infl == null) {
@@ -485,7 +486,7 @@ public class RdfConstructor implements ModelConstructor {
     public <INFLUENCE, TYPE> INFLUENCE addEntityInfluence(QName qname, TYPE e2,
                                                           Entity e1,
                                                           XMLGregorianCalendar time,
-                                                          List<Attribute> aAttrs,
+                                                          Collection<Attribute> aAttrs,
                                                           Object other,
                                                           Class<INFLUENCE> cl) {
 
@@ -513,7 +514,7 @@ public class RdfConstructor implements ModelConstructor {
     public <INFLUENCE> INFLUENCE addUnknownInfluence(QName qname,
                                                      ActivityOrAgentOrEntity e2,
                                                      ActivityOrAgentOrEntity e1,
-                                                     List<Attribute> aAttrs,
+                                                     Collection<Attribute> aAttrs,
                                                      Class<INFLUENCE> cl) {
 
         INFLUENCE infl = null;
@@ -541,7 +542,7 @@ public class RdfConstructor implements ModelConstructor {
     public <INFLUENCE, TYPE> INFLUENCE addActivityInfluence(QName qname, TYPE a2,
                                                                Activity a1,
                                                                XMLGregorianCalendar time,
-                                                               List<Attribute> aAttrs,
+                                                               Collection<Attribute> aAttrs,
                                                                Class<INFLUENCE> cl) {
 
            INFLUENCE infl = null;
@@ -567,7 +568,7 @@ public class RdfConstructor implements ModelConstructor {
 
     public <INFLUENCE, TYPE> INFLUENCE addAgentInfluence(QName qname, TYPE e2,
                                                          Agent a1, XMLGregorianCalendar time,
-                                                         List<Attribute> aAttrs,
+                                                         Collection<Attribute> aAttrs,
                                                          Object other,
                                                          Class<INFLUENCE> cl) {
 

@@ -357,7 +357,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	res.setResponsible(responsible);
 	return res;
     }
-    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1, QName a, List<Attribute> attributes) {
+    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1, QName a, Collection<Attribute> attributes) {
         AgentRef agid2=(ag2==null)? null : newAgentRef(ag2);
         AgentRef agid1=(ag1==null)? null : newAgentRef(ag1);
         ActivityRef aid=(a==null)? null : newActivityRef(a);
@@ -394,7 +394,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public Activity newActivity(QName id, 
                                 XMLGregorianCalendar startTime,
 				XMLGregorianCalendar endTime,
-				List<Attribute> attributes) {
+				Collection<Attribute> attributes) {
 	Activity res = newActivity(id);
 	res.setStartTime(startTime);
 	res.setEndTime(endTime);
@@ -440,7 +440,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return res;
     }
 
-    public Agent newAgent(QName id, List<Attribute> attributes) {
+    public Agent newAgent(QName id, Collection<Attribute> attributes) {
 	Agent res = newAgent(id);
 	setAttributes(res, attributes);
 	return res;
@@ -754,7 +754,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return res;
     }
 
-    public Entity newEntity(QName id, List<Attribute> attributes) {
+    public Entity newEntity(QName id, Collection<Attribute> attributes) {
 	Entity res = newEntity(id);
 	setAttributes(res, attributes);
 	return res;
@@ -824,7 +824,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	}
 	return res;
     }
-    public HadMember newHadMember(QName c, List<QName> e) {
+    public HadMember newHadMember(QName c, Collection<QName> e) {
         EntityRef cid=(c==null)? null: newEntityRef(c);
         List<EntityRef> ll=new LinkedList<EntityRef>();
         for (QName q: e) {
@@ -1044,7 +1044,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return res;
     }
     
-    public Used newUsed(QName id, QName activity, QName entity, XMLGregorianCalendar time, List<Attribute> attributes) {
+    public Used newUsed(QName id, QName activity, QName entity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
    	ActivityRef aid = (activity==null)? null: newActivityRef(activity);
         EntityRef eid = (entity==null)? null: newEntityRef(entity);
    	Used res=newUsed(id,aid,null,eid);	
@@ -1100,7 +1100,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
                                                    QName a, 
                                                    QName ag, 
                                                    QName plan, 
-                                                   List<Attribute> attributes) {
+                                                   Collection<Attribute> attributes) {
 	ActivityRef aid=(a==null)? null: newActivityRef(a);
 	EntityRef eid=(plan==null)? null: newEntityRef(plan);
 	AgentRef agid=(ag==null)? null: newAgentRef(ag);
@@ -1136,7 +1136,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
 
     
-    public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,  List<Attribute> attributes) {
+    public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,  Collection<Attribute> attributes) {
         EntityRef eid=(e==null)? null : newEntityRef(e);
         AgentRef agid=(ag==null)? null : newAgentRef(ag);
         WasAttributedTo res=newWasAttributedTo(id, eid, agid);
@@ -1220,7 +1220,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return newWasDerivedFrom(stringToQName(id), aid1, aid2, aid, did1, did2);
     }
 
-    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1, QName a, QName g, QName u,  List<Attribute> attributes) {
+    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1, QName a, QName g, QName u,  Collection<Attribute> attributes) {
 	EntityRef eid1 = (e1==null)? null: newEntityRef(e1);
 	EntityRef eid2 = (e2==null)? null: newEntityRef(e2);
 	ActivityRef aid = (a==null)? null : newActivityRef(a);
@@ -1261,7 +1261,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return newWasEndedBy(stringToQName(id), aid, eid);
     }
     
-    public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger, QName ender, XMLGregorianCalendar time, List<Attribute> attributes) {
+    public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger, QName ender, XMLGregorianCalendar time, Collection<Attribute> attributes) {
    	ActivityRef aid = (activity==null)? null: newActivityRef(activity);
       	EntityRef eid = (trigger==null)? null: newEntityRef(trigger);
       	ActivityRef sid = (ender==null)? null: newActivityRef(ender);
@@ -1331,7 +1331,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return newWasGeneratedBy(stringToQName(id), aid, role, pid);
     }
     
-    public WasGeneratedBy newWasGeneratedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, List<Attribute> attributes) {
+    public WasGeneratedBy newWasGeneratedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
    	ActivityRef aid = (activity==null)? null: newActivityRef(activity);
    	EntityRef eid = (entity==null)? null: newEntityRef(entity);
    	WasGeneratedBy res=newWasGeneratedBy(id,eid,null,aid);	
@@ -1378,7 +1378,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
     
     
-    public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1, List<Attribute> attributes) {
+    public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes) {
         AnyRef aid2 = (a2==null) ? null: newAnyRef(a2);
         AnyRef aid1 = (a1==null) ? null: newAnyRef(a1);
         WasInfluencedBy res=newWasInfluencedBy(id,aid2,aid1);   
@@ -1440,7 +1440,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return newWasInformedBy(stringToQName(id), pid1, pid2);
     }
 
-    public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1, List<Attribute> attributes) {
+    public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes) {
         ActivityRef aid2 = (a2==null) ? null: newActivityRef(a2);
         ActivityRef aid1 = (a1==null) ? null: newActivityRef(a1);
         WasInformedBy res=newWasInformedBy(id,aid2,aid1);   
@@ -1472,7 +1472,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return newWasInvalidatedBy(stringToQName(id), eid, aid);
     }
     
-    public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, List<Attribute> attributes) {
+    public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
    	ActivityRef aid = (activity==null) ? null: newActivityRef(activity);
    	EntityRef eid = (entity==null)? null: newEntityRef(entity);
    	WasInvalidatedBy res=newWasInvalidatedBy(id,eid,aid);	
@@ -1511,7 +1511,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return newWasStartedBy(stringToQName(id), aid, eid);
     }
     
-    public WasStartedBy newWasStartedBy(QName id, QName activity, QName trigger, QName starter, XMLGregorianCalendar time, List<Attribute> attributes) {
+    public WasStartedBy newWasStartedBy(QName id, QName activity, QName trigger, QName starter, XMLGregorianCalendar time, Collection<Attribute> attributes) {
    	ActivityRef aid = (activity==null)? null: newActivityRef(activity);
       	EntityRef eid = (trigger==null)? null: newEntityRef(trigger);
       	ActivityRef sid = (starter==null)? null: newActivityRef(starter);
@@ -1541,7 +1541,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 
 
  
-    public void setAttributes(HasExtensibility res, List<Attribute> attributes) {
+    public void setAttributes(HasExtensibility res, Collection<Attribute> attributes) {
 	if (attributes==null) return;
 	HasType typ=(res instanceof HasType)? (HasType)res : null;
 	HasLocation loc=(res instanceof HasLocation)? (HasLocation)res : null;

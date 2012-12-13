@@ -106,21 +106,15 @@ public class JSONConstructor implements ModelConstructor {
 		return result;
 	}
 	
-	private Object convertTypedLiteral(String datatype, Object value) {
-		if (value instanceof InternationalizedString) {
-			InternationalizedString iString = (InternationalizedString)value;
-			return typedLiteral(iString.getValue(), null, iString.getLang());
-		}
-		else {
-			return typedLiteral((String)value, datatype, null);
-		}
-	}
-	
 	private Object[] convertAttribute(Attribute attr) {
 		String attrName = qnExport.qnameToString(attr.getElementName());
 		Object value = attr.getValue();
 		Object attrValue;
-		if (value instanceof InternationalizedString) {
+		if (value instanceof QName) {
+			// force type xsd:QName
+			attrValue = typedLiteral(qnExport.qnameToString((QName)value), "xsd:QName", null);
+		}
+		else if (value instanceof InternationalizedString) {
 			InternationalizedString iStr = (InternationalizedString)value;
 			String lang = iStr.getLang(); 
 			if (lang != null) {
@@ -134,7 +128,7 @@ public class JSONConstructor implements ModelConstructor {
 		}
 		else {
 			String datatype = qnExport.qnameToString(attr.getXsdType());
-			attrValue = typedLiteral(value, datatype, null);
+			attrValue = typedLiteral((String)value, datatype, null);
 		}
 		return tuple(attrName, attrValue);
 	}

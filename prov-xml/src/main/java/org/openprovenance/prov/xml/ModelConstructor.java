@@ -6,7 +6,7 @@ import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-/** An interface for constructing Java Beans for the PROV data model */
+/** An interface for constructing concrete representations of the PROV data model */
 
 public interface ModelConstructor {
     

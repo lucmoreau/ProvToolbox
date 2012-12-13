@@ -94,7 +94,7 @@ public class RoundTripFromJavaTest extends
 		// Class cast errors (ActivityOrAgentOrEntity)    Limitation of Elmo, I think this can be fixed by asserting triples without Elmo
 	}
 
-	public void NOtestInfluence3() throws JAXBException
+	public void testInfluence3() throws JAXBException
 	{
 		// Class cast errors (ActivityOrAgentOrEntity)
 	}

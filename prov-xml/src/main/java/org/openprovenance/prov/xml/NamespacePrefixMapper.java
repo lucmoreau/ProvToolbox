@@ -15,6 +15,9 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
     static final public String XML_NS="http://www.w3.org/XML/1998/namespace";
     static final public String PROV_PREFIX = "prov";
     static final public String XSD_PREFIX = "xsd";
+    
+    static final public String RDF_NS = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+    static final public String RDF_PREFIX = "rdf";
 
     private Hashtable<String,String> nss=null;
 

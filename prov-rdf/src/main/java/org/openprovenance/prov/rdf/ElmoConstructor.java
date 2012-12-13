@@ -33,7 +33,6 @@ import org.openprovenance.prov.xml.WasStartedBy;
 import org.openrdf.elmo.ElmoManager;
 import org.openrdf.elmo.sesame.SesameManager;
 import org.openrdf.model.Resource;
-import org.openrdf.model.impl.BNodeImpl;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.StatementImpl;
 import org.openrdf.model.impl.URIImpl;
@@ -41,30 +40,7 @@ import org.openrdf.model.impl.URIImpl;
 /**
  * A Converter to RDF
  */
-public class RdfConstructor implements ModelConstructor {
-    
-    public Hashtable<QName,QName> qualifiedInfluenceTable=new Hashtable<QName, QName>();
-    public Hashtable<QName,QName> influencerTable=new Hashtable<QName, QName>();
-    
-
-    public static QName newProvQName(String local) {
-	return new QName(NamespacePrefixMapper.PROV_NS, local, NamespacePrefixMapper.PROV_PREFIX);
-    }
-
-    public static QName newRdfQName(String local) {
-	return new QName(NamespacePrefixMapper.RDF_NS, local, NamespacePrefixMapper.RDF_PREFIX);
-    }
-    
-    
-    public static QName QNAME_PROVO_Influence=newProvQName("Influence");
-    public static QName QNAME_PROVO_influencer=newProvQName("influencer");
-    public static QName QNAME_PROVO_qualifiedInfluence=newProvQName("qualifiedInfluence");
-    public static QName QNAME_PROVO_wasInfluencedBy=newProvQName("wasInfluencedBy");
-    
-    
-    public static QName QNAME_RDF_TYPE=newRdfQName("type");
-
-    
+public class ElmoConstructor implements ModelConstructor {
     final ElmoManager manager;
 
     private Hashtable<String, String> namespaceTable = new Hashtable<String, String>();
@@ -73,9 +49,8 @@ public class RdfConstructor implements ModelConstructor {
         return namespaceTable;
     }
 
-    public RdfConstructor(ElmoManager manager) {
+    public ElmoConstructor(ElmoManager manager) {
         this.manager = manager;
-        initInfluenceTables();
     }
 
     @Override
@@ -330,12 +305,18 @@ public class RdfConstructor implements ModelConstructor {
                                               Collection<Attribute> attributes) {
 
 
-        @SuppressWarnings("unused")
-        QName u = addUnknownInfluence(id, qn2, qn1, attributes, QNAME_PROVO_Influence);
+        ActivityOrAgentOrEntity e1 = designateIfNotNull(qn1,
+                                                        ActivityOrAgentOrEntity.class);
+        ActivityOrAgentOrEntity e2 = designateIfNotNull(qn2,
+                                                        ActivityOrAgentOrEntity.class);
 
-        if ((binaryProp(id, qn2)) && (qn1 != null))
-            assertStatement(createObjectProperty(qn2, QNAME_PROVO_wasInfluencedBy, qn1));
-        
+
+        @SuppressWarnings("unused")
+        Influence u = addUnknownInfluence(id, e2, e1, attributes, Influence.class);
+
+        if ((binaryProp(id, e2)) && (e1 != null))
+            e2.getWasInfluencedBy().add(e1);
+
         return null;
     }
 
@@ -417,7 +398,8 @@ public class RdfConstructor implements ModelConstructor {
         System.out.println("$$$$$$$$$$$$ in startBundle");
         // TODO: bundle name does not seem to be interpreted according to the
         // prefix declared in bundle.
-        URIImpl uri = qnameToURI(bundleId);
+        URIImpl uri = new URIImpl(bundleId.getNamespaceURI()
+                                  + bundleId.getLocalPart());
         contexts.add(uri);
         if (bundleId != null) {
             ((SesameManager) manager).getConnection().setAddContexts(uri);
@@ -434,7 +416,7 @@ public class RdfConstructor implements ModelConstructor {
             return new URIImpl(NamespacePrefixMapper.XSD_HASH_NS
                     + qname.getLocalPart());
         } else {
-            return qnameToURI(qname);
+            return new URIImpl(qname.getNamespaceURI() + qname.getLocalPart());
 
         }
     }
@@ -453,24 +435,14 @@ public class RdfConstructor implements ModelConstructor {
         org.openrdf.model.Resource r = ((org.openrdf.elmo.sesame.roles.SesameEntity) infl)
                 .getSesameResource();
 
-        processAttributes(r, aAttrs);
-    }
-    
-    public void processAttributes(QName q,
-				  Collection<Attribute> attributes) {
-	processAttributes(qnameToURI(q), attributes);
-    }
-
-
-    public void processAttributes(org.openrdf.model.Resource r,
-				  Collection<Attribute> aAttrs) {
-	for (Attribute attr : aAttrs) {
+        for (Attribute attr : aAttrs) {
 
             QName pred = null;
+            QName type = null;
 
             LiteralImpl literalImpl = null;
 
-            QName type = attr.getXsdType();
+            type = attr.getXsdType();
 
             String value;
             if (attr.getValue() instanceof InternationalizedString) {
@@ -494,44 +466,16 @@ public class RdfConstructor implements ModelConstructor {
             }
             pred = attr.getElementName();
 
-            org.openrdf.model.Statement stmnt = createDataProperty(r, pred, literalImpl);
-            assertStatement(stmnt);
+            org.openrdf.model.Statement stmnt = new StatementImpl(r,
+                    new URIImpl(pred.getNamespaceURI() + pred.getLocalPart()),
+                    literalImpl);
+
+            try {
+                ((org.openrdf.elmo.sesame.SesameManager) manager)
+                        .getConnection().add(stmnt);
+            } catch (org.openrdf.repository.RepositoryException e) {
+            }
         }
-    }
-
-    public void assertStatement(org.openrdf.model.Statement stmnt) {
-	try {
-	    ((org.openrdf.elmo.sesame.SesameManager) manager)
-	            .getConnection().add(stmnt);
-	} catch (org.openrdf.repository.RepositoryException e) {
-	}
-    }
-
-    public StatementImpl createDataProperty(org.openrdf.model.Resource r,
-                                            QName pred, 
-                                            LiteralImpl literalImpl) {
-	return new StatementImpl(r,
-	                         qnameToURI(pred),
-	                         literalImpl);
-    }
-
-    public StatementImpl createObjectProperty(org.openrdf.model.Resource r,
-                                              QName pred, 
-                                              QName object) {
-	return new StatementImpl(r,
-	                         qnameToURI(pred),
-	                         qnameToURI(object));
-    }
-    public StatementImpl createObjectProperty(QName subject,
-                                              QName pred, 
-                                              QName object) {
-	return new StatementImpl(qnameToURI(subject),
-	                         qnameToURI(pred),
-	                         qnameToURI(object));
-    }
-
-    public URIImpl qnameToURI(QName qname) {
-	return new URIImpl(qname.getNamespaceURI() + qname.getLocalPart());
     }
 
     public <INFLUENCE, TYPE> INFLUENCE addEntityInfluence(QName qname, TYPE e2,
@@ -562,40 +506,25 @@ public class RdfConstructor implements ModelConstructor {
     }
 
 
-    public  QName addUnknownInfluence(QName infl,
-                                      QName subject,
-                                      QName object,
-                                      Collection<Attribute> attributes,
-                                      QName qualifiedClass) {
-        if ((infl != null)
-                || ((attributes != null) && !(attributes.isEmpty()))) {
-            infl = assertType(infl, qualifiedClass);
-            if (object != null) assertInfluencer(infl, object, qualifiedClass);
-            assertQualifiedInfluence(subject, infl, qualifiedClass);
-            processAttributes(infl, attributes);
+    public <INFLUENCE> INFLUENCE addUnknownInfluence(QName qname,
+                                                     ActivityOrAgentOrEntity e2,
+                                                     ActivityOrAgentOrEntity e1,
+                                                     Collection<Attribute> aAttrs,
+                                                     Class<INFLUENCE> cl) {
+
+        INFLUENCE infl = null;
+
+        if ((qname != null)
+                || ((aAttrs != null) && !(((List<?>) aAttrs).isEmpty()))) {
+            infl = designate(qname, cl);
+            Influence qi = (Influence) infl;
+            if (e1 != null)
+                qi.getInfluencers().add(e1);
+            addQualifiedInfluence(e2, infl);
+
+            processAttributes(qi, aAttrs);
         }
         return infl;
-    }
-
-    public void assertQualifiedInfluence(QName subject, QName infl, QName qualifiedClass) {
-	assertStatement(createObjectProperty(subject, 
-	                                     qualifiedInfluenceTable.get(qualifiedClass), 
-	                                     infl));	
-    }
-
-    public void assertInfluencer(QName infl, QName object, QName qualifiedClass) {
-	assertStatement(createObjectProperty(infl,
-	                                     influencerTable.get(qualifiedClass),
-	                                     object));	
-    }
-
-    public QName assertType(QName infl, QName qualifiedClass) {
-	// TODO: if infl==null, then should generate a blank node
-	Resource uri=new BNodeImpl("blank");
-	System.out.println("Resource is " + uri);
-	
-	assertStatement(createObjectProperty(infl, QNAME_RDF_TYPE, qualifiedClass));
-	return infl;
     }
 
     private void setTime(InstantaneousEvent infl, XMLGregorianCalendar time) {
@@ -657,11 +586,6 @@ public class RdfConstructor implements ModelConstructor {
         return infl;
     }
     
-     void initInfluenceTables() {
-	qualifiedInfluenceTable.put(QNAME_PROVO_Influence, QNAME_PROVO_qualifiedInfluence);
-	
-	influencerTable.put(QNAME_PROVO_Influence, QNAME_PROVO_influencer);
-    }
    
     // not pretty
 

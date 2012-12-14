@@ -47,6 +47,7 @@ public class RdfConstructor implements ModelConstructor {
     public Hashtable<QName,QName> qualifiedInfluenceTable=new Hashtable<QName, QName>();
     public Hashtable<QName,QName> influencerTable=new Hashtable<QName, QName>();
     public Hashtable<QName,QName> unqualifiedTable=new Hashtable<QName, QName>();
+    public Hashtable<QName,QName> otherTable=new Hashtable<QName, QName>();
     
 
     public static QName newProvQName(String local) {
@@ -79,6 +80,9 @@ public class RdfConstructor implements ModelConstructor {
     public static QName QNAME_PROVO_activity=newProvQName("activity");
     public static QName QNAME_PROVO_entity=newProvQName("entity");
     public static QName QNAME_PROVO_agent=newProvQName("agent");
+    public static QName QNAME_PROVO_hadActivity=newProvQName("hadActivity");
+    public static QName QNAME_PROVO_hadEntity=newProvQName("hadEntity");
+    public static QName QNAME_PROVO_hadPlan=newProvQName("hadPlan");
     
     public static QName QNAME_PROVO_Influence=newProvQName("Influence");
     public static QName QNAME_PROVO_qualifiedInfluence=newProvQName("qualifiedInfluence");
@@ -92,8 +96,55 @@ public class RdfConstructor implements ModelConstructor {
     public static QName QNAME_PROVO_qualifiedUsage=newProvQName("qualifiedUsage");
     public static QName QNAME_PROVO_used=newProvQName("used");
 
+    public static QName QNAME_PROVO_Invalidation=newProvQName("Invalidation");
+    public static QName QNAME_PROVO_qualifiedInvalidation=newProvQName("qualifiedInvalidation");
+    public static QName QNAME_PROVO_wasInvalidatedBy=newProvQName("wasInvalidatedBy");
     
+    public static QName QNAME_PROVO_Start=newProvQName("Start");
+    public static QName QNAME_PROVO_qualifiedStart=newProvQName("qualifiedStart");
+    public static QName QNAME_PROVO_wasStartedBy=newProvQName("wasStartedBy");
+
+    public static QName QNAME_PROVO_End=newProvQName("End");
+    public static QName QNAME_PROVO_qualifiedEnd=newProvQName("qualifiedEnd");
+    public static QName QNAME_PROVO_wasEndedBy=newProvQName("wasEndedBy");
+
+
     public static QName QNAME_RDF_TYPE=newRdfQName("type");
+    
+    void initInfluenceTables() {
+   	 qualifiedInfluenceTable.put(QNAME_PROVO_Influence, QNAME_PROVO_qualifiedInfluence);
+   	 qualifiedInfluenceTable.put(QNAME_PROVO_Generation, QNAME_PROVO_qualifiedGeneration);
+   	 qualifiedInfluenceTable.put(QNAME_PROVO_Usage, QNAME_PROVO_qualifiedUsage);
+   	 qualifiedInfluenceTable.put(QNAME_PROVO_Invalidation, QNAME_PROVO_qualifiedInvalidation);
+   	 qualifiedInfluenceTable.put(QNAME_PROVO_Start, QNAME_PROVO_qualifiedStart);
+   	 qualifiedInfluenceTable.put(QNAME_PROVO_End, QNAME_PROVO_qualifiedEnd);
+   	
+   	 influencerTable.put(QNAME_PROVO_Influence, QNAME_PROVO_influencer);
+   	 activityInfluence(QNAME_PROVO_Generation);
+   	 entityInfluence(QNAME_PROVO_Usage);
+   	 activityInfluence(QNAME_PROVO_Invalidation);
+   	 entityInfluence(QNAME_PROVO_Start);
+   	 entityInfluence(QNAME_PROVO_End);
+   	 
+   	 unqualifiedTable.put(QNAME_PROVO_Influence, QNAME_PROVO_wasInfluencedBy);
+   	 unqualifiedTable.put(QNAME_PROVO_Generation, QNAME_PROVO_wasGeneratedBy);
+   	 unqualifiedTable.put(QNAME_PROVO_Usage, QNAME_PROVO_used);
+   	 unqualifiedTable.put(QNAME_PROVO_Invalidation, QNAME_PROVO_wasInvalidatedBy);
+   	 unqualifiedTable.put(QNAME_PROVO_Start, QNAME_PROVO_wasStartedBy);
+  	 unqualifiedTable.put(QNAME_PROVO_End, QNAME_PROVO_wasEndedBy);
+  	 
+  	 otherTable.put(QNAME_PROVO_Start, QNAME_PROVO_hadActivity);
+  	 otherTable.put(QNAME_PROVO_End, QNAME_PROVO_hadActivity);
+   	 
+   }
+
+    void activityInfluence(QName name) {
+		influencerTable.put(name, QNAME_PROVO_activity);
+	}
+    void entityInfluence(QName name) {
+		influencerTable.put(name, QNAME_PROVO_entity);
+	}
+   
 
     
     final ElmoManager manager;
@@ -146,7 +197,7 @@ public class RdfConstructor implements ModelConstructor {
                         XMLGregorianCalendar time, Collection<Attribute> attributes) {
        
  	    @SuppressWarnings("unused")
-        QName u = addInfluence(id, activity, entity, time, attributes,
+        QName u = addInfluence(id, activity, entity, time, null, attributes,
                  QNAME_PROVO_Usage);
 
         return null;
@@ -160,46 +211,23 @@ public class RdfConstructor implements ModelConstructor {
 
 
         @SuppressWarnings("unused")
-        QName g = addInfluence(id, entity, activity, time, attributes,
+        QName g = addInfluence(id, entity, activity, time, null, attributes,
                 QNAME_PROVO_Generation);
-
-//        if ((binaryProp(id, entity)) && (activity != null))
-//            assertStatement(createObjectProperty(entity, QNAME_PROVO_wasGeneratedBy, activity));
 
         return null;
     }
-    public WasGeneratedBy OLDnewWasGeneratedBy(QName id, QName entity,
-            QName activity,
-            XMLGregorianCalendar time,
-            Collection<Attribute> attributes) {
-
-	Entity e2 = designateIfNotNull(entity, Entity.class);
-	Activity a1 = designateIfNotNull(activity, Activity.class);
-
-	@SuppressWarnings("unused")
-	Generation g = addActivityInfluence(id, e2, a1, time, attributes,
-            Generation.class);
-
-	if ((binaryProp(id, e2)) && (a1 != null))
-	e2.getWasGeneratedBy().add(a1);
-	return null;
-	}
-
+ 
 
     @Override
     public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity,
                                                 QName activity,
                                                 XMLGregorianCalendar time,
                                                 Collection<Attribute> attributes) {
-        Entity e2 = designateIfNotNull(entity, Entity.class);
-        Activity a1 = designateIfNotNull(activity, Activity.class);
 
         @SuppressWarnings("unused")
-        Invalidation g = addActivityInfluence(id, e2, a1, time, attributes,
-                                            Invalidation.class);
+        QName inv = addInfluence(id, entity, activity, time, null, attributes,
+                                 QNAME_PROVO_Invalidation);
 
-        if ((binaryProp(id, e2)) && (a1 != null))
-            e2.getWasInvalidatedBy().add(a1);
         return null;
     }
 
@@ -208,19 +236,10 @@ public class RdfConstructor implements ModelConstructor {
                                         QName trigger, QName starter,
                                         XMLGregorianCalendar time,
                                         Collection<Attribute> attributes) {
-
-        Entity e1 = designateIfNotNull(trigger, Entity.class);
-        Activity a2 = designateIfNotNull(activity, Activity.class);
-        Start s = addEntityInfluence(id, a2, e1, time, attributes, starter, Start.class);
-        
-        if (starter != null) {
-            Activity a3 = designateIfNotNull(starter, Activity.class);
-            s.getHadActivity().add(a3);
-        }
-        
-        if ((binaryProp(id, a2)) && (e1 != null))
-            a2.getWasStartedBy().add(e1);
-        
+    	
+        @SuppressWarnings("unused")
+        QName s = addInfluence(id, activity, trigger, time, starter, attributes,
+                QNAME_PROVO_Start);
 
         return null;
     }
@@ -229,22 +248,13 @@ public class RdfConstructor implements ModelConstructor {
     public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger,
                                     QName ender, XMLGregorianCalendar time,
                                     Collection<Attribute> attributes) {
-
-        Entity e1 = designateIfNotNull(trigger, Entity.class);
-        Activity a2 = designateIfNotNull(activity, Activity.class);
-        End s = addEntityInfluence(id, a2, e1, time, attributes, ender, End.class);
-        
-        if (ender != null) {
-            Activity a3 = designateIfNotNull(ender, Activity.class);
-            s.getHadActivity().add(a3);
-        }
-        
-        if ((binaryProp(id, a2)) && (e1 != null))
-            a2.getWasEndedBy().add(e1);
-        
-
+    	
+        @SuppressWarnings("unused")
+        QName e = addInfluence(id, activity, trigger, time, ender, attributes,
+                QNAME_PROVO_End);
 
         return null;
+
     }
 
     @Override
@@ -374,7 +384,7 @@ public class RdfConstructor implements ModelConstructor {
 
 
         @SuppressWarnings("unused")
-        QName u = addInfluence(id, qn2, qn1, null, attributes, QNAME_PROVO_Influence);
+        QName u = addInfluence(id, qn2, qn1, null, null, attributes, QNAME_PROVO_Influence);
 
 //        if ((binaryProp(id, qn2)) && (qn1 != null))
             //assertStatement(createObjectProperty(qn2, QNAME_PROVO_wasInfluencedBy, qn1));
@@ -623,7 +633,7 @@ public class RdfConstructor implements ModelConstructor {
     public  QName addInfluence(QName infl,
                                      QName subject,
                                       QName object,
-                                      XMLGregorianCalendar time, Collection<Attribute> attributes,
+                                      XMLGregorianCalendar time, QName other, Collection<Attribute> attributes,
                                       QName qualifiedClass) {
         if ((infl != null)
                 || ((attributes != null) && !(attributes.isEmpty()))) {
@@ -632,6 +642,7 @@ public class RdfConstructor implements ModelConstructor {
             if (subject!=null)
               assertQualifiedInfluence(subject, infl, qualifiedClass);
             if (time!=null) assertAtTime(infl,time);
+            if (other!=null) asserterOther(infl,other, qualifiedClass);
             processAttributes(infl, attributes);
         }
 
@@ -641,7 +652,11 @@ public class RdfConstructor implements ModelConstructor {
         return infl;
     }
 
-    public void assertAtTime(QName subject, XMLGregorianCalendar time) {
+    public void asserterOther(QName subject, QName other, QName qualifiedClass) {
+        assertStatement(createObjectProperty(subject, otherTable.get(qualifiedClass), other));		
+	}
+
+	public void assertAtTime(QName subject, XMLGregorianCalendar time) {
 		assertStatement(createDataProperty(subject,QNAME_PROVO_atTime,newLiteral(time)));
 		
 	}
@@ -734,29 +749,7 @@ public class RdfConstructor implements ModelConstructor {
         return infl;
     }
     
-     void initInfluenceTables() {
-    	 qualifiedInfluenceTable.put(QNAME_PROVO_Influence, QNAME_PROVO_qualifiedInfluence);
-    	 qualifiedInfluenceTable.put(QNAME_PROVO_Generation, QNAME_PROVO_qualifiedGeneration);
-    	 qualifiedInfluenceTable.put(QNAME_PROVO_Usage, QNAME_PROVO_qualifiedUsage);
-	
-    	 influencerTable.put(QNAME_PROVO_Influence, QNAME_PROVO_influencer);
-    	 activityInfluence(QNAME_PROVO_Generation);
-    	 entityInfluence(QNAME_PROVO_Usage);
-    	 
-    	 unqualifiedTable.put(QNAME_PROVO_Influence, QNAME_PROVO_wasInfluencedBy);
-    	 unqualifiedTable.put(QNAME_PROVO_Generation, QNAME_PROVO_wasGeneratedBy);
-    	 unqualifiedTable.put(QNAME_PROVO_Usage, QNAME_PROVO_used);
-	
-    	 
-    }
-
-     void activityInfluence(QName name) {
- 		influencerTable.put(name, QNAME_PROVO_activity);
- 	}
-     void entityInfluence(QName name) {
- 		influencerTable.put(name, QNAME_PROVO_entity);
- 	}
-    
+     
     // not pretty
 
     public <INFLUENCE, EFFECT> void addQualifiedInfluence(EFFECT e2, INFLUENCE g) {

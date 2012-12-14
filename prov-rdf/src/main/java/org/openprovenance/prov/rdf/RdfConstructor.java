@@ -42,7 +42,6 @@ public class RdfConstructor implements ModelConstructor {
     
  
     
-    final ElmoManager manager;
 
     private Hashtable<String, String> namespaceTable = new Hashtable<String, String>();
 
@@ -52,8 +51,7 @@ public class RdfConstructor implements ModelConstructor {
 
     final GraphBuilder gb;
     final Ontology onto;
-    public RdfConstructor(ElmoManager manager) {
-        this.manager = manager;
+    public RdfConstructor(ElmoManager manager) { // manager should be passed to graph builder and not this constructor
         this.onto=new Ontology();
         this.gb=new GraphBuilder(manager);
     }
@@ -323,19 +321,15 @@ public class RdfConstructor implements ModelConstructor {
     
     public void processAttributes(QName q,
 				  Collection<Attribute> attributes) {
-	processAttributes(gb.qnameToResource(q), attributes);
-    }
-
-
-    public void processAttributes(org.openrdf.model.Resource r,
-				  Collection<Attribute> aAttrs) {
-	for (Attribute attr : aAttrs) {
+    	org.openrdf.model.Resource r=gb.qnameToResource(q);
+	
+	for (Attribute attr : attributes) {
 
             
             LiteralImpl literalImpl = null;
 
             QName type = attr.getXsdType();
-            QName pred = attr.getElementName();
+            QName pred = attr.getElementName();  //FIXME: convert to XSD_HASH
 
             String value;
             if (attr.getValue() instanceof InternationalizedString) {
@@ -352,7 +346,7 @@ public class RdfConstructor implements ModelConstructor {
                 } else {
                     qnAsString = qn.getPrefix() + ":" + qn.getLocalPart();
                 }
-                if (true) {
+                if (true) { //That's here the code to generate resource or literal.
                   literalImpl = new LiteralImpl(qnAsString, gb.qnameToURI(type));
                   gb.assertStatement(gb.createDataProperty(r, pred, literalImpl));
                 } else {
@@ -484,17 +478,6 @@ public class RdfConstructor implements ModelConstructor {
     }
 
   
-
-    public <T> T designateIfNotNull(QName qname, Class<T> cl) {
-        if (qname == null)
-            return null;
-        return designate(qname, cl);
-    }
-
-    public <T> T designate(QName qname, Class<T> cl) {
-
-        return manager.designate(qname, cl);
-    }
 
     public boolean binaryProp(Object id, Object subject) {
         return id == null && subject != null;

@@ -76,5 +76,31 @@ public class Utility {
 	rHelper.dumpToRDF(filename, (SesameManager) manager, format, contexts,
 			  rdfc.getNamespaceTable());
     }
+    
+    public void dumpRDFWithElmo(ProvFactory pFactory, Document document,
+			RDFFormat format, String filename) throws Exception {
+	RepositoryHelper rHelper = new RepositoryHelper();
+	ElmoModule module = new ElmoModule();
+	rHelper.registerConcepts(module);
+	ElmoManagerFactory factory = new SesameManagerFactory(module);
+	ElmoManager manager = factory.createElmoManager();
+
+	ElmoConstructor rdfc = new ElmoConstructor(manager);
+	rdfc.getNamespaceTable().putAll(document.getNss());
+	rdfc.getNamespaceTable().put("xsd", "http://www.w3.org/2001/XMLSchema#");
+	
+	//rdfc.getNamespaceTable().put("", "http://x.org/foo#"); //TODO: this is hack, I need to retrieve this value somewhere
+	//rdfc.getNamespaceTable().put("_", "http://x.org/bar#");
+
+	BeanTraversal bt = new BeanTraversal(rdfc,pFactory, new ValueConverter(pFactory));
+
+	bt.convert(document);
+	
+        List<Resource> contexts=rdfc.contexts;
+
+	//System.out.println("namespaces " + rdfc.getNamespaceTable());
+	rHelper.dumpToRDF(filename, (SesameManager) manager, format, contexts,
+			  rdfc.getNamespaceTable());
+    }
 
 }

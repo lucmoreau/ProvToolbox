@@ -54,9 +54,10 @@ public class RoundTripFromJavaTest extends
 	@Override
 	public boolean checkTest(String name)
 	{
-		if (name.endsWith("-S" + extension()))
+		if (name.endsWith("generation6-S" + extension())
+			|| name.endsWith("usage6-S" + extension()))
 		{
-			return false;
+			return false; 
 		}
 		return true;
 	}

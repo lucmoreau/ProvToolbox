@@ -54,22 +54,8 @@ public class RdfConstructor implements ModelConstructor {
 	return new QName(NamespacePrefixMapper.PROV_NS, local, NamespacePrefixMapper.PROV_PREFIX);
     }
 
-    public static QName newToolboxQName(String local) {
-	return new QName(NamespacePrefixMapper.TOOLBOX_NS, local, "_");
-    }
-    
-    static int blankCounter=0;
-    
-    QName newBlankName() {
-    	blankCounter++;
-    	return newToolboxQName("blank" + blankCounter);
-    }
-	boolean isBlankName(QName name) {
-		return name.getNamespaceURI().equals(NamespacePrefixMapper.TOOLBOX_NS)
-				&& name.getPrefix().equals("_");
-	}
+   
 	
-    
     public static QName newRdfQName(String local) {
 	return new QName(NamespacePrefixMapper.RDF_NS, local, NamespacePrefixMapper.RDF_PREFIX);
     }
@@ -204,9 +190,11 @@ public class RdfConstructor implements ModelConstructor {
         return namespaceTable;
     }
 
+    final GraphBuilder gb;
     public RdfConstructor(ElmoManager manager) {
         this.manager = manager;
         initInfluenceTables();
+        this.gb=new GraphBuilder(manager);
     }
 
     @Override
@@ -321,10 +309,10 @@ public class RdfConstructor implements ModelConstructor {
         if (der!=null) { //FIXME: a scruffy derivation could just have generation and usage, but der==null (no qualified derivation found
         	// since generation and usage are not taken into account.
           if (generation != null) {
-             assertStatement(createObjectProperty(der, QNAME_PROVO_hadGeneration, generation));		
+             gb.assertStatement(gb.createObjectProperty(der, QNAME_PROVO_hadGeneration, generation));		
           }
          if (usage != null) {
-             assertStatement(createObjectProperty(der, QNAME_PROVO_hadUsage, usage));		
+             gb.assertStatement(gb.createObjectProperty(der, QNAME_PROVO_hadUsage, usage));		
           }
         }
    
@@ -392,7 +380,7 @@ public class RdfConstructor implements ModelConstructor {
     public AlternateOf newAlternateOf(QName entity2, QName entity1) {
 
     	if ((entity2!=null) && (entity1!=null))
-            assertStatement(createObjectProperty(entity2, QNAME_PROVO_alternateOf, entity1));		
+            gb.assertStatement(gb.createObjectProperty(entity2, QNAME_PROVO_alternateOf, entity1));		
  
     	return null;
     }
@@ -402,7 +390,7 @@ public class RdfConstructor implements ModelConstructor {
     	
     	
        	if ((entity2!=null) && (entity1!=null))
-            assertStatement(createObjectProperty(entity2, QNAME_PROVO_specializationOf, entity1));		
+            gb.assertStatement(gb.createObjectProperty(entity2, QNAME_PROVO_specializationOf, entity1));		
 
         return null;
     }
@@ -412,9 +400,9 @@ public class RdfConstructor implements ModelConstructor {
 
 
        	if ((entity2!=null) && (entity1!=null))
-            assertStatement(createObjectProperty(entity2, QNAME_PROVO_mentionOf, entity1));		
+            gb.assertStatement(gb.createObjectProperty(entity2, QNAME_PROVO_mentionOf, entity1));		
        	if ((entity2!=null) && (b!=null))
-            assertStatement(createObjectProperty(entity2, QNAME_PROVO_asInBundle, b));		
+            gb.assertStatement(gb.createObjectProperty(entity2, QNAME_PROVO_asInBundle, b));		
 
         return null;
     }
@@ -452,7 +440,7 @@ public class RdfConstructor implements ModelConstructor {
         if (namespaces != null) {
             getNamespaceTable().putAll(namespaces);
         }
-        ((SesameManager) manager).getConnection().setAddContexts();
+        gb.setContext();
     }
 
     @Override
@@ -460,12 +448,14 @@ public class RdfConstructor implements ModelConstructor {
         System.out.println("$$$$$$$$$$$$ in startBundle");
         // TODO: bundle name does not seem to be interpreted according to the
         // prefix declared in bundle.
-        URIImpl uri = qnameToURI(bundleId);
+        URIImpl uri = gb.qnameToURI(bundleId);
         contexts.add(uri);
         if (bundleId != null) {
-            ((SesameManager) manager).getConnection().setAddContexts(uri);
+            gb.setContext(uri);
         }
     }
+
+
 
  
 
@@ -492,7 +482,7 @@ public class RdfConstructor implements ModelConstructor {
     
     public void processAttributes(QName q,
 				  Collection<Attribute> attributes) {
-	processAttributes(qnameToResource(q), attributes);
+	processAttributes(gb.qnameToResource(q), attributes);
     }
 
 
@@ -520,106 +510,19 @@ public class RdfConstructor implements ModelConstructor {
                 } else {
                     qnAsString = qn.getPrefix() + ":" + qn.getLocalPart();
                 }
-                literalImpl = new LiteralImpl(qnAsString, qnameToURI(type));
+                literalImpl = new LiteralImpl(qnAsString, gb.qnameToURI(type));
 
             } else {
                 value = attr.getValue().toString();
-                literalImpl = new LiteralImpl(value, qnameToURI(type));
+                literalImpl = new LiteralImpl(value, gb.qnameToURI(type));
             }
             pred = attr.getElementName();
 
-            org.openrdf.model.Statement stmnt = createDataProperty(r, pred, literalImpl);
-            assertStatement(stmnt);
+            gb.assertStatement(gb.createDataProperty(r, pred, literalImpl));
         }
     }
 
-    public void assertStatement(org.openrdf.model.Statement stmnt) {
-	try {
-	    ((org.openrdf.elmo.sesame.SesameManager) manager)
-	            .getConnection().add(stmnt);
-	} catch (org.openrdf.repository.RepositoryException e) {
-	}
-    }
-
-    public StatementImpl createDataProperty(org.openrdf.model.Resource r,
-                                            QName pred, 
-                                            LiteralImpl literalImpl) {
-	return new StatementImpl(r,
-	                         qnameToURI(pred),
-	                         literalImpl);
-    }
-    public StatementImpl createDataProperty(QName subject,
-            QName pred, 
-            LiteralImpl literalImpl) {
-    	return createDataProperty(qnameToResource(subject), pred, literalImpl);
-    }	
-
-    public StatementImpl createObjectProperty(org.openrdf.model.Resource r,
-                                              QName pred, 
-                                              QName object) {
-	return new StatementImpl(r,
-	                         qnameToURI(pred),
-	                         qnameToURI(object));
-    }
-    public StatementImpl createObjectProperty(QName subject,
-                                              QName pred, 
-                                              QName object) {
-	return new StatementImpl(qnameToResource(subject),
-	                         qnameToURI(pred),
-	                         qnameToResource(object));
-    }
-
-    
-    private URIImpl qnameToURI(QName qname) {
-        if (qname.getNamespaceURI().equals(NamespacePrefixMapper.XSD_NS)) {
-            return new URIImpl(NamespacePrefixMapper.XSD_HASH_NS
-                    + qname.getLocalPart());
-        } else {
-            return new URIImpl(qname.getNamespaceURI() + qname.getLocalPart());
-
-        }
-    }
-    private Resource qnameToResource(QName qname) {
-        if (qname.getNamespaceURI().equals(NamespacePrefixMapper.XSD_NS)) {
-            return new URIImpl(NamespacePrefixMapper.XSD_HASH_NS
-                    + qname.getLocalPart());
-        } if (isBlankName(qname)) {
-        	return new BNodeImpl(qname.getLocalPart());
-        } else {
-            return new URIImpl(qname.getNamespaceURI() + qname.getLocalPart());
-
-        }
-    }
-
-
-    public <INFLUENCE, TYPE> INFLUENCE addEntityInfluence(QName qname, TYPE e2,
-                                                          Entity e1,
-                                                          XMLGregorianCalendar time,
-                                                          Collection<Attribute> aAttrs,
-                                                          Object other,
-                                                          Class<INFLUENCE> cl) {
-
-        INFLUENCE infl = null;
-
-        if ((qname != null) || (time != null)
-                || ((aAttrs != null) && !(((List<?>) aAttrs).isEmpty()))
-                || (other != null)) {
-            infl = designate(qname, cl); // if qname is null, create an blank
-                                         // node
-            EntityInfluence qi = (EntityInfluence) infl;
-            if (e1 != null)
-                qi.getEntities().add(e1);
-            addQualifiedInfluence(e2, infl);
-
-            if (time != null) {
-                setTime((InstantaneousEvent) infl, time);
-            }
-            processAttributes(qi,  aAttrs);
-        }
-        return infl;
-    }
-
-
+   
     public  QName addInfluence(QName infl,
                                      QName subject,
                                       QName object,
@@ -639,46 +542,46 @@ public class RdfConstructor implements ModelConstructor {
         }
 
         if ((binaryProp(infl, subject)) && (object != null))
-            assertStatement(createObjectProperty(subject, unqualifiedTable.get(qualifiedClass), object));
+            gb.assertStatement(gb.createObjectProperty(subject, unqualifiedTable.get(qualifiedClass), object));
 
         return infl;
     }
 
     public void asserterOther(QName subject, QName other, QName qualifiedClass) {
-        assertStatement(createObjectProperty(subject, otherTable.get(qualifiedClass), other));		
+        gb.assertStatement(gb.createObjectProperty(subject, otherTable.get(qualifiedClass), other));		
 	}
 
 	public void assertAtTime(QName subject, XMLGregorianCalendar time) {
-		assertStatement(createDataProperty(subject,QNAME_PROVO_atTime,newLiteral(time)));
+		gb.assertStatement(gb.createDataProperty(subject,QNAME_PROVO_atTime,newLiteral(time)));
 		
 	}
 
 	private LiteralImpl newLiteral(XMLGregorianCalendar time) {
-		return new LiteralImpl(time.toString(), qnameToURI(ValueConverter.QNAME_XSD_HASH_DATETIME));
+		return new LiteralImpl(time.toString(), gb.qnameToURI(ValueConverter.QNAME_XSD_HASH_DATETIME));
 	}
 
 	public void assertQualifiedInfluence(QName subject, QName infl, QName qualifiedClass) {
-	assertStatement(createObjectProperty(subject, 
+	gb.assertStatement(gb.createObjectProperty(subject, 
 	                                     qualifiedInfluenceTable.get(qualifiedClass), 
 	                                     infl));	
     }
 
     public void assertInfluencer(QName infl, QName object, QName qualifiedClass) {
-	assertStatement(createObjectProperty(infl,
+	gb.assertStatement(gb.createObjectProperty(infl,
 	                                     influencerTable.get(qualifiedClass),
 	                                     object));	
     }
-	
+    
     
     public QName assertType(QName infl, QName qualifiedClass) {
     	if (infl==null) {
-    		infl=newBlankName();
+    		infl=gb.newBlankName();
     		//Resource uri=new BNodeImpl(infl.getLocalPart());
-//    		assertStatement(createObjectProperty(uri, QNAME_RDF_TYPE, qualifiedClass));
+//    		gb.assertStatement(gb.createObjectProperty(uri, QNAME_RDF_TYPE, qualifiedClass));
 //    	} else {
-//    		assertStatement(createObjectProperty(infl, QNAME_RDF_TYPE, qualifiedClass));
+//    		gb.assertStatement(gb.createObjectProperty(infl, QNAME_RDF_TYPE, qualifiedClass));
     	}
-    	assertStatement(createObjectProperty(infl, QNAME_RDF_TYPE, qualifiedClass));
+    	gb.assertStatement(gb.createObjectProperty(infl, QNAME_RDF_TYPE, qualifiedClass));
 		return infl;
     }
 
@@ -689,62 +592,8 @@ public class RdfConstructor implements ModelConstructor {
         }
     }
 
-    public <INFLUENCE, TYPE> INFLUENCE addActivityInfluence(QName qname, TYPE a2,
-                                                               Activity a1,
-                                                               XMLGregorianCalendar time,
-                                                               Collection<Attribute> aAttrs,
-                                                               Class<INFLUENCE> cl) {
-
-           INFLUENCE infl = null;
-
-           if ((qname != null) || (time != null)
-                   || ((aAttrs != null) && !(aAttrs.isEmpty()))) {
-               infl = designate(qname, cl);
-               ActivityInfluence qi = (ActivityInfluence) infl;
-               if (a1 != null)
-                   qi.getActivities().add(a1);
-               addQualifiedInfluence(a2, infl);
-
-               if (time != null) {
-                   setTime((InstantaneousEvent) infl, time);
-               }
-
-               processAttributes(qi,  aAttrs);
-           }
-           return infl;
-       }
-    
-    
-
-    public <INFLUENCE, TYPE> INFLUENCE addAgentInfluence(QName qname, TYPE e2,
-                                                         Agent a1, XMLGregorianCalendar time,
-                                                         Collection<Attribute> aAttrs,
-                                                         Object other,
-                                                         Class<INFLUENCE> cl) {
-
-        INFLUENCE infl = null;
-
-        if ((qname != null) || (time != null)
-                || ((aAttrs != null) && !(((List<?>) aAttrs).isEmpty()))
-                || (other != null)) {
-            infl = designate(qname, cl);
-            AgentInfluence qi = (AgentInfluence) infl;
-            if (a1 != null)
-                qi.getAgents().add(a1);
-            addQualifiedInfluence(e2, infl);
-
-            if (time != null) {
-                setTime((InstantaneousEvent) infl, time);
-            }
-            processAttributes(qi,  aAttrs);
-        }
-        return infl;
-    }
-    
-     
-    // not pretty
-
-    public <INFLUENCE, EFFECT> void addQualifiedInfluence(EFFECT e2, INFLUENCE g) {
+  
+    public <INFLUENCE, EFFECT> void DELETEaddQualifiedInfluence(EFFECT e2, INFLUENCE g) {
         if ((g != null) && (e2 != null)) {
             if (g instanceof Generation) {
                 ((Entity) e2).getQualifiedGeneration().add((Generation) g);

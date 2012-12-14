@@ -58,7 +58,16 @@ public class RoundTripFromJavaTest extends
 		    || name.endsWith("invalidation6-S" + extension())
 			|| name.endsWith("usage6-S" + extension())
 			|| name.endsWith("start9-S" + extension())
-			|| name.endsWith("end9-S" + extension()))
+			|| name.endsWith("end9-S" + extension())
+			|| name.endsWith("attribution5-S" + extension())
+			|| name.endsWith("delegation5-S" + extension())
+			|| name.endsWith("association5-S" + extension())
+			|| name.endsWith("communication4-S" + extension())
+			|| name.endsWith("specialization1-S" + extension())
+			|| name.endsWith("alternate1-S" + extension())
+			|| name.endsWith("mention1-S" + extension())
+			|| name.endsWith("mention2-S" + extension())
+			)
 		{
 			return false; 
 		}

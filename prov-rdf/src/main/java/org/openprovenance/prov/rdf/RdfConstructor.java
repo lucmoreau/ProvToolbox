@@ -83,6 +83,9 @@ public class RdfConstructor implements ModelConstructor {
     public static QName QNAME_PROVO_hadActivity=newProvQName("hadActivity");
     public static QName QNAME_PROVO_hadEntity=newProvQName("hadEntity");
     public static QName QNAME_PROVO_hadPlan=newProvQName("hadPlan");
+    public static QName QNAME_PROVO_hadGeneration=newProvQName("hadGeneration");
+    public static QName QNAME_PROVO_hadUsage=newProvQName("hadUsage");
+
     
     public static QName QNAME_PROVO_Influence=newProvQName("Influence");
     public static QName QNAME_PROVO_qualifiedInfluence=newProvQName("qualifiedInfluence");
@@ -108,6 +111,32 @@ public class RdfConstructor implements ModelConstructor {
     public static QName QNAME_PROVO_qualifiedEnd=newProvQName("qualifiedEnd");
     public static QName QNAME_PROVO_wasEndedBy=newProvQName("wasEndedBy");
 
+    public static QName QNAME_PROVO_Association=newProvQName("Association");
+    public static QName QNAME_PROVO_qualifiedAssociation=newProvQName("qualifiedAssociation");
+    public static QName QNAME_PROVO_wasAssociatedWith=newProvQName("wasAssociatedWith");
+
+    public static QName QNAME_PROVO_Attribution=newProvQName("Attribution");
+    public static QName QNAME_PROVO_qualifiedAttribution=newProvQName("qualifiedAttribution");
+    public static QName QNAME_PROVO_wasAttributedTo=newProvQName("wasAttributedTo");
+
+    public static QName QNAME_PROVO_Delegation=newProvQName("Delegation");
+    public static QName QNAME_PROVO_qualifiedDelegation=newProvQName("qualifiedDelegation");
+    public static QName QNAME_PROVO_actedOnBehalfOf=newProvQName("actedOnBehalfOf");
+
+    public static QName QNAME_PROVO_Derivation=newProvQName("Derivation");
+    public static QName QNAME_PROVO_qualifiedDerivation=newProvQName("qualifiedDerivation");
+    public static QName QNAME_PROVO_wasDerivedFrom=newProvQName("wasDerivedFrom");
+
+    public static QName QNAME_PROVO_Communication=newProvQName("Communication");
+    public static QName QNAME_PROVO_qualifiedCommunication=newProvQName("qualifiedCommunication");
+    public static QName QNAME_PROVO_wasInformedBy=newProvQName("wasInformedBy");
+    
+    public static QName QNAME_PROVO_specializationOf=newProvQName("specializationOf");
+    public static QName QNAME_PROVO_alternateOf=newProvQName("alternateOf");
+    public static QName QNAME_PROVO_mentionOf=newProvQName("mentionOf");
+    public static QName QNAME_PROVO_asInBundle=newProvQName("asInBundle");
+    public static QName QNAME_PROVO_hadMember=newProvQName("hadMember");
+
 
     public static QName QNAME_RDF_TYPE=newRdfQName("type");
     
@@ -118,6 +147,11 @@ public class RdfConstructor implements ModelConstructor {
    	 qualifiedInfluenceTable.put(QNAME_PROVO_Invalidation, QNAME_PROVO_qualifiedInvalidation);
    	 qualifiedInfluenceTable.put(QNAME_PROVO_Start, QNAME_PROVO_qualifiedStart);
    	 qualifiedInfluenceTable.put(QNAME_PROVO_End, QNAME_PROVO_qualifiedEnd);
+   	 qualifiedInfluenceTable.put(QNAME_PROVO_Association, QNAME_PROVO_qualifiedAssociation);
+   	 qualifiedInfluenceTable.put(QNAME_PROVO_Attribution, QNAME_PROVO_qualifiedAttribution);
+   	 qualifiedInfluenceTable.put(QNAME_PROVO_Delegation, QNAME_PROVO_qualifiedDelegation);
+   	 qualifiedInfluenceTable.put(QNAME_PROVO_Derivation, QNAME_PROVO_qualifiedDerivation);
+   	 qualifiedInfluenceTable.put(QNAME_PROVO_Communication, QNAME_PROVO_qualifiedCommunication);
    	
    	 influencerTable.put(QNAME_PROVO_Influence, QNAME_PROVO_influencer);
    	 activityInfluence(QNAME_PROVO_Generation);
@@ -125,6 +159,11 @@ public class RdfConstructor implements ModelConstructor {
    	 activityInfluence(QNAME_PROVO_Invalidation);
    	 entityInfluence(QNAME_PROVO_Start);
    	 entityInfluence(QNAME_PROVO_End);
+   	 agentInfluence(QNAME_PROVO_Association);
+   	 agentInfluence(QNAME_PROVO_Attribution);
+   	 agentInfluence(QNAME_PROVO_Delegation);
+   	 entityInfluence(QNAME_PROVO_Derivation);
+   	 activityInfluence(QNAME_PROVO_Communication);
    	 
    	 unqualifiedTable.put(QNAME_PROVO_Influence, QNAME_PROVO_wasInfluencedBy);
    	 unqualifiedTable.put(QNAME_PROVO_Generation, QNAME_PROVO_wasGeneratedBy);
@@ -132,10 +171,17 @@ public class RdfConstructor implements ModelConstructor {
    	 unqualifiedTable.put(QNAME_PROVO_Invalidation, QNAME_PROVO_wasInvalidatedBy);
    	 unqualifiedTable.put(QNAME_PROVO_Start, QNAME_PROVO_wasStartedBy);
   	 unqualifiedTable.put(QNAME_PROVO_End, QNAME_PROVO_wasEndedBy);
+  	 unqualifiedTable.put(QNAME_PROVO_Association, QNAME_PROVO_wasAssociatedWith);
+  	 unqualifiedTable.put(QNAME_PROVO_Attribution, QNAME_PROVO_wasAttributedTo);
+  	 unqualifiedTable.put(QNAME_PROVO_Delegation, QNAME_PROVO_actedOnBehalfOf);
+  	 unqualifiedTable.put(QNAME_PROVO_Derivation, QNAME_PROVO_wasDerivedFrom);
+  	 unqualifiedTable.put(QNAME_PROVO_Communication, QNAME_PROVO_wasInformedBy);
   	 
   	 otherTable.put(QNAME_PROVO_Start, QNAME_PROVO_hadActivity);
   	 otherTable.put(QNAME_PROVO_End, QNAME_PROVO_hadActivity);
-   	 
+  	 otherTable.put(QNAME_PROVO_Derivation, QNAME_PROVO_hadActivity);
+  	 otherTable.put(QNAME_PROVO_Association, QNAME_PROVO_hadPlan);
+  	 otherTable.put(QNAME_PROVO_Delegation, QNAME_PROVO_hadActivity);
    }
 
     void activityInfluence(QName name) {
@@ -143,6 +189,9 @@ public class RdfConstructor implements ModelConstructor {
 	}
     void entityInfluence(QName name) {
 		influencerTable.put(name, QNAME_PROVO_entity);
+	}
+    void agentInfluence(QName name) {
+		influencerTable.put(name, QNAME_PROVO_agent);
 	}
    
 
@@ -262,39 +311,22 @@ public class RdfConstructor implements ModelConstructor {
                                             QName activity, QName generation,
                                             QName usage,
                                             Collection<Attribute> attributes) {
+    	
+        @SuppressWarnings("unused")
+        QName der = addInfluence(id, entity2, entity1, null, activity, attributes,
+                                 QNAME_PROVO_Derivation);
 
-        Entity e2 = designateIfNotNull(entity2, Entity.class);
-        Entity e1 = designateIfNotNull(entity1, Entity.class);
-
-        QName other = activity;
-        if (usage != null) {
-            other = usage;
-        } else {
-            if (generation != null)
-                other = generation;
+  
+  
+        if (der!=null) { //FIXME: a scruffy derivation could just have generation and usage, but der==null (no qualified derivation found
+        	// since generation and usage are not taken into account.
+          if (generation != null) {
+             assertStatement(createObjectProperty(der, QNAME_PROVO_hadGeneration, generation));		
+          }
+         if (usage != null) {
+             assertStatement(createObjectProperty(der, QNAME_PROVO_hadUsage, usage));		
+          }
         }
-
-        Derivation d = addEntityInfluence(id, e2, e1, null, attributes, other,
-                                          Derivation.class);
-
-        if (d != null) {
-            if (generation != null) {
-                Generation g5 = designateIfNotNull(generation, Generation.class);
-                d.getHadGeneration().add(g5);
-            }
-            if (usage != null) {
-                Usage u4 = designateIfNotNull(usage, Usage.class);
-                d.getHadUsage().add(u4);
-            }
-            if (activity != null) {
-                Activity a3 = designateIfNotNull(activity, Activity.class);
-                d.getHadActivity().add(a3);
-            }
-        }
-
-        if ((binaryProp(id, e2)) && (e1 != null))
-            e2.getWasDerivedFrom().add(e1);
-
    
         return null;
     }
@@ -303,23 +335,12 @@ public class RdfConstructor implements ModelConstructor {
     public WasAssociatedWith newWasAssociatedWith(QName id, QName a, QName ag,
                                                   QName plan,
                                                   Collection<Attribute> attributes) {
-        
+    	
+      	
+        @SuppressWarnings("unused")
+        QName d = addInfluence(id, a, ag, null, plan, attributes,
+                QNAME_PROVO_Association);
 
-        Activity a2 = designateIfNotNull(a, Activity.class);
-        Agent ag1 = designateIfNotNull(ag, Agent.class);
-
-        Association assoc = addAgentInfluence(id, a2, ag1, null, attributes, plan,
-                                              Association.class);
-
-        if ((plan != null) && (assoc != null)) {
-            Plan pl = (Plan) designateIfNotNull(plan, Plan.class);
-            // will declare it as Plan if
-            // not alreadydone
-            assoc.getHadPlan().add(pl);
-        }
-
-        if ((binaryProp(id, a2)) && (ag1 != null))
-            a2.getWasAssociatedWith().add(ag1);
 
         return null;
     }
@@ -327,16 +348,10 @@ public class RdfConstructor implements ModelConstructor {
     @Override
     public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,
                                               Collection<Attribute> attributes) {
-
-        Entity e2 = designateIfNotNull(e, Entity.class);
-        Agent a1 = designateIfNotNull(ag, Agent.class);
-
         @SuppressWarnings("unused")
-        Attribution g = addAgentInfluence(id, e2, a1, null, attributes, null,
-                                          Attribution.class);
+        QName a = addInfluence(id, e, ag, null, null, attributes,
+                QNAME_PROVO_Attribution);
 
-        if ((binaryProp(id, e2)) && (a1 != null))
-            e2.getWasAttributedTo().add(a1);
         return null;
     }
 
@@ -344,36 +359,20 @@ public class RdfConstructor implements ModelConstructor {
     public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName agent2, QName agent1,
                                               QName a,
                                               Collection<Attribute> attributes) {
+    	
+        @SuppressWarnings("unused")
+        QName d = addInfluence(id, agent2, agent1, null, a, attributes,
+                QNAME_PROVO_Delegation);
 
-        Agent ag2 = designateIfNotNull(agent2, Agent.class);
-        Agent ag1 = designateIfNotNull(agent1, Agent.class);
-
-        Delegation g = addAgentInfluence(id, ag2, ag1, null, attributes, a,
-                                         Delegation.class);
-
-        if (a != null) {
-            Activity a3 = designateIfNotNull(a, Activity.class);
-            g.getHadActivity().add(a3);
-        }
-
-        if ((binaryProp(id, ag2)) && (ag1 != null))
-            ag2.getActedOnBehalfOf().add(ag1);
         return null;
     }
 
     @Override
     public WasInformedBy newWasInformedBy(QName id, QName activity2, QName activity1,
                                           Collection<Attribute> attributes) {
-
-        Activity a2 = designateIfNotNull(activity2, Activity.class);
-        Activity a1 = designateIfNotNull(activity1, Activity.class);
-
+    	
         @SuppressWarnings("unused")
-        Communication g = addActivityInfluence(id, a2, a1, null, attributes,
-                                               Communication.class);
-
-        if ((binaryProp(id, a2)) && (a1 != null))
-            a2.getWasInformedBy().add(a1);
+        QName com = addInfluence(id, activity2, activity1, null, null, attributes, QNAME_PROVO_Communication);
 
         return null;
     }
@@ -385,9 +384,6 @@ public class RdfConstructor implements ModelConstructor {
 
         @SuppressWarnings("unused")
         QName u = addInfluence(id, qn2, qn1, null, null, attributes, QNAME_PROVO_Influence);
-
-//        if ((binaryProp(id, qn2)) && (qn1 != null))
-            //assertStatement(createObjectProperty(qn2, QNAME_PROVO_wasInfluencedBy, qn1));
         
         return null;
     }
@@ -395,19 +391,19 @@ public class RdfConstructor implements ModelConstructor {
     @Override
     public AlternateOf newAlternateOf(QName entity2, QName entity1) {
 
-        Entity e2 = designateIfNotNull(entity2, Entity.class);
-        Entity e1 = designateIfNotNull(entity1, Entity.class);
-
-        e2.getAlternateOf().add(e1);
-        return null;
+    	if ((entity2!=null) && (entity1!=null))
+            assertStatement(createObjectProperty(entity2, QNAME_PROVO_alternateOf, entity1));		
+ 
+    	return null;
     }
 
     @Override
     public SpecializationOf newSpecializationOf(QName entity2, QName entity1) {
-        Entity e2 = designateIfNotNull(entity2, Entity.class);
-        Entity e1 = designateIfNotNull(entity1, Entity.class);
+    	
+    	
+       	if ((entity2!=null) && (entity1!=null))
+            assertStatement(createObjectProperty(entity2, QNAME_PROVO_specializationOf, entity1));		
 
-        e2.getSpecializationOf().add(e1);
         return null;
     }
 
@@ -415,16 +411,10 @@ public class RdfConstructor implements ModelConstructor {
     public MentionOf newMentionOf(QName entity2, QName entity1, QName b) {
 
 
-        Entity e2 = designateIfNotNull(entity2, Entity.class);
-        Entity e1 = designateIfNotNull(entity1, Entity.class);
-        Bundle e3 = designateIfNotNull(b, Bundle.class); // will
-       
-        if (e2 != null) {
-            if (e1 != null)
-                e2.getMentionOf().add(e1);
-            if (e3 != null)
-                e2.getAsInBundle().add(e3);
-        }
+       	if ((entity2!=null) && (entity1!=null))
+            assertStatement(createObjectProperty(entity2, QNAME_PROVO_mentionOf, entity1));		
+       	if ((entity2!=null) && (b!=null))
+            assertStatement(createObjectProperty(entity2, QNAME_PROVO_asInBundle, b));		
 
         return null;
     }
@@ -636,6 +626,8 @@ public class RdfConstructor implements ModelConstructor {
                                       XMLGregorianCalendar time, QName other, Collection<Attribute> attributes,
                                       QName qualifiedClass) {
         if ((infl != null)
+        		|| (time!=null)
+        		|| (other!=null)
                 || ((attributes != null) && !(attributes.isEmpty()))) {
             infl = assertType(infl, qualifiedClass);
             if (object != null) assertInfluencer(infl, object, qualifiedClass);

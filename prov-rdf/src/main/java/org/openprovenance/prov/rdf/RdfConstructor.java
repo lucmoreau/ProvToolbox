@@ -17,7 +17,6 @@ import org.openprovenance.prov.xml.HadMember;
 import org.openprovenance.prov.xml.InternationalizedString;
 import org.openprovenance.prov.xml.MentionOf;
 import org.openprovenance.prov.xml.NamedBundle;
-import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.Statement;
 import org.openprovenance.prov.xml.Used;
@@ -32,11 +31,8 @@ import org.openprovenance.prov.xml.WasInformedBy;
 import org.openprovenance.prov.xml.WasInvalidatedBy;
 import org.openprovenance.prov.xml.WasStartedBy;
 import org.openrdf.elmo.ElmoManager;
-import org.openrdf.elmo.sesame.SesameManager;
 import org.openrdf.model.Resource;
-import org.openrdf.model.impl.BNodeImpl;
 import org.openrdf.model.impl.LiteralImpl;
-import org.openrdf.model.impl.StatementImpl;
 import org.openrdf.model.impl.URIImpl;
 
 /**
@@ -44,143 +40,7 @@ import org.openrdf.model.impl.URIImpl;
  */
 public class RdfConstructor implements ModelConstructor {
     
-    public Hashtable<QName,QName> qualifiedInfluenceTable=new Hashtable<QName, QName>();
-    public Hashtable<QName,QName> influencerTable=new Hashtable<QName, QName>();
-    public Hashtable<QName,QName> unqualifiedTable=new Hashtable<QName, QName>();
-    public Hashtable<QName,QName> otherTable=new Hashtable<QName, QName>();
-    
-
-    public static QName newProvQName(String local) {
-	return new QName(NamespacePrefixMapper.PROV_NS, local, NamespacePrefixMapper.PROV_PREFIX);
-    }
-
-   
-	
-    public static QName newRdfQName(String local) {
-	return new QName(NamespacePrefixMapper.RDF_NS, local, NamespacePrefixMapper.RDF_PREFIX);
-    }
-    
-
-    public static QName QNAME_PROVO_atTime=newProvQName("atTime");
-    public static QName QNAME_PROVO_influencer=newProvQName("influencer");
-    public static QName QNAME_PROVO_activity=newProvQName("activity");
-    public static QName QNAME_PROVO_entity=newProvQName("entity");
-    public static QName QNAME_PROVO_agent=newProvQName("agent");
-    public static QName QNAME_PROVO_hadActivity=newProvQName("hadActivity");
-    public static QName QNAME_PROVO_hadEntity=newProvQName("hadEntity");
-    public static QName QNAME_PROVO_hadPlan=newProvQName("hadPlan");
-    public static QName QNAME_PROVO_hadGeneration=newProvQName("hadGeneration");
-    public static QName QNAME_PROVO_hadUsage=newProvQName("hadUsage");
-
-    
-    public static QName QNAME_PROVO_Influence=newProvQName("Influence");
-    public static QName QNAME_PROVO_qualifiedInfluence=newProvQName("qualifiedInfluence");
-    public static QName QNAME_PROVO_wasInfluencedBy=newProvQName("wasInfluencedBy");
-
-    public static QName QNAME_PROVO_Generation=newProvQName("Generation");
-    public static QName QNAME_PROVO_qualifiedGeneration=newProvQName("qualifiedGeneration");
-    public static QName QNAME_PROVO_wasGeneratedBy=newProvQName("wasGeneratedBy");
-
-    public static QName QNAME_PROVO_Usage=newProvQName("Usage");
-    public static QName QNAME_PROVO_qualifiedUsage=newProvQName("qualifiedUsage");
-    public static QName QNAME_PROVO_used=newProvQName("used");
-
-    public static QName QNAME_PROVO_Invalidation=newProvQName("Invalidation");
-    public static QName QNAME_PROVO_qualifiedInvalidation=newProvQName("qualifiedInvalidation");
-    public static QName QNAME_PROVO_wasInvalidatedBy=newProvQName("wasInvalidatedBy");
-    
-    public static QName QNAME_PROVO_Start=newProvQName("Start");
-    public static QName QNAME_PROVO_qualifiedStart=newProvQName("qualifiedStart");
-    public static QName QNAME_PROVO_wasStartedBy=newProvQName("wasStartedBy");
-
-    public static QName QNAME_PROVO_End=newProvQName("End");
-    public static QName QNAME_PROVO_qualifiedEnd=newProvQName("qualifiedEnd");
-    public static QName QNAME_PROVO_wasEndedBy=newProvQName("wasEndedBy");
-
-    public static QName QNAME_PROVO_Association=newProvQName("Association");
-    public static QName QNAME_PROVO_qualifiedAssociation=newProvQName("qualifiedAssociation");
-    public static QName QNAME_PROVO_wasAssociatedWith=newProvQName("wasAssociatedWith");
-
-    public static QName QNAME_PROVO_Attribution=newProvQName("Attribution");
-    public static QName QNAME_PROVO_qualifiedAttribution=newProvQName("qualifiedAttribution");
-    public static QName QNAME_PROVO_wasAttributedTo=newProvQName("wasAttributedTo");
-
-    public static QName QNAME_PROVO_Delegation=newProvQName("Delegation");
-    public static QName QNAME_PROVO_qualifiedDelegation=newProvQName("qualifiedDelegation");
-    public static QName QNAME_PROVO_actedOnBehalfOf=newProvQName("actedOnBehalfOf");
-
-    public static QName QNAME_PROVO_Derivation=newProvQName("Derivation");
-    public static QName QNAME_PROVO_qualifiedDerivation=newProvQName("qualifiedDerivation");
-    public static QName QNAME_PROVO_wasDerivedFrom=newProvQName("wasDerivedFrom");
-
-    public static QName QNAME_PROVO_Communication=newProvQName("Communication");
-    public static QName QNAME_PROVO_qualifiedCommunication=newProvQName("qualifiedCommunication");
-    public static QName QNAME_PROVO_wasInformedBy=newProvQName("wasInformedBy");
-    
-    public static QName QNAME_PROVO_specializationOf=newProvQName("specializationOf");
-    public static QName QNAME_PROVO_alternateOf=newProvQName("alternateOf");
-    public static QName QNAME_PROVO_mentionOf=newProvQName("mentionOf");
-    public static QName QNAME_PROVO_asInBundle=newProvQName("asInBundle");
-    public static QName QNAME_PROVO_hadMember=newProvQName("hadMember");
-
-
-    public static QName QNAME_RDF_TYPE=newRdfQName("type");
-    
-    void initInfluenceTables() {
-   	 qualifiedInfluenceTable.put(QNAME_PROVO_Influence, QNAME_PROVO_qualifiedInfluence);
-   	 qualifiedInfluenceTable.put(QNAME_PROVO_Generation, QNAME_PROVO_qualifiedGeneration);
-   	 qualifiedInfluenceTable.put(QNAME_PROVO_Usage, QNAME_PROVO_qualifiedUsage);
-   	 qualifiedInfluenceTable.put(QNAME_PROVO_Invalidation, QNAME_PROVO_qualifiedInvalidation);
-   	 qualifiedInfluenceTable.put(QNAME_PROVO_Start, QNAME_PROVO_qualifiedStart);
-   	 qualifiedInfluenceTable.put(QNAME_PROVO_End, QNAME_PROVO_qualifiedEnd);
-   	 qualifiedInfluenceTable.put(QNAME_PROVO_Association, QNAME_PROVO_qualifiedAssociation);
-   	 qualifiedInfluenceTable.put(QNAME_PROVO_Attribution, QNAME_PROVO_qualifiedAttribution);
-   	 qualifiedInfluenceTable.put(QNAME_PROVO_Delegation, QNAME_PROVO_qualifiedDelegation);
-   	 qualifiedInfluenceTable.put(QNAME_PROVO_Derivation, QNAME_PROVO_qualifiedDerivation);
-   	 qualifiedInfluenceTable.put(QNAME_PROVO_Communication, QNAME_PROVO_qualifiedCommunication);
-   	
-   	 influencerTable.put(QNAME_PROVO_Influence, QNAME_PROVO_influencer);
-   	 activityInfluence(QNAME_PROVO_Generation);
-   	 entityInfluence(QNAME_PROVO_Usage);
-   	 activityInfluence(QNAME_PROVO_Invalidation);
-   	 entityInfluence(QNAME_PROVO_Start);
-   	 entityInfluence(QNAME_PROVO_End);
-   	 agentInfluence(QNAME_PROVO_Association);
-   	 agentInfluence(QNAME_PROVO_Attribution);
-   	 agentInfluence(QNAME_PROVO_Delegation);
-   	 entityInfluence(QNAME_PROVO_Derivation);
-   	 activityInfluence(QNAME_PROVO_Communication);
-   	 
-   	 unqualifiedTable.put(QNAME_PROVO_Influence, QNAME_PROVO_wasInfluencedBy);
-   	 unqualifiedTable.put(QNAME_PROVO_Generation, QNAME_PROVO_wasGeneratedBy);
-   	 unqualifiedTable.put(QNAME_PROVO_Usage, QNAME_PROVO_used);
-   	 unqualifiedTable.put(QNAME_PROVO_Invalidation, QNAME_PROVO_wasInvalidatedBy);
-   	 unqualifiedTable.put(QNAME_PROVO_Start, QNAME_PROVO_wasStartedBy);
-  	 unqualifiedTable.put(QNAME_PROVO_End, QNAME_PROVO_wasEndedBy);
-  	 unqualifiedTable.put(QNAME_PROVO_Association, QNAME_PROVO_wasAssociatedWith);
-  	 unqualifiedTable.put(QNAME_PROVO_Attribution, QNAME_PROVO_wasAttributedTo);
-  	 unqualifiedTable.put(QNAME_PROVO_Delegation, QNAME_PROVO_actedOnBehalfOf);
-  	 unqualifiedTable.put(QNAME_PROVO_Derivation, QNAME_PROVO_wasDerivedFrom);
-  	 unqualifiedTable.put(QNAME_PROVO_Communication, QNAME_PROVO_wasInformedBy);
-  	 
-  	 otherTable.put(QNAME_PROVO_Start, QNAME_PROVO_hadActivity);
-  	 otherTable.put(QNAME_PROVO_End, QNAME_PROVO_hadActivity);
-  	 otherTable.put(QNAME_PROVO_Derivation, QNAME_PROVO_hadActivity);
-  	 otherTable.put(QNAME_PROVO_Association, QNAME_PROVO_hadPlan);
-  	 otherTable.put(QNAME_PROVO_Delegation, QNAME_PROVO_hadActivity);
-   }
-
-    void activityInfluence(QName name) {
-		influencerTable.put(name, QNAME_PROVO_activity);
-	}
-    void entityInfluence(QName name) {
-		influencerTable.put(name, QNAME_PROVO_entity);
-	}
-    void agentInfluence(QName name) {
-		influencerTable.put(name, QNAME_PROVO_agent);
-	}
-   
-
+ 
     
     final ElmoManager manager;
 
@@ -191,17 +51,18 @@ public class RdfConstructor implements ModelConstructor {
     }
 
     final GraphBuilder gb;
+    final Ontology onto;
     public RdfConstructor(ElmoManager manager) {
         this.manager = manager;
-        initInfluenceTables();
+        this.onto=new Ontology();
         this.gb=new GraphBuilder(manager);
     }
 
     @Override
     public org.openprovenance.prov.xml.Entity newEntity(QName id,
                                                         Collection<Attribute> attributes) {
-        Entity e = (Entity) designateIfNotNull(id, Entity.class);
-        processAttributes(e, attributes);
+	   	 assertType(id, Ontology.QNAME_PROVO_Entity);
+        processAttributes(id, attributes);
         return null;
     }
 
@@ -210,22 +71,22 @@ public class RdfConstructor implements ModelConstructor {
                                                             XMLGregorianCalendar startTime,
                                                             XMLGregorianCalendar endTime,
                                                             Collection<Attribute> attributes) {
-        Activity a = (Activity) designateIfNotNull(id, Activity.class);
+   	    assertType(id, Ontology.QNAME_PROVO_Activity);
         if (startTime != null) {
-            a.getStartedAtTime().add(startTime);
+		gb.assertStatement(gb.createDataProperty(id,Ontology.QNAME_PROVO_startedAtTime,newLiteral(startTime)));
         }
         if (endTime != null) {
-            a.getEndedAtTime().add(endTime);
+		gb.assertStatement(gb.createDataProperty(id,Ontology.QNAME_PROVO_endedAtTime,newLiteral(endTime)));
         }
-        processAttributes(a, attributes);
+        processAttributes(id, attributes);
         return null;
     }
 
     @Override
     public org.openprovenance.prov.xml.Agent newAgent(QName id,
                                                       Collection<Attribute> attributes) {
-        Agent ag = (Agent) designateIfNotNull(id, Agent.class);
-        processAttributes(ag, attributes);
+   	    assertType(id, Ontology.QNAME_PROVO_Agent);
+        processAttributes(id, attributes);
         return null;
     }
 
@@ -235,7 +96,7 @@ public class RdfConstructor implements ModelConstructor {
        
  	    @SuppressWarnings("unused")
         QName u = addInfluence(id, activity, entity, time, null, attributes,
-                 QNAME_PROVO_Usage);
+                 Ontology.QNAME_PROVO_Usage);
 
         return null;
     }
@@ -249,7 +110,7 @@ public class RdfConstructor implements ModelConstructor {
 
         @SuppressWarnings("unused")
         QName g = addInfluence(id, entity, activity, time, null, attributes,
-                QNAME_PROVO_Generation);
+                Ontology.QNAME_PROVO_Generation);
 
         return null;
     }
@@ -263,7 +124,7 @@ public class RdfConstructor implements ModelConstructor {
 
         @SuppressWarnings("unused")
         QName inv = addInfluence(id, entity, activity, time, null, attributes,
-                                 QNAME_PROVO_Invalidation);
+                                 Ontology.QNAME_PROVO_Invalidation);
 
         return null;
     }
@@ -276,7 +137,7 @@ public class RdfConstructor implements ModelConstructor {
     	
         @SuppressWarnings("unused")
         QName s = addInfluence(id, activity, trigger, time, starter, attributes,
-                QNAME_PROVO_Start);
+                Ontology.QNAME_PROVO_Start);
 
         return null;
     }
@@ -288,7 +149,7 @@ public class RdfConstructor implements ModelConstructor {
     	
         @SuppressWarnings("unused")
         QName e = addInfluence(id, activity, trigger, time, ender, attributes,
-                QNAME_PROVO_End);
+                Ontology.QNAME_PROVO_End);
 
         return null;
 
@@ -302,17 +163,17 @@ public class RdfConstructor implements ModelConstructor {
     	
         @SuppressWarnings("unused")
         QName der = addInfluence(id, entity2, entity1, null, activity, attributes,
-                                 QNAME_PROVO_Derivation);
+                                 Ontology.QNAME_PROVO_Derivation);
 
   
   
         if (der!=null) { //FIXME: a scruffy derivation could just have generation and usage, but der==null (no qualified derivation found
         	// since generation and usage are not taken into account.
           if (generation != null) {
-             gb.assertStatement(gb.createObjectProperty(der, QNAME_PROVO_hadGeneration, generation));		
+             gb.assertStatement(gb.createObjectProperty(der, Ontology.QNAME_PROVO_hadGeneration, generation));		
           }
          if (usage != null) {
-             gb.assertStatement(gb.createObjectProperty(der, QNAME_PROVO_hadUsage, usage));		
+             gb.assertStatement(gb.createObjectProperty(der, Ontology.QNAME_PROVO_hadUsage, usage));		
           }
         }
    
@@ -327,7 +188,7 @@ public class RdfConstructor implements ModelConstructor {
       	
         @SuppressWarnings("unused")
         QName d = addInfluence(id, a, ag, null, plan, attributes,
-                QNAME_PROVO_Association);
+                Ontology.QNAME_PROVO_Association);
 
 
         return null;
@@ -338,7 +199,7 @@ public class RdfConstructor implements ModelConstructor {
                                               Collection<Attribute> attributes) {
         @SuppressWarnings("unused")
         QName a = addInfluence(id, e, ag, null, null, attributes,
-                QNAME_PROVO_Attribution);
+                Ontology.QNAME_PROVO_Attribution);
 
         return null;
     }
@@ -350,7 +211,7 @@ public class RdfConstructor implements ModelConstructor {
     	
         @SuppressWarnings("unused")
         QName d = addInfluence(id, agent2, agent1, null, a, attributes,
-                QNAME_PROVO_Delegation);
+                Ontology.QNAME_PROVO_Delegation);
 
         return null;
     }
@@ -360,7 +221,7 @@ public class RdfConstructor implements ModelConstructor {
                                           Collection<Attribute> attributes) {
     	
         @SuppressWarnings("unused")
-        QName com = addInfluence(id, activity2, activity1, null, null, attributes, QNAME_PROVO_Communication);
+        QName com = addInfluence(id, activity2, activity1, null, null, attributes, Ontology.QNAME_PROVO_Communication);
 
         return null;
     }
@@ -371,7 +232,7 @@ public class RdfConstructor implements ModelConstructor {
 
 
         @SuppressWarnings("unused")
-        QName u = addInfluence(id, qn2, qn1, null, null, attributes, QNAME_PROVO_Influence);
+        QName u = addInfluence(id, qn2, qn1, null, null, attributes, Ontology.QNAME_PROVO_Influence);
         
         return null;
     }
@@ -380,7 +241,7 @@ public class RdfConstructor implements ModelConstructor {
     public AlternateOf newAlternateOf(QName entity2, QName entity1) {
 
     	if ((entity2!=null) && (entity1!=null))
-            gb.assertStatement(gb.createObjectProperty(entity2, QNAME_PROVO_alternateOf, entity1));		
+            gb.assertStatement(gb.createObjectProperty(entity2, Ontology.QNAME_PROVO_alternateOf, entity1));		
  
     	return null;
     }
@@ -390,7 +251,7 @@ public class RdfConstructor implements ModelConstructor {
     	
     	
        	if ((entity2!=null) && (entity1!=null))
-            gb.assertStatement(gb.createObjectProperty(entity2, QNAME_PROVO_specializationOf, entity1));		
+            gb.assertStatement(gb.createObjectProperty(entity2, Ontology.QNAME_PROVO_specializationOf, entity1));		
 
         return null;
     }
@@ -400,9 +261,9 @@ public class RdfConstructor implements ModelConstructor {
 
 
        	if ((entity2!=null) && (entity1!=null))
-            gb.assertStatement(gb.createObjectProperty(entity2, QNAME_PROVO_mentionOf, entity1));		
+            gb.assertStatement(gb.createObjectProperty(entity2, Ontology.QNAME_PROVO_mentionOf, entity1));		
        	if ((entity2!=null) && (b!=null))
-            gb.assertStatement(gb.createObjectProperty(entity2, QNAME_PROVO_asInBundle, b));		
+            gb.assertStatement(gb.createObjectProperty(entity2, Ontology.QNAME_PROVO_asInBundle, b));		
 
         return null;
     }
@@ -410,11 +271,7 @@ public class RdfConstructor implements ModelConstructor {
     @Override
     public HadMember newHadMember(QName collection, Collection<QName> ll) {
         for (QName entity: ll) {
-
-            org.openprovenance.prov.rdf.Collection c = designateIfNotNull(collection, org.openprovenance.prov.rdf.Collection.class);
-            Entity e = designateIfNotNull(entity, Entity.class);
-
-            c.getHadMember().add(e);
+        	gb.assertStatement(gb.createObjectProperty(collection, Ontology.QNAME_PROVO_hadMember, entity));      	
         }
         return null;
     }
@@ -463,22 +320,6 @@ public class RdfConstructor implements ModelConstructor {
 
 
     
-    public void processAttributes(Object infl, Collection<Attribute> aAttrs) {
-        if (aAttrs == null)
-            return;
-        if (infl == null) {
-            throw new NullPointerException(); // should never be here, really
-        }
-
-        // QName a=null;
-        // org.openrdf.model.Resource r = new URIImpl(a.getNamespaceURI()
-        // + a.getLocalPart());
-
-        org.openrdf.model.Resource r = ((org.openrdf.elmo.sesame.roles.SesameEntity) infl)
-                .getSesameResource();
-
-        processAttributes(r, aAttrs);
-    }
     
     public void processAttributes(QName q,
 				  Collection<Attribute> attributes) {
@@ -490,11 +331,11 @@ public class RdfConstructor implements ModelConstructor {
 				  Collection<Attribute> aAttrs) {
 	for (Attribute attr : aAttrs) {
 
-            QName pred = null;
-
+            
             LiteralImpl literalImpl = null;
 
             QName type = attr.getXsdType();
+            QName pred = attr.getElementName();
 
             String value;
             if (attr.getValue() instanceof InternationalizedString) {
@@ -502,6 +343,7 @@ public class RdfConstructor implements ModelConstructor {
                         .getValue();
                 value = iString.getValue();
                 literalImpl = new LiteralImpl(value, iString.getLang());
+                gb.assertStatement(gb.createDataProperty(r, pred, literalImpl));
             } else if (attr.getValue() instanceof QName) {
                 QName qn = (QName) attr.getValue();
                 String qnAsString;
@@ -510,15 +352,20 @@ public class RdfConstructor implements ModelConstructor {
                 } else {
                     qnAsString = qn.getPrefix() + ":" + qn.getLocalPart();
                 }
-                literalImpl = new LiteralImpl(qnAsString, gb.qnameToURI(type));
+                if (true) {
+                  literalImpl = new LiteralImpl(qnAsString, gb.qnameToURI(type));
+                  gb.assertStatement(gb.createDataProperty(r, pred, literalImpl));
+                } else {
+                gb.assertStatement(gb.createObjectProperty(r, pred, qn));
+                }
 
             } else {
                 value = attr.getValue().toString();
                 literalImpl = new LiteralImpl(value, gb.qnameToURI(type));
+                gb.assertStatement(gb.createDataProperty(r, pred, literalImpl));
             }
-            pred = attr.getElementName();
 
-            gb.assertStatement(gb.createDataProperty(r, pred, literalImpl));
+            
         }
     }
 
@@ -542,17 +389,17 @@ public class RdfConstructor implements ModelConstructor {
         }
 
         if ((binaryProp(infl, subject)) && (object != null))
-            gb.assertStatement(gb.createObjectProperty(subject, unqualifiedTable.get(qualifiedClass), object));
+        	gb.assertStatement(gb.createObjectProperty(subject, onto.unqualifiedTable.get(qualifiedClass), object));
 
         return infl;
     }
 
     public void asserterOther(QName subject, QName other, QName qualifiedClass) {
-        gb.assertStatement(gb.createObjectProperty(subject, otherTable.get(qualifiedClass), other));		
+        gb.assertStatement(gb.createObjectProperty(subject, onto.otherTable.get(qualifiedClass), other));		
 	}
 
 	public void assertAtTime(QName subject, XMLGregorianCalendar time) {
-		gb.assertStatement(gb.createDataProperty(subject,QNAME_PROVO_atTime,newLiteral(time)));
+		gb.assertStatement(gb.createDataProperty(subject,Ontology.QNAME_PROVO_atTime,newLiteral(time)));
 		
 	}
 
@@ -562,13 +409,13 @@ public class RdfConstructor implements ModelConstructor {
 
 	public void assertQualifiedInfluence(QName subject, QName infl, QName qualifiedClass) {
 	gb.assertStatement(gb.createObjectProperty(subject, 
-	                                     qualifiedInfluenceTable.get(qualifiedClass), 
+	                                     onto.qualifiedInfluenceTable.get(qualifiedClass), 
 	                                     infl));	
     }
 
     public void assertInfluencer(QName infl, QName object, QName qualifiedClass) {
 	gb.assertStatement(gb.createObjectProperty(infl,
-	                                     influencerTable.get(qualifiedClass),
+	                                     onto.influencerTable.get(qualifiedClass),
 	                                     object));	
     }
     
@@ -576,55 +423,14 @@ public class RdfConstructor implements ModelConstructor {
     public QName assertType(QName infl, QName qualifiedClass) {
     	if (infl==null) {
     		infl=gb.newBlankName();
-    		//Resource uri=new BNodeImpl(infl.getLocalPart());
-//    		gb.assertStatement(gb.createObjectProperty(uri, QNAME_RDF_TYPE, qualifiedClass));
-//    	} else {
-//    		gb.assertStatement(gb.createObjectProperty(infl, QNAME_RDF_TYPE, qualifiedClass));
     	}
-    	gb.assertStatement(gb.createObjectProperty(infl, QNAME_RDF_TYPE, qualifiedClass));
+    	gb.assertStatement(gb.createObjectProperty(infl, Ontology.QNAME_RDF_TYPE, qualifiedClass));
 		return infl;
     }
 
-    private void setTime(InstantaneousEvent infl, XMLGregorianCalendar time) {
-        if (infl != null) {
-            XMLGregorianCalendar t = (XMLGregorianCalendar) time;
-            infl.getAtTime().add(t);
-        }
-    }
-
+ 
   
-    public <INFLUENCE, EFFECT> void DELETEaddQualifiedInfluence(EFFECT e2, INFLUENCE g) {
-        if ((g != null) && (e2 != null)) {
-            if (g instanceof Generation) {
-                ((Entity) e2).getQualifiedGeneration().add((Generation) g);
-            } else if (g instanceof Invalidation) {
-                ((Entity) e2).getQualifiedInvalidation().add((Invalidation) g);
-            } else if (g instanceof Communication) {
-                ((Activity) e2).getQualifiedCommunication()
-                        .add((Communication) g);
-            } else if (g instanceof Usage) {
-                ((Activity) e2).getQualifiedUsage().add((Usage) g);
-            } else if (g instanceof Start) {
-                ((Activity) e2).getQualifiedStart().add((Start) g);
-            } else if (g instanceof End) {
-                ((Activity) e2).getQualifiedEnd().add((End) g);
-            } else if (g instanceof Attribution) {
-                ((Entity) e2).getQualifiedAttribution().add((Attribution) g);
-            } else if (g instanceof Association) {
-                ((Activity) e2).getQualifiedAssociation().add((Association) g);
-            } else if (g instanceof Delegation) {
-                ((Agent) e2).getQualifiedDelegation().add((Delegation) g);
-            } else if (g instanceof Derivation) {
-                ((Entity) e2).getQualifiedDerivation().add((Derivation) g);
-            } else if (g instanceof Influence) {
-                ((ActivityOrAgentOrEntity) e2).getQualifiedInfluence()
-                        .add((Influence) g);
-            } else {
-                throw new UnsupportedOperationException();
-            }
-        }
-    }
-
+   
 
    
 

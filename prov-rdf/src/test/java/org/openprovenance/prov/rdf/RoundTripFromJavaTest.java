@@ -99,37 +99,39 @@ public class RoundTripFromJavaTest extends
 
 	public void testInfluence1() throws JAXBException
 	{
-		// Class cast errors (ActivityOrAgentOrEntity)   Limitation of Elmo, I think this can be fixed by asserting triples without Elmo
+		// RDF Collector doesn't support Influence
 	}
 
 	public void testInfluence2() throws JAXBException
 	{
-		// Class cast errors (ActivityOrAgentOrEntity)    Limitation of Elmo, I think this can be fixed by asserting triples without Elmo
+		// RDF Collector doesn't support Influence
 	}
 
 	public void testInfluence3() throws JAXBException
 	{
-		// Class cast errors (ActivityOrAgentOrEntity)
+		// RDF Collector doesn't support Influence
 	}
 
 	public void testInfluence4() throws JAXBException
 	{
-		// Class cast errors (ActivityOrAgentOrEntity)
+		// RDF Collector doesn't support Influence
 	}
 
 	public void testInfluence5() throws JAXBException
 	{
-		// Class cast errors (ActivityOrAgentOrEntity)
+		// RDF Collector doesn't support Influence
 	}
 
 	public void testInfluence6() throws JAXBException
 	{
-		// Class cast errors (ActivityOrAgentOrEntity)
+		// RDF Collector doesn't support Influence
 	}
 
 	public void testInfluence7() throws JAXBException
 	{
-		// Class cast errors (ActivityOrAgentOrEntity)
+		
+		// RDF Collector doesn't support Influence
+
 	}
 
 	
@@ -141,13 +143,12 @@ public class RoundTripFromJavaTest extends
 
 	public void testMembership2() throws JAXBException
 	{
-		// TODO: Unsupported, no multiple members supported by toolbox
+		// RDF Collector doesn't support hadMember
 	}
 
 	public void testMembership3() throws JAXBException
 	{
-		// TODO: Unsupported, no multiple members supported by toolbox
-	}
+		}
 	
     public void testBundle2() {
 		// TODO: Not supported yet, though seemed to work at some point?

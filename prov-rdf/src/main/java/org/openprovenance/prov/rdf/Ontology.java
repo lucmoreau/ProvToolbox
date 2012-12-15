@@ -7,6 +7,7 @@ import javax.xml.namespace.QName;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
+
 public class Ontology {
 	   public Ontology () {
 		   initInfluenceTables();
@@ -192,7 +193,9 @@ public class Ontology {
 	    	if (res!=null) return res;
 	    	return qname;
 	    }
+}
 	   
 
 
-}
+
+

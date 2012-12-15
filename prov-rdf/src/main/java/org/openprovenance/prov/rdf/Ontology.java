@@ -6,6 +6,8 @@ import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
+/* Definition of all qualified names for prov-o ontology, and mapping for qualified pattern. */
+
 public class Ontology {
     public Ontology() {
 	initInfluenceTables();

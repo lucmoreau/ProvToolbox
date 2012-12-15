@@ -159,9 +159,31 @@ public class RdfConstructor implements ModelConstructor {
                                             QName usage,
                                             Collection<Attribute> attributes) {
     	
-        @SuppressWarnings("unused")
-        QName der = addInfluence(id, entity2, entity1, null, activity, attributes,
+    	int knownSubtypes=0;
+    	QName der=id;
+    	if (Attribute.hasType(Ontology.QNAME_PROVO_Revision, attributes)) {
+    		knownSubtypes++;
+    		der = addInfluence(der, entity2, entity1, null, activity, attributes,
+                    Ontology.QNAME_PROVO_Revision);
+
+    	}
+    	if (Attribute.hasType(Ontology.QNAME_PROVO_Quotation, attributes)) {
+    		knownSubtypes++;
+    		der = addInfluence(der, entity2, entity1, null, activity, attributes,
+                    Ontology.QNAME_PROVO_Quotation);
+
+    	}
+    	if (Attribute.hasType(Ontology.QNAME_PROVO_PrimarySource, attributes)) {
+    		knownSubtypes++;
+    		der = addInfluence(der, entity2, entity1, null, activity, attributes,
+                    Ontology.QNAME_PROVO_PrimarySource);
+
+    	}
+    	
+    	if (knownSubtypes==0) {
+        der = addInfluence(der, entity2, entity1, null, activity, attributes,
                                  Ontology.QNAME_PROVO_Derivation);
+    	}
 
   
   
@@ -329,6 +351,7 @@ public class RdfConstructor implements ModelConstructor {
             LiteralImpl literalImpl = null;
 
             QName type = attr.getXsdType();
+            //QName pred = onto.convertToRdf(attr.getElementName());  //FIXME: convert to XSD_HASH
             QName pred = attr.getElementName();  //FIXME: convert to XSD_HASH
 
             String value;
@@ -375,7 +398,7 @@ public class RdfConstructor implements ModelConstructor {
                 || ((attributes != null) && !(attributes.isEmpty()))) {
             infl = assertType(infl, qualifiedClass);
             if (object != null) assertInfluencer(infl, object, qualifiedClass);
-            if (subject!=null)
+            if (subject!=null) // scruffy provenance: subject may not be defined
               assertQualifiedInfluence(subject, infl, qualifiedClass);
             if (time!=null) assertAtTime(infl,time);
             if (other!=null) asserterOther(infl,other, qualifiedClass);

@@ -1,5 +1,7 @@
 package org.openprovenance.prov.xml;
 
+import java.util.Collection;
+
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
@@ -147,6 +149,23 @@ public class Attribute {
 	    return qnameToString(elementName)
 		   + " = \"" + val + "\" %% " + qnameToString(xsdType);
 	}
+    }
+    
+    static public boolean hasType(QName type, Collection<Attribute> attributes) {
+    	for (Attribute attribute: attributes) {
+    		switch (attribute.getKind()) {
+    			case PROV_TYPE :
+    				if (attribute.getValue().equals(type)) {
+    					return true;
+    				}
+					break;			
+				default :
+					break;
+    			
+    		}
+    	}
+    	return false;
+    		
     }
 
 }

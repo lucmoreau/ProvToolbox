@@ -4,6 +4,7 @@ import java.util.Hashtable;
 
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
 public class Ontology {
@@ -15,6 +16,7 @@ public class Ontology {
 	    public Hashtable<QName,QName> influencerTable=new Hashtable<QName, QName>();
 	    public Hashtable<QName,QName> unqualifiedTable=new Hashtable<QName, QName>();
 	    public Hashtable<QName,QName> otherTable=new Hashtable<QName, QName>();
+	    public Hashtable<QName,QName> convertTable=new Hashtable<QName, QName>();
 	    
 
 	    public static QName newProvQName(String local) {
@@ -24,10 +26,10 @@ public class Ontology {
 	   
 		
 	    public static QName newRdfQName(String local) {
-		return new QName(NamespacePrefixMapper.RDF_NS, local, NamespacePrefixMapper.RDF_PREFIX);
+			return new QName(NamespacePrefixMapper.RDF_NS, local, NamespacePrefixMapper.RDF_PREFIX);
 	    }
 	    
-
+	    public static QName QNAME_PROVO_atLocation=newProvQName("atLocation");
 	    public static QName QNAME_PROVO_atTime=newProvQName("atTime");
 	    public static QName QNAME_PROVO_startedAtTime=newProvQName("startedAtTime");
 	    public static QName QNAME_PROVO_endedAtTime=newProvQName("endedAtTime");
@@ -85,6 +87,21 @@ public class Ontology {
 	    public static QName QNAME_PROVO_qualifiedDerivation=newProvQName("qualifiedDerivation");
 	    public static QName QNAME_PROVO_wasDerivedFrom=newProvQName("wasDerivedFrom");
 
+	    public static QName QNAME_PROVO_Revision=newProvQName("Revision");
+	    public static QName QNAME_PROVO_qualifiedRevision=newProvQName("qualifiedRevision");
+	    public static QName QNAME_PROVO_wasRevisionOf=newProvQName("wasRevisionOf");
+
+	    
+	    public static QName QNAME_PROVO_Quotation=newProvQName("Quotation");
+	    public static QName QNAME_PROVO_qualifiedQuotation=newProvQName("qualifiedQuotation");
+	    public static QName QNAME_PROVO_wasQuotedFrom=newProvQName("wasQuotedFrom");//TODO: check it's right
+
+	    
+	    public static QName QNAME_PROVO_PrimarySource=newProvQName("PrimarySource");
+	    public static QName QNAME_PROVO_qualifiedPrimarySource=newProvQName("qualifiedPrimarySource");
+	    public static QName QNAME_PROVO_hadPrimarySource=newProvQName("hadPrimarySource");
+
+	    
 	    public static QName QNAME_PROVO_Communication=newProvQName("Communication");
 	    public static QName QNAME_PROVO_qualifiedCommunication=newProvQName("qualifiedCommunication");
 	    public static QName QNAME_PROVO_wasInformedBy=newProvQName("wasInformedBy");
@@ -97,6 +114,7 @@ public class Ontology {
 
 
 	    public static QName QNAME_RDF_TYPE=newRdfQName("type");
+	    public static QName QNAME_RDF_LABEL=newRdfQName("label");
 	    
 	    void initInfluenceTables() {
 	   	 qualifiedInfluenceTable.put(QNAME_PROVO_Influence, QNAME_PROVO_qualifiedInfluence);
@@ -109,6 +127,9 @@ public class Ontology {
 	   	 qualifiedInfluenceTable.put(QNAME_PROVO_Attribution, QNAME_PROVO_qualifiedAttribution);
 	   	 qualifiedInfluenceTable.put(QNAME_PROVO_Delegation, QNAME_PROVO_qualifiedDelegation);
 	   	 qualifiedInfluenceTable.put(QNAME_PROVO_Derivation, QNAME_PROVO_qualifiedDerivation);
+	   	 qualifiedInfluenceTable.put(QNAME_PROVO_Quotation, QNAME_PROVO_qualifiedQuotation);
+	   	 qualifiedInfluenceTable.put(QNAME_PROVO_Revision, QNAME_PROVO_qualifiedRevision);
+	   	 qualifiedInfluenceTable.put(QNAME_PROVO_PrimarySource, QNAME_PROVO_qualifiedPrimarySource);
 	   	 qualifiedInfluenceTable.put(QNAME_PROVO_Communication, QNAME_PROVO_qualifiedCommunication);
 	   	
 	   	 influencerTable.put(QNAME_PROVO_Influence, QNAME_PROVO_influencer);
@@ -121,6 +142,9 @@ public class Ontology {
 	   	 agentInfluence(QNAME_PROVO_Attribution);
 	   	 agentInfluence(QNAME_PROVO_Delegation);
 	   	 entityInfluence(QNAME_PROVO_Derivation);
+	   	 entityInfluence(QNAME_PROVO_Quotation);
+	   	 entityInfluence(QNAME_PROVO_Revision);
+	   	 entityInfluence(QNAME_PROVO_PrimarySource);
 	   	 activityInfluence(QNAME_PROVO_Communication);
 	   	 
 	   	 unqualifiedTable.put(QNAME_PROVO_Influence, QNAME_PROVO_wasInfluencedBy);
@@ -133,14 +157,25 @@ public class Ontology {
 	  	 unqualifiedTable.put(QNAME_PROVO_Attribution, QNAME_PROVO_wasAttributedTo);
 	  	 unqualifiedTable.put(QNAME_PROVO_Delegation, QNAME_PROVO_actedOnBehalfOf);
 	  	 unqualifiedTable.put(QNAME_PROVO_Derivation, QNAME_PROVO_wasDerivedFrom);
+	  	 unqualifiedTable.put(QNAME_PROVO_Revision, QNAME_PROVO_wasRevisionOf);
+	  	 unqualifiedTable.put(QNAME_PROVO_Quotation, QNAME_PROVO_wasQuotedFrom);
+	  	 unqualifiedTable.put(QNAME_PROVO_PrimarySource, QNAME_PROVO_hadPrimarySource);
 	  	 unqualifiedTable.put(QNAME_PROVO_Communication, QNAME_PROVO_wasInformedBy);
 	  	 
 	  	 otherTable.put(QNAME_PROVO_Start, QNAME_PROVO_hadActivity);
 	  	 otherTable.put(QNAME_PROVO_End, QNAME_PROVO_hadActivity);
 	  	 otherTable.put(QNAME_PROVO_Derivation, QNAME_PROVO_hadActivity);
+	  	 otherTable.put(QNAME_PROVO_Revision, QNAME_PROVO_hadActivity);
+	  	 otherTable.put(QNAME_PROVO_Quotation, QNAME_PROVO_hadActivity);
+	  	 otherTable.put(QNAME_PROVO_PrimarySource, QNAME_PROVO_hadActivity);
 	  	 otherTable.put(QNAME_PROVO_Association, QNAME_PROVO_hadPlan);
 	  	 otherTable.put(QNAME_PROVO_Delegation, QNAME_PROVO_hadActivity);
-	   }
+
+	    
+	  	 convertTable.put(Attribute.PROV_LABEL_QNAME, QNAME_RDF_LABEL);
+	  	 convertTable.put(Attribute.PROV_TYPE_QNAME, QNAME_RDF_TYPE);
+	  	 convertTable.put(Attribute.PROV_LOCATION_QNAME, QNAME_PROVO_atLocation);
+        }	
 
 	    void activityInfluence(QName name) {
 			influencerTable.put(name, QNAME_PROVO_activity);
@@ -151,6 +186,12 @@ public class Ontology {
 	    void agentInfluence(QName name) {
 			influencerTable.put(name, QNAME_PROVO_agent);
 		}
+	    
+	    public QName convertToRdf(QName qname) {
+	    	QName res=convertTable.get(qname);
+	    	if (res!=null) return res;
+	    	return qname;
+	    }
 	   
 
 

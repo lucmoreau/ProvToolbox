@@ -157,50 +157,54 @@ public class RdfConstructor implements ModelConstructor {
     }
 
     @Override
-    public WasDerivedFrom newWasDerivedFrom(QName id, QName entity2, QName entity1,
-                                            QName activity, QName generation,
-                                            QName usage,
-                                            Collection<Attribute> attributes) {
-    	
-    	int knownSubtypes=0;
-    	QName der=id;
-    	if (Attribute.hasType(Ontology.QNAME_PROVO_Revision, attributes)) {
-    		knownSubtypes++;
-    		der = addInfluence(der, entity2, entity1, null, activity, attributes,
-                    Ontology.QNAME_PROVO_Revision);
+    public WasDerivedFrom newWasDerivedFrom(QName id, QName entity2,
+					    QName entity1, QName activity,
+					    QName generation, QName usage,
+					    Collection<Attribute> attributes) {
 
-    	}
-    	if (Attribute.hasType(Ontology.QNAME_PROVO_Quotation, attributes)) {
-    		knownSubtypes++;
-    		der = addInfluence(der, entity2, entity1, null, activity, attributes,
-                    Ontology.QNAME_PROVO_Quotation);
+	int knownSubtypes = 0;
+	QName der = id;
+	if (Attribute.hasType(Ontology.QNAME_PROVO_Revision, attributes)) {
+	    knownSubtypes++;
+	    der = addInfluence(der, entity2, entity1, null, activity,
+			       attributes, Ontology.QNAME_PROVO_Revision);
 
-    	}
-    	if (Attribute.hasType(Ontology.QNAME_PROVO_PrimarySource, attributes)) {
-    		knownSubtypes++;
-    		der = addInfluence(der, entity2, entity1, null, activity, attributes,
-                    Ontology.QNAME_PROVO_PrimarySource);
+	}
+	if (Attribute.hasType(Ontology.QNAME_PROVO_Quotation, attributes)) {
+	    knownSubtypes++;
+	    der = addInfluence(der, entity2, entity1, null, activity,
+			       attributes, Ontology.QNAME_PROVO_Quotation);
 
-    	}
-    	
-    	if (knownSubtypes==0) {
-        der = addInfluence(der, entity2, entity1, null, activity, attributes,
-                                 Ontology.QNAME_PROVO_Derivation);
-    	}
+	}
+	if (Attribute.hasType(Ontology.QNAME_PROVO_PrimarySource, attributes)) {
+	    knownSubtypes++;
+	    der = addInfluence(der, entity2, entity1, null, activity,
+			       attributes, Ontology.QNAME_PROVO_PrimarySource);
 
-  
-  
-        if (der!=null) { //FIXME: a scruffy derivation could just have generation and usage, but der==null (no qualified derivation found
-        	// since generation and usage are not taken into account.
-          if (generation != null) {
-             gb.assertStatement(gb.createObjectProperty(der, Ontology.QNAME_PROVO_hadGeneration, generation));		
-          }
-         if (usage != null) {
-             gb.assertStatement(gb.createObjectProperty(der, Ontology.QNAME_PROVO_hadUsage, usage));		
-          }
-        }
-   
-        return null;
+	}
+
+	if (knownSubtypes == 0) {
+	    der = addInfluence(der, entity2, entity1, null, activity,
+			       attributes, Ontology.QNAME_PROVO_Derivation);
+	}
+
+	if (der != null) { // FIXME: a scruffy derivation could just have
+			   // generation and usage, but der==null (no qualified
+			   // derivation found
+	    // since generation and usage are not taken into account.
+	    if (generation != null) {
+		gb.assertStatement(gb.createObjectProperty(der,
+							   Ontology.QNAME_PROVO_hadGeneration,
+							   generation));
+	    }
+	    if (usage != null) {
+		gb.assertStatement(gb.createObjectProperty(der,
+							   Ontology.QNAME_PROVO_hadUsage,
+							   usage));
+	    }
+	}
+
+	return null;
     }
 
     @Override
@@ -390,31 +394,31 @@ public class RdfConstructor implements ModelConstructor {
 	}
     }
 
+    public QName addInfluence(QName infl, QName subject, QName object,
+			      XMLGregorianCalendar time, QName other,
+			      Collection<Attribute> attributes,
+			      QName qualifiedClass) {
+	if ((infl != null) || (time != null) || (other != null)
+		|| ((attributes != null) && !(attributes.isEmpty()))) {
+	    infl = assertType(infl, qualifiedClass);
+	    if (object != null)
+		assertInfluencer(infl, object, qualifiedClass);
+	    if (subject != null) // scruffy provenance: subject may not be
+				 // defined
+		assertQualifiedInfluence(subject, infl, qualifiedClass);
+	    if (time != null)
+		assertAtTime(infl, time);
+	    if (other != null)
+		asserterOther(infl, other, qualifiedClass);
+	    processAttributes(infl, attributes);
+	}
 
+	if ((binaryProp(infl, subject)) && (object != null))
+	    gb.assertStatement(gb.createObjectProperty(subject,
+						       onto.unqualifiedTable.get(qualifiedClass),
+						       object));
 
-   
-    public  QName addInfluence(QName infl,
-                                     QName subject,
-                                      QName object,
-                                      XMLGregorianCalendar time, QName other, Collection<Attribute> attributes,
-                                      QName qualifiedClass) {
-        if ((infl != null)
-        		|| (time!=null)
-        		|| (other!=null)
-                || ((attributes != null) && !(attributes.isEmpty()))) {
-            infl = assertType(infl, qualifiedClass);
-            if (object != null) assertInfluencer(infl, object, qualifiedClass);
-            if (subject!=null) // scruffy provenance: subject may not be defined
-              assertQualifiedInfluence(subject, infl, qualifiedClass);
-            if (time!=null) assertAtTime(infl,time);
-            if (other!=null) asserterOther(infl,other, qualifiedClass);
-            processAttributes(infl, attributes);
-        }
-
-        if ((binaryProp(infl, subject)) && (object != null))
-        	gb.assertStatement(gb.createObjectProperty(subject, onto.unqualifiedTable.get(qualifiedClass), object));
-
-        return infl;
+	return infl;
     }
 
     public void asserterOther(QName subject, QName other, QName qualifiedClass) {

@@ -44,6 +44,7 @@ import org.openprovenance.prov.xml.StatementOrBundle;
 import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.UsageRef;
 import org.openprovenance.prov.xml.Used;
+import org.openprovenance.prov.xml.ValueConverter;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.WasEndedBy;
 import org.openprovenance.prov.xml.WasGeneratedBy;
@@ -85,6 +86,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	private static final String PROV_JSON_PREFIX =              "prefix";
     
     private final ProvFactory pf = new ProvFactory();
+    private final ValueConverter vconv=new ValueConverter(pf);
     
     @Override
     public Document deserialize(JsonElement json, Type typeOfT,
@@ -92,14 +94,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         JsonObject provJSONDoc = json.getAsJsonObject();
         
         // Initialise namespaces
-        Hashtable<String, String> namespaces = new Hashtable<String, String>();
-        JsonObject prefixes = getObjectAndRemove(provJSONDoc, PROV_JSON_PREFIX);
-        if (prefixes != null) {
-            for (Map.Entry<String, JsonElement> pair: prefixes.entrySet()) {
-                namespaces.put(pair.getKey(), pair.getValue().getAsString());
-            }
+        Hashtable<String, String> namespaces = decodePrefixes(provJSONDoc);
+        if (namespaces != null)
             pf.setNamespaces(namespaces);
-        }
         
         // Decoding structures
         List<StatementOrBundle> statements = decodeBundle(provJSONDoc);
@@ -109,6 +106,18 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         doc.setNss(namespaces);
         doc.getEntityOrActivityOrWasGeneratedBy().addAll(statements);
         return doc;
+    }
+    
+    private Hashtable<String, String> decodePrefixes(JsonObject bundleStructure) {
+    	Hashtable<String, String> namespaces = new Hashtable<String, String>();
+        JsonObject prefixes = getObjectAndRemove(bundleStructure, PROV_JSON_PREFIX);
+        if (prefixes != null) {
+            for (Map.Entry<String, JsonElement> pair: prefixes.entrySet())
+                namespaces.put(pair.getKey(), pair.getValue().getAsString());
+            return namespaces;
+        }
+        else
+        	return null;
     }
     
     private List<StatementOrBundle> decodeBundle(JsonObject bundleStructure) {
@@ -196,8 +205,10 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = pf.newWasAttributedTo(id, entity, agent);
             break;
         case bundle:
-            @SuppressWarnings("rawtypes")
-			Collection statements = decodeBundle(attributeMap);
+        	Hashtable<String, String> localNamespaces = decodePrefixes(attributeMap);
+        	// TODO: Use the local namespace while preserving the top-level namespace
+        	@SuppressWarnings("rawtypes")
+            Collection statements = decodeBundle(attributeMap);
             NamedBundle namedBundle = new NamedBundle(); 
             namedBundle.setId(id);
             namedBundle.getEntityOrActivityOrWasGeneratedBy().addAll((Collection<? extends Statement>)statements);
@@ -265,11 +276,11 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             break;
         case hadMember:
             EntityRef collection = optionalEntityRef("prov:collection", attributeMap);
-            entity = optionalEntityRef("prov:entity", attributeMap);
+            Collection<EntityRef> entities = optionalEntityRefs("prov:entity", attributeMap);
             HadMember membership = new HadMember();
             membership.setCollection(collection);
-            if (entity != null)
-            	membership.getEntity().add(entity);
+            if (entities != null)
+            	membership.getEntity().addAll(entities);
             statement = membership;
             break;
         case mentionOf:
@@ -428,11 +439,11 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     
     private Attribute decodeAttribute(QName attributeName, JsonElement element) {
     	Object value;
-    	String xsdType;
+    	QName xsdType;
     	
     	if (element.isJsonPrimitive()) {
             value = decodeJSONPrimitive(element.getAsString());
-            xsdType = pf.getXsdType(value);
+            xsdType = vconv.getXsdType(value);
         } else {
             JsonObject struct = element.getAsJsonObject();
             if (struct.has("lang")) {
@@ -442,11 +453,12 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
                 iString.setValue(struct.get("$").getAsString());
                 iString.setLang(lang);
                 value = iString;
-                xsdType = "xsd:string";
+                xsdType = ValueConverter.QNAME_XSD_STRING;
             } else {
 	            // The following implicitly assume the type is one of XSD types
-	            xsdType = struct.get("type").getAsString();
-	            value = decodeXSDType(struct.get("$").getAsString(), xsdType);
+	            String xsdTypeAsString = struct.get("type").getAsString();
+	            value = decodeXSDType(struct.get("$").getAsString(), xsdTypeAsString);
+	            xsdType=pf.stringToQName(xsdTypeAsString); //FIXME: is the right way to go?
             }
         }    	
     	return new Attribute(attributeName, value, xsdType);
@@ -500,6 +512,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         }
     }
     
+    //FIXME: use ValueConverter
     private Object decodeXSDType(String value, String datatype) {
         
         if (datatype.equals("xsd:string"))  return value;
@@ -633,6 +646,22 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     private XMLGregorianCalendar optionalTime(String attributeName, JsonObject attributeMap) {
         if (attributeMap.has(attributeName))
             return pf.newISOTime(popString(attributeMap, attributeName));
+        else
+            return null;
+    }
+    
+    private Collection<EntityRef> entityRefs(String attributeName, JsonObject attributeMap) {
+        List<EntityRef> results = new ArrayList<EntityRef>();
+        List<JsonElement> elements = popMultiValAttribute(attributeName, attributeMap);
+        for (JsonElement element : elements) {
+        	results.add(pf.newEntityRef(element.getAsString()));
+        }
+        return results;
+    }
+    
+    private Collection<EntityRef> optionalEntityRefs(String attributeName, JsonObject attributeMap) {
+        if (attributeMap.has(attributeName))
+            return entityRefs(attributeName, attributeMap);
         else
             return null;
     }

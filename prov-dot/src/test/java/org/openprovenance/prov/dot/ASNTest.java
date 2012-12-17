@@ -14,7 +14,7 @@ public class ASNTest extends TestCase {
 
         CommonTree tree = u.convertASNToTree(asnFile);
 
-        Document o= (Document) u.convertTreeToJavaBean(tree);
+        Document o= (Document) u.oldConvertTreeToJavaBean(tree);
 
         //serial.serialiseDocument(new File(xmlFile),o,true);
 

@@ -3,7 +3,7 @@ import java.util.List;
 
 
 
-public class HTMLConstructor extends NotationConstructor {
+public class HTMLConstructor extends OldNotationConstructor {
 
     public String keyword(String s) {
 	return "<span class='prov-keyword'>" + s + "</span>";

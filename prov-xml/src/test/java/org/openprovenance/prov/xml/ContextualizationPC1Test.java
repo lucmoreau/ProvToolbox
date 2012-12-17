@@ -26,6 +26,7 @@ public class ContextualizationPC1Test extends TestCase {
 
     public static ProvFactory pFactory;
     static final ProvUtilities util=new ProvUtilities();
+    public static ValueConverter vconv;
 
     static {
 	namespaces = new Hashtable<String, String>();
@@ -33,6 +34,7 @@ public class ContextualizationPC1Test extends TestCase {
 	namespaces.put("_", PC1_NS);
 	namespaces.put("xsd", NamespacePrefixMapper.XSD_NS);
 	pFactory = new ProvFactory(namespaces);
+	vconv=new ValueConverter(pFactory);
     }
 
     /**
@@ -126,7 +128,7 @@ public class ContextualizationPC1Test extends TestCase {
 	Entity bunEntity = pFactory.newEntity(bun.getId());
 	Entity a = pFactory.newEntity(globalA1.getId().getLocalPart());
 	MentionOf ctx = pFactory.newMentionOf(a, globalA1, bunEntity);
-	pFactory.addAttribute(a, DOT_NS, DOT_PREFIX, "color", "blue");
+	pFactory.addAttribute(a, DOT_NS, DOT_PREFIX, "color", "blue", vconv);
 
 	graph.getEntityOrActivityOrWasGeneratedBy().add(bunEntity);
 	graph.getEntityOrActivityOrWasGeneratedBy().add(a);
@@ -155,11 +157,11 @@ public class ContextualizationPC1Test extends TestCase {
     }
 
     public void addValue(HasExtensibility p1, String val) {
-	pFactory.addAttribute(p1, PC1_NS, PC1_PREFIX, "value", val);
+	pFactory.addAttribute(p1, PC1_NS, PC1_PREFIX, "value", val, vconv);
     }
 
     public void addUrl(HasExtensibility p1, String val) {
-	pFactory.addAttribute(p1, PC1_NS, PC1_PREFIX, "url", val);
+	pFactory.addAttribute(p1, PC1_NS, PC1_PREFIX, "url", val, vconv);
     }
 
     public NamedBundle makePC1FullGraph(ProvFactory pFactory,

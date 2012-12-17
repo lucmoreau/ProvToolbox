@@ -4,8 +4,8 @@ import javax.xml.namespace.QName;
 
 /** An interface for constructing data structures when PROV Java beans
  * are traversed by BeanTraversal class. */
-
-public interface BeanConstructor {
+@Deprecated
+public interface OldBeanConstructor {
     public Object convert(QName q);
 
     public Object convertEntity(Object id, List<Object> tAttrs, List<Object> lAttr, List<Object> locAttr, Object value, List<Attribute> otherAttrs);

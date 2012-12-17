@@ -584,7 +584,7 @@ public class RdfCollector extends RDFHandlerBase {
 							}
 
 							// FIXME: Bug 3 occurs here.
-							String xsdType = getXsdType(shortType);
+							QName xsdType = pFactory.stringToQName(getXsdType(shortType));//Is it right?
 							attr = pFactory.newAttribute(uri.getNamespace(),
 									uri.getLocalName(), prefix,
 									decodeLiteral(lit), xsdType);
@@ -598,7 +598,7 @@ public class RdfCollector extends RDFHandlerBase {
 
 							attr = pFactory.newAttribute(uri.getNamespace(),
 									uri.getLocalName(), prefix, uw,
-									getXsdType("anyURI"));
+									pFactory.stringToQName(getXsdType("anyURI")));
 						} else
 						{
 							System.err.println("Invalid value");

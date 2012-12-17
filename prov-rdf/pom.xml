@@ -66,13 +66,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.openprovenance.prov</groupId>
-      <artifactId>prov-n</artifactId>
-      <version>0.0.4-SNAPSHOT</version>
-      <scope>test</scope>
-      <classifier>tests</classifier>
-    </dependency>
-    <dependency>
       <groupId>org.jvnet.jaxb2_commons</groupId>
 	  <artifactId>runtime</artifactId>
    	  <version>${jaxb.common.version}</version>

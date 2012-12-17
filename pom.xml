@@ -173,7 +173,7 @@
         <version>1.0</version>
       </extension>
     </extensions>  
-    
+
 
      <plugins>
 
@@ -285,13 +285,11 @@
           </dependencies>
         </plugin>
 
-
-
     </plugins>
    </pluginManagement>
   </build>
 
-  <properties>  
+  <properties>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 

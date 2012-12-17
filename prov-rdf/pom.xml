@@ -2,7 +2,7 @@
   <parent>
     <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.3</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -56,19 +56,19 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.0.3-SNAPSHOT</version>
+      <version>0.0.3</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-n</artifactId>
-      <version>0.0.3-SNAPSHOT</version>
+      <version>0.0.3</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-n</artifactId>
-      <version>0.0.3-SNAPSHOT</version>
+      <version>0.0.3</version>
       <scope>test</scope>
       <classifier>tests</classifier>
     </dependency>
@@ -87,7 +87,7 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.0.3-SNAPSHOT</version>
+      <version>0.0.3</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>

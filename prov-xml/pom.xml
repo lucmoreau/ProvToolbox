@@ -86,12 +86,6 @@
 
   <build>
 
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
 
 
 
@@ -987,6 +981,13 @@
      
    </pluginManagement>
       
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
     <testResources>
        <testResource>
          <directory>src/test/resources</directory>

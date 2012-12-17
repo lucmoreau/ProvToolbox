@@ -6,6 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Hashtable;
 import java.util.Date;
+import java.util.Properties;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import javax.xml.bind.JAXBElement;
 import java.util.GregorianCalendar;
@@ -39,6 +42,27 @@ public class ProvFactory {
 
     public static String printURI(java.net.URI u) {
 	return u.toString();
+    }
+    
+    private static String fileName = "toolbox.properties";
+    private static final String toolboxVersion = getPropertiesFromClasspath(fileName).getProperty("toolbox.version");
+
+    public String getVersion() {
+        return toolboxVersion;
+    }
+
+    private static Properties getPropertiesFromClasspath(String propFileName) {
+        Properties props = new Properties();
+        InputStream inputStream = ProvFactory.class.getClassLoader().getResourceAsStream(propFileName);
+        if (inputStream == null) {
+            return null;
+        }
+        try {
+            props.load(inputStream);
+        } catch (IOException ee) {
+            return null;
+        }
+        return props;   
     }
 
     /** Note, this method now makes it stateful :-( */

@@ -94,14 +94,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         JsonObject provJSONDoc = json.getAsJsonObject();
         
         // Initialise namespaces
-        Hashtable<String, String> namespaces = new Hashtable<String, String>();
-        JsonObject prefixes = getObjectAndRemove(provJSONDoc, PROV_JSON_PREFIX);
-        if (prefixes != null) {
-            for (Map.Entry<String, JsonElement> pair: prefixes.entrySet()) {
-                namespaces.put(pair.getKey(), pair.getValue().getAsString());
-            }
+        Hashtable<String, String> namespaces = decodePrefixes(provJSONDoc);
+        if (namespaces != null)
             pf.setNamespaces(namespaces);
-        }
         
         // Decoding structures
         List<StatementOrBundle> statements = decodeBundle(provJSONDoc);
@@ -111,6 +106,18 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         doc.setNss(namespaces);
         doc.getEntityOrActivityOrWasGeneratedBy().addAll(statements);
         return doc;
+    }
+    
+    private Hashtable<String, String> decodePrefixes(JsonObject bundleStructure) {
+    	Hashtable<String, String> namespaces = new Hashtable<String, String>();
+        JsonObject prefixes = getObjectAndRemove(bundleStructure, PROV_JSON_PREFIX);
+        if (prefixes != null) {
+            for (Map.Entry<String, JsonElement> pair: prefixes.entrySet())
+                namespaces.put(pair.getKey(), pair.getValue().getAsString());
+            return namespaces;
+        }
+        else
+        	return null;
     }
     
     private List<StatementOrBundle> decodeBundle(JsonObject bundleStructure) {
@@ -198,8 +205,10 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = pf.newWasAttributedTo(id, entity, agent);
             break;
         case bundle:
-            @SuppressWarnings("rawtypes")
-			Collection statements = decodeBundle(attributeMap);
+        	Hashtable<String, String> localNamespaces = decodePrefixes(attributeMap);
+        	// TODO: Use the local namespace while preserving the top-level namespace
+        	@SuppressWarnings("rawtypes")
+            Collection statements = decodeBundle(attributeMap);
             NamedBundle namedBundle = new NamedBundle(); 
             namedBundle.setId(id);
             namedBundle.getEntityOrActivityOrWasGeneratedBy().addAll((Collection<? extends Statement>)statements);

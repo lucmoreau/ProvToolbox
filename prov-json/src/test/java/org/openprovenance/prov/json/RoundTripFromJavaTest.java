@@ -32,11 +32,6 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 		return ".json";
 	}
 	
-	public boolean checkTest(String name) {
-		return !(name.contains("member2") || name.contains("member3"));
-	}
-
-	
 	@Override
 	public Document readDocument(String file) {
 		try {

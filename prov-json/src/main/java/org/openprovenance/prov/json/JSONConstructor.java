@@ -48,27 +48,81 @@ import org.openprovenance.prov.xml.WasStartedBy;
 public class JSONConstructor implements ModelConstructor {
 	private class JsonProvRecord {
 		String type;
-		Object id;
+		String id;
 		List<Object[]>  attributes;
 		
-		public JsonProvRecord(String type, QName id, List<Object[]>  attributes) {
+		public JsonProvRecord(String type, String id, List<Object[]>  attributes) {
 			this.type = type;
 			this.id = id;
 			this.attributes = attributes;
 		}
 	}
 
-	final private List<JsonProvRecord> records = new ArrayList<JsonProvRecord>();
 	final private QNameExport qnExport;
-
+	private List<JsonProvRecord> records = new ArrayList<JsonProvRecord>();
+	private Map<String, String> namespaces = null;
+	
 	public JSONConstructor(QNameExport qnExport) {
 		this.qnExport = qnExport;
 	}
 	
 	
 	public Object getJSONStructure() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String,Object> bundle = new HashMap<String, Object>();
+    	if (namespaces != null)
+    		bundle.put("prefix", namespaces);
+		for (Object o: records) {
+        	if (o == null) continue;
+            JsonProvRecord record = (JsonProvRecord)o;
+            String type = record.type;
+            
+            Map<Object, Object> structure = (Map<Object, Object>)bundle.get(type);
+            if (structure == null) {
+            	structure = new HashMap<Object, Object>();
+            	bundle.put(type, structure);
+            }
+            Map<Object,Object> hash = new HashMap<Object, Object>();
+            List<Object[]> tuples = (List<Object[]>)record.attributes;
+            for (Object[] tuple : tuples) {
+            	Object attribute = tuple[0];
+            	Object value = tuple[1];
+            	if (hash.containsKey(attribute)) {
+            		Object existing = hash.get(attribute);
+            		if (existing instanceof List) {
+            			// Already a multi-value attribute
+            			List<Object> values = (List<Object>)existing;
+            			values.add(value);
+            		}
+            		else {
+            			// A multi-value list needs to be created
+            			List<Object> values = new ArrayList<Object>();
+            			values.add(existing);
+            			values.add(value);
+            			hash.put(attribute, values);
+            		}
+            	}
+            	else {
+            		hash.put(attribute, value);
+            	}
+            }
+            if (structure.containsKey(record.id)) {
+            	Object existing = structure.get(record.id);
+            	if (existing instanceof List) {
+        			List<Object> values = (List<Object>)existing;
+        			values.add(hash);
+        		}
+        		else {
+        			// A multi-value list needs to be created
+        			List<Object> values = new ArrayList<Object>();
+        			values.add(existing);
+        			values.add(hash);
+        			structure.put(record.id, values);
+        		}
+            }
+            else
+            	structure.put(record.id, hash);
+        }
+        return bundle;
 	}
 
 	private static final Map<String,Integer> countMap = new HashMap<String, Integer>();
@@ -128,205 +182,318 @@ public class JSONConstructor implements ModelConstructor {
 		}
 		else {
 			String datatype = qnExport.qnameToString(attr.getXsdType());
-			attrValue = typedLiteral((String)value, datatype, null);
+			attrValue = typedLiteral(value.toString(), datatype, null);
 		}
 		return tuple(attrName, attrValue);
 	}
 	
-	private List<Object[]> convertAttributes(List<Attribute> attrs) {
+	private List<Object[]> convertAttributes(Collection<Attribute> attrs) {
 		List<Object[]> result = new ArrayList<Object[]>();
 		for (Attribute attr: attrs) {
 			result.add(convertAttribute(attr));
 		}
 		return result;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newEntity(javax.xml.namespace.QName, java.util.List)
-	 */
+
 	@Override
-	public Entity newEntity(QName id, List<Attribute> attributes) {
+	public Entity newEntity(QName id, Collection<Attribute> attributes) {
 		List<Object[]> attrs = convertAttributes(attributes);
-		JsonProvRecord record = new JsonProvRecord("entity", id, attrs);
+		JsonProvRecord record = new JsonProvRecord("entity", qnExport.qnameToString(id), attrs);
 		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newActivity(javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, javax.xml.datatype.XMLGregorianCalendar, java.util.List)
-	 */
+
 	@Override
 	public Activity newActivity(QName id, XMLGregorianCalendar startTime,
-			XMLGregorianCalendar endTime, List<Attribute> attributes) {
-		if (startTime != null || endTime !=null) {
-			List<Attribute> attrs = new ArrayList<Attribute>(attributes);
-			
-		}
+			XMLGregorianCalendar endTime, Collection<Attribute> attributes) {
+		List<Object[]> attrs = convertAttributes(attributes);
+		if (startTime != null) {
+    		attrs.add(tuple("prov:startTime", startTime.toXMLFormat()));
+    	}
+    	if (endTime != null) {
+    		attrs.add(tuple("prov:endTime", endTime.toXMLFormat()));
+    	}
+    	JsonProvRecord record = new JsonProvRecord("activity", qnExport.qnameToString(id), attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newAgent(javax.xml.namespace.QName, java.util.List)
-	 */
+
 	@Override
-	public Agent newAgent(QName id, List<Attribute> attributes) {
-		// TODO Auto-generated method stub
+	public Agent newAgent(QName id, Collection<Attribute> attributes) {
+		List<Object[]> attrs = convertAttributes(attributes);
+		JsonProvRecord record = new JsonProvRecord("agent", qnExport.qnameToString(id), attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newUsed(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.List)
-	 */
+
 	@Override
 	public Used newUsed(QName id, QName activity, QName entity,
-			XMLGregorianCalendar time, List<Attribute> attributes) {
-		// TODO Auto-generated method stub
+			XMLGregorianCalendar time, Collection<Attribute> attributes) {
+		List<Object[]> attrs = convertAttributes(attributes);
+		if (activity != null)
+			attrs.add(tuple("prov:activity", qnExport.qnameToString(activity)));
+    	if (entity != null)
+    		attrs.add(tuple("prov:entity", qnExport.qnameToString(entity)));
+    	if (time != null)
+    		attrs.add(tuple("prov:time", time.toXMLFormat()));
+    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("u");
+		JsonProvRecord record = new JsonProvRecord("used", recordID, attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newWasGeneratedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.List)
-	 */
+
 	@Override
 	public WasGeneratedBy newWasGeneratedBy(QName id, QName entity,
 			QName activity, XMLGregorianCalendar time,
-			List<Attribute> attributes) {
-		// TODO Auto-generated method stub
+			Collection<Attribute> attributes) {
+		List<Object[]> attrs = convertAttributes(attributes);
+		if (entity != null)
+    		attrs.add(tuple("prov:entity", qnExport.qnameToString(entity)));
+    	if (activity != null)
+			attrs.add(tuple("prov:activity", qnExport.qnameToString(activity)));
+    	if (time != null)
+    		attrs.add(tuple("prov:time", time.toXMLFormat()));
+    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("wGB");
+		JsonProvRecord record = new JsonProvRecord("wasGeneratedBy", recordID, attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newWasInvalidatedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.List)
-	 */
+
 	@Override
 	public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity,
 			QName activity, XMLGregorianCalendar time,
-			List<Attribute> attributes) {
-		// TODO Auto-generated method stub
+			Collection<Attribute> attributes) {
+		List<Object[]> attrs = convertAttributes(attributes);
+		if (entity != null)
+    		attrs.add(tuple("prov:entity", qnExport.qnameToString(entity)));
+    	if (activity != null)
+			attrs.add(tuple("prov:activity", qnExport.qnameToString(activity)));
+    	if (time != null)
+    		attrs.add(tuple("prov:time", time.toXMLFormat()));
+    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("wIB");
+		JsonProvRecord record = new JsonProvRecord("wasInvalidatedBy", recordID, attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newWasStartedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.List)
-	 */
+
 	@Override
 	public WasStartedBy newWasStartedBy(QName id, QName activity,
 			QName trigger, QName starter, XMLGregorianCalendar time,
-			List<Attribute> attributes) {
-		// TODO Auto-generated method stub
+			Collection<Attribute> attributes) {
+		List<Object[]> attrs = convertAttributes(attributes);
+		if (activity != null)
+			attrs.add(tuple("prov:activity", qnExport.qnameToString(activity)));
+		if (trigger != null)
+    		attrs.add(tuple("prov:trigger", qnExport.qnameToString(trigger)));
+		if (starter != null)
+    		attrs.add(tuple("prov:starter", qnExport.qnameToString(starter)));
+    	if (time != null)
+    		attrs.add(tuple("prov:time", time.toXMLFormat()));
+    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("wSB");
+		JsonProvRecord record = new JsonProvRecord("wasStartedBy", recordID, attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newWasEndedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.List)
-	 */
+
 	@Override
 	public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger,
-			QName ender, XMLGregorianCalendar time, List<Attribute> attributes) {
-		// TODO Auto-generated method stub
+			QName ender, XMLGregorianCalendar time,
+			Collection<Attribute> attributes) {
+		List<Object[]> attrs = convertAttributes(attributes);
+		if (activity != null)
+			attrs.add(tuple("prov:activity", qnExport.qnameToString(activity)));
+		if (trigger != null)
+    		attrs.add(tuple("prov:trigger", qnExport.qnameToString(trigger)));
+		if (ender != null)
+    		attrs.add(tuple("prov:ender", qnExport.qnameToString(ender)));
+    	if (time != null)
+    		attrs.add(tuple("prov:time", time.toXMLFormat()));
+    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("wEB");
+		JsonProvRecord record = new JsonProvRecord("wasEndedBy", recordID, attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newWasDerivedFrom(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, java.util.List)
-	 */
+
 	@Override
 	public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1,
 			QName activity, QName generation, QName usage,
-			List<Attribute> attributes) {
-		// TODO Auto-generated method stub
+			Collection<Attribute> attributes) {
+		List<Object[]> attrs = convertAttributes(attributes);
+		if (e2 != null)
+    		attrs.add(tuple("prov:generatedEntity", qnExport.qnameToString(e2)));
+		if (e1 != null)
+    		attrs.add(tuple("prov:usedEntity", qnExport.qnameToString(e1)));
+		if (activity != null)
+			attrs.add(tuple("prov:activity", qnExport.qnameToString(activity)));
+		if (generation != null)
+			attrs.add(tuple("prov:generation", qnExport.qnameToString(generation)));
+		if (usage != null)
+			attrs.add(tuple("prov:usage", qnExport.qnameToString(usage)));
+		
+    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("wDF");
+		JsonProvRecord record = new JsonProvRecord("wasDerivedFrom", recordID, attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newWasAssociatedWith(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, java.util.List)
-	 */
+
 	@Override
 	public WasAssociatedWith newWasAssociatedWith(QName id, QName a, QName ag,
-			QName plan, List<Attribute> attributes) {
-		// TODO Auto-generated method stub
+			QName plan, Collection<Attribute> attributes) {
+		List<Object[]> attrs = convertAttributes(attributes);
+		if (a != null)
+			attrs.add(tuple("prov:activity", qnExport.qnameToString(a)));
+		if (ag != null)
+    		attrs.add(tuple("prov:agent", qnExport.qnameToString(ag)));
+		if (plan != null)
+    		attrs.add(tuple("prov:plan", qnExport.qnameToString(plan)));
+    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("wAW");
+		JsonProvRecord record = new JsonProvRecord("wasAssociatedWith", recordID, attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newWasAttributedTo(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, java.util.List)
-	 */
+
 	@Override
 	public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,
-			List<Attribute> attributes) {
-		// TODO Auto-generated method stub
+			Collection<Attribute> attributes) {
+		List<Object[]> attrs = convertAttributes(attributes);
+		if (e != null)
+			attrs.add(tuple("prov:entity", qnExport.qnameToString(e)));
+		if (ag != null)
+    		attrs.add(tuple("prov:agent", qnExport.qnameToString(ag)));
+    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("wAT");
+		JsonProvRecord record = new JsonProvRecord("wasAttributedTo", recordID, attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newActedOnBehalfOf(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, java.util.List)
-	 */
+
 	@Override
 	public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1,
-			QName a, List<Attribute> attributes) {
-		// TODO Auto-generated method stub
+			QName a, Collection<Attribute> attributes) {
+		List<Object[]> attrs = convertAttributes(attributes);
+		if (ag2 != null)
+    		attrs.add(tuple("prov:delegate", qnExport.qnameToString(ag2)));
+		if (ag1 != null)
+    		attrs.add(tuple("prov:responsible", qnExport.qnameToString(ag1)));
+		if (a != null)
+			attrs.add(tuple("prov:activity", qnExport.qnameToString(a)));
+    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("aOBO");
+		JsonProvRecord record = new JsonProvRecord("actedOnBehalfOf", recordID, attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newWasInformedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, java.util.List)
-	 */
+
 	@Override
 	public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1,
-			List<Attribute> attributes) {
-		// TODO Auto-generated method stub
+			Collection<Attribute> attributes) {
+		List<Object[]> attrs = convertAttributes(attributes);
+		if (a2 != null)
+    		attrs.add(tuple("prov:informed", qnExport.qnameToString(a2)));
+		if (a1 != null)
+    		attrs.add(tuple("prov:informant", qnExport.qnameToString(a1)));
+    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("Infm");
+		JsonProvRecord record = new JsonProvRecord("wasInformedBy", recordID, attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newWasInfluencedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, java.util.List)
-	 */
+
 	@Override
 	public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1,
-			List<Attribute> attributes) {
-		// TODO Auto-generated method stub
+			Collection<Attribute> attributes) {
+		List<Object[]> attrs = convertAttributes(attributes);
+		if (a2 != null)
+    		attrs.add(tuple("prov:influencee", qnExport.qnameToString(a2)));
+		if (a1 != null)
+    		attrs.add(tuple("prov:influencer", qnExport.qnameToString(a1)));
+    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("Infl");
+		JsonProvRecord record = new JsonProvRecord("wasInfluencedBy", recordID, attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newAlternateOf(javax.xml.namespace.QName, javax.xml.namespace.QName)
-	 */
+
 	@Override
 	public AlternateOf newAlternateOf(QName e2, QName e1) {
-		// TODO Auto-generated method stub
+		List<Object[]> attrs = new ArrayList<Object[]>();
+		if (e2 != null)
+    		attrs.add(tuple("prov:alternate2", qnExport.qnameToString(e2)));
+		if (e1 != null)
+    		attrs.add(tuple("prov:alternate1", qnExport.qnameToString(e1)));
+		// TODO Add id to the interface
+		QName id = null;
+    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("aO");
+		JsonProvRecord record = new JsonProvRecord("alternateOf", recordID, attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newSpecializationOf(javax.xml.namespace.QName, javax.xml.namespace.QName)
-	 */
+
 	@Override
 	public SpecializationOf newSpecializationOf(QName e2, QName e1) {
-		// TODO Auto-generated method stub
+		List<Object[]> attrs = new ArrayList<Object[]>();
+		if (e2 != null)
+    		attrs.add(tuple("prov:specificEntity", qnExport.qnameToString(e2)));
+		if (e1 != null)
+    		attrs.add(tuple("prov:generalEntity", qnExport.qnameToString(e1)));
+		// TODO Add id to the interface
+		QName id = null;
+    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("sO");
+		JsonProvRecord record = new JsonProvRecord("specializationOf", recordID, attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newMentionOf(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)
-	 */
+
 	@Override
 	public MentionOf newMentionOf(QName e2, QName e1, QName b) {
-		// TODO Auto-generated method stub
+		List<Object[]> attrs = new ArrayList<Object[]>();
+		if (e2 != null)
+    		attrs.add(tuple("prov:specificEntity", qnExport.qnameToString(e2)));
+		if (e1 != null)
+    		attrs.add(tuple("prov:generalEntity", qnExport.qnameToString(e1)));
+		if (b != null)
+    		attrs.add(tuple("prov:bundle", qnExport.qnameToString(b)));
+		// TODO Add id to the interface
+		QName id = null;
+    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("mO");
+		JsonProvRecord record = new JsonProvRecord("mentionOf", recordID, attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newHadMember(javax.xml.namespace.QName, java.util.List)
-	 */
+
 	@Override
-	public HadMember newHadMember(QName c, List<QName> e) {
-		// TODO Auto-generated method stub
+	public HadMember newHadMember(QName c, Collection<QName> e) {
+		List<Object[]> attrs = new ArrayList<Object[]>();
+		if (c != null)
+    		attrs.add(tuple("prov:collection", qnExport.qnameToString(c)));
+		if (e != null && !e.isEmpty()) {
+			List<String> entityList = new ArrayList<String>(); 
+			for (QName entity : e)
+				entityList.add(qnExport.qnameToString(entity));
+			attrs.add(tuple("prov:entity", entityList));
+		}
+		// TODO Add id to the interface
+		QName id = null;
+    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("hM");
+		JsonProvRecord record = new JsonProvRecord("hadMember", recordID, attrs);
+		this.records.add(record);
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newDocument(java.util.Hashtable, java.util.Collection, java.util.Collection)
-	 */
+
 	@Override
 	public Document newDocument(Hashtable<String, String> namespaces,
 			Collection<Statement> statements, Collection<NamedBundle> bundles) {
@@ -334,9 +501,7 @@ public class JSONConstructor implements ModelConstructor {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#newNamedBundle(javax.xml.namespace.QName, java.util.Hashtable, java.util.Collection)
-	 */
+
 	@Override
 	public NamedBundle newNamedBundle(QName id,
 			Hashtable<String, String> namespaces,
@@ -345,21 +510,18 @@ public class JSONConstructor implements ModelConstructor {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#startDocument(java.util.Hashtable)
-	 */
+
 	@Override
 	public void startDocument(Hashtable<String, String> hashtable) {
-		// TODO Auto-generated method stub
-
+		// Make a copy of the table
+		namespaces = new Hashtable<String, String>(hashtable);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.xml.ModelConstructor#startBundle(javax.xml.namespace.QName, java.util.Hashtable)
-	 */
+
 	@Override
 	public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
 		// TODO Auto-generated method stub
-
+		
 	}
+
 }

@@ -267,11 +267,11 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             break;
         case hadMember:
             EntityRef collection = optionalEntityRef("prov:collection", attributeMap);
-            entity = optionalEntityRef("prov:entity", attributeMap);
+            Collection<EntityRef> entities = optionalEntityRefs("prov:entity", attributeMap);
             HadMember membership = new HadMember();
             membership.setCollection(collection);
-            if (entity != null)
-            	membership.getEntity().add(entity);
+            if (entities != null)
+            	membership.getEntity().addAll(entities);
             statement = membership;
             break;
         case mentionOf:
@@ -637,6 +637,22 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     private XMLGregorianCalendar optionalTime(String attributeName, JsonObject attributeMap) {
         if (attributeMap.has(attributeName))
             return pf.newISOTime(popString(attributeMap, attributeName));
+        else
+            return null;
+    }
+    
+    private Collection<EntityRef> entityRefs(String attributeName, JsonObject attributeMap) {
+        List<EntityRef> results = new ArrayList<EntityRef>();
+        List<JsonElement> elements = popMultiValAttribute(attributeName, attributeMap);
+        for (JsonElement element : elements) {
+        	results.add(pf.newEntityRef(element.getAsString()));
+        }
+        return results;
+    }
+    
+    private Collection<EntityRef> optionalEntityRefs(String attributeName, JsonObject attributeMap) {
+        if (attributeMap.has(attributeName))
+            return entityRefs(attributeName, attributeMap);
         else
             return null;
     }

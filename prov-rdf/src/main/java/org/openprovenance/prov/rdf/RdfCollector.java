@@ -282,7 +282,11 @@ public class RdfCollector extends RDFHandlerBase {
 			if (statement.getPredicate().equals(RDF.TYPE))
 			{
 				Value value = statement.getObject();
-				if (value instanceof URI && !isProvURI((URI) value))
+				if (!(value instanceof URI))
+				{
+					continue;
+				}
+				if (!isProvURI((URI) value))
 				{
 					continue;
 				}
@@ -437,8 +441,7 @@ public class RdfCollector extends RDFHandlerBase {
 
 			if (element instanceof HasType)
 			{
-				if (statement.getPredicate().stringValue()
-						.equals(PROV + "type"))
+				if (statement.getPredicate().equals(RDF.TYPE))
 				{
 					Value value = statement.getObject();
 					Object obj = valueToObject(statement.getObject());
@@ -454,10 +457,21 @@ public class RdfCollector extends RDFHandlerBase {
 							sameAsType = uriVal.equals(type.toString());
 						}
 
-						if (!sameAsType
-								&& !((HasType) element).getType().contains(obj))
+						if (!sameAsType)
 						{
-							pFactory.addType((HasType) element, obj);
+							if (statement.getObject() instanceof Resource)
+							{
+								pFactory.addType(
+										(HasType) element,
+										convertResourceToQName((Resource) statement
+												.getObject()));
+							} else if (statement.getObject() instanceof Literal)
+							{
+
+								pFactory.addType((HasType) element,
+										decodeLiteral((Literal) statement
+												.getObject()));
+							}
 						}
 					} else
 					{
@@ -513,62 +527,7 @@ public class RdfCollector extends RDFHandlerBase {
 				Value val = statement.getObject();
 				if (!isProvURI(uri))
 				{
-					if (uri.equals(RDF.TYPE))
-					{
-						// Add prov:type
-						if (element instanceof HasType)
-						{
-							if (val instanceof URI)
-							{
-								if (!val.toString().equals(type.getURI()))
-								{
-									URI valURI = (URI) (val);
-
-									String prefix = this.revnss.get(valURI
-											.getNamespace());
-									Object typeVal = null;
-									if (prefix == null)
-									{
-										URIWrapper uriWrapper = new URIWrapper();
-										java.net.URI jURI = java.net.URI
-												.create(valURI.toString());
-										uriWrapper.setValue(jURI);
-										typeVal = uriWrapper;
-										//
-										// System.out.println("info: "+valURI.getNamespace()+" "+valURI.getLocalName());
-										// valQ = new
-										// QName(valURI.getNamespace(),
-										// valURI.getLocalName());
-									} else
-									{
-
-										typeVal = new QName(
-												valURI.getNamespace(),
-												valURI.getLocalName(), prefix);
-									}
-
-									// Avoid adding duplicate types
-									if (typeVal != null
-											&& !((HasType) element).getType()
-													.contains(typeVal))
-									{
-										pFactory.addType((HasType) element,
-												typeVal);
-									}
-								}
-							} else if (val instanceof Literal)
-							{
-								Object typeVal = decodeLiteral((Literal) val);
-								if (typeVal != null
-										&& !((HasType) element).getType()
-												.contains(typeVal))
-								{
-									pFactory.addType((HasType) element, typeVal);
-								}
-							}
-						}
-
-					} else
+					if (!uri.equals(RDF.TYPE) && !uri.equals(RDFS.LABEL))
 					{
 						// Retrieve the prefix
 						String prefix = this.revnss.get(uri.getNamespace());

@@ -761,7 +761,7 @@ public class RdfCollector extends RDFHandlerBase {
 		} else
 		{
 			// Ugly!
-			String prefix = uri.getNamespace().hashCode() + "";
+			String prefix = "ns" + uri.getNamespace().hashCode() + "";// 
 			handleNamespace(prefix, uri.getNamespace());
 			qname = new QName(uri.getNamespace(), uri.getLocalName(), prefix);
 		}

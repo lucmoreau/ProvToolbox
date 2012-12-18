@@ -47,7 +47,7 @@ public class NotationConstructor implements ModelConstructor {
 	this.qnExport=qnExport;
     }
     
-    boolean standaloneExpression=false;
+    public boolean standaloneExpression=false;
        
     public void write(String s) {
         try {

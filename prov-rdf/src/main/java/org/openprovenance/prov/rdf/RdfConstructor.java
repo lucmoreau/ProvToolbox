@@ -375,7 +375,7 @@ public class RdfConstructor implements ModelConstructor {
 		} else {
 		    qnAsString = qn.getPrefix() + ":" + qn.getLocalPart();
 		}
-		if (true) { // That's here the code to generate resource or
+		if (false) { // That's here the code to generate resource or
 			    // literal.
 		    literalImpl = new LiteralImpl(qnAsString,
 						  gb.qnameToURI(type));

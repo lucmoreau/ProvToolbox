@@ -86,17 +86,11 @@ public class RoundTripFromJavaTest extends
 		return sw.toString();
 	}
 	
-	@Override
-	public void addFurtherAttributesWithQNames(HasExtensibility he) {
-	    //TODO: qnames not supported here, yet
-	}
-
-
 	public boolean mergeDuplicateProperties()
 	{
 		return true;
 	}
-
+	
 	public void testInfluence1() throws JAXBException
 	{
 		// RDF Collector doesn't support Influence
@@ -150,9 +144,6 @@ public class RoundTripFromJavaTest extends
 	{
 		}
 	
-    public void testBundle2() {
-		// TODO: Not supported yet, though seemed to work at some point?
-    }
 	
 	public void testScruffyGeneration1() {
 		// TODO: Unsupported

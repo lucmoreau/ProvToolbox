@@ -43,9 +43,9 @@ public class RoundTripFromRdfTest extends TestCase {
 		}
 		System.out.println("result is " + result);
 
-		ProvSerialiser.getThreadProvSerialiser().serialiseDocument(
-				new File("target/" + file + ".xml"), doc2, true);
-		u2.writeDocument(doc2, "target/" + file + ".provn");
+		//ProvSerialiser.getThreadProvSerialiser().serialiseDocument(
+		//		new File("target/" + file + ".xml"), doc2, true);
+		//u2.writeDocument(doc2, "target/" + file + ".provn");
 
 	}
 

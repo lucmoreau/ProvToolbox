@@ -27,6 +27,11 @@ public class Ontology {
 	return new QName(NamespacePrefixMapper.RDF_NS, local,
 			 NamespacePrefixMapper.RDF_PREFIX);
     }
+    
+    public static QName newRdfsQName(String local) {
+	return new QName(NamespacePrefixMapper.RDFS_NS, local,
+			 NamespacePrefixMapper.RDFS_PREFIX);
+    }
 
     public static QName QNAME_PROVO_atLocation = newProvQName("atLocation");
     public static QName QNAME_PROVO_atTime = newProvQName("atTime");
@@ -109,7 +114,7 @@ public class Ontology {
     public static QName QNAME_PROVO_hadMember = newProvQName("hadMember");
 
     public static QName QNAME_RDF_TYPE = newRdfQName("type");
-    public static QName QNAME_RDF_LABEL = newRdfQName("label");
+    public static QName QNAME_RDFS_LABEL = newRdfsQName("label");
 
     void initInfluenceTables() {
 	qualifiedInfluenceTable.put(QNAME_PROVO_Influence,
@@ -185,7 +190,7 @@ public class Ontology {
 	otherTable.put(QNAME_PROVO_Association, QNAME_PROVO_hadPlan);
 	otherTable.put(QNAME_PROVO_Delegation, QNAME_PROVO_hadActivity);
 
-	convertTable.put(Attribute.PROV_LABEL_QNAME, QNAME_RDF_LABEL);
+	convertTable.put(Attribute.PROV_LABEL_QNAME, QNAME_RDFS_LABEL);
 	convertTable.put(Attribute.PROV_TYPE_QNAME, QNAME_RDF_TYPE);
 	convertTable.put(Attribute.PROV_LOCATION_QNAME, QNAME_PROVO_atLocation);
     }

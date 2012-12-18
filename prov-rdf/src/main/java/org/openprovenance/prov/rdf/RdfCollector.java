@@ -826,6 +826,10 @@ public class RdfCollector extends RDFHandlerBase {
 									.newEntityRef(bundleQ));
 
 					store(context, nmo);
+				} else if (predS.equals(PROV + "value"))
+				{
+					Object resourceVal = convertResourceToQName((Resource) value);
+					entity.setValue(resourceVal);
 				}
 			} else if (value instanceof Literal)
 			{

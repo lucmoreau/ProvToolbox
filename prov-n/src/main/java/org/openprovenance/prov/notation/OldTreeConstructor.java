@@ -1,8 +1,8 @@
 package org.openprovenance.prov.notation;
 import java.util.List;
 
-
-public interface TreeConstructor {
+@Deprecated
+public interface OldTreeConstructor {
     /* Component 1 */
 
     public Object convertEntity(Object id, Object attrs);

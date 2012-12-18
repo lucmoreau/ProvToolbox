@@ -9,8 +9,8 @@ import java.io.File;
 import  org.antlr.runtime.tree.CommonTree;
 
 
-
-public  class MainParser {
+@Deprecated
+public  class OldMainParser {
 
 
 
@@ -25,9 +25,9 @@ public  class MainParser {
             System.out.println(tree.toStringTree());
 
             @SuppressWarnings("unused")
-            Object o1=new TreeTraversal(new NullConstructor()).convert(tree);
+            Object o1=new OldTreeTraversal(new OldNullConstructor()).convert(tree);
 
-            Object o2=u.convertTreeToJavaBean(tree);
+            Object o2=u.oldConvertTreeToJavaBean(tree);
 
 	    String o3=u.convertTreeToASN(tree);
 

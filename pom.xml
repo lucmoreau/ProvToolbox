@@ -5,7 +5,7 @@
   <groupId>org.openprovenance.prov</groupId>
   <artifactId>ProvToolbox</artifactId>
   <name>W3C PROV Specifications</name>
-  <version>0.0.4-SNAPSHOT</version>
+  <version>0.1.1-SNAPSHOT</version>
   <url>http://openprovenance.org/java/site/prov1_0</url>
   <packaging>pom</packaging>
   <description>Some Java code related to the W3C PROV specifications.</description>
@@ -173,7 +173,7 @@
         <version>1.0</version>
       </extension>
     </extensions>  
-    
+
 
      <plugins>
 
@@ -285,13 +285,11 @@
           </dependencies>
         </plugin>
 
-
-
     </plugins>
    </pluginManagement>
   </build>
 
-  <properties>  
+  <properties>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 

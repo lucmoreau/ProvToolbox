@@ -43,6 +43,7 @@ import org.openrdf.model.Value;
 import org.openrdf.model.impl.BNodeImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.vocabulary.RDF;
+import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.rio.helpers.RDFHandlerBase;
 
 public class RdfCollector extends RDFHandlerBase {
@@ -282,7 +283,11 @@ public class RdfCollector extends RDFHandlerBase {
 			if (statement.getPredicate().equals(RDF.TYPE))
 			{
 				Value value = statement.getObject();
-				if (value instanceof URI && !isProvURI((URI) value))
+				if (!(value instanceof URI))
+				{
+					continue;
+				}
+				if (!isProvURI((URI) value))
 				{
 					continue;
 				}
@@ -307,9 +312,26 @@ public class RdfCollector extends RDFHandlerBase {
 		return options.toArray(new ProvType[] {});
 	}
 
+	protected QName convertResourceToQName(Resource resource)
+	{
+		if (resource instanceof URI)
+		{
+			return convertURIToQName((URI) resource);
+		} else if (resource instanceof BNode)
+		{
+			return new QName(((BNode) (resource)).getID());
+		} else
+		{
+			return null;
+		}
+	}
+
 	protected Object valueToObject(Value value)
 	{
-		if (value instanceof Literal)
+		if (value instanceof Resource)
+		{
+			return convertResourceToQName((Resource) value);
+		} else if (value instanceof Literal)
 		{
 			return decodeLiteral((Literal) value);
 		} else if (value instanceof URI)
@@ -321,20 +343,6 @@ public class RdfCollector extends RDFHandlerBase {
 		} else if (value instanceof BNode)
 		{
 			return new QName(((BNode) (value)).getID());
-		} else
-		{
-			return null;
-		}
-	}
-
-	protected QName convertResourceToQName(Resource resource)
-	{
-		if (resource instanceof URI)
-		{
-			return convertURIToQName((URI) resource);
-		} else if (resource instanceof BNode)
-		{
-			return new QName(((BNode) (resource)).getID());
 		} else
 		{
 			return null;
@@ -437,27 +445,40 @@ public class RdfCollector extends RDFHandlerBase {
 
 			if (element instanceof HasType)
 			{
-				if (statement.getPredicate().stringValue()
-						.equals(PROV + "type"))
+				if (statement.getPredicate().equals(RDF.TYPE))
 				{
 					Value value = statement.getObject();
 					Object obj = valueToObject(statement.getObject());
 					if (obj != null)
 					{
 
+						Value vobj = statement.getObject();
 						Boolean sameAsType = false;
-						if (obj instanceof QName)
+						if (vobj instanceof URI)
 						{
 							// TODO: Nasty.
-							String uriVal = ((QName) (obj)).getNamespaceURI()
-									+ ((QName) (obj)).getLocalPart();
+							URI uri = (URI) (vobj);
+
+							String uriVal = uri.getNamespace()
+									+ uri.getLocalName();
 							sameAsType = uriVal.equals(type.toString());
 						}
 
-						if (!sameAsType
-								&& !((HasType) element).getType().contains(obj))
+						if (!sameAsType)
 						{
-							pFactory.addType((HasType) element, obj);
+							if (statement.getObject() instanceof Resource)
+							{
+								pFactory.addType(
+										(HasType) element,
+										convertResourceToQName((Resource) statement
+												.getObject()));
+							} else if (statement.getObject() instanceof Literal)
+							{
+
+								pFactory.addType((HasType) element,
+										decodeLiteral((Literal) statement
+												.getObject()));
+							}
 						}
 					} else
 					{
@@ -492,7 +513,8 @@ public class RdfCollector extends RDFHandlerBase {
 
 			if (element instanceof HasLabel)
 			{
-				if (predS.equals(PROV + "label"))
+				URI uri = (URI) statement.getPredicate();
+				if (uri.equals(RDFS.LABEL))
 				{
 					Literal lit = (Literal) (statement.getObject());
 					if (lit.getLanguage() != null)
@@ -513,62 +535,7 @@ public class RdfCollector extends RDFHandlerBase {
 				Value val = statement.getObject();
 				if (!isProvURI(uri))
 				{
-					if (uri.equals(RDF.TYPE))
-					{
-						// Add prov:type
-						if (element instanceof HasType)
-						{
-							if (val instanceof URI)
-							{
-								if (!val.toString().equals(type.getURI()))
-								{
-									URI valURI = (URI) (val);
-
-									String prefix = this.revnss.get(valURI
-											.getNamespace());
-									Object typeVal = null;
-									if (prefix == null)
-									{
-										URIWrapper uriWrapper = new URIWrapper();
-										java.net.URI jURI = java.net.URI
-												.create(valURI.toString());
-										uriWrapper.setValue(jURI);
-										typeVal = uriWrapper;
-										//
-										// System.out.println("info: "+valURI.getNamespace()+" "+valURI.getLocalName());
-										// valQ = new
-										// QName(valURI.getNamespace(),
-										// valURI.getLocalName());
-									} else
-									{
-
-										typeVal = new QName(
-												valURI.getNamespace(),
-												valURI.getLocalName(), prefix);
-									}
-
-									// Avoid adding duplicate types
-									if (typeVal != null
-											&& !((HasType) element).getType()
-													.contains(typeVal))
-									{
-										pFactory.addType((HasType) element,
-												typeVal);
-									}
-								}
-							} else if (val instanceof Literal)
-							{
-								Object typeVal = decodeLiteral((Literal) val);
-								if (typeVal != null
-										&& !((HasType) element).getType()
-												.contains(typeVal))
-								{
-									pFactory.addType((HasType) element, typeVal);
-								}
-							}
-						}
-
-					} else
+					if (!uri.equals(RDF.TYPE) && !uri.equals(RDFS.LABEL))
 					{
 						// Retrieve the prefix
 						String prefix = this.revnss.get(uri.getNamespace());
@@ -584,7 +551,10 @@ public class RdfCollector extends RDFHandlerBase {
 							}
 
 							// FIXME: Bug 3 occurs here.
-							String xsdType = getXsdType(shortType);
+							QName xsdType = pFactory
+									.stringToQName(getXsdType(shortType));// Is
+																			// it
+																			// right?
 							attr = pFactory.newAttribute(uri.getNamespace(),
 									uri.getLocalName(), prefix,
 									decodeLiteral(lit), xsdType);
@@ -596,9 +566,13 @@ public class RdfCollector extends RDFHandlerBase {
 									.stringValue());
 							uw.setValue(jURI);
 
-							attr = pFactory.newAttribute(uri.getNamespace(),
-									uri.getLocalName(), prefix, uw,
-									getXsdType("anyURI"));
+							attr = pFactory
+									.newAttribute(
+											uri.getNamespace(),
+											uri.getLocalName(),
+											prefix,
+											uw,
+											pFactory.stringToQName(getXsdType("anyURI")));
 						} else
 						{
 							System.err.println("Invalid value");
@@ -761,7 +735,7 @@ public class RdfCollector extends RDFHandlerBase {
 		} else
 		{
 			// Ugly!
-			String prefix = uri.getNamespace().hashCode() + "";
+			String prefix = "ns" + uri.getNamespace().hashCode() + "";//
 			handleNamespace(prefix, uri.getNamespace());
 			qname = new QName(uri.getNamespace(), uri.getLocalName(), prefix);
 		}
@@ -866,6 +840,10 @@ public class RdfCollector extends RDFHandlerBase {
 									.newEntityRef(bundleQ));
 
 					store(context, nmo);
+				} else if (predS.equals(PROV + "value"))
+				{
+					Object resourceVal = convertResourceToQName((Resource) value);
+					entity.setValue(resourceVal);
 				}
 			} else if (value instanceof Literal)
 			{

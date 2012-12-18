@@ -1,7 +1,7 @@
 package org.openprovenance.prov.notation;
 
 import org.openprovenance.prov.xml.Attribute;
-import org.openprovenance.prov.xml.BeanConstructor;
+import org.openprovenance.prov.xml.OldBeanConstructor;
 import org.openprovenance.prov.xml.ProvFactory;
 
 import static org.openprovenance.prov.xml.NamespacePrefixMapper.XSI_NS;
@@ -12,11 +12,12 @@ import java.util.LinkedList;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
+@Deprecated
 /** A class that implements the BeanConstructor interface and relies on a TreeConstructor to construct a data structure for a given bean. */
-public class BeanTreeConstructor implements BeanConstructor{
-    private TreeConstructor c;
+public class OldBeanTreeConstructor implements OldBeanConstructor{
+    private OldTreeConstructor c;
     final ProvFactory pFactory;
-    public BeanTreeConstructor(ProvFactory pFactory, TreeConstructor c) {
+    public OldBeanTreeConstructor(ProvFactory pFactory, OldTreeConstructor c) {
         this.pFactory=pFactory;
         this.c=c;
         this.namespaces=pFactory.getNss();

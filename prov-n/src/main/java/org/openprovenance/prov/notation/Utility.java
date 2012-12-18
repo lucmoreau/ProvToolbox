@@ -2,6 +2,7 @@ package org.openprovenance.prov.notation;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,9 +16,11 @@ import  org.antlr.runtime.tree.CommonTree;
 import  org.antlr.runtime.tree.CommonTreeAdaptor;
 import  org.antlr.runtime.tree.TreeAdaptor;
 
+import org.openprovenance.prov.xml.BeanTraversal;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.BeanTraversal;
+import org.openprovenance.prov.xml.OldBeanTraversal;
+import org.openprovenance.prov.xml.ValueConverter;
 
 
 public  class Utility {
@@ -61,20 +64,18 @@ public  class Utility {
         return tree;
     }
 
+   
     public Object convertTreeToJavaBean(CommonTree tree) {
-	if (tree==null) return null;
-        Object o=new TreeTraversal(new ProvConstructor(ProvFactory.getFactory())).convert(tree);
-        return o;
-    }
-
-    public String convertTreeToASN(CommonTree tree) {
-        Object o=new TreeTraversal(new NotationConstructor()).convert(tree);
-        return (String)o;
-    }
+  	if (tree==null) return null;
+  	ProvFactory pFactory=new ProvFactory();
+          Object o=new TreeTraversal(pFactory,pFactory).convert(tree);
+          return o;
+      }
 
 
+    //TODO
     public String convertTreeToHTML(CommonTree tree) {
-        Object o=new TreeTraversal(new HTMLConstructor()).convert(tree);
+        Object o=new OldTreeTraversal(new HTMLConstructor()).convert(tree);
         return (String)o;
     }
 
@@ -85,26 +86,25 @@ public  class Utility {
     }
 
     /** A conversion function that copies a Java Bean deeply. */
-    public Object convertJavaBeanToJavaBean(Document c) {
-        ProvFactory pFactory=new ProvFactory(c.getNss());
-        ProvConstructor pc=new ProvConstructor(pFactory);
-        pc.namespaceTable.putAll(c.getNss());
-        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(pFactory,pc));
-        Object o=bt.convert(c);
+    public Object convertJavaBeanToJavaBean(Document doc) {
+        ProvFactory pFactory=new ProvFactory(doc.getNss());
+        BeanTraversal bt=new BeanTraversal(pFactory, pFactory, new ValueConverter(pFactory));
+        Document o=bt.convert(doc);
         return o;
     }
 
-    
-    public String convertASNToASN(String file) throws java.io.IOException, Throwable {
-        CommonTree tree=convertASNToTree(file);
-        Object o=convertTreeToASN(tree);
-        return (String)o;
-    }
 
-    public String convertBeanToASN(Document c) {
-        BeanTraversal bt=new BeanTraversal(new BeanTreeConstructor(ProvFactory.getFactory(), new NotationConstructor()));
-        Object o=bt.convert(c);
-        return (String)o;
+
+    public String convertBeanToASN(Document doc) {
+	ProvFactory pFactory=new ProvFactory();
+	StringWriter writer=new StringWriter();
+	NotationConstructor nc=new NotationConstructor(writer, pFactory);
+        BeanTraversal bt=new BeanTraversal(nc, pFactory, new ValueConverter(pFactory));
+        bt.convert(doc);
+        nc.flush();
+        String s=writer.toString();
+        nc.close();
+        return s;
     }
 
     /* from http://www.antlr.org/wiki/display/ANTLR3/Interfacing+AST+with+Java */
@@ -140,15 +140,43 @@ public  class Utility {
     
     public void writeDocument(Document doc, String filename){
 	String s=convertBeanToASN(doc);
+	System.out.println("printing" + s);
         writeTextToFile(s,filename);
     }
     
     public Document readDocument(String filename) throws IOException, Throwable {
 	 CommonTree tree = convertASNToTree(filename);
-         Object o=convertTreeToJavaBean(tree);
-         return (Document)o;
+         Object doc=convertTreeToJavaBean(tree);
+         return (Document)doc;
     }
     
+    
+    @Deprecated
+    public Object oldConvertTreeToJavaBean(CommonTree tree) {
+        if (tree==null) return null;
+          Object o=new OldTreeTraversal(new OldProvConstructor(ProvFactory.getFactory())).convert(tree);
+          return o;
+      }
+    @Deprecated
+    public String convertTreeToASN(CommonTree tree) {
+        Object o=new OldTreeTraversal(new OldNotationConstructor()).convert(tree);
+        return (String)o;
+    }
+    
+    @Deprecated
+    public String convertASNToASN(String file) throws java.io.IOException, Throwable {
+        CommonTree tree=convertASNToTree(file);
+        Object o=convertTreeToASN(tree);
+        return (String)o;
+    }
+
+    @Deprecated
+    public String oldConvertBeanToASN(Document c) {
+        OldBeanTraversal bt=new OldBeanTraversal(new OldBeanTreeConstructor(ProvFactory.getFactory(), new OldNotationConstructor()));
+        Object o=bt.convert(c);
+        return (String)o;
+    }
+
 
 }
 

@@ -29,6 +29,7 @@ public class PC1FullTest extends TestCase {
     static final Hashtable<String, String> namespaces;
 
     public static ProvFactory pFactory;
+    public static ValueConverter vconv;
 
     static {
 	namespaces = new Hashtable<String, String>();
@@ -36,6 +37,7 @@ public class PC1FullTest extends TestCase {
 	namespaces.put("_", PC1_NS);
 	namespaces.put("xsd", NamespacePrefixMapper.XSD_NS);
 	pFactory = new ProvFactory(namespaces);
+	vconv=new ValueConverter(pFactory);
     }
 
     /**
@@ -125,11 +127,11 @@ public class PC1FullTest extends TestCase {
     }
 
     public void addValue(HasExtensibility p1, String val) {
-	pFactory.addAttribute(p1, PC1_NS, "value", PC1_PREFIX, val);
+	pFactory.addAttribute(p1, PC1_NS, "value", PC1_PREFIX, val, vconv);
     }
 
     public void addUrl(HasExtensibility p1, String val) {
-	pFactory.addAttribute(p1, PC1_NS, "url", PC1_PREFIX, val);
+	pFactory.addAttribute(p1, PC1_NS, "url", PC1_PREFIX, val, vconv);
     }
 
     public Document makePC1FullGraph(ProvFactory pFactory, String inputLocation,

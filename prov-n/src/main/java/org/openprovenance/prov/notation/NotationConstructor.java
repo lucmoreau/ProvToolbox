@@ -1,65 +1,260 @@
 package org.openprovenance.prov.notation;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Collection;
 import java.util.Hashtable;
-import java.util.List;
-import org.openprovenance.prov.xml.InternationalizedString;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
+
+import org.openprovenance.prov.xml.ActedOnBehalfOf;
+import org.openprovenance.prov.xml.Activity;
+import org.openprovenance.prov.xml.Agent;
+import org.openprovenance.prov.xml.AlternateOf;
+import org.openprovenance.prov.xml.Attribute;
+import org.openprovenance.prov.xml.ModelConstructor;
+import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.xml.Entity;
+import org.openprovenance.prov.xml.HadMember;
+import org.openprovenance.prov.xml.MentionOf;
+import org.openprovenance.prov.xml.NamedBundle;
+import org.openprovenance.prov.xml.QNameExport;
+import org.openprovenance.prov.xml.SpecializationOf;
+import org.openprovenance.prov.xml.Statement;
+import org.openprovenance.prov.xml.UncheckedException;
+import org.openprovenance.prov.xml.Used;
+import org.openprovenance.prov.xml.WasAssociatedWith;
+import org.openprovenance.prov.xml.WasAttributedTo;
+import org.openprovenance.prov.xml.WasDerivedFrom;
+import org.openprovenance.prov.xml.WasEndedBy;
+import org.openprovenance.prov.xml.WasGeneratedBy;
+import org.openprovenance.prov.xml.WasInfluencedBy;
+import org.openprovenance.prov.xml.WasInformedBy;
+import org.openprovenance.prov.xml.WasInvalidatedBy;
+import org.openprovenance.prov.xml.WasStartedBy;
 
 /** For testing purpose, conversion back to ASN. */
 
-public class NotationConstructor implements TreeConstructor {
+public class NotationConstructor implements ModelConstructor {
+    
+    public static final String MARKER = "-";
+    final private QNameExport qnExport;
+    final private BufferedWriter buffer;
 
-    public String symbol(String s) {
-	return s;
+    public NotationConstructor(Writer writer, QNameExport qnExport) {
+	this.buffer=new BufferedWriter(writer);
+	this.qnExport=qnExport;
     }
-    public String showprefix(String s) {
-	return s;
-    }
-
-    public String optionalAttributes(Object attrs) {
-        String s_attrs=(String)attrs;
-        if ("".equals(s_attrs)) {
-            return "";
-        } else {
-            return symbol(",[") + attrs + symbol("]");
+    
+    boolean standaloneExpression=false;
+       
+    public void write(String s) {
+        try {
+            buffer.write(s);
+        } catch (IOException e) {
+            throw new UncheckedException("NotationConstructor.write() failed", e);
         }
     }
-    public String optionalTime(Object time) {
-        return ((time==null)? "" : (", " + time));
+    
+    public void writeln(String s) {
+        try {
+            buffer.write(s);
+            if (!standaloneExpression)
+            buffer.newLine();
+        } catch (IOException e) {
+            throw new UncheckedException("NotationConstructor.write() failed", e);
+        }
+    }
+    
+    public void close() {
+	try {
+	    buffer.close();
+	} catch (IOException e) {
+	    throw new UncheckedException("convertBeanToNotation: closing writer failed", e);
+	}
+    }
+    
+    public void flush() {
+	try {
+	    buffer.flush();
+	} catch (IOException e) {
+	    throw new UncheckedException("convertBeanToNotation: closing writer failed", e);
+	}
+    }
+
+
+    public String idOrMarker(QName qn) {
+        return ((qn==null)? MARKER : qnExport.qnameToString(qn));
+    }
+
+    public String timeOrMarker(XMLGregorianCalendar time) {
+        return ((time==null)? MARKER : time.toString());
+    }
+
+    private String optionalId(QName id) {
+        return ((id==null)? "" : (qnExport.qnameToString(id) + ";"));
     }            
 
-    public Object optional2(Object str) {
-        return ((str==null)? "" : str);
+    
+    @Override
+    public Entity newEntity(QName id, Collection<Attribute> attributes) {
+        String s=keyword("entity") + "(" + idOrMarker(id)  + optionalAttributes(attributes) + ")";
+        writeln(s);
+	return null;
     }
-
-
-    public Object optional(Object str) {
-        return ((str==null)? "-" : str);
+    @Override
+    public Activity newActivity(QName id, XMLGregorianCalendar startTime,
+				XMLGregorianCalendar endTime,
+				Collection<Attribute> attributes) {
+        String s=keyword("activity") + "(" + idOrMarker(id) + "," + timeOrMarker(startTime) + "," + timeOrMarker(endTime) + optionalAttributes(attributes) + ")";
+        writeln(s);
+	return null;
     }
-
-    public Object convertActivity(Object id,Object startTime,Object endTime, Object aAttrs) {
-        String s=keyword("activity") + "(" + id + "," + optional(startTime) + "," + optional(endTime) + optionalAttributes(aAttrs) + ")";
-        return s;
+    @Override
+    public Agent newAgent(QName id, Collection<Attribute> attributes) {
+        String s=keyword("agent") + "(" + idOrMarker(id)  + optionalAttributes(attributes) + ")";
+        writeln(s);
+	return null;
     }
-    public Object convertEntity(Object id, Object attrs) {
-        String s=keyword("entity") + "(" + id  + optionalAttributes(attrs) + ")";
-        return s;
+    @Override
+    public Used newUsed(QName id, QName activity, QName entity,
+			XMLGregorianCalendar time, Collection<Attribute> attributes) {
+        String s=keyword("used") + "(" + optionalId(id) + idOrMarker(activity) + "," + idOrMarker(entity) + "," +
+                timeOrMarker(time) + optionalAttributes(attributes) + ")";
+        writeln(s);
+	return null;
     }
-    public Object convertAgent(Object id, Object attrs) {
-        String s=keyword("agent") + "(" + id  + optionalAttributes(attrs) + ")";
-        return s;
+    @Override
+    public WasGeneratedBy newWasGeneratedBy(QName id, QName entity,
+					    QName activity,
+					    XMLGregorianCalendar time,
+					    Collection<Attribute> attributes) {
+        String s=keyword("wasGeneratedBy") + "(" + optionalId(id) + idOrMarker(entity) + "," + idOrMarker(activity) + "," +
+                timeOrMarker(time) + optionalAttributes(attributes) +  ")";
+        writeln(s);
+	return null;
     }
-    public String keyword(String s) {
-        return s;
+    @Override
+    public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity,
+						QName activity,
+						XMLGregorianCalendar time,
+						Collection<Attribute> attributes) {
+        String s=keyword("wasInvalidatedBy") + "(" + optionalId(id) + idOrMarker(entity) + "," + idOrMarker(activity) + "," +
+                timeOrMarker(time) + optionalAttributes(attributes) +  ")";
+        writeln(s);
+        return null;
     }
-    public String breakline() {
-        return "\n";
+    @Override
+    public WasStartedBy newWasStartedBy(QName id, QName activity,
+					QName trigger, QName starter,
+					XMLGregorianCalendar time,
+					Collection<Attribute> attributes) {
+        String s="wasStartedBy(" + optionalId(id) + idOrMarker(activity) + "," + idOrMarker(trigger) + "," + idOrMarker(starter) + "," +
+                timeOrMarker(time) + optionalAttributes(attributes) +  ")";
+        writeln(s);
+	return null;
     }
-    public String showuri(String s) {
-        return  s;
+    @Override
+    public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger,
+				    QName ender, XMLGregorianCalendar time,
+				    Collection<Attribute> attributes) {
+        String s="wasEndedBy(" + optionalId(id) + idOrMarker(activity) + "," + idOrMarker(trigger) + "," + idOrMarker(ender) + "," +
+                timeOrMarker(time) + optionalAttributes(attributes) +  ")";
+        writeln(s);
+	return null;
     }
-
-    public Object convertDocument(Object namespaces, List<Object> records,
-                                  List<Object> bundles) {
+    @Override
+    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1,
+					    QName activity, QName generation,
+					    QName usage,
+					    Collection<Attribute> attributes) {
+        String s=keyword("wasDerivedFrom") + "(" + optionalId(id) + idOrMarker(e2) + ", " + idOrMarker(e1) + 
+                ((activity==null && generation==null && usage==null) ?
+                 "" : ", " + idOrMarker(activity) + ", " + idOrMarker(generation) + ", " + idOrMarker(usage)) + optionalAttributes(attributes) +  ")";
+        writeln(s);
+	return null;
+    }
+    @Override
+    public WasAssociatedWith newWasAssociatedWith(QName id, QName a, QName ag,
+						  QName plan,
+						  Collection<Attribute> attributes) {
+        String s=keyword("wasAssociatedWith") + "(" + optionalId(id) + idOrMarker(a) + "," + idOrMarker(ag) + "," +
+                idOrMarker(plan) +
+                optionalAttributes(attributes) + ")";        
+        writeln(s);
+        return null;
+    }
+    @Override
+    public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,
+					      Collection<Attribute> attributes) {
+        String s=keyword("wasAttributedTo") + "(" + optionalId(id) + idOrMarker(e) + ", " + idOrMarker(ag) +
+                optionalAttributes(attributes) +  ")";
+        writeln(s);
+	return null;
+    }
+    @Override
+    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1,
+					      QName a,
+					      Collection<Attribute> attributes) {
+        String s=keyword("actedOnBehalfOf") + "(" + optionalId(id) + idOrMarker(ag2) + "," + idOrMarker(ag1) + "," +
+                idOrMarker(a) +
+                optionalAttributes(attributes) + ")";
+        writeln(s);
+	return null;
+    }
+    
+    @Override
+    public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1,
+					  Collection<Attribute> attributes) {
+        String s="wasInformedBy(" + optionalId(id) + idOrMarker(a2) + "," + idOrMarker(a1)
+                + optionalAttributes(attributes) +  ")";
+        writeln(s);
+	return null;
+    }
+    @Override
+    public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1,
+					      Collection<Attribute> attributes) {
+        String s="wasInfluencedBy(" + optionalId(id) + idOrMarker(a2) + "," + idOrMarker(a1)
+                + optionalAttributes(attributes) +  ")";
+        writeln(s);
+	return null;
+    }
+    @Override
+    public AlternateOf newAlternateOf(QName e2, QName e1) {
+	writeln("alternateOf(" + idOrMarker(e2) + "," + idOrMarker(e1) + ")");
+	return null;
+   }
+    @Override
+    public SpecializationOf newSpecializationOf(QName e2, QName e1) {
+	writeln("specializationOf(" + idOrMarker(e2) + "," + idOrMarker(e1) + ")");
+	return null;
+    }
+    @Override
+    public MentionOf newMentionOf(QName e2, QName e1, QName b) {
+        String s="mentionOf(" + idOrMarker(e2) + ", " + idOrMarker(e1) + ", " + idOrMarker(b) + ")";
+        writeln(s);
+	return null;
+    }
+    @Override
+    public HadMember newHadMember(QName c, Collection<QName> ll) {
+        for (QName e: ll) {
+            String s=keyword("hadMember") + "(" + idOrMarker(c) + "," + idOrMarker(e) + ")";
+            writeln(s);
+        }
+	return null;
+    }
+    
+    @Override
+    public void startDocument(Hashtable<String, String> namespaces) {
         String s = keyword("document") + breakline();
+        s = s+ processNamespaces(namespaces);
+        write(s);
+    }
+
+
+    public String processNamespaces(Hashtable<String, String> namespaces) {
+        String s="";
         if (namespaces != null) {
             if (namespaces instanceof Hashtable) {
                 Hashtable<String, String> nss = (Hashtable<String, String>) namespaces;
@@ -87,315 +282,106 @@ public class NotationConstructor implements TreeConstructor {
                 s = s + namespaces + breakline();
             }
         }
-        for (Object o : records) {
-            s = s + o + breakline();
-        }
-        if (bundles != null) {
-            for (Object o : bundles) {
-                s = s + o + breakline();
-            }
-        }
-        s = s + keyword("endDocument");
         return s;
     }
+    
 
-    public Object convertBundle(Object id, Object namespaces, List<Object> records) {
-        String s="bundle " + id + breakline();
-	if (namespaces!=null) {
-	    s=s+namespaces + breakline();
-	}
-	if (records!=null) 
-	    for (Object o: records) {
-		s=s+o+breakline();
-	    }
-        s=s+"endBundle";
-        return s;
+
+    public Object convertNamespace(Object pre, Object iri) {
+        return keyword("prefix") + " " + showprefix((String)pre) + " " + showuri((String)iri);
     }
 
-    public void startBundle(Object bundleId) {
-    }
-
-    public Object convertAttributes(List<Object> attributes) {
-        String s="";
-        boolean first=true;
-        for (Object o: attributes) {
-            if (first) {
-                first=false;
-                s=s+o;
-            } else {
-                s=s+symbol(",")+ " " +o;
-            }
-        }
-        return s;
-    }
-    public Object convertId(String id) {
-        return id;
+    public Object convertDefaultNamespace(Object iri) {
+        return  keyword("default") + " " + showuri((String)iri);
     }
 
 
-    public Object convertAttribute(Object name, Object value) {
-	return name + "=" + value;
-    }
-    public Object convertStart(String start) {
-        return start;
-    }
-    public Object convertEnd(String end) {
-        return end;
-    }
-    public Object convertString(String s) {
-        return s;
+    public String showuri(String s) {
+        return  s;
     }
 
-    public Object convertString(String s, String lang) {
-        return s + "@" + lang;
-    }
-
-    public Object convertInt(int i) {
-        return i;
-    }
-
-    public String optionalId(Object id) {
-        return ((id==null)? "" : (id + ";"));
-    }            
-
-    public Object convertUsed(Object id, Object id2,Object id1, Object time, Object aAttrs) {
-        String s=keyword("used") + "(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," +
-            optional(time) + optionalAttributes(aAttrs) + ")";
-        return s;
-    }
-    public Object convertWasGeneratedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s=keyword("wasGeneratedBy") + "(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," +
-            optional(time) + optionalAttributes(aAttrs) +  ")";
-        return s;
-    }
-    public Object convertWasStartedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs ) {
-        String s="wasStartedBy(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," + optional(id3) + "," +
-            optional(time) + optionalAttributes(aAttrs) +  ")";
-        return s;
-    }
-    public Object convertWasEndedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs ) {
-        String s="wasEndedBy(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," + optional(id3) + "," +
-            optional(time) + optionalAttributes(aAttrs) +  ")";
-        return s;
-    }
-
-    public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {
-        String s="wasInformedBy(" + optionalId(id) + optional(id2) + "," + optional(id1)
-            + optionalAttributes(aAttrs) +  ")";
-        return s;
-    }
-
-
-    public Object convertWasInvalidatedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-        String s=keyword("wasInvalidatedBy") + "(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," +
-            optional(time) + optionalAttributes(aAttrs) +  ")";
-        return s;
-    }
-
-
-    public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object aAttrs ) {
-        String s=keyword("wasAttributedTo") + "(" + optionalId(id) + optional(id2) + ", " + optional(id1) +
-            optionalAttributes(aAttrs) +  ")";
-        return s;
-    }
-
-
-    public Object convertWasDerivedFrom(Object id, Object id2,Object id1, Object pe, Object g2, Object u1, Object aAttrs) {
-        String s=keyword("wasDerivedFrom") + "(" + optionalId(id) + optional(id2) + ", " + optional(id1) + 
-            ((pe==null && g2==null && u1==null) ?
-             "" : ", " + optional(pe) + ", " + optional(g2) + ", " + optional(u1)) + optionalAttributes(aAttrs) +  ")";
-        return s;
-    }
 
     
-    public Object convertWasInfluencedBy(Object id, Object id2, Object id1, Object dAttrs) {
-        String s="wasInfluencedBy(" + optionalId(id) + optional(id2) + ", " + optional(id1) + optionalAttributes(dAttrs) +  ")";
-        return s;
+    @Override
+    public Document newDocument(Hashtable<String, String> namespaces,
+				Collection<Statement> statements,
+				Collection<NamedBundle> bundles) {
+        String s="";
+        
+        s = s + keyword("endDocument");
+	
+        write(s);
+	return null;
     }
+    
 
-
-    public Object convertAlternateOf(Object id2,Object id1) {
-        String s="alternateOf(" + id2 + "," + id1 + ")";
-        return s;
+    @Override
+    public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
+        String s = keyword("bundle") + " " + qnExport.qnameToString(bundleId);
+        s = s+ processNamespaces(namespaces);
+        writeln(s);
+ 
     }
-
-    public Object convertSpecializationOf(Object id2, Object id1) {
-        String s="specializationOf(" + id2 + "," + id1 + ")";
-        return s;
+    
+    
+    
+    @Override
+    public NamedBundle newNamedBundle(QName id,
+				      Hashtable<String, String> namespaces,
+				      Collection<Statement> statements) {
+        String s="";    
+        s = s + keyword("endBundle");
+        writeln(s);
+	return null;
     }
-
-    public Object convertMentionOf(Object su, Object bu, Object ta) {
-        String s="mentionOf(" + su + ", " + bu + ", " + optional(ta) + ")";
-        return s;
+    
+    public String optionalAttributes(Collection<Attribute> attrs) {
+	if ((attrs==null) || (attrs.isEmpty())) {
+	    return "";
+	}
+	StringBuffer sb=new StringBuffer();
+	boolean first=true;
+	for (Attribute attr: attrs) {
+	    if (first) {
+		sb.append(symbol(",[")+ attr.toNotationString());
+		first=false;
+	    } else {
+		sb.append(symbol(",")+ " " + attr.toNotationString());
+	    }
+	}
+	if (!first) sb.append(symbol("]"));
+	return sb.toString();
     }
-
-    public Object convertWasAssociatedWith(Object id, Object id2,Object id1, Object pl, Object aAttrs) {
-        String s=keyword("wasAssociatedWith") + "(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," +
-            optional(pl) +
-            optionalAttributes(aAttrs) + ")";
-        return s;
+     
+    public String symbol(String s) {
+	return s;
     }
-
-    public Object convertActedOnBehalfOf(Object id, Object id2,Object id1, Object a, Object aAttrs) {
-        String s=keyword("actedOnBehalfOf") + "(" + optionalId(id) + optional(id2) + "," + optional(id1) + "," +
-            optional(a) +
-            optionalAttributes(aAttrs) + ")";
-        return s;
-    }
-
-    public Object convertHadMember(Object collection, Object entity) {
-	String s=keyword("hadMember") + "(" + optional(collection) + "," + optional(entity) + ")";
+    public String showprefix(String s) {
 	return s;
     }
 
 
-    public Object convertExtension(Object name, Object id, Object args, Object dAttrs) {
+    
+    public String keyword(String s) {
+        return s;
+    }
+    public String breakline() {
+        return "\n";
+    }
+    
+  
+   
+    //TODO
+    public Object convertExtension(Object name, QName id, Object args, Object dAttrs) {
 	System.out.println("Name @" + name);
 	System.out.println("Name @" + id);
 	System.out.println("Name @" + args);
 	System.out.println("Name @" + dAttrs);
-        String s=keyword((String)name) + "(" + optionalId(id) + args +
-            optionalAttributes(dAttrs) + ")";
-	return s;
+  //      String s=keyword((String)name) + "(" + oldOptionalId(id) + args +
+  //          oldOptionalAttributes(dAttrs) + ")";
+  //	return s;
+	return null;
     }
-
-    public Object convertQualifiedName(String qname) {	
-        return qname;
-    }
-    public Object convertIRI(String iri) {
-        return iri;
-    }
-    //TODO should not use xsd:QName
-
-    public Object convertTypedLiteral(String datatype, Object value) {
-        if ("xsd:QName".equals(datatype)) {
-            String val=(String)value;
-            return "'" + val.substring(1, val.length() -1 ) + "'";
-        } else {
-	    if ("prov:Qualified_Name".equals(datatype)) {
-		String val=(String)value;
-		return "'" + val.substring(1, val.length() -1 ) + "'";
-	    } else {
-		if (value instanceof InternationalizedString) {
-		    InternationalizedString is=(InternationalizedString) value;
-		    value=convertInternationalizedString(is);
-		}
-		return value + " %% " + datatype;
-	    }
-	}
-    }
-
-
-    public Object convertInternationalizedString (InternationalizedString is) {
-	String value;
-	String lang=is.getLang();
-	if (lang==null) {
-	    value= "\""+ is.getValue() + "\"";
-	} else { 
-	    value= "\""+ is.getValue()+"\""+"@"+lang;
-	}
-	return value;
-    }
-
-
-   public Object convertNamespace(Object pre, Object iri) {
-       return keyword("prefix") + " " + showprefix((String)pre) + " " + showuri((String)iri);
-   }
-
-   public Object convertDefaultNamespace(Object iri) {
-       return  keyword("default") + " " + showuri((String)iri);
-   }
-
-    public Object convertNamespaces(List<Object> namespaces) {
-        String s="";
-        for (Object o: namespaces) {
-            s=s+o+breakline();
-        }
-        return s;
-    }
-
-    public Object convertPrefix(String pre) {
-        return pre;
-    }
-
-    /* Component 5 */
-
-    public Object convertInsertion(Object id, Object id2, Object id1, Object kes, Object iAttrs) {
-        String s="derivedByInsertionFrom(" + optionalId(id) + id2 + ", " + id1 + ", "
-	    + kes + optionalAttributes(iAttrs) +  ")";
-	return s;
-    }
-
-    public Object convertRemoval(Object id, Object id2, Object id1, Object keyset, Object rAttrs) {
-        String s="derivedByRemovalFrom(" + optionalId(id) + id2 + ", " + id1 + ", "
-	    + keyset + optionalAttributes(rAttrs) +  ")";
-	return s;
-
-    }
-
-    public Object convertCollectionMemberOf(Object id, Object id2, Object es, Object complete, Object mAttrs) {
-
-        String s="memberOf(" + optionalId(id) + id2 + ", "
-	    + es + ((complete==null)? "" : ", "+complete) + optionalAttributes(mAttrs) +  ")";
-	return s;
-
-    }
-
-
-    public Object convertDictionaryMemberOf(Object id, Object id2, Object kes, Object complete, Object mAttrs) {
-
-        String s="memberOf(" + optionalId(id) + id2 + ", "
-	    + kes + ((complete==null)? "" : ", "+complete) + optionalAttributes(mAttrs) +  ")";
-	return s;
-
-    }
-
-    public Object convertEntry(Object o1, Object o2) {
-        String s="{" + o1 + ", " + o2 + "}";
-	return s;
-    }
-
-    public Object convertKeyEntitySet(List<Object> entries) {
-        String s="{";
-
-	boolean first=true;
-
-	for (Object entry: entries) {
-	    if (!first) {
-		s=s+", ";
-	    } else {
-		first=false;
-	    }
-
-
-	    s=s + entry;
-	}
-	s=s+"}";
-	return s;
-    }
-
-
-    public Object convertKeys(List<Object> keys) {
-        String s="{";
-
-	boolean first=true;
-
-	for (Object key: keys) {
-	    if (!first) {
-		s=s+", ";
-	    } else {
-		first=false;
-	    }
-
-
-	    s=s + key;
-	}
-	s=s+"}";
-	return s;
-    }
-    
-
-    /* Component 6 */
 
 
 

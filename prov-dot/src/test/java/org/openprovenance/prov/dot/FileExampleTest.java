@@ -17,7 +17,7 @@ public class FileExampleTest extends TestCase {
 
         CommonTree tree = u.convertASNToTree(asnFile);
 
-        Document o= (Document) u.convertTreeToJavaBean(tree);
+        Document o= (Document) u.oldConvertTreeToJavaBean(tree);
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         

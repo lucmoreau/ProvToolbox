@@ -359,7 +359,7 @@ public class RdfConstructor implements ModelConstructor {
 	    LiteralImpl literalImpl = null;
 
 	    QName type = attr.getXsdType();
-	    QName pred = attr.getElementName(); // FIXME: convert to XSD_HASH
+	    QName pred = onto.convertToRdf(attr.getElementName()); // FIXME: convert to XSD_HASH
 
 	    String value;
 	    if (attr.getValue() instanceof InternationalizedString) {
@@ -375,7 +375,7 @@ public class RdfConstructor implements ModelConstructor {
 		} else {
 		    qnAsString = qn.getPrefix() + ":" + qn.getLocalPart();
 		}
-		if (true) { // That's here the code to generate resource or
+		if (false) { // That's here the code to generate resource or
 			    // literal.
 		    literalImpl = new LiteralImpl(qnAsString,
 						  gb.qnameToURI(type));

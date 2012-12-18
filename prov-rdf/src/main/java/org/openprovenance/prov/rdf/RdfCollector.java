@@ -506,7 +506,8 @@ public class RdfCollector extends RDFHandlerBase {
 
 			if (element instanceof HasLabel)
 			{
-				if (predS.equals(PROV + "label"))
+				URI uri = (URI) statement.getPredicate();
+				if (uri.equals(RDFS.LABEL))
 				{
 					Literal lit = (Literal) (statement.getObject());
 					if (lit.getLanguage() != null)

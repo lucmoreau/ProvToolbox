@@ -18,6 +18,9 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
     
     static final public String RDF_NS = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
     static final public String RDF_PREFIX = "rdf";
+    static final public String RDFS_NS = "http://www.w3.org/2000/01/rdf-schema#";
+    static final public String RDFS_PREFIX = "rdfs";
+    
 	public static final String TOOLBOX_NS = "http://openprovenance.org/toolbox/";
 
     private Hashtable<String,String> nss=null;

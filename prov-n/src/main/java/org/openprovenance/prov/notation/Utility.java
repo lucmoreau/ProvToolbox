@@ -19,7 +19,6 @@ import  org.antlr.runtime.tree.TreeAdaptor;
 import org.openprovenance.prov.xml.BeanTraversal;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.OldBeanTraversal;
 import org.openprovenance.prov.xml.ValueConverter;
 
 
@@ -73,12 +72,19 @@ public  class Utility {
       }
 
 
-    //TODO
-    public String convertTreeToHTML(CommonTree tree) {
-        Object o=new OldTreeTraversal(new HTMLConstructor()).convert(tree);
-        return (String)o;
-    }
 
+    public String convertBeanToHTML(Document doc) {
+	ProvFactory pFactory=new ProvFactory();
+	StringWriter writer=new StringWriter();
+	NotationConstructor nc=new HTMLConstructor(writer, pFactory);
+        BeanTraversal bt=new BeanTraversal(nc, pFactory, new ValueConverter(pFactory));
+        bt.convert(doc);
+        nc.flush();
+        String s=writer.toString();
+        nc.close();
+        return s;
+    }
+    
     public Object convertASNToJavaBean(String file) throws java.io.IOException, Throwable {
         CommonTree tree=convertASNToTree(file);
         Object o=convertTreeToJavaBean(tree);
@@ -151,33 +157,7 @@ public  class Utility {
     }
     
     
-    @Deprecated
-    public Object oldConvertTreeToJavaBean(CommonTree tree) {
-        if (tree==null) return null;
-          Object o=new OldTreeTraversal(new OldProvConstructor(ProvFactory.getFactory())).convert(tree);
-          return o;
-      }
-    @Deprecated
-    public String convertTreeToASN(CommonTree tree) {
-        Object o=new OldTreeTraversal(new OldNotationConstructor()).convert(tree);
-        return (String)o;
-    }
-    
-    @Deprecated
-    public String convertASNToASN(String file) throws java.io.IOException, Throwable {
-        CommonTree tree=convertASNToTree(file);
-        Object o=convertTreeToASN(tree);
-        return (String)o;
-    }
-
-    @Deprecated
-    public String oldConvertBeanToASN(Document c) {
-        OldBeanTraversal bt=new OldBeanTraversal(new OldBeanTreeConstructor(ProvFactory.getFactory(), new OldNotationConstructor()));
-        Object o=bt.convert(c);
-        return (String)o;
-    }
-
-
+ 
 }
 
 

@@ -10,8 +10,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
-import org.openprovenance.prov.xml.Element;
-import org.openprovenance.prov.xml.HasLocation;
+import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.HasRole;
 import org.openprovenance.prov.xml.HasTime;
 import org.openprovenance.prov.xml.Identifiable;
@@ -99,18 +98,18 @@ public class QualifiedCollector extends RdfCollector {
 					case END:
 						createEnd(contextQ, qname);
 						break;
-					case ENTITYINFLUENCE:
-						createEntityInfluence(contextQ, qname);
-						break;
+//					case ENTITYINFLUENCE:
+//						createEntityInfluence(contextQ, qname);
+//						break;
 					case INVALIDATION:
 						createInvalidation(contextQ, qname);
 						break;
 					case START:
 						createStart(contextQ, qname);
 						break;
-					case INFLUENCE:
-						createInfluence(contextQ, qname);
-						break;
+					//case INFLUENCE:
+					//	createInfluence(contextQ, qname);
+					//	break;
 					default:
 						break;
 					}
@@ -211,54 +210,7 @@ public class QualifiedCollector extends RdfCollector {
 
 	}
 
-	private void handleInfluence(QName context,
-			org.openprovenance.prov.xml.Influence target,
-			List<Statement> statements, ProvType type)
-	{
-		super.handleBaseStatements(target, context, target.getId(), type);
-		/*
-		 * WasInfluencedBy wib = new WasInfluencedBy();
-		 * wib.setInfluencee(pFactory.newAnyRef(target.getId()));
-		 * 
-		 * for (Statement statement : statements) { String predS =
-		 * statement.getPredicate().stringValue(); Value value =
-		 * statement.getObject();
-		 * 
-		 * if (value instanceof Resource) { QName valueQ =
-		 * qNameFromResource((Resource) value); if
-		 * (this.baseProperties.containsKey(predS) &&
-		 * this.baseProperties.get(predS).equals( PROV + "influencer")) {
-		 * wib.setInfluencer(pFactory.newAnyRef(valueQ)); } } }
-		 * 
-		 * store(context, wib);
-		 */
-	}
-
-	private void handleAgentInfluence(QName context,
-			org.openprovenance.prov.xml.Influence target,
-			List<Statement> statements, ProvType type)
-	{
-		handleInfluence(context, target, statements, type);
-	}
-
-	private void handleActivityInfluence(QName context,
-			org.openprovenance.prov.xml.Influence target,
-			List<Statement> statements, ProvType type)
-	{
-		handleInfluence(context, target, statements, type);
-	}
-
-	private void handleEntityInfluence(QName context,
-			org.openprovenance.prov.xml.Influence target,
-			List<Statement> statements, ProvType type)
-	{
-		handleInfluence(context, target, statements, type);
-	}
-
-	private void handleInstantaneousEvent(QName context,
-			org.openprovenance.prov.xml.Influence target,
-			List<Statement> statements, ProvType type)
-	{
+	private XMLGregorianCalendar getInstantaneousTime(List<Statement> statements) {
 		for (Statement statement : statements)
 		{
 			QName predQ = convertURIToQName(statement.getPredicate());
@@ -266,35 +218,15 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (value instanceof Literal)
 			{
-				if (predQ.equals(Ontology.QNAME_PROVO_atTime) && target instanceof HasTime)
+				if (predQ.equals(Ontology.QNAME_PROVO_atTime))
 				{
 					XMLGregorianCalendar time = (XMLGregorianCalendar) super
 							.decodeLiteral((Literal) value);
-					((HasTime) target).setTime(time);
-				}
-			}
-
-			if (value instanceof Resource)
-			{
-				QName valueQ = convertResourceToQName((Resource) value);
-
-				if (predQ.equals(Ontology.QNAME_PROVO_hadRole) && target instanceof HasRole)
-				{
-					// TODO: Not really clarified as to what 'Role' is here.
-					((HasRole) (target)).getRole().add(
-							pFactory.newAnyRef(valueQ));
+					return time;
 				}
 			}
 		}
-	}
-
-	private void createEntityInfluence(QName context, QName qname)
-	{
-		WasInfluencedBy wib = new WasInfluencedBy();
-		wib.setId(qname);
-		List<Statement> statements = collators.get(context).get(qname);
-		handleEntityInfluence(context, wib, statements,
-				ProvType.ENTITYINFLUENCE);
+		return null;
 	}
 
 	private void createRevision(QName contextQ, QName qname)
@@ -326,9 +258,12 @@ public class QualifiedCollector extends RdfCollector {
 
 	private WasDerivedFrom createDerivation(QName context, QName qname)
 	{
-		WasDerivedFrom wdf = new WasDerivedFrom();
-		wdf.setId(qname);
-
+		QName e1 = null;
+		QName e2 = null;
+		QName activity = null;
+		QName generation = null;
+		QName usage = null;
+		
 		List<Statement> statements = collators.get(context).get(qname);
 
 		for (Statement statement : statements)
@@ -342,48 +277,41 @@ public class QualifiedCollector extends RdfCollector {
 
 				if (predQ.equals(Ontology.QNAME_PROVO_hadActivity))
 				{
-					wdf.setActivity(pFactory.newActivityRef(valueQ));
+					activity = valueQ;
 				}
 
 				if (predQ.equals(Ontology.QNAME_PROVO_hadGeneration))
 				{
-					wdf.setGeneration(pFactory.newGenerationRef(valueQ));
+					generation = valueQ;
 				}
 
 				if (predQ.equals(Ontology.QNAME_PROVO_hadUsage))
 				{
-					wdf.setUsage(pFactory.newUsageRef(valueQ));
+					usage = valueQ;
 				}
 
 				if (predQ.equals(Ontology.QNAME_PROVO_entity))
 				{
-					QName entityQ = convertResourceToQName((Resource) value);
-					wdf.setUsedEntity(pFactory.newEntityRef(entityQ));
+					e1 = valueQ;
 				}
 			}
 		}
-		handleEntityInfluence(context, wdf, statements, ProvType.DERIVATION);
+		List<Attribute> attributes = super.collectAttributes(context, qname, ProvType.DERIVATION);
+		WasDerivedFrom wdf = pFactory.newWasDerivedFrom(qname, e2, e1, activity, generation, usage, attributes);
 		store(context, wdf);
 		this.influenceMap.put(qname, wdf);
 		return wdf;
 	}
 
-	private void createInfluence(QName context, QName qname)
-	{
-		WasInfluencedBy wib = new WasInfluencedBy();
-		wib.setId(qname);
-		List<Statement> statements = collators.get(context).get(qname);
-		handleInfluence(context, wib, statements, ProvType.INFLUENCE);
-		this.influenceMap.put(qname, wib);
-
-	}
-
 	private void createEnd(QName context, QName qname)
 	{
-		WasEndedBy web = new WasEndedBy();
-		web.setId(qname);
-
 		List<Statement> statements = collators.get(context).get(qname);
+		
+		QName activity = null;
+		QName trigger = null;
+		QName ender = null;
+		XMLGregorianCalendar time = getInstantaneousTime(statements);
+		
 		for (Statement statement : statements)
 		{
 			QName predQ = convertURIToQName(statement.getPredicate());
@@ -391,29 +319,29 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (predQ.equals(Ontology.QNAME_PROVO_entity))
 			{
-				QName entityQ = convertResourceToQName((Resource) value);
-				web.setTrigger(pFactory.newEntityRef(entityQ));
+				trigger = convertResourceToQName((Resource) value);
 			}
 			if (predQ.equals(Ontology.QNAME_PROVO_hadActivity))
 			{
-				QName activityQ = convertResourceToQName((Resource) value);
-				web.setEnder(pFactory.newActivityRef(activityQ));
+				ender = convertResourceToQName((Resource) value);
 			}
 		}
 
-		handleEntityInfluence(context, web, statements, ProvType.END);
-		handleInstantaneousEvent(context, web, statements, ProvType.END);
-
+		List<Attribute> attributes = collectAttributes(context, qname, ProvType.END);
+		WasEndedBy web = pFactory.newWasEndedBy(qname, activity, trigger, ender, time, attributes);
 		store(context, web);
 		this.influenceMap.put(qname, web);
 	}
 
 	private void createStart(QName context, QName qname)
 	{
-		WasStartedBy wsb = new WasStartedBy();
-		wsb.setId(qname);
-
 		List<Statement> statements = collators.get(context).get(qname);
+		
+		QName activity = null;
+		QName trigger = null;
+		QName starter = null;
+		XMLGregorianCalendar time = getInstantaneousTime(statements);
+		
 		for (Statement statement : statements)
 		{
 			QName predQ = convertURIToQName(statement.getPredicate());
@@ -421,29 +349,27 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (predQ.equals(Ontology.QNAME_PROVO_entity))
 			{
-				QName entityQ = convertResourceToQName((Resource) value);
-				wsb.setTrigger(pFactory.newEntityRef(entityQ));
+				trigger = convertResourceToQName((Resource) value);
 			}
 			if (predQ.equals(Ontology.QNAME_PROVO_hadActivity))
 			{
-				QName activityQ = convertResourceToQName((Resource) value);
-				wsb.setStarter(pFactory.newActivityRef(activityQ));
+				starter = convertResourceToQName((Resource) value);
 			}
 		}
 
-		handleEntityInfluence(context, wsb, statements, ProvType.START);
-		handleInstantaneousEvent(context, wsb, statements, ProvType.START);
-
+		List<Attribute> attributes = collectAttributes(context, qname, ProvType.START);
+		WasStartedBy wsb = pFactory.newWasStartedBy(qname, activity, trigger, starter, time, attributes);
 		store(context, wsb);
 		this.influenceMap.put(qname, wsb);
 	}
 
 	private void createInvalidation(QName context, QName qname)
 	{
-		WasInvalidatedBy wib = new WasInvalidatedBy();
-		wib.setId(qname);
-
 		List<Statement> statements = collators.get(context).get(qname);
+		QName entity = null;
+		QName activity = null;
+		XMLGregorianCalendar time = getInstantaneousTime(statements);
+		
 		for (Statement statement : statements)
 		{
 			QName predQ = convertURIToQName(statement.getPredicate());
@@ -451,26 +377,24 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (predQ.equals(Ontology.QNAME_PROVO_activity))
 			{
-				QName activityQ = convertResourceToQName((Resource) value);
-				wib.setActivity(pFactory.newActivityRef(activityQ));
+				activity = convertResourceToQName((Resource) value);
 			}
-
 		}
 
-		handleActivityInfluence(context, wib, statements, ProvType.INVALIDATION);
-		handleInstantaneousEvent(context, wib, statements,
-				ProvType.INVALIDATION);
-
+		List<Attribute> attributes = collectAttributes(context, qname, ProvType.INVALIDATION);
+		WasInvalidatedBy wib = pFactory.newWasInvalidatedBy(qname, entity, activity, time, attributes);
 		store(context, wib);
 		this.influenceMap.put(qname, wib);
 	}
 
 	private void createDelegation(QName context, QName qname)
 	{
-		ActedOnBehalfOf aobo = new ActedOnBehalfOf();
-		aobo.setId(qname);
-
 		List<Statement> statements = collators.get(context).get(qname);
+		
+		QName ag2 = null;
+		QName ag1 = null;
+		QName a = null;
+		
 		for (Statement statement : statements)
 		{
 			QName predQ = convertURIToQName(statement.getPredicate());
@@ -478,28 +402,25 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (predQ.equals(Ontology.QNAME_PROVO_agent))
 			{
-				QName agentQ = convertResourceToQName((Resource) value);
-				aobo.setResponsible(pFactory.newAgentRef(agentQ));
+				ag1 = convertResourceToQName((Resource) value);
 			}
 
 			if (predQ.equals(Ontology.QNAME_PROVO_hadActivity))
 			{
-				QName activityQ = convertResourceToQName((Resource) value);
-				aobo.setActivity(pFactory.newActivityRef(activityQ));
+				a = convertResourceToQName((Resource) value);
 			}
 		}
 
-		handleAgentInfluence(context, aobo, statements, ProvType.DELEGATION);
-
+		List<Attribute> attributes = super.collectAttributes(context, qname, ProvType.DELEGATION);
+		ActedOnBehalfOf aobo = pFactory.newActedOnBehalfOf(qname, ag2, ag1, a, attributes);
 		store(context, aobo);
 		this.influenceMap.put(qname, aobo);
 	}
 
 	private void createCommunication(QName context, QName qname)
 	{
-		WasInformedBy wib = new WasInformedBy();
-		wib.setId(qname);
-
+		QName a2 = null;
+		QName a1 = null;
 		List<Statement> statements = collators.get(context).get(qname);
 		for (Statement statement : statements)
 		{
@@ -508,23 +429,21 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (predQ.equals(Ontology.QNAME_PROVO_activity))
 			{
-				QName activityQ = convertResourceToQName((Resource) value);
-				wib.setCause(pFactory.newActivityRef(activityQ));
+				a1 = convertResourceToQName((Resource) value);
 			}
 		}
 
-		handleActivityInfluence(context, wib, statements,
-				ProvType.COMMUNICATION);
-
+		List<Attribute> attributes = super.collectAttributes(context, qname, ProvType.COMMUNICATION);
+		WasInformedBy wib = pFactory.newWasInformedBy(qname, a2, a1, attributes);
 		store(context, wib);
 		this.influenceMap.put(qname, wib);
 	}
 
 	private void createAttribution(QName context, QName qname)
 	{
-		WasAttributedTo wat = new WasAttributedTo();
-		wat.setId(qname);
-
+		QName e = null;
+		QName ag = null;
+		
 		List<Statement> statements = collators.get(context).get(qname);
 		for (Statement statement : statements)
 		{
@@ -533,24 +452,23 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (predQ.equals(Ontology.QNAME_PROVO_agent))
 			{
-				QName agentQ = convertResourceToQName((Resource) value);
-				wat.setAgent(pFactory.newAgentRef(agentQ));
+				ag = convertResourceToQName((Resource) value);
 			}
 		}
 
-		handleAgentInfluence(context, wat, statements, ProvType.ATTRIBUTION);
-
+		List<Attribute> attributes = super.collectAttributes(context, qname, ProvType.ATTRIBUTION);
+		WasAttributedTo wat = pFactory.newWasAttributedTo(qname, e, ag, attributes);
 		store(context, wat);
 		this.influenceMap.put(qname, wat);
 	}
 
 	private void createAssociation(QName context, QName qname)
 	{
-		WasAssociatedWith waw = new WasAssociatedWith();
-		waw.setId(qname);
-
 		List<Statement> statements = collators.get(context).get(qname);
 
+		QName a = null;
+		QName ag = null;
+		QName plan = null;
 		for (Statement statement : statements)
 		{
 			QName predQ = convertURIToQName(statement.getPredicate());
@@ -560,30 +478,30 @@ public class QualifiedCollector extends RdfCollector {
 			{
 				if (predQ.equals(Ontology.QNAME_PROVO_hadPlan))
 				{
-					QName entityQ = convertResourceToQName((Resource) value);
-					waw.setPlan(pFactory.newEntityRef(entityQ));
+					plan = convertResourceToQName((Resource) value);
 				}
 
 				if (predQ.equals(Ontology.QNAME_PROVO_agent))
 				{
-					QName agentQ = convertResourceToQName((Resource) value);
-					waw.setAgent(pFactory.newAgentRef(agentQ));
+					ag = convertResourceToQName((Resource) value);
 				}
 			}
 		}
 
-		handleAgentInfluence(context, waw, statements, ProvType.ASSOCIATION);
-
+		List<Attribute> attributes = super.collectAttributes(context, qname, ProvType.ASSOCIATION);
+		WasAssociatedWith waw = pFactory.newWasAssociatedWith(qname, a, ag, plan, attributes);
 		store(context, waw);
 		this.influenceMap.put(qname, waw);
 	}
 
 	private void createUsage(QName context, QName qname)
 	{
-		Used used = new Used();
-		used.setId(qname);
 		List<Statement> statements = collators.get(context).get(qname);
-
+		
+		QName activity = null;
+		QName entity = null;
+		XMLGregorianCalendar time = getInstantaneousTime(statements);
+		
 		for (Statement statement : statements)
 		{
 			QName predQ = convertURIToQName(statement.getPredicate());
@@ -593,26 +511,24 @@ public class QualifiedCollector extends RdfCollector {
 			{
 				if (predQ.equals(Ontology.QNAME_PROVO_entity))
 				{
-					QName entityQ = convertResourceToQName((Resource) value);
-					used.setEntity(pFactory.newEntityRef(entityQ));
+					entity =  convertResourceToQName((Resource) value);
 				}
 			}
 		}
 
-		handleEntityInfluence(context, used, statements, ProvType.USAGE);
-		handleInstantaneousEvent(context, used, statements, ProvType.USAGE);
-
+		List<Attribute> attributes = collectAttributes(context, qname, ProvType.USAGE);
+		Used used = pFactory.newUsed(qname, activity, entity, time, attributes);
 		store(context, used);
 		this.influenceMap.put(qname, used);
 	}
 
 	private void createGeneration(QName context, QName qname)
 	{
-
-		WasGeneratedBy wgb = pFactory.newWasGeneratedBy(qname);
-
+		QName entity = null;
+		QName activity = null;
 		List<Statement> statements = collators.get(context).get(qname);
-
+		XMLGregorianCalendar time = getInstantaneousTime(statements);
+		
 		for (Statement statement : statements)
 		{
 			QName predQ = convertURIToQName(statement.getPredicate());
@@ -620,16 +536,16 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (value instanceof Resource)
 			{
+				System.out.println(predQ);
 				if (predQ.equals(Ontology.QNAME_PROVO_activity))
 				{
-					QName activityQ = convertResourceToQName((Resource) value);
-					wgb.setActivity(pFactory.newActivityRef(activityQ));
+					activity = convertResourceToQName((Resource) value);
 				}
 			}
 		}
-		handleActivityInfluence(context, wgb, statements, ProvType.GENERATION);
-		handleInstantaneousEvent(context, wgb, statements, ProvType.GENERATION);
-
+		
+		List<Attribute> attributes = collectAttributes(context, qname, ProvType.GENERATION);
+		WasGeneratedBy wgb = pFactory.newWasGeneratedBy(qname, entity, activity, time, attributes);
 		store(context, wgb);
 		this.influenceMap.put(qname, wgb);
 	}

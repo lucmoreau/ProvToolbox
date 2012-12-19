@@ -12,8 +12,7 @@ import org.openprovenance.prov.xml.UncheckedTestException;
 import org.openrdf.rio.RDFFormat;
 
 public class RoundTripFromJavaTest extends
-		org.openprovenance.prov.xml.RoundTripFromJavaTest
-{
+		org.openprovenance.prov.xml.RoundTripFromJavaTest {
 
 	public RoundTripFromJavaTest(String name)
 	{
@@ -54,22 +53,21 @@ public class RoundTripFromJavaTest extends
 	@Override
 	public boolean checkTest(String name)
 	{
-		if (name.endsWith("generation6-S" + extension())  //FIXME: rdfCollector doesn't read binary standalone properties??
-		    || name.endsWith("invalidation6-S" + extension())
-			|| name.endsWith("usage6-S" + extension())
-			|| name.endsWith("start9-S" + extension())
-			|| name.endsWith("end9-S" + extension())
-			|| name.endsWith("attribution5-S" + extension())
-			|| name.endsWith("delegation5-S" + extension())
-			|| name.endsWith("association5-S" + extension())
-			|| name.endsWith("communication4-S" + extension())
-			|| name.endsWith("specialization1-S" + extension())
-			|| name.endsWith("alternate1-S" + extension())
-			|| name.endsWith("mention1-S" + extension())
-			|| name.endsWith("mention2-S" + extension())
-			)
+		if (name.endsWith("generation6-S" + extension())
+				|| name.endsWith("invalidation6-S" + extension())
+				|| name.endsWith("usage6-S" + extension())
+				|| name.endsWith("start9-S" + extension())
+				|| name.endsWith("end9-S" + extension())
+				|| name.endsWith("attribution5-S" + extension())
+				|| name.endsWith("delegation5-S" + extension())
+				|| name.endsWith("association5-S" + extension())
+				|| name.endsWith("communication4-S" + extension())
+				|| name.endsWith("specialization1-S" + extension())
+				|| name.endsWith("alternate1-S" + extension())
+				|| name.endsWith("mention1-S" + extension())
+				|| name.endsWith("mention2-S" + extension()))
 		{
-			return false; 
+			return false;
 		}
 		return true;
 	}
@@ -85,12 +83,12 @@ public class RoundTripFromJavaTest extends
 		serial.serialiseDocument(sw, document, true);
 		return sw.toString();
 	}
-	
+
 	public boolean mergeDuplicateProperties()
 	{
 		return true;
 	}
-	
+
 	public void testInfluence1() throws JAXBException
 	{
 		// RDF Collector doesn't support Influence
@@ -123,15 +121,14 @@ public class RoundTripFromJavaTest extends
 
 	public void testInfluence7() throws JAXBException
 	{
-		
+
 		// RDF Collector doesn't support Influence
 
 	}
 
-	
 	public void testMembership1() throws JAXBException
 	{
-	    
+
 		// TODO: RDF Collector doesn't support hadMember
 	}
 
@@ -142,55 +139,78 @@ public class RoundTripFromJavaTest extends
 
 	public void testMembership3() throws JAXBException
 	{
-		}
-	
-	
-	public void testScruffyGeneration1() {
+	}
+
+	public void testScruffyGeneration1()
+	{
 		// TODO: Unsupported
 
 	}
-	  public void testScruffyGeneration2(){
-			// TODO: Unsupported  
-	  }
-	  public void testScruffyInvalidation1(){
-			// TODO: Unsupported  
-	  }
-	  public void testScruffyInvalidation2() {
-			// TODO: Unsupported  
-	  }
-	  public void testScruffyUsage1() {
-			// TODO: Unsupported  
-	  }
-	  public void testScruffyUsage2() {
-			// TODO: Unsupported    
-	  }
-	  public void testScruffyStart1() {
-			// TODO: Unsupported    		  
-	  }
-	  public void testScruffyStart2() {
-			// TODO: Unsupported    		  
-	  }
-	  public void testScruffyStart3() {
-			// TODO: Unsupported    		  
-	  }
-	  public void testScruffyStart4() {
-			// TODO: Unsupported    		  
-	  }
-	  public void testScruffyEnd1() {
-			// TODO: Unsupported    		  
-	  }
-	  public void testScruffyEnd2() {
-			// TODO: Unsupported    		  
-	  }
-	  public void testScruffyEnd3() {
-			// TODO: Unsupported    		  
-	  }
-	  public void testScruffyEnd4() {
-			// TODO: Unsupported    		  
-	  }
 
-	  
-	 
+	public void testScruffyGeneration2()
+	{
+		// TODO: Unsupported
+	}
+
+	public void testScruffyInvalidation1()
+	{
+		// TODO: Unsupported
+	}
+
+	public void testScruffyInvalidation2()
+	{
+		// TODO: Unsupported
+	}
+
+	public void testScruffyUsage1()
+	{
+		// TODO: Unsupported
+	}
+
+	public void testScruffyUsage2()
+	{
+		// TODO: Unsupported
+	}
+
+	public void testScruffyStart1()
+	{
+		// TODO: Unsupported
+	}
+
+	public void testScruffyStart2()
+	{
+		// TODO: Unsupported
+	}
+
+	public void testScruffyStart3()
+	{
+		// TODO: Unsupported
+	}
+
+	public void testScruffyStart4()
+	{
+		// TODO: Unsupported
+	}
+
+	public void testScruffyEnd1()
+	{
+		// TODO: Unsupported
+	}
+
+	public void testScruffyEnd2()
+	{
+		// TODO: Unsupported
+	}
+
+	public void testScruffyEnd3()
+	{
+		// TODO: Unsupported
+	}
+
+	public void testScruffyEnd4()
+	{
+		// TODO: Unsupported
+	}
 
 	public void IGNOREtestExtraFilesOutsideRepository()
 	{

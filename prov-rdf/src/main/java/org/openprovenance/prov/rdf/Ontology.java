@@ -46,6 +46,10 @@ public class Ontology {
     public static QName QNAME_PROVO_hadPlan = newProvQName("hadPlan");
     public static QName QNAME_PROVO_hadGeneration = newProvQName("hadGeneration");
     public static QName QNAME_PROVO_hadUsage = newProvQName("hadUsage");
+    public static QName QNAME_PROVO_hadRole = newProvQName("hadRole");
+    public static QName QNAME_PROVO_value = newProvQName("value");
+    public static QName QNAME_PROVO_generated = newProvQName("generated");
+    public static QName QNAME_PROVO_influenced = newProvQName("influenced");
 
     public static QName QNAME_PROVO_Activity = newProvQName("Activity");
     public static QName QNAME_PROVO_Entity = newProvQName("Entity");
@@ -113,6 +117,22 @@ public class Ontology {
     public static QName QNAME_PROVO_asInBundle = newProvQName("asInBundle");
     public static QName QNAME_PROVO_hadMember = newProvQName("hadMember");
 
+
+    public static QName QNAME_PROVO_Bundle = newProvQName("Bundle");
+    public static QName QNAME_PROVO_Organization = newProvQName("Organization");
+    public static QName QNAME_PROVO_Person = newProvQName("Person");
+    public static QName QNAME_PROVO_SoftwareAgent = newProvQName("SoftwareAgent");
+    public static QName QNAME_PROVO_Location = newProvQName("Location");
+    public static QName QNAME_PROVO_Plan = newProvQName("Plan");
+    public static QName QNAME_PROVO_Role = newProvQName("Role");
+    public static QName QNAME_PROVO_Collection = newProvQName("Collection");
+    public static QName QNAME_PROVO_EmptyCollection = newProvQName("EmptyCollection");
+
+    public static QName QNAME_PROVO_InstantaneousEvent = newProvQName("InstantaneousEvent");
+    public static QName QNAME_PROVO_EntityInfluence = newProvQName("EntityInfluence");
+    public static QName QNAME_PROVO_ActivityInfluence = newProvQName("ActivityInfluence");
+    public static QName QNAME_PROVO_AgentInfluence = newProvQName("AgentInfluence");
+    
     public static QName QNAME_RDF_TYPE = newRdfQName("type");
     public static QName QNAME_RDFS_LABEL = newRdfsQName("label");
 
@@ -193,6 +213,8 @@ public class Ontology {
 	convertTable.put(Attribute.PROV_LABEL_QNAME, QNAME_RDFS_LABEL);
 	convertTable.put(Attribute.PROV_TYPE_QNAME, QNAME_RDF_TYPE);
 	convertTable.put(Attribute.PROV_LOCATION_QNAME, QNAME_PROVO_atLocation);
+	convertTable.put(Attribute.PROV_VALUE_QNAME, QNAME_PROVO_value);
+	convertTable.put(Attribute.PROV_ROLE_QNAME, QNAME_PROVO_hadRole);
     }
 
     void activityInfluence(QName name) {

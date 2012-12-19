@@ -15,6 +15,7 @@ import org.openprovenance.prov.xml.HasLocation;
 import org.openprovenance.prov.xml.HasRole;
 import org.openprovenance.prov.xml.HasTime;
 import org.openprovenance.prov.xml.Identifiable;
+import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Ref;
 import org.openprovenance.prov.xml.StatementOrBundle;
@@ -45,9 +46,9 @@ public class QualifiedCollector extends RdfCollector {
 		this.influenceMap = new Hashtable<QName, org.openprovenance.prov.xml.Influence>();
 
 		this.baseProperties = new Hashtable<String, String>();
-		this.baseProperties.put(PROV + "entity", PROV + "influencer");
-		this.baseProperties.put(PROV + "agent", PROV + "influencer");
-		this.baseProperties.put(PROV + "activity", PROV + "influencer");
+		this.baseProperties.put( NamespacePrefixMapper.PROV_NS + "entity", NamespacePrefixMapper.PROV_NS + "influencer");
+		this.baseProperties.put(NamespacePrefixMapper.PROV_NS + "agent", NamespacePrefixMapper.PROV_NS + "influencer");
+		this.baseProperties.put(NamespacePrefixMapper.PROV_NS + "activity", NamespacePrefixMapper.PROV_NS + "influencer");
 
 	}
 
@@ -260,12 +261,12 @@ public class QualifiedCollector extends RdfCollector {
 	{
 		for (Statement statement : statements)
 		{
-			String predS = statement.getPredicate().stringValue();
+			QName predQ = convertURIToQName(statement.getPredicate());
 			Value value = statement.getObject();
 
 			if (value instanceof Literal)
 			{
-				if (predS.equals(PROV + "atTime") && target instanceof HasTime)
+				if (predQ.equals(Ontology.QNAME_PROVO_atTime) && target instanceof HasTime)
 				{
 					XMLGregorianCalendar time = (XMLGregorianCalendar) super
 							.decodeLiteral((Literal) value);
@@ -277,7 +278,7 @@ public class QualifiedCollector extends RdfCollector {
 			{
 				QName valueQ = convertResourceToQName((Resource) value);
 
-				if (predS.equals(PROV + "hadRole") && target instanceof HasRole)
+				if (predQ.equals(Ontology.QNAME_PROVO_hadRole) && target instanceof HasRole)
 				{
 					// TODO: Not really clarified as to what 'Role' is here.
 					((HasRole) (target)).getRole().add(
@@ -332,29 +333,29 @@ public class QualifiedCollector extends RdfCollector {
 
 		for (Statement statement : statements)
 		{
-			String predS = statement.getPredicate().stringValue();
+			QName predQ = convertURIToQName(statement.getPredicate());
 			Value value = statement.getObject();
 
 			if (value instanceof Resource)
 			{
 				QName valueQ = convertResourceToQName((Resource) value);
 
-				if (predS.equals(PROV + "hadActivity"))
+				if (predQ.equals(Ontology.QNAME_PROVO_hadActivity))
 				{
 					wdf.setActivity(pFactory.newActivityRef(valueQ));
 				}
 
-				if (predS.equals(PROV + "hadGeneration"))
+				if (predQ.equals(Ontology.QNAME_PROVO_hadGeneration))
 				{
 					wdf.setGeneration(pFactory.newGenerationRef(valueQ));
 				}
 
-				if (predS.equals(PROV + "hadUsage"))
+				if (predQ.equals(Ontology.QNAME_PROVO_hadUsage))
 				{
 					wdf.setUsage(pFactory.newUsageRef(valueQ));
 				}
 
-				if (predS.equals(PROV + "entity"))
+				if (predQ.equals(Ontology.QNAME_PROVO_entity))
 				{
 					QName entityQ = convertResourceToQName((Resource) value);
 					wdf.setUsedEntity(pFactory.newEntityRef(entityQ));
@@ -385,15 +386,15 @@ public class QualifiedCollector extends RdfCollector {
 		List<Statement> statements = collators.get(context).get(qname);
 		for (Statement statement : statements)
 		{
-			String predS = statement.getPredicate().stringValue();
+			QName predQ = convertURIToQName(statement.getPredicate());
 			Value value = statement.getObject();
 
-			if (predS.equals(PROV + "entity"))
+			if (predQ.equals(Ontology.QNAME_PROVO_entity))
 			{
 				QName entityQ = convertResourceToQName((Resource) value);
 				web.setTrigger(pFactory.newEntityRef(entityQ));
 			}
-			if (predS.equals(PROV + "hadActivity"))
+			if (predQ.equals(Ontology.QNAME_PROVO_hadActivity))
 			{
 				QName activityQ = convertResourceToQName((Resource) value);
 				web.setEnder(pFactory.newActivityRef(activityQ));
@@ -415,15 +416,15 @@ public class QualifiedCollector extends RdfCollector {
 		List<Statement> statements = collators.get(context).get(qname);
 		for (Statement statement : statements)
 		{
-			String predS = statement.getPredicate().stringValue();
+			QName predQ = convertURIToQName(statement.getPredicate());
 			Value value = statement.getObject();
 
-			if (predS.equals(PROV + "entity"))
+			if (predQ.equals(Ontology.QNAME_PROVO_entity))
 			{
 				QName entityQ = convertResourceToQName((Resource) value);
 				wsb.setTrigger(pFactory.newEntityRef(entityQ));
 			}
-			if (predS.equals(PROV + "hadActivity"))
+			if (predQ.equals(Ontology.QNAME_PROVO_hadActivity))
 			{
 				QName activityQ = convertResourceToQName((Resource) value);
 				wsb.setStarter(pFactory.newActivityRef(activityQ));
@@ -445,10 +446,10 @@ public class QualifiedCollector extends RdfCollector {
 		List<Statement> statements = collators.get(context).get(qname);
 		for (Statement statement : statements)
 		{
-			String predS = statement.getPredicate().stringValue();
+			QName predQ = convertURIToQName(statement.getPredicate());
 			Value value = statement.getObject();
 
-			if (predS.equals(PROV + "activity"))
+			if (predQ.equals(Ontology.QNAME_PROVO_activity))
 			{
 				QName activityQ = convertResourceToQName((Resource) value);
 				wib.setActivity(pFactory.newActivityRef(activityQ));
@@ -472,16 +473,16 @@ public class QualifiedCollector extends RdfCollector {
 		List<Statement> statements = collators.get(context).get(qname);
 		for (Statement statement : statements)
 		{
-			String predS = statement.getPredicate().stringValue();
+			QName predQ = convertURIToQName(statement.getPredicate());
 			Value value = statement.getObject();
 
-			if (predS.equals(PROV + "agent"))
+			if (predQ.equals(Ontology.QNAME_PROVO_agent))
 			{
 				QName agentQ = convertResourceToQName((Resource) value);
 				aobo.setResponsible(pFactory.newAgentRef(agentQ));
 			}
 
-			if (predS.equals(PROV + "hadActivity"))
+			if (predQ.equals(Ontology.QNAME_PROVO_hadActivity))
 			{
 				QName activityQ = convertResourceToQName((Resource) value);
 				aobo.setActivity(pFactory.newActivityRef(activityQ));
@@ -502,10 +503,10 @@ public class QualifiedCollector extends RdfCollector {
 		List<Statement> statements = collators.get(context).get(qname);
 		for (Statement statement : statements)
 		{
-			String predS = statement.getPredicate().stringValue();
+			QName predQ = convertURIToQName(statement.getPredicate());
 			Value value = statement.getObject();
 
-			if (predS.equals(PROV + "activity"))
+			if (predQ.equals(Ontology.QNAME_PROVO_activity))
 			{
 				QName activityQ = convertResourceToQName((Resource) value);
 				wib.setCause(pFactory.newActivityRef(activityQ));
@@ -527,10 +528,10 @@ public class QualifiedCollector extends RdfCollector {
 		List<Statement> statements = collators.get(context).get(qname);
 		for (Statement statement : statements)
 		{
-			String predS = statement.getPredicate().stringValue();
+			QName predQ = convertURIToQName(statement.getPredicate());
 			Value value = statement.getObject();
 
-			if (predS.equals(PROV + "agent"))
+			if (predQ.equals(Ontology.QNAME_PROVO_agent))
 			{
 				QName agentQ = convertResourceToQName((Resource) value);
 				wat.setAgent(pFactory.newAgentRef(agentQ));
@@ -552,18 +553,18 @@ public class QualifiedCollector extends RdfCollector {
 
 		for (Statement statement : statements)
 		{
-			String predS = statement.getPredicate().stringValue();
+			QName predQ = convertURIToQName(statement.getPredicate());
 			Value value = statement.getObject();
 
 			if (value instanceof Resource)
 			{
-				if (predS.equals(PROV + "hadPlan"))
+				if (predQ.equals(Ontology.QNAME_PROVO_hadPlan))
 				{
 					QName entityQ = convertResourceToQName((Resource) value);
 					waw.setPlan(pFactory.newEntityRef(entityQ));
 				}
 
-				if (predS.equals(PROV + "agent"))
+				if (predQ.equals(Ontology.QNAME_PROVO_agent))
 				{
 					QName agentQ = convertResourceToQName((Resource) value);
 					waw.setAgent(pFactory.newAgentRef(agentQ));
@@ -585,12 +586,12 @@ public class QualifiedCollector extends RdfCollector {
 
 		for (Statement statement : statements)
 		{
-			String predS = statement.getPredicate().stringValue();
+			QName predQ = convertURIToQName(statement.getPredicate());
 			Value value = statement.getObject();
 
 			if (value instanceof Resource)
 			{
-				if (predS.equals(PROV + "entity"))
+				if (predQ.equals(Ontology.QNAME_PROVO_entity))
 				{
 					QName entityQ = convertResourceToQName((Resource) value);
 					used.setEntity(pFactory.newEntityRef(entityQ));
@@ -614,12 +615,12 @@ public class QualifiedCollector extends RdfCollector {
 
 		for (Statement statement : statements)
 		{
-			String predS = statement.getPredicate().stringValue();
+			QName predQ = convertURIToQName(statement.getPredicate());
 			Value value = statement.getObject();
 
 			if (value instanceof Resource)
 			{
-				if (predS.equals(PROV + "activity"))
+				if (predQ.equals(Ontology.QNAME_PROVO_activity))
 				{
 					QName activityQ = convertResourceToQName((Resource) value);
 					wgb.setActivity(pFactory.newActivityRef(activityQ));
@@ -657,83 +658,69 @@ public class QualifiedCollector extends RdfCollector {
 				for (Statement statement : statements)
 				{
 
-					String predS = statement.getPredicate().stringValue();
+					QName predQ = convertURIToQName(statement.getPredicate());
 					Value value = statement.getObject();
 					if (value instanceof Resource)
 					{
 						QName refQ = convertResourceToQName((Resource) value);
 
-						if (predS.equals(RdfCollector.PROV
-								+ "qualifiedAssociation"))
+						if (predQ.equals(Ontology.QNAME_PROVO_qualifiedAssociation))
 						{
 							WasAssociatedWith waw = (WasAssociatedWith) influenceMap
 									.get(refQ);
 							waw.setActivity(pFactory.newActivityRef(qname));
-						} else if (predS.equals(RdfCollector.PROV
-								+ "qualifiedAttribution"))
+						} else if (predQ.equals(Ontology.QNAME_PROVO_qualifiedAttribution))
 						{
 							WasAttributedTo wat = (WasAttributedTo) influenceMap
 									.get(refQ);
 							wat.setEntity(pFactory.newEntityRef(qname));
-						} else if (predS.equals(RdfCollector.PROV
-								+ "qualifiedCommunication"))
+						} else if (predQ.equals(Ontology.QNAME_PROVO_qualifiedCommunication))
 						{
 							WasInformedBy wib = (WasInformedBy) influenceMap
 									.get(refQ);
 							wib.setEffect(pFactory.newActivityRef(qname));
-						} else if (predS.equals(RdfCollector.PROV
-								+ "qualifiedDelegation"))
+						} else if (predQ.equals(Ontology.QNAME_PROVO_qualifiedDelegation))
 						{
 							ActedOnBehalfOf aobo = (ActedOnBehalfOf) influenceMap
 									.get(refQ);
 							aobo.setSubordinate(pFactory.newAgentRef(qname));
-						} else if (predS.equals(RdfCollector.PROV
-								+ "qualifiedDerivation")
-								|| predS.equals(RdfCollector.PROV
-										+ "qualifiedPrimarySource")
-								|| predS.equals(RdfCollector.PROV
-										+ "qualifiedRevision")
-								|| predS.equals(RdfCollector.PROV
-										+ "qualifiedQuotation"))
+						} else if (predQ.equals(Ontology.QNAME_PROVO_qualifiedDerivation)
+								|| predQ.equals(Ontology.QNAME_PROVO_qualifiedPrimarySource)
+								|| predQ.equals(Ontology.QNAME_PROVO_qualifiedRevision)
+								|| predQ.equals(Ontology.QNAME_PROVO_qualifiedQuotation))
 						{
 							WasDerivedFrom wdf = (WasDerivedFrom) influenceMap
 									.get(refQ);
 							wdf.setGeneratedEntity(pFactory.newEntityRef(qname));
-						} else if (predS.equals(RdfCollector.PROV
-								+ "qualifiedEnd"))
+						} else if (predQ.equals(Ontology.QNAME_PROVO_qualifiedEnd))
 						{
 
 							WasEndedBy web = (WasEndedBy) influenceMap
 									.get(refQ);
 							web.setActivity(pFactory.newActivityRef(qname));
-						} else if (predS.equals(RdfCollector.PROV
-								+ "qualifiedGeneration"))
+						} else if (predQ.equals(Ontology.QNAME_PROVO_qualifiedGeneration))
 						{
 							WasGeneratedBy wgb = (WasGeneratedBy) influenceMap
 									.get(refQ);
 							wgb.setEntity(pFactory.newEntityRef(qname));
-						} else if (predS.equals(RdfCollector.PROV
-								+ "qualifiedInfluence"))
+						} else if (predQ.equals(Ontology.QNAME_PROVO_qualifiedInfluence))
 						{
 							WasInfluencedBy wib = (WasInfluencedBy) influenceMap
 									.get(refQ);
 							wib.setInfluencee(pFactory.newAnyRef(qname));
 
-						} else if (predS.equals(RdfCollector.PROV
-								+ "qualifiedInvalidation"))
+						} else if (predQ.equals(Ontology.QNAME_PROVO_qualifiedInvalidation))
 						{
 
 							WasInvalidatedBy wib = (WasInvalidatedBy) influenceMap
 									.get(refQ);
 							wib.setEntity(pFactory.newEntityRef(qname));
-						} else if (predS.equals(RdfCollector.PROV
-								+ "qualifiedStart"))
+						} else if (predQ.equals(Ontology.QNAME_PROVO_qualifiedStart))
 						{
 							WasStartedBy wsb = (WasStartedBy) influenceMap
 									.get(refQ);
 							wsb.setActivity(pFactory.newActivityRef(qname));
-						} else if (predS.equals(RdfCollector.PROV
-								+ "qualifiedUsage"))
+						} else if (predQ.equals(Ontology.QNAME_PROVO_qualifiedUsage))
 						{
 							Used used = (Used) influenceMap.get(refQ);
 							used.setActivity(pFactory.newActivityRef(qname));

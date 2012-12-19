@@ -49,11 +49,11 @@ import org.openrdf.rio.helpers.RDFHandlerBase;
 
 public class RdfCollector extends RDFHandlerBase {
 
-
 	enum ProvType
 	{
 
-		ENTITY(Ontology.QNAME_PROVO_Entity), AGENT(Ontology.QNAME_PROVO_Agent), ACTIVITY(Ontology.QNAME_PROVO_Activity), INFLUENCE(
+		ENTITY(Ontology.QNAME_PROVO_Entity), AGENT(Ontology.QNAME_PROVO_Agent), ACTIVITY(
+				Ontology.QNAME_PROVO_Activity), INFLUENCE(
 				Ontology.QNAME_PROVO_Influence),
 
 		BUNDLE(Ontology.QNAME_PROVO_Bundle, ProvType.ENTITY),
@@ -72,13 +72,16 @@ public class RdfCollector extends RDFHandlerBase {
 
 		COLLECTION(Ontology.QNAME_PROVO_Collection, ProvType.ENTITY),
 
-		EMPTYCOLLECTION(Ontology.QNAME_PROVO_EmptyCollection, ProvType.COLLECTION),
+		EMPTYCOLLECTION(Ontology.QNAME_PROVO_EmptyCollection,
+				ProvType.COLLECTION),
 
 		INSTANTANEOUSEVENT(Ontology.QNAME_PROVO_InstantaneousEvent),
 
-		ENTITYINFLUENCE(Ontology.QNAME_PROVO_EntityInfluence, ProvType.INFLUENCE),
+		ENTITYINFLUENCE(Ontology.QNAME_PROVO_EntityInfluence,
+				ProvType.INFLUENCE),
 
-		ACTIVITYINFLUENCE(Ontology.QNAME_PROVO_ActivityInfluence, ProvType.INFLUENCE),
+		ACTIVITYINFLUENCE(Ontology.QNAME_PROVO_ActivityInfluence,
+				ProvType.INFLUENCE),
 
 		AGENTINFLUENCE(Ontology.QNAME_PROVO_AgentInfluence, ProvType.INFLUENCE),
 
@@ -86,30 +89,31 @@ public class RdfCollector extends RDFHandlerBase {
 
 		ATTRIBUTION(Ontology.QNAME_PROVO_Attribution, ProvType.AGENTINFLUENCE),
 
-		COMMUNICATION(Ontology.QNAME_PROVO_Communication, ProvType.AGENTINFLUENCE),
+		COMMUNICATION(Ontology.QNAME_PROVO_Communication,
+				ProvType.AGENTINFLUENCE),
 
 		DELEGATION(Ontology.QNAME_PROVO_Delegation, ProvType.AGENTINFLUENCE),
 
 		DERIVATION(Ontology.QNAME_PROVO_Derivation, ProvType.ENTITYINFLUENCE),
 
-		QUOTATION(Ontology.QNAME_PROVO_Quotation, ProvType.ENTITYINFLUENCE), REVISION(Ontology.QNAME_PROVO_Revision,
-				ProvType.ENTITYINFLUENCE), PRIMARYSOURCE(Ontology.QNAME_PROVO_PrimarySource,
-				ProvType.ENTITYINFLUENCE),
+		QUOTATION(Ontology.QNAME_PROVO_Quotation, ProvType.ENTITYINFLUENCE), REVISION(
+				Ontology.QNAME_PROVO_Revision, ProvType.ENTITYINFLUENCE), PRIMARYSOURCE(
+				Ontology.QNAME_PROVO_PrimarySource, ProvType.ENTITYINFLUENCE),
 
-		END(Ontology.QNAME_PROVO_End, new ProvType[] { ProvType.INSTANTANEOUSEVENT,
-				ProvType.ENTITYINFLUENCE }),
+		END(Ontology.QNAME_PROVO_End, new ProvType[] {
+				ProvType.INSTANTANEOUSEVENT, ProvType.ENTITYINFLUENCE }),
 
-		START(Ontology.QNAME_PROVO_Start, new ProvType[] { ProvType.INSTANTANEOUSEVENT,
-				ProvType.ENTITYINFLUENCE }),
+		START(Ontology.QNAME_PROVO_Start, new ProvType[] {
+				ProvType.INSTANTANEOUSEVENT, ProvType.ENTITYINFLUENCE }),
 
-		GENERATION(Ontology.QNAME_PROVO_Generation, new ProvType[] { ProvType.INSTANTANEOUSEVENT,
-				ProvType.ACTIVITYINFLUENCE }),
+		GENERATION(Ontology.QNAME_PROVO_Generation, new ProvType[] {
+				ProvType.INSTANTANEOUSEVENT, ProvType.ACTIVITYINFLUENCE }),
 
 		INVALIDATION(Ontology.QNAME_PROVO_Invalidation, new ProvType[] {
 				ProvType.INSTANTANEOUSEVENT, ProvType.ACTIVITYINFLUENCE }),
 
-		USAGE(Ontology.QNAME_PROVO_Usage, new ProvType[] { ProvType.INSTANTANEOUSEVENT,
-				ProvType.ENTITYINFLUENCE });
+		USAGE(Ontology.QNAME_PROVO_Usage, new ProvType[] {
+				ProvType.INSTANTANEOUSEVENT, ProvType.ENTITYINFLUENCE });
 
 		private static final Map<QName, ProvType> lookup = new HashMap<QName, ProvType>();
 		static
@@ -143,9 +147,10 @@ public class RdfCollector extends RDFHandlerBase {
 		{
 			return qname;
 		}
-		
-		public String getURIString() {
-			return qname.getNamespaceURI()+qname.getLocalPart();
+
+		public String getURIString()
+		{
+			return qname.getNamespaceURI() + qname.getLocalPart();
 		}
 
 		public ProvType[] getExtends()
@@ -179,7 +184,8 @@ public class RdfCollector extends RDFHandlerBase {
 		this.document = pFactory.newDocument();
 		this.bundles = new Hashtable<QName, BundleHolder>();
 		document.setNss(new Hashtable<String, String>());
-		handleNamespace(NamespacePrefixMapper.XSD_PREFIX, NamespacePrefixMapper.XSD_HASH_NS);
+		handleNamespace(NamespacePrefixMapper.XSD_PREFIX,
+				NamespacePrefixMapper.XSD_HASH_NS);
 	}
 
 	private HashMap<QName, List<Statement>> getCollator(Resource context)
@@ -291,11 +297,12 @@ public class RdfCollector extends RDFHandlerBase {
 				{
 					continue;
 				}
-				if (!isProvURI(convertURIToQName((URI)value)))
+				if (!isProvURI(convertURIToQName((URI) value)))
 				{
 					continue;
 				}
-				ProvType provType = ProvType.lookup(convertURIToQName((URI)value));
+				ProvType provType = ProvType
+						.lookup(convertURIToQName((URI) value));
 				options.add(provType);
 			}
 		}
@@ -375,43 +382,50 @@ public class RdfCollector extends RDFHandlerBase {
 			}
 		}
 
-		if (dataType.equals( NamespacePrefixMapper.XSD_HASH_NS + "QName"))
+		if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "QName"))
 		{
 			return pFactory.newQName(literal.stringValue());
-		} else if (dataType.equals( NamespacePrefixMapper.XSD_HASH_NS + "string"))
+		} else if (dataType
+				.equals(NamespacePrefixMapper.XSD_HASH_NS + "string"))
 		{
 			return literal.stringValue();
-		} else if (dataType.equals( NamespacePrefixMapper.XSD_HASH_NS + "dateTime"))
+		} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
+				+ "dateTime"))
 		{
 			return literal.calendarValue();
-		} else if (dataType.equals( NamespacePrefixMapper.XSD_HASH_NS + "int"))
+		} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "int"))
 		{
 			return literal.intValue();
-		} else if (dataType.equals( NamespacePrefixMapper.XSD_HASH_NS + "integer"))
+		} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
+				+ "integer"))
 		{
 			return literal.integerValue();
-		} else if (dataType.equals( NamespacePrefixMapper.XSD_HASH_NS + "boolean"))
+		} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
+				+ "boolean"))
 		{
 			return literal.booleanValue();
-		} else if (dataType.equals( NamespacePrefixMapper.XSD_HASH_NS + "double"))
+		} else if (dataType
+				.equals(NamespacePrefixMapper.XSD_HASH_NS + "double"))
 		{
 			return literal.doubleValue();
-		} else if (dataType.equals( NamespacePrefixMapper.XSD_HASH_NS + "float"))
+		} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "float"))
 		{
 			return literal.floatValue();
-		} else if (dataType.equals( NamespacePrefixMapper.XSD_HASH_NS + "long"))
+		} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "long"))
 		{
 			return literal.longValue();
-		} else if (dataType.equals( NamespacePrefixMapper.XSD_HASH_NS + "short"))
+		} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "short"))
 		{
 			return literal.shortValue();
-		} else if (dataType.equals( NamespacePrefixMapper.XSD_HASH_NS + "byte"))
+		} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "byte"))
 		{
 			return literal.byteValue();
-		} else if (dataType.equals( NamespacePrefixMapper.XSD_HASH_NS + "decimal"))
+		} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
+				+ "decimal"))
 		{
 			return literal.decimalValue();
-		} else if (dataType.equals( NamespacePrefixMapper.XSD_HASH_NS + "anyURI"))
+		} else if (dataType
+				.equals(NamespacePrefixMapper.XSD_HASH_NS + "anyURI"))
 		{
 			URIWrapper uw = new URIWrapper();
 			uw.setValue(java.net.URI.create(literal.stringValue()));
@@ -426,12 +440,13 @@ public class RdfCollector extends RDFHandlerBase {
 	private String getXsdType(String shorttype)
 	{
 		String xsdType = "";
-		if (revnss.containsKey( NamespacePrefixMapper.XSD_HASH_NS))
+		if (revnss.containsKey(NamespacePrefixMapper.XSD_HASH_NS))
 		{
-			xsdType = revnss.get( NamespacePrefixMapper.XSD_HASH_NS) + ":" + shorttype;
+			xsdType = revnss.get(NamespacePrefixMapper.XSD_HASH_NS) + ":"
+					+ shorttype;
 		} else
 		{
-			xsdType =  NamespacePrefixMapper.XSD_HASH_NS + shorttype;
+			xsdType = NamespacePrefixMapper.XSD_HASH_NS + shorttype;
 		}
 		return xsdType;
 	}
@@ -535,10 +550,12 @@ public class RdfCollector extends RDFHandlerBase {
 				Value val = statement.getObject();
 				if (!isProvURI(predQ))
 				{
-					if (!predQ.equals(Ontology.QNAME_RDF_TYPE) && !predQ.equals(Ontology.QNAME_RDFS_LABEL))
+					if (!predQ.equals(Ontology.QNAME_RDF_TYPE)
+							&& !predQ.equals(Ontology.QNAME_RDFS_LABEL))
 					{
 						// Retrieve the prefix
-						String prefix = this.revnss.get(predQ.getNamespaceURI());
+						String prefix = this.revnss
+								.get(predQ.getNamespaceURI());
 						Attribute attr = null;
 						if (val instanceof Literal)
 						{
@@ -550,12 +567,10 @@ public class RdfCollector extends RDFHandlerBase {
 								shortType = lit.getDatatype().getLocalName();
 							}
 
-							// FIXME: Bug 3 occurs here.
 							QName xsdType = pFactory
-									.stringToQName(getXsdType(shortType));// Is
-																			// it
-																			// right?
-							attr = pFactory.newAttribute(predQ.getNamespaceURI(),
+									.stringToQName(getXsdType(shortType));
+							attr = pFactory.newAttribute(
+									predQ.getNamespaceURI(),
 									predQ.getLocalPart(), prefix,
 									decodeLiteral(lit), xsdType);
 
@@ -706,7 +721,8 @@ public class RdfCollector extends RDFHandlerBase {
 					System.out.println("Unhandled statements in " + qname);
 					for (Statement statement : collator.get(qname))
 					{
-						if (isProvURI(convertURIToQName(statement.getPredicate())))
+						if (isProvURI(convertURIToQName(statement
+								.getPredicate())))
 						{
 							System.out.println(statement);
 						}
@@ -759,66 +775,57 @@ public class RdfCollector extends RDFHandlerBase {
 				QName valueQ = convertResourceToQName((Resource) value);
 				if (predQ.equals(Ontology.QNAME_PROVO_wasDerivedFrom))
 				{
-					WasDerivedFrom wdf = pFactory.newWasDerivedFrom(
-							(QName) null, pFactory.newEntityRef(qname),
-							pFactory.newEntityRef(valueQ));
+					WasDerivedFrom wdf = pFactory
+							.newWasDerivedFrom((QName) null, qname, valueQ,
+									null, null, null, null);
 
 					store(context, wdf);
 				} else if (predQ.equals(Ontology.QNAME_PROVO_hadPrimarySource))
 				{
-					WasDerivedFrom wdf = pFactory.newWasDerivedFrom(
-							(QName) null, pFactory.newEntityRef(qname),
-							pFactory.newEntityRef(valueQ));
+					WasDerivedFrom wdf = pFactory.newWasDerivedFrom(null,
+							qname, valueQ, null, null, null, null);
 
 					pFactory.addPrimarySourceType(wdf);
 					store(context, wdf);
 				} else if (predQ.equals(Ontology.QNAME_PROVO_wasQuotedFrom))
 				{
-					WasDerivedFrom wdf = pFactory.newWasDerivedFrom(
-							(QName) null, pFactory.newEntityRef(qname),
-							pFactory.newEntityRef(valueQ));
+					WasDerivedFrom wdf = pFactory.newWasDerivedFrom(null,
+							qname, valueQ, null, null, null, null);
 					pFactory.addQuotationType(wdf);
 					store(context, wdf);
 				} else if (predQ.equals(Ontology.QNAME_PROVO_wasRevisionOf))
 				{
-					WasDerivedFrom wdf = pFactory.newWasDerivedFrom(
-							(QName) null, pFactory.newEntityRef(qname),
-							pFactory.newEntityRef(valueQ));
+					WasDerivedFrom wdf = pFactory.newWasDerivedFrom(null,
+							qname, valueQ, null, null, null, null);
 					pFactory.addRevisionType(wdf);
 					store(context, wdf);
 				} else if (predQ.equals(Ontology.QNAME_PROVO_wasGeneratedBy))
 				{
-					WasGeneratedBy wgb = pFactory.newWasGeneratedBy(
-							(QName) null, pFactory.newEntityRef(qname), null,
-							pFactory.newActivityRef(valueQ));
+					WasGeneratedBy wgb = pFactory.newWasGeneratedBy(null,
+							qname, valueQ, null, null);
 
 					store(context, wgb);
 				} else if (predQ.equals(Ontology.QNAME_PROVO_alternateOf))
 				{
-					AlternateOf ao = pFactory.newAlternateOf(
-							pFactory.newEntityRef(qname),
-							pFactory.newEntityRef(valueQ));
+					AlternateOf ao = pFactory.newAlternateOf(qname, valueQ);
 
 					store(context, ao);
 				} else if (predQ.equals(Ontology.QNAME_PROVO_specializationOf))
 				{
-					SpecializationOf so = pFactory.newSpecializationOf(
-							pFactory.newEntityRef(qname),
-							pFactory.newEntityRef(valueQ));
+					SpecializationOf so = pFactory.newSpecializationOf(qname,
+							valueQ);
 
 					store(context, so);
 				} else if (predQ.equals(Ontology.QNAME_PROVO_wasInvalidatedBy))
 				{
-					WasInvalidatedBy wib = pFactory.newWasInvalidatedBy(
-							(QName) null, pFactory.newEntityRef(qname),
-							pFactory.newActivityRef(valueQ));
+					WasInvalidatedBy wib = pFactory.newWasInvalidatedBy(null,
+							qname, valueQ, null, null);
 
 					store(context, wib);
 				} else if (predQ.equals(Ontology.QNAME_PROVO_wasAttributedTo))
 				{
-					WasAttributedTo wit = pFactory.newWasAttributedTo(
-							(QName) null, pFactory.newEntityRef(qname),
-							pFactory.newAgentRef(valueQ));
+					WasAttributedTo wit = pFactory.newWasAttributedTo(null,
+							qname, valueQ, null);
 
 					store(context, wit);
 				} else if (predQ.equals(Ontology.QNAME_PROVO_mentionOf))
@@ -831,13 +838,8 @@ public class RdfCollector extends RDFHandlerBase {
 							: convertURIToQName((URI) o);
 					QName entityQ = (value == null) ? null
 							: convertURIToQName((URI) value);
-					MentionOf nmo = pFactory.newMentionOf(
-							(qname == null) ? null : pFactory
-									.newEntityRef(qname),
-							(entityQ == null) ? null : pFactory
-									.newEntityRef(entityQ),
-							(bundleQ == null) ? null : pFactory
-									.newEntityRef(bundleQ));
+					MentionOf nmo = pFactory.newMentionOf(qname, entityQ,
+							bundleQ);
 
 					store(context, nmo);
 				} else if (predQ.equals(Ontology.QNAME_PROVO_value))
@@ -875,8 +877,8 @@ public class RdfCollector extends RDFHandlerBase {
 				{
 					QName agentQ = convertResourceToQName((Resource) value);
 					ActedOnBehalfOf aobo = pFactory.newActedOnBehalfOf(
-							(QName) null, pFactory.newAgentRef(qname),
-							pFactory.newAgentRef(agentQ), null);
+							null, qname,
+							agentQ, null, null);
 
 					store(context, aobo);
 				}
@@ -904,44 +906,43 @@ public class RdfCollector extends RDFHandlerBase {
 				if (predQ.equals(Ontology.QNAME_PROVO_wasAssociatedWith))
 				{
 					WasAssociatedWith waw = pFactory.newWasAssociatedWith(
-							(QName) null, pFactory.newActivityRef(qname),
-							pFactory.newAgentRef(valueQ));
+							null, qname,
+							valueQ, null, null);
 
 					store(context, waw);
 
 				} else if (predQ.equals(Ontology.QNAME_PROVO_used))
 				{
-					Used used = pFactory.newUsed((QName) null,
-							pFactory.newActivityRef(qname), null,
-							pFactory.newEntityRef(valueQ));
+					Used used = pFactory.newUsed(null,
+							qname,
+							valueQ, null, null);
 					store(context, used);
 
 				} else if (predQ.equals(Ontology.QNAME_PROVO_wasStartedBy))
 				{
-					WasStartedBy wsb = pFactory.newWasStartedBy((QName) null,
-							pFactory.newActivityRef(qname),
-							pFactory.newEntityRef(valueQ));
+					WasStartedBy wsb = pFactory.newWasStartedBy(null,
+							qname,
+							valueQ, null, null, null);
 					store(context, wsb);
 
 				} else if (predQ.equals(Ontology.QNAME_PROVO_generated))
 				{
 					WasGeneratedBy wgb = pFactory.newWasGeneratedBy(
-							(QName) null, pFactory.newEntityRef(valueQ), null,
-							pFactory.newActivityRef(qname));
+							null, valueQ, qname, null, null);
 					store(context, wgb);
 
 				} else if (predQ.equals(Ontology.QNAME_PROVO_wasEndedBy))
 				{
-					WasEndedBy web = pFactory.newWasEndedBy((QName) null,
-							pFactory.newActivityRef(qname),
-							pFactory.newEntityRef(valueQ));
+					WasEndedBy web = pFactory.newWasEndedBy(null,
+							qname,
+							valueQ, null, null, null);
 					store(context, web);
 
 				} else if (predQ.equals(Ontology.QNAME_PROVO_wasInformedBy))
 				{
-					WasInformedBy wib = pFactory.newWasInformedBy((QName) null,
-							pFactory.newActivityRef(qname),
-							pFactory.newActivityRef(valueQ));
+					WasInformedBy wib = pFactory.newWasInformedBy(null,
+							qname,
+							valueQ, null);
 					store(context, wib);
 				}
 			} else if (value instanceof Literal)

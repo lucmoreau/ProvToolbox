@@ -503,8 +503,8 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 
     public AlternateOf newAlternateOf(EntityRef eid2, EntityRef eid1) {
 	AlternateOf res = of.createAlternateOf();
-	res.setEntity2(eid2);
-	res.setEntity1(eid1);
+	res.setAlternate1(eid2);
+	res.setAlternate2(eid1);
 	return res;
     }
     
@@ -898,7 +898,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public MentionOf newMentionOf(EntityRef infra, EntityRef supra,
 				  EntityRef bundle) {
 	MentionOf res = of.createMentionOf();
-	res.setSpecializedEntity(infra);
+	res.setSpecificEntity(infra);
 	res.setBundle(bundle);
 	res.setGeneralEntity(supra);
 	return res;
@@ -906,7 +906,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 
     public MentionOf newMentionOf(MentionOf r) {
 	MentionOf res = of.createMentionOf();
-	res.setSpecializedEntity(r.getSpecializedEntity());
+	res.setSpecificEntity(r.getSpecificEntity());
 	res.setBundle(r.getBundle());
 	res.setGeneralEntity(r.getGeneralEntity());
 	return res;
@@ -915,7 +915,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public MentionOf newMentionOf(String infra, String supra, String bundle) {
 	MentionOf res = of.createMentionOf();
 	if (supra != null)
-	    res.setSpecializedEntity(newEntityRef(infra));
+	    res.setSpecificEntity(newEntityRef(infra));
 	if (bundle != null)
 	    res.setBundle(newEntityRef(bundle));
 	if (supra != null)
@@ -984,7 +984,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 
     public SpecializationOf newSpecializationOf(EntityRef eid2, EntityRef eid1) {
 	SpecializationOf res = of.createSpecializationOf();
-	res.setSpecializedEntity(eid2);
+	res.setSpecificEntity(eid2);
 	res.setGeneralEntity(eid1);
 	return res;
     }

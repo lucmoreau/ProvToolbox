@@ -307,15 +307,15 @@ public class BeanTraversal {
     }
 
     public AlternateOf convert(AlternateOf o) {
-        return c.newAlternateOf(q(o.getEntity2()), q(o.getEntity1()));
+        return c.newAlternateOf(q(o.getAlternate1()), q(o.getAlternate2()));
     }
 
     public SpecializationOf convert(SpecializationOf o) {
-        return c.newSpecializationOf(q(o.getSpecializedEntity()), q(o.getGeneralEntity()));
+        return c.newSpecializationOf(q(o.getSpecificEntity()), q(o.getGeneralEntity()));
     }
 
     public MentionOf convert(MentionOf o) {
-        return c.newMentionOf(q(o.getSpecializedEntity()),
+        return c.newMentionOf(q(o.getSpecificEntity()),
                               q(o.getGeneralEntity()),
                               q(o.getBundle()));
     }

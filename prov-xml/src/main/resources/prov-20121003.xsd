@@ -232,21 +232,21 @@
 
   <xs:complexType name="Alternate">
     <xs:sequence>
-      <xs:element name="entity2"   type="prov:EntityRef"/>
-      <xs:element name="entity1"   type="prov:EntityRef"/>
+      <xs:element name="alternate1"   type="prov:EntityRef"/>
+      <xs:element name="alternate2"   type="prov:EntityRef"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="Specialization">
     <xs:sequence>
-      <xs:element name="specializedEntity"   type="prov:EntityRef"/>
+      <xs:element name="specificEntity"   type="prov:EntityRef"/>
       <xs:element name="generalEntity"   type="prov:EntityRef"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="Mention">
     <xs:sequence>
-      <xs:element name="specializedEntity" type="prov:EntityRef"/>
+      <xs:element name="specificEntity" type="prov:EntityRef"/>
       <xs:element name="generalEntity"     type="prov:EntityRef"/>
       <xs:element name="bundle"            type="prov:EntityRef" minOccurs="1"/>
     </xs:sequence>

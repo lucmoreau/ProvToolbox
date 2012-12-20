@@ -10,6 +10,8 @@ import org.openprovenance.prov.xml.NamespacePrefixMapper;
 public class Ontology {
     public Ontology() {
 	initInfluenceTables();
+	initDomainTables();
+	initRangeTables();
     }
 
     public Hashtable<QName, QName> qualifiedInfluenceTable = new Hashtable<QName, QName>();
@@ -19,6 +21,7 @@ public class Ontology {
     public Hashtable<QName, QName> convertTable = new Hashtable<QName, QName>();
 
     public Hashtable<QName, QName> domains = new Hashtable<QName, QName>();
+    public Hashtable<QName, QName> ranges = new Hashtable<QName, QName>();
     
     public static QName newProvQName(String local) {
 	return new QName(NamespacePrefixMapper.PROV_NS, local,
@@ -223,6 +226,49 @@ public class Ontology {
 	convertTable.put(Attribute.PROV_ROLE_QNAME, QNAME_PROVO_hadRole);
     }
     
+    void initRangeTables() {
+    	this.ranges.put(QNAME_PROVO_actedOnBehalfOf, QNAME_PROVO_Agent);
+    	this.ranges.put(QNAME_PROVO_used, QNAME_PROVO_Entity);
+    	this.ranges.put(QNAME_PROVO_wasAssociatedWith, QNAME_PROVO_Agent);
+    	this.ranges.put(QNAME_PROVO_wasAttributedTo, QNAME_PROVO_Agent);
+    	this.ranges.put(QNAME_PROVO_wasDerivedFrom, QNAME_PROVO_Entity);
+    	this.ranges.put(QNAME_PROVO_wasGeneratedBy, QNAME_PROVO_Activity);
+    	this.ranges.put(QNAME_PROVO_wasInformedBy, QNAME_PROVO_Activity);
+    	this.ranges.put(QNAME_PROVO_alternateOf, QNAME_PROVO_Entity);
+    	this.ranges.put(QNAME_PROVO_atLocation, QNAME_PROVO_Location);
+    	this.ranges.put(QNAME_PROVO_generated, QNAME_PROVO_Entity);
+    	this.ranges.put(QNAME_PROVO_hadMember, QNAME_PROVO_Entity);
+    	this.ranges.put(QNAME_PROVO_hadPrimarySource, QNAME_PROVO_Entity);
+    	this.ranges.put(QNAME_PROVO_invalidated, QNAME_PROVO_Entity);
+    	this.ranges.put(QNAME_PROVO_specializationOf, QNAME_PROVO_Entity);
+    	this.ranges.put(QNAME_PROVO_wasEndedBy, QNAME_PROVO_Entity);
+    	this.ranges.put(QNAME_PROVO_wasInvalidatedBy, QNAME_PROVO_Activity);
+    	this.ranges.put(QNAME_PROVO_wasQuotedFrom, QNAME_PROVO_Entity);
+    	this.ranges.put(QNAME_PROVO_wasRevisionOf, QNAME_PROVO_Entity);
+    	this.ranges.put(QNAME_PROVO_wasStartedBy, QNAME_PROVO_Entity);
+    	this.ranges.put(QNAME_PROVO_activity, QNAME_PROVO_Activity);
+    	this.ranges.put(QNAME_PROVO_agent, QNAME_PROVO_Agent);
+    	this.ranges.put(QNAME_PROVO_entity, QNAME_PROVO_Entity);
+    	this.ranges.put(QNAME_PROVO_hadActivity, QNAME_PROVO_Activity);
+    	this.ranges.put(QNAME_PROVO_hadGeneration, QNAME_PROVO_Generation);
+    	this.ranges.put(QNAME_PROVO_hadPlan, QNAME_PROVO_Plan);
+    	this.ranges.put(QNAME_PROVO_hadUsage, QNAME_PROVO_Usage);
+    	this.ranges.put(QNAME_PROVO_qualifiedAssociation, QNAME_PROVO_Association);
+    	this.ranges.put(QNAME_PROVO_qualifiedAttribution, QNAME_PROVO_Attribution);
+    	this.ranges.put(QNAME_PROVO_qualifiedCommunication, QNAME_PROVO_Communication);
+    	this.ranges.put(QNAME_PROVO_qualifiedDelegation, QNAME_PROVO_Delegation);
+    	this.ranges.put(QNAME_PROVO_qualifiedDerivation, QNAME_PROVO_Derivation);
+    	this.ranges.put(QNAME_PROVO_qualifiedEnd, QNAME_PROVO_End);
+    	this.ranges.put(QNAME_PROVO_qualifiedGeneration, QNAME_PROVO_Generation);
+    	this.ranges.put(QNAME_PROVO_qualifiedInfluence, QNAME_PROVO_Influence);
+    	this.ranges.put(QNAME_PROVO_qualifiedInvalidation, QNAME_PROVO_Invalidation);
+    	this.ranges.put(QNAME_PROVO_qualifiedPrimarySource, QNAME_PROVO_PrimarySource);
+    	this.ranges.put(QNAME_PROVO_qualifiedQuotation, QNAME_PROVO_Quotation);
+    	this.ranges.put(QNAME_PROVO_qualifiedRevision, QNAME_PROVO_Revision);
+    	this.ranges.put(QNAME_PROVO_qualifiedStart, QNAME_PROVO_Start);
+    	this.ranges.put(QNAME_PROVO_qualifiedUsage, QNAME_PROVO_Usage);
+    }
+    
     void initDomainTables() {
     	/*
     	 * The domain table maps from predicate to domain. Note that this means
@@ -272,7 +318,7 @@ public class Ontology {
     	this.domains.put(QNAME_PROVO_qualifiedQuotation, QNAME_PROVO_Entity);
     	this.domains.put(QNAME_PROVO_qualifiedRevision, QNAME_PROVO_Entity);
     	
-    	this.domains.put(QNAME_PROVO_EntityInfluence, QNAME_PROVO_EntityInfluence);
+    	this.domains.put(QNAME_PROVO_entity, QNAME_PROVO_EntityInfluence);
     	
     	this.domains.put(QNAME_PROVO_atTime, QNAME_PROVO_InstantaneousEvent);
     	

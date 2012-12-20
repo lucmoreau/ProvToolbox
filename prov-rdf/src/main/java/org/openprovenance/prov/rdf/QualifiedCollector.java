@@ -58,7 +58,7 @@ public class QualifiedCollector extends RdfCollector {
 			HashMap<QName, List<Statement>> collator = collators.get(contextQ);
 			for (QName qname : collator.keySet())
 			{
-				ProvType[] types = getResourceTypes(contextQ, qname);
+				ProvType[] types = getExplicitTypes(contextQ, qname);
 				for (ProvType type : types)
 				{
 					switch (type)

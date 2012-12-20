@@ -1,6 +1,7 @@
 package org.openprovenance.prov.rdf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -164,6 +165,11 @@ public class RdfCollector extends RDFHandlerBase {
 			return qname.toString();
 		}
 
+		public boolean equals(ProvType b)
+		{
+			return b.getQName().equals(this.getQName());
+		}
+
 	}
 
 	protected ProvFactory pFactory;
@@ -172,10 +178,12 @@ public class RdfCollector extends RDFHandlerBase {
 	protected Document document;
 	private Hashtable<String, String> revnss;
 	private ValueConverter valueConverter;
+	private Ontology ontology;
 
 	public RdfCollector(ProvFactory pFactory)
 	{
 		this.pFactory = pFactory;
+		this.ontology = new Ontology();
 		this.collators = new HashMap<QName, HashMap<QName, List<Statement>>>();
 		this.revnss = new Hashtable<String, String>();
 		this.document = pFactory.newDocument();
@@ -281,10 +289,78 @@ public class RdfCollector extends RDFHandlerBase {
 		return statement;
 	}
 
-	protected ProvType[] getResourceTypes(QName context, QName qname)
+	private ProvType[] filterImplicitTypes(ProvType[] implicitTypes,
+			ProvType[] explicitTypes)
+	{
+		List<ProvType> explicitOptions = new ArrayList<ProvType>(
+				Arrays.asList(explicitTypes));
+		List<ProvType> implicitOptions = new ArrayList<ProvType>(
+				Arrays.asList(implicitTypes));
+
+		// Remove any that are already types that are already explicit
+		implicitOptions.removeAll(explicitOptions);
+
+		// Remove any that are extended by types in explicit
+		List<ProvType> cloned = new ArrayList<ProvType>(implicitOptions);
+		for (ProvType option : explicitOptions)
+		{
+			for (ProvType extended : option.getExtends())
+			{
+				cloned.remove(extended);
+			}
+		}
+		implicitOptions = cloned;
+		System.out.println("Filtered: " + implicitOptions);
+		return implicitOptions.toArray(new ProvType[] {});
+	}
+
+	protected ProvType[] getImplicitTypes(QName context, QName qname)
 	{
 		List<Statement> statements = collators.get(context).get(qname);
-		List<ProvType> options = new ArrayList<ProvType>();
+		List<ProvType> implicitOptions = new ArrayList<ProvType>();
+		for (Statement statement : statements)
+		{
+			QName predQ = convertURIToQName(statement.getPredicate());
+			// Check for a type that we can infer
+			if (ontology.domains.containsKey(predQ))
+			{
+				ProvType provType = ProvType
+						.lookup(ontology.domains.get(predQ));
+				if (!implicitOptions.contains(provType))
+				{
+					implicitOptions.add(provType);
+				}
+			}
+		}
+		
+		// TODO: Handle cases where qname is the object rather than the subject.
+		// We can use the range mapping to deduce the type of the object in these
+		// cases.
+
+		// Prunes back to the 'top' class (e.g. if we have Person and Agent, we
+		// only need Person)
+		if (implicitOptions.size() > 1)
+		{
+			List<ProvType> cloned = new ArrayList<ProvType>(implicitOptions);
+			for (ProvType option : implicitOptions)
+			{
+				for (ProvType extended : option.getExtends())
+				{
+					cloned.remove(extended);
+				}
+			}
+			implicitOptions = cloned;
+		}
+
+		System.out.println("Implicit types: "+implicitOptions);
+		return implicitOptions.toArray(new ProvType[] {});
+
+	}
+
+	protected ProvType[] getExplicitTypes(QName context, QName qname)
+	{
+		List<Statement> statements = collators.get(context).get(qname);
+		List<ProvType> explicitOptions = new ArrayList<ProvType>();
 		for (Statement statement : statements)
 		{
 			QName predQ = convertURIToQName(statement.getPredicate());
@@ -301,24 +377,27 @@ public class RdfCollector extends RDFHandlerBase {
 				}
 				ProvType provType = ProvType
 						.lookup(convertURIToQName((URI) value));
-				options.add(provType);
+				explicitOptions.add(provType);
 			}
 		}
 
-		if (options.size() > 1)
+		// Prunes back to the 'top' class (e.g. if we have Person and Agent, we
+		// only need Person)
+		if (explicitOptions.size() > 1)
 		{
-			List<ProvType> cloned = new ArrayList<ProvType>(options);
-			for (ProvType option : options)
+			List<ProvType> cloned = new ArrayList<ProvType>(explicitOptions);
+			for (ProvType option : explicitOptions)
 			{
 				for (ProvType extended : option.getExtends())
 				{
 					cloned.remove(extended);
 				}
 			}
-			options = cloned;
+			explicitOptions = cloned;
 		}
 
-		return options.toArray(new ProvType[] {});
+		System.out.println("Explicit types: "+explicitOptions);
+		return explicitOptions.toArray(new ProvType[] {});
 	}
 
 	protected QName convertResourceToQName(Resource resource)
@@ -595,6 +674,30 @@ public class RdfCollector extends RDFHandlerBase {
 		return attributes;
 	}
 
+	private void handleTypes(ProvType[] types, QName context, QName subject, boolean implicit) {
+		for (ProvType type : types)
+		{
+			switch (type)
+			{
+			case ACTIVITY:
+				createActivity(context, subject, implicit);
+				break;
+			case AGENT:
+			case PERSON:
+			case ORGANIZATION:
+			case SOFTWAREAGENT:
+				createAgent(context, subject, implicit);
+				break;
+			case ENTITY:
+			case PLAN:
+			case BUNDLE:
+				createEntity(context, subject, implicit);
+				break;
+			default:
+			}
+		}
+	}
+	
 	protected void buildGraph()
 	{
 		for (QName contextQ : collators.keySet())
@@ -602,28 +705,16 @@ public class RdfCollector extends RDFHandlerBase {
 			HashMap<QName, List<Statement>> collator = collators.get(contextQ);
 			for (QName qname : collator.keySet())
 			{
-				ProvType[] types = getResourceTypes(contextQ, qname);
-				for (ProvType type : types)
-				{
-					switch (type)
-					{
-					case ACTIVITY:
-						createActivity(contextQ, qname);
-						break;
-					case AGENT:
-					case PERSON:
-					case ORGANIZATION:
-					case SOFTWAREAGENT:
-						createAgent(contextQ, qname);
-						break;
-					case ENTITY:
-					case PLAN:
-					case BUNDLE:
-						createEntity(contextQ, qname);
-						break;
-					default:
-					}
-				}
+				System.out.println("Subject: " + qname);
+				
+				ProvType[] explicitTypes = getExplicitTypes(contextQ, qname);
+				ProvType[] implicitTypes = getImplicitTypes(contextQ, qname);
+				implicitTypes = filterImplicitTypes(implicitTypes,
+						explicitTypes);
+				
+				handleTypes(explicitTypes, contextQ, qname, false);
+				handleTypes(implicitTypes, contextQ, qname, true);
+				
 			}
 		}
 	}
@@ -727,7 +818,7 @@ public class RdfCollector extends RDFHandlerBase {
 		return qname;
 	}
 
-	private void createEntity(QName context, QName qname)
+	private void createEntity(QName context, QName qname, boolean implicit)
 	{
 
 		List<Statement> statements = collators.get(context).get(qname);
@@ -851,12 +942,15 @@ public class RdfCollector extends RDFHandlerBase {
 			}
 		}
 
-		org.openprovenance.prov.xml.Entity entity = pFactory.newEntity(qname,
-				attributes);
-		store(context, entity);
+		if (!implicit)
+		{
+			org.openprovenance.prov.xml.Entity entity = pFactory.newEntity(
+					qname, attributes);
+			store(context, entity);
+		}
 	}
 
-	private void createAgent(QName context, QName qname)
+	private void createAgent(QName context, QName qname, boolean implicit)
 	{
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.AGENT);
@@ -879,12 +973,15 @@ public class RdfCollector extends RDFHandlerBase {
 			}
 		}
 
-		org.openprovenance.prov.xml.Agent agent = pFactory.newAgent(qname,
-				attributes);
-		store(context, agent);
+		if (!implicit)
+		{
+			org.openprovenance.prov.xml.Agent agent = pFactory.newAgent(qname,
+					attributes);
+			store(context, agent);
+		}
 	}
 
-	private void createActivity(QName context, QName qname)
+	private void createActivity(QName context, QName qname, boolean implicit)
 	{
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.ACTIVITY);
@@ -972,9 +1069,12 @@ public class RdfCollector extends RDFHandlerBase {
 			}
 		}
 
-		org.openprovenance.prov.xml.Activity activity = pFactory.newActivity(
-				qname, startTime, endTime, attributes);
-		store(context, activity);
+		if (!implicit)
+		{
+			org.openprovenance.prov.xml.Activity activity = pFactory
+					.newActivity(qname, startTime, endTime, attributes);
+			store(context, activity);
+		}
 	}
 
 	@Override

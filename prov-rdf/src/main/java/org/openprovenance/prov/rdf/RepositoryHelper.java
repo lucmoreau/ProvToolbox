@@ -4,9 +4,7 @@ import java.io.FileWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.List;
 
-import org.openrdf.model.Resource;
 import org.openrdf.repository.contextaware.ContextAwareRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandler;
@@ -41,7 +39,6 @@ public class RepositoryHelper {
     public void dumpToRDF(String file,
                           ContextAwareRepository manager,
                           RDFFormat format,
-                          List<Resource> contexts,
                           Hashtable<String,String> prefixes) throws Exception {
         Writer writer = new FileWriter(file); 
         RDFHandler serialiser=null;

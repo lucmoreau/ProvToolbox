@@ -4,15 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.List;
-
 import javax.xml.bind.JAXBException;
+import org.openprovenance.prov.rdf.QualifiedCollector;
 
 import org.openprovenance.prov.xml.BeanTraversal;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ValueConverter;
-import org.openrdf.model.Resource;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.contextaware.ContextAwareRepository;
 import org.openrdf.repository.sail.SailRepository;
@@ -54,7 +52,7 @@ public class Utility {
 	//ElmoManagerFactory factory = new SesameManagerFactory(module);
 	//ElmoManager manager = factory.createElmoManager();
 
-	RdfConstructor rdfc = new RdfConstructor(new GraphBuilder(rep));
+	RdfConstructor rdfc = new RdfConstructor(new SesameGraphBuilder(rep));
 	rdfc.getNamespaceTable().putAll(document.getNss());
 	rdfc.getNamespaceTable().put("xsd", "http://www.w3.org/2001/XMLSchema#");
 	
@@ -65,10 +63,9 @@ public class Utility {
 
 	bt.convert(document);
 	
-        List<Resource> contexts=rdfc.contexts;
 
 	//System.out.println("namespaces " + rdfc.getNamespaceTable());
-	rHelper.dumpToRDF(filename, rep, format, contexts,
+	rHelper.dumpToRDF(filename, rep, format, 
 			  rdfc.getNamespaceTable());
     }
     

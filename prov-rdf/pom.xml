@@ -63,12 +63,13 @@ note old version required for elmo! -->
       <version>0.1.1-SNAPSHOT</version>
     </dependency>
 
+<!--  
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-n</artifactId>
       <version>0.1.1-SNAPSHOT</version>
     </dependency>
-
+-->
 
     
     <dependency>

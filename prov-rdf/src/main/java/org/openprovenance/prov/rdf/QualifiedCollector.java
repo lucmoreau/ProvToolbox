@@ -11,8 +11,6 @@ import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.Attribute;
-import org.openprovenance.prov.xml.HasRole;
-import org.openprovenance.prov.xml.HasTime;
 import org.openprovenance.prov.xml.Identifiable;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvFactory;

@@ -30,7 +30,6 @@ import org.openprovenance.prov.xml.WasInfluencedBy;
 import org.openprovenance.prov.xml.WasInformedBy;
 import org.openprovenance.prov.xml.WasInvalidatedBy;
 import org.openprovenance.prov.xml.WasStartedBy;
-import org.openrdf.elmo.ElmoManager;
 import org.openrdf.model.Resource;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.URIImpl;
@@ -49,11 +48,9 @@ public class RdfConstructor implements ModelConstructor {
     final GraphBuilder gb;
     final Ontology onto;
 
-    public RdfConstructor(ElmoManager manager) { // manager should be passed to
-						 // graph builder and not this
-						 // constructor
+    public RdfConstructor(GraphBuilder gb) {
 	this.onto = new Ontology();
-	this.gb = new GraphBuilder(manager);
+	this.gb = gb;
     }
 
     @Override

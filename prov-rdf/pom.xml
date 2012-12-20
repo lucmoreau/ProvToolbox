@@ -19,39 +19,43 @@
 		<url>http://repo.aduna-software.org/maven2/releases</url>
 	</repository>
   </repositories>
-
+  
+  <properties>
+    <sesame.version>2.6.10</sesame.version> 
+  </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>org.openrdf.elmo</groupId>
-      <artifactId>elmo-sesame</artifactId>
-      <version>1.5</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.openrdf.elmo</groupId>
-      <artifactId>elmo-codegen</artifactId>
-      <version>1.5</version>
-    </dependency>
 
     <dependency>
       <groupId>org.openrdf.sesame</groupId>
       <artifactId>sesame-runtime</artifactId>
-      <version>2.3.0</version>
+      <version>${sesame.version}</version>
     </dependency>
 
     <dependency>
-		<groupId>org.openrdf.sesame</groupId>
-		<artifactId>sesame-rio-n3</artifactId>
-		<version>2.3.0</version>
+        <groupId>org.openrdf.sesame</groupId>
+        <artifactId>sesame-rio-n3</artifactId>
+        <version>${sesame.version}</version>
     </dependency>
 
+    <dependency>
+        <groupId>org.openrdf.sesame</groupId>
+        <artifactId>sesame-rio-rdfxml</artifactId>
+        <version>${sesame.version}</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.openrdf.sesame</groupId>
+        <artifactId>sesame-rio-trig</artifactId>
+        <version>${sesame.version}</version>
+    </dependency>
+<!--
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>1.5.2</version>  <!-- note old version required for elmo! -->
+      <version>1.5.2</version>   
     </dependency>
-
+note old version required for elmo! -->
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
@@ -65,18 +69,8 @@
       <version>0.1.1-SNAPSHOT</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.jvnet.jaxb2_commons</groupId>
-	  <artifactId>runtime</artifactId>
-   	  <version>${jaxb.common.version}</version>
-    </dependency>
 
-
-    <dependency>
-    	<groupId>org.openrdf.sesame</groupId>
-    	<artifactId>sesame-rio-trig</artifactId>
-    	<version>2.3.0</version>
-    </dependency>
+    
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>

@@ -6,9 +6,8 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.openrdf.elmo.ElmoModule;
-import org.openrdf.elmo.sesame.SesameManager;
 import org.openrdf.model.Resource;
+import org.openrdf.repository.contextaware.ContextAwareRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.n3.N3Writer;
@@ -40,7 +39,7 @@ public class RepositoryHelper {
     
 
     public void dumpToRDF(String file,
-                          SesameManager manager,
+                          ContextAwareRepository manager,
                           RDFFormat format,
                           List<Resource> contexts,
                           Hashtable<String,String> prefixes) throws Exception {
@@ -63,110 +62,10 @@ public class RepositoryHelper {
         writer.close();
     }
 
-    public void readFromRDF(File file, String uri, SesameManager manager, RDFFormat format) throws Exception {
+    public void readFromRDF(File file, String uri, ContextAwareRepository manager, RDFFormat format) throws Exception {
         manager.getConnection().add(file,uri,format);
     }
 
 
-    /*
-    public static void main(String [] args) throws Exception {
-        if ((args==null) || (!((args.length==4) || (args.length==5)))) {
-            System.out.println("Usage: opmconvert -xml2rdf fileIn fileOut NS [yes]");
-            System.out.println("Usage: opmconvert -xml2n3 fileIn fileOut NS [yes]");
-            System.out.println("Usage: opmconvert -rdf2xml fileIn fileOut NS [gid]");
-
-            return;
-        }
-        if (args[0].equals("-rdf2xml")) {
-            String fileIn=args[1];
-            String fileOut=args[2];
-            String namespace=args[3];
-            String gid=null;
-            if (args.length==5) gid=args[4];
-
-            RepositoryHelper rHelper=new RepositoryHelper();
-            rHelper.rdfToXml(fileIn,fileOut,namespace,gid);
-            return;
-        }
-
-        if (args[0].equals("-xml2rdf")) {
-            String fileIn=args[1];
-            String fileOut=args[2];
-            String namespace=args[3];
-            String gid=null;
-            if (args.length==5) gid=args[4];
-
-            RepositoryHelper rHelper=new RepositoryHelper();
-            rHelper.xmlToRdf(fileIn,fileOut,namespace,gid);
-            return;
-        }
-
-        if (args[0].equals("-xml2n3")) {
-            String fileIn=args[1];
-            String fileOut=args[2];
-            String namespace=args[3];
-            String gid=null;
-            if (args.length==5) gid=args[4];
-
-            RepositoryHelper rHelper=new RepositoryHelper();
-            rHelper.xmlToN3(fileIn,fileOut,namespace,gid);
-            return;
-        }
-
-        //TODO: other options here
-
-
-    }
-
-
-    public void rdfToXml(String fileIn, String fileOut, String NS, String graphId) throws Exception {
-        ElmoModule module = new ElmoModule();
-        registerConcepts(module);
-        ElmoManagerFactory factory=new SesameManagerFactory(module);
-        ElmoManager manager = factory.createElmoManager();
-
-        RdfOPMFactory oFactory=new RdfOPMFactory(new RdfObjectFactory(manager,NS),
-                                                 manager);
-        File file = new File(fileIn);
-        readFromRDF(file,null,(SesameManager)manager,RDFFormat.RDFXML);
-
-        QName qname = new QName(NS, graphId);
-        Object o=manager.find(qname);
-        org.openprovenance.rdf.OPMGraph gr=(org.openprovenance.rdf.OPMGraph)o;
-        OPMGraph oGraph=oFactory.newOPMGraph(gr);
-        OPMSerialiser.getThreadOPMSerialiser().serialiseOPMGraph(new File(fileOut),oGraph,true);
-    }
-
-    public void xmlToRdf(String fileIn, String fileOut, String NS, String gid) throws Exception {
-        xmlToRdf(fileIn,fileOut,NS,gid,RDFFormat.RDFXML);
-    }
-    public void xmlToN3(String fileIn, String fileOut, String NS, String gid) throws Exception {
-        xmlToRdf(fileIn,fileOut,NS,gid,RDFFormat.N3);
-    }
-
-    public void xmlToRdf(String fileIn, String fileOut, String NS, String gid, RDFFormat format) throws Exception {
-        ElmoModule module = new ElmoModule();
-        registerConcepts(module);
-        ElmoManagerFactory factory=new SesameManagerFactory(module);
-        ElmoManager manager = factory.createElmoManager();
-
-
-        OPMGraph oGraph=OPMDeserialiser.getThreadOPMDeserialiser().deserialiseOPMGraph(new File(fileIn));
-        String graphId=oGraph.getId();
-
-
-        String namespace=NS;
-        if ((gid!=null) && (gid.equals("yes"))) namespace=namespace+ graphId +"/";
-        RdfOPMFactory oFactory=new RdfOPMFactory(new RdfObjectFactory(manager,namespace));
-
-
-        RdfOPMGraph graph2=oFactory.newOPMGraph(oGraph);
-
-        Collection<String[]> prefixes=Collections.singleton(new String[]{"ex",namespace});
-        
-            
-        dumpToRDF(new File(fileOut),(SesameManager)manager,format,prefixes);
-    }
-    */
-
+ 
 }

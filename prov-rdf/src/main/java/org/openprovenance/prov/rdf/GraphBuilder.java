@@ -3,26 +3,33 @@ package org.openprovenance.prov.rdf;
 import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
-import org.openrdf.elmo.ElmoManager;
-import org.openrdf.elmo.sesame.SesameManager;
 import org.openrdf.model.Resource;
 import org.openrdf.model.impl.BNodeImpl;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.StatementImpl;
 import org.openrdf.model.impl.URIImpl;
+import org.openrdf.repository.contextaware.ContextAwareRepository;
+
+/** This class is a Sesame-based rdf graph builder. Ideally, it should
+ * be abstracted in a generic interface and specific implementations that
+ * are based on sesame/jena/other 
+ */
 
 public class GraphBuilder {
 
-    final ElmoManager manager;
+    final ContextAwareRepository manager;
 
-    public GraphBuilder(ElmoManager manager) {
+    public GraphBuilder(ContextAwareRepository manager) {
 	this.manager = manager;
     }
 
     public void assertStatement(org.openrdf.model.Statement stmnt) {
 	try {
-	    ((org.openrdf.elmo.sesame.SesameManager) manager).getConnection()
-							     .add(stmnt);
+	    if (currentContext==null) {
+		manager.getConnection().add(stmnt);
+	    } else {
+		manager.getConnection().add(stmnt, currentContext);
+	    }
 	} catch (org.openrdf.repository.RepositoryException e) {
 	}
     }
@@ -92,11 +99,14 @@ public class GraphBuilder {
     }
 
     void setContext() {
-	((SesameManager) manager).getConnection().setAddContexts();
+	currentContext=null;
     }
-
+    
+    private Resource currentContext=null;
+    
     void setContext(URIImpl uri) {
-	((SesameManager) manager).getConnection().setAddContexts(uri);
+	currentContext=uri;
+	
     }
 
 }

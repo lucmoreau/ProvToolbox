@@ -115,21 +115,6 @@ public class RoundTripFromJavaTest extends
 
 	}
 
-	public void testMembership1() throws JAXBException
-	{
-
-		// TODO: RDF Collector doesn't support hadMember
-	}
-
-	public void testMembership2() throws JAXBException
-	{
-		// RDF Collector doesn't support hadMember
-	}
-
-	public void testMembership3() throws JAXBException
-	{
-	}
-
 	public void testScruffyGeneration1()
 	{
 		// TODO: Unsupported

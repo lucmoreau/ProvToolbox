@@ -165,6 +165,7 @@ public class ValueConverter {
 	    return QNAME_XSD_QNAME; //"xsd:QName";
 	if (o instanceof XMLGregorianCalendar) 
 	    return QNAME_XSD_DATETIME; //"xsd:dateTime";
+	//FIXME: see issue #54, value can be an element, when xsi:type was unspecified.
 	System.out.println("getXsdType() " + o.getClass());
 	return QNAME_UNKNOWN;
     }

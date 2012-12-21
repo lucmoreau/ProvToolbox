@@ -13,6 +13,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
+import org.openprovenance.prov.xml.HadMember;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
@@ -310,7 +311,6 @@ public class RdfCollector extends RDFHandlerBase {
 			}
 		}
 		implicitOptions = cloned;
-		System.out.println("Filtered: " + implicitOptions);
 		return implicitOptions.toArray(new ProvType[] {});
 	}
 
@@ -352,7 +352,6 @@ public class RdfCollector extends RDFHandlerBase {
 			implicitOptions = cloned;
 		}
 
-		System.out.println("Implicit types: "+implicitOptions);
 		return implicitOptions.toArray(new ProvType[] {});
 
 	}
@@ -396,7 +395,6 @@ public class RdfCollector extends RDFHandlerBase {
 			explicitOptions = cloned;
 		}
 
-		System.out.println("Explicit types: "+explicitOptions);
 		return explicitOptions.toArray(new ProvType[] {});
 	}
 
@@ -509,7 +507,6 @@ public class RdfCollector extends RDFHandlerBase {
 			return uw;
 		} else
 		{
-			// System.out.println("Unhandled::: "+literal.getDatatype());
 			return literal.stringValue();
 		}
 	}
@@ -688,6 +685,7 @@ public class RdfCollector extends RDFHandlerBase {
 			case SOFTWAREAGENT:
 				createAgent(context, subject, implicit);
 				break;
+			case COLLECTION:
 			case ENTITY:
 			case PLAN:
 			case BUNDLE:
@@ -705,7 +703,6 @@ public class RdfCollector extends RDFHandlerBase {
 			HashMap<QName, List<Statement>> collator = collators.get(contextQ);
 			for (QName qname : collator.keySet())
 			{
-				System.out.println("Subject: " + qname);
 				
 				ProvType[] explicitTypes = getExplicitTypes(contextQ, qname);
 				ProvType[] implicitTypes = getImplicitTypes(contextQ, qname);
@@ -824,7 +821,7 @@ public class RdfCollector extends RDFHandlerBase {
 		List<Statement> statements = collators.get(context).get(qname);
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.ENTITY);
-
+		List<QName> members = new ArrayList<QName>();
 		for (Statement statement : statements)
 		{
 			QName predQ = convertURIToQName(statement.getPredicate());
@@ -908,6 +905,10 @@ public class RdfCollector extends RDFHandlerBase {
 					attributes.add(pFactory.newAttribute(
 							Attribute.PROV_VALUE_QNAME, resourceVal,
 							this.valueConverter));
+				} else if (predQ.equals(Ontology.QNAME_PROVO_hadMember))
+				{
+					members.add(convertResourceToQName((Resource) (statement
+                                                .getObject())));
 				}
 			} else if (value instanceof Literal)
 			{
@@ -940,6 +941,11 @@ public class RdfCollector extends RDFHandlerBase {
 
 				store(convertResourceToQName(statement.getContext()), wib);
 			}
+		}
+
+		if(members.size() > 0) {
+			HadMember hm = pFactory.newHadMember(qname, members);
+			store(context, hm);
 		}
 
 		if (!implicit)

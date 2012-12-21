@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<prov:document
+    xmlns:prov="http://www.w3.org/ns/prov#"
+    xmlns:ex="http://example.org/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:dct="http://purl.org/dc/terms/"
+	xmlns:foaf="http://xmlns.com/foaf/0.1/">
+
+  <prov:agent prov:id="ex:chartgen">
+    <prov:type>prov:Organization</prov:type>
+    <foaf:name>Chart Generators Inc</foaf:name>
+  </prov:agent>
+
+  <prov:agent prov:id="ex:derek">
+    <prov:type xsi:type="xsd:QName">prov:Person</prov:type>
+    <foaf:givenName>Derek</foaf:givenName>
+    <foaf:mbox>mailto:derek@example.org</foaf:mbox>
+  </prov:agent>
+
+</prov:document>

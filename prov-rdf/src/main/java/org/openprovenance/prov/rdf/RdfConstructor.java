@@ -346,7 +346,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 
 	for (Attribute attr : attributes) {
 
-	    LITERAL literalImpl = null;
+	    LITERAL lit = null;
 
 	    QName type = attr.getXsdType();
 	    QName pred = onto.convertToRdf(attr.getElementName()); // FIXME: convert to XSD_HASH
@@ -355,8 +355,8 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 	    if (attr.getValue() instanceof InternationalizedString) {
 		InternationalizedString iString = (InternationalizedString) attr.getValue();
 		value = iString.getValue();
-		literalImpl = gb.newLiteral(value, iString.getLang());
-		gb.assertStatement(gb.createDataProperty(r, pred, literalImpl));
+		lit = gb.newLiteral(value, iString.getLang());
+		gb.assertStatement(gb.createDataProperty(r, pred, lit));
 	    } else if (attr.getValue() instanceof QName) {
 		QName qn = (QName) attr.getValue();
 		String qnAsString;
@@ -367,17 +367,17 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 		}
 		if (false) { // That's here the code to generate resource or
 			    // literal.
-		    literalImpl = gb.newLiteral(qnAsString,type);
+		    lit = gb.newLiteral(qnAsString,type);
 		    gb.assertStatement(gb.createDataProperty(r, pred,
-							     literalImpl));
+							     lit));
 		} else {
 		    gb.assertStatement(gb.createObjectProperty(r, pred, qn));
 		}
 
 	    } else {
 		value = attr.getValue().toString();
-		literalImpl = gb.newLiteral(value, type);
-		gb.assertStatement(gb.createDataProperty(r, pred, literalImpl));
+		lit = gb.newLiteral(value, type);
+		gb.assertStatement(gb.createDataProperty(r, pred, lit));
 	    }
 
 	}

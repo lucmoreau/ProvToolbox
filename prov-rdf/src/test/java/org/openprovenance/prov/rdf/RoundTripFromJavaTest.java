@@ -78,41 +78,9 @@ public class RoundTripFromJavaTest extends
 		return true;
 	}
 
-	public void testInfluence1() throws JAXBException
-	{
-		// RDF Collector doesn't support Influence
-	}
-
-	public void testInfluence2() throws JAXBException
-	{
-		// RDF Collector doesn't support Influence
-	}
-
-	public void testInfluence3() throws JAXBException
-	{
-		// RDF Collector doesn't support Influence
-	}
-
 	public void testInfluence4() throws JAXBException
 	{
 		// RDF Collector doesn't support Influence
-	}
-
-	public void testInfluence5() throws JAXBException
-	{
-		// RDF Collector doesn't support Influence
-	}
-
-	public void testInfluence6() throws JAXBException
-	{
-		// RDF Collector doesn't support Influence
-	}
-
-	public void testInfluence7() throws JAXBException
-	{
-
-		// RDF Collector doesn't support Influence
-
 	}
 
 	public void testScruffyGeneration1()

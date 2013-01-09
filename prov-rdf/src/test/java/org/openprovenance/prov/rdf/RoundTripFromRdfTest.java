@@ -86,6 +86,11 @@ public class RoundTripFromRdfTest extends TestCase {
 	{
 		testIssue("multiple_types");
 	}
+	
+	public void testIssue58() throws Exception
+	{
+		testIssue("58");
+	}
 
 	public void testFile1() throws Exception
 	{

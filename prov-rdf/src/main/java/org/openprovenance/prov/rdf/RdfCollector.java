@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
@@ -600,6 +601,27 @@ public class RdfCollector extends RDFHandlerBase {
 							this.valueConverter));
 				}
 			}
+			
+			if (predQ.equals(Ontology.QNAME_PROVO_wasInfluencedBy))
+			{
+				QName anyQ = convertResourceToQName((Resource) (statement
+						.getObject()));
+				WasInfluencedBy wib = pFactory.newWasInfluencedBy(null, qname,
+						anyQ, null);
+
+				store(convertResourceToQName(statement.getContext()), wib);
+			}
+
+			if (predQ.equals(Ontology.QNAME_PROVO_influenced))
+			{
+				QName anyQ = convertResourceToQName((Resource) (statement
+						.getObject()));
+
+				WasInfluencedBy wib = pFactory.newWasInfluencedBy(null, anyQ,
+						qname, null);
+
+				store(convertResourceToQName(statement.getContext()), wib);
+			}
 
 			if (predQ.equals(Ontology.QNAME_RDFS_LABEL))
 			{
@@ -920,27 +942,6 @@ public class RdfCollector extends RDFHandlerBase {
 							this.valueConverter));
 				}
 			}
-
-			if (predQ.equals(Ontology.QNAME_PROVO_wasInfluencedBy))
-			{
-				QName anyQ = convertResourceToQName((Resource) (statement
-						.getObject()));
-				WasInfluencedBy wib = pFactory.newWasInfluencedBy(null, qname,
-						anyQ, null);
-
-				store(convertResourceToQName(statement.getContext()), wib);
-			}
-
-			if (predQ.equals(Ontology.QNAME_PROVO_influenced))
-			{
-				QName anyQ = convertResourceToQName((Resource) (statement
-						.getObject()));
-
-				WasInfluencedBy wib = pFactory.newWasInfluencedBy(null, anyQ,
-						qname, null);
-
-				store(convertResourceToQName(statement.getContext()), wib);
-			}
 		}
 
 		if(members.size() > 0) {
@@ -1051,27 +1052,6 @@ public class RdfCollector extends RDFHandlerBase {
 					Object literal = decodeLiteral((Literal) value);
 					endTime = (XMLGregorianCalendar) literal;
 				}
-			}
-
-			if (predQ.equals(Ontology.QNAME_PROVO_wasInfluencedBy))
-			{
-				QName anyQ = convertResourceToQName((Resource) (statement
-						.getObject()));
-				WasInfluencedBy wib = pFactory.newWasInfluencedBy(null, qname,
-						anyQ, null);
-
-				store(convertResourceToQName(statement.getContext()), wib);
-			}
-
-			if (predQ.equals(Ontology.QNAME_PROVO_influenced))
-			{
-				QName anyQ = convertResourceToQName((Resource) (statement
-						.getObject()));
-
-				WasInfluencedBy wib = pFactory.newWasInfluencedBy(null, anyQ,
-						qname, null);
-
-				store(convertResourceToQName(statement.getContext()), wib);
 			}
 		}
 

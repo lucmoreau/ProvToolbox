@@ -1,7 +1,9 @@
-package org.openprovenance.prov.rdf;
+package org.openprovenance.prov.rdf.collector;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.namespace.QName;
 
 public class BundleHolder {
 	private List<org.openprovenance.prov.xml.Activity> activities;
@@ -91,4 +93,23 @@ public class BundleHolder {
 		}
 	}
 
+
+	public void store(org.openprovenance.prov.xml.Element element)
+	{
+		if (element instanceof org.openprovenance.prov.xml.Activity)
+		{
+			this.addActivity(
+					(org.openprovenance.prov.xml.Activity) element);
+		} else if (element instanceof org.openprovenance.prov.xml.Entity)
+		{
+
+			this.addEntity(
+					(org.openprovenance.prov.xml.Entity) element);
+		} else if (element instanceof org.openprovenance.prov.xml.Agent)
+		{
+
+			this.addAgent(
+					(org.openprovenance.prov.xml.Agent) element);
+		}
+	}
 }

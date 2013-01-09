@@ -878,10 +878,18 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
 
     public XMLGregorianCalendar newISOTime(String time) {
-	return newTime(javax.xml.bind.DatatypeConverter.parseDateTime(time)
-						       .getTime());
+        return newTime(javax.xml.bind.DatatypeConverter.parseDateTime(time)
+                                                       .getTime());
     }
 
+    public XMLGregorianCalendar newGYear(String year) {
+        XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
+        cal.setYear(new Integer(year));
+        return cal;
+    }
+
+  
+    
     public MentionOf newMentionOf(Entity infra, Entity supra, Entity bundle) {
 	return newMentionOf((infra == null) ? null : newEntityRef(infra),
 			    (supra == null) ? null : newEntityRef(supra),

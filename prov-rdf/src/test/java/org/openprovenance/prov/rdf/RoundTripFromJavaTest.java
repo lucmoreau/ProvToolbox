@@ -13,10 +13,14 @@ import org.openrdf.rio.RDFFormat;
 
 public class RoundTripFromJavaTest extends
 		org.openprovenance.prov.xml.RoundTripFromJavaTest {
+    
+    
 
 	public RoundTripFromJavaTest(String name)
 	{
 		super(name);
+		      checkYear=false;
+
 	}
 
 	public String extension()

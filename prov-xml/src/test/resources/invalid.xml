@@ -12,7 +12,7 @@
 
 
         <prov:specializationOf>
-          <prov:specializedEntity prov:ref="ex:e2"/>
+          <prov:specificEntity prov:ref="ex:e2"/>
           <prov:generalEntity prov:ref="ex:e1"/>
         </prov:specializationOf>
 	
@@ -61,7 +61,7 @@
 
 
         <prov:specializationOf>
-          <prov:specializedEntity prov:ref="ex:e5"/>
+          <prov:specificEntity prov:ref="ex:e5"/>
           <prov:generalEntity prov:ref="ex:e5"/>
         </prov:specializationOf>
 

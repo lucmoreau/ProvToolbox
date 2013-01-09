@@ -3,7 +3,6 @@ import junit.framework.TestCase;
 import org.openprovenance.prov.xml.Document;
 
 import javax.xml.bind.JAXBException;
-import org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.notation.Utility;
 
 public class ASNTest extends TestCase {
@@ -12,9 +11,8 @@ public class ASNTest extends TestCase {
         throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
         Utility u=new Utility();
 
-        CommonTree tree = u.convertASNToTree(asnFile);
 
-        Document o= (Document) u.oldConvertTreeToJavaBean(tree);
+        Document o= (Document) u.convertASNToJavaBean(asnFile);
 
         //serial.serialiseDocument(new File(xmlFile),o,true);
 

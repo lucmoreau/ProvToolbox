@@ -2,7 +2,7 @@
   <parent>
     <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.2-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -34,8 +34,8 @@
 
     <dependency>
       <groupId>org.jvnet.jaxb2_commons</groupId>
-	  <artifactId>runtime</artifactId>
-   	  <version>${jaxb.common.version}</version>
+      <artifactId>runtime</artifactId>
+      <version>${jaxb.common.version}</version>
     </dependency>
 
 
@@ -82,6 +82,13 @@
   		<artifactId>log4j</artifactId>
   		<version>1.2.17</version>
   	</dependency>
+
+
+
+
+
+ 
+
   </dependencies>
 
   <build>
@@ -112,8 +119,6 @@
 			     </plugin>
 		       </plugins>
                <schemaIncludes>
-                 <!--
-                 <schemaInclude>**/curie.xsd</schemaInclude> -->
                  <schemaInclude>**/toolbox.xsd</schemaInclude>
                  <schemaInclude>**/prov-20121003.xsd</schemaInclude>
                  <schemaInclude>**/validation.xsd</schemaInclude>
@@ -128,7 +133,7 @@
                <strict>false</strict> 
                <verbose>true</verbose>     
                <extension>true</extension>     
-	       <!-- <catalog>src/main/resources/catalog.cat</catalog> -->
+
                <args>
                  <arg>-npa</arg>
 			     <arg>-Xequals</arg>
@@ -311,7 +316,14 @@
   	          <arg value="Agent.java" />
                 </exec>
 
+<!--
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+  	          <arg value="-e s/protected List&lt;Object&gt; type/@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(ObjectAdaptor.class) protected List&lt;Object&gt; type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Agent.java" />
+                </exec>
 
+-->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/ public String toString/\/* added in pom.xml *\/@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable&lt;String,String&gt; nss=null; public java.util.Hashtable&lt;String,String&gt; getNss() { return nss;} public void setNss(java.util.Hashtable&lt;String,String&gt; s) { nss=s; };public String toString/" />

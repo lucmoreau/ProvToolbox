@@ -1,9 +1,21 @@
 package org.openprovenance.prov.notation;
+import java.io.Writer;
 import java.util.List;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
+
+import org.openprovenance.prov.xml.Attribute;
+import org.openprovenance.prov.xml.QNameExport;
 
 
-public class HTMLConstructor extends OldNotationConstructor {
+/* FIXME: this does not work, since methods define here do not override those of NotationConstructor. */
+
+public class HTMLConstructor extends NotationConstructor {
+    
+    public HTMLConstructor(Writer writer, QNameExport qnExport) {
+	super(writer, qnExport);
+    }
 
     public String keyword(String s) {
 	return "<span class='prov-keyword'>" + s + "</span>";
@@ -99,112 +111,15 @@ public class HTMLConstructor extends OldNotationConstructor {
         return iri;
     }
 
-    
-    public Object convertActivity(Object id,Object startTime,Object endTime, Object aAttrs) {
+    public  Object newActivity(QName id, XMLGregorianCalendar startTime,XMLGregorianCalendar endTime, List<Attribute> aAttrs) {
 	
-        return "<span class='prov-expression'> " + super.convertActivity(id,startTime,endTime,aAttrs) + "</span>";
+        return "<span class='prov-expression'> " + super.newActivity(id,startTime,endTime,aAttrs) + "</span>";
     }
 
-    public Object convertEntity(Object id, Object attrs) {
-        return "<span class='prov-expression'> " + super.convertEntity(id,attrs) + "</span>";
+    public Object newEntity(QName id, List<Attribute> attrs) {
+        return "<span class='prov-expression'> " + super.newEntity(id,attrs) + "</span>";
     }
 
-
-
-    /* Component 5 */
-
-    public Object convertInsertion(Object id, Object id2, Object id1, Object kes, Object iAttrs) {
-        String s="derivedByInsertionFrom(" + optionalId(id) + id2 + ", " + id1 + ", "
-	    + kes + optionalAttributes(iAttrs) +  ")";
-	return s;
-    }
-
-    public Object convertRemoval(Object id, Object id2, Object id1, Object keyset, Object rAttrs) {
-        String s="derivedByRemovalFrom(" + optionalId(id) + id2 + ", " + id1 + ", "
-	    + keyset + optionalAttributes(rAttrs) +  ")";
-	return s;
-
-    }
-
-    public Object convertCollectionMemberOf(Object id, Object id2, Object es, Object complete, Object mAttrs) {
-
-        String s="memberOf(" + optionalId(id) + id2 + ", "
-	    + es + ((complete==null)? "" : ", "+complete) + optionalAttributes(mAttrs) +  ")";
-	return s;
-
-    }
-
-
-    public Object convertDictionaryMemberOf(Object id, Object id2, Object kes, Object complete, Object mAttrs) {
-
-        String s="memberOf(" + optionalId(id) + id2 + ", "
-	    + kes + ((complete==null)? "" : ", "+complete) + optionalAttributes(mAttrs) +  ")";
-	return s;
-
-    }
-
-    public Object convertEntry(Object o1, Object o2) {
-        String s="{" + o1 + ", " + o2 + "}";
-	return s;
-    }
-
-    public Object convertKeyEntitySet(List<Object> entries) {
-        String s="{";
-
-	boolean first=true;
-
-	for (Object entry: entries) {
-	    if (!first) {
-		s=s+", ";
-	    } else {
-		first=false;
-	    }
-
-
-	    s=s + entry;
-	}
-	s=s+"}";
-	return s;
-    }
-
-
-    public Object convertKeys(List<Object> keys) {
-        String s="{";
-
-	boolean first=true;
-
-	for (Object key: keys) {
-	    if (!first) {
-		s=s+", ";
-	    } else {
-		first=false;
-	    }
-
-
-	    s=s + key;
-	}
-	s=s+"}";
-	return s;
-    }
-
-
-
-    /* Component 6 */
-
-    public Object convertNote(Object id, Object attrs) {
-        String s="note(" + id  + optionalAttributes(attrs) + ")";
-        return s;
-    }
-
-    public Object convertHasAnnotation(Object something, Object note) {
-        String s="hasAnnotation(" + something  + "," + note + ")";
-        return s;
-    }
-
-    public Object convertContextualizationOf(Object su, Object bu, Object ta) {
-        String s="contextualizationOf(" + su + ", " + bu + ", " + ta + ")";
-        return s;
-    }
 
 
 }

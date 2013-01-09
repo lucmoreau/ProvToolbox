@@ -130,10 +130,10 @@ public class ProvUtilities {
             return ((WasAttributedTo) r).getEntity().getRef();
         }
         if (r instanceof AlternateOf) {
-            return ((AlternateOf) r).getEntity2().getRef();
+            return ((AlternateOf) r).getAlternate1().getRef();
         }
         if (r instanceof SpecializationOf) {
-            return ((SpecializationOf) r).getSpecializedEntity().getRef();
+            return ((SpecializationOf) r).getSpecificEntity().getRef();
         }
         if (r instanceof HadMember) {
             return ((HadMember) r).getCollection().getRef();
@@ -142,7 +142,7 @@ public class ProvUtilities {
             return ((WasInformedBy) r).getEffect().getRef();
         }
         if (r instanceof MentionOf) {
-            return ((MentionOf) r).getSpecializedEntity().getRef();
+            return ((MentionOf) r).getSpecificEntity().getRef();
         }
         if (r instanceof WasInfluencedBy) {
             return ((WasInfluencedBy) r).getInfluencee().getRef();
@@ -201,7 +201,7 @@ public class ProvUtilities {
             return ((WasAttributedTo) r).getAgent().getRef();
         }
         if (r instanceof AlternateOf) {
-            return ((AlternateOf) r).getEntity1().getRef();
+            return ((AlternateOf) r).getAlternate2().getRef();
         }
         if (r instanceof SpecializationOf) {
             return ((SpecializationOf) r).getGeneralEntity().getRef();
@@ -331,7 +331,7 @@ public class ProvUtilities {
                 MentionOf ctxt = (MentionOf) o;
                 QName id1 = localEntity.getId();
                 QName id2 = remote.getId();
-                if (ctxt.getSpecializedEntity().getRef().equals(id1)
+                if (ctxt.getSpecificEntity().getRef().equals(id1)
                         && ctxt.getBundle().getRef().equals(id2))
                     return ctxt;
             }
@@ -416,7 +416,7 @@ public class ProvUtilities {
         fields.put(ActedOnBehalfOf.class, new String[] { "Id", "Subordinate",
                                                         "Responsible",
                                                         "Activity", "Any" });
-        fields.put(SpecializationOf.class, new String[] { "SpecializedEntity",
+        fields.put(SpecializationOf.class, new String[] { "SpecificEntity",
                                                           "GeneralEntity" });
         
 	// never use the accessor id for Mention, since it is not defined.
@@ -424,7 +424,7 @@ public class ProvUtilities {
 	//  like others.
 
         fields.put(MentionOf.class, new String[] { "Id", 
-						   "SpecializedEntity",
+						   "SpecificEntity",
 						   "GeneralEntity",
 						   "Bundle" });
         

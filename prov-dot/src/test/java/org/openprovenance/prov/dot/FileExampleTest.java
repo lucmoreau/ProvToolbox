@@ -6,7 +6,6 @@ import org.openprovenance.prov.xml.Document;
 import javax.xml.bind.JAXBException;
 import java.io.File;
 
-import org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.notation.Utility;
 
 public class FileExampleTest extends TestCase {
@@ -15,9 +14,8 @@ public class FileExampleTest extends TestCase {
         throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
         Utility u=new Utility();
 
-        CommonTree tree = u.convertASNToTree(asnFile);
+        Document o= (Document) u.convertASNToJavaBean(asnFile);
 
-        Document o= (Document) u.oldConvertTreeToJavaBean(tree);
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         

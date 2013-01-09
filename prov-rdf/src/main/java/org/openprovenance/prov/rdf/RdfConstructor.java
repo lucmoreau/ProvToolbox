@@ -1,7 +1,6 @@
 package org.openprovenance.prov.rdf;
 
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Collection;
 
@@ -30,30 +29,24 @@ import org.openprovenance.prov.xml.WasInfluencedBy;
 import org.openprovenance.prov.xml.WasInformedBy;
 import org.openprovenance.prov.xml.WasInvalidatedBy;
 import org.openprovenance.prov.xml.WasStartedBy;
-import org.openrdf.elmo.ElmoManager;
-import org.openrdf.model.Resource;
-import org.openrdf.model.impl.LiteralImpl;
-import org.openrdf.model.impl.URIImpl;
 
 /**
  * A Converter to RDF
  */
-public class RdfConstructor implements ModelConstructor {
+public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstructor {
 
     private Hashtable<String, String> namespaceTable = new Hashtable<String, String>();
 
     public Hashtable<String, String> getNamespaceTable() {
 	return namespaceTable;
     }
-
-    final GraphBuilder gb;
+    
+    final GraphBuilder<RESOURCE, LITERAL, STATEMENT> gb;
     final Ontology onto;
 
-    public RdfConstructor(ElmoManager manager) { // manager should be passed to
-						 // graph builder and not this
-						 // constructor
+    public RdfConstructor(GraphBuilder<RESOURCE, LITERAL, STATEMENT> gb) {
 	this.onto = new Ontology();
-	this.gb = new GraphBuilder(manager);
+	this.gb = gb;
     }
 
     @Override
@@ -342,21 +335,18 @@ public class RdfConstructor implements ModelConstructor {
 	System.out.println("$$$$$$$$$$$$ in startBundle");
 	// TODO: bundle name does not seem to be interpreted according to the
 	// prefix declared in bundle.
-	URIImpl uri = gb.qnameToURI(bundleId);
-	contexts.add(uri);
 	if (bundleId != null) {
-	    gb.setContext(uri);
+	    gb.setContext(gb.qnameToURI(bundleId));
 	}
     }
 
-    public List<Resource> contexts = new LinkedList<Resource>();
 
     public void processAttributes(QName q, Collection<Attribute> attributes) {
-	org.openrdf.model.Resource r = gb.qnameToResource(q);
+	RESOURCE r = gb.qnameToResource(q);
 
 	for (Attribute attr : attributes) {
 
-	    LiteralImpl literalImpl = null;
+	    LITERAL lit = null;
 
 	    QName type = attr.getXsdType();
 	    QName pred = onto.convertToRdf(attr.getElementName()); // FIXME: convert to XSD_HASH
@@ -365,8 +355,8 @@ public class RdfConstructor implements ModelConstructor {
 	    if (attr.getValue() instanceof InternationalizedString) {
 		InternationalizedString iString = (InternationalizedString) attr.getValue();
 		value = iString.getValue();
-		literalImpl = new LiteralImpl(value, iString.getLang());
-		gb.assertStatement(gb.createDataProperty(r, pred, literalImpl));
+		lit = gb.newLiteral(value, iString.getLang());
+		gb.assertStatement(gb.createDataProperty(r, pred, lit));
 	    } else if (attr.getValue() instanceof QName) {
 		QName qn = (QName) attr.getValue();
 		String qnAsString;
@@ -377,18 +367,17 @@ public class RdfConstructor implements ModelConstructor {
 		}
 		if (false) { // That's here the code to generate resource or
 			    // literal.
-		    literalImpl = new LiteralImpl(qnAsString,
-						  gb.qnameToURI(type));
+		    lit = gb.newLiteral(qnAsString,type);
 		    gb.assertStatement(gb.createDataProperty(r, pred,
-							     literalImpl));
+							     lit));
 		} else {
 		    gb.assertStatement(gb.createObjectProperty(r, pred, qn));
 		}
 
 	    } else {
 		value = attr.getValue().toString();
-		literalImpl = new LiteralImpl(value, gb.qnameToURI(type));
-		gb.assertStatement(gb.createDataProperty(r, pred, literalImpl));
+		lit = gb.newLiteral(value, type);
+		gb.assertStatement(gb.createDataProperty(r, pred, lit));
 	    }
 
 	}
@@ -434,10 +423,10 @@ public class RdfConstructor implements ModelConstructor {
 
     }
 
-    private LiteralImpl newLiteral(XMLGregorianCalendar time) {
-	return new LiteralImpl(
+    private LITERAL newLiteral(XMLGregorianCalendar time) {
+	return gb.newLiteral(
 			       time.toString(),
-			       gb.qnameToURI(ValueConverter.QNAME_XSD_HASH_DATETIME));
+			       ValueConverter.QNAME_XSD_HASH_DATETIME);
     }
 
     public void assertQualifiedInfluence(QName subject, QName infl,

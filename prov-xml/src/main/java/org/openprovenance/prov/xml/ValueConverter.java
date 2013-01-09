@@ -35,6 +35,7 @@ public class ValueConverter {
     public static QName QNAME_XSD_ANY_URI=newXsdQName("anyURI");
     public static QName QNAME_XSD_QNAME=newXsdQName("QName");
     public static QName QNAME_XSD_DATETIME=newXsdQName("dateTime");
+    public static QName QNAME_XSD_GYEAR=newXsdQName("gYear");
 
     public static QName QNAME_XSD_HASH_STRING=newXsdHashQName("string");
     public static QName QNAME_XSD_HASH_INT=newXsdHashQName("int");
@@ -56,7 +57,8 @@ public class ValueConverter {
     public static QName QNAME_XSD_HASH_ANY_URI=newXsdHashQName("anyURI");
     public static QName QNAME_XSD_HASH_QNAME=newXsdHashQName("QName");
     public static QName QNAME_XSD_HASH_DATETIME=newXsdHashQName("dateTime");
-    
+    public static QName QNAME_XSD_HASH_GYEAR=newXsdQName("gYear");
+
     
     public static QName QNAME_UNKNOWN=newXsdQName("UNKNOWN");
 
@@ -116,6 +118,11 @@ public class ValueConverter {
 	if (datatype.equals(QNAME_XSD_DATETIME) || datatype.equals(QNAME_XSD_HASH_DATETIME)) {
 	    return pFactory.newISOTime(value);
 	}
+        if (datatype.equals(QNAME_XSD_GYEAR) || datatype.equals(QNAME_XSD_HASH_GYEAR)) {
+            return pFactory.newGYear(value);
+        }
+	
+	
 	//transform to qname!!
 	if ((datatype.equals("rdf:XMLLiteral"))
 		|| (datatype.equals("xsd:normalizedString"))
@@ -163,8 +170,16 @@ public class ValueConverter {
 	    return QNAME_XSD_ANY_URI; //"xsd:anyURI";
 	if (o instanceof QName)
 	    return QNAME_XSD_QNAME; //"xsd:QName";
-	if (o instanceof XMLGregorianCalendar) 
-	    return QNAME_XSD_DATETIME; //"xsd:dateTime";
+	if (o instanceof XMLGregorianCalendar) {
+	    XMLGregorianCalendar cal=(XMLGregorianCalendar)o;
+	    QName t=cal.getXMLSchemaType();
+            if (t.getLocalPart().equals(QNAME_XSD_GYEAR.getLocalPart())) return QNAME_XSD_GYEAR;
+            if (t.getLocalPart().equals(QNAME_XSD_DATETIME.getLocalPart())) return QNAME_XSD_DATETIME;
+            //TODO: need to support all time related xsd types
+            //fall through, to unknown case
+	}
+	//FIXME: see issue #54, value can be an element, when xsi:type was unspecified.
+	System.out.println("getXsdType() " + o.getClass());
 	return QNAME_UNKNOWN;
     }
 

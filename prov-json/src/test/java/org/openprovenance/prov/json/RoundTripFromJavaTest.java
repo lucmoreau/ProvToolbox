@@ -17,6 +17,8 @@ import com.google.gson.GsonBuilder;
  */
 public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTripFromJavaTest
 {
+
+    
 	private Gson gson = new GsonBuilder()
 							.registerTypeAdapter(Document.class, new ProvDocumentDeserializer())
 							.registerTypeAdapter(Document.class, new ProvDocumentSerializer())
@@ -25,6 +27,8 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	
 	public RoundTripFromJavaTest(String testName) {
 		super(testName);
+		    checkYear=false;
+
 	}
 
 	@Override

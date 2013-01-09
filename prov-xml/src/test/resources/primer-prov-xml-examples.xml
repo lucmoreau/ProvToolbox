@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<prov:document
+    xmlns:prov="http://www.w3.org/ns/prov#"
+    xmlns:ex="http://example.org/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:dct="http://purl.org/dc/terms/"
+	xmlns:foaf="http://xmlns.com/foaf/0.1/">
+
+  <!-- Entities -->
+
+  <prov:entity prov:id="ex:article">
+	<dct:title>Crime rises in cities</dct:title>
+  </prov:entity>
+
+  <prov:entity prov:id="ex:dataSet1"/>
+
+  <prov:entity prov:id="ex:regionList"/>
+
+  <prov:entity prov:id="ex:composition"/>
+
+  <prov:entity prov:id="ex:chart1"/>
+
+  <!-- Activities -->
+
+  <prov:activity prov:id="ex:compile"/>
+
+  <prov:activity prov:id="ex:compose"/>
+
+  <prov:activity prov:id="ex:illustrate"/>
+
+  <!-- Usage and Generation -->
+
+  <prov:used>
+    <prov:activity prov:ref="ex:compose"/>
+    <prov:entity prov:ref="ex:dataset1"/>
+  </prov:used>
+
+  <prov:used>
+    <prov:activity prov:ref="ex:compose"/>
+    <prov:entity prov:ref="ex:regionList"/>
+  </prov:used>
+
+  <prov:wasGeneratedBy>
+    <prov:entity prov:ref="ex:composition"/>
+    <prov:activity prov:ref="ex:compose"/>
+  </prov:wasGeneratedBy>
+
+  <prov:used>
+    <prov:activity prov:ref="ex:illustrate"/>
+    <prov:entity prov:ref="ex:composition"/>
+  </prov:used>
+
+  <prov:wasGeneratedBy>
+    <prov:entity prov:ref="ex:chart1"/>
+    <prov:activity prov:ref="ex:illustrate"/>
+  </prov:wasGeneratedBy>
+
+  <!-- Agents and Responsibility -->
+
+  <prov:agent prov:id="ex:derek">
+    <prov:type xsi:type="xsd:QName">prov:Person</prov:type>
+    <foaf:givenName>Derek</foaf:givenName>
+    <foaf:mbox>mailto:derek@example.org</foaf:mbox>
+  </prov:agent>
+
+  <prov:agent prov:id="ex:chartgen">
+    <prov:type>prov:Organization</prov:type>
+    <foaf:name>Chart Generators Inc</foaf:name>
+  </prov:agent>
+
+  <prov:wasAssociatedWith>
+    <prov:activity prov:ref="ex:compose"/>
+    <prov:agent prov:ref="ex:derek"/>
+  </prov:wasAssociatedWith>
+
+  <prov:wasAssociatedWith>
+    <prov:activity prov:ref="ex:illustrate"/>
+    <prov:agent prov:ref="ex:derek"/>
+  </prov:wasAssociatedWith>
+
+  <prov:wasAttributedTo>
+    <prov:entity prov:ref="ex:chart1"/>
+    <prov:agent prov:ref="ex:derek"/>
+  </prov:wasAttributedTo>
+
+  <prov:actedOnBehalfOf>
+    <prov:delegate prov:ref="ex:derek"/>
+    <prov:responsible prov:ref="ex:chartgen"/>
+  </prov:actedOnBehalfOf>
+
+  <!-- Roles -->
+
+  <prov:used>
+    <prov:activity prov:ref="ex:compose"/>
+    <prov:entity prov:ref="ex:dataSet1"/>
+    <prov:role>ex:dataToCompose</prov:role>
+  </prov:used>
+
+  <prov:used>
+    <prov:activity prov:ref="ex:compose"/>
+    <prov:entity prov:ref="ex:regionList"/>
+    <prov:role>ex:regionsToAggregateBy</prov:role>
+  </prov:used>
+
+  <prov:wasAssociatedWith>
+    <prov:activity prov:ref="ex:compose"/>
+    <prov:agent prov:ref="ex:derek"/>
+    <prov:role>ex:analyst</prov:role>
+  </prov:wasAssociatedWith>
+
+  <prov:wasGeneratedBy>
+    <prov:entity prov:ref="ex:composition"/>
+    <prov:activity prov:ref="ex:compose"/>
+    <prov:role>ex:composedData</prov:role>
+  </prov:wasGeneratedBy>
+
+  <!-- Revision and Derivation -->
+
+  <entity prov:id="dataSet2"/>
+  <entity prov:id="chart2"/>
+
+  <prov:wasDerivedFrom>
+    <prov:generatedEntity prov:ref="ex:dataSet2"/>
+    <prov:usedEntity prov:ref="ex:dataSet1"/>
+    <prov:type>prov:Revision</prov:type>
+  </prov:wasDerivedFrom>
+
+  <prov:wasDerivedFrom>
+    <prov:generatedEntity prov:ref="ex:chart2"/>
+    <prov:usedEntity prov:ref="ex:dataSet2"/>
+  </prov:wasDerivedFrom>
+
+  <prov:wasDerivedFrom>
+    <prov:generatedEntity prov:ref="ex:chart2"/>
+    <prov:usedEntity prov:ref="ex:chart1"/>
+    <prov:type>prov:Revision</prov:type>
+  </prov:wasDerivedFrom>
+
+  <!-- Plans -->
+
+  <prov:activity prov:id="ex:correct"/>
+
+  <prov:entity prov:id="ex:instructions">
+    <prov:type>prov:Plan</prov:type>
+  </prov:entity>
+
+  <prov:agent prov:id="ex:edith">
+    <prov:type>prov:Person</prov:type>
+  </prov:agent>
+
+  <prov:wasAssociatedWith>
+    <prov:activity prov:ref="ex:correct"/>
+    <prov:agent prov:ref="ex:edith"/>
+    <prov:plan prov:ref="ex:instructions"/>
+  </prov:wasAssociatedWith>
+
+  <prov:wasGeneratedBy>
+    <prov:entity prov:ref="ex:dataSet2"/>
+    <prov:activity prov:ref="ex:correct"/>
+  </prov:wasGeneratedBy>
+
+  <!-- Time -->
+
+  <prov:wasGeneratedBy>
+    <prov:entity prov:ref="ex:chart1"/>
+    <prov:time>2012-03-02T10:30:00</prov:time>
+  </prov:wasGeneratedBy>
+
+  <prov:wasGeneratedBy>
+    <prov:entity prov:ref="ex:chart2"/>
+    <prov:time>2012-04-01T15:21:00</prov:time>
+  </prov:wasGeneratedBy>
+
+  <prov:wasStartedBy>
+    <prov:activity prov:ref="ex:correct"/>
+    <prov:time>2012-03-31T09:21:00</prov:time>
+  </prov:wasStartedBy>
+
+  <prov:wasEndedBy>
+    <prov:activity prov:ref="ex:correct"/>
+    <prov:time>2012-04-01T15:21:00</prov:time>
+  </prov:wasEndedBy>
+	
+  <!-- alternatively, you can put the activity start and end time in the activity declaration -->
+
+  <prov:activity prov:id="ex:correct">
+    <prov:startTime>2012-03-31T09:21:00</prov:startTime>
+    <prov:endTime>2012-04-01T15:21:00</prov:endTime>
+  </prov:activity>
+
+  <!-- Alternate Entities and Specialization -->
+
+  <prov:entity prov:id="ex:blogEntry"/>
+
+  <prov:wasDerivedFrom>
+    <prov:generatedEntity prov:ref="ex:blogEntry"/>
+    <prov:usedEntity prov:ref="ex:article"/>
+    <prov:type>prov:Quotation</prov:type>
+  </prov:wasDerivedFrom>
+
+  <prov:entity prov:id="ex:articleV1"/>
+
+  <prov:specializationOf>
+    <prov:specificEntity prov:ref="ex:articleV1"/>
+    <prov:generalEntity prov:ref="ex:article"/>
+  </prov:specializationOf>
+
+  <prov:entity prov:id="ex:articleV2"/>
+
+  <prov:specializationOf>
+    <prov:specificEntity prov:ref="ex:articleV2"/>
+    <prov:generalEntity prov:ref="ex:article"/>
+  </prov:specializationOf>
+
+  <prov:alternateOf>
+    <prov:alternate1 prov:ref="ex:articleV1"/>
+    <prov:alternate2 prov:ref="ex:articleV2"/>
+  </prov:alternateOf>
+
+</prov:document>

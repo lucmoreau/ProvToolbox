@@ -503,8 +503,8 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 
     public AlternateOf newAlternateOf(EntityRef eid2, EntityRef eid1) {
 	AlternateOf res = of.createAlternateOf();
-	res.setEntity2(eid2);
-	res.setEntity1(eid1);
+	res.setAlternate1(eid2);
+	res.setAlternate2(eid1);
 	return res;
     }
     
@@ -851,9 +851,11 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public HadMember newHadMember(QName c, Collection<QName> e) {
         EntityRef cid=(c==null)? null: newEntityRef(c);
         List<EntityRef> ll=new LinkedList<EntityRef>();
-        for (QName q: e) {
-            EntityRef eid=(e==null)? null: newEntityRef(q);
-            ll.add(eid);
+        if (e!=null) {
+            for (QName q: e) {
+        	EntityRef eid=newEntityRef(q);
+        	ll.add(eid);
+            }
         }
         HadMember res = of.createHadMember();
         res.setCollection(cid);
@@ -878,10 +880,18 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
 
     public XMLGregorianCalendar newISOTime(String time) {
-	return newTime(javax.xml.bind.DatatypeConverter.parseDateTime(time)
-						       .getTime());
+        return newTime(javax.xml.bind.DatatypeConverter.parseDateTime(time)
+                                                       .getTime());
     }
 
+    public XMLGregorianCalendar newGYear(String year) {
+        XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
+        cal.setYear(new Integer(year));
+        return cal;
+    }
+
+  
+    
     public MentionOf newMentionOf(Entity infra, Entity supra, Entity bundle) {
 	return newMentionOf((infra == null) ? null : newEntityRef(infra),
 			    (supra == null) ? null : newEntityRef(supra),
@@ -898,7 +908,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public MentionOf newMentionOf(EntityRef infra, EntityRef supra,
 				  EntityRef bundle) {
 	MentionOf res = of.createMentionOf();
-	res.setSpecializedEntity(infra);
+	res.setSpecificEntity(infra);
 	res.setBundle(bundle);
 	res.setGeneralEntity(supra);
 	return res;
@@ -906,7 +916,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 
     public MentionOf newMentionOf(MentionOf r) {
 	MentionOf res = of.createMentionOf();
-	res.setSpecializedEntity(r.getSpecializedEntity());
+	res.setSpecificEntity(r.getSpecificEntity());
 	res.setBundle(r.getBundle());
 	res.setGeneralEntity(r.getGeneralEntity());
 	return res;
@@ -915,7 +925,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public MentionOf newMentionOf(String infra, String supra, String bundle) {
 	MentionOf res = of.createMentionOf();
 	if (supra != null)
-	    res.setSpecializedEntity(newEntityRef(infra));
+	    res.setSpecificEntity(newEntityRef(infra));
 	if (bundle != null)
 	    res.setBundle(newEntityRef(bundle));
 	if (supra != null)
@@ -984,7 +994,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 
     public SpecializationOf newSpecializationOf(EntityRef eid2, EntityRef eid1) {
 	SpecializationOf res = of.createSpecializationOf();
-	res.setSpecializedEntity(eid2);
+	res.setSpecificEntity(eid2);
 	res.setGeneralEntity(eid1);
 	return res;
     }

@@ -4,37 +4,27 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.List;
-
 import javax.xml.bind.JAXBException;
+
+import org.openprovenance.prov.rdf.collector.QualifiedCollector;
+import org.openprovenance.prov.rdf.collector.RdfCollector;
 
 import org.openprovenance.prov.xml.BeanTraversal;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ValueConverter;
-import org.openrdf.elmo.ElmoManager;
-import org.openrdf.elmo.ElmoManagerFactory;
-import org.openrdf.elmo.ElmoModule;
-import org.openrdf.elmo.sesame.SesameManager;
-import org.openrdf.elmo.sesame.SesameManagerFactory;
-import org.openrdf.model.Resource;
+import org.openrdf.repository.Repository;
+import org.openrdf.repository.contextaware.ContextAwareRepository;
+import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.Rio;
+import org.openrdf.sail.memory.MemoryStore;
 
 public class Utility {
 
-    public Object convertTreeToJavaRdf(org.openprovenance.prov.xml.Document doc,
-				       ProvFactory pFactory, ElmoManager manager)
-										 throws java.io.IOException,
-										 Throwable {
-	RdfConstructor rdfc = new RdfConstructor(manager);
-	BeanTraversal bt = new BeanTraversal(rdfc,pFactory, new ValueConverter(pFactory));
-	Object o = bt.convert(doc);
-	return o;
-    }
 
     public Document parseRDF(String filename) throws RDFParseException,
 					     RDFHandlerException, IOException,
@@ -53,12 +43,18 @@ public class Utility {
 
     public void dumpRDF(ProvFactory pFactory, Document document,
 			RDFFormat format, String filename) throws Exception {
-	RepositoryHelper rHelper = new RepositoryHelper();
-	ElmoModule module = new ElmoModule();
-	ElmoManagerFactory factory = new SesameManagerFactory(module);
-	ElmoManager manager = factory.createElmoManager();
+	
+	
+	Repository myRepository = new SailRepository(new MemoryStore());
+	myRepository.initialize();
+	ContextAwareRepository rep=new ContextAwareRepository(myRepository); // was it necessary to create that?
 
-	RdfConstructor rdfc = new RdfConstructor(manager);
+	RepositoryHelper rHelper = new RepositoryHelper();
+	//ElmoModule module = new ElmoModule();
+	//ElmoManagerFactory factory = new SesameManagerFactory(module);
+	//ElmoManager manager = factory.createElmoManager();
+
+	RdfConstructor rdfc = new RdfConstructor(new SesameGraphBuilder(rep));
 	rdfc.getNamespaceTable().putAll(document.getNss());
 	rdfc.getNamespaceTable().put("xsd", "http://www.w3.org/2001/XMLSchema#");
 	
@@ -69,10 +65,9 @@ public class Utility {
 
 	bt.convert(document);
 	
-        List<Resource> contexts=rdfc.contexts;
 
 	//System.out.println("namespaces " + rdfc.getNamespaceTable());
-	rHelper.dumpToRDF(filename, (SesameManager) manager, format, contexts,
+	rHelper.dumpToRDF(filename, rep, format, 
 			  rdfc.getNamespaceTable());
     }
     

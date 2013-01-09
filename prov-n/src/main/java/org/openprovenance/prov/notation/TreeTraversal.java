@@ -295,7 +295,7 @@ public class TreeTraversal {
             id2=(QName)convert(ast.getChild(0));
             id1=(QName)convert(ast.getChild(1));
             List<QName> ll=new LinkedList<QName>();
-            ll.add(id1);
+            if (id1!=null) ll.add(id1);
             return c.newHadMember(id2,ll);
 
         case PROV_NParser.CTX:

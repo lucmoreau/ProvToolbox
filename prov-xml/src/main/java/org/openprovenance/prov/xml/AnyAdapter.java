@@ -47,7 +47,7 @@ public class AnyAdapter
             String child=el.getTextContent();
             String typeAsString=el.getAttributeNS(NamespacePrefixMapper.XSI_NS, "type");
             String lang=el.getAttributeNS(NamespacePrefixMapper.XML_NS, "lang");
-            QName type=stringToQName(typeAsString, el);
+            QName type=((typeAsString==null) || (typeAsString.equals(""))) ? null : stringToQName(typeAsString, el);
             if (type==null) type=ValueConverter.QNAME_XSD_STRING;
             if (type.equals(ValueConverter.QNAME_XSD_QNAME)) {
                 QName qn=stringToQName(child,el);  // TODO: not robust to prefix not predeclared 

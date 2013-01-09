@@ -15,7 +15,7 @@ public class RoundTripFromRdfTest extends TestCase {
 	{
 		System.out.println("-------------- File: " + file);
 		Utility u = new Utility();
-		org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility();
+	//	org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility();
 		ProvFactory pFactory = new ProvFactory();
 
 		DocumentEquality de = new DocumentEquality(true);
@@ -85,6 +85,11 @@ public class RoundTripFromRdfTest extends TestCase {
 	public void testMultipleTypes() throws Exception
 	{
 		testIssue("multiple_types");
+	}
+	
+	public void testIssue58() throws Exception
+	{
+		testIssue("58");
 	}
 
 	public void testFile1() throws Exception

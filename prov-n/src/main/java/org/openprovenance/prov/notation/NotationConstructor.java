@@ -238,10 +238,16 @@ public class NotationConstructor implements ModelConstructor {
     }
     @Override
     public HadMember newHadMember(QName c, Collection<QName> ll) {
-        for (QName e: ll) {
-            String s=keyword("hadMember") + "(" + idOrMarker(c) + "," + idOrMarker(e) + ")";
-            writeln(s);
-        }
+	if ((ll==null) || (ll.size()==0)) { 
+	    // strictly speaking it is not a syntactically correct expression, but we print something to support scruffiness
+	    String s=keyword("hadMember") + "(" + idOrMarker(c) + "," + idOrMarker(null) + ")";
+	    writeln(s);
+	} else {
+	    for (QName e: ll) {
+		String s=keyword("hadMember") + "(" + idOrMarker(c) + "," + idOrMarker(e) + ")";
+		writeln(s);
+	    }
+	}
 	return null;
     }
     

@@ -5,7 +5,6 @@ import org.openprovenance.prov.xml.ProvSerialiser;
 import javax.xml.bind.JAXBException;
 import java.io.File;
 
-import org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.notation.Utility;
 
 public class SculptureTest extends TestCase {
@@ -14,9 +13,8 @@ public class SculptureTest extends TestCase {
         throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
         Utility u=new Utility();
 
-        CommonTree tree = u.convertASNToTree(asnFile);
 
-        Document o= (Document) u.oldConvertTreeToJavaBean(tree);
+        Document o= (Document) u.convertASNToJavaBean(asnFile);
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         

@@ -247,7 +247,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	to.getType().addAll(from.getType());
 	to.getLocation().addAll(from.getLocation());
 	to.getRole().addAll(from.getRole());
-	to.getAny().addAll(from.getAny());
+	to.getAny().addAll(from.getAny());	
 	return to;
     }
 
@@ -1566,6 +1566,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	u1.getLabel().addAll(u.getLabel());
 	u1.getLocation().addAll(u.getLocation());
 	u1.getAny().addAll(u.getAny());
+
 	return u1;
     }
 

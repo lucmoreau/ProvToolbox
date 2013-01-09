@@ -176,7 +176,8 @@ public class ValueConverter {
             if (t.getLocalPart().equals(QNAME_XSD_GYEAR.getLocalPart())) return QNAME_XSD_GYEAR;
             if (t.getLocalPart().equals(QNAME_XSD_DATETIME.getLocalPart())) return QNAME_XSD_DATETIME;
             //TODO: need to support all time related xsd types
-            //fall through, to unknown case
+            // default, return xsd:datetime
+            return QNAME_XSD_DATETIME;
 	}
 	//FIXME: see issue #54, value can be an element, when xsi:type was unspecified.
 	System.out.println("getXsdType() " + o.getClass());

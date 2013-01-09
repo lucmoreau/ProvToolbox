@@ -5,7 +5,6 @@ import junit.framework.TestCase;
 
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.DocumentEquality;
-import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
 
 public class RoundTripFromProvnTest extends TestCase {
@@ -22,7 +21,6 @@ public class RoundTripFromProvnTest extends TestCase {
     public void loadFromProvnSaveAndReload(String file, Boolean compare) throws Throwable {
 	System.out.println("-------------- File: " + file);
 	org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility();
-	ProvFactory pFactory = new ProvFactory();
 
 	DocumentEquality de = new DocumentEquality(true);
 

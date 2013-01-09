@@ -610,7 +610,7 @@ public class ProvUtilities {
          * of.addAttributes((DerivedByInsertionFrom)from,
          * (DerivedByInsertionFrom)to); }
          */
-        System.out.println("addAttributes Unknow relation " + from);
+        System.out.println("addAttributes Unknown relation " + from);
         throw new UnsupportedOperationException();
     }
 

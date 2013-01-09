@@ -851,9 +851,11 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public HadMember newHadMember(QName c, Collection<QName> e) {
         EntityRef cid=(c==null)? null: newEntityRef(c);
         List<EntityRef> ll=new LinkedList<EntityRef>();
-        for (QName q: e) {
-            EntityRef eid=(e==null)? null: newEntityRef(q);
-            ll.add(eid);
+        if (e!=null) {
+            for (QName q: e) {
+        	EntityRef eid=newEntityRef(q);
+        	ll.add(eid);
+            }
         }
         HadMember res = of.createHadMember();
         res.setCollection(cid);

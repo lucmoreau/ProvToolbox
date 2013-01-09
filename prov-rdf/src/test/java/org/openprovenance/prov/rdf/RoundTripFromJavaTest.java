@@ -78,11 +78,6 @@ public class RoundTripFromJavaTest extends
 		return true;
 	}
 
-	public void testInfluence4() throws JAXBException
-	{
-		// RDF Collector doesn't support Influence
-	}
-
 	public void testScruffyGeneration1()
 	{
 		// TODO: Unsupported

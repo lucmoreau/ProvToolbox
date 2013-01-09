@@ -333,9 +333,10 @@ public class RdfCollector extends RDFHandlerBase {
 				}
 			}
 		}
-		
+
 		// TODO: Handle cases where qname is the object rather than the subject.
-		// We can use the range mapping to deduce the type of the object in these
+		// We can use the range mapping to deduce the type of the object in
+		// these
 		// cases.
 
 		// Prunes back to the 'top' class (e.g. if we have Person and Agent, we
@@ -526,198 +527,37 @@ public class RdfCollector extends RDFHandlerBase {
 		return xsdType;
 	}
 
-	public List<Attribute> collectAttributes(QName context, QName qname,
-			ProvType type)
+	private void handleTypes(ProvType[] types, QName context, QName subject, boolean implicit)
 	{
-		List<Attribute> attributes = new ArrayList<Attribute>();
-		List<Statement> statements = collators.get(context).get(qname);
-		for (Statement statement : statements)
+		if (!implicit)
 		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-
-			if (statement.getPredicate().equals(RDF.TYPE))
+			for (ProvType type : types)
 			{
-				Value value = statement.getObject();
-				Object obj = valueToObject(statement.getObject());
-				if (obj != null)
+				switch (type)
 				{
-
-					Value vobj = statement.getObject();
-					Boolean sameAsType = false;
-					if (vobj instanceof URI)
-					{
-						// TODO: Nasty.
-						URI uri = (URI) (vobj);
-
-						String uriVal = uri.getNamespace() + uri.getLocalName();
-						sameAsType = uriVal.equals(type.getURIString());
-					}
-
-					if (!sameAsType)
-					{
-
-						if (statement.getObject() instanceof Resource)
-						{
-							attributes
-									.add(pFactory
-											.newAttribute(
-													Attribute.PROV_TYPE_QNAME,
-													convertResourceToQName((Resource) statement
-															.getObject()),
-													this.valueConverter));
-
-						} else if (statement.getObject() instanceof Literal)
-						{
-
-							attributes
-									.add(pFactory.newAttribute(
-											Attribute.PROV_TYPE_QNAME,
-											decodeLiteral((Literal) statement
-													.getObject()),
-											this.valueConverter));
-						}
-					}
-				} else
-				{
-					System.out.println(value);
-					System.out.println("Value wasn't a suitable type");
-				}
-			}
-
-			if (predQ.equals(Ontology.QNAME_PROVO_hadRole))
-			{
-				String role = statement.getObject().stringValue();
-				attributes.add(pFactory.newAttribute(Attribute.PROV_ROLE_QNAME,
-						role, this.valueConverter));
-			}
-
-			if (predQ.equals(Ontology.QNAME_PROVO_atLocation))
-			{
-				Object obj = valueToObject(statement.getObject());
-				if (obj != null)
-				{
-					attributes.add(pFactory.newAttribute(
-							Attribute.PROV_LOCATION_QNAME, obj,
-							this.valueConverter));
-				}
-			}
-			
-			if (predQ.equals(Ontology.QNAME_PROVO_wasInfluencedBy))
-			{
-				QName anyQ = convertResourceToQName((Resource) (statement
-						.getObject()));
-				WasInfluencedBy wib = pFactory.newWasInfluencedBy(null, qname,
-						anyQ, null);
-
-				store(convertResourceToQName(statement.getContext()), wib);
-			}
-
-			if (predQ.equals(Ontology.QNAME_PROVO_influenced))
-			{
-				QName anyQ = convertResourceToQName((Resource) (statement
-						.getObject()));
-
-				WasInfluencedBy wib = pFactory.newWasInfluencedBy(null, anyQ,
-						qname, null);
-
-				store(convertResourceToQName(statement.getContext()), wib);
-			}
-
-			if (predQ.equals(Ontology.QNAME_RDFS_LABEL))
-			{
-				Literal lit = (Literal) (statement.getObject());
-				if (lit.getLanguage() != null)
-				{
-					InternationalizedString is = pFactory
-							.newInternationalizedString(lit.stringValue(), lit
-									.getLanguage().toUpperCase());
-					attributes.add(pFactory
-							.newAttribute(Attribute.PROV_LABEL_QNAME, is,
-									this.valueConverter));
-				} else
-				{
-					attributes.add(pFactory.newAttribute(
-							Attribute.PROV_LABEL_QNAME, lit.stringValue(),
-							this.valueConverter));
-				}
-			}
-
-			Value val = statement.getObject();
-			if (!isProvURI(predQ))
-			{
-				if (!predQ.equals(Ontology.QNAME_RDF_TYPE)
-						&& !predQ.equals(Ontology.QNAME_RDFS_LABEL))
-				{
-					// Retrieve the prefix
-					String prefix = this.revnss.get(predQ.getNamespaceURI());
-					Attribute attr = null;
-					if (val instanceof Literal)
-					{
-						Literal lit = (Literal) val;
-
-						String shortType = "string";
-						if (lit.getDatatype() != null)
-						{
-							shortType = lit.getDatatype().getLocalName();
-						}
-
-						QName xsdType = pFactory
-								.stringToQName(getXsdType(shortType));
-						attr = pFactory.newAttribute(predQ.getNamespaceURI(),
-								predQ.getLocalPart(), prefix,
-								decodeLiteral(lit), xsdType);
-
-					} else if (val instanceof Resource)
-					{
-						URIWrapper uw = new URIWrapper();
-						java.net.URI jURI = java.net.URI.create(val
-								.stringValue());
-						uw.setValue(jURI);
-
-						attr = pFactory.newAttribute(predQ.getNamespaceURI(),
-								predQ.getLocalPart(), prefix, uw,
-								pFactory.stringToQName(getXsdType("anyURI")));
-					} else
-					{
-						System.err.println("Invalid value");
-					}
-
-					if (attr != null)
-					{
-						attributes.add(attr);
-					}
-
+				case ACTIVITY:
+					createActivity(context, subject);
+					break;
+				case AGENT:
+				case PERSON:
+				case ORGANIZATION:
+				case SOFTWAREAGENT:
+					createAgent(context, subject);
+					break;
+				case COLLECTION:
+				case ENTITY:
+				case PLAN:
+				case BUNDLE:
+					createEntity(context, subject);
+					break;
+				default:
 				}
 			}
 		}
-		return attributes;
+
+		handlePredicates(context, subject);
 	}
 
-	private void handleTypes(ProvType[] types, QName context, QName subject, boolean implicit) {
-		for (ProvType type : types)
-		{
-			switch (type)
-			{
-			case ACTIVITY:
-				createActivity(context, subject, implicit);
-				break;
-			case AGENT:
-			case PERSON:
-			case ORGANIZATION:
-			case SOFTWAREAGENT:
-				createAgent(context, subject, implicit);
-				break;
-			case COLLECTION:
-			case ENTITY:
-			case PLAN:
-			case BUNDLE:
-				createEntity(context, subject, implicit);
-				break;
-			default:
-			}
-		}
-	}
-	
 	protected void buildGraph()
 	{
 		for (QName contextQ : collators.keySet())
@@ -725,15 +565,15 @@ public class RdfCollector extends RDFHandlerBase {
 			HashMap<QName, List<Statement>> collator = collators.get(contextQ);
 			for (QName qname : collator.keySet())
 			{
-				
+
 				ProvType[] explicitTypes = getExplicitTypes(contextQ, qname);
 				ProvType[] implicitTypes = getImplicitTypes(contextQ, qname);
 				implicitTypes = filterImplicitTypes(implicitTypes,
 						explicitTypes);
-				
+
 				handleTypes(explicitTypes, contextQ, qname, false);
 				handleTypes(implicitTypes, contextQ, qname, true);
-				
+
 			}
 		}
 	}
@@ -837,17 +677,209 @@ public class RdfCollector extends RDFHandlerBase {
 		return qname;
 	}
 
-	private void createEntity(QName context, QName qname, boolean implicit)
+	/*
+	 * Handles all attributes (location, role, type, etc). Returns a list
+	 * of Attribute objects.
+	 */
+	public List<Attribute> collectAttributes(QName context, QName qname,
+			ProvType type)
 	{
-
+		List<Attribute> attributes = new ArrayList<Attribute>();
 		List<Statement> statements = collators.get(context).get(qname);
-		List<Attribute> attributes = collectAttributes(context, qname,
-				ProvType.ENTITY);
+		for (Statement statement : statements)
+		{
+			QName predQ = convertURIToQName(statement.getPredicate());
+
+			if (statement.getPredicate().equals(RDF.TYPE))
+			{
+				Value value = statement.getObject();
+				Object obj = valueToObject(statement.getObject());
+				if (obj != null)
+				{
+
+					Value vobj = statement.getObject();
+					Boolean sameAsType = false;
+					if (vobj instanceof URI)
+					{
+						// TODO: Nasty.
+						URI uri = (URI) (vobj);
+
+						String uriVal = uri.getNamespace() + uri.getLocalName();
+						sameAsType = uriVal.equals(type.getURIString());
+					}
+
+					if (!sameAsType)
+					{
+
+						if (statement.getObject() instanceof Resource)
+						{
+							attributes
+									.add(pFactory
+											.newAttribute(
+													Attribute.PROV_TYPE_QNAME,
+													convertResourceToQName((Resource) statement
+															.getObject()),
+													this.valueConverter));
+
+						} else if (statement.getObject() instanceof Literal)
+						{
+
+							attributes
+									.add(pFactory.newAttribute(
+											Attribute.PROV_TYPE_QNAME,
+											decodeLiteral((Literal) statement
+													.getObject()),
+											this.valueConverter));
+						}
+					}
+				} else
+				{
+					System.out.println(value);
+					System.out.println("Value wasn't a suitable type");
+				}
+			}
+
+			if (predQ.equals(Ontology.QNAME_PROVO_hadRole))
+			{
+				String role = statement.getObject().stringValue();
+				attributes.add(pFactory.newAttribute(Attribute.PROV_ROLE_QNAME,
+						role, this.valueConverter));
+			}
+
+			if (predQ.equals(Ontology.QNAME_PROVO_atLocation))
+			{
+				Object obj = valueToObject(statement.getObject());
+				if (obj != null)
+				{
+					attributes.add(pFactory.newAttribute(
+							Attribute.PROV_LOCATION_QNAME, obj,
+							this.valueConverter));
+				}
+			}
+
+			if (predQ.equals(Ontology.QNAME_RDFS_LABEL))
+			{
+				Literal lit = (Literal) (statement.getObject());
+				if (lit.getLanguage() != null)
+				{
+					InternationalizedString is = pFactory
+							.newInternationalizedString(lit.stringValue(), lit
+									.getLanguage().toUpperCase());
+					attributes.add(pFactory
+							.newAttribute(Attribute.PROV_LABEL_QNAME, is,
+									this.valueConverter));
+				} else
+				{
+					attributes.add(pFactory.newAttribute(
+							Attribute.PROV_LABEL_QNAME, lit.stringValue(),
+							this.valueConverter));
+				}
+			}
+
+			Value val = statement.getObject();
+
+			if (val instanceof Resource)
+			{
+				if (predQ.equals(Ontology.QNAME_PROVO_value))
+				{
+					Object resourceVal = convertResourceToQName((Resource) val);
+					attributes.add(pFactory.newAttribute(
+							Attribute.PROV_VALUE_QNAME, resourceVal,
+							this.valueConverter));
+				}
+			} else if (val instanceof Literal)
+			{
+				if (predQ.equals(Ontology.QNAME_PROVO_value))
+				{
+					Object literal = decodeLiteral((Literal) val);
+					attributes.add(pFactory.newAttribute(
+							Attribute.PROV_VALUE_QNAME, literal,
+							this.valueConverter));
+				}
+			}
+
+			if (!isProvURI(predQ))
+			{
+				if (!predQ.equals(Ontology.QNAME_RDF_TYPE)
+						&& !predQ.equals(Ontology.QNAME_RDFS_LABEL))
+				{
+					// Retrieve the prefix
+					String prefix = this.revnss.get(predQ.getNamespaceURI());
+					Attribute attr = null;
+					if (val instanceof Literal)
+					{
+						Literal lit = (Literal) val;
+
+						String shortType = "string";
+						if (lit.getDatatype() != null)
+						{
+							shortType = lit.getDatatype().getLocalName();
+						}
+
+						QName xsdType = pFactory
+								.stringToQName(getXsdType(shortType));
+						attr = pFactory.newAttribute(predQ.getNamespaceURI(),
+								predQ.getLocalPart(), prefix,
+								decodeLiteral(lit), xsdType);
+
+					} else if (val instanceof Resource)
+					{
+						URIWrapper uw = new URIWrapper();
+						java.net.URI jURI = java.net.URI.create(val
+								.stringValue());
+						uw.setValue(jURI);
+
+						attr = pFactory.newAttribute(predQ.getNamespaceURI(),
+								predQ.getLocalPart(), prefix, uw,
+								pFactory.stringToQName(getXsdType("anyURI")));
+					} else
+					{
+						System.err.println("Invalid value");
+					}
+
+					if (attr != null)
+					{
+						attributes.add(attr);
+					}
+
+				}
+			}
+		}
+		return attributes;
+	}
+
+	/*
+	 * Handles PROV-O predicates, creating beans where appropriate.
+	 */
+	private void handlePredicates(QName context, QName qname)
+	{
 		List<QName> members = new ArrayList<QName>();
+		List<Statement> statements = collators.get(context).get(qname);
 		for (Statement statement : statements)
 		{
 			QName predQ = convertURIToQName(statement.getPredicate());
 			Value value = statement.getObject();
+
+			if (predQ.equals(Ontology.QNAME_PROVO_wasInfluencedBy))
+			{
+				QName anyQ = convertResourceToQName((Resource) (statement
+						.getObject()));
+				WasInfluencedBy wib = pFactory.newWasInfluencedBy(null, qname,
+						anyQ, null);
+
+				store(convertResourceToQName(statement.getContext()), wib);
+			}
+
+			if (predQ.equals(Ontology.QNAME_PROVO_influenced))
+			{
+				QName anyQ = convertResourceToQName((Resource) (statement
+						.getObject()));
+
+				WasInfluencedBy wib = pFactory.newWasInfluencedBy(null, anyQ,
+						qname, null);
+
+				store(convertResourceToQName(statement.getContext()), wib);
+			}
 
 			if (value instanceof Resource)
 			{
@@ -917,94 +949,11 @@ public class RdfCollector extends RDFHandlerBase {
 							: convertURIToQName((URI) o);
 					QName entityQ = (value == null) ? null
 							: convertURIToQName((URI) value);
-					MentionOf nmo = pFactory.newMentionOf(qname, entityQ,
+					MentionOf mo = pFactory.newMentionOf(entityQ, qname,
 							bundleQ);
 
-					store(context, nmo);
-				} else if (predQ.equals(Ontology.QNAME_PROVO_value))
-				{
-					Object resourceVal = convertResourceToQName((Resource) value);
-					attributes.add(pFactory.newAttribute(
-							Attribute.PROV_VALUE_QNAME, resourceVal,
-							this.valueConverter));
-				} else if (predQ.equals(Ontology.QNAME_PROVO_hadMember))
-				{
-					members.add(convertResourceToQName((Resource) (statement
-                                                .getObject())));
-				}
-			} else if (value instanceof Literal)
-			{
-				if (predQ.equals(Ontology.QNAME_PROVO_value))
-				{
-					Object literal = decodeLiteral((Literal) value);
-					attributes.add(pFactory.newAttribute(
-							Attribute.PROV_VALUE_QNAME, literal,
-							this.valueConverter));
-				}
-			}
-		}
-
-		if(members.size() > 0) {
-			HadMember hm = pFactory.newHadMember(qname, members);
-			store(context, hm);
-		}
-
-		if (!implicit)
-		{
-			org.openprovenance.prov.xml.Entity entity = pFactory.newEntity(
-					qname, attributes);
-			store(context, entity);
-		}
-	}
-
-	private void createAgent(QName context, QName qname, boolean implicit)
-	{
-		List<Attribute> attributes = collectAttributes(context, qname,
-				ProvType.AGENT);
-		List<Statement> statements = collators.get(context).get(qname);
-
-		for (Statement statement : statements)
-		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-			Value value = statement.getObject();
-			if (value instanceof Resource)
-			{
-				if (predQ.equals(Ontology.QNAME_PROVO_actedOnBehalfOf))
-				{
-					QName agentQ = convertResourceToQName((Resource) value);
-					ActedOnBehalfOf aobo = pFactory.newActedOnBehalfOf(null,
-							qname, agentQ, null, null);
-
-					store(context, aobo);
-				}
-			}
-		}
-
-		if (!implicit)
-		{
-			org.openprovenance.prov.xml.Agent agent = pFactory.newAgent(qname,
-					attributes);
-			store(context, agent);
-		}
-	}
-
-	private void createActivity(QName context, QName qname, boolean implicit)
-	{
-		List<Attribute> attributes = collectAttributes(context, qname,
-				ProvType.ACTIVITY);
-		List<Statement> statements = collators.get(context).get(qname);
-
-		XMLGregorianCalendar startTime = null;
-		XMLGregorianCalendar endTime = null;
-
-		for (Statement statement : statements)
-		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-			Value value = statement.getObject();
-			if (value instanceof Resource)
-			{
-				QName valueQ = convertResourceToQName((Resource) value);
-				if (predQ.equals(Ontology.QNAME_PROVO_wasAssociatedWith))
+					store(context, mo);
+				} else if (predQ.equals(Ontology.QNAME_PROVO_wasAssociatedWith))
 				{
 					WasAssociatedWith waw = pFactory.newWasAssociatedWith(null,
 							qname, valueQ, null, null);
@@ -1040,8 +989,62 @@ public class RdfCollector extends RDFHandlerBase {
 					WasInformedBy wib = pFactory.newWasInformedBy(null, qname,
 							valueQ, null);
 					store(context, wib);
+				} else if (predQ.equals(Ontology.QNAME_PROVO_actedOnBehalfOf))
+				{
+					QName agentQ = convertResourceToQName((Resource) value);
+					ActedOnBehalfOf aobo = pFactory.newActedOnBehalfOf(null,
+							qname, agentQ, null, null);
+
+					store(context, aobo);
+				} else if (predQ.equals(Ontology.QNAME_PROVO_hadMember))
+				{
+					members.add(convertResourceToQName((Resource) (statement
+							.getObject())));
 				}
-			} else if (value instanceof Literal)
+			}
+		}
+
+		if (members.size() > 0)
+		{
+			HadMember hm = pFactory.newHadMember(qname, members);
+			store(context, hm);
+		}
+	}
+
+	private void createEntity(QName context, QName qname)
+	{
+		List<Attribute> attributes = collectAttributes(context, qname,
+				ProvType.ENTITY);
+
+			org.openprovenance.prov.xml.Entity entity = pFactory.newEntity(
+					qname, attributes);
+			store(context, entity);
+	}
+
+	private void createAgent(QName context, QName qname)
+	{
+		List<Attribute> attributes = collectAttributes(context, qname,
+				ProvType.AGENT);
+
+		org.openprovenance.prov.xml.Agent agent = pFactory.newAgent(qname,
+				attributes);
+		store(context, agent);
+	}
+
+	private void createActivity(QName context, QName qname)
+	{
+		List<Attribute> attributes = collectAttributes(context, qname,
+				ProvType.ACTIVITY);
+		List<Statement> statements = collators.get(context).get(qname);
+
+		XMLGregorianCalendar startTime = null;
+		XMLGregorianCalendar endTime = null;
+
+		for (Statement statement : statements)
+		{
+			QName predQ = convertURIToQName(statement.getPredicate());
+			Value value = statement.getObject();
+			if (value instanceof Literal)
 			{
 				if (predQ.equals(Ontology.QNAME_PROVO_startedAtTime))
 				{
@@ -1055,12 +1058,9 @@ public class RdfCollector extends RDFHandlerBase {
 			}
 		}
 
-		if (!implicit)
-		{
-			org.openprovenance.prov.xml.Activity activity = pFactory
-					.newActivity(qname, startTime, endTime, attributes);
-			store(context, activity);
-		}
+		org.openprovenance.prov.xml.Activity activity = pFactory.newActivity(
+				qname, startTime, endTime, attributes);
+		store(context, activity);
 	}
 
 	@Override

@@ -19,8 +19,6 @@ public class RoundTripFromJavaTest extends
 	public RoundTripFromJavaTest(String name)
 	{
 		super(name);
-		      checkYear=false;
-
 	}
 
 	public String extension()

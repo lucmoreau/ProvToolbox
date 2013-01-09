@@ -102,7 +102,7 @@ public class RdfCollector extends RDFHandlerBase {
 		}
 		return true;
 	}
-	
+
 	protected List<Statement> getStatementsForPredicate(QName context,
 			QName qname, QName uri)
 	{
@@ -226,7 +226,17 @@ public class RdfCollector extends RDFHandlerBase {
 		{
 			return literal.stringValue();
 		} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
-				+ "dateTime"))
+				+ "dateTime")
+				|| dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "time")
+				|| dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "date")
+				|| dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
+						+ "gYearMonth")
+				|| dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
+						+ "gMonthDay")
+				|| dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "gYear")
+				|| dataType
+						.equals(NamespacePrefixMapper.XSD_HASH_NS + "gMonth")
+				|| dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "gDay"))
 		{
 			return literal.calendarValue();
 		} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "int"))
@@ -779,12 +789,11 @@ public class RdfCollector extends RDFHandlerBase {
 		getBundleHolder(context).store(activity);
 	}
 
-
 	public Document getDocument()
 	{
 		return document;
 	}
-	
+
 	/**
 	 * RDFHandlerBase overrides
 	 */
@@ -800,7 +809,7 @@ public class RdfCollector extends RDFHandlerBase {
 		pFactory.setNamespaces(this.document.getNss());
 		this.revnss.put(namespace, prefix);
 	}
-	
+
 	@Override
 	public void handleStatement(Statement statement)
 	{

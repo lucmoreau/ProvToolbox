@@ -207,8 +207,7 @@ public class RoundTripFromJavaTest extends TestCase {
    	w.setValue(URI.create(EX_NS+"hello"));
    	ht.getType().add(w);
     }
-    public boolean checkYear=true;
-    
+
     public void addLocations(HasLocation hl) {
    	hl.getLocation().add("London");
    	hl.getLocation().add(1);
@@ -219,7 +218,6 @@ public class RoundTripFromJavaTest extends TestCase {
    	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"london"));
    	hl.getLocation().add(w);
-   	if (checkYear)
    	hl.getLocation().add(pFactory.newGYear("2002"));
     }
     

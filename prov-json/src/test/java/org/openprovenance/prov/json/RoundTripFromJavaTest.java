@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.UncheckedTestException;
 
 import com.google.gson.Gson;
@@ -27,8 +26,6 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	
 	public RoundTripFromJavaTest(String testName) {
 		super(testName);
-		    checkYear=false;
-
 	}
 
 	@Override

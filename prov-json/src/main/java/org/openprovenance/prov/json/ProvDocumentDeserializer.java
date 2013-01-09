@@ -6,17 +6,14 @@ package org.openprovenance.prov.json;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.lang.reflect.Type;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
@@ -41,7 +38,6 @@ import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Statement;
 import org.openprovenance.prov.xml.StatementOrBundle;
-import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.UsageRef;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.ValueConverter;
@@ -456,9 +452,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
                 xsdType = ValueConverter.QNAME_XSD_STRING;
             } else {
 	            // The following implicitly assume the type is one of XSD types
-	            String xsdTypeAsString = struct.get("type").getAsString();
-	            value = decodeXSDType(struct.get("$").getAsString(), xsdTypeAsString);
-	            xsdType=pf.stringToQName(xsdTypeAsString); //FIXME: is the right way to go?
+	            String datatypeAsString = struct.get("type").getAsString();
+	            xsdType = pf.stringToQName(datatypeAsString);
+	            value = vconv.convertToJava(xsdType, struct.get("$").getAsString());
             }
         }    	
     	return new Attribute(attributeName, value, xsdType);
@@ -478,8 +474,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
                 iString.setLang(lang);
                 return iString;
             } else if (struct.has("type")) {
-            	String datatype = struct.get("type").getAsString();
-            	return decodeXSDType(value, datatype);
+            	String datatypeAsString = struct.get("type").getAsString();
+	            QName xsdType = pf.stringToQName(datatypeAsString);
+	            return vconv.convertToJava(xsdType, struct.get("$").getAsString());
             } else {
             	// if no type or lang information, decode as an Internationalized string without lang
             	InternationalizedString iString = new InternationalizedString();
@@ -512,54 +509,6 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         }
     }
     
-    //FIXME: use ValueConverter
-    private Object decodeXSDType(String value, String datatype) {
-        
-        if (datatype.equals("xsd:string"))  return value;
-        if (datatype.equals("xsd:int"))     return DatatypeConverter.parseInt(value);
-        if (datatype.equals("xsd:long"))    return DatatypeConverter.parseLong(value);
-        if (datatype.equals("xsd:short"))   return DatatypeConverter.parseShort(value);
-        if (datatype.equals("xsd:double"))  return DatatypeConverter.parseDouble(value);
-        if (datatype.equals("xsd:float"))   return DatatypeConverter.parseFloat(value);
-        if (datatype.equals("xsd:decimal")) return DatatypeConverter.parseDecimal(value);
-        if (datatype.equals("xsd:boolean")) return DatatypeConverter.parseBoolean(value);
-        if (datatype.equals("xsd:byte"))    return DatatypeConverter.parseByte(value);
-        if (datatype.equals("xsd:unsignedInt"))   return DatatypeConverter.parseUnsignedInt(value);
-        if (datatype.equals("xsd:unsignedShort")) return DatatypeConverter.parseUnsignedShort(value);
-        if (datatype.equals("xsd:unsignedByte"))  return DatatypeConverter.parseUnsignedInt(value);
-        if (datatype.equals("xsd:unsignedLong"))  return DatatypeConverter.parseUnsignedInt(value);
-        if (datatype.equals("xsd:integer"))             return DatatypeConverter.parseInteger(value);
-        if (datatype.equals("xsd:nonNegativeInteger"))  return DatatypeConverter.parseInteger(value);
-        if (datatype.equals("xsd:nonPositiveInteger"))  return DatatypeConverter.parseInteger(value);
-        if (datatype.equals("xsd:positiveInteger"))     return DatatypeConverter.parseInteger(value);
-        if (datatype.equals("xsd:dateTime"))            return pf.newXMLGregorianCalendar((GregorianCalendar)DatatypeConverter.parseDateTime(value));
-
-        if (datatype.equals("xsd:anyURI")) {
-            URIWrapper u=new URIWrapper();
-            u.setValue(URI.create(value));
-            return u;
-        }
-        if (datatype.equals("xsd:QName")) {
-            return pf.stringToQName(value);
-        }
-
-
-
-        if ((datatype.equals("rdf:XMLLiteral"))
-            || (datatype.equals("xsd:normalizedString"))
-            || (datatype.equals("xsd:token"))
-            || (datatype.equals("xsd:language"))
-            || (datatype.equals("xsd:Name"))
-            || (datatype.equals("xsd:NCName"))
-            || (datatype.equals("xsd:NMTOKEN"))
-            || (datatype.equals("xsd:hexBinary"))
-            || (datatype.equals("xsd:base64Binary"))) {
-
-            throw new UnsupportedOperationException("KNOWN literal type but conversion not supported yet " + datatype);
-        }
-        throw new UnsupportedOperationException("UNKNOWN literal type " + datatype);
-    }
-
     private List<JsonElement> popMultiValAttribute(String attributeName, JsonObject attributeMap) {
         if (attributeMap.has(attributeName)) {
             JsonElement element = attributeMap.remove(attributeName);

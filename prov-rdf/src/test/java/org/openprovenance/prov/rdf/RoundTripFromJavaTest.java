@@ -19,8 +19,6 @@ public class RoundTripFromJavaTest extends
 	public RoundTripFromJavaTest(String name)
 	{
 		super(name);
-		      checkYear=false;
-
 	}
 
 	public String extension()
@@ -80,43 +78,6 @@ public class RoundTripFromJavaTest extends
 	public boolean mergeDuplicateProperties()
 	{
 		return true;
-	}
-
-	public void testInfluence1() throws JAXBException
-	{
-		// RDF Collector doesn't support Influence
-	}
-
-	public void testInfluence2() throws JAXBException
-	{
-		// RDF Collector doesn't support Influence
-	}
-
-	public void testInfluence3() throws JAXBException
-	{
-		// RDF Collector doesn't support Influence
-	}
-
-	public void testInfluence4() throws JAXBException
-	{
-		// RDF Collector doesn't support Influence
-	}
-
-	public void testInfluence5() throws JAXBException
-	{
-		// RDF Collector doesn't support Influence
-	}
-
-	public void testInfluence6() throws JAXBException
-	{
-		// RDF Collector doesn't support Influence
-	}
-
-	public void testInfluence7() throws JAXBException
-	{
-
-		// RDF Collector doesn't support Influence
-
 	}
 
 	public void testScruffyGeneration1()

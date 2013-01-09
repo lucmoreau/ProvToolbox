@@ -1,4 +1,4 @@
-package org.openprovenance.prov.rdf;
+package org.openprovenance.prov.rdf.collector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,6 +9,7 @@ import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Identifiable;
@@ -596,7 +597,6 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (value instanceof Resource)
 			{
-				System.out.println(predQ);
 				if (predQ.equals(Ontology.QNAME_PROVO_activity))
 				{
 					activity = convertResourceToQName((Resource) value);

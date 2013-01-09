@@ -21,7 +21,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
     }  
     
     public boolean checkTest(String name) {
-	//TODO: prov-n does not support hadMember with multiple entities
+       //TODO: prov-n does not support hadMember with multiple entities
 	return !(name.contains("member2") 
 		|| name.contains("member3"));
     }

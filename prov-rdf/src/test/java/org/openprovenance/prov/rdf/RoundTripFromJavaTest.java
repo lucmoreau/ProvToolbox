@@ -80,18 +80,8 @@ public class RoundTripFromJavaTest extends
 		return true;
 	}
 
-	public void testScruffyGeneration1()
-	{
-		// TODO: Unsupported
-
-	}
 
 	public void testScruffyGeneration2()
-	{
-		// TODO: Unsupported
-	}
-
-	public void testScruffyInvalidation1()
 	{
 		// TODO: Unsupported
 	}
@@ -101,17 +91,7 @@ public class RoundTripFromJavaTest extends
 		// TODO: Unsupported
 	}
 
-	public void testScruffyUsage1()
-	{
-		// TODO: Unsupported
-	}
-
 	public void testScruffyUsage2()
-	{
-		// TODO: Unsupported
-	}
-
-	public void testScruffyStart1()
 	{
 		// TODO: Unsupported
 	}
@@ -127,11 +107,6 @@ public class RoundTripFromJavaTest extends
 	}
 
 	public void testScruffyStart4()
-	{
-		// TODO: Unsupported
-	}
-
-	public void testScruffyEnd1()
 	{
 		// TODO: Unsupported
 	}

@@ -2,6 +2,7 @@ package org.openprovenance.prov.rdf.collector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -54,6 +55,90 @@ public class QualifiedCollector extends RdfCollector {
 
 	}
 
+	/*
+	 * Given two lists, this creates a list of permutations of those lists. e.g.
+	 * Given [1,2], [[3,4]], returns [[1,3],[1,4],[2,3],[2,4]]
+	 */
+	private ArrayList<List<?>> permute(List<?>... lists)
+	{
+
+		ArrayList<List<?>> output = new ArrayList<List<?>>();
+		if (lists.length == 0)
+		{
+			output.add(new ArrayList<Object>());
+			return output;
+		}
+
+		for (List<?> list : lists)
+		{
+			// We require that the result has as many elements as the number
+			// of lists passed - so if a list is empty, add in a single null.
+			if (list.size() == 0)
+				list.add(null);
+		}
+
+		List<?> first = lists[0];
+		List<?>[] rest = Arrays.copyOfRange(lists, 1, lists.length);
+
+		for (Object x : first)
+		{
+			ArrayList<List<?>> permuted = permute(rest);
+			for (List<?> tocombine : permuted)
+			{
+				ArrayList<Object> l = new ArrayList<Object>();
+				l.add(x);
+				l.addAll(tocombine);
+				output.add(l);
+			}
+		}
+
+		return output;
+	}
+
+	private List<QName> getObjects(QName context, QName subject, QName pred)
+	{
+		List<Statement> statements = collators.get(context).get(subject);
+		List<QName> objects = new ArrayList<QName>();
+		for (Statement statement : statements)
+		{
+			QName predQ = convertURIToQName(statement.getPredicate());
+			Value value = statement.getObject();
+			if (pred.equals(predQ) && value instanceof Resource)
+			{
+				objects.add(convertResourceToQName((Resource) value));
+			}
+		}
+		if (objects.isEmpty())
+			objects.add(null);
+		return objects;
+	}
+
+	private List<QName> getSubjects(QName context, QName pred, QName object)
+	{
+		HashMap<QName, List<Statement>> resources = collators.get(context);
+		List<QName> subjects = new ArrayList<QName>();
+		for (QName subject : resources.keySet())
+		{
+			List<Statement> statements = resources.get(subject);
+			for (Statement statement : statements)
+			{
+				QName predQ = convertURIToQName(statement.getPredicate());
+				Value value = statement.getObject();
+				if (pred.equals(predQ) && value instanceof Resource)
+				{
+					QName valQ = convertResourceToQName((Resource) value);
+					if (valQ.equals(object))
+					{
+						subjects.add(subject);
+					}
+				}
+			}
+		}
+		if (subjects.isEmpty())
+			subjects.add(null);
+		return subjects;
+	}
+
 	@Override
 	protected void buildGraph()
 	{
@@ -87,7 +172,7 @@ public class QualifiedCollector extends RdfCollector {
 						createDelegation(contextQ, qname);
 						break;
 					case DERIVATION:
-						createDerivation(contextQ, qname);
+						createDerivation(contextQ, qname, Ontology.QNAME_PROVO_qualifiedDerivation);
 						break;
 					case PRIMARYSOURCE:
 						createPrimarySource(contextQ, qname);
@@ -101,9 +186,6 @@ public class QualifiedCollector extends RdfCollector {
 					case END:
 						createEnd(contextQ, qname);
 						break;
-					// case ENTITYINFLUENCE:
-					// createEntityInfluence(contextQ, qname);
-					// break;
 					case INVALIDATION:
 						createInvalidation(contextQ, qname);
 						break;
@@ -125,96 +207,12 @@ public class QualifiedCollector extends RdfCollector {
 	public void endRDF()
 	{
 		super.endRDF();
-		this.bindQualifiedProperties();
-		this.optimize();
-		this.nullBNodes();
 	}
 
-	private List<Ref> getSignature(
-			org.openprovenance.prov.xml.Influence influence)
+	private List<XMLGregorianCalendar> getInstantaneousTimes(
+			List<Statement> statements)
 	{
-		List<Ref> signature = null;
-		if (influence instanceof WasGeneratedBy)
-		{
-			WasGeneratedBy wgb = (WasGeneratedBy) influence;
-			if (wgb.getEntity() != null && wgb.getActivity() != null)
-			{
-				signature = Arrays.asList(new Ref[] { wgb.getEntity(),
-						wgb.getActivity() });
-			}
-		} else if (influence instanceof WasInvalidatedBy)
-		{
-			WasInvalidatedBy wib = (WasInvalidatedBy) influence;
-			if (wib.getActivity() != null && wib.getEntity() != null)
-			{
-				signature = Arrays.asList(new Ref[] { wib.getActivity(),
-						wib.getEntity() });
-			}
-		} else if (influence instanceof Used)
-		{
-			Used u = (Used) influence;
-			if (u.getActivity() != null && u.getEntity() != null)
-			{
-				signature = Arrays.asList(new Ref[] { u.getActivity(),
-						u.getEntity() });
-			}
-		} else if (influence instanceof WasDerivedFrom)
-		{
-			WasDerivedFrom wdf = (WasDerivedFrom) influence;
-			if (wdf.getGeneratedEntity() != null && wdf.getUsedEntity() != null)
-			{
-				signature = Arrays.asList(new Ref[] { wdf.getGeneratedEntity(),
-						wdf.getUsedEntity() });
-			}
-		} else
-		{
-			// System.out.println("Couldn't get signature for "
-			// + influence.getId());
-		}
-		return signature;
-	}
-
-	private void optimize()
-	{
-		HashMap<List<Ref>, Identifiable> collisions = new HashMap<List<Ref>, Identifiable>();
-
-		List<Identifiable> toRemove = new ArrayList<Identifiable>();
-		for (StatementOrBundle sob : document
-				.getEntityOrActivityOrWasGeneratedBy())
-		{
-			if (sob instanceof org.openprovenance.prov.xml.Influence)
-			{
-
-				Identifiable hasid = (Identifiable) sob;
-				List<Ref> signature = getSignature((org.openprovenance.prov.xml.Influence) hasid);
-				if (signature == null)
-					continue;
-				if (collisions.containsKey(signature))
-				{
-					Identifiable collision = collisions.get(signature);
-					if (hasid.getId() != null)
-					{
-						// We have a qualified wgb, so remove the collision.
-						toRemove.add(collision);
-					} else if (collision.getId() != null)
-					{
-						// We have an unqualified wgb, so remove the wgb if the
-						// collision is qualified.
-						toRemove.add(hasid);
-					}
-				} else
-				{
-					collisions.put(signature, hasid);
-				}
-			}
-		}
-
-		document.getEntityOrActivityOrWasGeneratedBy().removeAll(toRemove);
-
-	}
-
-	private XMLGregorianCalendar getInstantaneousTime(List<Statement> statements)
-	{
+		List<XMLGregorianCalendar> times = new ArrayList<XMLGregorianCalendar>();
 		for (Statement statement : statements)
 		{
 			QName predQ = convertURIToQName(statement.getPredicate());
@@ -224,499 +222,361 @@ public class QualifiedCollector extends RdfCollector {
 			{
 				if (predQ.equals(Ontology.QNAME_PROVO_atTime))
 				{
-					XMLGregorianCalendar time = (XMLGregorianCalendar) super
-							.decodeLiteral((Literal) value);
-					return time;
+					times.add((XMLGregorianCalendar) super
+							.decodeLiteral((Literal) value));
 				}
 			}
 		}
-		return null;
+		return times;
 	}
 
 	private void createRevision(QName contextQ, QName qname)
 	{
-		WasDerivedFrom wdf = createDerivation(contextQ, qname);
+		List<WasDerivedFrom> wdfs = createDerivation(contextQ, qname, Ontology.QNAME_PROVO_qualifiedRevision);
 		Object q = pFactory.newQName("prov:Revision");
-		if (!wdf.getType().contains(q))
+		for (WasDerivedFrom wdf : wdfs)
 		{
-			wdf.getType().add(q);
+			if (!wdf.getType().contains(q))
+			{
+				wdf.getType().add(q);
+			}
 		}
 	}
 
 	private void createQuotation(QName contextQ, QName qname)
 	{
-		WasDerivedFrom wdf = createDerivation(contextQ, qname);
+		List<WasDerivedFrom> wdfs = createDerivation(contextQ, qname, Ontology.QNAME_PROVO_qualifiedQuotation);
 		Object q = pFactory.newQName("prov:Quotation");
-		if (!wdf.getType().contains(q))
+		for (WasDerivedFrom wdf : wdfs)
 		{
-			wdf.getType().add(q);
+			if (!wdf.getType().contains(q))
+			{
+				wdf.getType().add(q);
+			}
 		}
 	}
 
-	private void createPrimarySource(QName contextQ, QName qname)
+	private void createPrimarySource(QName context, QName qname)
 	{
-		WasDerivedFrom wdf = createDerivation(contextQ, qname);
+		List<WasDerivedFrom> wdfs = createDerivation(context, qname, Ontology.QNAME_PROVO_qualifiedPrimarySource);
 		Object q = pFactory.newQName("prov:PrimarySource");
-		if (!wdf.getType().contains(q))
+
+		for (WasDerivedFrom wdf : wdfs)
 		{
-			wdf.getType().add(q);
+			if (!wdf.getType().contains(q))
+			{
+				wdf.getType().add(q);
+			}
 		}
 	}
 
-	private WasDerivedFrom createDerivation(QName context, QName qname)
+	private List<WasDerivedFrom> createDerivation(QName context, QName qname, QName pred)
 	{
-		QName e1 = null;
-		QName e2 = null;
-		QName activity = null;
-		QName generation = null;
-		QName usage = null;
 
-		List<Statement> statements = collators.get(context).get(qname);
+		List<QName> entities = getObjects(context, qname,
+				Ontology.QNAME_PROVO_entity);
+		List<QName> activities = getObjects(context, qname,
+				Ontology.QNAME_PROVO_hadActivity);
+		List<QName> generations = getObjects(context, qname,
+				Ontology.QNAME_PROVO_hadGeneration);
+		List<QName> usages = getObjects(context, qname,
+				Ontology.QNAME_PROVO_hadUsage);
 
-		for (Statement statement : statements)
-		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-			Value value = statement.getObject();
+		List<QName> generated = getSubjects(context,
+				pred, qname);
 
-			if (value instanceof Resource)
-			{
-				QName valueQ = convertResourceToQName((Resource) value);
-
-				if (predQ.equals(Ontology.QNAME_PROVO_hadActivity))
-				{
-					activity = valueQ;
-				}
-
-				if (predQ.equals(Ontology.QNAME_PROVO_hadGeneration))
-				{
-					generation = valueQ;
-				}
-
-				if (predQ.equals(Ontology.QNAME_PROVO_hadUsage))
-				{
-					usage = valueQ;
-				}
-
-				if (predQ.equals(Ontology.QNAME_PROVO_entity))
-				{
-					e1 = valueQ;
-				}
-			}
-		}
-		List<Attribute> attributes = super.collectAttributes(context, qname,
+		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.DERIVATION);
-		WasDerivedFrom wdf = pFactory.newWasDerivedFrom(qname, e2, e1,
-				activity, generation, usage, attributes);
-		store(context, wdf);
-		this.influenceMap.put(qname, wdf);
-		return wdf;
+
+		if (qname.getNamespaceURI() == "")
+		{
+			qname = null;
+		}
+
+		List<WasDerivedFrom> wdfs = new ArrayList<WasDerivedFrom>();
+		List<List<?>> perms = permute(generated, entities, activities,
+				generations, usages);
+		for (List<?> perm : perms)
+		{
+			WasDerivedFrom wdf = pFactory.newWasDerivedFrom(qname,
+					(QName) perm.get(0), (QName) perm.get(1),
+					(QName) perm.get(2), (QName) perm.get(3),
+					(QName) perm.get(4), attributes);
+			store(context, wdf);
+			wdfs.add(wdf);
+		}
+		return wdfs;
 	}
 
-	private WasInfluencedBy createInfluence(QName context, QName qname)
+	private List<WasInfluencedBy> createInfluence(QName context, QName qname)
 	{
-		QName a1 = null;
-		QName a2 = null;
-		
-		List<Statement> statements = collators.get(context).get(qname);
+		List<QName> influencers = getObjects(context, qname,
+				Ontology.QNAME_PROVO_influencer);
+		List<QName> influencees = getSubjects(context,
+				Ontology.QNAME_PROVO_qualifiedInfluence, qname);
 
-		for (Statement statement : statements)
-		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-			Value value = statement.getObject();
-
-			if (value instanceof Resource)
-			{
-				QName valueQ = convertResourceToQName((Resource) value);
-
-				if (predQ.equals(Ontology.QNAME_PROVO_influencer))
-				{
-					a1 = valueQ;
-				}
-
-				if (predQ.equals(Ontology.QNAME_PROVO_influenced))
-				{
-					a2 = valueQ;
-				}
-			}
-		}
-		
-		List<Attribute> attributes = super.collectAttributes(context, qname,
+		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.INFLUENCE);
-		WasInfluencedBy wib = pFactory.newWasInfluencedBy(qname, a2, a1,
-				attributes);
-		store(context, wib);
-		this.influenceMap.put(qname, wib);
-		return wib;
+
+		if (qname.getNamespaceURI() == "")
+		{
+			qname = null;
+		}
+
+		List<WasInfluencedBy> wibs = new ArrayList<WasInfluencedBy>();
+		List<List<?>> perms = permute(influencees, influencers);
+		for (List<?> perm : perms)
+		{
+			WasInfluencedBy wib = pFactory.newWasInfluencedBy(qname,
+					(QName) perm.get(0), (QName) perm.get(1), attributes);
+			store(context, wib);
+			wibs.add(wib);
+		}
+		return wibs;
 	}
 
 	private void createEnd(QName context, QName qname)
 	{
 		List<Statement> statements = collators.get(context).get(qname);
-
-		QName activity = null;
-		QName trigger = null;
-		QName ender = null;
-		XMLGregorianCalendar time = getInstantaneousTime(statements);
-
-		for (Statement statement : statements)
-		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-			Value value = statement.getObject();
-
-			if (predQ.equals(Ontology.QNAME_PROVO_entity))
-			{
-				trigger = convertResourceToQName((Resource) value);
-			}
-			if (predQ.equals(Ontology.QNAME_PROVO_hadActivity))
-			{
-				ender = convertResourceToQName((Resource) value);
-			}
-		}
+		List<XMLGregorianCalendar> times = getInstantaneousTimes(statements);
+		List<QName> triggers = getObjects(context, qname,
+				Ontology.QNAME_PROVO_entity);
+		List<QName> enders = getObjects(context, qname,
+				Ontology.QNAME_PROVO_hadActivity);
+		List<QName> activities = getSubjects(context,
+				Ontology.QNAME_PROVO_qualifiedEnd, qname);
 
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.END);
-		WasEndedBy web = pFactory.newWasEndedBy(qname, activity, trigger,
-				ender, time, attributes);
-		store(context, web);
-		this.influenceMap.put(qname, web);
+
+		if (qname.getNamespaceURI() == "")
+		{
+			qname = null;
+		}
+
+		List<List<?>> perms = permute(activities, triggers, enders, times);
+		for (List<?> perm : perms)
+		{
+			WasEndedBy web = pFactory.newWasEndedBy(qname, (QName) perm.get(0),
+					(QName) perm.get(1), (QName) perm.get(2),
+					(XMLGregorianCalendar) perm.get(3), attributes);
+			store(context, web);
+		}
 	}
 
 	private void createStart(QName context, QName qname)
 	{
 		List<Statement> statements = collators.get(context).get(qname);
-
-		QName activity = null;
-		QName trigger = null;
-		QName starter = null;
-		XMLGregorianCalendar time = getInstantaneousTime(statements);
-
-		for (Statement statement : statements)
-		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-			Value value = statement.getObject();
-
-			if (predQ.equals(Ontology.QNAME_PROVO_entity))
-			{
-				trigger = convertResourceToQName((Resource) value);
-			}
-			if (predQ.equals(Ontology.QNAME_PROVO_hadActivity))
-			{
-				starter = convertResourceToQName((Resource) value);
-			}
-		}
+		List<XMLGregorianCalendar> times = getInstantaneousTimes(statements);
+		List<QName> triggers = getObjects(context, qname,
+				Ontology.QNAME_PROVO_entity);
+		List<QName> starters = getObjects(context, qname,
+				Ontology.QNAME_PROVO_hadActivity);
+		List<QName> activities = getSubjects(context,
+				Ontology.QNAME_PROVO_qualifiedStart, qname);
 
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.START);
-		WasStartedBy wsb = pFactory.newWasStartedBy(qname, activity, trigger,
-				starter, time, attributes);
-		store(context, wsb);
-		this.influenceMap.put(qname, wsb);
+
+		if (qname.getNamespaceURI() == "")
+		{
+			qname = null;
+		}
+
+		List<List<?>> perms = permute(activities, triggers, starters, times);
+		for (List<?> perm : perms)
+		{
+			WasStartedBy wsb = pFactory.newWasStartedBy(qname,
+					(QName) perm.get(0), (QName) perm.get(1),
+					(QName) perm.get(2), (XMLGregorianCalendar) perm.get(3),
+					attributes);
+			store(context, wsb);
+		}
 	}
 
 	private void createInvalidation(QName context, QName qname)
 	{
 		List<Statement> statements = collators.get(context).get(qname);
-		QName entity = null;
-		QName activity = null;
-		XMLGregorianCalendar time = getInstantaneousTime(statements);
+		List<XMLGregorianCalendar> times = getInstantaneousTimes(statements);
 
-		for (Statement statement : statements)
-		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-			Value value = statement.getObject();
-
-			if (predQ.equals(Ontology.QNAME_PROVO_activity))
-			{
-				activity = convertResourceToQName((Resource) value);
-			}
-		}
+		List<QName> activities = getObjects(context, qname,
+				Ontology.QNAME_PROVO_activity);
+		List<QName> entities = getSubjects(context,
+				Ontology.QNAME_PROVO_qualifiedInvalidation, qname);
 
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.INVALIDATION);
-		WasInvalidatedBy wib = pFactory.newWasInvalidatedBy(qname, entity,
-				activity, time, attributes);
-		store(context, wib);
-		this.influenceMap.put(qname, wib);
+
+		if (qname.getNamespaceURI() == "")
+		{
+			qname = null;
+		}
+
+		List<List<?>> perms = permute(entities, activities, times);
+		for (List<?> perm : perms)
+		{
+			WasInvalidatedBy wib = pFactory.newWasInvalidatedBy(qname,
+					(QName) perm.get(0), (QName) perm.get(1),
+					(XMLGregorianCalendar) perm.get(2), attributes);
+			store(context, wib);
+		}
 	}
 
 	private void createDelegation(QName context, QName qname)
 	{
-		List<Statement> statements = collators.get(context).get(qname);
+		List<QName> activities = getObjects(context, qname,
+				Ontology.QNAME_PROVO_hadActivity);
+		List<QName> agents = getObjects(context, qname,
+				Ontology.QNAME_PROVO_agent);
+		List<QName> subordinates = getSubjects(context,
+				Ontology.QNAME_PROVO_qualifiedDelegation, qname);
 
-		QName ag2 = null;
-		QName ag1 = null;
-		QName a = null;
+		List<Attribute> attributes = collectAttributes(context, qname,
+				ProvType.DELEGATION);
 
-		for (Statement statement : statements)
+		if (qname.getNamespaceURI() == "")
 		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-			Value value = statement.getObject();
-
-			if (predQ.equals(Ontology.QNAME_PROVO_agent))
-			{
-				ag1 = convertResourceToQName((Resource) value);
-			}
-
-			if (predQ.equals(Ontology.QNAME_PROVO_hadActivity))
-			{
-				a = convertResourceToQName((Resource) value);
-			}
+			qname = null;
 		}
 
-		List<Attribute> attributes = super.collectAttributes(context, qname,
-				ProvType.DELEGATION);
-		ActedOnBehalfOf aobo = pFactory.newActedOnBehalfOf(qname, ag2, ag1, a,
-				attributes);
-		store(context, aobo);
-		this.influenceMap.put(qname, aobo);
+		List<List<?>> perms = permute(subordinates, agents, activities);
+		for (List<?> perm : perms)
+		{
+			ActedOnBehalfOf aobo = pFactory.newActedOnBehalfOf(qname,
+					(QName) perm.get(0), (QName) perm.get(1),
+					(QName) perm.get(2), attributes);
+			store(context, aobo);
+		}
+
 	}
 
 	private void createCommunication(QName context, QName qname)
 	{
-		QName a2 = null;
-		QName a1 = null;
-		List<Statement> statements = collators.get(context).get(qname);
-		for (Statement statement : statements)
-		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-			Value value = statement.getObject();
+		List<QName> activities = getObjects(context, qname,
+				Ontology.QNAME_PROVO_activity);
+		List<QName> effects = getSubjects(context,
+				Ontology.QNAME_PROVO_qualifiedCommunication, qname);
 
-			if (predQ.equals(Ontology.QNAME_PROVO_activity))
-			{
-				a1 = convertResourceToQName((Resource) value);
-			}
+		List<Attribute> attributes = collectAttributes(context, qname,
+				ProvType.COMMUNICATION);
+
+		if (qname.getNamespaceURI() == "")
+		{
+			qname = null;
 		}
 
-		List<Attribute> attributes = super.collectAttributes(context, qname,
-				ProvType.COMMUNICATION);
-		WasInformedBy wib = pFactory
-				.newWasInformedBy(qname, a2, a1, attributes);
-		store(context, wib);
-		this.influenceMap.put(qname, wib);
+		List<List<?>> perms = permute(effects, activities);
+		for (List<?> perm : perms)
+		{
+			WasInformedBy wib = pFactory.newWasInformedBy(qname,
+					(QName) perm.get(0), (QName) perm.get(1), attributes);
+			store(context, wib);
+		}
 	}
 
 	private void createAttribution(QName context, QName qname)
 	{
-		QName e = null;
-		QName ag = null;
+		List<QName> agents = getObjects(context, qname,
+				Ontology.QNAME_PROVO_agent);
+		List<QName> entities = getSubjects(context,
+				Ontology.QNAME_PROVO_qualifiedAttribution, qname);
 
-		List<Statement> statements = collators.get(context).get(qname);
-		for (Statement statement : statements)
+		List<Attribute> attributes = collectAttributes(context, qname,
+				ProvType.ATTRIBUTION);
+
+		if (qname.getNamespaceURI() == "")
 		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-			Value value = statement.getObject();
-
-			if (predQ.equals(Ontology.QNAME_PROVO_agent))
-			{
-				ag = convertResourceToQName((Resource) value);
-			}
+			qname = null;
 		}
 
-		List<Attribute> attributes = super.collectAttributes(context, qname,
-				ProvType.ATTRIBUTION);
-		WasAttributedTo wat = pFactory.newWasAttributedTo(qname, e, ag,
-				attributes);
-		store(context, wat);
-		this.influenceMap.put(qname, wat);
+		List<List<?>> perms = permute(entities, agents);
+		for (List<?> perm : perms)
+		{
+			WasAttributedTo wat = pFactory.newWasAttributedTo(qname,
+					(QName) perm.get(0), (QName) perm.get(1), attributes);
+			store(context, wat);
+		}
 	}
 
 	private void createAssociation(QName context, QName qname)
 	{
-		List<Statement> statements = collators.get(context).get(qname);
+		List<QName> plans = getObjects(context, qname,
+				Ontology.QNAME_PROVO_hadPlan);
+		List<QName> agents = getObjects(context, qname,
+				Ontology.QNAME_PROVO_agent);
+		List<QName> activities = getSubjects(context,
+				Ontology.QNAME_PROVO_qualifiedAssociation, qname);
 
-		QName a = null;
-		QName ag = null;
-		QName plan = null;
-		for (Statement statement : statements)
+		List<Attribute> attributes = collectAttributes(context, qname,
+				ProvType.ASSOCIATION);
+
+		if (qname.getNamespaceURI() == "")
 		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-			Value value = statement.getObject();
-
-			if (value instanceof Resource)
-			{
-				if (predQ.equals(Ontology.QNAME_PROVO_hadPlan))
-				{
-					plan = convertResourceToQName((Resource) value);
-				}
-
-				if (predQ.equals(Ontology.QNAME_PROVO_agent))
-				{
-					ag = convertResourceToQName((Resource) value);
-				}
-			}
+			qname = null;
 		}
 
-		List<Attribute> attributes = super.collectAttributes(context, qname,
-				ProvType.ASSOCIATION);
-		WasAssociatedWith waw = pFactory.newWasAssociatedWith(qname, a, ag,
-				plan, attributes);
-		store(context, waw);
-		this.influenceMap.put(qname, waw);
+		List<List<?>> perms = permute(activities, agents, plans);
+		for (List<?> perm : perms)
+		{
+			WasAssociatedWith waw = pFactory.newWasAssociatedWith(qname,
+					(QName) perm.get(0), (QName) perm.get(1),
+					(QName) perm.get(2), attributes);
+			store(context, waw);
+		}
 	}
 
 	private void createUsage(QName context, QName qname)
 	{
 		List<Statement> statements = collators.get(context).get(qname);
-
-		QName activity = null;
-		QName entity = null;
-		XMLGregorianCalendar time = getInstantaneousTime(statements);
-
-		for (Statement statement : statements)
-		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-			Value value = statement.getObject();
-
-			if (value instanceof Resource)
-			{
-				if (predQ.equals(Ontology.QNAME_PROVO_entity))
-				{
-					entity = convertResourceToQName((Resource) value);
-				}
-			}
-		}
+		List<XMLGregorianCalendar> times = getInstantaneousTimes(statements);
+		List<QName> entities = getObjects(context, qname,
+				Ontology.QNAME_PROVO_entity);
+		List<QName> activities = getSubjects(context,
+				Ontology.QNAME_PROVO_qualifiedUsage, qname);
 
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.USAGE);
-		Used used = pFactory.newUsed(qname, activity, entity, time, attributes);
-		store(context, used);
-		this.influenceMap.put(qname, used);
+
+		if (qname.getNamespaceURI() == "")
+		{
+			qname = null;
+		}
+
+		List<List<?>> perms = permute(activities, entities, times);
+		for (List<?> perm : perms)
+		{
+			Used used = pFactory.newUsed(qname, (QName) perm.get(0),
+					(QName) perm.get(1), (XMLGregorianCalendar) perm.get(2),
+					attributes);
+			store(context, used);
+		}
 	}
 
 	private void createGeneration(QName context, QName qname)
 	{
-		QName entity = null;
-		QName activity = null;
 		List<Statement> statements = collators.get(context).get(qname);
-		XMLGregorianCalendar time = getInstantaneousTime(statements);
-
-		for (Statement statement : statements)
-		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-			Value value = statement.getObject();
-
-			if (value instanceof Resource)
-			{
-				if (predQ.equals(Ontology.QNAME_PROVO_activity))
-				{
-					activity = convertResourceToQName((Resource) value);
-				}
-			}
-		}
+		List<XMLGregorianCalendar> times = getInstantaneousTimes(statements);
+		List<QName> activities = getObjects(context, qname,
+				Ontology.QNAME_PROVO_activity);
+		List<QName> entities = getSubjects(context,
+				Ontology.QNAME_PROVO_qualifiedGeneration, qname);
 
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.GENERATION);
-		WasGeneratedBy wgb = pFactory.newWasGeneratedBy(qname, entity,
-				activity, time, attributes);
-		store(context, wgb);
-		this.influenceMap.put(qname, wgb);
-	}
 
-	private void nullBNodes()
-	{
-		for (QName key : influenceMap.keySet())
+		if (qname.getNamespaceURI() == "")
 		{
-			if (key.getNamespaceURI() == "")
-			{
-				influenceMap.get(key).setId(null);
-			}
+			qname = null;
 		}
-	}
 
-	public void bindQualifiedProperties()
-	{
-		// Handle qualified attributes
-
-		for (QName contextQ : collators.keySet())
+		List<List<?>> perms = permute(entities, activities, times);
+		for (List<?> perm : perms)
 		{
-			HashMap<QName, List<Statement>> collator = collators.get(contextQ);
-			for (QName qname : collator.keySet())
-			{
-				List<Statement> statements = collator.get(qname);
-				for (Statement statement : statements)
-				{
-
-					QName predQ = convertURIToQName(statement.getPredicate());
-					Value value = statement.getObject();
-					if (value instanceof Resource)
-					{
-						QName refQ = convertResourceToQName((Resource) value);
-
-						if (predQ
-								.equals(Ontology.QNAME_PROVO_qualifiedAssociation))
-						{
-							WasAssociatedWith waw = (WasAssociatedWith) influenceMap
-									.get(refQ);
-							waw.setActivity(pFactory.newActivityRef(qname));
-						} else if (predQ
-								.equals(Ontology.QNAME_PROVO_qualifiedAttribution))
-						{
-							WasAttributedTo wat = (WasAttributedTo) influenceMap
-									.get(refQ);
-							wat.setEntity(pFactory.newEntityRef(qname));
-						} else if (predQ
-								.equals(Ontology.QNAME_PROVO_qualifiedCommunication))
-						{
-							WasInformedBy wib = (WasInformedBy) influenceMap
-									.get(refQ);
-							wib.setEffect(pFactory.newActivityRef(qname));
-						} else if (predQ
-								.equals(Ontology.QNAME_PROVO_qualifiedDelegation))
-						{
-							ActedOnBehalfOf aobo = (ActedOnBehalfOf) influenceMap
-									.get(refQ);
-							aobo.setSubordinate(pFactory.newAgentRef(qname));
-						} else if (predQ
-								.equals(Ontology.QNAME_PROVO_qualifiedDerivation)
-								|| predQ.equals(Ontology.QNAME_PROVO_qualifiedPrimarySource)
-								|| predQ.equals(Ontology.QNAME_PROVO_qualifiedRevision)
-								|| predQ.equals(Ontology.QNAME_PROVO_qualifiedQuotation))
-						{
-							WasDerivedFrom wdf = (WasDerivedFrom) influenceMap
-									.get(refQ);
-							wdf.setGeneratedEntity(pFactory.newEntityRef(qname));
-						} else if (predQ
-								.equals(Ontology.QNAME_PROVO_qualifiedEnd))
-						{
-
-							WasEndedBy web = (WasEndedBy) influenceMap
-									.get(refQ);
-							web.setActivity(pFactory.newActivityRef(qname));
-						} else if (predQ
-								.equals(Ontology.QNAME_PROVO_qualifiedGeneration))
-						{
-							WasGeneratedBy wgb = (WasGeneratedBy) influenceMap
-									.get(refQ);
-							wgb.setEntity(pFactory.newEntityRef(qname));
-						} else if (predQ
-								.equals(Ontology.QNAME_PROVO_qualifiedInfluence))
-						{
-							WasInfluencedBy wib = (WasInfluencedBy) influenceMap
-									.get(refQ);
-							wib.setInfluencee(pFactory.newAnyRef(qname));
-
-						} else if (predQ
-								.equals(Ontology.QNAME_PROVO_qualifiedInvalidation))
-						{
-
-							WasInvalidatedBy wib = (WasInvalidatedBy) influenceMap
-									.get(refQ);
-							wib.setEntity(pFactory.newEntityRef(qname));
-						} else if (predQ
-								.equals(Ontology.QNAME_PROVO_qualifiedStart))
-						{
-							WasStartedBy wsb = (WasStartedBy) influenceMap
-									.get(refQ);
-							wsb.setActivity(pFactory.newActivityRef(qname));
-						} else if (predQ
-								.equals(Ontology.QNAME_PROVO_qualifiedUsage))
-						{
-							Used used = (Used) influenceMap.get(refQ);
-							used.setActivity(pFactory.newActivityRef(qname));
-						}
-					}
-				}
-			}
+			WasGeneratedBy wgb = pFactory.newWasGeneratedBy(qname,
+					(QName) perm.get(0), (QName) perm.get(1),
+					(XMLGregorianCalendar) perm.get(2), attributes);
+			store(context, wgb);
 		}
+
 	}
 }

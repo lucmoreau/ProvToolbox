@@ -91,7 +91,7 @@ public class RoundTripFromRdfTest extends TestCase {
 	{
 		testIssue("58");
 	}
-
+	
 	public void testFile1() throws Exception
 	{
 		loadFromRdfSaveAndReload("prov-o-ex2-PASS.ttl", true);

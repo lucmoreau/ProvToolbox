@@ -9,8 +9,7 @@
 
 
 <!--
-   <jaxb:globalBindings>
-     <jaxb:javaType name="java.lang.Object"
+   <jaxb:globalBindings>     <jaxb:javaType name="java.lang.Object"
 		    xmlType="xs:anySimpleType"
 		    parseMethod="org.openprovenance.prov.xml.ObjectAdaptor.parseObjectToObject"
 />
@@ -50,11 +49,6 @@
             <jaxb:package name="org.openprovenance.prov.xml"/>
         </jaxb:schemaBindings>
 
-<!--
-	<jaxb:bindings node="xs:simpleType[@name='QualifiedName']">
-	  <jaxb:globalBindings mapSimpleTypeDef="true"/>
-	</jaxb:bindings>
--->
 	<jaxb:bindings node="xs:complexType[@name='Association']">
 	  <jaxb:class name="WasAssociatedWith"/>
 	</jaxb:bindings>

@@ -49,6 +49,14 @@
             <jaxb:package name="org.openprovenance.prov.xml"/>
         </jaxb:schemaBindings>
 
+<!--
+        <jaxb:bindings schemaLocation="prov-20121003.xsd" 
+		       node="/xs:schema/xs:complexType[@name='Entity']//xs:any">
+	  <jaxb:baseType>
+	    <jaxb:javaType name="org.openprovenance.prov.xml.FOO"/>
+	  </jaxb:baseType>
+	</jaxb:bindings>
+-->
 	<jaxb:bindings node="xs:complexType[@name='Association']">
 	  <jaxb:class name="WasAssociatedWith"/>
 	</jaxb:bindings>

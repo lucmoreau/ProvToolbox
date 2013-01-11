@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jaxb:bindings
+        version="1.0"
+        xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+        jaxb:extensionBindingPrefixes="hj" >
+
+
+<!--
+   <jaxb:globalBindings>
+     <jaxb:javaType name="java.lang.Object"
+		    xmlType="xs:anySimpleType"
+		    parseMethod="org.openprovenance.prov.xml.ObjectAdaptor.parseObjectToObject"
+/>
+   </jaxb:globalBindings>
+-->
+
+
+<!--
+   <jaxb:globalBindings>
+    <jaxb:javaType name="java.net.URI" xmlType="xs:anyURI"
+      parseMethod="java.net.URI.create"
+      printMethod="org.openprovenance.prov.xml.ProvFactory.printURI"
+    />
+  </jaxb:globalBindings>
+-->
+
+
+
+
+<!-- doen't work
+          <jaxb:bindings schemaLocation="prov-20121003.xsd" 
+		    node="/xs:schema/xs:complexType[@name='Entity']/xs:sequence/xs:any">
+	    <jaxb:property>
+	      <jaxb:baseType>
+		<jaxb:javaType name="org.openprovenance.prov.xml.Attribute"/>
+	      </jaxb:baseType>
+	    </jaxb:property>
+	  </jaxb:bindings>
+-->
+
+    <jaxb:bindings schemaLocation="prov-20121003.xsd" 
+                   node="/xs:schema">    
+
+
+
+        <jaxb:schemaBindings>
+            <jaxb:package name="org.openprovenance.prov.xml"/>
+        </jaxb:schemaBindings>
+
+<!--
+	<jaxb:bindings node="xs:simpleType[@name='QualifiedName']">
+	  <jaxb:globalBindings mapSimpleTypeDef="true"/>
+	</jaxb:bindings>
+-->
+	<jaxb:bindings node="xs:complexType[@name='Association']">
+	  <jaxb:class name="WasAssociatedWith"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Usage']">
+	  <jaxb:class name="Used"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Generation']">
+	  <jaxb:class name="WasGeneratedBy"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Invalidation']">
+	  <jaxb:class name="WasInvalidatedBy"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Start']">
+	  <jaxb:class name="WasStartedBy"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='End']">
+	  <jaxb:class name="WasEndedBy"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Communication']">
+	  <jaxb:class name="WasInformedBy"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Derivation']">
+	  <jaxb:class name="WasDerivedFrom"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Influence']">
+	  <jaxb:class name="WasInfluencedBy"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Attribution']">
+	  <jaxb:class name="WasAttributedTo"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Delegation']">
+	  <jaxb:class name="ActedOnBehalfOf"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Specialization']">
+	  <jaxb:class name="SpecializationOf"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Alternate']">
+	  <jaxb:class name="AlternateOf"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Mention']">
+	  <jaxb:class name="MentionOf"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Membership']">
+	  <jaxb:class name="HadMember"/>
+	</jaxb:bindings>
+         <!--
+	<jaxb:bindings node="xs:complexType[@name='Agent']">
+	  <jaxb:property>
+	    <jaxb:baseType>
+	      <jaxb:javaType name="Object"
+			     xmlType="xs:simpleType"
+			     parseMethod="ObjectAdaptor.parseObjectToObject"/>
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+        -->
+
+	<!--
+	<jaxb:bindings node="xs:complexType[@name='TypedLiteral']">
+	  <jaxb:property><jaxb:baseType>
+	  <jaxb:javaType name="java.net.URI"
+			 parseMethod="java.net.URI.create"
+			 printMethod="org.openprovenance.prov.xml.ProvFactory.printURI"
+			 />
+	  </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	-->
+
+    </jaxb:bindings>
+
+<!--    <jaxb:bindings schemaLocation="curie.xsd" 
+                   node="/xs:schema">       
+
+        <jaxb:schemaBindings>
+            <jaxb:package name="org.openprovenance.prov.xml"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+
+
+
+    
+    <jaxb:bindings schemaLocation="collection.xsd" 
+                   node="/xs:schema">       
+
+        <jaxb:schemaBindings>
+            <jaxb:package name="org.openprovenance.prov.xml.collection"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+    
+-->
+
+</jaxb:bindings>

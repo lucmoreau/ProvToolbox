@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<prov:document xmlns:prov="http://www.w3.org/ns/prov#" xmlns:prim="http://openprovenance.org/primitives#" xmlns:ex="http://example.org/" xmlns:ex2="http://example.org/e" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+        <!-- strict cycle due to one derivation and one specialization -->
+
+        <prov:entity prov:id="ex:e1">
+        </prov:entity>
+
+        <prov:entity prov:id="ex:e2">
+        </prov:entity>
+
+
+
+        <prov:specializationOf>
+          <prov:specificEntity prov:ref="ex:e2"/>
+          <prov:generalEntity prov:ref="ex:e1"/>
+        </prov:specializationOf>
+	
+        <prov:wasGeneratedBy prov:id="ex:gen2">
+          <prov:entity prov:ref="ex:e2"/>
+        </prov:wasGeneratedBy>
+	
+        <prov:wasGeneratedBy prov:id="ex:gen1">
+          <prov:entity prov:ref="ex:e1"/>
+        </prov:wasGeneratedBy>
+	
+        <prov:wasDerivedFrom prov:id="ex:der1">
+          <prov:generatedEntity prov:ref="ex:e1"/>
+          <prov:usedEntity prov:ref="ex:e2"/>
+        </prov:wasDerivedFrom>
+
+
+	<!-- strict cycle due to two derivations -->
+
+        <prov:entity prov:id="ex:e3">
+        </prov:entity>
+
+        <prov:entity prov:id="ex:e4">
+        </prov:entity>
+
+
+        <prov:wasGeneratedBy prov:id="ex:gen4">
+          <prov:entity prov:ref="ex:e4"/>
+        </prov:wasGeneratedBy>
+	
+        <prov:wasGeneratedBy prov:id="ex:gen3">
+          <prov:entity prov:ref="ex:e3"/>
+        </prov:wasGeneratedBy>
+	
+        <prov:wasDerivedFrom>
+          <prov:generatedEntity prov:ref="ex:e3"/>
+          <prov:usedEntity prov:ref="ex:e4"/>
+        </prov:wasDerivedFrom>
+
+        <prov:wasDerivedFrom>
+          <prov:generatedEntity prov:ref="ex:e4"/>
+          <prov:usedEntity prov:ref="ex:e3"/>
+        </prov:wasDerivedFrom>
+
+	<!-- specialization not reflexive -->
+
+
+        <prov:specializationOf>
+          <prov:specificEntity prov:ref="ex:e5"/>
+          <prov:generalEntity prov:ref="ex:e5"/>
+        </prov:specializationOf>
+
+
+	<!-- derivation loop -->
+
+        <prov:wasGeneratedBy prov:id="ex:gen6">
+          <prov:entity prov:ref="ex:e6"/>
+        </prov:wasGeneratedBy>
+	
+        <prov:wasDerivedFrom>
+          <prov:generatedEntity prov:ref="ex:e6"/>
+          <prov:usedEntity prov:ref="ex:e6"/>
+        </prov:wasDerivedFrom>
+
+
+
+	<!-- derivation loop without explicit generation event -->
+
+<!--        <prov:wasDerivedFrom>
+          <prov:generatedEntity prov:ref="ex:e7"/>
+          <prov:usedEntity prov:ref="ex:e7"/>
+        </prov:wasDerivedFrom>
+-->
+
+	<!-- invalid typing -->
+
+        <prov:entity prov:id="ex:a">
+        </prov:entity>
+
+        <prov:activity prov:id="ex:a">
+        </prov:activity>
+
+
+	<!-- failed unification  -->
+
+        <prov:wasGeneratedBy prov:id="ex:gen44">
+          <prov:entity prov:ref="ex:e44"/>
+          <prov:activity prov:ref="ex:a"/>
+        </prov:wasGeneratedBy>
+
+        <prov:wasGeneratedBy prov:id="ex:gen44">
+          <prov:entity prov:ref="ex:e44"/>
+          <prov:activity prov:ref="ex:a2"/>
+        </prov:wasGeneratedBy>
+	
+
+
+	<!-- warning: duplicate  -->
+
+        <prov:wasGeneratedBy prov:id="ex:gen50">
+          <prov:entity prov:ref="ex:e50"/>
+          <prov:activity prov:ref="ex:a"/>
+        </prov:wasGeneratedBy>
+
+        <prov:wasGeneratedBy prov:id="ex:gen50">
+          <prov:entity prov:ref="ex:e50"/>
+          <prov:activity prov:ref="ex:a"/>
+        </prov:wasGeneratedBy>
+	
+
+	<!-- warning: misleading qualified names  -->
+
+        <prov:wasGeneratedBy prov:id="ex:egen100">
+          <prov:entity prov:ref="ex:e100"/>
+          <prov:activity prov:ref="ex:a100"/>
+        </prov:wasGeneratedBy>
+
+        <prov:wasGeneratedBy prov:id="ex2:gen100">
+          <prov:entity prov:ref="ex:e100"/>
+          <prov:activity prov:ref="ex:a100"/>
+        </prov:wasGeneratedBy>
+
+
+
+	<!-- malformed expression  -->
+
+        <prov:wasGeneratedBy prov:id="ex:gen200">
+          <prov:activity prov:ref="ex:a"/>
+        </prov:wasGeneratedBy>
+
+
+
+</prov:document>

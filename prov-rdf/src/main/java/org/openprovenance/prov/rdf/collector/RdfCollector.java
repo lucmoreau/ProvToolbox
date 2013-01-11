@@ -56,6 +56,14 @@ public class RdfCollector extends RDFHandlerBase {
 	private Hashtable<String, String> revnss;
 	private ValueConverter valueConverter;
 
+	private List<QName> DM_TYPES = Arrays.asList(new QName[] {
+			Ontology.QNAME_PROVO_Bundle, Ontology.QNAME_PROVO_Collection,
+			Ontology.QNAME_PROVO_EmptyCollection,
+			Ontology.QNAME_PROVO_Organization, Ontology.QNAME_PROVO_Person,
+			Ontology.QNAME_PROVO_Plan, Ontology.QNAME_PROVO_PrimarySource,
+			Ontology.QNAME_PROVO_Quotation, Ontology.QNAME_PROVO_Revision,
+			Ontology.QNAME_PROVO_SoftwareAgent });
+
 	public RdfCollector(ProvFactory pFactory)
 	{
 		this.pFactory = pFactory;
@@ -441,13 +449,19 @@ public class RdfCollector extends RDFHandlerBase {
 
 						if (statement.getObject() instanceof Resource)
 						{
-							attributes
-									.add(pFactory
-											.newAttribute(
-													Attribute.PROV_TYPE_QNAME,
-													convertResourceToQName((Resource) statement
-															.getObject()),
-													this.valueConverter));
+							QName typeQ = convertResourceToQName((Resource) statement
+									.getObject());
+
+							if (isProvURI(typeQ)
+									&& DM_TYPES.indexOf(typeQ) == -1)
+							{
+								// System.out.println("Skipping type: " + typeQ);
+							} else
+							{
+								attributes.add(pFactory.newAttribute(
+										Attribute.PROV_TYPE_QNAME, typeQ,
+										this.valueConverter));
+							}
 
 						} else if (statement.getObject() instanceof Literal)
 						{

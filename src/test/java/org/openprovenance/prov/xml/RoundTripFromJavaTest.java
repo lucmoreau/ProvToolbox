@@ -69,7 +69,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void updateNamespaces(Document doc) {
 	Hashtable<String, String> nss = new Hashtable<String, String>();
 	updateNamespaces(nss);
-	doc.setNss(nss);
+	//	doc.setNss(nss);  //FIXME: this is no longer in the sql bean!
     }
    
     public String extension() {

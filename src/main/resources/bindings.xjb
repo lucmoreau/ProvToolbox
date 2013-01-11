@@ -46,7 +46,7 @@
 
 
         <jaxb:schemaBindings>
-            <jaxb:package name="org.openprovenance.prov.xml"/>
+            <jaxb:package name="org.openprovenance.prov.sql"/>
         </jaxb:schemaBindings>
 
 <!--
@@ -57,6 +57,9 @@
 	  </jaxb:baseType>
 	</jaxb:bindings>
 -->
+	<jaxb:bindings node="xs:complexType[@name='Attribute']">
+	  <jaxb:class name="org.openprovenance.prov.xml.Attribute"/>
+	</jaxb:bindings>
 	<jaxb:bindings node="xs:complexType[@name='Association']">
 	  <jaxb:class name="WasAssociatedWith"/>
 	</jaxb:bindings>

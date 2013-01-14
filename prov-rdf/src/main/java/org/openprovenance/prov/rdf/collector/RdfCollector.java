@@ -580,11 +580,6 @@ public class RdfCollector extends RDFHandlerBase {
 
 					} else if (value instanceof Resource)
 					{
-						URIWrapper uw = new URIWrapper();
-						java.net.URI jURI = java.net.URI.create(value
-								.stringValue());
-						uw.setValue(jURI);
-
 						attr = pFactory.newAttribute(predQ.getNamespaceURI(),
 								predQ.getLocalPart(), prefix,
 								convertResourceToQName((Resource) value),

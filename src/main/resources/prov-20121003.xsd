@@ -488,5 +488,27 @@
   <xs:element name="mentionOf"          type="prov:Mention"/>
   <xs:element name="hadMember"          type="prov:Membership"/>
   
+
+  <xs:complexType name="AValue">
+    <xs:sequence>
+        <xs:element name="int"               type="xs:int"/>
+        <xs:element name="string"               type="xs:string"/>
+        <xs:element name="long"               type="xs:long"/>
+        <xs:element name="short"               type="xs:short"/>
+        <xs:element name="double"               type="xs:double"/>
+        <xs:element name="float"               type="xs:float"/>
+        <xs:element name="decimal"               type="xs:decimal"/>
+        <xs:element name="boolean"               type="xs:boolean"/>
+        <xs:element name="byte"               type="xs:byte"/>
+        <xs:element name="anyURI"               type="xs:anyURI"/>
+        <xs:element name="qname"               type="xs:QName"/>
+        <xs:element name="unsignedInt"               type="xs:unsignedInt"/>
+        <xs:element name="unsignedLong"               type="xs:unsignedLong"/>
+        <xs:element name="dateTime"               type="xs:dateTime"/>
+        <xs:element name="gYear"               type="xs:gYear"/>
+        <xs:element name="integer"               type="xs:integer"/>
+        <xs:any namespace="##any" processContents="skip" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
   
 </xs:schema>

@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 /**
  * Unit test for setters/getters
  */
-public class GettersTest 
+abstract public class GettersTest 
     extends TestCase
 {
 

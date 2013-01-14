@@ -1,5 +1,6 @@
 
 package org.openprovenance.prov.xml;
+import java.math.BigInteger;
 import java.net.URI;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -152,6 +153,8 @@ public class ValueConverter {
 	    return QNAME_XSD_STRING; //"xsd:string";
 	if (o instanceof InternationalizedString)
 	    return QNAME_XSD_STRING; //"xsd:string";
+	if (o instanceof BigInteger)
+		return QNAME_XSD_INTEGER;
 	if (o instanceof Long)
 	    return QNAME_XSD_LONG; //"xsd:long";
 	if (o instanceof Short)

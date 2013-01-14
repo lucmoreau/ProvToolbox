@@ -1,0 +1,48 @@
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix ex:      <http://example.com/ontology#> .
+@prefix :        <http://example.com/> .
+
+:todays-us-supreme-court
+   a prov:Collection, ex:RobertsCourt;
+   dcterms:description [
+      a prov:Entity;
+      prov:value """2010–present: A. Scalia A. Kennedy C. Thomas R.B. Ginsburg S. 
+                  Breyer S. Alito S. Sotomayor E. Kagan""";
+      prov:wasQuotedFrom :page-by-composition;
+   ];
+   prov:qualifiedGeneration [
+      a prov:Generation;
+      
+      # Since we need to be imprecise, we can't use prov:generatedAtTime or prov:atTime
+      dcterms:date "2012"^^xsd:gYear;
+   ];
+
+   prov:wasDerivedFrom :the-first-us-supreme-court;
+
+   prov:hadMember
+      <http://dbpedia.org/resource/John_Glover_Roberts,_Jr.>,
+      <http://dbpedia.org/resource/Antonin_Scalia>, 
+      <http://dbpedia.org/resource/Anthony_Kennedy>, 
+      <http://dbpedia.org/resource/Clarence_Thomas>, 
+      <http://dbpedia.org/resource/Ruth_Bader_Ginsburg>,
+      <http://dbpedia.org/resource/Stephen_Breyer>,     
+      <http://dbpedia.org/resource/Samuel_Alito>,      
+      <http://dbpedia.org/resource/Sonia_Sotomayor>,  
+      <http://dbpedia.org/resource/Elena_Kagan>;   
+.
+
+:page-by-seat
+   a prov:Entity, ex:WikipediaPage;
+   prov:specializationOf <http://purl.org/twc/page/wikipedia/us-supreme-court-by-seat>;
+   prov:generatedAtTime "2011-08-31T12:51:00"^^xsd:dateTime;
+.
+
+:page-by-composition
+   a prov:Entity, ex:WikipediaPage;
+   prov:specializationOf <http://purl.org/twc/page/wikipedia/us-supreme-court-by-composition>;
+   prov:generatedAtTime "2012-05-16T14:33:00"^^xsd:dateTime;
+.

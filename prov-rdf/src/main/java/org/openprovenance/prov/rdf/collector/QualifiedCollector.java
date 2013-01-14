@@ -2,10 +2,10 @@ package org.openprovenance.prov.rdf.collector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
@@ -13,12 +13,7 @@ import javax.xml.namespace.QName;
 import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.Attribute;
-import org.openprovenance.prov.xml.Identifiable;
-import org.openprovenance.prov.xml.Influence;
-import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.xml.Ref;
-import org.openprovenance.prov.xml.StatementOrBundle;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.WasAttributedTo;
@@ -36,23 +31,10 @@ import org.openrdf.model.Value;
 
 public class QualifiedCollector extends RdfCollector {
 
-	private Hashtable<QName, org.openprovenance.prov.xml.Influence> influenceMap;
-	private Hashtable<String, String> baseProperties;
-
 	public QualifiedCollector(ProvFactory pFactory)
 	{
 		super(pFactory);
 		this.pFactory = pFactory;
-		this.influenceMap = new Hashtable<QName, org.openprovenance.prov.xml.Influence>();
-
-		this.baseProperties = new Hashtable<String, String>();
-		this.baseProperties.put(NamespacePrefixMapper.PROV_NS + "entity",
-				NamespacePrefixMapper.PROV_NS + "influencer");
-		this.baseProperties.put(NamespacePrefixMapper.PROV_NS + "agent",
-				NamespacePrefixMapper.PROV_NS + "influencer");
-		this.baseProperties.put(NamespacePrefixMapper.PROV_NS + "activity",
-				NamespacePrefixMapper.PROV_NS + "influencer");
-
 	}
 
 	/*
@@ -108,8 +90,6 @@ public class QualifiedCollector extends RdfCollector {
 				objects.add(convertResourceToQName((Resource) value));
 			}
 		}
-		if (objects.isEmpty())
-			objects.add(null);
 		return objects;
 	}
 
@@ -134,8 +114,6 @@ public class QualifiedCollector extends RdfCollector {
 				}
 			}
 		}
-		if (subjects.isEmpty())
-			subjects.add(null);
 		return subjects;
 	}
 
@@ -172,7 +150,8 @@ public class QualifiedCollector extends RdfCollector {
 						createDelegation(contextQ, qname);
 						break;
 					case DERIVATION:
-						createDerivation(contextQ, qname, Ontology.QNAME_PROVO_qualifiedDerivation);
+						createDerivation(contextQ, qname,
+								Ontology.QNAME_PROVO_qualifiedDerivation);
 						break;
 					case PRIMARYSOURCE:
 						createPrimarySource(contextQ, qname);
@@ -232,7 +211,8 @@ public class QualifiedCollector extends RdfCollector {
 
 	private void createRevision(QName contextQ, QName qname)
 	{
-		List<WasDerivedFrom> wdfs = createDerivation(contextQ, qname, Ontology.QNAME_PROVO_qualifiedRevision);
+		List<WasDerivedFrom> wdfs = createDerivation(contextQ, qname,
+				Ontology.QNAME_PROVO_qualifiedRevision);
 		Object q = pFactory.newQName("prov:Revision");
 		for (WasDerivedFrom wdf : wdfs)
 		{
@@ -245,7 +225,8 @@ public class QualifiedCollector extends RdfCollector {
 
 	private void createQuotation(QName contextQ, QName qname)
 	{
-		List<WasDerivedFrom> wdfs = createDerivation(contextQ, qname, Ontology.QNAME_PROVO_qualifiedQuotation);
+		List<WasDerivedFrom> wdfs = createDerivation(contextQ, qname,
+				Ontology.QNAME_PROVO_qualifiedQuotation);
 		Object q = pFactory.newQName("prov:Quotation");
 		for (WasDerivedFrom wdf : wdfs)
 		{
@@ -258,7 +239,8 @@ public class QualifiedCollector extends RdfCollector {
 
 	private void createPrimarySource(QName context, QName qname)
 	{
-		List<WasDerivedFrom> wdfs = createDerivation(context, qname, Ontology.QNAME_PROVO_qualifiedPrimarySource);
+		List<WasDerivedFrom> wdfs = createDerivation(context, qname,
+				Ontology.QNAME_PROVO_qualifiedPrimarySource);
 		Object q = pFactory.newQName("prov:PrimarySource");
 
 		for (WasDerivedFrom wdf : wdfs)
@@ -270,7 +252,8 @@ public class QualifiedCollector extends RdfCollector {
 		}
 	}
 
-	private List<WasDerivedFrom> createDerivation(QName context, QName qname, QName pred)
+	private List<WasDerivedFrom> createDerivation(QName context, QName qname,
+			QName pred)
 	{
 
 		List<QName> entities = getObjects(context, qname,
@@ -282,16 +265,12 @@ public class QualifiedCollector extends RdfCollector {
 		List<QName> usages = getObjects(context, qname,
 				Ontology.QNAME_PROVO_hadUsage);
 
-		List<QName> generated = getSubjects(context,
-				pred, qname);
+		List<QName> generated = getSubjects(context, pred, qname);
 
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.DERIVATION);
 
-		if (qname.getNamespaceURI() == "")
-		{
-			qname = null;
-		}
+		qname = getQualQName(qname);
 
 		List<WasDerivedFrom> wdfs = new ArrayList<WasDerivedFrom>();
 		List<List<?>> perms = permute(generated, entities, activities,
@@ -310,25 +289,33 @@ public class QualifiedCollector extends RdfCollector {
 
 	private List<WasInfluencedBy> createInfluence(QName context, QName qname)
 	{
+		HashSet<QName> all_influencers = new HashSet<QName>();
 		List<QName> influencers = getObjects(context, qname,
 				Ontology.QNAME_PROVO_influencer);
+		List<QName> agents = getObjects(context, qname,
+				Ontology.QNAME_PROVO_agent);
+		List<QName> entities = getObjects(context, qname,
+				Ontology.QNAME_PROVO_entity);
+		List<QName> activities = getObjects(context, qname,
+				Ontology.QNAME_PROVO_activity);
+		all_influencers.addAll(influencers);
+		all_influencers.addAll(agents);
+		all_influencers.addAll(entities);
+		all_influencers.addAll(activities);
 		List<QName> influencees = getSubjects(context,
 				Ontology.QNAME_PROVO_qualifiedInfluence, qname);
 
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.INFLUENCE);
-
-		if (qname.getNamespaceURI() == "")
-		{
-			qname = null;
-		}
+		
+		qname = getQualQName(qname);
 
 		List<WasInfluencedBy> wibs = new ArrayList<WasInfluencedBy>();
-		List<List<?>> perms = permute(influencees, influencers);
+		List<List<?>> perms = permute(influencees, new ArrayList<QName>(all_influencers));
 		for (List<?> perm : perms)
 		{
 			WasInfluencedBy wib = pFactory.newWasInfluencedBy(qname,
-					(QName) perm.get(0), (QName) perm.get(1), attributes);
+					(QName) perm.get(0), (QName) perm.get(1), attributes);	
 			store(context, wib);
 			wibs.add(wib);
 		}
@@ -349,10 +336,7 @@ public class QualifiedCollector extends RdfCollector {
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.END);
 
-		if (qname.getNamespaceURI() == "")
-		{
-			qname = null;
-		}
+		qname = getQualQName(qname);
 
 		List<List<?>> perms = permute(activities, triggers, enders, times);
 		for (List<?> perm : perms)
@@ -378,10 +362,7 @@ public class QualifiedCollector extends RdfCollector {
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.START);
 
-		if (qname.getNamespaceURI() == "")
-		{
-			qname = null;
-		}
+		qname = getQualQName(qname);
 
 		List<List<?>> perms = permute(activities, triggers, starters, times);
 		for (List<?> perm : perms)
@@ -407,10 +388,7 @@ public class QualifiedCollector extends RdfCollector {
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.INVALIDATION);
 
-		if (qname.getNamespaceURI() == "")
-		{
-			qname = null;
-		}
+		qname = getQualQName(qname);
 
 		List<List<?>> perms = permute(entities, activities, times);
 		for (List<?> perm : perms)
@@ -434,10 +412,7 @@ public class QualifiedCollector extends RdfCollector {
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.DELEGATION);
 
-		if (qname.getNamespaceURI() == "")
-		{
-			qname = null;
-		}
+		qname = getQualQName(qname);
 
 		List<List<?>> perms = permute(subordinates, agents, activities);
 		for (List<?> perm : perms)
@@ -460,10 +435,7 @@ public class QualifiedCollector extends RdfCollector {
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.COMMUNICATION);
 
-		if (qname.getNamespaceURI() == "")
-		{
-			qname = null;
-		}
+		qname = getQualQName(qname);
 
 		List<List<?>> perms = permute(effects, activities);
 		for (List<?> perm : perms)
@@ -484,10 +456,7 @@ public class QualifiedCollector extends RdfCollector {
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.ATTRIBUTION);
 
-		if (qname.getNamespaceURI() == "")
-		{
-			qname = null;
-		}
+		qname = getQualQName(qname);
 
 		List<List<?>> perms = permute(entities, agents);
 		for (List<?> perm : perms)
@@ -510,10 +479,7 @@ public class QualifiedCollector extends RdfCollector {
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.ASSOCIATION);
 
-		if (qname.getNamespaceURI() == "")
-		{
-			qname = null;
-		}
+		qname = getQualQName(qname);
 
 		List<List<?>> perms = permute(activities, agents, plans);
 		for (List<?> perm : perms)
@@ -537,10 +503,7 @@ public class QualifiedCollector extends RdfCollector {
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.USAGE);
 
-		if (qname.getNamespaceURI() == "")
-		{
-			qname = null;
-		}
+		qname = getQualQName(qname);
 
 		List<List<?>> perms = permute(activities, entities, times);
 		for (List<?> perm : perms)
@@ -550,6 +513,14 @@ public class QualifiedCollector extends RdfCollector {
 					attributes);
 			store(context, used);
 		}
+
+	}
+
+	private QName getQualQName(QName qname) {
+		if(qname.getNamespaceURI() == "") {
+			return null;
+		}
+		return qname;
 	}
 
 	private void createGeneration(QName context, QName qname)
@@ -564,10 +535,7 @@ public class QualifiedCollector extends RdfCollector {
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.GENERATION);
 
-		if (qname.getNamespaceURI() == "")
-		{
-			qname = null;
-		}
+		qname = getQualQName(qname);
 
 		List<List<?>> perms = permute(entities, activities, times);
 		for (List<?> perm : perms)

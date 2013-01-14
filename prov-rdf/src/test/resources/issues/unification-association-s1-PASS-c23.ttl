@@ -1,0 +1,23 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix prim: <http://openprovenance.org/primitives#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex: <http://example.org/> .
+@prefix xsi: <http://www.w3.org/2001/XMLSchema-instance> .
+@prefix pc1: <http://www.ipaw.info/pc1/> .
+
+
+ex:e1 a prov:Entity ;
+	prov:type "prov:Plan"^^xsd:QName .
+
+ex:a1 a prov:Activity .
+
+ex:ag1 a prov:Agent .
+
+ex:assoc1 a prov:Association ;
+	prov:agent ex:ag1 .
+
+ex:a1 prov:qualifiedAssociation ex:assoc1 .
+
+ex:e1 a prov:Plan .
+
+ex:assoc1 prov:hadPlan ex:e1 .

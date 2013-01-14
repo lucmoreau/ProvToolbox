@@ -1,0 +1,18 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix ex:   <http://example.com/> .
+
+
+ex:x1 prov:qualifiedInfluence ex:infl1.
+
+ex:infl1
+	a prov:Influence;
+	prov:influencer ex:x2
+.
+
+ex:x1 prov:qualifiedInfluence ex:infl1.
+
+ex:infl1
+	a prov:Influence;
+	prov:influencer ex:x2
+.
+

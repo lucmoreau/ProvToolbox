@@ -1,0 +1,24 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix prim: <http://openprovenance.org/primitives#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex: <http://example.org/> .
+@prefix xsi: <http://www.w3.org/2001/XMLSchema-instance> .
+@prefix pc1: <http://www.ipaw.info/pc1/> .
+
+
+ex:e1 a prov:Entity .
+
+ex:e2 a prov:Entity .
+
+ex:der1 a prov:Derivation ;
+	prov:entity ex:e1 .
+
+ex:e2 prov:qualifiedDerivation ex:der1 .
+
+ex:der1 prov:hadGeneration ex:gen .
+
+ex:der1 prov:hadUsage ex:use .
+
+ex:a a prov:Activity .
+
+ex:der1 prov:hadActivity ex:a .

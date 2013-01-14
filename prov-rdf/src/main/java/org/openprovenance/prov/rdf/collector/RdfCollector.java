@@ -164,6 +164,21 @@ public class RdfCollector extends RDFHandlerBase {
 			}
 		}
 
+		// Prunes back to the 'top' class (e.g. if we have Person and Agent, we
+		// only need Person)
+		if (explicitOptions.size() > 1)
+		{
+			List<ProvType> cloned = new ArrayList<ProvType>(explicitOptions);
+			for (ProvType option : explicitOptions)
+			{
+				for (ProvType extended : option.getExtends())
+				{
+					cloned.remove(extended);
+				}
+			}
+			explicitOptions = cloned;
+		}
+
 		return explicitOptions.toArray(new ProvType[] {});
 	}
 
@@ -174,7 +189,7 @@ public class RdfCollector extends RDFHandlerBase {
 			return convertURIToQName((URI) resource);
 		} else if (resource instanceof BNode)
 		{
-			return new QName(((BNode) (resource)).getID());
+			return bnodeToQName((BNode) resource);
 		} else
 		{
 			return null;
@@ -455,7 +470,8 @@ public class RdfCollector extends RDFHandlerBase {
 							if (isProvURI(typeQ)
 									&& DM_TYPES.indexOf(typeQ) == -1)
 							{
-								// System.out.println("Skipping type: " + typeQ);
+								// System.out.println("Skipping type: " +
+								// typeQ);
 							} else
 							{
 								attributes.add(pFactory.newAttribute(
@@ -564,14 +580,10 @@ public class RdfCollector extends RDFHandlerBase {
 
 					} else if (value instanceof Resource)
 					{
-						URIWrapper uw = new URIWrapper();
-						java.net.URI jURI = java.net.URI.create(value
-								.stringValue());
-						uw.setValue(jURI);
-
 						attr = pFactory.newAttribute(predQ.getNamespaceURI(),
-								predQ.getLocalPart(), prefix, uw,
-								pFactory.stringToQName(getXsdType("anyURI")));
+								predQ.getLocalPart(), prefix,
+								convertResourceToQName((Resource) value),
+								this.valueConverter);
 					} else
 					{
 						System.err.println("Invalid value");
@@ -824,16 +836,25 @@ public class RdfCollector extends RDFHandlerBase {
 		this.revnss.put(namespace, prefix);
 	}
 
+	protected QName bnodeToQName(BNode bnode)
+	{
+		QName qname;
+		qname = new QName(bnode.getID());
+
+		return qname;
+	}
+
 	@Override
 	public void handleStatement(Statement statement)
 	{
 		QName subjectQ = null;
 
+		QName contextQ = convertResourceToQName(statement.getContext());
+
 		Resource subject = statement.getSubject();
 		if (subject instanceof BNodeImpl)
 		{
-			BNodeImpl bnode = (BNodeImpl) subject;
-			subjectQ = new QName(bnode.getID());
+			subjectQ = bnodeToQName((BNodeImpl) subject);
 		} else if (subject instanceof URI)
 		{
 			URI uri = (URI) subject;
@@ -842,8 +863,6 @@ public class RdfCollector extends RDFHandlerBase {
 		{
 			System.err.println("Invalid subject resource");
 		}
-
-		QName contextQ = convertResourceToQName(statement.getContext());
 
 		if (!collators.containsKey(contextQ))
 		{

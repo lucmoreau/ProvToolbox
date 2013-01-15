@@ -321,6 +321,7 @@ public class InteropFramework
         } catch (IOException e) {
             throw new InteropException(e);
         } catch (Throwable e) {
+            e.printStackTrace();
             throw new InteropException(e);
 
         }

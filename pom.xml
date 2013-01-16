@@ -1,9 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+
   <parent>
-    <artifactId>ProvToolbox</artifactId>
+    <artifactId>validation-project</artifactId>
     <groupId>org.openprovenance.prov</groupId>
     <version>0.1.2-SNAPSHOT</version>
   </parent>
+
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>prov-sql</artifactId>
@@ -363,6 +366,20 @@
   	              <arg value="Agent.java" />
                 </exec>
 
+<!--
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/Activity.ActivityTypeItem/AValue/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Activity.java" />
+                </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/Item&lt;Object&gt;/Item&lt;AValue&gt;/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Activity.java" />
+                </exec>
+
+-->
                 <!-- getAny -: List Attribute -->
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">

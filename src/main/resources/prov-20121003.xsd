@@ -71,7 +71,23 @@
       <xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/> 
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
-      
+
+<!--      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> -->
+      <xs:element name="any"    type="prov:Attribute" minOccurs="0" maxOccurs="unbounded"/> 
+    </xs:sequence>
+    <xs:attribute ref="prov:id"/>
+  </xs:complexType>
+
+
+  <xs:complexType name="Essai">
+    <xs:sequence>
+      <xs:element name="startTime"    type="xs:dateTime" minOccurs="0"/> 
+      <xs:element name="endTime"      type="xs:dateTime" minOccurs="0"/> 
+      <xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="mytype"      type="prov:AValue" minOccurs="0"/> 
+
 <!--      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> -->
       <xs:element name="any"    type="prov:Attribute" minOccurs="0" maxOccurs="unbounded"/> 
     </xs:sequence>
@@ -428,6 +444,7 @@
         <xs:element name="mentionOf"            type="prov:Mention"/>
 
         <xs:element name="hadMember"   		type="prov:Membership"/>
+        <xs:element name="essai"                type="prov:Essai"/>
 
 <!-- not nice for jaxb conversion 		<xs:any namespace="##other"/>  -->
       </xs:choice>

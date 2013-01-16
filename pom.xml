@@ -1158,6 +1158,12 @@
                      <arg value="Attribute.java" />
                 </exec>
 
+
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+                     <arg value="Essai.java" />
+                </exec>
+
+
 <!--
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	              <arg value="-e s/equalsBuilder.append(this.getContent(), that.getContent());/\/\/Luc: equalsBuilder.append(this.getContent(), that.getContent());/" />
@@ -1307,6 +1313,23 @@
                 
                 <goals>
                   <goal>run</goal>
+                </goals>
+              </pluginExecutionFilter>
+              <action>
+                <execute>
+                  <runOnIncremental>false</runOnIncremental>
+                </execute>
+              </action>
+            </pluginExecution>
+
+
+            <pluginExecution>
+              <pluginExecutionFilter>
+                <groupId>org.jvnet.hyperjaxb3</groupId>
+                <artifactId>maven-hyperjaxb3-plugin</artifactId>
+                <versionRange>[0.5.6,)</versionRange>
+                <goals>
+                  <goal>generate</goal>
                 </goals>
               </pluginExecutionFilter>
               <action>

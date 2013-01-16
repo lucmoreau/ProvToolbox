@@ -2,6 +2,7 @@
 <prov:document xmlns:prov="http://www.w3.org/ns/prov#" xmlns:ns2="http://openprovenance.org/collection#" xmlns:ns3="http://openprovenance.org/validation#" xmlns:prim="http://openprovenance.org/primitives#" xmlns:pc1="http://www.ipaw.info/pc1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <prov:activity prov:id="pc1:00000p1">
         <prov:label>align_warp 1</prov:label>
+        <prov:type xsi:type="xsd:int">123</prov:type>
         <prov:type xsi:type="xsd:QName">prim:align_warp</prov:type>
     </prov:activity>
 </prov:document>

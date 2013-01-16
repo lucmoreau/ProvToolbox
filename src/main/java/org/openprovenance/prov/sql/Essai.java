@@ -763,15 +763,16 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
 	@JoinColumn(name = "TYPEWRAP_ESSAI_HJID")
         public AValue getItemObject() {
 	    System.out.println("===> in getItemObject()");
-	    AValue res= SQLValueConverter.convert(this.getItem());
-	    System.out.println("===> out getItemObject()");
+	    Object o=this.getItem();
+	    AValue res= SQLValueConverter.convert(o);
+	    System.out.println("===> out getItemObject() " + o);
 	    return res;
         }
 
         public void setItemObject(AValue target) {
     	    System.out.println("===> !!! in setItemObject()");
 
-            if (target!= null) {
+            if (target!= null) {  //FIXME: an int is used, and not an Integer. Can't detect the type of the argument!
         	Object res= SQLValueConverter.convertFromAValue(target);
                 setItem(res); 
             }

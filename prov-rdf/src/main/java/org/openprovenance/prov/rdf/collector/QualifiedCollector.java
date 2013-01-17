@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
@@ -13,7 +12,9 @@ import javax.xml.namespace.QName;
 import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.Attribute;
+import org.openprovenance.prov.xml.Identifiable;
 import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.xml.StatementOrBundle;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.WasAttributedTo;
@@ -24,10 +25,12 @@ import org.openprovenance.prov.xml.WasInfluencedBy;
 import org.openprovenance.prov.xml.WasInformedBy;
 import org.openprovenance.prov.xml.WasInvalidatedBy;
 import org.openprovenance.prov.xml.WasStartedBy;
+import org.openrdf.model.BNode;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
+import org.openrdf.model.impl.BNodeImpl;
 
 public class QualifiedCollector extends RdfCollector {
 
@@ -186,6 +189,29 @@ public class QualifiedCollector extends RdfCollector {
 	public void endRDF()
 	{
 		super.endRDF();
+		nullifyBNodes();
+	}
+
+	private void nullifyBNodes()
+	{
+		for (StatementOrBundle sob : document
+				.getEntityOrActivityOrWasGeneratedBy())
+		{
+			if (sob instanceof Identifiable)
+			{
+				Identifiable idsob = (Identifiable) sob;
+
+				if (idsob.getId() != null
+						&& idsob.getId().getNamespaceURI().equals(BNODE_NS))
+				{
+					if (!isBNodeReferenced(new BNodeImpl(idsob.getId()
+							.getLocalPart())))
+					{
+						idsob.setId(null);
+					}
+				}
+			}
+		}
 	}
 
 	private List<XMLGregorianCalendar> getInstantaneousTimes(
@@ -307,15 +333,16 @@ public class QualifiedCollector extends RdfCollector {
 
 		List<Attribute> attributes = collectAttributes(context, qname,
 				ProvType.INFLUENCE);
-		
+
 		qname = getQualQName(qname);
 
 		List<WasInfluencedBy> wibs = new ArrayList<WasInfluencedBy>();
-		List<List<?>> perms = permute(influencees, new ArrayList<QName>(all_influencers));
+		List<List<?>> perms = permute(influencees, new ArrayList<QName>(
+				all_influencers));
 		for (List<?> perm : perms)
 		{
 			WasInfluencedBy wib = pFactory.newWasInfluencedBy(qname,
-					(QName) perm.get(0), (QName) perm.get(1), attributes);	
+					(QName) perm.get(0), (QName) perm.get(1), attributes);
 			store(context, wib);
 			wibs.add(wib);
 		}
@@ -516,9 +543,16 @@ public class QualifiedCollector extends RdfCollector {
 
 	}
 
-	private QName getQualQName(QName qname) {
-		if(qname.getNamespaceURI() == "") {
-			return null;
+	private QName getQualQName(QName qname)
+	{
+		if (qname.getNamespaceURI() == "" || qname.getNamespaceURI().equals(BNODE_NS))
+		{
+			BNode bnode = new BNodeImpl(qname.getLocalPart());
+			if (!isBNodeReferenced(bnode))
+			{
+				return null;
+			}
+			return new QName(BNODE_NS, qname.getLocalPart(), "bnode");
 		}
 		return qname;
 	}

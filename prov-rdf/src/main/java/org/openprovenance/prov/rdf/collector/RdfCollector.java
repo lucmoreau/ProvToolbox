@@ -55,6 +55,24 @@ public class RdfCollector extends RDFHandlerBase {
 	protected Document document;
 	private Hashtable<String, String> revnss;
 	private ValueConverter valueConverter;
+	protected static String BNODE_NS = "http://openprovenance.org/provtoolbox/bnode/";
+	
+	private List<QName> QUAL_PREDS = Arrays.asList(new QName[] {
+			Ontology.QNAME_PROVO_qualifiedAssociation,
+			Ontology.QNAME_PROVO_qualifiedAttribution,
+			Ontology.QNAME_PROVO_qualifiedCommunication,
+			Ontology.QNAME_PROVO_qualifiedDelegation,
+			Ontology.QNAME_PROVO_qualifiedDerivation,
+			Ontology.QNAME_PROVO_qualifiedEnd,
+			Ontology.QNAME_PROVO_qualifiedGeneration,
+			Ontology.QNAME_PROVO_qualifiedInfluence,
+			Ontology.QNAME_PROVO_qualifiedInvalidation,
+			Ontology.QNAME_PROVO_qualifiedPrimarySource,
+			Ontology.QNAME_PROVO_qualifiedQuotation,
+			Ontology.QNAME_PROVO_qualifiedRevision,
+			Ontology.QNAME_PROVO_qualifiedStart,
+			Ontology.QNAME_PROVO_qualifiedUsage
+	});
 
 	private List<QName> DM_TYPES = Arrays.asList(new QName[] {
 			Ontology.QNAME_PROVO_Bundle, Ontology.QNAME_PROVO_Collection,
@@ -75,6 +93,7 @@ public class RdfCollector extends RDFHandlerBase {
 		document.setNss(new Hashtable<String, String>());
 		handleNamespace(NamespacePrefixMapper.XSD_PREFIX,
 				NamespacePrefixMapper.XSD_HASH_NS);
+		handleNamespace("bnode", BNODE_NS);
 	}
 
 	private HashMap<QName, List<Statement>> getCollator(Resource context)
@@ -101,6 +120,48 @@ public class RdfCollector extends RDFHandlerBase {
 	}
 
 	/* Utility functions */
+
+	protected boolean isBNodeReferenced(BNode object)
+	{
+		Collection<HashMap<QName, List<Statement>>> contexts = collators
+				.values();
+		for (HashMap<QName, List<Statement>> context : contexts)
+		{
+			for (QName subject : context.keySet())
+			{
+				List<Statement> statements = context.get(subject);
+				for (Statement statement : statements)
+				{
+					Value value = statement.getObject();
+					QName pred = convertURIToQName(statement.getPredicate());
+					if(QUAL_PREDS.contains(pred)) {
+						continue;
+					}
+					
+					if (value instanceof BNode)
+					{
+						if (value.equals(object))
+						{
+							return true;
+						}
+					}
+					else if(value instanceof QName) {
+						QName qname = (QName)value;
+						if(qname.getNamespaceURI().equals(BNODE_NS) && qname.getLocalPart().equals(object.getID())) {
+							return true;
+						} 
+					} else if(value instanceof Resource) {
+						QName qname = convertResourceToQName((Resource)value);
+						if(qname.getNamespaceURI().equals(BNODE_NS) && qname.getLocalPart().equals(object.getID())) {
+							return true;
+						} 
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
 
 	private boolean isProvURI(QName qname)
 	{
@@ -838,10 +899,7 @@ public class RdfCollector extends RDFHandlerBase {
 
 	protected QName bnodeToQName(BNode bnode)
 	{
-		QName qname;
-		qname = new QName(bnode.getID());
-
-		return qname;
+		return new QName(BNODE_NS, bnode.getID(), "bnode");
 	}
 
 	@Override

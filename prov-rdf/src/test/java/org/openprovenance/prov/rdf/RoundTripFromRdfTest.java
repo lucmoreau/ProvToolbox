@@ -25,12 +25,9 @@ public class RoundTripFromRdfTest extends TestCase {
 	private String folder;
 	private static String[] folders = { "issues", "examples" };
 	private static List<String> skip = Arrays
-			.asList(new String[] { "prov-o-property-hadUsage-FAIL.ttl",
-					"prov-o-property-hadGeneration-FAIL.ttl",
-					"prov-o-property-hadMember-PASS.ttl",
-					"prov-o-property-alternateOf-PASS.ttl",
-					"prov-o-property-specializationOf-PASS.ttl",
-					"ex_alternateOf.ttl" });
+			.asList(new String[] { 
+					"prov-o-property-hadUsage-FAIL.ttl",
+					"prov-o-property-hadGeneration-FAIL.ttl" });
 
 	public RoundTripFromRdfTest(String folder, String file)
 	{

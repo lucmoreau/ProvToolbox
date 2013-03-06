@@ -61,6 +61,10 @@ public class ProvToDot {
     ProvFactory of=new ProvFactory();
 
     public String qnameToString(QName qName) {
+        return qName.getNamespaceURI()+qName.getLocalPart();
+    }
+
+    public String localnameToString(QName qName) {
         return qName.getLocalPart();
     }
 
@@ -231,7 +235,12 @@ public class ProvToDot {
         @SuppressWarnings("unused")
         java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
     }
-    
+    public void convert(Document graph, String dotFile)
+	        throws java.io.FileNotFoundException, java.io.IOException {
+	        convert(graph,new File(dotFile));
+	        
+	    }
+	     
     public void convert(Document graph, String dotFile, String aFile, String type)
 	        throws java.io.FileNotFoundException, java.io.IOException {
 	        convert(graph,new File(dotFile));
@@ -577,7 +586,7 @@ public class ProvToDot {
         if (displayActivityValue) {
             return convertActivityName(""+of.getLabel(p));
         } else {
-            return qnameToString(p.getId());
+            return localnameToString(p.getId());
         }
     }
     public String processColor(Activity p) {
@@ -605,7 +614,7 @@ public class ProvToDot {
         if (displayEntityValue) {
             return convertEntityName(""+of.getLabel(p));
         } else {
-            return qnameToString(p.getId());
+            return localnameToString(p.getId());
         }
     }
     public String entityColor(Entity p) {
@@ -640,7 +649,7 @@ public class ProvToDot {
         if (displayAgentValue) {
             return convertAgentName(""+of.getLabel(p));
         } else {
-            return qnameToString(p.getId());
+            return localnameToString(p.getId());
         }
     }
 
@@ -890,7 +899,7 @@ public class ProvToDot {
     /* make name compatible with dot notation*/
     
     public String dotify(String name) {
-        return "n" + name.replace('-','_').replace('.','_').replace('/','_');
+        return "n" + name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_');
     }
 
     public void emitElement(QName name, HashMap<String,String> properties, PrintStream out) {

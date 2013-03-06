@@ -237,9 +237,16 @@ public class InteropFramework
 		String dotFileOut="target/foo.dot"; //give it as option, if not available create tmp file
 		ProvToDot toDot=
 		        (configFile==null)? new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot (configFile);
-	        toDot.convert(doc, dotFileOut, filename);       
+	        toDot.convert(doc, dotFileOut, filename);    
+	        break;
 	    }
-	    case DOT:
+	    case DOT: {
+		String configFile=null; // TODO: get it as option
+		ProvToDot toDot=
+		        (configFile==null)? new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot (configFile);
+	        toDot.convert(doc, filename);       
+	        break;
+	    }
 	    case JPEG:
 	    case SVG:{
                 String configFile=null; // give it as option
@@ -256,6 +263,7 @@ public class InteropFramework
                 
                 toDot.convert(doc, dotFileOut, filename, "svg");     
                 tmp.delete();
+                break;
             }
 		
 	    default:

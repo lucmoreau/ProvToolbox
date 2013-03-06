@@ -234,7 +234,9 @@ public class InteropFramework
 	    }
 	    case PDF: {
 		String configFile=null; // TODO: get it as option
-		String dotFileOut="target/foo.dot"; //give it as option, if not available create tmp file
+		File tmp=File.createTempFile("viz-", ".dot",new File("/tmp"));
+	                
+		String dotFileOut=tmp.getAbsolutePath(); //give it as option, if not available create tmp file
 		ProvToDot toDot=
 		        (configFile==null)? new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot (configFile);
 	        toDot.convert(doc, dotFileOut, filename);    

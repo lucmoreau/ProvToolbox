@@ -307,18 +307,19 @@ public class ProvToDot {
         HashMap<String,String> properties=new HashMap<String, String>();
 
         emitElement(p.getId(),
-                 addActivityShape(p,addActivityLabel(p, addActivityColor(p,properties))),
-                 out);
+                    addURL(p.getId(), addActivityShape(p,addActivityLabel(p, addActivityColor(p,properties)))),
+                    out);
 
-                emitAnnotations("", p,out);
+        emitAnnotations("", p,out);
     }
 
+   
     public void emitEntity(Entity a, PrintStream out) {
         HashMap<String,String> properties=new HashMap<String, String>();
 
         emitElement(a.getId(),
-                 addEntityShape(a,addEntityLabel(a, addEntityColor(a,properties))),
-                 out);
+                    addURL(a.getId(), addEntityShape(a,addEntityLabel(a, addEntityColor(a,properties)))),
+                    out);
 
         emitAnnotations("", a,out);
     }
@@ -327,8 +328,8 @@ public class ProvToDot {
         HashMap<String,String> properties=new HashMap<String, String>();
 
         emitElement(ag.getId(),
-                 addAgentShape(ag,addAgentLabel(ag, addAgentColor(ag,properties))),
-                 out);
+                    addURL(ag.getId(), addAgentShape(ag,addAgentLabel(ag, addAgentColor(ag,properties)))),
+                    out);
 
         emitAnnotations("", ag,out);
 
@@ -363,6 +364,13 @@ public class ProvToDot {
             return id;
         }
     }
+    
+    public HashMap<String, String> addURL(QName id,
+                                          HashMap<String, String> properties) {
+	if (id!=null) properties.put("URL", id.getNamespaceURI()+id.getLocalPart());
+	return properties;
+    }
+
 
     public HashMap<String,String> addAnnotationLinkProperties(HasExtensibility ann, HashMap<String,String> properties) {
         properties.put("arrowhead","none");

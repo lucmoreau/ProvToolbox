@@ -10,8 +10,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import javax.xml.namespace.QName;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.JAXBElement;
-//import org.w3c.dom.Element;
 
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
@@ -238,7 +236,6 @@ public class ProvToDot {
 	        throws java.io.FileNotFoundException, java.io.IOException {
 	        convert(graph,new File(dotFile));
 	        Runtime runtime = Runtime.getRuntime();
-	        @SuppressWarnings("unused")
 	        java.lang.Process proc = runtime.exec("dot -o " + aFile + " -T" + type + " " + dotFile);
 	        try {
 		    proc.waitFor();
@@ -688,6 +685,12 @@ public class ProvToDot {
             HashMap<String,String> properties2=new HashMap<String, String>();
             properties2.put("arrowhead","none");
 
+            String arrowTail=getArrowShapeForRelation(e);
+            if (arrowTail!=null) {
+        	properties2.put("arrowtail",arrowTail);
+        	properties2.put("dir","back");
+            }
+
             HashMap<String,String> properties3=new HashMap<String, String>();
 
 
@@ -703,11 +706,13 @@ public class ProvToDot {
                 properties3.put("arrowhead","onormal");
             }
             
-            emitRelation( bnid,
-                          qnameToString(u.getCause(e)),
-                          properties3,
-                          out,
-                          true);
+            if (u.getCause(e)!=null) {
+        	emitRelation( bnid,
+        	              qnameToString(u.getCause(e)),
+        	              properties3,
+        	              out,
+        	              true);
+            }
 
             HashMap<String,String> properties4=new HashMap<String, String>();
 
@@ -728,6 +733,12 @@ public class ProvToDot {
 		    addColors((Influence)e,properties);
 		}
 		
+		String arrowTail=getArrowShapeForRelation(e);
+		if (arrowTail!=null) {
+		    properties.put("arrowtail",arrowTail);
+		    properties.put("dir","both");
+		}
+
 		emitRelation( qnameToString(u.getEffect(e)),
 			      qnameToString(u.getCause(e)),
 			      properties,
@@ -747,6 +758,14 @@ public class ProvToDot {
 	    properties.put("labelfontsize", "8");
 	}
     }
+    
+    String getArrowShapeForRelation(Relation0 e) {
+  	if (e instanceof WasStartedBy)      return "oinv";
+ 	if (e instanceof WasEndedBy)        return "odiamond";
+ 	if (e instanceof WasInvalidatedBy)  return "odiamond";
+ 	return null;
+    }
+     
 
     String getLabelForRelation(Relation0 e) {
 	if (e instanceof Used)              return "used";

@@ -646,10 +646,10 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public Document newDocument(Collection<Activity> ps, Collection<Entity> as,
 				Collection<Agent> ags, Collection<Statement> lks) {
 	Document res = of.createDocument();
-	res.getEntityOrActivityOrWasGeneratedBy().addAll(ps);
-	res.getEntityOrActivityOrWasGeneratedBy().addAll(as);
-	res.getEntityOrActivityOrWasGeneratedBy().addAll(ags);
-	res.getEntityOrActivityOrWasGeneratedBy().addAll(lks);
+	res.getEntityAndActivityAndWasGeneratedBy().addAll(ps);
+	res.getEntityAndActivityAndWasGeneratedBy().addAll(as);
+	res.getEntityAndActivityAndWasGeneratedBy().addAll(ags);
+	res.getEntityAndActivityAndWasGeneratedBy().addAll(lks);
 	return res;
     }
     public Document newDocument(Hashtable<String, String> namespaces,
@@ -657,17 +657,17 @@ public class ProvFactory implements ModelConstructor, QNameExport {
                                 Collection<NamedBundle> bundles) {
 	Document res = of.createDocument();
 	res.setNss(namespaces);
-	res.getEntityOrActivityOrWasGeneratedBy()
+	res.getEntityAndActivityAndWasGeneratedBy()
 	   .addAll(statements);
-	res.getEntityOrActivityOrWasGeneratedBy()
+	res.getEntityAndActivityAndWasGeneratedBy()
 	   .addAll(bundles);
 	return res;
     }
 
     public Document newDocument(Document graph) {
 	Document res = of.createDocument();
-	res.getEntityOrActivityOrWasGeneratedBy()
-	   .addAll(graph.getEntityOrActivityOrWasGeneratedBy());
+	res.getEntityAndActivityAndWasGeneratedBy()
+	   .addAll(graph.getEntityAndActivityAndWasGeneratedBy());
 	return res;
     }
 
@@ -941,16 +941,16 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	res.setId(id);
 
 	if (ps != null) {
-	    res.getEntityOrActivityOrWasGeneratedBy().addAll(ps);
+	    res.getEntityAndActivityAndWasGeneratedBy().addAll(ps);
 	}
 	if (as != null) {
-	    res.getEntityOrActivityOrWasGeneratedBy().addAll(as);
+	    res.getEntityAndActivityAndWasGeneratedBy().addAll(as);
 	}
 	if (ags != null) {
-	    res.getEntityOrActivityOrWasGeneratedBy().addAll(ags);
+	    res.getEntityAndActivityAndWasGeneratedBy().addAll(ags);
 	}
 	if (lks != null) {
-	    res.getEntityOrActivityOrWasGeneratedBy().addAll(lks);
+	    res.getEntityAndActivityAndWasGeneratedBy().addAll(lks);
 	}
 	return res;
     }
@@ -960,7 +960,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	res.setId(id);
 
 	if (lks != null) {
-	    res.getEntityOrActivityOrWasGeneratedBy().addAll(lks);
+	    res.getEntityAndActivityAndWasGeneratedBy().addAll(lks);
 	}
 	return res;
     }
@@ -970,7 +970,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	res.setId(id);
 	res.setNss(namespaces);
 	if (statements != null) {
-	    res.getEntityOrActivityOrWasGeneratedBy().addAll(statements);
+	    res.getEntityAndActivityAndWasGeneratedBy().addAll(statements);
 	}
 	return res;
     }

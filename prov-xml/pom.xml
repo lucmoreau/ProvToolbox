@@ -120,7 +120,17 @@
 		       </plugins>
                <schemaIncludes>
                  <schemaInclude>**/toolbox.xsd</schemaInclude>
-                 <schemaInclude>**/prov-20121003.xsd</schemaInclude>
+                 <schemaInclude>**/prov-20130307.xsd</schemaInclude>
+
+
+
+
+<!--
+                 <schemaInclude>**/prov-links.xsd</schemaInclude>
+                 <schemaInclude>**/prov.xsd</schemaInclude>
+                 <schemaInclude>**/prov-dictionary.xsd</schemaInclude>
+
+-->
                  <schemaInclude>**/validation.xsd</schemaInclude>
                  <schemaInclude>**/collection.xsd</schemaInclude>
 

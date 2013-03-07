@@ -8,7 +8,7 @@
 	xmlns:val="http://openprovenance.org/validation#"
 	xmlns:prov="http://www.w3.org/ns/prov#">
 
-	<xs:import schemaLocation="prov-20121003.xsd"
+	<xs:import schemaLocation="prov-20130307.xsd"
 		namespace="http://www.w3.org/ns/prov#">
 	</xs:import>
 	

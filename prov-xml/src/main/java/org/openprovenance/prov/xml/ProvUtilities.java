@@ -28,53 +28,53 @@ public class ProvUtilities {
 
     public List<Relation0> getRelations(Document d) {
         return getObject(Relation0.class,
-                         d.getEntityOrActivityOrWasGeneratedBy());
+                         d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Entity> getEntity(Document d) {
-        return getObject(Entity.class, d.getEntityOrActivityOrWasGeneratedBy());
+        return getObject(Entity.class, d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Activity> getActivity(Document d) {
         return getObject(Activity.class,
-                         d.getEntityOrActivityOrWasGeneratedBy());
+                         d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Agent> getAgent(Document d) {
-        return getObject(Agent.class, d.getEntityOrActivityOrWasGeneratedBy());
+        return getObject(Agent.class, d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Relation0> getRelations(NamedBundle d) {
         return getObject2(Relation0.class,
-                         d.getEntityOrActivityOrWasGeneratedBy());
+                         d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Entity> getEntity(NamedBundle d) {
-        return getObject2(Entity.class, d.getEntityOrActivityOrWasGeneratedBy());
+        return getObject2(Entity.class, d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Activity> getActivity(NamedBundle d) {
         return getObject2(Activity.class,
-                         d.getEntityOrActivityOrWasGeneratedBy());
+                         d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Agent> getAgent(NamedBundle d) {
-        return getObject2(Agent.class, d.getEntityOrActivityOrWasGeneratedBy());
+        return getObject2(Agent.class, d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<NamedBundle> getNamedBundle(Document d) {
         return getObject(NamedBundle.class,
-                         d.getEntityOrActivityOrWasGeneratedBy());
+                         d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Statement> getStatement(Document d) {
 	return getObject(Statement.class,
-	                 d.getEntityOrActivityOrWasGeneratedBy());
+	                 d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     @SuppressWarnings("unchecked")
     public List<Statement> getStatement(NamedBundle d) {
-        List<?> res = d.getEntityOrActivityOrWasGeneratedBy();
+        List<?> res = d.getEntityAndActivityAndWasGeneratedBy();
         return (List<Statement>) res;
     }
 
@@ -292,7 +292,7 @@ public class ProvUtilities {
     public MentionOf getMentionForRemoteEntity(NamedBundle local,
                                                Entity remoteEntity,
                                                NamedBundle remote) {
-        return getMentionForLocalEntity(local.getEntityOrActivityOrWasGeneratedBy(),
+        return getMentionForLocalEntity(local.getEntityAndActivityAndWasGeneratedBy(),
                                          remoteEntity, remote);
     }
 
@@ -320,7 +320,7 @@ public class ProvUtilities {
     public MentionOf getMentionForLocalEntity(NamedBundle local,
                                               Entity localEntity,
                                               NamedBundle remote) {
-        return getMentionForLocalEntity(local.getEntityOrActivityOrWasGeneratedBy(),
+        return getMentionForLocalEntity(local.getEntityAndActivityAndWasGeneratedBy(),
                                         localEntity, remote);
     }
 

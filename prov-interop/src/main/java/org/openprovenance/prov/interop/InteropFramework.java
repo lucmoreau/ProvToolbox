@@ -393,12 +393,12 @@ public class InteropFramework
 	if (outfile==null) return;
 	try {
 	    Document doc=(Document) loadProvKnownGraph(infile);
-	    doc.setNss(new Hashtable<String, String>());
-	    doc.getNss().put("pc1",PC1_NS);
-	    doc.getNss().put("prim",PRIM_NS);
-	    doc.getNss().put("prov","http://www.w3.org/ns/prov#");
-	    doc.getNss().put("xsd","http://www.w3.org/2001/XMLSchema");
-	    doc.getNss().put("xsi","http://www.w3.org/2001/XMLSchema-instance");
+	    //doc.setNss(new Hashtable<String, String>());
+	    //doc.getNss().put("pc1",PC1_NS);
+	    //doc.getNss().put("prim",PRIM_NS);
+	    //doc.getNss().put("prov","http://www.w3.org/ns/prov#");
+	    //doc.getNss().put("xsd","http://www.w3.org/2001/XMLSchema");
+	    //doc.getNss().put("xsi","http://www.w3.org/2001/XMLSchema-instance");
 	    
 	    System.out.println("InteropFramework run() -> " + doc.getNss());
 	    writeDocument(outfile, doc);

@@ -50,23 +50,18 @@ public class Utility {
 	ContextAwareRepository rep=new ContextAwareRepository(myRepository); // was it necessary to create that?
 
 	RepositoryHelper rHelper = new RepositoryHelper();
-	//ElmoModule module = new ElmoModule();
-	//ElmoManagerFactory factory = new SesameManagerFactory(module);
-	//ElmoManager manager = factory.createElmoManager();
 
 	RdfConstructor rdfc = new RdfConstructor(new SesameGraphBuilder(rep));
 	rdfc.getNamespaceTable().putAll(document.getNss());
 	rdfc.getNamespaceTable().put("xsd", "http://www.w3.org/2001/XMLSchema#");
+	rdfc.getNamespaceTable().put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 	
-	//rdfc.getNamespaceTable().put("", "http://x.org/foo#"); //TODO: this is hack, I need to retrieve this value somewhere
-	//rdfc.getNamespaceTable().put("_", "http://x.org/bar#");
+
 
 	BeanTraversal bt = new BeanTraversal(rdfc,pFactory, new ValueConverter(pFactory));
-
 	bt.convert(document);
 	
 
-	//System.out.println("namespaces " + rdfc.getNamespaceTable());
 	rHelper.dumpToRDF(filename, rep, format, 
 			  rdfc.getNamespaceTable());
     }

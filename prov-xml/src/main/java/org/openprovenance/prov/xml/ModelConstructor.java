@@ -39,4 +39,6 @@ public interface ModelConstructor {
     public void startDocument(Hashtable<String, String> hashtable);
     public void startBundle(QName bundleId, Hashtable<String, String> namespaces);
 
+    //TODO:    public DerivedByInsertionFrom newInsertion(QName id, QName a2, QName a1, Object keymap, Collection<Attribute> attributes);
+
 }

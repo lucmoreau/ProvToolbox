@@ -19,16 +19,20 @@ t3:
 
 
 fam:
-	target/appassembler/bin/provconvert -provn2dot ../prov-n/src/test/resources/prov/prov-family.pn target/prov-family.dot target/prov-family.pdf ../prov-dot/src/main/resources/configFamily.xml
-	target/appassembler/bin/provconvert -provn2xml ../prov-n/src/test/resources/prov/prov-family.pn target/prov-family.xml
+	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.pn -outfile  target/prov-family.pdf 
+	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.pn -outfile  target/prov-family.xml
+	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.pn -outfile  target/prov-family.dot
 	cat target/prov-family.dot | sed -e 's/rankdir/size="8.5,11"; label="The PROV Family of Specifications\\nLuc Moreau"; labelloc="top"; labeljust="left"; fontsize="36"; rankdir/' | sed -e 's/OPMGraph/ProvFamily/' > target/prov-family-key.dot
 	dot -Tps2 target/prov-family-key.dot -o target/prov-family-key.ps
 	epstopdf  target/prov-family-key.ps  -o=target/prov-family-key.pdf
 
 
+
+
 fam2:
-	target/appassembler/bin/provconvert -provn2dot ../prov-n/src/test/resources/prov/prov-family2.pn target/prov-family2.dot target/prov-family2.pdf ../prov-dot/src/main/resources/configFamily.xml
-	target/appassembler/bin/provconvert -provn2xml ../prov-n/src/test/resources/prov/prov-family2.pn target/prov-family2.xml
+	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family2.pn -outfile target/prov-family2.pdf
+	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family2.pn -outfile target/prov-family2.dot
+	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family2.pn -outfile target/prov-family2.xml
 	cat target/prov-family2.dot | sed -e 's/rankdir/size="8.5,11"; label="The PROV Family of Specifications\\nLuc Moreau"; labelloc="top"; labeljust="left"; fontsize="36"; rankdir/' | sed -e 's/OPMGraph/ProvFamily/' > target/prov-family2-key.dot
 	dot -Tps2 target/prov-family2-key.dot -o target/prov-family2-key.ps
 	epstopdf target/prov-family2-key.ps  -o=target/prov-family2-key.pdf

@@ -526,7 +526,75 @@
 
   <xs:element name="plan"                 type="prov:Plan"/>
 
+  <!-- Component: links -->
+
   <xs:element name="mentionOf"          type="prov:Mention"/>
+
+  <!-- Component: dictionary -->
+
+	<!-- Dictionary -->
+	<xs:complexType name="Dictionary">
+		<xs:complexContent>
+			<xs:extension base="prov:Collection">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="dictionary" type="prov:Dictionary" />
+	
+	<!-- Empty Dictionary -->
+	<xs:complexType name="EmptyDictionary">
+		<xs:complexContent>
+			<xs:extension base="prov:Dictionary">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="emptyDictionary" type="prov:EmptyDictionary" />
+		
+	<!-- Key-Value Pair -->
+	<xs:complexType name="KeyValuePair">
+        <xs:sequence>
+    	  <xs:element name="entity" type="prov:IDRef" />
+    	  <xs:element name="key" type="xs:anySimpleType" />
+        </xs:sequence>
+	</xs:complexType>
+	
+	<!-- do we need to have this use the substitutionGroup? -->
+	<xs:element name="keyValuePair" type="prov:KeyValuePair"/>
+
+	<!-- Dictionary Membership -->
+	<xs:complexType name="DictionaryMembership">
+	  <xs:sequence>
+		<xs:element name="dictionary" type="prov:IDRef"/>
+		<xs:element name="keyValuePair" type="prov:KeyValuePair" maxOccurs="unbounded"/>
+	  </xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="hadDictionaryMember" type="prov:DictionaryMembership"/>
+
+	<!-- Insertion -->
+	<xs:complexType name="Insertion">
+	  <xs:sequence>
+		<xs:element name="newDictionary" type="prov:IDRef"/>
+		<xs:element name="oldDictionary" type="prov:IDRef"/>
+		<xs:element name="keyValuePair" type="prov:KeyValuePair" maxOccurs="unbounded"/>
+	  </xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="derivedByInsertionFrom" type="prov:Insertion"/>
+
+	<!-- Removal -->
+	<xs:complexType name="Removal">
+	  <xs:sequence>
+		<xs:element name="newDictionary" type="prov:IDRef"/>
+		<xs:element name="oldDictionary" type="prov:IDRef"/>
+		<xs:element name="key" type="xs:anySimpleType" maxOccurs="unbounded" />
+	  </xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="derivedByRemovalFrom" type="prov:Removal"/>
+
 
   <!-- document elements -->
 
@@ -560,6 +628,14 @@
         <xs:element ref="prov:hadMember" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:plan" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:mentionOf" minOccurs="0" maxOccurs="unbounded"/>
+
+        <xs:element ref="prov:dictionary" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:emptyDictionary" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:keyValuePair" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:hadDictionaryMember" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:derivedByInsertionFrom" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:derivedByRemovalFrom" minOccurs="0" maxOccurs="unbounded"/>
+
 <!--        <xs:element ref="prov:internalElement" minOccurs="0" maxOccurs="unbounded" /> -->
     </xs:sequence>
   </xs:group>

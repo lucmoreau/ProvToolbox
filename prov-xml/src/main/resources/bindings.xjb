@@ -94,6 +94,22 @@
 	  <jaxb:class name="MentionOf"/>
 	</jaxb:bindings>
 
+
+	<jaxb:bindings node="xs:complexType[@name='Insertion']">
+	  <jaxb:class name="DerivedByInsertionFrom"/>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Removal']">
+	  <jaxb:class name="DerivedByRemovalFrom"/>
+	</jaxb:bindings>
+
+	<jaxb:bindings node="xs:complexType[@name='KeyValuePair']">
+	  <jaxb:class name="Entry"/>
+	</jaxb:bindings>
+
+
+
+
+
          <!--
 	<jaxb:bindings node="xs:complexType[@name='Agent']">
 	  <jaxb:property>
@@ -149,7 +165,7 @@
     </jaxb:bindings>
 -->
 
-
+<!--
 
     <jaxb:bindings schemaLocation="collection.xsd" 
                    node="/xs:schema">       
@@ -159,6 +175,6 @@
         </jaxb:schemaBindings>
     </jaxb:bindings>
 
-
+-->
 
 </jaxb:bindings>

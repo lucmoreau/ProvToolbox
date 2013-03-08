@@ -129,10 +129,11 @@
                  <schemaInclude>**/prov-links.xsd</schemaInclude>
                  <schemaInclude>**/prov.xsd</schemaInclude>
                  <schemaInclude>**/prov-dictionary.xsd</schemaInclude>
+                 <schemaInclude>**/collection.xsd</schemaInclude>
 
 -->
                  <schemaInclude>**/validation.xsd</schemaInclude>
-                 <schemaInclude>**/collection.xsd</schemaInclude>
+
 
                </schemaIncludes>
                <bindingDirectory>src/main/resources</bindingDirectory>

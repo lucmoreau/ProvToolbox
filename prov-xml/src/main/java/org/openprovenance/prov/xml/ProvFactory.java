@@ -17,11 +17,11 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import org.openprovenance.prov.xml.collection.CollectionMemberOf;
-import org.openprovenance.prov.xml.collection.DerivedByInsertionFrom;
-import org.openprovenance.prov.xml.collection.DerivedByRemovalFrom;
-import org.openprovenance.prov.xml.collection.DictionaryMemberOf;
-import org.openprovenance.prov.xml.collection.Entry;
+import org.openprovenance.prov.xml.DictionaryMembership;
+import org.openprovenance.prov.xml.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.DerivedByRemovalFrom;
+import org.openprovenance.prov.xml.DictionaryMembership;
+import org.openprovenance.prov.xml.Entry;
 import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -39,7 +39,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 
     private final static ProvFactory oFactory = new ProvFactory();
 
-    public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.collection:org.openprovenance.prov.xml.validation";
+    public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.validation";
 
     static {
 	initBuilder();
@@ -84,7 +84,6 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return u.toString();
     }
 
-    final protected org.openprovenance.prov.xml.collection.ObjectFactory cof;
 
     protected DatatypeFactory dataFactory;
     /** Note, this method now makes it stateful :-( */
@@ -96,7 +95,6 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public ProvFactory() {
 	of = new ObjectFactory();
 	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
-	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	init();
 	setNamespaces(new Hashtable<String, String>());
     }
@@ -104,7 +102,6 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public ProvFactory(Hashtable<String, String> namespaces) {
 	of = new ObjectFactory();
 	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
-	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	this.namespaces = namespaces;
 	init();
     }
@@ -112,7 +109,6 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public ProvFactory(ObjectFactory of) {
 	this.of = of;
 	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
-	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	init();
 	setNamespaces(new Hashtable<String, String>());
     }
@@ -291,9 +287,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 
  
  
-    public org.openprovenance.prov.xml.collection.ObjectFactory getCollectionObjectFactory() {
-	return cof;
-    }
+
 
     /* Return the first label, it it exists */
     public String getLabel(HasExtensibility e) {
@@ -551,50 +545,51 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return res;
     }
 
-    public CollectionMemberOf newCollectionMemberOf(QName id, EntityRef after,
-						    List<Entity> entitySet) {
-	CollectionMemberOf res = cof.createCollectionMemberOf();
-	res.setId(id);
-	res.setEntity(after);
+
+    public DictionaryMembership newDictionaryMembership(QName id, IDRef dict,
+						    List<Entry> entitySet) {
+	DictionaryMembership res = of.createDictionaryMembership();
+	//res.setId(id);  TODO: no id?
+	res.setDictionary(dict);
 	if (entitySet != null)
-	    res.getMember().addAll(entitySet);
+	    res.getKeyValuePair().addAll(entitySet);
 	return res;
     }
 
-    public CollectionMemberOf newCollectionMemberOf(String id, EntityRef after,
-						    List<Entity> entitySet) {
-	return newCollectionMemberOf(stringToQName(id), after, entitySet);
+    public DictionaryMembership newDictionaryMembership(String id, EntityRef after,
+						    List<Entry> entitySet) {
+	return newDictionaryMembership(stringToQName(id), after, entitySet);
     }
 
     public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
-							    EntityRef after,
-							    EntityRef before,
+							    IDRef after,
+							    IDRef before,
 							    List<Entry> keyEntitySet) {
-	DerivedByInsertionFrom res = cof.createDerivedByInsertionFrom();
-	res.setId(id);
-	res.setAfter(after);
-	res.setBefore(before);
+	DerivedByInsertionFrom res = of.createDerivedByInsertionFrom();
+	//res.setId(id);
+	res.setNewDictionary(after);
+	res.setNewDictionary(before);
 	if (keyEntitySet != null)
-	    res.getEntry().addAll(keyEntitySet);
+	    res.getKeyValuePair().addAll(keyEntitySet);
 	return res;
     }
 
     public DerivedByInsertionFrom newDerivedByInsertionFrom(String id,
-							    EntityRef after,
-							    EntityRef before,
+							    IDRef after,
+							    IDRef before,
 							    List<Entry> keyEntitySet) {
 	return newDerivedByInsertionFrom(stringToQName(id), after, before,
 					 keyEntitySet);
     }
 
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
-							EntityRef after,
-							EntityRef before,
+							IDRef after,
+							IDRef before,
 							List<Object> keys) {
-	DerivedByRemovalFrom res = cof.createDerivedByRemovalFrom();
-	res.setId(id);
-	res.setAfter(after);
-	res.setBefore(before);
+	DerivedByRemovalFrom res = of.createDerivedByRemovalFrom();
+	//res.setId(id);
+	res.setNewDictionary(after);
+	res.setOldDictionary(before);
 	if (keys != null)
 	    res.getKey().addAll(keys);
 	return res;
@@ -607,20 +602,21 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return newDerivedByRemovalFrom(stringToQName(id), after, before, keys);
     }
 
-    public DictionaryMemberOf newDictionaryMemberOf(QName id, EntityRef after,
-						    List<Entry> keyEntitySet) {
-	DictionaryMemberOf res = cof.createDictionaryMemberOf();
-	res.setId(id);
+    /*    public DictionaryMembership newDictionaryMembership(QName id, EntityRef after,
+							List<Entry> keyEntitySet) {
+	DictionaryMembership res = of.createDictionaryMembership();
+	//res.setId(id);
 	res.setEntity(after);
 	if (keyEntitySet != null)
 	    res.getEntry().addAll(keyEntitySet);
 	return res;
     }
 
-    public DictionaryMemberOf newDictionaryMemberOf(String id, EntityRef after,
-						    List<Entry> keyEntitySet) {
-	return newDictionaryMemberOf(stringToQName(id), after, keyEntitySet);
+    public DictionaryMembership newDictionaryMembership(String id, EntityRef after,
+							List<Entry> keyEntitySet) {
+	return newDictionaryMembership(stringToQName(id), after, keyEntitySet);
     }
+    */
 
     public Document newDocument() {
 	Document res = of.createDocument();
@@ -628,8 +624,8 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
 
     /*
-     * public Bundle newBundle(String id, Collection<Activity> ps,
-     * Collection<Entity> as, Collection<Agent> ags, Collection<Object> lks) {
+     * public Bundle newBundle(String id, Dictionary<Activity> ps,
+     * Dictionary<Entity> as, Dictionary<Agent> ags, Dictionary<Object> lks) {
      * return newBundle(stringToQName(id), ps, as, ags, lks); }
      * 
      * public Bundle newBundle(Activity[] ps, Entity[] as, Agent[] ags, Object[]
@@ -817,7 +813,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
 
     public Entry newEntry(Object key, EntityRef entity) {
-	Entry res = cof.createEntry();
+	Entry res = of.createEntry();
 	res.setKey(key);
 	res.setEntity(entity);
 	return res;

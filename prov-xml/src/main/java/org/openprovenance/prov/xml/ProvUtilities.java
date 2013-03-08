@@ -8,8 +8,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.xml.collection.DerivedByInsertionFrom;
-import org.openprovenance.prov.xml.collection.Entry;
+import org.openprovenance.prov.xml.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.Entry;
 
 import java.lang.reflect.Method;
 
@@ -153,7 +153,7 @@ public class ProvUtilities {
         }
 
         if (r instanceof DerivedByInsertionFrom) {
-            return ((DerivedByInsertionFrom) r).getAfter().getRef();
+            return ((DerivedByInsertionFrom) r).getNewDictionary().getRef();
         }
         System.out.println("Unknown relation " + r);
         throw new UnsupportedOperationException();
@@ -219,7 +219,7 @@ public class ProvUtilities {
             return ((ActedOnBehalfOf) r).getResponsible().getRef();
         }
         if (r instanceof DerivedByInsertionFrom) {
-            return ((DerivedByInsertionFrom) r).getBefore().getRef();
+            return ((DerivedByInsertionFrom) r).getOldDictionary().getRef();
         }
         System.out.println("Unknown relation " + r);
         throw new UnsupportedOperationException();
@@ -281,7 +281,7 @@ public class ProvUtilities {
             List<QName> res = new LinkedList<QName>();
             DerivedByInsertionFrom dbif = ((DerivedByInsertionFrom) r);
             
-            for (Entry entry : dbif.getEntry()) {
+            for (Entry entry : dbif.getKeyValuePair()) {
                 res.add(entry.getEntity().getRef());
             }
             return res;

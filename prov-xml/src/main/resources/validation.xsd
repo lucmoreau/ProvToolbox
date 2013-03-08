@@ -61,7 +61,7 @@
 	</xs:complexType>
 
 	<xs:complexType name="MalformedStatements">
-	    <xs:sequence>
+	    <xs:sequence maxOccurs="unbounded" >
             <xs:group ref="prov:documentElements" />
         </xs:sequence>
        

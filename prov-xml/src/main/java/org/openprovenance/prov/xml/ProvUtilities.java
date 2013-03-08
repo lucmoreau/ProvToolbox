@@ -155,7 +155,7 @@ public class ProvUtilities {
         if (r instanceof DerivedByInsertionFrom) {
             return ((DerivedByInsertionFrom) r).getAfter().getRef();
         }
-        System.out.println("Unknow relation " + r);
+        System.out.println("Unknown relation " + r);
         throw new UnsupportedOperationException();
     }
 
@@ -398,7 +398,7 @@ public class ProvUtilities {
         fields.put(WasEndedBy.class, new String[] { "Id", "Activity",
                                                    "Trigger", "Ender", "Time",
                                                    "Any" });
-        fields.put(WasInformedBy.class, new String[] { "Id", "Effect", "Cause",
+        fields.put(WasInformedBy.class, new String[] { "Id", "Informed", "Informant",
                                                       "Any" });
         fields.put(WasDerivedFrom.class, new String[] { "Id",
                                                        "GeneratedEntity",
@@ -413,7 +413,7 @@ public class ProvUtilities {
         fields.put(WasAssociatedWith.class, new String[] { "Id", "Activity",
                                                           "Agent", "Plan",
                                                           "Any" });
-        fields.put(ActedOnBehalfOf.class, new String[] { "Id", "Subordinate",
+        fields.put(ActedOnBehalfOf.class, new String[] { "Id", "Delegate",
                                                         "Responsible",
                                                         "Activity", "Any" });
         fields.put(SpecializationOf.class, new String[] { "SpecificEntity",

@@ -252,7 +252,7 @@ public class BeanTraversal {
         convertTypeAttributes(inf,attrs);
         convertLabelAttributes(inf,attrs);
         convertAttributes(inf,attrs);
-        return c.newWasInformedBy(inf.getId(), q(inf.getEffect()), q(inf.getCause()), attrs);
+        return c.newWasInformedBy(inf.getId(), q(inf.getInformed()), q(inf.getInformant()), attrs);
     }
 
     public WasInfluencedBy convert(WasInfluencedBy infl) {
@@ -303,7 +303,7 @@ public class BeanTraversal {
         convertTypeAttributes(del,attrs);
         convertLabelAttributes(del,attrs);
         convertAttributes(del,attrs);
-        return c.newActedOnBehalfOf(del.getId(), q(del.getSubordinate()), q(del.getResponsible()), q(del.getActivity()), attrs);
+        return c.newActedOnBehalfOf(del.getId(), q(del.getDelegate()), q(del.getResponsible()), q(del.getActivity()), attrs);
     }
 
     public AlternateOf convert(AlternateOf o) {

@@ -353,31 +353,32 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
 
     public ActedOnBehalfOf newActedOnBehalfOf(ActedOnBehalfOf u) {
-	ActedOnBehalfOf u1 = newActedOnBehalfOf(u.getId(), u.getSubordinate(),
+	ActedOnBehalfOf u1 = newActedOnBehalfOf(u.getId(),
+						u.getDelegate(),
 						u.getResponsible(),
 						u.getActivity());
 	u1.getAny().addAll(u.getAny());
 	return u1;
     }
 
-    public ActedOnBehalfOf newActedOnBehalfOf(QName id, AgentRef subordinate,
+    public ActedOnBehalfOf newActedOnBehalfOf(QName id, AgentRef delegate,
 					      AgentRef responsible,
 					      ActivityRef eid2) {
 	ActedOnBehalfOf res = of.createActedOnBehalfOf();
 	res.setId(id);
 	res.setActivity(eid2);
-	res.setSubordinate(subordinate);
+	res.setDelegate(delegate);
 	res.setResponsible(responsible);
 	return res;
     }
 
-    public ActedOnBehalfOf newActedOnBehalfOf(String id, AgentRef subordinate,
+    public ActedOnBehalfOf newActedOnBehalfOf(String id, AgentRef delegate,
 					      AgentRef responsible,
 					      ActivityRef eid2) {
 	ActedOnBehalfOf res = of.createActedOnBehalfOf();
 	res.setId(stringToQName(id));
 	res.setActivity(eid2);
-	res.setSubordinate(subordinate);
+	res.setDelegate(delegate);
 	res.setResponsible(responsible);
 	return res;
     }
@@ -1453,8 +1454,8 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 					  ActivityRef pid2) {
 	WasInformedBy res = of.createWasInformedBy();
 	res.setId(id);
-	res.setEffect(pid1);
-	res.setCause(pid2);
+	res.setInformed(pid1);
+	res.setInformant(pid2);
 	return res;
     }
 
@@ -1483,8 +1484,9 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
     
     public WasInformedBy newWasInformedBy(WasInformedBy d) {
-	WasInformedBy wtb = newWasInformedBy(d.getId(), d.getEffect(),
-					     d.getCause());
+	WasInformedBy wtb = newWasInformedBy(d.getId(), 
+					     d.getInformed(),
+					     d.getInformant());
 	wtb.setId(d.getId());
 	wtb.getAny().addAll(d.getAny());
 	wtb.getType().addAll(d.getType());

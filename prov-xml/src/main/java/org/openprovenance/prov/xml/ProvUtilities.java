@@ -139,7 +139,7 @@ public class ProvUtilities {
             return ((HadMember) r).getCollection().getRef();
         }
         if (r instanceof WasInformedBy) {
-            return ((WasInformedBy) r).getEffect().getRef();
+            return ((WasInformedBy) r).getInformed().getRef();
         }
         if (r instanceof MentionOf) {
             return ((MentionOf) r).getSpecificEntity().getRef();
@@ -149,7 +149,7 @@ public class ProvUtilities {
         }
 
         if (r instanceof ActedOnBehalfOf) {
-            return ((ActedOnBehalfOf) r).getSubordinate().getRef();
+            return ((ActedOnBehalfOf) r).getDelegate().getRef();
         }
 
         if (r instanceof DerivedByInsertionFrom) {
@@ -213,7 +213,7 @@ public class ProvUtilities {
             return ((MentionOf) r).getGeneralEntity().getRef();
         }
         if (r instanceof WasInformedBy) {
-            return ((WasInformedBy) r).getCause().getRef();
+            return ((WasInformedBy) r).getInformant().getRef();
         }
         if (r instanceof ActedOnBehalfOf) {
             return ((ActedOnBehalfOf) r).getResponsible().getRef();

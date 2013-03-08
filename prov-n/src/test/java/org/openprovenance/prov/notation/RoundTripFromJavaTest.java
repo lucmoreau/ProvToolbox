@@ -49,7 +49,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
     public void NOmakeDocAndTest(Statement [] statements, String file, Statement [] opt, boolean check) {
 	Document doc = pFactory.newDocument();
 	for (int i=0; i< statements.length; i++) {
-	    doc.getEntityOrActivityOrWasGeneratedBy().add(statements[i]);
+	    doc.getEntityAndActivityAndWasGeneratedBy().add(statements[i]);
 	}
 	updateNamespaces(doc);
 	
@@ -68,7 +68,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	    compareDocuments(doc, doc2, check && checkTest(file1));
 	    
 	    if (opt!=null) {
-		doc.getEntityOrActivityOrWasGeneratedBy().addAll(Arrays.asList(opt));
+		doc.getEntityAndActivityAndWasGeneratedBy().addAll(Arrays.asList(opt));
 		String file2=file+"-M";
 		file2=file2+extension();
 		

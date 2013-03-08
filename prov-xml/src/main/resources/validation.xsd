@@ -14,6 +14,15 @@
 	
 	<xs:element name="validationReport" type="val:ValidationReport" />
 
+  <xs:complexType name="Statements">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+       <xs:group ref="prov:documentElements"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+  
+
 
         <xs:complexType name="ValidationReport">
                 <xs:sequence>
@@ -45,7 +54,7 @@
 
 	<xs:complexType name="MergeReport">
 		<xs:complexContent>
-			<xs:extension base="prov:Statements">
+			<xs:extension base="val:Statements">
 				<xs:attribute name="key" type="xs:string" />
 			</xs:extension>
 		</xs:complexContent>

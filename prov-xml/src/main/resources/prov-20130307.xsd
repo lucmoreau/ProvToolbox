@@ -578,9 +578,9 @@
 
   <xs:complexType name="NEWDocument"> <!-- TODO -->
     <xs:sequence maxOccurs="unbounded">
-        <xs:group ref="prov:documentElements" minOccurs="0"/>
-	<xs:element name="bundleContent" type="prov:NamedBundle" minOccurs="0"/>
-        <xs:any namespace="##other" processContents="lax" minOccurs="0" />
+      <xs:group ref="prov:documentElements" minOccurs="0"/>
+      <xs:element name="bundleContent" type="prov:NamedBundle" minOccurs="0"/>
+      <xs:any namespace="##other" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 

@@ -13,6 +13,12 @@
     <foaf:name>Chart Generators Inc</foaf:name>
   </prov:agent>
 
+  <ex:myagent prov:id="ex:chartgen">
+    <prov:type>prov:Organization</prov:type>
+    <foaf:name>Chart Generators Inc</foaf:name>
+  </ex:myagent>
+
+
   <prov:agent prov:id="ex:derek">
     <prov:type xsi:type="xsd:QName">prov:Person</prov:type>
     <foaf:givenName>Derek</foaf:givenName>

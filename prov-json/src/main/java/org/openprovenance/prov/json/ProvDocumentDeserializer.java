@@ -100,7 +100,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         // Create the document
         Document doc = pf.newDocument();
         doc.setNss(namespaces);
-        doc.getEntityOrActivityOrWasGeneratedBy().addAll(statements);
+        doc.getEntityAndActivityAndWasGeneratedBy().addAll(statements);
         return doc;
     }
     
@@ -207,7 +207,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             Collection statements = decodeBundle(attributeMap);
             NamedBundle namedBundle = new NamedBundle(); 
             namedBundle.setId(id);
-            namedBundle.getEntityOrActivityOrWasGeneratedBy().addAll((Collection<? extends Statement>)statements);
+            namedBundle.getEntityAndActivityAndWasGeneratedBy().addAll((Collection<? extends Statement>)statements);
             statement = namedBundle;
             break;
         case wasInformedBy:

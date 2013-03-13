@@ -190,7 +190,10 @@ entity(tr2013:WD-prov-dc-20130312,          [ prov:type='process:WGNote', dot:fi
 entity(tr2013:WD-prov-sem-20130312,         [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-sem-20130312"  ])
 entity(tr2013:WD-prov-implementations-20130312, [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-implementations-20130312"  ])
 
+entity(ex:family-cr, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 entity(ex:family-pr, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(ex:family-rec, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+
 derivedByInsertionFrom(ex:family-pr, ex:family7, {('tr:prov-dm',              tr2013:PR-prov-dm-20130312),
                                                   ('tr:prov-o',               tr2013:PR-prov-o-20130312),            
                                                   ('tr:prov-n',               tr2013:PR-prov-n-20130312),            
@@ -204,6 +207,66 @@ derivedByInsertionFrom(ex:family-pr, ex:family7, {('tr:prov-dm',              tr
                                                   ('tr:prov-dc',              tr2013:WD-prov-dc-20130312),
                                                   ('tr:prov-sem',             tr2013:WD-prov-sem-20130312),
                                                   ('tr:prov-implementations', tr2013:WD-prov-implementations-20130312) })
+
+derivedByInsertionFrom(ex:family-pr, ex:family7, {('tr:prov-dm',              tr2013:PR-prov-dm-20130312),
+                                                  ('tr:prov-o',               tr2013:PR-prov-o-20130312),            
+                                                  ('tr:prov-n',               tr2013:PR-prov-n-20130312),            
+                                                  ('tr:prov-constraints',     tr2013:PR-prov-constraints-20130312),
+                                                  ('tr:prov-primer',          tr2013:WD-prov-primer-20130312),
+                                                  ('tr:prov-overview',        tr2013:WD-prov-overview-20130312),
+                                                  ('tr:prov-dictionary',      tr2013:WD-prov-dictionary-20130312),
+                                                  ('tr:prov-xml',             tr2013:WD-prov-xml-20130312),
+                                                  ('tr:prov-links',           tr2013:WD-prov-links-20130312),
+                                                  ('tr:prov-aq',              tr2013:WD-prov-aq-20130312),
+                                                  ('tr:prov-dc',              tr2013:WD-prov-dc-20130312),
+                                                  ('tr:prov-sem',             tr2013:WD-prov-sem-20130312),
+                                                  ('tr:prov-implementations', tr2013:WD-prov-implementations-20130312) })
+
+
+entity(tr2013:REC-prov-dm-20130430,          [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/REC-prov-dm-20130430"  ])
+entity(tr2013:REC-prov-n-20130430,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/REC-prov-n-20130430"  ])
+entity(tr2013:REC-prov-o-20130430,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/REC-prov-o-20130430"  ])
+entity(tr2013:REC-prov-constraints-20130430, [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/REC-prov-constraints-20130430"  ])
+
+entity(tr2013:NOTE-prov-primer-20130430,      [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-primer-20130430"  ])
+entity(tr2013:NOTE-prov-overview-20130430,    [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-overview-20130430"  ])
+entity(tr2013:NOTE-prov-dictionary-20130430,  [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-dictionary-20130430"  ])
+entity(tr2013:NOTE-prov-xml-20130430,         [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-xml-20130430"  ])
+entity(tr2013:NOTE-prov-links-20130430,       [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-links-20130430"  ])
+entity(tr2013:NOTE-prov-aq-20130430,          [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-aq-20130430"  ])
+entity(tr2013:NOTE-prov-dc-20130430,          [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-dc-20130430"  ])
+entity(tr2013:NOTE-prov-sem-20130430,         [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-sem-20130430"  ])
+entity(tr2013:NOTE-prov-implementations-20130430, [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-implementations-20130430"  ])
+
+
+wasDerivedFrom(tr2013:REC-prov-dm-20130430,          tr2013:PR-prov-dm-20130312)
+wasDerivedFrom(tr2013:REC-prov-n-20130430,           tr2013:PR-prov-n-20130312)
+wasDerivedFrom(tr2013:REC-prov-o-20130430,           tr2013:PR-prov-o-20130312)
+wasDerivedFrom(tr2013:REC-prov-constraints-20130430, tr2013:PR-prov-constraints-20130312)
+
+wasDerivedFrom(tr2013:NOTE-prov-primer-20130430,     tr2013:WD-prov-primer-20130312)
+wasDerivedFrom(tr2013:NOTE-prov-overview-20130430,   tr2013:WD-prov-overview-20130312)
+wasDerivedFrom(tr2013:NOTE-prov-xml-20130430,        tr2013:WD-prov-xml-20130312)
+wasDerivedFrom(tr2013:NOTE-prov-links-20130430,      tr2013:WD-prov-links-20130312)
+wasDerivedFrom(tr2013:NOTE-prov-aq-20130430,         tr2013:WD-prov-aq-20130312)
+wasDerivedFrom(tr2013:NOTE-prov-dc-20130430,         tr2013:WD-prov-dc-20130312)
+
+
+
+
+derivedByInsertionFrom(ex:family-rec, ex:family-pr, {('tr:prov-dm',              tr2013:REC-prov-dm-20130430),
+                                                     ('tr:prov-o',               tr2013:REC-prov-o-20130430),            
+                                                     ('tr:prov-n',               tr2013:REC-prov-n-20130430),            
+                                                     ('tr:prov-constraints',     tr2013:REC-prov-constraints-20130430),
+                                                     ('tr:prov-primer',          tr2013:NOTE-prov-primer-20130430),
+                                                     ('tr:prov-overview',        tr2013:NOTE-prov-overview-20130430),
+                                                     ('tr:prov-dictionary',      tr2013:NOTE-prov-dictionary-20130430),
+                                                     ('tr:prov-xml',             tr2013:NOTE-prov-xml-20130430),
+                                                     ('tr:prov-links',           tr2013:NOTE-prov-links-20130430),
+                                                     ('tr:prov-aq',              tr2013:NOTE-prov-aq-20130430),
+                                                     ('tr:prov-dc',              tr2013:NOTE-prov-dc-20130430),
+                                                     ('tr:prov-sem',             tr2013:NOTE-prov-sem-20130430),
+                                                     ('tr:prov-implementations', tr2013:NOTE-prov-implementations-20130430) })
 
 
 

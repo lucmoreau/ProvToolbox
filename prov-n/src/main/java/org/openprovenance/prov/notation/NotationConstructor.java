@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
@@ -13,6 +14,8 @@ import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
+import org.openprovenance.prov.xml.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.ModelConstructor;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Entity;
@@ -388,6 +391,14 @@ public class NotationConstructor implements ModelConstructor {
   //	return s;
 	return null;
     }
+
+	@Override
+	public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
+			QName after, QName before, List<KeyQNamePair> keyEntitySet) {
+	    String s="TODO: newDerivedByInsertionFrom";
+	    writeln(s);
+		return null;
+	}
 
 
 

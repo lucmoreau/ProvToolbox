@@ -10,6 +10,8 @@ import javax.xml.namespace.QName;
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
+import org.openprovenance.prov.xml.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.ModelConstructor;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.HadMember;
@@ -501,5 +503,11 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
     public boolean binaryProp(Object id, Object subject) {
 	return id == null && subject != null;
     }
+    
+	@Override
+	public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
+			QName after, QName before, List<KeyQNamePair> keyEntitySet) {
+		throw new UnsupportedOperationException();
+	}
 
 }

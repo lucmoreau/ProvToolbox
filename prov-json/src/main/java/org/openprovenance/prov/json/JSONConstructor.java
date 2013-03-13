@@ -18,10 +18,12 @@ import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
+import org.openprovenance.prov.xml.DerivedByInsertionFrom;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.HadMember;
 import org.openprovenance.prov.xml.InternationalizedString;
+import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.MentionOf;
 import org.openprovenance.prov.xml.ModelConstructor;
 import org.openprovenance.prov.xml.NamedBundle;
@@ -542,6 +544,12 @@ public class JSONConstructor implements ModelConstructor {
 			currentNamespaces = new Hashtable<String, String>(namespaces);
 		// Create a separate list of records for the bundle
 		currentRecords = new ArrayList<JsonProvRecord>();
+	}
+
+	@Override
+	public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
+			QName after, QName before, List<KeyQNamePair> keyEntitySet) {
+		throw new UnsupportedOperationException();
 	}
 
 }

@@ -8,6 +8,7 @@ prefix w3      <http://www.w3.org/>
 prefix tr      <http://www.w3.org/TR/>
 prefix tr2011  <http://www.w3.org/TR/2011/>
 prefix tr2012  <http://www.w3.org/TR/2012/>
+prefix tr2013  <http://www.w3.org/TR/2013/>
 prefix process <http://www.w3.org/2005/10/Process-20051014/tr.html#>
 prefix email   <https://lists.w3.org/Archives/Member/w3c-archive/>
 prefix chairs  <https://lists.w3.org/Archives/Member/chairs/>
@@ -172,6 +173,40 @@ wasInformedBy(ex:act7,ex:act6, [dot:color="none"])
 
 wasAttributedTo(tr2011:WD-prov-dm-20111018,w3:Consortium)
 wasAttributedTo(tr2012:WD-prov-dm-20120503,w3:Consortium)
+
+
+entity(tr2013:PR-prov-dm-20130312,          [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/PR-prov-dm-20130312"  ])
+entity(tr2013:PR-prov-n-20130312,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/PR-prov-n-20130312"  ])
+entity(tr2013:PR-prov-o-20130312,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/PR-prov-o-20130312"  ])
+entity(tr2013:PR-prov-constraints-20130312, [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/PR-prov-constraints-20130312"  ])
+
+entity(tr2013:WD-prov-primer-20130312,      [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-primer-20130312"  ])
+entity(tr2013:WD-prov-overview-20130312,    [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-overview-20130312"  ])
+entity(tr2013:WD-prov-dictionary-20130312,  [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-dictionary-20130312"  ])
+entity(tr2013:WD-prov-xml-20130312,         [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-xml-20130312"  ])
+entity(tr2013:WD-prov-links-20130312,       [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-links-20130312"  ])
+entity(tr2013:WD-prov-aq-20130312,          [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-aq-20130312"  ])
+entity(tr2013:WD-prov-dc-20130312,          [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-dc-20130312"  ])
+entity(tr2013:WD-prov-sem-20130312,         [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-sem-20130312"  ])
+entity(tr2013:WD-prov-implementations-20130312, [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-implementations-20130312"  ])
+
+entity(ex:family-pr, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+derivedByInsertionFrom(ex:family-pr, ex:family7, {('tr:prov-dm',              tr2013:PR-prov-dm-20130312),
+                                                  ('tr:prov-o',               tr2013:PR-prov-o-20130312),            
+                                                  ('tr:prov-n',               tr2013:PR-prov-n-20130312),            
+                                                  ('tr:prov-constraints',     tr2013:PR-prov-constraints-20130312),
+                                                  ('tr:prov-primer',          tr2013:WD-prov-primer-20130312),
+                                                  ('tr:prov-overview',        tr2013:WD-prov-overview-20130312),
+                                                  ('tr:prov-dictionary',      tr2013:WD-prov-dictionary-20130312),
+                                                  ('tr:prov-xml',             tr2013:WD-prov-xml-20130312),
+                                                  ('tr:prov-links',           tr2013:WD-prov-links-20130312),
+                                                  ('tr:prov-aq',              tr2013:WD-prov-aq-20130312),
+                                                  ('tr:prov-dc',              tr2013:WD-prov-dc-20130312),
+                                                  ('tr:prov-sem',             tr2013:WD-prov-sem-20130312),
+                                                  ('tr:prov-implementations', tr2013:WD-prov-implementations-20130312) })
+
+
+
 endDocument
 
 

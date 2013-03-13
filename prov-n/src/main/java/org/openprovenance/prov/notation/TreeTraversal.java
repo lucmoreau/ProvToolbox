@@ -10,6 +10,7 @@ import javax.xml.namespace.QName;
 import  org.antlr.runtime.tree.Tree;
 import  org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.xml.Attribute;
+import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.ModelConstructor;
 import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -316,10 +317,9 @@ public class TreeTraversal {
             uid=(QName)convert(uidTree);
             id2=(QName)convert(ast.getChild(1));
             id1=(QName)convert(ast.getChild(2));
-            Object keymap=convert(ast.getChild(3));
-            dAttrs=(List<Attribute>) convert(ast.getChild(4));
-            //TODO: return c.newInsertion(uid,id2,id1,keymap,dAttrs);
-            return null;
+            List<KeyQNamePair> keymap=(List<KeyQNamePair>)convert(ast.getChild(3));
+            //dAttrs=(List<Attribute>) convert(ast.getChild(4));
+            return c.newDerivedByInsertionFrom(uid,id2,id1,keymap);
 
         case PROV_NParser.DBRF:
             uidTree=ast.getChild(0);
@@ -343,10 +343,12 @@ public class TreeTraversal {
             }
             uid=(QName)convert(uidTree);
             id2=(QName)convert(ast.getChild(1));
-            keymap=convert(ast.getChild(2));
+            //TODO: commented out keymap
+            //keymap=convert(ast.getChild(2));
             Object complete=convert(ast.getChild(3));
             dAttrs=(List<Attribute>) convert(ast.getChild(4));
             //return c.newDictionaryMemberOf(uid,id2,keymap,complete,dAttrs);
+            //TODO
             return null;
 
         case PROV_NParser.CMEM:
@@ -385,23 +387,23 @@ public class TreeTraversal {
             Object entities=convert(ast.getChild(1));
 
             @SuppressWarnings("unchecked")
-            List<Object> tmp_keys1 = (List<Object>)keys1;
-	    keys=tmp_keys1;
+            List<Object> keys2 = (List<Object>)keys1;
 	    
             @SuppressWarnings("unchecked")
-            List<Object> tmp_entities = (List<Object>)entities;
-	    values=tmp_entities;
+            List<QName> qnames = (List<QName>)entities;
 	    
-            List<Object> entries=new LinkedList<Object>();
+            List<KeyQNamePair> entries=new LinkedList<KeyQNamePair>();
             int ii=0;
-            for (Object key : keys) {
-                Object value=values.get(ii);
-               // entries.add(c.newEntry(key,value));
+            for (Object key : keys2) {
+                QName value=qnames.get(ii);
+                KeyQNamePair p=new KeyQNamePair();
+                p.name=value;
+                p.key=key;
+               entries.add(p);
                 ii++;
             }
 
-            //return c.newKeyEntitySet(entries);
-            return null;
+            return entries;
 
         case PROV_NParser.ES:
             List<Object> listOfEntities=new LinkedList<Object>();

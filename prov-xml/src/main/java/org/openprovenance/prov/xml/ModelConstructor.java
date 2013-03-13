@@ -38,6 +38,11 @@ public interface ModelConstructor {
                                       Collection<Statement> statements);
     public void startDocument(Hashtable<String, String> hashtable);
     public void startBundle(QName bundleId, Hashtable<String, String> namespaces);
+    
+    public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
+		    												QName after,
+		                                                    QName before,
+		    												List<KeyQNamePair> keyEntitySet);
 
     //TODO:    public DerivedByInsertionFrom newInsertion(QName id, QName a2, QName a1, Object keymap, Collection<Attribute> attributes);
 

@@ -568,10 +568,32 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	DerivedByInsertionFrom res = of.createDerivedByInsertionFrom();
 	//res.setId(id);
 	res.setNewDictionary(after);
-	res.setNewDictionary(before);
+	res.setOldDictionary(before);
 	if (keyEntitySet != null)
 	    res.getKeyValuePair().addAll(keyEntitySet);
 	return res;
+    }
+    
+    public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
+			QName after,
+            QName before,
+			List<KeyQNamePair> keyEntitySet) {
+    	IDRef aa=new IDRef();
+    	aa.setRef(after);
+    	IDRef ab=new IDRef();
+    	ab.setRef(before);
+    	List<Entry> entries=new LinkedList<Entry>();
+    	if (keyEntitySet!=null) {
+    	for (KeyQNamePair p: keyEntitySet) {
+    		Entry e=new Entry();
+    		e.setKey(p.key);
+        	IDRef ac=new IDRef();
+        	ac.setRef(p.name);
+    		e.setEntity(ac);
+    		entries.add(e);
+    	}
+    	}
+    	return newDerivedByInsertionFrom(id, aa, ab, entries);
     }
 
     public DerivedByInsertionFrom newDerivedByInsertionFrom(String id,

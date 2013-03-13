@@ -208,6 +208,19 @@ derivedByInsertionFrom(ex:family-pr, ex:family7, {('tr:prov-dm',              tr
                                                   ('tr:prov-sem',             tr2013:WD-prov-sem-20130312),
                                                   ('tr:prov-implementations', tr2013:WD-prov-implementations-20130312) })
 
+wasDerivedFrom(tr2013:PR-prov-dm-20130312,          tr2012:CR-prov-dm-2021211
+wasDerivedFrom(tr2013:PR-prov-n-20130312,           tr2012:CR-prov-n-2021211)
+wasDerivedFrom(tr2013:PR-prov-o-20130312,           tr2012:CR-prov-o-2021211)
+wasDerivedFrom(tr2013:PR-prov-constraints-20130312, tr2012:CR-prov-constraints-2021211)
+
+wasDerivedFrom(tr2013:WD-prov-primer-20130312,      tr2012:WD-prov-primer-20121211))
+wasDerivedFrom(tr2013:WD-prov-overview-20130312,    tr2012:WD-prov-overview-20121211))
+wasDerivedFrom(tr2013:WD-prov-xml-20130312,         tr2012:WD-prov-xml-20121211))
+wasDerivedFrom(tr2013:WD-prov-links-20130312,       tr2012:WD-prov-links-20121211)
+wasDerivedFrom(tr2013:WD-prov-aq-20130312,          tr2012:WD-prov-links-20120619)
+wasDerivedFrom(tr2013:WD-prov-dc-20130312,          tr2012:WD-prov-dc-20121211)
+
+
 derivedByInsertionFrom(ex:family-pr, ex:family7, {('tr:prov-dm',              tr2013:PR-prov-dm-20130312),
                                                   ('tr:prov-o',               tr2013:PR-prov-o-20130312),            
                                                   ('tr:prov-n',               tr2013:PR-prov-n-20130312),            

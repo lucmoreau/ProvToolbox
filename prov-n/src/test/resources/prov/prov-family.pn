@@ -13,7 +13,8 @@ prefix process <http://www.w3.org/2005/10/Process-20051014/tr.html#>
 prefix email   <https://lists.w3.org/Archives/Member/w3c-archive/>
 prefix chairs  <https://lists.w3.org/Archives/Member/chairs/>
 prefix trans   <http://www.w3.org/2005/08/01-transitions.html#>
-
+prefix wbs     <https://www.w3.org/2002/09/wbs/46974/>
+prefix wbs2    <https://www.w3.org/2002/09/wbs/33280/>
 
 prefix dot   <http://openprovenance.org/Toolbox/dot#>
 
@@ -316,6 +317,17 @@ wasDerivedFrom(tr2013:WD-prov-aq-20130312,          tr2012:WD-prov-aq-20120619)
 wasDerivedFrom(tr2013:WD-prov-dc-20130312,          tr2012:WD-prov-dc-20121211)
 
 
+entity(wbs:prov-implementation-survey/results)
+entity(wbs:prov-vocabulary-usage-survey/results)
+entity(wbs:prov-vocabulary-survey/results)
+entity(wbs:prov-constraints/results)
+
+wasDerivedFrom(tr2013:WD-prov-implementations-20130312, wbs:prov-implementation-survey/results)
+wasDerivedFrom(tr2013:WD-prov-implementations-20130312, wbs:prov-vocabulary-usage-survey/results)
+wasDerivedFrom(tr2013:WD-prov-implementations-20130312, wbs:prov-vocabulary-survey/results)
+wasDerivedFrom(tr2013:WD-prov-implementations-20130312, wbs:prov-constraints/results)
+
+
 derivedByInsertionFrom(ex:family-pr, ex:family-cr, {('tr:prov-dm',              tr2013:PR-prov-dm-20130312),
                                                     ('tr:prov-o',               tr2013:PR-prov-o-20130312),            
                                                   ('tr:prov-n',               tr2013:PR-prov-n-20130312),            
@@ -332,6 +344,17 @@ derivedByInsertionFrom(ex:family-pr, ex:family-cr, {('tr:prov-dm',              
 
 
 // REC release
+
+entity(chairs:2013JanMar/0116, [ prov:type='process:cfr' , dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2013JanMar/0116.html" ]) 
+
+entity(wbs2:provpf/results)
+wasDerivedFrom(chairs:2013JanMar/0116, tr2013:PR-prov-dm-20130312)
+wasDerivedFrom(chairs:2013JanMar/0116, tr2013:PR-prov-n-20130312)
+wasDerivedFrom(chairs:2013JanMar/0116, tr2013:PR-prov-o-20130312)
+wasDerivedFrom(chairs:2013JanMar/0116, tr2013:PR-prov-constraints-20130312)
+
+wasDerivedFrom(wbs2:provpf/results, chairs:2013JanMar/0116)
+
 
 entity(ex:family-rec, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 

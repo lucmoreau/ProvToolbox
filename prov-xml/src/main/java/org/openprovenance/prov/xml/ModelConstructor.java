@@ -40,9 +40,16 @@ public interface ModelConstructor {
     public void startBundle(QName bundleId, Hashtable<String, String> namespaces);
     
     public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
-		    												QName after,
-		                                                    QName before,
-		    												List<KeyQNamePair> keyEntitySet);
+                                                            QName after,
+                                                            QName before,
+                                                            List<KeyQNamePair> keyEntitySet,
+                                                            Collection<Attribute> attributes);
+
+    public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
+                                                        QName after,
+                                                        QName before,
+                                                        List<Object> keys,
+                                                        Collection<Attribute> attributes);
 
     //TODO:    public DerivedByInsertionFrom newInsertion(QName id, QName a2, QName a1, Object keymap, Collection<Attribute> attributes);
 

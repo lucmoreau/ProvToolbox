@@ -19,6 +19,7 @@ import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.DerivedByRemovalFrom;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.HadMember;
@@ -546,10 +547,25 @@ public class JSONConstructor implements ModelConstructor {
 		currentRecords = new ArrayList<JsonProvRecord>();
 	}
 
+
 	@Override
 	public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
-			QName after, QName before, List<KeyQNamePair> keyEntitySet) {
-		throw new UnsupportedOperationException();
+								QName after,
+								QName before,
+								List<KeyQNamePair> keyEntitySet,
+								Collection<Attribute> attributes) {
+	    throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
+							    QName after,
+							    QName before,
+							    List<Object> keys,
+							    Collection<Attribute> attributes) {
+	    throw new UnsupportedOperationException();
+
 	}
 
 }

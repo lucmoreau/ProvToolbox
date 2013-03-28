@@ -31,6 +31,8 @@ import org.openprovenance.prov.xml.WasInfluencedBy;
 import org.openprovenance.prov.xml.WasInformedBy;
 import org.openprovenance.prov.xml.WasInvalidatedBy;
 import org.openprovenance.prov.xml.WasStartedBy;
+import org.openprovenance.prov.xml.DerivedByRemovalFrom;
+
 
 /**
  * A Converter to RDF
@@ -503,11 +505,38 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
     public boolean binaryProp(Object id, Object subject) {
 	return id == null && subject != null;
     }
+
+    @Override
+    public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
+							    QName after,
+							    QName before,
+							    List<KeyQNamePair> keyEntitySet,
+							    Collection<Attribute> attributes) {
+	throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
+							QName after,
+							QName before,
+							List<Object> keys,
+							Collection<Attribute> attributes) {
+	throw new UnsupportedOperationException();
+
+    }
     
-	@Override
-	public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
-			QName after, QName before, List<KeyQNamePair> keyEntitySet) {
-		throw new UnsupportedOperationException();
-	}
+    /*
+    @Override
+    public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
+                                                            QName after, QName before, List<KeyQNamePair> keyEntitySet, Collection<Attributes> attributes) {
+	throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
+                                                            QName after, QName before, List<Oject> keys, Collection<Attributes> attributes) {
+	throw new UnsupportedOperationException();
+    }
+    */
 
 }

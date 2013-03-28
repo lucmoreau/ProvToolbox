@@ -15,6 +15,7 @@ import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.DerivedByRemovalFrom;
 import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.ModelConstructor;
 import org.openprovenance.prov.xml.Document;
@@ -394,10 +395,22 @@ public class NotationConstructor implements ModelConstructor {
 
 	@Override
 	public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
-			QName after, QName before, List<KeyQNamePair> keyEntitySet) {
+			QName after, QName before, List<KeyQNamePair> keyEntitySet, Collection<Attribute> attributes) {
 	    String s="TODO: newDerivedByInsertionFrom";
 	    writeln(s);
-		return null;
+	    return null;
+	}
+
+	@Override
+	public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
+							    QName after,
+							    QName before,
+							    List<Object> keys,
+							    Collection<Attribute> attributes) {
+	    String s="TODO: newDerivedByRemovalFrom";
+	    writeln(s);
+	    // TODO Auto-generated method stub
+	    return null;
 	}
 
 

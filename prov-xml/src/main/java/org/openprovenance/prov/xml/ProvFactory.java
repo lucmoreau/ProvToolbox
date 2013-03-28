@@ -564,20 +564,23 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
 							    IDRef after,
 							    IDRef before,
-							    List<Entry> keyEntitySet) {
+							    List<Entry> keyEntitySet,
+							    Collection<Attribute> attributes) {
 	DerivedByInsertionFrom res = of.createDerivedByInsertionFrom();
-	//res.setId(id);
+	res.setId(id);
 	res.setNewDictionary(after);
 	res.setOldDictionary(before);
 	if (keyEntitySet != null)
 	    res.getKeyEntityPair().addAll(keyEntitySet);
+	setAttributes(res, attributes);
 	return res;
     }
     
     public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
-			QName after,
-            QName before,
-			List<KeyQNamePair> keyEntitySet) {
+                                                            QName after,
+                                                            QName before,
+                                                            List<KeyQNamePair> keyEntitySet,
+                                                            Collection<Attribute> attributes) {
     	IDRef aa=new IDRef();
     	aa.setRef(after);
     	IDRef ab=new IDRef();
@@ -593,23 +596,39 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     		entries.add(e);
     	}
     	}
-    	return newDerivedByInsertionFrom(id, aa, ab, entries);
+    	return newDerivedByInsertionFrom(id, aa, ab, entries, attributes);
     }
 
     public DerivedByInsertionFrom newDerivedByInsertionFrom(String id,
 							    IDRef after,
 							    IDRef before,
-							    List<Entry> keyEntitySet) {
+							    List<Entry> keyEntitySet, 
+							    Collection<Attribute> attributes) {
 	return newDerivedByInsertionFrom(stringToQName(id), after, before,
-					 keyEntitySet);
+					 keyEntitySet,
+					 attributes);
     }
+    
+    public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
+                                                            QName after,
+                                                            QName before,
+                                                            List<Object> keys,
+                                                            Collection<Attribute> attributes) {
+    	IDRef aa=new IDRef();
+    	aa.setRef(after);
+    	IDRef ab=new IDRef();
+    	ab.setRef(before);
+    	return newDerivedByRemovalFrom(id, aa, ab, keys, attributes);
+    }
+
 
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
 							IDRef after,
 							IDRef before,
-							List<Object> keys) {
+							List<Object> keys,
+							Collection<Attribute> attributes) {
 	DerivedByRemovalFrom res = of.createDerivedByRemovalFrom();
-	//res.setId(id);
+	res.setId(id);
 	res.setNewDictionary(after);
 	res.setOldDictionary(before);
 	if (keys != null)
@@ -620,8 +639,9 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public DerivedByRemovalFrom newDerivedByRemovalFrom(String id,
 							EntityRef after,
 							EntityRef before,
-							List<Object> keys) {
-	return newDerivedByRemovalFrom(stringToQName(id), after, before, keys);
+							List<Object> keys,
+							Collection<Attribute> attributes) {
+	return newDerivedByRemovalFrom(stringToQName(id), after, before, keys, attributes);
     }
 
     /*    public DictionaryMembership newDictionaryMembership(QName id, EntityRef after,

@@ -318,8 +318,8 @@ public class TreeTraversal {
             id2=(QName)convert(ast.getChild(1));
             id1=(QName)convert(ast.getChild(2));
             List<KeyQNamePair> keymap=(List<KeyQNamePair>)convert(ast.getChild(3));
-            //dAttrs=(List<Attribute>) convert(ast.getChild(4));
-            return c.newDerivedByInsertionFrom(uid,id2,id1,keymap);
+            dAttrs=(List<Attribute>) convert(ast.getChild(4));
+            return c.newDerivedByInsertionFrom(uid,id2,id1,keymap,dAttrs);
 
         case PROV_NParser.DBRF:
             uidTree=ast.getChild(0);
@@ -330,11 +330,8 @@ public class TreeTraversal {
             id2=(QName)convert(ast.getChild(1));
             id1=(QName)convert(ast.getChild(2));
             Object keyset=convert(ast.getChild(3));
-            //@SuppressWarnings("unchecked")
-            //Object keylist=c.newKeys((List<Object>)keyset);
             dAttrs=(List<Attribute>)convert(ast.getChild(4));
-            //return c.newRemoval(uid,id2,id1,keylist,dAttrs);
-            return null;
+            return c.newDerivedByRemovalFrom(uid,id2,id1,(List<Object>)keyset,dAttrs);
 
         case PROV_NParser.DMEM:
             uidTree=ast.getChild(0);

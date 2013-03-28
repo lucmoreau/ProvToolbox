@@ -281,7 +281,7 @@ public class ProvUtilities {
             List<QName> res = new LinkedList<QName>();
             DerivedByInsertionFrom dbif = ((DerivedByInsertionFrom) r);
             
-            for (Entry entry : dbif.getKeyValuePair()) {
+            for (Entry entry : dbif.getKeyEntityPair()) {
                 res.add(entry.getEntity().getRef());
             }
             return res;

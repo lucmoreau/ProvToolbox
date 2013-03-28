@@ -552,7 +552,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	//res.setId(id);  TODO: no id?
 	res.setDictionary(dict);
 	if (entitySet != null)
-	    res.getKeyValuePair().addAll(entitySet);
+	    res.getKeyEntityPair().addAll(entitySet);
 	return res;
     }
 
@@ -570,7 +570,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	res.setNewDictionary(after);
 	res.setOldDictionary(before);
 	if (keyEntitySet != null)
-	    res.getKeyValuePair().addAll(keyEntitySet);
+	    res.getKeyEntityPair().addAll(keyEntitySet);
 	return res;
     }
     

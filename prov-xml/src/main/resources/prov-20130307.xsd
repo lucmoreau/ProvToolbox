@@ -553,7 +553,7 @@
 	<xs:element name="emptyDictionary" type="prov:EmptyDictionary" />
 		
 	<!-- Key-Value Pair -->
-	<xs:complexType name="KeyValuePair">
+	<xs:complexType name="KeyEntityPair">
         <xs:sequence>
     	  <xs:element name="entity" type="prov:IDRef" />
     	  <xs:element name="key" type="xs:anySimpleType" />
@@ -561,13 +561,13 @@
 	</xs:complexType>
 	
 	<!-- do we need to have this use the substitutionGroup? -->
-	<xs:element name="keyValuePair" type="prov:KeyValuePair"/>
+	<xs:element name="keyEntityPair" type="prov:KeyEntityPair"/>
 
 	<!-- Dictionary Membership -->
 	<xs:complexType name="DictionaryMembership">
 	  <xs:sequence>
 		<xs:element name="dictionary" type="prov:IDRef"/>
-		<xs:element name="keyValuePair" type="prov:KeyValuePair" maxOccurs="unbounded"/>
+		<xs:element name="keyEntityPair" type="prov:KeyEntityPair" maxOccurs="unbounded"/>
 	  </xs:sequence>
 	</xs:complexType>
 	
@@ -578,8 +578,13 @@
 	  <xs:sequence>
 		<xs:element name="newDictionary" type="prov:IDRef"/>
 		<xs:element name="oldDictionary" type="prov:IDRef"/>
-		<xs:element name="keyValuePair" type="prov:KeyValuePair" maxOccurs="unbounded"/>
+		<xs:element name="keyEntityPair" type="prov:KeyEntityPair" maxOccurs="unbounded"/>
+		<!-- prov attributes -->
+		<xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/>
+		<xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+		<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 	  </xs:sequence>
+	  <xs:attribute ref="prov:id"/>
 	</xs:complexType>
 	
 	<xs:element name="derivedByInsertionFrom" type="prov:Insertion"/>
@@ -590,7 +595,12 @@
 		<xs:element name="newDictionary" type="prov:IDRef"/>
 		<xs:element name="oldDictionary" type="prov:IDRef"/>
 		<xs:element name="key" type="xs:anySimpleType" maxOccurs="unbounded" />
+		<!-- prov attributes -->
+		<xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/>
+		<xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+		<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 	  </xs:sequence>
+	  <xs:attribute ref="prov:id"/>
 	</xs:complexType>
 	
 	<xs:element name="derivedByRemovalFrom" type="prov:Removal"/>
@@ -631,7 +641,7 @@
 
         <xs:element ref="prov:dictionary" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:emptyDictionary" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element ref="prov:keyValuePair" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:keyEntityPair" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:hadDictionaryMember" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:derivedByInsertionFrom" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:derivedByRemovalFrom" minOccurs="0" maxOccurs="unbounded"/>

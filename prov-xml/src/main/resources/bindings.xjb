@@ -102,7 +102,7 @@
 	  <jaxb:class name="DerivedByRemovalFrom"/>
 	</jaxb:bindings>
 
-	<jaxb:bindings node="xs:complexType[@name='KeyValuePair']">
+	<jaxb:bindings node="xs:complexType[@name='KeyEntityPair']">
 	  <jaxb:class name="Entry"/>
 	</jaxb:bindings>
 

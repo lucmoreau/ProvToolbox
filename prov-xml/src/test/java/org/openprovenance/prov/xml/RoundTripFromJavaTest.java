@@ -2013,4 +2013,21 @@ public class RoundTripFromJavaTest extends TestCase {
 
        }
 
+       public void testDictionary1 () throws JAXBException {
+		DerivedByInsertionFrom d1=pFactory.newDerivedByInsertionFrom(null, q("d2"), q("d1"), null, null);
+		
+		Statement [] statements=new Statement[] { d1 };
+		Statement [] opt=new Statement[] {  };
+		makeDocAndTest(statements, opt , "target/dictionary1");
+
+	    }
+       public void testDictionary2 () throws JAXBException {
+		DerivedByInsertionFrom d2=pFactory.newDerivedByInsertionFrom(q("deriv"), q("d2"), q("d1"), null, null);
+		
+		Statement [] statements=new Statement[] { d2 };
+		Statement [] opt=new Statement[] {  };
+		makeDocAndTest(statements, opt , "target/dictionary2");
+
+	    }
+
 }

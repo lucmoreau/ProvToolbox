@@ -2013,27 +2013,27 @@ public class RoundTripFromJavaTest extends TestCase {
 
        }
 
-	public void testDictionary1() throws JAXBException {
+   	public void testDictionaryInsertion1() throws JAXBException {
 		DerivedByInsertionFrom d1 = pFactory.newDerivedByInsertionFrom(null,
 				q("d2"), q("d1"), null, null);
 
 		Statement[] statements = new Statement[]{d1};
 		Statement[] opt = new Statement[]{};
-		makeDocAndTest(statements, opt, "target/dictionary1");
+		makeDocAndTest(statements, opt, "target/dictionaryInsertion1");
 
 	}
 
-	public void testDictionary2() throws JAXBException {
+	public void testDictionaryInsertion2() throws JAXBException {
 		DerivedByInsertionFrom d2 = pFactory.newDerivedByInsertionFrom(
 				q("deriv"), q("d2"), q("d1"), null, null);
 
 		Statement[] statements = new Statement[]{d2};
 		Statement[] opt = new Statement[]{};
-		makeDocAndTest(statements, opt, "target/dictionary2");
+		makeDocAndTest(statements, opt, "target/dictionaryInsertion2");
 
 	}
 
-	public void testDictionary3() throws JAXBException {
+	public void testDictionaryInsertion3() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p = new KeyQNamePair();
 		p.key = "a";
@@ -2044,11 +2044,11 @@ public class RoundTripFromJavaTest extends TestCase {
 
 		Statement[] statements = new Statement[]{d3};
 		Statement[] opt = new Statement[]{};
-		makeDocAndTest(statements, opt, "target/dictionary3");
+		makeDocAndTest(statements, opt, "target/dictionaryInsertion3");
 
 	}
 
-	public void testDictionary4() throws JAXBException {
+	public void testDictionaryInsertion4() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p1 = new KeyQNamePair();
 		p1.key = "a";
@@ -2063,10 +2063,10 @@ public class RoundTripFromJavaTest extends TestCase {
 
 		Statement[] statements = new Statement[]{d4};
 		Statement[] opt = new Statement[]{};
-		makeDocAndTest(statements, opt, "target/dictionary4");
+		makeDocAndTest(statements, opt, "target/dictionaryInsertion4");
 	}
 
-	public void testDictionary5() throws JAXBException {
+	public void testDictionaryInsertion5() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p1 = new KeyQNamePair();
 		p1.key = "a";
@@ -2086,8 +2086,10 @@ public class RoundTripFromJavaTest extends TestCase {
 
 		Statement[] statements = new Statement[]{d5};
 		Statement[] opt = new Statement[]{};
-		makeDocAndTest(statements, opt, "target/dictionary5");
+		makeDocAndTest(statements, opt, "target/dictionaryInsertion5");
 
 	}
+	
+	
 
 }

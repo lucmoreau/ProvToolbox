@@ -325,12 +325,12 @@ TODO: literal used in these production needs to disable qname, to allow for intl
 */
 
 insertionExpression
-	:	'derivedByInsertionFrom' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
+	:	'prov:derivedByInsertionFrom' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
       -> ^(DBIF ^(ID $id0?) $id2 $id1 keyEntitySet  optionalAttributeValuePairs)
 	;
 
 removalExpression
-	:	'derivedByRemovalFrom' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier ',' '{' literal (',' literal)* '}' optionalAttributeValuePairs ')'
+	:	'prov:derivedByRemovalFrom' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier ',' '{' literal (',' literal)* '}' optionalAttributeValuePairs ')'
       -> ^(DBRF ^(ID $id0?) $id2 $id1 ^(KEYS literal*)  optionalAttributeValuePairs)
 	;
 

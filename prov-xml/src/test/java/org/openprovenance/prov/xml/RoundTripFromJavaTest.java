@@ -2090,6 +2090,65 @@ public class RoundTripFromJavaTest extends TestCase {
 
 	}
 	
+ 	public void testDictionaryRemoval1() throws JAXBException {
+		DerivedByRemovalFrom d1 = pFactory.newDerivedByRemovalFrom(null,
+				q("d2"), q("d1"), null, null);
+
+		Statement[] statements = new Statement[]{d1};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryRemoval1");
+
+	}
+
+	public void testDictionaryRemoval2() throws JAXBException {
+		DerivedByRemovalFrom d2 = pFactory.newDerivedByRemovalFrom(
+				q("removal"), q("d2"), q("d1"), null, null);
+
+		Statement[] statements = new Statement[]{d2};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryRemoval2");
+
+	}
+
+	public void testDictionaryRemoval3() throws JAXBException {
+		List<Object> ll = new LinkedList<Object>();
+		ll.add("a");
+		DerivedByRemovalFrom d3 = pFactory.newDerivedByRemovalFrom(
+				q("removal3"), q("d2"), q("d1"), ll, null);
+
+		Statement[] statements = new Statement[]{d3};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryRemoval3");
+
+	}
+
+	public void testDictionaryRemoval4() throws JAXBException {
+		List<Object> ll = new LinkedList<Object>();
+		ll.add("a");
+		ll.add(1);
+		DerivedByRemovalFrom d4 = pFactory.newDerivedByRemovalFrom(
+				q("removal4"), q("d2"), q("d1"), ll, null);
+
+		Statement[] statements = new Statement[]{d4};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryRemoval4");
+	}
+
+	public void testDictionaryRemoval5() throws JAXBException {
+		List<Object> ll = new LinkedList<Object>();
+		ll.add("a");
+		ll.add(1);
+		ll.add(q("a"));
+		DerivedByRemovalFrom d5 = pFactory.newDerivedByRemovalFrom(
+				q("removal5"), q("d2"), q("d1"), ll, null);
+		addFurtherAttributes(d5);
+
+		Statement[] statements = new Statement[]{d5};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryRemoval5");
+
+	}
+	
 	
 
 }

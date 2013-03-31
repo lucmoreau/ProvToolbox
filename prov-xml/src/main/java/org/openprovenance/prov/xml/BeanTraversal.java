@@ -347,14 +347,13 @@ public class BeanTraversal {
     }
     
     public Relation0 convert(DerivedByRemovalFrom o) {
-	/*
+	
 	return c.newDerivedByRemovalFrom(o.getId(), 
 	                                 o.getNewDictionary().getRef(), 
 	                                 o.getOldDictionary().getRef(), 
 	                                 o.getKey(), 
-	                                 null);
-	                                 */
-	throw new UnsupportedOperationException();
+	                                 o.getAny());
+	                                 
     }
 
     public Relation0 convert(DerivedByInsertionFrom o) {

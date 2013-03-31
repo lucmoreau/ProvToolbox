@@ -633,6 +633,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	res.setOldDictionary(before);
 	if (keys != null)
 	    res.getKey().addAll(keys);
+	setAttributes(res, attributes);
 	return res;
     }
 

@@ -2013,21 +2013,81 @@ public class RoundTripFromJavaTest extends TestCase {
 
        }
 
-       public void NOtestDictionary1 () throws JAXBException {
-		DerivedByInsertionFrom d1=pFactory.newDerivedByInsertionFrom(null, q("d2"), q("d1"), null, null);
-		
-		Statement [] statements=new Statement[] { d1 };
-		Statement [] opt=new Statement[] {  };
-		makeDocAndTest(statements, opt , "target/dictionary1");
+	public void testDictionary1() throws JAXBException {
+		DerivedByInsertionFrom d1 = pFactory.newDerivedByInsertionFrom(null,
+				q("d2"), q("d1"), null, null);
 
-	    }
-       public void NOtestDictionary2 () throws JAXBException {
-		DerivedByInsertionFrom d2=pFactory.newDerivedByInsertionFrom(q("deriv"), q("d2"), q("d1"), null, null);
-		
-		Statement [] statements=new Statement[] { d2 };
-		Statement [] opt=new Statement[] {  };
-		makeDocAndTest(statements, opt , "target/dictionary2");
+		Statement[] statements = new Statement[]{d1};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionary1");
 
-	    }
+	}
+
+	public void testDictionary2() throws JAXBException {
+		DerivedByInsertionFrom d2 = pFactory.newDerivedByInsertionFrom(
+				q("deriv"), q("d2"), q("d1"), null, null);
+
+		Statement[] statements = new Statement[]{d2};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionary2");
+
+	}
+
+	public void testDictionary3() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p = new KeyQNamePair();
+		p.key = "a";
+		p.name = q("e0");
+		ll.add(p);
+		DerivedByInsertionFrom d3 = pFactory.newDerivedByInsertionFrom(
+				q("deriv3"), q("d2"), q("d1"), ll, null);
+
+		Statement[] statements = new Statement[]{d3};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionary3");
+
+	}
+
+	public void testDictionary4() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p1 = new KeyQNamePair();
+		p1.key = "a";
+		p1.name = q("e0");
+		ll.add(p1);
+		KeyQNamePair p2 = new KeyQNamePair();
+		p2.key = 1;
+		p2.name = q("e1");
+		ll.add(p2);
+		DerivedByInsertionFrom d4 = pFactory.newDerivedByInsertionFrom(
+				q("deriv4"), q("d2"), q("d1"), ll, null);
+
+		Statement[] statements = new Statement[]{d4};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionary4");
+	}
+
+	public void testDictionary5() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p1 = new KeyQNamePair();
+		p1.key = "a";
+		p1.name = q("e0");
+		ll.add(p1);
+		KeyQNamePair p2 = new KeyQNamePair();
+		p2.key = 1;
+		p2.name = q("e1");
+		ll.add(p2);
+		KeyQNamePair p3 = new KeyQNamePair();
+		p3.key = q("a");
+		p3.name = q("e2");
+		ll.add(p3);
+		DerivedByInsertionFrom d5 = pFactory.newDerivedByInsertionFrom(
+				q("deriv5"), q("d2"), q("d1"), ll, null);
+		addFurtherAttributes(d5);
+
+		Statement[] statements = new Statement[]{d5};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionary5");
+
+	}
 
 }

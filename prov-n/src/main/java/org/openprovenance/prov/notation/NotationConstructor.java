@@ -452,7 +452,7 @@ public class NotationConstructor implements ModelConstructor {
 	@Override
 	public DictionaryMembership newDictionaryMembership(QName dict,
 							    List<KeyQNamePair> keyEntitySet) {
-	    String s="prov:dictionaryMembership(" +  idOrMarker(dict)  
+	    String s="prov:hadDictionaryMember(" +  idOrMarker(dict)  
 		    + "," + keyEntitySet(keyEntitySet) +  ")";
 	    writeln(s);
 	    return null;

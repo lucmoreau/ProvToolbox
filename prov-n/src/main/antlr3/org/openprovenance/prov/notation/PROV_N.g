@@ -121,7 +121,7 @@ expression
 
             /* component 5 */
 
-        | insertionExpression | removalExpression | membershipExpression  | membershipExpression2
+        | insertionExpression | removalExpression | collectionMembershipExpression  | dictionaryMembershipExpression
 
 
             /* component 6 */ 
@@ -336,30 +336,17 @@ removalExpression
 
 
 /* TODO: specify complete as optional boolean */
-membershipExpression2
-	:	( 'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' keyEntitySet ',' 'true' optionalAttributeValuePairs ')'
-      -> ^(DMEM ^(ID $id0?) $id1 keyEntitySet  ^(TRUE) optionalAttributeValuePairs)
-         |          
-          'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' keyEntitySet ',' 'false' optionalAttributeValuePairs ')'
-      -> ^(DMEM ^(ID $id0?) $id1 keyEntitySet  ^(FALSE) optionalAttributeValuePairs)
-         |          
-          'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
-      -> ^(DMEM ^(ID $id0?) $id1 keyEntitySet  ^(UNKNOWN) optionalAttributeValuePairs)
-         |
-         'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' entitySet ',' 'true' optionalAttributeValuePairs ')'
-      -> ^(CMEM ^(ID $id0?) $id1 entitySet  ^(TRUE) optionalAttributeValuePairs)
-         |
-         'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' entitySet ',' 'false' optionalAttributeValuePairs ')'
-      -> ^(CMEM ^(ID $id0?) $id1 entitySet  ^(FALSE) optionalAttributeValuePairs)
-         |
-         'memberOf' '('  id0=optionalIdentifier  id1=identifier ',' entitySet optionalAttributeValuePairs ')'
-      -> ^(CMEM ^(ID $id0?) $id1 entitySet  ^(UNKNOWN) optionalAttributeValuePairs)
-
+dictionaryMembershipExpression
+	:	( 'prov:hadDictionaryMember' '('  id0=optionalIdentifier id1=identifier ',' keyEntitySet ')'
+      -> ^(DMEM ^(ID $id0?) $id1 keyEntitySet )
+         | 'prov:hadDictionaryMember' '('  id1=identifier ',' id2=identifier ',' literal ')'
+      -> ^(DMEM ^(ID) $id1 ^(KES ^(KEYS literal) ^(VALUES $id2)))
         )
 	;
 
 
-membershipExpression
+
+collectionMembershipExpression
 	:	 'hadMember' '('  id2=identifier ',' id1=identifier ')'
       -> ^(MEM $id2 $id1)
   ; 

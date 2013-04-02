@@ -185,6 +185,8 @@ public class BeanTraversal {
 	    return convert((DerivedByInsertionFrom) o);
 	} else if (o instanceof DerivedByRemovalFrom) {
 	    return convert((DerivedByRemovalFrom) o);
+	} else if (o instanceof DictionaryMembership) {
+	    return convert((DictionaryMembership) o);
 
 	} else {
 	    throw new UnsupportedOperationException("Unknown relation type "
@@ -374,6 +376,21 @@ public class BeanTraversal {
 
 	
     }
+    
+
+    public Relation0 convert(DictionaryMembership o) {
+	List<KeyQNamePair> entries=new LinkedList<KeyQNamePair>();
+    	if (o.getKeyEntityPair()!=null) {
+    	    for (Entry entry: o.getKeyEntityPair()) {
+    		KeyQNamePair p=new KeyQNamePair();
+    		p.key=entry.getKey();
+    		p.name=entry.getEntity().getRef();
+    		entries.add(p);
+    	    }
+    	}
+	return c.newDictionaryMembership(o.getDictionary().getRef(), entries);
+    }
+
 
     
 	

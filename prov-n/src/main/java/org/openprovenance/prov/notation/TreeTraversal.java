@@ -339,8 +339,8 @@ public class TreeTraversal {
             //    uidTree=uidTree.getChild(0);
             //}
             //uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(0));
-            keymap=(List<KeyQNamePair>) convert(ast.getChild(1));
+            id2=(QName)convert(ast.getChild(1));
+            keymap=(List<KeyQNamePair>) convert(ast.getChild(2));
             //dAttrs=(List<Attribute>) convert(ast.getChild(4));
             return c.newDictionaryMembership(id2,keymap);
 

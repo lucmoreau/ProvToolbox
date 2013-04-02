@@ -2157,5 +2157,61 @@ public class RoundTripFromJavaTest extends TestCase {
 		makeDocAndTest(statements, opt, "target/dictionaryMembership1");
 	}
 	
+   	
+   	
+	public void testDictionaryMembership2() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p1 = new KeyQNamePair();
+		p1.key = "a";
+		p1.name = q("e0");
+		ll.add(p1);
+		DictionaryMembership d5 = pFactory.newDictionaryMembership(q("d"),  ll);
+
+		Statement[] statements = new Statement[]{d5};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryMembership2");
+
+	}
+
+	public void testDictionaryMembership3() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p1 = new KeyQNamePair();
+		p1.key = "a";
+		p1.name = q("e0");
+		ll.add(p1);
+		KeyQNamePair p2 = new KeyQNamePair();
+		p2.key = 1;
+		p2.name = q("e1");
+		ll.add(p2);
+		DictionaryMembership d5 = pFactory.newDictionaryMembership(q("d"),  ll);
+
+		Statement[] statements = new Statement[]{d5};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryMembership3");
+
+	}
+
+	public void testDictionaryMembership4() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p1 = new KeyQNamePair();
+		p1.key = "a";
+		p1.name = q("e0");
+		ll.add(p1);
+		KeyQNamePair p2 = new KeyQNamePair();
+		p2.key = 1;
+		p2.name = q("e1");
+		ll.add(p2);
+		KeyQNamePair p3 = new KeyQNamePair();
+		p3.key = q("a");
+		p3.name = q("e2");
+		ll.add(p3);
+		DictionaryMembership d5 = pFactory.newDictionaryMembership(q("d"),  ll);
+
+		Statement[] statements = new Statement[]{d5};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryMembership4");
+
+	}
+
 
 }

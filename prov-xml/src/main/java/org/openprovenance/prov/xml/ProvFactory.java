@@ -644,6 +644,30 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 							Collection<Attribute> attributes) {
 	return newDerivedByRemovalFrom(stringToQName(id), after, before, keys, attributes);
     }
+    
+
+    public DictionaryMembership newDictionaryMembership(QName id, List<KeyQNamePair> keyEntitySet) {
+	DictionaryMembership res = of.createDictionaryMembership();
+    	IDRef idr=new IDRef();
+    	idr.ref=id;
+	res.setDictionary(idr);
+	
+	List<Entry> entries=new LinkedList<Entry>();
+    	if (keyEntitySet!=null) {
+    	    for (KeyQNamePair p: keyEntitySet) {
+    		Entry e=new Entry();
+    		e.setKey(p.key);
+    		IDRef ac=new IDRef();
+    		ac.setRef(p.name);
+    		e.setEntity(ac);
+    		entries.add(e);
+    	    }
+    	}
+	res.getKeyEntityPair().addAll(entries);
+	return res;
+    }
+
+
 
     /*    public DictionaryMembership newDictionaryMembership(QName id, EntityRef after,
 							List<Entry> keyEntitySet) {
@@ -1732,10 +1756,5 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
       
     }
-
-    public DictionaryMembership newDictionaryMembership(QName id2, List<KeyQNamePair> keymap) {
-	throw new UnsupportedOperationException();
-    }
-
 
 }

@@ -36,7 +36,12 @@ public class RoundTripFromJavaTest extends
 	    public void testDictionaryRemoval3() {};
 	    public void testDictionaryRemoval4() {};
 	    public void testDictionaryRemoval5() {};
+	    public void testDictionaryMembership1() {};
+	    public void testDictionaryMembership2() {};
+	    public void testDictionaryMembership3() {};
+	    public void testDictionaryMembership4() {};
 
+	    
 	@Override
 	public Document readDocument(String file)
 	{

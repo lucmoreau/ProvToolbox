@@ -1733,5 +1733,9 @@ public class ProvFactory implements ModelConstructor, QNameExport {
       
     }
 
+    public DictionaryMembership newDictionaryMembership(QName id2, List<KeyQNamePair> keymap) {
+	throw new UnsupportedOperationException();
+    }
+
 
 }

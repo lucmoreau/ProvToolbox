@@ -20,6 +20,7 @@ import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.DerivedByInsertionFrom;
 import org.openprovenance.prov.xml.DerivedByRemovalFrom;
+import org.openprovenance.prov.xml.DictionaryMembership;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.HadMember;
@@ -567,5 +568,13 @@ public class JSONConstructor implements ModelConstructor {
 	    throw new UnsupportedOperationException();
 
 	}
+
+	@Override
+        public DictionaryMembership newDictionaryMembership(QName dict,
+							    List<KeyQNamePair> keyEntitySet) {
+	    throw new UnsupportedOperationException();
+        }
+
+
 
 }

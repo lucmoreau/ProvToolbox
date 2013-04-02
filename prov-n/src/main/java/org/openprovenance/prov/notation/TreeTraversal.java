@@ -334,19 +334,15 @@ public class TreeTraversal {
             return c.newDerivedByRemovalFrom(uid,id2,id1,(List<Object>)keyset,dAttrs);
 
         case PROV_NParser.DMEM:
-            uidTree=ast.getChild(0);
-            if (uidTree.getChildCount()>0) {
-                uidTree=uidTree.getChild(0);
-            }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            //TODO: commented out keymap
-            //keymap=convert(ast.getChild(2));
-            Object complete=convert(ast.getChild(3));
-            dAttrs=(List<Attribute>) convert(ast.getChild(4));
-            //return c.newDictionaryMemberOf(uid,id2,keymap,complete,dAttrs);
-            //TODO
-            return null;
+            //uidTree=ast.getChild(0);
+            //if (uidTree.getChildCount()>0) {
+            //    uidTree=uidTree.getChild(0);
+            //}
+            //uid=(QName)convert(uidTree);
+            id2=(QName)convert(ast.getChild(0));
+            keymap=(List<KeyQNamePair>) convert(ast.getChild(1));
+            //dAttrs=(List<Attribute>) convert(ast.getChild(4));
+            return c.newDictionaryMembership(id2,keymap);
 
         case PROV_NParser.CMEM:
             uidTree=ast.getChild(0);
@@ -356,7 +352,7 @@ public class TreeTraversal {
             uid=(QName)convert(uidTree);
             id2=(QName)convert(ast.getChild(1));
             Object cmemEntities=convert(ast.getChild(2));
-            complete=convert(ast.getChild(3));
+            //complete=convert(ast.getChild(3));
             dAttrs=(List<Attribute>) convert(ast.getChild(4));
             //return c.newCollectionMemberOf(uid,id2,cmemEntities,complete,dAttrs);
             return null;

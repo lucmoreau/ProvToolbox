@@ -32,6 +32,7 @@ import org.openprovenance.prov.xml.WasInformedBy;
 import org.openprovenance.prov.xml.WasInvalidatedBy;
 import org.openprovenance.prov.xml.WasStartedBy;
 import org.openprovenance.prov.xml.DerivedByRemovalFrom;
+import org.openprovenance.prov.xml.DictionaryMembership;
 
 
 /**
@@ -524,19 +525,13 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 	throw new UnsupportedOperationException();
 
     }
-    
-    /*
-    @Override
-    public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
-                                                            QName after, QName before, List<KeyQNamePair> keyEntitySet, Collection<Attributes> attributes) {
-	throw new UnsupportedOperationException();
-    }
-    
-    @Override
-    public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
-                                                            QName after, QName before, List<Oject> keys, Collection<Attributes> attributes) {
-	throw new UnsupportedOperationException();
-    }
-    */
 
+	@Override
+        public DictionaryMembership newDictionaryMembership(QName dict,
+							    List<KeyQNamePair> keyEntitySet) {
+	    throw new UnsupportedOperationException();
+        }
+
+
+    
 }

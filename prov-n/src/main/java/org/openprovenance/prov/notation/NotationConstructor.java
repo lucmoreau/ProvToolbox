@@ -28,6 +28,7 @@ import org.openprovenance.prov.xml.QNameExport;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.Statement;
 import org.openprovenance.prov.xml.UncheckedException;
+import org.openprovenance.prov.xml.DictionaryMembership;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.ValueConverter;
 import org.openprovenance.prov.xml.WasAssociatedWith;
@@ -448,6 +449,14 @@ public class NotationConstructor implements ModelConstructor {
 	    return null;
 	}
 
+	@Override
+	public DictionaryMembership newDictionaryMembership(QName dict,
+							    List<KeyQNamePair> keyEntitySet) {
+	    String s="prov:dictionaryMembership(" +  idOrMarker(dict)  
+		    + "," + keyEntitySet(keyEntitySet) +  ")";
+	    writeln(s);
+	    return null;
+	}
 
 
 

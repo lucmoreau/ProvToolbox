@@ -50,7 +50,7 @@ public interface ModelConstructor {
                                                         QName before,
                                                         List<Object> keys,
                                                         Collection<Attribute> attributes);
-
-    //TODO:    public DerivedByInsertionFrom newInsertion(QName id, QName a2, QName a1, Object keymap, Collection<Attribute> attributes);
+    public DictionaryMembership newDictionaryMembership(QName dict,
+							List<KeyQNamePair> keyEntitySet);
 
 }

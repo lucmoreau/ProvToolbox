@@ -2149,6 +2149,13 @@ public class RoundTripFromJavaTest extends TestCase {
 
 	}
 	
+   	public void testDictionaryMembership1() throws JAXBException {
+		DictionaryMembership mem = pFactory.newDictionaryMembership(q("d"), null);
+
+		Statement[] statements = new Statement[]{mem};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryMembership1");
+	}
 	
 
 }

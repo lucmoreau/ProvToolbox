@@ -158,9 +158,12 @@ public class Ontology {
     public static QName QNAME_PROVO_Removal = newProvQName("Removal");
     public static QName QNAME_PROVO_qualifiedRemoval = newProvQName("qualifiedRemoval");
     public static QName QNAME_PROVO_hadDictionaryMember = newProvQName("hadDictionaryMember");
-	public static QName QNAME_PROVO_insertedKeyValuePair = newProvQName("insertedKeyValuePair");
+	public static QName QNAME_PROVO_insertedKeyEntityPair = newProvQName("insertedKeyEntityPair");
 	public static QName QNAME_PROVO_KeyValuePair = newProvQName("KeyValuePair");
+	public static QName QNAME_PROVO_pairKey = newProvQName("pairKey");
+	public static QName QNAME_PROVO_pairEntity = newProvQName("pairEntity");
 
+	
     void initInfluenceTables() {
 	qualifiedInfluenceTable.put(QNAME_PROVO_Influence,
 				    QNAME_PROVO_qualifiedInfluence);
@@ -245,8 +248,8 @@ public class Ontology {
 	otherTable.put(QNAME_PROVO_PrimarySource, QNAME_PROVO_hadActivity);
 	otherTable.put(QNAME_PROVO_Association, QNAME_PROVO_hadPlan);
 	otherTable.put(QNAME_PROVO_Delegation, QNAME_PROVO_hadActivity);
-	otherTable.put(QNAME_PROVO_Insertion, QNAME_PROVO_insertedKeyValuePair);
-	otherTable.put(QNAME_PROVO_Removal, QNAME_PROVO_insertedKeyValuePair);
+	otherTable.put(QNAME_PROVO_Insertion, QNAME_PROVO_insertedKeyEntityPair);
+	otherTable.put(QNAME_PROVO_Removal, QNAME_PROVO_insertedKeyEntityPair);
 
 	convertTable.put(Attribute.PROV_LABEL_QNAME, QNAME_RDFS_LABEL);
 	convertTable.put(Attribute.PROV_TYPE_QNAME, QNAME_RDF_TYPE);
@@ -300,7 +303,7 @@ public class Ontology {
     	this.ranges.put(QNAME_PROVO_derivedByInsertion, QNAME_PROVO_Dictionary);
     	this.ranges.put(QNAME_PROVO_qualifiedRemoval, QNAME_PROVO_Removal);
     	this.ranges.put(QNAME_PROVO_derivedByRemoval, QNAME_PROVO_Dictionary);
-    	this.ranges.put(QNAME_PROVO_insertedKeyValuePair, QNAME_PROVO_KeyValuePair);
+    	this.ranges.put(QNAME_PROVO_insertedKeyEntityPair, QNAME_PROVO_KeyValuePair);
     }
     
     void initDomainTables() {
@@ -366,7 +369,7 @@ public class Ontology {
     	this.domains.put(QNAME_PROVO_derivedByInsertion, QNAME_PROVO_Dictionary);
     	this.domains.put(QNAME_PROVO_qualifiedRemoval, QNAME_PROVO_Dictionary);
     	this.domains.put(QNAME_PROVO_derivedByRemoval, QNAME_PROVO_Dictionary);
-    	this.domains.put(QNAME_PROVO_insertedKeyValuePair, QNAME_PROVO_Insertion);
+    	this.domains.put(QNAME_PROVO_insertedKeyEntityPair, QNAME_PROVO_Insertion);
     	
     }
 

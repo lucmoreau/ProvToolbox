@@ -18,6 +18,7 @@ import org.openprovenance.prov.xml.HadMember;
 import org.openprovenance.prov.xml.InternationalizedString;
 import org.openprovenance.prov.xml.MentionOf;
 import org.openprovenance.prov.xml.NamedBundle;
+import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.Statement;
 import org.openprovenance.prov.xml.Used;
@@ -515,8 +516,40 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 							    Collection<Attribute> attributes) {
     	QName der = addInfluence(id, after, before, null, null,
 			       attributes, Ontology.QNAME_PROVO_Insertion);
+    	for (KeyQNamePair p: keyEntitySet) {
+    		QName thePair=gb.newBlankName();
+    	    gb.assertStatement(gb.createObjectProperty(der,
+    								                   Ontology.QNAME_PROVO_insertedKeyEntityPair,
+    								                   thePair));
+    	    
+    	    LITERAL lit = valueToLiteral(p.key);
+
+    	    gb.assertStatement(gb.createDataProperty(thePair, 
+                                                     Ontology.QNAME_PROVO_pairKey, 
+                                                     lit));
+    	    gb.assertStatement(gb.createObjectProperty(thePair, 
+                    Ontology.QNAME_PROVO_pairEntity, 
+                    p.name));
+    	    
+        }
+
+    	
 	    return null;
     }
+
+	private LITERAL valueToLiteral(Object val) {
+		LITERAL lit = null;
+		String value;
+		if (val instanceof QName) {
+			value=Attribute.qnameToString((QName)val); 
+		} else {
+		    value=val.toString();
+		}	
+		lit = gb.newLiteral(value, vc.getXsdType(val));
+		return lit;
+	}
+    
+    ValueConverter vc=new ValueConverter(ProvFactory.getFactory());
 
     @Override
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,

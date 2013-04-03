@@ -396,6 +396,7 @@ public class RdfCollector extends RDFHandlerBase {
 				createAgent(context, subject);
 				break;
 			case COLLECTION:
+			case DICTIONARY:
 			case ENTITY:
 			case PLAN:
 			case BUNDLE:

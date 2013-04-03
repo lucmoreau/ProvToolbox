@@ -26,9 +26,9 @@ public class RoundTripFromJavaTest extends
 		return ".trig";
 	}
 
-	   public void testDictionaryInsertion1() {};
-	    public void testDictionaryInsertion2() {};
-	    public void testDictionaryInsertion3() {};
+	   //public void testDictionaryInsertion1() {};
+	    //public void testDictionaryInsertion2() {};
+	    //public void testDictionaryInsertion3() {};
 	    public void testDictionaryInsertion4() {};
 	    public void testDictionaryInsertion5() {};
 	    public void testDictionaryRemoval1() {};
@@ -73,6 +73,9 @@ public class RoundTripFromJavaTest extends
 	{
 		if(name.endsWith("mention1"+extension()) || name.endsWith("mention2"+extension()))
 		{
+			return false;
+		}
+		if (name.contains("dictionary")) {
 			return false;
 		}
 		

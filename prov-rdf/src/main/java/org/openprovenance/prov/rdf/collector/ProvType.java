@@ -31,6 +31,8 @@ public enum ProvType
 
 	COLLECTION(Ontology.QNAME_PROVO_Collection, ProvType.ENTITY),
 
+	DICTIONARY(Ontology.QNAME_PROVO_Dictionary, ProvType.COLLECTION),
+
 	EMPTYCOLLECTION(Ontology.QNAME_PROVO_EmptyCollection,
 			ProvType.COLLECTION),
 
@@ -39,6 +41,13 @@ public enum ProvType
 	ENTITYINFLUENCE(Ontology.QNAME_PROVO_EntityInfluence,
 			ProvType.INFLUENCE),
 
+			
+	INSERTION(Ontology.QNAME_PROVO_Insertion,
+					ProvType.INFLUENCE),
+
+	REMOVAL(Ontology.QNAME_PROVO_Removal,
+							ProvType.INFLUENCE),
+					
 	ACTIVITYINFLUENCE(Ontology.QNAME_PROVO_ActivityInfluence,
 			ProvType.INFLUENCE),
 
@@ -71,8 +80,8 @@ public enum ProvType
 	INVALIDATION(Ontology.QNAME_PROVO_Invalidation, new ProvType[] {
 			ProvType.INSTANTANEOUSEVENT, ProvType.ACTIVITYINFLUENCE }),
 
-	USAGE(Ontology.QNAME_PROVO_Usage, new ProvType[] {
-			ProvType.INSTANTANEOUSEVENT, ProvType.ENTITYINFLUENCE });
+			USAGE(Ontology.QNAME_PROVO_Usage, new ProvType[] {
+					ProvType.INSTANTANEOUSEVENT, ProvType.ENTITYINFLUENCE });
 
 	private static final Map<QName, ProvType> lookup = new HashMap<QName, ProvType>();
 	static

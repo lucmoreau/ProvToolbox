@@ -513,7 +513,9 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 							    QName before,
 							    List<KeyQNamePair> keyEntitySet,
 							    Collection<Attribute> attributes) {
-	throw new UnsupportedOperationException();
+    	QName der = addInfluence(id, after, before, null, null,
+			       attributes, Ontology.QNAME_PROVO_Insertion);
+	    return null;
     }
 
     @Override
@@ -529,6 +531,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 	@Override
         public DictionaryMembership newDictionaryMembership(QName dict,
 							    List<KeyQNamePair> keyEntitySet) {
+	    
 	    throw new UnsupportedOperationException();
         }
 

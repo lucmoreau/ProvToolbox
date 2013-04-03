@@ -449,12 +449,22 @@ public class NotationConstructor implements ModelConstructor {
 	    return null;
 	}
 
+	boolean abbrev=false;
 	@Override
 	public DictionaryMembership newDictionaryMembership(QName dict,
 							    List<KeyQNamePair> keyEntitySet) {
-	    String s="prov:hadDictionaryMember(" +  idOrMarker(dict)  
-		    + "," + keyEntitySet(keyEntitySet) +  ")";
-	    writeln(s);
+		if (abbrev) {
+			String s="provx:hadDictionaryMember(" +  idOrMarker(dict)  
+				    + "," + keyEntitySet(keyEntitySet) +  ")";
+			    writeln(s);
+		} else {
+			for (KeyQNamePair entry: keyEntitySet) {
+				
+				String s="prov:hadDictionaryMember(" +   idOrMarker(dict) + "," + idOrMarker(entry.name)  						
+						 + "," + Attribute.valueToNotationString(entry.key,vc.getXsdType(entry.key)) + ")";
+			    writeln(s);	
+			}
+		}
 	    return null;
 	}
 

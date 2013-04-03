@@ -2149,7 +2149,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
 	}
 	
-   	public void testDictionaryMembership1() throws JAXBException {
+   	public void NOtestDictionaryMembership1() throws JAXBException { // this makes no sense, member is mandatory.
 		DictionaryMembership mem = pFactory.newDictionaryMembership(q("d"), null);
 
 		Statement[] statements = new Statement[]{mem};

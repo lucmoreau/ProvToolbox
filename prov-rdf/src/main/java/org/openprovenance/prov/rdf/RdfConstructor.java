@@ -522,15 +522,15 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
  								                   Ontology.QNAME_PROVO_insertedKeyEntityPair,
  								                   thePair));
  	    
- 	    LITERAL lit = valueToLiteral(p.key);
+ 	   LITERAL lit = valueToLiteral(p.key);
 
- 	    gb.assertStatement(gb.createDataProperty(thePair, 
-                                                  Ontology.QNAME_PROVO_pairKey, 
-                                                  lit));
- 	    gb.assertStatement(gb.createObjectProperty(thePair, 
-                 Ontology.QNAME_PROVO_pairEntity, 
-                 p.name));
- 	    
+	    gb.assertStatement(gb.createDataProperty(thePair, 
+                                                 Ontology.QNAME_PROVO_pairKey, 
+                                                 lit));
+	    gb.assertStatement(gb.createObjectProperty(thePair, 
+                Ontology.QNAME_PROVO_pairEntity, 
+                p.name));
+	    
      }
 
  	
@@ -578,9 +578,26 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 	@Override
         public DictionaryMembership newDictionaryMembership(QName dict,
 							    List<KeyQNamePair> keyEntitySet) {
+		for (KeyQNamePair p : keyEntitySet) {
+			QName thePair=gb.newBlankName();
+		    gb.assertStatement(gb.createObjectProperty(dict,
+							   Ontology.QNAME_PROVO_hadDictionaryMember,
+							   thePair));
+		    LITERAL lit = valueToLiteral(p.key);
+
+	 	    gb.assertStatement(gb.createDataProperty(thePair, 
+	                                                  Ontology.QNAME_PROVO_pairKey, 
+	                                                  lit));
+	 	    gb.assertStatement(gb.createObjectProperty(thePair, 
+	                 Ontology.QNAME_PROVO_pairEntity, 
+	                 p.name));
+	 	    
+		}
+		return null;
+	 
 	    
-	    throw new UnsupportedOperationException();
-        }
+	    
+      }
 
 
     

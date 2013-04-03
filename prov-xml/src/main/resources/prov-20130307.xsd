@@ -646,6 +646,8 @@
         <xs:element ref="prov:derivedByInsertionFrom" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:derivedByRemovalFrom" minOccurs="0" maxOccurs="unbounded"/>
 
+        <xs:element ref="prov:others" minOccurs="0" maxOccurs="unbounded"/>
+
 <!--        <xs:element ref="prov:internalElement" minOccurs="0" maxOccurs="unbounded" /> -->
     </xs:sequence>
   </xs:group>
@@ -662,13 +664,15 @@
      </xs:sequence>
    </xs:complexType>
 
-  <xs:complexType name="NEWDocument"> <!-- TODO -->
-    <xs:sequence maxOccurs="unbounded">
-      <xs:group ref="prov:documentElements" minOccurs="0"/>
-      <xs:element name="bundleContent" type="prov:NamedBundle" minOccurs="0"/>
-      <xs:any namespace="##other" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
+
+   <xs:element name="others" type="prov:Others"/>
+
+   <xs:complexType name="Others">
+     <xs:sequence>
+       <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+     </xs:sequence>
+   </xs:complexType>
+
 
   <!-- abstract element used by extensions -->
 

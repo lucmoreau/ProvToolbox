@@ -514,26 +514,26 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 							    QName before,
 							    List<KeyQNamePair> keyEntitySet,
 							    Collection<Attribute> attributes) {
-    	QName der = addInfluence(id, after, before, null, null,
+       	QName der = addInfluence(id, after, before, null, null,
 			       attributes, Ontology.QNAME_PROVO_Insertion);
-    	for (KeyQNamePair p: keyEntitySet) {
-    		QName thePair=gb.newBlankName();
-    	    gb.assertStatement(gb.createObjectProperty(der,
-    								                   Ontology.QNAME_PROVO_insertedKeyEntityPair,
-    								                   thePair));
-    	    
-    	    LITERAL lit = valueToLiteral(p.key);
+ 	for (KeyQNamePair p: keyEntitySet) {
+ 		QName thePair=gb.newBlankName();
+ 	    gb.assertStatement(gb.createObjectProperty(der,
+ 								                   Ontology.QNAME_PROVO_insertedKeyEntityPair,
+ 								                   thePair));
+ 	    
+ 	    LITERAL lit = valueToLiteral(p.key);
 
-    	    gb.assertStatement(gb.createDataProperty(thePair, 
-                                                     Ontology.QNAME_PROVO_pairKey, 
-                                                     lit));
-    	    gb.assertStatement(gb.createObjectProperty(thePair, 
-                    Ontology.QNAME_PROVO_pairEntity, 
-                    p.name));
-    	    
-        }
+ 	    gb.assertStatement(gb.createDataProperty(thePair, 
+                                                  Ontology.QNAME_PROVO_pairKey, 
+                                                  lit));
+ 	    gb.assertStatement(gb.createObjectProperty(thePair, 
+                 Ontology.QNAME_PROVO_pairEntity, 
+                 p.name));
+ 	    
+     }
 
-    	
+ 	
 	    return null;
     }
 
@@ -557,7 +557,21 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 							QName before,
 							List<Object> keys,
 							Collection<Attribute> attributes) {
-	throw new UnsupportedOperationException();
+       	QName der = addInfluence(id, after, before, null, null,
+			       attributes, Ontology.QNAME_PROVO_Removal);
+ 	    for (Object k: keys) {
+ 	    
+ 	    LITERAL lit = valueToLiteral(k);
+
+ 	    gb.assertStatement(gb.createDataProperty(der, 
+                                                  Ontology.QNAME_PROVO_removedKey, 
+                                                  lit));
+ 	    
+ 	    }
+
+ 	
+	    return null;
+
 
     }
 

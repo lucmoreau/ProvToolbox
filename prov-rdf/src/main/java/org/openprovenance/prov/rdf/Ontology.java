@@ -159,6 +159,7 @@ public class Ontology {
     public static QName QNAME_PROVO_qualifiedRemoval = newProvQName("qualifiedRemoval");
     public static QName QNAME_PROVO_hadDictionaryMember = newProvQName("hadDictionaryMember");
 	public static QName QNAME_PROVO_insertedKeyEntityPair = newProvQName("insertedKeyEntityPair");
+	public static QName QNAME_PROVO_removedKey = newProvQName("removedKey");
 	public static QName QNAME_PROVO_KeyValuePair = newProvQName("KeyValuePair");
 	public static QName QNAME_PROVO_pairKey = newProvQName("pairKey");
 	public static QName QNAME_PROVO_pairEntity = newProvQName("pairEntity");

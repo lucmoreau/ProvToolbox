@@ -31,8 +31,8 @@ public class RoundTripFromJavaTest extends
 	    //public void testDictionaryInsertion3() {};
 	    //public void testDictionaryInsertion4() {};
 	    //public void testDictionaryInsertion5() {};
-	    public void testDictionaryRemoval1() {};
-	    public void testDictionaryRemoval2() {};
+	    //public void testDictionaryRemoval1() {};
+	    //public void testDictionaryRemoval2() {};
 	    public void testDictionaryRemoval3() {};
 	    public void testDictionaryRemoval4() {};
 	    public void testDictionaryRemoval5() {};

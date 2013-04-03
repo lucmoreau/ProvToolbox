@@ -7,7 +7,7 @@
 :copied-string
    a prov:Entity;
    prov:value 
-      """2010–present: A. Scalia A. Kennedy C. Thomas R.B. Ginsburg 
+      """2010-present: A. Scalia A. Kennedy C. Thomas R.B. Ginsburg 
          S. Breyer S. Alito S. Sotomayor E. Kagan""";
    prov:wasQuotedFrom 
       <http://purl.org/twc/page/wikipedia/us-supreme-court-by-composition>;

@@ -38,6 +38,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	    public void testDictionaryInsertion3() {};
 	    public void testDictionaryInsertion4() {};
 	    public void testDictionaryInsertion5() {};
+	    public void testDictionaryInsertion6() {};
 	    public void testDictionaryRemoval1() {};
 	    public void testDictionaryRemoval2() {};
 	    public void testDictionaryRemoval3() {};

@@ -646,7 +646,7 @@ prefix ex <http://example>  /* a single prefix declaration */
 
 /* component 6 */
 
-          derivedByInsertionFrom(ex:e1, ex:e2, {("k1", ex:e2)})
+          prov:derivedByInsertionFrom(ex:e1, ex:e2, {("k1", ex:e2)})
 
 
 
@@ -753,25 +753,20 @@ prefix ex <http://example>  /* a single prefix declaration */
 
 /* component 5 */
 
-          derivedByInsertionFrom(ex:e1, ex:e2, {("k1", ex:e2)})
-          derivedByInsertionFrom(ex:e1, ex:e2, {("k1", ex:e2), ("k2", ex:e3)})
-          derivedByInsertionFrom(ex:e1, ex:e2, {("k1", ex:e2)}, [ex:param="a"])
-          derivedByInsertionFrom(ex:e1, ex:e2, {("k1", ex:e2), ("k2", ex:e3)}, [ex:param="a"])
+          prov:derivedByInsertionFrom(ex:e1, ex:e2, {("k1", ex:e2)})
+          prov:derivedByInsertionFrom(ex:e1, ex:e2, {("k1", ex:e2), ("k2", ex:e3)})
+          prov:derivedByInsertionFrom(ex:e1, ex:e2, {("k1", ex:e2)}, [ex:param="a"])
+          prov:derivedByInsertionFrom(ex:e1, ex:e2, {("k1", ex:e2), ("k2", ex:e3)}, [ex:param="a"])
 
-          derivedByRemovalFrom(ex:e1, ex:e2, {"k1"})
-          derivedByRemovalFrom(ex:e1, ex:e2, {"k1", "k2"})
-          derivedByRemovalFrom(ex:e1, ex:e2, {"k1", "k2", "222" %% xsd:int})
-          derivedByRemovalFrom(ex:e1, ex:e2, {"k1"}, [ex:param="a"])
-          derivedByRemovalFrom(ex:e1, ex:e2, {"k1", "k2"}, [ex:param="a"])
-          derivedByRemovalFrom(ex:e1, ex:e2, {"k1", "k2", "222" %% xsd:int}, [ex:param="a"])
+          prov:derivedByRemovalFrom(ex:e1, ex:e2, {"k1"})
+          prov:derivedByRemovalFrom(ex:e1, ex:e2, {"k1", "k2"})
+          prov:derivedByRemovalFrom(ex:e1, ex:e2, {"k1", "k2", "222" %% xsd:int})
+          prov:derivedByRemovalFrom(ex:e1, ex:e2, {"k1"}, [ex:param="a"])
+          prov:derivedByRemovalFrom(ex:e1, ex:e2, {"k1", "k2"}, [ex:param="a"])
+          prov:derivedByRemovalFrom(ex:e1, ex:e2, {"k1", "k2", "222" %% xsd:int}, [ex:param="a"])
 
 
-	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)})
-	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)}, true)
-	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)}, false)
-	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)}, [ex:param="a"])
-	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)}, true, [ex:param="a"])
-	  memberOf(ex:e1, {("k1", ex:e2), ("k2", ex:e3)}, false, [ex:param="a"])
+	  prov:hadDictionaryMember(ex:e1,  ex:e2, "k2")
 
 
 

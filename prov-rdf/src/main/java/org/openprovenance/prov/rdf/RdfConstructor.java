@@ -97,7 +97,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 			Collection<Attribute> attributes) {
 
 	@SuppressWarnings("unused")
-	QName u = addInfluence(id, activity, entity, time, null, attributes,
+	QName u = addInfluence(id, activity, entity, time, null, false, attributes,
 			       Ontology.QNAME_PROVO_Usage);
 
 	return null;
@@ -110,7 +110,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 					    Collection<Attribute> attributes) {
 
 	@SuppressWarnings("unused")
-	QName g = addInfluence(id, entity, activity, time, null, attributes,
+	QName g = addInfluence(id, entity, activity, time, null, false, attributes,
 			       Ontology.QNAME_PROVO_Generation);
 
 	return null;
@@ -123,7 +123,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 						Collection<Attribute> attributes) {
 
 	@SuppressWarnings("unused")
-	QName inv = addInfluence(id, entity, activity, time, null, attributes,
+	QName inv = addInfluence(id, entity, activity, time, null, false, attributes,
 				 Ontology.QNAME_PROVO_Invalidation);
 
 	return null;
@@ -136,7 +136,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 					Collection<Attribute> attributes) {
 
 	@SuppressWarnings("unused")
-	QName s = addInfluence(id, activity, trigger, time, starter,
+	QName s = addInfluence(id, activity, trigger, time, starter, false,
 			       attributes, Ontology.QNAME_PROVO_Start);
 
 	return null;
@@ -148,7 +148,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 				    Collection<Attribute> attributes) {
 
 	@SuppressWarnings("unused")
-	QName e = addInfluence(id, activity, trigger, time, ender, attributes,
+	QName e = addInfluence(id, activity, trigger, time, ender, false, attributes, 
 			       Ontology.QNAME_PROVO_End);
 
 	return null;
@@ -165,25 +165,25 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 	QName der = id;
 	if (Attribute.hasType(Ontology.QNAME_PROVO_Revision, attributes)) {
 	    knownSubtypes++;
-	    der = addInfluence(der, entity2, entity1, null, activity,
+	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, Ontology.QNAME_PROVO_Revision);
 
 	}
 	if (Attribute.hasType(Ontology.QNAME_PROVO_Quotation, attributes)) {
 	    knownSubtypes++;
-	    der = addInfluence(der, entity2, entity1, null, activity,
+	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, Ontology.QNAME_PROVO_Quotation);
 
 	}
 	if (Attribute.hasType(Ontology.QNAME_PROVO_PrimarySource, attributes)) {
 	    knownSubtypes++;
-	    der = addInfluence(der, entity2, entity1, null, activity,
+	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, Ontology.QNAME_PROVO_PrimarySource);
 
 	}
 
 	if (knownSubtypes == 0) {
-	    der = addInfluence(der, entity2, entity1, null, activity,
+	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, Ontology.QNAME_PROVO_Derivation);
 	}
 
@@ -214,7 +214,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 						  Collection<Attribute> attributes) {
 
 	@SuppressWarnings("unused")
-	QName d = addInfluence(id, a, ag, null, plan, attributes,
+	QName d = addInfluence(id, a, ag, null, plan, false, attributes,
 			       Ontology.QNAME_PROVO_Association);
 
 	return null;
@@ -224,7 +224,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
     public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,
 					      Collection<Attribute> attributes) {
 	@SuppressWarnings("unused")
-	QName a = addInfluence(id, e, ag, null, null, attributes,
+	QName a = addInfluence(id, e, ag, null, null, false, attributes,
 			       Ontology.QNAME_PROVO_Attribution);
 
 	return null;
@@ -236,7 +236,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 					      Collection<Attribute> attributes) {
 
 	@SuppressWarnings("unused")
-	QName d = addInfluence(id, agent2, agent1, null, a, attributes,
+	QName d = addInfluence(id, agent2, agent1, null, a, false, attributes,
 			       Ontology.QNAME_PROVO_Delegation);
 
 	return null;
@@ -248,7 +248,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 					  Collection<Attribute> attributes) {
 
 	@SuppressWarnings("unused")
-	QName com = addInfluence(id, activity2, activity1, null, null,
+	QName com = addInfluence(id, activity2, activity1, null, null, false,
 				 attributes, Ontology.QNAME_PROVO_Communication);
 
 	return null;
@@ -259,7 +259,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 					      Collection<Attribute> attributes) {
 
 	@SuppressWarnings("unused")
-	QName u = addInfluence(id, qn2, qn1, null, null, attributes,
+	QName u = addInfluence(id, qn2, qn1, null, null, false, attributes,
 			       Ontology.QNAME_PROVO_Influence);
 
 	return null;
@@ -390,10 +390,10 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
     }
 
     public QName addInfluence(QName infl, QName subject, QName object,
-			      XMLGregorianCalendar time, QName other,
+			      XMLGregorianCalendar time, QName other, boolean someOther,
 			      Collection<Attribute> attributes,
 			      QName qualifiedClass) {
-	if ((infl != null) || (time != null) || (other != null)
+	if ((infl != null) || (time != null) || (other != null) || someOther
 		|| ((attributes != null) && !(attributes.isEmpty()))) {
 	    infl = assertType(infl, qualifiedClass);
 	    if (object != null)
@@ -514,7 +514,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 							    QName before,
 							    List<KeyQNamePair> keyEntitySet,
 							    Collection<Attribute> attributes) {
-       	QName der = addInfluence(id, after, before, null, null,
+       	QName der = addInfluence(id, after, before, null, null, true,
 			       attributes, Ontology.QNAME_PROVO_Insertion);
  	for (KeyQNamePair p: keyEntitySet) {
  		QName thePair=gb.newBlankName();
@@ -557,7 +557,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 							QName before,
 							List<Object> keys,
 							Collection<Attribute> attributes) {
-       	QName der = addInfluence(id, after, before, null, null,
+       	QName der = addInfluence(id, after, before, null, null, true,
 			       attributes, Ontology.QNAME_PROVO_Removal);
  	    for (Object k: keys) {
  	    

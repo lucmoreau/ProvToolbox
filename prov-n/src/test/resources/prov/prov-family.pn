@@ -19,8 +19,6 @@ prefix wbs2    <https://www.w3.org/2002/09/wbs/33280/>
 prefix dot   <http://openprovenance.org/Toolbox/dot#>
 
 
-
-
 entity(tr2011:WD-prov-dm-20111018,          [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2011/WD-prov-dm-20111018" ])
 entity(tr2011:WD-prov-o-20111213,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2011/WD-prov-o-20111213" ])
 entity(tr2011:WD-prov-dm-20111215,          [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2011/WD-prov-dm-20111215"  ])
@@ -147,17 +145,21 @@ entity(ex:family5, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 entity(ex:family6, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 entity(ex:family7, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
+
+
+
 prov:derivedByInsertionFrom(ex:family1, ex:family0, {('tr:prov-dm',     tr2011:WD-prov-dm-20111018)})
+
 prov:derivedByInsertionFrom(ex:family2, ex:family1, {('tr:prov-o',      tr2011:WD-prov-o-20111213)})
 prov:derivedByInsertionFrom(ex:family3, ex:family2, {('tr:prov-dm',     tr2011:WD-prov-dm-20111215)})
 prov:derivedByInsertionFrom(ex:family4, ex:family3, {('tr:prov-primer', tr2012:WD-prov-primer-20120110),
-                                                ('tr:prov-aq',     tr2012:WD-prov-aq-20120110)})
+                                                     ('tr:prov-aq',     tr2012:WD-prov-aq-20120110)})
 prov:derivedByInsertionFrom(ex:family5, ex:family4, {('tr:prov-dm',     tr2012:WD-prov-dm-20120202)})
 prov:derivedByInsertionFrom(ex:family6, ex:family5, {('tr:prov-dm',     tr2012:WD-prov-dm-20120503),
-                                                ('tr:prov-o',      tr2012:WD-prov-o-20120503),            
-                                                ('tr:prov-n',      tr2012:WD-prov-n-20120503),            
-                                                ('tr:prov-primer', tr2012:WD-prov-primer-20120503),            
-                                                ('tr:prov-constraints', tr2012:WD-prov-constraints-20120503)})
+                                                     ('tr:prov-o',      tr2012:WD-prov-o-20120503),            
+                                                     ('tr:prov-n',      tr2012:WD-prov-n-20120503),            
+                                                     ('tr:prov-primer', tr2012:WD-prov-primer-20120503),            
+                                                     ('tr:prov-constraints', tr2012:WD-prov-constraints-20120503)})
 prov:derivedByInsertionFrom(ex:family7, ex:family6, {('tr:prov-aq',     tr2012:WD-prov-aq-20120619)})
 
 
@@ -245,14 +247,14 @@ wasDerivedFrom(tr2012:CR-prov-constraints-20121211,      tr2012:WD-prov-constrai
 wasDerivedFrom(tr2012:WD-prov-primer-20121211,      tr2012:WD-prov-primer-20120724)
 
 prov:derivedByInsertionFrom(ex:family-cr, ex:family7, {('tr:prov-dm',              tr2012:CR-prov-dm-20121211),
-                                                  ('tr:prov-o',               tr2012:CR-prov-o-20121211),            
-                                                  ('tr:prov-n',               tr2012:CR-prov-n-20121211),            
-                                                  ('tr:prov-constraints',     tr2012:CR-prov-constraints-20121211),
-                                                  ('tr:prov-primer',          tr2012:WD-prov-primer-20121211),
-                                                  ('tr:prov-overview',        tr2012:WD-prov-overview-20121211),
-                                                  ('tr:prov-xml',             tr2012:WD-prov-xml-20121211),
-                                                  ('tr:prov-links',           tr2012:WD-prov-links-20121211),
-                                                  ('tr:prov-dc',              tr2012:WD-prov-dc-20121211)  })
+                                                       ('tr:prov-o',               tr2012:CR-prov-o-20121211),            
+                                                       ('tr:prov-n',               tr2012:CR-prov-n-20121211),            
+                                                       ('tr:prov-constraints',     tr2012:CR-prov-constraints-20121211),
+                                                       ('tr:prov-primer',          tr2012:WD-prov-primer-20121211),
+                                                       ('tr:prov-overview',        tr2012:WD-prov-overview-20121211),
+                                                       ('tr:prov-xml',             tr2012:WD-prov-xml-20121211),
+                                                       ('tr:prov-links',           tr2012:WD-prov-links-20121211),
+                                                       ('tr:prov-dc',              tr2012:WD-prov-dc-20121211)  })
 
 
 // PR release
@@ -329,18 +331,18 @@ wasDerivedFrom(tr2013:WD-prov-implementations-20130312, wbs:prov-constraints/res
 
 
 prov:derivedByInsertionFrom(ex:family-pr, ex:family-cr, {('tr:prov-dm',              tr2013:PR-prov-dm-20130312),
-                                                    ('tr:prov-o',               tr2013:PR-prov-o-20130312),            
-                                                  ('tr:prov-n',               tr2013:PR-prov-n-20130312),            
-                                                  ('tr:prov-constraints',     tr2013:PR-prov-constraints-20130312),
-                                                  ('tr:prov-primer',          tr2013:WD-prov-primer-20130312),
-                                                  ('tr:prov-overview',        tr2013:WD-prov-overview-20130312),
-                                                  ('tr:prov-dictionary',      tr2013:WD-prov-dictionary-20130312),
-                                                  ('tr:prov-xml',             tr2013:WD-prov-xml-20130312),
-                                                  ('tr:prov-links',           tr2013:WD-prov-links-20130312),
-                                                  ('tr:prov-aq',              tr2013:WD-prov-aq-20130312),
-                                                  ('tr:prov-dc',              tr2013:WD-prov-dc-20130312),
-                                                  ('tr:prov-sem',             tr2013:WD-prov-sem-20130312),
-                                                  ('tr:prov-implementations', tr2013:WD-prov-implementations-20130312) })
+                                                  	 ('tr:prov-o',               tr2013:PR-prov-o-20130312),            
+                                                  	 ('tr:prov-n',               tr2013:PR-prov-n-20130312),            
+                                                  	 ('tr:prov-constraints',     tr2013:PR-prov-constraints-20130312),
+                                                  	 ('tr:prov-primer',          tr2013:WD-prov-primer-20130312),
+                                                  	 ('tr:prov-overview',        tr2013:WD-prov-overview-20130312),
+                                                  	 ('tr:prov-dictionary',      tr2013:WD-prov-dictionary-20130312),
+                                                  	 ('tr:prov-xml',             tr2013:WD-prov-xml-20130312),
+                                                  	 ('tr:prov-links',           tr2013:WD-prov-links-20130312),
+                                                  	 ('tr:prov-aq',              tr2013:WD-prov-aq-20130312),
+                                                  	 ('tr:prov-dc',              tr2013:WD-prov-dc-20130312),
+                                                  	 ('tr:prov-sem',             tr2013:WD-prov-sem-20130312),
+                                                  	 ('tr:prov-implementations', tr2013:WD-prov-implementations-20130312) })
 
 
 // REC release
@@ -391,18 +393,18 @@ wasDerivedFrom(tr2013:NOTE-prov-dc-20130430,         tr2013:WD-prov-dc-20130312)
 
 
 prov:derivedByInsertionFrom(ex:family-rec, ex:family-pr, {('tr:prov-dm',              tr2013:REC-prov-dm-20130430),
-                                                     ('tr:prov-o',               tr2013:REC-prov-o-20130430),            
-                                                     ('tr:prov-n',               tr2013:REC-prov-n-20130430),            
-                                                     ('tr:prov-constraints',     tr2013:REC-prov-constraints-20130430),
-                                                     ('tr:prov-primer',          tr2013:NOTE-prov-primer-20130430),
-                                                     ('tr:prov-overview',        tr2013:NOTE-prov-overview-20130430),
-                                                     ('tr:prov-dictionary',      tr2013:NOTE-prov-dictionary-20130430),
-                                                     ('tr:prov-xml',             tr2013:NOTE-prov-xml-20130430),
-                                                     ('tr:prov-links',           tr2013:NOTE-prov-links-20130430),
-                                                     ('tr:prov-aq',              tr2013:NOTE-prov-aq-20130430),
-                                                     ('tr:prov-dc',              tr2013:NOTE-prov-dc-20130430),
-                                                     ('tr:prov-sem',             tr2013:NOTE-prov-sem-20130430),
-                                                     ('tr:prov-implementations', tr2013:NOTE-prov-implementations-20130430) })
+                                                     	  ('tr:prov-o',               tr2013:REC-prov-o-20130430),            
+                                                     	  ('tr:prov-n',               tr2013:REC-prov-n-20130430),            
+                                                     	  ('tr:prov-constraints',     tr2013:REC-prov-constraints-20130430),
+                                                     	  ('tr:prov-primer',          tr2013:NOTE-prov-primer-20130430),
+                                                     	  ('tr:prov-overview',        tr2013:NOTE-prov-overview-20130430),
+                                                     	  ('tr:prov-dictionary',      tr2013:NOTE-prov-dictionary-20130430),
+                                                     	  ('tr:prov-xml',             tr2013:NOTE-prov-xml-20130430),
+                                                     	  ('tr:prov-links',           tr2013:NOTE-prov-links-20130430),
+                                                     	  ('tr:prov-aq',              tr2013:NOTE-prov-aq-20130430),
+                                                     	  ('tr:prov-dc',              tr2013:NOTE-prov-dc-20130430),
+                                                     	  ('tr:prov-sem',             tr2013:NOTE-prov-sem-20130430),
+                                                     	  ('tr:prov-implementations', tr2013:NOTE-prov-implementations-20130430) })
 
 
 

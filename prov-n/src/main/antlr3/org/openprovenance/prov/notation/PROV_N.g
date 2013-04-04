@@ -325,23 +325,23 @@ TODO: literal used in these production needs to disable qname, to allow for intl
 */
 
 insertionExpression
-	:	'prov:derivedByInsertionFrom' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier ',' keyEntitySet optionalAttributeValuePairs ')'
+@after { qnameDisabled = false; }
+	: 	'prov:derivedByInsertionFrom('  id0=optionalIdentifier id2=identifier ',' id1=identifier ',' { qnameDisabled=true; } keyEntitySet optionalAttributeValuePairs ')'
       -> ^(DBIF ^(ID $id0?) $id2 $id1 keyEntitySet  optionalAttributeValuePairs)
 	;
 
+// todo: check that qname is properly disabled
 removalExpression
-	:	'prov:derivedByRemovalFrom' '('  id0=optionalIdentifier id2=identifier ',' id1=identifier ',' '{' literal (',' literal)* '}' optionalAttributeValuePairs ')'
+@after { qnameDisabled = false; }
+	:	'prov:derivedByRemovalFrom('  id0=optionalIdentifier id2=identifier ',' id1=identifier ',' { qnameDisabled=true; } '{' literal (',' literal)* '}' { qnameDisabled=false; }  optionalAttributeValuePairs ')'
       -> ^(DBRF ^(ID $id0?) $id2 $id1 ^(KEYS literal*)  optionalAttributeValuePairs)
 	;
 
 
-/* TODO: specify complete as optional boolean */
+
 dictionaryMembershipExpression
-	:	( 'prov:hadDictionaryMember' '('  id0=optionalIdentifier id1=identifier ',' keyEntitySet ')'
-      -> ^(DMEM ^(ID $id0?) $id1 keyEntitySet )
-         | 'prov:hadDictionaryMember' '('  id1=identifier ',' id2=identifier ',' literal ')'
+	:	 'prov:hadDictionaryMember('  id1=identifier ',' id2=identifier ',' literal ')'
       -> ^(DMEM ^(ID) $id1 ^(KES ^(KEYS literal) ^(VALUES $id2)))
-        )
 	;
 
 
@@ -352,10 +352,20 @@ collectionMembershipExpression
   ; 
 
 
+//@after { qnameDisabled = false; } 
+// 
+// 
+//  {qnameDisabled=false; }
+// {qnameDisabled=true; }
+
 keyEntitySet
-    : '{'  '(' literal ',' val=identifier  ')' ( ','  '(' literal ',' val=identifier  ')' )* '}'
+
+    : '{'  '('   { qnameDisabled=true; } literal {qnameDisabled=false; } ','  identifier  ')' ( ','  '('  {qnameDisabled=true; } literal {qnameDisabled=false; }  ',' identifier  ')' )* '}'
       -> ^(KES ^(KEYS literal+) ^(VALUES identifier+))
     ;
+
+
+
 
 
 entitySet
@@ -370,11 +380,9 @@ entitySet
 
 */
 
-
-
-
+// { !$qn.text.contains("prov:") }?
 extensibilityExpression
-	:	QUALIFIED_NAME '(' id0=optionalIdentifier extensibilityArgument ( ','  extensibilityArgument)* attr=optionalAttributeValuePairs ')'
+	:	qn=QUALIFIED_NAME { System.out.println("extensibility: qnameDisabled " + qnameDisabled + " " + $qn.text); }  '(' id0=optionalIdentifier extensibilityArgument ( ','  extensibilityArgument)* attr=optionalAttributeValuePairs ')'
       -> {$attr.tree==null}?
          ^(EXT ^(ID QUALIFIED_NAME) ^(ID $id0?) extensibilityArgument* ^(ATTRIBUTES))
       -> ^(EXT ^(ID QUALIFIED_NAME) ^(ID $id0?) extensibilityArgument* optionalAttributeValuePairs)

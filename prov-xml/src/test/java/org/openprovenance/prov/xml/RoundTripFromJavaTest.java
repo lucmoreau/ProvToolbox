@@ -2090,6 +2090,29 @@ public class RoundTripFromJavaTest extends TestCase {
 
 	}
 	
+	public void testDictionaryInsertion6() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p1 = new KeyQNamePair();
+		p1.key = "a";
+		p1.name = q("e0");
+		ll.add(p1);
+		KeyQNamePair p2 = new KeyQNamePair();
+		p2.key = 1;
+		p2.name = q("e1");
+		ll.add(p2);
+		KeyQNamePair p3 = new KeyQNamePair();
+		p3.key = q("a");
+		p3.name = q("e2");
+		ll.add(p3);
+		DerivedByInsertionFrom d5 = pFactory.newDerivedByInsertionFrom(
+				null, q("d2"), q("d1"), ll, null);
+
+		Statement[] statements = new Statement[]{d5};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryInsertion6");
+
+	}
+	
  	public void testDictionaryRemoval1() throws JAXBException {
 		DerivedByRemovalFrom d1 = pFactory.newDerivedByRemovalFrom(null,
 				q("d2"), q("d1"), null, null);

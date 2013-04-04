@@ -409,6 +409,7 @@ public class TreeTraversal {
             /* Component 6 */
 
         case PROV_NParser.EXT:
+        	System.out.println("FOUND Extension " + ast);
             Object extName=convert(ast.getChild(0));
             uidTree=ast.getChild(1);
             if (uidTree.getChildCount()>0) {

@@ -1,6 +1,8 @@
 
 
+
 document
+
 
 prefix ex  <http://example.org/>
 
@@ -15,22 +17,61 @@ prefix chairs  <https://lists.w3.org/Archives/Member/chairs/>
 prefix trans   <http://www.w3.org/2005/08/01-transitions.html#>
 prefix wbs     <https://www.w3.org/2002/09/wbs/46974/>
 prefix wbs2    <https://www.w3.org/2002/09/wbs/33280/>
+prefix user    <http://www.w3.org/2011/prov/wiki/User:>
+prefix wiki    <http://www.w3.org/2011/prov/wiki/>
+prefix foaf    <http://xmlns.com/foaf/spec/>
 
 prefix dot   <http://openprovenance.org/Toolbox/dot#>
 
+prefix pd  <http://www.w3.org/2001/02pd/rec54#>
 
-entity(tr2011:WD-prov-dm-20111018,          [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2011/WD-prov-dm-20111018" ])
-entity(tr2011:WD-prov-o-20111213,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2011/WD-prov-o-20111213" ])
-entity(tr2011:WD-prov-dm-20111215,          [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2011/WD-prov-dm-20111215"  ])
-entity(tr2012:WD-prov-aq-20120110,          [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-aq-20120110"  ])
-entity(tr2012:WD-prov-primer-20120110,      [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-primer-20120110"  ])
-entity(tr2012:WD-prov-dm-20120202,          [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-dm-20120202"  ])
-entity(tr2012:WD-prov-dm-20120503,          [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-dm-20120503"  ])
-entity(tr2012:WD-prov-o-20120503,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-o-20120503"  ])
-entity(tr2012:WD-prov-n-20120503,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-n-20120503"  ])
-entity(tr2012:WD-prov-constraints-20120503, [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-constraints-20120503"  ])
-entity(tr2012:WD-prov-primer-20120503,      [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-primer-20120503"  ])
-entity(tr2012:WD-prov-aq-20120619,          [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-aq-20120619"  ])
+ 
+agent(user:Bvillazo,[foaf:name="Daniel Garijo"])
+agent(user:Ctilmes,[foaf:name="Curt Tilmes"])
+agent(user:Ctrim,[foaf:name="Craig Trim"])
+agent(user:Dcorsar,[foaf:name="David Corsar"])
+agent(user:Dmcguinn,[foaf:name="Deborah L. McGuinness"])
+agent(user:Gklyne,[foaf:name="Graham Klyne"])
+agent(user:Hhua,[foaf:name="Hook Hua"])
+agent(user:Ivan,[foaf:name="Ivan Herman"])
+agent(user:Jcheney,[foaf:name="James Cheney"])
+agent(user:Jmccuske,[foaf:name="James McCusker"])
+agent(user:Jmyers4,[foaf:name="Jim Myers"])
+agent(user:Jzhao,[foaf:name="Jun Zhao"])
+agent(user:Kbelhajj,[foaf:name="Khalid Belhajjame"])
+agent(user:Keckert,[foaf:name="Kai Eckert"])
+agent(user:Lmoreau,[foaf:name="Luc Moreau"])
+agent(user:Ohartig,[foaf:name="Olaf Hartig"])
+agent(user:Pgroth,[foaf:name="Paul Groth"])
+agent(user:Pmissier,[foaf:name="Paolo Missier"])
+agent(user:Rbfar,[foaf:name="Reza B'Far"])
+agent(user:Scoppens,[foaf:name="Sam Coppens"])
+agent(user:Scresswe,[foaf:name="Steve Cresswell"])
+agent(user:Smiles,[foaf:name="Simon Miles"])
+agent(user:Ssahoo2,[foaf:name="Satya Sahoo"])
+agent(user:Ssoiland,[foaf:name="Stian Soilan-Reyes"])
+agent(user:Szednik,[foaf:name="Stephan Zednik"])
+agent(user:Tdenies,[foaf:name="Tom De Nies"])
+agent(user:Thuynh,[foaf:name="Trung Dong Huynh"])
+agent(user:Tlebo,[foaf:name="Timothy Lebo"])
+agent(user:Ygil,[foaf:name="Yolanda Gil"])
+agent(user:Ysimmhan,[foaf:name="user:Ysimmhan"])
+
+
+
+
+entity(tr2011:WD-prov-dm-20111018,          [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2011/WD-prov-dm-20111018" ])
+entity(tr2011:WD-prov-o-20111213,           [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2011/WD-prov-o-20111213" ])
+entity(tr2011:WD-prov-dm-20111215,          [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2011/WD-prov-dm-20111215"  ])
+entity(tr2012:WD-prov-aq-20120110,          [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-aq-20120110"  ])
+entity(tr2012:WD-prov-primer-20120110,      [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-primer-20120110"  ])
+entity(tr2012:WD-prov-dm-20120202,          [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2012/WD-prov-dm-20120202"  ])
+entity(tr2012:WD-prov-dm-20120503,          [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2012/WD-prov-dm-20120503"  ])
+entity(tr2012:WD-prov-o-20120503,           [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2012/WD-prov-o-20120503"  ])
+entity(tr2012:WD-prov-n-20120503,           [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2012/WD-prov-n-20120503"  ])
+entity(tr2012:WD-prov-constraints-20120503, [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2012/WD-prov-constraints-20120503"  ])
+entity(tr2012:WD-prov-primer-20120503,      [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-primer-20120503"  ])
+entity(tr2012:WD-prov-aq-20120619,          [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-aq-20120619"  ])
 
 
 entity(process:rec-advance,    [ prov:type='prov:Plan', dot:fillcolor="lightblue", dot:url="http://www.w3.org/2005/10/Process-20051014/tr.html#rec-advance"  ])
@@ -79,99 +120,99 @@ wasDerivedFrom(tr2012:WD-prov-o-20120503, tr2011:WD-prov-o-20111213)
 wasDerivedFrom(tr2012:WD-prov-aq-20120619, tr2012:WD-prov-aq-20120110)
 
 
-activity(ex:act1,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
-activity(ex:act2,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
-activity(ex:act3,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
-activity(ex:act4,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
-activity(ex:act5,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
-activity(ex:act6,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
-activity(ex:act7,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
+activity(ex:publ1,-,-,[prov:type='prov:Publish' ])
+activity(ex:publ2,-,-,[prov:type='prov:Publish' ])
+activity(ex:publ3,-,-,[prov:type='prov:Publish' ])
+activity(ex:publ4,-,-,[prov:type='prov:Publish' ])
+activity(ex:publ5,-,-,[prov:type='prov:Publish' ])
+activity(ex:publ6,-,-,[prov:type='prov:Publish' ])
+activity(ex:publ7,-,-,[prov:type='prov:Publish' ])
 
-wasGeneratedBy(tr2011:WD-prov-dm-20111018,          ex:act1, -)
+wasGeneratedBy(tr2011:WD-prov-dm-20111018,          ex:publ1, -)
 
-wasGeneratedBy(tr2011:WD-prov-o-20111213,           ex:act2, -)
+wasGeneratedBy(tr2011:WD-prov-o-20111213,           ex:publ2, -)
 
-wasGeneratedBy(tr2011:WD-prov-dm-20111215,          ex:act3, -)
+wasGeneratedBy(tr2011:WD-prov-dm-20111215,          ex:publ3, -)
 
-wasGeneratedBy(tr2012:WD-prov-primer-20120110,      ex:act4, -)
-wasGeneratedBy(tr2012:WD-prov-aq-20120110,          ex:act4, -)
+wasGeneratedBy(tr2012:WD-prov-primer-20120110,      ex:publ4, -)
+wasGeneratedBy(tr2012:WD-prov-aq-20120110,          ex:publ4, -)
 
-wasGeneratedBy(tr2012:WD-prov-dm-20120202,          ex:act5, -)
+wasGeneratedBy(tr2012:WD-prov-dm-20120202,          ex:publ5, -)
 
-wasGeneratedBy(tr2012:WD-prov-dm-20120503,          ex:act6, -)
-wasGeneratedBy(tr2012:WD-prov-o-20120503,           ex:act6, -)
-wasGeneratedBy(tr2012:WD-prov-n-20120503,           ex:act6, -)
-wasGeneratedBy(tr2012:WD-prov-constraints-20120503, ex:act6, -)
-wasGeneratedBy(tr2012:WD-prov-primer-20120503,      ex:act6, -)
+wasGeneratedBy(tr2012:WD-prov-dm-20120503,          ex:publ6, -)
+wasGeneratedBy(tr2012:WD-prov-o-20120503,           ex:publ6, -)
+wasGeneratedBy(tr2012:WD-prov-n-20120503,           ex:publ6, -)
+wasGeneratedBy(tr2012:WD-prov-constraints-20120503, ex:publ6, -)
+wasGeneratedBy(tr2012:WD-prov-primer-20120503,      ex:publ6, -)
 
-wasGeneratedBy(tr2012:WD-prov-aq-20120619,          ex:act7, -)
-
-
-used(ex:act1,chairs:2011OctDec/0004,-)
-used(ex:act1,email:2011Oct/0141,-)
-
-used(ex:act2,chairs:2011OctDec/0152,-)
-used(ex:act2,email:2011Dec/0075,-)
-used(ex:act3,email:2011Dec/0111,-)
-
-used(ex:act4,chairs:2011OctDec/0171,-)
-used(ex:act4,chairs:2012JanMar/0000,-)
-used(ex:act4,email:2012Jan/0043,-)
+wasGeneratedBy(tr2012:WD-prov-aq-20120619,          ex:publ7, -)
 
 
-used(ex:act5,email:2012Jan/0422,-)
+used(ex:publ1,chairs:2011OctDec/0004,-)
+used(ex:publ1,email:2011Oct/0141,-)
 
-used(ex:act6, email:2012Apr/0583, -)
-used(ex:act6, chairs:2012AprJun/0037, -)
+used(ex:publ2,chairs:2011OctDec/0152,-)
+used(ex:publ2,email:2011Dec/0075,-)
+used(ex:publ3,email:2011Dec/0111,-)
 
-used(ex:act7, email:2012Jun/0164, -)
+used(ex:publ4,chairs:2011OctDec/0171,-)
+used(ex:publ4,chairs:2012JanMar/0000,-)
+used(ex:publ4,email:2012Jan/0043,-)
+
+
+used(ex:publ5,email:2012Jan/0422,-)
+
+used(ex:publ6, email:2012Apr/0583, -)
+used(ex:publ6, chairs:2012AprJun/0037, -)
+
+used(ex:publ7, email:2012Jun/0164, -)
 
 agent(w3:Consortium, [ prov:type='prov:Organization', dot:fillcolor="thistle3", dot:url="http://www.w3.org/Consortium"   ])
 
-wasAssociatedWith(ex:act1, w3:Consortium, process:rec-advance)
-wasAssociatedWith(ex:act2, w3:Consortium, process:rec-advance)
-wasAssociatedWith(ex:act3, w3:Consortium, process:rec-advance)
-wasAssociatedWith(ex:act4, w3:Consortium, process:rec-advance)
-wasAssociatedWith(ex:act5, w3:Consortium, process:rec-advance)
-wasAssociatedWith(ex:act6, w3:Consortium, process:rec-advance)
-wasAssociatedWith(ex:act7, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:publ1, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:publ2, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:publ3, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:publ4, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:publ5, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:publ6, w3:Consortium, process:rec-advance)
+wasAssociatedWith(ex:publ7, w3:Consortium, process:rec-advance)
 
-entity(ex:family0, [ prov:type='prov:EmptyDictionary', dot:fillcolor="bisque2"  ])
-entity(ex:family1, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
-entity(ex:family2, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
-entity(ex:family3, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
-entity(ex:family4, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
-entity(ex:family5, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
-entity(ex:family6, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
-entity(ex:family7, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
-
-
+entity(wiki:Family0, [ prov:type='prov:EmptyDictionary', dot:fillcolor="bisque2"  ])
+entity(wiki:Family1, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(wiki:Family2, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(wiki:Family3, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(wiki:Family4, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(wiki:Family5, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(wiki:Family6, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(wiki:Family7, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 
-prov:derivedByInsertionFrom(ex:family1, ex:family0, {('tr:prov-dm',     tr2011:WD-prov-dm-20111018)})
 
-prov:derivedByInsertionFrom(ex:family2, ex:family1, {('tr:prov-o',      tr2011:WD-prov-o-20111213)})
-prov:derivedByInsertionFrom(ex:family3, ex:family2, {('tr:prov-dm',     tr2011:WD-prov-dm-20111215)})
-prov:derivedByInsertionFrom(ex:family4, ex:family3, {('tr:prov-primer', tr2012:WD-prov-primer-20120110),
-                                                     ('tr:prov-aq',     tr2012:WD-prov-aq-20120110)})
-prov:derivedByInsertionFrom(ex:family5, ex:family4, {('tr:prov-dm',     tr2012:WD-prov-dm-20120202)})
-prov:derivedByInsertionFrom(ex:family6, ex:family5, {('tr:prov-dm',     tr2012:WD-prov-dm-20120503),
-                                                     ('tr:prov-o',      tr2012:WD-prov-o-20120503),            
-                                                     ('tr:prov-n',      tr2012:WD-prov-n-20120503),            
-                                                     ('tr:prov-primer', tr2012:WD-prov-primer-20120503),            
-                                                     ('tr:prov-constraints', tr2012:WD-prov-constraints-20120503)})
-prov:derivedByInsertionFrom(ex:family7, ex:family6, {('tr:prov-aq',     tr2012:WD-prov-aq-20120619)})
+
+prov:derivedByInsertionFrom(wiki:Family1, wiki:Family0, {('tr:prov-dm',     tr2011:WD-prov-dm-20111018)})
+
+prov:derivedByInsertionFrom(wiki:Family2, wiki:Family1, {('tr:prov-o',      tr2011:WD-prov-o-20111213)})
+prov:derivedByInsertionFrom(wiki:Family3, wiki:Family2, {('tr:prov-dm',     tr2011:WD-prov-dm-20111215)})
+prov:derivedByInsertionFrom(wiki:Family4, wiki:Family3, {('tr:prov-primer', tr2012:WD-prov-primer-20120110),
+                                                         ('tr:prov-aq',     tr2012:WD-prov-aq-20120110)})
+prov:derivedByInsertionFrom(wiki:Family5, wiki:Family4, {('tr:prov-dm',     tr2012:WD-prov-dm-20120202)})
+prov:derivedByInsertionFrom(wiki:Family6, wiki:Family5, {('tr:prov-dm',     tr2012:WD-prov-dm-20120503),
+                                                     	 ('tr:prov-o',      tr2012:WD-prov-o-20120503),            
+                                                     	 ('tr:prov-n',      tr2012:WD-prov-n-20120503),            
+                                                     	 ('tr:prov-primer', tr2012:WD-prov-primer-20120503),            
+                                                     	 ('tr:prov-constraints', tr2012:WD-prov-constraints-20120503)})
+prov:derivedByInsertionFrom(wiki:Family7, wiki:Family6, {('tr:prov-aq',     tr2012:WD-prov-aq-20120619)})
 
 
 
 // I introduce these edges for layout only, but it's really time orderign I mean here
 
-wasInformedBy(ex:act2,ex:act1, [dot:color="none"] )
-wasInformedBy(ex:act3,ex:act2, [dot:color="none"])
-wasInformedBy(ex:act4,ex:act3, [dot:color="none"])
-wasInformedBy(ex:act5,ex:act4, [dot:color="none"])
-wasInformedBy(ex:act6,ex:act5, [dot:color="none"])
-wasInformedBy(ex:act7,ex:act6, [dot:color="none"])
+wasInformedBy(ex:publ2,ex:publ1, [dot:color="none"] )
+wasInformedBy(ex:publ3,ex:publ2, [dot:color="none"])
+wasInformedBy(ex:publ4,ex:publ3, [dot:color="none"])
+wasInformedBy(ex:publ5,ex:publ4, [dot:color="none"])
+wasInformedBy(ex:publ6,ex:publ5, [dot:color="none"])
+wasInformedBy(ex:publ7,ex:publ6, [dot:color="none"])
 
 
 wasAttributedTo(tr2011:WD-prov-dm-20111018,w3:Consortium)
@@ -180,25 +221,27 @@ wasAttributedTo(tr2012:WD-prov-dm-20120503,w3:Consortium)
 // 8th publication
 
 entity(email:2012Jul/0154,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Jul/0154" ])
-activity(ex:act8,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
-used(ex:act8,email:2012Jul/0154,-)
-wasGeneratedBy(tr2012:WD-prov-dm-20120724,          ex:act8, -)
-wasGeneratedBy(tr2012:WD-prov-n-20120724,           ex:act8, -)
-wasGeneratedBy(tr2012:WD-prov-o-20120724,           ex:act8, -)
-wasGeneratedBy(tr2012:WD-prov-primer-20120724,      ex:act8, -)
+activity(ex:publ8,-,-,[prov:type='prov:Publish' ])
+used(ex:publ8,email:2012Jul/0154,-)
+wasAssociatedWith(ex:publ8, w3:Consortium, process:rec-advance)
+wasGeneratedBy(tr2012:WD-prov-dm-20120724,          ex:publ8, -)
+wasGeneratedBy(tr2012:WD-prov-n-20120724,           ex:publ8, -)
+wasGeneratedBy(tr2012:WD-prov-o-20120724,           ex:publ8, -)
+wasGeneratedBy(tr2012:WD-prov-primer-20120724,      ex:publ8, -)
 
 // 9th publication
 
 entity(email:2012Sep/0070,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Sep/0070" ])
-used(ex:act9,email:2012Sep/0070,-)
-activity(ex:act9,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
-wasGeneratedBy(tr2012:WD-prov-constraints-20120911, ex:act9, -)
+used(ex:publ9,email:2012Sep/0070,-)
+activity(ex:publ9,-,-,[prov:type='prov:Publish' ])
+wasAssociatedWith(ex:publ9, w3:Consortium, process:rec-advance)
+wasGeneratedBy(tr2012:WD-prov-constraints-20120911, ex:publ9, -)
 
-entity(tr2012:WD-prov-dm-20120724,          [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-dm-20120724"  ])
-entity(tr2012:WD-prov-n-20120724,           [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-n-20120724"  ])
-entity(tr2012:WD-prov-o-20120724,           [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-o-20120724"  ])
-entity(tr2012:WD-prov-constraints-20120911, [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-constraints-20120911"  ])
-entity(tr2012:WD-prov-primer-20120724,      [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-primer-20120724"  ])
+entity(tr2012:WD-prov-dm-20120724,          [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-dm-20120724"  ])
+entity(tr2012:WD-prov-n-20120724,           [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-n-20120724"  ])
+entity(tr2012:WD-prov-o-20120724,           [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-o-20120724"  ])
+entity(tr2012:WD-prov-constraints-20120911, [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-constraints-20120911"  ])
+entity(tr2012:WD-prov-primer-20120724,      [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-primer-20120724"  ])
 
 wasDerivedFrom(tr2012:WD-prov-dm-20120724, tr2012:WD-prov-dm-20120503)
 wasDerivedFrom(tr2012:WD-prov-n-20120724, tr2012:WD-prov-n-20120503)
@@ -210,35 +253,36 @@ wasDerivedFrom(tr2012:WD-prov-primer-20120724, tr2012:WD-prov-primer-20120503)
 // CR release
 
 entity(email:2012Dec/0041,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Dec/0041" ])
-activity(ex:act10,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
-used(ex:act10,email:2012Dec/0041,-)
+activity(ex:publ10,-,-,[prov:type='prov:Publish' ])
+wasAssociatedWith(ex:publ10, w3:Consortium, process:rec-advance)
+used(ex:publ10,email:2012Dec/0041,-)
 
-wasGeneratedBy(tr2012:CR-prov-dm-20121211,          ex:act10, -)
-wasGeneratedBy(tr2012:CR-prov-n-20121211,           ex:act10, -)
-wasGeneratedBy(tr2012:CR-prov-o-20121211,           ex:act10, -)
-wasGeneratedBy(tr2012:CR-prov-constraints-20121211, ex:act10, -)
+wasGeneratedBy(tr2012:CR-prov-dm-20121211,          ex:publ10, -)
+wasGeneratedBy(tr2012:CR-prov-n-20121211,           ex:publ10, -)
+wasGeneratedBy(tr2012:CR-prov-o-20121211,           ex:publ10, -)
+wasGeneratedBy(tr2012:CR-prov-constraints-20121211, ex:publ10, -)
 
-wasGeneratedBy(tr2012:WD-prov-primer-20121211,      ex:act10, -)
-wasGeneratedBy(tr2012:WD-prov-overview-20121211,    ex:act10, -)
-wasGeneratedBy(tr2012:WD-prov-xml-20121211,         ex:act10, -)
-wasGeneratedBy(tr2012:WD-prov-links-20121211,       ex:act10, -)
-wasGeneratedBy(tr2012:WD-prov-dc-20121211,          ex:act10, -)
-
-
-
-entity(ex:family-cr, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+wasGeneratedBy(tr2012:WD-prov-primer-20121211,      ex:publ10, -)
+wasGeneratedBy(tr2012:WD-prov-overview-20121211,    ex:publ10, -)
+wasGeneratedBy(tr2012:WD-prov-xml-20121211,         ex:publ10, -)
+wasGeneratedBy(tr2012:WD-prov-links-20121211,       ex:publ10, -)
+wasGeneratedBy(tr2012:WD-prov-dc-20121211,          ex:publ10, -)
 
 
-entity(tr2012:CR-prov-dm-20121211,          [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/PR-prov-dm-20121211"  ])
-entity(tr2012:CR-prov-n-20121211,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/PR-prov-n-20121211"  ])
-entity(tr2012:CR-prov-o-20121211,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/PR-prov-o-20121211"  ])
-entity(tr2012:CR-prov-constraints-20121211, [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/PR-prov-constraints-20121211"  ])
 
-entity(tr2012:WD-prov-primer-20121211,      [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-primer-20121211"  ])
-entity(tr2012:WD-prov-overview-20121211,    [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-overview-20121211"  ])
-entity(tr2012:WD-prov-xml-20121211,         [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-xml-20121211"  ])
-entity(tr2012:WD-prov-links-20121211,       [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-links-20121211"  ])
-entity(tr2012:WD-prov-dc-20121211,          [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2012/WD-prov-dc-20121211"  ])
+entity(wiki:Family-cr, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+
+
+entity(tr2012:CR-prov-dm-20121211,          [ prov:type='process:RecsCR', dot:url="http://www.w3.org/TR/2012/PR-prov-dm-20121211"  ])
+entity(tr2012:CR-prov-n-20121211,           [ prov:type='process:RecsCR', dot:url="http://www.w3.org/TR/2012/PR-prov-n-20121211"  ])
+entity(tr2012:CR-prov-o-20121211,           [ prov:type='process:RecsCR', dot:url="http://www.w3.org/TR/2012/PR-prov-o-20121211"  ])
+entity(tr2012:CR-prov-constraints-20121211, [ prov:type='process:RecsCR', dot:url="http://www.w3.org/TR/2012/PR-prov-constraints-20121211"  ])
+
+entity(tr2012:WD-prov-primer-20121211,      [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-primer-20121211"  ])
+entity(tr2012:WD-prov-overview-20121211,    [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-overview-20121211"  ])
+entity(tr2012:WD-prov-xml-20121211,         [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-xml-20121211"  ])
+entity(tr2012:WD-prov-links-20121211,       [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-links-20121211"  ])
+entity(tr2012:WD-prov-dc-20121211,          [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-dc-20121211"  ])
 
 wasDerivedFrom(tr2012:CR-prov-dm-20121211,      tr2012:WD-prov-dm-20120724)
 wasDerivedFrom(tr2012:CR-prov-n-20121211,      tr2012:WD-prov-n-20120724)
@@ -246,15 +290,17 @@ wasDerivedFrom(tr2012:CR-prov-o-20121211,      tr2012:WD-prov-o-20120724)
 wasDerivedFrom(tr2012:CR-prov-constraints-20121211,      tr2012:WD-prov-constraints-20120911)
 wasDerivedFrom(tr2012:WD-prov-primer-20121211,      tr2012:WD-prov-primer-20120724)
 
-prov:derivedByInsertionFrom(ex:family-cr, ex:family7, {('tr:prov-dm',              tr2012:CR-prov-dm-20121211),
-                                                       ('tr:prov-o',               tr2012:CR-prov-o-20121211),            
-                                                       ('tr:prov-n',               tr2012:CR-prov-n-20121211),            
-                                                       ('tr:prov-constraints',     tr2012:CR-prov-constraints-20121211),
-                                                       ('tr:prov-primer',          tr2012:WD-prov-primer-20121211),
-                                                       ('tr:prov-overview',        tr2012:WD-prov-overview-20121211),
-                                                       ('tr:prov-xml',             tr2012:WD-prov-xml-20121211),
-                                                       ('tr:prov-links',           tr2012:WD-prov-links-20121211),
-                                                       ('tr:prov-dc',              tr2012:WD-prov-dc-20121211)  })
+prov:derivedByInsertionFrom(wiki:Family-cr, 
+                            wiki:Family7, 
+                            {('tr:prov-dm',              tr2012:CR-prov-dm-20121211),
+                             ('tr:prov-o',               tr2012:CR-prov-o-20121211),            
+                             ('tr:prov-n',               tr2012:CR-prov-n-20121211),            
+                             ('tr:prov-constraints',     tr2012:CR-prov-constraints-20121211),
+                             ('tr:prov-primer',          tr2012:WD-prov-primer-20121211),
+                             ('tr:prov-overview',        tr2012:WD-prov-overview-20121211),
+                             ('tr:prov-xml',             tr2012:WD-prov-xml-20121211),
+                             ('tr:prov-links',           tr2012:WD-prov-links-20121211),
+                             ('tr:prov-dc',              tr2012:WD-prov-dc-20121211)  })
 
 
 // PR release
@@ -265,44 +311,45 @@ entity(chairs:2013JanMar/0097, [ prov:type='trans:transreq' , dot:fillcolor="gai
 
 
 entity(email:2013Mar/0073,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2013Mar/0073" ])
-activity(ex:act11,-,-,[prov:type="publish", dot:fillcolor="darkseagreen" ])
-used(ex:act11,email:2013Mar/0073,-)
-used(ex:act11,chairs:2013JanMar/0090,-)
-used(ex:act11,chairs:2013JanMar/0097,-)
+activity(ex:publ11,-,-, [prov:type='prov:Publish' ])
+wasAssociatedWith(ex:publ11, w3:Consortium, process:rec-advance)
+used(ex:publ11,email:2013Mar/0073,-)
+used(ex:publ11,chairs:2013JanMar/0090,-)
+used(ex:publ11,chairs:2013JanMar/0097,-)
 
 
-wasGeneratedBy(tr2013:PR-prov-dm-20130312,          ex:act11, -)
-wasGeneratedBy(tr2013:PR-prov-n-20130312,           ex:act11, -)
-wasGeneratedBy(tr2013:PR-prov-o-20130312,           ex:act11, -)
-wasGeneratedBy(tr2013:PR-prov-constraints-20130312, ex:act11, -)
+wasGeneratedBy(tr2013:PR-prov-dm-20130312,          ex:publ11, -)
+wasGeneratedBy(tr2013:PR-prov-n-20130312,           ex:publ11, -)
+wasGeneratedBy(tr2013:PR-prov-o-20130312,           ex:publ11, -)
+wasGeneratedBy(tr2013:PR-prov-constraints-20130312, ex:publ11, -)
 
-wasGeneratedBy(tr2013:WD-prov-primer-20130312,      ex:act11, -)
-wasGeneratedBy(tr2013:WD-prov-overview-20130312,    ex:act11, -)
-wasGeneratedBy(tr2013:WD-prov-dictionary-20130312,  ex:act11, -)
-wasGeneratedBy(tr2013:WD-prov-xml-20130312,         ex:act11, -)
-wasGeneratedBy(tr2013:WD-prov-links-20130312,       ex:act11, -)
-wasGeneratedBy(tr2013:WD-prov-aq-20130312,          ex:act11, -)
-wasGeneratedBy(tr2013:WD-prov-dc-20130312,          ex:act11, -)
-wasGeneratedBy(tr2013:WD-prov-sem-20130312,         ex:act11, -)
-wasGeneratedBy(tr2013:WD-prov-implementations-20130312, ex:act11, -)
+wasGeneratedBy(tr2013:WD-prov-primer-20130312,      ex:publ11, -)
+wasGeneratedBy(tr2013:WD-prov-overview-20130312,    ex:publ11, -)
+wasGeneratedBy(tr2013:WD-prov-dictionary-20130312,  ex:publ11, -)
+wasGeneratedBy(tr2013:WD-prov-xml-20130312,         ex:publ11, -)
+wasGeneratedBy(tr2013:WD-prov-links-20130312,       ex:publ11, -)
+wasGeneratedBy(tr2013:WD-prov-aq-20130312,          ex:publ11, -)
+wasGeneratedBy(tr2013:WD-prov-dc-20130312,          ex:publ11, -)
+wasGeneratedBy(tr2013:WD-prov-sem-20130312,         ex:publ11, -)
+wasGeneratedBy(tr2013:WD-prov-implementations-20130312, ex:publ11, -)
 
 
-entity(ex:family-pr, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(wiki:Family-pr, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
-entity(tr2013:PR-prov-dm-20130312,          [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/PR-prov-dm-20130312"  ])
-entity(tr2013:PR-prov-n-20130312,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/PR-prov-n-20130312"  ])
-entity(tr2013:PR-prov-o-20130312,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/PR-prov-o-20130312"  ])
-entity(tr2013:PR-prov-constraints-20130312, [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/PR-prov-constraints-20130312"  ])
+entity(tr2013:PR-prov-dm-20130312,          [ prov:type='process:RecsPR', dot:url="http://www.w3.org/TR/2013/PR-prov-dm-20130312"  ])
+entity(tr2013:PR-prov-n-20130312,           [ prov:type='process:RecsPR', dot:url="http://www.w3.org/TR/2013/PR-prov-n-20130312"  ])
+entity(tr2013:PR-prov-o-20130312,           [ prov:type='process:RecsPR', dot:url="http://www.w3.org/TR/2013/PR-prov-o-20130312"  ])
+entity(tr2013:PR-prov-constraints-20130312, [ prov:type='process:RecsPR', dot:url="http://www.w3.org/TR/2013/PR-prov-constraints-20130312"  ])
 
-entity(tr2013:WD-prov-primer-20130312,      [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-primer-20130312"  ])
-entity(tr2013:WD-prov-overview-20130312,    [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-overview-20130312"  ])
-entity(tr2013:WD-prov-dictionary-20130312,  [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-dictionary-20130312"  ])
-entity(tr2013:WD-prov-xml-20130312,         [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-xml-20130312"  ])
-entity(tr2013:WD-prov-links-20130312,       [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-links-20130312"  ])
-entity(tr2013:WD-prov-aq-20130312,          [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-aq-20130312"  ])
-entity(tr2013:WD-prov-dc-20130312,          [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-dc-20130312"  ])
-entity(tr2013:WD-prov-sem-20130312,         [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-sem-20130312"  ])
-entity(tr2013:WD-prov-implementations-20130312, [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/WD-prov-implementations-20130312"  ])
+entity(tr2013:WD-prov-primer-20130312,      [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-primer-20130312"  ])
+entity(tr2013:WD-prov-overview-20130312,    [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-overview-20130312"  ])
+entity(tr2013:WD-prov-dictionary-20130312,  [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-dictionary-20130312"  ])
+entity(tr2013:WD-prov-xml-20130312,         [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-xml-20130312"  ])
+entity(tr2013:WD-prov-links-20130312,       [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-links-20130312"  ])
+entity(tr2013:WD-prov-aq-20130312,          [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-aq-20130312"  ])
+entity(tr2013:WD-prov-dc-20130312,          [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-dc-20130312"  ])
+entity(tr2013:WD-prov-sem-20130312,         [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-sem-20130312"  ])
+entity(tr2013:WD-prov-implementations-20130312, [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-implementations-20130312"  ])
 
 
 
@@ -330,7 +377,7 @@ wasDerivedFrom(tr2013:WD-prov-implementations-20130312, wbs:prov-vocabulary-surv
 wasDerivedFrom(tr2013:WD-prov-implementations-20130312, wbs:prov-constraints/results)
 
 
-prov:derivedByInsertionFrom(ex:family-pr, ex:family-cr, {('tr:prov-dm',              tr2013:PR-prov-dm-20130312),
+prov:derivedByInsertionFrom(wiki:Family-pr, wiki:Family-cr, {('tr:prov-dm',              tr2013:PR-prov-dm-20130312),
                                                   	 ('tr:prov-o',               tr2013:PR-prov-o-20130312),            
                                                   	 ('tr:prov-n',               tr2013:PR-prov-n-20130312),            
                                                   	 ('tr:prov-constraints',     tr2013:PR-prov-constraints-20130312),
@@ -349,6 +396,25 @@ prov:derivedByInsertionFrom(ex:family-pr, ex:family-cr, {('tr:prov-dm',         
 
 entity(chairs:2013JanMar/0116, [ prov:type='process:cfr' , dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2013JanMar/0116.html" ]) 
 
+activity(ex:publ12,-,-,[prov:type='prov:Publish' ])
+wasAssociatedWith(ex:publ12, w3:Consortium, process:rec-advance)
+
+wasGeneratedBy(tr2013:REC-prov-dm-20130430,          ex:publ12, -)
+wasGeneratedBy(tr2013:REC-prov-n-20130430,           ex:publ12, -)
+wasGeneratedBy(tr2013:REC-prov-o-20130430,           ex:publ12, -)
+wasGeneratedBy(tr2013:REC-prov-constraints-20130430, ex:publ12, -)
+
+wasGeneratedBy(tr2013:NOTE-prov-primer-20130430,      ex:publ12, -)
+wasGeneratedBy(tr2013:NOTE-prov-overview-20130430,    ex:publ12, -)
+wasGeneratedBy(tr2013:NOTE-prov-dictionary-20130430,  ex:publ12, -)
+wasGeneratedBy(tr2013:NOTE-prov-xml-20130430,         ex:publ12, -)
+wasGeneratedBy(tr2013:NOTE-prov-links-20130430,       ex:publ12, -)
+wasGeneratedBy(tr2013:NOTE-prov-aq-20130430,          ex:publ12, -)
+wasGeneratedBy(tr2013:NOTE-prov-dc-20130430,          ex:publ12, -)
+wasGeneratedBy(tr2013:NOTE-prov-sem-20130430,         ex:publ12, -)
+wasGeneratedBy(tr2013:NOTE-prov-implementations-20130430, ex:publ12, -)
+
+
 entity(wbs2:provpf/results)
 wasDerivedFrom(chairs:2013JanMar/0116, tr2013:PR-prov-dm-20130312)
 wasDerivedFrom(chairs:2013JanMar/0116, tr2013:PR-prov-n-20130312)
@@ -358,23 +424,23 @@ wasDerivedFrom(chairs:2013JanMar/0116, tr2013:PR-prov-constraints-20130312)
 wasDerivedFrom(wbs2:provpf/results, chairs:2013JanMar/0116)
 
 
-entity(ex:family-rec, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+entity(wiki:Family-rec, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 
-entity(tr2013:REC-prov-dm-20130430,          [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/REC-prov-dm-20130430"  ])
-entity(tr2013:REC-prov-n-20130430,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/REC-prov-n-20130430"  ])
-entity(tr2013:REC-prov-o-20130430,           [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/REC-prov-o-20130430"  ])
-entity(tr2013:REC-prov-constraints-20130430, [ prov:type='process:RecsWD', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/REC-prov-constraints-20130430"  ])
+entity(tr2013:REC-prov-dm-20130430,          [ prov:type='process:RecsW3C'  ])
+entity(tr2013:REC-prov-n-20130430,           [ prov:type='process:RecsW3C'  ])
+entity(tr2013:REC-prov-o-20130430,           [ prov:type='process:RecsW3C'  ])
+entity(tr2013:REC-prov-constraints-20130430, [ prov:type='process:RecsW3C'  ])
 
-entity(tr2013:NOTE-prov-primer-20130430,      [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-primer-20130430"  ])
-entity(tr2013:NOTE-prov-overview-20130430,    [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-overview-20130430"  ])
-entity(tr2013:NOTE-prov-dictionary-20130430,  [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-dictionary-20130430"  ])
-entity(tr2013:NOTE-prov-xml-20130430,         [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-xml-20130430"  ])
-entity(tr2013:NOTE-prov-links-20130430,       [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-links-20130430"  ])
-entity(tr2013:NOTE-prov-aq-20130430,          [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-aq-20130430"  ])
-entity(tr2013:NOTE-prov-dc-20130430,          [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-dc-20130430"  ])
-entity(tr2013:NOTE-prov-sem-20130430,         [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-sem-20130430"  ])
-entity(tr2013:NOTE-prov-implementations-20130430, [ prov:type='process:WGNote', dot:fillcolor="sandybrown", dot:url="http://www.w3.org/TR/2013/NOTE-prov-implementations-20130430"  ])
+entity(tr2013:NOTE-prov-primer-20130430,      [ prov:type='process:WGNote'  ])
+entity(tr2013:NOTE-prov-overview-20130430,    [ prov:type='process:WGNote'  ])
+entity(tr2013:NOTE-prov-dictionary-20130430,  [ prov:type='process:WGNote'  ])
+entity(tr2013:NOTE-prov-xml-20130430,         [ prov:type='process:WGNote'  ])
+entity(tr2013:NOTE-prov-links-20130430,       [ prov:type='process:WGNote'  ])
+entity(tr2013:NOTE-prov-aq-20130430,          [ prov:type='process:WGNote'  ])
+entity(tr2013:NOTE-prov-dc-20130430,          [ prov:type='process:WGNote'  ])
+entity(tr2013:NOTE-prov-sem-20130430,         [ prov:type='process:WGNote'  ])
+entity(tr2013:NOTE-prov-implementations-20130430, [ prov:type='process:WGNote'  ])
 
 
 wasDerivedFrom(tr2013:REC-prov-dm-20130430,          tr2013:PR-prov-dm-20130312)
@@ -388,23 +454,63 @@ wasDerivedFrom(tr2013:NOTE-prov-xml-20130430,        tr2013:WD-prov-xml-20130312
 wasDerivedFrom(tr2013:NOTE-prov-links-20130430,      tr2013:WD-prov-links-20130312)
 wasDerivedFrom(tr2013:NOTE-prov-aq-20130430,         tr2013:WD-prov-aq-20130312)
 wasDerivedFrom(tr2013:NOTE-prov-dc-20130430,         tr2013:WD-prov-dc-20130312)
+wasDerivedFrom(tr2013:NOTE-prov-implementations-20130430,         tr2013:WD-prov-implementations-20130312)
 
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Lmoreau,  [prov:role='pd:editor'])
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Pmissier, [prov:role='pd:editor'])
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Kbelhajj, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Rbfar,    [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Jcheney,  [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Scoppens, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Scresswe, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Ygil,     [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Pgroth,   [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Gklyne,   [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Tlebo,    [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Jmccuske, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Smiles,   [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Jmyers4,  [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Ssahoo2,  [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-dm-20130430,user:Ctilmes,  [prov:role='prov:Contributor'])
 
+wasAttributedTo(tr2013:REC-prov-n-20130430,user:Lmoreau,  [prov:role='pd:editor'])
+wasAttributedTo(tr2013:REC-prov-n-20130430,user:Pmissier, [prov:role='pd:editor'])
+wasAttributedTo(tr2013:REC-prov-n-20130430,user:Jcheney,  [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-n-20130430,user:Ssoiland, [prov:role='prov:Contributor'])
 
+wasAttributedTo(tr2013:REC-prov-constraints-20130430,user:Jcheney,  [prov:role='pd:editor'])
+wasAttributedTo(tr2013:REC-prov-constraints-20130430,user:Lmoreau,  [prov:role='pd:editor'])
+wasAttributedTo(tr2013:REC-prov-constraints-20130430,user:Pmissier, [prov:role='pd:editor'])
+wasAttributedTo(tr2013:REC-prov-constraints-20130430,user:Tdenies,  [prov:role='prov:Contributor'])
 
-prov:derivedByInsertionFrom(ex:family-rec, ex:family-pr, {('tr:prov-dm',              tr2013:REC-prov-dm-20130430),
-                                                     	  ('tr:prov-o',               tr2013:REC-prov-o-20130430),            
-                                                     	  ('tr:prov-n',               tr2013:REC-prov-n-20130430),            
-                                                     	  ('tr:prov-constraints',     tr2013:REC-prov-constraints-20130430),
-                                                     	  ('tr:prov-primer',          tr2013:NOTE-prov-primer-20130430),
-                                                     	  ('tr:prov-overview',        tr2013:NOTE-prov-overview-20130430),
-                                                     	  ('tr:prov-dictionary',      tr2013:NOTE-prov-dictionary-20130430),
-                                                     	  ('tr:prov-xml',             tr2013:NOTE-prov-xml-20130430),
-                                                     	  ('tr:prov-links',           tr2013:NOTE-prov-links-20130430),
-                                                     	  ('tr:prov-aq',              tr2013:NOTE-prov-aq-20130430),
-                                                     	  ('tr:prov-dc',              tr2013:NOTE-prov-dc-20130430),
-                                                     	  ('tr:prov-sem',             tr2013:NOTE-prov-sem-20130430),
-                                                     	  ('tr:prov-implementations', tr2013:NOTE-prov-implementations-20130430) })
+wasAttributedTo(tr2013:REC-prov-o-20130430,user:Tlebo,    [prov:role='pd:editor'])
+wasAttributedTo(tr2013:REC-prov-o-20130430,user:Ssahoo2,  [prov:role='pd:editor'])
+wasAttributedTo(tr2013:REC-prov-o-20130430,user:Dmcguinn, [prov:role='pd:editor'])
+wasAttributedTo(tr2013:REC-prov-o-20130430,user:Kbelhajj, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-o-20130430,user:Jcheney,  [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-o-20130430,user:Dcorsar,  [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-o-20130430,user:Bvillazo, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-o-20130430,user:Ssoiland, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-o-20130430,user:Szednik,  [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:REC-prov-o-20130430,user:Jzhao,    [prov:role='prov:Contributor'])
+
+wasAttributedTo(tr2013:NOTE-prov-sem-20130430,user:Jcheney,  [prov:role='pd:editor'])
+
+prov:derivedByInsertionFrom(wiki:Family-rec,
+                            wiki:Family-pr, 
+                            {('tr:prov-dm',              tr2013:REC-prov-dm-20130430),
+                             ('tr:prov-o',               tr2013:REC-prov-o-20130430),            
+                             ('tr:prov-n',               tr2013:REC-prov-n-20130430),            
+                             ('tr:prov-constraints',     tr2013:REC-prov-constraints-20130430),
+                             ('tr:prov-primer',          tr2013:NOTE-prov-primer-20130430),
+                             ('tr:prov-overview',        tr2013:NOTE-prov-overview-20130430),
+                             ('tr:prov-dictionary',      tr2013:NOTE-prov-dictionary-20130430),
+                             ('tr:prov-xml',             tr2013:NOTE-prov-xml-20130430),
+                             ('tr:prov-links',           tr2013:NOTE-prov-links-20130430),
+                             ('tr:prov-aq',              tr2013:NOTE-prov-aq-20130430),
+                             ('tr:prov-dc',              tr2013:NOTE-prov-dc-20130430),
+                             ('tr:prov-sem',             tr2013:NOTE-prov-sem-20130430),
+                             ('tr:prov-implementations', tr2013:NOTE-prov-implementations-20130430) })
 
 
 

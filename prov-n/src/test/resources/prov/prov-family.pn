@@ -20,10 +20,12 @@ prefix wbs2    <https://www.w3.org/2002/09/wbs/33280/>
 prefix user    <http://www.w3.org/2011/prov/wiki/User:>
 prefix wiki    <http://www.w3.org/2011/prov/wiki/>
 prefix foaf    <http://xmlns.com/foaf/spec/>
+prefix occl    <http://staff.oclc.org/~dewey/>
+prefix pd  <http://www.w3.org/2001/02pd/rec54#>
 
 prefix dot   <http://openprovenance.org/Toolbox/dot#>
 
-prefix pd  <http://www.w3.org/2001/02pd/rec54#>
+
 
  
 agent(user:Bvillazo,[foaf:name="Daniel Garijo"])
@@ -32,6 +34,7 @@ agent(user:Ctrim,[foaf:name="Craig Trim"])
 agent(user:Dcorsar,[foaf:name="David Corsar"])
 agent(user:Dmcguinn,[foaf:name="Deborah L. McGuinness"])
 agent(user:Gklyne,[foaf:name="Graham Klyne"])
+agent(user:Hdeus,[foaf:name="Helena Deus"])
 agent(user:Hhua,[foaf:name="Hook Hua"])
 agent(user:Ivan,[foaf:name="Ivan Herman"])
 agent(user:Jcheney,[foaf:name="James Cheney"])
@@ -56,7 +59,7 @@ agent(user:Thuynh,[foaf:name="Trung Dong Huynh"])
 agent(user:Tlebo,[foaf:name="Timothy Lebo"])
 agent(user:Ygil,[foaf:name="Yolanda Gil"])
 agent(user:Ysimmhan,[foaf:name="user:Ysimmhan"])
-
+agent(occl:michael.htm,[foaf:name="Michael Panzer"])
 
 
 
@@ -213,6 +216,12 @@ wasInformedBy(ex:publ4,ex:publ3, [dot:color="none"])
 wasInformedBy(ex:publ5,ex:publ4, [dot:color="none"])
 wasInformedBy(ex:publ6,ex:publ5, [dot:color="none"])
 wasInformedBy(ex:publ7,ex:publ6, [dot:color="none"])
+wasInformedBy(ex:publ8,ex:publ7, [dot:color="none"])
+wasInformedBy(ex:publ9,ex:publ8, [dot:color="none"])
+wasInformedBy(ex:publ10,ex:publ9, [dot:color="none"])
+wasInformedBy(ex:publ11,ex:publ10, [dot:color="none"])
+wasInformedBy(ex:publ12,ex:publ11, [dot:color="none"])
+
 
 
 wasAttributedTo(tr2011:WD-prov-dm-20111018,w3:Consortium)
@@ -423,6 +432,7 @@ wasDerivedFrom(chairs:2013JanMar/0116, tr2013:PR-prov-constraints-20130312)
 
 wasDerivedFrom(wbs2:provpf/results, chairs:2013JanMar/0116)
 
+used(ex:publ12,wbs2:provpf/results,-)
 
 entity(wiki:Family-rec, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
@@ -495,6 +505,53 @@ wasAttributedTo(tr2013:REC-prov-o-20130430,user:Szednik,  [prov:role='prov:Contr
 wasAttributedTo(tr2013:REC-prov-o-20130430,user:Jzhao,    [prov:role='prov:Contributor'])
 
 wasAttributedTo(tr2013:NOTE-prov-sem-20130430,user:Jcheney,  [prov:role='pd:editor'])
+
+wasAttributedTo(tr2013:NOTE-prov-primer-20130430,user:Smiles,   [prov:role='pd:editor'])
+wasAttributedTo(tr2013:NOTE-prov-primer-20130430,user:Ygil,     [prov:role='pd:editor'])
+wasAttributedTo(tr2013:NOTE-prov-primer-20130430,user:Kbelhajj, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-primer-20130430,user:Hdeus,    [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-primer-20130430,user:Bvillazo, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-primer-20130430,user:Gklyne,   [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-primer-20130430,user:Pmissier, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-primer-20130430,user:Ssoiland, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-primer-20130430,user:Szednik,  [prov:role='prov:Contributor'])
+
+wasAttributedTo(tr2013:NOTE-prov-xml-20130430,user:Szednik,   [prov:role='pd:editor'])
+wasAttributedTo(tr2013:NOTE-prov-xml-20130430,user:Ctilmes,   [prov:role='pd:editor'])
+wasAttributedTo(tr2013:NOTE-prov-xml-20130430,user:Hhua,      [prov:role='pd:editor'])
+wasAttributedTo(tr2013:NOTE-prov-xml-20130430,user:Lmoreau,  [prov:role='prov:Contributor'])
+
+wasAttributedTo(tr2013:NOTE-prov-dc-20130430,user:Bvillazo,    [prov:role='pd:editor'])
+wasAttributedTo(tr2013:NOTE-prov-dc-20130430,user:Keckert,     [prov:role='pd:editor'])
+wasAttributedTo(tr2013:NOTE-prov-dc-20130430,user:Smiles,      [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-dc-20130430,user:Ctrim,       [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-dc-20130430,occl:michael.htm, [prov:role='prov:Contributor'])
+
+
+wasAttributedTo(tr2013:NOTE-prov-aq-20130430,user:Gklyne,    [prov:role='pd:editor'])
+wasAttributedTo(tr2013:NOTE-prov-aq-20130430,user:Pgroth,    [prov:role='pd:editor'])
+wasAttributedTo(tr2013:NOTE-prov-aq-20130430,user:Lmoreau,   [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-aq-20130430,user:Ohartig,   [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-aq-20130430,user:Ysimmhan,  [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-aq-20130430,user:Jmyers4,   [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-aq-20130430,user:Kbelhajj,  [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-aq-20130430,user:Smiles,    [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-aq-20130430,user:Ssoiland,  [prov:role='prov:Contributor'])
+
+wasAttributedTo(tr2013:NOTE-prov-implementations-20130430,user:Pgroth,    [prov:role='pd:editor'])
+wasAttributedTo(tr2013:NOTE-prov-implementations-20130430,user:Thuynh,    [prov:role='pd:editor'])
+wasAttributedTo(tr2013:NOTE-prov-implementations-20130430,user:Szednik,   [prov:role='pd:editor'])
+
+wasAttributedTo(tr2013:NOTE-prov-overview-20130430,user:Pgroth,    [prov:role='pd:editor'])
+wasAttributedTo(tr2013:NOTE-prov-overview-20130430,user:Lmoreau,   [prov:role='pd:editor'])
+
+wasAttributedTo(tr2013:NOTE-prov-dictionary-20130430,user:Tdenies,   [prov:role='pd:editor'])
+wasAttributedTo(tr2013:NOTE-prov-dictionary-20130430,user:Scoppens,  [prov:role='pd:editor'])
+wasAttributedTo(tr2013:NOTE-prov-dictionary-20130430,user:Lmoreau,   [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-dictionary-20130430,user:Jcheney,   [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-dictionary-20130430,user:Ssoiland,  [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-dictionary-20130430,user:Pmissier,  [prov:role='prov:Contributor'])
+wasAttributedTo(tr2013:NOTE-prov-dictionary-20130430,user:Tlebo,     [prov:role='prov:Contributor'])
 
 prov:derivedByInsertionFrom(wiki:Family-rec,
                             wiki:Family-pr, 

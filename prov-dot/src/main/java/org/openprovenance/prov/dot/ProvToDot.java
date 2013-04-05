@@ -907,7 +907,7 @@ public class ProvToDot {
     /* make name compatible with dot notation*/
     
     public String dotify(String name) {
-        return "n" + name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_');
+        return "n" + name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_').replace('~','_');
     }
 
     public void emitElement(QName name, HashMap<String,String> properties, PrintStream out) {

@@ -73,6 +73,8 @@ public class InteropFramework
             case DOT:
                 extensionMap.put(ProvFormat.DOT,"dot");
                 extensionRevMap.put("dot", ProvFormat.DOT);
+                extensionRevMap.put("gv", ProvFormat.DOT);
+                mimeTypeMap.put(ProvFormat.DOT,"text/vnd.graphviz");
                 break;
             case JPEG:
                 extensionMap.put(ProvFormat.JPEG,"jpg");

@@ -38,6 +38,7 @@ agent(user:Hdeus,[foaf:name="Helena Deus"])
 agent(user:Hhua,[foaf:name="Hook Hua"])
 agent(user:Ivan,[foaf:name="Ivan Herman"])
 agent(user:Jcheney,[foaf:name="James Cheney"])
+agent(user:Rgolden,[foaf:name="Ryan Golden"])
 agent(user:Jmccuske,[foaf:name="James McCusker"])
 agent(user:Jmyers4,[foaf:name="Jim Myers"])
 agent(user:Jzhao,[foaf:name="Jun Zhao"])
@@ -77,6 +78,9 @@ entity(tr2012:WD-prov-primer-20120503,      [ prov:type='pd:WD', dot:url="http:/
 entity(tr2012:WD-prov-aq-20120619,          [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-aq-20120619"  ])
 
 
+
+
+
 entity(process:rec-advance,    [ prov:type='prov:Plan', dot:fillcolor="lightblue", dot:url="http://www.w3.org/2005/10/Process-20051014/tr.html#rec-advance"  ])
   
 
@@ -105,6 +109,20 @@ entity(chairs:2012AprJun/0037, [ prov:type='trans:transreq' , dot:fillcolor="gai
 entity(email:2012Apr/0583,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Apr/0583" ])
 
 entity(email:2012Jun/0164,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Jun/0164" ])
+
+
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Lmoreau,  [prov:role='pd:editor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Pmissier, [prov:role='pd:editor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Kbelhajj, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Scresswe, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Rgolden,  [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Pgroth,   [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Gklyne,   [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Jmccuske, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Smiles,   [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Jmyers4,  [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Ssahoo2,  [prov:role='prov:Contributor'])
+
 
 
 // prov-dm revisions
@@ -246,10 +264,10 @@ activity(ex:publ9,-,-,[prov:type='prov:Publish' ])
 wasAssociatedWith(ex:publ9, w3:Consortium, process:rec-advance)
 wasGeneratedBy(tr2012:WD-prov-constraints-20120911, ex:publ9, -)
 
-entity(tr2012:WD-prov-dm-20120724,          [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-dm-20120724"  ])
-entity(tr2012:WD-prov-n-20120724,           [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-n-20120724"  ])
-entity(tr2012:WD-prov-o-20120724,           [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-o-20120724"  ])
-entity(tr2012:WD-prov-constraints-20120911, [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-constraints-20120911"  ])
+entity(tr2012:WD-prov-dm-20120724,          [ prov:type='pd:WD', prov:type='pd:LastCall', dot:url="http://www.w3.org/TR/2012/WD-prov-dm-20120724"  ])
+entity(tr2012:WD-prov-n-20120724,           [ prov:type='pd:WD', prov:type='pd:LastCall', dot:url="http://www.w3.org/TR/2012/WD-prov-n-20120724"  ])
+entity(tr2012:WD-prov-o-20120724,           [ prov:type='pd:WD', prov:type='pd:LastCall', dot:url="http://www.w3.org/TR/2012/WD-prov-o-20120724"  ])
+entity(tr2012:WD-prov-constraints-20120911, [ prov:type='pd:WD', prov:type='pd:LastCall', dot:url="http://www.w3.org/TR/2012/WD-prov-constraints-20120911"  ])
 entity(tr2012:WD-prov-primer-20120724,      [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-primer-20120724"  ])
 
 wasDerivedFrom(tr2012:WD-prov-dm-20120724, tr2012:WD-prov-dm-20120503)

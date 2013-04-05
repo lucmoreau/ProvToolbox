@@ -62,53 +62,207 @@ agent(user:Ygil,[foaf:name="Yolanda Gil"])
 agent(user:Ysimmhan,[foaf:name="user:Ysimmhan"])
 agent(occl:michael.htm,[foaf:name="Michael Panzer"])
 
+//////////////////////////////////////////////////////////////////////
+// The general W3C process
+//////////////////////////////////////////////////////////////////////
 
+entity(process:rec-advance,    [ prov:type='prov:Plan', dot:fillcolor="lightblue", dot:url="http://www.w3.org/2005/10/Process-20051014/tr.html#rec-advance"  ])
+
+//////////////////////////////////////////////////////////////////////
+// At the beginning there was ... nothing
+//////////////////////////////////////////////////////////////////////
+
+entity(wiki:Family0, [ prov:type='prov:EmptyDictionary', dot:fillcolor="bisque2"  ])
+
+//////////////////////////////////////////////////////////////////////
+// first publication: first workin draft of prov-dm
+//////////////////////////////////////////////////////////////////////
+
+entity(chairs:2011OctDec/0004, [ prov:type='trans:transreq', dot:fillcolor="gainsboro" ]) // for prov-dm
+entity(email:2011Oct/0141,     [ prov:type='trans:pubreq',  dot:fillcolor="gold"  ])
 
 entity(tr2011:WD-prov-dm-20111018,          [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2011/WD-prov-dm-20111018" ])
+activity(ex:publ1,-,-,[prov:type='prov:Publish' ])
+wasGeneratedBy(tr2011:WD-prov-dm-20111018,          ex:publ1, -)
+used(ex:publ1,chairs:2011OctDec/0004,-)
+used(ex:publ1,email:2011Oct/0141,-)
+wasAssociatedWith(ex:publ1, w3:Consortium, process:rec-advance)
+
+
+entity(wiki:Family1, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+prov:derivedByInsertionFrom(wiki:Family1, wiki:Family0, {('tr:prov-dm',     tr2011:WD-prov-dm-20111018)})
+
+//////////////////////////////////////////////////////////////////////
+// second publication: first working draft of prov-o
+//////////////////////////////////////////////////////////////////////
+
+entity(chairs:2011OctDec/0152, [ prov:type='trans:transreq', dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2011OctDec/0152"  ]) // for prov-o
+entity(email:2011Dec/0075,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2011Dec/0075" ])
+
 entity(tr2011:WD-prov-o-20111213,           [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2011/WD-prov-o-20111213" ])
+activity(ex:publ2,-,-,[prov:type='prov:Publish' ])
+wasGeneratedBy(tr2011:WD-prov-o-20111213,           ex:publ2, -)
+used(ex:publ2,chairs:2011OctDec/0152,-)
+used(ex:publ2,email:2011Dec/0075,-)
+
+wasAssociatedWith(ex:publ2, w3:Consortium, process:rec-advance)
+
+
+entity(wiki:Family2, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+
+prov:derivedByInsertionFrom(wiki:Family2, wiki:Family1, {('tr:prov-o',      tr2011:WD-prov-o-20111213)})
+
+
+//////////////////////////////////////////////////////////////////////
+// third publication: a new version of prov-dm
+//////////////////////////////////////////////////////////////////////
+
+entity(email:2011Dec/0111,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2011Dec/0111" ])
+
 entity(tr2011:WD-prov-dm-20111215,          [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2011/WD-prov-dm-20111215"  ])
+activity(ex:publ3,-,-,[prov:type='prov:Publish' ])
+wasGeneratedBy(tr2011:WD-prov-dm-20111215,          ex:publ3, -)
+
+used(ex:publ3,email:2011Dec/0111,-)
+
+wasAssociatedWith(ex:publ3, w3:Consortium, process:rec-advance)
+
+entity(wiki:Family3, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+
+prov:derivedByInsertionFrom(wiki:Family3, wiki:Family2, {('tr:prov-dm',     tr2011:WD-prov-dm-20111215)})
+
+//////////////////////////////////////////////////////////////////////
+// fourth publication: prov-aq and prov-primer join the PROV family
+//////////////////////////////////////////////////////////////////////
+
+entity(chairs:2011OctDec/0171, [ prov:type='trans:transreq', dot:fillcolor="gainsboro" ]) // for prov-aq
+entity(email:2012Jan/0043,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])
+
+
 entity(tr2012:WD-prov-aq-20120110,          [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-aq-20120110"  ])
 entity(tr2012:WD-prov-primer-20120110,      [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-primer-20120110"  ])
+
+activity(ex:publ4,-,-,[prov:type='prov:Publish' ])
+
+wasGeneratedBy(tr2012:WD-prov-primer-20120110,      ex:publ4, -)
+wasGeneratedBy(tr2012:WD-prov-aq-20120110,          ex:publ4, -)
+
+used(ex:publ4,chairs:2011OctDec/0171,-)
+used(ex:publ4,chairs:2012JanMar/0000,-)
+used(ex:publ4,email:2012Jan/0043,-)
+
+wasAssociatedWith(ex:publ4, w3:Consortium, process:rec-advance)
+
+entity(wiki:Family4, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+
+prov:derivedByInsertionFrom(wiki:Family4, wiki:Family3, {('tr:prov-primer', tr2012:WD-prov-primer-20120110),
+                                                         ('tr:prov-aq',     tr2012:WD-prov-aq-20120110)})
+
+
+//////////////////////////////////////////////////////////////////////
+// fifth publication: next working draft of prov-dm
+//////////////////////////////////////////////////////////////////////
+
+entity(email:2012Jan/0422,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Jan/0422" ]) //for prov-dm wd3
+
 entity(tr2012:WD-prov-dm-20120202,          [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2012/WD-prov-dm-20120202"  ])
+
+activity(ex:publ5,-,-,[prov:type='prov:Publish' ])
+
+wasGeneratedBy(tr2012:WD-prov-dm-20120202,          ex:publ5, -)
+
+used(ex:publ5,email:2012Jan/0422,-)
+
+wasAssociatedWith(ex:publ5, w3:Consortium, process:rec-advance)
+
+entity(wiki:Family5, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+prov:derivedByInsertionFrom(wiki:Family5, wiki:Family4, {('tr:prov-dm',     tr2012:WD-prov-dm-20120202)})
+
+
+//////////////////////////////////////////////////////////////////////
+// sixth publication: 
+//   - next working drafts of prov-dm, prov-o, prov-primer, and 
+//   - first release of prov-n, prov-constraints
+//////////////////////////////////////////////////////////////////////
+
+entity(chairs:2012AprJun/0037, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro" ]) // for prov-n, prov-constraitns
+
+entity(email:2012Apr/0583,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])
+
 entity(tr2012:WD-prov-dm-20120503,          [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2012/WD-prov-dm-20120503"  ])
 entity(tr2012:WD-prov-o-20120503,           [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2012/WD-prov-o-20120503"  ])
 entity(tr2012:WD-prov-n-20120503,           [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2012/WD-prov-n-20120503"  ])
 entity(tr2012:WD-prov-constraints-20120503, [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2012/WD-prov-constraints-20120503"  ])
 entity(tr2012:WD-prov-primer-20120503,      [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-primer-20120503"  ])
+
+activity(ex:publ6,-,-,[prov:type='prov:Publish' ])
+
+
+
+wasGeneratedBy(tr2012:WD-prov-dm-20120503,          ex:publ6, -)
+wasGeneratedBy(tr2012:WD-prov-o-20120503,           ex:publ6, -)
+wasGeneratedBy(tr2012:WD-prov-n-20120503,           ex:publ6, -)
+wasGeneratedBy(tr2012:WD-prov-constraints-20120503, ex:publ6, -)
+wasGeneratedBy(tr2012:WD-prov-primer-20120503,      ex:publ6, -)
+
+used(ex:publ6, email:2012Apr/0583, -)
+used(ex:publ6, chairs:2012AprJun/0037, -)
+
+wasAssociatedWith(ex:publ6, w3:Consortium, process:rec-advance)
+
+
+entity(wiki:Family6, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+
+prov:derivedByInsertionFrom(wiki:Family6, wiki:Family5, {('tr:prov-dm',     tr2012:WD-prov-dm-20120503),
+                                                     	 ('tr:prov-o',      tr2012:WD-prov-o-20120503),            
+                                                     	 ('tr:prov-n',      tr2012:WD-prov-n-20120503),            
+                                                     	 ('tr:prov-primer', tr2012:WD-prov-primer-20120503),            
+                                                     	 ('tr:prov-constraints', tr2012:WD-prov-constraints-20120503)})
+
+//////////////////////////////////////////////////////////////////////
+// seventh publication: 
+//   - next working draft of prov-aq
+//////////////////////////////////////////////////////////////////////
+
+
+entity(email:2012Jun/0164,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Jun/0164" ])
+
 entity(tr2012:WD-prov-aq-20120619,          [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-aq-20120619"  ])
 
+activity(ex:publ7,-,-,[prov:type='prov:Publish' ])
+
+wasGeneratedBy(tr2012:WD-prov-aq-20120619,          ex:publ7, -)
+
+used(ex:publ7, email:2012Jun/0164, -)
+
+wasAssociatedWith(ex:publ7, w3:Consortium, process:rec-advance)  
+
+
+entity(wiki:Family7, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+
+prov:derivedByInsertionFrom(wiki:Family7, wiki:Family6, {('tr:prov-aq',     tr2012:WD-prov-aq-20120619)})
+
+//////////////////////////////////////////////////////////////////////
+// eighth publication: 
+//   - 
+//////////////////////////////////////////////////////////////////////
 
 
 
 
-entity(process:rec-advance,    [ prov:type='prov:Plan', dot:fillcolor="lightblue", dot:url="http://www.w3.org/2005/10/Process-20051014/tr.html#rec-advance"  ])
-  
-
-entity(chairs:2011OctDec/0004, [ prov:type='trans:transreq', dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2011OctDec/0004" ]) // for prov-dm
-entity(email:2011Oct/0141,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2011Oct/0141"  ])
-
-entity(chairs:2011OctDec/0152, [ prov:type='trans:transreq', dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2011OctDec/0152"  ]) // for prov-o
-entity(email:2011Dec/0075,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2011Dec/0075" ])
 
 
-entity(chairs:2011OctDec/0171, [ prov:type='trans:transreq', dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2011OctDec/0171"  ]) // for prov-aq
-entity(email:2012Jan/0043,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Jan/0043" ])
-
-
-entity(email:2011Dec/0111,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2011Dec/0111" ])
 
 entity(chairs:2012JanMar/0000, [ prov:type='trans:transreq', dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2012JanMar/0000"  ]) // for prov-primer
 
 
 
-entity(email:2012Jan/0422,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Jan/0422" ]) //for prov-dm wd3
 
 
-entity(chairs:2012AprJun/0037, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2012AprJun/0037" ]) // for prov-n, prov-constraitns
 
-entity(email:2012Apr/0583,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Apr/0583" ])
 
-entity(email:2012Jun/0164,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Jun/0164" ])
+
+
 
 
 wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Lmoreau,  [prov:role='pd:editor'])
@@ -141,104 +295,59 @@ wasDerivedFrom(tr2012:WD-prov-o-20120503, tr2011:WD-prov-o-20111213)
 wasDerivedFrom(tr2012:WD-prov-aq-20120619, tr2012:WD-prov-aq-20120110)
 
 
-activity(ex:publ1,-,-,[prov:type='prov:Publish' ])
-activity(ex:publ2,-,-,[prov:type='prov:Publish' ])
-activity(ex:publ3,-,-,[prov:type='prov:Publish' ])
-activity(ex:publ4,-,-,[prov:type='prov:Publish' ])
-activity(ex:publ5,-,-,[prov:type='prov:Publish' ])
-activity(ex:publ6,-,-,[prov:type='prov:Publish' ])
-activity(ex:publ7,-,-,[prov:type='prov:Publish' ])
-
-wasGeneratedBy(tr2011:WD-prov-dm-20111018,          ex:publ1, -)
-
-wasGeneratedBy(tr2011:WD-prov-o-20111213,           ex:publ2, -)
-
-wasGeneratedBy(tr2011:WD-prov-dm-20111215,          ex:publ3, -)
-
-wasGeneratedBy(tr2012:WD-prov-primer-20120110,      ex:publ4, -)
-wasGeneratedBy(tr2012:WD-prov-aq-20120110,          ex:publ4, -)
-
-wasGeneratedBy(tr2012:WD-prov-dm-20120202,          ex:publ5, -)
-
-wasGeneratedBy(tr2012:WD-prov-dm-20120503,          ex:publ6, -)
-wasGeneratedBy(tr2012:WD-prov-o-20120503,           ex:publ6, -)
-wasGeneratedBy(tr2012:WD-prov-n-20120503,           ex:publ6, -)
-wasGeneratedBy(tr2012:WD-prov-constraints-20120503, ex:publ6, -)
-wasGeneratedBy(tr2012:WD-prov-primer-20120503,      ex:publ6, -)
-
-wasGeneratedBy(tr2012:WD-prov-aq-20120619,          ex:publ7, -)
 
 
-used(ex:publ1,chairs:2011OctDec/0004,-)
-used(ex:publ1,email:2011Oct/0141,-)
-
-used(ex:publ2,chairs:2011OctDec/0152,-)
-used(ex:publ2,email:2011Dec/0075,-)
-used(ex:publ3,email:2011Dec/0111,-)
-
-used(ex:publ4,chairs:2011OctDec/0171,-)
-used(ex:publ4,chairs:2012JanMar/0000,-)
-used(ex:publ4,email:2012Jan/0043,-)
 
 
-used(ex:publ5,email:2012Jan/0422,-)
 
-used(ex:publ6, email:2012Apr/0583, -)
-used(ex:publ6, chairs:2012AprJun/0037, -)
 
-used(ex:publ7, email:2012Jun/0164, -)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 agent(w3:Consortium, [ prov:type='prov:Organization', dot:fillcolor="thistle3", dot:url="http://www.w3.org/Consortium"   ])
 
-wasAssociatedWith(ex:publ1, w3:Consortium, process:rec-advance)
-wasAssociatedWith(ex:publ2, w3:Consortium, process:rec-advance)
-wasAssociatedWith(ex:publ3, w3:Consortium, process:rec-advance)
-wasAssociatedWith(ex:publ4, w3:Consortium, process:rec-advance)
-wasAssociatedWith(ex:publ5, w3:Consortium, process:rec-advance)
-wasAssociatedWith(ex:publ6, w3:Consortium, process:rec-advance)
-wasAssociatedWith(ex:publ7, w3:Consortium, process:rec-advance)
-
-entity(wiki:Family0, [ prov:type='prov:EmptyDictionary', dot:fillcolor="bisque2"  ])
-entity(wiki:Family1, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
-entity(wiki:Family2, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
-entity(wiki:Family3, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
-entity(wiki:Family4, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
-entity(wiki:Family5, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
-entity(wiki:Family6, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
-entity(wiki:Family7, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 
 
 
-prov:derivedByInsertionFrom(wiki:Family1, wiki:Family0, {('tr:prov-dm',     tr2011:WD-prov-dm-20111018)})
-
-prov:derivedByInsertionFrom(wiki:Family2, wiki:Family1, {('tr:prov-o',      tr2011:WD-prov-o-20111213)})
-prov:derivedByInsertionFrom(wiki:Family3, wiki:Family2, {('tr:prov-dm',     tr2011:WD-prov-dm-20111215)})
-prov:derivedByInsertionFrom(wiki:Family4, wiki:Family3, {('tr:prov-primer', tr2012:WD-prov-primer-20120110),
-                                                         ('tr:prov-aq',     tr2012:WD-prov-aq-20120110)})
-prov:derivedByInsertionFrom(wiki:Family5, wiki:Family4, {('tr:prov-dm',     tr2012:WD-prov-dm-20120202)})
-prov:derivedByInsertionFrom(wiki:Family6, wiki:Family5, {('tr:prov-dm',     tr2012:WD-prov-dm-20120503),
-                                                     	 ('tr:prov-o',      tr2012:WD-prov-o-20120503),            
-                                                     	 ('tr:prov-n',      tr2012:WD-prov-n-20120503),            
-                                                     	 ('tr:prov-primer', tr2012:WD-prov-primer-20120503),            
-                                                     	 ('tr:prov-constraints', tr2012:WD-prov-constraints-20120503)})
-prov:derivedByInsertionFrom(wiki:Family7, wiki:Family6, {('tr:prov-aq',     tr2012:WD-prov-aq-20120619)})
 
 
 
-// I introduce these edges for layout only, but it's really time orderign I mean here
 
-wasInformedBy(ex:publ2,ex:publ1, [dot:color="none"] )
-wasInformedBy(ex:publ3,ex:publ2, [dot:color="none"])
-wasInformedBy(ex:publ4,ex:publ3, [dot:color="none"])
-wasInformedBy(ex:publ5,ex:publ4, [dot:color="none"])
-wasInformedBy(ex:publ6,ex:publ5, [dot:color="none"])
-wasInformedBy(ex:publ7,ex:publ6, [dot:color="none"])
-wasInformedBy(ex:publ8,ex:publ7, [dot:color="none"])
-wasInformedBy(ex:publ9,ex:publ8, [dot:color="none"])
-wasInformedBy(ex:publ10,ex:publ9, [dot:color="none"])
-wasInformedBy(ex:publ11,ex:publ10, [dot:color="none"])
-wasInformedBy(ex:publ12,ex:publ11, [dot:color="none"])
+
+
+
+
+
+
+
+
 
 
 
@@ -586,6 +695,32 @@ prov:derivedByInsertionFrom(wiki:Family-rec,
                              ('tr:prov-dc',              tr2013:NOTE-prov-dc-20130430),
                              ('tr:prov-sem',             tr2013:NOTE-prov-sem-20130430),
                              ('tr:prov-implementations', tr2013:NOTE-prov-implementations-20130430) })
+
+
+
+// I introduce these edges for layout only, but it's really time orderign I mean here
+
+wasInformedBy(ex:publ2,ex:publ1, [dot:color="none"] )
+wasInformedBy(ex:publ3,ex:publ2, [dot:color="none"])
+wasInformedBy(ex:publ4,ex:publ3, [dot:color="none"])
+wasInformedBy(ex:publ5,ex:publ4, [dot:color="none"])
+wasInformedBy(ex:publ6,ex:publ5, [dot:color="none"])
+wasInformedBy(ex:publ7,ex:publ6, [dot:color="none"])
+wasInformedBy(ex:publ8,ex:publ7, [dot:color="none"])
+wasInformedBy(ex:publ9,ex:publ8, [dot:color="none"])
+wasInformedBy(ex:publ10,ex:publ9, [dot:color="none"])
+wasInformedBy(ex:publ11,ex:publ10, [dot:color="none"])
+wasInformedBy(ex:publ12,ex:publ11, [dot:color="none"])
+used(ex:publ2,wiki:Family1, -, [dot:color="none"])
+used(ex:publ3,wiki:Family2, -, [dot:color="none"])
+used(ex:publ4,wiki:Family3, -, [dot:color="none"])
+used(ex:publ5,wiki:Family4, -, [dot:color="none"])
+used(ex:publ6,wiki:Family5, -, [dot:color="none"])
+used(ex:publ7,wiki:Family6, -, [dot:color="none"])
+used(ex:publ10,wiki:Family7, -, [dot:color="none"])
+used(ex:publ11,wiki:Family-cr, -,  [dot:color="none"])
+used(ex:publ12,wiki:Family-pr, -,  [dot:color="none"])
+
 
 
 

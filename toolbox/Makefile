@@ -23,9 +23,10 @@ fam:
 	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.pn -outfile  target/prov-family.xml
 	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.pn -outfile  target/prov-family.svg
 	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.pn -outfile  target/prov-family.dot
-	cat target/prov-family.dot | sed -e 's/rankdir/size="8.5,11"; label="The PROV Family of Specifications\\nLuc Moreau"; labelloc="top"; labeljust="left"; fontsize="36"; rankdir/' | sed -e 's/OPMGraph/ProvFamily/' > target/prov-family-key.dot
-	dot -Tps2 target/prov-family-key.dot -o target/prov-family-key.ps
-	epstopdf  target/prov-family-key.ps  -o=target/prov-family-key.pdf
+	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.pn -outfile  target/prov-family.ttl
+#	cat target/prov-family.dot | sed -e 's/rankdir/size="8.5,11"; label="The PROV Family of Specifications\\nLuc Moreau"; labelloc="top"; labeljust="left"; fontsize="36"; rankdir/' | sed -e 's/OPMGraph/ProvFamily/' > target/prov-family-key.dot
+#	dot -Tps2 target/prov-family-key.dot -o target/prov-family-key.ps
+#	epstopdf  target/prov-family-key.ps  -o=target/prov-family-key.pdf
 
 
 

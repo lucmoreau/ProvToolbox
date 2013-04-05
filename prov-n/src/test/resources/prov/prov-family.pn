@@ -68,6 +68,8 @@ agent(occl:michael.htm,[foaf:name="Michael Panzer"])
 
 entity(process:rec-advance,    [ prov:type='prov:Plan', dot:fillcolor="lightblue", dot:url="http://www.w3.org/2005/10/Process-20051014/tr.html#rec-advance"  ])
 
+agent(w3:Consortium, [ prov:type='prov:Organization', dot:fillcolor="thistle3", dot:url="http://www.w3.org/Consortium"   ])
+
 //////////////////////////////////////////////////////////////////////
 // At the beginning there was ... nothing
 //////////////////////////////////////////////////////////////////////
@@ -82,6 +84,8 @@ entity(chairs:2011OctDec/0004, [ prov:type='trans:transreq', dot:fillcolor="gain
 entity(email:2011Oct/0141,     [ prov:type='trans:pubreq',  dot:fillcolor="gold"  ])
 
 entity(tr2011:WD-prov-dm-20111018,          [ prov:type='process:RecsWD', dot:url="http://www.w3.org/TR/2011/WD-prov-dm-20111018" ])
+
+
 activity(ex:publ1,-,-,[prov:type='prov:Publish' ])
 wasGeneratedBy(tr2011:WD-prov-dm-20111018,          ex:publ1, -)
 used(ex:publ1,chairs:2011OctDec/0004,-)
@@ -91,6 +95,20 @@ wasAssociatedWith(ex:publ1, w3:Consortium, process:rec-advance)
 
 entity(wiki:Family1, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 prov:derivedByInsertionFrom(wiki:Family1, wiki:Family0, {('tr:prov-dm',     tr2011:WD-prov-dm-20111018)})
+
+
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Lmoreau,  [prov:role='pd:editor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Pmissier, [prov:role='pd:editor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Kbelhajj, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Scresswe, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Rgolden,  [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Pgroth,   [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Gklyne,   [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Jmccuske, [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Smiles,   [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Jmyers4,  [prov:role='prov:Contributor'])
+wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Ssahoo2,  [prov:role='prov:Contributor'])
+
 
 //////////////////////////////////////////////////////////////////////
 // second publication: first working draft of prov-o
@@ -131,10 +149,13 @@ entity(wiki:Family3, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 prov:derivedByInsertionFrom(wiki:Family3, wiki:Family2, {('tr:prov-dm',     tr2011:WD-prov-dm-20111215)})
 
+wasDerivedFrom(tr2011:WD-prov-dm-20111215,tr2011:WD-prov-dm-20111018)
+
 //////////////////////////////////////////////////////////////////////
 // fourth publication: prov-aq and prov-primer join the PROV family
 //////////////////////////////////////////////////////////////////////
 
+entity(chairs:2012JanMar/0000, [ prov:type='trans:transreq', dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2012JanMar/0000"  ]) // for prov-primer
 entity(chairs:2011OctDec/0171, [ prov:type='trans:transreq', dot:fillcolor="gainsboro" ]) // for prov-aq
 entity(email:2012Jan/0043,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])
 
@@ -178,6 +199,8 @@ wasAssociatedWith(ex:publ5, w3:Consortium, process:rec-advance)
 entity(wiki:Family5, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 prov:derivedByInsertionFrom(wiki:Family5, wiki:Family4, {('tr:prov-dm',     tr2012:WD-prov-dm-20120202)})
 
+wasDerivedFrom(tr2012:WD-prov-dm-20120202,tr2011:WD-prov-dm-20111215)
+
 
 //////////////////////////////////////////////////////////////////////
 // sixth publication: 
@@ -219,6 +242,13 @@ prov:derivedByInsertionFrom(wiki:Family6, wiki:Family5, {('tr:prov-dm',     tr20
                                                      	 ('tr:prov-primer', tr2012:WD-prov-primer-20120503),            
                                                      	 ('tr:prov-constraints', tr2012:WD-prov-constraints-20120503)})
 
+
+wasDerivedFrom(tr2012:WD-prov-dm-20120503,          tr2012:WD-prov-dm-20120202)
+wasDerivedFrom(tr2012:WD-prov-n-20120503,           tr2012:WD-prov-dm-20120202)
+wasDerivedFrom(tr2012:WD-prov-constraints-20120503, tr2012:WD-prov-dm-20120202)
+wasDerivedFrom(tr2012:WD-prov-primer-20120503,      tr2012:WD-prov-primer-20120110)
+wasDerivedFrom(tr2012:WD-prov-o-20120503,           tr2011:WD-prov-o-20111213)
+
 //////////////////////////////////////////////////////////////////////
 // seventh publication: 
 //   - next working draft of prov-aq
@@ -242,130 +272,46 @@ entity(wiki:Family7, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 prov:derivedByInsertionFrom(wiki:Family7, wiki:Family6, {('tr:prov-aq',     tr2012:WD-prov-aq-20120619)})
 
-//////////////////////////////////////////////////////////////////////
-// eighth publication: 
-//   - 
-//////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-entity(chairs:2012JanMar/0000, [ prov:type='trans:transreq', dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2012JanMar/0000"  ]) // for prov-primer
-
-
-
-
-
-
-
-
-
-
-
-wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Lmoreau,  [prov:role='pd:editor'])
-wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Pmissier, [prov:role='pd:editor'])
-wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Kbelhajj, [prov:role='prov:Contributor'])
-wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Scresswe, [prov:role='prov:Contributor'])
-wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Rgolden,  [prov:role='prov:Contributor'])
-wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Pgroth,   [prov:role='prov:Contributor'])
-wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Gklyne,   [prov:role='prov:Contributor'])
-wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Jmccuske, [prov:role='prov:Contributor'])
-wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Smiles,   [prov:role='prov:Contributor'])
-wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Jmyers4,  [prov:role='prov:Contributor'])
-wasAttributedTo(tr2011:WD-prov-dm-20111018,user:Ssahoo2,  [prov:role='prov:Contributor'])
-
-
-
-// prov-dm revisions
-wasDerivedFrom(tr2011:WD-prov-dm-20111215,tr2011:WD-prov-dm-20111018)
-wasDerivedFrom(tr2012:WD-prov-dm-20120202,tr2011:WD-prov-dm-20111215)
-wasDerivedFrom(tr2012:WD-prov-dm-20120503,tr2012:WD-prov-dm-20120202)
-// prov-n revisions
-wasDerivedFrom(tr2012:WD-prov-n-20120503,tr2012:WD-prov-dm-20120202)
-// prov-constraints revisions
-wasDerivedFrom(tr2012:WD-prov-constraints-20120503,tr2012:WD-prov-dm-20120202)
-// prov-primer
-wasDerivedFrom(tr2012:WD-prov-primer-20120503, tr2012:WD-prov-primer-20120110)
-// prov-o
-wasDerivedFrom(tr2012:WD-prov-o-20120503, tr2011:WD-prov-o-20111213)
-// prov-aq
 wasDerivedFrom(tr2012:WD-prov-aq-20120619, tr2012:WD-prov-aq-20120110)
 
+//////////////////////////////////////////////////////////////////////
+// eighth publication: 
+//   - prov-dm, prov-n, prov-o, prov-primer
+//////////////////////////////////////////////////////////////////////
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-agent(w3:Consortium, [ prov:type='prov:Organization', dot:fillcolor="thistle3", dot:url="http://www.w3.org/Consortium"   ])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-wasAttributedTo(tr2011:WD-prov-dm-20111018,w3:Consortium)
-wasAttributedTo(tr2012:WD-prov-dm-20120503,w3:Consortium)
-
-// 8th publication
 
 entity(email:2012Jul/0154,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Jul/0154" ])
 activity(ex:publ8,-,-,[prov:type='prov:Publish' ])
 used(ex:publ8,email:2012Jul/0154,-)
+
 wasAssociatedWith(ex:publ8, w3:Consortium, process:rec-advance)
+
 wasGeneratedBy(tr2012:WD-prov-dm-20120724,          ex:publ8, -)
 wasGeneratedBy(tr2012:WD-prov-n-20120724,           ex:publ8, -)
 wasGeneratedBy(tr2012:WD-prov-o-20120724,           ex:publ8, -)
 wasGeneratedBy(tr2012:WD-prov-primer-20120724,      ex:publ8, -)
 
-// 9th publication
+
+entity(wiki:Family8, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
+
+prov:derivedByInsertionFrom(wiki:Family8, wiki:Family7, {('tr:prov-dm',     tr2012:WD-prov-dm-20120724)
+                                                         ('tr:prov-n',      tr2012:WD-prov-dm-20120724)
+                                                         ('tr:prov-o',      tr2012:WD-prov-o-20120724)
+                                                         ('tr:prov-primer', tr2012:WD-prov-primert-20120724)})
+
+wasDerivedFrom(tr2012:WD-prov-dm-20120724,     tr2012:WD-prov-dm-20120503)
+wasDerivedFrom(tr2012:WD-prov-n-20120724,      tr2012:WD-prov-n-20120503)
+wasDerivedFrom(tr2012:WD-prov-o-20120724,      tr2012:WD-prov-o-20120503)
+wasDerivedFrom(tr2012:WD-prov-primer-20120724, tr2012:WD-prov-primer-20120503)
+
+
+//////////////////////////////////////////////////////////////////////
+// ninth publication: ??? last call??
+//   - TOCHECK: constraints published later
+//////////////////////////////////////////////////////////////////////
+
+
+
 
 entity(email:2012Sep/0070,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Sep/0070" ])
 used(ex:publ9,email:2012Sep/0070,-)
@@ -379,18 +325,22 @@ entity(tr2012:WD-prov-o-20120724,           [ prov:type='pd:WD', prov:type='pd:L
 entity(tr2012:WD-prov-constraints-20120911, [ prov:type='pd:WD', prov:type='pd:LastCall', dot:url="http://www.w3.org/TR/2012/WD-prov-constraints-20120911"  ])
 entity(tr2012:WD-prov-primer-20120724,      [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2012/WD-prov-primer-20120724"  ])
 
-wasDerivedFrom(tr2012:WD-prov-dm-20120724, tr2012:WD-prov-dm-20120503)
-wasDerivedFrom(tr2012:WD-prov-n-20120724, tr2012:WD-prov-n-20120503)
-wasDerivedFrom(tr2012:WD-prov-o-20120724, tr2012:WD-prov-o-20120503)
+
 wasDerivedFrom(tr2012:WD-prov-constraints-20120911, tr2012:WD-prov-constraints-20120503)
 
-wasDerivedFrom(tr2012:WD-prov-primer-20120724, tr2012:WD-prov-primer-20120503)
+//////////////////////////////////////////////////////////////////////
+// CR publication: 
+//   - prov-dm, prov-n, prov-o, prov-constraints CR
+//   - prov-primer, next working draft
+//   - prov-dc, prov-links, prov-overview first public working draft
+//////////////////////////////////////////////////////////////////////
 
-// CR release
+//TODO: transreq for CR and for FPWD
 
 entity(email:2012Dec/0041,     [ prov:type='trans:pubreq',  dot:fillcolor="gold", dot:url="https://lists.w3.org/Archives/Member/w3c-archive/2012Dec/0041" ])
 activity(ex:publ10,-,-,[prov:type='prov:Publish' ])
 wasAssociatedWith(ex:publ10, w3:Consortium, process:rec-advance)
+
 used(ex:publ10,email:2012Dec/0041,-)
 
 wasGeneratedBy(tr2012:CR-prov-dm-20121211,          ex:publ10, -)
@@ -427,7 +377,7 @@ wasDerivedFrom(tr2012:CR-prov-constraints-20121211,      tr2012:WD-prov-constrai
 wasDerivedFrom(tr2012:WD-prov-primer-20121211,      tr2012:WD-prov-primer-20120724)
 
 prov:derivedByInsertionFrom(wiki:Family-cr, 
-                            wiki:Family7, 
+                            wiki:Family8, 
                             {('tr:prov-dm',              tr2012:CR-prov-dm-20121211),
                              ('tr:prov-o',               tr2012:CR-prov-o-20121211),            
                              ('tr:prov-n',               tr2012:CR-prov-n-20121211),            
@@ -439,8 +389,14 @@ prov:derivedByInsertionFrom(wiki:Family-cr,
                              ('tr:prov-dc',              tr2012:WD-prov-dc-20121211)  })
 
 
-// PR release
+//////////////////////////////////////////////////////////////////////
+// PR publication: 
+//   - prov-dm, prov-n, prov-o, prov-constraints PR
+//   - prov-primer, prov-dc, prov-links, prov-overview: next working draft
+//   - prov-dictionary, prov-implementation, prov-sem: first public working draft
+//////////////////////////////////////////////////////////////////////
 
+//TODO transreq for PR
 
 entity(chairs:2013JanMar/0090, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2013JanMar/0090" ]) // for prov-dictionary, prov-implementations
 entity(chairs:2013JanMar/0097, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2013JanMar/0097" ]) // for prov-sem
@@ -472,20 +428,20 @@ wasGeneratedBy(tr2013:WD-prov-implementations-20130312, ex:publ11, -)
 
 entity(wiki:Family-pr, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
-entity(tr2013:PR-prov-dm-20130312,          [ prov:type='process:RecsPR', dot:url="http://www.w3.org/TR/2013/PR-prov-dm-20130312"  ])
-entity(tr2013:PR-prov-n-20130312,           [ prov:type='process:RecsPR', dot:url="http://www.w3.org/TR/2013/PR-prov-n-20130312"  ])
-entity(tr2013:PR-prov-o-20130312,           [ prov:type='process:RecsPR', dot:url="http://www.w3.org/TR/2013/PR-prov-o-20130312"  ])
-entity(tr2013:PR-prov-constraints-20130312, [ prov:type='process:RecsPR', dot:url="http://www.w3.org/TR/2013/PR-prov-constraints-20130312"  ])
+entity(tr2013:PR-prov-dm-20130312,          [ prov:type='process:RecsPR' ])
+entity(tr2013:PR-prov-n-20130312,           [ prov:type='process:RecsPR' ])
+entity(tr2013:PR-prov-o-20130312,           [ prov:type='process:RecsPR' ])
+entity(tr2013:PR-prov-constraints-20130312, [ prov:type='process:RecsPR' ])
 
-entity(tr2013:WD-prov-primer-20130312,      [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-primer-20130312"  ])
-entity(tr2013:WD-prov-overview-20130312,    [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-overview-20130312"  ])
-entity(tr2013:WD-prov-dictionary-20130312,  [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-dictionary-20130312"  ])
-entity(tr2013:WD-prov-xml-20130312,         [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-xml-20130312"  ])
-entity(tr2013:WD-prov-links-20130312,       [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-links-20130312"  ])
-entity(tr2013:WD-prov-aq-20130312,          [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-aq-20130312"  ])
-entity(tr2013:WD-prov-dc-20130312,          [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-dc-20130312"  ])
-entity(tr2013:WD-prov-sem-20130312,         [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-sem-20130312"  ])
-entity(tr2013:WD-prov-implementations-20130312, [ prov:type='pd:WD', dot:url="http://www.w3.org/TR/2013/WD-prov-implementations-20130312"  ])
+entity(tr2013:WD-prov-primer-20130312,      [ prov:type='pd:WD' ])
+entity(tr2013:WD-prov-overview-20130312,    [ prov:type='pd:WD' ])
+entity(tr2013:WD-prov-dictionary-20130312,  [ prov:type='pd:WD' ])
+entity(tr2013:WD-prov-xml-20130312,         [ prov:type='pd:WD' ])
+entity(tr2013:WD-prov-links-20130312,       [ prov:type='pd:WD' ])
+entity(tr2013:WD-prov-aq-20130312,          [ prov:type='pd:WD' ])
+entity(tr2013:WD-prov-dc-20130312,          [ prov:type='pd:WD' ])
+entity(tr2013:WD-prov-sem-20130312,         [ prov:type='pd:WD' ])
+entity(tr2013:WD-prov-implementations-20130312, [ prov:type='pd:WD' ])
 
 
 
@@ -528,7 +484,15 @@ prov:derivedByInsertionFrom(wiki:Family-pr, wiki:Family-cr, {('tr:prov-dm',     
                                                   	 ('tr:prov-implementations', tr2013:WD-prov-implementations-20130312) })
 
 
-// REC release
+
+
+//////////////////////////////////////////////////////////////////////
+// REC publication: 
+//   - prov-dm, prov-n, prov-o, prov-constraints PR
+//   - prov-primer, prov-dc, prov-links, prov-overview: next working draft
+//   - prov-dictionary, prov-implementation, prov-sem: first public working draft
+//////////////////////////////////////////////////////////////////////
+
 
 entity(chairs:2013JanMar/0116, [ prov:type='process:cfr' , dot:fillcolor="gainsboro", dot:url="https://lists.w3.org/Archives/Member/chairs/2013JanMar/0116.html" ]) 
 

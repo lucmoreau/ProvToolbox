@@ -174,6 +174,26 @@ public class JSONConstructor implements ModelConstructor {
 		return result;
 	}
 	
+	private Object convertValue(Object value) {
+		if (value instanceof String ||
+			value instanceof Double ||
+			value instanceof Integer ||
+			value instanceof Boolean)
+			return value;
+		if (value instanceof QName)
+			return typedLiteral(qnExport.qnameToString((QName)value), "xsd:QName", null);
+		if (value instanceof InternationalizedString) {
+			InternationalizedString iStr = (InternationalizedString)value;
+			String lang = iStr.getLang(); 
+			if (lang != null)
+				// If 'lang' is defined
+				return typedLiteral(iStr.getValue(), "xsd:string", lang); 
+			else 
+				return iStr.getValue();
+		}
+		return null;
+	}
+	
 	private Object[] convertAttribute(Attribute attr) {
 		String attrName = qnExport.qnameToString(attr.getElementName());
 		Object value = attr.getValue();
@@ -555,8 +575,26 @@ public class JSONConstructor implements ModelConstructor {
 								QName before,
 								List<KeyQNamePair> keyEntitySet,
 								Collection<Attribute> attributes) {
-	    throw new UnsupportedOperationException();
-
+		List<Object[]> attrs = convertAttributes(attributes);
+		if (after != null)
+    		attrs.add(tuple("prov:after", qnExport.qnameToString(after)));
+		if (before != null)
+    		attrs.add(tuple("prov:before", qnExport.qnameToString(before)));
+		if (keyEntitySet != null && !keyEntitySet.isEmpty()) {
+			List<Map<String, Object>> values = new ArrayList<Map<String, Object>>(keyEntitySet.size());
+			for (KeyQNamePair pair: keyEntitySet) {
+				Object entity = qnExport.qnameToString(pair.name);
+				Map<String, Object> item = new Hashtable<String, Object>();
+				item.put("$", entity);
+				item.put("key", this.convertValue(pair.key));
+				values.add(item);
+			}
+			attrs.add(tuple("prov:key-entity-set", values));
+		}
+		String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("dBIF");
+		JsonProvRecord record = new JsonProvRecord("derivedByInsertionFrom", recordID, attrs);
+		this.currentRecords.add(record);
+		return null;
 	}
 
 	@Override
@@ -565,15 +603,46 @@ public class JSONConstructor implements ModelConstructor {
 							    QName before,
 							    List<Object> keys,
 							    Collection<Attribute> attributes) {
-	    throw new UnsupportedOperationException();
-
+		List<Object[]> attrs = convertAttributes(attributes);
+		if (after != null)
+    		attrs.add(tuple("prov:after", qnExport.qnameToString(after)));
+		if (before != null)
+    		attrs.add(tuple("prov:before", qnExport.qnameToString(before)));
+		if (keys != null && !keys.isEmpty()) {
+			List<Object> values = new ArrayList<Object>(keys.size());
+			for (Object key: keys) {
+				values.add(this.convertValue(key));
+			}
+			attrs.add(tuple("prov:key-set", values));
+		}
+		String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("dBRF");
+		JsonProvRecord record = new JsonProvRecord("derivedByRemovalFrom", recordID, attrs);
+		this.currentRecords.add(record);
+		return null;
 	}
 
 	@Override
-        public DictionaryMembership newDictionaryMembership(QName dict,
-							    List<KeyQNamePair> keyEntitySet) {
-	    throw new UnsupportedOperationException();
-        }
+    public DictionaryMembership newDictionaryMembership(QName dict,
+						    List<KeyQNamePair> keyEntitySet) {
+		List<Object[]> attrs = new ArrayList<Object[]>();
+		if (dict != null)
+    		attrs.add(tuple("prov:dictionary", qnExport.qnameToString(dict)));
+		if (keyEntitySet != null && !keyEntitySet.isEmpty()) {
+			List<Map<String, Object>> values = new ArrayList<Map<String, Object>>(keyEntitySet.size());
+			for (KeyQNamePair pair: keyEntitySet) {
+				Object entity = qnExport.qnameToString(pair.name);
+				Map<String, Object> item = new Hashtable<String, Object>();
+				item.put("$", entity);
+				item.put("key", this.convertValue(pair.key));
+				values.add(item);
+			}
+			attrs.add(tuple("prov:key-entity-set", values));
+		}
+		String recordID = getBlankID("hDM");
+		JsonProvRecord record = new JsonProvRecord("hadDictionaryMember", recordID, attrs);
+		this.currentRecords.add(record);
+		return null;
+    }
 
 
 

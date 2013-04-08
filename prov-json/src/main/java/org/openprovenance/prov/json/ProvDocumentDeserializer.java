@@ -23,6 +23,9 @@ import org.openprovenance.prov.xml.ActivityRef;
 import org.openprovenance.prov.xml.AgentRef;
 import org.openprovenance.prov.xml.AnyRef;
 import org.openprovenance.prov.xml.Attribute;
+import org.openprovenance.prov.xml.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.DerivedByRemovalFrom;
+import org.openprovenance.prov.xml.DictionaryMembership;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.EntityRef;
 import org.openprovenance.prov.xml.GenerationRef;
@@ -34,6 +37,7 @@ import org.openprovenance.prov.xml.HasRole;
 import org.openprovenance.prov.xml.HasType;
 import org.openprovenance.prov.xml.HasValue;
 import org.openprovenance.prov.xml.InternationalizedString;
+import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Statement;
@@ -316,6 +320,26 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             }
             statement = wUB;
             break;
+        case derivedByInsertionFrom:
+        	QName before = optionalQName("prov:before", attributeMap);
+        	QName after = optionalQName("prov:after", attributeMap);
+        	List<KeyQNamePair> keyEntitySet = optionalKeyEntitySet("prov:key-entity-set", attributeMap);
+        	DerivedByInsertionFrom dBIF = pf.newDerivedByInsertionFrom(id, after, before, keyEntitySet, null);
+        	statement = dBIF;
+        	break;
+        case derivedByRemovalFrom:
+        	before = optionalQName("prov:before", attributeMap);
+        	after = optionalQName("prov:after", attributeMap);
+        	List<Object> keys = optionalKeySet("prov:key-set", attributeMap);
+        	DerivedByRemovalFrom dBRF = pf.newDerivedByRemovalFrom(id, after, before, keys, null);
+        	statement = dBRF;
+        	break;
+        case hadDictionaryMember:
+        	QName dictionary = optionalQName("prov:dictionary", attributeMap);
+        	keyEntitySet = optionalKeyEntitySet("prov:key-entity-set", attributeMap);
+        	DictionaryMembership hDM = pf.newDictionaryMembership(dictionary, keyEntitySet);
+        	statement = hDM;
+        	break;
         default:
             statement = null;
             break;
@@ -538,7 +562,19 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     private String popString(JsonObject jo, String memberName) {
         return jo.remove(memberName).getAsString();
     }
+
     
+    private QName qName(String attributeName, JsonObject attributeMap) {
+    	return pf.stringToQName(popString(attributeMap, attributeName));
+    }
+    
+    private QName optionalQName(String attributeName, JsonObject attributeMap) {
+    	if (attributeMap.has(attributeName))
+            return qName(attributeName, attributeMap);
+        else
+            return null;
+    }
+
     private EntityRef entityRef(String attributeName, JsonObject attributeMap) {
     	return pf.newEntityRef(popString(attributeMap, attributeName));
     }
@@ -611,6 +647,43 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     private Collection<EntityRef> optionalEntityRefs(String attributeName, JsonObject attributeMap) {
         if (attributeMap.has(attributeName))
             return entityRefs(attributeName, attributeMap);
+        else
+            return null;
+    }
+    
+    private List<KeyQNamePair> keyEntitySet(String attributeName, JsonObject attributeMap) {
+    	List<KeyQNamePair> results = new ArrayList<KeyQNamePair>();
+    	List<JsonElement> elements = popMultiValAttribute(attributeName, attributeMap);
+        for (JsonElement element : elements) {
+        	JsonObject item = element.getAsJsonObject();
+        	KeyQNamePair pair = new KeyQNamePair();
+        	pair.key = this.decodeAttributeValue(item.remove("key"));
+        	pair.name = pf.stringToQName(this.popString(item, "$"));
+        	results.add(pair);
+        }
+        return results;
+    }
+    
+    private List<KeyQNamePair> optionalKeyEntitySet(String attributeName, JsonObject attributeMap) {
+    	if (attributeMap.has(attributeName))
+            return keyEntitySet(attributeName, attributeMap);
+        else
+            return null;
+    }
+    
+    private List<Object> keySet(String attributeName, JsonObject attributeMap) {
+    	List<Object> results = new ArrayList<Object>();
+    	List<JsonElement> elements = popMultiValAttribute(attributeName, attributeMap);
+        for (JsonElement element : elements) {
+        	Object key = decodeAttributeValue(element);
+        	results.add(key);
+        }
+        return results;
+    }
+    
+    private List<Object> optionalKeySet(String attributeName, JsonObject attributeMap) {
+    	if (attributeMap.has(attributeName))
+            return keySet(attributeName, attributeMap);
         else
             return null;
     }

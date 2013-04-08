@@ -33,22 +33,6 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 		return ".json";
 	}
 	
-	   public void testDictionaryInsertion1() {};
-	    public void testDictionaryInsertion2() {};
-	    public void testDictionaryInsertion3() {};
-	    public void testDictionaryInsertion4() {};
-	    public void testDictionaryInsertion5() {};
-	    public void testDictionaryInsertion6() {};
-	    public void testDictionaryRemoval1() {};
-	    public void testDictionaryRemoval2() {};
-	    public void testDictionaryRemoval3() {};
-	    public void testDictionaryRemoval4() {};
-	    public void testDictionaryRemoval5() {};
-	    public void testDictionaryMembership1() {};
-	    public void testDictionaryMembership2() {};
-	    public void testDictionaryMembership3() {};
-	    public void testDictionaryMembership4() {};
-
 	@Override
 	public Document readDocument(String file) {
 		try {

@@ -13,6 +13,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
@@ -556,7 +557,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         else {
             // Return a single item list
             return Collections.singletonList(element);
-            }
+        }
     } 
     
     private String popString(JsonObject jo, String memberName) {
@@ -653,14 +654,31 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     
     private List<KeyQNamePair> keyEntitySet(String attributeName, JsonObject attributeMap) {
     	List<KeyQNamePair> results = new ArrayList<KeyQNamePair>();
-    	List<JsonElement> elements = popMultiValAttribute(attributeName, attributeMap);
-        for (JsonElement element : elements) {
-        	JsonObject item = element.getAsJsonObject();
-        	KeyQNamePair pair = new KeyQNamePair();
-        	pair.key = this.decodeAttributeValue(item.remove("key"));
-        	pair.name = pf.stringToQName(this.popString(item, "$"));
-        	results.add(pair);
-        }
+    	// check if it is a dictionary or a list
+    	JsonElement kESElement = attributeMap.remove(attributeName);
+    	if (kESElement.isJsonArray()) {
+    		// decode it as a list of elements
+	    	List<JsonElement> elements = pickMultiValues(kESElement);
+	        for (JsonElement element : elements) {
+	        	JsonObject item = element.getAsJsonObject();
+	        	KeyQNamePair pair = new KeyQNamePair();
+	        	pair.key = this.decodeAttributeValue(item.remove("key"));
+	        	pair.name = pf.stringToQName(this.popString(item, "$"));
+	        	results.add(pair);
+	        }
+    	}
+    	else if (kESElement.isJsonObject()) {
+    		// decode it as a dictionary whose keys are of the same datatype
+    		JsonObject dictionary = kESElement.getAsJsonObject();
+    		String keyDatatype = dictionary.remove("$key-datatype").getAsString();
+    		QName datatype = pf.stringToQName(keyDatatype);
+    		for (Entry<String, JsonElement> entry: dictionary.entrySet()) {
+    			KeyQNamePair pair = new KeyQNamePair();
+	        	pair.key = vconv.convertToJava(datatype, entry.getKey());
+	        	pair.name = pf.stringToQName(entry.getValue().getAsString());
+	        	results.add(pair);
+    		}
+    	}
         return results;
     }
     

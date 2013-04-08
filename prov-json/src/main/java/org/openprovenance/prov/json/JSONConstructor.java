@@ -29,10 +29,12 @@ import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.MentionOf;
 import org.openprovenance.prov.xml.ModelConstructor;
 import org.openprovenance.prov.xml.NamedBundle;
+import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.QNameExport;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.Statement;
 import org.openprovenance.prov.xml.Used;
+import org.openprovenance.prov.xml.ValueConverter;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.WasAttributedTo;
 import org.openprovenance.prov.xml.WasDerivedFrom;
@@ -69,6 +71,9 @@ public class JSONConstructor implements ModelConstructor {
 	private List<JsonProvRecord> currentRecords = documentRecords;
 	private Map<String, String> currentNamespaces = null;
 	
+	private final ProvFactory pf = new ProvFactory();
+    private final ValueConverter vconv = new ValueConverter(pf);
+    
 	public JSONConstructor(QNameExport qnExport) {
 		this.qnExport = qnExport;
 	}
@@ -174,6 +179,20 @@ public class JSONConstructor implements ModelConstructor {
 		return result;
 	}
 	
+	private String convertValueToString(Object value) {
+		if (value instanceof String) {
+			return (String)value;
+		}
+
+		if (value instanceof QName)
+			return qnExport.qnameToString((QName)value);
+		if (value instanceof InternationalizedString) {
+			InternationalizedString iStr = (InternationalizedString)value;
+			return iStr.getValue();
+		}
+		return value.toString();
+	}
+	
 	private Object convertValue(Object value) {
 		if (value instanceof String ||
 			value instanceof Double ||
@@ -191,6 +210,7 @@ public class JSONConstructor implements ModelConstructor {
 			else 
 				return iStr.getValue();
 		}
+		// TODO: Raise an exception?
 		return null;
 	}
 	
@@ -465,9 +485,7 @@ public class JSONConstructor implements ModelConstructor {
     		attrs.add(tuple("prov:alternate2", qnExport.qnameToString(e2)));
 		if (e1 != null)
     		attrs.add(tuple("prov:alternate1", qnExport.qnameToString(e1)));
-		// TODO Add id to the interface
-		QName id = null;
-    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("aO");
+    	String recordID = getBlankID("aO");
 		JsonProvRecord record = new JsonProvRecord("alternateOf", recordID, attrs);
 		this.currentRecords.add(record);
 		return null;
@@ -481,9 +499,7 @@ public class JSONConstructor implements ModelConstructor {
     		attrs.add(tuple("prov:specificEntity", qnExport.qnameToString(e2)));
 		if (e1 != null)
     		attrs.add(tuple("prov:generalEntity", qnExport.qnameToString(e1)));
-		// TODO Add id to the interface
-		QName id = null;
-    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("sO");
+		String recordID = getBlankID("sO");
 		JsonProvRecord record = new JsonProvRecord("specializationOf", recordID, attrs);
 		this.currentRecords.add(record);
 		return null;
@@ -499,9 +515,7 @@ public class JSONConstructor implements ModelConstructor {
     		attrs.add(tuple("prov:generalEntity", qnExport.qnameToString(e1)));
 		if (b != null)
     		attrs.add(tuple("prov:bundle", qnExport.qnameToString(b)));
-		// TODO Add id to the interface
-		QName id = null;
-    	String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("mO");
+		String recordID = getBlankID("mO");
 		JsonProvRecord record = new JsonProvRecord("mentionOf", recordID, attrs);
 		this.currentRecords.add(record);
 		return null;
@@ -568,7 +582,51 @@ public class JSONConstructor implements ModelConstructor {
 		currentRecords = new ArrayList<JsonProvRecord>();
 	}
 
-
+	private Object encodeKeyEntitySet(List<KeyQNamePair> keyEntitySet) {
+		// Check for the types of keys
+		boolean isAllKeyOfSameDatatype = true;
+		Object firstKey = keyEntitySet.get(0).key;
+		Class<?> firstKeyClass = firstKey.getClass();
+		for (KeyQNamePair pair: keyEntitySet) {
+			Class<?> keyClass = pair.key.getClass();
+			if (keyClass == InternationalizedString.class) {
+				// check if it is just a simple string
+				InternationalizedString istr = (InternationalizedString)pair.key;
+				if (istr.getLang() == null) {
+					keyClass = String.class;
+				}
+			}
+			if (keyClass != firstKeyClass) {
+				isAllKeyOfSameDatatype = false;
+				break;
+			}
+		}
+		
+		if (isAllKeyOfSameDatatype) {
+			// encode as a dictionary
+			Map<Object, String> dictionary = new HashMap<Object, String>();
+			String keyDatatype = pf.qnameToString(vconv.getXsdType(keyEntitySet.get(0).key));
+			dictionary.put("$key-datatype", keyDatatype);
+			for (KeyQNamePair pair: keyEntitySet) {
+				String key = convertValueToString(pair.key);
+				String entity = qnExport.qnameToString(pair.name);
+				dictionary.put(key, entity);
+			}
+			return dictionary;
+		}
+		
+		// encode as a generic list of key-value pairs
+		List<Map<String, Object>> values = new ArrayList<Map<String, Object>>(keyEntitySet.size());
+		for (KeyQNamePair pair: keyEntitySet) {
+			Object entity = qnExport.qnameToString(pair.name);
+			Map<String, Object> item = new Hashtable<String, Object>();
+			item.put("$", entity);
+			item.put("key", convertValue(pair.key));
+			values.add(item);
+		}
+		return values;
+	}
+	
 	@Override
 	public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
 								QName after,
@@ -581,15 +639,7 @@ public class JSONConstructor implements ModelConstructor {
 		if (before != null)
     		attrs.add(tuple("prov:before", qnExport.qnameToString(before)));
 		if (keyEntitySet != null && !keyEntitySet.isEmpty()) {
-			List<Map<String, Object>> values = new ArrayList<Map<String, Object>>(keyEntitySet.size());
-			for (KeyQNamePair pair: keyEntitySet) {
-				Object entity = qnExport.qnameToString(pair.name);
-				Map<String, Object> item = new Hashtable<String, Object>();
-				item.put("$", entity);
-				item.put("key", this.convertValue(pair.key));
-				values.add(item);
-			}
-			attrs.add(tuple("prov:key-entity-set", values));
+			attrs.add(tuple("prov:key-entity-set", encodeKeyEntitySet(keyEntitySet)));
 		}
 		String recordID = (id != null) ? qnExport.qnameToString(id) : getBlankID("dBIF");
 		JsonProvRecord record = new JsonProvRecord("derivedByInsertionFrom", recordID, attrs);
@@ -611,7 +661,7 @@ public class JSONConstructor implements ModelConstructor {
 		if (keys != null && !keys.isEmpty()) {
 			List<Object> values = new ArrayList<Object>(keys.size());
 			for (Object key: keys) {
-				values.add(this.convertValue(key));
+				values.add(convertValue(key));
 			}
 			attrs.add(tuple("prov:key-set", values));
 		}
@@ -628,15 +678,7 @@ public class JSONConstructor implements ModelConstructor {
 		if (dict != null)
     		attrs.add(tuple("prov:dictionary", qnExport.qnameToString(dict)));
 		if (keyEntitySet != null && !keyEntitySet.isEmpty()) {
-			List<Map<String, Object>> values = new ArrayList<Map<String, Object>>(keyEntitySet.size());
-			for (KeyQNamePair pair: keyEntitySet) {
-				Object entity = qnExport.qnameToString(pair.name);
-				Map<String, Object> item = new Hashtable<String, Object>();
-				item.put("$", entity);
-				item.put("key", this.convertValue(pair.key));
-				values.add(item);
-			}
-			attrs.add(tuple("prov:key-entity-set", values));
+			attrs.add(tuple("prov:key-entity-set", encodeKeyEntitySet(keyEntitySet)));
 		}
 		String recordID = getBlankID("hDM");
 		JsonProvRecord record = new JsonProvRecord("hadDictionaryMember", recordID, attrs);

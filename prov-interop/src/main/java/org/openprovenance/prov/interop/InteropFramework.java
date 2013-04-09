@@ -400,7 +400,7 @@ public class InteropFramework
 	    //doc.getNss().put("xsd","http://www.w3.org/2001/XMLSchema");
 	    //doc.getNss().put("xsi","http://www.w3.org/2001/XMLSchema-instance");
 	    
-	    System.out.println("InteropFramework run() -> " + doc.getNss());
+	    //System.out.println("InteropFramework run() -> " + doc.getNss());
 	    writeDocument(outfile, doc);
 	} catch (Throwable e) {
 	    // TODO Auto-generated catch block

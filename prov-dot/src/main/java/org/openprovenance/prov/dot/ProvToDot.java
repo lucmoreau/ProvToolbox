@@ -359,7 +359,7 @@ public class ProvToDot {
     public QName annotationId(QName id,String node) {
 	
         if (true || id==null) {
-            return new QName("http://foo/ignore","ann" + node + (annotationCount++));
+            return new QName("http://annot/","ann" + node + (annotationCount++));
         } else {
             return id;
         }

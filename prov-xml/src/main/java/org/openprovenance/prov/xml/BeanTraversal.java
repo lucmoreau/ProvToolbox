@@ -181,12 +181,19 @@ public class BeanTraversal {
 	    return convert((MentionOf) o);
 	} else if (o instanceof HadMember) {
 	    return convert((HadMember) o);
+	} else if (o instanceof DerivedByInsertionFrom) {
+	    return convert((DerivedByInsertionFrom) o);
+	} else if (o instanceof DerivedByRemovalFrom) {
+	    return convert((DerivedByRemovalFrom) o);
+	} else if (o instanceof DictionaryMembership) {
+	    return convert((DictionaryMembership) o);
 
 	} else {
 	    throw new UnsupportedOperationException("Unknown relation type "
 		    + o);
 	}
     }
+
 
     final private QName q(Ref id) {
 	return (id==null) ? null: id.getRef();
@@ -252,7 +259,7 @@ public class BeanTraversal {
         convertTypeAttributes(inf,attrs);
         convertLabelAttributes(inf,attrs);
         convertAttributes(inf,attrs);
-        return c.newWasInformedBy(inf.getId(), q(inf.getEffect()), q(inf.getCause()), attrs);
+        return c.newWasInformedBy(inf.getId(), q(inf.getInformed()), q(inf.getInformant()), attrs);
     }
 
     public WasInfluencedBy convert(WasInfluencedBy infl) {
@@ -303,7 +310,7 @@ public class BeanTraversal {
         convertTypeAttributes(del,attrs);
         convertLabelAttributes(del,attrs);
         convertAttributes(del,attrs);
-        return c.newActedOnBehalfOf(del.getId(), q(del.getSubordinate()), q(del.getResponsible()), q(del.getActivity()), attrs);
+        return c.newActedOnBehalfOf(del.getId(), q(del.getDelegate()), q(del.getResponsible()), q(del.getActivity()), attrs);
     }
 
     public AlternateOf convert(AlternateOf o) {
@@ -340,6 +347,51 @@ public class BeanTraversal {
 	                        		     null :
 	                        	             o.getEntity().get(0).getRef()))); */
     }
+    
+    public Relation0 convert(DerivedByRemovalFrom o) {
+	
+	return c.newDerivedByRemovalFrom(o.getId(), 
+	                                 o.getNewDictionary().getRef(), 
+	                                 o.getOldDictionary().getRef(), 
+	                                 o.getKey(), 
+	                                 o.getAny());
+	                                 
+    }
+
+    public Relation0 convert(DerivedByInsertionFrom o) {
+	List<KeyQNamePair> entries=new LinkedList<KeyQNamePair>();
+    	if (o.getKeyEntityPair()!=null) {
+    	    for (Entry entry: o.getKeyEntityPair()) {
+    		KeyQNamePair p=new KeyQNamePair();
+    		p.key=entry.getKey();
+    		p.name=entry.getEntity().getRef();
+    		entries.add(p);
+    	    }
+    	}
+	return c.newDerivedByInsertionFrom(o.getId(), 
+	                                   o.getNewDictionary().getRef(), 
+	                                   o.getOldDictionary().getRef(), 
+	                                   entries, 
+	                                   o.getAny());
+
+	
+    }
+    
+
+    public Relation0 convert(DictionaryMembership o) {
+	List<KeyQNamePair> entries=new LinkedList<KeyQNamePair>();
+    	if (o.getKeyEntityPair()!=null) {
+    	    for (Entry entry: o.getKeyEntityPair()) {
+    		KeyQNamePair p=new KeyQNamePair();
+    		p.key=entry.getKey();
+    		p.name=entry.getEntity().getRef();
+    		entries.add(p);
+    	    }
+    	}
+	return c.newDictionaryMembership(o.getDictionary().getRef(), entries);
+    }
+
+
     
 	
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
@@ -13,17 +14,23 @@ import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
+import org.openprovenance.prov.xml.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.DerivedByRemovalFrom;
+import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.ModelConstructor;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.HadMember;
 import org.openprovenance.prov.xml.MentionOf;
 import org.openprovenance.prov.xml.NamedBundle;
+import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.QNameExport;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.Statement;
 import org.openprovenance.prov.xml.UncheckedException;
+import org.openprovenance.prov.xml.DictionaryMembership;
 import org.openprovenance.prov.xml.Used;
+import org.openprovenance.prov.xml.ValueConverter;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.WasAttributedTo;
 import org.openprovenance.prov.xml.WasDerivedFrom;
@@ -389,6 +396,77 @@ public class NotationConstructor implements ModelConstructor {
 	return null;
     }
 
+	@Override
+	public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
+			QName after, QName before, List<KeyQNamePair> kes, Collection<Attribute> attributes) {
+	    
+	    String s="prov:derivedByInsertionFrom(" + optionalId(id) + idOrMarker(after) + "," + idOrMarker(before)
+		    + "," + keyEntitySet(kes)
+		                + optionalAttributes(attributes) +  ")";
+	    writeln(s);
+	    return null;
+	}
+	
+	static ValueConverter vc=new ValueConverter(ProvFactory.getFactory());
+
+	private String keyEntitySet(List<KeyQNamePair> kes) {
+	    String s="{";
+	    if (kes!=null) {
+		boolean first=true;
+		for (KeyQNamePair p: kes) {
+		    if (!first) s=s+", ";
+		    first=false;
+		    s= s + "(" + Attribute.valueToNotationString(p.key,vc.getXsdType(p.key)) + ", " + idOrMarker(p.name) + ")";
+		}
+	    }
+	    s=s+"}";
+	    return s;
+	}
+	private String keySet(List<Object> ks) {
+	    String s="{";
+	    if (ks!=null) {
+		boolean first=true;
+		for (Object k: ks) {
+		    if (!first) s=s+", ";
+		    first=false;
+		    s= s + Attribute.valueToNotationString(k,vc.getXsdType(k));
+		}
+	    }
+	    s=s+"}";
+	    return s;
+	}
+
+	@Override
+	public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
+							    QName after,
+							    QName before,
+							    List<Object> keys,
+							    Collection<Attribute> attributes) {
+	    String s="prov:derivedByRemovalFrom(" + optionalId(id) + idOrMarker(after) + "," + idOrMarker(before)
+		    + "," + keySet(keys)
+	                + optionalAttributes(attributes) +  ")";	    
+	    writeln(s);
+	    return null;
+	}
+
+	boolean abbrev=false;
+	@Override
+	public DictionaryMembership newDictionaryMembership(QName dict,
+							    List<KeyQNamePair> keyEntitySet) {
+		if (abbrev) {
+			String s="provx:hadDictionaryMember(" +  idOrMarker(dict)  
+				    + "," + keyEntitySet(keyEntitySet) +  ")";
+			    writeln(s);
+		} else {
+			for (KeyQNamePair entry: keyEntitySet) {
+				
+				String s="prov:hadDictionaryMember(" +   idOrMarker(dict) + "," + idOrMarker(entry.name)  						
+						 + "," + Attribute.valueToNotationString(entry.key,vc.getXsdType(entry.key)) + ")";
+			    writeln(s);	
+			}
+		}
+	    return null;
+	}
 
 
 

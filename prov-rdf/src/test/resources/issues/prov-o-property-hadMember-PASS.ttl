@@ -10,7 +10,7 @@
    a prov:Collection, ex:RobertsCourt;
    dcterms:description [
       a prov:Entity;
-      prov:value """2010–present: A. Scalia A. Kennedy C. Thomas R.B. Ginsburg S. 
+      prov:value """2010-present: A. Scalia A. Kennedy C. Thomas R.B. Ginsburg S. 
                   Breyer S. Alito S. Sotomayor E. Kagan""";
       prov:wasQuotedFrom :page-by-composition;
    ];

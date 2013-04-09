@@ -144,7 +144,27 @@ public class Ontology {
     
     public static QName QNAME_RDF_TYPE = newRdfQName("type");
     public static QName QNAME_RDFS_LABEL = newRdfsQName("label");
+    
+    
+    // dictionary stuff
+    
+    public static QName QNAME_PROVO_Dictionary = newProvQName("Dictionary");
+    public static QName QNAME_PROVO_EmptyDictionary = newProvQName("EmptyDictionary");
+    public static QName QNAME_PROVO_derivedByInsertion = newProvQName("derivedByInsertion");
+    public static QName QNAME_PROVO_Insertion = newProvQName("Insertion");
+    public static QName QNAME_PROVO_qualifiedInsertion = newProvQName("qualifiedInsertion");
+    public static QName QNAME_PROVO_dictionary = newProvQName("dictionary");
+    public static QName QNAME_PROVO_derivedByRemoval = newProvQName("derivedByRemoval");
+    public static QName QNAME_PROVO_Removal = newProvQName("Removal");
+    public static QName QNAME_PROVO_qualifiedRemoval = newProvQName("qualifiedRemoval");
+    public static QName QNAME_PROVO_hadDictionaryMember = newProvQName("hadDictionaryMember");
+	public static QName QNAME_PROVO_insertedKeyEntityPair = newProvQName("insertedKeyEntityPair");
+	public static QName QNAME_PROVO_removedKey = newProvQName("removedKey");
+	public static QName QNAME_PROVO_KeyValuePair = newProvQName("KeyValuePair");
+	public static QName QNAME_PROVO_pairKey = newProvQName("pairKey");
+	public static QName QNAME_PROVO_pairEntity = newProvQName("pairEntity");
 
+	
     void initInfluenceTables() {
 	qualifiedInfluenceTable.put(QNAME_PROVO_Influence,
 				    QNAME_PROVO_qualifiedInfluence);
@@ -172,7 +192,11 @@ public class Ontology {
 	qualifiedInfluenceTable.put(QNAME_PROVO_PrimarySource,
 				    QNAME_PROVO_qualifiedPrimarySource);
 	qualifiedInfluenceTable.put(QNAME_PROVO_Communication,
-				    QNAME_PROVO_qualifiedCommunication);
+		    QNAME_PROVO_qualifiedCommunication);
+	qualifiedInfluenceTable.put(QNAME_PROVO_Insertion,
+		    QNAME_PROVO_qualifiedInsertion);
+	qualifiedInfluenceTable.put(QNAME_PROVO_Removal,
+		    QNAME_PROVO_qualifiedRemoval);
 
 	influencerTable.put(QNAME_PROVO_Influence, QNAME_PROVO_influencer);
 	activityInfluence(QNAME_PROVO_Generation);
@@ -188,6 +212,9 @@ public class Ontology {
 	entityInfluence(QNAME_PROVO_Revision);
 	entityInfluence(QNAME_PROVO_PrimarySource);
 	activityInfluence(QNAME_PROVO_Communication);
+	
+	dictionaryInfluence(QNAME_PROVO_Insertion);
+	dictionaryInfluence(QNAME_PROVO_Removal);
 
 	unqualifiedTable.put(QNAME_PROVO_Influence, QNAME_PROVO_wasInfluencedBy);
 	unqualifiedTable.put(QNAME_PROVO_Generation, QNAME_PROVO_wasGeneratedBy);
@@ -208,7 +235,11 @@ public class Ontology {
 	unqualifiedTable.put(QNAME_PROVO_PrimarySource,
 			     QNAME_PROVO_hadPrimarySource);
 	unqualifiedTable.put(QNAME_PROVO_Communication,
-			     QNAME_PROVO_wasInformedBy);
+		     QNAME_PROVO_wasInformedBy);
+	unqualifiedTable.put(QNAME_PROVO_Insertion,
+		     QNAME_PROVO_derivedByInsertion);
+	unqualifiedTable.put(QNAME_PROVO_Removal,
+		     QNAME_PROVO_derivedByRemoval);
 
 	otherTable.put(QNAME_PROVO_Start, QNAME_PROVO_hadActivity);
 	otherTable.put(QNAME_PROVO_End, QNAME_PROVO_hadActivity);
@@ -218,6 +249,8 @@ public class Ontology {
 	otherTable.put(QNAME_PROVO_PrimarySource, QNAME_PROVO_hadActivity);
 	otherTable.put(QNAME_PROVO_Association, QNAME_PROVO_hadPlan);
 	otherTable.put(QNAME_PROVO_Delegation, QNAME_PROVO_hadActivity);
+	otherTable.put(QNAME_PROVO_Insertion, QNAME_PROVO_insertedKeyEntityPair);
+	otherTable.put(QNAME_PROVO_Removal, QNAME_PROVO_insertedKeyEntityPair);
 
 	convertTable.put(Attribute.PROV_LABEL_QNAME, QNAME_RDFS_LABEL);
 	convertTable.put(Attribute.PROV_TYPE_QNAME, QNAME_RDF_TYPE);
@@ -267,6 +300,11 @@ public class Ontology {
     	this.ranges.put(QNAME_PROVO_qualifiedRevision, QNAME_PROVO_Revision);
     	this.ranges.put(QNAME_PROVO_qualifiedStart, QNAME_PROVO_Start);
     	this.ranges.put(QNAME_PROVO_qualifiedUsage, QNAME_PROVO_Usage);
+    	this.ranges.put(QNAME_PROVO_qualifiedInsertion, QNAME_PROVO_Insertion);
+    	this.ranges.put(QNAME_PROVO_derivedByInsertion, QNAME_PROVO_Dictionary);
+    	this.ranges.put(QNAME_PROVO_qualifiedRemoval, QNAME_PROVO_Removal);
+    	this.ranges.put(QNAME_PROVO_derivedByRemoval, QNAME_PROVO_Dictionary);
+    	this.ranges.put(QNAME_PROVO_insertedKeyEntityPair, QNAME_PROVO_KeyValuePair);
     }
     
     void initDomainTables() {
@@ -327,6 +365,13 @@ public class Ontology {
     	this.domains.put(QNAME_PROVO_hadPlan, QNAME_PROVO_Association);
     	this.domains.put(QNAME_PROVO_hadUsage, QNAME_PROVO_Derivation);
     	
+    	
+    	this.domains.put(QNAME_PROVO_qualifiedInsertion, QNAME_PROVO_Dictionary);
+    	this.domains.put(QNAME_PROVO_derivedByInsertion, QNAME_PROVO_Dictionary);
+    	this.domains.put(QNAME_PROVO_qualifiedRemoval, QNAME_PROVO_Dictionary);
+    	this.domains.put(QNAME_PROVO_derivedByRemoval, QNAME_PROVO_Dictionary);
+    	this.domains.put(QNAME_PROVO_insertedKeyEntityPair, QNAME_PROVO_Insertion);
+    	
     }
 
     void activityInfluence(QName name) {
@@ -334,8 +379,11 @@ public class Ontology {
     }
 
     void entityInfluence(QName name) {
-	influencerTable.put(name, QNAME_PROVO_entity);
-    }
+    	influencerTable.put(name, QNAME_PROVO_entity);
+        }
+    void dictionaryInfluence(QName name) {
+    	influencerTable.put(name, QNAME_PROVO_dictionary);
+        }
 
     void agentInfluence(QName name) {
 	influencerTable.put(name, QNAME_PROVO_agent);

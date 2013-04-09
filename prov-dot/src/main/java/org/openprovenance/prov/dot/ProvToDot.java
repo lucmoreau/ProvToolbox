@@ -32,7 +32,7 @@ import org.openprovenance.prov.xml.WasEndedBy;
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.WasAttributedTo;
 import org.openprovenance.prov.xml.WasAssociatedWith;
-import org.openprovenance.prov.xml.collection.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.DerivedByInsertionFrom;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.xml.Identifiable;
@@ -907,7 +907,7 @@ public class ProvToDot {
     /* make name compatible with dot notation*/
     
     public String dotify(String name) {
-        return "n" + name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_');
+        return "n" + name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_').replace('~','_');
     }
 
     public void emitElement(QName name, HashMap<String,String> properties, PrintStream out) {

@@ -8,11 +8,20 @@
 	xmlns:val="http://openprovenance.org/validation#"
 	xmlns:prov="http://www.w3.org/ns/prov#">
 
-	<xs:import schemaLocation="prov-20121003.xsd"
+	<xs:import schemaLocation="prov-20130307.xsd"
 		namespace="http://www.w3.org/ns/prov#">
 	</xs:import>
 	
 	<xs:element name="validationReport" type="val:ValidationReport" />
+
+  <xs:complexType name="Statements">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+       <xs:group ref="prov:documentElements"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+  
 
 
         <xs:complexType name="ValidationReport">
@@ -45,14 +54,14 @@
 
 	<xs:complexType name="MergeReport">
 		<xs:complexContent>
-			<xs:extension base="prov:Statements">
+			<xs:extension base="val:Statements">
 				<xs:attribute name="key" type="xs:string" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="MalformedStatements">
-	    <xs:sequence>
+	    <xs:sequence maxOccurs="unbounded" >
             <xs:group ref="prov:documentElements" />
         </xs:sequence>
        

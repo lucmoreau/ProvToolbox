@@ -38,5 +38,19 @@ public interface ModelConstructor {
                                       Collection<Statement> statements);
     public void startDocument(Hashtable<String, String> hashtable);
     public void startBundle(QName bundleId, Hashtable<String, String> namespaces);
+    
+    public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
+                                                            QName after,
+                                                            QName before,
+                                                            List<KeyQNamePair> keyEntitySet,
+                                                            Collection<Attribute> attributes);
+
+    public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
+                                                        QName after,
+                                                        QName before,
+                                                        List<Object> keys,
+                                                        Collection<Attribute> attributes);
+    public DictionaryMembership newDictionaryMembership(QName dict,
+							List<KeyQNamePair> keyEntitySet);
 
 }

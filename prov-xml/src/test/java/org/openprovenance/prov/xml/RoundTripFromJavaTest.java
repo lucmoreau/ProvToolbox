@@ -100,11 +100,11 @@ public class RoundTripFromJavaTest extends TestCase {
     public void makeDocAndTest(Statement []stment, NamedBundle[] bundles, String file, Statement[] opt, boolean check) {
 	Document doc = pFactory.newDocument();
 	for (int i=0; i< stment.length; i++) {
-	   doc.getEntityOrActivityOrWasGeneratedBy().add(stment[i]);
+	   doc.getEntityAndActivityAndWasGeneratedBy().add(stment[i]);
 	}
 	if (bundles!=null) {
 	    for (int j=0; j<bundles.length; j++) {
-	        doc.getEntityOrActivityOrWasGeneratedBy().add(bundles[j]);
+	        doc.getEntityAndActivityAndWasGeneratedBy().add(bundles[j]);
 	    }
 	}
 	updateNamespaces(doc);
@@ -114,7 +114,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	
 	if (opt!=null) {
 	    String file2=file+"-M";
-            doc.getEntityOrActivityOrWasGeneratedBy().addAll(Arrays.asList(opt));
+            doc.getEntityAndActivityAndWasGeneratedBy().addAll(Arrays.asList(opt));
 	    compareDocAndFile(doc, file2, check);
 	}
     }
@@ -2012,5 +2012,229 @@ public class RoundTripFromJavaTest extends TestCase {
            makeDocAndTest(statements, bundles, "target/bundle2", null, true);
 
        }
+
+   	public void testDictionaryInsertion1() throws JAXBException {
+		DerivedByInsertionFrom d1 = pFactory.newDerivedByInsertionFrom(null,
+				q("d2"), q("d1"), null, null);
+
+		Statement[] statements = new Statement[]{d1};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryInsertion1");
+
+	}
+
+	public void testDictionaryInsertion2() throws JAXBException {
+		DerivedByInsertionFrom d2 = pFactory.newDerivedByInsertionFrom(
+				q("deriv"), q("d2"), q("d1"), null, null);
+
+		Statement[] statements = new Statement[]{d2};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryInsertion2");
+
+	}
+
+	public void testDictionaryInsertion3() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p = new KeyQNamePair();
+		p.key = "a";
+		p.name = q("e0");
+		ll.add(p);
+		DerivedByInsertionFrom d3 = pFactory.newDerivedByInsertionFrom(
+				q("deriv3"), q("d2"), q("d1"), ll, null);
+
+		Statement[] statements = new Statement[]{d3};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryInsertion3");
+
+	}
+
+	public void testDictionaryInsertion4() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p1 = new KeyQNamePair();
+		p1.key = "a";
+		p1.name = q("e0");
+		ll.add(p1);
+		KeyQNamePair p2 = new KeyQNamePair();
+		p2.key = 1;
+		p2.name = q("e1");
+		ll.add(p2);
+		DerivedByInsertionFrom d4 = pFactory.newDerivedByInsertionFrom(
+				q("deriv4"), q("d2"), q("d1"), ll, null);
+
+		Statement[] statements = new Statement[]{d4};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryInsertion4");
+	}
+
+	public void testDictionaryInsertion5() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p1 = new KeyQNamePair();
+		p1.key = "a";
+		p1.name = q("e0");
+		ll.add(p1);
+		KeyQNamePair p2 = new KeyQNamePair();
+		p2.key = 1;
+		p2.name = q("e1");
+		ll.add(p2);
+		KeyQNamePair p3 = new KeyQNamePair();
+		p3.key = q("a");
+		p3.name = q("e2");
+		ll.add(p3);
+		DerivedByInsertionFrom d5 = pFactory.newDerivedByInsertionFrom(
+				q("deriv5"), q("d2"), q("d1"), ll, null);
+		addFurtherAttributes(d5);
+
+		Statement[] statements = new Statement[]{d5};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryInsertion5");
+
+	}
+	
+	public void testDictionaryInsertion6() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p1 = new KeyQNamePair();
+		p1.key = "a";
+		p1.name = q("e0");
+		ll.add(p1);
+		KeyQNamePair p2 = new KeyQNamePair();
+		p2.key = 1;
+		p2.name = q("e1");
+		ll.add(p2);
+		KeyQNamePair p3 = new KeyQNamePair();
+		p3.key = q("a");
+		p3.name = q("e2");
+		ll.add(p3);
+		DerivedByInsertionFrom d5 = pFactory.newDerivedByInsertionFrom(
+				null, q("d2"), q("d1"), ll, null);
+
+		Statement[] statements = new Statement[]{d5};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryInsertion6");
+
+	}
+	
+ 	public void testDictionaryRemoval1() throws JAXBException {
+		DerivedByRemovalFrom d1 = pFactory.newDerivedByRemovalFrom(null,
+				q("d2"), q("d1"), null, null);
+
+		Statement[] statements = new Statement[]{d1};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryRemoval1");
+
+	}
+
+	public void testDictionaryRemoval2() throws JAXBException {
+		DerivedByRemovalFrom d2 = pFactory.newDerivedByRemovalFrom(
+				q("removal"), q("d2"), q("d1"), null, null);
+
+		Statement[] statements = new Statement[]{d2};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryRemoval2");
+
+	}
+
+	public void testDictionaryRemoval3() throws JAXBException {
+		List<Object> ll = new LinkedList<Object>();
+		ll.add("a");
+		DerivedByRemovalFrom d3 = pFactory.newDerivedByRemovalFrom(
+				q("removal3"), q("d2"), q("d1"), ll, null);
+
+		Statement[] statements = new Statement[]{d3};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryRemoval3");
+
+	}
+
+	public void testDictionaryRemoval4() throws JAXBException {
+		List<Object> ll = new LinkedList<Object>();
+		ll.add("a");
+		ll.add(1);
+		DerivedByRemovalFrom d4 = pFactory.newDerivedByRemovalFrom(
+				q("removal4"), q("d2"), q("d1"), ll, null);
+
+		Statement[] statements = new Statement[]{d4};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryRemoval4");
+	}
+
+	public void testDictionaryRemoval5() throws JAXBException {
+		List<Object> ll = new LinkedList<Object>();
+		ll.add("a");
+		ll.add(1);
+		ll.add(q("a"));
+		DerivedByRemovalFrom d5 = pFactory.newDerivedByRemovalFrom(
+				q("removal5"), q("d2"), q("d1"), ll, null);
+		addFurtherAttributes(d5);
+
+		Statement[] statements = new Statement[]{d5};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryRemoval5");
+
+	}
+	
+   	public void NOtestDictionaryMembership1() throws JAXBException { // this makes no sense, member is mandatory.
+		DictionaryMembership mem = pFactory.newDictionaryMembership(q("d"), null);
+
+		Statement[] statements = new Statement[]{mem};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryMembership1");
+	}
+	
+   	
+   	
+	public void testDictionaryMembership2() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p1 = new KeyQNamePair();
+		p1.key = "a";
+		p1.name = q("e0");
+		ll.add(p1);
+		DictionaryMembership d5 = pFactory.newDictionaryMembership(q("d"),  ll);
+
+		Statement[] statements = new Statement[]{d5};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryMembership2");
+
+	}
+
+	public void testDictionaryMembership3() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p1 = new KeyQNamePair();
+		p1.key = "a";
+		p1.name = q("e0");
+		ll.add(p1);
+		KeyQNamePair p2 = new KeyQNamePair();
+		p2.key = 1;
+		p2.name = q("e1");
+		ll.add(p2);
+		DictionaryMembership d5 = pFactory.newDictionaryMembership(q("d"),  ll);
+
+		Statement[] statements = new Statement[]{d5};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryMembership3");
+
+	}
+
+	public void testDictionaryMembership4() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p1 = new KeyQNamePair();
+		p1.key = "a";
+		p1.name = q("e0");
+		ll.add(p1);
+		KeyQNamePair p2 = new KeyQNamePair();
+		p2.key = 1;
+		p2.name = q("e1");
+		ll.add(p2);
+		KeyQNamePair p3 = new KeyQNamePair();
+		p3.key = q("a");
+		p3.name = q("e2");
+		ll.add(p3);
+		DictionaryMembership d5 = pFactory.newDictionaryMembership(q("d"),  ll);
+
+		Statement[] statements = new Statement[]{d5};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryMembership4");
+
+	}
+
 
 }

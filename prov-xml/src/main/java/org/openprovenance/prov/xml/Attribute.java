@@ -127,7 +127,7 @@ public class Attribute {
     }
 
     /** Method replicated from ProvFactory. */
-    public String qnameToString(QName qname) {
+    static public String qnameToString(QName qname) {
 	return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
 		+ qname.getLocalPart();
     }
@@ -135,21 +135,24 @@ public class Attribute {
     /** A method to generate the prov-n representation of an attribute  ex:attr="value" %% xsd:type */
     
     public String toNotationString() {
-	if (val instanceof InternationalizedString) {
-	    InternationalizedString istring = (InternationalizedString) val;
-	    return qnameToString(elementName)
-		    + " = \"" + istring.getValue() + 
-		    ((istring.getLang()==null) ? "\"" : "\"@" + istring.getLang())
-		    + " %% " + qnameToString(xsdType);
-	} else if (val instanceof QName) {
-	    QName qn = (QName) val;	    
-	    return qnameToString(elementName)
-		    + " = '" + qnameToString(qn) + "'";
-	} else {
-	    return qnameToString(elementName)
-		   + " = \"" + val + "\" %% " + qnameToString(xsdType);
-	}
+	return qnameToString(elementName) + " = " + valueToNotationString(val, xsdType);
     }
+    
+    //TODO: move this code to ValueConverter
+    public static String valueToNotationString(Object val, QName xsdType) {
+ 	if (val instanceof InternationalizedString) {
+ 	    InternationalizedString istring = (InternationalizedString) val;
+ 	    return "\"" + istring.getValue() + 
+ 		    ((istring.getLang()==null) ? "\"" : "\"@" + istring.getLang())
+ 		    + " %% " + qnameToString(xsdType);
+ 	} else if (val instanceof QName) {
+ 	    QName qn = (QName) val;	    
+ 	    return "'" + qnameToString(qn) + "'";
+ 	} else {
+ 	    return "\"" + val + "\" %% " + qnameToString(xsdType);
+ 	}
+     }
+  
     
     static public boolean hasType(QName type, Collection<Attribute> attributes) {
     	for (Attribute attribute: attributes) {

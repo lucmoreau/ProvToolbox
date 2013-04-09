@@ -23,7 +23,10 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
     public boolean checkTest(String name) {
        //TODO: prov-n does not support hadMember with multiple entities
 	return !(name.contains("member2") 
-		|| name.contains("member3"));
+		|| name.contains("member3")
+		|| name.contains("Membership3")
+		|| name.contains("Membership4")
+		);
     }
     
     @Override
@@ -43,13 +46,12 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	String s=u.convertBeanToASN(doc);
 	u.writeTextToFile(s, file);
     }
- 
-
+	
 
     public void NOmakeDocAndTest(Statement [] statements, String file, Statement [] opt, boolean check) {
 	Document doc = pFactory.newDocument();
 	for (int i=0; i< statements.length; i++) {
-	    doc.getEntityOrActivityOrWasGeneratedBy().add(statements[i]);
+	    doc.getEntityAndActivityAndWasGeneratedBy().add(statements[i]);
 	}
 	updateNamespaces(doc);
 	
@@ -68,7 +70,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	    compareDocuments(doc, doc2, check && checkTest(file1));
 	    
 	    if (opt!=null) {
-		doc.getEntityOrActivityOrWasGeneratedBy().addAll(Arrays.asList(opt));
+		doc.getEntityAndActivityAndWasGeneratedBy().addAll(Arrays.asList(opt));
 		String file2=file+"-M";
 		file2=file2+extension();
 		

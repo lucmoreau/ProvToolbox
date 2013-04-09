@@ -10,6 +10,7 @@ import javax.xml.namespace.QName;
 import  org.antlr.runtime.tree.Tree;
 import  org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.xml.Attribute;
+import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.ModelConstructor;
 import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -316,10 +317,9 @@ public class TreeTraversal {
             uid=(QName)convert(uidTree);
             id2=(QName)convert(ast.getChild(1));
             id1=(QName)convert(ast.getChild(2));
-            Object keymap=convert(ast.getChild(3));
+            List<KeyQNamePair> keymap=(List<KeyQNamePair>)convert(ast.getChild(3));
             dAttrs=(List<Attribute>) convert(ast.getChild(4));
-            //return c.newInsertion(uid,id2,id1,keymap,dAttrs);
-            return null;
+            return c.newDerivedByInsertionFrom(uid,id2,id1,keymap,dAttrs);
 
         case PROV_NParser.DBRF:
             uidTree=ast.getChild(0);
@@ -330,24 +330,19 @@ public class TreeTraversal {
             id2=(QName)convert(ast.getChild(1));
             id1=(QName)convert(ast.getChild(2));
             Object keyset=convert(ast.getChild(3));
-            //@SuppressWarnings("unchecked")
-            //Object keylist=c.newKeys((List<Object>)keyset);
             dAttrs=(List<Attribute>)convert(ast.getChild(4));
-            //return c.newRemoval(uid,id2,id1,keylist,dAttrs);
-            return null;
+            return c.newDerivedByRemovalFrom(uid,id2,id1,(List<Object>)keyset,dAttrs);
 
         case PROV_NParser.DMEM:
-            uidTree=ast.getChild(0);
-            if (uidTree.getChildCount()>0) {
-                uidTree=uidTree.getChild(0);
-            }
-            uid=(QName)convert(uidTree);
+            //uidTree=ast.getChild(0);
+            //if (uidTree.getChildCount()>0) {
+            //    uidTree=uidTree.getChild(0);
+            //}
+            //uid=(QName)convert(uidTree);
             id2=(QName)convert(ast.getChild(1));
-            keymap=convert(ast.getChild(2));
-            Object complete=convert(ast.getChild(3));
-            dAttrs=(List<Attribute>) convert(ast.getChild(4));
-            //return c.newDictionaryMemberOf(uid,id2,keymap,complete,dAttrs);
-            return null;
+            keymap=(List<KeyQNamePair>) convert(ast.getChild(2));
+            //dAttrs=(List<Attribute>) convert(ast.getChild(4));
+            return c.newDictionaryMembership(id2,keymap);
 
         case PROV_NParser.CMEM:
             uidTree=ast.getChild(0);
@@ -357,7 +352,7 @@ public class TreeTraversal {
             uid=(QName)convert(uidTree);
             id2=(QName)convert(ast.getChild(1));
             Object cmemEntities=convert(ast.getChild(2));
-            complete=convert(ast.getChild(3));
+            //complete=convert(ast.getChild(3));
             dAttrs=(List<Attribute>) convert(ast.getChild(4));
             //return c.newCollectionMemberOf(uid,id2,cmemEntities,complete,dAttrs);
             return null;
@@ -385,23 +380,23 @@ public class TreeTraversal {
             Object entities=convert(ast.getChild(1));
 
             @SuppressWarnings("unchecked")
-            List<Object> tmp_keys1 = (List<Object>)keys1;
-	    keys=tmp_keys1;
+            List<Object> keys2 = (List<Object>)keys1;
 	    
             @SuppressWarnings("unchecked")
-            List<Object> tmp_entities = (List<Object>)entities;
-	    values=tmp_entities;
+            List<QName> qnames = (List<QName>)entities;
 	    
-            List<Object> entries=new LinkedList<Object>();
+            List<KeyQNamePair> entries=new LinkedList<KeyQNamePair>();
             int ii=0;
-            for (Object key : keys) {
-                Object value=values.get(ii);
-               // entries.add(c.newEntry(key,value));
+            for (Object key : keys2) {
+                QName value=qnames.get(ii);
+                KeyQNamePair p=new KeyQNamePair();
+                p.name=value;
+                p.key=key;
+               entries.add(p);
                 ii++;
             }
 
-            //return c.newKeyEntitySet(entries);
-            return null;
+            return entries;
 
         case PROV_NParser.ES:
             List<Object> listOfEntities=new LinkedList<Object>();
@@ -414,6 +409,7 @@ public class TreeTraversal {
             /* Component 6 */
 
         case PROV_NParser.EXT:
+        	System.out.println("FOUND Extension " + ast);
             Object extName=convert(ast.getChild(0));
             uidTree=ast.getChild(1);
             if (uidTree.getChildCount()>0) {

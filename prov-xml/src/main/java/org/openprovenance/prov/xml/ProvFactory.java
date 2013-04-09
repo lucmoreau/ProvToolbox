@@ -17,11 +17,11 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import org.openprovenance.prov.xml.collection.CollectionMemberOf;
-import org.openprovenance.prov.xml.collection.DerivedByInsertionFrom;
-import org.openprovenance.prov.xml.collection.DerivedByRemovalFrom;
-import org.openprovenance.prov.xml.collection.DictionaryMemberOf;
-import org.openprovenance.prov.xml.collection.Entry;
+import org.openprovenance.prov.xml.DictionaryMembership;
+import org.openprovenance.prov.xml.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.DerivedByRemovalFrom;
+import org.openprovenance.prov.xml.DictionaryMembership;
+import org.openprovenance.prov.xml.Entry;
 import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -39,7 +39,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 
     private final static ProvFactory oFactory = new ProvFactory();
 
-    public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.collection:org.openprovenance.prov.xml.validation";
+    public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.validation";
 
     static {
 	initBuilder();
@@ -84,7 +84,6 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return u.toString();
     }
 
-    final protected org.openprovenance.prov.xml.collection.ObjectFactory cof;
 
     protected DatatypeFactory dataFactory;
     /** Note, this method now makes it stateful :-( */
@@ -96,7 +95,6 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public ProvFactory() {
 	of = new ObjectFactory();
 	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
-	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	init();
 	setNamespaces(new Hashtable<String, String>());
     }
@@ -104,7 +102,6 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public ProvFactory(Hashtable<String, String> namespaces) {
 	of = new ObjectFactory();
 	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
-	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	this.namespaces = namespaces;
 	init();
     }
@@ -112,7 +109,6 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public ProvFactory(ObjectFactory of) {
 	this.of = of;
 	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
-	cof = new org.openprovenance.prov.xml.collection.ObjectFactory();
 	init();
 	setNamespaces(new Hashtable<String, String>());
     }
@@ -291,9 +287,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 
  
  
-    public org.openprovenance.prov.xml.collection.ObjectFactory getCollectionObjectFactory() {
-	return cof;
-    }
+
 
     /* Return the first label, it it exists */
     public String getLabel(HasExtensibility e) {
@@ -353,31 +347,32 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
 
     public ActedOnBehalfOf newActedOnBehalfOf(ActedOnBehalfOf u) {
-	ActedOnBehalfOf u1 = newActedOnBehalfOf(u.getId(), u.getSubordinate(),
+	ActedOnBehalfOf u1 = newActedOnBehalfOf(u.getId(),
+						u.getDelegate(),
 						u.getResponsible(),
 						u.getActivity());
 	u1.getAny().addAll(u.getAny());
 	return u1;
     }
 
-    public ActedOnBehalfOf newActedOnBehalfOf(QName id, AgentRef subordinate,
+    public ActedOnBehalfOf newActedOnBehalfOf(QName id, AgentRef delegate,
 					      AgentRef responsible,
 					      ActivityRef eid2) {
 	ActedOnBehalfOf res = of.createActedOnBehalfOf();
 	res.setId(id);
 	res.setActivity(eid2);
-	res.setSubordinate(subordinate);
+	res.setDelegate(delegate);
 	res.setResponsible(responsible);
 	return res;
     }
 
-    public ActedOnBehalfOf newActedOnBehalfOf(String id, AgentRef subordinate,
+    public ActedOnBehalfOf newActedOnBehalfOf(String id, AgentRef delegate,
 					      AgentRef responsible,
 					      ActivityRef eid2) {
 	ActedOnBehalfOf res = of.createActedOnBehalfOf();
 	res.setId(stringToQName(id));
 	res.setActivity(eid2);
-	res.setSubordinate(subordinate);
+	res.setDelegate(delegate);
 	res.setResponsible(responsible);
 	return res;
     }
@@ -550,76 +545,145 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return res;
     }
 
-    public CollectionMemberOf newCollectionMemberOf(QName id, EntityRef after,
-						    List<Entity> entitySet) {
-	CollectionMemberOf res = cof.createCollectionMemberOf();
-	res.setId(id);
-	res.setEntity(after);
+
+    public DictionaryMembership newDictionaryMembership(QName id, IDRef dict,
+						    List<Entry> entitySet) {
+	DictionaryMembership res = of.createDictionaryMembership();
+	//res.setId(id);  TODO: no id?
+	res.setDictionary(dict);
 	if (entitySet != null)
-	    res.getMember().addAll(entitySet);
+	    res.getKeyEntityPair().addAll(entitySet);
 	return res;
     }
 
-    public CollectionMemberOf newCollectionMemberOf(String id, EntityRef after,
-						    List<Entity> entitySet) {
-	return newCollectionMemberOf(stringToQName(id), after, entitySet);
+    public DictionaryMembership newDictionaryMembership(String id, EntityRef after,
+						    List<Entry> entitySet) {
+	return newDictionaryMembership(stringToQName(id), after, entitySet);
     }
 
     public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
-							    EntityRef after,
-							    EntityRef before,
-							    List<Entry> keyEntitySet) {
-	DerivedByInsertionFrom res = cof.createDerivedByInsertionFrom();
+							    IDRef after,
+							    IDRef before,
+							    List<Entry> keyEntitySet,
+							    Collection<Attribute> attributes) {
+	DerivedByInsertionFrom res = of.createDerivedByInsertionFrom();
 	res.setId(id);
-	res.setAfter(after);
-	res.setBefore(before);
+	res.setNewDictionary(after);
+	res.setOldDictionary(before);
 	if (keyEntitySet != null)
-	    res.getEntry().addAll(keyEntitySet);
+	    res.getKeyEntityPair().addAll(keyEntitySet);
+	setAttributes(res, attributes);
 	return res;
+    }
+    
+    public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
+                                                            QName after,
+                                                            QName before,
+                                                            List<KeyQNamePair> keyEntitySet,
+                                                            Collection<Attribute> attributes) {
+    	IDRef aa=new IDRef();
+    	aa.setRef(after);
+    	IDRef ab=new IDRef();
+    	ab.setRef(before);
+    	List<Entry> entries=new LinkedList<Entry>();
+    	if (keyEntitySet!=null) {
+    	for (KeyQNamePair p: keyEntitySet) {
+    		Entry e=new Entry();
+    		e.setKey(p.key);
+        	IDRef ac=new IDRef();
+        	ac.setRef(p.name);
+    		e.setEntity(ac);
+    		entries.add(e);
+    	}
+    	}
+    	return newDerivedByInsertionFrom(id, aa, ab, entries, attributes);
     }
 
     public DerivedByInsertionFrom newDerivedByInsertionFrom(String id,
-							    EntityRef after,
-							    EntityRef before,
-							    List<Entry> keyEntitySet) {
+							    IDRef after,
+							    IDRef before,
+							    List<Entry> keyEntitySet, 
+							    Collection<Attribute> attributes) {
 	return newDerivedByInsertionFrom(stringToQName(id), after, before,
-					 keyEntitySet);
+					 keyEntitySet,
+					 attributes);
+    }
+    
+    public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
+                                                            QName after,
+                                                            QName before,
+                                                            List<Object> keys,
+                                                            Collection<Attribute> attributes) {
+    	IDRef aa=new IDRef();
+    	aa.setRef(after);
+    	IDRef ab=new IDRef();
+    	ab.setRef(before);
+    	return newDerivedByRemovalFrom(id, aa, ab, keys, attributes);
     }
 
+
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
-							EntityRef after,
-							EntityRef before,
-							List<Object> keys) {
-	DerivedByRemovalFrom res = cof.createDerivedByRemovalFrom();
+							IDRef after,
+							IDRef before,
+							List<Object> keys,
+							Collection<Attribute> attributes) {
+	DerivedByRemovalFrom res = of.createDerivedByRemovalFrom();
 	res.setId(id);
-	res.setAfter(after);
-	res.setBefore(before);
+	res.setNewDictionary(after);
+	res.setOldDictionary(before);
 	if (keys != null)
 	    res.getKey().addAll(keys);
+	setAttributes(res, attributes);
 	return res;
     }
 
     public DerivedByRemovalFrom newDerivedByRemovalFrom(String id,
 							EntityRef after,
 							EntityRef before,
-							List<Object> keys) {
-	return newDerivedByRemovalFrom(stringToQName(id), after, before, keys);
+							List<Object> keys,
+							Collection<Attribute> attributes) {
+	return newDerivedByRemovalFrom(stringToQName(id), after, before, keys, attributes);
+    }
+    
+
+    public DictionaryMembership newDictionaryMembership(QName id, List<KeyQNamePair> keyEntitySet) {
+	DictionaryMembership res = of.createDictionaryMembership();
+    	IDRef idr=new IDRef();
+    	idr.ref=id;
+	res.setDictionary(idr);
+	
+	List<Entry> entries=new LinkedList<Entry>();
+    	if (keyEntitySet!=null) {
+    	    for (KeyQNamePair p: keyEntitySet) {
+    		Entry e=new Entry();
+    		e.setKey(p.key);
+    		IDRef ac=new IDRef();
+    		ac.setRef(p.name);
+    		e.setEntity(ac);
+    		entries.add(e);
+    	    }
+    	}
+	res.getKeyEntityPair().addAll(entries);
+	return res;
     }
 
-    public DictionaryMemberOf newDictionaryMemberOf(QName id, EntityRef after,
-						    List<Entry> keyEntitySet) {
-	DictionaryMemberOf res = cof.createDictionaryMemberOf();
-	res.setId(id);
+
+
+    /*    public DictionaryMembership newDictionaryMembership(QName id, EntityRef after,
+							List<Entry> keyEntitySet) {
+	DictionaryMembership res = of.createDictionaryMembership();
+	//res.setId(id);
 	res.setEntity(after);
 	if (keyEntitySet != null)
 	    res.getEntry().addAll(keyEntitySet);
 	return res;
     }
 
-    public DictionaryMemberOf newDictionaryMemberOf(String id, EntityRef after,
-						    List<Entry> keyEntitySet) {
-	return newDictionaryMemberOf(stringToQName(id), after, keyEntitySet);
+    public DictionaryMembership newDictionaryMembership(String id, EntityRef after,
+							List<Entry> keyEntitySet) {
+	return newDictionaryMembership(stringToQName(id), after, keyEntitySet);
     }
+    */
 
     public Document newDocument() {
 	Document res = of.createDocument();
@@ -627,8 +691,8 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
 
     /*
-     * public Bundle newBundle(String id, Collection<Activity> ps,
-     * Collection<Entity> as, Collection<Agent> ags, Collection<Object> lks) {
+     * public Bundle newBundle(String id, Dictionary<Activity> ps,
+     * Dictionary<Entity> as, Dictionary<Agent> ags, Dictionary<Object> lks) {
      * return newBundle(stringToQName(id), ps, as, ags, lks); }
      * 
      * public Bundle newBundle(Activity[] ps, Entity[] as, Agent[] ags, Object[]
@@ -646,10 +710,10 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public Document newDocument(Collection<Activity> ps, Collection<Entity> as,
 				Collection<Agent> ags, Collection<Statement> lks) {
 	Document res = of.createDocument();
-	res.getEntityOrActivityOrWasGeneratedBy().addAll(ps);
-	res.getEntityOrActivityOrWasGeneratedBy().addAll(as);
-	res.getEntityOrActivityOrWasGeneratedBy().addAll(ags);
-	res.getEntityOrActivityOrWasGeneratedBy().addAll(lks);
+	res.getEntityAndActivityAndWasGeneratedBy().addAll(ps);
+	res.getEntityAndActivityAndWasGeneratedBy().addAll(as);
+	res.getEntityAndActivityAndWasGeneratedBy().addAll(ags);
+	res.getEntityAndActivityAndWasGeneratedBy().addAll(lks);
 	return res;
     }
     public Document newDocument(Hashtable<String, String> namespaces,
@@ -657,17 +721,17 @@ public class ProvFactory implements ModelConstructor, QNameExport {
                                 Collection<NamedBundle> bundles) {
 	Document res = of.createDocument();
 	res.setNss(namespaces);
-	res.getEntityOrActivityOrWasGeneratedBy()
+	res.getEntityAndActivityAndWasGeneratedBy()
 	   .addAll(statements);
-	res.getEntityOrActivityOrWasGeneratedBy()
+	res.getEntityAndActivityAndWasGeneratedBy()
 	   .addAll(bundles);
 	return res;
     }
 
     public Document newDocument(Document graph) {
 	Document res = of.createDocument();
-	res.getEntityOrActivityOrWasGeneratedBy()
-	   .addAll(graph.getEntityOrActivityOrWasGeneratedBy());
+	res.getEntityAndActivityAndWasGeneratedBy()
+	   .addAll(graph.getEntityAndActivityAndWasGeneratedBy());
 	return res;
     }
 
@@ -816,7 +880,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
 
     public Entry newEntry(Object key, EntityRef entity) {
-	Entry res = cof.createEntry();
+	Entry res = of.createEntry();
 	res.setKey(key);
 	res.setEntity(entity);
 	return res;
@@ -941,16 +1005,16 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	res.setId(id);
 
 	if (ps != null) {
-	    res.getEntityOrActivityOrWasGeneratedBy().addAll(ps);
+	    res.getEntityAndActivityAndWasGeneratedBy().addAll(ps);
 	}
 	if (as != null) {
-	    res.getEntityOrActivityOrWasGeneratedBy().addAll(as);
+	    res.getEntityAndActivityAndWasGeneratedBy().addAll(as);
 	}
 	if (ags != null) {
-	    res.getEntityOrActivityOrWasGeneratedBy().addAll(ags);
+	    res.getEntityAndActivityAndWasGeneratedBy().addAll(ags);
 	}
 	if (lks != null) {
-	    res.getEntityOrActivityOrWasGeneratedBy().addAll(lks);
+	    res.getEntityAndActivityAndWasGeneratedBy().addAll(lks);
 	}
 	return res;
     }
@@ -960,7 +1024,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	res.setId(id);
 
 	if (lks != null) {
-	    res.getEntityOrActivityOrWasGeneratedBy().addAll(lks);
+	    res.getEntityAndActivityAndWasGeneratedBy().addAll(lks);
 	}
 	return res;
     }
@@ -970,7 +1034,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	res.setId(id);
 	res.setNss(namespaces);
 	if (statements != null) {
-	    res.getEntityOrActivityOrWasGeneratedBy().addAll(statements);
+	    res.getEntityAndActivityAndWasGeneratedBy().addAll(statements);
 	}
 	return res;
     }
@@ -1453,8 +1517,8 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 					  ActivityRef pid2) {
 	WasInformedBy res = of.createWasInformedBy();
 	res.setId(id);
-	res.setEffect(pid1);
-	res.setCause(pid2);
+	res.setInformed(pid1);
+	res.setInformant(pid2);
 	return res;
     }
 
@@ -1483,8 +1547,9 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
     
     public WasInformedBy newWasInformedBy(WasInformedBy d) {
-	WasInformedBy wtb = newWasInformedBy(d.getId(), d.getEffect(),
-					     d.getCause());
+	WasInformedBy wtb = newWasInformedBy(d.getId(), 
+					     d.getInformed(),
+					     d.getInformant());
 	wtb.setId(d.getId());
 	wtb.getAny().addAll(d.getAny());
 	wtb.getType().addAll(d.getType());
@@ -1691,6 +1756,5 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
       
     }
-
 
 }

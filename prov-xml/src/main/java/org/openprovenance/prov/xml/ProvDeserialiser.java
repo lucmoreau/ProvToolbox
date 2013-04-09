@@ -77,13 +77,13 @@ public class ProvDeserialiser {
             sources=new Source[schemaCount+schemaFiles.length];
             sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"curie.xsd"));
             sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"xml.xsd"));
-            sources[2]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20120920-curie.xsd"));
+            sources[2]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20130307.xsd")); //TODO: here to use: prov-20130307-curie.xsd
         } else {
             schemaCount=3;
             sources=new Source[schemaCount+schemaFiles.length];
             sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"curie.xsd"));
             sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"xml.xsd"));
-            sources[2]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20120920.xsd"));
+            sources[2]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20130307.xsd"));
         }
 
 

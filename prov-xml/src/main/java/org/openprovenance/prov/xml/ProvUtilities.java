@@ -8,8 +8,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.xml.collection.DerivedByInsertionFrom;
-import org.openprovenance.prov.xml.collection.Entry;
+import org.openprovenance.prov.xml.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.Entry;
 
 import java.lang.reflect.Method;
 
@@ -28,53 +28,53 @@ public class ProvUtilities {
 
     public List<Relation0> getRelations(Document d) {
         return getObject(Relation0.class,
-                         d.getEntityOrActivityOrWasGeneratedBy());
+                         d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Entity> getEntity(Document d) {
-        return getObject(Entity.class, d.getEntityOrActivityOrWasGeneratedBy());
+        return getObject(Entity.class, d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Activity> getActivity(Document d) {
         return getObject(Activity.class,
-                         d.getEntityOrActivityOrWasGeneratedBy());
+                         d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Agent> getAgent(Document d) {
-        return getObject(Agent.class, d.getEntityOrActivityOrWasGeneratedBy());
+        return getObject(Agent.class, d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Relation0> getRelations(NamedBundle d) {
         return getObject2(Relation0.class,
-                         d.getEntityOrActivityOrWasGeneratedBy());
+                         d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Entity> getEntity(NamedBundle d) {
-        return getObject2(Entity.class, d.getEntityOrActivityOrWasGeneratedBy());
+        return getObject2(Entity.class, d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Activity> getActivity(NamedBundle d) {
         return getObject2(Activity.class,
-                         d.getEntityOrActivityOrWasGeneratedBy());
+                         d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Agent> getAgent(NamedBundle d) {
-        return getObject2(Agent.class, d.getEntityOrActivityOrWasGeneratedBy());
+        return getObject2(Agent.class, d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<NamedBundle> getNamedBundle(Document d) {
         return getObject(NamedBundle.class,
-                         d.getEntityOrActivityOrWasGeneratedBy());
+                         d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     public List<Statement> getStatement(Document d) {
 	return getObject(Statement.class,
-	                 d.getEntityOrActivityOrWasGeneratedBy());
+	                 d.getEntityAndActivityAndWasGeneratedBy());
     }
 
     @SuppressWarnings("unchecked")
     public List<Statement> getStatement(NamedBundle d) {
-        List<?> res = d.getEntityOrActivityOrWasGeneratedBy();
+        List<?> res = d.getEntityAndActivityAndWasGeneratedBy();
         return (List<Statement>) res;
     }
 
@@ -139,7 +139,7 @@ public class ProvUtilities {
             return ((HadMember) r).getCollection().getRef();
         }
         if (r instanceof WasInformedBy) {
-            return ((WasInformedBy) r).getEffect().getRef();
+            return ((WasInformedBy) r).getInformed().getRef();
         }
         if (r instanceof MentionOf) {
             return ((MentionOf) r).getSpecificEntity().getRef();
@@ -149,13 +149,13 @@ public class ProvUtilities {
         }
 
         if (r instanceof ActedOnBehalfOf) {
-            return ((ActedOnBehalfOf) r).getSubordinate().getRef();
+            return ((ActedOnBehalfOf) r).getDelegate().getRef();
         }
 
         if (r instanceof DerivedByInsertionFrom) {
-            return ((DerivedByInsertionFrom) r).getAfter().getRef();
+            return ((DerivedByInsertionFrom) r).getNewDictionary().getRef();
         }
-        System.out.println("Unknow relation " + r);
+        System.out.println("Unknown relation " + r);
         throw new UnsupportedOperationException();
     }
 
@@ -213,13 +213,13 @@ public class ProvUtilities {
             return ((MentionOf) r).getGeneralEntity().getRef();
         }
         if (r instanceof WasInformedBy) {
-            return ((WasInformedBy) r).getCause().getRef();
+            return ((WasInformedBy) r).getInformant().getRef();
         }
         if (r instanceof ActedOnBehalfOf) {
             return ((ActedOnBehalfOf) r).getResponsible().getRef();
         }
         if (r instanceof DerivedByInsertionFrom) {
-            return ((DerivedByInsertionFrom) r).getBefore().getRef();
+            return ((DerivedByInsertionFrom) r).getOldDictionary().getRef();
         }
         System.out.println("Unknown relation " + r);
         throw new UnsupportedOperationException();
@@ -281,7 +281,7 @@ public class ProvUtilities {
             List<QName> res = new LinkedList<QName>();
             DerivedByInsertionFrom dbif = ((DerivedByInsertionFrom) r);
             
-            for (Entry entry : dbif.getEntry()) {
+            for (Entry entry : dbif.getKeyEntityPair()) {
                 res.add(entry.getEntity().getRef());
             }
             return res;
@@ -292,7 +292,7 @@ public class ProvUtilities {
     public MentionOf getMentionForRemoteEntity(NamedBundle local,
                                                Entity remoteEntity,
                                                NamedBundle remote) {
-        return getMentionForLocalEntity(local.getEntityOrActivityOrWasGeneratedBy(),
+        return getMentionForLocalEntity(local.getEntityAndActivityAndWasGeneratedBy(),
                                          remoteEntity, remote);
     }
 
@@ -320,7 +320,7 @@ public class ProvUtilities {
     public MentionOf getMentionForLocalEntity(NamedBundle local,
                                               Entity localEntity,
                                               NamedBundle remote) {
-        return getMentionForLocalEntity(local.getEntityOrActivityOrWasGeneratedBy(),
+        return getMentionForLocalEntity(local.getEntityAndActivityAndWasGeneratedBy(),
                                         localEntity, remote);
     }
 
@@ -398,7 +398,7 @@ public class ProvUtilities {
         fields.put(WasEndedBy.class, new String[] { "Id", "Activity",
                                                    "Trigger", "Ender", "Time",
                                                    "Any" });
-        fields.put(WasInformedBy.class, new String[] { "Id", "Effect", "Cause",
+        fields.put(WasInformedBy.class, new String[] { "Id", "Informed", "Informant",
                                                       "Any" });
         fields.put(WasDerivedFrom.class, new String[] { "Id",
                                                        "GeneratedEntity",
@@ -413,7 +413,7 @@ public class ProvUtilities {
         fields.put(WasAssociatedWith.class, new String[] { "Id", "Activity",
                                                           "Agent", "Plan",
                                                           "Any" });
-        fields.put(ActedOnBehalfOf.class, new String[] { "Id", "Subordinate",
+        fields.put(ActedOnBehalfOf.class, new String[] { "Id", "Delegate",
                                                         "Responsible",
                                                         "Activity", "Any" });
         fields.put(SpecializationOf.class, new String[] { "SpecificEntity",

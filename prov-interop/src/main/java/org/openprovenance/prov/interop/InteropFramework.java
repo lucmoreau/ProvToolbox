@@ -236,7 +236,7 @@ public class InteropFramework
 	    }
 	    case PDF: {
 		String configFile=null; // TODO: get it as option
-		File tmp=File.createTempFile("viz-", ".dot",new File("/tmp"));
+		File tmp=File.createTempFile("viz-", ".dot");
 	                
 		String dotFileOut=tmp.getAbsolutePath(); //give it as option, if not available create tmp file
 		ProvToDot toDot=
@@ -254,7 +254,7 @@ public class InteropFramework
 	    case JPEG:
 	    case SVG:{
                 String configFile=null; // give it as option
-                File tmp=File.createTempFile("viz-", ".dot",new File("/tmp"));
+                File tmp=File.createTempFile("viz-", ".dot");
                 
                 String dotFileOut=tmp.getAbsolutePath(); //give it as option, if not available create tmp file
                 //ProvToDot toDot=new ProvToDot((configFile==null)? "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml" : configFile); 

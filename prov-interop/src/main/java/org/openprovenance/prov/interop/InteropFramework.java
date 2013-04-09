@@ -121,7 +121,7 @@ public class InteropFramework
             case TRIG:
                 extensionMap.put(ProvFormat.TRIG,"trig");
                 extensionRevMap.put("trig", ProvFormat.TRIG);
-                mimeTypeMap.put(ProvFormat.TURTLE,"application/x-trig");
+                mimeTypeMap.put(ProvFormat.TRIG, "application/x-trig");
                 provTypeMap.put(ProvFormat.DOT, ProvFormatType.INPUTOUTPUT);
                 break;
             case TURTLE:

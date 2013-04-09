@@ -87,21 +87,21 @@ public class InteropFramework
                 extensionRevMap.put("jpg", ProvFormat.JPEG);
                 mimeTypeMap.put(ProvFormat.JPEG,"image/jpeg");
                 mimeTypeRevMap.put("image/jpeg", ProvFormat.JPEG);
-                provTypeMap.put(ProvFormat.DOT, ProvFormatType.OUTPUT);
+                provTypeMap.put(ProvFormat.JPEG, ProvFormatType.OUTPUT);
                 break;
             case JSON:
                 extensionMap.put(ProvFormat.JSON,"json");
                 extensionRevMap.put("json", ProvFormat.JSON);
                 mimeTypeMap.put(ProvFormat.JSON,"application/json");
                 mimeTypeRevMap.put("application/json", ProvFormat.JSON);
-                provTypeMap.put(ProvFormat.DOT, ProvFormatType.INPUTOUTPUT);
+                provTypeMap.put(ProvFormat.JSON, ProvFormatType.INPUTOUTPUT);
                 break;
             case PDF:
                 extensionMap.put(ProvFormat.PDF,"pdf");
                 extensionRevMap.put("pdf", ProvFormat.PDF);
                 mimeTypeMap.put(ProvFormat.PDF,"application/pdf");
                 mimeTypeRevMap.put("application/pdf", ProvFormat.PDF);
-                provTypeMap.put(ProvFormat.DOT, ProvFormatType.OUTPUT);
+                provTypeMap.put(ProvFormat.PDF, ProvFormatType.OUTPUT);
                 break;
             case PROVN:
                 extensionMap.put(ProvFormat.PROVN,"provn");
@@ -111,35 +111,35 @@ public class InteropFramework
                 extensionRevMap.put("prov-asn", ProvFormat.PROVN);
                 mimeTypeMap.put(ProvFormat.PROVN,"text/provenance-notation");
                 mimeTypeRevMap.put("text/provenance-notation", ProvFormat.PROVN);
-                provTypeMap.put(ProvFormat.DOT, ProvFormatType.INPUTOUTPUT);
+                provTypeMap.put(ProvFormat.PROVN, ProvFormatType.INPUTOUTPUT);
                 break;
             case RDFXML:
                 extensionMap.put(ProvFormat.RDFXML,"rdf");
                 extensionRevMap.put("rdf", ProvFormat.RDFXML);
                 mimeTypeMap.put(ProvFormat.RDFXML,"application/rdf+xml");
                 mimeTypeRevMap.put("application/rdf+xml", ProvFormat.RDFXML);
-                provTypeMap.put(ProvFormat.DOT, ProvFormatType.INPUTOUTPUT);
+                provTypeMap.put(ProvFormat.RDFXML, ProvFormatType.INPUTOUTPUT);
                 break;
             case SVG:
                 extensionMap.put(ProvFormat.SVG,"svg");
                 extensionRevMap.put("svg", ProvFormat.SVG);
                 mimeTypeMap.put(ProvFormat.SVG,"image/svg+xml");
                 mimeTypeRevMap.put("image/svg+xml", ProvFormat.SVG);
-                provTypeMap.put(ProvFormat.DOT, ProvFormatType.OUTPUT);
+                provTypeMap.put(ProvFormat.SVG, ProvFormatType.OUTPUT);
                 break;
             case TRIG:
                 extensionMap.put(ProvFormat.TRIG,"trig");
                 extensionRevMap.put("trig", ProvFormat.TRIG);
                 mimeTypeMap.put(ProvFormat.TRIG, "application/x-trig");
                 mimeTypeRevMap.put("application/x-trig", ProvFormat.TRIG);
-                provTypeMap.put(ProvFormat.DOT, ProvFormatType.INPUTOUTPUT);
+                provTypeMap.put(ProvFormat.TRIG, ProvFormatType.INPUTOUTPUT);
                 break;
             case TURTLE:
                 extensionMap.put(ProvFormat.TURTLE,"ttl");
                 extensionRevMap.put("ttl", ProvFormat.TURTLE);    
                 mimeTypeMap.put(ProvFormat.TURTLE,"text/turtle");
                 mimeTypeRevMap.put("text/turtle", ProvFormat.TURTLE);
-                provTypeMap.put(ProvFormat.DOT, ProvFormatType.INPUTOUTPUT);
+                provTypeMap.put(ProvFormat.TURTLE, ProvFormatType.INPUTOUTPUT);
                 break;
             case XML:
                 extensionMap.put(ProvFormat.XML,"provx");
@@ -147,7 +147,7 @@ public class InteropFramework
                 extensionRevMap.put("xml", ProvFormat.XML);    
                 mimeTypeMap.put(ProvFormat.XML,"text/xml");
                 mimeTypeRevMap.put("text/xml", ProvFormat.XML);
-                provTypeMap.put(ProvFormat.DOT, ProvFormatType.INPUTOUTPUT);
+                provTypeMap.put(ProvFormat.XML, ProvFormatType.INPUTOUTPUT);
                 break;
             default:
                 break;

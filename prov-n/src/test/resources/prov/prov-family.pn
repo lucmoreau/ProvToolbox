@@ -23,6 +23,7 @@ prefix occl    <http://staff.oclc.org/~dewey/>
 prefix pd      <http://www.w3.org/2001/02pd/rec54#>
 prefix meeting <http://www.w3.org/2011/prov/meeting/>
 prefix act     <http://www.w3.org/2011/prov/wiki/Activities#>
+prefix rdfs    <http://www.w3.org/2000/01/rdf-schema#>
 
 prefix dot   <http://openprovenance.org/Toolbox/dot#>
 
@@ -563,14 +564,17 @@ wasAttributedTo(tr2012:WD-prov-constraints-20120911, user:Tdenies,  [prov:role='
 entity(chairs:2012OctDec/0060, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro" ]) // CR transition request
 entity(chairs:2012OctDec/0072, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro" ]) // for prov-xml, prov-dc, prov-links, prov-overview fpwd
 entity(email:2012Dec/0041,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])
+entity(w3:2012/12/07-provt-minutes, [rdfs:comment="minutes for the PR transition call"])
+
 activity(act:publ10,-,-,[prov:type='prov:Publish' ])
 wasInformedBy(act:publ10, act:WG)
 
 wasAssociatedWith(act:publ10, w3:Consortium, process:rec-advance)
 
-used(act:publ10,email:2012Dec/0041,-)
-used(act:publ10,chairs:2012OctDec/0060)
-used(act:publ10,chairs:2012OctDec/0072)
+used(act:publ10,email:2012Dec/0041,- )
+used(act:publ10,chairs:2012OctDec/0060, -)
+used(act:publ10,chairs:2012OctDec/0072, -)
+used(act:publ10,w3:2012/12/07-provt-minutes, -)
 
 wasGeneratedBy(tr2012:CR-prov-dm-20121211,          act:publ10, -)
 wasGeneratedBy(tr2012:CR-prov-n-20121211,           act:publ10, -)
@@ -697,6 +701,7 @@ entity(chairs:2013JanMar/0088, [ prov:type='trans:transreq' , dot:fillcolor="gai
 entity(chairs:2013JanMar/0090, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro" ]) // for prov-dictionary, prov-implementations
 entity(chairs:2013JanMar/0097, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro" ]) // for prov-sem
 
+entity(w3:2013/03/08-provpr-minutes, [rdfs:comment="minutes for the PR transition call"])
 
 entity(email:2013Mar/0073,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])
 activity(act:publ11,-,-, [prov:type='prov:Publish' ])
@@ -708,7 +713,7 @@ used(act:publ11,email:2013Mar/0073,-)
 used(act:publ11,chairs:2013JanMar/0088,-)
 used(act:publ11,chairs:2013JanMar/0090,-)
 used(act:publ11,chairs:2013JanMar/0097,-)
-
+used(act:publ11,w3:2013/03/08-provpr-minutes, -)
 
 wasGeneratedBy(tr2013:PR-prov-dm-20130312,          act:publ11, -)
 wasGeneratedBy(tr2013:PR-prov-n-20130312,           act:publ11, -)

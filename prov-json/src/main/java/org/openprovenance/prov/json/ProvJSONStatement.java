@@ -19,5 +19,8 @@ enum ProvJSONStatement {
     specializationOf,
     mentionOf,
     hadMember,
-    bundle
+    bundle,
+    derivedByInsertionFrom,
+    derivedByRemovalFrom,
+    hadDictionaryMember
 }

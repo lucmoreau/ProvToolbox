@@ -42,6 +42,8 @@ public class InteropFramework
     public final Hashtable<ProvFormat,String> extensionMap;
     public final Hashtable<String,ProvFormat> extensionRevMap;
     public final Hashtable<ProvFormat,String> mimeTypeMap;
+    public final Hashtable<String,ProvFormat> mimeTypeRevMap;
+    public final Hashtable<ProvFormat,ProvFormatType> provTypeMap;
 
 
     public InteropFramework() {
@@ -61,7 +63,8 @@ public class InteropFramework
 	extensionMap=new Hashtable<InteropFramework.ProvFormat, String>();
 	extensionRevMap=new Hashtable<String, InteropFramework.ProvFormat>();
 	mimeTypeMap=new Hashtable<InteropFramework.ProvFormat, String>();
-
+	mimeTypeRevMap=new Hashtable<String, InteropFramework.ProvFormat>();
+	provTypeMap=new Hashtable<InteropFramework.ProvFormat, InteropFramework.ProvFormatType>();
 
 	initializeExtensionMap(extensionMap, extensionRevMap);
     }
@@ -75,22 +78,30 @@ public class InteropFramework
                 extensionRevMap.put("dot", ProvFormat.DOT);
                 extensionRevMap.put("gv", ProvFormat.DOT);
                 mimeTypeMap.put(ProvFormat.DOT,"text/vnd.graphviz");
+                mimeTypeRevMap.put("text/vnd.graphviz", ProvFormat.DOT);
+                provTypeMap.put(ProvFormat.DOT, ProvFormatType.OUTPUT);
                 break;
             case JPEG:
                 extensionMap.put(ProvFormat.JPEG,"jpg");
                 extensionRevMap.put("jpeg", ProvFormat.JPEG);
                 extensionRevMap.put("jpg", ProvFormat.JPEG);
                 mimeTypeMap.put(ProvFormat.JPEG,"image/jpeg");
+                mimeTypeRevMap.put("image/jpeg", ProvFormat.JPEG);
+                provTypeMap.put(ProvFormat.JPEG, ProvFormatType.OUTPUT);
                 break;
             case JSON:
                 extensionMap.put(ProvFormat.JSON,"json");
                 extensionRevMap.put("json", ProvFormat.JSON);
                 mimeTypeMap.put(ProvFormat.JSON,"application/json");
+                mimeTypeRevMap.put("application/json", ProvFormat.JSON);
+                provTypeMap.put(ProvFormat.JSON, ProvFormatType.INPUTOUTPUT);
                 break;
             case PDF:
                 extensionMap.put(ProvFormat.PDF,"pdf");
                 extensionRevMap.put("pdf", ProvFormat.PDF);
                 mimeTypeMap.put(ProvFormat.PDF,"application/pdf");
+                mimeTypeRevMap.put("application/pdf", ProvFormat.PDF);
+                provTypeMap.put(ProvFormat.PDF, ProvFormatType.OUTPUT);
                 break;
             case PROVN:
                 extensionMap.put(ProvFormat.PROVN,"provn");
@@ -99,32 +110,44 @@ public class InteropFramework
                 extensionRevMap.put("asn", ProvFormat.PROVN);
                 extensionRevMap.put("prov-asn", ProvFormat.PROVN);
                 mimeTypeMap.put(ProvFormat.PROVN,"text/provenance-notation");
+                mimeTypeRevMap.put("text/provenance-notation", ProvFormat.PROVN);
+                provTypeMap.put(ProvFormat.PROVN, ProvFormatType.INPUTOUTPUT);
                 break;
             case RDFXML:
                 extensionMap.put(ProvFormat.RDFXML,"rdf");
                 extensionRevMap.put("rdf", ProvFormat.RDFXML);
                 mimeTypeMap.put(ProvFormat.RDFXML,"application/rdf+xml");
+                mimeTypeRevMap.put("application/rdf+xml", ProvFormat.RDFXML);
+                provTypeMap.put(ProvFormat.RDFXML, ProvFormatType.INPUTOUTPUT);
                 break;
             case SVG:
                 extensionMap.put(ProvFormat.SVG,"svg");
                 extensionRevMap.put("svg", ProvFormat.SVG);
                 mimeTypeMap.put(ProvFormat.SVG,"image/svg+xml");
+                mimeTypeRevMap.put("image/svg+xml", ProvFormat.SVG);
+                provTypeMap.put(ProvFormat.SVG, ProvFormatType.OUTPUT);
                 break;
             case TRIG:
                 extensionMap.put(ProvFormat.TRIG,"trig");
                 extensionRevMap.put("trig", ProvFormat.TRIG);
-                mimeTypeMap.put(ProvFormat.TURTLE,"application/x-trig");
+                mimeTypeMap.put(ProvFormat.TRIG, "application/x-trig");
+                mimeTypeRevMap.put("application/x-trig", ProvFormat.TRIG);
+                provTypeMap.put(ProvFormat.TRIG, ProvFormatType.INPUTOUTPUT);
                 break;
             case TURTLE:
                 extensionMap.put(ProvFormat.TURTLE,"ttl");
                 extensionRevMap.put("ttl", ProvFormat.TURTLE);    
                 mimeTypeMap.put(ProvFormat.TURTLE,"text/turtle");
+                mimeTypeRevMap.put("text/turtle", ProvFormat.TURTLE);
+                provTypeMap.put(ProvFormat.TURTLE, ProvFormatType.INPUTOUTPUT);
                 break;
             case XML:
                 extensionMap.put(ProvFormat.XML,"provx");
                 extensionRevMap.put("provx", ProvFormat.XML);             
                 extensionRevMap.put("xml", ProvFormat.XML);    
                 mimeTypeMap.put(ProvFormat.XML,"text/xml");
+                mimeTypeRevMap.put("text/xml", ProvFormat.XML);
+                provTypeMap.put(ProvFormat.XML, ProvFormatType.INPUTOUTPUT);
                 break;
             default:
                 break;
@@ -189,7 +212,19 @@ public class InteropFramework
     
 
     public enum ProvFormat {  PROVN, XML, TURTLE, RDFXML, TRIG,  JSON, DOT, JPEG, SVG, PDF }
+    public enum ProvFormatType {  INPUT, OUTPUT, INPUTOUTPUT }
     
+    public Boolean isInputFormat(ProvFormat format) {
+        ProvFormatType t = provTypeMap.get(format);
+        return (t.equals(ProvFormatType.INPUT) || t.equals(ProvFormatType.INPUTOUTPUT));
+    }
+
+    public Boolean isOutputFormat(ProvFormat format) {
+        ProvFormatType t = provTypeMap.get(format);
+        return (t.equals(ProvFormatType.OUTPUT) || t.equals(ProvFormatType.INPUTOUTPUT));
+    }
+
+
     public ProvFormat getTypeForFile(String filename) {
         int count=filename.lastIndexOf(".");
         if (count==-1) return null;

@@ -913,8 +913,15 @@ wasDerivedFrom(wbs2:provpf/results, chairs:2013JanMar/0116)
 
 entity(team:2013Apr/0405,[rdfs:comment="the director's approval to publish recommendations"])
 
+
+
 wasDerivedFrom(team:2013Apr/0405,wbs2:provpf/results)
 
+
+entity(email:2013Apr/0507,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])  // final publication request
+wasDerivedFrom(email:2013Apr/0507,team:2013Apr/0405)
+
+used(act:publ12,email:2013Apr/0507,-)
 used(act:publ12,team:2013Apr/0405,-)
 
 entity(wiki:Family-rec, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])

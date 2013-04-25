@@ -24,6 +24,7 @@ prefix pd      <http://www.w3.org/2001/02pd/rec54#>
 prefix meeting <http://www.w3.org/2011/prov/meeting/>
 prefix act     <http://www.w3.org/2011/prov/wiki/Activities#>
 prefix rdfs    <http://www.w3.org/2000/01/rdf-schema#>
+prefix team    <https://lists.w3.org/Archives/Team/w3t-comm/>
 
 prefix dot   <http://openprovenance.org/Toolbox/dot#>
 
@@ -498,16 +499,6 @@ wasAttributedTo(tr2012:WD-prov-o-20120503, user:Ssoiland, [prov:role='prov:Contr
 wasAttributedTo(tr2012:WD-prov-o-20120503, user:Szednik,  [prov:role='prov:Contributor'])
 wasAttributedTo(tr2012:WD-prov-o-20120503, user:Jzhao,    [prov:role='prov:Contributor'])
 
-wasAttributedTo(tr2012:WD-prov-primer-20120724, user:Smiles,   [prov:role='pd:editor', prov:role='prov:Contributor'])
-wasAttributedTo(tr2012:WD-prov-primer-20120724, user:Ygil,     [prov:role='pd:editor', prov:role='prov:Contributor'])
-wasAttributedTo(tr2012:WD-prov-primer-20120724, user:Kbelhajj, [prov:role='prov:Contributor'])
-wasAttributedTo(tr2012:WD-prov-primer-20120724, user:Hdeus,    [prov:role='prov:Contributor'])
-wasAttributedTo(tr2012:WD-prov-primer-20120724, user:Bvillazo, [prov:role='prov:Contributor'])
-wasAttributedTo(tr2012:WD-prov-primer-20120724, user:Gklyne,   [prov:role='prov:Contributor'])
-wasAttributedTo(tr2012:WD-prov-primer-20120724, user:Pmissier, [prov:role='prov:Contributor'])
-wasAttributedTo(tr2012:WD-prov-primer-20120724, user:Ssoiland, [prov:role='prov:Contributor'])
-wasAttributedTo(tr2012:WD-prov-primer-20120724, user:Szednik,  [prov:role='prov:Contributor'])
-
 
 wasAttributedTo(tr2012:WD-prov-primer-20120724, user:Smiles,   [prov:role='pd:editor', prov:role='prov:Contributor'])
 wasAttributedTo(tr2012:WD-prov-primer-20120724, user:Ygil,     [prov:role='pd:editor', prov:role='prov:Contributor'])
@@ -886,7 +877,7 @@ wasAttributedTo(tr2013:WD-prov-links-20130312, user:Tlebo,    [prov:role='pd:edi
 //   - prov-primer, prov-xml, prov-aq, prov-dc, prov-links, prov-overview, prov-dictionary, prov-implementation, prov-sem: NOTE
 //////////////////////////////////////////////////////////////////////
 
-//TODO transreq for REC
+
 
 entity(chairs:2013JanMar/0116, [ prov:type='process:cfr' , dot:fillcolor="gainsboro" ]) 
 
@@ -917,9 +908,14 @@ wasDerivedFrom(chairs:2013JanMar/0116, tr2013:PR-prov-n-20130312)
 wasDerivedFrom(chairs:2013JanMar/0116, tr2013:PR-prov-o-20130312)
 wasDerivedFrom(chairs:2013JanMar/0116, tr2013:PR-prov-constraints-20130312)
 
+
 wasDerivedFrom(wbs2:provpf/results, chairs:2013JanMar/0116)
 
-used(act:publ12,wbs2:provpf/results,-)
+entity(team:2013Apr/0405,[rdfs:comment="the director's approval to publish recommendations"])
+
+wasDerivedFrom(team:2013Apr/0405,wbs2:provpf/results)
+
+used(act:publ12,team:2013Apr/0405,-)
 
 entity(wiki:Family-rec, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 

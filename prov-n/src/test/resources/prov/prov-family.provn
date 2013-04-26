@@ -10,10 +10,11 @@ prefix tr      <http://www.w3.org/TR/>
 prefix tr2011  <http://www.w3.org/TR/2011/>
 prefix tr2012  <http://www.w3.org/TR/2012/>
 prefix tr2013  <http://www.w3.org/TR/2013/>
-prefix process <http://www.w3.org/2005/10/Process-20051014/tr.html#>
+prefix process <http://www.w3.org/2005/10/Process-20051014/tr#>
+prefix groups <http://www.w3.org/2005/10/Process-20051014/groups#>
 prefix email   <https://lists.w3.org/Archives/Member/w3c-archive/>
 prefix chairs  <https://lists.w3.org/Archives/Member/chairs/>
-prefix trans   <http://www.w3.org/2005/08/01-transitions.html#>
+prefix trans   <http://www.w3.org/2005/08/01-transitions#>
 prefix wbs     <https://www.w3.org/2002/09/wbs/46974/>
 prefix wbs2    <https://www.w3.org/2002/09/wbs/33280/>
 prefix user    <http://www.w3.org/2011/prov/wiki/User:>
@@ -32,9 +33,9 @@ prefix dot   <http://openprovenance.org/Toolbox/dot#>
 // The general W3C process
 //////////////////////////////////////////////////////////////////////
 
-entity(process:rec-advance,    [ prov:type='prov:Plan', dot:fillcolor="lightblue", dot:url="http://www.w3.org/2005/10/Process-20051014/tr.html#rec-advance"  ])
+entity(process:rec-advance,    [ prov:type='prov:Plan', dot:fillcolor="lightblue"  ])
 
-agent(w3:Consortium, [ prov:type='prov:Organization', dot:fillcolor="thistle3", dot:url="http://www.w3.org/Consortium"   ])
+agent(w3:Consortium, [ prov:type='prov:Organization', dot:fillcolor="thistle3"   ])
 
 //////////////////////////////////////////////////////////////////////
 // The Working Group activity
@@ -50,10 +51,10 @@ wasStartedBy(act:WG, w3:2011/01/prov-wg-charter,-,-)
 entity(meeting:2013-04-04#resolution_1) //TODO, get the right URL when we vote
 wasEndedBy(act:WG, w3:2011/01/prov-wg-charter,-,-)
 
-wasAssociatedWith(act:WG,user:Sandro,-, [prov:role="team contact"])
-wasAssociatedWith(act:WG,user:Ivan,-, [prov:role="team contact"])
-wasAssociatedWith(act:WG,user:Pgroth,-, [prov:role="co-chair"])
-wasAssociatedWith(act:WG,user:Lmoreau,-, [prov:role="co-chair"])
+wasAssociatedWith(act:WG,user:Sandro,-, [prov:role='groups:TeamContact'])
+wasAssociatedWith(act:WG,user:Ivan,-, [prov:role='groups:TeamContact'])
+wasAssociatedWith(act:WG,user:Pgroth,-, [prov:role='groups:GeneralChairs'])
+wasAssociatedWith(act:WG,user:Lmoreau,-, [prov:role='groups:GeneralChairs'])
 actedOnBehalfOf(user:Ivan,w3:Consortium,act:WG)
 actedOnBehalfOf(user:Sandro,w3:Consortium,act:WG)
 
@@ -189,7 +190,7 @@ entity(wiki:Family3, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 prov:derivedByInsertionFrom(wiki:Family3, wiki:Family2, {('tr:prov-dm',     tr2011:WD-prov-dm-20111215)})
 
-wasDerivedFrom(tr2011:WD-prov-dm-20111215,tr2011:WD-prov-dm-20111018)
+wasDerivedFrom(tr2011:WD-prov-dm-20111215,tr2011:WD-prov-dm-20111018, [prov:type='prov:Revision'])
 
 
 wasAttributedTo(tr2011:WD-prov-dm-20111215, user:Lmoreau,  [prov:role='pd:editor', prov:role='prov:Contributor'])
@@ -277,7 +278,7 @@ wasAssociatedWith(act:publ5, w3:Consortium, process:rec-advance)
 entity(wiki:Family5, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 prov:derivedByInsertionFrom(wiki:Family5, wiki:Family4, {('tr:prov-dm',     tr2012:WD-prov-dm-20120202)})
 
-wasDerivedFrom(tr2012:WD-prov-dm-20120202,tr2011:WD-prov-dm-20111215)
+wasDerivedFrom(tr2012:WD-prov-dm-20120202,tr2011:WD-prov-dm-20111215, [prov:type='prov:Revision'])
 
 
 
@@ -335,11 +336,11 @@ prov:derivedByInsertionFrom(wiki:Family6, wiki:Family5, {('tr:prov-dm',     tr20
                                                      	 ('tr:prov-constraints', tr2012:WD-prov-constraints-20120503)})
 
 
-wasDerivedFrom(tr2012:WD-prov-dm-20120503,          tr2012:WD-prov-dm-20120202)
-wasDerivedFrom(tr2012:WD-prov-n-20120503,           tr2012:WD-prov-dm-20120202)
-wasDerivedFrom(tr2012:WD-prov-constraints-20120503, tr2012:WD-prov-dm-20120202)
-wasDerivedFrom(tr2012:WD-prov-primer-20120503,      tr2012:WD-prov-primer-20120110)
-wasDerivedFrom(tr2012:WD-prov-o-20120503,           tr2011:WD-prov-o-20111213)
+wasDerivedFrom(tr2012:WD-prov-dm-20120503,          tr2012:WD-prov-dm-20120202, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2012:WD-prov-n-20120503,           tr2012:WD-prov-dm-20120202, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2012:WD-prov-constraints-20120503, tr2012:WD-prov-dm-20120202, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2012:WD-prov-primer-20120503,      tr2012:WD-prov-primer-20120110, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2012:WD-prov-o-20120503,           tr2011:WD-prov-o-20111213, [prov:type='prov:Revision'])
 
 
 wasAttributedTo(tr2012:WD-prov-dm-20120503, user:Lmoreau,  [prov:role='pd:editor', prov:role='prov:Contributor'])
@@ -410,7 +411,7 @@ entity(wiki:Family7, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 prov:derivedByInsertionFrom(wiki:Family7, wiki:Family6, {('tr:prov-aq',     tr2012:WD-prov-aq-20120619)})
 
-wasDerivedFrom(tr2012:WD-prov-aq-20120619, tr2012:WD-prov-aq-20120110)
+wasDerivedFrom(tr2012:WD-prov-aq-20120619, tr2012:WD-prov-aq-20120110, [prov:type='prov:Revision'])
 
 wasAttributedTo(tr2012:WD-prov-aq-20120619, user:Gklyne,    [prov:role='pd:editor', prov:role='prov:Contributor'])
 wasAttributedTo(tr2012:WD-prov-aq-20120619, user:Pgroth,    [prov:role='pd:editor', prov:role='prov:Contributor'])
@@ -458,10 +459,10 @@ prov:derivedByInsertionFrom(wiki:Family8, wiki:Family7, {('tr:prov-dm',     tr20
                                                          ('tr:prov-o',      tr2012:WD-prov-o-20120724),
                                                          ('tr:prov-primer', tr2012:WD-prov-primer-20120724)})
 
-wasDerivedFrom(tr2012:WD-prov-dm-20120724,     tr2012:WD-prov-dm-20120503)
-wasDerivedFrom(tr2012:WD-prov-n-20120724,      tr2012:WD-prov-n-20120503)
-wasDerivedFrom(tr2012:WD-prov-o-20120724,      tr2012:WD-prov-o-20120503)
-wasDerivedFrom(tr2012:WD-prov-primer-20120724, tr2012:WD-prov-primer-20120503)
+wasDerivedFrom(tr2012:WD-prov-dm-20120724,     tr2012:WD-prov-dm-20120503, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2012:WD-prov-n-20120724,      tr2012:WD-prov-n-20120503, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2012:WD-prov-o-20120724,      tr2012:WD-prov-o-20120503, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2012:WD-prov-primer-20120724, tr2012:WD-prov-primer-20120503, [prov:type='prov:Revision'])
 
 
 wasAttributedTo(tr2012:WD-prov-dm-20120724, user:Lmoreau,  [prov:role='pd:editor', prov:role='prov:Contributor'])
@@ -534,7 +535,7 @@ entity(wiki:Family9, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 prov:derivedByInsertionFrom(wiki:Family9, wiki:Family8, {('tr:prov-constraints',     tr2012:WD-prov-constraints-20120911)})
 
-wasDerivedFrom(tr2012:WD-prov-constraints-20120911, tr2012:WD-prov-constraints-20120503)
+wasDerivedFrom(tr2012:WD-prov-constraints-20120911, tr2012:WD-prov-constraints-20120503, [prov:type='prov:Revision'])
 
 
 wasAttributedTo(tr2012:WD-prov-constraints-20120911, user:Jcheney,  [prov:role='pd:editor', prov:role='prov:Contributor'])
@@ -593,11 +594,11 @@ entity(tr2012:WD-prov-xml-20121211,         [ prov:type='pd:WD' ])
 entity(tr2012:WD-prov-links-20121211,       [ prov:type='pd:WD' ])
 entity(tr2012:WD-prov-dc-20121211,          [ prov:type='pd:WD' ])
 
-wasDerivedFrom(tr2012:CR-prov-dm-20121211,      tr2012:WD-prov-dm-20120724)
-wasDerivedFrom(tr2012:CR-prov-n-20121211,      tr2012:WD-prov-n-20120724)
-wasDerivedFrom(tr2012:CR-prov-o-20121211,      tr2012:WD-prov-o-20120724)
-wasDerivedFrom(tr2012:CR-prov-constraints-20121211,      tr2012:WD-prov-constraints-20120911)
-wasDerivedFrom(tr2012:WD-prov-primer-20121211,      tr2012:WD-prov-primer-20120724)
+wasDerivedFrom(tr2012:CR-prov-dm-20121211,      tr2012:WD-prov-dm-20120724, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2012:CR-prov-n-20121211,      tr2012:WD-prov-n-20120724, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2012:CR-prov-o-20121211,      tr2012:WD-prov-o-20120724, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2012:CR-prov-constraints-20121211,      tr2012:WD-prov-constraints-20120911, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2012:WD-prov-primer-20121211,      tr2012:WD-prov-primer-20120724, [prov:type='prov:Revision'])
 
 prov:derivedByInsertionFrom(wiki:Family-cr, 
                             wiki:Family9, 
@@ -740,17 +741,17 @@ entity(tr2013:WD-prov-implementations-20130312, [ prov:type='pd:WD' ])
 
 
 
-wasDerivedFrom(tr2013:PR-prov-dm-20130312,          tr2012:CR-prov-dm-20121211)
-wasDerivedFrom(tr2013:PR-prov-n-20130312,           tr2012:CR-prov-n-20121211)
-wasDerivedFrom(tr2013:PR-prov-o-20130312,           tr2012:CR-prov-o-20121211)
-wasDerivedFrom(tr2013:PR-prov-constraints-20130312, tr2012:CR-prov-constraints-20121211)
+wasDerivedFrom(tr2013:PR-prov-dm-20130312,          tr2012:CR-prov-dm-20121211, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:PR-prov-n-20130312,           tr2012:CR-prov-n-20121211, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:PR-prov-o-20130312,           tr2012:CR-prov-o-20121211, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:PR-prov-constraints-20130312, tr2012:CR-prov-constraints-20121211, [prov:type='prov:Revision])
 
-wasDerivedFrom(tr2013:WD-prov-primer-20130312,      tr2012:WD-prov-primer-20121211)
-wasDerivedFrom(tr2013:WD-prov-overview-20130312,    tr2012:WD-prov-overview-20121211)
-wasDerivedFrom(tr2013:WD-prov-xml-20130312,         tr2012:WD-prov-xml-20121211)
-wasDerivedFrom(tr2013:WD-prov-links-20130312,       tr2012:WD-prov-links-20121211)
-wasDerivedFrom(tr2013:WD-prov-aq-20130312,          tr2012:WD-prov-aq-20120619)
-wasDerivedFrom(tr2013:WD-prov-dc-20130312,          tr2012:WD-prov-dc-20121211)
+wasDerivedFrom(tr2013:WD-prov-primer-20130312,      tr2012:WD-prov-primer-20121211, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:WD-prov-overview-20130312,    tr2012:WD-prov-overview-20121211, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:WD-prov-xml-20130312,         tr2012:WD-prov-xml-20121211, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:WD-prov-links-20130312,       tr2012:WD-prov-links-20121211, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:WD-prov-aq-20130312,          tr2012:WD-prov-aq-20120619, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:WD-prov-dc-20130312,          tr2012:WD-prov-dc-20121211, [prov:type='prov:Revision'])
 
 
 entity(wbs:prov-implementation-survey/results)
@@ -942,18 +943,18 @@ entity(tr2013:NOTE-prov-sem-20130430,         [ prov:type='process:WGNote'  ])
 entity(tr2013:NOTE-prov-implementations-20130430, [ prov:type='process:WGNote'  ])
 
 
-wasDerivedFrom(tr2013:REC-prov-dm-20130430,          tr2013:PR-prov-dm-20130312)
-wasDerivedFrom(tr2013:REC-prov-n-20130430,           tr2013:PR-prov-n-20130312)
-wasDerivedFrom(tr2013:REC-prov-o-20130430,           tr2013:PR-prov-o-20130312)
-wasDerivedFrom(tr2013:REC-prov-constraints-20130430, tr2013:PR-prov-constraints-20130312)
+wasDerivedFrom(tr2013:REC-prov-dm-20130430,          tr2013:PR-prov-dm-20130312, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:REC-prov-n-20130430,           tr2013:PR-prov-n-20130312, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:REC-prov-o-20130430,           tr2013:PR-prov-o-20130312, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:REC-prov-constraints-20130430, tr2013:PR-prov-constraints-20130312, [prov:type='prov:Revision'])
 
-wasDerivedFrom(tr2013:NOTE-prov-primer-20130430,     tr2013:WD-prov-primer-20130312)
-wasDerivedFrom(tr2013:NOTE-prov-overview-20130430,   tr2013:WD-prov-overview-20130312)
-wasDerivedFrom(tr2013:NOTE-prov-xml-20130430,        tr2013:WD-prov-xml-20130312)
-wasDerivedFrom(tr2013:NOTE-prov-links-20130430,      tr2013:WD-prov-links-20130312)
-wasDerivedFrom(tr2013:NOTE-prov-aq-20130430,         tr2013:WD-prov-aq-20130312)
-wasDerivedFrom(tr2013:NOTE-prov-dc-20130430,         tr2013:WD-prov-dc-20130312)
-wasDerivedFrom(tr2013:NOTE-prov-implementations-20130430,         tr2013:WD-prov-implementations-20130312)
+wasDerivedFrom(tr2013:NOTE-prov-primer-20130430,     tr2013:WD-prov-primer-20130312, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:NOTE-prov-overview-20130430,   tr2013:WD-prov-overview-20130312, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:NOTE-prov-xml-20130430,        tr2013:WD-prov-xml-20130312, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:NOTE-prov-links-20130430,      tr2013:WD-prov-links-20130312, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:NOTE-prov-aq-20130430,         tr2013:WD-prov-aq-20130312, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:NOTE-prov-dc-20130430,         tr2013:WD-prov-dc-20130312, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:NOTE-prov-implementations-20130430,         tr2013:WD-prov-implementations-20130312, [prov:type='prov:Revision'])
 
 wasAttributedTo(tr2013:REC-prov-dm-20130430, user:Lmoreau,  [prov:role='pd:editor', prov:role='prov:Contributor'])
 wasAttributedTo(tr2013:REC-prov-dm-20130430, user:Pmissier, [prov:role='pd:editor', prov:role='prov:Contributor'])

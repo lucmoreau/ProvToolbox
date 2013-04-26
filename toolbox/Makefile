@@ -20,10 +20,14 @@ t3:
 
 fam:
 	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.pdf 
-	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.xml
+	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.provx
 	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.svg
 	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.dot
 	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.ttl
+expfam:
+	cp ../prov-n/src/test/resources/prov/prov-family.provn ~/luc-svn/papers/prov-wg/hg/provenance
+	cp target/prov-family.* ~/luc-svn/papers/prov-wg/hg/provenance
+
 #	cat target/prov-family.dot | sed -e 's/rankdir/size="8.5,11"; label="The PROV Family of Specifications\\nLuc Moreau"; labelloc="top"; labeljust="left"; fontsize="36"; rankdir/' | sed -e 's/OPMGraph/ProvFamily/' > target/prov-family-key.dot
 #	dot -Tps2 target/prov-family-key.dot -o target/prov-family-key.ps
 #	epstopdf  target/prov-family-key.ps  -o=target/prov-family-key.pdf

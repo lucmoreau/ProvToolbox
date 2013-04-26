@@ -244,7 +244,6 @@ wasAttributedTo(tr2012:WD-prov-aq-20120110, user:Ysimmhan,  [prov:role='prov:Con
 wasAttributedTo(tr2012:WD-prov-aq-20120110, user:Jmyers4,   [prov:role='prov:Contributor'])
 wasAttributedTo(tr2012:WD-prov-aq-20120110, user:Kbelhajj,  [prov:role='prov:Contributor'])
 wasAttributedTo(tr2012:WD-prov-aq-20120110, user:Smiles,    [prov:role='prov:Contributor'])
-wasAttributedTo(tr2012:WD-prov-aq-20120110, user:Ssoiland,  [prov:role='prov:Contributor'])
 
 
 wasAttributedTo(tr2012:WD-prov-primer-20120110, user:Smiles,   [prov:role='pd:editor', prov:role='prov:Contributor'])

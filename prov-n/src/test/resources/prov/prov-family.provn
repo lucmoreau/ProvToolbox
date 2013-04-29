@@ -19,7 +19,7 @@ prefix wbs     <https://www.w3.org/2002/09/wbs/46974/>
 prefix wbs2    <https://www.w3.org/2002/09/wbs/33280/>
 prefix user    <http://www.w3.org/2011/prov/wiki/User:>
 prefix wiki    <http://www.w3.org/2011/prov/wiki/>
-prefix foaf    <http://xmlns.com/foaf/spec/>
+prefix foaf    <http://xmlns.com/foaf/0.1/>
 prefix occl    <http://staff.oclc.org/~dewey/>
 prefix pd      <http://www.w3.org/2001/02pd/rec54#>
 prefix meeting <http://www.w3.org/2011/prov/meeting/>
@@ -95,7 +95,7 @@ agent(user:Tdenies,[foaf:name="Tom De Nies"])
 agent(user:Thuynh,[foaf:name="Trung Dong Huynh"])
 agent(user:Tlebo,[foaf:name="Timothy Lebo"])
 agent(user:Ygil,[foaf:name="Yolanda Gil"])
-agent(user:Ysimmhan,[foaf:name="user:Ysimmhan"])
+agent(user:Ysimmhan,[foaf:name="Yogesh Simmhan"])
 agent(occl:michael.htm,[foaf:name="Michael Panzer"])
 
 
@@ -954,6 +954,8 @@ wasDerivedFrom(tr2013:NOTE-prov-xml-20130430,        tr2013:WD-prov-xml-20130312
 wasDerivedFrom(tr2013:NOTE-prov-links-20130430,      tr2013:WD-prov-links-20130312, [prov:type='prov:Revision'])
 wasDerivedFrom(tr2013:NOTE-prov-aq-20130430,         tr2013:WD-prov-aq-20130312, [prov:type='prov:Revision'])
 wasDerivedFrom(tr2013:NOTE-prov-dc-20130430,         tr2013:WD-prov-dc-20130312, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:NOTE-prov-sem-20130430,        tr2013:WD-prov-sem-20130312, [prov:type='prov:Revision'])
+wasDerivedFrom(tr2013:NOTE-prov-dictionary-20130430,        tr2013:WD-prov-dictionary-20130312, [prov:type='prov:Revision'])
 wasDerivedFrom(tr2013:NOTE-prov-implementations-20130430,         tr2013:WD-prov-implementations-20130312, [prov:type='prov:Revision'])
 
 wasAttributedTo(tr2013:REC-prov-dm-20130430, user:Lmoreau,  [prov:role='pd:editor', prov:role='prov:Contributor'])
@@ -1116,7 +1118,6 @@ specializationOf(tr2012:WD-prov-primer-20120110, tr:prov-primer)
 
 specializationOf(tr2013:NOTE-prov-aq-20130430, tr:prov-aq)
 specializationOf(tr2013:WD-prov-aq-20130312, tr:prov-aq)
-specializationOf(tr2012:WD-prov-aq-20120724, tr:prov-aq)
 specializationOf(tr2012:WD-prov-aq-20120619, tr:prov-aq)
 specializationOf(tr2012:WD-prov-aq-20120110, tr:prov-aq)
 

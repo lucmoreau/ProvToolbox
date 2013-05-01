@@ -18,7 +18,7 @@ public class Attribute {
     public static QName PROV_LOCATION_QNAME=provQName("location");
     public static QName PROV_VALUE_QNAME=provQName("value");
     
-    enum AttributeKind {
+    public enum AttributeKind {
 	PROV_TYPE,
 	PROV_LABEL,
 	PROV_ROLE,

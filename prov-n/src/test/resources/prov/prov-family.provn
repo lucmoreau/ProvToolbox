@@ -744,7 +744,7 @@ entity(tr2013:WD-prov-implementations-20130312, [ prov:type='pd:WD' ])
 wasDerivedFrom(tr2013:PR-prov-dm-20130312,          tr2012:CR-prov-dm-20121211, [prov:type='prov:Revision'])
 wasDerivedFrom(tr2013:PR-prov-n-20130312,           tr2012:CR-prov-n-20121211, [prov:type='prov:Revision'])
 wasDerivedFrom(tr2013:PR-prov-o-20130312,           tr2012:CR-prov-o-20121211, [prov:type='prov:Revision'])
-wasDerivedFrom(tr2013:PR-prov-constraints-20130312, tr2012:CR-prov-constraints-20121211, [prov:type='prov:Revision])
+wasDerivedFrom(tr2013:PR-prov-constraints-20130312, tr2012:CR-prov-constraints-20121211, [prov:type='prov:Revision'])
 
 wasDerivedFrom(tr2013:WD-prov-primer-20130312,      tr2012:WD-prov-primer-20121211, [prov:type='prov:Revision'])
 wasDerivedFrom(tr2013:WD-prov-overview-20130312,    tr2012:WD-prov-overview-20121211, [prov:type='prov:Revision'])

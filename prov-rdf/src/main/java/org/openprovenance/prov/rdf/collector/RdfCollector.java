@@ -221,7 +221,7 @@ public class RdfCollector extends RDFHandlerBase {
 				}
 				ProvType provType = ProvType
 						.lookup(convertURIToQName((URI) value));
-				explicitOptions.add(provType);
+				if (provType!=null) explicitOptions.add(provType);
 			}
 		}
 

@@ -28,6 +28,8 @@ public enum ProvType
 	ROLE(Ontology.QNAME_PROVO_Role),
 
 	PLAN(Ontology.QNAME_PROVO_Plan, ProvType.ENTITY),
+	
+	CONTRIBUTOR(Ontology.QNAME_PROVDC_Contributor, ProvType.ROLE),
 
 	COLLECTION(Ontology.QNAME_PROVO_Collection, ProvType.ENTITY),
 
@@ -35,6 +37,9 @@ public enum ProvType
 
 	EMPTYCOLLECTION(Ontology.QNAME_PROVO_EmptyCollection,
 			ProvType.COLLECTION),
+
+	EMPTYDICTIONARY(Ontology.QNAME_PROVO_EmptyDictionary,
+			ProvType.DICTIONARY),
 
 	INSTANTANEOUSEVENT(Ontology.QNAME_PROVO_InstantaneousEvent),
 

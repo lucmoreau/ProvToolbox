@@ -80,7 +80,13 @@ public class RdfCollector extends RDFHandlerBase {
 			Ontology.QNAME_PROVO_Organization, Ontology.QNAME_PROVO_Person,
 			Ontology.QNAME_PROVO_Plan, Ontology.QNAME_PROVO_PrimarySource,
 			Ontology.QNAME_PROVO_Quotation, Ontology.QNAME_PROVO_Revision,
-			Ontology.QNAME_PROVO_SoftwareAgent });
+			Ontology.QNAME_PROVO_SoftwareAgent,
+			Ontology.QNAME_PROVDC_Contributor,
+			Ontology.QNAME_PROVO_Dictionary,
+			Ontology.QNAME_PROVO_EmptyDictionary
+
+
+			});
 
 	public RdfCollector(ProvFactory pFactory)
 	{

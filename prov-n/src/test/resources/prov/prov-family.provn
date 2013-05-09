@@ -48,7 +48,7 @@ wasAssociatedWith(act:WG,w3:Consortium,process:rec-advance)
 entity(w3:2011/01/prov-wg-charter)
 wasStartedBy(act:WG, w3:2011/01/prov-wg-charter,-,-)
 
-entity(meeting:2013-04-04#resolution_1) //TODO, get the right URL when we vote
+entity(meeting:2013-05-02#resolution_2)
 wasEndedBy(act:WG, w3:2011/01/prov-wg-charter,-,-)
 
 wasAssociatedWith(act:WG,user:Sandro,-, [prov:role='groups:TeamContact'])

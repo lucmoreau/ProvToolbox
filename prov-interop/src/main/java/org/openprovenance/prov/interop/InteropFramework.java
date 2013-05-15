@@ -286,8 +286,23 @@ public class InteropFramework
 	        toDot.convert(doc, filename);       
 	        break;
 	    }
-	    case JPEG:
-	    case SVG:{
+	    case JPEG: {
+                String configFile=null; // give it as option
+                File tmp=File.createTempFile("viz-", ".dot");
+                
+                String dotFileOut=tmp.getAbsolutePath(); //give it as option, if not available create tmp file
+                ProvToDot toDot;
+                if (configFile!=null) {
+                	toDot=new ProvToDot(configFile);	
+                } else {
+                	toDot=new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
+                }
+                
+                toDot.convert(doc, dotFileOut, filename, "jpg");     
+                tmp.delete();
+                break;
+            }
+	    case SVG: {
                 String configFile=null; // give it as option
                 File tmp=File.createTempFile("viz-", ".dot");
                 

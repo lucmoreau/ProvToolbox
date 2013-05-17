@@ -71,7 +71,10 @@ public class RdfCollector extends RDFHandlerBase {
 			Ontology.QNAME_PROVO_qualifiedQuotation,
 			Ontology.QNAME_PROVO_qualifiedRevision,
 			Ontology.QNAME_PROVO_qualifiedStart,
-			Ontology.QNAME_PROVO_qualifiedUsage
+			Ontology.QNAME_PROVO_qualifiedUsage,
+			Ontology.QNAME_PROVO_qualifiedInsertion,
+			Ontology.QNAME_PROVO_qualifiedRemoval
+
 	});
 
 	private List<QName> DM_TYPES = Arrays.asList(new QName[] {

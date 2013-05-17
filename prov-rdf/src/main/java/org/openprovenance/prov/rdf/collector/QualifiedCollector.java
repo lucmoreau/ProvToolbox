@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -12,7 +13,10 @@ import javax.xml.namespace.QName;
 import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.Attribute;
+import org.openprovenance.prov.xml.DerivedByInsertionFrom;
+import org.openprovenance.prov.xml.DerivedByRemovalFrom;
 import org.openprovenance.prov.xml.Identifiable;
+import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.StatementOrBundle;
 import org.openprovenance.prov.xml.Used;
@@ -91,6 +95,22 @@ public class QualifiedCollector extends RdfCollector {
 			if (pred.equals(predQ) && value instanceof Resource)
 			{
 				objects.add(convertResourceToQName((Resource) value));
+			}
+		}
+		return objects;
+	}
+
+	private List<Value> getDataObjects(QName context, QName subject, QName pred)
+	{
+		List<Statement> statements = collators.get(context).get(subject);
+		List<Value> objects = new ArrayList<Value>();
+		for (Statement statement : statements)
+		{
+			QName predQ = convertURIToQName(statement.getPredicate());
+			Value value = statement.getObject();
+			if (pred.equals(predQ) && (!(value instanceof Resource)))
+			{
+				objects.add(value);
 			}
 		}
 		return objects;
@@ -177,6 +197,12 @@ public class QualifiedCollector extends RdfCollector {
 					case INFLUENCE:
 						createInfluence(contextQ, qname);
 						break;
+					case INSERTION:
+						createInsertion(contextQ, qname);
+						break;
+					case REMOVAL:
+						createRemoval(contextQ,qname);
+						break;
 					default:
 						break;
 					}
@@ -184,6 +210,8 @@ public class QualifiedCollector extends RdfCollector {
 			}
 		}
 	}
+
+
 
 	@Override
 	public void endRDF()
@@ -373,6 +401,82 @@ public class QualifiedCollector extends RdfCollector {
 					(XMLGregorianCalendar) perm.get(3), attributes);
 			store(context, web);
 		}
+	}
+
+	private void createInsertion(QName context, QName qname)
+	{
+		List<QName> objectDictionaries = getObjects(context, qname,
+				Ontology.QNAME_PROVO_dictionary);
+		List<QName> pairs = getObjects(context, qname,
+				Ontology.QNAME_PROVO_insertedKeyEntityPair);
+		List<QName> subjectDictionaries = getSubjects(context,
+				Ontology.QNAME_PROVO_qualifiedInsertion, qname);
+
+		List<Attribute> attributes = collectAttributes(context, qname,
+				ProvType.INSERTION);
+
+		qname = getQualQName(qname);
+
+		List<List<?>> perms = permute(subjectDictionaries, objectDictionaries);
+		for (List<?> perm : perms)
+		{
+			DerivedByInsertionFrom dbif = pFactory.newDerivedByInsertionFrom(qname, 
+					(QName) perm.get(0),
+					(QName) perm.get(1),
+					createKeyEntityPairs(context, pairs), 
+					attributes);
+					
+			store(context, dbif);
+		}
+	}
+
+	
+	private void createRemoval(QName context, QName qname)
+	{
+		List<QName> objectDictionaries = getObjects(context, qname,
+				Ontology.QNAME_PROVO_dictionary);
+		List<Value> keys = getDataObjects(context, qname,
+				Ontology.QNAME_PROVO_removedKey);
+		List<QName> subjectDictionaries = getSubjects(context,
+				Ontology.QNAME_PROVO_qualifiedRemoval, qname);
+
+		List<Attribute> attributes = collectAttributes(context, qname,
+				ProvType.REMOVAL);
+
+		qname = getQualQName(qname);
+		
+		List<Object> theKeys=new LinkedList<Object>();
+		for (Value key: keys) {
+			theKeys.add(valueToObject(key));
+		}
+
+		List<List<?>> perms = permute(subjectDictionaries, objectDictionaries);
+		for (List<?> perm : perms)
+		{
+			DerivedByRemovalFrom dbif = pFactory.newDerivedByRemovalFrom(qname, 
+					(QName) perm.get(0),
+					(QName) perm.get(1),
+	                theKeys,
+					attributes);
+					
+			store(context, dbif);
+		}
+	}
+
+	private List<KeyQNamePair> createKeyEntityPairs(QName context, List<QName> pairs) {
+		List<KeyQNamePair> result= new LinkedList<KeyQNamePair>();
+		for (QName pair: pairs) {
+			List<Value> keys = getDataObjects(context, pair,
+	                  Ontology.QNAME_PROVO_pairKey);  // key is data property!
+
+			List<QName> entities = getObjects(context, pair,
+	                  Ontology.QNAME_PROVO_pairEntity);
+			KeyQNamePair p=new KeyQNamePair();
+			if (!keys.isEmpty()) p.key=valueToObject(keys.get(0)); // we ignore the others
+			if (!entities.isEmpty()) p.name=entities.get(0); // we ignore the others
+		    result.add(p);
+		}
+		return result;
 	}
 
 	private void createStart(QName context, QName qname)

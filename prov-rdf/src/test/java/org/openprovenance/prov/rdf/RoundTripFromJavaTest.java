@@ -75,11 +75,7 @@ public class RoundTripFromJavaTest extends
 		{
 			return false;
 		}
-		if (name.contains("dictionaryMember")) return false;
-		if (name.contains("dictionaryRemovalIGN") &&
-				(!name.contains("dictionaryRemoval1"))
-				&& (!name.contains("dictionaryRemoval2"))) return false;
-
+	
 		return true;
 	}
 

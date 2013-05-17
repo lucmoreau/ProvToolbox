@@ -84,37 +84,7 @@ public class QualifiedCollector extends RdfCollector {
 		return output;
 	}
 
-	private List<QName> getObjects(QName context, QName subject, QName pred)
-	{
-		List<Statement> statements = collators.get(context).get(subject);
-		List<QName> objects = new ArrayList<QName>();
-		for (Statement statement : statements)
-		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-			Value value = statement.getObject();
-			if (pred.equals(predQ) && value instanceof Resource)
-			{
-				objects.add(convertResourceToQName((Resource) value));
-			}
-		}
-		return objects;
-	}
-
-	private List<Value> getDataObjects(QName context, QName subject, QName pred)
-	{
-		List<Statement> statements = collators.get(context).get(subject);
-		List<Value> objects = new ArrayList<Value>();
-		for (Statement statement : statements)
-		{
-			QName predQ = convertURIToQName(statement.getPredicate());
-			Value value = statement.getObject();
-			if (pred.equals(predQ) && (!(value instanceof Resource)))
-			{
-				objects.add(value);
-			}
-		}
-		return objects;
-	}
+	
 
 	private List<QName> getSubjects(QName context, QName pred, QName object)
 	{
@@ -463,21 +433,6 @@ public class QualifiedCollector extends RdfCollector {
 		}
 	}
 
-	private List<KeyQNamePair> createKeyEntityPairs(QName context, List<QName> pairs) {
-		List<KeyQNamePair> result= new LinkedList<KeyQNamePair>();
-		for (QName pair: pairs) {
-			List<Value> keys = getDataObjects(context, pair,
-	                  Ontology.QNAME_PROVO_pairKey);  // key is data property!
-
-			List<QName> entities = getObjects(context, pair,
-	                  Ontology.QNAME_PROVO_pairEntity);
-			KeyQNamePair p=new KeyQNamePair();
-			if (!keys.isEmpty()) p.key=valueToObject(keys.get(0)); // we ignore the others
-			if (!entities.isEmpty()) p.name=entities.get(0); // we ignore the others
-		    result.add(p);
-		}
-		return result;
-	}
 
 	private void createStart(QName context, QName qname)
 	{

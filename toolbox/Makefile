@@ -21,9 +21,11 @@ t3:
 fam:
 	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.pdf 
 	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.provx
-	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.svg
 	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.dot
 	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.ttl
+	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.rdf
+	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/prov-family-graphics.provn -outfile  target/prov-family.svg
+
 expfam:
 	cp ../prov-n/src/test/resources/prov/prov-family.provn ~/luc-svn/papers/prov-wg/hg/provenance
 	cp target/prov-family.* ~/luc-svn/papers/prov-wg/hg/provenance

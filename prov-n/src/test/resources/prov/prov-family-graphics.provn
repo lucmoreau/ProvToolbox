@@ -2,7 +2,7 @@
 
 document
 
-
+// A VARIANT OF THE FILE WITH ATTRIBUTES FOR VISUALIZATION
 
 
 prefix w3      <http://www.w3.org/>
@@ -27,14 +27,15 @@ prefix act     <http://www.w3.org/2011/prov/wiki/Activities#>
 prefix rdfs    <http://www.w3.org/2000/01/rdf-schema#>
 prefix team    <https://lists.w3.org/Archives/Team/w3t-comm/>
 
+prefix dot   <http://openprovenance.org/Toolbox/dot#>
 
 //////////////////////////////////////////////////////////////////////
 // The general W3C process
 //////////////////////////////////////////////////////////////////////
 
-entity(process:rec-advance,    [ prov:type='prov:Plan' ])
+entity(process:rec-advance,    [ prov:type='prov:Plan', dot:fillcolor="lightblue"  ])
 
-agent(w3:Consortium, [ prov:type='prov:Organization'   ])
+agent(w3:Consortium, [ prov:type='prov:Organization', dot:fillcolor="thistle3"   ])
 
 //////////////////////////////////////////////////////////////////////
 // The Working Group activity
@@ -102,14 +103,14 @@ agent(occl:michael.htm,[foaf:name="Michael Panzer"])
 // At the beginning there was ... nothing
 //////////////////////////////////////////////////////////////////////
 
-entity(wiki:Family0, [ prov:type='prov:EmptyDictionary'  ])
+entity(wiki:Family0, [ prov:type='prov:EmptyDictionary', dot:fillcolor="bisque2"  ])
 
 //////////////////////////////////////////////////////////////////////
 // first publication: first workin draft of prov-dm
 //////////////////////////////////////////////////////////////////////
 
-entity(chairs:2011OctDec/0004, [ prov:type='trans:transreq' ]) // for prov-dm
-entity(email:2011Oct/0141,     [ prov:type='trans:pubreq' ])
+entity(chairs:2011OctDec/0004, [ prov:type='trans:transreq', dot:fillcolor="gainsboro" ]) // for prov-dm
+entity(email:2011Oct/0141,     [ prov:type='trans:pubreq',  dot:fillcolor="gold"  ])
 
 entity(tr2011:WD-prov-dm-20111018,          [ prov:type='process:RecsWD' ])
 
@@ -122,7 +123,7 @@ used(act:publ1,email:2011Oct/0141,-)
 wasAssociatedWith(act:publ1, w3:Consortium, process:rec-advance)
 
 
-entity(wiki:Family1, [ prov:type='prov:Dictionary' ])
+entity(wiki:Family1, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 prov:derivedByInsertionFrom(wiki:Family1, wiki:Family0, {('tr:prov-dm',     tr2011:WD-prov-dm-20111018)})
 
 
@@ -143,8 +144,8 @@ wasAttributedTo(tr2011:WD-prov-dm-20111018, user:Ssahoo2,  [prov:type='prov:Cont
 // second publication: first working draft of prov-o
 //////////////////////////////////////////////////////////////////////
 
-entity(chairs:2011OctDec/0152, [ prov:type='trans:transreq'  ]) // for prov-o
-entity(email:2011Dec/0075,     [ prov:type='trans:pubreq' ])
+entity(chairs:2011OctDec/0152, [ prov:type='trans:transreq', dot:fillcolor="gainsboro"  ]) // for prov-o
+entity(email:2011Dec/0075,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])
 
 entity(tr2011:WD-prov-o-20111213,           [ prov:type='process:RecsWD' ])
 activity(act:publ2,-,-,[prov:type='prov:Publish' ])
@@ -156,7 +157,7 @@ used(act:publ2,email:2011Dec/0075,-)
 wasAssociatedWith(act:publ2, w3:Consortium, process:rec-advance)
 
 
-entity(wiki:Family2, [ prov:type='prov:Dictionary' ])
+entity(wiki:Family2, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 prov:derivedByInsertionFrom(wiki:Family2, wiki:Family1, {('tr:prov-o',      tr2011:WD-prov-o-20111213)})
 
@@ -174,7 +175,7 @@ wasAttributedTo(tr2011:WD-prov-o-20111213, user:Szednik,  [prov:type='prov:Contr
 // third publication: a new version of prov-dm
 //////////////////////////////////////////////////////////////////////
 
-entity(email:2011Dec/0111,     [ prov:type='trans:pubreq' ])
+entity(email:2011Dec/0111,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])
 
 entity(tr2011:WD-prov-dm-20111215,          [ prov:type='process:RecsWD' ])
 activity(act:publ3,-,-,[prov:type='prov:Publish' ])
@@ -185,7 +186,7 @@ used(act:publ3,email:2011Dec/0111,-)
 
 wasAssociatedWith(act:publ3, w3:Consortium, process:rec-advance)
 
-entity(wiki:Family3, [ prov:type='prov:Dictionary' ])
+entity(wiki:Family3, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 prov:derivedByInsertionFrom(wiki:Family3, wiki:Family2, {('tr:prov-dm',     tr2011:WD-prov-dm-20111215)})
 
@@ -209,9 +210,9 @@ wasAttributedTo(tr2011:WD-prov-dm-20111215, user:Ssahoo2,  [prov:type='prov:Cont
 // fourth publication: prov-aq and prov-primer join the PROV family
 //////////////////////////////////////////////////////////////////////
 
-entity(chairs:2012JanMar/0000, [ prov:type='trans:transreq' ]) // for prov-primer
-entity(chairs:2011OctDec/0171, [ prov:type='trans:transreq' ]) // for prov-aq
-entity(email:2012Jan/0043,     [ prov:type='trans:pubreq' ])
+entity(chairs:2012JanMar/0000, [ prov:type='trans:transreq', dot:fillcolor="gainsboro" ]) // for prov-primer
+entity(chairs:2011OctDec/0171, [ prov:type='trans:transreq', dot:fillcolor="gainsboro" ]) // for prov-aq
+entity(email:2012Jan/0043,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])
 
 
 entity(tr2012:WD-prov-aq-20120110,          [ prov:type='pd:WD' ])
@@ -229,7 +230,7 @@ used(act:publ4,email:2012Jan/0043,-)
 
 wasAssociatedWith(act:publ4, w3:Consortium, process:rec-advance)
 
-entity(wiki:Family4, [ prov:type='prov:Dictionary' ])
+entity(wiki:Family4, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 prov:derivedByInsertionFrom(wiki:Family4, wiki:Family3, {('tr:prov-primer', tr2012:WD-prov-primer-20120110),
                                                          ('tr:prov-aq',     tr2012:WD-prov-aq-20120110)})
@@ -261,7 +262,7 @@ wasAttributedTo(tr2012:WD-prov-primer-20120110, user:Szednik,  [prov:type='prov:
 // fifth publication: next working draft of prov-dm
 //////////////////////////////////////////////////////////////////////
 
-entity(email:2012Jan/0422,     [ prov:type='trans:pubreq' ]) //for prov-dm wd3
+entity(email:2012Jan/0422,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ]) //for prov-dm wd3
 
 entity(tr2012:WD-prov-dm-20120202,          [ prov:type='process:RecsWD' ])
 
@@ -274,7 +275,7 @@ used(act:publ5,email:2012Jan/0422,-)
 
 wasAssociatedWith(act:publ5, w3:Consortium, process:rec-advance)
 
-entity(wiki:Family5, [ prov:type='prov:Dictionary' ])
+entity(wiki:Family5, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 prov:derivedByInsertionFrom(wiki:Family5, wiki:Family4, {('tr:prov-dm',     tr2012:WD-prov-dm-20120202)})
 
 wasDerivedFrom(tr2012:WD-prov-dm-20120202,tr2011:WD-prov-dm-20111215, [prov:type='prov:Revision'])
@@ -301,9 +302,9 @@ wasAttributedTo(tr2012:WD-prov-dm-20120202, user:Ssahoo2,  [prov:type='prov:Cont
 //   - first release of prov-n, prov-constraints
 //////////////////////////////////////////////////////////////////////
 
-entity(chairs:2012AprJun/0037, [ prov:type='trans:transreq' ]) // for prov-n, prov-constraitns
+entity(chairs:2012AprJun/0037, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro" ]) // for prov-n, prov-constraitns
 
-entity(email:2012Apr/0583,     [ prov:type='trans:pubreq' ])
+entity(email:2012Apr/0583,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])
 
 entity(tr2012:WD-prov-dm-20120503,          [ prov:type='process:RecsWD' ])
 entity(tr2012:WD-prov-o-20120503,           [ prov:type='process:RecsWD' ])
@@ -326,7 +327,7 @@ used(act:publ6, chairs:2012AprJun/0037, -)
 wasAssociatedWith(act:publ6, w3:Consortium, process:rec-advance)
 
 
-entity(wiki:Family6, [ prov:type='prov:Dictionary' ])
+entity(wiki:Family6, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 prov:derivedByInsertionFrom(wiki:Family6, wiki:Family5, {('tr:prov-dm',     tr2012:WD-prov-dm-20120503),
                                                      	 ('tr:prov-o',      tr2012:WD-prov-o-20120503),            
@@ -392,7 +393,7 @@ wasAttributedTo(tr2012:WD-prov-primer-20120503, user:Szednik,  [prov:type='prov:
 //////////////////////////////////////////////////////////////////////
 
 
-entity(email:2012Jun/0164,     [ prov:type='trans:pubreq' ])
+entity(email:2012Jun/0164,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])
 
 entity(tr2012:WD-prov-aq-20120619,          [ prov:type='pd:WD' ])
 
@@ -406,7 +407,7 @@ used(act:publ7, email:2012Jun/0164, -)
 wasAssociatedWith(act:publ7, w3:Consortium, process:rec-advance)  
 
 
-entity(wiki:Family7, [ prov:type='prov:Dictionary' ])
+entity(wiki:Family7, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 prov:derivedByInsertionFrom(wiki:Family7, wiki:Family6, {('tr:prov-aq',     tr2012:WD-prov-aq-20120619)})
 
@@ -431,7 +432,7 @@ wasAttributedTo(tr2012:WD-prov-aq-20120619, user:Ssoiland,  [prov:type='prov:Con
 //////////////////////////////////////////////////////////////////////
 
 
-entity(email:2012Jul/0154,     [ prov:type='trans:pubreq' ])
+entity(email:2012Jul/0154,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])
 
 entity(tr2012:WD-prov-dm-20120724,          [ prov:type='pd:WD', prov:type='pd:LastCall' ])
 entity(tr2012:WD-prov-n-20120724,           [ prov:type='pd:WD', prov:type='pd:LastCall' ])
@@ -451,7 +452,7 @@ wasGeneratedBy(tr2012:WD-prov-o-20120724,           act:publ8, -)
 wasGeneratedBy(tr2012:WD-prov-primer-20120724,      act:publ8, -)
 
 
-entity(wiki:Family8, [ prov:type='prov:Dictionary' ])
+entity(wiki:Family8, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 prov:derivedByInsertionFrom(wiki:Family8, wiki:Family7, {('tr:prov-dm',     tr2012:WD-prov-dm-20120724),
                                                          ('tr:prov-n',      tr2012:WD-prov-dm-20120724),
@@ -517,7 +518,7 @@ wasAttributedTo(tr2012:WD-prov-primer-20120724, user:Szednik,  [prov:type='prov:
 
 
 
-entity(email:2012Sep/0070,     [ prov:type='trans:pubreq' ])
+entity(email:2012Sep/0070,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])
 
 entity(tr2012:WD-prov-constraints-20120911, [ prov:type='pd:WD', prov:type='pd:LastCall' ])
 
@@ -530,7 +531,7 @@ wasAssociatedWith(act:publ9, w3:Consortium, process:rec-advance)
 
 wasGeneratedBy(tr2012:WD-prov-constraints-20120911, act:publ9, -)
 
-entity(wiki:Family9, [ prov:type='prov:Dictionary' ])
+entity(wiki:Family9, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 prov:derivedByInsertionFrom(wiki:Family9, wiki:Family8, {('tr:prov-constraints',     tr2012:WD-prov-constraints-20120911)})
 
@@ -551,9 +552,9 @@ wasAttributedTo(tr2012:WD-prov-constraints-20120911, user:Tdenies,  [prov:type='
 //////////////////////////////////////////////////////////////////////
 
 
-entity(chairs:2012OctDec/0060, [ prov:type='trans:transreq' ]) // CR transition request
-entity(chairs:2012OctDec/0072, [ prov:type='trans:transreq' ]) // for prov-xml, prov-dc, prov-links, prov-overview fpwd
-entity(email:2012Dec/0041,     [ prov:type='trans:pubreq' ])
+entity(chairs:2012OctDec/0060, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro" ]) // CR transition request
+entity(chairs:2012OctDec/0072, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro" ]) // for prov-xml, prov-dc, prov-links, prov-overview fpwd
+entity(email:2012Dec/0041,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])
 entity(w3:2012/12/07-provt-minutes, [rdfs:comment="minutes for the PR transition call"])
 
 activity(act:publ10,-,-,[prov:type='prov:Publish' ])
@@ -579,7 +580,7 @@ wasGeneratedBy(tr2012:WD-prov-dc-20121211,          act:publ10, -)
 
 
 
-entity(wiki:Family-cr, [ prov:type='prov:Dictionary' ])
+entity(wiki:Family-cr, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 
 entity(tr2012:CR-prov-dm-20121211,          [ prov:type='process:RecsCR' ])
@@ -687,13 +688,13 @@ wasAttributedTo(tr2012:WD-prov-links-20121211, user:Tlebo,    [prov:type='pd:edi
 //////////////////////////////////////////////////////////////////////
 
 
-entity(chairs:2013JanMar/0088, [ prov:type='trans:transreq'  ]) // PR transition request
-entity(chairs:2013JanMar/0090, [ prov:type='trans:transreq'  ]) // for prov-dictionary, prov-implementations
-entity(chairs:2013JanMar/0097, [ prov:type='trans:transreq'  ]) // for prov-sem
+entity(chairs:2013JanMar/0088, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro" ]) // PR transition request
+entity(chairs:2013JanMar/0090, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro" ]) // for prov-dictionary, prov-implementations
+entity(chairs:2013JanMar/0097, [ prov:type='trans:transreq' , dot:fillcolor="gainsboro" ]) // for prov-sem
 
 entity(w3:2013/03/08-provpr-minutes, [rdfs:comment="minutes for the PR transition call"])
 
-entity(email:2013Mar/0073,     [ prov:type='trans:pubreq' ])
+entity(email:2013Mar/0073,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])
 activity(act:publ11,-,-, [prov:type='prov:Publish' ])
 wasInformedBy(act:publ11, act:WG)
 
@@ -721,7 +722,7 @@ wasGeneratedBy(tr2013:WD-prov-sem-20130312,         act:publ11, -)
 wasGeneratedBy(tr2013:WD-prov-implementations-20130312, act:publ11, -)
 
 
-entity(wiki:Family-pr, [ prov:type='prov:Dictionary' ])
+entity(wiki:Family-pr, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 entity(tr2013:PR-prov-dm-20130312,          [ prov:type='process:RecsPR' ])
 entity(tr2013:PR-prov-n-20130312,           [ prov:type='process:RecsPR' ])
@@ -878,7 +879,7 @@ wasAttributedTo(tr2013:WD-prov-links-20130312, user:Tlebo,    [prov:type='pd:edi
 
 
 
-entity(chairs:2013JanMar/0116, [ prov:type='process:cfr'  ]) 
+entity(chairs:2013JanMar/0116, [ prov:type='process:cfr' , dot:fillcolor="gainsboro" ]) 
 
 activity(act:publ12,-,-,[prov:type='prov:Publish' ])
 wasInformedBy(act:publ12, act:WG)
@@ -917,13 +918,13 @@ entity(team:2013Apr/0405,[rdfs:comment="the director's approval to publish recom
 wasDerivedFrom(team:2013Apr/0405,wbs2:provpf/results)
 
 
-entity(email:2013Apr/0507,     [ prov:type='trans:pubreq' ])  // final publication request
+entity(email:2013Apr/0507,     [ prov:type='trans:pubreq',  dot:fillcolor="gold" ])  // final publication request
 wasDerivedFrom(email:2013Apr/0507,team:2013Apr/0405)
 
 used(act:publ12,email:2013Apr/0507,-)
 used(act:publ12,team:2013Apr/0405,-)
 
-entity(wiki:Family-rec, [ prov:type='prov:Dictionary' ])
+entity(wiki:Family-rec, [ prov:type='prov:Dictionary', dot:fillcolor="bisque2" ])
 
 
 entity(tr2013:REC-prov-dm-20130430,          [ prov:type='process:RecsW3C'  ])
@@ -1166,6 +1167,33 @@ specializationOf(wiki:Family9,wiki:Family)
 specializationOf(wiki:Family-cr,wiki:Family)
 specializationOf(wiki:Family-pr,wiki:Family)
 specializationOf(wiki:Family-rec,wiki:Family)
+
+
+// I introduce these edges for layout only, but it's really time orderign I mean here
+
+wasInformedBy(act:publ2,act:publ1, [dot:color="none"] )
+wasInformedBy(act:publ3,act:publ2, [dot:color="none"])
+wasInformedBy(act:publ4,act:publ3, [dot:color="none"])
+wasInformedBy(act:publ5,act:publ4, [dot:color="none"])
+wasInformedBy(act:publ6,act:publ5, [dot:color="none"])
+wasInformedBy(act:publ7,act:publ6, [dot:color="none"])
+wasInformedBy(act:publ8,act:publ7, [dot:color="none"])
+wasInformedBy(act:publ9,act:publ8, [dot:color="none"])
+wasInformedBy(act:publ10,act:publ9, [dot:color="none"])
+wasInformedBy(act:publ11,act:publ10, [dot:color="none"])
+wasInformedBy(act:publ12,act:publ11, [dot:color="none"])
+used(act:publ2,wiki:Family1, -, [dot:color="none"])
+used(act:publ3,wiki:Family2, -, [dot:color="none"])
+used(act:publ4,wiki:Family3, -, [dot:color="none"])
+used(act:publ5,wiki:Family4, -, [dot:color="none"])
+used(act:publ6,wiki:Family5, -, [dot:color="none"])
+used(act:publ7,wiki:Family6, -, [dot:color="none"])
+used(act:publ8,wiki:Family7, -, [dot:color="none"])
+used(act:publ9,wiki:Family8, -, [dot:color="none"])
+used(act:publ10,wiki:Family9, -, [dot:color="none"])
+used(act:publ11,wiki:Family-cr, -,  [dot:color="none"])
+used(act:publ12,wiki:Family-pr, -,  [dot:color="none"])
+
 
 
 

@@ -8,6 +8,7 @@ import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
 public class Ontology {
+
     public Ontology() {
 	initInfluenceTables();
 	initDomainTables();
@@ -141,6 +142,9 @@ public class Ontology {
     public static QName QNAME_PROVO_EntityInfluence = newProvQName("EntityInfluence");
     public static QName QNAME_PROVO_ActivityInfluence = newProvQName("ActivityInfluence");
     public static QName QNAME_PROVO_AgentInfluence = newProvQName("AgentInfluence");
+    
+    public static QName QNAME_PROVDC_Contributor = newProvQName("Contributor");
+
     
     public static QName QNAME_RDF_TYPE = newRdfQName("type");
     public static QName QNAME_RDFS_LABEL = newRdfsQName("label");

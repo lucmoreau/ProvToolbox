@@ -75,10 +75,7 @@ public class RoundTripFromJavaTest extends
 		{
 			return false;
 		}
-		if (name.contains("dictionary")) {
-			return false;
-		}
-		
+	
 		return true;
 	}
 

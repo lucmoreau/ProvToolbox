@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -15,11 +16,13 @@ import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
+import org.openprovenance.prov.xml.DictionaryMembership;
 import org.openprovenance.prov.xml.HadMember;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.InternationalizedString;
+import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.MentionOf;
 import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
@@ -71,7 +74,10 @@ public class RdfCollector extends RDFHandlerBase {
 			Ontology.QNAME_PROVO_qualifiedQuotation,
 			Ontology.QNAME_PROVO_qualifiedRevision,
 			Ontology.QNAME_PROVO_qualifiedStart,
-			Ontology.QNAME_PROVO_qualifiedUsage
+			Ontology.QNAME_PROVO_qualifiedUsage,
+			Ontology.QNAME_PROVO_qualifiedInsertion,
+			Ontology.QNAME_PROVO_qualifiedRemoval
+
 	});
 
 	private List<QName> DM_TYPES = Arrays.asList(new QName[] {
@@ -80,7 +86,13 @@ public class RdfCollector extends RDFHandlerBase {
 			Ontology.QNAME_PROVO_Organization, Ontology.QNAME_PROVO_Person,
 			Ontology.QNAME_PROVO_Plan, Ontology.QNAME_PROVO_PrimarySource,
 			Ontology.QNAME_PROVO_Quotation, Ontology.QNAME_PROVO_Revision,
-			Ontology.QNAME_PROVO_SoftwareAgent });
+			Ontology.QNAME_PROVO_SoftwareAgent,
+			Ontology.QNAME_PROVDC_Contributor,
+			Ontology.QNAME_PROVO_Dictionary,
+			Ontology.QNAME_PROVO_EmptyDictionary
+
+
+			});
 
 	public RdfCollector(ProvFactory pFactory)
 	{
@@ -668,6 +680,8 @@ public class RdfCollector extends RDFHandlerBase {
 	private void handlePredicates(QName context, QName qname)
 	{
 		List<QName> members = new ArrayList<QName>();
+		List<QName> dictionaryMembers = new ArrayList<QName>();
+
 		List<Statement> statements = collators.get(context).get(qname);
 		for (Statement statement : statements)
 		{
@@ -814,6 +828,10 @@ public class RdfCollector extends RDFHandlerBase {
 				{
 					members.add(convertResourceToQName((Resource) (statement
 							.getObject())));
+				} else if (predQ.equals(Ontology.QNAME_PROVO_hadDictionaryMember))
+				{
+					dictionaryMembers.add(convertResourceToQName((Resource) (statement
+							.getObject())));
 				}
 			}
 		}
@@ -822,8 +840,65 @@ public class RdfCollector extends RDFHandlerBase {
 		{
 			HadMember hm = pFactory.newHadMember(qname, members);
 			store(context, hm);
+		}		
+		if (dictionaryMembers.size() > 0)
+		{
+			List<KeyQNamePair> pairs=
+			 createKeyEntityPairs( context, dictionaryMembers);
+			
+			DictionaryMembership hm = pFactory.newDictionaryMembership(qname, pairs);
+			store(context, hm);
 		}
 	}
+	
+	protected List<Value> getDataObjects(QName context, QName subject, QName pred)
+	{
+		List<Statement> statements = collators.get(context).get(subject);
+		List<Value> objects = new ArrayList<Value>();
+		for (Statement statement : statements)
+		{
+			QName predQ = convertURIToQName(statement.getPredicate());
+			Value value = statement.getObject();
+			if (pred.equals(predQ) && (!(value instanceof Resource)))
+			{
+				objects.add(value);
+			}
+		}
+		return objects;
+	}
+
+	protected List<KeyQNamePair> createKeyEntityPairs(QName context, List<QName> pairs) {
+		List<KeyQNamePair> result= new LinkedList<KeyQNamePair>();
+		for (QName pair: pairs) {
+			List<Value> keys = getDataObjects(context, pair,
+	                  Ontology.QNAME_PROVO_pairKey);  // key is data property!
+
+			List<QName> entities = getObjects(context, pair,
+	                  Ontology.QNAME_PROVO_pairEntity);
+			KeyQNamePair p=new KeyQNamePair();
+			if (!keys.isEmpty()) p.key=valueToObject(keys.get(0)); // we ignore the others
+			if (!entities.isEmpty()) p.name=entities.get(0); // we ignore the others
+		    result.add(p);
+		}
+		return result;
+	}
+
+	protected List<QName> getObjects(QName context, QName subject, QName pred)
+	{
+		List<Statement> statements = collators.get(context).get(subject);
+		List<QName> objects = new ArrayList<QName>();
+		for (Statement statement : statements)
+		{
+			QName predQ = convertURIToQName(statement.getPredicate());
+			Value value = statement.getObject();
+			if (pred.equals(predQ) && value instanceof Resource)
+			{
+				objects.add(convertResourceToQName((Resource) value));
+			}
+		}
+		return objects;
+	}
+
 
 	private void createEntity(QName context, QName qname)
 	{

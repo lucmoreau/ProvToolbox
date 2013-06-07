@@ -9,7 +9,7 @@ import org.openprovenance.prov.notation.Utility;
 
 public class SculptureTest extends TestCase {
 
-    public void sculptureToDot(String asnFile, String xmlFile, String dotFile, String pdfFile)
+    public void sculptureToDot(String asnFile, String xmlFile, String dotFile, String pdfFile, String title) 
         throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
         Utility u=new Utility();
 
@@ -22,13 +22,14 @@ public class SculptureTest extends TestCase {
 
         ProvToDot toDot=new ProvToDot("src/main/resources/defaultConfigWithRoleNoLabel.xml"); 
         
-        toDot.convert(o,dotFile,pdfFile);
+        toDot.convert(o,dotFile,pdfFile,title);
     }
 
     public void testSculptureToDot1() throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
         sculptureToDot("../prov-n/src/test/resources/prov/sculpture.prov-asn",
                        "target/sculpture.prov-xml",
                        "target/sculpture.dot",
-                       "target/sculpture.pdf");
+                       "target/sculpture.pdf",
+                       "sculpture");
     }
 }

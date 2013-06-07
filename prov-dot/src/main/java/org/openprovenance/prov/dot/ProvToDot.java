@@ -15,6 +15,7 @@ import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.Activity;
+import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.Relation0;
 import org.openprovenance.prov.xml.Influence;
 import org.openprovenance.prov.xml.Agent;
@@ -83,7 +84,7 @@ public class ProvToDot {
 
         ProvToDot converter=((configFile==null) ? new ProvToDot() : new ProvToDot(configFile));
 
-        converter.convert(opmFile,outDot,outPdf);
+        converter.convert(opmFile,outDot,outPdf,null);
     }
 
 
@@ -223,27 +224,28 @@ public class ProvToDot {
 
     }
 
-    public void convert(String opmFile, String dotFile, String pdfFile)
+    public void convert(String opmFile, String dotFile, String pdfFile, String title)
         throws java.io.FileNotFoundException, java.io.IOException, JAXBException {
-        convert (ProvDeserialiser.getThreadProvDeserialiser().deserialiseDocument(new File(opmFile)),dotFile,pdfFile);
+        name=title;
+        convert (ProvDeserialiser.getThreadProvDeserialiser().deserialiseDocument(new File(opmFile)),dotFile,pdfFile,title);
     }
 
-    public void convert(Document graph, String dotFile, String pdfFile)
+    public void convert(Document graph, String dotFile, String pdfFile, String title)
         throws java.io.FileNotFoundException, java.io.IOException {
-        convert(graph,new File(dotFile));
+        convert(graph,new File(dotFile), title);
         Runtime runtime = Runtime.getRuntime();
         @SuppressWarnings("unused")
         java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
     }
-    public void convert(Document graph, String dotFile)
+    public void convert(Document graph, String dotFile, String title)
 	        throws java.io.FileNotFoundException, java.io.IOException {
-	        convert(graph,new File(dotFile));
+	        convert(graph,new File(dotFile),title);
 	        
 	    }
 	     
-    public void convert(Document graph, String dotFile, String aFile, String type)
+    public void convert(Document graph, String dotFile, String aFile, String type, String title)
 	        throws java.io.FileNotFoundException, java.io.IOException {
-	        convert(graph,new File(dotFile));
+	        convert(graph,new File(dotFile),title);
 	        Runtime runtime = Runtime.getRuntime();
 	        java.lang.Process proc = runtime.exec("dot -o " + aFile + " -T" + type + " " + dotFile);
 	        try {
@@ -251,30 +253,69 @@ public class ProvToDot {
 		} catch (InterruptedException e){};
     }
     
-    public void convert(Document graph, File file) throws java.io.FileNotFoundException{
+    public void convert(Document graph, File file, String title) throws java.io.FileNotFoundException{
         OutputStream os=new FileOutputStream(file);
-        convert(graph, new PrintStream(os));
+        convert(graph, new PrintStream(os), title);
     }
 
-    public void convert(Document graph, PrintStream out) {
-        List<Relation0> edges=u.getRelations(graph);
+    public void convert(Document doc, PrintStream out, String title) {
+        if (title!=null) name=title;
+        List<Relation0> edges=u.getRelations(doc);
 
-        prelude(out);
+        prelude(doc, out);
 
-        if (u.getActivity(graph)!=null) {
-            for (Activity p: u.getActivity(graph)) {
+        if (u.getActivity(doc)!=null) {
+            for (Activity p: u.getActivity(doc)) {
                 emitActivity(p,out);
             }
         }
 
-        if (u.getEntity(graph)!=null) {
-            for (Entity p: u.getEntity(graph)) {
+        if (u.getEntity(doc)!=null) {
+            for (Entity p: u.getEntity(doc)) {
                 emitEntity(p,out);
             }
         }
 
-        if (u.getAgent(graph)!=null) {
-            for (Agent p: u.getAgent(graph)) {
+        if (u.getAgent(doc)!=null) {
+            for (Agent p: u.getAgent(doc)) {
+                emitAgent(p,out);
+            }
+        }
+        
+        if (u.getBundle(doc)!=null) {
+            for (NamedBundle bun: u.getBundle(doc)) {
+                convert(bun,out);
+            }
+        }
+
+        for (Relation0 e: edges) {
+            emitDependency(e,out);
+        }
+        
+
+        postlude(doc, out);
+       
+    }
+
+    public void convert(NamedBundle bun, PrintStream out) {
+        List<Relation0> edges=u.getRelations(bun);
+
+        prelude(bun, out);
+
+        if (u.getActivity(bun)!=null) {
+            for (Activity p: u.getActivity(bun)) {
+                emitActivity(p,out);
+            }
+        }
+
+        if (u.getEntity(bun)!=null) {
+            for (Entity p: u.getEntity(bun)) {
+                emitEntity(p,out);
+            }
+        }
+
+        if (u.getAgent(bun)!=null) {
+            for (Agent p: u.getAgent(bun)) {
                 emitAgent(p,out);
             }
         }
@@ -284,7 +325,7 @@ public class ProvToDot {
         }
         
 
-        postlude(out);
+        postlude(bun, out);
        
     }
 
@@ -964,13 +1005,23 @@ public class ProvToDot {
         sb.append("]");
     }
 
-    void prelude(PrintStream out) {
+    void prelude(Document doc, PrintStream out) {
         out.println("digraph " + name + " { size=\"16,12\"; rankdir=\"BT\"; ");
     }
 
-    void postlude(PrintStream out) {
+    void postlude(Document doc, PrintStream out) {
         out.println("}");
         out.close();
+    }
+
+    void prelude(NamedBundle doc, PrintStream out) {
+        out.println("subgraph " + "cluster" + dotify(qnameToString(doc.getId())) + " { ");
+        out.println("  label=\"" + localnameToString(doc.getId()) + "\";");
+        out.println("  URL=\"" + qnameToString(doc.getId()) + "\";");
+    }
+
+    void postlude(NamedBundle doc, PrintStream out) {
+        out.println("}");
     }
 
 

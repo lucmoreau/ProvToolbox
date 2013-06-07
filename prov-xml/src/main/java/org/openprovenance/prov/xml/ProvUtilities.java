@@ -44,6 +44,10 @@ public class ProvUtilities {
         return getObject(Agent.class, d.getEntityAndActivityAndWasGeneratedBy());
     }
 
+    public List<NamedBundle> getBundle(Document d) {
+        return getObject(NamedBundle.class, d.getEntityAndActivityAndWasGeneratedBy());
+    }
+
     public List<Relation0> getRelations(NamedBundle d) {
         return getObject2(Relation0.class,
                          d.getEntityAndActivityAndWasGeneratedBy());

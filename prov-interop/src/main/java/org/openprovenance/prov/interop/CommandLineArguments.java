@@ -19,6 +19,7 @@ public class CommandLineArguments {
     public static final String HELP = "help";
     public static final String LOGFILE = "logfile";
     public static final String INFILE = "infile";
+    public static final String TITLE = "title";
 
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
@@ -28,6 +29,7 @@ public class CommandLineArguments {
                 "print the version information and exit");
         Option verbose = new Option(VERBOSE, "be verbose");
         Option debug = new Option(DEBUG, "print debugging information");
+        Option title = new Option(TITLE, "document title");
 
         Option logfile = OptionBuilder
                 .withArgName("file")
@@ -62,6 +64,7 @@ public class CommandLineArguments {
         options.addOption(infile);
         options.addOption(outfile);
         options.addOption(namespaces);
+        options.addOption(title);
 
         return options;
 
@@ -78,6 +81,7 @@ public class CommandLineArguments {
         String infile = null;
         String outfile = null;
         String namespaces = null;
+        String title = null;
 
 
         try {
@@ -92,7 +96,8 @@ public class CommandLineArguments {
 	    if (line.hasOption(LOGFILE))    logfile    = line.getOptionValue(LOGFILE);
             if (line.hasOption(INFILE))     infile     = line.getOptionValue(INFILE);
 	    if (line.hasOption(OUTFILE))    outfile    = line.getOptionValue(OUTFILE);
-	    if (line.hasOption(NAMESPACES)) namespaces = line.getOptionValue(NAMESPACES);
+            if (line.hasOption(NAMESPACES)) namespaces = line.getOptionValue(NAMESPACES);
+            if (line.hasOption(TITLE))      title = line.getOptionValue(TITLE);
 	    
 	    if (help!=null) {
 		HelpFormatter formatter = new HelpFormatter();
@@ -111,7 +116,8 @@ public class CommandLineArguments {
                                                           logfile,
                                                           infile,
                                                           outfile,
-                                                          namespaces);
+                                                          namespaces,
+                                                          title);
             interop.run();
 
         }

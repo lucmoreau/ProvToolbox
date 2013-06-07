@@ -47,7 +47,8 @@ public class InteropFramework {
 	final private String logfile;
 	final private String infile;
 	final private String outfile;
-	final private String namespaces;
+        final private String namespaces;
+        final private String title;
 	public final Hashtable<ProvFormat, String> extensionMap;
 	public final Hashtable<String, ProvFormat> extensionRevMap;
 	public final Hashtable<ProvFormat, String> mimeTypeMap;
@@ -55,17 +56,18 @@ public class InteropFramework {
 	public final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
 
 	public InteropFramework() {
-		this(null, null, null, null, null, null);
+		this(null, null, null, null, null, null,null);
 	}
 
 	public InteropFramework(String verbose, String debug, String logfile,
-			String infile, String outfile, String namespaces) {
+			String infile, String outfile, String namespaces, String title) {
 		this.verbose = verbose;
 		this.debug = debug;
 		this.logfile = logfile;
 		this.infile = infile;
 		this.outfile = outfile;
 		this.namespaces = namespaces;
+		this.title=title;
 		extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
 		extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
 		mimeTypeMap = new Hashtable<InteropFramework.ProvFormat, String>();
@@ -297,7 +299,7 @@ public class InteropFramework {
 				ProvToDot toDot = (configFile == null) ? new ProvToDot(
 						ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
 						configFile);
-				toDot.convert(doc, dotFileOut, filename);
+				toDot.convert(doc, dotFileOut, filename,title);
 				break;
 			}
 			case DOT: {
@@ -305,7 +307,7 @@ public class InteropFramework {
 				ProvToDot toDot = (configFile == null) ? new ProvToDot(
 						ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
 						configFile);
-				toDot.convert(doc, filename);
+				toDot.convert(doc, filename,title);
 				break;
 			}
 			case JPEG: {
@@ -343,7 +345,7 @@ public class InteropFramework {
 					toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
 				}
 
-				toDot.convert(doc, dotFileOut, filename, "svg");
+				toDot.convert(doc, dotFileOut, filename, "svg", title);
 				tmp.delete();
 				break;
 			}

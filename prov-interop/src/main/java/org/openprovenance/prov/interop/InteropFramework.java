@@ -329,6 +329,7 @@ public class InteropFramework {
 				break;
 			}
 			case SVG: {
+				System.out.println("convert to svg");
 				String configFile = null; // give it as option
 				File tmp = File.createTempFile("viz-", ".dot");
 

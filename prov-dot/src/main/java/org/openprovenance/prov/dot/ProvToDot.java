@@ -226,7 +226,6 @@ public class ProvToDot {
 
     public void convert(String opmFile, String dotFile, String pdfFile, String title)
         throws java.io.FileNotFoundException, java.io.IOException, JAXBException {
-        name=title;
         convert (ProvDeserialiser.getThreadProvDeserialiser().deserialiseDocument(new File(opmFile)),dotFile,pdfFile,title);
     }
 
@@ -259,6 +258,7 @@ public class ProvToDot {
     }
 
     public void convert(Document doc, PrintStream out, String title) {
+    	System.out.println("convert document with title " + title);
         if (title!=null) name=title;
         List<Relation0> edges=u.getRelations(doc);
 

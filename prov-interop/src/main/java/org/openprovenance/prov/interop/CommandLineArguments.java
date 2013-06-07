@@ -29,7 +29,6 @@ public class CommandLineArguments {
                 "print the version information and exit");
         Option verbose = new Option(VERBOSE, "be verbose");
         Option debug = new Option(DEBUG, "print debugging information");
-        Option title = new Option(TITLE, "document title");
 
         Option logfile = OptionBuilder
                 .withArgName("file")
@@ -53,6 +52,13 @@ public class CommandLineArguments {
                 .hasArg()
                 .withDescription("use given file as declaration of prefix namespaces")
                 .create(NAMESPACES);
+        
+ 
+        Option title = OptionBuilder
+                .withArgName("string")
+                .hasArg()
+                .withDescription("document title")
+                .create(TITLE);
 
         Options options = new Options();
 

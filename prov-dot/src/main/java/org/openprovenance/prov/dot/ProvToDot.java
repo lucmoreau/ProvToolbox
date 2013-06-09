@@ -3,8 +3,10 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -248,7 +250,11 @@ public class ProvToDot {
 	        Runtime runtime = Runtime.getRuntime();
 	        java.lang.Process proc = runtime.exec("dot -o " + aFile + " -T" + type + " " + dotFile);
 	        try {
-		    proc.waitFor();
+	        	System.out.println("blocking");
+	        	BufferedReader errorReader = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+	            System.out.println("Error:  " + errorReader.readLine());
+			    proc.waitFor();
+			    System.out.println("exit value " + proc.exitValue());
 		} catch (InterruptedException e){};
     }
     

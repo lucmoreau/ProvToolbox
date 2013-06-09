@@ -336,6 +336,7 @@ public class InteropFramework {
 				String dotFileOut = tmp.getAbsolutePath(); // give it as option,
 															// if not available
 															// create tmp file
+				System.out.println("Shoudl create in " + dotFileOut);
 				// ProvToDot toDot=new ProvToDot((configFile==null)?
 				// "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml"
 				// : configFile);

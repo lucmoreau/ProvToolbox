@@ -329,14 +329,12 @@ public class InteropFramework {
 				break;
 			}
 			case SVG: {
-				System.out.println("convert to svg");
 				String configFile = null; // give it as option
 				File tmp = File.createTempFile("viz-", ".dot");
 
 				String dotFileOut = tmp.getAbsolutePath(); // give it as option,
 															// if not available
 															// create tmp file
-				System.out.println("Shoudl create in " + dotFileOut);
 				// ProvToDot toDot=new ProvToDot((configFile==null)?
 				// "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml"
 				// : configFile);

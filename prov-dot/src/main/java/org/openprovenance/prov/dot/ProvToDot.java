@@ -116,9 +116,9 @@ public class ProvToDot {
             break;
 
         case ROLE_NO_LABEL:
-	    System.out.println("ProvToDot role no label");
+	    //System.out.println("ProvToDot role no label");
         default:
-	    System.out.println("ProvToDot role no label (by default)");
+	    //System.out.println("ProvToDot role no label (by default)");
             is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE_WITH_ROLE_NO_LABEL);
             break;
         }
@@ -250,11 +250,13 @@ public class ProvToDot {
 	        Runtime runtime = Runtime.getRuntime();
 	        java.lang.Process proc = runtime.exec("dot -o " + aFile + " -T" + type + " " + dotFile);
 	        try {
-	        	System.out.println("blocking");
 	        	BufferedReader errorReader = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-	            System.out.println("Error:  " + errorReader.readLine());
-			    proc.waitFor();
-			    System.out.println("exit value " + proc.exitValue());
+			String s_error=errorReader.readLine();
+			if (s_error!=null) {
+			    System.out.println("Error:  " + s_error);
+			}
+			proc.waitFor();
+			System.err.println("exit value " + proc.exitValue());
 		} catch (InterruptedException e){};
     }
     
@@ -264,7 +266,6 @@ public class ProvToDot {
     }
 
     public void convert(Document doc, PrintStream out, String title) {
-    	System.out.println("convert document with title " + title);
         if (title!=null) name=title;
         List<Relation0> edges=u.getRelations(doc);
 
@@ -1012,7 +1013,7 @@ public class ProvToDot {
     }
 
     void prelude(Document doc, PrintStream out) {
-        out.println("digraph " + name + " { size=\"16,12\"; rankdir=\"BT\"; ");
+        out.println("digraph \"" + name + "\" { size=\"16,12\"; rankdir=\"BT\"; ");
     }
 
     void postlude(Document doc, PrintStream out) {

@@ -324,7 +324,7 @@ public class InteropFramework {
 					toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
 				}
 
-				toDot.convert(doc, dotFileOut, filename, "jpg");
+				toDot.convert(doc, dotFileOut, filename, "jpg", title);
 				tmp.delete();
 				break;
 			}

@@ -155,8 +155,8 @@ public class InteropFramework {
 				extensionMap.put(ProvFormat.XML, "provx");
 				extensionRevMap.put("provx", ProvFormat.XML);
 				extensionRevMap.put("xml", ProvFormat.XML);
-				mimeTypeMap.put(ProvFormat.XML, "text/xml");
-				mimeTypeRevMap.put("text/xml", ProvFormat.XML);
+				mimeTypeMap.put(ProvFormat.XML, "application/provenance+xml");
+				mimeTypeRevMap.put("application/provenance+xml", ProvFormat.XML);
 				provTypeMap.put(ProvFormat.XML, ProvFormatType.INPUTOUTPUT);
 				break;
 			default:

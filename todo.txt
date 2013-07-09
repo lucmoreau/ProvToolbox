@@ -1,0 +1,16 @@
+
+- mvn clean install
+  performs round trip testing
+
+- currently fails on src/test/samples/activity.xml
+	<pc1:foo>hello</pc1:foo>
+
+
+- any is dumped to database
+   but is not read properly
+
+- problematic code is in src/main/java/org/openprovenance/prov/sql/Essai.java
+
+//            this.any = ItemUtils.wrap(this.any, this.anyItems, Essai.EssaiAnyItem.class);
+
+  should be uncommented out (twice) but the code fails to compile.

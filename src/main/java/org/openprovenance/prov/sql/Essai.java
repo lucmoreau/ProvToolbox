@@ -51,6 +51,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.openprovenance.prov.xml.Attribute;
 
 
 /**
@@ -484,8 +485,10 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
             this.anyItems = new ArrayList<Essai.EssaiAnyItem>();
         }
         if (ItemUtils.shouldBeWrapped(this.any)) {
+	    System.out.println("Essai: getAnyItems " + this.any);
+	    System.out.println(" Essai: getAnyItems " + this.anyItems);
 	    // LUC, Commented out
-	    //            this.any = ItemUtils.wrap(this.any, this.anyItems, Essai.EssaiAnyItem.class);
+	              this.any = ItemUtils.wrap(this.any, this.anyItems, Essai.EssaiAnyItem.class);
         }
         return this.anyItems;
     }
@@ -498,6 +501,8 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
             this.anyItems = new ArrayList<Essai.EssaiAnyItem>();
         }
         if (ItemUtils.shouldBeWrapped(this.any)) {
+	    System.out.println("Essai: setAnyItems " + value);
+	    System.out.println("  Essai: setAnyItems " + this.any);
 	    // LUC, Commented out
             //this.any = ItemUtils.wrap(this.any, this.anyItems, Essai.EssaiAnyItem.class);
         }
@@ -644,11 +649,11 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
     @Table(name = "ESSAIANYITEM")
     @Inheritance(strategy = InheritanceType.JOINED)
     public static class EssaiAnyItem
-        implements Item<Object>
+        implements Item<Attribute>
     {
 
         @XmlAnyElement(lax = true)
-        protected Object item;
+        protected Attribute item;
         @XmlAttribute(name = "Hjid")
         protected Long hjid;
         public final static String ItemObjectContextPath = "org.openprovenance.prov.sql";
@@ -662,7 +667,7 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
          *     
          */
         @Transient
-        public Object getItem() {
+        public Attribute getItem() {
             return item;
         }
 
@@ -674,7 +679,7 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
          *     {@link Object }
          *     
          */
-        public void setItem(Object value) {
+        public void setItem(Attribute value) {
             this.item = value;
         }
 
@@ -718,7 +723,8 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
 
         public void setItemObject(String target) {
             if (target!= null) {
-                setItem(JAXBContextUtils.unmarshal(ItemObjectContextPath, target));
+        	//LUC cast does not seem right!
+                setItem((Attribute)JAXBContextUtils.unmarshal(ItemObjectContextPath, target));
             }
         }
 

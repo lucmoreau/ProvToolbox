@@ -42,11 +42,13 @@ public class Attribute {
 	OTHER
     }
 
-    final private QName elementName;
-    final private Object val;
-    final private QName xsdType;
+    private QName elementName;
+    private Object val;
+    private QName xsdType;
     private AttributeKind kind;
     
+    public Attribute() {
+    }
     
     public Attribute(QName elementName, Object val, QName xsdType) {
  	if (elementName==null) throw new IllegalArgumentException("Attribute elementName is null ");
@@ -67,8 +69,7 @@ public class Attribute {
  	this.kind=kind;
      }
 
-    @Basic
-    @Column(name = "QNAME")
+
     public QName getQName(AttributeKind kind) {
 	switch (kind) {
 	case  PROV_TYPE: return PROV_TYPE_QNAME;
@@ -82,7 +83,7 @@ public class Attribute {
 	}
     }
     
-    @Transient
+
     public AttributeKind getAttributeKind(QName q) {
 	if (q.equals(PROV_TYPE_QNAME)) return AttributeKind.PROV_TYPE;
 	if (q.equals(PROV_LABEL_QNAME)) return AttributeKind.PROV_LABEL;
@@ -91,6 +92,23 @@ public class Attribute {
 	if (q.equals(PROV_ROLE_QNAME)) return AttributeKind.PROV_ROLE;
 	return AttributeKind.OTHER;
     }
+
+    @Transient
+    public AttributeKind getKind() {
+	return kind;
+    }
+
+    @Basic
+    @Column(name = "KIND")
+    public String getAttributeKindItem () {
+	return "" + kind;
+    }
+    public void setAttributeKindItem (String k) {
+	System.out.println("---> setAttributeKindItem() reading " + k);
+	kind=AttributeKind.OTHER;
+    }
+    
+
 
 
     public boolean equals(Object o) {
@@ -110,21 +128,72 @@ public class Attribute {
     public QName getElementName() {
 	return elementName;
     }
-    
-    @Transient
-    public AttributeKind getKind() {
-	return kind;
+
+    @Basic
+    @Column(name = "ELEMENTNAME") 
+    public String getElementNameItem() {
+	if (elementName==null) return null;
+	return QNameToString(elementName);
     }
+
+    public void setElementNameItem(String name) {
+	System.out.println("---> setElementNameItem() reading " + name);
+	elementName=stringToQName(name);
+	System.out.println(" ---> setElementNameItem() got " + elementName);
+    }
+
+    public String QNameToString(QName element) {
+	if (element==null) return null;
+	return element.getPrefix()
+	    + " "
+	    + element.getNamespaceURI()
+	    + " "
+	    + element.getLocalPart();
+    }
+    public QName stringToQName(String s) {
+	String []parts=s.split(" ");
+	return new QName( parts[1], // namespaceURI
+			       parts[2], // localPart
+			       parts[0]  // prfix
+			       );
+    }
+    
 
     @Transient
     public Object getValue() {
 	return val;
     }
 
+
+    @Basic
+    @Column(name = "VALUE")
+    public String getValueItem() {
+	return "" + this.getValue();
+    }
+    public void setValueItem(String value) {
+	System.out.println("---> setValueString() reading " + value);
+	val=value;
+    }
+	
+
     @Transient
     public QName getXsdType() {
 	return xsdType;
     }
+
+    //    @Basic
+    //    @Column(name = "XSDTYPE")
+    public String getXsdTypeItem() {    
+	if (xsdType==null) return null;
+	return QNameToString(xsdType);
+    }
+
+    public void setXsdTypeItem(String name) {
+	System.out.println("---> setXsdTypeIterm() reading " + name);
+	xsdType=stringToQName(name);
+	System.out.println(" ---> setXsdTypeIterm() got " + xsdType);
+    }
+
 
     @Override
     public int hashCode() {

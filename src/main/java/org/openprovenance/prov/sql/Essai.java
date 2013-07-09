@@ -22,11 +22,13 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -100,7 +102,8 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
     protected List<InternationalizedString> label;
     protected List<Object> type;
     protected List<Object> location;
-    protected AValue mytype;
+    protected List<AValue> mytype;
+    @XmlAnyElement(lax = true)
     protected List<org.openprovenance.prov.xml.Attribute> any;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
     protected QName id;
@@ -108,6 +111,7 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
     protected Long hjid;
     protected transient List<Essai.EssaiTypeItem> typeItems;
     protected transient List<Essai.EssaiLocationItem> locationItems;
+    protected transient List<Essai.EssaiAnyItem> anyItems;
 
     /**
      * Gets the value of the startTime property.
@@ -284,24 +288,23 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
      *     {@link AValue }
      *     
      */
-    @ManyToOne(targetEntity = AValue.class, cascade = {
+    @OneToMany(targetEntity = AValue.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "MYTYPE_ESSAI_HJID")
-    public AValue getMytype() {
-        return mytype;
+    public List<AValue> getMytype() {
+        if (mytype == null) {
+            mytype = new ArrayList<AValue>();
+        }
+        return this.mytype;
     }
 
     /**
-     * Sets the value of the mytype property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link AValue }
-     *     
+     * 
      */
-    public void setMytype(AValue value) {
-        this.mytype = value;
+    public void setMytype(List<AValue> mytype) {
+        this.mytype = mytype;
     }
 
     /**
@@ -471,6 +474,37 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
         }
     }
 
+
+    @OneToMany(targetEntity = Essai.EssaiAnyItem.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "ANYITEMS_ESSAI_HJID")
+    public List<Essai.EssaiAnyItem> getAnyItems() {
+        if (this.anyItems == null) {
+            this.anyItems = new ArrayList<Essai.EssaiAnyItem>();
+        }
+        if (ItemUtils.shouldBeWrapped(this.any)) {
+	    // LUC, Commented out
+	    //            this.any = ItemUtils.wrap(this.any, this.anyItems, Essai.EssaiAnyItem.class);
+        }
+        return this.anyItems;
+    }
+
+    public void setAnyItems(List<Essai.EssaiAnyItem> value) {
+        this.any = null;
+        this.anyItems = null;
+        this.anyItems = value;
+        if (this.anyItems == null) {
+            this.anyItems = new ArrayList<Essai.EssaiAnyItem>();
+        }
+        if (ItemUtils.shouldBeWrapped(this.any)) {
+	    // LUC, Commented out
+            //this.any = ItemUtils.wrap(this.any, this.anyItems, Essai.EssaiAnyItem.class);
+        }
+    }
+
+
+
     @Basic
     @Column(name = "IDITEM")
     public String getIdItem() {
@@ -603,6 +637,91 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
     public int hashCode() {
         final HashCodeStrategy strategy = JAXBHashCodeStrategy.INSTANCE;
         return this.hashCode(null, strategy);
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @Entity(name = "Essai$EssaiAnyItem")
+    @Table(name = "ESSAIANYITEM")
+    @Inheritance(strategy = InheritanceType.JOINED)
+    public static class EssaiAnyItem
+        implements Item<Object>
+    {
+
+        @XmlAnyElement(lax = true)
+        protected Object item;
+        @XmlAttribute(name = "Hjid")
+        protected Long hjid;
+        public final static String ItemObjectContextPath = "org.openprovenance.prov.sql";
+
+        /**
+         * 
+         * 
+         * @return
+         *     possible object is
+         *     {@link Object }
+         *     
+         */
+        @Transient
+        public Object getItem() {
+            return item;
+        }
+
+        /**
+         * 
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link Object }
+         *     
+         */
+        public void setItem(Object value) {
+            this.item = value;
+        }
+
+        /**
+         * Gets the value of the hjid property.
+         * 
+         * @return
+         *     possible object is
+         *     {@link Long }
+         *     
+         */
+        @Id
+        @Column(name = "HJID")
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        public Long getHjid() {
+            return hjid;
+        }
+
+        /**
+         * Sets the value of the hjid property.
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link Long }
+         *     
+         */
+        public void setHjid(Long value) {
+            this.hjid = value;
+        }
+
+        @Basic
+        @Column(name = "ITEMOBJECT")
+        @Lob
+        public String getItemObject() {
+            if (JAXBContextUtils.isMarshallable(ItemObjectContextPath, this.getItem())) {
+                return JAXBContextUtils.marshal(ItemObjectContextPath, this.getItem());
+            } else {
+                return null;
+            }
+        }
+
+        public void setItemObject(String target) {
+            if (target!= null) {
+                setItem(JAXBContextUtils.unmarshal(ItemObjectContextPath, target));
+            }
+        }
+
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

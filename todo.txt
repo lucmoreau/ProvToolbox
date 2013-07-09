@@ -2,15 +2,11 @@
 - mvn clean install
   performs round trip testing
 
-- currently fails on src/test/samples/activity.xml
+- Succeeds on src/test/samples/activity.xml
 	<pc1:foo>hello</pc1:foo>
+- currently fails 
+	<pc1:bar>10</pc1:bar>
 
+ I suspect 10, in the java representation, is a string not a number
 
-- any is dumped to database
-   but is not read properly
-
-- problematic code is in src/main/java/org/openprovenance/prov/sql/Essai.java
-
-//            this.any = ItemUtils.wrap(this.any, this.anyItems, Essai.EssaiAnyItem.class);
-
-  should be uncommented out (twice) but the code fails to compile.
+ It's here that I should use AValue

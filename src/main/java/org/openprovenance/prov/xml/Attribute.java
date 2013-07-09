@@ -160,23 +160,6 @@ public class Attribute {
     
 
     @Transient
-    public Object getValue() {
-	return val;
-    }
-
-
-    @Basic
-    @Column(name = "VALUE")
-    public String getValueItem() {
-	return "" + this.getValue();
-    }
-    public void setValueItem(String value) {
-	System.out.println("---> setValueString() reading " + value);
-	val=value;
-    }
-	
-
-    @Transient
     public QName getXsdType() {
 	return xsdType;
     }
@@ -193,6 +176,32 @@ public class Attribute {
 	xsdType=stringToQName(name);
 	System.out.println(" ---> setXsdTypeIterm() got " + xsdType);
     }
+
+    
+
+    @Transient
+    public Object getValue() {
+	return val;
+    }
+    
+    ValueConverter vc=new ValueConverter(ProvFactory.getFactory());
+    
+
+
+    @Basic
+    @Column(name = "VALUE")
+    public String getValueItem() {
+	return "" + this.getValue();
+    }
+    public void setValueItem(String value) {
+	System.out.println("---> setValueString() reading " + value);
+	if (getXsdType()==null) {
+	    val=value;
+	    return;
+	}
+	val=vc.convertToJava(getXsdType(), value);  //LUC: have we deserialized this value yet?
+    }
+	
 
 
     @Override

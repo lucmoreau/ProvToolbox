@@ -475,7 +475,7 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
         }
     }
 
-
+    /*
     @OneToMany(targetEntity = Essai.EssaiAnyItem.class, cascade = {
         CascadeType.ALL
     })
@@ -508,7 +508,7 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
         }
     }
 
-
+    */
 
     @Basic
     @Column(name = "IDITEM")

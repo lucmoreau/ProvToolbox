@@ -31,5 +31,6 @@
         <prov:mytype><prov:long>123456</prov:long></prov:mytype>
         <prov:mytype><prov:string>abcd</prov:string></prov:mytype>
 	<pc1:foo>hello</pc1:foo>
+	<pc1:bar xsi:type="xsd:int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">10</pc1:bar>
     </prov:essai>
 </prov:document>

@@ -89,6 +89,9 @@
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="mytype"      type="prov:AValue" minOccurs="0" maxOccurs="unbounded"/> 
 
+
+      <xs:element name="test"      type="prov:AValue" minOccurs="0" maxOccurs="1"/> 
+
 <!--
 
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> 

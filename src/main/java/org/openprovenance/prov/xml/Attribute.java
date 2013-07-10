@@ -8,9 +8,12 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.openprovenance.prov.sql.AValue;
 import org.openprovenance.prov.sql.InternationalizedString;
 import java.util.Collection;
 
@@ -187,9 +190,10 @@ public class Attribute {
     ValueConverter vc=new ValueConverter(ProvFactory.getFactory());
     
 
-
+    /*
+    //
     @Basic
-    @Column(name = "VALUE")
+    //    @Column(name = "VALUE")
     public String getValueItem() {
 	return "" + this.getValue();
     }
@@ -201,8 +205,62 @@ public class Attribute {
 	}
 	val=vc.convertToJava(getXsdType(), value);  //LUC: have we deserialized this value yet?
     }
-	
 
+    */
+	
+    AValue avalue;
+    
+    /**
+     * Gets the value of the test property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link AValue }
+     *     
+     */
+    @ManyToOne(targetEntity = AValue.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "VALUE_ATTRIBUTE_HJID")
+    public AValue getValueItem() {
+        System.out.println("---> getValueItem() reading " + val);
+        if (avalue==null) avalue=javaToValue(val);
+        return avalue;
+    }
+
+    public AValue javaToValue(Object val2) {
+        System.out.println("---> setValueItem() for " + val2);
+
+        AValue res=new AValue();
+        if (val2 instanceof String) {
+            res.setString((String) val2);
+        }
+        if (val2 instanceof Integer) {
+            res.setInt((Integer) val2);
+        }
+        return res;
+    }
+
+    /**
+     * Sets the value of the test property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link AValue }
+     *     
+     */
+    public void setValueItem(AValue value) {
+        this.avalue=value;
+        this.val = valueToJava(value);
+    }
+
+
+    public Object valueToJava(AValue value) {
+        Object tmp;
+        tmp=value.getString();
+        if (tmp!=null) return tmp;
+        tmp=value.getInt();
+        if (tmp!=null) return tmp;
+        return null;
+    }
 
     @Override
     public int hashCode() {

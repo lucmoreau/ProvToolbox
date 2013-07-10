@@ -5,3 +5,18 @@
 
 - testing <prov:lieu> 
   as List<Location> getLieu()
+
+  created a LocationAdapter
+
+Problem, failure in the locaiton adapter:
+
+	at org.openprovenance.prov.xml.LocationAdapter.marshal(LocationAdapter.java:86)
+
+
+Caused by: java.lang.NullPointerException
+	at org.openprovenance.prov.xml.ProvFactory.newElement(ProvFactory.java:771)
+	at org.openprovenance.prov.xml.LocationAdapter.marshal(LocationAdapter.java:86)
+	at org.openprovenance.prov.xml.LocationAdapter.marshal(LocationAdapter.java:15)
+	at com.sun.xml.internal.bind.v2.runtime.reflect.AdaptedLister$ListIteratorImpl.next(AdaptedLister.java:98)
+	... 49 more
+F

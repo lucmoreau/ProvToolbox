@@ -57,9 +57,19 @@
         <prov:label>hello</prov:label>
         <prov:label xml:lang="EN">bye</prov:label>
         <prov:location>here</prov:location>
-        <prov:lieu>foo</prov:lieu> <!-- problematic line -->
 
     </prov:activity>
 
 
+    <prov:essai prov:id="ex:a8">
+        <prov:label>activity7</prov:label>
+        <prov:label>hello</prov:label>
+        <prov:label xml:lang="EN">bye</prov:label>
+        <prov:location>here</prov:location>
+        <prov:lieu>foo</prov:lieu> <!-- problematic line -->
+
+    </prov:essai>
+
+
 </prov:document>
+

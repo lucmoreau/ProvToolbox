@@ -74,16 +74,16 @@ public class LocationAdapter
 	Object value=attribute.getValue();
 	if (value instanceof InternationalizedString) {
 	    InternationalizedString istring=((InternationalizedString)value);
-	    return pFactory.newElement(null, //attribute.getElementName(), 
+	    return pFactory.newElement(Attribute.PROV_LOCATION_QNAME, //attribute.getElementName(), 
 				       istring.getValue(),
 				       attribute.getXsdType(),
 				       istring.getLang());
 	} else if (value instanceof QName) {
-            return pFactory.newElement(null, //attribute.getElementName(), 
+            return pFactory.newElement(Attribute.PROV_LOCATION_QNAME, //attribute.getElementName(), 
                                        (QName)value);
 
 	} else {
-	    return pFactory.newElement(null, //attribute.getElementName(), 
+	    return pFactory.newElement(Attribute.PROV_LOCATION_QNAME, //attribute.getElementName(), 
 				       value.toString(),
 				       attribute.getXsdType());
 	}

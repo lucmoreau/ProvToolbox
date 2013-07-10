@@ -1269,6 +1269,12 @@
   	          <arg value="persistence.xml" />
                 </exec>
 
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
+  	          <arg value="-e s/&lt;class&gt;org.openprovenance.prov.sql.Essai$EssaiLieuItem&lt;\/class&gt;//" />
+  	          <arg value="-iBAK" />
+  	          <arg value="persistence.xml" />
+                </exec>
+
         
 
         

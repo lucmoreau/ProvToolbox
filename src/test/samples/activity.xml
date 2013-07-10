@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<prov:document xmlns:prov="http://www.w3.org/ns/prov#" xmlns:ns2="http://openprovenance.org/collection#" xmlns:ns3="http://openprovenance.org/validation#" xmlns:prim="http://openprovenance.org/primitives#" xmlns:pc1="http://www.ipaw.info/pc1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<prov:document xmlns:prov="http://www.w3.org/ns/prov#" xmlns:ns2="http://openprovenance.org/collection#" xmlns:ns3="http://openprovenance.org/validation#" xmlns:prim="http://openprovenance.org/primitives#" xmlns:pc1="http://www.ipaw.info/pc1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ex="http://example.com/">
 
 <!--
     <prov:activity prov:id="pc1:00000p1">
@@ -33,4 +33,10 @@
 	<pc1:foo>hello</pc1:foo>
 	<pc1:bar xsi:type="xsd:int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">10</pc1:bar>
     </prov:essai>
+
+    <prov:entity prov:id="ex:e2">
+        <prov:label>entity2</prov:label>
+        <ex:tag1 xsi:type="xsd:string">hello</ex:tag1>
+    </prov:entity>
+
 </prov:document>

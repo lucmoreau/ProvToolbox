@@ -52,8 +52,8 @@ public class DocumentEquality {
 				NamedBundle b2 = (NamedBundle) r2;
 				if (!b1.getId().equals(b2.getId()))
 					return false;
-				List<?> stmts1 = b1.getEntityOrActivityOrWasGeneratedBy();
-				List<?> stmts2 = b2.getEntityOrActivityOrWasGeneratedBy();
+				List<?> stmts1 = b1.getEntityAndActivityAndWasGeneratedBy();
+				List<?> stmts2 = b2.getEntityAndActivityAndWasGeneratedBy();
 				return statementListEqual((List<StatementOrBundle>) stmts1,
 						(List<StatementOrBundle>) stmts2);
 			}
@@ -128,8 +128,8 @@ public class DocumentEquality {
 	}
 
 	public boolean check(Document d1, Document d2) {
-		return statementListEqual(d1.getEntityOrActivityOrWasGeneratedBy(),
-				d2.getEntityOrActivityOrWasGeneratedBy());
+		return statementListEqual(d1.getEntityAndActivityAndWasGeneratedBy(),
+				d2.getEntityAndActivityAndWasGeneratedBy());
 	}
 
 }

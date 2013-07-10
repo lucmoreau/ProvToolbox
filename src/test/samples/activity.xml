@@ -39,4 +39,17 @@
         <ex:tag1 xsi:type="xsd:string">hello</ex:tag1>
     </prov:entity>
 
+    <prov:activity prov:id="ex:a1">
+        <prov:startTime>2013-07-10T20:18:42.780+01:00</prov:startTime>
+        <prov:endTime>2013-07-10T20:18:42.780+01:00</prov:endTime>
+    </prov:activity>
+
+    <prov:activity prov:id="ex:a7">
+        <prov:label>activity7</prov:label>
+        <prov:label>hello</prov:label>
+        <prov:label xml:lang="EN">bye</prov:label>
+        <prov:label xml:lang="FR">bonjour</prov:label>
+    </prov:activity>
+
+
 </prov:document>

@@ -303,6 +303,18 @@
   	          <arg value="Entity.java" />
                 </exec>
 
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e /@Entity(name = &quot;Entity$EntityAnyItem&quot;)/,/@XmlAccessorType.*/ { s/^/\/\//g}" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Entity.java" />
+                </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/protected transient List&lt;Entity.EntityAnyItem&gt; anyItems;//" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Entity.java" />
+                </exec>
+
 
 <!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
@@ -319,10 +331,29 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private AttributeProcessor _attrs=new AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
+  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__ACTIVITY_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
   	              <arg value="Activity.java" />
                 </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e /@OneToMany(targetEntity = Activity.ActivityAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Activity.java" />
+                </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e /@Entity(name = &quot;Activity$ActivityAnyItem&quot;)/,/@XmlAccessorType.*/ { s/^/\/\//g}" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Activity.java" />
+                </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/protected transient List&lt;Activity.ActivityAnyItem&gt; anyItems;//" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Activity.java" />
+                </exec>
+
 
                 <!-- getAny -: List Attribute -->
 
@@ -347,6 +378,12 @@
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/List&lt;Object&gt; lhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; lhsAny/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Activity.java" />
+                </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/List&lt;Object&gt; rhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; rhsAny/" />
   	          <arg value="-iBAK" />
   	          <arg value="Activity.java" />
                 </exec>
@@ -1219,6 +1256,20 @@
   	          <arg value="-iBAK" />
   	          <arg value="persistence.xml" />
                 </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
+  	          <arg value="-e s/&lt;class&gt;org.openprovenance.prov.sql.Activity$ActivityAnyItem&lt;\/class&gt;//" />
+  	          <arg value="-iBAK" />
+  	          <arg value="persistence.xml" />
+                </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
+  	          <arg value="-e s/&lt;class&gt;org.openprovenance.prov.sql.Entity$EntityAnyItem&lt;\/class&gt;//" />
+  	          <arg value="-iBAK" />
+  	          <arg value="persistence.xml" />
+                </exec>
+
+        
 
         
               </tasks>

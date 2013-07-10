@@ -52,6 +52,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.xml.Attribute;
+import org.openprovenance.prov.xml.Location;
 
 
 /**
@@ -87,6 +88,7 @@ import org.openprovenance.prov.xml.Attribute;
     "label",
     "type",
     "location",
+    "lieu",
     "mytype",
     "any"
 })
@@ -103,6 +105,7 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
     protected List<InternationalizedString> label;
     protected List<Object> type;
     protected List<Object> location;
+    protected List<Location> lieu;
     protected List<AValue> mytype;
     @XmlAnyElement(lax = true)
     protected List<org.openprovenance.prov.xml.Attribute> any;
@@ -280,6 +283,31 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
     public void setLocation(List<Object> location) {
         this.location = location;
     }
+
+
+
+
+
+    @OneToMany(targetEntity = Location.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "LOCATIONS_ESSAI_HJID")
+    public List<Location> getLocationItem() {
+        if (lieu == null) {
+            lieu = new ArrayList<Location>();
+        }
+        return this.lieu;
+    }
+
+    public void setLocationItem(List<Location> locations) {
+        this.lieu = locations;
+	if (getLocation().isEmpty()) {
+	    for (Location loc: locations) {
+		getLocation().add(loc.getValue());
+	    }
+	}
+    }
+
 
     /**
      * Gets the value of the mytype property.

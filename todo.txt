@@ -2,11 +2,6 @@
 - mvn clean install
   performs round trip testing
 
-- Succeeds on src/test/samples/activity.xml
-	<pc1:foo>hello</pc1:foo>
-- currently fails 
-	<pc1:bar>10</pc1:bar>
 
- I suspect 10, in the java representation, is a string not a number
-
- It's here that I should use AValue
+- testing <prov:lieu> 
+  as List<Location> getLieu()

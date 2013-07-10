@@ -145,7 +145,7 @@ public class Attribute {
 	System.out.println(" ---> setElementNameItem() got " + elementName);
     }
 
-    public String QNameToString(QName element) {
+    public static String QNameToString(QName element) {
 	if (element==null) return null;
 	return element.getPrefix()
 	    + " "
@@ -153,7 +153,7 @@ public class Attribute {
 	    + " "
 	    + element.getLocalPart();
     }
-    public QName stringToQName(String s) {
+    public static QName stringToQName(String s) {
 	String []parts=s.split(" ");
 	return new QName( parts[1], // namespaceURI
 			       parts[2], // localPart
@@ -226,7 +226,7 @@ public class Attribute {
         return avalue;
     }
 
-    public AValue javaToValue(Object val2) {
+    public static AValue javaToValue(Object val2) {
         System.out.println("---> setValueItem() for " + val2);
 
         AValue res=new AValue();

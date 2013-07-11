@@ -7,7 +7,9 @@ public class RoundTripJavaToJavaTest extends RoundTripFromJavaTest {
 
     public RoundTripJavaToJavaTest(String testName) {
 	super(testName);
+	test=false;
     }
+
 
     ProvFactory pFactory=new ProvFactory();
     

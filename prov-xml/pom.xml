@@ -237,6 +237,31 @@
   	              <arg value="Entity.java" />
                 </exec>
 
+                <!-- getTest -: List<Location>  to be updated to locaiton -->
+
+		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+  	          <arg value="-e s/List&lt;Object&gt; getTest/List&lt;Location&gt; getTest/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Entity.java" />
+                </exec>
+		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+  	          <arg value="-e s/List&lt;Object&gt; test/List&lt;Location&gt; test/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Entity.java" />
+                </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+  	          <arg value="-e s/test = new ArrayList&lt;Object&gt;/test = new ArrayList&lt;Location&gt;/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Entity.java" />
+                </exec>
+
+		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+  	          <arg value="-e s/List&lt;Object&gt; theTest/List&lt;Location&gt; theTest/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Entity.java" />
+                </exec>
+
                 <!-- getAny -: List Attribute -->
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">

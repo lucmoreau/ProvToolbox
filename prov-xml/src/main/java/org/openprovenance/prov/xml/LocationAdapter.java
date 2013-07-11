@@ -39,6 +39,9 @@ public class LocationAdapter
 
 
     public Location unmarshal(Object value) {
+        System.out.println("-> LocationAdapter: unmarshal " + value);
+        System.out.println("-> LocationAdapter: unmarshal " + value.getClass());
+
         if (value instanceof org.w3c.dom.Element) {
             org.w3c.dom.Element el=(org.w3c.dom.Element)value;
             String prefix=el.getPrefix();
@@ -64,7 +67,12 @@ public class LocationAdapter
             //return pFactory.newAttribute(je.getName(),je.getValue(),vconv);
             throw new UnsupportedOperationException();
         }
-        return null;
+        
+        Location loc= new Location (value, vconv.getXsdType(value));
+        System.out.println("-> LocationAdapter: unmarshal " + loc);
+        return loc;
+
+        //return null;
     }
 
     public Object marshal(Location location) {

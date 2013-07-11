@@ -34,12 +34,22 @@ public class Location {
 
 
     public QName getXsdType() {
-	return xsdType;
+        return xsdType;
+    }
+
+
+
+    public void setXsdType(QName xsdType) {
+        this.xsdType=xsdType;
     }
 
 
     public Object getValue() {
-	return val;
+        return val;
+    }
+    
+    public void setValue(Object val) {
+        this.val=val;
     }
     
 
@@ -58,5 +68,9 @@ public class Location {
 	return "[loc " + val + " " + xsdType + "]";
     }
 
+    public String toString() {
+        return toStringDebug();
+    }
+    
 
 }

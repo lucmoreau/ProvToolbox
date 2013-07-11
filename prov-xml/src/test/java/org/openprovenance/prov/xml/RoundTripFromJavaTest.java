@@ -268,10 +268,31 @@ public class RoundTripFromJavaTest extends TestCase {
 
     }
 
+    public boolean test=true;
+
     public void testEntity0() throws JAXBException  {
 	setNamespaces();
 	Entity a = pFactory.newEntity("ex:e0");
 	a.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), ValueConverter.QNAME_XSD_STRING));
+
+	if (test) {
+
+	    a.getTest().add(pFactory.newLocation("un llieu",ValueConverter.QNAME_XSD_STRING));
+	    a.getTest().add(pFactory.newLocation(1,ValueConverter.QNAME_XSD_INT));
+	    a.getTest().add(pFactory.newLocation(2.0,ValueConverter.QNAME_XSD_DOUBLE));
+	    a.getTest().add(pFactory.newLocation(ValueConverter.QNAME_XSD_INT,
+						 ValueConverter.QNAME_XSD_QNAME));
+
+	    URIWrapper w=new URIWrapper();
+	    w.setValue(URI.create(EX_NS+"london"));
+	    a.getTest().add(pFactory.newLocation(w,ValueConverter.QNAME_XSD_ANY_URI));
+
+	    a.getTest().add(pFactory.newLocation(new Long(2),ValueConverter.QNAME_XSD_LONG));
+
+	    // This fails because we don't get to read the type in xsi:type
+	    //a.getTest().add(pFactory.newLocation(2,ValueConverter.QNAME_XSD_UNSIGNED_INT));
+
+	}
 	makeDocAndTest(a,"target/entity0");
     }
 

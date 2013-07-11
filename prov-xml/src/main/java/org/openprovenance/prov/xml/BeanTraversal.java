@@ -101,7 +101,7 @@ public class BeanTraversal {
         return acc;
     }
 
-    
+
     public Object convertValueAttributes(HasValue e, List<Attribute> acc) {
         Object value = e.getValue();
         if (value==null) return acc;

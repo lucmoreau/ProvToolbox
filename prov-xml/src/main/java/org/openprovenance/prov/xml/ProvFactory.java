@@ -545,6 +545,15 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return res;
     }
 
+    public Location newLocation(Object value, ValueConverter vconv) {
+        Location res = new Location(value, vconv.getXsdType(value));
+        return res;
+      }
+
+    public Location newLocation(Object value, QName type) {
+        Location res = new Location(value, type);
+        return res;
+      }
 
     public DictionaryMembership newDictionaryMembership(QName id, IDRef dict,
 						    List<Entry> entitySet) {

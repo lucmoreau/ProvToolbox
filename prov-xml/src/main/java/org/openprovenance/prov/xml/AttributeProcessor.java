@@ -20,7 +20,7 @@ public class AttributeProcessor {
               
     /* Processing of attributes */
     
-    Hashtable<String,List<Attribute>> attributesWithNamespace(String namespace) {
+    public Hashtable<String,List<Attribute>> attributesWithNamespace(String namespace) {
 
 
         Hashtable<String,List<Attribute>> result=namespaceIndex.get(namespace);

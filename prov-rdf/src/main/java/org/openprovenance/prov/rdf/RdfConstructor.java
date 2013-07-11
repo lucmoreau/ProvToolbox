@@ -1,5 +1,6 @@
 package org.openprovenance.prov.rdf;
 
+import java.net.URI;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Collection;
@@ -358,6 +359,14 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 	    QName pred = onto.convertToRdf(attr.getElementName()); // FIXME: convert to XSD_HASH
 
 	    String value;
+	    
+	    if (type.equals(ValueConverter.QNAME_XSD_ANY_URI)
+	            &&
+	            onto.asObjectProperty.contains(pred)) {
+	        System.out.println(" $$$$$$$$$$$$$$$$$$$$$$ " + pred);
+	        //TODO
+	    }
+	    
 	    if (attr.getValue() instanceof InternationalizedString) {
 		InternationalizedString iString = (InternationalizedString) attr.getValue();
 		value = iString.getValue();

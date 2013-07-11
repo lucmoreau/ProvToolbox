@@ -245,5 +245,20 @@ public class RoundTripFromXmlTest extends TestCase {
   	testFile("primer-prov-xml-examples", true);
       }
 
+    public void testTypedObject() throws Exception {
+  	Document doc=testFile("typedObject", true);
+  	
+	/*	Agent ag=(Agent)doc.getEntityAndActivityAndWasGeneratedBy().get(0);
+	System.out.println("agent" +ag);
+	System.out.println("agent type " +ag.getType());
+	System.out.println("agent type " +ag.getType().get(0));
+	System.out.println("agent type " +ag.getType().get(0).getClass());
+	
+	org.w3c.dom.Element el=(org.w3c.dom.Element)ag.getType().get(0);
+	serialize(el);
+	*/
+      }
+
+
 
 }

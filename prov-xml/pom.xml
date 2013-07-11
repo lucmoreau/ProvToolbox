@@ -224,6 +224,11 @@
             <configuration>
               <tasks>
                 
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+  	              <arg value="-e s/@XmlAttribute(name = &quot;type&quot;)/@XmlAttribute(name = &quot;type&quot;, namespace=&quot;http:\/\/www.w3.org\/2001\/XMLSchema-instance&quot;)/"/>
+  	              <arg value="-iBAK" />
+  	              <arg value="TypedObject.java" />
+                </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/implements Equals, HashCode, ToString/implements Element, Equals, HashCode, ToString, HasValue/" />

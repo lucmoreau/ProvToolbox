@@ -32,6 +32,8 @@
        <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
        <xs:element ref="prov:value" minOccurs="0"/>
        <xs:element name="test" minOccurs="0" maxOccurs="unbounded"/>
+       <xs:element ref="prov:test2"  minOccurs="0" maxOccurs="unbounded"/>
+
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
@@ -423,6 +425,25 @@
   <xs:element name="type"     type="xs:anySimpleType"/>
   <xs:element name="location" type="xs:anySimpleType"/>
   <xs:element name="value"    type="xs:anySimpleType"/>
+
+  <xs:element name="test2"    type="prov:TypedObject"/>
+
+  <xs:complexType name="TypedObject2">
+    <xs:complexContent>
+      <xs:extension base="xs:anyType">
+	<xs:attribute name="type" type="xs:QName"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>    
+
+
+  <xs:complexType name="TypedObject">
+    <xs:simpleContent>
+      <xs:extension base="xs:anySimpleType">
+	<xs:attribute name="type" type="xs:QName"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    
 
   <xs:attribute name="id"  type="xs:QName"/>
   <xs:attribute name="ref" type="xs:QName"/>

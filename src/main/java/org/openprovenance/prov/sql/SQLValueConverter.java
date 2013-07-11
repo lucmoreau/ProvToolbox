@@ -151,6 +151,15 @@ public class SQLValueConverter {
 	if ((o=target.getFloat())!=null) {
 	    return o;
 	}
+	if ((o=target.getDouble())!=null) {
+	    return o;
+	}
+	if ((o=target.getUnsignedInt())!=null) {
+	    return o;
+	}
+	if ((o=target.getUnsignedLong())!=null) {
+	    return o;
+	}
 
 	return null;
     }

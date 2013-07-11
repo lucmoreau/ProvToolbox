@@ -57,8 +57,19 @@
         <prov:label>hello</prov:label>
         <prov:label xml:lang="EN">bye</prov:label>
 
+        <prov:test2 xsi:type="xsd:int">1</prov:test2> 
+
+
+<!-- this one doesn't work!
+        <prov:test2 xsi:type="xsd:QName">ex:a8</prov:test2>  -->
+
+        <prov:test2 xsi:type="xsd:unsignedInt">5</prov:test2> 
+        <prov:test2 xsi:type="xsd:float">1.0</prov:test2> 
+        <prov:test2 xsi:type="xsd:double">3.0</prov:test2> 
+
 
     </prov:activity>
+
 
 
     <prov:essai prov:id="ex:a8">

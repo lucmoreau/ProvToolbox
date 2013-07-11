@@ -58,13 +58,16 @@
     <xs:sequence>
     </xs:sequence>
   </xs:complexType>
-  <xs:complexType name="TypedObject">
-    <xs:complexContent>
-      <xs:extension base="xs:anyType">
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>    
 
+  <xs:element name="test2"    type="prov:TypedObject"/>
+
+  <xs:complexType name="TypedObject">
+    <xs:simpleContent>
+      <xs:extension base="xs:anySimpleType">
+	<xs:attribute name="type" type="xs:QName"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    
 
   <xs:element name="activity" type="prov:Activity"/>
   <xs:complexType name="Activity">
@@ -75,6 +78,7 @@
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
 
+       <xs:element ref="prov:test2"  minOccurs="0" maxOccurs="unbounded"/>
 
 
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> 

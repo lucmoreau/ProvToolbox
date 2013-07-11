@@ -2,26 +2,14 @@
 - mvn clean install
   performs round trip testing
 
-
-- testing <prov:lieu> 
-
-Problem is
-         <prov:lieu>ici</prov:lieu>
-
-Class loader doesn't find the jaxb serialization for location.
+see prov-sql/src/test/samples/activity.xml
 
 
-sEE pom.xml
+  Two ways of handling locations.
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/">
-  	          <arg value="-e 1,/org.openprovenance.prov.sql/ s/org.openprovenance.prov.sql/org.openprovenance.prov.sql:org.openprovenance.prov.xml/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="RoundtripTest.java" />
-                </exec>
+  <prov:lieu> in prov:essai. 
+             Uses a LocationAdapter
 
-
-Now, it seems path is defined but
-
-java.lang.NoClassDefFoundError: org/jvnet/jaxb2_commons/lang/builder/JAXBEqualsBuilder
-
-#so need to define same pom.xml as for prov-xml
+  <pro:test2> in prov:activity
+    has defined a TypedObject in schema,
+        corrected by sed, so that it understand attribute xsi:

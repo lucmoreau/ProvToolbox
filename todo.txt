@@ -4,19 +4,24 @@
 
 
 - testing <prov:lieu> 
-  as List<Location> getLieu()
 
-  created a LocationAdapter
+Problem is
+         <prov:lieu>ici</prov:lieu>
 
-Problem, failure in the locaiton adapter:
-
-	at org.openprovenance.prov.xml.LocationAdapter.marshal(LocationAdapter.java:86)
+Class loader doesn't find the jaxb serialization for location.
 
 
-Caused by: java.lang.NullPointerException
-	at org.openprovenance.prov.xml.ProvFactory.newElement(ProvFactory.java:771)
-	at org.openprovenance.prov.xml.LocationAdapter.marshal(LocationAdapter.java:86)
-	at org.openprovenance.prov.xml.LocationAdapter.marshal(LocationAdapter.java:15)
-	at com.sun.xml.internal.bind.v2.runtime.reflect.AdaptedLister$ListIteratorImpl.next(AdaptedLister.java:98)
-	... 49 more
-F
+sEE pom.xml
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/">
+  	          <arg value="-e 1,/org.openprovenance.prov.sql/ s/org.openprovenance.prov.sql/org.openprovenance.prov.sql:org.openprovenance.prov.xml/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="RoundtripTest.java" />
+                </exec>
+
+
+Now, it seems path is defined but
+
+java.lang.NoClassDefFoundError: org/jvnet/jaxb2_commons/lang/builder/JAXBEqualsBuilder
+
+#so need to define same pom.xml as for prov-xml

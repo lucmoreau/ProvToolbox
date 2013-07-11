@@ -67,9 +67,9 @@
         <prov:label xml:lang="EN">bye</prov:label>
         <prov:location>here</prov:location>
 
-
+<!--
          <prov:lieu>ici</prov:lieu>
-
+-->
 
     </prov:essai>
 

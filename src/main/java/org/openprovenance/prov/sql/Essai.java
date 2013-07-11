@@ -301,11 +301,6 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
 
     public void setLocationItem(List<Location> locations) {
         this.lieu = locations;
-	if (getLocation().isEmpty()) {
-	    for (Location loc: locations) {
-		getLocation().add(loc.getValue());
-	    }
-	}
     }
 
 

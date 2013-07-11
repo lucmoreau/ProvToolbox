@@ -45,6 +45,7 @@ public class LocationAdapter
             String namespace=el.getNamespaceURI();
             String local=el.getLocalName();
             String child=el.getTextContent();
+            System.out.println("-> LocationAdapter: unmarshal " + namespace + " " + local + " " + child);
             String typeAsString=el.getAttributeNS(NamespacePrefixMapper.XSI_NS, "type");
             String lang=el.getAttributeNS(NamespacePrefixMapper.XML_NS, "lang");
             QName type=((typeAsString==null) || (typeAsString.equals(""))) ? null : stringToQName(typeAsString, el);
@@ -66,17 +67,20 @@ public class LocationAdapter
         return null;
     }
 
-    public Object marshal(Location attribute) {
+    public Object marshal(Location location) {
         //System.out.println("AnyAdapter2 marshalling for " + attribute);
         //System.out.println("AnyAdapter2 marshalling for " + attribute
         //                .getClass());
         //TODO: this call creates a DOM but does not encode the type as xsi:type
-	Object value=attribute.getValue();
+	Object value=location.getValue();	
+        QName xsdType = location.getXsdType();
+        System.out.println("-> LocationAdapter: marshal " + value + " " + xsdType);
+
 	if (value instanceof InternationalizedString) {
 	    InternationalizedString istring=((InternationalizedString)value);
 	    return pFactory.newElement(Attribute.PROV_LOCATION_QNAME, //attribute.getElementName(), 
 				       istring.getValue(),
-				       attribute.getXsdType(),
+				       xsdType,
 				       istring.getLang());
 	} else if (value instanceof QName) {
             return pFactory.newElement(Attribute.PROV_LOCATION_QNAME, //attribute.getElementName(), 
@@ -85,7 +89,7 @@ public class LocationAdapter
 	} else {
 	    return pFactory.newElement(Attribute.PROV_LOCATION_QNAME, //attribute.getElementName(), 
 				       value.toString(),
-				       attribute.getXsdType());
+				       xsdType);
 	}
         //JAXBElement<?> je=new JAXBElement(value.getElementName(),value.getValue().getClass(),value.getValue());
         //return je;

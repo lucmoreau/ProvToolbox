@@ -54,6 +54,10 @@
     <xs:sequence>
     </xs:sequence>
   </xs:complexType>
+  <xs:complexType name="Location">
+    <xs:sequence>
+    </xs:sequence>
+  </xs:complexType>
 
   <xs:element name="activity" type="prov:Activity"/>
   <xs:complexType name="Activity">

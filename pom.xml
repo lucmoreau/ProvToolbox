@@ -1231,6 +1231,10 @@
                      <arg value="Attribute.java" />
                 </exec>
 
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+                     <arg value="Location.java" />
+                </exec>
+
 
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
                      <arg value="Essai.java" />

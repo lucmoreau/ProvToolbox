@@ -23,12 +23,20 @@
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
       <version>0.2.4-SNAPSHOT</version>
+
       <exclusions>
 	<exclusion>
 	  <groupId>org.jvnet.jaxb2_commons</groupId>
 	  <artifactId>runtime</artifactId>
 	</exclusion>
       </exclusions>
+
+    </dependency>
+
+    <dependency>
+	  <groupId>org.jvnet.jaxb2_commons</groupId>
+	  <artifactId>runtime</artifactId>
+	  <version>0.4.1.5-no-equals</version>
     </dependency>
     
     <dependency>
@@ -1266,12 +1274,12 @@
   	          <arg value="sun-jaxb.episode" />
                 </exec>
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/">
+<!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/">
   	          <arg value="-e 1,/org.openprovenance.prov.sql/ s/org.openprovenance.prov.sql/org.openprovenance.prov.sql:org.openprovenance.prov.xml/" />
   	          <arg value="-iBAK" />
   	          <arg value="RoundtripTest.java" />
                 </exec>
-
+-->
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
   	          <arg value="-e s/org.openprovenance.prov.sql.OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
   	          <arg value="-iBAK" />

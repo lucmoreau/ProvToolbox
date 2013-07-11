@@ -15,19 +15,30 @@ import javax.persistence.Transient;
 
 import org.openprovenance.prov.sql.AValue;
 import org.openprovenance.prov.sql.InternationalizedString;
+import org.openprovenance.prov.sql.SQLValueConverter;
+
 import java.util.Collection;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
 import javax.xml.namespace.QName;
 
 
-@XmlJavaTypeAdapter(LocationAdapter.class)
+//@XmlJavaTypeAdapter(LocationAdapter.class)
+@XmlType(name = "Location", propOrder = {
+	    "xsdType",
+	    "val"
+	})
 @javax.persistence.Entity(name = "Location")
 @Table(name = "LOCATION")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Location {
     
+    @XmlValue
     private Object val;
+    @XmlAttribute(name = "type", namespace = "http://www.w3.org/2001/XMLSchema-instance")
     private QName xsdType;
 
     
@@ -78,7 +89,8 @@ public class Location {
     
     ValueConverter vc=new ValueConverter(ProvFactory.getFactory());
 	
-    AValue avalue;
+    transient Object valueItem;
+    transient AValue avalue;
     
     /**
      * Gets the value of the test property.
@@ -92,7 +104,7 @@ public class Location {
     @JoinColumn(name = "VALUE_LOCATION_HJID")
     public AValue getValueItem() {
         System.out.println("#---> getValueItem() reading " + val);
-        if (avalue==null) avalue=Attribute.javaToValue(val);
+        if ((avalue==null) && (val!=null)) avalue=SQLValueConverter.convertToAValue(vc.getXsdType(val), val); //TODO, I am not using the one saved!
         return avalue;
     }
 
@@ -109,18 +121,9 @@ public class Location {
         System.out.println("#---> setValueItem() reading " + ((value==null)? null : value.getString()));
 
         this.avalue=value;
-        this.val = valueToJava(value);
+        this.val = SQLValueConverter.convertFromAValue(value);
     }
 
-
-    public Object valueToJava(AValue value) {
-        Object tmp;
-        tmp=value.getString();
-        if (tmp!=null) return tmp;
-        tmp=value.getInt();
-        if (tmp!=null) return tmp;
-        return null;
-    }
 
     @Override
     public int hashCode() {
@@ -136,8 +139,8 @@ public class Location {
     public String toStringDebug() { 
 	return "[loc " + val + " " + xsdType + "]";
     }
-
-
+    
+    @XmlAttribute(name = "Hjid")
     Long hjid;
 
     @Id

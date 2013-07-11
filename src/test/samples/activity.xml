@@ -67,9 +67,15 @@
         <prov:label xml:lang="EN">bye</prov:label>
         <prov:location>here</prov:location>
 
-<!--
+
          <prov:lieu>ici</prov:lieu>
--->
+         <prov:lieu xsi:type="xsd:int">1</prov:lieu>
+
+         <prov:lieu xsi:type="xsd:float">1.0</prov:lieu>
+
+
+	 <prov:lieu xsi:type="xsd:QName">ex:ici</prov:lieu> 
+
 
     </prov:essai>
 

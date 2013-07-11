@@ -140,9 +140,18 @@ public class SQLValueConverter {
     public static Object convertFromAValue(AValue target) {
 	Object o;
 	if ((o=target.getInt())!=null) {
-	    System.out.println("convertFromAValue(): " + o);
 	    return o;
 	}
+	if ((o=target.getString())!=null) {
+	    return o;
+	}
+	if ((o=target.getQname())!=null) {
+	    return o;
+	}
+	if ((o=target.getFloat())!=null) {
+	    return o;
+	}
+
 	return null;
     }
 	

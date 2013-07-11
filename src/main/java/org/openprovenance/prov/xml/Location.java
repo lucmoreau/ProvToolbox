@@ -57,15 +57,16 @@ public class Location {
 
     //    @Basic
     //    @Column(name = "XSDTYPE")
-    public String getXsdTypeItem() {    
+    public String getXsdTypeItem() { 
+        System.out.println("#---> getXsdTypeItem() reading " + xsdType);
 	if (xsdType==null) return null;
 	return Attribute.QNameToString(xsdType);
     }
 
     public void setXsdTypeItem(String name) {
-	System.out.println("---> setXsdTypeIterm() reading " + name);
+	System.out.println("#---> setXsdTypeItem() reading " + name);
 	xsdType=Attribute.stringToQName(name);
-	System.out.println(" ---> setXsdTypeIterm() got " + xsdType);
+	System.out.println("#---> setXsdTypeItem() got " + xsdType);
     }
 
     
@@ -90,7 +91,7 @@ public class Location {
     @ManyToOne(targetEntity = AValue.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "VALUE_LOCATION_HJID")
     public AValue getValueItem() {
-        System.out.println("---> getValueItem() reading " + val);
+        System.out.println("#---> getValueItem() reading " + val);
         if (avalue==null) avalue=Attribute.javaToValue(val);
         return avalue;
     }
@@ -104,6 +105,9 @@ public class Location {
      *     
      */
     public void setValueItem(AValue value) {
+        System.out.println("#---> setValueItem() reading " + value);
+        System.out.println("#---> setValueItem() reading " + ((value==null)? null : value.getString()));
+
         this.avalue=value;
         this.val = valueToJava(value);
     }

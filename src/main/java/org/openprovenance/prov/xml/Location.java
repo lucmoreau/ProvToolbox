@@ -20,25 +20,16 @@ import org.openprovenance.prov.sql.SQLValueConverter;
 import java.util.Collection;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
 import javax.xml.namespace.QName;
 
 
-//@XmlJavaTypeAdapter(LocationAdapter.class)
-@XmlType(name = "Location", propOrder = {
-	    "xsdType",
-	    "val"
-	})
+@XmlJavaTypeAdapter(LocationAdapter.class)
 @javax.persistence.Entity(name = "Location")
 @Table(name = "LOCATION")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Location {
     
-    @XmlValue
     private Object val;
-    @XmlAttribute(name = "type", namespace = "http://www.w3.org/2001/XMLSchema-instance")
     private QName xsdType;
 
     
@@ -89,8 +80,7 @@ public class Location {
     
     ValueConverter vc=new ValueConverter(ProvFactory.getFactory());
 	
-    transient Object valueItem;
-    transient AValue avalue;
+    AValue avalue;
     
     /**
      * Gets the value of the test property.
@@ -139,8 +129,8 @@ public class Location {
     public String toStringDebug() { 
 	return "[loc " + val + " " + xsdType + "]";
     }
-    
-    @XmlAttribute(name = "Hjid")
+
+
     Long hjid;
 
     @Id

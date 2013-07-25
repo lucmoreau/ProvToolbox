@@ -44,8 +44,8 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Location", namespace = "http://www.w3.org/ns/prov#")
-public class Location extends TypedValue
+@XmlType(name = "Role", namespace = "http://www.w3.org/ns/prov#")
+public class Role extends TypedValue
     implements Equals, HashCode, ToString
 {
 }

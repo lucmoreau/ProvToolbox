@@ -425,6 +425,20 @@
   <xs:element name="value"    type="xs:anySimpleType"/>
 
 
+  <xs:complexType name="TypedValue">
+    <xs:simpleContent>
+      <xs:extension base="xs:anySimpleType">
+	<xs:attribute name="type" type="xs:QName"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    
+  <xs:complexType name="Location2">
+    <xs:simpleContent>
+      <xs:extension base="prov:TypedValue">
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    
+
   <xs:complexType name="Location">
     <xs:simpleContent>
       <xs:extension base="xs:anySimpleType">

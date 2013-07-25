@@ -1,4 +1,11 @@
 
+Have a representation of typed values in Java.	
+	    // This fails because we don't get to read the type in xsi:type
+	    //a.getLocation().add(pFactory.newLocation(2,ValueConverter.QNAME_XSD_UNSIGNED_INT));
+	    // problem in prov-n parsing, since  TreeTraversal.convertTypeLiteral generate a java value without type!
+
+
+----------------------------------------------------------------------
 - Support for bundles
 - HadMember conversion to rdf
 - Influence to rdf

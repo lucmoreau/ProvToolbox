@@ -952,6 +952,12 @@
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
                      <arg value="Location.java" />
                 </exec>
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+                     <arg value="Role.java" />
+                </exec>
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+                     <arg value="TypedValue.java" />
+                </exec>
 
 <!--
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">

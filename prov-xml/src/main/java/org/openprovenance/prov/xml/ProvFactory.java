@@ -526,8 +526,17 @@ public class ProvFactory implements ModelConstructor, QNameExport {
   	return res;
       }
 
+    public Attribute newAttribute(QName qname, Object value, QName type) {
+  	Attribute res = new Attribute(qname, value, type);
+  	return res;
+      }
+
     public Attribute newAttribute(Attribute.AttributeKind kind, Object value, ValueConverter vconv) {
   	Attribute res = new Attribute(kind, value, vconv.getXsdType(value));
+  	return res;
+      }
+    public Attribute newAttribute(Attribute.AttributeKind kind, Object value, QName type) {
+  	Attribute res = new Attribute(kind, value, type);
   	return res;
       }
 
@@ -546,12 +555,13 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
 
     public Location newLocation(Object value, ValueConverter vconv) {
-        Location res = new Location(value, vconv.getXsdType(value));
-        return res;
+        return newLocation(value,vconv.getXsdType(value));
       }
 
     public Location newLocation(Object value, QName type) {
-        Location res = new Location(value, type);
+        Location res =  of.createLocation();
+        res.setType(type);
+        res.setValueAsJava(value);
         return res;
       }
 
@@ -1672,7 +1682,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 		break;
 	    case PROV_LOCATION:
 		if (loc!=null) {
-		    loc.getLocation().add(aValue);
+		    loc.getLocation().add(newLocation(aValue,attr.getXsdType()));
 		}
 		break;
 	    case PROV_ROLE:

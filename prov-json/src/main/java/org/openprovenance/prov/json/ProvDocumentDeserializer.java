@@ -39,6 +39,7 @@ import org.openprovenance.prov.xml.HasType;
 import org.openprovenance.prov.xml.HasValue;
 import org.openprovenance.prov.xml.InternationalizedString;
 import org.openprovenance.prov.xml.KeyQNamePair;
+import org.openprovenance.prov.xml.Location;
 import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Statement;
@@ -378,9 +379,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         values = popMultiValAttribute("prov:location", attributeMap);
         if (!values.isEmpty()) {
         	if (statement instanceof HasLocation) {
-	            List<Object> locations = ((HasLocation)statement).getLocation();
+	            List<Location> locations = ((HasLocation)statement).getLocation();
 	            for (JsonElement value: values) {
-	                locations.add(decodeAttributeValue(value));
+	                locations.add(pf.newLocation(decodeAttributeValue(value),vconv));
 	            }
         	}
         	else {

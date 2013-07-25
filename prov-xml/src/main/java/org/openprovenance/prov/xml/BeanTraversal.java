@@ -94,9 +94,9 @@ public class BeanTraversal {
     }
     
     public List<Attribute> convertLocationAttributes(HasLocation e, List<Attribute> acc) {
-        List<Object> locations = e.getLocation();
-        for (Object location : locations) {
-            acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LOCATION,location, vconv));
+        List<Location> locations = e.getLocation();
+        for (Location location : locations) {
+            acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LOCATION,location.getValueAsJava(vconv), location.getType()));
         }
         return acc;
     }

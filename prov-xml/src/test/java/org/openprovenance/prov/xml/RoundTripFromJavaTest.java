@@ -209,16 +209,16 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void addLocations(HasLocation hl) {
-   	hl.getLocation().add("London");
-   	hl.getLocation().add(1);
-   	hl.getLocation().add(1.0);
-   	hl.getLocation().add(true);
-   	hl.getLocation().add(new QName(EX_NS, "london", EX_PREFIX));
-   	hl.getLocation().add(pFactory.newTimeNow());
+   	hl.getLocation().add(pFactory.newLocation("London",vconv));
+   	hl.getLocation().add(pFactory.newLocation(1,vconv));
+   	hl.getLocation().add(pFactory.newLocation(1.0,vconv));
+   	hl.getLocation().add(pFactory.newLocation(true,vconv));
+   	hl.getLocation().add(pFactory.newLocation(new QName(EX_NS, "london", EX_PREFIX),vconv));
+   	hl.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),vconv));
    	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"london"));
-   	hl.getLocation().add(w);
-   	hl.getLocation().add(pFactory.newGYear("2002"));
+   	hl.getLocation().add(pFactory.newLocation(w,vconv));
+   	hl.getLocation().add(pFactory.newLocation(pFactory.newGYear("2002"),vconv));
     }
     
     public void addValue(HasValue hl) {
@@ -277,21 +277,25 @@ public class RoundTripFromJavaTest extends TestCase {
 
 	if (test) {
 
-	    a.getTest().add(pFactory.newLocation("un llieu",ValueConverter.QNAME_XSD_STRING));
-	    a.getTest().add(pFactory.newLocation(1,ValueConverter.QNAME_XSD_INT));
-	    a.getTest().add(pFactory.newLocation(2.0,ValueConverter.QNAME_XSD_DOUBLE));
-	    a.getTest().add(pFactory.newLocation(ValueConverter.QNAME_XSD_INT,
+	    a.getLocation().add(pFactory.newLocation("un llieu",ValueConverter.QNAME_XSD_STRING));
+	    a.getLocation().add(pFactory.newLocation(1,ValueConverter.QNAME_XSD_INT));
+	    a.getLocation().add(pFactory.newLocation(2.0,ValueConverter.QNAME_XSD_DOUBLE));
+
+
+	    //ValueConverter.QNAME_XSD_INT, Note this is problematic for conversion to/from rdf
+
+	    a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "abc", EX_PREFIX),
 						 ValueConverter.QNAME_XSD_QNAME));
 
 	    URIWrapper w=new URIWrapper();
 	    w.setValue(URI.create(EX_NS+"london"));
-	    a.getTest().add(pFactory.newLocation(w,ValueConverter.QNAME_XSD_ANY_URI));
+	    a.getLocation().add(pFactory.newLocation(w,ValueConverter.QNAME_XSD_ANY_URI));
 
-	    a.getTest().add(pFactory.newLocation(new Long(2),ValueConverter.QNAME_XSD_LONG));
+	    a.getLocation().add(pFactory.newLocation(new Long(2),ValueConverter.QNAME_XSD_LONG));
 
 	    // This fails because we don't get to read the type in xsi:type
-	    //a.getTest().add(pFactory.newLocation(2,ValueConverter.QNAME_XSD_UNSIGNED_INT));
-
+	    //a.getLocation().add(pFactory.newLocation(2,ValueConverter.QNAME_XSD_UNSIGNED_INT));
+	    // problem in prov-n parsing, since  TreeTraversal.convertTypeLiteral generate a java value without type!
 	}
 	makeDocAndTest(a,"target/entity0");
     }
@@ -522,15 +526,15 @@ public class RoundTripFromJavaTest extends TestCase {
        	a.getLabel().add(pFactory.newInternationalizedString("hello"));
        	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
        	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
-   	a.getLocation().add("London");
-   	a.getLocation().add(1);
-   	a.getLocation().add(1.0);
-   	a.getLocation().add(true);
-   	a.getLocation().add(new QName(EX_NS, "london", EX_PREFIX));
-   	a.getLocation().add(pFactory.newTimeNow());
+   	a.getLocation().add(pFactory.newLocation("London",vconv));
+   	a.getLocation().add(pFactory.newLocation(1,vconv));
+   	a.getLocation().add(pFactory.newLocation(1.0,vconv));
+   	a.getLocation().add(pFactory.newLocation(true,vconv));
+   	a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "london", EX_PREFIX),vconv));
+   	a.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),vconv));
    	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"london"));
-   	a.getLocation().add(w);
+   	a.getLocation().add(pFactory.newLocation(w,vconv));
        	makeDocAndTest(a,"target/agent7");
     }
     public void testAgent8() throws JAXBException  {
@@ -558,22 +562,22 @@ public class RoundTripFromJavaTest extends TestCase {
        	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
        	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
        	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
-   	a.getLocation().add("London");
-   	a.getLocation().add("London");
-   	a.getLocation().add(1);
-   	a.getLocation().add(1);
-   	a.getLocation().add(1.0);
-   	a.getLocation().add(1.0);
-   	a.getLocation().add(true);
-   	a.getLocation().add(true);
-   	a.getLocation().add(new QName(EX_NS, "london", EX_PREFIX));
-   	a.getLocation().add(new QName(EX_NS, "london", EX_PREFIX));
-   	a.getLocation().add(pFactory.newTimeNow());
-   	a.getLocation().add(pFactory.newTimeNow());
+   	a.getLocation().add(pFactory.newLocation("London",vconv));
+   	a.getLocation().add(pFactory.newLocation("London",vconv));
+   	a.getLocation().add(pFactory.newLocation(1,vconv));
+   	a.getLocation().add(pFactory.newLocation(1,vconv));
+   	a.getLocation().add(pFactory.newLocation(1.0,vconv));
+   	a.getLocation().add(pFactory.newLocation(1.0,vconv));
+   	a.getLocation().add(pFactory.newLocation(true,vconv));
+   	a.getLocation().add(pFactory.newLocation(true,vconv));
+   	a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "london", EX_PREFIX),vconv));
+   	a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "london", EX_PREFIX),vconv));
+   	a.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),vconv));
+   	a.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),vconv));
    	URIWrapper w2=new URIWrapper();
    	w2.setValue(URI.create(EX_NS+"london"));
-   	a.getLocation().add(w2);
-   	a.getLocation().add(w2);
+   	a.getLocation().add(pFactory.newLocation(w2,vconv));
+   	a.getLocation().add(pFactory.newLocation(w2,vconv));
 
        	makeDocAndTest(a,"target/agent8");
     }

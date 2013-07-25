@@ -948,6 +948,11 @@
                      <arg value="URIWrapper.java" />
                 </exec>
 
+
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+                     <arg value="Location.java" />
+                </exec>
+
 <!--
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/equalsBuilder.append(this.getContent(), that.getContent());/\/\/Luc: equalsBuilder.append(this.getContent(), that.getContent());/" />

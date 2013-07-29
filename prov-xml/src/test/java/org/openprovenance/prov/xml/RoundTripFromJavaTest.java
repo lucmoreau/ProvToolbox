@@ -225,7 +225,8 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void addValue(HasValue hl) {
-        hl.setValue(new QName(EX_NS, "avalue", EX_PREFIX));
+        hl.setValue(pFactory.newValue(new QName(EX_NS, "avalue", EX_PREFIX),
+				      ValueConverter.QNAME_XSD_QNAME));
     }
 
     public void addFurtherAttributes(HasExtensibility he) {

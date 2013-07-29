@@ -103,9 +103,9 @@ public class BeanTraversal {
 
 
     public Object convertValueAttributes(HasValue e, List<Attribute> acc) {
-        Object value = e.getValue();
+        Value value = e.getValue();
         if (value==null) return acc;
-        acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_VALUE,value, vconv));
+        acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_VALUE,value.getValueAsJava(vconv), value.getType()));
         return acc;     
     }
 

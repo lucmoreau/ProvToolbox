@@ -592,6 +592,17 @@ public class ProvFactory implements ModelConstructor, QNameExport {
         res.setValueAsJava(value);
         return res;
       }
+    public Value newValue(Object value, ValueConverter vconv) {
+        return newValue(value,vconv.getXsdType(value));
+      }
+
+    public Value newValue(Object value, QName type) {
+	if (value==null) return null;
+        Value res =  of.createValue();
+        res.setType(type);
+        res.setValueAsJava(value);
+        return res;
+      }
 
     public DictionaryMembership newDictionaryMembership(QName id, IDRef dict,
 						    List<Entry> entitySet) {
@@ -1724,7 +1735,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 		break;
 	    case PROV_VALUE:
 		if (aval!=null) {
-		    aval.setValue(aValue);
+		    aval.setValue(newValue(aValue,attr.getXsdType()));
 		}
 		break;
 	    case OTHER:

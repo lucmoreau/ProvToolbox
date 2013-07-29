@@ -354,9 +354,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         List<JsonElement> values = popMultiValAttribute("prov:type", attributeMap);
         if (!values.isEmpty()) {
         	if (statement instanceof HasType) {
-	            List<Object> types = ((HasType)statement).getType();
+	            List<org.openprovenance.prov.xml.Type> types = ((HasType)statement).getType();
 	            for (JsonElement value: values) {
-	                types.add(decodeTypeRef(value));
+	                types.add(pf.newType(decodeTypeRef(value),vconv));
 	            }
         	}
         	else {

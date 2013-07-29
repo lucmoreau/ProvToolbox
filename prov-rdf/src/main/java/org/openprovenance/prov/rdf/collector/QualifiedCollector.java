@@ -19,7 +19,9 @@ import org.openprovenance.prov.xml.Identifiable;
 import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.StatementOrBundle;
+import org.openprovenance.prov.xml.Type;
 import org.openprovenance.prov.xml.Used;
+import org.openprovenance.prov.xml.ValueConverter;
 import org.openprovenance.prov.xml.WasAssociatedWith;
 import org.openprovenance.prov.xml.WasAttributedTo;
 import org.openprovenance.prov.xml.WasDerivedFrom;
@@ -237,12 +239,14 @@ public class QualifiedCollector extends RdfCollector {
 	{
 		List<WasDerivedFrom> wdfs = createDerivation(contextQ, qname,
 				Ontology.QNAME_PROVO_qualifiedRevision);
-		Object q = pFactory.newQName("prov:Revision");
+		//QName q = pFactory.newQName("prov:Revision");
+		QName q = Ontology.QNAME_PROVO_Revision;
+		Type type=pFactory.newType(q, ValueConverter.QNAME_XSD_QNAME);
 		for (WasDerivedFrom wdf : wdfs)
 		{
-			if (!wdf.getType().contains(q))
+			if (!wdf.getType().contains(type))
 			{
-				wdf.getType().add(q);
+				wdf.getType().add(type);
 			}
 		}
 	}
@@ -251,12 +255,14 @@ public class QualifiedCollector extends RdfCollector {
 	{
 		List<WasDerivedFrom> wdfs = createDerivation(contextQ, qname,
 				Ontology.QNAME_PROVO_qualifiedQuotation);
-		Object q = pFactory.newQName("prov:Quotation");
+		//Object q = pFactory.newQName("prov:Quotation");
+		QName q = Ontology.QNAME_PROVO_Quotation;
+		Type type=pFactory.newType(q, ValueConverter.QNAME_XSD_QNAME);
 		for (WasDerivedFrom wdf : wdfs)
 		{
-			if (!wdf.getType().contains(q))
+			if (!wdf.getType().contains(type))
 			{
-				wdf.getType().add(q);
+				wdf.getType().add(type);
 			}
 		}
 	}
@@ -265,13 +271,15 @@ public class QualifiedCollector extends RdfCollector {
 	{
 		List<WasDerivedFrom> wdfs = createDerivation(context, qname,
 				Ontology.QNAME_PROVO_qualifiedPrimarySource);
-		Object q = pFactory.newQName("prov:PrimarySource");
+		//Object q = pFactory.newQName("prov:PrimarySource");
+		QName q = Ontology.QNAME_PROVO_PrimarySource;
+		Type type=pFactory.newType(q, ValueConverter.QNAME_XSD_QNAME);
 
 		for (WasDerivedFrom wdf : wdfs)
 		{
-			if (!wdf.getType().contains(q))
+			if (!wdf.getType().contains(type))
 			{
-				wdf.getType().add(q);
+				wdf.getType().add(type);
 			}
 		}
 	}

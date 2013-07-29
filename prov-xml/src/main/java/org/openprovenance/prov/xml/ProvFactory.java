@@ -1748,7 +1748,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
 
     // What's the difference with stringToQName?
-    public Object newQName(String qnameAsString) {
+    public QName newQName(String qnameAsString) {
 	int index = qnameAsString.indexOf(':');
 	String prefix;
 	String local;

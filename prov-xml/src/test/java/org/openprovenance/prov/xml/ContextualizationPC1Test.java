@@ -100,7 +100,7 @@ public class ContextualizationPC1Test extends TestCase {
 	                       String value) {
 
 	Entity a = pFactory.newEntity(id, label);
-	pFactory.addType(a, "http://openprovenance.org/primitives#String");
+	pFactory.addType(a, URI.create("http://openprovenance.org/primitives#String"));
 
 	addValue(a, value);
 
@@ -171,30 +171,30 @@ public class ContextualizationPC1Test extends TestCase {
 	//Activity p0 = pFactory.newActivity("p0", "PC1Full Workflow");
 
 	Activity p1 = pFactory.newActivity("p1", "align_warp 1");
-	List<Object> o = p1.getType();
+	List<Type> o = p1.getType();
 
-	o.add(PRIMITIVE_ALIGN_WARP);
+	o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,ValueConverter.QNAME_XSD_ANY_URI));
 
-	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP);
-	pFactory.addType(p1, 10);
-	pFactory.addType(p1, -10);
-	pFactory.addType(p1, -10.55);
-	pFactory.addType(p1, "abc");
-	pFactory.addType(p1, true);
+	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, ValueConverter.QNAME_XSD_ANY_URI);
+	pFactory.addType(p1, 10, ValueConverter.QNAME_XSD_INT);
+	pFactory.addType(p1, -10, ValueConverter.QNAME_XSD_INT);
+	pFactory.addType(p1, -10.55, ValueConverter.QNAME_XSD_FLOAT);
+	pFactory.addType(p1, "abc", ValueConverter.QNAME_XSD_STRING);
+	pFactory.addType(p1, true, ValueConverter.QNAME_XSD_BOOLEAN);
 	pFactory.addType(p1, URI.create("http://www.example.com/hi"));
 
 	Activity p2 = pFactory.newActivity("p2", "align_warp 2");
-	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP);
+	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, ValueConverter.QNAME_XSD_ANY_URI);
 
 	Activity p3 = pFactory.newActivity("p3", "align_warp 3");
-	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP);
+	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP, ValueConverter.QNAME_XSD_ANY_URI);
 
 	Activity p4 = pFactory.newActivity("p4", "align_warp 4");
 
-	pFactory.addType(p4, PRIMITIVE_ALIGN_WARP);
+	pFactory.addType(p4, PRIMITIVE_ALIGN_WARP, ValueConverter.QNAME_XSD_ANY_URI);
 
 	Activity p5 = pFactory.newActivity("p5", "Reslice 1");
-	pFactory.addType(p5, PRIMITIVE_RESLICE);
+	pFactory.addType(p5, PRIMITIVE_RESLICE, ValueConverter.QNAME_XSD_ANY_URI);
 
 	Activity p6 = pFactory.newActivity("p6", "Reslice 2");
 	pFactory.addType(p6, PRIMITIVE_RESLICE);

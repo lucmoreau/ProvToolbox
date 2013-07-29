@@ -70,9 +70,9 @@ public class BeanTraversal {
 
    
     public List<Attribute> convertTypeAttributes(HasType e, List<Attribute> acc) {
-	List<Object> types=e.getType();
-	for (Object type : types) {
-	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_TYPE, type, vconv));
+	List<Type> types=e.getType();
+	for (Type type : types) {
+	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_TYPE, type.getValueAsJava(vconv), type.getType()));
 	}
 	return acc;
     }

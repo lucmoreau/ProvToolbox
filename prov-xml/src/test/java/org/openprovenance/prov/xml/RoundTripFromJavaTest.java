@@ -197,15 +197,18 @@ public class RoundTripFromJavaTest extends TestCase {
    
 
     public void addTypes(HasType ht) {
-   	ht.getType().add("a");
-   	ht.getType().add(1);
-   	ht.getType().add(1.0);
-   	ht.getType().add(true);
-   	ht.getType().add(new QName(EX_NS, "abc", EX_PREFIX));
-   	ht.getType().add(pFactory.newTimeNow());
+   	ht.getType().add(pFactory.newType("a", ValueConverter.QNAME_XSD_STRING));
+   	ht.getType().add(pFactory.newType(1, ValueConverter.QNAME_XSD_INT));
+   	ht.getType().add(pFactory.newType(1.0, ValueConverter.QNAME_XSD_FLOAT));
+   	ht.getType().add(pFactory.newType(true, ValueConverter.QNAME_XSD_STRING));
+   	ht.getType().add(pFactory.newType(new QName(EX_NS, "abc", EX_PREFIX),
+					  ValueConverter.QNAME_XSD_QNAME));
+   	ht.getType().add(pFactory.newType(pFactory.newTimeNow(),
+					  ValueConverter.QNAME_XSD_DATETIME));
    	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"hello"));
-   	ht.getType().add(w);
+	ht.getType().add(pFactory.newType(w,
+					  ValueConverter.QNAME_XSD_ANY_URI));
     }
 
     public void addLocations(HasLocation hl) {
@@ -530,28 +533,14 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testAgent6() throws JAXBException  {
 	setNamespaces();
    	Agent a = pFactory.newAgent("ex:ag6", "agent6");
-   	a.getType().add("a");
-   	a.getType().add(1);
-   	a.getType().add(1.0);
-   	a.getType().add(true);
-   	a.getType().add(new QName(EX_NS, "abc", EX_PREFIX));
-   	a.getType().add(pFactory.newTimeNow());
-   	URIWrapper w=new URIWrapper();
-   	w.setValue(URI.create(EX_NS+"hello"));
-   	a.getType().add(w);
+	addTypes(a);
    	makeDocAndTest(a,"target/agent6");
     }
 
     public void testAgent7() throws JAXBException  {
 	setNamespaces();
        	Agent a = pFactory.newAgent("ex:ag7", "agent7");
-       	pFactory.addType(a,"a");
-       	pFactory.addType(a,1);
-       	pFactory.addType(a,1.0);
-       	pFactory.addType(a,true);
-       	pFactory.addType(a,new QName(EX_NS, "abc", EX_PREFIX));
-       	pFactory.addType(a,pFactory.newTimeNow());
-       	pFactory.addType(a,URI.create(EX_NS+"hello"));
+	addTypes(a);
        	a.getLabel().add(pFactory.newInternationalizedString("hello"));
        	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
        	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
@@ -569,6 +558,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testAgent8() throws JAXBException  {
 	setNamespaces();
        	Agent a = pFactory.newAgent("ex:ag8", "agent8");
+	/*
        	a.getType().add("a");
        	a.getType().add("a");
        	a.getType().add(1);
@@ -604,7 +594,13 @@ public class RoundTripFromJavaTest extends TestCase {
    	a.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),vconv));
    	a.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),vconv));
    	URIWrapper w2=new URIWrapper();
+   	w2.setValue(URI.create(EX_NS+"london"));*/
+	addTypes(a);
+	addTypes(a);
+
+   	URIWrapper w2=new URIWrapper();
    	w2.setValue(URI.create(EX_NS+"london"));
+
    	a.getLocation().add(pFactory.newLocation(w2,vconv));
    	a.getLocation().add(pFactory.newLocation(w2,vconv));
 
@@ -2014,10 +2010,10 @@ public class RoundTripFromJavaTest extends TestCase {
            NamedBundle b2=pFactory.newNamedBundle(q("bundle2"), st2);
            
            Entity eb1=pFactory.newEntity(q("bundle1"));
-           pFactory.addType(eb1, pFactory.newQName("prov:Bundle"));
+           pFactory.addType(eb1, pFactory.newType(pFactory.newQName("prov:Bundle"), ValueConverter.QNAME_XSD_QNAME));
            
            Entity eb2=pFactory.newEntity(q("bundle2"));
-           pFactory.addType(eb2, pFactory.newQName("prov:Bundle"));
+           pFactory.addType(eb2, pFactory.newType(pFactory.newQName("prov:Bundle"),ValueConverter.QNAME_XSD_QNAME));
 
            Statement [] statements=new Statement[] { eb1, eb2,};
            NamedBundle [] bundles=new NamedBundle[] {  b1, b2 };
@@ -2055,10 +2051,10 @@ public class RoundTripFromJavaTest extends TestCase {
            NamedBundle b2=pFactory.newNamedBundle(q("bundle2"), st2);
            
            Entity eb1=pFactory.newEntity(q("bundle1"));
-           pFactory.addType(eb1, pFactory.newQName("prov:Bundle"));
+           pFactory.addType(eb1, pFactory.newType(pFactory.newQName("prov:Bundle"),ValueConverter.QNAME_XSD_QNAME));
            
            Entity eb2=pFactory.newEntity(q("bundle2"));
-           pFactory.addType(eb2, pFactory.newQName("prov:Bundle"));
+           pFactory.addType(eb2, pFactory.newType(pFactory.newQName("prov:Bundle"),ValueConverter.QNAME_XSD_QNAME));
 
            Statement [] statements=new Statement[] { eb1, eb2,};
            NamedBundle [] bundles=new NamedBundle[] {  b1, b2 };

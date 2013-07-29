@@ -256,15 +256,15 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
 
     public void addPrimarySourceType(HasType a) {
-	a.getType().add(newQName("prov:PrimarySource"));
+	a.getType().add(newType(newQName("prov:PrimarySource"),ValueConverter.QNAME_XSD_QNAME));
     }
 
     public void addQuotationType(HasType a) {
-	a.getType().add(newQName("prov:Quotation"));
+	a.getType().add(newType(newQName("prov:Quotation"),ValueConverter.QNAME_XSD_QNAME));
     }
 
     public void addRevisionType(HasType a) {
-	a.getType().add(newQName("prov:Revision"));
+	a.getType().add(newType(newQName("prov:Revision"),ValueConverter.QNAME_XSD_QNAME));
     }
 
  
@@ -274,7 +274,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	}
     }
 
-    public void addType(HasType a, Object type) {
+    public void addType(HasType a, Type type) {
 
 	a.getType().add(type);
     }
@@ -282,7 +282,11 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public void addType(HasType a, URI type) {
 	URIWrapper u = new URIWrapper();
 	u.setValue(type);
-	a.getType().add(u);
+	a.getType().add(newType(u,ValueConverter.QNAME_XSD_ANY_URI));
+    }
+
+    public void addType(HasType a, Object o, QName type) {
+	a.getType().add(newType(o,type));
     }
 
  
@@ -326,11 +330,11 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	return "pFact: role TODO";
     }
 
-    public List<Object> getType(HasExtensibility e) {
+    public List<Type> getType(HasExtensibility e) {
 	if (e instanceof HasType)
 	    return ((HasType) e).getType();
-	List<Object> res = new LinkedList<Object>();
-	res.add("pFact: type TODO");
+	List<Type> res = new LinkedList<Type>();
+	res.add(newType("pFact: type TODO",ValueConverter.QNAME_XSD_STRING));
 	return res;
     }
 
@@ -572,6 +576,18 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public Role newRole(Object value, QName type) {
 	if (value==null) return null;
         Role res =  of.createRole();
+        res.setType(type);
+        res.setValueAsJava(value);
+        return res;
+      }
+
+    public Type newType(Object value, ValueConverter vconv) {
+        return newType(value,vconv.getXsdType(value));
+      }
+
+    public Type newType(Object value, QName type) {
+	if (value==null) return null;
+        Type res =  of.createType();
         res.setType(type);
         res.setValueAsJava(value);
         return res;
@@ -1160,7 +1176,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public Used newUsed(String id, Activity p, String role, Entity a,
 			String type) {
 	Used res = newUsed(id, p, role, a);
-	addType(res, type);
+	addType(res, newType(type,ValueConverter.QNAME_XSD_STRING));
 	return res;
     }
 
@@ -1332,7 +1348,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public WasDerivedFrom newWasDerivedFrom(String id, Entity a1, Entity a2,
 					    String type) {
 	WasDerivedFrom wdf = newWasDerivedFrom(id, a1, a2);
-	addType(wdf, type);
+	addType(wdf, newType(type,ValueConverter.QNAME_XSD_STRING));
 	return wdf;
     }
 
@@ -1450,7 +1466,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public WasGeneratedBy newWasGeneratedBy(String id, Entity a, String role,
 					    Activity p, String type) {
 	WasGeneratedBy wgb = newWasGeneratedBy(id, a, role, p);
-	addType(wgb, type);
+	addType(wgb, newType(type,ValueConverter.QNAME_XSD_STRING));
 	return wgb;
     }
 
@@ -1539,7 +1555,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 					  String type) {
 	WasInformedBy wtb = newWasInformedBy(p1, p2);
 	wtb.setId(id);
-	addType(wtb, type);
+	addType(wtb, newType(type,ValueConverter.QNAME_XSD_STRING));
 	return wtb;
     }
 
@@ -1703,7 +1719,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 		break;
 	    case PROV_TYPE: 
 		if (typ!=null) {
-		    typ.getType().add(aValue);
+		    typ.getType().add(newType(aValue,attr.getXsdType()));
 		}
 		break;
 	    case PROV_VALUE:

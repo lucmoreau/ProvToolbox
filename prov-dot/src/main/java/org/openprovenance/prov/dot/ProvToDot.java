@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import javax.xml.namespace.QName;
 import javax.xml.bind.JAXBException;
 
+import org.openprovenance.prov.xml.ValueConverter;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Entity;
@@ -23,6 +24,7 @@ import org.openprovenance.prov.xml.Influence;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.HasType;
+import org.openprovenance.prov.xml.Type;
 import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.WasGeneratedBy;
@@ -478,13 +480,14 @@ public class ProvToDot {
     }
 
 
+    ValueConverter vc=new ValueConverter(of);
 
     public HashMap<String,String> addEntityShape(Entity p, HashMap<String,String> properties) {
         // default is good for entity
-        List<Object> types=p.getType();
-        for (Object type: types) {
-            if (type instanceof QName) {
-                QName name=(QName) type;
+        List<Type> types=p.getType();
+        for (Type type: types) {
+            if (type.getValueAsJava(vc) instanceof QName) {
+                QName name=(QName) type.getValueAsJava(vc);
                 if (("Dictionary".equals(name.getLocalPart()))
                     ||
                     ("EmptyDictionary".equals(name.getLocalPart()))) {
@@ -884,9 +887,9 @@ public class ProvToDot {
         String label=null;
         if (!(e0 instanceof Influence)) return;
         Influence e=(Influence)e0;
-        List<Object> type=of.getType(e);
+        List<Type> type=of.getType(e);
         if ((type!=null) && (!type.isEmpty())) {
-            label=type.get(0).toString();
+            label=type.get(0).getValueAsJava(vc).toString();
         } else if (getRelationPrintRole(e)) {
             String role=of.getRole(e);
             if (role!=null) {

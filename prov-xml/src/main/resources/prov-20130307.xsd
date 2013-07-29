@@ -420,7 +420,7 @@
   
   <xs:element name="label"    type="prov:InternationalizedString"/>
   <xs:element name="role"     type="prov:Role"/>
-  <xs:element name="type"     type="xs:anySimpleType"/>
+  <xs:element name="type"     type="prov:Type"/>
   <xs:element name="location" type="prov:Location"/>
   <xs:element name="value"    type="xs:anySimpleType"/>
 

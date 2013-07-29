@@ -238,8 +238,8 @@ public class RoundTripFromXmlTest extends TestCase {
 	System.out.println("agent type " +ag.getType().get(0));
 	System.out.println("agent type " +ag.getType().get(0).getClass());
 	
-	org.w3c.dom.Element el=(org.w3c.dom.Element)ag.getType().get(0);
-	serialize(el);
+	//org.w3c.dom.Element el=(org.w3c.dom.Element)ag.getType().get(0);
+	//serialize(el);
       }
     public void NotestPrimer() throws Exception {
   	testFile("primer-prov-xml-examples", true);

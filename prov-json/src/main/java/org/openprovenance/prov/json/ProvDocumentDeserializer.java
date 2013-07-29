@@ -42,6 +42,7 @@ import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.Location;
 import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.xml.Role;
 import org.openprovenance.prov.xml.Statement;
 import org.openprovenance.prov.xml.StatementOrBundle;
 import org.openprovenance.prov.xml.UsageRef;
@@ -392,9 +393,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         values = popMultiValAttribute("prov:role", attributeMap);
         if (!values.isEmpty()) {
         	if (statement instanceof HasRole) {
-	            List<Object> roles = ((HasRole)statement).getRole();
+	            List<Role> roles = ((HasRole)statement).getRole();
 	            for (JsonElement value: values) {
-	                roles.add(decodeAttributeValue(value));
+	                roles.add(pf.newRole(decodeAttributeValue(value),vconv));
 	            }
         	}
         	else {

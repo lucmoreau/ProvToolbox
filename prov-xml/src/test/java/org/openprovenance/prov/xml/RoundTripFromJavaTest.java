@@ -268,6 +268,35 @@ public class RoundTripFromJavaTest extends TestCase {
 
     }
 
+    public void NOtestRoles() {
+	Role r1=pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING);
+	Role r2=pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING);
+	Location l1=pFactory.newLocation("otherLocation",ValueConverter.QNAME_XSD_STRING);
+	Location l2=pFactory.newLocation("otherLocation",ValueConverter.QNAME_XSD_STRING);
+	System.out.println("---------------------------------------------------------------------- " );
+	System.out.println("Role 1 " + r1);
+	System.out.println("Role 2 " + r2);
+	System.out.println("Location 1 " + l1);
+	System.out.println("Location 2 " + l2);
+	System.out.println("---------------------------------------------------------------------- " );
+	System.out.println(r1);
+	System.out.println(r2);
+	System.out.println(r1.equals(r1));
+	System.out.println(r1.equals(r2));
+	System.out.println(r2.equals(r1));
+	System.out.println(r2.equals(r2));
+
+	System.out.println(l1.equals(l1));
+	System.out.println(l1.equals(l2));
+	System.out.println(l2.equals(l1));
+	System.out.println(l2.equals(l2));
+	System.out.println("---------------------------------------------------------------------- " );
+
+
+	//assertTrue(r1.equals(r1));
+	//assertTrue(l1.equals(l2));
+    }
+
     public boolean test=true;
 
     public void testEntity0() throws JAXBException  {
@@ -616,7 +645,7 @@ public class RoundTripFromJavaTest extends TestCase {
 							pFactory.newEntityRef(q("e1")),
 							"somerole",
 							pFactory.newActivityRef(q("a1")));
-        gen.getRole().add("otherRole");
+        gen.getRole().add(pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING));
 	makeDocAndTest(gen,"target/generation3");
     }
 
@@ -698,7 +727,7 @@ public class RoundTripFromJavaTest extends TestCase {
                                     pFactory.newActivityRef(q("a1")),
                                     "somerole",
                                     pFactory.newEntityRef(q("e1")));
-        use.getRole().add("otherRole");
+        use.getRole().add(pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING));
         
         makeDocAndTest(use,"target/usage3");
     }
@@ -777,8 +806,8 @@ public class RoundTripFromJavaTest extends TestCase {
 	WasInvalidatedBy inv = pFactory.newWasInvalidatedBy(q("inv3"),
 							    pFactory.newEntityRef(q("e1")),
 							    pFactory.newActivityRef(q("a1")));
-	inv.getRole().add("someRole");
-	inv.getRole().add("otherRole");
+	inv.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
+	inv.getRole().add(pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING));
 	makeDocAndTest(inv,  "target/invalidation3");
     }
 
@@ -787,7 +816,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	WasInvalidatedBy inv = pFactory.newWasInvalidatedBy(q("inv4"),
 							    pFactory.newEntityRef(q("e1")),
 							    pFactory.newActivityRef(q("a1")));
-	inv.getRole().add("someRole");
+	inv.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
 	inv.setTime(pFactory.newTimeNow());
 	makeDocAndTest(inv,  "target/invalidation4");
     }
@@ -797,7 +826,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	WasInvalidatedBy inv = pFactory.newWasInvalidatedBy(q("inv4"),
 							    pFactory.newEntityRef(q("e1")),
 							    pFactory.newActivityRef(q("a1")));
-	inv.getRole().add("someRole");
+	inv.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
 	inv.setTime(pFactory.newTimeNow());
 	addTypes(inv);
 	addLocations(inv);
@@ -821,7 +850,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	WasInvalidatedBy inv = pFactory.newWasInvalidatedBy((QName) null,
 							    pFactory.newEntityRef(q("e1")),
 							    pFactory.newActivityRef(q("a1")));
-	inv.getRole().add("someRole");
+	inv.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
 	inv.setTime(pFactory.newTimeNow());
 	addTypes(inv);
 	addLocations(inv);
@@ -909,8 +938,8 @@ public class RoundTripFromJavaTest extends TestCase {
    						      null);
    	start.setStarter(pFactory.newActivityRef(q("a2")));
    	start.setTime(pFactory.newTimeNow());
-   	start.getRole().add("someRole");
-   	start.getRole().add("otherRole");
+   	start.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
+   	start.getRole().add(pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING));
    	addTypes(start);
 	addLocations(start);
 	addLabels(start);
@@ -935,8 +964,8 @@ public class RoundTripFromJavaTest extends TestCase {
    						      null);
    	start.setStarter(pFactory.newActivityRef(q("a2")));
    	start.setTime(pFactory.newTimeNow());
-   	start.getRole().add("someRole");
-   	start.getRole().add("otherRole");
+   	start.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
+   	start.getRole().add(pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING));
    	addTypes(start);
 	addLocations(start);
 	addLabels(start);
@@ -1020,8 +1049,8 @@ public class RoundTripFromJavaTest extends TestCase {
 						null);
 	end.setEnder(pFactory.newActivityRef(q("a2")));
 	end.setTime(pFactory.newTimeNow());
-	end.getRole().add("someRole");
-	end.getRole().add("otherRole");
+	end.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
+	end.getRole().add(pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING));
 	addTypes(end);
 	addLocations(end);
 	addLabels(end);
@@ -1046,8 +1075,8 @@ public class RoundTripFromJavaTest extends TestCase {
 						null);
 	end.setEnder(pFactory.newActivityRef(q("a2")));
 	end.setTime(pFactory.newTimeNow());
-	end.getRole().add("someRole");
-	end.getRole().add("otherRole");
+	end.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
+	end.getRole().add(pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING));
 	addTypes(end);
 	addLocations(end);
 	addLabels(end);
@@ -1269,8 +1298,8 @@ public class RoundTripFromJavaTest extends TestCase {
                                                                 pFactory.newActivityRef(q("a1")),
                                                                 pFactory.newAgentRef(q("ag1")));
         assoc.setPlan(pFactory.newEntityRef(q("plan1")));
-        assoc.getRole().add("someRole");
-        assoc.getRole().add("someOtherRole");
+        assoc.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
+        assoc.getRole().add(pFactory.newRole("someOtherRole",ValueConverter.QNAME_XSD_STRING));
         makeDocAndTest(assoc, "target/association8");
     }
     

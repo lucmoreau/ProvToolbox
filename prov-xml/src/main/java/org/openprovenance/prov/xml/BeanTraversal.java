@@ -86,9 +86,9 @@ public class BeanTraversal {
     }
     
     public List<Attribute> convertRoleAttributes(HasRole e, List<Attribute> acc) {
-   	List<Object> roles = e.getRole();
-   	for (Object role : roles) {
-   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_ROLE,role, vconv));
+   	List<Role> roles = e.getRole();
+   	for (Role role : roles) {
+   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_ROLE,role.getValueAsJava(vconv), role.getType()));
    	}
    	return acc;
     }

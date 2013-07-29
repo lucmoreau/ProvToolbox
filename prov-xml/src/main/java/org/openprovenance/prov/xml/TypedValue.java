@@ -150,13 +150,13 @@ public class TypedValue
         if (this == object) {
             return ;
         }
-        final Location that = ((Location) object);
+        final TypedValue that = ((TypedValue) object);
         equalsBuilder.append(this.getValue(), that.getValue());
         equalsBuilder.append(this.getType(), that.getType());
     }
 
     public boolean equals(Object object) {
-        if (!(object instanceof Location)) {
+        if (!(object instanceof TypedValue)) {
             return false;
         }
         if (this == object) {

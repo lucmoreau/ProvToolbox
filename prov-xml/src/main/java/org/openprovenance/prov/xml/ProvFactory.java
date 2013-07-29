@@ -268,7 +268,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     }
 
  
-    public void addRole(HasRole a, Object role) {
+    public void addRole(HasRole a, Role role) {
 	if (role != null) {
 	    a.getRole().add(role);
 	}
@@ -560,6 +560,18 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 
     public Location newLocation(Object value, QName type) {
         Location res =  of.createLocation();
+        res.setType(type);
+        res.setValueAsJava(value);
+        return res;
+      }
+
+    public Role newRole(Object value, ValueConverter vconv) {
+        return newRole(value,vconv.getXsdType(value));
+      }
+
+    public Role newRole(Object value, QName type) {
+	if (value==null) return null;
+        Role res =  of.createRole();
         res.setType(type);
         res.setValueAsJava(value);
         return res;
@@ -1134,7 +1146,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
     public Used newUsed(QName id, ActivityRef aid, String role, EntityRef eid) {
 	Used res = newUsed(id);
 	res.setActivity(aid);
-	addRole(res, role);
+	addRole(res, newRole(role,ValueConverter.QNAME_XSD_STRING));
 	res.setEntity(eid);
 	return res;
     }
@@ -1156,8 +1168,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	Used res = of.createUsed();
 	res.setId(stringToQName(id));
 	res.setActivity(pid);
-	addRole(res, role);
-	res.setEntity(aid);
+	addRole(res, newRole(role,ValueConverter.QNAME_XSD_STRING));
 	return res;
     }
     
@@ -1425,7 +1436,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 	res.setId(id);
 	res.setActivity(pid);
 	res.setEntity(aid);
-	addRole(res, role);
+	addRole(res, newRole(role,ValueConverter.QNAME_XSD_STRING));
 	return res;
     }
 
@@ -1687,7 +1698,7 @@ public class ProvFactory implements ModelConstructor, QNameExport {
 		break;
 	    case PROV_ROLE:
 		if (rol!=null) {
-		    rol.getRole().add(aValue);
+		    rol.getRole().add(newRole(aValue,attr.getXsdType()));
 		}
 		break;
 	    case PROV_TYPE: 

@@ -69,6 +69,16 @@
     </xs:simpleContent>
   </xs:complexType>    
 
+
+  <xs:complexType name="TypedValue">
+    <xs:simpleContent>
+      <xs:extension base="xs:anySimpleType">
+	<xs:attribute name="type" type="xs:QName"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    
+
+
   <xs:element name="activity" type="prov:Activity"/>
   <xs:complexType name="Activity">
     <xs:sequence>
@@ -407,7 +417,7 @@
   <xs:element name="label"    type="prov:InternationalizedString"/>
   <xs:element name="role"     type="xs:anySimpleType"/>
   <xs:element name="type"     type="xs:anySimpleType"/>
-  <xs:element name="location" type="xs:anySimpleType"/>
+  <xs:element name="location" type="prov:Location"/>
   <xs:element name="value"    type="xs:anySimpleType"/>
 
   <!-- See comment in preamble.

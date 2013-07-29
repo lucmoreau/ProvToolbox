@@ -4,7 +4,7 @@
   <parent>
     <artifactId>validation-project</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.2.1-SNAPSHOT</version>
   </parent>
 
 
@@ -1014,6 +1014,47 @@
   	          <arg value="WasStartedBy.java" />
                 </exec>
 
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasStartedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasGeneratedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Used.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Activity.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Entity.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Agent.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasInvalidatedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasEndedBy.java" />
+                </exec>
+
 
 <!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
@@ -1240,6 +1281,13 @@
   	              <arg value="GenerationRef.java" />
                 </exec>
 
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/&quot;Location&quot;/&quot;IgnoreLocation&quot;/" />
+  	              <arg value="-iBAK" />
+                      <arg value="OrgOpenprovenanceProvXmlLocation.java" />
+                </exec>
+
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
                      <arg value="URIWrapper.java" />
                 </exec>
@@ -1257,6 +1305,8 @@
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
                      <arg value="Essai.java" />
                 </exec>
+
+
 
 
 <!--

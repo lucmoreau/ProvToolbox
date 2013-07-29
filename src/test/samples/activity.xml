@@ -57,12 +57,22 @@
         <prov:label>hello</prov:label>
         <prov:label xml:lang="EN">bye</prov:label>
 
-        <prov:test2 xsi:type="xsd:int">1</prov:test2> 
+
+
+        <prov:location>here</prov:location>
+	<prov:location xsi:type="xsd:int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">10</prov:location>
+	<prov:location xsi:type="xsd:float" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">100.0</prov:location>
+	<prov:location xsi:type="xsd:string" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">a location</prov:location>
+
+
+
+	<prov:location xsi:type="xsd:boolean" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">true</prov:location>
+
 
 
 <!-- this one doesn't work!
         <prov:test2 xsi:type="xsd:QName">ex:a8</prov:test2>  -->
-
+        <prov:test2 xsi:type="xsd:int">1</prov:test2> 
         <prov:test2 xsi:type="xsd:unsignedInt">5</prov:test2> 
         <prov:test2 xsi:type="xsd:float">1.0</prov:test2> 
         <prov:test2 xsi:type="xsd:double">3.0</prov:test2> 
@@ -72,6 +82,7 @@
 
 
 
+<!--
     <prov:essai prov:id="ex:a8">
         <prov:label>activity7</prov:label>
         <prov:label>hello</prov:label>
@@ -90,6 +101,7 @@
 
     </prov:essai>
 
+-->
 
 </prov:document>
 

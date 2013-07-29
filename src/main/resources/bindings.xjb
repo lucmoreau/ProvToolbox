@@ -61,7 +61,7 @@
 	  <jaxb:class name="org.openprovenance.prov.xml.Attribute"/>
 	</jaxb:bindings>
 	<jaxb:bindings node="xs:complexType[@name='Location']">
-	  <jaxb:class name="org.openprovenance.prov.xml.Location"/>
+	  <jaxb:class name="org.openprovenance.prov.xml.Location"/>  <!-- implClass="org.openprovenance.prov.xml.Location" -->
 	</jaxb:bindings>
 	<jaxb:bindings node="xs:complexType[@name='Association']">
 	  <jaxb:class name="WasAssociatedWith"/>

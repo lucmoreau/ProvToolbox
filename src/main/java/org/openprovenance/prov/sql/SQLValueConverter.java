@@ -161,6 +161,10 @@ public class SQLValueConverter {
 	    return o;
 	}
 
+	if ((o=target.isBoolean())!=null) {
+	    return o;
+	}
+
 	return null;
     }
 	

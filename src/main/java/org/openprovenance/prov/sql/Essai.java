@@ -104,7 +104,7 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
     protected XMLGregorianCalendar endTime;
     protected List<InternationalizedString> label;
     protected List<Object> type;
-    protected List<Object> location;
+    protected List<Location> location;
     protected List<Location> lieu;
     protected List<AValue> mytype;
     @XmlAnyElement(lax = true)
@@ -268,10 +268,14 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
      * 
      * 
      */
-    @Transient
-    public List<Object> getLocation() {
+    @OneToMany(targetEntity = org.openprovenance.prov.xml.Location.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "LOCATION__ESSAI_HJID")
+
+    public List<Location> getLocation() {
         if (location == null) {
-            location = new ArrayList<Object>();
+            location = new ArrayList<Location>();
         }
         return this.location;
     }
@@ -280,7 +284,7 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
      * 
      * 
      */
-    public void setLocation(List<Object> location) {
+    public void setLocation(List<Location> location) {
         this.location = location;
     }
 
@@ -288,20 +292,6 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
 
 
 
-    @OneToMany(targetEntity = Location.class, cascade = {
-        CascadeType.ALL
-    })
-    @JoinColumn(name = "LOCATIONS_ESSAI_HJID")
-    public List<Location> getLocationItem() {
-        if (lieu == null) {
-            lieu = new ArrayList<Location>();
-        }
-        return this.lieu;
-    }
-
-    public void setLocationItem(List<Location> locations) {
-        this.lieu = locations;
-    }
 
 
     /**
@@ -472,31 +462,7 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
         }
     }
 
-    @OneToMany(targetEntity = Essai.EssaiLocationItem.class, cascade = {
-        CascadeType.ALL
-    })
-    @JoinColumn(name = "LOCATIONITEMS_ESSAI_HJID")
-    public List<Essai.EssaiLocationItem> getLocationItems() {
-        if (this.locationItems == null) {
-            this.locationItems = new ArrayList<Essai.EssaiLocationItem>();
-        }
-        if (ItemUtils.shouldBeWrapped(this.location)) {
-            this.location = ItemUtils.wrap(this.location, this.locationItems, Essai.EssaiLocationItem.class);
-        }
-        return this.locationItems;
-    }
 
-    public void setLocationItems(List<Essai.EssaiLocationItem> value) {
-        this.location = null;
-        this.locationItems = null;
-        this.locationItems = value;
-        if (this.locationItems == null) {
-            this.locationItems = new ArrayList<Essai.EssaiLocationItem>();
-        }
-        if (ItemUtils.shouldBeWrapped(this.location)) {
-            this.location = ItemUtils.wrap(this.location, this.locationItems, Essai.EssaiLocationItem.class);
-        }
-    }
 
     /*
     @OneToMany(targetEntity = Essai.EssaiAnyItem.class, cascade = {
@@ -588,9 +554,9 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
             }
         }
         {
-            List<Object> lhsLocation;
+            List<Location> lhsLocation;
             lhsLocation = (((this.location!= null)&&(!this.location.isEmpty()))?this.getLocation():null);
-            List<Object> rhsLocation;
+            List<Location> rhsLocation;
             rhsLocation = (((that.location!= null)&&(!that.location.isEmpty()))?that.getLocation():null);
             if (!strategy.equals(LocatorUtils.property(thisLocator, "location", lhsLocation), LocatorUtils.property(thatLocator, "location", rhsLocation), lhsLocation, rhsLocation)) {
                 return false;
@@ -645,7 +611,7 @@ public class Essai implements  org.openprovenance.prov.xml.Element, Equals, Hash
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "type", theType), currentHashCode, theType);
         }
         {
-            List<Object> theLocation;
+            List<Location> theLocation;
             theLocation = (((this.location!= null)&&(!this.location.isEmpty()))?this.getLocation():null);
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "location", theLocation), currentHashCode, theLocation);
         }

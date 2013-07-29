@@ -63,11 +63,13 @@
 	<prov:location xsi:type="xsd:int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">10</prov:location>
 	<prov:location xsi:type="xsd:float" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">100.0</prov:location>
 	<prov:location xsi:type="xsd:string" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">a location</prov:location>
-
-
-
 	<prov:location xsi:type="xsd:boolean" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">true</prov:location>
 
+        <prov:type>here</prov:type>
+	<prov:type xsi:type="xsd:int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">10</prov:type>
+	<prov:type xsi:type="xsd:float" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">100.0</prov:type>
+	<prov:type xsi:type="xsd:string" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">a type</prov:type>
+	<prov:type xsi:type="xsd:boolean" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">true</prov:type>
 
 
 <!-- this one doesn't work!

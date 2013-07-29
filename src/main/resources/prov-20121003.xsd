@@ -54,10 +54,33 @@
     <xs:sequence>
     </xs:sequence>
   </xs:complexType>
+
+
   <xs:complexType name="Location">
-    <xs:sequence>
-    </xs:sequence>
-  </xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="prov:TypedValue">
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    
+  <xs:complexType name="Type">
+    <xs:simpleContent>
+      <xs:extension base="prov:TypedValue">
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    
+<!--  <xs:complexType name="Value">
+    <xs:simpleContent>
+      <xs:extension base="prov:TypedValue">
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    -->
+  <xs:complexType name="Role">
+    <xs:simpleContent>
+      <xs:extension base="prov:TypedValue">
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    
+
 
   <xs:element name="test2"    type="prov:TypedObject"/>
 
@@ -97,7 +120,7 @@
   </xs:complexType>
 
 
-  <xs:complexType name="Essai">
+<!--  <xs:complexType name="Essai">
     <xs:sequence>
       <xs:element name="startTime"    type="xs:dateTime" minOccurs="0"/> 
       <xs:element name="endTime"      type="xs:dateTime" minOccurs="0"/> 
@@ -109,11 +132,6 @@
       <xs:element name="lieu"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="test"      type="prov:AValue" minOccurs="0" maxOccurs="1"/> 
 
-<!--
-
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> 
-
--->
 
       <xs:element name="attributes"    type="prov:Attribute" minOccurs="0" maxOccurs="unbounded"/>  
 
@@ -122,7 +140,7 @@
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
-  
+  -->
 
   <xs:complexType name="Usage">
     <xs:sequence>
@@ -415,8 +433,8 @@
        -->
   
   <xs:element name="label"    type="prov:InternationalizedString"/>
-  <xs:element name="role"     type="xs:anySimpleType"/>
-  <xs:element name="type"     type="xs:anySimpleType"/>
+  <xs:element name="role"     type="prov:Role"/>
+  <xs:element name="type"     type="prov:Type"/>
   <xs:element name="location" type="prov:Location"/>
   <xs:element name="value"    type="xs:anySimpleType"/>
 
@@ -475,7 +493,6 @@
         <xs:element name="mentionOf"            type="prov:Mention"/>
 
         <xs:element name="hadMember"   		type="prov:Membership"/>
-        <xs:element name="essai"                type="prov:Essai"/>
 
 <!-- not nice for jaxb conversion 		<xs:any namespace="##other"/>  -->
       </xs:choice>

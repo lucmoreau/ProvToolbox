@@ -363,7 +363,7 @@
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@Entity(name = &quot;Activity$ActivityAnyItem&quot;)/,/@XmlAccessorType.*/ { s/^/\/\//g}" />
   	          <arg value="-iBAK" />
-  	          <arg value="Activity.java" />
+  	          <arg value="ActivityFOO.java" />
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
@@ -1056,6 +1056,116 @@
                 </exec>
 
 
+<!-- Type -->
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Activity.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasAttributedTo.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasAssociatedWith.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Entity.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasGeneratedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Used.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasInformedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasStartedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasEndedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasInvalidatedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasDerivedFrom.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Agent.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="ActedOnBehalfOf.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasInfluencedBy.java" />
+                </exec>
+
+
+
+
+<!-- Role -->
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasAssociatedWith.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasGeneratedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Used.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasStartedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasEndedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasInvalidatedBy.java" />
+                </exec>
+
+
 <!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
   	          <arg value="-iBAK" />
@@ -1262,6 +1372,11 @@
   	              <arg value="-iBAK" />
   	              <arg value="ObjectFactory.java" />
                 </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ TypedValue/ AValue/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="ObjectFactory.java" />
+                </exec>
 
                 <!--
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
@@ -1287,9 +1402,17 @@
   	              <arg value="-iBAK" />
                       <arg value="OrgOpenprovenanceProvXmlLocation.java" />
                 </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/&quot;TypedValue&quot;/&quot;IgnoreTypedValue&quot;/" />
+  	              <arg value="-iBAK" />
+                      <arg value="OrgOpenprovenanceProvXmlTypedValue.java" />
+                </exec>
 
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
                      <arg value="URIWrapper.java" />
+                </exec>
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+                     <arg value="TypedValue.java" />
                 </exec>
 
 
@@ -1333,6 +1456,11 @@
   	          <arg value="-iBAK" />
   	          <arg value="sun-jaxb.episode" />
                 </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
+  	          <arg value="-e s/org.openprovenance.prov.sql.OrgOpenprovenanceProvXmlTypedValue/org.openprovenance.prov.xml.TypedValue/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="sun-jaxb.episode" />
+                </exec>
 
 <!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/">
   	          <arg value="-e 1,/org.openprovenance.prov.sql/ s/org.openprovenance.prov.sql/org.openprovenance.prov.sql:org.openprovenance.prov.xml/" />
@@ -1347,6 +1475,21 @@
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
   	          <arg value="-e s/org.openprovenance.prov.sql.OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="persistence.xml" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
+  	          <arg value="-e s/org.openprovenance.prov.sql.OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="persistence.xml" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
+  	          <arg value="-e s/org.openprovenance.prov.sql.OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="persistence.xml" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlTypedValue/org.openprovenance.prov.xml.TypedValue/" />
   	          <arg value="-iBAK" />
   	          <arg value="persistence.xml" />
                 </exec>

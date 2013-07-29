@@ -13,3 +13,16 @@ see prov-sql/src/test/samples/activity.xml
   <pro:test2> in prov:activity
     has defined a TypedObject in schema,
         corrected by sed, so that it understand attribute xsi:
+
+----------------------------------------------------------------------
+
+Next steps.
+
+1. Revisit TypedObject.
+     Mapping to sql looks good. 
+     Issue as to why field is a string and not an object?
+
+2. Modify prov-xml so that all locations used this.
+   This implies modifying the interface HasLocation
+
+3. Make prov-sql work with this.

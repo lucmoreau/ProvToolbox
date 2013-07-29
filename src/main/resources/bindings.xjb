@@ -63,6 +63,15 @@
 	<jaxb:bindings node="xs:complexType[@name='Location']">
 	  <jaxb:class name="org.openprovenance.prov.xml.Location"/>  <!-- implClass="org.openprovenance.prov.xml.Location" -->
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Type']">
+	  <jaxb:class name="org.openprovenance.prov.xml.Type"/>  <!-- implClass="org.openprovenance.prov.xml.Type" -->
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Role']">
+	  <jaxb:class name="org.openprovenance.prov.xml.Role"/>  <!-- implClass="org.openprovenance.prov.xml.Type" -->
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='TypedValue']">
+	  <jaxb:class name="org.openprovenance.prov.xml.TypedValue"/>  <!-- implClass="org.openprovenance.prov.xml.Type" -->
+	</jaxb:bindings>
 	<jaxb:bindings node="xs:complexType[@name='Association']">
 	  <jaxb:class name="WasAssociatedWith"/>
 	</jaxb:bindings>

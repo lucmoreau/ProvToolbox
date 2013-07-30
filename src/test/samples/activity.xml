@@ -36,6 +36,13 @@
 
     <prov:entity prov:id="ex:e2">
         <prov:label>entity2</prov:label>
+	<prov:value xsi:type="xsd:string" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">a string value</prov:value>
+        <ex:tag1 xsi:type="xsd:string">hello</ex:tag1>
+    </prov:entity>
+
+    <prov:entity prov:id="ex:e3">
+        <prov:label>entity2</prov:label>
+	<prov:value xsi:type="xsd:int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">1234</prov:value>
         <ex:tag1 xsi:type="xsd:string">hello</ex:tag1>
     </prov:entity>
 

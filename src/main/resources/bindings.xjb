@@ -69,6 +69,9 @@
 	<jaxb:bindings node="xs:complexType[@name='Role']">
 	  <jaxb:class name="org.openprovenance.prov.xml.Role"/>  <!-- implClass="org.openprovenance.prov.xml.Type" -->
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Value']">
+	  <jaxb:class name="org.openprovenance.prov.xml.Value"/>  <!-- implClass="org.openprovenance.prov.xml.Type" -->
+	</jaxb:bindings>
 	<jaxb:bindings node="xs:complexType[@name='TypedValue']">
 	  <jaxb:class name="org.openprovenance.prov.xml.TypedValue"/>  <!-- implClass="org.openprovenance.prov.xml.Type" -->
 	</jaxb:bindings>

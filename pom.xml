@@ -1129,6 +1129,13 @@
   	          <arg value="WasInfluencedBy.java" />
                 </exec>
 
+<!-- Value -->
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlValue/org.openprovenance.prov.xml.Value/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Entity.java" />
+                </exec>
 
 
 
@@ -1407,6 +1414,17 @@
   	              <arg value="-iBAK" />
                       <arg value="OrgOpenprovenanceProvXmlTypedValue.java" />
                 </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/&quot;Type&quot;/&quot;IgnoreType&quot;/" />
+  	              <arg value="-iBAK" />
+                      <arg value="OrgOpenprovenanceProvXmlType.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/&quot;Value&quot;/&quot;IgnoreValue&quot;/" />
+  	              <arg value="-iBAK" />
+                      <arg value="OrgOpenprovenanceProvXmlValue.java" />
+                </exec>
+
 
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
                      <arg value="URIWrapper.java" />
@@ -1485,6 +1503,11 @@
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
   	          <arg value="-e s/org.openprovenance.prov.sql.OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="persistence.xml" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
+  	          <arg value="-e s/org.openprovenance.prov.sql.OrgOpenprovenanceProvXmlValue/org.openprovenance.prov.xml.Value/" />
   	          <arg value="-iBAK" />
   	          <arg value="persistence.xml" />
                 </exec>

@@ -160,7 +160,6 @@ public class SQLValueConverter {
 	if ((o=target.getUnsignedLong())!=null) {
 	    return o;
 	}
-
 	if ((o=target.isBoolean())!=null) {
 	    return o;
 	}

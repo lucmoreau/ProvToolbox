@@ -80,6 +80,12 @@
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>    
+  <xs:complexType name="Value">
+    <xs:simpleContent>
+      <xs:extension base="prov:TypedValue">
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    
 
 
   <xs:element name="test2"    type="prov:TypedObject"/>
@@ -436,7 +442,7 @@
   <xs:element name="role"     type="prov:Role"/>
   <xs:element name="type"     type="prov:Type"/>
   <xs:element name="location" type="prov:Location"/>
-  <xs:element name="value"    type="xs:anySimpleType"/>
+  <xs:element name="value"    type="prov:Value"/>
 
   <!-- See comment in preamble.
        These should be prov:QualifiedName

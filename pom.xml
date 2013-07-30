@@ -34,6 +34,22 @@
     </dependency>
 
     <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-xml</artifactId>
+      <version>0.2.4-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+      <exclusions>
+	<exclusion>
+	  <groupId>org.jvnet.jaxb2_commons</groupId>
+	  <artifactId>runtime</artifactId>
+	</exclusion>
+      </exclusions>
+
+    </dependency>
+
+
+    <dependency>
 	  <groupId>org.jvnet.jaxb2_commons</groupId>
 	  <artifactId>runtime</artifactId>
 	  <version>0.4.1.5-no-equals</version>
@@ -1695,9 +1711,130 @@
         </lifecycleMappingMetadata>
       </configuration>
       </plugin>
+
+                                                                                                                                                                                        
+                                                                                                                                                                                         
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>hibernate3-maven-plugin</artifactId>
+        <version>${hibernate3.plugin.version}</version>
+
+        <executions>
+          <execution>
+            <id>create.schema.mysql</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>hbm2ddl</goal>
+            </goals>
+            <configuration>
+	      <hibernatetool>
+		<jpaconfiguration/>
+              </hibernatetool>
+
+              <components>
+                <component>
+                  <name>hbm2ddl</name>
+                  <implementation>jpaconfiguration</implementation>
+                </component>
+              </components>
+
+              <componentProperties>
+                <export>false</export>
+                <jdk5>true</jdk5>
+                <create>true</create>
+                <drop>false</drop>
+                <propertyfile>src/main/resources/mysql.properties</propertyfile>
+                <outputfilename>provenance.store.create.schema.mysql</outputfilename>
+                <persistenceunit>org.openprovenance.prov.sql</persistenceunit>
+              </componentProperties>
+            </configuration>
+          </execution>
+
+
+          <execution>
+            <id>create.drop.schema.mysql</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>hbm2ddl</goal>
+            </goals>
+            <configuration>
+              <components>
+                <component>
+                  <name>hbm2ddl</name>
+                  <implementation>jpaconfiguration</implementation>
+                </component>
+              </components>
+
+              <componentProperties>
+                <export>false</export>
+                <jdk5>true</jdk5>
+                <create>true</create>
+                <drop>true</drop>
+                <propertyfile>src/main/resources/mysql.properties</propertyfile>
+                <outputfilename>provenance.store.create.drop.schema.mysql</outputfilename>
+                <persistenceunit>org.openprovenance.prov.sql</persistenceunit>
+              </componentProperties>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>drop.schema.mysql</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>hbm2ddl</goal>
+            </goals>
+            <configuration>
+              <components>
+                <component>
+                  <name>hbm2ddl</name>
+                  <implementation>jpaconfiguration</implementation>
+                </component>
+              </components>
+
+              <componentProperties>
+                <export>false</export>
+                <jdk5>true</jdk5>
+                <create>false</create>
+                <drop>true</drop>
+                <propertyfile>src/main/resources/mysql.properties</propertyfile>
+                <outputfilename>provenance.store.drop.schema.mysql</outputfilename>
+                <persistenceunit>org.openprovenance.prov.sql</persistenceunit>
+              </componentProperties>
+            </configuration>
+          </execution>
+
+         <execution>
+              <id>create.schema.hsql</id>
+              <phase>process-classes</phase>
+              <goals>
+                <goal>hbm2ddl</goal>
+              </goals>
+              <configuration>
+                <components>
+                  <component>
+                    <name>hbm2ddl</name>
+                    <implementation>jpaconfiguration</implementation>
+                  </component>
+                </components>
+
+                <componentProperties>
+                  <export>false</export>
+                  <jdk5>true</jdk5>
+                  <create>true</create>
+                  <drop>false</drop>
+                  <propertyfile>src/main/resources/hsql.properties</propertyfile>
+                  <outputfilename>provenance.store.create.schema.hsql</outputfilename>
+                  <persistenceunit>org.openprovenance.prov.sql</persistenceunit>
+                </componentProperties>
+              </configuration>
+            </execution>
+
+          </executions>
+	</plugin>
+
      </plugins>
-     
-     
+
+
    </pluginManagement>
       
     <resources>

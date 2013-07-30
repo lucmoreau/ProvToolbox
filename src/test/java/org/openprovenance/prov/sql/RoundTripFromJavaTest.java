@@ -1,12 +1,6 @@
 package org.openprovenance.prov.sql;
 
-import java.io.IOException;
-import java.util.Arrays;
-
-
 import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.Statement;
-import org.openprovenance.prov.xml.UncheckedTestException;
 import org.openprovenance.prov.sql.PersistenceUtility;
 
 public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTripFromJavaTest {

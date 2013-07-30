@@ -15,11 +15,12 @@ public class PersistenceUtility {
     final private EntityManagerFactory emf;                                                                                                                   
 
     public PersistenceUtility() {
-        this.entityManager=createEntityManager();          
         Map<String,String> properties=makeProperties(getUnitName());
         
         this.emf=javax.persistence.Persistence.createEntityManagerFactory(getUnitName(),                                                                                                 
-                                                                          properties);       
+                                                                          properties);  
+        this.entityManager=createEntityManager();          
+
 
     }
              

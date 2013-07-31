@@ -157,8 +157,7 @@
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
-<!--       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> -->
-      <xs:element name="any"    type="prov:Attribute" minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -172,9 +171,7 @@
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
-
-<!--      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> -->
-      <xs:element name="any"    type="prov:Attribute" minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> 
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -189,8 +186,7 @@
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
-<!--      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> -->
-      <xs:element name="any"    type="prov:Attribute" minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -220,8 +216,7 @@
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"      minOccurs="0" maxOccurs="unbounded"/> 
-<!--      <xs:any namespace="##other"      minOccurs="0" maxOccurs="unbounded"/>-->
-      <xs:element name="any"    type="prov:Attribute" minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other"      minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -233,8 +228,7 @@
       <xs:element name="informant"   type="prov:ActivityRef"/>
       <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-<!--      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> -->
-      <xs:element name="any"    type="prov:Attribute" minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> 
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -251,8 +245,7 @@
       <xs:element name="usedEntity"       type="prov:EntityRef"/>
       <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-<!--      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> -->
-      <xs:element name="any"    type="prov:Attribute" minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> 
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -279,8 +272,7 @@
       <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
-<!--      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>  -->
-      <xs:element name="any"    type="prov:Attribute" minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/> 
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -292,8 +284,7 @@
       <xs:element name="agent"    type="prov:AgentRef"/>
       <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
-<!--       <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/> -->
-      <xs:element name="any"    type="prov:Attribute" minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/> 
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -305,8 +296,7 @@
       <xs:element name="activity"    type="prov:ActivityRef"/>
       <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
-<!--       <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/> -->
-      <xs:element name="any"    type="prov:Attribute" minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -318,8 +308,7 @@
       <xs:element name="influencer"     type="prov:AnyRef"/>
       <xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
-<!--       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> -->
-      <xs:element name="any"    type="prov:Attribute" minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>

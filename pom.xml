@@ -811,7 +811,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
+  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__AGENT_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
   	              <arg value="Agent.java" />
                 </exec>
@@ -990,7 +990,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
+  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__USED_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
   	              <arg value="Used.java" />
                 </exec>
@@ -1039,7 +1039,7 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
+  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASDERIVEDFROM_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasDerivedFrom.java" />
                 </exec>
@@ -1112,7 +1112,7 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
+  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASASSOCIATEDWITH_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasAssociatedWith.java" />
                 </exec>
@@ -1161,7 +1161,7 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
+  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASATTRIBUTEDTO_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasAttributedTo.java" />
                 </exec>
@@ -1208,7 +1208,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
+  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__ACTEDONBEHALFOF_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
   	              <arg value="ActedOnBehalfOf.java" />
                 </exec>
@@ -1307,7 +1307,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
+  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASINVALIDATEDBY_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasInvalidatedBy.java" />
                 </exec>
@@ -1356,7 +1356,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
+  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASSTARTEDBY_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasStartedBy.java" />
                 </exec>
@@ -1564,7 +1564,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
+  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASENDEDBY_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasEndedBy.java" />
                 </exec>
@@ -1615,7 +1615,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
+  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASINFORMEDBY_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasInformedBy.java" />
                 </exec>
@@ -1663,7 +1663,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
+  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASINFLUENCEDBY_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
   	              <arg value="WasInfluencedBy.java" />
                 </exec>

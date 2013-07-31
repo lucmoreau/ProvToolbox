@@ -20,7 +20,7 @@ import java.util.Collection;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
-@XmlJavaTypeAdapter(AnyAdapter.class)
+@XmlJavaTypeAdapter(org.openprovenance.prov.sql.AnyAdapter.class)
 @javax.persistence.Entity(name = "Attribute")
 @Table(name = "ATTRIBUTE")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -36,7 +36,7 @@ public class Attribute {
     public static QName PROV_LOCATION_QNAME=provQName("location");
     public static QName PROV_VALUE_QNAME=provQName("value");
     
-    enum AttributeKind {
+    public enum AttributeKind {
 	PROV_TYPE,
 	PROV_LABEL,
 	PROV_ROLE,

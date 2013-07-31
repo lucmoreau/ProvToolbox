@@ -113,6 +113,9 @@ public class TypedValue {
 	return xsdType;
     }
 
+    public void setXsdType(QName type) {
+	this.xsdType=type;
+    }
     @Basic
     @Column(name = "XSDTYPE")
     public String getXsdTypeItem() { 
@@ -243,6 +246,44 @@ public class TypedValue {
 	return "[loc " + value + " " + xsdType + "]";
     }
 
+    transient protected Object valueAsJava;
+
+
+    /**
+     * Gets the value of the value property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Object }
+     *     
+     */
+    public Object getValueAsJava(ValueConverter vconv) {
+    	if (valueAsJava==null) {
+    		valueAsJava=vconv.convertToJava(getXsdType(), (String)value);
+    	}
+        return valueAsJava;
+    }
+
+
+    /**
+     * Sets the value of the value property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Object }
+     *     
+     */
+    public void setValueAsJava(Object valueAsJava) {
+	if (valueAsJava!=null) {
+	    if (valueAsJava instanceof QName) {
+		QName q=(QName) valueAsJava;
+		this.value=q.getPrefix()+":"+q.getLocalPart();
+	    } else {
+		this.value = valueAsJava.toString();
+	    }
+	}
+        this.valueAsJava = valueAsJava;
+    }
 
     @XmlAttribute(name = "Hjid")
     Long hjid;

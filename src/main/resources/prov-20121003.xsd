@@ -205,8 +205,8 @@
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
-<!--      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>-->
-      <xs:element name="any"    type="prov:Attribute" minOccurs="0" maxOccurs="unbounded"/> 
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+<!--      <xs:element name="any"    type="prov:Attribute" minOccurs="0" maxOccurs="unbounded"/>  -->
     </xs:sequence>
     <xs:attribute ref="prov:id"/>
   </xs:complexType>
@@ -229,8 +229,8 @@
 
   <xs:complexType name="Communication">
     <xs:sequence>
-      <xs:element name="effect"  type="prov:ActivityRef"/>
-      <xs:element name="cause"   type="prov:ActivityRef"/>
+      <xs:element name="informed"  type="prov:ActivityRef"/>
+      <xs:element name="informant"   type="prov:ActivityRef"/>
       <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
 <!--      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> -->
@@ -300,7 +300,7 @@
 
   <xs:complexType name="Delegation">
     <xs:sequence>
-      <xs:element name="subordinate" type="prov:AgentRef"/>
+      <xs:element name="delegate" type="prov:AgentRef"/>
       <xs:element name="responsible" type="prov:AgentRef"/>
       <xs:element name="activity"    type="prov:ActivityRef"/>
       <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 

@@ -201,6 +201,7 @@
 	 </configuration>
        </plugin>
 
+
        <plugin>
          <groupId>org.jvnet.jaxb2.maven2</groupId>
 	 <artifactId>maven-jaxb2-plugin</artifactId>
@@ -247,7 +248,7 @@
         </executions>
       </plugin>
 
-      
+
 
 
       
@@ -2134,15 +2135,25 @@
         <executions>
           <execution>
             <id>create.schema.mysql</id>
-            <phase>process-classes</phase>
+            <phase>generate-sources</phase>
             <goals>
-              <goal>hbm2ddl</goal>
+              <goal>run</goal>
             </goals>
             <configuration>
 	      <hibernatetool>
-		<jpaconfiguration/>
+		<jpaconfiguration
+		    configurationfile="target/test-classes/persistence.properties"
+		    persistenceunit="org.openprovenance.prov.sql"/>
+		<hbm2ddl create="true" outputfilename="target/luc.ddl"/>
+		<hbm2doc/>
+                <classpath>
+                  <path location="target/classes"/>
+                  <path location="target/test-classes"/>
+                </classpath>
+
               </hibernatetool>
 
+<!--
               <components>
                 <component>
                   <name>hbm2ddl</name>
@@ -2159,10 +2170,11 @@
                 <outputfilename>provenance.store.create.schema.mysql</outputfilename>
                 <persistenceunit>org.openprovenance.prov.sql</persistenceunit>
               </componentProperties>
+-->
             </configuration>
           </execution>
 
-
+<!--
           <execution>
             <id>create.drop.schema.mysql</id>
             <phase>process-classes</phase>
@@ -2240,8 +2252,18 @@
                 </componentProperties>
               </configuration>
             </execution>
-
+-->
           </executions>
+
+	  <dependencies>
+            <dependency>
+              <groupId>hsqldb</groupId>
+              <artifactId>hsqldb</artifactId>
+              <version>1.8.0.7</version>
+              <scope>runtime</scope>
+            </dependency>
+          </dependencies>
+
 	</plugin>
 
      </plugins>

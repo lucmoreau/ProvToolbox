@@ -9,6 +9,7 @@ public class RoundTripFromJavaSQLTest extends org.openprovenance.prov.sql.RoundT
 
     public RoundTripFromJavaSQLTest(String name) {
 	super(name);
+	u.setUp();
     }
     
     
@@ -18,7 +19,7 @@ public class RoundTripFromJavaSQLTest extends org.openprovenance.prov.sql.RoundT
     
     @Override
     public void setUp () {
-	u.setUp();
+	//u.setUp();
     }
     
     @Override

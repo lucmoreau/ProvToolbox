@@ -17,6 +17,7 @@
 
 -->
 
+<!--
     <prov:essai prov:id="pc1:00000p1">
         <prov:label>align_essai 1</prov:label>
         <prov:mytype><prov:int>456</prov:int></prov:mytype>
@@ -33,6 +34,7 @@
 	<pc1:foo>hello</pc1:foo>
 	<pc1:bar xsi:type="xsd:int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">10</pc1:bar>
     </prov:essai>
+-->
 
     <prov:entity prov:id="ex:e2">
         <prov:label>entity2</prov:label>
@@ -81,11 +83,12 @@
 
 <!-- this one doesn't work!
         <prov:test2 xsi:type="xsd:QName">ex:a8</prov:test2>  -->
+<!--
         <prov:test2 xsi:type="xsd:int">1</prov:test2> 
         <prov:test2 xsi:type="xsd:unsignedInt">5</prov:test2> 
         <prov:test2 xsi:type="xsd:float">1.0</prov:test2> 
         <prov:test2 xsi:type="xsd:double">3.0</prov:test2> 
-
+-->
 
     </prov:activity>
 

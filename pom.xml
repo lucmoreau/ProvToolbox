@@ -268,15 +268,6 @@
             <configuration>
               <tasks>
                 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/@XmlAttribute(name = &quot;type&quot;)/@XmlAttribute(name = &quot;type&quot;, namespace=&quot;http:\/\/www.w3.org\/2001\/XMLSchema-instance&quot;)/"/>
-  	              <arg value="-iBAK" />
-  	              <arg value="TypedObject.java" />
-                </exec>
-
-                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-                     <arg value="TypedObject.java" />
-                </exec>
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
@@ -736,11 +727,6 @@
   	          <arg value="Activity.java" />
                 </exec>
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e /@Entity(name = &quot;Activity$ActivityAnyItem&quot;)/,/@XmlAccessorType.*/ { s/^/\/\//g}" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ActivityFOO.java" />
-                </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/protected transient List&lt;Activity.ActivityAnyItem&gt; anyItems;//" />
@@ -1863,6 +1849,8 @@
                 </exec>
 
 
+
+<!--
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
                      <arg value="URIWrapper.java" />
                 </exec>
@@ -1879,10 +1867,7 @@
                      <arg value="Location.java" />
                 </exec>
 
-
-                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-                     <arg value="Essai.java" />
-                </exec>
+-->
 
 
 

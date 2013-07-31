@@ -119,15 +119,15 @@ public class TypedValue {
     @Basic
     @Column(name = "XSDTYPE")
     public String getXsdTypeItem() { 
-        System.out.println("#---> getXsdTypeItem() reading " + xsdType);
+        //System.out.println("#---> getXsdTypeItem() reading " + xsdType);
 	if (xsdType==null) return null;
 	return Attribute.QNameToString(xsdType);
     }
 
     public void setXsdTypeItem(String name) {
-	System.out.println("#---> setXsdTypeItem() reading " + name);
+	//System.out.println("#---> setXsdTypeItem() reading " + name);
 	if (name!=null) xsdType=Attribute.stringToQName(name);
-	System.out.println("#---> setXsdTypeItem() got " + xsdType);
+	//System.out.println("#---> setXsdTypeItem() got " + xsdType);
     }
 
     
@@ -158,16 +158,16 @@ public class TypedValue {
     @ManyToOne(targetEntity = AValue.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "VALUE__TYPEDVALUE_HJID")
     public AValue getValueItem() {
-        System.out.println("#---> getValueItem() reading " + value);
+        //System.out.println("#---> getValueItem() reading " + value);
 
         if ((avalue==null) && (value!=null)) {
             if (xsdType==null) {
 		avalue=SQLValueConverter.convertToAValue(vc.getXsdType(value), value); //TODO, I am not using the one saved!
-		System.out.println("##---> getValueItem() reading found " + avalue);
+		//System.out.println("##---> getValueItem() reading found " + avalue);
 	    } else {
                 avalue=SQLValueConverter.convertToAValue(xsdType, vc.convertToJava(xsdType, (String)value));
-		System.out.println("###--> getValueItem() reading found " + avalue);
-		System.out.println("###--> getValueItem() reading found - " + SQLValueConverter.convertFromAValue(avalue));
+		//System.out.println("###--> getValueItem() reading found " + avalue);
+		//System.out.println("###--> getValueItem() reading found - " + SQLValueConverter.convertFromAValue(avalue));
 	    }
 	}
         return avalue;
@@ -187,26 +187,13 @@ public class TypedValue {
         
 
         
-        System.out.println("#---> setValueItem() reading " + value);
-        System.out.println("#---> setValueItem() reading (id) " + ((value==null)? "none" : value.getHjid()));
-        System.out.println("#---> setValueItem() reading (string) " + ((value==null)? null : value.getString()));
-        System.out.println("#---> setValueItem() reading (int) " + ((value==null)? null : value.getInt()));
+        //System.out.println("#---> setValueItem() reading " + value);
+        //System.out.println("#---> setValueItem() reading (id) " + ((value==null)? "none" : value.getHjid()));
+        //System.out.println("#---> setValueItem() reading (string) " + ((value==null)? null : value.getString()));
+        //System.out.println("#---> setValueItem() reading (int) " + ((value==null)? null : value.getInt()));
        
         
-        
-        /*
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory(null);
-
-        //EntityManagerFactory factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
-        EntityManager em = factory.createEntityManager();
-
-        AValue av = em.find(AValue.class, value.getHjid());
-
-        System.out.println("#---> setValueItem() reading " + av);
-        System.out.println("#---> setValueItem() reading (id) " + ((av==null)? "none" : av.getHjid()));
-        System.out.println("#---> setValueItem() reading (string) " + ((av==null)? null : av.getString()));
-        System.out.println("#---> setValueItem() reading (int) " + ((av==null)? null : av.getInt()));*/
-
+   
         this.avalue=value;
 	if (value!=null) {
 	    Object o=SQLValueConverter.convertFromAValue(value);

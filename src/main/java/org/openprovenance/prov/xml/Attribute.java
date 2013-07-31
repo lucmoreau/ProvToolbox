@@ -107,7 +107,7 @@ public class Attribute {
 	return "" + kind;
     }
     public void setAttributeKindItem (String k) {
-	System.out.println("---> setAttributeKindItem() reading " + k);
+	//System.out.println("---> setAttributeKindItem() reading " + k);
 	kind=AttributeKind.OTHER;
     }
     
@@ -140,9 +140,9 @@ public class Attribute {
     }
 
     public void setElementNameItem(String name) {
-	System.out.println("---> setElementNameItem() reading " + name);
+	//System.out.println("---> setElementNameItem() reading " + name);
 	elementName=stringToQName(name);
-	System.out.println(" ---> setElementNameItem() got " + elementName);
+	//System.out.println(" ---> setElementNameItem() got " + elementName);
     }
 
     public static String QNameToString(QName element) {
@@ -175,9 +175,9 @@ public class Attribute {
     }
 
     public void setXsdTypeItem(String name) {
-	System.out.println("---> setXsdTypeIterm() reading " + name);
+	//System.out.println("---> setXsdTypeIterm() reading " + name);
 	xsdType=stringToQName(name);
-	System.out.println(" ---> setXsdTypeIterm() got " + xsdType);
+	//System.out.println(" ---> setXsdTypeIterm() got " + xsdType);
     }
 
     
@@ -221,13 +221,13 @@ public class Attribute {
     @ManyToOne(targetEntity = AValue.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "VALUE_ATTRIBUTE_HJID")
     public AValue getValueItem() {
-        System.out.println("---> getValueItem() reading " + val);
+        //System.out.println("---> getValueItem() reading " + val);
         if (avalue==null) avalue=javaToValue(val);
         return avalue;
     }
 
     public static AValue javaToValue(Object val2) {
-        System.out.println("---> setValueItem() for " + val2);
+        //System.out.println("---> setValueItem() for " + val2);
 
         AValue res=new AValue();
         if (val2 instanceof String) {

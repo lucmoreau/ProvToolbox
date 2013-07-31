@@ -37,7 +37,7 @@ public class PersistenceUtility {
                final Enumeration<URL> resources = getClass().getClassLoader().getResources("META-INF/persistence.xml");
                while (resources.hasMoreElements()) {
                  final URL resource = resources.nextElement();
-                 logger.debug("Detected [" + resource + "].");
+                 //logger.debug("Detected [" + resource + "].");
                }
          
              }
@@ -68,11 +68,11 @@ public class PersistenceUtility {
                 
             }
             else {
-                logger.debug("Loading entity manager factory properties.");
+                //logger.debug("Loading entity manager factory properties.");
                 final Properties properties = new Properties();
                 while (resources.hasMoreElements()) {
                     final URL resource = resources.nextElement();
-                    logger.debug("Loading entity manager factory properties from [" + resource + "].");
+                    //logger.debug("Loading entity manager factory properties from [" + resource + "].");
                     
                     if (resource == null) {
                         return null;

@@ -1,9 +1,10 @@
 package org.openprovenance.prov.sql;
 
-import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.sql.PersistenceUtility;
+import java.util.Hashtable;
 
-abstract public class RoundTripFromJavaSQLTest extends org.openprovenance.prov.xml.RoundTripFromJavaTest {
+//import org.openprovenance.prov.sql.PersistenceUtility;
+
+public class RoundTripFromJavaSQLTest extends org.openprovenance.prov.sql.RoundTripFromJavaTest {
     final PersistenceUtility u=new PersistenceUtility();
 
     public RoundTripFromJavaSQLTest(String name) {
@@ -16,15 +17,27 @@ abstract public class RoundTripFromJavaSQLTest extends org.openprovenance.prov.x
     }
     
     @Override
-    public Document readDocument(String file1) {
-
-        return null;
+    public void setUp () {
+	u.setUp();
     }
+    
+    @Override
+    public Document readDocument(String file1) {
+	Long key=dbKeys.get(file1);
+	if (key==null) return null;
+        Document doc=u.find(Document.class, key);
+	System.out.println("read document " + doc.getHjid() + " for " + file1);
+	return doc;
+
+    }
+    
+    static Hashtable<String, Long> dbKeys=new Hashtable<String, Long>();
 
     @Override
     public void writeDocument(Document doc, String file) {
 	Document doc2=u.persist(doc);
-	//u.writeTextToFile(s, file);
+	dbKeys.put(file, doc.getHjid());
+	System.out.println("saved document " + doc.getHjid() + " for " + file);
     }
 	
     

@@ -1,4 +1,5 @@
 package org.openprovenance.prov.sql;
+import org.openprovenance.prov.xml.URIWrapper;
 import  org.openprovenance.prov.xml.ValueConverter;
 import  org.openprovenance.prov.xml.ProvFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -88,7 +89,7 @@ public class SQLValueConverter {
 	}
 	if (datatype.equals(ValueConverter.QNAME_XSD_ANY_URI)) {
 	    AValue res=new AValue();
-	    res.setAnyURI((String) value);
+	    res.setAnyURI( value.toString());
 	    return res;
 	}
 	if (datatype.equals(ValueConverter.QNAME_XSD_QNAME)) {

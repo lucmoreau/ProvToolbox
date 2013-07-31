@@ -13,18 +13,21 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
 import org.apache.log4j.Logger;
-import org.openprovenance.prov.xml.Document;
 
 public class PersistenceUtility {
     static Logger logger = Logger.getLogger(PersistenceUtility.class);
-    final private EntityManagerFactory emf;                                                                                                                   
+    private EntityManagerFactory emf;                                                                                                                   
+    private EntityManager entityManager;      
 
     public PersistenceUtility() {
        
-        this.emf=createEntityManagerFactory();  
-        this.entityManager=createEntityManager();          
-
-
+ 
+    }
+    
+    public void setUp() {
+	this.emf=createEntityManagerFactory();  
+	this.entityManager=createEntityManager();          
+	
     }
 
 
@@ -114,7 +117,6 @@ public class PersistenceUtility {
         return "org.openprovenance.prov.sql";
     }
 
-    final private EntityManager entityManager;      
     
     public EntityManager createEntityManager () {                                                                                                                                        
         EntityManager em=emf.createEntityManager();                                                                                                                                      
@@ -141,6 +143,11 @@ public class PersistenceUtility {
         tx.begin();                                                                                                                                                                      
         return tx;                                                                                                                                                                       
     }                                                                                                                                                                                    
+    public EntityTransaction commitTransaction() {                                                                                                                                        
+        EntityTransaction tx=entityManager.getTransaction();                                                                                                                             
+        tx.commit();                                                                                                                                                                      
+        return tx;                                                                                                                                                                       
+    }                                                                                                                                                                                    
              
     public void close() {                                                                                                                                                                
         entityManager.close();                                                                                                                                                           
@@ -150,7 +157,15 @@ public class PersistenceUtility {
     public Document persist(Document doc) {
         beginTransaction();
         entityManager.persist(doc);
-        close();
+        commitTransaction();
+        return doc;
+    }            
+    
+    
+    public <DOC> DOC find(Class<DOC> cl, Long id) {
+        beginTransaction();
+        DOC doc=entityManager.find(cl, id);
+        commitTransaction();
         return doc;
     }            
     

@@ -31,7 +31,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 //TODO: move the QNameExport capability outside the factory, and make it purely stateless, without namespace. 
 
-public class ProvFactory implements ModelConstructor, QNameExport {
+public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstructor {
 
     static public DocumentBuilder builder;
 

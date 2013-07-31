@@ -13,6 +13,9 @@
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:element name="mentionOf" type="prov:Mention" substitutionGroup="prov:internalElement" />
+	<xs:element name="mentionOf" type="prov:Mention" /> 
+	 
+	 
+	 <!--   substitutionGroup="prov:internalElement" -->
 	
 </xs:schema>

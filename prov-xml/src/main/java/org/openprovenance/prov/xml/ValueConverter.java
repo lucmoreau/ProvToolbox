@@ -64,9 +64,9 @@ public class ValueConverter {
     public static QName QNAME_UNKNOWN=newXsdQName("UNKNOWN");
 
     
-    final private ProvFactory pFactory;
+    final private LiteralConstructor pFactory;
     
-    public ValueConverter(ProvFactory pFactory) {
+    public ValueConverter(LiteralConstructor pFactory) {
 	this.pFactory=pFactory;
     }
     

@@ -99,11 +99,13 @@
 <groupId>org.hibernate</groupId>
 <artifactId>hibernate-entitymanager</artifactId>
 <version>3.6.5.Final</version>
+<scope>test</scope>
 </dependency>
 <dependency>
 <groupId>org.hibernate</groupId>
 <artifactId>hibernate</artifactId>
 <version>3.2.5.ga</version>
+<scope>test</scope>
 </dependency>
 <!--  Database  -->
 <dependency>
@@ -2128,52 +2130,6 @@
         </lifecycleMappingMetadata>
       </configuration>
       </plugin>
-
-                                                                                                                                                                                        
-                         
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>hibernate3-maven-plugin</artifactId>
-        <version>${hibernate3.plugin.version}</version>
-
-            <configuration>
-	      <hibernatetool  destdir="${project.build.directory}/hibernate-out">
-                <classpath>
-                  <path location="${project.build.directory}/classes"/>
-                  <path location="${project.build.directory}/test-classes"/>
-                </classpath>
-		<jpaconfiguration persistenceunit="org.openprovenance.prov.sql" 
-				  propertyfile="${project.build.directory}/test-classes/persistence.properties"/>
-<!--		<hbm2ddl export="true"
-			 create="true"
-			 outputfilename="${project.build.directory}/luc.ddl"/> -->
-		<hbm2doc/>
-                <hbm2hbmxml/>
-		<hbm2ddl/>
-
-              </hibernatetool>
-
-            </configuration>
-	    <goals>
-              <goal>run</goal>
-            </goals>
-
-
-
-	  <dependencies>
-
-
-            <dependency>
-              <groupId>hsqldb</groupId>
-              <artifactId>hsqldb</artifactId>
-              <version>1.8.0.7</version>
-              <scope>runtime</scope>
-            </dependency>
-          </dependencies>
-
-	</plugin>
-
      </plugins>
 
 

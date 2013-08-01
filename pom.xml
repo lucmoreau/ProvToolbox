@@ -824,6 +824,13 @@
 -->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/this.ref = value;/this.ref = value; IdentifierManagement.it.add(value,this);/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="EntityRef.java" />
+                </exec>
+
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.xml.Element, Equals, HashCode /" />
   	              <arg value="-iBAK" />
   	              <arg value="Agent.java" />

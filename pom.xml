@@ -789,12 +789,31 @@
                 </exec>
 -->
 
-
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/ActivityAnyItem.*^$.*implements Item&lt;Object&gt;/ActivityAnyItem implemens Item&lt;org.openprovenance.prov.xml.Attribute&gt;/" />
+  	          <arg value="-e /@Entity(name = &quot;Activity$ActivityAnyItem&quot;)/,/^}/ { /^}/b; s/^/\/\//g}" />
   	          <arg value="-iBAK" />
   	          <arg value="Activity.java" />
                 </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/ @XmlAccessorType(XmlAccessType.FIELD)//" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Activity.java" />
+                </exec>
+
+
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e /@Entity(name = &quot;Entity$EntityAnyItem&quot;)/,/^}/ { /^}/b; s/^/\/\//g}" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Entity.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/ @XmlAccessorType(XmlAccessType.FIELD)//" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Entity.java" />
+                </exec>
+
+
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
@@ -1813,6 +1832,21 @@
   	          <arg value="-iBAK" />
   	          <arg value="ObjectFactory.java" />
                 </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/createOrgOpenprovenanceProvXmlAttribute/createAttribute/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="ObjectFactory.java" />
+                </exec><!-- do it twice !! -->
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="ObjectFactory.java" />
+                </exec><!-- do it twice !! -->
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="ObjectFactory.java" />
+                </exec>
 
 
                 <!--
@@ -1876,6 +1910,24 @@
 
 -->
 
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+                     <arg value="OrgOpenprovenanceProvXmlLocation.java" />
+                </exec>
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+                     <arg value="OrgOpenprovenanceProvXmlType.java" />
+                </exec>
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+                     <arg value="OrgOpenprovenanceProvXmlRole.java" />
+                </exec>
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+                     <arg value="OrgOpenprovenanceProvXmlTypedValue.java" />
+                </exec>
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+                     <arg value="OrgOpenprovenanceProvXmlValue.java" />
+                </exec>
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+                     <arg value="OrgOpenprovenanceProvXmlAttribute.java" />
+                </exec>
 
 
 

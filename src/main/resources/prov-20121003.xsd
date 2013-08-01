@@ -88,17 +88,6 @@
   </xs:complexType>    
 
 
-  <xs:element name="test2"    type="prov:TypedObject"/>
-
-  <xs:complexType name="TypedObject">
-    <xs:simpleContent>
-      <xs:extension base="xs:anySimpleType">
-	<xs:attribute name="type" type="xs:QName"/>
-      </xs:extension>
-    </xs:simpleContent>
-  </xs:complexType>    
-
-
   <xs:complexType name="TypedValue">
     <xs:simpleContent>
       <xs:extension base="xs:anySimpleType">
@@ -116,8 +105,6 @@
       <xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/> 
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/> 
       <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
-
-       <xs:element ref="prov:test2"  minOccurs="0" maxOccurs="unbounded"/>
 
 
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/> 

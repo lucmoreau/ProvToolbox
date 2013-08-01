@@ -803,7 +803,7 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e /@Entity(name = &quot;Entity$EntityAnyItem&quot;)/,/^}/ { /^}/b; s/^/\/\//g}" />
+  	          <arg value="-e /@javax.persistence.Entity(name = &quot;Entity$EntityAnyItem&quot;)/,/^}/ { /^}/b; s/^/\/\//g}" />
   	          <arg value="-iBAK" />
   	          <arg value="Entity.java" />
                 </exec>
@@ -813,8 +813,15 @@
   	          <arg value="Entity.java" />
                 </exec>
 
+<!-- unique constraint
 
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/@Table(name = &quot;ENTITYREF&quot;)/@Table(name = &quot;ENTITYREF&quot;, uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={&quot;REFITEM&quot;}))/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="EntityRef.java" />
+                </exec>
 
+-->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.xml.Element, Equals, HashCode /" />

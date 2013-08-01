@@ -99,7 +99,11 @@
 <groupId>org.hibernate</groupId>
 <artifactId>hibernate-entitymanager</artifactId>
 <version>3.6.5.Final</version>
-<scope>test</scope>
+</dependency>
+<dependency>
+<groupId>org.hibernate</groupId>
+<artifactId>hibernate</artifactId>
+<version>3.2.5.ga</version>
 </dependency>
 <!--  Database  -->
 <dependency>
@@ -2126,136 +2130,40 @@
       </plugin>
 
                                                                                                                                                                                         
-                                                                                                                                                                                         
+                         
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>hibernate3-maven-plugin</artifactId>
         <version>${hibernate3.plugin.version}</version>
 
-        <executions>
-          <execution>
-            <id>create.schema.mysql</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
             <configuration>
-	      <hibernatetool>
-		<jpaconfiguration
-		    configurationfile="target/test-classes/persistence.properties"
-		    persistenceunit="org.openprovenance.prov.sql"/>
-		<hbm2ddl create="true" outputfilename="target/luc.ddl"/>
-		<hbm2doc/>
+	      <hibernatetool  destdir="${project.build.directory}/hibernate-out">
                 <classpath>
-                  <path location="target/classes"/>
-                  <path location="target/test-classes"/>
+                  <path location="${project.build.directory}/classes"/>
+                  <path location="${project.build.directory}/test-classes"/>
                 </classpath>
+		<jpaconfiguration persistenceunit="org.openprovenance.prov.sql" 
+				  propertyfile="${project.build.directory}/test-classes/persistence.properties"/>
+<!--		<hbm2ddl export="true"
+			 create="true"
+			 outputfilename="${project.build.directory}/luc.ddl"/> -->
+		<hbm2doc/>
+                <hbm2hbmxml/>
+		<hbm2ddl/>
 
               </hibernatetool>
 
-<!--
-              <components>
-                <component>
-                  <name>hbm2ddl</name>
-                  <implementation>jpaconfiguration</implementation>
-                </component>
-              </components>
-
-              <componentProperties>
-                <export>false</export>
-                <jdk5>true</jdk5>
-                <create>true</create>
-                <drop>false</drop>
-                <propertyfile>src/main/resources/mysql.properties</propertyfile>
-                <outputfilename>provenance.store.create.schema.mysql</outputfilename>
-                <persistenceunit>org.openprovenance.prov.sql</persistenceunit>
-              </componentProperties>
--->
             </configuration>
-          </execution>
-
-<!--
-          <execution>
-            <id>create.drop.schema.mysql</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>hbm2ddl</goal>
+	    <goals>
+              <goal>run</goal>
             </goals>
-            <configuration>
-              <components>
-                <component>
-                  <name>hbm2ddl</name>
-                  <implementation>jpaconfiguration</implementation>
-                </component>
-              </components>
 
-              <componentProperties>
-                <export>false</export>
-                <jdk5>true</jdk5>
-                <create>true</create>
-                <drop>true</drop>
-                <propertyfile>src/main/resources/mysql.properties</propertyfile>
-                <outputfilename>provenance.store.create.drop.schema.mysql</outputfilename>
-                <persistenceunit>org.openprovenance.prov.sql</persistenceunit>
-              </componentProperties>
-            </configuration>
-          </execution>
 
-          <execution>
-            <id>drop.schema.mysql</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>hbm2ddl</goal>
-            </goals>
-            <configuration>
-              <components>
-                <component>
-                  <name>hbm2ddl</name>
-                  <implementation>jpaconfiguration</implementation>
-                </component>
-              </components>
-
-              <componentProperties>
-                <export>false</export>
-                <jdk5>true</jdk5>
-                <create>false</create>
-                <drop>true</drop>
-                <propertyfile>src/main/resources/mysql.properties</propertyfile>
-                <outputfilename>provenance.store.drop.schema.mysql</outputfilename>
-                <persistenceunit>org.openprovenance.prov.sql</persistenceunit>
-              </componentProperties>
-            </configuration>
-          </execution>
-
-         <execution>
-              <id>create.schema.hsql</id>
-              <phase>process-classes</phase>
-              <goals>
-                <goal>hbm2ddl</goal>
-              </goals>
-              <configuration>
-                <components>
-                  <component>
-                    <name>hbm2ddl</name>
-                    <implementation>jpaconfiguration</implementation>
-                  </component>
-                </components>
-
-                <componentProperties>
-                  <export>false</export>
-                  <jdk5>true</jdk5>
-                  <create>true</create>
-                  <drop>false</drop>
-                  <propertyfile>src/main/resources/hsql.properties</propertyfile>
-                  <outputfilename>provenance.store.create.schema.hsql</outputfilename>
-                  <persistenceunit>org.openprovenance.prov.sql</persistenceunit>
-                </componentProperties>
-              </configuration>
-            </execution>
--->
-          </executions>
 
 	  <dependencies>
+
+
             <dependency>
               <groupId>hsqldb</groupId>
               <artifactId>hsqldb</artifactId>

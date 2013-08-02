@@ -16,8 +16,8 @@ import org.apache.log4j.Logger;
 
 public class PersistenceUtility {
     static Logger logger = Logger.getLogger(PersistenceUtility.class);
-    private EntityManagerFactory emf;                                                                                                                   
-    private EntityManager entityManager;      
+    static private EntityManagerFactory emf;                                                                                                                   
+    static private EntityManager entityManager;      
 
     public PersistenceUtility() {
        
@@ -25,8 +25,12 @@ public class PersistenceUtility {
     }
     
     public void setUp() {
-	this.emf=createEntityManagerFactory();  
-	this.entityManager=createEntityManager();          
+	if (emf==null) this.emf=createEntityManagerFactory();  
+	if (entityManager==null) this.entityManager=createEntityManager();  
+	
+	//System.out.println("**** persisting IdentifierManagement");
+        //entityManager.persist(IdentifierManagement.it);
+	//entityManager.merge(IdentifierManagement.it);
 	
     }
 
@@ -155,10 +159,13 @@ public class PersistenceUtility {
     
 
     public Document persist(Document doc) {
-        beginTransaction();
-        entityManager.persist(doc);
-        commitTransaction();
-        return doc;
+            beginTransaction();
+            entityManager.persist(doc);
+            System.out.println("**** persisting IdentifierManagement");
+            entityManager.persist(IdentifierManagement.it);
+            commitTransaction();
+            return doc;
+    
     }            
     
     

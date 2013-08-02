@@ -27,34 +27,44 @@ public class IdentifierManagement {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    /*
+    
     @ElementCollection
     @MapKeyColumn(name="uri")
-    @Column(name="value")
-    @CollectionTable(name="management_identifiers", joinColumns=@JoinColumn(name="HJID"))
-    private Map<String, Long> identifiers;
-    */
-    @Transient
+ //   @Column(name="value")
+    @CollectionTable(name="IdentifierManagementEntries", joinColumns=@JoinColumn(name="HJID"))
+    
     private Map<String, EntityRef> identifiers=new HashMap<String, EntityRef>();
     
-    public void add(String key, EntityRef newref) {
+    public Map<String, EntityRef> getIdentifiers() {
+        return identifiers;
+    }
+    
+    @Transient
+    private Map<String, QName> qnames=new HashMap<String, QName>();
+    
+    public void add(String key, QName q, EntityRef newref) {
 	EntityRef old=identifiers.get(key);
 	if (old!=null) {
-	    newref.setHjid(old.getHjid());
-	    System.out.println("*** reusing " + old.getHjid());
+	       System.out.println("*---- seeing again " + key + " (id=" + old.getHjid() + ")");
+
+	       //newref.setHjid(old.getHjid());
+	    //System.out.println("*** reusing " + old.getHjid());
 	} else {
-	    identifiers.put(key, newref);
+	    getIdentifiers().put(key, newref);
+	    qnames.put(key, q);
+	    System.out.println("*** storing " + key+ " (id=" + newref.getHjid() + ")");
 	}
     }
     
     public void add(QName q,EntityRef newref) {
 	String uri=q.getNamespaceURI()+q.getLocalPart();
-	add(uri,newref);
+	add(uri,q, newref);
     }
     
     static IdentifierManagement it;
     
     static {
+        System.out.println("$$$$$$$$$$  creating IdentifierManagement instance");
 	it=new IdentifierManagement();
     }
 

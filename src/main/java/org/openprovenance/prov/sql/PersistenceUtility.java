@@ -13,6 +13,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
 import org.apache.log4j.Logger;
+import org.openprovenance.prov.xml.Statement;
+import org.openprovenance.prov.xml.StatementOrBundle;
 
 public class PersistenceUtility {
     static Logger logger = Logger.getLogger(PersistenceUtility.class);
@@ -28,10 +30,12 @@ public class PersistenceUtility {
 	if (emf==null) this.emf=createEntityManagerFactory();  
 	if (entityManager==null) this.entityManager=createEntityManager();  
 	
-	//System.out.println("**** persisting IdentifierManagement");
+	System.out.println("**** merging IdentifierManagement");
         //entityManager.persist(IdentifierManagement.it);
 	//entityManager.merge(IdentifierManagement.it);
 	
+	//entityManager.refresh(IdentifierManagement.it);
+	//IdentifierManagement.it=entityManager.find(IdentifierManagement.class, 1);
     }
 
 
@@ -160,9 +164,16 @@ public class PersistenceUtility {
 
     public Document persist(Document doc) {
             beginTransaction();
+            Dagify dagifier=new Dagify(entityManager);
+            for (StatementOrBundle s: doc.getEntityOrActivityOrWasGeneratedBy()) {
+                if (s instanceof Statement) {
+                    Dagify.run((Statement)s, dagifier);
+                }
+            }
             entityManager.persist(doc);
-            System.out.println("**** persisting IdentifierManagement");
-            entityManager.persist(IdentifierManagement.it);
+            
+            //System.out.println("**** persisting IdentifierManagement");
+            //entityManager.persist(IdentifierManagement.it);
             commitTransaction();
             return doc;
     

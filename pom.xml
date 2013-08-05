@@ -813,22 +813,32 @@
   	          <arg value="Entity.java" />
                 </exec>
 
-<!-- unique constraint
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/@Table(name = &quot;ENTITYREF&quot;)/@Table(name = &quot;ENTITYREF&quot;, uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={&quot;REFITEM&quot;}))/" />
+  	          <arg value="-e s/ @Column(name = &quot;REFITEM&quot;)/@Column(name = &quot;URI&quot;)public String getUri() { return ((this.getRef()==null)? null: this.getRef().getNamespaceURI() + this.getRef().getLocalPart()); } public void setUri(String uri) {} @Basic@Column(name = &quot;REFITEM&quot;)/" />
   	          <arg value="-iBAK" />
   	          <arg value="EntityRef.java" />
                 </exec>
 
--->
 
+<!-- unique constraint-->
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/@Table(name = &quot;ENTITYREF&quot;)/@Table(name = &quot;ENTITYREF&quot;, uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={&quot;URI&quot;}))/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="EntityRef.java" />
+                </exec>
+
+
+
+
+<!--
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/this.ref = value;/this.ref = value; IdentifierManagement.it.add(value,this);/" />
   	          <arg value="-iBAK" />
   	          <arg value="EntityRef.java" />
                 </exec>
-
+-->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.xml.Element, Equals, HashCode /" />

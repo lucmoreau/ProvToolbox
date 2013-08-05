@@ -26,7 +26,6 @@ import org.openprovenance.prov.xml.DerivedByInsertionFrom;
 import org.openprovenance.prov.xml.DerivedByRemovalFrom;
 import org.openprovenance.prov.xml.DictionaryMembership;
 import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.GenerationRef;
 import org.openprovenance.prov.xml.HadMember;
 import org.openprovenance.prov.xml.HasExtensibility;
 import org.openprovenance.prov.xml.HasLabel;
@@ -43,7 +42,7 @@ import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Role;
 import org.openprovenance.prov.xml.Statement;
 import org.openprovenance.prov.xml.StatementOrBundle;
-import org.openprovenance.prov.xml.UsageRef;
+import org.openprovenance.prov.xml.IDRef;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.ValueConverter;
 import org.openprovenance.prov.xml.WasAssociatedWith;
@@ -230,8 +229,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             IDRef generatedEntity = optionalIdRef("prov:generatedEntity", attributeMap);
             IDRef usedEntity = optionalIdRef("prov:usedEntity", attributeMap);
             activity = optionalIdRef("prov:activity", attributeMap);
-            GenerationRef generation = optionalGenerationRef("prov:generation", attributeMap);
-            UsageRef usage = optionalUsageRef("prov:usage", attributeMap);
+            IDRef generation = optionalIdRef("prov:generation", attributeMap);
+            IDRef usage = optionalIdRef("prov:usage", attributeMap);
             statement = pf.newWasDerivedFrom(id, generatedEntity, usedEntity, activity, generation, usage);
             break;
         case wasEndedBy:
@@ -608,20 +607,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         else
             return null;
     }
-    
-    private GenerationRef optionalGenerationRef(String attributeName, JsonObject attributeMap) {
-        if (attributeMap.has(attributeName))
-            return pf.newGenerationRef(popString(attributeMap, attributeName));
-        else
-            return null;
-    }
-    
-    private UsageRef optionalUsageRef(String attributeName, JsonObject attributeMap) {
-        if (attributeMap.has(attributeName))
-            return pf.newUsageRef(popString(attributeMap, attributeName));
-        else
-            return null;
-    }
+
     
     private XMLGregorianCalendar optionalTime(String attributeName, JsonObject attributeMap) {
         if (attributeMap.has(attributeName))

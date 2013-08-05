@@ -39,7 +39,7 @@ public class AnyAdapter
 
 
     public Attribute unmarshal(Object value) {
-        System.out.println("AnyAdapter unmarshalling for " + value);
+        //System.out.println("AnyAdapter unmarshalling for " + value);
         if (value instanceof org.w3c.dom.Element) {
             org.w3c.dom.Element el=(org.w3c.dom.Element)value;
             String prefix=el.getPrefix();
@@ -67,7 +67,7 @@ public class AnyAdapter
     }
 
     public Object marshal(Attribute attribute) {
-        System.out.println("AnyAdapter marshalling for " + attribute);
+        //System.out.println("AnyAdapter marshalling for " + attribute);
         //System.out.println("AnyAdapter2 marshalling for " + attribute
         //                .getClass());
         //TODO: this call creates a DOM but does not encode the type as xsi:type

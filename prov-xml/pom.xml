@@ -910,44 +910,9 @@
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/implements Equals, HashCode, ToString/implements Ref, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
-  	              <arg value="EntityRef.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Ref, Equals, HashCode, ToString/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="ActivityRef.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Ref, Equals, HashCode, ToString/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="AnyRef.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Ref, Equals, HashCode, ToString/" />
-  	              <arg value="-iBAK" />
   	              <arg value="AgentRef.java" />
                 </exec>
 
-                <!--
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Ref, Equals, HashCode, ToString/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NoteRef.java" />
-                </exec> -->
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Ref, Equals, HashCode, ToString/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="UsageRef.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Ref, Equals, HashCode, ToString/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="GenerationRef.java" />
-                </exec>
 
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
                      <arg value="URIWrapper.java" />

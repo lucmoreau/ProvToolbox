@@ -469,8 +469,8 @@ public class ProvUtilities {
                                                      IDRef.class,
                                                      IDRef.class,
                                                      IDRef.class,
-                                                     GenerationRef.class,
-                                                     UsageRef.class,
+                                                     IDRef.class,
+                                                     IDRef.class,
                                                      Object.class });
         types.put(WasInfluencedBy.class, new Class[] { QName.class,
                                                       IDRef.class,

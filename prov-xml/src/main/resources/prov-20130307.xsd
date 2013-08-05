@@ -144,8 +144,8 @@
       <xs:element name="generatedEntity"  type="prov:IDRef"/>
       <xs:element name="usedEntity"       type="prov:IDRef"/>
       <xs:element name="activity"         type="prov:IDRef" minOccurs="0"/>
-      <xs:element name="generation"       type="prov:GenerationRef" minOccurs="0"/>
-      <xs:element name="usage"            type="prov:UsageRef" minOccurs="0"/>
+      <xs:element name="generation"       type="prov:IDRef" minOccurs="0"/>
+      <xs:element name="usage"            type="prov:IDRef" minOccurs="0"/>
       <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
@@ -472,23 +472,6 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="UsageRef">
-    <xs:complexContent>
-      <xs:extension base="prov:IDRef">
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-
-  <xs:complexType name="GenerationRef">
-    <xs:complexContent>
-      <xs:extension base="prov:IDRef">
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  
-  
   
   <!--
      top-level definition of elements following the salami slice XSD design pattern

@@ -1134,7 +1134,7 @@ public class RoundTripFromJavaTest extends TestCase {
    	                                                pFactory.newIDRef(q("e2")),
    	                                                pFactory.newIDRef(q("e1")));
    	der.setActivity(pFactory.newIDRef(q("a")));
-   	der.setUsage(pFactory.newUsageRef(q("u")));
+   	der.setUsage(pFactory.newIDRef(q("u")));
    	makeDocAndTest(der, "target/derivation6");
     }
     
@@ -1144,8 +1144,8 @@ public class RoundTripFromJavaTest extends TestCase {
    	                                                pFactory.newIDRef(q("e2")),
    	                                                pFactory.newIDRef(q("e1")));
    	der.setActivity(pFactory.newIDRef(q("a")));
-   	der.setUsage(pFactory.newUsageRef(q("u")));
-   	der.setGeneration(pFactory.newGenerationRef(q("g")));
+   	der.setUsage(pFactory.newIDRef(q("u")));
+   	der.setGeneration(pFactory.newIDRef(q("g")));
    	
    	makeDocAndTest(der, "target/derivation7");
     }
@@ -1179,8 +1179,8 @@ public class RoundTripFromJavaTest extends TestCase {
                                                         pFactory.newIDRef(q("e2")),
                                                         pFactory.newIDRef(q("e1")));
         der.setActivity(pFactory.newIDRef(q("a")));
-        der.setUsage(pFactory.newUsageRef(q("u")));
-        der.setGeneration(pFactory.newGenerationRef(q("g")));
+        der.setUsage(pFactory.newIDRef(q("u")));
+        der.setGeneration(pFactory.newIDRef(q("g")));
         makeDocAndTest(der, "target/derivation10");
     }
     
@@ -1190,8 +1190,8 @@ public class RoundTripFromJavaTest extends TestCase {
                                                         pFactory.newIDRef(q("e2")),
                                                         pFactory.newIDRef(q("e1")));
         der.setActivity(pFactory.newIDRef(q("a")));
-        der.setUsage(pFactory.newUsageRef(q("u")));
-        der.setGeneration(pFactory.newGenerationRef(q("g")));
+        der.setUsage(pFactory.newIDRef(q("u")));
+        der.setGeneration(pFactory.newIDRef(q("g")));
         pFactory.addRevisionType(der);
         makeDocAndTest(der, "target/derivation11");
     }
@@ -1202,8 +1202,8 @@ public class RoundTripFromJavaTest extends TestCase {
                                                         pFactory.newIDRef(q("e2")),
                                                         pFactory.newIDRef(q("e1")));
         der.setActivity(pFactory.newIDRef(q("a")));
-        der.setUsage(pFactory.newUsageRef(q("u")));
-        der.setGeneration(pFactory.newGenerationRef(q("g")));
+        der.setUsage(pFactory.newIDRef(q("u")));
+        der.setGeneration(pFactory.newIDRef(q("g")));
         pFactory.addQuotationType(der);
         makeDocAndTest(der, "target/derivation12");
     }
@@ -1214,8 +1214,8 @@ public class RoundTripFromJavaTest extends TestCase {
                                                         pFactory.newIDRef(q("e2")),
                                                         pFactory.newIDRef(q("e1")));
         der.setActivity(pFactory.newIDRef(q("a")));
-        der.setUsage(pFactory.newUsageRef(q("u")));
-        der.setGeneration(pFactory.newGenerationRef(q("g")));
+        der.setUsage(pFactory.newIDRef(q("u")));
+        der.setGeneration(pFactory.newIDRef(q("g")));
         pFactory.addPrimarySourceType(der);
         makeDocAndTest(der, "target/derivation13");
     }

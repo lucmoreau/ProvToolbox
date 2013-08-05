@@ -20,15 +20,12 @@ import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.xml.Activity;
-import org.openprovenance.prov.xml.ActivityRef;
 import org.openprovenance.prov.xml.AgentRef;
-import org.openprovenance.prov.xml.AnyRef;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.DerivedByInsertionFrom;
 import org.openprovenance.prov.xml.DerivedByRemovalFrom;
 import org.openprovenance.prov.xml.DictionaryMembership;
 import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.EntityRef;
 import org.openprovenance.prov.xml.GenerationRef;
 import org.openprovenance.prov.xml.HadMember;
 import org.openprovenance.prov.xml.HasExtensibility;
@@ -37,6 +34,7 @@ import org.openprovenance.prov.xml.HasLocation;
 import org.openprovenance.prov.xml.HasRole;
 import org.openprovenance.prov.xml.HasType;
 import org.openprovenance.prov.xml.HasValue;
+import org.openprovenance.prov.xml.IDRef;
 import org.openprovenance.prov.xml.InternationalizedString;
 import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.Location;
@@ -190,20 +188,20 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = pf.newAgent(id);
             break;            
         case alternateOf:
-            EntityRef alternate1 = optionalEntityRef("prov:alternate1", attributeMap);
-            EntityRef alternate2 = optionalEntityRef("prov:alternate2", attributeMap);
+            IDRef alternate1 = optionalIdRef("prov:alternate1", attributeMap);
+            IDRef alternate2 = optionalIdRef("prov:alternate2", attributeMap);
             statement = pf.newAlternateOf(alternate2, alternate1);
             break;
         case wasAssociatedWith:
-            ActivityRef activity = optionalActivityRef("prov:activity", attributeMap);
+            IDRef activity = optionalIdRef("prov:activity", attributeMap);
             AgentRef agent = optionalAgentRef("prov:agent", attributeMap); 
-            EntityRef plan = optionalEntityRef("prov:plan", attributeMap);
+            IDRef plan = optionalIdRef("prov:plan", attributeMap);
             WasAssociatedWith wAW = pf.newWasAssociatedWith(id, activity, agent);
             if (plan != null) wAW.setPlan(plan);
             statement = wAW;
             break;
         case wasAttributedTo:
-            EntityRef entity = optionalEntityRef("prov:entity", attributeMap);
+            IDRef entity = optionalIdRef("prov:entity", attributeMap);
             agent = optionalAgentRef("prov:agent", attributeMap);
             statement = pf.newWasAttributedTo(id, entity, agent);
             break;
@@ -218,28 +216,28 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = namedBundle;
             break;
         case wasInformedBy:
-            ActivityRef informed = optionalActivityRef("prov:informed", attributeMap);
-            ActivityRef informant = optionalActivityRef("prov:informant", attributeMap);
+            IDRef informed = optionalIdRef("prov:informed", attributeMap);
+            IDRef informant = optionalIdRef("prov:informant", attributeMap);
             statement = pf.newWasInformedBy(id, informed, informant);
             break;
         case actedOnBehalfOf:
             AgentRef delegate = optionalAgentRef("prov:delegate", attributeMap);
             AgentRef responsible = optionalAgentRef("prov:responsible", attributeMap);
-            activity = optionalActivityRef("prov:activity", attributeMap);
+            activity = optionalIdRef("prov:activity", attributeMap);
             statement = pf.newActedOnBehalfOf(id, delegate, responsible, activity);
             break;
         case wasDerivedFrom:
-            EntityRef generatedEntity = optionalEntityRef("prov:generatedEntity", attributeMap);
-            EntityRef usedEntity = optionalEntityRef("prov:usedEntity", attributeMap);
-            activity = optionalActivityRef("prov:activity", attributeMap);
+            IDRef generatedEntity = optionalIdRef("prov:generatedEntity", attributeMap);
+            IDRef usedEntity = optionalIdRef("prov:usedEntity", attributeMap);
+            activity = optionalIdRef("prov:activity", attributeMap);
             GenerationRef generation = optionalGenerationRef("prov:generation", attributeMap);
             UsageRef usage = optionalUsageRef("prov:usage", attributeMap);
             statement = pf.newWasDerivedFrom(id, generatedEntity, usedEntity, activity, generation, usage);
             break;
         case wasEndedBy:
-            activity = optionalActivityRef("prov:activity", attributeMap);
-            EntityRef trigger = optionalEntityRef("prov:trigger", attributeMap);
-            ActivityRef ender = optionalActivityRef("prov:ender", attributeMap);
+            activity = optionalIdRef("prov:activity", attributeMap);
+            IDRef trigger = optionalIdRef("prov:trigger", attributeMap);
+            IDRef ender = optionalIdRef("prov:ender", attributeMap);
             XMLGregorianCalendar time = optionalTime("prov:time", attributeMap);
             WasEndedBy wEB = pf.newWasEndedBy(id, activity, trigger);
             if (ender != null)
@@ -250,8 +248,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = wEB;
             break;
         case wasGeneratedBy:
-            entity = optionalEntityRef("prov:entity", attributeMap);
-            activity = optionalActivityRef("prov:activity", attributeMap);
+            entity = optionalIdRef("prov:entity", attributeMap);
+            activity = optionalIdRef("prov:activity", attributeMap);
             time = optionalTime("prov:time", attributeMap);
             WasGeneratedBy wGB = pf.newWasGeneratedBy(id);
             wGB.setEntity(entity);
@@ -263,13 +261,13 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = wGB;
             break;
         case wasInfluencedBy:
-            AnyRef influencee = anyRef("prov:influencee", attributeMap);
-            AnyRef influencer = anyRef("prov:influencer", attributeMap);
+            IDRef influencee = anyRef("prov:influencee", attributeMap);
+            IDRef influencer = anyRef("prov:influencer", attributeMap);
             statement = pf.newWasInfluencedBy(id, influencee, influencer);
             break;
         case wasInvalidatedBy:
-            entity = optionalEntityRef("prov:entity", attributeMap);
-            activity = optionalActivityRef("prov:activity", attributeMap);
+            entity = optionalIdRef("prov:entity", attributeMap);
+            activity = optionalIdRef("prov:activity", attributeMap);
             time = optionalTime("prov:time", attributeMap);
             WasInvalidatedBy wIB = pf.newWasInvalidatedBy(id, entity, activity);
             if (time != null) {
@@ -278,8 +276,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = wIB;
             break;
         case hadMember:
-            EntityRef collection = optionalEntityRef("prov:collection", attributeMap);
-            Collection<EntityRef> entities = optionalEntityRefs("prov:entity", attributeMap);
+            IDRef collection = optionalIdRef("prov:collection", attributeMap);
+            Collection<IDRef> entities = optionalIdRefs("prov:entity", attributeMap);
             HadMember membership = new HadMember();
             membership.setCollection(collection);
             if (entities != null)
@@ -287,20 +285,20 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = membership;
             break;
         case mentionOf:
-            EntityRef specificEntity = optionalEntityRef("prov:specificEntity", attributeMap);
-            EntityRef generalEntity = optionalEntityRef("prov:generalEntity", attributeMap);
-            EntityRef bundle = optionalEntityRef("prov:bundle", attributeMap);
+            IDRef specificEntity = optionalIdRef("prov:specificEntity", attributeMap);
+            IDRef generalEntity = optionalIdRef("prov:generalEntity", attributeMap);
+            IDRef bundle = optionalIdRef("prov:bundle", attributeMap);
             statement = pf.newMentionOf(specificEntity, generalEntity, bundle);
             break;
         case specializationOf:
-            specificEntity = optionalEntityRef("prov:specificEntity", attributeMap);
-            generalEntity = optionalEntityRef("prov:generalEntity", attributeMap);
+            specificEntity = optionalIdRef("prov:specificEntity", attributeMap);
+            generalEntity = optionalIdRef("prov:generalEntity", attributeMap);
             statement = pf.newSpecializationOf(specificEntity, generalEntity);
             break;
         case wasStartedBy:
-            activity = optionalActivityRef("prov:activity", attributeMap);
-            trigger = optionalEntityRef("prov:trigger", attributeMap);
-            ActivityRef starter = optionalActivityRef("prov:starter", attributeMap);
+            activity = optionalIdRef("prov:activity", attributeMap);
+            trigger = optionalIdRef("prov:trigger", attributeMap);
+            IDRef starter = optionalIdRef("prov:starter", attributeMap);
             time = optionalTime("prov:time", attributeMap);
             WasStartedBy wSB = pf.newWasStartedBy(id, activity, trigger);
             if (starter != null)
@@ -311,8 +309,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = wSB;
             break;
         case used:
-            activity = optionalActivityRef("prov:activity", attributeMap);
-            entity = optionalEntityRef("prov:entity", attributeMap);
+            activity = optionalIdRef("prov:activity", attributeMap);
+            entity = optionalIdRef("prov:entity", attributeMap);
             time = optionalTime("prov:time", attributeMap);
             Used wUB = pf.newUsed(id);
             wUB.setActivity(activity);
@@ -578,38 +576,32 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             return null;
     }
 
-    private EntityRef entityRef(String attributeName, JsonObject attributeMap) {
-    	return pf.newEntityRef(popString(attributeMap, attributeName));
+    private IDRef idRef(String attributeName, JsonObject attributeMap) {
+    	return pf.newIDRef(popString(attributeMap, attributeName));
     }
     
-    private ActivityRef activityRef(String attributeName, JsonObject attributeMap) {
-    	return pf.newActivityRef(popString(attributeMap, attributeName));
+    
+    private IDRef anyRef(String attributeName, JsonObject attributeMap) {
+	if (attributeMap.has(attributeName)) 
+	    return pf.newIDRef(popString(attributeMap, attributeName));
+	else return null;
     }
+
     
     private AgentRef agentRef(String attributeName, JsonObject attributeMap) {
     	return pf.newAgentRef(popString(attributeMap, attributeName));
     }
     
-    private AnyRef anyRef(String attributeName, JsonObject attributeMap) {
-    	if (attributeMap.has(attributeName)) 
-    		return pf.newAnyRef(popString(attributeMap, attributeName));
-    	else return null;
-    }
+
     
-    private EntityRef optionalEntityRef(String attributeName, JsonObject attributeMap) {
+    private IDRef optionalIdRef(String attributeName, JsonObject attributeMap) {
         if (attributeMap.has(attributeName))
-            return entityRef(attributeName, attributeMap);
+            return idRef(attributeName, attributeMap);
         else
             return null;
     }
     
-    private ActivityRef optionalActivityRef(String attributeName, JsonObject attributeMap) {
-        if (attributeMap.has(attributeName))
-            return activityRef(attributeName, attributeMap);
-        else
-            return null;
-    }
-    
+
     private AgentRef optionalAgentRef(String attributeName, JsonObject attributeMap) {
         if (attributeMap.has(attributeName))
             return agentRef(attributeName, attributeMap);
@@ -638,18 +630,18 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             return null;
     }
     
-    private Collection<EntityRef> entityRefs(String attributeName, JsonObject attributeMap) {
-        List<EntityRef> results = new ArrayList<EntityRef>();
+    private Collection<IDRef> idRefs(String attributeName, JsonObject attributeMap) {
+        List<IDRef> results = new ArrayList<IDRef>();
         List<JsonElement> elements = popMultiValAttribute(attributeName, attributeMap);
         for (JsonElement element : elements) {
-        	results.add(pf.newEntityRef(element.getAsString()));
+        	results.add(pf.newIDRef(element.getAsString()));
         }
         return results;
     }
     
-    private Collection<EntityRef> optionalEntityRefs(String attributeName, JsonObject attributeMap) {
+    private Collection<IDRef> optionalIdRefs(String attributeName, JsonObject attributeMap) {
         if (attributeMap.has(attributeName))
-            return entityRefs(attributeName, attributeMap);
+            return idRefs(attributeName, attributeMap);
         else
             return null;
     }

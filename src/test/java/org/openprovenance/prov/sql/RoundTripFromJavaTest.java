@@ -1570,7 +1570,7 @@ public class RoundTripFromJavaTest extends TestCase {
        public void testInfluence1() throws JAXBException {
 	setNamespaces();
            WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf1"), 
-                                                             pFactory.newAnyRef(q("a2")),
+                                                             pFactory.newIDRef(q("a2")),
                                                              null);
            makeDocAndTest(inf, "target/influence1");
        }
@@ -1579,15 +1579,15 @@ public class RoundTripFromJavaTest extends TestCase {
 	setNamespaces();
            WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf2"), 
                                                              null,
-                                                             pFactory.newAnyRef(q("a1")));
+                                                             pFactory.newIDRef(q("a1")));
            makeDocAndTest(inf, "target/influence2");
        }
        
        public void testInfluence3() throws JAXBException {
 	setNamespaces();
            WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf3"), 
-                                                             pFactory.newAnyRef(q("a2")),
-                                                             pFactory.newAnyRef(q("a1")));
+                                                             pFactory.newIDRef(q("a2")),
+                                                             pFactory.newIDRef(q("a1")));
            makeDocAndTest(inf, "target/influence3");
        }
 
@@ -1596,8 +1596,8 @@ public class RoundTripFromJavaTest extends TestCase {
        public void testInfluence4() throws JAXBException {
 	setNamespaces();
            WasInfluencedBy inf = pFactory.newWasInfluencedBy((QName)null, 
-                                                             pFactory.newAnyRef(q("a2")),
-                                                             pFactory.newAnyRef(q("a1")));
+                                                             pFactory.newIDRef(q("a2")),
+                                                             pFactory.newIDRef(q("a1")));
            makeDocAndTest(inf, "target/influence4");
        }
        
@@ -1606,8 +1606,8 @@ public class RoundTripFromJavaTest extends TestCase {
        public void testInfluence5() throws JAXBException {
 	setNamespaces();
            WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf5"), 
-                                                             pFactory.newAnyRef(q("a2")),
-                                                             pFactory.newAnyRef(q("a1")));
+                                                             pFactory.newIDRef(q("a2")),
+                                                             pFactory.newIDRef(q("a1")));
            addLabels(inf);
            makeDocAndTest(inf, "target/influence5");
        }
@@ -1615,8 +1615,8 @@ public class RoundTripFromJavaTest extends TestCase {
        public void testInfluence6() throws JAXBException {
 	setNamespaces();
            WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf6"), 
-                                                             pFactory.newAnyRef(q("a2")),
-                                                             pFactory.newAnyRef(q("a1")));
+                                                             pFactory.newIDRef(q("a2")),
+                                                             pFactory.newIDRef(q("a1")));
            addLabels(inf);
            addTypes(inf);
            makeDocAndTest(inf, "target/influence6");
@@ -1626,8 +1626,8 @@ public class RoundTripFromJavaTest extends TestCase {
        public void testInfluence7() throws JAXBException {
 	setNamespaces();
            WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf7"), 
-                                                             pFactory.newAnyRef(q("a2")),
-                                                             pFactory.newAnyRef(q("a1")));
+                                                             pFactory.newIDRef(q("a2")),
+                                                             pFactory.newIDRef(q("a1")));
            addLabels(inf);
            addTypes(inf);
            addFurtherAttributes(inf);

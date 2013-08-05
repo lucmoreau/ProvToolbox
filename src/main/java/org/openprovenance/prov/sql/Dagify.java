@@ -23,7 +23,28 @@ public class Dagify implements RecordAction {
     }
     
     Hashtable<String, EntityRef> table=new Hashtable<String, EntityRef>();
+    Hashtable<String, IDRef> table2=new Hashtable<String, IDRef>();
     
+    public IDRef uniquify(IDRef entity) {
+        if (entity==null) return null;
+        QName q=entity.getRef();
+        String uri=q.getNamespaceURI()+q.getLocalPart();
+        IDRef found=table2.get(uri);
+        if (found!=null) {
+            return found;
+        }
+        Query qq=em.createQuery("SELECT e FROM IDRef e WHERE e.uri LIKE :uri");
+        qq.setParameter("uri", uri);
+        List<IDRef> ll=(List<IDRef>) qq.getResultList();
+        System.out.println("found ll " + ll);
+        
+        IDRef newId=entity;
+        if ((ll!=null) && (!(ll.isEmpty()))) {
+            newId=ll.get(0);
+        }
+        table2.put(uri, newId);
+        return newId;
+    }
 
     public EntityRef uniquify(EntityRef entity) {
         if (entity==null) return null;

@@ -531,14 +531,14 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
     }
   
 
-    public AnyRef newAnyRef(QName id) {
-	AnyRef res = of.createAnyRef();
+    public IDRef newIDRef(QName id) {
+	IDRef res = of.createIDRef();
 	res.setRef(id);
 	return res;
     }
 
-    public AnyRef newAnyRef(String id) {
-	return newAnyRef(stringToQName(id));
+    public IDRef newIDRef(String id) {
+	return newIDRef(stringToQName(id));
     }
 
     public Attribute newAttribute(QName qname, Object value, ValueConverter vconv) {
@@ -1527,8 +1527,8 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return wgb;
     }
 
-    public WasInfluencedBy newWasInfluencedBy(QName id, AnyRef influencee,
-					      AnyRef influencer) {
+    public WasInfluencedBy newWasInfluencedBy(QName id, IDRef influencee,
+					      IDRef influencer) {
 	WasInfluencedBy res = of.createWasInfluencedBy();
 	res.setId(id);
 	res.setInfluencee(influencee);
@@ -1536,8 +1536,8 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return res;
     }
 
-    public WasInfluencedBy newWasInfluencedBy(String id, AnyRef influencee,
-					      AnyRef influencer) {
+    public WasInfluencedBy newWasInfluencedBy(String id, IDRef influencee,
+					      IDRef influencer) {
 	WasInfluencedBy res = of.createWasInfluencedBy();
 	res.setId(stringToQName(id));
 	res.setInfluencee(influencee);
@@ -1548,14 +1548,14 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
     public WasInfluencedBy newWasInfluencedBy(String id, String influencee,
 					      String influencer) {
 	return newWasInfluencedBy(id, (influencee == null) ? null
-		: newAnyRef(influencee), (influencer == null) ? null
-		: newAnyRef(influencer));
+		: newIDRef(influencee), (influencer == null) ? null
+		: newIDRef(influencer));
     }
     
     
     public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes) {
-        AnyRef aid2 = (a2==null) ? null: newAnyRef(a2);
-        AnyRef aid1 = (a1==null) ? null: newAnyRef(a1);
+        IDRef aid2 = (a2==null) ? null: newIDRef(a2);
+        IDRef aid1 = (a1==null) ? null: newIDRef(a1);
         WasInfluencedBy res=newWasInfluencedBy(id,aid2,aid1);   
         setAttributes(res, attributes);
         return res;

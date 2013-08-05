@@ -1507,8 +1507,8 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
 	return wgb;
     }
 
-    public WasInfluencedBy newWasInfluencedBy(QName id, AnyRef influencee,
-					      AnyRef influencer) {
+    public WasInfluencedBy newWasInfluencedBy(QName id, IDRef influencee,
+					      IDRef influencer) {
 	WasInfluencedBy res = of.createWasInfluencedBy();
 	res.setId(id);
 	res.setInfluencee(influencee);
@@ -1516,8 +1516,8 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
 	return res;
     }
 
-    public WasInfluencedBy newWasInfluencedBy(String id, AnyRef influencee,
-					      AnyRef influencer) {
+    public WasInfluencedBy newWasInfluencedBy(String id, IDRef influencee,
+					      IDRef influencer) {
 	WasInfluencedBy res = of.createWasInfluencedBy();
 	res.setId(stringToQName(id));
 	res.setInfluencee(influencee);

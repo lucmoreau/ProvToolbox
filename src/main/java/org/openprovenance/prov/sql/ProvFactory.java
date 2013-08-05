@@ -377,7 +377,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 
     public ActedOnBehalfOf newActedOnBehalfOf(QName id, AgentRef delegate,
 					      AgentRef responsible,
-					      ActivityRef eid2) {
+					      IDRef eid2) {
 	ActedOnBehalfOf res = of.createActedOnBehalfOf();
 	res.setId(id);
 	res.setActivity(eid2);
@@ -388,7 +388,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 
     public ActedOnBehalfOf newActedOnBehalfOf(String id, AgentRef delegate,
 					      AgentRef responsible,
-					      ActivityRef eid2) {
+					      IDRef eid2) {
 	ActedOnBehalfOf res = of.createActedOnBehalfOf();
 	res.setId(stringToQName(id));
 	res.setActivity(eid2);
@@ -399,7 +399,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
     public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1, QName a, Collection<Attribute> attributes) {
         AgentRef agid2=(ag2==null)? null : newAgentRef(ag2);
         AgentRef agid1=(ag1==null)? null : newAgentRef(ag1);
-        ActivityRef aid=(a==null)? null : newActivityRef(a);
+        IDRef aid=(a==null)? null : newIDRef(a);
         ActedOnBehalfOf res=newActedOnBehalfOf(id, agid2, agid1, aid);
         setAttributes(res, attributes);
         return res;
@@ -450,20 +450,10 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return newActivity(stringToQName(pr), label);
     }
 
-    public ActivityRef newActivityRef(Activity p) {
-	ActivityRef res = of.createActivityRef();
+    public IDRef newIDRef(Activity p) {
+	IDRef res = of.createIDRef();
 	res.setRef(p.getId());
 	return res;
-    }
-
-    public ActivityRef newActivityRef(QName id) {
-	ActivityRef res = of.createActivityRef();
-	res.setRef(id);
-	return res;
-    }
-
-    public ActivityRef newActivityRef(String id) {
-	return newActivityRef(stringToQName(id));
     }
 
     public Agent newAgent(Agent a) {
@@ -516,7 +506,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return newAgentRef(stringToQName(id));
     }
 
-    public AlternateOf newAlternateOf(EntityRef eid2, EntityRef eid1) {
+    public AlternateOf newAlternateOf(IDRef eid2, IDRef eid1) {
 	AlternateOf res = of.createAlternateOf();
 	res.setAlternate1(eid2);
 	res.setAlternate2(eid1);
@@ -525,21 +515,11 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
     
 
     public AlternateOf newAlternateOf(QName e2, QName e1) {
-        EntityRef eid2 = (e2==null)? null: newEntityRef(e2);
-        EntityRef eid1 = (e1==null)? null: newEntityRef(e1);
+        IDRef eid2 = (e2==null)? null: newIDRef(e2);
+        IDRef eid1 = (e1==null)? null: newIDRef(e1);
         return newAlternateOf(eid2, eid1);
     }
   
-
-    public IDRef newIDRef(QName id) {
-	IDRef res = of.createIDRef();
-	res.setRef(id);
-	return res;
-    }
-
-    public IDRef newIDRef(String id) {
-	return newIDRef(stringToQName(id));
-    }
 
     public Attribute newAttribute(QName qname, Object value, ValueConverter vconv) {
   	Attribute res = new Attribute(qname, value, vconv.getXsdType(value));
@@ -631,7 +611,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return res;
     }
 
-    public DictionaryMembership newDictionaryMembership(String id, EntityRef after,
+    public DictionaryMembership newDictionaryMembership(String id, IDRef after,
 						    List<Entry> entitySet) {
 	return newDictionaryMembership(stringToQName(id), after, entitySet);
     }
@@ -713,8 +693,8 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
     }
 
     public DerivedByRemovalFrom newDerivedByRemovalFrom(String id,
-							EntityRef after,
-							EntityRef before,
+							IDRef after,
+							IDRef before,
 							List<Object> keys,
 							Collection<Attribute> attributes) {
 	return newDerivedByRemovalFrom(stringToQName(id), after, before, keys, attributes);
@@ -744,7 +724,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 */
 
 
-    /*    public DictionaryMembership newDictionaryMembership(QName id, EntityRef after,
+    /*    public DictionaryMembership newDictionaryMembership(QName id, IDRef after,
 							List<Entry> keyEntitySet) {
 	DictionaryMembership res = of.createDictionaryMembership();
 	//res.setId(id);
@@ -754,7 +734,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return res;
     }
 
-    public DictionaryMembership newDictionaryMembership(String id, EntityRef after,
+    public DictionaryMembership newDictionaryMembership(String id, IDRef after,
 							List<Entry> keyEntitySet) {
 	return newDictionaryMembership(stringToQName(id), after, keyEntitySet);
     }
@@ -938,25 +918,25 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return newEntity(stringToQName(id), label);
     }
 
-    public EntityRef newEntityRef(Entity a) {
-	EntityRef res = of.createEntityRef();
+    public IDRef newIDRef(Entity a) {
+	IDRef res = of.createIDRef();
 	res.setRef(a.getId());
 	return res;
     }
 
-    public EntityRef newEntityRef(QName id) {
-	EntityRef res = of.createEntityRef();
+    public IDRef newIDRef(QName id) {
+	IDRef res = of.createIDRef();
 	res.setRef(id);
 	return res;
     }
 
-    public EntityRef newEntityRef(String id) {
-	return newEntityRef(stringToQName(id));
+    public IDRef newIDRef(String id) {
+	return newIDRef(stringToQName(id));
     }
     
     /*
 
-    public Entry newEntry(Object key, EntityRef entity) {
+    public Entry newEntry(Object key, IDRef entity) {
 	Entry res = of.createEntry();
 	res.setKey(key);
 	res.setEntity(entity);
@@ -981,7 +961,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return res;
     }
 
-    public HadMember newHadMember(EntityRef collection, EntityRef... entities) {
+    public HadMember newHadMember(IDRef collection, IDRef... entities) {
 	HadMember res = of.createHadMember();
 	res.setCollection(collection);
 	if (entities != null) {
@@ -990,11 +970,11 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return res;
     }
     public HadMember newHadMember(QName c, Collection<QName> e) {
-        EntityRef cid=(c==null)? null: newEntityRef(c);
-        List<EntityRef> ll=new LinkedList<EntityRef>();
+        IDRef cid=(c==null)? null: newIDRef(c);
+        List<IDRef> ll=new LinkedList<IDRef>();
         if (e!=null) {
             for (QName q: e) {
-        	EntityRef eid=newEntityRef(q);
+        	IDRef eid=newIDRef(q);
         	ll.add(eid);
             }
         }
@@ -1034,20 +1014,20 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
   
     
     public MentionOf newMentionOf(Entity infra, Entity supra, Entity bundle) {
-	return newMentionOf((infra == null) ? null : newEntityRef(infra),
-			    (supra == null) ? null : newEntityRef(supra),
-			    (bundle == null) ? null : newEntityRef(bundle));
+	return newMentionOf((infra == null) ? null : newIDRef(infra),
+			    (supra == null) ? null : newIDRef(supra),
+			    (bundle == null) ? null : newIDRef(bundle));
     }
     public MentionOf newMentionOf(QName e2, QName e1, QName b) {
-        EntityRef eid2 = (e2==null)? null: newEntityRef(e2);
-        EntityRef eid1 = (e1==null)? null: newEntityRef(e1);
-        EntityRef bid = (b==null)? null: newEntityRef(b);
+        IDRef eid2 = (e2==null)? null: newIDRef(e2);
+        IDRef eid1 = (e1==null)? null: newIDRef(e1);
+        IDRef bid = (b==null)? null: newIDRef(b);
         return newMentionOf(eid2, eid1, bid);
     }
 
     
-    public MentionOf newMentionOf(EntityRef infra, EntityRef supra,
-				  EntityRef bundle) {
+    public MentionOf newMentionOf(IDRef infra, IDRef supra,
+				  IDRef bundle) {
 	MentionOf res = of.createMentionOf();
 	res.setSpecificEntity(infra);
 	res.setBundle(bundle);
@@ -1066,11 +1046,11 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
     public MentionOf newMentionOf(String infra, String supra, String bundle) {
 	MentionOf res = of.createMentionOf();
 	if (supra != null)
-	    res.setSpecificEntity(newEntityRef(infra));
+	    res.setSpecificEntity(newIDRef(infra));
 	if (bundle != null)
-	    res.setBundle(newEntityRef(bundle));
+	    res.setBundle(newIDRef(bundle));
 	if (supra != null)
-	    res.setGeneralEntity(newEntityRef(supra));
+	    res.setGeneralEntity(newIDRef(supra));
 	return res;
     }
 
@@ -1134,7 +1114,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
     }
 
 
-    public SpecializationOf newSpecializationOf(EntityRef eid2, EntityRef eid1) {
+    public SpecializationOf newSpecializationOf(IDRef eid2, IDRef eid1) {
 	SpecializationOf res = of.createSpecializationOf();
 	res.setSpecificEntity(eid2);
 	res.setGeneralEntity(eid1);
@@ -1142,8 +1122,8 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
     }
 
     public SpecializationOf newSpecializationOf(QName e2, QName e1) {
-        EntityRef eid2 = (e2==null)? null: newEntityRef(e2);
-        EntityRef eid1 = (e1==null)? null: newEntityRef(e1);
+        IDRef eid2 = (e2==null)? null: newIDRef(e2);
+        IDRef eid1 = (e1==null)? null: newIDRef(e1);
         return newSpecializationOf(eid2, eid1);
     }
   
@@ -1190,7 +1170,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return res;
     }
 
-    public Used newUsed(QName id, ActivityRef aid, String role, EntityRef eid) {
+    public Used newUsed(QName id, IDRef aid, String role, IDRef eid) {
 	Used res = newUsed(id);
 	res.setActivity(aid);
 	addRole(res, newRole(role,ValueConverter.QNAME_XSD_STRING));
@@ -1199,8 +1179,8 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
     }
 
     public Used newUsed(String id, Activity p, String role, Entity a) {
-	ActivityRef pid = newActivityRef(p);
-	EntityRef aid = newEntityRef(a);
+	IDRef pid = newIDRef(p);
+	IDRef aid = newIDRef(a);
 	return newUsed(stringToQName(id), pid, role, aid);
     }
 
@@ -1211,7 +1191,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return res;
     }
 
-    public Used newUsed(String id, ActivityRef pid, String role, EntityRef aid) {
+    public Used newUsed(String id, IDRef pid, String role, IDRef aid) {
 	Used res = of.createUsed();
 	res.setId(stringToQName(id));
 	res.setActivity(pid);
@@ -1220,8 +1200,8 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
     }
     
     public Used newUsed(QName id, QName activity, QName entity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
-   	ActivityRef aid = (activity==null)? null: newActivityRef(activity);
-        EntityRef eid = (entity==null)? null: newEntityRef(entity);
+   	IDRef aid = (activity==null)? null: newIDRef(activity);
+        IDRef eid = (entity==null)? null: newIDRef(entity);
    	Used res=newUsed(id,aid,null,eid);	
    	res.setTime(time);
 	setAttributes(res, attributes);
@@ -1243,11 +1223,11 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 
     public WasAssociatedWith newWasAssociatedWith(QName id, Activity eid2,
 						  Agent eid1) {
-	return newWasAssociatedWith(id, newActivityRef(eid2.getId()),
+	return newWasAssociatedWith(id, newIDRef(eid2.getId()),
 				    newAgentRef(eid1.getId()));
     }
 
-    public WasAssociatedWith newWasAssociatedWith(QName id, ActivityRef eid2,
+    public WasAssociatedWith newWasAssociatedWith(QName id, IDRef eid2,
 						  AgentRef eid1) {
 	WasAssociatedWith res = of.createWasAssociatedWith();
 	res.setId(id);
@@ -1258,11 +1238,11 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 
     public WasAssociatedWith newWasAssociatedWith(String id, Activity eid2,
 						  Agent eid1) {
-	return newWasAssociatedWith(id, newActivityRef(eid2.getId()),
+	return newWasAssociatedWith(id, newIDRef(eid2.getId()),
 				    newAgentRef(eid1.getId()));
     }
 
-    public WasAssociatedWith newWasAssociatedWith(String id, ActivityRef eid2,
+    public WasAssociatedWith newWasAssociatedWith(String id, IDRef eid2,
 						  AgentRef eid1) {
 	WasAssociatedWith res = of.createWasAssociatedWith();
 	res.setId(stringToQName(id));
@@ -1276,8 +1256,8 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
                                                    QName ag, 
                                                    QName plan, 
                                                    Collection<Attribute> attributes) {
-	ActivityRef aid=(a==null)? null: newActivityRef(a);
-	EntityRef eid=(plan==null)? null: newEntityRef(plan);
+	IDRef aid=(a==null)? null: newIDRef(a);
+	IDRef eid=(plan==null)? null: newIDRef(plan);
 	AgentRef agid=(ag==null)? null: newAgentRef(ag);
 	WasAssociatedWith res= newWasAssociatedWith(id,aid,agid);
 	res.setPlan(eid);
@@ -1296,7 +1276,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return u1;
     }
 
-    public WasAttributedTo newWasAttributedTo(QName id, EntityRef eid,
+    public WasAttributedTo newWasAttributedTo(QName id, IDRef eid,
 					      AgentRef agid) {
 	WasAttributedTo res = of.createWasAttributedTo();
 	res.setId(id);
@@ -1305,14 +1285,14 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return res;
     }
 
-    public WasAttributedTo newWasAttributedTo(String id, EntityRef eid,
+    public WasAttributedTo newWasAttributedTo(String id, IDRef eid,
 					      AgentRef agid) {
 	return newWasAttributedTo(stringToQName(id), eid, agid);
     }
 
     
     public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,  Collection<Attribute> attributes) {
-        EntityRef eid=(e==null)? null : newEntityRef(e);
+        IDRef eid=(e==null)? null : newIDRef(e);
         AgentRef agid=(ag==null)? null : newAgentRef(ag);
         WasAttributedTo res=newWasAttributedTo(id, eid, agid);
         setAttributes(res, attributes);
@@ -1337,8 +1317,8 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return newWasDerivedFrom(null, a1, a2, a, g2, u1);
     }
 
-    public WasDerivedFrom newWasDerivedFrom(QName id, EntityRef aid1,
-					    EntityRef aid2) {
+    public WasDerivedFrom newWasDerivedFrom(QName id, IDRef aid1,
+					    IDRef aid2) {
 	WasDerivedFrom res = of.createWasDerivedFrom();
 	res.setId(id);
 	res.setUsedEntity(aid2);
@@ -1346,8 +1326,8 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return res;
     }
 
-    public WasDerivedFrom newWasDerivedFrom(QName id, EntityRef aid1,
-					    EntityRef aid2, ActivityRef aid,
+    public WasDerivedFrom newWasDerivedFrom(QName id, IDRef aid1,
+					    IDRef aid2, IDRef aid,
 					    GenerationRef did1, UsageRef did2) {
 	WasDerivedFrom res = of.createWasDerivedFrom();
 	res.setId(id);
@@ -1360,17 +1340,17 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
     }
 
     public WasDerivedFrom newWasDerivedFrom(String id, Entity a1, Entity a2) {
-	EntityRef aid1 = newEntityRef(a1);
-	EntityRef aid2 = newEntityRef(a2);
+	IDRef aid1 = newIDRef(a1);
+	IDRef aid2 = newIDRef(a2);
 	return newWasDerivedFrom(id, aid1, aid2);
     }
 
     public WasDerivedFrom newWasDerivedFrom(String id, Entity e2, Entity e1,
 					    Activity a, WasGeneratedBy g2,
 					    Used u1) {
-	EntityRef eid1 = newEntityRef(e1);
-	EntityRef eid2 = newEntityRef(e2);
-	ActivityRef aid = newActivityRef(a);
+	IDRef eid1 = newIDRef(e1);
+	IDRef eid2 = newIDRef(e2);
+	IDRef aid = newIDRef(a);
 	GenerationRef did2 = newGenerationRef(g2);
 	UsageRef did1 = newUsageRef(u1);
 	return newWasDerivedFrom(id, eid2, eid1, aid, did2, did1);
@@ -1384,21 +1364,21 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
     }
 
 
-    public WasDerivedFrom newWasDerivedFrom(String id, EntityRef aid1,
-					    EntityRef aid2) {
+    public WasDerivedFrom newWasDerivedFrom(String id, IDRef aid1,
+					    IDRef aid2) {
 	return newWasDerivedFrom(stringToQName(id), aid1, aid2);
     }
 
-    public WasDerivedFrom newWasDerivedFrom(String id, EntityRef aid1,
-					    EntityRef aid2, ActivityRef aid,
+    public WasDerivedFrom newWasDerivedFrom(String id, IDRef aid1,
+					    IDRef aid2, IDRef aid,
 					    GenerationRef did1, UsageRef did2) {
 	return newWasDerivedFrom(stringToQName(id), aid1, aid2, aid, did1, did2);
     }
 
     public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1, QName a, QName g, QName u,  Collection<Attribute> attributes) {
-	EntityRef eid1 = (e1==null)? null: newEntityRef(e1);
-	EntityRef eid2 = (e2==null)? null: newEntityRef(e2);
-	ActivityRef aid = (a==null)? null : newActivityRef(a);
+	IDRef eid1 = (e1==null)? null: newIDRef(e1);
+	IDRef eid2 = (e2==null)? null: newIDRef(e2);
+	IDRef aid = (a==null)? null : newIDRef(a);
 	GenerationRef gid = (g==null)? null: newGenerationRef(g);
 	UsageRef uid = (u==null) ? null : newUsageRef(u);
 	WasDerivedFrom res=newWasDerivedFrom(id, eid2, eid1, aid, gid, uid);
@@ -1424,7 +1404,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return res;
     }
     
-    public WasEndedBy newWasEndedBy(QName id, ActivityRef aid, EntityRef eid) {
+    public WasEndedBy newWasEndedBy(QName id, IDRef aid, IDRef eid) {
 	WasEndedBy res = of.createWasEndedBy();
 	res.setId(id);
 	res.setActivity(aid);
@@ -1432,14 +1412,14 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return res;
     }
 
-    public WasEndedBy newWasEndedBy(String id, ActivityRef aid, EntityRef eid) {
+    public WasEndedBy newWasEndedBy(String id, IDRef aid, IDRef eid) {
 	return newWasEndedBy(stringToQName(id), aid, eid);
     }
     
     public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger, QName ender, XMLGregorianCalendar time, Collection<Attribute> attributes) {
-   	ActivityRef aid = (activity==null)? null: newActivityRef(activity);
-      	EntityRef eid = (trigger==null)? null: newEntityRef(trigger);
-      	ActivityRef sid = (ender==null)? null: newActivityRef(ender);
+   	IDRef aid = (activity==null)? null: newIDRef(activity);
+      	IDRef eid = (trigger==null)? null: newIDRef(trigger);
+      	IDRef sid = (ender==null)? null: newIDRef(ender);
       	WasEndedBy res=newWasEndedBy(id,aid,eid);	
       	res.setTime(time);
       	res.setEnder(sid);
@@ -1472,13 +1452,13 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 
     public WasGeneratedBy newWasGeneratedBy(QName id, Entity a, String role,
 					    Activity p) {
-	EntityRef aid = newEntityRef(a);
-	ActivityRef pid = newActivityRef(p);
+	IDRef aid = newIDRef(a);
+	IDRef pid = newIDRef(p);
 	return newWasGeneratedBy(id, aid, role, pid);
     }
 
-    public WasGeneratedBy newWasGeneratedBy(QName id, EntityRef aid,
-					    String role, ActivityRef pid) {
+    public WasGeneratedBy newWasGeneratedBy(QName id, IDRef aid,
+					    String role, IDRef pid) {
 	WasGeneratedBy res = of.createWasGeneratedBy();
 	res.setId(id);
 	res.setActivity(pid);
@@ -1489,8 +1469,8 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 
     public WasGeneratedBy newWasGeneratedBy(String id, Entity a, String role,
 					    Activity p) {
-	EntityRef aid = newEntityRef(a);
-	ActivityRef pid = newActivityRef(p);
+	IDRef aid = newIDRef(a);
+	IDRef pid = newIDRef(p);
 	return newWasGeneratedBy(stringToQName(id), aid, role, pid);
     }
 
@@ -1501,14 +1481,14 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return wgb;
     }
 
-    public WasGeneratedBy newWasGeneratedBy(String id, EntityRef aid,
-					    String role, ActivityRef pid) {
+    public WasGeneratedBy newWasGeneratedBy(String id, IDRef aid,
+					    String role, IDRef pid) {
 	return newWasGeneratedBy(stringToQName(id), aid, role, pid);
     }
     
     public WasGeneratedBy newWasGeneratedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
-   	ActivityRef aid = (activity==null)? null: newActivityRef(activity);
-   	EntityRef eid = (entity==null)? null: newEntityRef(entity);
+   	IDRef aid = (activity==null)? null: newIDRef(activity);
+   	IDRef eid = (entity==null)? null: newIDRef(entity);
    	WasGeneratedBy res=newWasGeneratedBy(id,eid,null,aid);	
    	res.setTime(time);
 	setAttributes(res, attributes);
@@ -1590,8 +1570,8 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return wtb;
     }
 
-    public WasInformedBy newWasInformedBy(QName id, ActivityRef pid1,
-					  ActivityRef pid2) {
+    public WasInformedBy newWasInformedBy(QName id, IDRef pid1,
+					  IDRef pid2) {
 	WasInformedBy res = of.createWasInformedBy();
 	res.setId(id);
 	res.setInformed(pid1);
@@ -1600,8 +1580,8 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
     }
 
     public WasInformedBy newWasInformedBy(String id, Activity p1, Activity p2) {
-	ActivityRef pid1 = newActivityRef(p1);
-	ActivityRef pid2 = newActivityRef(p2);
+	IDRef pid1 = newIDRef(p1);
+	IDRef pid2 = newIDRef(p2);
 	return newWasInformedBy(id, pid1, pid2);
     }
 
@@ -1610,14 +1590,14 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return newWasInformedBy(stringToQName(id), p1, p2, type);
     }
 
-    public WasInformedBy newWasInformedBy(String id, ActivityRef pid1,
-					  ActivityRef pid2) {
+    public WasInformedBy newWasInformedBy(String id, IDRef pid1,
+					  IDRef pid2) {
 	return newWasInformedBy(stringToQName(id), pid1, pid2);
     }
 
     public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes) {
-        ActivityRef aid2 = (a2==null) ? null: newActivityRef(a2);
-        ActivityRef aid1 = (a1==null) ? null: newActivityRef(a1);
+        IDRef aid2 = (a2==null) ? null: newIDRef(a2);
+        IDRef aid1 = (a1==null) ? null: newIDRef(a1);
         WasInformedBy res=newWasInformedBy(id,aid2,aid1);   
         setAttributes(res, attributes);
         return res;
@@ -1634,8 +1614,8 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return wtb;
     }
 
-    public WasInvalidatedBy newWasInvalidatedBy(QName id, EntityRef eid,
-						ActivityRef aid) {
+    public WasInvalidatedBy newWasInvalidatedBy(QName id, IDRef eid,
+						IDRef aid) {
 	WasInvalidatedBy res = of.createWasInvalidatedBy();
 	res.setId(id);
 	res.setEntity(eid);
@@ -1643,14 +1623,14 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return res;
     }
 
-    public WasInvalidatedBy newWasInvalidatedBy(String id, EntityRef eid,
-						ActivityRef aid) {
+    public WasInvalidatedBy newWasInvalidatedBy(String id, IDRef eid,
+						IDRef aid) {
 	return newWasInvalidatedBy(stringToQName(id), eid, aid);
     }
     
     public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
-   	ActivityRef aid = (activity==null) ? null: newActivityRef(activity);
-   	EntityRef eid = (entity==null)? null: newEntityRef(entity);
+   	IDRef aid = (activity==null) ? null: newIDRef(activity);
+   	IDRef eid = (entity==null)? null: newIDRef(entity);
    	WasInvalidatedBy res=newWasInvalidatedBy(id,eid,aid);	
    	res.setTime(time);
 	setAttributes(res, attributes);
@@ -1674,7 +1654,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
    	return res;
     }
     
-    public WasStartedBy newWasStartedBy(QName id, ActivityRef aid, EntityRef eid) {
+    public WasStartedBy newWasStartedBy(QName id, IDRef aid, IDRef eid) {
 	WasStartedBy res = of.createWasStartedBy();
 	res.setId(id);
 	res.setActivity(aid);
@@ -1682,15 +1662,15 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return res;
     }
 
-    public WasStartedBy newWasStartedBy(String id, ActivityRef aid,
-					EntityRef eid) {
+    public WasStartedBy newWasStartedBy(String id, IDRef aid,
+					IDRef eid) {
 	return newWasStartedBy(stringToQName(id), aid, eid);
     }
     
     public WasStartedBy newWasStartedBy(QName id, QName activity, QName trigger, QName starter, XMLGregorianCalendar time, Collection<Attribute> attributes) {
-   	ActivityRef aid = (activity==null)? null: newActivityRef(activity);
-      	EntityRef eid = (trigger==null)? null: newEntityRef(trigger);
-      	ActivityRef sid = (starter==null)? null: newActivityRef(starter);
+   	IDRef aid = (activity==null)? null: newIDRef(activity);
+      	IDRef eid = (trigger==null)? null: newIDRef(trigger);
+      	IDRef sid = (starter==null)? null: newIDRef(starter);
       	WasStartedBy res=newWasStartedBy(id,aid,eid);	
       	res.setTime(time);
       	res.setStarter(sid);

@@ -22,7 +22,6 @@ public class Dagify implements RecordAction {
         this.em=em;
     }
     
-    Hashtable<String, EntityRef> table=new Hashtable<String, EntityRef>();
     Hashtable<String, IDRef> table2=new Hashtable<String, IDRef>();
     
     public IDRef uniquify(IDRef entity) {
@@ -46,30 +45,9 @@ public class Dagify implements RecordAction {
         return newId;
     }
 
-    public EntityRef uniquify(EntityRef entity) {
-        if (entity==null) return null;
-        QName q=entity.getRef();
-        String uri=q.getNamespaceURI()+q.getLocalPart();
-        EntityRef found=table.get(uri);
-        if (found!=null) {
-            return found;
-        }
-        Query qq=em.createQuery("SELECT e FROM EntityRef e WHERE e.uri LIKE :uri");
-        qq.setParameter("uri", uri);
-        List<EntityRef> ll=(List<EntityRef>) qq.getResultList();
-        System.out.println("found ll " + ll);
-        
-        EntityRef newEntity=entity;
-        if ((ll!=null) && (!(ll.isEmpty()))) {
-            newEntity=ll.get(0);
-        }
-        table.put(uri, newEntity);
-        return newEntity;
-    }
+   
     
-    public ActivityRef uniquify(ActivityRef activity) {
-        return activity;
-    }
+
     public AgentRef uniquify(AgentRef activity) {
         return activity;
     }
@@ -79,10 +57,7 @@ public class Dagify implements RecordAction {
     public UsageRef uniquify(UsageRef activity) {
         return activity;
     }
-    public AnyRef uniquify(AnyRef influencee) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+
 
 
     public void run(Entity e) {
@@ -180,8 +155,8 @@ public class Dagify implements RecordAction {
     }
 
     public void run(HadMember mem) {
-        List<EntityRef> ll=new LinkedList<EntityRef>();
-        for (EntityRef er: mem.getEntity()) {
+        List<IDRef> ll=new LinkedList<IDRef>();
+        for (IDRef er: mem.getEntity()) {
             ll.add(uniquify(er));
         }
         mem.getEntity().clear();

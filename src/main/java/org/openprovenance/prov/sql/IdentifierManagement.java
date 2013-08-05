@@ -18,10 +18,11 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Transient;
 import javax.xml.namespace.QName;
 
-@Entity(name="IdentifierManagement")
-@Table(name = "IdentifierManagement")
+//@Entity(name="IdentifierManagement")
+//@Table(name = "IdentifierManagement")
 
 public class IdentifierManagement {
+    /*
     @Id
     @Column(name = "HJID")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -67,6 +68,7 @@ public class IdentifierManagement {
         System.out.println("$$$$$$$$$$  creating IdentifierManagement instance");
 	it=new IdentifierManagement();
     }
+    */
 
 
 }

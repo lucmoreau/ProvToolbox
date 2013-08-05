@@ -30,7 +30,7 @@ public class PersistenceUtility {
 	if (emf==null) this.emf=createEntityManagerFactory();  
 	if (entityManager==null) this.entityManager=createEntityManager();  
 	
-	System.out.println("**** merging IdentifierManagement");
+	//System.out.println("**** merging IdentifierManagement");
         //entityManager.persist(IdentifierManagement.it);
 	//entityManager.merge(IdentifierManagement.it);
 	

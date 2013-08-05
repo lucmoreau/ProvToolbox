@@ -48,10 +48,6 @@ public class Dagify implements RecordAction {
    
     
 
-    public AgentRef uniquify(AgentRef activity) {
-        return activity;
-    }
-
 
 
     public void run(Entity e) {

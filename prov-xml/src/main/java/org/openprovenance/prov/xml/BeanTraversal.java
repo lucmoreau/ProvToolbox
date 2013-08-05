@@ -332,7 +332,7 @@ public class BeanTraversal {
     public HadMember convert(HadMember o) {
         List<QName> qq=new LinkedList<QName>();
         if (o.getEntity()!=null) {
-            for (EntityRef eid:o.getEntity()) {
+            for (IDRef eid:o.getEntity()) {
                 qq.add(q(eid));
             }
         }

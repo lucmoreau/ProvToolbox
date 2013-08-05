@@ -168,25 +168,25 @@ public class ProvUtilities {
             return ((Used) r).getEntity().getRef();
         }
         if (r instanceof WasGeneratedBy) {
-            ActivityRef ref = ((WasGeneratedBy) r).getActivity();
+            IDRef ref = ((WasGeneratedBy) r).getActivity();
             if (ref == null)
                 return null;
             return ref.getRef();
         }
         if (r instanceof WasInvalidatedBy) {
-            ActivityRef ref = ((WasInvalidatedBy) r).getActivity();
+            IDRef ref = ((WasInvalidatedBy) r).getActivity();
             if (ref == null)
                 return null;
             return ref.getRef();
         }
         if (r instanceof WasStartedBy) {
-            EntityRef ref = ((WasStartedBy) r).getTrigger();
+            IDRef ref = ((WasStartedBy) r).getTrigger();
             if (ref == null)
                 return null;
             return ref.getRef();
         }
         if (r instanceof WasEndedBy) {
-            EntityRef ref = ((WasEndedBy) r).getTrigger();
+            IDRef ref = ((WasEndedBy) r).getTrigger();
             if (ref == null)
                 return null;
             return ref.getRef();
@@ -232,7 +232,7 @@ public class ProvUtilities {
     public List<QName> getOtherCauses(Relation0 r) {
         if (r instanceof WasAssociatedWith) {
             List<QName> res = new LinkedList<QName>();
-            EntityRef e = ((WasAssociatedWith) r).getPlan();
+            IDRef e = ((WasAssociatedWith) r).getPlan();
             if (e == null)
                 return null;
             res.add(e.getRef());
@@ -240,7 +240,7 @@ public class ProvUtilities {
         }
         if (r instanceof WasStartedBy) {
             List<QName> res = new LinkedList<QName>();
-            ActivityRef a = ((WasStartedBy) r).getStarter();
+            IDRef a = ((WasStartedBy) r).getStarter();
             if (a == null)
                 return null;
             res.add(a.getRef());
@@ -248,7 +248,7 @@ public class ProvUtilities {
         }
         if (r instanceof MentionOf) {
             List<QName> res = new LinkedList<QName>();
-            EntityRef a = ((MentionOf) r).getBundle();
+            IDRef a = ((MentionOf) r).getBundle();
             if (a == null)
                 return null;
             res.add(a.getRef());
@@ -256,10 +256,10 @@ public class ProvUtilities {
         }
         if (r instanceof HadMember) {
             List<QName> res = new LinkedList<QName>();
-            List<EntityRef> entities=((HadMember) r).getEntity();
+            List<IDRef> entities=((HadMember) r).getEntity();
             if ((entities==null) || (entities.size()<=1)) return null;
             boolean first=true;
-            for (EntityRef ee: entities) {
+            for (IDRef ee: entities) {
                 if (!first) res.add(ee.getRef());
                 first=false;
             }
@@ -267,7 +267,7 @@ public class ProvUtilities {
         }
         if (r instanceof WasEndedBy) {
             List<QName> res = new LinkedList<QName>();
-            ActivityRef a = ((WasEndedBy) r).getEnder();
+            IDRef a = ((WasEndedBy) r).getEnder();
             if (a == null)
                 return null;
             res.add(a.getRef());
@@ -275,7 +275,7 @@ public class ProvUtilities {
         }
         if (r instanceof ActedOnBehalfOf) {
             List<QName> res = new LinkedList<QName>();
-            ActivityRef a = ((ActedOnBehalfOf) r).getActivity();
+            IDRef a = ((ActedOnBehalfOf) r).getActivity();
             if (a == null)
                 return null;
             res.add(a.getRef());
@@ -437,65 +437,65 @@ public class ProvUtilities {
                                            XMLGregorianCalendar.class,
                                            XMLGregorianCalendar.class,
                                            Object.class });
-        types.put(Used.class, new Class[] { QName.class, ActivityRef.class,
-                                           EntityRef.class,
+        types.put(Used.class, new Class[] { QName.class, IDRef.class,
+                                           IDRef.class,
                                            XMLGregorianCalendar.class,
                                            Object.class });
         types.put(WasGeneratedBy.class,
-                  new Class[] { QName.class, EntityRef.class,
-                               ActivityRef.class, XMLGregorianCalendar.class,
+                  new Class[] { QName.class, IDRef.class,
+                               IDRef.class, XMLGregorianCalendar.class,
                                Object.class });
         types.put(WasInvalidatedBy.class,
-                  new Class[] { QName.class, EntityRef.class,
-                               ActivityRef.class, XMLGregorianCalendar.class,
+                  new Class[] { QName.class, IDRef.class,
+                               IDRef.class, XMLGregorianCalendar.class,
                                Object.class });
         types.put(WasStartedBy.class, new Class[] { QName.class,
-                                                   ActivityRef.class,
-                                                   EntityRef.class,
-                                                   ActivityRef.class,
+                                                   IDRef.class,
+                                                   IDRef.class,
+                                                   IDRef.class,
                                                    XMLGregorianCalendar.class,
                                                    Object.class });
         types.put(WasEndedBy.class, new Class[] { QName.class,
-                                                 ActivityRef.class,
-                                                 EntityRef.class,
-                                                 ActivityRef.class,
+                                                 IDRef.class,
+                                                 IDRef.class,
+                                                 IDRef.class,
                                                  XMLGregorianCalendar.class,
                                                  Object.class });
         types.put(WasInformedBy.class, new Class[] { QName.class,
-                                                    ActivityRef.class,
-                                                    ActivityRef.class,
+                                                    IDRef.class,
+                                                    IDRef.class,
                                                     Object.class });
         types.put(WasDerivedFrom.class, new Class[] { QName.class,
-                                                     EntityRef.class,
-                                                     EntityRef.class,
-                                                     ActivityRef.class,
+                                                     IDRef.class,
+                                                     IDRef.class,
+                                                     IDRef.class,
                                                      GenerationRef.class,
                                                      UsageRef.class,
                                                      Object.class });
         types.put(WasInfluencedBy.class, new Class[] { QName.class,
-                                                      AnyRef.class,
-                                                      AnyRef.class,
+                                                      IDRef.class,
+                                                      IDRef.class,
                                                       Object.class });
         types.put(WasAttributedTo.class, new Class[] { QName.class,
-                                                      EntityRef.class,
+                                                      IDRef.class,
                                                       AgentRef.class,
                                                       Object.class });
         types.put(WasAssociatedWith.class, new Class[] { QName.class,
-                                                        ActivityRef.class,
+                                                        IDRef.class,
                                                         AgentRef.class,
-                                                        EntityRef.class,
+                                                        IDRef.class,
                                                         Object.class });
         types.put(ActedOnBehalfOf.class, new Class[] { QName.class,
                                                       AgentRef.class,
                                                       AgentRef.class,
-                                                      ActivityRef.class,
+                                                      IDRef.class,
                                                       Object.class });
-        types.put(SpecializationOf.class, new Class[] { EntityRef.class,
-                                                       EntityRef.class });
+        types.put(SpecializationOf.class, new Class[] { IDRef.class,
+                                                       IDRef.class });
         types.put(MentionOf.class, new Class[] { QName.class,
-						 EntityRef.class,
-						 EntityRef.class,
-						 EntityRef.class });
+						 IDRef.class,
+						 IDRef.class,
+						 IDRef.class });
     }
 
     @SuppressWarnings("unchecked")

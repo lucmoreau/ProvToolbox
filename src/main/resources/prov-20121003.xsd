@@ -225,8 +225,8 @@
   
   <xs:complexType name="Derivation">
     <xs:sequence>
-      <xs:element name="generation"       type="prov:GenerationRef" minOccurs="0"/>
-      <xs:element name="usage"            type="prov:UsageRef" minOccurs="0"/>
+      <xs:element name="generation"       type="prov:IDRef" minOccurs="0"/>
+      <xs:element name="usage"            type="prov:IDRef" minOccurs="0"/>
       <xs:element name="activity"         type="prov:IDRef" minOccurs="0"/>
       <xs:element name="generatedEntity"  type="prov:IDRef"/>
       <xs:element name="usedEntity"       type="prov:IDRef"/>
@@ -434,14 +434,6 @@
   <xs:complexType name="AgentRef">
     <xs:attribute ref="prov:ref"/>
   </xs:complexType>
-  
-  <xs:complexType name="UsageRef">
-   	     <xs:attribute ref="prov:ref" use="required"/>
-  </xs:complexType>
-  <xs:complexType name="GenerationRef">
-    <xs:attribute ref="prov:ref" use="required"/>
-  </xs:complexType>
-  
   
 
   <xs:group name="documentElements">

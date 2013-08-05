@@ -455,6 +455,16 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	res.setRef(p.getId());
 	return res;
     }
+    public IDRef newIDRef(WasGeneratedBy g) {
+	IDRef res = of.createIDRef();
+	res.setRef(g.getId());
+	return res;
+    }
+    public IDRef newIDRef(Used u) {
+	IDRef res = of.createIDRef();
+	res.setRef(u.getId());
+	return res;
+    }
 
     public Agent newAgent(Agent a) {
 	Agent res = newAgent(a.getId());
@@ -943,23 +953,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return res;
     }
 */
-    public GenerationRef newGenerationRef(QName id) {
-	GenerationRef res = of.createGenerationRef();
-	res.setRef(id);
-	return res;
-    }
 
-    public GenerationRef newGenerationRef(String id) {
-	GenerationRef res = of.createGenerationRef();
-	res.setRef(stringToQName(id));
-	return res;
-    }
-
-    public GenerationRef newGenerationRef(WasGeneratedBy edge) {
-	GenerationRef res = of.createGenerationRef();
-	res.setRef(edge.getId());
-	return res;
-    }
 
     public HadMember newHadMember(IDRef collection, IDRef... entities) {
 	HadMember res = of.createHadMember();
@@ -1141,23 +1135,6 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	return newTime(new Date());
     }
 
-    public UsageRef newUsageRef(QName id) {
-	UsageRef res = of.createUsageRef();
-	res.setRef(id);
-	return res;
-    }
-
-    public UsageRef newUsageRef(String id) {
-	UsageRef res = of.createUsageRef();
-	res.setRef(stringToQName(id));
-	return res;
-    }
-
-    public UsageRef newUsageRef(Used edge) {
-	UsageRef res = of.createUsageRef();
-	res.setRef(edge.getId());
-	return res;
-    }
 
     public Used newUsed(Activity p, String role, Entity a) {
 	Used res = newUsed(null, p, role, a);
@@ -1328,7 +1305,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 
     public WasDerivedFrom newWasDerivedFrom(QName id, IDRef aid1,
 					    IDRef aid2, IDRef aid,
-					    GenerationRef did1, UsageRef did2) {
+					    IDRef did1, IDRef did2) {
 	WasDerivedFrom res = of.createWasDerivedFrom();
 	res.setId(id);
 	res.setUsedEntity(aid2);
@@ -1351,8 +1328,8 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	IDRef eid1 = newIDRef(e1);
 	IDRef eid2 = newIDRef(e2);
 	IDRef aid = newIDRef(a);
-	GenerationRef did2 = newGenerationRef(g2);
-	UsageRef did1 = newUsageRef(u1);
+	IDRef did2 = newIDRef(g2);
+	IDRef did1 = newIDRef(u1);
 	return newWasDerivedFrom(id, eid2, eid1, aid, did2, did1);
     }
 
@@ -1371,7 +1348,7 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 
     public WasDerivedFrom newWasDerivedFrom(String id, IDRef aid1,
 					    IDRef aid2, IDRef aid,
-					    GenerationRef did1, UsageRef did2) {
+					    IDRef did1, IDRef did2) {
 	return newWasDerivedFrom(stringToQName(id), aid1, aid2, aid, did1, did2);
     }
 
@@ -1379,8 +1356,8 @@ public class ProvFactory implements LiteralConstructor { //implements ModelConst
 	IDRef eid1 = (e1==null)? null: newIDRef(e1);
 	IDRef eid2 = (e2==null)? null: newIDRef(e2);
 	IDRef aid = (a==null)? null : newIDRef(a);
-	GenerationRef gid = (g==null)? null: newGenerationRef(g);
-	UsageRef uid = (u==null) ? null : newUsageRef(u);
+	IDRef gid = (g==null)? null: newIDRef(g);
+	IDRef uid = (u==null) ? null : newIDRef(u);
 	WasDerivedFrom res=newWasDerivedFrom(id, eid2, eid1, aid, gid, uid);
 	setAttributes(res, attributes);
 	return res;

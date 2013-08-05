@@ -51,12 +51,6 @@ public class Dagify implements RecordAction {
     public AgentRef uniquify(AgentRef activity) {
         return activity;
     }
-    public GenerationRef uniquify(GenerationRef activity) {
-        return activity;
-    }
-    public UsageRef uniquify(UsageRef activity) {
-        return activity;
-    }
 
 
 

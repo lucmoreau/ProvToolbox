@@ -168,6 +168,11 @@ public class PersistenceUtility {
             for (StatementOrBundle s: doc.getEntityOrActivityOrWasGeneratedBy()) {
                 if (s instanceof Statement) {
                     Dagify.run((Statement)s, dagifier);
+                } else if (s instanceof NamedBundle) {
+                    for (Statement s2: ((NamedBundle)s).getEntityOrActivityOrWasGeneratedBy()) {
+                        Dagify.run((Statement)s2, dagifier);
+                    }
+                    
                 }
             }
             entityManager.persist(doc);

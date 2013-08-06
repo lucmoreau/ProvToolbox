@@ -5,7 +5,8 @@
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
-        jaxb:extensionBindingPrefixes="hj" >
+	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+        jaxb:extensionBindingPrefixes="hj orm" >
 
 
 <!--
@@ -143,6 +144,99 @@
 	  </jaxb:property>
 	</jaxb:bindings>
 	-->
+
+
+
+	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@name='activity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="ACTIVITY"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@name='entity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="ENTITY"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@name='activity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="ACTIVITY"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@name='entity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="ENTITY"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Derivation']//xs:element[@name='generatedEntity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="GENERATED_ENTITY"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Derivation']//xs:element[@name='usedEntity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="USED_ENTITY"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Derivation']//xs:element[@name='generation']">
+	  <hj:many-to-one>
+	    <orm:join-column name="GENERATION"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Derivation']//xs:element[@name='usage']">
+	  <hj:many-to-one>
+	    <orm:join-column name="USAGE"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Derivation']//xs:element[@name='activity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="ACTIVITY"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Entity']//xs:element[@ref='prov:value']">
+	  <hj:many-to-one>
+	    <orm:join-column name="VALUE"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Entity']//xs:element[@ref='prov:location']">
+	  <hj:one-to-many>
+	    <orm:join-column name="ENTITY"/>
+	  </hj:one-to-many>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Activity']//xs:element[@ref='prov:location']">
+	  <hj:one-to-many>
+	    <orm:join-column name="ACTIVITY"/>
+	  </hj:one-to-many>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Agent']//xs:element[@ref='prov:location']">
+	  <hj:one-to-many>
+	    <orm:join-column name="AGENT"/>
+	  </hj:one-to-many>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@ref='prov:location']">
+	  <hj:one-to-many>
+	    <orm:join-column name="USAGE"/>
+	  </hj:one-to-many>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@ref='prov:location']">
+	  <hj:one-to-many>
+	    <orm:join-column name="GENERATION"/>
+	  </hj:one-to-many>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@ref='prov:location']">
+	  <hj:one-to-many>
+	    <orm:join-column name="START"/>
+	  </hj:one-to-many>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@ref='prov:location']">
+	  <hj:one-to-many>
+	    <orm:join-column name="_END"/>  <!-- note END is keyword -->
+	  </hj:one-to-many>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@ref='prov:location']">
+	  <hj:one-to-many>
+	    <orm:join-column name="INVALIDATION"/>
+	  </hj:one-to-many>
+	</jaxb:bindings>
 
     </jaxb:bindings>
 

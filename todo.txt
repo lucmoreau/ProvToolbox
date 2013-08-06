@@ -1,28 +1,8 @@
 
-- mvn clean install
-  performs round trip testing
+- QNames not properly parse in Type, Location, etc
 
-see prov-sql/src/test/samples/activity.xml
+- Continue customization of colum names
+
+- Remove IdITEM from all beans
 
 
-  Two ways of handling locations.
-
-  <prov:lieu> in prov:essai. 
-             Uses a LocationAdapter
-
-  <pro:test2> in prov:activity
-    has defined a TypedObject in schema,
-        corrected by sed, so that it understand attribute xsi:
-
-----------------------------------------------------------------------
-
-Next steps.
-
-1. Revisit TypedObject.
-     Mapping to sql looks good. 
-     Issue as to why field is a string and not an object?
-
-2. Modify prov-xml so that all locations used this.
-   This implies modifying the interface HasLocation
-
-3. Make prov-sql work with this.

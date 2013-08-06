@@ -802,6 +802,7 @@
 
 
 
+
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@javax.persistence.Entity(name = &quot;Entity$EntityAnyItem&quot;)/,/^}/ { /^}/b; s/^/\/\//g}" />
   	          <arg value="-iBAK" />
@@ -1462,6 +1463,80 @@
   	          <arg value="WasEndedBy.java" />
                 </exec>
 
+<!-- IDRef -->
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Activity.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Agent.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Entity.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasDerivedFrom.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="ActedOnBehalfOf.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasGeneratedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Used.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasInvalidatedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasStartedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasEndedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasInformedBy.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasAssociatedWith.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasAttributedTo.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="WasInfluencedBy.java" />
+                </exec>
+
+
 
 <!-- Type -->
 
@@ -1757,23 +1832,6 @@
 -->
 
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.xml.Ref, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="ActivityRef.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.xml.Ref, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="AnyRef.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.xml.Ref, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="AgentRef.java" />
-                </exec>
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
@@ -1863,23 +1921,8 @@
                 </exec>
 
 
-                <!--
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.xml.Ref, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NoteRef.java" />
-                </exec> -->
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.xml.Ref, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="UsageRef.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.xml.Ref, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="GenerationRef.java" />
-                </exec>
+
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">

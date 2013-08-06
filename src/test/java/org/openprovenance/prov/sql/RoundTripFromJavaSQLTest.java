@@ -1,5 +1,6 @@
 package org.openprovenance.prov.sql;
 
+import java.io.File;
 import java.util.Hashtable;
 
 //import org.openprovenance.prov.sql.PersistenceUtility;
@@ -27,6 +28,11 @@ public class RoundTripFromJavaSQLTest extends org.openprovenance.prov.sql.RoundT
 	Long key=dbKeys.get(file1);
 	if (key==null) return null;
         Document doc=u.find(Document.class, key);
+        try {
+            ProvSerialiser.getThreadProvSerialiser().serialiseDocument(new File(file1+"-persist"), doc, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 	System.out.println("read document " + doc.getHjid() + " for " + file1);
 	return doc;
 

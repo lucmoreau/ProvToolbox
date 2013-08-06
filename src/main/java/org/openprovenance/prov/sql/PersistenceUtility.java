@@ -171,8 +171,7 @@ public class PersistenceUtility {
                 } else if (s instanceof NamedBundle) {
                     for (Statement s2: ((NamedBundle)s).getEntityOrActivityOrWasGeneratedBy()) {
                         Dagify.run((Statement)s2, dagifier);
-                    }
-                    
+                    }       
                 }
             }
             entityManager.persist(doc);

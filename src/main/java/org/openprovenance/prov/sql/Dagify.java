@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.xml.Identifiable;
 import org.openprovenance.prov.xml.Statement;
 
 
@@ -22,71 +23,92 @@ public class Dagify implements RecordAction {
         this.em=em;
     }
     
-    Hashtable<String, IDRef> table2=new Hashtable<String, IDRef>();
+    Hashtable<String, IDRef> table=new Hashtable<String, IDRef>();
     
-    public IDRef uniquify(IDRef entity) {
-        if (entity==null) return null;
-        QName q=entity.getRef();
+    public IDRef uniquify(IDRef ref) {
+        if (ref==null) return null;
+        QName q=ref.getRef();
         String uri=q.getNamespaceURI()+q.getLocalPart();
-        IDRef found=table2.get(uri);
+        IDRef found=table.get(uri);
         if (found!=null) {
             return found;
         }
         Query qq=em.createQuery("SELECT e FROM IDRef e WHERE e.uri LIKE :uri");
         qq.setParameter("uri", uri);
         List<IDRef> ll=(List<IDRef>) qq.getResultList();
-        System.out.println("found ll " + ll);
+        //System.out.println("found ll " + ll);
         
-        IDRef newId=entity;
+        IDRef newId=ref;
         if ((ll!=null) && (!(ll.isEmpty()))) {
             newId=ll.get(0);
         }
-        table2.put(uri, newId);
+        table.put(uri, newId);
         return newId;
     }
 
    
+    /*
+    public IDRef createKey(QName id) {
+	IDRef ref=new IDRef();
+	ref.setRef(id);
+  	return uniquify(ref);
+      }
+
+   */
     
+    public IDRef createKey(Identifiable e) {
+	IDRef ref=new IDRef();
+	ref.setRef(e.getId());
+  	return uniquify(ref);
+      }
+
 
 
 
     public void run(Entity e) {
-        // TODO Auto-generated method stub
-        
+	e.setIdRef(createKey(e));
     }
 
     public void run(Activity a) {
-        // TODO Auto-generated method stub
-        
+	a.setIdRef(createKey(a));        
     }
 
+  
+
+
+
+
     public void run(Agent ag) {
-        // TODO Auto-generated method stub
-        
+	ag.setIdRef(createKey(ag));                
     }
 
     public void run(WasGeneratedBy gen) {
+	if (gen.getId()!=null) gen.setIdRef(createKey(gen));                
         gen.setEntity(uniquify(gen.getEntity()));
         gen.setActivity(uniquify(gen.getActivity()));
     }
 
     public void run(Used use) {
+	if (use.getId()!=null) use.setIdRef(createKey(use));                
         use.setEntity(uniquify(use.getEntity()));
         use.setActivity(uniquify(use.getActivity()));      
     }
 
     public void run(WasInvalidatedBy inv) {
+	if (inv.getId()!=null) inv.setIdRef(createKey(inv));                
         inv.setEntity(uniquify(inv.getEntity()));
         inv.setActivity(uniquify(inv.getActivity()));          
     }
 
     public void run(WasStartedBy start) {
+	if (start.getId()!=null) start.setIdRef(createKey(start));                
         start.setActivity(uniquify(start.getActivity()));    
         start.setTrigger(uniquify(start.getTrigger()));
         start.setStarter(uniquify(start.getStarter()));                  
     }
 
     public void run(WasEndedBy end) {
+	if (end.getId()!=null) end.setIdRef(createKey(end));                
         end.setActivity(uniquify(end.getActivity()));    
         end.setTrigger(uniquify(end.getTrigger()));
         end.setEnder(uniquify(end.getEnder()));          
@@ -94,11 +116,13 @@ public class Dagify implements RecordAction {
     }
 
     public void run(WasInformedBy inf) {
+	if (inf.getId()!=null) inf.setIdRef(createKey(inf));                
         inf.setInformant(uniquify(inf.getInformant()));    
         inf.setInformed(uniquify(inf.getInformed()));    
     }
 
     public void run(WasDerivedFrom der) {
+	if (der.getId()!=null) der.setIdRef(createKey(der));                
         der.setGeneratedEntity(uniquify(der.getGeneratedEntity()));    
         der.setUsedEntity(uniquify(der.getUsedEntity()));    
         der.setActivity(uniquify(der.getActivity()));    
@@ -107,23 +131,27 @@ public class Dagify implements RecordAction {
     }
 
     public void run(WasAssociatedWith assoc) {
+	if (assoc.getId()!=null) assoc.setIdRef(createKey(assoc));                
         assoc.setActivity(uniquify(assoc.getActivity()));    
         assoc.setAgent(uniquify(assoc.getAgent()));    
         assoc.setPlan(uniquify(assoc.getPlan()));    
     }
 
     public void run(WasAttributedTo attr) {
+	if (attr.getId()!=null) attr.setIdRef(createKey(attr));                
         attr.setAgent(uniquify(attr.getAgent()));    
         attr.setEntity(uniquify(attr.getEntity()));
     }
 
     public void run(ActedOnBehalfOf del) {
+	if (del.getId()!=null) del.setIdRef(createKey(del));                
         del.setDelegate(uniquify(del.getDelegate()));    
         del.setResponsible(uniquify(del.getResponsible()));    
         del.setActivity(uniquify(del.getActivity()));            
     }
 
     public void run(WasInfluencedBy inf) {
+	if (inf.getId()!=null) inf.setIdRef(createKey(inf));                
         inf.setInfluencee(uniquify(inf.getInfluencee()));
         inf.setInfluencer(uniquify(inf.getInfluencer()));
     }

@@ -211,7 +211,7 @@
   <xs:complexType name="Attribution">
     <xs:sequence>
       <xs:element name="entity" type="prov:IDRef"/>
-      <xs:element name="agent"    type="prov:AgentRef"/>
+      <xs:element name="agent"    type="prov:IDRef"/>
       <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
       <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
@@ -222,7 +222,7 @@
   <xs:complexType name="Association">
     <xs:sequence>
       <xs:element name="activity" type="prov:IDRef"/>
-      <xs:element name="agent"    type="prov:AgentRef"  minOccurs="0"/>
+      <xs:element name="agent"    type="prov:IDRef"  minOccurs="0"/>
       <xs:element name="plan"     type="prov:IDRef" minOccurs="0"/>
       <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
       <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
@@ -235,8 +235,8 @@
 
   <xs:complexType name="Delegation">
     <xs:sequence>
-      <xs:element name="delegate" type="prov:AgentRef"/>
-      <xs:element name="responsible" type="prov:AgentRef"/>
+      <xs:element name="delegate" type="prov:IDRef"/>
+      <xs:element name="responsible" type="prov:IDRef"/>
       <xs:element name="activity"    type="prov:IDRef"/>
       <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
       <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
@@ -463,13 +463,6 @@
 
   <xs:complexType name="IDRef">
     <xs:attribute ref="prov:ref" use="required" />
-  </xs:complexType>
-
-  <xs:complexType name="AgentRef">
-    <xs:complexContent>
-      <xs:extension base="prov:IDRef">
-      </xs:extension>
-    </xs:complexContent>
   </xs:complexType>
 
   

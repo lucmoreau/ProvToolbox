@@ -359,8 +359,8 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
 	return u1;
     }
 
-    public ActedOnBehalfOf newActedOnBehalfOf(QName id, AgentRef delegate,
-					      AgentRef responsible,
+    public ActedOnBehalfOf newActedOnBehalfOf(QName id, IDRef delegate,
+					      IDRef responsible,
 					      IDRef eid2) {
 	ActedOnBehalfOf res = of.createActedOnBehalfOf();
 	res.setId(id);
@@ -370,8 +370,8 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
 	return res;
     }
 
-    public ActedOnBehalfOf newActedOnBehalfOf(String id, AgentRef delegate,
-					      AgentRef responsible,
+    public ActedOnBehalfOf newActedOnBehalfOf(String id, IDRef delegate,
+					      IDRef responsible,
 					      IDRef eid2) {
 	ActedOnBehalfOf res = of.createActedOnBehalfOf();
 	res.setId(stringToQName(id));
@@ -381,8 +381,8 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
 	return res;
     }
     public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1, QName a, Collection<Attribute> attributes) {
-        AgentRef agid2=(ag2==null)? null : newAgentRef(ag2);
-        AgentRef agid1=(ag1==null)? null : newAgentRef(ag1);
+        IDRef agid2=(ag2==null)? null : newIDRef(ag2);
+        IDRef agid1=(ag1==null)? null : newIDRef(ag1);
         IDRef aid=(a==null)? null : newIDRef(a);
         ActedOnBehalfOf res=newActedOnBehalfOf(id, agid2, agid1, aid);
         setAttributes(res, attributes);
@@ -474,20 +474,10 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
 	return newAgent(stringToQName(ag), label);
     }
 
-    public AgentRef newAgentRef(Agent a) {
-	AgentRef res = of.createAgentRef();
+    public IDRef newIDRef(Agent a) {
+	IDRef res = of.createIDRef();
 	res.setRef(a.getId());
 	return res;
-    }
-
-    public AgentRef newAgentRef(QName id) {
-	AgentRef res = of.createAgentRef();
-	res.setRef(id);
-	return res;
-    }
-
-    public AgentRef newAgentRef(String id) {
-	return newAgentRef(stringToQName(id));
     }
 
     public AlternateOf newAlternateOf(IDRef eid2, IDRef eid1) {
@@ -546,6 +536,15 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
         Location res =  of.createLocation();
         res.setType(type);
         res.setValueAsJava(value);
+        if (value instanceof QName) {
+            QName q=(QName)value;
+            if ((q.getPrefix()==null) || (q.getPrefix()=="")) {
+                res.getAttributes().put(new QName("http://www.w3.org/2000/xmlns/", "xmlns"), q.getNamespaceURI());
+            } else {
+                res.getAttributes().put(new QName("http://www.w3.org/2000/xmlns/",  q.getPrefix(), "xmlns"), q.getNamespaceURI());
+
+            }
+        }
         return res;
       }
 
@@ -1181,11 +1180,11 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
     public WasAssociatedWith newWasAssociatedWith(QName id, Activity eid2,
 						  Agent eid1) {
 	return newWasAssociatedWith(id, newIDRef(eid2.getId()),
-				    newAgentRef(eid1.getId()));
+				    newIDRef(eid1.getId()));
     }
 
     public WasAssociatedWith newWasAssociatedWith(QName id, IDRef eid2,
-						  AgentRef eid1) {
+						  IDRef eid1) {
 	WasAssociatedWith res = of.createWasAssociatedWith();
 	res.setId(id);
 	res.setActivity(eid2);
@@ -1196,11 +1195,11 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
     public WasAssociatedWith newWasAssociatedWith(String id, Activity eid2,
 						  Agent eid1) {
 	return newWasAssociatedWith(id, newIDRef(eid2.getId()),
-				    newAgentRef(eid1.getId()));
+				    newIDRef(eid1.getId()));
     }
 
     public WasAssociatedWith newWasAssociatedWith(String id, IDRef eid2,
-						  AgentRef eid1) {
+						  IDRef eid1) {
 	WasAssociatedWith res = of.createWasAssociatedWith();
 	res.setId(stringToQName(id));
 	res.setActivity(eid2);
@@ -1215,7 +1214,7 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
                                                    Collection<Attribute> attributes) {
 	IDRef aid=(a==null)? null: newIDRef(a);
 	IDRef eid=(plan==null)? null: newIDRef(plan);
-	AgentRef agid=(ag==null)? null: newAgentRef(ag);
+	IDRef agid=(ag==null)? null: newIDRef(ag);
 	WasAssociatedWith res= newWasAssociatedWith(id,aid,agid);
 	res.setPlan(eid);
 	setAttributes(res, attributes);
@@ -1234,7 +1233,7 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
     }
 
     public WasAttributedTo newWasAttributedTo(QName id, IDRef eid,
-					      AgentRef agid) {
+					      IDRef agid) {
 	WasAttributedTo res = of.createWasAttributedTo();
 	res.setId(id);
 	res.setEntity(eid);
@@ -1243,14 +1242,14 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
     }
 
     public WasAttributedTo newWasAttributedTo(String id, IDRef eid,
-					      AgentRef agid) {
+					      IDRef agid) {
 	return newWasAttributedTo(stringToQName(id), eid, agid);
     }
 
     
     public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,  Collection<Attribute> attributes) {
         IDRef eid=(e==null)? null : newIDRef(e);
-        AgentRef agid=(ag==null)? null : newAgentRef(ag);
+        IDRef agid=(ag==null)? null : newIDRef(ag);
         WasAttributedTo res=newWasAttributedTo(id, eid, agid);
         setAttributes(res, attributes);
         return res;

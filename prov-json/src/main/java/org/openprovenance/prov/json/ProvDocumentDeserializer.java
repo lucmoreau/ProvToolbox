@@ -20,7 +20,7 @@ import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.xml.Activity;
-import org.openprovenance.prov.xml.AgentRef;
+import org.openprovenance.prov.xml.IDRef;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.DerivedByInsertionFrom;
 import org.openprovenance.prov.xml.DerivedByRemovalFrom;
@@ -193,7 +193,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             break;
         case wasAssociatedWith:
             IDRef activity = optionalIdRef("prov:activity", attributeMap);
-            AgentRef agent = optionalAgentRef("prov:agent", attributeMap); 
+            IDRef agent = optionalIdRef("prov:agent", attributeMap); 
             IDRef plan = optionalIdRef("prov:plan", attributeMap);
             WasAssociatedWith wAW = pf.newWasAssociatedWith(id, activity, agent);
             if (plan != null) wAW.setPlan(plan);
@@ -201,7 +201,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             break;
         case wasAttributedTo:
             IDRef entity = optionalIdRef("prov:entity", attributeMap);
-            agent = optionalAgentRef("prov:agent", attributeMap);
+            agent = optionalIdRef("prov:agent", attributeMap);
             statement = pf.newWasAttributedTo(id, entity, agent);
             break;
         case bundle:
@@ -220,8 +220,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = pf.newWasInformedBy(id, informed, informant);
             break;
         case actedOnBehalfOf:
-            AgentRef delegate = optionalAgentRef("prov:delegate", attributeMap);
-            AgentRef responsible = optionalAgentRef("prov:responsible", attributeMap);
+            IDRef delegate = optionalIdRef("prov:delegate", attributeMap);
+            IDRef responsible = optionalIdRef("prov:responsible", attributeMap);
             activity = optionalIdRef("prov:activity", attributeMap);
             statement = pf.newActedOnBehalfOf(id, delegate, responsible, activity);
             break;
@@ -587,10 +587,6 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     }
 
     
-    private AgentRef agentRef(String attributeName, JsonObject attributeMap) {
-    	return pf.newAgentRef(popString(attributeMap, attributeName));
-    }
-    
 
     
     private IDRef optionalIdRef(String attributeName, JsonObject attributeMap) {
@@ -600,13 +596,6 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             return null;
     }
     
-
-    private AgentRef optionalAgentRef(String attributeName, JsonObject attributeMap) {
-        if (attributeMap.has(attributeName))
-            return agentRef(attributeName, attributeMap);
-        else
-            return null;
-    }
 
     
     private XMLGregorianCalendar optionalTime(String attributeName, JsonObject attributeMap) {

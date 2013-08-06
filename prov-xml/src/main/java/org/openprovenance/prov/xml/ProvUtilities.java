@@ -478,16 +478,16 @@ public class ProvUtilities {
                                                       Object.class });
         types.put(WasAttributedTo.class, new Class[] { QName.class,
                                                       IDRef.class,
-                                                      AgentRef.class,
+                                                      IDRef.class,
                                                       Object.class });
         types.put(WasAssociatedWith.class, new Class[] { QName.class,
                                                         IDRef.class,
-                                                        AgentRef.class,
+                                                        IDRef.class,
                                                         IDRef.class,
                                                         Object.class });
         types.put(ActedOnBehalfOf.class, new Class[] { QName.class,
-                                                      AgentRef.class,
-                                                      AgentRef.class,
+                                                      IDRef.class,
+                                                      IDRef.class,
                                                       IDRef.class,
                                                       Object.class });
         types.put(SpecializationOf.class, new Class[] { IDRef.class,

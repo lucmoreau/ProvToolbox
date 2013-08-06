@@ -11,6 +11,7 @@ package org.openprovenance.prov.xml;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
@@ -24,7 +25,8 @@ import org.jvnet.jaxb2_commons.lang.ToString;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBEqualsBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
-
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * <p>Java class for Location complex type.
@@ -58,6 +60,10 @@ public class TypedValue
     @XmlAttribute(name = "type", namespace = "http://www.w3.org/2001/XMLSchema-instance")
     protected QName type;
 
+    @XmlAnyAttribute
+    protected Map<QName, String> attributes=new HashMap<QName, String>();
+
+
     transient protected Object valueAsJava;
 
     /**
@@ -85,6 +91,14 @@ public class TypedValue
     }
 
 
+
+    public Map<QName, String> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Map<QName, String> attributes) {
+        this.attributes = attributes;
+    }
 
     /**
      * Gets the value of the type property.

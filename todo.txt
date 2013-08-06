@@ -6,3 +6,4 @@
 - Remove IdITEM from all beans
 
 
+- deal with nss in bundle/document

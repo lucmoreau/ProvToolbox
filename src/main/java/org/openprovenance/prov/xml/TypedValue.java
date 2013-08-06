@@ -50,8 +50,8 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
     "value"
     })
 //@XmlJavaTypeAdapter(TypedValueAdapter.class)
-@javax.persistence.Entity(name = "TypedValue_")
-@Table(name = "TypedValue")
+@javax.persistence.Entity(name = "TypedValue")
+@Table(name = "TYPEDVALUE")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class TypedValue {
     

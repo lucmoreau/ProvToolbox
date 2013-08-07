@@ -237,6 +237,23 @@
 	    <orm:join-column name="INVALIDATION"/>
 	  </hj:one-to-many>
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Statements']">
+	  <hj:ignored>
+	  </hj:ignored>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='NamedBundle']">
+	  <hj:entity>
+	    <orm:table name="BUNDLE"/>
+	  </hj:entity>
+	</jaxb:bindings>
+
+
+
+
+
+
+
+
 
     </jaxb:bindings>
 

@@ -983,7 +983,217 @@
                 </exec>
 
 
+<!-- renaming coluns in Bundles -->
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMENTITY_NAMEDBUNDLEENTITY_0/ENTITY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMACTIVITY_NAMEDBUNDLEENTI_0/ACTIVITY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASGENERATEDBY_NAMEDBUND_0/WASGENERATEDBY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMUSED_NAMEDBUNDLEENTITYOR_0/USED/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASINFORMEDBY_NAMEDBUNDL_0/WASINFORMEDBY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASSTARTEDBY_NAMEDBUNDLE_0/WASSTARTEDBY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASENDEDBY_NAMEDBUNDLEEN_0/WASENDEDBY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASINVALIDATEDBY_NAMEDBU_0/WASINVALIDATEDBY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASDERIVEDFROM_NAMEDBUND_0/WASDERIVEDFROM/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMAGENT_NAMEDBUNDLEENTITYO_0/AGENT/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASATTRIBUTEDTO_NAMEDBUN_0/WASATTRIBUTEDTO/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASASSOCIATEDWITH_NAMEDB_0/WASASSOCIATEDWITH/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMACTEDONBEHALFOF_NAMEDBUN_0/ACTEDONBEHALFOF/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASINFLUENCEDBY_NAMEDBUN_0/WASINFLUENCEDBY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMSPECIALIZATIONOF_NAMEDBU_0/SPECIALIZATIONOF/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMALTERNATEOF_NAMEDBUNDLEE_0/ALTERNATEOF/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMMENTIONOF_NAMEDBUNDLEENT_0/MENTIONOF/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMHADMEMBER_NAMEDBUNDLEENT_0/HADMEMBER/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ENTITYORACTIVITYORWASGENERAT_2/STATEMENTS/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+              <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/NAMEDBUNDLEENTITYORACTIVITYO_0/BUNDLE_STATEMENTS/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
 
+<!-- renaming coluns in Documents -->
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMENTITY_DOCUMENTENTITYORA_0/ENTITY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMACTIVITY_DOCUMENTENTITYO_0/ACTIVITY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASGENERATEDBY_DOCUMENTE_0/WASGENERATEDBY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMUSED_DOCUMENTENTITYORACT_0/USED/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASINFORMEDBY_DOCUMENTEN_0/WASINFORMEDBY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASSTARTEDBY_DOCUMENTENT_0/WASSTARTEDBY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASENDEDBY_DOCUMENTENTIT_0/WASENDEDBY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASINVALIDATEDBY_DOCUMEN_0/WASINVALIDATEDBY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASDERIVEDFROM_DOCUMENTE_0/WASDERIVEDFROM/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMAGENT_DOCUMENTENTITYORAC_0/AGENT/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASATTRIBUTEDTO_DOCUMENT_0/WASATTRIBUTEDTO/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASASSOCIATEDWITH_DOCUME_0/WASASSOCIATEDWITH/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMACTEDONBEHALFOF_DOCUMENT_0/ACTEDONBEHALFOF/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMWASINFLUENCEDBY_DOCUMENT_0/WASINFLUENCEDBY/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMSPECIALIZATIONOF_DOCUMEN_0/SPECIALIZATIONOF/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMALTERNATEOF_DOCUMENTENTI_0/ALTERNATEOF/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMMENTIONOF_DOCUMENTENTITY_0/MENTIONOF/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMHADMEMBER_DOCUMENTENTITY_0/HADMEMBER/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ITEMBUNDLE_DOCUMENTENTITYORA_0/BUNDLE/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/DOCUMENTENTITYORACTIVITYORWA_0/DOCUMENT_STATEMENTS/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ENTITYORACTIVITYORWASGENERAT_1/STATEMENTSORBUNDLE/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Document.java" />
+                </exec>
+
+
+<!-- -->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	              <arg value="-e s/List&lt;Object&gt;/List&lt;org.openprovenance.prov.xml.Statement&gt;/" />

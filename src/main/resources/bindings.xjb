@@ -145,7 +145,11 @@
 	</jaxb:bindings>
 	-->
 
-
+	<jaxb:bindings node="xs:complexType[@name='NamedBundle']">
+	  <hj:entity>
+	    <orm:table name="BUNDLE"/>
+	  </hj:entity>
+	</jaxb:bindings>
 
 	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@name='activity']">
 	  <hj:many-to-one>
@@ -169,7 +173,7 @@
 	</jaxb:bindings>
 	<jaxb:bindings node="xs:complexType[@name='Derivation']//xs:element[@name='generatedEntity']">
 	  <hj:many-to-one>
-	    <orm:join-column name="GENERATED_ENTITY"/>
++	    <orm:join-column name="GENERATED_ENTITY"/>
 	  </hj:many-to-one>
 	</jaxb:bindings>
 	<jaxb:bindings node="xs:complexType[@name='Derivation']//xs:element[@name='usedEntity']">
@@ -229,7 +233,7 @@
 	</jaxb:bindings>
 	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@ref='prov:location']">
 	  <hj:one-to-many>
-	    <orm:join-column name="_END"/>  <!-- note END is keyword -->
+	    <orm:join-column name="END_"/>  <!-- note END is keyword -->
 	  </hj:one-to-many>
 	</jaxb:bindings>
 	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@ref='prov:location']">
@@ -241,13 +245,170 @@
 	  <hj:ignored>
 	  </hj:ignored>
 	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='NamedBundle']">
-	  <hj:entity>
-	    <orm:table name="BUNDLE"/>
-	  </hj:entity>
+
+	<jaxb:bindings node="xs:complexType[@name='Activity']//xs:element[@name='startTime']">
+	  <hj:basic>
+	    <orm:column name="START_TIME"/>
+	  </hj:basic>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Activity']//xs:element[@name='endTime']">
+	  <hj:basic>
+	    <orm:column name="END_TIME"/>
+	  </hj:basic>
 	</jaxb:bindings>
 
 
+
+	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@name='activity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="ACTIVITY"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@name='trigger']">
+	  <hj:many-to-one>
+	    <orm:join-column name="TRIGGER"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@name='starter']">
+	  <hj:many-to-one>
+	    <orm:join-column name="STARTER"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@name='activity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="ACTIVITY"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@name='trigger']">
+	  <hj:many-to-one>
+	    <orm:join-column name="TRIGGER"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@name='ender']">
+	  <hj:many-to-one>
+	    <orm:join-column name="ENDER"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Communication']//xs:element[@name='informed']">
+	  <hj:many-to-one>
+	    <orm:join-column name="INFORMED"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Communication']//xs:element[@name='informant']">
+	  <hj:many-to-one>
+	    <orm:join-column name="INFORMANT"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+
+
+	<jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@name='activity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="ACTIVITY"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@name='agent']">
+	  <hj:many-to-one>
+	    <orm:join-column name="AGENT"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@name='plan']">
+	  <hj:many-to-one>
+	    <orm:join-column name="PLAN"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Attribution']//xs:element[@name='agent']">
+	  <hj:many-to-one>
+	    <orm:join-column name="AGENT"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Attribution']//xs:element[@name='entity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="ENTITY"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Delegation']//xs:element[@name='delegate']">
+	  <hj:many-to-one>
+	    <orm:join-column name="DELEGATE"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Delegation']//xs:element[@name='responsible']">
+	  <hj:many-to-one>
+	    <orm:join-column name="RESPONSIBLE"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Delegation']//xs:element[@name='activity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="ACTIVITY"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Influence']//xs:element[@name='influencer']">
+	  <hj:many-to-one>
+	    <orm:join-column name="INFLUENCER"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Influence']//xs:element[@name='influencee']">
+	  <hj:many-to-one>
+	    <orm:join-column name="INFLUENCEE"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@name='activity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="ACTIVITY"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@name='entity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="ENTITY"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Alternate']//xs:element[@name='alternate1']">
+	  <hj:many-to-one>
+	    <orm:join-column name="ALTERNATE1"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Alternate']//xs:element[@name='alternate2']">
+	  <hj:many-to-one>
+	    <orm:join-column name="ALTERNATE2"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Specialization']//xs:element[@name='specificEntity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="SPECIFIC"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Specialization']//xs:element[@name='generalEntity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="GENERAL"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Mention']//xs:element[@name='specificEntity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="SPECIFIC"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Mention']//xs:element[@name='generalEntity']">
+	  <hj:many-to-one>
+	    <orm:join-column name="GENERAL"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Mention']//xs:element[@name='bundle']">
+	  <hj:many-to-one>
+	    <orm:join-column name="BUNDLE"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Membership']//xs:element[@name='collection']">
+	  <hj:many-to-one>
+	    <orm:join-column name="COLLECTION"/>
+	  </hj:many-to-one>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Membership']//xs:element[@name='entity']">
+	  <hj:many-to-many>
+	    <orm:join-table name="HADMEMBER_ELEMENTS">
+	      <orm:join-column name="COLLECTION"/>
+	      <orm:inverse-join-column name="ENTITY"/>
+	    </orm:join-table>
+	  </hj:many-to-many>
+	</jaxb:bindings>
 
 
 

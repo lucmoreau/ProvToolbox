@@ -156,7 +156,7 @@ public class TypedValue {
      *     
      */
     @ManyToOne(targetEntity = AValue.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "VALUE__TYPEDVALUE_HJID")
+    @JoinColumn(name = "VALUE")
     public AValue getValueItem() {
         //System.out.println("#---> getValueItem() reading " + value);
 

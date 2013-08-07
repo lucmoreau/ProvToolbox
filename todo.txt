@@ -3,6 +3,14 @@
 
 - Continue customization of colum names
 
+  TYPE/ROLE (like location)
+  ATTRIBUTE
+  INTERNATIONALIZEDSTRING
+
+  idref
+
+
+
 - Remove IdITEM from all beans
 
 

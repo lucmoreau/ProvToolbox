@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import javax.xml.namespace.QName;
 import javax.xml.bind.JAXBException;
 
+import org.openprovenance.prov.xml.ActivityIN;
 import org.openprovenance.prov.xml.ValueConverter;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
@@ -429,7 +430,7 @@ public class ProvToDot {
         return properties;
     }
     
-    public HashMap<String,String> addActivityShape(Activity p, HashMap<String,String> properties) {
+    public HashMap<String,String> addActivityShape(ActivityIN p, HashMap<String,String> properties) {
         properties.put("shape","polygon");
         properties.put("sides","4");
         return properties;
@@ -648,7 +649,7 @@ public class ProvToDot {
             return localnameToString(p.getId());
         }
     }
-    public String processColor(Activity p) {
+    public String processColor(ActivityIN p) {
         // Note, I should compute effective account membership
         List<String> colors=new LinkedList<String>();
         // for (AccountRef acc: p.getAccount()) {

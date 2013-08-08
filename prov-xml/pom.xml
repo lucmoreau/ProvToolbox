@@ -15,6 +15,11 @@
 
 
   <dependencies>
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-model</artifactId>
+      <version>0.2.4-SNAPSHOT</version>
+    </dependency>
 
     <dependency>
       <groupId>javax.xml.bind</groupId>

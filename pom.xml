@@ -27,8 +27,9 @@
 
     <module>prov-interop</module>    
     <module>prov-rdf</module>    
-    <module>toolbox</module>    
+    <module>toolbox</module>
 
+    <module>prov-model</module>
   </modules>
 
 

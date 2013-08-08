@@ -25,6 +25,7 @@ import org.jvnet.jaxb2_commons.lang.ToString;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBEqualsBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
+
 import java.util.Map;
 import java.util.HashMap;
 
@@ -50,7 +51,7 @@ import java.util.HashMap;
     "value"
 })
 public class TypedValue
-    implements Equals, HashCode, ToString
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.TypedValue
 {
 
     @XmlValue
@@ -66,26 +67,18 @@ public class TypedValue
 
     transient protected Object valueAsJava;
 
-    /**
-     * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *     
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.TypIN#getValue()
      */
+    @Override
     public Object getValue() {
         return value;
     }
 
-    /**
-     * Sets the value of the value property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Object }
-     *     
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.TypIN#setValue(java.lang.Object)
      */
+    @Override
     public void setValue(Object value) {
         this.value = value;
     }
@@ -100,27 +93,19 @@ public class TypedValue
         this.attributes = attributes;
     }
 
-    /**
-     * Gets the value of the type property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QName }
-     *     
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.TypIN#getType()
      */
+    @Override
     public QName getType() {
         return type;
     }
 
-    /**
-     * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *     
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.TypIN#getValueAsJava(org.openprovenance.prov.xml.ValueConverter)
      */
-    public Object getValueAsJava(ValueConverter vconv) {
+    @Override
+    public Object getValueAsJava(org.openprovenance.prov.model.ValueConverter vconv) {
     	if (valueAsJava==null) {
     		valueAsJava=vconv.convertToJava(getType(), (String)value);
     	}
@@ -128,14 +113,10 @@ public class TypedValue
     }
 
 
-    /**
-     * Sets the value of the value property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Object }
-     *     
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.TypIN#setValueAsJava(java.lang.Object)
      */
+    @Override
     public void setValueAsJava(Object valueAsJava) {
 	if (valueAsJava!=null) {
 	    if (valueAsJava instanceof QName) {
@@ -156,6 +137,10 @@ public class TypedValue
      *     {@link QName }
      *     
      */
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.TypIN#setType(javax.xml.namespace.QName)
+     */
+    @Override
     public void setType(QName value) {
         this.type = value;
     }

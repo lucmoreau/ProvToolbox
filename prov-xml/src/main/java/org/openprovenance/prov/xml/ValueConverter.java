@@ -6,7 +6,7 @@ import java.net.URI;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-public class ValueConverter {
+public class ValueConverter implements org.openprovenance.prov.model.ValueConverter {
     
     public static QName newXsdQName(String local) {
 	return new QName(NamespacePrefixMapper.XSD_NS, local, NamespacePrefixMapper.XSD_PREFIX);

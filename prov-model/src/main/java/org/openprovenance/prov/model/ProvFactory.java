@@ -18,6 +18,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 
+import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,13 +28,11 @@ import javax.xml.parsers.ParserConfigurationException;
 
 //TODO: move the QNameExport capability outside the factory, and make it purely stateless, without namespace. 
 
-public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstructor {
+public abstract class ProvFactory implements ModelConstructor, QNameExport, LiteralConstructor {
 
     static public DocumentBuilder builder;
 
     public static final String DEFAULT_NS = "_";
-
-    private final static ProvFactory oFactory = new ProvFactory();
 
     public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.validation";
 
@@ -62,10 +61,6 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
         return props;   
     }
 
-    public static ProvFactory getFactory() {
-	return oFactory;
-    }
-
     static void initBuilder() {
 	try {
 	    DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -86,28 +81,20 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
     private Hashtable<String, String> namespaces = null;
     protected ObjectFactory of;
 
-    final protected org.openprovenance.prov.xml.validation.ObjectFactory vof;
 
-    public ProvFactory() {
-	of = new ObjectFactory();
-	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
+    public ProvFactory(ObjectFactory of) {
+	this.of = of;
 	init();
 	setNamespaces(new Hashtable<String, String>());
     }
 
-    public ProvFactory(Hashtable<String, String> namespaces) {
-	of = new ObjectFactory();
-	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
+    public ProvFactory(ObjectFactory of, Hashtable<String, String> namespaces) {
+	this.of = of;
 	this.namespaces = namespaces;
 	init();
     }
 
-    public ProvFactory(ObjectFactory of) {
-	this.of = of;
-	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
-	init();
-	setNamespaces(new Hashtable<String, String>());
-    }
+
 
     public void addAttribute(HasExtensibility a, Attribute o) {
 	a.getAny().add(o);
@@ -334,9 +321,7 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
 	return res;
     }
 
-    public org.openprovenance.prov.xml.validation.ObjectFactory getValidationObjectFactory() {
-	return vof;
-    }
+  
 
     void init() {
 	try {
@@ -490,36 +475,40 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
         return newAlternateOf(eid2, eid1);
     }
   
-
     public Attribute newAttribute(QName qname, Object value, ValueConverter vconv) {
-  	Attribute res = new Attribute(qname, value, vconv.getXsdType(value));
+  	Attribute res = createAttribute(qname, value, vconv.getXsdType(value));
   	return res;
       }
 
     public Attribute newAttribute(QName qname, Object value, QName type) {
-  	Attribute res = new Attribute(qname, value, type);
+  	Attribute res = createAttribute(qname, value, type);
   	return res;
       }
 
+    abstract Attribute createAttribute(QName qname, Object value, QName type);
+    abstract Attribute createAttribute(AttributeKind kind, Object value, QName type);
+    
     public Attribute newAttribute(Attribute.AttributeKind kind, Object value, ValueConverter vconv) {
-  	Attribute res = new Attribute(kind, value, vconv.getXsdType(value));
+  	Attribute res = createAttribute(kind, value, vconv.getXsdType(value));
   	return res;
       }
     public Attribute newAttribute(Attribute.AttributeKind kind, Object value, QName type) {
-  	Attribute res = new Attribute(kind, value, type);
+  	Attribute res = createAttribute(kind, value, type);
   	return res;
       }
 
+
+
     public Attribute newAttribute(String namespace, String localName,
 				  String prefix, Object value, ValueConverter vconv) {
-	Attribute res = new Attribute(new QName(namespace, localName, prefix),
+	Attribute res = createAttribute(new QName(namespace, localName, prefix),
 				      value, vconv.getXsdType(value));
 	return res;
     }
 
     public Attribute newAttribute(String namespace, String localName,
 				  String prefix, Object value, QName type) {
-	Attribute res = new Attribute(new QName(namespace, localName, prefix),
+	Attribute res = createAttribute(new QName(namespace, localName, prefix),
 				      value, type);
 	return res;
     }
@@ -532,6 +521,8 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
         Location res =  of.createLocation();
         res.setType(type);
         res.setValueAsJava(value);
+        //FIXME: how can I process a QNAME properly here
+        /*
         if (value instanceof QName) {
             QName q=(QName)value;
             if ((q.getPrefix()==null) || (q.getPrefix()=="")) {
@@ -540,7 +531,7 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
                 res.getAttributes().put(new QName("http://www.w3.org/2000/xmlns/",  q.getPrefix(), "xmlns"), q.getNamespaceURI());
 
             }
-        }
+        }*/
         return res;
       }
 
@@ -614,16 +605,16 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
                                                             QName before,
                                                             List<KeyQNamePair> keyEntitySet,
                                                             Collection<Attribute> attributes) {
-    	IDRef aa=new IDRef();
+    	IDRef aa=createIDRef();
     	aa.setRef(after);
-    	IDRef ab=new IDRef();
+    	IDRef ab=createIDRef();
     	ab.setRef(before);
     	List<Entry> entries=new LinkedList<Entry>();
     	if (keyEntitySet!=null) {
     	for (KeyQNamePair p: keyEntitySet) {
-    		Entry e=new Entry();
+    		Entry e=of.createEntry();
     		e.setKey(p.key);
-        	IDRef ac=new IDRef();
+        	IDRef ac=createIDRef();
         	ac.setRef(p.name);
     		e.setEntity(ac);
     		entries.add(e);
@@ -632,6 +623,8 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
     	return newDerivedByInsertionFrom(id, aa, ab, entries, attributes);
     }
 
+    abstract public IDRef createIDRef();
+    
     public DerivedByInsertionFrom newDerivedByInsertionFrom(String id,
 							    IDRef after,
 							    IDRef before,
@@ -647,9 +640,9 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
                                                             QName before,
                                                             List<Object> keys,
                                                             Collection<Attribute> attributes) {
-    	IDRef aa=new IDRef();
+    	IDRef aa=createIDRef();
     	aa.setRef(after);
-    	IDRef ab=new IDRef();
+    	IDRef ab=createIDRef();
     	ab.setRef(before);
     	return newDerivedByRemovalFrom(id, aa, ab, keys, attributes);
     }
@@ -681,16 +674,16 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
 
     public DictionaryMembership newDictionaryMembership(QName id, List<KeyQNamePair> keyEntitySet) {
 	DictionaryMembership res = of.createDictionaryMembership();
-    	IDRef idr=new IDRef();
-    	idr.ref=id;
+    	IDRef idr=createIDRef();
+    	idr.setRef(id);
 	res.setDictionary(idr);
 	
 	List<Entry> entries=new LinkedList<Entry>();
     	if (keyEntitySet!=null) {
     	    for (KeyQNamePair p: keyEntitySet) {
-    		Entry e=new Entry();
+    		Entry e=of.createEntry();
     		e.setKey(p.key);
-    		IDRef ac=new IDRef();
+    		IDRef ac=createIDRef();
     		ac.setRef(p.name);
     		e.setEntity(ac);
     		entries.add(e);
@@ -999,6 +992,7 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
 	return res;
     }
 
+    
     public MentionOf newMentionOf(MentionOf r) {
 	MentionOf res = of.createMentionOf();
 	res.setSpecificEntity(r.getSpecificEntity());
@@ -1504,11 +1498,6 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
 	return out;
     }
 
-    // public void addType(HasExtensibility a,
-    // String type) {
-    //
-    // addType(a,type,"xsd:anyURI");
-    // }
 
     public WasInformedBy newWasInformedBy(Activity p1, Activity p2) {
 	return newWasInformedBy(null, p1, p2);

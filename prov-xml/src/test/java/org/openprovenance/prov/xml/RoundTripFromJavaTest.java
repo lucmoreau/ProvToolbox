@@ -10,6 +10,9 @@ import java.net.URI;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.KeyQNamePair;
+import org.openprovenance.prov.model.URIWrapper;
+
 import junit.framework.TestCase;
 
 /**

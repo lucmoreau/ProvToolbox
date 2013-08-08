@@ -1,5 +1,13 @@
 package org.openprovenance.prov.model;
 
-public interface HadMember {
+import java.util.List;
+
+public interface HadMember extends Relation0 {
+
+    void setCollection(IDRef collection);
+
+    List<IDRef> getEntity();
+
+    IDRef getCollection();
 
 }

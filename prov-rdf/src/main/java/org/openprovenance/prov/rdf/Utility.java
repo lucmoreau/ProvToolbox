@@ -6,10 +6,10 @@ import java.io.InputStream;
 import java.net.URL;
 import javax.xml.bind.JAXBException;
 
+import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.rdf.collector.QualifiedCollector;
 import org.openprovenance.prov.rdf.collector.RdfCollector;
 
-import org.openprovenance.prov.xml.BeanTraversal;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ValueConverter;

@@ -1,5 +1,7 @@
 package org.openprovenance.prov.model;
 
-public interface Agent {
+import java.util.List;
+
+public interface Agent extends Identifiable,  HasLabel, HasType, HasExtensibility, HasLocation, Statement  {
 
 }

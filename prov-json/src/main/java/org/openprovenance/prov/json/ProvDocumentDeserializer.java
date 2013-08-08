@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.IDRef;
@@ -35,7 +36,6 @@ import org.openprovenance.prov.xml.HasType;
 import org.openprovenance.prov.xml.HasValue;
 import org.openprovenance.prov.xml.IDRef;
 import org.openprovenance.prov.xml.InternationalizedString;
-import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.Location;
 import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;

@@ -20,8 +20,6 @@ import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Entity;
 import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.NamedBundle;
-import org.openprovenance.prov.xml.Relation0;
-import org.openprovenance.prov.xml.Influence;
 import org.openprovenance.prov.xml.Agent;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.HasType;
@@ -54,6 +52,8 @@ import org.openprovenance.prov.dot.EntityMapEntry;
 import org.openprovenance.prov.dot.ActivityMapEntry;
 import org.openprovenance.prov.dot.RelationStyleMapEntry;
 import org.openprovenance.prov.dot.ProvPrinterConfigDeserialiser;
+import org.openprovenance.prov.model.Influence;
+import org.openprovenance.prov.model.Relation0;
 
 /** Serialisation of  Prov representation to DOT format. */
 public class ProvToDot {

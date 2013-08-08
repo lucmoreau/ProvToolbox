@@ -9,6 +9,7 @@ import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.Activity;
 import org.openprovenance.prov.xml.Agent;
@@ -16,7 +17,6 @@ import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.DerivedByInsertionFrom;
 import org.openprovenance.prov.xml.DerivedByRemovalFrom;
-import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.ModelConstructor;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.Entity;

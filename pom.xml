@@ -20,6 +20,7 @@
 
 
   <modules>
+    <module>prov-model</module>
     <module>prov-xml</module>    
     <module>prov-n</module>    
     <module>prov-dot</module>    
@@ -29,7 +30,7 @@
     <module>prov-rdf</module>    
     <module>toolbox</module>
 
-    <module>prov-model</module>
+
   </modules>
 
 

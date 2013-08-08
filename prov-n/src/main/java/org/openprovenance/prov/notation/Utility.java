@@ -16,7 +16,7 @@ import  org.antlr.runtime.tree.CommonTree;
 import  org.antlr.runtime.tree.CommonTreeAdaptor;
 import  org.antlr.runtime.tree.TreeAdaptor;
 
-import org.openprovenance.prov.xml.BeanTraversal;
+import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ValueConverter;

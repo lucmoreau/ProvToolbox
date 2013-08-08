@@ -17,6 +17,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+import org.openprovenance.prov.model.Attribute.AttributeKind;
+import org.openprovenance.prov.model.KeyQNamePair;
+import org.openprovenance.prov.model.LiteralConstructor;
+import org.openprovenance.prov.model.URIWrapper;
 import org.openprovenance.prov.xml.DictionaryMembership;
 import org.openprovenance.prov.xml.DerivedByInsertionFrom;
 import org.openprovenance.prov.xml.DerivedByRemovalFrom;
@@ -31,7 +35,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 //TODO: move the QNameExport capability outside the factory, and make it purely stateless, without namespace. 
 
-public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstructor {
+public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     static public DocumentBuilder builder;
 
@@ -113,326 +117,10 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
 	setNamespaces(new Hashtable<String, String>());
     }
 
-    public void addAttribute(HasExtensibility a, Attribute o) {
-	a.getAny().add(o);
-    }
-
-    public void addAttribute(HasExtensibility a, String namespace,
-			     String localName, String prefix, Object value, ValueConverter vconv) {
-
-	a.getAny().add(newAttribute(namespace, localName, prefix, value, vconv));
-    }
-
-    public void addAttribute(HasExtensibility a, String namespace,
-			     String localName, String prefix, Object value,
-			     QName type) {
-
-	a.getAny().add(newAttribute(namespace, localName, prefix, value, type));
-    }
-
-    public ActedOnBehalfOf addAttributes(ActedOnBehalfOf from,
-					 ActedOnBehalfOf to) {
-	to.getLabel().addAll(from.getLabel());
-	to.getType().addAll(from.getType());
-	to.getAny().addAll(from.getAny());
-	return to;
-    }
-
-    public Activity addAttributes(Activity from, Activity to) {
-	to.getLabel().addAll(from.getLabel());
-	to.getType().addAll(from.getType());
-	to.getLocation().addAll(from.getLocation());
-	to.getAny().addAll(from.getAny());
-	return to;
-    }
-
-    public Agent addAttributes(Agent from, Agent to) {
-	to.getLabel().addAll(from.getLabel());
-	to.getType().addAll(from.getType());
-	// to.getLocation().addAll(from.getLocation());
-	to.getAny().addAll(from.getAny());
-	return to;
-    }
-
-    public Entity addAttributes(Entity from, Entity to) {
-	to.getLabel().addAll(from.getLabel());
-	to.getType().addAll(from.getType());
-	to.getLocation().addAll(from.getLocation());
-	to.getAny().addAll(from.getAny());
-	return to;
-    }
-
-    public Used addAttributes(Used from, Used to) {
-	to.getLabel().addAll(from.getLabel());
-	to.getType().addAll(from.getType());
-	to.getLocation().addAll(from.getLocation());
-	to.getRole().addAll(from.getRole());
-	to.getAny().addAll(from.getAny());
-	return to;
-    }
-
-    public WasAssociatedWith addAttributes(WasAssociatedWith from,
-					   WasAssociatedWith to) {
-	to.getLabel().addAll(from.getLabel());
-	to.getType().addAll(from.getType());
-	to.getRole().addAll(from.getRole());
-	to.getAny().addAll(from.getAny());
-	return to;
-    }
-
-    public WasAttributedTo addAttributes(WasAttributedTo from,
-					 WasAttributedTo to) {
-	to.getLabel().addAll(from.getLabel());
-	to.getType().addAll(from.getType());
-	to.getAny().addAll(from.getAny());
-	return to;
-    }
-
-    public WasDerivedFrom addAttributes(WasDerivedFrom from, WasDerivedFrom to) {
-	to.getLabel().addAll(from.getLabel());
-	to.getType().addAll(from.getType());
-	to.getAny().addAll(from.getAny());
-	return to;
-    }
-
-    public WasEndedBy addAttributes(WasEndedBy from, WasEndedBy to) {
-	to.getLabel().addAll(from.getLabel());
-	to.getType().addAll(from.getType());
-	to.getLocation().addAll(from.getLocation());
-	to.getRole().addAll(from.getRole());
-	to.getAny().addAll(from.getAny());
-	return to;
-    }
-
-    public WasGeneratedBy addAttributes(WasGeneratedBy from, WasGeneratedBy to) {
-	to.getLabel().addAll(from.getLabel());
-	to.getType().addAll(from.getType());
-	to.getLocation().addAll(from.getLocation());
-	to.getRole().addAll(from.getRole());
-	to.getAny().addAll(from.getAny());
-	return to;
-    }
-
-    public WasInfluencedBy addAttributes(WasInfluencedBy from,
-					 WasInfluencedBy to) {
-	to.getLabel().addAll(from.getLabel());
-	to.getType().addAll(from.getType());
-	to.getAny().addAll(from.getAny());
-	return to;
-    }
-
-    public WasInformedBy addAttributes(WasInformedBy from, WasInformedBy to) {
-	to.getLabel().addAll(from.getLabel());
-	to.getType().addAll(from.getType());
-	to.getAny().addAll(from.getAny());
-	return to;
-    }
-
-    public WasInvalidatedBy addAttributes(WasInvalidatedBy from,
-					  WasInvalidatedBy to) {
-	to.getLabel().addAll(from.getLabel());
-	to.getType().addAll(from.getType());
-	to.getLocation().addAll(from.getLocation());
-	to.getRole().addAll(from.getRole());
-	to.getAny().addAll(from.getAny());
-	return to;
-    }
-
-    public WasStartedBy addAttributes(WasStartedBy from, WasStartedBy to) {
-	to.getLabel().addAll(from.getLabel());
-	to.getType().addAll(from.getType());
-	to.getLocation().addAll(from.getLocation());
-	to.getRole().addAll(from.getRole());
-	to.getAny().addAll(from.getAny());	
-	return to;
-    }
-
-    public void addLabel(HasLabel a, String label) {
-	a.getLabel().add(newInternationalizedString(label));
-    }
-
-    public void addLabel(HasLabel a, String label, String language) {
-	a.getLabel().add(newInternationalizedString(label, language));
-    }
-
-    public void addPrimarySourceType(HasType a) {
-	a.getType().add(newType(newQName("prov:PrimarySource"),ValueConverter.QNAME_XSD_QNAME));
-    }
-
-    public void addQuotationType(HasType a) {
-	a.getType().add(newType(newQName("prov:Quotation"),ValueConverter.QNAME_XSD_QNAME));
-    }
-
-    public void addRevisionType(HasType a) {
-	a.getType().add(newType(newQName("prov:Revision"),ValueConverter.QNAME_XSD_QNAME));
-    }
-
- 
-    public void addRole(HasRole a, Role role) {
-	if (role != null) {
-	    a.getRole().add(role);
-	}
-    }
-
-    public void addType(HasType a, Type type) {
-
-	a.getType().add(type);
-    }
-
-    public void addType(HasType a, URI type) {
-	URIWrapper u = new URIWrapper();
-	u.setValue(type);
-	a.getType().add(newType(u,ValueConverter.QNAME_XSD_ANY_URI));
-    }
-
-    public void addType(HasType a, Object o, QName type) {
-	a.getType().add(newType(o,type));
-    }
-
- 
- 
+  
 
 
-    /* Return the first label, it it exists */
-    public String getLabel(HasExtensibility e) {
 
-	List<InternationalizedString> labels = ((HasLabel) e).getLabel();
-	if ((labels == null) || (labels.isEmpty()))
-	    return null;
-	if (e instanceof HasLabel)
-	    return labels.get(0).getValue();
-	return "pFact: label TODO";
-    }
-
-    public String getNamespace(String prefix) {
-	if ((prefix == null) || ("".equals(prefix)))
-	    return namespaces.get(DEFAULT_NS);
-	if (prefix.equals(NamespacePrefixMapper.PROV_PREFIX))
-	    return NamespacePrefixMapper.PROV_NS;
-	if (prefix.equals(NamespacePrefixMapper.XSD_PREFIX))
-	    return NamespacePrefixMapper.XSD_NS;
-	return namespaces.get(prefix);
-    }
-
-    public Hashtable<String, String> getNss() {
-	return namespaces;
-    }
-
-    public ObjectFactory getObjectFactory() {
-	return of;
-    }
-
-    public String getPackageList() {
-	return packageList;
-    }
-
-    public String getRole(HasExtensibility e) {
-	return "pFact: role TODO";
-    }
-
-    public List<Type> getType(HasExtensibility e) {
-	if (e instanceof HasType)
-	    return ((HasType) e).getType();
-	List<Type> res = new LinkedList<Type>();
-	res.add(newType("pFact: type TODO",ValueConverter.QNAME_XSD_STRING));
-	return res;
-    }
-
-    public org.openprovenance.prov.xml.validation.ObjectFactory getValidationObjectFactory() {
-	return vof;
-    }
-
-    void init() {
-	try {
-	    dataFactory = DatatypeFactory.newInstance();
-	} catch (DatatypeConfigurationException ex) {
-	    throw new RuntimeException(ex);
-	}
-    }
-
-    public ActedOnBehalfOf newActedOnBehalfOf(ActedOnBehalfOf u) {
-	ActedOnBehalfOf u1 = newActedOnBehalfOf(u.getId(),
-						u.getDelegate(),
-						u.getResponsible(),
-						u.getActivity());
-	u1.getAny().addAll(u.getAny());
-	return u1;
-    }
-
-    public ActedOnBehalfOf newActedOnBehalfOf(QName id, IDRef delegate,
-					      IDRef responsible,
-					      IDRef eid2) {
-	ActedOnBehalfOf res = of.createActedOnBehalfOf();
-	res.setId(id);
-	res.setActivity(eid2);
-	res.setDelegate(delegate);
-	res.setResponsible(responsible);
-	return res;
-    }
-
-    public ActedOnBehalfOf newActedOnBehalfOf(String id, IDRef delegate,
-					      IDRef responsible,
-					      IDRef eid2) {
-	ActedOnBehalfOf res = of.createActedOnBehalfOf();
-	res.setId(stringToQName(id));
-	res.setActivity(eid2);
-	res.setDelegate(delegate);
-	res.setResponsible(responsible);
-	return res;
-    }
-    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1, QName a, Collection<Attribute> attributes) {
-        IDRef agid2=(ag2==null)? null : newIDRef(ag2);
-        IDRef agid1=(ag1==null)? null : newIDRef(ag1);
-        IDRef aid=(a==null)? null : newIDRef(a);
-        ActedOnBehalfOf res=newActedOnBehalfOf(id, agid2, agid1, aid);
-        setAttributes(res, attributes);
-        return res;
-    }
-
-    
-    
-    public Activity newActivity(Activity a) {
-	Activity res = newActivity(a.getId());
-	res.getType().addAll(a.getType());
-	res.getLabel().addAll(a.getLabel());
-	res.getLocation().addAll(a.getLocation());
-	res.setStartTime(a.getStartTime());
-	res.setEndTime(a.getEndTime());
-	return res;
-    }
-
-    public Activity newActivity(QName a) {
-	Activity res = of.createActivity();
-	res.setId(a);
-	return res;
-    }
-
-    public Activity newActivity(QName q, String label) {
-	Activity res = newActivity(q);
-	if (label != null)
-	    res.getLabel().add(newInternationalizedString(label));
-	return res;
-    }
-
-    public Activity newActivity(QName id, 
-                                XMLGregorianCalendar startTime,
-				XMLGregorianCalendar endTime,
-				Collection<Attribute> attributes) {
-	Activity res = newActivity(id);
-	res.setStartTime(startTime);
-	res.setEndTime(endTime);
-	setAttributes(res, attributes);
-	return res;
-
-    }
-
-    public Activity newActivity(String pr) {
-	return newActivity(stringToQName(pr));
-    }
-
-    public Activity newActivity(String pr, String label) {
-	return newActivity(stringToQName(pr), label);
-    }
 
     public IDRef newIDRef(Activity p) {
 	IDRef res = of.createIDRef();
@@ -1768,6 +1456,27 @@ public class ProvFactory implements ModelConstructor, QNameExport, LiteralConstr
     @Override
     public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
       
+    }
+
+    @Override
+    org.openprovenance.prov.model.Attribute createAttribute(QName qname,
+							    Object value,
+							    QName type) {
+	return new Attribute(qname,value,type);
+    }
+
+    @Override
+    org.openprovenance.prov.model.Attribute createAttribute(AttributeKind kind,
+							    Object value,
+							    QName type) {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public org.openprovenance.prov.model.IDRef createIDRef() {
+	
+	return new IDRef();
     }
 
 }

@@ -1,4 +1,5 @@
-package org.openprovenance.prov.xml;
+package org.openprovenance.prov.model;
+
 
 public interface RecordValue {
     public Object run(Entity e);

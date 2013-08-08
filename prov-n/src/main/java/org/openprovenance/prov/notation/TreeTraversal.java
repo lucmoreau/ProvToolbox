@@ -9,8 +9,8 @@ import javax.xml.namespace.QName;
 
 import  org.antlr.runtime.tree.Tree;
 import  org.antlr.runtime.tree.CommonTree;
+import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.xml.Attribute;
-import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.ModelConstructor;
 import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;

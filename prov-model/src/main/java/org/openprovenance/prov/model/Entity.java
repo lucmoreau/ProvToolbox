@@ -1,5 +1,7 @@
 package org.openprovenance.prov.model;
 
-public interface Entity {
+import java.util.List;
+
+public interface Entity extends Identifiable,  HasLabel, HasType, HasExtensibility, HasLocation, Statement, HasValue   {
 
 }

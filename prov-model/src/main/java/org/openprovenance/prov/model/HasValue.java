@@ -1,4 +1,4 @@
-package org.openprovenance.prov.xml;
+package org.openprovenance.prov.model;
 
 public interface HasValue {
     public Value getValue();

@@ -14,6 +14,8 @@ import java.util.logging.Logger;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.KeyQNamePair;
+import org.openprovenance.prov.model.URIWrapper;
 import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.xml.ActedOnBehalfOf;
 import org.openprovenance.prov.xml.DictionaryMembership;
@@ -22,13 +24,11 @@ import org.openprovenance.prov.xml.AlternateOf;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.InternationalizedString;
-import org.openprovenance.prov.xml.KeyQNamePair;
 import org.openprovenance.prov.xml.MentionOf;
 import org.openprovenance.prov.xml.NamedBundle;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.SpecializationOf;
-import org.openprovenance.prov.xml.URIWrapper;
 import org.openprovenance.prov.xml.Used;
 import org.openprovenance.prov.xml.ValueConverter;
 import org.openprovenance.prov.xml.WasAssociatedWith;
@@ -125,7 +125,7 @@ public class RdfCollector extends RDFHandlerBase {
 	}
 
 	protected void store(QName context,
-			org.openprovenance.prov.xml.Relation0 relation0)
+			org.openprovenance.prov.model.Relation0 relation0)
 	{
 		getBundleHolder(context).addStatement(
 				(org.openprovenance.prov.xml.Statement) relation0);

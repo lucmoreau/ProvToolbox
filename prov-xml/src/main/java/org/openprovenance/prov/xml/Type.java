@@ -26,6 +26,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 
 
+
 /**
  * <p>Java class for Location complex type.
  * 
@@ -44,9 +45,10 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Role", namespace = "http://www.w3.org/ns/prov#")
-public class Role extends TypedValue
-    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Role
+@XmlType(name = "Type", namespace = "http://www.w3.org/ns/prov#")
+
+public class Type extends TypedValue
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Type
 {
 }
 

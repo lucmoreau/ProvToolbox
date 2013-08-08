@@ -6,7 +6,7 @@
 //
 
 
-package org.openprovenance.prov.xml;
+package org.openprovenance.prov.model;
 
 import java.net.URI;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
@@ -21,7 +21,7 @@ public class URIAdapter
     }
 
     public String marshal(URI value) {
-        return (org.openprovenance.prov.xml.ProvFactory.printURI(value));
+        return (ProvFactory.printURI(value));
     }
 
 }

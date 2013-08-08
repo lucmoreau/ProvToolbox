@@ -2,7 +2,7 @@ package org.openprovenance.prov.json;
 
 import java.lang.reflect.Type;
 
-import org.openprovenance.prov.xml.BeanTraversal;
+import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ValueConverter;

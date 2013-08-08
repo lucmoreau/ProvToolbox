@@ -1,4 +1,4 @@
-package org.openprovenance.prov.xml;
+package org.openprovenance.prov.model;
 
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;

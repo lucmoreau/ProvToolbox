@@ -1,5 +1,7 @@
 package org.openprovenance.prov.xml;
 
+import org.openprovenance.prov.model.BeanTraversal;
+
 /**
  * Unit test for PROV roundtrip conversion between Java and XML
  */

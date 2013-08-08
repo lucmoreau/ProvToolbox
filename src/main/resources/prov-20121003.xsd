@@ -469,7 +469,7 @@
      <xs:sequence>
        <xs:choice maxOccurs="unbounded">
          <xs:group ref="prov:documentElements"/>
-         <xs:element name="bundle" type="prov:NamedBundle"/>
+         <xs:element name="bundleContent" type="prov:NamedBundle"/>
        </xs:choice>
      </xs:sequence>
    </xs:complexType>

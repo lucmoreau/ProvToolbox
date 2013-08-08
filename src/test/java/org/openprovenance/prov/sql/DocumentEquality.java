@@ -17,6 +17,7 @@ import org.openprovenance.prov.xml.StatementOrBundle;
  * @author Trung Dong Huynh <tdh@ecs.soton.ac.uk>
  * 
  */
+
 public class DocumentEquality {
 	static Logger logger = Logger.getLogger(DocumentEquality.class);
 	

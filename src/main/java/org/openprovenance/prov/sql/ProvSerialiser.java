@@ -119,6 +119,7 @@ public class ProvSerialiser {
         m.marshal(of.createDocument(graph),sw);
         return sw.toString();
     }
+    
 
     public void serialiseDocument (OutputStream out, Document graph, boolean format)
         throws JAXBException {

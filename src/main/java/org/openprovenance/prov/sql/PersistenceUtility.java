@@ -11,6 +11,7 @@ import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
 import org.openprovenance.prov.xml.Statement;
@@ -161,6 +162,7 @@ public class PersistenceUtility {
         entityManager.close();                                                                                                                                                           
     }          
     
+    
 
     public Document persist(Document doc) {
             beginTransaction();
@@ -189,6 +191,10 @@ public class PersistenceUtility {
         DOC doc=entityManager.find(cl, id);
         commitTransaction();
         return doc;
+    }
+
+    public Query createQuery(String q) {
+	return entityManager.createQuery(q);
     }            
     
    

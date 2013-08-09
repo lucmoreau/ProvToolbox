@@ -424,7 +424,6 @@
   <xs:element name="location" type="prov:Location"/>
   <xs:element name="value"    type="prov:Value"/>
 
-
   <xs:complexType name="TypedValue">
     <xs:simpleContent>
       <xs:extension base="xs:anySimpleType">

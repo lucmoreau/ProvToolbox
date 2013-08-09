@@ -6,8 +6,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 
-
-@XmlJavaTypeAdapter(AnyAdapter.class)
+// Adapter is declared globally in package-info.java
+//@XmlJavaTypeAdapter(AnyAdapter.class)
 public class Attribute implements org.openprovenance.prov.model.Attribute {
     
     public static QName provQName(String s) {

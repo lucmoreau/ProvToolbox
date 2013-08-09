@@ -151,7 +151,7 @@
                <extension>true</extension>     
 
                <args>
-                 <arg>-npa</arg>
+
 			     <arg>-Xequals</arg>
   			     <arg>-XhashCode</arg>
 			     <arg>-XtoString</arg>
@@ -1096,6 +1096,12 @@
   	          <arg value="-e s/xml.URIWrapper/model.URIWrapper/" />
   	          <arg value="-iBAK" />
   	          <arg value="JAXBDebug.java" />
+                </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+  	          <arg value="-e s/@javax.xml.bind.annotation.XmlSchema/@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(AnyAdapter.class)@javax.xml.bind.annotation.XmlSchema/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="package-info.java" />
                 </exec>
 
 

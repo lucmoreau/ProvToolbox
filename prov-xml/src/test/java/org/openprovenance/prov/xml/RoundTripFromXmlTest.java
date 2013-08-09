@@ -22,7 +22,6 @@ import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.Document;
 
 import junit.framework.TestCase;
-
 /**
  * Unit test for PROV roundtrip conversion between Java and XML
  */

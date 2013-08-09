@@ -81,6 +81,7 @@ public class ProvSerialiser {
                              new NamespacePrefixMapper(namespaces));
 	//System.out.println("--------------> ");
 	//m.setAdapter(new org.w3._2001.xmlschema.Adapter1());
+        //m.setAdapter(new AttributeAdapter());
     }
 
     /** By default we use a document provided by the DocumentBuilder

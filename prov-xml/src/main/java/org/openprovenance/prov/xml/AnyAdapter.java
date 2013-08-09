@@ -14,7 +14,7 @@ import javax.xml.namespace.QName;
 
 
 public class AnyAdapter
-    extends XmlAdapter<Object,Attribute>
+    extends XmlAdapter<Object,org.openprovenance.prov.model.Attribute>
 {
 
     ProvFactory pFactory=new ProvFactory();
@@ -67,7 +67,7 @@ public class AnyAdapter
         return null;
     }
 
-    public Object marshal(Attribute attribute) {
+    public Object marshal(org.openprovenance.prov.model.Attribute attribute) {
         //System.out.println("AnyAdapter marshalling for " + attribute);
         //System.out.println("AnyAdapter2 marshalling for " + attribute
         //                .getClass());

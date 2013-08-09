@@ -92,6 +92,14 @@ public class AnyAdapter
         //return je;
     }
 
-   
+    static AnyAdapter me=new AnyAdapter();
+    
+    static Attribute parseMethod(Object o) {
+	return me.unmarshal(o);
+    }
+    
+    static Object printMethod(Attribute a) {
+	return me.marshal(a);
+    }
 
 }

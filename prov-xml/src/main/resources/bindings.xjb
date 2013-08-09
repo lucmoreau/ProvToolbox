@@ -23,10 +23,16 @@
       printMethod="org.openprovenance.prov.xml.ProvFactory.printURI"
     />
   </jaxb:globalBindings>
+
+
+
+   <jaxb:globalBindings>
+    <jaxb:javaType name="org.openprovenance.prov" xmlType="xs:anyURI"
+      parseMethod="org.openprovenance.prov.xml.AnyAdapter.parseMethod"
+      printMethod="org.openprovenance.prov.xml.AnyAdapter.printMethod"
+    />
+  </jaxb:globalBindings>
 -->
-
-
-
 
 <!-- doen't work
           <jaxb:bindings schemaLocation="prov-20121003.xsd" 

@@ -19,8 +19,8 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 
     
 	private Gson gson = new GsonBuilder()
-							.registerTypeAdapter(Document.class, new ProvDocumentDeserializer())
-							.registerTypeAdapter(Document.class, new ProvDocumentSerializer())
+							.registerTypeAdapter(org.openprovenance.prov.xml.Document.class, new ProvDocumentDeserializer())
+							.registerTypeAdapter(org.openprovenance.prov.xml.Document.class, new ProvDocumentSerializer())
 							.setPrettyPrinting()
 							.create();
 	
@@ -37,7 +37,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	@Override
 	public Document readDocument(String file) {
 		try {
-			Document doc = gson.fromJson(new BufferedReader(new FileReader(file)), Document.class);
+			Document doc = gson.fromJson(new BufferedReader(new FileReader(file)), org.openprovenance.prov.xml.Document.class);
 			return doc;
 		} catch (Exception e) {
 			throw new UncheckedTestException(e);

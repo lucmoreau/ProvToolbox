@@ -33,6 +33,8 @@ public interface ObjectFactory {
     JAXBElement<Activity> createActivity(Activity u);
 
     Type createType();
+    
+    
 
     JAXBElement<Agent> createAgent(Agent u);
 

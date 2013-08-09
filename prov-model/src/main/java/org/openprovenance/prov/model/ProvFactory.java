@@ -323,7 +323,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 
   
 
-    void init() {
+    protected void init() {
 	try {
 	    dataFactory = DatatypeFactory.newInstance();
 	} catch (DatatypeConfigurationException ex) {
@@ -485,8 +485,8 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
   	return res;
       }
 
-    abstract Attribute createAttribute(QName qname, Object value, QName type);
-    abstract Attribute createAttribute(AttributeKind kind, Object value, QName type);
+    public abstract Attribute createAttribute(QName qname, Object value, QName type);
+    public abstract Attribute createAttribute(AttributeKind kind, Object value, QName type);
     
     public Attribute newAttribute(Attribute.AttributeKind kind, Object value, ValueConverter vconv) {
   	Attribute res = createAttribute(kind, value, vconv.getXsdType(value));

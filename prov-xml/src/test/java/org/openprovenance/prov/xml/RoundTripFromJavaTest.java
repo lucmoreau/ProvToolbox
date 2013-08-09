@@ -377,7 +377,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	    a.getLocation().add(pFactory.newLocation(w,ValueConverter.QNAME_XSD_ANY_URI));
 
 	    Location loc=pFactory.newLocation(new Long(2),ValueConverter.QNAME_XSD_LONG);
-	    //FIXME
+	    //FIXME: Location containing a QName does not work
 	    //loc.getAttributes().put(ValueConverter.QNAME_XSD_LONG,"1");
 	    a.getLocation().add(loc);
 

@@ -14,7 +14,7 @@ import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Variant;
 import javax.xml.bind.JAXBException;
-import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;

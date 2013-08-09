@@ -92,25 +92,24 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     protected DatatypeFactory dataFactory;
     /** Note, this method now makes it stateful :-( */
     private Hashtable<String, String> namespaces = null;
-    protected ObjectFactory of;
 
     final protected org.openprovenance.prov.xml.validation.ObjectFactory vof;
 
     public ProvFactory() {
-	super(new ObjectFactory());
+	super(new ObjectFactory2());
 	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
 	init();
 	setNamespaces(new Hashtable<String, String>());
     }
 
     public ProvFactory(Hashtable<String, String> namespaces) {
-	super(new ObjectFactory(), namespaces);
+	super(new ObjectFactory2(), namespaces);
 	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
 	this.namespaces = namespaces;
 	init();
     }
 
-    public ProvFactory(ObjectFactory of) {
+    public ProvFactory(ObjectFactory2 of) {
 	super(of);
 	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
 	init();
@@ -121,12 +120,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
 
 
-
-    public IDRef newIDRef(Activity p) {
-	IDRef res = of.createIDRef();
-	res.setRef(p.getId());
-	return res;
-    }
 
 
 
@@ -164,47 +157,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     }
 
  
-
-    public IDRef newIDRef(Entity a) {
-	IDRef res = of.createIDRef();
-	res.setRef(a.getId());
-	return res;
-    }
-
-    public IDRef newIDRef(QName id) {
-	IDRef res = of.createIDRef();
-	res.setRef(id);
-	return res;
-    }
-
-    public IDRef newIDRef(String id) {
-	return newIDRef(stringToQName(id));
-    }
-
-    public Entry newEntry(Object key, IDRef entity) {
-	Entry res = of.createEntry();
-	res.setKey(key);
-	res.setEntity(entity);
-	return res;
-    }
-
-    public IDRef newIDRef(WasGeneratedBy edge) {
-	IDRef res = of.createIDRef();
-	res.setRef(edge.getId());
-	return res;
-    }
-
-    public HadMember newHadMember(IDRef collection, IDRef... entities) {
-	HadMember res = of.createHadMember();
-	res.setCollection(collection);
-	if (entities != null) {
-	    res.getEntity().addAll(Arrays.asList(entities));
-	}
-	return res;
-    }
-
-
-  
 
 
     @Override

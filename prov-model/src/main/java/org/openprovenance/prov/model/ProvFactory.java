@@ -79,7 +79,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     protected DatatypeFactory dataFactory;
     /** Note, this method now makes it stateful :-( */
     private Hashtable<String, String> namespaces = null;
-    protected ObjectFactory of;
+    final protected ObjectFactory of;
 
 
     public ProvFactory(ObjectFactory of) {

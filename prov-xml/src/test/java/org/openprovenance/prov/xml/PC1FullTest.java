@@ -9,6 +9,18 @@ import java.net.URI;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.HasExtensibility;
+import org.openprovenance.prov.model.Entity;
+import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.Agent;
+import org.openprovenance.prov.model.Used;
+import org.openprovenance.prov.model.WasDerivedFrom;
+import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasAssociatedWith;
+import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Type;
+
 import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;

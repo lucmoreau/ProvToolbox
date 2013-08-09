@@ -18,6 +18,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.Document;
+
 import junit.framework.TestCase;
 
 /**

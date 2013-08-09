@@ -1,23 +1,16 @@
 package org.openprovenance.prov.xml;
 
 import java.util.List;
-import java.util.LinkedList;
 import java.util.Hashtable;
 import javax.xml.bind.JAXBElement;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.AttributeProcessor;
-import org.openprovenance.prov.model.HasExtensibility;
 import org.openprovenance.prov.model.RecordAction;
 import org.openprovenance.prov.model.RecordValue;
-import org.openprovenance.prov.model.Relation0;
 import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.StatementOrBundle;
-import org.openprovenance.prov.xml.DerivedByInsertionFrom;
-import org.openprovenance.prov.xml.Entry;
+import org.openprovenance.prov.model.IDRef;
 
 import java.lang.reflect.Method;
 

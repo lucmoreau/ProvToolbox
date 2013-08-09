@@ -180,4 +180,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 	return new IDRef();
     }
 
+    public org.openprovenance.prov.xml.validation.ObjectFactory getValidationObjectFactory() {
+        return vof;
+    }
+
 }

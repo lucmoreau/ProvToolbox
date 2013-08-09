@@ -990,11 +990,6 @@
   	          <arg value="ActedOnBehalfOf.java" />
                 </exec>
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ActedOnBehalfOf.java" />
-                </exec>
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;Attribute&gt; theAny/" />
   	          <arg value="-iBAK" />
@@ -1013,11 +1008,6 @@
   	          <arg value="Used.java" />
                 </exec>
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Used.java" />
-                </exec>
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;Attribute&gt; theAny/" />
@@ -1037,11 +1027,7 @@
   	          <arg value="WasGeneratedBy.java" />
                 </exec>
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasGeneratedBy.java" />
-                </exec>
+
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;Attribute&gt; theAny/" />
   	          <arg value="-iBAK" />
@@ -1060,89 +1046,8 @@
   	          <arg value="WasDerivedFrom.java" />
                 </exec>
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasDerivedFrom.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasStartedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasEndedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInvalidatedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInformedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInfluencedBy.java" />
-                </exec>
 
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAssociatedWith.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAttributedTo.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="SpecializationOf.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="MentionOf.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="HadMember.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="AlternateOf.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="DerivedByRemovalFrom.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="DerivedByInsertionFrom.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="DictionaryMembership.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/IDRef/org.openprovenance.prov.model.IDRef/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Entry.java" />
-                </exec>
 
 
 

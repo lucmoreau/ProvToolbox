@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.xml.DocumentEquality;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openrdf.rio.RDFFormat;

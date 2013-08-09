@@ -1,6 +1,5 @@
 package org.openprovenance.prov.rdf;
 
-import java.net.URI;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Collection;
@@ -162,7 +161,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
     public WasDerivedFrom newWasDerivedFrom(QName id, QName entity2,
 					    QName entity1, QName activity,
 					    QName generation, QName usage,
-					    Collection<Attribute> attributes) {
+					    Collection<org.openprovenance.prov.model.Attribute> attributes) {
 
 	int knownSubtypes = 0;
 	QName der = id;

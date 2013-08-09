@@ -18,7 +18,6 @@ public class Ontology {
         initRangeTables();
         initAttributeAsResourceTables();
     }
-
     public Hashtable<QName, QName> qualifiedInfluenceTable = new Hashtable<QName, QName>();
     public Hashtable<QName, QName> influencerTable = new Hashtable<QName, QName>();
     public Hashtable<QName, QName> unqualifiedTable = new Hashtable<QName, QName>();

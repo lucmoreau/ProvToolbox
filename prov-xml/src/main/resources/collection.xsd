@@ -16,8 +16,8 @@
 	
 	<xs:complexType name="DerivedByInsertionFrom">
 		<xs:sequence>
-			<xs:element name="after" type="prov:EntityRef" />
-			<xs:element name="before" type="prov:EntityRef" />
+			<xs:element name="after" type="prov:IDRef" />
+			<xs:element name="before" type="prov:IDRef" />
 			<xs:element ref="prov:label" minOccurs="0"
 				maxOccurs="unbounded" />
 			<xs:element ref="prov:type" minOccurs="0"
@@ -32,8 +32,8 @@
 
 	<xs:complexType name="DerivedByRemovalFrom">
 		<xs:sequence>
-			<xs:element name="after" type="prov:EntityRef" />
-			<xs:element name="before" type="prov:EntityRef" />
+			<xs:element name="after" type="prov:IDRef" />
+			<xs:element name="before" type="prov:IDRef" />
 			<xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="key" type="xs:anySimpleType" minOccurs="1" maxOccurs="unbounded" />
@@ -44,7 +44,7 @@
 
 	<xs:complexType name="CollectionMemberOf">
 		<xs:sequence>
-			<xs:element name="entity" type="prov:EntityRef" />
+			<xs:element name="entity" type="prov:IDRef" />
 			<xs:element name="member" type="prov:Entity" minOccurs="1" maxOccurs="unbounded" />
 			<xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded" />
@@ -56,7 +56,7 @@
 
 	<xs:complexType name="DictionaryMemberOf">
 		<xs:sequence>
-			<xs:element name="entity" type="prov:EntityRef" />
+			<xs:element name="entity" type="prov:IDRef" />
 			<xs:element name="entry" type="col:Entry" minOccurs="1" maxOccurs="unbounded" />
 			<xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded" />
@@ -72,7 +72,7 @@
 	<xs:complexType name="Entry">
 		<xs:sequence>
 			<xs:element ref="col:key" minOccurs="1" maxOccurs="1" />
-			<xs:element name="entity" type="prov:EntityRef" minOccurs="1" maxOccurs="1" />
+			<xs:element name="entity" type="prov:IDRef" minOccurs="1" maxOccurs="1" />
 		</xs:sequence>
 	</xs:complexType>
 

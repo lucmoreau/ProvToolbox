@@ -236,7 +236,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Equals, HashCode, ToString, org.openprovenance.prov.model.Entity/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements org.openprovenance.prov.model.Entity, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="Entity.java" />
                 </exec>
@@ -296,7 +296,7 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Equals, HashCode, ToString, org.openprovenance.prov.model.Activity/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements org.openprovenance.prov.model.Activity, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="Activity.java" />
                 </exec>
@@ -330,18 +330,18 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Equals, HashCode, ToString, org.openprovenance.prov.model.Agent/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements org.openprovenance.prov.model.Agent, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="Agent.java" />
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Equals, HashCode, ToString, org.openprovenance.prov.model.Document/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements org.openprovenance.prov.model.Document, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="Document.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Equals, HashCode, ToString, org.openprovenance.prov.model.Entry/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements org.openprovenance.prov.model.Entry, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="Entry.java" />
                 </exec>
@@ -403,16 +403,11 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/List&lt;Object&gt;/List&lt;Statement&gt;/" />
+  	              <arg value="-e s/List&lt;Object&gt;/List&lt;org.openprovenance.prov.model.Statement&gt;/" />
   	              <arg value="-iBAK" />
   	              <arg value="NamedBundle.java" />
                 </exec>
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/Statement/org.openprovenance.prov.model.Statement/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="NamedBundle.java" />
-                </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/implements Equals, HashCode, ToString/implements org.openprovenance.prov.model.NamedBundle, Equals, HashCode, ToString /" />
@@ -569,13 +564,13 @@
 
  
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Equals, HashCode, ToString, org.openprovenance.prov.model.AlternateOf/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements org.openprovenance.prov.model.AlternateOf, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="AlternateOf.java" />
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Equals, HashCode, ToString, org.openprovenance.prov.model.HadMember/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements org.openprovenance.prov.model.HadMember, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="HadMember.java" />
                 </exec>
@@ -936,13 +931,13 @@
 
 -->
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Equals, HashCode, ToString, org.openprovenance.prov.model.IDRef/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements org.openprovenance.prov.model.IDRef, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="IDRef.java" />
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements Equals, HashCode, ToString, org.openprovenance.prov.model.InternationalizedString/" />
+  	              <arg value="-e s/implements Equals, HashCode, ToString/implements org.openprovenance.prov.model.InternationalizedString, Equals, HashCode, ToString/" />
   	              <arg value="-iBAK" />
   	              <arg value="InternationalizedString.java" />
                 </exec>
@@ -1052,7 +1047,7 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/URIWrapper/org.openprovenance.prov.model.URIWrapper/" />
+  	          <arg value="-e s/ URIWrapper/ org.openprovenance.prov.model.URIWrapper/" />
   	          <arg value="-iBAK" />
   	          <arg value="ObjectFactory.java" />
                 </exec>

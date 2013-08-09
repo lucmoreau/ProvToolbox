@@ -5,7 +5,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 
-import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.xml.UncheckedTestException;
 
 import com.google.gson.Gson;

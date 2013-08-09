@@ -9,32 +9,33 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.KeyQNamePair;
-import org.openprovenance.prov.xml.ActedOnBehalfOf;
-import org.openprovenance.prov.xml.AlternateOf;
-import org.openprovenance.prov.xml.Attribute;
-import org.openprovenance.prov.xml.DerivedByInsertionFrom;
-import org.openprovenance.prov.xml.ModelConstructor;
-import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.HadMember;
-import org.openprovenance.prov.xml.InternationalizedString;
-import org.openprovenance.prov.xml.MentionOf;
-import org.openprovenance.prov.xml.NamedBundle;
+import org.openprovenance.prov.model.ActedOnBehalfOf;
+import org.openprovenance.prov.model.AlternateOf;
+import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.DerivedByInsertionFrom;
+import org.openprovenance.prov.model.ModelConstructor;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.HadMember;
+import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.model.MentionOf;
+import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.xml.SpecializationOf;
-import org.openprovenance.prov.xml.Statement;
-import org.openprovenance.prov.xml.Used;
-import org.openprovenance.prov.xml.ValueConverter;
-import org.openprovenance.prov.xml.WasAssociatedWith;
-import org.openprovenance.prov.xml.WasAttributedTo;
-import org.openprovenance.prov.xml.WasDerivedFrom;
-import org.openprovenance.prov.xml.WasEndedBy;
-import org.openprovenance.prov.xml.WasGeneratedBy;
-import org.openprovenance.prov.xml.WasInfluencedBy;
-import org.openprovenance.prov.xml.WasInformedBy;
-import org.openprovenance.prov.xml.WasInvalidatedBy;
-import org.openprovenance.prov.xml.WasStartedBy;
-import org.openprovenance.prov.xml.DerivedByRemovalFrom;
-import org.openprovenance.prov.xml.DictionaryMembership;
+import org.openprovenance.prov.model.SpecializationOf;
+import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.Used;
+import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.model.WasAssociatedWith;
+import org.openprovenance.prov.model.WasAttributedTo;
+import org.openprovenance.prov.model.WasDerivedFrom;
+import org.openprovenance.prov.model.WasEndedBy;
+import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasInfluencedBy;
+import org.openprovenance.prov.model.WasInformedBy;
+import org.openprovenance.prov.model.WasInvalidatedBy;
+import org.openprovenance.prov.model.WasStartedBy;
+import org.openprovenance.prov.model.DerivedByRemovalFrom;
+import org.openprovenance.prov.model.DictionaryMembership;
+
 
 
 /**
@@ -56,6 +57,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 	this.gb = gb;
     }
 
+    
     @Override
     public org.openprovenance.prov.xml.Entity newEntity(QName id,
 							Collection<Attribute> attributes) {
@@ -164,19 +166,19 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 
 	int knownSubtypes = 0;
 	QName der = id;
-	if (Attribute.hasType(Ontology.QNAME_PROVO_Revision, attributes)) {
+	if (org.openprovenance.prov.xml.Attribute.hasType(Ontology.QNAME_PROVO_Revision, attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, Ontology.QNAME_PROVO_Revision);
 
 	}
-	if (Attribute.hasType(Ontology.QNAME_PROVO_Quotation, attributes)) {
+	if (org.openprovenance.prov.xml.Attribute.hasType(Ontology.QNAME_PROVO_Quotation, attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, Ontology.QNAME_PROVO_Quotation);
 
 	}
-	if (Attribute.hasType(Ontology.QNAME_PROVO_PrimarySource, attributes)) {
+	if (org.openprovenance.prov.xml.Attribute.hasType(Ontology.QNAME_PROVO_PrimarySource, attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, Ontology.QNAME_PROVO_PrimarySource);
@@ -550,7 +552,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 		LITERAL lit = null;
 		String value;
 		if (val instanceof QName) {
-			value=Attribute.qnameToString((QName)val); 
+			value=org.openprovenance.prov.xml.Attribute.qnameToString((QName)val); 
 		} else {
 		    value=val.toString();
 		}	

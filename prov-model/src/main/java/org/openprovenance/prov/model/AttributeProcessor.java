@@ -1,10 +1,12 @@
-package org.openprovenance.prov.xml;
+package org.openprovenance.prov.model;
 import java.util.List;
 import java.util.LinkedList;
 
 import javax.xml.namespace.QName;
 import java.util.Hashtable;
 import javax.xml.bind.JAXBElement;
+
+
 
 public class AttributeProcessor {
 

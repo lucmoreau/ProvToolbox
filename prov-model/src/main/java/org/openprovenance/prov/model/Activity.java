@@ -5,7 +5,7 @@ import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-public interface Activity extends Identifiable,  HasLabel, HasType, HasExtensibility, HasLocation, Statement  {
+public interface Activity extends Identifiable,  HasLabel, HasType, HasExtensibility, HasLocation, Statement, Element  {
 
 
 

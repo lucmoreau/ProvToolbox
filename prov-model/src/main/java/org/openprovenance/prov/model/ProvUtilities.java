@@ -1,5 +1,6 @@
 package org.openprovenance.prov.model;
 
+import java.util.Hashtable;
 import java.util.List;
 import java.util.LinkedList;
 
@@ -285,5 +286,10 @@ public class ProvUtilities {
         return null;
     }
 
+    public Hashtable<String, List<Attribute>> attributesWithNamespace(HasExtensibility e,
+                                                                      String namespace) {
+        AttributeProcessor _attrs=new AttributeProcessor(e.getAny()); 
+        return _attrs.attributesWithNamespace(namespace);
+    }
 
 }

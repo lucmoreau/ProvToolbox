@@ -6,62 +6,62 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 public class BundleHolder {
-	private List<org.openprovenance.prov.xml.Activity> activities;
-	private List<org.openprovenance.prov.xml.Agent> agents;
-	private List<org.openprovenance.prov.xml.Entity> entities;
-	private List<org.openprovenance.prov.xml.Statement> statements;
+	private List<org.openprovenance.prov.model.Activity> activities;
+	private List<org.openprovenance.prov.model.Agent> agents;
+	private List<org.openprovenance.prov.model.Entity> entities;
+	private List<org.openprovenance.prov.model.Statement> statements;
 
 	public BundleHolder()
 	{
-		this.activities = new ArrayList<org.openprovenance.prov.xml.Activity>();
-		this.agents = new ArrayList<org.openprovenance.prov.xml.Agent>();
-		this.entities = new ArrayList<org.openprovenance.prov.xml.Entity>();
-		this.statements = new ArrayList<org.openprovenance.prov.xml.Statement>();
+		this.activities = new ArrayList<org.openprovenance.prov.model.Activity>();
+		this.agents = new ArrayList<org.openprovenance.prov.model.Agent>();
+		this.entities = new ArrayList<org.openprovenance.prov.model.Entity>();
+		this.statements = new ArrayList<org.openprovenance.prov.model.Statement>();
 	}
 
-	public List<org.openprovenance.prov.xml.Activity> getActivities()
+	public List<org.openprovenance.prov.model.Activity> getActivities()
 	{
 		return activities;
 	}
 
 	public void setActivities(
-			List<org.openprovenance.prov.xml.Activity> activities)
+			List<org.openprovenance.prov.model.Activity> activities)
 	{
 		this.activities = activities;
 	}
 
-	public List<org.openprovenance.prov.xml.Agent> getAgents()
+	public List<org.openprovenance.prov.model.Agent> getAgents()
 	{
 		return agents;
 	}
 
-	public void setAgents(List<org.openprovenance.prov.xml.Agent> agents)
+	public void setAgents(List<org.openprovenance.prov.model.Agent> agents)
 	{
 		this.agents = agents;
 	}
 
-	public List<org.openprovenance.prov.xml.Entity> getEntities()
+	public List<org.openprovenance.prov.model.Entity> getEntities()
 	{
 		return entities;
 	}
 
-	public void setEntities(List<org.openprovenance.prov.xml.Entity> entities)
+	public void setEntities(List<org.openprovenance.prov.model.Entity> entities)
 	{
 		this.entities = entities;
 	}
 
-	public List<org.openprovenance.prov.xml.Statement> getStatements()
+	public List<org.openprovenance.prov.model.Statement> getStatements()
 	{
 		return statements;
 	}
 
 	public void setStatements(
-			List<org.openprovenance.prov.xml.Statement> statements)
+			List<org.openprovenance.prov.model.Statement> statements)
 	{
 		this.statements = statements;
 	}
 
-	public void addAgent(org.openprovenance.prov.xml.Agent agent)
+	public void addAgent(org.openprovenance.prov.model.Agent agent)
 	{
 		if (!this.agents.contains(agent))
 		{
@@ -69,7 +69,7 @@ public class BundleHolder {
 		}
 	}
 
-	public void addActivity(org.openprovenance.prov.xml.Activity activity)
+	public void addActivity(org.openprovenance.prov.model.Activity activity)
 	{
 		if (!this.activities.contains(activity))
 		{
@@ -77,7 +77,7 @@ public class BundleHolder {
 		}
 	}
 
-	public void addEntity(org.openprovenance.prov.xml.Entity entity)
+	public void addEntity(org.openprovenance.prov.model.Entity entity)
 	{
 		if (!this.entities.contains(entity))
 		{
@@ -85,7 +85,7 @@ public class BundleHolder {
 		}
 	}
 
-	public void addStatement(org.openprovenance.prov.xml.Statement statement)
+	public void addStatement(org.openprovenance.prov.model.Statement statement)
 	{
 		if (!this.statements.contains(statement))
 		{
@@ -94,22 +94,22 @@ public class BundleHolder {
 	}
 
 
-	public void store(org.openprovenance.prov.xml.Element element)
+	public void store(org.openprovenance.prov.model.Element element)
 	{
-		if (element instanceof org.openprovenance.prov.xml.Activity)
+		if (element instanceof org.openprovenance.prov.model.Activity)
 		{
 			this.addActivity(
-					(org.openprovenance.prov.xml.Activity) element);
-		} else if (element instanceof org.openprovenance.prov.xml.Entity)
+					(org.openprovenance.prov.model.Activity) element);
+		} else if (element instanceof org.openprovenance.prov.model.Entity)
 		{
 
 			this.addEntity(
-					(org.openprovenance.prov.xml.Entity) element);
-		} else if (element instanceof org.openprovenance.prov.xml.Agent)
+					(org.openprovenance.prov.model.Entity) element);
+		} else if (element instanceof org.openprovenance.prov.model.Agent)
 		{
 
 			this.addAgent(
-					(org.openprovenance.prov.xml.Agent) element);
+					(org.openprovenance.prov.model.Agent) element);
 		}
 	}
 }

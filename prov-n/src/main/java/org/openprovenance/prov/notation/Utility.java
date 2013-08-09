@@ -18,8 +18,8 @@ import  org.antlr.runtime.tree.TreeAdaptor;
 
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.ValueConverter;
+import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.model.Document;
 
 
 public  class Utility {

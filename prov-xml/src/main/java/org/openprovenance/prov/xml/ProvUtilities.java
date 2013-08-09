@@ -8,6 +8,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.AttributeProcessor;
+import org.openprovenance.prov.model.HasExtensibility;
 import org.openprovenance.prov.model.RecordAction;
 import org.openprovenance.prov.model.RecordValue;
 import org.openprovenance.prov.model.Relation0;
@@ -547,5 +550,6 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities{
         else throw new UnsupportedOperationException();
 
     }
+
 
 }

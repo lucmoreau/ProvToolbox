@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 
-import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.Statement;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.xml.UncheckedTestException;
 
 

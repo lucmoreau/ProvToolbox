@@ -20,36 +20,36 @@ import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.notation.Utility;
-import org.openprovenance.prov.xml.Activity;
-import org.openprovenance.prov.xml.IDRef;
-import org.openprovenance.prov.xml.Attribute;
-import org.openprovenance.prov.xml.DerivedByInsertionFrom;
-import org.openprovenance.prov.xml.DerivedByRemovalFrom;
-import org.openprovenance.prov.xml.DictionaryMembership;
-import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.HadMember;
-import org.openprovenance.prov.xml.HasExtensibility;
-import org.openprovenance.prov.xml.HasLabel;
-import org.openprovenance.prov.xml.HasLocation;
-import org.openprovenance.prov.xml.HasRole;
-import org.openprovenance.prov.xml.HasType;
-import org.openprovenance.prov.xml.HasValue;
-import org.openprovenance.prov.xml.IDRef;
-import org.openprovenance.prov.xml.InternationalizedString;
-import org.openprovenance.prov.xml.Location;
-import org.openprovenance.prov.xml.NamedBundle;
+import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.IDRef;
+import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.DerivedByInsertionFrom;
+import org.openprovenance.prov.model.DerivedByRemovalFrom;
+import org.openprovenance.prov.model.DictionaryMembership;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.HadMember;
+import org.openprovenance.prov.model.HasExtensibility;
+import org.openprovenance.prov.model.HasLabel;
+import org.openprovenance.prov.model.HasLocation;
+import org.openprovenance.prov.model.HasRole;
+import org.openprovenance.prov.model.HasType;
+import org.openprovenance.prov.model.HasValue;
+import org.openprovenance.prov.model.IDRef;
+import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.model.Location;
+import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.xml.Role;
-import org.openprovenance.prov.xml.Statement;
-import org.openprovenance.prov.xml.StatementOrBundle;
-import org.openprovenance.prov.xml.IDRef;
-import org.openprovenance.prov.xml.Used;
-import org.openprovenance.prov.xml.ValueConverter;
-import org.openprovenance.prov.xml.WasAssociatedWith;
-import org.openprovenance.prov.xml.WasEndedBy;
-import org.openprovenance.prov.xml.WasGeneratedBy;
-import org.openprovenance.prov.xml.WasInvalidatedBy;
-import org.openprovenance.prov.xml.WasStartedBy;
+import org.openprovenance.prov.model.Role;
+import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.model.IDRef;
+import org.openprovenance.prov.model.Used;
+import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.model.WasAssociatedWith;
+import org.openprovenance.prov.model.WasEndedBy;
+import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasInvalidatedBy;
+import org.openprovenance.prov.model.WasStartedBy;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -164,7 +164,6 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         else {
             id = pf.stringToQName(idStr);
         }
-
         // Decoding attributes
         ProvJSONStatement provStatement = ProvJSONStatement.valueOf(statementType);
         switch (provStatement) {
@@ -209,7 +208,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         	// TODO: Use the local namespace while preserving the top-level namespace
         	@SuppressWarnings("rawtypes")
             Collection statements = decodeBundle(attributeMap);
-            NamedBundle namedBundle = new NamedBundle(); 
+            NamedBundle namedBundle = pf.getObjectFactory().createNamedBundle(); 
             namedBundle.setId(id);
             namedBundle.getEntityAndActivityAndWasGeneratedBy().addAll((Collection<? extends Statement>)statements);
             statement = namedBundle;
@@ -277,7 +276,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         case hadMember:
             IDRef collection = optionalIdRef("prov:collection", attributeMap);
             Collection<IDRef> entities = optionalIdRefs("prov:entity", attributeMap);
-            HadMember membership = new HadMember();
+            HadMember membership = pf.getObjectFactory().createHadMember();
             membership.setCollection(collection);
             if (entities != null)
             	membership.getEntity().addAll(entities);
@@ -351,7 +350,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         List<JsonElement> values = popMultiValAttribute("prov:type", attributeMap);
         if (!values.isEmpty()) {
         	if (statement instanceof HasType) {
-	            List<org.openprovenance.prov.xml.Type> types = ((HasType)statement).getType();
+	            List<org.openprovenance.prov.model.Type> types = ((HasType)statement).getType();
 	            for (JsonElement value: values) {
 	                types.add(pf.newType(decodeTypeRef(value),vconv));
 	            }
@@ -441,7 +440,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     }
     
     private InternationalizedString decodeInternationalizedString(JsonElement element) {
-        InternationalizedString iString = new InternationalizedString();
+        InternationalizedString iString = pf.getObjectFactory().createInternationalizedString();
         if (element.isJsonPrimitive()) {
             iString.setValue(element.getAsString());
         }
@@ -469,7 +468,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             if (struct.has("lang")) {
                 // Internationalized strings
                 String lang = struct.get("lang").getAsString();
-                InternationalizedString iString = new InternationalizedString();
+                InternationalizedString iString = pf.getObjectFactory().createInternationalizedString();
                 iString.setValue(struct.get("$").getAsString());
                 iString.setLang(lang);
                 value = iString;
@@ -481,7 +480,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	            value = vconv.convertToJava(xsdType, struct.get("$").getAsString());
             }
         }    	
-    	return new Attribute(attributeName, value, xsdType);
+    	return pf.newAttribute(attributeName, value, xsdType);
     }
     
     private Object decodeAttributeValue(JsonElement element) {
@@ -493,7 +492,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             if (struct.has("lang")) {
                 // Internationalized strings
                 String lang = struct.get("lang").getAsString();
-                InternationalizedString iString = new InternationalizedString();
+                InternationalizedString iString = pf.getObjectFactory().createInternationalizedString();
                 iString.setValue(value);
                 iString.setLang(lang);
                 return iString;
@@ -503,7 +502,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	            return vconv.convertToJava(xsdType, struct.get("$").getAsString());
             } else {
             	// if no type or lang information, decode as an Internationalized string without lang
-            	InternationalizedString iString = new InternationalizedString();
+            	InternationalizedString iString = pf.getObjectFactory().createInternationalizedString();
                 iString.setValue(value);
                 return iString;
 //            	return decodeJSONPrimitive(value);

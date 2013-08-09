@@ -176,8 +176,8 @@ public class Attribute implements org.openprovenance.prov.model.Attribute {
      }
   
     
-    static public boolean hasType(QName type, Collection<Attribute> attributes) {
-    	for (Attribute attribute: attributes) {
+    static public boolean hasType(QName type, Collection<org.openprovenance.prov.model.Attribute> attributes) {
+    	for (org.openprovenance.prov.model.Attribute attribute: attributes) {
     		switch (attribute.getKind()) {
     			case PROV_TYPE :
     				if (attribute.getValue().equals(type)) {

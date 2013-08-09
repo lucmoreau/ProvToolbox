@@ -5,8 +5,8 @@ import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.xml.Attribute;
-import org.openprovenance.prov.xml.QNameExport;
+import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.QNameExport;
 
 
 /* FIXME: this does not work, since methods define here do not override those of NotationConstructor. */

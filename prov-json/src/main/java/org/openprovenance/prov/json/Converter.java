@@ -7,7 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.model.Document;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -303,7 +303,7 @@
 
 	<jaxb:bindings node="xs:complexType[@name='Delegation']">
 	  <jaxb:class name="ActedOnBehalfOf"/>
-        <inheritance:implements>org.openprovenance.prov.model.ActedOnBehalfOf</inheritance:implements>
+          <inheritance:implements>org.openprovenance.prov.model.ActedOnBehalfOf</inheritance:implements>
 	</jaxb:bindings>
 
 	<jaxb:bindings node="xs:complexType[@name='Delegation']//xs:element[@ref='prov:type']">
@@ -350,6 +350,7 @@
 
 	<jaxb:bindings node="xs:complexType[@name='Derivation']">
 	  <jaxb:class name="WasDerivedFrom"/>
+          <inheritance:implements>org.openprovenance.prov.model.WasDerivedFrom</inheritance:implements>
 	</jaxb:bindings>
 
 
@@ -407,11 +408,8 @@
 
 	<jaxb:bindings node="xs:complexType[@name='End']">
 	  <jaxb:class name="WasEndedBy"/>
+          <inheritance:implements>org.openprovenance.prov.model.WasEndedBy</inheritance:implements>
 	</jaxb:bindings>
-
-
-
-
 
 	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@ref='prov:type']">
 	  <jaxb:property>
@@ -468,6 +466,7 @@
 
 	<jaxb:bindings node="xs:complexType[@name='Generation']">
 	  <jaxb:class name="WasGeneratedBy"/>
+          <inheritance:implements>org.openprovenance.prov.model.WasGeneratedBy</inheritance:implements>
 	</jaxb:bindings>
 
 
@@ -519,6 +518,7 @@
 
 	<jaxb:bindings node="xs:complexType[@name='Influence']">
 	  <jaxb:class name="WasInfluencedBy"/>
+          <inheritance:implements>org.openprovenance.prov.model.WasInfluencedBy</inheritance:implements>
 	</jaxb:bindings>
 
 	<jaxb:bindings node="xs:complexType[@name='Influence']//xs:element[@ref='prov:type']">

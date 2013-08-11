@@ -230,23 +230,10 @@
             <configuration>
               <tasks>
                 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/@XmlAttribute(name = &quot;type&quot;)/@XmlAttribute(name = &quot;type&quot;, namespace=&quot;http:\/\/www.w3.org\/2001\/XMLSchema-instance&quot;)/"/>
-  	              <arg value="-iBAK" />
-  	              <arg value="TypedObject.java" />
-                </exec>
 
 
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements org.openprovenance.prov.model.Document, Equals, HashCode, ToString/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-
-
-
-
+		<!-- Document -->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	              <arg value="-e s/ public String toString/\/* added in pom.xml *\/@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable&lt;String,String&gt; nss=null; public java.util.Hashtable&lt;String,String&gt; getNss() { return nss;} public void setNss(java.util.Hashtable&lt;String,String&gt; s) { nss=s; };public String toString/" />
@@ -260,6 +247,8 @@
   	              <arg value="-iBAK" />
   	              <arg value="Document.java" />
                 </exec>
+
+		<!-- Bundle -->
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
@@ -275,73 +264,6 @@
                 </exec>
 
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements org.openprovenance.prov.model.NamedBundle, Equals, HashCode, ToString /" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-
-
-
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/List&lt;Object&gt;/List&lt;Statement&gt;/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Statements.java" />
-                </exec>
-
-
-
-
- 
-
-
-
-
-
-
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements org.openprovenance.prov.model.IDRef, Equals, HashCode, ToString/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="IDRef.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/implements Equals, HashCode, ToString/implements org.openprovenance.prov.model.InternationalizedString, Equals, HashCode, ToString/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="InternationalizedString.java" />
-                </exec>
-
-
-
-                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-                     <arg value="URIWrapper.java" />
-                </exec>
-
-
-                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-                     <arg value="Location.java" />
-                </exec>
-                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-                     <arg value="Role.java" />
-                </exec>
-                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-                     <arg value="Type.java" />
-                </exec>
-                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-                     <arg value="TypedValue.java" />
-                </exec>
-                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-                     <arg value="Value.java" />
-                </exec>
-
-<!-- mapping to model interfaces -->
-
-
-
 
 
 
@@ -353,46 +275,13 @@
   	          <arg value="ObjectFactory.java" />
                 </exec>
 
-
-<!--
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/import javax.xml.namespace.QName;/import javax.xml.namespace.QName; import org.openprovenance.prov.model.Type;import org.openprovenance.prov.model.URIWrapper;import org.openprovenance.prov.model.Location;import org.openprovenance.prov.model.Value;import org.openprovenance.prov.model.Used;import org.openprovenance.prov.model.WasGeneratedBy;import org.openprovenance.prov.model.WasDerivedFrom;import org.openprovenance.prov.model.WasStartedBy;import org.openprovenance.prov.model.WasEndedBy;import org.openprovenance.prov.model.WasGeneratedBy;import org.openprovenance.prov.model.WasInvalidatedBy;import org.openprovenance.prov.model.MentionOf;import org.openprovenance.prov.model.WasInfluencedBy;import org.openprovenance.prov.model.WasInformedBy;import org.openprovenance.prov.model.SpecializationOf;import org.openprovenance.prov.model.AlternateOf;import org.openprovenance.prov.model.Entity;import org.openprovenance.prov.model.Agent;import org.openprovenance.prov.model.Activity;import org.openprovenance.prov.model.Entity;import org.openprovenance.prov.model.WasAttributedTo;import org.openprovenance.prov.model.ActedOnBehalfOf;import org.openprovenance.prov.model.WasAssociatedWith;import org.openprovenance.prov.model.Document; /" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/new /new org.openprovenance.prov.xml./" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/new org.openprovenance.prov.xml.JAXBElement/new JAXBElement/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/new org.openprovenance.prov.xml.QName/new QName/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/new org.openprovenance.prov.xml.org/new org/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/class ObjectFactory/class ObjectFactory implements org.openprovenance.prov.model.ObjectFactory/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec>
-
--->
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc">
   	          <arg value="-e s/xml.URIWrapper/model.URIWrapper/" />
   	          <arg value="-iBAK" />
   	          <arg value="JAXBDebug.java" />
                 </exec>
+
+		<!-- declare Adapter in package -->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	          <arg value="-e s/^@javax.xml.bind.annotation.XmlSchema/@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(AnyAdapter.class)@javax.xml.bind.annotation.XmlSchema/" />
@@ -401,20 +290,29 @@
                 </exec>
 
 
-<!--
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/equalsBuilder.append(this.getContent(), that.getContent());/\/\/Luc: equalsBuilder.append(this.getContent(), that.getContent());/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Value.java" />
+		<!-- Delete auto-generated classes, use custom classes instead. -->
+
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+                     <arg value="TypedValue.java" />
                 </exec>
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/hashCodeBuilder.append(this.getContent());/\/\/Luc: hashCodeBuilder.append(this.getContent());/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Value.java" />
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+                     <arg value="Value.java" />
                 </exec>
--->
 
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+                     <arg value="Role.java" />
+                </exec>
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+                     <arg value="Type.java" />
+                </exec>
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+                     <arg value="Location.java" />
+                </exec>
+
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
+                     <arg value="URIWrapper.java" />
+                </exec>
         
               </tasks>
               <sourceRoot>${project.build.directory}/generated-sources/xjc/</sourceRoot>

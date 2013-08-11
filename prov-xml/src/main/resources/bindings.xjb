@@ -404,6 +404,13 @@
 	  </jaxb:property>
 	</jaxb:bindings>
 
+	<!-- Document -->
+
+	<jaxb:bindings node="xs:complexType[@name='Document']">
+          <inheritance:implements>org.openprovenance.prov.model.Document</inheritance:implements>
+	</jaxb:bindings>
+
+
 
 	<!-- End -->
 
@@ -514,6 +521,12 @@
 	  </jaxb:property>
 	</jaxb:bindings>
 
+	<!-- IDRef -->
+
+      <jaxb:bindings node="xs:complexType[@name='IDRef']">
+        <inheritance:implements>org.openprovenance.prov.model.IDRef</inheritance:implements>
+      </jaxb:bindings>
+
 
 	<!-- Influence -->
 
@@ -552,6 +565,12 @@
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
+
+	<!-- InternationalizedString -->
+
+      <jaxb:bindings node="xs:complexType[@name='InternationalizedString']">
+        <inheritance:implements>org.openprovenance.prov.model.InternationalizedString</inheritance:implements>
+      </jaxb:bindings>
 
 
 
@@ -605,6 +624,12 @@
 	  </jaxb:property>
 	</jaxb:bindings>
 
+	<!-- Location -->
+
+      <jaxb:bindings node="xs:complexType[@name='Location']">
+        <inheritance:implements>org.openprovenance.prov.model.Location</inheritance:implements>
+      </jaxb:bindings>
+
 
 	<!-- Membership -->
 
@@ -654,6 +679,19 @@
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
+
+	<!-- NamedBundle -->
+
+	<jaxb:bindings node="xs:complexType[@name='NamedBundle']">
+          <inheritance:implements>org.openprovenance.prov.model.NamedBundle</inheritance:implements>
+	</jaxb:bindings>
+
+	<!-- Role -->
+
+      <jaxb:bindings node="xs:complexType[@name='Role']">
+        <inheritance:implements>org.openprovenance.prov.model.Role</inheritance:implements>
+      </jaxb:bindings>
+
 
 
 	<!-- Specialization -->
@@ -734,6 +772,18 @@
 	</jaxb:bindings>
 
 
+	<!-- Type -->
+
+      <jaxb:bindings node="xs:complexType[@name='Type']">
+        <inheritance:implements>org.openprovenance.prov.model.Type</inheritance:implements>
+      </jaxb:bindings>
+
+	<!-- TypedValue -->
+
+      <jaxb:bindings node="xs:complexType[@name='TypedValue']">
+        <inheritance:implements>org.openprovenance.prov.model.TypedValue</inheritance:implements>
+      </jaxb:bindings>
+
 
 
 	<!-- Usage -->
@@ -785,6 +835,13 @@
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
+
+	<!-- Value -->
+
+      <jaxb:bindings node="xs:complexType[@name='Value']">
+        <inheritance:implements>org.openprovenance.prov.model.Value</inheritance:implements>
+      </jaxb:bindings>
+
 
 
 	<!-- Insertion -->
@@ -902,36 +959,15 @@
 
 
 
-
+    <!-- To be moved out of this package soon -->
 
     <jaxb:bindings schemaLocation="validation.xsd" 
                    node="/xs:schema">       
-
         <jaxb:schemaBindings>
             <jaxb:package name="org.openprovenance.prov.xml.validation"/>
         </jaxb:schemaBindings>
     </jaxb:bindings>
 
-<!--
-    <jaxb:bindings schemaLocation="extensions/prov-links.xsd" 
-                   node="/xs:schema">       
 
-	<jaxb:bindings node="xs:complexType[@name='Mention']">
-	  <jaxb:class name="MentionOf"/>
-	</jaxb:bindings>
-    </jaxb:bindings>
--->
-
-<!--
-
-    <jaxb:bindings schemaLocation="collection.xsd" 
-                   node="/xs:schema">       
-
-        <jaxb:schemaBindings>
-            <jaxb:package name="org.openprovenance.prov.xml.collection"/>
-        </jaxb:schemaBindings>
-    </jaxb:bindings>
-
--->
 
 </jaxb:bindings>

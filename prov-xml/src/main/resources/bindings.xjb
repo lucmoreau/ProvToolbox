@@ -2,6 +2,7 @@
 <jaxb:bindings
         version="1.0"
         xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:inheritance="http://jaxb2-commons.dev.java.net/basic/inheritance"
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
@@ -34,370 +35,235 @@
   </jaxb:globalBindings>
 -->
 
-<!-- doen't work
-          <jaxb:bindings schemaLocation="prov-20121003.xsd" 
-		    node="/xs:schema/xs:complexType[@name='Entity']/xs:sequence/xs:any">
-	    <jaxb:property>
-	      <jaxb:baseType>
-		<jaxb:javaType name="org.openprovenance.prov.xml.Attribute"/>
-	      </jaxb:baseType>
-	    </jaxb:property>
-	  </jaxb:bindings>
--->
-
     <jaxb:bindings schemaLocation="prov-20130307.xsd" 
                    node="/xs:schema">    
 
+      <jaxb:schemaBindings>
+        <jaxb:package name="org.openprovenance.prov.xml"/>
+      </jaxb:schemaBindings>
+
+      <!-- Entity -->
+
+      <jaxb:bindings node="xs:complexType[@name='Entity']">
+         <inheritance:implements>org.openprovenance.prov.model.Entity</inheritance:implements>
+      </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Entity']//xs:element[@ref='prov:label']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Entity']//xs:element[@ref='prov:location']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Location">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Entity']//xs:element[@ref='prov:type']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Type">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Entity']//xs:any">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Entity']//xs:element[@ref='prov:value']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Value">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
 
 
-        <jaxb:schemaBindings>
-            <jaxb:package name="org.openprovenance.prov.xml"/>
-        </jaxb:schemaBindings>
-	<jaxb:bindings node="xs:complexType[@name='Association']">
-	  <jaxb:class name="WasAssociatedWith"/>
+      <!-- Activity -->
+
+      <jaxb:bindings node="xs:complexType[@name='Activity']">
+         <inheritance:implements>org.openprovenance.prov.model.Activity</inheritance:implements>
+      </jaxb:bindings>
+
+
+
+      <jaxb:bindings node="xs:complexType[@name='Activity']//xs:element[@ref='prov:label']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Activity']//xs:element[@ref='prov:location']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Location">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Activity']//xs:element[@ref='prov:type']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Type">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Activity']//xs:any">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+      
+
+      <!-- Agent -->
+
+      <jaxb:bindings node="xs:complexType[@name='Agent']">
+        <inheritance:implements>org.openprovenance.prov.model.Agent</inheritance:implements>
+      </jaxb:bindings>
+      
+      <jaxb:bindings node="xs:complexType[@name='Agent']//xs:element[@ref='prov:label']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Agent']//xs:element[@ref='prov:location']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Location">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Agent']//xs:element[@ref='prov:type']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Type">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Agent']//xs:any">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+
+
+      <!-- Alternate -->
+
+      <jaxb:bindings node="xs:complexType[@name='Alternate']">
+	<jaxb:class name="AlternateOf"/>
+      </jaxb:bindings>
+
+      <jaxb:bindings node="xs:complexType[@name='Alternate']//xs:element[@name='alternate1']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
 	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Usage']">
-	  <jaxb:class name="Used"/>
+	<jaxb:bindings node="xs:complexType[@name='Alternate']//xs:element[@name='alternate2']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
 	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Generation']">
-	  <jaxb:class name="WasGeneratedBy"/>
+
+
+      <!-- Association -->
+      
+      <jaxb:bindings node="xs:complexType[@name='Association']">
+	<jaxb:class name="WasAssociatedWith"/>
+        <inheritance:implements>org.openprovenance.prov.model.WasAssociatedWith</inheritance:implements>
+      </jaxb:bindings>
+
+      <jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@ref='prov:type']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Type">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@ref='prov:label']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Association']//xs:any">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@ref='prov:role']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Role">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+
+	<jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@name='activity']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
 	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Invalidation']">
-	  <jaxb:class name="WasInvalidatedBy"/>
+	<jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@name='agent']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
 	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Start']">
-	  <jaxb:class name="WasStartedBy"/>
+	<jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@name='plan']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
 	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='End']">
-	  <jaxb:class name="WasEndedBy"/>
+
+
+
+      <!-- Attribution -->
+
+      <jaxb:bindings node="xs:complexType[@name='Attribution']">
+	<jaxb:class name="WasAttributedTo"/>
+        <inheritance:implements>org.openprovenance.prov.model.WasAttributedTo</inheritance:implements>
+      </jaxb:bindings>
+
+
+      <jaxb:bindings node="xs:complexType[@name='Attribution']//xs:element[@ref='prov:type']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Type">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Attribution']//xs:element[@ref='prov:label']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+
+      <jaxb:bindings node="xs:complexType[@name='Attribution']//xs:any">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Attribution']//xs:element[@name='agent']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Attribution']//xs:element[@name='entity']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
+	<!-- Communication -->
+
 	<jaxb:bindings node="xs:complexType[@name='Communication']">
 	  <jaxb:class name="WasInformedBy"/>
+        <inheritance:implements>org.openprovenance.prov.model.WasInformedBy</inheritance:implements>
 	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Derivation']">
-	  <jaxb:class name="WasDerivedFrom"/>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Influence']">
-	  <jaxb:class name="WasInfluencedBy"/>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Attribution']">
-	  <jaxb:class name="WasAttributedTo"/>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Delegation']">
-	  <jaxb:class name="ActedOnBehalfOf"/>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Specialization']">
-	  <jaxb:class name="SpecializationOf"/>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Alternate']">
-	  <jaxb:class name="AlternateOf"/>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Membership']">
-	  <jaxb:class name="HadMember"/>
-	</jaxb:bindings>
-
-	<jaxb:bindings node="xs:complexType[@name='Mention']">
-	  <jaxb:class name="MentionOf"/>
-	</jaxb:bindings>
-
-
-	<jaxb:bindings node="xs:complexType[@name='Insertion']">
-	  <jaxb:class name="DerivedByInsertionFrom"/>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Removal']">
-	  <jaxb:class name="DerivedByRemovalFrom"/>
-	</jaxb:bindings>
-
-	<jaxb:bindings node="xs:complexType[@name='KeyEntityPair']">
-	  <jaxb:class name="Entry"/>
-	</jaxb:bindings>
-
-
-	<jaxb:bindings node="xs:complexType[@name='Delegation']//xs:element[@ref='prov:type']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Delegation']//xs:element[@ref='prov:label']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Delegation']//xs:any">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@ref='prov:type']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@ref='prov:label']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:any">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@ref='prov:location']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Location">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@ref='prov:role']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Role">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
-	<jaxb:bindings node="xs:complexType[@name='Derivation']//xs:element[@ref='prov:type']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Derivation']//xs:element[@ref='prov:label']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Derivation']//xs:any">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
-	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@ref='prov:type']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@ref='prov:label']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:any">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@ref='prov:location']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Location">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@ref='prov:role']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Role">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
-	<jaxb:bindings node="xs:complexType[@name='Activity']//xs:element[@ref='prov:label']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Activity']//xs:element[@ref='prov:location']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Location">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Activity']//xs:element[@ref='prov:type']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Activity']//xs:any">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
-
-	<jaxb:bindings node="xs:complexType[@name='Agent']//xs:element[@ref='prov:label']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Agent']//xs:element[@ref='prov:location']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Location">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Agent']//xs:element[@ref='prov:type']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Agent']//xs:any">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
-
-	<jaxb:bindings node="xs:complexType[@name='Entity']//xs:element[@ref='prov:label']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Entity']//xs:element[@ref='prov:location']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Location">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Entity']//xs:element[@ref='prov:type']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Entity']//xs:any">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Entity']//xs:element[@ref='prov:value']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Value">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
-
-
-
-
-
-
-
-	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@ref='prov:type']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@ref='prov:label']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Start']//xs:any">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@ref='prov:location']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Location">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@ref='prov:role']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Role">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
-
-
-	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@ref='prov:type']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@ref='prov:label']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='End']//xs:any">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@ref='prov:location']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Location">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@ref='prov:role']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Role">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
-
-	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@ref='prov:type']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@ref='prov:label']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:any">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@ref='prov:location']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Location">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@ref='prov:role']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Role">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
 
 	<jaxb:bindings node="xs:complexType[@name='Communication']//xs:element[@ref='prov:type']">
 	  <jaxb:property>
@@ -417,120 +283,48 @@
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
-
-
-	<jaxb:bindings node="xs:complexType[@name='Influence']//xs:element[@ref='prov:type']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Influence']//xs:element[@ref='prov:label']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Influence']//xs:any">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
-
-	<jaxb:bindings node="xs:complexType[@name='Attribution']//xs:element[@ref='prov:type']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Attribution']//xs:element[@ref='prov:label']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Attribution']//xs:any">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
-	<jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@ref='prov:type']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@ref='prov:label']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Association']//xs:any">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@ref='prov:role']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Role">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
-
-	<jaxb:bindings node="xs:complexType[@name='Insertion']//xs:element[@name='keyEntityPair']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Entry">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Insertion']//xs:any">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Insertion']//xs:element[@ref='prov:type']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Insertion']//xs:element[@ref='prov:label']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
-
-
-	<jaxb:bindings node="xs:complexType[@name='Removal']//xs:any">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
-	<jaxb:bindings node="xs:complexType[@name='DictionaryMembership']//xs:element[@name='keyEntityPair']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.Entry">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
-	<jaxb:bindings node="xs:complexType[@name='KeyEntityPair']//xs:element[@name='entity']">
+	<jaxb:bindings node="xs:complexType[@name='Communication']//xs:element[@name='informed']">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Communication']//xs:element[@name='informant']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
+
+
+
+	<!-- Delegation -->
+
+	<jaxb:bindings node="xs:complexType[@name='Delegation']">
+	  <jaxb:class name="ActedOnBehalfOf"/>
+        <inheritance:implements>org.openprovenance.prov.model.ActedOnBehalfOf</inheritance:implements>
+	</jaxb:bindings>
+
+	<jaxb:bindings node="xs:complexType[@name='Delegation']//xs:element[@ref='prov:type']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Delegation']//xs:element[@ref='prov:label']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Delegation']//xs:any">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
 	<jaxb:bindings node="xs:complexType[@name='Delegation']//xs:element[@name='delegate']">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
@@ -549,174 +343,31 @@
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Alternate']//xs:element[@name='alternate1']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Alternate']//xs:element[@name='alternate2']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Specialization']//xs:element[@name='specificEntity']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Specialization']//xs:element[@name='generalEntity']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Mention']//xs:element[@name='specificEntity']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Mention']//xs:element[@name='generalEntity']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Mention']//xs:element[@name='bundle']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
+
+
+
+	<!-- Derivation -->
+
+	<jaxb:bindings node="xs:complexType[@name='Derivation']">
+	  <jaxb:class name="WasDerivedFrom"/>
 	</jaxb:bindings>
 
-	<jaxb:bindings node="xs:complexType[@name='DictionaryMembership']//xs:element[@name='dictionary']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Insertion']//xs:element[@name='newDictionary']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Insertion']//xs:element[@name='oldDictionary']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Removal']//xs:element[@name='newDictionary']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
 
-	<jaxb:bindings node="xs:complexType[@name='Removal']//xs:element[@name='oldDictionary']">
+	<jaxb:bindings node="xs:complexType[@name='Derivation']//xs:element[@ref='prov:type']">
 	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@name='entity']">
+	<jaxb:bindings node="xs:complexType[@name='Derivation']//xs:element[@ref='prov:label']">
 	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@name='activity']">
+	<jaxb:bindings node="xs:complexType[@name='Derivation']//xs:any">
 	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@name='entity']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@name='activity']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@name='entity']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@name='activity']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-
-	<jaxb:bindings node="xs:complexType[@name='Influence']//xs:element[@name='influencer']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Influence']//xs:element[@name='influencee']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Communication']//xs:element[@name='informed']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Communication']//xs:element[@name='informant']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@name='activity']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@name='trigger']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@name='starter']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@name='activity']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@name='trigger']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@name='ender']">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
@@ -750,36 +401,216 @@
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@name='activity']">
+
+
+	<!-- End -->
+
+	<jaxb:bindings node="xs:complexType[@name='End']">
+	  <jaxb:class name="WasEndedBy"/>
+	</jaxb:bindings>
+
+
+
+
+
+	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@ref='prov:type']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@ref='prov:label']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='End']//xs:any">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@ref='prov:location']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Location">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@ref='prov:role']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Role">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@name='activity']">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@name='agent']">
+	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@name='trigger']">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@name='plan']">
+	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@name='ender']">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Attribution']//xs:element[@name='agent']">
+
+
+
+	<!-- Generation -->
+
+	<jaxb:bindings node="xs:complexType[@name='Generation']">
+	  <jaxb:class name="WasGeneratedBy"/>
+	</jaxb:bindings>
+
+
+	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@ref='prov:type']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@ref='prov:label']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:any">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@ref='prov:location']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Location">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@ref='prov:role']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Role">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@name='entity']">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
-	<jaxb:bindings node="xs:complexType[@name='Attribution']//xs:element[@name='entity']">
+	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@name='activity']">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
+
+
+	<!-- Influence -->
+
+	<jaxb:bindings node="xs:complexType[@name='Influence']">
+	  <jaxb:class name="WasInfluencedBy"/>
+	</jaxb:bindings>
+
+	<jaxb:bindings node="xs:complexType[@name='Influence']//xs:element[@ref='prov:type']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Influence']//xs:element[@ref='prov:label']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Influence']//xs:any">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Influence']//xs:element[@name='influencer']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Influence']//xs:element[@name='influencee']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
+
+
+	<!-- Invalidation -->
+
+	<jaxb:bindings node="xs:complexType[@name='Invalidation']">
+	  <jaxb:class name="WasInvalidatedBy"/>
+	</jaxb:bindings>
+
+	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@ref='prov:type']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@ref='prov:label']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:any">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@ref='prov:location']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Location">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@ref='prov:role']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Role">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@name='entity']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@name='activity']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
+
+	<!-- Membership -->
+
+	<jaxb:bindings node="xs:complexType[@name='Membership']">
+	  <jaxb:class name="HadMember"/>
+	</jaxb:bindings>
+
+
 	<jaxb:bindings node="xs:complexType[@name='Membership']//xs:element[@name='collection']">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
@@ -795,40 +626,267 @@
 	</jaxb:bindings>
 
 
-         <!--
-	<jaxb:bindings node="xs:complexType[@name='Agent']">
+	<!-- Mention -->
+
+	<jaxb:bindings node="xs:complexType[@name='Mention']">
+	  <jaxb:class name="MentionOf"/>
+	</jaxb:bindings>
+
+	<jaxb:bindings node="xs:complexType[@name='Mention']//xs:element[@name='specificEntity']">
 	  <jaxb:property>
-	    <jaxb:baseType>
-	      <jaxb:javaType name="Object"
-			     xmlType="xs:simpleType"
-			     parseMethod="ObjectAdaptor.parseObjectToObject"/>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
-        -->
-
-	<!--
-	<jaxb:bindings node="xs:complexType[@name='TypedLiteral']">
-	  <jaxb:property><jaxb:baseType>
-	  <jaxb:javaType name="java.net.URI"
-			 parseMethod="java.net.URI.create"
-			 printMethod="org.openprovenance.prov.xml.ProvFactory.printURI"
-			 />
-	  </jaxb:baseType>
+	<jaxb:bindings node="xs:complexType[@name='Mention']//xs:element[@name='generalEntity']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
-	-->
+	<jaxb:bindings node="xs:complexType[@name='Mention']//xs:element[@name='bundle']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
+
+	<!-- Specialization -->
+
+	<jaxb:bindings node="xs:complexType[@name='Specialization']">
+	  <jaxb:class name="SpecializationOf"/>
+	</jaxb:bindings>
+
+	<jaxb:bindings node="xs:complexType[@name='Specialization']//xs:element[@name='specificEntity']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Specialization']//xs:element[@name='generalEntity']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
+	<!-- Start -->
+
+	<jaxb:bindings node="xs:complexType[@name='Start']">
+	  <jaxb:class name="WasStartedBy"/>
+	</jaxb:bindings>
+
+	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@ref='prov:type']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@ref='prov:label']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Start']//xs:any">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@ref='prov:location']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Location">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@ref='prov:role']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Role">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
+	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@name='activity']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@name='trigger']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@name='starter']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
+
+
+
+	<!-- Usage -->
+
+	<jaxb:bindings node="xs:complexType[@name='Usage']">
+	  <jaxb:class name="Used"/>
+	</jaxb:bindings>
+
+	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@ref='prov:type']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@ref='prov:label']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:any">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@ref='prov:location']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Location">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@ref='prov:role']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Role">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@name='entity']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@name='activity']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
+
+	<!-- Insertion -->
+
+	<jaxb:bindings node="xs:complexType[@name='Insertion']">
+	  <jaxb:class name="DerivedByInsertionFrom"/>
+	</jaxb:bindings>
+
+	<jaxb:bindings node="xs:complexType[@name='Insertion']//xs:element[@name='keyEntityPair']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Entry">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Insertion']//xs:any">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Insertion']//xs:element[@ref='prov:type']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Insertion']//xs:element[@ref='prov:label']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Insertion']//xs:element[@name='newDictionary']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Insertion']//xs:element[@name='oldDictionary']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
+
+
+	<!-- Removal -->
+
+	<jaxb:bindings node="xs:complexType[@name='Removal']">
+	  <jaxb:class name="DerivedByRemovalFrom"/>
+	</jaxb:bindings>
+
+	<jaxb:bindings node="xs:complexType[@name='Removal']//xs:any">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
+	<jaxb:bindings node="xs:complexType[@name='Removal']//xs:element[@name='newDictionary']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Removal']//xs:element[@name='oldDictionary']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
+
+	<!-- KeyEntityPair -->
+
+	<jaxb:bindings node="xs:complexType[@name='KeyEntityPair']">
+	  <jaxb:class name="Entry"/>
+	</jaxb:bindings>
+
+	<jaxb:bindings node="xs:complexType[@name='KeyEntityPair']//xs:element[@name='entity']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
+
+	<!-- DictionaryMembership -->
+
+	<jaxb:bindings node="xs:complexType[@name='DictionaryMembership']//xs:element[@name='keyEntityPair']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Entry">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='DictionaryMembership']//xs:element[@name='dictionary']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
+
+
 
     </jaxb:bindings>
 
-<!--    <jaxb:bindings schemaLocation="curie.xsd" 
-                   node="/xs:schema">       
 
-        <jaxb:schemaBindings>
-            <jaxb:package name="org.openprovenance.prov.xml"/>
-        </jaxb:schemaBindings>
-    </jaxb:bindings>
--->
 
 
 

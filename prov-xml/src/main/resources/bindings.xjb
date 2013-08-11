@@ -558,6 +558,7 @@
 
 	<jaxb:bindings node="xs:complexType[@name='Invalidation']">
 	  <jaxb:class name="WasInvalidatedBy"/>
+          <inheritance:implements>org.openprovenance.prov.model.WasInvalidatedBy</inheritance:implements>
 	</jaxb:bindings>
 
 	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@ref='prov:type']">
@@ -608,6 +609,7 @@
 
 	<jaxb:bindings node="xs:complexType[@name='Membership']">
 	  <jaxb:class name="HadMember"/>
+          <inheritance:implements>org.openprovenance.prov.model.HadMember</inheritance:implements>
 	</jaxb:bindings>
 
 

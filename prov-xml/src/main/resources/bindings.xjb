@@ -149,6 +149,7 @@
 
       <jaxb:bindings node="xs:complexType[@name='Alternate']">
 	<jaxb:class name="AlternateOf"/>
+        <inheritance:implements>org.openprovenance.prov.model.AlternateOf</inheritance:implements>
       </jaxb:bindings>
 
       <jaxb:bindings node="xs:complexType[@name='Alternate']//xs:element[@name='alternate1']">
@@ -632,6 +633,7 @@
 
 	<jaxb:bindings node="xs:complexType[@name='Mention']">
 	  <jaxb:class name="MentionOf"/>
+          <inheritance:implements>org.openprovenance.prov.model.MentionOf</inheritance:implements>
 	</jaxb:bindings>
 
 	<jaxb:bindings node="xs:complexType[@name='Mention']//xs:element[@name='specificEntity']">
@@ -658,6 +660,7 @@
 
 	<jaxb:bindings node="xs:complexType[@name='Specialization']">
 	  <jaxb:class name="SpecializationOf"/>
+          <inheritance:implements>org.openprovenance.prov.model.SpecializationOf</inheritance:implements>
 	</jaxb:bindings>
 
 	<jaxb:bindings node="xs:complexType[@name='Specialization']//xs:element[@name='specificEntity']">
@@ -677,6 +680,7 @@
 
 	<jaxb:bindings node="xs:complexType[@name='Start']">
 	  <jaxb:class name="WasStartedBy"/>
+          <inheritance:implements>org.openprovenance.prov.model.WasStartedBy</inheritance:implements>
 	</jaxb:bindings>
 
 	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@ref='prov:type']">
@@ -736,6 +740,7 @@
 
 	<jaxb:bindings node="xs:complexType[@name='Usage']">
 	  <jaxb:class name="Used"/>
+          <inheritance:implements>org.openprovenance.prov.model.Used</inheritance:implements>
 	</jaxb:bindings>
 
 	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@ref='prov:type']">
@@ -786,6 +791,7 @@
 
 	<jaxb:bindings node="xs:complexType[@name='Insertion']">
 	  <jaxb:class name="DerivedByInsertionFrom"/>
+          <inheritance:implements>org.openprovenance.prov.model.DerivedByInsertionFrom</inheritance:implements>
 	</jaxb:bindings>
 
 	<jaxb:bindings node="xs:complexType[@name='Insertion']//xs:element[@name='keyEntityPair']">
@@ -831,6 +837,7 @@
 
 	<jaxb:bindings node="xs:complexType[@name='Removal']">
 	  <jaxb:class name="DerivedByRemovalFrom"/>
+          <inheritance:implements>org.openprovenance.prov.model.DerivedByRemovalFrom</inheritance:implements>
 	</jaxb:bindings>
 
 	<jaxb:bindings node="xs:complexType[@name='Removal']//xs:any">
@@ -858,6 +865,7 @@
 
 	<jaxb:bindings node="xs:complexType[@name='KeyEntityPair']">
 	  <jaxb:class name="Entry"/>
+          <inheritance:implements>org.openprovenance.prov.model.Entry</inheritance:implements>
 	</jaxb:bindings>
 
 	<jaxb:bindings node="xs:complexType[@name='KeyEntityPair']//xs:element[@name='entity']">
@@ -869,6 +877,10 @@
 
 
 	<!-- DictionaryMembership -->
+	<jaxb:bindings node="xs:complexType[@name='DictionaryMembership']">
+          <inheritance:implements>org.openprovenance.prov.model.DictionaryMembership</inheritance:implements>
+	</jaxb:bindings>
+
 
 	<jaxb:bindings node="xs:complexType[@name='DictionaryMembership']//xs:element[@name='keyEntityPair']">
 	  <jaxb:property>

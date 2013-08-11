@@ -3,7 +3,7 @@
 
 
 
-<xs:schema targetNamespace="http://www.w3.org/ns/prov#"
+<xs:schema targetNamespace="http://www.w3.org/ns/openprov#"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:prov="http://www.w3.org/ns/prov#"
            xmlns:jxb="http://java.sun.com/xml/ns/jaxb"

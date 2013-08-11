@@ -257,17 +257,6 @@
   	              <arg value="NamedBundle.java" />
                 </exec>
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/List&lt;Object&gt;/List&lt;org.openprovenance.prov.model.Statement&gt;/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-
-
-
-
-
-
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
   	          <arg value="-e s/ URIWrapper/ org.openprovenance.prov.model.URIWrapper/" />
@@ -313,7 +302,7 @@
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
                      <arg value="URIWrapper.java" />
                 </exec>
-        
+
               </tasks>
               <sourceRoot>${project.build.directory}/generated-sources/xjc/</sourceRoot>
             </configuration>

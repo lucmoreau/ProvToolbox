@@ -410,6 +410,15 @@
           <inheritance:implements>org.openprovenance.prov.model.Document</inheritance:implements>
 	</jaxb:bindings>
 
+<!--
+	<jaxb:bindings node="xs:complexType[@name='Document']//xs:sequence">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.StatementOrBundle">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
+-->
 
 
 	<!-- End -->
@@ -685,6 +694,14 @@
 	<jaxb:bindings node="xs:complexType[@name='NamedBundle']">
           <inheritance:implements>org.openprovenance.prov.model.NamedBundle</inheritance:implements>
 	</jaxb:bindings>
+
+	<jaxb:bindings node="xs:complexType[@name='NamedBundle']//xs:sequence">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Statement">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
 
 	<!-- Role -->
 
@@ -969,5 +986,16 @@
     </jaxb:bindings>
 
 
+<!-- THIS DOESN'T SEEM TO WORK, SO USE 'sed' PATCH instead -->
+
+<!--
+    <jaxb:bindings schemaLocation="toolbox.xsd" 
+                   node="/xs:schema">       
+	<jaxb:bindings node="xs:complexType[@name='URIWrapper']">
+            <jaxb:package name="org.openprovenance.prov.model"/>
+	</jaxb:bindings>
+    </jaxb:bindings>
+
+-->
 
 </jaxb:bindings>

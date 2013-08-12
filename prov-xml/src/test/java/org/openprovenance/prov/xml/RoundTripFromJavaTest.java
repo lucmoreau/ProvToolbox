@@ -67,7 +67,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     static final Hashtable<String, String> namespaces;
 
-    public static ProvFactory pFactory;
+    public static org.openprovenance.prov.model.ProvFactory pFactory;
     public static ValueConverter vconv;
 
     static Hashtable<String, String> updateNamespaces (Hashtable<String, String> nss) {

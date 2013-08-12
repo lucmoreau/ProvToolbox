@@ -410,15 +410,16 @@
           <inheritance:implements>org.openprovenance.prov.model.Document</inheritance:implements>
 	</jaxb:bindings>
 
-<!--
-	<jaxb:bindings node="xs:complexType[@name='Document']//xs:sequence">
+
+	<!--
+	<jaxb:bindings node="xs:complexType[@name='Document']//xs:group">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.StatementOrBundle">
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
+	-->
 
--->
 
 
 	<!-- End -->

@@ -6,7 +6,7 @@
 //
 
 
-package org.openprovenance.prov.xml;
+package org.openprovenance.prov.sql;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -44,5 +44,5 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 @Table(name = "ROLE")
 public class Role
     extends TypedValue
-    implements Equals, HashCode
+    implements org.openprovenance.prov.model.Role, Equals, HashCode
 {}

@@ -2,10 +2,11 @@ package org.openprovenance.prov.sql;
 
 import java.io.File;
 import java.util.Hashtable;
+import org.openprovenance.prov.sql.Document;
 
 //import org.openprovenance.prov.sql.PersistenceUtility;
 
-public class RoundTripFromJavaSQLTest extends org.openprovenance.prov.sql.RoundTripFromJavaTest {
+public class RoundTripFromJavaSQLTest extends RoundTripFromJavaTest {
     final PersistenceUtility u=new PersistenceUtility();
 
     public RoundTripFromJavaSQLTest(String name) {
@@ -41,10 +42,10 @@ public class RoundTripFromJavaSQLTest extends org.openprovenance.prov.sql.RoundT
     static Hashtable<String, Long> dbKeys=new Hashtable<String, Long>();
 
     @Override
-    public void writeDocument(Document doc, String file) {
-	Document doc2=u.persist(doc);
-	dbKeys.put(file, doc.getHjid());
-	System.out.println("saved document " + doc.getHjid() + " for " + file);
+    public void writeDocument(org.openprovenance.prov.model.Document doc, String file) {
+	Document doc2=u.persist((org.openprovenance.prov.sql.Document)doc);
+	dbKeys.put(file, ((org.openprovenance.prov.sql.Document)doc).getHjid());
+	System.out.println("saved document " + ((org.openprovenance.prov.sql.Document)doc).getHjid() + " for " + file);
     }
 	
     

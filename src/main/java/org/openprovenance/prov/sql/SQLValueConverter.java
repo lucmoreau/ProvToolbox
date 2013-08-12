@@ -1,5 +1,4 @@
 package org.openprovenance.prov.sql;
-import org.openprovenance.prov.xml.URIWrapper;
 import  org.openprovenance.prov.xml.ValueConverter;
 import  org.openprovenance.prov.xml.ProvFactory;
 import javax.xml.datatype.XMLGregorianCalendar;

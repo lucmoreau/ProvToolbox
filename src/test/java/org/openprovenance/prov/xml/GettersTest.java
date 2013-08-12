@@ -2,7 +2,11 @@ package org.openprovenance.prov.xml;
 import java.util.Hashtable;
 import junit.framework.TestCase;
         
-
+import org.openprovenance.prov.model.WasDerivedFrom;
+import org.openprovenance.prov.model.Entity;
+import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.Used;
+import org.openprovenance.prov.model.WasGeneratedBy;
 
 /**
  * Unit test for setters/getters

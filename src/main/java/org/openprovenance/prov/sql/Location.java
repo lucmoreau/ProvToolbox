@@ -1,4 +1,4 @@
-package org.openprovenance.prov.xml;
+package org.openprovenance.prov.sql;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -22,7 +22,6 @@ import javax.persistence.Transient;
 
 import org.openprovenance.prov.sql.AValue;
 import org.openprovenance.prov.sql.InternationalizedString;
-import org.openprovenance.prov.sql.SQLValueConverter;
 
 import java.util.Collection;
 
@@ -45,4 +44,4 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 @javax.persistence.Entity(name = "Location")
 @Table(name = "LOCATION")
 //@Inheritance(strategy = InheritanceType.JOINED)
-public class Location extends TypedValue implements Equals, HashCode {}
+public class Location extends TypedValue implements org.openprovenance.prov.model.Location, Equals, HashCode {}

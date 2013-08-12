@@ -12,7 +12,6 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ValueConverter;
 
@@ -22,7 +21,7 @@ public class AnyAdapter
 
     ProvFactory pFactory=new ProvFactory();
     
-    ValueConverter vconv=new ValueConverter(pFactory);
+    org.openprovenance.prov.model.ValueConverter vconv=new org.openprovenance.prov.model.ValueConverter(pFactory);
     
     public QName stringToQName(String id, org.w3c.dom.Element el) {
         if (id == null)

@@ -1,4 +1,4 @@
-package org.openprovenance.prov.xml;
+package org.openprovenance.prov.sql;
 import java.util.List;
 
 public interface HasExtensibility {

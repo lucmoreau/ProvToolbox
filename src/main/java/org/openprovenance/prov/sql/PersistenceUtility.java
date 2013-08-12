@@ -14,8 +14,8 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
-import org.openprovenance.prov.xml.Statement;
-import org.openprovenance.prov.xml.StatementOrBundle;
+import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.StatementOrBundle;
 
 public class PersistenceUtility {
     static Logger logger = Logger.getLogger(PersistenceUtility.class);
@@ -167,11 +167,11 @@ public class PersistenceUtility {
     public Document persist(Document doc) {
             beginTransaction();
             Dagify dagifier=new Dagify(entityManager);
-            for (StatementOrBundle s: doc.getEntityOrActivityOrWasGeneratedBy()) {
+            for (StatementOrBundle s: doc.getEntityAndActivityAndWasGeneratedBy()) {
                 if (s instanceof Statement) {
                     Dagify.run((Statement)s, dagifier);
                 } else if (s instanceof NamedBundle) {
-                    for (Statement s2: ((NamedBundle)s).getEntityOrActivityOrWasGeneratedBy()) {
+                    for (Statement s2: ((NamedBundle)s).getEntityAndActivityAndWasGeneratedBy()) {
                         Dagify.run((Statement)s2, dagifier);
                     }       
                 }

@@ -1,4 +1,4 @@
-package org.openprovenance.prov.xml;
+package org.openprovenance.prov.sql;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -28,7 +28,8 @@ import javax.persistence.Transient;
 
 import org.openprovenance.prov.sql.AValue;
 import org.openprovenance.prov.sql.InternationalizedString;
-import org.openprovenance.prov.sql.SQLValueConverter;
+import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.ValueConverter;
 
 import java.util.Collection;
 
@@ -53,7 +54,7 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 @javax.persistence.Entity(name = "TypedValue")
 @Table(name = "TYPEDVALUE")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class TypedValue {
+public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     
     @XmlValue
     @XmlSchemaType(name = "anySimpleType")
@@ -91,9 +92,9 @@ public class TypedValue {
         }
         {
             QName lhsType;
-            lhsType = this.getXsdType();
+            lhsType = this.getType();
             QName rhsType;
-            rhsType = that.getXsdType();
+            rhsType = that.getType();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "type", lhsType), LocatorUtils.property(thatLocator, "type", rhsType), lhsType, rhsType)) {
                 return false;
             }
@@ -109,11 +110,11 @@ public class TypedValue {
 
 
     @Transient
-    public QName getXsdType() {
+    public QName getType() {
 	return xsdType;
     }
 
-    public void setXsdType(QName type) {
+    public void setType(QName type) {
 	this.xsdType=type;
     }
     @Basic
@@ -222,7 +223,7 @@ public class TypedValue {
         }
         {
             QName theType;
-            theType = this.getXsdType();
+            theType = this.getType();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "type", theType), currentHashCode, theType);
         }
         return currentHashCode;
@@ -246,7 +247,7 @@ public class TypedValue {
      */
     public Object getValueAsJava(ValueConverter vconv) {
     	if (valueAsJava==null) {
-    		valueAsJava=vconv.convertToJava(getXsdType(), (String)value);
+    		valueAsJava=vconv.convertToJava(getType(), (String)value);
     	}
         return valueAsJava;
     }

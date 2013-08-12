@@ -8,8 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.xml.Identifiable;
-import org.openprovenance.prov.xml.Statement;
+import org.openprovenance.prov.model.Identifiable;
+import org.openprovenance.prov.model.Statement;
 
 
 
@@ -23,13 +23,13 @@ public class Dagify implements RecordAction {
         this.em=em;
     }
     
-    Hashtable<String, IDRef> table=new Hashtable<String, IDRef>();
+    Hashtable<String, org.openprovenance.prov.model.IDRef> table=new Hashtable<String, org.openprovenance.prov.model.IDRef>();
     
-    public IDRef uniquify(IDRef ref) {
+    public org.openprovenance.prov.model.IDRef uniquify(org.openprovenance.prov.model.IDRef ref) {
         if (ref==null) return null;
         QName q=ref.getRef();
         String uri=q.getNamespaceURI()+q.getLocalPart();
-        IDRef found=table.get(uri);
+        org.openprovenance.prov.model.IDRef found=table.get(uri);
         if (found!=null) {
             return found;
         }
@@ -38,7 +38,7 @@ public class Dagify implements RecordAction {
         List<IDRef> ll=(List<IDRef>) qq.getResultList();
         //System.out.println("found ll " + ll);
         
-        IDRef newId=ref;
+        org.openprovenance.prov.model.IDRef newId=ref;
         if ((ll!=null) && (!(ll.isEmpty()))) {
             newId=ll.get(0);
         }
@@ -59,7 +59,7 @@ public class Dagify implements RecordAction {
     public IDRef createKey(Identifiable e) {
 	IDRef ref=new IDRef();
 	ref.setRef(e.getId());
-  	return uniquify(ref);
+  	return (IDRef)uniquify(ref);
       }
 
 
@@ -173,8 +173,8 @@ public class Dagify implements RecordAction {
     }
 
     public void run(HadMember mem) {
-        List<IDRef> ll=new LinkedList<IDRef>();
-        for (IDRef er: mem.getEntity()) {
+        List<org.openprovenance.prov.model.IDRef> ll=new LinkedList<org.openprovenance.prov.model.IDRef>();
+        for (org.openprovenance.prov.model.IDRef er: mem.getEntity()) {
             ll.add(uniquify(er));
         }
         mem.getEntity().clear();

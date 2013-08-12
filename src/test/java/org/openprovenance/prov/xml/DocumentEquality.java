@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.apache.commons.collections.bag.HashBag;
 import org.apache.log4j.Logger;
+import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.StatementOrBundle;
 
 /**
  * @author Trung Dong Huynh <tdh@ecs.soton.ac.uk>

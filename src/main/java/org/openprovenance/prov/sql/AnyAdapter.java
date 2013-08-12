@@ -16,7 +16,7 @@ import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ValueConverter;
 
 public class AnyAdapter
-    extends XmlAdapter<Object,Attribute>
+    extends XmlAdapter<Object,org.openprovenance.prov.model.Attribute>
 {
 
     ProvFactory pFactory=new ProvFactory();
@@ -42,7 +42,7 @@ public class AnyAdapter
 
 
     public Attribute unmarshal(Object value) {
-        //System.out.println("AnyAdapter unmarshalling for " + value);
+        System.out.println("AnyAdapter unmarshalling for " + value);
         if (value instanceof org.w3c.dom.Element) {
             org.w3c.dom.Element el=(org.w3c.dom.Element)value;
             String prefix=el.getPrefix();
@@ -69,7 +69,7 @@ public class AnyAdapter
         return null;
     }
 
-    public Object marshal(Attribute attribute) {
+    public Object marshal(org.openprovenance.prov.model.Attribute attribute) {
         //System.out.println("AnyAdapter marshalling for " + attribute);
         //System.out.println("AnyAdapter2 marshalling for " + attribute
         //                .getClass());

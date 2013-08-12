@@ -40,7 +40,6 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 
     static final Hashtable<String, String> namespaces;
 
-    public static ProvFactory pFactory;
     public static ValueConverter vconv;
 
     static Hashtable<String, String> updateNamespaces (Hashtable<String, String> nss) {

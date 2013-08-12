@@ -2307,6 +2307,14 @@
   	          <arg value="persistence.xml" />
                 </exec>
 
+		<!-- declare Adapter in package -->
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/^@javax.xml.bind.annotation.XmlSchema/@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(AnyAdapter.class)@javax.xml.bind.annotation.XmlSchema/" />
+  	          <arg value="-iBAK" />
+  	          <arg value="package-info.java" />
+                </exec>
+
         
 
         

@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlValue;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.FetchType;
@@ -156,8 +157,9 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      *     {@link AValue }
      *     
      */
-    @ManyToOne(targetEntity = AValue.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "VALUE")
+    //@ManyToOne(targetEntity = AValue.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    //@JoinColumn(name = "VALUE")
+    @Embedded
     public AValue getValueItem() {
         //System.out.println("#---> getValueItem() reading " + value);
 

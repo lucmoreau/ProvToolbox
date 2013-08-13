@@ -15,3 +15,11 @@
 
 
 - deal with nss in bundle/document
+
+----------------------------------------------------------------------
+
+
+
+- AValue is now embedded in TypedValue and Attribute
+- todo: revisit AValue, just with minimum sql friendly types
+

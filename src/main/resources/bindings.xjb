@@ -61,6 +61,9 @@
 	  <jaxb:baseType  name="org.openprovenance.prov.model.Location">
 	  </jaxb:baseType>
 	</jaxb:property>
+	<hj:one-to-many>
+	  <orm:join-column name="ENTITY"/>
+	</hj:one-to-many>
       </jaxb:bindings>
       <jaxb:bindings node="xs:complexType[@name='Entity']//xs:element[@ref='prov:type']">
 	<jaxb:property>
@@ -301,6 +304,11 @@
 	    <orm:join-column name="ENTITY"/>
 	  </hj:many-to-one>
 	</jaxb:bindings>
+
+      <jaxb:bindings node="xs:complexType[@name='AValue']">
+	<hj:embeddable/>
+      </jaxb:bindings>
+
 
 	<!-- Communication -->
 

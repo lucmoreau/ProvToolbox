@@ -2,6 +2,7 @@ package org.openprovenance.prov.sql;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -214,8 +215,9 @@ public class Attribute implements org.openprovenance.prov.model.Attribute {
      *     {@link AValue }
      *     
      */
-    @ManyToOne(targetEntity = AValue.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "VALUE_ATTRIBUTE_HJID")
+    //@ManyToOne(targetEntity = AValue.class, cascade = CascadeType.ALL)
+    //@JoinColumn(name = "VALUE_ATTRIBUTE_HJID")
+    @Embedded
     public AValue getValueItem() {
         //System.out.println("---> getValueItem() reading " + val);
         if (avalue==null) avalue=javaToValue(val);

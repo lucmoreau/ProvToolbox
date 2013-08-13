@@ -1156,7 +1156,7 @@
   	              <arg value="NamedBundle.java" />
                 </exec>
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/entityAndActivityAndWasGeneratedByItems/statements/" />
+  	              <arg value="-e s/EntityAndActivityAndWasGeneratedByItems/Statements/" />
   	              <arg value="-iBAK" />
   	              <arg value="NamedBundle.java" />
                 </exec>

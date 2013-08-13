@@ -259,12 +259,13 @@
 
   <!-- Component 4 -->
 
-  <xs:complexType name="Bundle">
+<!--   <xs:complexType name="Bundle">
     <xs:complexContent>
       <xs:extension base="prov:Entity">
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+-->
 
 <!--
   <xs:complexType name="NamedBundle">
@@ -501,7 +502,7 @@
   
   <!-- Component 5 elements -->
 
-  <xs:element name="bundle"               type="prov:Bundle"/>
+<!--   <xs:element name="bundle"               type="prov:Bundle"/> -->
   <xs:element name="specializationOf"     type="prov:Specialization"/>
   <xs:element name="alternateOf"          type="prov:Alternate"/>
 
@@ -608,32 +609,37 @@
         <xs:element ref="prov:wasEndedBy" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:wasInvalidatedBy" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:wasDerivedFrom" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:agent" minOccurs="0" maxOccurs="unbounded"/>
+<!--
         <xs:element ref="prov:wasRevisionOf" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:wasQuotedFrom" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:hadPrimarySource" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element ref="prov:agent" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:person" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:organization" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:softwareAgent" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:plan" minOccurs="0" maxOccurs="unbounded"/>
+
+-->
         <xs:element ref="prov:wasAttributedTo" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:wasAssociatedWith" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:actedOnBehalfOf" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:wasInfluencedBy" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element ref="prov:bundle" minOccurs="0" maxOccurs="unbounded"/>
+<!--        <xs:element ref="prov:bundle" minOccurs="0" maxOccurs="unbounded"/> -->
         <xs:element ref="prov:specializationOf" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:alternateOf" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:collection" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:emptyCollection" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:hadMember" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element ref="prov:plan" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:mentionOf" minOccurs="0" maxOccurs="unbounded"/>
 
+<!--
         <xs:element ref="prov:dictionary" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:emptyDictionary" minOccurs="0" maxOccurs="unbounded"/>
-<!--        <xs:element ref="prov:keyEntityPair" minOccurs="0" maxOccurs="unbounded"/> -->
+        <xs:element ref="prov:keyEntityPair" minOccurs="0" maxOccurs="unbounded"/> 
         <xs:element ref="prov:hadDictionaryMember" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:derivedByInsertionFrom" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="prov:derivedByRemovalFrom" minOccurs="0" maxOccurs="unbounded"/>
+-->
 
 <!--        <xs:element ref="prov:others" minOccurs="0" maxOccurs="unbounded"/> -->
 

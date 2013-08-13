@@ -284,9 +284,9 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
      * Create an instance of {@link Bundle }
      * 
      */
-    public Bundle createBundle() {
-        return new org.openprovenance.prov.sql.Bundle();
-    }
+    //    public Bundle createBundle() {
+    //        return new org.openprovenance.prov.sql.Bundle();
+    //    }
 
     /**
      * Create an instance of {@link Role }
@@ -621,10 +621,10 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
      * Create an instance of {@link JAXBElement }{@code <}{@link Bundle }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "bundle")
-    public JAXBElement<Bundle> createBundle(Bundle value) {
-        return new JAXBElement<Bundle>(_Bundle_QNAME, Bundle.class, null, value);
-    }
+    //    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "bundle")
+    //    public JAXBElement<Bundle> createBundle(Bundle value) {
+    //        return new JAXBElement<Bundle>(_Bundle_QNAME, Bundle.class, null, value);
+    //    }
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link Value }{@code >}}

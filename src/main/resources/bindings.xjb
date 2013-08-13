@@ -305,6 +305,12 @@
 	  </hj:many-to-one>
 	</jaxb:bindings>
 
+	<!-- AStatement -->
+      <jaxb:bindings node="xs:complexType[@name='AStatement']">
+        <inheritance:implements>org.openprovenance.prov.model.StatementOrBundle</inheritance:implements>
+      </jaxb:bindings>
+
+	<!-- AValue -->
       <jaxb:bindings node="xs:complexType[@name='AValue']">
 	<hj:embeddable/>
       </jaxb:bindings>
@@ -489,6 +495,12 @@
 
 	<jaxb:bindings node="xs:complexType[@name='Document']">
           <inheritance:implements>org.openprovenance.prov.model.Document</inheritance:implements>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Document']//xs:sequence">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.StatementOrBundle">
+	    </jaxb:baseType>
+	  </jaxb:property>
 	</jaxb:bindings>
 
 

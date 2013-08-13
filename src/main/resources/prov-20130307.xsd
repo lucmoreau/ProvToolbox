@@ -345,12 +345,17 @@
   </xs:complexType>
 -->
   <xs:complexType name="NamedBundle">  <!--BundleConstructor -->
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
 	<xs:sequence maxOccurs="unbounded">
-		<xs:group ref="prov:documentElements"/>
-<!--		<xs:any namespace="##other" processContents="lax" minOccurs="0"/>  TODO -->
+	  <xs:group ref="prov:documentElements"/>
+	  <!--		<xs:any namespace="##other" processContents="lax" minOccurs="0"/>  TODO -->
 	</xs:sequence>
 	<xs:attribute ref="prov:id"/>
-  </xs:complexType>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+
 
 
 

@@ -1180,6 +1180,13 @@
   	              <arg value="NamedBundle.java" />
                 </exec>
 -->
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ENTITYANDACTIVITYANDWASGENER_2/BUNDLE/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+
 <!--
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	              <arg value="-e s/EntityAndActivityAndWasGeneratedBy/Statements/" />
@@ -1291,7 +1298,7 @@
   	              <arg value="Document.java" />
                 </exec>
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ENTITYANDACTIVITYANDWASGENER_1/STATEMENTSORBUNDLE/" />
+  	              <arg value="-e s/ENTITYANDACTIVITYANDWASGENER_1/DOCUMENT/" />
   	              <arg value="-iBAK" />
   	              <arg value="Document.java" />
                 </exec>
@@ -1302,11 +1309,13 @@
   	              <arg value="Document.java" />
                 </exec>
 
+<!--
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	              <arg value="-e s/EntityAndActivityAndWasGeneratedByItems/statementOrBundle/" />
   	              <arg value="-iBAK" />
   	              <arg value="Document.java" />
                 </exec>
+-->
 
 <!-- -->
 

@@ -58,7 +58,7 @@ public class AnyAdapter
                 return pFactory.newAttribute(namespace,local,prefix, qn, type);
             } else if ((lang==null) || (lang.equals(""))) {
 		Attribute attr= pFactory.newAttribute(namespace,local,prefix, vconv.convertToJava(type, child), type);
-		System.out.println("Found attribute " + attr);
+		//System.out.println("Found attribute " + attr);
 		return attr;
 	    } else {
 		return pFactory.newAttribute(namespace,local,prefix, pFactory.newInternationalizedString(child,lang), type);

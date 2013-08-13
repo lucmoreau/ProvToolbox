@@ -110,6 +110,7 @@ public class Attribute implements org.openprovenance.prov.model.Attribute {
 
 
     public boolean equals(Object o) {
+	System.out.println("calling equal on: me: " + this + " and other: " + o);
 	if (o instanceof Attribute) {
 	    Attribute other = (Attribute) o;
 	    return elementName.getLocalPart()

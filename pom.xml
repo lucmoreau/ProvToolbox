@@ -281,6 +281,44 @@
             </goals>
             <configuration>
               <tasks>
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ public List&lt;Attribute&gt; getAny()/ 	private void ignoreMe() {} @OneToMany(targetEntity = org.openprovenance.prov.sql.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ENTITY&quot;) public List&lt;Attribute&gt; getAny ()/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Entity.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ public List&lt;Attribute&gt; getAny()/ 	private void ignoreMe() {} @OneToMany(targetEntity = org.openprovenance.prov.sql.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ACTIVITY&quot;) public List&lt;Attribute&gt; getAny ()/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Activity.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ public List&lt;Attribute&gt; getAny()/ 	private void ignoreMe() {} @OneToMany(targetEntity = org.openprovenance.prov.sql.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;AGENT&quot;) public List&lt;Attribute&gt; getAny ()/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Agent.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ public List&lt;Attribute&gt; getAny()/ 	private void ignoreMe() {} @OneToMany(targetEntity = org.openprovenance.prov.sql.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;AGENT&quot;) public List&lt;Attribute&gt; getAny ()/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Agent.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ public List&lt;Attribute&gt; getAny()/ 	private void ignoreMe() {} @OneToMany(targetEntity = org.openprovenance.prov.sql.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;WASATTRIBUTEDTO&quot;) public List&lt;Attribute&gt; getAny ()/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="WasAttributedTo.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ public List&lt;Attribute&gt; getAny()/ 	private void ignoreMe() {} @OneToMany(targetEntity = org.openprovenance.prov.sql.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;WASASSOCIATEDWITH&quot;) public List&lt;Attribute&gt; getAny ()/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="WasAssociatedWith.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ public List&lt;Attribute&gt; getAny()/ 	private void ignoreMe() {} @OneToMany(targetEntity = org.openprovenance.prov.sql.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;WASGENERATEDBY&quot;) public List&lt;Attribute&gt; getAny ()/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="WasGeneratedBy.java" />
+                </exec>
+
+
                 
 
 
@@ -291,7 +329,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__ENTITY_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
+  	              <arg value="-e s/ public List&lt;Attribute&gt; getAny()/ 	private void ignoreMe() {} @OneToMany(targetEntity = org.openprovenance.prov.sql.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ENTITY&quot;) public List&lt;Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
   	              <arg value="Entity.java" />
                 </exec>
@@ -730,7 +768,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__ACTIVITY_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
+  	              <arg value="-e s/ public List&lt;Attribute&gt; getAny()/ 	@OneToMany(targetEntity = org.openprovenance.prov.model.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__ACTIVITY_HJID&quot;) public List&lt;org.openprovenance.prov.model.Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
   	              <arg value="Activity.java" />
                 </exec>
@@ -2290,7 +2328,7 @@
                 </exec>
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
-  	          <arg value="-e s/&lt;class&gt;org.openprovenance.prov.sql.Entity$EntityAnyItem&lt;\/class&gt;//" />
+  	          <arg value="-e s/org.openprovenance.prov.sql.Others/org.openprovenance.prov.sql.Attribute/" />
   	          <arg value="-iBAK" />
   	          <arg value="persistence.xml" />
                 </exec>

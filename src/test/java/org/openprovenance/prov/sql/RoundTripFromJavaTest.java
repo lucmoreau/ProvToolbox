@@ -4,25 +4,12 @@ import java.io.File;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.net.URI;
 import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
-
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.HasExtensibility;
-import org.openprovenance.prov.model.HasLabel;
-import org.openprovenance.prov.model.HasLocation;
-import org.openprovenance.prov.model.HasType;
-import org.openprovenance.prov.model.HasValue;
 import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.URIWrapper;
 import org.openprovenance.prov.xml.UncheckedTestException;
 import org.openprovenance.prov.xml.ValueConverter;
-
-import junit.framework.TestCase;
 
 /**
  * Unit test for PROV roundtrip conversion between Java and XML
@@ -87,6 +74,20 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	return ".xml";
     }
     
+    public void testDictionaryInsertion1() {}
+    public void testDictionaryInsertion2() {}
+    public void testDictionaryInsertion3() {}
+    public void testDictionaryInsertion4() {}
+    public void testDictionaryInsertion5() {}
+    public void testDictionaryInsertion6() {}
+    public void testDictionaryRemoval1() {}
+    public void testDictionaryRemoval2() {}
+    public void testDictionaryRemoval3() {}
+    public void testDictionaryRemoval4() {}
+    public void testDictionaryRemoval5() {}
+    public void testDictionaryMembership2() {}
+    public void testDictionaryMembership3() {}
+    public void testDictionaryMembership4() {}
 
     public void makeDocAndTest(Statement []stment, NamedBundle[] bundles, String file, Statement[] opt, boolean check) {
 	Document doc = pFactory.newDocument();

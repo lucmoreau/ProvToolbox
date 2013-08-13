@@ -1,51 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <prov:document xmlns:prov="http://www.w3.org/ns/prov#" xmlns:ns2="http://openprovenance.org/collection#" xmlns:ns3="http://openprovenance.org/validation#" xmlns:prim="http://openprovenance.org/primitives#" xmlns:pc1="http://www.ipaw.info/pc1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ex="http://example.com/">
 
-<!--
-    <prov:activity prov:id="pc1:00000p1">
-        <prov:label>align_warp 1</prov:label>
-        <prov:type xsi:type="xsd:int">123</prov:type>
-        <prov:type xsi:type="xsd:QName">prim:align_warp</prov:type>
-    </prov:activity>
-
-
-    <prov:essai prov:id="pc1:00000p1">
-        <prov:label>align_essai 1</prov:label>
-        <prov:type xsi:type="xsd:int">456</prov:type>
-        <prov:mytype><prov:int>456</prov:int></prov:mytype>
-    </prov:essai>
-
--->
-
-<!--
-    <prov:essai prov:id="pc1:00000p1">
-        <prov:label>align_essai 1</prov:label>
-        <prov:mytype><prov:int>456</prov:int></prov:mytype>
-        <prov:mytype><prov:long>123456</prov:long></prov:mytype>
-        <prov:mytype><prov:string>abcd</prov:string></prov:mytype>
-    </prov:essai>
-
-
-    <prov:essai prov:id="pc1:00000p2">
-        <prov:label>align_essai 1</prov:label>
-        <prov:mytype><prov:int>456</prov:int></prov:mytype>
-        <prov:mytype><prov:long>123456</prov:long></prov:mytype>
-        <prov:mytype><prov:string>abcd</prov:string></prov:mytype>
-	<pc1:foo>hello</pc1:foo>
-	<pc1:bar xsi:type="xsd:int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">10</pc1:bar>
-    </prov:essai>
--->
 
     <prov:entity prov:id="ex:e2">
         <prov:label>entity2</prov:label>
 	<prov:value xsi:type="xsd:string" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">a string value</prov:value>
-        <ex:tag1 xsi:type="xsd:string">hello</ex:tag1>
+        <ex:tag1 xsi:type="xsd:string">hello1</ex:tag1>
     </prov:entity>
 
     <prov:entity prov:id="ex:e3">
         <prov:label>entity2</prov:label>
 	<prov:value xsi:type="xsd:int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">1234</prov:value>
-        <ex:tag1 xsi:type="xsd:string">hello</ex:tag1>
+        <ex:tag1 xsi:type="xsd:string">hello2</ex:tag1> 
     </prov:entity>
 
     <prov:activity prov:id="ex:a1">

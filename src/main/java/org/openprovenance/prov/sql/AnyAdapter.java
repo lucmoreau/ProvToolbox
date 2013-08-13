@@ -57,7 +57,9 @@ public class AnyAdapter
                 QName qn=stringToQName(child,el);  // TODO: not robust to prefix not predeclared 
                 return pFactory.newAttribute(namespace,local,prefix, qn, type);
             } else if ((lang==null) || (lang.equals(""))) {
-		return pFactory.newAttribute(namespace,local,prefix, vconv.convertToJava(type, child), type);
+		Attribute attr= pFactory.newAttribute(namespace,local,prefix, vconv.convertToJava(type, child), type);
+		System.out.println("Found attribute " + attr);
+		return attr;
 	    } else {
 		return pFactory.newAttribute(namespace,local,prefix, pFactory.newInternationalizedString(child,lang), type);
 	    }
@@ -66,6 +68,7 @@ public class AnyAdapter
             JAXBElement<?> je=(JAXBElement<?>) value;
             return pFactory.newAttribute(je.getName(),je.getValue(),vconv);
         }
+
         return null;
     }
 

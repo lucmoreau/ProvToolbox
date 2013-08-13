@@ -69,6 +69,7 @@ public class Dagify implements RecordAction {
 	e.setIdRef(createKey(e));
     }
 
+    
     public void run(Activity a) {
 	a.setIdRef(createKey(a));        
     }

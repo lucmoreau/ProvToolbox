@@ -807,10 +807,17 @@
                 </exec>
 
 
+
+
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/protected transient List&lt;Activity.ActivityAnyItem&gt; anyItems;//" />
   	          <arg value="-iBAK" />
   	          <arg value="Activity.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/protected transient List&lt;Agent.AgentAnyItem&gt; anyItems;//" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Agent.java" />
                 </exec>
 
 
@@ -871,6 +878,17 @@
   	          <arg value="-iBAK" />
   	          <arg value="Activity.java" />
                 </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e /@Entity(name = &quot;Agent$AgentAnyItem&quot;)/,/^}/ { /^}/b; s/^/\/\//g}" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Agent.java" />
+                </exec>
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/ @XmlAccessorType(XmlAccessType.FIELD)//" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Agent.java" />
+                </exec>
+
 
 
 
@@ -1056,6 +1074,12 @@
 
 <!-- renaming coluns in Bundles -->
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ENTITYANDACTIVITYANDWASGENER_3/BUNDLE/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="NamedBundle.java" />
+                </exec>
+<!--
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	              <arg value="-e s/ITEMENTITY_NAMEDBUNDLEENTITY_0/ENTITY/" />
   	              <arg value="-iBAK" />
   	              <arg value="NamedBundle.java" />
@@ -1155,11 +1179,15 @@
   	              <arg value="-iBAK" />
   	              <arg value="NamedBundle.java" />
                 </exec>
+-->
+<!--
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/EntityAndActivityAndWasGeneratedByItems/Statements/" />
+  	              <arg value="-e s/EntityAndActivityAndWasGeneratedBy/Statements/" />
   	              <arg value="-iBAK" />
   	              <arg value="NamedBundle.java" />
                 </exec>
+
+-->
 
 <!-- renaming coluns in Documents -->
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
@@ -2322,6 +2350,8 @@
   	          <arg value="-iBAK" />
   	          <arg value="persistence.xml" />
                 </exec>
+
+
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
   	          <arg value="-e s/org.openprovenance.prov.sql.Others/org.openprovenance.prov.sql.Attribute/" />

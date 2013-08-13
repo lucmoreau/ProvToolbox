@@ -41,7 +41,7 @@ public class Utility {
 	return rdfCollector.getDocument();
     }
 
-    public void dumpRDF(ProvFactory pFactory, Document document,
+    public void dumpRDF(org.openprovenance.prov.model.ProvFactory pFactory, Document document,
 			RDFFormat format, String filename) throws Exception {
 	
 	
@@ -57,7 +57,6 @@ public class Utility {
 	rdfc.getNamespaceTable().put("xsd", "http://www.w3.org/2001/XMLSchema#");
 	rdfc.getNamespaceTable().put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 	
-
 
 	BeanTraversal bt = new BeanTraversal(rdfc,pFactory, new ValueConverter(pFactory));
 	bt.convert(document);

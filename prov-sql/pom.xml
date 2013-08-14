@@ -36,7 +36,6 @@
 	  <artifactId>runtime</artifactId>
 	</exclusion>
       </exclusions>
-
     </dependency>
 
     <dependency>
@@ -57,9 +56,9 @@
 
 
     <dependency>
-	  <groupId>org.jvnet.jaxb2_commons</groupId>
-	  <artifactId>jaxb2-basics-runtime</artifactId>
-	  <version>0.6.2</version>
+      <groupId>org.jvnet.jaxb2_commons</groupId>
+      <artifactId>jaxb2-basics-runtime</artifactId>
+      <version>0.6.2</version>
     </dependency>
 
     <dependency>
@@ -94,6 +93,7 @@
     </dependency>
 
     <!--  Hibernate Dependencies  -->
+
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
@@ -120,9 +120,10 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.4</version>
+      <scope>test</scope>
     </dependency>
 
-<!-- If we want to run moxy
+    <!-- If we want to run moxy
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
 	  <artifactId>org.eclipse.persistence.moxy</artifactId>
@@ -131,41 +132,20 @@
 
 -->
 
-<!--
+
     <dependency>
-      <groupId>commons-jxpath</groupId>
-      <artifactId>commons-jxpath</artifactId>
-      <version>1.2</version>
-       <exclusions> 
-		<exclusion>
-			<groupId>xerces</groupId>
-			<artifactId>xerces</artifactId>
-		</exclusion>
-		<exclusion>
-			<groupId>ant</groupId>
-			<artifactId>ant-optional</artifactId>
-		</exclusion>
-		<exclusion>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-		</exclusion>
- 	   </exclusions>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.2.1</version>
     </dependency>
 
--->
 
 
-  	<dependency>
-  		<groupId>commons-collections</groupId>
-  		<artifactId>commons-collections</artifactId>
-  		<version>3.2.1</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>log4j</groupId>
-  		<artifactId>log4j</artifactId>
-  		<version>1.2.17</version>
-  	</dependency>
-
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
+    </dependency>
 
 
   </dependencies>
@@ -908,32 +888,7 @@
             </configuration>
           </execution>
 
-<!--
-          <execution>
-            <id>patch.executable</id>
-            <phase>package</phase>
-            <goals>
-             <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
-  	              <arg value="-e s/^cd/#### no CD ### Luc/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="pim2dot" />
-                </exec>
 
-                <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
-  	              <arg value="a+x" />
-  	              <arg value="pim2dot" />
-  	              <arg value="pim2dot.bat" />
-                </exec>
-
-
-              </tasks>
-            </configuration>
-          </execution>
--->
         </executions>
       </plugin>
 
@@ -943,26 +898,6 @@
         <version>2.3</version>
       </plugin>
 
-
-<!--
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <descriptors>
-          <descriptor>${project.build.directory}/classes/pim2dot-assembly.xml</descriptor>
-         </descriptors>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <id>make-assembly</id>
-              <goals>
-               <goal>single</goal>
-              </goals>
-          </execution>
-        </executions>
-      </plugin>
--->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -974,14 +909,6 @@
             <goals>
               <goal>test-jar</goal>
             </goals>
-            <!-- 
-            <configuration>
-              <classifier>client</classifier>
-              <includes>
-                <include>**/service/*</include>
-              </includes>
-            </configuration>
-            -->
           </execution>
         </executions>
       </plugin>
@@ -993,7 +920,6 @@
        <plugin>
          <groupId>org.jvnet.jaxb2.maven2</groupId>
          <artifactId>maven-jaxb2-plugin</artifactId>
-         <!-- <version>0.4.M1</version> -->
          <version>0.8.1</version> 
        </plugin>
        

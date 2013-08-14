@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<prov:document xmlns:prov="http://www.w3.org/ns/prov#" xmlns:ns2="http://openprovenance.org/collection#" xmlns:ns3="http://openprovenance.org/validation#" xmlns:prim="http://openprovenance.org/primitives#" xmlns:pc1="http://www.ipaw.info/pc1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ex="http://example.com/">
+
+
+    <prov:entity prov:id="ex:e2">
+        <prov:label>entity2</prov:label>
+	<prov:value xsi:type="xsd:string" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">a string value</prov:value>
+        <ex:tag1 xsi:type="xsd:string">hello1</ex:tag1>
+    </prov:entity>
+
+    <prov:entity prov:id="ex:e3">
+        <prov:label>entity2</prov:label>
+	<prov:value xsi:type="xsd:int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">1234</prov:value>
+        <ex:tag1 xsi:type="xsd:string">hello2</ex:tag1> 
+    </prov:entity>
+
+    <prov:activity prov:id="ex:a1">
+        <prov:startTime>2013-07-10T20:18:42.780+01:00</prov:startTime>
+        <prov:endTime>2013-07-10T20:18:42.780+01:00</prov:endTime>
+    </prov:activity>
+
+    <prov:activity prov:id="ex:a7">
+        <prov:label>activity7</prov:label>
+        <prov:label>hello</prov:label>
+        <prov:label xml:lang="EN">bye</prov:label>
+        <prov:label xml:lang="FR">bonjour</prov:label>
+    </prov:activity>
+
+
+    <prov:activity prov:id="ex:a8">
+        <prov:label>activity7</prov:label>
+        <prov:label>hello</prov:label>
+        <prov:label xml:lang="EN">bye</prov:label>
+
+
+
+        <prov:location>here</prov:location>
+	<prov:location xsi:type="xsd:int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">10</prov:location>
+	<prov:location xsi:type="xsd:float" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">100.0</prov:location>
+	<prov:location xsi:type="xsd:string" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">a location</prov:location>
+	<prov:location xsi:type="xsd:boolean" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">true</prov:location>
+
+        <prov:type>here</prov:type>
+	<prov:type xsi:type="xsd:int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">10</prov:type>
+	<prov:type xsi:type="xsd:float" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">100.0</prov:type>
+	<prov:type xsi:type="xsd:string" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">a type</prov:type>
+	<prov:type xsi:type="xsd:boolean" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">true</prov:type>
+
+
+<!-- this one doesn't work!
+        <prov:test2 xsi:type="xsd:QName">ex:a8</prov:test2>  -->
+<!--
+        <prov:test2 xsi:type="xsd:int">1</prov:test2> 
+        <prov:test2 xsi:type="xsd:unsignedInt">5</prov:test2> 
+        <prov:test2 xsi:type="xsd:float">1.0</prov:test2> 
+        <prov:test2 xsi:type="xsd:double">3.0</prov:test2> 
+-->
+
+    </prov:activity>
+
+    <prov:used prov:id="ex:use2">
+        <prov:activity prov:ref="ex:a1"/>
+        <prov:entity prov:ref="ex:e1"/>
+        <prov:location>here</prov:location>
+        <prov:role>great</prov:role>
+
+    </prov:used>
+
+
+<!--
+    <prov:essai prov:id="ex:a8">
+        <prov:label>activity7</prov:label>
+        <prov:label>hello</prov:label>
+        <prov:label xml:lang="EN">bye</prov:label>
+        <prov:location>here</prov:location>
+
+
+         <prov:lieu>ici</prov:lieu>
+         <prov:lieu xsi:type="xsd:int">1</prov:lieu>
+
+         <prov:lieu xsi:type="xsd:float">1.0</prov:lieu>
+
+
+	 <prov:lieu xsi:type="xsd:QName">ex:ici</prov:lieu> 
+
+
+    </prov:essai>
+
+-->
+
+</prov:document>
+

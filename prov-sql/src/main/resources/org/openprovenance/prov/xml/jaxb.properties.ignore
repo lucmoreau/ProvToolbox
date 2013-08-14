@@ -1,0 +1,4 @@
+### choose which jaxb provider
+
+javax.xml.bind.context.factory=org.eclipse.persistence.jaxb.JAXBContextFactory
+javax.xml.bind.context.factory=com.sun.xml.bind.v2.ContextFactory

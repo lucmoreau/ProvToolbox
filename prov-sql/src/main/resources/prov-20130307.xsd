@@ -1,0 +1,792 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--  This schema is adapted from the PROV-XML schema for the ProvToolbox by luc moreau
+
+      Notable differences include
+      - <xs:any namespace="##other"/>  processContents not set to lax
+      - still using EntityRef, XXXRef ... mostly for legacy reason
+      - abstract internalElement not supported, extension schema integrate
+      - no extensibility in bundles/documents
+
+  -->
+
+
+<xs:schema targetNamespace="http://www.w3.org/ns/prov#"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:prov="http://www.w3.org/ns/prov#"
+           xmlns:xml="http://www.w3.org/XML/1998/namespace"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+
+
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace" 
+             schemaLocation="xml.xsd"/>
+
+  <xs:complexType name="AStatement">
+  </xs:complexType>
+
+  <!-- Component 1 -->
+
+  <xs:complexType name="Entity">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:value" minOccurs="0"/>
+	  
+	  <xs:any namespace="##other"  processContents="skip" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute ref="prov:id"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+
+  <xs:complexType name="Activity">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="startTime"    type="xs:dateTime" minOccurs="0"/> 
+	  <xs:element name="endTime"      type="xs:dateTime" minOccurs="0"/> 
+	  <xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/> 
+	  <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute ref="prov:id"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+  
+
+  <xs:complexType name="Generation">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="entity"   type="prov:IDRef"/>
+	  <xs:element name="activity" type="prov:IDRef" minOccurs="0"/>
+	  <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
+	  <xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
+	  
+	  <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute ref="prov:id"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+
+
+  <xs:complexType name="Usage">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="activity" type="prov:IDRef"/>
+	  <xs:element name="entity"   type="prov:IDRef"/>
+	  <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
+	  <xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute ref="prov:id"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+
+  
+
+  <xs:complexType name="Start">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="activity" type="prov:IDRef"/>
+	  <xs:element name="trigger"  type="prov:IDRef" minOccurs="0"/>
+	  <xs:element name="starter"  type="prov:IDRef" minOccurs="0"/>
+	  <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
+	  <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute ref="prov:id"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+  
+  <xs:complexType name="End">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="activity" type="prov:IDRef"/>
+	  <xs:element name="trigger"  type="prov:IDRef"  minOccurs="0"/>
+	  <xs:element name="ender"    type="prov:IDRef" minOccurs="0"/>
+	  <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
+	  <xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute ref="prov:id"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+  
+
+  <xs:complexType name="Invalidation">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="entity"   type="prov:IDRef"/>
+	  <xs:element name="activity" type="prov:IDRef" minOccurs="0"/>
+	  <xs:element name="time"     type="xs:dateTime" minOccurs="0"/>
+	  <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element ref="prov:role"      minOccurs="0" maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:any namespace="##other"      minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute ref="prov:id"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+
+
+
+  <xs:complexType name="Communication">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="informed"  type="prov:IDRef"/>
+	  <xs:element name="informant"   type="prov:IDRef"/>
+	  <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute ref="prov:id"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+  
+
+  <!-- Component 2 -->
+
+  
+  <xs:complexType name="Derivation">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="generatedEntity"  type="prov:IDRef"/>
+	  <xs:element name="usedEntity"       type="prov:IDRef"/>
+	  <xs:element name="activity"         type="prov:IDRef" minOccurs="0"/>
+	  <xs:element name="generation"       type="prov:IDRef" minOccurs="0"/>
+	  <xs:element name="usage"            type="prov:IDRef" minOccurs="0"/>
+	  <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute ref="prov:id"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+
+
+  <xs:complexType name="Revision">
+    <xs:complexContent>
+      <xs:extension base="prov:Derivation">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Quotation">
+    <xs:complexContent>
+      <xs:extension base="prov:Derivation">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="PrimarySource">
+    <xs:complexContent>
+      <xs:extension base="prov:Derivation">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <!-- Component 3 -->
+  
+  <xs:complexType name="Agent">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:location"  minOccurs="0" maxOccurs="unbounded"/>		
+	  <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute ref="prov:id"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+
+
+  <xs:complexType name="Person">
+    <xs:complexContent>
+      <xs:extension base="prov:Agent">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Organization">
+    <xs:complexContent>
+      <xs:extension base="prov:Agent">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="SoftwareAgent">
+    <xs:complexContent>
+      <xs:extension base="prov:Agent">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Attribution">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="entity" type="prov:IDRef"/>
+	  <xs:element name="agent"    type="prov:IDRef"/>
+	  <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute ref="prov:id"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+
+  <xs:complexType name="Association">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="activity" type="prov:IDRef"/>
+	  <xs:element name="agent"    type="prov:IDRef"  minOccurs="0"/>
+	  <xs:element name="plan"     type="prov:IDRef" minOccurs="0"/>
+	  <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:role"  minOccurs="0" maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute ref="prov:id"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+
+
+
+  <xs:complexType name="Delegation">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="delegate" type="prov:IDRef"/>
+	  <xs:element name="responsible" type="prov:IDRef"/>
+	  <xs:element name="activity"    type="prov:IDRef"/>
+	  <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute ref="prov:id"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+
+
+
+  <xs:complexType name="Influence">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="influencee"     type="prov:IDRef"/>
+	  <xs:element name="influencer"     type="prov:IDRef"/>
+	  <xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/> 
+	  <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute ref="prov:id"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+
+
+  <!-- Component 4 -->
+
+<!--   <xs:complexType name="Bundle">
+    <xs:complexContent>
+      <xs:extension base="prov:Entity">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+-->
+
+<!--
+  <xs:complexType name="NamedBundle">
+    <xs:sequence>
+      <xs:group ref="prov:documentElements"/>
+    </xs:sequence>
+    <xs:attribute ref="prov:id"/>
+  </xs:complexType>
+-->
+  <xs:complexType name="NamedBundle">  <!--BundleConstructor -->
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence maxOccurs="unbounded">
+	  <xs:group ref="prov:documentElements"/>
+	  <!--		<xs:any namespace="##other" processContents="lax" minOccurs="0"/>  TODO -->
+	</xs:sequence>
+	<xs:attribute ref="prov:id"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+
+
+
+
+  <!-- Component 5 -->
+
+  <xs:complexType name="Specialization">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="specificEntity"   type="prov:IDRef"/>
+	  <xs:element name="generalEntity"   type="prov:IDRef"/>
+	</xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+
+  <xs:complexType name="Alternate">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="alternate1"   type="prov:IDRef"/>
+	  <xs:element name="alternate2"   type="prov:IDRef"/>
+	</xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+
+
+
+  <xs:complexType name="Mention">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="specificEntity" type="prov:IDRef"/>
+	  <xs:element name="generalEntity"     type="prov:IDRef"/>
+	  <xs:element name="bundle"            type="prov:IDRef" minOccurs="1"/>
+	</xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+
+
+  
+  <!-- Component 6 -->
+<!-- 
+  <xs:complexType name="DerivedByInsertionFrom">
+    <xs:sequence>
+      <xs:element name="after"           type="prov:IDRef"/>
+      <xs:element name="before"          type="prov:IDRef"/>
+      <xs:element name="entry"           type="prov:Entry" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute ref="prov:id"/>
+  </xs:complexType>
+
+  <xs:complexType name="DerivedByRemovalFrom">
+    <xs:sequence>
+      <xs:element name="after"    type="prov:IDRef"/>
+      <xs:element name="before"   type="prov:IDRef"/>
+      <xs:element name="key"      type="xs:anySimpleType" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute ref="prov:id"/>
+  </xs:complexType>
+
+  <xs:complexType name="CollectionMemberOf">
+    <xs:sequence>
+      <xs:element name="entity"          type="prov:IDRef"/>
+      <xs:element name="complete"        type="xs:boolean"/>
+      <xs:element name="member"          type="prov:Entity" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute ref="prov:id"/>
+  </xs:complexType>
+
+  <xs:complexType name="DictionaryMemberOf">
+    <xs:sequence>
+      <xs:element name="entity"          type="prov:IDRef"/>
+      <xs:element name="complete"        type="xs:boolean"/>
+      <xs:element name="entry"           type="prov:Entry" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element ref="prov:label" minOccurs="0"  maxOccurs="unbounded"/> 
+      <xs:element ref="prov:type"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other"  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute ref="prov:id"/>
+  </xs:complexType>
+
+
+  <xs:element name="key"  type="xs:anySimpleType"/>
+
+  <xs:complexType name="Entry">
+    <xs:sequence>
+      <xs:element ref="prov:key"  minOccurs="1" maxOccurs="1"/>
+      <xs:element name="entity"   type="prov:IDRef" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+-->
+
+  <xs:complexType name="Collection">
+    <xs:complexContent>
+      <xs:extension base="prov:Entity">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EmptyCollection">
+    <xs:complexContent>
+      <xs:extension base="prov:Collection">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="Membership">
+    <xs:complexContent>
+      <xs:extension base="prov:AStatement">
+	<xs:sequence>
+	  <xs:element name="collection"          type="prov:IDRef"/>
+	  <xs:element name="entity"          type="prov:IDRef" maxOccurs="unbounded"/>
+	</xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+  
+
+  <xs:complexType name="Plan">
+    <xs:complexContent>
+      <xs:extension base="prov:Entity">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+ 
+  <xs:complexType name="InternationalizedString">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute ref="xml:lang" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    
+
+
+   <!--
+       Typed literals are encoded by means
+       of xsi:type that represent the prov:datatype.
+
+       -->
+  
+  <xs:element name="label"    type="prov:InternationalizedString"/>
+  <xs:element name="role"     type="prov:Role"/>
+  <xs:element name="type"     type="prov:Type"/>
+  <xs:element name="location" type="prov:Location"/>
+  <xs:element name="value"    type="prov:Value"/>
+
+  <xs:complexType name="TypedValue">
+    <xs:simpleContent>
+      <xs:extension base="xs:anySimpleType">
+	<xs:attribute name="type" type="xs:QName"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    
+
+  <xs:complexType name="Location">
+    <xs:simpleContent>
+      <xs:extension base="prov:TypedValue">
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    
+  <xs:complexType name="Type">
+    <xs:simpleContent>
+      <xs:extension base="prov:TypedValue">
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    
+  <xs:complexType name="Value">
+    <xs:simpleContent>
+      <xs:extension base="prov:TypedValue">
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    
+  <xs:complexType name="Role">
+    <xs:simpleContent>
+      <xs:extension base="prov:TypedValue">
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>    
+
+  <xs:attribute name="id"  type="xs:QName"/>
+  <xs:attribute name="ref" type="xs:QName"/>
+
+  <xs:complexType name="IDRef">
+    <xs:attribute ref="prov:ref" use="required" />
+  </xs:complexType>
+
+  
+  <!--
+     top-level definition of elements following the salami slice XSD design pattern
+     to encourage integration within existing non-prov XML documents.
+  -->
+
+  <!-- Component 1 elements -->
+
+  <xs:element name="entity"               type="prov:Entity"/>
+  <xs:element name="activity"             type="prov:Activity"/>
+  <xs:element name="wasGeneratedBy"       type="prov:Generation"/>
+  <xs:element name="used"                 type="prov:Usage"/>
+  <xs:element name="wasInformedBy"        type="prov:Communication"/>
+  <xs:element name="wasStartedBy"         type="prov:Start"/>
+  <xs:element name="wasEndedBy"           type="prov:End"/>
+  <xs:element name="wasInvalidatedBy"     type="prov:Invalidation"/>
+
+  <!-- Component 2 elements -->
+
+  <xs:element name="wasDerivedFrom"       type="prov:Derivation"/>
+  <xs:element name="wasRevisionOf"        type="prov:Revision"/>
+  <xs:element name="wasQuotedFrom"        type="prov:Quotation"/>
+  <xs:element name="hadPrimarySource"     type="prov:PrimarySource"/>
+
+  <!-- Component 3 elements -->
+
+  <xs:element name="agent"                type="prov:Agent"/>
+  <xs:element name="person"               type="prov:Person"/>
+  <xs:element name="organization"         type="prov:Organization"/>
+  <xs:element name="softwareAgent"        type="prov:SoftwareAgent"/>
+  <xs:element name="wasAttributedTo"      type="prov:Attribution"/>
+  <xs:element name="wasAssociatedWith"    type="prov:Association"/>
+  <xs:element name="actedOnBehalfOf"      type="prov:Delegation"/>
+  <xs:element name="wasInfluencedBy"      type="prov:Influence"/>
+  
+  <!-- Component 5 elements -->
+
+<!--   <xs:element name="bundle"               type="prov:Bundle"/> -->
+  <xs:element name="specializationOf"     type="prov:Specialization"/>
+  <xs:element name="alternateOf"          type="prov:Alternate"/>
+
+  <!-- Component 6 elements -->
+
+  <xs:element name="hadMember"            type="prov:Membership"/>
+  <xs:element name="collection"           type="prov:Collection"/>
+  <xs:element name="emptyCollection"      type="prov:EmptyCollection"/>
+
+  <!-- Component 7 elements -->
+
+  <xs:element name="plan"                 type="prov:Plan"/>
+
+  <!-- Component: links -->
+
+  <xs:element name="mentionOf"          type="prov:Mention"/>
+
+  <!-- Component: dictionary -->
+
+	<!-- Dictionary -->
+	<xs:complexType name="Dictionary">
+		<xs:complexContent>
+			<xs:extension base="prov:Collection">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="dictionary" type="prov:Dictionary" />
+	
+	<!-- Empty Dictionary -->
+	<xs:complexType name="EmptyDictionary">
+		<xs:complexContent>
+			<xs:extension base="prov:Dictionary">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="emptyDictionary" type="prov:EmptyDictionary" />
+		
+	<!-- Key-Value Pair -->
+	<xs:complexType name="KeyEntityPair">
+        <xs:sequence>
+    	  <xs:element name="key" type="xs:anySimpleType" />
+    	  <xs:element name="entity" type="prov:IDRef" />
+        </xs:sequence>
+	</xs:complexType>
+	
+	<!-- do we need to have this use the substitutionGroup? -->
+	<xs:element name="keyEntityPair" type="prov:KeyEntityPair"/>
+
+	<!-- Dictionary Membership -->
+	<xs:complexType name="DictionaryMembership">
+	  <xs:sequence>
+		<xs:element name="dictionary" type="prov:IDRef"/>
+		<xs:element name="keyEntityPair" type="prov:KeyEntityPair" maxOccurs="unbounded"/>
+	  </xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="hadDictionaryMember" type="prov:DictionaryMembership"/>
+
+	<!-- Insertion -->
+	<xs:complexType name="Insertion">
+	  <xs:sequence>
+		<xs:element name="newDictionary" type="prov:IDRef"/>
+		<xs:element name="oldDictionary" type="prov:IDRef"/>
+		<xs:element name="keyEntityPair" type="prov:KeyEntityPair" maxOccurs="unbounded"/>
+		<!-- prov attributes -->
+		<xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/>
+		<xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+		<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+	  </xs:sequence>
+	  <xs:attribute ref="prov:id"/>
+	</xs:complexType>
+	
+	<xs:element name="derivedByInsertionFrom" type="prov:Insertion"/>
+
+	<!-- Removal -->
+	<xs:complexType name="Removal">
+	  <xs:sequence>
+		<xs:element name="newDictionary" type="prov:IDRef"/>
+		<xs:element name="oldDictionary" type="prov:IDRef"/>
+		<xs:element name="key" type="xs:anySimpleType" maxOccurs="unbounded" />
+		<!-- prov attributes -->
+		<xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/>
+		<xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>
+		<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+	  </xs:sequence>
+	  <xs:attribute ref="prov:id"/>
+	</xs:complexType>
+	
+	<xs:element name="derivedByRemovalFrom" type="prov:Removal"/>
+
+
+  <!-- document elements -->
+
+  <xs:group name="documentElements">
+    <xs:sequence>
+        <xs:element ref="prov:entity" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:activity" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:wasGeneratedBy" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:used" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:wasInformedBy" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:wasStartedBy" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:wasEndedBy" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:wasInvalidatedBy" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:wasDerivedFrom" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:agent" minOccurs="0" maxOccurs="unbounded"/>
+<!--
+        <xs:element ref="prov:wasRevisionOf" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:wasQuotedFrom" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:hadPrimarySource" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:person" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:organization" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:softwareAgent" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:plan" minOccurs="0" maxOccurs="unbounded"/>
+
+-->
+        <xs:element ref="prov:wasAttributedTo" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:wasAssociatedWith" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:actedOnBehalfOf" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:wasInfluencedBy" minOccurs="0" maxOccurs="unbounded"/>
+<!--        <xs:element ref="prov:bundle" minOccurs="0" maxOccurs="unbounded"/> -->
+        <xs:element ref="prov:specializationOf" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:alternateOf" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:collection" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:emptyCollection" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:hadMember" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:mentionOf" minOccurs="0" maxOccurs="unbounded"/>
+
+<!--
+        <xs:element ref="prov:dictionary" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:emptyDictionary" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:keyEntityPair" minOccurs="0" maxOccurs="unbounded"/> 
+        <xs:element ref="prov:hadDictionaryMember" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:derivedByInsertionFrom" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="prov:derivedByRemovalFrom" minOccurs="0" maxOccurs="unbounded"/>
+-->
+
+<!--        <xs:element ref="prov:others" minOccurs="0" maxOccurs="unbounded"/> -->
+
+<!--        <xs:element ref="prov:internalElement" minOccurs="0" maxOccurs="unbounded" /> -->
+    </xs:sequence>
+  </xs:group>
+
+  <xs:element name="document" type="prov:Document" />
+
+   <xs:complexType name="Document">
+     <xs:sequence>
+       <xs:choice maxOccurs="unbounded">
+         <xs:group ref="prov:documentElements"/>
+         <xs:element name="bundleContent" type="prov:NamedBundle"/>
+       </xs:choice>
+<!--       <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/> -->
+     </xs:sequence>
+   </xs:complexType>
+
+
+   <xs:element name="others" type="prov:Others"/>
+
+   <xs:complexType name="Others">
+     <xs:sequence>
+       <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+     </xs:sequence>
+   </xs:complexType>
+
+  <xs:complexType name="AValue">
+    <xs:choice>
+        <xs:element name="int"               type="xs:int"/>
+        <xs:element name="string"               type="xs:string"/>
+        <xs:element name="long"               type="xs:long"/>
+        <xs:element name="short"               type="xs:short"/>
+        <xs:element name="double"               type="xs:double"/>
+        <xs:element name="float"               type="xs:float"/>
+        <xs:element name="decimal"               type="xs:decimal"/>
+        <xs:element name="boolean"               type="xs:boolean"/>
+        <xs:element name="byte"               type="xs:byte"/>
+        <xs:element name="anyURI"               type="xs:anyURI"/>
+        <xs:element name="qname"               type="xs:QName"/>
+        <xs:element name="unsignedInt"               type="xs:unsignedInt"/>
+        <xs:element name="unsignedLong"               type="xs:unsignedLong"/>
+        <xs:element name="dateTime"               type="xs:dateTime"/>
+        <xs:element name="gYear"               type="xs:gYear"/>
+        <xs:element name="integer"               type="xs:integer"/>
+<!--
+        <xs:any namespace="##any" processContents="skip" minOccurs="0" maxOccurs="1"/>-->
+    </xs:choice>
+  </xs:complexType>
+
+
+
+  <!-- abstract element used by extensions -->
+
+<!--  <xs:element name="internalElement" abstract="true" /> TODO -->
+</xs:schema>

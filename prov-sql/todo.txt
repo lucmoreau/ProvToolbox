@@ -1,0 +1,25 @@
+
+- QNames not properly parse in Type, Location, etc
+
+- Continue customization of colum names
+
+  TYPE/ROLE (like location)
+  ATTRIBUTE
+  INTERNATIONALIZEDSTRING
+
+  idref
+
+
+
+- Remove IdITEM from all beans
+
+
+- deal with nss in bundle/document
+
+----------------------------------------------------------------------
+
+
+
+- AValue is now embedded in TypedValue and Attribute
+- todo: revisit AValue, just with minimum sql friendly types
+

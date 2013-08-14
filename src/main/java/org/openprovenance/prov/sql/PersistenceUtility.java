@@ -167,11 +167,11 @@ public class PersistenceUtility {
     public Document persist(Document doc) {
             beginTransaction();
             Dagify dagifier=new Dagify(entityManager);
-            for (StatementOrBundle s: doc.getEntityAndActivityAndWasGeneratedBy()) {
+            for (StatementOrBundle s: doc.getStatementOrBundle()) {
                 if (s instanceof Statement) {
                     Dagify.run((Statement)s, dagifier);
                 } else if (s instanceof NamedBundle) {
-                    for (Statement s2: ((NamedBundle)s).getEntityAndActivityAndWasGeneratedBy()) {
+                    for (Statement s2: ((NamedBundle)s).getStatement()) {
                         Dagify.run((Statement)s2, dagifier);
                     }       
                 }

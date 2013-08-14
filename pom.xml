@@ -23,6 +23,7 @@
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-model</artifactId>
       <version>0.2.4-SNAPSHOT</version>
+
     </dependency>
 
     <dependency>
@@ -30,8 +31,8 @@
       <artifactId>prov-xml</artifactId>
       <version>0.2.4-SNAPSHOT</version>
 
-      <exclusions>
-	<exclusion>
+      <exclusions> 
+	<exclusion><!-- Equals defined in this jar is incompatible with one used by hyperjaxb. Instead, use jaxb2-basics-runtime below -->
 	  <groupId>org.jvnet.jaxb2_commons</groupId>
 	  <artifactId>runtime</artifactId>
 	</exclusion>
@@ -45,8 +46,9 @@
       <version>0.2.4-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
+
       <exclusions>
-	<exclusion>
+	<exclusion><!-- Equals defined in this jar is incompatible with one used by hyperjaxb. Instead, use jaxb2-basics-runtime below -->
 	  <groupId>org.jvnet.jaxb2_commons</groupId>
 	  <artifactId>runtime</artifactId>
 	</exclusion>
@@ -57,70 +59,64 @@
 
     <dependency>
 	  <groupId>org.jvnet.jaxb2_commons</groupId>
-	  <artifactId>runtime</artifactId>
-	  <version>0.4.1.5-no-equals</version>
+	  <artifactId>jaxb2-basics-runtime</artifactId>
+	  <version>0.6.2</version>
     </dependency>
-    
+
+    <dependency>
+     <groupId>com.sun.xml.bind</groupId>
+     <artifactId>jaxb-impl</artifactId>
+     <version>2.2.4</version>
+    </dependency>
+
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
       <version>${jaxb.api.version}</version>
     </dependency>
 
-<!--
+
     <dependency>
-     <groupId>com.sun.xml.bind</groupId>
-     <artifactId>jaxb-impl</artifactId>
-     <version>${jaxb.impl.version}</version>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+      <version>1.0.0.Final</version>
     </dependency>
--->
-
-
-<!--
+    
     <dependency>
-      <groupId>org.jvnet.jaxb2_commons</groupId>
-      <artifactId>runtime</artifactId>
-      <version>${jaxb.common.version}</version>
+      <groupId>org.jvnet.hyperjaxb3</groupId>
+      <artifactId>hyperjaxb3-ejb-runtime</artifactId>
+      <version>0.5.6</version>
     </dependency>
--->
 
-<dependency>
-<groupId>org.hibernate.javax.persistence</groupId>
-<artifactId>hibernate-jpa-2.0-api</artifactId>
-<version>1.0.0.Final</version>
-</dependency>
+    <dependency>
+      <groupId>org.jvnet.hyperjaxb3</groupId>
+      <artifactId>hyperjaxb3-ejb-roundtrip</artifactId>
+      <version>0.5.6</version>
+    </dependency>
 
-<dependency>
-<groupId>org.jvnet.hyperjaxb3</groupId>
-<artifactId>hyperjaxb3-ejb-runtime</artifactId>
-<version>0.5.6</version>
-</dependency>
-<dependency>
-<groupId>org.jvnet.hyperjaxb3</groupId>
-<artifactId>hyperjaxb3-ejb-roundtrip</artifactId>
-<version>0.5.6</version>
-</dependency>
-<!--  Hibernate Dependencies  -->
-<dependency>
-<groupId>org.hibernate</groupId>
-<artifactId>hibernate-entitymanager</artifactId>
-<version>3.6.5.Final</version>
-<scope>test</scope>
-</dependency>
-<dependency>
-<groupId>org.hibernate</groupId>
-<artifactId>hibernate</artifactId>
-<version>3.2.5.ga</version>
-<scope>test</scope>
-</dependency>
-<!--  Database  -->
-<dependency>
-<groupId>hsqldb</groupId>
-<artifactId>hsqldb</artifactId>
-<version>1.8.0.7</version>
-<scope>test</scope>
-</dependency>
+    <!--  Hibernate Dependencies  -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>3.6.5.Final</version>
+      <scope>test</scope>
+    </dependency>
 
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate</artifactId>
+      <version>3.2.5.ga</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!--  Database  -->
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>1.8.0.7</version>
+      <scope>test</scope>
+    </dependency>
+    
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -1182,7 +1178,7 @@
 -->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ENTITYANDACTIVITYANDWASGENER_2/BUNDLE/" />
+  	              <arg value="-e s/STATEMENT__NAMEDBUNDLE_HJID/BUNDLE/" />
   	              <arg value="-iBAK" />
   	              <arg value="NamedBundle.java" />
                 </exec>
@@ -1197,108 +1193,9 @@
 -->
 
 <!-- renaming coluns in Documents -->
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMENTITY_DOCUMENTENTITYAND_0/ENTITY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMACTIVITY_DOCUMENTENTITYA_0/ACTIVITY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASGENERATEDBY_DOCUMENTE_0/WASGENERATEDBY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMUSED_DOCUMENTENTITYANDAC_0/USED/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASINFORMEDBY_DOCUMENTEN_0/WASINFORMEDBY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASSTARTEDBY_DOCUMENTENT_0/WASSTARTEDBY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASENDEDBY_DOCUMENTENTIT_0/WASENDEDBY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASINVALIDATEDBY_DOCUMEN_0/WASINVALIDATEDBY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASDERIVEDFROM_DOCUMENTE_0/WASDERIVEDFROM/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMAGENT_DOCUMENTENTITYANDA_0/AGENT/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASATTRIBUTEDTO_DOCUMENT_0/WASATTRIBUTEDTO/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASASSOCIATEDWITH_DOCUME_0/WASASSOCIATEDWITH/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMACTEDONBEHALFOF_DOCUMENT_0/ACTEDONBEHALFOF/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASINFLUENCEDBY_DOCUMENT_0/WASINFLUENCEDBY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMSPECIALIZATIONOF_DOCUMEN_0/SPECIALIZATIONOF/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMALTERNATEOF_DOCUMENTENTI_0/ALTERNATEOF/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMMENTIONOF_DOCUMENTENTITY_0/MENTIONOF/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMHADMEMBER_DOCUMENTENTITY_0/HADMEMBER/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMBUNDLECONTENT_DOCUMENTEN_0/BUNDLE/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
+
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/DOCUMENTENTITYANDACTIVITYAND_0/DOCUMENT_STATEMENTS/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ENTITYANDACTIVITYANDWASGENER_1/DOCUMENT/" />
+  	              <arg value="-e s/STATEMENTORBUNDLE_DOCUMENT_H_0/DOCUMENT/" />
   	              <arg value="-iBAK" />
   	              <arg value="Document.java" />
                 </exec>

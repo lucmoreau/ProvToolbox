@@ -497,21 +497,17 @@
           <inheritance:implements>org.openprovenance.prov.model.Document</inheritance:implements>
 	</jaxb:bindings>
 	<jaxb:bindings node="xs:complexType[@name='Document']//xs:sequence">
-	  <jaxb:property>
+	  <jaxb:property name="StatementOrBundle">
 	    <jaxb:baseType  name="org.openprovenance.prov.model.StatementOrBundle">
 	    </jaxb:baseType>
 	  </jaxb:property>
+	  <hj:many-to-many>
+	    <orm:join-table name="DOCUMENT_STATEMENT_JOIN">
+	      <orm:join-column name="DOCUMENT"/>
+	      <orm:inverse-join-column name="STATEMENT"/>
+	    </orm:join-table>
+	  </hj:many-to-many>
 	</jaxb:bindings>
-
-
-	<!--
-	<jaxb:bindings node="xs:complexType[@name='Document']//xs:group">
-	  <jaxb:property>
-	    <jaxb:baseType  name="org.openprovenance.prov.model.StatementOrBundle">
-	    </jaxb:baseType>
-	  </jaxb:property>
-	</jaxb:bindings>
-	-->
 
 
 
@@ -841,10 +837,16 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings node="xs:complexType[@name='NamedBundle']//xs:sequence">
-	  <jaxb:property>
+	  <jaxb:property name="Statement">
 	    <jaxb:baseType  name="org.openprovenance.prov.model.Statement">
 	    </jaxb:baseType>
 	  </jaxb:property>
+	  <hj:many-to-many>
+	    <orm:join-table name="BUNDLE_STATEMENT_JOIN">
+	      <orm:join-column name="BUNDLE"/>
+	      <orm:inverse-join-column name="STATEMENT"/>
+	    </orm:join-table>
+	  </hj:many-to-many>
 	</jaxb:bindings>
 
 

@@ -4,7 +4,7 @@
   <parent>
     <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.3.0</version>
+    <version>0.3.1-SNAPSHOT</version>
   </parent>
   <artifactId>prov-json</artifactId>
   <name>PROV-JSON</name>
@@ -21,12 +21,12 @@
     <dependency>
     	<groupId>org.openprovenance.prov</groupId>
     	<artifactId>prov-model</artifactId>
-    	<version>0.3.0</version>
+    	<version>0.3.1-SNAPSHOT</version>
     </dependency>
     <dependency>
     	<groupId>org.openprovenance.prov</groupId>
     	<artifactId>prov-n</artifactId>
-    	<version>0.3.0</version>
+    	<version>0.3.1-SNAPSHOT</version>
     </dependency>
     <dependency>
     	<groupId>org.mozilla</groupId>
@@ -42,7 +42,7 @@
     	<groupId>org.openprovenance.prov</groupId>
     	<artifactId>prov-xml</artifactId>
     	<scope>test</scope>
-    	<version>0.3.0</version>
+    	<version>0.3.1-SNAPSHOT</version>
     	<classifier>tests</classifier>
     </dependency>
     <dependency>

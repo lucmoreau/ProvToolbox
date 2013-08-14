@@ -41,6 +41,12 @@
     <jaxb:bindings schemaLocation="prov-20130307.xsd" 
                    node="/xs:schema">    
 
+      <!-- Doesn't seem to work
+      <hj:persistence>
+	<hj:default-generated-id name="pk"/>
+      </hj:persistence>
+      -->
+
       <jaxb:schemaBindings>
         <jaxb:package name="org.openprovenance.prov.sql"/>
       </jaxb:schemaBindings>
@@ -49,8 +55,8 @@
 
       <jaxb:bindings node="xs:complexType[@name='Entity']">
          <inheritance:implements>org.openprovenance.prov.model.Entity</inheritance:implements>
-	<hj:generated-property name="AnyItems" propertyName="DoDo">
-	</hj:generated-property>
+	 <hj:generated-property name="AnyItems" propertyName="DoDo">
+	 </hj:generated-property>
       </jaxb:bindings>
       <jaxb:bindings node="xs:complexType[@name='Entity']//xs:element[@ref='prov:label']">
 	<jaxb:property>

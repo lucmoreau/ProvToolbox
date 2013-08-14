@@ -16,7 +16,7 @@ import com.google.gson.GsonBuilder;
  */
 public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTripFromJavaTest
 {
-
+        final Converter convert=new Converter();
     
 	private Gson gson = new GsonBuilder()
 							.registerTypeAdapter(org.openprovenance.prov.xml.Document.class, new ProvDocumentDeserializer())
@@ -36,20 +36,17 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	
 	@Override
 	public Document readDocument(String file) {
-		try {
-			Document doc = gson.fromJson(new BufferedReader(new FileReader(file)), org.openprovenance.prov.xml.Document.class);
-			return doc;
-		} catch (Exception e) {
-			throw new UncheckedTestException(e);
-		}
+	    try {
+	        return convert.readDocument(file);
+	    } catch (Exception e) {
+	        throw new UncheckedTestException(e);
+	    }
 	}
 
 	@Override
 	public void writeDocument(Document doc, String file) {
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-			gson.toJson(doc, writer);
-			writer.close();
+		    convert.writeDocument(doc, file);
 		} catch (Exception e) {
 			throw new UncheckedTestException(e);
 		}

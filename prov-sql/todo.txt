@@ -1,4 +1,5 @@
 
+
 - QNames not properly parse in Type, Location, etc
 
 - Continue customization of colum names
@@ -6,15 +7,14 @@
   TYPE/ROLE (like location)
   ATTRIBUTE
   INTERNATIONALIZEDSTRING
-
   idref
-
 
 
 - Remove IdITEM from all beans
 
+- Deal with nss in bundle/document
 
-- deal with nss in bundle/document
+- Define ManyToMany mapping for attributes, with a single jointable?
 
 ----------------------------------------------------------------------
 

@@ -22,14 +22,13 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-model</artifactId>
-      <version>0.2.4-SNAPSHOT</version>
-
+      <version>0.3.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.2.4-SNAPSHOT</version>
+      <version>0.3.1-SNAPSHOT</version>
 
       <exclusions> 
 	<exclusion><!-- Equals defined in this jar is incompatible with one used by hyperjaxb. Instead, use jaxb2-basics-runtime below -->
@@ -43,7 +42,7 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.2.4-SNAPSHOT</version>
+      <version>0.3.1-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
 
@@ -278,6 +277,14 @@
             <configuration>
               <tasks>
 
+<!-- What I wanted to do, with a many to many join table
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	              <arg value="-e s/ public List&lt;Attribute&gt; getAny()/ 	private void ignoreMe() {} @javax.persistence.ManyToMany(targetEntity = org.openprovenance.prov.sql.Attribute.class, cascade = { CascadeType.ALL }) @javax.persistence.JoinTable (name=&quot;ATTRIBUTE_JOIN&quot;, joinColumns={@JoinColumn(name = &quot;ENTITY&quot;)}, inverseJoinColumns={@JoinColumn(name = &quot;ATTRIBUTE&quot;)}) public List&lt;Attribute&gt; getAny ()/" />
+  	              <arg value="-iBAK" />
+  	              <arg value="Entity.java" />
+                </exec>
+-->
+
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	              <arg value="-e s/ public List&lt;Attribute&gt; getAny()/ 	private void ignoreMe() {} @OneToMany(targetEntity = org.openprovenance.prov.sql.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ENTITY&quot;) public List&lt;Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
@@ -350,46 +357,8 @@
                 </exec>
 
 
-                <!-- getAny -: List Attribute -->
 
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; theAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Entity.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/any = new ArrayList&lt;Object&gt;/any = new ArrayList&lt;org.openprovenance.prov.xml.Attribute&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Entity.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; lhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; lhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Entity.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; rhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; rhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Entity.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; any/List&lt;org.openprovenance.prov.xml.Attribute&gt; any/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Entity.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Entity.java" />
-                </exec>
-
-<!-- dealing with any -->
+<!-- Entity -->
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = Entity.EntityAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
   	          <arg value="-iBAK" />
@@ -407,6 +376,19 @@
   	          <arg value="-iBAK" />
   	          <arg value="Entity.java" />
                 </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e /@javax.persistence.Entity(name = &quot;Entity$EntityAnyItem&quot;)/,/^}/ { /^}/b; s/^/\/\//g}" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Entity.java" />
+                </exec>
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/ @XmlAccessorType(XmlAccessType.FIELD)//" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Entity.java" />
+                </exec>
+
 
 <!-- WasEndedBy -->
 
@@ -430,16 +412,6 @@
   	          <arg value="-iBAK" />
   	          <arg value="WasEndedBy.java" />
                 </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; lhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; lhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasEndedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; rhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; rhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasEndedBy.java" />
-                </exec>
 
 <!-- WasStartedBy -->
 
@@ -460,16 +432,6 @@
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/ @XmlAccessorType(XmlAccessType.FIELD)//" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasStartedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; lhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; lhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasStartedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; rhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; rhsAny/" />
   	          <arg value="-iBAK" />
   	          <arg value="WasStartedBy.java" />
                 </exec>
@@ -497,16 +459,6 @@
   	          <arg value="-iBAK" />
   	          <arg value="Used.java" />
                 </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; lhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; lhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Used.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; rhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; rhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Used.java" />
-                </exec>
 
 
 <!-- WasGeneratedBy -->
@@ -528,16 +480,6 @@
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/ @XmlAccessorType(XmlAccessType.FIELD)//" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasGeneratedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; lhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; lhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasGeneratedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; rhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; rhsAny/" />
   	          <arg value="-iBAK" />
   	          <arg value="WasGeneratedBy.java" />
                 </exec>
@@ -564,16 +506,6 @@
   	          <arg value="-iBAK" />
   	          <arg value="WasInvalidatedBy.java" />
                 </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; lhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; lhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInvalidatedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; rhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; rhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInvalidatedBy.java" />
-                </exec>
 
 <!-- WasAttributedTo -->
 
@@ -594,16 +526,6 @@
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/ @XmlAccessorType(XmlAccessType.FIELD)//" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAttributedTo.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; lhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; lhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAttributedTo.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; rhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; rhsAny/" />
   	          <arg value="-iBAK" />
   	          <arg value="WasAttributedTo.java" />
                 </exec>
@@ -630,16 +552,6 @@
   	          <arg value="-iBAK" />
   	          <arg value="WasAssociatedWith.java" />
                 </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; lhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; lhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAssociatedWith.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; rhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; rhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAssociatedWith.java" />
-                </exec>
 
 <!-- WasDerivedFrom -->
 
@@ -660,16 +572,6 @@
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/ @XmlAccessorType(XmlAccessType.FIELD)//" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasDerivedFrom.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; lhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; lhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasDerivedFrom.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; rhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; rhsAny/" />
   	          <arg value="-iBAK" />
   	          <arg value="WasDerivedFrom.java" />
                 </exec>
@@ -696,16 +598,6 @@
   	          <arg value="-iBAK" />
   	          <arg value="WasInformedBy.java" />
                 </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; lhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; lhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInformedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; rhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; rhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInformedBy.java" />
-                </exec>
 
 <!-- WasInfluencedBy -->
 
@@ -726,16 +618,6 @@
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/ @XmlAccessorType(XmlAccessType.FIELD)//" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInfluencedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; lhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; lhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInfluencedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; rhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; rhsAny/" />
   	          <arg value="-iBAK" />
   	          <arg value="WasInfluencedBy.java" />
                 </exec>
@@ -762,32 +644,9 @@
   	          <arg value="-iBAK" />
   	          <arg value="ActedOnBehalfOf.java" />
                 </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; lhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; lhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ActedOnBehalfOf.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; rhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; rhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ActedOnBehalfOf.java" />
-                </exec>
 
 
-
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Element, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Activity.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Attribute&gt; getAny()/ 	@OneToMany(targetEntity = org.openprovenance.prov.model.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__ACTIVITY_HJID&quot;) public List&lt;org.openprovenance.prov.model.Attribute&gt; getAny ()/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Activity.java" />
-                </exec>
+<!-- Activity -->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = Activity.ActivityAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
@@ -797,72 +656,10 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e /@OneToMany(targetEntity = Agent.AgentAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Agent.java" />
-                </exec>
-
-
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/protected transient List&lt;Activity.ActivityAnyItem&gt; anyItems;//" />
   	          <arg value="-iBAK" />
   	          <arg value="Activity.java" />
                 </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/protected transient List&lt;Agent.AgentAnyItem&gt; anyItems;//" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Agent.java" />
-                </exec>
-
-
-                <!-- getAny -: List Attribute -->
-
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; theAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Activity.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/any = new ArrayList&lt;Object&gt;/any = new ArrayList&lt;org.openprovenance.prov.xml.Attribute&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Activity.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; any/List&lt;org.openprovenance.prov.xml.Attribute&gt; any/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Activity.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; lhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; lhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Activity.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; rhsAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; rhsAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Activity.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Activity.java" />
-                </exec>
-
-
-<!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Activity.java" />
-                </exec>
--->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@Entity(name = &quot;Activity$ActivityAnyItem&quot;)/,/^}/ { /^}/b; s/^/\/\//g}" />
@@ -874,6 +671,23 @@
   	          <arg value="-iBAK" />
   	          <arg value="Activity.java" />
                 </exec>
+
+<!-- Agent -->
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e /@OneToMany(targetEntity = Agent.AgentAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Agent.java" />
+                </exec>
+
+
+                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+  	          <arg value="-e s/protected transient List&lt;Agent.AgentAnyItem&gt; anyItems;//" />
+  	          <arg value="-iBAK" />
+  	          <arg value="Agent.java" />
+                </exec>
+
+
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@Entity(name = &quot;Agent$AgentAnyItem&quot;)/,/^}/ { /^}/b; s/^/\/\//g}" />
   	          <arg value="-iBAK" />
@@ -887,19 +701,7 @@
 
 
 
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e /@javax.persistence.Entity(name = &quot;Entity$EntityAnyItem&quot;)/,/^}/ { /^}/b; s/^/\/\//g}" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Entity.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/ @XmlAccessorType(XmlAccessType.FIELD)//" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Entity.java" />
-                </exec>
-
+<!-- IDRef -->
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
@@ -909,7 +711,7 @@
                 </exec>
 
 
-<!-- unique constraint-->
+         <!-- unique constraint-->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/@Table(name = &quot;IDREF&quot;)/@javax.persistence.Cacheable @Table(name = &quot;IDREF&quot;, uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={&quot;URI&quot;}))/" />
@@ -918,79 +720,8 @@
                 </exec>
 
 
+<!-- Document -->
 
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Element, Equals, HashCode /" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Agent.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__AGENT_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Agent.java" />
-                </exec>
-
-<!--
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Activity.ActivityTypeItem/AValue/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Activity.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Item&lt;Object&gt;/Item&lt;AValue&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Activity.java" />
-                </exec>
-
--->
-                <!-- getAny -: List Attribute -->
-
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; theAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Agent.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/any = new ArrayList&lt;Object&gt;/any = new ArrayList&lt;org.openprovenance.prov.xml.Attribute&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Agent.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; any/List&lt;org.openprovenance.prov.xml.Attribute&gt; any/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Agent.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Agent.java" />
-                </exec>
-
-
-<!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Agent.java" />
-                </exec>
--->
-
-
-<!--
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/protected List&lt;Object&gt; type/@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(ObjectAdaptor.class) protected List&lt;Object&gt; type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Agent.java" />
-                </exec>
-
--->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	              <arg value="-e s/ public int hashCode(Obj/\/* added in pom.xml *\/@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable&lt;String,String&gt; nss=null; public java.util.Hashtable&lt;String,String&gt; getNss() { return nss;} public void setNss(java.util.Hashtable&lt;String,String&gt; s) { nss=s; };public int hashCode(Obj/" />
@@ -998,201 +729,6 @@
   	              <arg value="Document.java" />
                 </exec>
 
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/List&lt;Object&gt;/List&lt;org.openprovenance.prov.model.StatementOrBundle&gt;/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Item&lt;Object&gt;/Item&lt;org.openprovenance.prov.model.StatementOrBundle&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/setItem(Object/setItem(org.openprovenance.prov.model.StatementOrBundle/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Object getItem/org.openprovenance.prov.model.StatementOrBundle getItem/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Document.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/protected Object item/protected org.openprovenance.prov.model.StatementOrBundle item/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Document.java" />
-                </exec>
-
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public int hashCode(Obj/\/* added in pom.xml *\/@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable&lt;String,String&gt; nss=null; public java.util.Hashtable&lt;String,String&gt; getNss() { return nss;} public void setNss(java.util.Hashtable&lt;String,String&gt; s) { nss=s; };public int hashCode(Obj/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/List&lt;Object&gt;/List&lt;org.openprovenance.prov.model.Statement&gt;/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.StatementOrBundle, Equals, HashCode /" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Item&lt;Object&gt;/Item&lt;org.openprovenance.prov.model.Statement&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/setItem(Object/setItem(org.openprovenance.prov.model.Statement/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Object getItem/org.openprovenance.prov.model.Statement getItem/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/protected Object item/protected org.openprovenance.prov.model.Statement item/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="NamedBundle.java" />
-                </exec>
-
-
-<!-- renaming coluns in Bundles -->
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ENTITYANDACTIVITYANDWASGENER_3/BUNDLE/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-<!--
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMENTITY_NAMEDBUNDLEENTITY_0/ENTITY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMACTIVITY_NAMEDBUNDLEENTI_0/ACTIVITY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASGENERATEDBY_NAMEDBUND_0/WASGENERATEDBY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMUSED_NAMEDBUNDLEENTITYAN_0/USED/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASINFORMEDBY_NAMEDBUNDL_0/WASINFORMEDBY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASSTARTEDBY_NAMEDBUNDLE_0/WASSTARTEDBY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASENDEDBY_NAMEDBUNDLEEN_0/WASENDEDBY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASINVALIDATEDBY_NAMEDBU_0/WASINVALIDATEDBY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASDERIVEDFROM_NAMEDBUND_0/WASDERIVEDFROM/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMAGENT_NAMEDBUNDLEENTITYA_0/AGENT/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASATTRIBUTEDTO_NAMEDBUN_0/WASATTRIBUTEDTO/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASASSOCIATEDWITH_NAMEDB_0/WASASSOCIATEDWITH/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMACTEDONBEHALFOF_NAMEDBUN_0/ACTEDONBEHALFOF/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMWASINFLUENCEDBY_NAMEDBUN_0/WASINFLUENCEDBY/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMSPECIALIZATIONOF_NAMEDBU_0/SPECIALIZATIONOF/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMALTERNATEOF_NAMEDBUNDLEE_0/ALTERNATEOF/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMMENTIONOF_NAMEDBUNDLEENT_0/MENTIONOF/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ITEMHADMEMBER_NAMEDBUNDLEENT_0/HADMEMBER/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ENTITYANDACTIVITYANDWASGENER_2/STATEMENTS/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/NAMEDBUNDLEENTITYANDACTIVITY_0/BUNDLE_STATEMENTS/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
--->
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/STATEMENT__NAMEDBUNDLE_HJID/BUNDLE/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-
-<!--
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/EntityAndActivityAndWasGeneratedBy/Statements/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-
--->
-
-<!-- renaming coluns in Documents -->
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	              <arg value="-e s/STATEMENTORBUNDLE_DOCUMENT_H_0/DOCUMENT/" />
@@ -1200,498 +736,31 @@
   	              <arg value="Document.java" />
                 </exec>
 
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ItemBundleContent/Bundle/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-
-<!--
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/EntityAndActivityAndWasGeneratedByItems/statementOrBundle/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
--->
-
-<!-- -->
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/List&lt;Object&gt;/List&lt;org.openprovenance.prov.model.Statement&gt;/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Statements.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Item&lt;Object&gt;/Item&lt;org.openprovenance.prov.model.Statement&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Statements.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/setItem(Object/setItem(org.openprovenance.prov.model.Statement/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Statements.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Object getItem/org.openprovenance.prov.model.Statement getItem/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Statements.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/protected Object item/protected org.openprovenance.prov.model.Statement item/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Statements.java" />
-                </exec>
-
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Influence, org.openprovenance.prov.model.HasType, org.openprovenance.prov.model.HasTime, org.openprovenance.prov.model.HasLocation, org.openprovenance.prov.model.HasRole, org.openprovenance.prov.model.HasLabel, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Used.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__USED_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Used.java" />
-                </exec>
-
-
-                <!-- getAny -: List Attribute -->
+		<!-- renaming coluns in Documents -->
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; theAny/" />
+  	          <arg value="-e s/ItemBundleContent/Bundle/" />
   	          <arg value="-iBAK" />
-  	          <arg value="Used.java" />
+  	          <arg value="Document.java" />
                 </exec>
+
+
+
+<!-- NamedBundle -->
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/any = new ArrayList&lt;Object&gt;/any = new ArrayList&lt;org.openprovenance.prov.xml.Attribute&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Used.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; any/List&lt;org.openprovenance.prov.xml.Attribute&gt; any/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Used.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Used.java" />
-                </exec>
-
-
-<!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Used.java" />
-                </exec>
--->
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Influence, org.openprovenance.prov.model.HasType, org.openprovenance.prov.model.HasLabel, Equals, HashCode/" />
+  	              <arg value="-e s/ public int hashCode(Obj/\/* added in pom.xml *\/@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable&lt;String,String&gt; nss=null; public java.util.Hashtable&lt;String,String&gt; getNss() { return nss;} public void setNss(java.util.Hashtable&lt;String,String&gt; s) { nss=s; };public int hashCode(Obj/" />
   	              <arg value="-iBAK" />
-  	              <arg value="WasDerivedFrom.java" />
+  	              <arg value="NamedBundle.java" />
                 </exec>
 
 
+
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASDERIVEDFROM_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
+  	              <arg value="-e s/STATEMENT__NAMEDBUNDLE_HJID/BUNDLE/" />
   	              <arg value="-iBAK" />
-  	              <arg value="WasDerivedFrom.java" />
-                </exec>
-
-                <!-- getAny -: List Attribute -->
-
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; theAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasDerivedFrom.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/any = new ArrayList&lt;Object&gt;/any = new ArrayList&lt;org.openprovenance.prov.xml.Attribute&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasDerivedFrom.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; any/List&lt;org.openprovenance.prov.xml.Attribute&gt; any/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasDerivedFrom.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasDerivedFrom.java" />
-                </exec>
-
-
-<!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasDerivedFrom.java" />
-                </exec>
--->
- 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Relation0, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="AlternateOf.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Relation0, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="HadMember.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Relation0, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="SpecializationOf.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Relation0, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="MentionOf.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Influence, org.openprovenance.prov.model.HasRole, org.openprovenance.prov.model.HasType, org.openprovenance.prov.model.HasLabel, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasAssociatedWith.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASASSOCIATEDWITH_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasAssociatedWith.java" />
-                </exec>
-
-
-                <!-- getAny -: List Attribute -->
-
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; theAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAssociatedWith.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/any = new ArrayList&lt;Object&gt;/any = new ArrayList&lt;org.openprovenance.prov.xml.Attribute&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAssociatedWith.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; any/List&lt;org.openprovenance.prov.xml.Attribute&gt; any/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAssociatedWith.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAssociatedWith.java" />
-                </exec>
-
-
-<!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAssociatedWith.java" />
-                </exec>
--->
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Influence, org.openprovenance.prov.model.HasType, org.openprovenance.prov.model.HasLabel, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasAttributedTo.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASATTRIBUTEDTO_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasAttributedTo.java" />
-                </exec>
-
-                <!-- getAny -: List Attribute -->
-
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; theAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAttributedTo.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/any = new ArrayList&lt;Object&gt;/any = new ArrayList&lt;org.openprovenance.prov.xml.Attribute&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAttributedTo.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; any/List&lt;org.openprovenance.prov.xml.Attribute&gt; any/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAttributedTo.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAttributedTo.java" />
-                </exec>
-
-
-<!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAttributedTo.java" />
-                </exec>
--->
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Influence, org.openprovenance.prov.model.HasType, org.openprovenance.prov.model.HasLabel, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="ActedOnBehalfOf.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__ACTEDONBEHALFOF_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="ActedOnBehalfOf.java" />
-                </exec>
-
-                <!-- getAny -: List Attribute -->
-
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; theAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ActedOnBehalfOf.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/any = new ArrayList&lt;Object&gt;/any = new ArrayList&lt;org.openprovenance.prov.xml.Attribute&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ActedOnBehalfOf.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; any/List&lt;org.openprovenance.prov.xml.Attribute&gt; any/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ActedOnBehalfOf.java" />
-                </exec>
-
-
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ActedOnBehalfOf.java" />
-                </exec>
-
-
-<!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ActedOnBehalfOf.java" />
-                </exec>
--->
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Influence, org.openprovenance.prov.model.HasRole, org.openprovenance.prov.model.HasTime, org.openprovenance.prov.model.HasLocation, org.openprovenance.prov.model.HasType, org.openprovenance.prov.model.HasLabel, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasGeneratedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASGENERATEDBY_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasGeneratedBy.java" />
-                </exec>
-
-                <!-- getAny -: List Attribute -->
-
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; theAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasGeneratedBy.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/any = new ArrayList&lt;Object&gt;/any = new ArrayList&lt;org.openprovenance.prov.xml.Attribute&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasGeneratedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; any/List&lt;org.openprovenance.prov.xml.Attribute&gt; any/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasGeneratedBy.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasGeneratedBy.java" />
-                </exec>
-
-
-<!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasGeneratedBy.java" />
-                </exec>
--->
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Influence, org.openprovenance.prov.model.HasRole, org.openprovenance.prov.model.HasTime, org.openprovenance.prov.model.HasLocation, org.openprovenance.prov.model.HasType, org.openprovenance.prov.model.HasLabel, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasInvalidatedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASINVALIDATEDBY_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasInvalidatedBy.java" />
-                </exec>
-
-                <!-- getAny -: List Attribute -->
-
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; theAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInvalidatedBy.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/any = new ArrayList&lt;Object&gt;/any = new ArrayList&lt;org.openprovenance.prov.xml.Attribute&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInvalidatedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; any/List&lt;org.openprovenance.prov.xml.Attribute&gt; any/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInvalidatedBy.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInvalidatedBy.java" />
-                </exec>
-
-
-<!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInvalidatedBy.java" />
-                </exec>
--->
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Influence, org.openprovenance.prov.model.HasRole, org.openprovenance.prov.model.HasTime, org.openprovenance.prov.model.HasLocation, org.openprovenance.prov.model.HasType, org.openprovenance.prov.model.HasLabel, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasStartedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASSTARTEDBY_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasStartedBy.java" />
-                </exec>
-
-                <!-- getAny -: List Attribute -->
-
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; theAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasStartedBy.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/any = new ArrayList&lt;Object&gt;/any = new ArrayList&lt;org.openprovenance.prov.xml.Attribute&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasStartedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; any/List&lt;org.openprovenance.prov.xml.Attribute&gt; any/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasStartedBy.java" />
-                </exec>
-
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasStartedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasStartedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasGeneratedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Used.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Activity.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Entity.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Agent.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInvalidatedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasEndedBy.java" />
+  	              <arg value="NamedBundle.java" />
                 </exec>
 
 <!-- IDRef -->
@@ -1699,7 +768,7 @@
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
-  	          <arg value="Activity.java" />
+  	          <arg value="Entity.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
@@ -1709,7 +778,7 @@
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
-  	          <arg value="Entity.java" />
+  	          <arg value="Activity.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
@@ -1767,303 +836,7 @@
   	          <arg value="WasInfluencedBy.java" />
                 </exec>
 
-
-
-<!-- Type -->
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Activity.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAttributedTo.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAssociatedWith.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Entity.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasGeneratedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Used.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInformedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasStartedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasEndedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInvalidatedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasDerivedFrom.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Agent.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ActedOnBehalfOf.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInfluencedBy.java" />
-                </exec>
-
-<!-- Value -->
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlValue/org.openprovenance.prov.xml.Value/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Entity.java" />
-                </exec>
-
-
-
-<!-- Role -->
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasAssociatedWith.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasGeneratedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="Used.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasStartedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasEndedBy.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInvalidatedBy.java" />
-                </exec>
-
-
-<!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasStartedBy.java" />
-                </exec>
--->
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Influence, org.openprovenance.prov.model.HasRole, org.openprovenance.prov.model.HasTime, org.openprovenance.prov.model.HasLocation, org.openprovenance.prov.model.HasType, org.openprovenance.prov.model.HasLabel, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasEndedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASENDEDBY_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasEndedBy.java" />
-                </exec>
-
-
-                <!-- getAny -: List Attribute -->
-
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; theAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasEndedBy.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/any = new ArrayList&lt;Object&gt;/any = new ArrayList&lt;org.openprovenance.prov.xml.Attribute&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasEndedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; any/List&lt;org.openprovenance.prov.xml.Attribute&gt; any/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasEndedBy.java" />
-                </exec>
-
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasEndedBy.java" />
-                </exec>
-
-
-<!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasEndedBy.java" />
-                </exec>
--->
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Influence, org.openprovenance.prov.model.HasType, org.openprovenance.prov.model.HasLabel, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasInformedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASINFORMEDBY_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasInformedBy.java" />
-                </exec>
-
-                <!-- getAny -: List Attribute -->
-
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; theAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInformedBy.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/any = new ArrayList&lt;Object&gt;/any = new ArrayList&lt;org.openprovenance.prov.xml.Attribute&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInformedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; any/List&lt;org.openprovenance.prov.xml.Attribute&gt; any/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInformedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInformedBy.java" />
-                </exec>
-
-
-<!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInformedBy.java" />
-                </exec>
--->
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements org.openprovenance.prov.model.Influence, org.openprovenance.prov.model.HasType, org.openprovenance.prov.model.HasLabel, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasInfluencedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;org.openprovenance.prov.xml.Attribute&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); }  \n\n	@OneToMany(targetEntity = org.openprovenance.prov.xml.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ANY__WASINFLUENCEDBY_HJID&quot;) public List&lt;org.openprovenance.prov.xml.Attribute&gt; getAny ()/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="WasInfluencedBy.java" />
-                </exec>
-
-
-                <!-- getAny -: List Attribute -->
-
-		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; theAny/List&lt;org.openprovenance.prov.xml.Attribute&gt; theAny/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInfluencedBy.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/any = new ArrayList&lt;Object&gt;/any = new ArrayList&lt;org.openprovenance.prov.xml.Attribute&gt;/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInfluencedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; any/List&lt;org.openprovenance.prov.xml.Attribute&gt; any/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInfluencedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/List&lt;Object&gt; any/List&lt;org.openprovenance.prov.xml.Attribute&gt; any/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInfluencedBy.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInfluencedBy.java" />
-                </exec>
-
-<!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/Internationalized/org.openprovenance.prov.xml.Internationalized/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="WasInfluencedBy.java" />
-                </exec>
--->
-
-
-<!--
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/implements Equals, HashCode/implements Influence, HasType, Equals, HashCode/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="DerivedByInsertionFrom.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/ public List&lt;Object&gt; getAny()/ @javax.xml.bind.annotation.XmlTransient private org.openprovenance.prov.xml.AttributeProcessor _attrs=new org.openprovenance.prov.xml.AttributeProcessor(getAny()); public java.util.Hashtable&lt;String,List&lt;Object&gt;&gt; attributesWithNamespace(String namespace) { return _attrs.attributesWithNamespace(namespace); } public List&lt;Object&gt; getAny ()/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="DerivedByInsertionFrom.java" />
-                </exec>
-
--->
-
-
-
+<!-- ObjectFactory -->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	              <arg value="-e s/new Attribute()/null/" />
@@ -2075,96 +848,15 @@
   	              <arg value="-iBAK" />
   	              <arg value="ObjectFactory.java" />
                 </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/createOrgOpenprovenanceProvXmlLocation/createLocation/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec><!-- do it twice !! -->
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec><!-- do it twice !! -->
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/createOrgOpenprovenanceProvXmlRole/createRole/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec><!-- do it twice !! -->
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec><!-- do it twice !! -->
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/createOrgOpenprovenanceProvXmlType/createType/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec><!-- do it twice !! -->
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec><!-- do it twice !! -->
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/createOrgOpenprovenanceProvXmlValue/createValue/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec><!-- do it twice !! -->
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlValue/org.openprovenance.prov.xml.Value/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec><!-- do it twice !! -->
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlValue/org.openprovenance.prov.xml.Value/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/createOrgOpenprovenanceProvXmlAttribute/createAttribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec><!-- do it twice !! -->
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec><!-- do it twice !! -->
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec>
 
-
-
-
-
+<!-- remove some auto-generated files -->
 
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
                      <arg value="TypedValue.java" />
                 </exec>
-
-
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
                      <arg value="Attribute.java" />
                 </exec>
-
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
                      <arg value="Location.java" />
                 </exec>
@@ -2174,90 +866,18 @@
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
                      <arg value="Role.java" />
                 </exec>
-
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
                      <arg value="Value.java" />
                 </exec>
 
 
-
-
-
-
-<!--
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/equalsBuilder.append(this.getContent(), that.getContent());/\/\/Luc: equalsBuilder.append(this.getContent(), that.getContent());/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Value.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	              <arg value="-e s/hashCodeBuilder.append(this.getContent());/\/\/Luc: hashCodeBuilder.append(this.getContent());/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Value.java" />
-                </exec>
--->
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
-  	          <arg value="-e s/org.openprovenance.prov.sql.OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="sun-jaxb.episode" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
-  	          <arg value="-e s/org.openprovenance.prov.sql.OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="sun-jaxb.episode" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
-  	          <arg value="-e s/org.openprovenance.prov.sql.OrgOpenprovenanceProvXmlTypedValue/org.openprovenance.prov.xml.TypedValue/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="sun-jaxb.episode" />
-                </exec>
-
-<!--                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/">
-  	          <arg value="-e 1,/org.openprovenance.prov.sql/ s/org.openprovenance.prov.sql/org.openprovenance.prov.sql:org.openprovenance.prov.xml/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="RoundtripTest.java" />
-                </exec>
--->
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
-  	          <arg value="-e s/org.openprovenance.prov.sql.OrgOpenprovenanceProvXmlAttribute/org.openprovenance.prov.xml.Attribute/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="persistence.xml" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
-  	          <arg value="-e s/org.openprovenance.prov.sql.OrgOpenprovenanceProvXmlLocation/org.openprovenance.prov.xml.Location/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="persistence.xml" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
-  	          <arg value="-e s/org.openprovenance.prov.sql.OrgOpenprovenanceProvXmlType/org.openprovenance.prov.xml.Type/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="persistence.xml" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
-  	          <arg value="-e s/org.openprovenance.prov.sql.OrgOpenprovenanceProvXmlRole/org.openprovenance.prov.xml.Role/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="persistence.xml" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
-  	          <arg value="-e s/org.openprovenance.prov.sql.OrgOpenprovenanceProvXmlValue/org.openprovenance.prov.xml.Value/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="persistence.xml" />
-                </exec>
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
-  	          <arg value="-e s/OrgOpenprovenanceProvXmlTypedValue/org.openprovenance.prov.xml.TypedValue/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="persistence.xml" />
-                </exec>
+<!-- persistence.xml -->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
   	          <arg value="-e s/&lt;class&gt;org.openprovenance.prov.sql.Activity$ActivityAnyItem&lt;\/class&gt;//" />
   	          <arg value="-iBAK" />
   	          <arg value="persistence.xml" />
                 </exec>
-
-
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
   	          <arg value="-e s/org.openprovenance.prov.sql.Others/org.openprovenance.prov.sql.Attribute/" />
@@ -2271,13 +891,8 @@
   	          <arg value="persistence.xml" />
                 </exec>
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
-  	          <arg value="-e s/&lt;class&gt;org.openprovenance.prov.sql.Essai$EssaiLieuItem&lt;\/class&gt;//" />
-  	          <arg value="-iBAK" />
-  	          <arg value="persistence.xml" />
-                </exec>
 
-		<!-- declare Adapter in package -->
+<!-- declare Adapter in package -->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/^@javax.xml.bind.annotation.XmlSchema/@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(AnyAdapter.class)@javax.xml.bind.annotation.XmlSchema/" />

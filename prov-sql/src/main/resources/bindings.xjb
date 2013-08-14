@@ -49,6 +49,8 @@
 
       <jaxb:bindings node="xs:complexType[@name='Entity']">
          <inheritance:implements>org.openprovenance.prov.model.Entity</inheritance:implements>
+	<hj:generated-property name="AnyItems" propertyName="DoDo">
+	</hj:generated-property>
       </jaxb:bindings>
       <jaxb:bindings node="xs:complexType[@name='Entity']//xs:element[@ref='prov:label']">
 	<jaxb:property>
@@ -71,12 +73,6 @@
 	  </jaxb:baseType>
 	</jaxb:property>
       </jaxb:bindings>
-      <jaxb:bindings node="xs:complexType[@name='Entity']//xs:any">
-	<jaxb:property>
-	  <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
-	  </jaxb:baseType>
-	</jaxb:property>
-      </jaxb:bindings>
       <jaxb:bindings node="xs:complexType[@name='Entity']//xs:element[@ref='prov:value']">
 	<jaxb:property>
 	  <jaxb:baseType  name="org.openprovenance.prov.model.Value">
@@ -86,6 +82,14 @@
 	  <orm:join-column name="VALUE"/>
 	</hj:many-to-one>
       </jaxb:bindings>
+
+      <jaxb:bindings node="xs:complexType[@name='Entity']//xs:any">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+
 
 
       <!-- Activity -->

@@ -194,7 +194,7 @@ public class QualifiedCollector extends RdfCollector {
 	private void nullifyBNodes()
 	{
 		for (StatementOrBundle sob : document
-				.getEntityAndActivityAndWasGeneratedBy())
+				.getStatementOrBundle())
 		{
 			if (sob instanceof Identifiable)
 			{

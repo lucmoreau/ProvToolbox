@@ -242,12 +242,6 @@
                 </exec>
 
 
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/List&lt;Object&gt;/List&lt;org.openprovenance.prov.model.StatementOrBundle&gt;/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-
 		<!-- Bundle -->
 
 

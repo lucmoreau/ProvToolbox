@@ -410,15 +410,14 @@
           <inheritance:implements>org.openprovenance.prov.model.Document</inheritance:implements>
 	</jaxb:bindings>
 
-
-	<!--
-	<jaxb:bindings node="xs:complexType[@name='Document']//xs:group">
-	  <jaxb:property>
+	<jaxb:bindings node="xs:complexType[@name='Document']//xs:sequence">
+	  <jaxb:property name="StatementOrBundle">
 	    <jaxb:baseType  name="org.openprovenance.prov.model.StatementOrBundle">
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
-	-->
+
+
 
 
 
@@ -697,7 +696,7 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings node="xs:complexType[@name='NamedBundle']//xs:sequence">
-	  <jaxb:property>
+	  <jaxb:property name="Statement">
 	    <jaxb:baseType  name="org.openprovenance.prov.model.Statement">
 	    </jaxb:baseType>
 	  </jaxb:property>

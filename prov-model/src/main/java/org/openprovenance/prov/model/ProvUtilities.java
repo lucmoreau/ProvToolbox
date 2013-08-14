@@ -21,57 +21,57 @@ public class ProvUtilities {
 
     public List<Relation0> getRelations(Document d) {
         return getObject(Relation0.class,
-                         d.getEntityAndActivityAndWasGeneratedBy());
+                         d.getStatementOrBundle());
     }
 
     public List<Entity> getEntity(Document d) {
-        return getObject(Entity.class, d.getEntityAndActivityAndWasGeneratedBy());
+        return getObject(Entity.class, d.getStatementOrBundle());
     }
 
     public List<Activity> getActivity(Document d) {
         return getObject(Activity.class,
-                         d.getEntityAndActivityAndWasGeneratedBy());
+                         d.getStatementOrBundle());
     }
 
     public List<Agent> getAgent(Document d) {
-        return getObject(Agent.class, d.getEntityAndActivityAndWasGeneratedBy());
+        return getObject(Agent.class, d.getStatementOrBundle());
     }
 
     public List<NamedBundle> getBundle(Document d) {
-        return getObject(NamedBundle.class, d.getEntityAndActivityAndWasGeneratedBy());
+        return getObject(NamedBundle.class, d.getStatementOrBundle());
     }
 
     public List<Relation0> getRelations(NamedBundle d) {
         return getObject2(Relation0.class,
-                         d.getEntityAndActivityAndWasGeneratedBy());
+                         d.getStatement());
     }
 
     public List<Entity> getEntity(NamedBundle d) {
-        return getObject2(Entity.class, d.getEntityAndActivityAndWasGeneratedBy());
+        return getObject2(Entity.class, d.getStatement());
     }
 
     public List<Activity> getActivity(NamedBundle d) {
         return getObject2(Activity.class,
-                         d.getEntityAndActivityAndWasGeneratedBy());
+                         d.getStatement());
     }
 
     public List<Agent> getAgent(NamedBundle d) {
-        return getObject2(Agent.class, d.getEntityAndActivityAndWasGeneratedBy());
+        return getObject2(Agent.class, d.getStatement());
     }
 
     public List<NamedBundle> getNamedBundle(Document d) {
         return getObject(NamedBundle.class,
-                         d.getEntityAndActivityAndWasGeneratedBy());
+                         d.getStatementOrBundle());
     }
 
     public List<Statement> getStatement(Document d) {
 	return getObject(Statement.class,
-	                 d.getEntityAndActivityAndWasGeneratedBy());
+	                 d.getStatementOrBundle());
     }
 
     @SuppressWarnings("unchecked")
     public List<Statement> getStatement(NamedBundle d) {
-        List<?> res = d.getEntityAndActivityAndWasGeneratedBy();
+        List<?> res = d.getStatement();
         return (List<Statement>) res;
     }
 

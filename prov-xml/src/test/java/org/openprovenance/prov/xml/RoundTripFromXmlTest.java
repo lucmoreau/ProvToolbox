@@ -113,11 +113,11 @@ public class RoundTripFromXmlTest extends TestCase {
     public void makeDocAndTest(Statement []stment, NamedBundle[] bundles, String file, Statement[] opt, boolean check) {
 	Document doc = pFactory.newDocument();
 	for (int i=0; i< stment.length; i++) {
-	   doc.getEntityAndActivityAndWasGeneratedBy().add(stment[i]);
+	   doc.getStatementOrBundle().add(stment[i]);
 	}
 	if (bundles!=null) {
 	    for (int j=0; j<bundles.length; j++) {
-	        doc.getEntityAndActivityAndWasGeneratedBy().add(bundles[j]);
+	        doc.getStatementOrBundle().add(bundles[j]);
 	    }
 	}
 	updateNamespaces(doc);
@@ -127,7 +127,7 @@ public class RoundTripFromXmlTest extends TestCase {
 	
 	if (opt!=null) {
 	    String file2=file+"-M";
-            doc.getEntityAndActivityAndWasGeneratedBy().addAll(Arrays.asList(opt));
+            doc.getStatementOrBundle().addAll(Arrays.asList(opt));
 	    compareDocAndFile(doc, file2, check);
 	}
     }
@@ -235,7 +235,7 @@ public class RoundTripFromXmlTest extends TestCase {
     public void testIssue() throws Exception {
   	Document doc=testFile("issue-type", false);
   	
-	Agent ag=(Agent)doc.getEntityAndActivityAndWasGeneratedBy().get(0);
+	Agent ag=(Agent)doc.getStatementOrBundle().get(0);
 	System.out.println("agent" +ag);
 	System.out.println("agent type " +ag.getType());
 	System.out.println("agent type " +ag.getType().get(0));

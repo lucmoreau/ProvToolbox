@@ -443,25 +443,25 @@ public class RdfCollector extends RDFHandlerBase {
 			for (org.openprovenance.prov.model.Activity activity : defaultBundle
 					.getActivities())
 			{
-				document.getEntityAndActivityAndWasGeneratedBy().add(activity);
+				document.getStatementOrBundle().add(activity);
 			}
 
 			for (org.openprovenance.prov.model.Agent agent : defaultBundle
 					.getAgents())
 			{
-				document.getEntityAndActivityAndWasGeneratedBy().add(agent);
+				document.getStatementOrBundle().add(agent);
 			}
 
 			for (org.openprovenance.prov.model.Entity entity : defaultBundle
 					.getEntities())
 			{
-				document.getEntityAndActivityAndWasGeneratedBy().add(entity);
+				document.getStatementOrBundle().add(entity);
 			}
 
 			for (org.openprovenance.prov.model.Statement statement : defaultBundle
 					.getStatements())
 			{
-				document.getEntityAndActivityAndWasGeneratedBy().add(statement);
+				document.getStatementOrBundle().add(statement);
 			}
 		}
 
@@ -478,7 +478,7 @@ public class RdfCollector extends RDFHandlerBase {
 			statements.addAll(bundleHolder.getAgents());
 			statements.addAll(bundleHolder.getStatements());
 			NamedBundle bundle = pFactory.newNamedBundle(key, null, statements);
-			document.getEntityAndActivityAndWasGeneratedBy().add(bundle);
+			document.getStatementOrBundle().add(bundle);
 		}
 
 	}

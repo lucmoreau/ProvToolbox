@@ -23,7 +23,7 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities{
     public MentionOf getMentionForRemoteEntity(NamedBundle local,
                                                Entity remoteEntity,
                                                NamedBundle remote) {        
-        return getMentionForLocalEntity(local.getEntityAndActivityAndWasGeneratedBy(),
+        return getMentionForLocalEntity(local.getStatement(),
                                          remoteEntity, remote);
     }
 
@@ -51,7 +51,7 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities{
     public MentionOf getMentionForLocalEntity(NamedBundle local,
                                               Entity localEntity,
                                               NamedBundle remote) {
-        return getMentionForLocalEntity(local.getEntityAndActivityAndWasGeneratedBy(),
+        return getMentionForLocalEntity(local.getStatement(),
                                         localEntity, remote);
     }
 

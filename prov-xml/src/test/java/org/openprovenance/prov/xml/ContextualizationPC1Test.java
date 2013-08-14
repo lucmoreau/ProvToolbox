@@ -151,7 +151,7 @@ public class ContextualizationPC1Test extends TestCase {
 	String bName = "b123"; // needs to be generated
 
 	NamedBundle bun = makePC1FullGraph(pFactory, bName);
-	graph.getEntityAndActivityAndWasGeneratedBy().add(bun);
+	graph.getStatementOrBundle().add(bun);
 
 	Hashtable<String, String> namespaces = new Hashtable<String, String>();
 	// currently, no prefix used, all qnames map to PC1_NS
@@ -166,9 +166,9 @@ public class ContextualizationPC1Test extends TestCase {
 	MentionOf ctx = pFactory.newMentionOf(a, globalA1, bunEntity);
 	pFactory.addAttribute(a, DOT_NS, DOT_PREFIX, "color", "blue", vconv);
 
-	graph.getEntityAndActivityAndWasGeneratedBy().add(bunEntity);
-	graph.getEntityAndActivityAndWasGeneratedBy().add(a);
-	graph.getEntityAndActivityAndWasGeneratedBy().add(ctx);
+	graph.getStatementOrBundle().add(bunEntity);
+	graph.getStatementOrBundle().add(a);
+	graph.getStatementOrBundle().add(ctx);
 
 	Hashtable<String, String> nss = new Hashtable<String, String>();
 	// choose here, how serialization to xml to be made

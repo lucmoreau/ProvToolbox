@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface Document {
 
-    List<StatementOrBundle> getEntityAndActivityAndWasGeneratedBy();
+    List<StatementOrBundle> getStatementOrBundle();
 
     void setNss(Hashtable<String, String> namespaces);
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface NamedBundle extends Identifiable, StatementOrBundle {
 
-    List<Statement> getEntityAndActivityAndWasGeneratedBy();
+    List<Statement> getStatement();
 
     void setNss(Hashtable<String, String> namespaces);
 

@@ -736,10 +736,10 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     public Document newDocument(Collection<Activity> ps, Collection<Entity> as,
 				Collection<Agent> ags, Collection<Statement> lks) {
 	Document res = of.createDocument();
-	res.getEntityAndActivityAndWasGeneratedBy().addAll(ps);
-	res.getEntityAndActivityAndWasGeneratedBy().addAll(as);
-	res.getEntityAndActivityAndWasGeneratedBy().addAll(ags);
-	res.getEntityAndActivityAndWasGeneratedBy().addAll(lks);
+	res.getStatementOrBundle().addAll(ps);
+	res.getStatementOrBundle().addAll(as);
+	res.getStatementOrBundle().addAll(ags);
+	res.getStatementOrBundle().addAll(lks);
 	return res;
     }
     public Document newDocument(Hashtable<String, String> namespaces,
@@ -747,17 +747,17 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
                                 Collection<NamedBundle> bundles) {
 	Document res = of.createDocument();
 	res.setNss(namespaces);
-	res.getEntityAndActivityAndWasGeneratedBy()
+	res.getStatementOrBundle()
 	   .addAll(statements);
-	res.getEntityAndActivityAndWasGeneratedBy()
+	res.getStatementOrBundle()
 	   .addAll(bundles);
 	return res;
     }
 
     public Document newDocument(Document graph) {
 	Document res = of.createDocument();
-	res.getEntityAndActivityAndWasGeneratedBy()
-	   .addAll(graph.getEntityAndActivityAndWasGeneratedBy());
+	res.getStatementOrBundle()
+	   .addAll(graph.getStatementOrBundle());
 	return res;
     }
 
@@ -1020,16 +1020,16 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.setId(id);
 
 	if (ps != null) {
-	    res.getEntityAndActivityAndWasGeneratedBy().addAll(ps);
+	    res.getStatement().addAll(ps);
 	}
 	if (as != null) {
-	    res.getEntityAndActivityAndWasGeneratedBy().addAll(as);
+	    res.getStatement().addAll(as);
 	}
 	if (ags != null) {
-	    res.getEntityAndActivityAndWasGeneratedBy().addAll(ags);
+	    res.getStatement().addAll(ags);
 	}
 	if (lks != null) {
-	    res.getEntityAndActivityAndWasGeneratedBy().addAll(lks);
+	    res.getStatement().addAll(lks);
 	}
 	return res;
     }
@@ -1039,7 +1039,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.setId(id);
 
 	if (lks != null) {
-	    res.getEntityAndActivityAndWasGeneratedBy().addAll(lks);
+	    res.getStatement().addAll(lks);
 	}
 	return res;
     }
@@ -1049,7 +1049,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.setId(id);
 	res.setNss(namespaces);
 	if (statements != null) {
-	    res.getEntityAndActivityAndWasGeneratedBy().addAll(statements);
+	    res.getStatement().addAll(statements);
 	}
 	return res;
     }

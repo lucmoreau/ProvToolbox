@@ -170,9 +170,18 @@ public class Attribute implements org.openprovenance.prov.model.Attribute {
  	} else if (val instanceof QName) {
  	    QName qn = (QName) val;	    
  	    return "'" + qnameToString(qn) + "'";
+ 	} else if (val instanceof String) {
+	    String s=(String)val;
+	    if (s.contains("\n")) {
+		// return "\"\"\"" + val + "\"\"\" %% " + qnameToString(xsdType);
+		return "\"\"\"" + val + "\"\"\"" ;
+	    } else {
+		return "\"" + val + "\" %% " + qnameToString(xsdType);
+	    }
  	} else {
+	    // We should never be here!
  	    return "\"" + val + "\" %% " + qnameToString(xsdType);
- 	}
+	}
      }
   
     

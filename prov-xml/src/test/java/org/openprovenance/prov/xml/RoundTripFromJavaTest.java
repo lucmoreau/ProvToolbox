@@ -230,6 +230,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "bye", vconv));
 	//he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), "xsd:string"));
 	he.getAny().add(pFactory.newAttribute(EX2_NS,"tag3",EX2_PREFIX, "hi", vconv));
+	he.getAny().add(pFactory.newAttribute(EX_NS,"tag1",EX_PREFIX,"hello\nover\nmore\nlines", vconv));
 
     }
 

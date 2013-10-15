@@ -96,3 +96,9 @@ jpl:
 # TODO
 #	target/appassembler/bin/provconvert -xml2dot target/jpl.xml target/jpl.dot target/jpl.pdf ../prov-dot/src/main/resources/configFamily.xml 
 
+#http://mojo.codehaus.org/license-maven-plugin/index.html
+license:
+	mvn license:add-third-party
+
+missing:
+	mvn license:add-third-party -Dlicense.useMissingFile

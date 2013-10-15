@@ -11,6 +11,7 @@ package org.openprovenance.prov.xml;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
@@ -25,6 +26,8 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBEqualsBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * <p>Java class for Location complex type.
@@ -48,7 +51,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
     "value"
 })
 public class TypedValue
-    implements Equals, HashCode, ToString
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.TypedValue
 {
 
     @XmlValue
@@ -58,55 +61,51 @@ public class TypedValue
     @XmlAttribute(name = "type", namespace = "http://www.w3.org/2001/XMLSchema-instance")
     protected QName type;
 
+    @XmlAnyAttribute
+    protected Map<QName, String> attributes=new HashMap<QName, String>();
+
+
     transient protected Object valueAsJava;
 
-    /**
-     * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *     
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.TypIN#getValue()
      */
+    @Override
     public Object getValue() {
         return value;
     }
 
-    /**
-     * Sets the value of the value property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Object }
-     *     
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.TypIN#setValue(java.lang.Object)
      */
+    @Override
     public void setValue(Object value) {
         this.value = value;
     }
 
 
 
-    /**
-     * Gets the value of the type property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QName }
-     *     
+    public Map<QName, String> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Map<QName, String> attributes) {
+        this.attributes = attributes;
+    }
+
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.TypIN#getType()
      */
+    @Override
     public QName getType() {
         return type;
     }
 
-    /**
-     * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *     
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.TypIN#getValueAsJava(org.openprovenance.prov.xml.ValueConverter)
      */
-    public Object getValueAsJava(ValueConverter vconv) {
+    @Override
+    public Object getValueAsJava(org.openprovenance.prov.model.ValueConverter vconv) {
     	if (valueAsJava==null) {
     		valueAsJava=vconv.convertToJava(getType(), (String)value);
     	}
@@ -114,17 +113,19 @@ public class TypedValue
     }
 
 
-    /**
-     * Sets the value of the value property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Object }
-     *     
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.TypIN#setValueAsJava(java.lang.Object)
      */
+    @Override
     public void setValueAsJava(Object valueAsJava) {
-	if (valueAsJava!=null)
-	    this.value = valueAsJava.toString();
+	if (valueAsJava!=null) {
+	    if (valueAsJava instanceof QName) {
+		QName q=(QName) valueAsJava;
+		this.value=q.getPrefix()+":"+q.getLocalPart();
+	    } else {
+		this.value = valueAsJava.toString();
+	    }
+	}
         this.valueAsJava = valueAsJava;
     }
 
@@ -136,6 +137,10 @@ public class TypedValue
      *     {@link QName }
      *     
      */
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.TypIN#setType(javax.xml.namespace.QName)
+     */
+    @Override
     public void setType(QName value) {
         this.type = value;
     }
@@ -150,13 +155,13 @@ public class TypedValue
         if (this == object) {
             return ;
         }
-        final Location that = ((Location) object);
+        final TypedValue that = ((TypedValue) object);
         equalsBuilder.append(this.getValue(), that.getValue());
         equalsBuilder.append(this.getType(), that.getType());
     }
 
     public boolean equals(Object object) {
-        if (!(object instanceof Location)) {
+        if (!(object instanceof TypedValue)) {
             return false;
         }
         if (this == object) {

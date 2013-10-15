@@ -3,10 +3,11 @@ import java.io.File;
 import java.util.Hashtable;
 import javax.xml.bind.JAXBException;
 import junit.framework.TestCase;
+
 import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import  org.antlr.runtime.tree.CommonTree;
 
 /**

@@ -1,56 +1,49 @@
 package org.openprovenance.prov.dot;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import javax.xml.namespace.QName;
+import java.util.List;
+
 import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.xml.Attribute;
-import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.Entity;
-import org.openprovenance.prov.xml.Activity;
-import org.openprovenance.prov.xml.NamedBundle;
-import org.openprovenance.prov.xml.Relation0;
-import org.openprovenance.prov.xml.Influence;
-import org.openprovenance.prov.xml.Agent;
-import org.openprovenance.prov.xml.Used;
-import org.openprovenance.prov.xml.HasType;
-import org.openprovenance.prov.xml.AlternateOf;
-import org.openprovenance.prov.xml.SpecializationOf;
-import org.openprovenance.prov.xml.WasGeneratedBy;
-import org.openprovenance.prov.xml.WasDerivedFrom;
-import org.openprovenance.prov.xml.WasInvalidatedBy;
-import org.openprovenance.prov.xml.WasInformedBy;
-import org.openprovenance.prov.xml.WasInfluencedBy;
-import org.openprovenance.prov.xml.WasStartedBy;
-import org.openprovenance.prov.xml.WasEndedBy;
-import org.openprovenance.prov.xml.ActedOnBehalfOf;
-import org.openprovenance.prov.xml.WasAttributedTo;
-import org.openprovenance.prov.xml.WasAssociatedWith;
-import org.openprovenance.prov.xml.DerivedByInsertionFrom;
-import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.xml.ProvUtilities;
-import org.openprovenance.prov.xml.Identifiable;
+import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.Agent;
+import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Entity;
+import org.openprovenance.prov.model.HasExtensibility;
+import org.openprovenance.prov.model.HasType;
+import org.openprovenance.prov.model.Identifiable;
+import org.openprovenance.prov.model.Influence;
+import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Relation0;
+import org.openprovenance.prov.model.Type;
+import org.openprovenance.prov.model.ActedOnBehalfOf;
+import org.openprovenance.prov.model.AlternateOf;
+import org.openprovenance.prov.model.DerivedByInsertionFrom;
 import org.openprovenance.prov.xml.ProvDeserialiser;
-import org.openprovenance.prov.xml.HasExtensibility;
-
-
-
-import org.openprovenance.prov.dot.ProvPrinterConfiguration;
-import org.openprovenance.prov.dot.AgentMapEntry;
-import org.openprovenance.prov.dot.AccountColorMapEntry;
-import org.openprovenance.prov.dot.EntityMapEntry;
-import org.openprovenance.prov.dot.ActivityMapEntry;
-import org.openprovenance.prov.dot.RelationStyleMapEntry;
-import org.openprovenance.prov.dot.ProvPrinterConfigDeserialiser;
+import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.model.SpecializationOf;
+import org.openprovenance.prov.model.Used;
+import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.model.WasAssociatedWith;
+import org.openprovenance.prov.model.WasAttributedTo;
+import org.openprovenance.prov.model.WasDerivedFrom;
+import org.openprovenance.prov.model.WasEndedBy;
+import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasInfluencedBy;
+import org.openprovenance.prov.model.WasInformedBy;
+import org.openprovenance.prov.model.WasInvalidatedBy;
+import org.openprovenance.prov.model.WasStartedBy;
 
 /** Serialisation of  Prov representation to DOT format. */
 public class ProvToDot {
@@ -459,7 +452,7 @@ public class ProvToDot {
     }
 
     public  HashMap<String,String> addColors(HasExtensibility e, HashMap<String,String> properties) {
-        Hashtable<String,List<Attribute>> table=e.attributesWithNamespace("http://openprovenance.org/Toolbox/dot#");
+        Hashtable<String,List<Attribute>> table=u.attributesWithNamespace(e,"http://openprovenance.org/Toolbox/dot#");
 
         List<Attribute> o=table.get("fillcolor");
         if (o!=null && !o.isEmpty()) {
@@ -478,13 +471,14 @@ public class ProvToDot {
     }
 
 
+    ValueConverter vc=new ValueConverter(of);
 
     public HashMap<String,String> addEntityShape(Entity p, HashMap<String,String> properties) {
         // default is good for entity
-        List<Object> types=p.getType();
-        for (Object type: types) {
-            if (type instanceof QName) {
-                QName name=(QName) type;
+        List<Type> types=p.getType();
+        for (Type type: types) {
+            if (type.getValueAsJava(vc) instanceof QName) {
+                QName name=(QName) type.getValueAsJava(vc);
                 if (("Dictionary".equals(name.getLocalPart()))
                     ||
                     ("EmptyDictionary".equals(name.getLocalPart()))) {
@@ -884,9 +878,9 @@ public class ProvToDot {
         String label=null;
         if (!(e0 instanceof Influence)) return;
         Influence e=(Influence)e0;
-        List<Object> type=of.getType(e);
+        List<Type> type=of.getType(e);
         if ((type!=null) && (!type.isEmpty())) {
-            label=type.get(0).toString();
+            label=type.get(0).getValueAsJava(vc).toString();
         } else if (getRelationPrintRole(e)) {
             String role=of.getRole(e);
             if (role!=null) {

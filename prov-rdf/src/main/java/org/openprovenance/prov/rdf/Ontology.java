@@ -9,6 +9,7 @@ import javax.xml.namespace.QName;
 import org.openprovenance.prov.xml.Attribute;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
+
 public class Ontology {
 
     public Ontology() {
@@ -17,7 +18,6 @@ public class Ontology {
         initRangeTables();
         initAttributeAsResourceTables();
     }
-
     public Hashtable<QName, QName> qualifiedInfluenceTable = new Hashtable<QName, QName>();
     public Hashtable<QName, QName> influencerTable = new Hashtable<QName, QName>();
     public Hashtable<QName, QName> unqualifiedTable = new Hashtable<QName, QName>();

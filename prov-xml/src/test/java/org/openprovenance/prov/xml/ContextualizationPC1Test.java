@@ -6,7 +6,43 @@ import java.util.Hashtable;
 import java.net.URI;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
+
+
 import junit.framework.TestCase;
+import org.openprovenance.prov.model.HasExtensibility;
+import org.openprovenance.prov.model.Entity;
+import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.Agent;
+import org.openprovenance.prov.model.HasLabel;
+import org.openprovenance.prov.model.HasLocation;
+import org.openprovenance.prov.model.HasType;
+import org.openprovenance.prov.model.HasValue;
+import org.openprovenance.prov.model.Used;
+import org.openprovenance.prov.model.WasDerivedFrom;
+import org.openprovenance.prov.model.WasAttributedTo;
+import org.openprovenance.prov.model.WasInvalidatedBy;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasAssociatedWith;
+import org.openprovenance.prov.model.WasStartedBy;
+import org.openprovenance.prov.model.WasInfluencedBy;
+import org.openprovenance.prov.model.WasInformedBy;
+import org.openprovenance.prov.model.ActedOnBehalfOf;
+import org.openprovenance.prov.model.MentionOf;
+import org.openprovenance.prov.model.AlternateOf;
+import org.openprovenance.prov.model.SpecializationOf;
+import org.openprovenance.prov.model.WasEndedBy;
+import org.openprovenance.prov.model.HadMember;
+import org.openprovenance.prov.model.Used;
+import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Role;
+import org.openprovenance.prov.model.Location;
+import org.openprovenance.prov.model.Type;
+import org.openprovenance.prov.model.DerivedByInsertionFrom;
+import org.openprovenance.prov.model.DerivedByRemovalFrom;
+import org.openprovenance.prov.model.DictionaryMembership;
 
 /**
  * Unit test for simple Provenance Challenge 1 like workflow.
@@ -87,7 +123,7 @@ public class ContextualizationPC1Test extends TestCase {
     public Entity newFile(ProvFactory pFactory, String id, String label,
 	                  String file, String location) {
 
-	Entity a = pFactory.newEntity(id, label);
+	org.openprovenance.prov.model.Entity a = pFactory.newEntity(id, label);
 	pFactory.addType(a, URI
 	        .create("http://openprovenance.org/primitives#File"));
 
@@ -100,7 +136,7 @@ public class ContextualizationPC1Test extends TestCase {
 	                       String value) {
 
 	Entity a = pFactory.newEntity(id, label);
-	pFactory.addType(a, "http://openprovenance.org/primitives#String");
+	pFactory.addType(a, URI.create("http://openprovenance.org/primitives#String"));
 
 	addValue(a, value);
 
@@ -115,7 +151,7 @@ public class ContextualizationPC1Test extends TestCase {
 	String bName = "b123"; // needs to be generated
 
 	NamedBundle bun = makePC1FullGraph(pFactory, bName);
-	graph.getEntityAndActivityAndWasGeneratedBy().add(bun);
+	graph.getStatementOrBundle().add(bun);
 
 	Hashtable<String, String> namespaces = new Hashtable<String, String>();
 	// currently, no prefix used, all qnames map to PC1_NS
@@ -130,9 +166,9 @@ public class ContextualizationPC1Test extends TestCase {
 	MentionOf ctx = pFactory.newMentionOf(a, globalA1, bunEntity);
 	pFactory.addAttribute(a, DOT_NS, DOT_PREFIX, "color", "blue", vconv);
 
-	graph.getEntityAndActivityAndWasGeneratedBy().add(bunEntity);
-	graph.getEntityAndActivityAndWasGeneratedBy().add(a);
-	graph.getEntityAndActivityAndWasGeneratedBy().add(ctx);
+	graph.getStatementOrBundle().add(bunEntity);
+	graph.getStatementOrBundle().add(a);
+	graph.getStatementOrBundle().add(ctx);
 
 	Hashtable<String, String> nss = new Hashtable<String, String>();
 	// choose here, how serialization to xml to be made
@@ -171,30 +207,30 @@ public class ContextualizationPC1Test extends TestCase {
 	//Activity p0 = pFactory.newActivity("p0", "PC1Full Workflow");
 
 	Activity p1 = pFactory.newActivity("p1", "align_warp 1");
-	List<Object> o = p1.getType();
+	List<Type> o = p1.getType();
 
-	o.add(PRIMITIVE_ALIGN_WARP);
+	o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,ValueConverter.QNAME_XSD_ANY_URI));
 
-	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP);
-	pFactory.addType(p1, 10);
-	pFactory.addType(p1, -10);
-	pFactory.addType(p1, -10.55);
-	pFactory.addType(p1, "abc");
-	pFactory.addType(p1, true);
+	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, ValueConverter.QNAME_XSD_ANY_URI);
+	pFactory.addType(p1, 10, ValueConverter.QNAME_XSD_INT);
+	pFactory.addType(p1, -10, ValueConverter.QNAME_XSD_INT);
+	pFactory.addType(p1, -10.55, ValueConverter.QNAME_XSD_FLOAT);
+	pFactory.addType(p1, "abc", ValueConverter.QNAME_XSD_STRING);
+	pFactory.addType(p1, true, ValueConverter.QNAME_XSD_BOOLEAN);
 	pFactory.addType(p1, URI.create("http://www.example.com/hi"));
 
 	Activity p2 = pFactory.newActivity("p2", "align_warp 2");
-	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP);
+	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, ValueConverter.QNAME_XSD_ANY_URI);
 
 	Activity p3 = pFactory.newActivity("p3", "align_warp 3");
-	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP);
+	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP, ValueConverter.QNAME_XSD_ANY_URI);
 
 	Activity p4 = pFactory.newActivity("p4", "align_warp 4");
 
-	pFactory.addType(p4, PRIMITIVE_ALIGN_WARP);
+	pFactory.addType(p4, PRIMITIVE_ALIGN_WARP, ValueConverter.QNAME_XSD_ANY_URI);
 
 	Activity p5 = pFactory.newActivity("p5", "Reslice 1");
-	pFactory.addType(p5, PRIMITIVE_RESLICE);
+	pFactory.addType(p5, PRIMITIVE_RESLICE, ValueConverter.QNAME_XSD_ANY_URI);
 
 	Activity p6 = pFactory.newActivity("p6", "Reslice 2");
 	pFactory.addType(p6, PRIMITIVE_RESLICE);

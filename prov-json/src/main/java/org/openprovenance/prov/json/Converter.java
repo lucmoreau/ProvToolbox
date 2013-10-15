@@ -7,7 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.model.Document;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,14 +15,15 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
 public class Converter {
+    // TODO: Can registration be generic, for all types of beans?
 	private Gson gson = new GsonBuilder()
-	                       .registerTypeAdapter(Document.class, new ProvDocumentDeserializer())
-	                       .registerTypeAdapter(Document.class, new ProvDocumentSerializer())
+	                       .registerTypeAdapter(org.openprovenance.prov.xml.Document.class, new ProvDocumentDeserializer())
+	                       .registerTypeAdapter(org.openprovenance.prov.xml.Document.class, new ProvDocumentSerializer())
 	                       .setPrettyPrinting()
 	                       .create();
 	
 	public Document readDocument(String file) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
-	    Document doc = gson.fromJson(new BufferedReader(new FileReader(file)), Document.class);
+	    Document doc = gson.fromJson(new BufferedReader(new FileReader(file)), org.openprovenance.prov.xml.Document.class);
 	    return doc;
 	}
 

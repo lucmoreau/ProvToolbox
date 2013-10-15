@@ -12,8 +12,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.namespace.QName;
 
+
 public class AnyAdapter
-    extends XmlAdapter<Object,Attribute>
+    extends XmlAdapter<Object,org.openprovenance.prov.model.Attribute>
 {
 
     ProvFactory pFactory=new ProvFactory();
@@ -39,6 +40,7 @@ public class AnyAdapter
 
 
     public Attribute unmarshal(Object value) {
+        //System.out.println("AnyAdapter unmarshalling for " + value);
         if (value instanceof org.w3c.dom.Element) {
             org.w3c.dom.Element el=(org.w3c.dom.Element)value;
             String prefix=el.getPrefix();
@@ -65,8 +67,8 @@ public class AnyAdapter
         return null;
     }
 
-    public Object marshal(Attribute attribute) {
-        //System.out.println("AnyAdapter2 marshalling for " + attribute);
+    public Object marshal(org.openprovenance.prov.model.Attribute attribute) {
+        //System.out.println("AnyAdapter marshalling for " + attribute);
         //System.out.println("AnyAdapter2 marshalling for " + attribute
         //                .getClass());
         //TODO: this call creates a DOM but does not encode the type as xsi:type
@@ -90,6 +92,14 @@ public class AnyAdapter
         //return je;
     }
 
-   
+    static AnyAdapter me=new AnyAdapter();
+    
+    static Attribute parseMethod(Object o) {
+	return me.unmarshal(o);
+    }
+    
+    static Object printMethod(Attribute a) {
+	return me.marshal(a);
+    }
 
 }

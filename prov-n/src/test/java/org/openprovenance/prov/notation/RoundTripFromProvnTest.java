@@ -3,7 +3,7 @@ package org.openprovenance.prov.notation;
 import java.io.File;
 import junit.framework.TestCase;
 
-import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.xml.DocumentEquality;
 import org.openprovenance.prov.xml.ProvSerialiser;
 

@@ -9,6 +9,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 
+import org.openprovenance.prov.model.Document;
+
 import org.openprovenance.prov.xml.validation.ValidationReport;
 import org.w3c.dom.Node;
 
@@ -20,7 +22,7 @@ import java.util.Hashtable;
 /** Serialiser of PROV Graphs. */
 
 public class ProvSerialiser {
-    private ObjectFactory of=new ObjectFactory();
+    private ObjectFactory2 of=new ObjectFactory2();
     private org.openprovenance.prov.xml.validation.ObjectFactory vof=new org.openprovenance.prov.xml.validation.ObjectFactory();
 	static DocumentBuilder docBuilder;
 
@@ -79,6 +81,7 @@ public class ProvSerialiser {
                              new NamespacePrefixMapper(namespaces));
 	//System.out.println("--------------> ");
 	//m.setAdapter(new org.w3._2001.xmlschema.Adapter1());
+        //m.setAdapter(new AttributeAdapter());
     }
 
     /** By default we use a document provided by the DocumentBuilder

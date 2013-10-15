@@ -9,37 +9,37 @@ import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.xml.ActedOnBehalfOf;
-import org.openprovenance.prov.xml.Activity;
-import org.openprovenance.prov.xml.Agent;
-import org.openprovenance.prov.xml.AlternateOf;
-import org.openprovenance.prov.xml.Attribute;
-import org.openprovenance.prov.xml.DerivedByInsertionFrom;
-import org.openprovenance.prov.xml.DerivedByRemovalFrom;
-import org.openprovenance.prov.xml.KeyQNamePair;
-import org.openprovenance.prov.xml.ModelConstructor;
-import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.Entity;
-import org.openprovenance.prov.xml.HadMember;
-import org.openprovenance.prov.xml.MentionOf;
-import org.openprovenance.prov.xml.NamedBundle;
+import org.openprovenance.prov.model.KeyQNamePair;
+import org.openprovenance.prov.model.ActedOnBehalfOf;
+import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.Agent;
+import org.openprovenance.prov.model.AlternateOf;
+import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.DerivedByInsertionFrom;
+import org.openprovenance.prov.model.DerivedByRemovalFrom;
+import org.openprovenance.prov.model.ModelConstructor;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Entity;
+import org.openprovenance.prov.model.HadMember;
+import org.openprovenance.prov.model.MentionOf;
+import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.xml.QNameExport;
-import org.openprovenance.prov.xml.SpecializationOf;
-import org.openprovenance.prov.xml.Statement;
+import org.openprovenance.prov.model.QNameExport;
+import org.openprovenance.prov.model.SpecializationOf;
+import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.xml.UncheckedException;
-import org.openprovenance.prov.xml.DictionaryMembership;
-import org.openprovenance.prov.xml.Used;
-import org.openprovenance.prov.xml.ValueConverter;
-import org.openprovenance.prov.xml.WasAssociatedWith;
-import org.openprovenance.prov.xml.WasAttributedTo;
-import org.openprovenance.prov.xml.WasDerivedFrom;
-import org.openprovenance.prov.xml.WasEndedBy;
-import org.openprovenance.prov.xml.WasGeneratedBy;
-import org.openprovenance.prov.xml.WasInfluencedBy;
-import org.openprovenance.prov.xml.WasInformedBy;
-import org.openprovenance.prov.xml.WasInvalidatedBy;
-import org.openprovenance.prov.xml.WasStartedBy;
+import org.openprovenance.prov.model.DictionaryMembership;
+import org.openprovenance.prov.model.Used;
+import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.model.WasAssociatedWith;
+import org.openprovenance.prov.model.WasAttributedTo;
+import org.openprovenance.prov.model.WasDerivedFrom;
+import org.openprovenance.prov.model.WasEndedBy;
+import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasInfluencedBy;
+import org.openprovenance.prov.model.WasInformedBy;
+import org.openprovenance.prov.model.WasInvalidatedBy;
+import org.openprovenance.prov.model.WasStartedBy;
 
 /** For testing purpose, conversion back to ASN. */
 
@@ -416,7 +416,7 @@ public class NotationConstructor implements ModelConstructor {
 		for (KeyQNamePair p: kes) {
 		    if (!first) s=s+", ";
 		    first=false;
-		    s= s + "(" + Attribute.valueToNotationString(p.key,vc.getXsdType(p.key)) + ", " + idOrMarker(p.name) + ")";
+		    s= s + "(" + org.openprovenance.prov.xml.Attribute.valueToNotationString(p.key,vc.getXsdType(p.key)) + ", " + idOrMarker(p.name) + ")";
 		}
 	    }
 	    s=s+"}";
@@ -429,7 +429,7 @@ public class NotationConstructor implements ModelConstructor {
 		for (Object k: ks) {
 		    if (!first) s=s+", ";
 		    first=false;
-		    s= s + Attribute.valueToNotationString(k,vc.getXsdType(k));
+		    s= s +  org.openprovenance.prov.xml.Attribute.valueToNotationString(k,vc.getXsdType(k));
 		}
 	    }
 	    s=s+"}";
@@ -461,7 +461,7 @@ public class NotationConstructor implements ModelConstructor {
 			for (KeyQNamePair entry: keyEntitySet) {
 				
 				String s="prov:hadDictionaryMember(" +   idOrMarker(dict) + "," + idOrMarker(entry.name)  						
-						 + "," + Attribute.valueToNotationString(entry.key,vc.getXsdType(entry.key)) + ")";
+						 + "," +  org.openprovenance.prov.xml.Attribute.valueToNotationString(entry.key,vc.getXsdType(entry.key)) + ")";
 			    writeln(s);	
 			}
 		}

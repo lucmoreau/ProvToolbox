@@ -18,40 +18,38 @@ import java.util.Map.Entry;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.notation.Utility;
-import org.openprovenance.prov.xml.Activity;
-import org.openprovenance.prov.xml.ActivityRef;
-import org.openprovenance.prov.xml.AgentRef;
-import org.openprovenance.prov.xml.AnyRef;
-import org.openprovenance.prov.xml.Attribute;
-import org.openprovenance.prov.xml.DerivedByInsertionFrom;
-import org.openprovenance.prov.xml.DerivedByRemovalFrom;
-import org.openprovenance.prov.xml.DictionaryMembership;
-import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.EntityRef;
-import org.openprovenance.prov.xml.GenerationRef;
-import org.openprovenance.prov.xml.HadMember;
-import org.openprovenance.prov.xml.HasExtensibility;
-import org.openprovenance.prov.xml.HasLabel;
-import org.openprovenance.prov.xml.HasLocation;
-import org.openprovenance.prov.xml.HasRole;
-import org.openprovenance.prov.xml.HasType;
-import org.openprovenance.prov.xml.HasValue;
-import org.openprovenance.prov.xml.InternationalizedString;
-import org.openprovenance.prov.xml.KeyQNamePair;
-import org.openprovenance.prov.xml.Location;
-import org.openprovenance.prov.xml.NamedBundle;
+import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.IDRef;
+import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.DerivedByInsertionFrom;
+import org.openprovenance.prov.model.DerivedByRemovalFrom;
+import org.openprovenance.prov.model.DictionaryMembership;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.HadMember;
+import org.openprovenance.prov.model.HasExtensibility;
+import org.openprovenance.prov.model.HasLabel;
+import org.openprovenance.prov.model.HasLocation;
+import org.openprovenance.prov.model.HasRole;
+import org.openprovenance.prov.model.HasType;
+import org.openprovenance.prov.model.HasValue;
+import org.openprovenance.prov.model.IDRef;
+import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.model.Location;
+import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.xml.Statement;
-import org.openprovenance.prov.xml.StatementOrBundle;
-import org.openprovenance.prov.xml.UsageRef;
-import org.openprovenance.prov.xml.Used;
-import org.openprovenance.prov.xml.ValueConverter;
-import org.openprovenance.prov.xml.WasAssociatedWith;
-import org.openprovenance.prov.xml.WasEndedBy;
-import org.openprovenance.prov.xml.WasGeneratedBy;
-import org.openprovenance.prov.xml.WasInvalidatedBy;
-import org.openprovenance.prov.xml.WasStartedBy;
+import org.openprovenance.prov.model.Role;
+import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.model.IDRef;
+import org.openprovenance.prov.model.Used;
+import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.model.WasAssociatedWith;
+import org.openprovenance.prov.model.WasEndedBy;
+import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasInvalidatedBy;
+import org.openprovenance.prov.model.WasStartedBy;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -106,7 +104,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         // Create the document
         Document doc = pf.newDocument();
         doc.setNss(namespaces);
-        doc.getEntityAndActivityAndWasGeneratedBy().addAll(statements);
+        doc.getStatementOrBundle().addAll(statements);
         return doc;
     }
     
@@ -166,7 +164,6 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         else {
             id = pf.stringToQName(idStr);
         }
-
         // Decoding attributes
         ProvJSONStatement provStatement = ProvJSONStatement.valueOf(statementType);
         switch (provStatement) {
@@ -189,21 +186,21 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = pf.newAgent(id);
             break;            
         case alternateOf:
-            EntityRef alternate1 = optionalEntityRef("prov:alternate1", attributeMap);
-            EntityRef alternate2 = optionalEntityRef("prov:alternate2", attributeMap);
+            IDRef alternate1 = optionalIdRef("prov:alternate1", attributeMap);
+            IDRef alternate2 = optionalIdRef("prov:alternate2", attributeMap);
             statement = pf.newAlternateOf(alternate2, alternate1);
             break;
         case wasAssociatedWith:
-            ActivityRef activity = optionalActivityRef("prov:activity", attributeMap);
-            AgentRef agent = optionalAgentRef("prov:agent", attributeMap); 
-            EntityRef plan = optionalEntityRef("prov:plan", attributeMap);
+            IDRef activity = optionalIdRef("prov:activity", attributeMap);
+            IDRef agent = optionalIdRef("prov:agent", attributeMap); 
+            IDRef plan = optionalIdRef("prov:plan", attributeMap);
             WasAssociatedWith wAW = pf.newWasAssociatedWith(id, activity, agent);
             if (plan != null) wAW.setPlan(plan);
             statement = wAW;
             break;
         case wasAttributedTo:
-            EntityRef entity = optionalEntityRef("prov:entity", attributeMap);
-            agent = optionalAgentRef("prov:agent", attributeMap);
+            IDRef entity = optionalIdRef("prov:entity", attributeMap);
+            agent = optionalIdRef("prov:agent", attributeMap);
             statement = pf.newWasAttributedTo(id, entity, agent);
             break;
         case bundle:
@@ -211,34 +208,34 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         	// TODO: Use the local namespace while preserving the top-level namespace
         	@SuppressWarnings("rawtypes")
             Collection statements = decodeBundle(attributeMap);
-            NamedBundle namedBundle = new NamedBundle(); 
+            NamedBundle namedBundle = pf.getObjectFactory().createNamedBundle(); 
             namedBundle.setId(id);
-            namedBundle.getEntityAndActivityAndWasGeneratedBy().addAll((Collection<? extends Statement>)statements);
+            namedBundle.getStatement().addAll((Collection<? extends Statement>)statements);
             statement = namedBundle;
             break;
         case wasInformedBy:
-            ActivityRef informed = optionalActivityRef("prov:informed", attributeMap);
-            ActivityRef informant = optionalActivityRef("prov:informant", attributeMap);
+            IDRef informed = optionalIdRef("prov:informed", attributeMap);
+            IDRef informant = optionalIdRef("prov:informant", attributeMap);
             statement = pf.newWasInformedBy(id, informed, informant);
             break;
         case actedOnBehalfOf:
-            AgentRef delegate = optionalAgentRef("prov:delegate", attributeMap);
-            AgentRef responsible = optionalAgentRef("prov:responsible", attributeMap);
-            activity = optionalActivityRef("prov:activity", attributeMap);
+            IDRef delegate = optionalIdRef("prov:delegate", attributeMap);
+            IDRef responsible = optionalIdRef("prov:responsible", attributeMap);
+            activity = optionalIdRef("prov:activity", attributeMap);
             statement = pf.newActedOnBehalfOf(id, delegate, responsible, activity);
             break;
         case wasDerivedFrom:
-            EntityRef generatedEntity = optionalEntityRef("prov:generatedEntity", attributeMap);
-            EntityRef usedEntity = optionalEntityRef("prov:usedEntity", attributeMap);
-            activity = optionalActivityRef("prov:activity", attributeMap);
-            GenerationRef generation = optionalGenerationRef("prov:generation", attributeMap);
-            UsageRef usage = optionalUsageRef("prov:usage", attributeMap);
+            IDRef generatedEntity = optionalIdRef("prov:generatedEntity", attributeMap);
+            IDRef usedEntity = optionalIdRef("prov:usedEntity", attributeMap);
+            activity = optionalIdRef("prov:activity", attributeMap);
+            IDRef generation = optionalIdRef("prov:generation", attributeMap);
+            IDRef usage = optionalIdRef("prov:usage", attributeMap);
             statement = pf.newWasDerivedFrom(id, generatedEntity, usedEntity, activity, generation, usage);
             break;
         case wasEndedBy:
-            activity = optionalActivityRef("prov:activity", attributeMap);
-            EntityRef trigger = optionalEntityRef("prov:trigger", attributeMap);
-            ActivityRef ender = optionalActivityRef("prov:ender", attributeMap);
+            activity = optionalIdRef("prov:activity", attributeMap);
+            IDRef trigger = optionalIdRef("prov:trigger", attributeMap);
+            IDRef ender = optionalIdRef("prov:ender", attributeMap);
             XMLGregorianCalendar time = optionalTime("prov:time", attributeMap);
             WasEndedBy wEB = pf.newWasEndedBy(id, activity, trigger);
             if (ender != null)
@@ -249,8 +246,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = wEB;
             break;
         case wasGeneratedBy:
-            entity = optionalEntityRef("prov:entity", attributeMap);
-            activity = optionalActivityRef("prov:activity", attributeMap);
+            entity = optionalIdRef("prov:entity", attributeMap);
+            activity = optionalIdRef("prov:activity", attributeMap);
             time = optionalTime("prov:time", attributeMap);
             WasGeneratedBy wGB = pf.newWasGeneratedBy(id);
             wGB.setEntity(entity);
@@ -262,13 +259,13 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = wGB;
             break;
         case wasInfluencedBy:
-            AnyRef influencee = anyRef("prov:influencee", attributeMap);
-            AnyRef influencer = anyRef("prov:influencer", attributeMap);
+            IDRef influencee = anyRef("prov:influencee", attributeMap);
+            IDRef influencer = anyRef("prov:influencer", attributeMap);
             statement = pf.newWasInfluencedBy(id, influencee, influencer);
             break;
         case wasInvalidatedBy:
-            entity = optionalEntityRef("prov:entity", attributeMap);
-            activity = optionalActivityRef("prov:activity", attributeMap);
+            entity = optionalIdRef("prov:entity", attributeMap);
+            activity = optionalIdRef("prov:activity", attributeMap);
             time = optionalTime("prov:time", attributeMap);
             WasInvalidatedBy wIB = pf.newWasInvalidatedBy(id, entity, activity);
             if (time != null) {
@@ -277,29 +274,29 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = wIB;
             break;
         case hadMember:
-            EntityRef collection = optionalEntityRef("prov:collection", attributeMap);
-            Collection<EntityRef> entities = optionalEntityRefs("prov:entity", attributeMap);
-            HadMember membership = new HadMember();
+            IDRef collection = optionalIdRef("prov:collection", attributeMap);
+            Collection<IDRef> entities = optionalIdRefs("prov:entity", attributeMap);
+            HadMember membership = pf.getObjectFactory().createHadMember();
             membership.setCollection(collection);
             if (entities != null)
             	membership.getEntity().addAll(entities);
             statement = membership;
             break;
         case mentionOf:
-            EntityRef specificEntity = optionalEntityRef("prov:specificEntity", attributeMap);
-            EntityRef generalEntity = optionalEntityRef("prov:generalEntity", attributeMap);
-            EntityRef bundle = optionalEntityRef("prov:bundle", attributeMap);
+            IDRef specificEntity = optionalIdRef("prov:specificEntity", attributeMap);
+            IDRef generalEntity = optionalIdRef("prov:generalEntity", attributeMap);
+            IDRef bundle = optionalIdRef("prov:bundle", attributeMap);
             statement = pf.newMentionOf(specificEntity, generalEntity, bundle);
             break;
         case specializationOf:
-            specificEntity = optionalEntityRef("prov:specificEntity", attributeMap);
-            generalEntity = optionalEntityRef("prov:generalEntity", attributeMap);
+            specificEntity = optionalIdRef("prov:specificEntity", attributeMap);
+            generalEntity = optionalIdRef("prov:generalEntity", attributeMap);
             statement = pf.newSpecializationOf(specificEntity, generalEntity);
             break;
         case wasStartedBy:
-            activity = optionalActivityRef("prov:activity", attributeMap);
-            trigger = optionalEntityRef("prov:trigger", attributeMap);
-            ActivityRef starter = optionalActivityRef("prov:starter", attributeMap);
+            activity = optionalIdRef("prov:activity", attributeMap);
+            trigger = optionalIdRef("prov:trigger", attributeMap);
+            IDRef starter = optionalIdRef("prov:starter", attributeMap);
             time = optionalTime("prov:time", attributeMap);
             WasStartedBy wSB = pf.newWasStartedBy(id, activity, trigger);
             if (starter != null)
@@ -310,8 +307,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             statement = wSB;
             break;
         case used:
-            activity = optionalActivityRef("prov:activity", attributeMap);
-            entity = optionalEntityRef("prov:entity", attributeMap);
+            activity = optionalIdRef("prov:activity", attributeMap);
+            entity = optionalIdRef("prov:entity", attributeMap);
             time = optionalTime("prov:time", attributeMap);
             Used wUB = pf.newUsed(id);
             wUB.setActivity(activity);
@@ -353,9 +350,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         List<JsonElement> values = popMultiValAttribute("prov:type", attributeMap);
         if (!values.isEmpty()) {
         	if (statement instanceof HasType) {
-	            List<Object> types = ((HasType)statement).getType();
+	            List<org.openprovenance.prov.model.Type> types = ((HasType)statement).getType();
 	            for (JsonElement value: values) {
-	                types.add(decodeTypeRef(value));
+	                types.add(pf.newType(decodeTypeRef(value),vconv));
 	            }
         	}
         	else {
@@ -392,9 +389,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         values = popMultiValAttribute("prov:role", attributeMap);
         if (!values.isEmpty()) {
         	if (statement instanceof HasRole) {
-	            List<Object> roles = ((HasRole)statement).getRole();
+	            List<Role> roles = ((HasRole)statement).getRole();
 	            for (JsonElement value: values) {
-	                roles.add(decodeAttributeValue(value));
+	                roles.add(pf.newRole(decodeAttributeValue(value),vconv));
 	            }
         	}
         	else {
@@ -409,7 +406,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         		throw new UnsupportedOperationException("Only one instance of prov:value is allowed in a statement - id: " + idStr);
         	}
         	if (statement instanceof HasValue) {
-        		((HasValue)statement).setValue(decodeAttributeValue(values.get(0)));
+		    ((HasValue)statement).setValue(pf.newValue(decodeAttributeValue(values.get(0)),vconv));
         	}
         	else {
         		throw new UnsupportedOperationException("prov:value is not allowed in a " + statementType + "statement - id: " + idStr);
@@ -443,7 +440,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     }
     
     private InternationalizedString decodeInternationalizedString(JsonElement element) {
-        InternationalizedString iString = new InternationalizedString();
+        InternationalizedString iString = pf.getObjectFactory().createInternationalizedString();
         if (element.isJsonPrimitive()) {
             iString.setValue(element.getAsString());
         }
@@ -471,7 +468,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             if (struct.has("lang")) {
                 // Internationalized strings
                 String lang = struct.get("lang").getAsString();
-                InternationalizedString iString = new InternationalizedString();
+                InternationalizedString iString = pf.getObjectFactory().createInternationalizedString();
                 iString.setValue(struct.get("$").getAsString());
                 iString.setLang(lang);
                 value = iString;
@@ -483,7 +480,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	            value = vconv.convertToJava(xsdType, struct.get("$").getAsString());
             }
         }    	
-    	return new Attribute(attributeName, value, xsdType);
+    	return pf.newAttribute(attributeName, value, xsdType);
     }
     
     private Object decodeAttributeValue(JsonElement element) {
@@ -495,7 +492,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             if (struct.has("lang")) {
                 // Internationalized strings
                 String lang = struct.get("lang").getAsString();
-                InternationalizedString iString = new InternationalizedString();
+                InternationalizedString iString = pf.getObjectFactory().createInternationalizedString();
                 iString.setValue(value);
                 iString.setLang(lang);
                 return iString;
@@ -505,7 +502,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	            return vconv.convertToJava(xsdType, struct.get("$").getAsString());
             } else {
             	// if no type or lang information, decode as an Internationalized string without lang
-            	InternationalizedString iString = new InternationalizedString();
+            	InternationalizedString iString = pf.getObjectFactory().createInternationalizedString();
                 iString.setValue(value);
                 return iString;
 //            	return decodeJSONPrimitive(value);
@@ -577,58 +574,28 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             return null;
     }
 
-    private EntityRef entityRef(String attributeName, JsonObject attributeMap) {
-    	return pf.newEntityRef(popString(attributeMap, attributeName));
+    private IDRef idRef(String attributeName, JsonObject attributeMap) {
+    	return pf.newIDRef(popString(attributeMap, attributeName));
     }
     
-    private ActivityRef activityRef(String attributeName, JsonObject attributeMap) {
-    	return pf.newActivityRef(popString(attributeMap, attributeName));
-    }
     
-    private AgentRef agentRef(String attributeName, JsonObject attributeMap) {
-    	return pf.newAgentRef(popString(attributeMap, attributeName));
+    private IDRef anyRef(String attributeName, JsonObject attributeMap) {
+	if (attributeMap.has(attributeName)) 
+	    return pf.newIDRef(popString(attributeMap, attributeName));
+	else return null;
     }
+
     
-    private AnyRef anyRef(String attributeName, JsonObject attributeMap) {
-    	if (attributeMap.has(attributeName)) 
-    		return pf.newAnyRef(popString(attributeMap, attributeName));
-    	else return null;
-    }
+
     
-    private EntityRef optionalEntityRef(String attributeName, JsonObject attributeMap) {
+    private IDRef optionalIdRef(String attributeName, JsonObject attributeMap) {
         if (attributeMap.has(attributeName))
-            return entityRef(attributeName, attributeMap);
+            return idRef(attributeName, attributeMap);
         else
             return null;
     }
     
-    private ActivityRef optionalActivityRef(String attributeName, JsonObject attributeMap) {
-        if (attributeMap.has(attributeName))
-            return activityRef(attributeName, attributeMap);
-        else
-            return null;
-    }
-    
-    private AgentRef optionalAgentRef(String attributeName, JsonObject attributeMap) {
-        if (attributeMap.has(attributeName))
-            return agentRef(attributeName, attributeMap);
-        else
-            return null;
-    }
-    
-    private GenerationRef optionalGenerationRef(String attributeName, JsonObject attributeMap) {
-        if (attributeMap.has(attributeName))
-            return pf.newGenerationRef(popString(attributeMap, attributeName));
-        else
-            return null;
-    }
-    
-    private UsageRef optionalUsageRef(String attributeName, JsonObject attributeMap) {
-        if (attributeMap.has(attributeName))
-            return pf.newUsageRef(popString(attributeMap, attributeName));
-        else
-            return null;
-    }
+
     
     private XMLGregorianCalendar optionalTime(String attributeName, JsonObject attributeMap) {
         if (attributeMap.has(attributeName))
@@ -637,18 +604,18 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             return null;
     }
     
-    private Collection<EntityRef> entityRefs(String attributeName, JsonObject attributeMap) {
-        List<EntityRef> results = new ArrayList<EntityRef>();
+    private Collection<IDRef> idRefs(String attributeName, JsonObject attributeMap) {
+        List<IDRef> results = new ArrayList<IDRef>();
         List<JsonElement> elements = popMultiValAttribute(attributeName, attributeMap);
         for (JsonElement element : elements) {
-        	results.add(pf.newEntityRef(element.getAsString()));
+        	results.add(pf.newIDRef(element.getAsString()));
         }
         return results;
     }
     
-    private Collection<EntityRef> optionalEntityRefs(String attributeName, JsonObject attributeMap) {
+    private Collection<IDRef> optionalIdRefs(String attributeName, JsonObject attributeMap) {
         if (attributeMap.has(attributeName))
-            return entityRefs(attributeName, attributeMap);
+            return idRefs(attributeName, attributeMap);
         else
             return null;
     }

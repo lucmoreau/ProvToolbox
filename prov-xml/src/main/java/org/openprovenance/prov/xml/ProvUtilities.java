@@ -1,302 +1,29 @@
 package org.openprovenance.prov.xml;
 
 import java.util.List;
-import java.util.LinkedList;
 import java.util.Hashtable;
 import javax.xml.bind.JAXBElement;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.xml.DerivedByInsertionFrom;
-import org.openprovenance.prov.xml.Entry;
+import org.openprovenance.prov.model.RecordAction;
+import org.openprovenance.prov.model.RecordValue;
+import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.IDRef;
 
 import java.lang.reflect.Method;
 
 /** Utilities for manipulating PROV Descriptions. */
 
-public class ProvUtilities {
+public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities{
 
     private ProvFactory p = new ProvFactory();
 
-    /*
-     * public List<Element> getElements(Bundle g) { List<Element> res = new
-     * LinkedList<Element>(); res.addAll(g.getRecords().getEntity());
-     * res.addAll(g.getRecords().getActivity());
-     * res.addAll(g.getRecords().getAgent()); return res; }
-     */
-
-    public List<Relation0> getRelations(Document d) {
-        return getObject(Relation0.class,
-                         d.getEntityAndActivityAndWasGeneratedBy());
-    }
-
-    public List<Entity> getEntity(Document d) {
-        return getObject(Entity.class, d.getEntityAndActivityAndWasGeneratedBy());
-    }
-
-    public List<Activity> getActivity(Document d) {
-        return getObject(Activity.class,
-                         d.getEntityAndActivityAndWasGeneratedBy());
-    }
-
-    public List<Agent> getAgent(Document d) {
-        return getObject(Agent.class, d.getEntityAndActivityAndWasGeneratedBy());
-    }
-
-    public List<NamedBundle> getBundle(Document d) {
-        return getObject(NamedBundle.class, d.getEntityAndActivityAndWasGeneratedBy());
-    }
-
-    public List<Relation0> getRelations(NamedBundle d) {
-        return getObject2(Relation0.class,
-                         d.getEntityAndActivityAndWasGeneratedBy());
-    }
-
-    public List<Entity> getEntity(NamedBundle d) {
-        return getObject2(Entity.class, d.getEntityAndActivityAndWasGeneratedBy());
-    }
-
-    public List<Activity> getActivity(NamedBundle d) {
-        return getObject2(Activity.class,
-                         d.getEntityAndActivityAndWasGeneratedBy());
-    }
-
-    public List<Agent> getAgent(NamedBundle d) {
-        return getObject2(Agent.class, d.getEntityAndActivityAndWasGeneratedBy());
-    }
-
-    public List<NamedBundle> getNamedBundle(Document d) {
-        return getObject(NamedBundle.class,
-                         d.getEntityAndActivityAndWasGeneratedBy());
-    }
-
-    public List<Statement> getStatement(Document d) {
-	return getObject(Statement.class,
-	                 d.getEntityAndActivityAndWasGeneratedBy());
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<Statement> getStatement(NamedBundle d) {
-        List<?> res = d.getEntityAndActivityAndWasGeneratedBy();
-        return (List<Statement>) res;
-    }
-
-    public <T> List<T> getObject(Class<T> cl, List<StatementOrBundle> ll) {
-        List<T> res = new LinkedList<T>();
-        for (Object o : ll) {
-            if (cl.isInstance(o)) {
-                @SuppressWarnings("unchecked")
-                T o2 = (T) o;
-                res.add(o2);
-            }
-        }
-        return res;
-    }
-    public <T> List<T> getObject2(Class<T> cl, List<Statement> ll) {
-        List<T> res = new LinkedList<T>();
-        for (Object o : ll) {
-            if (cl.isInstance(o)) {
-                @SuppressWarnings("unchecked")
-                T o2 = (T) o;
-                res.add(o2);
-            }
-        }
-        return res;
-    }
- 
-
-    public QName getEffect(Relation0 r) {
-        if (r instanceof Used) {
-            return ((Used) r).getActivity().getRef();
-        }
-        if (r instanceof WasStartedBy) {
-            return ((WasStartedBy) r).getActivity().getRef();
-        }
-        if (r instanceof WasEndedBy) {
-            return ((WasEndedBy) r).getActivity().getRef();
-        }
-        if (r instanceof WasGeneratedBy) {
-            return ((WasGeneratedBy) r).getEntity().getRef();
-        }
-        if (r instanceof WasDerivedFrom) {
-            return ((WasDerivedFrom) r).getGeneratedEntity().getRef();
-        }
-       
-        if (r instanceof WasAssociatedWith) {
-            return ((WasAssociatedWith) r).getActivity().getRef();
-        }
-        if (r instanceof WasInvalidatedBy) {
-            return ((WasInvalidatedBy) r).getEntity().getRef();
-        }
-
-        if (r instanceof WasAttributedTo) {
-            return ((WasAttributedTo) r).getEntity().getRef();
-        }
-        if (r instanceof AlternateOf) {
-            return ((AlternateOf) r).getAlternate1().getRef();
-        }
-        if (r instanceof SpecializationOf) {
-            return ((SpecializationOf) r).getSpecificEntity().getRef();
-        }
-        if (r instanceof HadMember) {
-            return ((HadMember) r).getCollection().getRef();
-        }
-        if (r instanceof WasInformedBy) {
-            return ((WasInformedBy) r).getInformed().getRef();
-        }
-        if (r instanceof MentionOf) {
-            return ((MentionOf) r).getSpecificEntity().getRef();
-        }
-        if (r instanceof WasInfluencedBy) {
-            return ((WasInfluencedBy) r).getInfluencee().getRef();
-        }
-
-        if (r instanceof ActedOnBehalfOf) {
-            return ((ActedOnBehalfOf) r).getDelegate().getRef();
-        }
-
-        if (r instanceof DerivedByInsertionFrom) {
-            return ((DerivedByInsertionFrom) r).getNewDictionary().getRef();
-        }
-        System.out.println("Unknown relation " + r);
-        throw new UnsupportedOperationException();
-    }
-
-    public QName getCause(Relation0 r) {
-        if (r instanceof Used) {
-            return ((Used) r).getEntity().getRef();
-        }
-        if (r instanceof WasGeneratedBy) {
-            ActivityRef ref = ((WasGeneratedBy) r).getActivity();
-            if (ref == null)
-                return null;
-            return ref.getRef();
-        }
-        if (r instanceof WasInvalidatedBy) {
-            ActivityRef ref = ((WasInvalidatedBy) r).getActivity();
-            if (ref == null)
-                return null;
-            return ref.getRef();
-        }
-        if (r instanceof WasStartedBy) {
-            EntityRef ref = ((WasStartedBy) r).getTrigger();
-            if (ref == null)
-                return null;
-            return ref.getRef();
-        }
-        if (r instanceof WasEndedBy) {
-            EntityRef ref = ((WasEndedBy) r).getTrigger();
-            if (ref == null)
-                return null;
-            return ref.getRef();
-        }
-        if (r instanceof WasDerivedFrom) {
-            return ((WasDerivedFrom) r).getUsedEntity().getRef();
-        }
-
-        if (r instanceof WasInfluencedBy) {
-            return ((WasInfluencedBy) r).getInfluencer().getRef();
-        }
-          if (r instanceof WasAssociatedWith) {
-            return ((WasAssociatedWith) r).getAgent().getRef();
-        }
-        if (r instanceof WasAttributedTo) {
-            return ((WasAttributedTo) r).getAgent().getRef();
-        }
-        if (r instanceof AlternateOf) {
-            return ((AlternateOf) r).getAlternate2().getRef();
-        }
-        if (r instanceof SpecializationOf) {
-            return ((SpecializationOf) r).getGeneralEntity().getRef();
-        }
-        if (r instanceof HadMember) {
-            return ((HadMember) r).getEntity().get(0).getRef();
-        }
-        if (r instanceof MentionOf) {
-            return ((MentionOf) r).getGeneralEntity().getRef();
-        }
-        if (r instanceof WasInformedBy) {
-            return ((WasInformedBy) r).getInformant().getRef();
-        }
-        if (r instanceof ActedOnBehalfOf) {
-            return ((ActedOnBehalfOf) r).getResponsible().getRef();
-        }
-        if (r instanceof DerivedByInsertionFrom) {
-            return ((DerivedByInsertionFrom) r).getOldDictionary().getRef();
-        }
-        System.out.println("Unknown relation " + r);
-        throw new UnsupportedOperationException();
-    }
-
-    public List<QName> getOtherCauses(Relation0 r) {
-        if (r instanceof WasAssociatedWith) {
-            List<QName> res = new LinkedList<QName>();
-            EntityRef e = ((WasAssociatedWith) r).getPlan();
-            if (e == null)
-                return null;
-            res.add(e.getRef());
-            return res;
-        }
-        if (r instanceof WasStartedBy) {
-            List<QName> res = new LinkedList<QName>();
-            ActivityRef a = ((WasStartedBy) r).getStarter();
-            if (a == null)
-                return null;
-            res.add(a.getRef());
-            return res;
-        }
-        if (r instanceof MentionOf) {
-            List<QName> res = new LinkedList<QName>();
-            EntityRef a = ((MentionOf) r).getBundle();
-            if (a == null)
-                return null;
-            res.add(a.getRef());
-            return res;
-        }
-        if (r instanceof HadMember) {
-            List<QName> res = new LinkedList<QName>();
-            List<EntityRef> entities=((HadMember) r).getEntity();
-            if ((entities==null) || (entities.size()<=1)) return null;
-            boolean first=true;
-            for (EntityRef ee: entities) {
-                if (!first) res.add(ee.getRef());
-                first=false;
-            }
-            return res;
-        }
-        if (r instanceof WasEndedBy) {
-            List<QName> res = new LinkedList<QName>();
-            ActivityRef a = ((WasEndedBy) r).getEnder();
-            if (a == null)
-                return null;
-            res.add(a.getRef());
-            return res;
-        }
-        if (r instanceof ActedOnBehalfOf) {
-            List<QName> res = new LinkedList<QName>();
-            ActivityRef a = ((ActedOnBehalfOf) r).getActivity();
-            if (a == null)
-                return null;
-            res.add(a.getRef());
-            return res;
-        }
-        if (r instanceof DerivedByInsertionFrom) {
-            List<QName> res = new LinkedList<QName>();
-            DerivedByInsertionFrom dbif = ((DerivedByInsertionFrom) r);
-            
-            for (Entry entry : dbif.getKeyEntityPair()) {
-                res.add(entry.getEntity().getRef());
-            }
-            return res;
-        }
-        return null;
-    }
-
     public MentionOf getMentionForRemoteEntity(NamedBundle local,
                                                Entity remoteEntity,
-                                               NamedBundle remote) {
-        return getMentionForLocalEntity(local.getEntityAndActivityAndWasGeneratedBy(),
+                                               NamedBundle remote) {        
+        return getMentionForLocalEntity(local.getStatement(),
                                          remoteEntity, remote);
     }
 
@@ -324,7 +51,7 @@ public class ProvUtilities {
     public MentionOf getMentionForLocalEntity(NamedBundle local,
                                               Entity localEntity,
                                               NamedBundle remote) {
-        return getMentionForLocalEntity(local.getEntityAndActivityAndWasGeneratedBy(),
+        return getMentionForLocalEntity(local.getStatement(),
                                         localEntity, remote);
     }
 
@@ -437,65 +164,65 @@ public class ProvUtilities {
                                            XMLGregorianCalendar.class,
                                            XMLGregorianCalendar.class,
                                            Object.class });
-        types.put(Used.class, new Class[] { QName.class, ActivityRef.class,
-                                           EntityRef.class,
+        types.put(Used.class, new Class[] { QName.class, IDRef.class,
+                                           IDRef.class,
                                            XMLGregorianCalendar.class,
                                            Object.class });
         types.put(WasGeneratedBy.class,
-                  new Class[] { QName.class, EntityRef.class,
-                               ActivityRef.class, XMLGregorianCalendar.class,
+                  new Class[] { QName.class, IDRef.class,
+                               IDRef.class, XMLGregorianCalendar.class,
                                Object.class });
         types.put(WasInvalidatedBy.class,
-                  new Class[] { QName.class, EntityRef.class,
-                               ActivityRef.class, XMLGregorianCalendar.class,
+                  new Class[] { QName.class, IDRef.class,
+                               IDRef.class, XMLGregorianCalendar.class,
                                Object.class });
         types.put(WasStartedBy.class, new Class[] { QName.class,
-                                                   ActivityRef.class,
-                                                   EntityRef.class,
-                                                   ActivityRef.class,
+                                                   IDRef.class,
+                                                   IDRef.class,
+                                                   IDRef.class,
                                                    XMLGregorianCalendar.class,
                                                    Object.class });
         types.put(WasEndedBy.class, new Class[] { QName.class,
-                                                 ActivityRef.class,
-                                                 EntityRef.class,
-                                                 ActivityRef.class,
+                                                 IDRef.class,
+                                                 IDRef.class,
+                                                 IDRef.class,
                                                  XMLGregorianCalendar.class,
                                                  Object.class });
         types.put(WasInformedBy.class, new Class[] { QName.class,
-                                                    ActivityRef.class,
-                                                    ActivityRef.class,
+                                                    IDRef.class,
+                                                    IDRef.class,
                                                     Object.class });
         types.put(WasDerivedFrom.class, new Class[] { QName.class,
-                                                     EntityRef.class,
-                                                     EntityRef.class,
-                                                     ActivityRef.class,
-                                                     GenerationRef.class,
-                                                     UsageRef.class,
+                                                     IDRef.class,
+                                                     IDRef.class,
+                                                     IDRef.class,
+                                                     IDRef.class,
+                                                     IDRef.class,
                                                      Object.class });
         types.put(WasInfluencedBy.class, new Class[] { QName.class,
-                                                      AnyRef.class,
-                                                      AnyRef.class,
+                                                      IDRef.class,
+                                                      IDRef.class,
                                                       Object.class });
         types.put(WasAttributedTo.class, new Class[] { QName.class,
-                                                      EntityRef.class,
-                                                      AgentRef.class,
+                                                      IDRef.class,
+                                                      IDRef.class,
                                                       Object.class });
         types.put(WasAssociatedWith.class, new Class[] { QName.class,
-                                                        ActivityRef.class,
-                                                        AgentRef.class,
-                                                        EntityRef.class,
+                                                        IDRef.class,
+                                                        IDRef.class,
+                                                        IDRef.class,
                                                         Object.class });
         types.put(ActedOnBehalfOf.class, new Class[] { QName.class,
-                                                      AgentRef.class,
-                                                      AgentRef.class,
-                                                      ActivityRef.class,
+                                                      IDRef.class,
+                                                      IDRef.class,
+                                                      IDRef.class,
                                                       Object.class });
-        types.put(SpecializationOf.class, new Class[] { EntityRef.class,
-                                                       EntityRef.class });
+        types.put(SpecializationOf.class, new Class[] { IDRef.class,
+                                                       IDRef.class });
         types.put(MentionOf.class, new Class[] { QName.class,
-						 EntityRef.class,
-						 EntityRef.class,
-						 EntityRef.class });
+						 IDRef.class,
+						 IDRef.class,
+						 IDRef.class });
     }
 
     @SuppressWarnings("unchecked")
@@ -816,5 +543,6 @@ public class ProvUtilities {
         else throw new UnsupportedOperationException();
 
     }
+
 
 }

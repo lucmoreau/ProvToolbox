@@ -46,7 +46,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Role", namespace = "http://www.w3.org/ns/prov#")
 public class Role extends TypedValue
-    implements Equals, HashCode, ToString
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Role
 {
 }
 

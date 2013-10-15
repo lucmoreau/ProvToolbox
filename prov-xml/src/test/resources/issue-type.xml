@@ -10,6 +10,7 @@
 
   <prov:agent prov:id="ex:chartgen">
     <prov:type>prov:Organization</prov:type>
+    <prov:location xsi:type="xsd:QName" xmlns:foo="http://foo/">foo:cde</prov:location>
     <foaf:name>Chart Generators Inc</foaf:name>
   </prov:agent>
 

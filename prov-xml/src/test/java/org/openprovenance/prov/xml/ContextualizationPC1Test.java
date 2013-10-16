@@ -47,7 +47,7 @@ import org.openprovenance.prov.model.DictionaryMembership;
 /**
  * Unit test for simple Provenance Challenge 1 like workflow.
  */
-public class ContextualizationPC1Test extends TestCase {
+abstract public class ContextualizationPC1Test extends TestCase {
 
     public static final String PC1_NS = "http://www.ipaw.info/pc1/";
     public static final String PC1_PREFIX = "pc1";

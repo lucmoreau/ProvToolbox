@@ -58,10 +58,11 @@ import org.w3c.dom.Element;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Entity", propOrder = {
     "label",
-    "location",
+   // "location",
     "type",
     "value",
-    "any"
+   // "any"
+    "all"
 })
 @XmlSeeAlso({
     Bundle.class,
@@ -73,14 +74,16 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
 
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
-    @XmlElement(type = org.openprovenance.prov.xml.Location.class)
-    protected List<org.openprovenance.prov.model.Location> location;
+    //@XmlElement(type = org.openprovenance.prov.xml.Location.class)
+    transient protected List<org.openprovenance.prov.model.Location> location;
     @XmlElement(type = org.openprovenance.prov.xml.Type.class)
     protected List<org.openprovenance.prov.model.Type> type;
     @XmlElement(type = org.openprovenance.prov.xml.Value.class)
     protected org.openprovenance.prov.model.Value value;
+    transient protected List<Attribute> any;
+
     @XmlAnyElement
-    protected List<Attribute> any;
+    protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
     protected QName id;
 
@@ -137,8 +140,21 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
      */
     public List<org.openprovenance.prov.model.Location> getLocation() {
         if (location == null) {
-            location = new ArrayList<org.openprovenance.prov.model.Location>();
-        }
+            if (all==null) {
+        	location = new ArrayList<org.openprovenance.prov.model.Location>();
+            } else {
+        	System.out.println("** Should extract location from all");
+        	location = new ArrayList<org.openprovenance.prov.model.Location>();
+        	for (Attribute attr: all) {
+        	    if (attr.getKind()== Attribute.AttributeKind.PROV_LOCATION) {
+        		Location loc=new Location();
+        		loc.type=attr.getXsdType();
+        		loc.value=attr.getValue().toString();
+        		location.add(loc);
+        	    }
+        	}
+            }
+        } 
         return this.location;
     }
 
@@ -219,11 +235,29 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
      */
     public List<Attribute> getAny() {
         if (any == null) {
-            any = new AttributeList<Attribute>(this);
+            any = new ArrayList<Attribute> ();
+            if (all!=null) {
+        	for (Attribute attr: all) {
+        	    if (attr.getKind()== Attribute.AttributeKind.OTHER) {  		
+            		any.add(attr);
+            	    }
+        	}
+            }
         }
         return this.any;
     }
 
+    
+    
+    public List<Attribute> getAll() {
+	System.out.println("** getAll()");
+        if (all == null) {
+            List locs=getLocation();
+            all = new AttributeList<Attribute>(this,(List<Attribute>)locs, any);
+        }
+        return this.all;
+    }
+ 
     /**
      * Gets the value of the id property.
      * 
@@ -323,6 +357,10 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
             theId = this.getId();
             toStringBuilder.append("id", theId);
         }
+        {
+            toStringBuilder.append("all", getAll());
+        }
+
     }
 
     public String toString() {

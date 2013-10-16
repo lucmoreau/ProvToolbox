@@ -53,7 +53,7 @@ import junit.framework.TestCase;
 /**
  * Unit test for PROV roundtrip conversion between Java and XML
  */
-public class RoundTripFromJavaTest extends TestCase {
+abstract public class RoundTripFromJavaTest extends TestCase {
 
     public static final String EX_NS = "http://example.org/";
     public static final String EX2_NS = "http://example2.org/";

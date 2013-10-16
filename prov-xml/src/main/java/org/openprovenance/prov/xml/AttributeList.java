@@ -2,6 +2,7 @@ package org.openprovenance.prov.xml;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openprovenance.prov.model.HasLocation;
 import org.openprovenance.prov.model.Identifiable;
@@ -13,8 +14,11 @@ public class AttributeList<TYPE> extends AbstractList<TYPE> {
   
     private Identifiable obj;
 
-    AttributeList(Identifiable obj) {
+    AttributeList(Identifiable obj, List<TYPE> locs, List<TYPE> any) {
+	System.out.println("*** Constructor called");
 	this.obj=obj;
+	ll.addAll(locs);
+	ll.addAll(any);
     }
 
     @Override
@@ -24,6 +28,8 @@ public class AttributeList<TYPE> extends AbstractList<TYPE> {
 
     @Override
     public TYPE set(int index, TYPE element) {
+	System.out.println("*** AttributeList set " + index);
+
         TYPE oldValue = ll.get(index);
         ll.set(index,element);
         return oldValue;

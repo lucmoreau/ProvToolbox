@@ -358,11 +358,11 @@ public class SmallTest extends TestCase {
 
 	    a.getLocation().add(pFactory.newLocation(1,ValueConverter.QNAME_XSD_INT));
 
-	    a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "abc", EX_PREFIX),
-						     ValueConverter.QNAME_XSD_QNAME));
+	    //	    a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "abc", EX_PREFIX),
+	    //						     ValueConverter.QNAME_XSD_QNAME));
 
-	    a.getLocation().add(pFactory.newLocation(new QName("http://noexample.org/", "abc", EX_PREFIX),
-						     ValueConverter.QNAME_XSD_QNAME));
+	    //	    a.getLocation().add(pFactory.newLocation(new QName("http://noexample.org/", "abc", EX_PREFIX),
+	    //						     ValueConverter.QNAME_XSD_QNAME));
 
 	    a.getLocation().add(pFactory.newLocation(2.0,ValueConverter.QNAME_XSD_DOUBLE));
 

@@ -48,6 +48,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 public class Role extends TypedValue
     implements Equals, HashCode, ToString, org.openprovenance.prov.model.Role
 {
+ 
 }
 
 // {

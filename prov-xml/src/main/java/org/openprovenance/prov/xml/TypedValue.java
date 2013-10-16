@@ -48,11 +48,13 @@ import java.util.HashMap;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TypedValue", namespace = "http://www.w3.org/ns/prov#", propOrder = {
-    "value"
+   "value"
 })
-public class TypedValue
+public class TypedValue   
+
     implements Equals, HashCode, ToString, org.openprovenance.prov.model.TypedValue
 {
+    
 
     @XmlValue
     @XmlSchemaType(name = "anySimpleType")

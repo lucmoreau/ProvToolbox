@@ -50,6 +50,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 public class Type extends TypedValue
     implements Equals, HashCode, ToString, org.openprovenance.prov.model.Type
 {
+ 
 }
 
 // {

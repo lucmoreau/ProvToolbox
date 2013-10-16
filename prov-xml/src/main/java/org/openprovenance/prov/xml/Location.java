@@ -46,8 +46,42 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Location", namespace = "http://www.w3.org/ns/prov#")
 public class Location extends TypedValue
-    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Location
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Location, org.openprovenance.prov.model.Attribute
 {
+
+    @Override
+    public QName getQName(AttributeKind kind) {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public AttributeKind getAttributeKind(QName q) {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public QName getElementName() {
+	return Attribute.PROV_LOCATION_QNAME;
+    }
+
+    @Override
+    public AttributeKind getKind() {
+	return Attribute.AttributeKind.PROV_LOCATION;
+    }
+
+    @Override
+    public QName getXsdType() {
+	return getType();
+    }
+
+    @Override
+    public String toNotationString() {
+	// TODO Auto-generated method stub
+	return null;
+    }
+   
 }
 
 // {

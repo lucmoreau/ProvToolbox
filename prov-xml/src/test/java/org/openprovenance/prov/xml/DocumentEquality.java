@@ -68,7 +68,7 @@ public class DocumentEquality {
 		Method[] allMethods = class1.getDeclaredMethods();
 		for (Method m : allMethods) {
 			String methodName = m.getName(); 
-			if (methodName.startsWith("get")) {
+			if (methodName.startsWith("get") && (!methodName.equals("getAll"))) {
 				try {
 					Object attr1 = m.invoke(r1);
 					Object attr2 = m.invoke(r2);
@@ -86,6 +86,10 @@ public class DocumentEquality {
 
 					// the two attributes are not equal
 					String attrName = methodName.substring(3);
+					System.out.println("The following " + attrName + " attributes are not the same");
+					System.out.println(attr1);
+					System.out.println(attr2);
+
 					logger.debug("The following " + attrName + " attributes are not the same");
 					logger.debug(attr1);
 					logger.debug(attr2);

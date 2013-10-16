@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 /**
  * Unit test for PROV roundtrip conversion between Java and XML
  */
-public class RoundTripFromXmlTest extends TestCase {
+abstract public class RoundTripFromXmlTest extends TestCase {
 
     public static final String EX_NS = "http://example.org/";
     public static final String EX2_NS = "http://example2.org/";
@@ -236,10 +236,23 @@ public class RoundTripFromXmlTest extends TestCase {
   	Document doc=testFile("issue-type", false);
   	
 	Agent ag=(Agent)doc.getStatementOrBundle().get(0);
-	System.out.println("agent" +ag);
-	System.out.println("agent type " +ag.getType());
-	System.out.println("agent type " +ag.getType().get(0));
-	System.out.println("agent type " +ag.getType().get(0).getClass());
+	System.out.println("-agent" +ag);
+	System.out.println("-agent type " +ag.getType());
+	System.out.println("-agent type " +ag.getType().get(0));
+	System.out.println("-agent type " +ag.getType().get(0).getClass());
+	System.out.println("-agent type " +ag.getType().get(0).getValue());
+	System.out.println("-agent type " +ag.getType().get(0).getValue().getClass());
+	System.out.println("-agent type " +ag.getType().get(0).getType());
+
+
+	System.out.println("-agent location " +ag.getLocation());
+	System.out.println("-agent location " +ag.getLocation().get(0));
+	System.out.println("-agent location " +ag.getLocation().get(0).getClass());
+	System.out.println("-agent location " +ag.getLocation().get(0).getValue());
+	System.out.println("-agent location " +ag.getLocation().get(0).getValue().getClass());
+	System.out.println("-agent location xsi:Type" +ag.getLocation().get(0).getType());
+	//	System.out.println("-agent location " +((TypedValue)(ag.getLocation().get(0))).getValueAsJava());
+	System.out.println("-agent location " +((TypedValue)(ag.getLocation().get(0))).getAttributes());
 	
 	//org.w3c.dom.Element el=(org.w3c.dom.Element)ag.getType().get(0);
 	//serialize(el);

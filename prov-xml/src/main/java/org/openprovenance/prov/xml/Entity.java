@@ -147,7 +147,7 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
         	    if (attr.getKind()== Attribute.AttributeKind.PROV_LOCATION) {  	
         		Location loc=new Location();
         		loc.type=attr.getXsdType();
-        		loc.value=attr.getValue().toString();
+        		loc.setValueAsJava(attr.getValue());
             		some.add(loc);
             	    }
         	}

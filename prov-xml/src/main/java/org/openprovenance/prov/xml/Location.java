@@ -48,17 +48,36 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 public class Location extends TypedValue
     implements Equals, HashCode, ToString, org.openprovenance.prov.model.Location, org.openprovenance.prov.model.Attribute
 {
-
+    
+    
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.AttrIN#getQName(org.openprovenance.prov.xml.Attribute.AttributeKind)
+     */
     @Override
     public QName getQName(AttributeKind kind) {
-	// TODO Auto-generated method stub
-	return null;
+	switch (kind) {
+	case  PROV_TYPE: return Attribute.PROV_TYPE_QNAME;
+	case  PROV_LABEL: return Attribute.PROV_LABEL_QNAME;
+	case  PROV_VALUE: return Attribute.PROV_VALUE_QNAME;
+	case  PROV_LOCATION: return Attribute.PROV_LOCATION_QNAME;
+	case  PROV_ROLE: return Attribute.PROV_ROLE_QNAME;
+	case OTHER:
+        default: 
+		return null;
+	}
     }
-
+    
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.AttrIN#getAttributeKind(javax.xml.namespace.QName)
+     */
     @Override
     public AttributeKind getAttributeKind(QName q) {
-	// TODO Auto-generated method stub
-	return null;
+	if (q.equals(Attribute.PROV_TYPE_QNAME)) return AttributeKind.PROV_TYPE;
+	if (q.equals(Attribute.PROV_LABEL_QNAME)) return AttributeKind.PROV_LABEL;
+	if (q.equals(Attribute.PROV_VALUE_QNAME)) return AttributeKind.PROV_VALUE;
+	if (q.equals(Attribute.PROV_LOCATION_QNAME)) return AttributeKind.PROV_LOCATION;
+	if (q.equals(Attribute.PROV_ROLE_QNAME)) return AttributeKind.PROV_ROLE;
+	return AttributeKind.OTHER;
     }
 
     @Override

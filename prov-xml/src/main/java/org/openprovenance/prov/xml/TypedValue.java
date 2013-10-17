@@ -123,7 +123,8 @@ public class TypedValue
 	if (valueAsJava!=null) {
 	    if (valueAsJava instanceof QName) {
 		QName q=(QName) valueAsJava;
-		this.value=q.getPrefix()+":"+q.getLocalPart();
+		//this.value=q.getPrefix()+":"+q.getLocalPart();
+		this.value=q;
 	    } else {
 		this.value = valueAsJava.toString();
 	    }

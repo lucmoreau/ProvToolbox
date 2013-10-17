@@ -69,7 +69,7 @@ import org.w3c.dom.Element;
     Collection.class,
     Plan.class
 })
-public class Entity implements Equals, HashCode, ToString, org.openprovenance.prov.model.Entity
+public class Entity implements Equals, HashCode, ToString, org.openprovenance.prov.model.Entity, HasAllAttributes
 {
 
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
@@ -140,24 +140,26 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
      */
     public List<org.openprovenance.prov.model.Location> getLocation() {
         if (location == null) {
-            if (all==null) {
-        	location = new ArrayList<org.openprovenance.prov.model.Location>();
-            } else {
-        	System.out.println("** Should extract location from all");
-        	location = new ArrayList<org.openprovenance.prov.model.Location>();
+            
+            List<org.openprovenance.prov.model.Location> some=new ArrayList<org.openprovenance.prov.model.Location>();
+            if (all!=null) {
         	for (Attribute attr: all) {
-        	    if (attr.getKind()== Attribute.AttributeKind.PROV_LOCATION) {
+        	    if (attr.getKind()== Attribute.AttributeKind.PROV_LOCATION) {  	
         		Location loc=new Location();
         		loc.type=attr.getXsdType();
         		loc.value=attr.getValue().toString();
-        		location.add(loc);
-        	    }
+            		some.add(loc);
+            	    }
         	}
             }
+            location=new AttributeList<org.openprovenance.prov.model.Location>(this,some);
         } 
         return this.location;
     }
 
+
+    
+    
     /**
      * Gets the value of the type property.
      * 
@@ -234,26 +236,33 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
      * 
      */
     public List<Attribute> getAny() {
+	System.out.println("** getAany()");
+
         if (any == null) {
-            any = new ArrayList<Attribute> ();
+            List<Attribute> some=new ArrayList<Attribute>();
             if (all!=null) {
         	for (Attribute attr: all) {
         	    if (attr.getKind()== Attribute.AttributeKind.OTHER) {  		
-            		any.add(attr);
+            		some.add(attr);
             	    }
         	}
             }
+           
+            any=new AttributeList<Attribute>(this,some);
         }
         return this.any;
     }
 
     
     
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
+     */
+    @Override
     public List<Attribute> getAll() {
 	System.out.println("** getAll()");
         if (all == null) {
-            List locs=getLocation();
-            all = new AttributeList<Attribute>(this,(List<Attribute>)locs, any);
+            all = new ArrayList<Attribute>();
         }
         return this.all;
     }

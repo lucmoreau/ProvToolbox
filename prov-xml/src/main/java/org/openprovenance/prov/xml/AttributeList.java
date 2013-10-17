@@ -3,6 +3,7 @@ package org.openprovenance.prov.xml;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collection;
 
 import org.openprovenance.prov.model.HasLocation;
 import org.openprovenance.prov.model.Identifiable;
@@ -14,12 +15,14 @@ public class AttributeList<TYPE> extends AbstractList<TYPE> {
   
     private Identifiable obj;
 
-    AttributeList(Identifiable obj, List<TYPE> locs, List<TYPE> any) {
-	System.out.println("*** Constructor called");
-	this.obj=obj;
-	ll.addAll(locs);
-	ll.addAll(any);
-    }
+    AttributeList(Identifiable obj) {
+  	System.out.println("*** Constructor called");
+  	this.obj=obj;
+      }
+    AttributeList(Identifiable obj, Collection<TYPE> col) {
+  	this(obj);
+  	ll.addAll(col);
+      }
 
     @Override
     public TYPE get(int index) {
@@ -46,18 +49,10 @@ public class AttributeList<TYPE> extends AbstractList<TYPE> {
     }
     
     public void add(int index,TYPE element){
-	System.out.println("*** AttributeList add " + index);
+	System.out.println("*** AttributeList add " + index + " " + element);
 	ll.add(index,element);
-	if (element instanceof Location) {
-	    Location attr=(Location) element;
-	    if (obj instanceof HasLocation) {
-		System.out.println("*** AttributeList adding location ");
-
-		HasLocation obj2=(HasLocation) obj;
-		obj2.getLocation().add(attr);
-	    }
-	}
-	
+	HasAllAttributes obj2=(HasAllAttributes)obj;
+	obj2.getAll().add((org.openprovenance.prov.model.Attribute)element);	
     }
 
     

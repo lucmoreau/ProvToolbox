@@ -88,7 +88,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 	return u.toString();
     }
 
-
     protected DatatypeFactory dataFactory;
     /** Note, this method now makes it stateful :-( */
     private Hashtable<String, String> namespaces = null;

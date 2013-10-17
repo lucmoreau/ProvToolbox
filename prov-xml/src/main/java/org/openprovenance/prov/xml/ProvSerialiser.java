@@ -27,6 +27,7 @@ public class ProvSerialiser {
 	static DocumentBuilder docBuilder;
 
 
+
     /** Note DocumentBuilderFactory is documented to be non thread safe. 
         TODO: code analysis, of potential concurrency issues. */
 	static void initBuilder() {

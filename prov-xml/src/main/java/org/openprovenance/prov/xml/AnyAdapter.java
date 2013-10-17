@@ -12,7 +12,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.namespace.QName;
 
-import org.w3c.dom.DOMException;
+import org.openprovenance.prov.model.DOMProcessing;
 
 
 /**
@@ -25,10 +25,12 @@ public class AnyAdapter
 
     ProvFactory pFactory=new ProvFactory();
     
+    DOMProcessing dom=new DOMProcessing();
+    
     ValueConverter vconv=new ValueConverter(pFactory);
     
 
-    /**
+    /** Converts a string to a QName, extracting namespace from the DOM.
      * @param str string to convert to QName
      * @param el current Element in which this string was found (as attribute or attribute value)
      * @return
@@ -37,22 +39,22 @@ public class AnyAdapter
         if (str == null) return null;
         int index = str.indexOf(':');
         if (index == -1) {
-            QName qn= new QName(//el.getAttribute("xmlns"), //what's the default?
-                                el.lookupNamespaceURI(null),  // find default namespace
+            QName qn= new QName(el.lookupNamespaceURI(null),  // find default namespace
                                 str);
             return qn;
         }
         String prefix = str.substring(0, index);
         String local = str.substring(index + 1, str.length());
-        QName qn= new QName(//el.getAttributeNS("http://www.w3.org/2000/xmlns/", prefix),
-                            el.lookupNamespaceURI(prefix),
+        QName qn= new QName(el.lookupNamespaceURI(prefix),
                             local,
                             prefix);
         return qn;
     } 
 
 
+    //TODO: unmarshalling, to create subclass of Attributes according to prov type.
 
+   
     public Attribute unmarshallAttribute(org.w3c.dom.Element el) {
 	String prefix=el.getPrefix();
 	String namespace=el.getNamespaceURI();
@@ -95,16 +97,16 @@ public class AnyAdapter
 	Object value=attribute.getValue();
 	if (value instanceof InternationalizedString) {
 	    InternationalizedString istring=((InternationalizedString)value);
-	    return pFactory.newElement(attribute.getElementName(), 
+	    return dom.newElement(attribute.getElementName(), 
 				       istring.getValue(),
 				       attribute.getXsdType(),
 				       istring.getLang());
 	} else if (value instanceof QName) {
-            return pFactory.newElement(attribute.getElementName(), 
+            return dom.newElement(attribute.getElementName(), 
                                        (QName)value);
 
 	} else {
-	    return pFactory.newElement(attribute.getElementName(), 
+	    return dom.newElement(attribute.getElementName(), 
 				       value.toString(),
 				       attribute.getXsdType());
 	}

@@ -5,7 +5,6 @@ import java.util.LinkedList;
 
 /** Prefix definition for PROV serialisations. */
 
-
 public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.NamespacePrefixMapper {
     
         static final public String PROV_NS="http://www.w3.org/ns/prov#";

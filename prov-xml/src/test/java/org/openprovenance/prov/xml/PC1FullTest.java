@@ -43,6 +43,7 @@ abstract public class PC1FullTest extends TestCase {
     public static ProvFactory pFactory;
     public static ValueConverter vconv;
 
+    
     static {
 	namespaces = new Hashtable<String, String>();
 	// currently, no prefix used, all qnames map to PC1_NS

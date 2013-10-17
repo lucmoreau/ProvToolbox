@@ -358,14 +358,32 @@ public class SmallTest extends TestCase {
 
 	    a.getLocation().add(pFactory.newLocation(1,ValueConverter.QNAME_XSD_INT));
 
-	    a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "abc", EX_PREFIX),
-	    						     ValueConverter.QNAME_XSD_QNAME));
+	    // Consider following cases for QNames
+	    // - declared namespace, with declared prefix
+	    // - declared namespace, with other prefix
+	    // - declared namespace, as default namespace
 
-	    a.getLocation().add(pFactory.newLocation(new QName("http://noexample.org/", "abcno", EX_PREFIX),
+	    // - undeclared namespace, with declared prefix
+	    // - undeclared namespace, with other prefix
+	    // - undeclared namespace, as default namespace
+
+	    a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "abc", EX_PREFIX),
 						     ValueConverter.QNAME_XSD_QNAME));
 	    
-
-	    a.getLocation().add(pFactory.newLocation(new QName("http://noexample.org/", "abcnop"),
+	    a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "abc", "other"),
+						     ValueConverter.QNAME_XSD_QNAME));
+	    
+	    a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "abc"),
+						     ValueConverter.QNAME_XSD_QNAME));
+	    
+	    a.getLocation().add(pFactory.newLocation(new QName("http://example4.org/", "abc", EX_PREFIX),
+						     ValueConverter.QNAME_XSD_QNAME));
+	    
+	    a.getLocation().add(pFactory.newLocation(new QName("http://example4.org/", "abc", "other"),
+						     ValueConverter.QNAME_XSD_QNAME));
+	    
+	    
+	    a.getLocation().add(pFactory.newLocation(new QName("http://example4.org/", "abc"),
 						     ValueConverter.QNAME_XSD_QNAME));
 	    
 	    a.getLocation().add(pFactory.newLocation(2.0,ValueConverter.QNAME_XSD_DOUBLE));

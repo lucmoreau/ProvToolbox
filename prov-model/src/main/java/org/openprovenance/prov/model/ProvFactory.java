@@ -30,9 +30,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public abstract class ProvFactory implements ModelConstructor, QNameExport, LiteralConstructor {
 
-
     public static final String DEFAULT_NS = "_";
-
+ 
     public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.validation";
 
     private static String fileName = "toolbox.properties";
@@ -507,18 +506,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
         Location res =  of.createLocation();
         res.setType(type);
         res.setValueAsJava(value);
-        //FIXME: how can I process a QNAME properly here
-        /*
-        if (value instanceof QName) {
-            QName q=(QName)value;
-            if ((q.getPrefix()==null) || (q.getPrefix()=="")) {
-                res.getAttributes().put(new QName("http://www.w3.org/2000/xmlns/", "xmlns"), q.getNamespaceURI());
-            } else {
-                res.getAttributes().put(new QName("http://www.w3.org/2000/xmlns/",  q.getPrefix(), "xmlns"), q.getNamespaceURI());
-
-            }
-        }*/
-        System.out.println("Prof Facto " + res);
         return res;
       }
 
@@ -916,9 +903,29 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
                                                        .getTime());
     }
 
-    public XMLGregorianCalendar newGYear(String year) {
+    public XMLGregorianCalendar newGYear(int year) {
         XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
-        cal.setYear(new Integer(year));
+        cal.setYear(year);
+        return cal;
+    }
+
+    public XMLGregorianCalendar newGMonth(int month) {
+        XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
+        cal.setMonth(month);
+        return cal;
+    }
+
+    public XMLGregorianCalendar newGDay(int day) {
+        XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
+        cal.setDay(day);
+        return cal;
+    }
+
+
+    public XMLGregorianCalendar newGMonthDay(int month, int day) {
+        XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
+        cal.setMonth(month);
+        cal.setDay(day);
         return cal;
     }
 
@@ -1587,6 +1594,11 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return u1;
     }
 
+    public XMLGregorianCalendar newYear(int year) {
+        XMLGregorianCalendar res=dataFactory.newXMLGregorianCalendar();
+        res.setYear(year);
+        return res;
+    }
     public XMLGregorianCalendar newXMLGregorianCalendar(GregorianCalendar gc) {
 	return dataFactory.newXMLGregorianCalendar(gc);
     }

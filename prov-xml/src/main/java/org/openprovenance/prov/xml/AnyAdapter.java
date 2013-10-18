@@ -90,7 +90,7 @@ public class AnyAdapter
 
     
     public Object marshal(org.openprovenance.prov.model.Attribute attribute) {
-        System.out.println("AnyAdapter marshalling for " + attribute);
+        //System.out.println("AnyAdapter marshalling for " + attribute);
         //System.out.println("AnyAdapter2 marshalling for " + attribute
         //                .getClass());
         //TODO: this call creates a DOM but does not encode the type as xsi:type

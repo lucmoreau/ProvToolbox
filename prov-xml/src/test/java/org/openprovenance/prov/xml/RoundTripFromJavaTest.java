@@ -261,7 +261,7 @@ abstract public class RoundTripFromJavaTest extends TestCase {
    	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"london"));
    	hl.getLocation().add(pFactory.newLocation(w,vconv));
-   	hl.getLocation().add(pFactory.newLocation(pFactory.newGYear("2002"),vconv));
+   	hl.getLocation().add(pFactory.newLocation(pFactory.newGYear(2002),vconv));
     }
     
     public void addValue(HasValue hl) {

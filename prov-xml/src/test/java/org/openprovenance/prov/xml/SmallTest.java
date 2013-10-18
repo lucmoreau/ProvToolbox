@@ -263,8 +263,9 @@ public class SmallTest extends TestCase {
    	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"london"));
    	hl.getLocation().add(pFactory.newLocation(w,vconv));
-   	hl.getLocation().add(pFactory.newLocation(pFactory.newGYear("2002"),vconv));
+   	hl.getLocation().add(pFactory.newLocation(pFactory.newGYear(2002),vconv));
     }
+    
     
     public void addValue(HasValue hl) {
         hl.setValue(pFactory.newValue(new QName(EX_NS, "avalue", EX_PREFIX),
@@ -346,47 +347,120 @@ public class SmallTest extends TestCase {
     }
 
     public boolean test=true;
+    
+    public Object[][] attributeValues =
+        {
+         {"un llieu",ValueConverter.QNAME_XSD_STRING},
+         
+         {1,ValueConverter.QNAME_XSD_INT},
+
+         {1,ValueConverter.QNAME_XSD_LONG},
+
+         {1,ValueConverter.QNAME_XSD_SHORT},
+
+         {2.0,ValueConverter.QNAME_XSD_DOUBLE},
+
+         {1.0,ValueConverter.QNAME_XSD_FLOAT},
+
+         {10,ValueConverter.QNAME_XSD_DECIMAL},
+
+         {true,ValueConverter.QNAME_XSD_BOOLEAN},
+
+         {false,ValueConverter.QNAME_XSD_BOOLEAN},
+
+  //    FIXME   {"yes",ValueConverter.QNAME_XSD_BOOLEAN},
+
+  //   FIXME    {"no",ValueConverter.QNAME_XSD_BOOLEAN},
+         
+         {10,ValueConverter.QNAME_XSD_BYTE},
+
+         {10,ValueConverter.QNAME_XSD_UNSIGNED_INT},
+
+         {10,ValueConverter.QNAME_XSD_UNSIGNED_LONG},
+
+         {10,ValueConverter.QNAME_XSD_INTEGER},
+
+         {10,ValueConverter.QNAME_XSD_UNSIGNED_SHORT},
+
+         {10,ValueConverter.QNAME_XSD_NON_NEGATIVE_INTEGER},
+
+         {-10,ValueConverter.QNAME_XSD_NON_POSITIVE_INTEGER},
+
+         {10,ValueConverter.QNAME_XSD_POSITIVE_INTEGER},
+
+         {10,ValueConverter.QNAME_XSD_UNSIGNED_BYTE},
+
+         {"http://example.org",ValueConverter.QNAME_XSD_ANY_URI},
+
+
+         // Consider following cases for QNames
+         // - declared namespace, with declared prefix
+         // - declared namespace, with other prefix
+         // - declared namespace, as default namespace
+
+         // - undeclared namespace, with declared prefix
+         // - undeclared namespace, with other prefix
+         // - undeclared namespace, as default namespace
+
+         {new QName(EX_NS, "abc", EX_PREFIX), ValueConverter.QNAME_XSD_QNAME},
+         
+         {new QName(EX_NS, "abc", "other"), ValueConverter.QNAME_XSD_QNAME},
+         
+         {new QName(EX_NS, "abc"), ValueConverter.QNAME_XSD_QNAME},
+         
+         {new QName("http://example4.org/", "abc", EX_PREFIX), ValueConverter.QNAME_XSD_QNAME},
+         
+         {new QName("http://example4.org/", "abc", "other"), ValueConverter.QNAME_XSD_QNAME},
+             
+         {new QName("http://example4.org/", "abc"), ValueConverter.QNAME_XSD_QNAME},
+         
+         
+         {pFactory.newTimeNow(),ValueConverter.QNAME_XSD_DATETIME},
+
+         {pFactory.newYear(2013),ValueConverter.QNAME_XSD_GYEAR},
+
+         {pFactory.newGMonth(01),ValueConverter.QNAME_XSD_GMONTH},
+
+         {pFactory.newGDay(30),ValueConverter.QNAME_XSD_GDAY},
+         
+         {pFactory.newGMonthDay(12,25),ValueConverter.QNAME_XSD_GMONTH_DAY},
+
+        // {pFactory.newGMonthDay(03, 15),ValueConverter.QNAME_XSD_GMONTH_DAY}    
+
+         
+         
+         {"EN",ValueConverter.QNAME_XSD_LANGUAGE},
+         {"normal",ValueConverter.QNAME_XSD_NORMALIZED_STRING},
+         {"TOK",ValueConverter.QNAME_XSD_TOKEN},
+         {"NMTOK",ValueConverter.QNAME_XSD_NMTOKEN},
+         {"name",ValueConverter.QNAME_XSD_NAME},
+         {"NCName",ValueConverter.QNAME_XSD_NCNAME}
+
+         
+        };
+    
+    public void addLocations2(HasLocation hl){
+        for (Object [] pair: attributeValues) {
+            Object value=pair[0];
+            QName type=(QName) pair[1];
+            hl.getLocation().add(pFactory.newLocation(value,type));
+         }
+
+    }
 
     public void testEntity0() throws JAXBException  {
 	setNamespaces();
 	Entity a = pFactory.newEntity("ex:e0");
-	a.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), ValueConverter.QNAME_XSD_STRING));
+	
+	addLocations2(a);
+	
+        a.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), ValueConverter.QNAME_XSD_STRING));
+
 
 	if (test) {
 
-	    a.getLocation().add(pFactory.newLocation("un llieu",ValueConverter.QNAME_XSD_STRING));
 
-	    a.getLocation().add(pFactory.newLocation(1,ValueConverter.QNAME_XSD_INT));
-
-	    // Consider following cases for QNames
-	    // - declared namespace, with declared prefix
-	    // - declared namespace, with other prefix
-	    // - declared namespace, as default namespace
-
-	    // - undeclared namespace, with declared prefix
-	    // - undeclared namespace, with other prefix
-	    // - undeclared namespace, as default namespace
-
-	    a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "abc", EX_PREFIX),
-						     ValueConverter.QNAME_XSD_QNAME));
 	    
-	    a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "abc", "other"),
-						     ValueConverter.QNAME_XSD_QNAME));
-	    
-	    a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "abc"),
-						     ValueConverter.QNAME_XSD_QNAME));
-	    
-	    a.getLocation().add(pFactory.newLocation(new QName("http://example4.org/", "abc", EX_PREFIX),
-						     ValueConverter.QNAME_XSD_QNAME));
-	    
-	    a.getLocation().add(pFactory.newLocation(new QName("http://example4.org/", "abc", "other"),
-						     ValueConverter.QNAME_XSD_QNAME));
-	    
-	    
-	    a.getLocation().add(pFactory.newLocation(new QName("http://example4.org/", "abc"),
-						     ValueConverter.QNAME_XSD_QNAME));
-	    
-	    a.getLocation().add(pFactory.newLocation(2.0,ValueConverter.QNAME_XSD_DOUBLE));
 
 
 	    //ValueConverter.QNAME_XSD_INT, Note this is problematic for conversion to/from rdf

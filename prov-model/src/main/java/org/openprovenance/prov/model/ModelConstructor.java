@@ -9,7 +9,7 @@ import javax.xml.namespace.QName;
 /** An interface for constructing concrete representations of the PROV data model */
 
 public interface ModelConstructor {
-    
+ 
     public Entity newEntity(QName id, Collection<Attribute> attributes);
     public Activity newActivity(QName id, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, Collection<Attribute> attributes);
     public Agent newAgent(QName id, Collection<Attribute> attributes);

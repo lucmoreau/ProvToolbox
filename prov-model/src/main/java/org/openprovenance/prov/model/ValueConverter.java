@@ -18,27 +18,49 @@ public class ValueConverter  {
 	return new QName(NamespacePrefixMapper.XSD_HASH_NS, local, NamespacePrefixMapper.XSD_PREFIX);
     }
     
-    public static QName QNAME_XSD_STRING=newXsdQName("string");
-    public static QName QNAME_XSD_INT=newXsdQName("int");
-    public static QName QNAME_XSD_LONG=newXsdQName("long");
-    public static QName QNAME_XSD_SHORT=newXsdQName("short");
-    public static QName QNAME_XSD_DOUBLE=newXsdQName("double");
-    public static QName QNAME_XSD_FLOAT=newXsdQName("float");
-    public static QName QNAME_XSD_DECIMAL=newXsdQName("decimal");
-    public static QName QNAME_XSD_BOOLEAN=newXsdQName("boolean");
-    public static QName QNAME_XSD_BYTE=newXsdQName("byte");
-    public static QName QNAME_XSD_UNSIGNED_INT=newXsdQName("unsignedInt");
-    public static QName QNAME_XSD_UNSIGNED_LONG=newXsdQName("unsignedLong");
-    public static QName QNAME_XSD_INTEGER=newXsdQName("integer");
-    public static QName QNAME_XSD_UNSIGNED_SHORT=newXsdQName("unsignedShort");
-    public static QName QNAME_XSD_NON_NEGATIVE_INTEGER=newXsdQName("nonNegativeInteger");
-    public static QName QNAME_XSD_NON_POSITIVE_INTEGER=newXsdQName("nonPositiveInteger");
-    public static QName QNAME_XSD_POSITIVE_INTEGER=newXsdQName("positiveInteger");
-    public static QName QNAME_XSD_UNSIGNED_BYTE=newXsdQName("unsignedByte");
+    public static QName QNAME_XSD_STRING=newXsdQName("string"); //*
+    public static QName QNAME_XSD_INT=newXsdQName("int");//*
+    public static QName QNAME_XSD_LONG=newXsdQName("long");//*
+    public static QName QNAME_XSD_SHORT=newXsdQName("short");//*
+    public static QName QNAME_XSD_DOUBLE=newXsdQName("double"); //*
+    public static QName QNAME_XSD_FLOAT=newXsdQName("float"); //*
+    public static QName QNAME_XSD_DECIMAL=newXsdQName("decimal"); //*
+    public static QName QNAME_XSD_BOOLEAN=newXsdQName("boolean"); //*
+    public static QName QNAME_XSD_BYTE=newXsdQName("byte");//*
+    public static QName QNAME_XSD_UNSIGNED_INT=newXsdQName("unsignedInt");//*
+    public static QName QNAME_XSD_UNSIGNED_LONG=newXsdQName("unsignedLong");//*
+    public static QName QNAME_XSD_INTEGER=newXsdQName("integer"); //*
+    public static QName QNAME_XSD_UNSIGNED_SHORT=newXsdQName("unsignedShort");//*
+    public static QName QNAME_XSD_NON_NEGATIVE_INTEGER=newXsdQName("nonNegativeInteger");//*
+    public static QName QNAME_XSD_NON_POSITIVE_INTEGER=newXsdQName("nonPositiveInteger");//*
+    public static QName QNAME_XSD_POSITIVE_INTEGER=newXsdQName("positiveInteger");//*
+    public static QName QNAME_XSD_UNSIGNED_BYTE=newXsdQName("unsignedByte");//*
     public static QName QNAME_XSD_ANY_URI=newXsdQName("anyURI");
     public static QName QNAME_XSD_QNAME=newXsdQName("QName");
-    public static QName QNAME_XSD_DATETIME=newXsdQName("dateTime");
-    public static QName QNAME_XSD_GYEAR=newXsdQName("gYear");
+    public static QName QNAME_XSD_DATETIME=newXsdQName("dateTime"); //*
+    public static QName QNAME_XSD_GYEAR=newXsdQName("gYear"); //*
+
+    public static QName QNAME_XSD_GMONTH=newXsdQName("gMonth"); //*
+    public static QName QNAME_XSD_GDAY=newXsdQName("gDay"); //*
+    public static QName QNAME_XSD_GYEAR_MONTH=newXsdQName("gYearMonth"); //*
+    public static QName QNAME_XSD_GMONTH_DAY=newXsdQName("gMonthDay"); //*
+    public static QName QNAME_XSD_DURATION=newXsdQName("duration"); //*
+    public static QName QNAME_XSD_YEAR_MONTH_DURATION=newXsdQName("yearMonthDuration"); //*
+    public static QName QNAME_XSD_DAY_TIME_DURATION=newXsdQName("dayTimeDuration"); //*
+
+    public static QName QNAME_XSD_HEX_BINARY=newXsdQName("hexBinary"); //*
+    public static QName QNAME_XSD_BASE64_BINARY=newXsdQName("base64Binary"); //*
+
+    public static QName QNAME_XSD_LANGUAGE=newXsdQName("language"); //*
+    public static QName QNAME_XSD_NORMALIZED_STRING=newXsdQName("normalizedString"); //*
+    public static QName QNAME_XSD_TOKEN=newXsdQName("token"); //*
+    public static QName QNAME_XSD_NMTOKEN=newXsdQName("NMTOKEN"); //*
+    public static QName QNAME_XSD_NAME=newXsdQName("Name"); //*
+    public static QName QNAME_XSD_NCNAME=newXsdQName("NCName"); //*
+
+    public static QName QNAME_XSD_TIME=newXsdQName("time");  //*
+    public static QName QNAME_XSD_DATE=newXsdQName("date"); //*
+    public static QName QNAME_XSD_DATETIMESTAMP=newXsdQName("dateTimeStamp");  //*
 
     public static QName QNAME_XSD_HASH_STRING=newXsdHashQName("string");
     public static QName QNAME_XSD_HASH_INT=newXsdHashQName("int");
@@ -65,7 +87,6 @@ public class ValueConverter  {
     
     public static QName QNAME_UNKNOWN=newXsdQName("UNKNOWN");
 
-    
     final private LiteralConstructor pFactory;
     
     public ValueConverter(LiteralConstructor pFactory) {
@@ -122,18 +143,49 @@ public class ValueConverter  {
 	    return pFactory.newISOTime(value);
 	}
         if (datatype.equals(QNAME_XSD_GYEAR) || datatype.equals(QNAME_XSD_HASH_GYEAR)) {
-            return pFactory.newGYear(value);
+            return pFactory.newGYear(new Integer(value));
         }
+
+        if (datatype.equals(QNAME_XSD_GMONTH)) {
+            // format is --02
+            return pFactory.newGMonth(new Integer(value.substring(2)));
+        }
+        if (datatype.equals(QNAME_XSD_GMONTH_DAY)) {
+            // format is --12-25            
+            return pFactory.newGMonthDay(new Integer(value.substring(2,4)), 
+                                         new Integer(value.substring(5,7)));
+        }
+
+	if (datatype.equals(QNAME_XSD_GDAY)) {
+	    // format is ---30
+	    return pFactory.newGDay(new Integer(value.substring(3)));
+	}
 	
-	
+        if (datatype.equals(QNAME_XSD_LANGUAGE)) {
+            return value;
+        }
+
+        if (datatype.equals(QNAME_XSD_TOKEN)) {
+            return value;
+        }
+        if (datatype.equals(QNAME_XSD_NMTOKEN)) {
+            return value;
+        }
+
+        if (datatype.equals(QNAME_XSD_NAME)) {
+            return value;
+        }
+
+        if (datatype.equals(QNAME_XSD_NCNAME)) {
+            return value;
+        }
+
+        if (datatype.equals(QNAME_XSD_NORMALIZED_STRING)) {
+            return value;
+        }
+
 	//transform to qname!!
 	if ((datatype.equals("rdf:XMLLiteral"))
-		|| (datatype.equals("xsd:normalizedString"))
-		|| (datatype.equals("xsd:token"))
-		|| (datatype.equals("xsd:language"))
-		|| (datatype.equals("xsd:Name"))
-		|| (datatype.equals("xsd:NCName"))
-		|| (datatype.equals("xsd:NMTOKEN"))
 		|| (datatype.equals("xsd:hexBinary"))
 		|| (datatype.equals("xsd:base64Binary"))) {
 

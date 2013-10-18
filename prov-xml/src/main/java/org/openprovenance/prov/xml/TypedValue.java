@@ -25,6 +25,7 @@ import org.jvnet.jaxb2_commons.lang.ToString;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBEqualsBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
+import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 
 import java.util.Map;
@@ -128,6 +129,8 @@ public class TypedValue
 		this.value=q;
 	    } else if (valueAsJava instanceof byte[]) {
 	        this.value=valueAsJava;
+	    } else if (valueAsJava instanceof org.w3c.dom.Element) {
+	        this.value=valueAsJava;
 	    } else {
 		this.value = valueAsJava.toString();
 	    }
@@ -162,7 +165,21 @@ public class TypedValue
             return ;
         }
         final TypedValue that = ((TypedValue) object);
-        equalsBuilder.append(this.getValue(), that.getValue());
+        if ((this.getValue() instanceof org.w3c.dom.Element)
+                && 
+                (that.getValue() instanceof org.w3c.dom.Element)) {
+            try {
+                final String s1=DOMProcessing.writeToString((org.w3c.dom.Element)this.getValue());
+                final String s2=DOMProcessing.writeToString((org.w3c.dom.Element)that.getValue());
+                System.out.println("*** Comparing " + s1);
+                System.out.println("*** Comparing " + s2);
+                equalsBuilder.append(s1,s2);
+            } catch(Exception e) {
+                equalsBuilder.append(this.getValue(), that.getValue());
+            }
+        } else {
+            equalsBuilder.append(this.getValue(), that.getValue());
+        }
         equalsBuilder.append(this.getType(), that.getType());
     }
 

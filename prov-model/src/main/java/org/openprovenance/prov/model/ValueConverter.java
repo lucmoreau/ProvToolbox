@@ -11,12 +11,17 @@ import javax.xml.namespace.QName;
 public class ValueConverter  {
     
     public static QName newXsdQName(String local) {
-	return new QName(NamespacePrefixMapper.XSD_NS, local, NamespacePrefixMapper.XSD_PREFIX);
+        return new QName(NamespacePrefixMapper.XSD_NS, local, NamespacePrefixMapper.XSD_PREFIX);
     }
 
     public static QName newXsdHashQName(String local) {
 	return new QName(NamespacePrefixMapper.XSD_HASH_NS, local, NamespacePrefixMapper.XSD_PREFIX);
     }
+    
+    public static QName newRdfQName(String local) {
+        return new QName("http://www.w3.org/1999/02/22-rdf-syntax-ns#", local, "rdf");
+    }
+    
     
     public static QName QNAME_XSD_STRING=newXsdQName("string"); //*
     public static QName QNAME_XSD_INT=newXsdQName("int");//*
@@ -83,6 +88,9 @@ public class ValueConverter  {
     public static QName QNAME_XSD_HASH_QNAME=newXsdHashQName("QName");
     public static QName QNAME_XSD_HASH_DATETIME=newXsdHashQName("dateTime");
     public static QName QNAME_XSD_HASH_GYEAR=newXsdQName("gYear");
+
+    
+    public static QName QNAME_RDF_LITERAL=newRdfQName("XMLLiteral");
 
     
     public static QName QNAME_UNKNOWN=newXsdQName("UNKNOWN");
@@ -205,11 +213,8 @@ public class ValueConverter  {
         }
 
 	//transform to qname!!
-	if ((datatype.equals("rdf:XMLLiteral"))) {
-
-	    throw new UnsupportedOperationException(
-						    "KNOWN literal type but conversion not supported yet "
-							    + datatype);
+	if (datatype.equals(QNAME_RDF_LITERAL)) {
+	    return value;
 	}
 
 	throw new UnsupportedOperationException("UNKNOWN literal type "

@@ -1,6 +1,8 @@
 package org.openprovenance.prov.xml;
 
 import java.io.File;
+
+import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.HasExtensibility;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Activity;
@@ -44,6 +46,7 @@ import java.util.List;
 import java.net.URI;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
 
 import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.URIWrapper;
@@ -348,6 +351,19 @@ public class SmallTest extends TestCase {
 
     public boolean test=true;
     
+    DOMProcessing dom=new DOMProcessing();
+    
+    org.w3c.dom.Element createXMLLiteral() {
+        DocumentBuilder builder=dom.builder;
+        org.w3c.dom.Document doc=builder.newDocument();
+        org.w3c.dom.Element el1=doc.createElementNS("http://app/","ap:aaa");
+        org.w3c.dom.Element el2=doc.createElementNS("http://app/","ap:bbb");
+        org.w3c.dom.Element el3=doc.createElementNS("http://app/","ap:ccc");
+        el2.appendChild(el3);
+        el1.appendChild(el2);
+        return el1;        
+    }
+    
     public Object[][] attributeValues =
         {
          {"un llieu",ValueConverter.QNAME_XSD_STRING},
@@ -439,8 +455,9 @@ public class SmallTest extends TestCase {
          {"TOK",ValueConverter.QNAME_XSD_TOKEN},
          {"NMTOK",ValueConverter.QNAME_XSD_NMTOKEN},
          {"name",ValueConverter.QNAME_XSD_NAME},
-         {"NCName",ValueConverter.QNAME_XSD_NCNAME}
-
+         {"NCName",ValueConverter.QNAME_XSD_NCNAME},
+         
+         {createXMLLiteral(),ValueConverter.QNAME_RDF_LITERAL}
          
         };
     

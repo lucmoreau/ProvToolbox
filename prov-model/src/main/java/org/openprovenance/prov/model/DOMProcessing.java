@@ -1,13 +1,30 @@
 package org.openprovenance.prov.model;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public class DOMProcessing {
+    private static final QName QNAME_RDF_LITERAL = ValueConverter.QNAME_RDF_LITERAL;
+    private static final String RDF_PREFIX = QNAME_RDF_LITERAL.getPrefix();
+    private static final String RDF_NAMESPACE = QNAME_RDF_LITERAL.getNamespaceURI();
+    private static final String RDF_LITERAL = qnameToString(QNAME_RDF_LITERAL);
+    
     static public DocumentBuilder builder;
  
     static void initBuilder() {
@@ -89,5 +106,53 @@ public class DOMProcessing {
 	return el;
     }
 
+
+    public Object newElement(QName qname, Element value) {
+        org.w3c.dom.Document doc = builder.newDocument();
+        Element el = doc.createElementNS(qname.getNamespaceURI(),
+                                         qnameToString(qname)); 
+        el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", RDF_LITERAL);
+        el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:"+RDF_PREFIX, RDF_NAMESPACE);
+        el.appendChild(doc.importNode(value, true));
+        return el;
+    }
+    
+    static public void writeDOMToPrinter(Node document, StreamResult result,
+                                         boolean formatted)
+            throws TransformerConfigurationException, TransformerException {
+        
+        // Use a Transformer for output
+        TransformerFactory tFactory = TransformerFactory.newInstance();
+        Transformer transformer = tFactory.newTransformer();
+
+        DOMSource source = new DOMSource(document);
+        // transformer.setOutputProperty(OutputKeys.ENCODING,"ISO-8859-1");
+        // transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM,"users.dtd");
+        transformer.setOutputProperty(OutputKeys.METHOD,"xml");
+
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        if (formatted) {
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        } else {
+            transformer.setOutputProperty(OutputKeys.INDENT, "no");
+        }
+
+        transformer.transform(source, result);
+
+    }                                                                                                                                            
+    static public void writeDOMToPrinter(Node document, Writer out, boolean formatted)                                                           
+            throws TransformerConfigurationException, TransformerException  {                                                                        
+                                                                                                                                                     
+            StreamResult result = new StreamResult(out);                                                                                             
+            writeDOMToPrinter(document,result,formatted);                                                                                            
+        }                                                                                                                                            
+                 
+    static public String writeToString (Node toWrite)                                                                                            
+            throws TransformerConfigurationException, TransformerException {                                                                         
+                                                                                                                                                     
+            StringWriter sw=new StringWriter();                                                                                                      
+            writeDOMToPrinter(toWrite,new PrintWriter(sw),false);                                                                                    
+            return sw.toString();                                                                                                                    
+        }     
 
 }

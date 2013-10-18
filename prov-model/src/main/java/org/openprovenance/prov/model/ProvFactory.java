@@ -959,6 +959,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
         }
      
     }
+
   
     public MentionOf newMentionOf(Entity infra, Entity supra, Entity bundle) {
 	return newMentionOf((infra == null) ? null : newIDRef(infra),

@@ -112,7 +112,7 @@ public class AnyAdapter
                                       attribute.getType());
             } else {
                 return dom.newElement(attribute.getElementName(), 
-                                      pFactory.base64Encoding((byte[]) value), //FIXME: HEX
+                                      pFactory.hexEncoding((byte[]) value), //FIXME: HEX
                                       attribute.getType());               
             }
 

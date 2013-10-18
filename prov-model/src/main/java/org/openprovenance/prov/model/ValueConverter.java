@@ -197,8 +197,7 @@ public class ValueConverter  {
         }
 
         if (datatype.equals(QNAME_XSD_HEX_BINARY)) {
-            //FIXME
-            return value;
+            return pFactory.hexDecoding(value);
         }
 
         if (datatype.equals(QNAME_XSD_BASE64_BINARY)) {

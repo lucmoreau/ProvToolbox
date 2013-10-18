@@ -19,4 +19,6 @@ public interface LiteralConstructor {
 
      byte [] base64Decoding(String s);
 
+    Object hexDecoding(String value);
+
 }

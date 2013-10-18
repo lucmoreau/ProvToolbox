@@ -19,6 +19,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 
+import org.apache.commons.codec.DecoderException;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilder;
@@ -947,8 +948,18 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     public byte [] base64Decoding(String s) {
         return org.apache.commons.codec.binary.Base64.decodeBase64(s);
     }
-
-   
+    public String hexEncoding(byte [] b) {
+        return org.apache.commons.codec.binary.Hex.encodeHexString(b);
+    }
+    public byte [] hexDecoding(String s) {
+        try {
+            return org.apache.commons.codec.binary.Hex.decodeHex(s.toCharArray());
+        } catch  (Exception e) {
+            return s.getBytes(); // fall back, but obviously, this is not converted
+        }
+     
+    }
+  
     public MentionOf newMentionOf(Entity infra, Entity supra, Entity bundle) {
 	return newMentionOf((infra == null) ? null : newIDRef(infra),
 			    (supra == null) ? null : newIDRef(supra),

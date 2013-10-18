@@ -127,10 +127,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
   	return res;
       }
 
-    public Attribute newAttribute(QName qname, Object value, QName type) {
-  	Attribute res = new Attribute(qname, value, type);
-  	return res;
-      }
+
 
     public Attribute newAttribute(Attribute.AttributeKind kind, Object value, ValueConverter vconv) {
   	Attribute res = new Attribute(kind, value, vconv.getXsdType(value));
@@ -144,19 +141,35 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     public Attribute newAttribute(String namespace, String localName,
 				  String prefix, Object value, ValueConverter vconv) {
 	Attribute res = new Attribute(new QName(namespace, localName, prefix),
-				      value, vconv.getXsdType(value));
+	                              value, 
+	                              vconv.getXsdType(value));
 	return res;
     }
 
-    public Attribute newAttribute(String namespace, String localName,
-				  String prefix, Object value, QName type) {
-	Attribute res = new Attribute(new QName(namespace, localName, prefix),
-				      value, type);
-	return res;
+    public org.openprovenance.prov.model.Attribute newAttribute(QName elementName, Object value, QName type) {
+        if (elementName.equals(Attribute.PROV_LOCATION_QNAME)) {
+            return newLocation(value,type);
+        }
+        Attribute res = new Attribute(elementName,
+                                      value, 
+                                      type);
+        return res;
     }
+    
+    public org.openprovenance.prov.model.Attribute newAttribute(String namespace, String localName,
+                                                                String prefix, Object value, QName type) {
 
- 
-
+        return newAttribute(new QName(namespace, localName, prefix),
+                            value, 
+                            type);
+    }
+    
+    public Location newLocation(Object value, QName type) {
+        Location loc=new Location();
+        loc.type=type;
+        loc.setValueAsJava(value);
+        return loc;
+    }
 
     @Override
     public org.openprovenance.prov.model.Attribute createAttribute(QName qname,

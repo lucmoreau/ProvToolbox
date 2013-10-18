@@ -23,7 +23,7 @@ public interface Attribute {
 
     public abstract Object getValue();
 
-    public abstract QName getXsdType();
+    public abstract QName getType();
 
     /** A method to generate the prov-n representation of an attribute  ex:attr="value" %% xsd:type */
 

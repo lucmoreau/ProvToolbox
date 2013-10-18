@@ -1618,22 +1618,22 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 		break;
 	    case PROV_LOCATION:
 		if (loc!=null) {
-		    loc.getLocation().add(newLocation(aValue,attr.getXsdType()));
+		    loc.getLocation().add(newLocation(aValue,attr.getType()));
 		}
 		break;
 	    case PROV_ROLE:
 		if (rol!=null) {
-		    rol.getRole().add(newRole(aValue,attr.getXsdType()));
+		    rol.getRole().add(newRole(aValue,attr.getType()));
 		}
 		break;
 	    case PROV_TYPE: 
 		if (typ!=null) {
-		    typ.getType().add(newType(aValue,attr.getXsdType()));
+		    typ.getType().add(newType(aValue,attr.getType()));
 		}
 		break;
 	    case PROV_VALUE:
 		if (aval!=null) {
-		    aval.setValue(newValue(aValue,attr.getXsdType()));
+		    aval.setValue(newValue(aValue,attr.getType()));
 		}
 		break;
 	    case OTHER:

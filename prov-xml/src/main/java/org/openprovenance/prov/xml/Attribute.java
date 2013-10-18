@@ -14,11 +14,11 @@ public class Attribute implements org.openprovenance.prov.model.Attribute {
 	return new QName(NamespacePrefixMapper.PROV_NS, s, NamespacePrefixMapper.PROV_PREFIX);
     }
     
-    public static QName PROV_TYPE_QNAME=provQName("type"); 
-    public static QName PROV_LABEL_QNAME=provQName("label"); 
-    public static QName PROV_ROLE_QNAME=provQName("role");
-    public static QName PROV_LOCATION_QNAME=provQName("location");
-    public static QName PROV_VALUE_QNAME=provQName("value");
+    public static final QName PROV_TYPE_QNAME=provQName("type"); 
+    public static final QName PROV_LABEL_QNAME=provQName("label"); 
+    public static final QName PROV_ROLE_QNAME=provQName("role");
+    public static final QName PROV_LOCATION_QNAME=provQName("location");
+    public static final QName PROV_VALUE_QNAME=provQName("value");
     
 
 
@@ -120,7 +120,7 @@ public class Attribute implements org.openprovenance.prov.model.Attribute {
      * @see org.openprovenance.prov.xml.AttrIN#getXsdType()
      */
     @Override
-    public QName getXsdType() {
+    public QName getType() {
 	return xsdType;
     }
 

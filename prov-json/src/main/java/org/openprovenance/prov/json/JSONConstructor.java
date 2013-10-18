@@ -235,7 +235,7 @@ public class JSONConstructor implements ModelConstructor {
 			}
 		}
 		else {
-			String datatype = qnExport.qnameToString(attr.getXsdType());
+			String datatype = qnExport.qnameToString(attr.getType());
 			attrValue = typedLiteral(value.toString(), datatype, null);
 		}
 		return tuple(attrName, attrValue);

@@ -24,6 +24,7 @@ import org.jvnet.jaxb2_commons.lang.ToString;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBEqualsBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
+import org.openprovenance.prov.model.DOMProcessing;
 
 
 /**
@@ -48,206 +49,23 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 public class Location extends TypedValue
     implements Equals, HashCode, ToString, org.openprovenance.prov.model.Location, org.openprovenance.prov.model.Attribute
 {
-    
-    
-    /* (non-Javadoc)
-     * @see org.openprovenance.prov.xml.AttrIN#getQName(org.openprovenance.prov.xml.Attribute.AttributeKind)
-     */
-    @Override
-    public QName getQName(AttributeKind kind) {
-	switch (kind) {
-	case  PROV_TYPE: return Attribute.PROV_TYPE_QNAME;
-	case  PROV_LABEL: return Attribute.PROV_LABEL_QNAME;
-	case  PROV_VALUE: return Attribute.PROV_VALUE_QNAME;
-	case  PROV_LOCATION: return Attribute.PROV_LOCATION_QNAME;
-	case  PROV_ROLE: return Attribute.PROV_ROLE_QNAME;
-	case OTHER:
-        default: 
-		return null;
-	}
-    }
-    
-    /* (non-Javadoc)
-     * @see org.openprovenance.prov.xml.AttrIN#getAttributeKind(javax.xml.namespace.QName)
-     */
-    @Override
-    public AttributeKind getAttributeKind(QName q) {
-	if (q.equals(Attribute.PROV_TYPE_QNAME)) return AttributeKind.PROV_TYPE;
-	if (q.equals(Attribute.PROV_LABEL_QNAME)) return AttributeKind.PROV_LABEL;
-	if (q.equals(Attribute.PROV_VALUE_QNAME)) return AttributeKind.PROV_VALUE;
-	if (q.equals(Attribute.PROV_LOCATION_QNAME)) return AttributeKind.PROV_LOCATION;
-	if (q.equals(Attribute.PROV_ROLE_QNAME)) return AttributeKind.PROV_ROLE;
-	return AttributeKind.OTHER;
-    }
 
+    private static final AttributeKind PROV_LOCATION_KIND = Attribute.AttributeKind.PROV_LOCATION;
+    private static final QName PROV_LOCATION_QNAME = Attribute.PROV_LOCATION_QNAME;
+ 
     @Override
     public QName getElementName() {
-	return Attribute.PROV_LOCATION_QNAME;
+	return PROV_LOCATION_QNAME;
     }
 
     @Override
     public AttributeKind getKind() {
-	return Attribute.AttributeKind.PROV_LOCATION;
-    }
-
-    @Override
-    public QName getXsdType() {
-	return getType();
+	return PROV_LOCATION_KIND;
     }
 
     @Override
     public String toNotationString() {
-	// TODO Auto-generated method stub
-	return null;
+        return DOMProcessing.qnameToString(getElementName()) + " = " + Attribute.valueToNotationString(getValue(), getType());
     }
    
 }
-
-// {
-
-//     @XmlValue
-//     @XmlSchemaType(name = "anySimpleType")
-//     protected Object value;
-//     @XmlAttribute(name = "type", namespace = "http://www.w3.org/2001/XMLSchema-instance")
-//     protected QName type;
-
-    
-//     transient protected Object valueAsJava;
-
-//     /**
-//      * Gets the value of the value property.
-//      * 
-//      * @return
-//      *     possible object is
-//      *     {@link Object }
-//      *     
-//      */
-//     public Object getValue() {
-//         return value;
-//     }
-
-//     /**
-//      * Sets the value of the value property.
-//      * 
-//      * @param value
-//      *     allowed object is
-//      *     {@link Object }
-//      *     
-//      */
-//     public void setValue(Object value) {
-//         this.value = value;
-//     }
-
-
-
-//     /**
-//      * Gets the value of the type property.
-//      * 
-//      * @return
-//      *     possible object is
-//      *     {@link QName }
-//      *     
-//      */
-//     public QName getType() {
-//         return type;
-//     }
-
-
-
-//     /**
-//      * Gets the value of the value property.
-//      * 
-//      * @return
-//      *     possible object is
-//      *     {@link Object }
-//      *     
-//      */
-//     public Object getValueAsJava(ValueConverter vconv) {
-//     	if (valueAsJava==null) {
-//     		valueAsJava=vconv.convertToJava(getType(), (String)value);
-//     	}
-//         return valueAsJava;
-//     }
-
-//     /**
-//      * Sets the value of the value property.
-//      * 
-//      * @param value
-//      *     allowed object is
-//      *     {@link Object }
-//      *     
-//      */
-//     public void setValueAsJava(Object valueAsJava) {
-// 	if (valueAsJava!=null)
-// 	    this.value = valueAsJava.toString();
-//         this.valueAsJava = valueAsJava;
-//     }
-
-//     /*
-//      * Sets the value of the type property.
-//      * 
-//      * @param value
-//      *     allowed object is
-//      *     {@link QName }
-//      *     
-//      */
-//     public void setType(QName value) {
-//         this.type = value;
-//     }
-
-//     public void equals(Object object, EqualsBuilder equalsBuilder) {
-//         if (!(object instanceof Location)) {
-//             equalsBuilder.appendSuper(false);
-//             return ;
-//         }
-//         if (this == object) {
-//             return ;
-//         }
-//         final Location that = ((Location) object);
-//         equalsBuilder.append(this.getValue(), that.getValue());
-//         equalsBuilder.append(this.getType(), that.getType());
-//     }
-
-//     public boolean equals(Object object) {
-//         if (!(object instanceof Location)) {
-//             return false;
-//         }
-//         if (this == object) {
-//             return true;
-//         }
-//         final EqualsBuilder equalsBuilder = new JAXBEqualsBuilder();
-//         equals(object, equalsBuilder);
-//         return equalsBuilder.isEquals();
-//     }
-
-//     public void hashCode(HashCodeBuilder hashCodeBuilder) {
-//         hashCodeBuilder.append(this.getValue());
-//         hashCodeBuilder.append(this.getType());
-//     }
-
-//     public int hashCode() {
-//         final HashCodeBuilder hashCodeBuilder = new JAXBHashCodeBuilder();
-//         hashCode(hashCodeBuilder);
-//         return hashCodeBuilder.toHashCode();
-//     }
-
-//     public void toString(ToStringBuilder toStringBuilder) {
-//         {
-//             Object theValue;
-//             theValue = this.getValue();
-//             toStringBuilder.append("value", theValue);
-//         }
-//         {
-//             QName theType;
-//             theType = this.getType();
-//             toStringBuilder.append("type", theType);
-//         }
-//     }
-
-//     public String toString() {
-//         final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
-//         toString(toStringBuilder);
-//         return toStringBuilder.toString();
-//     }
-
-// }

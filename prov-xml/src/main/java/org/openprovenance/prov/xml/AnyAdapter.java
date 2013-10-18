@@ -55,7 +55,7 @@ public class AnyAdapter
     //TODO: unmarshalling, to create subclass of Attributes according to prov type.
 
    
-    public Attribute unmarshallAttribute(org.w3c.dom.Element el) {
+    public org.openprovenance.prov.model.Attribute unmarshallAttribute(org.w3c.dom.Element el) {
 	String prefix=el.getPrefix();
 	String namespace=el.getNamespaceURI();
 	String local=el.getLocalName();
@@ -65,7 +65,7 @@ public class AnyAdapter
 	QName type=((typeAsString==null) || (typeAsString.equals(""))) ? null : stringToQName(typeAsString, el);
 	if (type==null) type=ValueConverter.QNAME_XSD_STRING;
 	if (type.equals(ValueConverter.QNAME_XSD_QNAME)) {
-	    QName qn=stringToQName(child,el);  // TODO: not robust to prefix not predeclared 
+	    QName qn=stringToQName(child,el);
 	    return pFactory.newAttribute(namespace,local,prefix, qn, type);
 	} else if ((lang==null) || (lang.equals(""))) {
 	    return pFactory.newAttribute(namespace,local,prefix, vconv.convertToJava(type, child), type);
@@ -75,7 +75,7 @@ public class AnyAdapter
     }
     
 
-    public Attribute unmarshal(Object value) {
+    public org.openprovenance.prov.model.Attribute unmarshal(Object value) {
         //System.out.println("AnyAdapter unmarshalling for " + value);
         if (value instanceof org.w3c.dom.Element) {
             org.w3c.dom.Element el=(org.w3c.dom.Element)value;
@@ -99,7 +99,7 @@ public class AnyAdapter
 	    InternationalizedString istring=((InternationalizedString)value);
 	    return dom.newElement(attribute.getElementName(), 
 				       istring.getValue(),
-				       attribute.getXsdType(),
+				       attribute.getType(),
 				       istring.getLang());
 	} else if (value instanceof QName) {
             return dom.newElement(attribute.getElementName(), 
@@ -108,7 +108,7 @@ public class AnyAdapter
 	} else {
 	    return dom.newElement(attribute.getElementName(), 
 				       value.toString(),
-				       attribute.getXsdType());
+				       attribute.getType());
 	}
         //JAXBElement<?> je=new JAXBElement(value.getElementName(),value.getValue().getClass(),value.getValue());
         //return je;
@@ -116,11 +116,11 @@ public class AnyAdapter
 
     static AnyAdapter me=new AnyAdapter();
     
-    static Attribute parseMethod(Object o) {
+    static org.openprovenance.prov.model.Attribute parseMethod(Object o) {
 	return me.unmarshal(o);
     }
     
-    static Object printMethod(Attribute a) {
+    static Object printMethod(org.openprovenance.prov.model.Attribute a) {
 	return me.marshal(a);
     }
 

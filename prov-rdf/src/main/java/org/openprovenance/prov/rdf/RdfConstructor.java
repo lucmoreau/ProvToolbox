@@ -356,7 +356,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 
 	    LITERAL lit = null;
 
-	    QName type = attr.getXsdType();
+	    QName type = attr.getType();
 	    QName pred = onto.convertToRdf(attr.getElementName()); // FIXME: convert to XSD_HASH
 
 	    String value;

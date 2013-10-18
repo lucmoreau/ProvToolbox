@@ -144,12 +144,18 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
             List<org.openprovenance.prov.model.Location> some=new ArrayList<org.openprovenance.prov.model.Location>();
             if (all!=null) {
         	for (Attribute attr: all) {
-        	    if (attr.getKind()== Attribute.AttributeKind.PROV_LOCATION) {  	
-        		Location loc=new Location();
-        		loc.type=attr.getXsdType();
-        		loc.setValueAsJava(attr.getValue());
-            		some.add(loc);
-            	    }
+        	    if (attr instanceof Location) {
+        	        some.add((Location)attr);
+        	    } else {
+        	        if (attr.getKind()== Attribute.AttributeKind.PROV_LOCATION) {  	
+        	            
+        	            Location loc=new Location();
+        	            loc.type=attr.getType();
+        	            loc.setValueAsJava(attr.getValue());
+        	            System.out.println("--- location " + loc); // should never be here, really
+        	            some.add(loc);
+        	        }
+        	    }
         	}
             }
             location=new AttributeList<org.openprovenance.prov.model.Location>(this,some);

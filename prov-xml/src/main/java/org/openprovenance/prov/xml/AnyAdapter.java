@@ -101,9 +101,20 @@ public class AnyAdapter
 				       istring.getValue(),
 				       attribute.getType(),
 				       istring.getLang());
-	} else if (value instanceof QName) {
+        } else if (value instanceof QName) {
             return dom.newElement(attribute.getElementName(), 
-                                       (QName)value);
+                                  (QName)value);
+
+        } else if (value instanceof byte[]) {
+            if (attribute.getType().equals(ValueConverter.QNAME_XSD_BASE64_BINARY)) {
+                return dom.newElement(attribute.getElementName(), 
+                                      pFactory.base64Encoding((byte[]) value),
+                                      attribute.getType());
+            } else {
+                return dom.newElement(attribute.getElementName(), 
+                                      pFactory.base64Encoding((byte[]) value), //FIXME: HEX
+                                      attribute.getType());               
+            }
 
 	} else {
 	    return dom.newElement(attribute.getElementName(), 

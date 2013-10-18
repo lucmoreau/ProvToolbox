@@ -126,6 +126,8 @@ public class TypedValue
 		QName q=(QName) valueAsJava;
 		//this.value=q.getPrefix()+":"+q.getLocalPart();
 		this.value=q;
+	    } else if (valueAsJava instanceof byte[]) {
+	        this.value=valueAsJava;
 	    } else {
 		this.value = valueAsJava.toString();
 	    }

@@ -15,4 +15,8 @@ public interface LiteralConstructor {
 
     Object newISOTime(String value);
 
+    Object newDuration(String value);
+
+     byte [] base64Decoding(String s);
+
 }

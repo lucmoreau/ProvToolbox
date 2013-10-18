@@ -13,6 +13,7 @@ import java.net.URI;
 import javax.xml.bind.JAXBElement;
 import java.util.GregorianCalendar;
 import javax.xml.namespace.QName;
+import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -929,8 +930,25 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
         return cal;
     }
 
-  
+    public Duration newDuration(int durationInMilliSeconds) {
+        Duration dur=dataFactory.newDuration(durationInMilliSeconds);
+        return dur;
+    }
+
+   
+    public Duration newDuration(String lexicalRepresentation) {
+        Duration dur=dataFactory.newDuration(lexicalRepresentation);
+        return dur;
+    }
     
+    public String base64Encoding(byte [] b) {
+        return org.apache.commons.codec.binary.Base64.encodeBase64String(b);
+    }
+    public byte [] base64Decoding(String s) {
+        return org.apache.commons.codec.binary.Base64.decodeBase64(s);
+    }
+
+   
     public MentionOf newMentionOf(Entity infra, Entity supra, Entity bundle) {
 	return newMentionOf((infra == null) ? null : newIDRef(infra),
 			    (supra == null) ? null : newIDRef(supra),

@@ -425,9 +425,14 @@ public class SmallTest extends TestCase {
          
          {pFactory.newGMonthDay(12,25),ValueConverter.QNAME_XSD_GMONTH_DAY},
 
-        // {pFactory.newGMonthDay(03, 15),ValueConverter.QNAME_XSD_GMONTH_DAY}    
-
          
+         {pFactory.newDuration(12225),ValueConverter.QNAME_XSD_DURATION},
+
+         {pFactory.newDuration(0),ValueConverter.QNAME_XSD_YEAR_MONTH_DURATION},
+         {pFactory.newDuration("P2147483647DT2147483647H2147483647M123456789012345.123456789012345S"),ValueConverter.QNAME_XSD_DAY_TIME_DURATION},
+
+    //     { new byte[] {0,1,2,34,5,6}, ValueConverter.QNAME_XSD_HEX_BINARY},
+         { new byte[] {0,1,2,34,5,6}, ValueConverter.QNAME_XSD_BASE64_BINARY},
          
          {"EN",ValueConverter.QNAME_XSD_LANGUAGE},
          {"normal",ValueConverter.QNAME_XSD_NORMALIZED_STRING},

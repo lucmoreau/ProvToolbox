@@ -156,11 +156,23 @@ public class ValueConverter  {
                                          new Integer(value.substring(5,7)));
         }
 
-	if (datatype.equals(QNAME_XSD_GDAY)) {
-	    // format is ---30
-	    return pFactory.newGDay(new Integer(value.substring(3)));
-	}
-	
+        if (datatype.equals(QNAME_XSD_GDAY)) {
+            // format is ---30
+            return pFactory.newGDay(new Integer(value.substring(3)));
+        }
+        
+        if (datatype.equals(QNAME_XSD_DURATION)) {
+            return pFactory.newDuration(value);
+        }
+        
+        if (datatype.equals(QNAME_XSD_DAY_TIME_DURATION)) {
+            return pFactory.newDuration(value);
+        }
+        
+        if (datatype.equals(QNAME_XSD_YEAR_MONTH_DURATION)) {
+            return pFactory.newDuration(value);
+        }
+        
         if (datatype.equals(QNAME_XSD_LANGUAGE)) {
             return value;
         }
@@ -184,10 +196,17 @@ public class ValueConverter  {
             return value;
         }
 
+        if (datatype.equals(QNAME_XSD_HEX_BINARY)) {
+            //FIXME
+            return value;
+        }
+
+        if (datatype.equals(QNAME_XSD_BASE64_BINARY)) {
+            return pFactory.base64Decoding(value);
+        }
+
 	//transform to qname!!
-	if ((datatype.equals("rdf:XMLLiteral"))
-		|| (datatype.equals("xsd:hexBinary"))
-		|| (datatype.equals("xsd:base64Binary"))) {
+	if ((datatype.equals("rdf:XMLLiteral"))) {
 
 	    throw new UnsupportedOperationException(
 						    "KNOWN literal type but conversion not supported yet "

@@ -27,7 +27,10 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
+import org.w3c.dom.NodeList;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -169,14 +172,16 @@ public class TypedValue
                 && 
                 (that.getValue() instanceof org.w3c.dom.Element)) {
             try {
-        	final org.w3c.dom.Element thisEl=((org.w3c.dom.Element)this.getValue());
-        	final org.w3c.dom.Element thatEl=((org.w3c.dom.Element)that.getValue());
-        	thisEl.normalize();
-        	thatEl.normalize();
-                final String s1=DOMProcessing.writeToString(thisEl);
-                final String s2=DOMProcessing.writeToString(thatEl);
-                System.out.println("*** Comparing " + s1);
-                System.out.println("*** Comparing " + s2);
+        		final org.w3c.dom.Element thisEl=((org.w3c.dom.Element)this.getValue());
+        		final org.w3c.dom.Element thatEl=((org.w3c.dom.Element)that.getValue());
+        		final org.w3c.dom.Node n1=thisEl;
+        		final org.w3c.dom.Node n2=thatEl;
+        		DOMProcessing.trimNode(n1); // for unknown reasons, normalize() doesn't seem to have any effect. Use this function instead
+        		DOMProcessing.trimNode(n2);
+                final String s1=DOMProcessing.writeToString(n1);
+                final String s2=DOMProcessing.writeToString(n2);
+                //System.out.println("*** Comparing " + s1);                
+                //System.out.println("*** Comparing " + s2);
                 equalsBuilder.append(s1,s2);
             } catch(Exception e) {
                 equalsBuilder.append(this.getValue(), that.getValue());
@@ -186,7 +191,7 @@ public class TypedValue
         }
         equalsBuilder.append(this.getType(), that.getType());
     }
-
+   
     public boolean equals(Object object) {
         if (!(object instanceof TypedValue)) {
             return false;

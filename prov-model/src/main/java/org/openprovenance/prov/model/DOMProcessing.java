@@ -3,6 +3,8 @@ package org.openprovenance.prov.model;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -18,6 +20,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class DOMProcessing {
     private static final QName QNAME_RDF_LITERAL = ValueConverter.QNAME_RDF_LITERAL;
@@ -154,5 +157,31 @@ public class DOMProcessing {
             writeDOMToPrinter(toWrite,new PrintWriter(sw),false);                                                                                    
             return sw.toString();                                                                                                                    
         }     
+    
+    
+    public static void trimNode(org.w3c.dom.Node node) {
+    	List<org.w3c.dom.Text> nodes=new LinkedList<org.w3c.dom.Text>();
+    	trimNode(node,nodes);
+    	for (org.w3c.dom.Text n: nodes){
+    		if (n.getTextContent().equals(""))
+    		n.getParentNode().removeChild(n);
+    	}
+    }	
+	
+	static void trimNode(org.w3c.dom.Node node, List<org.w3c.dom.Text> nodes) {
+		if (node.getNodeType() == node.TEXT_NODE) {
+			node.normalize();
+			org.w3c.dom.Text txt = (org.w3c.dom.Text) node;
+			txt.setTextContent(txt.getTextContent().trim());
+			System.out.println("<" + node.getTextContent() + ">");
+			nodes.add(txt);
+		} else {
+			NodeList nl = node.getChildNodes();
+			for (int i = 0; i < nl.getLength(); i++) {
+				trimNode(nl.item(i), nodes);
+			}
+		}
+	}
+
 
 }

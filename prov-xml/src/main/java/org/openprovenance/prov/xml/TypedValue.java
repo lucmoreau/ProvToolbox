@@ -169,8 +169,12 @@ public class TypedValue
                 && 
                 (that.getValue() instanceof org.w3c.dom.Element)) {
             try {
-                final String s1=DOMProcessing.writeToString((org.w3c.dom.Element)this.getValue());
-                final String s2=DOMProcessing.writeToString((org.w3c.dom.Element)that.getValue());
+        	final org.w3c.dom.Element thisEl=((org.w3c.dom.Element)this.getValue());
+        	final org.w3c.dom.Element thatEl=((org.w3c.dom.Element)that.getValue());
+        	thisEl.normalize();
+        	thatEl.normalize();
+                final String s1=DOMProcessing.writeToString(thisEl);
+                final String s2=DOMProcessing.writeToString(thatEl);
                 System.out.println("*** Comparing " + s1);
                 System.out.println("*** Comparing " + s2);
                 equalsBuilder.append(s1,s2);

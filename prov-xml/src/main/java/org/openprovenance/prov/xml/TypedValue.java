@@ -99,17 +99,13 @@ public class TypedValue
         this.attributes = attributes;
     }
 
-    /* (non-Javadoc)
-     * @see org.openprovenance.prov.xml.TypIN#getType()
-     */
+ 
     @Override
     public QName getType() {
         return type;
     }
 
-    /* (non-Javadoc)
-     * @see org.openprovenance.prov.xml.TypIN#getValueAsJava(org.openprovenance.prov.xml.ValueConverter)
-     */
+ 
     @Override
     public Object getValueAsJava(org.openprovenance.prov.model.ValueConverter vconv) {
     	if (valueAsJava==null) {
@@ -122,6 +118,11 @@ public class TypedValue
         return valueAsJava;
     }
 
+    
+    /** Converts a byte array in base64 or hexadecimal according to specified type. 
+     * 
+     * @param bytes array of bytes to convert
+     */
 
     public void setValueAsJava(final byte[] bytes) {
 	if (type.equals(ValueConverter.QNAME_XSD_BASE64_BINARY)) {
@@ -132,6 +133,10 @@ public class TypedValue
     }
 
 
+    /** Converts a DOM into a string representation, after "normalizing" it.
+     * 
+     * @param n DOM Node to convert.
+     */
     public void setValueAsJava(org.w3c.dom.Node n) {
 	DOMProcessing.trimNode(n);
 	try {

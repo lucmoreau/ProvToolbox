@@ -109,12 +109,8 @@ public class AnyAdapter extends
     }
 
     public Object marshal(org.openprovenance.prov.model.Attribute attribute) {
-        // System.out.println("AnyAdapter marshalling for " + attribute);
-        // System.out.println("AnyAdapter2 marshalling for " + attribute
-        // .getClass());
-        // TODO: this call creates a DOM but does not encode the type as
-        // xsi:type
         Object value = attribute.getValue();
+        QName type = attribute.getType();
         if (value instanceof InternationalizedString) {
             InternationalizedString istring = ((InternationalizedString) value);
             return dom.newElement(attribute.getElementName(),
@@ -123,31 +119,16 @@ public class AnyAdapter extends
         } else if (value instanceof QName) {
             return dom.newElement(attribute.getElementName(), (QName) value);
 
-        } else if (value instanceof org.w3c.dom.Element) {
+        } else if (type.equals(ValueConverter.QNAME_RDF_LITERAL))  {
             return dom.newElement(attribute.getElementName(),
-                                  (org.w3c.dom.Element) value);
-
-        } else if (value instanceof byte[]) {
-            if (attribute.getType()
-                    .equals(ValueConverter.QNAME_XSD_BASE64_BINARY)) {
-                return dom.newElement(attribute.getElementName(),
-                                      pFactory.base64Encoding((byte[]) value),
-                                      attribute.getType());
-            } else {
-                return dom.newElement(attribute.getElementName(),
-                                      pFactory.hexEncoding((byte[]) value), // FIXME:
-                                                                            // HEX
-                                      attribute.getType());
-            }
+                                  (org.w3c.dom.Element) attribute.getValueAsObject());
 
         } else {
-            return dom.newElement(attribute.getElementName(), value.toString(),
+            return dom.newElement(attribute.getElementName(), 
+                                  value.toString(),
                                   attribute.getType());
         }
-        // JAXBElement<?> je=new
-        // JAXBElement(value.getElementName(),value.getValue().getClass(),value.getValue());
-        // return je;
-    }
+     }
 
     static AnyAdapter me = new AnyAdapter();
 

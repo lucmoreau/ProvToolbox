@@ -366,8 +366,12 @@ public class SmallTest extends TestCase {
     
     public Object[][] attributeValues =
         {
-         {"un llieu",ValueConverter.QNAME_XSD_STRING},
-         
+	 {"un lieu",ValueConverter.QNAME_XSD_STRING},
+	 
+         {pFactory.newInternationalizedString("un lieu","fr"),ValueConverter.QNAME_XSD_STRING},
+
+         {pFactory.newInternationalizedString("a place","EN"),ValueConverter.QNAME_XSD_STRING},
+           
          {1,ValueConverter.QNAME_XSD_INT},
 
          {1,ValueConverter.QNAME_XSD_LONG},

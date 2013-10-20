@@ -116,6 +116,11 @@ public class Attribute implements org.openprovenance.prov.model.Attribute {
 	return val;
     }
 
+    
+    public Object getValueAsObject() {
+	throw new UnsupportedOperationException();
+    }
+    
     /* (non-Javadoc)
      * @see org.openprovenance.prov.xml.AttrIN#getXsdType()
      */

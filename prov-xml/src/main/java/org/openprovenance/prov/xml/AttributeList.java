@@ -2,10 +2,8 @@ package org.openprovenance.prov.xml;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collection;
 
-import org.openprovenance.prov.model.HasLocation;
 import org.openprovenance.prov.model.Identifiable;
 
 public class AttributeList<TYPE> extends AbstractList<TYPE> {
@@ -52,7 +50,7 @@ public class AttributeList<TYPE> extends AbstractList<TYPE> {
 	System.out.println("*** AttributeList add " + index + " " + element);
 	ll.add(index,element);
 	HasAllAttributes obj2=(HasAllAttributes)obj;
-	obj2.getAll().add((org.openprovenance.prov.model.Attribute)element);	
+	obj2.getAllAttributes().add((org.openprovenance.prov.model.Attribute)element);	
     }
 
     

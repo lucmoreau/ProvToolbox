@@ -127,9 +127,16 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     }
 
     public org.openprovenance.prov.model.Attribute newAttribute(QName elementName, Object value, QName type) {
-        if (elementName.equals(Attribute.PROV_LOCATION_QNAME)) {
-            return newLocation(value,type);
-        }
+	// TODO: use TypedValue.getAttributeKind and switch on a kind
+	if (elementName.equals(Attribute.PROV_LOCATION_QNAME)) {
+	    return newLocation(value,type);
+	}
+	if (elementName.equals(Attribute.PROV_TYPE_QNAME)) {
+	    return newType(value,type);
+	}
+	if (elementName.equals(Attribute.PROV_VALUE_QNAME)) {
+	    return newValue(value,type);
+	}
         Attribute res = new Attribute(elementName,
                                       value, 
                                       type);
@@ -150,6 +157,18 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         loc.setValueAsJava(value);
         return loc;
     }
+    public Type newType(Object value, QName type) {
+        Type typ=new Type();
+        typ.type=type;
+        typ.setValueAsJava(value);
+        return typ;
+    }
+    public Value newValue(Object value, QName type) {
+        Value res=new Value();
+        res.type=type;
+        res.setValueAsJava(value);
+        return res;
+    }
 
     @Override
     public org.openprovenance.prov.model.Attribute createAttribute(QName qname,
@@ -160,8 +179,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     @Override
     public org.openprovenance.prov.model.Attribute createAttribute(AttributeKind kind,
-							    Object value,
-							    QName type) {
+                                                                   Object value,
+                                                                   QName type) {
 	return new Attribute(kind,value,type);
 
     }

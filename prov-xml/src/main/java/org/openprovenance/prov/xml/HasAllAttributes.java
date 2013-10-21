@@ -6,6 +6,6 @@ import org.openprovenance.prov.model.Attribute;
 
 public interface HasAllAttributes {
 
-    public abstract List<Attribute> getAll();
+    public abstract List<Attribute> getAllAttributes();
 
 }

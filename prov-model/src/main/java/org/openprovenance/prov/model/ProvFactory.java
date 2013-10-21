@@ -484,14 +484,14 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     public Attribute newAttribute(String namespace, String localName,
 				  String prefix, Object value, ValueConverter vconv) {
 	Attribute res = createAttribute(new QName(namespace, localName, prefix),
-				      value, vconv.getXsdType(value));
+	                                value, vconv.getXsdType(value));
 	return res;
     }
 
     public Attribute newAttribute(String namespace, String localName,
 				  String prefix, Object value, QName type) {
 	Attribute res = createAttribute(new QName(namespace, localName, prefix),
-				      value, type);
+	                                value, type);
 	return res;
     }
 

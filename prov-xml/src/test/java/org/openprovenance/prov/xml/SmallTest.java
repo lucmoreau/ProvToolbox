@@ -241,7 +241,7 @@ public class SmallTest extends TestCase {
     }
    
 
-    public void addTypes(HasType ht) {
+    public void addTypes_old(HasType ht) {
    	ht.getType().add(pFactory.newType("a", ValueConverter.QNAME_XSD_STRING));
    	ht.getType().add(pFactory.newType(1, ValueConverter.QNAME_XSD_INT));
    	ht.getType().add(pFactory.newType(1.0, ValueConverter.QNAME_XSD_FLOAT));
@@ -256,7 +256,7 @@ public class SmallTest extends TestCase {
 					  ValueConverter.QNAME_XSD_ANY_URI));
     }
 
-    public void addLocations(HasLocation hl) {
+    public void addLocations_old(HasLocation hl) {
    	hl.getLocation().add(pFactory.newLocation("London",vconv));
    	hl.getLocation().add(pFactory.newLocation(1,vconv));
    	hl.getLocation().add(pFactory.newLocation(1.0,vconv));
@@ -453,6 +453,7 @@ public class SmallTest extends TestCase {
 
          { new byte[] {0,1,2,34,5,6}, ValueConverter.QNAME_XSD_HEX_BINARY},
          { new byte[] {0,1,2,34,5,6}, ValueConverter.QNAME_XSD_BASE64_BINARY},
+         { new byte[1023], ValueConverter.QNAME_XSD_BASE64_BINARY},
          
          {"EN",ValueConverter.QNAME_XSD_LANGUAGE},
          {"normal",ValueConverter.QNAME_XSD_NORMALIZED_STRING},
@@ -465,11 +466,19 @@ public class SmallTest extends TestCase {
          
         };
     
-    public void addLocations2(HasLocation hl){
+    public void addLocations(HasLocation hl){
         for (Object [] pair: attributeValues) {
             Object value=pair[0];
             QName type=(QName) pair[1];
             hl.getLocation().add(pFactory.newLocation(value,type));
+         }
+
+    }
+    public void addTypes(HasType hl){
+        for (Object [] pair: attributeValues) {
+            Object value=pair[0];
+            QName type=(QName) pair[1];
+            hl.getType().add(pFactory.newType(value,type));
          }
 
     }
@@ -478,7 +487,14 @@ public class SmallTest extends TestCase {
 	setNamespaces();
 	Entity a = pFactory.newEntity("ex:e0");
 	
-	addLocations2(a);
+	addLabels(a);
+	addLocations(a);
+	addTypes(a);
+	
+	a.setValue(pFactory.newValue(10,ValueConverter.QNAME_XSD_BYTE));
+	
+	a.setValue(pFactory.newValue("10",ValueConverter.QNAME_XSD_STRING));
+
 	
         a.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), ValueConverter.QNAME_XSD_STRING));
 

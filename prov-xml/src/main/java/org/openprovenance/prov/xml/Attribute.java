@@ -2,7 +2,6 @@ package org.openprovenance.prov.xml;
 
 import java.util.Collection;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 

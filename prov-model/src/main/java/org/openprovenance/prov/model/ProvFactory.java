@@ -19,12 +19,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 
-import org.apache.commons.codec.DecoderException;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
-import org.w3c.dom.Element;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 /** A stateless factory for PROV objects. */
 

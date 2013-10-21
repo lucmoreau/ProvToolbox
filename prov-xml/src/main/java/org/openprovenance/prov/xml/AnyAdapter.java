@@ -9,14 +9,12 @@ package org.openprovenance.prov.xml;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.DOMProcessing;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-/**
+/** Adapter convert an Attribute to DOM and vice-versa.
  * @author lavm
+ * @see javax.xml.bind.annotation.adapters.XmlAdapter
  * 
  */
 public class AnyAdapter extends
@@ -24,82 +22,17 @@ public class AnyAdapter extends
 
     ProvFactory pFactory = new ProvFactory();
 
-    DOMProcessing dom = new DOMProcessing();
-
     ValueConverter vconv = new ValueConverter(pFactory);
 
-    /**
-     * Converts a string to a QName, extracting namespace from the DOM.
-     * 
-     * @param str
-     *            string to convert to QName
-     * @param el
-     *            current Element in which this string was found (as attribute
-     *            or attribute value)
-     * @return
+
+    /** Unmarshals an Object (expect to be a DOM Element in an Attribute.
+     * @see javax.xml.bind.annotation.adapters.XmlAdapter#unmarshal(java.lang.Object)
      */
-    public QName stringToQName(String str, org.w3c.dom.Element el) {
-        if (str == null)
-            return null;
-        int index = str.indexOf(':');
-        if (index == -1) {
-            QName qn = new QName(el.lookupNamespaceURI(null), // find default
-                                                              // namespace
-                    str);
-            return qn;
-        }
-        String prefix = str.substring(0, index);
-        String local = str.substring(index + 1, str.length());
-        QName qn = new QName(el.lookupNamespaceURI(prefix), local, prefix);
-        return qn;
-    }
-
-    // TODO: unmarshalling, to create subclass of Attributes according to prov
-    // type.
-
-    public org.openprovenance.prov.model.Attribute unmarshallAttribute(org.w3c.dom.Element el) {
-        String prefix = el.getPrefix();
-        String namespace = el.getNamespaceURI();
-        String local = el.getLocalName();
-        String child = el.getTextContent();
-        String typeAsString = el.getAttributeNS(NamespacePrefixMapper.XSI_NS,
-                                                "type");
-        String lang = el.getAttributeNS(NamespacePrefixMapper.XML_NS, "lang");
-        QName type = ((typeAsString == null) || (typeAsString.equals(""))) ? null
-                : stringToQName(typeAsString, el);
-        if (type == null)
-            type = ValueConverter.QNAME_XSD_STRING;
-        if (type.equals(ValueConverter.QNAME_XSD_QNAME)) {
-            QName qn = stringToQName(child, el);
-            return pFactory.newAttribute(namespace, local, prefix, qn, type);
-        } else if (type.equals(ValueConverter.QNAME_RDF_LITERAL)) {
-            NodeList nodes=el.getChildNodes();
-            org.w3c.dom.Element content=null;
-            for (int i=0; i<nodes.getLength(); i++) {
-                Node node=nodes.item(i);
-                if (node instanceof org.w3c.dom.Element) {
-                    content=(org.w3c.dom.Element)node;
-                    break;
-                }
-            }
-            return pFactory
-                    .newAttribute(namespace, local, prefix,
-                                  content, type);
-        } else if ((lang == null) || (lang.equals(""))) {
-            return pFactory
-                    .newAttribute(namespace, local, prefix,
-                                  vconv.convertToJava(type, child), type);
-        } else {
-            return pFactory.newAttribute(namespace, local, prefix, pFactory
-                    .newInternationalizedString(child, lang), type);
-        }
-    }
-
     public org.openprovenance.prov.model.Attribute unmarshal(Object value) {
         // System.out.println("AnyAdapter unmarshalling for " + value);
         if (value instanceof org.w3c.dom.Element) {
             org.w3c.dom.Element el = (org.w3c.dom.Element) value;
-            return unmarshallAttribute(el);
+            return DOMProcessing.unmarshallAttribute(el,pFactory,vconv);
         }
         if (value instanceof JAXBElement) {
             JAXBElement<?> je = (JAXBElement<?>) value;
@@ -108,36 +41,12 @@ public class AnyAdapter extends
         return null;
     }
 
+    
+    /** Marshals an Attribute to a DOM Element.
+     * @see javax.xml.bind.annotation.adapters.XmlAdapter#marshal(java.lang.Object)
+     */
     public Object marshal(org.openprovenance.prov.model.Attribute attribute) {
-        Object value = attribute.getValue();
-        QName type = attribute.getType();
-        if (value instanceof InternationalizedString) {
-            InternationalizedString istring = ((InternationalizedString) value);
-            return dom.newElement(attribute.getElementName(),
-                                  istring.getValue(), attribute.getType(),
-                                  istring.getLang());
-        } else if (value instanceof QName) {
-            return dom.newElement(attribute.getElementName(), (QName) value);
-
-        } else if (type.equals(ValueConverter.QNAME_RDF_LITERAL))  {
-            return dom.newElement(attribute.getElementName(),
-                                  (org.w3c.dom.Element) attribute.getValueAsObject());
-
-        } else {
-            return dom.newElement(attribute.getElementName(), 
-                                  value.toString(),
-                                  attribute.getType());
-        }
-     }
-
-    static AnyAdapter me = new AnyAdapter();
-
-    static org.openprovenance.prov.model.Attribute parseMethod(Object o) {
-        return me.unmarshal(o);
+        return DOMProcessing.marshalAttribute(attribute);
     }
-
-    static Object printMethod(org.openprovenance.prov.model.Attribute a) {
-        return me.marshal(a);
-    }
-
+   
 }

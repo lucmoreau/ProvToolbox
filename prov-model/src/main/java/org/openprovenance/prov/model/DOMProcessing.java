@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class DOMProcessing {
+final public class DOMProcessing {
     private static final QName QNAME_RDF_LITERAL = ValueConverter.QNAME_RDF_LITERAL;
     private static final String RDF_PREFIX = QNAME_RDF_LITERAL.getPrefix();
     private static final String RDF_NAMESPACE = QNAME_RDF_LITERAL.getNamespaceURI();
@@ -51,6 +51,33 @@ public class DOMProcessing {
 	return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
 		+ qname.getLocalPart();
     }
+    
+
+    /**
+     * Converts a string to a QName, extracting namespace from the DOM.
+     * 
+     * @param str
+     *            string to convert to QName
+     * @param el
+     *            current Element in which this string was found (as attribute
+     *            or attribute value)
+     * @return
+     */
+    final static public QName stringToQName(String str, org.w3c.dom.Element el) {
+        if (str == null)
+            return null;
+        int index = str.indexOf(':');
+        if (index == -1) {
+            QName qn = new QName(el.lookupNamespaceURI(null), // find default namespace
+                                                              // namespace
+                                 str);
+            return qn;
+        }
+        String prefix = str.substring(0, index);
+        String local = str.substring(index + 1, str.length());
+        QName qn = new QName(el.lookupNamespaceURI(prefix), local, prefix);
+        return qn;
+    }
 
 
     /** Create a new element, with given elementName, and QName as content. One cannot assume that 
@@ -60,7 +87,8 @@ public class DOMProcessing {
      * @return
      */
     
-    public Element newElement(QName elementName, QName value) {
+    
+    final static public Element newElement(QName elementName, QName value) {
 	org.w3c.dom.Document doc = builder.newDocument();
 	Element el = doc.createElementNS(elementName.getNamespaceURI(),
 					 qnameToString(elementName));
@@ -87,7 +115,7 @@ public class DOMProcessing {
 	return el;
     }
 
-    public Element newElement(QName qname, String value, QName type) {
+    final static public Element newElement(QName qname, String value, QName type) {
 	org.w3c.dom.Document doc = builder.newDocument();
 	Element el = doc.createElementNS(qname.getNamespaceURI(),
 	                                 qnameToString(qname));
@@ -97,7 +125,8 @@ public class DOMProcessing {
 	return el;
     }
 
-    public Element newElement(QName qname, String value, QName type,
+
+    final public static Element newElement(QName qname, String value, QName type,
 			      String lang) {
 	org.w3c.dom.Document doc = builder.newDocument();
 	Element el = doc.createElementNS(qname.getNamespaceURI(),
@@ -110,7 +139,7 @@ public class DOMProcessing {
     }
 
 
-    public Object newElement(QName qname, Element value) {
+    final static public Element newElement(QName qname, Element value) {
         org.w3c.dom.Document doc = builder.newDocument();
         Element el = doc.createElementNS(qname.getNamespaceURI(),
                                          qnameToString(qname)); 
@@ -159,7 +188,7 @@ public class DOMProcessing {
         }     
     
     
-    public static void trimNode(org.w3c.dom.Node node) {
+    public static void trimNode(Node node) {
     	List<org.w3c.dom.Text> nodes=new LinkedList<org.w3c.dom.Text>();
     	trimNode(node,nodes);
     	for (org.w3c.dom.Text n: nodes){
@@ -167,21 +196,84 @@ public class DOMProcessing {
     		n.getParentNode().removeChild(n);
     	}
     }	
-	
-	static void trimNode(org.w3c.dom.Node node, List<org.w3c.dom.Text> nodes) {
-		if (node.getNodeType() == node.TEXT_NODE) {
-			node.normalize();
-			org.w3c.dom.Text txt = (org.w3c.dom.Text) node;
-			txt.setTextContent(txt.getTextContent().trim());
-			System.out.println("<" + node.getTextContent() + ">");
-			nodes.add(txt);
-		} else {
-			NodeList nl = node.getChildNodes();
-			for (int i = 0; i < nl.getLength(); i++) {
-				trimNode(nl.item(i), nodes);
-			}
-		}
-	}
 
+    static void trimNode(Node node, List<org.w3c.dom.Text> nodes) {
+        if (node.getNodeType() == Node.TEXT_NODE) {
+            node.normalize();
+            org.w3c.dom.Text txt = (org.w3c.dom.Text) node;
+            txt.setTextContent(txt.getTextContent().trim());
+            System.out.println("<" + node.getTextContent() + ">");
+            nodes.add(txt);
+        } else {
+            NodeList nl = node.getChildNodes();
+            for (int i = 0; i < nl.getLength(); i++) {
+                trimNode(nl.item(i), nodes);
+            }
+        }
+    }
+    
+    final static
+    public org.w3c.dom.Element marshalAttribute(org.openprovenance.prov.model.Attribute attribute) {
+	Object value = attribute.getValue();
+	QName type = attribute.getType();
+	if (value instanceof InternationalizedString) {
+	    InternationalizedString istring = ((InternationalizedString) value);
+	    return newElement(attribute.getElementName(), istring.getValue(),
+			      attribute.getType(), istring.getLang());
+	} else if (value instanceof QName) {
+	    return newElement(attribute.getElementName(), (QName) value);
+
+	} else if (type.equals(ValueConverter.QNAME_RDF_LITERAL)) {
+	    return newElement(attribute.getElementName(),
+			      (org.w3c.dom.Element) attribute.getValueAsObject());
+
+	} else {
+	    return newElement(attribute.getElementName(), value.toString(),
+			      attribute.getType());
+	}
+    }
+    
+    final
+    static public org.openprovenance.prov.model.Attribute unmarshallAttribute(org.w3c.dom.Element el,
+                                                                              ProvFactory pFactory,
+                                                                              ValueConverter vconv) {
+        String prefix = el.getPrefix();
+        String namespace = el.getNamespaceURI();
+        String local = el.getLocalName();
+        String child = el.getTextContent();
+        String typeAsString = el.getAttributeNS(NamespacePrefixMapper.XSI_NS,
+                                                "type");
+        String lang = el.getAttributeNS(NamespacePrefixMapper.XML_NS, "lang");
+        QName type = ((typeAsString == null) || (typeAsString.equals(""))) ? null
+                : DOMProcessing.stringToQName(typeAsString, el);
+        if (type == null)
+            type = ValueConverter.QNAME_XSD_STRING;
+        if (type.equals(ValueConverter.QNAME_XSD_QNAME)) {
+            QName qn = DOMProcessing.stringToQName(child, el);
+            return pFactory.newAttribute(namespace, local, prefix, qn, type);
+        } else if (type.equals(ValueConverter.QNAME_RDF_LITERAL)) {
+            NodeList nodes=el.getChildNodes();
+            org.w3c.dom.Element content=null;
+            for (int i=0; i<nodes.getLength(); i++) {
+                Node node=nodes.item(i);
+                if (node instanceof org.w3c.dom.Element) {
+                    content=(org.w3c.dom.Element)node;
+                    break;
+                }
+            }
+            return pFactory
+                    .newAttribute(namespace, local, prefix,
+                                  content, type);
+        } else if ((lang == null) || (lang.equals(""))) {
+            return pFactory
+                    .newAttribute(namespace, local, prefix,
+                                  vconv.convertToJava(type, child), type);
+        } else {
+            return pFactory.newAttribute(namespace, local, prefix, pFactory
+                    .newInternationalizedString(child, lang), type);
+        }
+    }
+
+    
 
 }

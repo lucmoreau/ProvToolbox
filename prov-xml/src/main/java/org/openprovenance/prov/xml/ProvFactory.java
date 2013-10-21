@@ -1,32 +1,12 @@
 package org.openprovenance.prov.xml;
 
-import java.util.Collection;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Hashtable;
-import java.util.Date;
 import java.util.Properties;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import javax.xml.bind.JAXBElement;
-import java.util.GregorianCalendar;
 import javax.xml.namespace.QName;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.DatatypeConfigurationException;
-
 import org.openprovenance.prov.model.Attribute.AttributeKind;
-import org.openprovenance.prov.model.KeyQNamePair;
-import org.openprovenance.prov.model.LiteralConstructor;
-import org.openprovenance.prov.model.URIWrapper;
-import org.openprovenance.prov.xml.DictionaryMembership;
-import org.openprovenance.prov.xml.DerivedByInsertionFrom;
-import org.openprovenance.prov.xml.DerivedByRemovalFrom;
-import org.openprovenance.prov.xml.DictionaryMembership;
-import org.openprovenance.prov.xml.Entry;
-import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;

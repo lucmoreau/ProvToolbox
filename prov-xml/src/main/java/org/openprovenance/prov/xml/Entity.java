@@ -228,7 +228,7 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
     public void setValue(org.openprovenance.prov.model.Value value) {
 	if (value!=null) {
 	    this.value = value;
-	    getAllAttributes().add((org.openprovenance.prov.model.Attribute)value);	
+	    getAllAttributes().add((org.openprovenance.prov.model.Attribute)value);	//FIXME: should replace previous value!
 	}
     }
 

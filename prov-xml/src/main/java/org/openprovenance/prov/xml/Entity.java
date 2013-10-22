@@ -79,6 +79,7 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
     transient protected List<org.openprovenance.prov.model.Location> location;
     transient protected List<org.openprovenance.prov.model.Type> type;
     transient protected org.openprovenance.prov.model.Value value;
+    transient protected List<org.openprovenance.prov.model.OtherAttribute> others; 
     transient protected List<Attribute> any;
 
     @XmlAnyElement
@@ -178,7 +179,7 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
      * 
      */
 
-    public List<org.openprovenance.prov.model.Type> getType() {
+    public List<org.openprovenance.prov.model.Type> getType_old() {
         if (type == null) {         
             List<org.openprovenance.prov.model.Type> some=new ArrayList<org.openprovenance.prov.model.Type>();
             if (all!=null) {
@@ -189,6 +190,12 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
         	}
             }
             type=new AttributeList<org.openprovenance.prov.model.Type>(this,some);
+        } 
+        return this.type;
+    }
+    public List<org.openprovenance.prov.model.Type> getType() {
+        if (type == null) {
+            type=populateAttributes(all, org.openprovenance.prov.model.Type.class);
         } 
         return this.type;
     }
@@ -272,7 +279,34 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
         return this.any;
     }
 
+    public List<org.openprovenance.prov.model.OtherAttribute> getOthers() {
+        if (others == null) {
+            List<org.openprovenance.prov.model.OtherAttribute> some=new ArrayList<org.openprovenance.prov.model.OtherAttribute>();
+            if (all!=null) {
+        	for (Attribute attr: all) {
+        	    if (attr instanceof org.openprovenance.prov.model.OtherAttribute) {
+            		some.add((org.openprovenance.prov.model.OtherAttribute)attr);
+            	    }
+        	}
+            }
+           
+            others=new AttributeList<org.openprovenance.prov.model.OtherAttribute>(this,some);
+        }
+        return this.others;
+    }
     
+    public <TYPE> AttributeList<TYPE> populateAttributes(List<Attribute> all, Class<TYPE> cl) {
+	List<TYPE> some=new ArrayList<TYPE>();
+        if (all!=null) {
+            for (Attribute attr: all) {
+        	if (cl.isInstance(attr)) {
+        	    some.add((TYPE)attr);
+        	}
+            }
+        }
+        return new AttributeList<TYPE>(this,some);
+    }
+ 
     
     /* (non-Javadoc)
      * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
@@ -323,6 +357,7 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
         equalsBuilder.append(this.getLocation(), that.getLocation());
         equalsBuilder.append(this.getType(), that.getType());
         equalsBuilder.append(this.getValue(), that.getValue());
+        equalsBuilder.append(this.getOthers(), that.getOthers());
         equalsBuilder.append(this.getAny(), that.getAny());
         equalsBuilder.append(this.getId(), that.getId());
     }
@@ -344,6 +379,7 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
         hashCodeBuilder.append(this.getLocation());
         hashCodeBuilder.append(this.getType());
         hashCodeBuilder.append(this.getValue());
+        hashCodeBuilder.append(this.getOthers());
         hashCodeBuilder.append(this.getAny());
         hashCodeBuilder.append(this.getId());
     }
@@ -379,6 +415,11 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
             List<Attribute> theAny;
             theAny = this.getAny();
             toStringBuilder.append("any", theAny);
+        }        
+        {
+            List<org.openprovenance.prov.model.OtherAttribute> theOthers;
+            theOthers = this.getOthers();
+            toStringBuilder.append("others", theOthers);
         }
         {
             QName theId;

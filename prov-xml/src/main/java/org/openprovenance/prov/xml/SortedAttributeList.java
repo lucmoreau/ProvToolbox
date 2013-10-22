@@ -3,7 +3,17 @@ package org.openprovenance.prov.xml;
 import java.util.AbstractList;
 import java.util.ArrayList;
 
-
+/** SortedAttributeList is a list of attributes, maintained sorted, as per prov-xml schema: 
+ * prov:location, prov:role, prov:type, prov:value, and others.
+ * Adding an element to the list with .add(element) or .add(index,element) adds element as 
+ * the last attribute of its kind in the list. Furthermore, the SortedAttributeList ensures that 
+ * there is a single prov:value attribute.
+ * 
+ * 
+ * @author lavm
+ *
+ * @param <TYPE>
+ */
 public class SortedAttributeList<TYPE> extends AbstractList<TYPE> {
 
     int last_location=-1;

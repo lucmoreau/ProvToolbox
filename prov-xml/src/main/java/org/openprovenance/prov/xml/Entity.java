@@ -27,16 +27,10 @@ import org.w3c.dom.Element;
  * <p>Java class for Entity complex type.
  * 
  * <p>An entity is a physical, digital, conceptual, or other kind of thing with some fixed aspects; entities may be real or imaginary. 
- * (@see http://www.w3.org/TR/prov-dm/#concept-entity).
+ * (<a href="http://www.w3.org/TR/prov-dm/#concept-entity">PROV-DM Definition for Entity</a>).
  *  
- *  @see PROV-DM http://www.w3.org/TR/prov-dm/#term-entity
- *  @see PROV-O http://www.w3.org/TR/prov-o/#Entity
- *  @see PROV-N http://www.w3.org/TR/prov-n/#expression-Entity
  * 
  * <p>The following schema fragment specifies the expected content contained within this class. 
- * @see http://www.w3.org/TR/prov-xml/#term-Entity
- * 
- * 
  * <pre>
  * &lt;complexType name="Entity">
  *   &lt;complexContent>
@@ -54,6 +48,28 @@ import org.w3c.dom.Element;
  * &lt;/complexType>
  * </pre>
  * 
+ * <p>Due to JAXB restrictions, it was not possible to parse attributes that had a QName as value. 
+ * To avoid this problem, all attributes (except labels) are processed as &lt;any/>
+ * The Entity bean still offers the convenience accessors getLocation, getType, getValue, getOthers,
+ * while automatically maintaining a sorted list of attributes to be compatible with prov-xml schema.
+ *
+ *  <pre>
+ * &lt;complexType name="Entity">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element ref="{http://www.w3.org/ns/prov#}label" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;any processContents='skip' maxOccurs="unbounded" minOccurs="0"/>
+ *       &lt;/sequence>
+ *       &lt;attribute ref="{http://www.w3.org/ns/prov#}id"/>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
+ * </pre>
+ * @see <a href="http://www.w3.org/TR/prov-dm/#term-entity">PROV-DM Entity</a>
+ * @see <a href="http://www.w3.org/TR/prov-o/#Entity">PROV-O Entity</a>
+ * @see <a href="http://www.w3.org/TR/prov-n/#expression-Entity">PROV-N Entity</a>
+ * @see <a href="http://www.w3.org/TR/prov-xml/#term-Entity">PROV-XML Entity</a>
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)

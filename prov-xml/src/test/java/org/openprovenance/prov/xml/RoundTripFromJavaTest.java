@@ -181,6 +181,7 @@ abstract public class RoundTripFromJavaTest extends TestCase {
         }
     }
     
+    
 
     public void compareDocuments(Document doc, Document doc2, boolean check) {
 	assertTrue("self doc equality", doc.equals(doc));

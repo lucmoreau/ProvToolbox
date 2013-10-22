@@ -18,6 +18,7 @@ import org.openprovenance.prov.model.Document;
  * @author Trung Dong Huynh <tdh@ecs.soton.ac.uk>
  * 
  */
+
 public class DocumentEquality {
 	static Logger logger = Logger.getLogger(DocumentEquality.class);
 	

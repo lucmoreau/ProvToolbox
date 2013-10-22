@@ -30,7 +30,7 @@ import org.openprovenance.prov.model.DOMProcessing;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Location", namespace = "http://www.w3.org/ns/prov#")
 public class OtherAttribute extends TypedValue
-    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Location, org.openprovenance.prov.model.Attribute
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.OtherAttribute, org.openprovenance.prov.model.Attribute
 {
 
     private static final AttributeKind OTHER_KIND = Attribute.AttributeKind.OTHER;

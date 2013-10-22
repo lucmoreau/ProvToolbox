@@ -137,10 +137,10 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 	if (elementName.equals(Attribute.PROV_VALUE_QNAME)) {
 	    return newValue(value,type);
 	}
-        Attribute res = new Attribute(elementName,
-                                      value, 
-                                      type);
-        return res;
+	if (elementName.equals(Attribute.PROV_ROLE_QNAME)) {
+	    return newRole(value,type);
+	}
+	return newOther(elementName, value, type);
     }
     
     public org.openprovenance.prov.model.Attribute newAttribute(String namespace, String localName,
@@ -167,6 +167,19 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         Value res=new Value();
         res.type=type;
         res.setValueAsJava(value);
+        return res;
+    }
+    public Role newRole(Object value, QName type) {
+        Role res=new Role();
+        res.type=type;
+        res.setValueAsJava(value);
+        return res;
+    }
+    public OtherAttribute newOther(QName elementName, Object value, QName type) {
+        OtherAttribute res=new OtherAttribute();
+        res.type=type;
+        res.setValueAsJava(value);
+        res.setElementName(elementName);
         return res;
     }
 

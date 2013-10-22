@@ -80,7 +80,6 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
     transient protected List<org.openprovenance.prov.model.Type> type;
     transient protected org.openprovenance.prov.model.Value value;
     transient protected List<org.openprovenance.prov.model.OtherAttribute> others; 
-    transient protected List<Attribute> any;
 
     @XmlAnyElement
     protected List<Attribute> all;
@@ -243,21 +242,8 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
      * 
      */
     public List<Attribute> getAny() {
-	System.out.println("** getAany()");
-
-        if (any == null) {
-            List<Attribute> some=new ArrayList<Attribute>();
-            if (all!=null) {
-        	for (Attribute attr: all) {
-        	    if (attr.getKind()== Attribute.AttributeKind.OTHER) {  		
-            		some.add(attr);
-            	    }
-        	}
-            }
-           
-            any=new AttributeList<Attribute>(this,some);
-        }
-        return this.any;
+	System.out.println("** legacy getAny()");
+	return null;
     }
 
     public List<org.openprovenance.prov.model.OtherAttribute> getOthers() {
@@ -285,7 +271,7 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
      */
     @Override
     public List<Attribute> getAllAttributes() {
-	System.out.println("** getAll()");
+	System.out.println("** getAllAttribute()");
         if (all == null) {
             all = new SortedAttributeList<Attribute>();
         }

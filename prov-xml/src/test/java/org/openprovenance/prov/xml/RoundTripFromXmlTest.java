@@ -148,6 +148,7 @@ abstract public class RoundTripFromXmlTest extends TestCase {
     }
 
     
+    
     public void writeDocument(Document doc, String file2) {
         try {
             writeXMLDocument(doc, file2);

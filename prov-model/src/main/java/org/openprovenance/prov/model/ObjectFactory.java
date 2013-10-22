@@ -20,6 +20,8 @@ public interface ObjectFactory {
 
     Value createValue();
 
+    OtherAttribute createOther();
+
     DictionaryMembership createDictionaryMembership();
 
     DerivedByInsertionFrom createDerivedByInsertionFrom();

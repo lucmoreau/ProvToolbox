@@ -9,6 +9,7 @@ import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.HasLabel;
 import org.openprovenance.prov.model.HasLocation;
+import org.openprovenance.prov.model.HasOtherAttribute;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.HasValue;
 import org.openprovenance.prov.model.Used;
@@ -363,7 +364,15 @@ public class SmallTest extends TestCase {
         el1.appendChild(el2);
         return el1;        
     }
-    
+    public Object[][] attributeValues_small =
+        {
+	 {"un lieu",ValueConverter.QNAME_XSD_STRING},
+	 
+         {pFactory.newInternationalizedString("un lieu","fr"),ValueConverter.QNAME_XSD_STRING},
+
+         {pFactory.newInternationalizedString("a place","EN"),ValueConverter.QNAME_XSD_STRING}
+        };
+  
     public Object[][] attributeValues =
         {
 	 {"un lieu",ValueConverter.QNAME_XSD_STRING},
@@ -482,21 +491,44 @@ public class SmallTest extends TestCase {
          }
 
     }
+    public void addOthers(HasOtherAttribute ho, QName elementName) {
+	for (Object [] pair: attributeValues) {
+	    Object value=pair[0];
+	    QName type=(QName) pair[1];
+	    if (value instanceof QName) {
+		QName qq=(QName)value;
+		if ((qq.getPrefix().equals(elementName.getPrefix()))
+			&&
+			(!(qq.getNamespaceURI().equals(elementName.getNamespaceURI())))) {
+		    // ignore this case
+		} else {
+		    ho.getOthers().add(pFactory.newOther(elementName, value, type));
+		}			
+	    } else {
+		ho.getOthers().add(pFactory.newOther(elementName, value, type));
+	    }
+	}
+    }
 
     public void testEntity0() throws JAXBException  {
 	setNamespaces();
 	Entity a = pFactory.newEntity("ex:e0");
 	
+	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+
 	addLabels(a);
-	addLocations(a);
 	addTypes(a);
-	
+	addLocations(a);
+
 	a.setValue(pFactory.newValue(10,ValueConverter.QNAME_XSD_BYTE));
 	
 	a.setValue(pFactory.newValue("10",ValueConverter.QNAME_XSD_STRING));
 
 	
-        a.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), ValueConverter.QNAME_XSD_STRING));
+        //a.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), ValueConverter.QNAME_XSD_STRING));
 
 
 	if (test) {

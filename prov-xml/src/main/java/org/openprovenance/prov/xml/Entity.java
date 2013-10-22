@@ -287,7 +287,7 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
     public List<Attribute> getAllAttributes() {
 	System.out.println("** getAll()");
         if (all == null) {
-            all = new ArrayList<Attribute>();
+            all = new SortedAttributeList<Attribute>();
         }
         return this.all;
     }

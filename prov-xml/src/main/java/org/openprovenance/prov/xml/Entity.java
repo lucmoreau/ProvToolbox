@@ -138,20 +138,14 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
      * 
      * 
      */
+
     public List<org.openprovenance.prov.model.Location> getLocation() {
-        if (location == null) {         
-            List<org.openprovenance.prov.model.Location> some=new ArrayList<org.openprovenance.prov.model.Location>();
-            if (all!=null) {
-        	for (Attribute attr: all) {
-        	    if (attr instanceof Location) {
-        	        some.add((Location)attr);
-        	    } 
-        	}
-            }
-            location=new AttributeList<org.openprovenance.prov.model.Location>(this,some);
+        if (location == null) {
+            location=populateKnownAttributes(all, org.openprovenance.prov.model.Location.class);
         } 
         return this.location;
     }
+
 
 
     
@@ -179,23 +173,10 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
      * 
      */
 
-    public List<org.openprovenance.prov.model.Type> getType_old() {
-        if (type == null) {         
-            List<org.openprovenance.prov.model.Type> some=new ArrayList<org.openprovenance.prov.model.Type>();
-            if (all!=null) {
-        	for (Attribute attr: all) {
-        	    if (attr instanceof org.openprovenance.prov.model.Type) {
-        	        some.add((Type)attr);
-        	    }
-        	}
-            }
-            type=new AttributeList<org.openprovenance.prov.model.Type>(this,some);
-        } 
-        return this.type;
-    }
+
     public List<org.openprovenance.prov.model.Type> getType() {
         if (type == null) {
-            type=populateAttributes(all, org.openprovenance.prov.model.Type.class);
+            type=populateKnownAttributes(all, org.openprovenance.prov.model.Type.class);
         } 
         return this.type;
     }
@@ -281,21 +262,12 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
 
     public List<org.openprovenance.prov.model.OtherAttribute> getOthers() {
         if (others == null) {
-            List<org.openprovenance.prov.model.OtherAttribute> some=new ArrayList<org.openprovenance.prov.model.OtherAttribute>();
-            if (all!=null) {
-        	for (Attribute attr: all) {
-        	    if (attr instanceof org.openprovenance.prov.model.OtherAttribute) {
-            		some.add((org.openprovenance.prov.model.OtherAttribute)attr);
-            	    }
-        	}
-            }
-           
-            others=new AttributeList<org.openprovenance.prov.model.OtherAttribute>(this,some);
-        }
+            others=populateKnownAttributes(all, org.openprovenance.prov.model.OtherAttribute.class);
+        } 
         return this.others;
     }
     
-    public <TYPE> AttributeList<TYPE> populateAttributes(List<Attribute> all, Class<TYPE> cl) {
+    public <TYPE> AttributeList<TYPE> populateKnownAttributes(List<Attribute> all, Class<TYPE> cl) {
 	List<TYPE> some=new ArrayList<TYPE>();
         if (all!=null) {
             for (Attribute attr: all) {

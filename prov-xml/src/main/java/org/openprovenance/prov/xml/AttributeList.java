@@ -13,11 +13,11 @@ public class AttributeList<TYPE> extends AbstractList<TYPE> {
   
     private Identifiable obj;
 
-    AttributeList(Identifiable obj) {
+    public AttributeList(Identifiable obj) {
   	System.out.println("*** Constructor called");
   	this.obj=obj;
       }
-    AttributeList(Identifiable obj, Collection<TYPE> col) {
+    public AttributeList(Identifiable obj, Collection<TYPE> col) {
   	this(obj);
   	ll.addAll(col);
       }
@@ -45,6 +45,7 @@ public class AttributeList<TYPE> extends AbstractList<TYPE> {
     public Object[] toArray() {
         return (Object[]) ll.toArray();
     }
+    
     
     public void add(int index,TYPE element){
 	System.out.println("*** AttributeList add " + index + " " + element);

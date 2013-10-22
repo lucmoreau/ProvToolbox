@@ -187,7 +187,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     @Override
     public org.openprovenance.prov.model.IDRef createIDRef() {
-	
 	return new IDRef();
     }
 

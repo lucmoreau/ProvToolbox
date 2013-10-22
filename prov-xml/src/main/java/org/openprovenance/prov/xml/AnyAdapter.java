@@ -25,7 +25,7 @@ public class AnyAdapter extends
     ValueConverter vconv = new ValueConverter(pFactory);
 
 
-    /** Unmarshals an Object (expect to be a DOM Element in an Attribute.
+    /** Unmarshals an Object (expect to be a DOM Element) into an Attribute.
      * @see javax.xml.bind.annotation.adapters.XmlAdapter#unmarshal(java.lang.Object)
      */
     public org.openprovenance.prov.model.Attribute unmarshal(Object value) {

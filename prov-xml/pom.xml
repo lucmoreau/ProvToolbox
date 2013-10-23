@@ -278,7 +278,11 @@
 
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
                      <arg value="Entity.java" />
+                     <arg value="Activity.java" />
+                     <arg value="Agent.java" />
                 </exec>
+
+
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
                      <arg value="TypedValue.java" />
                 </exec>

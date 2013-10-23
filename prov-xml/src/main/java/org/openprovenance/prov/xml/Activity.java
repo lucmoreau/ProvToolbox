@@ -8,8 +8,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -22,27 +23,24 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBEqualsBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.Attribute;
-import org.w3c.dom.Element;
 
 
 /**
- * <p>Java class for Entity complex type.
+ * <p>Java class for Activity complex type.
  * 
- * <p>An entity is a physical, digital, conceptual, or other kind of thing with some fixed aspects; entities may be real or imaginary. 
- * (<a href="http://www.w3.org/TR/prov-dm/#concept-entity">PROV-DM Definition for Entity</a>).
- *  
+ * <p>The following schema fragment specifies the expected content contained within this class.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class. 
  * <pre>
- * &lt;complexType name="Entity">
+ * &lt;complexType name="Activity">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
+ *         &lt;element name="startTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
+ *         &lt;element name="endTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
  *         &lt;element ref="{http://www.w3.org/ns/prov#}label" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element ref="{http://www.w3.org/ns/prov#}location" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element ref="{http://www.w3.org/ns/prov#}type" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element ref="{http://www.w3.org/ns/prov#}value" minOccurs="0"/>
- *         &lt;any processContents='skip' namespace='##other' maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;any namespace='##other' maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *       &lt;attribute ref="{http://www.w3.org/ns/prov#}id"/>
  *     &lt;/restriction>
@@ -50,59 +48,84 @@ import org.w3c.dom.Element;
  * &lt;/complexType>
  * </pre>
  * 
- * <p>Due to JAXB restrictions, it was not possible to parse attributes that had a QName as value. 
- * To avoid this problem, all attributes (except labels) are processed as &lt;any/>
- * The Entity bean still offers the convenience accessors getLocation, getType, getValue, getOthers,
- * while automatically maintaining a sorted list of attributes to be compatible with prov-xml schema.
- *
- *  <pre>
- * &lt;complexType name="Entity">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element ref="{http://www.w3.org/ns/prov#}label" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;any processContents='skip' maxOccurs="unbounded" minOccurs="0"/>
- *       &lt;/sequence>
- *       &lt;attribute ref="{http://www.w3.org/ns/prov#}id"/>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * @see <a href="http://www.w3.org/TR/prov-dm/#term-entity">PROV-DM Entity</a>
- * @see <a href="http://www.w3.org/TR/prov-o/#Entity">PROV-O Entity</a>
- * @see <a href="http://www.w3.org/TR/prov-n/#expression-Entity">PROV-N Entity</a>
- * @see <a href="http://www.w3.org/TR/prov-xml/#term-Entity">PROV-XML Entity</a>
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Entity", propOrder = {
+@XmlType(name = "Activity", propOrder = {
+    "startTime",
+    "endTime",
     "label",
-   // "location",
+    //"location",
     //"type",
-    //"value",
-   // "any"
+    //"any"
     "all"
 })
-@XmlSeeAlso({
-    Bundle.class,
-    Collection.class,
-    Plan.class
-})
-public class Entity implements Equals, HashCode, ToString, org.openprovenance.prov.model.Entity, HasAllAttributes
+public class Activity implements Equals, HashCode, ToString, org.openprovenance.prov.model.Activity, HasAllAttributes
 {
 
+    @XmlSchemaType(name = "dateTime")
+    protected XMLGregorianCalendar startTime;
+    @XmlSchemaType(name = "dateTime")
+    protected XMLGregorianCalendar endTime;
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
-
+  
     transient protected List<org.openprovenance.prov.model.Location> location;
     transient protected List<org.openprovenance.prov.model.Type> type;
-    transient protected org.openprovenance.prov.model.Value value;
     transient protected List<org.openprovenance.prov.model.OtherAttribute> others; 
 
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
     protected QName id;
+
+    /**
+     * Gets the value of the startTime property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public XMLGregorianCalendar getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * Sets the value of the startTime property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public void setStartTime(XMLGregorianCalendar value) {
+        this.startTime = value;
+    }
+
+    /**
+     * Gets the value of the endTime property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public XMLGregorianCalendar getEndTime() {
+        return endTime;
+    }
+
+    /**
+     * Sets the value of the endTime property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public void setEndTime(XMLGregorianCalendar value) {
+        this.endTime = value;
+    }
 
     /**
      * Gets the value of the label property.
@@ -158,15 +181,14 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
 
     public List<org.openprovenance.prov.model.Location> getLocation() {
         if (location == null) {
-            location=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Location.class);
+            location=AttributeList.populateKnownAttributes(this, all, org.openprovenance.prov.model.Location.class);
         } 
         return this.location;
     }
 
 
+    
 
-    
-    
     /**
      * Gets the value of the type property.
      * 
@@ -189,8 +211,7 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
      * 
      * 
      */
-
-
+    
     public List<org.openprovenance.prov.model.Type> getType() {
         if (type == null) {
             type=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Type.class);
@@ -198,44 +219,6 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
         return this.type;
     }
 
-
- 
-    
-    /**
-     * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link org.openprovenance.prov.xml.Value }
-     *     
-     */
-    public org.openprovenance.prov.model.Value getValue() {
-	if (value==null) {
-	    if (all!=null) { // TODO: inefficient, I search this list every time getValue is called, though there may be no value
-        	for (Attribute attr: all) {
-        	    if (attr instanceof org.openprovenance.prov.model.Value) {
-        	        value=(Value)attr;
-        	    }
-        	}
-            }
-	}
-        return value;
-    }
-
-    /**
-     * Sets the value of the value property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link org.openprovenance.prov.xml.Value }
-     *     
-     */
-    public void setValue(org.openprovenance.prov.model.Value value) {
-	if (value!=null) {
-	    this.value = value;
-	    getAllAttributes().add((org.openprovenance.prov.model.Attribute)value);	//FIXME: should replace previous value!
-	}
-    }
 
     /**
      * Gets the value of the any property.
@@ -255,22 +238,23 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Element }
+     * {@link Object }
      * 
      * 
      */
+    
     public List<Attribute> getAny() {
-	System.out.println("** legacy getAny()");
-	return null;
-    }
+  	System.out.println("** legacy getAny()");
+  	return null;
+      }
 
     public List<org.openprovenance.prov.model.OtherAttribute> getOthers() {
-        if (others == null) {
-            others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.OtherAttribute.class);
-        } 
-        return this.others;
+	if (others == null) {
+	    others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.OtherAttribute.class);
+	} 
+	return this.others;
     }
-    
+     
     
     /** Gets the List of all attributes
      * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
@@ -283,6 +267,7 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
         return this.all;
     }
  
+
     /**
      * Gets the value of the id property.
      * 
@@ -308,24 +293,25 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
     }
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {
-        if (!(object instanceof Entity)) {
+        if (!(object instanceof Activity)) {
             equalsBuilder.appendSuper(false);
             return ;
         }
         if (this == object) {
             return ;
         }
-        final Entity that = ((Entity) object);
+        final Activity that = ((Activity) object);
+        equalsBuilder.append(this.getStartTime(), that.getStartTime());
+        equalsBuilder.append(this.getEndTime(), that.getEndTime());
         equalsBuilder.append(this.getLabel(), that.getLabel());
         equalsBuilder.append(this.getLocation(), that.getLocation());
         equalsBuilder.append(this.getType(), that.getType());
-        equalsBuilder.append(this.getValue(), that.getValue());
         equalsBuilder.append(this.getOthers(), that.getOthers());
         equalsBuilder.append(this.getId(), that.getId());
     }
 
     public boolean equals(Object object) {
-        if (!(object instanceof Entity)) {
+        if (!(object instanceof Activity)) {
             return false;
         }
         if (this == object) {
@@ -337,10 +323,11 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
     }
 
     public void hashCode(HashCodeBuilder hashCodeBuilder) {
+        hashCodeBuilder.append(this.getStartTime());
+        hashCodeBuilder.append(this.getEndTime());
         hashCodeBuilder.append(this.getLabel());
         hashCodeBuilder.append(this.getLocation());
         hashCodeBuilder.append(this.getType());
-        hashCodeBuilder.append(this.getValue());
         hashCodeBuilder.append(this.getOthers());
         hashCodeBuilder.append(this.getId());
     }
@@ -352,6 +339,16 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
     }
 
     public void toString(ToStringBuilder toStringBuilder) {
+        {
+            XMLGregorianCalendar theStartTime;
+            theStartTime = this.getStartTime();
+            toStringBuilder.append("startTime", theStartTime);
+        }
+        {
+            XMLGregorianCalendar theEndTime;
+            theEndTime = this.getEndTime();
+            toStringBuilder.append("endTime", theEndTime);
+        }
         {
             List<org.openprovenance.prov.model.InternationalizedString> theLabel;
             theLabel = this.getLabel();
@@ -368,12 +365,6 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
             toStringBuilder.append("type", theType);
         }
         {
-            org.openprovenance.prov.model.Value theValue;
-            theValue = this.getValue();
-            toStringBuilder.append("value", theValue);
-        }
-  
-        {
             List<org.openprovenance.prov.model.OtherAttribute> theOthers;
             theOthers = this.getOthers();
             toStringBuilder.append("others", theOthers);
@@ -386,7 +377,6 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
         { //TODO: only now, for debugging.
             toStringBuilder.append("all", getAllAttributes());
         }
-
     }
 
     public String toString() {

@@ -524,52 +524,46 @@ public class SmallTest extends TestCase {
 	addLocations(a);
 
 	a.setValue(pFactory.newValue(10,ValueConverter.QNAME_XSD_BYTE));
-	
 	a.setValue(pFactory.newValue("10",ValueConverter.QNAME_XSD_STRING));
 
-	
-        //a.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), ValueConverter.QNAME_XSD_STRING));
 
-
-	if (test) {
-
-
-	    
-
-
-	    //ValueConverter.QNAME_XSD_INT, Note this is problematic for conversion to/from rdf
-
-	    //THis fails
-
-	    /*
-
-	    a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "abc", EX_PREFIX),
-						 ValueConverter.QNAME_XSD_QNAME));
-
-	    a.getLocation().add(pFactory.newLocation(new QName("http://foo/", "cde", "foo"),
-						 ValueConverter.QNAME_XSD_QNAME));
-
-
-	    a.getLocation().add(pFactory.newLocation(new QName("http://foo/", "fgh"),
-						 ValueConverter.QNAME_XSD_QNAME));
-
-	    */
-	    // URIWrapper w=new URIWrapper();
-	    // w.setValue(URI.create(EX_NS+"london"));
-	    // a.getLocation().add(pFactory.newLocation(w,ValueConverter.QNAME_XSD_ANY_URI));
-
-	    // Location loc=pFactory.newLocation(new Long(2),ValueConverter.QNAME_XSD_LONG);
-	    //FIXME: Location containing a QName does not work
-	    //loc.getAttributes().put(ValueConverter.QNAME_XSD_LONG,"1");
-	    //	    a.getLocation().add(loc);
-
-	    // This fails because we don't get to read the type in xsi:type
-	    //a.getLocation().add(pFactory.newLocation(2,ValueConverter.QNAME_XSD_UNSIGNED_INT));
-	    // problem in prov-n parsing, since  TreeTraversal.convertTypeLiteral generate a java value without type!
-	}
-
-	System.out.println("Object is " + a);
 	makeDocAndTest(a,"target/entity0");
+    }
+    
+    
+
+    public void testActivity0() throws JAXBException  {
+	setNamespaces();
+	Activity a = pFactory.newActivity("ex:a0");
+	
+	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+
+	addLabels(a);
+	addTypes(a);
+	addLocations(a);
+
+	makeDocAndTest(a,"target/activity0");
+    }
+
+    
+
+    public void testAgent0() throws JAXBException  {
+	setNamespaces();
+	Agent a = pFactory.newAgent("ex:ag0");
+	
+	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+
+	addLabels(a);
+	addTypes(a);
+	addLocations(a);
+
+	makeDocAndTest(a,"target/agent0");
     }
 
 }

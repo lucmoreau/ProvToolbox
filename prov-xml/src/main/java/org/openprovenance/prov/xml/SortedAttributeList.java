@@ -36,7 +36,7 @@ public class SortedAttributeList<TYPE> extends AbstractList<TYPE> {
 
     @Override
     public TYPE set(int index, TYPE element) {
-	System.out.println("*** SortedAttributeList set " + index);
+	//System.out.println("*** SortedAttributeList set " + index);
 
         TYPE oldValue = ll.get(index);
         ll.set(index,element);
@@ -55,7 +55,7 @@ public class SortedAttributeList<TYPE> extends AbstractList<TYPE> {
     
     
     public void add(int index,TYPE element){
-	System.out.println("*** SortedAttributeList add " + index + " " + element);
+	//System.out.println("*** SortedAttributeList add " + index + " " + element);
 	if (element instanceof org.openprovenance.prov.model.Location) {
 	    last_location++;
 	    ll.add(last_location,element);

@@ -3,7 +3,9 @@ package org.openprovenance.prov.xml;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Identifiable;
 
 public class AttributeList<TYPE> extends AbstractList<TYPE> {
@@ -14,7 +16,7 @@ public class AttributeList<TYPE> extends AbstractList<TYPE> {
     private Identifiable obj;
 
     public AttributeList(Identifiable obj) {
-  	System.out.println("*** Constructor called");
+  	//System.out.println("*** Constructor called");
   	this.obj=obj;
       }
     public AttributeList(Identifiable obj, Collection<TYPE> col) {
@@ -29,7 +31,7 @@ public class AttributeList<TYPE> extends AbstractList<TYPE> {
 
     @Override
     public TYPE set(int index, TYPE element) {
-	System.out.println("*** AttributeList set " + index);
+	//System.out.println("*** AttributeList set " + index);
 
         TYPE oldValue = ll.get(index);
         ll.set(index,element);
@@ -48,11 +50,26 @@ public class AttributeList<TYPE> extends AbstractList<TYPE> {
     
     
     public void add(int index,TYPE element){
-	System.out.println("*** AttributeList add " + index + " " + element);
+	//System.out.println("*** AttributeList add " + index + " " + element);
 	ll.add(index,element);
 	HasAllAttributes obj2=(HasAllAttributes)obj;
 	obj2.getAllAttributes().add((org.openprovenance.prov.model.Attribute)element);	
     }
-
     
+    final static public <TYPE> AttributeList<TYPE> populateKnownAttributes(Identifiable object, 
+                                                                           List<Attribute> all, 
+                                                                           Class<TYPE> cl) {
+  	List<TYPE> some=new ArrayList<TYPE>();
+          if (all!=null) {
+              for (Attribute attr: all) {
+          	if (cl.isInstance(attr)) {
+          	    some.add((TYPE)attr);
+          	}
+              }
+          }
+          return new AttributeList<TYPE>(object,some);
+      }
+   
+    
+   
 }

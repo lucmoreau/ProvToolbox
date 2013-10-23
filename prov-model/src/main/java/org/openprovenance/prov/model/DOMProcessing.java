@@ -202,7 +202,6 @@ final public class DOMProcessing {
             node.normalize();
             org.w3c.dom.Text txt = (org.w3c.dom.Text) node;
             txt.setTextContent(txt.getTextContent().trim());
-            System.out.println("<" + node.getTextContent() + ">");
             nodes.add(txt);
         } else {
             NodeList nl = node.getChildNodes();

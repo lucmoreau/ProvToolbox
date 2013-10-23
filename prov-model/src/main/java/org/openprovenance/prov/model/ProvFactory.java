@@ -1406,7 +1406,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.setId(id);
 	res.setActivity(pid);
 	res.setEntity(aid);
-	addRole(res, newRole(role,ValueConverter.QNAME_XSD_STRING));
+	if (role!=null) addRole(res, newRole(role,ValueConverter.QNAME_XSD_STRING));
 	return res;
     }
 

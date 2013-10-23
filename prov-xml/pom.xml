@@ -280,6 +280,7 @@
                      <arg value="Entity.java" />
                      <arg value="Activity.java" />
                      <arg value="Agent.java" />
+                     <arg value="WasGeneratedBy.java" />
                 </exec>
 
 

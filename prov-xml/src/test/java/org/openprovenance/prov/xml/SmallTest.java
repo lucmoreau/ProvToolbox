@@ -10,6 +10,7 @@ import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.HasLabel;
 import org.openprovenance.prov.model.HasLocation;
 import org.openprovenance.prov.model.HasOtherAttribute;
+import org.openprovenance.prov.model.HasRole;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.HasValue;
 import org.openprovenance.prov.model.Used;
@@ -491,6 +492,14 @@ public class SmallTest extends TestCase {
          }
 
     }
+    public void addRoles(HasRole hl){
+        for (Object [] pair: attributeValues) {
+            Object value=pair[0];
+            QName type=(QName) pair[1];
+            hl.getRole().add(pFactory.newRole(value,type));
+         }
+
+    }
     public void addOthers(HasOtherAttribute ho, QName elementName) {
 	for (Object [] pair: attributeValues) {
 	    Object value=pair[0];
@@ -565,5 +574,32 @@ public class SmallTest extends TestCase {
 
 	makeDocAndTest(a,"target/agent0");
     }
+
+    public QName q(String n) {
+	return new QName(EX_NS, n, EX_PREFIX);
+    }
+    
+    public void testGeneration0() throws JAXBException  {
+ 	setNamespaces();
+
+	WasGeneratedBy a = pFactory.newWasGeneratedBy((QName)null,
+  							pFactory.newIDRef(q("e1")),
+  							null,
+  							pFactory.newIDRef(q("a1")));
+ 	
+ 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
+ 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
+ 	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
+ 	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+
+ 	addLabels(a);
+ 	addRoles(a);
+ 	addTypes(a);	
+ 	addLocations(a);
+ 	
+
+ 	makeDocAndTest(a,"target/generation0");
+     }
+    
 
 }

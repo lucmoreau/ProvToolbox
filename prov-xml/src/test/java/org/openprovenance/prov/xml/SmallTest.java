@@ -747,6 +747,47 @@ public class SmallTest extends TestCase {
 
 	makeDocAndTest(a,"target/start0");
    }
+  
+  public void testInfluence0() throws JAXBException  {
+ 	setNamespaces();
+
+
+ 	WasInfluencedBy a = pFactory.newWasInfluencedBy(q("infl0"), 
+ 	                                                pFactory.newIDRef(q("e1")),
+ 	                                                pFactory.newIDRef(q("e2")));
+ 	
+ 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
+ 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
+ 	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
+ 	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+
+ 	addLabels(a);
+ 	addTypes(a);	
+ 	
+
+ 	makeDocAndTest(a,"target/influence0");
+     }
+
+   
+  public void testCommunication0() throws JAXBException  {
+ 	setNamespaces();
+
+
+ 	WasInformedBy a = pFactory.newWasInformedBy(q("com0"), 
+ 	                                            pFactory.newIDRef(q("a1")),
+ 	                                            pFactory.newIDRef(q("a2")));
+ 	
+ 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
+ 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
+ 	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
+ 	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+
+ 	addLabels(a);
+ 	addTypes(a);	
+ 	
+
+ 	makeDocAndTest(a,"target/communication0");
+     }
 
    
 

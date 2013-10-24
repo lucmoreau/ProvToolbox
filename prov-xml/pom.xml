@@ -288,6 +288,8 @@
                      <arg value="WasDerivedFrom.java" />
                      <arg value="WasEndedBy.java" />
                      <arg value="WasStartedBy.java" />
+                     <arg value="WasInfluencedBy.java" />
+                     <arg value="WasInformedBy.java" />
                 </exec>
 
 

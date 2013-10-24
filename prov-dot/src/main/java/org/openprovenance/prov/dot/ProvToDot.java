@@ -20,6 +20,7 @@ import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HasExtensibility;
+import org.openprovenance.prov.model.HasOtherAttribute;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.model.Influence;
@@ -451,7 +452,7 @@ public class ProvToDot {
         return properties;
     }
 
-    public  HashMap<String,String> addColors(HasExtensibility e, HashMap<String,String> properties) {
+    public  HashMap<String,String> addColors(HasOtherAttribute e, HashMap<String,String> properties) {
         Hashtable<String,List<Attribute>> table=u.attributesWithNamespace(e,"http://openprovenance.org/Toolbox/dot#");
 
         List<Attribute> o=table.get("fillcolor");

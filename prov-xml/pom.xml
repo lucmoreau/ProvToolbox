@@ -291,6 +291,8 @@
                      <arg value="WasInfluencedBy.java" />
                      <arg value="WasInformedBy.java" />
                      <arg value="ActedOnBehalfOf.java" />
+                     <arg value="DerivedByInsertionFrom.java" />
+                     <arg value="DerivedByRemovalFrom.java" />
                 </exec>
 
 

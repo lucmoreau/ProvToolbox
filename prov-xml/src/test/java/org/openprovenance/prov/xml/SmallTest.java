@@ -683,29 +683,50 @@ public class SmallTest extends TestCase {
  	
 
  	makeDocAndTest(a,"target/derivation0");
-     }
+  }
   
   public void testEnd0() throws JAXBException  {
- 	setNamespaces();
+	setNamespaces();
 
 	WasEndedBy a = pFactory.newWasEndedBy((QName)null,
-  							pFactory.newIDRef(q("a1")),
-  							pFactory.newIDRef(q("e1")));
- 	
- 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
- 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
- 	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
- 	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+							pFactory.newIDRef(q("a1")),
+							pFactory.newIDRef(q("e1")));
+	
+	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
 
- 	addLabels(a);
- 	addRoles(a);
- 	addTypes(a);	
- 	addLocations(a);
- 	
+	addLabels(a);
+	addRoles(a);
+	addTypes(a);	
+	addLocations(a);
+	
 
- 	makeDocAndTest(a,"target/end0");
-     }
-    
+	makeDocAndTest(a,"target/end0");
+   }
+
+  public void testStart0() throws JAXBException  {
+	setNamespaces();
+
+	WasStartedBy a = pFactory.newWasStartedBy((QName)null,
+							pFactory.newIDRef(q("a1")),
+							pFactory.newIDRef(q("e1")));
+	
+	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+
+	addLabels(a);
+	addRoles(a);
+	addTypes(a);	
+	addLocations(a);
+	
+
+	makeDocAndTest(a,"target/start0");
+   }
+
    
 
 }

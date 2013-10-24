@@ -348,12 +348,17 @@ public class BeanTraversal {
     }
     
     public Relation0 convert(DerivedByRemovalFrom o) {
+    	List<Attribute> attrs=new LinkedList<Attribute>();      
+        convertTypeAttributes(o,attrs);
+        convertLabelAttributes(o,attrs);
+        convertAttributes(o,attrs);
+    	
 	
 	return c.newDerivedByRemovalFrom(o.getId(), 
 	                                 o.getNewDictionary().getRef(), 
 	                                 o.getOldDictionary().getRef(), 
 	                                 o.getKey(), 
-	                                 o.getAny());
+	                                 attrs);
 	                                 
     }
 
@@ -367,11 +372,16 @@ public class BeanTraversal {
     		entries.add(p);
     	    }
     	}
+    	List<Attribute> attrs=new LinkedList<Attribute>();      
+        convertTypeAttributes(o,attrs);
+        convertLabelAttributes(o,attrs);
+        convertAttributes(o,attrs);
+    	
 	return c.newDerivedByInsertionFrom(o.getId(), 
 	                                   o.getNewDictionary().getRef(), 
 	                                   o.getOldDictionary().getRef(), 
 	                                   entries, 
-	                                   o.getAny());
+	                                   attrs);
 
 	
     }

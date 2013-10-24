@@ -68,7 +68,8 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
     @XmlElement(required = true)
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> key;
-    protected List<InternationalizedString> label;
+    @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
+    protected List<org.openprovenance.prov.model.InternationalizedString> label;
     
     
     
@@ -179,9 +180,9 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
      * 
      * 
      */
-    public List<InternationalizedString> getLabel() {
+    public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
         if (label == null) {
-            label = new ArrayList<InternationalizedString>();
+            label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
         }
         return this.label;
     }
@@ -353,7 +354,7 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
             toStringBuilder.append("key", theKey);
         }
         {
-            List<InternationalizedString> theLabel;
+            List<org.openprovenance.prov.model.InternationalizedString> theLabel;
             theLabel = this.getLabel();
             toStringBuilder.append("label", theLabel);
         }

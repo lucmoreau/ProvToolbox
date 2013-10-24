@@ -2,7 +2,7 @@ package org.openprovenance.prov.model;
 
 import java.util.List;
 
-public interface DerivedByRemovalFrom extends Identifiable, HasExtensibility, Influence {
+public interface DerivedByRemovalFrom extends Identifiable, HasExtensibility, HasType, HasLabel, Influence {
 
     void setNewDictionary(IDRef after);
 

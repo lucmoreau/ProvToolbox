@@ -585,7 +585,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.setOldDictionary(before);
 	if (keyEntitySet != null)
 	    res.getKeyEntityPair().addAll(keyEntitySet);
-	// TODO setAttributes(res, attributes);
+	setAttributes(res, attributes);
 	return res;
     }
     
@@ -648,7 +648,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.setOldDictionary(before);
 	if (keys != null)
 	    res.getKey().addAll(keys);
-	//TODO setAttributes(res, attributes);
+	setAttributes(res, attributes);
 	return res;
     }
 

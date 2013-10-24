@@ -21,7 +21,53 @@ public class Attribute implements org.openprovenance.prov.model.Attribute {
     public static final QName PROV_LOCATION_QNAME=provQName("location");
     public static final QName PROV_VALUE_QNAME=provQName("value");
     
+    /** Method replicated from ProvFactory. */
+    static public String qnameToString(QName qname) {
+	return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
+		+ qname.getLocalPart();
+    }
 
+    //TODO: move this code to ValueConverter
+    public static String valueToNotationString(Object val, QName xsdType) {
+ 	if (val instanceof InternationalizedString) {
+ 	    InternationalizedString istring = (InternationalizedString) val;
+ 	    return "\"" + istring.getValue() + 
+ 		    ((istring.getLang()==null) ? "\"" : "\"@" + istring.getLang())
+ 		    + " %% " + qnameToString(xsdType);
+ 	} else if (val instanceof QName) {
+ 	    QName qn = (QName) val;	    
+ 	    return "'" + qnameToString(qn) + "'";
+ 	} else if (val instanceof String) {
+	    String s=(String)val;
+	    if (s.contains("\n")) {
+		// return "\"\"\"" + val + "\"\"\" %% " + qnameToString(xsdType);
+		return "\"\"\"" + val + "\"\"\"" ;
+	    } else {
+		return "\"" + val + "\" %% " + qnameToString(xsdType);
+	    }
+ 	} else {
+	    // We should never be here!
+ 	    return "\"" + val + "\" %% " + qnameToString(xsdType);
+	}
+     }
+  
+    
+    static public boolean hasType(QName type, Collection<org.openprovenance.prov.model.Attribute> attributes) {
+    	for (org.openprovenance.prov.model.Attribute attribute: attributes) {
+    		switch (attribute.getKind()) {
+    			case PROV_TYPE :
+    				if (attribute.getValue().equals(type)) {
+    					return true;
+    				}
+					break;			
+				default :
+					break;
+    			
+    		}
+    	}
+    	return false;
+    		
+    }
 
     final private QName elementName;
     final private Object val;
@@ -154,11 +200,6 @@ public class Attribute implements org.openprovenance.prov.model.Attribute {
 	return "[" + elementName + " " + val + " " + xsdType + "]";
     }
 
-    /** Method replicated from ProvFactory. */
-    static public String qnameToString(QName qname) {
-	return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
-		+ qname.getLocalPart();
-    }
     
     /* (non-Javadoc)
      * @see org.openprovenance.prov.xml.AttrIN#toNotationString()
@@ -169,47 +210,6 @@ public class Attribute implements org.openprovenance.prov.model.Attribute {
 	return qnameToString(elementName) + " = " + valueToNotationString(val, xsdType);
     }
     
-    //TODO: move this code to ValueConverter
-    public static String valueToNotationString(Object val, QName xsdType) {
- 	if (val instanceof InternationalizedString) {
- 	    InternationalizedString istring = (InternationalizedString) val;
- 	    return "\"" + istring.getValue() + 
- 		    ((istring.getLang()==null) ? "\"" : "\"@" + istring.getLang())
- 		    + " %% " + qnameToString(xsdType);
- 	} else if (val instanceof QName) {
- 	    QName qn = (QName) val;	    
- 	    return "'" + qnameToString(qn) + "'";
- 	} else if (val instanceof String) {
-	    String s=(String)val;
-	    if (s.contains("\n")) {
-		// return "\"\"\"" + val + "\"\"\" %% " + qnameToString(xsdType);
-		return "\"\"\"" + val + "\"\"\"" ;
-	    } else {
-		return "\"" + val + "\" %% " + qnameToString(xsdType);
-	    }
- 	} else {
-	    // We should never be here!
- 	    return "\"" + val + "\" %% " + qnameToString(xsdType);
-	}
-     }
-  
-    
-    static public boolean hasType(QName type, Collection<org.openprovenance.prov.model.Attribute> attributes) {
-    	for (org.openprovenance.prov.model.Attribute attribute: attributes) {
-    		switch (attribute.getKind()) {
-    			case PROV_TYPE :
-    				if (attribute.getValue().equals(type)) {
-    					return true;
-    				}
-					break;			
-				default :
-					break;
-    			
-    		}
-    	}
-    	return false;
-    		
-    }
 
 
     @Override

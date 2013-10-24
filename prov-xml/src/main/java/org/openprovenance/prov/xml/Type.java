@@ -43,7 +43,7 @@ public class Type extends TypedValue implements Equals, HashCode, ToString,
 	org.openprovenance.prov.model.Type,
 	org.openprovenance.prov.model.Attribute {
 
-    private static final AttributeKind PROV_TYPE_KIND = Attribute.AttributeKind.PROV_TYPE;
+    private static final AttributeKind PROV_TYPE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_TYPE;
     private static final QName PROV_TYPE_QNAME = Attribute.PROV_TYPE_QNAME;
 
     @Override

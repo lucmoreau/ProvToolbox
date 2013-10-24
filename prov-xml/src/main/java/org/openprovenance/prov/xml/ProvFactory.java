@@ -98,7 +98,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
   
 
 
-
+/*
 
 
 
@@ -125,7 +125,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 	                              vconv.getXsdType(value));
 	return res;
     }
-
+*/
     public org.openprovenance.prov.model.Attribute newAttribute(QName elementName, Object value, QName type) {
 	// TODO: use TypedValue.getAttributeKind and switch on a kind
 	if (elementName.equals(Attribute.PROV_LOCATION_QNAME)) {
@@ -183,6 +183,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         return res;
     }
 
+    
     @Override
     public org.openprovenance.prov.model.Attribute createAttribute(QName qname,
 							    Object value,
@@ -197,6 +198,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 	return new Attribute(kind,value,type);
 
     }
+    
 
     @Override
     public org.openprovenance.prov.model.IDRef createIDRef() {

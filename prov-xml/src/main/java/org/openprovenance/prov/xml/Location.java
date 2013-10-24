@@ -33,7 +33,7 @@ public class Location extends TypedValue
     implements Equals, HashCode, ToString, org.openprovenance.prov.model.Location, org.openprovenance.prov.model.Attribute
 {
 
-    private static final AttributeKind PROV_LOCATION_KIND = Attribute.AttributeKind.PROV_LOCATION;
+    private static final AttributeKind PROV_LOCATION_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_LOCATION;
     private static final QName PROV_LOCATION_QNAME = Attribute.PROV_LOCATION_QNAME;
  
     @Override

@@ -33,7 +33,7 @@ public class OtherAttribute extends TypedValue
     implements Equals, HashCode, ToString, org.openprovenance.prov.model.OtherAttribute, org.openprovenance.prov.model.Attribute
 {
 
-    private static final AttributeKind OTHER_KIND = Attribute.AttributeKind.OTHER;
+    private static final AttributeKind OTHER_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.OTHER;
  
     QName elementName;
     

@@ -34,10 +34,12 @@ public class AnyAdapter extends
             org.w3c.dom.Element el = (org.w3c.dom.Element) value;
             return DOMProcessing.unmarshallAttribute(el,pFactory,vconv);
         }
+        /*
         if (value instanceof JAXBElement) {
             JAXBElement<?> je = (JAXBElement<?>) value;
             return pFactory.newAttribute(je.getName(), je.getValue(), vconv);
         }
+        */
         return null;
     }
 

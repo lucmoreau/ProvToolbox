@@ -277,50 +277,10 @@ public class SmallTest extends TestCase {
 				      ValueConverter.QNAME_XSD_QNAME));
     }
 
-    public void addFurtherAttributes(HasExtensibility he) {
-	if (true) return;
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag1",EX_PREFIX,"hello", vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "bye", vconv));
-	//he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), "xsd:string"));
-	he.getAny().add(pFactory.newAttribute(EX2_NS,"tag3",EX2_PREFIX, "hi", vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag1",EX_PREFIX,"hello\nover\nmore\nlines", vconv));
-
-    }
-
     
-    public void addFurtherAttributes0(HasExtensibility he) {
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag1",EX_PREFIX,"hello", vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "bye", vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), ValueConverter.QNAME_XSD_STRING));
-	he.getAny().add(pFactory.newAttribute(EX2_NS,"tag3",EX2_PREFIX, "hi", vconv));
-	
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Integer(1), vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Long(1), vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Short((short) 1), vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Double(1.0), vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Float(1.0), vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new java.math.BigDecimal(1.0), vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Boolean(true), vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Byte((byte) 123), vconv));
-	
-	addFurtherAttributesWithQNames(he);
-	
-	URIWrapper w=new URIWrapper();
-   	w.setValue(URI.create(EX_NS+"london"));
-   	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, w, vconv));
-	
-    }
-    
+
    
-    
-    ///////////////////////////////////////////////////////////////////////
-    
-    public void addFurtherAttributesWithQNames(HasExtensibility he) {
-        he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new QName(EX2_NS,"newyork", EX2_PREFIX), vconv));
-        he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new QName(EX_NS, "london", EX_PREFIX), vconv));
-        he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new QName(EX3_NS, "london"), vconv));
-
-    }
+  
 
     public void NOtestRoles() {
 	Role r1=pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING);

@@ -25,7 +25,6 @@ public class BeanTraversal {
 	
         c.startDocument(b.getNss());
 
-
 	for (Statement s : u.getStatement(b)) {
 	    if (s instanceof Entity) {
 		sRecords.add(convert((Entity)s));

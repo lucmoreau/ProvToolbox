@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 
 /** Utilities for manipulating PROV Descriptions. */
 
-public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities{
+public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
 
     private ProvFactory p = new ProvFactory();
 

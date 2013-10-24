@@ -82,6 +82,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	a.getAny().add(o);
     }
 
+    /*
     public void addAttribute(HasExtensibility a, String namespace,
 			     String localName, String prefix, Object value, ValueConverter vconv) {
 
@@ -94,6 +95,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 
 	a.getAny().add(newAttribute(namespace, localName, prefix, value, type));
     }
+    */
 
     public ActedOnBehalfOf addAttributes(ActedOnBehalfOf from,
 					 ActedOnBehalfOf to) {
@@ -457,6 +459,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
         return newAlternateOf(eid2, eid1);
     }
   
+    
     public Attribute newAttribute(QName qname, Object value, ValueConverter vconv) {
   	Attribute res = createAttribute(qname, value, vconv.getXsdType(value));
   	return res;

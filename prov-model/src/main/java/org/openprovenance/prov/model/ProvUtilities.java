@@ -10,7 +10,6 @@ import javax.xml.namespace.QName;
 /** Utilities for manipulating PROV Descriptions. */
 
 public class ProvUtilities {
-
     /*
      * public List<Element> getElements(Bundle g) { List<Element> res = new
      * LinkedList<Element>(); res.addAll(g.getRecords().getEntity());

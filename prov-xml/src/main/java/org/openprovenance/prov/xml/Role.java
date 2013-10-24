@@ -42,7 +42,7 @@ public class Role extends TypedValue implements Equals, HashCode, ToString,
 	org.openprovenance.prov.model.Role,
 	org.openprovenance.prov.model.Attribute {
 
-    private static final AttributeKind PROV_ROLE_KIND = Attribute.AttributeKind.PROV_ROLE;
+    private static final AttributeKind PROV_ROLE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_ROLE;
     private static final QName PROV_ROLE_QNAME = Attribute.PROV_ROLE_QNAME;
 
     @Override

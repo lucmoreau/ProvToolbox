@@ -283,6 +283,7 @@
                      <arg value="WasGeneratedBy.java" />
                      <arg value="Used.java" />
                      <arg value="WasAssociatedWith.java" />
+                     <arg value="WasAttributedTo.java" />
                 </exec>
 
 

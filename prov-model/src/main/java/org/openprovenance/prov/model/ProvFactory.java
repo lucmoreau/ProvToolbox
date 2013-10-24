@@ -949,7 +949,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     }
     
     
-    public String base64EncodingChunked(byte [] b) {
+    public String base64Encoding(byte [] b) {
         return org.apache.commons.codec.binary.Base64.encodeBase64String(b);
     }
     public byte [] base64Decoding(String s) {

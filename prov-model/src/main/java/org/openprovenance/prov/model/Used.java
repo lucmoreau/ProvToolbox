@@ -1,6 +1,6 @@
 package org.openprovenance.prov.model;
 
-public interface Used extends Identifiable, HasLabel, HasType, HasTime, HasExtensibility, HasRole, HasLocation, Influence {
+public interface Used extends Identifiable, HasLabel, HasType, HasTime, HasExtensibility, HasRole, HasLocation, HasOtherAttribute, Influence {
 
     void setActivity(IDRef aid);
 

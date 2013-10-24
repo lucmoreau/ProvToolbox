@@ -1117,6 +1117,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     public Used newUsed(QName id, IDRef aid, String role, IDRef eid) {
 	Used res = newUsed(id);
 	res.setActivity(aid);
+	if (role!=null)
 	addRole(res, newRole(role,ValueConverter.QNAME_XSD_STRING));
 	res.setEntity(eid);
 	return res;

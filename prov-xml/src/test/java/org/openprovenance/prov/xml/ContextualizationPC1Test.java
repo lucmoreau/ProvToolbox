@@ -15,6 +15,7 @@ import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.HasLabel;
 import org.openprovenance.prov.model.HasLocation;
+import org.openprovenance.prov.model.HasOtherAttribute;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.HasValue;
 import org.openprovenance.prov.model.Used;
@@ -47,7 +48,7 @@ import org.openprovenance.prov.model.DictionaryMembership;
 /**
  * Unit test for simple Provenance Challenge 1 like workflow.
  */
-abstract public class ContextualizationPC1Test extends TestCase {
+public class ContextualizationPC1Test extends TestCase {
 
     public static final String PC1_NS = "http://www.ipaw.info/pc1/";
     public static final String PC1_PREFIX = "pc1";
@@ -164,7 +165,7 @@ abstract public class ContextualizationPC1Test extends TestCase {
 	Entity bunEntity = pFactory.newEntity(bun.getId());
 	Entity a = pFactory.newEntity(globalA1.getId().getLocalPart());
 	MentionOf ctx = pFactory.newMentionOf(a, globalA1, bunEntity);
-	pFactory.addAttribute(a, DOT_NS, DOT_PREFIX, "color", "blue", vconv);
+	a.getOthers().add(pFactory.newOther(DOT_NS, DOT_PREFIX, "color", "blue", ValueConverter.QNAME_XSD_STRING));
 
 	graph.getStatementOrBundle().add(bunEntity);
 	graph.getStatementOrBundle().add(a);
@@ -191,14 +192,17 @@ abstract public class ContextualizationPC1Test extends TestCase {
 	    return makePC1FullGraph(pFactory, FILE_LOCATION, "./", bName);
 	}
     }
-
-    public void addValue(HasExtensibility p1, String val) {
-	pFactory.addAttribute(p1, PC1_NS, PC1_PREFIX, "value", val, vconv);
+    
+    public void addValue(HasOtherAttribute p1, String val) {
+	p1.getOthers().add(pFactory.newOther(PC1_NS, "value", PC1_PREFIX, val, 
+	                                     org.openprovenance.prov.model.ValueConverter.QNAME_XSD_STRING));
     }
 
-    public void addUrl(HasExtensibility p1, String val) {
-	pFactory.addAttribute(p1, PC1_NS, PC1_PREFIX, "url", val, vconv);
+    public void addUrl(HasOtherAttribute p1, String val) {
+	p1.getOthers().add(pFactory.newOther(PC1_NS, "url", PC1_PREFIX, val, 
+	                                     org.openprovenance.prov.model.ValueConverter.QNAME_XSD_STRING));
     }
+
 
     public NamedBundle makePC1FullGraph(ProvFactory pFactory,
 	                                String inputLocation,

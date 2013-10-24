@@ -5,7 +5,7 @@ import org.openprovenance.prov.model.BeanTraversal;
 /**
  * Unit test for PROV roundtrip conversion between Java and XML
  */
-abstract public class RoundTripJavaToJavaTest extends RoundTripFromJavaTest {
+public class RoundTripJavaToJavaTest extends RoundTripFromJavaTest {
 
     public RoundTripJavaToJavaTest(String testName) {
 	super(testName);

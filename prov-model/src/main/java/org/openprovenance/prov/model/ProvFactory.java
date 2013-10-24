@@ -538,6 +538,10 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
         res.setElementName(elementName);
         return res;
       }
+    public OtherAttribute newOther(String namespace, String local, String prefix,  Object value, QName type) {
+	QName elementName=new QName(namespace,local,prefix);
+        return newOther(elementName,value,type);
+      }
 
     
     public Value newValue(Object value, ValueConverter vconv) {

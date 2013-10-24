@@ -290,6 +290,7 @@
                      <arg value="WasStartedBy.java" />
                      <arg value="WasInfluencedBy.java" />
                      <arg value="WasInformedBy.java" />
+                     <arg value="ActedOnBehalfOf.java" />
                 </exec>
 
 

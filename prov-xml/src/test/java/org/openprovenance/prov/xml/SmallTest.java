@@ -536,7 +536,7 @@ public class SmallTest extends TestCase {
 	a.setValue(pFactory.newValue("10",ValueConverter.QNAME_XSD_STRING));
 
 
-	makeDocAndTest(a,"target/entity0");
+	makeDocAndTest(a,"target/attr_entity0");
     }
     
     
@@ -554,7 +554,7 @@ public class SmallTest extends TestCase {
 	addTypes(a);
 	addLocations(a);
 
-	makeDocAndTest(a,"target/activity0");
+	makeDocAndTest(a,"target/attr_activity0");
     }
 
     
@@ -572,7 +572,7 @@ public class SmallTest extends TestCase {
 	addTypes(a);
 	addLocations(a);
 
-	makeDocAndTest(a,"target/agent0");
+	makeDocAndTest(a,"target/attr_agent0");
     }
 
     public QName q(String n) {
@@ -598,7 +598,7 @@ public class SmallTest extends TestCase {
  	addLocations(a);
  	
 
- 	makeDocAndTest(a,"target/generation0");
+ 	makeDocAndTest(a,"target/attr_generation0");
      }
 
     public void testInvalidation0() throws JAXBException  {
@@ -619,7 +619,7 @@ public class SmallTest extends TestCase {
   	addLocations(a);
   	
 
-  	makeDocAndTest(a,"target/invalidation0");
+  	makeDocAndTest(a,"target/attr_invalidation0");
       }
 
     public void testUsage0() throws JAXBException  {
@@ -641,7 +641,7 @@ public class SmallTest extends TestCase {
   	addLocations(a);
   	
 
-  	makeDocAndTest(a,"target/usage0");
+  	makeDocAndTest(a,"target/attr_usage0");
       }
     
    public void testAssociation0() throws JAXBException  {
@@ -662,7 +662,7 @@ public class SmallTest extends TestCase {
  	addTypes(a);	
  	
 
- 	makeDocAndTest(a,"target/association0");
+ 	makeDocAndTest(a,"target/attr_association0");
      }
      
    
@@ -683,7 +683,7 @@ public class SmallTest extends TestCase {
 	addTypes(a);	
 	
 
-	makeDocAndTest(a,"target/attribution0");
+	makeDocAndTest(a,"target/attr_attribution0");
     }
 
   public void testDerivation0() throws JAXBException  {
@@ -703,7 +703,7 @@ public class SmallTest extends TestCase {
  	addTypes(a);	
  	
 
- 	makeDocAndTest(a,"target/derivation0");
+ 	makeDocAndTest(a,"target/attr_derivation0");
   }
   
   public void testEnd0() throws JAXBException  {
@@ -724,7 +724,7 @@ public class SmallTest extends TestCase {
 	addLocations(a);
 	
 
-	makeDocAndTest(a,"target/end0");
+	makeDocAndTest(a,"target/attr_end0");
    }
 
   public void testStart0() throws JAXBException  {
@@ -745,7 +745,7 @@ public class SmallTest extends TestCase {
 	addLocations(a);
 	
 
-	makeDocAndTest(a,"target/start0");
+	makeDocAndTest(a,"target/attr_start0");
    }
   
   public void testInfluence0() throws JAXBException  {
@@ -765,30 +765,52 @@ public class SmallTest extends TestCase {
  	addTypes(a);	
  	
 
- 	makeDocAndTest(a,"target/influence0");
+ 	makeDocAndTest(a,"target/attr_influence0");
      }
 
    
   public void testCommunication0() throws JAXBException  {
- 	setNamespaces();
+	setNamespaces();
 
 
- 	WasInformedBy a = pFactory.newWasInformedBy(q("com0"), 
- 	                                            pFactory.newIDRef(q("a1")),
- 	                                            pFactory.newIDRef(q("a2")));
- 	
- 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
- 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
- 	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
- 	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+	WasInformedBy a = pFactory.newWasInformedBy(q("com0"), 
+	                                            pFactory.newIDRef(q("a1")),
+	                                            pFactory.newIDRef(q("a2")));
+	
+	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
 
- 	addLabels(a);
- 	addTypes(a);	
- 	
+	addLabels(a);
+	addTypes(a);	
+	
 
- 	makeDocAndTest(a,"target/communication0");
-     }
+	makeDocAndTest(a,"target/attr_communication0");
+   }
 
-   
+ 
+  public void testDelegation0() throws JAXBException  {
+	setNamespaces();
+
+
+	ActedOnBehalfOf a = pFactory.newActedOnBehalfOf(q("del0"), 
+	                                                pFactory.newIDRef(q("a1")),
+	                                                pFactory.newIDRef(q("a2")),
+	                                                pFactory.newIDRef(q("a3")));
+	
+	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+
+	addLabels(a);
+	addTypes(a);	
+	
+
+	makeDocAndTest(a,"target/attr_delegation0");
+   }
+
+ 
 
 }

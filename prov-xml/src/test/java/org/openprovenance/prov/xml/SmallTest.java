@@ -602,26 +602,47 @@ public class SmallTest extends TestCase {
      }
     
     public void testUsage0() throws JAXBException  {
- 	setNamespaces();
+  	setNamespaces();
 
-	Used a = pFactory.newUsed((QName)null,
-	                          pFactory.newIDRef(q("a1")),
-	                          null,
-	                          pFactory.newIDRef(q("e1")));
- 	
- 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
- 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
- 	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
- 	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+ 	Used a = pFactory.newUsed((QName)null,
+ 	                          pFactory.newIDRef(q("a1")),
+ 	                          null,
+ 	                          pFactory.newIDRef(q("e1")));
+  	
+  	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
+  	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
+  	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
+  	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
 
- 	addLabels(a);
- 	addRoles(a);
- 	addTypes(a);	
- 	addLocations(a);
- 	
+  	addLabels(a);
+  	addRoles(a);
+  	addTypes(a);	
+  	addLocations(a);
+  	
 
- 	makeDocAndTest(a,"target/usage0");
-     }
-    
+  	makeDocAndTest(a,"target/usage0");
+      }
+     
+    public void testAssociation0() throws JAXBException  {
+  	setNamespaces();
+
+ 
+ 	WasAssociatedWith a = pFactory.newWasAssociatedWith(q("assoc0"), 
+ 	                                                    pFactory.newIDRef(q("a1")),
+ 	                                                    pFactory.newIDRef(q("ag1")));
+  	
+  	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
+  	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
+  	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
+  	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+
+  	addLabels(a);
+  	addRoles(a);
+  	addTypes(a);	
+  	
+
+  	makeDocAndTest(a,"target/association0");
+      }
+     
 
 }

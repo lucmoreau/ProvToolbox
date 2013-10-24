@@ -282,6 +282,7 @@
                      <arg value="Agent.java" />
                      <arg value="WasGeneratedBy.java" />
                      <arg value="Used.java" />
+                     <arg value="WasAssociatedWith.java" />
                 </exec>
 
 

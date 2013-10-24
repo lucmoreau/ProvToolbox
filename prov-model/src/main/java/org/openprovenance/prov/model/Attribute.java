@@ -2,7 +2,7 @@ package org.openprovenance.prov.model;
 
 import javax.xml.namespace.QName;
 
-public interface Attribute {
+public interface Attribute extends TypedValue {
 
     public enum AttributeKind {
 	PROV_TYPE,

@@ -107,7 +107,7 @@ public class TypedValue
 
  
     @Override
-    public Object getValueAsJava(org.openprovenance.prov.model.ValueConverter vconv) {
+    public Object getValueAsObject(org.openprovenance.prov.model.ValueConverter vconv) {
     	if (valueAsJava==null) {
     		valueAsJava=vconv.convertToJava(getType(), (String)value);
     	}
@@ -152,7 +152,7 @@ public class TypedValue
      * @see org.openprovenance.prov.xml.TypIN#setValueAsJava(java.lang.Object)
      */
     @Override
-    public void setValueAsJava(Object valueAsJava) {
+    public void setValueAsObject(Object valueAsJava) {
 	if ((valueAsJava!=null) && (value==null)) {
 	    if (valueAsJava instanceof QName) {
 		this.value=valueAsJava;

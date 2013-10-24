@@ -502,7 +502,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     public Location newLocation(Object value, QName type) {
         Location res =  of.createLocation();
         res.setType(type);
-        res.setValueAsJava(value);
+        res.setValueAsObject(value);
         return res;
       }
 
@@ -514,7 +514,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	if (value==null) return null;
         Role res =  of.createRole();
         res.setType(type);
-        res.setValueAsJava(value);
+        res.setValueAsObject(value);
         return res;
       }
 
@@ -526,7 +526,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	if (value==null) return null;
         Type res =  of.createType();
         res.setType(type);
-        res.setValueAsJava(value);
+        res.setValueAsObject(value);
         return res;
       }
 
@@ -534,7 +534,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	if (value==null) return null;
         OtherAttribute res =  of.createOther();
         res.setType(type);
-        res.setValueAsJava(value);
+        res.setValueAsObject(value);
         res.setElementName(elementName);
         return res;
       }
@@ -552,7 +552,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	if (value==null) return null;
         Value res =  of.createValue();
         res.setType(type);
-        res.setValueAsJava(value);
+        res.setValueAsObject(value);
         return res;
       }
 
@@ -582,7 +582,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.setOldDictionary(before);
 	if (keyEntitySet != null)
 	    res.getKeyEntityPair().addAll(keyEntitySet);
-	setAttributes(res, attributes);
+	// TODO setAttributes(res, attributes);
 	return res;
     }
     
@@ -645,7 +645,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.setOldDictionary(before);
 	if (keys != null)
 	    res.getKey().addAll(keys);
-	setAttributes(res, attributes);
+	//TODO setAttributes(res, attributes);
 	return res;
     }
 
@@ -1650,7 +1650,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     }
 
  
-    public void setAttributes(HasExtensibility res, Collection<Attribute> attributes) {
+    public void setAttributes(HasOtherAttribute res, Collection<Attribute> attributes) {
 	if (attributes==null) return;
 	HasType typ=(res instanceof HasType)? (HasType)res : null;
 	HasLocation loc=(res instanceof HasLocation)? (HasLocation)res : null;
@@ -1691,7 +1691,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 		}
 		break;
 	    case OTHER:
-		res.getAny().add(attr);
+		res.getOthers().add(newOther(attr.getElementName(), aValue, attr.getType()));
 		break;
 	    
 	    default:

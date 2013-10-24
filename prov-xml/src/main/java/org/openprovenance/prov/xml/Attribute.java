@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.ValueConverter;
+
 
 // Adapter is declared globally in package-info.java
 //@XmlJavaTypeAdapter(AnyAdapter.class)
@@ -128,6 +130,9 @@ public class Attribute implements org.openprovenance.prov.model.Attribute {
 	return xsdType;
     }
 
+    public void setType(QName type) {
+	throw new UnsupportedOperationException();
+    }
     @Override
     public int hashCode() {
 	int hash = 0;
@@ -204,6 +209,27 @@ public class Attribute implements org.openprovenance.prov.model.Attribute {
     	}
     	return false;
     		
+    }
+
+
+    @Override
+    public void setValue(Object value) {
+	// TODO Auto-generated method stub
+	
+    }
+
+
+    @Override
+    public Object getValueAsObject(ValueConverter vconv) {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+
+    @Override
+    public void setValueAsObject(Object valueAsJava) {
+	// TODO Auto-generated method stub
+	
     }
 
 }

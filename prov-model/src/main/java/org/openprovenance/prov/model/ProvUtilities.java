@@ -11,7 +11,6 @@ import javax.xml.namespace.QName;
 
 public class ProvUtilities {
 
-
     /*
      * public List<Element> getElements(Bundle g) { List<Element> res = new
      * LinkedList<Element>(); res.addAll(g.getRecords().getEntity());
@@ -286,10 +285,12 @@ public class ProvUtilities {
         return null;
     }
 
-    public Hashtable<String, List<Attribute>> attributesWithNamespace(HasExtensibility e,
+    public Hashtable<String, List<Attribute>> attributesWithNamespace(HasOtherAttribute e,
                                                                       String namespace) {
-        AttributeProcessor _attrs=new AttributeProcessor(e.getAny()); 
+	List ll=e.getOthers();
+        AttributeProcessor _attrs=new AttributeProcessor((List<Attribute>)ll); 
         return _attrs.attributesWithNamespace(namespace);
     }
+    
 
 }

@@ -247,7 +247,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      *     {@link Object }
      *     
      */
-    public Object getValueAsJava(ValueConverter vconv) {
+    public Object getValueAsObject(ValueConverter vconv) {
     	if (valueAsJava==null) {
     		valueAsJava=vconv.convertToJava(getType(), (String)value);
     	}
@@ -263,7 +263,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      *     {@link Object }
      *     
      */
-    public void setValueAsJava(Object valueAsJava) {
+    public void setValueAsObject(Object valueAsJava) {
 	if (valueAsJava!=null) {
 	    if (valueAsJava instanceof QName) {
 		QName q=(QName) valueAsJava;

@@ -72,7 +72,7 @@ public class BeanTraversal {
     public List<Attribute> convertTypeAttributes(HasType e, List<Attribute> acc) {
 	List<Type> types=e.getType();
 	for (Type type : types) {
-	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_TYPE, type.getValueAsJava(vconv), type.getType()));
+	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_TYPE, type.getValueAsObject(vconv), type.getType()));
 	}
 	return acc;
     }
@@ -88,7 +88,7 @@ public class BeanTraversal {
     public List<Attribute> convertRoleAttributes(HasRole e, List<Attribute> acc) {
    	List<Role> roles = e.getRole();
    	for (Role role : roles) {
-   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_ROLE,role.getValueAsJava(vconv), role.getType()));
+   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_ROLE,role.getValueAsObject(vconv), role.getType()));
    	}
    	return acc;
     }
@@ -96,7 +96,7 @@ public class BeanTraversal {
     public List<Attribute> convertLocationAttributes(HasLocation e, List<Attribute> acc) {
         List<Location> locations = e.getLocation();
         for (Location location : locations) {
-            acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LOCATION,location.getValueAsJava(vconv), location.getType()));
+            acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LOCATION,location.getValueAsObject(vconv), location.getType()));
         }
         return acc;
     }
@@ -105,15 +105,15 @@ public class BeanTraversal {
     public Object convertValueAttributes(HasValue e, List<Attribute> acc) {
         Value value = e.getValue();
         if (value==null) return acc;
-        acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_VALUE,value.getValueAsJava(vconv), value.getType()));
+        acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_VALUE,value.getValueAsObject(vconv), value.getType()));
         return acc;     
     }
 
-    public List<Attribute> convertAttributes(HasExtensibility e, List<Attribute> acc) {
-	acc.addAll(e.getAny());
+    public List<Attribute> convertAttributes(HasOtherAttribute e, List<Attribute> acc) {
+	List ll=e.getOthers();
+	acc.addAll((List<Attribute>)ll);
 	return acc;
     }
-
 
        
 

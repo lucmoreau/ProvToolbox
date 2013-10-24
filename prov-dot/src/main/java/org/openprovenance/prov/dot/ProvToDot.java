@@ -477,8 +477,8 @@ public class ProvToDot {
         // default is good for entity
         List<Type> types=p.getType();
         for (Type type: types) {
-            if (type.getValueAsJava(vc) instanceof QName) {
-                QName name=(QName) type.getValueAsJava(vc);
+            if (type.getValueAsObject(vc) instanceof QName) {
+                QName name=(QName) type.getValueAsObject(vc);
                 if (("Dictionary".equals(name.getLocalPart()))
                     ||
                     ("EmptyDictionary".equals(name.getLocalPart()))) {
@@ -880,7 +880,7 @@ public class ProvToDot {
         Influence e=(Influence)e0;
         List<Type> type=of.getType(e);
         if ((type!=null) && (!type.isEmpty())) {
-            label=type.get(0).getValueAsJava(vc).toString();
+            label=type.get(0).getValueAsObject(vc).toString();
         } else if (getRelationPrintRole(e)) {
             String role=of.getRole(e);
             if (role!=null) {

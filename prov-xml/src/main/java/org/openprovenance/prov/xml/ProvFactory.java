@@ -154,31 +154,31 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     public Location newLocation(Object value, QName type) {
         Location loc=new Location();
         loc.type=type;
-        loc.setValueAsJava(value);
+        loc.setValueAsObject(value);
         return loc;
     }
     public Type newType(Object value, QName type) {
         Type typ=new Type();
         typ.type=type;
-        typ.setValueAsJava(value);
+        typ.setValueAsObject(value);
         return typ;
     }
     public Value newValue(Object value, QName type) {
         Value res=new Value();
         res.type=type;
-        res.setValueAsJava(value);
+        res.setValueAsObject(value);
         return res;
     }
     public Role newRole(Object value, QName type) {
         Role res=new Role();
         res.type=type;
-        res.setValueAsJava(value);
+        res.setValueAsObject(value);
         return res;
     }
     public OtherAttribute newOther(QName elementName, Object value, QName type) {
         OtherAttribute res=new OtherAttribute();
         res.type=type;
-        res.setValueAsJava(value);
+        res.setValueAsObject(value);
         res.setElementName(elementName);
         return res;
     }

@@ -600,7 +600,28 @@ public class SmallTest extends TestCase {
 
  	makeDocAndTest(a,"target/generation0");
      }
-    
+
+    public void testInvalidation0() throws JAXBException  {
+  	setNamespaces();
+
+ 	WasInvalidatedBy a = pFactory.newWasInvalidatedBy((QName)null,
+   							pFactory.newIDRef(q("e1")),
+   							pFactory.newIDRef(q("a1")));
+  	
+  	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
+  	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
+  	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
+  	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+
+  	addLabels(a);
+  	addRoles(a);
+  	addTypes(a);	
+  	addLocations(a);
+  	
+
+  	makeDocAndTest(a,"target/invalidation0");
+      }
+
     public void testUsage0() throws JAXBException  {
   	setNamespaces();
 
@@ -710,8 +731,8 @@ public class SmallTest extends TestCase {
 	setNamespaces();
 
 	WasStartedBy a = pFactory.newWasStartedBy((QName)null,
-							pFactory.newIDRef(q("a1")),
-							pFactory.newIDRef(q("e1")));
+	                                          pFactory.newIDRef(q("a1")),
+	                                          pFactory.newIDRef(q("e1")));
 	
 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));

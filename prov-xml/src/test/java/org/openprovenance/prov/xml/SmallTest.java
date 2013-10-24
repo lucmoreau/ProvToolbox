@@ -670,8 +670,8 @@ public class SmallTest extends TestCase {
 
 
  	WasDerivedFrom a = pFactory.newWasDerivedFrom(q("der0"), 
- 	                                       	             pFactory.newIDRef(q("e2")),
- 	                                                    pFactory.newIDRef(q("e1")));
+ 	                                              pFactory.newIDRef(q("e2")),
+ 	                                              pFactory.newIDRef(q("e1")));
  	
  	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
  	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
@@ -684,5 +684,28 @@ public class SmallTest extends TestCase {
 
  	makeDocAndTest(a,"target/derivation0");
      }
+  
+  public void testEnd0() throws JAXBException  {
+ 	setNamespaces();
+
+	WasEndedBy a = pFactory.newWasEndedBy((QName)null,
+  							pFactory.newIDRef(q("a1")),
+  							pFactory.newIDRef(q("e1")));
+ 	
+ 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
+ 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
+ 	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
+ 	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+
+ 	addLabels(a);
+ 	addRoles(a);
+ 	addTypes(a);	
+ 	addLocations(a);
+ 	
+
+ 	makeDocAndTest(a,"target/end0");
+     }
+    
+   
 
 }

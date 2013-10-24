@@ -285,6 +285,7 @@
                      <arg value="WasAssociatedWith.java" />
                      <arg value="WasAttributedTo.java" />
                      <arg value="WasDerivedFrom.java" />
+                     <arg value="WasEndedBy.java" />
                 </exec>
 
 

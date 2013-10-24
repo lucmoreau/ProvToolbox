@@ -243,6 +243,7 @@ public class JSONConstructor implements ModelConstructor {
 	
 	private List<Object[]> convertAttributes(Collection<Attribute> attrs) {
 		List<Object[]> result = new ArrayList<Object[]>();
+		if (attrs!=null)
 		for (Attribute attr: attrs) {
 			result.add(convertAttribute(attr));
 		}

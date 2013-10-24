@@ -28,7 +28,7 @@ import org.openprovenance.prov.model.DerivedByRemovalFrom;
 import org.openprovenance.prov.model.DictionaryMembership;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.HadMember;
-import org.openprovenance.prov.model.HasExtensibility;
+import org.openprovenance.prov.model.HasOtherAttribute;
 import org.openprovenance.prov.model.HasLabel;
 import org.openprovenance.prov.model.HasLocation;
 import org.openprovenance.prov.model.HasRole;
@@ -415,8 +415,10 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         
         // arbitrary attribute decoding
         if (provStatement != ProvJSONStatement.bundle && !attributeMap.entrySet().isEmpty()) {
-        	if (statement instanceof HasExtensibility) {
-	            List<Attribute> attributes = ((HasExtensibility)statement).getAny();
+        	if (statement instanceof HasOtherAttribute) {
+		    //TODO: to clean up this casting
+	            List ll = ((HasOtherAttribute)statement).getOthers();
+	            List<Attribute> attributes = (List<Attribute>) ll;
 	            for (Map.Entry<String, JsonElement> aPair: attributeMap.entrySet()) {
 	                QName attributeName = pf.stringToQName(aPair.getKey());
 	                JsonElement element = aPair.getValue();

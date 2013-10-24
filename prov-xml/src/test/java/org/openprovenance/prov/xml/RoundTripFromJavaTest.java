@@ -2194,7 +2194,7 @@ public class RoundTripFromJavaTest extends TestCase {
 		ll.add(p3);
 		DerivedByInsertionFrom d5 = pFactory.newDerivedByInsertionFrom(
 				q("deriv5"), q("d2"), q("d1"), ll, null);
-	//TODO	addFurtherAttributes(d5);
+		addFurtherAttributes(d5);
 
 		Statement[] statements = new Statement[]{d5};
 		Statement[] opt = new Statement[]{};
@@ -2276,7 +2276,7 @@ public class RoundTripFromJavaTest extends TestCase {
 		ll.add(q("a"));
 		DerivedByRemovalFrom d5 = pFactory.newDerivedByRemovalFrom(
 				q("removal5"), q("d2"), q("d1"), ll, null);
-//TODO		addFurtherAttributes(d5);
+		addFurtherAttributes(d5);
 
 		Statement[] statements = new Statement[]{d5};
 		Statement[] opt = new Statement[]{};

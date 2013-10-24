@@ -352,6 +352,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
     public void processAttributes(QName q, Collection<Attribute> attributes) {
 	RESOURCE r = gb.qnameToResource(q);
 
+	if (attributes!=null)
 	for (Attribute attr : attributes) {
 
 	    LITERAL lit = null;

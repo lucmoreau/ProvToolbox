@@ -12,6 +12,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName; 
+
+import org.openprovenance.prov.model.OtherAttribute;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.URIWrapper;
@@ -103,6 +105,11 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
      */
     public ObjectFactory2() {
     }
+
+    public OtherAttribute createOther() {
+        return new org.openprovenance.prov.xml.OtherAttribute();
+    }
+
 
     /**
      * Create an instance of {@link EmptyDictionary }

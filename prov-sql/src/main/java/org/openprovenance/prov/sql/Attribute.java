@@ -336,4 +336,34 @@ public class Attribute implements org.openprovenance.prov.model.Attribute {
         this.hjid = value;
     }
 
+    public void setValue(Object value) {
+	// TODO Auto-generated method stub
+	
+    }
+
+    public Object getValueAsObject(org.openprovenance.prov.model.ValueConverter vconv) {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    public void setValueAsObject(Object valueAsJava) {
+	// TODO Auto-generated method stub
+	
+    }
+
+    public void setType(QName value) {
+	// TODO Auto-generated method stub
+	
+    }
+
+    public QName getType() {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    public Object getValueAsObject() {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
 }

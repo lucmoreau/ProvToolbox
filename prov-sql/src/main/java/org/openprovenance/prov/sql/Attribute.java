@@ -160,18 +160,18 @@ public class Attribute implements org.openprovenance.prov.model.Attribute {
     
 
     @Transient
-    public QName getXsdType() {
+    public QName getType() {
 	return xsdType;
     }
 
     //    @Basic
     //    @Column(name = "XSDTYPE")
-    public String getXsdTypeItem() {    
+    public String getTypeItem() {    
 	if (xsdType==null) return null;
 	return QNameToString(xsdType);
     }
 
-    public void setXsdTypeItem(String name) {
+    public void setTypeItem(String name) {
 	//System.out.println("---> setXsdTypeIterm() reading " + name);
 	xsdType=stringToQName(name);
 	//System.out.println(" ---> setXsdTypeIterm() got " + xsdType);
@@ -356,11 +356,9 @@ public class Attribute implements org.openprovenance.prov.model.Attribute {
 	
     }
 
-    public QName getType() {
-	// TODO Auto-generated method stub
-	return null;
-    }
 
+
+    @Transient
     public Object getValueAsObject() {
 	// TODO Auto-generated method stub
 	return null;

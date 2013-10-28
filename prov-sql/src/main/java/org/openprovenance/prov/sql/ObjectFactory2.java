@@ -107,7 +107,7 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     }
 
     public OtherAttribute createOther() {
-        return new org.openprovenance.prov.xml.OtherAttribute();
+        return new org.openprovenance.prov.sql.Other();
     }
 
 
@@ -317,14 +317,6 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
      */
     public Activity createActivity() {
         return new org.openprovenance.prov.sql.Activity();
-    }
-
-    /**
-     * Create an instance of {@link Others }
-     * 
-     */
-    public Others createOthers() {
-        return new org.openprovenance.prov.sql.Others();
     }
 
     /**
@@ -748,15 +740,6 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "mentionOf")
     public JAXBElement<MentionOf> createMentionOf(MentionOf value) {
         return new JAXBElement<MentionOf>(_MentionOf_QNAME, MentionOf.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link Others }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "others")
-    public JAXBElement<Others> createOthers(Others value) {
-        return new JAXBElement<Others>(_Others_QNAME, Others.class, null, value);
     }
 
     /**

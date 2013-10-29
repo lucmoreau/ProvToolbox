@@ -30,6 +30,7 @@ import javax.persistence.Transient;
 import org.openprovenance.prov.sql.AValue;
 import org.openprovenance.prov.sql.InternationalizedString;
 import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.ValueConverter;
 
 import java.util.Collection;
@@ -59,10 +60,10 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     
     @XmlValue
     @XmlSchemaType(name = "anySimpleType")
-    private Object value;
+    protected Object value;
 
     @XmlAttribute(name = "type", namespace = "http://www.w3.org/2001/XMLSchema-instance")
-    private QName xsdType;
+    protected QName type;
 
     
     public TypedValue() {
@@ -70,7 +71,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     
     public TypedValue(Object val, QName xsdType) {
  	this.value = val;
- 	this.xsdType = xsdType;
+ 	this.type = xsdType;
      }
 
    
@@ -112,23 +113,23 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
 
     @Transient
     public QName getType() {
-	return xsdType;
+	return type;
     }
 
     public void setType(QName type) {
-	this.xsdType=type;
+	this.type=type;
     }
     @Basic
     @Column(name = "XSDTYPE")
     public String getXsdTypeItem() { 
         //System.out.println("#---> getXsdTypeItem() reading " + xsdType);
-	if (xsdType==null) return null;
-	return Attribute.QNameToString(xsdType);
+	if (type==null) return null;
+	return Attribute.QNameToString(type);
     }
 
     public void setXsdTypeItem(String name) {
 	//System.out.println("#---> setXsdTypeItem() reading " + name);
-	if (name!=null) xsdType=Attribute.stringToQName(name);
+	if (name!=null) type=Attribute.stringToQName(name);
 	//System.out.println("#---> setXsdTypeItem() got " + xsdType);
     }
 
@@ -164,11 +165,11 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
         //System.out.println("#---> getValueItem() reading " + value);
 
         if ((avalue==null) && (value!=null)) {
-            if (xsdType==null) {
+            if (type==null) {
 		avalue=SQLValueConverter.convertToAValue(vc.getXsdType(value), value); //TODO, I am not using the one saved!
 		//System.out.println("##---> getValueItem() reading found " + avalue);
 	    } else {
-                avalue=SQLValueConverter.convertToAValue(xsdType, vc.convertToJava(xsdType, (String)value));
+                avalue=SQLValueConverter.convertToAValue(type, vc.convertToJava(type, (String)value));
 		//System.out.println("###--> getValueItem() reading found " + avalue);
 		//System.out.println("###--> getValueItem() reading found - " + SQLValueConverter.convertFromAValue(avalue));
 	    }
@@ -211,8 +212,8 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
 	int hash = 0;
 	if (value != null)
 	    hash ^= value.hashCode();
-	if (xsdType != null)
-	    hash ^= xsdType.hashCode();
+	if (type != null)
+	    hash ^= type.hashCode();
 	return hash;
     }
 
@@ -233,7 +234,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
 
 
     public String toStringDebug() { 
-	return "[loc " + value + " " + xsdType + "]";
+	return "[loc " + value + " " + type + "]";
     }
 
     transient protected Object valueAsJava;
@@ -251,6 +252,10 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     	if (valueAsJava==null) {
     		valueAsJava=vconv.convertToJava(getType(), (String)value);
     	}
+        return valueAsJava;
+    }
+    @Transient
+    public Object getValueAsObject() {
         return valueAsJava;
     }
 
@@ -288,5 +293,36 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     public void setHjid(Long value) {
         this.hjid = value;
     }
+    
+
+    
+    public QName getQName(AttributeKind kind) {
+        switch (kind) {
+        case  PROV_TYPE: return Attribute.PROV_TYPE_QNAME;
+        case  PROV_LABEL: return Attribute.PROV_LABEL_QNAME;
+        case  PROV_VALUE: return Attribute.PROV_VALUE_QNAME;
+        case  PROV_LOCATION: return Attribute.PROV_LOCATION_QNAME;
+        case  PROV_ROLE: return Attribute.PROV_ROLE_QNAME;
+        case OTHER:
+        default: 
+                return null;
+        }
+    }
+    
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.AttrIN#getAttributeKind(javax.xml.namespace.QName)
+     */
+    
+    public AttributeKind getAttributeKind(QName q) {
+        if (q.equals(Attribute.PROV_TYPE_QNAME)) return AttributeKind.PROV_TYPE;
+        if (q.equals(Attribute.PROV_LABEL_QNAME)) return AttributeKind.PROV_LABEL;
+        if (q.equals(Attribute.PROV_VALUE_QNAME)) return AttributeKind.PROV_VALUE;
+        if (q.equals(Attribute.PROV_LOCATION_QNAME)) return AttributeKind.PROV_LOCATION;
+        if (q.equals(Attribute.PROV_ROLE_QNAME)) return AttributeKind.PROV_ROLE;
+        return AttributeKind.OTHER;
+    }
+
+
+
 
 }

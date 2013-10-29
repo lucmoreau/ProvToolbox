@@ -869,6 +869,11 @@
                 </exec>
 
 
+                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
+                     <arg value="Entity.java" />
+                </exec>
+
+
 <!-- persistence.xml -->
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">

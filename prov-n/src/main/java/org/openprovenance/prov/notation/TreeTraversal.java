@@ -480,7 +480,7 @@ public class TreeTraversal {
             String attr1=convertToken(getTokenString(ast.getChild(0)));
             Object val1=convert(ast.getChild(1));
 
-            return pFactory.newAttribute(pFactory.stringToQName(attr1),val1,vconv);
+            return pFactory.newAttribute(pFactory.stringToQName(attr1),val1,vconv.getXsdType(val1));
 
         case PROV_NParser.STRING:
             if (ast.getChildCount()==1) {

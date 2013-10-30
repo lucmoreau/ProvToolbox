@@ -254,16 +254,16 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void addLocations(HasLocation hl) {
-   	hl.getLocation().add(pFactory.newLocation("London",vconv));
-   	hl.getLocation().add(pFactory.newLocation(1,vconv));
-   	hl.getLocation().add(pFactory.newLocation(1.0,vconv));
-   	hl.getLocation().add(pFactory.newLocation(true,vconv));
+   	hl.getLocation().add(pFactory.newLocation("London",ValueConverter.QNAME_XSD_STRING));
+   	hl.getLocation().add(pFactory.newLocation(1,ValueConverter.QNAME_XSD_INT));
+   	hl.getLocation().add(pFactory.newLocation(1.0,ValueConverter.QNAME_XSD_FLOAT));
+   	hl.getLocation().add(pFactory.newLocation(true,ValueConverter.QNAME_XSD_BOOLEAN));
 	//   	hl.getLocation().add(pFactory.newLocation(new QName(EX_NS, "london", EX_PREFIX),vconv));
-   	hl.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),vconv));
+   	hl.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),ValueConverter.QNAME_XSD_DATETIME));
    	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"london"));
-   	hl.getLocation().add(pFactory.newLocation(w,vconv));
-   	hl.getLocation().add(pFactory.newLocation(pFactory.newGYear(2002),vconv));
+   	hl.getLocation().add(pFactory.newLocation(w,ValueConverter.QNAME_XSD_ANY_URI));
+   	hl.getLocation().add(pFactory.newLocation(pFactory.newGYear(2002),ValueConverter.QNAME_XSD_GYEAR));
     }
     
     public void addValue(HasValue hl) {
@@ -606,15 +606,15 @@ public class RoundTripFromJavaTest extends TestCase {
        	a.getLabel().add(pFactory.newInternationalizedString("hello"));
        	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
        	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
-   	a.getLocation().add(pFactory.newLocation("London",vconv));
-   	a.getLocation().add(pFactory.newLocation(1,vconv));
-   	a.getLocation().add(pFactory.newLocation(1.0,vconv));
-   	a.getLocation().add(pFactory.newLocation(true,vconv));
+   	a.getLocation().add(pFactory.newLocation("London",ValueConverter.QNAME_XSD_STRING));
+   	a.getLocation().add(pFactory.newLocation(1,ValueConverter.QNAME_XSD_INT));
+   	a.getLocation().add(pFactory.newLocation(1.0,ValueConverter.QNAME_XSD_FLOAT));
+   	a.getLocation().add(pFactory.newLocation(true,ValueConverter.QNAME_XSD_BOOLEAN));
 	//   	a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "london", EX_PREFIX),vconv));
-   	a.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),vconv));
+   	a.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),ValueConverter.QNAME_XSD_DATETIME));
    	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"london"));
-   	a.getLocation().add(pFactory.newLocation(w,vconv));
+   	a.getLocation().add(pFactory.newLocation(w,ValueConverter.QNAME_XSD_ANY_URI));
        	makeDocAndTest(a,"target/agent7");
     }
     public void testAgent8() throws JAXBException  {
@@ -663,8 +663,8 @@ public class RoundTripFromJavaTest extends TestCase {
    	URIWrapper w2=new URIWrapper();
    	w2.setValue(URI.create(EX_NS+"london"));
 
-   	a.getLocation().add(pFactory.newLocation(w2,vconv));
-   	a.getLocation().add(pFactory.newLocation(w2,vconv));
+   	a.getLocation().add(pFactory.newLocation(w2,ValueConverter.QNAME_XSD_ANY_URI));
+   	a.getLocation().add(pFactory.newLocation(w2,ValueConverter.QNAME_XSD_ANY_URI));
 
        	makeDocAndTest(a,"target/agent8");
     }

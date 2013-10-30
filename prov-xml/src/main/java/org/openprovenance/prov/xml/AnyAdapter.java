@@ -12,9 +12,20 @@ import org.openprovenance.prov.model.DOMProcessing;
 public class AnyAdapter extends
         XmlAdapter<Object, org.openprovenance.prov.model.Attribute> {
 
-    ProvFactory pFactory = new ProvFactory();
+    final org.openprovenance.prov.model.ProvFactory pFactory;
+    
+    public AnyAdapter() {
+	pFactory= new ProvFactory();
+	vconv=new ValueConverter(pFactory);
+    }
 
-    ValueConverter vconv = new ValueConverter(pFactory);
+    public AnyAdapter(org.openprovenance.prov.model.ProvFactory pFactory) {
+	this.pFactory= pFactory;
+	vconv=new ValueConverter(pFactory);
+    }
+
+    final ValueConverter vconv;
+    
 
 
     /** Unmarshals an Object (expect to be a DOM Element) into an Attribute.

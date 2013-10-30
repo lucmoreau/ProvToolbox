@@ -43,6 +43,7 @@ import org.openprovenance.prov.model.WasStartedBy;
 
 /** For testing purpose, conversion back to ASN. */
 
+
 public class NotationConstructor implements ModelConstructor {
     
     public static final String MARKER = "-";

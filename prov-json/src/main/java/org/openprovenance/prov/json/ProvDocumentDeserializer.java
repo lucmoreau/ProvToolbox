@@ -378,7 +378,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         	if (statement instanceof HasLocation) {
 	            List<Location> locations = ((HasLocation)statement).getLocation();
 	            for (JsonElement value: values) {
-	                locations.add(pf.newLocation(decodeAttributeValue(value),vconv));
+	            	Object loc=decodeAttributeValue(value);
+	                locations.add(pf.newLocation(loc,vconv.getXsdType(loc)));
 	            }
         	}
         	else {
@@ -391,7 +392,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         	if (statement instanceof HasRole) {
 	            List<Role> roles = ((HasRole)statement).getRole();
 	            for (JsonElement value: values) {
-	                roles.add(pf.newRole(decodeAttributeValue(value),vconv));
+	            	Object role=decodeAttributeValue(value);
+	                roles.add(pf.newRole(role,vconv.getXsdType(role)));
 	            }
         	}
         	else {

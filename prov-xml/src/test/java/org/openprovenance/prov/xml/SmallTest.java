@@ -258,19 +258,6 @@ public class SmallTest extends TestCase {
 					  ValueConverter.QNAME_XSD_ANY_URI));
     }
 
-    public void addLocations_old(HasLocation hl) {
-   	hl.getLocation().add(pFactory.newLocation("London",vconv));
-   	hl.getLocation().add(pFactory.newLocation(1,vconv));
-   	hl.getLocation().add(pFactory.newLocation(1.0,vconv));
-   	hl.getLocation().add(pFactory.newLocation(true,vconv));
-	//   	hl.getLocation().add(pFactory.newLocation(new QName(EX_NS, "london", EX_PREFIX),vconv));
-   	hl.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),vconv));
-   	URIWrapper w=new URIWrapper();
-   	w.setValue(URI.create(EX_NS+"london"));
-   	hl.getLocation().add(pFactory.newLocation(w,vconv));
-   	hl.getLocation().add(pFactory.newLocation(pFactory.newGYear(2002),vconv));
-    }
-    
     
     public void addValue(HasValue hl) {
         hl.setValue(pFactory.newValue(new QName(EX_NS, "avalue", EX_PREFIX),

@@ -550,18 +550,18 @@ public class RdfCollector extends RDFHandlerBase {
 							{
 								attributes.add(pFactory.newAttribute(
 										org.openprovenance.prov.xml.Attribute.PROV_TYPE_QNAME, typeQ,
-										this.valueConverter));
+										this.valueConverter.getXsdType(typeQ)));
 							}
 
 						} else if (statement.getObject() instanceof Literal)
 						{
-
+							Object obj2=decodeLiteral((Literal) statement
+									.getObject());
 							attributes
 									.add(pFactory.newAttribute(
 											org.openprovenance.prov.xml.Attribute.PROV_TYPE_QNAME,
-											decodeLiteral((Literal) statement
-													.getObject()),
-											this.valueConverter));
+											obj2,
+											this.valueConverter.getXsdType(obj2)));
 						}
 					}
 				} else
@@ -575,7 +575,7 @@ public class RdfCollector extends RDFHandlerBase {
 			{
 				String role = statement.getObject().stringValue();
 				attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Attribute.PROV_ROLE_QNAME,
-						role, this.valueConverter));
+						role, this.valueConverter.getXsdType(role)));
 			}
 
 			if (predQ.equals(Ontology.QNAME_PROVO_atLocation))
@@ -585,7 +585,7 @@ public class RdfCollector extends RDFHandlerBase {
 				{
 					attributes.add(pFactory.newAttribute(
 							org.openprovenance.prov.xml.Attribute.PROV_LOCATION_QNAME, obj,
-							this.valueConverter));
+							this.valueConverter.getXsdType(obj)));
 				}
 			}
 
@@ -599,12 +599,12 @@ public class RdfCollector extends RDFHandlerBase {
 									.getLanguage().toUpperCase());
 					attributes.add(pFactory
 							.newAttribute(org.openprovenance.prov.xml.Attribute.PROV_LABEL_QNAME, is,
-									this.valueConverter));
+									ValueConverter.QNAME_XSD_STRING));
 				} else
 				{
 					attributes.add(pFactory.newAttribute(
 							org.openprovenance.prov.xml.Attribute.PROV_LABEL_QNAME, lit.stringValue(),
-							this.valueConverter));
+							ValueConverter.QNAME_XSD_STRING));
 				}
 			}
 
@@ -615,7 +615,7 @@ public class RdfCollector extends RDFHandlerBase {
 					Object resourceVal = convertResourceToQName((Resource) value);
 					attributes.add(pFactory.newAttribute(
 							org.openprovenance.prov.xml.Attribute.PROV_VALUE_QNAME, resourceVal,
-							this.valueConverter));
+							this.valueConverter.getXsdType(resourceVal)));
 				}
 			} else if (value instanceof Literal)
 			{
@@ -624,7 +624,7 @@ public class RdfCollector extends RDFHandlerBase {
 					Object literal = decodeLiteral((Literal) value);
 					attributes.add(pFactory.newAttribute(
 							org.openprovenance.prov.xml.Attribute.PROV_VALUE_QNAME, literal,
-							this.valueConverter));
+							this.valueConverter.getXsdType(literal)));
 				}
 			}
 
@@ -657,7 +657,7 @@ public class RdfCollector extends RDFHandlerBase {
 						attr = pFactory.newAttribute(predQ.getNamespaceURI(),
 								predQ.getLocalPart(), prefix,
 								convertResourceToQName((Resource) value),
-								this.valueConverter);
+								ValueConverter.QNAME_XSD_QNAME);
 					} else
 					{
 						System.err.println("Invalid value");
@@ -910,6 +910,7 @@ public class RdfCollector extends RDFHandlerBase {
 		getBundleHolder(context).store(entity);
 	}
 
+	
 	private void createAgent(QName context, QName qname)
 	{
 		List<Attribute> attributes = collectAttributes(context, qname,

@@ -875,6 +875,9 @@
                      <arg value="Activity.java" />
                      <arg value="Agent.java" />
                      <arg value="WasDerivedFrom.java" />
+                     <arg value="WasAssociatedWith.java" />
+                     <arg value="WasAttributedTo.java" />
+                     <arg value="WasGeneratedBy.java" />
                 </exec>
 
 

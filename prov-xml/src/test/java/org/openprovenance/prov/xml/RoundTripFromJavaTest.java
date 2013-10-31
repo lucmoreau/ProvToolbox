@@ -245,10 +245,9 @@ public class RoundTripFromJavaTest extends TestCase {
    	ht.getType().add(pFactory.newType(true, ValueConverter.QNAME_XSD_STRING));
    	ht.getType().add(pFactory.newType(new QName(EX_NS, "abc", EX_PREFIX),
 					  ValueConverter.QNAME_XSD_QNAME));
- //  	ht.getType().add(pFactory.newType(pFactory.newTimeNow(),
-//					  ValueConverter.QNAME_XSD_DATETIME));
-   	//URIWrapper w=new URIWrapper();
-   	//w.setValue(URI.create(EX_NS+"hello"));
+   	ht.getType().add(pFactory.newType(pFactory.newTimeNow(),
+					  ValueConverter.QNAME_XSD_DATETIME));
+
 	ht.getType().add(pFactory.newType(EX_NS+"hello",
 					  ValueConverter.QNAME_XSD_ANY_URI));
     }
@@ -258,11 +257,9 @@ public class RoundTripFromJavaTest extends TestCase {
    	hl.getLocation().add(pFactory.newLocation(1,ValueConverter.QNAME_XSD_INT));
    	hl.getLocation().add(pFactory.newLocation(1.0,ValueConverter.QNAME_XSD_FLOAT));
    	hl.getLocation().add(pFactory.newLocation(true,ValueConverter.QNAME_XSD_BOOLEAN));
-	//   	hl.getLocation().add(pFactory.newLocation(new QName(EX_NS, "london", EX_PREFIX),vconv));
+	hl.getLocation().add(pFactory.newLocation(new QName(EX_NS, "london", EX_PREFIX),ValueConverter.QNAME_XSD_QNAME));
    	hl.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),ValueConverter.QNAME_XSD_DATETIME));
-   	URIWrapper w=new URIWrapper();
-   	w.setValue(URI.create(EX_NS+"london"));
-   	hl.getLocation().add(pFactory.newLocation(w,ValueConverter.QNAME_XSD_ANY_URI));
+   	hl.getLocation().add(pFactory.newLocation(EX_NS+"london",ValueConverter.QNAME_XSD_ANY_URI));
    	hl.getLocation().add(pFactory.newLocation(pFactory.newGYear(2002),ValueConverter.QNAME_XSD_GYEAR));
     }
     

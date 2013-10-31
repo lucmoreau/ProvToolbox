@@ -82,21 +82,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	a.getAny().add(o);
     }
 
-    /*
-    public void addAttribute(HasExtensibility a, String namespace,
-			     String localName, String prefix, Object value, ValueConverter vconv) {
-
-	a.getAny().add(newAttribute(namespace, localName, prefix, value, vconv));
-    }
-
-    public void addAttribute(HasExtensibility a, String namespace,
-			     String localName, String prefix, Object value,
-			     QName type) {
-
-	a.getAny().add(newAttribute(namespace, localName, prefix, value, type));
-    }
-    */
-
+   
     public ActedOnBehalfOf addAttributes(ActedOnBehalfOf from,
 					 ActedOnBehalfOf to) {
 	to.getLabel().addAll(from.getLabel());
@@ -458,37 +444,12 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
         IDRef eid1 = (e1==null)? null: newIDRef(e1);
         return newAlternateOf(eid2, eid1);
     }
-  
-    /*
-    public Attribute newAttribute(QName qname, Object value, ValueConverter vconv) {
-  	Attribute res = createAttribute(qname, value, vconv.getXsdType(value));
-  	return res;
-      }
-      */
 
     abstract public Attribute newAttribute(QName qname, Object value, QName type);
   
-    //public abstract Attribute createAttribute(QName qname, Object value, QName type);
-    //public abstract Attribute createAttribute(AttributeKind kind, Object value, QName type);
-    
-    /*
-    public Attribute newAttribute(Attribute.AttributeKind kind, Object value, ValueConverter vconv) {
-  	Attribute res = createAttribute(kind, value, vconv.getXsdType(value));
-  	return res;
-      }
-      */
- 
     abstract public Attribute newAttribute(Attribute.AttributeKind kind, Object value, QName type);
 
 
-/*
-    public Attribute newAttribute(String namespace, String localName,
-				  String prefix, Object value, ValueConverter vconv) {
-	Attribute res = createAttribute(new QName(namespace, localName, prefix),
-	                                value, vconv.getXsdType(value));
-	return res;
-    }
-*/
     public Attribute newAttribute(String namespace, String localName,
 				  String prefix, Object value, QName type) {
 	Attribute res = newAttribute(new QName(namespace, localName, prefix),
@@ -496,25 +457,14 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
-    /*
-    public Location newLocation(Object value, ValueConverter vconv) {
-        return newLocation(value,vconv.getXsdType(value));
-      }
-      */
-    
-    public Location newLocation(Object value, QName type) {
+   public Location newLocation(Object value, QName type) {
         Location res =  of.createLocation();
         res.setType(type);
         res.setValueAsObject(value);
         return res;
       }
 
-    /*
-    public Role newRole(Object value, ValueConverter vconv) {
-        return newRole(value,vconv.getXsdType(value));
-      }
-      */
-
+ 
     public Role newRole(Object value, QName type) {
 	if (value==null) return null;
         Role res =  of.createRole();

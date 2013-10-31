@@ -29,7 +29,7 @@ import javax.xml.namespace.QName;
 @javax.persistence.Entity(name = "Attribute")
 @Table(name = "ATTRIBUTE")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Attribute implements org.openprovenance.prov.model.Attribute {
+abstract public class Attribute implements org.openprovenance.prov.model.Attribute {
     
     public static QName provQName(String s) {
 	return new QName(NamespacePrefixMapper.PROV_NS, s, NamespacePrefixMapper.PROV_PREFIX);

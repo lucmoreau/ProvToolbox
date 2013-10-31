@@ -35,7 +35,6 @@ public class RoundTripFromXmlTest extends TestCase {
 
     static final ProvUtilities util=new ProvUtilities();
 
-
     static final Hashtable<String, String> namespaces;
 
     public static ProvFactory pFactory;

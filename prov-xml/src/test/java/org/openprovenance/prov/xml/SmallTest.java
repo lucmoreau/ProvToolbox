@@ -60,6 +60,7 @@ import junit.framework.TestCase;
  */
 public class SmallTest extends TestCase {
 
+ 
     public static final String EX_NS = "http://example.org/";
     public static final String EX2_NS = "http://example2.org/";
     public static final String EX_PREFIX = "ex";

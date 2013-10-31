@@ -47,6 +47,7 @@ public class BeanTraversal {
 	return c.newDocument(b.getNss(), sRecords, bRecords);
     }
 
+    
     public NamedBundle convert(NamedBundle b) {
 	List<Statement> sRecords = new LinkedList<Statement>();
 	QName bundleId=b.getId();

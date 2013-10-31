@@ -466,13 +466,10 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
       }
       */
 
-    public Attribute newAttribute(QName qname, Object value, QName type) {
-  	Attribute res = createAttribute(qname, value, type);
-  	return res;
-      }
-
-    public abstract Attribute createAttribute(QName qname, Object value, QName type);
-    public abstract Attribute createAttribute(AttributeKind kind, Object value, QName type);
+    abstract public Attribute newAttribute(QName qname, Object value, QName type);
+  
+    //public abstract Attribute createAttribute(QName qname, Object value, QName type);
+    //public abstract Attribute createAttribute(AttributeKind kind, Object value, QName type);
     
     /*
     public Attribute newAttribute(Attribute.AttributeKind kind, Object value, ValueConverter vconv) {
@@ -480,10 +477,8 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
   	return res;
       }
       */
-    public Attribute newAttribute(Attribute.AttributeKind kind, Object value, QName type) {
-  	Attribute res = createAttribute(kind, value, type);
-  	return res;
-      }
+ 
+    abstract public Attribute newAttribute(Attribute.AttributeKind kind, Object value, QName type);
 
 
 /*
@@ -496,7 +491,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 */
     public Attribute newAttribute(String namespace, String localName,
 				  String prefix, Object value, QName type) {
-	Attribute res = createAttribute(new QName(namespace, localName, prefix),
+	Attribute res = newAttribute(new QName(namespace, localName, prefix),
 	                                value, type);
 	return res;
     }

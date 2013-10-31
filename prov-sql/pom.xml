@@ -871,6 +871,7 @@
 
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
                      <arg value="Entity.java" />
+                     <arg value="Document.java" />
                 </exec>
 
 

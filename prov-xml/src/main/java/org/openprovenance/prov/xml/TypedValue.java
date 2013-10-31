@@ -169,6 +169,7 @@ public class TypedValue
         this.valueAsJava = valueAsJava;
     }
 
+   
 
     /*
      * Sets the value of the type property.

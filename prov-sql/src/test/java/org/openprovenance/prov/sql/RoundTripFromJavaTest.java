@@ -74,6 +74,12 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	return ".xml";
     }
     
+    public void testEntity0 () throws JAXBException {
+	System.out.println("Starting test Entity0");
+	super.testEntity0();
+	System.out.println("Ending test Entity0");
+    }
+    
     public void testDictionaryInsertion1() {}
     public void testDictionaryInsertion2() {}
     public void testDictionaryInsertion3() {}
@@ -133,7 +139,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
             throw new UncheckedTestException(e);
         }
     }
-    
+   
 
     public void compareDocuments(Document doc, Document doc2, boolean check) {
 	assertTrue("self doc equality", doc.equals(doc));

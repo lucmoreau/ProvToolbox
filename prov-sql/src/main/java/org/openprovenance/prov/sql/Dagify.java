@@ -18,7 +18,6 @@ public class Dagify implements RecordAction {
 
     private EntityManager em;
 
-
     public Dagify(EntityManager em) {
         this.em=em;
     }

@@ -26,14 +26,14 @@ import org.openprovenance.prov.model.DOMProcessing;
 
 /**
  * <p>
- * Java class for Role complex type.
+ * Java class for Label complex type.
  * 
  * <p>
  * The following schema fragment specifies the expected content contained within
  * this class.
  * 
  * <pre>
- * &lt;complexType name="Role">
+ * &lt;complexType name="Label">
  *   &lt;simpleContent>
  *     &lt;extension base="&lt;http://www.w3.org/ns/prov#>TypedValue">
  *     &lt;/extension>
@@ -44,24 +44,24 @@ import org.openprovenance.prov.model.DOMProcessing;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Role")
-@Entity(name = "Role")
-@Table(name = "ROLE")
-public class Role extends TypedValue implements
-	org.openprovenance.prov.model.Role, Equals, HashCode,
+@XmlType(name = "Label")
+@Entity(name = "Label")
+@Table(name = "LABEL")
+public class Label extends TypedValue implements
+	org.openprovenance.prov.model.Label, Equals, HashCode,
 	org.openprovenance.prov.model.Attribute {
 
-    private static final AttributeKind PROV_ROLE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_ROLE;
-    private static final QName PROV_ROLE_QNAME = Attribute.PROV_ROLE_QNAME;
+    private static final AttributeKind PROV_LABEL_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_LABEL;
+    private static final QName PROV_LABEL_QNAME = Attribute.PROV_LABEL_QNAME;
 
     @Transient
     public QName getElementName() {
-	return PROV_ROLE_QNAME;
+	return PROV_LABEL_QNAME;
     }
 
     @Transient
     public AttributeKind getKind() {
-	return PROV_ROLE_KIND;
+	return PROV_LABEL_KIND;
     }
 
     public String toNotationString() {
@@ -73,7 +73,7 @@ public class Role extends TypedValue implements
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator,
 			  Object object, EqualsStrategy strategy) {
-	if (!(object instanceof Role)) {
+	if (!(object instanceof Label)) {
 	    return false;
 	}
 	if (this == object) {

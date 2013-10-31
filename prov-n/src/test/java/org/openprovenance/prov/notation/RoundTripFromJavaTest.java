@@ -31,7 +31,6 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
     
     @Override
     public Document readDocument(String file1) {
-
         try {
             return (Document) u.convertASNToJavaBean(file1);
         } catch (IOException e) {

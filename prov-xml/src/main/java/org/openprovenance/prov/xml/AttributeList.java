@@ -56,19 +56,19 @@ public class AttributeList<TYPE> extends AbstractList<TYPE> {
 	obj2.getAllAttributes().add((org.openprovenance.prov.model.Attribute)element);	
     }
     
-    final static public <TYPE> AttributeList<TYPE> populateKnownAttributes(Identifiable object, 
-                                                                           List<Attribute> all, 
-                                                                           Class<TYPE> cl) {
-  	List<TYPE> some=new ArrayList<TYPE>();
-          if (all!=null) {
-              for (Attribute attr: all) {
-          	if (cl.isInstance(attr)) {
-          	    some.add((TYPE)attr);
-          	}
-              }
-          }
-          return new AttributeList<TYPE>(object,some);
-      }
+    final static public <TYPE> AttributeList<TYPE> populateKnownAttributes(Identifiable object,
+									   List<Attribute> all,
+									   Class<TYPE> cl) {
+	List<TYPE> some = new ArrayList<TYPE>();
+	if (all != null) {
+	    for (Attribute attr : all) {
+		if (cl.isInstance(attr)) {
+		    some.add((TYPE) attr);
+		}
+	    }
+	}
+	return new AttributeList<TYPE>(object, some);
+    }
    
     
    

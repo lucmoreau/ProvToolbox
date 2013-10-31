@@ -6,7 +6,6 @@ import java.util.LinkedList;
 
 import javax.xml.namespace.QName;
 
-
 /** Utilities for manipulating PROV Descriptions. */
 
 public class ProvUtilities {

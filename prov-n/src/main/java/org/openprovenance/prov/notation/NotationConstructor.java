@@ -64,6 +64,7 @@ public class NotationConstructor implements ModelConstructor {
             throw new UncheckedException("NotationConstructor.write() failed", e);
         }
     }
+   
     
     public void writeln(String s) {
         try {

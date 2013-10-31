@@ -73,7 +73,7 @@ public class Value
 
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
-        if (!(object instanceof Other)) {
+        if (!(object instanceof Value)) {
             return false;
         }
         if (this == object) {

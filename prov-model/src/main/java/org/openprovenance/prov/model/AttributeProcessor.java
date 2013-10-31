@@ -9,6 +9,7 @@ import java.util.Hashtable;
 
 public class AttributeProcessor {
 
+    
     final private Hashtable<String,Hashtable<String,List<Attribute>>> namespaceIndex=
         new Hashtable<String,Hashtable<String,List<Attribute>>>();
     

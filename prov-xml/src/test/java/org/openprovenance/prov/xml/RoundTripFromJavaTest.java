@@ -245,11 +245,11 @@ public class RoundTripFromJavaTest extends TestCase {
    	ht.getType().add(pFactory.newType(true, ValueConverter.QNAME_XSD_STRING));
    	ht.getType().add(pFactory.newType(new QName(EX_NS, "abc", EX_PREFIX),
 					  ValueConverter.QNAME_XSD_QNAME));
-   	ht.getType().add(pFactory.newType(pFactory.newTimeNow(),
-					  ValueConverter.QNAME_XSD_DATETIME));
-   	URIWrapper w=new URIWrapper();
-   	w.setValue(URI.create(EX_NS+"hello"));
-	ht.getType().add(pFactory.newType(w,
+ //  	ht.getType().add(pFactory.newType(pFactory.newTimeNow(),
+//					  ValueConverter.QNAME_XSD_DATETIME));
+   	//URIWrapper w=new URIWrapper();
+   	//w.setValue(URI.create(EX_NS+"hello"));
+	ht.getType().add(pFactory.newType(EX_NS+"hello",
 					  ValueConverter.QNAME_XSD_ANY_URI));
     }
 
@@ -347,6 +347,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public boolean test=true;
 
+    
     public void testEntity0() throws JAXBException  {
 	setNamespaces();
 	Entity a = pFactory.newEntity("ex:e0");
@@ -378,9 +379,9 @@ public class RoundTripFromJavaTest extends TestCase {
 						 ValueConverter.QNAME_XSD_QNAME));
 
 	    */
-	    URIWrapper w=new URIWrapper();
-	    w.setValue(URI.create(EX_NS+"london"));
-	    a.getLocation().add(pFactory.newLocation(w,ValueConverter.QNAME_XSD_ANY_URI));
+	    //URIWrapper w=new URIWrapper();
+	    //w.setValue(URI.create(EX_NS+"london"));
+	    a.getLocation().add(pFactory.newLocation(EX_NS+"london",ValueConverter.QNAME_XSD_ANY_URI));
 
 	    Location loc=pFactory.newLocation(new Long(2),ValueConverter.QNAME_XSD_LONG);
 	    //FIXME: Location containing a QName does not work

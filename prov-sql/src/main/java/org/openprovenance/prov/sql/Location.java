@@ -71,7 +71,7 @@ public class Location extends TypedValue implements Equals, HashCode, org.openpr
 
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
-        if (!(object instanceof Other)) {
+        if (!(object instanceof Location)) {
             return false;
         }
         if (this == object) {

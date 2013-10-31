@@ -192,6 +192,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         return res;
     }
 
+    /*
     
     @Override
     public org.openprovenance.prov.model.Attribute createAttribute(QName qname,
@@ -207,8 +208,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 	return new Attribute(kind,value,type);
 
     }
+    */
     
-
     @Override
     public org.openprovenance.prov.model.IDRef createIDRef() {
 	return new IDRef();
@@ -216,6 +217,21 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     public org.openprovenance.prov.xml.validation.ObjectFactory getValidationObjectFactory() {
         return vof;
+    }
+
+    @Override
+    public org.openprovenance.prov.model.Attribute newAttribute(AttributeKind kind,
+								Object value,
+								QName type) {
+	switch (kind) {
+	case PROV_LOCATION: return newLocation(value, type);
+	case OTHER: throw new UnsupportedOperationException();
+	case PROV_LABEL: return newLabel(value,type); 
+	case PROV_ROLE: return newRole(value, type);
+	case PROV_TYPE: return newType(value, type);
+	case PROV_VALUE: return newValue(value, type);
+	}
+	return null;
     }
 
 }

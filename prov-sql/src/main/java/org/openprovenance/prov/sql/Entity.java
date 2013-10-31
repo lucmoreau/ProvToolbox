@@ -32,6 +32,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jvnet.hyperjaxb3.item.Item;
 import org.jvnet.hyperjaxb3.item.ItemUtils;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.ElementAsString;
@@ -43,6 +45,7 @@ import org.jvnet.jaxb2_commons.lang.HashCode;
 import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
+import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
@@ -629,5 +632,50 @@ public class Entity
 	// TODO Auto-generated method stub
 	return null;
     }
+    
+    public void toString(ToStringBuilder toStringBuilder) {
+        {
+            List<org.openprovenance.prov.model.InternationalizedString> theLabel;
+            theLabel = this.getLabel();
+            toStringBuilder.append("label", theLabel);
+        }
+        {
+            List<org.openprovenance.prov.model.Location> theLocation;
+            theLocation = this.getLocation();
+            toStringBuilder.append("location", theLocation);
+        }
+        {
+            List<org.openprovenance.prov.model.Type> theType;
+            theType = this.getType();
+            toStringBuilder.append("type", theType);
+        }
+        {
+            org.openprovenance.prov.model.Value theValue;
+            theValue = this.getValue();
+            toStringBuilder.append("value", theValue);
+        }
+  
+        {
+            List<org.openprovenance.prov.model.OtherAttribute> theOthers;
+            theOthers = this.getOthers();
+            toStringBuilder.append("others", theOthers);
+        }
+        {
+            QName theId;
+            theId = this.getId();
+            toStringBuilder.append("id", theId);
+        }
+        { //TODO: only now, for debugging.
+            toStringBuilder.append("all", getAllAttributes());
+        }
+
+    }
+
+    public String toString() {
+        final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
+        toString(toStringBuilder);
+        return toStringBuilder.toString();
+    }
+
 
 }

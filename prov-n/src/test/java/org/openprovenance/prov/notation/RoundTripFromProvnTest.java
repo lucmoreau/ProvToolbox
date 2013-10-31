@@ -21,7 +21,6 @@ public class RoundTripFromProvnTest extends TestCase {
     public void loadFromProvnSaveAndReload(String file, Boolean compare) throws Throwable {
 	System.out.println("-------------- File: " + file);
 	org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility();
-
 	DocumentEquality de = new DocumentEquality(true);
 
 	Document doc1 = u.readDocument("src/test/resources/" + file);

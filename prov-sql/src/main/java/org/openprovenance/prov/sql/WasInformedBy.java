@@ -36,17 +36,17 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 
 
 /**
- * <p>Java class for Attribution complex type.
+ * <p>Java class for Communication complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Attribution">
+ * &lt;complexType name="Communication">
  *   &lt;complexContent>
  *     &lt;extension base="{http://www.w3.org/ns/prov#}AStatement">
  *       &lt;sequence>
- *         &lt;element name="entity" type="{http://www.w3.org/ns/prov#}IDRef"/>
- *         &lt;element name="agent" type="{http://www.w3.org/ns/prov#}IDRef"/>
+ *         &lt;element name="informed" type="{http://www.w3.org/ns/prov#}IDRef"/>
+ *         &lt;element name="informant" type="{http://www.w3.org/ns/prov#}IDRef"/>
  *         &lt;element ref="{http://www.w3.org/ns/prov#}label" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element ref="{http://www.w3.org/ns/prov#}type" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element ref="{http://www.w3.org/ns/prov#}others" maxOccurs="unbounded" minOccurs="0"/>
@@ -61,32 +61,33 @@ import org.openprovenance.prov.xml.SortedAttributeList;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Attribution", propOrder = {
-    "entity",
-    "agent",
+@XmlType(name = "Communication", propOrder = {
+    "informed",
+    "informant",
     "label",
-    //"type",
-    //"others",
-    //"any"
+ //   "type",
+ //   "others",
+ //   "any"
     "all"
 })
-@Entity(name = "WasAttributedTo")
-@Table(name = "WASATTRIBUTEDTO")
-public class WasAttributedTo
+@Entity(name = "WasInformedBy")
+@Table(name = "WASINFORMEDBY")
+public class WasInformedBy
     extends AStatement
-    implements Equals, HashCode, org.openprovenance.prov.model.WasAttributedTo, HasAllAttributes
+    implements Equals, HashCode, org.openprovenance.prov.model.WasInformedBy, HasAllAttributes
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef entity;
+    protected org.openprovenance.prov.model.IDRef informed;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef agent;
+    protected org.openprovenance.prov.model.IDRef informant;
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
     
     transient protected List<org.openprovenance.prov.model.Type> type;
     transient protected List<OtherAttribute> others;
     
+
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
@@ -94,7 +95,7 @@ public class WasAttributedTo
     
 
     /**
-     * Gets the value of the entity property.
+     * Gets the value of the informed property.
      * 
      * @return
      *     possible object is
@@ -104,25 +105,25 @@ public class WasAttributedTo
     @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "ENTITY")
-    public org.openprovenance.prov.model.IDRef getEntity() {
-        return entity;
+    @JoinColumn(name = "INFORMED")
+    public org.openprovenance.prov.model.IDRef getInformed() {
+        return informed;
     }
 
     /**
-     * Sets the value of the entity property.
+     * Sets the value of the informed property.
      * 
      * @param value
      *     allowed object is
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setEntity(org.openprovenance.prov.model.IDRef value) {
-        this.entity = value;
+    public void setInformed(org.openprovenance.prov.model.IDRef value) {
+        this.informed = value;
     }
 
     /**
-     * Gets the value of the agent property.
+     * Gets the value of the informant property.
      * 
      * @return
      *     possible object is
@@ -132,21 +133,21 @@ public class WasAttributedTo
     @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "AGENT")
-    public org.openprovenance.prov.model.IDRef getAgent() {
-        return agent;
+    @JoinColumn(name = "INFORMANT")
+    public org.openprovenance.prov.model.IDRef getInformant() {
+        return informant;
     }
 
     /**
-     * Sets the value of the agent property.
+     * Sets the value of the informant property.
      * 
      * @param value
      *     allowed object is
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setAgent(org.openprovenance.prov.model.IDRef value) {
-        this.agent = value;
+    public void setInformant(org.openprovenance.prov.model.IDRef value) {
+        this.informant = value;
     }
 
     /**
@@ -174,7 +175,7 @@ public class WasAttributedTo
     @OneToMany(targetEntity = org.openprovenance.prov.sql.InternationalizedString.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "LABEL_WASATTRIBUTEDTO_HJID")
+    @JoinColumn(name = "LABEL_WASINFORMEDBY_HJID")
     public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
         if (label == null) {
             label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
@@ -215,7 +216,7 @@ public class WasAttributedTo
     @OneToMany(targetEntity = org.openprovenance.prov.sql.Type.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "TYPE__WASATTRIBUTEDTO_HJID")
+    @JoinColumn(name = "TYPE__WASINFORMEDBY_HJID")
     public List<org.openprovenance.prov.model.Type> getType() {
         if (type == null) {
             type=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Type.class);
@@ -256,7 +257,7 @@ public class WasAttributedTo
     @OneToMany(targetEntity = Other.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "OTHERS_WASATTRIBUTEDTO_HJID")
+    @JoinColumn(name = "OTHERS_WASINFORMEDBY_HJID")
     public List<OtherAttribute> getOthers() {
         if (others == null) {
             others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.OtherAttribute.class);
@@ -273,7 +274,17 @@ public class WasAttributedTo
     }
 
 
- 
+    /** Gets the List of all attributes
+     * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
+     */
+    @Transient
+    public List<Attribute> getAllAttributes() {
+        if (all == null) {
+            all = new SortedAttributeList<Attribute>();
+        }
+        return this.all;
+    }
+    
     /**
      * Gets the value of the id property.
      * 
@@ -309,23 +320,8 @@ public class WasAttributedTo
         setId(XmlAdapterUtils.marshall(QNameAsString.class, target));
     }
 
-    
-
-
-    /** Gets the List of all attributes
-     * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
-     */
-    @Transient
-    public List<Attribute> getAllAttributes() {
-        if (all == null) {
-            all = new SortedAttributeList<Attribute>();
-        }
-        return this.all;
-    }
-    
-    
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
-        if (!(object instanceof WasAttributedTo)) {
+        if (!(object instanceof WasInformedBy)) {
             return false;
         }
         if (this == object) {
@@ -334,22 +330,22 @@ public class WasAttributedTo
         if (!super.equals(thisLocator, thatLocator, object, strategy)) {
             return false;
         }
-        final WasAttributedTo that = ((WasAttributedTo) object);
+        final WasInformedBy that = ((WasInformedBy) object);
         {
-            org.openprovenance.prov.model.IDRef lhsEntity;
-            lhsEntity = this.getEntity();
-            org.openprovenance.prov.model.IDRef rhsEntity;
-            rhsEntity = that.getEntity();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "entity", lhsEntity), LocatorUtils.property(thatLocator, "entity", rhsEntity), lhsEntity, rhsEntity)) {
+            org.openprovenance.prov.model.IDRef lhsInformed;
+            lhsInformed = this.getInformed();
+            org.openprovenance.prov.model.IDRef rhsInformed;
+            rhsInformed = that.getInformed();
+            if (!strategy.equals(LocatorUtils.property(thisLocator, "informed", lhsInformed), LocatorUtils.property(thatLocator, "informed", rhsInformed), lhsInformed, rhsInformed)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsAgent;
-            lhsAgent = this.getAgent();
-            org.openprovenance.prov.model.IDRef rhsAgent;
-            rhsAgent = that.getAgent();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "agent", lhsAgent), LocatorUtils.property(thatLocator, "agent", rhsAgent), lhsAgent, rhsAgent)) {
+            org.openprovenance.prov.model.IDRef lhsInformant;
+            lhsInformant = this.getInformant();
+            org.openprovenance.prov.model.IDRef rhsInformant;
+            rhsInformant = that.getInformant();
+            if (!strategy.equals(LocatorUtils.property(thisLocator, "informant", lhsInformant), LocatorUtils.property(thatLocator, "informant", rhsInformant), lhsInformant, rhsInformant)) {
                 return false;
             }
         }
@@ -400,14 +396,14 @@ public class WasAttributedTo
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            org.openprovenance.prov.model.IDRef theEntity;
-            theEntity = this.getEntity();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "entity", theEntity), currentHashCode, theEntity);
+            org.openprovenance.prov.model.IDRef theInformed;
+            theInformed = this.getInformed();
+            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "informed", theInformed), currentHashCode, theInformed);
         }
         {
-            org.openprovenance.prov.model.IDRef theAgent;
-            theAgent = this.getAgent();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "agent", theAgent), currentHashCode, theAgent);
+            org.openprovenance.prov.model.IDRef theInformant;
+            theInformant = this.getInformant();
+            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "informant", theInformant), currentHashCode, theInformant);
         }
         {
             List<org.openprovenance.prov.model.InternationalizedString> theLabel;

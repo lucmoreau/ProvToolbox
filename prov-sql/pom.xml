@@ -882,6 +882,9 @@
                      <arg value="WasStartedBy.java" />
                      <arg value="WasInvalidatedBy.java" />
                      <arg value="ActedOnBehalfOf.java" />
+                     <arg value="Used.java" />
+                     <arg value="WasInfluencedBy.java" />
+                     <arg value="WasInformedBy.java" />
                 </exec>
 
 

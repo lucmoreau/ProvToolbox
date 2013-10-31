@@ -1,26 +1,30 @@
 package org.openprovenance.prov.sql;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
-
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.QNameAsString;
+import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
@@ -28,7 +32,6 @@ import org.jvnet.jaxb2_commons.lang.HashCode;
 import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
@@ -39,21 +42,24 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 
 
 /**
- * <p>Java class for Entity complex type.
+ * <p>Java class for Invalidation complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Entity">
+ * &lt;complexType name="Invalidation">
  *   &lt;complexContent>
  *     &lt;extension base="{http://www.w3.org/ns/prov#}AStatement">
  *       &lt;sequence>
+ *         &lt;element name="entity" type="{http://www.w3.org/ns/prov#}IDRef"/>
+ *         &lt;element name="activity" type="{http://www.w3.org/ns/prov#}IDRef" minOccurs="0"/>
+ *         &lt;element name="time" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
  *         &lt;element ref="{http://www.w3.org/ns/prov#}label" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element ref="{http://www.w3.org/ns/prov#}location" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element ref="{http://www.w3.org/ns/prov#}type" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element ref="{http://www.w3.org/ns/prov#}value" minOccurs="0"/>
+ *         &lt;element ref="{http://www.w3.org/ns/prov#}location" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element ref="{http://www.w3.org/ns/prov#}role" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element ref="{http://www.w3.org/ns/prov#}others" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;any processContents='skip' namespace='##other' maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;any namespace='##other' maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *       &lt;attribute ref="{http://www.w3.org/ns/prov#}id"/>
  *     &lt;/extension>
@@ -64,42 +70,125 @@ import org.openprovenance.prov.xml.SortedAttributeList;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Entity", propOrder = {
+@XmlType(name = "Invalidation", propOrder = {
+    "entity",
+    "activity",
+    "time",
     "label",
-  //  "location",
-  //  "type",
-  //  "value",
-  //  "others",
-  //  "any"
+   // "type",
+   // "location",
+   // "role",
+   // "others",
+   // "any"
     "all"
 })
-@XmlSeeAlso({
-    Collection.class,
-    Plan.class
-})
-@javax.persistence.Entity(name = "Entity")
-@Table(name = "ENTITY")
-public class Entity
+@Entity(name = "WasInvalidatedBy")
+@Table(name = "WASINVALIDATEDBY")
+public class WasInvalidatedBy
     extends AStatement
-    implements Equals, HashCode, org.openprovenance.prov.model.Entity, HasAllAttributes
+    implements Equals, HashCode, org.openprovenance.prov.model.WasInvalidatedBy, HasAllAttributes
 {
 
+    @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
+    protected org.openprovenance.prov.model.IDRef entity;
+    @XmlElement(type = org.openprovenance.prov.sql.IDRef.class)
+    protected org.openprovenance.prov.model.IDRef activity;
+    @XmlSchemaType(name = "dateTime")
+    protected XMLGregorianCalendar time;
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
- 
-    //@XmlElement(type = org.openprovenance.prov.sql.Location.class)
-    transient protected List<org.openprovenance.prov.model.Location> location;
-    //@XmlElement(type = org.openprovenance.prov.sql.Type.class)
+    
     transient protected List<org.openprovenance.prov.model.Type> type;
-    //@XmlElement(type = org.openprovenance.prov.sql.Value.class)
-    transient protected org.openprovenance.prov.model.Value value;
-    //@XmlElement(type = Other.class)
+    transient protected List<org.openprovenance.prov.model.Location> location;
+    transient protected List<org.openprovenance.prov.model.Role> role;
     transient protected List<OtherAttribute> others;
+
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
     protected QName id;
     
+
+    /**
+     * Gets the value of the entity property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link org.openprovenance.prov.sql.IDRef }
+     *     
+     */
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "ENTITY")
+    public org.openprovenance.prov.model.IDRef getEntity() {
+        return entity;
+    }
+
+    /**
+     * Sets the value of the entity property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link org.openprovenance.prov.sql.IDRef }
+     *     
+     */
+    public void setEntity(org.openprovenance.prov.model.IDRef value) {
+        this.entity = value;
+    }
+
+    /**
+     * Gets the value of the activity property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link org.openprovenance.prov.sql.IDRef }
+     *     
+     */
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "ACTIVITY")
+    public org.openprovenance.prov.model.IDRef getActivity() {
+        return activity;
+    }
+
+    /**
+     * Sets the value of the activity property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link org.openprovenance.prov.sql.IDRef }
+     *     
+     */
+    public void setActivity(org.openprovenance.prov.model.IDRef value) {
+        this.activity = value;
+    }
+
+    /**
+     * Gets the value of the time property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    @Transient
+    public XMLGregorianCalendar getTime() {
+        return time;
+    }
+
+    /**
+     * Sets the value of the time property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public void setTime(XMLGregorianCalendar value) {
+        this.time = value;
+    }
 
     /**
      * Gets the value of the label property.
@@ -126,7 +215,7 @@ public class Entity
     @OneToMany(targetEntity = org.openprovenance.prov.sql.InternationalizedString.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "LABEL_ENTITY_HJID")
+    @JoinColumn(name = "LABEL_WASINVALIDATEDBY_HJID")
     public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
         if (label == null) {
             label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
@@ -140,47 +229,6 @@ public class Entity
      */
     public void setLabel(List<org.openprovenance.prov.model.InternationalizedString> label) {
         this.label = label;
-    }
-
-    /**
-     * Gets the value of the location property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the location property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getLocation().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link org.openprovenance.prov.sql.Location }
-     * 
-     * 
-     */
-    @OneToMany(targetEntity = org.openprovenance.prov.sql.Location.class, cascade = {
-        CascadeType.ALL
-    })
-    @JoinColumn(name = "ENTITY")
-    public List<org.openprovenance.prov.model.Location> getLocation() {
-        if (location == null) {
-            location=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Location.class);
-        }
-        return this.location;
-    }
-
-    /**
-     * 
-     * 
-     */
-    public void setLocation(List<org.openprovenance.prov.model.Location> location) {
-        this.location = location;
     }
 
     /**
@@ -208,10 +256,12 @@ public class Entity
     @OneToMany(targetEntity = org.openprovenance.prov.sql.Type.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "TYPE__ENTITY_HJID")
+    @JoinColumn(name = "TYPE__WASINVALIDATEDBY_HJID")
     public List<org.openprovenance.prov.model.Type> getType() {
         if (type == null) {
+            type = new ArrayList<org.openprovenance.prov.model.Type>();
             type=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Type.class);
+
         }
         return this.type;
     }
@@ -225,43 +275,85 @@ public class Entity
     }
 
     /**
-     * Gets the value of the value property.
+     * Gets the value of the location property.
      * 
-     * @return
-     *     possible object is
-     *     {@link org.openprovenance.prov.sql.Value }
-     *     
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the location property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getLocation().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link org.openprovenance.prov.sql.Location }
+     * 
+     * 
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.Value.class, cascade = {
+    @OneToMany(targetEntity = org.openprovenance.prov.sql.Location.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "VALUE")
-    public org.openprovenance.prov.model.Value getValue() {
-	if (value==null) {
-	    if (all!=null) { // TODO: inefficient, I search this list every time getValue is called, though there may be no value
-        	for (Attribute attr: all) {
-        	    if (attr instanceof org.openprovenance.prov.model.Value) {
-        	        value=(Value)attr;
-        	    }
-        	}
-            }
-	}
-        return value;
+    @JoinColumn(name = "INVALIDATION")
+    public List<org.openprovenance.prov.model.Location> getLocation() {
+        if (location == null) {
+            location=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Location.class);
+        }
+        return this.location;
     }
 
     /**
-     * Sets the value of the value property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link org.openprovenance.prov.sql.Value }
-     *     
+     * 
      */
-    public void setValue(org.openprovenance.prov.model.Value value) {
-	if (value!=null) {
-	    this.value = value;
-	    getAllAttributes().add((org.openprovenance.prov.model.Attribute)value);	//FIXME: should replace previous value!
-	}
+    public void setLocation(List<org.openprovenance.prov.model.Location> location) {
+        this.location = location;
+    }
+
+    /**
+     * Gets the value of the role property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the role property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getRole().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link org.openprovenance.prov.sql.Role }
+     * 
+     * 
+     */
+    @OneToMany(targetEntity = org.openprovenance.prov.sql.Role.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "ROLE__WASINVALIDATEDBY_HJID")
+    public List<org.openprovenance.prov.model.Role> getRole() {
+        if (role == null) {
+            role=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Role.class);
+        }
+        return this.role;
+    }
+
+    /**
+     * 
+     * 
+     */
+    public void setRole(List<org.openprovenance.prov.model.Role> role) {
+        this.role = role;
     }
 
     /**
@@ -289,7 +381,7 @@ public class Entity
     @OneToMany(targetEntity = Other.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "OTHERS_ENTITY_HJID")
+    @JoinColumn(name = "OTHERS_WASINVALIDATEDBY_HJID")
     public List<OtherAttribute> getOthers() {
         if (others == null) {
             others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.OtherAttribute.class);
@@ -319,6 +411,7 @@ public class Entity
     }
     
 
+
     /**
      * Gets the value of the id property.
      * 
@@ -345,6 +438,17 @@ public class Entity
     }
 
     @Basic
+    @Column(name = "TIMEITEM")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getTimeItem() {
+        return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getTime());
+    }
+
+    public void setTimeItem(Date target) {
+        setTime(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
+    }
+
+    @Basic
     @Column(name = "IDITEM")
     public String getIdItem() {
         return XmlAdapterUtils.unmarshall(QNameAsString.class, this.getId());
@@ -355,7 +459,7 @@ public class Entity
     }
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
-        if (!(object instanceof Entity)) {
+        if (!(object instanceof WasInvalidatedBy)) {
             return false;
         }
         if (this == object) {
@@ -364,22 +468,40 @@ public class Entity
         if (!super.equals(thisLocator, thatLocator, object, strategy)) {
             return false;
         }
-        final Entity that = ((Entity) object);
+        final WasInvalidatedBy that = ((WasInvalidatedBy) object);
+        {
+            org.openprovenance.prov.model.IDRef lhsEntity;
+            lhsEntity = this.getEntity();
+            org.openprovenance.prov.model.IDRef rhsEntity;
+            rhsEntity = that.getEntity();
+            if (!strategy.equals(LocatorUtils.property(thisLocator, "entity", lhsEntity), LocatorUtils.property(thatLocator, "entity", rhsEntity), lhsEntity, rhsEntity)) {
+                return false;
+            }
+        }
+        {
+            org.openprovenance.prov.model.IDRef lhsActivity;
+            lhsActivity = this.getActivity();
+            org.openprovenance.prov.model.IDRef rhsActivity;
+            rhsActivity = that.getActivity();
+            if (!strategy.equals(LocatorUtils.property(thisLocator, "activity", lhsActivity), LocatorUtils.property(thatLocator, "activity", rhsActivity), lhsActivity, rhsActivity)) {
+                return false;
+            }
+        }
+        {
+            XMLGregorianCalendar lhsTime;
+            lhsTime = this.getTime();
+            XMLGregorianCalendar rhsTime;
+            rhsTime = that.getTime();
+            if (!strategy.equals(LocatorUtils.property(thisLocator, "time", lhsTime), LocatorUtils.property(thatLocator, "time", rhsTime), lhsTime, rhsTime)) {
+                return false;
+            }
+        }
         {
             List<org.openprovenance.prov.model.InternationalizedString> lhsLabel;
             lhsLabel = (((this.label!= null)&&(!this.label.isEmpty()))?this.getLabel():null);
             List<org.openprovenance.prov.model.InternationalizedString> rhsLabel;
             rhsLabel = (((that.label!= null)&&(!that.label.isEmpty()))?that.getLabel():null);
             if (!strategy.equals(LocatorUtils.property(thisLocator, "label", lhsLabel), LocatorUtils.property(thatLocator, "label", rhsLabel), lhsLabel, rhsLabel)) {
-                return false;
-            }
-        }
-        {
-            List<org.openprovenance.prov.model.Location> lhsLocation;
-            lhsLocation = (((this.location!= null)&&(!this.location.isEmpty()))?this.getLocation():null);
-            List<org.openprovenance.prov.model.Location> rhsLocation;
-            rhsLocation = (((that.location!= null)&&(!that.location.isEmpty()))?that.getLocation():null);
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "location", lhsLocation), LocatorUtils.property(thatLocator, "location", rhsLocation), lhsLocation, rhsLocation)) {
                 return false;
             }
         }
@@ -393,11 +515,20 @@ public class Entity
             }
         }
         {
-            org.openprovenance.prov.model.Value lhsValue;
-            lhsValue = this.getValue();
-            org.openprovenance.prov.model.Value rhsValue;
-            rhsValue = that.getValue();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "value", lhsValue), LocatorUtils.property(thatLocator, "value", rhsValue), lhsValue, rhsValue)) {
+            List<org.openprovenance.prov.model.Location> lhsLocation;
+            lhsLocation = (((this.location!= null)&&(!this.location.isEmpty()))?this.getLocation():null);
+            List<org.openprovenance.prov.model.Location> rhsLocation;
+            rhsLocation = (((that.location!= null)&&(!that.location.isEmpty()))?that.getLocation():null);
+            if (!strategy.equals(LocatorUtils.property(thisLocator, "location", lhsLocation), LocatorUtils.property(thatLocator, "location", rhsLocation), lhsLocation, rhsLocation)) {
+                return false;
+            }
+        }
+        {
+            List<org.openprovenance.prov.model.Role> lhsRole;
+            lhsRole = (((this.role!= null)&&(!this.role.isEmpty()))?this.getRole():null);
+            List<org.openprovenance.prov.model.Role> rhsRole;
+            rhsRole = (((that.role!= null)&&(!that.role.isEmpty()))?that.getRole():null);
+            if (!strategy.equals(LocatorUtils.property(thisLocator, "role", lhsRole), LocatorUtils.property(thatLocator, "role", rhsRole), lhsRole, rhsRole)) {
                 return false;
             }
         }
@@ -430,14 +561,24 @@ public class Entity
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
+            org.openprovenance.prov.model.IDRef theEntity;
+            theEntity = this.getEntity();
+            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "entity", theEntity), currentHashCode, theEntity);
+        }
+        {
+            org.openprovenance.prov.model.IDRef theActivity;
+            theActivity = this.getActivity();
+            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "activity", theActivity), currentHashCode, theActivity);
+        }
+        {
+            XMLGregorianCalendar theTime;
+            theTime = this.getTime();
+            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "time", theTime), currentHashCode, theTime);
+        }
+        {
             List<org.openprovenance.prov.model.InternationalizedString> theLabel;
             theLabel = (((this.label!= null)&&(!this.label.isEmpty()))?this.getLabel():null);
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "label", theLabel), currentHashCode, theLabel);
-        }
-        {
-            List<org.openprovenance.prov.model.Location> theLocation;
-            theLocation = (((this.location!= null)&&(!this.location.isEmpty()))?this.getLocation():null);
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "location", theLocation), currentHashCode, theLocation);
         }
         {
             List<org.openprovenance.prov.model.Type> theType;
@@ -445,9 +586,14 @@ public class Entity
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "type", theType), currentHashCode, theType);
         }
         {
-            org.openprovenance.prov.model.Value theValue;
-            theValue = this.getValue();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "value", theValue), currentHashCode, theValue);
+            List<org.openprovenance.prov.model.Location> theLocation;
+            theLocation = (((this.location!= null)&&(!this.location.isEmpty()))?this.getLocation():null);
+            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "location", theLocation), currentHashCode, theLocation);
+        }
+        {
+            List<org.openprovenance.prov.model.Role> theRole;
+            theRole = (((this.role!= null)&&(!this.role.isEmpty()))?this.getRole():null);
+            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "role", theRole), currentHashCode, theRole);
         }
         {
             List<OtherAttribute> theOthers;
@@ -468,7 +614,6 @@ public class Entity
     }
 
    
-
     transient IDRef idRef;
     @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
         CascadeType.ALL
@@ -488,50 +633,4 @@ public class Entity
 	// TODO Auto-generated method stub
 	return null;
     }
-    
-    public void toString(ToStringBuilder toStringBuilder) {
-        {
-            List<org.openprovenance.prov.model.InternationalizedString> theLabel;
-            theLabel = this.getLabel();
-            toStringBuilder.append("label", theLabel);
-        }
-        {
-            List<org.openprovenance.prov.model.Location> theLocation;
-            theLocation = this.getLocation();
-            toStringBuilder.append("location", theLocation);
-        }
-        {
-            List<org.openprovenance.prov.model.Type> theType;
-            theType = this.getType();
-            toStringBuilder.append("type", theType);
-        }
-        {
-            org.openprovenance.prov.model.Value theValue;
-            theValue = this.getValue();
-            toStringBuilder.append("value", theValue);
-        }
-  
-        {
-            List<org.openprovenance.prov.model.OtherAttribute> theOthers;
-            theOthers = this.getOthers();
-            toStringBuilder.append("others", theOthers);
-        }
-        {
-            QName theId;
-            theId = this.getId();
-            toStringBuilder.append("id", theId);
-        }
-        { //TODO: only now, for debugging.
-            toStringBuilder.append("all", getAllAttributes());
-        }
-
-    }
-
-    public String toString() {
-        final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
-        toString(toStringBuilder);
-        return toStringBuilder.toString();
-    }
-
-
 }

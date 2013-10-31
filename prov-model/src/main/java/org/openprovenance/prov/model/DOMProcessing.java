@@ -217,17 +217,21 @@ final public class DOMProcessing {
 	QName type = attribute.getType();
 	if (value instanceof InternationalizedString) {
 	    InternationalizedString istring = ((InternationalizedString) value);
-	    return newElement(attribute.getElementName(), istring.getValue(),
-			      attribute.getType(), istring.getLang());
+	    return newElement(attribute.getElementName(), 
+	                      istring.getValue(),
+			      attribute.getType(), 
+			      istring.getLang());
 	} else if (value instanceof QName) {
-	    return newElement(attribute.getElementName(), (QName) value);
+	    return newElement(attribute.getElementName(), 
+	                      (QName) value);
 
 	} else if (type.equals(ValueConverter.QNAME_RDF_LITERAL)) {
 	    return newElement(attribute.getElementName(),
 			      (org.w3c.dom.Element) attribute.getValueAsObject());
 
 	} else {
-	    return newElement(attribute.getElementName(), value.toString(),
+	    return newElement(attribute.getElementName(), 
+	                      value.toString(),
 			      attribute.getType());
 	}
     }

@@ -878,6 +878,10 @@
                      <arg value="WasAssociatedWith.java" />
                      <arg value="WasAttributedTo.java" />
                      <arg value="WasGeneratedBy.java" />
+                     <arg value="WasEndedBy.java" />
+                     <arg value="WasStartedBy.java" />
+                     <arg value="WasInvalidatedBy.java" />
+                     <arg value="ActedOnBehalfOf.java" />
                 </exec>
 
 

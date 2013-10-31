@@ -873,6 +873,8 @@
                      <arg value="Entity.java" />
                      <arg value="Document.java" />
                      <arg value="Activity.java" />
+                     <arg value="Agent.java" />
+                     <arg value="WasDerivedFrom.java" />
                 </exec>
 
 

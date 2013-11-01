@@ -3,7 +3,6 @@ package org.openprovenance.prov.xml;
 import java.io.File;
 
 import org.openprovenance.prov.model.DOMProcessing;
-import org.openprovenance.prov.model.HasExtensibility;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
@@ -25,32 +24,17 @@ import org.openprovenance.prov.model.WasStartedBy;
 import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
-import org.openprovenance.prov.model.MentionOf;
-import org.openprovenance.prov.model.AlternateOf;
-import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.WasEndedBy;
-import org.openprovenance.prov.model.HadMember;
-import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.Location;
-import org.openprovenance.prov.model.Type;
-import org.openprovenance.prov.model.DerivedByInsertionFrom;
-import org.openprovenance.prov.model.DerivedByRemovalFrom;
-import org.openprovenance.prov.model.DictionaryMembership;
-
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
 import java.net.URI;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 
-import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.URIWrapper;
 
 import junit.framework.TestCase;
@@ -58,7 +42,7 @@ import junit.framework.TestCase;
 /**
  * Unit test for PROV roundtrip conversion between Java and XML
  */
-public class SmallTest extends TestCase {
+public class AttributeTest extends TestCase {
 
  
     public static final String EX_NS = "http://example.org/";
@@ -100,7 +84,7 @@ public class SmallTest extends TestCase {
      * @param testName
      *            name of the test case
      */
-    public SmallTest(String testName) {
+    public AttributeTest(String testName) {
 	super(testName);
 	this.documentEquality = new DocumentEquality(mergeDuplicateProperties());
     }
@@ -225,7 +209,7 @@ public class SmallTest extends TestCase {
     public void writeXMLDocument(Document doc, String file) throws JAXBException {
 	ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
 	serial.serialiseDocument(new File(file), doc, true);
-	StringWriter sw = new StringWriter();
+	// sw = new StringWriter();
 	//serial.serialiseDocument(sw, doc, true);
 	//System.out.println(sw.toString());
     }
@@ -304,7 +288,7 @@ public class SmallTest extends TestCase {
     DOMProcessing dom=new DOMProcessing();
     
     org.w3c.dom.Element createXMLLiteral() {
-        DocumentBuilder builder=dom.builder;
+        DocumentBuilder builder=DOMProcessing.builder;
         org.w3c.dom.Document doc=builder.newDocument();
         org.w3c.dom.Element el1=doc.createElementNS("http://app/","ap:aaa");
         org.w3c.dom.Element el2=doc.createElementNS("http://app/","ap:bbb");

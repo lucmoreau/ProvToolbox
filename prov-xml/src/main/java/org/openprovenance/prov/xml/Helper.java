@@ -4,8 +4,6 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.model.ValueConverter;
-
 /* Not usefully named class, to be removed ultimately hopefully */
 
 public class Helper  {

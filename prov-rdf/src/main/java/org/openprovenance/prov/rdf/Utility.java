@@ -51,7 +51,6 @@ public class Utility {
 
 	RepositoryHelper rHelper = new RepositoryHelper();
 
-	
 	RdfConstructor rdfc = new RdfConstructor(new SesameGraphBuilder(rep));
 	rdfc.getNamespaceTable().putAll(document.getNss());
 	rdfc.getNamespaceTable().put("xsd", "http://www.w3.org/2001/XMLSchema#");

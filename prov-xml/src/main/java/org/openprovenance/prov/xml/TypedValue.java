@@ -249,11 +249,11 @@ public class TypedValue
     
     public QName getQName(AttributeKind kind) {
         switch (kind) {
-        case  PROV_TYPE: return Attribute.PROV_TYPE_QNAME;
-        case  PROV_LABEL: return Attribute.PROV_LABEL_QNAME;
-        case  PROV_VALUE: return Attribute.PROV_VALUE_QNAME;
-        case  PROV_LOCATION: return Attribute.PROV_LOCATION_QNAME;
-        case  PROV_ROLE: return Attribute.PROV_ROLE_QNAME;
+        case  PROV_TYPE: return Helper.PROV_TYPE_QNAME;
+        case  PROV_LABEL: return Helper.PROV_LABEL_QNAME;
+        case  PROV_VALUE: return Helper.PROV_VALUE_QNAME;
+        case  PROV_LOCATION: return Helper.PROV_LOCATION_QNAME;
+        case  PROV_ROLE: return Helper.PROV_ROLE_QNAME;
         case OTHER:
         default: 
                 return null;
@@ -265,11 +265,11 @@ public class TypedValue
      */
     
     public AttributeKind getAttributeKind(QName q) {
-        if (q.equals(Attribute.PROV_TYPE_QNAME)) return AttributeKind.PROV_TYPE;
-        if (q.equals(Attribute.PROV_LABEL_QNAME)) return AttributeKind.PROV_LABEL;
-        if (q.equals(Attribute.PROV_VALUE_QNAME)) return AttributeKind.PROV_VALUE;
-        if (q.equals(Attribute.PROV_LOCATION_QNAME)) return AttributeKind.PROV_LOCATION;
-        if (q.equals(Attribute.PROV_ROLE_QNAME)) return AttributeKind.PROV_ROLE;
+        if (q.equals(Helper.PROV_TYPE_QNAME)) return AttributeKind.PROV_TYPE;
+        if (q.equals(Helper.PROV_LABEL_QNAME)) return AttributeKind.PROV_LABEL;
+        if (q.equals(Helper.PROV_VALUE_QNAME)) return AttributeKind.PROV_VALUE;
+        if (q.equals(Helper.PROV_LOCATION_QNAME)) return AttributeKind.PROV_LOCATION;
+        if (q.equals(Helper.PROV_ROLE_QNAME)) return AttributeKind.PROV_ROLE;
         return AttributeKind.OTHER;
     }
 

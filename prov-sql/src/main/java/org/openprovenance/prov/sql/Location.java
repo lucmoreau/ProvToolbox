@@ -50,7 +50,7 @@ public class Location extends TypedValue implements Equals, HashCode, org.openpr
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_LOCATION_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_LOCATION;
-    private static final QName PROV_LOCATION_QNAME = Attribute.PROV_LOCATION_QNAME;
+    private static final QName PROV_LOCATION_QNAME = Helper2.PROV_LOCATION_QNAME;
 
     @Transient
     public QName getElementName() {
@@ -65,7 +65,7 @@ public class Location extends TypedValue implements Equals, HashCode, org.openpr
 
     public String toNotationString() {
 	return DOMProcessing.qnameToString(getElementName()) + " = "
-		+ org.openprovenance.prov.xml.Attribute.valueToNotationString(getValue(), getType());
+		+ org.openprovenance.prov.xml.Helper.valueToNotationString(getValue(), getType());
     }
     
 

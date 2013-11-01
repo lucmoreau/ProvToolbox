@@ -53,7 +53,7 @@ public class OtherAttribute extends TypedValue
 
     @Override
     public String toNotationString() {
-        return DOMProcessing.qnameToString(getElementName()) + " = " + Attribute.valueToNotationString(getValue(), getType());
+        return DOMProcessing.qnameToString(getElementName()) + " = " + Helper.valueToNotationString(getValue(), getType());
     }
    
 }

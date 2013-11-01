@@ -43,7 +43,7 @@ public class Label extends TypedValue implements Equals, HashCode, ToString,
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_LABEL_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_LABEL;
-    private static final QName PROV_LABEL_QNAME = Attribute.PROV_LABEL_QNAME;
+    private static final QName PROV_LABEL_QNAME = Helper.PROV_LABEL_QNAME;
 
     @Override
     public QName getElementName() {
@@ -58,7 +58,7 @@ public class Label extends TypedValue implements Equals, HashCode, ToString,
     @Override
     public String toNotationString() {
 	return DOMProcessing.qnameToString(getElementName()) + " = "
-		+ Attribute.valueToNotationString(getValue(), getType());
+		+ Helper.valueToNotationString(getValue(), getType());
     }
 
 }

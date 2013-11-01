@@ -69,12 +69,12 @@ public class Other
     @Column(name = "ELEMENTNAME") 
     public String getElementNameItem() {
 	if (elementName==null) return null;
-	return Attribute.QNameToString(elementName);
+	return Helper2.QNameToString(elementName);
     }
 
     public void setElementNameItem(String name) {
 	//System.out.println("---> setElementNameItem() reading " + name);
-	elementName=Attribute.stringToQName(name);
+	elementName=Helper2.stringToQName(name);
 	//System.out.println(" ---> setElementNameItem() got " + elementName);
     }
 
@@ -88,7 +88,7 @@ public class Other
     }
 
     public String toNotationString() {
-        return DOMProcessing.qnameToString(getElementName()) + " = " + org.openprovenance.prov.xml.Attribute.valueToNotationString(getValue(), getType());
+        return DOMProcessing.qnameToString(getElementName()) + " = " + org.openprovenance.prov.xml.Helper.valueToNotationString(getValue(), getType());
     }
 
 

@@ -34,7 +34,7 @@ public class Location extends TypedValue
 {
 
     private static final AttributeKind PROV_LOCATION_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_LOCATION;
-    private static final QName PROV_LOCATION_QNAME = Attribute.PROV_LOCATION_QNAME;
+    private static final QName PROV_LOCATION_QNAME = Helper.PROV_LOCATION_QNAME;
  
     @Override
     public QName getElementName() {
@@ -48,7 +48,7 @@ public class Location extends TypedValue
 
     @Override
     public String toNotationString() {
-        return DOMProcessing.qnameToString(getElementName()) + " = " + Attribute.valueToNotationString(getValue(), getType());
+        return DOMProcessing.qnameToString(getElementName()) + " = " + Helper.valueToNotationString(getValue(), getType());
     }
    
 }

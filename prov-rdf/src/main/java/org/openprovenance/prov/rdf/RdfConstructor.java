@@ -165,19 +165,19 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 
 	int knownSubtypes = 0;
 	QName der = id;
-	if (org.openprovenance.prov.xml.Attribute.hasType(Ontology.QNAME_PROVO_Revision, attributes)) {
+	if (org.openprovenance.prov.xml.Helper.hasType(Ontology.QNAME_PROVO_Revision, attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, Ontology.QNAME_PROVO_Revision);
 
 	}
-	if (org.openprovenance.prov.xml.Attribute.hasType(Ontology.QNAME_PROVO_Quotation, attributes)) {
+	if (org.openprovenance.prov.xml.Helper.hasType(Ontology.QNAME_PROVO_Quotation, attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, Ontology.QNAME_PROVO_Quotation);
 
 	}
-	if (org.openprovenance.prov.xml.Attribute.hasType(Ontology.QNAME_PROVO_PrimarySource, attributes)) {
+	if (org.openprovenance.prov.xml.Helper.hasType(Ontology.QNAME_PROVO_PrimarySource, attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, Ontology.QNAME_PROVO_PrimarySource);
@@ -552,7 +552,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 		LITERAL lit = null;
 		String value;
 		if (val instanceof QName) {
-			value=org.openprovenance.prov.xml.Attribute.qnameToString((QName)val); 
+			value=org.openprovenance.prov.xml.Helper.qnameToString((QName)val); 
 		} else {
 		    value=val.toString();
 		}	

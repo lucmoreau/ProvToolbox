@@ -52,7 +52,7 @@ public class Role extends TypedValue implements
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_ROLE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_ROLE;
-    private static final QName PROV_ROLE_QNAME = Attribute.PROV_ROLE_QNAME;
+    private static final QName PROV_ROLE_QNAME = Helper2.PROV_ROLE_QNAME;
 
     @Transient
     public QName getElementName() {
@@ -67,7 +67,7 @@ public class Role extends TypedValue implements
     public String toNotationString() {
 	return DOMProcessing.qnameToString(getElementName())
 		+ " = "
-		+ org.openprovenance.prov.xml.Attribute.valueToNotationString(getValue(),
+		+ org.openprovenance.prov.xml.Helper.valueToNotationString(getValue(),
 									      getType());
     }
 

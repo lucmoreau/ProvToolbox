@@ -43,7 +43,7 @@ public class Role extends TypedValue implements Equals, HashCode, ToString,
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_ROLE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_ROLE;
-    private static final QName PROV_ROLE_QNAME = Attribute.PROV_ROLE_QNAME;
+    private static final QName PROV_ROLE_QNAME = Helper.PROV_ROLE_QNAME;
 
     @Override
     public QName getElementName() {
@@ -58,7 +58,7 @@ public class Role extends TypedValue implements Equals, HashCode, ToString,
     @Override
     public String toNotationString() {
 	return DOMProcessing.qnameToString(getElementName()) + " = "
-		+ Attribute.valueToNotationString(getValue(), getType());
+		+ Helper.valueToNotationString(getValue(), getType());
     }
 
 }

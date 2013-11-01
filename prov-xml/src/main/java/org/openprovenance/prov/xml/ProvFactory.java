@@ -128,19 +128,19 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 */
     public org.openprovenance.prov.model.Attribute newAttribute(QName elementName, Object value, QName type) {
 	// TODO: use TypedValue.getAttributeKind and switch on a kind
-	if (elementName.equals(Attribute.PROV_LOCATION_QNAME)) {
+	if (elementName.equals(Helper.PROV_LOCATION_QNAME)) {
 	    return newLocation(value,type);
 	}
-	if (elementName.equals(Attribute.PROV_TYPE_QNAME)) {
+	if (elementName.equals(Helper.PROV_TYPE_QNAME)) {
 	    return newType(value,type);
 	}
-	if (elementName.equals(Attribute.PROV_VALUE_QNAME)) {
+	if (elementName.equals(Helper.PROV_VALUE_QNAME)) {
 	    return newValue(value,type);
 	}
-	if (elementName.equals(Attribute.PROV_ROLE_QNAME)) {
+	if (elementName.equals(Helper.PROV_ROLE_QNAME)) {
 	    return newRole(value,type);
 	}
-	if (elementName.equals(Attribute.PROV_LABEL_QNAME)) {
+	if (elementName.equals(Helper.PROV_LABEL_QNAME)) {
 	    return newLabel(value,type);
 	}
 	return newOther(elementName, value, type);

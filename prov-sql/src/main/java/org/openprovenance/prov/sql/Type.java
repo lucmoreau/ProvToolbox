@@ -52,7 +52,7 @@ public class Type
 {
 
     private static final AttributeKind PROV_TYPE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_TYPE;
-    private static final QName PROV_TYPE_QNAME = Attribute.PROV_TYPE_QNAME;
+    private static final QName PROV_TYPE_QNAME = Helper2.PROV_TYPE_QNAME;
 
     @Transient
     public QName getElementName() {
@@ -66,7 +66,7 @@ public class Type
 
     public String toNotationString() {
 	return DOMProcessing.qnameToString(getElementName()) + " = "
-		+ org.openprovenance.prov.xml.Attribute.valueToNotationString(getValue(), getType());
+		+ org.openprovenance.prov.xml.Helper.valueToNotationString(getValue(), getType());
     }
     
 

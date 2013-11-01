@@ -175,19 +175,19 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     @Override
     public Attribute newAttribute(QName elementName, Object value, QName type) {
 	// TODO: use TypedValue.getAttributeKind and switch on a kind
-	if (elementName.equals(org.openprovenance.prov.xml.Attribute.PROV_LOCATION_QNAME)) {
+	if (elementName.equals(org.openprovenance.prov.xml.Helper.PROV_LOCATION_QNAME)) {
 	    return newLocation(value,type);
 	}
-	if (elementName.equals(org.openprovenance.prov.xml.Attribute.PROV_TYPE_QNAME)) {
+	if (elementName.equals(org.openprovenance.prov.xml.Helper.PROV_TYPE_QNAME)) {
 	    return newType(value,type);
 	}
-	if (elementName.equals(org.openprovenance.prov.xml.Attribute.PROV_VALUE_QNAME)) {
+	if (elementName.equals(org.openprovenance.prov.xml.Helper.PROV_VALUE_QNAME)) {
 	    return newValue(value,type);
 	}
-	if (elementName.equals(org.openprovenance.prov.xml.Attribute.PROV_ROLE_QNAME)) {
+	if (elementName.equals(org.openprovenance.prov.xml.Helper.PROV_ROLE_QNAME)) {
 	    return newRole(value,type);
 	}
-	if (elementName.equals(org.openprovenance.prov.xml.Attribute.PROV_LABEL_QNAME)) {
+	if (elementName.equals(org.openprovenance.prov.xml.Helper.PROV_LABEL_QNAME)) {
 	    return newLabel(value,type);
 	}
 	return newOther(elementName, value, type);

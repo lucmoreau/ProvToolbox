@@ -44,7 +44,7 @@ public class Type extends TypedValue implements Equals, HashCode, ToString,
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_TYPE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_TYPE;
-    private static final QName PROV_TYPE_QNAME = Attribute.PROV_TYPE_QNAME;
+    private static final QName PROV_TYPE_QNAME = Helper.PROV_TYPE_QNAME;
 
     @Override
     public QName getElementName() {
@@ -59,7 +59,7 @@ public class Type extends TypedValue implements Equals, HashCode, ToString,
     @Override
     public String toNotationString() {
 	return DOMProcessing.qnameToString(getElementName()) + " = "
-		+ Attribute.valueToNotationString(getValue(), getType());
+		+ Helper.valueToNotationString(getValue(), getType());
     }
 
 }

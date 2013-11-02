@@ -11,6 +11,7 @@ import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HadMember;
+import org.openprovenance.prov.model.IDRef;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.OtherAttribute;
@@ -111,8 +112,14 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     final String stringForDefault="::";
-    
+
+    void gather(IDRef name) {
+	if (name!=null)
+	gather(name.getRef());
+    }
+
     void gather(QName name) {
+	if (name==null) return;
 	String namespace = name.getNamespaceURI();
 	String prefix = name.getPrefix();
 	if (prefix == null) {
@@ -154,92 +161,143 @@ public class NamespaceGatherer implements RecordAction {
 
     @Override
     public void run(HadMember mem) {
-	// TODO Auto-generated method stub
-
+	gather(mem.getCollection());
+	for (IDRef i: mem.getEntity()) {
+	    gather(i);
+	}
     }
 
     @Override
     public void run(SpecializationOf spec) {
-	// TODO Auto-generated method stub
-
+	gather(spec.getGeneralEntity());
+	gather(spec.getSpecificEntity());
     }
 
     @Override
     public void run(MentionOf men) {
-	// TODO Auto-generated method stub
-
+	gather(men.getBundle());
+	gather(men.getGeneralEntity());
+	gather(men.getSpecificEntity());
     }
 
     @Override
     public void run(AlternateOf alt) {
-	// TODO Auto-generated method stub
-
+	gather(alt.getAlternate1());
+	gather(alt.getAlternate2());
     }
 
     @Override
     public void run(WasInfluencedBy inf) {
-	// TODO Auto-generated method stub
-
+	gather(inf.getId());
+	gather(inf.getInfluencee());
+	gather(inf.getInfluencer());
+	gatherType(inf.getType());
+	gatherOther(inf.getOthers());
     }
 
     @Override
     public void run(ActedOnBehalfOf del) {
-	// TODO Auto-generated method stub
-
+	gather(del.getId());
+	gather(del.getDelegate());
+	gather(del.getResponsible());
+	gather(del.getActivity());
+	gatherType(del.getType());
+	gatherOther(del.getOthers());
     }
 
     @Override
     public void run(WasAttributedTo attr) {
-	// TODO Auto-generated method stub
-
+	gather(attr.getId());
+	gather(attr.getEntity());
+	gather(attr.getAgent());
+	gatherType(attr.getType());
+	gatherOther(attr.getOthers());	
     }
 
     @Override
     public void run(WasAssociatedWith assoc) {
-	// TODO Auto-generated method stub
-
+	gather(assoc.getId());
+	gather(assoc.getActivity());
+	gather(assoc.getAgent());
+	gather(assoc.getPlan());
+	gatherRole(assoc.getRole());
+	gatherType(assoc.getType());
+	gatherOther(assoc.getOthers());
     }
 
     @Override
     public void run(WasDerivedFrom der) {
-	// TODO Auto-generated method stub
-
+	gather(der.getId());
+	gather(der.getGeneratedEntity());
+	gather(der.getUsedEntity());
+	gather(der.getActivity());
+	gather(der.getGeneration());
+	gather(der.getUsage());
+	gatherType(der.getType());
+	gatherOther(der.getOthers());
     }
 
     @Override
     public void run(WasInformedBy inf) {
-	// TODO Auto-generated method stub
-
+	gather(inf.getId());
+	gather(inf.getInformed());
+	gather(inf.getInformant());
+	gatherType(inf.getType());
+	gatherOther(inf.getOthers());
     }
 
     @Override
     public void run(WasEndedBy end) {
-	// TODO Auto-generated method stub
-
+	gather(end.getId());
+	gather(end.getActivity());
+	gather(end.getEnder());
+	gather(end.getTrigger());
+	gatherLocation(end.getLocation());
+	gatherType(end.getType());
+	gatherRole(end.getRole());
+	gatherOther(end.getOthers());
     }
 
     @Override
     public void run(WasStartedBy start) {
-	// TODO Auto-generated method stub
-
+	gather(start.getId());
+	gather(start.getActivity());
+	gather(start.getStarter());
+	gather(start.getTrigger());
+	gatherLocation(start.getLocation());
+	gatherType(start.getType());
+	gatherRole(start.getRole());
+	gatherOther(start.getOthers());
     }
 
     @Override
     public void run(WasInvalidatedBy inv) {
-	// TODO Auto-generated method stub
-
+	gather(inv.getId());
+	gather(inv.getEntity());
+	gather(inv.getActivity());
+	gatherRole(inv.getRole());
+	gatherType(inv.getType());
+	gatherOther(inv.getOthers());
     }
 
     @Override
     public void run(Used use) {
-	// TODO Auto-generated method stub
-
+	gather(use.getId());
+	gather(use.getEntity());
+	gather(use.getActivity());
+	gatherRole(use.getRole());
+	gatherType(use.getType());
+	gatherOther(use.getOthers());
     }
 
     @Override
     public void run(WasGeneratedBy gen) {
-	// TODO Auto-generated method stub
-
+	gather(gen.getId());
+	gather(gen.getEntity());
+	gather(gen.getActivity());
+	gatherRole(gen.getRole());
+	gatherType(gen.getType());
+	gatherOther(gen.getOthers());
     }
 
     @Override

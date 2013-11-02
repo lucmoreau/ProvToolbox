@@ -20,6 +20,6 @@ public interface WasDerivedFrom  extends Identifiable,  HasLabel, HasType, HasEx
 
     IDRef getUsage();
 
-    Ref getActivity();
+    IDRef getActivity();
 
 }

@@ -228,60 +228,9 @@ public class AttributeTest extends TestCase {
     }
    
 
-    public void addTypes_old(HasType ht) {
-   	ht.getType().add(pFactory.newType("a", ValueConverter.QNAME_XSD_STRING));
-   	ht.getType().add(pFactory.newType(1, ValueConverter.QNAME_XSD_INT));
-   	ht.getType().add(pFactory.newType(1.0, ValueConverter.QNAME_XSD_FLOAT));
-   	ht.getType().add(pFactory.newType(true, ValueConverter.QNAME_XSD_STRING));
-   	ht.getType().add(pFactory.newType(new QName(EX_NS, "abc", EX_PREFIX),
-					  ValueConverter.QNAME_XSD_QNAME));
-   	ht.getType().add(pFactory.newType(pFactory.newTimeNow(),
-					  ValueConverter.QNAME_XSD_DATETIME));
-   	URIWrapper w=new URIWrapper();
-   	w.setValue(URI.create(EX_NS+"hello"));
-	ht.getType().add(pFactory.newType(w,
-					  ValueConverter.QNAME_XSD_ANY_URI));
-    }
-
-    
-    public void addValue(HasValue hl) {
-        hl.setValue(pFactory.newValue(new QName(EX_NS, "avalue", EX_PREFIX),
-				      ValueConverter.QNAME_XSD_QNAME));
-    }
-
-    
 
    
   
-
-    public void NOtestRoles() {
-	Role r1=pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING);
-	Role r2=pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING);
-	Location l1=pFactory.newLocation("otherLocation",ValueConverter.QNAME_XSD_STRING);
-	Location l2=pFactory.newLocation("otherLocation",ValueConverter.QNAME_XSD_STRING);
-	System.out.println("---------------------------------------------------------------------- " );
-	System.out.println("Role 1 " + r1);
-	System.out.println("Role 2 " + r2);
-	System.out.println("Location 1 " + l1);
-	System.out.println("Location 2 " + l2);
-	System.out.println("---------------------------------------------------------------------- " );
-	System.out.println(r1);
-	System.out.println(r2);
-	System.out.println(r1.equals(r1));
-	System.out.println(r1.equals(r2));
-	System.out.println(r2.equals(r1));
-	System.out.println(r2.equals(r2));
-
-	System.out.println(l1.equals(l1));
-	System.out.println(l1.equals(l2));
-	System.out.println(l2.equals(l1));
-	System.out.println(l2.equals(l2));
-	System.out.println("---------------------------------------------------------------------- " );
-
-
-	//assertTrue(r1.equals(r1));
-	//assertTrue(l1.equals(l2));
-    }
 
     public boolean test=true;
     
@@ -305,8 +254,9 @@ public class AttributeTest extends TestCase {
 
          {pFactory.newInternationalizedString("a place","EN"),ValueConverter.QNAME_XSD_STRING}
         };
-  
-    public Object[][] attributeValues =
+
+
+    public Object[][] attributeValues_long =
         {
 	 {"un lieu",ValueConverter.QNAME_XSD_STRING},
 	 
@@ -408,6 +358,8 @@ public class AttributeTest extends TestCase {
          
         };
     
+    public Object[][] attributeValues =attributeValues_long;
+
     public void addLocations(HasLocation hl){
         for (Object [] pair: attributeValues) {
             Object value=pair[0];
@@ -451,6 +403,155 @@ public class AttributeTest extends TestCase {
 	}
     }
 
+    public void testEntityWithOneAttribute(int i) throws JAXBException  {
+ 	setNamespaces();
+ 	Entity a = pFactory.newEntity("ex:en" + i);
+ 	
+
+ 	Object [] pair= attributeValues[i];
+ 	Object value=pair[0];
+ 	QName type=(QName) pair[1];
+ 	a.getType().add(pFactory.newType(value,type));
+ 	makeDocAndTest(a,"target/attr_entity_one_attr"+i);
+     }
+     
+    public void testEntityWithOneAttribute0 () throws JAXBException  {
+	testEntityWithOneAttribute(0);
+    }
+    public void testEntityWithOneAttribute1 () throws JAXBException  {
+	testEntityWithOneAttribute(1);
+    }
+    public void testEntityWithOneAttribute2 () throws JAXBException  {
+	testEntityWithOneAttribute(2);
+    }
+    public void testEntityWithOneAttribute3 () throws JAXBException  {
+	testEntityWithOneAttribute(3);
+    }
+    public void testEntityWithOneAttribute4 () throws JAXBException  {
+	testEntityWithOneAttribute(4);
+    }
+    public void testEntityWithOneAttribute5 () throws JAXBException  {
+	testEntityWithOneAttribute(5);
+    }
+    public void testEntityWithOneAttribute6 () throws JAXBException  {
+	testEntityWithOneAttribute(6);
+    }
+    public void testEntityWithOneAttribute7 () throws JAXBException  {
+	testEntityWithOneAttribute(7);
+    }
+    public void testEntityWithOneAttribute8 () throws JAXBException  {
+	testEntityWithOneAttribute(8);
+    }
+    public void testEntityWithOneAttribute9 () throws JAXBException  {
+	testEntityWithOneAttribute(0);
+    }
+    public void testEntityWithOneAttribute10 () throws JAXBException  {
+	testEntityWithOneAttribute(10);
+    }
+    public void testEntityWithOneAttribute11 () throws JAXBException  {
+	testEntityWithOneAttribute(11);
+    }
+    public void testEntityWithOneAttribute12 () throws JAXBException  {
+	testEntityWithOneAttribute(12);
+    }
+    public void testEntityWithOneAttribute13 () throws JAXBException  {
+	testEntityWithOneAttribute(13);
+    }
+    public void testEntityWithOneAttribute14 () throws JAXBException  {
+	testEntityWithOneAttribute(14);
+    }
+    public void testEntityWithOneAttribute15 () throws JAXBException  {
+	testEntityWithOneAttribute(15);
+    }
+    public void testEntityWithOneAttribute16 () throws JAXBException  {
+	testEntityWithOneAttribute(16);
+    }
+    public void testEntityWithOneAttribute17 () throws JAXBException  {
+	testEntityWithOneAttribute(17);
+    }
+    public void testEntityWithOneAttribute18 () throws JAXBException  {
+	testEntityWithOneAttribute(18);
+    }
+    public void testEntityWithOneAttribute19 () throws JAXBException  {
+	testEntityWithOneAttribute(19);
+    }
+    public void testEntityWithOneAttribute20 () throws JAXBException  {
+	testEntityWithOneAttribute(20);
+    }
+    public void testEntityWithOneAttribute21 () throws JAXBException  {
+	testEntityWithOneAttribute(21);
+    }
+    public void testEntityWithOneAttribute22 () throws JAXBException  {
+	testEntityWithOneAttribute(22);
+    }
+    public void testEntityWithOneAttribute23 () throws JAXBException  {
+	testEntityWithOneAttribute(23);
+    }
+    public void testEntityWithOneAttribute24 () throws JAXBException  {
+   	testEntityWithOneAttribute(24);
+    }
+    public void testEntityWithOneAttribute25 () throws JAXBException  {
+	testEntityWithOneAttribute(25);
+    }
+    public void testEntityWithOneAttribute26 () throws JAXBException  {
+	testEntityWithOneAttribute(26);
+    }
+    public void testEntityWithOneAttribute27 () throws JAXBException  {
+	testEntityWithOneAttribute(27);
+    }
+    public void testEntityWithOneAttribute28 () throws JAXBException  {
+	testEntityWithOneAttribute(28);
+    }
+    public void testEntityWithOneAttribute29 () throws JAXBException  {
+	testEntityWithOneAttribute(29);
+    }
+    public void testEntityWithOneAttribute30 () throws JAXBException  {
+	testEntityWithOneAttribute(30);
+    }
+    public void testEntityWithOneAttribute31 () throws JAXBException  {
+	testEntityWithOneAttribute(31);
+    }
+    public void testEntityWithOneAttribute32 () throws JAXBException  {
+	testEntityWithOneAttribute(32);
+    }
+    public void testEntityWithOneAttribute33() throws JAXBException  {
+	testEntityWithOneAttribute(33);
+    }
+    public void testEntityWithOneAttribute34 () throws JAXBException  {
+	testEntityWithOneAttribute(34);
+    }
+    public void testEntityWithOneAttribute35 () throws JAXBException  {
+	testEntityWithOneAttribute(35);
+    }
+    public void testEntityWithOneAttribute36 () throws JAXBException  {
+	testEntityWithOneAttribute(36);
+    }
+    public void testEntityWithOneAttribute37 () throws JAXBException  {
+	testEntityWithOneAttribute(37);
+    }
+    public void testEntityWithOneAttribute38 () throws JAXBException  {
+	testEntityWithOneAttribute(38);
+    }
+    public void testEntityWithOneAttribute39 () throws JAXBException  {
+	testEntityWithOneAttribute(39);
+    }
+    public void testEntityWithOneAttribute40 () throws JAXBException  {
+	testEntityWithOneAttribute(40);
+    }
+    public void testEntityWithOneAttribute41 () throws JAXBException  {
+	testEntityWithOneAttribute(41);
+    }
+    public void testEntityWithOneAttribute42 () throws JAXBException  {
+	testEntityWithOneAttribute(42);
+    }
+    public void testEntityWithOneAttribute43 () throws JAXBException  {
+	testEntityWithOneAttribute(43);
+    }
+    public void testEntityWithOneAttribute44 () throws JAXBException  {
+	testEntityWithOneAttribute(44);
+    }
+  
+    
     public void testEntity0() throws JAXBException  {
 	setNamespaces();
 	Entity a = pFactory.newEntity("ex:e0");

@@ -9,6 +9,7 @@ import javax.xml.namespace.QName;
 
 import  org.antlr.runtime.tree.Tree;
 import  org.antlr.runtime.tree.CommonTree;
+import org.openprovenance.prov.model.InternationalizedString;
 import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.ModelConstructor;
@@ -479,8 +480,24 @@ public class TreeTraversal {
         case PROV_NParser.ATTRIBUTE:
             String attr1=convertToken(getTokenString(ast.getChild(0)));
             Object val1=convert(ast.getChild(1));
-
-            return pFactory.newAttribute(pFactory.stringToQName(attr1),val1,vconv.getXsdType(val1));
+            
+            if (val1 instanceof Object[]) {
+            	Object [] values2=(Object[])val1;
+            	Object theValue=values2[0];
+            	QName theType=(QName)values2[1];
+		    
+            	//return pFactory.newAttribute(pFactory.stringToQName(attr1),val1,vconv.getXsdType(val1));
+            	if (ValueConverter.QNAME_XSD_QNAME.equals(theType)) {
+                	return pFactory.newAttribute(pFactory.stringToQName(attr1),pFactory.stringToQName((String)theValue),theType);            		
+            	} else {
+                	return pFactory.newAttribute(pFactory.stringToQName(attr1),theValue,theType);
+            
+            	}
+            } else if (val1 instanceof InternationalizedString) {
+            	return pFactory.newAttribute(pFactory.stringToQName(attr1),val1,ValueConverter.QNAME_XSD_STRING);	
+            } else { // TODO what case is it?
+                return pFactory.newAttribute(pFactory.stringToQName(attr1),val1,ValueConverter.QNAME_XSD_STRING);	            	
+            }
 
         case PROV_NParser.STRING:
             if (ast.getChildCount()==1) {
@@ -567,12 +584,16 @@ public class TreeTraversal {
     Hashtable<String,String> namespaceTable=new Hashtable<String, String>();
 
     public Object convertTypedLiteral(QName datatype, Object value) {
+    	Object [] valueTypePair=new Object[] {value,datatype};
+    	return valueTypePair;
+    /*	
         if (value instanceof String) {
             Object val=vconv.convertToJava(datatype,(String)value);
             return val;
         } else {
             return value;
         }
+        */
     }
 
 

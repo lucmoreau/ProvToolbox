@@ -31,6 +31,17 @@ import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
 
 public class NamespaceGatherer implements RecordAction {
+    
+    public NamespaceGatherer() {}
+    
+    public NamespaceGatherer(Hashtable<String, String> prefixes,
+                             String defaultNamespace) {
+	this.prefixes=prefixes;
+	//todo create inverse map!
+	this.defaultNamespace=defaultNamespace;
+    }
+    
+    
 
     /* mapping from prefixes to namespaces. */
     Hashtable<String, String> prefixes = new Hashtable<String, String>();
@@ -136,8 +147,8 @@ public class NamespaceGatherer implements RecordAction {
 	    if (oldPrefix == null) {
 		prefixes.put(newPrefix, namespace);
 		success = true;
-		namespaces.put(namespace, newPrefix);
 	    }
+		namespaces.put(namespace, newPrefix);
 	}
     }
 

@@ -19,6 +19,7 @@ public class NamespacesTest
 
     public static final String EXAMPLE_NS = "http://example.com/";
     public static final String EXAMPLE2_NS = "http://example2.com/";
+    public static final String EXAMPLE3_NS = "http://example3.com/";
     public static final String XSD_NS = "http://www.w3.org/2001/XMLSchema";
 
     public static ProvFactory pFactory;
@@ -205,6 +206,35 @@ public class NamespacesTest
         assertTrue(nss.getNamespaces().get(EXAMPLE_NS).equals("ex"));
         assertTrue(nss.getNamespaces().get(XSD_NS).equals("xsd"));
         assertTrue(nss.getNamespaces().get(EXAMPLE2_NS).equals("_pre0"));
+        
+    }
+
+    public void testNamespaces9 () 
+    {
+        Activity a1=pFactory.newActivity("ex:a1");
+        a1.getOthers().add(pFactory.newOther(new QName(EXAMPLE2_NS,"tag1", "ex"),
+                                             new QName(EXAMPLE3_NS,"tag1", "ex"), 
+                                             ValueConverter.QNAME_XSD_QNAME));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(a1);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        System.out.println("Default ns is: " + nss.getDefaultNamespace());
+        System.out.println("All prefixes: " + nss.getPrefixes());
+        System.out.println("All ns: " + nss.getNamespaces());
+        assertNull(nss.getDefaultNamespace());
+        assertTrue(nss.getPrefixes().size()==5);
+        assertTrue(nss.check("prov", NamespacePrefixMapper.PROV_NS));
+        assertTrue(nss.check("ex", EXAMPLE_NS));
+        assertTrue(nss.check("xsd", XSD_NS));
+        assertTrue(nss.check("_pre0", EXAMPLE2_NS));
+        assertTrue(nss.check("_pre1", EXAMPLE3_NS));
+        
+        assertTrue(nss.getNamespaces().size()==5);
+        assertTrue(nss.getNamespaces().get(NamespacePrefixMapper.PROV_NS).equals("prov"));
+        assertTrue(nss.getNamespaces().get(EXAMPLE_NS).equals("ex"));
+        assertTrue(nss.getNamespaces().get(XSD_NS).equals("xsd"));
+        assertTrue(nss.getNamespaces().get(EXAMPLE2_NS).equals("_pre0"));
+        assertTrue(nss.getNamespaces().get(EXAMPLE3_NS).equals("_pre1"));
         
     }
 

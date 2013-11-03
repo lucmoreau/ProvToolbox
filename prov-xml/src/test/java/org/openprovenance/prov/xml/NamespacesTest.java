@@ -17,7 +17,8 @@ public class NamespacesTest
     extends TestCase
 {
 
-    public static final String EXAMPLE_NS = "http://example.com";
+    public static final String EXAMPLE_NS = "http://example.com/";
+    public static final String EXAMPLE2_NS = "http://example2.com/";
     public static final String XSD_NS = "http://www.w3.org/2001/XMLSchema";
 
     public static ProvFactory pFactory;
@@ -53,7 +54,8 @@ public class NamespacesTest
         System.out.println("Default ns is: " + nss.getDefaultNamespace());
         System.out.println("All ns: " + nss.getPrefixes());
         assertNull(nss.getDefaultNamespace());
-        assertTrue(nss.getPrefixes().size()==1);
+        assertTrue(nss.getPrefixes().size()==2);
+        assertTrue(nss.check("prov", NamespacePrefixMapper.PROV_NS));
         assertTrue(nss.check("ex", EXAMPLE_NS));
     }
 
@@ -70,7 +72,8 @@ public class NamespacesTest
         System.out.println("Default ns is: " + nss.getDefaultNamespace());
         System.out.println("All ns: " + nss.getPrefixes());
         assertNull(nss.getDefaultNamespace());
-        assertTrue(nss.getPrefixes().size()==3);
+        assertTrue(nss.getPrefixes().size()==4);
+        assertTrue(nss.check("prov", NamespacePrefixMapper.PROV_NS));
         assertTrue(nss.check("ex", EXAMPLE_NS));
         assertTrue(nss.check("ex2", EXAMPLE_NS));
         assertTrue(nss.check("xsd", XSD_NS));
@@ -88,7 +91,8 @@ public class NamespacesTest
         System.out.println("Default ns is: " + nss.getDefaultNamespace());
         System.out.println("All ns: " + nss.getPrefixes());
         assertNull(nss.getDefaultNamespace());
-        assertTrue(nss.getPrefixes().size()==2);
+        assertTrue(nss.getPrefixes().size()==3);
+        assertTrue(nss.check("prov", NamespacePrefixMapper.PROV_NS));
         assertTrue(nss.check("ex", EXAMPLE_NS));
         assertTrue(nss.check("xsd", XSD_NS));
 
@@ -106,11 +110,67 @@ public class NamespacesTest
         System.out.println("Default ns is: " + nss.getDefaultNamespace());
         System.out.println("All ns: " + nss.getPrefixes());
         assertTrue(nss.getDefaultNamespace().equals(EXAMPLE_NS));
-        assertTrue(nss.getPrefixes().size()==2);
+        assertTrue(nss.getPrefixes().size()==3);
+        assertTrue(nss.check("prov", NamespacePrefixMapper.PROV_NS));
         assertTrue(nss.check("ex", EXAMPLE_NS));
         assertTrue(nss.check("xsd", XSD_NS));
     }
 
+
+    public void testNamespaces5 () 
+    {
+        Activity a1=pFactory.newActivity("ex:a1");
+        a1.getType().add(pFactory.newType(new QName("http://www.w3.org/ns/prov#", "emptyCollection", "prov"), 
+                                          ValueConverter.QNAME_XSD_QNAME));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(a1);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        System.out.println("Default ns is: " + nss.getDefaultNamespace());
+        System.out.println("All ns: " + nss.getPrefixes());
+        assertNull(nss.getDefaultNamespace());
+        assertTrue(nss.getPrefixes().size()==3);
+        assertTrue(nss.check("prov", NamespacePrefixMapper.PROV_NS));
+        assertTrue(nss.check("ex", EXAMPLE_NS));
+        assertTrue(nss.check("xsd", XSD_NS));
+    }
+
+
+    public void testNamespaces6 () 
+    {
+        Activity a1=pFactory.newActivity("ex:a1");
+        a1.getOthers().add(pFactory.newOther(new QName (EXAMPLE_NS,"tag1", "ex"),
+                                             new QName("http://www.w3.org/ns/prov#", "emptyCollection", "prov"), 
+                                             ValueConverter.QNAME_XSD_QNAME));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(a1);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        System.out.println("Default ns is: " + nss.getDefaultNamespace());
+        System.out.println("All ns: " + nss.getPrefixes());
+        assertNull(nss.getDefaultNamespace());
+        assertTrue(nss.getPrefixes().size()==3);
+        assertTrue(nss.check("prov", NamespacePrefixMapper.PROV_NS));
+        assertTrue(nss.check("ex", EXAMPLE_NS));
+        assertTrue(nss.check("xsd", XSD_NS));
+    }
+    
+    public void testNamespaces7 () 
+    {
+        Activity a1=pFactory.newActivity("ex:a1");
+        a1.getOthers().add(pFactory.newOther(new QName (EXAMPLE2_NS,"tag1", "ex2"),
+                                             new QName("http://www.w3.org/ns/prov#", "emptyCollection", "prov"), 
+                                             ValueConverter.QNAME_XSD_QNAME));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(a1);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        System.out.println("Default ns is: " + nss.getDefaultNamespace());
+        System.out.println("All ns: " + nss.getPrefixes());
+        assertNull(nss.getDefaultNamespace());
+        assertTrue(nss.getPrefixes().size()==4);
+        assertTrue(nss.check("prov", NamespacePrefixMapper.PROV_NS));
+        assertTrue(nss.check("ex", EXAMPLE_NS));
+        assertTrue(nss.check("xsd", XSD_NS));
+        assertTrue(nss.check("ex2", EXAMPLE2_NS));
+    }
 
 
 }

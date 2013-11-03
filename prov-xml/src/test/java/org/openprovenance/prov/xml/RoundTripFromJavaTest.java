@@ -1,7 +1,6 @@
 package org.openprovenance.prov.xml;
 
 import java.io.File;
-import org.openprovenance.prov.model.HasExtensibility;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
@@ -27,17 +26,13 @@ import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.WasEndedBy;
 import org.openprovenance.prov.model.HadMember;
-import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.Location;
-import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.DerivedByInsertionFrom;
 import org.openprovenance.prov.model.DerivedByRemovalFrom;
 import org.openprovenance.prov.model.DictionaryMembership;
 
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -219,7 +214,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void writeXMLDocument(Document doc, String file) throws JAXBException {
 	ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
 	serial.serialiseDocument(new File(file), doc, true);
-	StringWriter sw = new StringWriter();
+	//StringWriter sw = new StringWriter();
 	//serial.serialiseDocument(sw, doc, true);
 	//System.out.println(sw.toString());
     }

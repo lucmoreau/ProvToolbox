@@ -4,14 +4,9 @@ import java.io.File;
 
 
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.net.URI;
 import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;

@@ -34,7 +34,17 @@ import org.openprovenance.prov.model.WasStartedBy;
 
 public class NamespaceGatherer implements RecordAction {
     
-    public NamespaceGatherer() {}
+
+    /* mapping from prefixes to namespaces. */
+    Hashtable<String, String> prefixes = new Hashtable<String, String>();
+    /* mapping from namespaces to prefixes. */
+    Hashtable<String, String> namespaces = new Hashtable<String, String>();
+    
+    
+    public NamespaceGatherer() {
+	prefixes.put("prov",NamespacePrefixMapper.PROV_NS);
+	namespaces.put(NamespacePrefixMapper.PROV_NS,"prov");
+    }
     
     public NamespaceGatherer(Hashtable<String, String> prefixes,
                              String defaultNamespace) {
@@ -45,11 +55,6 @@ public class NamespaceGatherer implements RecordAction {
     
     
 
-    /* mapping from prefixes to namespaces. */
-    Hashtable<String, String> prefixes = new Hashtable<String, String>();
-    /* mapping from namespaces to prefixes. */
-    Hashtable<String, String> namespaces = new Hashtable<String, String>();
-    
     String defaultNamespace = null;
 
     public String getDefaultNamespace() {

@@ -65,6 +65,9 @@ public class NamespaceGatherer implements RecordAction {
 	return prefixes;
     }
 
+    public Hashtable<String, String> getNamespaces() {
+	return namespaces;
+    }
     public void registerLocation(List<Location> locations) {
 	for (Location loc : locations) {
 	    register(loc);
@@ -154,7 +157,10 @@ public class NamespaceGatherer implements RecordAction {
 	    String old = prefixes.get(prefix);
 	    if (old == null) {
 		prefixes.put(prefix, namespace);
-		namespaces.put(namespace,prefix);
+		if (namespaces.get(namespace)==null) {
+		    // make sure we don't overwrite an existing namespace
+		    namespaces.put(namespace,prefix);
+		}
 	    } else {
 		newPrefix(namespace);
 	    }
@@ -345,5 +351,7 @@ public class NamespaceGatherer implements RecordAction {
 	registerValue(e.getValue());
 	registerOther(e.getOthers());
     }
+
+
 
 }

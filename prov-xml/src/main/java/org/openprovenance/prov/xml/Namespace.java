@@ -11,6 +11,7 @@ public class Namespace {
     
 
     Hashtable<String, String> prefixes=new Hashtable<String, String>();
+    Hashtable<String, String> namespaces=new Hashtable<String, String>();
     String defaultNamespace=null;
 	    
     
@@ -20,6 +21,9 @@ public class Namespace {
     
     public Hashtable<String, String> getPrefixes() {
 	return prefixes;
+    }
+    public Hashtable<String, String> getNamespaces() {
+	return namespaces;
     }
     
     
@@ -47,6 +51,7 @@ public class Namespace {
 	Namespace ns=new Namespace();
 	ns.prefixes=gatherer.getPrefixes();
 	ns.defaultNamespace=gatherer.defaultNamespace;
+	ns.namespaces=gatherer.getNamespaces();
 	return ns;
     }
     

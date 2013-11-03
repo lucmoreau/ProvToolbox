@@ -23,6 +23,11 @@ public class Namespace {
     }
     
     
+    public boolean check(String prefix, String namespace) {
+	String knownAs=prefixes.get(prefix);
+	return namespace==knownAs;
+    }
+    
     static ProvUtilities u=new ProvUtilities();
     
     /* A Utility to find all namespaces (and associated prefixes). Prefixes are adopted first-come. 
@@ -34,7 +39,7 @@ public class Namespace {
 	    u.run(s, gatherer);
 	}
 	for (NamedBundle bu: u.getBundle(doc)) {
-	    gatherer.gather(bu.getId());
+	    gatherer.register(bu.getId());
 	    for (Statement s2: u.getStatement(bu)) {
 		u.run(s2,gatherer);
 	    }

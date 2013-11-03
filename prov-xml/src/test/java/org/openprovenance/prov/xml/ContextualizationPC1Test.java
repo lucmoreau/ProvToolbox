@@ -9,41 +9,19 @@ import javax.xml.namespace.QName;
 
 
 import junit.framework.TestCase;
-import org.openprovenance.prov.model.HasExtensibility;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
-import org.openprovenance.prov.model.HasLabel;
-import org.openprovenance.prov.model.HasLocation;
 import org.openprovenance.prov.model.HasOtherAttribute;
-import org.openprovenance.prov.model.HasType;
-import org.openprovenance.prov.model.HasValue;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasDerivedFrom;
-import org.openprovenance.prov.model.WasAttributedTo;
-import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.WasGeneratedBy;
 import org.openprovenance.prov.model.WasAssociatedWith;
-import org.openprovenance.prov.model.WasStartedBy;
-import org.openprovenance.prov.model.WasInfluencedBy;
-import org.openprovenance.prov.model.WasInformedBy;
-import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.MentionOf;
-import org.openprovenance.prov.model.AlternateOf;
-import org.openprovenance.prov.model.SpecializationOf;
-import org.openprovenance.prov.model.WasEndedBy;
-import org.openprovenance.prov.model.HadMember;
-import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Role;
-import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.Type;
-import org.openprovenance.prov.model.DerivedByInsertionFrom;
-import org.openprovenance.prov.model.DerivedByRemovalFrom;
-import org.openprovenance.prov.model.DictionaryMembership;
 
 /**
  * Unit test for simple Provenance Challenge 1 like workflow.

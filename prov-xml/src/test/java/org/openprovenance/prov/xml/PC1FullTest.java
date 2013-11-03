@@ -9,7 +9,6 @@ import java.net.URI;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.model.HasExtensibility;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;

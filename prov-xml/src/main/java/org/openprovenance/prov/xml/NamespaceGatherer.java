@@ -3,6 +3,7 @@ package org.openprovenance.prov.xml;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.ActedOnBehalfOf;
@@ -59,70 +60,85 @@ public class NamespaceGatherer implements RecordAction {
 	return prefixes;
     }
 
-    private void gatherLocation(List<Location> locations) {
+    public void registerLocation(List<Location> locations) {
 	for (Location loc : locations) {
-	    gather(loc.getType());
-	    Object val = loc.getValue();
-	    if (val instanceof QName) {
-		gather((QName) val);
-	    }
+	    register(loc);
 	}
-
     }
 
-    private void gatherType(List<Type> types) {
+    public void register(Location loc) {
+	register(loc.getType());
+	Object val = loc.getValue();
+	if (val instanceof QName) {
+	    register((QName) val);
+	}
+    }
+
+    public void registerType(List<Type> types) {
 	for (Type typ : types) {
-	    gather(typ.getType());
-	    Object val = typ.getValue();
-	    if (val instanceof QName) {
-		gather((QName) val);
-	    }
+	    register(typ);
 	}
 
     }
 
-    private void gatherRole(List<Role> roles) {
+    public void register(Type typ) {
+	register(typ.getType());
+	Object val = typ.getValue();
+	if (val instanceof QName) {
+	    register((QName) val);
+	}
+    }
+
+    public void registerRole(List<Role> roles) {
 	for (Role rol : roles) {
-	    gather(rol.getType());
-	    Object val = rol.getValue();
-	    if (val instanceof QName) {
-		gather((QName) val);
-	    }
+	    register(rol);
 	}
 
     }
 
-    private void gatherOther(List<OtherAttribute> others) {
+    public void register(Role rol) {
+	register(rol.getType());
+	Object val = rol.getValue();
+	if (val instanceof QName) {
+	    register((QName) val);
+	}
+    }
+
+    public void registerOther(List<OtherAttribute> others) {
 	for (OtherAttribute other : others) {
-	    gather(other.getType());
-	    gather(other.getElementName());
-	    Object val = other.getValue();
-	    if (val instanceof QName) {
-		gather((QName) val);
-	    }
+	    register(other);
 	}
 
     }
 
-    private void gatherValue(Value val2) {
+    public void register(OtherAttribute other) {
+	register(other.getType());
+	register(other.getElementName());
+	Object val = other.getValue();
+	if (val instanceof QName) {
+	    register((QName) val);
+	}
+    }
+
+    public void registerValue(Value val2) {
 	Object val = val2.getValue();
 	if (val instanceof QName) {
-	    gather((QName) val);
+	    register((QName) val);
 	}
     }
 
     final String stringForDefault="::";
 
-    void gather(IDRef name) {
+    void register(IDRef name) {
 	if (name!=null)
-	gather(name.getRef());
+	register(name.getRef());
     }
 
-    void gather(QName name) {
+    void register(QName name) {
 	if (name==null) return;
 	String namespace = name.getNamespaceURI();
 	String prefix = name.getPrefix();
-	if (prefix == null) {
+	if ((prefix == null) || (prefix.equals(XMLConstants.DEFAULT_NS_PREFIX))) {
 	    if (defaultNamespace == null) {
 		defaultNamespace = namespace;
 		namespaces.put(namespace, stringForDefault);
@@ -161,168 +177,168 @@ public class NamespaceGatherer implements RecordAction {
 
     @Override
     public void run(HadMember mem) {
-	gather(mem.getCollection());
+	register(mem.getCollection());
 	for (IDRef i: mem.getEntity()) {
-	    gather(i);
+	    register(i);
 	}
     }
 
     @Override
     public void run(SpecializationOf spec) {
-	gather(spec.getGeneralEntity());
-	gather(spec.getSpecificEntity());
+	register(spec.getGeneralEntity());
+	register(spec.getSpecificEntity());
     }
 
     @Override
     public void run(MentionOf men) {
-	gather(men.getBundle());
-	gather(men.getGeneralEntity());
-	gather(men.getSpecificEntity());
+	register(men.getBundle());
+	register(men.getGeneralEntity());
+	register(men.getSpecificEntity());
     }
 
     @Override
     public void run(AlternateOf alt) {
-	gather(alt.getAlternate1());
-	gather(alt.getAlternate2());
+	register(alt.getAlternate1());
+	register(alt.getAlternate2());
     }
 
     @Override
     public void run(WasInfluencedBy inf) {
-	gather(inf.getId());
-	gather(inf.getInfluencee());
-	gather(inf.getInfluencer());
-	gatherType(inf.getType());
-	gatherOther(inf.getOthers());
+	register(inf.getId());
+	register(inf.getInfluencee());
+	register(inf.getInfluencer());
+	registerType(inf.getType());
+	registerOther(inf.getOthers());
     }
 
     @Override
     public void run(ActedOnBehalfOf del) {
-	gather(del.getId());
-	gather(del.getDelegate());
-	gather(del.getResponsible());
-	gather(del.getActivity());
-	gatherType(del.getType());
-	gatherOther(del.getOthers());
+	register(del.getId());
+	register(del.getDelegate());
+	register(del.getResponsible());
+	register(del.getActivity());
+	registerType(del.getType());
+	registerOther(del.getOthers());
     }
 
     @Override
     public void run(WasAttributedTo attr) {
-	gather(attr.getId());
-	gather(attr.getEntity());
-	gather(attr.getAgent());
-	gatherType(attr.getType());
-	gatherOther(attr.getOthers());	
+	register(attr.getId());
+	register(attr.getEntity());
+	register(attr.getAgent());
+	registerType(attr.getType());
+	registerOther(attr.getOthers());	
     }
 
     @Override
     public void run(WasAssociatedWith assoc) {
-	gather(assoc.getId());
-	gather(assoc.getActivity());
-	gather(assoc.getAgent());
-	gather(assoc.getPlan());
-	gatherRole(assoc.getRole());
-	gatherType(assoc.getType());
-	gatherOther(assoc.getOthers());
+	register(assoc.getId());
+	register(assoc.getActivity());
+	register(assoc.getAgent());
+	register(assoc.getPlan());
+	registerRole(assoc.getRole());
+	registerType(assoc.getType());
+	registerOther(assoc.getOthers());
     }
 
     @Override
     public void run(WasDerivedFrom der) {
-	gather(der.getId());
-	gather(der.getGeneratedEntity());
-	gather(der.getUsedEntity());
-	gather(der.getActivity());
-	gather(der.getGeneration());
-	gather(der.getUsage());
-	gatherType(der.getType());
-	gatherOther(der.getOthers());
+	register(der.getId());
+	register(der.getGeneratedEntity());
+	register(der.getUsedEntity());
+	register(der.getActivity());
+	register(der.getGeneration());
+	register(der.getUsage());
+	registerType(der.getType());
+	registerOther(der.getOthers());
     }
 
     @Override
     public void run(WasInformedBy inf) {
-	gather(inf.getId());
-	gather(inf.getInformed());
-	gather(inf.getInformant());
-	gatherType(inf.getType());
-	gatherOther(inf.getOthers());
+	register(inf.getId());
+	register(inf.getInformed());
+	register(inf.getInformant());
+	registerType(inf.getType());
+	registerOther(inf.getOthers());
     }
 
     @Override
     public void run(WasEndedBy end) {
-	gather(end.getId());
-	gather(end.getActivity());
-	gather(end.getEnder());
-	gather(end.getTrigger());
-	gatherLocation(end.getLocation());
-	gatherType(end.getType());
-	gatherRole(end.getRole());
-	gatherOther(end.getOthers());
+	register(end.getId());
+	register(end.getActivity());
+	register(end.getEnder());
+	register(end.getTrigger());
+	registerLocation(end.getLocation());
+	registerType(end.getType());
+	registerRole(end.getRole());
+	registerOther(end.getOthers());
     }
 
     @Override
     public void run(WasStartedBy start) {
-	gather(start.getId());
-	gather(start.getActivity());
-	gather(start.getStarter());
-	gather(start.getTrigger());
-	gatherLocation(start.getLocation());
-	gatherType(start.getType());
-	gatherRole(start.getRole());
-	gatherOther(start.getOthers());
+	register(start.getId());
+	register(start.getActivity());
+	register(start.getStarter());
+	register(start.getTrigger());
+	registerLocation(start.getLocation());
+	registerType(start.getType());
+	registerRole(start.getRole());
+	registerOther(start.getOthers());
     }
 
     @Override
     public void run(WasInvalidatedBy inv) {
-	gather(inv.getId());
-	gather(inv.getEntity());
-	gather(inv.getActivity());
-	gatherRole(inv.getRole());
-	gatherType(inv.getType());
-	gatherOther(inv.getOthers());
+	register(inv.getId());
+	register(inv.getEntity());
+	register(inv.getActivity());
+	registerRole(inv.getRole());
+	registerType(inv.getType());
+	registerOther(inv.getOthers());
     }
 
     @Override
     public void run(Used use) {
-	gather(use.getId());
-	gather(use.getEntity());
-	gather(use.getActivity());
-	gatherRole(use.getRole());
-	gatherType(use.getType());
-	gatherOther(use.getOthers());
+	register(use.getId());
+	register(use.getEntity());
+	register(use.getActivity());
+	registerRole(use.getRole());
+	registerType(use.getType());
+	registerOther(use.getOthers());
     }
 
     @Override
     public void run(WasGeneratedBy gen) {
-	gather(gen.getId());
-	gather(gen.getEntity());
-	gather(gen.getActivity());
-	gatherRole(gen.getRole());
-	gatherType(gen.getType());
-	gatherOther(gen.getOthers());
+	register(gen.getId());
+	register(gen.getEntity());
+	register(gen.getActivity());
+	registerRole(gen.getRole());
+	registerType(gen.getType());
+	registerOther(gen.getOthers());
     }
 
     @Override
     public void run(Agent ag) {
-	gather(ag.getId());
-	gatherLocation(ag.getLocation());
-	gatherType(ag.getType());
-	gatherOther(ag.getOthers());
+	register(ag.getId());
+	registerLocation(ag.getLocation());
+	registerType(ag.getType());
+	registerOther(ag.getOthers());
     }
 
     @Override
     public void run(Activity a) {
-	gather(a.getId());
-	gatherLocation(a.getLocation());
-	gatherType(a.getType());
-	gatherOther(a.getOthers());
+	register(a.getId());
+	registerLocation(a.getLocation());
+	registerType(a.getType());
+	registerOther(a.getOthers());
     }
 
     @Override
     public void run(Entity e) {
-	gather(e.getId());
-	gatherLocation(e.getLocation());
-	gatherType(e.getType());
-	gatherValue(e.getValue());
-	gatherOther(e.getOthers());
+	register(e.getId());
+	registerLocation(e.getLocation());
+	registerType(e.getType());
+	registerValue(e.getValue());
+	registerOther(e.getOthers());
     }
 
 }

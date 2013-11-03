@@ -11,7 +11,6 @@ import org.openprovenance.prov.model.HasLocation;
 import org.openprovenance.prov.model.HasOtherAttribute;
 import org.openprovenance.prov.model.HasRole;
 import org.openprovenance.prov.model.HasType;
-import org.openprovenance.prov.model.HasValue;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasAttributedTo;
@@ -26,16 +25,11 @@ import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.WasEndedBy;
 import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.Role;
-import org.openprovenance.prov.model.Location;
 import java.util.Arrays;
 import java.util.Hashtable;
-import java.net.URI;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
-
-import org.openprovenance.prov.model.URIWrapper;
 
 import junit.framework.TestCase;
 

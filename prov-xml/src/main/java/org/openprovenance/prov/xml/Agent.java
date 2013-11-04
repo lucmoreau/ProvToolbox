@@ -319,5 +319,11 @@ public class Agent implements Equals, HashCode, ToString, org.openprovenance.pro
         toString(toStringBuilder);
         return toStringBuilder.toString();
     }
+    
+    
+    public Kind getKind() {
+ 	return org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_AGENT;
+    }
+
 
 }

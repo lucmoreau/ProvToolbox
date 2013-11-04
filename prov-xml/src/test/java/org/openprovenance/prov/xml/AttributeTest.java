@@ -89,9 +89,19 @@ public class AttributeTest extends TestCase {
      * @return the suite of tests being tested
      */
 
+  
+    
     public void updateNamespaces(Document doc) {
 	Hashtable<String, String> nss = new Hashtable<String, String>();
-	updateNamespaces(nss);
+	//updateNamespaces(nss);
+	Namespace ns=Namespace.gatherNamespaces(doc);
+	if (ns.getDefaultNamespace()!=null) {
+	    nss.put("_",ns.getDefaultNamespace());
+	}
+	for (String pre: ns.getPrefixes().keySet()) {
+	    nss.put(pre, ns.getPrefixes().get(pre));
+	}
+	System.out.println("updateNamespaces with " + nss);
 	doc.setNss(nss);
     }
    

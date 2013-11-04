@@ -237,5 +237,26 @@ public class NamespacesTest
         assertTrue(nss.getNamespaces().get(EXAMPLE3_NS).equals("_pre1"));
         
     }
+    
+    public void testNamespaces10 () 
+    {
+        Activity a1=pFactory.newActivity("ex:a10");
+        a1.getType().add(pFactory.newType(new QName(EXAMPLE_NS, "Amazing","other"), 
+                                                  ValueConverter.QNAME_XSD_QNAME));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(a1);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        System.out.println("Default ns is: " + nss.getDefaultNamespace());
+        System.out.println("All prefixes: " + nss.getPrefixes());
+        System.out.println("All ns: " + nss.getNamespaces());
+        assertNull(nss.getDefaultNamespace());
+        assertTrue(nss.getPrefixes().size()==4);
+        assertTrue(nss.check("prov", NamespacePrefixMapper.PROV_NS));
+        assertTrue(nss.check("ex", EXAMPLE_NS));
+        assertTrue(nss.check("other", EXAMPLE_NS));
+        assertTrue(nss.check("xsd", XSD_NS));
+    }
+
+
 
 }

@@ -14,6 +14,7 @@ import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
@@ -381,14 +382,14 @@ public class TreeTraversal {
             Object entities=convert(ast.getChild(1));
 
             @SuppressWarnings("unchecked")
-            List<Object> keys2 = (List<Object>)keys1;
+            List<TypedValue> keys2 = (List<TypedValue>)keys1;
 	    
             @SuppressWarnings("unchecked")
             List<QName> qnames = (List<QName>)entities;
 	    
             List<KeyQNamePair> entries=new LinkedList<KeyQNamePair>();
             int ii=0;
-            for (Object key : keys2) {
+            for (TypedValue key : keys2) {
                 QName value=qnames.get(ii);
                 KeyQNamePair p=new KeyQNamePair();
                 p.name=value;

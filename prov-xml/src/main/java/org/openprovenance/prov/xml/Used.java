@@ -463,4 +463,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
         return toStringBuilder.toString();
     }
 
+    public Kind getKind() {
+   	return org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_USAGE;
+    }
 }

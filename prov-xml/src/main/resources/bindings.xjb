@@ -949,6 +949,13 @@
 	  </jaxb:property>
 	</jaxb:bindings>
 
+	<jaxb:bindings node="xs:complexType[@name='KeyEntityPair']//xs:element[@name='key']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.TypedValue">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
 
 	<!-- DictionaryMembership -->
 	<jaxb:bindings node="xs:complexType[@name='DictionaryMembership']">

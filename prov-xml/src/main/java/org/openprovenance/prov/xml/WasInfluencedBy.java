@@ -340,5 +340,8 @@ public class WasInfluencedBy implements Equals, HashCode, ToString, org.openprov
         toString(toStringBuilder);
         return toStringBuilder.toString();
     }
+    public Kind getKind() {
+   	return org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_INFLUENCE;
+    }
 
 }

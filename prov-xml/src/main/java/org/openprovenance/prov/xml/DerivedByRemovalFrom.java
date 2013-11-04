@@ -380,5 +380,10 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
         toString(toStringBuilder);
         return toStringBuilder.toString();
     }
+    
+    public Kind getKind() {
+   	return org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_DICTIONARY_REMOVAL;
+    }
+
 
 }

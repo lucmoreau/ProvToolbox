@@ -22,6 +22,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBEqualsBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.StatementOrBundle;
 import org.w3c.dom.Element;
 
 
@@ -393,6 +394,10 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
         final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
         toString(toStringBuilder);
         return toStringBuilder.toString();
+    }
+    
+    public Kind getKind() {
+	return StatementOrBundle.Kind.PROV_ENTITY;
     }
 
 }

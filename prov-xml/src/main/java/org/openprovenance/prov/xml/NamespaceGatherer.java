@@ -10,15 +10,23 @@ import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.AlternateOf;
+import org.openprovenance.prov.model.DerivedByInsertionFrom;
+import org.openprovenance.prov.model.DerivedByRemovalFrom;
+import org.openprovenance.prov.model.DictionaryMembership;
 import org.openprovenance.prov.model.Entity;
+import org.openprovenance.prov.model.Entry;
 import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.IDRef;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.MentionOf;
+import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.OtherAttribute;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.RecordAction;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.SpecializationOf;
+import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.StatementAction;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.Value;
@@ -32,7 +40,7 @@ import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
 
-public class NamespaceGatherer implements RecordAction {
+public class NamespaceGatherer implements StatementAction {
     
 
     /* mapping from prefixes to namespaces. */
@@ -129,9 +137,11 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     public void registerValue(Value val2) {
-	Object val = val2.getValue();
-	if (val instanceof QName) {
-	    register((QName) val);
+	if (val2!=null) {
+	    Object val = val2.getValue();
+	    if (val instanceof QName) {
+		register((QName) val);
+	    }
 	}
     }
 
@@ -187,7 +197,7 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     @Override
-    public void run(HadMember mem) {
+    public void doAction(HadMember mem) {
 	register(mem.getCollection());
 	for (IDRef i: mem.getEntity()) {
 	    register(i);
@@ -195,26 +205,26 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     @Override
-    public void run(SpecializationOf spec) {
+    public void doAction(SpecializationOf spec) {
 	register(spec.getGeneralEntity());
 	register(spec.getSpecificEntity());
     }
 
     @Override
-    public void run(MentionOf men) {
+    public void doAction(MentionOf men) {
 	register(men.getBundle());
 	register(men.getGeneralEntity());
 	register(men.getSpecificEntity());
     }
 
     @Override
-    public void run(AlternateOf alt) {
+    public void doAction(AlternateOf alt) {
 	register(alt.getAlternate1());
 	register(alt.getAlternate2());
     }
 
     @Override
-    public void run(WasInfluencedBy inf) {
+    public void doAction(WasInfluencedBy inf) {
 	register(inf.getId());
 	register(inf.getInfluencee());
 	register(inf.getInfluencer());
@@ -223,7 +233,7 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     @Override
-    public void run(ActedOnBehalfOf del) {
+    public void doAction(ActedOnBehalfOf del) {
 	register(del.getId());
 	register(del.getDelegate());
 	register(del.getResponsible());
@@ -233,7 +243,7 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     @Override
-    public void run(WasAttributedTo attr) {
+    public void doAction(WasAttributedTo attr) {
 	register(attr.getId());
 	register(attr.getEntity());
 	register(attr.getAgent());
@@ -242,7 +252,7 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     @Override
-    public void run(WasAssociatedWith assoc) {
+    public void doAction(WasAssociatedWith assoc) {
 	register(assoc.getId());
 	register(assoc.getActivity());
 	register(assoc.getAgent());
@@ -253,7 +263,7 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     @Override
-    public void run(WasDerivedFrom der) {
+    public void doAction(WasDerivedFrom der) {
 	register(der.getId());
 	register(der.getGeneratedEntity());
 	register(der.getUsedEntity());
@@ -265,7 +275,7 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     @Override
-    public void run(WasInformedBy inf) {
+    public void doAction(WasInformedBy inf) {
 	register(inf.getId());
 	register(inf.getInformed());
 	register(inf.getInformant());
@@ -274,7 +284,7 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     @Override
-    public void run(WasEndedBy end) {
+    public void doAction(WasEndedBy end) {
 	register(end.getId());
 	register(end.getActivity());
 	register(end.getEnder());
@@ -286,7 +296,7 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     @Override
-    public void run(WasStartedBy start) {
+    public void doAction(WasStartedBy start) {
 	register(start.getId());
 	register(start.getActivity());
 	register(start.getStarter());
@@ -298,7 +308,7 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     @Override
-    public void run(WasInvalidatedBy inv) {
+    public void doAction(WasInvalidatedBy inv) {
 	register(inv.getId());
 	register(inv.getEntity());
 	register(inv.getActivity());
@@ -308,7 +318,7 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     @Override
-    public void run(Used use) {
+    public void doAction(Used use) {
 	register(use.getId());
 	register(use.getEntity());
 	register(use.getActivity());
@@ -318,7 +328,7 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     @Override
-    public void run(WasGeneratedBy gen) {
+    public void doAction(WasGeneratedBy gen) {
 	register(gen.getId());
 	register(gen.getEntity());
 	register(gen.getActivity());
@@ -328,7 +338,7 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     @Override
-    public void run(Agent ag) {
+    public void doAction(Agent ag) {
 	register(ag.getId());
 	registerLocation(ag.getLocation());
 	registerType(ag.getType());
@@ -336,7 +346,7 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     @Override
-    public void run(Activity a) {
+    public void doAction(Activity a) {
 	register(a.getId());
 	registerLocation(a.getLocation());
 	registerType(a.getType());
@@ -344,7 +354,7 @@ public class NamespaceGatherer implements RecordAction {
     }
 
     @Override
-    public void run(Entity e) {
+    public void doAction(Entity e) {
 	register(e.getId());
 	registerLocation(e.getLocation());
 	registerType(e.getType());
@@ -352,6 +362,50 @@ public class NamespaceGatherer implements RecordAction {
 	registerOther(e.getOthers());
     }
 
+    @Override
+    public void doAction(DictionaryMembership m) {
+	register(m.getDictionary());
+	registerEntry(m.getKeyEntityPair());	
+    }
+
+    @Override
+    public void doAction(DerivedByRemovalFrom r) {
+	register(r.getId());
+	register(r.getNewDictionary());
+	register(r.getOldDictionary());
+	registerType(r.getType());
+	registerOther(r.getOthers());
+	if (!r.getKey().isEmpty()) {
+	    register(ValueConverter.QNAME_XSD_INT); // pick up an xsd qname, so that xsd is registered!
+	}
+	
+    }
+
+    @Override
+    public void doAction(DerivedByInsertionFrom i) {
+	register(i.getId());
+	register(i.getNewDictionary());
+	register(i.getOldDictionary());
+	registerType(i.getType());
+	registerOther(i.getOthers());
+	registerEntry(i.getKeyEntityPair());	
+    }
+
+    void registerEntry(List<Entry> keyEntityPairs) {
+	for (Entry e: keyEntityPairs) {
+	    register(e.getEntity());
+	    //Object key=e.getKey();
+	    register(ValueConverter.QNAME_XSD_INT); // pick up an xsd qname, so that xsd is registered!
+	}	
+    }
+
+    @Override
+    public void doAction(NamedBundle bu, ProvUtilities u) {
+	register(bu.getId());
+	for (Statement s2: bu.getStatement()) {
+	    u.doAction(s2, this);
+	}
+    }
 
 
 }

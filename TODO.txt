@@ -1,4 +1,37 @@
+1.
+~/workspace/ProvToolbox/prov-n/target/dictionaryRemoval4-S.provn
+Shows the problem
 
+The following Key attributes are not the same
+[a, 1]
+[[Ljava.lang.Object;@32bb9f91, [Ljava.lang.Object;@3be9029c]
+
+Keys are java objects ... when we would want them to be TypedObjects?
+
+
+
+Likewise for dictionary insertion.
+
+STARTED TO CHANGE jaxb mapping SO THAT a KEY is NOW A TypedValue
+
+
+
+
+2. ~/workspace/ProvToolbox/prov-n/target/attr_entity_one_attr24.provn
+
+document
+prefix xsd <http://www.w3.org/2001/XMLSchema>
+prefix prov <http://www.w3.org/ns/prov#>
+prefix ex <http://example.org/>
+prefix _pre0 <http://example4.org/>
+entity(ex:en24,[prov:type = 'ex:abc'])
+endDocument
+
+ex:abc ... should have been _pre0:abc
+
+Need to update the serialization code, to make use of namespace mapping.
+
+----------------------------------------------------------------------
 Have a representation of typed values in Java.	
 	    // This fails because we don't get to read the type in xsi:type
 	    //a.getLocation().add(pFactory.newLocation(2,ValueConverter.QNAME_XSD_UNSIGNED_INT));

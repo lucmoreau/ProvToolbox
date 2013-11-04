@@ -455,5 +455,9 @@ public class WasGeneratedBy implements Equals, HashCode, ToString, org.openprove
         toString(toStringBuilder);
         return toStringBuilder.toString();
     }
+    
+    public Kind getKind() {
+   	return org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_GENERATION;
+    }
 
 }

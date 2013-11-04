@@ -378,5 +378,10 @@ public class DerivedByInsertionFrom implements Equals, HashCode, ToString, org.o
         toString(toStringBuilder);
         return toStringBuilder.toString();
     }
+    
+    public Kind getKind() {
+   	return org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_DICTIONARY_INSERTION;
+    }
+
 
 }

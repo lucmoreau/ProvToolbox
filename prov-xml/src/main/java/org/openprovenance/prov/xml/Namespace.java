@@ -4,6 +4,7 @@ import java.util.Hashtable;
 
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.StatementOrBundle;
 
 import org.openprovenance.prov.model.Document;
 
@@ -39,15 +40,9 @@ public class Namespace {
     
     static public Namespace gatherNamespaces(Document doc) {
 	NamespaceGatherer gatherer=new NamespaceGatherer();	
-	for (Statement s: u.getStatement(doc)) {
-	    u.run(s, gatherer);
-	}
-	for (NamedBundle bu: u.getBundle(doc)) {
-	    gatherer.register(bu.getId());
-	    for (Statement s2: u.getStatement(bu)) {
-		u.run(s2,gatherer);
-	    }
-	}
+	u.forAllStatementOrBundle(doc.getStatementOrBundle(), 
+	                          gatherer);
+	
 	Namespace ns=new Namespace();
 	ns.prefixes=gatherer.getPrefixes();
 	ns.defaultNamespace=gatherer.defaultNamespace;

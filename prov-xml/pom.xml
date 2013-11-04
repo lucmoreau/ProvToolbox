@@ -293,6 +293,13 @@
                      <arg value="ActedOnBehalfOf.java" />
                      <arg value="DerivedByInsertionFrom.java" />
                      <arg value="DerivedByRemovalFrom.java" />
+                     <arg value="SpecializationOf.java" />
+                     <arg value="AlternateOf.java" />
+                     <arg value="HadMember.java" />
+                     <arg value="NamedBundle.java" />
+                     <arg value="DictionaryMembership.java" />
+                     <arg value="MentionOf.java" />
+
                 </exec>
 
 

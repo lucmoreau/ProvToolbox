@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.Activity;
@@ -652,7 +653,7 @@ public class JSONConstructor implements ModelConstructor {
 	public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
 							    QName after,
 							    QName before,
-							    List<Object> keys,
+							    List<Key> keys,
 							    Collection<Attribute> attributes) {
 		List<Object[]> attrs = convertAttributes(attributes);
 		if (after != null)

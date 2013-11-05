@@ -36,6 +36,7 @@ import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.HasValue;
 import org.openprovenance.prov.model.IDRef;
 import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -329,7 +330,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         case derivedByRemovalFrom:
         	before = optionalQName("prov:before", attributeMap);
         	after = optionalQName("prov:after", attributeMap);
-        	List<Object> keys = optionalKeySet("prov:key-set", attributeMap);
+        	List<Key> keys = optionalKeySet("prov:key-set", attributeMap);
         	DerivedByRemovalFrom dBRF = pf.newDerivedByRemovalFrom(id, after, before, keys, null);
         	statement = dBRF;
         	break;
@@ -661,8 +662,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             return null;
     }
     
-    private List<Object> keySet(String attributeName, JsonObject attributeMap) {
-    	List<Object> results = new ArrayList<Object>();
+    private List<Key> keySet(String attributeName, JsonObject attributeMap) {
+    	List<Key> results = new ArrayList<Key>();
     	List<JsonElement> elements = popMultiValAttribute(attributeName, attributeMap);
         for (JsonElement element : elements) {
         	Object key = decodeAttributeValue(element);
@@ -671,7 +672,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         return results;
     }
     
-    private List<Object> optionalKeySet(String attributeName, JsonObject attributeMap) {
+    private List<Key> optionalKeySet(String attributeName, JsonObject attributeMap) {
     	if (attributeMap.has(attributeName))
             return keySet(attributeName, attributeMap);
         else

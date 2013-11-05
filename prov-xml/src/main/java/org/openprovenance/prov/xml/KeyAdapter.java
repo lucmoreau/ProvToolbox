@@ -28,10 +28,10 @@ public class KeyAdapter extends XmlAdapter<Element, TypedValue> {
     }
 
     @Override
-    public TypedValue unmarshal(Element value) throws Exception {
-         System.out.println("==> KeyAdapter unmarshalling for " + value);
-	// TODO Auto-generated method stub
-	return null;
+    public TypedValue unmarshal(Element el) throws Exception {
+         System.out.println("==> KeyAdapter unmarshalling for " + el);
+         //TODO: make sure I construct a typedvalue. Update newAttribute in xml.ProvFactory.
+         return (TypedValue) DOMProcessing.unmarshallAttribute(el,pFactory,vconv);
     }
 
 }

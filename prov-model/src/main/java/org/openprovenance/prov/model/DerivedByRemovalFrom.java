@@ -8,7 +8,7 @@ public interface DerivedByRemovalFrom extends Identifiable, HasExtensibility, Ha
 
     void setOldDictionary(IDRef before);
 
-    List<Object> getKey();
+    List<Key> getKey();
 
     IDRef getNewDictionary();
 

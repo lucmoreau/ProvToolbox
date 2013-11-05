@@ -19,6 +19,7 @@ import org.openprovenance.prov.model.InternationalizedString;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.Used;
@@ -566,7 +567,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
 							QName after,
 							QName before,
-							List<Object> keys,
+							List<Key> keys,
 							Collection<Attribute> attributes) {
        	QName der = addInfluence(id, after, before, null, null, true,
 			       attributes, Ontology.QNAME_PROVO_Removal);

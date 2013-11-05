@@ -589,7 +589,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
                                                             QName after,
                                                             QName before,
-                                                            List<Object> keys,
+                                                            List<Key> keys,
                                                             Collection<Attribute> attributes) {
     	IDRef aa=createIDRef();
     	aa.setRef(after);
@@ -602,7 +602,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
 							IDRef after,
 							IDRef before,
-							List<Object> keys,
+							List<Key> keys,
 							Collection<Attribute> attributes) {
 	DerivedByRemovalFrom res = of.createDerivedByRemovalFrom();
 	res.setId(id);
@@ -617,7 +617,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     public DerivedByRemovalFrom newDerivedByRemovalFrom(String id,
 							IDRef after,
 							IDRef before,
-							List<Object> keys,
+							List<Key> keys,
 							Collection<Attribute> attributes) {
 	return newDerivedByRemovalFrom(stringToQName(id), after, before, keys, attributes);
     }

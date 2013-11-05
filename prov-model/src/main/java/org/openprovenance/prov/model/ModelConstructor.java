@@ -48,7 +48,7 @@ public interface ModelConstructor {
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
                                                         QName after,
                                                         QName before,
-                                                        List<Object> keys,
+                                                        List<Key> keys,
                                                         Collection<Attribute> attributes);
     public DictionaryMembership newDictionaryMembership(QName dict,
 							List<KeyQNamePair> keyEntitySet);

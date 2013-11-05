@@ -17,6 +17,7 @@ import org.openprovenance.prov.model.DerivedByInsertionFrom;
 import org.openprovenance.prov.model.DerivedByRemovalFrom;
 import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.Used;
@@ -422,7 +423,7 @@ public class QualifiedCollector extends RdfCollector {
 
 		qname = getQualQName(qname);
 		
-		List<Object> theKeys=new LinkedList<Object>();
+		List<Key> theKeys=new LinkedList<Key>();
 		for (Value key: keys) {
 			theKeys.add(valueToObject(key));
 		}

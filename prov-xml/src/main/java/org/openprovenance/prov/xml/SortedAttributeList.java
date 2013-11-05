@@ -16,6 +16,7 @@ import java.util.ArrayList;
  */
 public class SortedAttributeList<TYPE> extends AbstractList<TYPE> {
 
+    int last_key=-1;
     int last_location=-1;
     int last_role=-1;
     int last_type=-1;
@@ -56,7 +57,15 @@ public class SortedAttributeList<TYPE> extends AbstractList<TYPE> {
     
     public void add(int index,TYPE element){
 	//System.out.println("*** SortedAttributeList add " + index + " " + element);
-	if (element instanceof org.openprovenance.prov.model.Location) {
+	if (element instanceof org.openprovenance.prov.model.Key) {
+	    last_key++;
+	    ll.add(last_key,element);
+	    last_location++;
+	    last_role++;
+	    last_type++;
+	    last_value++; first_value++;
+	    last_other++;
+	} else if (element instanceof org.openprovenance.prov.model.Location) {
 	    last_location++;
 	    ll.add(last_location,element);
 	    last_role++;

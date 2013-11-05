@@ -424,14 +424,14 @@ public class NotationConstructor implements ModelConstructor {
 	    s=s+"}";
 	    return s;
 	}
-	private String keySet(List<Object> ks) {
+	private String keySet(List<org.openprovenance.prov.model.Key> ks) {
 	    String s="{";
 	    if (ks!=null) {
 		boolean first=true;
-		for (Object k: ks) {
+		for (org.openprovenance.prov.model.Key k: ks) {
 		    if (!first) s=s+", ";
 		    first=false;
-		    s= s +  org.openprovenance.prov.xml.Helper.valueToNotationString(k,vc.getXsdType(k));
+		    s= s +  org.openprovenance.prov.xml.Helper.valueToNotationString(k);
 		}
 	    }
 	    s=s+"}";
@@ -442,7 +442,7 @@ public class NotationConstructor implements ModelConstructor {
 	public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
 							    QName after,
 							    QName before,
-							    List<Object> keys,
+							    List<org.openprovenance.prov.model.Key> keys,
 							    Collection<Attribute> attributes) {
 	    String s="prov:derivedByRemovalFrom(" + optionalId(id) + idOrMarker(after) + "," + idOrMarker(before)
 		    + "," + keySet(keys)

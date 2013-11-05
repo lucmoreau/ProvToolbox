@@ -334,7 +334,7 @@ public class TreeTraversal {
             id1=(QName)convert(ast.getChild(2));
             Object keyset=convert(ast.getChild(3));
             dAttrs=(List<Attribute>)convert(ast.getChild(4));
-            return c.newDerivedByRemovalFrom(uid,id2,id1,(List<Object>)keyset,dAttrs);
+            return c.newDerivedByRemovalFrom(uid,id2,id1,(List<org.openprovenance.prov.model.Key>)keyset,dAttrs);
 
         case PROV_NParser.DMEM:
             //uidTree=ast.getChild(0);
@@ -362,10 +362,12 @@ public class TreeTraversal {
 
 
         case PROV_NParser.KEYS:
-            List<Object> keys=new LinkedList<Object>();
+            List<Key> keys=new LinkedList<Key>();
             for (int i=0; i< ast.getChildCount(); i++) {
                 Object o=convert(ast.getChild(i));
-                keys.add(o);
+                Object [] pair=(Object[]) o;
+                keys.add(pFactory.newKey(pair[0], (QName)pair[1]));
+
             }
             return keys;
 
@@ -394,9 +396,7 @@ public class TreeTraversal {
                 QName value=qnames.get(ii);
                 KeyQNamePair p=new KeyQNamePair();
                 p.name=value;
-                
-                Object [] pair=(Object[]) o;
-                p.key=pFactory.newKey(pair[0], (QName)pair[1]);
+                p.key=(Key)o;
                 entries.add(p);
                 ii++;
             }

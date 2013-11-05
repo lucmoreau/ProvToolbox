@@ -2246,8 +2246,8 @@ public class RoundTripFromJavaTest extends TestCase {
 	}
 
 	public void testDictionaryRemoval3() throws JAXBException {
-		List<Object> ll = new LinkedList<Object>();
-		ll.add("a");
+		List<org.openprovenance.prov.model.Key> ll = new LinkedList<org.openprovenance.prov.model.Key>();
+		ll.add(pFactory.newKey("a",ValueConverter.QNAME_XSD_STRING));
 		DerivedByRemovalFrom d3 = pFactory.newDerivedByRemovalFrom(
 				q("removal3"), q("d2"), q("d1"), ll, null);
 
@@ -2258,9 +2258,10 @@ public class RoundTripFromJavaTest extends TestCase {
 	}
 
 	public void testDictionaryRemoval4() throws JAXBException {
-		List<Object> ll = new LinkedList<Object>();
-		ll.add("a");
-		ll.add(1);
+		List<org.openprovenance.prov.model.Key> ll = new LinkedList<org.openprovenance.prov.model.Key>();
+		ll.add(pFactory.newKey("a",ValueConverter.QNAME_XSD_STRING));
+		ll.add(pFactory.newKey("1",ValueConverter.QNAME_XSD_INT));
+
 		DerivedByRemovalFrom d4 = pFactory.newDerivedByRemovalFrom(
 				q("removal4"), q("d2"), q("d1"), ll, null);
 
@@ -2270,10 +2271,12 @@ public class RoundTripFromJavaTest extends TestCase {
 	}
 
 	public void testDictionaryRemoval5() throws JAXBException {
-		List<Object> ll = new LinkedList<Object>();
-		ll.add("a");
-		ll.add(1);
-		ll.add(q("a"));
+		List<org.openprovenance.prov.model.Key> ll = new LinkedList<org.openprovenance.prov.model.Key>();
+		ll.add(pFactory.newKey("a",ValueConverter.QNAME_XSD_STRING));
+		ll.add(pFactory.newKey("1",ValueConverter.QNAME_XSD_INT));
+		ll.add(pFactory.newKey(q("a"),ValueConverter.QNAME_XSD_QNAME));
+
+
 		DerivedByRemovalFrom d5 = pFactory.newDerivedByRemovalFrom(
 				q("removal5"), q("d2"), q("d1"), ll, null);
 		addFurtherAttributes(d5);

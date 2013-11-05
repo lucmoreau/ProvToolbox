@@ -52,7 +52,7 @@ import org.w3c.dom.Element;
 @XmlType(name = "Removal", propOrder = {
     "newDictionary",
     "oldDictionary",
-    "key",
+    //"key",
     "label",
     //"type",
     //"any"
@@ -65,9 +65,9 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
     protected org.openprovenance.prov.model.IDRef newDictionary;
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
     protected org.openprovenance.prov.model.IDRef oldDictionary;
-    @XmlElement(required = true)
-    @XmlSchemaType(name = "anySimpleType")
-    protected List<Object> key;
+    //@XmlElement(required = true)
+    //@XmlSchemaType(name = "anySimpleType")
+    transient protected List<org.openprovenance.prov.model.Key> key;
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
     
@@ -151,12 +151,23 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
      * 
      * 
      */
+    
+    /*
     public List<Object> getKey() {
         if (key == null) {
             key = new ArrayList<Object>();
         }
         return this.key;
     }
+    */
+    
+    public List<org.openprovenance.prov.model.Key> getKey() {
+        if (key == null) {
+            key=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Key.class);
+        } 
+        return this.key;
+    }
+    
 
     /**
      * Gets the value of the label property.
@@ -349,7 +360,7 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
             toStringBuilder.append("oldDictionary", theOldDictionary);
         }
         {
-            List<Object> theKey;
+            List<org.openprovenance.prov.model.Key> theKey;
             theKey = this.getKey();
             toStringBuilder.append("key", theKey);
         }

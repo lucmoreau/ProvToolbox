@@ -1,21 +1,3 @@
-1.
-~/workspace/ProvToolbox/prov-n/target/dictionaryRemoval4-S.provn
-Shows the problem
-
-The following Key attributes are not the same
-[a, 1]
-[[Ljava.lang.Object;@32bb9f91, [Ljava.lang.Object;@3be9029c]
-
-Keys are java objects ... when we would want them to be TypedObjects?
-
-
-
-Likewise for dictionary insertion.
-
-STARTED TO CHANGE jaxb mapping SO THAT a KEY is NOW A TypedValue
-
-
-
 
 2. ~/workspace/ProvToolbox/prov-n/target/attr_entity_one_attr24.provn
 

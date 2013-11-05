@@ -99,6 +99,8 @@ public interface ObjectFactory {
     WasStartedBy createWasStartedBy();
 
     TypedValue createTypedValue();
+
+    Key createKey();
     
     
 

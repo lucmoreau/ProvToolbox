@@ -9,7 +9,6 @@ import org.w3c.dom.Element;
 
 public class KeyAdapter extends XmlAdapter<Element, TypedValue> {
 
-    private static final QName QNAME_PROV_KEY = new QName(NamespacePrefixMapper.PROV_NS, "key", "prov");
     
     final org.openprovenance.prov.model.ProvFactory pFactory;
     final ValueConverter vconv;
@@ -24,7 +23,7 @@ public class KeyAdapter extends XmlAdapter<Element, TypedValue> {
     @Override
     public Element marshal(TypedValue value) throws Exception {
          System.out.println("==> KeyAdapter marshalling for " + value);
-         return DOMProcessing.marshalTypedValue(value,QNAME_PROV_KEY);
+         return DOMProcessing.marshalTypedValue(value,Helper.PROV_KEY_QNAME);
     }
 
     @Override

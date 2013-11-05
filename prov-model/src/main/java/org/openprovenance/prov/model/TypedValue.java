@@ -2,8 +2,6 @@ package org.openprovenance.prov.model;
 
 import javax.xml.namespace.QName;
 
-import org.w3c.dom.Element;
-
 
 public interface TypedValue {
 

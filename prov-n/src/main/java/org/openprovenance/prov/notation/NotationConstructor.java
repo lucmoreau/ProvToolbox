@@ -418,7 +418,7 @@ public class NotationConstructor implements ModelConstructor {
 		for (KeyQNamePair p: kes) {
 		    if (!first) s=s+", ";
 		    first=false;
-		    s= s + "(" + org.openprovenance.prov.xml.Helper.valueToNotationString(p.key,vc.getXsdType(p.key)) + ", " + idOrMarker(p.name) + ")";
+		    s= s + "(" + org.openprovenance.prov.xml.Helper.valueToNotationString(p.key) + ", " + idOrMarker(p.name) + ")";
 		}
 	    }
 	    s=s+"}";
@@ -463,7 +463,7 @@ public class NotationConstructor implements ModelConstructor {
 			for (KeyQNamePair entry: keyEntitySet) {
 				
 				String s="prov:hadDictionaryMember(" +   idOrMarker(dict) + "," + idOrMarker(entry.name)  						
-						 + "," +  org.openprovenance.prov.xml.Helper.valueToNotationString(entry.key,vc.getXsdType(entry.key)) + ")";
+						 + "," +  org.openprovenance.prov.xml.Helper.valueToNotationString(entry.key) + ")";
 			    writeln(s);	
 			}
 		}

@@ -17,13 +17,19 @@ public class Helper  {
     public static final QName PROV_ROLE_QNAME=provQName("role");
     public static final QName PROV_LOCATION_QNAME=provQName("location");
     public static final QName PROV_VALUE_QNAME=provQName("value");
+    public static final QName PROV_KEY_QNAME=provQName("key");
     
     /** Method replicated from ProvFactory. */
     static public String qnameToString(QName qname) {
 	return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
 		+ qname.getLocalPart();
     }
+    
+    public static String valueToNotationString(org.openprovenance.prov.model.Key key) {
+	return valueToNotationString(key.getValue(), key.getType());
+    }
 
+    
     //TODO: move this code to ValueConverter
     public static String valueToNotationString(Object val, QName xsdType) {
  	if (val instanceof InternationalizedString) {

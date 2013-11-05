@@ -465,8 +465,8 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
       }
    
 
-   public TypedValue newTypedValue(Object o, QName type) {
-	TypedValue res=of.createTypedValue();
+   public Key newKey(Object o, QName type) {
+	Key res=of.createKey();
 	res.setType(type);
 	res.setValueAsObject(o);
 	return res;
@@ -823,7 +823,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return newIDRef(stringToQName(id));
     }
 
-    public Entry newEntry(TypedValue key, IDRef entity) {
+    public Entry newEntry(Key key, IDRef entity) {
 	Entry res = of.createEntry();
 	res.setKey(key);
 	res.setEntity(entity);

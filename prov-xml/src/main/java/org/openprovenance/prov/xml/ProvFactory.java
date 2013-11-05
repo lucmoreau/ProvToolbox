@@ -142,6 +142,9 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 	}
 	if (elementName.equals(Helper.PROV_LABEL_QNAME)) {
 	    return newLabel(value,type);
+	}	
+	if (elementName.equals(Helper.PROV_KEY_QNAME)) {
+	    return newKey(value,type);
 	}
 	return newOther(elementName, value, type);
     }
@@ -191,6 +194,13 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         res.setElementName(elementName);
         return res;
     }
+    public Key newKey(Object value, QName type) {
+        Key typ=new Key();
+        typ.type=type;
+        typ.setValueAsObject(value);
+        return typ;
+    }
+    
 
     /*
     

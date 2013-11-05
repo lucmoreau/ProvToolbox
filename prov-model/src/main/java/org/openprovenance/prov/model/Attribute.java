@@ -10,6 +10,7 @@ public interface Attribute extends TypedValue {
 	PROV_ROLE,
 	PROV_LOCATION,
 	PROV_VALUE,
+	PROV_KEY,
 	OTHER	
     }
 

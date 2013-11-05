@@ -446,6 +446,15 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     }
 
     /**
+     * Create an instance of {@link Key }
+     * 
+     */
+    public Key createKey() {
+        return new org.openprovenance.prov.xml.Key();
+    }
+
+    
+    /**
      * Create an instance of {@link NamedBundle }
      * 
      */

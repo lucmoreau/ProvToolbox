@@ -9,5 +9,5 @@ public interface HadMember extends Relation0 {
     List<IDRef> getEntity();
 
     IDRef getCollection();
-
+    
 }

@@ -54,7 +54,7 @@ public class Entry
 {
     @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(KeyAdapter.class)
     @XmlAnyElement
-    protected org.openprovenance.prov.xml.TypedValue key;
+    protected org.openprovenance.prov.xml.Key key;
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
     protected org.openprovenance.prov.model.IDRef entity;
 
@@ -66,7 +66,7 @@ public class Entry
      *     {@link org.openprovenance.prov.xml.TypedValue }
      *     
      */
-    public org.openprovenance.prov.model.TypedValue getKey() {
+    public org.openprovenance.prov.model.Key getKey() {
         return key;
     }
 
@@ -78,8 +78,8 @@ public class Entry
      *     {@link org.openprovenance.prov.xml.TypedValue }
      *     
      */
-    public void setKey(org.openprovenance.prov.model.TypedValue value) {
-        this.key = (org.openprovenance.prov.xml.TypedValue) value;
+    public void setKey(org.openprovenance.prov.model.Key value) {
+        this.key = (org.openprovenance.prov.xml.Key) value;
     }
 
     /**

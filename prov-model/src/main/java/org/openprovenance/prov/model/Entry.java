@@ -2,11 +2,11 @@ package org.openprovenance.prov.model;
 
 public interface Entry {
 
-    void setKey(TypedValue key);
+    void setKey(Key key);
 
     void setEntity(IDRef entity);
 
-    TypedValue getKey();
+    Key getKey();
 
     IDRef getEntity();
 

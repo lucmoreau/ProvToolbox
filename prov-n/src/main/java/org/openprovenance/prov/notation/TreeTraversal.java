@@ -10,6 +10,7 @@ import javax.xml.namespace.QName;
 import  org.antlr.runtime.tree.Tree;
 import  org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.ModelConstructor;
@@ -382,19 +383,21 @@ public class TreeTraversal {
             Object entities=convert(ast.getChild(1));
 
             @SuppressWarnings("unchecked")
-            List<TypedValue> keys2 = (List<TypedValue>)keys1;
+            List<Object> keys2 = (List<Object>)keys1;
 	    
             @SuppressWarnings("unchecked")
             List<QName> qnames = (List<QName>)entities;
 	    
             List<KeyQNamePair> entries=new LinkedList<KeyQNamePair>();
             int ii=0;
-            for (TypedValue key : keys2) {
+            for (Object o : keys2) {
                 QName value=qnames.get(ii);
                 KeyQNamePair p=new KeyQNamePair();
                 p.name=value;
-                p.key=key;
-               entries.add(p);
+                
+                Object [] pair=(Object[]) o;
+                p.key=pFactory.newKey(pair[0], (QName)pair[1]);
+                entries.add(p);
                 ii++;
             }
 
@@ -489,7 +492,10 @@ public class TreeTraversal {
 		    
             	//return pFactory.newAttribute(pFactory.stringToQName(attr1),val1,vconv.getXsdType(val1));
             	if (ValueConverter.QNAME_XSD_QNAME.equals(theType)) {
-                	return pFactory.newAttribute(pFactory.stringToQName(attr1),pFactory.stringToQName((String)theValue),theType);            		
+                	return pFactory.newAttribute(pFactory.stringToQName(attr1),
+                	                             //pFactory.stringToQName((String)theValue),
+                	                             theValue,
+                	                             theType);            		
             	} else {
                 	return pFactory.newAttribute(pFactory.stringToQName(attr1),theValue,theType);
             
@@ -532,7 +538,8 @@ public class TreeTraversal {
             if (ast.getChild(1)==null) {
                 v2=ValueConverter.QNAME_XSD_QNAME;
                 //v1="\"" + v1 + "\"";
-                return convertTypedLiteral(v2,v1);
+                Object ooo=vconv.convertToJava(v2,v1);
+                return convertTypedLiteral(v2,ooo);
             } else {
                 v2=(QName)convert(ast.getChild(1));
                 if (ast.getChild(2)!=null) {

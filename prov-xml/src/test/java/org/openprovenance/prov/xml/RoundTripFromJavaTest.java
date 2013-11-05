@@ -2149,7 +2149,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	public void testDictionaryInsertion3() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p = new KeyQNamePair();
-		p.key = "a";
+		p.key = pFactory.newTypedValue("a",ValueConverter.QNAME_XSD_STRING);
 		p.name = q("e0");
 		ll.add(p);
 		DerivedByInsertionFrom d3 = pFactory.newDerivedByInsertionFrom(
@@ -2164,11 +2164,11 @@ public class RoundTripFromJavaTest extends TestCase {
 	public void testDictionaryInsertion4() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p1 = new KeyQNamePair();
-		p1.key = "a";
+		p1.key = pFactory.newTypedValue("a",ValueConverter.QNAME_XSD_STRING);
 		p1.name = q("e0");
 		ll.add(p1);
 		KeyQNamePair p2 = new KeyQNamePair();
-		p2.key = 1;
+		p2.key = pFactory.newTypedValue("1",ValueConverter.QNAME_XSD_INT);
 		p2.name = q("e1");
 		ll.add(p2);
 		DerivedByInsertionFrom d4 = pFactory.newDerivedByInsertionFrom(
@@ -2182,15 +2182,15 @@ public class RoundTripFromJavaTest extends TestCase {
 	public void testDictionaryInsertion5() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p1 = new KeyQNamePair();
-		p1.key = "a";
+		p1.key = pFactory.newTypedValue("a",ValueConverter.QNAME_XSD_STRING);
 		p1.name = q("e0");
 		ll.add(p1);
 		KeyQNamePair p2 = new KeyQNamePair();
-		p2.key = 1;
+		p2.key = pFactory.newTypedValue("1",ValueConverter.QNAME_XSD_INT);
 		p2.name = q("e1");
 		ll.add(p2);
 		KeyQNamePair p3 = new KeyQNamePair();
-		p3.key = q("a");
+		p3.key = pFactory.newTypedValue(q("a"),ValueConverter.QNAME_XSD_QNAME);
 		p3.name = q("e2");
 		ll.add(p3);
 		DerivedByInsertionFrom d5 = pFactory.newDerivedByInsertionFrom(
@@ -2206,15 +2206,15 @@ public class RoundTripFromJavaTest extends TestCase {
 	public void testDictionaryInsertion6() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p1 = new KeyQNamePair();
-		p1.key = "a";
+		p1.key = pFactory.newTypedValue("a",ValueConverter.QNAME_XSD_STRING);
 		p1.name = q("e0");
 		ll.add(p1);
 		KeyQNamePair p2 = new KeyQNamePair();
-		p2.key = 1;
+		p2.key = pFactory.newTypedValue(1,ValueConverter.QNAME_XSD_INT);
 		p2.name = q("e1");
 		ll.add(p2);
 		KeyQNamePair p3 = new KeyQNamePair();
-		p3.key = q("a");
+		p3.key = pFactory.newTypedValue(q("a"),ValueConverter.QNAME_XSD_QNAME);
 		p3.name = q("e2");
 		ll.add(p3);
 		DerivedByInsertionFrom d5 = pFactory.newDerivedByInsertionFrom(
@@ -2298,7 +2298,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	public void testDictionaryMembership2() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p1 = new KeyQNamePair();
-		p1.key = "a";
+		p1.key = pFactory.newTypedValue("a",ValueConverter.QNAME_XSD_STRING);
 		p1.name = q("e0");
 		ll.add(p1);
 		DictionaryMembership d5 = pFactory.newDictionaryMembership(q("d"),  ll);
@@ -2312,11 +2312,11 @@ public class RoundTripFromJavaTest extends TestCase {
 	public void testDictionaryMembership3() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p1 = new KeyQNamePair();
-		p1.key = "a";
+		p1.key = pFactory.newTypedValue("a",ValueConverter.QNAME_XSD_STRING);
 		p1.name = q("e0");
 		ll.add(p1);
 		KeyQNamePair p2 = new KeyQNamePair();
-		p2.key = 1;
+		p2.key = pFactory.newTypedValue(1,ValueConverter.QNAME_XSD_INT);
 		p2.name = q("e1");
 		ll.add(p2);
 		DictionaryMembership d5 = pFactory.newDictionaryMembership(q("d"),  ll);
@@ -2330,15 +2330,15 @@ public class RoundTripFromJavaTest extends TestCase {
 	public void testDictionaryMembership4() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p1 = new KeyQNamePair();
-		p1.key = "a";
+		p1.key = pFactory.newTypedValue("a",ValueConverter.QNAME_XSD_STRING);
 		p1.name = q("e0");
 		ll.add(p1);
 		KeyQNamePair p2 = new KeyQNamePair();
-		p2.key = 1;
+		p2.key = pFactory.newTypedValue(1,ValueConverter.QNAME_XSD_INT);
 		p2.name = q("e1");
 		ll.add(p2);
 		KeyQNamePair p3 = new KeyQNamePair();
-		p3.key = q("a");
+		p3.key = pFactory.newTypedValue(q("a"),ValueConverter.QNAME_XSD_QNAME);
 		p3.name = q("e2");
 		ll.add(p3);
 		DictionaryMembership d5 = pFactory.newDictionaryMembership(q("d"),  ll);

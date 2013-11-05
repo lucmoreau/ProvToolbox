@@ -463,7 +463,17 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
         res.setValueAsObject(value);
         return res;
       }
+   
 
+   public TypedValue newTypedValue(Object o, QName type) {
+	TypedValue res=of.createTypedValue();
+	res.setType(type);
+	res.setValueAsObject(o);
+	return res;
+   }
+
+
+   
  
     public Role newRole(Object value, QName type) {
 	if (value==null) return null;

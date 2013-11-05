@@ -97,6 +97,8 @@ public interface ObjectFactory {
     WasInvalidatedBy createWasInvalidatedBy();
 
     WasStartedBy createWasStartedBy();
+
+    TypedValue createTypedValue();
     
     
 

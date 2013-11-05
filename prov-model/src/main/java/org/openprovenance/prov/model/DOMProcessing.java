@@ -213,24 +213,30 @@ final public class DOMProcessing {
     
     final static
     public org.w3c.dom.Element marshalAttribute(org.openprovenance.prov.model.Attribute attribute) {
+	return marshalTypedValue(attribute, attribute.getElementName());
+    }
+    
+    final static
+    public org.w3c.dom.Element marshalTypedValue(org.openprovenance.prov.model.TypedValue attribute,
+                                                 QName elementName) {	
 	Object value = attribute.getValue();
 	QName type = attribute.getType();
 	if (value instanceof InternationalizedString) {
 	    InternationalizedString istring = ((InternationalizedString) value);
-	    return newElement(attribute.getElementName(), 
+	    return newElement(elementName, 
 	                      istring.getValue(),
 			      attribute.getType(), 
 			      istring.getLang());
 	} else if (value instanceof QName) {
-	    return newElement(attribute.getElementName(), 
+	    return newElement(elementName, 
 	                      (QName) value);
 
 	} else if (type.equals(ValueConverter.QNAME_RDF_LITERAL)) {
-	    return newElement(attribute.getElementName(),
+	    return newElement(elementName,
 			      (org.w3c.dom.Element) attribute.getValueAsObject());
 
 	} else {
-	    return newElement(attribute.getElementName(), 
+	    return newElement(elementName, 
 	                      value.toString(),
 			      attribute.getType());
 	}

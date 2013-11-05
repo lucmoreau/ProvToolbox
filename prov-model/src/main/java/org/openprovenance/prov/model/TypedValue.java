@@ -2,6 +2,8 @@ package org.openprovenance.prov.model;
 
 import javax.xml.namespace.QName;
 
+import org.w3c.dom.Element;
+
 
 public interface TypedValue {
 
@@ -64,5 +66,7 @@ public interface TypedValue {
      *     
      */
     public abstract void setType(QName value);
+
+    public abstract Object getValueAsObject();
 
 }

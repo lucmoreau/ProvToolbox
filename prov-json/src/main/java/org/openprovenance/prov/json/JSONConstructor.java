@@ -587,17 +587,11 @@ public class JSONConstructor implements ModelConstructor {
 	private Object encodeKeyEntitySet(List<KeyQNamePair> keyEntitySet) {
 		// Check for the types of keys
 		boolean isAllKeyOfSameDatatype = true;
-		Object firstKey = keyEntitySet.get(0).key;
-		Class<?> firstKeyClass = firstKey.getClass();
+		Key firstKey = keyEntitySet.get(0).key;
+		QName firstKeyClass = firstKey.getType();
 		for (KeyQNamePair pair: keyEntitySet) {
-			Class<?> keyClass = pair.key.getClass();
-			if (keyClass == InternationalizedString.class) {
-				// check if it is just a simple string
-				InternationalizedString istr = (InternationalizedString)pair.key;
-				if (istr.getLang() == null) {
-					keyClass = String.class;
-				}
-			}
+			QName keyClass = pair.key.getType();
+			
 			if (keyClass != firstKeyClass) {
 				isAllKeyOfSameDatatype = false;
 				break;
@@ -607,10 +601,11 @@ public class JSONConstructor implements ModelConstructor {
 		if (isAllKeyOfSameDatatype) {
 			// encode as a dictionary
 			Map<Object, String> dictionary = new HashMap<Object, String>();
-			String keyDatatype = pf.qnameToString(vconv.getXsdType(keyEntitySet.get(0).key));
+			String keyDatatype = pf.qnameToString(keyEntitySet.get(0).key.getType());
 			dictionary.put("$key-datatype", keyDatatype);
 			for (KeyQNamePair pair: keyEntitySet) {
-				String key = convertValueToString(pair.key);
+				//String key = convertValueToString(pair.key);
+			        String key = convertValueToString(pair.key.getValueAsObject());
 				String entity = qnExport.qnameToString(pair.name);
 				dictionary.put(key, entity);
 			}
@@ -623,7 +618,7 @@ public class JSONConstructor implements ModelConstructor {
 			Object entity = qnExport.qnameToString(pair.name);
 			Map<String, Object> item = new Hashtable<String, Object>();
 			item.put("$", entity);
-			item.put("key", convertValue(pair.key));
+			item.put("key", convertValue(pair.key.getValueAsObject()));
 			values.add(item);
 		}
 		return values;
@@ -662,8 +657,10 @@ public class JSONConstructor implements ModelConstructor {
     		attrs.add(tuple("prov:before", qnExport.qnameToString(before)));
 		if (keys != null && !keys.isEmpty()) {
 			List<Object> values = new ArrayList<Object>(keys.size());
-			for (Object key: keys) {
-				values.add(convertValue(key));
+			for (Key key: keys) {
+			    
+			    values.add(convertValue(key.getValue()));
+
 			}
 			attrs.add(tuple("prov:key-set", values));
 		}

@@ -34,7 +34,6 @@ import org.openprovenance.prov.model.HasLocation;
 import org.openprovenance.prov.model.HasRole;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.HasValue;
-import org.openprovenance.prov.model.IDRef;
 import org.openprovenance.prov.model.InternationalizedString;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Location;
@@ -43,7 +42,6 @@ import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
-import org.openprovenance.prov.model.IDRef;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.model.WasAssociatedWith;
@@ -635,7 +633,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	        for (JsonElement element : elements) {
 	        	JsonObject item = element.getAsJsonObject();
 	        	KeyQNamePair pair = new KeyQNamePair();
-	        	pair.key = this.decodeAttributeValue(item.remove("key"));
+	        	Object o=this.decodeAttributeValue(item.remove("key"));
+	        	pair.key = pf.newKey(o, vconv.getXsdType(o));
 	        	pair.name = pf.stringToQName(this.popString(item, "$"));
 	        	results.add(pair);
 	        }
@@ -647,7 +646,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     		QName datatype = pf.stringToQName(keyDatatype);
     		for (Entry<String, JsonElement> entry: dictionary.entrySet()) {
     			KeyQNamePair pair = new KeyQNamePair();
-	        	pair.key = vconv.convertToJava(datatype, entry.getKey());
+    			Object o=vconv.convertToJava(datatype, entry.getKey());
+	        	pair.key = pf.newKey(o, vconv.getXsdType(o));
 	        	pair.name = pf.stringToQName(entry.getValue().getAsString());
 	        	results.add(pair);
     		}
@@ -666,8 +666,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     	List<Key> results = new ArrayList<Key>();
     	List<JsonElement> elements = popMultiValAttribute(attributeName, attributeMap);
         for (JsonElement element : elements) {
-        	Key key = decodeAttributeValue(element);
-        	results.add(key);
+            Object o=decodeAttributeValue(element);
+            Key key = pf.newKey(o, vconv.getXsdType(o));
+            results.add(key);
         }
         return results;
     }

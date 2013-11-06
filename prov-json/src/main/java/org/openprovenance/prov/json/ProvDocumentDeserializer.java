@@ -666,7 +666,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     	List<Key> results = new ArrayList<Key>();
     	List<JsonElement> elements = popMultiValAttribute(attributeName, attributeMap);
         for (JsonElement element : elements) {
-        	Object key = decodeAttributeValue(element);
+        	Key key = decodeAttributeValue(element);
         	results.add(key);
         }
         return results;

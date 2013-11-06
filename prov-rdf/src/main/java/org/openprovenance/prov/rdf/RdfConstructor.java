@@ -22,6 +22,7 @@ import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.model.WasAssociatedWith;
@@ -36,19 +37,18 @@ import org.openprovenance.prov.model.WasStartedBy;
 import org.openprovenance.prov.model.DerivedByRemovalFrom;
 import org.openprovenance.prov.model.DictionaryMembership;
 
-
-
 /**
  * A Converter to RDF
  */
-public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstructor {
+public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
+	ModelConstructor {
 
     private Hashtable<String, String> namespaceTable = new Hashtable<String, String>();
 
     public Hashtable<String, String> getNamespaceTable() {
 	return namespaceTable;
     }
-    
+
     final GraphBuilder<RESOURCE, LITERAL, STATEMENT> gb;
     final Ontology onto;
 
@@ -57,7 +57,6 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 	this.gb = gb;
     }
 
-    
     @Override
     public org.openprovenance.prov.xml.Entity newEntity(QName id,
 							Collection<Attribute> attributes) {
@@ -100,8 +99,8 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 			Collection<Attribute> attributes) {
 
 	@SuppressWarnings("unused")
-	QName u = addInfluence(id, activity, entity, time, null, false, attributes,
-			       Ontology.QNAME_PROVO_Usage);
+	QName u = addInfluence(id, activity, entity, time, null, false,
+			       attributes, Ontology.QNAME_PROVO_Usage);
 
 	return null;
     }
@@ -113,8 +112,8 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 					    Collection<Attribute> attributes) {
 
 	@SuppressWarnings("unused")
-	QName g = addInfluence(id, entity, activity, time, null, false, attributes,
-			       Ontology.QNAME_PROVO_Generation);
+	QName g = addInfluence(id, entity, activity, time, null, false,
+			       attributes, Ontology.QNAME_PROVO_Generation);
 
 	return null;
     }
@@ -126,8 +125,8 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 						Collection<Attribute> attributes) {
 
 	@SuppressWarnings("unused")
-	QName inv = addInfluence(id, entity, activity, time, null, false, attributes,
-				 Ontology.QNAME_PROVO_Invalidation);
+	QName inv = addInfluence(id, entity, activity, time, null, false,
+				 attributes, Ontology.QNAME_PROVO_Invalidation);
 
 	return null;
     }
@@ -151,34 +150,40 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 				    Collection<Attribute> attributes) {
 
 	@SuppressWarnings("unused")
-	QName e = addInfluence(id, activity, trigger, time, ender, false, attributes, 
-			       Ontology.QNAME_PROVO_End);
+	QName e = addInfluence(id, activity, trigger, time, ender, false,
+			       attributes, Ontology.QNAME_PROVO_End);
 
 	return null;
 
     }
 
     @Override
-    public WasDerivedFrom newWasDerivedFrom(QName id, QName entity2,
-					    QName entity1, QName activity,
-					    QName generation, QName usage,
+    public WasDerivedFrom newWasDerivedFrom(QName id,
+					    QName entity2,
+					    QName entity1,
+					    QName activity,
+					    QName generation,
+					    QName usage,
 					    Collection<org.openprovenance.prov.model.Attribute> attributes) {
 
 	int knownSubtypes = 0;
 	QName der = id;
-	if (org.openprovenance.prov.xml.Helper.hasType(Ontology.QNAME_PROVO_Revision, attributes)) {
+	if (org.openprovenance.prov.xml.Helper.hasType(Ontology.QNAME_PROVO_Revision,
+						       attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, Ontology.QNAME_PROVO_Revision);
 
 	}
-	if (org.openprovenance.prov.xml.Helper.hasType(Ontology.QNAME_PROVO_Quotation, attributes)) {
+	if (org.openprovenance.prov.xml.Helper.hasType(Ontology.QNAME_PROVO_Quotation,
+						       attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, Ontology.QNAME_PROVO_Quotation);
 
 	}
-	if (org.openprovenance.prov.xml.Helper.hasType(Ontology.QNAME_PROVO_PrimarySource, attributes)) {
+	if (org.openprovenance.prov.xml.Helper.hasType(Ontology.QNAME_PROVO_PrimarySource,
+						       attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, Ontology.QNAME_PROVO_PrimarySource);
@@ -349,60 +354,61 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 	}
     }
 
-
     public void processAttributes(QName q, Collection<Attribute> attributes) {
 	RESOURCE r = gb.qnameToResource(q);
 
-	if (attributes!=null)
-	for (Attribute attr : attributes) {
+	if (attributes != null)
+	    for (Attribute attr : attributes) {
 
-	    LITERAL lit = null;
+		LITERAL lit = null;
 
-	    QName type = attr.getType();
-	    QName pred = onto.convertToRdf(attr.getElementName()); // FIXME: convert to XSD_HASH
+		QName type = attr.getType();
+		QName pred = onto.convertToRdf(attr.getElementName()); // FIXME:
+								       // convert
+								       // to
+								       // XSD_HASH
 
-	    String value;
-	    
-	    if (type.equals(ValueConverter.QNAME_XSD_ANY_URI)
-	            &&
-	            onto.asObjectProperty.contains(pred)) {
-	        System.out.println(" $$$$$$$$$$$$$$$$$$$$$$ " + pred);
-	        //TODO
-	    }
-	    
-	    if (attr.getValue() instanceof InternationalizedString) {
-		InternationalizedString iString = (InternationalizedString) attr.getValue();
-		value = iString.getValue();
-		lit = gb.newLiteral(value, iString.getLang());
-		gb.assertStatement(gb.createDataProperty(r, pred, lit));
-	    } else if (attr.getValue() instanceof QName) {
-		QName qn = (QName) attr.getValue();
-		String qnAsString;
-		if ((qn.getPrefix() == null) || (qn.getPrefix().equals(""))) {
-		    qnAsString = qn.getLocalPart();
-		} else {
-		    qnAsString = qn.getPrefix() + ":" + qn.getLocalPart();
-		}
-		if (false) { // That's here the code to generate resource or
-			    // literal.
-		    lit = gb.newLiteral(qnAsString,type);
-		    gb.assertStatement(gb.createDataProperty(r, pred,
-							     lit));
-		} else {
-		    gb.assertStatement(gb.createObjectProperty(r, pred, qn));
+		String value;
+
+		if (type.equals(ValueConverter.QNAME_XSD_ANY_URI)
+			&& onto.asObjectProperty.contains(pred)) {
+		    System.out.println(" $$$$$$$$$$$$$$$$$$$$$$ " + pred);
+		    // TODO
 		}
 
-	    } else {
-		value = attr.getValue().toString();
-		lit = gb.newLiteral(value, type);
-		gb.assertStatement(gb.createDataProperty(r, pred, lit));
-	    }
+		if (attr.getValue() instanceof InternationalizedString) {
+		    InternationalizedString iString = (InternationalizedString) attr.getValue();
+		    value = iString.getValue();
+		    lit = gb.newLiteral(value, iString.getLang());
+		    gb.assertStatement(gb.createDataProperty(r, pred, lit));
+		} else if (attr.getValue() instanceof QName) {
+		    QName qn = (QName) attr.getValue();
+		    String qnAsString;
+		    if ((qn.getPrefix() == null) || (qn.getPrefix().equals(""))) {
+			qnAsString = qn.getLocalPart();
+		    } else {
+			qnAsString = qn.getPrefix() + ":" + qn.getLocalPart();
+		    }
+		    if (false) { // That's here the code to generate resource or
+				 // literal.
+			lit = gb.newLiteral(qnAsString, type);
+			gb.assertStatement(gb.createDataProperty(r, pred, lit));
+		    } else {
+			gb.assertStatement(gb.createObjectProperty(r, pred, qn));
+		    }
 
-	}
+		} else {
+		    value = attr.getValue().toString();
+		    lit = gb.newLiteral(value, type);
+		    gb.assertStatement(gb.createDataProperty(r, pred, lit));
+		}
+
+	    }
     }
 
     public QName addInfluence(QName infl, QName subject, QName object,
-			      XMLGregorianCalendar time, QName other, boolean someOther,
+			      XMLGregorianCalendar time, QName other,
+			      boolean someOther,
 			      Collection<Attribute> attributes,
 			      QName qualifiedClass) {
 	if ((infl != null) || (time != null) || (other != null) || someOther
@@ -442,9 +448,8 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
     }
 
     private LITERAL newLiteral(XMLGregorianCalendar time) {
-	return gb.newLiteral(
-			       time.toString(),
-			       ValueConverter.QNAME_XSD_HASH_DATETIME);
+	return gb.newLiteral(time.toString(),
+			     ValueConverter.QNAME_XSD_HASH_DATETIME);
     }
 
     public void assertQualifiedInfluence(QName subject, QName infl,
@@ -526,42 +531,52 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 							    QName before,
 							    List<KeyQNamePair> keyEntitySet,
 							    Collection<Attribute> attributes) {
-       	QName der = addInfluence(id, after, before, null, null, true,
-			       attributes, Ontology.QNAME_PROVO_Insertion);
- 	for (KeyQNamePair p: keyEntitySet) {
- 		QName thePair=gb.newBlankName();
- 	    gb.assertStatement(gb.createObjectProperty(der,
- 								                   Ontology.QNAME_PROVO_insertedKeyEntityPair,
- 								                   thePair));
- 	    
- 	   LITERAL lit = valueToLiteral(p.key);
+	QName der = addInfluence(id, after, before, null, null, true,
+				 attributes, Ontology.QNAME_PROVO_Insertion);
+	for (KeyQNamePair p : keyEntitySet) {
+	    QName thePair = gb.newBlankName();
+	    gb.assertStatement(gb.createObjectProperty(der,
+						       Ontology.QNAME_PROVO_insertedKeyEntityPair,
+						       thePair));
 
-	    gb.assertStatement(gb.createDataProperty(thePair, 
-                                                 Ontology.QNAME_PROVO_pairKey, 
-                                                 lit));
-	    gb.assertStatement(gb.createObjectProperty(thePair, 
-                Ontology.QNAME_PROVO_pairEntity, 
-                p.name));
-	    
+	    LITERAL lit = valueToLiteral(p.key);
+
+	    gb.assertStatement(gb.createDataProperty(thePair,
+						     Ontology.QNAME_PROVO_pairKey,
+						     lit));
+	    gb.assertStatement(gb.createObjectProperty(thePair,
+						       Ontology.QNAME_PROVO_pairEntity,
+						       p.name));
+
+	}
+
+	return null;
+    }
+    private LITERAL valueToLiteral(TypedValue val) {
+ 	LITERAL lit = null;
+ 	String value;
+ 	if (val.getValue() instanceof QName) {
+ 	    value = org.openprovenance.prov.xml.Helper.qnameToString((QName) val.getValue());
+ 	} else {
+ 	    value = val.getValue().toString(); //FIXME: what about Internatioanlized string.
+ 	}
+ 	lit = gb.newLiteral(value, val.getType());
+ 	return lit;
      }
 
- 	
-	    return null;
+    private LITERAL valueToLiteral(Object val) {
+	LITERAL lit = null;
+	String value;
+	if (val instanceof QName) {
+	    value = org.openprovenance.prov.xml.Helper.qnameToString((QName) val);
+	} else {
+	    value = val.toString();
+	}
+	lit = gb.newLiteral(value, vc.getXsdType(val));
+	return lit;
     }
 
-	private LITERAL valueToLiteral(Object val) {
-		LITERAL lit = null;
-		String value;
-		if (val instanceof QName) {
-			value=org.openprovenance.prov.xml.Helper.qnameToString((QName)val); 
-		} else {
-		    value=val.toString();
-		}	
-		lit = gb.newLiteral(value, vc.getXsdType(val));
-		return lit;
-	}
-    
-    ValueConverter vc=new ValueConverter(ProvFactory.getFactory());
+    ValueConverter vc = new ValueConverter(ProvFactory.getFactory());
 
     @Override
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
@@ -569,48 +584,42 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements ModelConstr
 							QName before,
 							List<Key> keys,
 							Collection<Attribute> attributes) {
-       	QName der = addInfluence(id, after, before, null, null, true,
-			       attributes, Ontology.QNAME_PROVO_Removal);
- 	    for (Object k: keys) {
- 	    
- 	    LITERAL lit = valueToLiteral(k);
+	QName der = addInfluence(id, after, before, null, null, true,
+				 attributes, Ontology.QNAME_PROVO_Removal);
+	for (Key k : keys) {
 
- 	    gb.assertStatement(gb.createDataProperty(der, 
-                                                  Ontology.QNAME_PROVO_removedKey, 
-                                                  lit));
- 	    
- 	    }
+	    LITERAL lit = valueToLiteral(k);
 
- 	
-	    return null;
+	    gb.assertStatement(gb.createDataProperty(der,
+						     Ontology.QNAME_PROVO_removedKey,
+						     lit));
 
+	}
+
+	return null;
 
     }
 
-	@Override
-        public DictionaryMembership newDictionaryMembership(QName dict,
-							    List<KeyQNamePair> keyEntitySet) {
-		for (KeyQNamePair p : keyEntitySet) {
-			QName thePair=gb.newBlankName();
-		    gb.assertStatement(gb.createObjectProperty(dict,
-							   Ontology.QNAME_PROVO_hadDictionaryMember,
-							   thePair));
-		    LITERAL lit = valueToLiteral(p.key);
+    @Override
+    public DictionaryMembership newDictionaryMembership(QName dict,
+							List<KeyQNamePair> keyEntitySet) {
+	for (KeyQNamePair p : keyEntitySet) {
+	    QName thePair = gb.newBlankName();
+	    gb.assertStatement(gb.createObjectProperty(dict,
+						       Ontology.QNAME_PROVO_hadDictionaryMember,
+						       thePair));
+	    LITERAL lit = valueToLiteral(p.key);
 
-	 	    gb.assertStatement(gb.createDataProperty(thePair, 
-	                                                  Ontology.QNAME_PROVO_pairKey, 
-	                                                  lit));
-	 	    gb.assertStatement(gb.createObjectProperty(thePair, 
-	                 Ontology.QNAME_PROVO_pairEntity, 
-	                 p.name));
-	 	    
-		}
-		return null;
-	 
-	    
-	    
-      }
+	    gb.assertStatement(gb.createDataProperty(thePair,
+						     Ontology.QNAME_PROVO_pairKey,
+						     lit));
+	    gb.assertStatement(gb.createObjectProperty(thePair,
+						       Ontology.QNAME_PROVO_pairEntity,
+						       p.name));
 
+	}
+	return null;
 
-    
+    }
+
 }

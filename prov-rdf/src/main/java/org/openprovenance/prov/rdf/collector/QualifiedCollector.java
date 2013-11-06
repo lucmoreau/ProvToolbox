@@ -425,7 +425,7 @@ public class QualifiedCollector extends RdfCollector {
 		
 		List<Key> theKeys=new LinkedList<Key>();
 		for (Value key: keys) {
-			theKeys.add(valueToObject(key));
+			theKeys.add(valueToKey(key));
 		}
 
 		List<List<?>> perms = permute(subjectDictionaries, objectDictionaries);

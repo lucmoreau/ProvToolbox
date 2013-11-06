@@ -3,6 +3,7 @@ package org.openprovenance.prov.notation;
 import java.io.IOException;
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.UncheckedTestException;
 
 public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
@@ -31,6 +32,7 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 
 	@Override
 	public void writeDocument(Document doc, String file) {
+		Namespace.withThreadNamespace(doc.getNamespace());
 		String s = u.convertBeanToASN(doc);
 		u.writeTextToFile(s, file);
 	}

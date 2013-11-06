@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Namespace;
 
 
 /**

@@ -43,6 +43,7 @@ import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.URIWrapper;
+import org.openprovenance.prov.model.Namespace;
 
 import junit.framework.TestCase;
 
@@ -113,6 +114,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	}
 	System.out.println("updateNamespaces with " + nss);
 	doc.setNss(nss);
+	doc.setNamespace(ns);
     }
    
     public String extension() {
@@ -178,6 +180,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void writeDocument(Document doc, String file2) {
+	Namespace.withThreadNamespace(doc.getNamespace());
         try {
             writeXMLDocument(doc, file2);
         } catch (JAXBException e) {

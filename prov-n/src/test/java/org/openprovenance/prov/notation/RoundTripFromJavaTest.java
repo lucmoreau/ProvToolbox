@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.xml.UncheckedTestException;
 
@@ -38,6 +39,7 @@ public class RoundTripFromJavaTest extends
 
 	@Override
 	public void writeDocument(Document doc, String file) {
+		Namespace.withThreadNamespace(doc.getNamespace());
 		String s = u.convertBeanToASN(doc);
 		u.writeTextToFile(s, file);
 	}

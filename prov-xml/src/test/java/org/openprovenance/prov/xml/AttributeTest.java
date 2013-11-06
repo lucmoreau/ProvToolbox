@@ -25,6 +25,8 @@ import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.WasEndedBy;
 import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.Namespace;
+
 import java.util.Arrays;
 import java.util.Hashtable;
 import javax.xml.bind.JAXBException;
@@ -95,6 +97,8 @@ public class AttributeTest extends TestCase {
 	Hashtable<String, String> nss = new Hashtable<String, String>();
 	//updateNamespaces(nss);
 	Namespace ns=Namespace.gatherNamespaces(doc);
+	doc.setNamespace(ns);
+
 	if (ns.getDefaultNamespace()!=null) {
 	    nss.put("_",ns.getDefaultNamespace());
 	}
@@ -170,6 +174,7 @@ public class AttributeTest extends TestCase {
     }
 
     public void writeDocument(Document doc, String file2) {
+	Namespace.withThreadNamespace(doc.getNamespace());
         try {
             writeXMLDocument(doc, file2);
         } catch (JAXBException e) {

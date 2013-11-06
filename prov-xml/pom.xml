@@ -300,6 +300,7 @@
                      <arg value="DictionaryMembership.java" />
                      <arg value="MentionOf.java" />
                      <arg value="Entry.java" />
+                     <arg value="Document.java" />
 
                 </exec>
 

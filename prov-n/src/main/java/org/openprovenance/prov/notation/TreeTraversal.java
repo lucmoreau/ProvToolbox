@@ -16,6 +16,7 @@ import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.TypedValue;
+import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
@@ -508,16 +509,16 @@ public class TreeTraversal {
 
         case PROV_NParser.STRING:
             if (ast.getChildCount()==1) {
-                return unwrap(convertToken(getTokenString(ast.getChild(0))));
+                return unescape(unwrap(convertToken(getTokenString(ast.getChild(0)))));
             } else {
-                return pFactory.newInternationalizedString(unwrap(convertToken(getTokenString(ast.getChild(0)))),
+                return pFactory.newInternationalizedString(unescape(unwrap(convertToken(getTokenString(ast.getChild(0))))),
                                                            stripAmpersand(convertToken(getTokenString(ast.getChild(1)))));
             }
         case PROV_NParser.STRING_LONG:
             if (ast.getChildCount()==1) {
-                return unquoteTrice(convertToken(getTokenString(ast.getChild(0))));
+                return unescape(unquoteTrice(convertToken(getTokenString(ast.getChild(0)))));
             } else {
-                return pFactory.newInternationalizedString(unquoteTrice(convertToken(getTokenString(ast.getChild(0)))),
+                return pFactory.newInternationalizedString(unescape(unquoteTrice(convertToken(getTokenString(ast.getChild(0))))),
                                                            stripAmpersand(convertToken(getTokenString(ast.getChild(1)))));
             }
 
@@ -543,11 +544,11 @@ public class TreeTraversal {
             } else {
                 v2=(QName)convert(ast.getChild(1));
                 if (ast.getChild(2)!=null) {
-                    Object iv1=pFactory.newInternationalizedString(unwrap(v1),
+                    Object iv1=pFactory.newInternationalizedString(unescape(unwrap(v1)),
                                                                    stripAmpersand(convertToken(getTokenString(ast.getChild(2)))));
                     return convertTypedLiteral(v2,iv1);
                 } else {
-                    v1=unwrap(v1);
+                    v1=unescape(unwrap(v1));
                     return convertTypedLiteral(v2,v1);
                 }
             }
@@ -589,6 +590,10 @@ public class TreeTraversal {
 
     }
     
+    private String unescape(String s) {
+	return Helper.unescape(s);
+    }
+
     Hashtable<String,String> namespaceTable=new Hashtable<String, String>();
 
     public Object convertTypedLiteral(QName datatype, Object value) {

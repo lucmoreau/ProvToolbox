@@ -6,6 +6,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
         
 import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.NamespaceGatherer;
 import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
@@ -200,13 +201,13 @@ public class NamespacesTest
         assertTrue(nss.check("prov", NamespacePrefixMapper.PROV_NS));
         assertTrue(nss.check("ex", EXAMPLE_NS));
         assertTrue(nss.check("xsd", XSD_NS));
-        assertTrue(nss.check("_pre0", EXAMPLE2_NS));
+        assertTrue(nss.check(NamespaceGatherer.xmlns+"0", EXAMPLE2_NS));
         
         assertTrue(nss.getNamespaces().size()==4);
         assertTrue(nss.getNamespaces().get(NamespacePrefixMapper.PROV_NS).equals("prov"));
         assertTrue(nss.getNamespaces().get(EXAMPLE_NS).equals("ex"));
         assertTrue(nss.getNamespaces().get(XSD_NS).equals("xsd"));
-        assertTrue(nss.getNamespaces().get(EXAMPLE2_NS).equals("_pre0"));
+        assertTrue(nss.getNamespaces().get(EXAMPLE2_NS).equals(NamespaceGatherer.xmlns+"0"));
         
     }
 
@@ -227,15 +228,15 @@ public class NamespacesTest
         assertTrue(nss.check("prov", NamespacePrefixMapper.PROV_NS));
         assertTrue(nss.check("ex", EXAMPLE_NS));
         assertTrue(nss.check("xsd", XSD_NS));
-        assertTrue(nss.check("_pre0", EXAMPLE2_NS));
-        assertTrue(nss.check("_pre1", EXAMPLE3_NS));
+        assertTrue(nss.check(NamespaceGatherer.xmlns+"0", EXAMPLE2_NS));
+        assertTrue(nss.check(NamespaceGatherer.xmlns+"1", EXAMPLE3_NS));
         
         assertTrue(nss.getNamespaces().size()==5);
         assertTrue(nss.getNamespaces().get(NamespacePrefixMapper.PROV_NS).equals("prov"));
         assertTrue(nss.getNamespaces().get(EXAMPLE_NS).equals("ex"));
         assertTrue(nss.getNamespaces().get(XSD_NS).equals("xsd"));
-        assertTrue(nss.getNamespaces().get(EXAMPLE2_NS).equals("_pre0"));
-        assertTrue(nss.getNamespaces().get(EXAMPLE3_NS).equals("_pre1"));
+        assertTrue(nss.getNamespaces().get(EXAMPLE2_NS).equals(NamespaceGatherer.xmlns+"0"));
+        assertTrue(nss.getNamespaces().get(EXAMPLE3_NS).equals(NamespaceGatherer.xmlns+"1"));
         
     }
     

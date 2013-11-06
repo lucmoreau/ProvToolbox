@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.Namespace;
+
 /* Not usefully named class, to be removed ultimately hopefully */
 
 public class Helper  {
@@ -19,10 +21,25 @@ public class Helper  {
     public static final QName PROV_VALUE_QNAME=provQName("value");
     public static final QName PROV_KEY_QNAME=provQName("key");
     
-    /** Method replicated from ProvFactory. */
     static public String qnameToString(QName qname) {
-	return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
+	Namespace ns=Namespace.getThreadNamespace();
+	if ((ns.getDefaultNamespace()!=null) 
+		&& (ns.getDefaultNamespace().equals(qname.getNamespaceURI()))) {
+	    return qname.getLocalPart();
+	} else {
+	    String pref=ns.getNamespaces().get(qname.getNamespaceURI());
+	    if (pref!=null)  {
+		return pref + ":" + qname.getLocalPart();
+	    } else {
+		// Really should never be here
+		return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
+			+ qname.getLocalPart();
+	    }
+	}
+	/* old
+	 return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
 		+ qname.getLocalPart();
+	 */
     }
     
     public static String valueToNotationString(org.openprovenance.prov.model.Key key) {
@@ -30,7 +47,17 @@ public class Helper  {
     }
 
     
+    public static String escape (String s) {
+  	return s.replace("\"", "\\\"");
+      }
+    
+    public static String unescape (String s) {
+  	return s.replace("\\\"","\"");
+      }
+    
+    
     //TODO: move this code to ValueConverter
+    //TODO: what else should be escaped?
     public static String valueToNotationString(Object val, QName xsdType) {
  	if (val instanceof InternationalizedString) {
  	    InternationalizedString istring = (InternationalizedString) val;
@@ -44,16 +71,16 @@ public class Helper  {
 	    String s=(String)val;
 	    if (s.contains("\n")) {
 		// return "\"\"\"" + val + "\"\"\" %% " + qnameToString(xsdType);
-		return "\"\"\"" + val + "\"\"\"" ;
+		return "\"\"\"" + escape(s) + "\"\"\"" ;
 	    } else {
-		return "\"" + val + "\" %% " + qnameToString(xsdType);
+		return "\"" + escape(s) + "\" %% " + qnameToString(xsdType);
 	    }
  	} else {
 	    // We should never be here!
  	    return "\"" + val + "\" %% " + qnameToString(xsdType);
 	}
      }
-  
+
     
     static public boolean hasType(QName type, Collection<org.openprovenance.prov.model.Attribute> attributes) {
     	for (org.openprovenance.prov.model.Attribute attribute: attributes) {

@@ -146,7 +146,7 @@ public class NamespaceGatherer implements StatementAction {
 	}
     }
 
-    String xmlns = "_pre";
+    static final public String xmlns = "pre_";
     int prefixCount = 0;
 
     void newPrefix(String namespace) {

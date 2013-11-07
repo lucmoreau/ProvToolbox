@@ -885,6 +885,15 @@
                      <arg value="Used.java" />
                      <arg value="WasInfluencedBy.java" />
                      <arg value="WasInformedBy.java" />
+                     <arg value="DictionaryMembership.java" />
+                     <arg value="AlternateOf.java" />
+                     <arg value="SpecializationOf.java" />
+                     <arg value="AStatement.java" />
+                     <arg value="Entry.java" />
+                     <arg value="DerivedByInsertionFrom.java" />
+                     <arg value="DerivedByRemovalFrom.java" />
+                     <arg value="NamedBundle.java" />
+                     <arg value="MentionOf.java" />
                 </exec>
 
 

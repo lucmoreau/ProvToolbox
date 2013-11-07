@@ -19,6 +19,11 @@ public class KeyAdapter extends XmlAdapter<Element, TypedValue> {
     }
 
 
+    public KeyAdapter(org.openprovenance.prov.model.ProvFactory pFactory) {
+	this.pFactory=pFactory;
+	vconv=new ValueConverter(pFactory);
+    }
+
 
     @Override
     public Element marshal(TypedValue value) throws Exception {

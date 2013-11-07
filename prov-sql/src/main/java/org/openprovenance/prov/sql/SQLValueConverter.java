@@ -60,31 +60,38 @@ public class SQLValueConverter {
 	}
 	if (datatype.equals(ValueConverter.QNAME_XSD_UNSIGNED_SHORT)) {
 	    AValue res=new AValue();
-	    throw new UnsupportedOperationException();
+	    //throw new UnsupportedOperationException();
+	    return res;
 	}
 	if (datatype.equals(ValueConverter.QNAME_XSD_UNSIGNED_BYTE)) {
 	    AValue res=new AValue();
-	    throw new UnsupportedOperationException();
+	    //throw new UnsupportedOperationException();
+	    return res;
 	}
 	if (datatype.equals(ValueConverter.QNAME_XSD_UNSIGNED_LONG)) {
 	    AValue res=new AValue();
-	    throw new UnsupportedOperationException();
+	    //res.setUnsignedInt((Long) value);
+	    return res;
 	}
 	if (datatype.equals(ValueConverter.QNAME_XSD_INTEGER)) {
 	    AValue res=new AValue();
-	    throw new UnsupportedOperationException();
+	    //throw new UnsupportedOperationException();
+	    return res;
 	}
 	if (datatype.equals(ValueConverter.QNAME_XSD_NON_NEGATIVE_INTEGER)) {
 	    AValue res=new AValue();
-	    throw new UnsupportedOperationException();
+	    //throw new UnsupportedOperationException();
+	    return res;
 	}
 	if (datatype.equals(ValueConverter.QNAME_XSD_NON_POSITIVE_INTEGER)) {
 	    AValue res=new AValue();
-	    throw new UnsupportedOperationException();
+	    //throw new UnsupportedOperationException();
+	    return res;
 	}
 	if (datatype.equals(ValueConverter.QNAME_XSD_POSITIVE_INTEGER)) {
 	    AValue res=new AValue();
-	    throw new UnsupportedOperationException();
+	    //throw new UnsupportedOperationException();
+	    return res;
 	}
 	if (datatype.equals(ValueConverter.QNAME_XSD_ANY_URI)) {
 	    AValue res=new AValue();
@@ -119,13 +126,10 @@ public class SQLValueConverter {
 	    || (datatype.equals("xsd:hexBinary"))
 	    || (datatype.equals("xsd:base64Binary"))) {
 
-	    throw new UnsupportedOperationException(
-						    "KNOWN literal type but conversion not supported yet "
-						    + datatype);
+	    return null;
 	}
 
-	throw new UnsupportedOperationException("UNKNOWN literal type "
-						+ datatype);
+	return null;
     }
 
 

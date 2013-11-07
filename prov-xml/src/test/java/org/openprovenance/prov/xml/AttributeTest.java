@@ -1,39 +1,39 @@
 package org.openprovenance.prov.xml;
 
 import java.io.File;
-
-import org.openprovenance.prov.model.DOMProcessing;
-import org.openprovenance.prov.model.Entity;
-import org.openprovenance.prov.model.Activity;
-import org.openprovenance.prov.model.Agent;
-import org.openprovenance.prov.model.HasLabel;
-import org.openprovenance.prov.model.HasLocation;
-import org.openprovenance.prov.model.HasOtherAttribute;
-import org.openprovenance.prov.model.HasRole;
-import org.openprovenance.prov.model.HasType;
-import org.openprovenance.prov.model.Used;
-import org.openprovenance.prov.model.WasDerivedFrom;
-import org.openprovenance.prov.model.WasAttributedTo;
-import org.openprovenance.prov.model.WasInvalidatedBy;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.NamedBundle;
-import org.openprovenance.prov.model.WasGeneratedBy;
-import org.openprovenance.prov.model.WasAssociatedWith;
-import org.openprovenance.prov.model.WasStartedBy;
-import org.openprovenance.prov.model.WasInfluencedBy;
-import org.openprovenance.prov.model.WasInformedBy;
-import org.openprovenance.prov.model.ActedOnBehalfOf;
-import org.openprovenance.prov.model.WasEndedBy;
-import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.Namespace;
-
 import java.util.Arrays;
 import java.util.Hashtable;
+
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 
 import junit.framework.TestCase;
+
+import org.openprovenance.prov.model.ActedOnBehalfOf;
+import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.Agent;
+import org.openprovenance.prov.model.DOMProcessing;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Entity;
+import org.openprovenance.prov.model.HasLabel;
+import org.openprovenance.prov.model.HasLocation;
+import org.openprovenance.prov.model.HasOtherAttribute;
+import org.openprovenance.prov.model.HasRole;
+import org.openprovenance.prov.model.HasType;
+import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.Used;
+import org.openprovenance.prov.model.WasAssociatedWith;
+import org.openprovenance.prov.model.WasAttributedTo;
+import org.openprovenance.prov.model.WasDerivedFrom;
+import org.openprovenance.prov.model.WasEndedBy;
+import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasInfluencedBy;
+import org.openprovenance.prov.model.WasInformedBy;
+import org.openprovenance.prov.model.WasInvalidatedBy;
+import org.openprovenance.prov.model.WasStartedBy;
 
 /**
  * Unit test for PROV roundtrip conversion between Java and XML
@@ -51,12 +51,12 @@ public class AttributeTest extends TestCase {
     static final ProvUtilities util=new ProvUtilities();
 
 
-    static final Hashtable<String, String> namespaces;
+    static public final Hashtable<String, String> namespaces;
 
     public static org.openprovenance.prov.model.ProvFactory pFactory;
     public static ValueConverter vconv;
 
-    static Hashtable<String, String> updateNamespaces (Hashtable<String, String> nss) {
+    protected static Hashtable<String, String> updateNamespaces (Hashtable<String, String> nss) {
         nss.put(EX_PREFIX, EX_NS);
         nss.put(EX2_PREFIX, EX2_NS);
         nss.put("_", EX3_NS);

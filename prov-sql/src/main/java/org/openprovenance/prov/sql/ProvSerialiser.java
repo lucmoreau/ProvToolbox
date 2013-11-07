@@ -9,8 +9,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 
+import org.openprovenance.prov.model.Document;
+
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
-import org.openprovenance.prov.xml.validation.ValidationReport;
 import org.w3c.dom.Node;
 
 import java.io.OutputStream;
@@ -21,7 +22,7 @@ import java.util.Hashtable;
 /** Serialiser of PROV Graphs. */
 
 public class ProvSerialiser {
-    private ObjectFactory of=new ObjectFactory();
+    private ObjectFactory2 of=new ObjectFactory2();
 	static DocumentBuilder docBuilder;
 
 

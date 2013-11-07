@@ -456,6 +456,7 @@ public class WasInfluencedBy
 	return null;
     }
 
+    @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_INFLUENCE;
     }

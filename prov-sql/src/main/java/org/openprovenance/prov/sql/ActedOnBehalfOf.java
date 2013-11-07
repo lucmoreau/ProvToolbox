@@ -502,7 +502,7 @@ public class ActedOnBehalfOf
 	// TODO Auto-generated method stub
 	return null;
     }
-
+    @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_DELEGATION;
     }

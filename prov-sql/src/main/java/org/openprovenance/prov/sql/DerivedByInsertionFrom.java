@@ -2,6 +2,8 @@ package org.openprovenance.prov.sql;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
@@ -479,6 +481,7 @@ public class DerivedByInsertionFrom
         final HashCodeStrategy strategy = JAXBHashCodeStrategy.INSTANCE;
         return this.hashCode(null, strategy);
     }
+    @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_DICTIONARY_INSERTION;
     }

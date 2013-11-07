@@ -630,7 +630,7 @@ public class Used
 	return null;
     }
     
-
+    @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_USAGE;
     }

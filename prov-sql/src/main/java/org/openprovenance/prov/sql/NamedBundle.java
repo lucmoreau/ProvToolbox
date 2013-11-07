@@ -243,6 +243,7 @@ public class NamedBundle
         final HashCodeStrategy strategy = JAXBHashCodeStrategy.INSTANCE;
         return this.hashCode(null, strategy);
     }
+    @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_BUNDLE;
     }

@@ -581,7 +581,7 @@ public class Activity
         toString(toStringBuilder);
         return toStringBuilder.toString();
     }
-
+    @Transient
     public Kind getKind() {
 	return StatementOrBundle.Kind.PROV_ACTIVITY;
     }

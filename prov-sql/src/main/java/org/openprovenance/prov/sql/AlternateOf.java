@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -170,7 +171,7 @@ public class AlternateOf
         return this.hashCode(null, strategy);
     }
     
-
+    @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_ALTERNATE;
     }

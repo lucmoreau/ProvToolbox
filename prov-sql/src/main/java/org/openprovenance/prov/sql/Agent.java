@@ -469,7 +469,7 @@ public class Agent
         toString(toStringBuilder);
         return toStringBuilder.toString();
     }
-
+    @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_AGENT;
     }

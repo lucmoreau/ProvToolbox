@@ -2,6 +2,8 @@ package org.openprovenance.prov.sql;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
@@ -446,10 +448,12 @@ public class DerivedByRemovalFrom
         return this.hashCode(null, strategy);
     }
 
+    @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_DICTIONARY_REMOVAL;
     }
 
+    @Transient
     public List<Attribute> getAny() {
   	System.out.println("** legacy getAny()");
   	return null;

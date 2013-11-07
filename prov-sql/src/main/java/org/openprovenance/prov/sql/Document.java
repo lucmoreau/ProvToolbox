@@ -256,7 +256,7 @@ public class Document
     public void setNamespace(Namespace ns) {
         namespace=ns;       
     }
-
+    @Transient
     public Namespace getNamespace() {
         return namespace;
     }

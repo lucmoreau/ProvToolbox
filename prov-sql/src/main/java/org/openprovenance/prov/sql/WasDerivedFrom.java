@@ -599,6 +599,7 @@ public class WasDerivedFrom
 	// TODO Auto-generated method stub
 	return null;
     }
+    @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_DERIVATION;
     }

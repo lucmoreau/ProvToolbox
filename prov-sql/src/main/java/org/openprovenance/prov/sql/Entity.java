@@ -534,7 +534,7 @@ public class Entity
         return toStringBuilder.toString();
     }
 
-
+    @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_ENTITY;
     }

@@ -21,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -38,6 +39,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.StatementOrBundle;
 
 
@@ -245,6 +247,18 @@ public class Document
         final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
         toString(toStringBuilder);
         return toStringBuilder.toString();
+    }
+
+    
+    transient Namespace namespace;
+    
+    @Transient
+    public void setNamespace(Namespace ns) {
+        namespace=ns;       
+    }
+
+    public Namespace getNamespace() {
+        return namespace;
     }
 
 }

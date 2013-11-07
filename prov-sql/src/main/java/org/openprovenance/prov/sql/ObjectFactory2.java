@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName; 
 
+import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.OtherAttribute;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.Document;
@@ -286,6 +287,15 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     public Value createValue() {
         return new org.openprovenance.prov.sql.Value();
     }
+    
+    /**
+     * Create an instance of {@link Key }
+     * 
+     */
+   public Key createKey() {
+        return new org.openprovenance.prov.sql.Key();
+    }
+
 
     /**
      * Create an instance of {@link Bundle }
@@ -822,5 +832,6 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     public JAXBElement<WasGeneratedBy> createWasGeneratedBy(WasGeneratedBy value) {
         return new JAXBElement<WasGeneratedBy>(_WasGeneratedBy_QNAME, WasGeneratedBy.class, null, value);
     }
+
 
 }

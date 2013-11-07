@@ -39,6 +39,7 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.OtherAttribute;
+import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.xml.AttributeList;
 import org.openprovenance.prov.xml.HasAllAttributes;
 import org.openprovenance.prov.xml.SortedAttributeList;
@@ -580,5 +581,10 @@ public class Activity
         toString(toStringBuilder);
         return toStringBuilder.toString();
     }
+
+    public Kind getKind() {
+	return StatementOrBundle.Kind.PROV_ACTIVITY;
+    }
+
 
 }

@@ -35,6 +35,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.OtherAttribute;
 import org.openprovenance.prov.xml.AttributeList;
 import org.openprovenance.prov.xml.HasAllAttributes;
@@ -679,5 +680,9 @@ public class WasStartedBy
 	return null;
     }
     
-
+    public Kind getKind() {
+        return StatementOrBundle.Kind.PROV_START;
+    }
+  
+    
 }

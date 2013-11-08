@@ -232,8 +232,8 @@ public class AttributeTest extends TestCase {
 
     public void addLabels(HasLabel hl) {
    	hl.getLabel().add(pFactory.newInternationalizedString("hello"));
-   	hl.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-   	hl.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
+   	hl.getLabel().add(pFactory.newInternationalizedString("bye","en"));
+   	hl.getLabel().add(pFactory.newInternationalizedString("bonjour","fr"));
     }
    
 
@@ -261,7 +261,7 @@ public class AttributeTest extends TestCase {
 	 
          {pFactory.newInternationalizedString("un lieu","fr"),ValueConverter.QNAME_XSD_STRING},
 
-         {pFactory.newInternationalizedString("a place","EN"),ValueConverter.QNAME_XSD_STRING}
+         {pFactory.newInternationalizedString("a place","en"),ValueConverter.QNAME_XSD_STRING}
         };
 
 
@@ -271,7 +271,7 @@ public class AttributeTest extends TestCase {
 	 
          {pFactory.newInternationalizedString("un lieu","fr"),ValueConverter.QNAME_XSD_STRING},
 
-         {pFactory.newInternationalizedString("a place","EN"),ValueConverter.QNAME_XSD_STRING},
+         {pFactory.newInternationalizedString("a place","en"),ValueConverter.QNAME_XSD_STRING},
            
          {1,ValueConverter.QNAME_XSD_INT},
 
@@ -356,7 +356,7 @@ public class AttributeTest extends TestCase {
          { new byte[] {0,1,2,34,5,6}, ValueConverter.QNAME_XSD_BASE64_BINARY},
          { new byte[1023], ValueConverter.QNAME_XSD_BASE64_BINARY},
          
-         {"EN",ValueConverter.QNAME_XSD_LANGUAGE},
+         {"en",ValueConverter.QNAME_XSD_LANGUAGE},
          {"normal",ValueConverter.QNAME_XSD_NORMALIZED_STRING},
          {"TOK",ValueConverter.QNAME_XSD_TOKEN},
          {"NMTOK",ValueConverter.QNAME_XSD_NMTOKEN},

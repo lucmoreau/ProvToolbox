@@ -278,6 +278,9 @@ public class RdfCollector extends RDFHandlerBase {
     }
 
     protected Object decodeLiteral(Literal literal) {
+	
+	System.out.println("+++-----> Literal " + literal.getDatatype());
+	    //System.out.println("+++--------> Literal " + obj2);
 	String dataType = NamespacePrefixMapper.XSD_HASH_NS + "string";
 	if (literal.getLanguage() != null) {
 	    return pFactory.newInternationalizedString(literal.stringValue(),
@@ -482,10 +485,29 @@ public class RdfCollector extends RDFHandlerBase {
 			    }
 
 			} else if (statement.getObject() instanceof Literal) {
+			    /*
 			    Object obj2 = decodeLiteral((Literal) statement.getObject());
+			    System.out.println("????-----> Literal " + ((Literal)statement.getObject()).getDatatype());
+			    System.out.println("????--------> Literal " + obj2);
+			    System.out.println("????  " + convertURIToQName(((Literal)statement.getObject()).getDatatype()));
+			    
 			    attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_TYPE_QNAME,
 								 obj2,
 								 this.valueConverter.getXsdType(obj2)));
+			    */
+			   
+			    Literal lit=(Literal)statement.getObject();
+			    Object theValue;
+			    if (lit.getLanguage() != null) {
+				theValue= pFactory.newInternationalizedString(lit.stringValue(),
+				                                              lit.getLanguage());
+			    } else {
+				theValue=lit.stringValue();
+			    }
+			    attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_TYPE_QNAME, 
+			                                         theValue,
+			                                         ((lit.getDatatype()==null) ? ValueConverter.QNAME_XSD_STRING: 
+			                                         Ontology.convertFromRdf(convertURIToQName(lit.getDatatype())))));
 			}
 		    }
 		} else {
@@ -536,6 +558,8 @@ public class RdfCollector extends RDFHandlerBase {
 	    } else if (value instanceof Literal) {
 		if (predQ.equals(Ontology.QNAME_PROVO_value)) {
 		    Object literal = decodeLiteral((Literal) value);
+		    System.out.println("-----> Literal " + ((Literal)value).getDatatype());
+		    System.out.println("--------> Literal " + literal);
 		    attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_VALUE_QNAME,
 							 literal,
 							 this.valueConverter.getXsdType(literal)));

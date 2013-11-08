@@ -424,4 +424,15 @@ public class Ontology {
 	    return res;
 	return qname;
     }
+    
+    static
+    public QName convertFromRdf(QName qname) {
+	if (NamespacePrefixMapper.XSD_HASH_NS.equals(qname.getNamespaceURI())) {
+	    return new QName(NamespacePrefixMapper.XSD_NS,
+	                     qname.getLocalPart(),
+	                     qname.getPrefix());
+	} else {
+	    return qname;
+	}
+    }
 }

@@ -412,9 +412,9 @@ public class AttributeTest extends TestCase {
 	}
     }
 
-    public void testEntityWithOneAttribute(int i) throws JAXBException  {
+    public void testEntityWithOneTypeAttribute(int i) throws JAXBException  {
  	setNamespaces();
- 	Entity a = pFactory.newEntity("ex:en" + i);
+ 	Entity a = pFactory.newEntity("ex:et" + i);
  	
 
  	Object [] pair= attributeValues[i];
@@ -423,141 +423,592 @@ public class AttributeTest extends TestCase {
  	a.getType().add(pFactory.newType(value,type));
  	makeDocAndTest(a,"target/attr_entity_one_attr"+i);
      }
-     
+    
+
+    public void testEntityWithOneValueAttribute(int i) throws JAXBException  {
+ 	setNamespaces();
+ 	Entity a = pFactory.newEntity("ex:en_v" + i);
+ 	
+
+ 	Object [] pair= attributeValues[i];
+ 	Object value=pair[0];
+ 	QName type=(QName) pair[1];
+ 	a.setValue(pFactory.newValue(value,type));
+ 	makeDocAndTest(a,"target/attr_entity_one_value_attr"+i);
+     }
+
+    public void testEntityWithOneLocationAttribute(int i) throws JAXBException  {
+ 	setNamespaces();
+ 	Entity a = pFactory.newEntity("ex:en_l" + i);
+ 	
+
+ 	Object [] pair= attributeValues[i];
+ 	Object value=pair[0];
+ 	QName type=(QName) pair[1];
+ 	a.getLocation().add(pFactory.newLocation(value,type));
+ 	makeDocAndTest(a,"target/attr_entity_one_location_attr"+i);
+     }
+
+    public void testEntityWithOneOtherAttribute(int i) throws JAXBException  {
+ 	setNamespaces();
+ 	Entity a = pFactory.newEntity("ex:en_o" + i);
+ 	
+
+ 	Object [] pair= attributeValues[i];
+ 	Object value=pair[0];
+ 	QName type=(QName) pair[1];
+ 	a.getOthers().add(pFactory.newOther(new QName(EX_NS,  "tag2", "exo"), value,type));
+ 	makeDocAndTest(a,"target/attr_entity_one_other_attr"+i);
+     }
+    
+    // VALUE
+    public void testEntityWithOneValueAttribute0 () throws JAXBException  {
+	testEntityWithOneValueAttribute(0);
+    }
+    public void testEntityWithOneValueAttribute1 () throws JAXBException  {
+	testEntityWithOneValueAttribute(1);
+    }
+    public void testEntityWithOneValueAttribute2 () throws JAXBException  {
+	testEntityWithOneValueAttribute(2);
+    }
+    public void testEntityWithOneValueAttribute3 () throws JAXBException  {
+	testEntityWithOneValueAttribute(3);
+    }
+    public void testEntityWithOneValueAttribute4 () throws JAXBException  {
+	testEntityWithOneValueAttribute(4);
+    }
+    public void testEntityWithOneValueAttribute5 () throws JAXBException  {
+	testEntityWithOneValueAttribute(5);
+    }
+    public void testEntityWithOneValueAttribute6 () throws JAXBException  {
+	testEntityWithOneValueAttribute(6);
+    }
+    public void testEntityWithOneValueAttribute7 () throws JAXBException  {
+	testEntityWithOneValueAttribute(7);
+    }
+    public void testEntityWithOneValueAttribute8 () throws JAXBException  {
+	testEntityWithOneValueAttribute(8);
+    }
+    public void testEntityWithOneValueAttribute9 () throws JAXBException  {
+	testEntityWithOneValueAttribute(9);
+    }
+    public void testEntityWithOneValueAttribute10 () throws JAXBException  {
+	testEntityWithOneValueAttribute(10);
+    }
+    public void testEntityWithOneValueAttribute11 () throws JAXBException  {
+	testEntityWithOneValueAttribute(11);
+    }
+    public void testEntityWithOneValueAttribute12 () throws JAXBException  {
+	testEntityWithOneValueAttribute(12);
+    }
+    public void testEntityWithOneValueAttribute13 () throws JAXBException  {
+	testEntityWithOneValueAttribute(13);
+    }
+    public void testEntityWithOneValueAttribute14 () throws JAXBException  {
+	testEntityWithOneValueAttribute(14);
+    }
+    public void testEntityWithOneValueAttribut15 () throws JAXBException  {
+	testEntityWithOneValueAttribute(15);
+    }
+    public void testEntityWithOneValueAttribute16 () throws JAXBException  {
+	testEntityWithOneValueAttribute(16);
+    }
+    public void testEntityWithOneValueAttribute17 () throws JAXBException  {
+	testEntityWithOneValueAttribute(17);
+    }
+    public void testEntityWithOneValueAttribute18 () throws JAXBException  {
+	testEntityWithOneValueAttribute(18);
+    }
+    public void testEntityWithOneValueAttribute19 () throws JAXBException  {
+	testEntityWithOneValueAttribute(19);
+    }
+    public void testEntityWithOneValueAttribute20 () throws JAXBException  {
+	testEntityWithOneValueAttribute(20);
+    }
+    public void testEntityWithOneValueAttribute21 () throws JAXBException  {
+	testEntityWithOneValueAttribute(21);
+    }
+    public void testEntityWithOneValueAttribute22 () throws JAXBException  {
+	testEntityWithOneValueAttribute(22);
+    }
+    public void testEntityWithOneValueAttribute23 () throws JAXBException  {
+	testEntityWithOneValueAttribute(23);
+    }
+    public void testEntityWithOneValueAttribute24 () throws JAXBException  {
+	testEntityWithOneValueAttribute(24);
+    }
+    public void testEntityWithOneValueAttribute25 () throws JAXBException  {
+	testEntityWithOneValueAttribute(25);
+    }
+    public void testEntityWithOneValueAttribute26 () throws JAXBException  {
+	testEntityWithOneValueAttribute(26);
+    }
+    public void testEntityWithOneValueAttribute27 () throws JAXBException  {
+	testEntityWithOneValueAttribute(27);
+    }
+    public void testEntityWithOneValueAttribute28 () throws JAXBException  {
+	testEntityWithOneValueAttribute(28);
+    }
+    public void testEntityWithOneValueAttribute29 () throws JAXBException  {
+	testEntityWithOneValueAttribute(29);
+    }
+    public void testEntityWithOneValueAttribute30 () throws JAXBException  {
+	testEntityWithOneValueAttribute(30);
+    }
+    public void testEntityWithOneValueAttribute31 () throws JAXBException  {
+	testEntityWithOneValueAttribute(31);
+    }
+    public void testEntityWithOneValueAttribute32 () throws JAXBException  {
+	testEntityWithOneValueAttribute(32);
+    }
+    public void testEntityWithOneValueAttribute33 () throws JAXBException  {
+	testEntityWithOneValueAttribute(33);
+    }
+    public void testEntityWithOneValueAttribute34 () throws JAXBException  {
+	testEntityWithOneValueAttribute(34);
+    }
+    public void testEntityWithOneValueAttribute35 () throws JAXBException  {
+	testEntityWithOneValueAttribute(35);
+    }
+    public void testEntityWithOneValueAttribute36 () throws JAXBException  {
+	testEntityWithOneValueAttribute(36);
+    }
+    public void testEntityWithOneValueAttribute37 () throws JAXBException  {
+	testEntityWithOneValueAttribute(37);
+    }
+    public void testEntityWithOneValueAttribute38 () throws JAXBException  {
+	testEntityWithOneValueAttribute(38);
+    }
+    public void testEntityWithOneValueAttribute39 () throws JAXBException  {
+	testEntityWithOneValueAttribute(39);
+    }
+    public void testEntityWithOneValueAttribute40 () throws JAXBException  {
+	testEntityWithOneValueAttribute(40);
+    }
+    public void testEntityWithOneValueAttribute41 () throws JAXBException  {
+	testEntityWithOneValueAttribute(41);
+    }
+    public void testEntityWithOneValueAttribute42 () throws JAXBException  {
+	testEntityWithOneValueAttribute(42);
+    }
+    public void testEntityWithOneValueAttribute43 () throws JAXBException  {
+	testEntityWithOneValueAttribute(43);
+    }
+    public void testEntityWithOneValueAttribute44 () throws JAXBException  {
+	testEntityWithOneValueAttribute(44);
+    }
+
+    // LOCATION
+    public void testEntityWithOneLocationAttribute0 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(0);
+    }
+    public void testEntityWithOneLocationAttribute1 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(1);
+    }
+    public void testEntityWithOneLocationAttribute2 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(2);
+    }
+    public void testEntityWithOneLocationAttribute3 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(3);
+    }
+    public void testEntityWithOneLocationAttribute4 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(4);
+    }
+    public void testEntityWithOneLocationAttribute5 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(5);
+    }
+    public void testEntityWithOneLocationAttribute6 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(6);
+    }
+    public void testEntityWithOneLocationAttribute7 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(7);
+    }
+    public void testEntityWithOneLocationAttribute8 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(8);
+    }
+    public void testEntityWithOneLocationAttribute9 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(9);
+    }
+    public void testEntityWithOneLocationAttribute10 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(10);
+    }
+    public void testEntityWithOneLocationAttribute11 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(11);
+    }
+    public void testEntityWithOneLocationAttribute12 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(12);
+    }
+    public void testEntityWithOneLocationAttribute13 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(13);
+    }
+    public void testEntityWithOneLocationAttribute14 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(14);
+    }
+    public void testEntityWithOneLocationAttribut15 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(15);
+    }
+    public void testEntityWithOneLocationAttribute16 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(16);
+    }
+    public void testEntityWithOneLocationAttribute17 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(17);
+    }
+    public void testEntityWithOneLocationAttribute18 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(18);
+    }
+    public void testEntityWithOneLocationAttribute19 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(19);
+    }
+    public void testEntityWithOneLocationAttribute20 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(20);
+    }
+    public void testEntityWithOneLocationAttribute21 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(21);
+    }
+    public void testEntityWithOneLocationAttribute22 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(22);
+    }
+    public void testEntityWithOneLocationAttribute23 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(23);
+    }
+    public void testEntityWithOneLocationAttribute24 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(24);
+    }
+    public void testEntityWithOneLocationAttribute25 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(25);
+    }
+    public void testEntityWithOneLocationAttribute26 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(26);
+    }
+    public void testEntityWithOneLocationAttribute27 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(27);
+    }
+    public void testEntityWithOneLocationAttribute28 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(28);
+    }
+    public void testEntityWithOneLocationAttribute29 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(29);
+    }
+    public void testEntityWithOneLocationAttribute30 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(30);
+    }
+    public void testEntityWithOneLocationAttribute31 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(31);
+    }
+    public void testEntityWithOneLocationAttribute32 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(32);
+    }
+    public void testEntityWithOneLocationAttribute33 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(33);
+    }
+    public void testEntityWithOneLocationAttribute34 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(34);
+    }
+    public void testEntityWithOneLocationAttribute35 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(35);
+    }
+    public void testEntityWithOneLocationAttribute36 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(36);
+    }
+    public void testEntityWithOneLocationAttribute37 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(37);
+    }
+    public void testEntityWithOneLocationAttribute38 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(38);
+    }
+    public void testEntityWithOneLocationAttribute39 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(39);
+    }
+    public void testEntityWithOneLocationAttribute40 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(40);
+    }
+    public void testEntityWithOneLocationAttribute41 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(41);
+    }
+    public void testEntityWithOneLocationAttribute42 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(42);
+    }
+    public void testEntityWithOneLocationAttribute43 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(43);
+    }
+    public void testEntityWithOneLocationAttribute44 () throws JAXBException  {
+	testEntityWithOneLocationAttribute(44);
+    }
+
+    // OTHER
+    public void testEntityWithOneOtherAttribute0 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(0);
+    }
+    public void testEntityWithOneOtherAttribute1 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(1);
+    }
+    public void testEntityWithOneOtherAttribute2 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(2);
+    }
+    public void testEntityWithOneOtherAttribute3 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(3);
+    }
+    public void testEntityWithOneOtherAttribute4 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(4);
+    }
+    public void testEntityWithOneOtherAttribute5 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(5);
+    }
+    public void testEntityWithOneOtherAttribute6 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(6);
+    }
+    public void testEntityWithOneOtherAttribute7 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(7);
+    }
+    public void testEntityWithOneOtherAttribute8 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(8);
+    }
+    public void testEntityWithOneOtherAttribute9 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(9);
+    }
+    public void testEntityWithOneOtherAttribute10 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(10);
+    }
+    public void testEntityWithOneOtherAttribute11 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(11);
+    }
+    public void testEntityWithOneOtherAttribute12 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(12);
+    }
+    public void testEntityWithOneOtherAttribute13 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(13);
+    }
+    public void testEntityWithOneOtherAttribute14 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(14);
+    }
+    public void testEntityWithOneOtherAttribut15 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(15);
+    }
+    public void testEntityWithOneOtherAttribute16 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(16);
+    }
+    public void testEntityWithOneOtherAttribute17 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(17);
+    }
+    public void testEntityWithOneOtherAttribute18 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(18);
+    }
+    public void testEntityWithOneOtherAttribute19 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(19);
+    }
+    public void testEntityWithOneOtherAttribute20 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(20);
+    }
+    public void testEntityWithOneOtherAttribute21 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(21);
+    }
+    public void testEntityWithOneOtherAttribute22 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(22);
+    }
+    public void testEntityWithOneOtherAttribute23 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(23);
+    }
+    public void testEntityWithOneOtherAttribute24 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(24);
+    }
+    public void testEntityWithOneOtherAttribute25 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(25);
+    }
+    public void testEntityWithOneOtherAttribute26 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(26);
+    }
+    public void testEntityWithOneOtherAttribute27 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(27);
+    }
+    public void testEntityWithOneOtherAttribute28 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(28);
+    }
+    public void testEntityWithOneOtherAttribute29 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(29);
+    }
+    public void testEntityWithOneOtherAttribute30 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(30);
+    }
+    public void testEntityWithOneOtherAttribute31 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(31);
+    }
+    public void testEntityWithOneOtherAttribute32 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(32);
+    }
+    public void testEntityWithOneOtherAttribute33 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(33);
+    }
+    public void testEntityWithOneOtherAttribute34 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(34);
+    }
+    public void testEntityWithOneOtherAttribute35 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(35);
+    }
+    public void testEntityWithOneOtherAttribute36 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(36);
+    }
+    public void testEntityWithOneOtherAttribute37 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(37);
+    }
+    public void testEntityWithOneOtherAttribute38 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(38);
+    }
+    public void testEntityWithOneOtherAttribute39 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(39);
+    }
+    public void testEntityWithOneOtherAttribute40 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(40);
+    }
+    public void testEntityWithOneOtherAttribute41 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(41);
+    }
+    public void testEntityWithOneOtherAttribute42 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(42);
+    }
+    public void testEntityWithOneOtherAttribute43 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(43);
+    }
+    public void testEntityWithOneOtherAttribute44 () throws JAXBException  {
+	testEntityWithOneOtherAttribute(44);
+    }
+
+
+    // TYPE
+
     public void testEntityWithOneAttribute0 () throws JAXBException  {
-	testEntityWithOneAttribute(0);
+	testEntityWithOneTypeAttribute(0);
     }
     public void testEntityWithOneAttribute1 () throws JAXBException  {
-	testEntityWithOneAttribute(1);
+	testEntityWithOneTypeAttribute(1);
     }
     public void testEntityWithOneAttribute2 () throws JAXBException  {
-	testEntityWithOneAttribute(2);
+	testEntityWithOneTypeAttribute(2);
     }
     public void testEntityWithOneAttribute3 () throws JAXBException  {
-	testEntityWithOneAttribute(3);
+	testEntityWithOneTypeAttribute(3);
     }
     public void testEntityWithOneAttribute4 () throws JAXBException  {
-	testEntityWithOneAttribute(4);
+	testEntityWithOneTypeAttribute(4);
     }
     public void testEntityWithOneAttribute5 () throws JAXBException  {
-	testEntityWithOneAttribute(5);
+	testEntityWithOneTypeAttribute(5);
     }
     public void testEntityWithOneAttribute6 () throws JAXBException  {
-	testEntityWithOneAttribute(6);
+	testEntityWithOneTypeAttribute(6);
     }
     public void testEntityWithOneAttribute7 () throws JAXBException  {
-	testEntityWithOneAttribute(7);
+	testEntityWithOneTypeAttribute(7);
     }
     public void testEntityWithOneAttribute8 () throws JAXBException  {
-	testEntityWithOneAttribute(8);
+	testEntityWithOneTypeAttribute(8);
     }
     public void testEntityWithOneAttribute9 () throws JAXBException  {
-	testEntityWithOneAttribute(0);
+	testEntityWithOneTypeAttribute(0);
     }
     public void testEntityWithOneAttribute10 () throws JAXBException  {
-	testEntityWithOneAttribute(10);
+	testEntityWithOneTypeAttribute(10);
     }
     public void testEntityWithOneAttribute11 () throws JAXBException  {
-	testEntityWithOneAttribute(11);
+	testEntityWithOneTypeAttribute(11);
     }
     public void testEntityWithOneAttribute12 () throws JAXBException  {
-	testEntityWithOneAttribute(12);
+	testEntityWithOneTypeAttribute(12);
     }
     public void testEntityWithOneAttribute13 () throws JAXBException  {
-	testEntityWithOneAttribute(13);
+	testEntityWithOneTypeAttribute(13);
     }
     public void testEntityWithOneAttribute14 () throws JAXBException  {
-	testEntityWithOneAttribute(14);
+	testEntityWithOneTypeAttribute(14);
     }
     public void testEntityWithOneAttribute15 () throws JAXBException  {
-	testEntityWithOneAttribute(15);
+	testEntityWithOneTypeAttribute(15);
     }
     public void testEntityWithOneAttribute16 () throws JAXBException  {
-	testEntityWithOneAttribute(16);
+	testEntityWithOneTypeAttribute(16);
     }
     public void testEntityWithOneAttribute17 () throws JAXBException  {
-	testEntityWithOneAttribute(17);
+	testEntityWithOneTypeAttribute(17);
     }
     public void testEntityWithOneAttribute18 () throws JAXBException  {
-	testEntityWithOneAttribute(18);
+	testEntityWithOneTypeAttribute(18);
     }
     public void testEntityWithOneAttribute19 () throws JAXBException  {
-	testEntityWithOneAttribute(19);
+	testEntityWithOneTypeAttribute(19);
     }
     public void testEntityWithOneAttribute20 () throws JAXBException  {
-	testEntityWithOneAttribute(20);
+	testEntityWithOneTypeAttribute(20);
     }
     public void testEntityWithOneAttribute21 () throws JAXBException  {
-	testEntityWithOneAttribute(21);
+	testEntityWithOneTypeAttribute(21);
     }
     public void testEntityWithOneAttribute22 () throws JAXBException  {
-	testEntityWithOneAttribute(22);
+	testEntityWithOneTypeAttribute(22);
     }
     public void testEntityWithOneAttribute23 () throws JAXBException  {
-	testEntityWithOneAttribute(23);
+	testEntityWithOneTypeAttribute(23);
     }
     public void testEntityWithOneAttribute24 () throws JAXBException  {
-   	testEntityWithOneAttribute(24);
+   	testEntityWithOneTypeAttribute(24);
     }
     public void testEntityWithOneAttribute25 () throws JAXBException  {
-	testEntityWithOneAttribute(25);
+	testEntityWithOneTypeAttribute(25);
     }
     public void testEntityWithOneAttribute26 () throws JAXBException  {
-	testEntityWithOneAttribute(26);
+	testEntityWithOneTypeAttribute(26);
     }
     public void testEntityWithOneAttribute27 () throws JAXBException  {
-	testEntityWithOneAttribute(27);
+	testEntityWithOneTypeAttribute(27);
     }
     public void testEntityWithOneAttribute28 () throws JAXBException  {
-	testEntityWithOneAttribute(28);
+	testEntityWithOneTypeAttribute(28);
     }
     public void testEntityWithOneAttribute29 () throws JAXBException  {
-	testEntityWithOneAttribute(29);
+	testEntityWithOneTypeAttribute(29);
     }
     public void testEntityWithOneAttribute30 () throws JAXBException  {
-	testEntityWithOneAttribute(30);
+	testEntityWithOneTypeAttribute(30);
     }
     public void testEntityWithOneAttribute31 () throws JAXBException  {
-	testEntityWithOneAttribute(31);
+	testEntityWithOneTypeAttribute(31);
     }
     public void testEntityWithOneAttribute32 () throws JAXBException  {
-	testEntityWithOneAttribute(32);
+	testEntityWithOneTypeAttribute(32);
     }
     public void testEntityWithOneAttribute33() throws JAXBException  {
-	testEntityWithOneAttribute(33);
+	testEntityWithOneTypeAttribute(33);
     }
     public void testEntityWithOneAttribute34 () throws JAXBException  {
-	testEntityWithOneAttribute(34);
+	testEntityWithOneTypeAttribute(34);
     }
     public void testEntityWithOneAttribute35 () throws JAXBException  {
-	testEntityWithOneAttribute(35);
+	testEntityWithOneTypeAttribute(35);
     }
     public void testEntityWithOneAttribute36 () throws JAXBException  {
-	testEntityWithOneAttribute(36);
+	testEntityWithOneTypeAttribute(36);
     }
     public void testEntityWithOneAttribute37 () throws JAXBException  {
-	testEntityWithOneAttribute(37);
+	testEntityWithOneTypeAttribute(37);
     }
     public void testEntityWithOneAttribute38 () throws JAXBException  {
-	testEntityWithOneAttribute(38);
+	testEntityWithOneTypeAttribute(38);
     }
     public void testEntityWithOneAttribute39 () throws JAXBException  {
-	testEntityWithOneAttribute(39);
+	testEntityWithOneTypeAttribute(39);
     }
     public void testEntityWithOneAttribute40 () throws JAXBException  {
-	testEntityWithOneAttribute(40);
+	testEntityWithOneTypeAttribute(40);
     }
     public void testEntityWithOneAttribute41 () throws JAXBException  {
-	testEntityWithOneAttribute(41);
+	testEntityWithOneTypeAttribute(41);
     }
     public void testEntityWithOneAttribute42 () throws JAXBException  {
-	testEntityWithOneAttribute(42);
+	testEntityWithOneTypeAttribute(42);
     }
     public void testEntityWithOneAttribute43 () throws JAXBException  {
-	testEntityWithOneAttribute(43);
+	testEntityWithOneTypeAttribute(43);
     }
     public void testEntityWithOneAttribute44 () throws JAXBException  {
-	testEntityWithOneAttribute(44);
+	testEntityWithOneTypeAttribute(44);
     }
   
     

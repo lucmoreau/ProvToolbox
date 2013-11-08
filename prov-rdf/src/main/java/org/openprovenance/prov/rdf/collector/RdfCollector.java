@@ -484,30 +484,10 @@ public class RdfCollector extends RDFHandlerBase {
 								     this.valueConverter.getXsdType(typeQ)));
 			    }
 
-			} else if (statement.getObject() instanceof Literal) {
-			    /*
-			    Object obj2 = decodeLiteral((Literal) statement.getObject());
-			    System.out.println("????-----> Literal " + ((Literal)statement.getObject()).getDatatype());
-			    System.out.println("????--------> Literal " + obj2);
-			    System.out.println("????  " + convertURIToQName(((Literal)statement.getObject()).getDatatype()));
-			    
-			    attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_TYPE_QNAME,
-								 obj2,
-								 this.valueConverter.getXsdType(obj2)));
-			    */
-			   
+			} else if (statement.getObject() instanceof Literal) {	   
 			    Literal lit=(Literal)statement.getObject();
-			    Object theValue;
-			    if (lit.getLanguage() != null) {
-				theValue= pFactory.newInternationalizedString(lit.stringValue(),
-				                                              lit.getLanguage());
-			    } else {
-				theValue=lit.stringValue();
-			    }
-			    attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_TYPE_QNAME, 
-			                                         theValue,
-			                                         ((lit.getDatatype()==null) ? ValueConverter.QNAME_XSD_STRING: 
-			                                         Ontology.convertFromRdf(convertURIToQName(lit.getDatatype())))));
+			    Attribute attr = newAttribute(lit,org.openprovenance.prov.xml.Helper.PROV_TYPE_QNAME);
+			    attributes.add(attr);
 			}
 		    }
 		} else {
@@ -524,12 +504,10 @@ public class RdfCollector extends RDFHandlerBase {
 	    }
 
 	    if (predQ.equals(Ontology.QNAME_PROVO_atLocation)) {
-		Object obj = valueToObject(statement.getObject());
-		if (obj != null) {
-		    attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_LOCATION_QNAME,
-							 obj,
-							 this.valueConverter.getXsdType(obj)));
-		}
+		Value obj=statement.getObject();
+		Attribute attr = newAttributeForValue(obj);
+		attributes.add(attr);
+
 	    }
 
 	    if (predQ.equals(Ontology.QNAME_RDFS_LABEL)) {
@@ -557,12 +535,15 @@ public class RdfCollector extends RDFHandlerBase {
 		}
 	    } else if (value instanceof Literal) {
 		if (predQ.equals(Ontology.QNAME_PROVO_value)) {
+		    Attribute attr=newAttribute((Literal)value,org.openprovenance.prov.xml.Helper.PROV_VALUE_QNAME);
+		    attributes.add(attr);
+		    /*
+		    
 		    Object literal = decodeLiteral((Literal) value);
-		    System.out.println("-----> Literal " + ((Literal)value).getDatatype());
-		    System.out.println("--------> Literal " + literal);
 		    attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_VALUE_QNAME,
 							 literal,
 							 this.valueConverter.getXsdType(literal)));
+							 */
 		}
 	    }
 
@@ -605,6 +586,43 @@ public class RdfCollector extends RDFHandlerBase {
 	    }
 	}
 	return attributes;
+    }
+
+    public Attribute newAttributeForValue(Value obj) {
+	Attribute attr;
+	if (obj instanceof Literal) {			
+	    attr=newAttribute((Literal)obj,org.openprovenance.prov.xml.Helper.PROV_LOCATION_QNAME);
+	} else if (obj instanceof Resource) {
+	    attr=pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_LOCATION_QNAME,
+	                               convertResourceToQName((Resource) obj),
+	                               ValueConverter.QNAME_XSD_QNAME);
+	} else {
+	    throw new UnsupportedOperationException();
+	    /*
+	    Object obj2 = valueToObject(statement.getObject());
+	    if (obj != null) {
+		attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_LOCATION_QNAME,
+		                                     obj,
+		                                     this.valueConverter.getXsdType(obj)));
+	    }
+	    */
+	}
+	return attr;
+    }
+
+    public Attribute newAttribute(Literal lit, QName type) {
+	Object theValue;
+	if (lit.getLanguage() != null) {
+	    theValue = pFactory.newInternationalizedString(lit.stringValue(),
+							   lit.getLanguage());
+	} else {
+	    theValue = lit.stringValue();
+	}
+	Attribute attr = pFactory.newAttribute(type,
+					       theValue,
+					       ((lit.getDatatype() == null) ? ValueConverter.QNAME_XSD_STRING
+						       : Ontology.convertFromRdf(convertURIToQName(lit.getDatatype()))));
+	return attr;
     }
 
     /*

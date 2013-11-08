@@ -52,10 +52,12 @@ public class NamespaceGatherer implements StatementAction {
     }
 
     public void register(Location loc) {
-	register(loc.getType());
-	Object val = loc.getValue();
-	if (val instanceof QName) {
-	    register((QName) val);
+	if (loc!=null) {
+	    register(loc.getType());
+	    Object val = loc.getValue();
+	    if (val instanceof QName) {
+		register((QName) val);
+	    }
 	}
     }
 
@@ -107,6 +109,7 @@ public class NamespaceGatherer implements StatementAction {
 
     public void registerValue(Value val2) {
 	if (val2!=null) {
+	    register(val2.getType());
 	    Object val = val2.getValue();
 	    if (val instanceof QName) {
 		register((QName) val);

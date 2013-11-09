@@ -238,8 +238,8 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void addLabels(HasLabel hl) {
    	hl.getLabel().add(pFactory.newInternationalizedString("hello"));
-   	hl.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-   	hl.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
+   	hl.getLabel().add(pFactory.newInternationalizedString("bye","en"));
+   	hl.getLabel().add(pFactory.newInternationalizedString("bonjour","fr"));
     }
    
 
@@ -582,15 +582,15 @@ public class RoundTripFromJavaTest extends TestCase {
 	setNamespaces();
    	Agent a = pFactory.newAgent("ex:ag2", "agent2");
    	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-   	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
+   	a.getLabel().add(pFactory.newInternationalizedString("bye","en"));
    	makeDocAndTest(a,"target/agent4");
     }
     public void testAgent5() throws JAXBException  {
 	setNamespaces();
    	Agent a = pFactory.newAgent("ex:ag2", "agent2");
    	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-   	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-   	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
+   	a.getLabel().add(pFactory.newInternationalizedString("bye","en"));
+   	a.getLabel().add(pFactory.newInternationalizedString("bonjour","fr"));
    	makeDocAndTest(a,"target/agent5");
     }
    
@@ -607,8 +607,8 @@ public class RoundTripFromJavaTest extends TestCase {
        	Agent a = pFactory.newAgent("ex:ag7", "agent7");
 	addTypes(a);
        	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
+       	a.getLabel().add(pFactory.newInternationalizedString("bye","en"));
+       	a.getLabel().add(pFactory.newInternationalizedString("bonjour","fr"));
    	a.getLocation().add(pFactory.newLocation("London",ValueConverter.QNAME_XSD_STRING));
    	a.getLocation().add(pFactory.newLocation(1,ValueConverter.QNAME_XSD_INT));
    	a.getLocation().add(pFactory.newLocation(1.0,ValueConverter.QNAME_XSD_FLOAT));

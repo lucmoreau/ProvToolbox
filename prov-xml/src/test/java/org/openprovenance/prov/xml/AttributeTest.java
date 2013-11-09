@@ -325,15 +325,15 @@ public class AttributeTest extends TestCase {
 
          {new QName(EX_NS, "abc", EX_PREFIX), ValueConverter.QNAME_XSD_QNAME},
          
-         {new QName(EX_NS, "abc", "other"), ValueConverter.QNAME_XSD_QNAME},
+         {new QName(EX_NS, "abcd", "other"), ValueConverter.QNAME_XSD_QNAME},
          
-         {new QName(EX_NS, "abc"), ValueConverter.QNAME_XSD_QNAME},
+         {new QName(EX_NS, "abcde"), ValueConverter.QNAME_XSD_QNAME},
          
          {new QName("http://example4.org/", "abc", EX_PREFIX), ValueConverter.QNAME_XSD_QNAME},
          
-         {new QName("http://example4.org/", "abc", "other"), ValueConverter.QNAME_XSD_QNAME},
+         {new QName("http://example4.org/", "abcd", "other"), ValueConverter.QNAME_XSD_QNAME},
              
-         {new QName("http://example4.org/", "abc"), ValueConverter.QNAME_XSD_QNAME},
+         {new QName("http://example4.org/", "abcde"), ValueConverter.QNAME_XSD_QNAME},
          
          
          {pFactory.newTimeNow(),ValueConverter.QNAME_XSD_DATETIME},

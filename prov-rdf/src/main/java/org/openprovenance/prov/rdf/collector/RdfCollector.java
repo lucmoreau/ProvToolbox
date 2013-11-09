@@ -476,12 +476,11 @@ public class RdfCollector extends RDFHandlerBase {
 
 			    if (isProvURI(typeQ)
 				    && DM_TYPES.indexOf(typeQ) == -1) {
-				// System.out.println("Skipping type: " +
-				// typeQ);
+				// System.out.println("Skipping type: " + typeQ);
 			    } else {
 				attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_TYPE_QNAME,
 								     typeQ,
-								     this.valueConverter.getXsdType(typeQ)));
+								     ValueConverter.QNAME_XSD_QNAME));
 			    }
 
 			} else if (statement.getObject() instanceof Literal) {	   
@@ -497,115 +496,49 @@ public class RdfCollector extends RDFHandlerBase {
 	    }
 
 	    if (predQ.equals(Ontology.QNAME_PROVO_hadRole)) {
-		String role = statement.getObject().stringValue();
-		attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_ROLE_QNAME,
-						     role,
-						     this.valueConverter.getXsdType(role)));
+		Value obj=statement.getObject();
+
+		Attribute attr = newAttributeForValue(obj,org.openprovenance.prov.xml.Helper.PROV_ROLE_QNAME);
+		attributes.add(attr);
 	    }
 
 	    if (predQ.equals(Ontology.QNAME_PROVO_atLocation)) {
 		Value obj=statement.getObject();
-		Attribute attr = newAttributeForValue(obj);
+		Attribute attr = newAttributeForValue(obj,org.openprovenance.prov.xml.Helper.PROV_LOCATION_QNAME);
 		attributes.add(attr);
 
 	    }
 
 	    if (predQ.equals(Ontology.QNAME_RDFS_LABEL)) {
 		Literal lit = (Literal) (statement.getObject());
-		if (lit.getLanguage() != null) {
-		    InternationalizedString is = pFactory.newInternationalizedString(lit.stringValue(),
-										     lit.getLanguage()
-											.toUpperCase());
-		    attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_LABEL_QNAME,
-							 is,
-							 ValueConverter.QNAME_XSD_STRING));
-		} else {
-		    attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_LABEL_QNAME,
-							 lit.stringValue(),
-							 ValueConverter.QNAME_XSD_STRING));
-		}
+		Attribute attr=newAttribute(lit, org.openprovenance.prov.xml.Helper.PROV_LABEL_QNAME);
+		attributes.add(attr);		
 	    }
-
-	    if (value instanceof Resource) {
-		if (predQ.equals(Ontology.QNAME_PROVO_value)) {
-		    Object resourceVal = convertResourceToQName((Resource) value);
-		    attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_VALUE_QNAME,
-							 resourceVal,
-							 this.valueConverter.getXsdType(resourceVal)));
-		}
-	    } else if (value instanceof Literal) {
-		if (predQ.equals(Ontology.QNAME_PROVO_value)) {
-		    Attribute attr=newAttribute((Literal)value,org.openprovenance.prov.xml.Helper.PROV_VALUE_QNAME);
-		    attributes.add(attr);
-		    /*
-		    
-		    Object literal = decodeLiteral((Literal) value);
-		    attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_VALUE_QNAME,
-							 literal,
-							 this.valueConverter.getXsdType(literal)));
-							 */
-		}
+	    if (predQ.equals(Ontology.QNAME_PROVO_value)) {
+		Attribute attr=newAttributeForValue(value, org.openprovenance.prov.xml.Helper.PROV_VALUE_QNAME);
+		attributes.add(attr);
 	    }
-
 	    if (!isProvURI(predQ)) {
 		if (!predQ.equals(Ontology.QNAME_RDF_TYPE)
 			&& !predQ.equals(Ontology.QNAME_RDFS_LABEL)) {
-		    // Retrieve the prefix
-		    String prefix = this.revnss.get(predQ.getNamespaceURI());
-		    Attribute attr = null;
-		    if (value instanceof Literal) {
-			Literal lit = (Literal) value;
-
-			String shortType = "string";
-			if (lit.getDatatype() != null) {
-			    shortType = lit.getDatatype().getLocalName();
-			}
-
-			QName xsdType = pFactory.stringToQName(getXsdType(shortType));
-			attr = pFactory.newAttribute(predQ.getNamespaceURI(),
-						     predQ.getLocalPart(),
-						     prefix,
-						     decodeLiteral(lit),
-						     xsdType);
-
-		    } else if (value instanceof Resource) {
-			attr = pFactory.newAttribute(predQ.getNamespaceURI(),
-						     predQ.getLocalPart(),
-						     prefix,
-						     convertResourceToQName((Resource) value),
-						     ValueConverter.QNAME_XSD_QNAME);
-		    } else {
-			System.err.println("Invalid value");
-		    }
-
-		    if (attr != null) {
-			attributes.add(attr);
-		    }
-
+		    Attribute attr = newAttributeForValue(value, predQ);
+		    attributes.add(attr);
 		}
 	    }
 	}
 	return attributes;
     }
 
-    public Attribute newAttributeForValue(Value obj) {
+    public Attribute newAttributeForValue(Value obj, QName type) {
 	Attribute attr;
 	if (obj instanceof Literal) {			
-	    attr=newAttribute((Literal)obj,org.openprovenance.prov.xml.Helper.PROV_LOCATION_QNAME);
+	    attr=newAttribute((Literal)obj,type);
 	} else if (obj instanceof Resource) {
-	    attr=pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_LOCATION_QNAME,
+	    attr=pFactory.newAttribute(type,
 	                               convertResourceToQName((Resource) obj),
 	                               ValueConverter.QNAME_XSD_QNAME);
 	} else {
 	    throw new UnsupportedOperationException();
-	    /*
-	    Object obj2 = valueToObject(statement.getObject());
-	    if (obj != null) {
-		attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_LOCATION_QNAME,
-		                                     obj,
-		                                     this.valueConverter.getXsdType(obj)));
-	    }
-	    */
 	}
 	return attr;
     }

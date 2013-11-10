@@ -445,10 +445,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         return statement;
     }
     
-    private Object decodeTypeRef(JsonElement element) {
-    	return decodeAttributeValue(element);
-    }
-    
+
     private InternationalizedString decodeInternationalizedString(JsonElement element) {
         InternationalizedString iString = pf.getObjectFactory().createInternationalizedString();
         if (element.isJsonPrimitive()) {
@@ -493,7 +490,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     	return pf.newAttribute(attributeName, value, xsdType);
     }
     
-    
+    //TODO: the two functions decodeAttribute and decodeAttribute are very similar. Merge?
     Attribute decodeAttributeValue(JsonElement element, QName elementName) {
 	if (element.isJsonPrimitive()) {
             Object o=decodeJSONPrimitive(element.getAsString());
@@ -669,8 +666,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	        for (JsonElement element : elements) {
 	        	JsonObject item = element.getAsJsonObject();
 	        	KeyQNamePair pair = new KeyQNamePair();
-	        	Object o=this.decodeAttributeValue(item.remove("key"));
-	        	pair.key = pf.newKey(o, vconv.getXsdType(o));
+	        	Object o=this.decodeAttributeValue(item.remove("key"));  
+	        	pair.key = pf.newKey(o, vconv.getXsdType(o));              //TODO remove use of vconv
 	        	pair.name = pf.stringToQName(this.popString(item, "$"));
 	        	results.add(pair);
 	        }
@@ -683,7 +680,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     		for (Entry<String, JsonElement> entry: dictionary.entrySet()) {
     			KeyQNamePair pair = new KeyQNamePair();
     			Object o=vconv.convertToJava(datatype, entry.getKey());
-	        	pair.key = pf.newKey(o, vconv.getXsdType(o));
+	        	pair.key = pf.newKey(o, vconv.getXsdType(o));         //TODO remove use of vconv
 	        	pair.name = pf.stringToQName(entry.getValue().getAsString());
 	        	results.add(pair);
     		}

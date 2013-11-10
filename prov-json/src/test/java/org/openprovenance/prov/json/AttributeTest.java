@@ -32,7 +32,7 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 	
 	@Override
 	public void writeDocument(Document doc, String file) {
-		Namespace.withThreadNamespace(doc.getNamespace());
+		//Namespace.withThreadNamespace(doc.getNamespace());
 
 		try {
 		    convert.writeDocument(doc, file);

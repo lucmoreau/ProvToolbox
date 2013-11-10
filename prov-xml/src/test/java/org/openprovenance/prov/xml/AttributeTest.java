@@ -105,7 +105,7 @@ public class AttributeTest extends TestCase {
 	for (String pre: ns.getPrefixes().keySet()) {
 	    nss.put(pre, ns.getPrefixes().get(pre));
 	}
-	System.out.println("updateNamespaces with " + nss);
+	//System.out.println("updateNamespaces with " + nss);
 	doc.setNss(nss);
     }
    

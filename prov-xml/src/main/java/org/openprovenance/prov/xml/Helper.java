@@ -23,6 +23,10 @@ public class Helper  {
     
     static public String qnameToString(QName qname) {
 	Namespace ns=Namespace.getThreadNamespace();
+	return qnameToString(qname,ns);
+    }
+    
+    static public String qnameToString(QName qname, Namespace ns) {
 	if ((ns.getDefaultNamespace()!=null) 
 		&& (ns.getDefaultNamespace().equals(qname.getNamespaceURI()))) {
 	    return qname.getLocalPart();

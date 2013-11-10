@@ -2,9 +2,10 @@ package org.openprovenance.prov.json;
 
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.UncheckedTestException;
 
-abstract public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
+public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
         final Converter convert=new Converter();
 
 
@@ -31,6 +32,8 @@ abstract public class AttributeTest extends org.openprovenance.prov.xml.Attribut
 	
 	@Override
 	public void writeDocument(Document doc, String file) {
+		Namespace.withThreadNamespace(doc.getNamespace());
+
 		try {
 		    convert.writeDocument(doc, file);
 		} catch (Exception e) {

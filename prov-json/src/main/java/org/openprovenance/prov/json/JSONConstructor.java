@@ -200,8 +200,10 @@ public class JSONConstructor implements ModelConstructor {
 			value instanceof Integer ||
 			value instanceof Boolean)
 			return value;
-		if (value instanceof QName)
-			return typedLiteral(qnExport.qnameToString((QName)value), "xsd:QName", null);
+		if (value instanceof QName) {
+			return typedLiteral(qnExport.qnameToString((QName)value), 
+			                    "xsd:QName", null);
+		}
 		if (value instanceof InternationalizedString) {
 			InternationalizedString iStr = (InternationalizedString)value;
 			String lang = iStr.getLang(); 
@@ -220,8 +222,10 @@ public class JSONConstructor implements ModelConstructor {
 		Object value = attr.getValue();
 		Object attrValue;
 		if (value instanceof QName) {
-			// force type xsd:QName
-			attrValue = typedLiteral(qnExport.qnameToString((QName)value), "xsd:QName", null);
+			// force type xsd:QName 
+		    
+			attrValue = typedLiteral(qnExport.qnameToString((QName)value), 
+			                         "xsd:QName", null);
 		}
 		else if (value instanceof InternationalizedString) {
 			InternationalizedString iStr = (InternationalizedString)value;

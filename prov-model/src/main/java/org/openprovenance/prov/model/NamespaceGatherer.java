@@ -21,6 +21,7 @@ public class NamespaceGatherer implements StatementAction {
     public NamespaceGatherer() {
 	prefixes.put("prov",NamespacePrefixMapper.PROV_NS);
 	namespaces.put(NamespacePrefixMapper.PROV_NS,"prov");
+	defaultNamespace=null;
     }
     
     public NamespaceGatherer(Hashtable<String, String> prefixes,
@@ -32,7 +33,7 @@ public class NamespaceGatherer implements StatementAction {
     
     
 
-    String defaultNamespace = null;
+    String defaultNamespace;
 
     public String getDefaultNamespace() {
 	return defaultNamespace;
@@ -131,7 +132,7 @@ public class NamespaceGatherer implements StatementAction {
 	if ((prefix == null) || (prefix.equals(XMLConstants.DEFAULT_NS_PREFIX))) {
 	    if (defaultNamespace == null) {
 		defaultNamespace = namespace;
-		namespaces.put(namespace, stringForDefault);
+		//namespaces.put(namespace, stringForDefault);
 	    } else {
 		newPrefix(namespace);
 	    }
@@ -164,7 +165,10 @@ public class NamespaceGatherer implements StatementAction {
 		prefixes.put(newPrefix, namespace);
 		success = true;
 	    }
+	    if (namespaces.get(namespace)==null) {
+		// make sure we don't overwrite namespace
 		namespaces.put(namespace, newPrefix);
+	    }
 	}
     }
 

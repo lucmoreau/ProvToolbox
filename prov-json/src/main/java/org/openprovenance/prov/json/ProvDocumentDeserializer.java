@@ -38,6 +38,7 @@ import org.openprovenance.prov.model.InternationalizedString;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.Statement;
@@ -351,7 +352,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         	if (statement instanceof HasType) {
 	            List<org.openprovenance.prov.model.Type> types = ((HasType)statement).getType();
 	            for (JsonElement value: values) {
-	                types.add(pf.newType(decodeTypeRef(value),vconv));
+	        	types.add((org.openprovenance.prov.model.Type)decodeAttribute(Helper.PROV_TYPE_QNAME, value));
+	                //types.add(pf.newType(decodeTypeRef(value),vconv));
 	            }
         	}
         	else {
@@ -377,8 +379,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         	if (statement instanceof HasLocation) {
 	            List<Location> locations = ((HasLocation)statement).getLocation();
 	            for (JsonElement value: values) {
-	            	Object loc=decodeAttributeValue(value);
-	                locations.add(pf.newLocation(loc,vconv.getXsdType(loc)));
+	        	locations.add((org.openprovenance.prov.model.Location)decodeAttribute(Helper.PROV_LOCATION_QNAME, value));
+	            	//Object loc=decodeAttributeValue(value);
+	                //locations.add(pf.newLocation(loc,vconv.getXsdType(loc)));
 	            }
         	}
         	else {
@@ -391,8 +394,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         	if (statement instanceof HasRole) {
 	            List<Role> roles = ((HasRole)statement).getRole();
 	            for (JsonElement value: values) {
-	            	Object role=decodeAttributeValue(value);
-	                roles.add(pf.newRole(role,vconv.getXsdType(role)));
+	        	roles.add((org.openprovenance.prov.model.Role)decodeAttribute(Helper.PROV_ROLE_QNAME, value));
+	            	//Object role=decodeAttributeValue(value);
+	                //roles.add(pf.newRole(role,vconv.getXsdType(role)));
 	            }
         	}
         	else {
@@ -407,7 +411,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         		throw new UnsupportedOperationException("Only one instance of prov:value is allowed in a statement - id: " + idStr);
         	}
         	if (statement instanceof HasValue) {
-		    ((HasValue)statement).setValue(pf.newValue(decodeAttributeValue(values.get(0)),vconv));
+        	    ((HasValue)statement).setValue((org.openprovenance.prov.model.Value)decodeAttribute(Helper.PROV_VALUE_QNAME, values.get(0)));
+
+		    //((HasValue)statement).setValue(pf.newValue(decodeAttributeValue(values.get(0)),vconv));
         	}
         	else {
         		throw new UnsupportedOperationException("prov:value is not allowed in a " + statementType + "statement - id: " + idStr);
@@ -425,6 +431,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	                JsonElement element = aPair.getValue();
 	                values = pickMultiValues(element);
 	                for (JsonElement value: values) {
+
 	                    Attribute attr = decodeAttribute(attributeName, value);
 	                    attributes.add(attr);
 	                }
@@ -484,6 +491,35 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             }
         }    	
     	return pf.newAttribute(attributeName, value, xsdType);
+    }
+    
+    
+    Attribute decodeAttributeValue(JsonElement element, QName elementName) {
+	if (element.isJsonPrimitive()) {
+            Object o=decodeJSONPrimitive(element.getAsString());
+            QName type=vconv.getXsdType(o);
+            return pf.newAttribute(elementName, o, type);
+        } else {
+            JsonObject struct = element.getAsJsonObject(); 
+            String value = struct.get("$").getAsString();
+            if (struct.has("lang")) {
+                // Internationalized strings
+                String lang = struct.get("lang").getAsString();
+                InternationalizedString iString = pf.getObjectFactory().createInternationalizedString();
+                iString.setValue(value);
+                iString.setLang(lang);
+                return pf.newAttribute(elementName, iString, ValueConverter.QNAME_XSD_STRING);
+            }  else if (struct.has("type")) {
+            	String datatypeAsString = struct.get("type").getAsString();
+            	QName xsdType = pf.stringToQName(datatypeAsString); 
+            	return pf.newAttribute(elementName, value, xsdType);
+            } else {
+            	// if no type or lang information, decode as an Internationalized string without lang
+            	InternationalizedString iString = pf.getObjectFactory().createInternationalizedString();
+                iString.setValue(value);
+                return pf.newAttribute(elementName, iString, ValueConverter.QNAME_XSD_STRING);
+            }
+        }
     }
     
     private Object decodeAttributeValue(JsonElement element) {

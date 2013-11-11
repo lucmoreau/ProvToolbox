@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Just for validation of examples -->
+
+<xs:schema targetNamespace="http://example.com/ns/ex#"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://example.com/ns/ex#"
+           elementFormDefault="qualified"
+           attributeFormDefault="qualified">
+
+    <xs:import namespace="http://www.w3.org/ns/prov#"
+            schemaLocation="w3c/prov.xsd"/>
+
+    <xs:element name="how" type="xs:string" />
+
+    <xs:element name="content" type="xs:string" />
+
+    <xs:element name="version" type="xs:string" />
+
+    <xs:element name="host" type="xs:string" />
+
+    <xs:element name="port" type="xs:string" />
+
+    <xs:element name="parameter" type="xs:string" />
+
+    <xs:element name="circumstances" type="xs:string" />
+
+    <xs:element name="name" type="xs:string" />
+
+    <xs:element name="employee" type="xs:string" />
+
+    <xs:element name="label" type="xs:string" />
+
+    <xs:element name="perfrating" type="xs:string" />
+
+    <xs:element name="vizcolor" type="xs:string" />
+
+	<xs:complexType name="Workflow">
+		<xs:sequence>
+			<xs:element name="version" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

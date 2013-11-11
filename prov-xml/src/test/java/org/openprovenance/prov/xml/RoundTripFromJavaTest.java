@@ -48,6 +48,7 @@ import javax.xml.namespace.QName;
 import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.URIWrapper;
 import org.openprovenance.prov.model.Namespace;
+import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
 
@@ -176,10 +177,68 @@ public class RoundTripFromJavaTest extends TestCase {
         compareDocuments(doc, doc3, check && checkTest(file));
     }
     public void conditionalCheckSchema(String file) {
-	checkSchema(file);
+	if (checkSchema(file)) doCheckSchema2(file);
     }
     
-    public void checkSchema(String file) {
+    
+    public boolean checkSchema(String name)
+    {
+	if(name.endsWith("association2"+extension()) 
+		|| name.endsWith("end1"+extension())
+		|| name.endsWith("end4"+extension())
+		|| name.endsWith("delegation1"+extension())
+		|| name.endsWith("delegation2"+extension())
+		|| name.endsWith("dictionaryRemoval1-S"+extension())
+		|| name.endsWith("dictionaryRemoval1-M"+extension())
+		|| name.endsWith("dictionaryRemoval2-S"+extension())
+		|| name.endsWith("dictionaryRemoval2-M"+extension())
+		|| name.endsWith("attribution1"+extension())
+		|| name.endsWith("attribution2"+extension())
+		|| name.endsWith("mention1"+extension())
+		|| name.endsWith("derivation1"+extension())
+		|| name.endsWith("derivation2"+extension())
+		|| name.endsWith("derivation9"+extension())
+		|| name.endsWith("communication1"+extension())
+		|| name.endsWith("communication2"+extension())
+		|| name.endsWith("influence1"+extension())
+		|| name.endsWith("influence2"+extension())
+		|| name.endsWith("start1"+extension())
+		|| name.endsWith("start4"+extension())
+		|| name.endsWith("usage1"+extension())
+		|| name.endsWith("entity0"+extension())
+		|| name.endsWith("dictionaryInsertion1-S"+extension())
+		|| name.endsWith("dictionaryInsertion1-M"+extension())
+		|| name.endsWith("dictionaryInsertion2-S"+extension())
+		|| name.endsWith("dictionaryInsertion2-M"+extension())
+		)
+	{
+	    return false;
+	}
+	
+	return true;
+    }
+
+    
+    public void doCheckSchema1(String file) {
+	
+	String[] schemaFiles = new String[1];
+	schemaFiles[0] = "src/main/resources/ex.xsd";
+	try {
+	    ProvDeserialiser.getThreadProvDeserialiser().validateDocumentNew(schemaFiles, new File(file));
+	} catch (JAXBException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	} catch (SAXException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+    }
+
+    
+    public void doCheckSchema2(String file) {
 	//String command="xmllint --schema src/main/resources/w3c/prov.xsd --schema src/main/resources/w3c/xml.xsd --schema src/main/resources/ex.xsd " +file; //--noout
 	String command="xmllint --schema src/main/resources/ex.xsd " +file; //--noout
 	try {
@@ -2266,7 +2325,29 @@ public class RoundTripFromJavaTest extends TestCase {
 		makeDocAndTest(statements, opt, "target/dictionaryInsertion6");
 
 	}
-	
+	public void testDictionaryInsertion7() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p1 = new KeyQNamePair();
+		p1.key = pFactory.newKey("a",ValueConverter.QNAME_XSD_STRING);
+		p1.name = q("e0");
+		ll.add(p1);
+		KeyQNamePair p2 = new KeyQNamePair();
+		p2.key = pFactory.newKey(1,ValueConverter.QNAME_XSD_INT);
+		p2.name = q("e1");
+		ll.add(p2);
+		KeyQNamePair p3 = new KeyQNamePair();
+		p3.key = pFactory.newKey(q("a"),ValueConverter.QNAME_XSD_QNAME);
+		p3.name = q("e2");
+		ll.add(p3);
+		DerivedByInsertionFrom d7 = pFactory.newDerivedByInsertionFrom(
+				null, q("d2"), q("d1"), ll, null);
+
+		addLabels(d7);
+		Statement[] statements = new Statement[]{d7};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryInsertion7");
+
+	}
  	public void testDictionaryRemoval1() throws JAXBException {
 		DerivedByRemovalFrom d1 = pFactory.newDerivedByRemovalFrom(null,
 				q("d2"), q("d1"), null, null);

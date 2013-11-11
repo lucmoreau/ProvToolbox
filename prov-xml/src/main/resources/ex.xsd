@@ -36,14 +36,27 @@
 	<xs:extension base="xs:anySimpleType">
 	  <xs:anyAttribute/>
 	</xs:extension>
+
       </xs:simpleContent>
     </xs:complexType>    
 
+    <xs:complexType name="OtherTag2" mixed="true" >
+      <xs:sequence>
+        <xs:any minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:anyAttribute/>
+    </xs:complexType>
 
-    <xs:element name="tag1" type="ex:Tag1" />
-    <xs:element name="tag2" type="ex:Tag2" />
 
+
+    <xs:element name="tagx" type="ex:Tag1" />
+    <xs:element name="tagy" type="ex:Tag2" />
+
+    <xs:element name="tag1" type="xs:anyType" />
+    <xs:element name="tag2" type="xs:anyType" />
     <xs:element name="tag3" type="xs:anySimpleType" />
+
+
 
 
 </xs:schema>

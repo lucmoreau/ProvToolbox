@@ -21,5 +21,8 @@ public class RoundTripJavaToJavaTest extends RoundTripFromJavaTest {
         compareDocuments(doc, doc2, check && checkTest(file));
     }
 
+    public boolean checkSchema(String name) {
+	return false;
+    }
 
 }

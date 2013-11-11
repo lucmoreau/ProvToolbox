@@ -536,7 +536,7 @@ public class PC1FullTest extends TestCase {
 
 	try {
 	    deserial.validateDocument(schemaFiles,
-		                    new File("target/pc1-full.xml"), false);
+		                    new File("target/pc1-full.xml"));
 	} catch (Exception e) {
 	    //e.printStackTrace();
 	    assertTrue(e instanceof javax.xml.bind.UnmarshalException);

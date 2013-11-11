@@ -53,4 +53,11 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 		}
 	}
 	
+	@Override
+	public boolean checkSchema(String name) {
+	    return false;
+	}
+
+	
+	
 }

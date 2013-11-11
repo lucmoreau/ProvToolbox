@@ -615,7 +615,7 @@ public class ContextualizationPC1Test extends TestCase {
 
 	try {
 	    deserial.validateDocument(schemaFiles,
-		                    new File("target/pc1-spec.xml"), false);
+		                    new File("target/pc1-spec.xml"));
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    assertTrue(true);

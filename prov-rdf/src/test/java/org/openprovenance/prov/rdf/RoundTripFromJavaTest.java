@@ -154,4 +154,10 @@ public class RoundTripFromJavaTest extends
 			e.printStackTrace();
 		}
 	}
+	@Override
+	public boolean checkSchema(String name) {
+		return false;
+	}
+
+	
 }

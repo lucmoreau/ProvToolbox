@@ -86,6 +86,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
     public void testDictionaryInsertion4() {}
     public void testDictionaryInsertion5() {}
     public void testDictionaryInsertion6() {}
+    public void testDictionaryInsertion7() {}
     public void testDictionaryRemoval1() {}
     public void testDictionaryRemoval2() {}
     public void testDictionaryRemoval3() {}
@@ -184,7 +185,10 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	 
 	 
     }
-
+    @Override
+    public boolean checkSchema(String name) {
+	return false;
+    }
     ///////////////////////////////////////////////////////////////////////
 
 }

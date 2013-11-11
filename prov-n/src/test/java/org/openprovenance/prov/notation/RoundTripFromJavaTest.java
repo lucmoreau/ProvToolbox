@@ -43,6 +43,11 @@ public class RoundTripFromJavaTest extends
 		String s = u.convertBeanToASN(doc);
 		u.writeTextToFile(s, file);
 	}
+	
+	@Override
+	public boolean checkSchema(String name) {
+		return false;
+	}
 
 	public void NOmakeDocAndTest(Statement[] statements, String file,
 			Statement[] opt, boolean check) {

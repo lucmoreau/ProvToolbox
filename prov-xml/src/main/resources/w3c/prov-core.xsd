@@ -365,10 +365,10 @@
    -->
   
   <xs:element name="label" type="prov:InternationalizedString"/>
-  <xs:element name="role" type="xs:anySimpleType"/>
-  <xs:element name="type" type="xs:anySimpleType"/>
-  <xs:element name="location" type="xs:anySimpleType"/>
-  <xs:element name="value" type="xs:anySimpleType"/>
+  <xs:element name="role" type="xs:anyType"/>     <!-- was anySimpleType -->
+  <xs:element name="type" type="xs:anyType"/>     <!-- was anySimpleType -->
+  <xs:element name="location" type="xs:anyType"/> <!-- was anySimpleType -->
+  <xs:element name="value" type="xs:anyType"/>    <!-- was anySimpleType -->
 
   <xs:attribute name="id" type="xs:QName"/>
   <xs:attribute name="ref" type="xs:QName"/>

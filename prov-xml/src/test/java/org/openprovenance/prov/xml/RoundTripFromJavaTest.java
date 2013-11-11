@@ -180,6 +180,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void checkSchema(String file) {
+	//String command="xmllint --schema src/main/resources/w3c/prov.xsd --schema src/main/resources/w3c/xml.xsd --schema src/main/resources/ex.xsd " +file; //--noout
 	String command="xmllint --schema src/main/resources/ex.xsd " +file; //--noout
 	try {
 	    Process proc=Runtime.getRuntime().exec(command);

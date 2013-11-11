@@ -1,24 +1,5 @@
 
-2. ~/workspace/ProvToolbox/prov-n/target/attr_entity_one_attr24.provn
-
-document
-prefix xsd <http://www.w3.org/2001/XMLSchema>
-prefix prov <http://www.w3.org/ns/prov#>
-prefix ex <http://example.org/>
-prefix _pre0 <http://example4.org/>
-entity(ex:en24,[prov:type = 'ex:abc'])
-endDocument
-
-ex:abc ... should have been _pre0:abc
-
-Need to update the serialization code, to make use of namespace mapping.
-
-----------------------------------------------------------------------
-Have a representation of typed values in Java.	
-	    // This fails because we don't get to read the type in xsi:type
-	    //a.getLocation().add(pFactory.newLocation(2,ValueConverter.QNAME_XSD_UNSIGNED_INT));
-	    // problem in prov-n parsing, since  TreeTraversal.convertTypeLiteral generate a java value without type!
-
+xml:lang xml namespace not declared!
 
 ----------------------------------------------------------------------
 - Support for bundles

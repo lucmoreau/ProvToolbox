@@ -2,43 +2,48 @@
 
 <!-- Just for validation of examples -->
 
-<xs:schema targetNamespace="http://example.com/ns/ex#"
+<xs:schema targetNamespace="http://example.org/"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns="http://example.com/ns/ex#"
+           xmlns="http://example.org/"
+           xmlns:prov="http://www.w3.org/ns/prov#"
+           xmlns:ex="http://example.org/"
+           xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            elementFormDefault="qualified"
-           attributeFormDefault="qualified">
+           attributeFormDefault="unqualified">
 
+    <xs:import namespace="http://www.w3.org/2001/XMLSchema-instance"/>
     <xs:import namespace="http://www.w3.org/ns/prov#"
-            schemaLocation="w3c/prov.xsd"/>
+               schemaLocation="w3c/prov.xsd"/>
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" 
+               schemaLocation="w3c/xml.xsd"/>
+<!--
+    <xs:import namespace="http://www.w3.org/2001/XMLSchema-instance"
+               schemaLocation="w3c/xsi.xsd"/>
+-->
 
-    <xs:element name="how" type="xs:string" />
 
-    <xs:element name="content" type="xs:string" />
+    <xs:complexType name="Tag1">
+      <xs:simpleContent>
+	<xs:extension base="xs:anySimpleType">
+          <xs:attribute ref="xml:lang" use="optional"/>
+	</xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>    
 
-    <xs:element name="version" type="xs:string" />
+    <xs:complexType name="Tag2">
+      <xs:simpleContent>
+	<xs:extension base="xs:anySimpleType">
+	  <xs:anyAttribute/>
+	</xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>    
 
-    <xs:element name="host" type="xs:string" />
 
-    <xs:element name="port" type="xs:string" />
+    <xs:element name="tag1" type="ex:Tag1" />
+    <xs:element name="tag2" type="ex:Tag2" />
 
-    <xs:element name="parameter" type="xs:string" />
+    <xs:element name="tag3" type="xs:anySimpleType" />
 
-    <xs:element name="circumstances" type="xs:string" />
-
-    <xs:element name="name" type="xs:string" />
-
-    <xs:element name="employee" type="xs:string" />
-
-    <xs:element name="label" type="xs:string" />
-
-    <xs:element name="perfrating" type="xs:string" />
-
-    <xs:element name="vizcolor" type="xs:string" />
-
-	<xs:complexType name="Workflow">
-		<xs:sequence>
-			<xs:element name="version" type="xs:string" />
-		</xs:sequence>
-	</xs:complexType>
 
 </xs:schema>

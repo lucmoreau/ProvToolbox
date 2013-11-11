@@ -1,6 +1,10 @@
 package org.openprovenance.prov.xml;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
@@ -167,8 +171,42 @@ public class RoundTripFromJavaTest extends TestCase {
     public void compareDocAndFile(Document doc, String file, boolean check) {
         file=file+extension();
         writeDocument(doc, file);
+        if (check) conditionalCheckSchema(file);
         Document doc3=readDocument(file);
         compareDocuments(doc, doc3, check && checkTest(file));
+    }
+    public void conditionalCheckSchema(String file) {
+	checkSchema(file);
+    }
+    
+    public void checkSchema(String file) {
+	String command="xmllint --schema src/main/resources/ex.xsd " +file; //--noout
+	try {
+	    Process proc=Runtime.getRuntime().exec(command);
+	    proc.waitFor();
+	    int code=proc.exitValue();
+	    if (code!=0) {
+		BufferedReader errorReader = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+		String s_error=errorReader.readLine();
+		if (s_error!=null) {
+		    System.out.println("Error:  " + s_error);
+		}
+		BufferedReader outReader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+		String s_out=outReader.readLine();
+		if (s_out!=null) {
+		    System.out.println("Out:  " + s_out);
+		}
+	    }
+	    //System.out.println("out " + proc.getOutputStream().toString());
+	    //System.err.println("err " + proc.getErrorStream().toString());
+	    assertTrue(code==0);
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	} catch (InterruptedException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
     }
 
     public Document readDocument(String file1) {

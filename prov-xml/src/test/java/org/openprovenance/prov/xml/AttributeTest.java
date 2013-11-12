@@ -174,7 +174,7 @@ public class AttributeTest extends TestCase {
 
     
     public void conditionalCheckSchema(String file) {
-	if (checkSchema(file)) doCheckSchema2(file);
+	if (checkSchema(file)) doCheckSchema1(file);
     }
     
     
@@ -183,7 +183,8 @@ public class AttributeTest extends TestCase {
 	if(name.endsWith("33"+extension())
 		|| name.endsWith("33"+extension())
 		|| name.endsWith("34"+extension())
-		|| name.endsWith("attr_delegation0"+extension())
+		|| 
+		name.endsWith("attr_delegation0"+extension())
 		|| name.endsWith("attr_end0"+extension())
 		|| name.endsWith("attr_attribution0"+extension())
 		|| name.endsWith("attr_generation0"+extension())
@@ -197,7 +198,6 @@ public class AttributeTest extends TestCase {
 		|| name.endsWith("attr_association0"+extension())
 		|| name.endsWith("attr_communication0"+extension())
 		|| name.endsWith("attr_entity0"+extension())
-
 		)
 	{
 	    return false;
@@ -213,15 +213,21 @@ public class AttributeTest extends TestCase {
 	schemaFiles[0] = "src/main/resources/ex.xsd";
 	try {
 	    ProvDeserialiser.getThreadProvDeserialiser().validateDocumentNew(schemaFiles, new File(file));
+	    assertTrue(true);
 	} catch (JAXBException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    assertTrue(false);
 	} catch (SAXException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    assertTrue(false);
+
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    assertTrue(false);
+
 	}
     }
 

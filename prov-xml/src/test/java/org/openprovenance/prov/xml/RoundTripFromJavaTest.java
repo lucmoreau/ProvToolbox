@@ -183,7 +183,7 @@ public class RoundTripFromJavaTest extends TestCase {
         compareDocuments(doc, doc3, check && checkTest(file));
     }
     public void conditionalCheckSchema(String file) {
-	if (checkSchema(file)) doCheckSchema2(file);
+	if (checkSchema(file)) doCheckSchema1(file);
     }
     
     

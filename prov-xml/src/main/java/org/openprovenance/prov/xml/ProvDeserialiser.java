@@ -222,20 +222,24 @@ public class ProvDeserialiser {
 						       IOException {
 	int schemaCount;
 	
-	schemaCount = 4;
-	SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-	
+	schemaCount = 2;
+
+	 //System.setProperty("javax.xml.validation.SchemaFactory:http://www.w3.org/XML/XMLSchema/v1.1",
+           //      "org.apache.xerces.jaxp.validation.XMLSchema11Factory");
+	 
+		SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			  //  "http://www.w3.org/XML/XMLSchema/v1.1");
+
+	 
 	// associate the schema factory with the resource resolver, which is responsible for resolving the imported XSD's
-	sf.setResourceResolver(new ResourceResolver());
+	//sf.setResourceResolver(new ResourceResolver());
 
 	
 	Source[] sources = new Source[schemaCount + schemaFiles.length];
 	
 	sources = new Source[schemaCount + schemaFiles.length];
 	sources[0] = new StreamSource(this.getClass().getResourceAsStream("/w3c/" + "xml.xsd"));
-	sources[1] = new StreamSource(this.getClass().getResourceAsStream("/w3c/" + "prov-core.xsd"));
-	sources[2] = new StreamSource(this.getClass().getResourceAsStream("/w3c/" + "prov-dictionary.xsd"));
-	sources[3] = new StreamSource(this.getClass().getResourceAsStream("/w3c/" + "prov-links.xsd"));
+	sources[1] = new StreamSource(this.getClass().getResourceAsStream("/w3c/" + "prov-single.xsd"));
 	
 	
 	int i = 0;

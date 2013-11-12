@@ -1,0 +1,15 @@
+<xs:schema targetNamespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+ 
+  <xs:complexType name="XMLLiteral">
+    <xs:complexContent>
+      <xs:extension base="xs:anyType">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+</xs:schema>

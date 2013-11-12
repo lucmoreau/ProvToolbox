@@ -117,6 +117,12 @@ public class RoundTripFromJavaTest extends TestCase {
 	for (String pre: ns.getPrefixes().keySet()) {
 	    nss.put(pre, ns.getPrefixes().get(pre));
 	}
+	/*
+	nss.put("xml", NamespacePrefixMapper.XML_NS);
+	ns.getPrefixes().put("xml",NamespacePrefixMapper.XML_NS);
+	ns.getNamespaces().put(NamespacePrefixMapper.XML_NS,"xml");
+*/
+	
 	//System.out.println("updateNamespaces with " + nss);
 	doc.setNss(nss);
 	doc.setNamespace(ns);
@@ -205,7 +211,6 @@ public class RoundTripFromJavaTest extends TestCase {
 		|| name.endsWith("start1"+extension())
 		|| name.endsWith("start4"+extension())
 		|| name.endsWith("usage1"+extension())
-		|| name.endsWith("entity0"+extension())
 		|| name.endsWith("dictionaryInsertion1-S"+extension())
 		|| name.endsWith("dictionaryInsertion1-M"+extension())
 		|| name.endsWith("dictionaryInsertion2-S"+extension())
@@ -453,7 +458,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	Entity a = pFactory.newEntity("ex:e0");
 	a.getOthers().add(pFactory.newOther(new QName(EX_NS, "tag2", EX_PREFIX), 
 	                                    pFactory.newInternationalizedString("bonjour","fr"), 
-	                                    ValueConverter.QNAME_XSD_STRING));
+	                                    ValueConverter.QNAME_PROV_INTERNATIONALIZED_STRING));
 
 	if (test) {
 

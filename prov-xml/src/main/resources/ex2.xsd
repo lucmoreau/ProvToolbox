@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Just for validation of examples -->
+
+<xs:schema targetNamespace="http://example2.org/"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://example2.org/"
+           xmlns:ex2="http://example2.org/"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+
+    <xs:element name="tag1" type="xs:anyType" />
+    <xs:element name="tag2" type="xs:anyType" />
+    <xs:element name="tag3" type="xs:anyType" />
+    <xs:element name="tag4" type="xs:anyType" />
+    <xs:element name="tag5" type="xs:anyType" />
+
+
+
+
+</xs:schema>

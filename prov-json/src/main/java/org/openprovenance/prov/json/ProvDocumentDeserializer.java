@@ -479,7 +479,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
                 iString.setValue(struct.get("$").getAsString());
                 iString.setLang(lang);
                 value = iString;
-                xsdType = ValueConverter.QNAME_XSD_STRING;
+                //xsdType = ValueConverter.QNAME_XSD_STRING;
+                xsdType = ValueConverter.QNAME_PROV_INTERNATIONALIZED_STRING;
             } else {
 	            // The following implicitly assume the type is one of XSD types
 	            String datatypeAsString = struct.get("type").getAsString();
@@ -505,7 +506,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
                 InternationalizedString iString = pf.getObjectFactory().createInternationalizedString();
                 iString.setValue(value);
                 iString.setLang(lang);
-                return pf.newAttribute(elementName, iString, ValueConverter.QNAME_XSD_STRING);
+                //return pf.newAttribute(elementName, iString, ValueConverter.QNAME_XSD_STRING);
+                return pf.newAttribute(elementName, iString, ValueConverter.QNAME_PROV_INTERNATIONALIZED_STRING);
             }  else if (struct.has("type")) {
             	String datatypeAsString = struct.get("type").getAsString();
             	QName xsdType = pf.stringToQName(datatypeAsString); 
@@ -514,7 +516,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             	// if no type or lang information, decode as an Internationalized string without lang
             	InternationalizedString iString = pf.getObjectFactory().createInternationalizedString();
                 iString.setValue(value);
-                return pf.newAttribute(elementName, iString, ValueConverter.QNAME_XSD_STRING);
+                //return pf.newAttribute(elementName, iString, ValueConverter.QNAME_XSD_STRING);
+                return pf.newAttribute(elementName, iString, ValueConverter.QNAME_PROV_INTERNATIONALIZED_STRING);
             }
         }
     }

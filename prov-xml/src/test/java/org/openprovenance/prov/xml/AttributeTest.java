@@ -1,6 +1,9 @@
 package org.openprovenance.prov.xml;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Hashtable;
 
@@ -34,6 +37,7 @@ import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
+import org.xml.sax.SAXException;
 
 /**
  * Unit test for PROV roundtrip conversion between Java and XML
@@ -105,6 +109,7 @@ public class AttributeTest extends TestCase {
 	for (String pre: ns.getPrefixes().keySet()) {
 	    nss.put(pre, ns.getPrefixes().get(pre));
 	}
+	
 	//System.out.println("updateNamespaces with " + nss);
 	doc.setNss(nss);
     }
@@ -159,10 +164,97 @@ public class AttributeTest extends TestCase {
     public void compareDocAndFile(Document doc, String file, boolean check) {
         file=file+extension();
         writeDocument(doc, file);
+        if (check) conditionalCheckSchema(file);
+
         Document doc3=readDocument(file);
         compareDocuments(doc, doc3, check && checkTest(file));
 	updateNamespaces(doc3);
 	writeDocument(doc3, file + "-2");
+    }
+
+    
+    public void conditionalCheckSchema(String file) {
+	if (checkSchema(file)) doCheckSchema2(file);
+    }
+    
+    
+    public boolean checkSchema(String name)
+    {
+	if(name.endsWith("33"+extension())
+		|| name.endsWith("33"+extension())
+		|| name.endsWith("34"+extension())
+		|| name.endsWith("attr_delegation0"+extension())
+		|| name.endsWith("attr_end0"+extension())
+		|| name.endsWith("attr_attribution0"+extension())
+		|| name.endsWith("attr_generation0"+extension())
+		|| name.endsWith("attr_derivation0"+extension())
+		|| name.endsWith("attr_activity0"+extension())
+		|| name.endsWith("attr_influence0"+extension())
+		|| name.endsWith("attr_invalidation0"+extension())
+		|| name.endsWith("attr_agent0"+extension())
+		|| name.endsWith("attr_start0"+extension())
+		|| name.endsWith("attr_usage0"+extension())
+		|| name.endsWith("attr_association0"+extension())
+		|| name.endsWith("attr_communication0"+extension())
+		|| name.endsWith("attr_entity0"+extension())
+
+		)
+	{
+	    return false;
+	}
+	
+	return true;
+    }
+
+    
+    public void doCheckSchema1(String file) {
+	
+	String[] schemaFiles = new String[1];
+	schemaFiles[0] = "src/main/resources/ex.xsd";
+	try {
+	    ProvDeserialiser.getThreadProvDeserialiser().validateDocumentNew(schemaFiles, new File(file));
+	} catch (JAXBException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	} catch (SAXException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+    }
+
+    
+    public void doCheckSchema2(String file) {
+	//String command="xmllint --schema src/main/resources/w3c/prov.xsd --schema src/main/resources/w3c/xml.xsd --schema src/main/resources/ex.xsd " +file; //--noout
+	String command="xmllint --schema src/main/resources/ex.xsd " +file; //--noout
+	try {
+	    Process proc=Runtime.getRuntime().exec(command);
+	    proc.waitFor();
+	    int code=proc.exitValue();
+	    if (code!=0) {
+		BufferedReader errorReader = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+		String s_error=errorReader.readLine();
+		if (s_error!=null) {
+		    System.out.println("Error:  " + s_error);
+		}
+		BufferedReader outReader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+		String s_out=outReader.readLine();
+		if (s_out!=null) {
+		    System.out.println("Out:  " + s_out);
+		}
+	    }
+	    //System.out.println("out " + proc.getOutputStream().toString());
+	    //System.err.println("err " + proc.getErrorStream().toString());
+	    assertTrue(code==0);
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	} catch (InterruptedException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
     }
 
     public Document readDocument(String file1) {
@@ -269,9 +361,9 @@ public class AttributeTest extends TestCase {
         {
 	 {"un lieu",ValueConverter.QNAME_XSD_STRING},
 	 
-         {pFactory.newInternationalizedString("un lieu","fr"),ValueConverter.QNAME_XSD_STRING},
+         {pFactory.newInternationalizedString("un lieu","fr"),ValueConverter.QNAME_PROV_INTERNATIONALIZED_STRING},
 
-         {pFactory.newInternationalizedString("a place","en"),ValueConverter.QNAME_XSD_STRING},
+         {pFactory.newInternationalizedString("a place","en"),ValueConverter.QNAME_PROV_INTERNATIONALIZED_STRING},
            
          {1,ValueConverter.QNAME_XSD_INT},
 

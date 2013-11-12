@@ -37,5 +37,10 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 		u.writeTextToFile(s, file);
 	}
 
+	@Override
+        public boolean checkSchema(String name) {
+                return false;
+        }
+
 
 }

@@ -553,7 +553,10 @@ public class RdfCollector extends RDFHandlerBase {
 	}
 	Attribute attr = pFactory.newAttribute(type,
 					       theValue,
-					       ((lit.getDatatype() == null) ? ValueConverter.QNAME_XSD_STRING
+					       ((lit.getDatatype() == null) ? 
+					               ((lit.getLanguage()==null)
+					                       ? ValueConverter.QNAME_XSD_STRING
+					                       : ValueConverter.QNAME_PROV_INTERNATIONALIZED_STRING)
 						       : Ontology.convertFromRdf(convertURIToQName(lit.getDatatype()))));
 	return attr;
     }

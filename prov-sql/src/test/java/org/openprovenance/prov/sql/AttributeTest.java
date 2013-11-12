@@ -57,6 +57,9 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 		+ " for " + file);
     }
     
- 
+    @Override
+    public boolean checkSchema(String name) {
+            return false;
+    }
 
 }

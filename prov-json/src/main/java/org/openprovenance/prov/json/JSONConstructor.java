@@ -209,7 +209,9 @@ public class JSONConstructor implements ModelConstructor {
 			String lang = iStr.getLang(); 
 			if (lang != null)
 				// If 'lang' is defined
-				return typedLiteral(iStr.getValue(), "xsd:string", lang); 
+				return typedLiteral(iStr.getValue(), 
+				                    "prov:InternationalizedString", //"xsd:string", 
+				                    lang); 
 			else 
 				return iStr.getValue();
 		}
@@ -232,7 +234,9 @@ public class JSONConstructor implements ModelConstructor {
 			String lang = iStr.getLang(); 
 			if (lang != null) {
 				// If 'lang' is defined
-				attrValue = typedLiteral(iStr.getValue(), "xsd:string", lang); 
+				attrValue = typedLiteral(iStr.getValue(), 
+				                         "prov:InternationalizedString", //"xsd:string", 
+				                         lang); 
 			}
 			else {
 				// Otherwise, just return the string

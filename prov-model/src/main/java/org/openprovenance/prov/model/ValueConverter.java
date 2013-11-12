@@ -22,7 +22,11 @@ public class ValueConverter  {
         return new QName("http://www.w3.org/1999/02/22-rdf-syntax-ns#", local, "rdf");
     }
     
-    
+    public static QName newProvQName(String local) {
+        return new QName(NamespacePrefixMapper.PROV_NS,local,"prov");
+    }
+    public static final QName QNAME_PROV_INTERNATIONALIZED_STRING = newProvQName("InternationalizedString");
+
     public static QName QNAME_XSD_STRING=newXsdQName("string"); //*
     public static QName QNAME_XSD_INT=newXsdQName("int");//*
     public static QName QNAME_XSD_LONG=newXsdQName("long");//*

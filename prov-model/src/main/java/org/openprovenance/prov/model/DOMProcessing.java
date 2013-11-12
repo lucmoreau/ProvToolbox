@@ -133,6 +133,8 @@ final public class DOMProcessing {
 	                                 qnameToString(qname));				 
 	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qnameToString(type));
 	el.setAttributeNS(NamespacePrefixMapper.XML_NS, "xml:lang", lang);
+        el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xml", NamespacePrefixMapper.XML_NS);
+
 	el.appendChild(doc.createTextNode(value));
 	doc.appendChild(el);
 	return el;

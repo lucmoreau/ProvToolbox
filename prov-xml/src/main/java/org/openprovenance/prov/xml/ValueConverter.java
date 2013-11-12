@@ -6,7 +6,8 @@ import org.openprovenance.prov.model.LiteralConstructor;
 
 
 public class ValueConverter extends org.openprovenance.prov.model.ValueConverter {
-       public ValueConverter(LiteralConstructor pFactory) {
+
+    public ValueConverter(LiteralConstructor pFactory) {
 	super(pFactory);
     }
     

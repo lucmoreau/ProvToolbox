@@ -7,16 +7,23 @@
            xmlns="http://example.org/"
            xmlns:prov="http://www.w3.org/ns/prov#"
            xmlns:ex="http://example.org/"
+           xmlns:ex2="http://example2.org/"
            xmlns:xml="http://www.w3.org/XML/1998/namespace"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
 
     <xs:import namespace="http://www.w3.org/2001/XMLSchema-instance"/>
     <xs:import namespace="http://www.w3.org/ns/prov#"
                schemaLocation="w3c/prov.xsd"/>
+    <xs:import namespace="http://example2.org/"
+               schemaLocation="ex2.xsd"/>
     <xs:import namespace="http://www.w3.org/XML/1998/namespace" 
                schemaLocation="w3c/xml.xsd"/>
+    <xs:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+               schemaLocation="w3c/rdf.xsd"/>
+
 <!--
     <xs:import namespace="http://www.w3.org/2001/XMLSchema-instance"
                schemaLocation="w3c/xsi.xsd"/>
@@ -54,7 +61,9 @@
 
     <xs:element name="tag1" type="xs:anyType" />
     <xs:element name="tag2" type="xs:anyType" />
-    <xs:element name="tag3" type="xs:anySimpleType" />
+    <xs:element name="tag3" type="xs:anyType" />
+    <xs:element name="tag4" type="xs:anyType" />
+    <xs:element name="tag5" type="xs:anyType" />
 
 
 

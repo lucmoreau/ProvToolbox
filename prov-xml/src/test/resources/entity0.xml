@@ -2,7 +2,7 @@
 <prov:document xmlns:prov="http://www.w3.org/ns/prov#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns3="http://openprovenance.org/validation#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ex="http://example.org/" xmlns:xml="http://www.w3.org/XML/1998/namespace" >
     <prov:entity prov:id="ex:e0">
         <prov:location xml:lang="fr">bonjour</prov:location>
-        <prov:location xsi:type="xsd:string" xml:lang="fr">bonjour</prov:location>
+        <prov:location xsi:type="prov:InternationalizedString" xml:lang="fr">bonjour</prov:location>
         <prov:location xsi:type="xsd:string">bonjour</prov:location>
 
 

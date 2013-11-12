@@ -447,7 +447,7 @@ public class AttributeTest extends TestCase {
          
          {pFactory.newDuration(12225),ValueConverter.QNAME_XSD_DURATION},
 
-         {pFactory.newDuration(0),ValueConverter.QNAME_XSD_YEAR_MONTH_DURATION},
+         {pFactory.newDuration("P2Y6M"),ValueConverter.QNAME_XSD_YEAR_MONTH_DURATION},
          {pFactory.newDuration("P2147483647DT2147483647H2147483647M123456789012345.123456789012345S"),ValueConverter.QNAME_XSD_DAY_TIME_DURATION},
 
          { new byte[] {0,1,2,34,5,6}, ValueConverter.QNAME_XSD_HEX_BINARY},

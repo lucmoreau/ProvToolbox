@@ -3,7 +3,7 @@ package org.openprovenance.prov.model;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-public interface Activity extends Identifiable,  HasLabel, HasType, HasExtensibility, HasLocation, HasOtherAttribute, Statement, Element  {
+public interface Activity extends Identifiable,  HasLabel, HasType, HasLocation, HasOtherAttribute, Statement, Element  {
 
 
 

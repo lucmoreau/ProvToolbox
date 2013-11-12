@@ -5,8 +5,6 @@ import java.io.StringWriter;
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.HasExtensibility;
-import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.UncheckedTestException;
 import org.openrdf.rio.RDFFormat;

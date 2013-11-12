@@ -112,44 +112,44 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
     }
 
     static {
-        fields.put(Activity.class, new String[] { "Id", "StartTime", "EndTime", "Any" });
+        fields.put(Activity.class, new String[] { "Id", "StartTime", "EndTime", "Others" });
 
         fields.put(Used.class, new String[] { "Id", "Activity", "Entity",
-                                             "Time", "Any" });
+                                             "Time", "Others" });
         fields.put(WasGeneratedBy.class, new String[] { "Id", "Entity",
                                                        "Activity", "Time",
-                                                       "Any" });
+                                                       "Others" });
         fields.put(WasInvalidatedBy.class, new String[] { "Id", "Entity",
                                                          "Activity", "Time",
-                                                         "Any" });
+                                                         "Others" });
         fields.put(WasStartedBy.class, new String[] { "Id", "Activity",
                                                      "Trigger", "Starter",
-                                                     "Time", "Any" });
+                                                     "Time", "Others" });
         // 0 , 1 , 2 , 3 , 4 , 5
         // length=6
         // firstTimeIndex=4
         // last index=5
         fields.put(WasEndedBy.class, new String[] { "Id", "Activity",
                                                    "Trigger", "Ender", "Time",
-                                                   "Any" });
+                                                   "Others" });
         fields.put(WasInformedBy.class, new String[] { "Id", "Informed", "Informant",
-                                                      "Any" });
+                                                      "Others" });
         fields.put(WasDerivedFrom.class, new String[] { "Id",
                                                        "GeneratedEntity",
                                                        "UsedEntity",
                                                        "Activity",
                                                        "Generation", "Usage",
-                                                       "Any" });
+                                                       "Others" });
         fields.put(WasInfluencedBy.class, new String[] { "Id", "Influencee",
-                                                        "Influencer", "Any" });
+                                                        "Influencer", "Others" });
         fields.put(WasAttributedTo.class, new String[] { "Id", "Entity",
-                                                        "Agent", "Any" });
+                                                        "Agent", "Others" });
         fields.put(WasAssociatedWith.class, new String[] { "Id", "Activity",
                                                           "Agent", "Plan",
-                                                          "Any" });
+                                                          "Others" });
         fields.put(ActedOnBehalfOf.class, new String[] { "Id", "Delegate",
                                                         "Responsible",
-                                                        "Activity", "Any" });
+                                                        "Activity", "Others" });
         fields.put(SpecializationOf.class, new String[] { "SpecificEntity",
                                                           "GeneralEntity" });
         

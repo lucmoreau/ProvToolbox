@@ -1,7 +1,7 @@
 package org.openprovenance.prov.model;
 
 public interface WasStartedBy extends Identifiable, HasLabel, HasTime, HasType,
-	HasExtensibility, HasRole, HasLocation, HasOtherAttribute, Influence {
+	HasRole, HasLocation, HasOtherAttribute, Influence {
 
     IDRef getActivity();
 

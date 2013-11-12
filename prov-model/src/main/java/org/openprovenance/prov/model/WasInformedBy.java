@@ -1,6 +1,6 @@
 package org.openprovenance.prov.model;
 
-public interface WasInformedBy extends Identifiable,  HasLabel, HasType, HasExtensibility, HasOtherAttribute, Influence {
+public interface WasInformedBy extends Identifiable,  HasLabel, HasType, HasOtherAttribute, Influence {
 
     void setInformed(IDRef pid1);
 

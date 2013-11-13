@@ -23,7 +23,11 @@ package org.openprovenance.prov.model;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
+ * TODO: add http://www.w3.org/Submission/2013/SUBM-prov-json-20130424/
+ * TODO: add an example to create
+ * TODO: add link to factory
+ *
  * @see <a href="http://www.w3.org/TR/prov-dm/#term-entity">PROV-DM Entity</a>
  * @see <a href="http://www.w3.org/TR/prov-o/#Entity">PROV-O Entity</a>
  * @see <a href="http://www.w3.org/TR/prov-n/#expression-Entity">PROV-N Entity</a>

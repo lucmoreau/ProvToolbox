@@ -15,13 +15,14 @@ package org.openprovenance.prov.model;
  * myEntity.getLocation().add(provFactory.newLocation("London"))
  * </pre>
  * 
- * <p> <b>Relevant factory methods:</b>
+ * <p> <b>Relevant Factory Methods:</b>
  * <ul>
  * <li> {@link ProvFactory#newEntity(QName)}
  * <li> {@link ProvFactory#newEntity(javax.xml.namespace.QName, java.util.Collection)}
  * <li> {@link ObjectFactory#createEntity()}
  * </ul>
  * 
+ * <p> <b>Schema Definition:</b>
  * <p>The following schema fragment specifies the expected content contained within this type. 
  * <pre>
  * &lt;complexType name="Entity">

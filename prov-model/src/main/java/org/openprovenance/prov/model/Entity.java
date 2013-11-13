@@ -24,14 +24,23 @@ package org.openprovenance.prov.model;
  * &lt;/complexType>
  * </pre>
  *
- * TODO: add http://www.w3.org/Submission/2013/SUBM-prov-json-20130424/
- * TODO: add an example to create
- * TODO: add link to factory
- *
+ * <p>The constructor method newEntity can be used to create an instance of Entity.
+ * <pre>
+ * QName myId= ... ;  // some qualified name
+ * Entity myEntity=provFactory.newEntity(myId)
+ * </pre>
+ * 
+ * <p> Relevant factory methods:
+ * @see ProvFactory#newEntity(QName)
+ * @see ProvFactory#newEntity(javax.xml.namespace.QName, java.util.Collection)
+ * @see ObjectFactory#createEntity()
+ * </p>
+ * <p> Links to related definitions in specification documents:
  * @see <a href="http://www.w3.org/TR/prov-dm/#term-entity">PROV-DM Entity</a>
  * @see <a href="http://www.w3.org/TR/prov-o/#Entity">PROV-O Entity</a>
  * @see <a href="http://www.w3.org/TR/prov-n/#expression-Entity">PROV-N Entity</a>
  * @see <a href="http://www.w3.org/TR/prov-xml/#term-Entity">PROV-XML Entity</a>
+ * @see <a href="http://www.w3.org/Submission/2013/SUBM-prov-json-20130424/#term-entity">PROV-JSON Entity</a>
  * 
  */
 

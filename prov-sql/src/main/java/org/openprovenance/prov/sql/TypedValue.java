@@ -28,7 +28,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.openprovenance.prov.sql.AValue;
-import org.openprovenance.prov.sql.InternationalizedString;
+import org.openprovenance.prov.model.InternationalizedString;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.DOMProcessing;

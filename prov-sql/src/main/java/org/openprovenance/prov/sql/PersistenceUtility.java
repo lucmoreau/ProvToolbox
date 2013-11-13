@@ -181,7 +181,11 @@ public class PersistenceUtility {
             //System.out.println("**** persisting IdentifierManagement");
             //entityManager.persist(IdentifierManagement.it);
             return doc;
-	} finally {
+	} catch (RuntimeException re) {
+	    re.printStackTrace();
+	    return null;
+	}
+	finally {
             commitTransaction();
 	}
      

@@ -9,3 +9,6 @@ xerces:
 xmllint:
 	xmllint --noout --schema src/main/resources/ex.xsd target/attr_entity0.xml 
 
+
+xerces.all:
+	src/main/resources/xerces.sh -a src/main/resources/ex.xsd -i target/*.xml

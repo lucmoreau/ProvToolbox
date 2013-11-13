@@ -3,6 +3,39 @@ package org.openprovenance.prov.model;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+/**
+ * <p>Java interface for the PROV Activity complex type.
+ * 
+ * <p><a href="http://www.w3.org/TR/prov-dm/#concept-activity">PROV-DM Definition for Activity</a>: An activity is something that occurs over a period of time and acts upon or with entities; it may include consuming, processing, transforming, modifying, relocating, using, or generating entities.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this type.
+ * 
+ * <pre>
+ * &lt;complexType name="Activity">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="startTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
+ *         &lt;element name="endTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
+ *         &lt;element ref="{http://www.w3.org/ns/prov#}label" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element ref="{http://www.w3.org/ns/prov#}location" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element ref="{http://www.w3.org/ns/prov#}type" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;any namespace='##other' maxOccurs="unbounded" minOccurs="0"/>
+ *       &lt;/sequence>
+ *       &lt;attribute ref="{http://www.w3.org/ns/prov#}id"/>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
+ * </pre>
+ * 
+ * @see <a href="http://www.w3.org/TR/prov-dm/#term-activity">PROV-DM Activity</a>
+ * @see <a href="http://www.w3.org/TR/prov-o/#Activity">PROV-O Activity</a>
+ * @see <a href="http://www.w3.org/TR/prov-n/#expression-Activity">PROV-N Activity</a>
+ * @see <a href="http://www.w3.org/TR/prov-xml/#term-Activity">PROV-XML Activity</a>
+ * 
+ */
+
+
 public interface Activity extends Identifiable,  HasLabel, HasType, HasLocation, HasOtherAttribute, Statement, Element  {
 
 

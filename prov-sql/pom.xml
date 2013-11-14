@@ -176,7 +176,7 @@
 
      <plugins>
 
-
+<!--
        <plugin>
 	 <groupId>org.jvnet.hyperjaxb3</groupId>
 	 <artifactId>maven-hyperjaxb3-plugin</artifactId>
@@ -254,12 +254,12 @@
 
 
 
-      
+-->      
 
 
 
 
-
+<!--
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
@@ -272,13 +272,13 @@
             <configuration>
               <tasks>
 
-<!-- What I wanted to do, with a many to many join table
+- What I wanted to do, with a many to many join table
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	              <arg value="-e s/ public List&lt;Attribute&gt; getAny()/ 	private void ignoreMe() {} @javax.persistence.ManyToMany(targetEntity = org.openprovenance.prov.sql.Attribute.class, cascade = { CascadeType.ALL }) @javax.persistence.JoinTable (name=&quot;ATTRIBUTE_JOIN&quot;, joinColumns={@JoinColumn(name = &quot;ENTITY&quot;)}, inverseJoinColumns={@JoinColumn(name = &quot;ATTRIBUTE&quot;)}) public List&lt;Attribute&gt; getAny ()/" />
   	              <arg value="-iBAK" />
   	              <arg value="Entity.java" />
                 </exec>
--->
+
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	              <arg value="-e s/ public List&lt;Attribute&gt; getAny()/ 	private void ignoreMe() {} @OneToMany(targetEntity = org.openprovenance.prov.sql.Attribute.class, cascade = { CascadeType.ALL }) @JoinColumn(name = &quot;ENTITY&quot;) public List&lt;Attribute&gt; getAny ()/" />
@@ -353,7 +353,7 @@
 
 
 
-<!-- Entity -->
+
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = Entity.EntityAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
   	          <arg value="-iBAK" />
@@ -385,7 +385,7 @@
                 </exec>
 
 
-<!-- WasEndedBy -->
+
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = WasEndedBy.WasEndedByAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
@@ -408,7 +408,7 @@
   	          <arg value="WasEndedBy.java" />
                 </exec>
 
-<!-- WasStartedBy -->
+
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = WasStartedBy.WasStartedByAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
@@ -432,7 +432,7 @@
                 </exec>
 
 
-<!-- Used -->
+
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = Used.UsedAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
@@ -456,7 +456,7 @@
                 </exec>
 
 
-<!-- WasGeneratedBy -->
+
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = WasGeneratedBy.WasGeneratedByAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
@@ -479,7 +479,7 @@
   	          <arg value="WasGeneratedBy.java" />
                 </exec>
 
-<!-- WasInvalidatedBy -->
+
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = WasInvalidatedBy.WasInvalidatedByAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
@@ -502,7 +502,7 @@
   	          <arg value="WasInvalidatedBy.java" />
                 </exec>
 
-<!-- WasAttributedTo -->
+
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = WasAttributedTo.WasAttributedToAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
@@ -525,7 +525,7 @@
   	          <arg value="WasAttributedTo.java" />
                 </exec>
 
-<!-- WasAssociatedWith -->
+
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = WasAssociatedWith.WasAssociatedWithAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
@@ -548,7 +548,7 @@
   	          <arg value="WasAssociatedWith.java" />
                 </exec>
 
-<!-- WasDerivedFrom -->
+
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = WasDerivedFrom.WasDerivedFromAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
@@ -571,7 +571,7 @@
   	          <arg value="WasDerivedFrom.java" />
                 </exec>
 
-<!-- WasInformedBy -->
+
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = WasInformedBy.WasInformedByAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
@@ -594,7 +594,7 @@
   	          <arg value="WasInformedBy.java" />
                 </exec>
 
-<!-- WasInfluencedBy -->
+
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = WasInfluencedBy.WasInfluencedByAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
@@ -617,7 +617,7 @@
   	          <arg value="WasInfluencedBy.java" />
                 </exec>
 
-<!-- ActedOnBehalfOf -->
+
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = ActedOnBehalfOf.ActedOnBehalfOfAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
@@ -641,7 +641,7 @@
                 </exec>
 
 
-<!-- Activity -->
+
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = Activity.ActivityAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
@@ -667,7 +667,7 @@
   	          <arg value="Activity.java" />
                 </exec>
 
-<!-- Agent -->
+
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e /@OneToMany(targetEntity = Agent.AgentAnyItem.*/,/@Basic.*/ {/@Basic.*/b; s/^/\/\//g}" />
@@ -696,7 +696,7 @@
 
 
 
-<!-- IDRef -->
+
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
@@ -706,7 +706,7 @@
                 </exec>
 
 
-         <!-- unique constraint-->
+
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/@Table(name = &quot;IDREF&quot;)/@javax.persistence.Cacheable @Table(name = &quot;IDREF&quot;, uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={&quot;URI&quot;}))/" />
@@ -715,7 +715,7 @@
                 </exec>
 
 
-<!-- Document -->
+
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
@@ -731,7 +731,7 @@
   	              <arg value="Document.java" />
                 </exec>
 
-		<!-- renaming coluns in Documents -->
+
 
 		<exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/ItemBundleContent/Bundle/" />
@@ -741,7 +741,7 @@
 
 
 
-<!-- NamedBundle -->
+
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
@@ -758,7 +758,7 @@
   	              <arg value="NamedBundle.java" />
                 </exec>
 
-<!-- IDRef -->
+
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/^}$/\n\n    transient IDRef idRef;\n    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n        CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
@@ -831,7 +831,7 @@
   	          <arg value="WasInfluencedBy.java" />
                 </exec>
 
-<!-- ObjectFactory -->
+
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	              <arg value="-e s/new Attribute()/null/" />
@@ -844,7 +844,7 @@
   	              <arg value="ObjectFactory.java" />
                 </exec>
 
-<!-- remove some auto-generated files -->
+
 
                 <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
                      <arg value="TypedValue.java" />
@@ -897,7 +897,7 @@
                 </exec>
 
 
-<!-- persistence.xml -->
+
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/META-INF">
   	          <arg value="-e s/&lt;class&gt;org.openprovenance.prov.sql.Activity$ActivityAnyItem&lt;\/class&gt;//" />
@@ -918,7 +918,7 @@
                 </exec>
 
 
-<!-- declare Adapter in package -->
+
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
   	          <arg value="-e s/^@javax.xml.bind.annotation.XmlSchema/@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(AnyAdapter.class)@javax.xml.bind.annotation.XmlSchema/" />
@@ -937,7 +937,7 @@
 
         </executions>
       </plugin>
-
+-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>

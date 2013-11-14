@@ -79,6 +79,7 @@
 
        </plugin>
 
+<!--
        <plugin>
          <groupId>org.codehaus.mojo</groupId>
          <artifactId>appassembler-maven-plugin</artifactId>
@@ -121,8 +122,8 @@
             <configuration>
               <tasks>
 
-                <!-- patch the shell script to avoid changing current directory, so that
-                     relative files are understood as relative to the current directory. -->
+		 patch the shell script to avoid changing current directory, so that
+                     relative files are understood as relative to the current directory. 
 
                 <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
   	              <arg value="-e s/^cd/#### no CD ### Luc/" />
@@ -142,6 +143,7 @@
           </execution>
         </executions>
       </plugin>
+-->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

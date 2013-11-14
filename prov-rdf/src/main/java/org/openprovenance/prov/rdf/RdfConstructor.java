@@ -346,7 +346,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
     @Override
     public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
-	System.out.println("$$$$$$$$$$$$ in startBundle");
+	//System.out.println("$$$$$$$$$$$$ in startBundle");
 	// TODO: bundle name does not seem to be interpreted according to the
 	// prefix declared in bundle.
 	if (bundleId != null) {
@@ -369,12 +369,13 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 								       // XSD_HASH
 
 		String value;
-
-		if (type.equals(ValueConverter.QNAME_XSD_ANY_URI)
+		/*
+		if (!(type.equals(ValueConverter.QNAME_XSD_QNAME))
 			&& onto.asObjectProperty.contains(pred)) {
-		    System.out.println(" $$$$$$$$$$$$$$$$$$$$$$ " + pred);
+		    System.out.println(" TODO $$$$$$$$$$$$$$$$$$$$$$ " + pred + " is object property, but range is " + type);
 		    // TODO
 		}
+		*/
 
 		if (attr.getValue() instanceof InternationalizedString) {
 		    InternationalizedString iString = (InternationalizedString) attr.getValue();

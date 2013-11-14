@@ -84,7 +84,7 @@ public class DocumentEquality {
 						if (collectionEqual((Collection<?>) attr1,
 								(Collection<?>) attr2))
 							continue;
-
+					/*
 					// the two attributes are not equal
 					String attrName = methodName.substring(3);
 					System.out.println("The following " + attrName + " attributes are not the same");
@@ -94,6 +94,7 @@ public class DocumentEquality {
 					logger.debug("The following " + attrName + " attributes are not the same");
 					logger.debug(attr1);
 					logger.debug(attr2);
+					*/
 					return false;
 				} catch (Exception e) {
 					// Any exception means no equality

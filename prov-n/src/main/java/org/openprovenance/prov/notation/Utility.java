@@ -146,7 +146,7 @@ public  class Utility {
     
     public void writeDocument(Document doc, String filename){
 	String s=convertBeanToASN(doc);
-	System.out.println("printing" + s);
+	//System.out.println("printing" + s);
         writeTextToFile(s,filename);
     }
     

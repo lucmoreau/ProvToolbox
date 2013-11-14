@@ -67,8 +67,9 @@
       "additionalProperties":{
         "type":"object",
         "properties":{
-          "prov:started": {"type": "string", "format": "uri", "required":true},
-          "prov:starter": {"type": "string", "format": "uri", "required":true},
+           "prov:entity": {"type": "string", "format": "uri", "required":true},
+           "prov:activity": {"type": "string", "format": "uri", "required":true},
+           "prov:time": {"type": "string", "format": "date-time"}
         },
         "additionalProperties":{}
       }
@@ -80,6 +81,17 @@
         "properties":{
           "prov:informed": {"type": "string", "format": "uri", "required":true},
           "prov:informant": {"type": "string", "format": "uri", "required":true},
+        },
+        "additionalProperties":{}
+      }
+    },
+    "wasInfluencedBy": {
+      "type":"object",
+      "additionalProperties":{
+        "type":"object",
+        "properties":{
+          "prov:influencer": {"type": "string", "format": "uri", "required":true},
+          "prov:influencee": {"type": "string", "format": "uri", "required":true},
         },
         "additionalProperties":{}
       }
@@ -132,7 +144,7 @@
       "additionalProperties":{
         "type":"object",
         "properties":{
-          "prov:subordinate": {"type": "string", "format": "uri", "required":true},
+          "prov:delegate": {"type": "string", "format": "uri", "required":true},
           "prov:responsible": {"type": "string", "format": "uri", "required":true},
           "prov:activity": {"type": "string", "format": "uri"}
         },

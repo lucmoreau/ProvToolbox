@@ -11,7 +11,6 @@ import javax.xml.bind.PropertyException;
 
 import org.openprovenance.prov.model.Document;
 
-import org.openprovenance.prov.xml.validation.ValidationReport;
 import org.w3c.dom.Node;
 
 import java.io.OutputStream;
@@ -23,7 +22,7 @@ import java.util.Hashtable;
 
 public class ProvSerialiser {
     private ObjectFactory2 of=new ObjectFactory2();
-    private org.openprovenance.prov.xml.validation.ObjectFactory vof=new org.openprovenance.prov.xml.validation.ObjectFactory();
+    //private org.openprovenance.prov.xml.validation.ObjectFactory vof=new org.openprovenance.prov.xml.validation.ObjectFactory();
 	static DocumentBuilder docBuilder;
 
 
@@ -97,6 +96,7 @@ public class ProvSerialiser {
 
     /** This code is to be moved to the validator */
 
+    /*
     public org.w3c.dom.Document serialiseValidationReport (ValidationReport request) throws JAXBException {
         return (org.w3c.dom.Document) serialiseValidationReport (defaultEmptyDocument(), request);
     }
@@ -126,7 +126,7 @@ public class ProvSerialiser {
 	    
 	    
   
-
+*/
    
     public org.w3c.dom.Document serialiseDocument (Document request) throws JAXBException {
         return (org.w3c.dom.Document) serialiseDocument (defaultEmptyDocument(), request);

@@ -279,7 +279,7 @@ public class RdfCollector extends RDFHandlerBase {
 
     protected Object decodeLiteral(Literal literal) {
 	
-	System.out.println("+++-----> Literal " + literal.getDatatype());
+	//System.out.println("+++-----> Literal " + literal.getDatatype());
 	    //System.out.println("+++--------> Literal " + obj2);
 	String dataType = NamespacePrefixMapper.XSD_HASH_NS + "string";
 	if (literal.getLanguage() != null) {

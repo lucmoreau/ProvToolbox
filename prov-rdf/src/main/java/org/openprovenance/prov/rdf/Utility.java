@@ -29,7 +29,7 @@ public class Utility {
     public Document parseRDF(String filename) throws RDFParseException,
 					     RDFHandlerException, IOException,
 					     JAXBException {
-    	System.out.println("**** Parse "+filename);
+    	//System.out.println("**** Parse "+filename);
 	ProvFactory pFactory = new ProvFactory();
 	File file = new File(filename);
 	RDFParser rdfParser = Rio.createParser(Rio.getParserFormatForFileName(file.getName()));

@@ -23,7 +23,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     private final static ProvFactory oFactory = new ProvFactory();
 
-    public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.validation";
+    //public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.validation";
+    public static final String packageList = "org.openprovenance.prov.xml";
 
     static {
 	initBuilder();
@@ -72,25 +73,21 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     /** Note, this method now makes it stateful :-( */
     private Hashtable<String, String> namespaces = null;
 
-    final protected org.openprovenance.prov.xml.validation.ObjectFactory vof;
 
     public ProvFactory() {
 	super(new ObjectFactory2());
-	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
 	init();
 	setNamespaces(new Hashtable<String, String>());
     }
 
     public ProvFactory(Hashtable<String, String> namespaces) {
 	super(new ObjectFactory2(), namespaces);
-	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
 	this.namespaces = namespaces;
 	init();
     }
 
     public ProvFactory(ObjectFactory2 of) {
 	super(of);
-	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
 	init();
 	setNamespaces(new Hashtable<String, String>());
     }
@@ -225,9 +222,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 	return new IDRef();
     }
 
-    public org.openprovenance.prov.xml.validation.ObjectFactory getValidationObjectFactory() {
-        return vof;
-    }
 
     @Override
     public org.openprovenance.prov.model.Attribute newAttribute(AttributeKind kind,

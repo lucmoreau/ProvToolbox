@@ -84,25 +84,21 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     protected ObjectFactory of;
 
     
-    final protected org.openprovenance.prov.xml.validation.ObjectFactory vof;
 
     public ProvFactory() {
 	super(new ObjectFactory2());
-	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
 	init();
 	setNamespaces(new Hashtable<String, String>());
     }
 
     public ProvFactory(Hashtable<String, String> namespaces) {
 	super(new ObjectFactory2(), namespaces);
-	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
 	this.namespaces = namespaces;
 	init();
     }
 
     public ProvFactory(ObjectFactory2 of) {
 	super(of);
-	vof = new org.openprovenance.prov.xml.validation.ObjectFactory();
 	init();
 	setNamespaces(new Hashtable<String, String>());
     }

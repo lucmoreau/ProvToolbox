@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence version="1.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd
+http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <persistence-unit name="org.openprovenance.prov.sql">
+        <class>org.openprovenance.prov.sql.AStatement</class>
+        <class>org.openprovenance.prov.sql.AValue</class>
+        <class>org.openprovenance.prov.sql.ActedOnBehalfOf</class>
+        <class>org.openprovenance.prov.sql.Activity</class>
+        <class>org.openprovenance.prov.sql.Agent</class>
+        <class>org.openprovenance.prov.sql.AlternateOf</class>
+        <class>org.openprovenance.prov.sql.Collection</class>
+        <class>org.openprovenance.prov.sql.Dictionary</class>
+        <class>org.openprovenance.prov.sql.DictionaryMembership</class>
+        <class>org.openprovenance.prov.sql.Document</class>
+        <class>org.openprovenance.prov.sql.EmptyCollection</class>
+        <class>org.openprovenance.prov.sql.EmptyDictionary</class>
+        <class>org.openprovenance.prov.sql.Entity</class>
+        <class>org.openprovenance.prov.sql.HadMember</class>
+        <class>org.openprovenance.prov.sql.IDRef</class>
+        <class>org.openprovenance.prov.sql.InternationalizedString</class>
+        <class>org.openprovenance.prov.sql.Location</class>
+        <class>org.openprovenance.prov.sql.MentionOf</class>
+        <class>org.openprovenance.prov.sql.NamedBundle</class>
+        <class>org.openprovenance.prov.sql.Organization</class>
+        <class>org.openprovenance.prov.sql.Other</class>
+        <class>org.openprovenance.prov.sql.Person</class>
+        <class>org.openprovenance.prov.sql.Plan</class>
+        <class>org.openprovenance.prov.sql.PrimarySource</class>
+        <class>org.openprovenance.prov.sql.Quotation</class>
+        <class>org.openprovenance.prov.sql.Revision</class>
+        <class>org.openprovenance.prov.sql.Role</class>
+        <class>org.openprovenance.prov.sql.SoftwareAgent</class>
+        <class>org.openprovenance.prov.sql.SpecializationOf</class>
+        <class>org.openprovenance.prov.sql.Type</class>
+        <class>org.openprovenance.prov.sql.TypedValue</class>
+        <class>org.openprovenance.prov.sql.Used</class>
+        <class>org.openprovenance.prov.sql.Value</class>
+        <class>org.openprovenance.prov.sql.WasAssociatedWith</class>
+        <class>org.openprovenance.prov.sql.WasAttributedTo</class>
+        <class>org.openprovenance.prov.sql.WasDerivedFrom</class>
+        <class>org.openprovenance.prov.sql.WasEndedBy</class>
+        <class>org.openprovenance.prov.sql.WasGeneratedBy</class>
+        <class>org.openprovenance.prov.sql.WasInfluencedBy</class>
+        <class>org.openprovenance.prov.sql.WasInformedBy</class>
+        <class>org.openprovenance.prov.sql.WasInvalidatedBy</class>
+        <class>org.openprovenance.prov.sql.WasStartedBy</class>
+    </persistence-unit>
+</persistence>

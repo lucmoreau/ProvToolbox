@@ -10,41 +10,15 @@ import javax.xml.namespace.QName;
 
 public interface ModelConstructor {
  
-    public Entity newEntity(QName id, Collection<Attribute> attributes);
+    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1, QName a, Collection<Attribute> attributes);
     public Activity newActivity(QName id, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, Collection<Attribute> attributes);
     public Agent newAgent(QName id, Collection<Attribute> attributes);
-    public Used newUsed(QName id, QName activity, QName entity, XMLGregorianCalendar time, Collection<Attribute> attributes);
-    public WasGeneratedBy newWasGeneratedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes);
-    public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes);
-    public WasStartedBy newWasStartedBy(QName id, QName activity, QName trigger, QName starter, XMLGregorianCalendar time, Collection<Attribute> attributes);
-    public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger, QName ender, XMLGregorianCalendar time, Collection<Attribute> attributes);
-    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1, QName activity, QName generation, QName usage,  Collection<Attribute> attributes);
-    public WasAssociatedWith newWasAssociatedWith(QName id, QName a, QName ag, QName plan, Collection<Attribute> attributes);
-    public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,  Collection<Attribute> attributes);
-    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1, QName a, Collection<Attribute> attributes);
-    public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes);
-    public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes);
     public AlternateOf newAlternateOf(QName e2, QName e1);
-    public SpecializationOf newSpecializationOf(QName e2, QName e1);
-    public MentionOf newMentionOf(QName e2, QName e1, QName b);
-
-    public HadMember newHadMember(QName c, Collection<QName> e);
-
-    public Document newDocument(Hashtable<String, String> namespaces,
-                                Collection<Statement> statements,
-                                Collection<NamedBundle> bundles);
-    public NamedBundle newNamedBundle(QName id, 
-                                      Hashtable<String,String> namespaces, 
-                                      Collection<Statement> statements);
-    public void startDocument(Hashtable<String, String> hashtable);
-    public void startBundle(QName bundleId, Hashtable<String, String> namespaces);
-    
     public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
                                                             QName after,
                                                             QName before,
                                                             List<KeyQNamePair> keyEntitySet,
                                                             Collection<Attribute> attributes);
-
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
                                                         QName after,
                                                         QName before,
@@ -52,5 +26,51 @@ public interface ModelConstructor {
                                                         Collection<Attribute> attributes);
     public DictionaryMembership newDictionaryMembership(QName dict,
 							List<KeyQNamePair> keyEntitySet);
+    public Document newDocument(Hashtable<String, String> namespaces,
+                                Collection<Statement> statements,
+                                Collection<NamedBundle> bundles);
+    public Entity newEntity(QName id, Collection<Attribute> attributes);
+    public HadMember newHadMember(QName c, Collection<QName> e);
+    public MentionOf newMentionOf(QName e2, QName e1, QName b);
+    public NamedBundle newNamedBundle(QName id, 
+                                      Hashtable<String,String> namespaces, 
+                                      Collection<Statement> statements);
+    public SpecializationOf newSpecializationOf(QName e2, QName e1);
+    
+    /**
+     * @param id an optional identifier for a usage
+     * @param activity the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an entity
+     * @param entity an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#usage.entity">entity</a> being used
+     * @param time an optional "usage time", the time at which the entity started to be used;
+     * @param attributes an optional set of attribute-value pairs representing additional information about this usage.
+     * @return an instance of {@link Used}
+     */
+    public Used newUsed(QName id, QName activity, QName entity, XMLGregorianCalendar time, Collection<Attribute> attributes);
+    public WasAssociatedWith newWasAssociatedWith(QName id, QName a, QName ag, QName plan, Collection<Attribute> attributes);
+    public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,  Collection<Attribute> attributes);
+ 
+    /** A factory method to create an instance of a derivation {@link WasDerivedFrom}
+     * @param id an optional identifier for a derivation
+     * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation 
+     * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
+     * @param activity
+     * @param generation
+     * @param usage
+     * @param attributes
+     * @return an instance of {@link WasDerivedFrom}
+     */
+    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1, QName activity, QName generation, QName usage,  Collection<Attribute> attributes);
+
+    public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger, QName ender, XMLGregorianCalendar time, Collection<Attribute> attributes);
+
+    public WasGeneratedBy newWasGeneratedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes);
+    public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes);
+    public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes);
+    public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes);
+    
+    public WasStartedBy newWasStartedBy(QName id, QName activity, QName trigger, QName starter, XMLGregorianCalendar time, Collection<Attribute> attributes);
+
+    public void startBundle(QName bundleId, Hashtable<String, String> namespaces);
+    public void startDocument(Hashtable<String, String> hashtable);
 
 }

@@ -20,10 +20,11 @@ import javax.xml.datatype.DatatypeConfigurationException;
 
 
 import org.openprovenance.prov.model.Attribute.AttributeKind;
+//TODO: move the QNameExport capability outside the factory, and make it purely stateless, without namespace. 
+
 
 /** A stateless factory for PROV objects. */
 
-//TODO: move the QNameExport capability outside the factory, and make it purely stateless, without namespace. 
 
 public abstract class ProvFactory implements ModelConstructor, QNameExport, LiteralConstructor {
 
@@ -33,10 +34,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 
     private static String fileName = "toolbox.properties";
     private static final String toolboxVersion = getPropertiesFromClasspath(fileName).getProperty("toolbox.version");
-
-    public String getVersion() {
-        return toolboxVersion;
-    }
 
     private static Properties getPropertiesFromClasspath(String propFileName) {
         Properties props = new Properties();
@@ -52,23 +49,24 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
         return props;   
     }
 
-  
     public static String printURI(java.net.URI u) {
 	return u.toString();
     }
 
-
+  
     protected DatatypeFactory dataFactory;
+
+
     /** Note, this method now makes it stateful :-( */
     private Hashtable<String, String> namespaces = null;
+
     final protected ObjectFactory of;
-
-
     public ProvFactory(ObjectFactory of) {
 	this.of = of;
 	init();
 	setNamespaces(new Hashtable<String, String>());
     }
+
 
     public ProvFactory(ObjectFactory of, Hashtable<String, String> namespaces) {
 	this.of = of;
@@ -76,13 +74,12 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	init();
     }
 
-
-
     public void addAttribute(HasOtherAttribute a, OtherAttribute o) {
 	a.getOthers().add(o);
     }
 
-   
+
+
     public ActedOnBehalfOf addAttributes(ActedOnBehalfOf from,
 					 ActedOnBehalfOf to) {
 	to.getLabel().addAll(from.getLabel());
@@ -91,6 +88,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return to;
     }
 
+   
     public Activity addAttributes(Activity from, Activity to) {
 	to.getLabel().addAll(from.getLabel());
 	to.getType().addAll(from.getType());
@@ -220,11 +218,15 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	a.getType().add(newType(newQName("prov:Revision"),ValueConverter.QNAME_XSD_QNAME));
     }
 
- 
     public void addRole(HasRole a, Role role) {
 	if (role != null) {
 	    a.getRole().add(role);
 	}
+    }
+
+ 
+    public void addType(HasType a, Object o, QName type) {
+	a.getType().add(newType(o,type));
     }
 
     public void addType(HasType a, Type type) {
@@ -238,13 +240,19 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	a.getType().add(newType(u,ValueConverter.QNAME_XSD_ANY_URI));
     }
 
-    public void addType(HasType a, Object o, QName type) {
-	a.getType().add(newType(o,type));
+    public byte [] base64Decoding(String s) {
+        return org.apache.commons.codec.binary.Base64.decodeBase64(s);
     }
 
  
  
 
+
+    public String base64Encoding(byte [] b) {
+        return org.apache.commons.codec.binary.Base64.encodeBase64String(b);
+    }
+
+    abstract public IDRef createIDRef();
 
     /* Return the first label, it it exists */
     public String getLabel(HasOtherAttribute e) {
@@ -279,6 +287,8 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return packageList;
     }
 
+  
+
     public String getRole(HasOtherAttribute e) {
 	return "pFact: role TODO";
     }
@@ -291,8 +301,24 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
-  
+    public String getVersion() {
+        return toolboxVersion;
+    }
 
+    public byte [] hexDecoding(String s) {
+        try {
+            return org.apache.commons.codec.binary.Hex.decodeHex(s.toCharArray());
+        } catch  (Exception e) {
+            return s.getBytes(); // fall back, but obviously, this is not converted
+        }
+     
+    }
+    public String hexEncoding(byte [] b) {
+        return org.apache.commons.codec.binary.Hex.encodeHexString(b);
+    }
+
+    
+    
     protected void init() {
 	try {
 	    dataFactory = DatatypeFactory.newInstance();
@@ -321,6 +347,15 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
+    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1, QName a, Collection<Attribute> attributes) {
+        IDRef agid2=(ag2==null)? null : newIDRef(ag2);
+        IDRef agid1=(ag1==null)? null : newIDRef(ag1);
+        IDRef aid=(a==null)? null : newIDRef(a);
+        ActedOnBehalfOf res=newActedOnBehalfOf(id, agid2, agid1, aid);
+        setAttributes(res, attributes);
+        return res;
+    }
+
     public ActedOnBehalfOf newActedOnBehalfOf(String id, IDRef delegate,
 					      IDRef responsible,
 					      IDRef eid2) {
@@ -331,17 +366,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.setResponsible(responsible);
 	return res;
     }
-    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1, QName a, Collection<Attribute> attributes) {
-        IDRef agid2=(ag2==null)? null : newIDRef(ag2);
-        IDRef agid1=(ag1==null)? null : newIDRef(ag1);
-        IDRef aid=(a==null)? null : newIDRef(a);
-        ActedOnBehalfOf res=newActedOnBehalfOf(id, agid2, agid1, aid);
-        setAttributes(res, attributes);
-        return res;
-    }
 
-    
-    
     public Activity newActivity(Activity a) {
 	Activity res = newActivity(a.getId());
 	res.getType().addAll(a.getType());
@@ -385,12 +410,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return newActivity(stringToQName(pr), label);
     }
 
-    public IDRef newIDRef(Activity p) {
-	IDRef res = of.createIDRef();
-	res.setRef(p.getId());
-	return res;
-    }
-
     public Agent newAgent(Agent a) {
 	Agent res = newAgent(a.getId());
 	res.getType().addAll(a.getType());
@@ -416,6 +435,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	    res.getLabel().add(newInternationalizedString(label));
 	return res;
     }
+    
 
     public Agent newAgent(String ag) {
 	return newAgent(ag, null);
@@ -424,20 +444,14 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     public Agent newAgent(String ag, String label) {
 	return newAgent(stringToQName(ag), label);
     }
-
-    public IDRef newIDRef(Agent a) {
-	IDRef res = of.createIDRef();
-	res.setRef(a.getId());
-	return res;
-    }
-
+  
     public AlternateOf newAlternateOf(IDRef eid2, IDRef eid1) {
 	AlternateOf res = of.createAlternateOf();
 	res.setAlternate1(eid2);
 	res.setAlternate2(eid1);
 	return res;
     }
-    
+
 
     public AlternateOf newAlternateOf(QName e2, QName e1) {
         IDRef eid2 = (e2==null)? null: newIDRef(e2);
@@ -445,95 +459,19 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
         return newAlternateOf(eid2, eid1);
     }
 
-    abstract public Attribute newAttribute(QName qname, Object value, QName type);
-  
-    abstract public Attribute newAttribute(Attribute.AttributeKind kind, Object value, QName type);
+   abstract public Attribute newAttribute(Attribute.AttributeKind kind, Object value, QName type);
+   
+
+   abstract public Attribute newAttribute(QName qname, Object value, QName type);
 
 
+   
+ 
     public Attribute newAttribute(String namespace, String localName,
 				  String prefix, Object value, QName type) {
 	Attribute res = newAttribute(new QName(namespace, localName, prefix),
 	                                value, type);
 	return res;
-    }
-
-   public Location newLocation(Object value, QName type) {
-        Location res =  of.createLocation();
-        res.setType(type);
-        res.setValueAsObject(value);
-        return res;
-      }
-   
-
-   public Key newKey(Object o, QName type) {
-	Key res=of.createKey();
-	res.setType(type);
-	res.setValueAsObject(o);
-	return res;
-   }
-
-
-   
- 
-    public Role newRole(Object value, QName type) {
-	if (value==null) return null;
-        Role res =  of.createRole();
-        res.setType(type);
-        res.setValueAsObject(value);
-        return res;
-      }
-
-    public Type newType(Object value, ValueConverter vconv) {
-        return newType(value,vconv.getXsdType(value));
-      }
-
-    public Type newType(Object value, QName type) {
-	if (value==null) return null;
-        Type res =  of.createType();
-        res.setType(type);
-        res.setValueAsObject(value);
-        return res;
-      }
-
-    public OtherAttribute newOther(QName elementName, Object value, QName type) {
-	if (value==null) return null;
-        OtherAttribute res =  of.createOther();
-        res.setType(type);
-        res.setValueAsObject(value);
-        res.setElementName(elementName);
-        return res;
-      }
-    public OtherAttribute newOther(String namespace, String local, String prefix,  Object value, QName type) {
-	QName elementName=new QName(namespace,local,prefix);
-        return newOther(elementName,value,type);
-      }
-
-    
-    public Value newValue(Object value, ValueConverter vconv) {
-        return newValue(value,vconv.getXsdType(value));
-      }
-
-    public Value newValue(Object value, QName type) {
-	if (value==null) return null;
-        Value res =  of.createValue();
-        res.setType(type);
-        res.setValueAsObject(value);
-        return res;
-      }
-
-    public DictionaryMembership newDictionaryMembership(QName id, IDRef dict,
-						    List<Entry> entitySet) {
-	DictionaryMembership res = of.createDictionaryMembership();
-	//res.setId(id);  TODO: no id?
-	res.setDictionary(dict);
-	if (entitySet != null)
-	    res.getKeyEntityPair().addAll(entitySet);
-	return res;
-    }
-
-    public DictionaryMembership newDictionaryMembership(String id, IDRef after,
-						    List<Entry> entitySet) {
-	return newDictionaryMembership(stringToQName(id), after, entitySet);
     }
 
     public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
@@ -550,7 +488,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	setAttributes(res, attributes);
 	return res;
     }
-    
+
     public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
                                                             QName after,
                                                             QName before,
@@ -574,8 +512,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     	return newDerivedByInsertionFrom(id, aa, ab, entries, attributes);
     }
 
-    abstract public IDRef createIDRef();
-    
     public DerivedByInsertionFrom newDerivedByInsertionFrom(String id,
 							    IDRef after,
 							    IDRef before,
@@ -585,20 +521,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 					 keyEntitySet,
 					 attributes);
     }
-    
-    public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
-                                                            QName after,
-                                                            QName before,
-                                                            List<Key> keys,
-                                                            Collection<Attribute> attributes) {
-    	IDRef aa=createIDRef();
-    	aa.setRef(after);
-    	IDRef ab=createIDRef();
-    	ab.setRef(before);
-    	return newDerivedByRemovalFrom(id, aa, ab, keys, attributes);
-    }
-
-
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
 							IDRef after,
 							IDRef before,
@@ -614,6 +536,19 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
+    
+    public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
+                                                            QName after,
+                                                            QName before,
+                                                            List<Key> keys,
+                                                            Collection<Attribute> attributes) {
+    	IDRef aa=createIDRef();
+    	aa.setRef(after);
+    	IDRef ab=createIDRef();
+    	ab.setRef(before);
+    	return newDerivedByRemovalFrom(id, aa, ab, keys, attributes);
+    }
+
     public DerivedByRemovalFrom newDerivedByRemovalFrom(String id,
 							IDRef after,
 							IDRef before,
@@ -621,7 +556,16 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 							Collection<Attribute> attributes) {
 	return newDerivedByRemovalFrom(stringToQName(id), after, before, keys, attributes);
     }
-    
+
+    public DictionaryMembership newDictionaryMembership(QName id, IDRef dict,
+						    List<Entry> entitySet) {
+	DictionaryMembership res = of.createDictionaryMembership();
+	//res.setId(id);  TODO: no id?
+	res.setDictionary(dict);
+	if (entitySet != null)
+	    res.getKeyEntityPair().addAll(entitySet);
+	return res;
+    }
 
     public DictionaryMembership newDictionaryMembership(QName id, List<KeyQNamePair> keyEntitySet) {
 	DictionaryMembership res = of.createDictionaryMembership();
@@ -644,37 +588,16 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
-
-
-    /*    public DictionaryMembership newDictionaryMembership(QName id, IDRef after,
-							List<Entry> keyEntitySet) {
-	DictionaryMembership res = of.createDictionaryMembership();
-	//res.setId(id);
-	res.setEntity(after);
-	if (keyEntitySet != null)
-	    res.getEntry().addAll(keyEntitySet);
-	return res;
-    }
-
     public DictionaryMembership newDictionaryMembership(String id, IDRef after,
-							List<Entry> keyEntitySet) {
-	return newDictionaryMembership(stringToQName(id), after, keyEntitySet);
+						    List<Entry> entitySet) {
+	return newDictionaryMembership(stringToQName(id), after, entitySet);
     }
-    */
-
+    
     public Document newDocument() {
 	Document res = of.createDocument();
 	return res;
     }
 
-    /*
-     * public Bundle newBundle(String id, Dictionary<Activity> ps,
-     * Dictionary<Entity> as, Dictionary<Agent> ags, Dictionary<Object> lks) {
-     * return newBundle(stringToQName(id), ps, as, ags, lks); }
-     * 
-     * public Bundle newBundle(Activity[] ps, Entity[] as, Agent[] ags, Object[]
-     * lks) { return newBundle(null, ps, as, ags, lks); }
-     */
     public Document newDocument(Activity[] ps, Entity[] as, Agent[] ags,
 				Statement[] lks) {
 
@@ -683,7 +606,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 			   ((ags == null) ? null : Arrays.asList(ags)),
 			   ((lks == null) ? null : Arrays.asList(lks)));
     }
-
+    
     public Document newDocument(Collection<Activity> ps, Collection<Entity> as,
 				Collection<Agent> ags, Collection<Statement> lks) {
 	Document res = of.createDocument();
@@ -693,6 +616,15 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.getStatementOrBundle().addAll(lks);
 	return res;
     }
+    
+    public Document newDocument(Document graph) {
+	Document res = of.createDocument();
+	res.getStatementOrBundle()
+	   .addAll(graph.getStatementOrBundle());
+	return res;
+    }
+
+
     public Document newDocument(Hashtable<String, String> namespaces,
                                 Collection<Statement> statements,
                                 Collection<NamedBundle> bundles) {
@@ -705,12 +637,18 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
-    public Document newDocument(Document graph) {
-	Document res = of.createDocument();
-	res.getStatementOrBundle()
-	   .addAll(graph.getStatementOrBundle());
-	return res;
+    public Duration newDuration(int durationInMilliSeconds) {
+        Duration dur=dataFactory.newDuration(durationInMilliSeconds);
+        return dur;
     }
+    
+
+    public Duration newDuration(String lexicalRepresentation) {
+        Duration dur=dataFactory.newDuration(lexicalRepresentation);
+        return dur;
+    }
+
+
 
     public JAXBElement<ActedOnBehalfOf> newElement(ActedOnBehalfOf u) {
 	return of.createActedOnBehalfOf(u);
@@ -723,7 +661,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     public JAXBElement<Agent> newElement(Agent u) {
 	return of.createAgent(u);
     }
-
     public JAXBElement<Entity> newElement(Entity u) {
 	return of.createEntity(u);
     }
@@ -807,22 +744,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return newEntity(stringToQName(id), label);
     }
 
-    public IDRef newIDRef(Entity a) {
-	IDRef res = of.createIDRef();
-	res.setRef(a.getId());
-	return res;
-    }
-
-    public IDRef newIDRef(QName id) {
-	IDRef res = of.createIDRef();
-	res.setRef(id);
-	return res;
-    }
-
-    public IDRef newIDRef(String id) {
-	return newIDRef(stringToQName(id));
-    }
-
     public Entry newEntry(Key key, IDRef entity) {
 	Entry res = of.createEntry();
 	res.setKey(key);
@@ -830,10 +751,29 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
-    public IDRef newIDRef(WasGeneratedBy edge) {
-	IDRef res = of.createIDRef();
-	res.setRef(edge.getId());
-	return res;
+    public XMLGregorianCalendar newGDay(int day) {
+        XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
+        cal.setDay(day);
+        return cal;
+    }
+
+    public XMLGregorianCalendar newGMonth(int month) {
+        XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
+        cal.setMonth(month);
+        return cal;
+    }
+
+    public XMLGregorianCalendar newGMonthDay(int month, int day) {
+        XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
+        cal.setMonth(month);
+        cal.setDay(day);
+        return cal;
+    }
+
+    public XMLGregorianCalendar newGYear(int year) {
+        XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
+        cal.setYear(year);
+        return cal;
     }
 
     public HadMember newHadMember(IDRef collection, IDRef... entities) {
@@ -844,6 +784,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	}
 	return res;
     }
+
     public HadMember newHadMember(QName c, Collection<QName> e) {
         IDRef cid=(c==null)? null: newIDRef(c);
         List<IDRef> ll=new LinkedList<IDRef>();
@@ -859,7 +800,46 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
         return res;
     }
 
+    public IDRef newIDRef(Activity p) {
+	IDRef res = of.createIDRef();
+	res.setRef(p.getId());
+	return res;
+    }
+
+    public IDRef newIDRef(Agent a) {
+	IDRef res = of.createIDRef();
+	res.setRef(a.getId());
+	return res;
+    }
+
+    public IDRef newIDRef(Entity a) {
+	IDRef res = of.createIDRef();
+	res.setRef(a.getId());
+	return res;
+    }
+
+    public IDRef newIDRef(QName id) {
+	IDRef res = of.createIDRef();
+	res.setRef(id);
+	return res;
+    }
+    public IDRef newIDRef(String id) {
+	return newIDRef(stringToQName(id));
+    }
+
     
+
+    public IDRef newIDRef(Used edge) {
+	IDRef res = of.createIDRef();
+	res.setRef(edge.getId());
+	return res;
+    }
+
+    public IDRef newIDRef(WasGeneratedBy edge) {
+	IDRef res = of.createIDRef();
+	res.setRef(edge.getId());
+	return res;
+    }
 
     public InternationalizedString newInternationalizedString(String s) {
 	InternationalizedString res = of.createInternationalizedString();
@@ -880,76 +860,28 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
                                                        .getTime());
     }
 
-    public XMLGregorianCalendar newGYear(int year) {
-        XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
-        cal.setYear(year);
-        return cal;
-    }
-
-    public XMLGregorianCalendar newGMonth(int month) {
-        XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
-        cal.setMonth(month);
-        return cal;
-    }
-
-    public XMLGregorianCalendar newGDay(int day) {
-        XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
-        cal.setDay(day);
-        return cal;
-    }
+    public Key newKey(Object o, QName type) {
+    	Key res=of.createKey();
+    	res.setType(type);
+    	res.setValueAsObject(o);
+    	return res;
+       }
 
 
-    public XMLGregorianCalendar newGMonthDay(int month, int day) {
-        XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
-        cal.setMonth(month);
-        cal.setDay(day);
-        return cal;
-    }
+    public Location newLocation(Object value, QName type) {
+            Location res =  of.createLocation();
+            res.setType(type);
+            res.setValueAsObject(value);
+            return res;
+          }
 
-    public Duration newDuration(int durationInMilliSeconds) {
-        Duration dur=dataFactory.newDuration(durationInMilliSeconds);
-        return dur;
-    }
-
-   
-    public Duration newDuration(String lexicalRepresentation) {
-        Duration dur=dataFactory.newDuration(lexicalRepresentation);
-        return dur;
-    }
-    
-    
-    public String base64Encoding(byte [] b) {
-        return org.apache.commons.codec.binary.Base64.encodeBase64String(b);
-    }
-    public byte [] base64Decoding(String s) {
-        return org.apache.commons.codec.binary.Base64.decodeBase64(s);
-    }
-    public String hexEncoding(byte [] b) {
-        return org.apache.commons.codec.binary.Hex.encodeHexString(b);
-    }
-    public byte [] hexDecoding(String s) {
-        try {
-            return org.apache.commons.codec.binary.Hex.decodeHex(s.toCharArray());
-        } catch  (Exception e) {
-            return s.getBytes(); // fall back, but obviously, this is not converted
-        }
-     
-    }
-
-  
     public MentionOf newMentionOf(Entity infra, Entity supra, Entity bundle) {
 	return newMentionOf((infra == null) ? null : newIDRef(infra),
 			    (supra == null) ? null : newIDRef(supra),
 			    (bundle == null) ? null : newIDRef(bundle));
     }
-    public MentionOf newMentionOf(QName e2, QName e1, QName b) {
-        IDRef eid2 = (e2==null)? null: newIDRef(e2);
-        IDRef eid1 = (e1==null)? null: newIDRef(e1);
-        IDRef bid = (b==null)? null: newIDRef(b);
-        return newMentionOf(eid2, eid1, bid);
-    }
 
-    
+   
     public MentionOf newMentionOf(IDRef infra, IDRef supra,
 				  IDRef bundle) {
 	MentionOf res = of.createMentionOf();
@@ -958,7 +890,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.setGeneralEntity(supra);
 	return res;
     }
-
+    
     
     public MentionOf newMentionOf(MentionOf r) {
 	MentionOf res = of.createMentionOf();
@@ -967,7 +899,12 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.setGeneralEntity(r.getGeneralEntity());
 	return res;
     }
-
+    public MentionOf newMentionOf(QName e2, QName e1, QName b) {
+        IDRef eid2 = (e2==null)? null: newIDRef(e2);
+        IDRef eid1 = (e1==null)? null: newIDRef(e1);
+        IDRef bid = (b==null)? null: newIDRef(b);
+        return newMentionOf(eid2, eid1, bid);
+    }
     public MentionOf newMentionOf(String infra, String supra, String bundle) {
 	MentionOf res = of.createMentionOf();
 	if (supra != null)
@@ -978,7 +915,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	    res.setGeneralEntity(newIDRef(supra));
 	return res;
     }
-
     public NamedBundle newNamedBundle(QName id, Collection<Activity> ps,
 				      Collection<Entity> as,
 				      Collection<Agent> ags,
@@ -1001,6 +937,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
+  
     public NamedBundle newNamedBundle(QName id, Collection<Statement> lks) {
 	NamedBundle res = of.createNamedBundle();
 	res.setId(id);
@@ -1010,7 +947,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	}
 	return res;
     }
-
     public NamedBundle newNamedBundle(QName id, Hashtable<String,String> namespaces, Collection<Statement> statements) {
 	NamedBundle res = of.createNamedBundle();
 	res.setId(id);
@@ -1021,6 +957,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
+    
     public NamedBundle newNamedBundle(String id, Activity[] ps, Entity[] es,
 				      Agent[] ags, Statement[] lks) {
 
@@ -1030,6 +967,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 			      ((lks == null) ? null : Arrays.asList(lks)));
     }
 
+    
     public NamedBundle newNamedBundle(String id, Collection<Activity> ps,
 				      Collection<Entity> as,
 				      Collection<Agent> ags,
@@ -1037,6 +975,43 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return newNamedBundle(stringToQName(id), ps, as, ags, lks);
     }
 
+    public OtherAttribute newOther(QName elementName, Object value, QName type) {
+	if (value==null) return null;
+        OtherAttribute res =  of.createOther();
+        res.setType(type);
+        res.setValueAsObject(value);
+        res.setElementName(elementName);
+        return res;
+      }
+
+    public OtherAttribute newOther(String namespace, String local, String prefix,  Object value, QName type) {
+	QName elementName=new QName(namespace,local,prefix);
+        return newOther(elementName,value,type);
+      }
+
+    /* What's the difference with stringToQName? */
+    public QName newQName(String qnameAsString) {
+	int index = qnameAsString.indexOf(':');
+	String prefix;
+	String local;
+
+	if (index == -1) {
+	    prefix = "";
+	    local = qnameAsString;
+	} else {
+	    prefix = qnameAsString.substring(0, index);
+	    local = qnameAsString.substring(index + 1, qnameAsString.length());
+	}
+	return new QName(getNamespace(prefix), local, prefix);
+    }
+
+    public Role newRole(Object value, QName type) {
+	if (value==null) return null;
+        Role res =  of.createRole();
+        res.setType(type);
+        res.setValueAsObject(value);
+        return res;
+      }
 
     public SpecializationOf newSpecializationOf(IDRef eid2, IDRef eid1) {
 	SpecializationOf res = of.createSpecializationOf();
@@ -1050,10 +1025,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
         IDRef eid1 = (e1==null)? null: newIDRef(e1);
         return newSpecializationOf(eid2, eid1);
     }
-  
-    
 
-    
 
     public XMLGregorianCalendar newTime(Date date) {
 	GregorianCalendar gc = new GregorianCalendar();
@@ -1064,13 +1036,19 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     public XMLGregorianCalendar newTimeNow() {
 	return newTime(new Date());
     }
-
-
-    public IDRef newIDRef(Used edge) {
-	IDRef res = of.createIDRef();
-	res.setRef(edge.getId());
-	return res;
+  
+    public Type newType(Object value, QName type) {
+	if (value==null) return null;
+        Type res =  of.createType();
+        res.setType(type);
+        res.setValueAsObject(value);
+        return res;
     }
+
+    public Type newType(Object value, ValueConverter vconv) {
+	return newType(value, vconv.getXsdType(value));
+    }
+
 
     public Used newUsed(Activity p, String role, Entity a) {
 	Used res = newUsed(null, p, role, a);
@@ -1091,6 +1069,34 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.setEntity(eid);
 	return res;
     }
+    
+    /**
+     * @param id an optional identifier for a usage
+     * @param activity the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an entity
+     * @param entity an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#usage.entity">entity</a> being used
+     * @return an instance of {@link Used}
+     */    
+
+    public Used newUsed(QName id, QName activity, QName entity) {
+	IDRef aid = (activity == null) ? null : newIDRef(activity);
+	IDRef eid = (entity == null) ? null : newIDRef(entity);
+	Used res = newUsed(id, aid, null, eid);
+	return res;
+    }
+
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newUsed(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+     */
+    public Used newUsed(QName id, QName activity, QName entity,
+			XMLGregorianCalendar time,
+			Collection<Attribute> attributes) {
+	IDRef aid = (activity == null) ? null : newIDRef(activity);
+	IDRef eid = (entity == null) ? null : newIDRef(entity);
+	Used res = newUsed(id, aid, null, eid);
+	res.setTime(time);
+	setAttributes(res, attributes);
+	return res;
+    }
 
     public Used newUsed(String id, Activity p, String role, Entity a) {
 	IDRef pid = newIDRef(p);
@@ -1104,7 +1110,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	addType(res, newType(type,ValueConverter.QNAME_XSD_STRING));
 	return res;
     }
-
+    
     public Used newUsed(String id, IDRef pid, String role, IDRef aid) {
 	Used res = of.createUsed();
 	res.setId(stringToQName(id));
@@ -1112,18 +1118,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	addRole(res, newRole(role,ValueConverter.QNAME_XSD_STRING));
 	return res;
     }
-    
-    public Used newUsed(QName id, QName activity, QName entity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
-   	IDRef aid = (activity==null)? null: newIDRef(activity);
-        IDRef eid = (entity==null)? null: newIDRef(entity);
-   	Used res=newUsed(id,aid,null,eid);	
-   	res.setTime(time);
-	setAttributes(res, attributes);
-   	return res;
-       }
-
-    
-    
 
     public Used newUsed(Used u) {
 	Used u1 = newUsed(u.getId(), u.getActivity(), null, u.getEntity());
@@ -1134,6 +1128,21 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	u1.getLocation().addAll(u.getLocation());
 	return u1;
     }
+
+    
+    
+
+    public Value newValue(Object value, QName type) {
+	if (value==null) return null;
+        Value res =  of.createValue();
+        res.setType(type);
+        res.setValueAsObject(value);
+        return res;
+      }
+
+    public Value newValue(Object value, ValueConverter vconv) {
+        return newValue(value,vconv.getXsdType(value));
+      }
 
     public WasAssociatedWith newWasAssociatedWith(QName id, Activity eid2,
 						  Agent eid1) {
@@ -1150,21 +1159,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
-    public WasAssociatedWith newWasAssociatedWith(String id, Activity eid2,
-						  Agent eid1) {
-	return newWasAssociatedWith(id, newIDRef(eid2.getId()),
-				    newIDRef(eid1.getId()));
-    }
-
-    public WasAssociatedWith newWasAssociatedWith(String id, IDRef eid2,
-						  IDRef eid1) {
-	WasAssociatedWith res = of.createWasAssociatedWith();
-	res.setId(stringToQName(id));
-	res.setActivity(eid2);
-	res.setAgent(eid1);
-	return res;
-    }
-    
     public WasAssociatedWith  newWasAssociatedWith(QName id, 
                                                    QName a, 
                                                    QName ag, 
@@ -1178,7 +1172,22 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	setAttributes(res, attributes);
 	return res;
     }
+    
+    public WasAssociatedWith newWasAssociatedWith(String id, Activity eid2,
+						  Agent eid1) {
+	return newWasAssociatedWith(id, newIDRef(eid2.getId()),
+				    newIDRef(eid1.getId()));
+    }
 
+
+    public WasAssociatedWith newWasAssociatedWith(String id, IDRef eid2,
+						  IDRef eid1) {
+	WasAssociatedWith res = of.createWasAssociatedWith();
+	res.setId(stringToQName(id));
+	res.setActivity(eid2);
+	res.setAgent(eid1);
+	return res;
+    }
 
     public WasAssociatedWith newWasAssociatedWith(WasAssociatedWith u) {
 	WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(),
@@ -1199,11 +1208,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
-    public WasAttributedTo newWasAttributedTo(String id, IDRef eid,
-					      IDRef agid) {
-	return newWasAttributedTo(stringToQName(id), eid, agid);
-    }
-
     
     public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,  Collection<Attribute> attributes) {
         IDRef eid=(e==null)? null : newIDRef(e);
@@ -1211,6 +1215,11 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
         WasAttributedTo res=newWasAttributedTo(id, eid, agid);
         setAttributes(res, attributes);
         return res;
+    }
+
+    public WasAttributedTo newWasAttributedTo(String id, IDRef eid,
+					      IDRef agid) {
+	return newWasAttributedTo(stringToQName(id), eid, agid);
     }
 
     public WasAttributedTo newWasAttributedTo(WasAttributedTo u) {
@@ -1253,6 +1262,31 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
+    /** A factory method to create an instance of a derivation {@link WasDerivedFrom}
+     * @param id an optional identifier for a derivation
+     * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation 
+     * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
+     * @return an instance of {@link WasDerivedFrom}
+     */
+    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1) {
+	IDRef eid1 = (e1==null)? null: newIDRef(e1);
+	IDRef eid2 = (e2==null)? null: newIDRef(e2);
+	WasDerivedFrom res=newWasDerivedFrom(id, eid2, eid1);
+	return res;
+    }
+
+    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1, QName a, QName g, QName u,  Collection<Attribute> attributes) {
+	IDRef eid1 = (e1==null)? null: newIDRef(e1);
+	IDRef eid2 = (e2==null)? null: newIDRef(e2);
+	IDRef aid = (a==null)? null : newIDRef(a);
+	IDRef gid = (g==null)? null: newIDRef(g);
+	IDRef uid = (u==null) ? null : newIDRef(u);
+	WasDerivedFrom res=newWasDerivedFrom(id, eid2, eid1, aid, gid, uid);
+	setAttributes(res, attributes);
+	return res;
+    }
+
+
     public WasDerivedFrom newWasDerivedFrom(String id, Entity a1, Entity a2) {
 	IDRef aid1 = newIDRef(a1);
 	IDRef aid2 = newIDRef(a2);
@@ -1277,7 +1311,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return wdf;
     }
 
-
     public WasDerivedFrom newWasDerivedFrom(String id, IDRef aid1,
 					    IDRef aid2) {
 	return newWasDerivedFrom(stringToQName(id), aid1, aid2);
@@ -1288,31 +1321,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 					    IDRef did1, IDRef did2) {
 	return newWasDerivedFrom(stringToQName(id), aid1, aid2, aid, did1, did2);
     }
-
-    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1, QName a, QName g, QName u,  Collection<Attribute> attributes) {
-	IDRef eid1 = (e1==null)? null: newIDRef(e1);
-	IDRef eid2 = (e2==null)? null: newIDRef(e2);
-	IDRef aid = (a==null)? null : newIDRef(a);
-	IDRef gid = (g==null)? null: newIDRef(g);
-	IDRef uid = (u==null) ? null : newIDRef(u);
-	WasDerivedFrom res=newWasDerivedFrom(id, eid2, eid1, aid, gid, uid);
-	setAttributes(res, attributes);
-	return res;
-    }
-
-    /** A factory method to create an instance of a derivation {@link WasDerivedFrom}
-     * @param id an optional identifier for a derivation
-     * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation 
-     * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
-     * @return an instance of {@link WasDerivedFrom}
-     */
-    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1) {
-	IDRef eid1 = (e1==null)? null: newIDRef(e1);
-	IDRef eid2 = (e2==null)? null: newIDRef(e2);
-	WasDerivedFrom res=newWasDerivedFrom(id, eid2, eid1);
-	return res;
-    }
-
+    
     public WasDerivedFrom newWasDerivedFrom(WasDerivedFrom d) {
 	WasDerivedFrom wdf = newWasDerivedFrom(d.getId(),
 					       d.getGeneratedEntity(),
@@ -1330,17 +1339,13 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.setId(id);
 	return res;
     }
-    
+
     public WasEndedBy newWasEndedBy(QName id, IDRef aid, IDRef eid) {
 	WasEndedBy res = of.createWasEndedBy();
 	res.setId(id);
 	res.setActivity(aid);
 	res.setTrigger(eid);
 	return res;
-    }
-
-    public WasEndedBy newWasEndedBy(String id, IDRef aid, IDRef eid) {
-	return newWasEndedBy(stringToQName(id), aid, eid);
     }
     
     public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger, QName ender, XMLGregorianCalendar time, Collection<Attribute> attributes) {
@@ -1352,6 +1357,10 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
       	res.setEnder(sid);
 	setAttributes(res, attributes);
       	return res;
+    }
+
+    public WasEndedBy newWasEndedBy(String id, IDRef aid, IDRef eid) {
+	return newWasEndedBy(stringToQName(id), aid, eid);
     }
 
     public WasEndedBy newWasEndedBy(WasEndedBy u) {
@@ -1394,13 +1403,22 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
+    public WasGeneratedBy newWasGeneratedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
+   	IDRef aid = (activity==null)? null: newIDRef(activity);
+   	IDRef eid = (entity==null)? null: newIDRef(entity);
+   	WasGeneratedBy res=newWasGeneratedBy(id,eid,null,aid);	
+   	res.setTime(time);
+	setAttributes(res, attributes);
+   	return res;
+       }
+
     public WasGeneratedBy newWasGeneratedBy(String id, Entity a, String role,
 					    Activity p) {
 	IDRef aid = newIDRef(a);
 	IDRef pid = newIDRef(p);
 	return newWasGeneratedBy(stringToQName(id), aid, role, pid);
     }
-
+    
     public WasGeneratedBy newWasGeneratedBy(String id, Entity a, String role,
 					    Activity p, String type) {
 	WasGeneratedBy wgb = newWasGeneratedBy(id, a, role, p);
@@ -1412,15 +1430,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 					    String role, IDRef pid) {
 	return newWasGeneratedBy(stringToQName(id), aid, role, pid);
     }
-    
-    public WasGeneratedBy newWasGeneratedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
-   	IDRef aid = (activity==null)? null: newIDRef(activity);
-   	IDRef eid = (entity==null)? null: newIDRef(entity);
-   	WasGeneratedBy res=newWasGeneratedBy(id,eid,null,aid);	
-   	res.setTime(time);
-	setAttributes(res, attributes);
-   	return res;
-       }
 
     public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
 	WasGeneratedBy wgb = newWasGeneratedBy(g.getId(), g.getEntity(), null,
@@ -1443,6 +1452,15 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
+    public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes) {
+        IDRef aid2 = (a2==null) ? null: newIDRef(a2);
+        IDRef aid1 = (a1==null) ? null: newIDRef(a1);
+        WasInfluencedBy res=newWasInfluencedBy(id,aid2,aid1);   
+        setAttributes(res, attributes);
+        return res;
+    }
+    
+    
     public WasInfluencedBy newWasInfluencedBy(String id, IDRef influencee,
 					      IDRef influencer) {
 	WasInfluencedBy res = of.createWasInfluencedBy();
@@ -1458,15 +1476,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 		: newIDRef(influencee), (influencer == null) ? null
 		: newIDRef(influencer));
     }
-    
-    
-    public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes) {
-        IDRef aid2 = (a2==null) ? null: newIDRef(a2);
-        IDRef aid1 = (a1==null) ? null: newIDRef(a1);
-        WasInfluencedBy res=newWasInfluencedBy(id,aid2,aid1);   
-        setAttributes(res, attributes);
-        return res;
-    }
+
 
     public WasInfluencedBy newWasInfluencedBy(WasInfluencedBy in) {
 	WasInfluencedBy out = newWasInfluencedBy(in.getId(),
@@ -1478,7 +1488,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	out.getLabel().addAll(in.getLabel());
 	return out;
     }
-
 
     public WasInformedBy newWasInformedBy(Activity p1, Activity p2) {
 	return newWasInformedBy(null, p1, p2);
@@ -1501,6 +1510,14 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
+    public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes) {
+        IDRef aid2 = (a2==null) ? null: newIDRef(a2);
+        IDRef aid1 = (a1==null) ? null: newIDRef(a1);
+        WasInformedBy res=newWasInformedBy(id,aid2,aid1);   
+        setAttributes(res, attributes);
+        return res;
+    }
+
     public WasInformedBy newWasInformedBy(String id, Activity p1, Activity p2) {
 	IDRef pid1 = newIDRef(p1);
 	IDRef pid2 = newIDRef(p2);
@@ -1511,20 +1528,12 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 					  String type) {
 	return newWasInformedBy(stringToQName(id), p1, p2, type);
     }
-
+    
     public WasInformedBy newWasInformedBy(String id, IDRef pid1,
 					  IDRef pid2) {
 	return newWasInformedBy(stringToQName(id), pid1, pid2);
     }
 
-    public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes) {
-        IDRef aid2 = (a2==null) ? null: newIDRef(a2);
-        IDRef aid1 = (a1==null) ? null: newIDRef(a1);
-        WasInformedBy res=newWasInformedBy(id,aid2,aid1);   
-        setAttributes(res, attributes);
-        return res;
-    }
-    
     public WasInformedBy newWasInformedBy(WasInformedBy d) {
 	WasInformedBy wtb = newWasInformedBy(d.getId(), 
 					     d.getInformed(),
@@ -1544,11 +1553,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.setActivity(aid);
 	return res;
     }
-
-    public WasInvalidatedBy newWasInvalidatedBy(String id, IDRef eid,
-						IDRef aid) {
-	return newWasInvalidatedBy(stringToQName(id), eid, aid);
-    }
     
     public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
    	IDRef aid = (activity==null) ? null: newIDRef(activity);
@@ -1560,6 +1564,10 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
        }
 
 
+    public WasInvalidatedBy newWasInvalidatedBy(String id, IDRef eid,
+						IDRef aid) {
+	return newWasInvalidatedBy(stringToQName(id), eid, aid);
+    }
     public WasInvalidatedBy newWasInvalidatedBy(WasInvalidatedBy u) {
 	WasInvalidatedBy u1 = newWasInvalidatedBy(u.getId(), u.getEntity(),
 						  u.getActivity());
@@ -1570,23 +1578,19 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	u1.getLocation().addAll(u.getLocation());
 	return u1;
     }
+    
     public WasStartedBy newWasStartedBy(QName id) {
    	WasStartedBy res = of.createWasStartedBy();
    	res.setId(id);
    	return res;
     }
-    
+
     public WasStartedBy newWasStartedBy(QName id, IDRef aid, IDRef eid) {
 	WasStartedBy res = of.createWasStartedBy();
 	res.setId(id);
 	res.setActivity(aid);
 	res.setTrigger(eid);
 	return res;
-    }
-
-    public WasStartedBy newWasStartedBy(String id, IDRef aid,
-					IDRef eid) {
-	return newWasStartedBy(stringToQName(id), aid, eid);
     }
     
     public WasStartedBy newWasStartedBy(QName id, QName activity, QName trigger, QName starter, XMLGregorianCalendar time, Collection<Attribute> attributes) {
@@ -1601,6 +1605,11 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
        }
 
 
+    public WasStartedBy newWasStartedBy(String id, IDRef aid,
+					IDRef eid) {
+	return newWasStartedBy(stringToQName(id), aid, eid);
+    }
+
     public WasStartedBy newWasStartedBy(WasStartedBy u) {
 	WasStartedBy u1 = newWasStartedBy(u.getId(), u.getActivity(),
 					  u.getTrigger());
@@ -1613,21 +1622,25 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 
 	return u1;
     }
+    public XMLGregorianCalendar newXMLGregorianCalendar(GregorianCalendar gc) {
+	return dataFactory.newXMLGregorianCalendar(gc);
+    }
 
     public XMLGregorianCalendar newYear(int year) {
         XMLGregorianCalendar res=dataFactory.newXMLGregorianCalendar();
         res.setYear(year);
         return res;
     }
-    public XMLGregorianCalendar newXMLGregorianCalendar(GregorianCalendar gc) {
-	return dataFactory.newXMLGregorianCalendar(gc);
-    }
 
+ 
     public String qnameToString(QName qname) {
 	return DOMProcessing.qnameToString(qname);
     }
 
- 
+    public void resetNamespaces() {
+	namespaces = new Hashtable<String, String>();
+    }
+
     public void setAttributes(HasOtherAttribute res, Collection<Attribute> attributes) {
 	if (attributes==null) return;
 	HasType typ=(res instanceof HasType)? (HasType)res : null;
@@ -1684,24 +1697,16 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	namespaces = nss;
     }
 
-    public void resetNamespaces() {
-	namespaces = new Hashtable<String, String>();
+    @Override
+    public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
+      
     }
+    
+    /* Uses the xsd:type to java:type mapping of JAXB */
 
-    // What's the difference with stringToQName?
-    public QName newQName(String qnameAsString) {
-	int index = qnameAsString.indexOf(':');
-	String prefix;
-	String local;
-
-	if (index == -1) {
-	    prefix = "";
-	    local = qnameAsString;
-	} else {
-	    prefix = qnameAsString.substring(0, index);
-	    local = qnameAsString.substring(index + 1, qnameAsString.length());
-	}
-	return new QName(getNamespace(prefix), local, prefix);
+    @Override
+    public void startDocument(Hashtable<String, String> hashtable) {
+        
     }
 
     public QName stringToQName(String id) {
@@ -1723,18 +1728,6 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	} else {
 	    return new QName(namespaces.get(prefix), local, prefix);
 	}
-    }
-    
-    /* Uses the xsd:type to java:type mapping of JAXB */
-
-    @Override
-    public void startDocument(Hashtable<String, String> hashtable) {
-        
-    }
-
-    @Override
-    public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
-      
     }
 
 }

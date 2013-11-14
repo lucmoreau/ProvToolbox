@@ -1070,7 +1070,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
     
-    /**
+    /** A factory method to create an instance of a usage {@link Used}
      * @param id an optional identifier for a usage
      * @param activity the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an entity
      * @param entity an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#usage.entity">entity</a> being used
@@ -1403,6 +1403,23 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
+    /** A factory method to create an instance of a generation {@link WasGeneratedBy}
+     * @param id an optional identifier for a usage
+     * @param entity an identifier for the created <a href="http://www.w3.org/TR/prov-dm/#generation.entity">entity</a>
+     * @param activity an optional identifier  for the <a href="http://www.w3.org/TR/prov-dm/#generation.activity">activity</a> that creates the entity
+     * @return an instance of {@link WasGeneratedBy}
+     */    
+
+    public WasGeneratedBy newWasGeneratedBy(QName id, QName entity, QName activity) {
+   	IDRef aid = (activity==null)? null: newIDRef(activity);
+   	IDRef eid = (entity==null)? null: newIDRef(entity);
+   	WasGeneratedBy res=newWasGeneratedBy(id,eid,null,aid);	
+   	return res;
+    }
+
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasGeneratedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+     */
     public WasGeneratedBy newWasGeneratedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
    	IDRef aid = (activity==null)? null: newIDRef(activity);
    	IDRef eid = (entity==null)? null: newIDRef(entity);
@@ -1410,7 +1427,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
    	res.setTime(time);
 	setAttributes(res, attributes);
    	return res;
-       }
+    }
 
     public WasGeneratedBy newWasGeneratedBy(String id, Entity a, String role,
 					    Activity p) {
@@ -1553,7 +1570,24 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	res.setActivity(aid);
 	return res;
     }
+
+    /** A factory method to create an instance of an invalidation {@link WasInvalidatedBy}
+     * @param id an optional identifier for a usage
+     * @param entity an identifier for the created <a href="http://www.w3.org/TR/prov-dm/#invalidation.entity">entity</a>
+     * @param activity an optional identifier  for the <a href="http://www.w3.org/TR/prov-dm/#invalidation.activity">activity</a> that creates the entity
+     * @return an instance of {@link WasInvalidatedBy}
+     */    
+
+    public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity, QName activity) {
+   	IDRef aid = (activity==null) ? null: newIDRef(activity);
+   	IDRef eid = (entity==null)? null: newIDRef(entity);
+   	WasInvalidatedBy res=newWasInvalidatedBy(id,eid,aid);	
+   	return res;
+    }
     
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasInvalidatedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+     */
     public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
    	IDRef aid = (activity==null) ? null: newIDRef(activity);
    	IDRef eid = (entity==null)? null: newIDRef(entity);
@@ -1561,7 +1595,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
    	res.setTime(time);
 	setAttributes(res, attributes);
    	return res;
-       }
+    }
 
 
     public WasInvalidatedBy newWasInvalidatedBy(String id, IDRef eid,

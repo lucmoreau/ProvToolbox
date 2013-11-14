@@ -37,12 +37,12 @@ public interface ModelConstructor {
                                       Collection<Statement> statements);
     public SpecializationOf newSpecializationOf(QName e2, QName e1);
     
-    /**
+    /** A factory method to create an instance of a usage {@link Used}
      * @param id an optional identifier for a usage
      * @param activity the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an entity
      * @param entity an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#usage.entity">entity</a> being used
-     * @param time an optional "usage time", the time at which the entity started to be used;
-     * @param attributes an optional set of attribute-value pairs representing additional information about this usage.
+     * @param time an optional "usage time", the time at which the entity started to be used
+     * @param attributes an optional set of attribute-value pairs representing additional information about this usage
      * @return an instance of {@link Used}
      */
     public Used newUsed(QName id, QName activity, QName entity, XMLGregorianCalendar time, Collection<Attribute> attributes);
@@ -63,9 +63,30 @@ public interface ModelConstructor {
 
     public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger, QName ender, XMLGregorianCalendar time, Collection<Attribute> attributes);
 
+    /** A factory method to create an instance of a generation {@link WasGeneratedBy}
+     * @param id an optional identifier for a usage
+     * @param entity an identifier for the created <a href="http://www.w3.org/TR/prov-dm/#generation.entity">entity</a>
+     * @param activity an optional identifier  for the <a href="http://www.w3.org/TR/prov-dm/#generation.activity">activity</a> that creates the entity
+     * @param time an optional "generation time", the time at which the entity was completely created
+     * @param attributes an optional set of attribute-value pairs representing additional information about this generation
+     * @return an instance of {@link WasGeneratedBy}
+     */    
+
+
     public WasGeneratedBy newWasGeneratedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes);
     public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes);
     public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes);
+
+
+    /** A factory method to create an instance of a invalidation {@link WasInvalidatedBy}
+     * @param id an optional identifier for a usage
+     * @param entity an identifier for the created <a href="http://www.w3.org/TR/prov-dm/#invalidation.entity">entity</a>
+     * @param activity an optional identifier  for the <a href="http://www.w3.org/TR/prov-dm/#invalidation.activity">activity</a> that creates the entity
+     * @param time an optional "invalidation time", the time at which the entity was completely created
+     * @param attributes an optional set of attribute-value pairs representing additional information about this invalidation
+     * @return an instance of {@link WasInvalidatedBy}
+     */    
+
     public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes);
     
     public WasStartedBy newWasStartedBy(QName id, QName activity, QName trigger, QName starter, XMLGregorianCalendar time, Collection<Attribute> attributes);

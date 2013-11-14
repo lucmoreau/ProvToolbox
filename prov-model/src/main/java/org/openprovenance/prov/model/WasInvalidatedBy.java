@@ -2,8 +2,9 @@ package org.openprovenance.prov.model;
 
 /**
  * <p>Java class for PROV Invalidation association.
- * <p><a href="http://www.w3.org/TR/prov-dm/#concept-invalidation">PROV-DM Definition for Invalidation</a>: Invalidation is the completion of production of a 
- * new entity by an activity. This entity did not exist before invalidation and becomes available for usage after this invalidation.
+ * <p><a href="http://www.w3.org/TR/prov-dm/#concept-invalidation">PROV-DM Definition for Invalidation</a>: Invalidation is the start of the destruction, cessation, or 
+ * expiry of an existing entity by an activity. The entity is no longer available for use (or further invalidation) after invalidation. 
+ * Any generation or usage of an entity precedes its invalidation.
  *  
  *
  * <p>The constructor method {@link ProvFactory#newWasInvalidatedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)} can be used to create an instance of <tt>WasInvalidatedBy</tt>.

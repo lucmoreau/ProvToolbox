@@ -61,6 +61,17 @@ public interface ModelConstructor {
      */
     public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1, QName activity, QName generation, QName usage,  Collection<Attribute> attributes);
 
+    
+    /** A factory method to create an instance of an end {@link WasEndedBy}
+     * @param id
+     * @param activity an identifier for the ended <a href="http://www.w3.org/TR/prov-dm/#end.activity">activity</a>
+     * @param trigger an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.trigger">entity triggering</a> the activity ending
+     * @param ender an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.ender">activity</a> that generated the (possibly unspecified) entity
+     * @param time the optional <a href="http://www.w3.org/TR/prov-dm/#end.time">time</a>  at which the activity was ended
+     * @param attributes an optional set of <a href="http://www.w3.org/TR/prov-dm/#end.attributes">attribute-value pairs</a> representing additional information about this activity end
+     * @return an instance of {@link WasStartedBy}
+     */
+
     public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger, QName ender, XMLGregorianCalendar time, Collection<Attribute> attributes);
 
     /** A factory method to create an instance of a generation {@link WasGeneratedBy}
@@ -78,7 +89,7 @@ public interface ModelConstructor {
     public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes);
 
 
-    /** A factory method to create an instance of a invalidation {@link WasInvalidatedBy}
+    /** A factory method to create an instance of an invalidation {@link WasInvalidatedBy}
      * @param id an optional identifier for a usage
      * @param entity an identifier for the created <a href="http://www.w3.org/TR/prov-dm/#invalidation.entity">entity</a>
      * @param activity an optional identifier  for the <a href="http://www.w3.org/TR/prov-dm/#invalidation.activity">activity</a> that creates the entity
@@ -89,6 +100,15 @@ public interface ModelConstructor {
 
     public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes);
     
+    /** A factory method to create an instance of a start {@link WasStartedBy}
+     * @param id
+     * @param activity an identifier for the started <a href="http://www.w3.org/TR/prov-dm/#start.activity">activity</a>
+     * @param trigger an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#start.trigger">entity triggering</a> the activity
+     * @param starter an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#start.starter">activity</a> that generated the (possibly unspecified) entity
+     * @param time the optional <a href="http://www.w3.org/TR/prov-dm/#start.time">time</a>  at which the activity was started
+     * @param attributes an optional set of <a href="http://www.w3.org/TR/prov-dm/#start.attributes">attribute-value pairs</a> representing additional information about this activity start
+     * @return an instance of {@link WasStartedBy}
+     */
     public WasStartedBy newWasStartedBy(QName id, QName activity, QName trigger, QName starter, XMLGregorianCalendar time, Collection<Attribute> attributes);
 
     public void startBundle(QName bundleId, Hashtable<String, String> namespaces);

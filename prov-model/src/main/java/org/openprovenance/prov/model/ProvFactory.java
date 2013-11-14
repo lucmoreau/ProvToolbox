@@ -1348,6 +1348,27 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
     
+    
+    /** A factory method to create an instance of an end {@link WasEndedBy}
+     * @param id
+     * @param activity an identifier for the ended <a href="http://www.w3.org/TR/prov-dm/#end.activity">activity</a>
+     * @param trigger an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.trigger">entity triggering</a> the activity ending
+     * @param ender an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.ender">activity</a> that generated the (possibly unspecified) entity
+     * @param time the optional <a href="http://www.w3.org/TR/prov-dm/#end.time">time</a>  at which the activity was ended
+     * @param attributes an optional set of <a href="http://www.w3.org/TR/prov-dm/#end.attributes">attribute-value pairs</a> representing additional information about this activity end
+     * @return an instance of {@link WasStartedBy}
+     */
+    public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger, QName ender) {
+   	IDRef aid = (activity==null)? null: newIDRef(activity);
+      	IDRef eid = (trigger==null)? null: newIDRef(trigger);
+      	IDRef sid = (ender==null)? null: newIDRef(ender);
+      	WasEndedBy res=newWasEndedBy(id,aid,eid);	
+      	return res;
+    }
+
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasEndedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+     */
     public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger, QName ender, XMLGregorianCalendar time, Collection<Attribute> attributes) {
    	IDRef aid = (activity==null)? null: newIDRef(activity);
       	IDRef eid = (trigger==null)? null: newIDRef(trigger);
@@ -1613,6 +1634,11 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return u1;
     }
     
+    /** A factory method to create an instance of a start {@link WasStartedBy}
+     * @param id
+     * @return an instance of {@link WasStartedBy}
+     */
+       
     public WasStartedBy newWasStartedBy(QName id) {
    	WasStartedBy res = of.createWasStartedBy();
    	res.setId(id);
@@ -1627,6 +1653,25 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
     
+    /** A factory method to create an instance of a start {@link WasStartedBy}
+     * @param id
+     * @param activity an identifier for the started <a href="http://www.w3.org/TR/prov-dm/#start.activity">activity</a>
+     * @param trigger an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#start.trigger">entity triggering</a> the activity
+     * @param starter an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#start.starter">activity</a> that generated the (possibly unspecified) entity
+     * @return an instance of {@link WasStartedBy}
+     */
+    
+    public WasStartedBy newWasStartedBy(QName id, QName activity, QName trigger, QName starter) {
+   	IDRef aid = (activity==null)? null: newIDRef(activity);
+      	IDRef eid = (trigger==null)? null: newIDRef(trigger);
+      	IDRef sid = (starter==null)? null: newIDRef(starter);
+      	WasStartedBy res=newWasStartedBy(id,aid,eid);	
+      	return res;
+    }
+
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasStartedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+     */
     public WasStartedBy newWasStartedBy(QName id, QName activity, QName trigger, QName starter, XMLGregorianCalendar time, Collection<Attribute> attributes) {
    	IDRef aid = (activity==null)? null: newIDRef(activity);
       	IDRef eid = (trigger==null)? null: newIDRef(trigger);
@@ -1636,7 +1681,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
       	res.setStarter(sid);
 	setAttributes(res, attributes);
       	return res;
-       }
+    }
 
 
     public WasStartedBy newWasStartedBy(String id, IDRef aid,

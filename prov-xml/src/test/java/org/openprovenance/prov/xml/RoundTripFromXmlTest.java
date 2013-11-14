@@ -157,7 +157,7 @@ public class RoundTripFromXmlTest extends TestCase {
 	if (check) {
 	    boolean result=this.documentEquality.check(doc,  doc2);
 	    if (!result) {
-	    System.out.println("Pre-write graph: "+doc);
+		System.out.println("Pre-write graph: "+doc);
 		System.out.println("Read graph: "+doc2);
 	    }
 	    assertTrue("doc equals doc2", result);
@@ -231,6 +231,7 @@ public class RoundTripFromXmlTest extends TestCase {
   	Document doc=testFile("issue-type", false);
   	
 	Agent ag=(Agent)doc.getStatementOrBundle().get(0);
+	/*
 	System.out.println("-agent" +ag);
 	System.out.println("-agent type " +ag.getType());
 	System.out.println("-agent type " +ag.getType().get(0));
@@ -249,6 +250,7 @@ public class RoundTripFromXmlTest extends TestCase {
 	//	System.out.println("-agent location " +((TypedValue)(ag.getLocation().get(0))).getValueAsJava());
 	System.out.println("-agent location " +((TypedValue)(ag.getLocation().get(0))).getAttributes());
 	
+	*/
 	//org.w3c.dom.Element el=(org.w3c.dom.Element)ag.getType().get(0);
 	//serialize(el);
       }

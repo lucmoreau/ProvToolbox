@@ -242,7 +242,7 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
 
 
 
-    public List<org.openprovenance.prov.model.OtherAttribute> getOthers() {
+    public List<org.openprovenance.prov.model.OtherAttribute> getOther() {
 	if (others == null) {
 	    others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.OtherAttribute.class);
 	} 
@@ -301,7 +301,7 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
         equalsBuilder.append(this.getLabel(), that.getLabel());
         equalsBuilder.append(this.getRole(), that.getRole());
         equalsBuilder.append(this.getType(), that.getType());
-        equalsBuilder.append(this.getOthers(), that.getOthers());
+        equalsBuilder.append(this.getOther(), that.getOther());
         equalsBuilder.append(this.getId(), that.getId());
     }
 
@@ -324,7 +324,7 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
         hashCodeBuilder.append(this.getLabel());
         hashCodeBuilder.append(this.getRole());
         hashCodeBuilder.append(this.getType());
-        hashCodeBuilder.append(this.getOthers());
+        hashCodeBuilder.append(this.getOther());
         hashCodeBuilder.append(this.getId());
     }
 
@@ -367,7 +367,7 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
         }
         {
             List<org.openprovenance.prov.model.OtherAttribute> theOthers;
-            theOthers = this.getOthers();
+            theOthers = this.getOther();
             toStringBuilder.append("others", theOthers);
         }
         {

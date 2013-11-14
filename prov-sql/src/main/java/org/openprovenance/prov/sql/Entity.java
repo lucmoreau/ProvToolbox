@@ -291,7 +291,7 @@ public class Entity
         CascadeType.ALL
     })
     @JoinColumn(name = "OTHERS_ENTITY_HJID")
-    public List<OtherAttribute> getOthers() {
+    public List<OtherAttribute> getOther() {
         if (others == null) {
             others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.OtherAttribute.class);
         }
@@ -404,9 +404,9 @@ public class Entity
         }
         {
             List<OtherAttribute> lhsOthers;
-            lhsOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOthers():null);
+            lhsOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOther():null);
             List<OtherAttribute> rhsOthers;
-            rhsOthers = (((that.others!= null)&&(!that.others.isEmpty()))?that.getOthers():null);
+            rhsOthers = (((that.others!= null)&&(!that.others.isEmpty()))?that.getOther():null);
             if (!strategy.equals(LocatorUtils.property(thisLocator, "others", lhsOthers), LocatorUtils.property(thatLocator, "others", rhsOthers), lhsOthers, rhsOthers)) {
                 return false;
             }
@@ -452,7 +452,7 @@ public class Entity
         }
         {
             List<OtherAttribute> theOthers;
-            theOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOthers():null);
+            theOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOther():null);
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
         }
         {
@@ -514,7 +514,7 @@ public class Entity
   
         {
             List<org.openprovenance.prov.model.OtherAttribute> theOthers;
-            theOthers = this.getOthers();
+            theOthers = this.getOther();
             toStringBuilder.append("others", theOthers);
         }
         {

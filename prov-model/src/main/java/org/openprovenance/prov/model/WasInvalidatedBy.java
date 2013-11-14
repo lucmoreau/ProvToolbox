@@ -61,7 +61,7 @@ package org.openprovenance.prov.model;
  * 
  * 
  */
-public interface WasInvalidatedBy extends Identifiable,  HasLabel, HasTime, HasType, HasRole, HasLocation, HasOtherAttribute,  Influence{
+public interface WasInvalidatedBy extends Identifiable,  HasLabel, HasTime, HasType, HasRole, HasLocation, HasOther,  Influence{
 
     void setActivity(IDRef aid);
 

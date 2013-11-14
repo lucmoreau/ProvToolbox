@@ -205,7 +205,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(inf.getInfluencee());
 	register(inf.getInfluencer());
 	registerType(inf.getType());
-	registerOther(inf.getOthers());
+	registerOther(inf.getOther());
     }
 
     @Override
@@ -215,7 +215,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(del.getResponsible());
 	register(del.getActivity());
 	registerType(del.getType());
-	registerOther(del.getOthers());
+	registerOther(del.getOther());
     }
 
     @Override
@@ -224,7 +224,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(attr.getEntity());
 	register(attr.getAgent());
 	registerType(attr.getType());
-	registerOther(attr.getOthers());	
+	registerOther(attr.getOther());	
     }
 
     @Override
@@ -235,7 +235,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(assoc.getPlan());
 	registerRole(assoc.getRole());
 	registerType(assoc.getType());
-	registerOther(assoc.getOthers());
+	registerOther(assoc.getOther());
     }
 
     @Override
@@ -247,7 +247,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(der.getGeneration());
 	register(der.getUsage());
 	registerType(der.getType());
-	registerOther(der.getOthers());
+	registerOther(der.getOther());
     }
 
     @Override
@@ -256,7 +256,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(inf.getInformed());
 	register(inf.getInformant());
 	registerType(inf.getType());
-	registerOther(inf.getOthers());
+	registerOther(inf.getOther());
     }
 
     @Override
@@ -268,7 +268,7 @@ public class NamespaceGatherer implements StatementAction {
 	registerLocation(end.getLocation());
 	registerType(end.getType());
 	registerRole(end.getRole());
-	registerOther(end.getOthers());
+	registerOther(end.getOther());
     }
 
     @Override
@@ -280,7 +280,7 @@ public class NamespaceGatherer implements StatementAction {
 	registerLocation(start.getLocation());
 	registerType(start.getType());
 	registerRole(start.getRole());
-	registerOther(start.getOthers());
+	registerOther(start.getOther());
     }
 
     @Override
@@ -290,7 +290,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(inv.getActivity());
 	registerRole(inv.getRole());
 	registerType(inv.getType());
-	registerOther(inv.getOthers());
+	registerOther(inv.getOther());
     }
 
     @Override
@@ -300,7 +300,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(use.getActivity());
 	registerRole(use.getRole());
 	registerType(use.getType());
-	registerOther(use.getOthers());
+	registerOther(use.getOther());
     }
 
     @Override
@@ -310,7 +310,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(gen.getActivity());
 	registerRole(gen.getRole());
 	registerType(gen.getType());
-	registerOther(gen.getOthers());
+	registerOther(gen.getOther());
     }
 
     @Override
@@ -318,7 +318,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(ag.getId());
 	registerLocation(ag.getLocation());
 	registerType(ag.getType());
-	registerOther(ag.getOthers());
+	registerOther(ag.getOther());
     }
 
     @Override
@@ -326,7 +326,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(a.getId());
 	registerLocation(a.getLocation());
 	registerType(a.getType());
-	registerOther(a.getOthers());
+	registerOther(a.getOther());
     }
 
     @Override
@@ -335,7 +335,7 @@ public class NamespaceGatherer implements StatementAction {
 	registerLocation(e.getLocation());
 	registerType(e.getType());
 	registerValue(e.getValue());
-	registerOther(e.getOthers());
+	registerOther(e.getOther());
     }
 
     @Override
@@ -350,7 +350,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(r.getNewDictionary());
 	register(r.getOldDictionary());
 	registerType(r.getType());
-	registerOther(r.getOthers());
+	registerOther(r.getOther());
 	if (!r.getKey().isEmpty()) {
 	    register(ValueConverter.QNAME_XSD_INT); // pick up an xsd qname, so that xsd is registered!
 	}
@@ -363,7 +363,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(i.getNewDictionary());
 	register(i.getOldDictionary());
 	registerType(i.getType());
-	registerOther(i.getOthers());
+	registerOther(i.getOther());
 	registerEntry(i.getKeyEntityPair());	
     }
 

@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
-import org.openprovenance.prov.model.HasOtherAttribute;
+import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.Document;
@@ -143,7 +143,7 @@ public class ContextualizationPC1Test extends TestCase {
 	Entity bunEntity = pFactory.newEntity(bun.getId());
 	Entity a = pFactory.newEntity(globalA1.getId().getLocalPart());
 	MentionOf ctx = pFactory.newMentionOf(a, globalA1, bunEntity);
-	a.getOthers().add(pFactory.newOther(DOT_NS, DOT_PREFIX, "color", "blue", ValueConverter.QNAME_XSD_STRING));
+	a.getOther().add(pFactory.newOther(DOT_NS, DOT_PREFIX, "color", "blue", ValueConverter.QNAME_XSD_STRING));
 
 	graph.getStatementOrBundle().add(bunEntity);
 	graph.getStatementOrBundle().add(a);
@@ -171,13 +171,13 @@ public class ContextualizationPC1Test extends TestCase {
 	}
     }
     
-    public void addValue(HasOtherAttribute p1, String val) {
-	p1.getOthers().add(pFactory.newOther(PC1_NS, "value", PC1_PREFIX, val, 
+    public void addValue(HasOther p1, String val) {
+	p1.getOther().add(pFactory.newOther(PC1_NS, "value", PC1_PREFIX, val, 
 	                                     org.openprovenance.prov.model.ValueConverter.QNAME_XSD_STRING));
     }
 
-    public void addUrl(HasOtherAttribute p1, String val) {
-	p1.getOthers().add(pFactory.newOther(PC1_NS, "url", PC1_PREFIX, val, 
+    public void addUrl(HasOther p1, String val) {
+	p1.getOther().add(pFactory.newOther(PC1_NS, "url", PC1_PREFIX, val, 
 	                                     org.openprovenance.prov.model.ValueConverter.QNAME_XSD_STRING));
     }
 

@@ -283,9 +283,9 @@ public class ProvUtilities {
         return null;
     }
 
-    public Hashtable<String, List<Attribute>> attributesWithNamespace(HasOtherAttribute e,
+    public Hashtable<String, List<Attribute>> attributesWithNamespace(HasOther e,
                                                                       String namespace) {
-	List ll=e.getOthers();
+	List ll=e.getOther();
         AttributeProcessor _attrs=new AttributeProcessor((List<Attribute>)ll); 
         return _attrs.attributesWithNamespace(namespace);
     }

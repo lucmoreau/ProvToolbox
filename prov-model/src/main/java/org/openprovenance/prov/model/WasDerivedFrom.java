@@ -56,7 +56,7 @@ package org.openprovenance.prov.model;
  * 
  */
 
-public interface WasDerivedFrom  extends Identifiable,  HasLabel, HasType, HasOtherAttribute, Influence {
+public interface WasDerivedFrom  extends Identifiable,  HasLabel, HasType, HasOther, Influence {
 
     void setUsedEntity(IDRef aid2);
 

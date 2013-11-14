@@ -36,7 +36,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  */
 
 
-public interface Activity extends Identifiable,  HasLabel, HasType, HasLocation, HasOtherAttribute, Statement, Element  {
+public interface Activity extends Identifiable,  HasLabel, HasType, HasLocation, HasOther, Statement, Element  {
 
 
 

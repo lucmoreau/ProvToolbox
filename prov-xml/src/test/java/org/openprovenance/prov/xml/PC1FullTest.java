@@ -12,7 +12,7 @@ import javax.xml.namespace.QName;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
-import org.openprovenance.prov.model.HasOtherAttribute;
+import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasGeneratedBy;
@@ -139,13 +139,13 @@ public class PC1FullTest extends TestCase {
 	}
     }
 
-    public void addValue(HasOtherAttribute p1, String val) {
-	p1.getOthers().add(pFactory.newOther(PC1_NS, "value", PC1_PREFIX, val, 
+    public void addValue(HasOther p1, String val) {
+	p1.getOther().add(pFactory.newOther(PC1_NS, "value", PC1_PREFIX, val, 
 	                                     org.openprovenance.prov.model.ValueConverter.QNAME_XSD_STRING));
     }
 
-    public void addUrl(HasOtherAttribute p1, String val) {
-	p1.getOthers().add(pFactory.newOther(PC1_NS, "url", PC1_PREFIX, val, 
+    public void addUrl(HasOther p1, String val) {
+	p1.getOther().add(pFactory.newOther(PC1_NS, "url", PC1_PREFIX, val, 
 	                                     org.openprovenance.prov.model.ValueConverter.QNAME_XSD_STRING));
     }
 

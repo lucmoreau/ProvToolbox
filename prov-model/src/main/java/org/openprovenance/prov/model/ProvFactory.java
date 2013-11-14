@@ -74,8 +74,8 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	init();
     }
 
-    public void addAttribute(HasOtherAttribute a, OtherAttribute o) {
-	a.getOthers().add(o);
+    public void addAttribute(HasOther a, OtherAttribute o) {
+	a.getOther().add(o);
     }
 
 
@@ -84,7 +84,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 					 ActedOnBehalfOf to) {
 	to.getLabel().addAll(from.getLabel());
 	to.getType().addAll(from.getType());
-	to.getOthers().addAll(from.getOthers());
+	to.getOther().addAll(from.getOther());
 	return to;
     }
 
@@ -93,7 +93,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	to.getLabel().addAll(from.getLabel());
 	to.getType().addAll(from.getType());
 	to.getLocation().addAll(from.getLocation());
-	to.getOthers().addAll(from.getOthers());
+	to.getOther().addAll(from.getOther());
 	return to;
     }
 
@@ -101,7 +101,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	to.getLabel().addAll(from.getLabel());
 	to.getType().addAll(from.getType());
 	// to.getLocation().addAll(from.getLocation());
-	to.getOthers().addAll(from.getOthers());
+	to.getOther().addAll(from.getOther());
 	return to;
     }
 
@@ -109,7 +109,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	to.getLabel().addAll(from.getLabel());
 	to.getType().addAll(from.getType());
 	to.getLocation().addAll(from.getLocation());
-	to.getOthers().addAll(from.getOthers());
+	to.getOther().addAll(from.getOther());
 	return to;
     }
 
@@ -118,7 +118,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	to.getType().addAll(from.getType());
 	to.getLocation().addAll(from.getLocation());
 	to.getRole().addAll(from.getRole());
-	to.getOthers().addAll(from.getOthers());
+	to.getOther().addAll(from.getOther());
 	return to;
     }
 
@@ -127,7 +127,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	to.getLabel().addAll(from.getLabel());
 	to.getType().addAll(from.getType());
 	to.getRole().addAll(from.getRole());
-	to.getOthers().addAll(from.getOthers());
+	to.getOther().addAll(from.getOther());
 	return to;
     }
 
@@ -135,14 +135,14 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 					 WasAttributedTo to) {
 	to.getLabel().addAll(from.getLabel());
 	to.getType().addAll(from.getType());
-	to.getOthers().addAll(from.getOthers());
+	to.getOther().addAll(from.getOther());
 	return to;
     }
 
     public WasDerivedFrom addAttributes(WasDerivedFrom from, WasDerivedFrom to) {
 	to.getLabel().addAll(from.getLabel());
 	to.getType().addAll(from.getType());
-	to.getOthers().addAll(from.getOthers());
+	to.getOther().addAll(from.getOther());
 	return to;
     }
 
@@ -151,7 +151,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	to.getType().addAll(from.getType());
 	to.getLocation().addAll(from.getLocation());
 	to.getRole().addAll(from.getRole());
-	to.getOthers().addAll(from.getOthers());
+	to.getOther().addAll(from.getOther());
 	return to;
     }
 
@@ -160,7 +160,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	to.getType().addAll(from.getType());
 	to.getLocation().addAll(from.getLocation());
 	to.getRole().addAll(from.getRole());
-	to.getOthers().addAll(from.getOthers());
+	to.getOther().addAll(from.getOther());
 	return to;
     }
 
@@ -168,14 +168,14 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 					 WasInfluencedBy to) {
 	to.getLabel().addAll(from.getLabel());
 	to.getType().addAll(from.getType());
-	to.getOthers().addAll(from.getOthers());
+	to.getOther().addAll(from.getOther());
 	return to;
     }
 
     public WasInformedBy addAttributes(WasInformedBy from, WasInformedBy to) {
 	to.getLabel().addAll(from.getLabel());
 	to.getType().addAll(from.getType());
-	to.getOthers().addAll(from.getOthers());
+	to.getOther().addAll(from.getOther());
 	return to;
     }
 
@@ -185,7 +185,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	to.getType().addAll(from.getType());
 	to.getLocation().addAll(from.getLocation());
 	to.getRole().addAll(from.getRole());
-	to.getOthers().addAll(from.getOthers());
+	to.getOther().addAll(from.getOther());
 	return to;
     }
 
@@ -194,7 +194,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	to.getType().addAll(from.getType());
 	to.getLocation().addAll(from.getLocation());
 	to.getRole().addAll(from.getRole());
-	to.getOthers().addAll(from.getOthers());	
+	to.getOther().addAll(from.getOther());	
 	return to;
     }
 
@@ -255,7 +255,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     abstract public IDRef createIDRef();
 
     /* Return the first label, it it exists */
-    public String getLabel(HasOtherAttribute e) {
+    public String getLabel(HasOther e) {
 
 	List<InternationalizedString> labels = ((HasLabel) e).getLabel();
 	if ((labels == null) || (labels.isEmpty()))
@@ -289,11 +289,11 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 
   
 
-    public String getRole(HasOtherAttribute e) {
+    public String getRole(HasOther e) {
 	return "pFact: role TODO";
     }
 
-    public List<Type> getType(HasOtherAttribute e) {
+    public List<Type> getType(HasOther e) {
 	if (e instanceof HasType)
 	    return ((HasType) e).getType();
 	List<Type> res = new LinkedList<Type>();
@@ -332,7 +332,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 						u.getDelegate(),
 						u.getResponsible(),
 						u.getActivity());
-	u1.getOthers().addAll(u.getOthers());
+	u1.getOther().addAll(u.getOther());
 	return u1;
     }
 
@@ -1121,7 +1121,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 
     public Used newUsed(Used u) {
 	Used u1 = newUsed(u.getId(), u.getActivity(), null, u.getEntity());
-	u1.getOthers().addAll(u.getOthers());
+	u1.getOther().addAll(u.getOther());
 	u1.setTime(u.getTime());
 	u1.getType().addAll(u.getType());
 	u1.getLabel().addAll(u.getLabel());
@@ -1192,7 +1192,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     public WasAssociatedWith newWasAssociatedWith(WasAssociatedWith u) {
 	WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(),
 						    u.getAgent());
-	u1.getOthers().addAll(u.getOthers());
+	u1.getOther().addAll(u.getOther());
 	u1.setPlan(u.getPlan());
 	u1.getType().addAll(u.getType());
 	u1.getLabel().addAll(u.getLabel());
@@ -1225,7 +1225,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
     public WasAttributedTo newWasAttributedTo(WasAttributedTo u) {
 	WasAttributedTo u1 = newWasAttributedTo(u.getId(), u.getEntity(),
 						u.getAgent());
-	u1.getOthers().addAll(u.getOthers());
+	u1.getOther().addAll(u.getOther());
 	u1.getType().addAll(u.getType());
 	u1.getLabel().addAll(u.getLabel());
 	return u1;
@@ -1328,7 +1328,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 					       d.getUsedEntity());
 	wdf.setGeneration(d.getGeneration());
 	wdf.setUsage(d.getUsage());
-	wdf.getOthers().addAll(d.getOthers());
+	wdf.getOther().addAll(d.getOther());
 	wdf.getType().addAll(d.getType());
 	wdf.getLabel().addAll(d.getLabel());
 	return wdf;
@@ -1392,7 +1392,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	u1.getType().addAll(u.getType());
 	u1.getLabel().addAll(u.getLabel());
 	u1.getLocation().addAll(u.getLocation());
-	u1.getOthers().addAll(u.getOthers());
+	u1.getOther().addAll(u.getOther());
 	return u1;
     }
 
@@ -1474,7 +1474,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 					       g.getActivity());
 	wgb.setId(g.getId());
 	wgb.setTime(g.getTime());
-	wgb.getOthers().addAll(g.getOthers());
+	wgb.getOther().addAll(g.getOther());
 	wgb.getType().addAll(g.getType());
 	wgb.getLabel().addAll(g.getLabel());
 	wgb.getLocation().addAll(g.getLocation());
@@ -1521,7 +1521,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 						 in.getInfluencee(),
 						 in.getInfluencer());
 	out.setId(in.getId());
-	out.getOthers().addAll(in.getOthers());
+	out.getOther().addAll(in.getOther());
 	out.getType().addAll(in.getType());
 	out.getLabel().addAll(in.getLabel());
 	return out;
@@ -1577,7 +1577,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 					     d.getInformed(),
 					     d.getInformant());
 	wtb.setId(d.getId());
-	wtb.getOthers().addAll(d.getOthers());
+	wtb.getOther().addAll(d.getOther());
 	wtb.getType().addAll(d.getType());
 	wtb.getLabel().addAll(d.getLabel());
 	return wtb;
@@ -1627,7 +1627,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	WasInvalidatedBy u1 = newWasInvalidatedBy(u.getId(), u.getEntity(),
 						  u.getActivity());
 	u1.setTime(u.getTime());
-	u1.getOthers().addAll(u.getOthers());
+	u1.getOther().addAll(u.getOther());
 	u1.getType().addAll(u.getType());
 	u1.getLabel().addAll(u.getLabel());
 	u1.getLocation().addAll(u.getLocation());
@@ -1697,7 +1697,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	u1.getType().addAll(u.getType());
 	u1.getLabel().addAll(u.getLabel());
 	u1.getLocation().addAll(u.getLocation());
-	u1.getOthers().addAll(u.getOthers());
+	u1.getOther().addAll(u.getOther());
 
 	return u1;
     }
@@ -1720,7 +1720,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	namespaces = new Hashtable<String, String>();
     }
 
-    public void setAttributes(HasOtherAttribute res, Collection<Attribute> attributes) {
+    public void setAttributes(HasOther res, Collection<Attribute> attributes) {
 	if (attributes==null) return;
 	HasType typ=(res instanceof HasType)? (HasType)res : null;
 	HasLocation loc=(res instanceof HasLocation)? (HasLocation)res : null;
@@ -1761,7 +1761,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 		}
 		break;
 	    case OTHER:
-		res.getOthers().add(newOther(attr.getElementName(), aValue, attr.getType()));
+		res.getOther().add(newOther(attr.getElementName(), aValue, attr.getType()));
 		break;
 	    
 	    default:

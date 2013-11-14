@@ -10,7 +10,7 @@ import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.HasLabel;
 import org.openprovenance.prov.model.HasLocation;
-import org.openprovenance.prov.model.HasOtherAttribute;
+import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.HasValue;
 import org.openprovenance.prov.model.Used;
@@ -376,37 +376,37 @@ public class RoundTripFromJavaTest extends TestCase {
 				      ValueConverter.QNAME_XSD_QNAME));
     }
 
-    public void addFurtherAttributes(HasOtherAttribute he) {
-	he.getOthers().add(pFactory.newOther(EX_NS,"tag1",EX_PREFIX,"hello", ValueConverter.QNAME_XSD_STRING));
-	he.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "bye", ValueConverter.QNAME_XSD_STRING));
+    public void addFurtherAttributes(HasOther he) {
+	he.getOther().add(pFactory.newOther(EX_NS,"tag1",EX_PREFIX,"hello", ValueConverter.QNAME_XSD_STRING));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "bye", ValueConverter.QNAME_XSD_STRING));
 	//he.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), "xsd:string"));
-	he.getOthers().add(pFactory.newOther(EX2_NS,"tag3",EX2_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
-	he.getOthers().add(pFactory.newOther(EX_NS,"tag1",EX_PREFIX,"hello\nover\nmore\nlines", ValueConverter.QNAME_XSD_STRING));
+	he.getOther().add(pFactory.newOther(EX2_NS,"tag3",EX2_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag1",EX_PREFIX,"hello\nover\nmore\nlines", ValueConverter.QNAME_XSD_STRING));
 
     }
 
     
-    public void addFurtherAttributes0(HasOtherAttribute he) {
-	he.getOthers().add(pFactory.newOther(EX_NS,"tag1",EX_PREFIX,"hello", ValueConverter.QNAME_XSD_STRING));
-	he.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "bye", ValueConverter.QNAME_XSD_STRING));
-	he.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, 
+    public void addFurtherAttributes0(HasOther he) {
+	he.getOther().add(pFactory.newOther(EX_NS,"tag1",EX_PREFIX,"hello", ValueConverter.QNAME_XSD_STRING));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "bye", ValueConverter.QNAME_XSD_STRING));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, 
 	                                     pFactory.newInternationalizedString("bonjour","fr"), ValueConverter.QNAME_XSD_STRING));
-	he.getOthers().add(pFactory.newOther(EX2_NS,"tag3",EX2_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+	he.getOther().add(pFactory.newOther(EX2_NS,"tag3",EX2_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
 	
-	he.getOthers().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Integer(1), ValueConverter.QNAME_XSD_INT));
-	he.getOthers().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Long(1), ValueConverter.QNAME_XSD_LONG));
-	he.getOthers().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Short((short) 1), ValueConverter.QNAME_XSD_SHORT));
-	he.getOthers().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Double(1.0), ValueConverter.QNAME_XSD_DOUBLE));
-	he.getOthers().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Float(1.0), ValueConverter.QNAME_XSD_FLOAT));
-	he.getOthers().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new java.math.BigDecimal(1.0), ValueConverter.QNAME_XSD_INTEGER));
-	he.getOthers().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Boolean(true), ValueConverter.QNAME_XSD_BOOLEAN));
-	he.getOthers().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Byte((byte) 123), ValueConverter.QNAME_XSD_BYTE));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Integer(1), ValueConverter.QNAME_XSD_INT));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Long(1), ValueConverter.QNAME_XSD_LONG));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Short((short) 1), ValueConverter.QNAME_XSD_SHORT));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Double(1.0), ValueConverter.QNAME_XSD_DOUBLE));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Float(1.0), ValueConverter.QNAME_XSD_FLOAT));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new java.math.BigDecimal(1.0), ValueConverter.QNAME_XSD_INTEGER));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Boolean(true), ValueConverter.QNAME_XSD_BOOLEAN));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Byte((byte) 123), ValueConverter.QNAME_XSD_BYTE));
 	
 	addFurtherAttributesWithQNames(he);
 	
 	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"london"));
-   	he.getOthers().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, w, ValueConverter.QNAME_XSD_ANY_URI));
+   	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, w, ValueConverter.QNAME_XSD_ANY_URI));
 	
     }
     
@@ -414,10 +414,10 @@ public class RoundTripFromJavaTest extends TestCase {
     
     ///////////////////////////////////////////////////////////////////////
     
-    public void addFurtherAttributesWithQNames(HasOtherAttribute he) {
-        he.getOthers().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new QName(EX2_NS,"newyork", EX2_PREFIX), ValueConverter.QNAME_XSD_QNAME));
-        he.getOthers().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new QName(EX_NS, "london", EX_PREFIX), ValueConverter.QNAME_XSD_QNAME));
-        he.getOthers().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new QName(EX3_NS, "london"), ValueConverter.QNAME_XSD_QNAME));
+    public void addFurtherAttributesWithQNames(HasOther he) {
+        he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new QName(EX2_NS,"newyork", EX2_PREFIX), ValueConverter.QNAME_XSD_QNAME));
+        he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new QName(EX_NS, "london", EX_PREFIX), ValueConverter.QNAME_XSD_QNAME));
+        he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new QName(EX3_NS, "london"), ValueConverter.QNAME_XSD_QNAME));
 
     }
 
@@ -456,7 +456,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testEntity0() throws JAXBException  {
 	setNamespaces();
 	Entity a = pFactory.newEntity("ex:e0");
-	a.getOthers().add(pFactory.newOther(new QName(EX_NS, "tag2", EX_PREFIX), 
+	a.getOther().add(pFactory.newOther(new QName(EX_NS, "tag2", EX_PREFIX), 
 	                                    pFactory.newInternationalizedString("bonjour","fr"), 
 	                                    ValueConverter.QNAME_PROV_INTERNATIONALIZED_STRING));
 
@@ -1870,14 +1870,14 @@ public class RoundTripFromJavaTest extends TestCase {
 					null,
 					pFactory.newIDRef(q("a1")));
 	       gen1.setTime(pFactory.newTimeNow());
-	   	   gen1.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   gen1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
 
 	       WasGeneratedBy gen2 = pFactory.newWasGeneratedBy(q("gen1"),
 			          pFactory.newIDRef(q("e1")),
 			        	null,
 			          pFactory.newIDRef(q("a1")));
 	  	   gen2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   gen2.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   gen2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
    		   Entity e1=pFactory.newEntity(q("e1"));
 		   Activity a1=pFactory.newActivity(q("a1"));
 		   Statement [] opt=new Statement[] { e1, a1 };
@@ -1908,13 +1908,13 @@ public class RoundTripFromJavaTest extends TestCase {
 					pFactory.newIDRef(q("e1")),
 					pFactory.newIDRef(q("a1")));
 	       inv1.setTime(pFactory.newTimeNow());
-	   	   inv1.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   inv1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
 
 	       WasInvalidatedBy inv2 = pFactory.newWasInvalidatedBy(q("inv1"),
 			          pFactory.newIDRef(q("e1")),
 			          pFactory.newIDRef(q("a1")));
 	  	   inv2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   inv2.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   inv2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
 
    		   Entity e1=pFactory.newEntity(q("e1"));
 		   Activity a1=pFactory.newActivity(q("a1"));
@@ -1949,14 +1949,14 @@ public class RoundTripFromJavaTest extends TestCase {
 					null,
 					pFactory.newIDRef(q("e1")));
 	       use1.setTime(pFactory.newTimeNow());
-	   	   use1.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   use1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
 
 	       Used use2 = pFactory.newUsed(q("use1"),
 			          pFactory.newIDRef(q("a1")),
 			        	null,
 			          pFactory.newIDRef(q("e1")));
 	  	   use2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   use2.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   use2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
 
    		   Entity e1=pFactory.newEntity(q("e1"));
 		   Activity a1=pFactory.newActivity(q("a1"));
@@ -1990,13 +1990,13 @@ public class RoundTripFromJavaTest extends TestCase {
 					pFactory.newIDRef(q("a1")),
 					pFactory.newIDRef(q("e1")));
 	       start1.setTime(pFactory.newTimeNow());
-	   	   start1.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   start1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
 
 	       WasStartedBy start2 = pFactory.newWasStartedBy(q("start1"),
 			          pFactory.newIDRef(q("a1")),
 			          pFactory.newIDRef(q("e1")));
 	  	   start2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   start2.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   start2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
 
    		   Entity e1=pFactory.newEntity(q("e1"));
 		   Activity a1=pFactory.newActivity(q("a1"));
@@ -2011,14 +2011,14 @@ public class RoundTripFromJavaTest extends TestCase {
 					pFactory.newIDRef(q("a1")),
 					pFactory.newIDRef(q("e1")));
 	       start1.setTime(pFactory.newTimeNow());
-	   	   start1.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   start1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
 	   	   start1.setStarter(pFactory.newIDRef(q("a1s")));	
 
 	       WasStartedBy start2 = pFactory.newWasStartedBy(q("start1"),
 			          pFactory.newIDRef(q("a1")),
 			          pFactory.newIDRef(q("e1")));
 	  	   start2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   start2.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   start2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
 		   start2.setStarter(pFactory.newIDRef(q("a2s")));
 		   
    		   Entity e1=pFactory.newEntity(q("e1"));
@@ -2036,14 +2036,14 @@ public class RoundTripFromJavaTest extends TestCase {
 					pFactory.newIDRef(q("a1")),
 					pFactory.newIDRef(q("e1")));
 	       start1.setTime(pFactory.newTimeNow());
-	   	   start1.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   start1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
 	   	   start1.setStarter(pFactory.newIDRef(q("a1s")));	
 
 	       WasStartedBy start2 = pFactory.newWasStartedBy(q("start1"),
 			          pFactory.newIDRef(q("a2")),
 			          pFactory.newIDRef(q("e2")));
 	  	   start2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   start2.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   start2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
 		   start2.setStarter(pFactory.newIDRef(q("a2s")));
 		   
 		   Entity e1=pFactory.newEntity(q("e1"));
@@ -2082,13 +2082,13 @@ public class RoundTripFromJavaTest extends TestCase {
 					pFactory.newIDRef(q("a1")),
 					pFactory.newIDRef(q("e1")));
 	       end1.setTime(pFactory.newTimeNow());
-	   	   end1.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   end1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
 
 	       WasEndedBy end2 = pFactory.newWasEndedBy(q("end1"),
 			          pFactory.newIDRef(q("a1")),
 			          pFactory.newIDRef(q("e1")));
 	  	   end2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   end2.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   end2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
 
    		   Entity e1=pFactory.newEntity(q("e1"));
 		   Activity a1=pFactory.newActivity(q("a1"));
@@ -2103,14 +2103,14 @@ public class RoundTripFromJavaTest extends TestCase {
 					pFactory.newIDRef(q("a1")),
 					pFactory.newIDRef(q("e1")));
 	       end1.setTime(pFactory.newTimeNow());
-	   	   end1.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   end1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
 	   	   end1.setEnder(pFactory.newIDRef(q("a1s")));	
 
 	       WasEndedBy end2 = pFactory.newWasEndedBy(q("end1"),
 			          pFactory.newIDRef(q("a1")),
 			          pFactory.newIDRef(q("e1")));
 	  	   end2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   end2.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   end2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
 		   end2.setEnder(pFactory.newIDRef(q("a2s")));
 		   
    		   Entity e1=pFactory.newEntity(q("e1"));
@@ -2128,14 +2128,14 @@ public class RoundTripFromJavaTest extends TestCase {
 					pFactory.newIDRef(q("a1")),
 					pFactory.newIDRef(q("e1")));
 	       end1.setTime(pFactory.newTimeNow());
-	   	   end1.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   end1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
 	   	   end1.setEnder(pFactory.newIDRef(q("a1s")));	
 
 	       WasEndedBy end2 = pFactory.newWasEndedBy(q("end1"),
 			          pFactory.newIDRef(q("a2")),
 			          pFactory.newIDRef(q("e2")));
 	  	   end2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   end2.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   end2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
 		   end2.setEnder(pFactory.newIDRef(q("a2s")));
 		   
 		   Entity e1=pFactory.newEntity(q("e1"));

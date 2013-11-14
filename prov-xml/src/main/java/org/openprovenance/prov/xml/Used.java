@@ -279,7 +279,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
         return this.type;
     }
 
-    public List<org.openprovenance.prov.model.OtherAttribute> getOthers() {
+    public List<org.openprovenance.prov.model.OtherAttribute> getOther() {
 	if (others == null) {
 	    others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.OtherAttribute.class);
 	} 
@@ -342,7 +342,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
         equalsBuilder.append(this.getLocation(), that.getLocation());
         equalsBuilder.append(this.getRole(), that.getRole());
         equalsBuilder.append(this.getType(), that.getType());
-        equalsBuilder.append(this.getOthers(), that.getOthers());
+        equalsBuilder.append(this.getOther(), that.getOther());
         equalsBuilder.append(this.getId(), that.getId());
     }
 
@@ -366,7 +366,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
         hashCodeBuilder.append(this.getLocation());
         hashCodeBuilder.append(this.getRole());
         hashCodeBuilder.append(this.getType());
-        hashCodeBuilder.append(this.getOthers());
+        hashCodeBuilder.append(this.getOther());
         hashCodeBuilder.append(this.getId());
     }
 
@@ -414,7 +414,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
         }
         {
             List<org.openprovenance.prov.model.OtherAttribute> theOthers;
-            theOthers = this.getOthers();
+            theOthers = this.getOther();
             toStringBuilder.append("others", theOthers);
         }
         {

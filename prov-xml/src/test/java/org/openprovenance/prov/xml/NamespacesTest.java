@@ -150,7 +150,7 @@ public class NamespacesTest
     public void testNamespaces6 () 
     {
         Activity a1=pFactory.newActivity("ex:a1");
-        a1.getOthers().add(pFactory.newOther(new QName (EXAMPLE_NS,"tag1", "ex"),
+        a1.getOther().add(pFactory.newOther(new QName (EXAMPLE_NS,"tag1", "ex"),
                                              new QName("http://www.w3.org/ns/prov#", "emptyCollection", "prov"), 
                                              ValueConverter.QNAME_XSD_QNAME));
         Document doc=pFactory.newDocument();
@@ -168,7 +168,7 @@ public class NamespacesTest
     public void testNamespaces7 () 
     {
         Activity a1=pFactory.newActivity("ex:a1");
-        a1.getOthers().add(pFactory.newOther(new QName (EXAMPLE2_NS,"tag1", "ex2"),
+        a1.getOther().add(pFactory.newOther(new QName (EXAMPLE2_NS,"tag1", "ex2"),
                                              new QName("http://www.w3.org/ns/prov#", "emptyCollection", "prov"), 
                                              ValueConverter.QNAME_XSD_QNAME));
         Document doc=pFactory.newDocument();
@@ -187,7 +187,7 @@ public class NamespacesTest
     public void testNamespaces8 () 
     {
         Activity a1=pFactory.newActivity("ex:a1");
-        a1.getOthers().add(pFactory.newOther(new QName (EXAMPLE2_NS,"tag1", "ex"),
+        a1.getOther().add(pFactory.newOther(new QName (EXAMPLE2_NS,"tag1", "ex"),
                                              new QName("http://www.w3.org/ns/prov#", "emptyCollection", "prov"), 
                                              ValueConverter.QNAME_XSD_QNAME));
         Document doc=pFactory.newDocument();
@@ -214,7 +214,7 @@ public class NamespacesTest
     public void testNamespaces9 () 
     {
         Activity a1=pFactory.newActivity("ex:a1");
-        a1.getOthers().add(pFactory.newOther(new QName(EXAMPLE2_NS,"tag1", "ex"),
+        a1.getOther().add(pFactory.newOther(new QName(EXAMPLE2_NS,"tag1", "ex"),
                                              new QName(EXAMPLE3_NS,"tag1", "ex"), 
                                              ValueConverter.QNAME_XSD_QNAME));
         Document doc=pFactory.newDocument();

@@ -71,7 +71,7 @@ abstract public class GettersTest
 	assertTrue(pUtil.getter(wg1,1) == wg1.getEntity());
 	assertTrue(pUtil.getter(wg1,2) == wg1.getActivity());
 	assertEquals(pUtil.getter(wg1,3),wg1.getTime());
-	assertTrue(pUtil.getter(wg1,4) == wg1.getOthers());
+	assertTrue(pUtil.getter(wg1,4) == wg1.getOther());
 
 	// System.out.println(" wgb " + wg1);
 
@@ -91,7 +91,7 @@ abstract public class GettersTest
 	assertTrue(pUtil.getter(wd1,3) == wd1.getActivity());
 	assertTrue(pUtil.getter(wd1,4) == wd1.getGeneration());
 	assertTrue(pUtil.getter(wd1,5) == wd1.getUsage());
-	assertTrue(pUtil.getter(wd1,6) == wd1.getOthers());
+	assertTrue(pUtil.getter(wd1,6) == wd1.getOther());
 
 
     }

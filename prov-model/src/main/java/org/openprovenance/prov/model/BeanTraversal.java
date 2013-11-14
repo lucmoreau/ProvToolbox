@@ -109,8 +109,8 @@ public class BeanTraversal {
         return acc;     
     }
 
-    public List<Attribute> convertAttributes(HasOtherAttribute e, List<Attribute> acc) {
-	List ll=e.getOthers();
+    public List<Attribute> convertAttributes(HasOther e, List<Attribute> acc) {
+	List ll=e.getOther();
 	acc.addAll((List<Attribute>)ll);
 	return acc;
     }

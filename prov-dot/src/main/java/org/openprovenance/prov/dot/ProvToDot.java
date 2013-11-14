@@ -19,8 +19,8 @@ import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
-import org.openprovenance.prov.model.HasOtherAttribute;
-import org.openprovenance.prov.model.HasOtherAttribute;
+import org.openprovenance.prov.model.HasOther;
+import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.model.Influence;
@@ -335,7 +335,7 @@ public class ProvToDot {
     boolean collapseAnnotations=true;
 
     static int embeddedAnnotationCounter=0;
-    public void emitAnnotations(HasOtherAttribute node, PrintStream out) {
+    public void emitAnnotations(HasOther node, PrintStream out) {
 
     }
 
@@ -379,9 +379,9 @@ public class ProvToDot {
 
     }
 
-    public void emitAnnotations(String id, HasOtherAttribute ann, PrintStream out) {
+    public void emitAnnotations(String id, HasOther ann, PrintStream out) {
 
-        if ((ann.getOthers()==null) || (ann.getOthers().isEmpty())
+        if ((ann.getOther()==null) || (ann.getOther().isEmpty())
             &&
             (((HasType)ann).getType().isEmpty())) return;
 
@@ -416,7 +416,7 @@ public class ProvToDot {
     }
 
 
-    public HashMap<String,String> addAnnotationLinkProperties(HasOtherAttribute ann, HashMap<String,String> properties) {
+    public HashMap<String,String> addAnnotationLinkProperties(HasOther ann, HashMap<String,String> properties) {
         properties.put("arrowhead","none");
         properties.put("style","dashed");
         properties.put("color","gray");
@@ -454,7 +454,7 @@ public class ProvToDot {
         return properties;
     }
 
-    public  HashMap<String,String> addColors(HasOtherAttribute e, HashMap<String,String> properties) {
+    public  HashMap<String,String> addColors(HasOther e, HashMap<String,String> properties) {
         Hashtable<String,List<Attribute>> table=u.attributesWithNamespace(e,"http://openprovenance.org/Toolbox/dot#");
 
         List<Attribute> o=table.get("fillcolor");
@@ -533,11 +533,11 @@ public class ProvToDot {
         return properties;
     }
 
-    public HashMap<String,String> addAnnotationShape(HasOtherAttribute ann, HashMap<String,String> properties) {
+    public HashMap<String,String> addAnnotationShape(HasOther ann, HashMap<String,String> properties) {
         properties.put("shape","note");
         return properties;
     }
-    public HashMap<String,String> addAnnotationLabel(HasOtherAttribute ann, HashMap<String,String> properties) {
+    public HashMap<String,String> addAnnotationLabel(HasOther ann, HashMap<String,String> properties) {
         String label="";
         label=label+"<<TABLE cellpadding=\"0\" border=\"0\">\n";
         for (Object type: ((HasType)ann).getType()) {
@@ -546,7 +546,7 @@ public class ProvToDot {
             label=label+"	    <TD align=\"left\">" + getPropertyValueFromAny(type) + "</TD>\n";
             label=label+"	</TR>\n";
         }
-        for (OtherAttribute prop: ann.getOthers()) {
+        for (OtherAttribute prop: ann.getOther()) {
 
             if ("fillcolor".equals(prop.getElementName().getLocalPart())) {
                     // no need to display this attribute
@@ -617,7 +617,7 @@ public class ProvToDot {
     }
 
 
-    public HashMap<String,String> addAnnotationColor(HasOtherAttribute ann, HashMap<String,String> properties) {
+    public HashMap<String,String> addAnnotationColor(HasOther ann, HashMap<String,String> properties) {
         if (displayAnnotationColor) {
             properties.put("color",annotationColor(ann));
             properties.put("fontcolor","black");
@@ -692,7 +692,7 @@ public class ProvToDot {
     }
 
 
-    public String annotationColor(HasOtherAttribute ann) {
+    public String annotationColor(HasOther ann) {
         List<String> colors=new LinkedList<String>();
         colors.add("gray");
         return selectColor(colors);

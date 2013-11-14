@@ -61,7 +61,7 @@ package org.openprovenance.prov.model;
  * 
  * 
  */
-public interface WasGeneratedBy extends Identifiable,  HasLabel, HasTime, HasType, HasRole, HasLocation, HasOtherAttribute, Influence {
+public interface WasGeneratedBy extends Identifiable,  HasLabel, HasTime, HasType, HasRole, HasLocation, HasOther, Influence {
 
     void setActivity(IDRef pid);
 

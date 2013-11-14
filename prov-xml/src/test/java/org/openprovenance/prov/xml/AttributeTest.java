@@ -21,7 +21,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HasLabel;
 import org.openprovenance.prov.model.HasLocation;
-import org.openprovenance.prov.model.HasOtherAttribute;
+import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasRole;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.NamedBundle;
@@ -491,7 +491,7 @@ public class AttributeTest extends TestCase {
          }
 
     }
-    public void addOthers(HasOtherAttribute ho, QName elementName) {
+    public void addOthers(HasOther ho, QName elementName) {
 	for (Object [] pair: attributeValues) {
 	    Object value=pair[0];
 	    QName type=(QName) pair[1];
@@ -502,10 +502,10 @@ public class AttributeTest extends TestCase {
 			(!(qq.getNamespaceURI().equals(elementName.getNamespaceURI())))) {
 		    // ignore this case
 		} else {
-		    ho.getOthers().add(pFactory.newOther(elementName, value, type));
+		    ho.getOther().add(pFactory.newOther(elementName, value, type));
 		}			
 	    } else {
-		ho.getOthers().add(pFactory.newOther(elementName, value, type));
+		ho.getOther().add(pFactory.newOther(elementName, value, type));
 	    }
 	}
     }
@@ -555,7 +555,7 @@ public class AttributeTest extends TestCase {
  	Object [] pair= attributeValues[i];
  	Object value=pair[0];
  	QName type=(QName) pair[1];
- 	a.getOthers().add(pFactory.newOther(new QName(EX_NS,  "tag2", "exo"), value,type));
+ 	a.getOther().add(pFactory.newOther(new QName(EX_NS,  "tag2", "exo"), value,type));
  	makeDocAndTest(a,"target/attr_entity_one_other_attr"+i);
      }
     

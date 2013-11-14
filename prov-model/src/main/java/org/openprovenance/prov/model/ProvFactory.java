@@ -1300,6 +1300,19 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return res;
     }
 
+    /** A factory method to create an instance of a derivation {@link WasDerivedFrom}
+     * @param id an optional identifier for a derivation
+     * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation 
+     * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
+     * @return an instance of {@link WasDerivedFrom}
+     */
+    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1) {
+	IDRef eid1 = (e1==null)? null: newIDRef(e1);
+	IDRef eid2 = (e2==null)? null: newIDRef(e2);
+	WasDerivedFrom res=newWasDerivedFrom(id, eid2, eid1);
+	return res;
+    }
+
     public WasDerivedFrom newWasDerivedFrom(WasDerivedFrom d) {
 	WasDerivedFrom wdf = newWasDerivedFrom(d.getId(),
 					       d.getGeneratedEntity(),

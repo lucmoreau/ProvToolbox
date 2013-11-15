@@ -25,7 +25,6 @@ import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.openprovenance.prov.model.DOMProcessing;
-import org.openprovenance.prov.model.OtherAttribute;
 import javax.xml.namespace.QName;
 
 
@@ -51,7 +50,7 @@ import javax.xml.namespace.QName;
 @Table(name = "OTHER")
 public class Other
     extends TypedValue
-    implements Equals, HashCode, OtherAttribute, org.openprovenance.prov.model.Attribute
+    implements Equals, HashCode, org.openprovenance.prov.model.Other, org.openprovenance.prov.model.Attribute
 {
 
     QName elementName;

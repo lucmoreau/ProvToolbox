@@ -4,6 +4,6 @@ import java.util.List;
 public interface HasOther {
 
     
-    public List<org.openprovenance.prov.model.OtherAttribute> getOther();
+    public List<org.openprovenance.prov.model.Other> getOther();
 
 } 

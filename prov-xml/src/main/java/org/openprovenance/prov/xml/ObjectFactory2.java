@@ -216,8 +216,8 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
      * Create an instance of {@link Type }
      * 
      */
-    public OtherAttribute createOther() {
-        return new org.openprovenance.prov.xml.OtherAttribute();
+    public Other createOther() {
+        return new org.openprovenance.prov.xml.Other();
     }
 
 

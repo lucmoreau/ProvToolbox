@@ -20,7 +20,6 @@ import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.OtherAttribute;
 import org.w3c.dom.Element;
 import org.openprovenance.prov.model.StatementOrBundle;
 
@@ -40,7 +39,6 @@ import org.openprovenance.prov.model.StatementOrBundle;
  *         &lt;element name="keyEntityPair" type="{http://www.w3.org/ns/prov#}KeyEntityPair" maxOccurs="unbounded"/>
  *         &lt;element ref="{http://www.w3.org/ns/prov#}label" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element ref="{http://www.w3.org/ns/prov#}type" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element ref="{http://www.w3.org/ns/prov#}others" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;any processContents='lax' namespace='##other' maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *       &lt;attribute ref="{http://www.w3.org/ns/prov#}id"/>
@@ -58,7 +56,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
     "keyEntityPair",
     "label",
     "type",
-    "others",
+    "other",
     "any"
 })
 public class DerivedByInsertionFrom
@@ -76,8 +74,8 @@ public class DerivedByInsertionFrom
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
     @XmlElement(type = org.openprovenance.prov.sql.Type.class)
     protected List<org.openprovenance.prov.model.Type> type;
-    @XmlElement(type = Other.class)
-    protected List<OtherAttribute> others;
+    @XmlElement(type = org.openprovenance.prov.sql.Other.class)
+    protected List<org.openprovenance.prov.model.Other> other;
     @XmlAnyElement(lax = true)
     protected List<Attribute> any;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
@@ -243,7 +241,7 @@ public class DerivedByInsertionFrom
     }
 
     /**
-     * Gets the value of the others property.
+     * Gets the value of the other property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
@@ -264,19 +262,19 @@ public class DerivedByInsertionFrom
      * 
      * 
      */
-    public List<OtherAttribute> getOther() {
-        if (others == null) {
-            others = new ArrayList<OtherAttribute>();
+    public List<org.openprovenance.prov.model.Other> getOther() {
+        if (other == null) {
+            other = new ArrayList<org.openprovenance.prov.model.Other>();
         }
-        return this.others;
+        return this.other;
     }
 
     /**
      * 
      * 
      */
-    public void setOthers(List<OtherAttribute> others) {
-        this.others = others;
+    public void setOther(List<org.openprovenance.prov.model.Other> other) {
+        this.other = other;
     }
 
     /**
@@ -398,10 +396,10 @@ public class DerivedByInsertionFrom
             }
         }
         {
-            List<OtherAttribute> lhsOthers;
-            lhsOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOther():null);
-            List<OtherAttribute> rhsOthers;
-            rhsOthers = (((that.others!= null)&&(!that.others.isEmpty()))?that.getOther():null);
+            List<org.openprovenance.prov.model.Other> lhsOthers;
+            lhsOthers = (((this.other!= null)&&(!this.other.isEmpty()))?this.getOther():null);
+            List<org.openprovenance.prov.model.Other> rhsOthers;
+            rhsOthers = (((that.other!= null)&&(!that.other.isEmpty()))?that.getOther():null);
             if (!strategy.equals(LocatorUtils.property(thisLocator, "others", lhsOthers), LocatorUtils.property(thatLocator, "others", rhsOthers), lhsOthers, rhsOthers)) {
                 return false;
             }
@@ -460,8 +458,8 @@ public class DerivedByInsertionFrom
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "type", theType), currentHashCode, theType);
         }
         {
-            List<OtherAttribute> theOthers;
-            theOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOther():null);
+            List<org.openprovenance.prov.model.Other> theOthers;
+            theOthers = (((this.other!= null)&&(!this.other.isEmpty()))?this.getOther():null);
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
         }
         {

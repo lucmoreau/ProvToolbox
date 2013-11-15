@@ -33,7 +33,7 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.StatementOrBundle;
-import org.openprovenance.prov.model.OtherAttribute;
+import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.xml.AttributeList;
 import org.openprovenance.prov.xml.HasAllAttributes;
 import org.openprovenance.prov.xml.SortedAttributeList;
@@ -95,7 +95,7 @@ public class Entity
     //@XmlElement(type = org.openprovenance.prov.sql.Value.class)
     transient protected org.openprovenance.prov.model.Value value;
     //@XmlElement(type = Other.class)
-    transient protected List<OtherAttribute> others;
+    transient protected List<Other> others;
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
@@ -287,13 +287,13 @@ public class Entity
      * 
      * 
      */
-    @OneToMany(targetEntity = Other.class, cascade = {
+    @OneToMany(targetEntity =  org.openprovenance.prov.sql.Other.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "OTHERS_ENTITY_HJID")
-    public List<OtherAttribute> getOther() {
+    public List<Other> getOther() {
         if (others == null) {
-            others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.OtherAttribute.class);
+            others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Other.class);
         }
         return this.others;
     }
@@ -302,7 +302,7 @@ public class Entity
      * 
      * 
      */
-    public void setOthers(List<OtherAttribute> others) {
+    public void setOther(List<Other> others) {
         this.others = others;
     }
 
@@ -403,9 +403,9 @@ public class Entity
             }
         }
         {
-            List<OtherAttribute> lhsOthers;
+            List<Other> lhsOthers;
             lhsOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOther():null);
-            List<OtherAttribute> rhsOthers;
+            List<Other> rhsOthers;
             rhsOthers = (((that.others!= null)&&(!that.others.isEmpty()))?that.getOther():null);
             if (!strategy.equals(LocatorUtils.property(thisLocator, "others", lhsOthers), LocatorUtils.property(thatLocator, "others", rhsOthers), lhsOthers, rhsOthers)) {
                 return false;
@@ -451,7 +451,7 @@ public class Entity
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "value", theValue), currentHashCode, theValue);
         }
         {
-            List<OtherAttribute> theOthers;
+            List<Other> theOthers;
             theOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOther():null);
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
         }
@@ -513,7 +513,7 @@ public class Entity
         }
   
         {
-            List<org.openprovenance.prov.model.OtherAttribute> theOthers;
+            List<org.openprovenance.prov.model.Other> theOthers;
             theOthers = this.getOther();
             toStringBuilder.append("others", theOthers);
         }

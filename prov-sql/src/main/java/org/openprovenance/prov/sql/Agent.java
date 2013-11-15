@@ -32,7 +32,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.OtherAttribute;
+import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.xml.AttributeList;
 import org.openprovenance.prov.xml.HasAllAttributes;
@@ -89,7 +89,7 @@ public class Agent
 
     transient protected List<org.openprovenance.prov.model.Location> location;
     transient protected List<org.openprovenance.prov.model.Type> type;
-    transient protected List<OtherAttribute> others;
+    transient protected List<Other> others;
  
     @XmlAnyElement
     protected List<Attribute> all;
@@ -242,13 +242,13 @@ public class Agent
      * 
      * 
      */
-    @OneToMany(targetEntity = Other.class, cascade = {
+    @OneToMany(targetEntity =  org.openprovenance.prov.sql.Other.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "OTHERS_AGENT_HJID")
-    public List<OtherAttribute> getOther() {
+    public List<Other> getOther() {
         if (others == null) {
-            others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.OtherAttribute.class);
+            others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Other.class);
         }
         return this.others;
     }
@@ -257,7 +257,7 @@ public class Agent
      * 
      * 
      */
-    public void setOthers(List<OtherAttribute> others) {
+    public void setOther(List<Other> others) {
         this.others = others;
     }
 
@@ -349,9 +349,9 @@ public class Agent
             }
         }
         {
-            List<OtherAttribute> lhsOthers;
+            List<Other> lhsOthers;
             lhsOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOther():null);
-            List<OtherAttribute> rhsOthers;
+            List<Other> rhsOthers;
             rhsOthers = (((that.others!= null)&&(!that.others.isEmpty()))?that.getOther():null);
             if (!strategy.equals(LocatorUtils.property(thisLocator, "others", lhsOthers), LocatorUtils.property(thatLocator, "others", rhsOthers), lhsOthers, rhsOthers)) {
                 return false;
@@ -392,7 +392,7 @@ public class Agent
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "type", theType), currentHashCode, theType);
         }
         {
-            List<OtherAttribute> theOthers;
+            List<Other> theOthers;
             theOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOther():null);
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
         }
@@ -449,7 +449,7 @@ public class Agent
             toStringBuilder.append("type", theType);
         }  
         {
-            List<org.openprovenance.prov.model.OtherAttribute> theOthers;
+            List<org.openprovenance.prov.model.Other> theOthers;
             theOthers = this.getOther();
             toStringBuilder.append("others", theOthers);
         }

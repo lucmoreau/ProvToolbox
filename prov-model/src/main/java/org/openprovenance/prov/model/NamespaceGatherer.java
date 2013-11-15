@@ -92,14 +92,14 @@ public class NamespaceGatherer implements StatementAction {
 	}
     }
 
-    public void registerOther(List<OtherAttribute> others) {
-	for (OtherAttribute other : others) {
+    public void registerOther(List<Other> others) {
+	for (Other other : others) {
 	    register(other);
 	}
 
     }
 
-    public void register(OtherAttribute other) {
+    public void register(Other other) {
 	register(other.getType());
 	register(other.getElementName());
 	Object val = other.getValue();

@@ -30,7 +30,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.OtherAttribute;
+import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.xml.AttributeList;
 import org.openprovenance.prov.xml.HasAllAttributes;
@@ -54,7 +54,6 @@ import org.openprovenance.prov.xml.SortedAttributeList;
  *         &lt;element name="usage" type="{http://www.w3.org/ns/prov#}IDRef" minOccurs="0"/>
  *         &lt;element ref="{http://www.w3.org/ns/prov#}label" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element ref="{http://www.w3.org/ns/prov#}type" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element ref="{http://www.w3.org/ns/prov#}others" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;any namespace='##other' maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *       &lt;attribute ref="{http://www.w3.org/ns/prov#}id"/>
@@ -104,7 +103,7 @@ public class WasDerivedFrom
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
     
     transient protected List<org.openprovenance.prov.model.Type> type;
-    transient protected List<OtherAttribute> others;
+    transient protected List<Other> other;
     
     @XmlAnyElement
     protected List<Attribute> all;
@@ -356,23 +355,23 @@ public class WasDerivedFrom
      * 
      * 
      */
-    @OneToMany(targetEntity = Other.class, cascade = {
+    @OneToMany(targetEntity =  org.openprovenance.prov.sql.Other.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "OTHERS_WASDERIVEDFROM_HJID")
-    public List<OtherAttribute> getOther() {
-        if (others == null) {
-            others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.OtherAttribute.class);
+    public List<Other> getOther() {
+        if (other == null) {
+            other=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Other.class);
         }
-        return this.others;
+        return this.other;
     }
 
     /**
      * 
      * 
      */
-    public void setOthers(List<OtherAttribute> others) {
-        this.others = others;
+    public void setOther(List<Other> others) {
+        this.other = others;
     }
 
 
@@ -499,10 +498,10 @@ public class WasDerivedFrom
             }
         }
         {
-            List<OtherAttribute> lhsOthers;
-            lhsOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOther():null);
-            List<OtherAttribute> rhsOthers;
-            rhsOthers = (((that.others!= null)&&(!that.others.isEmpty()))?that.getOther():null);
+            List<Other> lhsOthers;
+            lhsOthers = (((this.other!= null)&&(!this.other.isEmpty()))?this.getOther():null);
+            List<Other> rhsOthers;
+            rhsOthers = (((that.other!= null)&&(!that.other.isEmpty()))?that.getOther():null);
             if (!strategy.equals(LocatorUtils.property(thisLocator, "others", lhsOthers), LocatorUtils.property(thatLocator, "others", rhsOthers), lhsOthers, rhsOthers)) {
                 return false;
             }
@@ -562,8 +561,8 @@ public class WasDerivedFrom
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "type", theType), currentHashCode, theType);
         }
         {
-            List<OtherAttribute> theOthers;
-            theOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOther():null);
+            List<Other> theOthers;
+            theOthers = (((this.other!= null)&&(!this.other.isEmpty()))?this.getOther():null);
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
         }
         {

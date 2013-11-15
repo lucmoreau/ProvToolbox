@@ -70,7 +70,7 @@ public class DerivedByInsertionFrom implements Equals, HashCode, ToString, org.o
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
     
     transient protected List<org.openprovenance.prov.model.Type> type;
-    transient protected List<org.openprovenance.prov.model.OtherAttribute> others;
+    transient protected List<org.openprovenance.prov.model.Other> others;
     @XmlAnyElement
     
     protected List<Attribute> all;
@@ -214,9 +214,9 @@ public class DerivedByInsertionFrom implements Equals, HashCode, ToString, org.o
         return this.type;
     }
 
-    public List<org.openprovenance.prov.model.OtherAttribute> getOther() {
+    public List<org.openprovenance.prov.model.Other> getOther() {
 	if (others == null) {
-	    others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.OtherAttribute.class);
+	    others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Other.class);
 	} 
 	return this.others;
     }
@@ -333,7 +333,7 @@ public class DerivedByInsertionFrom implements Equals, HashCode, ToString, org.o
             toStringBuilder.append("type", theType);
         }
         {
-            List<org.openprovenance.prov.model.OtherAttribute> theOthers;
+            List<org.openprovenance.prov.model.Other> theOthers;
             theOthers = this.getOther();
             toStringBuilder.append("others", theOthers);
         }

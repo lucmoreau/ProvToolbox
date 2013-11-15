@@ -50,7 +50,7 @@ public interface ObjectFactory {
 
     NamedBundle createNamedBundle();
 
-    OtherAttribute createOther();
+    Other createOther();
 
     Role createRole();
 

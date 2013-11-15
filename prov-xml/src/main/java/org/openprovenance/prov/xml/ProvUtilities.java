@@ -112,41 +112,41 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
     }
 
     static {
-        fields.put(Activity.class, new String[] { "Id", "StartTime", "EndTime", "Others" });
+        fields.put(Activity.class, new String[] { "Id", "StartTime", "EndTime", "Other" });
 
         fields.put(Used.class, new String[] { "Id", "Activity", "Entity",
-                                             "Time", "Others" });
+                                             "Time", "Other" });
         fields.put(WasGeneratedBy.class, new String[] { "Id", "Entity",
                                                        "Activity", "Time",
-                                                       "Others" });
+                                                       "Other" });
         fields.put(WasInvalidatedBy.class, new String[] { "Id", "Entity",
                                                          "Activity", "Time",
-                                                         "Others" });
+                                                         "Other" });
         fields.put(WasStartedBy.class, new String[] { "Id", "Activity",
                                                      "Trigger", "Starter",
-                                                     "Time", "Others" });
+                                                     "Time", "Other" });
         // 0 , 1 , 2 , 3 , 4 , 5
         // length=6
         // firstTimeIndex=4
         // last index=5
         fields.put(WasEndedBy.class, new String[] { "Id", "Activity",
                                                    "Trigger", "Ender", "Time",
-                                                   "Others" });
+                                                   "Other" });
         fields.put(WasInformedBy.class, new String[] { "Id", "Informed", "Informant",
-                                                      "Others" });
+                                                      "Other" });
         fields.put(WasDerivedFrom.class, new String[] { "Id",
                                                        "GeneratedEntity",
                                                        "UsedEntity",
                                                        "Activity",
                                                        "Generation", "Usage",
-                                                       "Others" });
+                                                       "Other" });
         fields.put(WasInfluencedBy.class, new String[] { "Id", "Influencee",
                                                         "Influencer", "Others" });
         fields.put(WasAttributedTo.class, new String[] { "Id", "Entity",
-                                                        "Agent", "Others" });
+                                                        "Agent", "Other" });
         fields.put(WasAssociatedWith.class, new String[] { "Id", "Activity",
                                                           "Agent", "Plan",
-                                                          "Others" });
+                                                          "Other" });
         fields.put(ActedOnBehalfOf.class, new String[] { "Id", "Delegate",
                                                         "Responsible",
                                                         "Activity", "Others" });

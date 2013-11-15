@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName; 
 
 import org.openprovenance.prov.model.Key;
-import org.openprovenance.prov.model.OtherAttribute;
+import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.URIWrapper;
@@ -107,7 +107,7 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     public ObjectFactory2() {
     }
 
-    public OtherAttribute createOther() {
+    public Other createOther() {
         return new org.openprovenance.prov.sql.Other();
     }
 

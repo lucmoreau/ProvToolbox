@@ -184,8 +184,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         res.setValueAsObject(value);
         return res;
     }
-    public OtherAttribute newOther(QName elementName, Object value, QName type) {
-        OtherAttribute res=new OtherAttribute();
+    public Other newOther(QName elementName, Object value, QName type) {
+        Other res=new Other();
         res.type=type;
         res.setValueAsObject(value);
         res.setElementName(elementName);

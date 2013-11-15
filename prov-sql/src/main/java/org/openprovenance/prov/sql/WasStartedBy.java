@@ -36,7 +36,6 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.StatementOrBundle;
-import org.openprovenance.prov.model.OtherAttribute;
 import org.openprovenance.prov.xml.AttributeList;
 import org.openprovenance.prov.xml.HasAllAttributes;
 import org.openprovenance.prov.xml.SortedAttributeList;
@@ -106,7 +105,7 @@ public class WasStartedBy
     transient protected List<org.openprovenance.prov.model.Location> location;
     transient protected List<org.openprovenance.prov.model.Role> role;
     transient protected List<org.openprovenance.prov.model.Type> type;
-    transient protected List<OtherAttribute> others;
+    transient protected List<org.openprovenance.prov.model.Other> other;
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
@@ -414,19 +413,19 @@ public class WasStartedBy
         CascadeType.ALL
     })
     @JoinColumn(name = "OTHERS_WASSTARTEDBY_HJID")
-    public List<OtherAttribute> getOther() {
-        if (others == null) {
-            others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.OtherAttribute.class);
+    public List<org.openprovenance.prov.model.Other> getOther() {
+        if (other == null) {
+            other=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Other.class);
         }
-        return this.others;
+        return this.other;
     }
 
     /**
      * 
      * 
      */
-    public void setOthers(List<OtherAttribute> others) {
-        this.others = others;
+    public void setOther(List<org.openprovenance.prov.model.Other> others) {
+        this.other = others;
     }
 
   
@@ -573,10 +572,10 @@ public class WasStartedBy
             }
         }
         {
-            List<OtherAttribute> lhsOthers;
-            lhsOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOther():null);
-            List<OtherAttribute> rhsOthers;
-            rhsOthers = (((that.others!= null)&&(!that.others.isEmpty()))?that.getOther():null);
+            List<org.openprovenance.prov.model.Other> lhsOthers;
+            lhsOthers = (((this.other!= null)&&(!this.other.isEmpty()))?this.getOther():null);
+            List<org.openprovenance.prov.model.Other> rhsOthers;
+            rhsOthers = (((that.other!= null)&&(!that.other.isEmpty()))?that.getOther():null);
             if (!strategy.equals(LocatorUtils.property(thisLocator, "others", lhsOthers), LocatorUtils.property(thatLocator, "others", rhsOthers), lhsOthers, rhsOthers)) {
                 return false;
             }
@@ -641,8 +640,8 @@ public class WasStartedBy
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "type", theType), currentHashCode, theType);
         }
         {
-            List<OtherAttribute> theOthers;
-            theOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOther():null);
+            List<org.openprovenance.prov.model.Other> theOthers;
+            theOthers = (((this.other!= null)&&(!this.other.isEmpty()))?this.getOther():null);
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
         }
         {

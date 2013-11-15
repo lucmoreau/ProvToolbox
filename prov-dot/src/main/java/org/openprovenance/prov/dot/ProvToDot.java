@@ -25,7 +25,7 @@ import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.model.Influence;
 import org.openprovenance.prov.model.NamedBundle;
-import org.openprovenance.prov.model.OtherAttribute;
+import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.Relation0;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
@@ -546,7 +546,7 @@ public class ProvToDot {
             label=label+"	    <TD align=\"left\">" + getPropertyValueFromAny(type) + "</TD>\n";
             label=label+"	</TR>\n";
         }
-        for (OtherAttribute prop: ann.getOther()) {
+        for (Other prop: ann.getOther()) {
 
             if ("fillcolor".equals(prop.getElementName().getLocalPart())) {
                     // no need to display this attribute

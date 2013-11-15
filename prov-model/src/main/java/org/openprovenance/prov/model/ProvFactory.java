@@ -74,7 +74,7 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	init();
     }
 
-    public void addAttribute(HasOther a, OtherAttribute o) {
+    public void addAttribute(HasOther a, Other o) {
 	a.getOther().add(o);
     }
 
@@ -975,16 +975,16 @@ public abstract class ProvFactory implements ModelConstructor, QNameExport, Lite
 	return newNamedBundle(stringToQName(id), ps, as, ags, lks);
     }
 
-    public OtherAttribute newOther(QName elementName, Object value, QName type) {
+    public Other newOther(QName elementName, Object value, QName type) {
 	if (value==null) return null;
-        OtherAttribute res =  of.createOther();
+        Other res =  of.createOther();
         res.setType(type);
         res.setValueAsObject(value);
         res.setElementName(elementName);
         return res;
       }
 
-    public OtherAttribute newOther(String namespace, String local, String prefix,  Object value, QName type) {
+    public Other newOther(String namespace, String local, String prefix,  Object value, QName type) {
 	QName elementName=new QName(namespace,local,prefix);
         return newOther(elementName,value,type);
       }

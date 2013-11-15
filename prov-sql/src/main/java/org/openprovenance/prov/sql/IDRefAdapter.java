@@ -11,7 +11,7 @@ public class IDRefAdapter extends XmlAdapter<IDRef, QName> {
             return null;
         } else {
             System.out.println("marshalling " + qname);
-            return (IDRef) pf.newIDRef(qname);
+            return (IDRef) pf.newIDRef(qname.toQName());
         }
     }
 

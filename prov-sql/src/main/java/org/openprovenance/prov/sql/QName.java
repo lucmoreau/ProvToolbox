@@ -48,12 +48,12 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 @Entity(name = "QName")
 @javax.persistence.Cacheable @Table(name = "QName", uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"URI"}))
 @Inheritance(strategy = InheritanceType.JOINED)
-public class QName extends javax.xml.namespace.QName
+public class QName // javax.xml.namespace.QName
     
 {
 
     public QName(String namespaceURI, String localPart, String prefix) {
-        super(namespaceURI, localPart, prefix);
+        //super(namespaceURI, localPart, prefix);
         this.namespace=namespaceURI;
         this.local=localPart;
         this.prefix=prefix;
@@ -64,7 +64,9 @@ public class QName extends javax.xml.namespace.QName
     @XmlAttribute(name = "Hjid")
     protected Long hjid;
 
-
+	public javax.xml.namespace.QName toQName () {
+		return new javax.xml.namespace.QName(namespace,local,prefix);
+	}
     /**
      * Gets the value of the hjid property.
      * 
@@ -103,7 +105,7 @@ public class QName extends javax.xml.namespace.QName
     
     @Basic@Column(name = "REFITEM")
     public String getRefItem() {
-        return XmlAdapterUtils.unmarshall(QNameAsString.class, this);
+        return XmlAdapterUtils.unmarshall(QNameAsString.class, this.toQName());
     }
 
     public void setRefItem(String target) {
@@ -141,4 +143,38 @@ public class QName extends javax.xml.namespace.QName
     public void setPrefix(String prefix) {
         this.prefix=prefix;
     }
+    
+    public final boolean equals(Object objectToTest) {
+    	             // Is this the same object?
+    	             if (objectToTest == this) {
+    	                 return true;
+    	             }
+    	             // Is this a QName?
+    	             if (objectToTest instanceof QName) {
+    	                 QName qName = (QName) objectToTest;
+    	                 return local.equals(qName.local) && namespace.equals(qName.namespace);
+    	             }
+    	  
+           return false;
+    	  
+       }
+    
+    /**
+     * <p>Generate the hash code for this <code>QName</code>.</p>
+     *
+     * <p>The hash code is calculated using both the Namespace URI and
+     * the local part of the <code>QName</code>.  The prefix is
+     * <strong><em>NOT</em></strong> used to calculate the hash
+     * code.</p>
+     *
+     * <p>This method satisfies the general contract of {@link
+     * java.lang.Object#hashCode() Object.hashCode()}.</p>
+     *
+     * @return hash code for this <code>QName</code> <code>Object</code>
+     */
+    public final int hashCode() {
+        return namespace.hashCode() ^ local.hashCode();
+    }
+
+    	     
 }

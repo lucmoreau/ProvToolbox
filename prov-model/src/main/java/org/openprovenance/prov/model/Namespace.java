@@ -25,6 +25,7 @@ public class Namespace {
     }
 
     private Namespace set(Namespace ns) {
+	if (ns==null) return null;
 	Hashtable<String, String> tmp1=new Hashtable<String, String>();
 	tmp1.putAll(ns.prefixes);
 	Hashtable<String, String> tmp2=new Hashtable<String, String>();

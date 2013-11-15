@@ -540,7 +540,7 @@ public class ProvToDot {
     public HashMap<String,String> addAnnotationLabel(HasOther ann, HashMap<String,String> properties) {
         String label="";
         label=label+"<<TABLE cellpadding=\"0\" border=\"0\">\n";
-        for (Object type: ((HasType)ann).getType()) {
+        for (Type type: ((HasType)ann).getType()) {
             label=label+"	<TR>\n";
             label=label+"	    <TD align=\"left\">" + "type" + ":</TD>\n";
             label=label+"	    <TD align=\"left\">" + getPropertyValueFromAny(type) + "</TD>\n";
@@ -598,7 +598,8 @@ public class ProvToDot {
         }*/
     }
 
-    public String getPropertyValueFromAny (Object val) {
+    public String getPropertyValueFromAny (Type t) {
+        Object val=t.getValue();
         if (val instanceof QName) {
             QName q=(QName)val;
             return q.getNamespaceURI() + q.getLocalPart();

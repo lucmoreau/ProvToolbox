@@ -191,4 +191,23 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
     }
     ///////////////////////////////////////////////////////////////////////
 
+    
+    public QName qq(String n) {
+        return new QName(EX_NS, n, EX_PREFIX);
+    }
+    
+    
+    public void testUsage100() throws JAXBException  {
+        System.out.println("testUsage 100 start");
+        setNamespaces();
+        Used use = (Used) pFactory.newUsed(q("use1"),
+                                           pFactory.newIDRef(q("a1")),
+                                           "somerole",
+                                           pFactory.newIDRef(q("e1")));
+        use.setTest(qq("test"));
+        makeDocAndTest(use,"target/usage100");
+        System.out.println("testUsage 100 end");
+
+    }
+
 }

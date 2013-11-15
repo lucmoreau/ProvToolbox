@@ -23,6 +23,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.QNameAsString;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
@@ -32,6 +34,7 @@ import org.jvnet.jaxb2_commons.lang.HashCode;
 import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
+import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
@@ -74,6 +77,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 @XmlType(name = "Usage", propOrder = {
     "activity",
     "entity",
+    "test",
     "time",
     "label",
     //"location",
@@ -109,7 +113,8 @@ public class Used
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
     protected QName id;
     
-
+ 
+    
     /**
      * Gets the value of the activity property.
      * 
@@ -634,6 +639,90 @@ public class Used
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_USAGE;
     }
+
+    public void toString(ToStringBuilder toStringBuilder) {
+        {
+            org.openprovenance.prov.model.IDRef theActivity;
+            theActivity = this.getActivity();
+            toStringBuilder.append("activity", theActivity);
+        }
+        {
+            org.openprovenance.prov.model.IDRef theEntity;
+            theEntity = this.getEntity();
+            toStringBuilder.append("entity", theEntity);
+        }
+        {
+            XMLGregorianCalendar theTime;
+            theTime = this.getTime();
+            toStringBuilder.append("time", theTime);
+        }
+        {
+            List<org.openprovenance.prov.model.InternationalizedString> theLabel;
+            theLabel = this.getLabel();
+            toStringBuilder.append("label", theLabel);
+        }
+        {
+            List<org.openprovenance.prov.model.Location> theLocation;
+            theLocation = this.getLocation();
+            toStringBuilder.append("location", theLocation);
+        }
+        {
+            List<org.openprovenance.prov.model.Role> theRole;
+            theRole = this.getRole();
+            toStringBuilder.append("role", theRole);
+        }
+        {
+            List<org.openprovenance.prov.model.Type> theType;
+            theType = this.getType();
+            toStringBuilder.append("type", theType);
+        }
+        {
+            List<org.openprovenance.prov.model.Other> theOthers;
+            theOthers = this.getOther();
+            toStringBuilder.append("others", theOthers);
+        }
+        {
+            QName theId;
+            theId = this.getId();
+            toStringBuilder.append("id", theId);
+        }
+        { //TODO: only now, for debugging.
+            toStringBuilder.append("all", getAllAttributes());
+        }
+    }
+
+  
+    public String toString() {
+        final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
+        toString(toStringBuilder);
+        return toStringBuilder.toString();
+    }
+
+    
+    
+  ///////////////////////////////////////////
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
+    @XmlElement(type = org.openprovenance.prov.sql.IDRef.class)
+    protected org.openprovenance.prov.sql.QName test;
+
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QName.class, cascade = { CascadeType.ALL })
+    @JoinColumn(name = "TEST")
+    public org.openprovenance.prov.sql.QName getTest() {
+        return test;
+    }
+
+    /**
+     * Sets the value of the activity property.
+     * 
+     * @param value
+     *            allowed object is {@link org.openprovenance.prov.sql.IDRef }
+     * 
+     */
+    public void setTest(org.openprovenance.prov.sql.QName value) {
+        this.test = value;
+    }
+
+   
 
     
 

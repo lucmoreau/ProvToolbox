@@ -23,7 +23,6 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.StatementOrBundle;
-import org.w3c.dom.Element;
 
 
 /**

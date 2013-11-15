@@ -53,7 +53,6 @@ import org.openprovenance.prov.xml.SortedAttributeList;
  *         &lt;element ref="{http://www.w3.org/ns/prov#}location" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element ref="{http://www.w3.org/ns/prov#}type" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element ref="{http://www.w3.org/ns/prov#}value" minOccurs="0"/>
- *         &lt;element ref="{http://www.w3.org/ns/prov#}others" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;any processContents='skip' namespace='##other' maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *       &lt;attribute ref="{http://www.w3.org/ns/prov#}id"/>
@@ -79,7 +78,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
     Plan.class
 })
 @javax.persistence.Entity(name = "Entity")
-@Table(name = "ENTITY")
+@Table(name = "ENTITY") //, uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"IDREF"})
 public class Entity
     extends AStatement
     implements Equals, HashCode, org.openprovenance.prov.model.Entity, HasAllAttributes

@@ -23,14 +23,12 @@ import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
-import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.QNameExport;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.xml.UncheckedException;
 import org.openprovenance.prov.model.DictionaryMembership;
 import org.openprovenance.prov.model.Used;
-import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasDerivedFrom;
@@ -409,8 +407,6 @@ public class NotationConstructor implements ModelConstructor {
 	    return null;
 	}
 	
-	static ValueConverter vc=new ValueConverter(ProvFactory.getFactory());
-
 	private String keyEntitySet(List<KeyQNamePair> kes) {
 	    String s="{";
 	    if (kes!=null) {

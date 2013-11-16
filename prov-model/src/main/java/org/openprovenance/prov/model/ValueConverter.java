@@ -26,6 +26,9 @@ public class ValueConverter  {
         return new QName(NamespacePrefixMapper.PROV_NS,local,"prov");
     }
     public static final QName QNAME_PROV_INTERNATIONALIZED_STRING = newProvQName("InternationalizedString");
+    public static final QName QNAME_PROV_REVISION = newProvQName("Revision");
+    public static final QName QNAME_PROV_QUOTATION = newProvQName("Quotation");
+    public static final QName QNAME_PROV_PRIMARY_SOURCE = newProvQName("PrimarySource");
 
     public static QName QNAME_XSD_STRING=newXsdQName("string"); //*
     public static QName QNAME_XSD_INT=newXsdQName("int");//*
@@ -100,9 +103,11 @@ public class ValueConverter  {
     public static QName QNAME_UNKNOWN=newXsdQName("UNKNOWN");
 
     final private LiteralConstructor pFactory;
+    final QNameConstructor qnConst;
     
-    public ValueConverter(LiteralConstructor pFactory) {
+    public ValueConverter(LiteralConstructor pFactory, QNameConstructor qnConst) {
 	this.pFactory=pFactory;
+	this.qnConst=qnConst;
     }
     
     
@@ -149,7 +154,7 @@ public class ValueConverter  {
 	    return u;
 	}
 	if (datatype.equals(QNAME_XSD_QNAME) || datatype.equals(QNAME_XSD_HASH_QNAME)) {
-	    return pFactory.newQName(value);
+	    return qnConst.newQName(value);
 	}
 	if (datatype.equals(QNAME_XSD_DATETIME) || datatype.equals(QNAME_XSD_HASH_DATETIME)) {
 	    return pFactory.newISOTime(value);

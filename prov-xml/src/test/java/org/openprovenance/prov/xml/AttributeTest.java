@@ -55,25 +55,13 @@ public class AttributeTest extends TestCase {
     static final ProvUtilities util=new ProvUtilities();
 
 
-    static public final Hashtable<String, String> namespaces;
 
     public static org.openprovenance.prov.model.ProvFactory pFactory;
     public static ValueConverter vconv;
 
-    protected static Hashtable<String, String> updateNamespaces (Hashtable<String, String> nss) {
-        nss.put(EX_PREFIX, EX_NS);
-        nss.put(EX2_PREFIX, EX2_NS);
-        nss.put("_", EX3_NS);
-	return nss;
-    }
-    static  void setNamespaces() {
-	pFactory.resetNamespaces();
-	pFactory.getNss().putAll(updateNamespaces(new Hashtable<String, String>()));
-    }
 
     static {
-	namespaces = updateNamespaces(new Hashtable<String, String>());
-	pFactory = new ProvFactory(namespaces);
+	pFactory = new ProvFactory();
 	vconv=new ValueConverter(pFactory);
     }
 	private DocumentEquality documentEquality;
@@ -465,6 +453,8 @@ public class AttributeTest extends TestCase {
          
         };
     
+   
+    
     public Object[][] attributeValues =attributeValues_long;
 
     public void addLocations(HasLocation hl){
@@ -511,8 +501,7 @@ public class AttributeTest extends TestCase {
     }
 
     public void testEntityWithOneTypeAttribute(int i) throws JAXBException  {
- 	setNamespaces();
- 	Entity a = pFactory.newEntity("ex:et" + i);
+ 	Entity a = pFactory.newEntity(q("et" + i));
  	
 
  	Object [] pair= attributeValues[i];
@@ -524,8 +513,7 @@ public class AttributeTest extends TestCase {
     
 
     public void testEntityWithOneValueAttribute(int i) throws JAXBException  {
- 	setNamespaces();
- 	Entity a = pFactory.newEntity("ex:en_v" + i);
+ 	Entity a = pFactory.newEntity(q("en_v" + i));
  	
 
  	Object [] pair= attributeValues[i];
@@ -536,8 +524,7 @@ public class AttributeTest extends TestCase {
      }
 
     public void testEntityWithOneLocationAttribute(int i) throws JAXBException  {
- 	setNamespaces();
- 	Entity a = pFactory.newEntity("ex:en_l" + i);
+ 	Entity a = pFactory.newEntity(q("en_l" + i));
  	
 
  	Object [] pair= attributeValues[i];
@@ -548,8 +535,7 @@ public class AttributeTest extends TestCase {
      }
 
     public void testEntityWithOneOtherAttribute(int i) throws JAXBException  {
- 	setNamespaces();
- 	Entity a = pFactory.newEntity("ex:en_o" + i);
+ 	Entity a = pFactory.newEntity(q("en_o" + i));
  	
 
  	Object [] pair= attributeValues[i];
@@ -1111,8 +1097,7 @@ public class AttributeTest extends TestCase {
   
     
     public void testEntity0() throws JAXBException  {
-	setNamespaces();
-	Entity a = pFactory.newEntity("ex:e0");
+	Entity a = pFactory.newEntity(q("e0"));
 	
 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
@@ -1133,8 +1118,7 @@ public class AttributeTest extends TestCase {
     
 
     public void testActivity0() throws JAXBException  {
-	setNamespaces();
-	Activity a = pFactory.newActivity("ex:a0");
+	Activity a = pFactory.newActivity(q("a0"));
 	
 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
@@ -1151,8 +1135,7 @@ public class AttributeTest extends TestCase {
     
 
     public void testAgent0() throws JAXBException  {
-	setNamespaces();
-	Agent a = pFactory.newAgent("ex:ag0");
+	Agent a = pFactory.newAgent(q("ag0"));
 	
 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
@@ -1171,7 +1154,6 @@ public class AttributeTest extends TestCase {
     }
     
     public void testGeneration0() throws JAXBException  {
- 	setNamespaces();
 
 	WasGeneratedBy a = pFactory.newWasGeneratedBy((QName)null,
   							pFactory.newIDRef(q("e1")),
@@ -1193,7 +1175,6 @@ public class AttributeTest extends TestCase {
      }
 
     public void testInvalidation0() throws JAXBException  {
-  	setNamespaces();
 
  	WasInvalidatedBy a = pFactory.newWasInvalidatedBy((QName)null,
    							pFactory.newIDRef(q("e1")),
@@ -1214,7 +1195,6 @@ public class AttributeTest extends TestCase {
       }
 
     public void testUsage0() throws JAXBException  {
-  	setNamespaces();
 
  	Used a = pFactory.newUsed((QName)null,
  	                          pFactory.newIDRef(q("a1")),
@@ -1236,7 +1216,6 @@ public class AttributeTest extends TestCase {
       }
     
    public void testAssociation0() throws JAXBException  {
- 	setNamespaces();
 
 
 	WasAssociatedWith a = pFactory.newWasAssociatedWith(q("assoc0"), 
@@ -1258,7 +1237,6 @@ public class AttributeTest extends TestCase {
      
    
   public void testAttribution0() throws JAXBException  {
-	setNamespaces();
 
 
 	WasAttributedTo a = pFactory.newWasAttributedTo(q("assoc0"), 
@@ -1278,8 +1256,7 @@ public class AttributeTest extends TestCase {
     }
 
   public void testDerivation0() throws JAXBException  {
- 	setNamespaces();
-
+ 
 
  	WasDerivedFrom a = pFactory.newWasDerivedFrom(q("der0"), 
  	                                              pFactory.newIDRef(q("e2")),
@@ -1298,7 +1275,6 @@ public class AttributeTest extends TestCase {
   }
   
   public void testEnd0() throws JAXBException  {
-	setNamespaces();
 
 	WasEndedBy a = pFactory.newWasEndedBy((QName)null,
 							pFactory.newIDRef(q("a1")),
@@ -1319,7 +1295,6 @@ public class AttributeTest extends TestCase {
    }
 
   public void testStart0() throws JAXBException  {
-	setNamespaces();
 
 	WasStartedBy a = pFactory.newWasStartedBy((QName)null,
 	                                          pFactory.newIDRef(q("a1")),
@@ -1340,7 +1315,6 @@ public class AttributeTest extends TestCase {
    }
   
   public void testInfluence0() throws JAXBException  {
- 	setNamespaces();
 
 
  	WasInfluencedBy a = pFactory.newWasInfluencedBy(q("infl0"), 
@@ -1361,7 +1335,6 @@ public class AttributeTest extends TestCase {
 
    
   public void testCommunication0() throws JAXBException  {
-	setNamespaces();
 
 
 	WasInformedBy a = pFactory.newWasInformedBy(q("com0"), 
@@ -1382,7 +1355,6 @@ public class AttributeTest extends TestCase {
 
  
   public void testDelegation0() throws JAXBException  {
-	setNamespaces();
 
 
 	ActedOnBehalfOf a = pFactory.newActedOnBehalfOf(q("del0"), 

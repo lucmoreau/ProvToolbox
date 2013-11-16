@@ -483,12 +483,6 @@ public class Entity
         idRef=target;}
     }
 
-    @Transient
-    public List<Attribute> getAny() {
-	// TODO Auto-generated method stub
-	return null;
-    }
-    
     public void toString(ToStringBuilder toStringBuilder) {
         {
             List<org.openprovenance.prov.model.InternationalizedString> theLabel;

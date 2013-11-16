@@ -77,7 +77,7 @@ public  class Utility {
 	ProvFactory pFactory=new ProvFactory();
 	StringWriter writer=new StringWriter();
 	NotationConstructor nc=new HTMLConstructor(writer, pFactory);
-        BeanTraversal bt=new BeanTraversal(nc, pFactory, new ValueConverter(pFactory));
+        BeanTraversal bt=new BeanTraversal(nc, pFactory);
         bt.convert(doc);
         nc.flush();
         String s=writer.toString();
@@ -94,7 +94,7 @@ public  class Utility {
     /** A conversion function that copies a Java Bean deeply. */
     public Object convertJavaBeanToJavaBean(Document doc) {
         ProvFactory pFactory=new ProvFactory(doc.getNss());
-        BeanTraversal bt=new BeanTraversal(pFactory, pFactory, new ValueConverter(pFactory));
+        BeanTraversal bt=new BeanTraversal(pFactory, pFactory);
         Document o=bt.convert(doc);
         return o;
     }
@@ -105,7 +105,7 @@ public  class Utility {
 	ProvFactory pFactory=new ProvFactory();
 	StringWriter writer=new StringWriter();
 	NotationConstructor nc=new NotationConstructor(writer, pFactory);
-        BeanTraversal bt=new BeanTraversal(nc, pFactory, new ValueConverter(pFactory));
+        BeanTraversal bt=new BeanTraversal(nc, pFactory);
         bt.convert(doc);
         nc.flush();
         String s=writer.toString();

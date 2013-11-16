@@ -2,6 +2,8 @@ package org.openprovenance.prov.model;
 
 import java.util.Hashtable;
 
+import javax.xml.namespace.QName;
+
 
 import org.openprovenance.prov.model.ProvUtilities;
 
@@ -82,6 +84,27 @@ public class Namespace {
 	ns.namespaces=gatherer.getNamespaces();
 	return ns;
     }
-    
+
+    public QName stringToQName(String id) {
+	if (id == null)
+	    return null;
+	int index = id.indexOf(':');
+	if (index == -1) {
+	    return new QName(getDefaultNamespace(), id);
+	}
+	String prefix = id.substring(0, index);
+	String local = id.substring(index + 1, id.length());
+	if ("prov".equals(prefix)) {
+	    return new QName(NamespacePrefixMapper.PROV_NS, local, prefix);
+	} else if ("xsd".equals(prefix)) {
+	    return new QName(NamespacePrefixMapper.XSD_NS, // + "#", // RDF ns ends
+								 // in #, not
+								 // XML ns.
+			     local, prefix);
+	} else {
+	    return new QName(namespaces.get(prefix), local, prefix);
+	}
+    }
+
     
 }

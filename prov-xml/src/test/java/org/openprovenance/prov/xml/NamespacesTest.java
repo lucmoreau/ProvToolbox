@@ -35,13 +35,11 @@ public class NamespacesTest
     }
     
 
-    static final Hashtable<String,String> namespaces;
 
     
     static {
-        namespaces=new Hashtable<String, String>();
-        namespaces.put("ex",EXAMPLE_NS);
-        pFactory=new ProvFactory(namespaces);
+
+        pFactory=new ProvFactory();
     }
 
     /**

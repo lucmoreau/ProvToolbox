@@ -13,6 +13,7 @@ import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.HasOther;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasGeneratedBy;
@@ -43,21 +44,9 @@ public class PC1FullTest extends TestCase {
     static final ProvUtilities util=new ProvUtilities();
 
 
-    static final Hashtable<String, String> namespaces;
-
-    public static ProvFactory pFactory;
-    public static ValueConverter vconv;
+    public static ProvFactory pFactory=new ProvFactory();
 
     
-    static {
-	namespaces = new Hashtable<String, String>();
-	// currently, no prefix used, all qnames map to PC1_NS
-	namespaces.put("_", PC1_NS);
-	namespaces.put("xsd", NamespacePrefixMapper.XSD_NS);
-	pFactory = new ProvFactory(namespaces);
-	vconv=new ValueConverter(pFactory);
-    }
-
     /**
      * Create the test case
      * 
@@ -103,7 +92,7 @@ public class PC1FullTest extends TestCase {
     static String FILE_LOCATION = "/shomewhere/pc1/";
     static String URL_LOCATION = "http://www.ipaw.info/challenge/";
 
-    static QName PRIMITIVE_ALIGN_WARP = new QName(PRIM_NS, "align_warp", PC1_PREFIX);
+    static QName PRIMITIVE_ALIGN_WARP = new QName(PRIM_NS, "align_warp", PRIM_PREFIX);
     static URI PRIMITIVE_RESLICE = URI
 	    .create("http://openprovenance.org/primitives#reslice");
     static URI PRIMITIVE_SOFTMEAN = URI
@@ -481,16 +470,9 @@ public class PC1FullTest extends TestCase {
 	                                 wd36, wd37, wd38, wd39, wd40, wd41,
 	                                 wd42, wd43, wd44, wd45, wd46, wd47,
 	                                 wd48, wd49, waw1 });
+	
+	graph.setNamespace(Namespace.gatherNamespaces(graph));
 
-	Hashtable<String, String> nss = new Hashtable<String, String>();
-	// choose here, how serialization to xml to be made
-	// 1: default namespace for PC1_NS
-	// nss.put("_",PC1_NS);
-	// 2: use prefix PC1
-	nss.put(PC1_PREFIX, PC1_NS);
-	nss.put(PRIM_PREFIX, PRIM_NS);
-	nss.put("xml", "http://www.w3.org/XML/1998/namespace");
-	graph.setNss(nss);
 	return graph;
     }
 
@@ -515,7 +497,7 @@ public class PC1FullTest extends TestCase {
 	Document c = deserial.deserialiseDocument(new File("target/pc1-full.xml"));
 	graph2 = c;
 
-	graph2.setNss(graph1.getNss());
+	graph2.setNamespace(graph1.getNamespace());
 	ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
 	serial.serialiseDocument(new File("target/pc1-full2.xml"), graph2, true);
 
@@ -530,7 +512,7 @@ public class PC1FullTest extends TestCase {
 	assertFalse("graph1 and graph2 differ", graph1.equals(graph2));
 
 	Document c2 = deserial.deserialiseDocument(new File("target/pc1-full.xml"));
-	c2.setNss(graph1.getNss());
+	c2.setNamespace(graph1.getNamespace());
 
 	assertFalse("c e* and c2 e* differ",
 	            util.getEntity(c)

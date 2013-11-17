@@ -29,6 +29,7 @@ public class ValueConverter  {
     public static final QName QNAME_PROV_REVISION = newProvQName("Revision");
     public static final QName QNAME_PROV_QUOTATION = newProvQName("Quotation");
     public static final QName QNAME_PROV_PRIMARY_SOURCE = newProvQName("PrimarySource");
+    public static final QName QNAME_PROV_BUNDLE = newProvQName("Bundle");
 
     public static QName QNAME_XSD_STRING=newXsdQName("string"); //*
     public static QName QNAME_XSD_INT=newXsdQName("int");//*

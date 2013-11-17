@@ -26,6 +26,7 @@ import org.jvnet.jaxb2_commons.lang.ToString;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBEqualsBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
 
 
@@ -232,12 +233,27 @@ public class NamedBundle
         }
     }
 
-   /* added in pom.xml */@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable<String,String> nss=null; public java.util.Hashtable<String,String> getNss() { return nss;} public void setNss(java.util.Hashtable<String,String> s) { nss=s; };public String toString() {
-        final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
-        toString(toStringBuilder);
-        return toStringBuilder.toString();
+    
+    @javax.xml.bind.annotation.XmlTransient 
+    private Namespace namespace=null; 
+
+    @Override
+    public Namespace getNamespace() { 
+	return namespace;
+    } 
+    
+    @Override
+    public void setNamespace(Namespace namespace) { 
+	this.namespace=namespace; 
     }
    
+    
+    public String toString() {
+	final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
+	toString(toStringBuilder);
+	return toStringBuilder.toString();
+    }
+    
 
    public Kind getKind() {
   	return org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_BUNDLE;

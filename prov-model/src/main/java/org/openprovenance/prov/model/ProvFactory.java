@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Hashtable;
 import java.util.Date;
 import java.util.Properties;
 import java.io.IOException;
@@ -31,6 +30,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.validation";
 
     private static String fileName = "toolbox.properties";
+    
     private static final String toolboxVersion = getPropertiesFromClasspath(fileName).getProperty("toolbox.version");
 
     private static Properties getPropertiesFromClasspath(String propFileName) {
@@ -63,10 +63,6 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
 
-    public ProvFactory(ObjectFactory of, Hashtable<String, String> namespaces) {
-	this.of = of;
-	init();
-    }
 
     public void addAttribute(HasOther a, Other o) {
 	a.getOther().add(o);
@@ -210,6 +206,10 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
     public void addRevisionType(HasType a) {
 	a.getType().add(newType(ValueConverter.QNAME_PROV_REVISION,ValueConverter.QNAME_XSD_QNAME));
+    }
+
+    public void addBundleType(HasType a) {
+	a.getType().add(newType(ValueConverter.QNAME_PROV_BUNDLE,ValueConverter.QNAME_XSD_QNAME));
     }
 
     public void addRole(HasRole a, Role role) {
@@ -558,11 +558,11 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
 
-    public Document newDocument(Hashtable<String, String> namespaces,
+    public Document newDocument(Namespace namespace,
                                 Collection<Statement> statements,
                                 Collection<NamedBundle> bundles) {
 	Document res = of.createDocument();
-	res.setNss(namespaces);
+	res.setNamespace(namespace);
 	res.getStatementOrBundle()
 	   .addAll(statements);
 	res.getStatementOrBundle()
@@ -859,10 +859,10 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}
 	return res;
     }
-    public NamedBundle newNamedBundle(QName id, Hashtable<String,String> namespaces, Collection<Statement> statements) {
+    public NamedBundle newNamedBundle(QName id, Namespace namespace, Collection<Statement> statements) {
 	NamedBundle res = of.createNamedBundle();
 	res.setId(id);
-	res.setNss(namespaces);
+	res.setNamespace(namespace);
 	if (statements != null) {
 	    res.getStatement().addAll(statements);
 	}
@@ -1534,14 +1534,14 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
     @Override
-    public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
+    public void startBundle(QName bundleId, Namespace namespaces) {
       
     }
     
     /* Uses the xsd:type to java:type mapping of JAXB */
 
     @Override
-    public void startDocument(Hashtable<String, String> hashtable) {
+    public void startDocument(Namespace namespace) {
         
     }
 

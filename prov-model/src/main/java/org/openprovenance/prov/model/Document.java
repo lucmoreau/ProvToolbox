@@ -9,10 +9,6 @@ public interface Document {
 
     List<StatementOrBundle> getStatementOrBundle();
 
-    void setNss(Hashtable<String, String> namespaces);
-
-    Hashtable<String, String> getNss();
-
     void setNamespace(Namespace ns);
     
     Namespace getNamespace();

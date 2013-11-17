@@ -1,6 +1,7 @@
 package org.openprovenance.prov.xml;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Hashtable;
 import java.net.URI;
@@ -13,6 +14,7 @@ import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.HasOther;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.Document;
@@ -37,19 +39,13 @@ public class ContextualizationPC1Test extends TestCase {
     public static final String EX_NS = "http://example.com/";
     public static final String EX_PREFIX = "ex";
 
-    static final Hashtable<String, String> namespaces;
 
     public static ProvFactory pFactory;
     static final ProvUtilities util=new ProvUtilities();
     public static ValueConverter vconv;
 
     static {
-	namespaces = new Hashtable<String, String>();
-	// currently, no prefix used, all qnames map to PC1_NS
-	namespaces.put("_", PC1_NS);
-	namespaces.put("xsd", NamespacePrefixMapper.XSD_NS);
-	pFactory = new ProvFactory(namespaces);
-	vconv=new ValueConverter(pFactory);
+	pFactory = new ProvFactory();
     }
 
     /**
@@ -99,10 +95,16 @@ public class ContextualizationPC1Test extends TestCase {
     static URI PRIMITIVE_SLICER = URI
 	    .create("http://openprovenance.org/primitives#slicer");
 
+
+    public QName q(String n) {
+	return new QName(EX_NS, n, EX_PREFIX);
+    }
+
+    
     public Entity newFile(ProvFactory pFactory, String id, String label,
 	                  String file, String location) {
 
-	org.openprovenance.prov.model.Entity a = pFactory.newEntity(id, label);
+	org.openprovenance.prov.model.Entity a = pFactory.newEntity(q(id), label);
 	pFactory.addType(a, URI
 	        .create("http://openprovenance.org/primitives#File"));
 
@@ -114,7 +116,7 @@ public class ContextualizationPC1Test extends TestCase {
     public Entity newParameter(ProvFactory pFactory, String id, String label,
 	                       String value) {
 
-	Entity a = pFactory.newEntity(id, label);
+	Entity a = pFactory.newEntity(q(id), label);
 	pFactory.addType(a, URI.create("http://openprovenance.org/primitives#String"));
 
 	addValue(a, value);
@@ -138,27 +140,18 @@ public class ContextualizationPC1Test extends TestCase {
 	namespaces.put("xsd", NamespacePrefixMapper.XSD_NS);
 	namespaces.put(EX_PREFIX, EX_NS);
 	namespaces.put(DOT_PREFIX, DOT_NS);
-	pFactory.setNamespaces(namespaces);
 
 	Entity bunEntity = pFactory.newEntity(bun.getId());
-	Entity a = pFactory.newEntity(globalA1.getId().getLocalPart());
+	Entity a = pFactory.newEntity(new QName(EX_NS, globalA1.getId().getLocalPart()));
 	MentionOf ctx = pFactory.newMentionOf(a, globalA1, bunEntity);
 	a.getOther().add(pFactory.newOther(DOT_NS, DOT_PREFIX, "color", "blue", ValueConverter.QNAME_XSD_STRING));
 
 	graph.getStatementOrBundle().add(bunEntity);
 	graph.getStatementOrBundle().add(a);
 	graph.getStatementOrBundle().add(ctx);
-
-	Hashtable<String, String> nss = new Hashtable<String, String>();
-	// choose here, how serialization to xml to be made
-	// 1: default namespace for PC1_NS
-	// nss.put("_",PC1_NS);
-	// 2: use prefix PC1
-	nss.put(PC1_PREFIX, PC1_NS);
-	nss.put(PRIM_PREFIX, PRIM_NS);
-	nss.put("ex", "http://example.com/");
-	nss.put(DOT_PREFIX, DOT_NS);
-	graph.setNss(nss);
+	
+	
+	graph.setNamespace(Namespace.gatherNamespaces(graph));
 
 	return graph;
     }
@@ -181,6 +174,22 @@ public class ContextualizationPC1Test extends TestCase {
 	                                     org.openprovenance.prov.model.ValueConverter.QNAME_XSD_STRING));
     }
 
+    
+    public Used newUsed(Activity activity, String role, Entity entity){
+	return newUsed(activity.getId(),role,entity.getId());
+    }
+    public Used newUsed(QName activity, String role, QName entity){
+	Used u1 = pFactory.newUsed(activity, entity);
+	u1.getRole().add(pFactory.newRole(role,org.openprovenance.prov.model.ValueConverter.QNAME_XSD_STRING));
+	return u1;
+	
+    }
+    
+    public WasDerivedFrom newWasDerivedFrom(Entity entity2, Entity entity1){
+	WasDerivedFrom wdf=pFactory.newWasDerivedFrom(null, entity2.getId(), entity1.getId());
+	return wdf;
+    }
+    
 
     public NamedBundle makePC1FullGraph(ProvFactory pFactory,
 	                                String inputLocation,
@@ -188,7 +197,7 @@ public class ContextualizationPC1Test extends TestCase {
 
 	//Activity p0 = pFactory.newActivity("p0", "PC1Full Workflow");
 
-	Activity p1 = pFactory.newActivity("p1", "align_warp 1");
+	Activity p1 = pFactory.newActivity(q("p1"), "align_warp 1");
 	List<Type> o = p1.getType();
 
 	o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,ValueConverter.QNAME_XSD_ANY_URI));
@@ -201,54 +210,54 @@ public class ContextualizationPC1Test extends TestCase {
 	pFactory.addType(p1, true, ValueConverter.QNAME_XSD_BOOLEAN);
 	pFactory.addType(p1, URI.create("http://www.example.com/hi"));
 
-	Activity p2 = pFactory.newActivity("p2", "align_warp 2");
+	Activity p2 = pFactory.newActivity(q("p2"), "align_warp 2");
 	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, ValueConverter.QNAME_XSD_ANY_URI);
 
-	Activity p3 = pFactory.newActivity("p3", "align_warp 3");
+	Activity p3 = pFactory.newActivity(q("p3"), "align_warp 3");
 	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP, ValueConverter.QNAME_XSD_ANY_URI);
 
-	Activity p4 = pFactory.newActivity("p4", "align_warp 4");
+	Activity p4 = pFactory.newActivity(q("p4"), "align_warp 4");
 
 	pFactory.addType(p4, PRIMITIVE_ALIGN_WARP, ValueConverter.QNAME_XSD_ANY_URI);
 
-	Activity p5 = pFactory.newActivity("p5", "Reslice 1");
+	Activity p5 = pFactory.newActivity(q("p5"), "Reslice 1");
 	pFactory.addType(p5, PRIMITIVE_RESLICE, ValueConverter.QNAME_XSD_ANY_URI);
 
-	Activity p6 = pFactory.newActivity("p6", "Reslice 2");
+	Activity p6 = pFactory.newActivity(q("p6"), "Reslice 2");
 	pFactory.addType(p6, PRIMITIVE_RESLICE);
 
-	Activity p7 = pFactory.newActivity("p7", "Reslice 3");
+	Activity p7 = pFactory.newActivity(q("p7"), "Reslice 3");
 	pFactory.addType(p7, PRIMITIVE_RESLICE);
 
-	Activity p8 = pFactory.newActivity("p8", "Reslice 4");
+	Activity p8 = pFactory.newActivity(q("p8"), "Reslice 4");
 	pFactory.addType(p8, PRIMITIVE_RESLICE);
 
-	Activity p9 = pFactory.newActivity("p9", "Softmean");
+	Activity p9 = pFactory.newActivity(q("p9"), "Softmean");
 	pFactory.addType(p9, PRIMITIVE_SOFTMEAN);
 
-	Activity p10 = pFactory.newActivity("p10", "Slicer 1");
+	Activity p10 = pFactory.newActivity(q("p10"), "Slicer 1");
 
 	pFactory.addType(p10, PRIMITIVE_SLICER);
 
-	Activity p11 = pFactory.newActivity("p11", "Slicer 2");
+	Activity p11 = pFactory.newActivity(q("p11"), "Slicer 2");
 	pFactory.addType(p11, PRIMITIVE_SLICER);
 
-	Activity p12 = pFactory.newActivity("p12", "Slicer 3");
+	Activity p12 = pFactory.newActivity(q("p12"), "Slicer 3");
 	pFactory.addType(p12, PRIMITIVE_SLICER);
 
-	Activity p13 = pFactory.newActivity("p13", "Convert 1");
+	Activity p13 = pFactory.newActivity(q("p13"), "Convert 1");
 
 	pFactory.addType(p13, PRIMITIVE_CONVERT);
 
-	Activity p14 = pFactory.newActivity("p14", "Convert 2");
+	Activity p14 = pFactory.newActivity(q("p14"), "Convert 2");
 
 	pFactory.addType(p14, PRIMITIVE_CONVERT);
 
-	Activity p15 = pFactory.newActivity("p15", "Convert 3");
+	Activity p15 = pFactory.newActivity(q("p15"), "Convert 3");
 
 	pFactory.addType(p15, PRIMITIVE_CONVERT);
 
-	Agent ag1 = pFactory.newAgent("ag1", "John Doe");
+	Agent ag1 = pFactory.newAgent(q("ag1"), "John Doe");
 
 	Entity a1 = newFile(pFactory, "a1", "Reference Image", "reference.img",
 	                    inputLocation);
@@ -334,52 +343,52 @@ public class ContextualizationPC1Test extends TestCase {
 	Entity a30 = newFile(pFactory, "a30", "Atlas Z Graphic", "atlas-z.gif",
 	                     outputLocation);
 
-	Used u1 = pFactory.newUsed(p1, "img", a3);
-	Used u2 = pFactory.newUsed(p1, "hdr", a4);
-	Used u3 = pFactory.newUsed("u3", p1, "imgRef", a1);
-	Used u4 = pFactory.newUsed(p1, "hdrRef", a2);
-	Used u5 = pFactory.newUsed(p2, "img", a5);
-	Used u6 = pFactory.newUsed(p2, "hdr", a6);
-	Used u7 = pFactory.newUsed(p2, "imgRef", a1);
-	Used u8 = pFactory.newUsed(p2, "hdrRef", a2);
-	Used u9 = pFactory.newUsed(p3, "img", a7);
-	Used u10 = pFactory.newUsed(p3, "hdr", a8);
-	Used u11 = pFactory.newUsed(p3, "imgRef", a1);
-	Used u12 = pFactory.newUsed(p3, "hdrRef", a2);
-	Used u13 = pFactory.newUsed(p4, "img", a9);
-	Used u14 = pFactory.newUsed(p4, "hdr", a10);
-	Used u15 = pFactory.newUsed(p4, "imgRef", a1);
-	Used u16 = pFactory.newUsed(p4, "hdrRef", a2);
+	Used u1 = newUsed(p1, "img", a3);
+	Used u2 = newUsed(p1, "hdr", a4);
+	Used u3 = newUsed(p1, "imgRef", a1);u3.setId(q("u3"));
+	Used u4 = newUsed(p1, "hdrRef", a2);
+	Used u5 = newUsed(p2, "img", a5);
+	Used u6 = newUsed(p2, "hdr", a6);
+	Used u7 = newUsed(p2, "imgRef", a1);
+	Used u8 = newUsed(p2, "hdrRef", a2);
+	Used u9 = newUsed(p3, "img", a7);
+	Used u10 = newUsed(p3, "hdr", a8);
+	Used u11 = newUsed(p3, "imgRef", a1);
+	Used u12 = newUsed(p3, "hdrRef", a2);
+	Used u13 = newUsed(p4, "img", a9);
+	Used u14 = newUsed(p4, "hdr", a10);
+	Used u15 = newUsed(p4, "imgRef", a1);
+	Used u16 = newUsed(p4, "hdrRef", a2);
 
-	Used u17 = pFactory.newUsed(p5, "in", a11);
-	Used u18 = pFactory.newUsed(p6, "in", a12);
-	Used u19 = pFactory.newUsed(p7, "in", a13);
-	Used u20 = pFactory.newUsed(p8, "in", a14);
+	Used u17 = newUsed(p5, "in", a11);
+	Used u18 = newUsed(p6, "in", a12);
+	Used u19 = newUsed(p7, "in", a13);
+	Used u20 = newUsed(p8, "in", a14);
 
-	Used u21 = pFactory.newUsed(p9, "i1", a15);
-	Used u22 = pFactory.newUsed(p9, "h1", a16);
-	Used u23 = pFactory.newUsed(p9, "i2", a17);
-	Used u24 = pFactory.newUsed(p9, "h2", a18);
-	Used u25 = pFactory.newUsed(p9, "i3", a19);
-	Used u26 = pFactory.newUsed(p9, "h3", a20);
-	Used u27 = pFactory.newUsed(p9, "i4", a21);
-	Used u28 = pFactory.newUsed(p9, "h4", a22);
+	Used u21 = newUsed(p9, "i1", a15);
+	Used u22 = newUsed(p9, "h1", a16);
+	Used u23 = newUsed(p9, "i2", a17);
+	Used u24 = newUsed(p9, "h2", a18);
+	Used u25 = newUsed(p9, "i3", a19);
+	Used u26 = newUsed(p9, "h3", a20);
+	Used u27 = newUsed(p9, "i4", a21);
+	Used u28 = newUsed(p9, "h4", a22);
 
-	Used u29 = pFactory.newUsed(p10, "img", a23);
-	Used u30 = pFactory.newUsed(p10, "hdr", a24);
-	Used u30p = pFactory.newUsed(p10, "param", a25p);
-	Used u31 = pFactory.newUsed(p11, "img", a23);
-	Used u32 = pFactory.newUsed(p11, "hdr", a24);
-	Used u32p = pFactory.newUsed(p11, "param", a26p);
-	Used u33 = pFactory.newUsed(p12, "img", a23);
-	Used u34 = pFactory.newUsed(p12, "hdr", a24);
-	Used u34p = pFactory.newUsed(p12, "param", a27p);
+	Used u29 = newUsed(p10, "img", a23);
+	Used u30 = newUsed(p10, "hdr", a24);
+	Used u30p = newUsed(p10, "param", a25p);
+	Used u31 = newUsed(p11, "img", a23);
+	Used u32 = newUsed(p11, "hdr", a24);
+	Used u32p = newUsed(p11, "param", a26p);
+	Used u33 = newUsed(p12, "img", a23);
+	Used u34 = newUsed(p12, "hdr", a24);
+	Used u34p = newUsed(p12, "param", a27p);
 
-	Used u35 = pFactory.newUsed(p13, "in", a25);
-	Used u36 = pFactory.newUsed(p14, "in", a26);
-	Used u37 = pFactory.newUsed(p15, "in", a27);
+	Used u35 = newUsed(p13, "in", a25);
+	Used u36 = newUsed(p14, "in", a26);
+	Used u37 = newUsed(p15, "in", a27);
 
-	WasGeneratedBy wg1 = pFactory.newWasGeneratedBy("wgb1", a11, "out", p1);
+	WasGeneratedBy wg1 = pFactory.newWasGeneratedBy(a11, "out", p1);wg1.setId(q("wgb1"));
 	WasGeneratedBy wg2 = pFactory.newWasGeneratedBy(a12, "out", p2);
 	WasGeneratedBy wg3 = pFactory.newWasGeneratedBy(a13, "out", p3);
 	WasGeneratedBy wg4 = pFactory.newWasGeneratedBy(a14, "out", p4);
@@ -407,72 +416,76 @@ public class ContextualizationPC1Test extends TestCase {
 	wg19.setTime(pFactory.newTimeNow());
 	wg20.setTime(pFactory.newTimeNow());
 
-	WasDerivedFrom wd1 = pFactory.newWasDerivedFrom(a11, a1, p1, wg1, u3);
-	WasDerivedFrom wd2 = pFactory.newWasDerivedFrom(a11, a2);
-	WasDerivedFrom wd3 = pFactory.newWasDerivedFrom(a11, a3);
-	WasDerivedFrom wd4 = pFactory.newWasDerivedFrom(a11, a4);
-	WasDerivedFrom wd5 = pFactory.newWasDerivedFrom(a12, a1);
-	WasDerivedFrom wd6 = pFactory.newWasDerivedFrom(a12, a2);
-	WasDerivedFrom wd7 = pFactory.newWasDerivedFrom(a12, a5);
-	WasDerivedFrom wd8 = pFactory.newWasDerivedFrom(a12, a6);
-	WasDerivedFrom wd9 = pFactory.newWasDerivedFrom(a13, a1);
-	WasDerivedFrom wd10 = pFactory.newWasDerivedFrom(a13, a2);
-	WasDerivedFrom wd11 = pFactory.newWasDerivedFrom(a13, a7);
-	WasDerivedFrom wd12 = pFactory.newWasDerivedFrom(a13, a8);
-	WasDerivedFrom wd13 = pFactory.newWasDerivedFrom(a14, a1);
-	WasDerivedFrom wd14 = pFactory.newWasDerivedFrom(a14, a2);
-	WasDerivedFrom wd15 = pFactory.newWasDerivedFrom(a14, a9);
-	WasDerivedFrom wd16 = pFactory.newWasDerivedFrom(a14, a10);
+	//WasDerivedFrom wd1 = pFactory.newWasDerivedFrom(a11, a1, p1, wg1, u3);
+	WasDerivedFrom wd1 = newWasDerivedFrom(a11,a1);
+	wd1.setActivity(pFactory.newIDRef(p1.getId()));
+	wd1.setGeneration(pFactory.newIDRef(wg1.getId()));
+	wd1.setUsage(pFactory.newIDRef(u3.getId()));
+	WasDerivedFrom wd2 = newWasDerivedFrom(a11, a2);
+	WasDerivedFrom wd3 = newWasDerivedFrom(a11, a3);
+	WasDerivedFrom wd4 = newWasDerivedFrom(a11, a4);
+	WasDerivedFrom wd5 = newWasDerivedFrom(a12, a1);
+	WasDerivedFrom wd6 = newWasDerivedFrom(a12, a2);
+	WasDerivedFrom wd7 = newWasDerivedFrom(a12, a5);
+	WasDerivedFrom wd8 = newWasDerivedFrom(a12, a6);
+	WasDerivedFrom wd9 = newWasDerivedFrom(a13, a1);
+	WasDerivedFrom wd10 = newWasDerivedFrom(a13, a2);
+	WasDerivedFrom wd11 = newWasDerivedFrom(a13, a7);
+	WasDerivedFrom wd12 = newWasDerivedFrom(a13, a8);
+	WasDerivedFrom wd13 = newWasDerivedFrom(a14, a1);
+	WasDerivedFrom wd14 = newWasDerivedFrom(a14, a2);
+	WasDerivedFrom wd15 = newWasDerivedFrom(a14, a9);
+	WasDerivedFrom wd16 = newWasDerivedFrom(a14, a10);
 
-	WasDerivedFrom wd17 = pFactory.newWasDerivedFrom(a15, a11);
-	WasDerivedFrom wd18 = pFactory.newWasDerivedFrom(a16, a11);
-	WasDerivedFrom wd19 = pFactory.newWasDerivedFrom(a17, a12);
-	WasDerivedFrom wd20 = pFactory.newWasDerivedFrom(a18, a12);
-	WasDerivedFrom wd21 = pFactory.newWasDerivedFrom(a19, a13);
-	WasDerivedFrom wd22 = pFactory.newWasDerivedFrom(a20, a13);
-	WasDerivedFrom wd23 = pFactory.newWasDerivedFrom(a21, a14);
-	WasDerivedFrom wd24 = pFactory.newWasDerivedFrom(a22, a14);
+	WasDerivedFrom wd17 = newWasDerivedFrom(a15, a11);
+	WasDerivedFrom wd18 = newWasDerivedFrom(a16, a11);
+	WasDerivedFrom wd19 = newWasDerivedFrom(a17, a12);
+	WasDerivedFrom wd20 = newWasDerivedFrom(a18, a12);
+	WasDerivedFrom wd21 = newWasDerivedFrom(a19, a13);
+	WasDerivedFrom wd22 = newWasDerivedFrom(a20, a13);
+	WasDerivedFrom wd23 = newWasDerivedFrom(a21, a14);
+	WasDerivedFrom wd24 = newWasDerivedFrom(a22, a14);
 
-	WasDerivedFrom wd25 = pFactory.newWasDerivedFrom(a23, a15);
-	WasDerivedFrom wd26 = pFactory.newWasDerivedFrom(a23, a16);
-	WasDerivedFrom wd27 = pFactory.newWasDerivedFrom(a23, a17);
-	WasDerivedFrom wd28 = pFactory.newWasDerivedFrom(a23, a18);
-	WasDerivedFrom wd29 = pFactory.newWasDerivedFrom(a23, a19);
-	WasDerivedFrom wd30 = pFactory.newWasDerivedFrom(a23, a20);
-	WasDerivedFrom wd31 = pFactory.newWasDerivedFrom(a23, a21);
-	WasDerivedFrom wd32 = pFactory.newWasDerivedFrom(a23, a22);
+	WasDerivedFrom wd25 = newWasDerivedFrom(a23, a15);
+	WasDerivedFrom wd26 = newWasDerivedFrom(a23, a16);
+	WasDerivedFrom wd27 = newWasDerivedFrom(a23, a17);
+	WasDerivedFrom wd28 = newWasDerivedFrom(a23, a18);
+	WasDerivedFrom wd29 = newWasDerivedFrom(a23, a19);
+	WasDerivedFrom wd30 = newWasDerivedFrom(a23, a20);
+	WasDerivedFrom wd31 = newWasDerivedFrom(a23, a21);
+	WasDerivedFrom wd32 = newWasDerivedFrom(a23, a22);
 
-	WasDerivedFrom wd33 = pFactory.newWasDerivedFrom(a24, a15);
-	WasDerivedFrom wd34 = pFactory.newWasDerivedFrom(a24, a16);
-	WasDerivedFrom wd35 = pFactory.newWasDerivedFrom(a24, a17);
-	WasDerivedFrom wd36 = pFactory.newWasDerivedFrom(a24, a18);
-	WasDerivedFrom wd37 = pFactory.newWasDerivedFrom(a24, a19);
-	WasDerivedFrom wd38 = pFactory.newWasDerivedFrom(a24, a20);
-	WasDerivedFrom wd39 = pFactory.newWasDerivedFrom(a24, a21);
-	WasDerivedFrom wd40 = pFactory.newWasDerivedFrom(a24, a22);
+	WasDerivedFrom wd33 = newWasDerivedFrom(a24, a15);
+	WasDerivedFrom wd34 = newWasDerivedFrom(a24, a16);
+	WasDerivedFrom wd35 = newWasDerivedFrom(a24, a17);
+	WasDerivedFrom wd36 = newWasDerivedFrom(a24, a18);
+	WasDerivedFrom wd37 = newWasDerivedFrom(a24, a19);
+	WasDerivedFrom wd38 = newWasDerivedFrom(a24, a20);
+	WasDerivedFrom wd39 = newWasDerivedFrom(a24, a21);
+	WasDerivedFrom wd40 = newWasDerivedFrom(a24, a22);
 
-	WasDerivedFrom wd41 = pFactory.newWasDerivedFrom(a25, a23);
-	WasDerivedFrom wd42 = pFactory.newWasDerivedFrom(a25, a24);
-	WasDerivedFrom wd43 = pFactory.newWasDerivedFrom(a26, a23);
-	WasDerivedFrom wd44 = pFactory.newWasDerivedFrom(a26, a24);
-	WasDerivedFrom wd45 = pFactory.newWasDerivedFrom(a27, a23);
-	WasDerivedFrom wd46 = pFactory.newWasDerivedFrom(a27, a24);
+	WasDerivedFrom wd41 = newWasDerivedFrom(a25, a23);
+	WasDerivedFrom wd42 = newWasDerivedFrom(a25, a24);
+	WasDerivedFrom wd43 = newWasDerivedFrom(a26, a23);
+	WasDerivedFrom wd44 = newWasDerivedFrom(a26, a24);
+	WasDerivedFrom wd45 = newWasDerivedFrom(a27, a23);
+	WasDerivedFrom wd46 = newWasDerivedFrom(a27, a24);
 
-	WasDerivedFrom wd47 = pFactory.newWasDerivedFrom(a28, a25);
-	WasDerivedFrom wd48 = pFactory.newWasDerivedFrom(a29, a26);
-	WasDerivedFrom wd49 = pFactory.newWasDerivedFrom(a30, a27);
+	WasDerivedFrom wd47 = newWasDerivedFrom(a28, a25);
+	WasDerivedFrom wd48 = newWasDerivedFrom(a29, a26);
+	WasDerivedFrom wd49 = newWasDerivedFrom(a30, a27);
 
-	WasAssociatedWith waw1 = pFactory.newWasAssociatedWith("waw1", p1, ag1);
+	WasAssociatedWith waw1 = pFactory.newWasAssociatedWith(q("waw1"), p1, ag1);
 
-	NamedBundle graph = pFactory.newNamedBundle(bName,
-	                                            new Activity[] { p1, p2,
+	NamedBundle graph = pFactory.newNamedBundle(q(bName),
+	                                            Arrays.asList( p1, p2,
 	                                                            p3, p4, p5,
 	                                                            p6, p7, p8,
 	                                                            p9, p10,
 	                                                            p11, p12,
 	                                                            p13, p14,
-	                                                            p15 },
-	                                            new Entity[] { a1, a2, a5,
+	                                                            p15 ),
+	                                            Arrays.asList( a1, a2, a5,
 	                                                          a6, a3, a4,
 	                                                          a7, a8, a9,
 	                                                          a10, a11,
@@ -486,9 +499,9 @@ public class ContextualizationPC1Test extends TestCase {
 	                                                          a25p, a26,
 	                                                          a26p, a27,
 	                                                          a27p, a28,
-	                                                          a29, a30 },
-	                                            new Agent[] { ag1 },
-	                                            new Statement[] { u1, u2, u3,
+	                                                          a29, a30 ),
+	                                            Arrays.asList( ag1 ),
+	                                            Arrays.asList(new Statement[] { u1, u2, u3,
 	                                                          u4, u5, u6,
 	                                                          u7, u8, u9,
 	                                                          u10, u11,
@@ -541,7 +554,7 @@ public class ContextualizationPC1Test extends TestCase {
 	                                                          wd44, wd45,
 	                                                          wd46, wd47,
 	                                                          wd48, wd49,
-	                                                          waw1 });
+	                                                          waw1 }));
 
 	return graph;
     }
@@ -567,7 +580,7 @@ public class ContextualizationPC1Test extends TestCase {
 	Document c = deserial.deserialiseDocument(new File("target/pc1-spec.xml"));
 	graph2 = c;
 
-	graph2.setNss(graph1.getNss());
+	graph2.setNamespace(graph1.getNamespace());
 	ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
 	serial.serialiseDocument(new File("target/pc1-spec2.xml"), graph2, true);
 
@@ -584,7 +597,7 @@ public class ContextualizationPC1Test extends TestCase {
 	assertFalse("graph1 and graph2 differ", graph1.equals(graph2));
 
 	Document c2 = deserial.deserialiseDocument(new File("target/pc1-spec.xml"));
-	c2.setNss(graph1.getNss());
+	c2.setNamespace(graph1.getNamespace());
 
 	assertFalse("c e* and c2 e* differ",
 	            util.getEntity(c)

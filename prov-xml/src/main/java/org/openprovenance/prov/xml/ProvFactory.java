@@ -76,10 +76,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 	init();
     }
 
-    public ProvFactory(Hashtable<String, String> namespaces) {
-	super(new ObjectFactory2(), namespaces);
-	init();
-    }
 
     public ProvFactory(ObjectFactory2 of) {
 	super(of);

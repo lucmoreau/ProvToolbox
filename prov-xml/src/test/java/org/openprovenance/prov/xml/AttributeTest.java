@@ -57,12 +57,10 @@ public class AttributeTest extends TestCase {
 
 
     public static org.openprovenance.prov.model.ProvFactory pFactory;
-    public static ValueConverter vconv;
 
 
     static {
 	pFactory = new ProvFactory();
-	vconv=new ValueConverter(pFactory);
     }
 	private DocumentEquality documentEquality;
 
@@ -86,20 +84,8 @@ public class AttributeTest extends TestCase {
   
     
     public void updateNamespaces(Document doc) {
-	Hashtable<String, String> nss = new Hashtable<String, String>();
-	//updateNamespaces(nss);
 	Namespace ns=Namespace.gatherNamespaces(doc);
 	doc.setNamespace(ns);
-
-	if (ns.getDefaultNamespace()!=null) {
-	    nss.put("_",ns.getDefaultNamespace());
-	}
-	for (String pre: ns.getPrefixes().keySet()) {
-	    nss.put(pre, ns.getPrefixes().get(pre));
-	}
-	
-	//System.out.println("updateNamespaces with " + nss);
-	doc.setNss(nss);
     }
    
     public String extension() {

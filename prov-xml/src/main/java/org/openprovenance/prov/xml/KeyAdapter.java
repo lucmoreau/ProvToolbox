@@ -13,13 +13,13 @@ public class KeyAdapter extends XmlAdapter<Element, TypedValue> {
 
     public KeyAdapter() {
 	pFactory= new ProvFactory();
-	vconv=new ValueConverter(pFactory);
+	vconv=new ValueConverter(pFactory,null);
     }
 
 
     public KeyAdapter(org.openprovenance.prov.model.ProvFactory pFactory) {
 	this.pFactory=pFactory;
-	vconv=new ValueConverter(pFactory);
+	vconv=new ValueConverter(pFactory,null);
     }
 
 

@@ -15,15 +15,15 @@ public class BeanTraversal {
 	this.pFactory=pFactory;
     }
 
-    public Document convert(Document b) {
+    public Document convert(Document doc) {
 
 	List<NamedBundle> bRecords = new LinkedList<NamedBundle>();
 
 	List<Statement> sRecords = new LinkedList<Statement>();
 	
-        c.startDocument(b.getNss());
+        c.startDocument(doc.getNamespace());
 
-	for (Statement s : u.getStatement(b)) {
+	for (Statement s : u.getStatement(doc)) {
 	    if (s instanceof Entity) {
 		sRecords.add(convert((Entity)s));
 	    } else if (s instanceof Activity) {
@@ -36,20 +36,20 @@ public class BeanTraversal {
 
 	}
 
-	for (NamedBundle bu : u.getNamedBundle(b)) {
+	for (NamedBundle bu : u.getNamedBundle(doc)) {
 	    NamedBundle o = convert(bu);
 	    if (o != null)
 		bRecords.add(o);
 
 	}
-	return c.newDocument(b.getNss(), sRecords, bRecords);
+	return c.newDocument(doc.getNamespace(), sRecords, bRecords);
     }
 
     
     public NamedBundle convert(NamedBundle b) {
 	List<Statement> sRecords = new LinkedList<Statement>();
 	QName bundleId=b.getId();
-        c.startBundle(bundleId, b.getNss());
+        c.startBundle(bundleId, b.getNamespace());
 
 	for (Statement s : u.getStatement(b)) {
 	    if (s instanceof Entity) {
@@ -63,7 +63,7 @@ public class BeanTraversal {
 	    }
 
 	}
-	return c.newNamedBundle(bundleId, b.getNss(), sRecords);
+	return c.newNamedBundle(bundleId, b.getNamespace(), sRecords);
     }
 
    

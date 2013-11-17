@@ -194,11 +194,6 @@ public class Document
         }
     }
 
-   /* added in pom.xml */@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable<String,String> nss=null; public java.util.Hashtable<String,String> getNss() { return nss;} public void setNss(java.util.Hashtable<String,String> s) { nss=s; };public String toString() {
-        final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
-        toString(toStringBuilder);
-        return toStringBuilder.toString();
-    }
 
    transient Namespace namespace;
    @Override

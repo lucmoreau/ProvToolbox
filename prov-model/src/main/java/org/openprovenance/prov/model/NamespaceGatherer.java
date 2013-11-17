@@ -124,6 +124,8 @@ public class NamespaceGatherer implements StatementAction {
 	if (name!=null)
 	register(name.getRef());
     }
+    
+    //TODO: the code below is replicated in Namespace. Avoid duplication.
 
     void register(QName name) {
 	if (name==null) return;

@@ -2,6 +2,7 @@ package org.openprovenance.prov.model;
 
 import java.util.Hashtable;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 
@@ -39,9 +40,9 @@ public class Namespace {
     }
 
 
-    Hashtable<String, String> prefixes=new Hashtable<String, String>();
-    Hashtable<String, String> namespaces=new Hashtable<String, String>();
-    String defaultNamespace=null;
+    private Hashtable<String, String> prefixes=new Hashtable<String, String>();
+    private Hashtable<String, String> namespaces=new Hashtable<String, String>();
+    private String defaultNamespace=null;
 	    
     public Namespace() {}
     
@@ -53,6 +54,10 @@ public class Namespace {
     }
     public String getDefaultNamespace () {
 	return defaultNamespace;
+    }
+    
+    public void setDefaultNamespace(String defaultNamespace) {
+	this.defaultNamespace=defaultNamespace;
     }
     
     public Hashtable<String, String> getPrefixes() {
@@ -67,6 +72,53 @@ public class Namespace {
 	String knownAs=prefixes.get(prefix);
 	return namespace==knownAs;
     }
+    public void registerDefault(String namespace) {
+	register(null,namespace);
+    }
+
+    public void register(String prefix, String namespace) {
+ 	if ((prefix == null) || (prefix.equals(XMLConstants.DEFAULT_NS_PREFIX))) {
+ 	    if (defaultNamespace == null) {
+ 		defaultNamespace = namespace;
+ 	    } else {
+ 		newPrefix(namespace);
+ 	    }
+ 	} else {
+ 	    String old = prefixes.get(prefix);
+ 	    if (old == null) {
+ 		prefixes.put(prefix, namespace);
+ 		if (namespaces.get(namespace)==null) {
+ 		    // make sure we don't overwrite an existing namespace
+ 		    namespaces.put(namespace,prefix);
+ 		}
+ 	    } else {
+ 		newPrefix(namespace);
+ 	    }
+ 	}
+     }
+
+     static final public String xmlns = "pre_";
+     int prefixCount = 0;
+
+     void newPrefix(String namespace) {
+ 	boolean success = false;
+ 	while (!success) {
+ 	    String old=namespaces.get(namespace);
+ 	    if (old!=null) return;
+ 	    int count = prefixCount++;
+ 	    String newPrefix = xmlns + count; //gensym a new prefix
+ 	    String oldPrefix = prefixes.get(newPrefix); // check that it hasn't been used yet
+ 	    if (oldPrefix == null) {
+ 		prefixes.put(newPrefix, namespace);
+ 		success = true;
+ 	    }
+ 	    if (namespaces.get(namespace)==null) {
+ 		// make sure we don't overwrite namespace
+ 		namespaces.put(namespace, newPrefix);
+ 	    }
+ 	}
+     }
+
     
     static ProvUtilities u=new ProvUtilities();
     

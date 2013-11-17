@@ -23,6 +23,7 @@ import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QNameExport;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
@@ -259,42 +260,34 @@ public class NotationConstructor implements ModelConstructor {
     }
     
     @Override
-    public void startDocument(Hashtable<String, String> namespaces) {
+    public void startDocument(Namespace namespaces) {
         String s = keyword("document") + breakline();
         s = s+ processNamespaces(namespaces);
         write(s);
     }
 
 
-    public String processNamespaces(Hashtable<String, String> namespaces) {
+    public String processNamespaces(Namespace namespace) {
         String s="";
-        if (namespaces != null) {
-            if (namespaces instanceof Hashtable) {
-                Hashtable<String, String> nss = (Hashtable<String, String>) namespaces;
-                // FIXME TODO: Should not be getting blank keys here.
-                if (nss.containsKey("")) {
-                    nss.put("_", nss.get(""));
-                    nss.remove("");
-                }
-                String def;
-                if ((def=nss.get("_"))!=null) {
-                    s = s + convertDefaultNamespace("<" + def + ">") + breakline();
-                }
-                 
-                for (String key : nss.keySet()) {
-                    String uri = nss.get(key);
-                    if (key.equals("_")) {
-                       // IGNORE, we have just handled it
-                    } else {
-                        s = s + convertNamespace(key, "<" + uri + ">")
-                                + breakline();
-                    }
-                }
+        
+        Hashtable<String, String> nss =  namespace.getPrefixes();
+        // FIXME TODO: Should not be getting blank keys here.
 
+        String def;
+        if ((def=namespace.getDefaultNamespace())!=null) {
+            s = s + convertDefaultNamespace("<" + def + ">") + breakline();
+        }
+        
+        for (String key : nss.keySet()) {
+            String uri = nss.get(key);
+            if (key.equals("_")) {
+        	// IGNORE, we have just handled it
             } else {
-                s = s + namespaces + breakline();
+        	s = s + convertNamespace(key, "<" + uri + ">")
+        		+ breakline();
             }
         }
+        
         return s;
     }
     
@@ -316,7 +309,7 @@ public class NotationConstructor implements ModelConstructor {
 
     
     @Override
-    public Document newDocument(Hashtable<String, String> namespaces,
+    public Document newDocument(Namespace namespaces,
 				Collection<Statement> statements,
 				Collection<NamedBundle> bundles) {
         String s="";
@@ -329,7 +322,7 @@ public class NotationConstructor implements ModelConstructor {
     
 
     @Override
-    public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
+    public void startBundle(QName bundleId, Namespace namespaces) {
         String s = keyword("bundle") + " " + qnExport.qnameToString(bundleId);
         s = s+ processNamespaces(namespaces);
         writeln(s);
@@ -340,7 +333,7 @@ public class NotationConstructor implements ModelConstructor {
     
     @Override
     public NamedBundle newNamedBundle(QName id,
-				      Hashtable<String, String> namespaces,
+				      Namespace namespace,
 				      Collection<Statement> statements) {
         String s="";    
         s = s + keyword("endBundle");

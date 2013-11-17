@@ -1,6 +1,5 @@
 package org.openprovenance.prov.model;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -26,14 +25,14 @@ public interface ModelConstructor {
                                                         Collection<Attribute> attributes);
     public DictionaryMembership newDictionaryMembership(QName dict,
 							List<KeyQNamePair> keyEntitySet);
-    public Document newDocument(Hashtable<String, String> namespaces,
-                                Collection<Statement> statements,
+    public Document newDocument(Namespace namespace,
+                                Collection<Statement> statements, 
                                 Collection<NamedBundle> bundles);
     public Entity newEntity(QName id, Collection<Attribute> attributes);
     public HadMember newHadMember(QName c, Collection<QName> e);
     public MentionOf newMentionOf(QName e2, QName e1, QName b);
     public NamedBundle newNamedBundle(QName id, 
-                                      Hashtable<String,String> namespaces, 
+                                      Namespace namespace, 
                                       Collection<Statement> statements);
     public SpecializationOf newSpecializationOf(QName e2, QName e1);
     
@@ -111,7 +110,7 @@ public interface ModelConstructor {
      */
     public WasStartedBy newWasStartedBy(QName id, QName activity, QName trigger, QName starter, XMLGregorianCalendar time, Collection<Attribute> attributes);
 
-    public void startBundle(QName bundleId, Hashtable<String, String> namespaces);
-    public void startDocument(Hashtable<String, String> hashtable);
+    public void startBundle(QName bundleId, Namespace namespace);
+    public void startDocument(Namespace namespace);
 
 }

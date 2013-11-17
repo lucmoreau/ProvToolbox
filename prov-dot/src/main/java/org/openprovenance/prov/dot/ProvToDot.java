@@ -474,14 +474,13 @@ public class ProvToDot {
     }
 
 
-    ValueConverter vc=new ValueConverter(of);
 
     public HashMap<String,String> addEntityShape(Entity p, HashMap<String,String> properties) {
         // default is good for entity
         List<Type> types=p.getType();
         for (Type type: types) {
-            if (type.getValueAsObject(vc) instanceof QName) {
-                QName name=(QName) type.getValueAsObject(vc);
+            if (type.getValue() instanceof QName) {
+                QName name=(QName) type.getValue();
                 if (("Dictionary".equals(name.getLocalPart()))
                     ||
                     ("EmptyDictionary".equals(name.getLocalPart()))) {
@@ -884,7 +883,7 @@ public class ProvToDot {
         Influence e=(Influence)e0;
         List<Type> type=of.getType(e);
         if ((type!=null) && (!type.isEmpty())) {
-            label=type.get(0).getValueAsObject(vc).toString();
+            label=type.get(0).getValue().toString();
         } else if (getRelationPrintRole(e)) {
             String role=of.getRole(e);
             if (role!=null) {

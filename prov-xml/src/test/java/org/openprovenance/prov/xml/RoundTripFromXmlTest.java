@@ -5,7 +5,6 @@ import java.io.File;
 
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.Hashtable;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -13,6 +12,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.Document;
 
@@ -30,30 +30,15 @@ public class RoundTripFromXmlTest extends TestCase {
 
     static final ProvUtilities util=new ProvUtilities();
 
-    static final Hashtable<String, String> namespaces;
 
-    public static ProvFactory pFactory;
+    public static ProvFactory pFactory=new ProvFactory();
     public static ValueConverter vconv;
 
-    static Hashtable<String, String> updateNamespaces (Hashtable<String, String> nss) {
-        nss.put(EX_PREFIX, EX_NS);
-        nss.put(EX2_PREFIX, EX2_NS);
-        nss.put("_", EX3_NS);
-        nss.put("dct","http://purl.org/dc/terms/");
-        nss.put("foaf","http://xmlns.com/foaf/0.1/");
-        
-	return nss;
-    }
-    static  void setNamespaces() {
-	pFactory.resetNamespaces();
-	pFactory.getNss().putAll(updateNamespaces(new Hashtable<String, String>()));
+  
+    static  void setNamespacesTODELETE() {
     }
 
-    static {
-	namespaces = updateNamespaces(new Hashtable<String, String>());
-	pFactory = new ProvFactory(namespaces);
-	vconv=new ValueConverter(pFactory);
-    }
+   
 	private DocumentEquality documentEquality;
 
     /**
@@ -74,9 +59,7 @@ public class RoundTripFromXmlTest extends TestCase {
      */
 
     public void updateNamespaces(Document doc) {
-	Hashtable<String, String> nss = new Hashtable<String, String>();
-	updateNamespaces(nss);
-	doc.setNss(nss);
+	doc.setNamespace(Namespace.gatherNamespaces(doc));
     }
    
     public String extension() {

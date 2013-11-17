@@ -194,6 +194,13 @@ public class Document
         }
     }
 
+    public String toString() {
+        final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
+        toString(toStringBuilder);
+        return toStringBuilder.toString();
+    }
+
+
 
    transient Namespace namespace;
    @Override

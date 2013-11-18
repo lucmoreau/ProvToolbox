@@ -827,13 +827,14 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return newMentionOf(eid2, eid1, bid);
     }
     
-    public NamedBundle newNamedBundle(QName id, Collection<Activity> ps,
+    public NamedBundle newNamedBundle(QName id, 
+                                      Collection<Activity> ps,
 				      Collection<Entity> as,
 				      Collection<Agent> ags,
 				      Collection<Statement> lks) {
 	NamedBundle res = of.createNamedBundle();
 	res.setId(id);
-
+	
 	if (ps != null) {
 	    res.getStatement().addAll(ps);
 	}

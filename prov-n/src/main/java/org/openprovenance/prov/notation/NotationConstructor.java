@@ -271,8 +271,6 @@ public class NotationConstructor implements ModelConstructor {
         String s="";
         
         Hashtable<String, String> nss =  namespace.getPrefixes();
-        // FIXME TODO: Should not be getting blank keys here.
-
         String def;
         if ((def=namespace.getDefaultNamespace())!=null) {
             s = s + convertDefaultNamespace("<" + def + ">") + breakline();
@@ -280,7 +278,7 @@ public class NotationConstructor implements ModelConstructor {
         
         for (String key : nss.keySet()) {
             String uri = nss.get(key);
-            if (key.equals("_")) {
+            if ((key.equals("_") || (key.equals("prov")))) {
         	// IGNORE, we have just handled it
             } else {
         	s = s + convertNamespace(key, "<" + uri + ">")
@@ -323,7 +321,7 @@ public class NotationConstructor implements ModelConstructor {
 
     @Override
     public void startBundle(QName bundleId, Namespace namespaces) {
-        String s = keyword("bundle") + " " + qnExport.qnameToString(bundleId);
+        String s = keyword("bundle") + " " + qnExport.qnameToString(bundleId)+ breakline();
         s = s+ processNamespaces(namespaces);
         writeln(s);
  

@@ -126,16 +126,27 @@ public class Namespace {
      * If a prefix is bound to another namespace, then a new prefix is generated for that namespace. */
     
     static public Namespace gatherNamespaces(Document doc) {
-	NamespaceGatherer gatherer=new NamespaceGatherer();	
-	u.forAllStatementOrBundle(doc.getStatementOrBundle(), 
-	                          gatherer);
-	
-	Namespace ns=new Namespace();
-	ns.prefixes=gatherer.getPrefixes();
-	ns.defaultNamespace=gatherer.defaultNamespace;
-	ns.namespaces=gatherer.getNamespaces();
-	return ns;
-    }
+   	NamespaceGatherer gatherer=new NamespaceGatherer();	
+   	u.forAllStatementOrBundle(doc.getStatementOrBundle(), 
+   	                          gatherer);
+   	
+   	Namespace ns=new Namespace();
+   	ns.prefixes=gatherer.getPrefixes();
+   	ns.defaultNamespace=gatherer.defaultNamespace;
+   	ns.namespaces=gatherer.getNamespaces();
+   	return ns;
+       }
+    static public Namespace gatherNamespaces(NamedBundle doc) {
+   	NamespaceGatherer gatherer=new NamespaceGatherer();	
+   	u.forAllStatement(doc.getStatement(), 
+   	                          gatherer);
+   	
+   	Namespace ns=new Namespace();
+   	ns.prefixes=gatherer.getPrefixes();
+   	ns.defaultNamespace=gatherer.defaultNamespace;
+   	ns.namespaces=gatherer.getNamespaces();
+   	return ns;
+       }
 
     public QName stringToQName(String id) {
 	if (id == null)
@@ -154,9 +165,12 @@ public class Namespace {
 								 // XML ns.
 			     local, prefix);
 	} else {
-	    return new QName(namespaces.get(prefix), local, prefix);
+	    return new QName(prefixes.get(prefix), local, prefix);
 	}
     }
 
+    public String toString() {
+	return "[Namespace (" + defaultNamespace + ") " + prefixes + "]";
+    }
     
 }

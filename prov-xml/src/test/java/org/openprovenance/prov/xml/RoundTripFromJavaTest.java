@@ -2146,6 +2146,8 @@ public class RoundTripFromJavaTest extends TestCase {
            st2.add(aa1);
            st2.add(ee1);
            st2.add(use2);
+           
+           b1.setNamespace(Namespace.gatherNamespaces(b1));
 
            NamedBundle b2=pFactory.newNamedBundle(q("bundle2"), st2);
            
@@ -2154,6 +2156,8 @@ public class RoundTripFromJavaTest extends TestCase {
            
            Entity eb2=pFactory.newEntity(q("bundle2"));
            pFactory.addBundleType(eb2);
+           
+           b2.setNamespace(Namespace.gatherNamespaces(b2));
 
            Statement [] statements=new Statement[] { eb1, eb2,};
            NamedBundle [] bundles=new NamedBundle[] {  b1, b2 };
@@ -2176,7 +2180,8 @@ public class RoundTripFromJavaTest extends TestCase {
            st1.add(use1);
 
            NamedBundle b1=pFactory.newNamedBundle(q("bundle1"), st1);
-           
+           b1.setNamespace(Namespace.gatherNamespaces(b1));
+
            Used use2 = pFactory.newUsed(q("use2"),
                                         pFactory.newIDRef(q("e1")),
                                         null,
@@ -2189,7 +2194,8 @@ public class RoundTripFromJavaTest extends TestCase {
            st2.add(use2);
 
            NamedBundle b2=pFactory.newNamedBundle(q("bundle2"), st2);
-           
+           b2.setNamespace(Namespace.gatherNamespaces(b2));
+
            Entity eb1=pFactory.newEntity(q("bundle1"));
            pFactory.addBundleType(eb1);
            
@@ -2203,8 +2209,53 @@ public class RoundTripFromJavaTest extends TestCase {
            makeDocAndTest(statements, bundles, "target/bundle2", null, true);
 
        }
+       
+       
+       //FIXME: inheritance of namespaces does not work properly
+    public void FIXMEtestBundle3() throws JAXBException {
+	Used use1 = pFactory.newUsed(q("use1"), pFactory.newIDRef(q("a1")),
+				     null, pFactory.newIDRef(q("e1")));
+	Entity e1 = pFactory.newEntity(q("e1"));
+	Activity a1 = pFactory.newActivity(q("a1"));
+	List<Statement> st1 = new LinkedList<Statement>();
+	st1.add(a1);
+	st1.add(e1);
+	st1.add(use1);
 
-   	public void testDictionaryInsertion1() throws JAXBException {
+	NamedBundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
+
+	Used use2 = pFactory.newUsed(q("use2"), pFactory.newIDRef(q("aa1")),
+				     null, pFactory.newIDRef(q("ee1")));
+	Entity ee1 = pFactory.newEntity(q("ee1"));
+	Activity aa1 = pFactory.newActivity(q("aa1"));
+	List<Statement> st2 = new LinkedList<Statement>();
+	st2.add(aa1);
+	st2.add(ee1);
+	st2.add(use2);
+
+	Namespace ns1=Namespace.gatherNamespaces(b1);
+	b1.setNamespace(new Namespace());
+
+	NamedBundle b2 = pFactory.newNamedBundle(q("bundle2"), st2);
+
+	Entity eb1 = pFactory.newEntity(q("bundle1"));
+	pFactory.addBundleType(eb1);
+
+	Entity eb2 = pFactory.newEntity(q("bundle2"));
+	pFactory.addBundleType(eb2);
+
+	Namespace ns2=Namespace.gatherNamespaces(b2);
+	b2.setNamespace(new Namespace());
+
+	Statement[] statements = new Statement[] { eb1, eb2, };
+	NamedBundle[] bundles = new NamedBundle[] { b1, b2 };
+
+	makeDocAndTest(statements, bundles, "target/bundle3", null, true);
+
+    }
+	      
+
+    public void testDictionaryInsertion1() throws JAXBException {
 		DerivedByInsertionFrom d1 = pFactory.newDerivedByInsertionFrom(null,
 				q("d2"), q("d1"), null, null);
 

@@ -30,6 +30,7 @@ import org.openprovenance.prov.model.InternationalizedString;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.QNameExport;
 import org.openprovenance.prov.model.SpecializationOf;
@@ -553,7 +554,7 @@ public class JSONConstructor implements ModelConstructor {
 
 
 	@Override
-	public Document newDocument(Hashtable<String, String> namespaces,
+	public Document newDocument(Namespace namespaces,
 			Collection<Statement> statements, Collection<NamedBundle> bundles) {
 		// TODO Auto-generated method stub
 		return null;
@@ -562,7 +563,7 @@ public class JSONConstructor implements ModelConstructor {
 
 	@Override
 	public NamedBundle newNamedBundle(QName id,
-			Hashtable<String, String> namespaces,
+			Namespace namespaces,
 			Collection<Statement> statements) {
 		Object bundle = getJSONStructure(currentRecords, currentNamespaces);
 		documentBundles.put(qnExport.qnameToString(id), bundle);
@@ -574,7 +575,7 @@ public class JSONConstructor implements ModelConstructor {
 
 
 	@Override
-	public void startDocument(Hashtable<String, String> hashtable) {
+	public void startDocument(Namespace namespace) {
 		// Make a copy of the namespace table
 		if (hashtable != null && !hashtable.isEmpty()) {
 			documentNamespaces = new Hashtable<String, String>(hashtable);
@@ -584,7 +585,7 @@ public class JSONConstructor implements ModelConstructor {
 
 
 	@Override
-	public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
+	public void startBundle(QName bundleId, Namespace namespaces) {
 		// Make a copy of the namespace table
 		if (namespaces != null && !namespaces.isEmpty())
 			currentNamespaces = new Hashtable<String, String>(namespaces);

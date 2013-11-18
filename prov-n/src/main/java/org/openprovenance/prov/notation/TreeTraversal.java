@@ -446,8 +446,7 @@ public class TreeTraversal {
 
         case PROV_NParser.DOCUMENT:
             Namespace nss=(Namespace)convert(ast.getChild(0));
-            //c.startBundle(null);
-            //System.out.println("Document (UnNamed bunded) ");
+            //System.out.println("+++ namespace" + nss);
             @SuppressWarnings("unchecked")
             List<Statement> records2=(List<Statement>)convert(ast.getChild(1));
             List<NamedBundle> bundles=null;
@@ -462,7 +461,7 @@ public class TreeTraversal {
             namespace=new Namespace();
 
             Namespace namespace2=(Namespace)convert(ast.getChild(1));
-            
+
             // parse bundleId after namespace declarations
             QName bundleId=(QName) convert(ast.getChild(0));
 

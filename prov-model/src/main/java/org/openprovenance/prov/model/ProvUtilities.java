@@ -295,6 +295,11 @@ public class ProvUtilities {
             doAction(o, action);
         }
     }
+    public void forAllStatement(List<Statement> records, StatementAction action) {
+        for (Statement o : records) {
+            doAction(o, action);
+        }
+    }
 
     public void doAction(StatementOrBundle s, StatementAction action) {
 	switch (s.getKind()) {

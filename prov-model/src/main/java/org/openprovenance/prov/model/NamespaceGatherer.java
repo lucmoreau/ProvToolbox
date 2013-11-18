@@ -379,10 +379,10 @@ public class NamespaceGatherer implements StatementAction {
 
     @Override
     public void doAction(NamedBundle bu, ProvUtilities u) {
-	register(bu.getId());
-	for (Statement s2: bu.getStatement()) {
-	    u.doAction(s2, this);
-	}
+	//register(bu.getId());
+	//for (Statement s2: bu.getStatement()) {
+	//    u.doAction(s2, this);
+	//}
     }
 
 

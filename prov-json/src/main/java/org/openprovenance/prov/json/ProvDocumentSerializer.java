@@ -29,8 +29,7 @@ public class ProvDocumentSerializer implements JsonSerializer<Document> {
 	};
 	JSONConstructor jsonConstructor = new JSONConstructor(qExport);
 	BeanTraversal bt = new BeanTraversal(jsonConstructor, 
-	                                     pFactory,
-					     new ValueConverter(pFactory));
+	                                     pFactory);
 	bt.convert(doc);
 	Object jsonStructure = jsonConstructor.getJSONStructure();
 	return context.serialize(jsonStructure);

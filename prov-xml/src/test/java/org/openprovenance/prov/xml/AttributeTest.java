@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Hashtable;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;

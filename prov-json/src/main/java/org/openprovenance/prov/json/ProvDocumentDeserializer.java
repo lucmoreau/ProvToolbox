@@ -560,8 +560,6 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		InternationalizedString iString = pf.getObjectFactory()
 						    .createInternationalizedString();
 		iString.setValue(value);
-		// return pf.newAttribute(elementName, iString,
-		// ValueConverter.QNAME_XSD_STRING);
 		return pf.newAttribute(elementName,
 				       iString,
 				       ValueConverter.QNAME_PROV_INTERNATIONALIZED_STRING);
@@ -688,13 +686,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    for (JsonElement element : elements) {
 		JsonObject item = element.getAsJsonObject();
 		KeyQNamePair pair = new KeyQNamePair();
-		// Object o=this.decodeAttributeValue(item.remove("key"));
-
 		pair.key = (Key) decodeAttributeValue(item.remove("key"),
 						      Helper.PROV_KEY_QNAME);
 
-		// pair.key = pf.newKey(o, vconv.getXsdType(o)); //TODO remove
-		// use of vconv
 		pair.name = ns.stringToQName(this.popString(item, "$"));
 		results.add(pair);
 	    }
@@ -730,8 +724,6 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 							  attributeMap);
 	for (JsonElement element : elements) {
 	    Key key = (Key) decodeAttributeValue(element, Helper.PROV_KEY_QNAME);
-	    // Object o=decodeAttributeValue(element);
-	    // Key key = pf.newKey(o, vconv.getXsdType(o));
 	    results.add(key);
 	}
 	return results;

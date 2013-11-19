@@ -38,6 +38,7 @@ import org.openprovenance.prov.model.InternationalizedString;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Role;
@@ -68,7 +69,8 @@ import com.google.gson.JsonParseException;
  *
  */
 public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
-	public static void main(String[] args) {
+    Namespace ns;
+    public static void main(String[] args) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Document.class, new ProvDocumentDeserializer());
         Gson gson = gsonBuilder.create();
@@ -86,7 +88,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	private static final String PROV_JSON_PREFIX =              "prefix";
     
     private final ProvFactory pf = new ProvFactory();
-    private final ValueConverter vconv=new ValueConverter(pf);
+    private final ValueConverter vconv=new ValueConverter(pf,null);
     
     @Override
     public Document deserialize(JsonElement json, Type typeOfT,
@@ -95,15 +97,22 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         
         // Initialise namespaces
         Hashtable<String, String> namespaces = decodePrefixes(provJSONDoc);
-        if (namespaces != null)
-            pf.setNamespaces(namespaces);
+        
+        ns=new Namespace();
+        if (namespaces != null) {
+            for (String prefix: namespaces.keySet()) {
+        	String aNamespace=namespaces.get(prefix);
+        	ns.register(prefix, aNamespace);
+            }
+        }        
         
         // Decoding structures
         List<StatementOrBundle> statements = decodeBundle(provJSONDoc);
         
         // Create the document
         Document doc = pf.newDocument();
-        doc.setNss(namespaces);
+        doc.setNamespace(ns);
+
         doc.getStatementOrBundle().addAll(statements);
         return doc;
     }
@@ -162,7 +171,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             id = null;
         }
         else {
-            id = pf.stringToQName(idStr);
+            id = ns.stringToQName(idStr);
         }
         // Decoding attributes
         ProvJSONStatement provStatement = ProvJSONStatement.valueOf(statementType);
@@ -427,7 +436,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	            List ll = ((HasOther)statement).getOther();
 	            List<Attribute> attributes = (List<Attribute>) ll;
 	            for (Map.Entry<String, JsonElement> aPair: attributeMap.entrySet()) {
-	                QName attributeName = pf.stringToQName(aPair.getKey());
+	                QName attributeName = ns.stringToQName(aPair.getKey());
 	                JsonElement element = aPair.getValue();
 	                values = pickMultiValues(element);
 	                for (JsonElement value: values) {
@@ -484,8 +493,10 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
             } else {
 	            // The following implicitly assume the type is one of XSD types
 	            String datatypeAsString = struct.get("type").getAsString();
-	            xsdType = pf.stringToQName(datatypeAsString);
-	            value = vconv.convertToJava(xsdType, struct.get("$").getAsString());
+	            xsdType = ns.stringToQName(datatypeAsString);
+	            
+	            //value = vconv.convertToJava(xsdType, struct.get("$").getAsString());
+	            value =  struct.get("$").getAsString();
             }
         }    	
     	return pf.newAttribute(attributeName, value, xsdType);
@@ -510,7 +521,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
                 return pf.newAttribute(elementName, iString, ValueConverter.QNAME_PROV_INTERNATIONALIZED_STRING);
             }  else if (struct.has("type")) {
             	String datatypeAsString = struct.get("type").getAsString();
-            	QName xsdType = pf.stringToQName(datatypeAsString); 
+            	QName xsdType = ns.stringToQName(datatypeAsString); 
             	return pf.newAttribute(elementName, value, xsdType);
             } else {
             	// if no type or lang information, decode as an Internationalized string without lang
@@ -537,7 +548,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
                 return iString;
             } else if (struct.has("type")) {
             	String datatypeAsString = struct.get("type").getAsString();
-	            QName xsdType = pf.stringToQName(datatypeAsString);
+	            QName xsdType = ns.stringToQName(datatypeAsString);
 	            return vconv.convertToJava(xsdType, struct.get("$").getAsString());
             } else {
             	// if no type or lang information, decode as an Internationalized string without lang
@@ -603,7 +614,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 
     
     private QName qName(String attributeName, JsonObject attributeMap) {
-    	return pf.stringToQName(popString(attributeMap, attributeName));
+    	return ns.stringToQName(popString(attributeMap, attributeName));
     }
     
     private QName optionalQName(String attributeName, JsonObject attributeMap) {
@@ -614,13 +625,13 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     }
 
     private IDRef idRef(String attributeName, JsonObject attributeMap) {
-    	return pf.newIDRef(popString(attributeMap, attributeName));
+    	return pf.newIDRef(ns.stringToQName(popString(attributeMap, attributeName)));
     }
     
     
     private IDRef anyRef(String attributeName, JsonObject attributeMap) {
 	if (attributeMap.has(attributeName)) 
-	    return pf.newIDRef(popString(attributeMap, attributeName));
+	    return pf.newIDRef(ns.stringToQName(popString(attributeMap, attributeName)));
 	else return null;
     }
 
@@ -647,7 +658,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
         List<IDRef> results = new ArrayList<IDRef>();
         List<JsonElement> elements = popMultiValAttribute(attributeName, attributeMap);
         for (JsonElement element : elements) {
-        	results.add(pf.newIDRef(element.getAsString()));
+        	results.add(pf.newIDRef(ns.stringToQName(element.getAsString())));
         }
         return results;
     }
@@ -671,7 +682,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	        	KeyQNamePair pair = new KeyQNamePair();
 	        	Object o=this.decodeAttributeValue(item.remove("key"));  
 	        	pair.key = pf.newKey(o, vconv.getXsdType(o));              //TODO remove use of vconv
-	        	pair.name = pf.stringToQName(this.popString(item, "$"));
+	        	pair.name = ns.stringToQName(this.popString(item, "$"));
 	        	results.add(pair);
 	        }
     	}
@@ -679,12 +690,12 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     		// decode it as a dictionary whose keys are of the same datatype
     		JsonObject dictionary = kESElement.getAsJsonObject();
     		String keyDatatype = dictionary.remove("$key-datatype").getAsString();
-    		QName datatype = pf.stringToQName(keyDatatype);
+    		QName datatype = ns.stringToQName(keyDatatype);
     		for (Entry<String, JsonElement> entry: dictionary.entrySet()) {
     			KeyQNamePair pair = new KeyQNamePair();
     			Object o=vconv.convertToJava(datatype, entry.getKey());
 	        	pair.key = pf.newKey(o, vconv.getXsdType(o));         //TODO remove use of vconv
-	        	pair.name = pf.stringToQName(entry.getValue().getAsString());
+	        	pair.name = ns.stringToQName(entry.getValue().getAsString());
 	        	results.add(pair);
     		}
     	}

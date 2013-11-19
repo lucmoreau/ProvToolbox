@@ -74,7 +74,6 @@ public class JSONConstructor implements ModelConstructor {
 	private Map<String, String> currentNamespaces = null;
 	
 	private final ProvFactory pf = new ProvFactory();
-    private final ValueConverter vconv = new ValueConverter(pf);
     
 	public JSONConstructor(QNameExport qnExport) {
 		this.qnExport = qnExport;
@@ -576,6 +575,7 @@ public class JSONConstructor implements ModelConstructor {
 
 	@Override
 	public void startDocument(Namespace namespace) {
+	    Hashtable<String, String> hashtable=namespace.getPrefixes();
 		// Make a copy of the namespace table
 		if (hashtable != null && !hashtable.isEmpty()) {
 			documentNamespaces = new Hashtable<String, String>(hashtable);
@@ -586,9 +586,11 @@ public class JSONConstructor implements ModelConstructor {
 
 	@Override
 	public void startBundle(QName bundleId, Namespace namespaces) {
+	    Hashtable<String, String> hashtable=namespaces.getPrefixes();
+
 		// Make a copy of the namespace table
-		if (namespaces != null && !namespaces.isEmpty())
-			currentNamespaces = new Hashtable<String, String>(namespaces);
+		if (hashtable != null && !hashtable.isEmpty())
+			currentNamespaces = new Hashtable<String, String>(hashtable);
 		// Create a separate list of records for the bundle
 		currentRecords = new ArrayList<JsonProvRecord>();
 	}

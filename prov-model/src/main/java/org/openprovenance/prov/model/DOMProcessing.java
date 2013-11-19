@@ -48,8 +48,10 @@ final public class DOMProcessing {
     ///TODO: should use the prefix definition of nss, as opposed to the one in qname
 
     static public String qnameToString(QName qname) {
-	return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
-		+ qname.getLocalPart();
+	Namespace ns=Namespace.getThreadNamespace();
+	return ns.qnameToString(qname);
+//	return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
+//		+ qname.getLocalPart();
     }
     
 
@@ -254,14 +256,17 @@ final public class DOMProcessing {
         String child = el.getTextContent();
         String typeAsString = el.getAttributeNS(NamespacePrefixMapper.XSI_NS,
                                                 "type");
+
         String lang = el.getAttributeNS(NamespacePrefixMapper.XML_NS, "lang");
         QName type = ((typeAsString == null) || (typeAsString.equals(""))) ? null
                 : DOMProcessing.stringToQName(typeAsString, el);
+
         if (type == null)
             type = ValueConverter.QNAME_XSD_STRING;
         if (type.equals(ValueConverter.QNAME_XSD_QNAME)) {
             QName qn = DOMProcessing.stringToQName(child, el);
-            return pFactory.newAttribute(namespace, local, prefix, qn, type);
+            Attribute x= pFactory.newAttribute(namespace, local, prefix, qn, type);
+            return x;
         } else if (type.equals(ValueConverter.QNAME_RDF_LITERAL)) {
             NodeList nodes=el.getChildNodes();
             org.w3c.dom.Element content=null;

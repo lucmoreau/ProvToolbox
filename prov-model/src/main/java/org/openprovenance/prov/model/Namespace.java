@@ -111,10 +111,11 @@ public class Namespace {
  	    if (oldPrefix == null) {
  		prefixes.put(newPrefix, namespace);
  		success = true;
- 	    }
- 	    if (namespaces.get(namespace)==null) {
- 		// make sure we don't overwrite namespace
- 		namespaces.put(namespace, newPrefix);
+ 	    
+ 		if (namespaces.get(namespace)==null) {
+ 		    // make sure we don't overwrite namespace
+ 		    namespaces.put(namespace, newPrefix);
+ 		}
  	    }
  	}
      }
@@ -130,23 +131,17 @@ public class Namespace {
    	u.forAllStatementOrBundle(doc.getStatementOrBundle(), 
    	                          gatherer);
    	
-   	Namespace ns=new Namespace();
-   	ns.prefixes=gatherer.getPrefixes();
-   	ns.defaultNamespace=gatherer.defaultNamespace;
-   	ns.namespaces=gatherer.getNamespaces();
+   	Namespace ns=gatherer.getNamespace();
    	return ns;
-       }
+    }
+    
     static public Namespace gatherNamespaces(NamedBundle doc) {
    	NamespaceGatherer gatherer=new NamespaceGatherer();	
    	u.forAllStatement(doc.getStatement(), 
    	                          gatherer);
-   	
-   	Namespace ns=new Namespace();
-   	ns.prefixes=gatherer.getPrefixes();
-   	ns.defaultNamespace=gatherer.defaultNamespace;
-   	ns.namespaces=gatherer.getNamespaces();
+   	Namespace ns=gatherer.getNamespace();
    	return ns;
-       }
+    }
 
     public QName stringToQName(String id) {
 	if (id == null)
@@ -167,6 +162,33 @@ public class Namespace {
 	} else {
 	    return new QName(prefixes.get(prefix), local, prefix);
 	}
+    }
+    
+
+    static public String qnameToStringWithNamespace(QName qname) {
+	Namespace ns=Namespace.getThreadNamespace();
+	return ns.qnameToString(qname);
+    }
+    
+
+    public String qnameToString(QName qname) {
+	if ((getDefaultNamespace()!=null) 
+		&& (getDefaultNamespace().equals(qname.getNamespaceURI()))) {
+	    return qname.getLocalPart();
+	} else {
+	    String pref=getNamespaces().get(qname.getNamespaceURI());
+	    if (pref!=null)  {
+		return pref + ":" + qname.getLocalPart();
+	    } else {
+		// Really should never be here
+		return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
+			+ qname.getLocalPart();
+	    }
+	}
+	/* old
+	 return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
+		+ qname.getLocalPart();
+	 */
     }
 
     public String toString() {

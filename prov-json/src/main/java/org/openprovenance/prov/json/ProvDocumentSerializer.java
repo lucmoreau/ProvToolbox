@@ -7,9 +7,7 @@ import javax.xml.namespace.QName;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QNameExport;
-import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.model.ValueConverter;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSerializationContext;
@@ -24,7 +22,7 @@ public class ProvDocumentSerializer implements JsonSerializer<Document> {
 	QNameExport qExport = new QNameExport() {
 	    @Override
 	    public String qnameToString(QName qname) {
-		return Helper.qnameToString(qname, doc.getNamespace());
+		return doc.getNamespace().qnameToString(qname);
 	    }
 	};
 	JSONConstructor jsonConstructor = new JSONConstructor(qExport);

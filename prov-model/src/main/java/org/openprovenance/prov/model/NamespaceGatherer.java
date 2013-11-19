@@ -13,39 +13,33 @@ public class NamespaceGatherer implements StatementAction {
     
 
     /* mapping from prefixes to namespaces. */
-    Hashtable<String, String> prefixes = new Hashtable<String, String>();
+    //ashtable<String, String> prefixes = new Hashtable<String, String>();
     /* mapping from namespaces to prefixes. */
-    Hashtable<String, String> namespaces = new Hashtable<String, String>();
+    //Hashtable<String, String> namespaces = new Hashtable<String, String>();
     
+    Namespace ns=new Namespace();
     
     public NamespaceGatherer() {
-	prefixes.put("prov",NamespacePrefixMapper.PROV_NS);
-	namespaces.put(NamespacePrefixMapper.PROV_NS,"prov");
-	defaultNamespace=null;
+	ns.getPrefixes().put("prov",NamespacePrefixMapper.PROV_NS);
+	ns.getNamespaces().put(NamespacePrefixMapper.PROV_NS,"prov");
+	ns.setDefaultNamespace(null);
     }
     
     public NamespaceGatherer(Hashtable<String, String> prefixes,
                              String defaultNamespace) {
-	this.prefixes=prefixes;
-	//todo create inverse map!
-	this.defaultNamespace=defaultNamespace;
+	ns.getPrefixes().putAll(prefixes);
+	//TODO create inverse map!
+	ns.setDefaultNamespace(defaultNamespace);
     }
     
     
 
-    String defaultNamespace;
+    //String defaultNamespace;
 
-    public String getDefaultNamespace() {
-	return defaultNamespace;
+    public Namespace getNamespace() {
+	return ns;
     }
 
-    public Hashtable<String, String> getPrefixes() {
-	return prefixes;
-    }
-
-    public Hashtable<String, String> getNamespaces() {
-	return namespaces;
-    }
     public void registerLocation(List<Location> locations) {
 	for (Location loc : locations) {
 	    register(loc);
@@ -132,45 +126,9 @@ public class NamespaceGatherer implements StatementAction {
 	String namespace = name.getNamespaceURI();
 	String prefix = name.getPrefix();
 	if ((prefix == null) || (prefix.equals(XMLConstants.DEFAULT_NS_PREFIX))) {
-	    if (defaultNamespace == null) {
-		defaultNamespace = namespace;
-		//namespaces.put(namespace, stringForDefault);
-	    } else {
-		newPrefix(namespace);
-	    }
+	    ns.registerDefault(namespace);
 	} else {
-	    String old = prefixes.get(prefix);
-	    if (old == null) {
-		prefixes.put(prefix, namespace);
-		if (namespaces.get(namespace)==null) {
-		    // make sure we don't overwrite an existing namespace
-		    namespaces.put(namespace,prefix);
-		}
-	    } else {
-		newPrefix(namespace);
-	    }
-	}
-    }
-
-    static final public String xmlns = "pre_";
-    int prefixCount = 0;
-
-    void newPrefix(String namespace) {
-	boolean success = false;
-	while (!success) {
-	    String old=namespaces.get(namespace);
-	    if (old!=null) return;
-	    int count = prefixCount++;
-	    String newPrefix = xmlns + count; //gensym a new prefix
-	    String oldPrefix = prefixes.get(newPrefix); // check that it hasn't been used yet
-	    if (oldPrefix == null) {
-		prefixes.put(newPrefix, namespace);
-		success = true;
-	    }
-	    if (namespaces.get(namespace)==null) {
-		// make sure we don't overwrite namespace
-		namespaces.put(namespace, newPrefix);
-	    }
+	    ns.register(prefix, namespace);
 	}
     }
 

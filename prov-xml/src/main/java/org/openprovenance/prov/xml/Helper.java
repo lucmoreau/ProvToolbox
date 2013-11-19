@@ -21,12 +21,12 @@ public class Helper  {
     public static final QName PROV_VALUE_QNAME=provQName("value");
     public static final QName PROV_KEY_QNAME=provQName("key");
     
-    static public String qnameToString(QName qname) {
+    static public String qnameToStringDELETE(QName qname) {
 	Namespace ns=Namespace.getThreadNamespace();
-	return qnameToString(qname,ns);
+	return ns.qnameToString(qname);
     }
     
-    static public String qnameToString(QName qname, Namespace ns) {
+    static public String qnameToStringDELETE(QName qname, Namespace ns) {
 	if ((ns.getDefaultNamespace()!=null) 
 		&& (ns.getDefaultNamespace().equals(qname.getNamespaceURI()))) {
 	    return qname.getLocalPart();
@@ -67,21 +67,21 @@ public class Helper  {
  	    InternationalizedString istring = (InternationalizedString) val;
  	    return "\"" + istring.getValue() + 
  		    ((istring.getLang()==null) ? "\"" : "\"@" + istring.getLang())
- 		    + " %% " + qnameToString(xsdType);
+ 		    + " %% " + Namespace.qnameToStringWithNamespace(xsdType);
  	} else if (val instanceof QName) {
  	    QName qn = (QName) val;	    
- 	    return "'" + qnameToString(qn) + "'";
+ 	    return "'" + Namespace.qnameToStringWithNamespace(qn) + "'";
  	} else if (val instanceof String) {
 	    String s=(String)val;
 	    if (s.contains("\n")) {
 		// return "\"\"\"" + val + "\"\"\" %% " + qnameToString(xsdType);
 		return "\"\"\"" + escape(s) + "\"\"\"" ;
 	    } else {
-		return "\"" + escape(s) + "\" %% " + qnameToString(xsdType);
+		return "\"" + escape(s) + "\" %% " + Namespace.qnameToStringWithNamespace(xsdType);
 	    }
  	} else {
 	    // We should never be here!
- 	    return "\"" + val + "\" %% " + qnameToString(xsdType);
+ 	    return "\"" + val + "\" %% " + Namespace.qnameToStringWithNamespace(xsdType);
 	}
      }
 

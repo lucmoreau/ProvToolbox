@@ -114,6 +114,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     }
 */
     public org.openprovenance.prov.model.Attribute newAttribute(QName elementName, Object value, QName type) {
+
 	// TODO: use TypedValue.getAttributeKind and switch on a kind
 	if (elementName.equals(Helper.PROV_LOCATION_QNAME)) {
 	    return newLocation(value,type);
@@ -136,13 +137,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 	return newOther(elementName, value, type);
     }
     
-    public org.openprovenance.prov.model.Attribute newAttribute(String namespace, String localName,
-                                                                String prefix, Object value, QName type) {
-
-        return newAttribute(new QName(namespace, localName, prefix),
-                            value, 
-                            type);
-    }
+   
     
     public Location newLocation(Object value, QName type) {
         Location loc=new Location();

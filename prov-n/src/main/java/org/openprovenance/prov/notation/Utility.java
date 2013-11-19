@@ -111,7 +111,7 @@ public  class Utility {
 	QNameExport qExport = new QNameExport() {
 	    @Override
 	    public String qnameToString(QName qname) {
-		return Helper.qnameToString(qname, doc.getNamespace());
+		return doc.getNamespace().qnameToString(qname);
 	    }
 	};
 	NotationConstructor nc=new NotationConstructor(writer, qExport);

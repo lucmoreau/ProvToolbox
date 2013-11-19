@@ -424,8 +424,14 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
  
     public Attribute newAttribute(String namespace, String localName,
 				  String prefix, Object value, QName type) {
-	Attribute res = newAttribute(new QName(namespace, localName, prefix),
-	                                value, type);
+	Attribute res;
+	if (prefix==null) {
+	    res = newAttribute(new QName(namespace, localName),
+	                       value, type); 
+	} else {
+	    res = newAttribute(new QName(namespace, localName, prefix),
+                               value, type);
+	}
 	return res;
     }
 

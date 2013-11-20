@@ -1107,6 +1107,13 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	res.setGeneratedEntity(aid1);
 	return res;
     }
+    public WasDerivedFrom newWasDerivedFrom(QName aid1,
+					    QName aid2) {
+	WasDerivedFrom res = of.createWasDerivedFrom();
+	res.setUsedEntity(newIDRef(aid2));
+	res.setGeneratedEntity(newIDRef(aid1));
+	return res;
+    }
 
     public WasDerivedFrom newWasDerivedFrom(QName id, IDRef aid1,
 					    IDRef aid2, IDRef aid,
@@ -1368,6 +1375,13 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	res.setId(id);
 	res.setEntity(eid);
 	res.setActivity(aid);
+	return res;
+    }
+    public WasInvalidatedBy newWasInvalidatedBy(QName eid,
+						QName aid) {
+	WasInvalidatedBy res = of.createWasInvalidatedBy();
+	res.setEntity(newIDRef(eid));
+	res.setActivity(newIDRef(aid));
 	return res;
     }
 

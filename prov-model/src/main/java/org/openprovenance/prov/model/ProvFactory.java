@@ -328,6 +328,11 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
+    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1) {
+        ActedOnBehalfOf res=newActedOnBehalfOf(id, ag2, ag1, null,null);
+        return res;
+    }
+
     public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1, QName a, Collection<Attribute> attributes) {
         IDRef agid2=(ag2==null)? null : newIDRef(ag2);
         IDRef agid1=(ag1==null)? null : newIDRef(ag1);
@@ -1049,6 +1054,14 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
+    public WasAssociatedWith  newWasAssociatedWith(QName id, 
+                                                   QName a, 
+                                                   QName ag) {
+	IDRef aid=(a==null)? null: newIDRef(a);
+	IDRef agid=(ag==null)? null: newIDRef(ag);
+	WasAssociatedWith res= newWasAssociatedWith(id,aid,agid);
+	return res;
+    }
     public WasAssociatedWith  newWasAssociatedWith(QName id, 
                                                    QName a, 
                                                    QName ag, 

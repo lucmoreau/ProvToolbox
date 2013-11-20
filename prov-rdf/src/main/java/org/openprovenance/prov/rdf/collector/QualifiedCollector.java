@@ -18,10 +18,10 @@ import org.openprovenance.prov.model.DerivedByRemovalFrom;
 import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Key;
+import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.Used;
-import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasDerivedFrom;
@@ -241,7 +241,7 @@ public class QualifiedCollector extends RdfCollector {
 				Ontology.QNAME_PROVO_qualifiedRevision);
 		//QName q = pFactory.newQName("prov:Revision");
 		QName q = Ontology.QNAME_PROVO_Revision;
-		Type type=pFactory.newType(q, ValueConverter.QNAME_XSD_QNAME);
+		Type type=pFactory.newType(q, Name.QNAME_XSD_QNAME);
 		for (WasDerivedFrom wdf : wdfs)
 		{
 			if (!wdf.getType().contains(type))
@@ -257,7 +257,7 @@ public class QualifiedCollector extends RdfCollector {
 				Ontology.QNAME_PROVO_qualifiedQuotation);
 		//Object q = pFactory.newQName("prov:Quotation");
 		QName q = Ontology.QNAME_PROVO_Quotation;
-		Type type=pFactory.newType(q, ValueConverter.QNAME_XSD_QNAME);
+		Type type=pFactory.newType(q, Name.QNAME_XSD_QNAME);
 		for (WasDerivedFrom wdf : wdfs)
 		{
 			if (!wdf.getType().contains(type))
@@ -273,7 +273,7 @@ public class QualifiedCollector extends RdfCollector {
 				Ontology.QNAME_PROVO_qualifiedPrimarySource);
 		//Object q = pFactory.newQName("prov:PrimarySource");
 		QName q = Ontology.QNAME_PROVO_PrimarySource;
-		Type type=pFactory.newType(q, ValueConverter.QNAME_XSD_QNAME);
+		Type type=pFactory.newType(q, Name.QNAME_XSD_QNAME);
 
 		for (WasDerivedFrom wdf : wdfs)
 		{

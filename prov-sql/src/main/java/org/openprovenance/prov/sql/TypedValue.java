@@ -32,6 +32,7 @@ import org.openprovenance.prov.model.InternationalizedString;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.DOMProcessing;
+import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.ValueConverter;
 
 import java.util.Collection;
@@ -271,9 +272,9 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      */
 
     public void setValueAsJava(final byte[] bytes) {
-	if (type.equals(ValueConverter.QNAME_XSD_BASE64_BINARY)) {
+	if (type.equals(Name.QNAME_XSD_BASE64_BINARY)) {
 	    this.value=ProvFactory.getFactory().base64Encoding(bytes);
-	} else if (type.equals(ValueConverter.QNAME_XSD_HEX_BINARY)) {
+	} else if (type.equals(Name.QNAME_XSD_HEX_BINARY)) {
 	    this.value=ProvFactory.getFactory().hexEncoding(bytes);
 	}
     }

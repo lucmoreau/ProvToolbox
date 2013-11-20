@@ -312,7 +312,7 @@ public class NamespaceGatherer implements StatementAction {
 	registerType(r.getType());
 	registerOther(r.getOther());
 	if (!r.getKey().isEmpty()) {
-	    register(ValueConverter.QNAME_XSD_INT); // pick up an xsd qname, so that xsd is registered!
+	    register(Name.QNAME_XSD_INT); // pick up an xsd qname, so that xsd is registered!
 	}
 	
     }
@@ -331,7 +331,7 @@ public class NamespaceGatherer implements StatementAction {
 	for (Entry e: keyEntityPairs) {
 	    register(e.getEntity());
 	    //Object key=e.getKey();
-	    register(ValueConverter.QNAME_XSD_INT); // pick up an xsd qname, so that xsd is registered!
+	    register(Name.QNAME_XSD_INT); // pick up an xsd qname, so that xsd is registered!
 	}	
     }
 

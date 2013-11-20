@@ -23,6 +23,7 @@ import org.openprovenance.prov.model.HasLocation;
 import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasRole;
 import org.openprovenance.prov.model.HasType;
+import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
@@ -328,61 +329,61 @@ public class AttributeTest extends TestCase {
     }
     public Object[][] attributeValues_small =
         {
-	 {"un lieu",ValueConverter.QNAME_XSD_STRING},
+	 {"un lieu",Name.QNAME_XSD_STRING},
 	 
-         {pFactory.newInternationalizedString("un lieu","fr"),ValueConverter.QNAME_XSD_STRING},
+         {pFactory.newInternationalizedString("un lieu","fr"),Name.QNAME_XSD_STRING},
 
-         {pFactory.newInternationalizedString("a place","en"),ValueConverter.QNAME_XSD_STRING}
+         {pFactory.newInternationalizedString("a place","en"),Name.QNAME_XSD_STRING}
         };
 
 
     public Object[][] attributeValues_long =
         {
-	 {"un lieu",ValueConverter.QNAME_XSD_STRING},
+	 {"un lieu",Name.QNAME_XSD_STRING},
 	 
-         {pFactory.newInternationalizedString("un lieu","fr"),ValueConverter.QNAME_PROV_INTERNATIONALIZED_STRING},
+         {pFactory.newInternationalizedString("un lieu","fr"),Name.QNAME_PROV_INTERNATIONALIZED_STRING},
 
-         {pFactory.newInternationalizedString("a place","en"),ValueConverter.QNAME_PROV_INTERNATIONALIZED_STRING},
+         {pFactory.newInternationalizedString("a place","en"),Name.QNAME_PROV_INTERNATIONALIZED_STRING},
            
-         {1,ValueConverter.QNAME_XSD_INT},
+         {1,Name.QNAME_XSD_INT},
 
-         {1,ValueConverter.QNAME_XSD_LONG},
+         {1,Name.QNAME_XSD_LONG},
 
-         {1,ValueConverter.QNAME_XSD_SHORT},
+         {1,Name.QNAME_XSD_SHORT},
 
-         {2.0,ValueConverter.QNAME_XSD_DOUBLE},
+         {2.0,Name.QNAME_XSD_DOUBLE},
 
-         {1.0,ValueConverter.QNAME_XSD_FLOAT},
+         {1.0,Name.QNAME_XSD_FLOAT},
 
-         {10,ValueConverter.QNAME_XSD_DECIMAL},
+         {10,Name.QNAME_XSD_DECIMAL},
 
-         {true,ValueConverter.QNAME_XSD_BOOLEAN},
+         {true,Name.QNAME_XSD_BOOLEAN},
 
-         {false,ValueConverter.QNAME_XSD_BOOLEAN},
+         {false,Name.QNAME_XSD_BOOLEAN},
 
-  //    FIXME   {"yes",ValueConverter.QNAME_XSD_BOOLEAN},
+  //    FIXME   {"yes",Name.QNAME_XSD_BOOLEAN},
 
-  //   FIXME    {"no",ValueConverter.QNAME_XSD_BOOLEAN},
+  //   FIXME    {"no",Name.QNAME_XSD_BOOLEAN},
          
-         {10,ValueConverter.QNAME_XSD_BYTE},
+         {10,Name.QNAME_XSD_BYTE},
 
-         {10,ValueConverter.QNAME_XSD_UNSIGNED_INT},
+         {10,Name.QNAME_XSD_UNSIGNED_INT},
 
-         {10,ValueConverter.QNAME_XSD_UNSIGNED_LONG},
+         {10,Name.QNAME_XSD_UNSIGNED_LONG},
 
-         {10,ValueConverter.QNAME_XSD_INTEGER},
+         {10,Name.QNAME_XSD_INTEGER},
 
-         {10,ValueConverter.QNAME_XSD_UNSIGNED_SHORT},
+         {10,Name.QNAME_XSD_UNSIGNED_SHORT},
 
-         {10,ValueConverter.QNAME_XSD_NON_NEGATIVE_INTEGER},
+         {10,Name.QNAME_XSD_NON_NEGATIVE_INTEGER},
 
-         {-10,ValueConverter.QNAME_XSD_NON_POSITIVE_INTEGER},
+         {-10,Name.QNAME_XSD_NON_POSITIVE_INTEGER},
 
-         {10,ValueConverter.QNAME_XSD_POSITIVE_INTEGER},
+         {10,Name.QNAME_XSD_POSITIVE_INTEGER},
 
-         {10,ValueConverter.QNAME_XSD_UNSIGNED_BYTE},
+         {10,Name.QNAME_XSD_UNSIGNED_BYTE},
 
-         {"http://example.org",ValueConverter.QNAME_XSD_ANY_URI},
+         {"http://example.org",Name.QNAME_XSD_ANY_URI},
 
 
          // Consider following cases for QNames
@@ -394,47 +395,47 @@ public class AttributeTest extends TestCase {
          // - undeclared namespace, with other prefix
          // - undeclared namespace, as default namespace
 
-         {new QName(EX_NS, "abc", EX_PREFIX), ValueConverter.QNAME_XSD_QNAME},
+         {new QName(EX_NS, "abc", EX_PREFIX), Name.QNAME_XSD_QNAME},
          
-         {new QName(EX_NS, "abcd", "other"), ValueConverter.QNAME_XSD_QNAME},
+         {new QName(EX_NS, "abcd", "other"), Name.QNAME_XSD_QNAME},
          
-         {new QName(EX_NS, "abcde"), ValueConverter.QNAME_XSD_QNAME},
+         {new QName(EX_NS, "abcde"), Name.QNAME_XSD_QNAME},
          
-         {new QName("http://example4.org/", "zabc", EX_PREFIX), ValueConverter.QNAME_XSD_QNAME},
+         {new QName("http://example4.org/", "zabc", EX_PREFIX), Name.QNAME_XSD_QNAME},
          
-         {new QName("http://example4.org/", "zabcd", "other"), ValueConverter.QNAME_XSD_QNAME},
+         {new QName("http://example4.org/", "zabcd", "other"), Name.QNAME_XSD_QNAME},
              
-         {new QName("http://example4.org/", "zabcde"), ValueConverter.QNAME_XSD_QNAME},
+         {new QName("http://example4.org/", "zabcde"), Name.QNAME_XSD_QNAME},
          
          
-         {pFactory.newTimeNow(),ValueConverter.QNAME_XSD_DATETIME},
+         {pFactory.newTimeNow(),Name.QNAME_XSD_DATETIME},
 
-         {pFactory.newYear(2013),ValueConverter.QNAME_XSD_GYEAR},
+         {pFactory.newYear(2013),Name.QNAME_XSD_GYEAR},
 
-         {pFactory.newGMonth(01),ValueConverter.QNAME_XSD_GMONTH},
+         {pFactory.newGMonth(01),Name.QNAME_XSD_GMONTH},
 
-         {pFactory.newGDay(30),ValueConverter.QNAME_XSD_GDAY},
+         {pFactory.newGDay(30),Name.QNAME_XSD_GDAY},
          
-         {pFactory.newGMonthDay(12,25),ValueConverter.QNAME_XSD_GMONTH_DAY},
+         {pFactory.newGMonthDay(12,25),Name.QNAME_XSD_GMONTH_DAY},
 
          
-         {pFactory.newDuration(12225),ValueConverter.QNAME_XSD_DURATION},
+         {pFactory.newDuration(12225),Name.QNAME_XSD_DURATION},
 
-         {pFactory.newDuration("P2Y6M"),ValueConverter.QNAME_XSD_YEAR_MONTH_DURATION},
-         {pFactory.newDuration("P2147483647DT2147483647H2147483647M123456789012345.123456789012345S"),ValueConverter.QNAME_XSD_DAY_TIME_DURATION},
+         {pFactory.newDuration("P2Y6M"),Name.QNAME_XSD_YEAR_MONTH_DURATION},
+         {pFactory.newDuration("P2147483647DT2147483647H2147483647M123456789012345.123456789012345S"),Name.QNAME_XSD_DAY_TIME_DURATION},
 
-         { new byte[] {0,1,2,34,5,6}, ValueConverter.QNAME_XSD_HEX_BINARY},
-         { new byte[] {0,1,2,34,5,6}, ValueConverter.QNAME_XSD_BASE64_BINARY},
-         { new byte[1023], ValueConverter.QNAME_XSD_BASE64_BINARY},
+         { new byte[] {0,1,2,34,5,6}, Name.QNAME_XSD_HEX_BINARY},
+         { new byte[] {0,1,2,34,5,6}, Name.QNAME_XSD_BASE64_BINARY},
+         { new byte[1023], Name.QNAME_XSD_BASE64_BINARY},
          
-         {"en",ValueConverter.QNAME_XSD_LANGUAGE},
-         {"normal",ValueConverter.QNAME_XSD_NORMALIZED_STRING},
-         {"TOK",ValueConverter.QNAME_XSD_TOKEN},
-         {"NMTOK",ValueConverter.QNAME_XSD_NMTOKEN},
-         {"name",ValueConverter.QNAME_XSD_NAME},
-         {"NCName",ValueConverter.QNAME_XSD_NCNAME},
+         {"en",Name.QNAME_XSD_LANGUAGE},
+         {"normal",Name.QNAME_XSD_NORMALIZED_STRING},
+         {"TOK",Name.QNAME_XSD_TOKEN},
+         {"NMTOK",Name.QNAME_XSD_NMTOKEN},
+         {"name",Name.QNAME_XSD_NAME},
+         {"NCName",Name.QNAME_XSD_NCNAME},
          
-         {createXMLLiteral(),ValueConverter.QNAME_RDF_LITERAL}
+         {createXMLLiteral(),Name.QNAME_RDF_LITERAL}
          
         };
     
@@ -1093,8 +1094,8 @@ public class AttributeTest extends TestCase {
 	addTypes(a);
 	addLocations(a);
 
-	a.setValue(pFactory.newValue(10,ValueConverter.QNAME_XSD_BYTE));
-	a.setValue(pFactory.newValue("10",ValueConverter.QNAME_XSD_STRING));
+	a.setValue(pFactory.newValue(10,Name.QNAME_XSD_BYTE));
+	a.setValue(pFactory.newValue("10",Name.QNAME_XSD_STRING));
 
 
 	makeDocAndTest(a,"target/attr_entity0");

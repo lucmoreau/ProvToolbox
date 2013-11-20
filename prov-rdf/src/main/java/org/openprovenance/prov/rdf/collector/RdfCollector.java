@@ -3,14 +3,10 @@ package org.openprovenance.prov.rdf.collector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
@@ -23,12 +19,12 @@ import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.InternationalizedString;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Key;
+import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Used;
@@ -261,7 +257,7 @@ public class RdfCollector extends RDFHandlerBase {
     protected Key valueToKey(Value value) {
 	if (value instanceof Resource) {
 	    return pFactory.newKey(convertResourceToQName((Resource) value),
-	                           ValueConverter.QNAME_XSD_QNAME);
+	                           Name.QNAME_XSD_QNAME);
 	} else if (value instanceof Literal) {
 	    Object o=decodeLiteral((Literal) value);
 	    //FIXME: lossy conversion, I have lost the rdf type by converting to java
@@ -270,10 +266,10 @@ public class RdfCollector extends RDFHandlerBase {
 	    URI uri = (URI) (value);
 	    URIWrapper uw = new URIWrapper();
 	    uw.setValue(java.net.URI.create(uri.toString()));
-	    return pFactory.newKey(uri.toString(), ValueConverter.QNAME_XSD_QNAME);
+	    return pFactory.newKey(uri.toString(), Name.QNAME_XSD_QNAME);
 	} else if (value instanceof BNode) {
 	    return pFactory.newKey(new QName(((BNode) (value)).getID()),
-	                           ValueConverter.QNAME_XSD_QNAME);
+	                           Name.QNAME_XSD_QNAME);
 	} else {
 	    return null;
 	}
@@ -483,7 +479,7 @@ public class RdfCollector extends RDFHandlerBase {
 			    } else {
 				attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_TYPE_QNAME,
 								     typeQ,
-								     ValueConverter.QNAME_XSD_QNAME));
+								     Name.QNAME_XSD_QNAME));
 			    }
 
 			} else if (statement.getObject() instanceof Literal) {	   
@@ -539,7 +535,7 @@ public class RdfCollector extends RDFHandlerBase {
 	} else if (obj instanceof Resource) {
 	    attr=pFactory.newAttribute(type,
 	                               convertResourceToQName((Resource) obj),
-	                               ValueConverter.QNAME_XSD_QNAME);
+	                               Name.QNAME_XSD_QNAME);
 	} else {
 	    throw new UnsupportedOperationException();
 	}
@@ -558,8 +554,8 @@ public class RdfCollector extends RDFHandlerBase {
 					       theValue,
 					       ((lit.getDatatype() == null) ? 
 					               ((lit.getLanguage()==null)
-					                       ? ValueConverter.QNAME_XSD_STRING
-					                       : ValueConverter.QNAME_PROV_INTERNATIONALIZED_STRING)
+					                       ? Name.QNAME_XSD_STRING
+					                       : Name.QNAME_PROV_INTERNATIONALIZED_STRING)
 						       : Ontology.convertFromRdf(convertURIToQName(lit.getDatatype()))));
 	return attr;
     }

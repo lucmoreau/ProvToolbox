@@ -81,7 +81,7 @@ public class BeanTraversal {
     public List<Attribute> convertLabelAttributes(HasLabel e, List<Attribute> acc) {
    	List<InternationalizedString> labels = e.getLabel();
    	for (InternationalizedString label : labels) {
-   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LABEL,label, ValueConverter.QNAME_XSD_STRING));
+   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LABEL,label, Name.QNAME_XSD_STRING));
    	}
    	return acc;
     }

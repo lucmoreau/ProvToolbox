@@ -13,6 +13,7 @@ import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.ModelConstructor;
+import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.TypedValue;
@@ -491,7 +492,7 @@ public class TreeTraversal {
             	QName theType=(QName)values2[1];
 		    
             	//return pFactory.newAttribute(pFactory.stringToQName(attr1),val1,vconv.getXsdType(val1));
-            	if (ValueConverter.QNAME_XSD_QNAME.equals(theType)) {
+            	if (Name.QNAME_XSD_QNAME.equals(theType)) {
                 	return pFactory.newAttribute(stringToQName(attr1),
                 	                             //pFactory.stringToQName((String)theValue),
                 	                             theValue,
@@ -505,11 +506,11 @@ public class TreeTraversal {
             } else if (val1 instanceof InternationalizedString) {
             	return pFactory.newAttribute(stringToQName(attr1),
             	                             val1,
-            	                             ValueConverter.QNAME_XSD_STRING);	
+            	                             Name.QNAME_XSD_STRING);	
             } else { // TODO what case is it?
                 return pFactory.newAttribute(stringToQName(attr1),
                                              val1,
-                                             ValueConverter.QNAME_XSD_STRING);	            	
+                                             Name.QNAME_XSD_STRING);	            	
             }
 
         case PROV_NParser.STRING:
@@ -542,7 +543,7 @@ public class TreeTraversal {
             QName v2;
             
             if (ast.getChild(1)==null) {
-                v2=ValueConverter.QNAME_XSD_QNAME;
+                v2=Name.QNAME_XSD_QNAME;
                 //v1="\"" + v1 + "\"";
                 Object ooo=stringToQName(v1);
                 return convertTypedLiteral(v2,ooo);

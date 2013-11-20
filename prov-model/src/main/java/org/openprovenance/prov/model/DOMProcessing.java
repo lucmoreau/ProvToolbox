@@ -23,7 +23,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 final public class DOMProcessing {
-    private static final QName QNAME_RDF_LITERAL = ValueConverter.QNAME_RDF_LITERAL;
+    private static final QName QNAME_RDF_LITERAL = Name.QNAME_RDF_LITERAL;
     private static final String RDF_PREFIX = QNAME_RDF_LITERAL.getPrefix();
     private static final String RDF_NAMESPACE = QNAME_RDF_LITERAL.getNamespaceURI();
     private static final String RDF_LITERAL = qnameToString(QNAME_RDF_LITERAL);
@@ -235,7 +235,7 @@ final public class DOMProcessing {
 	    return newElement(elementName, 
 	                      (QName) value);
 
-	} else if (type.equals(ValueConverter.QNAME_RDF_LITERAL)) {
+	} else if (type.equals(Name.QNAME_RDF_LITERAL)) {
 	    return newElement(elementName,
 			      (org.w3c.dom.Element) attribute.getValueAsObject());
 
@@ -262,12 +262,12 @@ final public class DOMProcessing {
                 : DOMProcessing.stringToQName(typeAsString, el);
 
         if (type == null)
-            type = ValueConverter.QNAME_XSD_STRING;
-        if (type.equals(ValueConverter.QNAME_XSD_QNAME)) {
+            type = Name.QNAME_XSD_STRING;
+        if (type.equals(Name.QNAME_XSD_QNAME)) {
             QName qn = DOMProcessing.stringToQName(child, el);
             Attribute x= pFactory.newAttribute(namespace, local, prefix, qn, type);
             return x;
-        } else if (type.equals(ValueConverter.QNAME_RDF_LITERAL)) {
+        } else if (type.equals(Name.QNAME_RDF_LITERAL)) {
             NodeList nodes=el.getChildNodes();
             org.w3c.dom.Element content=null;
             for (int i=0; i<nodes.getLength(); i++) {

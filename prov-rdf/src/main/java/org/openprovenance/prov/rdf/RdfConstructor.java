@@ -19,6 +19,7 @@ import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Key;
+import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
@@ -454,7 +455,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
     private LITERAL newLiteral(XMLGregorianCalendar time) {
 	return gb.newLiteral(time.toString(),
-			     ValueConverter.QNAME_XSD_HASH_DATETIME);
+			     Name.QNAME_XSD_HASH_DATETIME);
     }
 
     public void assertQualifiedInfluence(QName subject, QName infl,

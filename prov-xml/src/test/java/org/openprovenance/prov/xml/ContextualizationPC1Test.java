@@ -14,6 +14,7 @@ import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.HasOther;
+import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasDerivedFrom;
@@ -144,7 +145,7 @@ public class ContextualizationPC1Test extends TestCase {
 	Entity bunEntity = pFactory.newEntity(bun.getId());
 	Entity a = pFactory.newEntity(new QName(EX_NS, globalA1.getId().getLocalPart()));
 	MentionOf ctx = pFactory.newMentionOf(a, globalA1, bunEntity);
-	a.getOther().add(pFactory.newOther(DOT_NS, DOT_PREFIX, "color", "blue", ValueConverter.QNAME_XSD_STRING));
+	a.getOther().add(pFactory.newOther(DOT_NS, DOT_PREFIX, "color", "blue", Name.QNAME_XSD_STRING));
 
 	graph.getStatementOrBundle().add(bunEntity);
 	graph.getStatementOrBundle().add(a);
@@ -166,12 +167,12 @@ public class ContextualizationPC1Test extends TestCase {
     
     public void addValue(HasOther p1, String val) {
 	p1.getOther().add(pFactory.newOther(PC1_NS, "value", PC1_PREFIX, val, 
-	                                     org.openprovenance.prov.model.ValueConverter.QNAME_XSD_STRING));
+	                                     org.openprovenance.prov.model.Name.QNAME_XSD_STRING));
     }
 
     public void addUrl(HasOther p1, String val) {
 	p1.getOther().add(pFactory.newOther(PC1_NS, "url", PC1_PREFIX, val, 
-	                                     org.openprovenance.prov.model.ValueConverter.QNAME_XSD_STRING));
+	                                     org.openprovenance.prov.model.Name.QNAME_XSD_STRING));
     }
 
     
@@ -180,7 +181,7 @@ public class ContextualizationPC1Test extends TestCase {
     }
     public Used newUsed(QName activity, String role, QName entity){
 	Used u1 = pFactory.newUsed(activity, entity);
-	u1.getRole().add(pFactory.newRole(role,org.openprovenance.prov.model.ValueConverter.QNAME_XSD_STRING));
+	u1.getRole().add(pFactory.newRole(role,org.openprovenance.prov.model.Name.QNAME_XSD_STRING));
 	return u1;
 	
     }
@@ -200,28 +201,28 @@ public class ContextualizationPC1Test extends TestCase {
 	Activity p1 = pFactory.newActivity(q("p1"), "align_warp 1");
 	List<Type> o = p1.getType();
 
-	o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,ValueConverter.QNAME_XSD_ANY_URI));
+	o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,Name.QNAME_XSD_ANY_URI));
 
-	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, ValueConverter.QNAME_XSD_ANY_URI);
-	pFactory.addType(p1, 10, ValueConverter.QNAME_XSD_INT);
-	pFactory.addType(p1, -10, ValueConverter.QNAME_XSD_INT);
-	pFactory.addType(p1, -10.55, ValueConverter.QNAME_XSD_FLOAT);
-	pFactory.addType(p1, "abc", ValueConverter.QNAME_XSD_STRING);
-	pFactory.addType(p1, true, ValueConverter.QNAME_XSD_BOOLEAN);
+	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p1, 10, Name.QNAME_XSD_INT);
+	pFactory.addType(p1, -10, Name.QNAME_XSD_INT);
+	pFactory.addType(p1, -10.55, Name.QNAME_XSD_FLOAT);
+	pFactory.addType(p1, "abc", Name.QNAME_XSD_STRING);
+	pFactory.addType(p1, true, Name.QNAME_XSD_BOOLEAN);
 	pFactory.addType(p1, URI.create("http://www.example.com/hi"));
 
 	Activity p2 = pFactory.newActivity(q("p2"), "align_warp 2");
-	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, ValueConverter.QNAME_XSD_ANY_URI);
+	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, Name.QNAME_XSD_ANY_URI);
 
 	Activity p3 = pFactory.newActivity(q("p3"), "align_warp 3");
-	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP, ValueConverter.QNAME_XSD_ANY_URI);
+	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP, Name.QNAME_XSD_ANY_URI);
 
 	Activity p4 = pFactory.newActivity(q("p4"), "align_warp 4");
 
-	pFactory.addType(p4, PRIMITIVE_ALIGN_WARP, ValueConverter.QNAME_XSD_ANY_URI);
+	pFactory.addType(p4, PRIMITIVE_ALIGN_WARP, Name.QNAME_XSD_ANY_URI);
 
 	Activity p5 = pFactory.newActivity(q("p5"), "Reslice 1");
-	pFactory.addType(p5, PRIMITIVE_RESLICE, ValueConverter.QNAME_XSD_ANY_URI);
+	pFactory.addType(p5, PRIMITIVE_RESLICE, Name.QNAME_XSD_ANY_URI);
 
 	Activity p6 = pFactory.newActivity(q("p6"), "Reslice 2");
 	pFactory.addType(p6, PRIMITIVE_RESLICE);

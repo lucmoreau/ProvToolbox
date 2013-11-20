@@ -37,6 +37,7 @@ import org.openprovenance.prov.model.HasValue;
 import org.openprovenance.prov.model.InternationalizedString;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Location;
+import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.Helper;
@@ -544,11 +545,11 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		iString.setLang(lang);
 		return pf.newAttribute(elementName,
 				       iString,
-				       ValueConverter.QNAME_PROV_INTERNATIONALIZED_STRING);
+				       Name.QNAME_PROV_INTERNATIONALIZED_STRING);
 	    } else if (struct.has("type")) {
 		String datatypeAsString = struct.get("type").getAsString();
 		QName xsdType = ns.stringToQName(datatypeAsString);
-		if (xsdType.equals(ValueConverter.QNAME_XSD_QNAME)) {
+		if (xsdType.equals(Name.QNAME_XSD_QNAME)) {
 		    return pf.newAttribute(elementName,
 					   ns.stringToQName(value), xsdType);
 		} else {
@@ -562,7 +563,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		iString.setValue(value);
 		return pf.newAttribute(elementName,
 				       iString,
-				       ValueConverter.QNAME_PROV_INTERNATIONALIZED_STRING);
+				       Name.QNAME_PROV_INTERNATIONALIZED_STRING);
 	    }
 	}
     }

@@ -52,17 +52,16 @@ public class Utility {
 	RepositoryHelper rHelper = new RepositoryHelper();
 
 	RdfConstructor rdfc = new RdfConstructor(new SesameGraphBuilder(rep));
-	rdfc.getNamespaceTable().putAll(document.getNss());
-	rdfc.getNamespaceTable().put("xsd", "http://www.w3.org/2001/XMLSchema#");
-	rdfc.getNamespaceTable().put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+	rdfc.setNamespace(document.getNamespace());
+	rdfc.getNamespace().register("xsd", "http://www.w3.org/2001/XMLSchema#");
+	rdfc.getNamespace().register("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 	
-
-	BeanTraversal bt = new BeanTraversal(rdfc,pFactory, new ValueConverter(pFactory));
+	BeanTraversal bt = new BeanTraversal(rdfc,pFactory);
 	bt.convert(document);
 	
 
 	rHelper.dumpToRDF(filename, rep, format, 
-			  rdfc.getNamespaceTable());
+			  rdfc.getNamespace());
     }
     
 

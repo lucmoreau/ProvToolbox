@@ -146,7 +146,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
 
     
     
-    static ValueConverter vc=new ValueConverter(ProvFactory.getFactory());
+    static ValueConverter vc=new ValueConverter(ProvFactory.getFactory(), null);
 	
     transient AValue avalue;
     

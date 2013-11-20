@@ -79,8 +79,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
 
     protected DatatypeFactory dataFactory;
-    /** Note, this method now makes it stateful :-( */
-    private Hashtable<String, String> namespaces = null;
     protected ObjectFactory of;
 
     
@@ -88,19 +86,12 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     public ProvFactory() {
 	super(new ObjectFactory2());
 	init();
-	setNamespaces(new Hashtable<String, String>());
     }
 
-    public ProvFactory(Hashtable<String, String> namespaces) {
-	super(new ObjectFactory2(), namespaces);
-	this.namespaces = namespaces;
-	init();
-    }
 
     public ProvFactory(ObjectFactory2 of) {
 	super(of);
 	init();
-	setNamespaces(new Hashtable<String, String>());
     }
 
     /*

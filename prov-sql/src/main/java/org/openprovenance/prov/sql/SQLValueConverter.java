@@ -5,7 +5,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 public class SQLValueConverter {
-    static ValueConverter conv=new ValueConverter(new ProvFactory());
+    static ValueConverter conv=new ValueConverter(new ProvFactory(),null);
 
     static public AValue convertToAValue(QName datatype, Object value) {
 	if (datatype.equals(ValueConverter.QNAME_XSD_STRING)) {

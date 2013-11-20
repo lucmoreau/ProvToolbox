@@ -1,6 +1,5 @@
 package org.openprovenance.prov.rdf;
 
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Collection;
 
@@ -20,6 +19,7 @@ import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Key;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.TypedValue;
@@ -43,10 +43,14 @@ import org.openprovenance.prov.model.DictionaryMembership;
 public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	ModelConstructor {
 
-    private Hashtable<String, String> namespaceTable = new Hashtable<String, String>();
+    private Namespace namespaceTable ;
 
-    public Hashtable<String, String> getNamespaceTable() {
+    public Namespace getNamespace() {
 	return namespaceTable;
+    }
+    
+    public void setNamespace(Namespace ns) {
+	namespaceTable=ns;
     }
 
     final GraphBuilder<RESOURCE, LITERAL, STATEMENT> gb;
@@ -321,7 +325,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     }
 
     @Override
-    public Document newDocument(Hashtable<String, String> namespaces,
+    public Document newDocument(Namespace namespaces,
 				Collection<Statement> statements,
 				Collection<NamedBundle> bundles) {
 	// At this stage nothing left to do
@@ -330,22 +334,22 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
     @Override
     public NamedBundle newNamedBundle(QName id,
-				      Hashtable<String, String> namespaces,
+				      Namespace namespaces,
 				      Collection<Statement> statements) {
 	// At this stage nothing left to do
 	return null;
     }
 
     @Override
-    public void startDocument(Hashtable<String, String> namespaces) {
+    public void startDocument(Namespace namespaces) {
 	if (namespaces != null) {
-	    getNamespaceTable().putAll(namespaces);
+	    namespaceTable=namespaces;
 	}
 	gb.setContext();
     }
 
     @Override
-    public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
+    public void startBundle(QName bundleId, Namespace namespaces) {
 	//System.out.println("$$$$$$$$$$$$ in startBundle");
 	// TODO: bundle name does not seem to be interpreted according to the
 	// prefix declared in bundle.
@@ -557,7 +561,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
  	LITERAL lit = null;
  	String value;
  	if (val.getValue() instanceof QName) {
- 	    value = org.openprovenance.prov.xml.Helper.qnameToString((QName) val.getValue());
+ 	    value = Namespace.qnameToStringWithNamespace((QName) val.getValue());
  	} else {
  	    value = val.getValue().toString(); //FIXME: what about Internatioanlized string.
  	}
@@ -569,7 +573,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	LITERAL lit = null;
 	String value;
 	if (val instanceof QName) {
-	    value = org.openprovenance.prov.xml.Helper.qnameToString((QName) val);
+	    value = Namespace.qnameToStringWithNamespace((QName) val);
 	} else {
 	    value = val.toString();
 	}
@@ -577,7 +581,8 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	return lit;
     }
 
-    ValueConverter vc = new ValueConverter(ProvFactory.getFactory());
+    ValueConverter vc = new ValueConverter(ProvFactory.getFactory(),null
+                                           );
 
     @Override
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,

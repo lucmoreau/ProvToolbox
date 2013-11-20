@@ -27,6 +27,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
 
@@ -224,10 +225,29 @@ public class NamedBundle
         return equals(null, null, object, strategy);
     }
 
-   /* added in pom.xml */@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable<String,String> nss=null; public java.util.Hashtable<String,String> getNss() { return nss;} public void setNss(java.util.Hashtable<String,String> s) { nss=s; };public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
-        int currentHashCode = super.hashCode(locator, strategy);
-        {
-            List<Statement> theStatement;
+   
+    
+    @javax.xml.bind.annotation.XmlTransient 
+    private Namespace namespace=null; 
+    
+    @Transient
+    @Override
+    public Namespace getNamespace() { 
+	return namespace;
+    } 
+    
+    @Transient
+    @Override
+    public void setNamespace(Namespace namespace) { 
+	this.namespace=namespace; 
+    }
+   
+    
+    
+    public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
+	int currentHashCode = super.hashCode(locator, strategy);
+	{
+	    List<Statement> theStatement;
             theStatement = (((this.statement!= null)&&(!this.statement.isEmpty()))?this.getStatement():null);
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "statement", theStatement), currentHashCode, theStatement);
         }

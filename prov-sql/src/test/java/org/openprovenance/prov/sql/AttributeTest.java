@@ -5,7 +5,6 @@ import java.util.Hashtable;
 
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.xml.ValueConverter;
 
 public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
   
@@ -15,8 +14,7 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 
     public AttributeTest(String testName) {
 	super(testName);
-	pFactory = new ProvFactory(namespaces);
-	vconv=new ValueConverter(pFactory);
+	pFactory = new ProvFactory();
 
 	u.setUp();
     }

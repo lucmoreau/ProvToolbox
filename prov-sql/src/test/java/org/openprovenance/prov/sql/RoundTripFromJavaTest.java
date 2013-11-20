@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import javax.xml.bind.JAXBException;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.xml.UncheckedTestException;
@@ -25,25 +26,12 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
     static final ProvUtilities util=new ProvUtilities();
 
 
-    static final Hashtable<String, String> namespaces;
 
-    public static ValueConverter vconv;
-
-    static Hashtable<String, String> updateNamespaces (Hashtable<String, String> nss) {
-        nss.put(EX_PREFIX, EX_NS);
-        nss.put(EX2_PREFIX, EX2_NS);
-        nss.put("_", EX3_NS);
-	return nss;
-    }
     static  void setNamespaces() {
-	pFactory.resetNamespaces();
-	pFactory.getNss().putAll(updateNamespaces(new Hashtable<String, String>()));
     }
 
     static {
-	namespaces = updateNamespaces(new Hashtable<String, String>());
-	pFactory = new ProvFactory(namespaces);
-	vconv=new ValueConverter(pFactory);
+	pFactory = new ProvFactory();
     }
 	private DocumentEquality documentEquality;
 
@@ -65,9 +53,8 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
      */
 
     public void updateNamespaces(Document doc) {
-	Hashtable<String, String> nss = new Hashtable<String, String>();
-	updateNamespaces(nss);
-	doc.setNss(nss);
+	Namespace ns=Namespace.gatherNamespaces(doc);
+	doc.setNamespace(ns);
     }
    
     public String extension() {

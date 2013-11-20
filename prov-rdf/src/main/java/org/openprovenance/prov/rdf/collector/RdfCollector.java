@@ -29,6 +29,7 @@ import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Key;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.ValueConverter;
@@ -98,9 +99,10 @@ public class RdfCollector extends RDFHandlerBase {
 	this.collators = new HashMap<QName, HashMap<QName, List<Statement>>>();
 	this.revnss = new Hashtable<String, String>();
 	this.document = pFactory.newDocument();
-	this.valueConverter = new ValueConverter(pFactory);
+	this.valueConverter = new ValueConverter(pFactory,null);
 	this.bundles = new Hashtable<QName, BundleHolder>();
-	document.setNss(new Hashtable<String, String>());
+	this.namespace=new Namespace();
+	document.setNamespace(this.namespace);
 	handleNamespace(NamespacePrefixMapper.XSD_PREFIX,
 			NamespacePrefixMapper.XSD_HASH_NS);
 	handleNamespace("bnode", BNODE_NS);
@@ -277,6 +279,7 @@ public class RdfCollector extends RDFHandlerBase {
 	}
     }
 
+    Namespace namespace;
     protected Object decodeLiteral(Literal literal) {
 	
 	//System.out.println("+++-----> Literal " + literal.getDatatype());
@@ -289,7 +292,7 @@ public class RdfCollector extends RDFHandlerBase {
 
 	if (literal.getDatatype() != null) {
 	    if (literal instanceof URI) {
-		QName qname = (QName) pFactory.newQName(literal.getDatatype()
+		QName qname = (QName) namespace.stringToQName(literal.getDatatype()
 							       .stringValue());
 		dataType = qname.getNamespaceURI() + qname.getLocalPart();
 	    } else {
@@ -298,7 +301,7 @@ public class RdfCollector extends RDFHandlerBase {
 	}
 
 	if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "QName")) {
-	    return pFactory.newQName(literal.stringValue());
+	    return namespace.stringToQName(literal.stringValue());
 	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "string")) {
 	    return literal.stringValue();
 	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
@@ -847,8 +850,8 @@ public class RdfCollector extends RDFHandlerBase {
 	if (prefix.equals("")) {
 	    prefix = "def";
 	}
-	this.document.getNss().put(prefix, namespace);
-	pFactory.setNamespaces(this.document.getNss());
+	this.document.getNamespace().register(prefix, namespace);
+	//pFactory.setNamespaces(this.document.getNss());
 	this.revnss.put(namespace, prefix);
     }
 

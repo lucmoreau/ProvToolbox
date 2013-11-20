@@ -267,7 +267,7 @@ public class InteropFramework {
 			case XML: {
 				ProvSerialiser serial = ProvSerialiser
 						.getThreadProvSerialiser();
-				logger.debug("namespaces " + doc.getNss());
+				logger.debug("namespaces " + doc.getNamespace());
 				serial.serialiseDocument(new File(filename), doc, true);
 				break;
 			}
@@ -369,8 +369,8 @@ public class InteropFramework {
 	}
 
 	public void setNamespaces(Document doc) {
-		if (doc.getNss() == null)
-			doc.setNss(new Hashtable<String, String>());
+		if (doc.getNamespace() == null)
+			doc.setNamespace(new Namespace());
 
 	}
 

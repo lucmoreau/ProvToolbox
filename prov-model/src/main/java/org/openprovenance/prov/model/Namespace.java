@@ -8,6 +8,10 @@ import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.ProvUtilities;
 
+/** A class to manipulate Namespaces when creating, serializing and converting prov documents. 
+ * @author Luc Moreau 
+ * */
+
 public class Namespace {
     
     private static ThreadLocal<Namespace> threadNamespace =

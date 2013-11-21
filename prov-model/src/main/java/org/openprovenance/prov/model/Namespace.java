@@ -152,7 +152,9 @@ public class Namespace {
 	    return null;
 	int index = id.indexOf(':');
 	if (index == -1) {
-	    return new QName(getDefaultNamespace(), id);
+	    String tmp=getDefaultNamespace();
+	    if (tmp==null) throw new NullPointerException("Namespace.stringToQName(: Null namespace for "+id);
+	    return new QName(tmp, id);
 	}
 	String prefix = id.substring(0, index);
 	String local = id.substring(index + 1, id.length());
@@ -164,7 +166,9 @@ public class Namespace {
 								 // XML ns.
 			     local, prefix);
 	} else {
-	    return new QName(prefixes.get(prefix), local, prefix);
+	    String tmp=prefixes.get(prefix);
+	    if (tmp==null) throw new NullPointerException("Namespace.stringToQName(: Null namespace for "+id);
+	    return new QName(tmp, local, prefix);
 	}
     }
     

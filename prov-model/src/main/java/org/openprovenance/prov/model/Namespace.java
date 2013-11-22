@@ -124,6 +124,11 @@ public class Namespace {
  	}
      }
 
+    public void unregister(String prefix, String namespace) {
+       If (prefixes.get(prefix)!=null){
+          Prefixes.remove(prefix);
+       }
+    }
     
     static ProvUtilities u=new ProvUtilities();
     

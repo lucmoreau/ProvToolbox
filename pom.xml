@@ -136,7 +136,7 @@
     </snapshotRepository>
 
     <site>
-      <id>openprovenance.org</id>
+      <id>websites1.ecs.soton.ac.uk</id>
       <name>Site Deployment location</name>
       <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/site/prov</url>
     </site>
@@ -173,7 +173,7 @@
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-ssh</artifactId>
-        <version>1.0</version>
+        <version>2.5</version>
       </extension>
     </extensions>  
 

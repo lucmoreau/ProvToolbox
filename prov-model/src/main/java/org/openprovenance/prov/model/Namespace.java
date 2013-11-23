@@ -112,7 +112,7 @@ public class Namespace {
      static final public String xmlns = "pre_";
      int prefixCount = 0;
 
-     void newPrefix(String namespace) {
+     public void newPrefix(String namespace) {
  	boolean success = false;
  	while (!success) {
  	    String old=namespaces.get(namespace);

@@ -342,16 +342,6 @@ public class RdfCollector extends RDFHandlerBase {
 	}
     }
 
-    private String getXsdType(String shorttype) {
-	String xsdType = "";
-	if (revnss.containsKey(NamespacePrefixMapper.XSD_HASH_NS)) {
-	    xsdType = revnss.get(NamespacePrefixMapper.XSD_HASH_NS) + ":"
-		    + shorttype;
-	} else {
-	    xsdType = NamespacePrefixMapper.XSD_HASH_NS + shorttype;
-	}
-	return xsdType;
-    }
 
     private void handleTypes(ProvType[] types, QName context, QName subject) {
 	for (ProvType type : types) {
@@ -426,7 +416,7 @@ public class RdfCollector extends RDFHandlerBase {
 
     }
 
-    protected QName convertURIToQName(URI uri) {
+    protected QName convertURIToQNameOLD(URI uri) {
 	// It is not necessary to specify a prefix for a QName. This code was
 	// breaking on the jpl trace.
 	QName qname;
@@ -439,6 +429,26 @@ public class RdfCollector extends RDFHandlerBase {
 	    handleNamespace(prefix, uri.getNamespace());
 	    qname = new QName(uri.getNamespace(), uri.getLocalName(), prefix);
 	}
+	return qname;
+    }
+    
+    protected QName convertURIToQName(URI uri) {
+	QName qname;
+	String uriNamespace = uri.getNamespace();
+	String prefix=namespace.getNamespaces().get(uriNamespace);
+	String uriLocalName = uri.getLocalName();
+	if (prefix!=null) {
+	    qname = new QName(uriNamespace, uriLocalName, prefix);
+	} else {
+	    String defaultNS=namespace.getDefaultNamespace();
+	    if ((defaultNS!=null) && (defaultNS.equals(uriNamespace))) {
+		qname = new QName(uriNamespace, uriLocalName);
+	    } else {
+		namespace.newPrefix(uriNamespace);
+		String pref=namespace.getNamespaces().get(uriNamespace);
+		qname = new QName(uriNamespace, uriLocalName, pref);
+	    }
+	}	
 	return qname;
     }
 

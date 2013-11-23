@@ -152,8 +152,8 @@ public class AttributeTest extends TestCase {
     }
     
     
-    public boolean checkSchema(String name)
-    {
+    public boolean checkSchema(String name)  
+    {  // disable schema checking for the following because it relies on xsd1.1
 	if(name.endsWith("33"+extension())
 		|| name.endsWith("33"+extension())
 		|| name.endsWith("34"+extension())
@@ -509,16 +509,28 @@ public class AttributeTest extends TestCase {
  	makeDocAndTest(a,"target/attr_entity_one_value_attr"+i);
      }
 
-    public void testEntityWithOneLocationAttribute(int i) throws JAXBException  {
- 	Entity a = pFactory.newEntity(q("en_l" + i));
- 	
+    public void testAssociationWithOneRoleAttribute(int i) throws JAXBException  {
+ 	WasAssociatedWith a = pFactory.newWasAssociatedWith(q("ass_r" + i),
+ 	                                                    pFactory.newIDRef(q("a1")),
+ 	                                                    pFactory.newIDRef(q("ag1")));
 
  	Object [] pair= attributeValues[i];
  	Object value=pair[0];
  	QName type=(QName) pair[1];
- 	a.getLocation().add(pFactory.newLocation(value,type));
- 	makeDocAndTest(a,"target/attr_entity_one_location_attr"+i);
+ 	a.getRole().add(pFactory.newRole(value,type));
+ 	makeDocAndTest(a,"target/attr_association_one_role_attr"+i);
      }
+
+    public void testEntityWithOneLocationAttribute(int i) throws JAXBException  {
+  	Entity a = pFactory.newEntity(q("en_l" + i));
+  	
+
+  	Object [] pair= attributeValues[i];
+  	Object value=pair[0];
+  	QName type=(QName) pair[1];
+  	a.getLocation().add(pFactory.newLocation(value,type));
+  	makeDocAndTest(a,"target/attr_entity_one_location_attr"+i);
+      }
 
     public void testEntityWithOneOtherAttribute(int i) throws JAXBException  {
  	Entity a = pFactory.newEntity(q("en_o" + i));
@@ -1079,6 +1091,142 @@ public class AttributeTest extends TestCase {
     }
     public void testEntityWithOneAttribute44 () throws JAXBException  {
 	testEntityWithOneTypeAttribute(44);
+    }
+
+    public void testAssociationWithOneRoleAttribute0 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(0);
+    }
+    public void testAssociationWithOneRoleAttribute1 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(1);
+    }
+    public void testAssociationWithOneRoleAttribute2 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(2);
+    }
+    public void testAssociationWithOneRoleAttribute3 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(3);
+    }
+    public void testAssociationWithOneRoleAttribute4 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(4);
+    }
+    public void testAssociationWithOneRoleAttribute5 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(5);
+    }
+    public void testAssociationWithOneRoleAttribute6 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(6);
+    }
+    public void testAssociationWithOneRoleAttribute7 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(7);
+    }
+    public void testAssociationWithOneRoleAttribute8 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(8);
+    }
+    public void testAssociationWithOneRoleAttribute9 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(9);
+    }
+    public void testAssociationWithOneRoleAttribute10 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(10);
+    }
+    public void testAssociationWithOneRoleAttribute11 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(11);
+    }
+    public void testAssociationWithOneRoleAttribute12 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(12);
+    }
+    public void testAssociationWithOneRoleAttribute13 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(13);
+    }
+    public void testAssociationWithOneRoleAttribute14 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(14);
+    }
+    public void testAssociationWithOneRoleAttribute15 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(15);
+    }
+    public void testAssociationWithOneRoleAttribute16 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(16);
+    }
+    public void testAssociationWithOneRoleAttribute17 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(17);
+    }
+    public void testAssociationWithOneRoleAttribute18 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(18);
+    }
+    public void testAssociationWithOneRoleAttribute19 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(19);
+    }
+    public void testAssociationWithOneRoleAttribute20 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(20);
+    }
+    public void testAssociationWithOneRoleAttribute21 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(21);
+    }
+    public void testAssociationWithOneRoleAttribute22 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(22);
+    }
+    public void testAssociationWithOneRoleAttribute23 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(23);
+    }
+    public void testAssociationWithOneRoleAttribute24 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(24);
+    }
+    public void testAssociationWithOneRoleAttribute25 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(25);
+    }
+    public void testAssociationWithOneRoleAttribute26 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(26);
+    }
+    public void testAssociationWithOneRoleAttribute27 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(27);
+    }
+    public void testAssociationWithOneRoleAttribute28 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(28);
+    }
+    public void testAssociationWithOneRoleAttribute29 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(29);
+    }
+    public void testAssociationWithOneRoleAttribute30 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(30);
+    }
+    public void testAssociationWithOneRoleAttribute31 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(31);
+    }
+    public void testAssociationWithOneRoleAttribute32 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(32);
+    }
+    public void testAssociationWithOneRoleAttribute33 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(33);
+    }
+    public void testAssociationWithOneRoleAttribute34 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(34);
+    }
+    public void testAssociationWithOneRoleAttribute35 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(35);
+    }
+    public void testAssociationWithOneRoleAttribute36 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(36);
+    }
+    public void testAssociationWithOneRoleAttribute37 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(37);
+    }
+    public void testAssociationWithOneRoleAttribute38 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(38);
+    }
+    public void testAssociationWithOneRoleAttribute39 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(39);
+    }
+    public void testAssociationWithOneRoleAttribute40 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(40);
+    }
+    public void testAssociationWithOneRoleAttribute41 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(41);
+    }
+    public void testAssociationWithOneRoleAttribute42 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(42);
+    }
+    public void testAssociationWithOneRoleAttribute43 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(43);
+    }
+    public void testAssociationWithOneRoleAttribute44 () throws JAXBException  {
+	testAssociationWithOneRoleAttribute(44);
     }
   
     

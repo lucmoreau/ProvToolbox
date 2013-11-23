@@ -1039,6 +1039,9 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return newValue(value,vconv.getXsdType(value));
       }
 
+    public WasAssociatedWith newWasAssociatedWith(QName id) {
+	return newWasAssociatedWith(id, (QName)null,(QName)null);
+    }
     public WasAssociatedWith newWasAssociatedWith(QName id, Activity eid2,
 						  Agent eid1) {
 	return newWasAssociatedWith(id, newIDRef(eid2.getId()),

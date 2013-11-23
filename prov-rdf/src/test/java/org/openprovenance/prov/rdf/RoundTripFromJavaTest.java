@@ -5,8 +5,6 @@ import java.io.StringWriter;
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.HasExtensibility;
-import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.UncheckedTestException;
 import org.openrdf.rio.RDFFormat;
@@ -14,7 +12,7 @@ import org.openrdf.rio.RDFFormat;
 public class RoundTripFromJavaTest extends
 		org.openprovenance.prov.xml.RoundTripFromJavaTest {
     
-    
+ 
 
 	public RoundTripFromJavaTest(String name)
 	{
@@ -154,4 +152,10 @@ public class RoundTripFromJavaTest extends
 			e.printStackTrace();
 		}
 	}
+	@Override
+	public boolean checkSchema(String name) {
+		return false;
+	}
+
+	
 }

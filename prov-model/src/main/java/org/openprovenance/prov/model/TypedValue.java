@@ -43,7 +43,7 @@ public interface TypedValue {
      *     {@link Object }
      *     
      */
-    public abstract Object getValueAsJava(ValueConverter vconv);
+    public abstract Object getValueAsObject(ValueConverter vconv);
 
     /**
      * Sets the value of the value property.
@@ -53,7 +53,7 @@ public interface TypedValue {
      *     {@link Object }
      *     
      */
-    public abstract void setValueAsJava(Object valueAsJava);
+    public abstract void setValueAsObject(Object valueAsJava);
 
     /*
      * Sets the value of the type property.
@@ -64,5 +64,7 @@ public interface TypedValue {
      *     
      */
     public abstract void setType(QName value);
+
+    public abstract Object getValueAsObject();
 
 }

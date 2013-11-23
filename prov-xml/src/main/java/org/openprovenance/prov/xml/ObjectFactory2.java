@@ -11,8 +11,28 @@ package org.openprovenance.prov.xml;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
-import javax.xml.namespace.QName; import org.openprovenance.prov.model.Type;import org.openprovenance.prov.model.Document;import org.openprovenance.prov.model.URIWrapper;import org.openprovenance.prov.model.Location;import org.openprovenance.prov.model.Value;import org.openprovenance.prov.model.Used;import org.openprovenance.prov.model.WasGeneratedBy;import org.openprovenance.prov.model.WasDerivedFrom;import org.openprovenance.prov.model.WasStartedBy;import org.openprovenance.prov.model.WasEndedBy;import org.openprovenance.prov.model.WasGeneratedBy;import org.openprovenance.prov.model.WasInvalidatedBy;import org.openprovenance.prov.model.MentionOf;import org.openprovenance.prov.model.WasInfluencedBy;import org.openprovenance.prov.model.WasInformedBy;import org.openprovenance.prov.model.SpecializationOf;import org.openprovenance.prov.model.AlternateOf;import org.openprovenance.prov.model.Entity;import org.openprovenance.prov.model.Agent;import org.openprovenance.prov.model.Activity;import org.openprovenance.prov.model.Entity;import org.openprovenance.prov.model.WasAttributedTo;import org.openprovenance.prov.model.ActedOnBehalfOf;import org.openprovenance.prov.model.WasAssociatedWith; 
-
+import javax.xml.namespace.QName;
+import org.openprovenance.prov.model.Type;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Location;
+import org.openprovenance.prov.model.Value;
+import org.openprovenance.prov.model.Used;
+import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasDerivedFrom;
+import org.openprovenance.prov.model.WasStartedBy;
+import org.openprovenance.prov.model.WasEndedBy;
+import org.openprovenance.prov.model.WasInvalidatedBy;
+import org.openprovenance.prov.model.MentionOf;
+import org.openprovenance.prov.model.WasInfluencedBy;
+import org.openprovenance.prov.model.WasInformedBy;
+import org.openprovenance.prov.model.SpecializationOf;
+import org.openprovenance.prov.model.AlternateOf;
+import org.openprovenance.prov.model.Entity;
+import org.openprovenance.prov.model.Agent;
+import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.WasAttributedTo;
+import org.openprovenance.prov.model.ActedOnBehalfOf;
+import org.openprovenance.prov.model.WasAssociatedWith;
 
 /**
  * This object contains factory methods for each 
@@ -191,6 +211,15 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     public Type createType() {
         return new org.openprovenance.prov.xml.Type();
     }
+    
+    /**
+     * Create an instance of {@link Type }
+     * 
+     */
+    public Other createOther() {
+        return new org.openprovenance.prov.xml.Other();
+    }
+
 
     /**
      * Create an instance of {@link ActedOnBehalfOf }
@@ -416,6 +445,15 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
         return new org.openprovenance.prov.xml.TypedValue();
     }
 
+    /**
+     * Create an instance of {@link Key }
+     * 
+     */
+    public Key createKey() {
+        return new org.openprovenance.prov.xml.Key();
+    }
+
+    
     /**
      * Create an instance of {@link NamedBundle }
      * 

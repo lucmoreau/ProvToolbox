@@ -4,12 +4,12 @@ import java.util.LinkedList;
 
 import javax.xml.namespace.QName;
 import java.util.Hashtable;
-import javax.xml.bind.JAXBElement;
 
 
 
 public class AttributeProcessor {
 
+    
     final private Hashtable<String,Hashtable<String,List<Attribute>>> namespaceIndex=
         new Hashtable<String,Hashtable<String,List<Attribute>>>();
     

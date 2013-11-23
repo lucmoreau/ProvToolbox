@@ -19,7 +19,6 @@ import org.openprovenance.prov.model.Document;
  * 
  */
 
-
 public class DocumentEquality {
 	static Logger logger = Logger.getLogger(DocumentEquality.class);
 	
@@ -70,7 +69,7 @@ public class DocumentEquality {
 		Method[] allMethods = class1.getDeclaredMethods();
 		for (Method m : allMethods) {
 			String methodName = m.getName(); 
-			if (methodName.startsWith("get")) {
+			if (methodName.startsWith("get")  && (!methodName.equals("getAll"))) {
 				try {
 					Object attr1 = m.invoke(r1);
 					Object attr2 = m.invoke(r2);

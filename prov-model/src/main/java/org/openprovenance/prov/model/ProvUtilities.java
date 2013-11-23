@@ -6,12 +6,9 @@ import java.util.LinkedList;
 
 import javax.xml.namespace.QName;
 
-
 /** Utilities for manipulating PROV Descriptions. */
 
 public class ProvUtilities {
-
-
     /*
      * public List<Element> getElements(Bundle g) { List<Element> res = new
      * LinkedList<Element>(); res.addAll(g.getRecords().getEntity());
@@ -286,10 +283,95 @@ public class ProvUtilities {
         return null;
     }
 
-    public Hashtable<String, List<Attribute>> attributesWithNamespace(HasExtensibility e,
+    public Hashtable<String, List<Attribute>> attributesWithNamespace(HasOther e,
                                                                       String namespace) {
-        AttributeProcessor _attrs=new AttributeProcessor(e.getAny()); 
+	List ll=e.getOther();
+        AttributeProcessor _attrs=new AttributeProcessor((List<Attribute>)ll); 
         return _attrs.attributesWithNamespace(namespace);
     }
+    
+    public void forAllStatementOrBundle(List<StatementOrBundle> records, StatementAction action) {
+        for (StatementOrBundle o : records) {
+            doAction(o, action);
+        }
+    }
+    public void forAllStatement(List<Statement> records, StatementAction action) {
+        for (Statement o : records) {
+            doAction(o, action);
+        }
+    }
+
+    public void doAction(StatementOrBundle s, StatementAction action) {
+	switch (s.getKind()) {
+	case PROV_ACTIVITY: 
+	    action.doAction((Activity) s);
+	    break;
+	case PROV_AGENT:
+	    action.doAction((Agent) s);
+	    break;
+	case PROV_ALTERNATE:
+	    action.doAction((AlternateOf) s);
+	    break;
+	case PROV_ASSOCIATION:
+	    action.doAction((WasAssociatedWith) s);
+	    break;
+	case PROV_ATTRIBUTION:
+	    action.doAction((WasAttributedTo) s);
+	    break;
+	case PROV_BUNDLE: 
+	    action.doAction((NamedBundle) s, this);
+	    break;
+	case PROV_COMMUNICATION:
+	    action.doAction((WasInformedBy) s);
+	    break;
+	case PROV_DELEGATION:
+	    action.doAction((ActedOnBehalfOf) s);
+	    break;
+	case PROV_DERIVATION:
+	    action.doAction((WasDerivedFrom) s);
+	    break;
+	case PROV_DICTIONARY_INSERTION:
+	    action.doAction((DerivedByInsertionFrom) s);
+	    break;
+	case PROV_DICTIONARY_MEMBERSHIP:
+	    action.doAction((DictionaryMembership) s);
+	    break;
+	case PROV_DICTIONARY_REMOVAL:
+	    action.doAction((DerivedByRemovalFrom) s);
+	    break;
+	case PROV_END:
+	    action.doAction((WasEndedBy) s);
+	    break;
+	case PROV_ENTITY:
+	    action.doAction((Entity) s);
+	    break;
+	case PROV_GENERATION:
+	    action.doAction((WasGeneratedBy) s);
+	    break;
+	case PROV_INFLUENCE:
+	    action.doAction((WasInfluencedBy) s);
+	    break;
+	case PROV_INVALIDATION:
+	    action.doAction((WasInvalidatedBy) s);
+	    break;
+	case PROV_MEMBERSHIP:
+	    action.doAction((HadMember) s);
+	    break;
+	case PROV_MENTION:
+	    action.doAction((MentionOf) s);
+	    break;
+	case PROV_SPECIALIZATION:
+	    action.doAction((SpecializationOf) s);
+	    break;
+	case PROV_START:
+	    action.doAction((WasStartedBy) s);
+	    break;
+	case PROV_USAGE:
+	    action.doAction((Used) s);
+	    break;	
+	}
+    }
+
+    
 
 }

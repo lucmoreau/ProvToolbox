@@ -9,24 +9,21 @@ public class BeanTraversal {
     final private ModelConstructor c;
     final private ProvFactory pFactory;
     ProvUtilities u=new ProvUtilities();
-    final private ValueConverter vconv;
 
-    public BeanTraversal(ModelConstructor c, ProvFactory pFactory, ValueConverter vconv) {
+    public BeanTraversal(ModelConstructor c, ProvFactory pFactory) {
 	this.c=c;
 	this.pFactory=pFactory;
-	this.vconv=vconv;
     }
 
-    public Document convert(Document b) {
+    public Document convert(Document doc) {
 
 	List<NamedBundle> bRecords = new LinkedList<NamedBundle>();
 
 	List<Statement> sRecords = new LinkedList<Statement>();
 	
-        c.startDocument(b.getNss());
+        c.startDocument(doc.getNamespace());
 
-
-	for (Statement s : u.getStatement(b)) {
+	for (Statement s : u.getStatement(doc)) {
 	    if (s instanceof Entity) {
 		sRecords.add(convert((Entity)s));
 	    } else if (s instanceof Activity) {
@@ -39,19 +36,20 @@ public class BeanTraversal {
 
 	}
 
-	for (NamedBundle bu : u.getNamedBundle(b)) {
+	for (NamedBundle bu : u.getNamedBundle(doc)) {
 	    NamedBundle o = convert(bu);
 	    if (o != null)
 		bRecords.add(o);
 
 	}
-	return c.newDocument(b.getNss(), sRecords, bRecords);
+	return c.newDocument(doc.getNamespace(), sRecords, bRecords);
     }
 
+    
     public NamedBundle convert(NamedBundle b) {
 	List<Statement> sRecords = new LinkedList<Statement>();
 	QName bundleId=b.getId();
-        c.startBundle(bundleId, b.getNss());
+        c.startBundle(bundleId, b.getNamespace());
 
 	for (Statement s : u.getStatement(b)) {
 	    if (s instanceof Entity) {
@@ -65,14 +63,17 @@ public class BeanTraversal {
 	    }
 
 	}
-	return c.newNamedBundle(bundleId, b.getNss(), sRecords);
+	return c.newNamedBundle(bundleId, b.getNamespace(), sRecords);
     }
 
    
     public List<Attribute> convertTypeAttributes(HasType e, List<Attribute> acc) {
 	List<Type> types=e.getType();
 	for (Type type : types) {
-	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_TYPE, type.getValueAsJava(vconv), type.getType()));
+	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_TYPE, 
+	                                  type.getValue(),
+	                                  //type.getValueAsObject(vconv), 
+	                                  type.getType()));
 	}
 	return acc;
     }
@@ -80,7 +81,7 @@ public class BeanTraversal {
     public List<Attribute> convertLabelAttributes(HasLabel e, List<Attribute> acc) {
    	List<InternationalizedString> labels = e.getLabel();
    	for (InternationalizedString label : labels) {
-   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LABEL,label, vconv));
+   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LABEL,label, Name.QNAME_XSD_STRING));
    	}
    	return acc;
     }
@@ -88,7 +89,9 @@ public class BeanTraversal {
     public List<Attribute> convertRoleAttributes(HasRole e, List<Attribute> acc) {
    	List<Role> roles = e.getRole();
    	for (Role role : roles) {
-   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_ROLE,role.getValueAsJava(vconv), role.getType()));
+   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_ROLE,
+   	                                  role.getValue(), 
+   	                                  role.getType()));
    	}
    	return acc;
     }
@@ -96,7 +99,9 @@ public class BeanTraversal {
     public List<Attribute> convertLocationAttributes(HasLocation e, List<Attribute> acc) {
         List<Location> locations = e.getLocation();
         for (Location location : locations) {
-            acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LOCATION,location.getValueAsJava(vconv), location.getType()));
+            acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LOCATION,
+                                          location.getValue(), 
+                                          location.getType()));
         }
         return acc;
     }
@@ -105,15 +110,17 @@ public class BeanTraversal {
     public Object convertValueAttributes(HasValue e, List<Attribute> acc) {
         Value value = e.getValue();
         if (value==null) return acc;
-        acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_VALUE,value.getValueAsJava(vconv), value.getType()));
+        acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_VALUE,
+                                      value.getValue(), 
+                                      value.getType()));
         return acc;     
     }
 
-    public List<Attribute> convertAttributes(HasExtensibility e, List<Attribute> acc) {
-	acc.addAll(e.getAny());
+    public List<Attribute> convertAttributes(HasOther e, List<Attribute> acc) {
+	List ll=e.getOther();
+	acc.addAll((List<Attribute>)ll);
 	return acc;
     }
-
 
        
 
@@ -349,12 +356,17 @@ public class BeanTraversal {
     }
     
     public Relation0 convert(DerivedByRemovalFrom o) {
+    	List<Attribute> attrs=new LinkedList<Attribute>();      
+        convertTypeAttributes(o,attrs);
+        convertLabelAttributes(o,attrs);
+        convertAttributes(o,attrs);
+    	
 	
 	return c.newDerivedByRemovalFrom(o.getId(), 
 	                                 o.getNewDictionary().getRef(), 
 	                                 o.getOldDictionary().getRef(), 
 	                                 o.getKey(), 
-	                                 o.getAny());
+	                                 attrs);
 	                                 
     }
 
@@ -368,11 +380,16 @@ public class BeanTraversal {
     		entries.add(p);
     	    }
     	}
+    	List<Attribute> attrs=new LinkedList<Attribute>();      
+        convertTypeAttributes(o,attrs);
+        convertLabelAttributes(o,attrs);
+        convertAttributes(o,attrs);
+    	
 	return c.newDerivedByInsertionFrom(o.getId(), 
 	                                   o.getNewDictionary().getRef(), 
 	                                   o.getOldDictionary().getRef(), 
 	                                   entries, 
-	                                   o.getAny());
+	                                   attrs);
 
 	
     }

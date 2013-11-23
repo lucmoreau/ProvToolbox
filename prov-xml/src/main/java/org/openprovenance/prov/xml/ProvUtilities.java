@@ -11,15 +11,17 @@ import org.openprovenance.prov.model.RecordAction;
 import org.openprovenance.prov.model.RecordValue;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.IDRef;
+import org.openprovenance.prov.model.StatementAction;
 
 import java.lang.reflect.Method;
 
 /** Utilities for manipulating PROV Descriptions. */
 
-public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities{
+public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
 
     private ProvFactory p = new ProvFactory();
 
+    
     public MentionOf getMentionForRemoteEntity(NamedBundle local,
                                                Entity remoteEntity,
                                                NamedBundle remote) {        
@@ -47,6 +49,7 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities{
      * localEntity, NamedBundle remote) { return
      * getMentionForLocalEntity(local.getRecords(), localEntity, remote); }
      */
+    
 
     public MentionOf getMentionForLocalEntity(NamedBundle local,
                                               Entity localEntity,
@@ -109,44 +112,44 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities{
     }
 
     static {
-        fields.put(Activity.class, new String[] { "Id", "StartTime", "EndTime", "Any" });
+        fields.put(Activity.class, new String[] { "Id", "StartTime", "EndTime", "Other" });
 
         fields.put(Used.class, new String[] { "Id", "Activity", "Entity",
-                                             "Time", "Any" });
+                                             "Time", "Other" });
         fields.put(WasGeneratedBy.class, new String[] { "Id", "Entity",
                                                        "Activity", "Time",
-                                                       "Any" });
+                                                       "Other" });
         fields.put(WasInvalidatedBy.class, new String[] { "Id", "Entity",
                                                          "Activity", "Time",
-                                                         "Any" });
+                                                         "Other" });
         fields.put(WasStartedBy.class, new String[] { "Id", "Activity",
                                                      "Trigger", "Starter",
-                                                     "Time", "Any" });
+                                                     "Time", "Other" });
         // 0 , 1 , 2 , 3 , 4 , 5
         // length=6
         // firstTimeIndex=4
         // last index=5
         fields.put(WasEndedBy.class, new String[] { "Id", "Activity",
                                                    "Trigger", "Ender", "Time",
-                                                   "Any" });
+                                                   "Other" });
         fields.put(WasInformedBy.class, new String[] { "Id", "Informed", "Informant",
-                                                      "Any" });
+                                                      "Other" });
         fields.put(WasDerivedFrom.class, new String[] { "Id",
                                                        "GeneratedEntity",
                                                        "UsedEntity",
                                                        "Activity",
                                                        "Generation", "Usage",
-                                                       "Any" });
+                                                       "Other" });
         fields.put(WasInfluencedBy.class, new String[] { "Id", "Influencee",
-                                                        "Influencer", "Any" });
+                                                        "Influencer", "Others" });
         fields.put(WasAttributedTo.class, new String[] { "Id", "Entity",
-                                                        "Agent", "Any" });
+                                                        "Agent", "Other" });
         fields.put(WasAssociatedWith.class, new String[] { "Id", "Activity",
                                                           "Agent", "Plan",
-                                                          "Any" });
+                                                          "Other" });
         fields.put(ActedOnBehalfOf.class, new String[] { "Id", "Delegate",
                                                         "Responsible",
-                                                        "Activity", "Any" });
+                                                        "Activity", "Others" });
         fields.put(SpecializationOf.class, new String[] { "SpecificEntity",
                                                           "GeneralEntity" });
         
@@ -543,6 +546,8 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities{
         else throw new UnsupportedOperationException();
 
     }
+    
 
+   
 
 }

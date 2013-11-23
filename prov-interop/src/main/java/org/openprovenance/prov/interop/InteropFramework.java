@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Variant;
 import javax.xml.bind.JAXBException;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -248,6 +249,7 @@ public class InteropFramework {
 	}
 
 	public void writeDocument(String filename, Document doc) {
+	    Namespace.withThreadNamespace(doc.getNamespace());
 		try {
 			ProvFormat format = getTypeForFile(filename);
 			if (format == null) {
@@ -265,7 +267,7 @@ public class InteropFramework {
 			case XML: {
 				ProvSerialiser serial = ProvSerialiser
 						.getThreadProvSerialiser();
-				logger.debug("namespaces " + doc.getNss());
+				logger.debug("namespaces " + doc.getNamespace());
 				serial.serialiseDocument(new File(filename), doc, true);
 				break;
 			}
@@ -367,8 +369,8 @@ public class InteropFramework {
 	}
 
 	public void setNamespaces(Document doc) {
-		if (doc.getNss() == null)
-			doc.setNss(new Hashtable<String, String>());
+		if (doc.getNamespace() == null)
+			doc.setNamespace(new Namespace());
 
 	}
 
@@ -396,6 +398,9 @@ public class InteropFramework {
 				Utility u = new Utility();
 				CommonTree tree = u.convertASNToTree(filename);
 				Object o = u.convertTreeToJavaBean(tree);
+				Document doc=(Document)o;
+				Namespace ns=Namespace.gatherNamespaces(doc);
+                                doc.setNamespace(ns);
 				return o;
 			}
 			case RDFXML:
@@ -409,8 +414,10 @@ public class InteropFramework {
 				File in = new File(filename);
 				ProvDeserialiser deserial = ProvDeserialiser
 						.getThreadProvDeserialiser();
-				Document c = deserial.deserialiseDocument(in);
-				return c;
+				Document doc = deserial.deserialiseDocument(in);
+				Namespace ns=Namespace.gatherNamespaces(doc);
+				doc.setNamespace(ns);
+				return doc;
 			}
 			default: {
 				System.out.println("Unknown format " + filename);

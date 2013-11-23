@@ -1,6 +1,5 @@
 package org.openprovenance.prov.notation;
 import java.net.URI;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,10 +8,16 @@ import javax.xml.namespace.QName;
 
 import  org.antlr.runtime.tree.Tree;
 import  org.antlr.runtime.tree.CommonTree;
+import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.ModelConstructor;
+import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.TypedValue;
+import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
@@ -23,13 +28,14 @@ public class TreeTraversal {
 
     final private ModelConstructor c;
     final private ProvFactory pFactory;
-    final private ValueConverter vconv;
+    //final private ValueConverter vconv;
     
     public TreeTraversal(ModelConstructor c, ProvFactory pFactory) {
         this.c=c;
         this.pFactory=pFactory;
-        this.vconv=new ValueConverter(pFactory);
+        //this.vconv=new ValueConverter(pFactory,null);
     }
+   
 
     public String getTokenString(Tree t) {
         if (t==null) return null;
@@ -331,7 +337,7 @@ public class TreeTraversal {
             id1=(QName)convert(ast.getChild(2));
             Object keyset=convert(ast.getChild(3));
             dAttrs=(List<Attribute>)convert(ast.getChild(4));
-            return c.newDerivedByRemovalFrom(uid,id2,id1,(List<Object>)keyset,dAttrs);
+            return c.newDerivedByRemovalFrom(uid,id2,id1,(List<org.openprovenance.prov.model.Key>)keyset,dAttrs);
 
         case PROV_NParser.DMEM:
             //uidTree=ast.getChild(0);
@@ -359,10 +365,12 @@ public class TreeTraversal {
 
 
         case PROV_NParser.KEYS:
-            List<Object> keys=new LinkedList<Object>();
+            List<Key> keys=new LinkedList<Key>();
             for (int i=0; i< ast.getChildCount(); i++) {
                 Object o=convert(ast.getChild(i));
-                keys.add(o);
+                Object [] pair=(Object[]) o;
+                keys.add(pFactory.newKey(pair[0], (QName)pair[1]));
+
             }
             return keys;
 
@@ -387,12 +395,12 @@ public class TreeTraversal {
 	    
             List<KeyQNamePair> entries=new LinkedList<KeyQNamePair>();
             int ii=0;
-            for (Object key : keys2) {
+            for (Object o : keys2) {
                 QName value=qnames.get(ii);
                 KeyQNamePair p=new KeyQNamePair();
                 p.name=value;
-                p.key=key;
-               entries.add(p);
+                p.key=(Key)o;
+                entries.add(p);
                 ii++;
             }
 
@@ -438,10 +446,8 @@ public class TreeTraversal {
             return records;
 
         case PROV_NParser.DOCUMENT:
-            Hashtable<String,String> nss=(Hashtable<String,String>)convert(ast.getChild(0));
-            pFactory.getNss().putAll(nss);
-            //c.startBundle(null);
-            //System.out.println("Document (UnNamed bunded) ");
+            Namespace nss=(Namespace)convert(ast.getChild(0));
+            //System.out.println("+++ namespace" + nss);
             @SuppressWarnings("unchecked")
             List<Statement> records2=(List<Statement>)convert(ast.getChild(1));
             List<NamedBundle> bundles=null;
@@ -453,10 +459,10 @@ public class TreeTraversal {
             return c.newDocument(nss,records2, bundles);
 
         case PROV_NParser.BUNDLE:
-            namespaceTable=new Hashtable<String, String>();
+            namespace=new Namespace();
 
-            Hashtable<String,String> nss2=(Hashtable<String,String>)convert(ast.getChild(1));
-            
+            Namespace namespace2=(Namespace)convert(ast.getChild(1));
+
             // parse bundleId after namespace declarations
             QName bundleId=(QName) convert(ast.getChild(0));
 
@@ -464,7 +470,7 @@ public class TreeTraversal {
 
             @SuppressWarnings("unchecked")
             List<Statement> records3=(List<Statement>)convert(ast.getChild(2));
-            return c.newNamedBundle(bundleId,nss2,records3);
+            return c.newNamedBundle(bundleId,namespace2,records3);
             
         case PROV_NParser.ATTRIBUTES:
             List<Attribute> attributes=new LinkedList<Attribute>();
@@ -474,26 +480,51 @@ public class TreeTraversal {
             return attributes;
 
         case PROV_NParser.ID:
-            return pFactory.stringToQName(convertToken(getTokenString(ast.getChild(0))));
+            return stringToQName(convertToken(getTokenString(ast.getChild(0))));
 
         case PROV_NParser.ATTRIBUTE:
             String attr1=convertToken(getTokenString(ast.getChild(0)));
             Object val1=convert(ast.getChild(1));
-
-            return pFactory.newAttribute(pFactory.stringToQName(attr1),val1,vconv);
+            
+            if (val1 instanceof Object[]) {
+            	Object [] values2=(Object[])val1;
+            	Object theValue=values2[0];
+            	QName theType=(QName)values2[1];
+		    
+            	//return pFactory.newAttribute(pFactory.stringToQName(attr1),val1,vconv.getXsdType(val1));
+            	if (Name.QNAME_XSD_QNAME.equals(theType)) {
+                	return pFactory.newAttribute(stringToQName(attr1),
+                	                             //pFactory.stringToQName((String)theValue),
+                	                             theValue,
+                	                             theType);            		
+            	} else {
+                	return pFactory.newAttribute(stringToQName(attr1),
+                	                             theValue,
+                	                             theType);
+            
+            	}
+            } else if (val1 instanceof InternationalizedString) {
+            	return pFactory.newAttribute(stringToQName(attr1),
+            	                             val1,
+            	                             Name.QNAME_XSD_STRING);	
+            } else { // TODO what case is it?
+                return pFactory.newAttribute(stringToQName(attr1),
+                                             val1,
+                                             Name.QNAME_XSD_STRING);	            	
+            }
 
         case PROV_NParser.STRING:
             if (ast.getChildCount()==1) {
-                return unwrap(convertToken(getTokenString(ast.getChild(0))));
+                return unescape(unwrap(convertToken(getTokenString(ast.getChild(0)))));
             } else {
-                return pFactory.newInternationalizedString(unwrap(convertToken(getTokenString(ast.getChild(0)))),
+                return pFactory.newInternationalizedString(unescape(unwrap(convertToken(getTokenString(ast.getChild(0))))),
                                                            stripAmpersand(convertToken(getTokenString(ast.getChild(1)))));
             }
         case PROV_NParser.STRING_LONG:
             if (ast.getChildCount()==1) {
-                return unquoteTrice(convertToken(getTokenString(ast.getChild(0))));
+                return unescape(unquoteTrice(convertToken(getTokenString(ast.getChild(0)))));
             } else {
-                return pFactory.newInternationalizedString(unquoteTrice(convertToken(getTokenString(ast.getChild(0)))),
+                return pFactory.newInternationalizedString(unescape(unquoteTrice(convertToken(getTokenString(ast.getChild(0))))),
                                                            stripAmpersand(convertToken(getTokenString(ast.getChild(1)))));
             }
 
@@ -501,7 +532,7 @@ public class TreeTraversal {
             return convertInt(getTokenString(ast.getChild(0)));
         
         case PROV_NParser.QNAM:
-            return pFactory.stringToQName(convertToken(getTokenString(ast.getChild(0))));
+            return stringToQName(convertToken(getTokenString(ast.getChild(0))));
 
         case PROV_NParser.IRI:
             String iri=convertToken(getTokenString(ast.getChild(0)));
@@ -512,17 +543,18 @@ public class TreeTraversal {
             QName v2;
             
             if (ast.getChild(1)==null) {
-                v2=ValueConverter.QNAME_XSD_QNAME;
+                v2=Name.QNAME_XSD_QNAME;
                 //v1="\"" + v1 + "\"";
-                return convertTypedLiteral(v2,v1);
+                Object ooo=stringToQName(v1);
+                return convertTypedLiteral(v2,ooo);
             } else {
                 v2=(QName)convert(ast.getChild(1));
                 if (ast.getChild(2)!=null) {
-                    Object iv1=pFactory.newInternationalizedString(unwrap(v1),
+                    Object iv1=pFactory.newInternationalizedString(unescape(unwrap(v1)),
                                                                    stripAmpersand(convertToken(getTokenString(ast.getChild(2)))));
                     return convertTypedLiteral(v2,iv1);
                 } else {
-                    v1=unwrap(v1);
+                    v1=unescape(unwrap(v1));
                     return convertTypedLiteral(v2,v1);
                 }
             }
@@ -530,13 +562,14 @@ public class TreeTraversal {
         case PROV_NParser.NAMESPACE:
             String pre=(String)convert(ast.getChild(0));
             String iri1=unwrap(getTokenString(ast.getChild(1)));
-            if (pre!=null) // should not occur
-                namespaceTable.put(pre,iri1);
+            if (pre!=null) { // should not occur
+        	namespace.register(pre, iri1);
+            }
             return null;
 
         case PROV_NParser.DEFAULTNAMESPACE:
             iri1=unwrap(getTokenString(ast.getChild(0)));
-            namespaceTable.put("_",iri1);
+            namespace.registerDefault(iri1);
             return null;
 
         case PROV_NParser.PREFIX:
@@ -547,7 +580,7 @@ public class TreeTraversal {
             for (int i=0; i< ast.getChildCount(); i++) {
                 Object o=convert(ast.getChild(i));            
             }
-            return namespaceTable;
+            return namespace;
 
 
         case PROV_NParser.TRUE:
@@ -564,15 +597,28 @@ public class TreeTraversal {
 
     }
     
-    Hashtable<String,String> namespaceTable=new Hashtable<String, String>();
+    private QName stringToQName(String attr1) {
+	return namespace.stringToQName(attr1);
+    }
+
+
+    private String unescape(String s) {
+	return Helper.unescape(s);
+    }
+
+    Namespace namespace=new Namespace();
 
     public Object convertTypedLiteral(QName datatype, Object value) {
+    	Object [] valueTypePair=new Object[] {value,datatype};
+    	return valueTypePair;
+    /*	
         if (value instanceof String) {
             Object val=vconv.convertToJava(datatype,(String)value);
             return val;
         } else {
             return value;
         }
+        */
     }
 
 

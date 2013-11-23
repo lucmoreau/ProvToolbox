@@ -7,6 +7,7 @@ import java.net.URL;
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.model.BeanTraversal;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.rdf.collector.QualifiedCollector;
 import org.openprovenance.prov.rdf.collector.RdfCollector;
 
@@ -29,7 +30,7 @@ public class Utility {
     public Document parseRDF(String filename) throws RDFParseException,
 					     RDFHandlerException, IOException,
 					     JAXBException {
-    	System.out.println("**** Parse "+filename);
+    	//System.out.println("**** Parse "+filename);
 	ProvFactory pFactory = new ProvFactory();
 	File file = new File(filename);
 	RDFParser rdfParser = Rio.createParser(Rio.getParserFormatForFileName(file.getName()));
@@ -51,19 +52,21 @@ public class Utility {
 
 	RepositoryHelper rHelper = new RepositoryHelper();
 
-	
 	RdfConstructor rdfc = new RdfConstructor(new SesameGraphBuilder(rep));
-	rdfc.getNamespaceTable().putAll(document.getNss());
-	rdfc.getNamespaceTable().put("xsd", "http://www.w3.org/2001/XMLSchema#");
-	rdfc.getNamespaceTable().put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 	
+	
+	Namespace ns=new Namespace(document.getNamespace());	
+	ns.unregister("xsd", "http://www.w3.org/2001/XMLSchema");
+	ns.register("xsd", "http://www.w3.org/2001/XMLSchema#");
+	ns.register("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+	rdfc.setNamespace(ns);
 
-	BeanTraversal bt = new BeanTraversal(rdfc,pFactory, new ValueConverter(pFactory));
+	BeanTraversal bt = new BeanTraversal(rdfc,pFactory);
 	bt.convert(document);
 	
 
 	rHelper.dumpToRDF(filename, rep, format, 
-			  rdfc.getNamespaceTable());
+			  rdfc.getNamespace());
     }
     
 

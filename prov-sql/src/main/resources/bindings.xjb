@@ -88,6 +88,12 @@
 	  <orm:join-column name="VALUE"/>
 	</hj:many-to-one>
       </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Entity']//xs:element[@ref='prov:others']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
 
       <jaxb:bindings node="xs:complexType[@name='Entity']//xs:any">
 	<jaxb:property>
@@ -137,6 +143,12 @@
 	  </jaxb:baseType>
 	</jaxb:property>
       </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Activity']//xs:element[@ref='prov:others']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
       <jaxb:bindings node="xs:complexType[@name='Activity']//xs:any">
 	<jaxb:property>
 	  <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
@@ -172,6 +184,13 @@
 	  </jaxb:baseType>
 	</jaxb:property>
       </jaxb:bindings>
+      <jaxb:bindings node="xs:complexType[@name='Agent']//xs:element[@ref='prov:others']">
+	<jaxb:property>
+	  <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
+	  </jaxb:baseType>
+	</jaxb:property>
+      </jaxb:bindings>
+
       <jaxb:bindings node="xs:complexType[@name='Agent']//xs:any">
 	<jaxb:property>
 	  <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
@@ -266,6 +285,12 @@
 	    <orm:join-column name="PLAN"/>
 	  </hj:many-to-one>
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Association']//xs:element[@ref='prov:others']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
 
 
 
@@ -314,6 +339,13 @@
 	    <orm:join-column name="ENTITY"/>
 	  </hj:many-to-one>
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Attribution']//xs:element[@ref='prov:others']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
 
 	<!-- AStatement -->
       <jaxb:bindings node="xs:complexType[@name='AStatement']">
@@ -369,6 +401,13 @@
 	    <orm:join-column name="INFORMANT"/>
 	  </hj:many-to-one>
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Communication']//xs:element[@ref='prov:others']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
 
 
 
@@ -395,6 +434,12 @@
 	<jaxb:bindings node="xs:complexType[@name='Delegation']//xs:any">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Delegation']//xs:element[@ref='prov:others']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
@@ -491,6 +536,13 @@
 	    <orm:join-column name="GENERATION"/>
 	  </hj:many-to-one>
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Derivation']//xs:element[@ref='prov:others']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
 	<jaxb:bindings node="xs:complexType[@name='Derivation']//xs:element[@name='usage']">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
@@ -540,6 +592,13 @@
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='End']//xs:element[@ref='prov:others']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
 	<jaxb:bindings node="xs:complexType[@name='End']//xs:any">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
@@ -626,6 +685,13 @@
 	    <orm:join-column name="GENERATION"/>
 	  </hj:one-to-many>
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@ref='prov:others']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
 	<jaxb:bindings node="xs:complexType[@name='Generation']//xs:element[@ref='prov:role']">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.Role">
@@ -701,6 +767,13 @@
 	    <orm:join-column name="INFLUENCEE"/>
 	  </hj:many-to-one>
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Influence']//xs:element[@ref='prov:others']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
 
 	<!-- InternationalizedString -->
 
@@ -759,6 +832,13 @@
 	    <orm:join-column name="ENTITY"/>
 	  </hj:many-to-one>
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@ref='prov:others']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
 	<jaxb:bindings node="xs:complexType[@name='Invalidation']//xs:element[@name='activity']">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
@@ -866,6 +946,12 @@
         <inheritance:implements>org.openprovenance.prov.model.Role</inheritance:implements>
       </jaxb:bindings>
 
+	<!-- OtherAttribute -->
+
+      <jaxb:bindings node="xs:complexType[@name='Other']">
+        <inheritance:implements>org.openprovenance.prov.model.OtherAttribute</inheritance:implements>
+      </jaxb:bindings>
+
 
 
 	<!-- Specialization -->
@@ -931,6 +1017,12 @@
 	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@ref='prov:role']">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.Role">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Start']//xs:element[@ref='prov:others']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
@@ -1012,6 +1104,13 @@
 	    <orm:join-column name="USAGE"/>
 	  </hj:one-to-many>
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@ref='prov:others']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+
 	<jaxb:bindings node="xs:complexType[@name='Usage']//xs:element[@ref='prov:role']">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.Role">
@@ -1090,6 +1189,12 @@
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Insertion']//xs:element[@ref='prov:others']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
 
 
 
@@ -1103,6 +1208,18 @@
 
 	</jaxb:bindings>
 
+	<jaxb:bindings node="xs:complexType[@name='Removal']//xs:element[@ref='prov:type']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.Type">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Removal']//xs:element[@ref='prov:label']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.InternationalizedString">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
 	<jaxb:bindings node="xs:complexType[@name='Removal']//xs:any">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.Attribute">
@@ -1119,6 +1236,12 @@
 	<jaxb:bindings node="xs:complexType[@name='Removal']//xs:element[@name='oldDictionary']">
 	  <jaxb:property>
 	    <jaxb:baseType  name="org.openprovenance.prov.model.IDRef">
+	    </jaxb:baseType>
+	  </jaxb:property>
+	</jaxb:bindings>
+	<jaxb:bindings node="xs:complexType[@name='Removal']//xs:element[@ref='prov:others']">
+	  <jaxb:property>
+	    <jaxb:baseType  name="org.openprovenance.prov.model.OtherAttribute">
 	    </jaxb:baseType>
 	  </jaxb:property>
 	</jaxb:bindings>

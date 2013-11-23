@@ -136,7 +136,7 @@
     </snapshotRepository>
 
     <site>
-      <id>public.www.site</id>
+      <id>openprovenance.org</id>
       <name>Site Deployment location</name>
       <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/site/prov</url>
     </site>

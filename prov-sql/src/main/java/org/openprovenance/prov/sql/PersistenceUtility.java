@@ -24,7 +24,6 @@ public class PersistenceUtility {
 
     public PersistenceUtility() {
        
- 
     }
     
     public void setUp() {
@@ -165,6 +164,7 @@ public class PersistenceUtility {
     
 
     public Document persist(Document doc) {
+	try {
             beginTransaction();
             Dagify dagifier=new Dagify(entityManager);
             for (StatementOrBundle s: doc.getStatementOrBundle()) {
@@ -180,9 +180,15 @@ public class PersistenceUtility {
             
             //System.out.println("**** persisting IdentifierManagement");
             //entityManager.persist(IdentifierManagement.it);
-            commitTransaction();
             return doc;
-    
+	} catch (RuntimeException re) {
+	    re.printStackTrace();
+	    return null;
+	}
+	finally {
+            commitTransaction();
+	}
+     
     }            
     
     

@@ -10,8 +10,8 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Namespace;
 
-import org.openprovenance.prov.xml.validation.ValidationReport;
 import org.w3c.dom.Node;
 
 import java.io.OutputStream;
@@ -23,8 +23,9 @@ import java.util.Hashtable;
 
 public class ProvSerialiser {
     private ObjectFactory2 of=new ObjectFactory2();
-    private org.openprovenance.prov.xml.validation.ObjectFactory vof=new org.openprovenance.prov.xml.validation.ObjectFactory();
+    //private org.openprovenance.prov.xml.validation.ObjectFactory vof=new org.openprovenance.prov.xml.validation.ObjectFactory();
 	static DocumentBuilder docBuilder;
+
 
 
     /** Note DocumentBuilderFactory is documented to be non thread safe. 
@@ -73,10 +74,10 @@ public class ProvSerialiser {
     }
 
     public void configurePrefixes(Marshaller m) throws PropertyException {
-        configurePrefixes(m,new Hashtable<String,String>());
+        configurePrefixes(m,new Namespace());
     }
 
-    public void configurePrefixes(Marshaller m, Hashtable<String,String> namespaces) throws PropertyException {
+    public void configurePrefixes(Marshaller m, Namespace namespaces) throws PropertyException {
         m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
                              new NamespacePrefixMapper(namespaces));
 	//System.out.println("--------------> ");
@@ -94,38 +95,7 @@ public class ProvSerialiser {
     }
 
 
-    /** This code is to be moved to the validator */
-
-    public org.w3c.dom.Document serialiseValidationReport (ValidationReport request) throws JAXBException {
-        return (org.w3c.dom.Document) serialiseValidationReport (defaultEmptyDocument(), request);
-    }
-    
-    public Node serialiseValidationReport (Node addTo, ValidationReport graph)
-        throws JAXBException {
-        Marshaller m=jc.createMarshaller();
-        m.marshal(vof.createValidationReport(graph),addTo);
-        return addTo;
-    }
-    
-    public void serialiseValidationReport (File file, ValidationReport graph, boolean format)
-	        throws JAXBException {
-	        Marshaller m=jc.createMarshaller();
-	        m.setProperty("jaxb.formatted.output",format);
-	        //configurePrefixes(m,graph.getNss());
-	        m.marshal(vof.createValidationReport(graph),file);
-    }
-	    
-    public void serialiseValidationReport (File file, ValidationReport graph, Hashtable<String,String> prefixes, boolean format)
-	        throws JAXBException {
-	        Marshaller m=jc.createMarshaller();
-	        m.setProperty("jaxb.formatted.output",format);
-	        configurePrefixes(m,prefixes);
-	        m.marshal(vof.createValidationReport(graph),file);
-    }
-	    
-	    
   
-
    
     public org.w3c.dom.Document serialiseDocument (Document request) throws JAXBException {
         return (org.w3c.dom.Document) serialiseDocument (defaultEmptyDocument(), request);
@@ -148,7 +118,7 @@ public class ProvSerialiser {
         throws JAXBException {
         Marshaller m=jc.createMarshaller();
         m.setProperty("jaxb.formatted.output",format);
-        configurePrefixes(m,graph.getNss());
+        configurePrefixes(m,graph.getNamespace());
         m.marshal(of.createDocument(graph),sw);
         return sw.toString();
     }
@@ -157,14 +127,14 @@ public class ProvSerialiser {
         throws JAXBException {
         Marshaller m=jc.createMarshaller();
         m.setProperty("jaxb.formatted.output",format);
-        configurePrefixes(m,graph.getNss());
+        configurePrefixes(m,graph.getNamespace());
         m.marshal(of.createDocument(graph),out);
     }
     public void serialiseDocument (File file, Document graph, boolean format)
 	        throws JAXBException {
 	Marshaller m=jc.createMarshaller();
 	m.setProperty("jaxb.formatted.output",format);
-	configurePrefixes(m,graph.getNss());
+	configurePrefixes(m,graph.getNamespace());
 	m.marshal(of.createDocument(graph),file);
     }
 

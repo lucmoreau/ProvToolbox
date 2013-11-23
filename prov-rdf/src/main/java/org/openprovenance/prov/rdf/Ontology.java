@@ -6,7 +6,7 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.xml.Attribute;
+import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
 
@@ -271,11 +271,11 @@ public class Ontology {
 	otherTable.put(QNAME_PROVO_Insertion, QNAME_PROVO_insertedKeyEntityPair);
 	otherTable.put(QNAME_PROVO_Removal, QNAME_PROVO_insertedKeyEntityPair);
 
-	convertTable.put(Attribute.PROV_LABEL_QNAME, QNAME_RDFS_LABEL);
-	convertTable.put(Attribute.PROV_TYPE_QNAME, QNAME_RDF_TYPE);
-	convertTable.put(Attribute.PROV_LOCATION_QNAME, QNAME_PROVO_atLocation);
-	convertTable.put(Attribute.PROV_VALUE_QNAME, QNAME_PROVO_value);
-	convertTable.put(Attribute.PROV_ROLE_QNAME, QNAME_PROVO_hadRole);
+	convertTable.put(Helper.PROV_LABEL_QNAME, QNAME_RDFS_LABEL);
+	convertTable.put(Helper.PROV_TYPE_QNAME, QNAME_RDF_TYPE);
+	convertTable.put(Helper.PROV_LOCATION_QNAME, QNAME_PROVO_atLocation);
+	convertTable.put(Helper.PROV_VALUE_QNAME, QNAME_PROVO_value);
+	convertTable.put(Helper.PROV_ROLE_QNAME, QNAME_PROVO_hadRole);
     }
     
     void initRangeTables() {
@@ -423,5 +423,16 @@ public class Ontology {
 	if (res != null)
 	    return res;
 	return qname;
+    }
+    
+    static
+    public QName convertFromRdf(QName qname) {
+	if (NamespacePrefixMapper.XSD_HASH_NS.equals(qname.getNamespaceURI())) {
+	    return new QName(NamespacePrefixMapper.XSD_NS,
+	                     qname.getLocalPart(),
+	                     qname.getPrefix());
+	} else {
+	    return qname;
+	}
     }
 }

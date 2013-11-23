@@ -1,7 +1,7 @@
 package org.openprovenance.prov.model;
 
 
-public interface WasAssociatedWith extends Identifiable,  HasLabel, HasType, HasExtensibility, HasRole, Influence {
+public interface WasAssociatedWith extends Identifiable,  HasLabel, HasType, HasRole, HasOther, Influence {
 
     void setActivity(IDRef eid2);
 

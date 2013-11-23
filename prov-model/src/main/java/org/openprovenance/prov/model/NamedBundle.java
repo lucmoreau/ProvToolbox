@@ -7,8 +7,8 @@ public interface NamedBundle extends Identifiable, StatementOrBundle {
 
     List<Statement> getStatement();
 
-    void setNss(Hashtable<String, String> namespaces);
+    void setNamespace(Namespace namespaces);
 
-    Hashtable<String, String> getNss();
+    Namespace getNamespace();
 
 }

@@ -1,0 +1,295 @@
+package org.openprovenance.prov.model;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+final public class DOMProcessing {
+    private static final QName QNAME_RDF_LITERAL = Name.QNAME_RDF_LITERAL;
+    private static final String RDF_PREFIX = QNAME_RDF_LITERAL.getPrefix();
+    private static final String RDF_NAMESPACE = QNAME_RDF_LITERAL.getNamespaceURI();
+    private static final String RDF_LITERAL = qnameToString(QNAME_RDF_LITERAL);
+    
+    static public DocumentBuilder builder;
+ 
+    static void initBuilder() {
+  	try {
+  	    DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+  	    docBuilderFactory.setNamespaceAware(true);
+  	    builder = docBuilderFactory.newDocumentBuilder();
+  	} catch (ParserConfigurationException ex) {
+  	    throw new RuntimeException(ex);
+  	}
+      }
+
+    static {
+	initBuilder();
+    }
+    
+    
+    ///TODO: should use the prefix definition of nss, as opposed to the one in qname
+
+    static public String qnameToString(QName qname) {
+	Namespace ns=Namespace.getThreadNamespace();
+	return ns.qnameToString(qname);
+//	return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
+//		+ qname.getLocalPart();
+    }
+    
+
+    /**
+     * Converts a string to a QName, extracting namespace from the DOM.
+     * 
+     * @param str
+     *            string to convert to QName
+     * @param el
+     *            current Element in which this string was found (as attribute
+     *            or attribute value)
+     * @return
+     */
+    final static public QName stringToQName(String str, org.w3c.dom.Element el) {
+        if (str == null)
+            return null;
+        int index = str.indexOf(':');
+        if (index == -1) {
+            QName qn = new QName(el.lookupNamespaceURI(null), // find default namespace
+                                                              // namespace
+                                 str);
+            return qn;
+        }
+        String prefix = str.substring(0, index);
+        String local = str.substring(index + 1, str.length());
+        QName qn = new QName(el.lookupNamespaceURI(prefix), local, prefix);
+        return qn;
+    }
+
+
+    /** Create a new element, with given elementName, and QName as content. One cannot assume that 
+     * the prefixes have been declared, hence all namespaces need to be declared.
+     * @param elementName
+     * @param value
+     * @return
+     */
+    
+    
+    final static public Element newElement(QName elementName, QName value) {
+	org.w3c.dom.Document doc = builder.newDocument();
+	Element el = doc.createElementNS(elementName.getNamespaceURI(),
+					 qnameToString(elementName));
+	
+	// 1. we add an xsi:type="xsd:QName" attribute
+	//   making sure xsi and xsd prefixes are appropriately declared.
+	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", "xsd:QName");
+	el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsd", NamespacePrefixMapper.XSD_NS);
+
+	// 2. We add the QName's string representation as child of the element
+	String valueAsString=qnameToString(value);
+	el.appendChild(doc.createTextNode(valueAsString));
+	
+	// 3. We make sure that the QName's prefix is given the right namespace, or the default namespace is declared if there is no prefix
+	int index=valueAsString.indexOf(":");
+	if (index!=-1) {
+	    String prefix = valueAsString.substring(0, index);
+	    el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:"+prefix, value.getNamespaceURI());
+	} else {
+	    el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns", value.getNamespaceURI());
+	}
+	
+	doc.appendChild(el);
+	return el;
+    }
+
+    final static public Element newElement(QName qname, String value, QName type) {
+	org.w3c.dom.Document doc = builder.newDocument();
+	Element el = doc.createElementNS(qname.getNamespaceURI(),
+	                                 qnameToString(qname));
+	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qnameToString(type));
+	el.appendChild(doc.createTextNode(value));
+	doc.appendChild(el);
+	return el;
+    }
+
+
+    final public static Element newElement(QName qname, String value, QName type,
+			      String lang) {
+	org.w3c.dom.Document doc = builder.newDocument();
+	Element el = doc.createElementNS(qname.getNamespaceURI(),
+	                                 qnameToString(qname));				 
+	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qnameToString(type));
+	el.setAttributeNS(NamespacePrefixMapper.XML_NS, "xml:lang", lang);
+        el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xml", NamespacePrefixMapper.XML_NS);
+
+	el.appendChild(doc.createTextNode(value));
+	doc.appendChild(el);
+	return el;
+    }
+
+
+    final static public Element newElement(QName qname, Element value) {
+        org.w3c.dom.Document doc = builder.newDocument();
+        Element el = doc.createElementNS(qname.getNamespaceURI(),
+                                         qnameToString(qname)); 
+        el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", RDF_LITERAL);
+        el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:"+RDF_PREFIX, RDF_NAMESPACE);
+        el.appendChild(doc.importNode(value, true));
+        return el;
+    }
+    
+    static public void writeDOMToPrinter(Node document, StreamResult result,
+                                         boolean formatted)
+            throws TransformerConfigurationException, TransformerException {
+        
+        // Use a Transformer for output
+        TransformerFactory tFactory = TransformerFactory.newInstance();
+        Transformer transformer = tFactory.newTransformer();
+
+        DOMSource source = new DOMSource(document);
+        // transformer.setOutputProperty(OutputKeys.ENCODING,"ISO-8859-1");
+        // transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM,"users.dtd");
+        transformer.setOutputProperty(OutputKeys.METHOD,"xml");
+
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        if (formatted) {
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        } else {
+            transformer.setOutputProperty(OutputKeys.INDENT, "no");
+        }
+
+        transformer.transform(source, result);
+
+    }                                                                                                                                            
+    static public void writeDOMToPrinter(Node document, Writer out, boolean formatted)                                                           
+            throws TransformerConfigurationException, TransformerException  {                                                                        
+                                                                                                                                                     
+            StreamResult result = new StreamResult(out);                                                                                             
+            writeDOMToPrinter(document,result,formatted);                                                                                            
+        }                                                                                                                                            
+                 
+    static public String writeToString (Node toWrite)                                                                                            
+            throws TransformerConfigurationException, TransformerException {                                                                         
+                                                                                                                                                     
+            StringWriter sw=new StringWriter();                                                                                                      
+            writeDOMToPrinter(toWrite,new PrintWriter(sw),false);                                                                                    
+            return sw.toString();                                                                                                                    
+        }     
+    
+    
+    public static void trimNode(Node node) {
+    	List<org.w3c.dom.Text> nodes=new LinkedList<org.w3c.dom.Text>();
+    	trimNode(node,nodes);
+    	for (org.w3c.dom.Text n: nodes){
+    		if (n.getTextContent().equals(""))
+    		n.getParentNode().removeChild(n);
+    	}
+    }	
+
+    static void trimNode(Node node, List<org.w3c.dom.Text> nodes) {
+        if (node.getNodeType() == Node.TEXT_NODE) {
+            node.normalize();
+            org.w3c.dom.Text txt = (org.w3c.dom.Text) node;
+            txt.setTextContent(txt.getTextContent().trim());
+            nodes.add(txt);
+        } else {
+            NodeList nl = node.getChildNodes();
+            for (int i = 0; i < nl.getLength(); i++) {
+                trimNode(nl.item(i), nodes);
+            }
+        }
+    }
+    
+    final static
+    public org.w3c.dom.Element marshalAttribute(org.openprovenance.prov.model.Attribute attribute) {
+	return marshalTypedValue(attribute, attribute.getElementName());
+    }
+    
+    final static
+    public org.w3c.dom.Element marshalTypedValue(org.openprovenance.prov.model.TypedValue attribute,
+                                                 QName elementName) {	
+	Object value = attribute.getValue();
+	QName type = attribute.getType();
+	if (value instanceof InternationalizedString) {
+	    InternationalizedString istring = ((InternationalizedString) value);
+	    return newElement(elementName, 
+	                      istring.getValue(),
+			      attribute.getType(), 
+			      istring.getLang());
+	} else if (value instanceof QName) {
+	    return newElement(elementName, 
+	                      (QName) value);
+
+	} else if (type.equals(Name.QNAME_RDF_LITERAL)) {
+	    return newElement(elementName,
+			      (org.w3c.dom.Element) attribute.getValueAsObject());
+
+	} else {
+	    return newElement(elementName, 
+	                      value.toString(),
+			      attribute.getType());
+	}
+    }
+    
+    final
+    static public org.openprovenance.prov.model.Attribute unmarshallAttribute(org.w3c.dom.Element el,
+                                                                              ProvFactory pFactory,
+                                                                              ValueConverter vconv) {
+        String prefix = el.getPrefix();
+        String namespace = el.getNamespaceURI();
+        String local = el.getLocalName();
+        String child = el.getTextContent();
+        String typeAsString = el.getAttributeNS(NamespacePrefixMapper.XSI_NS,
+                                                "type");
+
+        String lang = el.getAttributeNS(NamespacePrefixMapper.XML_NS, "lang");
+        QName type = ((typeAsString == null) || (typeAsString.equals(""))) ? null
+                : DOMProcessing.stringToQName(typeAsString, el);
+
+        if (type == null)
+            type = Name.QNAME_XSD_STRING;
+        if (type.equals(Name.QNAME_XSD_QNAME)) {
+            QName qn = DOMProcessing.stringToQName(child, el);
+            Attribute x= pFactory.newAttribute(namespace, local, prefix, qn, type);
+            return x;
+        } else if (type.equals(Name.QNAME_RDF_LITERAL)) {
+            NodeList nodes=el.getChildNodes();
+            org.w3c.dom.Element content=null;
+            for (int i=0; i<nodes.getLength(); i++) {
+                Node node=nodes.item(i);
+                if (node instanceof org.w3c.dom.Element) {
+                    content=(org.w3c.dom.Element)node;
+                    break;
+                }
+            }
+            return pFactory
+                    .newAttribute(namespace, local, prefix,
+                                  content, type);
+        } else if ((lang == null) || (lang.equals(""))) {
+            return pFactory
+                    .newAttribute(namespace, local, prefix,
+                                  vconv.convertToJava(type, child), type);
+        } else {
+            return pFactory.newAttribute(namespace, local, prefix, pFactory
+                    .newInternationalizedString(child, lang), type);
+        }
+    }
+
+    
+
+}

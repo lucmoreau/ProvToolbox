@@ -1,14 +1,19 @@
 package org.openprovenance.prov.xml;
 
+import java.io.BufferedReader;
 import java.io.File;
-import org.openprovenance.prov.model.HasExtensibility;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.HasLabel;
 import org.openprovenance.prov.model.HasLocation;
+import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.HasValue;
+import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasAttributedTo;
@@ -26,19 +31,14 @@ import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.WasEndedBy;
 import org.openprovenance.prov.model.HadMember;
-import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.Location;
-import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.DerivedByInsertionFrom;
 import org.openprovenance.prov.model.DerivedByRemovalFrom;
 import org.openprovenance.prov.model.DictionaryMembership;
 
-import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.net.URI;
@@ -47,6 +47,8 @@ import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.URIWrapper;
+import org.openprovenance.prov.model.Namespace;
+import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
 
@@ -65,27 +67,14 @@ public class RoundTripFromJavaTest extends TestCase {
     static final ProvUtilities util=new ProvUtilities();
 
 
-    static final Hashtable<String, String> namespaces;
 
-    public static org.openprovenance.prov.model.ProvFactory pFactory;
-    public static ValueConverter vconv;
+    public static org.openprovenance.prov.model.ProvFactory pFactory=new ProvFactory();
 
-    static Hashtable<String, String> updateNamespaces (Hashtable<String, String> nss) {
-        nss.put(EX_PREFIX, EX_NS);
-        nss.put(EX2_PREFIX, EX2_NS);
-        nss.put("_", EX3_NS);
-	return nss;
-    }
-    static  void setNamespaces() {
-	pFactory.resetNamespaces();
-	pFactory.getNss().putAll(updateNamespaces(new Hashtable<String, String>()));
+   
+    static  void setNamespacesTODELETE() {
     }
 
-    static {
-	namespaces = updateNamespaces(new Hashtable<String, String>());
-	pFactory = new ProvFactory(namespaces);
-	vconv=new ValueConverter(pFactory);
-    }
+
 	private DocumentEquality documentEquality;
 
     /**
@@ -106,9 +95,8 @@ public class RoundTripFromJavaTest extends TestCase {
      */
 
     public void updateNamespaces(Document doc) {
-	Hashtable<String, String> nss = new Hashtable<String, String>();
-	updateNamespaces(nss);
-	doc.setNss(nss);
+	Namespace ns=Namespace.gatherNamespaces(doc);
+	doc.setNamespace(ns);
     }
    
     public String extension() {
@@ -161,8 +149,100 @@ public class RoundTripFromJavaTest extends TestCase {
     public void compareDocAndFile(Document doc, String file, boolean check) {
         file=file+extension();
         writeDocument(doc, file);
+        if (check) conditionalCheckSchema(file);
         Document doc3=readDocument(file);
         compareDocuments(doc, doc3, check && checkTest(file));
+    }
+    public void conditionalCheckSchema(String file) {
+	if (checkSchema(file)) doCheckSchema1(file);
+    }
+    
+    
+    public boolean checkSchema(String name)
+    {
+	if(name.endsWith("association2"+extension()) 
+		|| name.endsWith("end1"+extension())
+		|| name.endsWith("end4"+extension())
+		|| name.endsWith("delegation1"+extension())
+		|| name.endsWith("delegation2"+extension())
+		|| name.endsWith("dictionaryRemoval1-S"+extension())
+		|| name.endsWith("dictionaryRemoval1-M"+extension())
+		|| name.endsWith("dictionaryRemoval2-S"+extension())
+		|| name.endsWith("dictionaryRemoval2-M"+extension())
+		|| name.endsWith("attribution1"+extension())
+		|| name.endsWith("attribution2"+extension())
+		|| name.endsWith("mention1"+extension())
+		|| name.endsWith("derivation1"+extension())
+		|| name.endsWith("derivation2"+extension())
+		|| name.endsWith("derivation9"+extension())
+		|| name.endsWith("communication1"+extension())
+		|| name.endsWith("communication2"+extension())
+		|| name.endsWith("influence1"+extension())
+		|| name.endsWith("influence2"+extension())
+		|| name.endsWith("start1"+extension())
+		|| name.endsWith("start4"+extension())
+		|| name.endsWith("usage1"+extension())
+		|| name.endsWith("dictionaryInsertion1-S"+extension())
+		|| name.endsWith("dictionaryInsertion1-M"+extension())
+		|| name.endsWith("dictionaryInsertion2-S"+extension())
+		|| name.endsWith("dictionaryInsertion2-M"+extension())
+		)
+	{
+	    return false;
+	}
+	
+	return true;
+    }
+
+    
+    public void doCheckSchema1(String file) {
+	
+	String[] schemaFiles = new String[1];
+	schemaFiles[0] = "src/main/resources/ex.xsd";
+	try {
+	    ProvDeserialiser.getThreadProvDeserialiser().validateDocumentNew(schemaFiles, new File(file));
+	} catch (JAXBException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	} catch (SAXException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+    }
+
+    
+    public void doCheckSchema2(String file) {
+	//String command="xmllint --schema src/main/resources/w3c/prov.xsd --schema src/main/resources/w3c/xml.xsd --schema src/main/resources/ex.xsd " +file; //--noout
+	String command="xmllint --schema src/main/resources/ex.xsd " +file; //--noout
+	try {
+	    Process proc=Runtime.getRuntime().exec(command);
+	    proc.waitFor();
+	    int code=proc.exitValue();
+	    if (code!=0) {
+		BufferedReader errorReader = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+		String s_error=errorReader.readLine();
+		if (s_error!=null) {
+		    System.out.println("Error:  " + s_error);
+		}
+		BufferedReader outReader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+		String s_out=outReader.readLine();
+		if (s_out!=null) {
+		    System.out.println("Out:  " + s_out);
+		}
+	    }
+	    //System.out.println("out " + proc.getOutputStream().toString());
+	    //System.err.println("err " + proc.getErrorStream().toString());
+	    assertTrue(code==0);
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	} catch (InterruptedException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
     }
 
     public Document readDocument(String file1) {
@@ -174,6 +254,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void writeDocument(Document doc, String file2) {
+	Namespace.withThreadNamespace(doc.getNamespace());
         try {
             writeXMLDocument(doc, file2);
         } catch (JAXBException e) {
@@ -217,7 +298,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void writeXMLDocument(Document doc, String file) throws JAXBException {
 	ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
 	serial.serialiseDocument(new File(file), doc, true);
-	StringWriter sw = new StringWriter();
+	//StringWriter sw = new StringWriter();
 	//serial.serialiseDocument(sw, doc, true);
 	//System.out.println(sw.toString());
     }
@@ -231,74 +312,72 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void addLabels(HasLabel hl) {
    	hl.getLabel().add(pFactory.newInternationalizedString("hello"));
-   	hl.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-   	hl.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
+   	hl.getLabel().add(pFactory.newInternationalizedString("bye","en"));
+   	hl.getLabel().add(pFactory.newInternationalizedString("bonjour","fr"));
     }
    
 
     public void addTypes(HasType ht) {
-   	ht.getType().add(pFactory.newType("a", ValueConverter.QNAME_XSD_STRING));
-   	ht.getType().add(pFactory.newType(1, ValueConverter.QNAME_XSD_INT));
-   	ht.getType().add(pFactory.newType(1.0, ValueConverter.QNAME_XSD_FLOAT));
-   	ht.getType().add(pFactory.newType(true, ValueConverter.QNAME_XSD_STRING));
+   	ht.getType().add(pFactory.newType("a", Name.QNAME_XSD_STRING));
+   	ht.getType().add(pFactory.newType(1, Name.QNAME_XSD_INT));
+   	ht.getType().add(pFactory.newType(1.0, Name.QNAME_XSD_FLOAT));
+   	ht.getType().add(pFactory.newType(true, Name.QNAME_XSD_STRING));
    	ht.getType().add(pFactory.newType(new QName(EX_NS, "abc", EX_PREFIX),
-					  ValueConverter.QNAME_XSD_QNAME));
+					  Name.QNAME_XSD_QNAME));
    	ht.getType().add(pFactory.newType(pFactory.newTimeNow(),
-					  ValueConverter.QNAME_XSD_DATETIME));
-   	URIWrapper w=new URIWrapper();
-   	w.setValue(URI.create(EX_NS+"hello"));
-	ht.getType().add(pFactory.newType(w,
-					  ValueConverter.QNAME_XSD_ANY_URI));
+					  Name.QNAME_XSD_DATETIME));
+
+	ht.getType().add(pFactory.newType(EX_NS+"hello",
+					  Name.QNAME_XSD_ANY_URI));
     }
 
     public void addLocations(HasLocation hl) {
-   	hl.getLocation().add(pFactory.newLocation("London",vconv));
-   	hl.getLocation().add(pFactory.newLocation(1,vconv));
-   	hl.getLocation().add(pFactory.newLocation(1.0,vconv));
-   	hl.getLocation().add(pFactory.newLocation(true,vconv));
-	//   	hl.getLocation().add(pFactory.newLocation(new QName(EX_NS, "london", EX_PREFIX),vconv));
-   	hl.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),vconv));
-   	URIWrapper w=new URIWrapper();
-   	w.setValue(URI.create(EX_NS+"london"));
-   	hl.getLocation().add(pFactory.newLocation(w,vconv));
-   	hl.getLocation().add(pFactory.newLocation(pFactory.newGYear("2002"),vconv));
+   	hl.getLocation().add(pFactory.newLocation("London",Name.QNAME_XSD_STRING));
+   	hl.getLocation().add(pFactory.newLocation(1,Name.QNAME_XSD_INT));
+   	hl.getLocation().add(pFactory.newLocation(1.0,Name.QNAME_XSD_FLOAT));
+   	hl.getLocation().add(pFactory.newLocation(true,Name.QNAME_XSD_BOOLEAN));
+	hl.getLocation().add(pFactory.newLocation(new QName(EX_NS, "london", EX_PREFIX),Name.QNAME_XSD_QNAME));
+   	hl.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),Name.QNAME_XSD_DATETIME));
+   	hl.getLocation().add(pFactory.newLocation(EX_NS+"london",Name.QNAME_XSD_ANY_URI));
+   	hl.getLocation().add(pFactory.newLocation(pFactory.newGYear(2002),Name.QNAME_XSD_GYEAR));
     }
     
     public void addValue(HasValue hl) {
         hl.setValue(pFactory.newValue(new QName(EX_NS, "avalue", EX_PREFIX),
-				      ValueConverter.QNAME_XSD_QNAME));
+				      Name.QNAME_XSD_QNAME));
     }
 
-    public void addFurtherAttributes(HasExtensibility he) {
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag1",EX_PREFIX,"hello", vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "bye", vconv));
-	//he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), "xsd:string"));
-	he.getAny().add(pFactory.newAttribute(EX2_NS,"tag3",EX2_PREFIX, "hi", vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag1",EX_PREFIX,"hello\nover\nmore\nlines", vconv));
+    public void addFurtherAttributes(HasOther he) {
+	he.getOther().add(pFactory.newOther(EX_NS,"tag1",EX_PREFIX,"hello", Name.QNAME_XSD_STRING));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "bye", Name.QNAME_XSD_STRING));
+	//he.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), "xsd:string"));
+	he.getOther().add(pFactory.newOther(EX2_NS,"tag3",EX2_PREFIX, "hi", Name.QNAME_XSD_STRING));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag1",EX_PREFIX,"hello\nover\nmore\nlines", Name.QNAME_XSD_STRING));
 
     }
 
     
-    public void addFurtherAttributes0(HasExtensibility he) {
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag1",EX_PREFIX,"hello", vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "bye", vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), ValueConverter.QNAME_XSD_STRING));
-	he.getAny().add(pFactory.newAttribute(EX2_NS,"tag3",EX2_PREFIX, "hi", vconv));
+    public void addFurtherAttributes0(HasOther he) {
+	he.getOther().add(pFactory.newOther(EX_NS,"tag1",EX_PREFIX,"hello", Name.QNAME_XSD_STRING));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "bye", Name.QNAME_XSD_STRING));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, 
+	                                     pFactory.newInternationalizedString("bonjour","fr"), Name.QNAME_XSD_STRING));
+	he.getOther().add(pFactory.newOther(EX2_NS,"tag3",EX2_PREFIX, "hi", Name.QNAME_XSD_STRING));
 	
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Integer(1), vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Long(1), vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Short((short) 1), vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Double(1.0), vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Float(1.0), vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new java.math.BigDecimal(1.0), vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Boolean(true), vconv));
-	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new Byte((byte) 123), vconv));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Integer(1), Name.QNAME_XSD_INT));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Long(1), Name.QNAME_XSD_LONG));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Short((short) 1), Name.QNAME_XSD_SHORT));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Double(1.0), Name.QNAME_XSD_DOUBLE));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Float(1.0), Name.QNAME_XSD_FLOAT));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new java.math.BigDecimal(1.0), Name.QNAME_XSD_INTEGER));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Boolean(true), Name.QNAME_XSD_BOOLEAN));
+	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new Byte((byte) 123), Name.QNAME_XSD_BYTE));
 	
 	addFurtherAttributesWithQNames(he);
 	
 	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"london"));
-   	he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, w, vconv));
+   	he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, w, Name.QNAME_XSD_ANY_URI));
 	
     }
     
@@ -306,18 +385,18 @@ public class RoundTripFromJavaTest extends TestCase {
     
     ///////////////////////////////////////////////////////////////////////
     
-    public void addFurtherAttributesWithQNames(HasExtensibility he) {
-        he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new QName(EX2_NS,"newyork", EX2_PREFIX), vconv));
-        he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new QName(EX_NS, "london", EX_PREFIX), vconv));
-        he.getAny().add(pFactory.newAttribute(EX_NS,"tag",EX_PREFIX, new QName(EX3_NS, "london"), vconv));
+    public void addFurtherAttributesWithQNames(HasOther he) {
+        he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new QName(EX2_NS,"newyork", EX2_PREFIX), Name.QNAME_XSD_QNAME));
+        he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new QName(EX_NS, "london", EX_PREFIX), Name.QNAME_XSD_QNAME));
+        he.getOther().add(pFactory.newOther(EX_NS,"tag",EX_PREFIX, new QName(EX3_NS, "london"), Name.QNAME_XSD_QNAME));
 
     }
 
     public void NOtestRoles() {
-	Role r1=pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING);
-	Role r2=pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING);
-	Location l1=pFactory.newLocation("otherLocation",ValueConverter.QNAME_XSD_STRING);
-	Location l2=pFactory.newLocation("otherLocation",ValueConverter.QNAME_XSD_STRING);
+	Role r1=pFactory.newRole("otherRole",Name.QNAME_XSD_STRING);
+	Role r2=pFactory.newRole("otherRole",Name.QNAME_XSD_STRING);
+	Location l1=pFactory.newLocation("otherLocation",Name.QNAME_XSD_STRING);
+	Location l2=pFactory.newLocation("otherLocation",Name.QNAME_XSD_STRING);
 	System.out.println("---------------------------------------------------------------------- " );
 	System.out.println("Role 1 " + r1);
 	System.out.println("Role 2 " + r2);
@@ -344,46 +423,51 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public boolean test=true;
 
+
+
+    
     public void testEntity0() throws JAXBException  {
-	setNamespaces();
-	Entity a = pFactory.newEntity("ex:e0");
-	a.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, pFactory.newInternationalizedString("bonjour","fr"), ValueConverter.QNAME_XSD_STRING));
+	setNamespacesTODELETE();
+	Entity a = pFactory.newEntity(q("e0"));
+	a.getOther().add(pFactory.newOther(new QName(EX_NS, "tag2", EX_PREFIX), 
+	                                    pFactory.newInternationalizedString("bonjour","fr"), 
+	                                    Name.QNAME_PROV_INTERNATIONALIZED_STRING));
 
 	if (test) {
 
-	    a.getLocation().add(pFactory.newLocation("un llieu",ValueConverter.QNAME_XSD_STRING));
-	    a.getLocation().add(pFactory.newLocation(1,ValueConverter.QNAME_XSD_INT));
-	    a.getLocation().add(pFactory.newLocation(2.0,ValueConverter.QNAME_XSD_DOUBLE));
+	    a.getLocation().add(pFactory.newLocation("un llieu",Name.QNAME_XSD_STRING));
+	    a.getLocation().add(pFactory.newLocation(1,Name.QNAME_XSD_INT));
+	    a.getLocation().add(pFactory.newLocation(2.0,Name.QNAME_XSD_DOUBLE));
 
 
-	    //ValueConverter.QNAME_XSD_INT, Note this is problematic for conversion to/from rdf
+	    //Name.QNAME_XSD_INT, Note this is problematic for conversion to/from rdf
 
 	    //THis fails
 
 	    /*
 
 	    a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "abc", EX_PREFIX),
-						 ValueConverter.QNAME_XSD_QNAME));
+						 Name.QNAME_XSD_QNAME));
 
 	    a.getLocation().add(pFactory.newLocation(new QName("http://foo/", "cde", "foo"),
-						 ValueConverter.QNAME_XSD_QNAME));
+						 Name.QNAME_XSD_QNAME));
 
 
 	    a.getLocation().add(pFactory.newLocation(new QName("http://foo/", "fgh"),
-						 ValueConverter.QNAME_XSD_QNAME));
+						 Name.QNAME_XSD_QNAME));
 
 	    */
-	    URIWrapper w=new URIWrapper();
-	    w.setValue(URI.create(EX_NS+"london"));
-	    a.getLocation().add(pFactory.newLocation(w,ValueConverter.QNAME_XSD_ANY_URI));
+	    //URIWrapper w=new URIWrapper();
+	    //w.setValue(URI.create(EX_NS+"london"));
+	    a.getLocation().add(pFactory.newLocation(EX_NS+"london",Name.QNAME_XSD_ANY_URI));
 
-	    Location loc=pFactory.newLocation(new Long(2),ValueConverter.QNAME_XSD_LONG);
+	    Location loc=pFactory.newLocation(new Long(2),Name.QNAME_XSD_LONG);
 	    //FIXME: Location containing a QName does not work
-	    //loc.getAttributes().put(ValueConverter.QNAME_XSD_LONG,"1");
+	    //loc.getAttributes().put(Name.QNAME_XSD_LONG,"1");
 	    a.getLocation().add(loc);
 
 	    // This fails because we don't get to read the type in xsi:type
-	    //a.getLocation().add(pFactory.newLocation(2,ValueConverter.QNAME_XSD_UNSIGNED_INT));
+	    //a.getLocation().add(pFactory.newLocation(2,Name.QNAME_XSD_UNSIGNED_INT));
 	    // problem in prov-n parsing, since  TreeTraversal.convertTypeLiteral generate a java value without type!
 	}
 	makeDocAndTest(a,"target/entity0");
@@ -392,56 +476,56 @@ public class RoundTripFromJavaTest extends TestCase {
 
     
     public void testEntity1() throws JAXBException  {
-	setNamespaces();
-	Entity a = pFactory.newEntity("ex:e1");
+	setNamespacesTODELETE();
+	Entity a = pFactory.newEntity(q("e1"));
 	makeDocAndTest(a,"target/entity1");
     }
 
     public void testEntity2() throws JAXBException  {
-	setNamespaces();
-   	Entity a = pFactory.newEntity("ex:e2", "entity2");
+	setNamespacesTODELETE();
+   	Entity a = pFactory.newEntity(q("e2"), "entity2");
    	makeDocAndTest(a,"target/entity2");
     }
 
     public void testEntity3() throws JAXBException  {
-	setNamespaces();
-   	Entity a = pFactory.newEntity("ex:e3", "entity3");
+	setNamespacesTODELETE();
+   	Entity a = pFactory.newEntity(q("e3"), "entity3");
    	addValue(a);
    	makeDocAndTest(a,"target/entity3");
     }
 
     public void testEntity4() throws JAXBException  {
-	setNamespaces();
-   	Entity a = pFactory.newEntity("ex:e4", "entity4");
+	setNamespacesTODELETE();
+   	Entity a = pFactory.newEntity(q("e4"), "entity4");
 	addLabels(a);
    	makeDocAndTest(a,"target/entity4");
     }
    
     
     public void testEntity5() throws JAXBException  {
-	setNamespaces();
-   	Entity a = pFactory.newEntity("ex:e5", "entity5");
+	setNamespacesTODELETE();
+   	Entity a = pFactory.newEntity(q("e5"), "entity5");
 	addTypes(a);
    	makeDocAndTest(a,"target/entity5");
     }
 
     public void testEntity6() throws JAXBException  {
-	setNamespaces();
-       	Entity a = pFactory.newEntity("ex:e6", "entity6");
+	setNamespacesTODELETE();
+       	Entity a = pFactory.newEntity(q("e6"), "entity6");
 	addLocations(a);
        	makeDocAndTest(a,"target/entity6");
     }
     public void testEntity7() throws JAXBException  {
-	setNamespaces();
-       	Entity a = pFactory.newEntity("ex:e7", "entity7");
+	setNamespacesTODELETE();
+       	Entity a = pFactory.newEntity(q("e7"), "entity7");
 	addTypes(a);
 	addLocations(a);
 	addLabels(a);
        	makeDocAndTest(a,"target/entity7");
     }
     public void testEntity8() throws JAXBException  {
-	setNamespaces();
-       	Entity a = pFactory.newEntity("ex:e8", "entity8");
+	setNamespacesTODELETE();
+       	Entity a = pFactory.newEntity(q("e8"), "entity8");
 	addTypes(a);
 	addTypes(a);
 	addLocations(a);
@@ -452,8 +536,8 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testEntity9() throws JAXBException  {
-	setNamespaces();
-       	Entity a = pFactory.newEntity("ex:e9", "entity9");
+	setNamespacesTODELETE();
+       	Entity a = pFactory.newEntity(q("e9"), "entity9");
 	addTypes(a);
 	addLocations(a);
 	addLabels(a);
@@ -462,8 +546,8 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testEntity10() throws JAXBException  {
-	setNamespaces();
-       	Entity a = pFactory.newEntity("ex:e10", "entity10");
+	setNamespacesTODELETE();
+       	Entity a = pFactory.newEntity(q("e10"), "entity10");
 	addTypes(a);
 	addLocations(a);
 	addLabels(a);
@@ -476,56 +560,56 @@ public class RoundTripFromJavaTest extends TestCase {
     
     
     public void testActivity1() throws JAXBException  {
-	setNamespaces();
-	Activity a = pFactory.newActivity("ex:a1");
+	setNamespacesTODELETE();
+	Activity a = pFactory.newActivity(q("a1"));
 	makeDocAndTest(a,"target/activity1");
     }
     public void testActivity2() throws JAXBException  {
-	setNamespaces();
-   	Activity a = pFactory.newActivity("ex:a2", "activity2");
+	setNamespacesTODELETE();
+   	Activity a = pFactory.newActivity(q("a2"), "activity2");
    	makeDocAndTest(a,"target/activity2");
     }
 
     public void testActivity3() throws JAXBException  {
-	setNamespaces();
-	Activity a = pFactory.newActivity("ex:a1");
+	setNamespacesTODELETE();
+	Activity a = pFactory.newActivity(q("a1"));
 	a.setStartTime(pFactory.newTimeNow());
 	a.setEndTime(pFactory.newTimeNow());
 	makeDocAndTest(a,"target/activity3");
     }
 
     public void testActivity4() throws JAXBException  {
-	setNamespaces();
-   	Activity a = pFactory.newActivity("ex:a2", "activity2");
+	setNamespacesTODELETE();
+   	Activity a = pFactory.newActivity(q("a2"), "activity2");
 	addLabels(a);
    	makeDocAndTest(a,"target/activity4");
     }
     public void testActivity5() throws JAXBException  {
-	setNamespaces();
-   	Activity a = pFactory.newActivity("ex:a2", "activity2");
+	setNamespacesTODELETE();
+   	Activity a = pFactory.newActivity(q("a2"), "activity2");
 	addTypes(a);
    	makeDocAndTest(a,"target/activity5");
     }
    
     
     public void testActivity6() throws JAXBException  {
-	setNamespaces();
-   	Activity a = pFactory.newActivity("ex:a6", "activity6");
+	setNamespacesTODELETE();
+   	Activity a = pFactory.newActivity(q("a6"), "activity6");
 	addLocations(a);
    	makeDocAndTest(a,"target/activity6");
     }
 
     public void testActivity7() throws JAXBException  {
-	setNamespaces();
-       	Activity a = pFactory.newActivity("ex:a7", "activity7");
+	setNamespacesTODELETE();
+       	Activity a = pFactory.newActivity(q("a7"), "activity7");
 	addTypes(a);
 	addLocations(a);
 	addLabels(a);
        	makeDocAndTest(a,"target/activity7");
     }
     public void testActivity8() throws JAXBException  {
-	setNamespaces();
-       	Activity a = pFactory.newActivity("ex:a8", "activity8");
+	setNamespacesTODELETE();
+       	Activity a = pFactory.newActivity(q("a8"), "activity8");
 	a.setStartTime(pFactory.newTimeNow());
 	a.setEndTime(pFactory.newTimeNow());
 	addTypes(a);
@@ -538,8 +622,8 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testActivity9() throws JAXBException  {
-	setNamespaces();
-       	Activity a = pFactory.newActivity("ex:a9", "activity9");
+	setNamespacesTODELETE();
+       	Activity a = pFactory.newActivity(q("a9"), "activity9");
         addTypes(a);
         addLocations(a);
         addLabels(a);
@@ -552,69 +636,69 @@ public class RoundTripFromJavaTest extends TestCase {
     
     
     public void testAgent1() throws JAXBException  {
-	setNamespaces();
-	Agent a = pFactory.newAgent("ex:ag1");
+	setNamespacesTODELETE();
+	Agent a = pFactory.newAgent(q("ag1"));
 	makeDocAndTest(a,"target/agent1");
     }
 
     public void testAgent2() throws JAXBException  {
-	setNamespaces();
-   	Agent a = pFactory.newAgent("ex:ag2", "agent2");
+	setNamespacesTODELETE();
+   	Agent a = pFactory.newAgent(q("ag2"), "agent2");
    	makeDocAndTest(a,"target/agent2");
     }
 
     
     public void testAgent3() throws JAXBException  {
-	setNamespaces();
-   	Agent a = pFactory.newAgent("ex:ag2", "agent2");
+	setNamespacesTODELETE();
+   	Agent a = pFactory.newAgent(q("ag2"), "agent2");
    	a.getLabel().add(pFactory.newInternationalizedString("hello"));
    	makeDocAndTest(a,"target/agent3");
     }
     public void testAgent4() throws JAXBException  {
-	setNamespaces();
-   	Agent a = pFactory.newAgent("ex:ag2", "agent2");
+	setNamespacesTODELETE();
+   	Agent a = pFactory.newAgent(q("ag2"), "agent2");
    	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-   	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
+   	a.getLabel().add(pFactory.newInternationalizedString("bye","en"));
    	makeDocAndTest(a,"target/agent4");
     }
     public void testAgent5() throws JAXBException  {
-	setNamespaces();
-   	Agent a = pFactory.newAgent("ex:ag2", "agent2");
+	setNamespacesTODELETE();
+   	Agent a = pFactory.newAgent(q("ag2"), "agent2");
    	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-   	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-   	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
+   	a.getLabel().add(pFactory.newInternationalizedString("bye","en"));
+   	a.getLabel().add(pFactory.newInternationalizedString("bonjour","fr"));
    	makeDocAndTest(a,"target/agent5");
     }
    
     
     public void testAgent6() throws JAXBException  {
-	setNamespaces();
-   	Agent a = pFactory.newAgent("ex:ag6", "agent6");
+	setNamespacesTODELETE();
+   	Agent a = pFactory.newAgent(q("ag6"), "agent6");
 	addTypes(a);
    	makeDocAndTest(a,"target/agent6");
     }
 
     public void testAgent7() throws JAXBException  {
-	setNamespaces();
-       	Agent a = pFactory.newAgent("ex:ag7", "agent7");
+	setNamespacesTODELETE();
+       	Agent a = pFactory.newAgent(q("ag7"), "agent7");
 	addTypes(a);
        	a.getLabel().add(pFactory.newInternationalizedString("hello"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bye","EN"));
-       	a.getLabel().add(pFactory.newInternationalizedString("bonjour","FR"));
-   	a.getLocation().add(pFactory.newLocation("London",vconv));
-   	a.getLocation().add(pFactory.newLocation(1,vconv));
-   	a.getLocation().add(pFactory.newLocation(1.0,vconv));
-   	a.getLocation().add(pFactory.newLocation(true,vconv));
+       	a.getLabel().add(pFactory.newInternationalizedString("bye","en"));
+       	a.getLabel().add(pFactory.newInternationalizedString("bonjour","fr"));
+   	a.getLocation().add(pFactory.newLocation("London",Name.QNAME_XSD_STRING));
+   	a.getLocation().add(pFactory.newLocation(1,Name.QNAME_XSD_INT));
+   	a.getLocation().add(pFactory.newLocation(1.0,Name.QNAME_XSD_FLOAT));
+   	a.getLocation().add(pFactory.newLocation(true,Name.QNAME_XSD_BOOLEAN));
 	//   	a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "london", EX_PREFIX),vconv));
-   	a.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),vconv));
+   	a.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),Name.QNAME_XSD_DATETIME));
    	URIWrapper w=new URIWrapper();
    	w.setValue(URI.create(EX_NS+"london"));
-   	a.getLocation().add(pFactory.newLocation(w,vconv));
+   	a.getLocation().add(pFactory.newLocation(w,Name.QNAME_XSD_ANY_URI));
        	makeDocAndTest(a,"target/agent7");
     }
     public void testAgent8() throws JAXBException  {
-	setNamespaces();
-       	Agent a = pFactory.newAgent("ex:ag8", "agent8");
+	setNamespacesTODELETE();
+       	Agent a = pFactory.newAgent(q("ag8"), "agent8");
 	/*
        	a.getType().add("a");
        	a.getType().add("a");
@@ -658,8 +742,8 @@ public class RoundTripFromJavaTest extends TestCase {
    	URIWrapper w2=new URIWrapper();
    	w2.setValue(URI.create(EX_NS+"london"));
 
-   	a.getLocation().add(pFactory.newLocation(w2,vconv));
-   	a.getLocation().add(pFactory.newLocation(w2,vconv));
+   	a.getLocation().add(pFactory.newLocation(w2,Name.QNAME_XSD_ANY_URI));
+   	a.getLocation().add(pFactory.newLocation(w2,Name.QNAME_XSD_ANY_URI));
 
        	makeDocAndTest(a,"target/agent8");
     }
@@ -672,7 +756,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void testGeneration1() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasGeneratedBy gen = pFactory.newWasGeneratedBy(q("gen1"),
 							pFactory.newIDRef(q("e1")),
 							null,
@@ -682,7 +766,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
 
     public void testGeneration2() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasGeneratedBy gen = pFactory.newWasGeneratedBy(q("gen2"),
 							pFactory.newIDRef(q("e1")),
 							null,
@@ -693,18 +777,18 @@ public class RoundTripFromJavaTest extends TestCase {
 
 
     public void testGeneration3() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasGeneratedBy gen = pFactory.newWasGeneratedBy(q("gen3"),
 							pFactory.newIDRef(q("e1")),
 							"somerole",
 							pFactory.newIDRef(q("a1")));
-        gen.getRole().add(pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING));
+        gen.getRole().add(pFactory.newRole("otherRole",Name.QNAME_XSD_STRING));
 	makeDocAndTest(gen,"target/generation3");
     }
 
 
     public void testGeneration4() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasGeneratedBy gen = pFactory.newWasGeneratedBy(q("gen4"),
                                                         pFactory.newIDRef(q("e1")),
                                                         "somerole",
@@ -714,7 +798,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void testGeneration5() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasGeneratedBy gen = pFactory.newWasGeneratedBy(q("gen4"),
                                                         pFactory.newIDRef(q("e1")),
                                                         "somerole",
@@ -730,7 +814,7 @@ public class RoundTripFromJavaTest extends TestCase {
     
     
     public void testGeneration6() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
   	WasGeneratedBy gen = pFactory.newWasGeneratedBy((QName)null,
   							pFactory.newIDRef(q("e1")),
   							null,
@@ -739,7 +823,7 @@ public class RoundTripFromJavaTest extends TestCase {
       }
 
     public void testGeneration7() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasGeneratedBy gen = pFactory.newWasGeneratedBy((QName)null,
                                                         pFactory.newIDRef(q("e1")),
                                                         "somerole",
@@ -756,7 +840,7 @@ public class RoundTripFromJavaTest extends TestCase {
     //////////////////////////////////
     
     public void testUsage1() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
         Used use = pFactory.newUsed(q("use1"),
                                     null,
                                     null,
@@ -765,7 +849,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testUsage2() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
         Used use = pFactory.newUsed(q("use2"),
                                     pFactory.newIDRef(q("a1")),
                                     null,
@@ -775,18 +859,18 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testUsage3() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
         Used use = pFactory.newUsed(q("use3"),
                                     pFactory.newIDRef(q("a1")),
                                     "somerole",
                                     pFactory.newIDRef(q("e1")));
-        use.getRole().add(pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING));
+        use.getRole().add(pFactory.newRole("otherRole",Name.QNAME_XSD_STRING));
         
         makeDocAndTest(use,"target/usage3");
     }
     
     public void testUsage4() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
         Used use = pFactory.newUsed(q("use4"),
                                     pFactory.newIDRef(q("a1")),
                                     "somerole",
@@ -797,7 +881,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testUsage5() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
         Used use = pFactory.newUsed(q("use4"),
                                     pFactory.newIDRef(q("a1")),
                                     "somerole",
@@ -812,7 +896,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testUsage6() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
         Used use = pFactory.newUsed((QName)null,
                                     pFactory.newIDRef(q("a1")),
                                     null,
@@ -822,7 +906,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testUsage7() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
         Used use = pFactory.newUsed((QName)null,
                                     pFactory.newIDRef(q("a1")),
                                     "somerole",
@@ -839,7 +923,7 @@ public class RoundTripFromJavaTest extends TestCase {
     // //////////////////////////////////////////////
 
     public void testInvalidation1() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasInvalidatedBy inv = pFactory.newWasInvalidatedBy(q("inv1"),
 							    pFactory.newIDRef(q("e1")),
 							    null);
@@ -847,7 +931,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testInvalidation2() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasInvalidatedBy inv = pFactory.newWasInvalidatedBy(q("inv2"),
 							    pFactory.newIDRef(q("e1")),
 							    pFactory.newIDRef(q("a1")));
@@ -855,31 +939,31 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testInvalidation3() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasInvalidatedBy inv = pFactory.newWasInvalidatedBy(q("inv3"),
 							    pFactory.newIDRef(q("e1")),
 							    pFactory.newIDRef(q("a1")));
-	inv.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
-	inv.getRole().add(pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING));
+	inv.getRole().add(pFactory.newRole("someRole",Name.QNAME_XSD_STRING));
+	inv.getRole().add(pFactory.newRole("otherRole",Name.QNAME_XSD_STRING));
 	makeDocAndTest(inv,  "target/invalidation3");
     }
 
     public void testInvalidation4() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasInvalidatedBy inv = pFactory.newWasInvalidatedBy(q("inv4"),
 							    pFactory.newIDRef(q("e1")),
 							    pFactory.newIDRef(q("a1")));
-	inv.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
+	inv.getRole().add(pFactory.newRole("someRole",Name.QNAME_XSD_STRING));
 	inv.setTime(pFactory.newTimeNow());
 	makeDocAndTest(inv,  "target/invalidation4");
     }
 
     public void testInvalidation5() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasInvalidatedBy inv = pFactory.newWasInvalidatedBy(q("inv4"),
 							    pFactory.newIDRef(q("e1")),
 							    pFactory.newIDRef(q("a1")));
-	inv.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
+	inv.getRole().add(pFactory.newRole("someRole",Name.QNAME_XSD_STRING));
 	inv.setTime(pFactory.newTimeNow());
 	addTypes(inv);
 	addLocations(inv);
@@ -891,7 +975,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testInvalidation6() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasInvalidatedBy inv = pFactory.newWasInvalidatedBy((QName) null,
 							    pFactory.newIDRef(q("e1")),
 							    pFactory.newIDRef(q("a1")));
@@ -899,11 +983,11 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testInvalidation7() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasInvalidatedBy inv = pFactory.newWasInvalidatedBy((QName) null,
 							    pFactory.newIDRef(q("e1")),
 							    pFactory.newIDRef(q("a1")));
-	inv.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
+	inv.getRole().add(pFactory.newRole("someRole",Name.QNAME_XSD_STRING));
 	inv.setTime(pFactory.newTimeNow());
 	addTypes(inv);
 	addLocations(inv);
@@ -916,7 +1000,7 @@ public class RoundTripFromJavaTest extends TestCase {
 //////////////////////////////////
 
     public void testStart1() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasStartedBy start = pFactory.newWasStartedBy(q("start1"),
 						      null,
 						      pFactory.newIDRef(q("e1")));
@@ -925,7 +1009,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testStart2() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasStartedBy start = pFactory.newWasStartedBy(q("start2"),
 						      pFactory.newIDRef(q("a1")),
 						      pFactory.newIDRef(q("e1")));
@@ -934,7 +1018,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testStart3() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasStartedBy start = pFactory.newWasStartedBy(q("start3"),
 						      pFactory.newIDRef(q("a1")),
 						      null);
@@ -943,7 +1027,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testStart4() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasStartedBy start = pFactory.newWasStartedBy(q("start4"),
 						      null,
 						      pFactory.newIDRef(q("e1")));
@@ -953,7 +1037,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testStart5() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasStartedBy start = pFactory.newWasStartedBy(q("start5"),
 						      pFactory.newIDRef(q("a1")),
 						      pFactory.newIDRef(q("e1")));
@@ -963,7 +1047,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testStart6() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasStartedBy start = pFactory.newWasStartedBy(q("start6"),
 						      pFactory.newIDRef(q("a1")),
 						      null);
@@ -974,7 +1058,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     
     public void testStart7() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
    	WasStartedBy start = pFactory.newWasStartedBy(q("start7"),
    						      pFactory.newIDRef(q("a1")),
    						      null);
@@ -985,14 +1069,14 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void testStart8() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
    	WasStartedBy start = pFactory.newWasStartedBy(q("start8"),
    						      pFactory.newIDRef(q("a1")),
    						      null);
    	start.setStarter(pFactory.newIDRef(q("a2")));
    	start.setTime(pFactory.newTimeNow());
-   	start.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
-   	start.getRole().add(pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING));
+   	start.getRole().add(pFactory.newRole("someRole",Name.QNAME_XSD_STRING));
+   	start.getRole().add(pFactory.newRole("otherRole",Name.QNAME_XSD_STRING));
    	addTypes(start);
 	addLocations(start);
 	addLabels(start);
@@ -1002,7 +1086,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void testStart9() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
    	WasStartedBy start = pFactory.newWasStartedBy((QName)null,
    						      pFactory.newIDRef(q("a1")),
    						      pFactory.newIDRef(q("e1")));
@@ -1011,14 +1095,14 @@ public class RoundTripFromJavaTest extends TestCase {
        }
     
     public void testStart10() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
    	WasStartedBy start = pFactory.newWasStartedBy((QName)null,
    						      pFactory.newIDRef(q("a1")),
    						      null);
    	start.setStarter(pFactory.newIDRef(q("a2")));
    	start.setTime(pFactory.newTimeNow());
-   	start.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
-   	start.getRole().add(pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING));
+   	start.getRole().add(pFactory.newRole("someRole",Name.QNAME_XSD_STRING));
+   	start.getRole().add(pFactory.newRole("otherRole",Name.QNAME_XSD_STRING));
    	addTypes(start);
 	addLocations(start);
 	addLabels(start);
@@ -1030,7 +1114,7 @@ public class RoundTripFromJavaTest extends TestCase {
     // ////////////////////////////////
 
     public void testEnd1() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasEndedBy end = pFactory.newWasEndedBy(q("end1"), null,
 						pFactory.newIDRef(q("e1")));
 	
@@ -1038,7 +1122,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testEnd2() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasEndedBy end = pFactory.newWasEndedBy(q("end2"),
 						pFactory.newIDRef(q("a1")),
 						pFactory.newIDRef(q("e1")));
@@ -1047,7 +1131,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testEnd3() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasEndedBy end = pFactory.newWasEndedBy(q("end3"),
 						pFactory.newIDRef(q("a1")),
 						null);
@@ -1056,7 +1140,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testEnd4() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasEndedBy end = pFactory.newWasEndedBy(q("end4"), null,
 						pFactory.newIDRef(q("e1")));
 	end.setEnder(pFactory.newIDRef(q("a2")));
@@ -1065,7 +1149,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testEnd5() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasEndedBy end = pFactory.newWasEndedBy(q("end5"),
 						pFactory.newIDRef(q("a1")),
 						pFactory.newIDRef(q("e1")));
@@ -1075,7 +1159,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testEnd6() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasEndedBy end = pFactory.newWasEndedBy(q("end6"),
 						pFactory.newIDRef(q("a1")),
 						null);
@@ -1085,7 +1169,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testEnd7() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasEndedBy end = pFactory.newWasEndedBy(q("end7"),
 						pFactory.newIDRef(q("a1")),
 						null);
@@ -1096,14 +1180,14 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testEnd8() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasEndedBy end = pFactory.newWasEndedBy(q("end8"),
 						pFactory.newIDRef(q("a1")),
 						null);
 	end.setEnder(pFactory.newIDRef(q("a2")));
 	end.setTime(pFactory.newTimeNow());
-	end.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
-	end.getRole().add(pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING));
+	end.getRole().add(pFactory.newRole("someRole",Name.QNAME_XSD_STRING));
+	end.getRole().add(pFactory.newRole("otherRole",Name.QNAME_XSD_STRING));
 	addTypes(end);
 	addLocations(end);
 	addLabels(end);
@@ -1113,7 +1197,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testEnd9() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasEndedBy end = pFactory.newWasEndedBy((QName) null,
 						pFactory.newIDRef(q("a1")),
 						pFactory.newIDRef(q("e1")));
@@ -1122,14 +1206,14 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testEnd10() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasEndedBy end = pFactory.newWasEndedBy((QName) null,
 						pFactory.newIDRef(q("a1")),
 						null);
 	end.setEnder(pFactory.newIDRef(q("a2")));
 	end.setTime(pFactory.newTimeNow());
-	end.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
-	end.getRole().add(pFactory.newRole("otherRole",ValueConverter.QNAME_XSD_STRING));
+	end.getRole().add(pFactory.newRole("someRole",Name.QNAME_XSD_STRING));
+	end.getRole().add(pFactory.newRole("otherRole",Name.QNAME_XSD_STRING));
 	addTypes(end);
 	addLocations(end);
 	addLabels(end);
@@ -1142,7 +1226,7 @@ public class RoundTripFromJavaTest extends TestCase {
     // ////////////////////////////////
 
     public void testDerivation1() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
 	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der1"), 
 	                                                null,
 	                                                pFactory.newIDRef(q("e1")));
@@ -1150,7 +1234,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testDerivation2() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
    	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der2"), 
    	                                                pFactory.newIDRef(q("e2")),
    	                                                null);
@@ -1158,7 +1242,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void testDerivation3() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
    	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der3"), 
    	                                                pFactory.newIDRef(q("e2")),
    	                                                pFactory.newIDRef(q("e1")));   	
@@ -1166,7 +1250,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testDerivation4() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
    	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der4"), 
    	                                                pFactory.newIDRef(q("e2")),
    	                                                pFactory.newIDRef(q("e1")));
@@ -1175,7 +1259,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void testDerivation5() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
    	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der5"), 
    	                                                pFactory.newIDRef(q("e2")),
    	                                                pFactory.newIDRef(q("e1")));
@@ -1185,7 +1269,7 @@ public class RoundTripFromJavaTest extends TestCase {
     
     
     public void testDerivation6() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
    	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der6"), 
    	                                                pFactory.newIDRef(q("e2")),
    	                                                pFactory.newIDRef(q("e1")));
@@ -1195,7 +1279,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void testDerivation7() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
    	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der7"), 
    	                                                pFactory.newIDRef(q("e2")),
    	                                                pFactory.newIDRef(q("e1")));
@@ -1209,7 +1293,7 @@ public class RoundTripFromJavaTest extends TestCase {
     
     
     public void testDerivation8() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
    	WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der8"), 
    	                                                pFactory.newIDRef(q("e2")),
    	                                                pFactory.newIDRef(q("e1")));
@@ -1221,7 +1305,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void testDerivation9() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
    	WasDerivedFrom der = pFactory.newWasDerivedFrom((QName)null, 
    	                                                pFactory.newIDRef(q("e2")),
    	                                                null);
@@ -1230,7 +1314,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void testDerivation10() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasDerivedFrom der = pFactory.newWasDerivedFrom((QName)null, 
                                                         pFactory.newIDRef(q("e2")),
                                                         pFactory.newIDRef(q("e1")));
@@ -1241,7 +1325,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void testDerivation11() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasDerivedFrom der = pFactory.newWasDerivedFrom(q("rev1"), 
                                                         pFactory.newIDRef(q("e2")),
                                                         pFactory.newIDRef(q("e1")));
@@ -1253,7 +1337,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testDerivation12() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasDerivedFrom der = pFactory.newWasDerivedFrom(q("quo1"), 
                                                         pFactory.newIDRef(q("e2")),
                                                         pFactory.newIDRef(q("e1")));
@@ -1265,7 +1349,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testDerivation13() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasDerivedFrom der = pFactory.newWasDerivedFrom(q("prim1"), 
                                                         pFactory.newIDRef(q("e2")),
                                                         pFactory.newIDRef(q("e1")));
@@ -1279,7 +1363,7 @@ public class RoundTripFromJavaTest extends TestCase {
     // ////////////////////////////////
 
     public void testAssociation1() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc1"), 
                                                                 pFactory.newIDRef(q("a1")),
                                                                 null);
@@ -1287,7 +1371,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testAssociation2() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc2"), 
                                                                 null,
                                                                 pFactory.newIDRef(q("ag1")));
@@ -1295,7 +1379,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testAssociation3() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc3"), 
                                                                 pFactory.newIDRef(q("a1")),
                                                                 pFactory.newIDRef(q("ag1")));
@@ -1304,7 +1388,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
 
     public void testAssociation4() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc4"), 
                                                                 pFactory.newIDRef(q("a1")),
                                                                 pFactory.newIDRef(q("ag1")));
@@ -1314,7 +1398,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     
     public void testAssociation5() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAssociatedWith assoc = pFactory.newWasAssociatedWith((QName)null, 
                                                                 pFactory.newIDRef(q("a1")),
                                                                 pFactory.newIDRef(q("ag1")));
@@ -1324,7 +1408,7 @@ public class RoundTripFromJavaTest extends TestCase {
     
 
     public void testAssociation6() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc6"), 
                                                                 pFactory.newIDRef(q("a1")),
                                                                 pFactory.newIDRef(q("ag1")));
@@ -1334,7 +1418,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testAssociation7() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc7"), 
                                                                 pFactory.newIDRef(q("a1")),
                                                                 pFactory.newIDRef(q("ag1")));
@@ -1346,19 +1430,19 @@ public class RoundTripFromJavaTest extends TestCase {
 
 
     public void testAssociation8() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc8"), 
                                                                 pFactory.newIDRef(q("a1")),
                                                                 pFactory.newIDRef(q("ag1")));
         assoc.setPlan(pFactory.newIDRef(q("plan1")));
-        assoc.getRole().add(pFactory.newRole("someRole",ValueConverter.QNAME_XSD_STRING));
-        assoc.getRole().add(pFactory.newRole("someOtherRole",ValueConverter.QNAME_XSD_STRING));
+        assoc.getRole().add(pFactory.newRole("someRole",Name.QNAME_XSD_STRING));
+        assoc.getRole().add(pFactory.newRole("someOtherRole",Name.QNAME_XSD_STRING));
         makeDocAndTest(assoc, "target/association8");
     }
     
 
     public void testAssociation9() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc9"), 
                                                                 pFactory.newIDRef(q("a1")),
                                                                 pFactory.newIDRef(q("ag1")));
@@ -1372,7 +1456,7 @@ public class RoundTripFromJavaTest extends TestCase {
  // ////////////////////////////////
 
     public void testAttribution1() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAttributedTo attr = pFactory.newWasAttributedTo(q("attr1"), 
                                                            pFactory.newIDRef(q("e1")),
                                                            null);
@@ -1380,7 +1464,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void testAttribution2() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAttributedTo attr = pFactory.newWasAttributedTo(q("attr2"), 
                                                            null,
                                                            pFactory.newIDRef(q("ag1")));
@@ -1388,7 +1472,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void testAttribution3() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAttributedTo attr = pFactory.newWasAttributedTo(q("attr3"), 
                                                            pFactory.newIDRef(q("e1")),
                                                            pFactory.newIDRef(q("ag1")));
@@ -1397,7 +1481,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
 
     public void testAttribution4() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAttributedTo attr = pFactory.newWasAttributedTo(q("attr4"), 
                                                            pFactory.newIDRef(q("e1")),
                                                            pFactory.newIDRef(q("ag1")));
@@ -1406,7 +1490,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     
     public void testAttribution5() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAttributedTo attr = pFactory.newWasAttributedTo((QName)null, 
                                                            pFactory.newIDRef(q("e1")),
                                                            pFactory.newIDRef(q("ag1")));
@@ -1416,7 +1500,7 @@ public class RoundTripFromJavaTest extends TestCase {
     
 
     public void testAttribution6() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAttributedTo attr = pFactory.newWasAttributedTo(q("attr6"), 
                                                            pFactory.newIDRef(q("e1")),
                                                            pFactory.newIDRef(q("ag1")));
@@ -1425,7 +1509,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testAttribution7() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAttributedTo attr = pFactory.newWasAttributedTo(q("attr7"), 
                                                            pFactory.newIDRef(q("e1")),
                                                            pFactory.newIDRef(q("ag1")));
@@ -1436,7 +1520,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
 
     public void testAttribution8() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
         WasAttributedTo attr = pFactory.newWasAttributedTo(q("attr8"), 
                                                            pFactory.newIDRef(q("e1")),
                                                            pFactory.newIDRef(q("ag1")));
@@ -1450,7 +1534,7 @@ public class RoundTripFromJavaTest extends TestCase {
     // ////////////////////////////////
 
        public void testDelegation1() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del1"), 
                                                               pFactory.newIDRef(q("e1")),
                                                               null,
@@ -1459,7 +1543,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testDelegation2() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del2"), 
                                                               null,
                                                               pFactory.newIDRef(q("ag1")),
@@ -1468,7 +1552,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testDelegation3() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del3"), 
                                                               pFactory.newIDRef(q("e1")),
                                                               pFactory.newIDRef(q("ag1")),
@@ -1478,7 +1562,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
 
        public void testDelegation4() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del4"), 
                                                               pFactory.newIDRef(q("e1")),
                                                               pFactory.newIDRef(q("ag1")),
@@ -1489,7 +1573,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
        
        public void testDelegation5() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            ActedOnBehalfOf del = pFactory.newActedOnBehalfOf((QName)null, 
                                                               pFactory.newIDRef(q("e1")),
                                                               pFactory.newIDRef(q("ag1")),
@@ -1500,7 +1584,7 @@ public class RoundTripFromJavaTest extends TestCase {
        
 
        public void testDelegation6() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del6"), 
                                                               pFactory.newIDRef(q("e1")),
                                                               pFactory.newIDRef(q("ag1")),
@@ -1510,7 +1594,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
 
        public void testDelegation7() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del7"), 
                                                               pFactory.newIDRef(q("e1")),
                                                               pFactory.newIDRef(q("ag1")),
@@ -1522,7 +1606,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
 
        public void testDelegation8() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del8"), 
                                                               pFactory.newIDRef(q("e1")),
                                                               pFactory.newIDRef(q("ag1")),
@@ -1536,7 +1620,7 @@ public class RoundTripFromJavaTest extends TestCase {
        // ////////////////////////////////
 
        public void testCommunication1() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            WasInformedBy inf = pFactory.newWasInformedBy(q("inf1"), 
                                                          pFactory.newIDRef(q("a2")),
                                                          null);
@@ -1544,7 +1628,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testCommunication2() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            WasInformedBy inf = pFactory.newWasInformedBy(q("inf2"), 
                                                               null,
                                                               pFactory.newIDRef(q("a1")));
@@ -1552,7 +1636,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testCommunication3() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            WasInformedBy inf = pFactory.newWasInformedBy(q("inf3"), 
                                                          pFactory.newIDRef(q("a2")),
                                                          pFactory.newIDRef(q("a1")));
@@ -1562,7 +1646,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
        
        public void testCommunication4() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            WasInformedBy inf = pFactory.newWasInformedBy((QName)null, 
                                                          pFactory.newIDRef(q("a2")),
                                                          pFactory.newIDRef(q("a1")));
@@ -1572,7 +1656,7 @@ public class RoundTripFromJavaTest extends TestCase {
        
 
        public void testCommunication5() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            WasInformedBy inf = pFactory.newWasInformedBy(q("inf5"), 
                                                          pFactory.newIDRef(q("a2")),
                                                          pFactory.newIDRef(q("a1")));
@@ -1581,7 +1665,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
 
        public void testCommunication6() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            WasInformedBy inf = pFactory.newWasInformedBy(q("inf6"), 
                                                          pFactory.newIDRef(q("a2")),
                                                          pFactory.newIDRef(q("a1")));
@@ -1592,7 +1676,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
 
        public void testCommunication7() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            WasInformedBy inf = pFactory.newWasInformedBy(q("inf7"), 
                                                          pFactory.newIDRef(q("a2")),
                                                          pFactory.newIDRef(q("a1")));
@@ -1606,7 +1690,7 @@ public class RoundTripFromJavaTest extends TestCase {
        // ////////////////////////////////
 
        public void testInfluence1() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf1"), 
                                                              pFactory.newIDRef(q("a2")),
                                                              null);
@@ -1614,7 +1698,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testInfluence2() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf2"), 
                                                              null,
                                                              pFactory.newIDRef(q("a1")));
@@ -1622,7 +1706,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testInfluence3() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf3"), 
                                                              pFactory.newIDRef(q("a2")),
                                                              pFactory.newIDRef(q("a1")));
@@ -1632,7 +1716,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
        
        public void testInfluence4() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            WasInfluencedBy inf = pFactory.newWasInfluencedBy((QName)null, 
                                                              pFactory.newIDRef(q("a2")),
                                                              pFactory.newIDRef(q("a1")));
@@ -1642,7 +1726,7 @@ public class RoundTripFromJavaTest extends TestCase {
        
 
        public void testInfluence5() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf5"), 
                                                              pFactory.newIDRef(q("a2")),
                                                              pFactory.newIDRef(q("a1")));
@@ -1651,7 +1735,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
 
        public void testInfluence6() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf6"), 
                                                              pFactory.newIDRef(q("a2")),
                                                              pFactory.newIDRef(q("a1")));
@@ -1662,7 +1746,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
 
        public void testInfluence7() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf7"), 
                                                              pFactory.newIDRef(q("a2")),
                                                              pFactory.newIDRef(q("a1")));
@@ -1677,7 +1761,7 @@ public class RoundTripFromJavaTest extends TestCase {
        // ////////////////////////////////
 
        public void testAlternate1() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            AlternateOf alt = pFactory.newAlternateOf(pFactory.newIDRef(q("e2")),
                                                      pFactory.newIDRef(q("e1")));
            makeDocAndTest(alt, "target/alternate1");
@@ -1685,7 +1769,7 @@ public class RoundTripFromJavaTest extends TestCase {
        
 
        public void testSpecialization1() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            SpecializationOf spe = pFactory.newSpecializationOf(pFactory.newIDRef(q("e2")),
                                                                pFactory.newIDRef(q("e1")));
            makeDocAndTest(spe, "target/specialization1");
@@ -1693,7 +1777,7 @@ public class RoundTripFromJavaTest extends TestCase {
        
        
        public void testMention1() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            MentionOf men = pFactory.newMentionOf(pFactory.newIDRef(q("e2")),
                                                  pFactory.newIDRef(q("e1")),
                                                  null);
@@ -1701,7 +1785,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testMention2() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            MentionOf men = pFactory.newMentionOf(pFactory.newIDRef(q("e2")),
                                                  pFactory.newIDRef(q("e1")),
                                                  pFactory.newIDRef(q("b")));
@@ -1710,13 +1794,13 @@ public class RoundTripFromJavaTest extends TestCase {
        
 
        public void testMembership1() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            HadMember mem = pFactory.newHadMember(pFactory.newIDRef(q("c")),
                                                  pFactory.newIDRef(q("e1")));
            makeDocAndTest(mem, "target/member1");
        }
        public void testMembership2() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            HadMember mem = pFactory.newHadMember(pFactory.newIDRef(q("c")),
                                                  pFactory.newIDRef(q("e1")),
                                                  pFactory.newIDRef(q("e2")));
@@ -1724,7 +1808,7 @@ public class RoundTripFromJavaTest extends TestCase {
            makeDocAndTest(mem, "target/member2");
        }
        public void testMembership3() throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            HadMember mem = pFactory.newHadMember(pFactory.newIDRef(q("c")),
                                                  pFactory.newIDRef(q("e1")),
                                                  pFactory.newIDRef(q("e2")),
@@ -1734,7 +1818,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
      
        public void testScruffyGeneration1() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
     	   WasGeneratedBy gen1 = pFactory.newWasGeneratedBy(q("gen1"),
 					pFactory.newIDRef(q("e1")),
 					null,
@@ -1753,20 +1837,20 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testScruffyGeneration2() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
     	   WasGeneratedBy gen1 = pFactory.newWasGeneratedBy(q("gen1"),
 					pFactory.newIDRef(q("e1")),
 					null,
 					pFactory.newIDRef(q("a1")));
 	       gen1.setTime(pFactory.newTimeNow());
-	   	   gen1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   gen1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", Name.QNAME_XSD_STRING));
 
 	       WasGeneratedBy gen2 = pFactory.newWasGeneratedBy(q("gen1"),
 			          pFactory.newIDRef(q("e1")),
 			        	null,
 			          pFactory.newIDRef(q("a1")));
 	  	   gen2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   gen2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   gen2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", Name.QNAME_XSD_STRING));
    		   Entity e1=pFactory.newEntity(q("e1"));
 		   Activity a1=pFactory.newActivity(q("a1"));
 		   Statement [] opt=new Statement[] { e1, a1 };
@@ -1775,7 +1859,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testScruffyInvalidation1() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
     	   WasInvalidatedBy inv1 = pFactory.newWasInvalidatedBy(q("inv1"),
 					pFactory.newIDRef(q("e1")),
 					pFactory.newIDRef(q("a1")));
@@ -1792,18 +1876,18 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testScruffyInvalidation2() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
     	   WasInvalidatedBy inv1 = pFactory.newWasInvalidatedBy(q("inv1"),
 					pFactory.newIDRef(q("e1")),
 					pFactory.newIDRef(q("a1")));
 	       inv1.setTime(pFactory.newTimeNow());
-	   	   inv1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   inv1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", Name.QNAME_XSD_STRING));
 
 	       WasInvalidatedBy inv2 = pFactory.newWasInvalidatedBy(q("inv1"),
 			          pFactory.newIDRef(q("e1")),
 			          pFactory.newIDRef(q("a1")));
 	  	   inv2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   inv2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   inv2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", Name.QNAME_XSD_STRING));
 
    		   Entity e1=pFactory.newEntity(q("e1"));
 		   Activity a1=pFactory.newActivity(q("a1"));
@@ -1813,7 +1897,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testScruffyUsage1() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
     	   Used use1 = pFactory.newUsed(q("use1"),
 					pFactory.newIDRef(q("a1")),
 					null,
@@ -1832,20 +1916,20 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testScruffyUsage2() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
     	   Used use1 = pFactory.newUsed(q("use1"),
 					pFactory.newIDRef(q("a1")),
 					null,
 					pFactory.newIDRef(q("e1")));
 	       use1.setTime(pFactory.newTimeNow());
-	   	   use1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   use1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", Name.QNAME_XSD_STRING));
 
 	       Used use2 = pFactory.newUsed(q("use1"),
 			          pFactory.newIDRef(q("a1")),
 			        	null,
 			          pFactory.newIDRef(q("e1")));
 	  	   use2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   use2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   use2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", Name.QNAME_XSD_STRING));
 
    		   Entity e1=pFactory.newEntity(q("e1"));
 		   Activity a1=pFactory.newActivity(q("a1"));
@@ -1855,7 +1939,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testScruffyStart1() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
     	   WasStartedBy start1 = pFactory.newWasStartedBy(q("start1"),
 					pFactory.newIDRef(q("a1")),
 					pFactory.newIDRef(q("e1")));
@@ -1874,18 +1958,18 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testScruffyStart2() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
     	   WasStartedBy start1 = pFactory.newWasStartedBy(q("start1"),
 					pFactory.newIDRef(q("a1")),
 					pFactory.newIDRef(q("e1")));
 	       start1.setTime(pFactory.newTimeNow());
-	   	   start1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   start1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", Name.QNAME_XSD_STRING));
 
 	       WasStartedBy start2 = pFactory.newWasStartedBy(q("start1"),
 			          pFactory.newIDRef(q("a1")),
 			          pFactory.newIDRef(q("e1")));
 	  	   start2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   start2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   start2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", Name.QNAME_XSD_STRING));
 
    		   Entity e1=pFactory.newEntity(q("e1"));
 		   Activity a1=pFactory.newActivity(q("a1"));
@@ -1895,19 +1979,19 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testScruffyStart3() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
     	   WasStartedBy start1 = pFactory.newWasStartedBy(q("start1"),
 					pFactory.newIDRef(q("a1")),
 					pFactory.newIDRef(q("e1")));
 	       start1.setTime(pFactory.newTimeNow());
-	   	   start1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   start1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", Name.QNAME_XSD_STRING));
 	   	   start1.setStarter(pFactory.newIDRef(q("a1s")));	
 
 	       WasStartedBy start2 = pFactory.newWasStartedBy(q("start1"),
 			          pFactory.newIDRef(q("a1")),
 			          pFactory.newIDRef(q("e1")));
 	  	   start2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   start2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   start2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", Name.QNAME_XSD_STRING));
 		   start2.setStarter(pFactory.newIDRef(q("a2s")));
 		   
    		   Entity e1=pFactory.newEntity(q("e1"));
@@ -1920,19 +2004,19 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testScruffyStart4() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
     	   WasStartedBy start1 = pFactory.newWasStartedBy(q("start1"),
 					pFactory.newIDRef(q("a1")),
 					pFactory.newIDRef(q("e1")));
 	       start1.setTime(pFactory.newTimeNow());
-	   	   start1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   start1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", Name.QNAME_XSD_STRING));
 	   	   start1.setStarter(pFactory.newIDRef(q("a1s")));	
 
 	       WasStartedBy start2 = pFactory.newWasStartedBy(q("start1"),
 			          pFactory.newIDRef(q("a2")),
 			          pFactory.newIDRef(q("e2")));
 	  	   start2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   start2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   start2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", Name.QNAME_XSD_STRING));
 		   start2.setStarter(pFactory.newIDRef(q("a2s")));
 		   
 		   Entity e1=pFactory.newEntity(q("e1"));
@@ -1947,7 +2031,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testScruffyEnd1() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
     	   WasEndedBy end1 = pFactory.newWasEndedBy(q("end1"),
 					pFactory.newIDRef(q("a1")),
 					pFactory.newIDRef(q("e1")));
@@ -1966,18 +2050,18 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testScruffyEnd2() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
     	   WasEndedBy end1 = pFactory.newWasEndedBy(q("end1"),
 					pFactory.newIDRef(q("a1")),
 					pFactory.newIDRef(q("e1")));
 	       end1.setTime(pFactory.newTimeNow());
-	   	   end1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   end1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", Name.QNAME_XSD_STRING));
 
 	       WasEndedBy end2 = pFactory.newWasEndedBy(q("end1"),
 			          pFactory.newIDRef(q("a1")),
 			          pFactory.newIDRef(q("e1")));
 	  	   end2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   end2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   end2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", Name.QNAME_XSD_STRING));
 
    		   Entity e1=pFactory.newEntity(q("e1"));
 		   Activity a1=pFactory.newActivity(q("a1"));
@@ -1987,19 +2071,19 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testScruffyEnd3() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
     	   WasEndedBy end1 = pFactory.newWasEndedBy(q("end1"),
 					pFactory.newIDRef(q("a1")),
 					pFactory.newIDRef(q("e1")));
 	       end1.setTime(pFactory.newTimeNow());
-	   	   end1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   end1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", Name.QNAME_XSD_STRING));
 	   	   end1.setEnder(pFactory.newIDRef(q("a1s")));	
 
 	       WasEndedBy end2 = pFactory.newWasEndedBy(q("end1"),
 			          pFactory.newIDRef(q("a1")),
 			          pFactory.newIDRef(q("e1")));
 	  	   end2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   end2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   end2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", Name.QNAME_XSD_STRING));
 		   end2.setEnder(pFactory.newIDRef(q("a2s")));
 		   
    		   Entity e1=pFactory.newEntity(q("e1"));
@@ -2012,19 +2096,19 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testScruffyEnd4() throws JAXBException  {
-	setNamespaces();
+	setNamespacesTODELETE();
     	   WasEndedBy end1 = pFactory.newWasEndedBy(q("end1"),
 					pFactory.newIDRef(q("a1")),
 					pFactory.newIDRef(q("e1")));
 	       end1.setTime(pFactory.newTimeNow());
-	   	   end1.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hello", ValueConverter.QNAME_XSD_STRING));
+	   	   end1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", Name.QNAME_XSD_STRING));
 	   	   end1.setEnder(pFactory.newIDRef(q("a1s")));	
 
 	       WasEndedBy end2 = pFactory.newWasEndedBy(q("end1"),
 			          pFactory.newIDRef(q("a2")),
 			          pFactory.newIDRef(q("e2")));
 	  	   end2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
-		   end2.getAny().add(pFactory.newAttribute(EX_NS,"tag2",EX_PREFIX, "hi", ValueConverter.QNAME_XSD_STRING));
+		   end2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", Name.QNAME_XSD_STRING));
 		   end2.setEnder(pFactory.newIDRef(q("a2s")));
 		   
 		   Entity e1=pFactory.newEntity(q("e1"));
@@ -2039,7 +2123,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testBundle1 () throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            Used use1 = pFactory.newUsed(q("use1"),
                                         pFactory.newIDRef(q("a1")),
                                         null,
@@ -2063,14 +2147,18 @@ public class RoundTripFromJavaTest extends TestCase {
            st2.add(aa1);
            st2.add(ee1);
            st2.add(use2);
+           
+           b1.setNamespace(Namespace.gatherNamespaces(b1));
 
            NamedBundle b2=pFactory.newNamedBundle(q("bundle2"), st2);
            
-           Entity eb1=pFactory.newEntity(q("bundle1"));
-           pFactory.addType(eb1, pFactory.newType(pFactory.newQName("prov:Bundle"), ValueConverter.QNAME_XSD_QNAME));
+           Entity eb1=pFactory.newEntity(q("bundle1"));    
+           pFactory.addBundleType(eb1);
            
            Entity eb2=pFactory.newEntity(q("bundle2"));
-           pFactory.addType(eb2, pFactory.newType(pFactory.newQName("prov:Bundle"),ValueConverter.QNAME_XSD_QNAME));
+           pFactory.addBundleType(eb2);
+           
+           b2.setNamespace(Namespace.gatherNamespaces(b2));
 
            Statement [] statements=new Statement[] { eb1, eb2,};
            NamedBundle [] bundles=new NamedBundle[] {  b1, b2 };
@@ -2080,7 +2168,7 @@ public class RoundTripFromJavaTest extends TestCase {
        }
        
        public void testBundle2 () throws JAXBException {
-	setNamespaces();
+	setNamespacesTODELETE();
            Used use1 = pFactory.newUsed(q("use1"),
                                         pFactory.newIDRef(q("a1")),
                                         null,
@@ -2093,7 +2181,8 @@ public class RoundTripFromJavaTest extends TestCase {
            st1.add(use1);
 
            NamedBundle b1=pFactory.newNamedBundle(q("bundle1"), st1);
-           
+           b1.setNamespace(Namespace.gatherNamespaces(b1));
+
            Used use2 = pFactory.newUsed(q("use2"),
                                         pFactory.newIDRef(q("e1")),
                                         null,
@@ -2106,21 +2195,68 @@ public class RoundTripFromJavaTest extends TestCase {
            st2.add(use2);
 
            NamedBundle b2=pFactory.newNamedBundle(q("bundle2"), st2);
-           
+           b2.setNamespace(Namespace.gatherNamespaces(b2));
+
            Entity eb1=pFactory.newEntity(q("bundle1"));
-           pFactory.addType(eb1, pFactory.newType(pFactory.newQName("prov:Bundle"),ValueConverter.QNAME_XSD_QNAME));
+           pFactory.addBundleType(eb1);
+           
            
            Entity eb2=pFactory.newEntity(q("bundle2"));
-           pFactory.addType(eb2, pFactory.newType(pFactory.newQName("prov:Bundle"),ValueConverter.QNAME_XSD_QNAME));
-
+           pFactory.addBundleType(eb2);
+           
            Statement [] statements=new Statement[] { eb1, eb2,};
            NamedBundle [] bundles=new NamedBundle[] {  b1, b2 };
 
            makeDocAndTest(statements, bundles, "target/bundle2", null, true);
 
        }
+       
+       
+       //FIXME: inheritance of namespaces does not work properly
+    public void FIXMEtestBundle3() throws JAXBException {
+	Used use1 = pFactory.newUsed(q("use1"), pFactory.newIDRef(q("a1")),
+				     null, pFactory.newIDRef(q("e1")));
+	Entity e1 = pFactory.newEntity(q("e1"));
+	Activity a1 = pFactory.newActivity(q("a1"));
+	List<Statement> st1 = new LinkedList<Statement>();
+	st1.add(a1);
+	st1.add(e1);
+	st1.add(use1);
 
-   	public void testDictionaryInsertion1() throws JAXBException {
+	NamedBundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
+
+	Used use2 = pFactory.newUsed(q("use2"), pFactory.newIDRef(q("aa1")),
+				     null, pFactory.newIDRef(q("ee1")));
+	Entity ee1 = pFactory.newEntity(q("ee1"));
+	Activity aa1 = pFactory.newActivity(q("aa1"));
+	List<Statement> st2 = new LinkedList<Statement>();
+	st2.add(aa1);
+	st2.add(ee1);
+	st2.add(use2);
+
+	Namespace ns1=Namespace.gatherNamespaces(b1);
+	b1.setNamespace(new Namespace());
+
+	NamedBundle b2 = pFactory.newNamedBundle(q("bundle2"), st2);
+
+	Entity eb1 = pFactory.newEntity(q("bundle1"));
+	pFactory.addBundleType(eb1);
+
+	Entity eb2 = pFactory.newEntity(q("bundle2"));
+	pFactory.addBundleType(eb2);
+
+	Namespace ns2=Namespace.gatherNamespaces(b2);
+	b2.setNamespace(new Namespace());
+
+	Statement[] statements = new Statement[] { eb1, eb2, };
+	NamedBundle[] bundles = new NamedBundle[] { b1, b2 };
+
+	makeDocAndTest(statements, bundles, "target/bundle3", null, true);
+
+    }
+	      
+
+    public void testDictionaryInsertion1() throws JAXBException {
 		DerivedByInsertionFrom d1 = pFactory.newDerivedByInsertionFrom(null,
 				q("d2"), q("d1"), null, null);
 
@@ -2143,7 +2279,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	public void testDictionaryInsertion3() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p = new KeyQNamePair();
-		p.key = "a";
+		p.key = pFactory.newKey("a",Name.QNAME_XSD_STRING);
 		p.name = q("e0");
 		ll.add(p);
 		DerivedByInsertionFrom d3 = pFactory.newDerivedByInsertionFrom(
@@ -2158,11 +2294,11 @@ public class RoundTripFromJavaTest extends TestCase {
 	public void testDictionaryInsertion4() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p1 = new KeyQNamePair();
-		p1.key = "a";
+		p1.key = pFactory.newKey("a",Name.QNAME_XSD_STRING);
 		p1.name = q("e0");
 		ll.add(p1);
 		KeyQNamePair p2 = new KeyQNamePair();
-		p2.key = 1;
+		p2.key = pFactory.newKey("1",Name.QNAME_XSD_INT);
 		p2.name = q("e1");
 		ll.add(p2);
 		DerivedByInsertionFrom d4 = pFactory.newDerivedByInsertionFrom(
@@ -2176,15 +2312,15 @@ public class RoundTripFromJavaTest extends TestCase {
 	public void testDictionaryInsertion5() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p1 = new KeyQNamePair();
-		p1.key = "a";
+		p1.key = pFactory.newKey("a",Name.QNAME_XSD_STRING);
 		p1.name = q("e0");
 		ll.add(p1);
 		KeyQNamePair p2 = new KeyQNamePair();
-		p2.key = 1;
+		p2.key = pFactory.newKey("1",Name.QNAME_XSD_INT);
 		p2.name = q("e1");
 		ll.add(p2);
 		KeyQNamePair p3 = new KeyQNamePair();
-		p3.key = q("a");
+		p3.key = pFactory.newKey(q("a"),Name.QNAME_XSD_QNAME);
 		p3.name = q("e2");
 		ll.add(p3);
 		DerivedByInsertionFrom d5 = pFactory.newDerivedByInsertionFrom(
@@ -2200,15 +2336,15 @@ public class RoundTripFromJavaTest extends TestCase {
 	public void testDictionaryInsertion6() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p1 = new KeyQNamePair();
-		p1.key = "a";
+		p1.key = pFactory.newKey("a",Name.QNAME_XSD_STRING);
 		p1.name = q("e0");
 		ll.add(p1);
 		KeyQNamePair p2 = new KeyQNamePair();
-		p2.key = 1;
+		p2.key = pFactory.newKey(1,Name.QNAME_XSD_INT);
 		p2.name = q("e1");
 		ll.add(p2);
 		KeyQNamePair p3 = new KeyQNamePair();
-		p3.key = q("a");
+		p3.key = pFactory.newKey(q("a"),Name.QNAME_XSD_QNAME);
 		p3.name = q("e2");
 		ll.add(p3);
 		DerivedByInsertionFrom d5 = pFactory.newDerivedByInsertionFrom(
@@ -2219,7 +2355,29 @@ public class RoundTripFromJavaTest extends TestCase {
 		makeDocAndTest(statements, opt, "target/dictionaryInsertion6");
 
 	}
-	
+	public void testDictionaryInsertion7() throws JAXBException {
+		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
+		KeyQNamePair p1 = new KeyQNamePair();
+		p1.key = pFactory.newKey("a",Name.QNAME_XSD_STRING);
+		p1.name = q("e0");
+		ll.add(p1);
+		KeyQNamePair p2 = new KeyQNamePair();
+		p2.key = pFactory.newKey(1,Name.QNAME_XSD_INT);
+		p2.name = q("e1");
+		ll.add(p2);
+		KeyQNamePair p3 = new KeyQNamePair();
+		p3.key = pFactory.newKey(q("a"),Name.QNAME_XSD_QNAME);
+		p3.name = q("e2");
+		ll.add(p3);
+		DerivedByInsertionFrom d7 = pFactory.newDerivedByInsertionFrom(
+				null, q("d2"), q("d1"), ll, null);
+
+		addLabels(d7);
+		Statement[] statements = new Statement[]{d7};
+		Statement[] opt = new Statement[]{};
+		makeDocAndTest(statements, opt, "target/dictionaryInsertion7");
+
+	}
  	public void testDictionaryRemoval1() throws JAXBException {
 		DerivedByRemovalFrom d1 = pFactory.newDerivedByRemovalFrom(null,
 				q("d2"), q("d1"), null, null);
@@ -2241,8 +2399,8 @@ public class RoundTripFromJavaTest extends TestCase {
 	}
 
 	public void testDictionaryRemoval3() throws JAXBException {
-		List<Object> ll = new LinkedList<Object>();
-		ll.add("a");
+		List<org.openprovenance.prov.model.Key> ll = new LinkedList<org.openprovenance.prov.model.Key>();
+		ll.add(pFactory.newKey("a",Name.QNAME_XSD_STRING));
 		DerivedByRemovalFrom d3 = pFactory.newDerivedByRemovalFrom(
 				q("removal3"), q("d2"), q("d1"), ll, null);
 
@@ -2253,9 +2411,10 @@ public class RoundTripFromJavaTest extends TestCase {
 	}
 
 	public void testDictionaryRemoval4() throws JAXBException {
-		List<Object> ll = new LinkedList<Object>();
-		ll.add("a");
-		ll.add(1);
+		List<org.openprovenance.prov.model.Key> ll = new LinkedList<org.openprovenance.prov.model.Key>();
+		ll.add(pFactory.newKey("a",Name.QNAME_XSD_STRING));
+		ll.add(pFactory.newKey("1",Name.QNAME_XSD_INT));
+
 		DerivedByRemovalFrom d4 = pFactory.newDerivedByRemovalFrom(
 				q("removal4"), q("d2"), q("d1"), ll, null);
 
@@ -2265,10 +2424,12 @@ public class RoundTripFromJavaTest extends TestCase {
 	}
 
 	public void testDictionaryRemoval5() throws JAXBException {
-		List<Object> ll = new LinkedList<Object>();
-		ll.add("a");
-		ll.add(1);
-		ll.add(q("a"));
+		List<org.openprovenance.prov.model.Key> ll = new LinkedList<org.openprovenance.prov.model.Key>();
+		ll.add(pFactory.newKey("a",Name.QNAME_XSD_STRING));
+		ll.add(pFactory.newKey("1",Name.QNAME_XSD_INT));
+		ll.add(pFactory.newKey(q("a"),Name.QNAME_XSD_QNAME));
+
+
 		DerivedByRemovalFrom d5 = pFactory.newDerivedByRemovalFrom(
 				q("removal5"), q("d2"), q("d1"), ll, null);
 		addFurtherAttributes(d5);
@@ -2292,7 +2453,7 @@ public class RoundTripFromJavaTest extends TestCase {
 	public void testDictionaryMembership2() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p1 = new KeyQNamePair();
-		p1.key = "a";
+		p1.key = pFactory.newKey("a",Name.QNAME_XSD_STRING);
 		p1.name = q("e0");
 		ll.add(p1);
 		DictionaryMembership d5 = pFactory.newDictionaryMembership(q("d"),  ll);
@@ -2306,11 +2467,11 @@ public class RoundTripFromJavaTest extends TestCase {
 	public void testDictionaryMembership3() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p1 = new KeyQNamePair();
-		p1.key = "a";
+		p1.key = pFactory.newKey("a",Name.QNAME_XSD_STRING);
 		p1.name = q("e0");
 		ll.add(p1);
 		KeyQNamePair p2 = new KeyQNamePair();
-		p2.key = 1;
+		p2.key = pFactory.newKey(1,Name.QNAME_XSD_INT);
 		p2.name = q("e1");
 		ll.add(p2);
 		DictionaryMembership d5 = pFactory.newDictionaryMembership(q("d"),  ll);
@@ -2324,15 +2485,15 @@ public class RoundTripFromJavaTest extends TestCase {
 	public void testDictionaryMembership4() throws JAXBException {
 		List<KeyQNamePair> ll = new LinkedList<KeyQNamePair>();
 		KeyQNamePair p1 = new KeyQNamePair();
-		p1.key = "a";
+		p1.key = pFactory.newKey("a",Name.QNAME_XSD_STRING);
 		p1.name = q("e0");
 		ll.add(p1);
 		KeyQNamePair p2 = new KeyQNamePair();
-		p2.key = 1;
+		p2.key = pFactory.newKey(1,Name.QNAME_XSD_INT);
 		p2.name = q("e1");
 		ll.add(p2);
 		KeyQNamePair p3 = new KeyQNamePair();
-		p3.key = q("a");
+		p3.key = pFactory.newKey(q("a"),Name.QNAME_XSD_QNAME);
 		p3.name = q("e2");
 		ll.add(p3);
 		DictionaryMembership d5 = pFactory.newDictionaryMembership(q("d"),  ll);

@@ -34,6 +34,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 		return ".json";
 	}
 	
+	
 	@Override
 	public Document readDocument(String file) {
 	    try {
@@ -51,5 +52,12 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 			throw new UncheckedTestException(e);
 		}
 	}
+	
+	@Override
+	public boolean checkSchema(String name) {
+	    return false;
+	}
+
+	
 	
 }

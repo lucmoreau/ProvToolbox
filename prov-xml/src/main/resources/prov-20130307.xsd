@@ -544,7 +544,7 @@
 	<!-- Key-Value Pair -->
 	<xs:complexType name="KeyEntityPair">
         <xs:sequence>
-    	  <xs:element name="key" type="xs:anySimpleType" />
+    	  <xs:element name="key" type="prov:TypedValue" />
     	  <xs:element name="entity" type="prov:IDRef" />
         </xs:sequence>
 	</xs:complexType>

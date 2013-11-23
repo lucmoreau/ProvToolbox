@@ -6,6 +6,8 @@ import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import  org.antlr.runtime.CommonTokenStream;
 import  org.antlr.runtime.ANTLRFileStream;
 import  org.antlr.runtime.CharStream;
@@ -17,7 +19,9 @@ import  org.antlr.runtime.tree.CommonTreeAdaptor;
 import  org.antlr.runtime.tree.TreeAdaptor;
 
 import org.openprovenance.prov.model.BeanTraversal;
+import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.QNameExport;
 import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.model.Document;
 
@@ -77,7 +81,7 @@ public  class Utility {
 	ProvFactory pFactory=new ProvFactory();
 	StringWriter writer=new StringWriter();
 	NotationConstructor nc=new HTMLConstructor(writer, pFactory);
-        BeanTraversal bt=new BeanTraversal(nc, pFactory, new ValueConverter(pFactory));
+        BeanTraversal bt=new BeanTraversal(nc, pFactory);
         bt.convert(doc);
         nc.flush();
         String s=writer.toString();
@@ -93,19 +97,25 @@ public  class Utility {
 
     /** A conversion function that copies a Java Bean deeply. */
     public Object convertJavaBeanToJavaBean(Document doc) {
-        ProvFactory pFactory=new ProvFactory(doc.getNss());
-        BeanTraversal bt=new BeanTraversal(pFactory, pFactory, new ValueConverter(pFactory));
+        ProvFactory pFactory=new ProvFactory();
+        BeanTraversal bt=new BeanTraversal(pFactory, pFactory);
         Document o=bt.convert(doc);
         return o;
     }
 
 
 
-    public String convertBeanToASN(Document doc) {
+    public String convertBeanToASN(final Document doc) {
 	ProvFactory pFactory=new ProvFactory();
 	StringWriter writer=new StringWriter();
-	NotationConstructor nc=new NotationConstructor(writer, pFactory);
-        BeanTraversal bt=new BeanTraversal(nc, pFactory, new ValueConverter(pFactory));
+	QNameExport qExport = new QNameExport() {
+	    @Override
+	    public String qnameToString(QName qname) {
+		return doc.getNamespace().qnameToString(qname);
+	    }
+	};
+	NotationConstructor nc=new NotationConstructor(writer, qExport);
+        BeanTraversal bt=new BeanTraversal(nc, pFactory);
         bt.convert(doc);
         nc.flush();
         String s=writer.toString();
@@ -146,7 +156,7 @@ public  class Utility {
     
     public void writeDocument(Document doc, String filename){
 	String s=convertBeanToASN(doc);
-	System.out.println("printing" + s);
+	//System.out.println("printing" + s);
         writeTextToFile(s,filename);
     }
     

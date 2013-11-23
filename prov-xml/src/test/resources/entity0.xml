@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<prov:document xmlns:prov="http://www.w3.org/ns/prov#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns3="http://openprovenance.org/validation#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ex="http://example.org/" xmlns:xml="http://www.w3.org/XML/1998/namespace" >
+    <prov:entity prov:id="ex:e0">
+        <prov:location xml:lang="fr">bonjour</prov:location>
+        <prov:location xsi:type="prov:InternationalizedString" xml:lang="fr">bonjour</prov:location>
+        <prov:location xsi:type="xsd:string">bonjour</prov:location>
+
+
+<!-- 10 -->
+        <ex:tag1 xml:lang="fr">bonjour</ex:tag1>
+        <ex:tag1 xsi:type="xsd:QName">bonjour</ex:tag1>  <!-- not valid -->
+
+<!-- 14 -->
+        <ex:tag2 xml:lang="fr">bonjour</ex:tag2>
+        <ex:tag2 xsi:type="xsd:QName">bonjour</ex:tag2> <!-- not valid -->
+
+<!-- 18 -->
+        <ex:tag2 xml:lang="fr">bonjour</ex:tag2> <!-- not valid -->
+        <ex:tag2 xsi:type="xsd:QName">bonjour</ex:tag2>
+
+<!-- 22 -->
+        <ex:tag2 ex:lang="fr">bonjour</ex:tag2> 
+        <ex:tag2 xsi:type="xsd:QName">bonjour</ex:tag2>
+    </prov:entity>
+</prov:document>

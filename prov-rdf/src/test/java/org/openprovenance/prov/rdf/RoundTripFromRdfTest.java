@@ -90,6 +90,6 @@ public class RoundTripFromRdfTest extends TestCase {
 		{
 			assertTrue(result);
 		}
-		System.out.println("result is " + result);
+		if (!result) System.out.println("result is " + result);
 	}
 }

@@ -12,6 +12,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName; 
+
+import org.openprovenance.prov.model.Key;
+import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.URIWrapper;
@@ -103,6 +106,11 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
      */
     public ObjectFactory2() {
     }
+
+    public Other createOther() {
+        return new org.openprovenance.prov.sql.Other();
+    }
+
 
     /**
      * Create an instance of {@link EmptyDictionary }
@@ -279,6 +287,15 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     public Value createValue() {
         return new org.openprovenance.prov.sql.Value();
     }
+    
+    /**
+     * Create an instance of {@link Key }
+     * 
+     */
+   public Key createKey() {
+        return new org.openprovenance.prov.sql.Key();
+    }
+
 
     /**
      * Create an instance of {@link Bundle }
@@ -310,14 +327,6 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
      */
     public Activity createActivity() {
         return new org.openprovenance.prov.sql.Activity();
-    }
-
-    /**
-     * Create an instance of {@link Others }
-     * 
-     */
-    public Others createOthers() {
-        return new org.openprovenance.prov.sql.Others();
     }
 
     /**
@@ -744,15 +753,6 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link Others }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "others")
-    public JAXBElement<Others> createOthers(Others value) {
-        return new JAXBElement<Others>(_Others_QNAME, Others.class, null, value);
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link WasAttributedTo }{@code >}}
      * 
      */
@@ -832,5 +832,6 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     public JAXBElement<WasGeneratedBy> createWasGeneratedBy(WasGeneratedBy value) {
         return new JAXBElement<WasGeneratedBy>(_WasGeneratedBy_QNAME, WasGeneratedBy.class, null, value);
     }
+
 
 }

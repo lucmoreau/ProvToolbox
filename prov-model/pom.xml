@@ -8,4 +8,13 @@
   <artifactId>prov-model</artifactId>
   <name>PROV-MODEL</name>
   <description>A generic implementation of the PROV Data  Model as Java Beans Interfaces, irrespective of the underlying bean implementation</description>
+
+  <dependencies>
+<dependency>
+	<groupId>commons-codec</groupId>
+	<artifactId>commons-codec</artifactId>
+	<version>1.8</version>
+</dependency>
+  </dependencies>
+
 </project>

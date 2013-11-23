@@ -2,7 +2,7 @@ package org.openprovenance.prov.model;
 
 import javax.xml.namespace.QName;
 
-public interface Attribute {
+public interface Attribute extends TypedValue {
 
     public enum AttributeKind {
 	PROV_TYPE,
@@ -10,6 +10,7 @@ public interface Attribute {
 	PROV_ROLE,
 	PROV_LOCATION,
 	PROV_VALUE,
+	PROV_KEY,
 	OTHER	
     }
 
@@ -21,12 +22,25 @@ public interface Attribute {
 
     public abstract AttributeKind getKind();
 
+    
+    /** Get the type of an Attribute 
+     * @return  possible object of {@link String}, {@link QName}, {@link InternationalizedString}
+     */
+    
     public abstract Object getValue();
 
-    public abstract QName getXsdType();
+    
+    /** Get the type of an Attribute 
+     * @return  possible instance of  {@link QName}
+     */
+    
+    public abstract QName getType();
 
     /** A method to generate the prov-n representation of an attribute  ex:attr="value" %% xsd:type */
 
     public abstract String toNotationString();
+    
+    /** Returns the value of an Attribute as a Java Object. */
+    public Object getValueAsObject();
 
 }

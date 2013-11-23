@@ -1,0 +1,20 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+
+
+<http://example.org/e1> a prov:Entity .
+
+<http://example.org/e2> a prov:Entity .
+
+<http://example.org/der1> a prov:Derivation ;
+	prov:entity <http://example.org/e1> .
+
+<http://example.org/e2> prov:qualifiedDerivation <http://example.org/der1> .
+
+<http://example.org/der1> prov:hadGeneration <http://example.org/gen> .
+
+<http://example.org/der1> prov:hadUsage <http://example.org/use> .
+
+<http://example.org/a> a prov:Activity .
+
+<http://example.org/der1> prov:hadActivity <http://example.org/a> .

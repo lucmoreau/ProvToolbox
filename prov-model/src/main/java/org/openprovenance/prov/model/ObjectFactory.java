@@ -6,95 +6,109 @@ public interface ObjectFactory {
 
     ActedOnBehalfOf createActedOnBehalfOf();
 
+    JAXBElement<ActedOnBehalfOf> createActedOnBehalfOf(ActedOnBehalfOf u);
+
     Activity createActivity();
 
-    IDRef createIDRef();
+    JAXBElement<Activity> createActivity(Activity u);
 
     Agent createAgent();
 
+    JAXBElement<Agent> createAgent(Agent u);
+
     AlternateOf createAlternateOf();
-
-    Location createLocation();
-
-    Role createRole();
-
-    Value createValue();
-
-    DictionaryMembership createDictionaryMembership();
 
     DerivedByInsertionFrom createDerivedByInsertionFrom();
 
     DerivedByRemovalFrom createDerivedByRemovalFrom();
 
+    DictionaryMembership createDictionaryMembership();
+
     Document createDocument();
 
-    JAXBElement<ActedOnBehalfOf> createActedOnBehalfOf(ActedOnBehalfOf u);
-
-    JAXBElement<Activity> createActivity(Activity u);
-
-    Type createType();
-    
-    
-
-    JAXBElement<Agent> createAgent(Agent u);
+    Entity createEntity();
 
     JAXBElement<Entity> createEntity(Entity u);
-
-    JAXBElement<MentionOf> createMentionOf(MentionOf u);
-
-    JAXBElement<Used> createUsed(Used u);
-
-    JAXBElement<WasAssociatedWith> createWasAssociatedWith(WasAssociatedWith u);
-
-    JAXBElement<WasAttributedTo> createWasAttributedTo(WasAttributedTo u);
-
-    JAXBElement<WasDerivedFrom> createWasDerivedFrom(WasDerivedFrom u);
-
-    JAXBElement<WasEndedBy> createWasEndedBy(WasEndedBy u);
-
-    JAXBElement<WasGeneratedBy> createWasGeneratedBy(WasGeneratedBy u);
-
-    JAXBElement<WasInfluencedBy> createWasInfluencedBy(WasInfluencedBy u);
-
-    JAXBElement<WasInformedBy> createWasInformedBy(WasInformedBy u);
-
-    JAXBElement<WasInvalidatedBy> createWasInvalidatedBy(WasInvalidatedBy u);
-
-    JAXBElement<WasStartedBy> createWasStartedBy(WasStartedBy u);
-
-    Entity createEntity();
 
     Entry createEntry();
 
     HadMember createHadMember();
 
+    IDRef createIDRef();
+    
+    
+
     InternationalizedString createInternationalizedString();
+
+    Key createKey();
+
+    Location createLocation();
 
     MentionOf createMentionOf();
 
+    JAXBElement<MentionOf> createMentionOf(MentionOf u);
+
     NamedBundle createNamedBundle();
+
+    Other createOther();
+
+    Role createRole();
 
     SpecializationOf createSpecializationOf();
 
+    Type createType();
+
+    TypedValue createTypedValue();
+    
+    /**
+     * Create an instance of {@link Used }
+     * 
+     */
     Used createUsed();
+    
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link Used }{@code >}}
+     * 
+     */
+    JAXBElement<Used> createUsed(Used u);
+
+    Value createValue();
 
     WasAssociatedWith createWasAssociatedWith();
 
+    JAXBElement<WasAssociatedWith> createWasAssociatedWith(WasAssociatedWith u);
+
     WasAttributedTo createWasAttributedTo();
+
+    JAXBElement<WasAttributedTo> createWasAttributedTo(WasAttributedTo u);
 
     WasDerivedFrom createWasDerivedFrom();
 
+    JAXBElement<WasDerivedFrom> createWasDerivedFrom(WasDerivedFrom u);
+
     WasEndedBy createWasEndedBy();
+
+    JAXBElement<WasEndedBy> createWasEndedBy(WasEndedBy u);
 
     WasGeneratedBy createWasGeneratedBy();
 
+    JAXBElement<WasGeneratedBy> createWasGeneratedBy(WasGeneratedBy u);
+
     WasInfluencedBy createWasInfluencedBy();
+
+    JAXBElement<WasInfluencedBy> createWasInfluencedBy(WasInfluencedBy u);
 
     WasInformedBy createWasInformedBy();
 
+    JAXBElement<WasInformedBy> createWasInformedBy(WasInformedBy u);
+
     WasInvalidatedBy createWasInvalidatedBy();
 
+    JAXBElement<WasInvalidatedBy> createWasInvalidatedBy(WasInvalidatedBy u);
+
     WasStartedBy createWasStartedBy();
+
+    JAXBElement<WasStartedBy> createWasStartedBy(WasStartedBy u);
     
     
 

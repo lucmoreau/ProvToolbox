@@ -10,7 +10,6 @@ import org.openprovenance.prov.rdf.Ontology;
 
 public enum ProvType
 {
-
 	ENTITY(Ontology.QNAME_PROVO_Entity), AGENT(Ontology.QNAME_PROVO_Agent), ACTIVITY(
 			Ontology.QNAME_PROVO_Activity), INFLUENCE(
 			Ontology.QNAME_PROVO_Influence),

@@ -4,20 +4,15 @@ import java.io.File;
 
 
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.net.URI;
 import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.Document;
 
@@ -36,30 +31,14 @@ public class RoundTripFromXmlTest extends TestCase {
     static final ProvUtilities util=new ProvUtilities();
 
 
-    static final Hashtable<String, String> namespaces;
-
-    public static ProvFactory pFactory;
+    public static ProvFactory pFactory=new ProvFactory();
     public static ValueConverter vconv;
 
-    static Hashtable<String, String> updateNamespaces (Hashtable<String, String> nss) {
-        nss.put(EX_PREFIX, EX_NS);
-        nss.put(EX2_PREFIX, EX2_NS);
-        nss.put("_", EX3_NS);
-        nss.put("dct","http://purl.org/dc/terms/");
-        nss.put("foaf","http://xmlns.com/foaf/0.1/");
-        
-	return nss;
-    }
-    static  void setNamespaces() {
-	pFactory.resetNamespaces();
-	pFactory.getNss().putAll(updateNamespaces(new Hashtable<String, String>()));
+  
+    static  void setNamespacesTODELETE() {
     }
 
-    static {
-	namespaces = updateNamespaces(new Hashtable<String, String>());
-	pFactory = new ProvFactory(namespaces);
-	vconv=new ValueConverter(pFactory);
-    }
+   
 	private DocumentEquality documentEquality;
 
     /**
@@ -80,9 +59,7 @@ public class RoundTripFromXmlTest extends TestCase {
      */
 
     public void updateNamespaces(Document doc) {
-	Hashtable<String, String> nss = new Hashtable<String, String>();
-	updateNamespaces(nss);
-	doc.setNss(nss);
+	doc.setNamespace(Namespace.gatherNamespaces(doc));
     }
    
     public String extension() {
@@ -148,6 +125,7 @@ public class RoundTripFromXmlTest extends TestCase {
     }
 
     
+    
     public void writeDocument(Document doc, String file2) {
         try {
             writeXMLDocument(doc, file2);
@@ -162,7 +140,7 @@ public class RoundTripFromXmlTest extends TestCase {
 	if (check) {
 	    boolean result=this.documentEquality.check(doc,  doc2);
 	    if (!result) {
-	    System.out.println("Pre-write graph: "+doc);
+		System.out.println("Pre-write graph: "+doc);
 		System.out.println("Read graph: "+doc2);
 	    }
 	    assertTrue("doc equals doc2", result);
@@ -236,11 +214,26 @@ public class RoundTripFromXmlTest extends TestCase {
   	Document doc=testFile("issue-type", false);
   	
 	Agent ag=(Agent)doc.getStatementOrBundle().get(0);
-	System.out.println("agent" +ag);
-	System.out.println("agent type " +ag.getType());
-	System.out.println("agent type " +ag.getType().get(0));
-	System.out.println("agent type " +ag.getType().get(0).getClass());
+	/*
+	System.out.println("-agent" +ag);
+	System.out.println("-agent type " +ag.getType());
+	System.out.println("-agent type " +ag.getType().get(0));
+	System.out.println("-agent type " +ag.getType().get(0).getClass());
+	System.out.println("-agent type " +ag.getType().get(0).getValue());
+	System.out.println("-agent type " +ag.getType().get(0).getValue().getClass());
+	System.out.println("-agent type " +ag.getType().get(0).getType());
+
+
+	System.out.println("-agent location " +ag.getLocation());
+	System.out.println("-agent location " +ag.getLocation().get(0));
+	System.out.println("-agent location " +ag.getLocation().get(0).getClass());
+	System.out.println("-agent location " +ag.getLocation().get(0).getValue());
+	System.out.println("-agent location " +ag.getLocation().get(0).getValue().getClass());
+	System.out.println("-agent location xsi:Type" +ag.getLocation().get(0).getType());
+	//	System.out.println("-agent location " +((TypedValue)(ag.getLocation().get(0))).getValueAsJava());
+	System.out.println("-agent location " +((TypedValue)(ag.getLocation().get(0))).getAttributes());
 	
+	*/
 	//org.w3c.dom.Element el=(org.w3c.dom.Element)ag.getType().get(0);
 	//serialize(el);
       }

@@ -1,7 +1,7 @@
 package org.openprovenance.prov.model;
 
 
-public interface ActedOnBehalfOf extends Identifiable, HasLabel, HasType, HasExtensibility, Influence {
+public interface ActedOnBehalfOf extends Identifiable, HasLabel, HasType, HasOther, Influence {
 
     IDRef getDelegate();
 

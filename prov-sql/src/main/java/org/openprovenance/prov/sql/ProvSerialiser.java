@@ -9,8 +9,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Namespace;
+
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
-import org.openprovenance.prov.xml.validation.ValidationReport;
 import org.w3c.dom.Node;
 
 import java.io.OutputStream;
@@ -21,7 +23,7 @@ import java.util.Hashtable;
 /** Serialiser of PROV Graphs. */
 
 public class ProvSerialiser {
-    private ObjectFactory of=new ObjectFactory();
+    private ObjectFactory2 of=new ObjectFactory2();
 	static DocumentBuilder docBuilder;
 
 
@@ -71,10 +73,10 @@ public class ProvSerialiser {
     }
 
     public void configurePrefixes(Marshaller m) throws PropertyException {
-        configurePrefixes(m,new Hashtable<String,String>());
+        configurePrefixes(m,new Namespace());
     }
 
-    public void configurePrefixes(Marshaller m, Hashtable<String,String> namespaces) throws PropertyException {
+    public void configurePrefixes(Marshaller m, Namespace namespaces) throws PropertyException {
         m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
                              new NamespacePrefixMapper(namespaces));
 	//System.out.println("--------------> ");
@@ -115,7 +117,7 @@ public class ProvSerialiser {
         throws JAXBException {
         Marshaller m=jc.createMarshaller();
         m.setProperty("jaxb.formatted.output",format);
-        configurePrefixes(m,graph.getNss());
+        configurePrefixes(m,graph.getNamespace());
         m.marshal(of.createDocument(graph),sw);
         return sw.toString();
     }
@@ -125,14 +127,14 @@ public class ProvSerialiser {
         throws JAXBException {
         Marshaller m=jc.createMarshaller();
         m.setProperty("jaxb.formatted.output",format);
-        configurePrefixes(m,graph.getNss());
+        configurePrefixes(m,graph.getNamespace());
         m.marshal(of.createDocument(graph),out);
     }
     public void serialiseDocument (File file, Document graph, boolean format)
 	        throws JAXBException {
 	Marshaller m=jc.createMarshaller();
 	m.setProperty("jaxb.formatted.output",format);
-	configurePrefixes(m,graph.getNss());
+	configurePrefixes(m,graph.getNamespace());
 	m.marshal(of.createDocument(graph),file);
     }
 

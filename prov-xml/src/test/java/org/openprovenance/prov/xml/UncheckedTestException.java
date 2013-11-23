@@ -6,6 +6,5 @@ public class UncheckedTestException extends RuntimeException {
 
     public UncheckedTestException(Throwable e) {
         super(e);
-    }
-
+    }   
 }

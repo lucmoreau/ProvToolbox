@@ -19,11 +19,13 @@ import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
-import org.openprovenance.prov.model.HasExtensibility;
+import org.openprovenance.prov.model.HasOther;
+import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.model.Influence;
 import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.Relation0;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
@@ -82,6 +84,7 @@ public class ProvToDot {
         converter.convert(opmFile,outDot,outPdf,null);
     }
 
+ 
 
     public ProvToDot() {
         InputStream is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE);
@@ -332,7 +335,7 @@ public class ProvToDot {
     boolean collapseAnnotations=true;
 
     static int embeddedAnnotationCounter=0;
-    public void emitAnnotations(HasExtensibility node, PrintStream out) {
+    public void emitAnnotations(HasOther node, PrintStream out) {
 
     }
 
@@ -376,9 +379,9 @@ public class ProvToDot {
 
     }
 
-    public void emitAnnotations(String id, HasExtensibility ann, PrintStream out) {
+    public void emitAnnotations(String id, HasOther ann, PrintStream out) {
 
-        if ((ann.getAny()==null) || (ann.getAny().isEmpty())
+        if ((ann.getOther()==null) || (ann.getOther().isEmpty())
             &&
             (((HasType)ann).getType().isEmpty())) return;
 
@@ -413,7 +416,7 @@ public class ProvToDot {
     }
 
 
-    public HashMap<String,String> addAnnotationLinkProperties(HasExtensibility ann, HashMap<String,String> properties) {
+    public HashMap<String,String> addAnnotationLinkProperties(HasOther ann, HashMap<String,String> properties) {
         properties.put("arrowhead","none");
         properties.put("style","dashed");
         properties.put("color","gray");
@@ -451,7 +454,7 @@ public class ProvToDot {
         return properties;
     }
 
-    public  HashMap<String,String> addColors(HasExtensibility e, HashMap<String,String> properties) {
+    public  HashMap<String,String> addColors(HasOther e, HashMap<String,String> properties) {
         Hashtable<String,List<Attribute>> table=u.attributesWithNamespace(e,"http://openprovenance.org/Toolbox/dot#");
 
         List<Attribute> o=table.get("fillcolor");
@@ -471,14 +474,13 @@ public class ProvToDot {
     }
 
 
-    ValueConverter vc=new ValueConverter(of);
 
     public HashMap<String,String> addEntityShape(Entity p, HashMap<String,String> properties) {
         // default is good for entity
         List<Type> types=p.getType();
         for (Type type: types) {
-            if (type.getValueAsJava(vc) instanceof QName) {
-                QName name=(QName) type.getValueAsJava(vc);
+            if (type.getValue() instanceof QName) {
+                QName name=(QName) type.getValue();
                 if (("Dictionary".equals(name.getLocalPart()))
                     ||
                     ("EmptyDictionary".equals(name.getLocalPart()))) {
@@ -530,20 +532,20 @@ public class ProvToDot {
         return properties;
     }
 
-    public HashMap<String,String> addAnnotationShape(HasExtensibility ann, HashMap<String,String> properties) {
+    public HashMap<String,String> addAnnotationShape(HasOther ann, HashMap<String,String> properties) {
         properties.put("shape","note");
         return properties;
     }
-    public HashMap<String,String> addAnnotationLabel(HasExtensibility ann, HashMap<String,String> properties) {
+    public HashMap<String,String> addAnnotationLabel(HasOther ann, HashMap<String,String> properties) {
         String label="";
         label=label+"<<TABLE cellpadding=\"0\" border=\"0\">\n";
-        for (Object type: ((HasType)ann).getType()) {
+        for (Type type: ((HasType)ann).getType()) {
             label=label+"	<TR>\n";
             label=label+"	    <TD align=\"left\">" + "type" + ":</TD>\n";
             label=label+"	    <TD align=\"left\">" + getPropertyValueFromAny(type) + "</TD>\n";
             label=label+"	</TR>\n";
         }
-        for (Attribute prop: ann.getAny()) {
+        for (Other prop: ann.getOther()) {
 
             if ("fillcolor".equals(prop.getElementName().getLocalPart())) {
                     // no need to display this attribute
@@ -551,8 +553,8 @@ public class ProvToDot {
             }
 
             label=label+"	<TR>\n";
-            label=label+"	    <TD align=\"left\">" + convertProperty(prop) + ":</TD>\n";
-            label=label+"	    <TD align=\"left\">" + convertValue(prop) + "</TD>\n";
+            label=label+"	    <TD align=\"left\">" + convertProperty((Attribute)prop) + ":</TD>\n";
+            label=label+"	    <TD align=\"left\">" + convertValue((Attribute)prop) + "</TD>\n";
             label=label+"	</TR>\n";
         }
         label=label+"    </TABLE>>\n";
@@ -595,7 +597,8 @@ public class ProvToDot {
         }*/
     }
 
-    public String getPropertyValueFromAny (Object val) {
+    public String getPropertyValueFromAny (Type t) {
+        Object val=t.getValue();
         if (val instanceof QName) {
             QName q=(QName)val;
             return q.getNamespaceURI() + q.getLocalPart();
@@ -614,7 +617,7 @@ public class ProvToDot {
     }
 
 
-    public HashMap<String,String> addAnnotationColor(HasExtensibility ann, HashMap<String,String> properties) {
+    public HashMap<String,String> addAnnotationColor(HasOther ann, HashMap<String,String> properties) {
         if (displayAnnotationColor) {
             properties.put("color",annotationColor(ann));
             properties.put("fontcolor","black");
@@ -689,7 +692,7 @@ public class ProvToDot {
     }
 
 
-    public String annotationColor(HasExtensibility ann) {
+    public String annotationColor(HasOther ann) {
         List<String> colors=new LinkedList<String>();
         colors.add("gray");
         return selectColor(colors);
@@ -880,7 +883,7 @@ public class ProvToDot {
         Influence e=(Influence)e0;
         List<Type> type=of.getType(e);
         if ((type!=null) && (!type.isEmpty())) {
-            label=type.get(0).getValueAsJava(vc).toString();
+            label=type.get(0).getValue().toString();
         } else if (getRelationPrintRole(e)) {
             String role=of.getRole(e);
             if (role!=null) {

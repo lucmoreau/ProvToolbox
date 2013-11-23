@@ -2,9 +2,10 @@ package org.openprovenance.prov.xml;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
+import org.openprovenance.prov.model.Namespace;
+
 
 /** Prefix definition for PROV serialisations. */
-
 
 public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.NamespacePrefixMapper {
     
@@ -37,11 +38,11 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
 */
     String defaultNamespace;
 
-    public NamespacePrefixMapper(Hashtable<String,String> nss) {
+    public NamespacePrefixMapper(Namespace nss) {
         if (nss!=null) {
-            this.defaultNamespace=nss.get("_");
+            this.defaultNamespace=nss.getDefaultNamespace();
         }
-        this.nss=nss;
+        this.nss=nss.getPrefixes();
         //System.out.println("PREFIXES IS " + nss);
         //System.out.println("DEFAULT " + defaultNamespace);
     }

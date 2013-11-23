@@ -45,11 +45,11 @@
 
 
 
-<!-- If we want to run moxy
+<!-- If we want to run moxy 
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
 	  <artifactId>org.eclipse.persistence.moxy</artifactId>
-   	  <version>2.3.2</version>
+   	  <version>2.5.1</version>
     </dependency>
 
 -->
@@ -92,9 +92,14 @@
 
 
 
+<!--
 
- 
-
+  	<dependency>
+  		<groupId>xerces</groupId>
+  		<artifactId>xercesImpl</artifactId>
+  		<version>2.11.0</version>
+  	</dependency>
+-->
   </dependencies>
 
   <build>
@@ -103,7 +108,7 @@
 
 
      <plugins>
-
+<!--
       <plugin>
         <groupId>org.jvnet.jaxb2.maven2</groupId>
 	    <artifactId>maven-jaxb2-plugin</artifactId>
@@ -131,13 +136,7 @@
 
 
 
-<!--
-                 <schemaInclude>**/prov-links.xsd</schemaInclude>
-                 <schemaInclude>**/prov.xsd</schemaInclude>
-                 <schemaInclude>**/prov-dictionary.xsd</schemaInclude>
-                 <schemaInclude>**/collection.xsd</schemaInclude>
 
--->
                  <schemaInclude>**/validation.xsd</schemaInclude>
 
 
@@ -157,14 +156,15 @@
   			     <arg>-XhashCode</arg>
 			     <arg>-XtoString</arg>
   			     <arg>-Xinheritance</arg>
-			     <!--  
  			      <arg>-Xhyperjaxb3-ejb</arg>
-			          <arg>-Xhyperjaxb3-ejb-roundtripTestClassName=RoundtripTest</arg> -->
+			          <arg>-Xhyperjaxb3-ejb-roundtripTestClassName=RoundtripTest</arg> 
                </args>
             </configuration>
           </execution>
         </executions>
       </plugin>
+
+-->
 
       <!-- executable to be run as target/appassembler/bin/pim2dot
       src/test/resources/example2.xml file.dot file.pdf -->
@@ -219,118 +219,6 @@
 -->
 
 
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>patch.source.files</id>
-            <phase>generate-sources</phase>
-            <goals>
-             <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                
-
-
-
-		<!-- Document -->
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/ public String toString/\/* added in pom.xml *\/@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable&lt;String,String&gt; nss=null; public java.util.Hashtable&lt;String,String&gt; getNss() { return nss;} public void setNss(java.util.Hashtable&lt;String,String&gt; s) { nss=s; };public String toString/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="Document.java" />
-                </exec>
-
-
-		<!-- Bundle -->
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	              <arg value="-e s/ public String toString/\/* added in pom.xml *\/@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable&lt;String,String&gt; nss=null; public java.util.Hashtable&lt;String,String&gt; getNss() { return nss;} public void setNss(java.util.Hashtable&lt;String,String&gt; s) { nss=s; };public String toString/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="NamedBundle.java" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/ URIWrapper/ org.openprovenance.prov.model.URIWrapper/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="ObjectFactory.java" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc">
-  	          <arg value="-e s/xml.URIWrapper/model.URIWrapper/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="JAXBDebug.java" />
-                </exec>
-
-		<!-- declare Adapter in package -->
-
-                <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-  	          <arg value="-e s/^@javax.xml.bind.annotation.XmlSchema/@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(AnyAdapter.class)@javax.xml.bind.annotation.XmlSchema/" />
-  	          <arg value="-iBAK" />
-  	          <arg value="package-info.java" />
-                </exec>
-
-
-		<!-- Delete auto-generated classes, use custom classes instead. -->
-
-                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-                     <arg value="TypedValue.java" />
-                </exec>
-
-                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-                     <arg value="Value.java" />
-                </exec>
-
-                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-                     <arg value="Role.java" />
-                </exec>
-                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-                     <arg value="Type.java" />
-                </exec>
-                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-                     <arg value="Location.java" />
-                </exec>
-
-                <exec executable="rm" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/xml">
-                     <arg value="URIWrapper.java" />
-                </exec>
-
-              </tasks>
-              <sourceRoot>${project.build.directory}/generated-sources/xjc/</sourceRoot>
-            </configuration>
-          </execution>
-
-<!--
-          <execution>
-            <id>patch.executable</id>
-            <phase>package</phase>
-            <goals>
-             <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
-  	              <arg value="-e s/^cd/#### no CD ### Luc/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="pim2dot" />
-                </exec>
-
-                <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
-  	              <arg value="a+x" />
-  	              <arg value="pim2dot" />
-  	              <arg value="pim2dot.bat" />
-                </exec>
-
-
-              </tasks>
-            </configuration>
-          </execution>
--->
-        </executions>
-      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

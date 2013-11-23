@@ -1,8 +1,6 @@
 package org.openprovenance.prov.model;
 
-import java.util.List;
-
-public interface WasAttributedTo  extends Identifiable,  HasLabel, HasType, HasExtensibility, Influence {
+public interface WasAttributedTo  extends Identifiable,  HasLabel, HasType, HasOther, Influence {
 
     void setEntity(IDRef eid);
 

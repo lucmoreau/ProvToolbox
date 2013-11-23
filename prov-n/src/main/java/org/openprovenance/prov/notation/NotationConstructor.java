@@ -23,14 +23,13 @@ import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QNameExport;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.xml.UncheckedException;
 import org.openprovenance.prov.model.DictionaryMembership;
 import org.openprovenance.prov.model.Used;
-import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasDerivedFrom;
@@ -42,6 +41,7 @@ import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
 
 /** For testing purpose, conversion back to ASN. */
+
 
 public class NotationConstructor implements ModelConstructor {
     
@@ -63,6 +63,7 @@ public class NotationConstructor implements ModelConstructor {
             throw new UncheckedException("NotationConstructor.write() failed", e);
         }
     }
+   
     
     public void writeln(String s) {
         try {
@@ -259,42 +260,32 @@ public class NotationConstructor implements ModelConstructor {
     }
     
     @Override
-    public void startDocument(Hashtable<String, String> namespaces) {
+    public void startDocument(Namespace namespaces) {
         String s = keyword("document") + breakline();
         s = s+ processNamespaces(namespaces);
         write(s);
     }
 
 
-    public String processNamespaces(Hashtable<String, String> namespaces) {
+    public String processNamespaces(Namespace namespace) {
         String s="";
-        if (namespaces != null) {
-            if (namespaces instanceof Hashtable) {
-                Hashtable<String, String> nss = (Hashtable<String, String>) namespaces;
-                // FIXME TODO: Should not be getting blank keys here.
-                if (nss.containsKey("")) {
-                    nss.put("_", nss.get(""));
-                    nss.remove("");
-                }
-                String def;
-                if ((def=nss.get("_"))!=null) {
-                    s = s + convertDefaultNamespace("<" + def + ">") + breakline();
-                }
-                 
-                for (String key : nss.keySet()) {
-                    String uri = nss.get(key);
-                    if (key.equals("_")) {
-                       // IGNORE, we have just handled it
-                    } else {
-                        s = s + convertNamespace(key, "<" + uri + ">")
-                                + breakline();
-                    }
-                }
-
+        
+        Hashtable<String, String> nss =  namespace.getPrefixes();
+        String def;
+        if ((def=namespace.getDefaultNamespace())!=null) {
+            s = s + convertDefaultNamespace("<" + def + ">") + breakline();
+        }
+        
+        for (String key : nss.keySet()) {
+            String uri = nss.get(key);
+            if ((key.equals("_") || (key.equals("prov")))) {
+        	// IGNORE, we have just handled it
             } else {
-                s = s + namespaces + breakline();
+        	s = s + convertNamespace(key, "<" + uri + ">")
+        		+ breakline();
             }
         }
+        
         return s;
     }
     
@@ -316,7 +307,7 @@ public class NotationConstructor implements ModelConstructor {
 
     
     @Override
-    public Document newDocument(Hashtable<String, String> namespaces,
+    public Document newDocument(Namespace namespaces,
 				Collection<Statement> statements,
 				Collection<NamedBundle> bundles) {
         String s="";
@@ -329,8 +320,8 @@ public class NotationConstructor implements ModelConstructor {
     
 
     @Override
-    public void startBundle(QName bundleId, Hashtable<String, String> namespaces) {
-        String s = keyword("bundle") + " " + qnExport.qnameToString(bundleId);
+    public void startBundle(QName bundleId, Namespace namespaces) {
+        String s = keyword("bundle") + " " + qnExport.qnameToString(bundleId)+ breakline();
         s = s+ processNamespaces(namespaces);
         writeln(s);
  
@@ -340,7 +331,7 @@ public class NotationConstructor implements ModelConstructor {
     
     @Override
     public NamedBundle newNamedBundle(QName id,
-				      Hashtable<String, String> namespaces,
+				      Namespace namespace,
 				      Collection<Statement> statements) {
         String s="";    
         s = s + keyword("endBundle");
@@ -407,8 +398,6 @@ public class NotationConstructor implements ModelConstructor {
 	    return null;
 	}
 	
-	static ValueConverter vc=new ValueConverter(ProvFactory.getFactory());
-
 	private String keyEntitySet(List<KeyQNamePair> kes) {
 	    String s="{";
 	    if (kes!=null) {
@@ -416,20 +405,20 @@ public class NotationConstructor implements ModelConstructor {
 		for (KeyQNamePair p: kes) {
 		    if (!first) s=s+", ";
 		    first=false;
-		    s= s + "(" + org.openprovenance.prov.xml.Attribute.valueToNotationString(p.key,vc.getXsdType(p.key)) + ", " + idOrMarker(p.name) + ")";
+		    s= s + "(" + org.openprovenance.prov.xml.Helper.valueToNotationString(p.key) + ", " + idOrMarker(p.name) + ")";
 		}
 	    }
 	    s=s+"}";
 	    return s;
 	}
-	private String keySet(List<Object> ks) {
+	private String keySet(List<org.openprovenance.prov.model.Key> ks) {
 	    String s="{";
 	    if (ks!=null) {
 		boolean first=true;
-		for (Object k: ks) {
+		for (org.openprovenance.prov.model.Key k: ks) {
 		    if (!first) s=s+", ";
 		    first=false;
-		    s= s +  org.openprovenance.prov.xml.Attribute.valueToNotationString(k,vc.getXsdType(k));
+		    s= s +  org.openprovenance.prov.xml.Helper.valueToNotationString(k);
 		}
 	    }
 	    s=s+"}";
@@ -440,7 +429,7 @@ public class NotationConstructor implements ModelConstructor {
 	public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
 							    QName after,
 							    QName before,
-							    List<Object> keys,
+							    List<org.openprovenance.prov.model.Key> keys,
 							    Collection<Attribute> attributes) {
 	    String s="prov:derivedByRemovalFrom(" + optionalId(id) + idOrMarker(after) + "," + idOrMarker(before)
 		    + "," + keySet(keys)
@@ -461,7 +450,7 @@ public class NotationConstructor implements ModelConstructor {
 			for (KeyQNamePair entry: keyEntitySet) {
 				
 				String s="prov:hadDictionaryMember(" +   idOrMarker(dict) + "," + idOrMarker(entry.name)  						
-						 + "," +  org.openprovenance.prov.xml.Attribute.valueToNotationString(entry.key,vc.getXsdType(entry.key)) + ")";
+						 + "," +  org.openprovenance.prov.xml.Helper.valueToNotationString(entry.key) + ")";
 			    writeln(s);	
 			}
 		}

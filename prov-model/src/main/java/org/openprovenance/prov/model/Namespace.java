@@ -56,6 +56,14 @@ public class Namespace {
 	    namespaces.put(entry.getValue(),entry.getKey());
 	}
     }
+    
+    public Namespace(Namespace other) {
+	this.defaultNamespace=other.defaultNamespace;
+	this.prefixes=new Hashtable<String, String>();
+	prefixes.putAll(other.prefixes);
+	this.namespaces=new Hashtable<String,String>();
+	namespaces.putAll(other.namespaces);
+    }
     public String getDefaultNamespace () {
 	return defaultNamespace;
     }
@@ -124,12 +132,26 @@ public class Namespace {
  	}
      }
 
-    public void unregister(String prefix, String namespace) {
-       If (prefixes.get(prefix)!=null){
-          Prefixes.remove(prefix);
-       }
-    }
     
+     public void unregister(String prefix, String namespace) {
+	 String val=prefixes.get(prefix);
+	 if (val!=null){
+	     if (val.equals(namespace)) {
+		 prefixes.remove(prefix);
+		 namespaces.remove(namespace);
+	     }
+	 }
+     }
+     
+     public void unregisterDeafult(String namespace) {
+	 String val=getDefaultNamespace();
+	 if (val!=null){
+	     if (val.equals(namespace)) {
+		 setDefaultNamespace(null);
+	     }
+	 }
+     }
+	    
     static ProvUtilities u=new ProvUtilities();
     
     /* A Utility to find all namespaces (and associated prefixes). Prefixes are adopted first-come. 

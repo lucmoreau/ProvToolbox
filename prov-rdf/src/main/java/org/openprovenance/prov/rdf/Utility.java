@@ -7,6 +7,7 @@ import java.net.URL;
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.model.BeanTraversal;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.rdf.collector.QualifiedCollector;
 import org.openprovenance.prov.rdf.collector.RdfCollector;
 
@@ -52,10 +53,14 @@ public class Utility {
 	RepositoryHelper rHelper = new RepositoryHelper();
 
 	RdfConstructor rdfc = new RdfConstructor(new SesameGraphBuilder(rep));
-	rdfc.setNamespace(document.getNamespace());
-	rdfc.getNamespace().register("xsd", "http://www.w3.org/2001/XMLSchema#");
-	rdfc.getNamespace().register("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 	
+	
+	Namespace ns=new Namespace(document.getNamespace());	
+	ns.unregister("xsd", "http://www.w3.org/2001/XMLSchema");
+	ns.register("xsd", "http://www.w3.org/2001/XMLSchema#");
+	ns.register("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+	rdfc.setNamespace(ns);
+
 	BeanTraversal bt = new BeanTraversal(rdfc,pFactory);
 	bt.convert(document);
 	

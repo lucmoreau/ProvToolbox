@@ -44,14 +44,14 @@ import org.openprovenance.prov.model.DictionaryMembership;
 public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	ModelConstructor {
 
-    private Namespace namespaceTable ;
+    private Namespace namespace ;
 
     public Namespace getNamespace() {
-	return namespaceTable;
+	return namespace;
     }
     
     public void setNamespace(Namespace ns) {
-	namespaceTable=ns;
+	namespace=ns;
     }
 
     final GraphBuilder<RESOURCE, LITERAL, STATEMENT> gb;
@@ -344,7 +344,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     @Override
     public void startDocument(Namespace namespaces) {
 	if (namespaces != null) {
-	    namespaceTable=namespaces;
+	    //namespace=namespaces; // namespace is expected to have been set outside RdfConstructor
 	}
 	gb.setContext();
     }

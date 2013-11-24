@@ -16,7 +16,7 @@ https://github.com/lucmoreau/ProvToolbox/wiki
 Contributors
 ------------
 
- * Trung Dong: JSON subpackage.
+ * Trung Dong Huynh: JSON subpackage.
  * Mike Jewell: JSON subpackage validation, RDF Conversion
  * Amir Sezavar Keshavarz: JSON subpackage.
 

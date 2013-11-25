@@ -19,26 +19,12 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 
 
 /**
- * <p>Java class for IDRef complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="IDRef">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute ref="{http://www.w3.org/ns/prov#}ref use="required""/>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
  * 
  * 
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "QName")
-@Entity(name = "QName")
-@javax.persistence.Cacheable @Table(name = "QName", uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"URI"}))
+@Entity(name = "QualifiedName")
+@javax.persistence.Cacheable 
+@Table(name = "QUALIFIEDNAME", uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"URI"}))
 @Inheritance(strategy = InheritanceType.JOINED)
 public class QualifiedName
  implements org.openprovenance.prov.model.QualifiedName
@@ -52,18 +38,17 @@ public class QualifiedName
         this.prefix=prefix;
     }
 
-    @XmlAttribute(name = "ref", namespace = "http://www.w3.org/ns/prov#", required = true)
-    protected org.openprovenance.prov.model.QualifiedName ref;
     @XmlAttribute(name = "Hjid")
     protected Long hjid;
 
-	/* (non-Javadoc)
-	 * @see org.openprovenance.prov.sql.QualifiedName#toQName()
-	 */
-	@Override
-	public javax.xml.namespace.QName toQName () {
-		return new javax.xml.namespace.QName(namespace,local,prefix);
-	}
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.sql.QualifiedName#toQName()
+     */
+    @Override
+    public javax.xml.namespace.QName toQName () {
+	return new javax.xml.namespace.QName(namespace,local,prefix);
+    }
+
     /**
      * Gets the value of the hjid property.
      * 

@@ -183,7 +183,9 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
         return new QualifiedName(EX_NS, n, EX_PREFIX);
     }
     
-    
+    public org.openprovenance.prov.model.QualifiedName qq(String n) {
+		return new QualifiedName(EX_NS, n, EX_PREFIX);
+       }
     
     public void testUsage100() throws JAXBException  {
         System.out.println("testUsage 100 start");

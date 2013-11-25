@@ -47,7 +47,8 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IDRef")
 @Entity(name = "IDRef")
-@javax.persistence.Cacheable @Table(name = "IDREF", uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"URI"}))
+@javax.persistence.Cacheable 
+@Table(name = "IDREF", uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"URI"}))
 @Inheritance(strategy = InheritanceType.JOINED)
 public class IDRef
     implements Equals, HashCode, org.openprovenance.prov.model.IDRef
@@ -55,6 +56,7 @@ public class IDRef
 
     @XmlAttribute(name = "ref", namespace = "http://www.w3.org/ns/prov#", required = true)
     protected QName ref;
+    
     @XmlAttribute(name = "Hjid")
     protected Long hjid;
 

@@ -155,7 +155,7 @@ public class Used
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "ENTITY")

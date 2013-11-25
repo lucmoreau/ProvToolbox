@@ -1286,7 +1286,7 @@ public class AttributeTest extends TestCase {
     public QName q(String n) {
    	return new QName(EX_NS, n, EX_PREFIX);
        } 
-    public QualifiedName qq(String n) {
+    public org.openprovenance.prov.model.QualifiedName qq(String n) {
 		return new QualifiedName(EX_NS, n, EX_PREFIX);
        }
     

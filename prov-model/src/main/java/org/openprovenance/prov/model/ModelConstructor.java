@@ -44,7 +44,7 @@ public interface ModelConstructor {
      * @param attributes an optional set of attribute-value pairs representing additional information about this usage
      * @return an instance of {@link Used}
      */
-    public Used newUsed(QName id, QName activity, QName entity, XMLGregorianCalendar time, Collection<Attribute> attributes);
+    public Used newUsed(QName id, QName activity, QualifiedName entity, XMLGregorianCalendar time, Collection<Attribute> attributes);
     public WasAssociatedWith newWasAssociatedWith(QName id, QName a, QName ag, QName plan, Collection<Attribute> attributes);
     public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,  Collection<Attribute> attributes);
  

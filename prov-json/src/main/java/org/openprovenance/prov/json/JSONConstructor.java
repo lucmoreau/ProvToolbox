@@ -31,6 +31,7 @@ import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.QNameExport;
 import org.openprovenance.prov.model.SpecializationOf;
@@ -296,7 +297,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public Used newUsed(QName id, QName activity, QName entity,
+    public Used newUsed(QName id, QName activity, QualifiedName entity,
 			XMLGregorianCalendar time,
 			Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);

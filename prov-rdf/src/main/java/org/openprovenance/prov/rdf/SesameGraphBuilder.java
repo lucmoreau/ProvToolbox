@@ -2,6 +2,7 @@ package org.openprovenance.prov.rdf;
 
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openrdf.model.Resource;
 import org.openrdf.model.impl.BNodeImpl;
@@ -69,6 +70,17 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
     }
 
     /* (non-Javadoc)
+     * @see org.openprovenance.prov.rdf.GraphBuilder#createObjectProperty(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QualifiedName)
+     */
+    @Override
+    public  org.openrdf.model.Statement createObjectProperty(QName subject, 
+                                              QName pred,
+					      QualifiedName object) {
+	return new StatementImpl(qnameToResource(subject), qnameToURI(pred),
+				 qnameToResource(object));
+    }
+
+    /* (non-Javadoc)
      * @see org.openprovenance.prov.rdf.GraphBuilder#createObjectProperty(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)
      */
     @Override
@@ -110,7 +122,26 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
 	}
     }
 
+    
+    public Resource qnameToResource(QualifiedName qname) {
+	if (qname.getNamespaceURI().equals(NamespacePrefixMapper.XSD_NS)) {
+	    return new URIImpl(NamespacePrefixMapper.XSD_HASH_NS
+		    + qname.getLocalPart());
+	}
+	if (isBlankName(qname)) {
+	    return new BNodeImpl(qname.getLocalPart());
+	} else {
+	    return new URIImpl(qname.getNamespaceURI() + qname.getLocalPart());
+
+	}
+    }
+
     boolean isBlankName(QName name) {
+	return name.getNamespaceURI().equals(NamespacePrefixMapper.TOOLBOX_NS)
+		&& name.getPrefix().equals("_");
+    }
+
+    boolean isBlankName(QualifiedName name) {
 	return name.getNamespaceURI().equals(NamespacePrefixMapper.TOOLBOX_NS)
 		&& name.getPrefix().equals("_");
     }

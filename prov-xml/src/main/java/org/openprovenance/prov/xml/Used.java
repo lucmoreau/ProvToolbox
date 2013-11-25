@@ -67,8 +67,10 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
 
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
     protected org.openprovenance.prov.model.IDRef activity;
+    
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef entity;
+    protected org.openprovenance.prov.model.QualifiedName entity;
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar time;
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
@@ -117,7 +119,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
      *     {@link org.openprovenance.prov.xml.IDRef }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getEntity() {
+    public org.openprovenance.prov.model.QualifiedName getEntity() {
         return entity;
     }
 
@@ -129,7 +131,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
      *     {@link org.openprovenance.prov.xml.IDRef }
      *     
      */
-    public void setEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.entity = value;
     }
 
@@ -383,7 +385,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
             toStringBuilder.append("activity", theActivity);
         }
         {
-            org.openprovenance.prov.model.IDRef theEntity;
+            org.openprovenance.prov.model.QualifiedName theEntity;
             theEntity = this.getEntity();
             toStringBuilder.append("entity", theEntity);
         }

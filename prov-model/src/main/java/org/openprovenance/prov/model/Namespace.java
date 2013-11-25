@@ -198,7 +198,7 @@ public class Namespace {
 	    return new QName(tmp, local, prefix);
 	}
     }
-    
+
 
     static public String qnameToStringWithNamespace(QName qname) {
 	Namespace ns=Namespace.getThreadNamespace();
@@ -207,27 +207,49 @@ public class Namespace {
     
 
     public String qnameToString(QName qname) {
-	if ((getDefaultNamespace()!=null) 
-		&& (getDefaultNamespace().equals(qname.getNamespaceURI()))) {
-	    return qname.getLocalPart();
-	} else {
-	    String pref=getNamespaces().get(qname.getNamespaceURI());
-	    if (pref!=null)  {
-		return pref + ":" + qname.getLocalPart();
-	    } else {
-		// Really should never be here
-		return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
-			+ qname.getLocalPart();
-	    }
-	}
-	/* old
-	 return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
-		+ qname.getLocalPart();
-	 */
-    }
+ 	if ((getDefaultNamespace()!=null) 
+ 		&& (getDefaultNamespace().equals(qname.getNamespaceURI()))) {
+ 	    return qname.getLocalPart();
+ 	} else {
+ 	    String pref=getNamespaces().get(qname.getNamespaceURI());
+ 	    if (pref!=null)  {
+ 		return pref + ":" + qname.getLocalPart();
+ 	    } else {
+ 		// Really should never be here
+ 		return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
+ 			+ qname.getLocalPart();
+ 	    }
+ 	}
+ 	/* old
+ 	 return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
+ 		+ qname.getLocalPart();
+ 	 */
+     }
+    
+    public String qnameToString(QualifiedName qname) {
+ 	if ((getDefaultNamespace()!=null) 
+ 		&& (getDefaultNamespace().equals(qname.getNamespaceURI()))) {
+ 	    return qname.getLocalPart();
+ 	} else {
+ 	    String pref=getNamespaces().get(qname.getNamespaceURI());
+ 	    if (pref!=null)  {
+ 		return pref + ":" + qname.getLocalPart();
+ 	    } else {
+ 		// Really should never be here
+ 		return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
+ 			+ qname.getLocalPart();
+ 	    }
+ 	}
+ 	/* old
+ 	 return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
+ 		+ qname.getLocalPart();
+ 	 */
+     }
 
     public String toString() {
 	return "[Namespace (" + defaultNamespace + ") " + prefixes + "]";
     }
+
+
     
 }

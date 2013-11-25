@@ -19,6 +19,7 @@ import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.xml.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
 
@@ -95,7 +96,7 @@ public class TreeTraversal {
             QName id1=(QName) convert(ast.getChild(2));
             XMLGregorianCalendar time=(XMLGregorianCalendar) convert(ast.getChild(3));
             List<Attribute> rAttrs=(List<Attribute>) convert(ast.getChild(4));
-            return c.newUsed(uid, id2,id1,time,rAttrs);
+            return c.newUsed(uid, id2,new QualifiedName(id1),time,rAttrs);
 
         case PROV_NParser.WGB:
             uidTree=ast.getChild(0);

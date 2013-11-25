@@ -21,6 +21,7 @@ import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.TypedValue;
@@ -99,7 +100,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     }
 
     @Override
-    public Used newUsed(QName id, QName activity, QName entity,
+    public Used newUsed(QName id, QName activity, QualifiedName entity,
 			XMLGregorianCalendar time,
 			Collection<Attribute> attributes) {
 
@@ -440,6 +441,34 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	return infl;
     }
 
+    public QName addInfluence(QName infl, QName subject, QualifiedName object,
+			      XMLGregorianCalendar time, QName other,
+			      boolean someOther,
+			      Collection<Attribute> attributes,
+			      QName qualifiedClass) {
+	if ((infl != null) || (time != null) || (other != null) || someOther
+		|| ((attributes != null) && !(attributes.isEmpty()))) {
+	    infl = assertType(infl, qualifiedClass);
+	    if (object != null)
+		assertInfluencer(infl, object, qualifiedClass);
+	    if (subject != null) // scruffy provenance: subject may not be
+				 // defined
+		assertQualifiedInfluence(subject, infl, qualifiedClass);
+	    if (time != null)
+		assertAtTime(infl, time);
+	    if (other != null)
+		asserterOther(infl, other, qualifiedClass);
+	    processAttributes(infl, attributes);
+	}
+
+	if ((binaryProp(infl, subject)) && (object != null))
+	    gb.assertStatement(gb.createObjectProperty(subject,
+						       onto.unqualifiedTable.get(qualifiedClass),
+						       object));
+
+	return infl;
+    }
+
     public void asserterOther(QName subject, QName other, QName qualifiedClass) {
 	gb.assertStatement(gb.createObjectProperty(subject,
 						   onto.otherTable.get(qualifiedClass),
@@ -466,10 +495,16 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     }
 
     public void assertInfluencer(QName infl, QName object, QName qualifiedClass) {
-	gb.assertStatement(gb.createObjectProperty(infl,
-						   onto.influencerTable.get(qualifiedClass),
-						   object));
-    }
+ 	gb.assertStatement(gb.createObjectProperty(infl,
+ 						   onto.influencerTable.get(qualifiedClass),
+ 						   object));
+     }
+    
+    public void assertInfluencer(QName infl, QualifiedName object, QName qualifiedClass) {
+ 	gb.assertStatement(gb.createObjectProperty(infl,
+ 						   onto.influencerTable.get(qualifiedClass),
+ 						   object));
+     }
 
     public QName assertType(QName infl, QName qualifiedClass) {
 	if (infl == null) {

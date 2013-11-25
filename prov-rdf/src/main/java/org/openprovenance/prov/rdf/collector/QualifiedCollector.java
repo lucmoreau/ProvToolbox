@@ -602,13 +602,22 @@ public class QualifiedCollector extends RdfCollector {
 		List<List<?>> perms = permute(activities, entities, times);
 		for (List<?> perm : perms)
 		{
-			Used used = pFactory.newUsed(qname, (QName) perm.get(0),
-					(QName) perm.get(1), (XMLGregorianCalendar) perm.get(2),
+			Used used = pFactory.newUsed(qname, 
+			                             (QName) perm.get(0),
+			                             q((QName) perm.get(1)), 
+			                             (XMLGregorianCalendar) perm.get(2),
 					attributes);
 			store(context, used);
 		}
 
 	}
+	
+	 private org.openprovenance.prov.model.QualifiedName q(QName valueQ) {
+		if (valueQ==null) return null;
+		//FIXME need some factory
+		return new org.openprovenance.prov.xml.QualifiedName(valueQ);
+	    }
+
 
 	private QName getQualQName(QName qname)
 	{

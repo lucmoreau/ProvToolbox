@@ -8,4 +8,6 @@ public interface QNameExport {
      */
     public String qnameToString(QName qname);
 
+    public String qnameToString(QualifiedName qn);
+
 }

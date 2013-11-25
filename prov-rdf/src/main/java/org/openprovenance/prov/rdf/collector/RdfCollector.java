@@ -23,6 +23,7 @@ import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.xml.QualifiedName;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Namespace;
@@ -689,7 +690,7 @@ public class RdfCollector extends RDFHandlerBase {
 		    store(context, waw);
 
 		} else if (predQ.equals(Ontology.QNAME_PROVO_used)) {
-		    Used used = pFactory.newUsed(null, qname, valueQ, null,
+		    Used used = pFactory.newUsed(null, qname, q(valueQ), null,
 						 null);
 		    store(context, used);
 
@@ -745,6 +746,12 @@ public class RdfCollector extends RDFHandlerBase {
 								       pairs);
 	    store(context, hm);
 	}
+    }
+
+    private org.openprovenance.prov.model.QualifiedName q(QName valueQ) {
+	if (valueQ==null) return null;
+	//FIXME need some factory
+	return new org.openprovenance.prov.xml.QualifiedName(valueQ);
     }
 
     protected List<Value> getDataObjects(QName context, QName subject,

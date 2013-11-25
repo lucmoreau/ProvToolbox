@@ -206,6 +206,8 @@ public class BeanTraversal {
 	return (id==null) ? null: id.getRef();
     }
 
+ 
+
     public Used convert(Used use) {
 	List<Attribute> attrs=new LinkedList<Attribute>();	
 	convertTypeAttributes(use,attrs);
@@ -213,7 +215,7 @@ public class BeanTraversal {
 	convertLocationAttributes(use,attrs);	
  	convertRoleAttributes(use,attrs);
 	convertAttributes(use,attrs);
-	return c.newUsed(use.getId(), q(use.getActivity()), q(use.getEntity()), use.getTime(), attrs);
+	return c.newUsed(use.getId(), q(use.getActivity()), use.getEntity(), use.getTime(), attrs);
     }
     
     public WasGeneratedBy convert(WasGeneratedBy gen) {

@@ -25,6 +25,7 @@ import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QNameExport;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.xml.UncheckedException;
@@ -95,6 +96,9 @@ public class NotationConstructor implements ModelConstructor {
     public String idOrMarker(QName qn) {
         return ((qn==null)? MARKER : qnExport.qnameToString(qn));
     }
+    public String idOrMarker(QualifiedName qn) {
+        return ((qn==null)? MARKER : qnExport.qnameToString(qn));
+    }
 
     public String timeOrMarker(XMLGregorianCalendar time) {
         return ((time==null)? MARKER : time.toString());
@@ -126,7 +130,7 @@ public class NotationConstructor implements ModelConstructor {
 	return null;
     }
     @Override
-    public Used newUsed(QName id, QName activity, QName entity,
+    public Used newUsed(QName id, QName activity, QualifiedName entity,
 			XMLGregorianCalendar time, Collection<Attribute> attributes) {
         String s=keyword("used") + "(" + optionalId(id) + idOrMarker(activity) + "," + idOrMarker(entity) + "," +
                 timeOrMarker(time) + optionalAttributes(attributes) + ")";
@@ -248,7 +252,7 @@ public class NotationConstructor implements ModelConstructor {
     public HadMember newHadMember(QName c, Collection<QName> ll) {
 	if ((ll==null) || (ll.size()==0)) { 
 	    // strictly speaking it is not a syntactically correct expression, but we print something to support scruffiness
-	    String s=keyword("hadMember") + "(" + idOrMarker(c) + "," + idOrMarker(null) + ")";
+	    String s=keyword("hadMember") + "(" + idOrMarker(c) + "," + idOrMarker((QName)null) + ")";
 	    writeln(s);
 	} else {
 	    for (QName e: ll) {

@@ -23,6 +23,7 @@ public class Dagify implements RecordAction {
     }
     
     Hashtable<String, org.openprovenance.prov.model.IDRef> table=new Hashtable<String, org.openprovenance.prov.model.IDRef>();
+    Hashtable<String, org.openprovenance.prov.model.QualifiedName> table2=new Hashtable<String, org.openprovenance.prov.model.QualifiedName>();
     
     public org.openprovenance.prov.model.IDRef uniquify(org.openprovenance.prov.model.IDRef ref) {
         if (ref==null) return null;
@@ -42,6 +43,26 @@ public class Dagify implements RecordAction {
             newId=ll.get(0);
         }
         table.put(uri, newId);
+        return newId;
+    }
+
+    public org.openprovenance.prov.model.QualifiedName uniquify(org.openprovenance.prov.model.QualifiedName q) {
+        if (q==null) return null;
+        String uri=q.getNamespaceURI()+q.getLocalPart();
+        org.openprovenance.prov.model.QualifiedName found=table2.get(uri);
+        if (found!=null) {
+            return found;
+        }
+        Query qq=em.createQuery("SELECT e FROM QualifiedName e WHERE e.uri LIKE :uri");
+        qq.setParameter("uri", uri);
+        List<QualifiedName> ll=(List<QualifiedName>) qq.getResultList();
+        //System.out.println("found ll " + ll);
+        
+        org.openprovenance.prov.model.QualifiedName newId=q;
+        if ((ll!=null) && (!(ll.isEmpty()))) {
+            newId=ll.get(0);
+        }
+        table2.put(uri, newId);
         return newId;
     }
 

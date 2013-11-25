@@ -152,10 +152,12 @@ public class ProvUtilities {
         System.out.println("Unknown relation " + r);
         throw new UnsupportedOperationException();
     }
+    
+    //FIXME: change signature to QUalified Name.
 
     public QName getCause(Relation0 r) {
         if (r instanceof Used) {
-            return ((Used) r).getEntity().getRef();
+            return ((Used) r).getEntity().toQName();
         }
         if (r instanceof WasGeneratedBy) {
             IDRef ref = ((WasGeneratedBy) r).getActivity();

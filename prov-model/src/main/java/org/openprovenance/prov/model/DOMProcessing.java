@@ -54,6 +54,12 @@ final public class DOMProcessing {
 //		+ qname.getLocalPart();
     }
     
+    
+    static public String qnameToString(QualifiedName qname) {
+	Namespace ns=Namespace.getThreadNamespace();
+	return ns.qnameToString(qname);
+    }
+    
 
     /**
      * Converts a string to a QName, extracting namespace from the DOM.
@@ -289,6 +295,7 @@ final public class DOMProcessing {
                     .newInternationalizedString(child, lang), type);
         }
     }
+
 
     
 

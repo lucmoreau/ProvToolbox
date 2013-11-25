@@ -2,6 +2,8 @@ package org.openprovenance.prov.rdf;
 
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.QualifiedName;
+
 public interface GraphBuilder<RESOURCE, LITERAL, STATEMENT> {
 
     public abstract void assertStatement(STATEMENT stmnt);
@@ -17,6 +19,9 @@ public interface GraphBuilder<RESOURCE, LITERAL, STATEMENT> {
 
     public abstract STATEMENT createObjectProperty(QName subject, QName pred,
 						   QName object);
+    
+    public abstract STATEMENT createObjectProperty(QName subject, QName pred,
+						   QualifiedName object);
 
     public abstract LITERAL newLiteral(String value, QName type);
 

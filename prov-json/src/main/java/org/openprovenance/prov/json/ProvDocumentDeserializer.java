@@ -40,6 +40,7 @@ import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Role;
@@ -344,12 +345,12 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    break;
 	case used:
 	    activity = optionalIdRef("prov:activity", attributeMap);
-	    entity = optionalIdRef("prov:entity", attributeMap);
+	    QualifiedName entity2 = optionalQualifiedName("prov:entity", attributeMap);
 	    time = optionalTime("prov:time", attributeMap);
 	    Used wUB = pf.newUsed(id);
 	    wUB.setActivity(activity);
-	    if (entity != null)
-		wUB.setEntity(entity);
+	    if (entity2 != null)
+		wUB.setEntity(entity2);
 	    if (time != null) {
 		wUB.setTime(time);
 	    }
@@ -634,6 +635,12 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 						      attributeName)));
     }
 
+
+    private QualifiedName qualifiedName(String attributeName, JsonObject attributeMap) {
+	return new org.openprovenance.prov.xml.QualifiedName(ns.stringToQName(popString(attributeMap,
+	                                                                                attributeName)));
+    }
+
     private IDRef anyRef(String attributeName, JsonObject attributeMap) {
 	if (attributeMap.has(attributeName))
 	    return pf.newIDRef(ns.stringToQName(popString(attributeMap,
@@ -645,6 +652,13 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     private IDRef optionalIdRef(String attributeName, JsonObject attributeMap) {
 	if (attributeMap.has(attributeName))
 	    return idRef(attributeName, attributeMap);
+	else
+	    return null;
+    }
+
+    private QualifiedName optionalQualifiedName(String attributeName, JsonObject attributeMap) {
+	if (attributeMap.has(attributeName))
+	    return qualifiedName(attributeName, attributeMap);
 	else
 	    return null;
     }

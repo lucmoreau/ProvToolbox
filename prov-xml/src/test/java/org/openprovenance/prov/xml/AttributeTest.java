@@ -1284,8 +1284,11 @@ public class AttributeTest extends TestCase {
     }
 
     public QName q(String n) {
-	return new QName(EX_NS, n, EX_PREFIX);
-    }
+   	return new QName(EX_NS, n, EX_PREFIX);
+       } 
+    public QualifiedName qq(String n) {
+		return new QualifiedName(EX_NS, n, EX_PREFIX);
+       }
     
     public void testGeneration0() throws JAXBException  {
 
@@ -1333,7 +1336,7 @@ public class AttributeTest extends TestCase {
  	Used a = pFactory.newUsed((QName)null,
  	                          pFactory.newIDRef(q("a1")),
  	                          null,
- 	                          pFactory.newIDRef(q("e1")));
+ 	                          qq("e1"));
   	
   	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
   	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));

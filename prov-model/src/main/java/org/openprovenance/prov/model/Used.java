@@ -63,9 +63,9 @@ public interface Used extends Identifiable, HasLabel, HasType, HasTime, HasRole,
 
     void setActivity(IDRef aid);
 
-    void setEntity(IDRef eid);
+    void setEntity(QualifiedName eid);
 
-    IDRef getEntity();
+    QualifiedName getEntity();
 
     IDRef getActivity();
 

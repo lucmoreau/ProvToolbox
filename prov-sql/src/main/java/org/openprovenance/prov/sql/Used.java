@@ -38,6 +38,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.xml.AttributeList;
@@ -96,8 +97,10 @@ public class Used
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
     protected org.openprovenance.prov.model.IDRef activity;
+    
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef entity;
+    protected org.openprovenance.prov.model.QualifiedName entity;
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar time;
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
@@ -113,7 +116,8 @@ public class Used
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
     protected QName id;
     
- 
+   
+
     
     /**
      * Gets the value of the activity property.
@@ -155,10 +159,13 @@ public class Used
         CascadeType.ALL
     })
     @JoinColumn(name = "ENTITY")
-    public org.openprovenance.prov.model.IDRef getEntity() {
+    public org.openprovenance.prov.model.QualifiedName getEntity() {
         return entity;
     }
 
+    
+  
+    
     /**
      * Sets the value of the entity property.
      * 
@@ -167,7 +174,7 @@ public class Used
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.entity = value;
     }
 
@@ -480,9 +487,9 @@ public class Used
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsEntity;
+            org.openprovenance.prov.model.QualifiedName lhsEntity;
             lhsEntity = this.getEntity();
-            org.openprovenance.prov.model.IDRef rhsEntity;
+            org.openprovenance.prov.model.QualifiedName rhsEntity;
             rhsEntity = that.getEntity();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "entity", lhsEntity), LocatorUtils.property(thatLocator, "entity", rhsEntity), lhsEntity, rhsEntity)) {
                 return false;
@@ -567,7 +574,7 @@ public class Used
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "activity", theActivity), currentHashCode, theActivity);
         }
         {
-            org.openprovenance.prov.model.IDRef theEntity;
+            org.openprovenance.prov.model.QualifiedName theEntity;
             theEntity = this.getEntity();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "entity", theEntity), currentHashCode, theEntity);
         }
@@ -647,7 +654,7 @@ public class Used
             toStringBuilder.append("activity", theActivity);
         }
         {
-            org.openprovenance.prov.model.IDRef theEntity;
+            org.openprovenance.prov.model.QualifiedName theEntity;
             theEntity = this.getEntity();
             toStringBuilder.append("entity", theEntity);
         }
@@ -703,11 +710,11 @@ public class Used
   ///////////////////////////////////////////
     @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.sql.QName test;
+    protected QualifiedName test;
 
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QName.class, cascade = { CascadeType.ALL })
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = { CascadeType.ALL })
     @JoinColumn(name = "TEST")
-    public org.openprovenance.prov.sql.QName getTest() {
+    public QualifiedName getTest() {
         return test;
     }
 
@@ -718,7 +725,7 @@ public class Used
      *            allowed object is {@link org.openprovenance.prov.sql.IDRef }
      * 
      */
-    public void setTest(org.openprovenance.prov.sql.QName value) {
+    public void setTest(QualifiedName value) {
         this.test = value;
     }
 

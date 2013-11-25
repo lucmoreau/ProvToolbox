@@ -118,10 +118,21 @@ public class NamespaceGatherer implements StatementAction {
 	if (name!=null)
 	register(name.getRef());
     }
+ 
     
-    //TODO: the code below is replicated in Namespace. Avoid duplication.
 
     void register(QName name) {
+	if (name==null) return;
+	String namespace = name.getNamespaceURI();
+	String prefix = name.getPrefix();
+	if ((prefix == null) || (prefix.equals(XMLConstants.DEFAULT_NS_PREFIX))) {
+	    ns.registerDefault(namespace);
+	} else {
+	    ns.register(prefix, namespace);
+	}
+    }
+
+    void register(QualifiedName name) {
 	if (name==null) return;
 	String namespace = name.getNamespaceURI();
 	String prefix = name.getPrefix();

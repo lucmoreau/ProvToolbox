@@ -106,17 +106,20 @@ public class NotationConstructor implements ModelConstructor {
 
     private String optionalId(QName id) {
         return ((id==null)? "" : (qnExport.qnameToString(id) + ";"));
-    }            
+    }    
+    private String optionalId(QualifiedName id) {
+        return ((id==null)? "" : (qnExport.qnameToString(id) + ";"));
+    }    
 
     
     @Override
-    public Entity newEntity(QName id, Collection<Attribute> attributes) {
+    public Entity newEntity(QualifiedName id, Collection<Attribute> attributes) {
         String s=keyword("entity") + "(" + idOrMarker(id)  + optionalAttributes(attributes) + ")";
         writeln(s);
 	return null;
     }
     @Override
-    public Activity newActivity(QName id, XMLGregorianCalendar startTime,
+    public Activity newActivity(QualifiedName id, XMLGregorianCalendar startTime,
 				XMLGregorianCalendar endTime,
 				Collection<Attribute> attributes) {
         String s=keyword("activity") + "(" + idOrMarker(id) + "," + timeOrMarker(startTime) + "," + timeOrMarker(endTime) + optionalAttributes(attributes) + ")";
@@ -124,13 +127,13 @@ public class NotationConstructor implements ModelConstructor {
 	return null;
     }
     @Override
-    public Agent newAgent(QName id, Collection<Attribute> attributes) {
+    public Agent newAgent(QualifiedName id, Collection<Attribute> attributes) {
         String s=keyword("agent") + "(" + idOrMarker(id)  + optionalAttributes(attributes) + ")";
         writeln(s);
 	return null;
     }
     @Override
-    public Used newUsed(QName id, QualifiedName activity, QualifiedName entity,
+    public Used newUsed(QualifiedName id, QualifiedName activity, QualifiedName entity,
 			XMLGregorianCalendar time, Collection<Attribute> attributes) {
         String s=keyword("used") + "(" + optionalId(id) + idOrMarker(activity) + "," + idOrMarker(entity) + "," +
                 timeOrMarker(time) + optionalAttributes(attributes) + ")";
@@ -138,7 +141,7 @@ public class NotationConstructor implements ModelConstructor {
 	return null;
     }
     @Override
-    public WasGeneratedBy newWasGeneratedBy(QName id, QName entity,
+    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QName entity,
 					    QName activity,
 					    XMLGregorianCalendar time,
 					    Collection<Attribute> attributes) {
@@ -148,7 +151,7 @@ public class NotationConstructor implements ModelConstructor {
 	return null;
     }
     @Override
-    public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity,
+    public WasInvalidatedBy newWasInvalidatedBy(QualifiedName id, QName entity,
 						QName activity,
 						XMLGregorianCalendar time,
 						Collection<Attribute> attributes) {
@@ -158,7 +161,7 @@ public class NotationConstructor implements ModelConstructor {
         return null;
     }
     @Override
-    public WasStartedBy newWasStartedBy(QName id, QName activity,
+    public WasStartedBy newWasStartedBy(QualifiedName id, QName activity,
 					QName trigger, QName starter,
 					XMLGregorianCalendar time,
 					Collection<Attribute> attributes) {
@@ -168,7 +171,7 @@ public class NotationConstructor implements ModelConstructor {
 	return null;
     }
     @Override
-    public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger,
+    public WasEndedBy newWasEndedBy(QualifiedName id, QName activity, QName trigger,
 				    QName ender, XMLGregorianCalendar time,
 				    Collection<Attribute> attributes) {
         String s="wasEndedBy(" + optionalId(id) + idOrMarker(activity) + "," + idOrMarker(trigger) + "," + idOrMarker(ender) + "," +
@@ -177,7 +180,7 @@ public class NotationConstructor implements ModelConstructor {
 	return null;
     }
     @Override
-    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1,
+    public WasDerivedFrom newWasDerivedFrom(QualifiedName id, QName e2, QName e1,
 					    QName activity, QName generation,
 					    QName usage,
 					    Collection<Attribute> attributes) {
@@ -188,7 +191,7 @@ public class NotationConstructor implements ModelConstructor {
 	return null;
     }
     @Override
-    public WasAssociatedWith newWasAssociatedWith(QName id, QName a, QName ag,
+    public WasAssociatedWith newWasAssociatedWith(QualifiedName id, QName a, QName ag,
 						  QName plan,
 						  Collection<Attribute> attributes) {
         String s=keyword("wasAssociatedWith") + "(" + optionalId(id) + idOrMarker(a) + "," + idOrMarker(ag) + "," +
@@ -198,7 +201,7 @@ public class NotationConstructor implements ModelConstructor {
         return null;
     }
     @Override
-    public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,
+    public WasAttributedTo newWasAttributedTo(QualifiedName id, QName e, QName ag,
 					      Collection<Attribute> attributes) {
         String s=keyword("wasAttributedTo") + "(" + optionalId(id) + idOrMarker(e) + ", " + idOrMarker(ag) +
                 optionalAttributes(attributes) +  ")";
@@ -206,7 +209,7 @@ public class NotationConstructor implements ModelConstructor {
 	return null;
     }
     @Override
-    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1,
+    public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QName ag2, QName ag1,
 					      QName a,
 					      Collection<Attribute> attributes) {
         String s=keyword("actedOnBehalfOf") + "(" + optionalId(id) + idOrMarker(ag2) + "," + idOrMarker(ag1) + "," +
@@ -217,7 +220,7 @@ public class NotationConstructor implements ModelConstructor {
     }
     
     @Override
-    public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1,
+    public WasInformedBy newWasInformedBy(QualifiedName id, QName a2, QName a1,
 					  Collection<Attribute> attributes) {
         String s="wasInformedBy(" + optionalId(id) + idOrMarker(a2) + "," + idOrMarker(a1)
                 + optionalAttributes(attributes) +  ")";
@@ -225,7 +228,7 @@ public class NotationConstructor implements ModelConstructor {
 	return null;
     }
     @Override
-    public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1,
+    public WasInfluencedBy newWasInfluencedBy(QualifiedName id, QName a2, QName a1,
 					      Collection<Attribute> attributes) {
         String s="wasInfluencedBy(" + optionalId(id) + idOrMarker(a2) + "," + idOrMarker(a1)
                 + optionalAttributes(attributes) +  ")";
@@ -324,7 +327,7 @@ public class NotationConstructor implements ModelConstructor {
     
 
     @Override
-    public void startBundle(QName bundleId, Namespace namespaces) {
+    public void startBundle(QualifiedName bundleId, Namespace namespaces) {
         String s = keyword("bundle") + " " + qnExport.qnameToString(bundleId)+ breakline();
         s = s+ processNamespaces(namespaces);
         writeln(s);
@@ -334,7 +337,7 @@ public class NotationConstructor implements ModelConstructor {
     
     
     @Override
-    public NamedBundle newNamedBundle(QName id,
+    public NamedBundle newNamedBundle(QualifiedName id,
 				      Namespace namespace,
 				      Collection<Statement> statements) {
         String s="";    
@@ -392,7 +395,7 @@ public class NotationConstructor implements ModelConstructor {
     }
 
 	@Override
-	public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
+	public DerivedByInsertionFrom newDerivedByInsertionFrom(QualifiedName id,
 			QName after, QName before, List<KeyQNamePair> kes, Collection<Attribute> attributes) {
 	    
 	    String s="prov:derivedByInsertionFrom(" + optionalId(id) + idOrMarker(after) + "," + idOrMarker(before)
@@ -430,7 +433,7 @@ public class NotationConstructor implements ModelConstructor {
 	}
 
 	@Override
-	public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
+	public DerivedByRemovalFrom newDerivedByRemovalFrom(QualifiedName id,
 							    QName after,
 							    QName before,
 							    List<org.openprovenance.prov.model.Key> keys,

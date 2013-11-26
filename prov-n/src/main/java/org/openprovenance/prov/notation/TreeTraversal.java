@@ -19,7 +19,7 @@ import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.xml.QualifiedName;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
 
@@ -69,12 +69,12 @@ public class TreeTraversal {
             /* Component 1 */
 
         case PROV_NParser.ENTITY:
-            QName id=(QName)convert(ast.getChild(0));
+            QualifiedName id=(QualifiedName)convert(ast.getChild(0));
             List<Attribute> eAttrs=(List<Attribute>) convert(ast.getChild(1));
             return c.newEntity(id,eAttrs);
 
         case PROV_NParser.ACTIVITY:
-            id=(QName)convert(ast.getChild(0));
+            id=(QualifiedName)convert(ast.getChild(0));
             XMLGregorianCalendar startTime=(XMLGregorianCalendar)convert(ast.getChild(1));
             XMLGregorianCalendar endTime=(XMLGregorianCalendar)convert(ast.getChild(2));
             List<Attribute> aAttrs=(List<Attribute>) convert(ast.getChild(3));
@@ -91,37 +91,37 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            QName uid=(QName) convert(uidTree);
-            QName id2=(QName) convert(ast.getChild(1));
-            QName id1=(QName) convert(ast.getChild(2));
+            QualifiedName uid=(QualifiedName) convert(uidTree);
+            QualifiedName id2=(QualifiedName) convert(ast.getChild(1));
+            QualifiedName id1=(QualifiedName) convert(ast.getChild(2));
             XMLGregorianCalendar time=(XMLGregorianCalendar) convert(ast.getChild(3));
             List<Attribute> rAttrs=(List<Attribute>) convert(ast.getChild(4));
-            return c.newUsed(uid, (id2==null)? null: new QualifiedName(id2),new QualifiedName(id1),time,rAttrs);
+            return c.newUsed(uid, id2, id1,time,rAttrs);
 
         case PROV_NParser.WGB:
             uidTree=ast.getChild(0);
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName) convert(ast.getChild(1));
-            id1=(QName) convert(ast.getChild(2));
+            uid=(QualifiedName) convert(uidTree);
+            id2=(QualifiedName) convert(ast.getChild(1));
+            id1=(QualifiedName) convert(ast.getChild(2));
             time=(XMLGregorianCalendar) convert(ast.getChild(3));
             rAttrs=(List<Attribute>) convert(ast.getChild(4));
-            return c.newWasGeneratedBy(uid,id2,id1,time,rAttrs);
+            return c.newWasGeneratedBy(uid,id2.toQName(),id1.toQName(),time,rAttrs);
 
         case PROV_NParser.WSB:
             uidTree=ast.getChild(0);
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
-            QName id3=(QName)convert(ast.getChild(3));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
+            QualifiedName id3=(QualifiedName)convert(ast.getChild(3));
             time=(XMLGregorianCalendar) convert(ast.getChild(4));
             rAttrs=(List<Attribute>) convert(ast.getChild(5));
-            return c.newWasStartedBy(uid,id2,id1,id3,time,rAttrs);
+            return c.newWasStartedBy(uid,id2.toQName(),id1.toQName(),id3.toQName(),time,rAttrs);
 
 
         case PROV_NParser.WEB:
@@ -129,13 +129,13 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
-            id3=(QName) convert(ast.getChild(3));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
+            id3=(QualifiedName) convert(ast.getChild(3));
             time=(XMLGregorianCalendar) convert(ast.getChild(4));
             rAttrs=(List<Attribute>) convert(ast.getChild(5));
-            return c.newWasEndedBy(uid,id2,id1,id3,time,rAttrs);
+            return c.newWasEndedBy(uid,id2.toQName(),id1.toQName(),id3.toQName(),time,rAttrs);
 
         case PROV_NParser.TIME:
             if (ast.getChildCount()==0) return null;
@@ -147,12 +147,12 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
             time=(XMLGregorianCalendar) convert(ast.getChild(3));
             rAttrs=(List<Attribute>) convert(ast.getChild(4));
-            return c.newWasInvalidatedBy(uid,id2,id1,time,rAttrs);
+            return c.newWasInvalidatedBy(uid,id2.toQName(),id1.toQName(),time,rAttrs);
 
 
 
@@ -161,17 +161,17 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
             rAttrs=(List<Attribute>) convert(ast.getChild(3));
-            return c.newWasInformedBy(uid,id2,id1,rAttrs);
+            return c.newWasInformedBy(uid,id2.toQName(),id1.toQName(),rAttrs);
 
 
             /* Component 2 */
 
         case PROV_NParser.AGENT:
-            id=(QName) convert(ast.getChild(0));
+            id=(QualifiedName) convert(ast.getChild(0));
             List<Attribute> agAttrs=(List<Attribute>) convert(ast.getChild(1));
             return c.newAgent(id,agAttrs);
 
@@ -181,11 +181,11 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
             rAttrs=(List<Attribute>) convert(ast.getChild(3));
-            return c.newWasAttributedTo(uid,id2,id1,rAttrs);
+            return c.newWasAttributedTo(uid,id2.toQName(),id1.toQName(),rAttrs);
 
 
         case PROV_NParser.WAW:
@@ -193,12 +193,12 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName) ((ast.getChild(2)==null)?null : convert(ast.getChild(2)));
-            QName pl=(QName) ((ast.getChild(3)==null)?null : convert(ast.getChild(3)));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName) ((ast.getChild(2)==null)?null : convert(ast.getChild(2)));
+            QualifiedName pl=(QualifiedName) ((ast.getChild(3)==null)?null : convert(ast.getChild(3)));
             rAttrs=(List<Attribute>) convert(ast.getChild(4));
-            return c.newWasAssociatedWith(uid,id2,id1,pl,rAttrs);
+            return c.newWasAssociatedWith(uid,id2.toQName(),id1.toQName(),pl.toQName(),rAttrs);
 
 
         case PROV_NParser.AOBO:
@@ -206,12 +206,12 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
-            QName a=(QName) ((ast.getChild(3)==null)?null : convert(ast.getChild(3)));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
+            QualifiedName a=(QualifiedName) ((ast.getChild(3)==null)?null : convert(ast.getChild(3)));
             rAttrs=(List<Attribute>) convert(ast.getChild(4));
-            return c.newActedOnBehalfOf(uid,id2,id1,a,rAttrs);
+            return c.newActedOnBehalfOf(uid,id2.toQName(),id1.toQName(),a.toQName(),rAttrs);
 
 
             /* Component 3 */
@@ -221,14 +221,14 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
-            QName pe=(QName) convert(ast.getChild(3));
-            QName q2=(QName) convert(ast.getChild(4));
-            QName q1=(QName) convert(ast.getChild(5));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
+            QualifiedName pe=(QualifiedName) convert(ast.getChild(3));
+            QualifiedName q2=(QualifiedName) convert(ast.getChild(4));
+            QualifiedName q1=(QualifiedName) convert(ast.getChild(5));
             List<Attribute> dAttrs=(List<Attribute>) convert(ast.getChild(6));
-            return c.newWasDerivedFrom(uid,id2,id1,pe,q2,q1,dAttrs);
+            return c.newWasDerivedFrom(uid,id2.toQName(),id1.toQName(),pe.toQName(),q2.toQName(),q1.toQName(),dAttrs);
 
             /*
         case PROV_NParser.WRO:
@@ -279,38 +279,38 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
             dAttrs=(List<Attribute>) convert(ast.getChild(3));
-            return c.newWasInfluencedBy(uid,id2,id1,dAttrs);
+            return c.newWasInfluencedBy(uid,id2.toQName(),id1.toQName(),dAttrs);
 
             /* Component 4 */
 
             /* Component 5 */
 
         case PROV_NParser.ALTERNATE:
-            id2=(QName)convert(ast.getChild(0));
-            id1=(QName)convert(ast.getChild(1));
-            return c.newAlternateOf(id2,id1);
+            id2=(QualifiedName)convert(ast.getChild(0));
+            id1=(QualifiedName)convert(ast.getChild(1));
+            return c.newAlternateOf(id2.toQName(),id1.toQName());
 
         case PROV_NParser.SPECIALIZATION:
-            id2=(QName)convert(ast.getChild(0));
-            id1=(QName)convert(ast.getChild(1));
-            return c.newSpecializationOf(id2,id1);
+            id2=(QualifiedName)convert(ast.getChild(0));
+            id1=(QualifiedName)convert(ast.getChild(1));
+            return c.newSpecializationOf(id2.toQName(),id1.toQName());
 
         case PROV_NParser.MEM:
-            id2=(QName)convert(ast.getChild(0));
-            id1=(QName)convert(ast.getChild(1));
+            id2=(QualifiedName)convert(ast.getChild(0));
+            id1=(QualifiedName)convert(ast.getChild(1));
             List<QName> ll=new LinkedList<QName>();
-            if (id1!=null) ll.add(id1);
-            return c.newHadMember(id2,ll);
+            if (id1!=null) ll.add(id1.toQName());
+            return c.newHadMember(id2.toQName(),ll);
 
         case PROV_NParser.CTX:
-            QName su=(QName)convert(ast.getChild(0));
-            QName bu=(QName)convert(ast.getChild(1));
-            QName ta=(QName)convert(ast.getChild(2));
-            return c.newMentionOf(su,bu,ta);
+            QualifiedName su=(QualifiedName)convert(ast.getChild(0));
+            QualifiedName bu=(QualifiedName)convert(ast.getChild(1));
+            QualifiedName ta=(QualifiedName)convert(ast.getChild(2));
+            return c.newMentionOf(su.toQName(),bu.toQName(),ta.toQName());
 
 
 
@@ -321,43 +321,43 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
             List<KeyQNamePair> keymap=(List<KeyQNamePair>)convert(ast.getChild(3));
             dAttrs=(List<Attribute>) convert(ast.getChild(4));
-            return c.newDerivedByInsertionFrom(uid,id2,id1,keymap,dAttrs);
+            return c.newDerivedByInsertionFrom(uid,id2.toQName(),id1.toQName(),keymap,dAttrs);
 
         case PROV_NParser.DBRF:
             uidTree=ast.getChild(0);
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
             Object keyset=convert(ast.getChild(3));
             dAttrs=(List<Attribute>)convert(ast.getChild(4));
-            return c.newDerivedByRemovalFrom(uid,id2,id1,(List<org.openprovenance.prov.model.Key>)keyset,dAttrs);
+            return c.newDerivedByRemovalFrom(uid,id2.toQName(),id1.toQName(),(List<org.openprovenance.prov.model.Key>)keyset,dAttrs);
 
         case PROV_NParser.DMEM:
             //uidTree=ast.getChild(0);
             //if (uidTree.getChildCount()>0) {
             //    uidTree=uidTree.getChild(0);
             //}
-            //uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
+            //uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
             keymap=(List<KeyQNamePair>) convert(ast.getChild(2));
             //dAttrs=(List<Attribute>) convert(ast.getChild(4));
-            return c.newDictionaryMembership(id2,keymap);
+            return c.newDictionaryMembership(id2.toQName(),keymap);
 
         case PROV_NParser.CMEM:
             uidTree=ast.getChild(0);
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
             Object cmemEntities=convert(ast.getChild(2));
             //complete=convert(ast.getChild(3));
             dAttrs=(List<Attribute>) convert(ast.getChild(4));
@@ -370,7 +370,7 @@ public class TreeTraversal {
             for (int i=0; i< ast.getChildCount(); i++) {
                 Object o=convert(ast.getChild(i));
                 Object [] pair=(Object[]) o;
-                keys.add(pFactory.newKey(pair[0], (QName)pair[1]));
+                keys.add(pFactory.newKey(pair[0], (QualifiedName)pair[1]));
 
             }
             return keys;
@@ -424,7 +424,7 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
+            uid=(QualifiedName)convert(uidTree);
 
             Object optionalAttributes=convert(ast.getChild(ast.getChildCount()-1));
             List<Object> args=new LinkedList<Object>();
@@ -465,7 +465,7 @@ public class TreeTraversal {
             Namespace namespace2=(Namespace)convert(ast.getChild(1));
 
             // parse bundleId after namespace declarations
-            QName bundleId=(QName) convert(ast.getChild(0));
+            QualifiedName bundleId=(QualifiedName) convert(ast.getChild(0));
 
             //c.startBundle(bundleId);
 
@@ -490,7 +490,7 @@ public class TreeTraversal {
             if (val1 instanceof Object[]) {
             	Object [] values2=(Object[])val1;
             	Object theValue=values2[0];
-            	QName theType=(QName)values2[1];
+            	QualifiedName theType=(QualifiedName)values2[1];
 		    
             	//return pFactory.newAttribute(pFactory.stringToQName(attr1),val1,vconv.getXsdType(val1));
             	if (Name.QNAME_XSD_QNAME.equals(theType)) {
@@ -549,7 +549,7 @@ public class TreeTraversal {
                 Object ooo=stringToQName(v1);
                 return convertTypedLiteral(v2,ooo);
             } else {
-                v2=(QName)convert(ast.getChild(1));
+                v2=(QualifiedName)convert(ast.getChild(1));
                 if (ast.getChild(2)!=null) {
                     Object iv1=pFactory.newInternationalizedString(unescape(unwrap(v1)),
                                                                    stripAmpersand(convertToken(getTokenString(ast.getChild(2)))));

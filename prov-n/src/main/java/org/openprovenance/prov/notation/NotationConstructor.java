@@ -130,7 +130,7 @@ public class NotationConstructor implements ModelConstructor {
 	return null;
     }
     @Override
-    public Used newUsed(QName id, QName activity, QualifiedName entity,
+    public Used newUsed(QName id, QualifiedName activity, QualifiedName entity,
 			XMLGregorianCalendar time, Collection<Attribute> attributes) {
         String s=keyword("used") + "(" + optionalId(id) + idOrMarker(activity) + "," + idOrMarker(entity) + "," +
                 timeOrMarker(time) + optionalAttributes(attributes) + ")";

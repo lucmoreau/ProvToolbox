@@ -20,7 +20,8 @@ public interface GraphBuilder<RESOURCE, LITERAL, STATEMENT> {
     public abstract STATEMENT createObjectProperty(QName subject, QName pred,
 						   QName object);
     
-    public abstract STATEMENT createObjectProperty(QName subject, QName pred,
+    public abstract STATEMENT createObjectProperty(QualifiedName subject, 
+                                                   QName pred,
 						   QualifiedName object);
 
     public abstract LITERAL newLiteral(String value, QName type);

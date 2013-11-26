@@ -62,7 +62,7 @@ public class GettersTest
         Entity e2=pFactory.newEntity(q("e2"),
 				     "file 2");
 
-        Used u1=pFactory.newUsed(q("u1"), a3.getId(),new QualifiedName(e1.getId()));  //role: in
+        Used u1=pFactory.newUsed(q("u1"), new QualifiedName(a3.getId()),new QualifiedName(e1.getId()));  //role: in
         WasGeneratedBy wg1=pFactory.newWasGeneratedBy(q("wgb1"), e1.getId(),a3.getId());
 
         

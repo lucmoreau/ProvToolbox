@@ -65,8 +65,9 @@ import org.openprovenance.prov.model.Attribute;
 public class Used implements Equals, HashCode, ToString, org.openprovenance.prov.model.Used, HasAllAttributes
 {
 
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef activity;
+    protected org.openprovenance.prov.model.QualifiedName activity;
     
     @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
@@ -95,7 +96,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
      *     {@link org.openprovenance.prov.xml.IDRef }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getActivity() {
+    public org.openprovenance.prov.model.QualifiedName getActivity() {
         return activity;
     }
 
@@ -107,7 +108,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
      *     {@link org.openprovenance.prov.xml.IDRef }
      *     
      */
-    public void setActivity(org.openprovenance.prov.model.IDRef value) {
+    public void setActivity(org.openprovenance.prov.model.QualifiedName value) {
         this.activity = value;
     }
 
@@ -380,7 +381,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            org.openprovenance.prov.model.IDRef theActivity;
+            org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
             toStringBuilder.append("activity", theActivity);
         }

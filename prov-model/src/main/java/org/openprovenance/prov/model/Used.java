@@ -61,13 +61,13 @@ package org.openprovenance.prov.model;
 
 public interface Used extends Identifiable, HasLabel, HasType, HasTime, HasRole, HasLocation, HasOther, Influence {
 
-    void setActivity(IDRef aid);
+    void setActivity(QualifiedName aid);
 
     void setEntity(QualifiedName eid);
 
     QualifiedName getEntity();
 
-    IDRef getActivity();
+    QualifiedName getActivity();
 
 
 }

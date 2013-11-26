@@ -95,10 +95,10 @@ public class ProvUtilities {
         return res;
     }
  
-
+    //FIXME: change signature to QualifiedName
     public QName getEffect(Relation0 r) {
         if (r instanceof Used) {
-            return ((Used) r).getActivity().getRef();
+            return ((Used) r).getActivity().toQName();
         }
         if (r instanceof WasStartedBy) {
             return ((WasStartedBy) r).getActivity().getRef();

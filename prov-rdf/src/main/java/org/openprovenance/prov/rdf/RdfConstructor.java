@@ -100,7 +100,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     }
 
     @Override
-    public Used newUsed(QName id, QName activity, QualifiedName entity,
+    public Used newUsed(QName id, QualifiedName activity, QualifiedName entity,
 			XMLGregorianCalendar time,
 			Collection<Attribute> attributes) {
 
@@ -441,7 +441,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	return infl;
     }
 
-    public QName addInfluence(QName infl, QName subject, QualifiedName object,
+    public QName addInfluence(QName infl, QualifiedName subject, QualifiedName object,
 			      XMLGregorianCalendar time, QName other,
 			      boolean someOther,
 			      Collection<Attribute> attributes,
@@ -453,7 +453,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 		assertInfluencer(infl, object, qualifiedClass);
 	    if (subject != null) // scruffy provenance: subject may not be
 				 // defined
-		assertQualifiedInfluence(subject, infl, qualifiedClass);
+		assertQualifiedInfluence(subject.toQName(), infl, qualifiedClass);
 	    if (time != null)
 		assertAtTime(infl, time);
 	    if (other != null)
@@ -487,7 +487,8 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 			     Name.QNAME_XSD_HASH_DATETIME);
     }
 
-    public void assertQualifiedInfluence(QName subject, QName infl,
+    public void assertQualifiedInfluence(QName subject, 
+                                         QName infl,
 					 QName qualifiedClass) {
 	gb.assertStatement(gb.createObjectProperty(subject,
 						   onto.qualifiedInfluenceTable.get(qualifiedClass),
@@ -503,7 +504,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     public void assertInfluencer(QName infl, QualifiedName object, QName qualifiedClass) {
  	gb.assertStatement(gb.createObjectProperty(infl,
  						   onto.influencerTable.get(qualifiedClass),
- 						   object));
+ 						   object.toQName()));
      }
 
     public QName assertType(QName infl, QName qualifiedClass) {

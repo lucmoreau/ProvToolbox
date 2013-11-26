@@ -603,7 +603,7 @@ public class QualifiedCollector extends RdfCollector {
 		for (List<?> perm : perms)
 		{
 			Used used = pFactory.newUsed(qname, 
-			                             (QName) perm.get(0),
+			                             q((QName) perm.get(0)),
 			                             q((QName) perm.get(1)), 
 			                             (XMLGregorianCalendar) perm.get(2),
 					attributes);

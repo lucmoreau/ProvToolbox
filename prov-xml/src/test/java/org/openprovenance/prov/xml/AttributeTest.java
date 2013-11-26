@@ -1334,7 +1334,7 @@ public class AttributeTest extends TestCase {
     public void testUsage0() throws JAXBException  {
 
  	Used a = pFactory.newUsed((QName)null,
- 	                          pFactory.newIDRef(q("a1")),
+ 	                          qq("a1"),
  	                          null,
  	                          qq("e1"));
   	

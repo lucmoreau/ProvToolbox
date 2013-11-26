@@ -73,7 +73,7 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
      * @see org.openprovenance.prov.rdf.GraphBuilder#createObjectProperty(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QualifiedName)
      */
     @Override
-    public  org.openrdf.model.Statement createObjectProperty(QName subject, 
+    public  org.openrdf.model.Statement createObjectProperty(QualifiedName subject, 
                                               QName pred,
 					      QualifiedName object) {
 	return new StatementImpl(qnameToResource(subject), qnameToURI(pred),

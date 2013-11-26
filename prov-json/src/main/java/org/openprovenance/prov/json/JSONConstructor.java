@@ -297,7 +297,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public Used newUsed(QName id, QName activity, QualifiedName entity,
+    public Used newUsed(QName id, QualifiedName activity, QualifiedName entity,
 			XMLGregorianCalendar time,
 			Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);

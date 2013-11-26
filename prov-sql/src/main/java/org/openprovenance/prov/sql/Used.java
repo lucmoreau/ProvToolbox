@@ -94,13 +94,14 @@ public class Used
     extends AStatement
     implements Equals, HashCode, org.openprovenance.prov.model.Used, HasAllAttributes
 {
-
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef activity;
+    protected org.openprovenance.prov.model.QualifiedName activity;
     
     @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
     protected org.openprovenance.prov.model.QualifiedName entity;
+    
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar time;
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
@@ -127,11 +128,11 @@ public class Used
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "ACTIVITY")
-    public org.openprovenance.prov.model.IDRef getActivity() {
+    public org.openprovenance.prov.model.QualifiedName getActivity() {
         return activity;
     }
 
@@ -143,7 +144,7 @@ public class Used
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setActivity(org.openprovenance.prov.model.IDRef value) {
+    public void setActivity(org.openprovenance.prov.model.QualifiedName value) {
         this.activity = value;
     }
 
@@ -478,9 +479,9 @@ public class Used
         }
         final Used that = ((Used) object);
         {
-            org.openprovenance.prov.model.IDRef lhsActivity;
+            org.openprovenance.prov.model.QualifiedName lhsActivity;
             lhsActivity = this.getActivity();
-            org.openprovenance.prov.model.IDRef rhsActivity;
+            org.openprovenance.prov.model.QualifiedName rhsActivity;
             rhsActivity = that.getActivity();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "activity", lhsActivity), LocatorUtils.property(thatLocator, "activity", rhsActivity), lhsActivity, rhsActivity)) {
                 return false;
@@ -569,7 +570,7 @@ public class Used
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            org.openprovenance.prov.model.IDRef theActivity;
+            org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "activity", theActivity), currentHashCode, theActivity);
         }
@@ -649,7 +650,7 @@ public class Used
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            org.openprovenance.prov.model.IDRef theActivity;
+            org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
             toStringBuilder.append("activity", theActivity);
         }

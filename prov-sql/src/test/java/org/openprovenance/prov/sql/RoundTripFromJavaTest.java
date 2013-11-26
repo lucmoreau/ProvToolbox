@@ -191,7 +191,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
         System.out.println("testUsage 100 start");
         setNamespaces();
         Used use = (Used) pFactory.newUsed(q("use1"),
-                                           pFactory.newIDRef(q("a1")),
+                                           qq("a1"),
                                            "somerole",
                                            qqq("e1"));
         use.setTest(qqq("test"));

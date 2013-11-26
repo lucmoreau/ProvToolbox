@@ -967,7 +967,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
-    public Used newUsed(QName id, IDRef aid, String role, QualifiedName eid) {
+    public Used newUsed(QName id, QualifiedName aid, String role, QualifiedName eid) {
 	Used res = newUsed(id);
 	res.setActivity(aid);
 	if (role!=null)
@@ -983,18 +983,16 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      * @return an instance of {@link Used}
      */    
 
-    public Used newUsed(QName id, QName activity, QualifiedName entity) {
- 	IDRef aid = (activity == null) ? null : newIDRef(activity);
+    public Used newUsed(QName id, QualifiedName activity, QualifiedName entity) {
  	Used res = newUsed(id);
-	res.setActivity(aid);
+	res.setActivity(activity);
 	res.setEntity(entity);
  	return res;
      }
 
-    public Used newUsed(QName activity, QualifiedName entity) {
-	IDRef aid = (activity == null) ? null : newIDRef(activity);
+    public Used newUsed(QualifiedName activity, QualifiedName entity) {
  	Used res = newUsed((QName)null);
-	res.setActivity(aid);
+	res.setActivity(activity);
 	res.setEntity(entity);
  	return res;
      }
@@ -1002,11 +1000,10 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      /* (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newUsed(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
-    public Used newUsed(QName id, QName activity, QualifiedName entity,
+    public Used newUsed(QName id, QualifiedName activity, QualifiedName entity,
 			XMLGregorianCalendar time,
 			Collection<Attribute> attributes) {
-	IDRef aid = (activity == null) ? null : newIDRef(activity);
-	Used res = newUsed(id, aid, null, entity);
+	Used res = newUsed(id, activity, null, entity);
 	res.setTime(time);
 	setAttributes(res, attributes);
 	return res;
@@ -1016,7 +1013,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     
 
     public Used newUsed(Used u) {
-	Used u1 = newUsed(u.getId(), u.getActivity().getRef(), u.getEntity(),null,null);
+	Used u1 = newUsed(u.getId(), u.getActivity(), u.getEntity(),null,null);
 	u1.getOther().addAll(u.getOther());
 	u1.setTime(u.getTime());
 	u1.getType().addAll(u.getType());

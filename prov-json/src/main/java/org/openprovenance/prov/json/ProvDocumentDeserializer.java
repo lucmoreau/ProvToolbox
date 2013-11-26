@@ -344,11 +344,11 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    statement = wSB;
 	    break;
 	case used:
-	    activity = optionalIdRef("prov:activity", attributeMap);
+	    QualifiedName activity2 = optionalQualifiedName("prov:activity", attributeMap);
 	    QualifiedName entity2 = optionalQualifiedName("prov:entity", attributeMap);
 	    time = optionalTime("prov:time", attributeMap);
 	    Used wUB = pf.newUsed(id);
-	    wUB.setActivity(activity);
+	    wUB.setActivity(activity2);
 	    if (entity2 != null)
 		wUB.setEntity(entity2);
 	    if (time != null) {

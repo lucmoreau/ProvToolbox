@@ -177,9 +177,9 @@ public class ContextualizationPC1Test extends TestCase {
 
     
     public Used newUsed(Activity activity, String role, Entity entity){
-	return newUsed(activity.getId(),role,new QualifiedName(entity.getId()));
+	return newUsed(new QualifiedName(activity.getId()),role,new QualifiedName(entity.getId()));
     }
-    public Used newUsed(QName activity, String role, QualifiedName entity){
+    public Used newUsed(QualifiedName activity, String role, QualifiedName entity){
 	Used u1 = pFactory.newUsed(activity, entity);
 	u1.getRole().add(pFactory.newRole(role,org.openprovenance.prov.model.Name.QNAME_XSD_STRING));
 	return u1;

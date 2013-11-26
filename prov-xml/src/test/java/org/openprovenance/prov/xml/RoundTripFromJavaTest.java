@@ -854,7 +854,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testUsage2() throws JAXBException  {
 	setNamespacesTODELETE();
         Used use = pFactory.newUsed(q("use2"),
-                                    pFactory.newIDRef(q("a1")),
+                                    qq("a1"),
                                     null,
                                     qq("e1"));
         
@@ -864,7 +864,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testUsage3() throws JAXBException  {
 	setNamespacesTODELETE();
         Used use = pFactory.newUsed(q("use3"),
-                                    pFactory.newIDRef(q("a1")),
+                                    qq("a1"),
                                     "somerole",
                                     qq("e1"));
         use.getRole().add(pFactory.newRole("otherRole",Name.QNAME_XSD_STRING));
@@ -875,7 +875,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testUsage4() throws JAXBException  {
 	setNamespacesTODELETE();
         Used use = pFactory.newUsed(q("use4"),
-                                    pFactory.newIDRef(q("a1")),
+                                    qq("a1"),
                                     "somerole",
                                     qq("e1"));
         use.setTime(pFactory.newTimeNow());
@@ -886,7 +886,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testUsage5() throws JAXBException  {
 	setNamespacesTODELETE();
         Used use = pFactory.newUsed(q("use4"),
-                                    pFactory.newIDRef(q("a1")),
+                                    qq("a1"),
                                     "somerole",
                                     qq("e1"));
         use.setTime(pFactory.newTimeNow());
@@ -901,7 +901,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testUsage6() throws JAXBException  {
 	setNamespacesTODELETE();
         Used use = pFactory.newUsed((QName)null,
-                                    pFactory.newIDRef(q("a1")),
+                                    qq("a1"),
                                     null,
                                     qq("e1"));
 
@@ -911,7 +911,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testUsage7() throws JAXBException  {
 	setNamespacesTODELETE();
         Used use = pFactory.newUsed((QName)null,
-                                    pFactory.newIDRef(q("a1")),
+                                    qq("a1"),
                                     "somerole",
                                     qq("e1"));
         use.setTime(pFactory.newTimeNow());
@@ -1902,14 +1902,14 @@ public class RoundTripFromJavaTest extends TestCase {
        public void testScruffyUsage1() throws JAXBException  {
 	setNamespacesTODELETE();
     	   Used use1 = pFactory.newUsed(q("use1"),
-					pFactory.newIDRef(q("a1")),
+					qq("a1"),
 					null,
 					qq("e1"));
 	       use1.setTime(pFactory.newTimeNow());
 	       Used use2 = pFactory.newUsed(q("use1"),
-			          pFactory.newIDRef(q("a1")),
-			        	null,
-			          qq("e1"));
+	                                    qq("a1"),
+	                                    null,
+	                                    qq("e1"));
 	  	   use2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
    		   Entity e1=pFactory.newEntity(q("e1"));
 		   Activity a1=pFactory.newActivity(q("a1"));
@@ -1921,16 +1921,16 @@ public class RoundTripFromJavaTest extends TestCase {
        public void testScruffyUsage2() throws JAXBException  {
 	setNamespacesTODELETE();
     	   Used use1 = pFactory.newUsed(q("use1"),
-					pFactory.newIDRef(q("a1")),
+					qq("a1"),
 					null,
 					qq("e1"));
 	       use1.setTime(pFactory.newTimeNow());
 	   	   use1.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hello", Name.QNAME_XSD_STRING));
 
 	       Used use2 = pFactory.newUsed(q("use1"),
-			          pFactory.newIDRef(q("a1")),
-			        	null,
-			          qq("e1"));
+	                                    qq("a1"),
+	                                    null,
+	                                    qq("e1"));
 	  	   use2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));	
 		   use2.getOther().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX, "hi", Name.QNAME_XSD_STRING));
 
@@ -2128,7 +2128,7 @@ public class RoundTripFromJavaTest extends TestCase {
        public void testBundle1 () throws JAXBException {
 	setNamespacesTODELETE();
            Used use1 = pFactory.newUsed(q("use1"),
-                                        pFactory.newIDRef(q("a1")),
+                                        qq("a1"),
                                         null,
                                         qq("e1"));
            Entity e1=pFactory.newEntity(q("e1"));
@@ -2141,7 +2141,7 @@ public class RoundTripFromJavaTest extends TestCase {
            NamedBundle b1=pFactory.newNamedBundle(q("bundle1"), st1);
            
            Used use2 = pFactory.newUsed(q("use2"),
-                                        pFactory.newIDRef(q("aa1")),
+                                        qq("aa1"),
                                         null,
                                         qq("ee1"));
            Entity ee1=pFactory.newEntity(q("ee1"));
@@ -2173,7 +2173,7 @@ public class RoundTripFromJavaTest extends TestCase {
        public void testBundle2 () throws JAXBException {
 	setNamespacesTODELETE();
            Used use1 = pFactory.newUsed(q("use1"),
-                                        pFactory.newIDRef(q("a1")),
+                                        qq("a1"),
                                         null,
                                         qq("e1"));
            Entity e1=pFactory.newEntity(q("e1"));
@@ -2187,7 +2187,7 @@ public class RoundTripFromJavaTest extends TestCase {
            b1.setNamespace(Namespace.gatherNamespaces(b1));
 
            Used use2 = pFactory.newUsed(q("use2"),
-                                        pFactory.newIDRef(q("e1")),
+                                        qq("e1"),
                                         null,
                                         qq("a1"));
            Entity ee1=pFactory.newEntity(q("a1"));
@@ -2217,7 +2217,7 @@ public class RoundTripFromJavaTest extends TestCase {
        
        //FIXME: inheritance of namespaces does not work properly
     public void FIXMEtestBundle3() throws JAXBException {
-	Used use1 = pFactory.newUsed(q("use1"), pFactory.newIDRef(q("a1")),
+	Used use1 = pFactory.newUsed(q("use1"), qq("a1"),
 				     null, qq("e1"));
 	Entity e1 = pFactory.newEntity(q("e1"));
 	Activity a1 = pFactory.newActivity(q("a1"));
@@ -2228,7 +2228,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
 	NamedBundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
 
-	Used use2 = pFactory.newUsed(q("use2"), pFactory.newIDRef(q("aa1")),
+	Used use2 = pFactory.newUsed(q("use2"), qq("aa1"),
 				     null, qq("ee1"));
 	Entity ee1 = pFactory.newEntity(q("ee1"));
 	Activity aa1 = pFactory.newActivity(q("aa1"));

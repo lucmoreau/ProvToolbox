@@ -690,7 +690,7 @@ public class RdfCollector extends RDFHandlerBase {
 		    store(context, waw);
 
 		} else if (predQ.equals(Ontology.QNAME_PROVO_used)) {
-		    Used used = pFactory.newUsed(null, qname, q(valueQ), null,
+		    Used used = pFactory.newUsed(null, q(qname), q(valueQ), null,
 						 null);
 		    store(context, used);
 

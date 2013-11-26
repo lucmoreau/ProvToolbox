@@ -31,7 +31,7 @@ public interface ModelConstructor {
     public Entity newEntity(QualifiedName id, Collection<Attribute> attributes);
     public HadMember newHadMember(QName c, Collection<QName> e);
     public MentionOf newMentionOf(QName e2, QName e1, QName b);
-    public NamedBundle newNamedBundle(QName id, 
+    public NamedBundle newNamedBundle(QualifiedName id, 
                                       Namespace namespace, 
                                       Collection<Statement> statements);
     public SpecializationOf newSpecializationOf(QName e2, QName e1);
@@ -110,7 +110,7 @@ public interface ModelConstructor {
      */
     public WasStartedBy newWasStartedBy(QualifiedName id, QName activity, QName trigger, QName starter, XMLGregorianCalendar time, Collection<Attribute> attributes);
 
-    public void startBundle(QName bundleId, Namespace namespace);
+    public void startBundle(QualifiedName bundleId, Namespace namespace);
     public void startDocument(Namespace namespace);
 
 }

@@ -803,7 +803,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return newMentionOf(eid2, eid1, bid);
     }
     
-    public NamedBundle newNamedBundle(QName id, 
+    public NamedBundle newNamedBundle(QualifiedName id, 
                                       Collection<Activity> ps,
 				      Collection<Entity> as,
 				      Collection<Agent> ags,
@@ -827,7 +827,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
   
-    public NamedBundle newNamedBundle(QName id, Collection<Statement> lks) {
+    public NamedBundle newNamedBundle(QualifiedName id, Collection<Statement> lks) {
 	NamedBundle res = of.createNamedBundle();
 	res.setId(id);
 
@@ -836,7 +836,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}
 	return res;
     }
-    public NamedBundle newNamedBundle(QName id, Namespace namespace, Collection<Statement> statements) {
+    public NamedBundle newNamedBundle(QualifiedName id, Namespace namespace, Collection<Statement> statements) {
 	NamedBundle res = of.createNamedBundle();
 	res.setId(id);
 	res.setNamespace(namespace);
@@ -1536,7 +1536,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
     @Override
-    public void startBundle(QName bundleId, Namespace namespaces) {
+    public void startBundle(QualifiedName bundleId, Namespace namespaces) {
       
     }
     

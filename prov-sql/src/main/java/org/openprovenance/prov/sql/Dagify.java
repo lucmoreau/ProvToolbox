@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.model.Identifiable;
+import org.openprovenance.prov.model.OldIdentifiable;
 import org.openprovenance.prov.model.Statement;
 
 
@@ -76,7 +76,7 @@ public class Dagify implements RecordAction {
 
    */
     
-    public IDRef createKey(Identifiable e) {
+    public IDRef createKey(OldIdentifiable e) {
 	IDRef ref=new IDRef();
 	ref.setRef(e.getId());
   	return (IDRef)uniquify(ref);

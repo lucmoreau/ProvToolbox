@@ -9,16 +9,16 @@ import javax.xml.namespace.QName;
 
 public interface ModelConstructor {
  
-    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1, QName a, Collection<Attribute> attributes);
-    public Activity newActivity(QName id, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, Collection<Attribute> attributes);
-    public Agent newAgent(QName id, Collection<Attribute> attributes);
+    public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QName ag2, QName ag1, QName a, Collection<Attribute> attributes);
+    public Activity newActivity(QualifiedName id, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, Collection<Attribute> attributes);
+    public Agent newAgent(QualifiedName id, Collection<Attribute> attributes);
     public AlternateOf newAlternateOf(QName e2, QName e1);
-    public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
+    public DerivedByInsertionFrom newDerivedByInsertionFrom(QualifiedName id,
                                                             QName after,
                                                             QName before,
                                                             List<KeyQNamePair> keyEntitySet,
                                                             Collection<Attribute> attributes);
-    public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
+    public DerivedByRemovalFrom newDerivedByRemovalFrom(QualifiedName id,
                                                         QName after,
                                                         QName before,
                                                         List<Key> keys,
@@ -28,7 +28,7 @@ public interface ModelConstructor {
     public Document newDocument(Namespace namespace,
                                 Collection<Statement> statements, 
                                 Collection<NamedBundle> bundles);
-    public Entity newEntity(QName id, Collection<Attribute> attributes);
+    public Entity newEntity(QualifiedName id, Collection<Attribute> attributes);
     public HadMember newHadMember(QName c, Collection<QName> e);
     public MentionOf newMentionOf(QName e2, QName e1, QName b);
     public NamedBundle newNamedBundle(QName id, 
@@ -44,9 +44,9 @@ public interface ModelConstructor {
      * @param attributes an optional set of attribute-value pairs representing additional information about this usage
      * @return an instance of {@link Used}
      */
-    public Used newUsed(QName id, QualifiedName activity, QualifiedName entity, XMLGregorianCalendar time, Collection<Attribute> attributes);
-    public WasAssociatedWith newWasAssociatedWith(QName id, QName a, QName ag, QName plan, Collection<Attribute> attributes);
-    public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,  Collection<Attribute> attributes);
+    public Used newUsed(QualifiedName id, QualifiedName activity, QualifiedName entity, XMLGregorianCalendar time, Collection<Attribute> attributes);
+    public WasAssociatedWith newWasAssociatedWith(QualifiedName id, QName a, QName ag, QName plan, Collection<Attribute> attributes);
+    public WasAttributedTo newWasAttributedTo(QualifiedName id, QName e, QName ag,  Collection<Attribute> attributes);
  
     /** A factory method to create an instance of a derivation {@link WasDerivedFrom}
      * @param id an optional identifier for a derivation
@@ -58,7 +58,7 @@ public interface ModelConstructor {
      * @param attributes
      * @return an instance of {@link WasDerivedFrom}
      */
-    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1, QName activity, QName generation, QName usage,  Collection<Attribute> attributes);
+    public WasDerivedFrom newWasDerivedFrom(QualifiedName id, QName e2, QName e1, QName activity, QName generation, QName usage,  Collection<Attribute> attributes);
 
     
     /** A factory method to create an instance of an end {@link WasEndedBy}
@@ -71,7 +71,7 @@ public interface ModelConstructor {
      * @return an instance of {@link WasStartedBy}
      */
 
-    public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger, QName ender, XMLGregorianCalendar time, Collection<Attribute> attributes);
+    public WasEndedBy newWasEndedBy(QualifiedName id, QName activity, QName trigger, QName ender, XMLGregorianCalendar time, Collection<Attribute> attributes);
 
     /** A factory method to create an instance of a generation {@link WasGeneratedBy}
      * @param id an optional identifier for a usage
@@ -83,9 +83,9 @@ public interface ModelConstructor {
      */    
 
 
-    public WasGeneratedBy newWasGeneratedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes);
-    public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes);
-    public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1, Collection<Attribute> attributes);
+    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes);
+    public WasInfluencedBy newWasInfluencedBy(QualifiedName id, QName a2, QName a1, Collection<Attribute> attributes);
+    public WasInformedBy newWasInformedBy(QualifiedName id, QName a2, QName a1, Collection<Attribute> attributes);
 
 
     /** A factory method to create an instance of an invalidation {@link WasInvalidatedBy}
@@ -97,7 +97,7 @@ public interface ModelConstructor {
      * @return an instance of {@link WasInvalidatedBy}
      */    
 
-    public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes);
+    public WasInvalidatedBy newWasInvalidatedBy(QualifiedName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes);
     
     /** A factory method to create an instance of a start {@link WasStartedBy}
      * @param id
@@ -108,7 +108,7 @@ public interface ModelConstructor {
      * @param attributes an optional set of <a href="http://www.w3.org/TR/prov-dm/#start.attributes">attribute-value pairs</a> representing additional information about this activity start
      * @return an instance of {@link WasStartedBy}
      */
-    public WasStartedBy newWasStartedBy(QName id, QName activity, QName trigger, QName starter, XMLGregorianCalendar time, Collection<Attribute> attributes);
+    public WasStartedBy newWasStartedBy(QualifiedName id, QName activity, QName trigger, QName starter, XMLGregorianCalendar time, Collection<Attribute> attributes);
 
     public void startBundle(QName bundleId, Namespace namespace);
     public void startDocument(Namespace namespace);

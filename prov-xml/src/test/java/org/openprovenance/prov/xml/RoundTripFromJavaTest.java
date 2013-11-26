@@ -857,7 +857,6 @@ public class RoundTripFromJavaTest extends TestCase {
                                     qq("a1"),
                                     null,
                                     qq("e1"));
-        
         makeDocAndTest(use,"target/usage2");
     }
 

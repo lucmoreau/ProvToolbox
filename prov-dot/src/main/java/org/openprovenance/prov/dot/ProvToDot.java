@@ -22,7 +22,7 @@ import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasType;
-import org.openprovenance.prov.model.Identifiable;
+import org.openprovenance.prov.model.OldIdentifiable;
 import org.openprovenance.prov.model.Influence;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Other;
@@ -386,13 +386,13 @@ public class ProvToDot {
             (((HasType)ann).getType().isEmpty())) return;
 
         HashMap<String,String> properties=new HashMap<String, String>();
-        QName newId=annotationId(((Identifiable)ann).getId(),id);
+        QName newId=annotationId(((OldIdentifiable)ann).getId(),id);
         emitElement(newId,
                     addAnnotationShape(ann,addAnnotationColor(ann,addAnnotationLabel(ann,properties))),
                     out);
         HashMap<String,String> linkProperties=new HashMap<String, String>();
         emitRelation(qnameToString(newId),
-                     qnameToString(((Identifiable)ann).getId()),
+                     qnameToString(((OldIdentifiable)ann).getId()),
                      addAnnotationLinkProperties(ann,linkProperties),out,true);
     }
 

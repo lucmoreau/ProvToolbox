@@ -85,8 +85,11 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
 
     @XmlAnyElement
     protected List<Attribute> all;
+    
+    
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected org.openprovenance.prov.model.QualifiedName id;
 
     /**
      * Gets the value of the activity property.
@@ -313,7 +316,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
      *     {@link QName }
      *     
      */
-    public QName getId() {
+    public org.openprovenance.prov.model.QualifiedName getId() {
         return id;
     }
 
@@ -325,9 +328,10 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
      *     {@link QName }
      *     
      */
-    public void setId(QName value) {
+    public void etId(org.openprovenance.prov.model.QualifiedName value) {
         this.id = value;
     }
+    
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {
         if (!(object instanceof Used)) {
@@ -421,7 +425,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
         }

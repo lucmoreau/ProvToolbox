@@ -15,7 +15,7 @@ import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.DerivedByInsertionFrom;
 import org.openprovenance.prov.model.DerivedByRemovalFrom;
-import org.openprovenance.prov.model.Identifiable;
+import org.openprovenance.prov.model.OldIdentifiable;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Name;
@@ -197,9 +197,9 @@ public class QualifiedCollector extends RdfCollector {
 		for (StatementOrBundle sob : document
 				.getStatementOrBundle())
 		{
-			if (sob instanceof Identifiable)
+			if (sob instanceof OldIdentifiable)
 			{
-				Identifiable idsob = (Identifiable) sob;
+				OldIdentifiable idsob = (OldIdentifiable) sob;
 
 				if (idsob.getId() != null
 						&& idsob.getId().getNamespaceURI().equals(BNODE_NS))

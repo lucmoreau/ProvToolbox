@@ -1,5 +1,4 @@
 package org.openprovenance.prov.model;
-import javax.xml.namespace.QName;
 
 public interface Identifiable {
     /**
@@ -7,18 +6,18 @@ public interface Identifiable {
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    public abstract QName getId();
+    public QualifiedName getId();
 
     /**
      * Sets the value of the id property.
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    public abstract void setId(QName value);
+    public void setId(QualifiedName value);
 } 

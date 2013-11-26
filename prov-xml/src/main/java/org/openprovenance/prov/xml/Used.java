@@ -328,7 +328,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
      *     {@link QName }
      *     
      */
-    public void etId(org.openprovenance.prov.model.QualifiedName value) {
+    public void setId(org.openprovenance.prov.model.QualifiedName value) {
         this.id = value;
     }
     

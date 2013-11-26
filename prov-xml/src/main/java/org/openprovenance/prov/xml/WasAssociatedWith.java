@@ -76,8 +76,10 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
     
     @XmlAnyElement
     protected List<Attribute> all;
+    
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected org.openprovenance.prov.model.QualifiedName id;
 
     /**
      * Gets the value of the activity property.
@@ -270,7 +272,7 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
      *     {@link QName }
      *     
      */
-    public QName getId() {
+    public org.openprovenance.prov.model.QualifiedName getId() {
         return id;
     }
 
@@ -279,10 +281,10 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(org.openprovenance.prov.model.QualifiedName value) {
         this.id = value;
     }
 
@@ -371,7 +373,7 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
         }

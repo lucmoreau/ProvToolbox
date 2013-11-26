@@ -69,8 +69,11 @@ public class WasInfluencedBy implements Equals, HashCode, ToString, org.openprov
     
     @XmlAnyElement
     protected List<Attribute> all;
+    
+
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected org.openprovenance.prov.model.QualifiedName id;
 
     /**
      * Gets the value of the influencee property.
@@ -210,7 +213,7 @@ public class WasInfluencedBy implements Equals, HashCode, ToString, org.openprov
      *     {@link QName }
      *     
      */
-    public QName getId() {
+    public org.openprovenance.prov.model.QualifiedName getId() {
         return id;
     }
 
@@ -222,7 +225,7 @@ public class WasInfluencedBy implements Equals, HashCode, ToString, org.openprov
      *     {@link QName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(org.openprovenance.prov.model.QualifiedName value) {
         this.id = value;
     }
 
@@ -297,7 +300,7 @@ public class WasInfluencedBy implements Equals, HashCode, ToString, org.openprov
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
         }

@@ -85,8 +85,12 @@ public class WasEndedBy implements Equals, HashCode, ToString, org.openprovenanc
     
     @XmlAnyElement
     protected List<Attribute> all;
+    
+
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected org.openprovenance.prov.model.QualifiedName id;
+
 
     /**
      * Gets the value of the activity property.
@@ -335,7 +339,7 @@ public class WasEndedBy implements Equals, HashCode, ToString, org.openprovenanc
      *     {@link QName }
      *     
      */
-    public QName getId() {
+    public org.openprovenance.prov.model.QualifiedName getId() {
         return id;
     }
 
@@ -347,7 +351,7 @@ public class WasEndedBy implements Equals, HashCode, ToString, org.openprovenanc
      *     {@link QName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(org.openprovenance.prov.model.QualifiedName value) {
         this.id = value;
     }
 
@@ -450,12 +454,9 @@ public class WasEndedBy implements Equals, HashCode, ToString, org.openprovenanc
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
-        }
-        { //TODO: only now, for debugging.
-            toStringBuilder.append("all", getAllAttributes());
         }
     }
 

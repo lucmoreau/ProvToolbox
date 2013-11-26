@@ -19,6 +19,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBEqualsBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.QualifiedName;
 
 
 /**
@@ -69,9 +70,11 @@ public class WasAttributedTo implements Equals, HashCode, ToString, org.openprov
     
     @XmlAnyElement
     protected List<Attribute> all;
+    
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
-
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected org.openprovenance.prov.model.QualifiedName id;
+   
     /**
      * Gets the value of the entity property.
      * 
@@ -209,7 +212,7 @@ public class WasAttributedTo implements Equals, HashCode, ToString, org.openprov
      *     {@link QName }
      *     
      */
-    public QName getId() {
+    public QualifiedName getId() {
         return id;
     }
 
@@ -221,7 +224,7 @@ public class WasAttributedTo implements Equals, HashCode, ToString, org.openprov
      *     {@link QName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(QualifiedName value) {
         this.id = value;
     }
 
@@ -296,12 +299,9 @@ public class WasAttributedTo implements Equals, HashCode, ToString, org.openprov
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
-        }
-        { //TODO: only now, for debugging.
-            toStringBuilder.append("all", getAllAttributes());
         }
     }
 

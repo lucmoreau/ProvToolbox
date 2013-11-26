@@ -6,20 +6,20 @@ import java.util.Collection;
 import java.util.List;
 
 import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.OldIdentifiable;
+import org.openprovenance.prov.model.Identifiable;
 
 public class AttributeList<TYPE> extends AbstractList<TYPE> {
 
 
     private final ArrayList<TYPE> ll=new ArrayList<TYPE>();
   
-    private OldIdentifiable obj;
+    private Identifiable obj;
 
-    public AttributeList(OldIdentifiable obj) {
+    public AttributeList(Identifiable obj) {
   	//System.out.println("*** Constructor called");
   	this.obj=obj;
       }
-    public AttributeList(OldIdentifiable obj, Collection<TYPE> col) {
+    public AttributeList(Identifiable obj, Collection<TYPE> col) {
   	this(obj);
   	ll.addAll(col);
       }
@@ -56,7 +56,7 @@ public class AttributeList<TYPE> extends AbstractList<TYPE> {
 	obj2.getAllAttributes().add((org.openprovenance.prov.model.Attribute)element);	
     }
     
-    final static public <TYPE> AttributeList<TYPE> populateKnownAttributes(OldIdentifiable object,
+    final static public <TYPE> AttributeList<TYPE> populateKnownAttributes(Identifiable object,
 									   List<Attribute> all,
 									   Class<TYPE> cl) {
 	List<TYPE> some = new ArrayList<TYPE>();

@@ -11,7 +11,7 @@ public class IDRefAdapter extends XmlAdapter<IDRef, org.openprovenance.prov.mode
             return null;
         } else {
             //System.out.println("marshalling " + qname);
-            return (IDRef) pf.newIDRef(qname.toQName());
+            return new IDRef(qname.toQName());
         }
     }
 

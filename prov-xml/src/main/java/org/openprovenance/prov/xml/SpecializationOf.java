@@ -51,20 +51,23 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 public class SpecializationOf implements Equals, HashCode, ToString, org.openprovenance.prov.model.SpecializationOf
 {
 
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef specificEntity;
+    protected org.openprovenance.prov.model.QualifiedName specificEntity;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef generalEntity;
+    protected org.openprovenance.prov.model.QualifiedName generalEntity;
 
     /**
      * Gets the value of the specificEntity property.
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getSpecificEntity() {
+    public org.openprovenance.prov.model.QualifiedName getSpecificEntity() {
         return specificEntity;
     }
 
@@ -73,10 +76,10 @@ public class SpecializationOf implements Equals, HashCode, ToString, org.openpro
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setSpecificEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setSpecificEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.specificEntity = value;
     }
 
@@ -85,10 +88,10 @@ public class SpecializationOf implements Equals, HashCode, ToString, org.openpro
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getGeneralEntity() {
+    public org.openprovenance.prov.model.QualifiedName getGeneralEntity() {
         return generalEntity;
     }
 
@@ -97,10 +100,10 @@ public class SpecializationOf implements Equals, HashCode, ToString, org.openpro
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setGeneralEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setGeneralEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.generalEntity = value;
     }
 
@@ -142,12 +145,12 @@ public class SpecializationOf implements Equals, HashCode, ToString, org.openpro
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            org.openprovenance.prov.model.IDRef theSpecificEntity;
+            org.openprovenance.prov.model.QualifiedName theSpecificEntity;
             theSpecificEntity = this.getSpecificEntity();
             toStringBuilder.append("specificEntity", theSpecificEntity);
         }
         {
-            org.openprovenance.prov.model.IDRef theGeneralEntity;
+            org.openprovenance.prov.model.QualifiedName theGeneralEntity;
             theGeneralEntity = this.getGeneralEntity();
             toStringBuilder.append("generalEntity", theGeneralEntity);
         }

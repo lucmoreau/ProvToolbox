@@ -51,20 +51,23 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 public class AlternateOf implements Equals, HashCode, ToString, org.openprovenance.prov.model.AlternateOf
 {
 
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef alternate1;
+    protected org.openprovenance.prov.model.QualifiedName alternate1;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef alternate2;
+    protected org.openprovenance.prov.model.QualifiedName alternate2;
 
     /**
      * Gets the value of the alternate1 property.
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getAlternate1() {
+    public org.openprovenance.prov.model.QualifiedName getAlternate1() {
         return alternate1;
     }
 
@@ -73,10 +76,10 @@ public class AlternateOf implements Equals, HashCode, ToString, org.openprovenan
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setAlternate1(org.openprovenance.prov.model.IDRef value) {
+    public void setAlternate1(org.openprovenance.prov.model.QualifiedName value) {
         this.alternate1 = value;
     }
 
@@ -85,10 +88,10 @@ public class AlternateOf implements Equals, HashCode, ToString, org.openprovenan
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getAlternate2() {
+    public org.openprovenance.prov.model.QualifiedName getAlternate2() {
         return alternate2;
     }
 
@@ -97,10 +100,10 @@ public class AlternateOf implements Equals, HashCode, ToString, org.openprovenan
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setAlternate2(org.openprovenance.prov.model.IDRef value) {
+    public void setAlternate2(org.openprovenance.prov.model.QualifiedName value) {
         this.alternate2 = value;
     }
 
@@ -142,12 +145,12 @@ public class AlternateOf implements Equals, HashCode, ToString, org.openprovenan
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            org.openprovenance.prov.model.IDRef theAlternate1;
+            org.openprovenance.prov.model.QualifiedName theAlternate1;
             theAlternate1 = this.getAlternate1();
             toStringBuilder.append("alternate1", theAlternate1);
         }
         {
-            org.openprovenance.prov.model.IDRef theAlternate2;
+            org.openprovenance.prov.model.QualifiedName theAlternate2;
             theAlternate2 = this.getAlternate2();
             toStringBuilder.append("alternate2", theAlternate2);
         }

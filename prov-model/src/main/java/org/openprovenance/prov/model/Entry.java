@@ -4,10 +4,10 @@ public interface Entry {
 
     void setKey(Key key);
 
-    void setEntity(IDRef entity);
+    void setEntity(QualifiedName entity);
 
     Key getKey();
 
-    IDRef getEntity();
+    QualifiedName getEntity();
 
 }

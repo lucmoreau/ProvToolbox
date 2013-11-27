@@ -64,17 +64,17 @@ package org.openprovenance.prov.model;
 public interface WasStartedBy extends Identifiable, HasLabel, HasTime, HasType,
 	HasRole, HasLocation, HasOther, Influence {
 
-    IDRef getActivity();
+    QualifiedName getActivity();
 
-    void setActivity(IDRef aid);
+    void setActivity(QualifiedName aid);
 
-    IDRef getStarter();
+    QualifiedName getStarter();
 
-    IDRef getTrigger();
+    QualifiedName getTrigger();
 
 
-    void setStarter(IDRef sid);
+    void setStarter(QualifiedName sid);
 
-    void setTrigger(IDRef eid);
+    void setTrigger(QualifiedName eid);
 
 }

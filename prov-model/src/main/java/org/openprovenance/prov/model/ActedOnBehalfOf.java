@@ -3,16 +3,16 @@ package org.openprovenance.prov.model;
 
 public interface ActedOnBehalfOf extends Identifiable, HasLabel, HasType, HasOther, Influence {
 
-    IDRef getDelegate();
+    QualifiedName getDelegate();
 
-    void setActivity(IDRef eid2);
+    void setActivity(QualifiedName eid2);
 
-    void setDelegate(IDRef delegate);
+    void setDelegate(QualifiedName delegate);
 
-    void setResponsible(IDRef responsible);
+    void setResponsible(QualifiedName responsible);
 
-    IDRef getResponsible();
+    QualifiedName getResponsible();
 
-    IDRef getActivity();
+    QualifiedName getActivity();
 
 }

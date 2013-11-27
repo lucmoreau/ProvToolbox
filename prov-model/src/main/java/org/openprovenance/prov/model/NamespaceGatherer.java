@@ -146,7 +146,7 @@ public class NamespaceGatherer implements StatementAction {
     @Override
     public void doAction(HadMember mem) {
 	register(mem.getCollection());
-	for (IDRef i: mem.getEntity()) {
+	for (QualifiedName i: mem.getEntity()) {
 	    register(i);
 	}
     }

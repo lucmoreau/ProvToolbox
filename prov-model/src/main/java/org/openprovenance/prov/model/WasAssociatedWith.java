@@ -3,16 +3,16 @@ package org.openprovenance.prov.model;
 
 public interface WasAssociatedWith extends Identifiable,  HasLabel, HasType, HasRole, HasOther, Influence {
 
-    void setActivity(IDRef eid2);
+    void setActivity(QualifiedName eid2);
 
-    void setAgent(IDRef eid1);
+    void setAgent(QualifiedName eid1);
 
-    void setPlan(IDRef eid);
+    void setPlan(QualifiedName eid);
 
-    IDRef getActivity();
+    QualifiedName getActivity();
 
-    IDRef getAgent();
+    QualifiedName getAgent();
 
-    IDRef getPlan();
+    QualifiedName getPlan();
 
 }

@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.LinkedList;
 
-import javax.xml.namespace.QName;
 
 /** Utilities for manipulating PROV Descriptions. */
 
@@ -95,190 +94,177 @@ public class ProvUtilities {
         return res;
     }
  
-    //FIXME: change signature to QualifiedName
-    public QName getEffect(Relation0 r) {
+
+    public QualifiedName getEffect(Relation0 r) {
         if (r instanceof Used) {
-            return ((Used) r).getActivity().toQName();
+            return ((Used) r).getActivity();
         }
         if (r instanceof WasStartedBy) {
-            return ((WasStartedBy) r).getActivity().getRef();
+            return ((WasStartedBy) r).getActivity();
         }
         if (r instanceof WasEndedBy) {
-            return ((WasEndedBy) r).getActivity().getRef();
+            return ((WasEndedBy) r).getActivity();
         }
         if (r instanceof WasGeneratedBy) {
-            return ((WasGeneratedBy) r).getEntity().getRef();
+            return ((WasGeneratedBy) r).getEntity();
         }
         if (r instanceof WasDerivedFrom) {
-            return ((WasDerivedFrom) r).getGeneratedEntity().getRef();
+            return ((WasDerivedFrom) r).getGeneratedEntity();
         }
        
         if (r instanceof WasAssociatedWith) {
-            return ((WasAssociatedWith) r).getActivity().getRef();
+            return ((WasAssociatedWith) r).getActivity();
         }
         if (r instanceof WasInvalidatedBy) {
-            return ((WasInvalidatedBy) r).getEntity().getRef();
+            return ((WasInvalidatedBy) r).getEntity();
         }
 
         if (r instanceof WasAttributedTo) {
-            return ((WasAttributedTo) r).getEntity().getRef();
+            return ((WasAttributedTo) r).getEntity();
         }
         if (r instanceof AlternateOf) {
-            return ((AlternateOf) r).getAlternate1().getRef();
+            return ((AlternateOf) r).getAlternate1();
         }
         if (r instanceof SpecializationOf) {
-            return ((SpecializationOf) r).getSpecificEntity().getRef();
+            return ((SpecializationOf) r).getSpecificEntity();
         }
         if (r instanceof HadMember) {
-            return ((HadMember) r).getCollection().getRef();
+            return ((HadMember) r).getCollection();
         }
         if (r instanceof WasInformedBy) {
-            return ((WasInformedBy) r).getInformed().getRef();
+            return ((WasInformedBy) r).getInformed();
         }
         if (r instanceof MentionOf) {
-            return ((MentionOf) r).getSpecificEntity().getRef();
+            return ((MentionOf) r).getSpecificEntity();
         }
         if (r instanceof WasInfluencedBy) {
-            return ((WasInfluencedBy) r).getInfluencee().getRef();
+            return ((WasInfluencedBy) r).getInfluencee();
         }
 
         if (r instanceof ActedOnBehalfOf) {
-            return ((ActedOnBehalfOf) r).getDelegate().getRef();
+            return ((ActedOnBehalfOf) r).getDelegate();
         }
 
         if (r instanceof DerivedByInsertionFrom) {
-            return ((DerivedByInsertionFrom) r).getNewDictionary().getRef();
+            return ((DerivedByInsertionFrom) r).getNewDictionary();
         }
         System.out.println("Unknown relation " + r);
         throw new UnsupportedOperationException();
     }
     
-    //FIXME: change signature to QUalified Name.
 
-    public QName getCause(Relation0 r) {
+    public QualifiedName getCause(Relation0 r) {
         if (r instanceof Used) {
-            return ((Used) r).getEntity().toQName();
+            return ((Used) r).getEntity();
         }
         if (r instanceof WasGeneratedBy) {
-            IDRef ref = ((WasGeneratedBy) r).getActivity();
-            if (ref == null)
-                return null;
-            return ref.getRef();
+            return ((WasGeneratedBy) r).getActivity();
         }
         if (r instanceof WasInvalidatedBy) {
-            IDRef ref = ((WasInvalidatedBy) r).getActivity();
-            if (ref == null)
-                return null;
-            return ref.getRef();
+            return ((WasInvalidatedBy) r).getActivity();
         }
         if (r instanceof WasStartedBy) {
-            IDRef ref = ((WasStartedBy) r).getTrigger();
-            if (ref == null)
-                return null;
-            return ref.getRef();
+            return ((WasStartedBy) r).getTrigger();
         }
         if (r instanceof WasEndedBy) {
-            IDRef ref = ((WasEndedBy) r).getTrigger();
-            if (ref == null)
-                return null;
-            return ref.getRef();
+            return ((WasEndedBy) r).getTrigger();
         }
         if (r instanceof WasDerivedFrom) {
-            return ((WasDerivedFrom) r).getUsedEntity().getRef();
+            return ((WasDerivedFrom) r).getUsedEntity();
         }
 
         if (r instanceof WasInfluencedBy) {
-            return ((WasInfluencedBy) r).getInfluencer().getRef();
+            return ((WasInfluencedBy) r).getInfluencer();
         }
           if (r instanceof WasAssociatedWith) {
-            return ((WasAssociatedWith) r).getAgent().getRef();
+            return ((WasAssociatedWith) r).getAgent();
         }
         if (r instanceof WasAttributedTo) {
-            return ((WasAttributedTo) r).getAgent().getRef();
+            return ((WasAttributedTo) r).getAgent();
         }
         if (r instanceof AlternateOf) {
-            return ((AlternateOf) r).getAlternate2().getRef();
+            return ((AlternateOf) r).getAlternate2();
         }
         if (r instanceof SpecializationOf) {
-            return ((SpecializationOf) r).getGeneralEntity().getRef();
+            return ((SpecializationOf) r).getGeneralEntity();
         }
         if (r instanceof HadMember) {
-            return ((HadMember) r).getEntity().get(0).getRef();
+            return ((HadMember) r).getEntity().get(0);
         }
         if (r instanceof MentionOf) {
-            return ((MentionOf) r).getGeneralEntity().getRef();
+            return ((MentionOf) r).getGeneralEntity();
         }
         if (r instanceof WasInformedBy) {
-            return ((WasInformedBy) r).getInformant().getRef();
+            return ((WasInformedBy) r).getInformant();
         }
         if (r instanceof ActedOnBehalfOf) {
-            return ((ActedOnBehalfOf) r).getResponsible().getRef();
+            return ((ActedOnBehalfOf) r).getResponsible();
         }
         if (r instanceof DerivedByInsertionFrom) {
-            return ((DerivedByInsertionFrom) r).getOldDictionary().getRef();
+            return ((DerivedByInsertionFrom) r).getOldDictionary();
         }
         System.out.println("Unknown relation " + r);
         throw new UnsupportedOperationException();
     }
 
-    public List<QName> getOtherCauses(Relation0 r) {
+    public List<QualifiedName> getOtherCauses(Relation0 r) {
         if (r instanceof WasAssociatedWith) {
-            List<QName> res = new LinkedList<QName>();
-            IDRef e = ((WasAssociatedWith) r).getPlan();
+            List<QualifiedName> res = new LinkedList<QualifiedName>();
+            QualifiedName e = ((WasAssociatedWith) r).getPlan();
             if (e == null)
                 return null;
-            res.add(e.getRef());
+            res.add(e);
             return res;
         }
         if (r instanceof WasStartedBy) {
-            List<QName> res = new LinkedList<QName>();
-            IDRef a = ((WasStartedBy) r).getStarter();
+            List<QualifiedName> res = new LinkedList<QualifiedName>();
+            QualifiedName a = ((WasStartedBy) r).getStarter();
             if (a == null)
                 return null;
-            res.add(a.getRef());
+            res.add(a);
             return res;
         }
         if (r instanceof MentionOf) {
-            List<QName> res = new LinkedList<QName>();
-            IDRef a = ((MentionOf) r).getBundle();
+            List<QualifiedName> res = new LinkedList<QualifiedName>();
+            QualifiedName a = ((MentionOf) r).getBundle();
             if (a == null)
                 return null;
-            res.add(a.getRef());
+            res.add(a);
             return res;
         }
         if (r instanceof HadMember) {
-            List<QName> res = new LinkedList<QName>();
-            List<IDRef> entities=((HadMember) r).getEntity();
+            List<QualifiedName> res = new LinkedList<QualifiedName>();
+            List<QualifiedName> entities=((HadMember) r).getEntity();
             if ((entities==null) || (entities.size()<=1)) return null;
             boolean first=true;
-            for (IDRef ee: entities) {
-                if (!first) res.add(ee.getRef());
+            for (QualifiedName ee: entities) {
+                if (!first) res.add(ee);
                 first=false;
             }
             return res;
         }
         if (r instanceof WasEndedBy) {
-            List<QName> res = new LinkedList<QName>();
-            IDRef a = ((WasEndedBy) r).getEnder();
+            List<QualifiedName> res = new LinkedList<QualifiedName>();
+            QualifiedName a = ((WasEndedBy) r).getEnder();
             if (a == null)
                 return null;
-            res.add(a.getRef());
+            res.add(a);
             return res;
         }
         if (r instanceof ActedOnBehalfOf) {
-            List<QName> res = new LinkedList<QName>();
-            IDRef a = ((ActedOnBehalfOf) r).getActivity();
+            List<QualifiedName> res = new LinkedList<QualifiedName>();
+            QualifiedName a = ((ActedOnBehalfOf) r).getActivity();
             if (a == null)
                 return null;
-            res.add(a.getRef());
+            res.add(a);
             return res;
         }
         if (r instanceof DerivedByInsertionFrom) {
-            List<QName> res = new LinkedList<QName>();
+            List<QualifiedName> res = new LinkedList<QualifiedName>();
             DerivedByInsertionFrom dbif = ((DerivedByInsertionFrom) r);
             
             for (Entry entry : dbif.getKeyEntityPair()) {
-                res.add(entry.getEntity().getRef());
+                res.add(entry.getEntity());
             }
             return res;
         }

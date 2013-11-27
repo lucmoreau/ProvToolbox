@@ -246,7 +246,6 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return org.apache.commons.codec.binary.Base64.encodeBase64String(b);
     }
 
-    abstract public IDRef createIDRef();
 
     /* Return the first label, it it exists */
     public String getLabel(HasOther e) {
@@ -312,35 +311,30 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	ActedOnBehalfOf u1 = newActedOnBehalfOf(u.getId(),
 						u.getDelegate(),
 						u.getResponsible(),
-						u.getActivity());
+						u.getActivity(),
+						null);
 	u1.getOther().addAll(u.getOther());
 	return u1;
     }
 
-    public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, IDRef delegate,
-					      IDRef responsible,
-					      IDRef eid2) {
+    public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, 
+                                              QualifiedName delegate,
+					      QualifiedName responsible,
+					      QualifiedName activity, 
+					      Collection<Attribute> attributes) {
 	ActedOnBehalfOf res = of.createActedOnBehalfOf();
 	res.setId(id);
-	res.setActivity(eid2);
+	res.setActivity(activity);
 	res.setDelegate(delegate);
 	res.setResponsible(responsible);
 	return res;
     }
 
-    public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QName ag2, QName ag1) {
+    public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QualifiedName ag2, QualifiedName ag1) {
         ActedOnBehalfOf res=newActedOnBehalfOf(id, ag2, ag1, null,null);
         return res;
     }
 
-    public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QName ag2, QName ag1, QName a, Collection<Attribute> attributes) {
-        IDRef agid2=(ag2==null)? null : newIDRef(ag2);
-        IDRef agid1=(ag1==null)? null : newIDRef(ag1);
-        IDRef aid=(a==null)? null : newIDRef(a);
-        ActedOnBehalfOf res=newActedOnBehalfOf(id, agid2, agid1, aid);
-        setAttributes(res, attributes);
-        return res;
-    }
 
 
     public Activity newActivity(Activity a) {
@@ -405,19 +399,13 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
     
 
-    public AlternateOf newAlternateOf(IDRef eid2, IDRef eid1) {
+    public AlternateOf newAlternateOf(QualifiedName eid2, QualifiedName eid1) {
 	AlternateOf res = of.createAlternateOf();
 	res.setAlternate1(eid2);
 	res.setAlternate2(eid1);
 	return res;
     }
 
-
-    public AlternateOf newAlternateOf(QName e2, QName e1) {
-        IDRef eid2 = (e2==null)? null: newIDRef(e2);
-        IDRef eid1 = (e1==null)? null: newIDRef(e1);
-        return newAlternateOf(eid2, eid1);
-    }
 
    abstract public Attribute newAttribute(Attribute.AttributeKind kind, Object value, QName type);
    
@@ -441,8 +429,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
     public DerivedByInsertionFrom newDerivedByInsertionFrom(QualifiedName id,
-							    IDRef after,
-							    IDRef before,
+							    QualifiedName after,
+							    QualifiedName before,
 							    List<Entry> keyEntitySet,
 							    Collection<Attribute> attributes) {
 	DerivedByInsertionFrom res = of.createDerivedByInsertionFrom();
@@ -455,32 +443,11 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
-    public DerivedByInsertionFrom newDerivedByInsertionFrom(QualifiedName id,
-                                                            QName after,
-                                                            QName before,
-                                                            List<KeyQNamePair> keyEntitySet,
-                                                            Collection<Attribute> attributes) {
-    	IDRef aa=createIDRef();
-    	aa.setRef(after);
-    	IDRef ab=createIDRef();
-    	ab.setRef(before);
-    	List<Entry> entries=new LinkedList<Entry>();
-    	if (keyEntitySet!=null) {
-    	for (KeyQNamePair p: keyEntitySet) {
-    		Entry e=of.createEntry();
-    		e.setKey(p.key);
-        	IDRef ac=createIDRef();
-        	ac.setRef(p.name);
-    		e.setEntity(ac);
-    		entries.add(e);
-    	}
-    	}
-    	return newDerivedByInsertionFrom(id, aa, ab, entries, attributes);
-    }
+   
 
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QualifiedName id,
-							IDRef after,
-							IDRef before,
+							QualifiedName after,
+							QualifiedName before,
 							List<Key> keys,
 							Collection<Attribute> attributes) {
 	DerivedByRemovalFrom res = of.createDerivedByRemovalFrom();
@@ -493,47 +460,13 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
-    
-    public DerivedByRemovalFrom newDerivedByRemovalFrom(QualifiedName id,
-                                                            QName after,
-                                                            QName before,
-                                                            List<Key> keys,
-                                                            Collection<Attribute> attributes) {
-    	IDRef aa=createIDRef();
-    	aa.setRef(after);
-    	IDRef ab=createIDRef();
-    	ab.setRef(before);
-    	return newDerivedByRemovalFrom(id, aa, ab, keys, attributes);
-    }
-
-    public DictionaryMembership newDictionaryMembership(QName id, IDRef dict,
-						    List<Entry> entitySet) {
+  
+    public DictionaryMembership newDictionaryMembership(QualifiedName dict,
+                                                        List<Entry> entitySet) {
 	DictionaryMembership res = of.createDictionaryMembership();
-	//res.setId(id);  TODO: no id?
 	res.setDictionary(dict);
 	if (entitySet != null)
 	    res.getKeyEntityPair().addAll(entitySet);
-	return res;
-    }
-
-    public DictionaryMembership newDictionaryMembership(QName id, List<KeyQNamePair> keyEntitySet) {
-	DictionaryMembership res = of.createDictionaryMembership();
-    	IDRef idr=createIDRef();
-    	idr.setRef(id);
-	res.setDictionary(idr);
-	
-	List<Entry> entries=new LinkedList<Entry>();
-    	if (keyEntitySet!=null) {
-    	    for (KeyQNamePair p: keyEntitySet) {
-    		Entry e=of.createEntry();
-    		e.setKey(p.key);
-    		IDRef ac=createIDRef();
-    		ac.setRef(p.name);
-    		e.setEntity(ac);
-    		entries.add(e);
-    	    }
-    	}
-	res.getKeyEntityPair().addAll(entries);
 	return res;
     }
 
@@ -680,7 +613,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
-    public Entry newEntry(Key key, IDRef entity) {
+    public Entry newEntry(Key key, QualifiedName entity) {
 	Entry res = of.createEntry();
 	res.setKey(key);
 	res.setEntity(entity);
@@ -712,41 +645,19 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return cal;
     }
 
-    public HadMember newHadMember(IDRef collection, IDRef... entities) {
-	HadMember res = of.createHadMember();
-	res.setCollection(collection);
-	if (entities != null) {
-	    res.getEntity().addAll(Arrays.asList(entities));
-	}
-	return res;
-    }
 
-    public HadMember newHadMember(QName c, Collection<QName> e) {
-        IDRef cid=(c==null)? null: newIDRef(c);
-        List<IDRef> ll=new LinkedList<IDRef>();
+    public HadMember newHadMember(QualifiedName c, Collection<QualifiedName> e) {
+        List<QualifiedName> ll=new LinkedList<QualifiedName>();
         if (e!=null) {
-            for (QName q: e) {
-        	IDRef eid=newIDRef(q);
-        	ll.add(eid);
+            for (QualifiedName q: e) {
+        	ll.add(q);
             }
         }
         HadMember res = of.createHadMember();
-        res.setCollection(cid);
+        res.setCollection(c);
         res.getEntity().addAll(ll);
         return res;
-    }
-
-    public IDRef newIDRef(QName id) {
-	IDRef res = of.createIDRef();
-	res.setRef(id);
-	return res;
-    }
-    
-    public IDRef newIDRef(QualifiedName id) {
-	
-	return newIDRef(id.toQName());
-    }
-    
+    }    
 
     public InternationalizedString newInternationalizedString(String s) {
 	InternationalizedString res = of.createInternationalizedString();
@@ -784,8 +695,9 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
   
    
-    public MentionOf newMentionOf(IDRef infra, IDRef supra,
-				  IDRef bundle) {
+    public MentionOf newMentionOf(QualifiedName infra, 
+                                  QualifiedName supra,
+				  QualifiedName bundle) {
 	MentionOf res = of.createMentionOf();
 	res.setSpecificEntity(infra);
 	res.setBundle(bundle);
@@ -801,12 +713,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	res.setGeneralEntity(r.getGeneralEntity());
 	return res;
     }
-    public MentionOf newMentionOf(QName e2, QName e1, QName b) {
-        IDRef eid2 = (e2==null)? null: newIDRef(e2);
-        IDRef eid1 = (e1==null)? null: newIDRef(e1);
-        IDRef bid = (b==null)? null: newIDRef(b);
-        return newMentionOf(eid2, eid1, bid);
-    }
+   
     
     public NamedBundle newNamedBundle(QualifiedName id, 
                                       Collection<Activity> ps,
@@ -894,19 +801,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return res;
       }
 
-    public SpecializationOf newSpecializationOf(IDRef eid2, IDRef eid1) {
+    public SpecializationOf newSpecializationOf(QualifiedName eid2, QualifiedName eid1) {
 	SpecializationOf res = of.createSpecializationOf();
 	res.setSpecificEntity(eid2);
 	res.setGeneralEntity(eid1);
 	return res;
     }
-
-    public SpecializationOf newSpecializationOf(QName e2, QName e1) {
-        IDRef eid2 = (e2==null)? null: newIDRef(e2);
-        IDRef eid1 = (e1==null)? null: newIDRef(e1);
-        return newSpecializationOf(eid2, eid1);
-    }
-
 
     public XMLGregorianCalendar newTime(Date date) {
 	GregorianCalendar gc = new GregorianCalendar();
@@ -1008,15 +908,17 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
       }
 
     public WasAssociatedWith newWasAssociatedWith(QualifiedName id) {
-	return newWasAssociatedWith(id, (QName)null,(QName)null);
+	return newWasAssociatedWith(id, (QualifiedName)null,(QualifiedName)null);
     }
-    public WasAssociatedWith newWasAssociatedWith(QualifiedName id, Activity eid2,
+    public WasAssociatedWith newWasAssociatedWith(QualifiedName id,
+                                                  Activity eid2,
 						  Agent eid1) {
-	return newWasAssociatedWith(id, eid2.getId().toQName(), eid1.getId().toQName());
+	return newWasAssociatedWith(id, eid2.getId(), eid1.getId());
     }
 
-    public WasAssociatedWith newWasAssociatedWith(QualifiedName id, IDRef eid2,
-						  IDRef eid1) {
+    public WasAssociatedWith newWasAssociatedWith(QualifiedName id,
+                                                  QualifiedName eid2,
+						  QualifiedName eid1) {
 	WasAssociatedWith res = of.createWasAssociatedWith();
 	res.setId(id);
 	res.setActivity(eid2);
@@ -1024,24 +926,14 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
+    
     public WasAssociatedWith  newWasAssociatedWith(QualifiedName id, 
-                                                   QName a, 
-                                                   QName ag) {
-	IDRef aid=(a==null)? null: newIDRef(a);
-	IDRef agid=(ag==null)? null: newIDRef(ag);
-	WasAssociatedWith res= newWasAssociatedWith(id,aid,agid);
-	return res;
-    }
-    public WasAssociatedWith  newWasAssociatedWith(QualifiedName id, 
-                                                   QName a, 
-                                                   QName ag, 
-                                                   QName plan, 
+                                                   QualifiedName a, 
+                                                   QualifiedName ag, 
+                                                   QualifiedName plan, 
                                                    Collection<Attribute> attributes) {
-	IDRef aid=(a==null)? null: newIDRef(a);
-	IDRef eid=(plan==null)? null: newIDRef(plan);
-	IDRef agid=(ag==null)? null: newIDRef(ag);
-	WasAssociatedWith res= newWasAssociatedWith(id,aid,agid);
-	res.setPlan(eid);
+	WasAssociatedWith res= newWasAssociatedWith(id,a,ag);
+	res.setPlan(plan);
 	setAttributes(res, attributes);
 	return res;
     }
@@ -1056,8 +948,9 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return u1;
     }
 
-    public WasAttributedTo newWasAttributedTo(QualifiedName id, IDRef eid,
-					      IDRef agid) {
+    public WasAttributedTo newWasAttributedTo(QualifiedName id, 
+                                              QualifiedName eid,
+					      QualifiedName agid) {
 	WasAttributedTo res = of.createWasAttributedTo();
 	res.setId(id);
 	res.setEntity(eid);
@@ -1065,14 +958,20 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
-    
-    public WasAttributedTo newWasAttributedTo(QualifiedName id, QName e, QName ag,  Collection<Attribute> attributes) {
-        IDRef eid=(e==null)? null : newIDRef(e);
-        IDRef agid=(ag==null)? null : newIDRef(ag);
-        WasAttributedTo res=newWasAttributedTo(id, eid, agid);
+
+    public WasAttributedTo newWasAttributedTo(QualifiedName id, 
+                                              QualifiedName eid,
+					      QualifiedName agid,
+					      Collection<Attribute> attributes) {
+	WasAttributedTo res = of.createWasAttributedTo();
+	res.setId(id);
+	res.setEntity(eid);
+	res.setAgent(agid);
         setAttributes(res, attributes);
-        return res;
+	return res;
     }
+
+    
 
     public WasAttributedTo newWasAttributedTo(WasAttributedTo u) {
 	WasAttributedTo u1 = newWasAttributedTo(u.getId(), u.getEntity(),
@@ -1082,33 +981,34 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	u1.getLabel().addAll(u.getLabel());
 	return u1;
     }
-    public WasDerivedFrom newWasDerivedFrom(QualifiedName id, IDRef aid1,
-					    IDRef aid2) {
+    
+    /** A factory method to create an instance of a derivation {@link WasDerivedFrom}
+     * @param id an optional identifier for a derivation
+     * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation 
+     * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
+     * @return an instance of {@link WasDerivedFrom}
+     */
+    public WasDerivedFrom newWasDerivedFrom(QualifiedName id, 
+                                            QualifiedName e2,
+					    QualifiedName e1) {
 	WasDerivedFrom res = of.createWasDerivedFrom();
 	res.setId(id);
+	res.setUsedEntity(e1);
+	res.setGeneratedEntity(e2);
+	return res;
+    }    
+    public WasDerivedFrom newWasDerivedFrom(QualifiedName aid1,
+					    QualifiedName aid2) {
+	WasDerivedFrom res = of.createWasDerivedFrom();
 	res.setUsedEntity(aid2);
 	res.setGeneratedEntity(aid1);
 	return res;
     }    
-    public WasDerivedFrom newWasDerivedFrom(QualifiedName id, QualifiedName aid1,
-                                            QualifiedName aid2) {
-	WasDerivedFrom res = of.createWasDerivedFrom();
-	res.setId(id);
-	res.setUsedEntity(newIDRef(aid2.toQName()));
-	res.setGeneratedEntity(newIDRef(aid1.toQName()));
-	return res;
-    }
-    public WasDerivedFrom newWasDerivedFrom(QName aid1,
-					    QName aid2) {
-	WasDerivedFrom res = of.createWasDerivedFrom();
-	res.setUsedEntity(newIDRef(aid2));
-	res.setGeneratedEntity(newIDRef(aid1));
-	return res;
-    }
+   
 
-    public WasDerivedFrom newWasDerivedFrom(QualifiedName id, IDRef aid1,
-					    IDRef aid2, IDRef aid,
-					    IDRef did1, IDRef did2) {
+    public WasDerivedFrom newWasDerivedFrom(QualifiedName id, QualifiedName aid1,
+					    QualifiedName aid2, QualifiedName aid,
+					    QualifiedName did1, QualifiedName did2) {
 	WasDerivedFrom res = of.createWasDerivedFrom();
 	res.setId(id);
 	res.setUsedEntity(aid2);
@@ -1118,31 +1018,6 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	res.setUsage(did2);
 	return res;
     }
-
-    /** A factory method to create an instance of a derivation {@link WasDerivedFrom}
-     * @param id an optional identifier for a derivation
-     * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation 
-     * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
-     * @return an instance of {@link WasDerivedFrom}
-     */
-    public WasDerivedFrom newWasDerivedFrom(QualifiedName id, QName e2, QName e1) {
-	IDRef eid1 = (e1==null)? null: newIDRef(e1);
-	IDRef eid2 = (e2==null)? null: newIDRef(e2);
-	WasDerivedFrom res=newWasDerivedFrom(id, eid2, eid1);
-	return res;
-    }
-
-    public WasDerivedFrom newWasDerivedFrom(QualifiedName id, QName e2, QName e1, QName a, QName g, QName u,  Collection<Attribute> attributes) {
-	IDRef eid1 = (e1==null)? null: newIDRef(e1);
-	IDRef eid2 = (e2==null)? null: newIDRef(e2);
-	IDRef aid = (a==null)? null : newIDRef(a);
-	IDRef gid = (g==null)? null: newIDRef(g);
-	IDRef uid = (u==null) ? null : newIDRef(u);
-	WasDerivedFrom res=newWasDerivedFrom(id, eid2, eid1, aid, gid, uid);
-	setAttributes(res, attributes);
-	return res;
-    }
-
 
 
     public WasDerivedFrom newWasDerivedFrom(WasDerivedFrom d) {
@@ -1163,7 +1038,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
-    public WasEndedBy newWasEndedBy(QualifiedName id, IDRef aid, IDRef eid) {
+    public WasEndedBy newWasEndedBy(QualifiedName id, QualifiedName aid, QualifiedName eid) {
 	WasEndedBy res = of.createWasEndedBy();
 	res.setId(id);
 	res.setActivity(aid);
@@ -1181,25 +1056,19 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      * @param attributes an optional set of <a href="http://www.w3.org/TR/prov-dm/#end.attributes">attribute-value pairs</a> representing additional information about this activity end
      * @return an instance of {@link WasStartedBy}
      */
-    public WasEndedBy newWasEndedBy(QualifiedName id, QName activity, QName trigger, QName ender) {
-   	IDRef aid = (activity==null)? null: newIDRef(activity);
-      	IDRef eid = (trigger==null)? null: newIDRef(trigger);
-      	IDRef sid = (ender==null)? null: newIDRef(ender);
-      	WasEndedBy res=newWasEndedBy(id,aid,eid);	
-      	res.setEnder(sid);
+    public WasEndedBy newWasEndedBy(QualifiedName id, QualifiedName activity, QualifiedName trigger, QualifiedName ender) {
+      	WasEndedBy res=newWasEndedBy(id,activity,trigger);	
+      	res.setEnder(ender);
       	return res;
     }
 
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newWasEndedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
-    public WasEndedBy newWasEndedBy(QualifiedName id, QName activity, QName trigger, QName ender, XMLGregorianCalendar time, Collection<Attribute> attributes) {
-   	IDRef aid = (activity==null)? null: newIDRef(activity);
-      	IDRef eid = (trigger==null)? null: newIDRef(trigger);
-      	IDRef sid = (ender==null)? null: newIDRef(ender);
-      	WasEndedBy res=newWasEndedBy(id,aid,eid);	
+    public WasEndedBy newWasEndedBy(QualifiedName id, QualifiedName activity, QualifiedName trigger, QualifiedName ender, XMLGregorianCalendar time, Collection<Attribute> attributes) {
+      	WasEndedBy res=newWasEndedBy(id,activity,trigger);	
       	res.setTime(time);
-      	res.setEnder(sid);
+      	res.setEnder(ender);
 	setAttributes(res, attributes);
       	return res;
     }
@@ -1227,16 +1096,18 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	
     }
 
-    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, Entity a, String role,
+    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, 
+                                            Entity a, 
+                                            String role,
 					    Activity p) {
 
-	WasGeneratedBy res=newWasGeneratedBy(id, a.getId().toQName(), p.getId().toQName());
+	WasGeneratedBy res=newWasGeneratedBy(id, a.getId(), p.getId());
 	if (role!=null) addRole(res, newRole(role,Name.QNAME_XSD_STRING));
 	return res;
     }
 
-    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, IDRef aid,
-					    String role, IDRef pid) {
+    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QualifiedName aid,
+					    String role, QualifiedName pid) {
 	WasGeneratedBy res = of.createWasGeneratedBy();
 	res.setId(id);
 	res.setActivity(pid);
@@ -1252,20 +1123,16 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      * @return an instance of {@link WasGeneratedBy}
      */    
 
-    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QName entity, QName activity) {
-   	IDRef aid = (activity==null)? null: newIDRef(activity);
-   	IDRef eid = (entity==null)? null: newIDRef(entity);
-   	WasGeneratedBy res=newWasGeneratedBy(id,eid,null,aid);	
+    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QualifiedName entity, QualifiedName activity) {
+   	WasGeneratedBy res=newWasGeneratedBy(id,entity,null,activity);	
    	return res;
     }
 
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newWasGeneratedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
-    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
-   	IDRef aid = (activity==null)? null: newIDRef(activity);
-   	IDRef eid = (entity==null)? null: newIDRef(entity);
-   	WasGeneratedBy res=newWasGeneratedBy(id,eid,null,aid);	
+    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QualifiedName entity, QualifiedName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
+   	WasGeneratedBy res=newWasGeneratedBy(id,entity,null,activity);	
    	res.setTime(time);
 	setAttributes(res, attributes);
    	return res;
@@ -1285,8 +1152,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return wgb;
     }
 
-    public WasInfluencedBy newWasInfluencedBy(QualifiedName id, IDRef influencee,
-					      IDRef influencer) {
+    public WasInfluencedBy newWasInfluencedBy(QualifiedName id, QualifiedName influencee,
+					      QualifiedName influencer) {
 	WasInfluencedBy res = of.createWasInfluencedBy();
 	res.setId(id);
 	res.setInfluencee(influencee);
@@ -1294,10 +1161,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
-    public WasInfluencedBy newWasInfluencedBy(QualifiedName id, QName a2, QName a1, Collection<Attribute> attributes) {
-        IDRef aid2 = (a2==null) ? null: newIDRef(a2);
-        IDRef aid1 = (a1==null) ? null: newIDRef(a1);
-        WasInfluencedBy res=newWasInfluencedBy(id,aid2,aid1);   
+    public WasInfluencedBy newWasInfluencedBy(QualifiedName id, QualifiedName a2, QualifiedName a1, Collection<Attribute> attributes) {
+        WasInfluencedBy res=newWasInfluencedBy(id,a2,a1);   
         setAttributes(res, attributes);
         return res;
     }
@@ -1326,8 +1191,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return wtb;
     }
 
-    public WasInformedBy newWasInformedBy(QualifiedName id, IDRef pid1,
-					  IDRef pid2) {
+    public WasInformedBy newWasInformedBy(QualifiedName id, QualifiedName pid1,
+					  QualifiedName pid2) {
 	WasInformedBy res = of.createWasInformedBy();
 	res.setId(id);
 	res.setInformed(pid1);
@@ -1335,17 +1200,15 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
-    public WasInformedBy newWasInformedBy(QualifiedName id, QName a2, QName a1, Collection<Attribute> attributes) {
-        IDRef aid2 = (a2==null) ? null: newIDRef(a2);
-        IDRef aid1 = (a1==null) ? null: newIDRef(a1);
-        WasInformedBy res=newWasInformedBy(id,aid2,aid1);   
+    public WasInformedBy newWasInformedBy(QualifiedName id, QualifiedName a2, QualifiedName a1, Collection<Attribute> attributes) {
+        WasInformedBy res=newWasInformedBy(id,a2,a1);   
         setAttributes(res, attributes);
         return res;
     }
 
     public WasInformedBy newWasInformedBy(QualifiedName id, Activity p1, Activity p2) {
 
-	return newWasInformedBy(id, p1.getId().toQName(), p2.getId().toQName(),null);
+	return newWasInformedBy(id, p1.getId(), p2.getId(),null);
     }
 
 
@@ -1360,19 +1223,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return wtb;
     }
 
-    public WasInvalidatedBy newWasInvalidatedBy(QualifiedName id, IDRef eid,
-						IDRef aid) {
+   
+    public WasInvalidatedBy newWasInvalidatedBy(QualifiedName eid,
+						QualifiedName aid) {
 	WasInvalidatedBy res = of.createWasInvalidatedBy();
-	res.setId(id);
 	res.setEntity(eid);
 	res.setActivity(aid);
-	return res;
-    }
-    public WasInvalidatedBy newWasInvalidatedBy(QName eid,
-						QName aid) {
-	WasInvalidatedBy res = of.createWasInvalidatedBy();
-	res.setEntity(newIDRef(eid));
-	res.setActivity(newIDRef(aid));
 	return res;
     }
 
@@ -1383,20 +1239,19 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      * @return an instance of {@link WasInvalidatedBy}
      */    
 
-    public WasInvalidatedBy newWasInvalidatedBy(QualifiedName id, QName entity, QName activity) {
-   	IDRef aid = (activity==null) ? null: newIDRef(activity);
-   	IDRef eid = (entity==null)? null: newIDRef(entity);
-   	WasInvalidatedBy res=newWasInvalidatedBy(id,eid,aid);	
-   	return res;
+    public WasInvalidatedBy newWasInvalidatedBy(QualifiedName id, QualifiedName entity, QualifiedName activity) {
+	WasInvalidatedBy res = of.createWasInvalidatedBy();
+	res.setId(id);
+	res.setEntity(entity);
+	res.setActivity(activity);
+	return res;
     }
     
     /* (non-Javadoc)
-     * @see org.openprovenance.prov.model.ModelConstructor#newWasInvalidatedBy(javax.xml.namespace.QualifiedName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasInvalidatedBy(javax.xml.namespace.QualifiedName, javax.xml.namespace.QualifiedName, javax.xml.namespace.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
-    public WasInvalidatedBy newWasInvalidatedBy(QualifiedName id, QName entity, QName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
-   	IDRef aid = (activity==null) ? null: newIDRef(activity);
-   	IDRef eid = (entity==null)? null: newIDRef(entity);
-   	WasInvalidatedBy res=newWasInvalidatedBy(id,eid,aid);	
+    public WasInvalidatedBy newWasInvalidatedBy(QualifiedName id, QualifiedName entity, QualifiedName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
+   	WasInvalidatedBy res=newWasInvalidatedBy(id,entity,activity);	
    	res.setTime(time);
 	setAttributes(res, attributes);
    	return res;
@@ -1425,7 +1280,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
    	return res;
     }
 
-    public WasStartedBy newWasStartedBy(QualifiedName id, IDRef aid, IDRef eid) {
+    public WasStartedBy newWasStartedBy(QualifiedName id, QualifiedName aid, QualifiedName eid) {
 	WasStartedBy res = of.createWasStartedBy();
 	res.setId(id);
 	res.setActivity(aid);
@@ -1441,25 +1296,19 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      * @return an instance of {@link WasStartedBy}
      */
     
-    public WasStartedBy newWasStartedBy(QualifiedName id, QName activity, QName trigger, QName starter) {
-   	IDRef aid = (activity==null)? null: newIDRef(activity);
-      	IDRef eid = (trigger==null)? null: newIDRef(trigger);
-      	IDRef sid = (starter==null)? null: newIDRef(starter);
-      	WasStartedBy res=newWasStartedBy(id,aid,eid);	
-      	res.setStarter(sid);
+    public WasStartedBy newWasStartedBy(QualifiedName id, QualifiedName activity, QualifiedName trigger, QualifiedName starter) {  	
+      	WasStartedBy res=newWasStartedBy(id,activity,trigger);	
+      	res.setStarter(starter);
       	return res;
     }
 
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newWasStartedBy(javax.xml.namespace.QualifiedName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
-    public WasStartedBy newWasStartedBy(QualifiedName id, QName activity, QName trigger, QName starter, XMLGregorianCalendar time, Collection<Attribute> attributes) {
-   	IDRef aid = (activity==null)? null: newIDRef(activity);
-      	IDRef eid = (trigger==null)? null: newIDRef(trigger);
-      	IDRef sid = (starter==null)? null: newIDRef(starter);
-      	WasStartedBy res=newWasStartedBy(id,aid,eid);	
+    public WasStartedBy newWasStartedBy(QualifiedName id, QualifiedName activity, QualifiedName trigger, QualifiedName starter, XMLGregorianCalendar time, Collection<Attribute> attributes) {
+      	WasStartedBy res=newWasStartedBy(id,activity,trigger);	
       	res.setTime(time);
-      	res.setStarter(sid);
+      	res.setStarter(starter);
 	setAttributes(res, attributes);
       	return res;
     }

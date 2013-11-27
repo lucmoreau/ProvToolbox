@@ -4,14 +4,14 @@ import java.util.List;
 
 public interface DerivedByRemovalFrom extends Identifiable, HasType, HasLabel, Influence {
 
-    void setNewDictionary(IDRef after);
+    void setNewDictionary(QualifiedName after);
 
-    void setOldDictionary(IDRef before);
+    void setOldDictionary(QualifiedName before);
 
     List<Key> getKey();
 
-    IDRef getNewDictionary();
+    QualifiedName getNewDictionary();
 
-    IDRef getOldDictionary();
+    QualifiedName getOldDictionary();
 
 }

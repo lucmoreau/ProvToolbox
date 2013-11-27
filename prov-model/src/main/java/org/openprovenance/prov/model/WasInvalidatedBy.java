@@ -63,12 +63,12 @@ package org.openprovenance.prov.model;
  */
 public interface WasInvalidatedBy extends Identifiable,  HasLabel, HasTime, HasType, HasRole, HasLocation, HasOther,  Influence{
 
-    void setActivity(IDRef aid);
+    void setActivity(QualifiedName aid);
 
-    void setEntity(IDRef eid);
+    void setEntity(QualifiedName eid);
 
-    IDRef getEntity();
+    QualifiedName getEntity();
 
-    IDRef getActivity();
+    QualifiedName getActivity();
 
 }

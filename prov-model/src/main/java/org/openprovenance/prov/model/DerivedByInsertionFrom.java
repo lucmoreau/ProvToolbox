@@ -4,14 +4,14 @@ import java.util.List;
 
 public interface DerivedByInsertionFrom extends Identifiable, HasOther, HasType, HasLabel, Influence {
 
-    void setNewDictionary(IDRef after);
+    void setNewDictionary(QualifiedName after);
 
-    void setOldDictionary(IDRef before);
+    void setOldDictionary(QualifiedName before);
 
     List<Entry> getKeyEntityPair();
 
-    IDRef getNewDictionary();
+    QualifiedName getNewDictionary();
 
-    IDRef getOldDictionary();
+    QualifiedName getOldDictionary();
 
 }

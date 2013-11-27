@@ -2,12 +2,12 @@ package org.openprovenance.prov.model;
 
 public interface WasAttributedTo  extends Identifiable,  HasLabel, HasType, HasOther, Influence {
 
-    void setEntity(IDRef eid);
+    void setEntity(QualifiedName eid);
 
-    void setAgent(IDRef agid);
+    void setAgent(QualifiedName agid);
 
-    IDRef getEntity();
+    QualifiedName getEntity();
 
-    IDRef getAgent();
+    QualifiedName getAgent();
 
 }

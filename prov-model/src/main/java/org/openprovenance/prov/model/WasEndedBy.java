@@ -63,16 +63,16 @@ package org.openprovenance.prov.model;
 
 public interface WasEndedBy  extends Identifiable,  HasLabel, HasTime, HasType, HasRole, HasLocation, HasOther, Influence {
 
-    void setActivity(IDRef aid);
+    void setActivity(QualifiedName aid);
 
-    void setTrigger(IDRef eid);
+    void setTrigger(QualifiedName eid);
 
-    void setEnder(IDRef sid);
+    void setEnder(QualifiedName sid);
 
-    IDRef getActivity();
+    QualifiedName getActivity();
 
-    IDRef getTrigger();
+    QualifiedName getTrigger();
 
-    IDRef getEnder();
+    QualifiedName getEnder();
 
 }

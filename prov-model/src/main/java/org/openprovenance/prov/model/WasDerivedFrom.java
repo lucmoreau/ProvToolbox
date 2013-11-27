@@ -58,24 +58,24 @@ package org.openprovenance.prov.model;
 
 public interface WasDerivedFrom  extends Identifiable,  HasLabel, HasType, HasOther, Influence {
 
-    void setUsedEntity(IDRef aid2);
+    void setUsedEntity(QualifiedName aid2);
 
-    void setGeneratedEntity(IDRef aid1);
+    void setGeneratedEntity(QualifiedName aid1);
 
-    void setActivity(IDRef aid);
+    void setActivity(QualifiedName aid);
 
-    void setGeneration(IDRef did1);
+    void setGeneration(QualifiedName did1);
 
-    void setUsage(IDRef did2);
+    void setUsage(QualifiedName did2);
 
-    IDRef getGeneratedEntity();
+    QualifiedName getGeneratedEntity();
 
-    IDRef getGeneration();
+    QualifiedName getGeneration();
 
-    IDRef getUsedEntity();
+    QualifiedName getUsedEntity();
 
-    IDRef getUsage();
+    QualifiedName getUsage();
 
-    IDRef getActivity();
+    QualifiedName getActivity();
 
 }

@@ -4,10 +4,10 @@ import java.util.List;
 
 public interface HadMember extends Relation0 {
 
-    void setCollection(IDRef collection);
+    void setCollection(QualifiedName collection);
 
-    List<IDRef> getEntity();
+    List<QualifiedName> getEntity();
 
-    IDRef getCollection();
+    QualifiedName getCollection();
     
 }

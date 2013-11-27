@@ -389,9 +389,9 @@ public class PC1FullTest extends TestCase {
 
 	//WasDerivedFrom wd1 = pFactory.newWasDerivedFrom(a11, a1, p1, wg1, u3);
 	WasDerivedFrom wd1 = newWasDerivedFrom(a11,a1);
-	wd1.setActivity(pFactory.newIDRef(p1.getId().toQName()));
-	wd1.setGeneration(pFactory.newIDRef(wg1.getId().toQName()));
-	wd1.setUsage(pFactory.newIDRef(u3.getId().toQName()));
+	wd1.setActivity(p1.getId());
+	wd1.setGeneration(wg1.getId());
+	wd1.setUsage(u3.getId());
 	WasDerivedFrom wd2 = newWasDerivedFrom(a11, a2);
 	WasDerivedFrom wd3 = newWasDerivedFrom(a11, a3);
 	WasDerivedFrom wd4 = newWasDerivedFrom(a11, a4);

@@ -148,7 +148,7 @@ public class ContextualizationPC1Test extends TestCase {
 
 	Entity bunEntity = pFactory.newEntity(bun.getId());
 	Entity a = pFactory.newEntity(new org.openprovenance.prov.xml.QualifiedName(EX_NS, globalA1.getId().getLocalPart(),null));
-	MentionOf ctx = pFactory.newMentionOf(a.getId().toQName(), globalA1.getId().toQName(), bunEntity.getId().toQName());
+	MentionOf ctx = pFactory.newMentionOf(a.getId(), globalA1.getId(), bunEntity.getId());
 	a.getOther().add(pFactory.newOther(DOT_NS, DOT_PREFIX, "color", "blue", Name.QNAME_XSD_STRING));
 
 	graph.getStatementOrBundle().add(bunEntity);
@@ -424,9 +424,9 @@ public class ContextualizationPC1Test extends TestCase {
 
 	//WasDerivedFrom wd1 = pFactory.newWasDerivedFrom(a11, a1, p1, wg1, u3);
 	WasDerivedFrom wd1 = newWasDerivedFrom(a11,a1);
-	wd1.setActivity(pFactory.newIDRef(p1.getId().toQName()));
-	wd1.setGeneration(pFactory.newIDRef(wg1.getId().toQName()));
-	wd1.setUsage(pFactory.newIDRef(u3.getId().toQName()));
+	wd1.setActivity(p1.getId());
+	wd1.setGeneration(wg1.getId());
+	wd1.setUsage(u3.getId());
 	WasDerivedFrom wd2 = newWasDerivedFrom(a11, a2);
 	WasDerivedFrom wd3 = newWasDerivedFrom(a11, a3);
 	WasDerivedFrom wd4 = newWasDerivedFrom(a11, a4);

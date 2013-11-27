@@ -66,7 +66,7 @@ public class GettersTest
 				     "file 2");
 
         Used u1=pFactory.newUsed(q("u1"), a3.getId(),e1.getId());  //role: in
-        WasGeneratedBy wg1=pFactory.newWasGeneratedBy(q("wgb1"), e1.getId().toQName(),a3.getId().toQName());
+        WasGeneratedBy wg1=pFactory.newWasGeneratedBy(q("wgb1"), e1.getId(),a3.getId());
 
         
 	// System.out.println(" method " + pUtil.getter(wg1,0));
@@ -89,7 +89,7 @@ public class GettersTest
 
 	// System.out.println(" wgb " + wg1);
 
-	WasDerivedFrom wd1=pFactory.newWasDerivedFrom(null,e2.getId().toQName(),e1.getId().toQName(),a3.getId().toQName(),wg1.getId().toQName(),u1.getId().toQName(),null);
+	WasDerivedFrom wd1=pFactory.newWasDerivedFrom(null,e2.getId(),e1.getId(),a3.getId(),wg1.getId(),u1.getId(),null);
 
 	assertTrue(pUtil.getter(wd1,0) == wd1.getId());
 	assertTrue(pUtil.getter(wd1,1) == wd1.getGeneratedEntity());

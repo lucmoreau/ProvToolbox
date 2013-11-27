@@ -25,6 +25,7 @@ import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.Type;
+import org.openprovenance.prov.model.QualifiedName;
 
 /**
  * Unit test for simple Provenance Challenge 1 like workflow.
@@ -97,8 +98,11 @@ public class ContextualizationPC1Test extends TestCase {
 	    .create("http://openprovenance.org/primitives#slicer");
 
 
-    public QName q(String n) {
+    public QName qq(String n) {
 	return new QName(EX_NS, n, EX_PREFIX);
+    }
+    public QualifiedName q(String n) {
+	return new org.openprovenance.prov.xml.QualifiedName(EX_NS, n, EX_PREFIX);
     }
 
     
@@ -143,8 +147,8 @@ public class ContextualizationPC1Test extends TestCase {
 	namespaces.put(DOT_PREFIX, DOT_NS);
 
 	Entity bunEntity = pFactory.newEntity(bun.getId());
-	Entity a = pFactory.newEntity(new QName(EX_NS, globalA1.getId().getLocalPart()));
-	MentionOf ctx = pFactory.newMentionOf(a, globalA1, bunEntity);
+	Entity a = pFactory.newEntity(new org.openprovenance.prov.xml.QualifiedName(EX_NS, globalA1.getId().getLocalPart(),null));
+	MentionOf ctx = pFactory.newMentionOf(a.getId().toQName(), globalA1.getId().toQName(), bunEntity.getId().toQName());
 	a.getOther().add(pFactory.newOther(DOT_NS, DOT_PREFIX, "color", "blue", Name.QNAME_XSD_STRING));
 
 	graph.getStatementOrBundle().add(bunEntity);
@@ -177,8 +181,9 @@ public class ContextualizationPC1Test extends TestCase {
 
     
     public Used newUsed(Activity activity, String role, Entity entity){
-	return newUsed(new QualifiedName(activity.getId()),role,new QualifiedName(entity.getId()));
+	return newUsed(activity.getId(),role,entity.getId());
     }
+    
     public Used newUsed(QualifiedName activity, String role, QualifiedName entity){
 	Used u1 = pFactory.newUsed(activity, entity);
 	u1.getRole().add(pFactory.newRole(role,org.openprovenance.prov.model.Name.QNAME_XSD_STRING));
@@ -419,9 +424,9 @@ public class ContextualizationPC1Test extends TestCase {
 
 	//WasDerivedFrom wd1 = pFactory.newWasDerivedFrom(a11, a1, p1, wg1, u3);
 	WasDerivedFrom wd1 = newWasDerivedFrom(a11,a1);
-	wd1.setActivity(pFactory.newIDRef(p1.getId()));
-	wd1.setGeneration(pFactory.newIDRef(wg1.getId()));
-	wd1.setUsage(pFactory.newIDRef(u3.getId()));
+	wd1.setActivity(pFactory.newIDRef(p1.getId().toQName()));
+	wd1.setGeneration(pFactory.newIDRef(wg1.getId().toQName()));
+	wd1.setUsage(pFactory.newIDRef(u3.getId().toQName()));
 	WasDerivedFrom wd2 = newWasDerivedFrom(a11, a2);
 	WasDerivedFrom wd3 = newWasDerivedFrom(a11, a3);
 	WasDerivedFrom wd4 = newWasDerivedFrom(a11, a4);

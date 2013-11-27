@@ -487,7 +487,7 @@ public class AttributeTest extends TestCase {
     }
 
     public void testEntityWithOneTypeAttribute(int i) throws JAXBException  {
- 	Entity a = pFactory.newEntity(q("et" + i));
+ 	Entity a = pFactory.newEntity(qq("et" + i));
  	
 
  	Object [] pair= attributeValues[i];
@@ -499,7 +499,7 @@ public class AttributeTest extends TestCase {
     
 
     public void testEntityWithOneValueAttribute(int i) throws JAXBException  {
- 	Entity a = pFactory.newEntity(q("en_v" + i));
+ 	Entity a = pFactory.newEntity(qq("en_v" + i));
  	
 
  	Object [] pair= attributeValues[i];
@@ -510,7 +510,7 @@ public class AttributeTest extends TestCase {
      }
 
     public void testAssociationWithOneRoleAttribute(int i) throws JAXBException  {
- 	WasAssociatedWith a = pFactory.newWasAssociatedWith(q("ass_r" + i),
+ 	WasAssociatedWith a = pFactory.newWasAssociatedWith(qq("ass_r" + i),
  	                                                    pFactory.newIDRef(q("a1")),
  	                                                    pFactory.newIDRef(q("ag1")));
 
@@ -522,7 +522,7 @@ public class AttributeTest extends TestCase {
      }
 
     public void testEntityWithOneLocationAttribute(int i) throws JAXBException  {
-  	Entity a = pFactory.newEntity(q("en_l" + i));
+  	Entity a = pFactory.newEntity(qq("en_l" + i));
   	
 
   	Object [] pair= attributeValues[i];
@@ -533,7 +533,7 @@ public class AttributeTest extends TestCase {
       }
 
     public void testEntityWithOneOtherAttribute(int i) throws JAXBException  {
- 	Entity a = pFactory.newEntity(q("en_o" + i));
+ 	Entity a = pFactory.newEntity(qq("en_o" + i));
  	
 
  	Object [] pair= attributeValues[i];
@@ -1231,7 +1231,7 @@ public class AttributeTest extends TestCase {
   
     
     public void testEntity0() throws JAXBException  {
-	Entity a = pFactory.newEntity(q("e0"));
+	Entity a = pFactory.newEntity(qq("e0"));
 	
 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
@@ -1252,7 +1252,7 @@ public class AttributeTest extends TestCase {
     
 
     public void testActivity0() throws JAXBException  {
-	Activity a = pFactory.newActivity(q("a0"));
+	Activity a = pFactory.newActivity(qq("a0"));
 	
 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
@@ -1269,7 +1269,7 @@ public class AttributeTest extends TestCase {
     
 
     public void testAgent0() throws JAXBException  {
-	Agent a = pFactory.newAgent(q("ag0"));
+	Agent a = pFactory.newAgent(qq("ag0"));
 	
 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
@@ -1292,7 +1292,7 @@ public class AttributeTest extends TestCase {
     
     public void testGeneration0() throws JAXBException  {
 
-	WasGeneratedBy a = pFactory.newWasGeneratedBy((QName)null,
+	WasGeneratedBy a = pFactory.newWasGeneratedBy((QualifiedName)null,
   							pFactory.newIDRef(q("e1")),
   							null,
   							pFactory.newIDRef(q("a1")));
@@ -1313,7 +1313,7 @@ public class AttributeTest extends TestCase {
 
     public void testInvalidation0() throws JAXBException  {
 
- 	WasInvalidatedBy a = pFactory.newWasInvalidatedBy((QName)null,
+ 	WasInvalidatedBy a = pFactory.newWasInvalidatedBy((QualifiedName)null,
    							pFactory.newIDRef(q("e1")),
    							pFactory.newIDRef(q("a1")));
   	
@@ -1333,7 +1333,7 @@ public class AttributeTest extends TestCase {
 
     public void testUsage0() throws JAXBException  {
 
- 	Used a = pFactory.newUsed((QName)null,
+ 	Used a = pFactory.newUsed((QualifiedName)null,
  	                          qq("a1"),
  	                          null,
  	                          qq("e1"));
@@ -1355,7 +1355,7 @@ public class AttributeTest extends TestCase {
    public void testAssociation0() throws JAXBException  {
 
 
-	WasAssociatedWith a = pFactory.newWasAssociatedWith(q("assoc0"), 
+	WasAssociatedWith a = pFactory.newWasAssociatedWith(qq("assoc0"), 
 	                                                    pFactory.newIDRef(q("a1")),
 	                                                    pFactory.newIDRef(q("ag1")));
  	
@@ -1376,7 +1376,7 @@ public class AttributeTest extends TestCase {
   public void testAttribution0() throws JAXBException  {
 
 
-	WasAttributedTo a = pFactory.newWasAttributedTo(q("assoc0"), 
+	WasAttributedTo a = pFactory.newWasAttributedTo(qq("assoc0"), 
 	                                                    pFactory.newIDRef(q("e1")),
 	                                                    pFactory.newIDRef(q("ag1")));
 	
@@ -1395,7 +1395,7 @@ public class AttributeTest extends TestCase {
   public void testDerivation0() throws JAXBException  {
  
 
- 	WasDerivedFrom a = pFactory.newWasDerivedFrom(q("der0"), 
+ 	WasDerivedFrom a = pFactory.newWasDerivedFrom(qq("der0"), 
  	                                              pFactory.newIDRef(q("e2")),
  	                                              pFactory.newIDRef(q("e1")));
  	
@@ -1413,7 +1413,7 @@ public class AttributeTest extends TestCase {
   
   public void testEnd0() throws JAXBException  {
 
-	WasEndedBy a = pFactory.newWasEndedBy((QName)null,
+	WasEndedBy a = pFactory.newWasEndedBy((QualifiedName)null,
 							pFactory.newIDRef(q("a1")),
 							pFactory.newIDRef(q("e1")));
 	
@@ -1433,7 +1433,7 @@ public class AttributeTest extends TestCase {
 
   public void testStart0() throws JAXBException  {
 
-	WasStartedBy a = pFactory.newWasStartedBy((QName)null,
+	WasStartedBy a = pFactory.newWasStartedBy((QualifiedName)null,
 	                                          pFactory.newIDRef(q("a1")),
 	                                          pFactory.newIDRef(q("e1")));
 	
@@ -1454,7 +1454,7 @@ public class AttributeTest extends TestCase {
   public void testInfluence0() throws JAXBException  {
 
 
- 	WasInfluencedBy a = pFactory.newWasInfluencedBy(q("infl0"), 
+ 	WasInfluencedBy a = pFactory.newWasInfluencedBy(qq("infl0"), 
  	                                                pFactory.newIDRef(q("e1")),
  	                                                pFactory.newIDRef(q("e2")));
  	
@@ -1474,7 +1474,7 @@ public class AttributeTest extends TestCase {
   public void testCommunication0() throws JAXBException  {
 
 
-	WasInformedBy a = pFactory.newWasInformedBy(q("com0"), 
+	WasInformedBy a = pFactory.newWasInformedBy(qq("com0"), 
 	                                            pFactory.newIDRef(q("a1")),
 	                                            pFactory.newIDRef(q("a2")));
 	
@@ -1494,7 +1494,7 @@ public class AttributeTest extends TestCase {
   public void testDelegation0() throws JAXBException  {
 
 
-	ActedOnBehalfOf a = pFactory.newActedOnBehalfOf(q("del0"), 
+	ActedOnBehalfOf a = pFactory.newActedOnBehalfOf(qq("del0"), 
 	                                                pFactory.newIDRef(q("a1")),
 	                                                pFactory.newIDRef(q("a2")),
 	                                                pFactory.newIDRef(q("a3")));

@@ -53,7 +53,11 @@ public class QualifiedName
 	 */
 	@Override
 	public javax.xml.namespace.QName toQName () {
+	    if (prefix==null) {
+		return new javax.xml.namespace.QName(namespace,local);
+	    } else {
 		return new javax.xml.namespace.QName(namespace,local,prefix);
+	    }
 	}
     
 
@@ -149,6 +153,10 @@ public class QualifiedName
     @Override
     public final int hashCode() {
         return namespace.hashCode() ^ local.hashCode();
+    }
+    
+    public String toString() {
+	return "'" + prefix + ":{" + namespace + "}" + local + "'";
     }
 
     	     

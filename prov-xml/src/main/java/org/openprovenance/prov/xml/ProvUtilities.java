@@ -11,7 +11,6 @@ import org.openprovenance.prov.model.RecordAction;
 import org.openprovenance.prov.model.RecordValue;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.IDRef;
-import org.openprovenance.prov.model.StatementAction;
 
 import java.lang.reflect.Method;
 
@@ -34,8 +33,8 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         for (Object o : objects) {
             if (o instanceof MentionOf) {
                 MentionOf ctxt = (MentionOf) o;
-                QName id1 = remoteEntity.getId();
-                QName id2 = remote.getId();
+                QName id1 = remoteEntity.getId().toQName();
+                QName id2 = remote.getId().toQName();
                 if (ctxt.getGeneralEntity().getRef().equals(id1)
                         && ctxt.getBundle().getRef().equals(id2))
                     return ctxt;
@@ -63,8 +62,8 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         for (Statement o : records) {
             if (o instanceof MentionOf) {
                 MentionOf ctxt = (MentionOf) o;
-                QName id1 = localEntity.getId();
-                QName id2 = remote.getId();
+                QName id1 = localEntity.getId().toQName();
+                QName id2 = remote.getId().toQName();
                 if (ctxt.getSpecificEntity().getRef().equals(id1)
                         && ctxt.getBundle().getRef().equals(id2))
                     return ctxt;

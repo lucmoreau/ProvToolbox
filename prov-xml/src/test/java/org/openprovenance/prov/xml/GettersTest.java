@@ -48,7 +48,10 @@ public class GettersTest
      */
 
 
-    public QName q(String n) {
+    public QualifiedName q(String n) {
+	return new QualifiedName("http://example.org/", n, "ex");
+    }
+    public QName qq(String n) {
 	return new QName("http://example.org/", n, "ex");
     }
 
@@ -62,8 +65,8 @@ public class GettersTest
         Entity e2=pFactory.newEntity(q("e2"),
 				     "file 2");
 
-        Used u1=pFactory.newUsed(q("u1"), new QualifiedName(a3.getId()),new QualifiedName(e1.getId()));  //role: in
-        WasGeneratedBy wg1=pFactory.newWasGeneratedBy(q("wgb1"), e1.getId(),a3.getId());
+        Used u1=pFactory.newUsed(q("u1"), a3.getId(),e1.getId());  //role: in
+        WasGeneratedBy wg1=pFactory.newWasGeneratedBy(q("wgb1"), e1.getId().toQName(),a3.getId().toQName());
 
         
 	// System.out.println(" method " + pUtil.getter(wg1,0));
@@ -86,7 +89,7 @@ public class GettersTest
 
 	// System.out.println(" wgb " + wg1);
 
-	WasDerivedFrom wd1=pFactory.newWasDerivedFrom(null,e2.getId(),e1.getId(),a3.getId(),wg1.getId(),u1.getId(),null);
+	WasDerivedFrom wd1=pFactory.newWasDerivedFrom(null,e2.getId().toQName(),e1.getId().toQName(),a3.getId().toQName(),wg1.getId().toQName(),u1.getId().toQName(),null);
 
 	assertTrue(pUtil.getter(wd1,0) == wd1.getId());
 	assertTrue(pUtil.getter(wd1,1) == wd1.getGeneratedEntity());

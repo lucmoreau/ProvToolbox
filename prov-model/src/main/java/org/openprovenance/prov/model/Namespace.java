@@ -7,6 +7,7 @@ import javax.xml.namespace.QName;
 
 
 import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.model.exception.QualifiedNameException;
 
 /** A class to manipulate Namespaces when creating, serializing and converting prov documents. 
  * @author Luc Moreau 
@@ -194,7 +195,7 @@ public class Namespace {
 			     local, prefix);
 	} else {
 	    String tmp=prefixes.get(prefix);
-	    if (tmp==null) throw new NullPointerException("Namespace.stringToQName(: Null namespace for "+id);
+	    if (tmp==null) throw new NullPointerException("Namespace.stringToQName(): Null namespace for "+id);
 	    return new QName(tmp, local, prefix);
 	}
     }
@@ -215,6 +216,7 @@ public class Namespace {
  	    if (pref!=null)  {
  		return pref + ":" + qname.getLocalPart();
  	    } else {
+ 		//throw new QualifiedNameException("QualifiedName with null prefix but no default namespace" + qname);
  		// Really should never be here
  		return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
  			+ qname.getLocalPart();

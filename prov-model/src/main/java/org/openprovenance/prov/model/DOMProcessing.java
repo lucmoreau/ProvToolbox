@@ -265,12 +265,12 @@ final public class DOMProcessing {
 
         String lang = el.getAttributeNS(NamespacePrefixMapper.XML_NS, "lang");
         QName type = ((typeAsString == null) || (typeAsString.equals(""))) ? null
-                : DOMProcessing.stringToQName(typeAsString, el);
+                : stringToQName(typeAsString, el);
 
         if (type == null)
             type = Name.QNAME_XSD_STRING;
         if (type.equals(Name.QNAME_XSD_QNAME)) {
-            QName qn = DOMProcessing.stringToQName(child, el);
+            QName qn = stringToQName(child, el);
             Attribute x= pFactory.newAttribute(namespace, local, prefix, qn, type);
             return x;
         } else if (type.equals(Name.QNAME_RDF_LITERAL)) {

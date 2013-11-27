@@ -36,7 +36,10 @@ public class PC1FullTest extends TestCase {
     public static final String PRIM_NS = "http://openprovenance.org/primitives#";
     public static final String PRIM_PREFIX = "prim";
     
-    public QName q(String n) {
+    public org.openprovenance.prov.model.QualifiedName q(String n) {
+   	return new QualifiedName(PC1_NS, n, PC1_PREFIX);
+    }
+    public QName qq(String n) {
    	return new QName(PC1_NS, n, PC1_PREFIX);
     }
        
@@ -144,9 +147,9 @@ public class PC1FullTest extends TestCase {
     }
     
     public Used newUsed(Activity activity, String role, Entity entity){
-	return newUsed(new QualifiedName(activity.getId()),role,new QualifiedName(entity.getId()));
+	return newUsed(activity.getId(),role,entity.getId());
     }
-    public Used newUsed(QualifiedName activity, String role, QualifiedName entity){
+    public Used newUsed(org.openprovenance.prov.model.QualifiedName activity, String role, org.openprovenance.prov.model.QualifiedName entity){
 	Used u1 = pFactory.newUsed(activity, entity);
 	u1.getRole().add(pFactory.newRole(role,org.openprovenance.prov.model.Name.QNAME_XSD_STRING));
 	return u1;
@@ -386,9 +389,9 @@ public class PC1FullTest extends TestCase {
 
 	//WasDerivedFrom wd1 = pFactory.newWasDerivedFrom(a11, a1, p1, wg1, u3);
 	WasDerivedFrom wd1 = newWasDerivedFrom(a11,a1);
-	wd1.setActivity(pFactory.newIDRef(p1.getId()));
-	wd1.setGeneration(pFactory.newIDRef(wg1.getId()));
-	wd1.setUsage(pFactory.newIDRef(u3.getId()));
+	wd1.setActivity(pFactory.newIDRef(p1.getId().toQName()));
+	wd1.setGeneration(pFactory.newIDRef(wg1.getId().toQName()));
+	wd1.setUsage(pFactory.newIDRef(u3.getId().toQName()));
 	WasDerivedFrom wd2 = newWasDerivedFrom(a11, a2);
 	WasDerivedFrom wd3 = newWasDerivedFrom(a11, a3);
 	WasDerivedFrom wd4 = newWasDerivedFrom(a11, a4);

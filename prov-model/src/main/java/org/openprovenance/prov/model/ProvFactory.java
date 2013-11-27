@@ -742,6 +742,11 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
     
+    public IDRef newIDRef(QualifiedName id) {
+	
+	return newIDRef(id.toQName());
+    }
+    
 
     public InternationalizedString newInternationalizedString(String s) {
 	InternationalizedString res = of.createInternationalizedString();
@@ -1083,6 +1088,14 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	res.setId(id);
 	res.setUsedEntity(aid2);
 	res.setGeneratedEntity(aid1);
+	return res;
+    }    
+    public WasDerivedFrom newWasDerivedFrom(QualifiedName id, QualifiedName aid1,
+                                            QualifiedName aid2) {
+	WasDerivedFrom res = of.createWasDerivedFrom();
+	res.setId(id);
+	res.setUsedEntity(newIDRef(aid2.toQName()));
+	res.setGeneratedEntity(newIDRef(aid1.toQName()));
 	return res;
     }
     public WasDerivedFrom newWasDerivedFrom(QName aid1,

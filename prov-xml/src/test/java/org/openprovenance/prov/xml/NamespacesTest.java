@@ -28,8 +28,8 @@ public class NamespacesTest
     
     public static final String EX_PREFIX = "ex";
 
-    public QName q(String n) {
-	return new QName(EXAMPLE_NS, n, EX_PREFIX);
+    public QualifiedName q(String n) {
+	return new QualifiedName(EXAMPLE_NS, n, EX_PREFIX);
     }
     
 

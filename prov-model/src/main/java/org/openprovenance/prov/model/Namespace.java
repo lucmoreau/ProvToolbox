@@ -200,6 +200,31 @@ public class Namespace {
 	}
     }
 
+    public QualifiedName stringToQualifiedName(String id, ProvFactory pFactory) {
+	if (id == null)
+	    return null;
+	int index = id.indexOf(':');
+	if (index == -1) {
+	    String tmp=getDefaultNamespace();
+	    if (tmp==null) throw new NullPointerException("Namespace.stringToQName(: Null namespace for "+id);
+	    return pFactory.newQualifiedName(tmp, id, null);
+	}
+	String prefix = id.substring(0, index);
+	String local = id.substring(index + 1, id.length());
+	if ("prov".equals(prefix)) {
+	    return pFactory.newQualifiedName(NamespacePrefixMapper.PROV_NS, local, prefix);
+	} else if ("xsd".equals(prefix)) {
+	    return pFactory.newQualifiedName(NamespacePrefixMapper.XSD_NS, // + "#", // RDF ns ends
+								 // in #, not
+								 // XML ns.
+			     local, prefix);
+	} else {
+	    String tmp=prefixes.get(prefix);
+	    if (tmp==null) throw new NullPointerException("Namespace.stringToQName(): Null namespace for "+id);
+	    return pFactory.newQualifiedName(tmp, local, prefix);
+	}
+    }
+
 
     static public String qnameToStringWithNamespace(QName qname) {
 	Namespace ns=Namespace.getThreadNamespace();
@@ -238,7 +263,7 @@ public class Namespace {
  		return pref + ":" + qname.getLocalPart();
  	    } else {
  		// Really should never be here
- 		return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
+ 		return ((qname.getPrefix()==null || qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
  			+ qname.getLocalPart();
  	    }
  	}

@@ -44,13 +44,18 @@ public class NamespaceGatherer implements StatementAction {
 	}
     }
 
+    public void registerPotentialQualifiedName(Object o) {
+	if (o instanceof QName) {
+	    register((QName) o);
+	} else if (o instanceof QualifiedName) {
+	    register((QualifiedName) o);
+	}
+    }
     public void register(Location loc) {
 	if (loc!=null) {
 	    register(loc.getType());
 	    Object val = loc.getValue();
-	    if (val instanceof QName) {
-		register((QName) val);
-	    }
+	    registerPotentialQualifiedName(val);
 	}
     }
 
@@ -64,9 +69,7 @@ public class NamespaceGatherer implements StatementAction {
     public void register(Type typ) {
 	register(typ.getType());
 	Object val = typ.getValue();
-	if (val instanceof QName) {
-	    register((QName) val);
-	}
+	registerPotentialQualifiedName(val);
     }
 
     public void registerRole(List<Role> roles) {
@@ -79,9 +82,7 @@ public class NamespaceGatherer implements StatementAction {
     public void register(Role rol) {
 	register(rol.getType());
 	Object val = rol.getValue();
-	if (val instanceof QName) {
-	    register((QName) val);
-	}
+	registerPotentialQualifiedName(val);
     }
 
     public void registerOther(List<Other> others) {
@@ -95,18 +96,14 @@ public class NamespaceGatherer implements StatementAction {
 	register(other.getType());
 	register(other.getElementName());
 	Object val = other.getValue();
-	if (val instanceof QName) {
-	    register((QName) val);
-	}
+	registerPotentialQualifiedName(val);
     }
 
     public void registerValue(Value val2) {
 	if (val2!=null) {
 	    register(val2.getType());
 	    Object val = val2.getValue();
-	    if (val instanceof QName) {
-		register((QName) val);
-	    }
+	    registerPotentialQualifiedName(val);
 	}
     }
 

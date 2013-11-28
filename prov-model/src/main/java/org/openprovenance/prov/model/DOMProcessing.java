@@ -27,6 +27,11 @@ final public class DOMProcessing {
     private static final String RDF_PREFIX = QNAME_RDF_LITERAL.getPrefix();
     private static final String RDF_NAMESPACE = QNAME_RDF_LITERAL.getNamespaceURI();
     private static final String RDF_LITERAL = qnameToString(QNAME_RDF_LITERAL);
+    private final ProvFactory pFactory;
+    
+    public DOMProcessing(ProvFactory pFactory) {
+	this.pFactory=pFactory;
+    }
     
     static public DocumentBuilder builder;
  
@@ -87,6 +92,35 @@ final public class DOMProcessing {
         return qn;
     }
 
+    
+
+    /**
+     * Converts a string to a QName, extracting namespace from the DOM.
+     * 
+     * @param str
+     *            string to convert to QName
+     * @param el
+     *            current Element in which this string was found (as attribute
+     *            or attribute value)
+     * @return
+     */
+    final public QualifiedName stringToQualifiedName(String str, org.w3c.dom.Element el) {
+        if (str == null)
+            return null;
+        int index = str.indexOf(':');
+        if (index == -1) {
+            QualifiedName qn = pFactory.newQualifiedName(el.lookupNamespaceURI(null), // find default namespace
+                                                         // namespace
+                                                         str,
+                                                         null);
+            return qn;
+        }
+        String prefix = str.substring(0, index);
+        String local = str.substring(index + 1, str.length());
+        QualifiedName qn = pFactory.newQualifiedName(el.lookupNamespaceURI(prefix), local, prefix);
+        return qn;
+    }
+
 
     /** Create a new element, with given elementName, and QName as content. One cannot assume that 
      * the prefixes have been declared, hence all namespaces need to be declared.
@@ -97,6 +131,33 @@ final public class DOMProcessing {
     
     
     final static public Element newElement(QName elementName, QName value) {
+	org.w3c.dom.Document doc = builder.newDocument();
+	Element el = doc.createElementNS(elementName.getNamespaceURI(),
+					 qnameToString(elementName));
+	
+	// 1. we add an xsi:type="xsd:QName" attribute
+	//   making sure xsi and xsd prefixes are appropriately declared.
+	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", "xsd:QName");
+	el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsd", NamespacePrefixMapper.XSD_NS);
+
+	// 2. We add the QName's string representation as child of the element
+	String valueAsString=qnameToString(value);
+	el.appendChild(doc.createTextNode(valueAsString));
+	
+	// 3. We make sure that the QName's prefix is given the right namespace, or the default namespace is declared if there is no prefix
+	int index=valueAsString.indexOf(":");
+	if (index!=-1) {
+	    String prefix = valueAsString.substring(0, index);
+	    el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:"+prefix, value.getNamespaceURI());
+	} else {
+	    el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns", value.getNamespaceURI());
+	}
+	
+	doc.appendChild(el);
+	return el;
+    }
+    
+    final static public Element newElement(QName elementName, QualifiedName value) {
 	org.w3c.dom.Document doc = builder.newDocument();
 	Element el = doc.createElementNS(elementName.getNamespaceURI(),
 					 qnameToString(elementName));
@@ -241,6 +302,10 @@ final public class DOMProcessing {
 	    return newElement(elementName, 
 	                      (QName) value);
 
+	} else if (value instanceof QualifiedName) {
+	    return newElement(elementName, 
+	                      (QualifiedName) value);
+
 	} else if (type.equals(Name.QNAME_RDF_LITERAL)) {
 	    return newElement(elementName,
 			      (org.w3c.dom.Element) attribute.getValueAsObject());
@@ -253,7 +318,7 @@ final public class DOMProcessing {
     }
     
     final
-    static public org.openprovenance.prov.model.Attribute unmarshallAttribute(org.w3c.dom.Element el,
+    public org.openprovenance.prov.model.Attribute unmarshallAttribute(org.w3c.dom.Element el,
                                                                               ProvFactory pFactory,
                                                                               ValueConverter vconv) {
         String prefix = el.getPrefix();
@@ -270,7 +335,7 @@ final public class DOMProcessing {
         if (type == null)
             type = Name.QNAME_XSD_STRING;
         if (type.equals(Name.QNAME_XSD_QNAME)) {
-            QName qn = stringToQName(child, el);
+            QualifiedName qn = stringToQualifiedName(child, el);
             Attribute x= pFactory.newAttribute(namespace, local, prefix, qn, type);
             return x;
         } else if (type.equals(Name.QNAME_RDF_LITERAL)) {

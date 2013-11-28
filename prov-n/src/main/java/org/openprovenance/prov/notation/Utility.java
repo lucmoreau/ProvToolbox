@@ -19,11 +19,9 @@ import  org.antlr.runtime.tree.CommonTreeAdaptor;
 import  org.antlr.runtime.tree.TreeAdaptor;
 
 import org.openprovenance.prov.model.BeanTraversal;
-import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.QNameExport;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.model.Document;
 
 
@@ -78,10 +76,21 @@ public  class Utility {
 
 
 
-    public String convertBeanToHTML(Document doc) {
+    public String convertBeanToHTML(final Document doc) {
 	ProvFactory pFactory=new ProvFactory();
 	StringWriter writer=new StringWriter();
-	NotationConstructor nc=new HTMLConstructor(writer, pFactory);
+	QNameExport qExport = new QNameExport() {
+	    @Override
+	    public String qnameToString(QName qname) {
+		return doc.getNamespace().qnameToString(qname);
+	    }
+
+	    @Override
+	    public String qnameToString(QualifiedName qname) {
+		return doc.getNamespace().qnameToString(qname);
+	    }
+	};
+	NotationConstructor nc=new HTMLConstructor(writer,qExport);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
         bt.convert(doc);
         nc.flush();

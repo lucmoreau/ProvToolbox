@@ -315,7 +315,7 @@ public class AttributeTest extends TestCase {
 
     public boolean test=true;
     
-    DOMProcessing dom=new DOMProcessing();
+    DOMProcessing dom=new DOMProcessing(pFactory);
     
     org.w3c.dom.Element createXMLLiteral() {
         DocumentBuilder builder=DOMProcessing.builder;
@@ -395,17 +395,17 @@ public class AttributeTest extends TestCase {
          // - undeclared namespace, with other prefix
          // - undeclared namespace, as default namespace
 
-         {new QName(EX_NS, "abc", EX_PREFIX), Name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName(EX_NS, "abc", EX_PREFIX), Name.QNAME_XSD_QNAME},
          
-         {new QName(EX_NS, "abcd", "other"), Name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName(EX_NS, "abcd", "other"), Name.QNAME_XSD_QNAME},
          
-         {new QName(EX_NS, "abcde"), Name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName(EX_NS, "abcde",null), Name.QNAME_XSD_QNAME},
          
-         {new QName("http://example4.org/", "zabc", EX_PREFIX), Name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName("http://example4.org/", "zabc", EX_PREFIX), Name.QNAME_XSD_QNAME},
          
-         {new QName("http://example4.org/", "zabcd", "other"), Name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName("http://example4.org/", "zabcd", "other"), Name.QNAME_XSD_QNAME},
              
-         {new QName("http://example4.org/", "zabcde"), Name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName("http://example4.org/", "zabcde",null), Name.QNAME_XSD_QNAME},
          
          
          {pFactory.newTimeNow(),Name.QNAME_XSD_DATETIME},

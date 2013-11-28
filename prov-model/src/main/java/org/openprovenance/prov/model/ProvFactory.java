@@ -197,19 +197,20 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
     public void addPrimarySourceType(HasType a) {
-	a.getType().add(newType(Name.QNAME_PROV_PRIMARY_SOURCE,Name.QNAME_XSD_QNAME));
+	a.getType().add(newType(newQualifiedName(Name.QNAME_PROV_PRIMARY_SOURCE),
+	                        Name.QNAME_XSD_QNAME));
     }
 
     public void addQuotationType(HasType a) {
-	a.getType().add(newType(Name.QNAME_PROV_QUOTATION,Name.QNAME_XSD_QNAME));
+	a.getType().add(newType(newQualifiedName(Name.QNAME_PROV_QUOTATION),Name.QNAME_XSD_QNAME));
     }
 
     public void addRevisionType(HasType a) {
-	a.getType().add(newType(Name.QNAME_PROV_REVISION,Name.QNAME_XSD_QNAME));
+	a.getType().add(newType(newQualifiedName(Name.QNAME_PROV_REVISION),Name.QNAME_XSD_QNAME));
     }
 
     public void addBundleType(HasType a) {
-	a.getType().add(newType(Name.QNAME_PROV_BUNDLE,Name.QNAME_XSD_QNAME));
+	a.getType().add(newType(newQualifiedName(Name.QNAME_PROV_BUNDLE),Name.QNAME_XSD_QNAME));
     }
 
     public void addRole(HasRole a, Role role) {
@@ -426,7 +427,16 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
    abstract public Attribute newAttribute(QName qname, Object value, QName type);
 
 
-   
+
+   public org.openprovenance.prov.model.Attribute newAttribute(QualifiedName elementName, Object value, QualifiedName type) {
+	return newAttribute(elementName.toQName(),value,type.toQName());
+   }
+   public org.openprovenance.prov.model.Attribute newAttribute(QualifiedName elementName, Object value, QName type) {
+	return newAttribute(elementName.toQName(),value,type);
+   }
+   public org.openprovenance.prov.model.Attribute newAttribute(Attribute.AttributeKind kind, Object value, QualifiedName type) {
+	return newAttribute(kind,value,type.toQName());
+   }
  
     public Attribute newAttribute(String namespace, String localName,
 				  String prefix, Object value, QName type) {
@@ -795,8 +805,13 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     public Other newOther(String namespace, String local, String prefix,  Object value, QName type) {
 	QName elementName=new QName(namespace,local,prefix);
         return newOther(elementName,value,type);
-      }
+    }
+    
+    abstract public QualifiedName newQualifiedName(String namespace, String local, String prefix);
 
+    public QualifiedName newQualifiedName(QName qname) {
+	return newQualifiedName(qname.getNamespaceURI(), qname.getLocalPart(), qname.getPrefix());
+    }
     /* What's the difference with stringToQName? */
     
     /*
@@ -926,9 +941,6 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return res;
       }
 
-    public Value newValue(Object value, ValueConverter vconv) {
-        return newValue(value,vconv.getXsdType(value));
-      }
 
     public WasAssociatedWith newWasAssociatedWith(QualifiedName id) {
 	return newWasAssociatedWith(id, (QualifiedName)null,(QualifiedName)null);

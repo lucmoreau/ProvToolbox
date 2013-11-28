@@ -112,5 +112,9 @@ public interface ModelConstructor {
 
     public void startBundle(QualifiedName bundleId, Namespace namespace);
     public void startDocument(Namespace namespace);
+    
+    
+    public QualifiedName newQualifiedName(String namespace, String local, String prefix);
+
 
 }

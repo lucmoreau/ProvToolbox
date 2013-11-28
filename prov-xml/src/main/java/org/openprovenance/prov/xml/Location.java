@@ -8,6 +8,7 @@ import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.HashCode;
 import org.jvnet.jaxb2_commons.lang.ToString;
 import org.openprovenance.prov.model.DOMProcessing;
+import org.openprovenance.prov.model.Name;
 
 
 /**
@@ -34,7 +35,7 @@ public class Location extends TypedValue
 {
 
     private static final AttributeKind PROV_LOCATION_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_LOCATION;
-    private static final QName PROV_LOCATION_QNAME = Helper.PROV_LOCATION_QNAME;
+    private static final QName PROV_LOCATION_QNAME = Name.PROV_LOCATION_QNAME;
  
     @Override
     public QName getElementName() {

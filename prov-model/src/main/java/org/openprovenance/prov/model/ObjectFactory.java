@@ -32,10 +32,7 @@ public interface ObjectFactory {
 
     Entry createEntry();
 
-    HadMember createHadMember();
-
-    IDRef createIDRef();
-    
+    HadMember createHadMember();   
     
 
     InternationalizedString createInternationalizedString();

@@ -33,10 +33,10 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         for (Object o : objects) {
             if (o instanceof MentionOf) {
                 MentionOf ctxt = (MentionOf) o;
-                QName id1 = remoteEntity.getId().toQName();
-                QName id2 = remote.getId().toQName();
-                if (ctxt.getGeneralEntity().getRef().equals(id1)
-                        && ctxt.getBundle().getRef().equals(id2))
+                org.openprovenance.prov.model.QualifiedName id1 = remoteEntity.getId();
+                org.openprovenance.prov.model.QualifiedName id2 = remote.getId();
+                if (ctxt.getGeneralEntity().equals(id1)
+                        && ctxt.getBundle().equals(id2))
                     return ctxt;
             }
         }
@@ -62,10 +62,10 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         for (Statement o : records) {
             if (o instanceof MentionOf) {
                 MentionOf ctxt = (MentionOf) o;
-                QName id1 = localEntity.getId().toQName();
-                QName id2 = remote.getId().toQName();
-                if (ctxt.getSpecificEntity().getRef().equals(id1)
-                        && ctxt.getBundle().getRef().equals(id2))
+                org.openprovenance.prov.model.QualifiedName id1 = localEntity.getId();
+                org.openprovenance.prov.model.QualifiedName id2 = remote.getId();
+                if (ctxt.getSpecificEntity().equals(id1)
+                        && ctxt.getBundle().equals(id2))
                     return ctxt;
             }
         }

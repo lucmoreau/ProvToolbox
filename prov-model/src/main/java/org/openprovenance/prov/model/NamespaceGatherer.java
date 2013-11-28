@@ -6,8 +6,6 @@ import java.util.List;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.model.NamespacePrefixMapper;
-import org.openprovenance.prov.model.ValueConverter;
 
 public class NamespaceGatherer implements StatementAction {
     
@@ -114,12 +112,7 @@ public class NamespaceGatherer implements StatementAction {
 
     final String stringForDefault="::";
 
-    void register(IDRef name) {
-	if (name!=null)
-	register(name.getRef());
-    }
  
-    
 
     void register(QName name) {
 	if (name==null) return;

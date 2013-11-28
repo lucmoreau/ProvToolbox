@@ -17,7 +17,6 @@ import org.w3c.dom.Node;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.File;
-import java.util.Hashtable;
 
 /** Serialiser of PROV Graphs. */
 

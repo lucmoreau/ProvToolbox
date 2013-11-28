@@ -58,10 +58,14 @@ import org.openprovenance.prov.model.Attribute;
 public class DerivedByInsertionFrom implements Equals, HashCode, ToString, org.openprovenance.prov.model.DerivedByInsertionFrom, HasAllAttributes
 {
 
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef newDictionary;
+    protected org.openprovenance.prov.model.QualifiedName newDictionary;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef oldDictionary;
+    protected org.openprovenance.prov.model.QualifiedName oldDictionary;
+
     @XmlElement(required = true, type = org.openprovenance.prov.xml.Entry.class)
     protected List<org.openprovenance.prov.model.Entry> keyEntityPair;
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
@@ -83,10 +87,10 @@ public class DerivedByInsertionFrom implements Equals, HashCode, ToString, org.o
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getNewDictionary() {
+    public org.openprovenance.prov.model.QualifiedName getNewDictionary() {
         return newDictionary;
     }
 
@@ -95,10 +99,10 @@ public class DerivedByInsertionFrom implements Equals, HashCode, ToString, org.o
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setNewDictionary(org.openprovenance.prov.model.IDRef value) {
+    public void setNewDictionary(org.openprovenance.prov.model.QualifiedName value) {
         this.newDictionary = value;
     }
 
@@ -107,10 +111,10 @@ public class DerivedByInsertionFrom implements Equals, HashCode, ToString, org.o
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getOldDictionary() {
+    public org.openprovenance.prov.model.QualifiedName getOldDictionary() {
         return oldDictionary;
     }
 
@@ -119,10 +123,10 @@ public class DerivedByInsertionFrom implements Equals, HashCode, ToString, org.o
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setOldDictionary(org.openprovenance.prov.model.IDRef value) {
+    public void setOldDictionary(org.openprovenance.prov.model.QualifiedName value) {
         this.oldDictionary = value;
     }
 
@@ -309,12 +313,12 @@ public class DerivedByInsertionFrom implements Equals, HashCode, ToString, org.o
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            org.openprovenance.prov.model.IDRef theNewDictionary;
+            org.openprovenance.prov.model.QualifiedName theNewDictionary;
             theNewDictionary = this.getNewDictionary();
             toStringBuilder.append("newDictionary", theNewDictionary);
         }
         {
-            org.openprovenance.prov.model.IDRef theOldDictionary;
+            org.openprovenance.prov.model.QualifiedName theOldDictionary;
             theOldDictionary = this.getOldDictionary();
             toStringBuilder.append("oldDictionary", theOldDictionary);
         }

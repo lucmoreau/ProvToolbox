@@ -1,6 +1,5 @@
 package org.openprovenance.prov.xml;
 
-import java.util.Hashtable;
 import java.util.Properties;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,18 +16,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
-    static public DocumentBuilder builder;
-
-    public static final String DEFAULT_NS = "_";
-
     private final static ProvFactory oFactory = new ProvFactory();
 
     //public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.validation";
     public static final String packageList = "org.openprovenance.prov.xml";
-
-    static {
-	initBuilder();
-    }
 
     private static String fileName = "toolbox.properties";
     private static final String toolboxVersion = getPropertiesFromClasspath(fileName).getProperty("toolbox.version");
@@ -55,16 +46,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 	return oFactory;
     }
 
-    static void initBuilder() {
-	try {
-	    DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-	    docBuilderFactory.setNamespaceAware(true);
-	    builder = docBuilderFactory.newDocumentBuilder();
-	} catch (ParserConfigurationException ex) {
-	    throw new RuntimeException(ex);
-	}
-    }
-
     public static String printURI(java.net.URI u) {
 	return u.toString();
     }
@@ -83,36 +64,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     }
 
   
-
-
-/*
-
-
-
-    public Attribute newAttribute(QName qname, Object value, ValueConverter vconv) {
-  	Attribute res = new Attribute(qname, value, vconv.getXsdType(value));
-  	return res;
-      }
-
-
-
-    public Attribute newAttribute(Attribute.AttributeKind kind, Object value, ValueConverter vconv) {
-  	Attribute res = new Attribute(kind, value, vconv.getXsdType(value));
-  	return res;
-      }
-    public Attribute newAttribute(Attribute.AttributeKind kind, Object value, QName type) {
-  	Attribute res = new Attribute(kind, value, type);
-  	return res;
-      }
-
-    public Attribute newAttribute(String namespace, String localName,
-				  String prefix, Object value, ValueConverter vconv) {
-	Attribute res = new Attribute(new QName(namespace, localName, prefix),
-	                              value, 
-	                              vconv.getXsdType(value));
-	return res;
-    }
-*/
     public org.openprovenance.prov.model.Attribute newAttribute(QName elementName, Object value, QName type) {
 
 	// TODO: use TypedValue.getAttributeKind and switch on a kind
@@ -184,23 +135,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     }
     
 
-    /*
-    
-    @Override
-    public org.openprovenance.prov.model.Attribute createAttribute(QName qname,
-							    Object value,
-							    QName type) {
-	return new Attribute(qname,value,type);
-    }
-
-    @Override
-    public org.openprovenance.prov.model.Attribute createAttribute(AttributeKind kind,
-                                                                   Object value,
-                                                                   QName type) {
-	return new Attribute(kind,value,type);
-
-    }
-    */
     
 
 
@@ -215,6 +149,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 	case PROV_ROLE: return newRole(value, type);
 	case PROV_TYPE: return newType(value, type);
 	case PROV_VALUE: return newValue(value, type);
+	case PROV_KEY: return newValue(value, type);
 	}
 	return null;
     }

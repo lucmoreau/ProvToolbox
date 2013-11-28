@@ -60,7 +60,7 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
             return false;
     }
     
-    public org.openprovenance.prov.model.QualifiedName qq(String n) {
+    public org.openprovenance.prov.model.QualifiedName q(String n) {
 		return new QualifiedName(EX_NS, n, EX_PREFIX);
        }
 

@@ -57,10 +57,14 @@ import org.openprovenance.prov.model.Attribute;
 public class WasInformedBy implements Equals, HashCode, ToString, org.openprovenance.prov.model.WasInformedBy, HasAllAttributes
 {
 
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef informed;
+    protected org.openprovenance.prov.model.QualifiedName informed;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef informant;
+    protected org.openprovenance.prov.model.QualifiedName informant;
+
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
     
@@ -81,10 +85,10 @@ public class WasInformedBy implements Equals, HashCode, ToString, org.openproven
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getInformed() {
+    public org.openprovenance.prov.model.QualifiedName getInformed() {
         return informed;
     }
 
@@ -93,10 +97,10 @@ public class WasInformedBy implements Equals, HashCode, ToString, org.openproven
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setInformed(org.openprovenance.prov.model.IDRef value) {
+    public void setInformed(org.openprovenance.prov.model.QualifiedName value) {
         this.informed = value;
     }
 
@@ -105,10 +109,10 @@ public class WasInformedBy implements Equals, HashCode, ToString, org.openproven
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getInformant() {
+    public org.openprovenance.prov.model.QualifiedName getInformant() {
         return informant;
     }
 
@@ -117,10 +121,10 @@ public class WasInformedBy implements Equals, HashCode, ToString, org.openproven
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setInformant(org.openprovenance.prov.model.IDRef value) {
+    public void setInformant(org.openprovenance.prov.model.QualifiedName value) {
         this.informant = value;
     }
 
@@ -275,12 +279,12 @@ public class WasInformedBy implements Equals, HashCode, ToString, org.openproven
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            org.openprovenance.prov.model.IDRef theInformed;
+            org.openprovenance.prov.model.QualifiedName theInformed;
             theInformed = this.getInformed();
             toStringBuilder.append("informed", theInformed);
         }
         {
-            org.openprovenance.prov.model.IDRef theInformant;
+            org.openprovenance.prov.model.QualifiedName theInformant;
             theInformant = this.getInformant();
             toStringBuilder.append("informant", theInformant);
         }

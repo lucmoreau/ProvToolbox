@@ -23,7 +23,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 /** A stateless factory for PROV objects. */
 
 
-public abstract class ProvFactory implements LiteralConstructor, ModelConstructor, QNameExport {
+public abstract class ProvFactory implements LiteralConstructor, ModelConstructor {
 
     public static final String DEFAULT_NS = "_";
  
@@ -320,14 +320,27 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, 
                                               QualifiedName delegate,
 					      QualifiedName responsible,
-					      QualifiedName activity, 
-					      Collection<Attribute> attributes) {
+					      QualifiedName activity) {
 	ActedOnBehalfOf res = of.createActedOnBehalfOf();
 	res.setId(id);
 	res.setActivity(activity);
 	res.setDelegate(delegate);
 	res.setResponsible(responsible);
 	return res;
+    }    
+    
+    public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, 
+                                              QualifiedName delegate,
+     					      QualifiedName responsible,
+     					      QualifiedName activity, 
+     					      Collection<Attribute> attributes) {
+     	ActedOnBehalfOf res = of.createActedOnBehalfOf();
+     	res.setId(id);
+     	res.setActivity(activity);
+     	res.setDelegate(delegate);
+     	res.setResponsible(responsible);
+	setAttributes(res, attributes);
+     	return res;
     }
 
     public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QualifiedName ag2, QualifiedName ag1) {
@@ -643,6 +656,16 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
         cal.setYear(year);
         return cal;
+    }
+
+
+    public HadMember newHadMember(QualifiedName collection, QualifiedName... entities) {
+        HadMember res = of.createHadMember();
+        res.setCollection(collection);
+        if (entities != null) {
+            res.getEntity().addAll(Arrays.asList(entities));
+        }
+        return res;
     }
 
 
@@ -1006,9 +1029,13 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }    
    
 
-    public WasDerivedFrom newWasDerivedFrom(QualifiedName id, QualifiedName aid1,
-					    QualifiedName aid2, QualifiedName aid,
-					    QualifiedName did1, QualifiedName did2) {
+    public WasDerivedFrom newWasDerivedFrom(QualifiedName id, 
+                                            QualifiedName aid1,
+					    QualifiedName aid2, 
+					    QualifiedName aid,
+					    QualifiedName did1, 
+					    QualifiedName did2,
+					    Collection<Attribute> attributes) {
 	WasDerivedFrom res = of.createWasDerivedFrom();
 	res.setId(id);
 	res.setUsedEntity(aid2);
@@ -1016,6 +1043,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	res.setActivity(aid);
 	res.setGeneration(did1);
 	res.setUsage(did2);
+        setAttributes(res, attributes);
 	return res;
     }
 
@@ -1335,15 +1363,6 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         res.setYear(year);
         return res;
     }
-
-    //FIXME: should no longer be here
-    public String qnameToString(QName qname) {
-	return DOMProcessing.qnameToString(qname);
-    }
-    public String qnameToString(QualifiedName qname) {
-	return DOMProcessing.qnameToString(qname);
-    }
-
 
     public void setAttributes(HasOther res, Collection<Attribute> attributes) {
 	if (attributes==null) return;

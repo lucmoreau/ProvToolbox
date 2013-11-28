@@ -55,6 +55,9 @@ public class Helper  {
  	} else if (val instanceof QName) {
  	    QName qn = (QName) val;	    
  	    return "'" + Namespace.qnameToStringWithNamespace(qn) + "'";
+ 	} else if (val instanceof QualifiedName) {
+ 	    QualifiedName qn = (QualifiedName) val;	    
+ 	    return "'" + Namespace.qnameToStringWithNamespace(qn) + "'";
  	} else if (val instanceof String) {
 	    String s=(String)val;
 	    if (s.contains("\n")) {

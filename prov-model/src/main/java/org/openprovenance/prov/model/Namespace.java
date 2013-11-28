@@ -227,10 +227,15 @@ public class Namespace {
 
 
     static public String qnameToStringWithNamespace(QName qname) {
-	Namespace ns=Namespace.getThreadNamespace();
-	return ns.qnameToString(qname);
-    }
-    
+ 	Namespace ns=Namespace.getThreadNamespace();
+ 	return ns.qnameToString(qname);
+     }
+     
+    static public String qnameToStringWithNamespace(QualifiedName qname) {
+ 	Namespace ns=Namespace.getThreadNamespace();
+ 	return ns.qnameToString(qname);
+     }
+     
 
     public String qnameToString(QName qname) {
  	if ((getDefaultNamespace()!=null) 

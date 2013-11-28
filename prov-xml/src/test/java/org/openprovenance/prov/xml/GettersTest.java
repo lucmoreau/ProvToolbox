@@ -1,5 +1,4 @@
 package org.openprovenance.prov.xml;
-import java.util.Hashtable;
 
 import javax.xml.namespace.QName;
 

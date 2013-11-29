@@ -13,15 +13,14 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.model.Activity;
-import org.openprovenance.prov.model.IDRef;
+import org.openprovenance.prov.model.Entry;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.DerivedByInsertionFrom;
 import org.openprovenance.prov.model.DerivedByRemovalFrom;
@@ -40,8 +39,6 @@ import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.Statement;
@@ -183,12 +180,12 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 					      String idStr,
 					      JsonObject attributeMap) {
 	StatementOrBundle statement;
-	QName id;
+	QualifiedName id;
 	if (idStr.startsWith("_:")) {
 	    // Ignore all blank node IDs
 	    id = null;
 	} else {
-	    id = ns.stringToQName(idStr);
+	    id = ns.stringToQualifiedName(idStr,pf);
 	}
 	// Decoding attributes
 	ProvJSONStatement provStatement = ProvJSONStatement.valueOf(statementType);
@@ -214,25 +211,26 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    statement = pf.newAgent(id);
 	    break;
 	case alternateOf:
-	    IDRef alternate1 = optionalIdRef("prov:alternate1", attributeMap);
-	    IDRef alternate2 = optionalIdRef("prov:alternate2", attributeMap);
+	    QualifiedName alternate1 = optionalQualifiedName("prov:alternate1", attributeMap);
+	    QualifiedName alternate2 = optionalQualifiedName("prov:alternate2", attributeMap);
 	    statement = pf.newAlternateOf(alternate2, alternate1);
 	    break;
 	case wasAssociatedWith:
-	    IDRef activity = optionalIdRef("prov:activity", attributeMap);
-	    IDRef agent = optionalIdRef("prov:agent", attributeMap);
-	    IDRef plan = optionalIdRef("prov:plan", attributeMap);
+	    QualifiedName activity = optionalQualifiedName("prov:activity", attributeMap);
+	    QualifiedName agent = optionalQualifiedName("prov:agent", attributeMap);
+	    QualifiedName plan = optionalQualifiedName("prov:plan", attributeMap);
 	    WasAssociatedWith wAW = pf.newWasAssociatedWith(id, activity, agent);
 	    if (plan != null)
 		wAW.setPlan(plan);
 	    statement = wAW;
 	    break;
 	case wasAttributedTo:
-	    IDRef entity = optionalIdRef("prov:entity", attributeMap);
-	    agent = optionalIdRef("prov:agent", attributeMap);
+	    QualifiedName entity = optionalQualifiedName("prov:entity", attributeMap);
+	    agent = optionalQualifiedName("prov:agent", attributeMap);
 	    statement = pf.newWasAttributedTo(id, entity, agent);
 	    break;
 	case bundle:
+	    @SuppressWarnings("unused")
 	    Hashtable<String, String> localNamespaces = decodePrefixes(attributeMap);
 	    // TODO: Use the local namespace while preserving the top-level
 	    // namespace
@@ -245,31 +243,31 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    statement = namedBundle;
 	    break;
 	case wasInformedBy:
-	    IDRef informed = optionalIdRef("prov:informed", attributeMap);
-	    IDRef informant = optionalIdRef("prov:informant", attributeMap);
+	    QualifiedName informed = optionalQualifiedName("prov:informed", attributeMap);
+	    QualifiedName informant = optionalQualifiedName("prov:informant", attributeMap);
 	    statement = pf.newWasInformedBy(id, informed, informant);
 	    break;
 	case actedOnBehalfOf:
-	    IDRef delegate = optionalIdRef("prov:delegate", attributeMap);
-	    IDRef responsible = optionalIdRef("prov:responsible", attributeMap);
-	    activity = optionalIdRef("prov:activity", attributeMap);
+	    QualifiedName delegate = optionalQualifiedName("prov:delegate", attributeMap);
+	    QualifiedName responsible = optionalQualifiedName("prov:responsible", attributeMap);
+	    activity = optionalQualifiedName("prov:activity", attributeMap);
 	    statement = pf.newActedOnBehalfOf(id, delegate, responsible,
 					      activity);
 	    break;
 	case wasDerivedFrom:
-	    IDRef generatedEntity = optionalIdRef("prov:generatedEntity",
+	    QualifiedName generatedEntity = optionalQualifiedName("prov:generatedEntity",
 						  attributeMap);
-	    IDRef usedEntity = optionalIdRef("prov:usedEntity", attributeMap);
-	    activity = optionalIdRef("prov:activity", attributeMap);
-	    IDRef generation = optionalIdRef("prov:generation", attributeMap);
-	    IDRef usage = optionalIdRef("prov:usage", attributeMap);
+	    QualifiedName usedEntity = optionalQualifiedName("prov:usedEntity", attributeMap);
+	    activity = optionalQualifiedName("prov:activity", attributeMap);
+	    QualifiedName generation = optionalQualifiedName("prov:generation", attributeMap);
+	    QualifiedName usage = optionalQualifiedName("prov:usage", attributeMap);
 	    statement = pf.newWasDerivedFrom(id, generatedEntity, usedEntity,
-					     activity, generation, usage);
+					     activity, generation, usage,null);
 	    break;
 	case wasEndedBy:
-	    activity = optionalIdRef("prov:activity", attributeMap);
-	    IDRef trigger = optionalIdRef("prov:trigger", attributeMap);
-	    IDRef ender = optionalIdRef("prov:ender", attributeMap);
+	    activity = optionalQualifiedName("prov:activity", attributeMap);
+	    QualifiedName trigger = optionalQualifiedName("prov:trigger", attributeMap);
+	    QualifiedName ender = optionalQualifiedName("prov:ender", attributeMap);
 	    XMLGregorianCalendar time = optionalTime("prov:time", attributeMap);
 	    WasEndedBy wEB = pf.newWasEndedBy(id, activity, trigger);
 	    if (ender != null)
@@ -280,8 +278,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    statement = wEB;
 	    break;
 	case wasGeneratedBy:
-	    entity = optionalIdRef("prov:entity", attributeMap);
-	    activity = optionalIdRef("prov:activity", attributeMap);
+	    entity = optionalQualifiedName("prov:entity", attributeMap);
+	    activity = optionalQualifiedName("prov:activity", attributeMap);
 	    time = optionalTime("prov:time", attributeMap);
 	    WasGeneratedBy wGB = pf.newWasGeneratedBy(id);
 	    wGB.setEntity(entity);
@@ -293,13 +291,13 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    statement = wGB;
 	    break;
 	case wasInfluencedBy:
-	    IDRef influencee = anyRef("prov:influencee", attributeMap);
-	    IDRef influencer = anyRef("prov:influencer", attributeMap);
+	    QualifiedName influencee = anyRef("prov:influencee", attributeMap);
+	    QualifiedName influencer = anyRef("prov:influencer", attributeMap);
 	    statement = pf.newWasInfluencedBy(id, influencee, influencer);
 	    break;
 	case wasInvalidatedBy:
-	    entity = optionalIdRef("prov:entity", attributeMap);
-	    activity = optionalIdRef("prov:activity", attributeMap);
+	    entity = optionalQualifiedName("prov:entity", attributeMap);
+	    activity = optionalQualifiedName("prov:activity", attributeMap);
 	    time = optionalTime("prov:time", attributeMap);
 	    WasInvalidatedBy wIB = pf.newWasInvalidatedBy(id, entity, activity);
 	    if (time != null) {
@@ -308,8 +306,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    statement = wIB;
 	    break;
 	case hadMember:
-	    IDRef collection = optionalIdRef("prov:collection", attributeMap);
-	    Collection<IDRef> entities = optionalIdRefs("prov:entity",
+	    QualifiedName collection = optionalQualifiedName("prov:collection", attributeMap);
+	    Collection<QualifiedName> entities = optionalQualifiedNames("prov:entity",
 							attributeMap);
 	    HadMember membership = pf.getObjectFactory().createHadMember();
 	    membership.setCollection(collection);
@@ -318,22 +316,22 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    statement = membership;
 	    break;
 	case mentionOf:
-	    IDRef specificEntity = optionalIdRef("prov:specificEntity",
+	    QualifiedName specificEntity = optionalQualifiedName("prov:specificEntity",
 						 attributeMap);
-	    IDRef generalEntity = optionalIdRef("prov:generalEntity",
+	    QualifiedName generalEntity = optionalQualifiedName("prov:generalEntity",
 						attributeMap);
-	    IDRef bundle = optionalIdRef("prov:bundle", attributeMap);
+	    QualifiedName bundle = optionalQualifiedName("prov:bundle", attributeMap);
 	    statement = pf.newMentionOf(specificEntity, generalEntity, bundle);
 	    break;
 	case specializationOf:
-	    specificEntity = optionalIdRef("prov:specificEntity", attributeMap);
-	    generalEntity = optionalIdRef("prov:generalEntity", attributeMap);
+	    specificEntity = optionalQualifiedName("prov:specificEntity", attributeMap);
+	    generalEntity = optionalQualifiedName("prov:generalEntity", attributeMap);
 	    statement = pf.newSpecializationOf(specificEntity, generalEntity);
 	    break;
 	case wasStartedBy:
-	    activity = optionalIdRef("prov:activity", attributeMap);
-	    trigger = optionalIdRef("prov:trigger", attributeMap);
-	    IDRef starter = optionalIdRef("prov:starter", attributeMap);
+	    activity = optionalQualifiedName("prov:activity", attributeMap);
+	    trigger = optionalQualifiedName("prov:trigger", attributeMap);
+	    QualifiedName starter = optionalQualifiedName("prov:starter", attributeMap);
 	    time = optionalTime("prov:time", attributeMap);
 	    WasStartedBy wSB = pf.newWasStartedBy(id, activity, trigger);
 	    if (starter != null)
@@ -357,9 +355,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    statement = wUB;
 	    break;
 	case derivedByInsertionFrom:
-	    QName before = optionalQName("prov:before", attributeMap);
-	    QName after = optionalQName("prov:after", attributeMap);
-	    List<KeyQNamePair> keyEntitySet = optionalKeyEntitySet("prov:key-entity-set",
+	    QualifiedName before = optionalQualifiedName("prov:before", attributeMap);
+	    QualifiedName after = optionalQualifiedName("prov:after", attributeMap);
+	    List<Entry> keyEntitySet = optionalEntrySet("prov:key-entity-set",
 								   attributeMap);
 	    DerivedByInsertionFrom dBIF = pf.newDerivedByInsertionFrom(id,
 								       after,
@@ -369,8 +367,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    statement = dBIF;
 	    break;
 	case derivedByRemovalFrom:
-	    before = optionalQName("prov:before", attributeMap);
-	    after = optionalQName("prov:after", attributeMap);
+	    before = optionalQualifiedName("prov:before", attributeMap);
+	    after = optionalQualifiedName("prov:after", attributeMap);
 	    List<Key> keys = optionalKeySet("prov:key-set", attributeMap);
 	    DerivedByRemovalFrom dBRF = pf.newDerivedByRemovalFrom(id, after,
 								   before,
@@ -378,8 +376,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    statement = dBRF;
 	    break;
 	case hadDictionaryMember:
-	    QName dictionary = optionalQName("prov:dictionary", attributeMap);
-	    keyEntitySet = optionalKeyEntitySet("prov:key-entity-set",
+	    QualifiedName dictionary = optionalQualifiedName("prov:dictionary", attributeMap);
+	    keyEntitySet = optionalEntrySet("prov:key-entity-set",
 						attributeMap);
 	    DictionaryMembership hDM = pf.newDictionaryMembership(dictionary,
 								  keyEntitySet);
@@ -401,7 +399,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List<org.openprovenance.prov.model.Type> types = ((HasType) statement).getType();
 		for (JsonElement value : values) {
 		    types.add((org.openprovenance.prov.model.Type) decodeAttributeValue(value,
-											Helper.PROV_TYPE_QNAME));
+											Name.PROV_TYPE_QNAME));
 		}
 	    } else {
 		throw new UnsupportedOperationException(
@@ -434,7 +432,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List<Location> locations = ((HasLocation) statement).getLocation();
 		for (JsonElement value : values) {
 		    locations.add((org.openprovenance.prov.model.Location) decodeAttributeValue(value,
-												Helper.PROV_LOCATION_QNAME));
+												Name.PROV_LOCATION_QNAME));
 		}
 	    } else {
 		throw new UnsupportedOperationException(
@@ -451,7 +449,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List<Role> roles = ((HasRole) statement).getRole();
 		for (JsonElement value : values) {
 		    roles.add((org.openprovenance.prov.model.Role) decodeAttributeValue(value,
-											Helper.PROV_ROLE_QNAME));
+											Name.PROV_ROLE_QNAME));
 		}
 	    } else {
 		throw new UnsupportedOperationException(
@@ -472,7 +470,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    }
 	    if (statement instanceof HasValue) {
 		((HasValue) statement).setValue((org.openprovenance.prov.model.Value) decodeAttributeValue(values.get(0),
-													   Helper.PROV_VALUE_QNAME));
+													   Name.PROV_VALUE_QNAME));
 	    } else {
 		throw new UnsupportedOperationException(
 							"prov:value is not allowed in a "
@@ -490,13 +488,13 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List ll = ((HasOther) statement).getOther();
 		List<Attribute> attributes = (List<Attribute>) ll;
 		for (Map.Entry<String, JsonElement> aPair : attributeMap.entrySet()) {
-		    QName attributeName = ns.stringToQName(aPair.getKey());
+		    QualifiedName attributeName = ns.stringToQualifiedName(aPair.getKey(),pf);
 		    JsonElement element = aPair.getValue();
 		    values = pickMultiValues(element);
 		    for (JsonElement value : values) {
 
 			Attribute attr = decodeAttributeValue(value,
-							      attributeName);
+							      attributeName.toQName());
 			attributes.add(attr);
 		    }
 		}
@@ -529,7 +527,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	return iString;
     }
 
-    Attribute decodeAttributeValue(JsonElement element, QName elementName) {
+    private Attribute decodeAttributeValue(JsonElement element, QName elementName) {
 	if (element.isJsonPrimitive()) {
 	    Object o = decodeJSONPrimitive(element.getAsString());
 	    QName type = vconv.getXsdType(o);
@@ -552,7 +550,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		QName xsdType = ns.stringToQName(datatypeAsString);
 		if (xsdType.equals(Name.QNAME_XSD_QNAME)) {
 		    return pf.newAttribute(elementName,
-					   ns.stringToQName(value), xsdType);
+					   ns.stringToQualifiedName(value,pf), xsdType);
 		} else {
 		    return pf.newAttribute(elementName, value, xsdType);
 		}
@@ -619,42 +617,23 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	return jo.remove(memberName).getAsString();
     }
 
-    private QName qName(String attributeName, JsonObject attributeMap) {
-	return ns.stringToQName(popString(attributeMap, attributeName));
-    }
-
-    private QName optionalQName(String attributeName, JsonObject attributeMap) {
-	if (attributeMap.has(attributeName))
-	    return qName(attributeName, attributeMap);
-	else
-	    return null;
-    }
-
-    private IDRef idRef(String attributeName, JsonObject attributeMap) {
-	return pf.newIDRef(ns.stringToQName(popString(attributeMap,
-						      attributeName)));
-    }
-
 
     private QualifiedName qualifiedName(String attributeName, JsonObject attributeMap) {
-	return new org.openprovenance.prov.xml.QualifiedName(ns.stringToQName(popString(attributeMap,
-	                                                                                attributeName)));
+	return ns.stringToQualifiedName(popString(attributeMap,
+	                                               attributeName),
+	                                               pf);
     }
 
-    private IDRef anyRef(String attributeName, JsonObject attributeMap) {
+    // TODO: this name is legacy, what should it be?
+    private QualifiedName anyRef(String attributeName, JsonObject attributeMap) {
 	if (attributeMap.has(attributeName))
-	    return pf.newIDRef(ns.stringToQName(popString(attributeMap,
+	    return pf.newQualifiedName(ns.stringToQName(popString(attributeMap,
 							  attributeName)));
 	else
 	    return null;
     }
 
-    private IDRef optionalIdRef(String attributeName, JsonObject attributeMap) {
-	if (attributeMap.has(attributeName))
-	    return idRef(attributeName, attributeMap);
-	else
-	    return null;
-    }
+ 
 
     private QualifiedName optionalQualifiedName(String attributeName, JsonObject attributeMap) {
 	if (attributeMap.has(attributeName))
@@ -671,28 +650,28 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    return null;
     }
 
-    private Collection<IDRef> idRefs(String attributeName,
+    private Collection<QualifiedName> qualifiedNames(String attributeName,
 				     JsonObject attributeMap) {
-	List<IDRef> results = new ArrayList<IDRef>();
+	List<QualifiedName> results = new ArrayList<QualifiedName>();
 	List<JsonElement> elements = popMultiValAttribute(attributeName,
 							  attributeMap);
 	for (JsonElement element : elements) {
-	    results.add(pf.newIDRef(ns.stringToQName(element.getAsString())));
+	    results.add(pf.newQualifiedName(ns.stringToQName(element.getAsString())));
 	}
 	return results;
     }
 
-    private Collection<IDRef> optionalIdRefs(String attributeName,
+    private Collection<QualifiedName> optionalQualifiedNames(String attributeName,
 					     JsonObject attributeMap) {
 	if (attributeMap.has(attributeName))
-	    return idRefs(attributeName, attributeMap);
+	    return qualifiedNames(attributeName, attributeMap);
 	else
 	    return null;
     }
 
-    private List<KeyQNamePair> keyEntitySet(String attributeName,
+    private List<Entry> entrySet(String attributeName,
 					    JsonObject attributeMap) {
-	List<KeyQNamePair> results = new ArrayList<KeyQNamePair>();
+	List<Entry> results = new ArrayList<Entry>();
 	// check if it is a dictionary or a list
 	JsonElement kESElement = attributeMap.remove(attributeName);
 	if (kESElement.isJsonArray()) {
@@ -700,11 +679,10 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    List<JsonElement> elements = pickMultiValues(kESElement);
 	    for (JsonElement element : elements) {
 		JsonObject item = element.getAsJsonObject();
-		KeyQNamePair pair = new KeyQNamePair();
-		pair.key = (Key) decodeAttributeValue(item.remove("key"),
-						      Helper.PROV_KEY_QNAME);
-
-		pair.name = ns.stringToQName(this.popString(item, "$"));
+		Entry pair = pf.newEntry((Key) decodeAttributeValue(item.remove("key"),
+		                                                    Name.PROV_KEY_QNAME),
+		                                                    
+		                         ns.stringToQualifiedName(this.popString(item, "$"),pf));
 		results.add(pair);
 	    }
 	} else if (kESElement.isJsonObject()) {
@@ -713,32 +691,35 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    String keyDatatype = dictionary.remove("$key-datatype")
 					   .getAsString();
 	    QName datatype = ns.stringToQName(keyDatatype);
-	    for (Entry<String, JsonElement> entry : dictionary.entrySet()) {
-		KeyQNamePair pair = new KeyQNamePair();
+	    for (Map.Entry<String, JsonElement> entry : dictionary.entrySet()) {
 		Object o = vconv.convertToJava(datatype, entry.getKey());
-		pair.key = pf.newKey(o, vconv.getXsdType(o)); // TODO remove use
+		
+		Entry pair = pf.newEntry(pf.newKey(o, vconv.getXsdType(o)), // TODO remove use
+		
 							      // of vconv
-		pair.name = ns.stringToQName(entry.getValue().getAsString());
+		                         ns.stringToQualifiedName(entry.getValue().getAsString(), pf));
 		results.add(pair);
 	    }
 	}
 	return results;
     }
 
-    private List<KeyQNamePair> optionalKeyEntitySet(String attributeName,
+    
+    private List<Entry> optionalEntrySet(String attributeName,
 						    JsonObject attributeMap) {
 	if (attributeMap.has(attributeName))
-	    return keyEntitySet(attributeName, attributeMap);
+	    return entrySet(attributeName, attributeMap);
 	else
 	    return null;
     }
 
+    
     private List<Key> keySet(String attributeName, JsonObject attributeMap) {
 	List<Key> results = new ArrayList<Key>();
 	List<JsonElement> elements = popMultiValAttribute(attributeName,
 							  attributeMap);
 	for (JsonElement element : elements) {
-	    Key key = (Key) decodeAttributeValue(element, Helper.PROV_KEY_QNAME);
+	    Key key = (Key) decodeAttributeValue(element, Name.PROV_KEY_QNAME);
 	    results.add(key);
 	}
 	return results;

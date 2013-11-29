@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.Entry;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
@@ -191,6 +192,8 @@ public class JSONConstructor implements ModelConstructor {
 
 	if (value instanceof QName)
 	    return qnExport.qnameToString((QName) value);
+	if (value instanceof QualifiedName)
+	    return qnExport.qnameToString((QualifiedName) value);
 	if (value instanceof InternationalizedString) {
 	    InternationalizedString iStr = (InternationalizedString) value;
 	    return iStr.getValue();
@@ -204,6 +207,10 @@ public class JSONConstructor implements ModelConstructor {
 	    return value;
 	if (value instanceof QName) {
 	    return typedLiteral(qnExport.qnameToString((QName) value),
+				"xsd:QName", null);
+	}
+	if (value instanceof QualifiedName) {
+	    return typedLiteral(qnExport.qnameToString((QualifiedName) value),
 				"xsd:QName", null);
 	}
 	if (value instanceof InternationalizedString) {
@@ -230,7 +237,12 @@ public class JSONConstructor implements ModelConstructor {
 
 	    attrValue = typedLiteral(qnExport.qnameToString((QName) value),
 				     "xsd:QName", null);
-	} else if (value instanceof InternationalizedString) {
+	} else 	if (value instanceof QualifiedName) {
+	    // force type xsd:QName
+
+	    attrValue = typedLiteral(qnExport.qnameToString((QualifiedName) value),
+				     "xsd:QName", null);
+	} else  if (value instanceof InternationalizedString) {
 	    InternationalizedString iStr = (InternationalizedString) value;
 	    String lang = iStr.getLang();
 	    if (lang != null) {
@@ -259,7 +271,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public Entity newEntity(QName id, Collection<Attribute> attributes) {
+    public Entity newEntity(QualifiedName id, Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	JsonProvRecord record = new JsonProvRecord("entity",
 						   qnExport.qnameToString(id),
@@ -269,7 +281,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public Activity newActivity(QName id, XMLGregorianCalendar startTime,
+    public Activity newActivity(QualifiedName id, XMLGregorianCalendar startTime,
 				XMLGregorianCalendar endTime,
 				Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
@@ -287,7 +299,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public Agent newAgent(QName id, Collection<Attribute> attributes) {
+    public Agent newAgent(QualifiedName id, Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	JsonProvRecord record = new JsonProvRecord("agent",
 						   qnExport.qnameToString(id),
@@ -335,8 +347,9 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public WasInvalidatedBy newWasInvalidatedBy(QName id, QName entity,
-						QName activity,
+    public WasInvalidatedBy newWasInvalidatedBy(QualifiedName id, 
+                                                QualifiedName entity,
+						QualifiedName activity,
 						XMLGregorianCalendar time,
 						Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
@@ -355,8 +368,8 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public WasStartedBy newWasStartedBy(QName id, QName activity,
-					QName trigger, QName starter,
+    public WasStartedBy newWasStartedBy(QualifiedName id, QualifiedName activity,
+					QualifiedName trigger, QualifiedName starter,
 					XMLGregorianCalendar time,
 					Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
@@ -377,8 +390,8 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public WasEndedBy newWasEndedBy(QName id, QName activity, QName trigger,
-				    QName ender, XMLGregorianCalendar time,
+    public WasEndedBy newWasEndedBy(QualifiedName id, QualifiedName activity, QualifiedName trigger,
+				    QualifiedName ender, XMLGregorianCalendar time,
 				    Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (activity != null)
@@ -398,9 +411,9 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public WasDerivedFrom newWasDerivedFrom(QName id, QName e2, QName e1,
-					    QName activity, QName generation,
-					    QName usage,
+    public WasDerivedFrom newWasDerivedFrom(QualifiedName id, QualifiedName e2, QualifiedName e1,
+					    QualifiedName activity, QualifiedName generation,
+					    QualifiedName usage,
 					    Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (e2 != null)
@@ -424,10 +437,10 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public WasAssociatedWith newWasAssociatedWith(QName id,
-						  QName a,
-						  QName ag,
-						  QName plan,
+    public WasAssociatedWith newWasAssociatedWith(QualifiedName id,
+						  QualifiedName a,
+						  QualifiedName ag,
+						  QualifiedName plan,
 						  Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (a != null)
@@ -445,7 +458,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public WasAttributedTo newWasAttributedTo(QName id, QName e, QName ag,
+    public WasAttributedTo newWasAttributedTo(QualifiedName id, QualifiedName e, QualifiedName ag,
 					      Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (e != null)
@@ -461,8 +474,8 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public ActedOnBehalfOf newActedOnBehalfOf(QName id, QName ag2, QName ag1,
-					      QName a,
+    public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QualifiedName ag2, QualifiedName ag1,
+					      QualifiedName a,
 					      Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (ag2 != null)
@@ -480,7 +493,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public WasInformedBy newWasInformedBy(QName id, QName a2, QName a1,
+    public WasInformedBy newWasInformedBy(QualifiedName id, QualifiedName a2, QualifiedName a1,
 					  Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (a2 != null)
@@ -496,7 +509,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public WasInfluencedBy newWasInfluencedBy(QName id, QName a2, QName a1,
+    public WasInfluencedBy newWasInfluencedBy(QualifiedName id, QualifiedName a2, QualifiedName a1,
 					      Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (a2 != null)
@@ -512,7 +525,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public AlternateOf newAlternateOf(QName e2, QName e1) {
+    public AlternateOf newAlternateOf(QualifiedName e2, QualifiedName e1) {
 	List<Object[]> attrs = new ArrayList<Object[]>();
 	if (e2 != null)
 	    attrs.add(tuple("prov:alternate2", qnExport.qnameToString(e2)));
@@ -526,7 +539,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public SpecializationOf newSpecializationOf(QName e2, QName e1) {
+    public SpecializationOf newSpecializationOf(QualifiedName e2, QualifiedName e1) {
 	List<Object[]> attrs = new ArrayList<Object[]>();
 	if (e2 != null)
 	    attrs.add(tuple("prov:specificEntity", qnExport.qnameToString(e2)));
@@ -540,7 +553,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public MentionOf newMentionOf(QName e2, QName e1, QName b) {
+    public MentionOf newMentionOf(QualifiedName e2, QualifiedName e1, QualifiedName b) {
 	List<Object[]> attrs = new ArrayList<Object[]>();
 	if (e2 != null)
 	    attrs.add(tuple("prov:specificEntity", qnExport.qnameToString(e2)));
@@ -555,18 +568,18 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public HadMember newHadMember(QName c, Collection<QName> e) {
+    public HadMember newHadMember(QualifiedName c, Collection<QualifiedName> e) {
 	List<Object[]> attrs = new ArrayList<Object[]>();
 	if (c != null)
 	    attrs.add(tuple("prov:collection", qnExport.qnameToString(c)));
 	if (e != null && !e.isEmpty()) {
 	    List<String> entityList = new ArrayList<String>();
-	    for (QName entity : e)
+	    for (QualifiedName entity : e)
 		entityList.add(qnExport.qnameToString(entity));
 	    attrs.add(tuple("prov:entity", entityList));
 	}
 	// TODO Add id to the interface
-	QName id = null;
+	QualifiedName id = null;
 	String recordID = (id != null) ? qnExport.qnameToString(id)
 		: getBlankID("hM");
 	JsonProvRecord record = new JsonProvRecord("hadMember", recordID, attrs);
@@ -583,7 +596,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public NamedBundle newNamedBundle(QName id, Namespace namespaces,
+    public NamedBundle newNamedBundle(QualifiedName id, Namespace namespaces,
 				      Collection<Statement> statements) {
 	Object bundle = getJSONStructure(currentRecords, currentNamespaces);
 	documentBundles.put(qnExport.qnameToString(id), bundle);
@@ -607,7 +620,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public void startBundle(QName bundleId, Namespace namespaces) {
+    public void startBundle(QualifiedName bundleId, Namespace namespaces) {
 	Hashtable<String, String> hashtable = namespaces.getPrefixes();
 
 	// Make a copy of the namespace table
@@ -617,13 +630,13 @@ public class JSONConstructor implements ModelConstructor {
 	currentRecords = new ArrayList<JsonProvRecord>();
     }
 
-    private Object encodeKeyEntitySet(List<KeyQNamePair> keyEntitySet) {
+    private Object encodeKeyEntitySet(List<Entry> keyEntitySet) {
 	// Check for the types of keys
 	boolean isAllKeyOfSameDatatype = true;
-	Key firstKey = keyEntitySet.get(0).key;
+	Key firstKey = keyEntitySet.get(0).getKey();
 	QName firstKeyClass = firstKey.getType();
-	for (KeyQNamePair pair : keyEntitySet) {
-	    QName keyClass = pair.key.getType();
+	for (Entry pair : keyEntitySet) {
+	    QName keyClass = pair.getKey().getType();
 
 	    if (keyClass != firstKeyClass) {
 		isAllKeyOfSameDatatype = false;
@@ -634,12 +647,12 @@ public class JSONConstructor implements ModelConstructor {
 	if (isAllKeyOfSameDatatype) {
 	    // encode as a dictionary
 	    Map<Object, String> dictionary = new HashMap<Object, String>();
-	    String keyDatatype = pf.qnameToString(keyEntitySet.get(0).key.getType());
+	    String keyDatatype = qnExport.qnameToString(keyEntitySet.get(0).getKey().getType());
 	    dictionary.put("$key-datatype", keyDatatype);
-	    for (KeyQNamePair pair : keyEntitySet) {
+	    for (Entry pair : keyEntitySet) {
 		// String key = convertValueToString(pair.key);
-		String key = convertValueToString(pair.key.getValueAsObject());
-		String entity = qnExport.qnameToString(pair.name);
+		String key = convertValueToString(pair.getKey().getValueAsObject());
+		String entity = qnExport.qnameToString(pair.getEntity());
 		dictionary.put(key, entity);
 	    }
 	    return dictionary;
@@ -648,21 +661,21 @@ public class JSONConstructor implements ModelConstructor {
 	// encode as a generic list of key-value pairs
 	List<Map<String, Object>> values = new ArrayList<Map<String, Object>>(
 									      keyEntitySet.size());
-	for (KeyQNamePair pair : keyEntitySet) {
-	    Object entity = qnExport.qnameToString(pair.name);
+	for (Entry pair : keyEntitySet) {
+	    Object entity = qnExport.qnameToString(pair.getEntity());
 	    Map<String, Object> item = new Hashtable<String, Object>();
 	    item.put("$", entity);
-	    item.put("key", convertValue(pair.key.getValueAsObject()));
+	    item.put("key", convertValue(pair.getKey().getValueAsObject()));
 	    values.add(item);
 	}
 	return values;
     }
 
     @Override
-    public DerivedByInsertionFrom newDerivedByInsertionFrom(QName id,
-							    QName after,
-							    QName before,
-							    List<KeyQNamePair> keyEntitySet,
+    public DerivedByInsertionFrom newDerivedByInsertionFrom(QualifiedName id,
+							    QualifiedName after,
+							    QualifiedName before,
+							    List<Entry> keyEntitySet,
 							    Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (after != null)
@@ -682,9 +695,9 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public DerivedByRemovalFrom newDerivedByRemovalFrom(QName id,
-							QName after,
-							QName before,
+    public DerivedByRemovalFrom newDerivedByRemovalFrom(QualifiedName id,
+							QualifiedName after,
+							QualifiedName before,
 							List<Key> keys,
 							Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
@@ -710,8 +723,8 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public DictionaryMembership newDictionaryMembership(QName dict,
-							List<KeyQNamePair> keyEntitySet) {
+    public DictionaryMembership newDictionaryMembership(QualifiedName dict,
+							List<Entry> keyEntitySet) {
 	List<Object[]> attrs = new ArrayList<Object[]>();
 	if (dict != null)
 	    attrs.add(tuple("prov:dictionary", qnExport.qnameToString(dict)));
@@ -724,6 +737,11 @@ public class JSONConstructor implements ModelConstructor {
 						   recordID, attrs);
 	this.currentRecords.add(record);
 	return null;
+    }
+
+    @Override
+    public QualifiedName newQualifiedName(String namespace, String local,
+					  String prefix) {	return null;
     }
 
 }

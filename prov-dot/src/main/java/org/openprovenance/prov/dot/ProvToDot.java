@@ -20,12 +20,12 @@ import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HasOther;
-import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasType;
-import org.openprovenance.prov.model.OldIdentifiable;
+import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.model.Influence;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Other;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Relation0;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
@@ -58,11 +58,11 @@ public class ProvToDot {
     ProvUtilities u=new ProvUtilities();
     ProvFactory of=new ProvFactory();
 
-    public String qnameToString(QName qName) {
+    public String qualifiedNameToString(QualifiedName qName) {
         return qName.getNamespaceURI()+qName.getLocalPart();
     }
 
-    public String localnameToString(QName qName) {
+    public String localnameToString(QualifiedName qName) {
         return qName.getLocalPart();
     }
 
@@ -386,13 +386,13 @@ public class ProvToDot {
             (((HasType)ann).getType().isEmpty())) return;
 
         HashMap<String,String> properties=new HashMap<String, String>();
-        QName newId=annotationId(((OldIdentifiable)ann).getId(),id);
+        QualifiedName newId=annotationId(((Identifiable)ann).getId(),id);
         emitElement(newId,
                     addAnnotationShape(ann,addAnnotationColor(ann,addAnnotationLabel(ann,properties))),
                     out);
         HashMap<String,String> linkProperties=new HashMap<String, String>();
-        emitRelation(qnameToString(newId),
-                     qnameToString(((OldIdentifiable)ann).getId()),
+        emitRelation(qualifiedNameToString(newId),
+                     qualifiedNameToString(((Identifiable)ann).getId()),
                      addAnnotationLinkProperties(ann,linkProperties),out,true);
     }
 
@@ -400,16 +400,16 @@ public class ProvToDot {
 
     int annotationCount=0;
     @SuppressWarnings("unused")
-    public QName annotationId(QName id,String node) {
+    public QualifiedName annotationId(QualifiedName id,String node) {
 	
         if (true || id==null) {
-            return new QName("http://annot/","ann" + node + (annotationCount++));
+            return of.newQualifiedName("http://annot/","ann" + node + (annotationCount++),null);
         } else {
             return id;
         }
     }
     
-    public HashMap<String, String> addURL(QName id,
+    public HashMap<String, String> addURL(QualifiedName id,
                                           HashMap<String, String> properties) {
 	if (id!=null) properties.put("URL", id.getNamespaceURI()+id.getLocalPart());
 	return properties;
@@ -737,7 +737,7 @@ public class ProvToDot {
     public void emitDependency(Relation0 e, PrintStream out) {
         HashMap<String,String> properties=new HashMap<String, String>();
 
-        List<QName> others=u.getOtherCauses(e);
+        List<QualifiedName> others=u.getOtherCauses(e);
         if (others !=null) { // n-ary case
             String bnid="bn" + (bncounter++);
 
@@ -756,7 +756,7 @@ public class ProvToDot {
             HashMap<String,String> properties3=new HashMap<String, String>();
 
 
-            emitRelation( qnameToString(u.getEffect(e)),
+            emitRelation( qualifiedNameToString(u.getEffect(e)),
                           bnid,
                           properties2,
                           out,
@@ -770,7 +770,7 @@ public class ProvToDot {
             
             if (u.getCause(e)!=null) {
         	emitRelation( bnid,
-        	              qnameToString(u.getCause(e)),
+        	              qualifiedNameToString(u.getCause(e)),
         	              properties3,
         	              out,
         	              true);
@@ -778,10 +778,10 @@ public class ProvToDot {
 
             HashMap<String,String> properties4=new HashMap<String, String>();
 
-            for (QName other: others) {
+            for (QualifiedName other: others) {
 		if (other!=null) {
 		    emitRelation( bnid,
-				  qnameToString(other),
+				  qualifiedNameToString(other),
 				  properties4,
 				  out,
 				  true);
@@ -801,8 +801,8 @@ public class ProvToDot {
 		    properties.put("dir","both");
 		}
 
-		emitRelation( qnameToString(u.getEffect(e)),
-			      qnameToString(u.getCause(e)),
+		emitRelation( qualifiedNameToString(u.getEffect(e)),
+			      qualifiedNameToString(u.getCause(e)),
 			      properties,
 			      out,
 			      true);
@@ -955,9 +955,9 @@ public class ProvToDot {
         return "n" + name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_').replace('~','_');
     }
 
-    public void emitElement(QName name, HashMap<String,String> properties, PrintStream out) {
+    public void emitElement(QualifiedName name, HashMap<String,String> properties, PrintStream out) {
         StringBuffer sb=new StringBuffer();
-        sb.append(""+dotify(qnameToString(name)));
+        sb.append(""+dotify(qualifiedNameToString(name)));
         emitProperties(sb,properties);
         out.println(sb.toString());
     }
@@ -1019,9 +1019,9 @@ public class ProvToDot {
     }
 
     void prelude(NamedBundle doc, PrintStream out) {
-        out.println("subgraph " + "cluster" + dotify(qnameToString(doc.getId())) + " { ");
+        out.println("subgraph " + "cluster" + dotify(qualifiedNameToString(doc.getId())) + " { ");
         out.println("  label=\"" + localnameToString(doc.getId()) + "\";");
-        out.println("  URL=\"" + qnameToString(doc.getId()) + "\";");
+        out.println("  URL=\"" + qualifiedNameToString(doc.getId()) + "\";");
     }
 
     void postlude(NamedBundle doc, PrintStream out) {

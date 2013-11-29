@@ -297,7 +297,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public Used newUsed(QName id, QualifiedName activity, QualifiedName entity,
+    public Used newUsed(QualifiedName id, QualifiedName activity, QualifiedName entity,
 			XMLGregorianCalendar time,
 			Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
@@ -315,8 +315,8 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     @Override
-    public WasGeneratedBy newWasGeneratedBy(QName id, QName entity,
-					    QName activity,
+    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QualifiedName entity,
+					    QualifiedName activity,
 					    XMLGregorianCalendar time,
 					    Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);

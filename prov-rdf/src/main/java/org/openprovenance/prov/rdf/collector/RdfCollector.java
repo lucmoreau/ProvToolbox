@@ -23,7 +23,7 @@ import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.xml.QualifiedName;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Namespace;
@@ -235,6 +235,15 @@ public class RdfCollector extends RDFHandlerBase {
 	    return null;
 	}
     }
+    protected QualifiedName convertResourceToQualifiedName(Resource resource) {
+	if (resource instanceof URI) {
+	    return convertURIToQualifiedName((URI) resource);
+	} else if (resource instanceof BNode) {
+	    return bnodeToQualifiedName((BNode) resource);
+	} else {
+	    return null;
+	}
+    }
 
     protected Object valueToObject(Value value) {
 	if (value instanceof Resource) {
@@ -344,7 +353,7 @@ public class RdfCollector extends RDFHandlerBase {
     }
 
 
-    private void handleTypes(ProvType[] types, QName context, QName subject) {
+    private void handleTypes(ProvType[] types, QName context, QualifiedName subject) {
 	for (ProvType type : types) {
 	    switch (type) {
 	    case ACTIVITY:
@@ -417,21 +426,6 @@ public class RdfCollector extends RDFHandlerBase {
 
     }
 
-    protected QName convertURIToQNameOLD(URI uri) {
-	// It is not necessary to specify a prefix for a QName. This code was
-	// breaking on the jpl trace.
-	QName qname;
-	if (revnss.containsKey(uri.getNamespace())) {
-	    String prefix = revnss.get(uri.getNamespace());
-	    qname = new QName(uri.getNamespace(), uri.getLocalName(), prefix);
-	} else {
-	    // TODO: Ugly! This generates a prefix when none is given.
-	    String prefix = "ns" + uri.getNamespace().hashCode() + "";//
-	    handleNamespace(prefix, uri.getNamespace());
-	    qname = new QName(uri.getNamespace(), uri.getLocalName(), prefix);
-	}
-	return qname;
-    }
     
     protected QName convertURIToQName(URI uri) {
 	QName qname;
@@ -452,12 +446,32 @@ public class RdfCollector extends RDFHandlerBase {
 	}	
 	return qname;
     }
+    
+    protected QualifiedName convertURIToQualifiedName(URI uri) {
+	QualifiedName qname;
+	String uriNamespace = uri.getNamespace();
+	String prefix=namespace.getNamespaces().get(uriNamespace);
+	String uriLocalName = uri.getLocalName();
+	if (prefix!=null) {
+	    qname = pFactory.newQualifiedName(uriNamespace, uriLocalName, prefix);
+	} else {
+	    String defaultNS=namespace.getDefaultNamespace();
+	    if ((defaultNS!=null) && (defaultNS.equals(uriNamespace))) {
+		qname = pFactory.newQualifiedName(uriNamespace, uriLocalName,null);
+	    } else {
+		namespace.newPrefix(uriNamespace);
+		String pref=namespace.getNamespaces().get(uriNamespace);
+		qname = pFactory.newQualifiedName(uriNamespace, uriLocalName, pref);
+	    }
+	}	
+	return qname;
+    }
 
     /*
      * Handles all attributes (location, role, type, etc). Returns a list of
      * Attribute objects.
      */
-    public List<Attribute> collectAttributes(QName context, QName qname,
+    public List<Attribute> collectAttributes(QName context, QualifiedName qname,
 					     ProvType type) {
 	List<Attribute> attributes = new ArrayList<Attribute>();
 	List<Statement> statements = collators.get(context).get(qname);
@@ -580,7 +594,7 @@ public class RdfCollector extends RDFHandlerBase {
 
 	List<Statement> statements = collators.get(context).get(qname);
 	for (Statement statement : statements) {
-	    QName predQ = convertURIToQName(statement.getPredicate());
+	    QualifiedName predQ = convertURIToQualifiedName(statement.getPredicate());
 	    Value value = statement.getObject();
 
 	    if (predQ.equals(Ontology.QNAME_PROVO_wasInfluencedBy)) {
@@ -601,9 +615,9 @@ public class RdfCollector extends RDFHandlerBase {
 	    }
 
 	    if (value instanceof Resource) {
-		QName valueQ = convertResourceToQName((Resource) value);
+		QualifiedName valueQ = convertResourceToQName((Resource) value);
 		if (predQ.equals(Ontology.QNAME_PROVO_wasDerivedFrom)) {
-		    WasDerivedFrom wdf = pFactory.newWasDerivedFrom((QName) null,
+		    WasDerivedFrom wdf = pFactory.newWasDerivedFrom((QualifiedName) null,
 								    qname,
 								    valueQ,
 								    null, null,
@@ -803,8 +817,9 @@ public class RdfCollector extends RDFHandlerBase {
 	return objects;
     }
 
-    private void createEntity(QName context, QName qname) {
-	List<Attribute> attributes = collectAttributes(context, qname,
+    private void createEntity(QName context, QualifiedName qname) {
+	List<Attribute> attributes = collectAttributes(context, 
+	                                               qname,
 						       ProvType.ENTITY);
 
 	org.openprovenance.prov.model.Entity entity = pFactory.newEntity(qname,
@@ -812,7 +827,7 @@ public class RdfCollector extends RDFHandlerBase {
 	getBundleHolder(context).store(entity);
     }
 
-    private void createAgent(QName context, QName qname) {
+    private void createAgent(QName context, QualifiedName qname) {
 	List<Attribute> attributes = collectAttributes(context, qname,
 						       ProvType.AGENT);
 
@@ -821,7 +836,7 @@ public class RdfCollector extends RDFHandlerBase {
 	getBundleHolder(context).store(agent);
     }
 
-    private void createActivity(QName context, QName qname) {
+    private void createActivity(QName context, QualifiedName qname) {
 	List<Attribute> attributes = collectAttributes(context, qname,
 						       ProvType.ACTIVITY);
 	List<Statement> statements = collators.get(context).get(qname);
@@ -870,6 +885,12 @@ public class RdfCollector extends RDFHandlerBase {
 
     protected QName bnodeToQName(BNode bnode) {
 	return new QName(BNODE_NS, bnode.getID(), "bnode");
+    }
+
+    
+
+    protected QualifiedName bnodeToQualifiedName(BNode bnode) {
+	return pFactory.newQualifiedName(BNODE_NS, bnode.getID(), "bnode");
     }
 
     @Override

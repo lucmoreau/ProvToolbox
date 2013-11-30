@@ -15,7 +15,7 @@ import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.DerivedByInsertionFrom;
 import org.openprovenance.prov.model.DerivedByRemovalFrom;
-import org.openprovenance.prov.model.OldIdentifiable;
+import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Name;
@@ -197,9 +197,9 @@ public class QualifiedCollector extends RdfCollector {
 		for (StatementOrBundle sob : document
 				.getStatementOrBundle())
 		{
-			if (sob instanceof OldIdentifiable)
+			if (sob instanceof Identifiable)
 			{
-				OldIdentifiable idsob = (OldIdentifiable) sob;
+				Identifiable idsob = (Identifiable) sob;
 
 				if (idsob.getId() != null
 						&& idsob.getId().getNamespaceURI().equals(BNODE_NS))
@@ -299,8 +299,9 @@ public class QualifiedCollector extends RdfCollector {
 
 		List<QName> generated = getSubjects(context, pred, qname);
 
-		List<Attribute> attributes = collectAttributes(context, qname,
-				ProvType.DERIVATION);
+		List<Attribute> attributes = collectAttributes(context, 
+		                                               pFactory.newQualifiedName(qname),
+		                                               ProvType.DERIVATION);
 
 		qname = getQualQName(qname);
 
@@ -337,7 +338,7 @@ public class QualifiedCollector extends RdfCollector {
 		List<QName> influencees = getSubjects(context,
 				Ontology.QNAME_PROVO_qualifiedInfluence, qname);
 
-		List<Attribute> attributes = collectAttributes(context, qname,
+		List<Attribute> attributes = collectAttributes(context, pFactory.newQualifiedName(qname),
 				ProvType.INFLUENCE);
 
 		qname = getQualQName(qname);

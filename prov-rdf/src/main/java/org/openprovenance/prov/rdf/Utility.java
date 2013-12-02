@@ -52,7 +52,8 @@ public class Utility {
 
 	RepositoryHelper rHelper = new RepositoryHelper();
 
-	RdfConstructor rdfc = new RdfConstructor(new SesameGraphBuilder(rep, pFactory));
+	RdfConstructor rdfc = new RdfConstructor(new SesameGraphBuilder(rep, pFactory),
+	                                         pFactory);
 	
 	
 	Namespace ns=new Namespace(document.getNamespace());	

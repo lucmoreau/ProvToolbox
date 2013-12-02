@@ -6,7 +6,6 @@ import java.util.Collection;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.Attribute;

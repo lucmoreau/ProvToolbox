@@ -2,6 +2,7 @@ package org.openprovenance.prov.rdf;
 
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.openrdf.model.Resource;
@@ -19,9 +20,11 @@ import org.openrdf.repository.contextaware.ContextAwareRepository;
 public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org.openrdf.model.Statement> {
 
     final ContextAwareRepository manager;
+    private final ProvFactory pFactory;
 
-    public SesameGraphBuilder(ContextAwareRepository manager) {
+    public SesameGraphBuilder(ContextAwareRepository manager, ProvFactory pFactory) {
 	this.manager = manager;
+	this.pFactory=pFactory;
     }
 
     /* (non-Javadoc)
@@ -44,7 +47,7 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
      */
     @Override
     public org.openrdf.model.Statement createDataProperty(org.openrdf.model.Resource r,
-					    QName pred, 
+					    QualifiedName pred, 
 					    LiteralImpl literalImpl) {
 	return new StatementImpl(r, qnameToURI(pred), literalImpl);
     }
@@ -53,8 +56,8 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
      * @see org.openprovenance.prov.rdf.GraphBuilder#createDataProperty(javax.xml.namespace.QName, javax.xml.namespace.QName, org.openrdf.model.impl.LiteralImpl)
      */
     @Override
-    public org.openrdf.model.Statement createDataProperty(QName subject, 
-                                            QName pred,
+    public org.openrdf.model.Statement createDataProperty(QualifiedName subject, 
+                                            QualifiedName pred,
 					    LiteralImpl literalImpl) {
 	return createDataProperty(qnameToResource(subject), pred, literalImpl);
     }
@@ -64,8 +67,8 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
      */
     @Override
     public org.openrdf.model.Statement createObjectProperty(org.openrdf.model.Resource r,
-					      QName pred, 
-					      QName object) {
+                                                            QualifiedName pred, 
+                                                            QualifiedName object) {
 	return new StatementImpl(r, qnameToURI(pred), qnameToURI(object));
     }
 
@@ -74,28 +77,19 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
      */
     @Override
     public  org.openrdf.model.Statement createObjectProperty(QualifiedName subject, 
-                                              QName pred,
-					      QualifiedName object) {
-	return new StatementImpl(qnameToResource(subject), qnameToURI(pred),
+                                                             QualifiedName pred,
+                                                             QualifiedName object) {
+	return new StatementImpl(qnameToResource(subject), 
+	                         qnameToURI(pred),
 				 qnameToResource(object));
     }
 
-    /* (non-Javadoc)
-     * @see org.openprovenance.prov.rdf.GraphBuilder#createObjectProperty(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)
-     */
-    @Override
-    public  org.openrdf.model.Statement createObjectProperty(QName subject, 
-                                              QName pred,
-					      QName object) {
-	return new StatementImpl(qnameToResource(subject), qnameToURI(pred),
-				 qnameToResource(object));
-    }
-
+   
     /* (non-Javadoc)
      * @see org.openprovenance.prov.rdf.GraphBuilder#qnameToURI(javax.xml.namespace.QName)
      */
     @Override
-    public URIImpl qnameToURI(QName qname) {
+    public URIImpl qnameToURI(QualifiedName qname) {
 	if (qname.getNamespaceURI().equals(NamespacePrefixMapper.XSD_NS)) {
 	    return new URIImpl(NamespacePrefixMapper.XSD_HASH_NS
 		    + qname.getLocalPart());
@@ -109,20 +103,6 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
      * @see org.openprovenance.prov.rdf.GraphBuilder#qnameToResource(javax.xml.namespace.QName)
      */
     @Override
-    public Resource qnameToResource(QName qname) {
-	if (qname.getNamespaceURI().equals(NamespacePrefixMapper.XSD_NS)) {
-	    return new URIImpl(NamespacePrefixMapper.XSD_HASH_NS
-		    + qname.getLocalPart());
-	}
-	if (isBlankName(qname)) {
-	    return new BNodeImpl(qname.getLocalPart());
-	} else {
-	    return new URIImpl(qname.getNamespaceURI() + qname.getLocalPart());
-
-	}
-    }
-
-    
     public Resource qnameToResource(QualifiedName qname) {
 	if (qname.getNamespaceURI().equals(NamespacePrefixMapper.XSD_NS)) {
 	    return new URIImpl(NamespacePrefixMapper.XSD_HASH_NS
@@ -152,13 +132,13 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
      * @see org.openprovenance.prov.rdf.GraphBuilder#newBlankName()
      */
     @Override
-    public QName newBlankName() {
+    public QualifiedName newBlankName() {
 	blankCounter++;
 	return newToolboxQName("blank" + blankCounter);
     }
 
-    public static QName newToolboxQName(String local) {
-	return new QName(NamespacePrefixMapper.TOOLBOX_NS, local, "_");
+    public QualifiedName newToolboxQName(String local) {
+	return pFactory.newQualifiedName(NamespacePrefixMapper.TOOLBOX_NS, local, "_");
     }
 
     public void setContext() {
@@ -173,7 +153,7 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
     }
 
     @Override
-    public LiteralImpl newLiteral(String value, QName type) {
+    public LiteralImpl newLiteral(String value, QualifiedName type) {
 	 return new LiteralImpl(value,
 	                        qnameToURI(type));
     }

@@ -4,184 +4,192 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
-import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.Name;
+import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
 
 public class Ontology {
 
-    public Ontology() {
+    final private ProvFactory pFactory;
+
+    public Ontology(ProvFactory pFactory) {
+	this.pFactory=pFactory;
 	initInfluenceTables();
 	initDomainTables();
         initRangeTables();
         initAttributeAsResourceTables();
     }
-    public Hashtable<QName, QName> qualifiedInfluenceTable = new Hashtable<QName, QName>();
-    public Hashtable<QName, QName> influencerTable = new Hashtable<QName, QName>();
-    public Hashtable<QName, QName> unqualifiedTable = new Hashtable<QName, QName>();
-    public Hashtable<QName, QName> otherTable = new Hashtable<QName, QName>();
-    public Hashtable<QName, QName> convertTable = new Hashtable<QName, QName>();
+    public Hashtable<QualifiedName, QualifiedName> qualifiedInfluenceTable = new Hashtable<QualifiedName, QualifiedName>();
+    public Hashtable<QualifiedName, QualifiedName> influencerTable = new Hashtable<QualifiedName, QualifiedName>();
+    public Hashtable<QualifiedName, QualifiedName> unqualifiedTable = new Hashtable<QualifiedName, QualifiedName>();
+    public Hashtable<QualifiedName, QualifiedName> otherTable = new Hashtable<QualifiedName, QualifiedName>();
+    public Hashtable<QualifiedName, QualifiedName> convertTable = new Hashtable<QualifiedName, QualifiedName>();
 
-    public Hashtable<QName, QName> domains = new Hashtable<QName, QName>();
-    public Hashtable<QName, QName> ranges = new Hashtable<QName, QName>();
+    public Hashtable<QualifiedName, QualifiedName> domains = new Hashtable<QualifiedName, QualifiedName>();
+    public Hashtable<QualifiedName, QualifiedName> ranges = new Hashtable<QualifiedName, QualifiedName>();
     
-    public Set<QName> asObjectProperty=new HashSet<QName>();
+    public Set<QualifiedName> asObjectProperty=new HashSet<QualifiedName>();
     
-    public static QName newProvQName(String local) {
-	return new QName(NamespacePrefixMapper.PROV_NS, local,
-			 NamespacePrefixMapper.PROV_PREFIX);
+    public QualifiedName newProvQName(String local) {
+	return pFactory.newQualifiedName(NamespacePrefixMapper.PROV_NS,
+					 local,
+					 NamespacePrefixMapper.PROV_PREFIX);
     }
 
-    public static QName newBookQName(String local) {
-	return new QName(NamespacePrefixMapper.BOOK_NS, local,
-			 NamespacePrefixMapper.BOOK_PREFIX);
+    public QualifiedName newBookQName(String local) {
+	return pFactory.newQualifiedName(NamespacePrefixMapper.BOOK_NS,
+					 local,
+					 NamespacePrefixMapper.BOOK_PREFIX);
     }
 
-    public static QName newRdfQName(String local) {
-	return new QName(NamespacePrefixMapper.RDF_NS, local,
-			 NamespacePrefixMapper.RDF_PREFIX);
+    public QualifiedName newRdfQName(String local) {
+	return pFactory.newQualifiedName(NamespacePrefixMapper.RDF_NS,
+					 local,
+					 NamespacePrefixMapper.RDF_PREFIX);
     }
     
-    public static QName newRdfsQName(String local) {
-	return new QName(NamespacePrefixMapper.RDFS_NS, local,
-			 NamespacePrefixMapper.RDFS_PREFIX);
+    public QualifiedName newRdfsQName(String local) {
+	return pFactory.newQualifiedName(NamespacePrefixMapper.RDFS_NS,
+					 local,
+					 NamespacePrefixMapper.RDFS_PREFIX);
     }
 
-    public static QName QNAME_PROVO_atLocation = newProvQName("atLocation");
-    public static QName QNAME_PROVO_atTime = newProvQName("atTime");
-    public static QName QNAME_PROVO_startedAtTime = newProvQName("startedAtTime");
-    public static QName QNAME_PROVO_endedAtTime = newProvQName("endedAtTime");
-    public static QName QNAME_PROVO_influencer = newProvQName("influencer");
-    public static QName QNAME_PROVO_activity = newProvQName("activity");
-    public static QName QNAME_PROVO_entity = newProvQName("entity");
-    public static QName QNAME_PROVO_agent = newProvQName("agent");
-    public static QName QNAME_PROVO_hadActivity = newProvQName("hadActivity");
-    public static QName QNAME_PROVO_hadEntity = newProvQName("hadEntity");
-    public static QName QNAME_PROVO_hadPlan = newProvQName("hadPlan");
-    public static QName QNAME_PROVO_hadGeneration = newProvQName("hadGeneration");
-    public static QName QNAME_PROVO_hadUsage = newProvQName("hadUsage");
-    public static QName QNAME_PROVO_hadRole = newProvQName("hadRole");
-    public static QName QNAME_PROVO_value = newProvQName("value");
-    public static QName QNAME_PROVO_generated = newProvQName("generated");
+    public QualifiedName QNAME_PROVO_atLocation = newProvQName("atLocation");
+    public QualifiedName QNAME_PROVO_atTime = newProvQName("atTime");
+    public QualifiedName QNAME_PROVO_startedAtTime = newProvQName("startedAtTime");
+    public QualifiedName QNAME_PROVO_endedAtTime = newProvQName("endedAtTime");
+    public QualifiedName QNAME_PROVO_influencer = newProvQName("influencer");
+    public QualifiedName QNAME_PROVO_activity = newProvQName("activity");
+    public QualifiedName QNAME_PROVO_entity = newProvQName("entity");
+    public QualifiedName QNAME_PROVO_agent = newProvQName("agent");
+    public QualifiedName QNAME_PROVO_hadActivity = newProvQName("hadActivity");
+    public QualifiedName QNAME_PROVO_hadEntity = newProvQName("hadEntity");
+    public QualifiedName QNAME_PROVO_hadPlan = newProvQName("hadPlan");
+    public QualifiedName QNAME_PROVO_hadGeneration = newProvQName("hadGeneration");
+    public QualifiedName QNAME_PROVO_hadUsage = newProvQName("hadUsage");
+    public QualifiedName QNAME_PROVO_hadRole = newProvQName("hadRole");
+    public QualifiedName QNAME_PROVO_value = newProvQName("value");
+    public QualifiedName QNAME_PROVO_generated = newProvQName("generated");
     
-    public static QName QNAME_PROVO_generatedAtTime = newProvQName("generatedAtTime");
-    public static QName QNAME_PROVO_influenced = newProvQName("influenced");
-    public static QName QNAME_PROVO_invalidated = newProvQName("invalidated");
-    public static QName QNAME_PROVO_invalidatedAtTime = newProvQName("invalidatedAtTime");
+    public QualifiedName QNAME_PROVO_generatedAtTime = newProvQName("generatedAtTime");
+    public QualifiedName QNAME_PROVO_influenced = newProvQName("influenced");
+    public QualifiedName QNAME_PROVO_invalidated = newProvQName("invalidated");
+    public QualifiedName QNAME_PROVO_invalidatedAtTime = newProvQName("invalidatedAtTime");
 
-    public static QName QNAME_PROVO_Activity = newProvQName("Activity");
-    public static QName QNAME_PROVO_Entity = newProvQName("Entity");
-    public static QName QNAME_PROVO_Agent = newProvQName("Agent");
+    public QualifiedName QNAME_PROVO_Activity = newProvQName("Activity");
+    public QualifiedName QNAME_PROVO_Entity = newProvQName("Entity");
+    public QualifiedName QNAME_PROVO_Agent = newProvQName("Agent");
 
-    public static QName QNAME_PROVO_Influence = newProvQName("Influence");
-    public static QName QNAME_PROVO_qualifiedInfluence = newProvQName("qualifiedInfluence");
-    public static QName QNAME_PROVO_wasInfluencedBy = newProvQName("wasInfluencedBy");
+    public QualifiedName QNAME_PROVO_Influence = newProvQName("Influence");
+    public QualifiedName QNAME_PROVO_qualifiedInfluence = newProvQName("qualifiedInfluence");
+    public QualifiedName QNAME_PROVO_wasInfluencedBy = newProvQName("wasInfluencedBy");
 
-    public static QName QNAME_PROVO_Generation = newProvQName("Generation");
-    public static QName QNAME_PROVO_qualifiedGeneration = newProvQName("qualifiedGeneration");
-    public static QName QNAME_PROVO_wasGeneratedBy = newProvQName("wasGeneratedBy");
+    public QualifiedName QNAME_PROVO_Generation = newProvQName("Generation");
+    public QualifiedName QNAME_PROVO_qualifiedGeneration = newProvQName("qualifiedGeneration");
+    public QualifiedName QNAME_PROVO_wasGeneratedBy = newProvQName("wasGeneratedBy");
 
-    public static QName QNAME_PROVO_Usage = newProvQName("Usage");
-    public static QName QNAME_PROVO_qualifiedUsage = newProvQName("qualifiedUsage");
-    public static QName QNAME_PROVO_used = newProvQName("used");
+    public QualifiedName QNAME_PROVO_Usage = newProvQName("Usage");
+    public QualifiedName QNAME_PROVO_qualifiedUsage = newProvQName("qualifiedUsage");
+    public QualifiedName QNAME_PROVO_used = newProvQName("used");
 
-    public static QName QNAME_PROVO_Invalidation = newProvQName("Invalidation");
-    public static QName QNAME_PROVO_qualifiedInvalidation = newProvQName("qualifiedInvalidation");
-    public static QName QNAME_PROVO_wasInvalidatedBy = newProvQName("wasInvalidatedBy");
+    public QualifiedName QNAME_PROVO_Invalidation = newProvQName("Invalidation");
+    public QualifiedName QNAME_PROVO_qualifiedInvalidation = newProvQName("qualifiedInvalidation");
+    public QualifiedName QNAME_PROVO_wasInvalidatedBy = newProvQName("wasInvalidatedBy");
 
-    public static QName QNAME_PROVO_Start = newProvQName("Start");
-    public static QName QNAME_PROVO_qualifiedStart = newProvQName("qualifiedStart");
-    public static QName QNAME_PROVO_wasStartedBy = newProvQName("wasStartedBy");
+    public QualifiedName QNAME_PROVO_Start = newProvQName("Start");
+    public QualifiedName QNAME_PROVO_qualifiedStart = newProvQName("qualifiedStart");
+    public QualifiedName QNAME_PROVO_wasStartedBy = newProvQName("wasStartedBy");
 
-    public static QName QNAME_PROVO_End = newProvQName("End");
-    public static QName QNAME_PROVO_qualifiedEnd = newProvQName("qualifiedEnd");
-    public static QName QNAME_PROVO_wasEndedBy = newProvQName("wasEndedBy");
+    public QualifiedName QNAME_PROVO_End = newProvQName("End");
+    public QualifiedName QNAME_PROVO_qualifiedEnd = newProvQName("qualifiedEnd");
+    public QualifiedName QNAME_PROVO_wasEndedBy = newProvQName("wasEndedBy");
 
-    public static QName QNAME_PROVO_Association = newProvQName("Association");
-    public static QName QNAME_PROVO_qualifiedAssociation = newProvQName("qualifiedAssociation");
-    public static QName QNAME_PROVO_wasAssociatedWith = newProvQName("wasAssociatedWith");
+    public QualifiedName QNAME_PROVO_Association = newProvQName("Association");
+    public QualifiedName QNAME_PROVO_qualifiedAssociation = newProvQName("qualifiedAssociation");
+    public QualifiedName QNAME_PROVO_wasAssociatedWith = newProvQName("wasAssociatedWith");
 
-    public static QName QNAME_PROVO_Attribution = newProvQName("Attribution");
-    public static QName QNAME_PROVO_qualifiedAttribution = newProvQName("qualifiedAttribution");
-    public static QName QNAME_PROVO_wasAttributedTo = newProvQName("wasAttributedTo");
+    public QualifiedName QNAME_PROVO_Attribution = newProvQName("Attribution");
+    public QualifiedName QNAME_PROVO_qualifiedAttribution = newProvQName("qualifiedAttribution");
+    public QualifiedName QNAME_PROVO_wasAttributedTo = newProvQName("wasAttributedTo");
 
-    public static QName QNAME_PROVO_Delegation = newProvQName("Delegation");
-    public static QName QNAME_PROVO_qualifiedDelegation = newProvQName("qualifiedDelegation");
-    public static QName QNAME_PROVO_actedOnBehalfOf = newProvQName("actedOnBehalfOf");
+    public QualifiedName QNAME_PROVO_Delegation = newProvQName("Delegation");
+    public QualifiedName QNAME_PROVO_qualifiedDelegation = newProvQName("qualifiedDelegation");
+    public QualifiedName QNAME_PROVO_actedOnBehalfOf = newProvQName("actedOnBehalfOf");
 
-    public static QName QNAME_PROVO_Derivation = newProvQName("Derivation");
-    public static QName QNAME_PROVO_qualifiedDerivation = newProvQName("qualifiedDerivation");
-    public static QName QNAME_PROVO_wasDerivedFrom = newProvQName("wasDerivedFrom");
+    public QualifiedName QNAME_PROVO_Derivation = newProvQName("Derivation");
+    public QualifiedName QNAME_PROVO_qualifiedDerivation = newProvQName("qualifiedDerivation");
+    public QualifiedName QNAME_PROVO_wasDerivedFrom = newProvQName("wasDerivedFrom");
 
-    public static QName QNAME_PROVO_Revision = newProvQName("Revision");
-    public static QName QNAME_PROVO_qualifiedRevision = newProvQName("qualifiedRevision");
-    public static QName QNAME_PROVO_wasRevisionOf = newProvQName("wasRevisionOf");
+    public QualifiedName QNAME_PROVO_Revision = newProvQName("Revision");
+    public QualifiedName QNAME_PROVO_qualifiedRevision = newProvQName("qualifiedRevision");
+    public QualifiedName QNAME_PROVO_wasRevisionOf = newProvQName("wasRevisionOf");
 
-    public static QName QNAME_PROVO_Quotation = newProvQName("Quotation");
-    public static QName QNAME_PROVO_qualifiedQuotation = newProvQName("qualifiedQuotation");
-    public static QName QNAME_PROVO_wasQuotedFrom = newProvQName("wasQuotedFrom");
+    public QualifiedName QNAME_PROVO_Quotation = newProvQName("Quotation");
+    public QualifiedName QNAME_PROVO_qualifiedQuotation = newProvQName("qualifiedQuotation");
+    public QualifiedName QNAME_PROVO_wasQuotedFrom = newProvQName("wasQuotedFrom");
     
-    public static QName QNAME_PROVO_PrimarySource = newProvQName("PrimarySource");
-    public static QName QNAME_PROVO_qualifiedPrimarySource = newProvQName("qualifiedPrimarySource");
-    public static QName QNAME_PROVO_hadPrimarySource = newProvQName("hadPrimarySource");
+    public QualifiedName QNAME_PROVO_PrimarySource = newProvQName("PrimarySource");
+    public QualifiedName QNAME_PROVO_qualifiedPrimarySource = newProvQName("qualifiedPrimarySource");
+    public QualifiedName QNAME_PROVO_hadPrimarySource = newProvQName("hadPrimarySource");
 
-    public static QName QNAME_PROVO_Communication = newProvQName("Communication");
-    public static QName QNAME_PROVO_qualifiedCommunication = newProvQName("qualifiedCommunication");
-    public static QName QNAME_PROVO_wasInformedBy = newProvQName("wasInformedBy");
+    public QualifiedName QNAME_PROVO_Communication = newProvQName("Communication");
+    public QualifiedName QNAME_PROVO_qualifiedCommunication = newProvQName("qualifiedCommunication");
+    public QualifiedName QNAME_PROVO_wasInformedBy = newProvQName("wasInformedBy");
 
-    public static QName QNAME_PROVO_specializationOf = newProvQName("specializationOf");
-    public static QName QNAME_PROVO_alternateOf = newProvQName("alternateOf");
-    public static QName QNAME_PROVO_mentionOf = newProvQName("mentionOf");
-    public static QName QNAME_PROVO_asInBundle = newProvQName("asInBundle");
-    public static QName QNAME_PROVO_hadMember = newProvQName("hadMember");
+    public QualifiedName QNAME_PROVO_specializationOf = newProvQName("specializationOf");
+    public QualifiedName QNAME_PROVO_alternateOf = newProvQName("alternateOf");
+    public QualifiedName QNAME_PROVO_mentionOf = newProvQName("mentionOf");
+    public QualifiedName QNAME_PROVO_asInBundle = newProvQName("asInBundle");
+    public QualifiedName QNAME_PROVO_hadMember = newProvQName("hadMember");
 
 
-    public static QName QNAME_PROVO_Bundle = newProvQName("Bundle");
-    public static QName QNAME_PROVO_Organization = newProvQName("Organization");
-    public static QName QNAME_PROVO_Person = newProvQName("Person");
-    public static QName QNAME_PROVO_SoftwareAgent = newProvQName("SoftwareAgent");
-    public static QName QNAME_PROVO_Location = newProvQName("Location");
-    public static QName QNAME_PROVO_Plan = newProvQName("Plan");
-    public static QName QNAME_PROVO_Role = newProvQName("Role");
-    public static QName QNAME_PROVO_Collection = newProvQName("Collection");
-    public static QName QNAME_PROVO_EmptyCollection = newProvQName("EmptyCollection");
+    public QualifiedName QNAME_PROVO_Bundle = newProvQName("Bundle");
+    public QualifiedName QNAME_PROVO_Organization = newProvQName("Organization");
+    public QualifiedName QNAME_PROVO_Person = newProvQName("Person");
+    public QualifiedName QNAME_PROVO_SoftwareAgent = newProvQName("SoftwareAgent");
+    public QualifiedName QNAME_PROVO_Location = newProvQName("Location");
+    public QualifiedName QNAME_PROVO_Plan = newProvQName("Plan");
+    public QualifiedName QNAME_PROVO_Role = newProvQName("Role");
+    public QualifiedName QNAME_PROVO_Collection = newProvQName("Collection");
+    public QualifiedName QNAME_PROVO_EmptyCollection = newProvQName("EmptyCollection");
 
-    public static QName QNAME_PROVO_InstantaneousEvent = newProvQName("InstantaneousEvent");
-    public static QName QNAME_PROVO_EntityInfluence = newProvQName("EntityInfluence");
-    public static QName QNAME_PROVO_ActivityInfluence = newProvQName("ActivityInfluence");
-    public static QName QNAME_PROVO_AgentInfluence = newProvQName("AgentInfluence");
+    public QualifiedName QNAME_PROVO_InstantaneousEvent = newProvQName("InstantaneousEvent");
+    public QualifiedName QNAME_PROVO_EntityInfluence = newProvQName("EntityInfluence");
+    public QualifiedName QNAME_PROVO_ActivityInfluence = newProvQName("ActivityInfluence");
+    public QualifiedName QNAME_PROVO_AgentInfluence = newProvQName("AgentInfluence");
     
-    public static QName QNAME_PROVDC_Contributor = newProvQName("Contributor");
+    public QualifiedName QNAME_PROVDC_Contributor = newProvQName("Contributor");
 
     
-    public static QName QNAME_RDF_TYPE = newRdfQName("type");
-    public static QName QNAME_RDFS_LABEL = newRdfsQName("label");
+    public QualifiedName QNAME_RDF_TYPE = newRdfQName("type");
+    public QualifiedName QNAME_RDFS_LABEL = newRdfsQName("label");
     
     
     // dictionary stuff
     
-    public static QName QNAME_PROVO_Dictionary = newProvQName("Dictionary");
-    public static QName QNAME_PROVO_EmptyDictionary = newProvQName("EmptyDictionary");
-    public static QName QNAME_PROVO_derivedByInsertion = newProvQName("derivedByInsertion");
-    public static QName QNAME_PROVO_Insertion = newProvQName("Insertion");
-    public static QName QNAME_PROVO_qualifiedInsertion = newProvQName("qualifiedInsertion");
-    public static QName QNAME_PROVO_dictionary = newProvQName("dictionary");
-    public static QName QNAME_PROVO_derivedByRemoval = newProvQName("derivedByRemoval");
-    public static QName QNAME_PROVO_Removal = newProvQName("Removal");
-    public static QName QNAME_PROVO_qualifiedRemoval = newProvQName("qualifiedRemoval");
-    public static QName QNAME_PROVO_hadDictionaryMember = newProvQName("hadDictionaryMember");
-	public static QName QNAME_PROVO_insertedKeyEntityPair = newProvQName("insertedKeyEntityPair");
-	public static QName QNAME_PROVO_removedKey = newProvQName("removedKey");
-	public static QName QNAME_PROVO_KeyValuePair = newProvQName("KeyValuePair");
-	public static QName QNAME_PROVO_pairKey = newProvQName("pairKey");
-	public static QName QNAME_PROVO_pairEntity = newProvQName("pairEntity");
+    public QualifiedName QNAME_PROVO_Dictionary = newProvQName("Dictionary");
+    public QualifiedName QNAME_PROVO_EmptyDictionary = newProvQName("EmptyDictionary");
+    public QualifiedName QNAME_PROVO_derivedByInsertion = newProvQName("derivedByInsertion");
+    public QualifiedName QNAME_PROVO_Insertion = newProvQName("Insertion");
+    public QualifiedName QNAME_PROVO_qualifiedInsertion = newProvQName("qualifiedInsertion");
+    public QualifiedName QNAME_PROVO_dictionary = newProvQName("dictionary");
+    public QualifiedName QNAME_PROVO_derivedByRemoval = newProvQName("derivedByRemoval");
+    public QualifiedName QNAME_PROVO_Removal = newProvQName("Removal");
+    public QualifiedName QNAME_PROVO_qualifiedRemoval = newProvQName("qualifiedRemoval");
+    public QualifiedName QNAME_PROVO_hadDictionaryMember = newProvQName("hadDictionaryMember");
+	public QualifiedName QNAME_PROVO_insertedKeyEntityPair = newProvQName("insertedKeyEntityPair");
+	public QualifiedName QNAME_PROVO_removedKey = newProvQName("removedKey");
+	public QualifiedName QNAME_PROVO_KeyValuePair = newProvQName("KeyValuePair");
+	public QualifiedName QNAME_PROVO_pairKey = newProvQName("pairKey");
+	public QualifiedName QNAME_PROVO_pairEntity = newProvQName("pairEntity");
 
     // prov book
 
-    public static QName QNAME_BK_topicIn = newBookQName("topicIn");
+    public QualifiedName QNAME_BK_topicIn = newBookQName("topicIn");
 
 
 	
@@ -272,11 +280,11 @@ public class Ontology {
 	otherTable.put(QNAME_PROVO_Insertion, QNAME_PROVO_insertedKeyEntityPair);
 	otherTable.put(QNAME_PROVO_Removal, QNAME_PROVO_insertedKeyEntityPair);
 
-	convertTable.put(Name.PROV_LABEL_QNAME, QNAME_RDFS_LABEL);
-	convertTable.put(Name.PROV_TYPE_QNAME, QNAME_RDF_TYPE);
-	convertTable.put(Name.PROV_LOCATION_QNAME, QNAME_PROVO_atLocation);
-	convertTable.put(Name.PROV_VALUE_QNAME, QNAME_PROVO_value);
-	convertTable.put(Name.PROV_ROLE_QNAME, QNAME_PROVO_hadRole);
+	convertTable.put(pFactory.newQualifiedName(Name.PROV_LABEL_QNAME), QNAME_RDFS_LABEL);
+	convertTable.put(pFactory.newQualifiedName(Name.PROV_TYPE_QNAME), QNAME_RDF_TYPE);
+	convertTable.put(pFactory.newQualifiedName(Name.PROV_LOCATION_QNAME), QNAME_PROVO_atLocation);
+	convertTable.put(pFactory.newQualifiedName(Name.PROV_VALUE_QNAME), QNAME_PROVO_value);
+	convertTable.put(pFactory.newQualifiedName(Name.PROV_ROLE_QNAME), QNAME_PROVO_hadRole);
     }
     
     void initRangeTables() {
@@ -402,36 +410,36 @@ public class Ontology {
         asObjectProperty.add(QNAME_PROVO_atLocation);
     }
 
-    void activityInfluence(QName name) {
+    void activityInfluence(QualifiedName name) {
 	influencerTable.put(name, QNAME_PROVO_activity);
     }
 
-    void entityInfluence(QName name) {
+    void entityInfluence(QualifiedName name) {
     	influencerTable.put(name, QNAME_PROVO_entity);
         }
-    void dictionaryInfluence(QName name) {
+    void dictionaryInfluence(QualifiedName name) {
     	influencerTable.put(name, QNAME_PROVO_dictionary);
         }
 
-    void agentInfluence(QName name) {
+    void agentInfluence(QualifiedName name) {
 	influencerTable.put(name, QNAME_PROVO_agent);
     }
     
     
 
-    public QName convertToRdf(QName qname) {
-	QName res = convertTable.get(qname);
+    public QualifiedName convertToRdf(QualifiedName qname) {
+	QualifiedName res = convertTable.get(qname);
 	if (res != null)
 	    return res;
 	return qname;
     }
     
-    static
-    public QName convertFromRdf(QName qname) {
+    
+    public QualifiedName convertFromRdf(QualifiedName qname) {
 	if (NamespacePrefixMapper.XSD_HASH_NS.equals(qname.getNamespaceURI())) {
-	    return new QName(NamespacePrefixMapper.XSD_NS,
-	                     qname.getLocalPart(),
-	                     qname.getPrefix());
+	    return pFactory.newQualifiedName(NamespacePrefixMapper.XSD_NS,
+	                                     qname.getLocalPart(),
+	                                     qname.getPrefix());
 	} else {
 	    return qname;
 	}

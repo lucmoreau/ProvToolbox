@@ -59,15 +59,15 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     final GraphBuilder<RESOURCE, LITERAL, STATEMENT> gb;
     final Ontology onto;
 
-    public RdfConstructor(GraphBuilder<RESOURCE, LITERAL, STATEMENT> gb) {
-	this.onto = new Ontology();
+    public RdfConstructor(GraphBuilder<RESOURCE, LITERAL, STATEMENT> gb, ProvFactory pFactory) {
+	this.onto = new Ontology(pFactory);
 	this.gb = gb;
     }
 
     @Override
     public org.openprovenance.prov.xml.Entity newEntity(QualifiedName id,
 							Collection<Attribute> attributes) {
-	assertType(id, Ontology.QNAME_PROVO_Entity);
+	assertType(id, onto.QNAME_PROVO_Entity);
 	processAttributes(id, attributes);
 	return null;
     }
@@ -77,15 +77,15 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 							    XMLGregorianCalendar startTime,
 							    XMLGregorianCalendar endTime,
 							    Collection<Attribute> attributes) {
-	assertType(id, Ontology.QNAME_PROVO_Activity);
+	assertType(id, onto.QNAME_PROVO_Activity);
 	if (startTime != null) {
-	    gb.assertStatement(gb.createDataProperty(id.toQName(),
-						     Ontology.QNAME_PROVO_startedAtTime,
+	    gb.assertStatement(gb.createDataProperty(id,
+						     onto.QNAME_PROVO_startedAtTime,
 						     newLiteral(startTime)));
 	}
 	if (endTime != null) {
-	    gb.assertStatement(gb.createDataProperty(id.toQName(),
-						     Ontology.QNAME_PROVO_endedAtTime,
+	    gb.assertStatement(gb.createDataProperty(id,
+						     onto.QNAME_PROVO_endedAtTime,
 						     newLiteral(endTime)));
 	}
 	processAttributes(id, attributes);
@@ -95,7 +95,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     @Override
     public org.openprovenance.prov.xml.Agent newAgent(QualifiedName id,
 						      Collection<Attribute> attributes) {
-	assertType(id, Ontology.QNAME_PROVO_Agent);
+	assertType(id, onto.QNAME_PROVO_Agent);
 	processAttributes(id, attributes);
 	return null;
     }
@@ -109,7 +109,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	@SuppressWarnings("unused")
 	QualifiedName u = addInfluence(id, activity, entity, time, (QualifiedName)null, false,
-			       attributes, Ontology.QNAME_PROVO_Usage);
+			       attributes, onto.QNAME_PROVO_Usage);
 
 	return null;
     }
@@ -122,7 +122,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	@SuppressWarnings("unused")
 	QualifiedName g = addInfluence(id, entity, activity, time, null, false,
-			       attributes, Ontology.QNAME_PROVO_Generation);
+			       attributes, onto.QNAME_PROVO_Generation);
 
 	return null;
     }
@@ -135,7 +135,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	@SuppressWarnings("unused")
 	QualifiedName inv = addInfluence(id, entity, activity, time, null, false,
-				 attributes, Ontology.QNAME_PROVO_Invalidation);
+				 attributes, onto.QNAME_PROVO_Invalidation);
 
 	return null;
     }
@@ -148,7 +148,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	@SuppressWarnings("unused")
 	QualifiedName s = addInfluence(id, activity, trigger, time, starter, false,
-			       attributes, Ontology.QNAME_PROVO_Start);
+			       attributes, onto.QNAME_PROVO_Start);
 
 	return null;
     }
@@ -160,7 +160,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	@SuppressWarnings("unused")
 	QualifiedName e = addInfluence(id, activity, trigger, time, ender, false,
-			       attributes, Ontology.QNAME_PROVO_End);
+			       attributes, onto.QNAME_PROVO_End);
 
 	return null;
 
@@ -177,31 +177,31 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	int knownSubtypes = 0;
 	QualifiedName der = id;
-	if (org.openprovenance.prov.xml.Helper.hasType(Ontology.QNAME_PROVO_Revision,
+	if (org.openprovenance.prov.xml.Helper.hasType(onto.QNAME_PROVO_Revision,
 						       attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
-			       attributes, Ontology.QNAME_PROVO_Revision);
+			       attributes, onto.QNAME_PROVO_Revision);
 
 	}
-	if (org.openprovenance.prov.xml.Helper.hasType(Ontology.QNAME_PROVO_Quotation,
+	if (org.openprovenance.prov.xml.Helper.hasType(onto.QNAME_PROVO_Quotation,
 						       attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
-			       attributes, Ontology.QNAME_PROVO_Quotation);
+			       attributes, onto.QNAME_PROVO_Quotation);
 
 	}
-	if (org.openprovenance.prov.xml.Helper.hasType(Ontology.QNAME_PROVO_PrimarySource,
+	if (org.openprovenance.prov.xml.Helper.hasType(onto.QNAME_PROVO_PrimarySource,
 						       attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
-			       attributes, Ontology.QNAME_PROVO_PrimarySource);
+			       attributes, onto.QNAME_PROVO_PrimarySource);
 
 	}
 
 	if (knownSubtypes == 0) {
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
-			       attributes, Ontology.QNAME_PROVO_Derivation);
+			       attributes, onto.QNAME_PROVO_Derivation);
 	}
 
 	if (der != null) { // FIXME: a scruffy derivation could just have
@@ -210,12 +210,12 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	    // since generation and usage are not taken into account.
 	    if (generation != null) {
 		gb.assertStatement(gb.createObjectProperty(der,
-							   Ontology.QNAME_PROVO_hadGeneration,
+							   onto.QNAME_PROVO_hadGeneration,
 							   generation));
 	    }
 	    if (usage != null) {
 		gb.assertStatement(gb.createObjectProperty(der,
-							   Ontology.QNAME_PROVO_hadUsage,
+							   onto.QNAME_PROVO_hadUsage,
 							   usage));
 	    }
 	}
@@ -232,7 +232,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	@SuppressWarnings("unused")
 	QualifiedName d = addInfluence(id, a, ag, null, plan, false, attributes,
-			       Ontology.QNAME_PROVO_Association);
+			       onto.QNAME_PROVO_Association);
 
 	return null;
     }
@@ -242,7 +242,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 					      Collection<Attribute> attributes) {
 	@SuppressWarnings("unused")
 	QualifiedName a = addInfluence(id, e, ag, null, null, false, attributes,
-			       Ontology.QNAME_PROVO_Attribution);
+			       onto.QNAME_PROVO_Attribution);
 
 	return null;
     }
@@ -254,7 +254,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	@SuppressWarnings("unused")
 	QualifiedName d = addInfluence(id, agent2, agent1, null, a, false, attributes,
-			       Ontology.QNAME_PROVO_Delegation);
+			       onto.QNAME_PROVO_Delegation);
 
 	return null;
     }
@@ -266,7 +266,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	@SuppressWarnings("unused")
 	QualifiedName com = addInfluence(id, activity2, activity1, null, null, false,
-				 attributes, Ontology.QNAME_PROVO_Communication);
+				 attributes, onto.QNAME_PROVO_Communication);
 
 	return null;
     }
@@ -277,7 +277,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	@SuppressWarnings("unused")
 	QualifiedName u = addInfluence(id, qn2, qn1, null, null, false, attributes,
-			       Ontology.QNAME_PROVO_Influence);
+			       onto.QNAME_PROVO_Influence);
 
 	return null;
     }
@@ -287,7 +287,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	if ((entity2 != null) && (entity1 != null))
 	    gb.assertStatement(gb.createObjectProperty(entity2,
-						       Ontology.QNAME_PROVO_alternateOf,
+						       onto.QNAME_PROVO_alternateOf,
 						       entity1));
 
 	return null;
@@ -298,7 +298,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	if ((entity2 != null) && (entity1 != null))
 	    gb.assertStatement(gb.createObjectProperty(entity2,
-						       Ontology.QNAME_PROVO_specializationOf,
+						       onto.QNAME_PROVO_specializationOf,
 						       entity1));
 
 	return null;
@@ -309,11 +309,11 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	if ((entity2 != null) && (entity1 != null))
 	    gb.assertStatement(gb.createObjectProperty(entity2,
-						       Ontology.QNAME_PROVO_mentionOf,
+						       onto.QNAME_PROVO_mentionOf,
 						       entity1));
 	if ((entity2 != null) && (b != null))
 	    gb.assertStatement(gb.createObjectProperty(entity2,
-						       Ontology.QNAME_PROVO_asInBundle,
+						       onto.QNAME_PROVO_asInBundle,
 						       b));
 
 	return null;
@@ -323,7 +323,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     public HadMember newHadMember(QualifiedName collection, Collection<QualifiedName> ll) {
 	for (QualifiedName entity : ll) {
 	    gb.assertStatement(gb.createObjectProperty(collection,
-						       Ontology.QNAME_PROVO_hadMember,
+						       onto.QNAME_PROVO_hadMember,
 						       entity));
 	}
 	return null;
@@ -359,20 +359,20 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	// TODO: bundle name does not seem to be interpreted according to the
 	// prefix declared in bundle.
 	if (bundleId != null) {
-	    gb.setContext(gb.qnameToURI(bundleId.toQName()));
+	    gb.setContext(gb.qnameToURI(bundleId));
 	}
     }
 
     public void processAttributes(QualifiedName q, Collection<Attribute> attributes) {
-	RESOURCE r = gb.qnameToResource(q.toQName());
+	RESOURCE r = gb.qnameToResource(q);
 
 	if (attributes != null)
 	    for (Attribute attr : attributes) {
 
 		LITERAL lit = null;
 
-		QName type = attr.getType();
-		QName pred = onto.convertToRdf(attr.getElementName()); // FIXME:
+		QualifiedName type = pFactory.newQualifiedName(attr.getType());
+		QualifiedName pred = onto.convertToRdf(pFactory.newQualifiedName(attr.getElementName())); // FIXME:
 								       // convert
 								       // to
 								       // XSD_HASH
@@ -391,7 +391,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 		    value = iString.getValue();
 		    lit = gb.newLiteral(value, iString.getLang());
 		    gb.assertStatement(gb.createDataProperty(r, pred, lit));
-		} else if (attr.getValue() instanceof QName) {
+		} /* else if (attr.getValue() instanceof QName) {
 		    QName qn = (QName) attr.getValue();
 		    String qnAsString;
 		    if ((qn.getPrefix() == null) || (qn.getPrefix().equals(""))) {
@@ -404,10 +404,10 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 			lit = gb.newLiteral(qnAsString, type);
 			gb.assertStatement(gb.createDataProperty(r, pred, lit));
 		    } else {
-			gb.assertStatement(gb.createObjectProperty(r, pred, qn));
+			gb.assertStatement(gb.createObjectProperty(r, pred, pFactory.newQualifiedName(qn)));
 		    }
 
-		} else if (attr.getValue() instanceof QualifiedName) {
+		} */ else if (attr.getValue() instanceof QualifiedName) {
 		    QualifiedName qn = (QualifiedName) attr.getValue();
 		    String qnAsString;
 		    if ((qn.getPrefix() == null) || (qn.getPrefix().equals(""))) {
@@ -420,7 +420,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 			lit = gb.newLiteral(qnAsString, type);
 			gb.assertStatement(gb.createDataProperty(r, pred, lit));
 		    } else {
-			gb.assertStatement(gb.createObjectProperty(r, pred, qn.toQName()));
+			gb.assertStatement(gb.createObjectProperty(r, pred, qn));
 		    }
 
 		} else {
@@ -446,7 +446,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
         			      QualifiedName qualifiedClass) {
 	if ((infl != null) || (time != null) || (other != null) || someOther
 		|| ((attributes != null) && !(attributes.isEmpty()))) {
-	    infl = assertType(infl, qualifiedClass.toQName());
+	    infl = assertType(infl, qualifiedClass);
 	    if (object != null)
 		assertInfluencer(infl, object, qualifiedClass);
 	    if (subject != null) // scruffy provenance: subject may not be
@@ -474,7 +474,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 			      QualifiedName qualifiedClass) {
 	if ((infl != null) || (time != null) || (other != null) || someOther
 		|| ((attributes != null) && !(attributes.isEmpty()))) {
-	    infl = assertType(infl, qualifiedClass.toQName());
+	    infl = assertType(infl, qualifiedClass);
 	    if (object != null)
 		assertInfluencer(infl, object, qualifiedClass);
 	    if (subject != null) // scruffy provenance: subject may not be
@@ -502,15 +502,15 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     }
 
     public void assertAtTime(QualifiedName subject, XMLGregorianCalendar time) {
-	gb.assertStatement(gb.createDataProperty(subject.toQName(),
-						 Ontology.QNAME_PROVO_atTime,
+	gb.assertStatement(gb.createDataProperty(subject,
+						 onto.QNAME_PROVO_atTime,
 						 newLiteral(time)));
 
     }
 
     private LITERAL newLiteral(XMLGregorianCalendar time) {
 	return gb.newLiteral(time.toString(),
-			     Name.QNAME_XSD_HASH_DATETIME);
+			     pFactory.newQualifiedName(Name.QNAME_XSD_HASH_DATETIME));
     }
 
     public void assertQualifiedInfluence(QualifiedName subject, 
@@ -533,13 +533,13 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
  						   object));
      }
 
-    public QualifiedName assertType(QualifiedName infl, QName qualifiedClass) {
+    public QualifiedName assertType(QualifiedName infl, QualifiedName qualifiedClass) {
 	if (infl == null) {
-	    infl = pFactory.newQualifiedName(gb.newBlankName());
+	    infl = gb.newBlankName();
 	}
 	gb.assertStatement(gb.createObjectProperty(infl,
-						   Ontology.QNAME_RDF_TYPE,
-						   pFactory.newQualifiedName(qualifiedClass)));
+						   onto.QNAME_RDF_TYPE,
+						   qualifiedClass));
 	return infl;
     }
 
@@ -600,21 +600,21 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 							    List<Entry> keyEntitySet,
 							    Collection<Attribute> attributes) {
 	QualifiedName der = addInfluence(id, after, before, null, null, true,
-				 attributes, Ontology.QNAME_PROVO_Insertion);
+				 attributes, onto.QNAME_PROVO_Insertion);
 	for (Entry p : keyEntitySet) {
-	    QName thePair = gb.newBlankName();
+	    QualifiedName thePair = gb.newBlankName();
 	    gb.assertStatement(gb.createObjectProperty(der,
-						       Ontology.QNAME_PROVO_insertedKeyEntityPair,
-						       pFactory.newQualifiedName(thePair)));
+						       onto.QNAME_PROVO_insertedKeyEntityPair,
+						       thePair));
 
 	    LITERAL lit = valueToLiteral(p.getKey());
 
 	    gb.assertStatement(gb.createDataProperty(thePair,
-						     Ontology.QNAME_PROVO_pairKey,
+						     onto.QNAME_PROVO_pairKey,
 						     lit));
 	    gb.assertStatement(gb.createObjectProperty(thePair,
-						       Ontology.QNAME_PROVO_pairEntity,
-						       p.getEntity().toQName()));
+						       onto.QNAME_PROVO_pairEntity,
+						       p.getEntity()));
 
 	}
 
@@ -628,7 +628,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
  	} else {
  	    value = val.getValue().toString(); //FIXME: what about Internatioanlized string.
  	}
- 	lit = gb.newLiteral(value, val.getType());
+ 	lit = gb.newLiteral(value, pFactory.newQualifiedName(val.getType()));
  	return lit;
      }
 
@@ -640,7 +640,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	} else {
 	    value = val.toString();
 	}
-	lit = gb.newLiteral(value, vc.getXsdType(val));
+	lit = gb.newLiteral(value, pFactory.newQualifiedName(vc.getXsdType(val)));
 	return lit;
     }
 
@@ -654,13 +654,13 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 							List<Key> keys,
 							Collection<Attribute> attributes) {
 	QualifiedName der = addInfluence(id, after, before, null, null, true,
-				 attributes, Ontology.QNAME_PROVO_Removal);
+				 attributes, onto.QNAME_PROVO_Removal);
 	for (Key k : keys) {
 
 	    LITERAL lit = valueToLiteral(k);
 
-	    gb.assertStatement(gb.createDataProperty(der.toQName(),
-						     Ontology.QNAME_PROVO_removedKey,
+	    gb.assertStatement(gb.createDataProperty(der,
+						     onto.QNAME_PROVO_removedKey,
 						     lit));
 
 	}
@@ -673,18 +673,18 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     public DictionaryMembership newDictionaryMembership(QualifiedName dict,
 							List<Entry> keyEntitySet) {
 	for (Entry p : keyEntitySet) {
-	    QName thePair = gb.newBlankName();
+	    QualifiedName thePair = gb.newBlankName();
 	    gb.assertStatement(gb.createObjectProperty(dict,
-						       Ontology.QNAME_PROVO_hadDictionaryMember,
-						       pFactory.newQualifiedName(thePair)));
+						       onto.QNAME_PROVO_hadDictionaryMember,
+						       thePair));
 	    LITERAL lit = valueToLiteral(p.getKey());
 
 	    gb.assertStatement(gb.createDataProperty(thePair,
-						     Ontology.QNAME_PROVO_pairKey,
+						     onto.QNAME_PROVO_pairKey,
 						     lit));
 	    gb.assertStatement(gb.createObjectProperty(thePair,
-						       Ontology.QNAME_PROVO_pairEntity,
-						       p.getEntity().toQName()));
+						       onto.QNAME_PROVO_pairEntity,
+						       p.getEntity()));
 
 	}
 	return null;

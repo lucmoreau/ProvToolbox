@@ -101,7 +101,7 @@ public class QualifiedCollector extends RdfCollector {
 				Value value = statement.getObject();
 				if (pred.equals(predQ) && value instanceof Resource)
 				{
-					QName valQ = convertResourceToQName((Resource) value);
+					QName valQ = convertResourceToQualifiedName((Resource) value);
 					if (valQ.equals(object))
 					{
 						subjects.add(subject);

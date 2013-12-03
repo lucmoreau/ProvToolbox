@@ -134,7 +134,7 @@ public class Types {
 		return this.extendsTypes;
 	}
 
-	public static ProvType lookup(QName qname)
+	public static ProvType lookup(QualifiedName qname)
 	{
 		return lookup.get(qname);
 	}

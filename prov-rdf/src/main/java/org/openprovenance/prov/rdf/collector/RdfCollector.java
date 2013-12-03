@@ -156,6 +156,12 @@ public class RdfCollector extends RDFHandlerBase {
 				&& qname.getLocalPart().equals(object.getID())) {
 			    return true;
 			}
+		    }  else if (value instanceof QualifiedName) {
+			QualifiedName qname = (QualifiedName) value;
+			if (qname.getNamespaceURI().equals(BNODE_NS)
+				&& qname.getLocalPart().equals(object.getID())) {
+			    return true;
+			}
 		    } else if (value instanceof Resource) {
 			QualifiedName qname = convertResourceToQualifiedName((Resource) value);
 			if (qname.getNamespaceURI().equals(BNODE_NS)
@@ -181,7 +187,7 @@ public class RdfCollector extends RDFHandlerBase {
 							QualifiedName qname, QualifiedName uri) {
 	ArrayList<Statement> statements = new ArrayList<Statement>();
 	for (Statement statement : collators.get(context).get(qname)) {
-	    if (convertURIToQName(statement.getPredicate()).equals(uri)) {
+	    if (convertURIToQualifiedName(statement.getPredicate()).equals(uri)) {
 		statements.add(statement);
 	    }
 	}
@@ -205,7 +211,7 @@ public class RdfCollector extends RDFHandlerBase {
 	List<Statement> statements = collators.get(context).get(qname);
 	List<Types.ProvType> explicitOptions = new ArrayList<Types.ProvType>();
 	for (Statement statement : statements) {
-	    QName predQ = convertURIToQName(statement.getPredicate());
+	    QualifiedName predQ = convertURIToQualifiedName(statement.getPredicate());
 	    if (predQ.equals(onto.QNAME_RDF_TYPE)) {
 		Value value = statement.getObject();
 		if (!(value instanceof URI)) {
@@ -214,7 +220,7 @@ public class RdfCollector extends RDFHandlerBase {
 		if (!isProvURI(convertURIToQualifiedName((URI) value))) {
 		    continue;
 		}
-		Types.ProvType provType = Types.ProvType.lookup(convertURIToQName((URI) value));
+		Types.ProvType provType = Types.ProvType.lookup(convertURIToQualifiedName((URI) value));
 		if (provType != null)
 		    explicitOptions.add(provType);
 	    }
@@ -256,7 +262,7 @@ public class RdfCollector extends RDFHandlerBase {
 	    uw.setValue(java.net.URI.create(uri.toString()));
 	    return uw;
 	} else if (value instanceof BNode) {
-	    return new QName(((BNode) (value)).getID());
+	    return new QName(((BNode) (value)).getID()); //FIXME
 	} else {
 	    return null;
 	}
@@ -278,7 +284,7 @@ public class RdfCollector extends RDFHandlerBase {
 	    uw.setValue(java.net.URI.create(uri.toString()));
 	    return pFactory.newKey(uri.toString(), Name.QNAME_XSD_QNAME);
 	} else if (value instanceof BNode) {
-	    return pFactory.newKey(new QName(((BNode) (value)).getID()),
+	    return pFactory.newKey(new QName(((BNode) (value)).getID()), //FIXME
 	                           Name.QNAME_XSD_QNAME);
 	} else {
 	    return null;
@@ -298,8 +304,8 @@ public class RdfCollector extends RDFHandlerBase {
 
 	if (literal.getDatatype() != null) {
 	    if (literal instanceof URI) {
-		QName qname = (QName) namespace.stringToQName(literal.getDatatype()
-							       .stringValue());
+		QualifiedName qname = namespace.stringToQualifiedName(literal.getDatatype()
+							       .stringValue(),pFactory);
 		dataType = qname.getNamespaceURI() + qname.getLocalPart();
 	    } else {
 		dataType = literal.getDatatype().stringValue();
@@ -307,7 +313,7 @@ public class RdfCollector extends RDFHandlerBase {
 	}
 
 	if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "QName")) {
-	    return namespace.stringToQName(literal.stringValue());
+	    return namespace.stringToQualifiedName(literal.stringValue(), pFactory);
 	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "string")) {
 	    return literal.stringValue();
 	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
@@ -391,8 +397,8 @@ public class RdfCollector extends RDFHandlerBase {
 
     protected void buildBundles() {
 	// Add 'default' bundle
-	if (bundles.containsKey(new QName(""))) {
-	    BundleHolder defaultBundle = bundles.get(new QName(""));
+	if (bundles.containsKey(new QName(""))) { //FIXME
+	    BundleHolder defaultBundle = bundles.get(new QName("")); //FIXME
 	    for (org.openprovenance.prov.model.Activity activity : defaultBundle.getActivities()) {
 		document.getStatementOrBundle().add(activity);
 	    }
@@ -426,26 +432,7 @@ public class RdfCollector extends RDFHandlerBase {
 
     }
 
-    
-    protected QName convertURIToQName(URI uri) {
-	QName qname;
-	String uriNamespace = uri.getNamespace();
-	String prefix=namespace.getNamespaces().get(uriNamespace);
-	String uriLocalName = uri.getLocalName();
-	if (prefix!=null) {
-	    qname = new QName(uriNamespace, uriLocalName, prefix);
-	} else {
-	    String defaultNS=namespace.getDefaultNamespace();
-	    if ((defaultNS!=null) && (defaultNS.equals(uriNamespace))) {
-		qname = new QName(uriNamespace, uriLocalName);
-	    } else {
-		namespace.newPrefix(uriNamespace);
-		String pref=namespace.getNamespaces().get(uriNamespace);
-		qname = new QName(uriNamespace, uriLocalName, pref);
-	    }
-	}	
-	return qname;
-    }
+
     
     protected QualifiedName convertURIToQualifiedName(URI uri) {
 	QualifiedName qname;
@@ -762,17 +749,12 @@ public class RdfCollector extends RDFHandlerBase {
 	}
     }
 
-    private org.openprovenance.prov.model.QualifiedName q(QName valueQ) {
-	if (valueQ==null) return null;
-	return pFactory.newQualifiedName(valueQ);
-    }
-
     protected List<Value> getDataObjects(QualifiedName context, QualifiedName subject,
 					 QualifiedName pred) {
 	List<Statement> statements = collators.get(context).get(subject);
 	List<Value> objects = new ArrayList<Value>();
 	for (Statement statement : statements) {
-	    QName predQ = convertURIToQName(statement.getPredicate());
+	    QualifiedName predQ = convertURIToQualifiedName(statement.getPredicate());
 	    Value value = statement.getObject();
 	    if (pred.equals(predQ) && (!(value instanceof Resource))) {
 		objects.add(value);
@@ -810,7 +792,7 @@ public class RdfCollector extends RDFHandlerBase {
 	List<Statement> statements = collators.get(context).get(subject);
 	List<QualifiedName> objects = new ArrayList<QualifiedName>();
 	for (Statement statement : statements) {
-	    QName predQ = convertURIToQName(statement.getPredicate());
+	    QualifiedName predQ = convertURIToQualifiedName(statement.getPredicate());
 	    Value value = statement.getObject();
 	    if (pred.equals(predQ) && value instanceof Resource) {
 		objects.add(convertResourceToQualifiedName((Resource) value));
@@ -847,7 +829,7 @@ public class RdfCollector extends RDFHandlerBase {
 	XMLGregorianCalendar endTime = null;
 
 	for (Statement statement : statements) {
-	    QName predQ = convertURIToQName(statement.getPredicate());
+	    QualifiedName predQ = convertURIToQualifiedName(statement.getPredicate());
 	    Value value = statement.getObject();
 	    if (value instanceof Literal) {
 		if (predQ.equals(onto.QNAME_PROVO_startedAtTime)) {
@@ -885,11 +867,7 @@ public class RdfCollector extends RDFHandlerBase {
 	this.revnss.put(namespace, prefix);
     }
 
-    protected QName bnodeToQName(BNode bnode) {
-	return new QName(BNODE_NS, bnode.getID(), "bnode");
-    }
-
-    
+  
 
     protected QualifiedName bnodeToQualifiedName(BNode bnode) {
 	return pFactory.newQualifiedName(BNODE_NS, bnode.getID(), "bnode");

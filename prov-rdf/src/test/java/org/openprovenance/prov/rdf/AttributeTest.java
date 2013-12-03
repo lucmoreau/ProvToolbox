@@ -2,11 +2,14 @@ package org.openprovenance.prov.rdf;
 
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.xml.UncheckedTestException;
 import org.openrdf.rio.RDFFormat;
 
 public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
-	final Utility u = new Utility();
+	final ProvFactory pFactory=new org.openprovenance.prov.xml.ProvFactory();
+	final Ontology onto=new Ontology(pFactory);    	
+	final Utility u = new Utility(pFactory,onto);
 
 
 	public AttributeTest(String testName) {
@@ -38,7 +41,7 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 		{
 			try
 			{
-				u.dumpRDF(pFactory, doc, RDFFormat.TRIG, file);
+				u.dumpRDF(doc, RDFFormat.TRIG, file);
 			} catch (Exception e)
 			{
 				e.printStackTrace();

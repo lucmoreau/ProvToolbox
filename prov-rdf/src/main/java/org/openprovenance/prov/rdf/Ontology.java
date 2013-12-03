@@ -8,7 +8,6 @@ import java.util.Set;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 
 
@@ -17,6 +16,7 @@ public class Ontology {
     final private ProvFactory pFactory;
 
     public Ontology(ProvFactory pFactory) {
+	System.out.println("In ontology " + pFactory);
 	this.pFactory=pFactory;
 	initInfluenceTables();
 	initDomainTables();
@@ -35,6 +35,7 @@ public class Ontology {
     public Set<QualifiedName> asObjectProperty=new HashSet<QualifiedName>();
     
     public QualifiedName newProvQName(String local) {
+	System.out.println("newProvQNAME " + pFactory);
 	return pFactory.newQualifiedName(NamespacePrefixMapper.PROV_NS,
 					 local,
 					 NamespacePrefixMapper.PROV_PREFIX);

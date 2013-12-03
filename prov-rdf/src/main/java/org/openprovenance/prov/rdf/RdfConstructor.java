@@ -16,7 +16,7 @@ import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.InternationalizedString;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.Entry;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Name;
@@ -26,7 +26,6 @@ import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.model.Used;
-import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasDerivedFrom;
@@ -57,10 +56,13 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
     final GraphBuilder<RESOURCE, LITERAL, STATEMENT> gb;
     final Ontology onto;
+    final ProvFactory pFactory;
+
 
     public RdfConstructor(GraphBuilder<RESOURCE, LITERAL, STATEMENT> gb, ProvFactory pFactory) {
 	this.onto = new Ontology(pFactory);
 	this.gb = gb;
+	this.pFactory=pFactory;
     }
 
     @Override
@@ -358,12 +360,12 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	// TODO: bundle name does not seem to be interpreted according to the
 	// prefix declared in bundle.
 	if (bundleId != null) {
-	    gb.setContext(gb.qnameToURI(bundleId));
+	    gb.setContext(gb.qualifiedNameToURI(bundleId));
 	}
     }
 
     public void processAttributes(QualifiedName q, Collection<Attribute> attributes) {
-	RESOURCE r = gb.qnameToResource(q);
+	RESOURCE r = gb.qualifiedNameToResource(q);
 
 	if (attributes != null)
 	    for (Attribute attr : attributes) {
@@ -631,20 +633,8 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
  	return lit;
      }
 
-    private LITERAL valueToLiteral(Object val) {
-	LITERAL lit = null;
-	String value;
-	if (val instanceof QName) {
-	    value = Namespace.qnameToStringWithNamespace((QName) val);
-	} else {
-	    value = val.toString();
-	}
-	lit = gb.newLiteral(value, pFactory.newQualifiedName(vc.getXsdType(val)));
-	return lit;
-    }
+    
 
-    ProvFactory pFactory=ProvFactory.getFactory();
-    ValueConverter vc = new ValueConverter(pFactory,null);
 
     @Override
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QualifiedName id,

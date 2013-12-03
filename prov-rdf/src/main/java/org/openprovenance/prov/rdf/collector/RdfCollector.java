@@ -10,7 +10,6 @@ import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.URIWrapper;
 import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
@@ -22,7 +21,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.Entry;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Key;
@@ -52,19 +51,19 @@ import org.openrdf.rio.helpers.RDFHandlerBase;
 
 public class RdfCollector extends RDFHandlerBase {
 
-    protected ProvFactory pFactory;
+    final protected ProvFactory pFactory;
     protected HashMap<QualifiedName, HashMap<QualifiedName, List<Statement>>> collators;
     private Hashtable<QualifiedName, BundleHolder> bundles;
     protected Document document;
     private Hashtable<String, String> revnss;
     private ValueConverter valueConverter;
-    final private Ontology onto;
+    final protected Ontology onto;
     protected static String BNODE_NS = "http://openprovenance.org/provtoolbox/bnode/";
 
     
-    public RdfCollector(ProvFactory pFactory) {
+    public RdfCollector(ProvFactory pFactory, Ontology onto) {
    	this.pFactory = pFactory;
-   	this.onto=new Ontology(pFactory);
+   	this.onto=onto;
    	this.collators = new HashMap<QualifiedName, HashMap<QualifiedName, List<Statement>>>();
    	this.revnss = new Hashtable<String, String>();
    	this.document = pFactory.newDocument();

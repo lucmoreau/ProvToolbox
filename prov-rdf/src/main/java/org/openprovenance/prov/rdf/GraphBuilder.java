@@ -1,6 +1,5 @@
 package org.openprovenance.prov.rdf;
 
-import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.QualifiedName;
 
@@ -27,9 +26,9 @@ public interface GraphBuilder<RESOURCE, LITERAL, STATEMENT> {
 
     public abstract LITERAL newLiteral(String value, String lang);
 
-    public abstract RESOURCE qnameToURI(QualifiedName qname);
+    public abstract RESOURCE qualifiedNameToURI(QualifiedName qname);
 
-    public abstract RESOURCE qnameToResource(QualifiedName qname);
+    public abstract RESOURCE qualifiedNameToResource(QualifiedName qname);
 
     public abstract QualifiedName newBlankName();
 

@@ -8,7 +8,6 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.URIWrapper;
 import org.openprovenance.prov.rdf.Ontology;
@@ -150,13 +149,13 @@ public class RdfCollector extends RDFHandlerBase {
 			if (value.equals(object)) {
 			    return true;
 			}
-		    } else if (value instanceof QName) {
-			QName qname = (QName) value;
+		    } /* else if (value instanceof javax.xml.namespace.QName) {
+			javax.xml.namespace.QName qname = (javax.xml.namespace.QName) value;
 			if (qname.getNamespaceURI().equals(BNODE_NS)
 				&& qname.getLocalPart().equals(object.getID())) {
 			    return true;
 			}
-		    }  else if (value instanceof QualifiedName) {
+		    } */  else if (value instanceof QualifiedName) {
 			QualifiedName qname = (QualifiedName) value;
 			if (qname.getNamespaceURI().equals(BNODE_NS)
 				&& qname.getLocalPart().equals(object.getID())) {
@@ -168,6 +167,8 @@ public class RdfCollector extends RDFHandlerBase {
 				&& qname.getLocalPart().equals(object.getID())) {
 			    return true;
 			}
+		    } else {	
+			
 		    }
 		}
 	    }
@@ -262,10 +263,14 @@ public class RdfCollector extends RDFHandlerBase {
 	    uw.setValue(java.net.URI.create(uri.toString()));
 	    return uw;
 	} else if (value instanceof BNode) {
-	    return new QName(((BNode) (value)).getID()); //FIXME
+	    return bnodeToQualifiedName(value); //FIXME
 	} else {
 	    return null;
 	}
+    }
+
+    public QualifiedName bnodeToQualifiedName(Value value) {
+	return pFactory.newQualifiedName("http://bnodeNS/", ((BNode) (value)).getID(), null);
     }
 
 
@@ -277,6 +282,9 @@ public class RdfCollector extends RDFHandlerBase {
 	} else if (value instanceof Literal) {
 	    Object o=decodeLiteral((Literal) value);
 	    //FIXME: lossy conversion, I have lost the rdf type by converting to java
+	    if (o instanceof QualifiedName) {
+		return pFactory.newKey(o, Name.QNAME_XSD_QNAME);
+	    }
 	    return pFactory.newKey(o, this.valueConverter.getXsdType(o));
 	} else if (value instanceof URI) {
 	    URI uri = (URI) (value);
@@ -284,7 +292,7 @@ public class RdfCollector extends RDFHandlerBase {
 	    uw.setValue(java.net.URI.create(uri.toString()));
 	    return pFactory.newKey(uri.toString(), Name.QNAME_XSD_QNAME);
 	} else if (value instanceof BNode) {
-	    return pFactory.newKey(new QName(((BNode) (value)).getID()), //FIXME
+	    return pFactory.newKey(bnodeToQualifiedName(value), //FIXME
 	                           Name.QNAME_XSD_QNAME);
 	} else {
 	    return null;
@@ -397,8 +405,8 @@ public class RdfCollector extends RDFHandlerBase {
 
     protected void buildBundles() {
 	// Add 'default' bundle
-	if (bundles.containsKey(new QName(""))) { //FIXME
-	    BundleHolder defaultBundle = bundles.get(new QName("")); //FIXME
+	if (bundles.containsKey(emptyQualifiedName())) { //FIXME
+	    BundleHolder defaultBundle = bundles.get(emptyQualifiedName()); //FIXME
 	    for (org.openprovenance.prov.model.Activity activity : defaultBundle.getActivities()) {
 		document.getStatementOrBundle().add(activity);
 	    }
@@ -430,6 +438,10 @@ public class RdfCollector extends RDFHandlerBase {
 	    document.getStatementOrBundle().add(bundle);
 	}
 
+    }
+
+    public QualifiedName emptyQualifiedName() {
+	return pFactory.newQualifiedName("","",null);//FIXME
     }
 
 
@@ -749,7 +761,8 @@ public class RdfCollector extends RDFHandlerBase {
 	}
     }
 
-    protected List<Value> getDataObjects(QualifiedName context, QualifiedName subject,
+    protected List<Value> getDataObjects(QualifiedName context, 
+                                         QualifiedName subject,
 					 QualifiedName pred) {
 	List<Statement> statements = collators.get(context).get(subject);
 	List<Value> objects = new ArrayList<Value>();

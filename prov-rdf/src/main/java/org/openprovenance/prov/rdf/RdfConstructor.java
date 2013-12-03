@@ -624,8 +624,8 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     private LITERAL valueToLiteral(TypedValue val) {
  	LITERAL lit = null;
  	String value;
- 	if (val.getValue() instanceof QName) {
- 	    value = Namespace.qnameToStringWithNamespace((QName) val.getValue());
+ 	if (val.getValue() instanceof QualifiedName) {
+ 	    value = Namespace.qnameToStringWithNamespace((QualifiedName) val.getValue());
  	} else {
  	    value = val.getValue().toString(); //FIXME: what about Internatioanlized string.
  	}

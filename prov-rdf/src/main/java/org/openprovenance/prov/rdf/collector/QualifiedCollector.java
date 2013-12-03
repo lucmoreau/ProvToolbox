@@ -416,8 +416,9 @@ public class QualifiedCollector extends RdfCollector {
 	{
 		List<QualifiedName> objectDictionaries = getObjects(context, qname,
 				onto.QNAME_PROVO_dictionary);
-		List<Value> keys = getDataObjects(context, qname,
-				onto.QNAME_PROVO_removedKey);
+		List<Value> keys = getDataObjects(context, 
+		                                  qname,
+		                                  onto.QNAME_PROVO_removedKey);
 		List<QualifiedName> subjectDictionaries = getSubjects(context,
 				onto.QNAME_PROVO_qualifiedRemoval, qname);
 
@@ -428,16 +429,15 @@ public class QualifiedCollector extends RdfCollector {
 		
 		List<Key> theKeys=new LinkedList<Key>();
 		for (Value key: keys) {
-			theKeys.add(valueToKey(key));
+		    theKeys.add(valueToKey(key));
 		}
 
 		List<List<?>> perms = permute(subjectDictionaries, objectDictionaries);
-		for (List<?> perm : perms)
-		{
-			DerivedByRemovalFrom dbif = pFactory.newDerivedByRemovalFrom(qname, 
-					(QualifiedName) perm.get(0),
+		for (List<?> perm : perms) {
+		    DerivedByRemovalFrom dbif = pFactory.newDerivedByRemovalFrom(qname, 
+		                                                                 (QualifiedName) perm.get(0),
 					(QualifiedName) perm.get(1),
-	                theKeys,
+					theKeys,
 					attributes);
 					
 			store(context, dbif);

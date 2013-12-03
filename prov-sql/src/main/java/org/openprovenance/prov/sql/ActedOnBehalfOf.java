@@ -81,11 +81,11 @@ public class ActedOnBehalfOf
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef delegate;
+    protected org.openprovenance.prov.model.QualifiedName delegate;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef responsible;
+    protected org.openprovenance.prov.model.QualifiedName responsible;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef activity;
+    protected org.openprovenance.prov.model.QualifiedName activity;
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
     
@@ -110,7 +110,7 @@ public class ActedOnBehalfOf
         CascadeType.ALL
     })
     @JoinColumn(name = "DELEGATE")
-    public org.openprovenance.prov.model.IDRef getDelegate() {
+    public org.openprovenance.prov.model.QualifiedName getDelegate() {
         return delegate;
     }
 
@@ -122,7 +122,7 @@ public class ActedOnBehalfOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setDelegate(org.openprovenance.prov.model.IDRef value) {
+    public void setDelegate(org.openprovenance.prov.model.QualifiedName value) {
         this.delegate = value;
     }
 
@@ -138,7 +138,7 @@ public class ActedOnBehalfOf
         CascadeType.ALL
     })
     @JoinColumn(name = "RESPONSIBLE")
-    public org.openprovenance.prov.model.IDRef getResponsible() {
+    public org.openprovenance.prov.model.QualifiedName getResponsible() {
         return responsible;
     }
 
@@ -150,7 +150,7 @@ public class ActedOnBehalfOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setResponsible(org.openprovenance.prov.model.IDRef value) {
+    public void setResponsible(org.openprovenance.prov.model.QualifiedName value) {
         this.responsible = value;
     }
 
@@ -166,7 +166,7 @@ public class ActedOnBehalfOf
         CascadeType.ALL
     })
     @JoinColumn(name = "ACTIVITY")
-    public org.openprovenance.prov.model.IDRef getActivity() {
+    public org.openprovenance.prov.model.QualifiedName getActivity() {
         return activity;
     }
 
@@ -178,7 +178,7 @@ public class ActedOnBehalfOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setActivity(org.openprovenance.prov.model.IDRef value) {
+    public void setActivity(org.openprovenance.prov.model.QualifiedName value) {
         this.activity = value;
     }
 
@@ -366,27 +366,27 @@ public class ActedOnBehalfOf
         }
         final ActedOnBehalfOf that = ((ActedOnBehalfOf) object);
         {
-            org.openprovenance.prov.model.IDRef lhsDelegate;
+            org.openprovenance.prov.model.QualifiedName lhsDelegate;
             lhsDelegate = this.getDelegate();
-            org.openprovenance.prov.model.IDRef rhsDelegate;
+            org.openprovenance.prov.model.QualifiedName rhsDelegate;
             rhsDelegate = that.getDelegate();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "delegate", lhsDelegate), LocatorUtils.property(thatLocator, "delegate", rhsDelegate), lhsDelegate, rhsDelegate)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsResponsible;
+            org.openprovenance.prov.model.QualifiedName lhsResponsible;
             lhsResponsible = this.getResponsible();
-            org.openprovenance.prov.model.IDRef rhsResponsible;
+            org.openprovenance.prov.model.QualifiedName rhsResponsible;
             rhsResponsible = that.getResponsible();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "responsible", lhsResponsible), LocatorUtils.property(thatLocator, "responsible", rhsResponsible), lhsResponsible, rhsResponsible)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsActivity;
+            org.openprovenance.prov.model.QualifiedName lhsActivity;
             lhsActivity = this.getActivity();
-            org.openprovenance.prov.model.IDRef rhsActivity;
+            org.openprovenance.prov.model.QualifiedName rhsActivity;
             rhsActivity = that.getActivity();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "activity", lhsActivity), LocatorUtils.property(thatLocator, "activity", rhsActivity), lhsActivity, rhsActivity)) {
                 return false;
@@ -439,17 +439,17 @@ public class ActedOnBehalfOf
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            org.openprovenance.prov.model.IDRef theDelegate;
+            org.openprovenance.prov.model.QualifiedName theDelegate;
             theDelegate = this.getDelegate();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "delegate", theDelegate), currentHashCode, theDelegate);
         }
         {
-            org.openprovenance.prov.model.IDRef theResponsible;
+            org.openprovenance.prov.model.QualifiedName theResponsible;
             theResponsible = this.getResponsible();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "responsible", theResponsible), currentHashCode, theResponsible);
         }
         {
-            org.openprovenance.prov.model.IDRef theActivity;
+            org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "activity", theActivity), currentHashCode, theActivity);
         }

@@ -79,9 +79,9 @@ public class WasInformedBy
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef informed;
+    protected org.openprovenance.prov.model.QualifiedName informed;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef informant;
+    protected org.openprovenance.prov.model.QualifiedName informant;
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
     
@@ -107,7 +107,7 @@ public class WasInformedBy
         CascadeType.ALL
     })
     @JoinColumn(name = "INFORMED")
-    public org.openprovenance.prov.model.IDRef getInformed() {
+    public org.openprovenance.prov.model.QualifiedName getInformed() {
         return informed;
     }
 
@@ -119,7 +119,7 @@ public class WasInformedBy
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setInformed(org.openprovenance.prov.model.IDRef value) {
+    public void setInformed(org.openprovenance.prov.model.QualifiedName value) {
         this.informed = value;
     }
 
@@ -135,7 +135,7 @@ public class WasInformedBy
         CascadeType.ALL
     })
     @JoinColumn(name = "INFORMANT")
-    public org.openprovenance.prov.model.IDRef getInformant() {
+    public org.openprovenance.prov.model.QualifiedName getInformant() {
         return informant;
     }
 
@@ -147,7 +147,7 @@ public class WasInformedBy
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setInformant(org.openprovenance.prov.model.IDRef value) {
+    public void setInformant(org.openprovenance.prov.model.QualifiedName value) {
         this.informant = value;
     }
 
@@ -333,18 +333,18 @@ public class WasInformedBy
         }
         final WasInformedBy that = ((WasInformedBy) object);
         {
-            org.openprovenance.prov.model.IDRef lhsInformed;
+            org.openprovenance.prov.model.QualifiedName lhsInformed;
             lhsInformed = this.getInformed();
-            org.openprovenance.prov.model.IDRef rhsInformed;
+            org.openprovenance.prov.model.QualifiedName rhsInformed;
             rhsInformed = that.getInformed();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "informed", lhsInformed), LocatorUtils.property(thatLocator, "informed", rhsInformed), lhsInformed, rhsInformed)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsInformant;
+            org.openprovenance.prov.model.QualifiedName lhsInformant;
             lhsInformant = this.getInformant();
-            org.openprovenance.prov.model.IDRef rhsInformant;
+            org.openprovenance.prov.model.QualifiedName rhsInformant;
             rhsInformant = that.getInformant();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "informant", lhsInformant), LocatorUtils.property(thatLocator, "informant", rhsInformant), lhsInformant, rhsInformant)) {
                 return false;
@@ -397,12 +397,12 @@ public class WasInformedBy
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            org.openprovenance.prov.model.IDRef theInformed;
+            org.openprovenance.prov.model.QualifiedName theInformed;
             theInformed = this.getInformed();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "informed", theInformed), currentHashCode, theInformed);
         }
         {
-            org.openprovenance.prov.model.IDRef theInformant;
+            org.openprovenance.prov.model.QualifiedName theInformant;
             theInformant = this.getInformant();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "informant", theInformant), currentHashCode, theInformant);
         }

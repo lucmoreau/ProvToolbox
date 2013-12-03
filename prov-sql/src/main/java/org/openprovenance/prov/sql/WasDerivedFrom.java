@@ -2,9 +2,7 @@ package org.openprovenance.prov.sql;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,10 +16,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.QNameAsString;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 import org.jvnet.jaxb2_commons.lang.Equals;
+import javax.xml.namespace.QName;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
 import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
@@ -32,6 +28,7 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.xml.AttributeList;
 import org.openprovenance.prov.xml.HasAllAttributes;
 import org.openprovenance.prov.xml.SortedAttributeList;
@@ -90,15 +87,15 @@ public class WasDerivedFrom
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef generatedEntity;
+    protected org.openprovenance.prov.model.QualifiedName generatedEntity;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef usedEntity;
+    protected org.openprovenance.prov.model.QualifiedName usedEntity;
     @XmlElement(type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef activity;
+    protected org.openprovenance.prov.model.QualifiedName activity;
     @XmlElement(type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef generation;
+    protected org.openprovenance.prov.model.QualifiedName generation;
     @XmlElement(type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef usage;
+    protected org.openprovenance.prov.model.QualifiedName usage;
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
     
@@ -108,7 +105,7 @@ public class WasDerivedFrom
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    protected QualifiedName id;
     
 
     /**
@@ -123,7 +120,7 @@ public class WasDerivedFrom
         CascadeType.ALL
     })
     @JoinColumn(name = "GENERATED_ENTITY")
-    public org.openprovenance.prov.model.IDRef getGeneratedEntity() {
+    public org.openprovenance.prov.model.QualifiedName getGeneratedEntity() {
         return generatedEntity;
     }
 
@@ -135,7 +132,7 @@ public class WasDerivedFrom
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setGeneratedEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setGeneratedEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.generatedEntity = value;
     }
 
@@ -151,7 +148,7 @@ public class WasDerivedFrom
         CascadeType.ALL
     })
     @JoinColumn(name = "USED_ENTITY")
-    public org.openprovenance.prov.model.IDRef getUsedEntity() {
+    public org.openprovenance.prov.model.QualifiedName getUsedEntity() {
         return usedEntity;
     }
 
@@ -163,7 +160,7 @@ public class WasDerivedFrom
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setUsedEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setUsedEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.usedEntity = value;
     }
 
@@ -179,7 +176,7 @@ public class WasDerivedFrom
         CascadeType.ALL
     })
     @JoinColumn(name = "ACTIVITY")
-    public org.openprovenance.prov.model.IDRef getActivity() {
+    public org.openprovenance.prov.model.QualifiedName getActivity() {
         return activity;
     }
 
@@ -191,7 +188,7 @@ public class WasDerivedFrom
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setActivity(org.openprovenance.prov.model.IDRef value) {
+    public void setActivity(org.openprovenance.prov.model.QualifiedName value) {
         this.activity = value;
     }
 
@@ -207,7 +204,7 @@ public class WasDerivedFrom
         CascadeType.ALL
     })
     @JoinColumn(name = "GENERATION")
-    public org.openprovenance.prov.model.IDRef getGeneration() {
+    public org.openprovenance.prov.model.QualifiedName getGeneration() {
         return generation;
     }
 
@@ -219,7 +216,7 @@ public class WasDerivedFrom
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setGeneration(org.openprovenance.prov.model.IDRef value) {
+    public void setGeneration(org.openprovenance.prov.model.QualifiedName value) {
         this.generation = value;
     }
 
@@ -235,7 +232,7 @@ public class WasDerivedFrom
         CascadeType.ALL
     })
     @JoinColumn(name = "USAGE")
-    public org.openprovenance.prov.model.IDRef getUsage() {
+    public org.openprovenance.prov.model.QualifiedName getUsage() {
         return usage;
     }
 
@@ -247,7 +244,7 @@ public class WasDerivedFrom
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setUsage(org.openprovenance.prov.model.IDRef value) {
+    public void setUsage(org.openprovenance.prov.model.QualifiedName value) {
         this.usage = value;
     }
 
@@ -396,8 +393,11 @@ public class WasDerivedFrom
      *     {@link QName }
      *     
      */
-    @Transient
-    public QName getId() {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "ID")
+    public QualifiedName getId() {
         return id;
     }
 
@@ -409,19 +409,11 @@ public class WasDerivedFrom
      *     {@link QName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(QualifiedName value) {
         this.id = value;
     }
 
-    @Basic
-    @Column(name = "IDITEM")
-    public String getIdItem() {
-        return XmlAdapterUtils.unmarshall(QNameAsString.class, this.getId());
-    }
-
-    public void setIdItem(String target) {
-        setId(XmlAdapterUtils.marshall(QNameAsString.class, target));
-    }
+    
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
         if (!(object instanceof WasDerivedFrom)) {
@@ -435,45 +427,45 @@ public class WasDerivedFrom
         }
         final WasDerivedFrom that = ((WasDerivedFrom) object);
         {
-            org.openprovenance.prov.model.IDRef lhsGeneratedEntity;
+            org.openprovenance.prov.model.QualifiedName lhsGeneratedEntity;
             lhsGeneratedEntity = this.getGeneratedEntity();
-            org.openprovenance.prov.model.IDRef rhsGeneratedEntity;
+            org.openprovenance.prov.model.QualifiedName rhsGeneratedEntity;
             rhsGeneratedEntity = that.getGeneratedEntity();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "generatedEntity", lhsGeneratedEntity), LocatorUtils.property(thatLocator, "generatedEntity", rhsGeneratedEntity), lhsGeneratedEntity, rhsGeneratedEntity)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsUsedEntity;
+            org.openprovenance.prov.model.QualifiedName lhsUsedEntity;
             lhsUsedEntity = this.getUsedEntity();
-            org.openprovenance.prov.model.IDRef rhsUsedEntity;
+            org.openprovenance.prov.model.QualifiedName rhsUsedEntity;
             rhsUsedEntity = that.getUsedEntity();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "usedEntity", lhsUsedEntity), LocatorUtils.property(thatLocator, "usedEntity", rhsUsedEntity), lhsUsedEntity, rhsUsedEntity)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsActivity;
+            org.openprovenance.prov.model.QualifiedName lhsActivity;
             lhsActivity = this.getActivity();
-            org.openprovenance.prov.model.IDRef rhsActivity;
+            org.openprovenance.prov.model.QualifiedName rhsActivity;
             rhsActivity = that.getActivity();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "activity", lhsActivity), LocatorUtils.property(thatLocator, "activity", rhsActivity), lhsActivity, rhsActivity)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsGeneration;
+            org.openprovenance.prov.model.QualifiedName lhsGeneration;
             lhsGeneration = this.getGeneration();
-            org.openprovenance.prov.model.IDRef rhsGeneration;
+            org.openprovenance.prov.model.QualifiedName rhsGeneration;
             rhsGeneration = that.getGeneration();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "generation", lhsGeneration), LocatorUtils.property(thatLocator, "generation", rhsGeneration), lhsGeneration, rhsGeneration)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsUsage;
+            org.openprovenance.prov.model.QualifiedName lhsUsage;
             lhsUsage = this.getUsage();
-            org.openprovenance.prov.model.IDRef rhsUsage;
+            org.openprovenance.prov.model.QualifiedName rhsUsage;
             rhsUsage = that.getUsage();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "usage", lhsUsage), LocatorUtils.property(thatLocator, "usage", rhsUsage), lhsUsage, rhsUsage)) {
                 return false;
@@ -507,9 +499,9 @@ public class WasDerivedFrom
             }
         }
         {
-            QName lhsId;
+            QualifiedName lhsId;
             lhsId = this.getId();
-            QName rhsId;
+            QualifiedName rhsId;
             rhsId = that.getId();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "id", lhsId), LocatorUtils.property(thatLocator, "id", rhsId), lhsId, rhsId)) {
                 return false;
@@ -526,27 +518,27 @@ public class WasDerivedFrom
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            org.openprovenance.prov.model.IDRef theGeneratedEntity;
+            org.openprovenance.prov.model.QualifiedName theGeneratedEntity;
             theGeneratedEntity = this.getGeneratedEntity();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "generatedEntity", theGeneratedEntity), currentHashCode, theGeneratedEntity);
         }
         {
-            org.openprovenance.prov.model.IDRef theUsedEntity;
+            org.openprovenance.prov.model.QualifiedName theUsedEntity;
             theUsedEntity = this.getUsedEntity();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "usedEntity", theUsedEntity), currentHashCode, theUsedEntity);
         }
         {
-            org.openprovenance.prov.model.IDRef theActivity;
+            org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "activity", theActivity), currentHashCode, theActivity);
         }
         {
-            org.openprovenance.prov.model.IDRef theGeneration;
+            org.openprovenance.prov.model.QualifiedName theGeneration;
             theGeneration = this.getGeneration();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "generation", theGeneration), currentHashCode, theGeneration);
         }
         {
-            org.openprovenance.prov.model.IDRef theUsage;
+            org.openprovenance.prov.model.QualifiedName theUsage;
             theUsage = this.getUsage();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "usage", theUsage), currentHashCode, theUsage);
         }
@@ -566,7 +558,7 @@ public class WasDerivedFrom
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
         }
         {
-            QName theId;
+            QualifiedName theId;
             theId = this.getId();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "id", theId), currentHashCode, theId);
         }
@@ -578,26 +570,6 @@ public class WasDerivedFrom
         return this.hashCode(null, strategy);
     }
 
-
-    transient IDRef idRef;
-    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
-        CascadeType.ALL
-    })
-    @JoinColumn(name = "IDREF")
-    public IDRef getIdRef() {
-        return idRef;
-    }
-
-    public void setIdRef(IDRef target) {
-        if (target!=null) { setId(target.getRef());
-        idRef=target;}
-    }
-    
-    @Transient
-    public List<Attribute> getAny() {
-	// TODO Auto-generated method stub
-	return null;
-    }
     @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_DERIVATION;

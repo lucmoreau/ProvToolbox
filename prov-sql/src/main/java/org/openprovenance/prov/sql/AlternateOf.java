@@ -54,9 +54,9 @@ public class AlternateOf
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef alternate1;
+    protected org.openprovenance.prov.model.QualifiedName alternate1;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef alternate2;
+    protected org.openprovenance.prov.model.QualifiedName alternate2;
 
     /**
      * Gets the value of the alternate1 property.
@@ -70,7 +70,7 @@ public class AlternateOf
         CascadeType.ALL
     })
     @JoinColumn(name = "ALTERNATE1")
-    public org.openprovenance.prov.model.IDRef getAlternate1() {
+    public org.openprovenance.prov.model.QualifiedName getAlternate1() {
         return alternate1;
     }
 
@@ -82,7 +82,7 @@ public class AlternateOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setAlternate1(org.openprovenance.prov.model.IDRef value) {
+    public void setAlternate1(org.openprovenance.prov.model.QualifiedName value) {
         this.alternate1 = value;
     }
 
@@ -98,7 +98,7 @@ public class AlternateOf
         CascadeType.ALL
     })
     @JoinColumn(name = "ALTERNATE2")
-    public org.openprovenance.prov.model.IDRef getAlternate2() {
+    public org.openprovenance.prov.model.QualifiedName getAlternate2() {
         return alternate2;
     }
 
@@ -110,7 +110,7 @@ public class AlternateOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setAlternate2(org.openprovenance.prov.model.IDRef value) {
+    public void setAlternate2(org.openprovenance.prov.model.QualifiedName value) {
         this.alternate2 = value;
     }
 
@@ -126,18 +126,18 @@ public class AlternateOf
         }
         final AlternateOf that = ((AlternateOf) object);
         {
-            org.openprovenance.prov.model.IDRef lhsAlternate1;
+            org.openprovenance.prov.model.QualifiedName lhsAlternate1;
             lhsAlternate1 = this.getAlternate1();
-            org.openprovenance.prov.model.IDRef rhsAlternate1;
+            org.openprovenance.prov.model.QualifiedName rhsAlternate1;
             rhsAlternate1 = that.getAlternate1();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "alternate1", lhsAlternate1), LocatorUtils.property(thatLocator, "alternate1", rhsAlternate1), lhsAlternate1, rhsAlternate1)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsAlternate2;
+            org.openprovenance.prov.model.QualifiedName lhsAlternate2;
             lhsAlternate2 = this.getAlternate2();
-            org.openprovenance.prov.model.IDRef rhsAlternate2;
+            org.openprovenance.prov.model.QualifiedName rhsAlternate2;
             rhsAlternate2 = that.getAlternate2();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "alternate2", lhsAlternate2), LocatorUtils.property(thatLocator, "alternate2", rhsAlternate2), lhsAlternate2, rhsAlternate2)) {
                 return false;
@@ -154,12 +154,12 @@ public class AlternateOf
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            org.openprovenance.prov.model.IDRef theAlternate1;
+            org.openprovenance.prov.model.QualifiedName theAlternate1;
             theAlternate1 = this.getAlternate1();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "alternate1", theAlternate1), currentHashCode, theAlternate1);
         }
         {
-            org.openprovenance.prov.model.IDRef theAlternate2;
+            org.openprovenance.prov.model.QualifiedName theAlternate2;
             theAlternate2 = this.getAlternate2();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "alternate2", theAlternate2), currentHashCode, theAlternate2);
         }

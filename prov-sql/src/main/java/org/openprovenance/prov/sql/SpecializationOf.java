@@ -54,9 +54,9 @@ public class SpecializationOf
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef specificEntity;
+    protected org.openprovenance.prov.model.QualifiedName specificEntity;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef generalEntity;
+    protected org.openprovenance.prov.model.QualifiedName generalEntity;
 
     /**
      * Gets the value of the specificEntity property.
@@ -70,7 +70,7 @@ public class SpecializationOf
         CascadeType.ALL
     })
     @JoinColumn(name = "SPECIFIC")
-    public org.openprovenance.prov.model.IDRef getSpecificEntity() {
+    public org.openprovenance.prov.model.QualifiedName getSpecificEntity() {
         return specificEntity;
     }
 
@@ -82,7 +82,7 @@ public class SpecializationOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setSpecificEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setSpecificEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.specificEntity = value;
     }
 
@@ -98,7 +98,7 @@ public class SpecializationOf
         CascadeType.ALL
     })
     @JoinColumn(name = "GENERAL")
-    public org.openprovenance.prov.model.IDRef getGeneralEntity() {
+    public org.openprovenance.prov.model.QualifiedName getGeneralEntity() {
         return generalEntity;
     }
 
@@ -110,7 +110,7 @@ public class SpecializationOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setGeneralEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setGeneralEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.generalEntity = value;
     }
 
@@ -126,18 +126,18 @@ public class SpecializationOf
         }
         final SpecializationOf that = ((SpecializationOf) object);
         {
-            org.openprovenance.prov.model.IDRef lhsSpecificEntity;
+            org.openprovenance.prov.model.QualifiedName lhsSpecificEntity;
             lhsSpecificEntity = this.getSpecificEntity();
-            org.openprovenance.prov.model.IDRef rhsSpecificEntity;
+            org.openprovenance.prov.model.QualifiedName rhsSpecificEntity;
             rhsSpecificEntity = that.getSpecificEntity();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "specificEntity", lhsSpecificEntity), LocatorUtils.property(thatLocator, "specificEntity", rhsSpecificEntity), lhsSpecificEntity, rhsSpecificEntity)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsGeneralEntity;
+            org.openprovenance.prov.model.QualifiedName lhsGeneralEntity;
             lhsGeneralEntity = this.getGeneralEntity();
-            org.openprovenance.prov.model.IDRef rhsGeneralEntity;
+            org.openprovenance.prov.model.QualifiedName rhsGeneralEntity;
             rhsGeneralEntity = that.getGeneralEntity();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "generalEntity", lhsGeneralEntity), LocatorUtils.property(thatLocator, "generalEntity", rhsGeneralEntity), lhsGeneralEntity, rhsGeneralEntity)) {
                 return false;
@@ -154,12 +154,12 @@ public class SpecializationOf
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            org.openprovenance.prov.model.IDRef theSpecificEntity;
+            org.openprovenance.prov.model.QualifiedName theSpecificEntity;
             theSpecificEntity = this.getSpecificEntity();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "specificEntity", theSpecificEntity), currentHashCode, theSpecificEntity);
         }
         {
-            org.openprovenance.prov.model.IDRef theGeneralEntity;
+            org.openprovenance.prov.model.QualifiedName theGeneralEntity;
             theGeneralEntity = this.getGeneralEntity();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "generalEntity", theGeneralEntity), currentHashCode, theGeneralEntity);
         }

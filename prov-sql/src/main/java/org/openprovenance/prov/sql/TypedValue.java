@@ -340,11 +340,11 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     
     public QName getQName(AttributeKind kind) {
         switch (kind) {
-        case  PROV_TYPE: return Helper2.PROV_TYPE_QNAME;
-        case  PROV_LABEL: return Helper2.PROV_LABEL_QNAME;
-        case  PROV_VALUE: return Helper2.PROV_VALUE_QNAME;
-        case  PROV_LOCATION: return Helper2.PROV_LOCATION_QNAME;
-        case  PROV_ROLE: return Helper2.PROV_ROLE_QNAME;
+        case  PROV_TYPE: return Name.PROV_TYPE_QNAME;
+        case  PROV_LABEL: return Name.PROV_LABEL_QNAME;
+        case  PROV_VALUE: return Name.PROV_VALUE_QNAME;
+        case  PROV_LOCATION: return Name.PROV_LOCATION_QNAME;
+        case  PROV_ROLE: return Name.PROV_ROLE_QNAME;
         case OTHER:
         default: 
                 return null;
@@ -356,11 +356,11 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      */
     
     public AttributeKind getAttributeKind(QName q) {
-        if (q.equals(Helper2.PROV_TYPE_QNAME)) return AttributeKind.PROV_TYPE;
-        if (q.equals(Helper2.PROV_LABEL_QNAME)) return AttributeKind.PROV_LABEL;
-        if (q.equals(Helper2.PROV_VALUE_QNAME)) return AttributeKind.PROV_VALUE;
-        if (q.equals(Helper2.PROV_LOCATION_QNAME)) return AttributeKind.PROV_LOCATION;
-        if (q.equals(Helper2.PROV_ROLE_QNAME)) return AttributeKind.PROV_ROLE;
+        if (q.equals(Name.PROV_TYPE_QNAME)) return AttributeKind.PROV_TYPE;
+        if (q.equals(Name.PROV_LABEL_QNAME)) return AttributeKind.PROV_LABEL;
+        if (q.equals(Name.PROV_VALUE_QNAME)) return AttributeKind.PROV_VALUE;
+        if (q.equals(Name.PROV_LOCATION_QNAME)) return AttributeKind.PROV_LOCATION;
+        if (q.equals(Name.PROV_ROLE_QNAME)) return AttributeKind.PROV_ROLE;
         return AttributeKind.OTHER;
     }
 

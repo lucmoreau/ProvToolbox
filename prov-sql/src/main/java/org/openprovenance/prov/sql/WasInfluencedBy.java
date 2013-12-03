@@ -2,9 +2,7 @@ package org.openprovenance.prov.sql;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -17,9 +15,6 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.QNameAsString;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -30,6 +25,7 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Other;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.xml.AttributeList;
 import org.openprovenance.prov.xml.HasAllAttributes;
@@ -79,9 +75,9 @@ public class WasInfluencedBy
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef influencee;
+    protected org.openprovenance.prov.model.QualifiedName influencee;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef influencer;
+    protected org.openprovenance.prov.model.QualifiedName influencer;
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
 
@@ -91,7 +87,7 @@ public class WasInfluencedBy
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    protected QualifiedName id;
     
 
     /**
@@ -106,7 +102,7 @@ public class WasInfluencedBy
         CascadeType.ALL
     })
     @JoinColumn(name = "INFLUENCEE")
-    public org.openprovenance.prov.model.IDRef getInfluencee() {
+    public org.openprovenance.prov.model.QualifiedName getInfluencee() {
         return influencee;
     }
 
@@ -118,7 +114,7 @@ public class WasInfluencedBy
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setInfluencee(org.openprovenance.prov.model.IDRef value) {
+    public void setInfluencee(org.openprovenance.prov.model.QualifiedName value) {
         this.influencee = value;
     }
 
@@ -134,7 +130,7 @@ public class WasInfluencedBy
         CascadeType.ALL
     })
     @JoinColumn(name = "INFLUENCER")
-    public org.openprovenance.prov.model.IDRef getInfluencer() {
+    public org.openprovenance.prov.model.QualifiedName getInfluencer() {
         return influencer;
     }
 
@@ -146,7 +142,7 @@ public class WasInfluencedBy
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setInfluencer(org.openprovenance.prov.model.IDRef value) {
+    public void setInfluencer(org.openprovenance.prov.model.QualifiedName value) {
         this.influencer = value;
     }
 
@@ -291,11 +287,15 @@ public class WasInfluencedBy
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    @Transient
-    public QName getId() {
+    
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "ID")
+    public QualifiedName getId() {
         return id;
     }
 
@@ -304,22 +304,13 @@ public class WasInfluencedBy
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(QualifiedName value) {
         this.id = value;
     }
 
-    @Basic
-    @Column(name = "IDITEM")
-    public String getIdItem() {
-        return XmlAdapterUtils.unmarshall(QNameAsString.class, this.getId());
-    }
-
-    public void setIdItem(String target) {
-        setId(XmlAdapterUtils.marshall(QNameAsString.class, target));
-    }
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
         if (!(object instanceof WasInfluencedBy)) {
@@ -333,18 +324,18 @@ public class WasInfluencedBy
         }
         final WasInfluencedBy that = ((WasInfluencedBy) object);
         {
-            org.openprovenance.prov.model.IDRef lhsInfluencee;
+            org.openprovenance.prov.model.QualifiedName lhsInfluencee;
             lhsInfluencee = this.getInfluencee();
-            org.openprovenance.prov.model.IDRef rhsInfluencee;
+            org.openprovenance.prov.model.QualifiedName rhsInfluencee;
             rhsInfluencee = that.getInfluencee();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "influencee", lhsInfluencee), LocatorUtils.property(thatLocator, "influencee", rhsInfluencee), lhsInfluencee, rhsInfluencee)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsInfluencer;
+            org.openprovenance.prov.model.QualifiedName lhsInfluencer;
             lhsInfluencer = this.getInfluencer();
-            org.openprovenance.prov.model.IDRef rhsInfluencer;
+            org.openprovenance.prov.model.QualifiedName rhsInfluencer;
             rhsInfluencer = that.getInfluencer();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "influencer", lhsInfluencer), LocatorUtils.property(thatLocator, "influencer", rhsInfluencer), lhsInfluencer, rhsInfluencer)) {
                 return false;
@@ -378,9 +369,9 @@ public class WasInfluencedBy
             }
         }
         {
-            QName lhsId;
+            QualifiedName lhsId;
             lhsId = this.getId();
-            QName rhsId;
+            QualifiedName rhsId;
             rhsId = that.getId();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "id", lhsId), LocatorUtils.property(thatLocator, "id", rhsId), lhsId, rhsId)) {
                 return false;
@@ -397,12 +388,12 @@ public class WasInfluencedBy
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            org.openprovenance.prov.model.IDRef theInfluencee;
+            org.openprovenance.prov.model.QualifiedName theInfluencee;
             theInfluencee = this.getInfluencee();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "influencee", theInfluencee), currentHashCode, theInfluencee);
         }
         {
-            org.openprovenance.prov.model.IDRef theInfluencer;
+            org.openprovenance.prov.model.QualifiedName theInfluencer;
             theInfluencer = this.getInfluencer();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "influencer", theInfluencer), currentHashCode, theInfluencer);
         }
@@ -422,7 +413,7 @@ public class WasInfluencedBy
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
         }
         {
-            QName theId;
+            QualifiedName theId;
             theId = this.getId();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "id", theId), currentHashCode, theId);
         }
@@ -435,20 +426,6 @@ public class WasInfluencedBy
     }
 
    
-
-    transient IDRef idRef;
-    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
-        CascadeType.ALL
-    })
-    @JoinColumn(name = "IDREF")
-    public IDRef getIdRef() {
-        return idRef;
-    }
-
-    public void setIdRef(IDRef target) {
-        if (target!=null) { setId(target.getRef());
-        idRef=target;}
-    }
 
     @Transient
     public List<Attribute> getAny() {

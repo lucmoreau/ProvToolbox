@@ -2,9 +2,7 @@ package org.openprovenance.prov.sql;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -17,11 +15,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.QNameAsString;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -31,6 +25,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.Other;
@@ -327,7 +322,10 @@ public class Entity
      *     {@link QualifiedName }
      *     
      */
-    @Transient
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "ID")
     public QualifiedName getId() {
         return id;
     }
@@ -344,15 +342,7 @@ public class Entity
         this.id = value;
     }
 
-    @Basic
-    @Column(name = "IDITEM")
-    public String getIdItem() {
-        return XmlAdapterUtils.unmarshall(QNameAsString.class, this.getId());
-    }
-
-    public void setIdItem(String target) {
-        setId(XmlAdapterUtils.marshall(QNameAsString.class, target));
-    }
+   
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
         if (!(object instanceof Entity)) {
@@ -468,20 +458,6 @@ public class Entity
     }
 
    
-
-    transient IDRef idRef;
-    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
-        CascadeType.ALL
-    })
-    @JoinColumn(name = "IDREF")
-    public IDRef getIdRef() {
-        return idRef;
-    }
-
-    public void setIdRef(IDRef target) {
-        if (target!=null) { setId(target.getRef());
-        idRef=target;}
-    }
 
     public void toString(ToStringBuilder toStringBuilder) {
         {

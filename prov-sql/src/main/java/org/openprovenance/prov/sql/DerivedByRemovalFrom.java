@@ -10,7 +10,9 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
+import javax.persistence.ManyToOne;
+import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -21,6 +23,7 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Key;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.xml.AttributeList;
@@ -71,9 +74,9 @@ public class DerivedByRemovalFrom
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef newDictionary;
+    protected org.openprovenance.prov.model.QualifiedName newDictionary;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef oldDictionary;
+    protected org.openprovenance.prov.model.QualifiedName oldDictionary;
 
     transient protected List<org.openprovenance.prov.model.Key> key;
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
@@ -84,7 +87,7 @@ public class DerivedByRemovalFrom
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    protected QualifiedName id;
 
     /**
      * Gets the value of the newDictionary property.
@@ -94,7 +97,7 @@ public class DerivedByRemovalFrom
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getNewDictionary() {
+    public org.openprovenance.prov.model.QualifiedName getNewDictionary() {
         return newDictionary;
     }
 
@@ -106,7 +109,7 @@ public class DerivedByRemovalFrom
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setNewDictionary(org.openprovenance.prov.model.IDRef value) {
+    public void setNewDictionary(org.openprovenance.prov.model.QualifiedName value) {
         this.newDictionary = value;
     }
 
@@ -118,7 +121,7 @@ public class DerivedByRemovalFrom
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getOldDictionary() {
+    public org.openprovenance.prov.model.QualifiedName getOldDictionary() {
         return oldDictionary;
     }
 
@@ -130,7 +133,7 @@ public class DerivedByRemovalFrom
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setOldDictionary(org.openprovenance.prov.model.IDRef value) {
+    public void setOldDictionary(org.openprovenance.prov.model.QualifiedName value) {
         this.oldDictionary = value;
     }
 
@@ -301,10 +304,14 @@ public class DerivedByRemovalFrom
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    public QName getId() {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "ID")
+    public QualifiedName getId() {
         return id;
     }
 
@@ -313,10 +320,10 @@ public class DerivedByRemovalFrom
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(QualifiedName value) {
         this.id = value;
     }
 
@@ -332,18 +339,18 @@ public class DerivedByRemovalFrom
         }
         final DerivedByRemovalFrom that = ((DerivedByRemovalFrom) object);
         {
-            org.openprovenance.prov.model.IDRef lhsNewDictionary;
+            org.openprovenance.prov.model.QualifiedName lhsNewDictionary;
             lhsNewDictionary = this.getNewDictionary();
-            org.openprovenance.prov.model.IDRef rhsNewDictionary;
+            org.openprovenance.prov.model.QualifiedName rhsNewDictionary;
             rhsNewDictionary = that.getNewDictionary();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "newDictionary", lhsNewDictionary), LocatorUtils.property(thatLocator, "newDictionary", rhsNewDictionary), lhsNewDictionary, rhsNewDictionary)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsOldDictionary;
+            org.openprovenance.prov.model.QualifiedName lhsOldDictionary;
             lhsOldDictionary = this.getOldDictionary();
-            org.openprovenance.prov.model.IDRef rhsOldDictionary;
+            org.openprovenance.prov.model.QualifiedName rhsOldDictionary;
             rhsOldDictionary = that.getOldDictionary();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "oldDictionary", lhsOldDictionary), LocatorUtils.property(thatLocator, "oldDictionary", rhsOldDictionary), lhsOldDictionary, rhsOldDictionary)) {
                 return false;
@@ -387,9 +394,9 @@ public class DerivedByRemovalFrom
         }
         
         {
-            QName lhsId;
+            QualifiedName lhsId;
             lhsId = this.getId();
-            QName rhsId;
+            QualifiedName rhsId;
             rhsId = that.getId();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "id", lhsId), LocatorUtils.property(thatLocator, "id", rhsId), lhsId, rhsId)) {
                 return false;
@@ -406,12 +413,12 @@ public class DerivedByRemovalFrom
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            org.openprovenance.prov.model.IDRef theNewDictionary;
+            org.openprovenance.prov.model.QualifiedName theNewDictionary;
             theNewDictionary = this.getNewDictionary();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "newDictionary", theNewDictionary), currentHashCode, theNewDictionary);
         }
         {
-            org.openprovenance.prov.model.IDRef theOldDictionary;
+            org.openprovenance.prov.model.QualifiedName theOldDictionary;
             theOldDictionary = this.getOldDictionary();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "oldDictionary", theOldDictionary), currentHashCode, theOldDictionary);
         }
@@ -436,7 +443,7 @@ public class DerivedByRemovalFrom
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
         }
         {
-            QName theId;
+            QualifiedName theId;
             theId = this.getId();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "id", theId), currentHashCode, theId);
         }

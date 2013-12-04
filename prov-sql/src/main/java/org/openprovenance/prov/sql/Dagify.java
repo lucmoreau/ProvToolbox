@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.model.OldIdentifiable;
 import org.openprovenance.prov.model.Statement;
 
@@ -22,29 +23,9 @@ public class Dagify implements RecordAction {
         this.em=em;
     }
     
-    Hashtable<String, org.openprovenance.prov.model.IDRef> table=new Hashtable<String, org.openprovenance.prov.model.IDRef>();
     Hashtable<String, org.openprovenance.prov.model.QualifiedName> table2=new Hashtable<String, org.openprovenance.prov.model.QualifiedName>();
     
-    public org.openprovenance.prov.model.IDRef uniquify(org.openprovenance.prov.model.IDRef ref) {
-        if (ref==null) return null;
-        QName q=ref.getRef();
-        String uri=q.getNamespaceURI()+q.getLocalPart();
-        org.openprovenance.prov.model.IDRef found=table.get(uri);
-        if (found!=null) {
-            return found;
-        }
-        Query qq=em.createQuery("SELECT e FROM IDRef e WHERE e.uri LIKE :uri");
-        qq.setParameter("uri", uri);
-        List<IDRef> ll=(List<IDRef>) qq.getResultList();
-        //System.out.println("found ll " + ll);
-        
-        org.openprovenance.prov.model.IDRef newId=ref;
-        if ((ll!=null) && (!(ll.isEmpty()))) {
-            newId=ll.get(0);
-        }
-        table.put(uri, newId);
-        return newId;
-    }
+
 
     public org.openprovenance.prov.model.QualifiedName uniquify(org.openprovenance.prov.model.QualifiedName q) {
         if (q==null) return null;
@@ -76,17 +57,15 @@ public class Dagify implements RecordAction {
 
    */
     
-    public IDRef createKey(OldIdentifiable e) {
-	IDRef ref=new IDRef();
-	ref.setRef(e.getId());
-  	return (IDRef)uniquify(ref);
-      }
+    public org.openprovenance.prov.model.QualifiedName createKey(Identifiable e) {
+	  	return  uniquify(e.getId());
+    }
 
 
 
 
     public void run(Entity e) {
-	e.setIdRef(createKey(e));
+    	e.setId(createKey(e));
     }
 
     
@@ -110,19 +89,19 @@ public class Dagify implements RecordAction {
     }
 
     public void run(Used use) {
-	if (use.getId()!=null) use.setIdRef(createKey(use));                
+	if (use.getId()!=null) use.setId(createKey(use));                
         use.setEntity(uniquify(use.getEntity()));
         use.setActivity(uniquify(use.getActivity()));      
     }
 
     public void run(WasInvalidatedBy inv) {
-	if (inv.getId()!=null) inv.setIdRef(createKey(inv));                
+	if (inv.getId()!=null) inv.setId(createKey(inv));                
         inv.setEntity(uniquify(inv.getEntity()));
         inv.setActivity(uniquify(inv.getActivity()));          
     }
 
     public void run(WasStartedBy start) {
-	if (start.getId()!=null) start.setIdRef(createKey(start));                
+	if (start.getId()!=null) start.setId(createKey(start));                
         start.setActivity(uniquify(start.getActivity()));    
         start.setTrigger(uniquify(start.getTrigger()));
         start.setStarter(uniquify(start.getStarter()));                  

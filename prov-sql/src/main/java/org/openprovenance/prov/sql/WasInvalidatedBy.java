@@ -22,8 +22,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.QNameAsString;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 import org.jvnet.jaxb2_commons.lang.Equals;
@@ -35,6 +33,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.xml.AttributeList;
 import org.openprovenance.prov.xml.HasAllAttributes;
@@ -90,9 +89,9 @@ public class WasInvalidatedBy
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef entity;
+    protected org.openprovenance.prov.model.QualifiedName entity;
     @XmlElement(type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef activity;
+    protected org.openprovenance.prov.model.QualifiedName activity;
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar time;
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
@@ -106,7 +105,7 @@ public class WasInvalidatedBy
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    protected QualifiedName id;
     
 
     /**
@@ -121,7 +120,7 @@ public class WasInvalidatedBy
         CascadeType.ALL
     })
     @JoinColumn(name = "ENTITY")
-    public org.openprovenance.prov.model.IDRef getEntity() {
+    public org.openprovenance.prov.model.QualifiedName getEntity() {
         return entity;
     }
 
@@ -133,7 +132,7 @@ public class WasInvalidatedBy
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.entity = value;
     }
 
@@ -149,7 +148,7 @@ public class WasInvalidatedBy
         CascadeType.ALL
     })
     @JoinColumn(name = "ACTIVITY")
-    public org.openprovenance.prov.model.IDRef getActivity() {
+    public org.openprovenance.prov.model.QualifiedName getActivity() {
         return activity;
     }
 
@@ -161,7 +160,7 @@ public class WasInvalidatedBy
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setActivity(org.openprovenance.prov.model.IDRef value) {
+    public void setActivity(org.openprovenance.prov.model.QualifiedName value) {
         this.activity = value;
     }
 
@@ -417,11 +416,14 @@ public class WasInvalidatedBy
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    @Transient
-    public QName getId() {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "ID")
+    public QualifiedName getId() {
         return id;
     }
 
@@ -430,10 +432,10 @@ public class WasInvalidatedBy
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(QualifiedName value) {
         this.id = value;
     }
 
@@ -448,15 +450,7 @@ public class WasInvalidatedBy
         setTime(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
     }
 
-    @Basic
-    @Column(name = "IDITEM")
-    public String getIdItem() {
-        return XmlAdapterUtils.unmarshall(QNameAsString.class, this.getId());
-    }
 
-    public void setIdItem(String target) {
-        setId(XmlAdapterUtils.marshall(QNameAsString.class, target));
-    }
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
         if (!(object instanceof WasInvalidatedBy)) {
@@ -470,18 +464,18 @@ public class WasInvalidatedBy
         }
         final WasInvalidatedBy that = ((WasInvalidatedBy) object);
         {
-            org.openprovenance.prov.model.IDRef lhsEntity;
+            org.openprovenance.prov.model.QualifiedName lhsEntity;
             lhsEntity = this.getEntity();
-            org.openprovenance.prov.model.IDRef rhsEntity;
+            org.openprovenance.prov.model.QualifiedName rhsEntity;
             rhsEntity = that.getEntity();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "entity", lhsEntity), LocatorUtils.property(thatLocator, "entity", rhsEntity), lhsEntity, rhsEntity)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsActivity;
+            org.openprovenance.prov.model.QualifiedName lhsActivity;
             lhsActivity = this.getActivity();
-            org.openprovenance.prov.model.IDRef rhsActivity;
+            org.openprovenance.prov.model.QualifiedName rhsActivity;
             rhsActivity = that.getActivity();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "activity", lhsActivity), LocatorUtils.property(thatLocator, "activity", rhsActivity), lhsActivity, rhsActivity)) {
                 return false;
@@ -542,9 +536,9 @@ public class WasInvalidatedBy
             }
         }
         {
-            QName lhsId;
+            QualifiedName lhsId;
             lhsId = this.getId();
-            QName rhsId;
+            QualifiedName rhsId;
             rhsId = that.getId();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "id", lhsId), LocatorUtils.property(thatLocator, "id", rhsId), lhsId, rhsId)) {
                 return false;
@@ -561,12 +555,12 @@ public class WasInvalidatedBy
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            org.openprovenance.prov.model.IDRef theEntity;
+            org.openprovenance.prov.model.QualifiedName theEntity;
             theEntity = this.getEntity();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "entity", theEntity), currentHashCode, theEntity);
         }
         {
-            org.openprovenance.prov.model.IDRef theActivity;
+            org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "activity", theActivity), currentHashCode, theActivity);
         }
@@ -601,7 +595,7 @@ public class WasInvalidatedBy
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
         }
         {
-            QName theId;
+            QualifiedName theId;
             theId = this.getId();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "id", theId), currentHashCode, theId);
         }
@@ -614,25 +608,6 @@ public class WasInvalidatedBy
     }
 
    
-    transient IDRef idRef;
-    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
-        CascadeType.ALL
-    })
-    @JoinColumn(name = "IDREF")
-    public IDRef getIdRef() {
-        return idRef;
-    }
-
-    public void setIdRef(IDRef target) {
-        if (target!=null) { setId(target.getRef());
-        idRef=target;}
-    }
-
-    @Transient
-    public List<Attribute> getAny() {
-	// TODO Auto-generated method stub
-	return null;
-    }
     @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_INVALIDATION;

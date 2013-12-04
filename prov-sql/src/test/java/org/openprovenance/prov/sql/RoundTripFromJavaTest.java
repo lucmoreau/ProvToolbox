@@ -3,14 +3,12 @@ package org.openprovenance.prov.sql;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.Hashtable;
 import javax.xml.bind.JAXBException;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.xml.UncheckedTestException;
-import org.openprovenance.prov.xml.ValueConverter;
 
 /**
  * Unit test for PROV roundtrip conversion between Java and XML

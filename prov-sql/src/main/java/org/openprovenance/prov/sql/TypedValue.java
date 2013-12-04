@@ -137,6 +137,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
 
 				@Override
 				public Object newQName(String value) {
+				    System.out.println("QNameConstructo.newQName() " + value);
 					return new QName(value); //FIXME
 				}
     	

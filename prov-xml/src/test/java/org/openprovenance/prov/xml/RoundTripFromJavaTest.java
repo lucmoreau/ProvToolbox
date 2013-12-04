@@ -1589,11 +1589,16 @@ public class RoundTripFromJavaTest extends TestCase {
         gen1.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX,
                                               "hello", Name.QNAME_XSD_STRING));
 
+        System.out.println("scruffyy " + gen1.getOther());
+        
+        
         WasGeneratedBy gen2 = pFactory.newWasGeneratedBy(q("gen1"), q("e1"),
                                                          null, q("a1"));
         gen2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));
         gen2.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "hi",
                                               Name.QNAME_XSD_STRING));
+        
+        System.out.println("scruffyy " + gen2.getOther());
         Entity e1 = pFactory.newEntity(q("e1"));
         Activity a1 = pFactory.newActivity(q("a1"));
         Statement[] opt = new Statement[] { e1, a1 };

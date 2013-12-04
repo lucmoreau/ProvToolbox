@@ -87,6 +87,7 @@ public class DerivedByRemovalFrom
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
     protected QualifiedName id;
 
     /**

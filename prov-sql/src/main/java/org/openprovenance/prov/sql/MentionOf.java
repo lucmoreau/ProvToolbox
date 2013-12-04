@@ -56,11 +56,11 @@ public class MentionOf
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef specificEntity;
+    protected org.openprovenance.prov.model.QualifiedName specificEntity;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef generalEntity;
+    protected org.openprovenance.prov.model.QualifiedName generalEntity;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef bundle;
+    protected org.openprovenance.prov.model.QualifiedName bundle;
 
     /**
      * Gets the value of the specificEntity property.
@@ -70,11 +70,11 @@ public class MentionOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "SPECIFICENTITY_MENTIONOF_HJID")
-    public org.openprovenance.prov.model.IDRef getSpecificEntity() {
+    public org.openprovenance.prov.model.QualifiedName getSpecificEntity() {
         return specificEntity;
     }
 
@@ -86,7 +86,7 @@ public class MentionOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setSpecificEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setSpecificEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.specificEntity = value;
     }
 
@@ -98,11 +98,11 @@ public class MentionOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "GENERALENTITY_MENTIONOF_HJID")
-    public org.openprovenance.prov.model.IDRef getGeneralEntity() {
+    public org.openprovenance.prov.model.QualifiedName getGeneralEntity() {
         return generalEntity;
     }
 
@@ -114,7 +114,7 @@ public class MentionOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setGeneralEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setGeneralEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.generalEntity = value;
     }
 
@@ -126,11 +126,11 @@ public class MentionOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "BUNDLE")
-    public org.openprovenance.prov.model.IDRef getBundle() {
+    public org.openprovenance.prov.model.QualifiedName getBundle() {
         return bundle;
     }
 
@@ -142,7 +142,7 @@ public class MentionOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setBundle(org.openprovenance.prov.model.IDRef value) {
+    public void setBundle(org.openprovenance.prov.model.QualifiedName value) {
         this.bundle = value;
     }
 
@@ -158,27 +158,27 @@ public class MentionOf
         }
         final MentionOf that = ((MentionOf) object);
         {
-            org.openprovenance.prov.model.IDRef lhsSpecificEntity;
+            org.openprovenance.prov.model.QualifiedName lhsSpecificEntity;
             lhsSpecificEntity = this.getSpecificEntity();
-            org.openprovenance.prov.model.IDRef rhsSpecificEntity;
+            org.openprovenance.prov.model.QualifiedName rhsSpecificEntity;
             rhsSpecificEntity = that.getSpecificEntity();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "specificEntity", lhsSpecificEntity), LocatorUtils.property(thatLocator, "specificEntity", rhsSpecificEntity), lhsSpecificEntity, rhsSpecificEntity)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsGeneralEntity;
+            org.openprovenance.prov.model.QualifiedName lhsGeneralEntity;
             lhsGeneralEntity = this.getGeneralEntity();
-            org.openprovenance.prov.model.IDRef rhsGeneralEntity;
+            org.openprovenance.prov.model.QualifiedName rhsGeneralEntity;
             rhsGeneralEntity = that.getGeneralEntity();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "generalEntity", lhsGeneralEntity), LocatorUtils.property(thatLocator, "generalEntity", rhsGeneralEntity), lhsGeneralEntity, rhsGeneralEntity)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsBundle;
+            org.openprovenance.prov.model.QualifiedName lhsBundle;
             lhsBundle = this.getBundle();
-            org.openprovenance.prov.model.IDRef rhsBundle;
+            org.openprovenance.prov.model.QualifiedName rhsBundle;
             rhsBundle = that.getBundle();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "bundle", lhsBundle), LocatorUtils.property(thatLocator, "bundle", rhsBundle), lhsBundle, rhsBundle)) {
                 return false;
@@ -195,17 +195,17 @@ public class MentionOf
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            org.openprovenance.prov.model.IDRef theSpecificEntity;
+            org.openprovenance.prov.model.QualifiedName theSpecificEntity;
             theSpecificEntity = this.getSpecificEntity();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "specificEntity", theSpecificEntity), currentHashCode, theSpecificEntity);
         }
         {
-            org.openprovenance.prov.model.IDRef theGeneralEntity;
+            org.openprovenance.prov.model.QualifiedName theGeneralEntity;
             theGeneralEntity = this.getGeneralEntity();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "generalEntity", theGeneralEntity), currentHashCode, theGeneralEntity);
         }
         {
-            org.openprovenance.prov.model.IDRef theBundle;
+            org.openprovenance.prov.model.QualifiedName theBundle;
             theBundle = this.getBundle();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "bundle", theBundle), currentHashCode, theBundle);
         }

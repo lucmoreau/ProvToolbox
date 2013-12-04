@@ -6,10 +6,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.Identifiable;
-import org.openprovenance.prov.model.OldIdentifiable;
 import org.openprovenance.prov.model.Statement;
 
 
@@ -70,7 +68,7 @@ public class Dagify implements RecordAction {
 
     
     public void run(Activity a) {
-	a.setIdRef(createKey(a));        
+	a.setId(createKey(a));        
     }
 
   
@@ -79,11 +77,11 @@ public class Dagify implements RecordAction {
 
 
     public void run(Agent ag) {
-	ag.setIdRef(createKey(ag));                
+	ag.setId(createKey(ag));                
     }
 
     public void run(WasGeneratedBy gen) {
-	if (gen.getId()!=null) gen.setIdRef(createKey(gen));                
+	if (gen.getId()!=null) gen.setId(createKey(gen));                
         gen.setEntity(uniquify(gen.getEntity()));
         gen.setActivity(uniquify(gen.getActivity()));
     }
@@ -108,7 +106,7 @@ public class Dagify implements RecordAction {
     }
 
     public void run(WasEndedBy end) {
-	if (end.getId()!=null) end.setIdRef(createKey(end));                
+	if (end.getId()!=null) end.setId(createKey(end));                
         end.setActivity(uniquify(end.getActivity()));    
         end.setTrigger(uniquify(end.getTrigger()));
         end.setEnder(uniquify(end.getEnder()));          
@@ -116,13 +114,13 @@ public class Dagify implements RecordAction {
     }
 
     public void run(WasInformedBy inf) {
-	if (inf.getId()!=null) inf.setIdRef(createKey(inf));                
+	if (inf.getId()!=null) inf.setId(createKey(inf));                
         inf.setInformant(uniquify(inf.getInformant()));    
         inf.setInformed(uniquify(inf.getInformed()));    
     }
 
     public void run(WasDerivedFrom der) {
-	if (der.getId()!=null) der.setIdRef(createKey(der));                
+	if (der.getId()!=null) der.setId(createKey(der));                
         der.setGeneratedEntity(uniquify(der.getGeneratedEntity()));    
         der.setUsedEntity(uniquify(der.getUsedEntity()));    
         der.setActivity(uniquify(der.getActivity()));    
@@ -131,27 +129,27 @@ public class Dagify implements RecordAction {
     }
 
     public void run(WasAssociatedWith assoc) {
-	if (assoc.getId()!=null) assoc.setIdRef(createKey(assoc));                
+	if (assoc.getId()!=null) assoc.setId(createKey(assoc));                
         assoc.setActivity(uniquify(assoc.getActivity()));    
         assoc.setAgent(uniquify(assoc.getAgent()));    
         assoc.setPlan(uniquify(assoc.getPlan()));    
     }
 
     public void run(WasAttributedTo attr) {
-	if (attr.getId()!=null) attr.setIdRef(createKey(attr));                
+	if (attr.getId()!=null) attr.setId(createKey(attr));                
         attr.setAgent(uniquify(attr.getAgent()));    
         attr.setEntity(uniquify(attr.getEntity()));
     }
 
     public void run(ActedOnBehalfOf del) {
-	if (del.getId()!=null) del.setIdRef(createKey(del));                
+	if (del.getId()!=null) del.setId(createKey(del));                
         del.setDelegate(uniquify(del.getDelegate()));    
         del.setResponsible(uniquify(del.getResponsible()));    
         del.setActivity(uniquify(del.getActivity()));            
     }
 
     public void run(WasInfluencedBy inf) {
-	if (inf.getId()!=null) inf.setIdRef(createKey(inf));                
+	if (inf.getId()!=null) inf.setId(createKey(inf));                
         inf.setInfluencee(uniquify(inf.getInfluencee()));
         inf.setInfluencer(uniquify(inf.getInfluencer()));
     }
@@ -173,8 +171,8 @@ public class Dagify implements RecordAction {
     }
 
     public void run(HadMember mem) {
-        List<org.openprovenance.prov.model.IDRef> ll=new LinkedList<org.openprovenance.prov.model.IDRef>();
-        for (org.openprovenance.prov.model.IDRef er: mem.getEntity()) {
+        List<org.openprovenance.prov.model.QualifiedName> ll=new LinkedList<org.openprovenance.prov.model.QualifiedName>();
+        for (org.openprovenance.prov.model.QualifiedName er: mem.getEntity()) {
             ll.add(uniquify(er));
         }
         mem.getEntity().clear();

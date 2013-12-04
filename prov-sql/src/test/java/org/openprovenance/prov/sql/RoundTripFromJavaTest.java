@@ -61,7 +61,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	return ".xml";
     }
     
-    public void testEntity0 () throws JAXBException {
+    public void testEntity0 () {
 	System.out.println("Starting test Entity0");
 	super.testEntity0();
 	System.out.println("Ending test Entity0");

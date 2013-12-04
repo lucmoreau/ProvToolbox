@@ -92,6 +92,7 @@ public class ActedOnBehalfOf
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
     protected QualifiedName id;
     
 
@@ -103,7 +104,7 @@ public class ActedOnBehalfOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "DELEGATE")
@@ -116,7 +117,7 @@ public class ActedOnBehalfOf
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.sql.IDRef }
+     *     {@link org.openprovenance.prov.sql.QualifiedName }
      *     
      */
     public void setDelegate(org.openprovenance.prov.model.QualifiedName value) {
@@ -131,7 +132,7 @@ public class ActedOnBehalfOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "RESPONSIBLE")
@@ -159,7 +160,7 @@ public class ActedOnBehalfOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "ACTIVITY")

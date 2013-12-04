@@ -29,10 +29,13 @@ import javax.persistence.Transient;
 
 import org.openprovenance.prov.sql.AValue;
 import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.Name;
+import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.QNameConstructor;
 import org.openprovenance.prov.model.ValueConverter;
 
 import java.util.Collection;
@@ -147,7 +150,15 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
 
     
     
-    static ValueConverter vc=new ValueConverter(ProvFactory.getFactory(), null);
+    static ValueConverter vc=new ValueConverter(ProvFactory.getFactory(),
+    		new QNameConstructor() {
+
+				@Override
+				public Object newQName(String value) {
+					return new QName(value); //FIXME
+				}
+    	
+    });
 	
     transient AValue avalue;
     
@@ -165,21 +176,23 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     public AValue getValueItem() {
         //System.out.println("#---> getValueItem() reading " + value);
 
-        if ((avalue==null) && (value!=null)) {
-            if (type==null) {
-		avalue=SQLValueConverter.convertToAValue(vc.getXsdType(value), value); //TODO, I am not using the one saved!
-		//System.out.println("##---> getValueItem() reading found " + avalue);
-            } else if (value instanceof InternationalizedString) {
-                avalue=SQLValueConverter.convertToAValue(type,  ((InternationalizedString) value).getValue());
-            } else if (value instanceof QName) {
-                avalue=SQLValueConverter.convertToAValue(type,  (QName) value);
-	    } else {
-                avalue=SQLValueConverter.convertToAValue(type, vc.convertToJava(type, (String)value));
-		//System.out.println("###--> getValueItem() reading found " + avalue);
-		//System.out.println("###--> getValueItem() reading found - " + SQLValueConverter.convertFromAValue(avalue));
-	    }
-	}
-        return avalue;
+    	if ((avalue==null) && (value!=null)) {
+    		if (type==null) {
+    			avalue=SQLValueConverter.convertToAValue(vc.getXsdType(value), value); //TODO, I am not using the one saved!
+    			//System.out.println("##---> getValueItem() reading found " + avalue);
+    		} else if (value instanceof InternationalizedString) {
+    			avalue=SQLValueConverter.convertToAValue(type,  ((InternationalizedString) value).getValue());
+    		} else if (value instanceof QName) {
+    			avalue=SQLValueConverter.convertToAValue(type,  (QName) value);
+    		} else if (value instanceof org.openprovenance.prov.model.QualifiedName) {
+    			avalue=SQLValueConverter.convertToAValue(type,  (QualifiedName) value);
+    		} else {
+    			avalue=SQLValueConverter.convertToAValue(type, vc.convertToJava(type, (String)value));
+    			//System.out.println("###--> getValueItem() reading found " + avalue);
+    			//System.out.println("###--> getValueItem() reading found - " + SQLValueConverter.convertFromAValue(avalue));
+    		}
+    	}
+    	return avalue;
     }
     
     private static final String PERSISTENCE_UNIT_NAME = "org.openprovenance.prov.sql";

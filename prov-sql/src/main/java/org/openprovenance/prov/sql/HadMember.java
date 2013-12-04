@@ -57,9 +57,9 @@ public class HadMember
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef collection;
+    protected org.openprovenance.prov.model.QualifiedName collection;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected List<org.openprovenance.prov.model.IDRef> entity;
+    protected List<org.openprovenance.prov.model.QualifiedName> entity;
 
     /**
      * Gets the value of the collection property.
@@ -69,11 +69,11 @@ public class HadMember
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "COLLECTION")
-    public org.openprovenance.prov.model.IDRef getCollection() {
+    public org.openprovenance.prov.model.QualifiedName getCollection() {
         return collection;
     }
 
@@ -85,7 +85,7 @@ public class HadMember
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setCollection(org.openprovenance.prov.model.IDRef value) {
+    public void setCollection(org.openprovenance.prov.model.QualifiedName value) {
         this.collection = value;
     }
 
@@ -111,7 +111,7 @@ public class HadMember
      * 
      * 
      */
-    @ManyToMany(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToMany(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinTable(name = "HADMEMBER_ELEMENTS", joinColumns = {
@@ -119,9 +119,9 @@ public class HadMember
     }, inverseJoinColumns = {
         @JoinColumn(name = "ENTITY")
     })
-    public List<org.openprovenance.prov.model.IDRef> getEntity() {
+    public List<org.openprovenance.prov.model.QualifiedName> getEntity() {
         if (entity == null) {
-            entity = new ArrayList<org.openprovenance.prov.model.IDRef>();
+            entity = new ArrayList<org.openprovenance.prov.model.QualifiedName>();
         }
         return this.entity;
     }
@@ -130,7 +130,7 @@ public class HadMember
      * 
      * 
      */
-    public void setEntity(List<org.openprovenance.prov.model.IDRef> entity) {
+    public void setEntity(List<org.openprovenance.prov.model.QualifiedName> entity) {
         this.entity = entity;
     }
 
@@ -146,18 +146,18 @@ public class HadMember
         }
         final HadMember that = ((HadMember) object);
         {
-            org.openprovenance.prov.model.IDRef lhsCollection;
+            org.openprovenance.prov.model.QualifiedName lhsCollection;
             lhsCollection = this.getCollection();
-            org.openprovenance.prov.model.IDRef rhsCollection;
+            org.openprovenance.prov.model.QualifiedName rhsCollection;
             rhsCollection = that.getCollection();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "collection", lhsCollection), LocatorUtils.property(thatLocator, "collection", rhsCollection), lhsCollection, rhsCollection)) {
                 return false;
             }
         }
         {
-            List<org.openprovenance.prov.model.IDRef> lhsEntity;
+            List<org.openprovenance.prov.model.QualifiedName> lhsEntity;
             lhsEntity = (((this.entity!= null)&&(!this.entity.isEmpty()))?this.getEntity():null);
-            List<org.openprovenance.prov.model.IDRef> rhsEntity;
+            List<org.openprovenance.prov.model.QualifiedName> rhsEntity;
             rhsEntity = (((that.entity!= null)&&(!that.entity.isEmpty()))?that.getEntity():null);
             if (!strategy.equals(LocatorUtils.property(thisLocator, "entity", lhsEntity), LocatorUtils.property(thatLocator, "entity", rhsEntity), lhsEntity, rhsEntity)) {
                 return false;
@@ -174,12 +174,12 @@ public class HadMember
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            org.openprovenance.prov.model.IDRef theCollection;
+            org.openprovenance.prov.model.QualifiedName theCollection;
             theCollection = this.getCollection();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "collection", theCollection), currentHashCode, theCollection);
         }
         {
-            List<org.openprovenance.prov.model.IDRef> theEntity;
+            List<org.openprovenance.prov.model.QualifiedName> theEntity;
             theEntity = (((this.entity!= null)&&(!this.entity.isEmpty()))?this.getEntity():null);
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "entity", theEntity), currentHashCode, theEntity);
         }

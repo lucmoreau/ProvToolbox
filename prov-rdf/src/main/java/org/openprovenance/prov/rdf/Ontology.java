@@ -410,11 +410,11 @@ public class Ontology {
 	otherTable.put(QNAME_PROVO_Insertion, QNAME_PROVO_insertedKeyEntityPair);
 	otherTable.put(QNAME_PROVO_Removal, QNAME_PROVO_insertedKeyEntityPair);
 
-	convertTable.put(pFactory.newQualifiedName(Name.PROV_LABEL_QNAME), QNAME_RDFS_LABEL);
-	convertTable.put(pFactory.newQualifiedName(Name.PROV_TYPE_QNAME), QNAME_RDF_TYPE);
-	convertTable.put(pFactory.newQualifiedName(Name.PROV_LOCATION_QNAME), QNAME_PROVO_atLocation);
-	convertTable.put(pFactory.newQualifiedName(Name.PROV_VALUE_QNAME), QNAME_PROVO_value);
-	convertTable.put(pFactory.newQualifiedName(Name.PROV_ROLE_QNAME), QNAME_PROVO_hadRole);
+	convertTable.put(pFactory.newQualifiedName(Name.QNAME_PROV_LABEL), QNAME_RDFS_LABEL);
+	convertTable.put(pFactory.newQualifiedName(Name.QNAME_PROV_TYPE), QNAME_RDF_TYPE);
+	convertTable.put(pFactory.newQualifiedName(Name.QNAME_PROV_LOCATION), QNAME_PROVO_atLocation);
+	convertTable.put(pFactory.newQualifiedName(Name.QNAME_PROV_VALUE), QNAME_PROVO_value);
+	convertTable.put(pFactory.newQualifiedName(Name.QNAME_PROV_ROLE), QNAME_PROVO_hadRole);
     }
     
     void initRangeTables() {

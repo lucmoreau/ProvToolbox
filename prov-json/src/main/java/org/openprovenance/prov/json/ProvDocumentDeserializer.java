@@ -399,7 +399,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List<org.openprovenance.prov.model.Type> types = ((HasType) statement).getType();
 		for (JsonElement value : values) {
 		    types.add((org.openprovenance.prov.model.Type) decodeAttributeValue(value,
-											Name.PROV_TYPE_QNAME));
+											Name.QNAME_PROV_TYPE));
 		}
 	    } else {
 		throw new UnsupportedOperationException(
@@ -432,7 +432,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List<Location> locations = ((HasLocation) statement).getLocation();
 		for (JsonElement value : values) {
 		    locations.add((org.openprovenance.prov.model.Location) decodeAttributeValue(value,
-												Name.PROV_LOCATION_QNAME));
+												Name.QNAME_PROV_LOCATION));
 		}
 	    } else {
 		throw new UnsupportedOperationException(
@@ -449,7 +449,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List<Role> roles = ((HasRole) statement).getRole();
 		for (JsonElement value : values) {
 		    roles.add((org.openprovenance.prov.model.Role) decodeAttributeValue(value,
-											Name.PROV_ROLE_QNAME));
+											Name.QNAME_PROV_ROLE));
 		}
 	    } else {
 		throw new UnsupportedOperationException(
@@ -470,7 +470,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    }
 	    if (statement instanceof HasValue) {
 		((HasValue) statement).setValue((org.openprovenance.prov.model.Value) decodeAttributeValue(values.get(0),
-													   Name.PROV_VALUE_QNAME));
+													   Name.QNAME_PROV_VALUE));
 	    } else {
 		throw new UnsupportedOperationException(
 							"prov:value is not allowed in a "
@@ -680,7 +680,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    for (JsonElement element : elements) {
 		JsonObject item = element.getAsJsonObject();
 		Entry pair = pf.newEntry((Key) decodeAttributeValue(item.remove("key"),
-		                                                    Name.PROV_KEY_QNAME),
+		                                                    Name.QNAME_PROV_KEY),
 		                                                    
 		                         ns.stringToQualifiedName(this.popString(item, "$"),pf));
 		results.add(pair);
@@ -719,7 +719,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	List<JsonElement> elements = popMultiValAttribute(attributeName,
 							  attributeMap);
 	for (JsonElement element : elements) {
-	    Key key = (Key) decodeAttributeValue(element, Name.PROV_KEY_QNAME);
+	    Key key = (Key) decodeAttributeValue(element, Name.QNAME_PROV_KEY);
 	    results.add(key);
 	}
 	return results;

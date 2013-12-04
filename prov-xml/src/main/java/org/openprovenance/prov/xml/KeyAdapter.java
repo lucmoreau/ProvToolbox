@@ -31,7 +31,7 @@ public class KeyAdapter extends XmlAdapter<Element, TypedValue> {
     @Override
     public Element marshal(TypedValue value) throws Exception {
          //System.out.println("==> KeyAdapter marshalling for " + value);
-         return DOMProcessing.marshalTypedValue(value,Name.PROV_KEY_QNAME);
+         return DOMProcessing.marshalTypedValue(value,Name.QNAME_PROV_KEY);
     }
 
     @Override

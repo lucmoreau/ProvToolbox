@@ -53,7 +53,7 @@ public class Type
 {
 
     private static final AttributeKind PROV_TYPE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_TYPE;
-    private static final QName PROV_TYPE_QNAME = Name.PROV_TYPE_QNAME;
+    private static final QName PROV_TYPE_QNAME = Name.QNAME_PROV_TYPE;
 
     @Transient
     public QName getElementName() {

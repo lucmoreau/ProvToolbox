@@ -28,7 +28,7 @@ public class Key extends TypedValue implements Equals, HashCode, org.openprovena
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_KEY_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_KEY;
-    private static final QName PROV_KEY_QNAME = Name.PROV_KEY_QNAME;
+    private static final QName PROV_KEY_QNAME = Name.QNAME_PROV_KEY;
 
     @Transient
     public QName getElementName() {

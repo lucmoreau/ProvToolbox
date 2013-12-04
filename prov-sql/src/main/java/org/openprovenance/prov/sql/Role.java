@@ -53,7 +53,7 @@ public class Role extends TypedValue implements
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_ROLE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_ROLE;
-    private static final QName PROV_ROLE_QNAME = Name.PROV_ROLE_QNAME;
+    private static final QName PROV_ROLE_QNAME = Name.QNAME_PROV_ROLE;
 
     @Transient
     public QName getElementName() {

@@ -25,12 +25,12 @@ public class Name {
     public static final QName QNAME_PROV_PRIMARY_SOURCE = newProvQName("PrimarySource");
     public static final QName QNAME_PROV_BUNDLE = newProvQName("Bundle");
     
-    public static final QName PROV_TYPE_QNAME=newProvQName("type"); 
-    public static final QName PROV_LABEL_QNAME=newProvQName("label"); 
-    public static final QName PROV_ROLE_QNAME=newProvQName("role");
-    public static final QName PROV_LOCATION_QNAME=newProvQName("location");
-    public static final QName PROV_VALUE_QNAME=newProvQName("value");
-    public static final QName PROV_KEY_QNAME=newProvQName("key");
+    public static final QName QNAME_PROV_TYPE=newProvQName("type"); 
+    public static final QName QNAME_PROV_LABEL=newProvQName("label"); 
+    public static final QName QNAME_PROV_ROLE=newProvQName("role");
+    public static final QName QNAME_PROV_LOCATION=newProvQName("location");
+    public static final QName QNAME_PROV_VALUE=newProvQName("value");
+    public static final QName QNAME_PROV_KEY=newProvQName("key");
 
     public static QName QNAME_XSD_STRING=newXsdQName("string"); //*
     public static QName QNAME_XSD_INT=newXsdQName("int");//*

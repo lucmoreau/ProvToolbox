@@ -53,7 +53,7 @@ public class Label extends TypedValue implements
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_LABEL_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_LABEL;
-    private static final QName PROV_LABEL_QNAME = Name.PROV_LABEL_QNAME;
+    private static final QName PROV_LABEL_QNAME = Name.QNAME_PROV_LABEL;
 
     @Transient
     public QName getElementName() {

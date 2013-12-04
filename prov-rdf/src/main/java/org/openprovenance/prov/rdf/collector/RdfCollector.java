@@ -501,14 +501,14 @@ public class RdfCollector extends RDFHandlerBase {
 				    && DM_TYPES.indexOf(typeQ) == -1) {
 				// System.out.println("Skipping type: " + typeQ);
 			    } else {
-				attributes.add(pFactory.newAttribute(Name.PROV_TYPE_QNAME,
+				attributes.add(pFactory.newAttribute(Name.QNAME_PROV_TYPE,
 								     typeQ,
 								     Name.QNAME_XSD_QNAME));
 			    }
 
 			} else if (statement.getObject() instanceof Literal) {	   
 			    Literal lit=(Literal)statement.getObject();
-			    Attribute attr = newAttribute(lit,pFactory.newQualifiedName(Name.PROV_TYPE_QNAME));
+			    Attribute attr = newAttribute(lit,pFactory.newQualifiedName(Name.QNAME_PROV_TYPE));
 			    attributes.add(attr);
 			}
 		    }
@@ -521,24 +521,24 @@ public class RdfCollector extends RDFHandlerBase {
 	    if (predQ.equals(onto.QNAME_PROVO_hadRole)) {
 		Value obj=statement.getObject();
 
-		Attribute attr = newAttributeForValue(obj,pFactory.newQualifiedName(Name.PROV_ROLE_QNAME));
+		Attribute attr = newAttributeForValue(obj,pFactory.newQualifiedName(Name.QNAME_PROV_ROLE));
 		attributes.add(attr);
 	    }
 
 	    if (predQ.equals(onto.QNAME_PROVO_atLocation)) {
 		Value obj=statement.getObject();
-		Attribute attr = newAttributeForValue(obj,pFactory.newQualifiedName(Name.PROV_LOCATION_QNAME));
+		Attribute attr = newAttributeForValue(obj,pFactory.newQualifiedName(Name.QNAME_PROV_LOCATION));
 		attributes.add(attr);
 
 	    }
 
 	    if (predQ.equals(onto.QNAME_RDFS_LABEL)) {
 		Literal lit = (Literal) (statement.getObject());
-		Attribute attr=newAttribute(lit, pFactory.newQualifiedName(Name.PROV_LABEL_QNAME));
+		Attribute attr=newAttribute(lit, pFactory.newQualifiedName(Name.QNAME_PROV_LABEL));
 		attributes.add(attr);		
 	    }
 	    if (predQ.equals(onto.QNAME_PROVO_value)) {
-		Attribute attr=newAttributeForValue(value, pFactory.newQualifiedName(Name.PROV_VALUE_QNAME));
+		Attribute attr=newAttributeForValue(value, pFactory.newQualifiedName(Name.QNAME_PROV_VALUE));
 		attributes.add(attr);
 	    }
 	    if (!isProvURI(predQ)) {

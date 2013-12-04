@@ -46,7 +46,7 @@ public class Value
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_VALUE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_VALUE;
-    private static final QName PROV_VALUE_QNAME = Name.PROV_VALUE_QNAME;
+    private static final QName PROV_VALUE_QNAME = Name.QNAME_PROV_VALUE;
     
     @Transient   
     public QName getElementName() {

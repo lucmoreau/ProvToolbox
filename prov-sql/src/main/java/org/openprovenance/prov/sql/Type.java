@@ -24,6 +24,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.openprovenance.prov.model.DOMProcessing;
+import org.openprovenance.prov.model.Name;
 
 
 /**
@@ -52,7 +53,7 @@ public class Type
 {
 
     private static final AttributeKind PROV_TYPE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_TYPE;
-    private static final QName PROV_TYPE_QNAME = Helper2.PROV_TYPE_QNAME;
+    private static final QName PROV_TYPE_QNAME = Name.PROV_TYPE_QNAME;
 
     @Transient
     public QName getElementName() {

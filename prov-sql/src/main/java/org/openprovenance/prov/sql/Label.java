@@ -23,6 +23,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.openprovenance.prov.model.DOMProcessing;
+import org.openprovenance.prov.model.Name;
 
 /**
  * <p>
@@ -52,7 +53,7 @@ public class Label extends TypedValue implements
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_LABEL_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_LABEL;
-    private static final QName PROV_LABEL_QNAME = Helper2.PROV_LABEL_QNAME;
+    private static final QName PROV_LABEL_QNAME = Name.PROV_LABEL_QNAME;
 
     @Transient
     public QName getElementName() {

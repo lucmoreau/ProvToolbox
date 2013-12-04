@@ -21,6 +21,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.openprovenance.prov.model.DOMProcessing;
+import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.sql.AValue;
 import org.openprovenance.prov.sql.InternationalizedString;
 
@@ -50,7 +51,7 @@ public class Key extends TypedValue implements Equals, HashCode, org.openprovena
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_KEY_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_KEY;
-    private static final QName PROV_KEY_QNAME = Helper2.PROV_KEY_QNAME;
+    private static final QName PROV_KEY_QNAME = Name.PROV_KEY_QNAME;
 
     @Transient
     public QName getElementName() {

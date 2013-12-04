@@ -51,7 +51,7 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 @Table(name = "IDREF", uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"URI"}))
 @Inheritance(strategy = InheritanceType.JOINED)
 public class IDRef
-    implements Equals, HashCode, org.openprovenance.prov.model.IDRef
+    implements Equals, HashCode
 {
 
     @XmlAttribute(name = "ref", namespace = "http://www.w3.org/ns/prov#", required = true)

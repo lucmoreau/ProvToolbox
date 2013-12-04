@@ -115,7 +115,9 @@ public class BeanTraversal {
         return acc;     
     }
 
+    @SuppressWarnings("unchecked")
     public List<Attribute> convertAttributes(HasOther e, List<Attribute> acc) {
+	@SuppressWarnings("rawtypes")
 	List ll=e.getOther();
 	acc.addAll((List<Attribute>)ll);
 	return acc;

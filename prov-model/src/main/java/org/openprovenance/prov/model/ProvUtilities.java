@@ -273,8 +273,10 @@ public class ProvUtilities {
 
     public Hashtable<String, List<Attribute>> attributesWithNamespace(HasOther e,
                                                                       String namespace) {
+	@SuppressWarnings("rawtypes")
 	List ll=e.getOther();
-        AttributeProcessor _attrs=new AttributeProcessor((List<Attribute>)ll); 
+        @SuppressWarnings("unchecked")
+	AttributeProcessor _attrs=new AttributeProcessor((List<Attribute>)ll); 
         return _attrs.attributesWithNamespace(namespace);
     }
     

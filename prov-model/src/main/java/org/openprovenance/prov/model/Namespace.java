@@ -231,9 +231,9 @@ public class Namespace {
  	return ns.qnameToString(qname);
      }
      
-    static public String qnameToStringWithNamespace(QualifiedName qname) {
+    static public String qualifiedNameToStringWithNamespace(QualifiedName qname) {
  	Namespace ns=Namespace.getThreadNamespace();
- 	return ns.qnameToString(qname);
+ 	return ns.qualifiedNameToString(qname);
      }
      
 
@@ -258,7 +258,7 @@ public class Namespace {
  	 */
      }
     
-    public String qnameToString(QualifiedName qname) {
+    public String qualifiedNameToString(QualifiedName qname) {
  	if ((getDefaultNamespace()!=null) 
  		&& (getDefaultNamespace().equals(qname.getNamespaceURI()))) {
  	    return qname.getLocalPart();
@@ -267,7 +267,7 @@ public class Namespace {
  	    if (pref!=null)  {
  		return pref + ":" + qname.getLocalPart();
  	    } else {
- 		// Really should never be here
+ 		// Really should never be here //FIXME?
  		return ((qname.getPrefix()==null || qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
  			+ qname.getLocalPart();
  	    }

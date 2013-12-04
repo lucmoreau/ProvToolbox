@@ -10,7 +10,7 @@ public class IDRefAdapter extends XmlAdapter<IDRef, org.openprovenance.prov.mode
         if (qname==null) {
             return null;
         } else {
-            System.out.println("marshalling " + qname);
+            //System.out.println("marshalling " + qname);
             IDRef res=new IDRef();
             res.setRef(qname.toQName());
             return res;
@@ -22,9 +22,9 @@ public class IDRefAdapter extends XmlAdapter<IDRef, org.openprovenance.prov.mode
         if (ref==null) {
             return null;
         } else {
-            System.out.println("unmarshalling " + ref);
+            //System.out.println("unmarshalling " + ref);
             javax.xml.namespace.QName q=  ref.getRef();
-            System.out.println("unmarshalling found " + q);
+            //System.out.println("unmarshalling found " + q);
             QualifiedName qq=new QualifiedName(q.getNamespaceURI(), q.getLocalPart(), q.getPrefix());
             return qq;
         }

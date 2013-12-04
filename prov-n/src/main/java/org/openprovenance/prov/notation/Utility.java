@@ -87,7 +87,7 @@ public  class Utility {
 
 	    @Override
 	    public String qnameToString(QualifiedName qname) {
-		return doc.getNamespace().qnameToString(qname);
+		return doc.getNamespace().qualifiedNameToString(qname);
 	    }
 	};
 	NotationConstructor nc=new HTMLConstructor(writer,qExport);
@@ -126,7 +126,7 @@ public  class Utility {
 
 	    @Override
 	    public String qnameToString(QualifiedName qname) {
-		return doc.getNamespace().qnameToString(qname);
+		return doc.getNamespace().qualifiedNameToString(qname);
 	    }
 	};
 	NotationConstructor nc=new NotationConstructor(writer, qExport);

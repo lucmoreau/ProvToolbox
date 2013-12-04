@@ -31,6 +31,8 @@ public class QualifiedName
     
 {
 
+	public QualifiedName() {} // for the purpose of persistence
+	
     public QualifiedName(String namespaceURI, String localPart, String prefix) {
         //super(namespaceURI, localPart, prefix);
         this.namespace=namespaceURI;
@@ -46,7 +48,11 @@ public class QualifiedName
      */
     @Override
     public javax.xml.namespace.QName toQName () {
-	return new javax.xml.namespace.QName(namespace,local,prefix);
+    	if (prefix==null) {
+    		return new javax.xml.namespace.QName(namespace,local);		
+    	} else {
+    		return new javax.xml.namespace.QName(namespace,local,prefix);
+    	}
     }
 
     /**
@@ -100,11 +106,11 @@ public class QualifiedName
 
     public void setRefItem(String target) {
         javax.xml.namespace.QName qname=XmlAdapterUtils.marshall(QNameAsString.class, target);
-        System.out.println("QName.setRefIterm " + target);
+        //System.out.println("QName.setRefIterm " + target);
         setNamespaceURI(qname.getNamespaceURI());
         setLocalPart(qname.getLocalPart());
         setPrefix(qname.getPrefix());
-        System.out.println("      initialized to " + this);
+        //System.out.println("      initialized to " + this);
     }
 
     transient String local;
@@ -183,6 +189,10 @@ public class QualifiedName
     @Override
     public final int hashCode() {
         return namespace.hashCode() ^ local.hashCode();
+    }
+
+    public String toString() {
+	return "'" + prefix + "::{" + namespace + "}" + local + "'";
     }
 
     	     

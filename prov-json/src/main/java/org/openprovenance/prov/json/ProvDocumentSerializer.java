@@ -27,7 +27,7 @@ public class ProvDocumentSerializer implements JsonSerializer<Document> {
 	    }
 	    @Override
 	    public String qnameToString(QualifiedName qname) {
-		return doc.getNamespace().qnameToString(qname);
+		return doc.getNamespace().qualifiedNameToString(qname);
 	    }
 	};
 	JSONConstructor jsonConstructor = new JSONConstructor(qExport);

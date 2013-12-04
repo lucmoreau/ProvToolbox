@@ -77,7 +77,6 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 @XmlType(name = "Usage", propOrder = {
     "activity",
     "entity",
-    "test",
     "time",
     "label",
     //"location",
@@ -683,31 +682,6 @@ public class Used
     }
 
     
-    
-  ///////////////////////////////////////////
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
-    @XmlElement(type = org.openprovenance.prov.sql.IDRef.class)
-    protected QualifiedName test;
-
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = { CascadeType.ALL })
-    @JoinColumn(name = "TEST")
-    public QualifiedName getTest() {
-        return test;
-    }
-
-    /**
-     * Sets the value of the activity property.
-     * 
-     * @param value
-     *            allowed object is {@link org.openprovenance.prov.sql.IDRef }
-     * 
-     */
-    public void setTest(QualifiedName value) {
-        this.test = value;
-    }
-
-   
-
     
 
 }

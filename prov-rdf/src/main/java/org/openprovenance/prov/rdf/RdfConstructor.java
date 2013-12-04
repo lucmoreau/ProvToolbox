@@ -625,7 +625,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
  	LITERAL lit = null;
  	String value;
  	if (val.getValue() instanceof QualifiedName) {
- 	    value = Namespace.qnameToStringWithNamespace((QualifiedName) val.getValue());
+ 	    value = Namespace.qualifiedNameToStringWithNamespace((QualifiedName) val.getValue());
  	} else {
  	    value = val.getValue().toString(); //FIXME: what about Internatioanlized string.
  	}

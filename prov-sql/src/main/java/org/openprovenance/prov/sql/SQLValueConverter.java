@@ -101,7 +101,7 @@ public class SQLValueConverter {
 	}
 	if (datatype.equals(Name.QNAME_XSD_QNAME)) {
 	    AValue res=new AValue();
-	    res.setQname((QName) value);
+	    res.setQname((QualifiedName) value);
 	    return res;
 	}
 	if (datatype.equals(Name.QNAME_XSD_DATETIME)) {

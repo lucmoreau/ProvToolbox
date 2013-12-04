@@ -9,6 +9,7 @@ import javax.persistence.Query;
 
 import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.QualifiedName;
 
 
 
@@ -21,11 +22,11 @@ public class Dagify implements RecordAction {
         this.em=em;
     }
     
-    Hashtable<String, org.openprovenance.prov.model.QualifiedName> table2=new Hashtable<String, org.openprovenance.prov.model.QualifiedName>();
+    Hashtable<String, QualifiedName> table2=new Hashtable<String, QualifiedName>();
     
 
 
-    public org.openprovenance.prov.model.QualifiedName uniquify(org.openprovenance.prov.model.QualifiedName q) {
+    public QualifiedName uniquify(QualifiedName q) {
         if (q==null) return null;
         String uri=q.getNamespaceURI()+q.getLocalPart();
         org.openprovenance.prov.model.QualifiedName found=table2.get(uri);
@@ -37,7 +38,7 @@ public class Dagify implements RecordAction {
         List<QualifiedName> ll=(List<QualifiedName>) qq.getResultList();
         //System.out.println("found ll " + ll);
         
-        org.openprovenance.prov.model.QualifiedName newId=q;
+        QualifiedName newId=q;
         if ((ll!=null) && (!(ll.isEmpty()))) {
             newId=ll.get(0);
         }
@@ -46,16 +47,9 @@ public class Dagify implements RecordAction {
     }
 
    
-    /*
-    public IDRef createKey(QName id) {
-	IDRef ref=new IDRef();
-	ref.setRef(id);
-  	return uniquify(ref);
-      }
 
-   */
     
-    public org.openprovenance.prov.model.QualifiedName createKey(Identifiable e) {
+    private org.openprovenance.prov.model.QualifiedName createKey(Identifiable e) {
 	  	return  uniquify(e.getId());
     }
 
@@ -63,12 +57,12 @@ public class Dagify implements RecordAction {
 
 
     public void run(Entity e) {
-    	e.setId(createKey(e));
+    	e.setId(uniquify(e.getId()));
     }
 
     
     public void run(Activity a) {
-	a.setId(createKey(a));        
+	a.setId(uniquify(a.getId()));        
     }
 
   
@@ -77,12 +71,12 @@ public class Dagify implements RecordAction {
 
 
     public void run(Agent ag) {
-	ag.setId(createKey(ag));                
+	ag.setId(uniquify(ag.getId()));                
     }
 
     public void run(WasGeneratedBy gen) {
-	if (gen.getId()!=null) gen.setId(createKey(gen));                
-        gen.setEntity(uniquify(gen.getEntity()));
+    	if (gen.getId()!=null) gen.setId(uniquify(gen.getId()));                
+    	gen.setEntity(uniquify(gen.getEntity()));
         gen.setActivity(uniquify(gen.getActivity()));
     }
 

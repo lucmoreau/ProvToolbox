@@ -764,7 +764,7 @@ public class RoundTripFromJavaTest extends TestCase {
     // /////////////////////////////////////////////////////////////////////
 
     public org.openprovenance.prov.model.QualifiedName q(String n) {
-        return new QualifiedName(EX_NS, n, EX_PREFIX);
+        return pFactory.newQualifiedName(EX_NS, n, EX_PREFIX);
     }
 
     /*
@@ -857,7 +857,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testUsage5() {
-        Used use = pFactory.newUsed(q("use4"), q("a1"), "somerole", q("e1"));
+        Used use = pFactory.newUsed(q("use5"), q("a1"), "somerole", q("e1"));
         use.setTime(pFactory.newTimeNow());
         addTypes(use);
         addLocations(use);

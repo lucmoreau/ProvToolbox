@@ -7,50 +7,32 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.FetchType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.openprovenance.prov.sql.AValue;
 import org.openprovenance.prov.model.InternationalizedString;
-import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.Name;
-import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QNameConstructor;
 import org.openprovenance.prov.model.ValueConverter;
 
-import java.util.Collection;
-
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
 import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 
@@ -320,6 +302,8 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     public void setValueAsObject(Object valueAsJava) {
  	if ((valueAsJava!=null) && (value==null)) {
  	    if (valueAsJava instanceof QName) {
+ 		this.value=valueAsJava;
+ 	    } else if (valueAsJava instanceof QualifiedName) { 
  		this.value=valueAsJava;
  	    } else if (valueAsJava instanceof InternationalizedString) { 
  		this.value=valueAsJava;

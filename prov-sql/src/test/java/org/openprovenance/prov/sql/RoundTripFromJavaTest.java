@@ -61,6 +61,11 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	return ".xml";
     }
     
+
+    public org.openprovenance.prov.model.QualifiedName q(String n) {
+        return new QualifiedName(EX_NS, n, EX_PREFIX);
+    }
+
     public void testEntity0 () {
 	System.out.println("Starting test Entity0");
 	super.testEntity0();
@@ -178,26 +183,6 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
     }
     ///////////////////////////////////////////////////////////////////////
 
-    
-    public QualifiedName qqq(String n) {
-        return new QualifiedName(EX_NS, n, EX_PREFIX);
-    }
-    
-    public org.openprovenance.prov.model.QualifiedName qq(String n) {
-		return new QualifiedName(EX_NS, n, EX_PREFIX);
-       }
-    
-    public void testUsage100() throws JAXBException  {
-        System.out.println("testUsage 100 start");
-        setNamespaces();
-        Used use = (Used) pFactory.newUsed(q("use1"),
-                                           qq("a1"),
-                                           "somerole",
-                                           qqq("e1"));
-        use.setTest(qqq("test"));
-        makeDocAndTest(use,"target/usage100");
-        System.out.println("testUsage 100 end");
-
-    }
+ 
 
 }

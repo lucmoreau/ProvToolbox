@@ -46,11 +46,11 @@ public class RoundTripFromJavaSQLTest extends RoundTripFromJavaTest {
     @Override
     public void writeDocument(org.openprovenance.prov.model.Document doc,
 			      String file) {
-	Document doc2 = u.persist((org.openprovenance.prov.sql.Document) doc);
-	dbKeys.put(file, ((org.openprovenance.prov.sql.Document) doc).getHjid());
-	System.out.println("saved document "
-		+ ((org.openprovenance.prov.sql.Document) doc).getHjid()
-		+ " for " + file);
+    	Document doc2 = u.persist((org.openprovenance.prov.sql.Document) doc);
+    	dbKeys.put(file, ((org.openprovenance.prov.sql.Document) doc).getHjid());
+    	System.out.println("saved document "
+    			+ ((org.openprovenance.prov.sql.Document) doc).getHjid()
+    			+ " for " + file);
     }
 
     /*
@@ -87,5 +87,11 @@ public class RoundTripFromJavaSQLTest extends RoundTripFromJavaTest {
      * 
      * }
      */
+    
+
+    public org.openprovenance.prov.model.QualifiedName q(String n) {
+		return new QualifiedName(EX_NS, n, EX_PREFIX);
+       }
+
 
 }

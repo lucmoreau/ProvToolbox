@@ -108,7 +108,7 @@ public class WasGeneratedBy
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
     @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
     protected QualifiedName id;
-    
+
 
     /**
      * Gets the value of the entity property.

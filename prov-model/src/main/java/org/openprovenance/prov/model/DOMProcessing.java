@@ -60,9 +60,9 @@ final public class DOMProcessing {
     }
     
     
-    static public String qnameToString(QualifiedName qname) {
+    static public String qualifiedNameToString(QualifiedName qname) {
 	Namespace ns=Namespace.getThreadNamespace();
-	return ns.qnameToString(qname);
+	return ns.qualifiedNameToString(qname);
     }
     
 
@@ -168,7 +168,7 @@ final public class DOMProcessing {
 	el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsd", NamespacePrefixMapper.XSD_NS);
 
 	// 2. We add the QName's string representation as child of the element
-	String valueAsString=qnameToString(value);
+	String valueAsString=qualifiedNameToString(value);
 	el.appendChild(doc.createTextNode(valueAsString));
 	
 	// 3. We make sure that the QName's prefix is given the right namespace, or the default namespace is declared if there is no prefix
@@ -243,11 +243,11 @@ final public class DOMProcessing {
         transformer.transform(source, result);
 
     }                                                                                                                                            
-    static public void writeDOMToPrinter(Node document, Writer out, boolean formatted)                                                           
-            throws TransformerConfigurationException, TransformerException  {                                                                        
-                                                                                                                                                     
-            StreamResult result = new StreamResult(out);                                                                                             
-            writeDOMToPrinter(document,result,formatted);                                                                                            
+    static public void writeDOMToPrinter(Node document, Writer out, boolean formatted)
+            throws TransformerConfigurationException, TransformerException  {
+
+            StreamResult result = new StreamResult(out);
+            writeDOMToPrinter(document,result,formatted);
         }                                                                                                                                            
                  
     static public String writeToString (Node toWrite)                                                                                            
@@ -292,6 +292,7 @@ final public class DOMProcessing {
                                                  QName elementName) {	
 	Object value = attribute.getValue();
 	QName type = attribute.getType();
+	
 	if (value instanceof InternationalizedString) {
 	    InternationalizedString istring = ((InternationalizedString) value);
 	    return newElement(elementName, 

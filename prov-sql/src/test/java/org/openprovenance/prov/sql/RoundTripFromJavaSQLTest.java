@@ -2,6 +2,8 @@ package org.openprovenance.prov.sql;
 
 import java.io.File;
 import java.util.Hashtable;
+
+import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.sql.Document;
 
 //import org.openprovenance.prov.sql.PersistenceUtility;
@@ -53,6 +55,12 @@ public class RoundTripFromJavaSQLTest extends RoundTripFromJavaTest {
     			+ " for " + file);
     }
 
+    public boolean doOptional(Statement[] opt) {
+  	return false;
+      }
+
+   
+    
     /*
      * 
      * public void NOmakeDocAndTest(Statement [] statements, String file,

@@ -10,10 +10,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.QNameAsString;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 
@@ -24,14 +21,14 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  */
 @Entity(name = "QualifiedName")
 @javax.persistence.Cacheable 
-@Table(name = "QUALIFIEDNAME", uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"URI"}))
+@Table(name = "QUALIFIEDNAME") //, uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"URI"}))
 @Inheritance(strategy = InheritanceType.JOINED)
 public class QualifiedName
  implements org.openprovenance.prov.model.QualifiedName
     
 {
 
-	public QualifiedName() {} // for the purpose of persistence
+    public QualifiedName() {} // for the purpose of persistence
 	
     public QualifiedName(String namespaceURI, String localPart, String prefix) {
         //super(namespaceURI, localPart, prefix);
@@ -102,11 +99,12 @@ public class QualifiedName
     @Basic@Column(name = "REFITEM")
     public String getRefItem() {
         return XmlAdapterUtils.unmarshall(QNameAsString.class, this.toQName());
+	//return Helper2.QNameToString(this.toQName());
     }
 
     public void setRefItem(String target) {
-        javax.xml.namespace.QName qname=XmlAdapterUtils.marshall(QNameAsString.class, target);
-        //System.out.println("QName.setRefIterm " + target);
+	javax.xml.namespace.QName qname=XmlAdapterUtils.marshall(QNameAsString.class, target);
+	//javax.xml.namespace.QName qname=Helper2.stringToQName(target);
         setNamespaceURI(qname.getNamespaceURI());
         setLocalPart(qname.getLocalPart());
         setPrefix(qname.getPrefix());

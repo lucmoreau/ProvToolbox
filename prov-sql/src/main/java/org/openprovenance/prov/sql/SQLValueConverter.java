@@ -1,12 +1,9 @@
 package org.openprovenance.prov.sql;
 import org.openprovenance.prov.model.Name;
-import  org.openprovenance.prov.xml.ValueConverter;
-import  org.openprovenance.prov.xml.ProvFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 public class SQLValueConverter {
-    static ValueConverter conv=new ValueConverter(new ProvFactory(),null);
 
     static public AValue convertToAValue(QName datatype, Object value) {
 	if (datatype.equals(Name.QNAME_XSD_STRING)) {
@@ -133,14 +130,14 @@ public class SQLValueConverter {
 	return null;
     }
 
-
+/*
     static AValue convert(Object o) {
 	if (o==null) return null;
 	QName type=conv.getXsdType(o);
 	
 	return convertToAValue(type,o);
     }
-
+*/
 
     public static Object convertFromAValue(AValue target) {
 	Object o;

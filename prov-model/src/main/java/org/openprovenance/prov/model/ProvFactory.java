@@ -1146,8 +1146,10 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
-    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QualifiedName aid,
-					    String role, QualifiedName pid) {
+    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, 
+                                            QualifiedName aid,
+					    String role, 
+					    QualifiedName pid) {
 	WasGeneratedBy res = of.createWasGeneratedBy();
 	res.setId(id);
 	res.setActivity(pid);

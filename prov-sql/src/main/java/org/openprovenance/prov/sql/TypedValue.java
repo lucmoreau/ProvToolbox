@@ -178,7 +178,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     	return avalue;
     }
     
-    private static final String PERSISTENCE_UNIT_NAME = "org.openprovenance.prov.sql";
+    //private static final String PERSISTENCE_UNIT_NAME = "org.openprovenance.prov.sql";
    
     /**
      * Sets the value of the test property.

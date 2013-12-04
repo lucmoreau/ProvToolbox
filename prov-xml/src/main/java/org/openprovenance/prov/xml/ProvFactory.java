@@ -76,7 +76,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 	case PROV_ROLE: return newRole(value, type);
 	case PROV_TYPE: return newType(value, type);
 	case PROV_VALUE: return newValue(value, type);
-	case PROV_KEY: return newValue(value, type);
+	case PROV_KEY: throw new UnsupportedOperationException();
 	}
 	return null;
     }

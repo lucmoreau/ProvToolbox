@@ -163,6 +163,7 @@ public class WasGeneratedBy
      *     
      */
     public void setActivity(org.openprovenance.prov.model.QualifiedName value) {
+	System.out.println("wasGeneratedBy.setActivity() " + value);
         this.activity = value;
     }
 

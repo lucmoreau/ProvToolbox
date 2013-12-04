@@ -1,7 +1,6 @@
 package org.openprovenance.prov.sql;
 
 
-import java.util.Hashtable;
 import java.util.Properties;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +15,6 @@ import org.openprovenance.prov.model.LiteralConstructor;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.QualifiedName;
 
-import org.openprovenance.prov.model.ValueConverter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -195,6 +193,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 	    return newType(value, type);
 	case PROV_VALUE:
 	    return newValue(value, type);
+	case PROV_KEY:
+	    throw new UnsupportedOperationException();
 	}
 	return null;
     }

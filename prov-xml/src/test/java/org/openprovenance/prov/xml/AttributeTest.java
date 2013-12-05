@@ -474,9 +474,11 @@ public class AttributeTest extends TestCase {
 	    QualifiedName type=(QualifiedName) pair[1];
 	    if (value instanceof QualifiedName) {
 		QualifiedName qq=(QualifiedName)value;
-		if (((qq.getPrefix().equals(elementName.getPrefix())))
-			&&
-			(!(qq.getNamespaceURI().equals(elementName.getNamespaceURI())))) {
+		if ((qq.getPrefix()!=null)
+		    && 
+		    ((qq.getPrefix().equals(elementName.getPrefix())))
+		    &&
+		    (!(qq.getNamespaceURI().equals(elementName.getNamespaceURI())))) {
 		    // ignore this case
 		} else {
 		    ho.getOther().add(pFactory.newOther(elementName, value, type));

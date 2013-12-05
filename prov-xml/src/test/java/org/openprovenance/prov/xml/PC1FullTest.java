@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.List;
 import java.net.URI;
 import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Activity;
@@ -21,6 +20,7 @@ import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Type;
+import org.openprovenance.prov.model.QualifiedName;
 
 import org.xml.sax.SAXException;
 
@@ -36,18 +36,16 @@ public class PC1FullTest extends TestCase {
     public static final String PRIM_NS = "http://openprovenance.org/primitives#";
     public static final String PRIM_PREFIX = "prim";
     
-    public org.openprovenance.prov.model.QualifiedName q(String n) {
-   	return new QualifiedName(PC1_NS, n, PC1_PREFIX);
+    public QualifiedName q(String n) {
+   	return new org.openprovenance.prov.xml.QualifiedName(PC1_NS, n, PC1_PREFIX);
     }
-    public QName qq(String n) {
-   	return new QName(PC1_NS, n, PC1_PREFIX);
-    }
-       
+ 
     
     static final ProvUtilities util=new ProvUtilities();
 
 
     public static ProvFactory pFactory=new ProvFactory();
+    public static Name name=pFactory.getName();
 
     
     /**
@@ -95,7 +93,7 @@ public class PC1FullTest extends TestCase {
     static String FILE_LOCATION = "/shomewhere/pc1/";
     static String URL_LOCATION = "http://www.ipaw.info/challenge/";
 
-    static QName PRIMITIVE_ALIGN_WARP = new QName(PRIM_NS, "align_warp", PRIM_PREFIX);
+    private static QualifiedName PRIMITIVE_ALIGN_WARP = pFactory.newQualifiedName(PRIM_NS, "align_warp", PRIM_PREFIX);
     static URI PRIMITIVE_RESLICE = URI
 	    .create("http://openprovenance.org/primitives#reslice");
     static URI PRIMITIVE_SOFTMEAN = URI
@@ -138,12 +136,12 @@ public class PC1FullTest extends TestCase {
 
     public void addValue(HasOther p1, String val) {
 	p1.getOther().add(pFactory.newOther(PC1_NS, "value", PC1_PREFIX, val, 
-	                                     org.openprovenance.prov.model.Name.QNAME_XSD_STRING));
+	                                     name.QNAME_XSD_STRING));
     }
 
     public void addUrl(HasOther p1, String val) {
 	p1.getOther().add(pFactory.newOther(PC1_NS, "url", PC1_PREFIX, val, 
-	                                     org.openprovenance.prov.model.Name.QNAME_XSD_STRING));
+	                                     name.QNAME_XSD_STRING));
     }
     
     public Used newUsed(Activity activity, String role, Entity entity){
@@ -151,7 +149,7 @@ public class PC1FullTest extends TestCase {
     }
     public Used newUsed(org.openprovenance.prov.model.QualifiedName activity, String role, org.openprovenance.prov.model.QualifiedName entity){
 	Used u1 = pFactory.newUsed(activity, entity);
-	u1.getRole().add(pFactory.newRole(role,org.openprovenance.prov.model.Name.QNAME_XSD_STRING));
+	u1.getRole().add(pFactory.newRole(role,name.QNAME_XSD_STRING));
 	return u1;
 
     }
@@ -170,65 +168,65 @@ public class PC1FullTest extends TestCase {
 	Activity p1 = pFactory.newActivity(q("00000p1"), "align_warp 1");
 	List<Type> o = p1.getType();
 
-	o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,Name.QNAME_XSD_QNAME));
+	o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,name.QNAME_XSD_QNAME));
 
-	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, Name.QNAME_XSD_QNAME);
-	pFactory.addType(p1, 10, Name.QNAME_XSD_INT);
-	pFactory.addType(p1, -10, Name.QNAME_XSD_INT);
-	pFactory.addType(p1, -10.55, Name.QNAME_XSD_FLOAT);
-	pFactory.addType(p1, "abc", Name.QNAME_XSD_STRING);
-	pFactory.addType(p1, true, Name.QNAME_XSD_BOOLEAN);
+	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, name.QNAME_XSD_QNAME);
+	pFactory.addType(p1, 10, name.QNAME_XSD_INT);
+	pFactory.addType(p1, -10, name.QNAME_XSD_INT);
+	pFactory.addType(p1, -10.55, name.QNAME_XSD_FLOAT);
+	pFactory.addType(p1, "abc", name.QNAME_XSD_STRING);
+	pFactory.addType(p1, true, name.QNAME_XSD_BOOLEAN);
 	pFactory.addType(p1, URI.create("http://www.example.com/hi"));
 
 	p1.getLabel().add(pFactory.newInternationalizedString("bonjour", "fr"));
 	p1.getLabel().add(pFactory.newInternationalizedString("hello", "en"));
 
 	Activity p2 = pFactory.newActivity(q("a2"), "align_warp 2");
-	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, Name.QNAME_XSD_QNAME);
+	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, name.QNAME_XSD_QNAME);
 
 	Activity p3 = pFactory.newActivity(q("a3"), "align_warp 3");
-	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP, Name.QNAME_XSD_QNAME);
+	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP, name.QNAME_XSD_QNAME);
 
 	Activity p4 = pFactory.newActivity(q("a4"), "align_warp 4");
 
-	pFactory.addType(p4, PRIMITIVE_ALIGN_WARP, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p4, PRIMITIVE_ALIGN_WARP, name.QNAME_XSD_ANY_URI);
 
 	Activity p5 = pFactory.newActivity(q("a5"), "Reslice 1");
-	pFactory.addType(p5, PRIMITIVE_RESLICE, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p5, PRIMITIVE_RESLICE, name.QNAME_XSD_ANY_URI);
 
 	Activity p6 = pFactory.newActivity(q("a6"), "Reslice 2");
-	pFactory.addType(p6, PRIMITIVE_RESLICE, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p6, PRIMITIVE_RESLICE, name.QNAME_XSD_ANY_URI);
 
 	Activity p7 = pFactory.newActivity(q("a7"), "Reslice 3");
-	pFactory.addType(p7, PRIMITIVE_RESLICE, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p7, PRIMITIVE_RESLICE, name.QNAME_XSD_ANY_URI);
 
 	Activity p8 = pFactory.newActivity(q("a8"), "Reslice 4");
-	pFactory.addType(p8, PRIMITIVE_RESLICE, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p8, PRIMITIVE_RESLICE, name.QNAME_XSD_ANY_URI);
 
 	Activity p9 = pFactory.newActivity(q("a9"), "Softmean");
-	pFactory.addType(p9, PRIMITIVE_SOFTMEAN, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p9, PRIMITIVE_SOFTMEAN, name.QNAME_XSD_ANY_URI);
 
 	Activity p10 = pFactory.newActivity(q("a10"), "Slicer 1");
 
-	pFactory.addType(p10, PRIMITIVE_SLICER, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p10, PRIMITIVE_SLICER, name.QNAME_XSD_ANY_URI);
 
 	Activity p11 = pFactory.newActivity(q("a11"), "Slicer 2");
-	pFactory.addType(p11, PRIMITIVE_SLICER, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p11, PRIMITIVE_SLICER, name.QNAME_XSD_ANY_URI);
 
 	Activity p12 = pFactory.newActivity(q("a12"), "Slicer 3");
-	pFactory.addType(p12, PRIMITIVE_SLICER, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p12, PRIMITIVE_SLICER, name.QNAME_XSD_ANY_URI);
 
 	Activity p13 = pFactory.newActivity(q("a13"), "Convert 1");
 
-	pFactory.addType(p13, PRIMITIVE_CONVERT, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p13, PRIMITIVE_CONVERT, name.QNAME_XSD_ANY_URI);
 
 	Activity p14 = pFactory.newActivity(q("a14"), "Convert 2");
 
-	pFactory.addType(p14, PRIMITIVE_CONVERT, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p14, PRIMITIVE_CONVERT, name.QNAME_XSD_ANY_URI);
 
 	Activity p15 = pFactory.newActivity(q("a15"), "Convert 3");
 
-	pFactory.addType(p15, PRIMITIVE_CONVERT, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p15, PRIMITIVE_CONVERT, name.QNAME_XSD_ANY_URI);
 
 	Agent ag1 = pFactory.newAgent(q("ag1"), "John Doe");
 

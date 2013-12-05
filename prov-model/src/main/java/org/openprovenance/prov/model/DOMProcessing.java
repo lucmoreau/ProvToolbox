@@ -23,9 +23,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 final public class DOMProcessing {
+    private static final String XML_LITERAL = "XMLLiteral";
     private static final String RDF_PREFIX = NamespacePrefixMapper.RDF_PREFIX;
     private static final String RDF_NAMESPACE = NamespacePrefixMapper.RDF_NS;
-    private static final String RDF_LITERAL = RDF_PREFIX + ":" + "Literal";
+    private static final String RDF_LITERAL = RDF_PREFIX + ":" + XML_LITERAL;
     private final ProvFactory pFactory;
     
     public DOMProcessing(ProvFactory pFactory) {
@@ -307,7 +308,7 @@ final public class DOMProcessing {
 	                      (QualifiedName) value);
 
 	} else if (type.getNamespaceURI().equals(RDF_NAMESPACE)
-		&& type.getLocalPart().equals("Literal")) {
+		&& type.getLocalPart().equals(XML_LITERAL)) {
 	    return newElement(elementName,
 			      (org.w3c.dom.Element) attribute.getValueAsObject());
 

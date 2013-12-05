@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.net.URI;
 import javax.xml.bind.JAXBElement;
 import java.util.GregorianCalendar;
-import javax.xml.namespace.QName;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
@@ -799,10 +798,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     
     
     abstract public QualifiedName newQualifiedName(String namespace, String local, String prefix);
-
-    public QualifiedName newQualifiedName(QName qname) {
+    
+    /* A convenience function. */
+    public QualifiedName newQualifiedName(javax.xml.namespace.QName qname) {
 	return newQualifiedName(qname.getNamespaceURI(), qname.getLocalPart(), qname.getPrefix());
     }
+    
     /* What's the difference with stringToQName? */
     
     /*

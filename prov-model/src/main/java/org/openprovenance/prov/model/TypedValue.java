@@ -33,7 +33,7 @@ public interface TypedValue {
      *     {@link QName }
      *     
      */
-    public abstract QName getType();
+    public abstract QualifiedName getType();
 
     /**
      * Gets the value of the value property.
@@ -63,7 +63,7 @@ public interface TypedValue {
      *     {@link QName }
      *     
      */
-    public abstract void setType(QName value);
+    public abstract void setType(QualifiedName value);
 
     public abstract Object getValueAsObject();
 

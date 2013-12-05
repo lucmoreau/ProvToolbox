@@ -3,14 +3,9 @@ package org.openprovenance.prov.xml;
 import java.util.Properties;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.xml.namespace.QName;
 import javax.xml.datatype.DatatypeFactory;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
-import org.openprovenance.prov.model.Name;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import org.openprovenance.prov.model.QualifiedName;
 
 /** A stateless factory for PROV objects. */
 
@@ -68,7 +63,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     @Override
     public org.openprovenance.prov.model.Attribute newAttribute(AttributeKind kind,
 								Object value,
-								QName type) {
+								org.openprovenance.prov.model.QualifiedName type) {
 	switch (kind) {
 	case PROV_LOCATION: return newLocation(value, type);
 	case OTHER: throw new UnsupportedOperationException();
@@ -81,25 +76,25 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 	return null;
     }
 
-    public org.openprovenance.prov.model.Attribute newAttribute(QName elementName, Object value, QName type) {
+    public org.openprovenance.prov.model.Attribute newAttribute(QualifiedName elementName, Object value, QualifiedName type) {
 
 	// TODO: use TypedValue.getAttributeKind and switch on a kind
-	if (elementName.equals(Name.QNAME_PROV_LOCATION)) {
+	if (elementName.equals(getName().QNAME_PROV_LOCATION)) {
 	    return newLocation(value,type);
 	}
-	if (elementName.equals(Name.QNAME_PROV_TYPE)) {
+	if (elementName.equals(getName().QNAME_PROV_TYPE)) {
 	    return newType(value,type);
 	}
-	if (elementName.equals(Name.QNAME_PROV_VALUE)) {
+	if (elementName.equals(getName().QNAME_PROV_VALUE)) {
 	    return newValue(value,type);
 	}
-	if (elementName.equals(Name.QNAME_PROV_ROLE)) {
+	if (elementName.equals(getName().QNAME_PROV_ROLE)) {
 	    return newRole(value,type);
 	}
-	if (elementName.equals(Name.QNAME_PROV_LABEL)) {
+	if (elementName.equals(getName().QNAME_PROV_LABEL)) {
 	    return newLabel(value,type);
 	}	
-	if (elementName.equals(Name.QNAME_PROV_KEY)) {
+	if (elementName.equals(getName().QNAME_PROV_KEY)) {
 	    return newKey(value,type);
 	}
 	return newOther(elementName, value, type);
@@ -107,25 +102,25 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     
    
     
-    public Key newKey(Object value, QName type) {
+    public Key newKey(Object value, QualifiedName type) {
         Key typ=new Key();
         typ.type=type;
         typ.setValueAsObject(value);
         return typ;
     }
-    public Label newLabel(Object value, QName type) {
+    public Label newLabel(Object value, QualifiedName type) {
         Label res=new Label();
         res.type=type;
         res.setValueAsObject(value);
         return res;
     }
-    public Location newLocation(Object value, QName type) {
+    public Location newLocation(Object value, QualifiedName type) {
         Location loc=new Location();
         loc.type=type;
         loc.setValueAsObject(value);
         return loc;
     }
-    public Other newOther(QName elementName, Object value, QName type) {
+    public Other newOther(QualifiedName elementName, Object value, QualifiedName type) {
         Other res=new Other();
         res.type=type;
         res.setValueAsObject(value);
@@ -136,7 +131,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     public org.openprovenance.prov.model.QualifiedName newQualifiedName(String namespace,
 									String local,
 									String prefix) {
-	return new QualifiedName(namespace, local, prefix);
+	return new org.openprovenance.prov.xml.QualifiedName(namespace, local, prefix);
     }
     
     /*

@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 
 import junit.framework.TestCase;
@@ -23,7 +22,7 @@ import org.openprovenance.prov.model.HasLocation;
 import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasRole;
 import org.openprovenance.prov.model.HasType;
-import org.openprovenance.prov.model.Name;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
@@ -57,10 +56,12 @@ public class AttributeTest extends TestCase {
 
 
     public static org.openprovenance.prov.model.ProvFactory pFactory;
+    public static org.openprovenance.prov.model.Name name;
 
 
     static {
 	pFactory = new ProvFactory();
+	name=pFactory.getName();
     }
 	private DocumentEquality documentEquality;
 
@@ -329,61 +330,61 @@ public class AttributeTest extends TestCase {
     }
     public Object[][] attributeValues_small =
         {
-	 {"un lieu",Name.QNAME_XSD_STRING},
+	 {"un lieu",name.QNAME_XSD_STRING},
 	 
-         {pFactory.newInternationalizedString("un lieu","fr"),Name.QNAME_XSD_STRING},
+         {pFactory.newInternationalizedString("un lieu","fr"),name.QNAME_XSD_STRING},
 
-         {pFactory.newInternationalizedString("a place","en"),Name.QNAME_XSD_STRING}
+         {pFactory.newInternationalizedString("a place","en"),name.QNAME_XSD_STRING}
         };
 
 
     public Object[][] attributeValues_long =
         {
-	 {"un lieu",Name.QNAME_XSD_STRING},
+	 {"un lieu",name.QNAME_XSD_STRING},
 	 
-         {pFactory.newInternationalizedString("un lieu","fr"),Name.QNAME_PROV_INTERNATIONALIZED_STRING},
+         {pFactory.newInternationalizedString("un lieu","fr"),name.QNAME_PROV_INTERNATIONALIZED_STRING},
 
-         {pFactory.newInternationalizedString("a place","en"),Name.QNAME_PROV_INTERNATIONALIZED_STRING},
+         {pFactory.newInternationalizedString("a place","en"),name.QNAME_PROV_INTERNATIONALIZED_STRING},
            
-         {1,Name.QNAME_XSD_INT},
+         {1,name.QNAME_XSD_INT},
 
-         {1,Name.QNAME_XSD_LONG},
+         {1,name.QNAME_XSD_LONG},
 
-         {1,Name.QNAME_XSD_SHORT},
+         {1,name.QNAME_XSD_SHORT},
 
-         {2.0,Name.QNAME_XSD_DOUBLE},
+         {2.0,name.QNAME_XSD_DOUBLE},
 
-         {1.0,Name.QNAME_XSD_FLOAT},
+         {1.0,name.QNAME_XSD_FLOAT},
 
-         {10,Name.QNAME_XSD_DECIMAL},
+         {10,name.QNAME_XSD_DECIMAL},
 
-         {true,Name.QNAME_XSD_BOOLEAN},
+         {true,name.QNAME_XSD_BOOLEAN},
 
-         {false,Name.QNAME_XSD_BOOLEAN},
+         {false,name.QNAME_XSD_BOOLEAN},
 
-  //    FIXME   {"yes",Name.QNAME_XSD_BOOLEAN},
+  //    FIXME   {"yes",name.QNAME_XSD_BOOLEAN},
 
-  //   FIXME    {"no",Name.QNAME_XSD_BOOLEAN},
+  //   FIXME    {"no",name.QNAME_XSD_BOOLEAN},
          
-         {10,Name.QNAME_XSD_BYTE},
+         {10,name.QNAME_XSD_BYTE},
 
-         {10,Name.QNAME_XSD_UNSIGNED_INT},
+         {10,name.QNAME_XSD_UNSIGNED_INT},
 
-         {10,Name.QNAME_XSD_UNSIGNED_LONG},
+         {10,name.QNAME_XSD_UNSIGNED_LONG},
 
-         {10,Name.QNAME_XSD_INTEGER},
+         {10,name.QNAME_XSD_INTEGER},
 
-         {10,Name.QNAME_XSD_UNSIGNED_SHORT},
+         {10,name.QNAME_XSD_UNSIGNED_SHORT},
 
-         {10,Name.QNAME_XSD_NON_NEGATIVE_INTEGER},
+         {10,name.QNAME_XSD_NON_NEGATIVE_INTEGER},
 
-         {-10,Name.QNAME_XSD_NON_POSITIVE_INTEGER},
+         {-10,name.QNAME_XSD_NON_POSITIVE_INTEGER},
 
-         {10,Name.QNAME_XSD_POSITIVE_INTEGER},
+         {10,name.QNAME_XSD_POSITIVE_INTEGER},
 
-         {10,Name.QNAME_XSD_UNSIGNED_BYTE},
+         {10,name.QNAME_XSD_UNSIGNED_BYTE},
 
-         {"http://example.org",Name.QNAME_XSD_ANY_URI},
+         {"http://example.org",name.QNAME_XSD_ANY_URI},
 
 
          // Consider following cases for QNames
@@ -395,47 +396,47 @@ public class AttributeTest extends TestCase {
          // - undeclared namespace, with other prefix
          // - undeclared namespace, as default namespace
 
-         {pFactory.newQualifiedName(EX_NS, "abc", EX_PREFIX), Name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName(EX_NS, "abc", EX_PREFIX), name.QNAME_XSD_QNAME},
          
-         {pFactory.newQualifiedName(EX_NS, "abcd", "other"), Name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName(EX_NS, "abcd", "other"), name.QNAME_XSD_QNAME},
          
-         {pFactory.newQualifiedName(EX_NS, "abcde",null), Name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName(EX_NS, "abcde",null), name.QNAME_XSD_QNAME},
          
-         {pFactory.newQualifiedName("http://example4.org/", "zabc", EX_PREFIX), Name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName("http://example4.org/", "zabc", EX_PREFIX), name.QNAME_XSD_QNAME},
          
-         {pFactory.newQualifiedName("http://example4.org/", "zabcd", "other"), Name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName("http://example4.org/", "zabcd", "other"), name.QNAME_XSD_QNAME},
              
-         {pFactory.newQualifiedName("http://example4.org/", "zabcde",null), Name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName("http://example4.org/", "zabcde",null), name.QNAME_XSD_QNAME},
          
          
-         {pFactory.newTimeNow(),Name.QNAME_XSD_DATETIME},
+         {pFactory.newTimeNow(),name.QNAME_XSD_DATETIME},
 
-         {pFactory.newYear(2013),Name.QNAME_XSD_GYEAR},
+         {pFactory.newYear(2013),name.QNAME_XSD_GYEAR},
 
-         {pFactory.newGMonth(01),Name.QNAME_XSD_GMONTH},
+         {pFactory.newGMonth(01),name.QNAME_XSD_GMONTH},
 
-         {pFactory.newGDay(30),Name.QNAME_XSD_GDAY},
+         {pFactory.newGDay(30),name.QNAME_XSD_GDAY},
          
-         {pFactory.newGMonthDay(12,25),Name.QNAME_XSD_GMONTH_DAY},
+         {pFactory.newGMonthDay(12,25),name.QNAME_XSD_GMONTH_DAY},
 
          
-         {pFactory.newDuration(12225),Name.QNAME_XSD_DURATION},
+         {pFactory.newDuration(12225),name.QNAME_XSD_DURATION},
 
-         {pFactory.newDuration("P2Y6M"),Name.QNAME_XSD_YEAR_MONTH_DURATION},
-         {pFactory.newDuration("P2147483647DT2147483647H2147483647M123456789012345.123456789012345S"),Name.QNAME_XSD_DAY_TIME_DURATION},
+         {pFactory.newDuration("P2Y6M"),name.QNAME_XSD_YEAR_MONTH_DURATION},
+         {pFactory.newDuration("P2147483647DT2147483647H2147483647M123456789012345.123456789012345S"),name.QNAME_XSD_DAY_TIME_DURATION},
 
-         { new byte[] {0,1,2,34,5,6}, Name.QNAME_XSD_HEX_BINARY},
-         { new byte[] {0,1,2,34,5,6}, Name.QNAME_XSD_BASE64_BINARY},
-         { new byte[1023], Name.QNAME_XSD_BASE64_BINARY},
+         { new byte[] {0,1,2,34,5,6}, name.QNAME_XSD_HEX_BINARY},
+         { new byte[] {0,1,2,34,5,6}, name.QNAME_XSD_BASE64_BINARY},
+         { new byte[1023], name.QNAME_XSD_BASE64_BINARY},
          
-         {"en",Name.QNAME_XSD_LANGUAGE},
-         {"normal",Name.QNAME_XSD_NORMALIZED_STRING},
-         {"TOK",Name.QNAME_XSD_TOKEN},
-         {"NMTOK",Name.QNAME_XSD_NMTOKEN},
-         {"name",Name.QNAME_XSD_NAME},
-         {"NCName",Name.QNAME_XSD_NCNAME},
+         {"en",name.QNAME_XSD_LANGUAGE},
+         {"normal",name.QNAME_XSD_NORMALIZED_STRING},
+         {"TOK",name.QNAME_XSD_TOKEN},
+         {"NMTOK",name.QNAME_XSD_NMTOKEN},
+         {"name",name.QNAME_XSD_NAME},
+         {"NCName",name.QNAME_XSD_NCNAME},
          
-         {createXMLLiteral(),Name.QNAME_RDF_LITERAL}
+         {createXMLLiteral(),name.QNAME_RDF_LITERAL}
          
         };
     
@@ -446,7 +447,7 @@ public class AttributeTest extends TestCase {
     public void addLocations(HasLocation hl){
         for (Object [] pair: attributeValues) {
             Object value=pair[0];
-            QName type=(QName) pair[1];
+            QualifiedName type=(QualifiedName) pair[1];
             hl.getLocation().add(pFactory.newLocation(value,type));
          }
 
@@ -454,7 +455,7 @@ public class AttributeTest extends TestCase {
     public void addTypes(HasType hl){
         for (Object [] pair: attributeValues) {
             Object value=pair[0];
-            QName type=(QName) pair[1];
+            QualifiedName type=(QualifiedName) pair[1];
             hl.getType().add(pFactory.newType(value,type));
          }
 
@@ -462,18 +463,18 @@ public class AttributeTest extends TestCase {
     public void addRoles(HasRole hl){
         for (Object [] pair: attributeValues) {
             Object value=pair[0];
-            QName type=(QName) pair[1];
+            QualifiedName type=(QualifiedName) pair[1];
             hl.getRole().add(pFactory.newRole(value,type));
          }
 
     }
-    public void addOthers(HasOther ho, QName elementName) {
+    public void addOthers(HasOther ho, org.openprovenance.prov.model.QualifiedName elementName) {
 	for (Object [] pair: attributeValues) {
 	    Object value=pair[0];
-	    QName type=(QName) pair[1];
-	    if (value instanceof QName) {
-		QName qq=(QName)value;
-		if ((qq.getPrefix().equals(elementName.getPrefix()))
+	    QualifiedName type=(QualifiedName) pair[1];
+	    if (value instanceof QualifiedName) {
+		QualifiedName qq=(QualifiedName)value;
+		if (((qq.getPrefix().equals(elementName.getPrefix())))
 			&&
 			(!(qq.getNamespaceURI().equals(elementName.getNamespaceURI())))) {
 		    // ignore this case
@@ -492,7 +493,7 @@ public class AttributeTest extends TestCase {
 
  	Object [] pair= attributeValues[i];
  	Object value=pair[0];
- 	QName type=(QName) pair[1];
+ 	QualifiedName type=(QualifiedName) pair[1];
  	a.getType().add(pFactory.newType(value,type));
  	makeDocAndTest(a,"target/attr_entity_one_attr"+i);
      }
@@ -504,7 +505,7 @@ public class AttributeTest extends TestCase {
 
  	Object [] pair= attributeValues[i];
  	Object value=pair[0];
- 	QName type=(QName) pair[1];
+ 	QualifiedName type=(QualifiedName) pair[1];
  	a.setValue(pFactory.newValue(value,type));
  	makeDocAndTest(a,"target/attr_entity_one_value_attr"+i);
      }
@@ -516,7 +517,7 @@ public class AttributeTest extends TestCase {
 
  	Object [] pair= attributeValues[i];
  	Object value=pair[0];
- 	QName type=(QName) pair[1];
+ 	QualifiedName type=(QualifiedName) pair[1];
  	a.getRole().add(pFactory.newRole(value,type));
  	makeDocAndTest(a,"target/attr_association_one_role_attr"+i);
      }
@@ -527,7 +528,7 @@ public class AttributeTest extends TestCase {
 
   	Object [] pair= attributeValues[i];
   	Object value=pair[0];
-  	QName type=(QName) pair[1];
+  	QualifiedName type=(QualifiedName) pair[1];
   	a.getLocation().add(pFactory.newLocation(value,type));
   	makeDocAndTest(a,"target/attr_entity_one_location_attr"+i);
       }
@@ -538,8 +539,8 @@ public class AttributeTest extends TestCase {
 
  	Object [] pair= attributeValues[i];
  	Object value=pair[0];
- 	QName type=(QName) pair[1];
- 	a.getOther().add(pFactory.newOther(new QName(EX_NS,  "tag2", "exo"), value,type));
+ 	QualifiedName type=(QualifiedName) pair[1];
+ 	a.getOther().add(pFactory.newOther(pFactory.newQualifiedName(EX_NS,  "tag2", "exo"), value,type));
  	makeDocAndTest(a,"target/attr_entity_one_other_attr"+i);
      }
     
@@ -1233,17 +1234,17 @@ public class AttributeTest extends TestCase {
     public void testEntity0()  {
 	Entity a = pFactory.newEntity(q("e0"));
 	
-	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
-	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
-	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
-	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 	addLabels(a);
 	addTypes(a);
 	addLocations(a);
 
-	a.setValue(pFactory.newValue(10,Name.QNAME_XSD_BYTE));
-	a.setValue(pFactory.newValue("10",Name.QNAME_XSD_STRING));
+	a.setValue(pFactory.newValue(10,name.QNAME_XSD_BYTE));
+	a.setValue(pFactory.newValue("10",name.QNAME_XSD_STRING));
 
 
 	makeDocAndTest(a,"target/attr_entity0");
@@ -1254,10 +1255,10 @@ public class AttributeTest extends TestCase {
     public void testActivity0()  {
 	Activity a = pFactory.newActivity(q("a0"));
 	
-	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
-	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
-	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
-	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 	addLabels(a);
 	addTypes(a);
@@ -1271,10 +1272,10 @@ public class AttributeTest extends TestCase {
     public void testAgent0()  {
 	Agent a = pFactory.newAgent(q("ag0"));
 	
-	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
-	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
-	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
-	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 	addLabels(a);
 	addTypes(a);
@@ -1284,8 +1285,8 @@ public class AttributeTest extends TestCase {
     }
 
 
-    public org.openprovenance.prov.model.QualifiedName q(String n) {
-	return new QualifiedName(EX_NS, n, EX_PREFIX);
+    public QualifiedName q(String n) {
+	return new org.openprovenance.prov.xml.QualifiedName(EX_NS, n, EX_PREFIX);
     }
     
     public void testGeneration0()  {
@@ -1294,10 +1295,10 @@ public class AttributeTest extends TestCase {
 	                                              null,
 	                                              q("a1"));
 	
-	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
-	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
-	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
-	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 	
 	addLabels(a);
 	addRoles(a);
@@ -1313,10 +1314,10 @@ public class AttributeTest extends TestCase {
    							q("e1"),
    							q("a1"));
   	
-  	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
-  	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
-  	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
-  	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+  	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
+  	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
+  	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+  	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
   	addLabels(a);
   	addRoles(a);
@@ -1334,10 +1335,10 @@ public class AttributeTest extends TestCase {
  	                          null,
  	                          q("e1"));
   	
-  	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
-  	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
-  	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
-  	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+  	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
+  	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
+  	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+  	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
   	addLabels(a);
   	addRoles(a);
@@ -1355,10 +1356,10 @@ public class AttributeTest extends TestCase {
 	                                                    q("a1"),
 	                                                    q("ag1"));
  	
- 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
- 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
- 	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
- 	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+ 	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
+ 	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
+ 	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+ 	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
  	addLabels(a);
  	addRoles(a);
@@ -1376,10 +1377,10 @@ public class AttributeTest extends TestCase {
 	                                                    q("e1"),
 	                                                    q("ag1"));
 	
-	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
-	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
-	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
-	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 	addLabels(a);
 	addTypes(a);	
@@ -1395,10 +1396,10 @@ public class AttributeTest extends TestCase {
  	                                              q("e2"),
  	                                              q("e1"));
  	
- 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
- 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
- 	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
- 	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+ 	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
+ 	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
+ 	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+ 	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
  	addLabels(a);
  	addTypes(a);	
@@ -1413,10 +1414,10 @@ public class AttributeTest extends TestCase {
 							q("a1"),
 							q("e1"));
 	
-	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
-	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
-	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
-	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 	addLabels(a);
 	addRoles(a);
@@ -1433,10 +1434,10 @@ public class AttributeTest extends TestCase {
 	                                          q("a1"),
 	                                          q("e1"));
 	
-	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
-	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
-	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
-	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 	addLabels(a);
 	addRoles(a);
@@ -1454,10 +1455,10 @@ public class AttributeTest extends TestCase {
  	                                                q("e1"),
  	                                                q("e2"));
  	
- 	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
- 	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
- 	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
- 	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+ 	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
+ 	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
+ 	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+ 	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
  	addLabels(a);
  	addTypes(a);	
@@ -1474,10 +1475,10 @@ public class AttributeTest extends TestCase {
 	                                            q("a1"),
 	                                            q("a2"));
 	
-	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
-	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
-	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
-	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 	addLabels(a);
 	addTypes(a);	
@@ -1495,10 +1496,10 @@ public class AttributeTest extends TestCase {
 	                                                q("a2"),
 	                                                q("a3"));
 	
-	addOthers(a, new QName(EX_NS,  "tag2", EX_PREFIX));
-	addOthers(a, new QName(EX_NS,  "tag3", EX2_PREFIX));
-	addOthers(a, new QName(EX2_NS, "tag4", "ex4"));
-	addOthers(a, new QName(EX2_NS, "tag5", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+	addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 	addLabels(a);
 	addTypes(a);	

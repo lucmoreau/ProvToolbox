@@ -3,11 +3,11 @@ package org.openprovenance.prov.xml;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.HashCode;
 import org.jvnet.jaxb2_commons.lang.ToString;
 import org.openprovenance.prov.model.DOMProcessing;
+import org.openprovenance.prov.model.QualifiedName;
 
 
 /**
@@ -35,14 +35,14 @@ public class Other extends TypedValue
 
     private static final AttributeKind OTHER_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.OTHER;
  
-    QName elementName;
+    QualifiedName elementName;
     
     @Override
-    public QName getElementName() {
+    public QualifiedName getElementName() {
 	return elementName;
     }
     
-    public void setElementName(QName elementName) {
+    public void setElementName(QualifiedName elementName) {
 	this.elementName=elementName;
     }
 
@@ -53,7 +53,7 @@ public class Other extends TypedValue
 
     @Override
     public String toNotationString() {
-        return DOMProcessing.qnameToString(getElementName()) + " = " + Helper.valueToNotationString(getValue(), getType());
+        return DOMProcessing.qualifiedNameToString(getElementName()) + " = " + Helper.valueToNotationString(getValue(), getType());
     }
    
 }

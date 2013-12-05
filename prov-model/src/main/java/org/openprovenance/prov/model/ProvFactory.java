@@ -197,20 +197,20 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
     public void addPrimarySourceType(HasType a) {
-	a.getType().add(newType(newQualifiedName(Name.QNAME_PROV_PRIMARY_SOURCE),
-	                        Name.QNAME_XSD_QNAME));
+	a.getType().add(newType(getName().QNAME_PROV_PRIMARY_SOURCE,
+	                        getName().QNAME_XSD_QNAME));
     }
 
     public void addQuotationType(HasType a) {
-	a.getType().add(newType(newQualifiedName(Name.QNAME_PROV_QUOTATION),Name.QNAME_XSD_QNAME));
+	a.getType().add(newType(getName().QNAME_PROV_QUOTATION,getName().QNAME_XSD_QNAME));
     }
 
     public void addRevisionType(HasType a) {
-	a.getType().add(newType(newQualifiedName(Name.QNAME_PROV_REVISION),Name.QNAME_XSD_QNAME));
+	a.getType().add(newType(getName().QNAME_PROV_REVISION,getName().QNAME_XSD_QNAME));
     }
 
     public void addBundleType(HasType a) {
-	a.getType().add(newType(newQualifiedName(Name.QNAME_PROV_BUNDLE),Name.QNAME_XSD_QNAME));
+	a.getType().add(newType(getName().QNAME_PROV_BUNDLE,getName().QNAME_XSD_QNAME));
     }
 
     public void addRole(HasRole a, Role role) {
@@ -220,7 +220,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
  
-    public void addType(HasType a, Object o, QName type) {
+    public void addType(HasType a, Object o, QualifiedName type) {
 	a.getType().add(newType(o,type));
     }
 
@@ -232,7 +232,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     public void addType(HasType a, URI type) {
 	URIWrapper u = new URIWrapper();
 	u.setValue(type);
-	a.getType().add(newType(u,Name.QNAME_XSD_ANY_URI));
+	a.getType().add(newType(u,getName().QNAME_XSD_ANY_URI));
     }
 
     public byte [] base64Decoding(String s) {
@@ -259,6 +259,13 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return "pFact: label TODO";
     }
 
+    private Name name=null;
+    public Name getName() {
+	if (name==null) {
+	    name=new Name(this);
+	}
+	return name;
+    }
 
     public ObjectFactory getObjectFactory() {
 	return of;
@@ -278,7 +285,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	if (e instanceof HasType)
 	    return ((HasType) e).getType();
 	List<Type> res = new LinkedList<Type>();
-	res.add(newType("pFact: type TODO",Name.QNAME_XSD_STRING));
+	res.add(newType("pFact: type TODO",getName().QNAME_XSD_STRING));
 	return res;
     }
 
@@ -421,33 +428,16 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
 
-   abstract public Attribute newAttribute(Attribute.AttributeKind kind, Object value, QName type);
+
+   abstract public org.openprovenance.prov.model.Attribute newAttribute(QualifiedName elementName, Object value, QualifiedName type) ;
    
-
-   abstract public Attribute newAttribute(QName qname, Object value, QName type);
-
-
-
-   public org.openprovenance.prov.model.Attribute newAttribute(QualifiedName elementName, Object value, QualifiedName type) {
-	return newAttribute(elementName.toQName(),value,type.toQName());
-   }
-   public org.openprovenance.prov.model.Attribute newAttribute(QualifiedName elementName, Object value, QName type) {
-	return newAttribute(elementName.toQName(),value,type);
-   }
-   public org.openprovenance.prov.model.Attribute newAttribute(Attribute.AttributeKind kind, Object value, QualifiedName type) {
-	return newAttribute(kind,value,type.toQName());
-   }
+    abstract public org.openprovenance.prov.model.Attribute newAttribute(Attribute.AttributeKind kind, Object value, QualifiedName type);
  
     public Attribute newAttribute(String namespace, String localName,
-				  String prefix, Object value, QName type) {
+				  String prefix, Object value, QualifiedName type) {
 	Attribute res;
-	if (prefix==null) {
-	    res = newAttribute(new QName(namespace, localName),
-	                       value, type); 
-	} else {
-	    res = newAttribute(new QName(namespace, localName, prefix),
-                               value, type);
-	}
+	res = newAttribute(newQualifiedName(namespace, localName, prefix),
+	                   value, type);	
 	return res;
     }
 
@@ -711,7 +701,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
                                                        .getTime());
     }
 
-    public Key newKey(Object o, QName type) {
+    public Key newKey(Object o, QualifiedName type) {
     	Key res=of.createKey();
     	res.setType(type);
     	res.setValueAsObject(o);
@@ -719,7 +709,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
        }
 
 
-    public Location newLocation(Object value, QName type) {
+    public Location newLocation(Object value, QualifiedName type) {
             Location res =  of.createLocation();
             res.setType(type);
             res.setValueAsObject(value);
@@ -793,7 +783,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
     
 
-    public Other newOther(QName elementName, Object value, QName type) {
+    public Other newOther(QualifiedName elementName, Object value, QualifiedName type) {
 	if (value==null) return null;
         Other res =  of.createOther();
         res.setType(type);
@@ -802,10 +792,11 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return res;
       }
 
-    public Other newOther(String namespace, String local, String prefix,  Object value, QName type) {
-	QName elementName=new QName(namespace,local,prefix);
+    public Other newOther(String namespace, String local, String prefix,  Object value, QualifiedName type) {
+	QualifiedName elementName=newQualifiedName(namespace,local,prefix);
         return newOther(elementName,value,type);
     }
+    
     
     abstract public QualifiedName newQualifiedName(String namespace, String local, String prefix);
 
@@ -831,7 +822,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
     */
     
-    public Role newRole(Object value, QName type) {
+    public Role newRole(Object value, QualifiedName type) {
 	if (value==null) return null;
         Role res =  of.createRole();
         res.setType(type);
@@ -856,7 +847,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return newTime(new Date());
     }
   
-    public Type newType(Object value, QName type) {
+    public Type newType(Object value, QualifiedName type) {
 	if (value==null) return null;
         Type res =  of.createType();
         res.setType(type);
@@ -879,7 +870,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	Used res = newUsed(id);
 	res.setActivity(aid);
 	if (role!=null)
-	addRole(res, newRole(role,Name.QNAME_XSD_STRING));
+	addRole(res, newRole(role,getName().QNAME_XSD_STRING));
 	res.setEntity(eid);
 	return res;
     }
@@ -906,7 +897,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      }
 
      /* (non-Javadoc)
-     * @see org.openprovenance.prov.model.ModelConstructor#newUsed(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+     * @see org.openprovenance.prov.model.ModelConstructor#newUsed(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
     public Used newUsed(QualifiedName id, QualifiedName activity, QualifiedName entity,
 			XMLGregorianCalendar time,
@@ -933,7 +924,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     
     
 
-    public Value newValue(Object value, QName type) {
+    public Value newValue(Object value, QualifiedName type) {
 	if (value==null) return null;
         Value res =  of.createValue();
         res.setType(type);
@@ -1103,7 +1094,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
     /* (non-Javadoc)
-     * @see org.openprovenance.prov.model.ModelConstructor#newWasEndedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasEndedBy(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
     public WasEndedBy newWasEndedBy(QualifiedName id, QualifiedName activity, QualifiedName trigger, QualifiedName ender, XMLGregorianCalendar time, Collection<Attribute> attributes) {
       	WasEndedBy res=newWasEndedBy(id,activity,trigger);	
@@ -1142,7 +1133,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 					    Activity p) {
 
 	WasGeneratedBy res=newWasGeneratedBy(id, a.getId(), p.getId());
-	if (role!=null) addRole(res, newRole(role,Name.QNAME_XSD_STRING));
+	if (role!=null) addRole(res, newRole(role,getName().QNAME_XSD_STRING));
 	return res;
     }
 
@@ -1154,7 +1145,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	res.setId(id);
 	res.setActivity(pid);
 	res.setEntity(aid);
-	if (role!=null) addRole(res, newRole(role,Name.QNAME_XSD_STRING));
+	if (role!=null) addRole(res, newRole(role,getName().QNAME_XSD_STRING));
 	return res;
     }
 
@@ -1171,7 +1162,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
     /* (non-Javadoc)
-     * @see org.openprovenance.prov.model.ModelConstructor#newWasGeneratedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasGeneratedBy(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
     public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QualifiedName entity, QualifiedName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
    	WasGeneratedBy res=newWasGeneratedBy(id,entity,null,activity);	
@@ -1229,7 +1220,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 					  String type) {
 	WasInformedBy wtb = newWasInformedBy(p1, p2);
 	wtb.setId(id);
-	addType(wtb, newType(type,Name.QNAME_XSD_STRING));
+	addType(wtb, newType(type,getName().QNAME_XSD_STRING));
 	return wtb;
     }
 
@@ -1290,7 +1281,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
     
     /* (non-Javadoc)
-     * @see org.openprovenance.prov.model.ModelConstructor#newWasInvalidatedBy(javax.xml.namespace.QualifiedName, javax.xml.namespace.QualifiedName, javax.xml.namespace.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasInvalidatedBy(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
     public WasInvalidatedBy newWasInvalidatedBy(QualifiedName id, QualifiedName entity, QualifiedName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
    	WasInvalidatedBy res=newWasInvalidatedBy(id,entity,activity);	
@@ -1345,7 +1336,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
     /* (non-Javadoc)
-     * @see org.openprovenance.prov.model.ModelConstructor#newWasStartedBy(javax.xml.namespace.QualifiedName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasStartedBy(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
     public WasStartedBy newWasStartedBy(QualifiedName id, QualifiedName activity, QualifiedName trigger, QualifiedName starter, XMLGregorianCalendar time, Collection<Attribute> attributes) {
       	WasStartedBy res=newWasStartedBy(id,activity,trigger);	

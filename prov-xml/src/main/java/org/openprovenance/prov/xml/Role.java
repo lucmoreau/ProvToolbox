@@ -3,13 +3,12 @@ package org.openprovenance.prov.xml;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
 
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.HashCode;
 import org.jvnet.jaxb2_commons.lang.ToString;
 import org.openprovenance.prov.model.DOMProcessing;
-import org.openprovenance.prov.model.Name;
+import org.openprovenance.prov.model.QualifiedName;
 
 
 /**
@@ -36,10 +35,10 @@ public class Role extends TypedValue implements Equals, HashCode, ToString,
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_ROLE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_ROLE;
-    private static final QName PROV_ROLE_QNAME = Name.QNAME_PROV_ROLE;
+    private static final QualifiedName PROV_ROLE_QNAME = ProvFactory.getFactory().getName().QNAME_PROV_ROLE;
 
     @Override
-    public QName getElementName() {
+    public QualifiedName getElementName() {
 	return PROV_ROLE_QNAME;
     }
 
@@ -50,7 +49,7 @@ public class Role extends TypedValue implements Equals, HashCode, ToString,
 
     @Override
     public String toNotationString() {
-	return DOMProcessing.qnameToString(getElementName()) + " = "
+	return DOMProcessing.qualifiedNameToString(getElementName()) + " = "
 		+ Helper.valueToNotationString(getValue(), getType());
     }
 

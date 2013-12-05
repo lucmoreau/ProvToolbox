@@ -46,12 +46,12 @@ public class Helper  {
     
     //TODO: move this code to ValueConverter
     //TODO: what else should be escaped?
-    public static String valueToNotationString(Object val, QName xsdType) {
+    public static String valueToNotationString(Object val, org.openprovenance.prov.model.QualifiedName xsdType) {
  	if (val instanceof InternationalizedString) {
  	    InternationalizedString istring = (InternationalizedString) val;
  	    return "\"" + istring.getValue() + 
  		    ((istring.getLang()==null) ? "\"" : "\"@" + istring.getLang())
- 		    + " %% " + Namespace.qnameToStringWithNamespace(xsdType);
+ 		    + " %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType);
  	} else if (val instanceof QName) {
  	    QName qn = (QName) val;	    
  	    return "'" + Namespace.qnameToStringWithNamespace(qn) + "'";
@@ -64,11 +64,11 @@ public class Helper  {
 		// return "\"\"\"" + val + "\"\"\" %% " + qnameToString(xsdType);
 		return "\"\"\"" + escape(s) + "\"\"\"" ;
 	    } else {
-		return "\"" + escape(s) + "\" %% " + Namespace.qnameToStringWithNamespace(xsdType);
+		return "\"" + escape(s) + "\" %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType);
 	    }
  	} else {
 	    // We should never be here!
- 	    return "\"" + val + "\" %% " + Namespace.qnameToStringWithNamespace(xsdType);
+ 	    return "\"" + val + "\" %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType);
 	}
      }
 

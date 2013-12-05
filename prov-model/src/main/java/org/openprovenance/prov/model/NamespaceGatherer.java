@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.List;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
 
 
 public class NamespaceGatherer implements StatementAction {
@@ -45,12 +44,11 @@ public class NamespaceGatherer implements StatementAction {
     }
 
     public void registerPotentialQualifiedName(Object o) {
-	if (o instanceof QName) {
-	    register((QName) o);
-	} else if (o instanceof QualifiedName) {
+	if (o instanceof QualifiedName) {
 	    register((QualifiedName) o);
 	}
     }
+    
     public void register(Location loc) {
 	if (loc!=null) {
 	    register(loc.getType());
@@ -110,7 +108,7 @@ public class NamespaceGatherer implements StatementAction {
     final String stringForDefault="::";
 
  
-
+/*
     void register(QName name) {
 	if (name==null) return;
 	String namespace = name.getNamespaceURI();
@@ -121,7 +119,7 @@ public class NamespaceGatherer implements StatementAction {
 	    ns.register(prefix, namespace);
 	}
     }
-
+*/
     void register(QualifiedName name) {
 	if (name==null) return;
 	String namespace = name.getNamespaceURI();
@@ -313,7 +311,9 @@ public class NamespaceGatherer implements StatementAction {
 	registerType(r.getType());
 	registerOther(r.getOther());
 	if (!r.getKey().isEmpty()) {
-	    register(Name.QNAME_XSD_INT); // pick up an xsd qname, so that xsd is registered!
+	    ns.register("xsd", NamespacePrefixMapper.XSD_NS);
+	 
+	    //register(Name.QNAME_XSD_INT); // pick up an xsd qname, so that xsd is registered!
 	}
 	
     }
@@ -332,7 +332,9 @@ public class NamespaceGatherer implements StatementAction {
 	for (Entry e: keyEntityPairs) {
 	    register(e.getEntity());
 	    //Object key=e.getKey();
-	    register(Name.QNAME_XSD_INT); // pick up an xsd qname, so that xsd is registered!
+	    ns.register("xsd", NamespacePrefixMapper.XSD_NS);
+
+	    //register(Name.QNAME_XSD_INT); // pick up an xsd qname, so that xsd is registered!
 	}	
     }
 

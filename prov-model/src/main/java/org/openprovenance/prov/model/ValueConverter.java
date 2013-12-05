@@ -13,125 +13,127 @@ public class ValueConverter  {
 
     final private LiteralConstructor pFactory;
     final QNameConstructor qnConst;
+    final private Name name;
     
-    public ValueConverter(LiteralConstructor pFactory, QNameConstructor qnConst) {
+    public ValueConverter(ProvFactory pFactory, QNameConstructor qnConst) {
 	this.pFactory=pFactory;
 	this.qnConst=qnConst;
+	this.name=pFactory.getName();
     }
     
     
     // should be implemented with a hash table of converters
     
-    public Object convertToJava(QName datatype, String value) {
-	if (datatype.equals(Name.QNAME_XSD_STRING) || datatype.equals(Name.QNAME_XSD_HASH_STRING))
+    public Object convertToJava(QualifiedName datatype, String value) {
+	if (datatype.equals(name.QNAME_XSD_STRING) || datatype.equals(name.QNAME_XSD_HASH_STRING))
 	    return value;
-	if (datatype.equals(Name.QNAME_XSD_INT) || datatype.equals(Name.QNAME_XSD_HASH_INT))
+	if (datatype.equals(name.QNAME_XSD_INT) || datatype.equals(name.QNAME_XSD_HASH_INT))
 	    return Integer.parseInt(value);
-	if (datatype.equals(Name.QNAME_XSD_LONG) || datatype.equals(Name.QNAME_XSD_HASH_LONG))
+	if (datatype.equals(name.QNAME_XSD_LONG) || datatype.equals(name.QNAME_XSD_HASH_LONG))
 	    return Long.parseLong(value);
-	if (datatype.equals(Name.QNAME_XSD_SHORT) || datatype.equals(Name.QNAME_XSD_HASH_SHORT))
+	if (datatype.equals(name.QNAME_XSD_SHORT) || datatype.equals(name.QNAME_XSD_HASH_SHORT))
 	    return Short.parseShort(value);
-	if (datatype.equals(Name.QNAME_XSD_DOUBLE) || datatype.equals(Name.QNAME_XSD_HASH_DOUBLE))
+	if (datatype.equals(name.QNAME_XSD_DOUBLE) || datatype.equals(name.QNAME_XSD_HASH_DOUBLE))
 	    return Double.parseDouble(value);
-	if (datatype.equals(Name.QNAME_XSD_FLOAT) || datatype.equals(Name.QNAME_XSD_HASH_FLOAT))
+	if (datatype.equals(name.QNAME_XSD_FLOAT) || datatype.equals(name.QNAME_XSD_HASH_FLOAT))
 	    return Float.parseFloat(value);
-	if (datatype.equals(Name.QNAME_XSD_DECIMAL) || datatype.equals(Name.QNAME_XSD_HASH_DECIMAL))
+	if (datatype.equals(name.QNAME_XSD_DECIMAL) || datatype.equals(name.QNAME_XSD_HASH_DECIMAL))
 	    return new java.math.BigDecimal(value);
-	if (datatype.equals(Name.QNAME_XSD_BOOLEAN) || datatype.equals(Name.QNAME_XSD_HASH_BOOLEAN))
+	if (datatype.equals(name.QNAME_XSD_BOOLEAN) || datatype.equals(name.QNAME_XSD_HASH_BOOLEAN))
 	    return Boolean.parseBoolean(value);
-	if (datatype.equals(Name.QNAME_XSD_BYTE) || datatype.equals(Name.QNAME_XSD_HASH_BYTE))
+	if (datatype.equals(name.QNAME_XSD_BYTE) || datatype.equals(name.QNAME_XSD_HASH_BYTE))
 	    return Byte.parseByte(value);
-	if (datatype.equals(Name.QNAME_XSD_UNSIGNED_INT) || datatype.equals(Name.QNAME_XSD_HASH_UNSIGNED_INT))
+	if (datatype.equals(name.QNAME_XSD_UNSIGNED_INT) || datatype.equals(name.QNAME_XSD_HASH_UNSIGNED_INT))
 	    return Long.parseLong(value);
-	if (datatype.equals(Name.QNAME_XSD_UNSIGNED_SHORT) || datatype.equals(Name.QNAME_XSD_HASH_UNSIGNED_SHORT))
+	if (datatype.equals(name.QNAME_XSD_UNSIGNED_SHORT) || datatype.equals(name.QNAME_XSD_HASH_UNSIGNED_SHORT))
 	    return Integer.parseInt(value);
-	if (datatype.equals(Name.QNAME_XSD_UNSIGNED_BYTE) || datatype.equals(Name.QNAME_XSD_HASH_UNSIGNED_BYTE))
+	if (datatype.equals(name.QNAME_XSD_UNSIGNED_BYTE) || datatype.equals(name.QNAME_XSD_HASH_UNSIGNED_BYTE))
 	    return Short.parseShort(value);
-	if (datatype.equals(Name.QNAME_XSD_UNSIGNED_LONG) || datatype.equals(Name.QNAME_XSD_HASH_UNSIGNED_LONG))
+	if (datatype.equals(name.QNAME_XSD_UNSIGNED_LONG) || datatype.equals(name.QNAME_XSD_HASH_UNSIGNED_LONG))
 	    return new java.math.BigInteger(value);
-	if (datatype.equals(Name.QNAME_XSD_INTEGER) || datatype.equals(Name.QNAME_XSD_HASH_INTEGER))
+	if (datatype.equals(name.QNAME_XSD_INTEGER) || datatype.equals(name.QNAME_XSD_HASH_INTEGER))
 	    return new java.math.BigInteger(value);
-	if (datatype.equals(Name.QNAME_XSD_NON_NEGATIVE_INTEGER) || datatype.equals(Name.QNAME_XSD_HASH_NON_NEGATIVE_INTEGER))
+	if (datatype.equals(name.QNAME_XSD_NON_NEGATIVE_INTEGER) || datatype.equals(name.QNAME_XSD_HASH_NON_NEGATIVE_INTEGER))
 	    return new java.math.BigInteger(value);
-	if (datatype.equals(Name.QNAME_XSD_NON_POSITIVE_INTEGER) || datatype.equals(Name.QNAME_XSD_HASH_NON_POSITIVE_INTEGER))
+	if (datatype.equals(name.QNAME_XSD_NON_POSITIVE_INTEGER) || datatype.equals(name.QNAME_XSD_HASH_NON_POSITIVE_INTEGER))
 	    return new java.math.BigInteger(value);
-	if (datatype.equals(Name.QNAME_XSD_POSITIVE_INTEGER) || datatype.equals(Name.QNAME_XSD_HASH_POSITIVE_INTEGER))
+	if (datatype.equals(name.QNAME_XSD_POSITIVE_INTEGER) || datatype.equals(name.QNAME_XSD_HASH_POSITIVE_INTEGER))
 	    return new java.math.BigInteger(value);
-	if (datatype.equals(Name.QNAME_XSD_ANY_URI) || datatype.equals(Name.QNAME_XSD_HASH_ANY_URI)) {
+	if (datatype.equals(name.QNAME_XSD_ANY_URI) || datatype.equals(name.QNAME_XSD_HASH_ANY_URI)) {
 	    URIWrapper u = new URIWrapper();
 	    u.setValue(URI.create(value));
 	    return u;
 	}
-	if (datatype.equals(Name.QNAME_XSD_QNAME) || datatype.equals(Name.QNAME_XSD_HASH_QNAME)) {
+	if (datatype.equals(name.QNAME_XSD_QNAME) || datatype.equals(name.QNAME_XSD_HASH_QNAME)) {
 	    return qnConst.newQName(value);
 	}
-	if (datatype.equals(Name.QNAME_XSD_DATETIME) || datatype.equals(Name.QNAME_XSD_HASH_DATETIME)) {
+	if (datatype.equals(name.QNAME_XSD_DATETIME) || datatype.equals(name.QNAME_XSD_HASH_DATETIME)) {
 	    return pFactory.newISOTime(value);
 	}
-        if (datatype.equals(Name.QNAME_XSD_GYEAR) || datatype.equals(Name.QNAME_XSD_HASH_GYEAR)) {
+        if (datatype.equals(name.QNAME_XSD_GYEAR) || datatype.equals(name.QNAME_XSD_HASH_GYEAR)) {
             return pFactory.newGYear(new Integer(value));
         }
 
-        if (datatype.equals(Name.QNAME_XSD_GMONTH)) {
+        if (datatype.equals(name.QNAME_XSD_GMONTH)) {
             // format is --02
             return pFactory.newGMonth(new Integer(value.substring(2)));
         }
-        if (datatype.equals(Name.QNAME_XSD_GMONTH_DAY)) {
+        if (datatype.equals(name.QNAME_XSD_GMONTH_DAY)) {
             // format is --12-25            
             return pFactory.newGMonthDay(new Integer(value.substring(2,4)), 
                                          new Integer(value.substring(5,7)));
         }
 
-        if (datatype.equals(Name.QNAME_XSD_GDAY)) {
+        if (datatype.equals(name.QNAME_XSD_GDAY)) {
             // format is ---30
             return pFactory.newGDay(new Integer(value.substring(3)));
         }
         
-        if (datatype.equals(Name.QNAME_XSD_DURATION)) {
+        if (datatype.equals(name.QNAME_XSD_DURATION)) {
             return pFactory.newDuration(value);
         }
         
-        if (datatype.equals(Name.QNAME_XSD_DAY_TIME_DURATION)) {
+        if (datatype.equals(name.QNAME_XSD_DAY_TIME_DURATION)) {
             return pFactory.newDuration(value);
         }
         
-        if (datatype.equals(Name.QNAME_XSD_YEAR_MONTH_DURATION)) {
+        if (datatype.equals(name.QNAME_XSD_YEAR_MONTH_DURATION)) {
             return pFactory.newDuration(value);
         }
         
-        if (datatype.equals(Name.QNAME_XSD_LANGUAGE)) {
+        if (datatype.equals(name.QNAME_XSD_LANGUAGE)) {
             return value;
         }
 
-        if (datatype.equals(Name.QNAME_XSD_TOKEN)) {
+        if (datatype.equals(name.QNAME_XSD_TOKEN)) {
             return value;
         }
-        if (datatype.equals(Name.QNAME_XSD_NMTOKEN)) {
-            return value;
-        }
-
-        if (datatype.equals(Name.QNAME_XSD_NAME)) {
+        if (datatype.equals(name.QNAME_XSD_NMTOKEN)) {
             return value;
         }
 
-        if (datatype.equals(Name.QNAME_XSD_NCNAME)) {
+        if (datatype.equals(name.QNAME_XSD_NAME)) {
             return value;
         }
 
-        if (datatype.equals(Name.QNAME_XSD_NORMALIZED_STRING)) {
+        if (datatype.equals(name.QNAME_XSD_NCNAME)) {
             return value;
         }
 
-        if (datatype.equals(Name.QNAME_XSD_HEX_BINARY)) {
+        if (datatype.equals(name.QNAME_XSD_NORMALIZED_STRING)) {
+            return value;
+        }
+
+        if (datatype.equals(name.QNAME_XSD_HEX_BINARY)) {
             return pFactory.hexDecoding(value);
         }
 
-        if (datatype.equals(Name.QNAME_XSD_BASE64_BINARY)) {
+        if (datatype.equals(name.QNAME_XSD_BASE64_BINARY)) {
             return pFactory.base64Decoding(value);
         }
 
 	//transform to qname!!
-	if (datatype.equals(Name.QNAME_RDF_LITERAL)) {
+	if (datatype.equals(name.QNAME_RDF_LITERAL)) {
 	    return value;
 	}
 
@@ -141,45 +143,45 @@ public class ValueConverter  {
     
     
 
-    public QName getXsdType(Object o) {
+    public QualifiedName getXsdType(Object o) {
 	if (o instanceof Integer)
-	    return Name.QNAME_XSD_INT; //"xsd:int";
+	    return name.QNAME_XSD_INT; //"xsd:int";
 	if (o instanceof String)
-	    return Name.QNAME_XSD_STRING; //"xsd:string";
+	    return name.QNAME_XSD_STRING; //"xsd:string";
 	if (o instanceof InternationalizedString)
-	    return Name.QNAME_XSD_STRING; //"xsd:string";
+	    return name.QNAME_XSD_STRING; //"xsd:string";
 	if (o instanceof BigInteger)
-	    return Name.QNAME_XSD_INTEGER;
+	    return name.QNAME_XSD_INTEGER;
 	if (o instanceof Long)
-	    return Name.QNAME_XSD_LONG; //"xsd:long";
+	    return name.QNAME_XSD_LONG; //"xsd:long";
 	if (o instanceof Short)
-	    return Name.QNAME_XSD_SHORT; //"xsd:short";
+	    return name.QNAME_XSD_SHORT; //"xsd:short";
 	if (o instanceof Double)
-	    return Name.QNAME_XSD_DOUBLE; //"xsd:double";
+	    return name.QNAME_XSD_DOUBLE; //"xsd:double";
 	if (o instanceof Float)
-	    return Name.QNAME_XSD_FLOAT; //"xsd:float";
+	    return name.QNAME_XSD_FLOAT; //"xsd:float";
 	if (o instanceof java.math.BigDecimal)
-	    return Name.QNAME_XSD_DECIMAL; //"xsd:decimal";
+	    return name.QNAME_XSD_DECIMAL; //"xsd:decimal";
 	if (o instanceof Boolean)
-	    return Name.QNAME_XSD_BOOLEAN; //"xsd:boolean";
+	    return name.QNAME_XSD_BOOLEAN; //"xsd:boolean";
 	if (o instanceof Byte)
-	    return Name.QNAME_XSD_BYTE; //"xsd:byte";
+	    return name.QNAME_XSD_BYTE; //"xsd:byte";
 	if (o instanceof URIWrapper)
-	    return Name.QNAME_XSD_ANY_URI; //"xsd:anyURI";
+	    return name.QNAME_XSD_ANY_URI; //"xsd:anyURI";
 	if (o instanceof QName)
-	    return Name.QNAME_XSD_QNAME; //"xsd:QName";
+	    return name.QNAME_XSD_QNAME; //"xsd:QName";
 	if (o instanceof XMLGregorianCalendar) {
 	    XMLGregorianCalendar cal=(XMLGregorianCalendar)o;
 	    QName t=cal.getXMLSchemaType();
-            if (t.getLocalPart().equals(Name.QNAME_XSD_GYEAR.getLocalPart())) return Name.QNAME_XSD_GYEAR;
-            if (t.getLocalPart().equals(Name.QNAME_XSD_DATETIME.getLocalPart())) return Name.QNAME_XSD_DATETIME;
+            if (t.getLocalPart().equals(name.QNAME_XSD_GYEAR.getLocalPart())) return name.QNAME_XSD_GYEAR;
+            if (t.getLocalPart().equals(name.QNAME_XSD_DATETIME.getLocalPart())) return name.QNAME_XSD_DATETIME;
             //TODO: need to support all time related xsd types
             // default, return xsd:datetime
-            return Name.QNAME_XSD_DATETIME;
+            return name.QNAME_XSD_DATETIME;
 	}
 	//FIXME: see issue #54, value can be an element, when xsi:type was unspecified.
 	System.out.println("getXsdType() " + o.getClass());
-	return Name.QNAME_UNKNOWN;
+	return name.QNAME_UNKNOWN;
     }
 
 

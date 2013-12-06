@@ -73,7 +73,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
     Plan.class
 })
 @javax.persistence.Entity(name = "Entity")
-@Table(name = "ENTITY") //, uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"IDREF"})
+@Table(name = "ENTITY") //, uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"ID"}))
 public class Entity
     extends AStatement
     implements Equals, HashCode, org.openprovenance.prov.model.Entity, HasAllAttributes
@@ -122,7 +122,7 @@ public class Entity
     @OneToMany(targetEntity = org.openprovenance.prov.sql.InternationalizedString.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "LABEL_ENTITY_HJID")
+    @JoinColumn(name = "LABEL_ENTITY_PK")
     public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
         if (label == null) {
             label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
@@ -204,7 +204,7 @@ public class Entity
     @OneToMany(targetEntity = org.openprovenance.prov.sql.Type.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "TYPE__ENTITY_HJID")
+    @JoinColumn(name = "TYPE__ENTITY_PK")
     public List<org.openprovenance.prov.model.Type> getType() {
         if (type == null) {
             type=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Type.class);
@@ -285,7 +285,7 @@ public class Entity
     @OneToMany(targetEntity =  org.openprovenance.prov.sql.Other.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "OTHERS_ENTITY_HJID")
+    @JoinColumn(name = "OTHERS_ENTITY_PK")
     public List<Other> getOther() {
         if (others == null) {
             others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Other.class);

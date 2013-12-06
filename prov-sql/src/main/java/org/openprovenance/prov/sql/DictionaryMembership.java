@@ -58,7 +58,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 @Entity(name = "DictionaryMembership")
 @Table(name = "DICTIONARYMEMBERSHIP")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class DictionaryMembership
+public class DictionaryMembership extends AStatement
     implements Equals, HashCode, org.openprovenance.prov.model.DictionaryMembership
 {
 
@@ -66,8 +66,6 @@ public class DictionaryMembership
     protected org.openprovenance.prov.model.QualifiedName dictionary;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.Entry.class)
     protected List<org.openprovenance.prov.model.Entry> keyEntityPair;
-    @XmlAttribute(name = "Hjid")
-    protected Long hjid;
 
     /**
      * Gets the value of the dictionary property.
@@ -133,33 +131,6 @@ public class DictionaryMembership
      */
     public void setKeyEntityPair(List<org.openprovenance.prov.model.Entry> keyEntityPair) {
         this.keyEntityPair = keyEntityPair;
-    }
-
-    /**
-     * Gets the value of the hjid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Long }
-     *     
-     */
-    @Id
-    @Column(name = "HJID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getHjid() {
-        return hjid;
-    }
-
-    /**
-     * Sets the value of the hjid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Long }
-     *     
-     */
-    public void setHjid(Long value) {
-        this.hjid = value;
     }
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {

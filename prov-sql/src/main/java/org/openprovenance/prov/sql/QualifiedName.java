@@ -37,8 +37,8 @@ public class QualifiedName
         this.prefix=prefix;
     }
 
-    @XmlAttribute(name = "Hjid")
-    protected Long hjid;
+    @XmlAttribute(name = "pk")
+    protected Long pk;
 
     /* (non-Javadoc)
      * @see org.openprovenance.prov.sql.QualifiedName#toQName()
@@ -53,7 +53,7 @@ public class QualifiedName
     }
 
     /**
-     * Gets the value of the hjid property.
+     * Gets the value of the pk property.
      * 
      * @return
      *     possible object is
@@ -61,22 +61,22 @@ public class QualifiedName
      *     
      */
     @Id
-    @Column(name = "HJID")
+    @Column(name = "PK")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getHjid() {
-        return hjid;
+    public Long getPk() {
+        return pk;
     }
 
     /**
-     * Sets the value of the hjid property.
+     * Sets the value of the pk property.
      * 
      * @param value
      *     allowed object is
      *     {@link Long }
      *     
      */
-    public void setHjid(Long value) {
-        this.hjid = value;
+    public void setPk(Long value) {
+        this.pk = value;
     }
 
     /* (non-Javadoc)

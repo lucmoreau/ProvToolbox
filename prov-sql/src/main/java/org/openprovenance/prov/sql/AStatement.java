@@ -72,10 +72,10 @@ public class AStatement
 {
 
     @XmlAttribute(name = "pk")
-    protected Long hjid;
+    protected Long pk;
 
     /**
-     * Gets the value of the hjid property.
+     * Gets the value of the pk property.
      * 
      * @return
      *     possible object is
@@ -83,22 +83,22 @@ public class AStatement
      *     
      */
     @Id
-    @Column(name = "HJID")
+    @Column(name = "PK")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getHjid() {
-        return hjid;
+    public Long getPk() {
+        return pk;
     }
 
     /**
-     * Sets the value of the hjid property.
+     * Sets the value of the pk property.
      * 
      * @param value
      *     allowed object is
      *     {@link Long }
      *     
      */
-    public void setHjid(Long value) {
-        this.hjid = value;
+    public void setPk(Long value) {
+        this.pk = value;
     }
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {

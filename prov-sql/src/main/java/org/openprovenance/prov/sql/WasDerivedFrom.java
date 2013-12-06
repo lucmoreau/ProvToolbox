@@ -274,7 +274,7 @@ public class WasDerivedFrom
     @OneToMany(targetEntity = org.openprovenance.prov.sql.InternationalizedString.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "LABEL_WASDERIVEDFROM_HJID")
+    @JoinColumn(name = "LABEL_WASDERIVEDFROM_PK")
     public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
         if (label == null) {
             label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
@@ -315,7 +315,7 @@ public class WasDerivedFrom
     @OneToMany(targetEntity = org.openprovenance.prov.sql.Type.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "TYPE__WASDERIVEDFROM_HJID")
+    @JoinColumn(name = "TYPE__WASDERIVEDFROM_PK")
     public List<org.openprovenance.prov.model.Type> getType() {
         if (type == null) {
             type=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Type.class);
@@ -356,7 +356,7 @@ public class WasDerivedFrom
     @OneToMany(targetEntity =  org.openprovenance.prov.sql.Other.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "OTHERS_WASDERIVEDFROM_HJID")
+    @JoinColumn(name = "OTHERS_WASDERIVEDFROM_PK")
     public List<Other> getOther() {
         if (other == null) {
             other=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Other.class);

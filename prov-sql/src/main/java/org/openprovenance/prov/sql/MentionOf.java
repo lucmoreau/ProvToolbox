@@ -73,7 +73,7 @@ public class MentionOf
     @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "SPECIFICENTITY_MENTIONOF_HJID")
+    @JoinColumn(name = "SPECIFICENTITY_MENTIONOF_PK")
     public org.openprovenance.prov.model.QualifiedName getSpecificEntity() {
         return specificEntity;
     }
@@ -101,7 +101,7 @@ public class MentionOf
     @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "GENERALENTITY_MENTIONOF_HJID")
+    @JoinColumn(name = "GENERALENTITY_MENTIONOF_PK")
     public org.openprovenance.prov.model.QualifiedName getGeneralEntity() {
         return generalEntity;
     }

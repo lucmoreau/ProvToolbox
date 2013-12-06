@@ -41,9 +41,6 @@ public class IDRef
     @XmlAttribute(name = "ref", namespace = "http://www.w3.org/ns/prov#", required = true)
     protected QName ref;
     
-    @XmlAttribute(name = "Hjid")
-    protected Long hjid;
-
     /**
      * Gets the value of the ref property.
      * 

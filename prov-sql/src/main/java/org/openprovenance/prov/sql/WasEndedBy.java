@@ -247,7 +247,7 @@ public class WasEndedBy
     @OneToMany(targetEntity = org.openprovenance.prov.sql.InternationalizedString.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "LABEL_WASENDEDBY_HJID")
+    @JoinColumn(name = "LABEL_WASENDEDBY_PK")
     public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
         if (label == null) {
             label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
@@ -330,7 +330,7 @@ public class WasEndedBy
     @OneToMany(targetEntity = org.openprovenance.prov.sql.Role.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "ROLE__WASENDEDBY_HJID")
+    @JoinColumn(name = "ROLE__WASENDEDBY_PK")
     public List<org.openprovenance.prov.model.Role> getRole() {
         if (role == null) {
             role=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Role.class);
@@ -372,7 +372,7 @@ public class WasEndedBy
     @OneToMany(targetEntity = org.openprovenance.prov.sql.Type.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "TYPE__WASENDEDBY_HJID")
+    @JoinColumn(name = "TYPE__WASENDEDBY_PK")
     public List<org.openprovenance.prov.model.Type> getType() {
         if (type == null) {
             type=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Type.class);
@@ -413,7 +413,7 @@ public class WasEndedBy
     @OneToMany(targetEntity =  org.openprovenance.prov.sql.Other.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "OTHERS_WASENDEDBY_HJID")
+    @JoinColumn(name = "OTHERS_WASENDEDBY_PK")
     public List<Other> getOther() {
         if (other == null) {
             other=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Other.class);

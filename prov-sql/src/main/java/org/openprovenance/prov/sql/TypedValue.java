@@ -158,11 +158,8 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      *     {@link AValue }
      *     
      */
-    //@ManyToOne(targetEntity = AValue.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    //@JoinColumn(name = "VALUE")
     @Embedded
     public AValue getValueItem() {
-        //System.out.println("#---> getValueItem() reading " + value);
 
     	if ((avalue==null) && (value!=null)) {
     		if (type==null) {
@@ -181,7 +178,6 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     	return avalue;
     }
     
-    //private static final String PERSISTENCE_UNIT_NAME = "org.openprovenance.prov.sql";
    
     /**
      * Sets the value of the test property.
@@ -193,15 +189,6 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      */
     public void setValueItem(AValue value) {
         
-
-        
-        //System.out.println("#---> setValueItem() reading " + value);
-        //System.out.println("#---> setValueItem() reading (id) " + ((value==null)? "none" : value.getHjid()));
-        //System.out.println("#---> setValueItem() reading (string) " + ((value==null)? null : value.getString()));
-        //System.out.println("#---> setValueItem() reading (int) " + ((value==null)? null : value.getInt()));
-       
-        
-   
         this.avalue=value;
 	if (value!=null) {
 	    Object o=SQLValueConverter.convertFromAValue(value);
@@ -320,18 +307,18 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      }
 
 
-    @XmlAttribute(name = "Hjid")
-    Long hjid;
+    @XmlAttribute(name = "pk")
+    Long pk;
 
     @Id
-    @Column(name = "HJID")
+    @Column(name = "PK")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getHjid() {
-        return hjid;
+    public Long getPk() {
+        return pk;
     }
 
-    public void setHjid(Long value) {
-        this.hjid = value;
+    public void setPk(Long value) {
+        this.pk = value;
     }
     
 

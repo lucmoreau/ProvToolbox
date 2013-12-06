@@ -38,7 +38,7 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-	System.out.println("read document " + ((org.openprovenance.prov.sql.Document)doc).getHjid() + " for " + file1);
+	System.out.println("read document " + ((org.openprovenance.prov.sql.Document)doc).getPk() + " for " + file1);
 	return (org.openprovenance.prov.sql.Document) doc;
 
     }
@@ -51,9 +51,9 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 
 	@SuppressWarnings("unused")
 	Document doc2 = u.persist((org.openprovenance.prov.sql.Document) doc);
-	dbKeys.put(file, ((org.openprovenance.prov.sql.Document) doc).getHjid());
+	dbKeys.put(file, ((org.openprovenance.prov.sql.Document) doc).getPk());
 	System.out.println("saved document "
-		+ ((org.openprovenance.prov.sql.Document) doc).getHjid()
+		+ ((org.openprovenance.prov.sql.Document) doc).getPk()
 		+ " for " + file);
     }
     

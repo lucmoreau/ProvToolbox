@@ -57,12 +57,14 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     final GraphBuilder<RESOURCE, LITERAL, STATEMENT> gb;
     final Ontology onto;
     final ProvFactory pFactory;
+    final Name name;
 
 
     public RdfConstructor(GraphBuilder<RESOURCE, LITERAL, STATEMENT> gb, ProvFactory pFactory) {
 	this.onto = new Ontology(pFactory);
 	this.gb = gb;
 	this.pFactory=pFactory;
+	this.name=pFactory.getName();
     }
 
     @Override
@@ -372,8 +374,8 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 		LITERAL lit = null;
 
-		QualifiedName type = pFactory.newQualifiedName(attr.getType());
-		QualifiedName pred = onto.convertToRdf(pFactory.newQualifiedName(attr.getElementName())); // FIXME:
+		QualifiedName type = attr.getType();
+		QualifiedName pred = onto.convertToRdf(attr.getElementName()); // FIXME:
 								       // convert
 								       // to
 								       // XSD_HASH
@@ -511,7 +513,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
     private LITERAL newLiteral(XMLGregorianCalendar time) {
 	return gb.newLiteral(time.toString(),
-			     pFactory.newQualifiedName(Name.QNAME_XSD_HASH_DATETIME));
+			     name.QNAME_XSD_HASH_DATETIME);
     }
 
     public void assertQualifiedInfluence(QualifiedName subject, 
@@ -629,7 +631,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
  	} else {
  	    value = val.getValue().toString(); //FIXME: what about Internatioanlized string.
  	}
- 	lit = gb.newLiteral(value, pFactory.newQualifiedName(val.getType()));
+ 	lit = gb.newLiteral(value, val.getType());
  	return lit;
      }
 

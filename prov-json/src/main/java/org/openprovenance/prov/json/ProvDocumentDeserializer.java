@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.model.Activity;
@@ -92,6 +91,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     private static final String PROV_JSON_PREFIX = "prefix";
 
     private final ProvFactory pf = new ProvFactory();
+    private final Name name=pf.getName();
     private final ValueConverter vconv = new ValueConverter(pf, null);
 
     @Override
@@ -399,7 +399,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List<org.openprovenance.prov.model.Type> types = ((HasType) statement).getType();
 		for (JsonElement value : values) {
 		    types.add((org.openprovenance.prov.model.Type) decodeAttributeValue(value,
-											Name.QNAME_PROV_TYPE));
+											name.QNAME_PROV_TYPE));
 		}
 	    } else {
 		throw new UnsupportedOperationException(
@@ -432,7 +432,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List<Location> locations = ((HasLocation) statement).getLocation();
 		for (JsonElement value : values) {
 		    locations.add((org.openprovenance.prov.model.Location) decodeAttributeValue(value,
-												Name.QNAME_PROV_LOCATION));
+												name.QNAME_PROV_LOCATION));
 		}
 	    } else {
 		throw new UnsupportedOperationException(
@@ -449,7 +449,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List<Role> roles = ((HasRole) statement).getRole();
 		for (JsonElement value : values) {
 		    roles.add((org.openprovenance.prov.model.Role) decodeAttributeValue(value,
-											Name.QNAME_PROV_ROLE));
+											name.QNAME_PROV_ROLE));
 		}
 	    } else {
 		throw new UnsupportedOperationException(
@@ -470,7 +470,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    }
 	    if (statement instanceof HasValue) {
 		((HasValue) statement).setValue((org.openprovenance.prov.model.Value) decodeAttributeValue(values.get(0),
-													   Name.QNAME_PROV_VALUE));
+													   name.QNAME_PROV_VALUE));
 	    } else {
 		throw new UnsupportedOperationException(
 							"prov:value is not allowed in a "
@@ -494,7 +494,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		    for (JsonElement value : values) {
 
 			Attribute attr = decodeAttributeValue(value,
-							      attributeName.toQName());
+							      attributeName);
 			attributes.add(attr);
 		    }
 		}
@@ -527,10 +527,10 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	return iString;
     }
 
-    private Attribute decodeAttributeValue(JsonElement element, QName elementName) {
+    private Attribute decodeAttributeValue(JsonElement element, QualifiedName elementName) {
 	if (element.isJsonPrimitive()) {
 	    Object o = decodeJSONPrimitive(element.getAsString());
-	    QName type = vconv.getXsdType(o);
+	    QualifiedName type = vconv.getXsdType(o);
 	    return pf.newAttribute(elementName, o, type);
 	} else {
 	    JsonObject struct = element.getAsJsonObject();
@@ -544,11 +544,11 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		iString.setLang(lang);
 		return pf.newAttribute(elementName,
 				       iString,
-				       Name.QNAME_PROV_INTERNATIONALIZED_STRING);
+				       name.QNAME_PROV_INTERNATIONALIZED_STRING);
 	    } else if (struct.has("type")) {
 		String datatypeAsString = struct.get("type").getAsString();
-		QName xsdType = ns.stringToQName(datatypeAsString);
-		if (xsdType.equals(Name.QNAME_XSD_QNAME)) {
+		QualifiedName xsdType = ns.stringToQualifiedName(datatypeAsString, pf);
+		if (xsdType.equals(name.QNAME_XSD_QNAME)) {
 		    return pf.newAttribute(elementName,
 					   ns.stringToQualifiedName(value,pf), xsdType);
 		} else {
@@ -562,7 +562,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		iString.setValue(value);
 		return pf.newAttribute(elementName,
 				       iString,
-				       Name.QNAME_PROV_INTERNATIONALIZED_STRING);
+				       name.QNAME_PROV_INTERNATIONALIZED_STRING);
 	    }
 	}
     }
@@ -627,8 +627,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     // TODO: this name is legacy, what should it be?
     private QualifiedName anyRef(String attributeName, JsonObject attributeMap) {
 	if (attributeMap.has(attributeName))
-	    return pf.newQualifiedName(ns.stringToQName(popString(attributeMap,
-							  attributeName)));
+	    return ns.stringToQualifiedName(popString(attributeMap,
+	                                              attributeName),
+	                                              pf);
 	else
 	    return null;
     }
@@ -680,7 +681,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    for (JsonElement element : elements) {
 		JsonObject item = element.getAsJsonObject();
 		Entry pair = pf.newEntry((Key) decodeAttributeValue(item.remove("key"),
-		                                                    Name.QNAME_PROV_KEY),
+		                                                    name.QNAME_PROV_KEY),
 		                                                    
 		                         ns.stringToQualifiedName(this.popString(item, "$"),pf));
 		results.add(pair);
@@ -690,7 +691,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    JsonObject dictionary = kESElement.getAsJsonObject();
 	    String keyDatatype = dictionary.remove("$key-datatype")
 					   .getAsString();
-	    QName datatype = ns.stringToQName(keyDatatype);
+	    QualifiedName datatype = ns.stringToQualifiedName(keyDatatype,pf);
 	    for (Map.Entry<String, JsonElement> entry : dictionary.entrySet()) {
 		Object o = vconv.convertToJava(datatype, entry.getKey());
 		
@@ -719,7 +720,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	List<JsonElement> elements = popMultiValAttribute(attributeName,
 							  attributeMap);
 	for (JsonElement element : elements) {
-	    Key key = (Key) decodeAttributeValue(element, Name.QNAME_PROV_KEY);
+	    Key key = (Key) decodeAttributeValue(element, name.QNAME_PROV_KEY);
 	    results.add(key);
 	}
 	return results;

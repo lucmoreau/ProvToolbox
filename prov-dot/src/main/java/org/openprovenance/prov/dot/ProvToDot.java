@@ -12,7 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
@@ -36,7 +35,6 @@ import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Used;
-import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasDerivedFrom;
@@ -479,8 +477,8 @@ public class ProvToDot {
         // default is good for entity
         List<Type> types=p.getType();
         for (Type type: types) {
-            if (type.getValue() instanceof QName) {
-                QName name=(QName) type.getValue();
+            if (type.getValue() instanceof QualifiedName) {
+                QualifiedName name=(QualifiedName) type.getValue();
                 if (("Dictionary".equals(name.getLocalPart()))
                     ||
                     ("EmptyDictionary".equals(name.getLocalPart()))) {
@@ -564,8 +562,8 @@ public class ProvToDot {
     }
 
    public String convertValue(Attribute v) {
-       if (v.getValue() instanceof QName) {
-           QName name=(QName) v.getValue();
+       if (v.getValue() instanceof QualifiedName) {
+           QualifiedName name=(QualifiedName) v.getValue();
            return name.getLocalPart();
        }
        String label=getPropertyValueFromAny(v);
@@ -574,9 +572,6 @@ public class ProvToDot {
        return label.substring(Math.max(i,j)+1, label.length());
    }
 
-    public String qnameToUri(QName qname) {
-        return qname.getNamespaceURI() + qname.getLocalPart();
-    }
 
     public String convertProperty(Attribute oLabel) {
         String label=getPropertyFromAny(oLabel);
@@ -586,21 +581,13 @@ public class ProvToDot {
     }
 
     public String getPropertyFromAny (Attribute o) {
-        return qnameToUri(o.getElementName());
-        /*
-        if (o instanceof JAXBElement) {
-            return qnameToUri(((JAXBElement<?>)o).getName());
-        } else if (o instanceof org.w3c.dom.Element) {
-            return ((org.w3c.dom.Element)o).getTagName();
-        } else {
-            return o.toString();
-        }*/
+        return o.getElementName().getUri();
     }
 
     public String getPropertyValueFromAny (Type t) {
         Object val=t.getValue();
-        if (val instanceof QName) {
-            QName q=(QName)val;
+        if (val instanceof QualifiedName) {
+            QualifiedName q=(QualifiedName)val;
             return q.getNamespaceURI() + q.getLocalPart();
         } else {
                 return "" +  val;
@@ -608,8 +595,8 @@ public class ProvToDot {
     }
     public String getPropertyValueFromAny (Attribute o) {
         Object val=o.getValue();
-        if (val instanceof QName) {
-            QName q=(QName)val;
+        if (val instanceof QualifiedName) {
+            QualifiedName q=(QualifiedName)val;
             return q.getNamespaceURI() + q.getLocalPart();
         } else {
                 return "" +  val;

@@ -11,11 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.Entry;
 import org.openprovenance.prov.model.Key;
-import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
@@ -190,8 +188,6 @@ public class JSONConstructor implements ModelConstructor {
 	    return (String) value;
 	}
 
-	if (value instanceof QName)
-	    return qnExport.qnameToString((QName) value);
 	if (value instanceof QualifiedName)
 	    return qnExport.qnameToString((QualifiedName) value);
 	if (value instanceof InternationalizedString) {
@@ -205,10 +201,7 @@ public class JSONConstructor implements ModelConstructor {
 	if (value instanceof String || value instanceof Double
 		|| value instanceof Integer || value instanceof Boolean)
 	    return value;
-	if (value instanceof QName) {
-	    return typedLiteral(qnExport.qnameToString((QName) value),
-				"xsd:QName", null);
-	}
+
 	if (value instanceof QualifiedName) {
 	    return typedLiteral(qnExport.qnameToString((QualifiedName) value),
 				"xsd:QName", null);
@@ -232,12 +225,7 @@ public class JSONConstructor implements ModelConstructor {
 	String attrName = qnExport.qnameToString(attr.getElementName());
 	Object value = attr.getValue();
 	Object attrValue;
-	if (value instanceof QName) {
-	    // force type xsd:QName
-
-	    attrValue = typedLiteral(qnExport.qnameToString((QName) value),
-				     "xsd:QName", null);
-	} else 	if (value instanceof QualifiedName) {
+ 	if (value instanceof QualifiedName) {
 	    // force type xsd:QName
 
 	    attrValue = typedLiteral(qnExport.qnameToString((QualifiedName) value),
@@ -634,9 +622,9 @@ public class JSONConstructor implements ModelConstructor {
 	// Check for the types of keys
 	boolean isAllKeyOfSameDatatype = true;
 	Key firstKey = keyEntitySet.get(0).getKey();
-	QName firstKeyClass = firstKey.getType();
+	QualifiedName firstKeyClass = firstKey.getType();
 	for (Entry pair : keyEntitySet) {
-	    QName keyClass = pair.getKey().getType();
+	    QualifiedName keyClass = pair.getKey().getType();
 
 	    if (keyClass != firstKeyClass) {
 		isAllKeyOfSameDatatype = false;

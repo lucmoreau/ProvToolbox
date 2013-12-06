@@ -6,8 +6,6 @@ import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
 import  org.antlr.runtime.CommonTokenStream;
 import  org.antlr.runtime.ANTLRFileStream;
 import  org.antlr.runtime.CharStream;
@@ -81,11 +79,6 @@ public  class Utility {
 	StringWriter writer=new StringWriter();
 	QNameExport qExport = new QNameExport() {
 	    @Override
-	    public String qnameToString(QName qname) {
-		return doc.getNamespace().qnameToString(qname);
-	    }
-
-	    @Override
 	    public String qnameToString(QualifiedName qname) {
 		return doc.getNamespace().qualifiedNameToString(qname);
 	    }
@@ -119,11 +112,6 @@ public  class Utility {
 	ProvFactory pFactory=new ProvFactory();
 	StringWriter writer=new StringWriter();
 	QNameExport qExport = new QNameExport() {
-	    @Override
-	    public String qnameToString(QName qname) {
-		return doc.getNamespace().qnameToString(qname);
-	    }
-
 	    @Override
 	    public String qnameToString(QualifiedName qname) {
 		return doc.getNamespace().qualifiedNameToString(qname);

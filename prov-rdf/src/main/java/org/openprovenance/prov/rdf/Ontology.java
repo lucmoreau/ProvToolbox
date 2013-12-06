@@ -15,9 +15,11 @@ public class Ontology {
  
 
     final private ProvFactory pFactory;
+    final private Name name;
 
     public Ontology(ProvFactory pFactory) {
 	this.pFactory=pFactory;
+	this.name=pFactory.getName();
 	
 	QNAME_PROVO_atLocation = newProvQName("atLocation");
 	QNAME_PROVO_atTime = newProvQName("atTime");
@@ -410,11 +412,11 @@ public class Ontology {
 	otherTable.put(QNAME_PROVO_Insertion, QNAME_PROVO_insertedKeyEntityPair);
 	otherTable.put(QNAME_PROVO_Removal, QNAME_PROVO_insertedKeyEntityPair);
 
-	convertTable.put(pFactory.newQualifiedName(Name.QNAME_PROV_LABEL), QNAME_RDFS_LABEL);
-	convertTable.put(pFactory.newQualifiedName(Name.QNAME_PROV_TYPE), QNAME_RDF_TYPE);
-	convertTable.put(pFactory.newQualifiedName(Name.QNAME_PROV_LOCATION), QNAME_PROVO_atLocation);
-	convertTable.put(pFactory.newQualifiedName(Name.QNAME_PROV_VALUE), QNAME_PROVO_value);
-	convertTable.put(pFactory.newQualifiedName(Name.QNAME_PROV_ROLE), QNAME_PROVO_hadRole);
+	convertTable.put(name.QNAME_PROV_LABEL, QNAME_RDFS_LABEL);
+	convertTable.put(name.QNAME_PROV_TYPE, QNAME_RDF_TYPE);
+	convertTable.put(name.QNAME_PROV_LOCATION, QNAME_PROVO_atLocation);
+	convertTable.put(name.QNAME_PROV_VALUE, QNAME_PROVO_value);
+	convertTable.put(name.QNAME_PROV_ROLE, QNAME_PROVO_hadRole);
     }
     
     void initRangeTables() {

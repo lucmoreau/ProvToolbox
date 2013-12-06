@@ -51,6 +51,7 @@ import org.openrdf.rio.helpers.RDFHandlerBase;
 public class RdfCollector extends RDFHandlerBase {
 
     final protected ProvFactory pFactory;
+    final protected Name name;
     protected HashMap<QualifiedName, HashMap<QualifiedName, List<Statement>>> collators;
     private Hashtable<QualifiedName, BundleHolder> bundles;
     protected Document document;
@@ -62,6 +63,7 @@ public class RdfCollector extends RDFHandlerBase {
     
     public RdfCollector(ProvFactory pFactory, Ontology onto) {
    	this.pFactory = pFactory;
+   	this.name=pFactory.getName();
    	this.onto=onto;
    	this.collators = new HashMap<QualifiedName, HashMap<QualifiedName, List<Statement>>>();
    	this.revnss = new Hashtable<String, String>();
@@ -278,22 +280,22 @@ public class RdfCollector extends RDFHandlerBase {
     protected Key valueToKey(Value value) {
 	if (value instanceof Resource) {
 	    return pFactory.newKey(convertResourceToQualifiedName((Resource) value),
-	                           Name.QNAME_XSD_QNAME);
+	                           name.QNAME_XSD_QNAME);
 	} else if (value instanceof Literal) {
 	    Object o=decodeLiteral((Literal) value);
 	    //FIXME: lossy conversion, I have lost the rdf type by converting to java
 	    if (o instanceof QualifiedName) {
-		return pFactory.newKey(o, Name.QNAME_XSD_QNAME);
+		return pFactory.newKey(o, name.QNAME_XSD_QNAME);
 	    }
 	    return pFactory.newKey(o, this.valueConverter.getXsdType(o));
 	} else if (value instanceof URI) {
 	    URI uri = (URI) (value);
 	    URIWrapper uw = new URIWrapper();
 	    uw.setValue(java.net.URI.create(uri.toString()));
-	    return pFactory.newKey(uri.toString(), Name.QNAME_XSD_QNAME);
+	    return pFactory.newKey(uri.toString(), name.QNAME_XSD_QNAME);
 	} else if (value instanceof BNode) {
 	    return pFactory.newKey(bnodeToQualifiedName(value), //FIXME
-	                           Name.QNAME_XSD_QNAME);
+	                           name.QNAME_XSD_QNAME);
 	} else {
 	    return null;
 	}
@@ -501,14 +503,14 @@ public class RdfCollector extends RDFHandlerBase {
 				    && DM_TYPES.indexOf(typeQ) == -1) {
 				// System.out.println("Skipping type: " + typeQ);
 			    } else {
-				attributes.add(pFactory.newAttribute(Name.QNAME_PROV_TYPE,
+				attributes.add(pFactory.newAttribute(name.QNAME_PROV_TYPE,
 								     typeQ,
-								     Name.QNAME_XSD_QNAME));
+								     name.QNAME_XSD_QNAME));
 			    }
 
 			} else if (statement.getObject() instanceof Literal) {	   
 			    Literal lit=(Literal)statement.getObject();
-			    Attribute attr = newAttribute(lit,pFactory.newQualifiedName(Name.QNAME_PROV_TYPE));
+			    Attribute attr = newAttribute(lit,name.QNAME_PROV_TYPE);
 			    attributes.add(attr);
 			}
 		    }
@@ -521,24 +523,24 @@ public class RdfCollector extends RDFHandlerBase {
 	    if (predQ.equals(onto.QNAME_PROVO_hadRole)) {
 		Value obj=statement.getObject();
 
-		Attribute attr = newAttributeForValue(obj,pFactory.newQualifiedName(Name.QNAME_PROV_ROLE));
+		Attribute attr = newAttributeForValue(obj,name.QNAME_PROV_ROLE);
 		attributes.add(attr);
 	    }
 
 	    if (predQ.equals(onto.QNAME_PROVO_atLocation)) {
 		Value obj=statement.getObject();
-		Attribute attr = newAttributeForValue(obj,pFactory.newQualifiedName(Name.QNAME_PROV_LOCATION));
+		Attribute attr = newAttributeForValue(obj,name.QNAME_PROV_LOCATION);
 		attributes.add(attr);
 
 	    }
 
 	    if (predQ.equals(onto.QNAME_RDFS_LABEL)) {
 		Literal lit = (Literal) (statement.getObject());
-		Attribute attr=newAttribute(lit, pFactory.newQualifiedName(Name.QNAME_PROV_LABEL));
+		Attribute attr=newAttribute(lit, name.QNAME_PROV_LABEL);
 		attributes.add(attr);		
 	    }
 	    if (predQ.equals(onto.QNAME_PROVO_value)) {
-		Attribute attr=newAttributeForValue(value, pFactory.newQualifiedName(Name.QNAME_PROV_VALUE));
+		Attribute attr=newAttributeForValue(value, name.QNAME_PROV_VALUE);
 		attributes.add(attr);
 	    }
 	    if (!isProvURI(predQ)) {
@@ -559,7 +561,7 @@ public class RdfCollector extends RDFHandlerBase {
 	} else if (obj instanceof Resource) {
 	    attr=pFactory.newAttribute(type,
 	                               convertResourceToQualifiedName((Resource) obj),
-	                               Name.QNAME_XSD_QNAME);
+	                               name.QNAME_XSD_QNAME);
 	} else {
 	    throw new UnsupportedOperationException();
 	}
@@ -578,8 +580,8 @@ public class RdfCollector extends RDFHandlerBase {
 					       theValue,
 					       ((lit.getDatatype() == null) ? 
 					               ((lit.getLanguage()==null)
-					                       ? pFactory.newQualifiedName(Name.QNAME_XSD_STRING)
-					                       : pFactory.newQualifiedName(Name.QNAME_PROV_INTERNATIONALIZED_STRING))
+					                       ? name.QNAME_XSD_STRING
+					                       : name.QNAME_PROV_INTERNATIONALIZED_STRING)
 						       : onto.convertFromRdf(convertURIToQualifiedName(lit.getDatatype()))));
 	return attr;
     }

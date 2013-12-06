@@ -4,14 +4,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 
 import  org.antlr.runtime.tree.Tree;
 import  org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.model.Entry;
 import org.openprovenance.prov.model.InternationalizedString;
 import org.openprovenance.prov.model.Key;
-import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.Name;
@@ -28,11 +26,13 @@ public class TreeTraversal {
 
     final private ModelConstructor c;
     final private ProvFactory pFactory;
+    final private Name name;
     //final private ValueConverter vconv;
     
     public TreeTraversal(ModelConstructor c, ProvFactory pFactory) {
         this.c=c;
         this.pFactory=pFactory;
+        this.name=pFactory.getName();
         //this.vconv=new ValueConverter(pFactory,null);
     }
    
@@ -369,7 +369,7 @@ public class TreeTraversal {
             for (int i=0; i< ast.getChildCount(); i++) {
                 Object o=convert(ast.getChild(i));
                 Object [] pair=(Object[]) o;
-                keys.add(pFactory.newKey(pair[0], (QName)pair[1]));
+                keys.add(pFactory.newKey(pair[0], (QualifiedName)pair[1]));
 
             }
             return keys;
@@ -488,7 +488,7 @@ public class TreeTraversal {
             if (val1 instanceof Object[]) {
             	Object [] values2=(Object[])val1;
             	Object theValue=values2[0];
-            	QName theType=(QName)values2[1];
+            	QualifiedName theType=(QualifiedName)values2[1];
 		    
 
             	return pFactory.newAttribute(stringToQualifiedName(attr1),
@@ -499,11 +499,11 @@ public class TreeTraversal {
             } else if (val1 instanceof InternationalizedString) {
             	return pFactory.newAttribute(stringToQualifiedName(attr1),
             	                             val1,
-            	                             Name.QNAME_XSD_STRING);	
+            	                             name.QNAME_XSD_STRING);	
             } else { // TODO what case is it?
                 return pFactory.newAttribute(stringToQualifiedName(attr1),
                                              val1,
-                                             Name.QNAME_XSD_STRING);	            	
+                                             name.QNAME_XSD_STRING);	            	
             }
 
         case PROV_NParser.STRING:
@@ -533,16 +533,15 @@ public class TreeTraversal {
 
         case PROV_NParser.TYPEDLITERAL:
             String v1=convertToken(getTokenString(ast.getChild(0)));
-            QName v2;
+            QualifiedName v2;
             
             if (ast.getChild(1)==null) {
-                v2=Name.QNAME_XSD_QNAME;
+                v2=name.QNAME_XSD_QNAME;
                 //v1="\"" + v1 + "\"";
                 Object ooo=stringToQualifiedName(v1);
                 return convertTypedLiteral(v2,ooo);
             } else {
-        	QualifiedName tmp=(QualifiedName)convert(ast.getChild(1));
-                v2=tmp.toQName();
+        	v2=(QualifiedName)convert(ast.getChild(1));
                 if (ast.getChild(2)!=null) {
                     Object iv1=pFactory.newInternationalizedString(unescape(unwrap(v1)),
                                                                    stripAmpersand(convertToken(getTokenString(ast.getChild(2)))));
@@ -602,7 +601,7 @@ public class TreeTraversal {
 
     Namespace namespace=new Namespace();
 
-    public Object convertTypedLiteral(QName datatype, Object value) {
+    public Object convertTypedLiteral(QualifiedName datatype, Object value) {
     	Object [] valueTypePair=new Object[] {value,datatype};
     	return valueTypePair;
     /*	

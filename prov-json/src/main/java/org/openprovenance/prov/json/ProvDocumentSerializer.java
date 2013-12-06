@@ -2,8 +2,6 @@ package org.openprovenance.prov.json;
 
 import java.lang.reflect.Type;
 
-import javax.xml.namespace.QName;
-
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QNameExport;
@@ -21,10 +19,6 @@ public class ProvDocumentSerializer implements JsonSerializer<Document> {
 				 JsonSerializationContext context) {
 	ProvFactory pFactory = new ProvFactory();
 	QNameExport qExport = new QNameExport() {
-	    @Override
-	    public String qnameToString(QName qname) {
-		return doc.getNamespace().qnameToString(qname);
-	    }
 	    @Override
 	    public String qnameToString(QualifiedName qname) {
 		return doc.getNamespace().qualifiedNameToString(qname);

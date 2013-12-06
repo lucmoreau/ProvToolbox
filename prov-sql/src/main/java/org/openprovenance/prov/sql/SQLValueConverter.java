@@ -100,7 +100,7 @@ public class SQLValueConverter {
 	}
 	if (datatype.equals(name.QNAME_XSD_QNAME)) {
 	    AValue res=new AValue();
-	    res.setQname((QualifiedName) value);
+	    res.setQname((org.openprovenance.prov.sql.QualifiedName) value); 
 	    return res;
 	}
 	if (datatype.equals(name.QNAME_XSD_DATETIME)) {

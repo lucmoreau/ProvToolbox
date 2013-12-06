@@ -54,7 +54,8 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     @XmlValue
     @XmlSchemaType(name = "anySimpleType")
     protected Object value;
-
+    
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
     @XmlAttribute(name = "type", namespace = "http://www.w3.org/2001/XMLSchema-instance")
     protected QualifiedName type;
 
@@ -114,6 +115,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     }
 
     public void setType(QualifiedName type) {
+	System.out.println("setType " + type + " " + type.getClass());
 	this.type=type;
     }
    
@@ -257,6 +259,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
         return valueAsJava;
     }
 
+    transient
     Name name=org.openprovenance.prov.sql.ProvFactory.getFactory().getName();
 
     

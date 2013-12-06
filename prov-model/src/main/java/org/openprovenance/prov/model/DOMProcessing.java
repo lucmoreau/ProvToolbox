@@ -6,7 +6,6 @@ import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -50,47 +49,11 @@ final public class DOMProcessing {
     }
     
     
-    ///TODO: should use the prefix definition of nss, as opposed to the one in qname
-
-    static public String qnameToString(QName qname) {
-	Namespace ns=Namespace.getThreadNamespace();
-	return ns.qnameToString(qname);
-//	return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
-//		+ qname.getLocalPart();
-    }
-    
-    
     static public String qualifiedNameToString(QualifiedName qname) {
 	Namespace ns=Namespace.getThreadNamespace();
 	return ns.qualifiedNameToString(qname);
     }
     
-
-    /**
-     * Converts a string to a QName, extracting namespace from the DOM.
-     * 
-     * @param str
-     *            string to convert to QName
-     * @param el
-     *            current Element in which this string was found (as attribute
-     *            or attribute value)
-     * @return
-     */
-    final static public QName stringToQName(String str, org.w3c.dom.Element el) {
-        if (str == null)
-            return null;
-        int index = str.indexOf(':');
-        if (index == -1) {
-            QName qn = new QName(el.lookupNamespaceURI(null), // find default namespace
-                                                              // namespace
-                                 str);
-            return qn;
-        }
-        String prefix = str.substring(0, index);
-        String local = str.substring(index + 1, str.length());
-        QName qn = new QName(el.lookupNamespaceURI(prefix), local, prefix);
-        return qn;
-    }
 
     
 
@@ -121,41 +84,8 @@ final public class DOMProcessing {
         return qn;
     }
 
-
-    /** Create a new element, with given elementName, and QName as content. One cannot assume that 
-     * the prefixes have been declared, hence all namespaces need to be declared.
-     * @param elementName
-     * @param value
-     * @return
-     */
     
     
-    final static public Element newElement(QName elementName, QName value) {
-	org.w3c.dom.Document doc = builder.newDocument();
-	Element el = doc.createElementNS(elementName.getNamespaceURI(),
-					 qnameToString(elementName));
-	
-	// 1. we add an xsi:type="xsd:QName" attribute
-	//   making sure xsi and xsd prefixes are appropriately declared.
-	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", "xsd:QName");
-	el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsd", NamespacePrefixMapper.XSD_NS);
-
-	// 2. We add the QName's string representation as child of the element
-	String valueAsString=qnameToString(value);
-	el.appendChild(doc.createTextNode(valueAsString));
-	
-	// 3. We make sure that the QName's prefix is given the right namespace, or the default namespace is declared if there is no prefix
-	int index=valueAsString.indexOf(":");
-	if (index!=-1) {
-	    String prefix = valueAsString.substring(0, index);
-	    el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:"+prefix, value.getNamespaceURI());
-	} else {
-	    el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns", value.getNamespaceURI());
-	}
-	
-	doc.appendChild(el);
-	return el;
-    }
     
     final static public Element newElement(QualifiedName elementName, QualifiedName value) {
 	org.w3c.dom.Document doc = builder.newDocument();
@@ -299,10 +229,6 @@ final public class DOMProcessing {
 	                      istring.getValue(),
 			      attribute.getType(), 
 			      istring.getLang());
-	} else if (value instanceof QName) {
-	    return newElement(elementName, 
-	                      (QualifiedName) value);
-
 	} else if (value instanceof QualifiedName) {
 	    return newElement(elementName, 
 	                      (QualifiedName) value);

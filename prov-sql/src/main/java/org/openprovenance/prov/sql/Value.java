@@ -6,7 +6,6 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
 
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
@@ -16,7 +15,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.openprovenance.prov.model.DOMProcessing;
-import org.openprovenance.prov.model.Name;
+import org.openprovenance.prov.model.QualifiedName;
 
 
 /**
@@ -46,10 +45,10 @@ public class Value
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_VALUE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_VALUE;
-    private static final QName PROV_VALUE_QNAME = Name.QNAME_PROV_VALUE;
+    private static final QualifiedName PROV_VALUE_QNAME = ProvFactory.getFactory().getName().QNAME_PROV_VALUE;
     
     @Transient   
-    public QName getElementName() {
+    public QualifiedName getElementName() {
 	return PROV_VALUE_QNAME;
     }
     
@@ -59,7 +58,7 @@ public class Value
     }
     
     public String toNotationString() {
-	return DOMProcessing.qnameToString(getElementName()) + " = "
+	return DOMProcessing.qualifiedNameToString(getElementName()) + " = "
 		+ org.openprovenance.prov.xml.Helper.valueToNotationString(getValue(), getType());
     }
     

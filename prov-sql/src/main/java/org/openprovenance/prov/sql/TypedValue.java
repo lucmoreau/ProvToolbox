@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
-import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -14,8 +14,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.ManyToOne;
 
 import org.openprovenance.prov.sql.AValue;
 import org.openprovenance.prov.model.InternationalizedString;
@@ -23,10 +25,11 @@ import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.Name;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.QNameConstructor;
 import org.openprovenance.prov.model.ValueConverter;
 
-import javax.xml.namespace.QName;
+//import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -47,18 +50,19 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     
+    
     @XmlValue
     @XmlSchemaType(name = "anySimpleType")
     protected Object value;
 
     @XmlAttribute(name = "type", namespace = "http://www.w3.org/2001/XMLSchema-instance")
-    protected QName type;
+    protected QualifiedName type;
 
     
     public TypedValue() {
     }
     
-    public TypedValue(Object val, QName xsdType) {
+    public TypedValue(Object val, QualifiedName xsdType) {
  	this.value = val;
  	this.type = xsdType;
      }
@@ -82,9 +86,9 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
             }
         }
         {
-            QName lhsType;
+            QualifiedName lhsType;
             lhsType = this.getType();
-            QName rhsType;
+            QualifiedName rhsType;
             rhsType = that.getType();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "type", lhsType), LocatorUtils.property(thatLocator, "type", rhsType), lhsType, rhsType)) {
                 return false;
@@ -100,24 +104,19 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
 
 
 
-    @Transient
-    public QName getType() {
+    
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "TYPE")
+    public QualifiedName getType() {
 	return type;
     }
 
-    public void setType(QName type) {
+    public void setType(QualifiedName type) {
 	this.type=type;
     }
-    @Basic
-    @Column(name = "XSDTYPE")
-    public String getTypeItem() { 
-	if (type==null) return null;
-	return Helper2.QNameToString(type);
-    }
-
-    public void setTypeItem(String name) {
-	if (name!=null) type=Helper2.stringToQName(name);
-    }
+   
 
     
 
@@ -138,7 +137,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
 				@Override
 				public Object newQName(String value) {
 				    System.out.println("QNameConstructo.newQName() " + value);
-					return new QName(value); //FIXME
+					return ProvFactory.getFactory().newQualifiedName("",value,null); //FIXME
 				}
     	
     });
@@ -165,8 +164,6 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     			//System.out.println("##---> getValueItem() reading found " + avalue);
     		} else if (value instanceof InternationalizedString) {
     			avalue=SQLValueConverter.convertToAValue(type,  ((InternationalizedString) value).getValue());
-    		} else if (value instanceof QName) {
-    			avalue=SQLValueConverter.convertToAValue(type,  (QName) value);
     		} else if (value instanceof org.openprovenance.prov.model.QualifiedName) {
     			avalue=SQLValueConverter.convertToAValue(type,  (QualifiedName) value);
     		} else {
@@ -226,7 +223,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "value", theValue), currentHashCode, theValue);
         }
         {
-            QName theType;
+            QualifiedName theType;
             theType = this.getType();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "type", theType), currentHashCode, theType);
         }
@@ -260,6 +257,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
         return valueAsJava;
     }
 
+    Name name=org.openprovenance.prov.sql.ProvFactory.getFactory().getName();
 
     
     /** Converts a byte array in base64 or hexadecimal according to specified type. 
@@ -268,9 +266,9 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      */
 
     public void setValueAsJava(final byte[] bytes) {
-	if (type.equals(Name.QNAME_XSD_BASE64_BINARY)) {
+	if (type.equals(name.QNAME_XSD_BASE64_BINARY)) {
 	    this.value=ProvFactory.getFactory().base64Encoding(bytes);
-	} else if (type.equals(Name.QNAME_XSD_HEX_BINARY)) {
+	} else if (type.equals(name.QNAME_XSD_HEX_BINARY)) {
 	    this.value=ProvFactory.getFactory().hexEncoding(bytes);
 	}
     }
@@ -302,9 +300,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      */
     public void setValueAsObject(Object valueAsJava) {
  	if ((valueAsJava!=null) && (value==null)) {
- 	    if (valueAsJava instanceof QName) {
- 		this.value=valueAsJava;
- 	    } else if (valueAsJava instanceof QualifiedName) { 
+ 	    if (valueAsJava instanceof QualifiedName) { 
  		this.value=valueAsJava;
  	    } else if (valueAsJava instanceof InternationalizedString) { 
  		this.value=valueAsJava;
@@ -336,13 +332,13 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     
 
     
-    public QName getQName(AttributeKind kind) {
+    public QualifiedName getQName(AttributeKind kind) {
         switch (kind) {
-        case  PROV_TYPE: return Name.QNAME_PROV_TYPE;
-        case  PROV_LABEL: return Name.QNAME_PROV_LABEL;
-        case  PROV_VALUE: return Name.QNAME_PROV_VALUE;
-        case  PROV_LOCATION: return Name.QNAME_PROV_LOCATION;
-        case  PROV_ROLE: return Name.QNAME_PROV_ROLE;
+        case  PROV_TYPE: return name.QNAME_PROV_TYPE;
+        case  PROV_LABEL: return name.QNAME_PROV_LABEL;
+        case  PROV_VALUE: return name.QNAME_PROV_VALUE;
+        case  PROV_LOCATION: return name.QNAME_PROV_LOCATION;
+        case  PROV_ROLE: return name.QNAME_PROV_ROLE;
         case OTHER:
         default: 
                 return null;
@@ -353,12 +349,12 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      * @see org.openprovenance.prov.xml.AttrIN#getAttributeKind(javax.xml.namespace.QName)
      */
     
-    public AttributeKind getAttributeKind(QName q) {
-        if (q.equals(Name.QNAME_PROV_TYPE)) return AttributeKind.PROV_TYPE;
-        if (q.equals(Name.QNAME_PROV_LABEL)) return AttributeKind.PROV_LABEL;
-        if (q.equals(Name.QNAME_PROV_VALUE)) return AttributeKind.PROV_VALUE;
-        if (q.equals(Name.QNAME_PROV_LOCATION)) return AttributeKind.PROV_LOCATION;
-        if (q.equals(Name.QNAME_PROV_ROLE)) return AttributeKind.PROV_ROLE;
+    public AttributeKind getAttributeKind(QualifiedName q) {
+        if (q.equals(name.QNAME_PROV_TYPE)) return AttributeKind.PROV_TYPE;
+        if (q.equals(name.QNAME_PROV_LABEL)) return AttributeKind.PROV_LABEL;
+        if (q.equals(name.QNAME_PROV_VALUE)) return AttributeKind.PROV_VALUE;
+        if (q.equals(name.QNAME_PROV_LOCATION)) return AttributeKind.PROV_LOCATION;
+        if (q.equals(name.QNAME_PROV_ROLE)) return AttributeKind.PROV_ROLE;
         return AttributeKind.OTHER;
     }
 

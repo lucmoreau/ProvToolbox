@@ -1,112 +1,114 @@
 package org.openprovenance.prov.sql;
 import org.openprovenance.prov.model.Name;
+import org.openprovenance.prov.model.QualifiedName;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 
 public class SQLValueConverter {
+    
+    static Name name=ProvFactory.getFactory().getName();
 
-    static public AValue convertToAValue(QName datatype, Object value) {
-	if (datatype.equals(Name.QNAME_XSD_STRING)) {
+    static public AValue convertToAValue(QualifiedName datatype, Object value) {
+	if (datatype.equals(name.QNAME_XSD_STRING)) {
 	    AValue res=new AValue();
 	    res.setString((String) value);
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_INT)) {
+	if (datatype.equals(name.QNAME_XSD_INT)) {
 	    AValue res=new AValue();
 	    res.setInt((Integer) value);
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_LONG)) {
+	if (datatype.equals(name.QNAME_XSD_LONG)) {
 	    AValue res=new AValue();
 	    res.setLong((Long) value);
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_SHORT)) {
+	if (datatype.equals(name.QNAME_XSD_SHORT)) {
 	    AValue res=new AValue();
 	    res.setShort((Short) value);
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_DOUBLE)) {
+	if (datatype.equals(name.QNAME_XSD_DOUBLE)) {
 	    AValue res=new AValue();
 	    res.setDouble((Double) value);
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_FLOAT)) {
+	if (datatype.equals(name.QNAME_XSD_FLOAT)) {
 	    AValue res=new AValue();
 	    res.setFloat((Float) value);
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_DECIMAL)) {
+	if (datatype.equals(name.QNAME_XSD_DECIMAL)) {
 	    AValue res=new AValue();
 	    res.setDecimal((java.math.BigDecimal) value);
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_BOOLEAN)) {
+	if (datatype.equals(name.QNAME_XSD_BOOLEAN)) {
 	    AValue res=new AValue();
 	    res.setBoolean((Boolean) value);
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_BYTE)) {
+	if (datatype.equals(name.QNAME_XSD_BYTE)) {
 	    AValue res=new AValue();
 	    res.setByte((Byte) value);
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_UNSIGNED_INT)) {
+	if (datatype.equals(name.QNAME_XSD_UNSIGNED_INT)) {
 	    AValue res=new AValue();
 	    res.setUnsignedInt((Long) value);
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_UNSIGNED_SHORT)) {
+	if (datatype.equals(name.QNAME_XSD_UNSIGNED_SHORT)) {
 	    AValue res=new AValue();
 	    //throw new UnsupportedOperationException();
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_UNSIGNED_BYTE)) {
+	if (datatype.equals(name.QNAME_XSD_UNSIGNED_BYTE)) {
 	    AValue res=new AValue();
 	    //throw new UnsupportedOperationException();
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_UNSIGNED_LONG)) {
+	if (datatype.equals(name.QNAME_XSD_UNSIGNED_LONG)) {
 	    AValue res=new AValue();
 	    //res.setUnsignedInt((Long) value);
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_INTEGER)) {
+	if (datatype.equals(name.QNAME_XSD_INTEGER)) {
 	    AValue res=new AValue();
 	    //throw new UnsupportedOperationException();
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_NON_NEGATIVE_INTEGER)) {
+	if (datatype.equals(name.QNAME_XSD_NON_NEGATIVE_INTEGER)) {
 	    AValue res=new AValue();
 	    //throw new UnsupportedOperationException();
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_NON_POSITIVE_INTEGER)) {
+	if (datatype.equals(name.QNAME_XSD_NON_POSITIVE_INTEGER)) {
 	    AValue res=new AValue();
 	    //throw new UnsupportedOperationException();
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_POSITIVE_INTEGER)) {
+	if (datatype.equals(name.QNAME_XSD_POSITIVE_INTEGER)) {
 	    AValue res=new AValue();
 	    //throw new UnsupportedOperationException();
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_ANY_URI)) {
+	if (datatype.equals(name.QNAME_XSD_ANY_URI)) {
 	    AValue res=new AValue();
 	    res.setAnyURI( value.toString());
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_QNAME)) {
+	if (datatype.equals(name.QNAME_XSD_QNAME)) {
 	    AValue res=new AValue();
 	    res.setQname((QualifiedName) value);
 	    return res;
 	}
-	if (datatype.equals(Name.QNAME_XSD_DATETIME)) {
+	if (datatype.equals(name.QNAME_XSD_DATETIME)) {
 	    AValue res=new AValue();
 	    res.setDateTime((XMLGregorianCalendar) value);
 	    return res;
 	}
-        if (datatype.equals(Name.QNAME_XSD_GYEAR)) {
+        if (datatype.equals(name.QNAME_XSD_GYEAR)) {
 	    AValue res=new AValue();
 	    res.setGYear((XMLGregorianCalendar) value);
 	    return res;

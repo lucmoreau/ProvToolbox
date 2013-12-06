@@ -7,15 +7,16 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 
 public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
-  
-
     
+    static {
+	pFactory = new ProvFactory();
+	name=pFactory.getName();
+    }
+      
     final PersistenceUtility u = new PersistenceUtility();
 
     public AttributeTest(String testName) {
 	super(testName);
-	pFactory = new ProvFactory();
-
 	u.setUp();
     }
 

@@ -21,15 +21,13 @@ import javax.persistence.ManyToOne;
 
 import org.openprovenance.prov.sql.AValue;
 import org.openprovenance.prov.model.InternationalizedString;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.sql.ProvFactory;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.DOMProcessing;
-import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.QNameConstructor;
 import org.openprovenance.prov.model.ValueConverter;
 
-//import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -49,6 +47,13 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 @Table(name = "TYPEDVALUE")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class TypedValue implements org.openprovenance.prov.model.TypedValue {
+    private static final QualifiedName QNAME_PROV_TYPE = ProvFactory.getFactory().getName().QNAME_PROV_TYPE;
+    private static final QualifiedName QNAME_PROV_LABEL = ProvFactory.getFactory().getName().QNAME_PROV_LABEL;
+    private static final QualifiedName QNAME_PROV_VALUE = ProvFactory.getFactory().getName().QNAME_PROV_VALUE;
+    private static final QualifiedName QNAME_PROV_LOCATION = ProvFactory.getFactory().getName().QNAME_PROV_LOCATION;
+    private static final QualifiedName QNAME_PROV_ROLE = ProvFactory.getFactory().getName().QNAME_PROV_ROLE;
+    private static final QualifiedName QNAME_XSD_HEX_BINARY = ProvFactory.getFactory().getName().QNAME_XSD_HEX_BINARY;
+    private static final QualifiedName QNAME_XSD_BASE64_BINARY = ProvFactory.getFactory().getName().QNAME_XSD_BASE64_BINARY;
     
     
     @XmlValue
@@ -115,7 +120,6 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     }
 
     public void setType(QualifiedName type) {
-	System.out.println("setType " + type + " " + type.getClass());
 	this.type=type;
     }
    
@@ -259,9 +263,6 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
         return valueAsJava;
     }
 
-    transient
-    Name name=org.openprovenance.prov.sql.ProvFactory.getFactory().getName();
-
     
     /** Converts a byte array in base64 or hexadecimal according to specified type. 
      * 
@@ -269,9 +270,9 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      */
 
     public void setValueAsJava(final byte[] bytes) {
-	if (type.equals(name.QNAME_XSD_BASE64_BINARY)) {
+	if (type.equals(QNAME_XSD_BASE64_BINARY)) {
 	    this.value=ProvFactory.getFactory().base64Encoding(bytes);
-	} else if (type.equals(name.QNAME_XSD_HEX_BINARY)) {
+	} else if (type.equals(QNAME_XSD_HEX_BINARY)) {
 	    this.value=ProvFactory.getFactory().hexEncoding(bytes);
 	}
     }
@@ -337,11 +338,11 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     
     public QualifiedName getQName(AttributeKind kind) {
         switch (kind) {
-        case  PROV_TYPE: return name.QNAME_PROV_TYPE;
-        case  PROV_LABEL: return name.QNAME_PROV_LABEL;
-        case  PROV_VALUE: return name.QNAME_PROV_VALUE;
-        case  PROV_LOCATION: return name.QNAME_PROV_LOCATION;
-        case  PROV_ROLE: return name.QNAME_PROV_ROLE;
+        case  PROV_TYPE: return QNAME_PROV_TYPE;
+        case  PROV_LABEL: return QNAME_PROV_LABEL;
+        case  PROV_VALUE: return QNAME_PROV_VALUE;
+        case  PROV_LOCATION: return QNAME_PROV_LOCATION;
+        case  PROV_ROLE: return QNAME_PROV_ROLE;
         case OTHER:
         default: 
                 return null;
@@ -353,11 +354,11 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      */
     
     public AttributeKind getAttributeKind(QualifiedName q) {
-        if (q.equals(name.QNAME_PROV_TYPE)) return AttributeKind.PROV_TYPE;
-        if (q.equals(name.QNAME_PROV_LABEL)) return AttributeKind.PROV_LABEL;
-        if (q.equals(name.QNAME_PROV_VALUE)) return AttributeKind.PROV_VALUE;
-        if (q.equals(name.QNAME_PROV_LOCATION)) return AttributeKind.PROV_LOCATION;
-        if (q.equals(name.QNAME_PROV_ROLE)) return AttributeKind.PROV_ROLE;
+        if (q.equals(QNAME_PROV_TYPE)) return AttributeKind.PROV_TYPE;
+        if (q.equals(QNAME_PROV_LABEL)) return AttributeKind.PROV_LABEL;
+        if (q.equals(QNAME_PROV_VALUE)) return AttributeKind.PROV_VALUE;
+        if (q.equals(QNAME_PROV_LOCATION)) return AttributeKind.PROV_LOCATION;
+        if (q.equals(QNAME_PROV_ROLE)) return AttributeKind.PROV_ROLE;
         return AttributeKind.OTHER;
     }
 

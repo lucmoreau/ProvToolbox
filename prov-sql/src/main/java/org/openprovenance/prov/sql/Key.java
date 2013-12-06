@@ -7,7 +7,6 @@ import javax.persistence.Transient;
 
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.QualifiedName;
-import javax.xml.namespace.QName;
 
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
@@ -20,10 +19,8 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Key", namespace = "http://www.w3.org/ns/prov#")
-//@XmlJavaTypeAdapter(LocationAdapter.class)
 @javax.persistence.Entity(name = "Key")
 @Table(name = "KEY")
-// @Inheritance(strategy = InheritanceType.JOINED)
 public class Key extends TypedValue implements Equals, HashCode, org.openprovenance.prov.model.Key,
 	org.openprovenance.prov.model.Attribute {
 

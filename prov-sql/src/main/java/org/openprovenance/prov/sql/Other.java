@@ -1,8 +1,6 @@
 package org.openprovenance.prov.sql;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
@@ -21,7 +19,6 @@ import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.QualifiedName;
-import javax.xml.namespace.QName;
 
 
 /**

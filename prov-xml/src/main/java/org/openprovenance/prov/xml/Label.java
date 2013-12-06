@@ -3,13 +3,10 @@ package org.openprovenance.prov.xml;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.HashCode;
 import org.jvnet.jaxb2_commons.lang.ToString;
 import org.openprovenance.prov.model.DOMProcessing;
-import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.QualifiedName;
 
 

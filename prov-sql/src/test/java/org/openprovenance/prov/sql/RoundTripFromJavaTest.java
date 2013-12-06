@@ -30,6 +30,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 
     static {
 	pFactory = new ProvFactory();
+	name=pFactory.getName();
     }
 	private DocumentEquality documentEquality;
 

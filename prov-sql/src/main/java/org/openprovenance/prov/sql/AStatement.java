@@ -71,7 +71,7 @@ public class AStatement
     implements Equals, HashCode, StatementOrBundle
 {
 
-    @XmlAttribute(name = "Hjid")
+    @XmlAttribute(name = "pk")
     protected Long hjid;
 
     /**

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Hashtable;
 import java.net.URI;
 import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
 
 
 import junit.framework.TestCase;
@@ -42,13 +41,10 @@ public class ContextualizationPC1Test extends TestCase {
     public static final String EX_PREFIX = "ex";
 
 
-    public static ProvFactory pFactory;
+    public static ProvFactory pFactory=new ProvFactory();
+    public static Name name=pFactory.getName();
     static final ProvUtilities util=new ProvUtilities();
     public static ValueConverter vconv;
-
-    static {
-	pFactory = new ProvFactory();
-    }
 
     /**
      * Create the test case
@@ -87,7 +83,7 @@ public class ContextualizationPC1Test extends TestCase {
     static String FILE_LOCATION = "/shomewhere/pc1/";
     static String URL_LOCATION = "http://www.ipaw.info/challenge/";
 
-    static QName PRIMITIVE_ALIGN_WARP = new QName(PRIM_NS, "align_warp");
+    static QualifiedName PRIMITIVE_ALIGN_WARP = pFactory.newQualifiedName(PRIM_NS, "align_warp",null);
     static URI PRIMITIVE_RESLICE = URI
 	    .create("http://openprovenance.org/primitives#reslice");
     static URI PRIMITIVE_SOFTMEAN = URI
@@ -98,9 +94,6 @@ public class ContextualizationPC1Test extends TestCase {
 	    .create("http://openprovenance.org/primitives#slicer");
 
 
-    public QName qq(String n) {
-	return new QName(EX_NS, n, EX_PREFIX);
-    }
     public QualifiedName q(String n) {
 	return new org.openprovenance.prov.xml.QualifiedName(EX_NS, n, EX_PREFIX);
     }
@@ -149,7 +142,7 @@ public class ContextualizationPC1Test extends TestCase {
 	Entity bunEntity = pFactory.newEntity(bun.getId());
 	Entity a = pFactory.newEntity(new org.openprovenance.prov.xml.QualifiedName(EX_NS, globalA1.getId().getLocalPart(),null));
 	MentionOf ctx = pFactory.newMentionOf(a.getId(), globalA1.getId(), bunEntity.getId());
-	a.getOther().add(pFactory.newOther(DOT_NS, DOT_PREFIX, "color", "blue", Name.QNAME_XSD_STRING));
+	a.getOther().add(pFactory.newOther(DOT_NS, DOT_PREFIX, "color", "blue", name.QNAME_XSD_STRING));
 
 	graph.getStatementOrBundle().add(bunEntity);
 	graph.getStatementOrBundle().add(a);
@@ -171,12 +164,12 @@ public class ContextualizationPC1Test extends TestCase {
     
     public void addValue(HasOther p1, String val) {
 	p1.getOther().add(pFactory.newOther(PC1_NS, "value", PC1_PREFIX, val, 
-	                                     org.openprovenance.prov.model.Name.QNAME_XSD_STRING));
+	                                     name.QNAME_XSD_STRING));
     }
 
     public void addUrl(HasOther p1, String val) {
 	p1.getOther().add(pFactory.newOther(PC1_NS, "url", PC1_PREFIX, val, 
-	                                     org.openprovenance.prov.model.Name.QNAME_XSD_STRING));
+	                                     name.QNAME_XSD_STRING));
     }
 
     
@@ -186,7 +179,7 @@ public class ContextualizationPC1Test extends TestCase {
     
     public Used newUsed(QualifiedName activity, String role, QualifiedName entity){
 	Used u1 = pFactory.newUsed(activity, entity);
-	u1.getRole().add(pFactory.newRole(role,org.openprovenance.prov.model.Name.QNAME_XSD_STRING));
+	u1.getRole().add(pFactory.newRole(role,name.QNAME_XSD_STRING));
 	return u1;
 	
     }
@@ -206,28 +199,28 @@ public class ContextualizationPC1Test extends TestCase {
 	Activity p1 = pFactory.newActivity(q("p1"), "align_warp 1");
 	List<Type> o = p1.getType();
 
-	o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,Name.QNAME_XSD_ANY_URI));
+	o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,name.QNAME_XSD_ANY_URI));
 
-	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, Name.QNAME_XSD_ANY_URI);
-	pFactory.addType(p1, 10, Name.QNAME_XSD_INT);
-	pFactory.addType(p1, -10, Name.QNAME_XSD_INT);
-	pFactory.addType(p1, -10.55, Name.QNAME_XSD_FLOAT);
-	pFactory.addType(p1, "abc", Name.QNAME_XSD_STRING);
-	pFactory.addType(p1, true, Name.QNAME_XSD_BOOLEAN);
+	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p1, 10, name.QNAME_XSD_INT);
+	pFactory.addType(p1, -10, name.QNAME_XSD_INT);
+	pFactory.addType(p1, -10.55, name.QNAME_XSD_FLOAT);
+	pFactory.addType(p1, "abc", name.QNAME_XSD_STRING);
+	pFactory.addType(p1, true, name.QNAME_XSD_BOOLEAN);
 	pFactory.addType(p1, URI.create("http://www.example.com/hi"));
 
 	Activity p2 = pFactory.newActivity(q("p2"), "align_warp 2");
-	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, name.QNAME_XSD_ANY_URI);
 
 	Activity p3 = pFactory.newActivity(q("p3"), "align_warp 3");
-	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP, name.QNAME_XSD_ANY_URI);
 
 	Activity p4 = pFactory.newActivity(q("p4"), "align_warp 4");
 
-	pFactory.addType(p4, PRIMITIVE_ALIGN_WARP, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p4, PRIMITIVE_ALIGN_WARP, name.QNAME_XSD_ANY_URI);
 
 	Activity p5 = pFactory.newActivity(q("p5"), "Reslice 1");
-	pFactory.addType(p5, PRIMITIVE_RESLICE, Name.QNAME_XSD_ANY_URI);
+	pFactory.addType(p5, PRIMITIVE_RESLICE, name.QNAME_XSD_ANY_URI);
 
 	Activity p6 = pFactory.newActivity(q("p6"), "Reslice 2");
 	pFactory.addType(p6, PRIMITIVE_RESLICE);

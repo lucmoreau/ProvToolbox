@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
@@ -32,7 +31,6 @@ import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.HasValue;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.MentionOf;
-import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Role;
@@ -65,6 +63,7 @@ public class RoundTripFromJavaTest extends TestCase {
     static final ProvUtilities util = new ProvUtilities();
 
     public static org.openprovenance.prov.model.ProvFactory pFactory = new ProvFactory();
+    public static org.openprovenance.prov.model.Name name = pFactory.getName();
 
     private DocumentEquality documentEquality;
 
@@ -321,100 +320,100 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void addTypes(HasType ht) {
-        ht.getType().add(pFactory.newType("a", Name.QNAME_XSD_STRING));
-        ht.getType().add(pFactory.newType(1, Name.QNAME_XSD_INT));
-        ht.getType().add(pFactory.newType(1.0, Name.QNAME_XSD_FLOAT));
-        ht.getType().add(pFactory.newType(true, Name.QNAME_XSD_STRING));
+        ht.getType().add(pFactory.newType("a", name.QNAME_XSD_STRING));
+        ht.getType().add(pFactory.newType(1, name.QNAME_XSD_INT));
+        ht.getType().add(pFactory.newType(1.0, name.QNAME_XSD_FLOAT));
+        ht.getType().add(pFactory.newType(true, name.QNAME_XSD_STRING));
         ht.getType().add(pFactory.newType(pFactory.newQualifiedName(EX_NS, "abc", EX_PREFIX),
-                                          Name.QNAME_XSD_QNAME));
+                                          name.QNAME_XSD_QNAME));
         ht.getType().add(pFactory.newType(pFactory.newTimeNow(),
-                                          Name.QNAME_XSD_DATETIME));
+                                          name.QNAME_XSD_DATETIME));
 
         ht.getType().add(pFactory.newType(EX_NS + "hello",
-                                          Name.QNAME_XSD_ANY_URI));
+                                          name.QNAME_XSD_ANY_URI));
     }
 
     public void addLocations(HasLocation hl) {
         hl.getLocation().add(pFactory.newLocation("London",
-                                                  Name.QNAME_XSD_STRING));
-        hl.getLocation().add(pFactory.newLocation(1, Name.QNAME_XSD_INT));
-        hl.getLocation().add(pFactory.newLocation(1.0, Name.QNAME_XSD_FLOAT));
+                                                  name.QNAME_XSD_STRING));
+        hl.getLocation().add(pFactory.newLocation(1, name.QNAME_XSD_INT));
+        hl.getLocation().add(pFactory.newLocation(1.0, name.QNAME_XSD_FLOAT));
         hl.getLocation()
-          .add(pFactory.newLocation(true, Name.QNAME_XSD_BOOLEAN));
+          .add(pFactory.newLocation(true, name.QNAME_XSD_BOOLEAN));
         hl.getLocation().add(pFactory.newLocation(pFactory.newQualifiedName(EX_NS, "london",
                                                             EX_PREFIX),
-                                                  Name.QNAME_XSD_QNAME));
+                                                  name.QNAME_XSD_QNAME));
         hl.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),
-                                                  Name.QNAME_XSD_DATETIME));
+                                                  name.QNAME_XSD_DATETIME));
         hl.getLocation().add(pFactory.newLocation(EX_NS + "london",
-                                                  Name.QNAME_XSD_ANY_URI));
+                                                  name.QNAME_XSD_ANY_URI));
         hl.getLocation().add(pFactory.newLocation(pFactory.newGYear(2002),
-                                                  Name.QNAME_XSD_GYEAR));
+                                                  name.QNAME_XSD_GYEAR));
     }
 
     public void addValue(HasValue hl) {
         hl.setValue(pFactory.newValue(pFactory.newQualifiedName(EX_NS, "avalue", EX_PREFIX),
-                                      Name.QNAME_XSD_QNAME));
+                                      name.QNAME_XSD_QNAME));
     }
 
     public void addFurtherAttributes(HasOther he) {
         he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX, "hello",
-                                            Name.QNAME_XSD_STRING));
+                                            name.QNAME_XSD_STRING));
         he.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "bye",
-                                            Name.QNAME_XSD_STRING));
+                                            name.QNAME_XSD_STRING));
         // he.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX,
         // pFactory.newInternationalizedString("bonjour","fr"), "xsd:string"));
         he.getOther().add(pFactory.newOther(EX2_NS, "tag3", EX2_PREFIX, "hi",
-                                            Name.QNAME_XSD_STRING));
+                                            name.QNAME_XSD_STRING));
         he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX,
                                             "hello\nover\nmore\nlines",
-                                            Name.QNAME_XSD_STRING));
+                                            name.QNAME_XSD_STRING));
 
     }
 
     public void addFurtherAttributes0(HasOther he) {
         he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX, "hello",
-                                            Name.QNAME_XSD_STRING));
+                                            name.QNAME_XSD_STRING));
         he.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "bye",
-                                            Name.QNAME_XSD_STRING));
+                                            name.QNAME_XSD_STRING));
         he.getOther()
           .add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX,
                                  pFactory.newInternationalizedString("bonjour",
                                                                      "fr"),
-                                 Name.QNAME_XSD_STRING));
+                                 name.QNAME_XSD_STRING));
         he.getOther().add(pFactory.newOther(EX2_NS, "tag3", EX2_PREFIX, "hi",
-                                            Name.QNAME_XSD_STRING));
+                                            name.QNAME_XSD_STRING));
 
         he.getOther()
           .add(pFactory.newOther(EX_NS, "tag", EX_PREFIX, new Integer(1),
-                                 Name.QNAME_XSD_INT));
+                                 name.QNAME_XSD_INT));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
-                                            new Long(1), Name.QNAME_XSD_LONG));
+                                            new Long(1), name.QNAME_XSD_LONG));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                                             new Short((short) 1),
-                                            Name.QNAME_XSD_SHORT));
+                                            name.QNAME_XSD_SHORT));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                                             new Double(1.0),
-                                            Name.QNAME_XSD_DOUBLE));
+                                            name.QNAME_XSD_DOUBLE));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                                             new Float(1.0),
-                                            Name.QNAME_XSD_FLOAT));
+                                            name.QNAME_XSD_FLOAT));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                                             new java.math.BigDecimal(1.0),
-                                            Name.QNAME_XSD_INTEGER));
+                                            name.QNAME_XSD_INTEGER));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                                             new Boolean(true),
-                                            Name.QNAME_XSD_BOOLEAN));
+                                            name.QNAME_XSD_BOOLEAN));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                                             new Byte((byte) 123),
-                                            Name.QNAME_XSD_BYTE));
+                                            name.QNAME_XSD_BYTE));
 
         addFurtherAttributesWithQNames(he);
 
         URIWrapper w = new URIWrapper();
         w.setValue(URI.create(EX_NS + "london"));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX, w,
-                                            Name.QNAME_XSD_ANY_URI));
+                                            name.QNAME_XSD_ANY_URI));
 
     }
 
@@ -424,24 +423,24 @@ public class RoundTripFromJavaTest extends TestCase {
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                                             pFactory.newQualifiedName(EX2_NS, "newyork",
                                                       EX2_PREFIX),
-                                            Name.QNAME_XSD_QNAME));
+                                            name.QNAME_XSD_QNAME));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                                             pFactory.newQualifiedName(EX_NS, "london",
                                                       EX_PREFIX),
-                                            Name.QNAME_XSD_QNAME));
+                                            name.QNAME_XSD_QNAME));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                                             pFactory.newQualifiedName(EX3_NS, "london",null),
-                                            Name.QNAME_XSD_QNAME));
+                                            name.QNAME_XSD_QNAME));
 
     }
 
     public void NOtestRoles() {
-        Role r1 = pFactory.newRole("otherRole", Name.QNAME_XSD_STRING);
-        Role r2 = pFactory.newRole("otherRole", Name.QNAME_XSD_STRING);
+        Role r1 = pFactory.newRole("otherRole", name.QNAME_XSD_STRING);
+        Role r2 = pFactory.newRole("otherRole", name.QNAME_XSD_STRING);
         Location l1 = pFactory.newLocation("otherLocation",
-                                           Name.QNAME_XSD_STRING);
+                                           name.QNAME_XSD_STRING);
         Location l2 = pFactory.newLocation("otherLocation",
-                                           Name.QNAME_XSD_STRING);
+                                           name.QNAME_XSD_STRING);
         System.out.println("---------------------------------------------------------------------- ");
         System.out.println("Role 1 " + r1);
         System.out.println("Role 2 " + r2);
@@ -470,20 +469,20 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testEntity0() {
         Entity a = pFactory.newEntity(q("e0"));
         a.getOther()
-         .add(pFactory.newOther(new QName(EX_NS, "tag2", EX_PREFIX),
+         .add(pFactory.newOther(pFactory.newQualifiedName(EX_NS, "tag2", EX_PREFIX),
                                 pFactory.newInternationalizedString("bonjour",
                                                                     "fr"),
-                                Name.QNAME_PROV_INTERNATIONALIZED_STRING));
+                                name.QNAME_PROV_INTERNATIONALIZED_STRING));
 
         if (test) {
 
             a.getLocation().add(pFactory.newLocation("un llieu",
-                                                     Name.QNAME_XSD_STRING));
-            a.getLocation().add(pFactory.newLocation(1, Name.QNAME_XSD_INT));
+                                                     name.QNAME_XSD_STRING));
+            a.getLocation().add(pFactory.newLocation(1, name.QNAME_XSD_INT));
             a.getLocation()
-             .add(pFactory.newLocation(2.0, Name.QNAME_XSD_DOUBLE));
+             .add(pFactory.newLocation(2.0, name.QNAME_XSD_DOUBLE));
 
-            // Name.QNAME_XSD_INT, Note this is problematic for conversion
+            // name.QNAME_XSD_INT, Note this is problematic for conversion
             // to/from rdf
 
             // THis fails
@@ -491,28 +490,28 @@ public class RoundTripFromJavaTest extends TestCase {
             /*
              * 
              * a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "abc",
-             * EX_PREFIX), Name.QNAME_XSD_QNAME));
+             * EX_PREFIX), name.QNAME_XSD_QNAME));
              * 
              * a.getLocation().add(pFactory.newLocation(new QName("http://foo/",
-             * "cde", "foo"), Name.QNAME_XSD_QNAME));
+             * "cde", "foo"), name.QNAME_XSD_QNAME));
              * 
              * 
              * a.getLocation().add(pFactory.newLocation(new QName("http://foo/",
-             * "fgh"), Name.QNAME_XSD_QNAME));
+             * "fgh"), name.QNAME_XSD_QNAME));
              */
             // URIWrapper w=new URIWrapper();
             // w.setValue(URI.create(EX_NS+"london"));
             a.getLocation().add(pFactory.newLocation(EX_NS + "london",
-                                                     Name.QNAME_XSD_ANY_URI));
+                                                     name.QNAME_XSD_ANY_URI));
 
             Location loc = pFactory.newLocation(new Long(2),
-                                                Name.QNAME_XSD_LONG);
+                                                name.QNAME_XSD_LONG);
             // FIXME: Location containing a QName does not work
-            // loc.getAttributes().put(Name.QNAME_XSD_LONG,"1");
+            // loc.getAttributes().put(name.QNAME_XSD_LONG,"1");
             a.getLocation().add(loc);
 
             // This fails because we don't get to read the type in xsi:type
-            // a.getLocation().add(pFactory.newLocation(2,Name.QNAME_XSD_UNSIGNED_INT));
+            // a.getLocation().add(pFactory.newLocation(2,name.QNAME_XSD_UNSIGNED_INT));
             // problem in prov-n parsing, since TreeTraversal.convertTypeLiteral
             // generate a java value without type!
         }
@@ -703,17 +702,17 @@ public class RoundTripFromJavaTest extends TestCase {
         a.getLabel().add(pFactory.newInternationalizedString("bye", "en"));
         a.getLabel().add(pFactory.newInternationalizedString("bonjour", "fr"));
         a.getLocation().add(pFactory.newLocation("London",
-                                                 Name.QNAME_XSD_STRING));
-        a.getLocation().add(pFactory.newLocation(1, Name.QNAME_XSD_INT));
-        a.getLocation().add(pFactory.newLocation(1.0, Name.QNAME_XSD_FLOAT));
-        a.getLocation().add(pFactory.newLocation(true, Name.QNAME_XSD_BOOLEAN));
+                                                 name.QNAME_XSD_STRING));
+        a.getLocation().add(pFactory.newLocation(1, name.QNAME_XSD_INT));
+        a.getLocation().add(pFactory.newLocation(1.0, name.QNAME_XSD_FLOAT));
+        a.getLocation().add(pFactory.newLocation(true, name.QNAME_XSD_BOOLEAN));
         // a.getLocation().add(pFactory.newLocation(new QName(EX_NS, "london",
         // EX_PREFIX),vconv));
         a.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),
-                                                 Name.QNAME_XSD_DATETIME));
+                                                 name.QNAME_XSD_DATETIME));
         URIWrapper w = new URIWrapper();
         w.setValue(URI.create(EX_NS + "london"));
-        a.getLocation().add(pFactory.newLocation(w, Name.QNAME_XSD_ANY_URI));
+        a.getLocation().add(pFactory.newLocation(w, name.QNAME_XSD_ANY_URI));
         makeDocAndTest(a, "target/agent7");
     }
 
@@ -759,8 +758,8 @@ public class RoundTripFromJavaTest extends TestCase {
         URIWrapper w2 = new URIWrapper();
         w2.setValue(URI.create(EX_NS + "london"));
 
-        a.getLocation().add(pFactory.newLocation(w2, Name.QNAME_XSD_ANY_URI));
-        a.getLocation().add(pFactory.newLocation(w2, Name.QNAME_XSD_ANY_URI));
+        a.getLocation().add(pFactory.newLocation(w2, name.QNAME_XSD_ANY_URI));
+        a.getLocation().add(pFactory.newLocation(w2, name.QNAME_XSD_ANY_URI));
 
         makeDocAndTest(a, "target/agent8");
     }
@@ -792,7 +791,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testGeneration3() {
         WasGeneratedBy gen = pFactory.newWasGeneratedBy(q("gen3"), q("e1"),
                                                         "somerole", q("a1"));
-        gen.getRole().add(pFactory.newRole("otherRole", Name.QNAME_XSD_STRING));
+        gen.getRole().add(pFactory.newRole("otherRole", name.QNAME_XSD_STRING));
         makeDocAndTest(gen, "target/generation3");
     }
 
@@ -848,7 +847,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testUsage3() {
         Used use = pFactory.newUsed(q("use3"), q("a1"), "somerole", q("e1"));
-        use.getRole().add(pFactory.newRole("otherRole", Name.QNAME_XSD_STRING));
+        use.getRole().add(pFactory.newRole("otherRole", name.QNAME_XSD_STRING));
 
         makeDocAndTest(use, "target/usage3");
     }
@@ -907,15 +906,15 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testInvalidation3() {
         WasInvalidatedBy inv = pFactory.newWasInvalidatedBy(q("inv3"), q("e1"),
                                                             q("a1"));
-        inv.getRole().add(pFactory.newRole("someRole", Name.QNAME_XSD_STRING));
-        inv.getRole().add(pFactory.newRole("otherRole", Name.QNAME_XSD_STRING));
+        inv.getRole().add(pFactory.newRole("someRole", name.QNAME_XSD_STRING));
+        inv.getRole().add(pFactory.newRole("otherRole", name.QNAME_XSD_STRING));
         makeDocAndTest(inv, "target/invalidation3");
     }
 
     public void testInvalidation4() {
         WasInvalidatedBy inv = pFactory.newWasInvalidatedBy(q("inv4"), q("e1"),
                                                             q("a1"));
-        inv.getRole().add(pFactory.newRole("someRole", Name.QNAME_XSD_STRING));
+        inv.getRole().add(pFactory.newRole("someRole", name.QNAME_XSD_STRING));
         inv.setTime(pFactory.newTimeNow());
         makeDocAndTest(inv, "target/invalidation4");
     }
@@ -923,7 +922,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testInvalidation5() {
         WasInvalidatedBy inv = pFactory.newWasInvalidatedBy(q("inv4"), q("e1"),
                                                             q("a1"));
-        inv.getRole().add(pFactory.newRole("someRole", Name.QNAME_XSD_STRING));
+        inv.getRole().add(pFactory.newRole("someRole", name.QNAME_XSD_STRING));
         inv.setTime(pFactory.newTimeNow());
         addTypes(inv);
         addLocations(inv);
@@ -943,7 +942,7 @@ public class RoundTripFromJavaTest extends TestCase {
     public void testInvalidation7() {
         WasInvalidatedBy inv = pFactory.newWasInvalidatedBy((QualifiedName) null,
                                                             q("e1"), q("a1"));
-        inv.getRole().add(pFactory.newRole("someRole", Name.QNAME_XSD_STRING));
+        inv.getRole().add(pFactory.newRole("someRole", name.QNAME_XSD_STRING));
         inv.setTime(pFactory.newTimeNow());
         addTypes(inv);
         addLocations(inv);
@@ -1015,9 +1014,9 @@ public class RoundTripFromJavaTest extends TestCase {
         start.setStarter(q("a2"));
         start.setTime(pFactory.newTimeNow());
         start.getRole()
-             .add(pFactory.newRole("someRole", Name.QNAME_XSD_STRING));
+             .add(pFactory.newRole("someRole", name.QNAME_XSD_STRING));
         start.getRole()
-             .add(pFactory.newRole("otherRole", Name.QNAME_XSD_STRING));
+             .add(pFactory.newRole("otherRole", name.QNAME_XSD_STRING));
         addTypes(start);
         addLocations(start);
         addLabels(start);
@@ -1039,9 +1038,9 @@ public class RoundTripFromJavaTest extends TestCase {
         start.setStarter(q("a2"));
         start.setTime(pFactory.newTimeNow());
         start.getRole()
-             .add(pFactory.newRole("someRole", Name.QNAME_XSD_STRING));
+             .add(pFactory.newRole("someRole", name.QNAME_XSD_STRING));
         start.getRole()
-             .add(pFactory.newRole("otherRole", Name.QNAME_XSD_STRING));
+             .add(pFactory.newRole("otherRole", name.QNAME_XSD_STRING));
         addTypes(start);
         addLocations(start);
         addLabels(start);
@@ -1103,8 +1102,8 @@ public class RoundTripFromJavaTest extends TestCase {
         WasEndedBy end = pFactory.newWasEndedBy(q("end8"), q("a1"), null);
         end.setEnder(q("a2"));
         end.setTime(pFactory.newTimeNow());
-        end.getRole().add(pFactory.newRole("someRole", Name.QNAME_XSD_STRING));
-        end.getRole().add(pFactory.newRole("otherRole", Name.QNAME_XSD_STRING));
+        end.getRole().add(pFactory.newRole("someRole", name.QNAME_XSD_STRING));
+        end.getRole().add(pFactory.newRole("otherRole", name.QNAME_XSD_STRING));
         addTypes(end);
         addLocations(end);
         addLabels(end);
@@ -1125,8 +1124,8 @@ public class RoundTripFromJavaTest extends TestCase {
                                                 null);
         end.setEnder(q("a2"));
         end.setTime(pFactory.newTimeNow());
-        end.getRole().add(pFactory.newRole("someRole", Name.QNAME_XSD_STRING));
-        end.getRole().add(pFactory.newRole("otherRole", Name.QNAME_XSD_STRING));
+        end.getRole().add(pFactory.newRole("someRole", name.QNAME_XSD_STRING));
+        end.getRole().add(pFactory.newRole("otherRole", name.QNAME_XSD_STRING));
         addTypes(end);
         addLocations(end);
         addLabels(end);
@@ -1304,9 +1303,9 @@ public class RoundTripFromJavaTest extends TestCase {
                                                                 q("ag1"));
         assoc.setPlan(q("plan1"));
         assoc.getRole()
-             .add(pFactory.newRole("someRole", Name.QNAME_XSD_STRING));
+             .add(pFactory.newRole("someRole", name.QNAME_XSD_STRING));
         assoc.getRole().add(pFactory.newRole("someOtherRole",
-                                             Name.QNAME_XSD_STRING));
+                                             name.QNAME_XSD_STRING));
         makeDocAndTest(assoc, "target/association8");
     }
 
@@ -1599,7 +1598,7 @@ public class RoundTripFromJavaTest extends TestCase {
         
         
         gen1.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX,
-                                              "hello-scruff-gen2", Name.QNAME_XSD_STRING));
+                                              "hello-scruff-gen2", name.QNAME_XSD_STRING));
                  
         
         WasGeneratedBy gen2 = pFactory.newWasGeneratedBy(q("gen1"), 
@@ -1611,7 +1610,7 @@ public class RoundTripFromJavaTest extends TestCase {
         
         
         gen2.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "hi-scruff-gen2",
-                                              Name.QNAME_XSD_STRING));
+                                              name.QNAME_XSD_STRING));
                                               
                 
         Entity e1 = pFactory.newEntity(q("e1"));
@@ -1640,13 +1639,13 @@ public class RoundTripFromJavaTest extends TestCase {
                                                              q("e1"), q("a1"));
         inv1.setTime(pFactory.newTimeNow());
         inv1.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX,
-                                              "hello", Name.QNAME_XSD_STRING));
+                                              "hello", name.QNAME_XSD_STRING));
 
         WasInvalidatedBy inv2 = pFactory.newWasInvalidatedBy(q("inv1"),
                                                              q("e1"), q("a1"));
         inv2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));
         inv2.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "hi",
-                                              Name.QNAME_XSD_STRING));
+                                              name.QNAME_XSD_STRING));
 
         Entity e1 = pFactory.newEntity(q("e1"));
         Activity a1 = pFactory.newActivity(q("a1"));
@@ -1671,12 +1670,12 @@ public class RoundTripFromJavaTest extends TestCase {
         Used use1 = pFactory.newUsed(q("use1"), q("a1"), null, q("e1"));
         use1.setTime(pFactory.newTimeNow());
         use1.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX,
-                                              "hello", Name.QNAME_XSD_STRING));
+                                              "hello", name.QNAME_XSD_STRING));
 
         Used use2 = pFactory.newUsed(q("use1"), q("a1"), null, q("e1"));
         use2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));
         use2.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "hi",
-                                              Name.QNAME_XSD_STRING));
+                                              name.QNAME_XSD_STRING));
 
         Entity e1 = pFactory.newEntity(q("e1"));
         Activity a1 = pFactory.newActivity(q("a1"));
@@ -1707,13 +1706,13 @@ public class RoundTripFromJavaTest extends TestCase {
         start1.setTime(pFactory.newTimeNow());
         start1.getOther()
               .add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "hello",
-                                     Name.QNAME_XSD_STRING));
+                                     name.QNAME_XSD_STRING));
 
         WasStartedBy start2 = pFactory.newWasStartedBy(q("start1"), q("a1"),
                                                        q("e1"));
         start2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));
         start2.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "hi",
-                                                Name.QNAME_XSD_STRING));
+                                                name.QNAME_XSD_STRING));
 
         Entity e1 = pFactory.newEntity(q("e1"));
         Activity a1 = pFactory.newActivity(q("a1"));
@@ -1728,14 +1727,14 @@ public class RoundTripFromJavaTest extends TestCase {
         start1.setTime(pFactory.newTimeNow());
         start1.getOther()
               .add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "hello",
-                                     Name.QNAME_XSD_STRING));
+                                     name.QNAME_XSD_STRING));
         start1.setStarter(q("a1s"));
 
         WasStartedBy start2 = pFactory.newWasStartedBy(q("start1"), q("a1"),
                                                        q("e1"));
         start2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));
         start2.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "hi",
-                                                Name.QNAME_XSD_STRING));
+                                                name.QNAME_XSD_STRING));
         start2.setStarter(q("a2s"));
 
         Entity e1 = pFactory.newEntity(q("e1"));
@@ -1753,14 +1752,14 @@ public class RoundTripFromJavaTest extends TestCase {
         start1.setTime(pFactory.newTimeNow());
         start1.getOther()
               .add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "hello",
-                                     Name.QNAME_XSD_STRING));
+                                     name.QNAME_XSD_STRING));
         start1.setStarter(q("a1s"));
 
         WasStartedBy start2 = pFactory.newWasStartedBy(q("start1"), q("a2"),
                                                        q("e2"));
         start2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));
         start2.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "hi",
-                                                Name.QNAME_XSD_STRING));
+                                                name.QNAME_XSD_STRING));
         start2.setStarter(q("a2s"));
 
         Entity e1 = pFactory.newEntity(q("e1"));
@@ -1792,12 +1791,12 @@ public class RoundTripFromJavaTest extends TestCase {
         WasEndedBy end1 = pFactory.newWasEndedBy(q("end1"), q("a1"), q("e1"));
         end1.setTime(pFactory.newTimeNow());
         end1.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX,
-                                              "hello", Name.QNAME_XSD_STRING));
+                                              "hello", name.QNAME_XSD_STRING));
 
         WasEndedBy end2 = pFactory.newWasEndedBy(q("end1"), q("a1"), q("e1"));
         end2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));
         end2.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "hi",
-                                              Name.QNAME_XSD_STRING));
+                                              name.QNAME_XSD_STRING));
 
         Entity e1 = pFactory.newEntity(q("e1"));
         Activity a1 = pFactory.newActivity(q("a1"));
@@ -1810,13 +1809,13 @@ public class RoundTripFromJavaTest extends TestCase {
         WasEndedBy end1 = pFactory.newWasEndedBy(q("end1"), q("a1"), q("e1"));
         end1.setTime(pFactory.newTimeNow());
         end1.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX,
-                                              "hello", Name.QNAME_XSD_STRING));
+                                              "hello", name.QNAME_XSD_STRING));
         end1.setEnder(q("a1s"));
 
         WasEndedBy end2 = pFactory.newWasEndedBy(q("end1"), q("a1"), q("e1"));
         end2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));
         end2.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "hi",
-                                              Name.QNAME_XSD_STRING));
+                                              name.QNAME_XSD_STRING));
         end2.setEnder(q("a2s"));
 
         Entity e1 = pFactory.newEntity(q("e1"));
@@ -1832,13 +1831,13 @@ public class RoundTripFromJavaTest extends TestCase {
         WasEndedBy end1 = pFactory.newWasEndedBy(q("end1"), q("a1"), q("e1"));
         end1.setTime(pFactory.newTimeNow());
         end1.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX,
-                                              "hello", Name.QNAME_XSD_STRING));
+                                              "hello", name.QNAME_XSD_STRING));
         end1.setEnder(q("a1s"));
 
         WasEndedBy end2 = pFactory.newWasEndedBy(q("end1"), q("a2"), q("e2"));
         end2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));
         end2.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "hi",
-                                              Name.QNAME_XSD_STRING));
+                                              name.QNAME_XSD_STRING));
         end2.setEnder(q("a2s"));
 
         Entity e1 = pFactory.newEntity(q("e1"));
@@ -1995,7 +1994,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testDictionaryInsertion3() {
         List<org.openprovenance.prov.model.Entry> ll = new LinkedList<Entry>();
-        Entry p1 = pFactory.newEntry(pFactory.newKey("a", Name.QNAME_XSD_STRING),
+        Entry p1 = pFactory.newEntry(pFactory.newKey("a", name.QNAME_XSD_STRING),
                                      q("e0"));
 
         ll.add(p1);
@@ -2012,11 +2011,11 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testDictionaryInsertion4() {
         List<org.openprovenance.prov.model.Entry> ll = new LinkedList<Entry>();
-        Entry p1 = pFactory.newEntry(pFactory.newKey("a", Name.QNAME_XSD_STRING),
+        Entry p1 = pFactory.newEntry(pFactory.newKey("a", name.QNAME_XSD_STRING),
                                      q("e0"));
 
         ll.add(p1);
-        Entry p2 = pFactory.newEntry(pFactory.newKey(1, Name.QNAME_XSD_INT),
+        Entry p2 = pFactory.newEntry(pFactory.newKey(1, name.QNAME_XSD_INT),
                                      q("e1"));
 
         ll.add(p2);
@@ -2032,16 +2031,16 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testDictionaryInsertion5() {
         List<org.openprovenance.prov.model.Entry> ll = new LinkedList<Entry>();
-        Entry p1 = pFactory.newEntry(pFactory.newKey("a", Name.QNAME_XSD_STRING),
+        Entry p1 = pFactory.newEntry(pFactory.newKey("a", name.QNAME_XSD_STRING),
                                      q("e0"));
 
         ll.add(p1);
-        Entry p2 = pFactory.newEntry(pFactory.newKey(1, Name.QNAME_XSD_INT),
+        Entry p2 = pFactory.newEntry(pFactory.newKey(1, name.QNAME_XSD_INT),
                                      q("e1"));
 
         ll.add(p2);
         Entry p3 = pFactory.newEntry(pFactory.newKey(q("a"),
-                                                     Name.QNAME_XSD_QNAME),
+                                                     name.QNAME_XSD_QNAME),
                                      q("e2"));
 
         ll.add(p3);
@@ -2059,16 +2058,16 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testDictionaryInsertion6() {
         List<org.openprovenance.prov.model.Entry> ll = new LinkedList<Entry>();
-        Entry p1 = pFactory.newEntry(pFactory.newKey("a", Name.QNAME_XSD_STRING),
+        Entry p1 = pFactory.newEntry(pFactory.newKey("a", name.QNAME_XSD_STRING),
                                      q("e0"));
 
         ll.add(p1);
-        Entry p2 = pFactory.newEntry(pFactory.newKey(1, Name.QNAME_XSD_INT),
+        Entry p2 = pFactory.newEntry(pFactory.newKey(1, name.QNAME_XSD_INT),
                                      q("e1"));
 
         ll.add(p2);
         Entry p3 = pFactory.newEntry(pFactory.newKey(q("a"),
-                                                     Name.QNAME_XSD_QNAME),
+                                                     name.QNAME_XSD_QNAME),
                                      q("e2"));
 
         ll.add(p3);
@@ -2085,16 +2084,16 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testDictionaryInsertion7() {
         List<org.openprovenance.prov.model.Entry> ll = new LinkedList<Entry>();
-        Entry p1 = pFactory.newEntry(pFactory.newKey("a", Name.QNAME_XSD_STRING),
+        Entry p1 = pFactory.newEntry(pFactory.newKey("a", name.QNAME_XSD_STRING),
                                      q("e0"));
 
         ll.add(p1);
-        Entry p2 = pFactory.newEntry(pFactory.newKey(1, Name.QNAME_XSD_INT),
+        Entry p2 = pFactory.newEntry(pFactory.newKey(1, name.QNAME_XSD_INT),
                                      q("e1"));
 
         ll.add(p2);
         Entry p3 = pFactory.newEntry(pFactory.newKey(q("a"),
-                                                     Name.QNAME_XSD_QNAME),
+                                                     name.QNAME_XSD_QNAME),
                                      q("e2"));
 
         ll.add(p3);
@@ -2137,7 +2136,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testDictionaryRemoval3() {
         List<org.openprovenance.prov.model.Key> ll = new LinkedList<org.openprovenance.prov.model.Key>();
-        ll.add(pFactory.newKey("a", Name.QNAME_XSD_STRING));
+        ll.add(pFactory.newKey("a", name.QNAME_XSD_STRING));
         DerivedByRemovalFrom d3 = pFactory.newDerivedByRemovalFrom(q("removal3"),
                                                                    q("d2"),
                                                                    q("d1"), ll,
@@ -2151,8 +2150,8 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testDictionaryRemoval4() {
         List<org.openprovenance.prov.model.Key> ll = new LinkedList<org.openprovenance.prov.model.Key>();
-        ll.add(pFactory.newKey("a", Name.QNAME_XSD_STRING));
-        ll.add(pFactory.newKey("1", Name.QNAME_XSD_INT));
+        ll.add(pFactory.newKey("a", name.QNAME_XSD_STRING));
+        ll.add(pFactory.newKey("1", name.QNAME_XSD_INT));
 
         DerivedByRemovalFrom d4 = pFactory.newDerivedByRemovalFrom(q("removal4"),
                                                                    q("d2"),
@@ -2166,9 +2165,9 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testDictionaryRemoval5() {
         List<org.openprovenance.prov.model.Key> ll = new LinkedList<org.openprovenance.prov.model.Key>();
-        ll.add(pFactory.newKey("a", Name.QNAME_XSD_STRING));
-        ll.add(pFactory.newKey("1", Name.QNAME_XSD_INT));
-        ll.add(pFactory.newKey(q("a"), Name.QNAME_XSD_QNAME));
+        ll.add(pFactory.newKey("a", name.QNAME_XSD_STRING));
+        ll.add(pFactory.newKey("1", name.QNAME_XSD_INT));
+        ll.add(pFactory.newKey(q("a"), name.QNAME_XSD_QNAME));
 
         DerivedByRemovalFrom d5 = pFactory.newDerivedByRemovalFrom(q("removal5"),
                                                                    q("d2"),
@@ -2194,7 +2193,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testDictionaryMembership2() {
         List<org.openprovenance.prov.model.Entry> ll = new LinkedList<Entry>();
-        Entry p1 = pFactory.newEntry(pFactory.newKey("a", Name.QNAME_XSD_STRING),
+        Entry p1 = pFactory.newEntry(pFactory.newKey("a", name.QNAME_XSD_STRING),
                                      q("e0"));
         ll.add(p1);
         DictionaryMembership d5 = pFactory.newDictionaryMembership(q("d"), ll);
@@ -2207,11 +2206,11 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testDictionaryMembership3() {
         List<org.openprovenance.prov.model.Entry> ll = new LinkedList<Entry>();
-        Entry p1 = pFactory.newEntry(pFactory.newKey("a", Name.QNAME_XSD_STRING),
+        Entry p1 = pFactory.newEntry(pFactory.newKey("a", name.QNAME_XSD_STRING),
                                      q("e0"));
 
         ll.add(p1);
-        Entry p2 = pFactory.newEntry(pFactory.newKey(1, Name.QNAME_XSD_INT),
+        Entry p2 = pFactory.newEntry(pFactory.newKey(1, name.QNAME_XSD_INT),
                                      q("e1"));
 
         ll.add(p2);
@@ -2225,16 +2224,16 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testDictionaryMembership4() {
         List<org.openprovenance.prov.model.Entry> ll = new LinkedList<Entry>();
-        Entry p1 = pFactory.newEntry(pFactory.newKey("a", Name.QNAME_XSD_STRING),
+        Entry p1 = pFactory.newEntry(pFactory.newKey("a", name.QNAME_XSD_STRING),
                                      q("e0"));
 
         ll.add(p1);
-        Entry p2 = pFactory.newEntry(pFactory.newKey(1, Name.QNAME_XSD_INT),
+        Entry p2 = pFactory.newEntry(pFactory.newKey(1, name.QNAME_XSD_INT),
                                      q("e1"));
 
         ll.add(p2);
         Entry p3 = pFactory.newEntry(pFactory.newKey(q("a"),
-                                                     Name.QNAME_XSD_QNAME),
+                                                     name.QNAME_XSD_QNAME),
                                      q("e2"));
 
         ll.add(p3);

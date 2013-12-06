@@ -18,7 +18,7 @@ import  org.antlr.runtime.tree.TreeAdaptor;
 
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.model.QNameExport;
+import org.openprovenance.prov.model.QualifiedNameExport;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Document;
 
@@ -77,9 +77,9 @@ public  class Utility {
     public String convertBeanToHTML(final Document doc) {
 	ProvFactory pFactory=new ProvFactory();
 	StringWriter writer=new StringWriter();
-	QNameExport qExport = new QNameExport() {
+	QualifiedNameExport qExport = new QualifiedNameExport() {
 	    @Override
-	    public String qnameToString(QualifiedName qname) {
+	    public String qualifiedNameToString(QualifiedName qname) {
 		return doc.getNamespace().qualifiedNameToString(qname);
 	    }
 	};
@@ -111,9 +111,9 @@ public  class Utility {
     public String convertBeanToASN(final Document doc) {
 	ProvFactory pFactory=new ProvFactory();
 	StringWriter writer=new StringWriter();
-	QNameExport qExport = new QNameExport() {
+	QualifiedNameExport qExport = new QualifiedNameExport() {
 	    @Override
-	    public String qnameToString(QualifiedName qname) {
+	    public String qualifiedNameToString(QualifiedName qname) {
 		return doc.getNamespace().qualifiedNameToString(qname);
 	    }
 	};

@@ -3,11 +3,9 @@ package org.openprovenance.prov.model;
 import java.util.Hashtable;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
 
 
 import org.openprovenance.prov.model.ProvUtilities;
-import org.openprovenance.prov.model.exception.QualifiedNameException;
 
 /** A class to manipulate Namespaces when creating, serializing and converting prov documents. 
  * @author Luc Moreau 
@@ -174,39 +172,15 @@ public class Namespace {
    	Namespace ns=gatherer.getNamespace();
    	return ns;
     }
-
-    public QName stringToQName(String id) {
-	if (id == null)
-	    return null;
-	int index = id.indexOf(':');
-	if (index == -1) {
-	    String tmp=getDefaultNamespace();
-	    if (tmp==null) throw new NullPointerException("Namespace.stringToQName(: Null namespace for "+id);
-	    return new QName(tmp, id);
-	}
-	String prefix = id.substring(0, index);
-	String local = id.substring(index + 1, id.length());
-	if ("prov".equals(prefix)) {
-	    return new QName(NamespacePrefixMapper.PROV_NS, local, prefix);
-	} else if ("xsd".equals(prefix)) {
-	    return new QName(NamespacePrefixMapper.XSD_NS, // + "#", // RDF ns ends
-								 // in #, not
-								 // XML ns.
-			     local, prefix);
-	} else {
-	    String tmp=prefixes.get(prefix);
-	    if (tmp==null) throw new NullPointerException("Namespace.stringToQName(): Null namespace for "+id);
-	    return new QName(tmp, local, prefix);
-	}
-    }
-
+    
+   
     public QualifiedName stringToQualifiedName(String id, ProvFactory pFactory) {
 	if (id == null)
 	    return null;
 	int index = id.indexOf(':');
 	if (index == -1) {
 	    String tmp=getDefaultNamespace();
-	    if (tmp==null) throw new NullPointerException("Namespace.stringToQName(: Null namespace for "+id);
+	    if (tmp==null) throw new NullPointerException("Namespace.stringToQualifiedName(: Null namespace for "+id);
 	    return pFactory.newQualifiedName(tmp, id, null);
 	}
 	String prefix = id.substring(0, index);
@@ -220,62 +194,35 @@ public class Namespace {
 			     local, prefix);
 	} else {
 	    String tmp=prefixes.get(prefix);
-	    if (tmp==null) throw new NullPointerException("Namespace.stringToQName(): Null namespace for "+id);
+	    if (tmp==null) throw new NullPointerException("Namespace.stringToQualifiedName(): Null namespace for "+id);
 	    return pFactory.newQualifiedName(tmp, local, prefix);
 	}
     }
 
 
-    static public String qnameToStringWithNamespace(QName qname) {
- 	Namespace ns=Namespace.getThreadNamespace();
- 	return ns.qnameToString(qname);
-     }
      
-    static public String qualifiedNameToStringWithNamespace(QualifiedName qname) {
+    static public String qualifiedNameToStringWithNamespace(QualifiedName name) {
  	Namespace ns=Namespace.getThreadNamespace();
- 	return ns.qualifiedNameToString(qname);
+ 	return ns.qualifiedNameToString(name);
      }
      
 
-    public String qnameToString(QName qname) {
- 	if ((getDefaultNamespace()!=null) 
- 		&& (getDefaultNamespace().equals(qname.getNamespaceURI()))) {
- 	    return qname.getLocalPart();
- 	} else {
- 	    String pref=getNamespaces().get(qname.getNamespaceURI());
- 	    if (pref!=null)  {
- 		return pref + ":" + qname.getLocalPart();
- 	    } else {
- 		//throw new QualifiedNameException("QualifiedName with null prefix but no default namespace" + qname);
- 		// Really should never be here
- 		return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
- 			+ qname.getLocalPart();
- 	    }
- 	}
- 	/* old
- 	 return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
- 		+ qname.getLocalPart();
- 	 */
-     }
+   
     
-    public String qualifiedNameToString(QualifiedName qname) {
+    public String qualifiedNameToString(QualifiedName name) {
  	if ((getDefaultNamespace()!=null) 
- 		&& (getDefaultNamespace().equals(qname.getNamespaceURI()))) {
- 	    return qname.getLocalPart();
+ 		&& (getDefaultNamespace().equals(name.getNamespaceURI()))) {
+ 	    return name.getLocalPart();
  	} else {
- 	    String pref=getNamespaces().get(qname.getNamespaceURI());
+ 	    String pref=getNamespaces().get(name.getNamespaceURI());
  	    if (pref!=null)  {
- 		return pref + ":" + qname.getLocalPart();
+ 		return pref + ":" + name.getLocalPart();
  	    } else {
  		// Really should never be here //FIXME?
- 		return ((qname.getPrefix()==null || qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
- 			+ qname.getLocalPart();
+ 		return ((name.getPrefix()==null || name.getPrefix().equals("")) ? "" : (name.getPrefix() + ":"))
+ 			+ name.getLocalPart();
  	    }
  	}
- 	/* old
- 	 return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
- 		+ qname.getLocalPart();
- 	 */
      }
 
     public String toString() {

@@ -7,13 +7,13 @@ package org.openprovenance.prov.model;
  * the activity's start. A start may refer to a trigger entity that set off the activity, or to an activity, known as starter, that generated the trigger.
  *  
  *
- * <p>The constructor method {@link ProvFactory#newWasStartedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)} can be used to create an instance of <tt>Start</tt>.
+ * <p>The constructor method {@link ProvFactory#newWasStartedBy(QualifiedName, QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of <tt>Start</tt>.
  * The following code snippet creates a new start statement, with a role attribute, and current time.
  * The instance of start is given an identifier <tt>myId</tt>.
  * <pre>
- * QName myId= ... ;  // some qualified name
- * QName activityId= ... ;  // some activity qualified name
- * QName triggerId= ... ;    // some trigger qualified name
+ * QualifiedName myId= ... ;  // some qualified name
+ * QualifiedName activityId= ... ;  // some activity qualified name
+ * QualifiedName triggerId= ... ;    // some trigger qualified name
  * WasStartedBy myWasStartedBy=provFactory.newWasStartedBy(myId,activityId,triggerId,null);
  * myWasStartedBy.getRole().add(provFactory.newRole("trigger"));
  * myWasStartedBy.setTime(provFactory.newTimeNow())
@@ -21,8 +21,8 @@ package org.openprovenance.prov.model;
  * 
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
- * <li> {@link ProvFactory#newWasStartedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)}
- * <li> {@link ProvFactory#newWasStartedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)}
+ * <li> {@link ProvFactory#newWasStartedBy(QualifiedName, QualifiedName, QualifiedName, QualifiedName)}
+ * <li> {@link ProvFactory#newWasStartedBy(QualifiedName, QualifiedName, QualifiedName, QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)}
  * <li> {@link ObjectFactory#createWasStartedBy()}
  * </ul>
  * 

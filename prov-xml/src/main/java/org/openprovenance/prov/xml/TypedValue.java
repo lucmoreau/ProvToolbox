@@ -235,7 +235,7 @@ public class TypedValue
 
 
     
-    public QualifiedName getQName(AttributeKind kind) {
+    public QualifiedName getQualifiedName(AttributeKind kind) {
         switch (kind) {
         case  PROV_TYPE: return QNAME_PROV_TYPE;
         case  PROV_LABEL: return QNAME_PROV_LABEL;

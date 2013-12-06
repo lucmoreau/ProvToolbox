@@ -32,7 +32,7 @@ import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.model.QNameExport;
+import org.openprovenance.prov.model.QualifiedNameExport;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.Used;
@@ -65,7 +65,7 @@ public class JSONConstructor implements ModelConstructor {
 	}
     }
 
-    final private QNameExport qnExport;
+    final private QualifiedNameExport qnExport;
     private Map<String, Object> documentBundles = new HashMap<String, Object>();
     private List<JsonProvRecord> documentRecords = new ArrayList<JsonProvRecord>();
     private Map<String, String> documentNamespaces = null;
@@ -74,7 +74,7 @@ public class JSONConstructor implements ModelConstructor {
 
     private final ProvFactory pf = new ProvFactory();
 
-    public JSONConstructor(QNameExport qnExport) {
+    public JSONConstructor(QualifiedNameExport qnExport) {
 	this.qnExport = qnExport;
     }
 
@@ -189,7 +189,7 @@ public class JSONConstructor implements ModelConstructor {
 	}
 
 	if (value instanceof QualifiedName)
-	    return qnExport.qnameToString((QualifiedName) value);
+	    return qnExport.qualifiedNameToString((QualifiedName) value);
 	if (value instanceof InternationalizedString) {
 	    InternationalizedString iStr = (InternationalizedString) value;
 	    return iStr.getValue();
@@ -203,7 +203,7 @@ public class JSONConstructor implements ModelConstructor {
 	    return value;
 
 	if (value instanceof QualifiedName) {
-	    return typedLiteral(qnExport.qnameToString((QualifiedName) value),
+	    return typedLiteral(qnExport.qualifiedNameToString((QualifiedName) value),
 				"xsd:QName", null);
 	}
 	if (value instanceof InternationalizedString) {
@@ -222,13 +222,13 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     private Object[] convertAttribute(Attribute attr) {
-	String attrName = qnExport.qnameToString(attr.getElementName());
+	String attrName = qnExport.qualifiedNameToString(attr.getElementName());
 	Object value = attr.getValue();
 	Object attrValue;
  	if (value instanceof QualifiedName) {
 	    // force type xsd:QName
 
-	    attrValue = typedLiteral(qnExport.qnameToString((QualifiedName) value),
+	    attrValue = typedLiteral(qnExport.qualifiedNameToString((QualifiedName) value),
 				     "xsd:QName", null);
 	} else  if (value instanceof InternationalizedString) {
 	    InternationalizedString iStr = (InternationalizedString) value;
@@ -243,7 +243,7 @@ public class JSONConstructor implements ModelConstructor {
 		attrValue = iStr.getValue();
 	    }
 	} else {
-	    String datatype = qnExport.qnameToString(attr.getType());
+	    String datatype = qnExport.qualifiedNameToString(attr.getType());
 	    attrValue = typedLiteral(value.toString(), datatype, null);
 	}
 	return tuple(attrName, attrValue);
@@ -262,7 +262,7 @@ public class JSONConstructor implements ModelConstructor {
     public Entity newEntity(QualifiedName id, Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	JsonProvRecord record = new JsonProvRecord("entity",
-						   qnExport.qnameToString(id),
+						   qnExport.qualifiedNameToString(id),
 						   attrs);
 	this.currentRecords.add(record);
 	return null;
@@ -280,7 +280,7 @@ public class JSONConstructor implements ModelConstructor {
 	    attrs.add(tuple("prov:endTime", endTime.toXMLFormat()));
 	}
 	JsonProvRecord record = new JsonProvRecord("activity",
-						   qnExport.qnameToString(id),
+						   qnExport.qualifiedNameToString(id),
 						   attrs);
 	this.currentRecords.add(record);
 	return null;
@@ -290,7 +290,7 @@ public class JSONConstructor implements ModelConstructor {
     public Agent newAgent(QualifiedName id, Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	JsonProvRecord record = new JsonProvRecord("agent",
-						   qnExport.qnameToString(id),
+						   qnExport.qualifiedNameToString(id),
 						   attrs);
 	this.currentRecords.add(record);
 	return null;
@@ -302,12 +302,12 @@ public class JSONConstructor implements ModelConstructor {
 			Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (activity != null)
-	    attrs.add(tuple("prov:activity", qnExport.qnameToString(activity)));
+	    attrs.add(tuple("prov:activity", qnExport.qualifiedNameToString(activity)));
 	if (entity != null)
-	    attrs.add(tuple("prov:entity", qnExport.qnameToString(entity)));
+	    attrs.add(tuple("prov:entity", qnExport.qualifiedNameToString(entity)));
 	if (time != null)
 	    attrs.add(tuple("prov:time", time.toXMLFormat()));
-	String recordID = (id != null) ? qnExport.qnameToString(id)
+	String recordID = (id != null) ? qnExport.qualifiedNameToString(id)
 		: getBlankID("u");
 	JsonProvRecord record = new JsonProvRecord("used", recordID, attrs);
 	this.currentRecords.add(record);
@@ -321,12 +321,12 @@ public class JSONConstructor implements ModelConstructor {
 					    Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (entity != null)
-	    attrs.add(tuple("prov:entity", qnExport.qnameToString(entity)));
+	    attrs.add(tuple("prov:entity", qnExport.qualifiedNameToString(entity)));
 	if (activity != null)
-	    attrs.add(tuple("prov:activity", qnExport.qnameToString(activity)));
+	    attrs.add(tuple("prov:activity", qnExport.qualifiedNameToString(activity)));
 	if (time != null)
 	    attrs.add(tuple("prov:time", time.toXMLFormat()));
-	String recordID = (id != null) ? qnExport.qnameToString(id)
+	String recordID = (id != null) ? qnExport.qualifiedNameToString(id)
 		: getBlankID("wGB");
 	JsonProvRecord record = new JsonProvRecord("wasGeneratedBy", recordID,
 						   attrs);
@@ -342,12 +342,12 @@ public class JSONConstructor implements ModelConstructor {
 						Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (entity != null)
-	    attrs.add(tuple("prov:entity", qnExport.qnameToString(entity)));
+	    attrs.add(tuple("prov:entity", qnExport.qualifiedNameToString(entity)));
 	if (activity != null)
-	    attrs.add(tuple("prov:activity", qnExport.qnameToString(activity)));
+	    attrs.add(tuple("prov:activity", qnExport.qualifiedNameToString(activity)));
 	if (time != null)
 	    attrs.add(tuple("prov:time", time.toXMLFormat()));
-	String recordID = (id != null) ? qnExport.qnameToString(id)
+	String recordID = (id != null) ? qnExport.qualifiedNameToString(id)
 		: getBlankID("wIB");
 	JsonProvRecord record = new JsonProvRecord("wasInvalidatedBy",
 						   recordID, attrs);
@@ -362,14 +362,14 @@ public class JSONConstructor implements ModelConstructor {
 					Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (activity != null)
-	    attrs.add(tuple("prov:activity", qnExport.qnameToString(activity)));
+	    attrs.add(tuple("prov:activity", qnExport.qualifiedNameToString(activity)));
 	if (trigger != null)
-	    attrs.add(tuple("prov:trigger", qnExport.qnameToString(trigger)));
+	    attrs.add(tuple("prov:trigger", qnExport.qualifiedNameToString(trigger)));
 	if (starter != null)
-	    attrs.add(tuple("prov:starter", qnExport.qnameToString(starter)));
+	    attrs.add(tuple("prov:starter", qnExport.qualifiedNameToString(starter)));
 	if (time != null)
 	    attrs.add(tuple("prov:time", time.toXMLFormat()));
-	String recordID = (id != null) ? qnExport.qnameToString(id)
+	String recordID = (id != null) ? qnExport.qualifiedNameToString(id)
 		: getBlankID("wSB");
 	JsonProvRecord record = new JsonProvRecord("wasStartedBy", recordID,
 						   attrs);
@@ -383,14 +383,14 @@ public class JSONConstructor implements ModelConstructor {
 				    Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (activity != null)
-	    attrs.add(tuple("prov:activity", qnExport.qnameToString(activity)));
+	    attrs.add(tuple("prov:activity", qnExport.qualifiedNameToString(activity)));
 	if (trigger != null)
-	    attrs.add(tuple("prov:trigger", qnExport.qnameToString(trigger)));
+	    attrs.add(tuple("prov:trigger", qnExport.qualifiedNameToString(trigger)));
 	if (ender != null)
-	    attrs.add(tuple("prov:ender", qnExport.qnameToString(ender)));
+	    attrs.add(tuple("prov:ender", qnExport.qualifiedNameToString(ender)));
 	if (time != null)
 	    attrs.add(tuple("prov:time", time.toXMLFormat()));
-	String recordID = (id != null) ? qnExport.qnameToString(id)
+	String recordID = (id != null) ? qnExport.qualifiedNameToString(id)
 		: getBlankID("wEB");
 	JsonProvRecord record = new JsonProvRecord("wasEndedBy", recordID,
 						   attrs);
@@ -405,18 +405,18 @@ public class JSONConstructor implements ModelConstructor {
 					    Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (e2 != null)
-	    attrs.add(tuple("prov:generatedEntity", qnExport.qnameToString(e2)));
+	    attrs.add(tuple("prov:generatedEntity", qnExport.qualifiedNameToString(e2)));
 	if (e1 != null)
-	    attrs.add(tuple("prov:usedEntity", qnExport.qnameToString(e1)));
+	    attrs.add(tuple("prov:usedEntity", qnExport.qualifiedNameToString(e1)));
 	if (activity != null)
-	    attrs.add(tuple("prov:activity", qnExport.qnameToString(activity)));
+	    attrs.add(tuple("prov:activity", qnExport.qualifiedNameToString(activity)));
 	if (generation != null)
 	    attrs.add(tuple("prov:generation",
-			    qnExport.qnameToString(generation)));
+			    qnExport.qualifiedNameToString(generation)));
 	if (usage != null)
-	    attrs.add(tuple("prov:usage", qnExport.qnameToString(usage)));
+	    attrs.add(tuple("prov:usage", qnExport.qualifiedNameToString(usage)));
 
-	String recordID = (id != null) ? qnExport.qnameToString(id)
+	String recordID = (id != null) ? qnExport.qualifiedNameToString(id)
 		: getBlankID("wDF");
 	JsonProvRecord record = new JsonProvRecord("wasDerivedFrom", recordID,
 						   attrs);
@@ -432,12 +432,12 @@ public class JSONConstructor implements ModelConstructor {
 						  Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (a != null)
-	    attrs.add(tuple("prov:activity", qnExport.qnameToString(a)));
+	    attrs.add(tuple("prov:activity", qnExport.qualifiedNameToString(a)));
 	if (ag != null)
-	    attrs.add(tuple("prov:agent", qnExport.qnameToString(ag)));
+	    attrs.add(tuple("prov:agent", qnExport.qualifiedNameToString(ag)));
 	if (plan != null)
-	    attrs.add(tuple("prov:plan", qnExport.qnameToString(plan)));
-	String recordID = (id != null) ? qnExport.qnameToString(id)
+	    attrs.add(tuple("prov:plan", qnExport.qualifiedNameToString(plan)));
+	String recordID = (id != null) ? qnExport.qualifiedNameToString(id)
 		: getBlankID("wAW");
 	JsonProvRecord record = new JsonProvRecord("wasAssociatedWith",
 						   recordID, attrs);
@@ -450,10 +450,10 @@ public class JSONConstructor implements ModelConstructor {
 					      Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (e != null)
-	    attrs.add(tuple("prov:entity", qnExport.qnameToString(e)));
+	    attrs.add(tuple("prov:entity", qnExport.qualifiedNameToString(e)));
 	if (ag != null)
-	    attrs.add(tuple("prov:agent", qnExport.qnameToString(ag)));
-	String recordID = (id != null) ? qnExport.qnameToString(id)
+	    attrs.add(tuple("prov:agent", qnExport.qualifiedNameToString(ag)));
+	String recordID = (id != null) ? qnExport.qualifiedNameToString(id)
 		: getBlankID("wAT");
 	JsonProvRecord record = new JsonProvRecord("wasAttributedTo", recordID,
 						   attrs);
@@ -467,12 +467,12 @@ public class JSONConstructor implements ModelConstructor {
 					      Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (ag2 != null)
-	    attrs.add(tuple("prov:delegate", qnExport.qnameToString(ag2)));
+	    attrs.add(tuple("prov:delegate", qnExport.qualifiedNameToString(ag2)));
 	if (ag1 != null)
-	    attrs.add(tuple("prov:responsible", qnExport.qnameToString(ag1)));
+	    attrs.add(tuple("prov:responsible", qnExport.qualifiedNameToString(ag1)));
 	if (a != null)
-	    attrs.add(tuple("prov:activity", qnExport.qnameToString(a)));
-	String recordID = (id != null) ? qnExport.qnameToString(id)
+	    attrs.add(tuple("prov:activity", qnExport.qualifiedNameToString(a)));
+	String recordID = (id != null) ? qnExport.qualifiedNameToString(id)
 		: getBlankID("aOBO");
 	JsonProvRecord record = new JsonProvRecord("actedOnBehalfOf", recordID,
 						   attrs);
@@ -485,10 +485,10 @@ public class JSONConstructor implements ModelConstructor {
 					  Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (a2 != null)
-	    attrs.add(tuple("prov:informed", qnExport.qnameToString(a2)));
+	    attrs.add(tuple("prov:informed", qnExport.qualifiedNameToString(a2)));
 	if (a1 != null)
-	    attrs.add(tuple("prov:informant", qnExport.qnameToString(a1)));
-	String recordID = (id != null) ? qnExport.qnameToString(id)
+	    attrs.add(tuple("prov:informant", qnExport.qualifiedNameToString(a1)));
+	String recordID = (id != null) ? qnExport.qualifiedNameToString(id)
 		: getBlankID("Infm");
 	JsonProvRecord record = new JsonProvRecord("wasInformedBy", recordID,
 						   attrs);
@@ -501,10 +501,10 @@ public class JSONConstructor implements ModelConstructor {
 					      Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (a2 != null)
-	    attrs.add(tuple("prov:influencee", qnExport.qnameToString(a2)));
+	    attrs.add(tuple("prov:influencee", qnExport.qualifiedNameToString(a2)));
 	if (a1 != null)
-	    attrs.add(tuple("prov:influencer", qnExport.qnameToString(a1)));
-	String recordID = (id != null) ? qnExport.qnameToString(id)
+	    attrs.add(tuple("prov:influencer", qnExport.qualifiedNameToString(a1)));
+	String recordID = (id != null) ? qnExport.qualifiedNameToString(id)
 		: getBlankID("Infl");
 	JsonProvRecord record = new JsonProvRecord("wasInfluencedBy", recordID,
 						   attrs);
@@ -516,9 +516,9 @@ public class JSONConstructor implements ModelConstructor {
     public AlternateOf newAlternateOf(QualifiedName e2, QualifiedName e1) {
 	List<Object[]> attrs = new ArrayList<Object[]>();
 	if (e2 != null)
-	    attrs.add(tuple("prov:alternate2", qnExport.qnameToString(e2)));
+	    attrs.add(tuple("prov:alternate2", qnExport.qualifiedNameToString(e2)));
 	if (e1 != null)
-	    attrs.add(tuple("prov:alternate1", qnExport.qnameToString(e1)));
+	    attrs.add(tuple("prov:alternate1", qnExport.qualifiedNameToString(e1)));
 	String recordID = getBlankID("aO");
 	JsonProvRecord record = new JsonProvRecord("alternateOf", recordID,
 						   attrs);
@@ -530,9 +530,9 @@ public class JSONConstructor implements ModelConstructor {
     public SpecializationOf newSpecializationOf(QualifiedName e2, QualifiedName e1) {
 	List<Object[]> attrs = new ArrayList<Object[]>();
 	if (e2 != null)
-	    attrs.add(tuple("prov:specificEntity", qnExport.qnameToString(e2)));
+	    attrs.add(tuple("prov:specificEntity", qnExport.qualifiedNameToString(e2)));
 	if (e1 != null)
-	    attrs.add(tuple("prov:generalEntity", qnExport.qnameToString(e1)));
+	    attrs.add(tuple("prov:generalEntity", qnExport.qualifiedNameToString(e1)));
 	String recordID = getBlankID("sO");
 	JsonProvRecord record = new JsonProvRecord("specializationOf",
 						   recordID, attrs);
@@ -544,11 +544,11 @@ public class JSONConstructor implements ModelConstructor {
     public MentionOf newMentionOf(QualifiedName e2, QualifiedName e1, QualifiedName b) {
 	List<Object[]> attrs = new ArrayList<Object[]>();
 	if (e2 != null)
-	    attrs.add(tuple("prov:specificEntity", qnExport.qnameToString(e2)));
+	    attrs.add(tuple("prov:specificEntity", qnExport.qualifiedNameToString(e2)));
 	if (e1 != null)
-	    attrs.add(tuple("prov:generalEntity", qnExport.qnameToString(e1)));
+	    attrs.add(tuple("prov:generalEntity", qnExport.qualifiedNameToString(e1)));
 	if (b != null)
-	    attrs.add(tuple("prov:bundle", qnExport.qnameToString(b)));
+	    attrs.add(tuple("prov:bundle", qnExport.qualifiedNameToString(b)));
 	String recordID = getBlankID("mO");
 	JsonProvRecord record = new JsonProvRecord("mentionOf", recordID, attrs);
 	this.currentRecords.add(record);
@@ -559,16 +559,16 @@ public class JSONConstructor implements ModelConstructor {
     public HadMember newHadMember(QualifiedName c, Collection<QualifiedName> e) {
 	List<Object[]> attrs = new ArrayList<Object[]>();
 	if (c != null)
-	    attrs.add(tuple("prov:collection", qnExport.qnameToString(c)));
+	    attrs.add(tuple("prov:collection", qnExport.qualifiedNameToString(c)));
 	if (e != null && !e.isEmpty()) {
 	    List<String> entityList = new ArrayList<String>();
 	    for (QualifiedName entity : e)
-		entityList.add(qnExport.qnameToString(entity));
+		entityList.add(qnExport.qualifiedNameToString(entity));
 	    attrs.add(tuple("prov:entity", entityList));
 	}
 	// TODO Add id to the interface
 	QualifiedName id = null;
-	String recordID = (id != null) ? qnExport.qnameToString(id)
+	String recordID = (id != null) ? qnExport.qualifiedNameToString(id)
 		: getBlankID("hM");
 	JsonProvRecord record = new JsonProvRecord("hadMember", recordID, attrs);
 	this.currentRecords.add(record);
@@ -587,7 +587,7 @@ public class JSONConstructor implements ModelConstructor {
     public NamedBundle newNamedBundle(QualifiedName id, Namespace namespaces,
 				      Collection<Statement> statements) {
 	Object bundle = getJSONStructure(currentRecords, currentNamespaces);
-	documentBundles.put(qnExport.qnameToString(id), bundle);
+	documentBundles.put(qnExport.qualifiedNameToString(id), bundle);
 	// Reset to document-level records and namespaces
 	currentRecords = documentRecords;
 	currentNamespaces = documentNamespaces;
@@ -635,12 +635,12 @@ public class JSONConstructor implements ModelConstructor {
 	if (isAllKeyOfSameDatatype) {
 	    // encode as a dictionary
 	    Map<Object, String> dictionary = new HashMap<Object, String>();
-	    String keyDatatype = qnExport.qnameToString(keyEntitySet.get(0).getKey().getType());
+	    String keyDatatype = qnExport.qualifiedNameToString(keyEntitySet.get(0).getKey().getType());
 	    dictionary.put("$key-datatype", keyDatatype);
 	    for (Entry pair : keyEntitySet) {
 		// String key = convertValueToString(pair.key);
 		String key = convertValueToString(pair.getKey().getValueAsObject());
-		String entity = qnExport.qnameToString(pair.getEntity());
+		String entity = qnExport.qualifiedNameToString(pair.getEntity());
 		dictionary.put(key, entity);
 	    }
 	    return dictionary;
@@ -650,7 +650,7 @@ public class JSONConstructor implements ModelConstructor {
 	List<Map<String, Object>> values = new ArrayList<Map<String, Object>>(
 									      keyEntitySet.size());
 	for (Entry pair : keyEntitySet) {
-	    Object entity = qnExport.qnameToString(pair.getEntity());
+	    Object entity = qnExport.qualifiedNameToString(pair.getEntity());
 	    Map<String, Object> item = new Hashtable<String, Object>();
 	    item.put("$", entity);
 	    item.put("key", convertValue(pair.getKey().getValueAsObject()));
@@ -667,14 +667,14 @@ public class JSONConstructor implements ModelConstructor {
 							    Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (after != null)
-	    attrs.add(tuple("prov:after", qnExport.qnameToString(after)));
+	    attrs.add(tuple("prov:after", qnExport.qualifiedNameToString(after)));
 	if (before != null)
-	    attrs.add(tuple("prov:before", qnExport.qnameToString(before)));
+	    attrs.add(tuple("prov:before", qnExport.qualifiedNameToString(before)));
 	if (keyEntitySet != null && !keyEntitySet.isEmpty()) {
 	    attrs.add(tuple("prov:key-entity-set",
 			    encodeKeyEntitySet(keyEntitySet)));
 	}
-	String recordID = (id != null) ? qnExport.qnameToString(id)
+	String recordID = (id != null) ? qnExport.qualifiedNameToString(id)
 		: getBlankID("dBIF");
 	JsonProvRecord record = new JsonProvRecord("derivedByInsertionFrom",
 						   recordID, attrs);
@@ -690,9 +690,9 @@ public class JSONConstructor implements ModelConstructor {
 							Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (after != null)
-	    attrs.add(tuple("prov:after", qnExport.qnameToString(after)));
+	    attrs.add(tuple("prov:after", qnExport.qualifiedNameToString(after)));
 	if (before != null)
-	    attrs.add(tuple("prov:before", qnExport.qnameToString(before)));
+	    attrs.add(tuple("prov:before", qnExport.qualifiedNameToString(before)));
 	if (keys != null && !keys.isEmpty()) {
 	    List<Object> values = new ArrayList<Object>(keys.size());
 	    for (Key key : keys) {
@@ -702,7 +702,7 @@ public class JSONConstructor implements ModelConstructor {
 	    }
 	    attrs.add(tuple("prov:key-set", values));
 	}
-	String recordID = (id != null) ? qnExport.qnameToString(id)
+	String recordID = (id != null) ? qnExport.qualifiedNameToString(id)
 		: getBlankID("dBRF");
 	JsonProvRecord record = new JsonProvRecord("derivedByRemovalFrom",
 						   recordID, attrs);
@@ -715,7 +715,7 @@ public class JSONConstructor implements ModelConstructor {
 							List<Entry> keyEntitySet) {
 	List<Object[]> attrs = new ArrayList<Object[]>();
 	if (dict != null)
-	    attrs.add(tuple("prov:dictionary", qnExport.qnameToString(dict)));
+	    attrs.add(tuple("prov:dictionary", qnExport.qualifiedNameToString(dict)));
 	if (keyEntitySet != null && !keyEntitySet.isEmpty()) {
 	    attrs.add(tuple("prov:key-entity-set",
 			    encodeKeyEntitySet(keyEntitySet)));

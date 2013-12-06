@@ -7,13 +7,13 @@ package org.openprovenance.prov.model;
  * An end may refer to a trigger entity that terminated the activity, or to an activity, known as ender that generated the trigger.
  *  
  *
- * <p>The constructor method {@link ProvFactory#newWasEndedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)} can be used to create an instance of <tt>End</tt>.
+ * <p>The constructor method {@link ProvFactory#newWasEndedBy(QualifiedName, QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of <tt>End</tt>.
  * The following code snippet creates a new end statement, with a role attribute, and current time.
  * The instance of end is given an identifier <tt>myId</tt>.
  * <pre>
- * QName myId= ... ;  // some qualified name
- * QName activityId= ... ;  // some activity qualified name
- * QName triggerId= ... ;    // some trigger qualified name
+ * QualifiedName myId= ... ;  // some qualified name
+ * QualifiedName activityId= ... ;  // some activity qualified name
+ * QualifiedName triggerId= ... ;    // some trigger qualified name
  * WasEndedBy myWasEndedBy=provFactory.newWasEndedBy(myId,activityId,triggerId,null);
  * myWasEndedBy.getRole().add(provFactory.newRole("trigger"));
  * myWasEndedBy.setTime(provFactory.newTimeNow())
@@ -21,8 +21,8 @@ package org.openprovenance.prov.model;
  * 
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
- * <li> {@link ProvFactory#newWasEndedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)}
- * <li> {@link ProvFactory#newWasEndedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)}
+ * <li> {@link ProvFactory#newWasEndedBy(QualifiedName, QualifiedName, QualifiedName, QualifiedName)}
+ * <li> {@link ProvFactory#newWasEndedBy(QualifiedName, QualifiedName, QualifiedName, QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)}
  * <li> {@link ObjectFactory#createWasEndedBy()}
  * </ul>
  * 

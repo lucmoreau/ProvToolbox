@@ -49,19 +49,19 @@ final public class DOMProcessing {
     }
     
     
-    static public String qualifiedNameToString(QualifiedName qname) {
+    static public String qualifiedNameToString(QualifiedName name) {
 	Namespace ns=Namespace.getThreadNamespace();
-	return ns.qualifiedNameToString(qname);
+	return ns.qualifiedNameToString(name);
     }
     
 
     
 
     /**
-     * Converts a string to a QName, extracting namespace from the DOM.
+     * Converts a string to a QualifiedName, extracting namespace from the DOM.
      * 
      * @param str
-     *            string to convert to QName
+     *            string to convert to QualifiedName
      * @param el
      *            current Element in which this string was found (as attribute
      *            or attribute value)
@@ -97,11 +97,12 @@ final public class DOMProcessing {
 	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", "xsd:QName");
 	el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsd", NamespacePrefixMapper.XSD_NS);
 
-	// 2. We add the QName's string representation as child of the element
+	// 2. We add the QualifiedName's string representation as child of the element
+	//    This representation depends on the extant prefix-namespace mapping
 	String valueAsString=qualifiedNameToString(value);
 	el.appendChild(doc.createTextNode(valueAsString));
 	
-	// 3. We make sure that the QName's prefix is given the right namespace, or the default namespace is declared if there is no prefix
+	// 3. We make sure that the QualifiedName's prefix is given the right namespace, or the default namespace is declared if there is no prefix
 	int index=valueAsString.indexOf(":");
 	if (index!=-1) {
 	    String prefix = valueAsString.substring(0, index);
@@ -114,10 +115,10 @@ final public class DOMProcessing {
 	return el;
     }
 
-    final static public Element newElement(QualifiedName qname, String value, QualifiedName type) {
+    final static public Element newElement(QualifiedName name, String value, QualifiedName type) {
 	org.w3c.dom.Document doc = builder.newDocument();
-	Element el = doc.createElementNS(qname.getNamespaceURI(),
-	                                 qualifiedNameToString(qname));
+	Element el = doc.createElementNS(name.getNamespaceURI(),
+	                                 qualifiedNameToString(name));
 	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qualifiedNameToString(type));
 	el.appendChild(doc.createTextNode(value));
 	doc.appendChild(el);
@@ -125,11 +126,13 @@ final public class DOMProcessing {
     }
 
 
-    final public static Element newElement(QualifiedName qname, String value, QualifiedName type,
+    final public static Element newElement(QualifiedName name, 
+                                           String value, 
+                                           QualifiedName type,
                                            String lang) {
 	org.w3c.dom.Document doc = builder.newDocument();
-	Element el = doc.createElementNS(qname.getNamespaceURI(),
-	                                 qualifiedNameToString(qname));				 
+	Element el = doc.createElementNS(name.getNamespaceURI(),
+	                                 qualifiedNameToString(name));				 
 	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qualifiedNameToString(type));
 	el.setAttributeNS(NamespacePrefixMapper.XML_NS, "xml:lang", lang);
         el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xml", NamespacePrefixMapper.XML_NS);
@@ -140,10 +143,10 @@ final public class DOMProcessing {
     }
 
 
-    final static public Element newElement(QualifiedName qname, Element value) {
+    final static public Element newElement(QualifiedName name, Element value) {
         org.w3c.dom.Document doc = builder.newDocument();
-        Element el = doc.createElementNS(qname.getNamespaceURI(),
-                                         qualifiedNameToString(qname)); 
+        Element el = doc.createElementNS(name.getNamespaceURI(),
+                                         qualifiedNameToString(name)); 
         el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", RDF_LITERAL);
         el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:"+RDF_PREFIX, RDF_NAMESPACE);
         el.appendChild(doc.importNode(value, true));

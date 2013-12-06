@@ -52,9 +52,6 @@ public class Helper  {
  	    return "\"" + istring.getValue() + 
  		    ((istring.getLang()==null) ? "\"" : "\"@" + istring.getLang())
  		    + " %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType);
- 	} else if (val instanceof QName) {
- 	    QName qn = (QName) val;	    
- 	    return "'" + Namespace.qnameToStringWithNamespace(qn) + "'";
  	} else if (val instanceof QualifiedName) {
  	    QualifiedName qn = (QualifiedName) val;	    
  	    return "'" + Namespace.qualifiedNameToStringWithNamespace(qn) + "'";

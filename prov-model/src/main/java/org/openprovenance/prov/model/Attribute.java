@@ -13,7 +13,7 @@ public interface Attribute extends TypedValue {
 	OTHER	
     }
 
-    public abstract QualifiedName getQName(AttributeKind kind);
+    public abstract QualifiedName getQualifiedName(AttributeKind kind);
 
     public abstract AttributeKind getAttributeKind(QualifiedName q);
 

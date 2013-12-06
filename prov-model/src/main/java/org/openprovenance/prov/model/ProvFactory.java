@@ -804,24 +804,6 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return newQualifiedName(qname.getNamespaceURI(), qname.getLocalPart(), qname.getPrefix());
     }
     
-    /* What's the difference with stringToQName? */
-    
-    /*
-    public QName newQName(String qnameAsString) {
-	int index = qnameAsString.indexOf(':');
-	String prefix;
-	String local;
-
-	if (index == -1) {
-	    prefix = "";
-	    local = qnameAsString;
-	} else {
-	    prefix = qnameAsString.substring(0, index);
-	    local = qnameAsString.substring(index + 1, qnameAsString.length());
-	}
-	return new QName(getNamespace(prefix), local, prefix);
-    }
-    */
     
     public Role newRole(Object value, QualifiedName type) {
 	if (value==null) return null;

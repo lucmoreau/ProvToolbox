@@ -1,7 +1,5 @@
 package org.openprovenance.prov.model;
 
-import javax.xml.namespace.QName;
-
 
 public interface TypedValue {
 
@@ -30,7 +28,7 @@ public interface TypedValue {
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
     public abstract QualifiedName getType();
@@ -60,7 +58,7 @@ public interface TypedValue {
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
     public abstract void setType(QualifiedName value);

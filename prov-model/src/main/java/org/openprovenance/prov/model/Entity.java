@@ -6,19 +6,19 @@ package org.openprovenance.prov.model;
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-entity">PROV-DM Definition for Entity</a>: An entity is a physical, digital, conceptual, or other kind of thing with some fixed aspects; entities may be real or imaginary. 
  *  
  *
- * <p>The constructor method {@link ProvFactory#newEntity(QName)} can be used to create an instance of <tt>Entity</tt>.
+ * <p>The constructor method {@link ProvFactory#newEntity(QualifiedName)} can be used to create an instance of <tt>Entity</tt>.
  * The following code snippet creates a new entity statement, with a location attribute
  * "London".  The entity is given an identifier <tt>myId</tt>.
  * <pre>
- * QName myId= ... ;  // some qualified name
+ * QualifiedName myId= ... ;  // some qualified name
  * Entity myEntity=provFactory.newEntity(myId)
  * myEntity.getLocation().add(provFactory.newLocation("London"))
  * </pre>
  * 
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
- * <li> {@link ProvFactory#newEntity(QName)}
- * <li> {@link ProvFactory#newEntity(javax.xml.namespace.QName, java.util.Collection)}
+ * <li> {@link ProvFactory#newEntity(QualifiedName)}
+ * <li> {@link ProvFactory#newEntity(QualifiedName, java.util.Collection)}
  * <li> {@link ObjectFactory#createEntity()}
  * </ul>
  * 

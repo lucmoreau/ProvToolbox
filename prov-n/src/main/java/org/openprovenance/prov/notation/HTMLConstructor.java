@@ -5,7 +5,7 @@ import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.QNameExport;
+import org.openprovenance.prov.model.QualifiedNameExport;
 import org.openprovenance.prov.model.QualifiedName;
 
 
@@ -13,7 +13,7 @@ import org.openprovenance.prov.model.QualifiedName;
 
 public class HTMLConstructor extends NotationConstructor {
     
-    public HTMLConstructor(Writer writer, QNameExport qnExport) {
+    public HTMLConstructor(Writer writer, QualifiedNameExport qnExport) {
 	super(writer, qnExport);
     }
 

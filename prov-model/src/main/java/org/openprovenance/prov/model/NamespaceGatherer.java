@@ -8,13 +8,7 @@ import javax.xml.XMLConstants;
 
 public class NamespaceGatherer implements StatementAction {
     
-
-    /* mapping from prefixes to namespaces. */
-    //ashtable<String, String> prefixes = new Hashtable<String, String>();
-    /* mapping from namespaces to prefixes. */
-    //Hashtable<String, String> namespaces = new Hashtable<String, String>();
-    
-    Namespace ns=new Namespace();
+    private Namespace ns=new Namespace();
     
     public NamespaceGatherer() {
 	ns.getPrefixes().put("prov",NamespacePrefixMapper.PROV_NS);
@@ -107,19 +101,6 @@ public class NamespaceGatherer implements StatementAction {
 
     final String stringForDefault="::";
 
- 
-/*
-    void register(QName name) {
-	if (name==null) return;
-	String namespace = name.getNamespaceURI();
-	String prefix = name.getPrefix();
-	if ((prefix == null) || (prefix.equals(XMLConstants.DEFAULT_NS_PREFIX))) {
-	    ns.registerDefault(namespace);
-	} else {
-	    ns.register(prefix, namespace);
-	}
-    }
-*/
     void register(QualifiedName name) {
 	if (name==null) return;
 	String namespace = name.getNamespaceURI();
@@ -312,8 +293,7 @@ public class NamespaceGatherer implements StatementAction {
 	registerOther(r.getOther());
 	if (!r.getKey().isEmpty()) {
 	    ns.register("xsd", NamespacePrefixMapper.XSD_NS);
-	 
-	    //register(Name.QNAME_XSD_INT); // pick up an xsd qname, so that xsd is registered!
+	    // make sure xsd is registered!
 	}
 	
     }
@@ -334,7 +314,7 @@ public class NamespaceGatherer implements StatementAction {
 	    //Object key=e.getKey();
 	    ns.register("xsd", NamespacePrefixMapper.XSD_NS);
 
-	    //register(Name.QNAME_XSD_INT); // pick up an xsd qname, so that xsd is registered!
+	    //make sure xsd is registered!
 	}	
     }
 

@@ -24,7 +24,7 @@ import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.QNameExport;
+import org.openprovenance.prov.model.QualifiedNameExport;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
@@ -49,11 +49,11 @@ public class NotationConstructor implements ModelConstructor {
     boolean abbrev = false;
     final private BufferedWriter buffer;
 
-    final private QNameExport qnExport;
+    final private QualifiedNameExport qnExport;
 
     public boolean standaloneExpression = false;
 
-    public NotationConstructor(Writer writer, QNameExport qnExport) {
+    public NotationConstructor(Writer writer, QualifiedNameExport qnExport) {
         this.buffer = new BufferedWriter(writer);
         this.qnExport = qnExport;
     }
@@ -105,7 +105,7 @@ public class NotationConstructor implements ModelConstructor {
     }
 
     public String idOrMarker(QualifiedName qn) {
-        return ((qn == null) ? MARKER : qnExport.qnameToString(qn));
+        return ((qn == null) ? MARKER : qnExport.qualifiedNameToString(qn));
     }
 
     private String keyEntitySet(List<Entry> kes) {
@@ -453,7 +453,7 @@ public class NotationConstructor implements ModelConstructor {
     }
 
     private String optionalId(QualifiedName id) {
-        return ((id == null) ? "" : (qnExport.qnameToString(id) + ";"));
+        return ((id == null) ? "" : (qnExport.qualifiedNameToString(id) + ";"));
     }
 
     public String processNamespaces(Namespace namespace) {
@@ -487,7 +487,7 @@ public class NotationConstructor implements ModelConstructor {
 
     @Override
     public void startBundle(QualifiedName bundleId, Namespace namespaces) {
-        String s = keyword("bundle") + " " + qnExport.qnameToString(bundleId)
+        String s = keyword("bundle") + " " + qnExport.qualifiedNameToString(bundleId)
                 + breakline();
         s = s + processNamespaces(namespaces);
         writeln(s);

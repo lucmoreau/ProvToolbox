@@ -657,7 +657,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	List<JsonElement> elements = popMultiValAttribute(attributeName,
 							  attributeMap);
 	for (JsonElement element : elements) {
-	    results.add(pf.newQualifiedName(ns.stringToQName(element.getAsString())));
+	    results.add(ns.stringToQualifiedName(element.getAsString(),pf));
 	}
 	return results;
     }

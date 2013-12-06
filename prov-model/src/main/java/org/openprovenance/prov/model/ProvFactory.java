@@ -24,7 +24,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 
 public abstract class ProvFactory implements LiteralConstructor, ModelConstructor {
 
-    public static final String DEFAULT_NS = "_";
+    private static final String DEFAULT_NS = "_";
  
     public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.validation";
 
@@ -838,11 +838,11 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return res;
     }
 
-    public Type newType(Object value, ValueConverter vconv) {
-	return newType(value, vconv.getXsdType(value));
-    }
 
-
+    /** A factory method to create an instance of a usage {@link Used}
+     * @param id an optional identifier for a usage
+     * @return an instance of {@link Used}
+     */    
     public Used newUsed(QualifiedName id) {
 	Used res = of.createUsed();
 	res.setId(id);
@@ -857,7 +857,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	res.setEntity(eid);
 	return res;
     }
-    
+
     /** A factory method to create an instance of a usage {@link Used}
      * @param id an optional identifier for a usage
      * @param activity the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an entity
@@ -871,6 +871,13 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	res.setEntity(entity);
  	return res;
      }
+
+    
+    /** A factory method to create an instance of a usage {@link Used}
+     * @param activity the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an entity
+     * @param entity an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#usage.entity">entity</a> being used
+     * @return an instance of {@link Used}
+     */    
 
     public Used newUsed(QualifiedName activity, QualifiedName entity) {
  	Used res = newUsed((QualifiedName)null);
@@ -893,14 +900,19 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
     
+    /** A factory method to create an instance of a usage {@link Used} from another
+     * @param u an instance of a usage 
+     * @return an instance of {@link Used} equal (in the sense of @see Object.equals()) to the input
+     */    
 
     public Used newUsed(Used u) {
-	Used u1 = newUsed(u.getId(), u.getActivity(), u.getEntity(),null,null);
+	Used u1 = newUsed(u.getId(), u.getActivity(), u.getEntity());
 	u1.getOther().addAll(u.getOther());
 	u1.setTime(u.getTime());
 	u1.getType().addAll(u.getType());
 	u1.getLabel().addAll(u.getLabel());
 	u1.getLocation().addAll(u.getLocation());
+	u1.getOther().addAll(u.getOther());
 	return u1;
     }
 
@@ -1045,18 +1057,29 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	wdf.getLabel().addAll(d.getLabel());
 	return wdf;
     }
-    
+    /** A factory method to create an instance of an end {@link WasEndedBy}
+     * @param id
+     * @return an instance of {@link WasEndedBy}
+     */
+      
     public WasEndedBy newWasEndedBy(QualifiedName id) {
 	WasEndedBy res = of.createWasEndedBy();
 	res.setId(id);
 	return res;
     }
 
-    public WasEndedBy newWasEndedBy(QualifiedName id, QualifiedName aid, QualifiedName eid) {
+    /** A factory method to create an instance of an end {@link WasEndedBy}
+     * @param id
+     * @param activity an identifier for the ended <a href="http://www.w3.org/TR/prov-dm/#end.activity">activity</a>
+     * @param trigger an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.trigger">entity triggering</a> the activity ending
+     * @return an instance of {@link WasEndedBy}
+     */
+    
+    public WasEndedBy newWasEndedBy(QualifiedName id, QualifiedName activity, QualifiedName trigger) {
 	WasEndedBy res = of.createWasEndedBy();
 	res.setId(id);
-	res.setActivity(aid);
-	res.setTrigger(eid);
+	res.setActivity(activity);
+	res.setTrigger(trigger);
 	return res;
     }
     
@@ -1066,9 +1089,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      * @param activity an identifier for the ended <a href="http://www.w3.org/TR/prov-dm/#end.activity">activity</a>
      * @param trigger an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.trigger">entity triggering</a> the activity ending
      * @param ender an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.ender">activity</a> that generated the (possibly unspecified) entity
-     * @param time the optional <a href="http://www.w3.org/TR/prov-dm/#end.time">time</a>  at which the activity was ended
-     * @param attributes an optional set of <a href="http://www.w3.org/TR/prov-dm/#end.attributes">attribute-value pairs</a> representing additional information about this activity end
-     * @return an instance of {@link WasStartedBy}
+     * @return an instance of {@link WasEndedBy}
      */
     public WasEndedBy newWasEndedBy(QualifiedName id, QualifiedName activity, QualifiedName trigger, QualifiedName ender) {
       	WasEndedBy res=newWasEndedBy(id,activity,trigger);	

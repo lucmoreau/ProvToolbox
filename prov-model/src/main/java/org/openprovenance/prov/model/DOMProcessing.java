@@ -65,7 +65,7 @@ final public class DOMProcessing {
      * @param el
      *            current Element in which this string was found (as attribute
      *            or attribute value)
-     * @return
+     * @return a qualified name {@link QualifiedName}
      */
     final public QualifiedName stringToQualifiedName(String str, org.w3c.dom.Element el) {
         if (str == null)

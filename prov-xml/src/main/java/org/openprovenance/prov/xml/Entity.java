@@ -358,10 +358,6 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
             theId = this.getId();
             toStringBuilder.append("id", theId);
         }
-        { //TODO: only now, for debugging.
-            toStringBuilder.append("all", getAllAttributes());
-        }
-
     }
 
     public String toString() {

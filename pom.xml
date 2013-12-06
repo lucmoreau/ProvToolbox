@@ -354,16 +354,16 @@
 
 
           <links>
-            <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+            <link>http://docs.oracle.com/javase/7/docs/api/</link>
             <link>http://java.sun.com/products/servlet/2.3/javadoc/</link>
             <link>http://www.oracle.com/technology/documentation/berkeley-db/je/java/</link>
             <link>http://prefuse.org/doc/api/</link>
             <link>http://ws.apache.org/axis/java/apiDocs/</link>
-            <link>http://jakarta.apache.org/commons/collections/api-3.2/</link>
-            <link>http://jakarta.apache.org/commons/io/api-1.2/</link>
-            <link>http://jakarta.apache.org/commons/lang/api-2.1/</link>
-            <link>http://jakarta.apache.org/commons/logging/commons-logging-1.0.4/docs/apidocs/</link>
-            <link>http://jakarta.apache.org/commons/pool/apidocs/</link>
+            <link>http://commons.apache.org/proper/commons-collections/javadocs/api-release/</link>
+            <link>http://commons.apache.org/proper/commons-io/javadocs/api-2.4/</link>
+            <link>http://commons.apache.org/proper/commons-lang/apidocs/</link>
+            <link>http://commons.apache.org/proper/commons-logging/javadocs/api-release/</link>
+            <link>http://commons.apache.org/proper/commons-pool/apidocs/</link>
             <link>http://xerces.apache.org/xerces-j/apiDocs/</link>
             <link>http://junit.sourceforge.net/javadoc/</link>
             <link>http://aopalliance.sourceforge.net/doc/</link>

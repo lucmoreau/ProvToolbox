@@ -40,7 +40,7 @@ public interface ModelConstructor {
      * @param id an optional identifier for a usage
      * @param activity the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an entity
      * @param entity an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#usage.entity">entity</a> being used
-     * @param time an optional "usage time", the time at which the entity started to be used
+     * @param time an optional "usage time", the <a href="http://www.w3.org/TR/prov-dm/#usage.time">time</a> at which the entity started to be used
      * @param attributes an optional set of attribute-value pairs representing additional information about this usage
      * @return an instance of {@link Used}
      */

@@ -51,7 +51,7 @@ public interface TypedValue {
      *     {@link Object }
      *     
      */
-    public abstract void setValueAsObject(Object valueAsJava);
+    public abstract void setValueAsObject(Object value);
 
     /*
      * Sets the value of the type property.

@@ -10,6 +10,7 @@ import javax.xml.namespace.QName;
 import org.openprovenance.prov.model.RecordAction;
 import org.openprovenance.prov.model.RecordValue;
 import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.QualifiedName;
 
 import java.lang.reflect.Method;
 
@@ -161,69 +162,69 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
 						   "Bundle" });
         
 
-        types.put(Activity.class, new Class[] { QName.class, 
+        types.put(Activity.class, new Class[] { QualifiedName.class, 
                                            XMLGregorianCalendar.class,
                                            XMLGregorianCalendar.class,
                                            Object.class });
-        types.put(Used.class, new Class[] { QName.class, IDRef.class,
-                                           IDRef.class,
+        types.put(Used.class, new Class[] { QualifiedName.class, QualifiedName.class,
+                                           QualifiedName.class,
                                            XMLGregorianCalendar.class,
                                            Object.class });
         types.put(WasGeneratedBy.class,
-                  new Class[] { QName.class, IDRef.class,
-                               IDRef.class, XMLGregorianCalendar.class,
+                  new Class[] { QualifiedName.class, QualifiedName.class,
+                               QualifiedName.class, XMLGregorianCalendar.class,
                                Object.class });
         types.put(WasInvalidatedBy.class,
-                  new Class[] { QName.class, IDRef.class,
-                               IDRef.class, XMLGregorianCalendar.class,
+                  new Class[] { QualifiedName.class, QualifiedName.class,
+                               QualifiedName.class, XMLGregorianCalendar.class,
                                Object.class });
-        types.put(WasStartedBy.class, new Class[] { QName.class,
-                                                   IDRef.class,
-                                                   IDRef.class,
-                                                   IDRef.class,
+        types.put(WasStartedBy.class, new Class[] { QualifiedName.class,
+                                                   QualifiedName.class,
+                                                   QualifiedName.class,
+                                                   QualifiedName.class,
                                                    XMLGregorianCalendar.class,
                                                    Object.class });
-        types.put(WasEndedBy.class, new Class[] { QName.class,
-                                                 IDRef.class,
-                                                 IDRef.class,
-                                                 IDRef.class,
+        types.put(WasEndedBy.class, new Class[] { QualifiedName.class,
+                                                 QualifiedName.class,
+                                                 QualifiedName.class,
+                                                 QualifiedName.class,
                                                  XMLGregorianCalendar.class,
                                                  Object.class });
-        types.put(WasInformedBy.class, new Class[] { QName.class,
-                                                    IDRef.class,
-                                                    IDRef.class,
+        types.put(WasInformedBy.class, new Class[] { QualifiedName.class,
+                                                    QualifiedName.class,
+                                                    QualifiedName.class,
                                                     Object.class });
-        types.put(WasDerivedFrom.class, new Class[] { QName.class,
-                                                     IDRef.class,
-                                                     IDRef.class,
-                                                     IDRef.class,
-                                                     IDRef.class,
-                                                     IDRef.class,
+        types.put(WasDerivedFrom.class, new Class[] { QualifiedName.class,
+                                                     QualifiedName.class,
+                                                     QualifiedName.class,
+                                                     QualifiedName.class,
+                                                     QualifiedName.class,
+                                                     QualifiedName.class,
                                                      Object.class });
-        types.put(WasInfluencedBy.class, new Class[] { QName.class,
-                                                      IDRef.class,
-                                                      IDRef.class,
+        types.put(WasInfluencedBy.class, new Class[] { QualifiedName.class,
+                                                      QualifiedName.class,
+                                                      QualifiedName.class,
                                                       Object.class });
-        types.put(WasAttributedTo.class, new Class[] { QName.class,
-                                                      IDRef.class,
-                                                      IDRef.class,
+        types.put(WasAttributedTo.class, new Class[] { QualifiedName.class,
+                                                      QualifiedName.class,
+                                                      QualifiedName.class,
                                                       Object.class });
-        types.put(WasAssociatedWith.class, new Class[] { QName.class,
-                                                        IDRef.class,
-                                                        IDRef.class,
-                                                        IDRef.class,
+        types.put(WasAssociatedWith.class, new Class[] { QualifiedName.class,
+                                                        QualifiedName.class,
+                                                        QualifiedName.class,
+                                                        QualifiedName.class,
                                                         Object.class });
-        types.put(ActedOnBehalfOf.class, new Class[] { QName.class,
-                                                      IDRef.class,
-                                                      IDRef.class,
-                                                      IDRef.class,
+        types.put(ActedOnBehalfOf.class, new Class[] { QualifiedName.class,
+                                                      QualifiedName.class,
+                                                      QualifiedName.class,
+                                                      QualifiedName.class,
                                                       Object.class });
-        types.put(SpecializationOf.class, new Class[] { IDRef.class,
-                                                       IDRef.class });
-        types.put(MentionOf.class, new Class[] { QName.class,
-						 IDRef.class,
-						 IDRef.class,
-						 IDRef.class });
+        types.put(SpecializationOf.class, new Class[] { QualifiedName.class,
+                                                       QualifiedName.class });
+        types.put(MentionOf.class, new Class[] { QualifiedName.class,
+						 QualifiedName.class,
+						 QualifiedName.class,
+						 QualifiedName.class });
     }
 
     @SuppressWarnings("unchecked")

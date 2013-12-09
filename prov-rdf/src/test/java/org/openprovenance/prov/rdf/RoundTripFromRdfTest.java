@@ -20,6 +20,11 @@ import org.openrdf.rio.Rio;
 
 @RunWith(value = Parameterized.class)
 public class RoundTripFromRdfTest extends TestCase {
+    
+	final ProvFactory pFactory=new org.openprovenance.prov.xml.ProvFactory();
+	final Ontology onto=new Ontology(pFactory);    	
+
+
 
 	private String file;
 	private String folder;
@@ -65,16 +70,15 @@ public class RoundTripFromRdfTest extends TestCase {
 			throws Exception
 	{
 		System.out.println("-------------- File: " + file);
-		Utility u = new Utility();
+		Utility u = new Utility(pFactory,onto);
 
-		ProvFactory pFactory = new ProvFactory();
 
 		DocumentEquality de = new DocumentEquality(true);
 		Document doc1 = u.parseRDF("src/test/resources/" + file);
 		file = file.replace('/', '_');
 		RDFFormat format = Rio.getParserFormatForFileName(file,
 				RDFFormat.TURTLE);
-		u.dumpRDF(pFactory, doc1, format, "target/" + file);
+		u.dumpRDF(doc1, format, "target/" + file);
 		Document doc2 = u.parseRDF("target/" + file);
 
 		boolean result = de.check(doc1, doc2); // TODO: we want

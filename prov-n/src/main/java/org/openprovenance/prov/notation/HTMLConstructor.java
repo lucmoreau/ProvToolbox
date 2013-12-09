@@ -3,17 +3,17 @@ import java.io.Writer;
 import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.QNameExport;
+import org.openprovenance.prov.model.QualifiedNameExport;
+import org.openprovenance.prov.model.QualifiedName;
 
 
 /* FIXME: this does not work, since methods define here do not override those of NotationConstructor. */
 
 public class HTMLConstructor extends NotationConstructor {
     
-    public HTMLConstructor(Writer writer, QNameExport qnExport) {
+    public HTMLConstructor(Writer writer, QualifiedNameExport qnExport) {
 	super(writer, qnExport);
     }
 
@@ -111,12 +111,12 @@ public class HTMLConstructor extends NotationConstructor {
         return iri;
     }
 
-    public  Object newActivity(QName id, XMLGregorianCalendar startTime,XMLGregorianCalendar endTime, List<Attribute> aAttrs) {
+    public  Object newActivity(QualifiedName id, XMLGregorianCalendar startTime,XMLGregorianCalendar endTime, List<Attribute> aAttrs) {
 	
         return "<span class='prov-expression'> " + super.newActivity(id,startTime,endTime,aAttrs) + "</span>";
     }
 
-    public Object newEntity(QName id, List<Attribute> attrs) {
+    public Object newEntity(QualifiedName id, List<Attribute> attrs) {
         return "<span class='prov-expression'> " + super.newEntity(id,attrs) + "</span>";
     }
 

@@ -6,15 +6,19 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.model.Identifiable;
-import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.DerivedByInsertionFrom;
+import org.openprovenance.prov.model.DerivedByRemovalFrom;
+import org.openprovenance.prov.model.DictionaryMembership;
+import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.StatementAction;
 
 
 
 
-public class Dagify implements RecordAction {
+public class Dagify implements StatementAction {
 
     private EntityManager em;
 
@@ -22,55 +26,42 @@ public class Dagify implements RecordAction {
         this.em=em;
     }
     
-    Hashtable<String, org.openprovenance.prov.model.IDRef> table=new Hashtable<String, org.openprovenance.prov.model.IDRef>();
+    Hashtable<String, QualifiedName> table=new Hashtable<String, QualifiedName>();
     
-    public org.openprovenance.prov.model.IDRef uniquify(org.openprovenance.prov.model.IDRef ref) {
-        if (ref==null) return null;
-        QName q=ref.getRef();
+
+
+    public QualifiedName uniquify(QualifiedName q) {
+        if (q==null) return null;
         String uri=q.getNamespaceURI()+q.getLocalPart();
-        org.openprovenance.prov.model.IDRef found=table.get(uri);
+        org.openprovenance.prov.model.QualifiedName found=table.get(uri);
         if (found!=null) {
             return found;
         }
-        Query qq=em.createQuery("SELECT e FROM IDRef e WHERE e.uri LIKE :uri");
+        Query qq=em.createQuery("SELECT e FROM QualifiedName e WHERE e.uri LIKE :uri");
         qq.setParameter("uri", uri);
-        List<IDRef> ll=(List<IDRef>) qq.getResultList();
+        @SuppressWarnings("unchecked")
+	List<QualifiedName> ll=(List<QualifiedName>) qq.getResultList();
         //System.out.println("found ll " + ll);
         
-        org.openprovenance.prov.model.IDRef newId=ref;
+        QualifiedName newId=q;
         if ((ll!=null) && (!(ll.isEmpty()))) {
             newId=ll.get(0);
+            //System.out.println("Uniquify found " + newId);
         }
         table.put(uri, newId);
         return newId;
     }
 
    
-    /*
-    public IDRef createKey(QName id) {
-	IDRef ref=new IDRef();
-	ref.setRef(id);
-  	return uniquify(ref);
-      }
-
-   */
-    
-    public IDRef createKey(Identifiable e) {
-	IDRef ref=new IDRef();
-	ref.setRef(e.getId());
-  	return (IDRef)uniquify(ref);
-      }
 
 
-
-
-    public void run(Entity e) {
-	e.setIdRef(createKey(e));
+    public void doAction(org.openprovenance.prov.model.Entity e) {
+    	e.setId(uniquify(e.getId()));
     }
 
     
-    public void run(Activity a) {
-	a.setIdRef(createKey(a));        
+    public void doAction(org.openprovenance.prov.model.Activity a) {
+	a.setId(uniquify(a.getId()));        
     }
 
   
@@ -78,51 +69,51 @@ public class Dagify implements RecordAction {
 
 
 
-    public void run(Agent ag) {
-	ag.setIdRef(createKey(ag));                
+    public void doAction(org.openprovenance.prov.model.Agent ag) {
+	ag.setId(uniquify(ag.getId()));                
     }
 
-    public void run(WasGeneratedBy gen) {
-	if (gen.getId()!=null) gen.setIdRef(createKey(gen));                
-        gen.setEntity(uniquify(gen.getEntity()));
+    public void doAction(org.openprovenance.prov.model.WasGeneratedBy gen) {
+    	if (gen.getId()!=null) gen.setId(uniquify(gen.getId()));                
+    	gen.setEntity(uniquify(gen.getEntity()));
         gen.setActivity(uniquify(gen.getActivity()));
     }
 
-    public void run(Used use) {
-	if (use.getId()!=null) use.setIdRef(createKey(use));                
+    public void doAction(org.openprovenance.prov.model.Used use) {
+	if (use.getId()!=null) use.setId(uniquify(use.getId()));                
         use.setEntity(uniquify(use.getEntity()));
         use.setActivity(uniquify(use.getActivity()));      
     }
 
-    public void run(WasInvalidatedBy inv) {
-	if (inv.getId()!=null) inv.setIdRef(createKey(inv));                
+    public void doAction(org.openprovenance.prov.model.WasInvalidatedBy inv) {
+	if (inv.getId()!=null) inv.setId(uniquify(inv.getId()));                
         inv.setEntity(uniquify(inv.getEntity()));
         inv.setActivity(uniquify(inv.getActivity()));          
     }
 
-    public void run(WasStartedBy start) {
-	if (start.getId()!=null) start.setIdRef(createKey(start));                
+    public void doAction(org.openprovenance.prov.model.WasStartedBy start) {
+	if (start.getId()!=null) start.setId(uniquify(start.getId()));                
         start.setActivity(uniquify(start.getActivity()));    
         start.setTrigger(uniquify(start.getTrigger()));
         start.setStarter(uniquify(start.getStarter()));                  
     }
 
-    public void run(WasEndedBy end) {
-	if (end.getId()!=null) end.setIdRef(createKey(end));                
+    public void doAction(org.openprovenance.prov.model.WasEndedBy end) {
+	if (end.getId()!=null) end.setId(uniquify(end.getId()));                
         end.setActivity(uniquify(end.getActivity()));    
         end.setTrigger(uniquify(end.getTrigger()));
         end.setEnder(uniquify(end.getEnder()));          
       
     }
 
-    public void run(WasInformedBy inf) {
-	if (inf.getId()!=null) inf.setIdRef(createKey(inf));                
+    public void doAction(org.openprovenance.prov.model.WasInformedBy inf) {
+	if (inf.getId()!=null) inf.setId(uniquify(inf.getId()));                
         inf.setInformant(uniquify(inf.getInformant()));    
         inf.setInformed(uniquify(inf.getInformed()));    
     }
 
-    public void run(WasDerivedFrom der) {
-	if (der.getId()!=null) der.setIdRef(createKey(der));                
+    public void doAction(org.openprovenance.prov.model.WasDerivedFrom der) {
+	if (der.getId()!=null) der.setId(uniquify(der.getId()));                
         der.setGeneratedEntity(uniquify(der.getGeneratedEntity()));    
         der.setUsedEntity(uniquify(der.getUsedEntity()));    
         der.setActivity(uniquify(der.getActivity()));    
@@ -130,51 +121,51 @@ public class Dagify implements RecordAction {
         der.setUsage(uniquify(der.getUsage()));           
     }
 
-    public void run(WasAssociatedWith assoc) {
-	if (assoc.getId()!=null) assoc.setIdRef(createKey(assoc));                
+    public void doAction(org.openprovenance.prov.model.WasAssociatedWith assoc) {
+	if (assoc.getId()!=null) assoc.setId(uniquify(assoc.getId()));                
         assoc.setActivity(uniquify(assoc.getActivity()));    
         assoc.setAgent(uniquify(assoc.getAgent()));    
         assoc.setPlan(uniquify(assoc.getPlan()));    
     }
 
-    public void run(WasAttributedTo attr) {
-	if (attr.getId()!=null) attr.setIdRef(createKey(attr));                
+    public void doAction(org.openprovenance.prov.model.WasAttributedTo attr) {
+	if (attr.getId()!=null) attr.setId(uniquify(attr.getId()));                
         attr.setAgent(uniquify(attr.getAgent()));    
         attr.setEntity(uniquify(attr.getEntity()));
     }
 
-    public void run(ActedOnBehalfOf del) {
-	if (del.getId()!=null) del.setIdRef(createKey(del));                
+    public void doAction(org.openprovenance.prov.model.ActedOnBehalfOf del) {
+	if (del.getId()!=null) del.setId(uniquify(del.getId()));                
         del.setDelegate(uniquify(del.getDelegate()));    
         del.setResponsible(uniquify(del.getResponsible()));    
         del.setActivity(uniquify(del.getActivity()));            
     }
 
-    public void run(WasInfluencedBy inf) {
-	if (inf.getId()!=null) inf.setIdRef(createKey(inf));                
+    public void doAction(org.openprovenance.prov.model.WasInfluencedBy inf) {
+	if (inf.getId()!=null) inf.setId(uniquify(inf.getId()));                
         inf.setInfluencee(uniquify(inf.getInfluencee()));
         inf.setInfluencer(uniquify(inf.getInfluencer()));
     }
 
-    public void run(AlternateOf alt) {
+    public void doAction(org.openprovenance.prov.model.AlternateOf alt) {
         alt.setAlternate1(uniquify(alt.getAlternate1()));
         alt.setAlternate2(uniquify(alt.getAlternate2()));
     }
 
-    public void run(MentionOf men) {
+    public void doAction(org.openprovenance.prov.model.MentionOf men) {
         men.setBundle(uniquify(men.getBundle()));
         men.setGeneralEntity(uniquify(men.getGeneralEntity()));
         men.setSpecificEntity(uniquify(men.getSpecificEntity()));       
     }
 
-    public void run(SpecializationOf spec) {
+    public void doAction(org.openprovenance.prov.model.SpecializationOf spec) {
         spec.setSpecificEntity(uniquify(spec.getSpecificEntity()));
         spec.setGeneralEntity(uniquify(spec.getGeneralEntity()));
     }
 
-    public void run(HadMember mem) {
-        List<org.openprovenance.prov.model.IDRef> ll=new LinkedList<org.openprovenance.prov.model.IDRef>();
-        for (org.openprovenance.prov.model.IDRef er: mem.getEntity()) {
+    public void doAction(org.openprovenance.prov.model.HadMember mem) {
+        List<org.openprovenance.prov.model.QualifiedName> ll=new LinkedList<org.openprovenance.prov.model.QualifiedName>();
+        for (org.openprovenance.prov.model.QualifiedName er: mem.getEntity()) {
             ll.add(uniquify(er));
         }
         mem.getEntity().clear();
@@ -182,97 +173,32 @@ public class Dagify implements RecordAction {
         
         mem.setCollection(uniquify(mem.getCollection()));        
     }
-    
-    // should be in utility class
-    
-    public void forAllRecords(List<Statement> records, RecordAction action) {
-        for (Statement o : records) {
-            run(o, action);
-        }
+  
+
+    @Override
+    public void doAction(DictionaryMembership s) {
+	throw new UnsupportedOperationException();
     }
 
-    static public void run(Statement o, RecordAction action) {
 
-        if (o instanceof Entity) {
-            action.run((Entity) o);
-        } else if (o instanceof Activity) {
-            action.run((Activity) o);
-        } else if (o instanceof Agent) {
-            action.run((Agent) o);
-        } else if (o instanceof Used) {
-            action.run((Used) o);
-        } else if (o instanceof WasGeneratedBy) {
-            WasGeneratedBy tmp = (WasGeneratedBy) o;
-            action.run(tmp);
-        }
-
-        else if (o instanceof WasInvalidatedBy) {
-            WasInvalidatedBy tmp = (WasInvalidatedBy) o;
-            action.run(tmp);
-        }
-
-        else if (o instanceof WasStartedBy) {
-            WasStartedBy tmp = (WasStartedBy) o;
-            action.run(tmp);
-        }
-
-        else if (o instanceof WasEndedBy) {
-            WasEndedBy tmp = (WasEndedBy) o;
-            action.run(tmp);
-        }
-
-        else if (o instanceof WasInformedBy) {
-            WasInformedBy tmp = (WasInformedBy) o;
-            action.run(tmp);
-        }
-
-        else if (o instanceof WasDerivedFrom) {
-            WasDerivedFrom tmp = (WasDerivedFrom) o;
-            action.run(tmp);
-        }
-
-        else if (o instanceof WasAssociatedWith) {
-            WasAssociatedWith tmp = (WasAssociatedWith) o;
-            action.run(tmp);
-        }
-
-        else if (o instanceof WasAttributedTo) {
-            WasAttributedTo tmp = (WasAttributedTo) o;
-            action.run(tmp);
-        }
-
-        else if (o instanceof ActedOnBehalfOf) {
-            ActedOnBehalfOf tmp = (ActedOnBehalfOf) o;
-            action.run(tmp);
-        }
-
-        else if (o instanceof WasInfluencedBy) {
-            WasInfluencedBy tmp = (WasInfluencedBy) o;
-            action.run(tmp);
-        }
-
-        else if (o instanceof AlternateOf) {
-            AlternateOf tmp = (AlternateOf) o;
-            action.run(tmp);
-        }
-
-        else if (o instanceof MentionOf) {
-            MentionOf tmp = (MentionOf) o;
-            action.run(tmp);
-        }
-
-        else if (o instanceof SpecializationOf) {
-            SpecializationOf tmp = (SpecializationOf) o;
-            action.run(tmp);
-        }
-
-        else if (o instanceof HadMember) {
-            HadMember tmp = (HadMember) o;
-            action.run(tmp);
-        }
-
+    @Override
+    public void doAction(DerivedByRemovalFrom s) {
+	throw new UnsupportedOperationException();
     }
-    
 
+
+    @Override
+    public void doAction(DerivedByInsertionFrom s) {
+	throw new UnsupportedOperationException();	
+    }
+
+
+
+
+    @Override
+    public void doAction(NamedBundle bun, ProvUtilities provUtilities) {
+	bun.setId(uniquify(bun.getId()));
+	provUtilities.forAllStatement(bun.getStatement(), this);
+    }
 
 }

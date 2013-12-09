@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -65,10 +64,14 @@ import org.openprovenance.prov.model.Attribute;
 public class WasInvalidatedBy implements Equals, HashCode, ToString, org.openprovenance.prov.model.WasInvalidatedBy, HasAllAttributes
 {
 
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef entity;
+    protected org.openprovenance.prov.model.QualifiedName entity;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef activity;
+    protected org.openprovenance.prov.model.QualifiedName activity;
+
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar time;
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
@@ -81,18 +84,23 @@ public class WasInvalidatedBy implements Equals, HashCode, ToString, org.openpro
     
     @XmlAnyElement
     protected List<Attribute> all;
+    
+  
+    
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected org.openprovenance.prov.model.QualifiedName id;
+
 
     /**
      * Gets the value of the entity property.
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getEntity() {
+    public org.openprovenance.prov.model.QualifiedName getEntity() {
         return entity;
     }
 
@@ -101,10 +109,10 @@ public class WasInvalidatedBy implements Equals, HashCode, ToString, org.openpro
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.entity = value;
     }
 
@@ -113,10 +121,10 @@ public class WasInvalidatedBy implements Equals, HashCode, ToString, org.openpro
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getActivity() {
+    public org.openprovenance.prov.model.QualifiedName getActivity() {
         return activity;
     }
 
@@ -125,10 +133,10 @@ public class WasInvalidatedBy implements Equals, HashCode, ToString, org.openpro
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setActivity(org.openprovenance.prov.model.IDRef value) {
+    public void setActivity(org.openprovenance.prov.model.QualifiedName value) {
         this.activity = value;
     }
 
@@ -305,10 +313,10 @@ public class WasInvalidatedBy implements Equals, HashCode, ToString, org.openpro
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link org.openprovenance.prov.model.QualifiedName }
      *     
      */
-    public QName getId() {
+    public org.openprovenance.prov.model.QualifiedName getId() {
         return id;
     }
 
@@ -317,10 +325,10 @@ public class WasInvalidatedBy implements Equals, HashCode, ToString, org.openpro
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link org.openprovenance.prov.model.QualifiedName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(org.openprovenance.prov.model.QualifiedName value) {
         this.id = value;
     }
 
@@ -374,12 +382,12 @@ public class WasInvalidatedBy implements Equals, HashCode, ToString, org.openpro
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            org.openprovenance.prov.model.IDRef theEntity;
+            org.openprovenance.prov.model.QualifiedName theEntity;
             theEntity = this.getEntity();
             toStringBuilder.append("entity", theEntity);
         }
         {
-            org.openprovenance.prov.model.IDRef theActivity;
+            org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
             toStringBuilder.append("activity", theActivity);
         }
@@ -414,12 +422,9 @@ public class WasInvalidatedBy implements Equals, HashCode, ToString, org.openpro
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
-        }
-        { //TODO: only now, for debugging.
-            toStringBuilder.append("all", getAllAttributes());
         }
     }
 

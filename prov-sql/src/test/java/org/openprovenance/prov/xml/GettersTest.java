@@ -1,7 +1,6 @@
 package org.openprovenance.prov.xml;
 import java.util.Hashtable;
 
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
         
@@ -51,8 +50,8 @@ abstract public class GettersTest
 
 
 
-    public QName q(String n) {
-	return new QName("http://example.org/", n, "ex");
+    public QualifiedName q(String n) {
+	return new QualifiedName("http://example.org/", n, "ex");
     }
 
 
@@ -66,7 +65,7 @@ abstract public class GettersTest
         Entity e2=pFactory.newEntity(q("e2"),
 				     "file 2");
 
-        Used u1=pFactory.newUsed(q("u1"), a3.getId(),e1.getId()); // role in
+        Used u1=pFactory.newUsed(q("u1"), a3.getId(), e1.getId()); // role in
         WasGeneratedBy wg1=pFactory.newWasGeneratedBy(q("wgb1"), e1.getId(),a3.getId());
 
         

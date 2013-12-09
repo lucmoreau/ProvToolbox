@@ -114,7 +114,7 @@ public class AValue
     protected Byte _byte;
     @XmlSchemaType(name = "anyURI")
     protected String anyURI;
-    protected QName qname;
+    protected QualifiedName qname;
     @XmlSchemaType(name = "unsignedInt")
     protected Long unsignedInt;
     @XmlSchemaType(name = "unsignedLong")
@@ -394,7 +394,7 @@ public class AValue
      *     
      */
     @Transient
-    public QName getQname() {
+    public QualifiedName getQname() {
         return qname;
     }
 
@@ -406,7 +406,7 @@ public class AValue
      *     {@link QName }
      *     
      */
-    public void setQname(QName value) {
+    public void setQname(QualifiedName value) {
         this.qname = value;
     }
 
@@ -541,11 +541,14 @@ public class AValue
     @Basic
     @Column(name = "QNAMEITEM")
     public String getQnameItem() {
-        return XmlAdapterUtils.unmarshall(QNameAsString.class, this.getQname());
+    	QName qn=(this.getQname()==null)? null : this.getQname().toQName();
+        return XmlAdapterUtils.unmarshall(QNameAsString.class, qn);
     }
 
     public void setQnameItem(String target) {
-        setQname(XmlAdapterUtils.marshall(QNameAsString.class, target));
+    	QName qname=XmlAdapterUtils.marshall(QNameAsString.class, target);
+    	QualifiedName qn=(qname==null)? null : new QualifiedName(qname.getNamespaceURI(),qname.getLocalPart(),qname.getPrefix());
+        setQname(qn);
     }
 
     @Basic
@@ -669,9 +672,9 @@ public class AValue
             }
         }
         {
-            QName lhsQname;
+            QualifiedName lhsQname;
             lhsQname = this.getQname();
-            QName rhsQname;
+            QualifiedName rhsQname;
             rhsQname = that.getQname();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "qname", lhsQname), LocatorUtils.property(thatLocator, "qname", rhsQname), lhsQname, rhsQname)) {
                 return false;
@@ -783,7 +786,7 @@ public class AValue
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "anyURI", theAnyURI), currentHashCode, theAnyURI);
         }
         {
-            QName theQname;
+            QualifiedName theQname;
             theQname = this.getQname();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "qname", theQname), currentHashCode, theQname);
         }

@@ -1,5 +1,6 @@
 package org.openprovenance.prov.sql;
 
+
 import junit.framework.TestCase;
 
 public class QNameTest extends TestCase {
@@ -11,18 +12,18 @@ public class QNameTest extends TestCase {
 	
 
 	public void testQName1() {
-		QName q1=new QName("http://example.org/", "v1", "ex");
-		QName q2=new QName("http://example.org/", "v1", "ex");
+		QualifiedName q1=new QualifiedName("http://example.org/", "v1", "ex");
+		QualifiedName q2=new QualifiedName("http://example.org/", "v1", "ex");
 		assertTrue(q1.equals(q2));
 	}
 	public void testQName2() {
-		QName q1=new QName("http://example.org/", "v1", "ex");
-		QName q2=new QName("http://example.org/", "v1", "exoooo");
+		QualifiedName q1=new QualifiedName("http://example.org/", "v1", "ex");
+		QualifiedName q2=new QualifiedName("http://example.org/", "v1", "exoooo");
 		assertTrue(q1.equals(q2));
 	}
 	public void testQName3() {
-		QName q1=new QName("http://example.org/", "v1", "ex");
-		QName q2=new QName("http://example.org/", "v1", "ex");
+		QualifiedName q1=new QualifiedName("http://example.org/", "v1", "ex");
+		QualifiedName q2=new QualifiedName("http://example.org/", "v1", "ex");
 		assertTrue(q1.equals(q2));
 		q2.setLocalPart("v2");
 		System.out.println("QName is " + q2);

@@ -58,16 +58,14 @@ import org.openprovenance.prov.model.StatementOrBundle;
 @Entity(name = "DictionaryMembership")
 @Table(name = "DICTIONARYMEMBERSHIP")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class DictionaryMembership
+public class DictionaryMembership extends AStatement
     implements Equals, HashCode, org.openprovenance.prov.model.DictionaryMembership
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef dictionary;
+    protected org.openprovenance.prov.model.QualifiedName dictionary;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.Entry.class)
     protected List<org.openprovenance.prov.model.Entry> keyEntityPair;
-    @XmlAttribute(name = "Hjid")
-    protected Long hjid;
 
     /**
      * Gets the value of the dictionary property.
@@ -77,11 +75,11 @@ public class DictionaryMembership
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "DICTIONARY__DICTIONARYMEMBER_0")
-    public org.openprovenance.prov.model.IDRef getDictionary() {
+    public org.openprovenance.prov.model.QualifiedName getDictionary() {
         return dictionary;
     }
 
@@ -93,7 +91,7 @@ public class DictionaryMembership
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setDictionary(org.openprovenance.prov.model.IDRef value) {
+    public void setDictionary(org.openprovenance.prov.model.QualifiedName value) {
         this.dictionary = value;
     }
 
@@ -135,33 +133,6 @@ public class DictionaryMembership
         this.keyEntityPair = keyEntityPair;
     }
 
-    /**
-     * Gets the value of the hjid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Long }
-     *     
-     */
-    @Id
-    @Column(name = "HJID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getHjid() {
-        return hjid;
-    }
-
-    /**
-     * Sets the value of the hjid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Long }
-     *     
-     */
-    public void setHjid(Long value) {
-        this.hjid = value;
-    }
-
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
         if (!(object instanceof DictionaryMembership)) {
             return false;
@@ -171,9 +142,9 @@ public class DictionaryMembership
         }
         final DictionaryMembership that = ((DictionaryMembership) object);
         {
-            org.openprovenance.prov.model.IDRef lhsDictionary;
+            org.openprovenance.prov.model.QualifiedName lhsDictionary;
             lhsDictionary = this.getDictionary();
-            org.openprovenance.prov.model.IDRef rhsDictionary;
+            org.openprovenance.prov.model.QualifiedName rhsDictionary;
             rhsDictionary = that.getDictionary();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "dictionary", lhsDictionary), LocatorUtils.property(thatLocator, "dictionary", rhsDictionary), lhsDictionary, rhsDictionary)) {
                 return false;
@@ -199,7 +170,7 @@ public class DictionaryMembership
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = 1;
         {
-            org.openprovenance.prov.model.IDRef theDictionary;
+            org.openprovenance.prov.model.QualifiedName theDictionary;
             theDictionary = this.getDictionary();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "dictionary", theDictionary), currentHashCode, theDictionary);
         }

@@ -1,5 +1,4 @@
 package org.openprovenance.prov.xml;
-import java.util.Hashtable;
 
 import javax.xml.namespace.QName;
 
@@ -48,7 +47,10 @@ public class GettersTest
      */
 
 
-    public QName q(String n) {
+    public QualifiedName q(String n) {
+	return new QualifiedName("http://example.org/", n, "ex");
+    }
+    public QName qq(String n) {
 	return new QName("http://example.org/", n, "ex");
     }
 

@@ -13,14 +13,17 @@ public class AnyAdapter extends
         XmlAdapter<Object, org.openprovenance.prov.model.Attribute> {
 
     final org.openprovenance.prov.model.ProvFactory pFactory;
+    final DOMProcessing domProcessor;
     
     public AnyAdapter() {
 	pFactory= new ProvFactory();
+	domProcessor=new DOMProcessing(pFactory);
 	vconv=new ValueConverter(pFactory,null);
     }
 
     public AnyAdapter(org.openprovenance.prov.model.ProvFactory pFactory) {
 	this.pFactory= pFactory;
+	domProcessor=new DOMProcessing(pFactory);
 	vconv=new ValueConverter(pFactory,null);
     }
 
@@ -35,7 +38,7 @@ public class AnyAdapter extends
         // System.out.println("AnyAdapter unmarshalling for " + value);
         if (value instanceof org.w3c.dom.Element) {
             org.w3c.dom.Element el = (org.w3c.dom.Element) value;
-            return DOMProcessing.unmarshallAttribute(el,pFactory,vconv);
+            return domProcessor.unmarshallAttribute(el,pFactory,vconv);
         }
         /*
         if (value instanceof JAXBElement) {

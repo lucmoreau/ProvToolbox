@@ -470,13 +470,7 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
         return new org.openprovenance.prov.model.URIWrapper();
     }
 
-    /**
-     * Create an instance of {@link IDRef }
-     * 
-     */
-    public IDRef createIDRef() {
-        return new org.openprovenance.prov.xml.IDRef();
-    }
+  
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link PrimarySource }{@code >}}

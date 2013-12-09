@@ -2,6 +2,8 @@ package org.openprovenance.prov.sql;
 
 import java.io.File;
 import java.util.Hashtable;
+
+import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.sql.Document;
 
 //import org.openprovenance.prov.sql.PersistenceUtility;
@@ -36,7 +38,7 @@ public class RoundTripFromJavaSQLTest extends RoundTripFromJavaTest {
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-	System.out.println("read document " + doc.getHjid() + " for " + file1);
+	System.out.println("read document " + doc.getPk() + " for " + file1);
 	return doc;
 
     }
@@ -46,13 +48,20 @@ public class RoundTripFromJavaSQLTest extends RoundTripFromJavaTest {
     @Override
     public void writeDocument(org.openprovenance.prov.model.Document doc,
 			      String file) {
+    	@SuppressWarnings("unused")
 	Document doc2 = u.persist((org.openprovenance.prov.sql.Document) doc);
-	dbKeys.put(file, ((org.openprovenance.prov.sql.Document) doc).getHjid());
-	System.out.println("saved document "
-		+ ((org.openprovenance.prov.sql.Document) doc).getHjid()
-		+ " for " + file);
+    	dbKeys.put(file, ((org.openprovenance.prov.sql.Document) doc).getPk());
+    	System.out.println("saved document "
+    			+ ((org.openprovenance.prov.sql.Document) doc).getPk()
+    			+ " for " + file);
     }
 
+    public boolean doOptional(Statement[] opt) {
+  	return false;
+      }
+
+   
+    
     /*
      * 
      * public void NOmakeDocAndTest(Statement [] statements, String file,
@@ -87,5 +96,11 @@ public class RoundTripFromJavaSQLTest extends RoundTripFromJavaTest {
      * 
      * }
      */
+    
+
+    public org.openprovenance.prov.model.QualifiedName q(String n) {
+		return new QualifiedName(EX_NS, n, EX_PREFIX);
+       }
+
 
 }

@@ -7,9 +7,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -20,7 +18,6 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBEqualsBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.Attribute;
-import org.w3c.dom.Element;
 
 
 /**
@@ -61,10 +58,14 @@ import org.w3c.dom.Element;
 public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.openprovenance.prov.model.DerivedByRemovalFrom, HasAllAttributes
 {
 
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef newDictionary;
+    protected org.openprovenance.prov.model.QualifiedName newDictionary;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef oldDictionary;
+    protected org.openprovenance.prov.model.QualifiedName oldDictionary;
+
     //@XmlElement(required = true)
     //@XmlSchemaType(name = "anySimpleType")
     transient protected List<org.openprovenance.prov.model.Key> key;
@@ -78,18 +79,20 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
  
     @XmlAnyElement
     protected List<Attribute> all;
+
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected org.openprovenance.prov.model.QualifiedName id;
 
     /**
      * Gets the value of the newDictionary property.
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getNewDictionary() {
+    public org.openprovenance.prov.model.QualifiedName getNewDictionary() {
         return newDictionary;
     }
 
@@ -98,10 +101,10 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setNewDictionary(org.openprovenance.prov.model.IDRef value) {
+    public void setNewDictionary(org.openprovenance.prov.model.QualifiedName value) {
         this.newDictionary = value;
     }
 
@@ -110,10 +113,10 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getOldDictionary() {
+    public org.openprovenance.prov.model.QualifiedName getOldDictionary() {
         return oldDictionary;
     }
 
@@ -122,10 +125,10 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setOldDictionary(org.openprovenance.prov.model.IDRef value) {
+    public void setOldDictionary(org.openprovenance.prov.model.QualifiedName value) {
         this.oldDictionary = value;
     }
 
@@ -254,10 +257,10 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link org.openprovenance.prov.model.QualifiedName }
      *     
      */
-    public QName getId() {
+    public org.openprovenance.prov.model.QualifiedName getId() {
         return id;
     }
 
@@ -266,10 +269,10 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link org.openprovenance.prov.model.QualifiedName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(org.openprovenance.prov.model.QualifiedName value) {
         this.id = value;
     }
 
@@ -321,12 +324,12 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            org.openprovenance.prov.model.IDRef theNewDictionary;
+            org.openprovenance.prov.model.QualifiedName theNewDictionary;
             theNewDictionary = this.getNewDictionary();
             toStringBuilder.append("newDictionary", theNewDictionary);
         }
         {
-            org.openprovenance.prov.model.IDRef theOldDictionary;
+            org.openprovenance.prov.model.QualifiedName theOldDictionary;
             theOldDictionary = this.getOldDictionary();
             toStringBuilder.append("oldDictionary", theOldDictionary);
         }
@@ -351,7 +354,7 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
         }

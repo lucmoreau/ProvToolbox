@@ -2,9 +2,8 @@ package org.openprovenance.prov.sql;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
+import javax.persistence.ManyToOne;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -17,11 +16,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.QNameAsString;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -32,6 +27,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.xml.AttributeList;
@@ -93,8 +89,10 @@ public class Agent
  
     @XmlAnyElement
     protected List<Attribute> all;
+
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected QualifiedName id;
     
 
     /**
@@ -122,7 +120,7 @@ public class Agent
     @OneToMany(targetEntity = org.openprovenance.prov.sql.InternationalizedString.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "LABEL_AGENT_HJID")
+    @JoinColumn(name = "LABEL_AGENT_PK")
     public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
         if (label == null) {
             label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
@@ -204,7 +202,7 @@ public class Agent
     @OneToMany(targetEntity = org.openprovenance.prov.sql.Type.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "TYPE__AGENT_HJID")
+    @JoinColumn(name = "TYPE__AGENT_PK")
     public List<org.openprovenance.prov.model.Type> getType() {
         if (type == null) {
             type=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Type.class);
@@ -245,7 +243,7 @@ public class Agent
     @OneToMany(targetEntity =  org.openprovenance.prov.sql.Other.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "OTHERS_AGENT_HJID")
+    @JoinColumn(name = "OTHERS_AGENT_PK")
     public List<Other> getOther() {
         if (others == null) {
             others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Other.class);
@@ -279,11 +277,14 @@ public class Agent
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    @Transient
-    public QName getId() {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "ID")
+    public QualifiedName getId() {
         return id;
     }
 
@@ -292,23 +293,13 @@ public class Agent
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(QualifiedName value) {
         this.id = value;
     }
 
-
-    @Basic
-    @Column(name = "IDITEM")
-    public String getIdItem() {
-        return XmlAdapterUtils.unmarshall(QNameAsString.class, this.getId());
-    }
-
-    public void setIdItem(String target) {
-        setId(XmlAdapterUtils.marshall(QNameAsString.class, target));
-    }
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
         if (!(object instanceof Agent)) {
@@ -358,9 +349,9 @@ public class Agent
             }
         }
         {
-            QName lhsId;
+            QualifiedName lhsId;
             lhsId = this.getId();
-            QName rhsId;
+            QualifiedName rhsId;
             rhsId = that.getId();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "id", lhsId), LocatorUtils.property(thatLocator, "id", rhsId), lhsId, rhsId)) {
                 return false;
@@ -397,7 +388,7 @@ public class Agent
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
         }
         {
-            QName theId;
+            QualifiedName theId;
             theId = this.getId();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "id", theId), currentHashCode, theId);
         }
@@ -411,26 +402,6 @@ public class Agent
 
   
 
-    transient IDRef idRef;
-    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
-        CascadeType.ALL
-    })
-    @JoinColumn(name = "IDREF")
-    public IDRef getIdRef() {
-        return idRef;
-    }
-
-    public void setIdRef(IDRef target) {
-        if (target!=null) { setId(target.getRef());
-        idRef=target;}
-    }
-    
-
-    @Transient
-    public List<Attribute> getAny() {
-	// TODO Auto-generated method stub
-	return null;
-    }
     
     public void toString(ToStringBuilder toStringBuilder) {
         {
@@ -454,12 +425,9 @@ public class Agent
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
-        }
-        { //TODO: only now, for debugging.
-            toStringBuilder.append("all", getAllAttributes());
         }
 
     }

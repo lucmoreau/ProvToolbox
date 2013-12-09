@@ -19,6 +19,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBEqualsBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.QualifiedName;
 
 
 /**
@@ -57,10 +58,14 @@ import org.openprovenance.prov.model.Attribute;
 public class WasAttributedTo implements Equals, HashCode, ToString, org.openprovenance.prov.model.WasAttributedTo, HasAllAttributes
 {
 
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef entity;
+    protected org.openprovenance.prov.model.QualifiedName entity;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef agent;
+    protected org.openprovenance.prov.model.QualifiedName agent;
+
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
     
@@ -69,18 +74,20 @@ public class WasAttributedTo implements Equals, HashCode, ToString, org.openprov
     
     @XmlAnyElement
     protected List<Attribute> all;
+    
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
-
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected org.openprovenance.prov.model.QualifiedName id;
+   
     /**
      * Gets the value of the entity property.
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getEntity() {
+    public org.openprovenance.prov.model.QualifiedName getEntity() {
         return entity;
     }
 
@@ -89,10 +96,10 @@ public class WasAttributedTo implements Equals, HashCode, ToString, org.openprov
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.entity = value;
     }
 
@@ -101,10 +108,10 @@ public class WasAttributedTo implements Equals, HashCode, ToString, org.openprov
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getAgent() {
+    public org.openprovenance.prov.model.QualifiedName getAgent() {
         return agent;
     }
 
@@ -113,10 +120,10 @@ public class WasAttributedTo implements Equals, HashCode, ToString, org.openprov
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setAgent(org.openprovenance.prov.model.IDRef value) {
+    public void setAgent(org.openprovenance.prov.model.QualifiedName value) {
         this.agent = value;
     }
 
@@ -209,7 +216,7 @@ public class WasAttributedTo implements Equals, HashCode, ToString, org.openprov
      *     {@link QName }
      *     
      */
-    public QName getId() {
+    public QualifiedName getId() {
         return id;
     }
 
@@ -221,7 +228,7 @@ public class WasAttributedTo implements Equals, HashCode, ToString, org.openprov
      *     {@link QName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(QualifiedName value) {
         this.id = value;
     }
 
@@ -271,12 +278,12 @@ public class WasAttributedTo implements Equals, HashCode, ToString, org.openprov
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            org.openprovenance.prov.model.IDRef theEntity;
+            org.openprovenance.prov.model.QualifiedName theEntity;
             theEntity = this.getEntity();
             toStringBuilder.append("entity", theEntity);
         }
         {
-            org.openprovenance.prov.model.IDRef theAgent;
+            org.openprovenance.prov.model.QualifiedName theAgent;
             theAgent = this.getAgent();
             toStringBuilder.append("agent", theAgent);
         }
@@ -296,12 +303,9 @@ public class WasAttributedTo implements Equals, HashCode, ToString, org.openprov
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
-        }
-        { //TODO: only now, for debugging.
-            toStringBuilder.append("all", getAllAttributes());
         }
     }
 

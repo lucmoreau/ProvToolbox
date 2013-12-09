@@ -2,8 +2,6 @@ package org.openprovenance.prov.model;
 
 public interface LiteralConstructor {
 
-    //Object newQName(String value);
-
     Object newGYear(int value);
 
     Object newGMonth(int value);

@@ -2,12 +2,12 @@ package org.openprovenance.prov.model;
 
 public interface WasInformedBy extends Identifiable,  HasLabel, HasType, HasOther, Influence {
 
-    void setInformed(IDRef pid1);
+    void setInformed(QualifiedName pid1);
 
-    void setInformant(IDRef pid2);
+    void setInformant(QualifiedName pid2);
 
-    IDRef getInformed();
+    QualifiedName getInformed();
 
-    IDRef getInformant();
+    QualifiedName getInformant();
 
 }

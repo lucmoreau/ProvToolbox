@@ -2,9 +2,7 @@ package org.openprovenance.prov.sql;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -17,11 +15,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.QNameAsString;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -31,6 +25,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.Other;
@@ -78,7 +73,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
     Plan.class
 })
 @javax.persistence.Entity(name = "Entity")
-@Table(name = "ENTITY") //, uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"IDREF"})
+@Table(name = "ENTITY") //, uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"ID"}))
 public class Entity
     extends AStatement
     implements Equals, HashCode, org.openprovenance.prov.model.Entity, HasAllAttributes
@@ -98,7 +93,8 @@ public class Entity
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected QualifiedName id;
     
 
     /**
@@ -126,7 +122,7 @@ public class Entity
     @OneToMany(targetEntity = org.openprovenance.prov.sql.InternationalizedString.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "LABEL_ENTITY_HJID")
+    @JoinColumn(name = "LABEL_ENTITY_PK")
     public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
         if (label == null) {
             label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
@@ -208,7 +204,7 @@ public class Entity
     @OneToMany(targetEntity = org.openprovenance.prov.sql.Type.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "TYPE__ENTITY_HJID")
+    @JoinColumn(name = "TYPE__ENTITY_PK")
     public List<org.openprovenance.prov.model.Type> getType() {
         if (type == null) {
             type=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Type.class);
@@ -289,7 +285,7 @@ public class Entity
     @OneToMany(targetEntity =  org.openprovenance.prov.sql.Other.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "OTHERS_ENTITY_HJID")
+    @JoinColumn(name = "OTHERS_ENTITY_PK")
     public List<Other> getOther() {
         if (others == null) {
             others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Other.class);
@@ -324,11 +320,14 @@ public class Entity
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    @Transient
-    public QName getId() {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "ID")
+    public QualifiedName getId() {
         return id;
     }
 
@@ -337,22 +336,14 @@ public class Entity
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(QualifiedName value) {
         this.id = value;
     }
 
-    @Basic
-    @Column(name = "IDITEM")
-    public String getIdItem() {
-        return XmlAdapterUtils.unmarshall(QNameAsString.class, this.getId());
-    }
-
-    public void setIdItem(String target) {
-        setId(XmlAdapterUtils.marshall(QNameAsString.class, target));
-    }
+   
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
         if (!(object instanceof Entity)) {
@@ -411,9 +402,9 @@ public class Entity
             }
         }
         {
-            QName lhsId;
+            QualifiedName lhsId;
             lhsId = this.getId();
-            QName rhsId;
+            QualifiedName rhsId;
             rhsId = that.getId();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "id", lhsId), LocatorUtils.property(thatLocator, "id", rhsId), lhsId, rhsId)) {
                 return false;
@@ -455,7 +446,7 @@ public class Entity
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
         }
         {
-            QName theId;
+            QualifiedName theId;
             theId = this.getId();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "id", theId), currentHashCode, theId);
         }
@@ -468,20 +459,6 @@ public class Entity
     }
 
    
-
-    transient IDRef idRef;
-    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
-        CascadeType.ALL
-    })
-    @JoinColumn(name = "IDREF")
-    public IDRef getIdRef() {
-        return idRef;
-    }
-
-    public void setIdRef(IDRef target) {
-        if (target!=null) { setId(target.getRef());
-        idRef=target;}
-    }
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
@@ -511,7 +488,7 @@ public class Entity
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
         }

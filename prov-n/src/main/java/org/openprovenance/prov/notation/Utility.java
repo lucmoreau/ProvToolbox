@@ -6,8 +6,6 @@ import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
 import  org.antlr.runtime.CommonTokenStream;
 import  org.antlr.runtime.ANTLRFileStream;
 import  org.antlr.runtime.CharStream;
@@ -19,10 +17,9 @@ import  org.antlr.runtime.tree.CommonTreeAdaptor;
 import  org.antlr.runtime.tree.TreeAdaptor;
 
 import org.openprovenance.prov.model.BeanTraversal;
-import org.openprovenance.prov.xml.Helper;
 import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.model.QNameExport;
-import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.model.QualifiedNameExport;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Document;
 
 
@@ -77,10 +74,16 @@ public  class Utility {
 
 
 
-    public String convertBeanToHTML(Document doc) {
+    public String convertBeanToHTML(final Document doc) {
 	ProvFactory pFactory=new ProvFactory();
 	StringWriter writer=new StringWriter();
-	NotationConstructor nc=new HTMLConstructor(writer, pFactory);
+	QualifiedNameExport qExport = new QualifiedNameExport() {
+	    @Override
+	    public String qualifiedNameToString(QualifiedName qname) {
+		return doc.getNamespace().qualifiedNameToString(qname);
+	    }
+	};
+	NotationConstructor nc=new HTMLConstructor(writer,qExport);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
         bt.convert(doc);
         nc.flush();
@@ -108,10 +111,10 @@ public  class Utility {
     public String convertBeanToASN(final Document doc) {
 	ProvFactory pFactory=new ProvFactory();
 	StringWriter writer=new StringWriter();
-	QNameExport qExport = new QNameExport() {
+	QualifiedNameExport qExport = new QualifiedNameExport() {
 	    @Override
-	    public String qnameToString(QName qname) {
-		return doc.getNamespace().qnameToString(qname);
+	    public String qualifiedNameToString(QualifiedName qname) {
+		return doc.getNamespace().qualifiedNameToString(qname);
 	    }
 	};
 	NotationConstructor nc=new NotationConstructor(writer, qExport);

@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -59,12 +58,18 @@ import org.openprovenance.prov.model.Attribute;
 public class ActedOnBehalfOf implements Equals, HashCode, ToString, org.openprovenance.prov.model.ActedOnBehalfOf, HasAllAttributes
 {
 
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef delegate;
+    protected org.openprovenance.prov.model.QualifiedName delegate;
+    
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef responsible;
+    protected org.openprovenance.prov.model.QualifiedName responsible;
+    
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef activity;
+    protected org.openprovenance.prov.model.QualifiedName activity;
+    
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
 
@@ -73,18 +78,21 @@ public class ActedOnBehalfOf implements Equals, HashCode, ToString, org.openprov
     
     @XmlAnyElement
     protected List<Attribute> all;
+    
+
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected org.openprovenance.prov.model.QualifiedName id;
 
     /**
      * Gets the value of the delegate property.
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getDelegate() {
+    public org.openprovenance.prov.model.QualifiedName getDelegate() {
         return delegate;
     }
 
@@ -93,10 +101,10 @@ public class ActedOnBehalfOf implements Equals, HashCode, ToString, org.openprov
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setDelegate(org.openprovenance.prov.model.IDRef value) {
+    public void setDelegate(org.openprovenance.prov.model.QualifiedName value) {
         this.delegate = value;
     }
 
@@ -105,10 +113,10 @@ public class ActedOnBehalfOf implements Equals, HashCode, ToString, org.openprov
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getResponsible() {
+    public org.openprovenance.prov.model.QualifiedName getResponsible() {
         return responsible;
     }
 
@@ -117,10 +125,10 @@ public class ActedOnBehalfOf implements Equals, HashCode, ToString, org.openprov
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setResponsible(org.openprovenance.prov.model.IDRef value) {
+    public void setResponsible(org.openprovenance.prov.model.QualifiedName value) {
         this.responsible = value;
     }
 
@@ -129,10 +137,10 @@ public class ActedOnBehalfOf implements Equals, HashCode, ToString, org.openprov
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getActivity() {
+    public org.openprovenance.prov.model.QualifiedName getActivity() {
         return activity;
     }
 
@@ -141,10 +149,10 @@ public class ActedOnBehalfOf implements Equals, HashCode, ToString, org.openprov
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setActivity(org.openprovenance.prov.model.IDRef value) {
+    public void setActivity(org.openprovenance.prov.model.QualifiedName value) {
         this.activity = value;
     }
 
@@ -234,10 +242,10 @@ public class ActedOnBehalfOf implements Equals, HashCode, ToString, org.openprov
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link org.openprovenance.prov.model.QualifiedName }
      *     
      */
-    public QName getId() {
+    public org.openprovenance.prov.model.QualifiedName getId() {
         return id;
     }
 
@@ -246,10 +254,10 @@ public class ActedOnBehalfOf implements Equals, HashCode, ToString, org.openprov
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link org.openprovenance.prov.model.QualifiedName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(org.openprovenance.prov.model.QualifiedName value) {
         this.id = value;
     }
 
@@ -301,17 +309,17 @@ public class ActedOnBehalfOf implements Equals, HashCode, ToString, org.openprov
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            org.openprovenance.prov.model.IDRef theDelegate;
+            org.openprovenance.prov.model.QualifiedName theDelegate;
             theDelegate = this.getDelegate();
             toStringBuilder.append("delegate", theDelegate);
         }
         {
-            org.openprovenance.prov.model.IDRef theResponsible;
+            org.openprovenance.prov.model.QualifiedName theResponsible;
             theResponsible = this.getResponsible();
             toStringBuilder.append("responsible", theResponsible);
         }
         {
-            org.openprovenance.prov.model.IDRef theActivity;
+            org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
             toStringBuilder.append("activity", theActivity);
         }
@@ -331,7 +339,7 @@ public class ActedOnBehalfOf implements Equals, HashCode, ToString, org.openprov
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
         }

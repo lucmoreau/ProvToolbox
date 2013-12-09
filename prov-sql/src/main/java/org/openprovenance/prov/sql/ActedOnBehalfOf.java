@@ -2,9 +2,7 @@ package org.openprovenance.prov.sql;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,8 +16,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.QNameAsString;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -28,6 +24,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.StatementOrBundle;
@@ -81,11 +78,11 @@ public class ActedOnBehalfOf
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef delegate;
+    protected org.openprovenance.prov.model.QualifiedName delegate;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef responsible;
+    protected org.openprovenance.prov.model.QualifiedName responsible;
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef activity;
+    protected org.openprovenance.prov.model.QualifiedName activity;
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
     
@@ -95,7 +92,8 @@ public class ActedOnBehalfOf
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected QualifiedName id;
     
 
     /**
@@ -106,11 +104,11 @@ public class ActedOnBehalfOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "DELEGATE")
-    public org.openprovenance.prov.model.IDRef getDelegate() {
+    public org.openprovenance.prov.model.QualifiedName getDelegate() {
         return delegate;
     }
 
@@ -119,10 +117,10 @@ public class ActedOnBehalfOf
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.sql.IDRef }
+     *     {@link org.openprovenance.prov.sql.QualifiedName }
      *     
      */
-    public void setDelegate(org.openprovenance.prov.model.IDRef value) {
+    public void setDelegate(org.openprovenance.prov.model.QualifiedName value) {
         this.delegate = value;
     }
 
@@ -134,11 +132,11 @@ public class ActedOnBehalfOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "RESPONSIBLE")
-    public org.openprovenance.prov.model.IDRef getResponsible() {
+    public org.openprovenance.prov.model.QualifiedName getResponsible() {
         return responsible;
     }
 
@@ -150,7 +148,7 @@ public class ActedOnBehalfOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setResponsible(org.openprovenance.prov.model.IDRef value) {
+    public void setResponsible(org.openprovenance.prov.model.QualifiedName value) {
         this.responsible = value;
     }
 
@@ -162,11 +160,11 @@ public class ActedOnBehalfOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "ACTIVITY")
-    public org.openprovenance.prov.model.IDRef getActivity() {
+    public org.openprovenance.prov.model.QualifiedName getActivity() {
         return activity;
     }
 
@@ -178,7 +176,7 @@ public class ActedOnBehalfOf
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setActivity(org.openprovenance.prov.model.IDRef value) {
+    public void setActivity(org.openprovenance.prov.model.QualifiedName value) {
         this.activity = value;
     }
 
@@ -207,7 +205,7 @@ public class ActedOnBehalfOf
     @OneToMany(targetEntity = org.openprovenance.prov.sql.InternationalizedString.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "LABEL_ACTEDONBEHALFOF_HJID")
+    @JoinColumn(name = "LABEL_ACTEDONBEHALFOF_PK")
     public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
         if (label == null) {
             label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
@@ -248,7 +246,7 @@ public class ActedOnBehalfOf
     @OneToMany(targetEntity = org.openprovenance.prov.sql.Type.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "TYPE__ACTEDONBEHALFOF_HJID")
+    @JoinColumn(name = "TYPE__ACTEDONBEHALFOF_PK")
     public List<org.openprovenance.prov.model.Type> getType() {
         if (type == null) {
             type=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Type.class);
@@ -289,7 +287,7 @@ public class ActedOnBehalfOf
     @OneToMany(targetEntity =  org.openprovenance.prov.sql.Other.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "OTHERS_ACTEDONBEHALFOF_HJID")
+    @JoinColumn(name = "OTHERS_ACTEDONBEHALFOF_PK")
     public List<Other> getOther() {
         if (others == null) {
             others=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Other.class);
@@ -327,8 +325,11 @@ public class ActedOnBehalfOf
      *     {@link QName }
      *     
      */
-    @Transient
-    public QName getId() {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "ID")
+    public QualifiedName getId() {
         return id;
     }
 
@@ -337,23 +338,14 @@ public class ActedOnBehalfOf
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(QualifiedName value) {
         this.id = value;
     }
 
-    @Basic
-    @Column(name = "IDITEM")
-    public String getIdItem() {
-        return XmlAdapterUtils.unmarshall(QNameAsString.class, this.getId());
-    }
-
-    public void setIdItem(String target) {
-        setId(XmlAdapterUtils.marshall(QNameAsString.class, target));
-    }
-
+   
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
         if (!(object instanceof ActedOnBehalfOf)) {
             return false;
@@ -366,27 +358,27 @@ public class ActedOnBehalfOf
         }
         final ActedOnBehalfOf that = ((ActedOnBehalfOf) object);
         {
-            org.openprovenance.prov.model.IDRef lhsDelegate;
+            org.openprovenance.prov.model.QualifiedName lhsDelegate;
             lhsDelegate = this.getDelegate();
-            org.openprovenance.prov.model.IDRef rhsDelegate;
+            org.openprovenance.prov.model.QualifiedName rhsDelegate;
             rhsDelegate = that.getDelegate();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "delegate", lhsDelegate), LocatorUtils.property(thatLocator, "delegate", rhsDelegate), lhsDelegate, rhsDelegate)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsResponsible;
+            org.openprovenance.prov.model.QualifiedName lhsResponsible;
             lhsResponsible = this.getResponsible();
-            org.openprovenance.prov.model.IDRef rhsResponsible;
+            org.openprovenance.prov.model.QualifiedName rhsResponsible;
             rhsResponsible = that.getResponsible();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "responsible", lhsResponsible), LocatorUtils.property(thatLocator, "responsible", rhsResponsible), lhsResponsible, rhsResponsible)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsActivity;
+            org.openprovenance.prov.model.QualifiedName lhsActivity;
             lhsActivity = this.getActivity();
-            org.openprovenance.prov.model.IDRef rhsActivity;
+            org.openprovenance.prov.model.QualifiedName rhsActivity;
             rhsActivity = that.getActivity();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "activity", lhsActivity), LocatorUtils.property(thatLocator, "activity", rhsActivity), lhsActivity, rhsActivity)) {
                 return false;
@@ -420,9 +412,9 @@ public class ActedOnBehalfOf
             }
         }
         {
-            QName lhsId;
+            QualifiedName lhsId;
             lhsId = this.getId();
-            QName rhsId;
+            QualifiedName rhsId;
             rhsId = that.getId();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "id", lhsId), LocatorUtils.property(thatLocator, "id", rhsId), lhsId, rhsId)) {
                 return false;
@@ -439,17 +431,17 @@ public class ActedOnBehalfOf
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            org.openprovenance.prov.model.IDRef theDelegate;
+            org.openprovenance.prov.model.QualifiedName theDelegate;
             theDelegate = this.getDelegate();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "delegate", theDelegate), currentHashCode, theDelegate);
         }
         {
-            org.openprovenance.prov.model.IDRef theResponsible;
+            org.openprovenance.prov.model.QualifiedName theResponsible;
             theResponsible = this.getResponsible();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "responsible", theResponsible), currentHashCode, theResponsible);
         }
         {
-            org.openprovenance.prov.model.IDRef theActivity;
+            org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "activity", theActivity), currentHashCode, theActivity);
         }
@@ -469,7 +461,7 @@ public class ActedOnBehalfOf
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
         }
         {
-            QName theId;
+            QualifiedName theId;
             theId = this.getId();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "id", theId), currentHashCode, theId);
         }
@@ -483,25 +475,6 @@ public class ActedOnBehalfOf
 
    
 
-    transient IDRef idRef;
-    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
-        CascadeType.ALL
-    })
-    @JoinColumn(name = "IDREF")
-    public IDRef getIdRef() {
-        return idRef;
-    }
-
-    public void setIdRef(IDRef target) {
-        if (target!=null) { setId(target.getRef());
-        idRef=target;}
-    }
-
-    @Transient
-    public List<Attribute> getAny() {
-	// TODO Auto-generated method stub
-	return null;
-    }
     @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_DELEGATION;

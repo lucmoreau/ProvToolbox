@@ -6,20 +6,20 @@ package org.openprovenance.prov.model;
  *  an update of an entity resulting in a new one, or the construction of a new entity based on a pre-existing entity.
  *  
  *
- * <p>The constructor method {@link ProvFactory#newWasDerivedFrom(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)} can be used to create an instance of <tt>WasDerivedFrom</tt>.
+ * <p>The constructor method {@link ProvFactory#newWasDerivedFrom(QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of <tt>WasDerivedFrom</tt>.
  * The following code snippet creates a new derivation statement, with a type attribute.
  * The instance of derivation is given an identifier <tt>myId</tt>.
  * <pre>
- * QName myId= ... ;  // some qualified name
- * QName effectId= ... ;  // some qualified name
- * QName causeId= ... ;   // some qualified name
+ * QualifiedName myId= ... ;  // some qualified name
+ * QualifiedName effectId= ... ;  // some qualified name
+ * QualifiedName causeId= ... ;   // some qualified name
  * WasDerivedFrom myWasDerivedFrom=provFactory.newWasDerivedFrom(myId,effectId,causeId)
  * myWasDerivedFrom.getType().add(provFactory.newType(Name.QNAME_PROV_REVISION))
  * </pre>
  * 
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
- * <li> {@link ProvFactory#newWasDerivedFrom(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)}
+ * <li> {@link ProvFactory#newWasDerivedFrom(QualifiedName, QualifiedName, QualifiedName)}
  * <li> {@link ObjectFactory#createWasDerivedFrom()}
  * </ul>
  * 
@@ -58,24 +58,24 @@ package org.openprovenance.prov.model;
 
 public interface WasDerivedFrom  extends Identifiable,  HasLabel, HasType, HasOther, Influence {
 
-    void setUsedEntity(IDRef aid2);
+    void setUsedEntity(QualifiedName aid2);
 
-    void setGeneratedEntity(IDRef aid1);
+    void setGeneratedEntity(QualifiedName aid1);
 
-    void setActivity(IDRef aid);
+    void setActivity(QualifiedName aid);
 
-    void setGeneration(IDRef did1);
+    void setGeneration(QualifiedName did1);
 
-    void setUsage(IDRef did2);
+    void setUsage(QualifiedName did2);
 
-    IDRef getGeneratedEntity();
+    QualifiedName getGeneratedEntity();
 
-    IDRef getGeneration();
+    QualifiedName getGeneration();
 
-    IDRef getUsedEntity();
+    QualifiedName getUsedEntity();
 
-    IDRef getUsage();
+    QualifiedName getUsage();
 
-    IDRef getActivity();
+    QualifiedName getActivity();
 
 }

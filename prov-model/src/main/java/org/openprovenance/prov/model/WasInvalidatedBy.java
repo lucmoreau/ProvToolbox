@@ -7,13 +7,13 @@ package org.openprovenance.prov.model;
  * Any generation or usage of an entity precedes its invalidation.
  *  
  *
- * <p>The constructor method {@link ProvFactory#newWasInvalidatedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)} can be used to create an instance of <tt>WasInvalidatedBy</tt>.
+ * <p>The constructor method {@link ProvFactory#newWasInvalidatedBy(QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of <tt>WasInvalidatedBy</tt>.
  * The following code snippet creates a new invalidation statement, with a role attribute, and current time.
  * The instance of invalidation is given an identifier <tt>myId</tt>.
  * <pre>
- * QName myId= ... ;  // some qualified name
- * QName entityId= ... ;    // some entity qualified name
- * QName activityId= ... ;  // some activity qualified name
+ * QualifiedName myId= ... ;  // some qualified name
+ * QualifiedName entityId= ... ;    // some entity qualified name
+ * QualifiedName activityId= ... ;  // some activity qualified name
  * WasInvalidatedBy myWasInvalidatedBy=provFactory.newWasInvalidatedBy(myId,entityId,activityId);
  * myWasInvalidatedBy.getRole().add(provFactory.newRole("parameter"));
  * myWasInvalidatedBy.setTime(provFactory.newTimeNow())
@@ -21,8 +21,8 @@ package org.openprovenance.prov.model;
  * 
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
- * <li> {@link ProvFactory#newWasInvalidatedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)}
- * <li> {@link ProvFactory#newWasInvalidatedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)}
+ * <li> {@link ProvFactory#newWasInvalidatedBy(QualifiedName, QualifiedName, QualifiedName)}
+ * <li> {@link ProvFactory#newWasInvalidatedBy(QualifiedName, QualifiedName, QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)}
  * <li> {@link ObjectFactory#createWasInvalidatedBy()}
  * </ul>
  * 
@@ -63,12 +63,12 @@ package org.openprovenance.prov.model;
  */
 public interface WasInvalidatedBy extends Identifiable,  HasLabel, HasTime, HasType, HasRole, HasLocation, HasOther,  Influence{
 
-    void setActivity(IDRef aid);
+    void setActivity(QualifiedName aid);
 
-    void setEntity(IDRef eid);
+    void setEntity(QualifiedName eid);
 
-    IDRef getEntity();
+    QualifiedName getEntity();
 
-    IDRef getActivity();
+    QualifiedName getActivity();
 
 }

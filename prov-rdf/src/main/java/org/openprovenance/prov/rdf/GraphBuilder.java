@@ -1,32 +1,36 @@
 package org.openprovenance.prov.rdf;
 
-import javax.xml.namespace.QName;
+
+import org.openprovenance.prov.model.QualifiedName;
 
 public interface GraphBuilder<RESOURCE, LITERAL, STATEMENT> {
 
     public abstract void assertStatement(STATEMENT stmnt);
 
-    public abstract STATEMENT createDataProperty(RESOURCE r, QName pred,
+    public abstract STATEMENT createDataProperty(RESOURCE r, 
+                                                 QualifiedName pred,
 						 LITERAL literal);
 
-    public abstract STATEMENT createDataProperty(QName subject, QName pred,
+    public abstract STATEMENT createDataProperty(QualifiedName subject, 
+                                                 QualifiedName pred,
 						 LITERAL literal);
 
-    public abstract STATEMENT createObjectProperty(RESOURCE r, QName pred,
-						   QName object);
+    public abstract STATEMENT createObjectProperty(RESOURCE r, QualifiedName pred,
+						   QualifiedName object);
+    
+    public abstract STATEMENT createObjectProperty(QualifiedName subject, 
+                                                   QualifiedName pred,
+						   QualifiedName object);
 
-    public abstract STATEMENT createObjectProperty(QName subject, QName pred,
-						   QName object);
-
-    public abstract LITERAL newLiteral(String value, QName type);
+    public abstract LITERAL newLiteral(String value, QualifiedName type);
 
     public abstract LITERAL newLiteral(String value, String lang);
 
-    public abstract RESOURCE qnameToURI(QName qname);
+    public abstract RESOURCE qualifiedNameToURI(QualifiedName qname);
 
-    public abstract RESOURCE qnameToResource(QName qname);
+    public abstract RESOURCE qualifiedNameToResource(QualifiedName qname);
 
-    public abstract QName newBlankName();
+    public abstract QualifiedName newBlankName();
 
     public void setContext();
 

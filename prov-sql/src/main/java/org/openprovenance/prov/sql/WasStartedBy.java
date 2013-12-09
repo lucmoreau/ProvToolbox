@@ -22,8 +22,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.QNameAsString;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 import org.jvnet.jaxb2_commons.lang.Equals;
@@ -35,6 +33,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.xml.AttributeList;
 import org.openprovenance.prov.xml.HasAllAttributes;
@@ -92,11 +91,11 @@ public class WasStartedBy
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef activity;
+    protected org.openprovenance.prov.model.QualifiedName activity;
     @XmlElement(type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef trigger;
+    protected org.openprovenance.prov.model.QualifiedName trigger;
     @XmlElement(type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef starter;
+    protected org.openprovenance.prov.model.QualifiedName starter;
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar time;
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
@@ -109,7 +108,8 @@ public class WasStartedBy
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected QualifiedName id;
     
 
     /**
@@ -120,11 +120,11 @@ public class WasStartedBy
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "ACTIVITY")
-    public org.openprovenance.prov.model.IDRef getActivity() {
+    public org.openprovenance.prov.model.QualifiedName getActivity() {
         return activity;
     }
 
@@ -136,7 +136,7 @@ public class WasStartedBy
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setActivity(org.openprovenance.prov.model.IDRef value) {
+    public void setActivity(org.openprovenance.prov.model.QualifiedName value) {
         this.activity = value;
     }
 
@@ -148,11 +148,11 @@ public class WasStartedBy
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "TRIGGER")
-    public org.openprovenance.prov.model.IDRef getTrigger() {
+    public org.openprovenance.prov.model.QualifiedName getTrigger() {
         return trigger;
     }
 
@@ -164,7 +164,7 @@ public class WasStartedBy
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setTrigger(org.openprovenance.prov.model.IDRef value) {
+    public void setTrigger(org.openprovenance.prov.model.QualifiedName value) {
         this.trigger = value;
     }
 
@@ -176,11 +176,11 @@ public class WasStartedBy
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "STARTER")
-    public org.openprovenance.prov.model.IDRef getStarter() {
+    public org.openprovenance.prov.model.QualifiedName getStarter() {
         return starter;
     }
 
@@ -192,7 +192,7 @@ public class WasStartedBy
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setStarter(org.openprovenance.prov.model.IDRef value) {
+    public void setStarter(org.openprovenance.prov.model.QualifiedName value) {
         this.starter = value;
     }
 
@@ -246,7 +246,7 @@ public class WasStartedBy
     @OneToMany(targetEntity = org.openprovenance.prov.sql.InternationalizedString.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "LABEL_WASSTARTEDBY_HJID")
+    @JoinColumn(name = "LABEL_WASSTARTEDBY_PK")
     public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
         if (label == null) {
             label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
@@ -329,7 +329,7 @@ public class WasStartedBy
     @OneToMany(targetEntity = org.openprovenance.prov.sql.Role.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "ROLE__WASSTARTEDBY_HJID")
+    @JoinColumn(name = "ROLE__WASSTARTEDBY_PK")
     public List<org.openprovenance.prov.model.Role> getRole() {
         if (role == null) {
             role=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Role.class);
@@ -371,7 +371,7 @@ public class WasStartedBy
     @OneToMany(targetEntity = org.openprovenance.prov.sql.Type.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "TYPE__WASSTARTEDBY_HJID")
+    @JoinColumn(name = "TYPE__WASSTARTEDBY_PK")
     public List<org.openprovenance.prov.model.Type> getType() {
         if (type == null) {
             type=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Type.class);
@@ -412,7 +412,7 @@ public class WasStartedBy
     @OneToMany(targetEntity = Other.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "OTHERS_WASSTARTEDBY_HJID")
+    @JoinColumn(name = "OTHERS_WASSTARTEDBY_PK")
     public List<org.openprovenance.prov.model.Other> getOther() {
         if (other == null) {
             other=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Other.class);
@@ -447,11 +447,14 @@ public class WasStartedBy
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    @Transient
-    public QName getId() {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "ID")
+    public QualifiedName getId() {
         return id;
     }
 
@@ -460,10 +463,10 @@ public class WasStartedBy
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(QualifiedName value) {
         this.id = value;
     }
 
@@ -478,16 +481,7 @@ public class WasStartedBy
         setTime(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
     }
 
-    @Basic
-    @Column(name = "IDITEM")
-    public String getIdItem() {
-        return XmlAdapterUtils.unmarshall(QNameAsString.class, this.getId());
-    }
-
-    public void setIdItem(String target) {
-        setId(XmlAdapterUtils.marshall(QNameAsString.class, target));
-    }
-
+    
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
         if (!(object instanceof WasStartedBy)) {
             return false;
@@ -500,27 +494,27 @@ public class WasStartedBy
         }
         final WasStartedBy that = ((WasStartedBy) object);
         {
-            org.openprovenance.prov.model.IDRef lhsActivity;
+            org.openprovenance.prov.model.QualifiedName lhsActivity;
             lhsActivity = this.getActivity();
-            org.openprovenance.prov.model.IDRef rhsActivity;
+            org.openprovenance.prov.model.QualifiedName rhsActivity;
             rhsActivity = that.getActivity();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "activity", lhsActivity), LocatorUtils.property(thatLocator, "activity", rhsActivity), lhsActivity, rhsActivity)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsTrigger;
+            org.openprovenance.prov.model.QualifiedName lhsTrigger;
             lhsTrigger = this.getTrigger();
-            org.openprovenance.prov.model.IDRef rhsTrigger;
+            org.openprovenance.prov.model.QualifiedName rhsTrigger;
             rhsTrigger = that.getTrigger();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "trigger", lhsTrigger), LocatorUtils.property(thatLocator, "trigger", rhsTrigger), lhsTrigger, rhsTrigger)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsStarter;
+            org.openprovenance.prov.model.QualifiedName lhsStarter;
             lhsStarter = this.getStarter();
-            org.openprovenance.prov.model.IDRef rhsStarter;
+            org.openprovenance.prov.model.QualifiedName rhsStarter;
             rhsStarter = that.getStarter();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "starter", lhsStarter), LocatorUtils.property(thatLocator, "starter", rhsStarter), lhsStarter, rhsStarter)) {
                 return false;
@@ -581,9 +575,9 @@ public class WasStartedBy
             }
         }
         {
-            QName lhsId;
+            QualifiedName lhsId;
             lhsId = this.getId();
-            QName rhsId;
+            QualifiedName rhsId;
             rhsId = that.getId();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "id", lhsId), LocatorUtils.property(thatLocator, "id", rhsId), lhsId, rhsId)) {
                 return false;
@@ -600,17 +594,17 @@ public class WasStartedBy
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            org.openprovenance.prov.model.IDRef theActivity;
+            org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "activity", theActivity), currentHashCode, theActivity);
         }
         {
-            org.openprovenance.prov.model.IDRef theTrigger;
+            org.openprovenance.prov.model.QualifiedName theTrigger;
             theTrigger = this.getTrigger();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "trigger", theTrigger), currentHashCode, theTrigger);
         }
         {
-            org.openprovenance.prov.model.IDRef theStarter;
+            org.openprovenance.prov.model.QualifiedName theStarter;
             theStarter = this.getStarter();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "starter", theStarter), currentHashCode, theStarter);
         }
@@ -645,7 +639,7 @@ public class WasStartedBy
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
         }
         {
-            QName theId;
+            QualifiedName theId;
             theId = this.getId();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "id", theId), currentHashCode, theId);
         }
@@ -658,26 +652,6 @@ public class WasStartedBy
     }
 
    
-
-    transient IDRef idRef;
-    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
-        CascadeType.ALL
-    })
-    @JoinColumn(name = "IDREF")
-    public IDRef getIdRef() {
-        return idRef;
-    }
-
-    public void setIdRef(IDRef target) {
-        if (target!=null) { setId(target.getRef());
-        idRef=target;}
-    }
-
-    @Transient
-    public List<Attribute> getAny() {
-	// TODO Auto-generated method stub
-	return null;
-    }
     @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_START;

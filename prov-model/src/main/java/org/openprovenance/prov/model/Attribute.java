@@ -1,6 +1,5 @@
 package org.openprovenance.prov.model;
 
-import javax.xml.namespace.QName;
 
 public interface Attribute extends TypedValue {
 
@@ -14,27 +13,27 @@ public interface Attribute extends TypedValue {
 	OTHER	
     }
 
-    public abstract QName getQName(AttributeKind kind);
+    public abstract QualifiedName getQualifiedName(AttributeKind kind);
 
-    public abstract AttributeKind getAttributeKind(QName q);
+    public abstract AttributeKind getAttributeKind(QualifiedName q);
 
-    public abstract QName getElementName();
+    public abstract QualifiedName getElementName();
 
     public abstract AttributeKind getKind();
 
     
     /** Get the type of an Attribute 
-     * @return  possible object of {@link String}, {@link QName}, {@link InternationalizedString}
+     * @return  possible object of {@link String}, {@link QualifiedName}, {@link InternationalizedString}
      */
     
     public abstract Object getValue();
 
     
     /** Get the type of an Attribute 
-     * @return  possible instance of  {@link QName}
+     * @return  possible instance of  {@link QualifiedName}
      */
     
-    public abstract QName getType();
+    public abstract QualifiedName getType();
 
     /** A method to generate the prov-n representation of an attribute  ex:attr="value" %% xsd:type */
 

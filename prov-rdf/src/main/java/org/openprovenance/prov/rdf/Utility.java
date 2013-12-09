@@ -12,8 +12,7 @@ import org.openprovenance.prov.rdf.collector.QualifiedCollector;
 import org.openprovenance.prov.rdf.collector.RdfCollector;
 
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.contextaware.ContextAwareRepository;
 import org.openrdf.repository.sail.SailRepository;
@@ -25,24 +24,31 @@ import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
 
 public class Utility {
+    private final ProvFactory pFactory;
+    private final Ontology onto;
+
+    public Utility (ProvFactory pFactory, Ontology onto) {
+	this.pFactory=pFactory;
+	this.onto=onto;
+
+    }
 
 
     public Document parseRDF(String filename) throws RDFParseException,
 					     RDFHandlerException, IOException,
 					     JAXBException {
     	//System.out.println("**** Parse "+filename);
-	ProvFactory pFactory = new ProvFactory();
 	File file = new File(filename);
 	RDFParser rdfParser = Rio.createParser(Rio.getParserFormatForFileName(file.getName()));
 	URL documentURL = file.toURI().toURL();
 	InputStream inputStream = documentURL.openStream();
-	RdfCollector rdfCollector = new QualifiedCollector(pFactory);
+	RdfCollector rdfCollector = new QualifiedCollector(pFactory,onto);
 	rdfParser.setRDFHandler(rdfCollector);
 	rdfParser.parse(inputStream, documentURL.toString());
 	return rdfCollector.getDocument();
     }
 
-    public void dumpRDF(org.openprovenance.prov.model.ProvFactory pFactory, Document document,
+    public void dumpRDF(Document document,
 			RDFFormat format, String filename) throws Exception {
 	
 	
@@ -51,9 +57,9 @@ public class Utility {
 	ContextAwareRepository rep=new ContextAwareRepository(myRepository); // was it necessary to create that?
 
 	RepositoryHelper rHelper = new RepositoryHelper();
-
-	RdfConstructor rdfc = new RdfConstructor(new SesameGraphBuilder(rep));
 	
+	RdfConstructor rdfc = new RdfConstructor(new SesameGraphBuilder(rep, pFactory), pFactory);
+			
 	
 	Namespace ns=new Namespace(document.getNamespace());	
 	ns.unregister("xsd", "http://www.w3.org/2001/XMLSchema");

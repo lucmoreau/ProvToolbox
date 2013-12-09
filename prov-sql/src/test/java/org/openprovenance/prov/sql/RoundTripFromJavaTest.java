@@ -3,14 +3,12 @@ package org.openprovenance.prov.sql;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.Hashtable;
 import javax.xml.bind.JAXBException;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.xml.UncheckedTestException;
-import org.openprovenance.prov.xml.ValueConverter;
 
 /**
  * Unit test for PROV roundtrip conversion between Java and XML
@@ -32,6 +30,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 
     static {
 	pFactory = new ProvFactory();
+	name=pFactory.getName();
     }
 	private DocumentEquality documentEquality;
 
@@ -61,7 +60,12 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	return ".xml";
     }
     
-    public void testEntity0 () throws JAXBException {
+
+    public org.openprovenance.prov.model.QualifiedName q(String n) {
+        return new QualifiedName(EX_NS, n, EX_PREFIX);
+    }
+
+    public void testEntity0 () {
 	System.out.println("Starting test Entity0");
 	super.testEntity0();
 	System.out.println("Ending test Entity0");
@@ -178,23 +182,6 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
     }
     ///////////////////////////////////////////////////////////////////////
 
-    
-    public QName qq(String n) {
-        return new QName(EX_NS, n, EX_PREFIX);
-    }
-    
-    
-    public void testUsage100() throws JAXBException  {
-        System.out.println("testUsage 100 start");
-        setNamespaces();
-        Used use = (Used) pFactory.newUsed(q("use1"),
-                                           pFactory.newIDRef(q("a1")),
-                                           "somerole",
-                                           pFactory.newIDRef(q("e1")));
-        use.setTest(qq("test"));
-        makeDocAndTest(use,"target/usage100");
-        System.out.println("testUsage 100 end");
-
-    }
+ 
 
 }

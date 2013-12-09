@@ -44,9 +44,15 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IDRef")
 public class IDRef
-    implements Equals, HashCode, ToString, org.openprovenance.prov.model.IDRef
+    implements Equals, HashCode, ToString  //, org.openprovenance.prov.model.IDRef
 {
 
+    public IDRef () {}
+    
+    public IDRef (QName q) {
+	this.ref=q;
+    }
+    
     @XmlAttribute(name = "ref", namespace = "http://www.w3.org/ns/prov#", required = true)
     protected QName ref;
 

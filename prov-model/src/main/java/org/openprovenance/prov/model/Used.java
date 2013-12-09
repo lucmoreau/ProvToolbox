@@ -6,13 +6,13 @@ package org.openprovenance.prov.model;
  *  Before usage, the activity had not begun to utilize this entity and could not have been affected by the entity.
  *  
  *
- * <p>The constructor method {@link ProvFactory#newUsed(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)} can be used to create an instance of <tt>Used</tt>.
+ * <p>The constructor method {@link ProvFactory#newUsed(QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of <tt>Used</tt>.
  * The following code snippet creates a new usage statement, with a role attribute, and current time.
  * The instance of usage is given an identifier <tt>myId</tt>.
  * <pre>
- * QName myId= ... ;  // some qualified name
- * QName activityId= ... ;  // some activity qualified name
- * QName entityId= ... ;    // some entity qualified name
+ * QualifiedName myId= ... ;  // some qualified name
+ * QualifiedName activityId= ... ;  // some activity qualified name
+ * QualifiedName entityId= ... ;    // some entity qualified name
  * Used myUsed=provFactory.newUsed(myId,activityId,entityId);
  * myUsed.getRole().add(provFactory.newRole("parameter"));
  * myUsed.setTime(provFactory.newTimeNow())
@@ -20,8 +20,8 @@ package org.openprovenance.prov.model;
  * 
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
- * <li> {@link ProvFactory#newUsed(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)}
- * <li> {@link ProvFactory#newUsed(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)}
+ * <li> {@link ProvFactory#newUsed(QualifiedName, QualifiedName, QualifiedName)}
+ * <li> {@link ProvFactory#newUsed(QualifiedName, QualifiedName, QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)}
  * <li> {@link ObjectFactory#createUsed()}
  * </ul>
  * 
@@ -61,13 +61,13 @@ package org.openprovenance.prov.model;
 
 public interface Used extends Identifiable, HasLabel, HasType, HasTime, HasRole, HasLocation, HasOther, Influence {
 
-    void setActivity(IDRef aid);
+    void setActivity(QualifiedName aid);
 
-    void setEntity(IDRef eid);
+    void setEntity(QualifiedName eid);
 
-    IDRef getEntity();
+    QualifiedName getEntity();
 
-    IDRef getActivity();
+    QualifiedName getActivity();
 
 
 }

@@ -69,16 +69,26 @@ import org.openprovenance.prov.model.Attribute;
 public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprovenance.prov.model.WasDerivedFrom, HasAllAttributes
 {
 
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef generatedEntity;
+    protected org.openprovenance.prov.model.QualifiedName generatedEntity;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef usedEntity;
+    protected org.openprovenance.prov.model.QualifiedName usedEntity;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef activity;
+    protected org.openprovenance.prov.model.QualifiedName activity;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef generation;
+    protected org.openprovenance.prov.model.QualifiedName generation;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef usage;
+    protected org.openprovenance.prov.model.QualifiedName usage;
+
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
     
@@ -87,18 +97,21 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
     
     @XmlAnyElement
     protected List<Attribute> all;
+    
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected org.openprovenance.prov.model.QualifiedName id;
+
 
     /**
      * Gets the value of the generatedEntity property.
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getGeneratedEntity() {
+    public org.openprovenance.prov.model.QualifiedName getGeneratedEntity() {
         return generatedEntity;
     }
 
@@ -107,10 +120,10 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setGeneratedEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setGeneratedEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.generatedEntity = value;
     }
 
@@ -119,10 +132,10 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getUsedEntity() {
+    public org.openprovenance.prov.model.QualifiedName getUsedEntity() {
         return usedEntity;
     }
 
@@ -131,10 +144,10 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setUsedEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setUsedEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.usedEntity = value;
     }
 
@@ -143,10 +156,10 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getActivity() {
+    public org.openprovenance.prov.model.QualifiedName getActivity() {
         return activity;
     }
 
@@ -155,10 +168,10 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setActivity(org.openprovenance.prov.model.IDRef value) {
+    public void setActivity(org.openprovenance.prov.model.QualifiedName value) {
         this.activity = value;
     }
 
@@ -167,10 +180,10 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getGeneration() {
+    public org.openprovenance.prov.model.QualifiedName getGeneration() {
         return generation;
     }
 
@@ -179,10 +192,10 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setGeneration(org.openprovenance.prov.model.IDRef value) {
+    public void setGeneration(org.openprovenance.prov.model.QualifiedName value) {
         this.generation = value;
     }
 
@@ -191,10 +204,10 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getUsage() {
+    public org.openprovenance.prov.model.QualifiedName getUsage() {
         return usage;
     }
 
@@ -203,10 +216,10 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setUsage(org.openprovenance.prov.model.IDRef value) {
+    public void setUsage(org.openprovenance.prov.model.QualifiedName value) {
         this.usage = value;
     }
 
@@ -299,7 +312,7 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
      *     {@link QName }
      *     
      */
-    public QName getId() {
+    public org.openprovenance.prov.model.QualifiedName getId() {
         return id;
     }
 
@@ -311,7 +324,7 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
      *     {@link QName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(org.openprovenance.prov.model.QualifiedName value) {
         this.id = value;
     }
 
@@ -367,27 +380,27 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            org.openprovenance.prov.model.IDRef theGeneratedEntity;
+            org.openprovenance.prov.model.QualifiedName theGeneratedEntity;
             theGeneratedEntity = this.getGeneratedEntity();
             toStringBuilder.append("generatedEntity", theGeneratedEntity);
         }
         {
-            org.openprovenance.prov.model.IDRef theUsedEntity;
+            org.openprovenance.prov.model.QualifiedName theUsedEntity;
             theUsedEntity = this.getUsedEntity();
             toStringBuilder.append("usedEntity", theUsedEntity);
         }
         {
-            org.openprovenance.prov.model.IDRef theActivity;
+            org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
             toStringBuilder.append("activity", theActivity);
         }
         {
-            org.openprovenance.prov.model.IDRef theGeneration;
+            org.openprovenance.prov.model.QualifiedName theGeneration;
             theGeneration = this.getGeneration();
             toStringBuilder.append("generation", theGeneration);
         }
         {
-            org.openprovenance.prov.model.IDRef theUsage;
+            org.openprovenance.prov.model.QualifiedName theUsage;
             theUsage = this.getUsage();
             toStringBuilder.append("usage", theUsage);
         }
@@ -407,7 +420,7 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
         }

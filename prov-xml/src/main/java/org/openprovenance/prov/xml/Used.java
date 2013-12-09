@@ -65,10 +65,13 @@ import org.openprovenance.prov.model.Attribute;
 public class Used implements Equals, HashCode, ToString, org.openprovenance.prov.model.Used, HasAllAttributes
 {
 
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef activity;
+    protected org.openprovenance.prov.model.QualifiedName activity;
+    
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef entity;
+    protected org.openprovenance.prov.model.QualifiedName entity;
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar time;
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
@@ -82,8 +85,11 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
 
     @XmlAnyElement
     protected List<Attribute> all;
+    
+    
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected org.openprovenance.prov.model.QualifiedName id;
 
     /**
      * Gets the value of the activity property.
@@ -93,7 +99,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
      *     {@link org.openprovenance.prov.xml.IDRef }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getActivity() {
+    public org.openprovenance.prov.model.QualifiedName getActivity() {
         return activity;
     }
 
@@ -105,7 +111,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
      *     {@link org.openprovenance.prov.xml.IDRef }
      *     
      */
-    public void setActivity(org.openprovenance.prov.model.IDRef value) {
+    public void setActivity(org.openprovenance.prov.model.QualifiedName value) {
         this.activity = value;
     }
 
@@ -117,7 +123,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
      *     {@link org.openprovenance.prov.xml.IDRef }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getEntity() {
+    public org.openprovenance.prov.model.QualifiedName getEntity() {
         return entity;
     }
 
@@ -129,7 +135,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
      *     {@link org.openprovenance.prov.xml.IDRef }
      *     
      */
-    public void setEntity(org.openprovenance.prov.model.IDRef value) {
+    public void setEntity(org.openprovenance.prov.model.QualifiedName value) {
         this.entity = value;
     }
 
@@ -310,7 +316,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
      *     {@link QName }
      *     
      */
-    public QName getId() {
+    public org.openprovenance.prov.model.QualifiedName getId() {
         return id;
     }
 
@@ -322,9 +328,10 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
      *     {@link QName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(org.openprovenance.prov.model.QualifiedName value) {
         this.id = value;
     }
+    
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {
         if (!(object instanceof Used)) {
@@ -378,12 +385,12 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            org.openprovenance.prov.model.IDRef theActivity;
+            org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
             toStringBuilder.append("activity", theActivity);
         }
         {
-            org.openprovenance.prov.model.IDRef theEntity;
+            org.openprovenance.prov.model.QualifiedName theEntity;
             theEntity = this.getEntity();
             toStringBuilder.append("entity", theEntity);
         }
@@ -418,7 +425,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
         }

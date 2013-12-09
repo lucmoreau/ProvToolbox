@@ -7,13 +7,13 @@ package org.openprovenance.prov.model;
  * new entity by an activity. This entity did not exist before generation and becomes available for usage after this generation.
  *  
  *
- * <p>The constructor method {@link ProvFactory#newWasGeneratedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)} can be used to create an instance of <tt>WasGeneratedBy</tt>.
+ * <p>The constructor method {@link ProvFactory#newWasGeneratedBy(QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of <tt>WasGeneratedBy</tt>.
  * The following code snippet creates a new generation statement, with a role attribute, and current time.
  * The instance of generation is given an identifier <tt>myId</tt>.
  * <pre>
- * QName myId= ... ;  // some qualified name
- * QName entityId= ... ;    // some entity qualified name
- * QName activityId= ... ;  // some activity qualified name
+ * QualifiedName myId= ... ;  // some qualified name
+ * QualifiedName entityId= ... ;    // some entity qualified name
+ * QualifiedName activityId= ... ;  // some activity qualified name
  * WasGeneratedBy myWasGeneratedBy=provFactory.newWasGeneratedBy(myId,entityId,activityId);
  * myWasGeneratedBy.getRole().add(provFactory.newRole("parameter"));
  * myWasGeneratedBy.setTime(provFactory.newTimeNow())
@@ -21,8 +21,8 @@ package org.openprovenance.prov.model;
  * 
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
- * <li> {@link ProvFactory#newWasGeneratedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName)}
- * <li> {@link ProvFactory#newWasGeneratedBy(javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.namespace.QName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)}
+ * <li> {@link ProvFactory#newWasGeneratedBy(QualifiedName, QualifiedName, QualifiedName)}
+ * <li> {@link ProvFactory#newWasGeneratedBy(QualifiedName, QualifiedName, QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)}
  * <li> {@link ObjectFactory#createWasGeneratedBy()}
  * </ul>
  * 
@@ -63,12 +63,12 @@ package org.openprovenance.prov.model;
  */
 public interface WasGeneratedBy extends Identifiable,  HasLabel, HasTime, HasType, HasRole, HasLocation, HasOther, Influence {
 
-    void setActivity(IDRef pid);
+    void setActivity(QualifiedName pid);
 
-    void setEntity(IDRef aid);
+    void setEntity(QualifiedName aid);
 
-    IDRef getEntity();
+    QualifiedName getEntity();
 
-    IDRef getActivity();
+    QualifiedName getActivity();
 
 }

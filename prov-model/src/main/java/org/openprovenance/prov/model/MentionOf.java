@@ -2,16 +2,16 @@ package org.openprovenance.prov.model;
 
 public interface MentionOf extends Relation0 {
 
-    void setSpecificEntity(IDRef infra);
+    void setSpecificEntity(QualifiedName infra);
 
-    void setBundle(IDRef bundle);
+    void setBundle(QualifiedName bundle);
 
-    void setGeneralEntity(IDRef supra);
+    void setGeneralEntity(QualifiedName supra);
 
-    IDRef getSpecificEntity();
+    QualifiedName getSpecificEntity();
 
-    IDRef getBundle();
+    QualifiedName getBundle();
 
-    IDRef getGeneralEntity();
+    QualifiedName getGeneralEntity();
 
 }

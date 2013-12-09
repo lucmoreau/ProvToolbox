@@ -7,15 +7,16 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 
 public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
-  
-
     
+    static {
+	pFactory = new ProvFactory();
+	name=pFactory.getName();
+    }
+      
     final PersistenceUtility u = new PersistenceUtility();
 
     public AttributeTest(String testName) {
 	super(testName);
-	pFactory = new ProvFactory();
-
 	u.setUp();
     }
 
@@ -37,7 +38,7 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-	System.out.println("read document " + ((org.openprovenance.prov.sql.Document)doc).getHjid() + " for " + file1);
+	System.out.println("read document " + ((org.openprovenance.prov.sql.Document)doc).getPk() + " for " + file1);
 	return (org.openprovenance.prov.sql.Document) doc;
 
     }
@@ -48,10 +49,11 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 			      String file) {
 	Namespace.withThreadNamespace(doc.getNamespace());
 
+	@SuppressWarnings("unused")
 	Document doc2 = u.persist((org.openprovenance.prov.sql.Document) doc);
-	dbKeys.put(file, ((org.openprovenance.prov.sql.Document) doc).getHjid());
+	dbKeys.put(file, ((org.openprovenance.prov.sql.Document) doc).getPk());
 	System.out.println("saved document "
-		+ ((org.openprovenance.prov.sql.Document) doc).getHjid()
+		+ ((org.openprovenance.prov.sql.Document) doc).getPk()
 		+ " for " + file);
     }
     
@@ -59,5 +61,9 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
     public boolean checkSchema(String name) {
             return false;
     }
+    
+    public org.openprovenance.prov.model.QualifiedName q(String n) {
+		return new QualifiedName(EX_NS, n, EX_PREFIX);
+       }
 
 }

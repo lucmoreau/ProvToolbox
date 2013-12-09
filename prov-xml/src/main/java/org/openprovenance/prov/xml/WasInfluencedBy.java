@@ -57,10 +57,14 @@ import org.openprovenance.prov.model.Attribute;
 public class WasInfluencedBy implements Equals, HashCode, ToString, org.openprovenance.prov.model.WasInfluencedBy, HasAllAttributes
 {
 
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef influencee;
+    protected org.openprovenance.prov.model.QualifiedName influencee;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef influencer;
+    protected org.openprovenance.prov.model.QualifiedName influencer;
+
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
     
@@ -69,18 +73,21 @@ public class WasInfluencedBy implements Equals, HashCode, ToString, org.openprov
     
     @XmlAnyElement
     protected List<Attribute> all;
+    
+
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected org.openprovenance.prov.model.QualifiedName id;
 
     /**
      * Gets the value of the influencee property.
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getInfluencee() {
+    public org.openprovenance.prov.model.QualifiedName getInfluencee() {
         return influencee;
     }
 
@@ -89,10 +96,10 @@ public class WasInfluencedBy implements Equals, HashCode, ToString, org.openprov
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setInfluencee(org.openprovenance.prov.model.IDRef value) {
+    public void setInfluencee(org.openprovenance.prov.model.QualifiedName value) {
         this.influencee = value;
     }
 
@@ -101,10 +108,10 @@ public class WasInfluencedBy implements Equals, HashCode, ToString, org.openprov
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getInfluencer() {
+    public org.openprovenance.prov.model.QualifiedName getInfluencer() {
         return influencer;
     }
 
@@ -113,10 +120,10 @@ public class WasInfluencedBy implements Equals, HashCode, ToString, org.openprov
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setInfluencer(org.openprovenance.prov.model.IDRef value) {
+    public void setInfluencer(org.openprovenance.prov.model.QualifiedName value) {
         this.influencer = value;
     }
 
@@ -210,7 +217,7 @@ public class WasInfluencedBy implements Equals, HashCode, ToString, org.openprov
      *     {@link QName }
      *     
      */
-    public QName getId() {
+    public org.openprovenance.prov.model.QualifiedName getId() {
         return id;
     }
 
@@ -222,7 +229,7 @@ public class WasInfluencedBy implements Equals, HashCode, ToString, org.openprov
      *     {@link QName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(org.openprovenance.prov.model.QualifiedName value) {
         this.id = value;
     }
 
@@ -272,12 +279,12 @@ public class WasInfluencedBy implements Equals, HashCode, ToString, org.openprov
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            org.openprovenance.prov.model.IDRef theInfluencee;
+            org.openprovenance.prov.model.QualifiedName theInfluencee;
             theInfluencee = this.getInfluencee();
             toStringBuilder.append("influencee", theInfluencee);
         }
         {
-            org.openprovenance.prov.model.IDRef theInfluencer;
+            org.openprovenance.prov.model.QualifiedName theInfluencer;
             theInfluencer = this.getInfluencer();
             toStringBuilder.append("influencer", theInfluencer);
         }
@@ -297,7 +304,7 @@ public class WasInfluencedBy implements Equals, HashCode, ToString, org.openprov
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
         }

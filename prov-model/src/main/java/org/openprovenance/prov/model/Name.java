@@ -1,100 +1,197 @@
 package org.openprovenance.prov.model;
 
-import javax.xml.namespace.QName;
-
 public class Name {
+    final private ProvFactory pFactory;
+    
+    public Name(ProvFactory pFactory) {
+	this.pFactory=pFactory;
+	QNAME_PROV_INTERNATIONALIZED_STRING = newProvQualifiedName("InternationalizedString");
+	QNAME_PROV_REVISION = newProvQualifiedName("Revision");
+	QNAME_PROV_QUOTATION = newProvQualifiedName("Quotation");
+	QNAME_PROV_PRIMARY_SOURCE = newProvQualifiedName("PrimarySource");
+	QNAME_PROV_BUNDLE = newProvQualifiedName("Bundle");
+	QNAME_PROV_TYPE=newProvQualifiedName("type"); 
+	QNAME_PROV_LABEL=newProvQualifiedName("label"); 
+	QNAME_PROV_ROLE=newProvQualifiedName("role");
+	QNAME_PROV_LOCATION=newProvQualifiedName("location");
+	QNAME_PROV_VALUE=newProvQualifiedName("value");
+	QNAME_PROV_KEY=newProvQualifiedName("key");
 
-    public static QName newXsdQName(String local) {
-        return new QName(NamespacePrefixMapper.XSD_NS, local, NamespacePrefixMapper.XSD_PREFIX);
+	QNAME_XSD_STRING=newXsdQualifiedName("string"); //*
+	QNAME_XSD_INT=newXsdQualifiedName("int");//*
+	QNAME_XSD_LONG=newXsdQualifiedName("long");//*
+	QNAME_XSD_SHORT=newXsdQualifiedName("short");//*
+	QNAME_XSD_DOUBLE=newXsdQualifiedName("double"); //*
+	QNAME_XSD_FLOAT=newXsdQualifiedName("float"); //*
+	QNAME_XSD_DECIMAL=newXsdQualifiedName("decimal"); //*
+	QNAME_XSD_BOOLEAN=newXsdQualifiedName("boolean"); //*
+	QNAME_XSD_BYTE=newXsdQualifiedName("byte");//*
+	QNAME_XSD_UNSIGNED_INT=newXsdQualifiedName("unsignedInt");//*
+	QNAME_XSD_UNSIGNED_LONG=newXsdQualifiedName("unsignedLong");//*
+	QNAME_XSD_INTEGER=newXsdQualifiedName("integer"); //*
+	QNAME_XSD_UNSIGNED_SHORT=newXsdQualifiedName("unsignedShort");//*
+	QNAME_XSD_NON_NEGATIVE_INTEGER=newXsdQualifiedName("nonNegativeInteger");//*
+	QNAME_XSD_NON_POSITIVE_INTEGER=newXsdQualifiedName("nonPositiveInteger");//*
+	QNAME_XSD_POSITIVE_INTEGER=newXsdQualifiedName("positiveInteger");//*
+	QNAME_XSD_UNSIGNED_BYTE=newXsdQualifiedName("unsignedByte");//*
+	QNAME_XSD_ANY_URI=newXsdQualifiedName("anyURI");
+	QNAME_XSD_QNAME=newXsdQualifiedName("QName");
+	QNAME_XSD_DATETIME=newXsdQualifiedName("dateTime"); //*
+	QNAME_XSD_GYEAR=newXsdQualifiedName("gYear"); //*
+
+	QNAME_XSD_GMONTH=newXsdQualifiedName("gMonth"); //*
+	QNAME_XSD_GDAY=newXsdQualifiedName("gDay"); //*
+	QNAME_XSD_GYEAR_MONTH=newXsdQualifiedName("gYearMonth"); //*
+	QNAME_XSD_GMONTH_DAY=newXsdQualifiedName("gMonthDay"); //*
+	QNAME_XSD_DURATION=newXsdQualifiedName("duration"); //*
+	QNAME_XSD_YEAR_MONTH_DURATION=newXsdQualifiedName("yearMonthDuration"); //*
+	QNAME_XSD_DAY_TIME_DURATION=newXsdQualifiedName("dayTimeDuration"); //*
+
+	QNAME_XSD_HEX_BINARY=newXsdQualifiedName("hexBinary"); //*
+	QNAME_XSD_BASE64_BINARY=newXsdQualifiedName("base64Binary"); //*
+
+	QNAME_XSD_LANGUAGE=newXsdQualifiedName("language"); //*
+	QNAME_XSD_NORMALIZED_STRING=newXsdQualifiedName("normalizedString"); //*
+	QNAME_XSD_TOKEN=newXsdQualifiedName("token"); //*
+	QNAME_XSD_NMTOKEN=newXsdQualifiedName("NMTOKEN"); //*
+	QNAME_XSD_NAME=newXsdQualifiedName("Name"); //*
+	QNAME_XSD_NCNAME=newXsdQualifiedName("NCName"); //*
+
+	QNAME_XSD_TIME=newXsdQualifiedName("time");  //*
+	QNAME_XSD_DATE=newXsdQualifiedName("date"); //*
+	QNAME_XSD_DATETIMESTAMP=newXsdQualifiedName("dateTimeStamp");  //*
+
+	QNAME_XSD_HASH_STRING=newXsdHashQualifiedName("string");
+	QNAME_XSD_HASH_INT=newXsdHashQualifiedName("int");
+	QNAME_XSD_HASH_LONG=newXsdHashQualifiedName("long");
+	QNAME_XSD_HASH_SHORT=newXsdHashQualifiedName("short");
+	QNAME_XSD_HASH_DOUBLE=newXsdHashQualifiedName("double");
+	QNAME_XSD_HASH_FLOAT=newXsdHashQualifiedName("float");
+	QNAME_XSD_HASH_DECIMAL=newXsdHashQualifiedName("decimal");
+	QNAME_XSD_HASH_BOOLEAN=newXsdHashQualifiedName("boolean");
+	QNAME_XSD_HASH_BYTE=newXsdHashQualifiedName("byte");
+	QNAME_XSD_HASH_UNSIGNED_INT=newXsdHashQualifiedName("unsignedInt");
+	QNAME_XSD_HASH_UNSIGNED_LONG=newXsdHashQualifiedName("unsignedLong");
+	QNAME_XSD_HASH_INTEGER=newXsdHashQualifiedName("integer");
+	QNAME_XSD_HASH_UNSIGNED_SHORT=newXsdHashQualifiedName("unsignedShort");
+	QNAME_XSD_HASH_NON_NEGATIVE_INTEGER=newXsdHashQualifiedName("nonNegativeInteger");
+	QNAME_XSD_HASH_NON_POSITIVE_INTEGER=newXsdHashQualifiedName("nonPositiveInteger");
+	QNAME_XSD_HASH_POSITIVE_INTEGER=newXsdHashQualifiedName("positiveInteger");
+	QNAME_XSD_HASH_UNSIGNED_BYTE=newXsdHashQualifiedName("unsignedByte");
+	QNAME_XSD_HASH_ANY_URI=newXsdHashQualifiedName("anyURI");
+	QNAME_XSD_HASH_QNAME=newXsdHashQualifiedName("QName");
+	QNAME_XSD_HASH_DATETIME=newXsdHashQualifiedName("dateTime");
+	QNAME_XSD_HASH_GYEAR=newXsdQualifiedName("gYear");
+
+
+	QNAME_RDF_LITERAL=newRdfQualifiedName("XMLLiteral");
+
+
+	QNAME_UNKNOWN=newXsdQualifiedName("UNKNOWN");
+
     }
 
-    public static QName newXsdHashQName(String local) {
-	return new QName(NamespacePrefixMapper.XSD_HASH_NS, local, NamespacePrefixMapper.XSD_PREFIX);
+    public QualifiedName newXsdQualifiedName(String local) {
+        return pFactory.newQualifiedName(NamespacePrefixMapper.XSD_NS, local, NamespacePrefixMapper.XSD_PREFIX);
+    }
+
+    public QualifiedName newXsdHashQualifiedName(String local) {
+	return pFactory.newQualifiedName(NamespacePrefixMapper.XSD_HASH_NS, local, NamespacePrefixMapper.XSD_PREFIX);
     }
     
-    public static QName newRdfQName(String local) {
-        return new QName("http://www.w3.org/1999/02/22-rdf-syntax-ns#", local, "rdf");
+    
+    public QualifiedName newRdfQualifiedName(String local) {
+        return pFactory.newQualifiedName(NamespacePrefixMapper.RDF_NS, local, "rdf");
     }
     
-    public static QName newProvQName(String local) {
-        return new QName(NamespacePrefixMapper.PROV_NS,local,"prov");
+    public QualifiedName newProvQualifiedName(String local) {
+        return pFactory.newQualifiedName(NamespacePrefixMapper.PROV_NS,local,"prov");
     }
-    public static final QName QNAME_PROV_INTERNATIONALIZED_STRING = newProvQName("InternationalizedString");
-    public static final QName QNAME_PROV_REVISION = newProvQName("Revision");
-    public static final QName QNAME_PROV_QUOTATION = newProvQName("Quotation");
-    public static final QName QNAME_PROV_PRIMARY_SOURCE = newProvQName("PrimarySource");
-    public static final QName QNAME_PROV_BUNDLE = newProvQName("Bundle");
+    
+    
+    final public QualifiedName QNAME_PROV_INTERNATIONALIZED_STRING ;
+    final public QualifiedName QNAME_PROV_REVISION ;
+    final public QualifiedName QNAME_PROV_QUOTATION ;
+    final public QualifiedName QNAME_PROV_PRIMARY_SOURCE ;
+    final public QualifiedName QNAME_PROV_BUNDLE ;
+    
+    final public QualifiedName QNAME_PROV_TYPE;
+    final public QualifiedName QNAME_PROV_LABEL;
+    final public QualifiedName QNAME_PROV_ROLE;
+    final public QualifiedName QNAME_PROV_LOCATION;
+    final public QualifiedName QNAME_PROV_VALUE;
+    final public QualifiedName QNAME_PROV_KEY;
 
-    public static QName QNAME_XSD_STRING=newXsdQName("string"); //*
-    public static QName QNAME_XSD_INT=newXsdQName("int");//*
-    public static QName QNAME_XSD_LONG=newXsdQName("long");//*
-    public static QName QNAME_XSD_SHORT=newXsdQName("short");//*
-    public static QName QNAME_XSD_DOUBLE=newXsdQName("double"); //*
-    public static QName QNAME_XSD_FLOAT=newXsdQName("float"); //*
-    public static QName QNAME_XSD_DECIMAL=newXsdQName("decimal"); //*
-    public static QName QNAME_XSD_BOOLEAN=newXsdQName("boolean"); //*
-    public static QName QNAME_XSD_BYTE=newXsdQName("byte");//*
-    public static QName QNAME_XSD_UNSIGNED_INT=newXsdQName("unsignedInt");//*
-    public static QName QNAME_XSD_UNSIGNED_LONG=newXsdQName("unsignedLong");//*
-    public static QName QNAME_XSD_INTEGER=newXsdQName("integer"); //*
-    public static QName QNAME_XSD_UNSIGNED_SHORT=newXsdQName("unsignedShort");//*
-    public static QName QNAME_XSD_NON_NEGATIVE_INTEGER=newXsdQName("nonNegativeInteger");//*
-    public static QName QNAME_XSD_NON_POSITIVE_INTEGER=newXsdQName("nonPositiveInteger");//*
-    public static QName QNAME_XSD_POSITIVE_INTEGER=newXsdQName("positiveInteger");//*
-    public static QName QNAME_XSD_UNSIGNED_BYTE=newXsdQName("unsignedByte");//*
-    public static QName QNAME_XSD_ANY_URI=newXsdQName("anyURI");
-    public static QName QNAME_XSD_QNAME=newXsdQName("QName");
-    public static QName QNAME_XSD_DATETIME=newXsdQName("dateTime"); //*
-    public static QName QNAME_XSD_GYEAR=newXsdQName("gYear"); //*
+    final public QualifiedName QNAME_XSD_STRING;
+    final public QualifiedName QNAME_XSD_INT;
+    final public QualifiedName QNAME_XSD_LONG;
+    final public QualifiedName QNAME_XSD_SHORT;
+    final public QualifiedName QNAME_XSD_DOUBLE;
+    final public QualifiedName QNAME_XSD_FLOAT;
+    final public QualifiedName QNAME_XSD_DECIMAL;
+    final public QualifiedName QNAME_XSD_BOOLEAN;
+    final public QualifiedName QNAME_XSD_BYTE;
+    final public QualifiedName QNAME_XSD_UNSIGNED_INT;
+    final public QualifiedName QNAME_XSD_UNSIGNED_LONG;
+    final public QualifiedName QNAME_XSD_INTEGER;
+    final public QualifiedName QNAME_XSD_UNSIGNED_SHORT;
+    final public QualifiedName QNAME_XSD_NON_NEGATIVE_INTEGER;
+    final public QualifiedName QNAME_XSD_NON_POSITIVE_INTEGER;
+    final public QualifiedName QNAME_XSD_POSITIVE_INTEGER;
+    final public QualifiedName QNAME_XSD_UNSIGNED_BYTE;
+    final public QualifiedName QNAME_XSD_ANY_URI;
+    final public QualifiedName QNAME_XSD_QNAME;
+    final public QualifiedName QNAME_XSD_DATETIME;
+    final public QualifiedName QNAME_XSD_GYEAR;
 
-    public static QName QNAME_XSD_GMONTH=newXsdQName("gMonth"); //*
-    public static QName QNAME_XSD_GDAY=newXsdQName("gDay"); //*
-    public static QName QNAME_XSD_GYEAR_MONTH=newXsdQName("gYearMonth"); //*
-    public static QName QNAME_XSD_GMONTH_DAY=newXsdQName("gMonthDay"); //*
-    public static QName QNAME_XSD_DURATION=newXsdQName("duration"); //*
-    public static QName QNAME_XSD_YEAR_MONTH_DURATION=newXsdQName("yearMonthDuration"); //*
-    public static QName QNAME_XSD_DAY_TIME_DURATION=newXsdQName("dayTimeDuration"); //*
+    final public QualifiedName QNAME_XSD_GMONTH;
+    final public QualifiedName QNAME_XSD_GDAY;
+    final public QualifiedName QNAME_XSD_GYEAR_MONTH;
+    final public QualifiedName QNAME_XSD_GMONTH_DAY;
+    final public QualifiedName QNAME_XSD_DURATION;
+    final public QualifiedName QNAME_XSD_YEAR_MONTH_DURATION;
+    final public QualifiedName QNAME_XSD_DAY_TIME_DURATION;
 
-    public static QName QNAME_XSD_HEX_BINARY=newXsdQName("hexBinary"); //*
-    public static QName QNAME_XSD_BASE64_BINARY=newXsdQName("base64Binary"); //*
+    final public QualifiedName QNAME_XSD_HEX_BINARY;
+    final public QualifiedName QNAME_XSD_BASE64_BINARY;
 
-    public static QName QNAME_XSD_LANGUAGE=newXsdQName("language"); //*
-    public static QName QNAME_XSD_NORMALIZED_STRING=newXsdQName("normalizedString"); //*
-    public static QName QNAME_XSD_TOKEN=newXsdQName("token"); //*
-    public static QName QNAME_XSD_NMTOKEN=newXsdQName("NMTOKEN"); //*
-    public static QName QNAME_XSD_NAME=newXsdQName("Name"); //*
-    public static QName QNAME_XSD_NCNAME=newXsdQName("NCName"); //*
+    final public QualifiedName QNAME_XSD_LANGUAGE;
+    final public QualifiedName QNAME_XSD_NORMALIZED_STRING;
+    final public QualifiedName QNAME_XSD_TOKEN;
+    final public QualifiedName QNAME_XSD_NMTOKEN;
+    final public QualifiedName QNAME_XSD_NAME;
+    final public QualifiedName QNAME_XSD_NCNAME;
 
-    public static QName QNAME_XSD_TIME=newXsdQName("time");  //*
-    public static QName QNAME_XSD_DATE=newXsdQName("date"); //*
-    public static QName QNAME_XSD_DATETIMESTAMP=newXsdQName("dateTimeStamp");  //*
+    final public QualifiedName QNAME_XSD_TIME;
+    final public QualifiedName QNAME_XSD_DATE;
+    final public QualifiedName QNAME_XSD_DATETIMESTAMP;
 
-    public static QName QNAME_XSD_HASH_STRING=newXsdHashQName("string");
-    public static QName QNAME_XSD_HASH_INT=newXsdHashQName("int");
-    public static QName QNAME_XSD_HASH_LONG=newXsdHashQName("long");
-    public static QName QNAME_XSD_HASH_SHORT=newXsdHashQName("short");
-    public static QName QNAME_XSD_HASH_DOUBLE=newXsdHashQName("double");
-    public static QName QNAME_XSD_HASH_FLOAT=newXsdHashQName("float");
-    public static QName QNAME_XSD_HASH_DECIMAL=newXsdHashQName("decimal");
-    public static QName QNAME_XSD_HASH_BOOLEAN=newXsdHashQName("boolean");
-    public static QName QNAME_XSD_HASH_BYTE=newXsdHashQName("byte");
-    public static QName QNAME_XSD_HASH_UNSIGNED_INT=newXsdHashQName("unsignedInt");
-    public static QName QNAME_XSD_HASH_UNSIGNED_LONG=newXsdHashQName("unsignedLong");
-    public static QName QNAME_XSD_HASH_INTEGER=newXsdHashQName("integer");
-    public static QName QNAME_XSD_HASH_UNSIGNED_SHORT=newXsdHashQName("unsignedShort");
-    public static QName QNAME_XSD_HASH_NON_NEGATIVE_INTEGER=newXsdHashQName("nonNegativeInteger");
-    public static QName QNAME_XSD_HASH_NON_POSITIVE_INTEGER=newXsdHashQName("nonPositiveInteger");
-    public static QName QNAME_XSD_HASH_POSITIVE_INTEGER=newXsdHashQName("positiveInteger");
-    public static QName QNAME_XSD_HASH_UNSIGNED_BYTE=newXsdHashQName("unsignedByte");
-    public static QName QNAME_XSD_HASH_ANY_URI=newXsdHashQName("anyURI");
-    public static QName QNAME_XSD_HASH_QNAME=newXsdHashQName("QName");
-    public static QName QNAME_XSD_HASH_DATETIME=newXsdHashQName("dateTime");
-    public static QName QNAME_XSD_HASH_GYEAR=newXsdQName("gYear");
+    final public QualifiedName QNAME_XSD_HASH_STRING;
+    final public QualifiedName QNAME_XSD_HASH_INT;
+    final public QualifiedName QNAME_XSD_HASH_LONG;
+    final public QualifiedName QNAME_XSD_HASH_SHORT;
+    final public QualifiedName QNAME_XSD_HASH_DOUBLE;
+    final public QualifiedName QNAME_XSD_HASH_FLOAT;
+    final public QualifiedName QNAME_XSD_HASH_DECIMAL;
+    final public QualifiedName QNAME_XSD_HASH_BOOLEAN;
+    final public QualifiedName QNAME_XSD_HASH_BYTE;
+    final public QualifiedName QNAME_XSD_HASH_UNSIGNED_INT;
+    final public QualifiedName QNAME_XSD_HASH_UNSIGNED_LONG;
+    final public QualifiedName QNAME_XSD_HASH_INTEGER;
+    final public QualifiedName QNAME_XSD_HASH_UNSIGNED_SHORT;
+    final public QualifiedName QNAME_XSD_HASH_NON_NEGATIVE_INTEGER;
+    final public QualifiedName QNAME_XSD_HASH_NON_POSITIVE_INTEGER;
+    final public QualifiedName QNAME_XSD_HASH_POSITIVE_INTEGER;
+    final public QualifiedName QNAME_XSD_HASH_UNSIGNED_BYTE;
+    final public QualifiedName QNAME_XSD_HASH_ANY_URI;
+    final public QualifiedName QNAME_XSD_HASH_QNAME;
+    final public QualifiedName QNAME_XSD_HASH_DATETIME;
+    final public QualifiedName QNAME_XSD_HASH_GYEAR;
 
     
-    public static QName QNAME_RDF_LITERAL=newRdfQName("XMLLiteral");
+    final public QualifiedName QNAME_RDF_LITERAL;
 
     
-    public static QName QNAME_UNKNOWN=newXsdQName("UNKNOWN");
+    final public QualifiedName QNAME_UNKNOWN;
 
 }

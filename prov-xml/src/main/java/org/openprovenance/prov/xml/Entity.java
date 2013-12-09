@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -101,8 +100,11 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
 
     @XmlAnyElement
     protected List<Attribute> all;
+
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected org.openprovenance.prov.model.QualifiedName id;
+
 
     /**
      * Gets the value of the label property.
@@ -261,10 +263,10 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link org.openprovenance.prov.model.QualifiedName }
      *     
      */
-    public QName getId() {
+    public org.openprovenance.prov.model.QualifiedName getId() {
         return id;
     }
 
@@ -273,10 +275,10 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link org.openprovenance.prov.model.QualifiedName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(org.openprovenance.prov.model.QualifiedName value) {
         this.id = value;
     }
 
@@ -352,14 +354,10 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
         }
-        { //TODO: only now, for debugging.
-            toStringBuilder.append("all", getAllAttributes());
-        }
-
     }
 
     public String toString() {

@@ -2,9 +2,7 @@ package org.openprovenance.prov.sql;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -17,9 +15,6 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.QNameAsString;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -31,6 +26,7 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.xml.AttributeList;
 import org.openprovenance.prov.xml.HasAllAttributes;
 import org.openprovenance.prov.xml.SortedAttributeList;
@@ -83,11 +79,11 @@ public class WasAssociatedWith
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef activity;
+    protected org.openprovenance.prov.model.QualifiedName activity;
     @XmlElement(type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef agent;
+    protected org.openprovenance.prov.model.QualifiedName agent;
     @XmlElement(type = org.openprovenance.prov.sql.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef plan;
+    protected org.openprovenance.prov.model.QualifiedName plan;
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
     
@@ -97,8 +93,9 @@ public class WasAssociatedWith
     
     @XmlAnyElement
     protected List<Attribute> all;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    protected QualifiedName id;
     
 
     /**
@@ -109,11 +106,11 @@ public class WasAssociatedWith
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "ACTIVITY")
-    public org.openprovenance.prov.model.IDRef getActivity() {
+    public org.openprovenance.prov.model.QualifiedName getActivity() {
         return activity;
     }
 
@@ -125,7 +122,7 @@ public class WasAssociatedWith
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setActivity(org.openprovenance.prov.model.IDRef value) {
+    public void setActivity(org.openprovenance.prov.model.QualifiedName value) {
         this.activity = value;
     }
 
@@ -137,11 +134,11 @@ public class WasAssociatedWith
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "AGENT")
-    public org.openprovenance.prov.model.IDRef getAgent() {
+    public org.openprovenance.prov.model.QualifiedName getAgent() {
         return agent;
     }
 
@@ -153,7 +150,7 @@ public class WasAssociatedWith
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setAgent(org.openprovenance.prov.model.IDRef value) {
+    public void setAgent(org.openprovenance.prov.model.QualifiedName value) {
         this.agent = value;
     }
 
@@ -165,11 +162,11 @@ public class WasAssociatedWith
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
     @JoinColumn(name = "PLAN")
-    public org.openprovenance.prov.model.IDRef getPlan() {
+    public org.openprovenance.prov.model.QualifiedName getPlan() {
         return plan;
     }
 
@@ -181,7 +178,7 @@ public class WasAssociatedWith
      *     {@link org.openprovenance.prov.sql.IDRef }
      *     
      */
-    public void setPlan(org.openprovenance.prov.model.IDRef value) {
+    public void setPlan(org.openprovenance.prov.model.QualifiedName value) {
         this.plan = value;
     }
 
@@ -210,7 +207,7 @@ public class WasAssociatedWith
     @OneToMany(targetEntity = org.openprovenance.prov.sql.InternationalizedString.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "LABEL_WASASSOCIATEDWITH_HJID")
+    @JoinColumn(name = "LABEL_WASASSOCIATEDWITH_PK")
     public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
         if (label == null) {
             label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
@@ -251,7 +248,7 @@ public class WasAssociatedWith
     @OneToMany(targetEntity = org.openprovenance.prov.sql.Role.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "ROLE__WASASSOCIATEDWITH_HJID")
+    @JoinColumn(name = "ROLE__WASASSOCIATEDWITH_PK")
     public List<org.openprovenance.prov.model.Role> getRole() {
         if (role == null) {
             role=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Role.class);
@@ -292,7 +289,7 @@ public class WasAssociatedWith
     @OneToMany(targetEntity = org.openprovenance.prov.sql.Type.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "TYPE__WASASSOCIATEDWITH_HJID")
+    @JoinColumn(name = "TYPE__WASASSOCIATEDWITH_PK")
     public List<org.openprovenance.prov.model.Type> getType() {
         if (type == null) {
             type=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Type.class);
@@ -333,7 +330,7 @@ public class WasAssociatedWith
     @OneToMany(targetEntity =  org.openprovenance.prov.sql.Other.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "OTHERS_WASASSOCIATEDWITH_HJID")
+    @JoinColumn(name = "OTHERS_WASASSOCIATEDWITH_PK")
     public List<Other> getOther() {
         if (other == null) {
             other=AttributeList.populateKnownAttributes(this,all, org.openprovenance.prov.model.Other.class);
@@ -356,11 +353,14 @@ public class WasAssociatedWith
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    @Transient
-    public QName getId() {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "ID")
+    public QualifiedName getId() {
         return id;
     }
 
@@ -369,23 +369,14 @@ public class WasAssociatedWith
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(QualifiedName value) {
         this.id = value;
     }
 
-    @Basic
-    @Column(name = "IDITEM")
-    public String getIdItem() {
-        return XmlAdapterUtils.unmarshall(QNameAsString.class, this.getId());
-    }
-
-    public void setIdItem(String target) {
-        setId(XmlAdapterUtils.marshall(QNameAsString.class, target));
-    }
-    
+ 
 
     /** Gets the List of all attributes
      * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
@@ -412,27 +403,27 @@ public class WasAssociatedWith
         }
         final WasAssociatedWith that = ((WasAssociatedWith) object);
         {
-            org.openprovenance.prov.model.IDRef lhsActivity;
+            org.openprovenance.prov.model.QualifiedName lhsActivity;
             lhsActivity = this.getActivity();
-            org.openprovenance.prov.model.IDRef rhsActivity;
+            org.openprovenance.prov.model.QualifiedName rhsActivity;
             rhsActivity = that.getActivity();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "activity", lhsActivity), LocatorUtils.property(thatLocator, "activity", rhsActivity), lhsActivity, rhsActivity)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsAgent;
+            org.openprovenance.prov.model.QualifiedName lhsAgent;
             lhsAgent = this.getAgent();
-            org.openprovenance.prov.model.IDRef rhsAgent;
+            org.openprovenance.prov.model.QualifiedName rhsAgent;
             rhsAgent = that.getAgent();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "agent", lhsAgent), LocatorUtils.property(thatLocator, "agent", rhsAgent), lhsAgent, rhsAgent)) {
                 return false;
             }
         }
         {
-            org.openprovenance.prov.model.IDRef lhsPlan;
+            org.openprovenance.prov.model.QualifiedName lhsPlan;
             lhsPlan = this.getPlan();
-            org.openprovenance.prov.model.IDRef rhsPlan;
+            org.openprovenance.prov.model.QualifiedName rhsPlan;
             rhsPlan = that.getPlan();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "plan", lhsPlan), LocatorUtils.property(thatLocator, "plan", rhsPlan), lhsPlan, rhsPlan)) {
                 return false;
@@ -475,9 +466,9 @@ public class WasAssociatedWith
             }
         }
         {
-            QName lhsId;
+            QualifiedName lhsId;
             lhsId = this.getId();
-            QName rhsId;
+            QualifiedName rhsId;
             rhsId = that.getId();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "id", lhsId), LocatorUtils.property(thatLocator, "id", rhsId), lhsId, rhsId)) {
                 return false;
@@ -494,17 +485,17 @@ public class WasAssociatedWith
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            org.openprovenance.prov.model.IDRef theActivity;
+            org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "activity", theActivity), currentHashCode, theActivity);
         }
         {
-            org.openprovenance.prov.model.IDRef theAgent;
+            org.openprovenance.prov.model.QualifiedName theAgent;
             theAgent = this.getAgent();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "agent", theAgent), currentHashCode, theAgent);
         }
         {
-            org.openprovenance.prov.model.IDRef thePlan;
+            org.openprovenance.prov.model.QualifiedName thePlan;
             thePlan = this.getPlan();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "plan", thePlan), currentHashCode, thePlan);
         }
@@ -529,7 +520,7 @@ public class WasAssociatedWith
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
         }
         {
-            QName theId;
+            QualifiedName theId;
             theId = this.getId();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "id", theId), currentHashCode, theId);
         }
@@ -541,26 +532,7 @@ public class WasAssociatedWith
         return this.hashCode(null, strategy);
     }
 
-   
-    transient IDRef idRef;
-    @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {
-        CascadeType.ALL
-    })
-    @JoinColumn(name = "IDREF")
-    public IDRef getIdRef() {
-        return idRef;
-    }
 
-    public void setIdRef(IDRef target) {
-        if (target!=null) { setId(target.getRef());
-        idRef=target;}
-    }
-
-    @Transient
-    public List<Attribute> getAny() {
-	// TODO Auto-generated method stub
-	return null;
-    }
     @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_ASSOCIATION;

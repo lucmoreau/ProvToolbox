@@ -2,7 +2,6 @@ package org.openprovenance.prov.model;
 import java.util.List;
 import java.util.LinkedList;
 
-import javax.xml.namespace.QName;
 import java.util.Hashtable;
 
 
@@ -33,7 +32,7 @@ public class AttributeProcessor {
 
         for (Attribute attribute: attributes) {
             
-            QName name=attribute.getElementName();
+            QualifiedName name=attribute.getElementName();
             if (namespace.equals(name.getNamespaceURI())) {
                 List<Attribute> ll=result.get(name.getLocalPart());
                 if (ll==null) {

@@ -2,12 +2,12 @@ package org.openprovenance.prov.model;
 
 public interface WasInfluencedBy extends Identifiable,  HasLabel, HasType, HasOther, Influence {
 
-    void setInfluencee(IDRef influencee);
+    void setInfluencee(QualifiedName influencee);
 
-    void setInfluencer(IDRef influencer);
+    void setInfluencer(QualifiedName influencer);
 
-    IDRef getInfluencee();
+    QualifiedName getInfluencee();
 
-    IDRef getInfluencer();
+    QualifiedName getInfluencer();
 
 }

@@ -4,10 +4,10 @@ import java.util.List;
 
 public interface DictionaryMembership extends Relation0 {
 
-    void setDictionary(IDRef dict);
+    void setDictionary(QualifiedName dict);
 
     List<Entry> getKeyEntityPair();
 
-    IDRef getDictionary();
+    QualifiedName getDictionary();
 
 }

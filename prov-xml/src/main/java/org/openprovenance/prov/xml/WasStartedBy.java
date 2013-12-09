@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -67,12 +66,18 @@ import org.openprovenance.prov.model.Attribute;
 public class WasStartedBy implements Equals, HashCode, ToString, org.openprovenance.prov.model.WasStartedBy, HasAllAttributes
 {
 
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef activity;
+    protected org.openprovenance.prov.model.QualifiedName activity;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef trigger;
+    protected org.openprovenance.prov.model.QualifiedName trigger;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef starter;
+    protected org.openprovenance.prov.model.QualifiedName starter;
+
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar time;
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
@@ -85,18 +90,23 @@ public class WasStartedBy implements Equals, HashCode, ToString, org.openprovena
     
     @XmlAnyElement
     protected List<Attribute> all;
+    
+
+    
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected org.openprovenance.prov.model.QualifiedName id;
+
 
     /**
      * Gets the value of the activity property.
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getActivity() {
+    public org.openprovenance.prov.model.QualifiedName getActivity() {
         return activity;
     }
 
@@ -105,10 +115,10 @@ public class WasStartedBy implements Equals, HashCode, ToString, org.openprovena
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setActivity(org.openprovenance.prov.model.IDRef value) {
+    public void setActivity(org.openprovenance.prov.model.QualifiedName value) {
         this.activity = value;
     }
 
@@ -117,10 +127,10 @@ public class WasStartedBy implements Equals, HashCode, ToString, org.openprovena
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getTrigger() {
+    public org.openprovenance.prov.model.QualifiedName getTrigger() {
         return trigger;
     }
 
@@ -129,10 +139,10 @@ public class WasStartedBy implements Equals, HashCode, ToString, org.openprovena
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setTrigger(org.openprovenance.prov.model.IDRef value) {
+    public void setTrigger(org.openprovenance.prov.model.QualifiedName value) {
         this.trigger = value;
     }
 
@@ -141,10 +151,10 @@ public class WasStartedBy implements Equals, HashCode, ToString, org.openprovena
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getStarter() {
+    public org.openprovenance.prov.model.QualifiedName getStarter() {
         return starter;
     }
 
@@ -153,10 +163,10 @@ public class WasStartedBy implements Equals, HashCode, ToString, org.openprovena
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setStarter(org.openprovenance.prov.model.IDRef value) {
+    public void setStarter(org.openprovenance.prov.model.QualifiedName value) {
         this.starter = value;
     }
 
@@ -332,10 +342,10 @@ public class WasStartedBy implements Equals, HashCode, ToString, org.openprovena
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link org.openprovenance.prov.model.QualifiedName }
      *     
      */
-    public QName getId() {
+    public org.openprovenance.prov.model.QualifiedName getId() {
         return id;
     }
 
@@ -344,10 +354,10 @@ public class WasStartedBy implements Equals, HashCode, ToString, org.openprovena
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link org.openprovenance.prov.model.QualifiedName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(org.openprovenance.prov.model.QualifiedName value) {
         this.id = value;
     }
 
@@ -405,17 +415,17 @@ public class WasStartedBy implements Equals, HashCode, ToString, org.openprovena
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            org.openprovenance.prov.model.IDRef theActivity;
+            org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
             toStringBuilder.append("activity", theActivity);
         }
         {
-            org.openprovenance.prov.model.IDRef theTrigger;
+            org.openprovenance.prov.model.QualifiedName theTrigger;
             theTrigger = this.getTrigger();
             toStringBuilder.append("trigger", theTrigger);
         }
         {
-            org.openprovenance.prov.model.IDRef theStarter;
+            org.openprovenance.prov.model.QualifiedName theStarter;
             theStarter = this.getStarter();
             toStringBuilder.append("starter", theStarter);
         }
@@ -450,12 +460,9 @@ public class WasStartedBy implements Equals, HashCode, ToString, org.openprovena
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
-        }
-        { //TODO: only now, for debugging.
-            toStringBuilder.append("all", getAllAttributes());
         }
     }
 

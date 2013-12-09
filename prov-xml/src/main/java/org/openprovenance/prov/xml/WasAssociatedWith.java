@@ -61,12 +61,18 @@ import org.openprovenance.prov.model.Attribute;
 public class WasAssociatedWith implements Equals, HashCode, ToString, org.openprovenance.prov.model.WasAssociatedWith, HasAllAttributes
 {
 
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef activity;
+    protected org.openprovenance.prov.model.QualifiedName activity;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef agent;
+    protected org.openprovenance.prov.model.QualifiedName agent;
+
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.IDRef plan;
+    protected org.openprovenance.prov.model.QualifiedName plan;
+
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.InternationalizedString> label;
     
@@ -76,18 +82,20 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
     
     @XmlAnyElement
     protected List<Attribute> all;
+    
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    protected QName id;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected org.openprovenance.prov.model.QualifiedName id;
 
     /**
      * Gets the value of the activity property.
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getActivity() {
+    public org.openprovenance.prov.model.QualifiedName getActivity() {
         return activity;
     }
 
@@ -96,10 +104,10 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setActivity(org.openprovenance.prov.model.IDRef value) {
+    public void setActivity(org.openprovenance.prov.model.QualifiedName value) {
         this.activity = value;
     }
 
@@ -108,10 +116,10 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getAgent() {
+    public org.openprovenance.prov.model.QualifiedName getAgent() {
         return agent;
     }
 
@@ -120,10 +128,10 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setAgent(org.openprovenance.prov.model.IDRef value) {
+    public void setAgent(org.openprovenance.prov.model.QualifiedName value) {
         this.agent = value;
     }
 
@@ -132,10 +140,10 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.IDRef getPlan() {
+    public org.openprovenance.prov.model.QualifiedName getPlan() {
         return plan;
     }
 
@@ -144,10 +152,10 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.xml.IDRef }
+     *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setPlan(org.openprovenance.prov.model.IDRef value) {
+    public void setPlan(org.openprovenance.prov.model.QualifiedName value) {
         this.plan = value;
     }
 
@@ -270,7 +278,7 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
      *     {@link QName }
      *     
      */
-    public QName getId() {
+    public org.openprovenance.prov.model.QualifiedName getId() {
         return id;
     }
 
@@ -279,10 +287,10 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    public void setId(QName value) {
+    public void setId(org.openprovenance.prov.model.QualifiedName value) {
         this.id = value;
     }
 
@@ -336,17 +344,17 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            org.openprovenance.prov.model.IDRef theActivity;
+            org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
             toStringBuilder.append("activity", theActivity);
         }
         {
-            org.openprovenance.prov.model.IDRef theAgent;
+            org.openprovenance.prov.model.QualifiedName theAgent;
             theAgent = this.getAgent();
             toStringBuilder.append("agent", theAgent);
         }
         {
-            org.openprovenance.prov.model.IDRef thePlan;
+            org.openprovenance.prov.model.QualifiedName thePlan;
             thePlan = this.getPlan();
             toStringBuilder.append("plan", thePlan);
         }
@@ -371,7 +379,7 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
             toStringBuilder.append("others", theOthers);
         }
         {
-            QName theId;
+            org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
         }

@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.UncheckedTestException;
 import org.openrdf.rio.RDFFormat;
@@ -12,6 +13,11 @@ import org.openrdf.rio.RDFFormat;
 public class RoundTripFromJavaTest extends
 		org.openprovenance.prov.xml.RoundTripFromJavaTest {
     
+	final ProvFactory pFactory=new org.openprovenance.prov.xml.ProvFactory();
+	final Ontology onto=new Ontology(pFactory);    	
+	final Utility u = new Utility(pFactory,onto);
+
+
  
 
 	public RoundTripFromJavaTest(String name)
@@ -58,7 +64,7 @@ public class RoundTripFromJavaTest extends
 	{
 		try
 		{
-			u.dumpRDF(pFactory, doc, RDFFormat.TRIG, file);
+			u.dumpRDF(doc, RDFFormat.TRIG, file);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -77,7 +83,6 @@ public class RoundTripFromJavaTest extends
 		return true;
 	}
 
-	final Utility u = new Utility();
 
 	private String dumpXML(org.openprovenance.prov.model.ProvFactory pFactory, Document document)
 			throws JAXBException

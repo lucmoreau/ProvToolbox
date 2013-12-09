@@ -8,9 +8,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.model.KeyQNamePair;
 import org.openprovenance.prov.model.URIWrapper;
 import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
@@ -22,7 +20,9 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.Entry;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Namespace;
@@ -50,74 +50,85 @@ import org.openrdf.rio.helpers.RDFHandlerBase;
 
 public class RdfCollector extends RDFHandlerBase {
 
-    protected ProvFactory pFactory;
-    protected HashMap<QName, HashMap<QName, List<Statement>>> collators;
-    private Hashtable<QName, BundleHolder> bundles;
+    final protected ProvFactory pFactory;
+    final protected Name name;
+    protected HashMap<QualifiedName, HashMap<QualifiedName, List<Statement>>> collators;
+    private Hashtable<QualifiedName, BundleHolder> bundles;
     protected Document document;
     private Hashtable<String, String> revnss;
     private ValueConverter valueConverter;
+    final protected Ontology onto;
     protected static String BNODE_NS = "http://openprovenance.org/provtoolbox/bnode/";
 
-    private List<QName> QUAL_PREDS = Arrays.asList(new QName[] {
-	    Ontology.QNAME_PROVO_qualifiedAssociation,
-	    Ontology.QNAME_PROVO_qualifiedAttribution,
-	    Ontology.QNAME_PROVO_qualifiedCommunication,
-	    Ontology.QNAME_PROVO_qualifiedDelegation,
-	    Ontology.QNAME_PROVO_qualifiedDerivation,
-	    Ontology.QNAME_PROVO_qualifiedEnd,
-	    Ontology.QNAME_PROVO_qualifiedGeneration,
-	    Ontology.QNAME_PROVO_qualifiedInfluence,
-	    Ontology.QNAME_PROVO_qualifiedInvalidation,
-	    Ontology.QNAME_PROVO_qualifiedPrimarySource,
-	    Ontology.QNAME_PROVO_qualifiedQuotation,
-	    Ontology.QNAME_PROVO_qualifiedRevision,
-	    Ontology.QNAME_PROVO_qualifiedStart,
-	    Ontology.QNAME_PROVO_qualifiedUsage,
-	    Ontology.QNAME_PROVO_qualifiedInsertion,
-	    Ontology.QNAME_PROVO_qualifiedRemoval
+    
+    public RdfCollector(ProvFactory pFactory, Ontology onto) {
+   	this.pFactory = pFactory;
+   	this.name=pFactory.getName();
+   	this.onto=onto;
+   	this.collators = new HashMap<QualifiedName, HashMap<QualifiedName, List<Statement>>>();
+   	this.revnss = new Hashtable<String, String>();
+   	this.document = pFactory.newDocument();
+   	this.valueConverter = new ValueConverter(pFactory,null);
+   	this.bundles = new Hashtable<QualifiedName, BundleHolder>();
+   	this.namespace=new Namespace();
+   	document.setNamespace(this.namespace);
+   	handleNamespace(NamespacePrefixMapper.XSD_PREFIX,
+   	                NamespacePrefixMapper.XSD_HASH_NS);
+   	handleNamespace("bnode", BNODE_NS);
+   	
+   	QUAL_PREDS= Arrays.asList(
+   	             	    onto.QNAME_PROVO_qualifiedAssociation,
+   	     	    onto.QNAME_PROVO_qualifiedAttribution,
+   	     	    onto.QNAME_PROVO_qualifiedCommunication,
+   	     	    onto.QNAME_PROVO_qualifiedDelegation,
+   	     	    onto.QNAME_PROVO_qualifiedDerivation,
+   	     	    onto.QNAME_PROVO_qualifiedEnd,
+   	     	    onto.QNAME_PROVO_qualifiedGeneration,
+   	     	    onto.QNAME_PROVO_qualifiedInfluence,
+   	     	    onto.QNAME_PROVO_qualifiedInvalidation,
+   	     	    onto.QNAME_PROVO_qualifiedPrimarySource,
+   	     	    onto.QNAME_PROVO_qualifiedQuotation,
+   	     	    onto.QNAME_PROVO_qualifiedRevision,
+   	     	    onto.QNAME_PROVO_qualifiedStart,
+   	     	    onto.QNAME_PROVO_qualifiedUsage,
+   	     	    onto.QNAME_PROVO_qualifiedInsertion,
+   	     	    onto.QNAME_PROVO_qualifiedRemoval
 
-    });
+   	         );
+   	
+   	DM_TYPES=Arrays.asList(new QualifiedName[] {
+   		    onto.QNAME_PROVO_Bundle, onto.QNAME_PROVO_Collection,
+   		    onto.QNAME_PROVO_EmptyCollection,
+   		    onto.QNAME_PROVO_Organization, onto.QNAME_PROVO_Person,
+   		    onto.QNAME_PROVO_Plan, onto.QNAME_PROVO_PrimarySource,
+   		    onto.QNAME_PROVO_Quotation, onto.QNAME_PROVO_Revision,
+   		    onto.QNAME_PROVO_SoftwareAgent,
+   		    onto.QNAME_PROVDC_Contributor, onto.QNAME_PROVO_Dictionary,
+   		    onto.QNAME_PROVO_EmptyDictionary
 
-    private List<QName> DM_TYPES = Arrays.asList(new QName[] {
-	    Ontology.QNAME_PROVO_Bundle, Ontology.QNAME_PROVO_Collection,
-	    Ontology.QNAME_PROVO_EmptyCollection,
-	    Ontology.QNAME_PROVO_Organization, Ontology.QNAME_PROVO_Person,
-	    Ontology.QNAME_PROVO_Plan, Ontology.QNAME_PROVO_PrimarySource,
-	    Ontology.QNAME_PROVO_Quotation, Ontology.QNAME_PROVO_Revision,
-	    Ontology.QNAME_PROVO_SoftwareAgent,
-	    Ontology.QNAME_PROVDC_Contributor, Ontology.QNAME_PROVO_Dictionary,
-	    Ontology.QNAME_PROVO_EmptyDictionary
+   	    });
 
-    });
-
-    public RdfCollector(ProvFactory pFactory) {
-	this.pFactory = pFactory;
-	this.collators = new HashMap<QName, HashMap<QName, List<Statement>>>();
-	this.revnss = new Hashtable<String, String>();
-	this.document = pFactory.newDocument();
-	this.valueConverter = new ValueConverter(pFactory,null);
-	this.bundles = new Hashtable<QName, BundleHolder>();
-	this.namespace=new Namespace();
-	document.setNamespace(this.namespace);
-	handleNamespace(NamespacePrefixMapper.XSD_PREFIX,
-			NamespacePrefixMapper.XSD_HASH_NS);
-	handleNamespace("bnode", BNODE_NS);
     }
 
-    private HashMap<QName, List<Statement>> getCollator(Resource context) {
-	return this.collators.get(convertResourceToQName(context));
+    final private List<QualifiedName> QUAL_PREDS;
+    
+    final List<QualifiedName> DM_TYPES ;
+
+   
+    private HashMap<QualifiedName, List<Statement>> getCollator(Resource context) {
+	return this.collators.get(convertResourceToQualifiedName(context));
     }
 
-    private BundleHolder getBundleHolder(QName context) {
+    private BundleHolder getBundleHolder(QualifiedName context) {
 	if (context == null)
-	    context = new QName("");
+	    context = pFactory.newQualifiedName("","",""); //TODO: what is this?
 	if (!bundles.containsKey(context)) {
 	    bundles.put(context, new BundleHolder());
 	}
 	return bundles.get(context);
     }
 
-    protected void store(QName context,
+    protected void store(QualifiedName context,
 			 org.openprovenance.prov.model.Relation0 relation0) {
 	getBundleHolder(context).addStatement((org.openprovenance.prov.model.Statement) relation0);
     }
@@ -125,13 +136,13 @@ public class RdfCollector extends RDFHandlerBase {
     /* Utility functions */
 
     protected boolean isBNodeReferenced(BNode object) {
-	Collection<HashMap<QName, List<Statement>>> contexts = collators.values();
-	for (HashMap<QName, List<Statement>> context : contexts) {
-	    for (QName subject : context.keySet()) {
+	Collection<HashMap<QualifiedName, List<Statement>>> contexts = collators.values();
+	for (HashMap<QualifiedName, List<Statement>> context : contexts) {
+	    for (QualifiedName subject : context.keySet()) {
 		List<Statement> statements = context.get(subject);
 		for (Statement statement : statements) {
 		    Value value = statement.getObject();
-		    QName pred = convertURIToQName(statement.getPredicate());
+		    QualifiedName pred = convertURIToQualifiedName(statement.getPredicate());
 		    if (QUAL_PREDS.contains(pred)) {
 			continue;
 		    }
@@ -140,18 +151,26 @@ public class RdfCollector extends RDFHandlerBase {
 			if (value.equals(object)) {
 			    return true;
 			}
-		    } else if (value instanceof QName) {
-			QName qname = (QName) value;
+		    } /* else if (value instanceof javax.xml.namespace.QName) {
+			javax.xml.namespace.QName qname = (javax.xml.namespace.QName) value;
+			if (qname.getNamespaceURI().equals(BNODE_NS)
+				&& qname.getLocalPart().equals(object.getID())) {
+			    return true;
+			}
+		    } */  else if (value instanceof QualifiedName) {
+			QualifiedName qname = (QualifiedName) value;
 			if (qname.getNamespaceURI().equals(BNODE_NS)
 				&& qname.getLocalPart().equals(object.getID())) {
 			    return true;
 			}
 		    } else if (value instanceof Resource) {
-			QName qname = convertResourceToQName((Resource) value);
+			QualifiedName qname = convertResourceToQualifiedName((Resource) value);
 			if (qname.getNamespaceURI().equals(BNODE_NS)
 				&& qname.getLocalPart().equals(object.getID())) {
 			    return true;
 			}
+		    } else {	
+			
 		    }
 		}
 	    }
@@ -160,26 +179,26 @@ public class RdfCollector extends RDFHandlerBase {
 	return false;
     }
 
-    private boolean isProvURI(QName qname) {
+    private boolean isProvURI(QualifiedName qname) {
 	if (!qname.getNamespaceURI().equals(NamespacePrefixMapper.PROV_NS)) {
 	    return false;
 	}
 	return true;
     }
 
-    protected List<Statement> getStatementsForPredicate(QName context,
-							QName qname, QName uri) {
+    protected List<Statement> getStatementsForPredicate(QualifiedName context,
+							QualifiedName qname, QualifiedName uri) {
 	ArrayList<Statement> statements = new ArrayList<Statement>();
 	for (Statement statement : collators.get(context).get(qname)) {
-	    if (convertURIToQName(statement.getPredicate()).equals(uri)) {
+	    if (convertURIToQualifiedName(statement.getPredicate()).equals(uri)) {
 		statements.add(statement);
 	    }
 	}
 	return statements;
     }
 
-    protected Statement getSingleStatementForPredicate(QName context,
-						       QName qname, QName uri) {
+    protected Statement getSingleStatementForPredicate(QualifiedName context,
+						       QualifiedName qname, QualifiedName uri) {
 	List<Statement> statements = getStatementsForPredicate(context, qname,
 							       uri);
 	assert (statements.size() <= 1);
@@ -191,20 +210,20 @@ public class RdfCollector extends RDFHandlerBase {
 	return statement;
     }
 
-    protected ProvType[] getExplicitTypes(QName context, QName qname) {
+    protected Types.ProvType[] getExplicitTypes(QualifiedName context, QualifiedName qname) {
 	List<Statement> statements = collators.get(context).get(qname);
-	List<ProvType> explicitOptions = new ArrayList<ProvType>();
+	List<Types.ProvType> explicitOptions = new ArrayList<Types.ProvType>();
 	for (Statement statement : statements) {
-	    QName predQ = convertURIToQName(statement.getPredicate());
-	    if (predQ.equals(Ontology.QNAME_RDF_TYPE)) {
+	    QualifiedName predQ = convertURIToQualifiedName(statement.getPredicate());
+	    if (predQ.equals(onto.QNAME_RDF_TYPE)) {
 		Value value = statement.getObject();
 		if (!(value instanceof URI)) {
 		    continue;
 		}
-		if (!isProvURI(convertURIToQName((URI) value))) {
+		if (!isProvURI(convertURIToQualifiedName((URI) value))) {
 		    continue;
 		}
-		ProvType provType = ProvType.lookup(convertURIToQName((URI) value));
+		Types.ProvType provType = Types.ProvType.lookup(convertURIToQualifiedName((URI) value));
 		if (provType != null)
 		    explicitOptions.add(provType);
 	    }
@@ -213,23 +232,23 @@ public class RdfCollector extends RDFHandlerBase {
 	// Prunes back to the 'top' class (e.g. if we have Person and Agent, we
 	// only need Person)
 	if (explicitOptions.size() > 1) {
-	    List<ProvType> cloned = new ArrayList<ProvType>(explicitOptions);
-	    for (ProvType option : explicitOptions) {
-		for (ProvType extended : option.getExtends()) {
+	    List<Types.ProvType> cloned = new ArrayList<Types.ProvType>(explicitOptions);
+	    for (Types.ProvType option : explicitOptions) {
+		for (Types.ProvType extended : option.getExtends()) {
 		    cloned.remove(extended);
 		}
 	    }
 	    explicitOptions = cloned;
 	}
 
-	return explicitOptions.toArray(new ProvType[] {});
+	return explicitOptions.toArray(new Types.ProvType[] {});
     }
 
-    protected QName convertResourceToQName(Resource resource) {
+    protected QualifiedName convertResourceToQualifiedName(Resource resource) {
 	if (resource instanceof URI) {
-	    return convertURIToQName((URI) resource);
+	    return convertURIToQualifiedName((URI) resource);
 	} else if (resource instanceof BNode) {
-	    return bnodeToQName((BNode) resource);
+	    return bnodeToQualifiedName((BNode) resource);
 	} else {
 	    return null;
 	}
@@ -237,7 +256,7 @@ public class RdfCollector extends RDFHandlerBase {
 
     protected Object valueToObject(Value value) {
 	if (value instanceof Resource) {
-	    return convertResourceToQName((Resource) value);
+	    return convertResourceToQualifiedName((Resource) value);
 	} else if (value instanceof Literal) {
 	    return decodeLiteral((Literal) value);
 	} else if (value instanceof URI) {
@@ -246,30 +265,37 @@ public class RdfCollector extends RDFHandlerBase {
 	    uw.setValue(java.net.URI.create(uri.toString()));
 	    return uw;
 	} else if (value instanceof BNode) {
-	    return new QName(((BNode) (value)).getID());
+	    return bnodeToQualifiedName(value); //FIXME
 	} else {
 	    return null;
 	}
+    }
+
+    public QualifiedName bnodeToQualifiedName(Value value) {
+	return pFactory.newQualifiedName("http://bnodeNS/", ((BNode) (value)).getID(), null);
     }
 
 
     // code replicated from valueToObject
     protected Key valueToKey(Value value) {
 	if (value instanceof Resource) {
-	    return pFactory.newKey(convertResourceToQName((Resource) value),
-	                           Name.QNAME_XSD_QNAME);
+	    return pFactory.newKey(convertResourceToQualifiedName((Resource) value),
+	                           name.QNAME_XSD_QNAME);
 	} else if (value instanceof Literal) {
 	    Object o=decodeLiteral((Literal) value);
 	    //FIXME: lossy conversion, I have lost the rdf type by converting to java
+	    if (o instanceof QualifiedName) {
+		return pFactory.newKey(o, name.QNAME_XSD_QNAME);
+	    }
 	    return pFactory.newKey(o, this.valueConverter.getXsdType(o));
 	} else if (value instanceof URI) {
 	    URI uri = (URI) (value);
 	    URIWrapper uw = new URIWrapper();
 	    uw.setValue(java.net.URI.create(uri.toString()));
-	    return pFactory.newKey(uri.toString(), Name.QNAME_XSD_QNAME);
+	    return pFactory.newKey(uri.toString(), name.QNAME_XSD_QNAME);
 	} else if (value instanceof BNode) {
-	    return pFactory.newKey(new QName(((BNode) (value)).getID()),
-	                           Name.QNAME_XSD_QNAME);
+	    return pFactory.newKey(bnodeToQualifiedName(value), //FIXME
+	                           name.QNAME_XSD_QNAME);
 	} else {
 	    return null;
 	}
@@ -288,8 +314,8 @@ public class RdfCollector extends RDFHandlerBase {
 
 	if (literal.getDatatype() != null) {
 	    if (literal instanceof URI) {
-		QName qname = (QName) namespace.stringToQName(literal.getDatatype()
-							       .stringValue());
+		QualifiedName qname = namespace.stringToQualifiedName(literal.getDatatype()
+							       .stringValue(),pFactory);
 		dataType = qname.getNamespaceURI() + qname.getLocalPart();
 	    } else {
 		dataType = literal.getDatatype().stringValue();
@@ -297,7 +323,7 @@ public class RdfCollector extends RDFHandlerBase {
 	}
 
 	if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "QName")) {
-	    return namespace.stringToQName(literal.stringValue());
+	    return namespace.stringToQualifiedName(literal.stringValue(), pFactory);
 	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "string")) {
 	    return literal.stringValue();
 	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
@@ -343,8 +369,8 @@ public class RdfCollector extends RDFHandlerBase {
     }
 
 
-    private void handleTypes(ProvType[] types, QName context, QName subject) {
-	for (ProvType type : types) {
+    private void handleTypes(Types.ProvType[] types, QualifiedName context, QualifiedName subject) {
+	for (Types.ProvType type : types) {
 	    switch (type) {
 	    case ACTIVITY:
 		createActivity(context, subject);
@@ -370,10 +396,10 @@ public class RdfCollector extends RDFHandlerBase {
     }
 
     protected void buildGraph() {
-	for (QName contextQ : collators.keySet()) {
-	    HashMap<QName, List<Statement>> collator = collators.get(contextQ);
-	    for (QName qname : collator.keySet()) {
-		ProvType[] explicitTypes = getExplicitTypes(contextQ, qname);
+	for (QualifiedName contextQ : collators.keySet()) {
+	    HashMap<QualifiedName, List<Statement>> collator = collators.get(contextQ);
+	    for (QualifiedName qname : collator.keySet()) {
+		Types.ProvType[] explicitTypes = getExplicitTypes(contextQ, qname);
 		handleTypes(explicitTypes, contextQ, qname);
 	    }
 	}
@@ -381,8 +407,8 @@ public class RdfCollector extends RDFHandlerBase {
 
     protected void buildBundles() {
 	// Add 'default' bundle
-	if (bundles.containsKey(new QName(""))) {
-	    BundleHolder defaultBundle = bundles.get(new QName(""));
+	if (bundles.containsKey(emptyQualifiedName())) { //FIXME
+	    BundleHolder defaultBundle = bundles.get(emptyQualifiedName()); //FIXME
 	    for (org.openprovenance.prov.model.Activity activity : defaultBundle.getActivities()) {
 		document.getStatementOrBundle().add(activity);
 	    }
@@ -400,7 +426,7 @@ public class RdfCollector extends RDFHandlerBase {
 	    }
 	}
 
-	for (QName key : bundles.keySet()) {
+	for (QualifiedName key : bundles.keySet()) {
 	    if (key.getLocalPart().equals("")) {
 		continue;
 	    }
@@ -416,37 +442,27 @@ public class RdfCollector extends RDFHandlerBase {
 
     }
 
-    protected QName convertURIToQNameOLD(URI uri) {
-	// It is not necessary to specify a prefix for a QName. This code was
-	// breaking on the jpl trace.
-	QName qname;
-	if (revnss.containsKey(uri.getNamespace())) {
-	    String prefix = revnss.get(uri.getNamespace());
-	    qname = new QName(uri.getNamespace(), uri.getLocalName(), prefix);
-	} else {
-	    // TODO: Ugly! This generates a prefix when none is given.
-	    String prefix = "ns" + uri.getNamespace().hashCode() + "";//
-	    handleNamespace(prefix, uri.getNamespace());
-	    qname = new QName(uri.getNamespace(), uri.getLocalName(), prefix);
-	}
-	return qname;
+    public QualifiedName emptyQualifiedName() {
+	return pFactory.newQualifiedName("","",null);//FIXME
     }
+
+
     
-    protected QName convertURIToQName(URI uri) {
-	QName qname;
+    protected QualifiedName convertURIToQualifiedName(URI uri) {
+	QualifiedName qname;
 	String uriNamespace = uri.getNamespace();
 	String prefix=namespace.getNamespaces().get(uriNamespace);
 	String uriLocalName = uri.getLocalName();
 	if (prefix!=null) {
-	    qname = new QName(uriNamespace, uriLocalName, prefix);
+	    qname = pFactory.newQualifiedName(uriNamespace, uriLocalName, prefix);
 	} else {
 	    String defaultNS=namespace.getDefaultNamespace();
 	    if ((defaultNS!=null) && (defaultNS.equals(uriNamespace))) {
-		qname = new QName(uriNamespace, uriLocalName);
+		qname = pFactory.newQualifiedName(uriNamespace, uriLocalName,null);
 	    } else {
 		namespace.newPrefix(uriNamespace);
 		String pref=namespace.getNamespaces().get(uriNamespace);
-		qname = new QName(uriNamespace, uriLocalName, pref);
+		qname = pFactory.newQualifiedName(uriNamespace, uriLocalName, pref);
 	    }
 	}	
 	return qname;
@@ -456,12 +472,12 @@ public class RdfCollector extends RDFHandlerBase {
      * Handles all attributes (location, role, type, etc). Returns a list of
      * Attribute objects.
      */
-    public List<Attribute> collectAttributes(QName context, QName qname,
-					     ProvType type) {
+    public List<Attribute> collectAttributes(QualifiedName context, QualifiedName qname,
+					     Types.ProvType type) {
 	List<Attribute> attributes = new ArrayList<Attribute>();
 	List<Statement> statements = collators.get(context).get(qname);
 	for (Statement statement : statements) {
-	    QName predQ = convertURIToQName(statement.getPredicate());
+	    QualifiedName predQ = convertURIToQualifiedName(statement.getPredicate());
 	    Value value = statement.getObject();
 
 	    if (statement.getPredicate().equals(RDF.TYPE)) {
@@ -481,20 +497,20 @@ public class RdfCollector extends RDFHandlerBase {
 		    if (!sameAsType) {
 
 			if (statement.getObject() instanceof Resource) {
-			    QName typeQ = convertResourceToQName((Resource) statement.getObject());
+			    QualifiedName typeQ = convertResourceToQualifiedName((Resource) statement.getObject());
 
 			    if (isProvURI(typeQ)
 				    && DM_TYPES.indexOf(typeQ) == -1) {
 				// System.out.println("Skipping type: " + typeQ);
 			    } else {
-				attributes.add(pFactory.newAttribute(org.openprovenance.prov.xml.Helper.PROV_TYPE_QNAME,
+				attributes.add(pFactory.newAttribute(name.QNAME_PROV_TYPE,
 								     typeQ,
-								     Name.QNAME_XSD_QNAME));
+								     name.QNAME_XSD_QNAME));
 			    }
 
 			} else if (statement.getObject() instanceof Literal) {	   
 			    Literal lit=(Literal)statement.getObject();
-			    Attribute attr = newAttribute(lit,org.openprovenance.prov.xml.Helper.PROV_TYPE_QNAME);
+			    Attribute attr = newAttribute(lit,name.QNAME_PROV_TYPE);
 			    attributes.add(attr);
 			}
 		    }
@@ -504,32 +520,32 @@ public class RdfCollector extends RDFHandlerBase {
 		}
 	    }
 
-	    if (predQ.equals(Ontology.QNAME_PROVO_hadRole)) {
+	    if (predQ.equals(onto.QNAME_PROVO_hadRole)) {
 		Value obj=statement.getObject();
 
-		Attribute attr = newAttributeForValue(obj,org.openprovenance.prov.xml.Helper.PROV_ROLE_QNAME);
+		Attribute attr = newAttributeForValue(obj,name.QNAME_PROV_ROLE);
 		attributes.add(attr);
 	    }
 
-	    if (predQ.equals(Ontology.QNAME_PROVO_atLocation)) {
+	    if (predQ.equals(onto.QNAME_PROVO_atLocation)) {
 		Value obj=statement.getObject();
-		Attribute attr = newAttributeForValue(obj,org.openprovenance.prov.xml.Helper.PROV_LOCATION_QNAME);
+		Attribute attr = newAttributeForValue(obj,name.QNAME_PROV_LOCATION);
 		attributes.add(attr);
 
 	    }
 
-	    if (predQ.equals(Ontology.QNAME_RDFS_LABEL)) {
+	    if (predQ.equals(onto.QNAME_RDFS_LABEL)) {
 		Literal lit = (Literal) (statement.getObject());
-		Attribute attr=newAttribute(lit, org.openprovenance.prov.xml.Helper.PROV_LABEL_QNAME);
+		Attribute attr=newAttribute(lit, name.QNAME_PROV_LABEL);
 		attributes.add(attr);		
 	    }
-	    if (predQ.equals(Ontology.QNAME_PROVO_value)) {
-		Attribute attr=newAttributeForValue(value, org.openprovenance.prov.xml.Helper.PROV_VALUE_QNAME);
+	    if (predQ.equals(onto.QNAME_PROVO_value)) {
+		Attribute attr=newAttributeForValue(value, name.QNAME_PROV_VALUE);
 		attributes.add(attr);
 	    }
 	    if (!isProvURI(predQ)) {
-		if (!predQ.equals(Ontology.QNAME_RDF_TYPE)
-			&& !predQ.equals(Ontology.QNAME_RDFS_LABEL)) {
+		if (!predQ.equals(onto.QNAME_RDF_TYPE)
+			&& !predQ.equals(onto.QNAME_RDFS_LABEL)) {
 		    Attribute attr = newAttributeForValue(value, predQ);
 		    attributes.add(attr);
 		}
@@ -538,21 +554,21 @@ public class RdfCollector extends RDFHandlerBase {
 	return attributes;
     }
 
-    public Attribute newAttributeForValue(Value obj, QName type) {
+    public Attribute newAttributeForValue(Value obj, QualifiedName type) {
 	Attribute attr;
 	if (obj instanceof Literal) {			
 	    attr=newAttribute((Literal)obj,type);
 	} else if (obj instanceof Resource) {
 	    attr=pFactory.newAttribute(type,
-	                               convertResourceToQName((Resource) obj),
-	                               Name.QNAME_XSD_QNAME);
+	                               convertResourceToQualifiedName((Resource) obj),
+	                               name.QNAME_XSD_QNAME);
 	} else {
 	    throw new UnsupportedOperationException();
 	}
 	return attr;
     }
 
-    public Attribute newAttribute(Literal lit, QName type) {
+    public Attribute newAttribute(Literal lit, QualifiedName type) {
 	Object theValue;
 	if (lit.getLanguage() != null) {
 	    theValue = pFactory.newInternationalizedString(lit.stringValue(),
@@ -564,52 +580,52 @@ public class RdfCollector extends RDFHandlerBase {
 					       theValue,
 					       ((lit.getDatatype() == null) ? 
 					               ((lit.getLanguage()==null)
-					                       ? Name.QNAME_XSD_STRING
-					                       : Name.QNAME_PROV_INTERNATIONALIZED_STRING)
-						       : Ontology.convertFromRdf(convertURIToQName(lit.getDatatype()))));
+					                       ? name.QNAME_XSD_STRING
+					                       : name.QNAME_PROV_INTERNATIONALIZED_STRING)
+						       : onto.convertFromRdf(convertURIToQualifiedName(lit.getDatatype()))));
 	return attr;
     }
 
     /*
      * Handles PROV-O predicates, creating beans where appropriate.
      */
-    private void handlePredicates(QName context, QName qname) {
-	List<QName> members = new ArrayList<QName>();
-	List<QName> dictionaryMembers = new ArrayList<QName>();
+    private void handlePredicates(QualifiedName context, QualifiedName qname) {
+	List<QualifiedName> members = new ArrayList<QualifiedName>();
+	List<QualifiedName> dictionaryMembers = new ArrayList<QualifiedName>();
 
 	List<Statement> statements = collators.get(context).get(qname);
 	for (Statement statement : statements) {
-	    QName predQ = convertURIToQName(statement.getPredicate());
+	    QualifiedName predQ = convertURIToQualifiedName(statement.getPredicate());
 	    Value value = statement.getObject();
 
-	    if (predQ.equals(Ontology.QNAME_PROVO_wasInfluencedBy)) {
-		QName anyQ = convertResourceToQName((Resource) (statement.getObject()));
+	    if (predQ.equals(onto.QNAME_PROVO_wasInfluencedBy)) {
+		QualifiedName anyQ = convertResourceToQualifiedName((Resource) (statement.getObject()));
 		WasInfluencedBy wib = pFactory.newWasInfluencedBy(null, qname,
 								  anyQ, null);
 
-		store(convertResourceToQName(statement.getContext()), wib);
+		store(convertResourceToQualifiedName(statement.getContext()), wib);
 	    }
 
-	    if (predQ.equals(Ontology.QNAME_PROVO_influenced)) {
-		QName anyQ = convertResourceToQName((Resource) (statement.getObject()));
+	    if (predQ.equals(onto.QNAME_PROVO_influenced)) {
+		QualifiedName anyQ = convertResourceToQualifiedName((Resource) (statement.getObject()));
 
 		WasInfluencedBy wib = pFactory.newWasInfluencedBy(null, anyQ,
 								  qname, null);
 
-		store(convertResourceToQName(statement.getContext()), wib);
+		store(convertResourceToQualifiedName(statement.getContext()), wib);
 	    }
 
 	    if (value instanceof Resource) {
-		QName valueQ = convertResourceToQName((Resource) value);
-		if (predQ.equals(Ontology.QNAME_PROVO_wasDerivedFrom)) {
-		    WasDerivedFrom wdf = pFactory.newWasDerivedFrom((QName) null,
+		QualifiedName valueQ = convertResourceToQualifiedName((Resource) value);
+		if (predQ.equals(onto.QNAME_PROVO_wasDerivedFrom)) {
+		    WasDerivedFrom wdf = pFactory.newWasDerivedFrom((QualifiedName) null,
 								    qname,
 								    valueQ,
 								    null, null,
 								    null, null);
 
 		    store(context, wdf);
-		} else if (predQ.equals(Ontology.QNAME_PROVO_hadPrimarySource)) {
+		} else if (predQ.equals(onto.QNAME_PROVO_hadPrimarySource)) {
 		    WasDerivedFrom wdf = pFactory.newWasDerivedFrom(null,
 								    qname,
 								    valueQ,
@@ -618,7 +634,7 @@ public class RdfCollector extends RDFHandlerBase {
 
 		    pFactory.addPrimarySourceType(wdf);
 		    store(context, wdf);
-		} else if (predQ.equals(Ontology.QNAME_PROVO_wasQuotedFrom)) {
+		} else if (predQ.equals(onto.QNAME_PROVO_wasQuotedFrom)) {
 		    WasDerivedFrom wdf = pFactory.newWasDerivedFrom(null,
 								    qname,
 								    valueQ,
@@ -626,7 +642,7 @@ public class RdfCollector extends RDFHandlerBase {
 								    null, null);
 		    pFactory.addQuotationType(wdf);
 		    store(context, wdf);
-		} else if (predQ.equals(Ontology.QNAME_PROVO_wasRevisionOf)) {
+		} else if (predQ.equals(onto.QNAME_PROVO_wasRevisionOf)) {
 		    WasDerivedFrom wdf = pFactory.newWasDerivedFrom(null,
 								    qname,
 								    valueQ,
@@ -634,23 +650,23 @@ public class RdfCollector extends RDFHandlerBase {
 								    null, null);
 		    pFactory.addRevisionType(wdf);
 		    store(context, wdf);
-		} else if (predQ.equals(Ontology.QNAME_PROVO_wasGeneratedBy)) {
+		} else if (predQ.equals(onto.QNAME_PROVO_wasGeneratedBy)) {
 		    WasGeneratedBy wgb = pFactory.newWasGeneratedBy(null,
 								    qname,
 								    valueQ,
 								    null, null);
 
 		    store(context, wgb);
-		} else if (predQ.equals(Ontology.QNAME_PROVO_alternateOf)) {
+		} else if (predQ.equals(onto.QNAME_PROVO_alternateOf)) {
 		    AlternateOf ao = pFactory.newAlternateOf(qname, valueQ);
 
 		    store(context, ao);
-		} else if (predQ.equals(Ontology.QNAME_PROVO_specializationOf)) {
+		} else if (predQ.equals(onto.QNAME_PROVO_specializationOf)) {
 		    SpecializationOf so = pFactory.newSpecializationOf(qname,
 								       valueQ);
 
 		    store(context, so);
-		} else if (predQ.equals(Ontology.QNAME_PROVO_wasInvalidatedBy)) {
+		} else if (predQ.equals(onto.QNAME_PROVO_wasInvalidatedBy)) {
 		    WasInvalidatedBy wib = pFactory.newWasInvalidatedBy(null,
 									qname,
 									valueQ,
@@ -658,28 +674,28 @@ public class RdfCollector extends RDFHandlerBase {
 									null);
 
 		    store(context, wib);
-		} else if (predQ.equals(Ontology.QNAME_PROVO_wasAttributedTo)) {
+		} else if (predQ.equals(onto.QNAME_PROVO_wasAttributedTo)) {
 		    WasAttributedTo wit = pFactory.newWasAttributedTo(null,
 								      qname,
 								      valueQ,
 								      null);
 
 		    store(context, wit);
-		} else if (predQ.equals(Ontology.QNAME_PROVO_mentionOf)) {
+		} else if (predQ.equals(onto.QNAME_PROVO_mentionOf)) {
 		    Statement asInBundleStatement = getSingleStatementForPredicate(context,
 										   qname,
-										   Ontology.QNAME_PROVO_asInBundle);
+										   onto.QNAME_PROVO_asInBundle);
 		    Object o = (asInBundleStatement == null) ? null
 			    : asInBundleStatement.getObject();
-		    QName bundleQ = (o == null) ? null
-			    : convertURIToQName((URI) o);
-		    QName entityQ = (value == null) ? null
-			    : convertURIToQName((URI) value);
+		    QualifiedName bundleQ = (o == null) ? null
+			    : convertURIToQualifiedName((URI) o);
+		    QualifiedName entityQ = (value == null) ? null
+			    : convertURIToQualifiedName((URI) value);
 		    MentionOf mo = pFactory.newMentionOf(entityQ, qname,
 							 bundleQ);
 
 		    store(context, mo);
-		} else if (predQ.equals(Ontology.QNAME_PROVO_wasAssociatedWith)) {
+		} else if (predQ.equals(onto.QNAME_PROVO_wasAssociatedWith)) {
 		    WasAssociatedWith waw = pFactory.newWasAssociatedWith(null,
 									  qname,
 									  valueQ,
@@ -688,36 +704,36 @@ public class RdfCollector extends RDFHandlerBase {
 
 		    store(context, waw);
 
-		} else if (predQ.equals(Ontology.QNAME_PROVO_used)) {
-		    Used used = pFactory.newUsed(null, qname, valueQ, null,
+		} else if (predQ.equals(onto.QNAME_PROVO_used)) {
+		    Used used = pFactory.newUsed(null, qname,valueQ, null,
 						 null);
 		    store(context, used);
 
-		} else if (predQ.equals(Ontology.QNAME_PROVO_wasStartedBy)) {
+		} else if (predQ.equals(onto.QNAME_PROVO_wasStartedBy)) {
 		    WasStartedBy wsb = pFactory.newWasStartedBy(null, qname,
 								valueQ, null,
 								null, null);
 		    store(context, wsb);
 
-		} else if (predQ.equals(Ontology.QNAME_PROVO_generated)) {
+		} else if (predQ.equals(onto.QNAME_PROVO_generated)) {
 		    WasGeneratedBy wgb = pFactory.newWasGeneratedBy(null,
 								    valueQ,
 								    qname,
 								    null, null);
 		    store(context, wgb);
 
-		} else if (predQ.equals(Ontology.QNAME_PROVO_wasEndedBy)) {
+		} else if (predQ.equals(onto.QNAME_PROVO_wasEndedBy)) {
 		    WasEndedBy web = pFactory.newWasEndedBy(null, qname,
 							    valueQ, null, null,
 							    null);
 		    store(context, web);
 
-		} else if (predQ.equals(Ontology.QNAME_PROVO_wasInformedBy)) {
+		} else if (predQ.equals(onto.QNAME_PROVO_wasInformedBy)) {
 		    WasInformedBy wib = pFactory.newWasInformedBy(null, qname,
 								  valueQ, null);
 		    store(context, wib);
-		} else if (predQ.equals(Ontology.QNAME_PROVO_actedOnBehalfOf)) {
-		    QName agentQ = convertResourceToQName((Resource) value);
+		} else if (predQ.equals(onto.QNAME_PROVO_actedOnBehalfOf)) {
+		    QualifiedName agentQ = convertResourceToQualifiedName((Resource) value);
 		    ActedOnBehalfOf aobo = pFactory.newActedOnBehalfOf(null,
 								       qname,
 								       agentQ,
@@ -725,10 +741,10 @@ public class RdfCollector extends RDFHandlerBase {
 								       null);
 
 		    store(context, aobo);
-		} else if (predQ.equals(Ontology.QNAME_PROVO_hadMember)) {
-		    members.add(convertResourceToQName((Resource) (statement.getObject())));
-		} else if (predQ.equals(Ontology.QNAME_PROVO_hadDictionaryMember)) {
-		    dictionaryMembers.add(convertResourceToQName((Resource) (statement.getObject())));
+		} else if (predQ.equals(onto.QNAME_PROVO_hadMember)) {
+		    members.add(convertResourceToQualifiedName((Resource) (statement.getObject())));
+		} else if (predQ.equals(onto.QNAME_PROVO_hadDictionaryMember)) {
+		    dictionaryMembers.add(convertResourceToQualifiedName((Resource) (statement.getObject())));
 		}
 	    }
 	}
@@ -738,7 +754,7 @@ public class RdfCollector extends RDFHandlerBase {
 	    store(context, hm);
 	}
 	if (dictionaryMembers.size() > 0) {
-	    List<KeyQNamePair> pairs = createKeyEntityPairs(context,
+	    List<Entry> pairs = createKeyEntityPairs(context,
 							    dictionaryMembers);
 
 	    DictionaryMembership hm = pFactory.newDictionaryMembership(qname,
@@ -747,12 +763,13 @@ public class RdfCollector extends RDFHandlerBase {
 	}
     }
 
-    protected List<Value> getDataObjects(QName context, QName subject,
-					 QName pred) {
+    protected List<Value> getDataObjects(QualifiedName context, 
+                                         QualifiedName subject,
+					 QualifiedName pred) {
 	List<Statement> statements = collators.get(context).get(subject);
 	List<Value> objects = new ArrayList<Value>();
 	for (Statement statement : statements) {
-	    QName predQ = convertURIToQName(statement.getPredicate());
+	    QualifiedName predQ = convertURIToQualifiedName(statement.getPredicate());
 	    Value value = statement.getObject();
 	    if (pred.equals(predQ) && (!(value instanceof Resource))) {
 		objects.add(value);
@@ -761,75 +778,79 @@ public class RdfCollector extends RDFHandlerBase {
 	return objects;
     }
 
-    protected List<KeyQNamePair> createKeyEntityPairs(QName context,
-						      List<QName> pairs) {
-	List<KeyQNamePair> result = new LinkedList<KeyQNamePair>();
-	for (QName pair : pairs) {
+    protected List<Entry> createKeyEntityPairs(QualifiedName context,
+						      List<QualifiedName> pairs) {
+	List<Entry> result = new LinkedList<Entry>();
+	for (QualifiedName pair : pairs) {
 	    List<Value> keys = getDataObjects(context, pair,
-					      Ontology.QNAME_PROVO_pairKey); // key
+					      onto.QNAME_PROVO_pairKey); // key
 									     // is
 									     // data
 									     // property!
 
-	    List<QName> entities = getObjects(context, pair,
-					      Ontology.QNAME_PROVO_pairEntity);
-	    KeyQNamePair p = new KeyQNamePair();
+	    List<QualifiedName> entities = getObjects(context, pair,
+					      onto.QNAME_PROVO_pairEntity);
+	    Key key=null;
+	    QualifiedName name=null;
 	    if (!keys.isEmpty())
-		p.key = valueToKey(keys.get(0)); // we ignore the others
+		key = valueToKey(keys.get(0)); // we ignore the others
 	    if (!entities.isEmpty())
-		p.name = entities.get(0); // we ignore the others
+		name = entities.get(0); // we ignore the others
+	    Entry p=pFactory.newEntry(key, name);
+
 	    result.add(p);
 	}
 	return result;
     }
 
-    protected List<QName> getObjects(QName context, QName subject, QName pred) {
+    protected List<QualifiedName> getObjects(QualifiedName context, QualifiedName subject, QualifiedName pred) {
 	List<Statement> statements = collators.get(context).get(subject);
-	List<QName> objects = new ArrayList<QName>();
+	List<QualifiedName> objects = new ArrayList<QualifiedName>();
 	for (Statement statement : statements) {
-	    QName predQ = convertURIToQName(statement.getPredicate());
+	    QualifiedName predQ = convertURIToQualifiedName(statement.getPredicate());
 	    Value value = statement.getObject();
 	    if (pred.equals(predQ) && value instanceof Resource) {
-		objects.add(convertResourceToQName((Resource) value));
+		objects.add(convertResourceToQualifiedName((Resource) value));
 	    }
 	}
 	return objects;
     }
 
-    private void createEntity(QName context, QName qname) {
-	List<Attribute> attributes = collectAttributes(context, qname,
-						       ProvType.ENTITY);
+    private void createEntity(QualifiedName context, QualifiedName qname) {
+	List<Attribute> attributes = collectAttributes(context, 
+	                                               qname,
+						       Types.ProvType.ENTITY);
 
 	org.openprovenance.prov.model.Entity entity = pFactory.newEntity(qname,
 									 attributes);
 	getBundleHolder(context).store(entity);
     }
 
-    private void createAgent(QName context, QName qname) {
+    private void createAgent(QualifiedName context, QualifiedName qname) {
 	List<Attribute> attributes = collectAttributes(context, qname,
-						       ProvType.AGENT);
+						       Types.ProvType.AGENT);
 
 	org.openprovenance.prov.model.Agent agent = pFactory.newAgent(qname,
 								      attributes);
 	getBundleHolder(context).store(agent);
     }
 
-    private void createActivity(QName context, QName qname) {
+    private void createActivity(QualifiedName context, QualifiedName qname) {
 	List<Attribute> attributes = collectAttributes(context, qname,
-						       ProvType.ACTIVITY);
+						       Types.ProvType.ACTIVITY);
 	List<Statement> statements = collators.get(context).get(qname);
 
 	XMLGregorianCalendar startTime = null;
 	XMLGregorianCalendar endTime = null;
 
 	for (Statement statement : statements) {
-	    QName predQ = convertURIToQName(statement.getPredicate());
+	    QualifiedName predQ = convertURIToQualifiedName(statement.getPredicate());
 	    Value value = statement.getObject();
 	    if (value instanceof Literal) {
-		if (predQ.equals(Ontology.QNAME_PROVO_startedAtTime)) {
+		if (predQ.equals(onto.QNAME_PROVO_startedAtTime)) {
 		    Object literal = decodeLiteral((Literal) value);
 		    startTime = (XMLGregorianCalendar) literal;
-		} else if (predQ.equals(Ontology.QNAME_PROVO_endedAtTime)) {
+		} else if (predQ.equals(onto.QNAME_PROVO_endedAtTime)) {
 		    Object literal = decodeLiteral((Literal) value);
 		    endTime = (XMLGregorianCalendar) literal;
 		}
@@ -861,31 +882,33 @@ public class RdfCollector extends RDFHandlerBase {
 	this.revnss.put(namespace, prefix);
     }
 
-    protected QName bnodeToQName(BNode bnode) {
-	return new QName(BNODE_NS, bnode.getID(), "bnode");
+  
+
+    protected QualifiedName bnodeToQualifiedName(BNode bnode) {
+	return pFactory.newQualifiedName(BNODE_NS, bnode.getID(), "bnode");
     }
 
     @Override
     public void handleStatement(Statement statement) {
-	QName subjectQ = null;
+	QualifiedName subjectQ = null;
 
-	QName contextQ = convertResourceToQName(statement.getContext());
+	QualifiedName contextQ = convertResourceToQualifiedName(statement.getContext());
 
 	Resource subject = statement.getSubject();
 	if (subject instanceof BNodeImpl) {
-	    subjectQ = bnodeToQName((BNodeImpl) subject);
+	    subjectQ = bnodeToQualifiedName((BNodeImpl) subject);
 	} else if (subject instanceof URI) {
 	    URI uri = (URI) subject;
-	    subjectQ = convertURIToQName(uri);
+	    subjectQ = convertURIToQualifiedName(uri);
 	} else {
 	    System.err.println("Invalid subject resource");
 	}
 
 	if (!collators.containsKey(contextQ)) {
-	    collators.put(contextQ, new HashMap<QName, List<Statement>>());
+	    collators.put(contextQ, new HashMap<QualifiedName, List<Statement>>());
 	}
 
-	HashMap<QName, List<Statement>> currcollator = getCollator(statement.getContext());
+	HashMap<QualifiedName, List<Statement>> currcollator = getCollator(statement.getContext());
 
 	if (!currcollator.containsKey(subjectQ)) {
 	    currcollator.put(subjectQ, new ArrayList<Statement>());

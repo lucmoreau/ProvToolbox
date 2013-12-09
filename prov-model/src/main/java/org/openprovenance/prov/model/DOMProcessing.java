@@ -6,7 +6,6 @@ import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,10 +22,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 final public class DOMProcessing {
-    private static final QName QNAME_RDF_LITERAL = Name.QNAME_RDF_LITERAL;
-    private static final String RDF_PREFIX = QNAME_RDF_LITERAL.getPrefix();
-    private static final String RDF_NAMESPACE = QNAME_RDF_LITERAL.getNamespaceURI();
-    private static final String RDF_LITERAL = qnameToString(QNAME_RDF_LITERAL);
+    private static final String XML_LITERAL = "XMLLiteral";
+    private static final String RDF_PREFIX = NamespacePrefixMapper.RDF_PREFIX;
+    private static final String RDF_NAMESPACE = NamespacePrefixMapper.RDF_NS;
+    private static final String RDF_LITERAL = RDF_PREFIX + ":" + XML_LITERAL;
+    private final ProvFactory pFactory;
+    
+    public DOMProcessing(ProvFactory pFactory) {
+	this.pFactory=pFactory;
+    }
     
     static public DocumentBuilder builder;
  
@@ -45,66 +49,60 @@ final public class DOMProcessing {
     }
     
     
-    ///TODO: should use the prefix definition of nss, as opposed to the one in qname
-
-    static public String qnameToString(QName qname) {
+    static public String qualifiedNameToString(QualifiedName name) {
 	Namespace ns=Namespace.getThreadNamespace();
-	return ns.qnameToString(qname);
-//	return ((qname.getPrefix().equals("")) ? "" : (qname.getPrefix() + ":"))
-//		+ qname.getLocalPart();
+	return ns.qualifiedNameToString(name);
     }
     
 
+    
+
     /**
-     * Converts a string to a QName, extracting namespace from the DOM.
+     * Converts a string to a QualifiedName, extracting namespace from the DOM.
      * 
      * @param str
-     *            string to convert to QName
+     *            string to convert to QualifiedName
      * @param el
      *            current Element in which this string was found (as attribute
      *            or attribute value)
-     * @return
+     * @return a qualified name {@link QualifiedName}
      */
-    final static public QName stringToQName(String str, org.w3c.dom.Element el) {
+    final public QualifiedName stringToQualifiedName(String str, org.w3c.dom.Element el) {
         if (str == null)
             return null;
         int index = str.indexOf(':');
         if (index == -1) {
-            QName qn = new QName(el.lookupNamespaceURI(null), // find default namespace
-                                                              // namespace
-                                 str);
+            QualifiedName qn = pFactory.newQualifiedName(el.lookupNamespaceURI(null), // find default namespace
+                                                         // namespace
+                                                         str,
+                                                         null);
             return qn;
         }
         String prefix = str.substring(0, index);
         String local = str.substring(index + 1, str.length());
-        QName qn = new QName(el.lookupNamespaceURI(prefix), local, prefix);
+        QualifiedName qn = pFactory.newQualifiedName(el.lookupNamespaceURI(prefix), local, prefix);
         return qn;
     }
 
-
-    /** Create a new element, with given elementName, and QName as content. One cannot assume that 
-     * the prefixes have been declared, hence all namespaces need to be declared.
-     * @param elementName
-     * @param value
-     * @return
-     */
     
     
-    final static public Element newElement(QName elementName, QName value) {
+    
+    final static public Element newElement(QualifiedName elementName, QualifiedName value) {
 	org.w3c.dom.Document doc = builder.newDocument();
 	Element el = doc.createElementNS(elementName.getNamespaceURI(),
-					 qnameToString(elementName));
+					 qualifiedNameToString(elementName));
 	
 	// 1. we add an xsi:type="xsd:QName" attribute
 	//   making sure xsi and xsd prefixes are appropriately declared.
 	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", "xsd:QName");
 	el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsd", NamespacePrefixMapper.XSD_NS);
 
-	// 2. We add the QName's string representation as child of the element
-	String valueAsString=qnameToString(value);
+	// 2. We add the QualifiedName's string representation as child of the element
+	//    This representation depends on the extant prefix-namespace mapping
+	String valueAsString=qualifiedNameToString(value);
 	el.appendChild(doc.createTextNode(valueAsString));
 	
-	// 3. We make sure that the QName's prefix is given the right namespace, or the default namespace is declared if there is no prefix
+	// 3. We make sure that the QualifiedName's prefix is given the right namespace, or the default namespace is declared if there is no prefix
 	int index=valueAsString.indexOf(":");
 	if (index!=-1) {
 	    String prefix = valueAsString.substring(0, index);
@@ -117,23 +115,25 @@ final public class DOMProcessing {
 	return el;
     }
 
-    final static public Element newElement(QName qname, String value, QName type) {
+    final static public Element newElement(QualifiedName name, String value, QualifiedName type) {
 	org.w3c.dom.Document doc = builder.newDocument();
-	Element el = doc.createElementNS(qname.getNamespaceURI(),
-	                                 qnameToString(qname));
-	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qnameToString(type));
+	Element el = doc.createElementNS(name.getNamespaceURI(),
+	                                 qualifiedNameToString(name));
+	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qualifiedNameToString(type));
 	el.appendChild(doc.createTextNode(value));
 	doc.appendChild(el);
 	return el;
     }
 
 
-    final public static Element newElement(QName qname, String value, QName type,
-			      String lang) {
+    final public static Element newElement(QualifiedName name, 
+                                           String value, 
+                                           QualifiedName type,
+                                           String lang) {
 	org.w3c.dom.Document doc = builder.newDocument();
-	Element el = doc.createElementNS(qname.getNamespaceURI(),
-	                                 qnameToString(qname));				 
-	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qnameToString(type));
+	Element el = doc.createElementNS(name.getNamespaceURI(),
+	                                 qualifiedNameToString(name));				 
+	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qualifiedNameToString(type));
 	el.setAttributeNS(NamespacePrefixMapper.XML_NS, "xml:lang", lang);
         el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xml", NamespacePrefixMapper.XML_NS);
 
@@ -143,10 +143,10 @@ final public class DOMProcessing {
     }
 
 
-    final static public Element newElement(QName qname, Element value) {
+    final static public Element newElement(QualifiedName name, Element value) {
         org.w3c.dom.Document doc = builder.newDocument();
-        Element el = doc.createElementNS(qname.getNamespaceURI(),
-                                         qnameToString(qname)); 
+        Element el = doc.createElementNS(name.getNamespaceURI(),
+                                         qualifiedNameToString(name)); 
         el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", RDF_LITERAL);
         el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:"+RDF_PREFIX, RDF_NAMESPACE);
         el.appendChild(doc.importNode(value, true));
@@ -176,11 +176,11 @@ final public class DOMProcessing {
         transformer.transform(source, result);
 
     }                                                                                                                                            
-    static public void writeDOMToPrinter(Node document, Writer out, boolean formatted)                                                           
-            throws TransformerConfigurationException, TransformerException  {                                                                        
-                                                                                                                                                     
-            StreamResult result = new StreamResult(out);                                                                                             
-            writeDOMToPrinter(document,result,formatted);                                                                                            
+    static public void writeDOMToPrinter(Node document, Writer out, boolean formatted)
+            throws TransformerConfigurationException, TransformerException  {
+
+            StreamResult result = new StreamResult(out);
+            writeDOMToPrinter(document,result,formatted);
         }                                                                                                                                            
                  
     static public String writeToString (Node toWrite)                                                                                            
@@ -222,20 +222,22 @@ final public class DOMProcessing {
     
     final static
     public org.w3c.dom.Element marshalTypedValue(org.openprovenance.prov.model.TypedValue attribute,
-                                                 QName elementName) {	
+                                                 QualifiedName elementName) {	
 	Object value = attribute.getValue();
-	QName type = attribute.getType();
+	QualifiedName type = attribute.getType();
+	
 	if (value instanceof InternationalizedString) {
 	    InternationalizedString istring = ((InternationalizedString) value);
 	    return newElement(elementName, 
 	                      istring.getValue(),
 			      attribute.getType(), 
 			      istring.getLang());
-	} else if (value instanceof QName) {
+	} else if (value instanceof QualifiedName) {
 	    return newElement(elementName, 
-	                      (QName) value);
+	                      (QualifiedName) value);
 
-	} else if (type.equals(Name.QNAME_RDF_LITERAL)) {
+	} else if (type.getNamespaceURI().equals(RDF_NAMESPACE)
+		&& type.getLocalPart().equals(XML_LITERAL)) {
 	    return newElement(elementName,
 			      (org.w3c.dom.Element) attribute.getValueAsObject());
 
@@ -247,7 +249,7 @@ final public class DOMProcessing {
     }
     
     final
-    static public org.openprovenance.prov.model.Attribute unmarshallAttribute(org.w3c.dom.Element el,
+    public org.openprovenance.prov.model.Attribute unmarshallAttribute(org.w3c.dom.Element el,
                                                                               ProvFactory pFactory,
                                                                               ValueConverter vconv) {
         String prefix = el.getPrefix();
@@ -258,16 +260,16 @@ final public class DOMProcessing {
                                                 "type");
 
         String lang = el.getAttributeNS(NamespacePrefixMapper.XML_NS, "lang");
-        QName type = ((typeAsString == null) || (typeAsString.equals(""))) ? null
-                : DOMProcessing.stringToQName(typeAsString, el);
-
+        QualifiedName type = ((typeAsString == null) || (typeAsString.equals(""))) ? null
+                : stringToQualifiedName(typeAsString, el);
+        Name name=pFactory.getName();
         if (type == null)
-            type = Name.QNAME_XSD_STRING;
-        if (type.equals(Name.QNAME_XSD_QNAME)) {
-            QName qn = DOMProcessing.stringToQName(child, el);
+            type = name.QNAME_XSD_STRING;
+        if (type.equals(name.QNAME_XSD_QNAME)) {
+            QualifiedName qn = stringToQualifiedName(child, el);
             Attribute x= pFactory.newAttribute(namespace, local, prefix, qn, type);
             return x;
-        } else if (type.equals(Name.QNAME_RDF_LITERAL)) {
+        } else if (type.equals(name.QNAME_RDF_LITERAL)) {
             NodeList nodes=el.getChildNodes();
             org.w3c.dom.Element content=null;
             for (int i=0; i<nodes.getLength(); i++) {
@@ -289,6 +291,7 @@ final public class DOMProcessing {
                     .newInternationalizedString(child, lang), type);
         }
     }
+
 
     
 

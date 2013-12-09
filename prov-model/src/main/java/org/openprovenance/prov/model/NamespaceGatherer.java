@@ -4,20 +4,11 @@ import java.util.Hashtable;
 import java.util.List;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.model.NamespacePrefixMapper;
-import org.openprovenance.prov.model.ValueConverter;
 
 public class NamespaceGatherer implements StatementAction {
     
-
-    /* mapping from prefixes to namespaces. */
-    //ashtable<String, String> prefixes = new Hashtable<String, String>();
-    /* mapping from namespaces to prefixes. */
-    //Hashtable<String, String> namespaces = new Hashtable<String, String>();
-    
-    Namespace ns=new Namespace();
+    private Namespace ns=new Namespace();
     
     public NamespaceGatherer() {
 	ns.getPrefixes().put("prov",NamespacePrefixMapper.PROV_NS);
@@ -46,13 +37,17 @@ public class NamespaceGatherer implements StatementAction {
 	}
     }
 
+    public void registerPotentialQualifiedName(Object o) {
+	if (o instanceof QualifiedName) {
+	    register((QualifiedName) o);
+	}
+    }
+    
     public void register(Location loc) {
 	if (loc!=null) {
 	    register(loc.getType());
 	    Object val = loc.getValue();
-	    if (val instanceof QName) {
-		register((QName) val);
-	    }
+	    registerPotentialQualifiedName(val);
 	}
     }
 
@@ -66,9 +61,7 @@ public class NamespaceGatherer implements StatementAction {
     public void register(Type typ) {
 	register(typ.getType());
 	Object val = typ.getValue();
-	if (val instanceof QName) {
-	    register((QName) val);
-	}
+	registerPotentialQualifiedName(val);
     }
 
     public void registerRole(List<Role> roles) {
@@ -81,9 +74,7 @@ public class NamespaceGatherer implements StatementAction {
     public void register(Role rol) {
 	register(rol.getType());
 	Object val = rol.getValue();
-	if (val instanceof QName) {
-	    register((QName) val);
-	}
+	registerPotentialQualifiedName(val);
     }
 
     public void registerOther(List<Other> others) {
@@ -97,31 +88,20 @@ public class NamespaceGatherer implements StatementAction {
 	register(other.getType());
 	register(other.getElementName());
 	Object val = other.getValue();
-	if (val instanceof QName) {
-	    register((QName) val);
-	}
+	registerPotentialQualifiedName(val);
     }
 
     public void registerValue(Value val2) {
 	if (val2!=null) {
 	    register(val2.getType());
 	    Object val = val2.getValue();
-	    if (val instanceof QName) {
-		register((QName) val);
-	    }
+	    registerPotentialQualifiedName(val);
 	}
     }
 
     final String stringForDefault="::";
 
-    void register(IDRef name) {
-	if (name!=null)
-	register(name.getRef());
-    }
-    
-    //TODO: the code below is replicated in Namespace. Avoid duplication.
-
-    void register(QName name) {
+    void register(QualifiedName name) {
 	if (name==null) return;
 	String namespace = name.getNamespaceURI();
 	String prefix = name.getPrefix();
@@ -135,7 +115,7 @@ public class NamespaceGatherer implements StatementAction {
     @Override
     public void doAction(HadMember mem) {
 	register(mem.getCollection());
-	for (IDRef i: mem.getEntity()) {
+	for (QualifiedName i: mem.getEntity()) {
 	    register(i);
 	}
     }
@@ -312,7 +292,8 @@ public class NamespaceGatherer implements StatementAction {
 	registerType(r.getType());
 	registerOther(r.getOther());
 	if (!r.getKey().isEmpty()) {
-	    register(Name.QNAME_XSD_INT); // pick up an xsd qname, so that xsd is registered!
+	    ns.register("xsd", NamespacePrefixMapper.XSD_NS);
+	    // make sure xsd is registered!
 	}
 	
     }
@@ -331,7 +312,9 @@ public class NamespaceGatherer implements StatementAction {
 	for (Entry e: keyEntityPairs) {
 	    register(e.getEntity());
 	    //Object key=e.getKey();
-	    register(Name.QNAME_XSD_INT); // pick up an xsd qname, so that xsd is registered!
+	    ns.register("xsd", NamespacePrefixMapper.XSD_NS);
+
+	    //make sure xsd is registered!
 	}	
     }
 

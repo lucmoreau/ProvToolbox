@@ -20,6 +20,7 @@ import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.notation.Utility;
+import org.openprovenance.prov.rdf.Ontology;
 
 import org.antlr.runtime.tree.CommonTree;
 
@@ -43,6 +44,7 @@ public class InteropFramework {
 
 	final Utility u = new Utility();
 	final ProvFactory pFactory = ProvFactory.getFactory();
+	final Ontology onto=new Ontology(pFactory);
 	final private String verbose;
 	final private String debug;
 	final private String logfile;
@@ -272,17 +274,17 @@ public class InteropFramework {
 				break;
 			}
 			case TURTLE: {
-				new org.openprovenance.prov.rdf.Utility().dumpRDF(pFactory,
+				new org.openprovenance.prov.rdf.Utility(pFactory,onto).dumpRDF(
 						doc, RDFFormat.TURTLE, filename);
 				break;
 			}
 			case RDFXML: {
-				new org.openprovenance.prov.rdf.Utility().dumpRDF(pFactory,
+				new org.openprovenance.prov.rdf.Utility(pFactory,onto).dumpRDF(
 						doc, RDFFormat.RDFXML, filename);
 				break;
 			}
 			case TRIG: {
-				new org.openprovenance.prov.rdf.Utility().dumpRDF(pFactory,
+				new org.openprovenance.prov.rdf.Utility(pFactory,onto).dumpRDF(
 						doc, RDFFormat.TRIG, filename);
 				break;
 			}
@@ -406,7 +408,7 @@ public class InteropFramework {
 			case RDFXML:
 			case TRIG:
 			case TURTLE: {
-				org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility();
+				org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory,onto);
 				Document doc = rdfU.parseRDF(filename);
 				return doc;
 			}
@@ -470,7 +472,7 @@ public class InteropFramework {
 
 		}
 		try {
-			org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility();
+			org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory,onto);
 			Document doc = rdfU.parseRDF(filename);
 			if (doc != null) {
 				return doc;

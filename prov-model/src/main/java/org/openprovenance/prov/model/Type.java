@@ -1,5 +1,5 @@
 package org.openprovenance.prov.model;
 
-public interface Type extends TypedValue {
+public interface Type extends TypedValue, Attribute {
 
 }

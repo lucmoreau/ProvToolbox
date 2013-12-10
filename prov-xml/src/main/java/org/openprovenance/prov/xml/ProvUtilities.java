@@ -2,7 +2,6 @@ package org.openprovenance.prov.xml;
 
 import java.util.List;
 import java.util.Hashtable;
-import javax.xml.bind.JAXBElement;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
@@ -227,6 +226,7 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
 						 QualifiedName.class });
     }
 
+    /*
     @SuppressWarnings("unchecked")
     public <T> JAXBElement<T> newElement(T r) {
         if (r instanceof Activity) {
@@ -283,6 +283,7 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         System.out.println("newElement Unknow relation " + r);
         throw new UnsupportedOperationException();
     }
+    */
 
     @SuppressWarnings("unchecked")
     public <T> T addAttributes(T from, T to) {

@@ -9,7 +9,6 @@ import java.util.Properties;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import javax.xml.bind.JAXBElement;
 import java.util.GregorianCalendar;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -535,67 +534,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return dur;
     }
 
-
-
-    public JAXBElement<ActedOnBehalfOf> newElement(ActedOnBehalfOf u) {
-	return of.createActedOnBehalfOf(u);
-    }
-
-    public JAXBElement<Activity> newElement(Activity u) {
-	return of.createActivity(u);
-    }
-
-    public JAXBElement<Agent> newElement(Agent u) {
-	return of.createAgent(u);
-    }
-    public JAXBElement<Entity> newElement(Entity u) {
-	return of.createEntity(u);
-    }
-
-    public JAXBElement<MentionOf> newElement(MentionOf u) {
-	return of.createMentionOf(u);
-    }
-
-    public JAXBElement<Used> newElement(Used u) {
-	return of.createUsed(u);
-    }
-
-    public JAXBElement<WasAssociatedWith> newElement(WasAssociatedWith u) {
-	return of.createWasAssociatedWith(u);
-    }
-
-    public JAXBElement<WasAttributedTo> newElement(WasAttributedTo u) {
-	return of.createWasAttributedTo(u);
-    }
-
-    public JAXBElement<WasDerivedFrom> newElement(WasDerivedFrom u) {
-	return of.createWasDerivedFrom(u);
-    }
-
-    public JAXBElement<WasEndedBy> newElement(WasEndedBy u) {
-	return of.createWasEndedBy(u);
-    }
-
-    public JAXBElement<WasGeneratedBy> newElement(WasGeneratedBy u) {
-	return of.createWasGeneratedBy(u);
-    }
-
-    public JAXBElement<WasInfluencedBy> newElement(WasInfluencedBy u) {
-	return of.createWasInfluencedBy(u);
-    }
-
-    public JAXBElement<WasInformedBy> newElement(WasInformedBy u) {
-	return of.createWasInformedBy(u);
-    }
-
-    public JAXBElement<WasInvalidatedBy> newElement(WasInvalidatedBy u) {
-	return of.createWasInvalidatedBy(u);
-    }
-
-    public JAXBElement<WasStartedBy> newElement(WasStartedBy u) {
-	return of.createWasStartedBy(u);
-    }
-
+    
     public Entity newEntity(Entity e) {
 	Entity res = newEntity(e.getId());
 	res.getType().addAll(e.getType());

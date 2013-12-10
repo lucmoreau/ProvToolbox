@@ -3,7 +3,7 @@ package org.openprovenance.prov.model;
 /**
  * 
  * <p>Java class for PROV Qualified Name
- * <p><a href="http://www.w3.org/TR/prov-dm/#concept-qualifiedName">PROV-DM Definition for Qualified Name<a/>: 
+ * <p><a href="http://www.w3.org/TR/prov-dm/#concept-qualifiedName">PROV-DM Definition for Qualified Name</a>: 
  * A qualified name is a name subject to namespace interpretation. It consists of a namespace, denoted by an optional prefix, and a local name.
  * <p>PROV-DM stipulates that a qualified name can be mapped into an IRI by concatenating the IRI associated with the prefix and the local part.
  * <p>A qualified name's prefix is optional. If a prefix occurs in a qualified name, it refers to a namespace declared in a namespace declaration. In the absence of prefix, the qualified name refers to the default namespace.

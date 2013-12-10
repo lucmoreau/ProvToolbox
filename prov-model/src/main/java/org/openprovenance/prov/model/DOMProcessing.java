@@ -226,8 +226,8 @@ final public class DOMProcessing {
 	Object value = attribute.getValue();
 	QualifiedName type = attribute.getType();
 	
-	if (value instanceof InternationalizedString) {
-	    InternationalizedString istring = ((InternationalizedString) value);
+	if (value instanceof LangString) {
+	    LangString istring = ((LangString) value);
 	    return newElement(elementName, 
 	                      istring.getValue(),
 			      attribute.getType(), 
@@ -239,7 +239,7 @@ final public class DOMProcessing {
 	} else if (type.getNamespaceURI().equals(RDF_NAMESPACE)
 		&& type.getLocalPart().equals(XML_LITERAL)) {
 	    return newElement(elementName,
-			      (org.w3c.dom.Element) attribute.getValueAsObject());
+			      (org.w3c.dom.Element) attribute.getConvertedValue());
 
 	} else {
 	    return newElement(elementName, 

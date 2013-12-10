@@ -23,7 +23,7 @@ public interface Attribute extends TypedValue {
 
     
     /** Get the type of an Attribute 
-     * @return  possible object of {@link String}, {@link QualifiedName}, {@link InternationalizedString}
+     * @return  possible object of {@link String}, {@link QualifiedName}, {@link LangString}
      */
     
     public abstract Object getValue();
@@ -40,6 +40,6 @@ public interface Attribute extends TypedValue {
     public abstract String toNotationString();
     
     /** Returns the value of an Attribute as a Java Object. */
-    public Object getValueAsObject();
+    public Object getConvertedValue();
 
 }

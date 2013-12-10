@@ -8,7 +8,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import  org.antlr.runtime.tree.Tree;
 import  org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.model.Entry;
-import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.ModelConstructor;
@@ -496,7 +496,7 @@ public class TreeTraversal {
                 	                             theType);
             
             	
-            } else if (val1 instanceof InternationalizedString) {
+            } else if (val1 instanceof LangString) {
             	return pFactory.newAttribute(stringToQualifiedName(attr1),
             	                             val1,
             	                             name.QNAME_XSD_STRING);	

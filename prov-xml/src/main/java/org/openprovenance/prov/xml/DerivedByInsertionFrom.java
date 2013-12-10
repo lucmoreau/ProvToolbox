@@ -69,7 +69,7 @@ public class DerivedByInsertionFrom implements Equals, HashCode, ToString, org.o
     @XmlElement(required = true, type = org.openprovenance.prov.xml.Entry.class)
     protected List<org.openprovenance.prov.model.Entry> keyEntityPair;
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
-    protected List<org.openprovenance.prov.model.InternationalizedString> label;
+    protected List<org.openprovenance.prov.model.LangString> label;
     
     transient protected List<org.openprovenance.prov.model.Type> type;
     transient protected List<org.openprovenance.prov.model.Other> others;
@@ -181,9 +181,9 @@ public class DerivedByInsertionFrom implements Equals, HashCode, ToString, org.o
      * 
      * 
      */
-    public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
+    public List<org.openprovenance.prov.model.LangString> getLabel() {
         if (label == null) {
-            label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
+            label = new ArrayList<org.openprovenance.prov.model.LangString>();
         }
         return this.label;
     }
@@ -328,7 +328,7 @@ public class DerivedByInsertionFrom implements Equals, HashCode, ToString, org.o
             toStringBuilder.append("keyEntityPair", theKeyEntityPair);
         }
         {
-            List<org.openprovenance.prov.model.InternationalizedString> theLabel;
+            List<org.openprovenance.prov.model.LangString> theLabel;
             theLabel = this.getLabel();
             toStringBuilder.append("label", theLabel);
         }

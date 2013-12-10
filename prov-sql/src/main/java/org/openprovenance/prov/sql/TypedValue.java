@@ -20,7 +20,7 @@ import javax.persistence.Transient;
 import javax.persistence.ManyToOne;
 
 import org.openprovenance.prov.sql.AValue;
-import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.sql.ProvFactory;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.DOMProcessing;
@@ -139,7 +139,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
  	this.value=value;
     }
 
-    public void setValue(InternationalizedString value) {
+    public void setValue(LangString value) {
  	this.value=value;
     }
 
@@ -173,8 +173,8 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     		if (type==null) {
     			avalue=SQLValueConverter.convertToAValue(vc.getXsdType(value), value); //TODO, I am not using the one saved!
     			//System.out.println("##---> getValueItem() reading found " + avalue);
-    		} else if (value instanceof InternationalizedString) {
-    			avalue=SQLValueConverter.convertToAValue(type,  ((InternationalizedString) value).getValue());
+    		} else if (value instanceof LangString) {
+    			avalue=SQLValueConverter.convertToAValue(type,  ((LangString) value).getValue());
     		} else if (value instanceof org.openprovenance.prov.model.QualifiedName) {
     			avalue=SQLValueConverter.convertToAValue(type,  (QualifiedName) value);
     		} else {
@@ -254,7 +254,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
         return valueAsJava;
     }
     @Transient
-    public Object getValueAsObject() {
+    public Object getConvertedValue() {
         return valueAsJava;
     }
 
@@ -301,7 +301,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
  	if ((valueAsJava!=null) && (value==null)) {
  	    if (valueAsJava instanceof QualifiedName) { 
  		this.value=valueAsJava;
- 	    } else if (valueAsJava instanceof InternationalizedString) { 
+ 	    } else if (valueAsJava instanceof LangString) { 
  		this.value=valueAsJava;
  	    } else if (valueAsJava instanceof byte[]) {
  		setValueAsJava((byte[]) valueAsJava);

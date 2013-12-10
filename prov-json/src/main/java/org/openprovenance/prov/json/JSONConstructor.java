@@ -25,7 +25,7 @@ import org.openprovenance.prov.model.DictionaryMembership;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HadMember;
-import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.NamedBundle;
@@ -190,8 +190,8 @@ public class JSONConstructor implements ModelConstructor {
 
 	if (value instanceof QualifiedName)
 	    return qnExport.qualifiedNameToString((QualifiedName) value);
-	if (value instanceof InternationalizedString) {
-	    InternationalizedString iStr = (InternationalizedString) value;
+	if (value instanceof LangString) {
+	    LangString iStr = (LangString) value;
 	    return iStr.getValue();
 	}
 	return value.toString();
@@ -206,13 +206,13 @@ public class JSONConstructor implements ModelConstructor {
 	    return typedLiteral(qnExport.qualifiedNameToString((QualifiedName) value),
 				"xsd:QName", null);
 	}
-	if (value instanceof InternationalizedString) {
-	    InternationalizedString iStr = (InternationalizedString) value;
+	if (value instanceof LangString) {
+	    LangString iStr = (LangString) value;
 	    String lang = iStr.getLang();
 	    if (lang != null)
 		// If 'lang' is defined
 		return typedLiteral(iStr.getValue(),
-				    "prov:InternationalizedString", // "xsd:string",
+				    "prov:LangString", // "xsd:string",
 				    lang);
 	    else
 		return iStr.getValue();
@@ -230,13 +230,13 @@ public class JSONConstructor implements ModelConstructor {
 
 	    attrValue = typedLiteral(qnExport.qualifiedNameToString((QualifiedName) value),
 				     "xsd:QName", null);
-	} else  if (value instanceof InternationalizedString) {
-	    InternationalizedString iStr = (InternationalizedString) value;
+	} else  if (value instanceof LangString) {
+	    LangString iStr = (LangString) value;
 	    String lang = iStr.getLang();
 	    if (lang != null) {
 		// If 'lang' is defined
 		attrValue = typedLiteral(iStr.getValue(),
-					 "prov:InternationalizedString", // "xsd:string",
+					 "prov:LangString", // "xsd:string",
 					 lang);
 	    } else {
 		// Otherwise, just return the string
@@ -639,7 +639,7 @@ public class JSONConstructor implements ModelConstructor {
 	    dictionary.put("$key-datatype", keyDatatype);
 	    for (Entry pair : keyEntitySet) {
 		// String key = convertValueToString(pair.key);
-		String key = convertValueToString(pair.getKey().getValueAsObject());
+		String key = convertValueToString(pair.getKey().getConvertedValue());
 		String entity = qnExport.qualifiedNameToString(pair.getEntity());
 		dictionary.put(key, entity);
 	    }
@@ -653,7 +653,7 @@ public class JSONConstructor implements ModelConstructor {
 	    Object entity = qnExport.qualifiedNameToString(pair.getEntity());
 	    Map<String, Object> item = new Hashtable<String, Object>();
 	    item.put("$", entity);
-	    item.put("key", convertValue(pair.getKey().getValueAsObject()));
+	    item.put("key", convertValue(pair.getKey().getConvertedValue()));
 	    values.add(item);
 	}
 	return values;

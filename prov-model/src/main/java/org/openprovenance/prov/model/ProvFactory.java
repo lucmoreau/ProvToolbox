@@ -247,7 +247,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     /* Return the first label, it it exists */
     public String getLabel(HasOther e) {
 
-	List<InternationalizedString> labels = ((HasLabel) e).getLabel();
+	List<LangString> labels = ((HasLabel) e).getLabel();
 	if ((labels == null) || (labels.isEmpty()))
 	    return null;
 	if (e instanceof HasLabel)
@@ -618,15 +618,15 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return res;
     }    
 
-    public InternationalizedString newInternationalizedString(String s) {
-	InternationalizedString res = of.createInternationalizedString();
+    public LangString newInternationalizedString(String s) {
+	LangString res = of.createInternationalizedString();
 	res.setValue(s);
 	return res;
     }
 
-    public InternationalizedString newInternationalizedString(String s,
+    public LangString newInternationalizedString(String s,
 							      String lang) {
-	InternationalizedString res = of.createInternationalizedString();
+	LangString res = of.createInternationalizedString();
 	res.setValue(s);
 	res.setLang(lang);
 	return res;
@@ -1323,8 +1323,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	    switch (attr.getKind()) {
 	    case PROV_LABEL:
 		if (lab!=null) {
-		    if (aValue instanceof InternationalizedString) {
-			lab.getLabel().add((InternationalizedString) aValue);		
+		    if (aValue instanceof LangString) {
+			lab.getLabel().add((LangString) aValue);		
 		    } else {
 			lab.getLabel().add(newInternationalizedString(aValue.toString()));
 		    }

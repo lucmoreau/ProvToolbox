@@ -32,7 +32,7 @@ import org.openprovenance.prov.model.HasLocation;
 import org.openprovenance.prov.model.HasRole;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.HasValue;
-import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.Name;
@@ -413,7 +413,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	values = popMultiValAttribute("prov:label", attributeMap);
 	if (!values.isEmpty()) {
 	    if (statement instanceof HasLabel) {
-		List<InternationalizedString> labels = ((HasLabel) statement).getLabel();
+		List<LangString> labels = ((HasLabel) statement).getLabel();
 		for (JsonElement value : values) {
 		    labels.add(decodeInternationalizedString(value));
 		}
@@ -510,8 +510,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	return statement;
     }
 
-    private InternationalizedString decodeInternationalizedString(JsonElement element) {
-	InternationalizedString iString = pf.getObjectFactory()
+    private LangString decodeInternationalizedString(JsonElement element) {
+	LangString iString = pf.getObjectFactory()
 					    .createInternationalizedString();
 	if (element.isJsonPrimitive()) {
 	    iString.setValue(element.getAsString());
@@ -538,7 +538,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    if (struct.has("lang")) {
 		// Internationalized strings
 		String lang = struct.get("lang").getAsString();
-		InternationalizedString iString = pf.getObjectFactory()
+		LangString iString = pf.getObjectFactory()
 						    .createInternationalizedString();
 		iString.setValue(value);
 		iString.setLang(lang);
@@ -557,7 +557,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    } else {
 		// if no type or lang information, decode as an
 		// Internationalized string without lang
-		InternationalizedString iString = pf.getObjectFactory()
+		LangString iString = pf.getObjectFactory()
 						    .createInternationalizedString();
 		iString.setValue(value);
 		return pf.newAttribute(elementName,

@@ -97,7 +97,7 @@ public class WasDerivedFrom
     @XmlElement(type = org.openprovenance.prov.sql.IDRef.class)
     protected org.openprovenance.prov.model.QualifiedName usage;
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
-    protected List<org.openprovenance.prov.model.InternationalizedString> label;
+    protected List<org.openprovenance.prov.model.LangString> label;
     
     transient protected List<org.openprovenance.prov.model.Type> type;
     transient protected List<Other> other;
@@ -275,9 +275,9 @@ public class WasDerivedFrom
         CascadeType.ALL
     })
     @JoinColumn(name = "LABEL_WASDERIVEDFROM_PK")
-    public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
+    public List<org.openprovenance.prov.model.LangString> getLabel() {
         if (label == null) {
-            label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
+            label = new ArrayList<org.openprovenance.prov.model.LangString>();
         }
         return this.label;
     }
@@ -286,7 +286,7 @@ public class WasDerivedFrom
      * 
      * 
      */
-    public void setLabel(List<org.openprovenance.prov.model.InternationalizedString> label) {
+    public void setLabel(List<org.openprovenance.prov.model.LangString> label) {
         this.label = label;
     }
 
@@ -473,9 +473,9 @@ public class WasDerivedFrom
             }
         }
         {
-            List<org.openprovenance.prov.model.InternationalizedString> lhsLabel;
+            List<org.openprovenance.prov.model.LangString> lhsLabel;
             lhsLabel = (((this.label!= null)&&(!this.label.isEmpty()))?this.getLabel():null);
-            List<org.openprovenance.prov.model.InternationalizedString> rhsLabel;
+            List<org.openprovenance.prov.model.LangString> rhsLabel;
             rhsLabel = (((that.label!= null)&&(!that.label.isEmpty()))?that.getLabel():null);
             if (!strategy.equals(LocatorUtils.property(thisLocator, "label", lhsLabel), LocatorUtils.property(thatLocator, "label", rhsLabel), lhsLabel, rhsLabel)) {
                 return false;
@@ -544,7 +544,7 @@ public class WasDerivedFrom
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "usage", theUsage), currentHashCode, theUsage);
         }
         {
-            List<org.openprovenance.prov.model.InternationalizedString> theLabel;
+            List<org.openprovenance.prov.model.LangString> theLabel;
             theLabel = (((this.label!= null)&&(!this.label.isEmpty()))?this.getLabel():null);
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "label", theLabel), currentHashCode, theLabel);
         }

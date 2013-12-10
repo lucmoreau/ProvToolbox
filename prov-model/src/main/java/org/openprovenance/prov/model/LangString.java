@@ -1,6 +1,23 @@
 package org.openprovenance.prov.model;
 
-public interface InternationalizedString {
+/**
+* <p>Java class for InternationalizedString complex type.
+* 
+* <p>The following schema fragment specifies the expected content contained within this class.
+* 
+* <pre>
+* &lt;complexType name="InternationalizedString">
+*   &lt;simpleContent>
+*     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
+*       &lt;attribute ref="{http://www.w3.org/XML/1998/namespace}lang"/>
+*     &lt;/extension>
+*   &lt;/simpleContent>
+* &lt;/complexType>
+* </pre>
+* 
+* 
+*/
+public interface LangString {
 
     /**
      * Gets the value of the value property.

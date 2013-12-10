@@ -5,7 +5,7 @@ public class Name {
     
     public Name(ProvFactory pFactory) {
 	this.pFactory=pFactory;
-	QNAME_PROV_INTERNATIONALIZED_STRING = newProvQualifiedName("InternationalizedString");
+	QNAME_PROV_INTERNATIONALIZED_STRING = newProvQualifiedName("LangString");
 	QNAME_PROV_REVISION = newProvQualifiedName("Revision");
 	QNAME_PROV_QUOTATION = newProvQualifiedName("Quotation");
 	QNAME_PROV_PRIMARY_SOURCE = newProvQualifiedName("PrimarySource");

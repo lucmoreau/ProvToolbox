@@ -79,7 +79,7 @@ public class WasInfluencedBy
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
     protected org.openprovenance.prov.model.QualifiedName influencer;
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
-    protected List<org.openprovenance.prov.model.InternationalizedString> label;
+    protected List<org.openprovenance.prov.model.LangString> label;
 
     transient protected List<org.openprovenance.prov.model.Type> type;
     transient protected List<Other> other;
@@ -173,9 +173,9 @@ public class WasInfluencedBy
         CascadeType.ALL
     })
     @JoinColumn(name = "LABEL_WASINFLUENCEDBY_OJ")
-    public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
+    public List<org.openprovenance.prov.model.LangString> getLabel() {
         if (label == null) {
-            label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
+            label = new ArrayList<org.openprovenance.prov.model.LangString>();
         }
         return this.label;
     }
@@ -184,7 +184,7 @@ public class WasInfluencedBy
      * 
      * 
      */
-    public void setLabel(List<org.openprovenance.prov.model.InternationalizedString> label) {
+    public void setLabel(List<org.openprovenance.prov.model.LangString> label) {
         this.label = label;
     }
 
@@ -343,9 +343,9 @@ public class WasInfluencedBy
             }
         }
         {
-            List<org.openprovenance.prov.model.InternationalizedString> lhsLabel;
+            List<org.openprovenance.prov.model.LangString> lhsLabel;
             lhsLabel = (((this.label!= null)&&(!this.label.isEmpty()))?this.getLabel():null);
-            List<org.openprovenance.prov.model.InternationalizedString> rhsLabel;
+            List<org.openprovenance.prov.model.LangString> rhsLabel;
             rhsLabel = (((that.label!= null)&&(!that.label.isEmpty()))?that.getLabel():null);
             if (!strategy.equals(LocatorUtils.property(thisLocator, "label", lhsLabel), LocatorUtils.property(thatLocator, "label", rhsLabel), lhsLabel, rhsLabel)) {
                 return false;
@@ -399,7 +399,7 @@ public class WasInfluencedBy
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "influencer", theInfluencer), currentHashCode, theInfluencer);
         }
         {
-            List<org.openprovenance.prov.model.InternationalizedString> theLabel;
+            List<org.openprovenance.prov.model.LangString> theLabel;
             theLabel = (((this.label!= null)&&(!this.label.isEmpty()))?this.getLabel():null);
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "label", theLabel), currentHashCode, theLabel);
         }

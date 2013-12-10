@@ -25,12 +25,12 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 
 
 /**
- * <p>Java class for InternationalizedString complex type.
+ * <p>Java class for LangString complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="InternationalizedString">
+ * &lt;complexType name="LangString">
  *   &lt;simpleContent>
  *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
  *       &lt;attribute ref="{http://www.w3.org/XML/1998/namespace}lang"/>
@@ -42,14 +42,14 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "InternationalizedString", propOrder = {
+@XmlType(name = "LangString", propOrder = {
     "value"
 })
-@Entity(name = "InternationalizedString")
+@Entity(name = "LangString")
 @Table(name = "INTERNATIONALIZEDSTRING")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class InternationalizedString
-    implements Equals, HashCode, org.openprovenance.prov.model.InternationalizedString
+    implements Equals, HashCode, org.openprovenance.prov.model.LangString
 {
 
     @XmlValue

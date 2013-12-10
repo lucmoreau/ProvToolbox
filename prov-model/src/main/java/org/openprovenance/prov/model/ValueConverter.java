@@ -148,7 +148,7 @@ public class ValueConverter  {
 	    return name.QNAME_XSD_INT; //"xsd:int";
 	if (o instanceof String)
 	    return name.QNAME_XSD_STRING; //"xsd:string";
-	if (o instanceof InternationalizedString)
+	if (o instanceof LangString)
 	    return name.QNAME_XSD_STRING; //"xsd:string";
 	if (o instanceof BigInteger)
 	    return name.QNAME_XSD_INTEGER;

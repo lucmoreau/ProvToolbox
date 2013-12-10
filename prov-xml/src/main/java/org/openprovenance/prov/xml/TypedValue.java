@@ -38,6 +38,7 @@ import org.openprovenance.prov.model.QualifiedName;
  * </pre>
  * 
  * 
+ * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TypedValue", namespace = "http://www.w3.org/ns/prov#", propOrder = {
@@ -93,7 +94,7 @@ public class TypedValue
      * @see org.openprovenance.prov.xml.TypedValue#setValue(java.lang.String)
      */
     @Override
-    public void setValue(org.openprovenance.prov.model.InternationalizedString value) {
+    public void setValue(org.openprovenance.prov.model.LangString value) {
         this.value = value;
     }
 
@@ -117,7 +118,8 @@ public class TypedValue
         return valueAsJavaObject;
     }
 
-    public Object getValueAsObject() {
+    @Override
+    public Object getConvertedValue() {
         return valueAsJavaObject;
     }
 
@@ -159,8 +161,8 @@ public class TypedValue
 	if ((anObject!=null) && (value==null)) {
 	    if(anObject instanceof QualifiedName) {
 		setValue((QualifiedName)anObject);
-	    } else if (anObject instanceof org.openprovenance.prov.model.InternationalizedString) { 
-		setValue((org.openprovenance.prov.model.InternationalizedString)anObject);
+	    } else if (anObject instanceof org.openprovenance.prov.model.LangString) { 
+		setValue((org.openprovenance.prov.model.LangString)anObject);
 	    } else if (anObject instanceof byte[]) {
 		setValueFromObject((byte[]) anObject);
 	    } else if (anObject instanceof org.w3c.dom.Node) {

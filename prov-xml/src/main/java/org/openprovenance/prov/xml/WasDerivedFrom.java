@@ -89,7 +89,7 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
     protected org.openprovenance.prov.model.QualifiedName usage;
 
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
-    protected List<org.openprovenance.prov.model.InternationalizedString> label;
+    protected List<org.openprovenance.prov.model.LangString> label;
     
     transient protected List<org.openprovenance.prov.model.Type> type;
     transient protected List<org.openprovenance.prov.model.Other> others;
@@ -244,9 +244,9 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
      * 
      * 
      */
-    public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
+    public List<org.openprovenance.prov.model.LangString> getLabel() {
         if (label == null) {
-            label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
+            label = new ArrayList<org.openprovenance.prov.model.LangString>();
         }
         return this.label;
     }
@@ -404,7 +404,7 @@ public class WasDerivedFrom implements Equals, HashCode, ToString, org.openprove
             toStringBuilder.append("usage", theUsage);
         }
         {
-            List<org.openprovenance.prov.model.InternationalizedString> theLabel;
+            List<org.openprovenance.prov.model.LangString> theLabel;
             theLabel = this.getLabel();
             toStringBuilder.append("label", theLabel);
         }

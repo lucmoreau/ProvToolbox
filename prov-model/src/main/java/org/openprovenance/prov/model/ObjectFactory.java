@@ -28,7 +28,7 @@ public interface ObjectFactory {
     HadMember createHadMember();   
     
 
-    InternationalizedString createInternationalizedString();
+    LangString createInternationalizedString();
 
     Key createKey();
 

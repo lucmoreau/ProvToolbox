@@ -20,9 +20,9 @@ public interface HasLabel {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link InternationalizedString }
+     * {@link LangString }
      * 
      * 
      */
-    public abstract List<InternationalizedString> getLabel();
+    public abstract List<LangString> getLabel();
 } 

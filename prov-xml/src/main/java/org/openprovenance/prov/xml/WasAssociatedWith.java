@@ -73,7 +73,7 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
     protected org.openprovenance.prov.model.QualifiedName plan;
 
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
-    protected List<org.openprovenance.prov.model.InternationalizedString> label;
+    protected List<org.openprovenance.prov.model.LangString> label;
     
     transient protected List<org.openprovenance.prov.model.Role> role;
     transient protected List<org.openprovenance.prov.model.Type> type;
@@ -180,9 +180,9 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
      * 
      * 
      */
-    public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
+    public List<org.openprovenance.prov.model.LangString> getLabel() {
         if (label == null) {
-            label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
+            label = new ArrayList<org.openprovenance.prov.model.LangString>();
         }
         return this.label;
     }
@@ -358,7 +358,7 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
             toStringBuilder.append("plan", thePlan);
         }
         {
-            List<org.openprovenance.prov.model.InternationalizedString> theLabel;
+            List<org.openprovenance.prov.model.LangString> theLabel;
             theLabel = this.getLabel();
             toStringBuilder.append("label", theLabel);
         }

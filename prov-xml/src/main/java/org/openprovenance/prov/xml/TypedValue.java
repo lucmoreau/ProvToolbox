@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
-import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -180,11 +179,11 @@ public class TypedValue
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
     /* (non-Javadoc)
-     * @see org.openprovenance.prov.xml.TypIN#setType(javax.xml.namespace.QName)
+     * @see org.openprovenance.prov.xml.TypedValue#setType(javax.xml.namespace.QualifiedName)
      */
     @Override
     public void setType(QualifiedName value) {

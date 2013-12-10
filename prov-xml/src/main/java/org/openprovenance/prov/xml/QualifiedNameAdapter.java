@@ -3,7 +3,7 @@ package org.openprovenance.prov.xml;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.namespace.QName;
 
-public class QNameAdapter extends XmlAdapter<QName, org.openprovenance.prov.model.QualifiedName> {
+public class QualifiedNameAdapter extends XmlAdapter<QName, org.openprovenance.prov.model.QualifiedName> {
     final ProvFactory pf=new ProvFactory();
 
     @Override

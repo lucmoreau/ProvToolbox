@@ -9,26 +9,6 @@ import org.openprovenance.prov.model.Namespace;
 /* Not usefully named class, to be removed ultimately hopefully */
 
 public class Helper  {
-    /*
-    public static QName provQName(String s) {
-	return new QName(NamespacePrefixMapper.PROV_NS, s, NamespacePrefixMapper.PROV_PREFIX);
-    }
-    
-    public static final QName PROV_TYPE_QNAME=provQName("type"); 
-    public static final QName PROV_LABEL_QNAME=provQName("label"); 
-    public static final QName PROV_ROLE_QNAME=provQName("role");
-    public static final QName PROV_LOCATION_QNAME=provQName("location");
-    public static final QName PROV_VALUE_QNAME=provQName("value");
-    public static final QName PROV_KEY_QNAME=provQName("key");
-    */
-    
-    /*
-    static public String qnameToStringDELETE(QName qname) {
-	Namespace ns=Namespace.getThreadNamespace();
-	return ns.qnameToString(qname);
-    }
-    
-    */
     
     public static String valueToNotationString(org.openprovenance.prov.model.Key key) {
 	return valueToNotationString(key.getValue(), key.getType());

@@ -72,7 +72,7 @@ public class Agent implements Equals, HashCode, ToString, org.openprovenance.pro
     
 
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QualifiedNameAdapter.class)
     protected org.openprovenance.prov.model.QualifiedName id;
 
 

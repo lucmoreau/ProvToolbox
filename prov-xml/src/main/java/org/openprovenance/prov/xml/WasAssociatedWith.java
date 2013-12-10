@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -84,7 +83,7 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
     protected List<Attribute> all;
     
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QualifiedNameAdapter.class)
     protected org.openprovenance.prov.model.QualifiedName id;
 
     /**
@@ -275,7 +274,7 @@ public class WasAssociatedWith implements Equals, HashCode, ToString, org.openpr
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
     public org.openprovenance.prov.model.QualifiedName getId() {

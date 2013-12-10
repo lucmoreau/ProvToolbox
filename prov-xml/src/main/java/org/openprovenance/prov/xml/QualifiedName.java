@@ -8,24 +8,11 @@ import javax.xml.namespace.QName;
 
 
 /**
- * <p>Java class for IDRef complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="IDRef">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute ref="{http://www.w3.org/ns/prov#}ref use="required""/>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
+ * <p>Java class for QualifiedName complex type.
  * 
  * 
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "QName")
+
 
 public class QualifiedName
  implements org.openprovenance.prov.model.QualifiedName

@@ -1,6 +1,5 @@
 package org.openprovenance.prov.xml;
 
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
         

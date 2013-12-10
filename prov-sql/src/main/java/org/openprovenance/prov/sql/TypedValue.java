@@ -131,11 +131,19 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
 	return value;
     }
 
-    public void setValue(Object value) {
-	this.value=value;
+    public void setValue(String value) {
+ 	this.value=value;
     }
 
-    
+    public void setValue(QualifiedName value) {
+ 	this.value=value;
+    }
+
+    public void setValue(InternationalizedString value) {
+ 	this.value=value;
+    }
+
+     
     
     static ValueConverter vc=new ValueConverter(ProvFactory.getFactory(),
     		new QNameConstructor() {
@@ -239,7 +247,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      *     {@link Object }
      *     
      */
-    public Object getValueAsObject(ValueConverter vconv) {
+    public Object convertValueToObject(ValueConverter vconv) {
     	if (valueAsJava==null) {
     		valueAsJava=vconv.convertToJava(getType(), (String)value);
     	}
@@ -289,7 +297,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      *     {@link Object }
      *     
      */
-    public void setValueAsObject(Object valueAsJava) {
+    public void setValueFromObject(Object valueAsJava) {
  	if ((valueAsJava!=null) && (value==null)) {
  	    if (valueAsJava instanceof QualifiedName) { 
  		this.value=valueAsJava;

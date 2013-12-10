@@ -23,8 +23,6 @@ import javax.xml.datatype.DatatypeConfigurationException;
 
 
 public abstract class ProvFactory implements LiteralConstructor, ModelConstructor {
-
-    private static final String DEFAULT_NS = "_";
  
     public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.validation";
 
@@ -703,7 +701,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     public Key newKey(Object o, QualifiedName type) {
     	Key res=of.createKey();
     	res.setType(type);
-    	res.setValueAsObject(o);
+    	res.setValueFromObject(o);
     	return res;
        }
 
@@ -711,7 +709,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     public Location newLocation(Object value, QualifiedName type) {
             Location res =  of.createLocation();
             res.setType(type);
-            res.setValueAsObject(value);
+            res.setValueFromObject(value);
             return res;
           }
 
@@ -786,7 +784,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	if (value==null) return null;
         Other res =  of.createOther();
         res.setType(type);
-        res.setValueAsObject(value);
+        res.setValueFromObject(value);
         res.setElementName(elementName);
         return res;
       }
@@ -809,7 +807,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	if (value==null) return null;
         Role res =  of.createRole();
         res.setType(type);
-        res.setValueAsObject(value);
+        res.setValueFromObject(value);
         return res;
       }
 
@@ -834,7 +832,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	if (value==null) return null;
         Type res =  of.createType();
         res.setType(type);
-        res.setValueAsObject(value);
+        res.setValueFromObject(value);
         return res;
     }
 
@@ -923,7 +921,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	if (value==null) return null;
         Value res =  of.createValue();
         res.setType(type);
-        res.setValueAsObject(value);
+        res.setValueFromObject(value);
         return res;
       }
 

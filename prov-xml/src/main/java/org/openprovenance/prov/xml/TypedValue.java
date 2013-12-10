@@ -66,7 +66,7 @@ public class TypedValue
     protected QualifiedName type;
 
 
-    transient protected Object valueAsJava;
+    transient protected Object valueAsJavaObject;
 
     /* (non-Javadoc)
      * @see org.openprovenance.prov.xml.TypIN#getValue()
@@ -77,10 +77,24 @@ public class TypedValue
     }
 
     /* (non-Javadoc)
-     * @see org.openprovenance.prov.xml.TypIN#setValue(java.lang.Object)
+     * @see org.openprovenance.prov.model.TypedValue#setValue(java.lang.String)
      */
     @Override
-    public void setValue(Object value) {
+    public void setValue(String value) {
+        this.value = value;
+    }
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.model.TypedValue#setValue(QualifiedName)
+     */
+    @Override
+    public void setValue(QualifiedName value) {
+        this.value = value;
+    }
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.xml.TypedValue#setValue(java.lang.String)
+     */
+    @Override
+    public void setValue(org.openprovenance.prov.model.InternationalizedString value) {
         this.value = value;
     }
 
@@ -93,15 +107,19 @@ public class TypedValue
 
  
     @Override
-    public Object getValueAsObject(org.openprovenance.prov.model.ValueConverter vconv) {
-    	if (valueAsJava==null) {
-    		valueAsJava=vconv.convertToJava(getType(), (String)value);
+    public Object convertValueToObject(org.openprovenance.prov.model.ValueConverter vconv) {
+    	if (valueAsJavaObject==null) {
+    	    if (value instanceof String) {
+    		valueAsJavaObject=vconv.convertToJava(getType(), (String)value);
+    	    } else {
+    		valueAsJavaObject=value;
+    	    }
     	}
-        return valueAsJava;
+        return valueAsJavaObject;
     }
 
     public Object getValueAsObject() {
-        return valueAsJava;
+        return valueAsJavaObject;
     }
 
     
@@ -110,11 +128,11 @@ public class TypedValue
      * @param bytes array of bytes to convert
      */
 
-    public void setValueAsJava(final byte[] bytes) {
+    private void setValueFromObject(byte[] bytes) {
 	if (type.equals(QNAME_XSD_BASE64_BINARY)) {
-	    this.value=ProvFactory.getFactory().base64Encoding(bytes);
+	    setValue(ProvFactory.getFactory().base64Encoding(bytes));
 	} else if (type.equals(QNAME_XSD_HEX_BINARY)) {
-	    this.value=ProvFactory.getFactory().hexEncoding(bytes);
+	    setValue(ProvFactory.getFactory().hexEncoding(bytes));
 	}
     }
 
@@ -123,14 +141,14 @@ public class TypedValue
      * 
      * @param n DOM Node to convert.
      */
-    public void setValueAsJava(org.w3c.dom.Node n) {
+    private void setValueFromObject(org.w3c.dom.Node n) {
 	DOMProcessing.trimNode(n);
 	try {
-	    this.value=DOMProcessing.writeToString(n);
+	    setValue(DOMProcessing.writeToString(n));
 	} catch (TransformerConfigurationException e) {
-	    this.value=n.toString();  // TODO: not the most compelling handling
+	    setValue(n.toString());  // TODO: not the most compelling handling
 	} catch (TransformerException e) {
-	    this.value=n.toString(); //TODO: not the most compelling handling
+	    setValue(n.toString()); //TODO: not the most compelling handling
 	}
     }
     
@@ -138,23 +156,21 @@ public class TypedValue
      * @see org.openprovenance.prov.xml.TypIN#setValueAsJava(java.lang.Object)
      */
     @Override
-    public void setValueAsObject(Object valueAsJava) {
-	if ((valueAsJava!=null) && (value==null)) {
-	    if (valueAsJava instanceof QName) {
-		this.value=valueAsJava;
-	    } else if (valueAsJava instanceof QualifiedName) {
-		this.value=valueAsJava;
-	    } else if (valueAsJava instanceof InternationalizedString) { 
-		this.value=valueAsJava;
-	    } else if (valueAsJava instanceof byte[]) {
-		setValueAsJava((byte[]) valueAsJava);
-	    } else if (valueAsJava instanceof org.w3c.dom.Node) {
-		setValueAsJava((org.w3c.dom.Node)valueAsJava);
+    public void setValueFromObject(Object anObject) {
+	if ((anObject!=null) && (value==null)) {
+	    if(anObject instanceof QualifiedName) {
+		setValue((QualifiedName)anObject);
+	    } else if (anObject instanceof org.openprovenance.prov.model.InternationalizedString) { 
+		setValue((org.openprovenance.prov.model.InternationalizedString)anObject);
+	    } else if (anObject instanceof byte[]) {
+		setValueFromObject((byte[]) anObject);
+	    } else if (anObject instanceof org.w3c.dom.Node) {
+		setValueFromObject((org.w3c.dom.Node)anObject);
 	    } else {
-		this.value = valueAsJava.toString();
+		setValue(anObject.toString());
 	    }
 	}
-        this.valueAsJava = valueAsJava;
+        this.valueAsJavaObject = anObject;
     }
 
    

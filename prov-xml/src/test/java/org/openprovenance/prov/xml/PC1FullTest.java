@@ -35,17 +35,20 @@ public class PC1FullTest extends TestCase {
     public static final String PC1_PREFIX = "pc1";
     public static final String PRIM_NS = "http://openprovenance.org/primitives#";
     public static final String PRIM_PREFIX = "prim";
-    
-    public QualifiedName q(String n) {
-   	return new org.openprovenance.prov.xml.QualifiedName(PC1_NS, n, PC1_PREFIX);
-    }
- 
-    
+      
     static final ProvUtilities util=new ProvUtilities();
 
 
     public static ProvFactory pFactory=new ProvFactory();
     public static Name name=pFactory.getName();
+    
+    
+    public QualifiedName q(String n) {
+   	//return new org.openprovenance.prov.xml.QualifiedName(PC1_NS, n, PC1_PREFIX);
+   	return pFactory.newQualifiedName(PC1_NS, n, PC1_PREFIX);
+    }
+ 
+ 
 
     
     /**

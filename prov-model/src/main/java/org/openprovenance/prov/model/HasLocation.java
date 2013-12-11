@@ -2,7 +2,7 @@ package org.openprovenance.prov.model;
 import java.util.List;
 
 /** 
- * <p>Java class for PROV objects that have a location.
+ * <p>Java interface for PROV objects that have a location.
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-location">PROV-DM Definition for Location</a>:  A location can be an identifiable geographic place (ISO 19112), 
  * but it can also be a non-geographic place such as a directory, row, or column. 
  * 

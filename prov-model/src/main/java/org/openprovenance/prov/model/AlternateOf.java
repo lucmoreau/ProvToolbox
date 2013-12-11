@@ -1,7 +1,7 @@
 package org.openprovenance.prov.model;
 
 /**
- * <p>Java class for PROV Alternate association.
+ * <p>Java interface for PROV Alternate association.
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-alternate">PROV-DM Definition for Alternate</a>: Two alternate 
  * entities present aspects of the same thing. These aspects may be the same or different, and the alternate entities 
  * may or may not overlap in time.

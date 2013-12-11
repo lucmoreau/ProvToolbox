@@ -1,7 +1,7 @@
 package org.openprovenance.prov.model;
 
 /**
- * <p>Java class for PROV Specialization association.
+ * <p>Java interface for PROV Specialization association.
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-specialization">PROV-DM Definition for Specialization</a>: 
  * An entity that is a specialization ◊ of another shares all aspects of the latter, and additionally presents 
  * more specific aspects of the same thing as the latter. In particular, the lifetime of the entity being specialized 

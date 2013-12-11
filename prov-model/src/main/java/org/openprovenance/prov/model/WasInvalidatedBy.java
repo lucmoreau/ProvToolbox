@@ -1,7 +1,7 @@
 package org.openprovenance.prov.model;
 
 /**
- * <p>Java class for PROV Invalidation association.
+ * <p>Java interface for PROV Invalidation association.
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-invalidation">PROV-DM Definition for Invalidation</a>: Invalidation is the start of the destruction, cessation, or 
  * expiry of an existing entity by an activity. The entity is no longer available for use (or further invalidation) after invalidation. 
  * Any generation or usage of an entity precedes its invalidation.

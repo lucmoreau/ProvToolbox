@@ -1,7 +1,7 @@
 package org.openprovenance.prov.model;
 
 /**
- * <p>Java class for PROV Derivation association.
+ * <p>Java interface for PROV Derivation association.
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-derivation">PROV-DM Definition for Derivation</a>: A derivation is a transformation of an entity into another, 
  *  an update of an entity resulting in a new one, or the construction of a new entity based on a pre-existing entity.
  *  

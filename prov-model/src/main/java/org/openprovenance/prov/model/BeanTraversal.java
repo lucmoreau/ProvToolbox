@@ -80,7 +80,7 @@ public class BeanTraversal {
     public List<Attribute> convertLabelAttributes(HasLabel e, List<Attribute> acc) {
    	List<LangString> labels = e.getLabel();
    	for (LangString label : labels) {
-   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LABEL,label, pFactory.getName().QNAME_XSD_STRING));
+   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LABEL,label, pFactory.getName().XSD_STRING));
    	}
    	return acc;
     }

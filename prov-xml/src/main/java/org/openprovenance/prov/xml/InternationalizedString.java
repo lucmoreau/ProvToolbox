@@ -34,7 +34,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "LangString", propOrder = {
+@XmlType(name = "InternationalizedString", propOrder = {
     "value"
 })
 public class InternationalizedString

@@ -35,7 +35,7 @@ public class Key extends TypedValue implements Equals, HashCode, ToString,
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_KEY_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_KEY;
-    private static final QualifiedName PROV_KEY_QNAME = ProvFactory.getFactory().getName().QNAME_PROV_KEY;
+    private static final QualifiedName PROV_KEY_QNAME = ProvFactory.getFactory().getName().PROV_KEY;
 
     
     @Override

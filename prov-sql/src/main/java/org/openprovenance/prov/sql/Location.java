@@ -24,7 +24,7 @@ public class Location extends TypedValue implements Equals, HashCode, org.openpr
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_LOCATION_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_LOCATION;
-    private static final QualifiedName PROV_LOCATION_QNAME = ProvFactory.getFactory().getName().QNAME_PROV_LOCATION;
+    private static final QualifiedName PROV_LOCATION_QNAME = ProvFactory.getFactory().getName().PROV_LOCATION;
 
     @Transient
     public QualifiedName getElementName() {

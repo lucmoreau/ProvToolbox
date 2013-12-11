@@ -193,20 +193,20 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
     public void addPrimarySourceType(HasType a) {
-	a.getType().add(newType(getName().QNAME_PROV_PRIMARY_SOURCE,
-	                        getName().QNAME_XSD_QNAME));
+	a.getType().add(newType(getName().PROV_PRIMARY_SOURCE,
+	                        getName().XSD_QNAME));
     }
 
     public void addQuotationType(HasType a) {
-	a.getType().add(newType(getName().QNAME_PROV_QUOTATION,getName().QNAME_XSD_QNAME));
+	a.getType().add(newType(getName().PROV_QUOTATION,getName().XSD_QNAME));
     }
 
     public void addRevisionType(HasType a) {
-	a.getType().add(newType(getName().QNAME_PROV_REVISION,getName().QNAME_XSD_QNAME));
+	a.getType().add(newType(getName().PROV_REVISION,getName().XSD_QNAME));
     }
 
     public void addBundleType(HasType a) {
-	a.getType().add(newType(getName().QNAME_PROV_BUNDLE,getName().QNAME_XSD_QNAME));
+	a.getType().add(newType(getName().PROV_BUNDLE,getName().XSD_QNAME));
     }
 
     public void addRole(HasRole a, Role role) {
@@ -228,7 +228,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     public void addType(HasType a, URI type) {
 	URIWrapper u = new URIWrapper();
 	u.setValue(type);
-	a.getType().add(newType(u,getName().QNAME_XSD_ANY_URI));
+	a.getType().add(newType(u,getName().XSD_ANY_URI));
     }
 
     public byte [] base64Decoding(String s) {
@@ -281,7 +281,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	if (e instanceof HasType)
 	    return ((HasType) e).getType();
 	List<Type> res = new LinkedList<Type>();
-	res.add(newType("pFact: type TODO",getName().QNAME_XSD_STRING));
+	res.add(newType("pFact: type TODO",getName().XSD_STRING));
 	return res;
     }
 
@@ -416,10 +416,15 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
     
 
-    public AlternateOf newAlternateOf(QualifiedName eid2, QualifiedName eid1) {
+    /** A factory method to create an instance of an alternate {@link AlternateOf}
+     * @param entity1 an identifier for the first {@link Entity}
+     * @param entity2 an identifier for the second {@link Entity}
+     * @return an instance of {@link AlternateOf}
+     */   
+    public AlternateOf newAlternateOf(QualifiedName entity1, QualifiedName entity2) {
 	AlternateOf res = of.createAlternateOf();
-	res.setAlternate1(eid2);
-	res.setAlternate2(eid1);
+	res.setAlternate1(entity1);
+	res.setAlternate2(entity2);
 	return res;
     }
 
@@ -748,12 +753,18 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         res.setType(type);
         res.setValueFromObject(value);
         return res;
-      }
+    }
 
-    public SpecializationOf newSpecializationOf(QualifiedName eid2, QualifiedName eid1) {
+
+    /** A factory method to create an instance of a specialization {@link SpecializationOf}
+     * @param specific an identifier ({@link QualifiedName}) for the specific {@link Entity}
+     * @param general an identifier  ({@link QualifiedName}) for the general {@link Entity}
+     * @return an instance of {@link SpecializationOf}
+     */       
+    public SpecializationOf newSpecializationOf(QualifiedName specific, QualifiedName general) {
 	SpecializationOf res = of.createSpecializationOf();
-	res.setSpecificEntity(eid2);
-	res.setGeneralEntity(eid1);
+	res.setSpecificEntity(specific);
+	res.setGeneralEntity(general);
 	return res;
     }
 
@@ -790,7 +801,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	Used res = newUsed(id);
 	res.setActivity(aid);
 	if (role!=null)
-	addRole(res, newRole(role,getName().QNAME_XSD_STRING));
+	addRole(res, newRole(role,getName().XSD_STRING));
 	res.setEntity(eid);
 	return res;
     }
@@ -1074,7 +1085,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 					    Activity p) {
 
 	WasGeneratedBy res=newWasGeneratedBy(id, a.getId(), p.getId());
-	if (role!=null) addRole(res, newRole(role,getName().QNAME_XSD_STRING));
+	if (role!=null) addRole(res, newRole(role,getName().XSD_STRING));
 	return res;
     }
 
@@ -1086,7 +1097,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	res.setId(id);
 	res.setActivity(pid);
 	res.setEntity(aid);
-	if (role!=null) addRole(res, newRole(role,getName().QNAME_XSD_STRING));
+	if (role!=null) addRole(res, newRole(role,getName().XSD_STRING));
 	return res;
     }
 
@@ -1161,7 +1172,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 					  String type) {
 	WasInformedBy wtb = newWasInformedBy(p1, p2);
 	wtb.setId(id);
-	addType(wtb, newType(type,getName().QNAME_XSD_STRING));
+	addType(wtb, newType(type,getName().XSD_STRING));
 	return wtb;
     }
 

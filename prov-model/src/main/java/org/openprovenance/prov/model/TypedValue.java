@@ -14,6 +14,7 @@ package org.openprovenance.prov.model;
  * 
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
+ * <li> {@link ProvFactory#newKey(Object, QualifiedName)}
  * <li> {@link ProvFactory#newLocation(Object, QualifiedName)}
  * <li> {@link ProvFactory#newOther(QualifiedName, Object, QualifiedName)}
  * <li> {@link ProvFactory#newRole(Object, QualifiedName)}
@@ -35,6 +36,11 @@ package org.openprovenance.prov.model;
  * &lt;/complexType>
  * </pre>
  * 
+ * <p>
+ * @see <a href="http://www.w3.org/TR/prov-dm/#term-value">PROV-DM Value</a>
+ * @see <a href="http://www.w3.org/TR/prov-n/#expression-literal">PROV-N Literal</a>
+ * @see <a href="http://www.w3.org/TR/prov-xml/#type-value">PROV-XML Value</a>
+ * @see <a href="http://www.w3.org/Submission/2013/SUBM-prov-json-20130424/#data-typing">PROV-JSON Data Typing</a>
  */
 
 

@@ -72,7 +72,7 @@ public class NamespacesTest
     {
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getType().add(pFactory.newType(pFactory.newQualifiedName(EXAMPLE_NS, "Amazing", "ex2"), 
-                                          name.QNAME_XSD_QNAME));
+                                          name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -100,7 +100,7 @@ public class NamespacesTest
     {
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getType().add(pFactory.newType(pFactory.newQualifiedName(EXAMPLE_NS, "Amazing", "ex"), 
-                                          name.QNAME_XSD_QNAME));
+                                          name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -119,7 +119,7 @@ public class NamespacesTest
     {
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getLocation().add(pFactory.newLocation(pFactory.newQualifiedName(EXAMPLE_NS, "Amazing",null), 
-                                                  name.QNAME_XSD_QNAME));
+                                                  name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -137,7 +137,7 @@ public class NamespacesTest
     {
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getType().add(pFactory.newType(pFactory.newQualifiedName("http://www.w3.org/ns/prov#", "emptyCollection", "prov"), 
-                                          name.QNAME_XSD_QNAME));
+                                          name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -156,7 +156,7 @@ public class NamespacesTest
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getOther().add(pFactory.newOther(pFactory.newQualifiedName(EXAMPLE_NS,"tag1", "ex"),
                                              pFactory.newQualifiedName("http://www.w3.org/ns/prov#", "emptyCollection", "prov"), 
-                                             name.QNAME_XSD_QNAME));
+                                             name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -174,7 +174,7 @@ public class NamespacesTest
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getOther().add(pFactory.newOther(pFactory.newQualifiedName (EXAMPLE2_NS,"tag1", "ex2"),
                                              pFactory.newQualifiedName("http://www.w3.org/ns/prov#", "emptyCollection", "prov"), 
-                                             name.QNAME_XSD_QNAME));
+                                             name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -193,7 +193,7 @@ public class NamespacesTest
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getOther().add(pFactory.newOther(pFactory.newQualifiedName (EXAMPLE2_NS,"tag1", "ex"),
                                              pFactory.newQualifiedName("http://www.w3.org/ns/prov#", "emptyCollection", "prov"), 
-                                             name.QNAME_XSD_QNAME));
+                                             name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -220,7 +220,7 @@ public class NamespacesTest
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getOther().add(pFactory.newOther(pFactory.newQualifiedName(EXAMPLE2_NS,"tag1", "ex"),
                                              pFactory.newQualifiedName(EXAMPLE3_NS,"tag1", "ex"), 
-                                             name.QNAME_XSD_QNAME));
+                                             name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -248,7 +248,7 @@ public class NamespacesTest
     {
         Activity a1=pFactory.newActivity(q("a10"));
         a1.getType().add(pFactory.newType(pFactory.newQualifiedName(EXAMPLE_NS, "Amazing","other"), 
-                                                  name.QNAME_XSD_QNAME));
+                                                  name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);

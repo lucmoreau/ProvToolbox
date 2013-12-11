@@ -399,7 +399,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List<org.openprovenance.prov.model.Type> types = ((HasType) statement).getType();
 		for (JsonElement value : values) {
 		    types.add((org.openprovenance.prov.model.Type) decodeAttributeValue(value,
-											name.QNAME_PROV_TYPE));
+											name.PROV_TYPE));
 		}
 	    } else {
 		throw new UnsupportedOperationException(
@@ -432,7 +432,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List<Location> locations = ((HasLocation) statement).getLocation();
 		for (JsonElement value : values) {
 		    locations.add((org.openprovenance.prov.model.Location) decodeAttributeValue(value,
-												name.QNAME_PROV_LOCATION));
+												name.PROV_LOCATION));
 		}
 	    } else {
 		throw new UnsupportedOperationException(
@@ -449,7 +449,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List<Role> roles = ((HasRole) statement).getRole();
 		for (JsonElement value : values) {
 		    roles.add((org.openprovenance.prov.model.Role) decodeAttributeValue(value,
-											name.QNAME_PROV_ROLE));
+											name.PROV_ROLE));
 		}
 	    } else {
 		throw new UnsupportedOperationException(
@@ -470,7 +470,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    }
 	    if (statement instanceof HasValue) {
 		((HasValue) statement).setValue((org.openprovenance.prov.model.Value) decodeAttributeValue(values.get(0),
-													   name.QNAME_PROV_VALUE));
+													   name.PROV_VALUE));
 	    } else {
 		throw new UnsupportedOperationException(
 							"prov:value is not allowed in a "
@@ -544,11 +544,11 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		iString.setLang(lang);
 		return pf.newAttribute(elementName,
 				       iString,
-				       name.QNAME_PROV_INTERNATIONALIZED_STRING);
+				       name.PROV_LANG_STRING);
 	    } else if (struct.has("type")) {
 		String datatypeAsString = struct.get("type").getAsString();
 		QualifiedName xsdType = ns.stringToQualifiedName(datatypeAsString, pf);
-		if (xsdType.equals(name.QNAME_XSD_QNAME)) {
+		if (xsdType.equals(name.XSD_QNAME)) {
 		    return pf.newAttribute(elementName,
 					   ns.stringToQualifiedName(value,pf), xsdType);
 		} else {
@@ -562,7 +562,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		iString.setValue(value);
 		return pf.newAttribute(elementName,
 				       iString,
-				       name.QNAME_PROV_INTERNATIONALIZED_STRING);
+				       name.PROV_LANG_STRING);
 	    }
 	}
     }
@@ -681,7 +681,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    for (JsonElement element : elements) {
 		JsonObject item = element.getAsJsonObject();
 		Entry pair = pf.newEntry((Key) decodeAttributeValue(item.remove("key"),
-		                                                    name.QNAME_PROV_KEY),
+		                                                    name.PROV_KEY),
 		                                                    
 		                         ns.stringToQualifiedName(this.popString(item, "$"),pf));
 		results.add(pair);
@@ -720,7 +720,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	List<JsonElement> elements = popMultiValAttribute(attributeName,
 							  attributeMap);
 	for (JsonElement element : elements) {
-	    Key key = (Key) decodeAttributeValue(element, name.QNAME_PROV_KEY);
+	    Key key = (Key) decodeAttributeValue(element, name.PROV_KEY);
 	    results.add(key);
 	}
 	return results;

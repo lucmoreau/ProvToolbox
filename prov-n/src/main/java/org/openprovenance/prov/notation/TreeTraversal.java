@@ -499,11 +499,11 @@ public class TreeTraversal {
             } else if (val1 instanceof LangString) {
             	return pFactory.newAttribute(stringToQualifiedName(attr1),
             	                             val1,
-            	                             name.QNAME_XSD_STRING);	
+            	                             name.XSD_STRING);	
             } else { // TODO what case is it?
                 return pFactory.newAttribute(stringToQualifiedName(attr1),
                                              val1,
-                                             name.QNAME_XSD_STRING);	            	
+                                             name.XSD_STRING);	            	
             }
 
         case PROV_NParser.STRING:
@@ -536,7 +536,7 @@ public class TreeTraversal {
             QualifiedName v2;
             
             if (ast.getChild(1)==null) {
-                v2=name.QNAME_XSD_QNAME;
+                v2=name.XSD_QNAME;
                 //v1="\"" + v1 + "\"";
                 Object ooo=stringToQualifiedName(v1);
                 return convertTypedLiteral(v2,ooo);

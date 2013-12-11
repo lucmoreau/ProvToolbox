@@ -14,7 +14,7 @@ package org.openprovenance.prov.model;
  * QualifiedName effectId= ... ;  // some qualified name
  * QualifiedName causeId= ... ;   // some qualified name
  * WasDerivedFrom myWasDerivedFrom=provFactory.newWasDerivedFrom(myId,effectId,causeId)
- * myWasDerivedFrom.getType().add(provFactory.newType(Name.QNAME_PROV_REVISION))
+ * myWasDerivedFrom.getType().add(provFactory.newType(Name.PROV_REVISION))
  * </pre>
  * 
  * <p><span class="strong">Relevant Factory Methods:</span>

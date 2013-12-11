@@ -44,7 +44,7 @@ public class Type
 {
 
     private static final AttributeKind PROV_TYPE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_TYPE;
-    private static final QualifiedName PROV_TYPE_QNAME = ProvFactory.getFactory().getName().QNAME_PROV_TYPE;
+    private static final QualifiedName PROV_TYPE_QNAME = ProvFactory.getFactory().getName().PROV_TYPE;
 
     @Transient
     public QualifiedName getElementName() {

@@ -39,7 +39,7 @@ public class Value extends TypedValue implements Equals, HashCode, ToString,
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_VALUE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_VALUE;
-    private static final QualifiedName PROV_VALUE_QNAME = ProvFactory.getFactory().getName().QNAME_PROV_VALUE;
+    private static final QualifiedName PROV_VALUE_QNAME = ProvFactory.getFactory().getName().PROV_VALUE;
 
     @Override
     public QualifiedName getElementName() {

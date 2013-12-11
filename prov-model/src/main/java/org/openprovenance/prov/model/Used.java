@@ -56,7 +56,6 @@ package org.openprovenance.prov.model;
  * @see <a href="http://www.w3.org/TR/prov-xml/#term-Usage">PROV-XML Usage</a>
  * @see <a href="http://www.w3.org/Submission/2013/SUBM-prov-json-20130424/#term-Usage">PROV-JSON Usage</a>
  * 
- * 
  */
 
 public interface Used extends Identifiable, HasLabel, HasType, HasTime, HasRole, HasLocation, HasOther, Influence {

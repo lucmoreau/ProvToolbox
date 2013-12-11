@@ -264,12 +264,12 @@ final public class DOMProcessing {
                 : stringToQualifiedName(typeAsString, el);
         Name name=pFactory.getName();
         if (type == null)
-            type = name.QNAME_XSD_STRING;
-        if (type.equals(name.QNAME_XSD_QNAME)) {
+            type = name.XSD_STRING;
+        if (type.equals(name.XSD_QNAME)) {
             QualifiedName qn = stringToQualifiedName(child, el);
             Attribute x= pFactory.newAttribute(namespace, local, prefix, qn, type);
             return x;
-        } else if (type.equals(name.QNAME_RDF_LITERAL)) {
+        } else if (type.equals(name.RDF_LITERAL)) {
             NodeList nodes=el.getChildNodes();
             org.w3c.dom.Element content=null;
             for (int i=0; i<nodes.getLength(); i++) {

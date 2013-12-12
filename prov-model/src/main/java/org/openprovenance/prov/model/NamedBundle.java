@@ -25,6 +25,17 @@ import java.util.List;
  * </pre>
  * 
  * 
+ * 
+ * <p> 
+ * @see <a href="http://www.w3.org/TR/prov-dm/#term-bundle">PROV-DM Bundle</a>
+ * @see <a href="http://www.w3.org/TR/prov-o/#Bundle">PROV-O Bundle</a>
+ * @see <a href="http://www.w3.org/TR/prov-n/#expression-bundle-constructor">PROV-N Bundle</a>
+ * @see <a href="http://www.w3.org/TR/prov-xml/#term-Bundle">PROV-XML Bundle</a>
+ * @see <a href="http://www.w3.org/Submission/2013/SUBM-prov-json-20130424/#bundle">PROV-JSON Bundle</a>
+ *  
+ * 
+
+ * 
  * @author lavm
  *
  */

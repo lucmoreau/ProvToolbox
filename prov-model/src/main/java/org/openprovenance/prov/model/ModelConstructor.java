@@ -5,11 +5,19 @@ import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 
-/** An interface for constructing concrete representations of the PROV data model */
+/** Interface for constructing concrete representations of the PROV data model */
 
 public interface ModelConstructor {
  
-    public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QualifiedName ag2, QualifiedName ag1, QualifiedName a, Collection<Attribute> attributes);
+    /** A factory method to create an instance of a delegation {@link ActedOnBehalfOf}
+     * @param id identifier for the delegation association between delegate and responsible
+     * @param delegate identifier for the agent associated with an activity, acting on behalf of the responsible agent
+     * @param responsible identifier for the agent, on behalf of which the delegate agent acted
+     * @param activity optional identifier of an activity for which the delegation association holds
+     * @param attributes optional set  of attributes representing additional information about this delegation association
+     * @return an instance of {@link ActedOnBehalfOf}
+     */
+    public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QualifiedName delegate, QualifiedName responsible, QualifiedName activity, Collection<Attribute> attributes);
     public Activity newActivity(QualifiedName id, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, Collection<Attribute> attributes);
     public Agent newAgent(QualifiedName id, Collection<Attribute> attributes);
     public AlternateOf newAlternateOf(QualifiedName e2, QualifiedName e1);
@@ -31,12 +39,20 @@ public interface ModelConstructor {
     public Entity newEntity(QualifiedName id, Collection<Attribute> attributes);
     public HadMember newHadMember(QualifiedName c, Collection<QualifiedName> e);
     public MentionOf newMentionOf(QualifiedName e2, QualifiedName e1, QualifiedName b);
+    
+    /**
+     * A factory method to create an instance of a Bundle {@link NamedBundle}
+     * @param id an identifier for the bundle
+     * @param namespace a {@link Namespace} object mapping prefix to namespace URIs
+     * @param statements a set of provenance descriptions 
+     * @return {@link NamedBundle}
+     */
     public NamedBundle newNamedBundle(QualifiedName id, 
                                       Namespace namespace, 
                                       Collection<Statement> statements);
     public SpecializationOf newSpecializationOf(QualifiedName e2, QualifiedName e1);
     
-    /** A factory method to create an instance of a usage {@link Used}
+    /** A factory method to create an instance of a Usage {@link Used}
      * @param id an optional identifier for a usage
      * @param activity the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an entity
      * @param entity an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#usage.entity">entity</a> being used
@@ -45,8 +61,26 @@ public interface ModelConstructor {
      * @return an instance of {@link Used}
      */
     public Used newUsed(QualifiedName id, QualifiedName activity, QualifiedName entity, XMLGregorianCalendar time, Collection<Attribute> attributes);
-    public WasAssociatedWith newWasAssociatedWith(QualifiedName id, QualifiedName a, QualifiedName ag, QualifiedName plan, Collection<Attribute> attributes);
-    public WasAttributedTo newWasAttributedTo(QualifiedName id, QualifiedName e, QualifiedName ag,  Collection<Attribute> attributes);
+ 
+    /** A factory method to create an instance of an Association {@link WasAssociatedWith}
+     * @param id an optional identifier for the association between an activity and an agent
+     * @param activity an identifier for the activity
+     * @param agent an optional identifier for the agent associated with the activity
+     * @param plan an optional identifier for the plan the agent relied on in the context of this activity
+     * @param attributes an optional set of attribute-value pairs representing additional information about this association of this activity with this agent.
+     * @return an instance of {@link WasAssociatedWith}
+     */
+    public WasAssociatedWith newWasAssociatedWith(QualifiedName id, QualifiedName activity, QualifiedName agent, QualifiedName plan, Collection<Attribute> attributes);
+    
+    
+    /** A factory method to create an instance of an attribution {@link WasAttributedTo}
+     * @param id  an optional identifier for the relation
+     * @param entity an entity identifier
+     * @param agent  the identifier of the agent whom the entity is ascribed to, and therefore bears some responsibility for its existence
+     * @param attributes an optional set of attribute-value pairs representing additional information about this attribution.
+     * @return an instance of {@link WasAttributedTo}
+     */
+    public WasAttributedTo newWasAttributedTo(QualifiedName id, QualifiedName entity, QualifiedName agent,  Collection<Attribute> attributes);
  
     /** A factory method to create an instance of a derivation {@link WasDerivedFrom}
      * @param id an optional identifier for a derivation
@@ -84,8 +118,25 @@ public interface ModelConstructor {
 
 
     public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QualifiedName entity, QualifiedName activity, XMLGregorianCalendar time, Collection<Attribute> attributes);
-    public WasInfluencedBy newWasInfluencedBy(QualifiedName id, QualifiedName a2, QualifiedName a1, Collection<Attribute> attributes);
-    public WasInformedBy newWasInformedBy(QualifiedName id, QualifiedName a2, QualifiedName a1, Collection<Attribute> attributes);
+
+    /** A factory method to create an instance of an influence {@link WasInfluencedBy}
+     * @param id optional identifier identifying the association
+     * @param influencee an identifier for an entity, activity, or agent
+     * @param influencer an identifier for an ancestor entity, activity, or agent that the former depends on
+     * @param attributes an optional set of attribute-value pairs representing additional information about this association
+     *
+     * @return an instance of {@link WasInfluencedBy}
+     */
+    public WasInfluencedBy newWasInfluencedBy(QualifiedName id, QualifiedName influencee, QualifiedName influencer, Collection<Attribute> attributes);
+
+    /** A factory method to create an instance of an communication {@link WasInformedBy}
+     * @param id an optional identifier identifying the association;
+     * @param informed the identifier of the informed activity;
+     * @param informant the identifier of the informant activity;
+     * @param attributes an optional set of attribute-value pairs representing additional information about this communication.
+     * @return an instance of {@link WasInformedBy}
+     */
+    public WasInformedBy newWasInformedBy(QualifiedName id, QualifiedName informed, QualifiedName informant, Collection<Attribute> attributes);
 
 
     /** A factory method to create an instance of an invalidation {@link WasInvalidatedBy}

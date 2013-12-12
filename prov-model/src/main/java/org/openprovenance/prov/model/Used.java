@@ -1,7 +1,7 @@
 package org.openprovenance.prov.model;
 
 /**
- * <p>Java class for PROV Usage association.
+ * <p>Interface for PROV Usage association.
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-usage">PROV-DM Definition for Usage</a>: Usage is the beginning of utilizing an entity by an activity.
  *  Before usage, the activity had not begun to utilize this entity and could not have been affected by the entity.
  *  

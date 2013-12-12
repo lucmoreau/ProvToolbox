@@ -1,7 +1,7 @@
 package org.openprovenance.prov.model;
 
 /**
- * <p>Java interface for what can be identified in PROV.
+ * <p>Interface for what can be identified in PROV.
  * <p><a href="http://www.w3.org/TR/prov-dm/#dfn-identifier">PROV-DM Definition for Identifier</a>: An identifier is a qualified name.
  * <p>Entity, Activity, and Agent have a mandatory identifier. Two entities (resp. activities, agents) are equal if they have the same identifier.
  * <p>Generation, Usage, Communication, Start, End, Invalidation, Derivation, Attribution, Association, Delegation, Influence have an optional identifier. 

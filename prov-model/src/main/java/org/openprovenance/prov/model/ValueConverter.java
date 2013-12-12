@@ -1,7 +1,6 @@
 
 package org.openprovenance.prov.model;
 import java.math.BigInteger;
-import java.net.URI;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
@@ -60,9 +59,7 @@ public class ValueConverter  {
 	if (datatype.equals(name.XSD_POSITIVE_INTEGER) || datatype.equals(name.QNAME_XSD_HASH_POSITIVE_INTEGER))
 	    return new java.math.BigInteger(value);
 	if (datatype.equals(name.XSD_ANY_URI) || datatype.equals(name.QNAME_XSD_HASH_ANY_URI)) {
-	    URIWrapper u = new URIWrapper();
-	    u.setValue(URI.create(value));
-	    return u;
+	    return value;
 	}
 	if (datatype.equals(name.XSD_QNAME) || datatype.equals(name.QNAME_XSD_HASH_QNAME)) {
 	    return qnConst.newQName(value);
@@ -166,8 +163,6 @@ public class ValueConverter  {
 	    return name.XSD_BOOLEAN; //"xsd:boolean";
 	if (o instanceof Byte)
 	    return name.XSD_BYTE; //"xsd:byte";
-	if (o instanceof URIWrapper)
-	    return name.XSD_ANY_URI; //"xsd:anyURI";
 	if (o instanceof QName)
 	    return name.XSD_QNAME; //"xsd:QName";
 	if (o instanceof XMLGregorianCalendar) {

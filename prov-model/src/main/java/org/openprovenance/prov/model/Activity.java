@@ -4,7 +4,7 @@ package org.openprovenance.prov.model;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
- * <p>Java interface for the PROV Activity complex type.
+ * <p>Interface for the PROV Activity complex type.
  * 
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-activity">PROV-DM Definition for Activity</a>: An activity is something that occurs over a period of time and acts upon or with entities; it may include consuming, processing, transforming, modifying, relocating, using, or generating entities.
  * 

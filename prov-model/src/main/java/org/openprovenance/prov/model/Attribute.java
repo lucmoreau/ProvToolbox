@@ -1,6 +1,13 @@
 package org.openprovenance.prov.model;
 
 
+/** 
+ * <p> Interface for a PROV attribute-value pair.
+ * <p> Attribute-value pairs are meant to provide further descriptions to (most) {@link Statement}.
+ * 
+ * @author lavm
+ *
+ */
 public interface Attribute extends TypedValue {
 
     public enum AttributeKind {
@@ -40,6 +47,7 @@ public interface Attribute extends TypedValue {
     public abstract String toNotationString();
     
     /** Returns the value of an Attribute as a Java Object. */
+    
     public Object getConvertedValue();
 
 }

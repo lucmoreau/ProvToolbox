@@ -2,7 +2,7 @@ package org.openprovenance.prov.model;
 
 
 /** 
- * <p>Java interface for PROV attribute location.
+ * <p>Interface for PROV attribute location.
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-location">PROV-DM Definition for Location</a>:  A location can be an identifiable geographic place (ISO 19112), 
  * but it can also be a non-geographic place such as a directory, row, or column. As such, there are numerous ways in which location can be expressed, such as by a 
  * coordinate, address, landmark, and so forth. This document does not specify how to concretely express locations, but instead provide a mechanism to introduce locations, 

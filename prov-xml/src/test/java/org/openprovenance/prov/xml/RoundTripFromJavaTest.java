@@ -36,7 +36,6 @@ import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.URIWrapper;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
@@ -410,9 +409,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
         addFurtherAttributesWithQNames(he);
 
-        URIWrapper w = new URIWrapper();
-        w.setValue(URI.create(EX_NS + "london"));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX, w,
+        he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX, EX_NS + "london",
                                             name.XSD_ANY_URI));
 
     }
@@ -710,9 +707,7 @@ public class RoundTripFromJavaTest extends TestCase {
         // EX_PREFIX),vconv));
         a.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),
                                                  name.XSD_DATETIME));
-        URIWrapper w = new URIWrapper();
-        w.setValue(URI.create(EX_NS + "london"));
-        a.getLocation().add(pFactory.newLocation(w, name.XSD_ANY_URI));
+        a.getLocation().add(pFactory.newLocation(EX_NS+"london", name.XSD_ANY_URI));
         makeDocAndTest(a, "target/agent7");
     }
 
@@ -755,11 +750,9 @@ public class RoundTripFromJavaTest extends TestCase {
         addTypes(a);
         addTypes(a);
 
-        URIWrapper w2 = new URIWrapper();
-        w2.setValue(URI.create(EX_NS + "london"));
 
-        a.getLocation().add(pFactory.newLocation(w2, name.XSD_ANY_URI));
-        a.getLocation().add(pFactory.newLocation(w2, name.XSD_ANY_URI));
+        a.getLocation().add(pFactory.newLocation(EX_NS + "london", name.XSD_ANY_URI));
+        a.getLocation().add(pFactory.newLocation(EX_NS + "london", name.XSD_ANY_URI));
 
         makeDocAndTest(a, "target/agent8");
     }

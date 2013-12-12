@@ -454,14 +454,6 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     }
 
     /**
-     * Create an instance of {@link org.openprovenance.prov.model.URIWrapper }
-     * 
-     */
-    public org.openprovenance.prov.model.URIWrapper createURIWrapper() {
-        return new org.openprovenance.prov.model.URIWrapper();
-    }
-
-    /**
      * Create an instance of {@link IDRef }
      * 
      */

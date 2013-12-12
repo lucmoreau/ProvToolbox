@@ -1,7 +1,7 @@
 package org.openprovenance.prov.model;
 
 /**
-* <p>Java class for InternationalizedString complex type.
+* <p>Interface for strings with language attribute.
 * 
 * <p>The following schema fragment specifies the expected content contained within this class.
 * 

@@ -447,7 +447,7 @@ public class PC1FullTest extends TestCase {
 	WasDerivedFrom wd48 = newWasDerivedFrom(a29, a26);
 	WasDerivedFrom wd49 = newWasDerivedFrom(a30, a27);
 
-	WasAssociatedWith waw1 = pFactory.newWasAssociatedWith(q("waw1"), p1, ag1);
+	WasAssociatedWith waw1 = pFactory.newWasAssociatedWith(q("waw1"), p1.getId(), ag1.getId());
 
 	Document graph = pFactory
 	        .newDocument(new Activity[] { p1, p2, p3, p4, p5, p6, p7, p8, p9,

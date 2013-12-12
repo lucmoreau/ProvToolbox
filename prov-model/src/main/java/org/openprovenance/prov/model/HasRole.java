@@ -2,7 +2,7 @@ package org.openprovenance.prov.model;
 import java.util.List;
 
 /** 
- * <p>Java interface for PROV objects that have a role.
+ * <p>Interface for PROV objects that have a role.
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-role">PROV-DM Definition for Role</a>:  A role is the function of an entity 
  * or agent with respect to an activity, in the context of a usage, generation, invalidation, association, start, and end.
  * 

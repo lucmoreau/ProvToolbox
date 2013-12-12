@@ -1,5 +1,10 @@
 package org.openprovenance.prov.model;
 
+/** 
+ * Interface for a PROV unit of description or a Bundle ({@link NamedBundle})
+ * @author lavm
+ *
+ */
 public interface StatementOrBundle {
     
     public Kind getKind();

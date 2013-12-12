@@ -226,9 +226,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
     public void addType(HasType a, URI type) {
-	URIWrapper u = new URIWrapper();
-	u.setValue(type);
-	a.getType().add(newType(u,getName().XSD_ANY_URI));
+	a.getType().add(newType(type,getName().XSD_ANY_URI));
     }
 
     public byte [] base64Decoding(String s) {
@@ -321,6 +319,13 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return u1;
     }
 
+    /** A factory method to create an instance of a delegation {@link ActedOnBehalfOf}
+     * @param id identifier for the delegation association between delegate and responsible
+     * @param delegate identifier for the agent associated with an activity, acting on behalf of the responsible agent
+     * @param responsible identifier for the agent, on behalf of which the delegate agent acted
+     * @param activity optional identifier of an activity for which the delegation association holds
+     * @return an instance of {@link ActedOnBehalfOf}
+     */
     public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, 
                                               QualifiedName delegate,
 					      QualifiedName responsible,
@@ -333,6 +338,10 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }    
     
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newActedOnBehalfOf(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
+     */
     public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, 
                                               QualifiedName delegate,
      					      QualifiedName responsible,
@@ -347,8 +356,15 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      	return res;
     }
 
-    public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QualifiedName ag2, QualifiedName ag1) {
-        ActedOnBehalfOf res=newActedOnBehalfOf(id, ag2, ag1, null,null);
+    
+    /** A factory method to create an instance of a delegation {@link ActedOnBehalfOf}
+     * @param id identifier for the delegation association between delegate and responsible
+     * @param delegate identifier for the agent associated with an activity, acting on behalf of the responsible agent
+     * @param responsible identifier for the agent, on behalf of which the delegate agent acted
+     * @return an instance of {@link ActedOnBehalfOf}
+     */
+    public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QualifiedName delegate, QualifiedName responsible) {
+        ActedOnBehalfOf res=newActedOnBehalfOf(id, delegate, responsible, null,null);
         return res;
     }
 
@@ -534,6 +550,10 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
     
 
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.LiteralConstructor#newDuration(java.lang.String)
+     */
     public Duration newDuration(String lexicalRepresentation) {
         Duration dur=dataFactory.newDuration(lexicalRepresentation);
         return dur;
@@ -574,18 +594,30 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.LiteralConstructor#newGDay(int)
+     */
     public XMLGregorianCalendar newGDay(int day) {
         XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
         cal.setDay(day);
         return cal;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.LiteralConstructor#newGMonth(int)
+     */
     public XMLGregorianCalendar newGMonth(int month) {
         XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
         cal.setMonth(month);
         return cal;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.LiteralConstructor#newGMonthDay(int, int)
+     */
     public XMLGregorianCalendar newGMonthDay(int month, int day) {
         XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
         cal.setMonth(month);
@@ -593,6 +625,10 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return cal;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.LiteralConstructor#newGYear(int)
+     */
     public XMLGregorianCalendar newGYear(int year) {
         XMLGregorianCalendar cal=dataFactory.newXMLGregorianCalendar();
         cal.setYear(year);
@@ -774,6 +810,10 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return newXMLGregorianCalendar(gc);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.LiteralConstructor#newTimeNow()
+     */
     public XMLGregorianCalendar newTimeNow() {
 	return newTime(new Date());
     }
@@ -875,26 +915,37 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return res;
       }
 
-
+    /** A factory method to create an instance of an Association {@link WasAssociatedWith}
+     * @param id an identifier for the association
+     * @return an instance of {@link WasAssociatedWith}
+     */
+ 
     public WasAssociatedWith newWasAssociatedWith(QualifiedName id) {
 	return newWasAssociatedWith(id, (QualifiedName)null,(QualifiedName)null);
     }
-    public WasAssociatedWith newWasAssociatedWith(QualifiedName id,
-                                                  Activity eid2,
-						  Agent eid1) {
-	return newWasAssociatedWith(id, eid2.getId(), eid1.getId());
-    }
 
+    /** A factory method to create an instance of an Association {@link WasAssociatedWith}
+     * @param id an optional identifier for the association between an activity and an agent
+     * @param activity an identifier for the activity
+     * @param agent an optional identifier for the agent associated with the activity
+     * @return an instance of {@link WasAssociatedWith}
+     */
+ 
+    
     public WasAssociatedWith newWasAssociatedWith(QualifiedName id,
-                                                  QualifiedName eid2,
-						  QualifiedName eid1) {
+                                                  QualifiedName activity,
+						  QualifiedName agent) {
 	WasAssociatedWith res = of.createWasAssociatedWith();
 	res.setId(id);
-	res.setActivity(eid2);
-	res.setAgent(eid1);
+	res.setActivity(activity);
+	res.setAgent(agent);
 	return res;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasAssociatedWith(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
+     */
     
     public WasAssociatedWith  newWasAssociatedWith(QualifiedName id, 
                                                    QualifiedName a, 
@@ -907,6 +958,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
     
+    
+    
     public WasAssociatedWith newWasAssociatedWith(WasAssociatedWith u) {
 	WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(),
 						    u.getAgent());
@@ -917,25 +970,37 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return u1;
     }
 
+
+
+    /** A factory method to create an instance of an attribution {@link WasAttributedTo}
+     * @param id  an optional identifier for the relation
+     * @param entity an entity identifier
+     * @param agent  the identifier of the agent whom the entity is ascribed to, and therefore bears some responsibility for its existence
+     * @return an instance of {@link WasAttributedTo}
+     */ 
     public WasAttributedTo newWasAttributedTo(QualifiedName id, 
-                                              QualifiedName eid,
-					      QualifiedName agid) {
+                                              QualifiedName entity,
+					      QualifiedName agent) {
 	WasAttributedTo res = of.createWasAttributedTo();
 	res.setId(id);
-	res.setEntity(eid);
-	res.setAgent(agid);
+	res.setEntity(entity);
+	res.setAgent(agent);
 	return res;
     }
 
 
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasAttributedTo(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
+     */
     public WasAttributedTo newWasAttributedTo(QualifiedName id, 
-                                              QualifiedName eid,
-					      QualifiedName agid,
+                                              QualifiedName entity,
+					      QualifiedName agent,
 					      Collection<Attribute> attributes) {
 	WasAttributedTo res = of.createWasAttributedTo();
 	res.setId(id);
-	res.setEntity(eid);
-	res.setAgent(agid);
+	res.setEntity(entity);
+	res.setAgent(agent);
         setAttributes(res, attributes);
 	return res;
     }
@@ -974,6 +1039,10 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }    
    
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasDerivedFrom(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
+     */
 
     public WasDerivedFrom newWasDerivedFrom(QualifiedName id, 
                                             QualifiedName aid1,
@@ -1137,7 +1206,17 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return wgb;
     }
 
-    public WasInfluencedBy newWasInfluencedBy(QualifiedName id, QualifiedName influencee,
+
+    /**A factory method to create an instance of an influence {@link WasInfluencedBy}
+     * @param id optional identifier identifying the association
+     * @param influencee an identifier for an entity, activity, or agent
+     * @param influencer an identifier for an ancestor entity, activity, or agent that the former depends on
+     *
+     * @return an instance of {@link WasInfluencedBy}
+     */
+    
+    public WasInfluencedBy newWasInfluencedBy(QualifiedName id, 
+                                              QualifiedName influencee,
 					      QualifiedName influencer) {
 	WasInfluencedBy res = of.createWasInfluencedBy();
 	res.setId(id);
@@ -1145,9 +1224,14 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	res.setInfluencer(influencer);
 	return res;
     }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasInfluencedBy(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
+     */
 
-    public WasInfluencedBy newWasInfluencedBy(QualifiedName id, QualifiedName a2, QualifiedName a1, Collection<Attribute> attributes) {
-        WasInfluencedBy res=newWasInfluencedBy(id,a2,a1);   
+    public WasInfluencedBy newWasInfluencedBy(QualifiedName id, QualifiedName influencee, QualifiedName influencer, Collection<Attribute> attributes) {
+        WasInfluencedBy res=newWasInfluencedBy(id,influencee,influencer);   
         setAttributes(res, attributes);
         return res;
     }
@@ -1164,36 +1248,32 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return out;
     }
 
-    public WasInformedBy newWasInformedBy(Activity p1, Activity p2) {
-	return newWasInformedBy(null, p1, p2);
-    }
+    /** A factory method to create an instance of an communication {@link WasInformedBy}
+     * @param id an optional identifier identifying the association;
+     * @param informed the identifier of the informed activity;
+     * @param informant the identifier of the informant activity;
+     * @return an instance of {@link WasInformedBy}
+     */
 
-    public WasInformedBy newWasInformedBy(QualifiedName id, Activity p1, Activity p2,
-					  String type) {
-	WasInformedBy wtb = newWasInformedBy(p1, p2);
-	wtb.setId(id);
-	addType(wtb, newType(type,getName().XSD_STRING));
-	return wtb;
-    }
-
-    public WasInformedBy newWasInformedBy(QualifiedName id, QualifiedName pid1,
-					  QualifiedName pid2) {
+    public WasInformedBy newWasInformedBy(QualifiedName id, 
+                                          QualifiedName informed,
+					  QualifiedName informant) {
 	WasInformedBy res = of.createWasInformedBy();
 	res.setId(id);
-	res.setInformed(pid1);
-	res.setInformant(pid2);
+	res.setInformed(informed);
+	res.setInformant(informant);
 	return res;
     }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasInformedBy(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
+     */
 
     public WasInformedBy newWasInformedBy(QualifiedName id, QualifiedName a2, QualifiedName a1, Collection<Attribute> attributes) {
         WasInformedBy res=newWasInformedBy(id,a2,a1);   
         setAttributes(res, attributes);
         return res;
-    }
-
-    public WasInformedBy newWasInformedBy(QualifiedName id, Activity p1, Activity p2) {
-
-	return newWasInformedBy(id, p1.getId(), p2.getId(),null);
     }
 
 

@@ -1,7 +1,7 @@
 package org.openprovenance.prov.model;
 
 /** 
- * <p>Java interface for a PROV value. 
+ * <p>Interface for a PROV value. 
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-value">PROV-DM Definition for Value</a>: 
  * A value is a constant such as a string, number, time, qualified name, IRI, and encoded binary data, 
  * whose interpretation is outside the scope of PROV. Values can occur in attribute-value pairs.

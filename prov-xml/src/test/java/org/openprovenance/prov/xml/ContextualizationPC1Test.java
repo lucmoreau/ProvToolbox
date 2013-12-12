@@ -474,7 +474,7 @@ public class ContextualizationPC1Test extends TestCase {
 	WasDerivedFrom wd48 = newWasDerivedFrom(a29, a26);
 	WasDerivedFrom wd49 = newWasDerivedFrom(a30, a27);
 
-	WasAssociatedWith waw1 = pFactory.newWasAssociatedWith(q("waw1"), p1, ag1);
+	WasAssociatedWith waw1 = pFactory.newWasAssociatedWith(q("waw1"), p1.getId(), ag1.getId());
 
 	NamedBundle graph = pFactory.newNamedBundle(q(bName),
 	                                            Arrays.asList( p1, p2,

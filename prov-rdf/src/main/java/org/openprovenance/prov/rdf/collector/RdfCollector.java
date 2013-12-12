@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.openprovenance.prov.model.URIWrapper;
 import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.DictionaryMembership;
@@ -261,9 +260,7 @@ public class RdfCollector extends RDFHandlerBase {
 	    return decodeLiteral((Literal) value);
 	} else if (value instanceof URI) {
 	    URI uri = (URI) (value);
-	    URIWrapper uw = new URIWrapper();
-	    uw.setValue(java.net.URI.create(uri.toString()));
-	    return uw;
+	    return uri.toString();
 	} else if (value instanceof BNode) {
 	    return bnodeToQualifiedName(value); //FIXME
 	} else {
@@ -290,8 +287,6 @@ public class RdfCollector extends RDFHandlerBase {
 	    return pFactory.newKey(o, this.valueConverter.getXsdType(o));
 	} else if (value instanceof URI) {
 	    URI uri = (URI) (value);
-	    URIWrapper uw = new URIWrapper();
-	    uw.setValue(java.net.URI.create(uri.toString()));
 	    return pFactory.newKey(uri.toString(), name.XSD_QNAME);
 	} else if (value instanceof BNode) {
 	    return pFactory.newKey(bnodeToQualifiedName(value), //FIXME
@@ -360,9 +355,7 @@ public class RdfCollector extends RDFHandlerBase {
 		+ "decimal")) {
 	    return literal.decimalValue();
 	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "anyURI")) {
-	    URIWrapper uw = new URIWrapper();
-	    uw.setValue(java.net.URI.create(literal.stringValue()));
-	    return uw;
+	    return literal.stringValue();
 	} else {
 	    return literal.stringValue();
 	}

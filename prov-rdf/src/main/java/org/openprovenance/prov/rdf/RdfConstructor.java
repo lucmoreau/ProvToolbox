@@ -6,9 +6,12 @@ import java.util.Collection;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.openprovenance.prov.model.ActedOnBehalfOf;
+import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.DerivedByInsertionFrom;
+import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.HadMember;
@@ -20,6 +23,7 @@ import org.openprovenance.prov.model.Entry;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
@@ -67,7 +71,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     }
 
     @Override
-    public org.openprovenance.prov.xml.Entity newEntity(QualifiedName id,
+    public Entity newEntity(QualifiedName id,
 							Collection<Attribute> attributes) {
 	assertType(id, onto.QNAME_PROVO_Entity);
 	processAttributes(id, attributes);
@@ -75,7 +79,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     }
 
     @Override
-    public org.openprovenance.prov.xml.Activity newActivity(QualifiedName id,
+    public Activity newActivity(QualifiedName id,
 							    XMLGregorianCalendar startTime,
 							    XMLGregorianCalendar endTime,
 							    Collection<Attribute> attributes) {
@@ -95,7 +99,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     }
 
     @Override
-    public org.openprovenance.prov.xml.Agent newAgent(QualifiedName id,
+    public Agent newAgent(QualifiedName id,
 						      Collection<Attribute> attributes) {
 	assertType(id, onto.QNAME_PROVO_Agent);
 	processAttributes(id, attributes);
@@ -179,21 +183,21 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	int knownSubtypes = 0;
 	QualifiedName der = id;
-	if (org.openprovenance.prov.xml.Helper.hasType(onto.QNAME_PROVO_Revision,
-						       attributes)) {
+	if (ProvUtilities.hasType(onto.QNAME_PROVO_Revision,
+					     attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, onto.QNAME_PROVO_Revision);
 
 	}
-	if (org.openprovenance.prov.xml.Helper.hasType(onto.QNAME_PROVO_Quotation,
+	if (ProvUtilities.hasType(onto.QNAME_PROVO_Quotation,
 						       attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, onto.QNAME_PROVO_Quotation);
 
 	}
-	if (org.openprovenance.prov.xml.Helper.hasType(onto.QNAME_PROVO_PrimarySource,
+	if (ProvUtilities.hasType(onto.QNAME_PROVO_PrimarySource,
 						       attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,

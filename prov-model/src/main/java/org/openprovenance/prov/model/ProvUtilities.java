@@ -1,5 +1,6 @@
 package org.openprovenance.prov.model;
 
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.LinkedList;
@@ -401,6 +402,29 @@ public class ProvUtilities {
  	}
       }
 
+     
+     
+     
+     
+   
+
+     static public boolean hasType(org.openprovenance.prov.model.QualifiedName type, Collection<org.openprovenance.prov.model.Attribute> attributes) {
+     	for (org.openprovenance.prov.model.Attribute attribute: attributes) {
+     		switch (attribute.getKind()) {
+     			case PROV_TYPE :
+     				if (attribute.getValue().equals(type)) {
+     					return true;
+     				}
+ 					break;			
+ 				default :
+ 					break;
+     			
+     		}
+     	}
+     	return false;
+     		
+     }
+ 
      
    
 

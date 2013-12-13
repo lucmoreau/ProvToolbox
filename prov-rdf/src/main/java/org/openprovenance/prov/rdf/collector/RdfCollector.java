@@ -59,6 +59,7 @@ public class RdfCollector extends RDFHandlerBase {
     final protected Ontology onto;
     protected static String BNODE_NS = "http://openprovenance.org/provtoolbox/bnode/";
 
+    final protected Types types;
     
     public RdfCollector(ProvFactory pFactory, Ontology onto) {
    	this.pFactory = pFactory;
@@ -74,6 +75,7 @@ public class RdfCollector extends RDFHandlerBase {
    	handleNamespace(NamespacePrefixMapper.XSD_PREFIX,
    	                NamespacePrefixMapper.XSD_HASH_NS);
    	handleNamespace("bnode", BNODE_NS);
+   	this.types=new Types(onto);
    	
    	QUAL_PREDS= Arrays.asList(
    	             	    onto.QNAME_PROVO_qualifiedAssociation,
@@ -222,7 +224,7 @@ public class RdfCollector extends RDFHandlerBase {
 		if (!isProvURI(convertURIToQualifiedName((URI) value))) {
 		    continue;
 		}
-		Types.ProvType provType = Types.ProvType.lookup(convertURIToQualifiedName((URI) value));
+		Types.ProvType provType = types.lookup(convertURIToQualifiedName((URI) value));
 		if (provType != null)
 		    explicitOptions.add(provType);
 	    }
@@ -233,7 +235,7 @@ public class RdfCollector extends RDFHandlerBase {
 	if (explicitOptions.size() > 1) {
 	    List<Types.ProvType> cloned = new ArrayList<Types.ProvType>(explicitOptions);
 	    for (Types.ProvType option : explicitOptions) {
-		for (Types.ProvType extended : option.getExtends()) {
+		for (Types.ProvType extended : types.getExtends(option)) {
 		    cloned.remove(extended);
 		}
 	    }
@@ -484,7 +486,7 @@ public class RdfCollector extends RDFHandlerBase {
 			URI uri = (URI) (vobj);
 
 			String uriVal = uri.getNamespace() + uri.getLocalName();
-			sameAsType = uriVal.equals(type.getURIString());
+			sameAsType = uriVal.equals(types.find(type));
 		    }
 
 		    if (!sameAsType) {

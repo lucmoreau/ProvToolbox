@@ -361,7 +361,47 @@ public class ProvUtilities {
 	    break;	
 	}
     }
-
     
+    public static String unescape (String s) {
+  	return s.replace("\\\"","\"");
+      }
+    
+    public static String valueToNotationString(org.openprovenance.prov.model.Key key) {
+ 	return valueToNotationString(key.getValue(), key.getType());
+     }
+
+     
+     public static String escape (String s) {
+   	return s.replace("\"", "\\\"");
+       }
+     
+
+     //TODO: move this code to ValueConverter
+     //TODO: what else should be escaped?
+     public static String valueToNotationString(Object val, org.openprovenance.prov.model.QualifiedName xsdType) {
+  	if (val instanceof LangString) {
+  	    LangString istring = (LangString) val;
+  	    return "\"" + istring.getValue() + 
+  		    ((istring.getLang()==null) ? "\"" : "\"@" + istring.getLang())
+  		    + " %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType);
+  	} else if (val instanceof QualifiedName) {
+  	    QualifiedName qn = (QualifiedName) val;	    
+  	    return "'" + Namespace.qualifiedNameToStringWithNamespace(qn) + "'";
+  	} else if (val instanceof String) {
+ 	    String s=(String)val;
+ 	    if (s.contains("\n")) {
+ 		// return "\"\"\"" + val + "\"\"\" %% " + qnameToString(xsdType);
+ 		return "\"\"\"" + escape(s) + "\"\"\"" ;
+ 	    } else {
+ 		return "\"" + escape(s) + "\" %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType);
+ 	    }
+  	} else {
+ 	    // We should never be here!
+  	    return "\"" + val + "\" %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType);
+ 	}
+      }
+
+     
+   
 
 }

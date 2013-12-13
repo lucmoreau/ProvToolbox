@@ -15,7 +15,7 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
 public class Converter {
-    // TODO: Can registration be generic, for all types of beans?
+    // TODO: Can registration be generic, for all types of beans? //FIXME: can this be made independent of xml. getDocClassMethod?
 	private Gson gson = new GsonBuilder()
 	                       .registerTypeAdapter(org.openprovenance.prov.xml.Document.class, new ProvDocumentDeserializer())
 	                       .registerTypeAdapter(org.openprovenance.prov.xml.Document.class, new ProvDocumentSerializer())

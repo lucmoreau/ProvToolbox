@@ -1,5 +1,7 @@
 package org.openprovenance.prov.dot;
 import junit.framework.TestCase;
+
+import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.Document;
 
@@ -13,8 +15,9 @@ public class FileExampleTest extends TestCase {
     public void fileToDot(String asnFile, String xmlFile, String dotFile, String pdfFile, String title)
         throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
         Utility u=new Utility();
+        ProvFactory pFactory=ProvFactory.getFactory();
 
-        Document o= (Document) u.convertASNToJavaBean(asnFile);
+        Document o= (Document) u.convertASNToJavaBean(asnFile,pFactory);
 
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();

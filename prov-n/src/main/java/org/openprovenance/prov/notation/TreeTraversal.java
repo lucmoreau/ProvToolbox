@@ -15,8 +15,8 @@ import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.xml.Helper;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 
@@ -596,7 +596,7 @@ public class TreeTraversal {
 
 
     private String unescape(String s) {
-	return Helper.unescape(s);
+	return ProvUtilities.unescape(s);
     }
 
     Namespace namespace=new Namespace();

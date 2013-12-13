@@ -16,6 +16,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.openprovenance.prov.model.DOMProcessing;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 
 /**
@@ -61,7 +62,7 @@ public class Role extends TypedValue implements
     public String toNotationString() {
 	return DOMProcessing.qualifiedNameToString(getElementName())
 		+ " = "
-		+ org.openprovenance.prov.xml.Helper.valueToNotationString(getValue(),
+		+ ProvUtilities.valueToNotationString(getValue(),
 									      getType());
     }
 

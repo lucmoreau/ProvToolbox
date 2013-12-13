@@ -29,7 +29,7 @@ public class RoundTripFromJavaTest extends
     @Override
     public Document readDocument(String file1) {
 	try {
-	    return (Document) u.convertASNToJavaBean(file1);
+	    return (Document) u.convertASNToJavaBean(file1,pFactory);
 	} catch (IOException e) {
 	    throw new UncheckedTestException(e);
 	} catch (Throwable e) {
@@ -40,7 +40,7 @@ public class RoundTripFromJavaTest extends
     @Override
     public void writeDocument(Document doc, String file) {
 	Namespace.withThreadNamespace(doc.getNamespace());
-	String s = u.convertBeanToASN(doc);
+	String s = u.convertBeanToASN(doc,pFactory);
 	u.writeTextToFile(s, file);
     }
 
@@ -62,12 +62,12 @@ public class RoundTripFromJavaTest extends
 	String file1 = (opt == null) ? file : file + "-S";
 	file1 = file1 + extension();
 
-	String s = u.convertBeanToASN(doc);
+	String s = u.convertBeanToASN(doc,pFactory);
 	u.writeTextToFile(s, file1);
 
 	Document doc2;
 	try {
-	    doc2 = (Document) u.convertASNToJavaBean(file1);
+	    doc2 = (Document) u.convertASNToJavaBean(file1,pFactory);
 	    compareDocuments(doc, doc2, check && checkTest(file1));
 
 	    if (opt != null) {
@@ -75,10 +75,10 @@ public class RoundTripFromJavaTest extends
 		String file2 = file + "-M";
 		file2 = file2 + extension();
 
-		String s2 = u.convertBeanToASN(doc);
+		String s2 = u.convertBeanToASN(doc,pFactory);
 		u.writeTextToFile(s2, file2);
 
-		Document doc3 = (Document) u.convertASNToJavaBean(file2);
+		Document doc3 = (Document) u.convertASNToJavaBean(file2,pFactory);
 		compareDocuments(doc, doc3, check && checkTest(file2));
 	    }
 

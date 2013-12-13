@@ -24,11 +24,11 @@ import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedNameExport;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.xml.UncheckedException;
 import org.openprovenance.prov.model.DictionaryMembership;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasAssociatedWith;
@@ -40,6 +40,7 @@ import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
+import org.openprovenance.prov.model.exception.UncheckedException;
 
 /** For testing purpose, conversion back to ASN. */
 
@@ -118,7 +119,7 @@ public class NotationConstructor implements ModelConstructor {
                 first = false;
                 s = s
                         + "("
-                        + org.openprovenance.prov.xml.Helper.valueToNotationString(p.getKey())
+                        + ProvUtilities.valueToNotationString(p.getKey())
                         + ", " + idOrMarker(p.getEntity()) + ")";
             }
         }
@@ -135,7 +136,7 @@ public class NotationConstructor implements ModelConstructor {
                     s = s + ", ";
                 first = false;
                 s = s
-                        + org.openprovenance.prov.xml.Helper.valueToNotationString(k);
+                        + ProvUtilities.valueToNotationString(k);
             }
         }
         s = s + "}";
@@ -227,7 +228,7 @@ public class NotationConstructor implements ModelConstructor {
                         + ","
                         + idOrMarker(entry.getEntity())
                         + ","
-                        + org.openprovenance.prov.xml.Helper.valueToNotationString(entry.getKey())
+                        + ProvUtilities.valueToNotationString(entry.getKey())
                         + ")";
                 writeln(s);
             }

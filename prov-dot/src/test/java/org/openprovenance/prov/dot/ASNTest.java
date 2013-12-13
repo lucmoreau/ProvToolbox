@@ -1,6 +1,7 @@
 package org.openprovenance.prov.dot;
 import junit.framework.TestCase;
 import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.xml.ProvFactory;
 
 import javax.xml.bind.JAXBException;
 import org.openprovenance.prov.notation.Utility;
@@ -11,8 +12,9 @@ public class ASNTest extends TestCase {
         throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
         Utility u=new Utility();
 
+        ProvFactory pFactory=ProvFactory.getFactory();
 
-        Document o= (Document) u.convertASNToJavaBean(asnFile);
+        Document o= (Document) u.convertASNToJavaBean(asnFile, pFactory);
 
         //serial.serialiseDocument(new File(xmlFile),o,true);
 

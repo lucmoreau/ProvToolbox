@@ -6,6 +6,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.openprovenance.prov.model.DOMProcessing;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
@@ -39,7 +40,7 @@ public class Location extends TypedValue implements Equals, HashCode, org.openpr
 
     public String toNotationString() {
 	return DOMProcessing.qualifiedNameToString(getElementName()) + " = "
-		+ org.openprovenance.prov.xml.Helper.valueToNotationString(getValue(), getType());
+		+ ProvUtilities.valueToNotationString(getValue(), getType());
     }
     
 

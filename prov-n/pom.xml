@@ -21,19 +21,6 @@
       <version>0.4.1-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.openprovenance.prov</groupId>
-      <artifactId>prov-xml</artifactId>
-      <version>0.4.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openprovenance.prov</groupId>
-      <artifactId>prov-xml</artifactId>
-      <version>0.4.1-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr-runtime</artifactId>
       <version>3.4</version>
@@ -43,6 +30,23 @@
       <artifactId>stringtemplate</artifactId>
       <version>4.0.2</version>
     </dependency>
+
+
+    <!-- for testing -->
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-xml</artifactId>
+      <version>0.4.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-xml</artifactId>
+      <version>0.4.1-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
 
   </dependencies>
 

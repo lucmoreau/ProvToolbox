@@ -48,7 +48,7 @@ public class Location extends TypedValue
 
     @Override
     public String toNotationString() {
-        return DOMProcessing.qualifiedNameToString(getElementName()) + " = " + Helper.valueToNotationString(getValue(), getType());
+        return DOMProcessing.qualifiedNameToString(getElementName()) + " = " + ProvUtilities.valueToNotationString(getValue(), getType());
     }
    
 }

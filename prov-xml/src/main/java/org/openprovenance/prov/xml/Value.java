@@ -54,7 +54,7 @@ public class Value extends TypedValue implements Equals, HashCode, ToString,
     @Override
     public String toNotationString() {
 	return DOMProcessing.qualifiedNameToString(getElementName()) + " = "
-		+ Helper.valueToNotationString(getValue(), getType());
+		+ ProvUtilities.valueToNotationString(getValue(), getType());
     }
 
 }

@@ -70,9 +70,10 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     Namespace ns;
 
     public static void main(String[] args) {
+	ProvDocumentDeserializer deserial=new ProvDocumentDeserializer();
 	GsonBuilder gsonBuilder = new GsonBuilder();
 	gsonBuilder.registerTypeAdapter(Document.class,
-					new ProvDocumentDeserializer());
+					deserial);
 	Gson gson = gsonBuilder.create();
 
 	try {
@@ -81,7 +82,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 									       args[0])),
 					     Document.class);
 	    Utility u = new Utility();
-	    String provN = u.convertBeanToASN(provDoc);
+	    String provN = u.convertBeanToASN(provDoc,deserial.pf);
 	    System.out.println(provN);
 	} catch (Exception e) {
 	    e.printStackTrace();

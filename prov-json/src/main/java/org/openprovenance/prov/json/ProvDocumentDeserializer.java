@@ -76,9 +76,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	Gson gson = gsonBuilder.create();
 
 	try {
-	    Document provDoc = gson.fromJson(new BufferedReader(
-								new FileReader(
-									       args[0])),
+	    Document provDoc = gson.fromJson(new BufferedReader(new FileReader(args[0])),
 					     Document.class);
 	    Utility u = new Utility();
 	    String provN = u.convertBeanToASN(provDoc);
@@ -97,7 +95,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     @Override
     public Document deserialize(JsonElement json, Type typeOfT,
 				JsonDeserializationContext context)
-								   throws JsonParseException {
+					throws JsonParseException {
 	JsonObject provJSONDoc = json.getAsJsonObject();
 
 	// Initialise namespaces
@@ -485,6 +483,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		&& !attributeMap.entrySet().isEmpty()) {
 	    if (statement instanceof HasOther) {
 		// TODO: to clean up this casting
+		@SuppressWarnings("rawtypes")
 		List ll = ((HasOther) statement).getOther();
 		List<Attribute> attributes = (List<Attribute>) ll;
 		for (Map.Entry<String, JsonElement> aPair : attributeMap.entrySet()) {
@@ -694,10 +693,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    QualifiedName datatype = ns.stringToQualifiedName(keyDatatype,pf);
 	    for (Map.Entry<String, JsonElement> entry : dictionary.entrySet()) {
 		Object o = vconv.convertToJava(datatype, entry.getKey());
-		
-		Entry pair = pf.newEntry(pf.newKey(o, vconv.getXsdType(o)), // TODO remove use
-		
-							      // of vconv
+
+		// TODO remove use of vconv
+		Entry pair = pf.newEntry(pf.newKey(o, vconv.getXsdType(o)), 
 		                         ns.stringToQualifiedName(entry.getValue().getAsString(), pf));
 		results.add(pair);
 	    }

@@ -18,28 +18,26 @@
     	<version>0.4.1-SNAPSHOT</version>
     </dependency>
     <dependency>
-    	<groupId>org.openprovenance.prov</groupId>
-    	<artifactId>prov-n</artifactId>
-    	<version>0.4.1-SNAPSHOT</version>
+    	<groupId>com.google.code.gson</groupId>
+    	<artifactId>gson</artifactId>
+    	<version>2.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.mozilla</groupId>
+    	<artifactId>rhino</artifactId>
+    	<version>1.7R3</version>
     </dependency>
 
+
+    <!-- We should aim to remove this dependency, and have it for testing only -->
     <dependency>
     	<groupId>org.openprovenance.prov</groupId>
     	<artifactId>prov-xml</artifactId>
     	<version>0.4.1-SNAPSHOT</version>
     </dependency>
 
-    <dependency>
-    	<groupId>org.mozilla</groupId>
-    	<artifactId>rhino</artifactId>
-    	<version>1.7R3</version>
-    </dependency>
-    <dependency>
-    	<groupId>com.google.code.gson</groupId>
-    	<artifactId>gson</artifactId>
-    	<version>2.1</version>
-    </dependency>
 
+    <!-- testing -->
 
     <dependency>
     	<groupId>org.openprovenance.prov</groupId>
@@ -48,11 +46,7 @@
     	<version>0.4.1-SNAPSHOT</version>
     	<classifier>tests</classifier>
     </dependency>
-    <dependency>
-    	<groupId>log4j</groupId>
-    	<artifactId>log4j</artifactId>
-    	<version>1.2.17</version>
-    </dependency>
+
   </dependencies>
   <build>
     <plugins>

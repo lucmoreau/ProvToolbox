@@ -3,7 +3,6 @@ package org.openprovenance.prov.rdf.collector;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.namespace.QName;
 
 public class BundleHolder {
 	private List<org.openprovenance.prov.model.Activity> activities;

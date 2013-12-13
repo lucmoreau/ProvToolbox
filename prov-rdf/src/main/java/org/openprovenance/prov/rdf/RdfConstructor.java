@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Collection;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.AlternateOf;
@@ -435,13 +434,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	    }
     }
 
-    public QualifiedName addInfluence(QualifiedName infl, QualifiedName subject, QualifiedName object,
-        			      XMLGregorianCalendar time, QualifiedName other,
-        			      boolean someOther,
-        			      Collection<Attribute> attributes,
-        			      QName qualifiedClass) {
-	return addInfluence(infl,subject,object,time,other,someOther,attributes,pFactory.newQualifiedName(qualifiedClass));
-    }
+
     public QualifiedName addInfluence(QualifiedName infl, QualifiedName subject, QualifiedName object,
         			      XMLGregorianCalendar time, QualifiedName other,
         			      boolean someOther,
@@ -523,12 +516,6 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 						   onto.qualifiedInfluenceTable.get(qualifiedClass),
 						   infl));
     }
-
-    public void assertInfluencer(QualifiedName infl, QualifiedName object, QName qualifiedClass) {
- 	gb.assertStatement(gb.createObjectProperty(infl,
- 						   onto.influencerTable.get(qualifiedClass),
- 						   object));
-     }
     
     public void assertInfluencer(QualifiedName infl, QualifiedName object, QualifiedName qualifiedClass) {
  	gb.assertStatement(gb.createObjectProperty(infl,

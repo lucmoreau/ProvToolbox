@@ -4,7 +4,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.rdf.Ontology;
@@ -12,8 +11,9 @@ import org.openprovenance.prov.xml.ProvFactory;
 
 public class Types {
     
+    //FIXME: make this a independent of xml.ProvFactory
    private static Ontology onto=new Ontology(ProvFactory.getFactory());
-   
+  
    public enum ProvType
    {
     ENTITY(onto.QNAME_PROVO_Entity), 

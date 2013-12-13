@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.openprovenance.prov.json;
 
 import java.util.ArrayList;

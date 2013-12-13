@@ -1,10 +1,5 @@
-/**
- * 
- */
 package org.openprovenance.prov.json;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +11,6 @@ import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Entry;
 import org.openprovenance.prov.model.QualifiedName;
@@ -50,8 +44,6 @@ import org.openprovenance.prov.model.WasGeneratedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -69,25 +61,6 @@ import com.google.gson.JsonParseException;
 public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     Namespace ns;
 
-    public static void main(String[] args) {
-	ProvDocumentDeserializer deserial=new ProvDocumentDeserializer();
-	GsonBuilder gsonBuilder = new GsonBuilder();
-	gsonBuilder.registerTypeAdapter(Document.class,
-					deserial);
-	Gson gson = gsonBuilder.create();
-
-	try {
-	    Document provDoc = gson.fromJson(new BufferedReader(
-								new FileReader(
-									       args[0])),
-					     Document.class);
-	    Utility u = new Utility();
-	    String provN = u.convertBeanToASN(provDoc,deserial.pf);
-	    System.out.println(provN);
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
-    }
 
     private static final String PROV_JSON_PREFIX = "prefix";
 

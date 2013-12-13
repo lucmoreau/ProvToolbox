@@ -18,7 +18,6 @@ import org.openprovenance.prov.model.DerivedByRemovalFrom;
 import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.Key;
-import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.Type;

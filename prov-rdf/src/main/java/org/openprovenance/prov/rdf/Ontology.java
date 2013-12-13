@@ -8,7 +8,7 @@ import java.util.Set;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.xml.NamespacePrefixMapper;
+import org.openprovenance.prov.model.NamespacePrefixMapper;
 
 
 public class Ontology {

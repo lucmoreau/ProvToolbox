@@ -12,6 +12,11 @@ public class QualifiedNameException extends RuntimeException {
     /**
      * 
      */
+    private static final long serialVersionUID = -2683382479059721612L;
+
+    /**
+     * 
+     */
     public QualifiedNameException() {
 	// TODO Auto-generated constructor stub
     }

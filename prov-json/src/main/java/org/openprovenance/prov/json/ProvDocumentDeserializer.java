@@ -32,7 +32,7 @@ import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
@@ -64,9 +64,17 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 
     private static final String PROV_JSON_PREFIX = "prefix";
 
-    private final ProvFactory pf = new ProvFactory();
-    private final Name name=pf.getName();
-    private final ValueConverter vconv = new ValueConverter(pf, null);
+    
+    private final ProvFactory pf;
+    private final Name name;
+    private final ValueConverter vconv;
+
+    public ProvDocumentDeserializer(ProvFactory pf) {
+	this.pf=pf;
+	this.name=pf.getName();
+	this.vconv = new ValueConverter(pf, null);
+    }
+    
 
     @Override
     public Document deserialize(JsonElement json, Type typeOfT,

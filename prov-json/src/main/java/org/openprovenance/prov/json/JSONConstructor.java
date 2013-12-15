@@ -28,7 +28,7 @@ import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedNameExport;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
@@ -69,7 +69,6 @@ public class JSONConstructor implements ModelConstructor {
     private List<JsonProvRecord> currentRecords = documentRecords;
     private Map<String, String> currentNamespaces = null;
 
-    private final ProvFactory pf = new ProvFactory();
 
     public JSONConstructor(QualifiedNameExport qnExport) {
 	this.qnExport = qnExport;

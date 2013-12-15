@@ -289,7 +289,7 @@ public class InteropFramework {
 				break;
 			}
 			case JSON: {
-				new org.openprovenance.prov.json.Converter().writeDocument(doc,
+				new org.openprovenance.prov.json.Converter(pFactory).writeDocument(doc,
 						filename);
 				break;
 			}
@@ -393,7 +393,7 @@ public class InteropFramework {
 															// from these
 															// formats
 			case JSON: {
-				return new org.openprovenance.prov.json.Converter()
+				return new org.openprovenance.prov.json.Converter(pFactory)
 						.readDocument(filename);
 			}
 			case PROVN: {
@@ -462,7 +462,7 @@ public class InteropFramework {
 		}
 
 		try {
-			Object o = new org.openprovenance.prov.json.Converter()
+			Object o = new org.openprovenance.prov.json.Converter(pFactory)
 					.readDocument(filename);
 			if (o != null) {
 				return o;

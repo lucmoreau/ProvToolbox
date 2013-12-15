@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.ProvFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,15 +16,26 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
 public class Converter {
-    // TODO: Can registration be generic, for all types of beans? //FIXME: can this be made independent of xml. getDocClassMethod?
-	private Gson gson = new GsonBuilder()
-	                       .registerTypeAdapter(org.openprovenance.prov.xml.Document.class, new ProvDocumentDeserializer())
-	                       .registerTypeAdapter(org.openprovenance.prov.xml.Document.class, new ProvDocumentSerializer())
-	                       .setPrettyPrinting()
-	                       .create();
+    final private ProvFactory pFactory;
+
+    final private Gson  gson;
+    final Class class1;
+    
+    public Converter (ProvFactory pFactory) {
+	this.pFactory=pFactory;
 	
+	class1=pFactory.newDocument().getClass();
+	
+	gson = new GsonBuilder()
+        .registerTypeAdapter(class1, new ProvDocumentDeserializer(pFactory))
+        .registerTypeAdapter(class1, new ProvDocumentSerializer(pFactory))
+        .setPrettyPrinting()
+        .create();
+
+    }
+    
 	public Document readDocument(String file) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
-	    Document doc = gson.fromJson(new BufferedReader(new FileReader(file)), org.openprovenance.prov.xml.Document.class);
+	    Document doc = (Document) gson.fromJson(new BufferedReader(new FileReader(file)), class1);
 	    return doc;
 	}
 

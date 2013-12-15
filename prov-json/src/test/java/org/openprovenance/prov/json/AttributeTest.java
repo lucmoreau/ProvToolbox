@@ -4,11 +4,10 @@ package org.openprovenance.prov.json;
 import java.util.List;
 
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.UncheckedTestException;
 
 public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
-        final Converter convert=new Converter();
+        final Converter convert=new Converter(pFactory);
 
 
 	public AttributeTest(String testName) {

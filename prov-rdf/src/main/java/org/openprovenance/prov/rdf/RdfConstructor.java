@@ -601,6 +601,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 						       onto.QNAME_PROVO_insertedKeyEntityPair,
 						       thePair));
 
+
 	    LITERAL lit = valueToLiteral(p.getKey());
 
 	    gb.assertStatement(gb.createDataProperty(thePair,
@@ -619,14 +620,19 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
  	String value;
  	if (val.getValue() instanceof QualifiedName) {
  	    value = Namespace.qualifiedNameToStringWithNamespace((QualifiedName) val.getValue());
+ 	 	lit = gb.newLiteral(value, val.getType());
+
+ 	} else if (val.getValue() instanceof LangString) {
+ 	    LangString iString=(LangString) val.getValue();
+	    lit = gb.newLiteral(iString.getValue(), iString.getLang());
+
  	} else {
  	    value = val.getValue().toString(); //FIXME: what about Internatioanlized string.
+ 	    lit = gb.newLiteral(value, val.getType());
+
  	}
- 	lit = gb.newLiteral(value, val.getType());
  	return lit;
      }
-
-    
 
 
     @Override

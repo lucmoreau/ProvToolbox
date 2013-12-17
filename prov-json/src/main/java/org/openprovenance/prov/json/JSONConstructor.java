@@ -179,18 +179,22 @@ public class JSONConstructor implements ModelConstructor {
 	return result;
     }
 
-    private String convertValueToString(Object value) {
-	if (value instanceof String) {
-	    return (String) value;
+    private String convertValueToString(Object value, Object convertedValue) {
+	if (convertedValue instanceof String) {
+	    return (String) convertedValue;
 	}
 
-	if (value instanceof QualifiedName)
-	    return qnExport.qualifiedNameToString((QualifiedName) value);
-	if (value instanceof LangString) {
-	    LangString iStr = (LangString) value;
+	if (convertedValue instanceof QualifiedName)
+	    return qnExport.qualifiedNameToString((QualifiedName) convertedValue);
+	if (convertedValue instanceof LangString) {
+	    LangString iStr = (LangString) convertedValue;
 	    return iStr.getValue();
 	}
-	return value.toString();
+	if (convertedValue instanceof byte[]) {
+	    return (String) value;
+	}
+	
+	return (String) value;
     }
 
     private Object convertValue(Object value) {
@@ -208,7 +212,7 @@ public class JSONConstructor implements ModelConstructor {
 	    if (lang != null)
 		// If 'lang' is defined
 		return typedLiteral(iStr.getValue(),
-				    "prov:LangString", // "xsd:string",
+				    "prov:InternationalizedString", // "xsd:string",
 				    lang);
 	    else
 		return iStr.getValue();
@@ -232,7 +236,7 @@ public class JSONConstructor implements ModelConstructor {
 	    if (lang != null) {
 		// If 'lang' is defined
 		attrValue = typedLiteral(iStr.getValue(),
-					 "prov:LangString", // "xsd:string",
+					 "prov:InternationalizedString", // "xsd:string",
 					 lang);
 	    } else {
 		// Otherwise, just return the string
@@ -635,7 +639,7 @@ public class JSONConstructor implements ModelConstructor {
 	    dictionary.put("$key-datatype", keyDatatype);
 	    for (Entry pair : keyEntitySet) {
 		// String key = convertValueToString(pair.key);
-		String key = convertValueToString(pair.getKey().getConvertedValue());
+		String key = convertValueToString(pair.getKey().getValue(), pair.getKey().getConvertedValue());
 		String entity = qnExport.qualifiedNameToString(pair.getEntity());
 		dictionary.put(key, entity);
 	    }

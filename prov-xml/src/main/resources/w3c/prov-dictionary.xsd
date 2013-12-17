@@ -28,7 +28,7 @@
 	<!-- Key-Entity Pair -->
 	<xs:complexType name="KeyEntityPair">
         <xs:sequence>
-    	  <xs:element name="key" type="xs:anySimpleType" />
+    	  <xs:element name="key" type="xs:anyType" /><!-- was anySimpleType -->
     	  <xs:element name="entity" type="prov:IDRef" />
         </xs:sequence>
 	</xs:complexType>
@@ -67,7 +67,7 @@
 	  <xs:sequence>
       <xs:element name="newDictionary" type="prov:IDRef"/>
       <xs:element name="oldDictionary" type="prov:IDRef"/>
-      <xs:element name="key" type="xs:anySimpleType" minOccurs="1" maxOccurs="unbounded" />
+      <xs:element name="key" type="xs:anyType" minOccurs="1" maxOccurs="unbounded" /><!-- was anySimpleType -->
       <!-- prov attributes -->
       <xs:element ref="prov:label" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="prov:type" minOccurs="0" maxOccurs="unbounded"/>

@@ -103,10 +103,10 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
    
     
     public Key newKey(Object value, QualifiedName type) {
-        Key typ=new Key();
-        typ.type=type;
-        typ.setValueFromObject(value);
-        return typ;
+        Key key=new Key();
+        key.type=type;
+        key.setValueFromObject(value);
+        return key;
     }
     public Label newLabel(Object value, QualifiedName type) {
         Label res=new Label();

@@ -1,6 +1,9 @@
 package org.openprovenance.prov.xml;
 
 
+import java.util.LinkedList;
+import java.util.List;
+
 import junit.framework.TestCase;
         
 import org.openprovenance.prov.model.Activity;
@@ -265,6 +268,28 @@ public class NamespacesTest
         assertTrue(nss.check("xsd", XSD_NS));
     }
 
+    
+    public void testNamespaces11 ()  {
+		
+	List<org.openprovenance.prov.model.Entry> ll = new LinkedList<org.openprovenance.prov.model.Entry>();
+	      
+	
 
+	org.openprovenance.prov.model.Entry p1 = pFactory.newEntry(pFactory.newKey(pFactory.newQualifiedName("http://example4.org/", "zabcd", "other"),
+	                                                                           name.XSD_QNAME),
+	                                                           q("e0"));
+	ll.add(p1);
+	org.openprovenance.prov.model.DerivedByInsertionFrom a = pFactory.newDerivedByInsertionFrom(q("dinsert"), 
+	                                                              q("d2"), 
+	                                                              q("d1"), 
+	                                                              ll, null);
+	
 
+	Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(a);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        
+        assertTrue(nss.getPrefixes().size()==4);
+ 
+    }
 }

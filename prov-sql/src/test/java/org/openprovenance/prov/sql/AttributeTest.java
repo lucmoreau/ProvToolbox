@@ -62,6 +62,10 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
             return false;
     }
     
+    public void testDictionaryInsertionWithOneKey(int i) {
+	if (i<3) System.out.println(" ---- Not supporting dictionaries yet");
+    }
+    
     public org.openprovenance.prov.model.QualifiedName q(String n) {
 		return new QualifiedName(EX_NS, n, EX_PREFIX);
        }

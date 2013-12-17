@@ -281,12 +281,24 @@ public class RdfCollector extends RDFHandlerBase {
 	    return pFactory.newKey(convertResourceToQualifiedName((Resource) value),
 	                           name.XSD_QNAME);
 	} else if (value instanceof Literal) {
-	    Object o=decodeLiteral((Literal) value);
-	    //FIXME: lossy conversion, I have lost the rdf type by converting to java
+	    Literal lit=(Literal) value;
+	    QualifiedName type;
+	    QualifiedName xsdtype;
+	    if (lit.getDatatype()!=null) {
+		type= convertURIToQualifiedName(lit.getDatatype());
+		xsdtype=onto.convertFromRdf(type);
+	    } else {
+		xsdtype=name.PROV_LANG_STRING;
+	    }
+		    
+	    Object o=decodeLiteral(lit);
 	    if (o instanceof QualifiedName) {
 		return pFactory.newKey(o, name.XSD_QNAME);
 	    }
-	    return pFactory.newKey(o, this.valueConverter.getXsdType(o));
+	    // Was old code, relying on converter
+	    //return pFactory.newKey(o, this.valueConverter.getXsdType(o));
+	    return pFactory.newKey(o, xsdtype);
+
 	} else if (value instanceof URI) {
 	    URI uri = (URI) (value);
 	    return pFactory.newKey(uri.toString(), name.XSD_QNAME);
@@ -361,6 +373,15 @@ public class RdfCollector extends RDFHandlerBase {
 	} else {
 	    return literal.stringValue();
 	}
+    }
+    
+    //FIXME make a map
+    
+    public QualifiedName getTypeForLiteral(String uri) {
+	if (uri.equals(NamespacePrefixMapper.XSD_HASH_NS + "unsignedInt")) {
+	    return name.XSD_UNSIGNED_INT;
+	}
+	return name.QNAME_UNKNOWN;
     }
 
 

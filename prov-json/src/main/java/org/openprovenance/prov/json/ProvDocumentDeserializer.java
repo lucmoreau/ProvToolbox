@@ -675,16 +675,34 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 					   .getAsString();
 	    QualifiedName datatype = ns.stringToQualifiedName(keyDatatype,pf);
 	    for (Map.Entry<String, JsonElement> entry : dictionary.entrySet()) {
-		Object o = vconv.convertToJava(datatype, entry.getKey());
-		
-		Entry pair = pf.newEntry(pf.newKey(o, vconv.getXsdType(o)), // TODO remove use
-		
-							      // of vconv
-		                         ns.stringToQualifiedName(entry.getValue().getAsString(), pf));
+		String entryKey = entry.getKey();
+		JsonElement entryValue = entry.getValue();
+
+		Entry pair = decodeDictionaryEntry(datatype, entryKey,
+						   entryValue);
 		results.add(pair);
 	    }
 	}
 	return results;
+    }
+
+
+    public Entry decodeDictionaryEntry(QualifiedName datatype,
+				       String entryKey,
+				       JsonElement entryValue) {
+
+	Key kk;
+	if (datatype.equals(name.XSD_QNAME)) {
+	    kk=(Key) pf.newAttribute(name.PROV_KEY,
+	                             ns.stringToQualifiedName(entryKey,pf), datatype);
+	} else {
+	    kk=(Key) pf.newAttribute(name.PROV_KEY, entryKey, datatype);
+	}
+
+	
+	Entry pair = pf.newEntry(kk,
+	                         ns.stringToQualifiedName(entryValue.getAsString(), pf));
+	return pair;
     }
 
     

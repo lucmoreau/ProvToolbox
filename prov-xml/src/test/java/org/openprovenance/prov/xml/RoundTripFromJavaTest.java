@@ -1983,7 +1983,7 @@ public class RoundTripFromJavaTest extends TestCase {
         NamedBundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
         Namespace ns1 = Namespace.gatherNamespaces(b1);
         b1.setNamespace(ns1);
-        System.out.println("bundle 1 ns " + ns1);
+        //System.out.println("bundle 1 ns " + ns1);
 
         
         Used use2 = pFactory.newUsed(another("use2"), another("aa1"), null, another("ee1"));
@@ -1996,7 +1996,7 @@ public class RoundTripFromJavaTest extends TestCase {
         NamedBundle b2 = pFactory.newNamedBundle(another("bundle2"), st2);
         Namespace ns2 = Namespace.gatherNamespaces(b2);
         b2.setNamespace(ns2);
-        System.out.println("bundle 2 ns " + ns2);
+        //.out.println("bundle 2 ns " + ns2);
 
         
         Entity eb1 = pFactory.newEntity(pFactory.newQualifiedName(EX_NS, "bundle1", "foo"));

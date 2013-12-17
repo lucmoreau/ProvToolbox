@@ -60,6 +60,13 @@ public class Namespace {
     
     private Namespace parent=null;
     
+    public void setParent(Namespace parent) {
+	this.parent=parent;
+    }
+    public Namespace getParent() {
+	return parent;
+    }
+
     public void addKnownNamespaces() {
 	getPrefixes().put("prov",NamespacePrefixMapper.PROV_NS);
 	getNamespaces().put(NamespacePrefixMapper.PROV_NS,"prov");
@@ -184,10 +191,9 @@ public class Namespace {
    	return ns;
     }
     
-    static public Namespace gatherNamespaces(NamedBundle doc) {
+    static public Namespace gatherNamespaces(NamedBundle bundle) {
    	NamespaceGatherer gatherer=new NamespaceGatherer();	
-   	u.forAllStatement(doc.getStatement(), 
-   	                          gatherer);
+   	u.forAllStatement(bundle.getStatement(), gatherer);
    	Namespace ns=gatherer.getNamespace();
    	return ns;
     }
@@ -204,6 +210,8 @@ public class Namespace {
 	}
 	String prefix = id.substring(0, index);
 	String local = id.substring(index + 1, id.length());
+	
+	//TODO: why have special cases here, prov and xsd are now declared prefixes in namespaces
 	if ("prov".equals(prefix)) {
 	    return pFactory.newQualifiedName(NamespacePrefixMapper.PROV_NS, local, prefix);
 	} else if ("xsd".equals(prefix)) {
@@ -213,7 +221,13 @@ public class Namespace {
 			     local, prefix);
 	} else {
 	    String tmp=prefixes.get(prefix);
-	    if (tmp==null) throw new NullPointerException("Namespace.stringToQualifiedName(): Null namespace for "+id);
+	    if (tmp==null) {
+		if (parent!=null) {
+		    return parent.stringToQualifiedName(id, pFactory);
+		} else {
+		    throw new QualifiedNameException("Namespace.stringToQualifiedName(): Null namespace for " + id + " namespace " + this);
+		}
+	    }
 	    return pFactory.newQualifiedName(tmp, local, prefix);
 	}
     }
@@ -256,6 +270,9 @@ public class Namespace {
     public String toString() {
 	return "[Namespace (" + defaultNamespace + ") " + prefixes + "]";
     }
+
+
+
 
 
     

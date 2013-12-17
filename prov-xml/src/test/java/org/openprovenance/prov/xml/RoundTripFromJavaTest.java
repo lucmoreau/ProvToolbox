@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -130,6 +129,12 @@ public class RoundTripFromJavaTest extends TestCase {
             }
         }
         updateNamespaces(doc);
+        
+        if (bundles!=null) {
+            for (int j = 0; j < bundles.length; j++) {
+                bundles[j].getNamespace().setParent(doc.getNamespace());
+            }
+        }
 
         String file1 = (opt == null) ? file : file + "-S";
         compareDocAndFile(doc, file1, check);
@@ -1918,8 +1923,9 @@ public class RoundTripFromJavaTest extends TestCase {
 
     }
 
-    // FIXME: inheritance of namespaces does not work properly
-    public void FIXMEtestBundle3() {
+    /** A small example showing inheritance of namespace from Document. */
+
+    public void testBundle3() {
         Used use1 = pFactory.newUsed(q("use1"), q("a1"), null, q("e1"));
         Entity e1 = pFactory.newEntity(q("e1"));
         Activity a1 = pFactory.newActivity(q("a1"));
@@ -1939,7 +1945,7 @@ public class RoundTripFromJavaTest extends TestCase {
         st2.add(use2);
 
         Namespace ns1 = Namespace.gatherNamespaces(b1);
-        b1.setNamespace(new Namespace());
+        b1.setNamespace(ns1);
 
         NamedBundle b2 = pFactory.newNamedBundle(q("bundle2"), st2);
 
@@ -1950,12 +1956,60 @@ public class RoundTripFromJavaTest extends TestCase {
         pFactory.addBundleType(eb2);
 
         Namespace ns2 = Namespace.gatherNamespaces(b2);
-        b2.setNamespace(new Namespace());
+        b2.setNamespace(ns2);
 
         Statement[] statements = new Statement[] { eb1, eb2, };
         NamedBundle[] bundles = new NamedBundle[] { b1, b2 };
 
         makeDocAndTest(statements, bundles, "target/bundle3", null, true);
+
+    }
+
+    
+    public org.openprovenance.prov.model.QualifiedName another(String n) {
+        return pFactory.newQualifiedName("http://another.org/", n, EX_PREFIX);
+    }
+
+    /** A small example showing inheritance of namespace from Document. */
+
+    public void testBundle4() {
+        Used use1 = pFactory.newUsed(q("use1"), q("a1"), null, q("e1"));
+        Entity e1 = pFactory.newEntity(q("e1"));
+        Activity a1 = pFactory.newActivity(q("a1"));
+        List<Statement> st1 = new LinkedList<Statement>();
+        st1.add(a1);
+        st1.add(e1);
+        st1.add(use1);
+        NamedBundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
+        Namespace ns1 = Namespace.gatherNamespaces(b1);
+        b1.setNamespace(ns1);
+        System.out.println("bundle 1 ns " + ns1);
+
+        
+        Used use2 = pFactory.newUsed(another("use2"), another("aa1"), null, another("ee1"));
+        Entity ee1 = pFactory.newEntity(another("ee1"));
+        Activity aa1 = pFactory.newActivity(another("aa1"));
+        List<Statement> st2 = new LinkedList<Statement>();
+        st2.add(aa1);
+        st2.add(ee1);
+        st2.add(use2);
+        NamedBundle b2 = pFactory.newNamedBundle(another("bundle2"), st2);
+        Namespace ns2 = Namespace.gatherNamespaces(b2);
+        b2.setNamespace(ns2);
+        System.out.println("bundle 2 ns " + ns2);
+
+        
+        Entity eb1 = pFactory.newEntity(pFactory.newQualifiedName(EX_NS, "bundle1", "foo"));
+        pFactory.addBundleType(eb1);
+
+        Entity eb2 = pFactory.newEntity(another("bundle2"));
+        pFactory.addBundleType(eb2);
+
+
+        Statement[] statements = new Statement[] { eb1, eb2, };
+        NamedBundle[] bundles = new NamedBundle[] { b1, b2 };
+
+        makeDocAndTest(statements, bundles, "target/bundle4", null, true);
 
     }
 

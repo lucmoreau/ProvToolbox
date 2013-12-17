@@ -461,10 +461,17 @@ public class TreeTraversal {
             return c.newDocument(nss,records2, bundles);
 
         case PROV_NParser.BUNDLE:
-            namespace=new Namespace();
-	    namespace.addKnownNamespaces();
-            Namespace namespace2=(Namespace)convert(ast.getChild(1));
+	    
+	    Namespace localNamespace=new Namespace();
+	    localNamespace.addKnownNamespaces();
+            localNamespace.setParent(namespace);
 
+            // make the local namespace to become the current namespace
+            namespace=localNamespace;
+            
+            convert(ast.getChild(1));
+            
+            
             // parse bundleId after namespace declarations
             QualifiedName bundleId=(QualifiedName) convert(ast.getChild(0));
 
@@ -472,7 +479,10 @@ public class TreeTraversal {
 
             @SuppressWarnings("unchecked")
             List<Statement> records3=(List<Statement>)convert(ast.getChild(2));
-            return c.newNamedBundle(bundleId,namespace2,records3);
+            
+            //restore the parent namespace
+            namespace=localNamespace.getParent();
+            return c.newNamedBundle(bundleId,localNamespace,records3);
             
         case PROV_NParser.ATTRIBUTES:
             List<Attribute> attributes=new LinkedList<Attribute>();

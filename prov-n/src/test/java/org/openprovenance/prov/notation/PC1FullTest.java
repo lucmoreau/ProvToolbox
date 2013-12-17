@@ -62,6 +62,7 @@ public class PC1FullTest
         Document c2=(Document)u.convertJavaBeanToJavaBean(c, pFactory);
         c2.setNamespace(c.getNamespace());
 
+        Namespace.withThreadNamespace(c2.getNamespace());
         serial.serialiseDocument(new File("target/pc1-full-2.xml"),c2,true);
 
     }

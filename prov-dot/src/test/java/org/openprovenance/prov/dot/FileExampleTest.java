@@ -8,6 +8,7 @@ import org.openprovenance.prov.xml.Document;
 import javax.xml.bind.JAXBException;
 import java.io.File;
 
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.notation.Utility;
 
 public class FileExampleTest extends TestCase {
@@ -19,7 +20,8 @@ public class FileExampleTest extends TestCase {
 
         Document o= (Document) u.convertASNToJavaBean(asnFile,pFactory);
 
-
+	Namespace.withThreadNamespace(o.getNamespace());
+	System.out.println("ns is " + o.getNamespace());
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         
         serial.serialiseDocument(new File(xmlFile),o,true);

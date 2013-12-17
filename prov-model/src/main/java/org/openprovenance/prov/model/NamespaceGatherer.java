@@ -11,10 +11,7 @@ public class NamespaceGatherer implements StatementAction {
     private Namespace ns=new Namespace();
     
     public NamespaceGatherer() {
-	ns.getPrefixes().put("prov",NamespacePrefixMapper.PROV_NS);
-	ns.getNamespaces().put(NamespacePrefixMapper.PROV_NS,"prov");
-	ns.getPrefixes().put("xsd",NamespacePrefixMapper.XSD_NS);
-	ns.getNamespaces().put(NamespacePrefixMapper.XSD_NS,"xsd");
+	ns.addKnownNamespaces();
 	ns.setDefaultNamespace(null);
     }
     

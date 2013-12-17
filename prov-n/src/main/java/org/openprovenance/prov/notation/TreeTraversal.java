@@ -33,6 +33,9 @@ public class TreeTraversal {
         this.c=c;
         this.pFactory=pFactory;
         this.name=pFactory.getName();
+        this.namespace=new Namespace();
+        this.namespace.addKnownNamespaces();
+        
         //this.vconv=new ValueConverter(pFactory,null);
     }
    
@@ -459,7 +462,7 @@ public class TreeTraversal {
 
         case PROV_NParser.BUNDLE:
             namespace=new Namespace();
-
+	    namespace.addKnownNamespaces();
             Namespace namespace2=(Namespace)convert(ast.getChild(1));
 
             // parse bundleId after namespace declarations
@@ -599,7 +602,8 @@ public class TreeTraversal {
 	return ProvUtilities.unescape(s);
     }
 
-    Namespace namespace=new Namespace();
+    Namespace namespace;
+    
 
     public Object convertTypedLiteral(QualifiedName datatype, Object value) {
     	Object [] valueTypePair=new Object[] {value,datatype};

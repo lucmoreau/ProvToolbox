@@ -67,6 +67,7 @@ public class Utility {
 	ns.register("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 	rdfc.setNamespace(ns);
 
+	Namespace.withThreadNamespace(document.getNamespace());
 	BeanTraversal bt = new BeanTraversal(rdfc,pFactory);
 	bt.convert(document);
 	

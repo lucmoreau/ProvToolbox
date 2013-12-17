@@ -3,6 +3,7 @@ import java.io.File;
 import javax.xml.bind.JAXBException;
 import junit.framework.TestCase;
 
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
@@ -50,10 +51,13 @@ public class PubTest
 
         graph1=(Document)o2;
 
-        
+        graph1.setNamespace(Namespace.gatherNamespaces(graph1));
+
 
         try {
             ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
+            Namespace.withThreadNamespace(graph1.getNamespace());
+
             serial.serialiseDocument(new File(file2),(Document)o2,true);
 
             assertTrue(true);

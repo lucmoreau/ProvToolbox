@@ -59,6 +59,13 @@ public class Namespace {
     private String defaultNamespace=null;
     
     private Namespace parent=null;
+    
+    public void addKnownNamespaces() {
+	getPrefixes().put("prov",NamespacePrefixMapper.PROV_NS);
+	getNamespaces().put(NamespacePrefixMapper.PROV_NS,"prov");
+	getPrefixes().put("xsd",NamespacePrefixMapper.XSD_NS);
+	getNamespaces().put(NamespacePrefixMapper.XSD_NS,"xsd");
+    }
 	    
     public Namespace() {}
     

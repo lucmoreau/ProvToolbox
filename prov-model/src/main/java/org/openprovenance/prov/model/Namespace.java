@@ -6,6 +6,7 @@ import javax.xml.XMLConstants;
 
 
 import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.model.exception.QualifiedNameException;
 
 /** A class to manipulate Namespaces when creating, serializing and converting prov documents. 
  * @author Luc Moreau 
@@ -41,11 +42,23 @@ public class Namespace {
 	this.defaultNamespace=ns.defaultNamespace;
 	return this;
     }
+    
+    public void extendWith(Namespace ns) {
+	if (ns==null) return;
+	if (ns.getDefaultNamespace()!=null) {
+	    registerDefault(ns.getDefaultNamespace());
+	}
+	for (String prefix: ns.prefixes.keySet()) {
+	    register(prefix, ns.prefixes.get(prefix));
+	}
+    }
 
 
     private Hashtable<String, String> prefixes=new Hashtable<String, String>();
     private Hashtable<String, String> namespaces=new Hashtable<String, String>();
     private String defaultNamespace=null;
+    
+    private Namespace parent=null;
 	    
     public Namespace() {}
     
@@ -77,8 +90,7 @@ public class Namespace {
     public Hashtable<String, String> getNamespaces() {
 	return namespaces;
     }
-    
-    
+     
     public boolean check(String prefix, String namespace) {
 	String knownAs=prefixes.get(prefix);
 	return namespace==knownAs;
@@ -218,6 +230,7 @@ public class Namespace {
  	    if (pref!=null)  {
  		return pref + ":" + name.getLocalPart();
  	    } else {
+ 		if (true) throw new QualifiedNameException("unknown qn " + name + " with ns " + toString());
  		// Really should never be here //FIXME?
  		return ((name.getPrefix()==null || name.getPrefix().equals("")) ? "" : (name.getPrefix() + ":"))
  			+ name.getLocalPart();

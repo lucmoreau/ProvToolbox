@@ -61,9 +61,11 @@ public class NamespacesTest
         //System.out.println("Default ns is: " + nss.getDefaultNamespace());
         //System.out.println("All ns: " + nss.getPrefixes());
         assertNull(nss.getDefaultNamespace());
-        assertTrue(nss.getPrefixes().size()==2);
+        assertTrue(nss.getPrefixes().size()==3);
         assertTrue(nss.check("prov", NamespacePrefixMapper.PROV_NS));
         assertTrue(nss.check("ex", EXAMPLE_NS));
+        
+        assertTrue(nss.check("xsd", NamespacePrefixMapper.XSD_NS));
     }
 
 

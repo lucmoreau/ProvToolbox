@@ -13,6 +13,8 @@ public class NamespaceGatherer implements StatementAction {
     public NamespaceGatherer() {
 	ns.getPrefixes().put("prov",NamespacePrefixMapper.PROV_NS);
 	ns.getNamespaces().put(NamespacePrefixMapper.PROV_NS,"prov");
+	ns.getPrefixes().put("xsd",NamespacePrefixMapper.XSD_NS);
+	ns.getNamespaces().put(NamespacePrefixMapper.XSD_NS,"xsd");
 	ns.setDefaultNamespace(null);
     }
     
@@ -83,6 +85,8 @@ public class NamespaceGatherer implements StatementAction {
 	}
 
     }
+    
+ 
 
     public void register(Other other) {
 	register(other.getType());
@@ -99,7 +103,6 @@ public class NamespaceGatherer implements StatementAction {
 	}
     }
 
-    final String stringForDefault="::";
 
     void register(QualifiedName name) {
 	if (name==null) return;

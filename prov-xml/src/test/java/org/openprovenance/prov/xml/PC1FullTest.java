@@ -82,10 +82,12 @@ public class PC1FullTest extends TestCase {
 	Document graph = makePC1FullGraph(pFactory);
 
 	ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
+        Namespace.withThreadNamespace(graph.getNamespace());
+
 	serial.serialiseDocument(new File("target/pc1-full.xml"), graph, true);
 
 	graph1 = graph;
-	System.out.println("PC1Full Test asserting True");
+	//System.out.println("PC1Full Test asserting True");
 	assertTrue(true);
 
     }
@@ -503,6 +505,8 @@ public class PC1FullTest extends TestCase {
 
 	graph2.setNamespace(graph1.getNamespace());
 	ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
+        Namespace.withThreadNamespace(graph2.getNamespace());
+
 	serial.serialiseDocument(new File("target/pc1-full2.xml"), graph2, true);
 
 	// System.out.println("a0" + graph1.getRecords().getActivity().get(0));

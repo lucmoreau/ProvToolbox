@@ -40,6 +40,7 @@ public class RoundTripFromJavaTest extends
     @Override
     public void writeDocument(Document doc, String file) {
 	Namespace.withThreadNamespace(doc.getNamespace());
+	System.out.println("ns is " + doc.getNamespace());
 	String s = u.convertBeanToASN(doc,pFactory);
 	u.writeTextToFile(s, file);
     }

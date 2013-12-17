@@ -168,10 +168,11 @@ public class RoundTripFromXmlTest extends TestCase {
     
     public void writeXMLDocument(Document doc, String file) throws JAXBException {
 	ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
+        Namespace.withThreadNamespace(doc.getNamespace());
+
 	serial.serialiseDocument(new File(file), doc, true);
 	StringWriter sw = new StringWriter();
 	serial.serialiseDocument(sw, doc, true);
-	//System.out.println(sw.toString());
     }
 
     public Document loadFromXmlSaveAndReload(String file, boolean compare) throws Exception {

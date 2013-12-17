@@ -69,10 +69,12 @@ public class ContextualizationPC1Test extends TestCase {
 	Document graph = makePC1GraphAndSpecialization(pFactory);
 
 	ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
+        Namespace.withThreadNamespace(graph.getNamespace());
+
 	serial.serialiseDocument(new File("target/pc1-spec.xml"), graph, true);
 
 	graph1 = graph;
-	System.out.println("PC1Full Test asserting True");
+	//System.out.println("PC1Full Test asserting True");
 	assertTrue(true);
 
     }
@@ -131,6 +133,9 @@ public class ContextualizationPC1Test extends TestCase {
 
 	NamedBundle bun = makePC1FullGraph(pFactory, bName);
 	graph.getStatementOrBundle().add(bun);
+	
+	
+	bun.setNamespace(Namespace.gatherNamespaces(bun));
 
 	Hashtable<String, String> namespaces = new Hashtable<String, String>();
 	// currently, no prefix used, all qnames map to PC1_NS
@@ -150,7 +155,8 @@ public class ContextualizationPC1Test extends TestCase {
 	
 	
 	graph.setNamespace(Namespace.gatherNamespaces(graph));
-
+	graph.getNamespace().extendWith(bun.getNamespace());
+	
 	return graph;
     }
 
@@ -554,6 +560,9 @@ public class ContextualizationPC1Test extends TestCase {
 	                                                          wd46, wd47,
 	                                                          wd48, wd49,
 	                                                          waw1 }));
+	
+	graph.setNamespace(Namespace.gatherNamespaces(graph));
+
 
 	return graph;
     }
@@ -576,11 +585,14 @@ public class ContextualizationPC1Test extends TestCase {
 
 	ProvDeserialiser deserial = ProvDeserialiser
 	        .getThreadProvDeserialiser();
+
 	Document c = deserial.deserialiseDocument(new File("target/pc1-spec.xml"));
 	graph2 = c;
 
 	graph2.setNamespace(graph1.getNamespace());
 	ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
+        Namespace.withThreadNamespace(graph2.getNamespace());
+
 	serial.serialiseDocument(new File("target/pc1-spec2.xml"), graph2, true);
 
 	// System.out.println("a0" + graph1.getRecords().getActivity().get(0));

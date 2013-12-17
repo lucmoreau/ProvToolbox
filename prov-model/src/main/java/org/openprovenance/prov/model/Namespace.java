@@ -225,10 +225,16 @@ public class Namespace {
  	return ns.qualifiedNameToString(name);
      }
      
-
-   
-    
     public String qualifiedNameToString(QualifiedName name) {
+	return qualifiedNameToString(name,null);
+    }
+   
+    /**
+     * @param name: the QualifiedName to convert to string
+     * @param child: argument used just for the purpose of debugging when throwing an exception
+     * @return a string representation of the QualifiedName
+     */
+    public String qualifiedNameToString(QualifiedName name, Namespace child) {
  	if ((getDefaultNamespace()!=null) 
  		&& (getDefaultNamespace().equals(name.getNamespaceURI()))) {
  	    return name.getLocalPart();
@@ -237,10 +243,12 @@ public class Namespace {
  	    if (pref!=null)  {
  		return pref + ":" + name.getLocalPart();
  	    } else {
- 		if (true) throw new QualifiedNameException("unknown qn " + name + " with ns " + toString());
- 		// Really should never be here //FIXME?
- 		return ((name.getPrefix()==null || name.getPrefix().equals("")) ? "" : (name.getPrefix() + ":"))
- 			+ name.getLocalPart();
+ 		if (parent!=null) {
+ 		    parent.qualifiedNameToString(name,this);
+ 		}
+ 		throw new QualifiedNameException("unknown qualified name " + name 
+ 		                                 + " with namespace " + toString()
+ 		                                 + ((child==null)? "" : (" and " + child)));
  	    }
  	}
      }

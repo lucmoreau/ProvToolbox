@@ -5,7 +5,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.LinkedList;
 
+import org.openprovenance.prov.model.StatementOrBundle.Kind;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /** Utilities for manipulating PROV Descriptions. */
@@ -478,7 +480,410 @@ public class ProvUtilities {
      		
      }
  
-     
+
+
+     public Object getter(Statement s, int i)  {
+         final Kind kind = s.getKind();
+ 	switch (kind) {
+ 	case PROV_ACTIVITY: {
+ 	    final org.openprovenance.prov.model.Activity a=(org.openprovenance.prov.model.Activity) s;
+ 	    switch (i) {
+ 	    case 0: return a.getId();
+ 	    case 1: return a.getStartTime();
+ 	    case 2: return a.getEndTime();
+ 	    case 3: return a.getOther();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	
+ 	case PROV_AGENT: {
+ 	    final org.openprovenance.prov.model.Agent a=(org.openprovenance.prov.model.Agent) s;
+ 	    switch (i) {
+ 	    case 0: return a.getId();
+ 	    case 1: return a.getOther();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_ALTERNATE: {
+ 	    final org.openprovenance.prov.model.AlternateOf a=(org.openprovenance.prov.model.AlternateOf) s;
+ 	    switch (i) {
+ 	    case 0: return a.getAlternate1();
+ 	    case 1: return a.getAlternate2();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_ASSOCIATION: {
+ 	    final org.openprovenance.prov.model.WasAssociatedWith a=(org.openprovenance.prov.model.WasAssociatedWith) s;
+ 	    switch (i) {
+ 	    case 0: return a.getId();
+ 	    case 1: return a.getActivity();
+ 	    case 2: return a.getAgent();
+ 	    case 3: return a.getPlan();
+ 	    case 4: return a.getOther();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_ATTRIBUTION: {
+ 	    final org.openprovenance.prov.model.WasAttributedTo a=(org.openprovenance.prov.model.WasAttributedTo) s;
+ 	    switch (i) {
+ 	    case 0: return a.getId();
+ 	    case 1: return a.getEntity();
+ 	    case 2: return a.getAgent();
+ 	    case 3: return a.getOther();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_BUNDLE:
+ 	    throw new InvalidCaseException("ProvUtilities.getter() for " + kind);
+ 	case PROV_COMMUNICATION: {
+ 	    final org.openprovenance.prov.model.WasInformedBy a=(org.openprovenance.prov.model.WasInformedBy) s;
+ 	    switch (i) {
+ 	    case 0: return a.getId();
+ 	    case 1: return a.getInformed();
+ 	    case 2: return a.getInformant();
+ 	    case 3: return a.getOther();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_DELEGATION: {
+ 	    final org.openprovenance.prov.model.ActedOnBehalfOf a=(org.openprovenance.prov.model.ActedOnBehalfOf) s;
+ 	    switch (i) {
+ 	    case 0: return a.getId();
+ 	    case 1: return a.getDelegate();
+ 	    case 2: return a.getResponsible();
+ 	    case 3: return a.getActivity();
+ 	    case 4: return a.getOther();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_DERIVATION: {
+ 	    final org.openprovenance.prov.model.WasDerivedFrom a=(org.openprovenance.prov.model.WasDerivedFrom) s;
+ 	    switch (i) {
+ 	    case 0: return a.getId();
+ 	    case 1: return a.getGeneratedEntity();
+ 	    case 2: return a.getUsedEntity();
+ 	    case 3: return a.getActivity();
+ 	    case 4: return a.getGeneration();
+ 	    case 5: return a.getUsage();
+ 	    case 6: return a.getOther();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_DICTIONARY_INSERTION:
+ 	    throw new InvalidCaseException("ProvUtilities.getter() for " + kind);
+ 	case PROV_DICTIONARY_MEMBERSHIP:
+ 	    throw new InvalidCaseException("ProvUtilities.getter() for " + kind);
+ 	case PROV_DICTIONARY_REMOVAL:
+ 	    throw new InvalidCaseException("ProvUtilities.getter() for " + kind);
+ 	case PROV_END: {
+ 	    final org.openprovenance.prov.model.WasEndedBy a=(org.openprovenance.prov.model.WasEndedBy) s;
+ 	    switch (i) {
+ 	    case 0: return a.getId();
+ 	    case 1: return a.getActivity();
+ 	    case 2: return a.getTrigger();
+ 	    case 3: return a.getEnder();
+ 	    case 4: return a.getTime();
+ 	    case 5: return a.getOther();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_ENTITY: {
+ 	    final org.openprovenance.prov.model.Entity a=(org.openprovenance.prov.model.Entity) s;
+ 	    switch (i) {
+ 	    case 0: return a.getId();
+ 	    case 1: return a.getOther();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_GENERATION: {
+ 	    final org.openprovenance.prov.model.WasGeneratedBy a=(org.openprovenance.prov.model.WasGeneratedBy) s;
+ 	    switch (i) {
+ 	    case 0: return a.getId();
+ 	    case 1: return a.getEntity();
+ 	    case 2: return a.getActivity();
+ 	    case 3: return a.getTime();
+ 	    case 4: return a.getOther();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_INFLUENCE: {
+ 	    final org.openprovenance.prov.model.WasInfluencedBy a=(org.openprovenance.prov.model.WasInfluencedBy) s;
+ 	    switch (i) {
+ 	    case 0: return a.getId();
+ 	    case 1: return a.getInfluencee();
+ 	    case 2: return a.getInfluencer();
+ 	    case 3: return a.getOther();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_INVALIDATION: {
+ 	    final org.openprovenance.prov.model.WasInvalidatedBy a=(org.openprovenance.prov.model.WasInvalidatedBy) s;
+ 	    switch (i) {
+ 	    case 0: return a.getId();
+ 	    case 1: return a.getEntity();
+ 	    case 2: return a.getActivity();
+ 	    case 3: return a.getTime();
+ 	    case 4: return a.getOther();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_MEMBERSHIP: {
+ 	    throw new InvalidCaseException("ProvUtilities.setter() for " + kind);
+ 	}
+ 	case PROV_MENTION: {
+ 	    final org.openprovenance.prov.model.MentionOf a=(org.openprovenance.prov.model.MentionOf) s;
+ 	    switch (i) {
+ 		//never use the accessor id for Mention, since it is
+ 		// not defined.  However, this allows iterations over
+ 		// this data structure to be performed like others.
+ 	    case 0: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    case 1: return a.getSpecificEntity();
+ 	    case 2: return a.getGeneralEntity();
+ 	    case 3: return a.getBundle();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_SPECIALIZATION: {
+ 	    final org.openprovenance.prov.model.SpecializationOf a=(org.openprovenance.prov.model.SpecializationOf) s;
+ 	    switch (i) {
+ 	    case 0: return a.getSpecificEntity();
+ 	    case 1: return a.getGeneralEntity();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_START: {
+ 	    final org.openprovenance.prov.model.WasStartedBy a=(org.openprovenance.prov.model.WasStartedBy) s;
+ 	    switch (i) {
+ 	    case 0: return a.getId();
+ 	    case 1: return a.getActivity();
+ 	    case 2: return a.getTrigger();
+ 	    case 3: return a.getStarter();
+ 	    case 4: return a.getTime();
+ 	    case 5: return a.getOther();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_USAGE: {
+ 	    final org.openprovenance.prov.model.Used a=(org.openprovenance.prov.model.Used) s;
+ 	    switch (i) {
+ 	    case 0: return a.getId();
+ 	    case 1: return a.getActivity();
+ 	    case 2: return a.getEntity();
+ 	    case 3: return a.getTime();
+ 	    case 4: return a.getOther();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	default:
+ 	    throw new InvalidCaseException("ProvUtilities.getter() for " + kind);     
+         }
+     }
+
+     public void setter(Statement s, int i, Object val)  {
+         final Kind kind = s.getKind();
+ 	switch (kind) {
+ 	case PROV_ACTIVITY: {
+ 	    final org.openprovenance.prov.model.Activity a=(org.openprovenance.prov.model.Activity) s;
+ 	    switch (i) {
+ 	    case 0: a.setId((QualifiedName)val); return;
+ 	    case 1: a.setStartTime((XMLGregorianCalendar)val); return;
+ 	    case 2: a.setEndTime((XMLGregorianCalendar)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	
+ 	case PROV_AGENT: {
+ 	    final org.openprovenance.prov.model.Agent a=(org.openprovenance.prov.model.Agent) s;
+ 	    switch (i) {
+ 	    case 0: a.setId((QualifiedName)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_ALTERNATE: {
+ 	    final org.openprovenance.prov.model.AlternateOf a=(org.openprovenance.prov.model.AlternateOf) s;
+ 	    switch (i) {
+ 	    case 0: a.setAlternate1((QualifiedName)val); return;
+ 	    case 1: a.setAlternate2((QualifiedName)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_ASSOCIATION: {
+ 	    final org.openprovenance.prov.model.WasAssociatedWith a=(org.openprovenance.prov.model.WasAssociatedWith) s;
+ 	    switch (i) {
+ 	    case 0: a.setId((QualifiedName)val); return;
+ 	    case 1: a.setActivity((QualifiedName)val); return;
+ 	    case 2: a.setAgent((QualifiedName)val); return;
+ 	    case 3: a.setPlan((QualifiedName)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_ATTRIBUTION: {
+ 	    final org.openprovenance.prov.model.WasAttributedTo a=(org.openprovenance.prov.model.WasAttributedTo) s;
+ 	    switch (i) {
+ 	    case 0: a.setId((QualifiedName)val); return;
+ 	    case 1: a.setEntity((QualifiedName)val); return;
+ 	    case 2: a.setAgent((QualifiedName)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_BUNDLE:
+ 	    throw new InvalidCaseException("ProvUtilities.setter() for " + kind);
+ 	case PROV_COMMUNICATION: {
+ 	    final org.openprovenance.prov.model.WasInformedBy a=(org.openprovenance.prov.model.WasInformedBy) s;
+ 	    switch (i) {
+ 	    case 0: a.setId((QualifiedName)val); return;
+ 	    case 1: a.setInformed((QualifiedName)val); return;
+ 	    case 2: a.setInformant((QualifiedName)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_DELEGATION: {
+ 	    final org.openprovenance.prov.model.ActedOnBehalfOf a=(org.openprovenance.prov.model.ActedOnBehalfOf) s;
+ 	    switch (i) {
+ 	    case 0: a.setId((QualifiedName)val); return;
+ 	    case 1: a.setDelegate((QualifiedName)val); return;
+ 	    case 2: a.setResponsible((QualifiedName)val); return;
+ 	    case 3: a.setActivity((QualifiedName)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_DERIVATION: {
+ 	    final org.openprovenance.prov.model.WasDerivedFrom a=(org.openprovenance.prov.model.WasDerivedFrom) s;
+ 	    switch (i) {
+ 	    case 0: a.setId((QualifiedName)val); return;
+ 	    case 1: a.setGeneratedEntity((QualifiedName)val); return;
+ 	    case 2: a.setUsedEntity((QualifiedName)val); return;
+ 	    case 3: a.setActivity((QualifiedName)val); return;
+ 	    case 4: a.setGeneration((QualifiedName)val); return;
+ 	    case 5: a.setUsage((QualifiedName)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_DICTIONARY_INSERTION:
+ 	    throw new InvalidCaseException("ProvUtilities.setter() for " + kind);
+ 	case PROV_DICTIONARY_MEMBERSHIP:
+ 	    throw new InvalidCaseException("ProvUtilities.setter() for " + kind);
+ 	case PROV_DICTIONARY_REMOVAL:
+ 	    throw new InvalidCaseException("ProvUtilities.setter() for " + kind);
+ 	case PROV_END: {
+ 	    final org.openprovenance.prov.model.WasEndedBy a=(org.openprovenance.prov.model.WasEndedBy) s;
+ 	    switch (i) {
+ 	    case 0: a.setId((QualifiedName)val); return;
+ 	    case 1: a.setActivity((QualifiedName)val); return;
+ 	    case 2: a.setTrigger((QualifiedName)val); return;
+ 	    case 3: a.setEnder((QualifiedName)val); return;
+ 	    case 4: a.setTime((XMLGregorianCalendar)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_ENTITY: {
+ 	    final org.openprovenance.prov.model.Entity a=(org.openprovenance.prov.model.Entity) s;
+ 	    switch (i) {
+ 	    case 0: a.setId((QualifiedName)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_GENERATION: {
+ 	    final org.openprovenance.prov.model.WasGeneratedBy a=(org.openprovenance.prov.model.WasGeneratedBy) s;
+ 	    switch (i) {
+ 	    case 0: a.setId((QualifiedName)val); return;
+ 	    case 1: a.setEntity((QualifiedName)val); return;
+ 	    case 2: a.setActivity((QualifiedName)val); return;
+ 	    case 3: a.setTime((XMLGregorianCalendar)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_INFLUENCE: {
+ 	    final org.openprovenance.prov.model.WasInfluencedBy a=(org.openprovenance.prov.model.WasInfluencedBy) s;
+ 	    switch (i) {
+ 	    case 0: a.setId((QualifiedName)val); return;
+ 	    case 1: a.setInfluencee((QualifiedName)val); return;
+ 	    case 2: a.setInfluencer((QualifiedName)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_INVALIDATION: {
+ 	    final org.openprovenance.prov.model.WasInvalidatedBy a=(org.openprovenance.prov.model.WasInvalidatedBy) s;
+ 	    switch (i) {
+ 	    case 0: a.setId((QualifiedName)val); return;
+ 	    case 1: a.setEntity((QualifiedName)val); return;
+ 	    case 2: a.setActivity((QualifiedName)val); return;
+ 	    case 3: a.setTime((XMLGregorianCalendar)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_MEMBERSHIP: {
+ 	    throw new InvalidCaseException("ProvUtilities.setter() for " + kind);
+ 	}
+ 	case PROV_MENTION: {
+ 	    final org.openprovenance.prov.model.MentionOf a=(org.openprovenance.prov.model.MentionOf) s;
+ 	    switch (i) {
+ 		//never use the accessor id for Mention, since it is
+ 		// not defined.  However, this allows iterations over
+ 		// this data structure to be performed like others.
+ 	    case 0: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    case 1: a.setSpecificEntity((QualifiedName)val); return;
+ 	    case 2: a.setGeneralEntity((QualifiedName)val); return;
+ 	    case 3: a.setBundle((QualifiedName)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_SPECIALIZATION: {
+ 	    final org.openprovenance.prov.model.SpecializationOf a=(org.openprovenance.prov.model.SpecializationOf) s;
+ 	    switch (i) {
+ 	    case 0: a.setSpecificEntity((QualifiedName)val); return;
+ 	    case 1: a.setGeneralEntity((QualifiedName)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_START: {
+ 	    final org.openprovenance.prov.model.WasStartedBy a=(org.openprovenance.prov.model.WasStartedBy) s;
+ 	    switch (i) {
+ 	    case 0: a.setId((QualifiedName)val); return;
+ 	    case 1: a.setActivity((QualifiedName)val); return;
+ 	    case 2: a.setTrigger((QualifiedName)val); return;
+ 	    case 3: a.setStarter((QualifiedName)val); return;
+ 	    case 4: a.setTime((XMLGregorianCalendar)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	case PROV_USAGE: {
+ 	    final org.openprovenance.prov.model.Used a=(org.openprovenance.prov.model.Used) s;
+ 	    switch (i) {
+ 	    case 0: a.setId((QualifiedName)val); return;
+ 	    case 1: a.setActivity((QualifiedName)val); return;
+ 	    case 2: a.setEntity((QualifiedName)val); return;
+ 	    case 3: a.setTime((XMLGregorianCalendar)val); return;
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+ 	    }
+ 	}
+ 	default:
+ 	    throw new InvalidCaseException("ProvUtilities.setter() for " + kind);     
+         }
+     }
+
+     /**
+      * Indicates whether object has no time field.
+      * 
+      */
+
+     public boolean hasNoTime(Statement o) {	 
+	 if (o instanceof HasTime) return false;
+	 if (o instanceof Activity) return false;
+	 return true;
+		 /* OLD Definition
+         return (o instanceof WasDerivedFrom) 
+        	 || (o instanceof ActedOnBehalfOf)
+                 || (o instanceof WasInformedBy)
+                 || (o instanceof WasAttributedTo)
+                 || (o instanceof WasAssociatedWith)
+                 || (o instanceof WasInfluencedBy)
+                 || (o instanceof SpecializationOf)
+                 || (o instanceof AlternateOf)
+                 || (o instanceof MentionOf)
+                 || (o instanceof HadMember);
+                 */
+     } 
    
 
 }

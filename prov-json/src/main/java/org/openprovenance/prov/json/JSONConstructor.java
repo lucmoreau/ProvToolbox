@@ -25,6 +25,7 @@ import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.ModelConstructor;
+import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
@@ -68,10 +69,12 @@ public class JSONConstructor implements ModelConstructor {
     private Map<String, String> documentNamespaces = null;
     private List<JsonProvRecord> currentRecords = documentRecords;
     private Map<String, String> currentNamespaces = null;
+    final private Name name;
 
 
-    public JSONConstructor(QualifiedNameExport qnExport) {
+    public JSONConstructor(QualifiedNameExport qnExport, Name name) {
 	this.qnExport = qnExport;
+	this.name=name;
     }
 
     public Map<String, Object> getJSONStructure() {
@@ -623,12 +626,20 @@ public class JSONConstructor implements ModelConstructor {
 	boolean isAllKeyOfSameDatatype = true;
 	Key firstKey = keyEntitySet.get(0).getKey();
 	QualifiedName firstKeyClass = firstKey.getType();
-	for (Entry pair : keyEntitySet) {
-	    QualifiedName keyClass = pair.getKey().getType();
-
-	    if (keyClass != firstKeyClass) {
-		isAllKeyOfSameDatatype = false;
-		break;
+	
+	if (name.PROV_LANG_STRING.equals(firstKeyClass)) {
+	    // LangString cannot be encoded in the compact form
+	    isAllKeyOfSameDatatype=false;
+	}
+	
+	if (isAllKeyOfSameDatatype) {
+	    for (Entry pair : keyEntitySet) {
+		QualifiedName keyClass = pair.getKey().getType();
+		
+		if (keyClass != firstKeyClass) {
+		    isAllKeyOfSameDatatype = false;
+		    break;
+		}
 	    }
 	}
 

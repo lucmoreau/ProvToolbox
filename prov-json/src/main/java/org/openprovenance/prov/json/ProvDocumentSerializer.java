@@ -29,7 +29,7 @@ public class ProvDocumentSerializer implements JsonSerializer<Document> {
 		return doc.getNamespace().qualifiedNameToString(qname);
 	    }
 	};
-	JSONConstructor jsonConstructor = new JSONConstructor(qExport);
+	JSONConstructor jsonConstructor = new JSONConstructor(qExport, pFactory.getName());
 	BeanTraversal bt = new BeanTraversal(jsonConstructor, 
 	                                     pFactory);
 	bt.convert(doc);

@@ -14,15 +14,6 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 		super(testName);
 	}
 	
-
-	    public boolean checkTest(String name) {
-		if (name.equals("target/attr_dict_insert_one_key1.json")) return false;
-		if (name.equals("target/attr_dict_insert_one_key2.json")) return false;
-		// all remaining tests successful in this file
-		return true;
-	    }
-
-
 	
 	@Override
 	public String extension() {

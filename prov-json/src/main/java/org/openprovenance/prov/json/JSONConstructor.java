@@ -29,7 +29,6 @@ import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedNameExport;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;

@@ -12,7 +12,7 @@ import org.openprovenance.prov.model.exception.QualifiedNameException;
  * @author Luc Moreau 
  * */
 
-public class Namespace {
+public class Namespace implements QualifiedNameExport {
     
     private static ThreadLocal<Namespace> threadNamespace =
 	    new ThreadLocal<Namespace> () {
@@ -239,15 +239,20 @@ public class Namespace {
  	return ns.qualifiedNameToString(name);
      }
      
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.QualifiedNameExport#qualifiedNameToString(org.openprovenance.prov.model.QualifiedName)
+     */
     public String qualifiedNameToString(QualifiedName name) {
 	return qualifiedNameToString(name,null);
     }
    
     /**
-     * @param name: the QualifiedName to convert to string
-     * @param child: argument used just for the purpose of debugging when throwing an exception
+     * @param name the QualifiedName to convert to string
+     * @param child argument used just for the purpose of debugging when throwing an exception
      * @return a string representation of the QualifiedName
      */
+  
     public String qualifiedNameToString(QualifiedName name, Namespace child) {
  	if ((getDefaultNamespace()!=null) 
  		&& (getDefaultNamespace().equals(name.getNamespaceURI()))) {

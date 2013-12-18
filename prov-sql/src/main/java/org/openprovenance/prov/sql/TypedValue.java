@@ -25,7 +25,6 @@ import org.openprovenance.prov.sql.ProvFactory;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.QNameConstructor;
 import org.openprovenance.prov.model.ValueConverter;
 
 import javax.xml.transform.TransformerConfigurationException;
@@ -143,18 +142,8 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
  	this.value=value;
     }
 
-     
     
-    static ValueConverter vc=new ValueConverter(ProvFactory.getFactory(),
-    		new QNameConstructor() {
-
-				@Override
-				public Object newQName(String value) {
-				    System.out.println("QNameConstructo.newQName() " + value);
-					return ProvFactory.getFactory().newQualifiedName("",value,null); //FIXME
-				}
-    	
-    });
+    static ValueConverter vc=new ValueConverter(ProvFactory.getFactory());
 	
     transient AValue avalue;
     

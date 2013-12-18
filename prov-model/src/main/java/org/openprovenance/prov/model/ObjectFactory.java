@@ -1,6 +1,21 @@
 package org.openprovenance.prov.model;
 
 
+/**
+ * This interface specifies core functionality similar to the JAXB ObjectFactory.
+ * It contains a factory method for each 
+ * Java element interface 
+ * in the org.openprovenance.prov.model package. 
+ * <p>An ObjectFactory allows you to programatically 
+ * construct new org.openprovenance.prov.model.instances of the Java representation.
+ * for XML content. These factory methods create empty instances, in which
+ * no field has been initialized yet.
+ * 
+ * <p>Note that this interface differs from the ObjectFactory in prov-xml since
+ * it returns instance of classes defined in package org.openprovenance.prov.model
+ * 
+ */
+
 public interface ObjectFactory {
 
     ActedOnBehalfOf createActedOnBehalfOf();

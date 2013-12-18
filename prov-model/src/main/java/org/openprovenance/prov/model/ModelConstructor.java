@@ -33,9 +33,17 @@ public interface ModelConstructor {
                                                         Collection<Attribute> attributes);
     public DictionaryMembership newDictionaryMembership(QualifiedName dict,
 							List<Entry> keyEntitySet);
+    /** A factory method to create an instance of a {@link Document}
+     * @param namespace the prefix namespace mapping for the current document
+     * @param statements a collection of statements
+     * @param bundles a collection of bundles
+     * @return an instance of {@link Document}, with this prefix-namespace mapping, statements, and bundles
+     */
     public Document newDocument(Namespace namespace,
                                 Collection<Statement> statements, 
                                 Collection<NamedBundle> bundles);
+    
+    
     public Entity newEntity(QualifiedName id, Collection<Attribute> attributes);
     public HadMember newHadMember(QualifiedName c, Collection<QualifiedName> e);
     public MentionOf newMentionOf(QualifiedName e2, QualifiedName e1, QualifiedName b);

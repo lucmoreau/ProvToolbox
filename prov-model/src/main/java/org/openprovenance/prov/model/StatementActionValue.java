@@ -1,6 +1,20 @@
 package org.openprovenance.prov.model;
 
 
+/** Interface to a visitor like functionality operating over PROV statements and bundles.  
+ * This visitor returns {@link Object}.  For a visitor that returns void, see {@link StatementAction}.
+ *  
+ * <p><span class="strong">Relevant Factory Methods:</span>
+ * <ul>
+ * <li> {@link ProvUtilities#doAction(org.openprovenance.prov.model.StatementOrBundle, org.openprovenance.prov.model.StatementActionValue)}
+ * <li> {@link ProvUtilities#doAction(org.openprovenance.prov.model.StatementOrBundle, org.openprovenance.prov.model.StatementAction)}
+ * <li> {@link ProvUtilities#forAllStatement(java.util.List, org.openprovenance.prov.model.StatementAction)}
+ * <li> {@link ProvUtilities#forAllStatementOrBundle(java.util.List, org.openprovenance.prov.model.StatementAction)}
+ * </ul>
+ * 
+ * @author lavm
+ *
+ */
 public interface StatementActionValue {
 
     Object doAction(Activity s);

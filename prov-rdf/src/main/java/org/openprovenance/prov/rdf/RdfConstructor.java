@@ -627,7 +627,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	    lit = gb.newLiteral(iString.getValue(), iString.getLang());
 
  	} else {
- 	    value = val.getValue().toString(); //FIXME: what about Internatioanlized string.
+ 	    value = val.getValue().toString();
  	    lit = gb.newLiteral(value, val.getType());
 
  	}

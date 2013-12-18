@@ -1,6 +1,7 @@
 package org.openprovenance.prov.dot;
 import junit.framework.TestCase;
 import org.openprovenance.prov.xml.Document;
+import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -12,9 +13,10 @@ public class SculptureTest extends TestCase {
     public void sculptureToDot(String asnFile, String xmlFile, String dotFile, String pdfFile, String title) 
         throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
         Utility u=new Utility();
+        ProvFactory pFactory=ProvFactory.getFactory();
 
 
-        Document o= (Document) u.convertASNToJavaBean(asnFile);
+        Document o= (Document) u.convertASNToJavaBean(asnFile,pFactory);
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         

@@ -8,15 +8,15 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import  org.antlr.runtime.tree.Tree;
 import  org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.model.Entry;
-import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.xml.Helper;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 
@@ -33,6 +33,9 @@ public class TreeTraversal {
         this.c=c;
         this.pFactory=pFactory;
         this.name=pFactory.getName();
+        this.namespace=new Namespace();
+        this.namespace.addKnownNamespaces();
+        
         //this.vconv=new ValueConverter(pFactory,null);
     }
    
@@ -458,10 +461,17 @@ public class TreeTraversal {
             return c.newDocument(nss,records2, bundles);
 
         case PROV_NParser.BUNDLE:
-            namespace=new Namespace();
+	    
+	    Namespace localNamespace=new Namespace();
+	    localNamespace.addKnownNamespaces();
+            localNamespace.setParent(namespace);
 
-            Namespace namespace2=(Namespace)convert(ast.getChild(1));
-
+            // make the local namespace to become the current namespace
+            namespace=localNamespace;
+            
+            convert(ast.getChild(1));
+            
+            
             // parse bundleId after namespace declarations
             QualifiedName bundleId=(QualifiedName) convert(ast.getChild(0));
 
@@ -469,7 +479,10 @@ public class TreeTraversal {
 
             @SuppressWarnings("unchecked")
             List<Statement> records3=(List<Statement>)convert(ast.getChild(2));
-            return c.newNamedBundle(bundleId,namespace2,records3);
+            
+            //restore the parent namespace
+            namespace=localNamespace.getParent();
+            return c.newNamedBundle(bundleId,localNamespace,records3);
             
         case PROV_NParser.ATTRIBUTES:
             List<Attribute> attributes=new LinkedList<Attribute>();
@@ -496,14 +509,14 @@ public class TreeTraversal {
                 	                             theType);
             
             	
-            } else if (val1 instanceof InternationalizedString) {
+            } else if (val1 instanceof LangString) {
             	return pFactory.newAttribute(stringToQualifiedName(attr1),
             	                             val1,
-            	                             name.QNAME_XSD_STRING);	
+            	                             name.XSD_STRING);	
             } else { // TODO what case is it?
                 return pFactory.newAttribute(stringToQualifiedName(attr1),
                                              val1,
-                                             name.QNAME_XSD_STRING);	            	
+                                             name.XSD_STRING);	            	
             }
 
         case PROV_NParser.STRING:
@@ -536,7 +549,7 @@ public class TreeTraversal {
             QualifiedName v2;
             
             if (ast.getChild(1)==null) {
-                v2=name.QNAME_XSD_QNAME;
+                v2=name.XSD_QNAME;
                 //v1="\"" + v1 + "\"";
                 Object ooo=stringToQualifiedName(v1);
                 return convertTypedLiteral(v2,ooo);
@@ -596,10 +609,11 @@ public class TreeTraversal {
 
 
     private String unescape(String s) {
-	return Helper.unescape(s);
+	return ProvUtilities.unescape(s);
     }
 
-    Namespace namespace=new Namespace();
+    Namespace namespace;
+    
 
     public Object convertTypedLiteral(QualifiedName datatype, Object value) {
     	Object [] valueTypePair=new Object[] {value,datatype};

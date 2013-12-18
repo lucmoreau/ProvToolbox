@@ -1,10 +1,19 @@
 package org.openprovenance.prov.model;
 
 /**
- * <p>Java interface for the PROV Agent complex type.
+ * <p>Interface for the PROV Agent complex type.
  * 
- * <p><a href="http://www.w3.org/TR/prov-dm/#concept-agent">PROV-DM Definition for Agent</a>: An agent is something that bears some form of responsibility for an activity taking place, for the existence of an entity, or for another agent's activity.
+ * <p><a href="http://www.w3.org/TR/prov-dm/#concept-agent">PROV-DM Definition for Agent</a>: An agent is something 
+ * that bears some form of responsibility for an activity taking place, for the existence of an entity, or for another agent's activity.
  *
+ *
+ * <p><span class="strong">Relevant Factory Methods:</span>
+ * <ul>
+ * <li> {@link ProvFactory#newAgent(QualifiedName)}
+ * <li> {@link ProvFactory#newAgent(QualifiedName, java.util.Collection)}
+ * <li> {@link ObjectFactory#createAgent()}
+ * </ul>
+ * 
  * <p>The following schema fragment specifies the expected content contained within this type.
  * 
  * <pre>

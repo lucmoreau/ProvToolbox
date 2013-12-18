@@ -2,7 +2,6 @@ package org.openprovenance.prov.rdf;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
-import java.util.Collection;
 import java.util.Hashtable;
 
 import org.openprovenance.prov.model.Namespace;

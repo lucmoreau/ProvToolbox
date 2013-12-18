@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilder;
@@ -15,6 +17,7 @@ import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.DOMProcessing;
+import org.openprovenance.prov.model.DerivedByInsertionFrom;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HasLabel;
@@ -330,61 +333,61 @@ public class AttributeTest extends TestCase {
     }
     public Object[][] attributeValues_small =
         {
-	 {"un lieu",name.QNAME_XSD_STRING},
+	 {"un lieu",name.XSD_STRING},
 	 
-         {pFactory.newInternationalizedString("un lieu","fr"),name.QNAME_XSD_STRING},
+         {pFactory.newInternationalizedString("un lieu","fr"),name.XSD_STRING},
 
-         {pFactory.newInternationalizedString("a place","en"),name.QNAME_XSD_STRING}
+         {pFactory.newInternationalizedString("a place","en"),name.XSD_STRING}
         };
 
 
     public Object[][] attributeValues_long =
         {
-	 {"un lieu",name.QNAME_XSD_STRING},
+	 {"un lieu",name.XSD_STRING},
 	 
-         {pFactory.newInternationalizedString("un lieu","fr"),name.QNAME_PROV_INTERNATIONALIZED_STRING},
+         {pFactory.newInternationalizedString("un lieu","fr"),name.PROV_LANG_STRING},
 
-         {pFactory.newInternationalizedString("a place","en"),name.QNAME_PROV_INTERNATIONALIZED_STRING},
+         {pFactory.newInternationalizedString("a place","en"),name.PROV_LANG_STRING},
            
-         {1,name.QNAME_XSD_INT},
+         {1,name.XSD_INT},
 
-         {1,name.QNAME_XSD_LONG},
+         {1,name.XSD_LONG},
 
-         {1,name.QNAME_XSD_SHORT},
+         {1,name.XSD_SHORT},
 
-         {2.0,name.QNAME_XSD_DOUBLE},
+         {2.0,name.XSD_DOUBLE},
 
-         {1.0,name.QNAME_XSD_FLOAT},
+         {1.0,name.XSD_FLOAT},
 
-         {10,name.QNAME_XSD_DECIMAL},
+         {10,name.XSD_DECIMAL},
 
-         {true,name.QNAME_XSD_BOOLEAN},
+         {true,name.XSD_BOOLEAN},
 
-         {false,name.QNAME_XSD_BOOLEAN},
+         {false,name.XSD_BOOLEAN},
 
   //    FIXME   {"yes",name.QNAME_XSD_BOOLEAN},
 
   //   FIXME    {"no",name.QNAME_XSD_BOOLEAN},
          
-         {10,name.QNAME_XSD_BYTE},
+         {10,name.XSD_BYTE},
 
-         {10,name.QNAME_XSD_UNSIGNED_INT},
+         {10,name.XSD_UNSIGNED_INT},
 
-         {10,name.QNAME_XSD_UNSIGNED_LONG},
+         {10,name.XSD_UNSIGNED_LONG},
 
-         {10,name.QNAME_XSD_INTEGER},
+         {10,name.XSD_INTEGER},
 
-         {10,name.QNAME_XSD_UNSIGNED_SHORT},
+         {10,name.XSD_UNSIGNED_SHORT},
 
-         {10,name.QNAME_XSD_NON_NEGATIVE_INTEGER},
+         {10,name.XSD_NON_NEGATIVE_INTEGER},
 
-         {-10,name.QNAME_XSD_NON_POSITIVE_INTEGER},
+         {-10,name.XSD_NON_POSITIVE_INTEGER},
 
-         {10,name.QNAME_XSD_POSITIVE_INTEGER},
+         {10,name.XSD_POSITIVE_INTEGER},
 
-         {10,name.QNAME_XSD_UNSIGNED_BYTE},
+         {10,name.XSD_UNSIGNED_BYTE},
 
-         {"http://example.org",name.QNAME_XSD_ANY_URI},
+         {"http://example.org",name.XSD_ANY_URI},
 
 
          // Consider following cases for QNames
@@ -396,47 +399,47 @@ public class AttributeTest extends TestCase {
          // - undeclared namespace, with other prefix
          // - undeclared namespace, as default namespace
 
-         {pFactory.newQualifiedName(EX_NS, "abc", EX_PREFIX), name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName(EX_NS, "abc", EX_PREFIX), name.XSD_QNAME},
          
-         {pFactory.newQualifiedName(EX_NS, "abcd", "other"), name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName(EX_NS, "abcd", "other"), name.XSD_QNAME},
          
-         {pFactory.newQualifiedName(EX_NS, "abcde",null), name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName(EX_NS, "abcde",null), name.XSD_QNAME},
          
-         {pFactory.newQualifiedName("http://example4.org/", "zabc", EX_PREFIX), name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName("http://example4.org/", "zabc", EX_PREFIX), name.XSD_QNAME},
          
-         {pFactory.newQualifiedName("http://example4.org/", "zabcd", "other"), name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName("http://example4.org/", "zabcd", "other"), name.XSD_QNAME},
              
-         {pFactory.newQualifiedName("http://example4.org/", "zabcde",null), name.QNAME_XSD_QNAME},
+         {pFactory.newQualifiedName("http://example4.org/", "zabcde",null), name.XSD_QNAME},
          
          
-         {pFactory.newTimeNow(),name.QNAME_XSD_DATETIME},
+         {pFactory.newTimeNow(),name.XSD_DATETIME},
 
-         {pFactory.newYear(2013),name.QNAME_XSD_GYEAR},
+         {pFactory.newYear(2013),name.XSD_GYEAR},
 
-         {pFactory.newGMonth(01),name.QNAME_XSD_GMONTH},
+         {pFactory.newGMonth(01),name.XSD_GMONTH},
 
-         {pFactory.newGDay(30),name.QNAME_XSD_GDAY},
+         {pFactory.newGDay(30),name.XSD_GDAY},
          
-         {pFactory.newGMonthDay(12,25),name.QNAME_XSD_GMONTH_DAY},
+         {pFactory.newGMonthDay(12,25),name.XSD_GMONTH_DAY},
 
          
-         {pFactory.newDuration(12225),name.QNAME_XSD_DURATION},
+         {pFactory.newDuration(12225),name.XSD_DURATION},
 
-         {pFactory.newDuration("P2Y6M"),name.QNAME_XSD_YEAR_MONTH_DURATION},
-         {pFactory.newDuration("P2147483647DT2147483647H2147483647M123456789012345.123456789012345S"),name.QNAME_XSD_DAY_TIME_DURATION},
+         {pFactory.newDuration("P2Y6M"),name.XSD_YEAR_MONTH_DURATION},
+         {pFactory.newDuration("P2147483647DT2147483647H2147483647M123456789012345.123456789012345S"),name.XSD_DAY_TIME_DURATION},
 
-         { new byte[] {0,1,2,34,5,6}, name.QNAME_XSD_HEX_BINARY},
-         { new byte[] {0,1,2,34,5,6}, name.QNAME_XSD_BASE64_BINARY},
-         { new byte[1023], name.QNAME_XSD_BASE64_BINARY},
+         { new byte[] {0,1,2,34,5,6}, name.XSD_HEX_BINARY},
+         { new byte[] {0,1,2,34,5,6}, name.XSD_BASE64_BINARY},
+         { new byte[1023], name.XSD_BASE64_BINARY},
          
-         {"en",name.QNAME_XSD_LANGUAGE},
-         {"normal",name.QNAME_XSD_NORMALIZED_STRING},
-         {"TOK",name.QNAME_XSD_TOKEN},
-         {"NMTOK",name.QNAME_XSD_NMTOKEN},
-         {"name",name.QNAME_XSD_NAME},
-         {"NCName",name.QNAME_XSD_NCNAME},
+         {"en",name.XSD_LANGUAGE},
+         {"normal",name.XSD_NORMALIZED_STRING},
+         {"TOK",name.XSD_TOKEN},
+         {"NMTOK",name.XSD_NMTOKEN},
+         {"name",name.XSD_NAME},
+         {"NCName",name.XSD_NCNAME},
          
-         {createXMLLiteral(),name.QNAME_RDF_LITERAL}
+         {createXMLLiteral(),name.RDF_LITERAL}
          
         };
     
@@ -1245,8 +1248,8 @@ public class AttributeTest extends TestCase {
 	addTypes(a);
 	addLocations(a);
 
-	a.setValue(pFactory.newValue(10,name.QNAME_XSD_BYTE));
-	a.setValue(pFactory.newValue("10",name.QNAME_XSD_STRING));
+	a.setValue(pFactory.newValue(10,name.XSD_BYTE));
+	a.setValue(pFactory.newValue("10",name.XSD_STRING));
 
 
 	makeDocAndTest(a,"target/attr_entity0");
@@ -1511,5 +1514,161 @@ public class AttributeTest extends TestCase {
    }
 
  
+
+  public void testDictionaryInsertionWithOneKey(int i)  {
+      Object [] pair= attributeValues[i];
+      Object value=pair[0];
+      QualifiedName type=(QualifiedName) pair[1];
+	
+      List<org.openprovenance.prov.model.Entry> ll = new LinkedList<org.openprovenance.prov.model.Entry>();
+      
+      org.openprovenance.prov.model.Entry p1 = pFactory.newEntry(pFactory.newKey(value, type),
+                                                                 q("e0"));
+      ll.add(p1);
+      DerivedByInsertionFrom a = pFactory.newDerivedByInsertionFrom(q("dins_"+i), 
+                                                                    q("d2"), 
+                                                                    q("d1"), 
+                                                                    ll, null);
+	
+
+
+      makeDocAndTest(a,"target/attr_dict_insert_one_key"+i);
+    }
+  
+  public void testDictionaryInsertionWithOneKey0() {
+      testDictionaryInsertionWithOneKey(0);
+  }
+  public void testDictionaryInsertionWithOneKey1() {
+      testDictionaryInsertionWithOneKey(1);
+  }
+  public void testDictionaryInsertionWithOneKey2() {
+      testDictionaryInsertionWithOneKey(2);
+  }
+  public void testDictionaryInsertionWithOneKey3() {
+      testDictionaryInsertionWithOneKey(3);
+  }
+  public void testDictionaryInsertionWithOneKey4() {
+      testDictionaryInsertionWithOneKey(4);
+  }
+  public void testDictionaryInsertionWithOneKey5() {
+      testDictionaryInsertionWithOneKey(5);
+  }
+  public void testDictionaryInsertionWithOneKey6() {
+      testDictionaryInsertionWithOneKey(6);
+  }
+  public void testDictionaryInsertionWithOneKey7() {
+      testDictionaryInsertionWithOneKey(7);
+  }
+  public void testDictionaryInsertionWithOneKey8() {
+      testDictionaryInsertionWithOneKey(8);
+  }
+  public void testDictionaryInsertionWithOneKey9() {
+      testDictionaryInsertionWithOneKey(9);
+  }
+  public void testDictionaryInsertionWithOneKey10() {
+      testDictionaryInsertionWithOneKey(10);
+  }
+  public void testDictionaryInsertionWithOneKey11() {
+      testDictionaryInsertionWithOneKey(11);
+  }
+  public void testDictionaryInsertionWithOneKey12() {
+      testDictionaryInsertionWithOneKey(12);
+  }
+  public void testDictionaryInsertionWithOneKey13() {
+      testDictionaryInsertionWithOneKey(13);
+  }
+  public void testDictionaryInsertionWithOneKey14() {
+      testDictionaryInsertionWithOneKey(14);
+  }
+  public void testDictionaryInsertionWithOneKey15() {
+      testDictionaryInsertionWithOneKey(15);
+  }
+  public void testDictionaryInsertionWithOneKey16() {
+      testDictionaryInsertionWithOneKey(16);
+  }
+  public void testDictionaryInsertionWithOneKey17() {
+      testDictionaryInsertionWithOneKey(17);
+  }
+  public void testDictionaryInsertionWithOneKey18() {
+      testDictionaryInsertionWithOneKey(18);
+  }
+  public void testDictionaryInsertionWithOneKey19() {
+      testDictionaryInsertionWithOneKey(19);
+  }
+  public void testDictionaryInsertionWithOneKey20() {
+      testDictionaryInsertionWithOneKey(20);
+  }
+  public void testDictionaryInsertionWithOneKey21() {
+      testDictionaryInsertionWithOneKey(21);
+  }
+  public void testDictionaryInsertionWithOneKey22() {
+      testDictionaryInsertionWithOneKey(22);
+  }
+  public void testDictionaryInsertionWithOneKey23() {
+      testDictionaryInsertionWithOneKey(23);
+  }
+  public void testDictionaryInsertionWithOneKey24() {
+      testDictionaryInsertionWithOneKey(24);
+  }
+  public void testDictionaryInsertionWithOneKey25() {
+      testDictionaryInsertionWithOneKey(25);
+  }
+  public void testDictionaryInsertionWithOneKey26() {
+      testDictionaryInsertionWithOneKey(26);
+  }
+  public void testDictionaryInsertionWithOneKey27() {
+      testDictionaryInsertionWithOneKey(27);
+  }
+  public void testDictionaryInsertionWithOneKey28() {
+      testDictionaryInsertionWithOneKey(28);
+  }
+  public void testDictionaryInsertionWithOneKey29() {
+      testDictionaryInsertionWithOneKey(29);
+  }
+  public void testDictionaryInsertionWithOneKey30() {
+      testDictionaryInsertionWithOneKey(30);
+  }
+  public void testDictionaryInsertionWithOneKey31() {
+      testDictionaryInsertionWithOneKey(31);
+  }
+  public void testDictionaryInsertionWithOneKey32() {
+      testDictionaryInsertionWithOneKey(32);
+  }
+  public void testDictionaryInsertionWithOneKey33() {
+      testDictionaryInsertionWithOneKey(33);
+  }
+  public void testDictionaryInsertionWithOneKey34() {
+      testDictionaryInsertionWithOneKey(34);
+  }
+  public void testDictionaryInsertionWithOneKey35() {
+      testDictionaryInsertionWithOneKey(35);
+  }
+  public void testDictionaryInsertionWithOneKey36() {
+      testDictionaryInsertionWithOneKey(36);
+  }
+  public void testDictionaryInsertionWithOneKey37() {
+      testDictionaryInsertionWithOneKey(37);
+  }
+  public void testDictionaryInsertionWithOneKey38() {
+      testDictionaryInsertionWithOneKey(38);
+  }
+  public void testDictionaryInsertionWithOneKey39() {
+      testDictionaryInsertionWithOneKey(39);
+  }
+  public void testDictionaryInsertionWithOneKey40() {
+      testDictionaryInsertionWithOneKey(40);
+  }
+  public void testDictionaryInsertionWithOneKey41() {
+      testDictionaryInsertionWithOneKey(41);
+  }
+  public void testDictionaryInsertionWithOneKey42() {
+      testDictionaryInsertionWithOneKey(42);
+  }
+  public void testDictionaryInsertionWithOneKey43() {
+      testDictionaryInsertionWithOneKey(43);
+  }
+  public void testDictionaryInsertionWithOneKey44() {
+      testDictionaryInsertionWithOneKey(44);
+  }
 
 }

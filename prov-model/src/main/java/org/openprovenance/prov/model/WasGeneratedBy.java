@@ -2,7 +2,7 @@ package org.openprovenance.prov.model;
 
 
 /**
- * <p>Java class for PROV Generation association.
+ * <p>Interface for PROV Generation association.
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-generation">PROV-DM Definition for Generation</a>: Generation is the completion of production of a 
  * new entity by an activity. This entity did not exist before generation and becomes available for usage after this generation.
  *  

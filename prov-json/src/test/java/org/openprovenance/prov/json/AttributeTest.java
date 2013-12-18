@@ -4,22 +4,30 @@ package org.openprovenance.prov.json;
 import java.util.List;
 
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.UncheckedTestException;
 
 public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
-        final Converter convert=new Converter();
+        final Converter convert=new Converter(pFactory);
 
 
 	public AttributeTest(String testName) {
 		super(testName);
 	}
 	
-
+	
 	@Override
 	public String extension() {
 		return ".json";
 	}
+
+	@Override	
+	public boolean checkSchema(String name)  {
+	    if(name.startsWith("target/attr_dict_insert_")) {
+		return false;
+	    }
+	    return true;
+	}
+	   
 
 	
 	@Override
@@ -43,11 +51,7 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 		}
 	}
 	
-	@Override
-        public boolean checkSchema(String name) {
-	    return true;
-        }
-	
+
 	@Override
 	public void doCheckSchema1(String file) {
 	    

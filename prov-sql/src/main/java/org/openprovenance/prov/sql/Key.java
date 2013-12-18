@@ -6,6 +6,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.openprovenance.prov.model.DOMProcessing;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 
 import org.jvnet.jaxb2_commons.lang.Equals;
@@ -25,7 +26,7 @@ public class Key extends TypedValue implements Equals, HashCode, org.openprovena
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_KEY_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_KEY;
-    private static final QualifiedName PROV_KEY_QNAME = ProvFactory.getFactory().getName().QNAME_PROV_KEY;
+    private static final QualifiedName PROV_KEY_QNAME = ProvFactory.getFactory().getName().PROV_KEY;
 
     @Transient
     public QualifiedName getElementName() {
@@ -40,7 +41,7 @@ public class Key extends TypedValue implements Equals, HashCode, org.openprovena
 
     public String toNotationString() {
 	return DOMProcessing.qualifiedNameToString(getElementName()) + " = "
-		+ org.openprovenance.prov.xml.Helper.valueToNotationString(getValue(), getType());
+		+ ProvUtilities.valueToNotationString(getValue(), getType());
     }
     
 

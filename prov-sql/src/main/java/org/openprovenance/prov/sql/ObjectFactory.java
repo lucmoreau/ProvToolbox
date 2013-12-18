@@ -304,7 +304,7 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link InternationalizedString }
+     * Create an instance of {@link LangString }
      * 
      */
     public InternationalizedString createInternationalizedString() {
@@ -674,7 +674,7 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link InternationalizedString }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link LangString }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "label")

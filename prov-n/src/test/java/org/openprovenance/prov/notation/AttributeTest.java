@@ -18,11 +18,11 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 	public String extension() {
 		return ".provn";
 	}
-
+		
 	@Override
 	public Document readDocument(String file1) {
 		try {
-			return (Document) u.convertASNToJavaBean(file1);
+			return (Document) u.convertASNToJavaBean(file1,pFactory);
 		} catch (IOException e) {
 			throw new UncheckedTestException(e);
 		} catch (Throwable e) {
@@ -33,7 +33,7 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 	@Override
 	public void writeDocument(Document doc, String file) {
 		Namespace.withThreadNamespace(doc.getNamespace());
-		String s = u.convertBeanToASN(doc);
+		String s = u.convertBeanToASN(doc,pFactory);
 		u.writeTextToFile(s, file);
 	}
 

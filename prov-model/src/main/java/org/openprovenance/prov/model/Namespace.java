@@ -6,12 +6,13 @@ import javax.xml.XMLConstants;
 
 
 import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.model.exception.QualifiedNameException;
 
 /** A class to manipulate Namespaces when creating, serializing and converting prov documents. 
  * @author Luc Moreau 
  * */
 
-public class Namespace {
+public class Namespace implements QualifiedNameExport {
     
     private static ThreadLocal<Namespace> threadNamespace =
 	    new ThreadLocal<Namespace> () {
@@ -41,11 +42,37 @@ public class Namespace {
 	this.defaultNamespace=ns.defaultNamespace;
 	return this;
     }
+    
+    public void extendWith(Namespace ns) {
+	if (ns==null) return;
+	if (ns.getDefaultNamespace()!=null) {
+	    registerDefault(ns.getDefaultNamespace());
+	}
+	for (String prefix: ns.prefixes.keySet()) {
+	    register(prefix, ns.prefixes.get(prefix));
+	}
+    }
 
 
     private Hashtable<String, String> prefixes=new Hashtable<String, String>();
     private Hashtable<String, String> namespaces=new Hashtable<String, String>();
     private String defaultNamespace=null;
+    
+    private Namespace parent=null;
+    
+    public void setParent(Namespace parent) {
+	this.parent=parent;
+    }
+    public Namespace getParent() {
+	return parent;
+    }
+
+    public void addKnownNamespaces() {
+	getPrefixes().put("prov",NamespacePrefixMapper.PROV_NS);
+	getNamespaces().put(NamespacePrefixMapper.PROV_NS,"prov");
+	getPrefixes().put("xsd",NamespacePrefixMapper.XSD_NS);
+	getNamespaces().put(NamespacePrefixMapper.XSD_NS,"xsd");
+    }
 	    
     public Namespace() {}
     
@@ -77,8 +104,7 @@ public class Namespace {
     public Hashtable<String, String> getNamespaces() {
 	return namespaces;
     }
-    
-    
+     
     public boolean check(String prefix, String namespace) {
 	String knownAs=prefixes.get(prefix);
 	return namespace==knownAs;
@@ -165,10 +191,9 @@ public class Namespace {
    	return ns;
     }
     
-    static public Namespace gatherNamespaces(NamedBundle doc) {
+    static public Namespace gatherNamespaces(NamedBundle bundle) {
    	NamespaceGatherer gatherer=new NamespaceGatherer();	
-   	u.forAllStatement(doc.getStatement(), 
-   	                          gatherer);
+   	u.forAllStatement(bundle.getStatement(), gatherer);
    	Namespace ns=gatherer.getNamespace();
    	return ns;
     }
@@ -185,6 +210,8 @@ public class Namespace {
 	}
 	String prefix = id.substring(0, index);
 	String local = id.substring(index + 1, id.length());
+	
+	//TODO: why have special cases here, prov and xsd are now declared prefixes in namespaces
 	if ("prov".equals(prefix)) {
 	    return pFactory.newQualifiedName(NamespacePrefixMapper.PROV_NS, local, prefix);
 	} else if ("xsd".equals(prefix)) {
@@ -194,7 +221,13 @@ public class Namespace {
 			     local, prefix);
 	} else {
 	    String tmp=prefixes.get(prefix);
-	    if (tmp==null) throw new NullPointerException("Namespace.stringToQualifiedName(): Null namespace for "+id);
+	    if (tmp==null) {
+		if (parent!=null) {
+		    return parent.stringToQualifiedName(id, pFactory);
+		} else {
+		    throw new QualifiedNameException("Namespace.stringToQualifiedName(): Null namespace for " + id + " namespace " + this);
+		}
+	    }
 	    return pFactory.newQualifiedName(tmp, local, prefix);
 	}
     }
@@ -206,10 +239,21 @@ public class Namespace {
  	return ns.qualifiedNameToString(name);
      }
      
-
-   
-    
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.QualifiedNameExport#qualifiedNameToString(org.openprovenance.prov.model.QualifiedName)
+     */
     public String qualifiedNameToString(QualifiedName name) {
+	return qualifiedNameToString(name,null);
+    }
+   
+    /**
+     * @param name the QualifiedName to convert to string
+     * @param child argument used just for the purpose of debugging when throwing an exception
+     * @return a string representation of the QualifiedName
+     */
+  
+    public String qualifiedNameToString(QualifiedName name, Namespace child) {
  	if ((getDefaultNamespace()!=null) 
  		&& (getDefaultNamespace().equals(name.getNamespaceURI()))) {
  	    return name.getLocalPart();
@@ -218,9 +262,12 @@ public class Namespace {
  	    if (pref!=null)  {
  		return pref + ":" + name.getLocalPart();
  	    } else {
- 		// Really should never be here //FIXME?
- 		return ((name.getPrefix()==null || name.getPrefix().equals("")) ? "" : (name.getPrefix() + ":"))
- 			+ name.getLocalPart();
+ 		if (parent!=null) {
+ 		    parent.qualifiedNameToString(name,this);
+ 		}
+ 		throw new QualifiedNameException("unknown qualified name " + name 
+ 		                                 + " with namespace " + toString()
+ 		                                 + ((child==null)? "" : (" and " + child)));
  	    }
  	}
      }
@@ -228,6 +275,9 @@ public class Namespace {
     public String toString() {
 	return "[Namespace (" + defaultNamespace + ") " + prefixes + "]";
     }
+
+
+
 
 
     

@@ -71,7 +71,7 @@ public class ActedOnBehalfOf implements Equals, HashCode, ToString, org.openprov
     protected org.openprovenance.prov.model.QualifiedName activity;
     
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
-    protected List<org.openprovenance.prov.model.InternationalizedString> label;
+    protected List<org.openprovenance.prov.model.LangString> label;
 
     transient protected List<org.openprovenance.prov.model.Type> type;
     transient protected List<org.openprovenance.prov.model.Other> others;
@@ -81,7 +81,7 @@ public class ActedOnBehalfOf implements Equals, HashCode, ToString, org.openprov
     
 
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QualifiedNameAdapter.class)
     protected org.openprovenance.prov.model.QualifiedName id;
 
     /**
@@ -178,9 +178,9 @@ public class ActedOnBehalfOf implements Equals, HashCode, ToString, org.openprov
      * 
      * 
      */
-    public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
+    public List<org.openprovenance.prov.model.LangString> getLabel() {
         if (label == null) {
-            label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
+            label = new ArrayList<org.openprovenance.prov.model.LangString>();
         }
         return this.label;
     }
@@ -324,7 +324,7 @@ public class ActedOnBehalfOf implements Equals, HashCode, ToString, org.openprov
             toStringBuilder.append("activity", theActivity);
         }
         {
-            List<org.openprovenance.prov.model.InternationalizedString> theLabel;
+            List<org.openprovenance.prov.model.LangString> theLabel;
             theLabel = this.getLabel();
             toStringBuilder.append("label", theLabel);
         }

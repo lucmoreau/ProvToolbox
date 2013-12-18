@@ -1,6 +1,8 @@
 package org.openprovenance.prov.xml;
 
-import javax.xml.namespace.QName;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import junit.framework.TestCase;
         
@@ -62,9 +64,11 @@ public class NamespacesTest
         //System.out.println("Default ns is: " + nss.getDefaultNamespace());
         //System.out.println("All ns: " + nss.getPrefixes());
         assertNull(nss.getDefaultNamespace());
-        assertTrue(nss.getPrefixes().size()==2);
+        assertTrue(nss.getPrefixes().size()==3);
         assertTrue(nss.check("prov", NamespacePrefixMapper.PROV_NS));
         assertTrue(nss.check("ex", EXAMPLE_NS));
+        
+        assertTrue(nss.check("xsd", NamespacePrefixMapper.XSD_NS));
     }
 
 
@@ -73,7 +77,7 @@ public class NamespacesTest
     {
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getType().add(pFactory.newType(pFactory.newQualifiedName(EXAMPLE_NS, "Amazing", "ex2"), 
-                                          name.QNAME_XSD_QNAME));
+                                          name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -101,7 +105,7 @@ public class NamespacesTest
     {
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getType().add(pFactory.newType(pFactory.newQualifiedName(EXAMPLE_NS, "Amazing", "ex"), 
-                                          name.QNAME_XSD_QNAME));
+                                          name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -120,7 +124,7 @@ public class NamespacesTest
     {
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getLocation().add(pFactory.newLocation(pFactory.newQualifiedName(EXAMPLE_NS, "Amazing",null), 
-                                                  name.QNAME_XSD_QNAME));
+                                                  name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -138,7 +142,7 @@ public class NamespacesTest
     {
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getType().add(pFactory.newType(pFactory.newQualifiedName("http://www.w3.org/ns/prov#", "emptyCollection", "prov"), 
-                                          name.QNAME_XSD_QNAME));
+                                          name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -157,7 +161,7 @@ public class NamespacesTest
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getOther().add(pFactory.newOther(pFactory.newQualifiedName(EXAMPLE_NS,"tag1", "ex"),
                                              pFactory.newQualifiedName("http://www.w3.org/ns/prov#", "emptyCollection", "prov"), 
-                                             name.QNAME_XSD_QNAME));
+                                             name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -175,7 +179,7 @@ public class NamespacesTest
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getOther().add(pFactory.newOther(pFactory.newQualifiedName (EXAMPLE2_NS,"tag1", "ex2"),
                                              pFactory.newQualifiedName("http://www.w3.org/ns/prov#", "emptyCollection", "prov"), 
-                                             name.QNAME_XSD_QNAME));
+                                             name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -194,7 +198,7 @@ public class NamespacesTest
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getOther().add(pFactory.newOther(pFactory.newQualifiedName (EXAMPLE2_NS,"tag1", "ex"),
                                              pFactory.newQualifiedName("http://www.w3.org/ns/prov#", "emptyCollection", "prov"), 
-                                             name.QNAME_XSD_QNAME));
+                                             name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -221,7 +225,7 @@ public class NamespacesTest
         Activity a1=pFactory.newActivity(q("a1"));
         a1.getOther().add(pFactory.newOther(pFactory.newQualifiedName(EXAMPLE2_NS,"tag1", "ex"),
                                              pFactory.newQualifiedName(EXAMPLE3_NS,"tag1", "ex"), 
-                                             name.QNAME_XSD_QNAME));
+                                             name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -249,7 +253,7 @@ public class NamespacesTest
     {
         Activity a1=pFactory.newActivity(q("a10"));
         a1.getType().add(pFactory.newType(pFactory.newQualifiedName(EXAMPLE_NS, "Amazing","other"), 
-                                                  name.QNAME_XSD_QNAME));
+                                                  name.XSD_QNAME));
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(a1);
         Namespace nss=Namespace.gatherNamespaces(doc);
@@ -264,6 +268,28 @@ public class NamespacesTest
         assertTrue(nss.check("xsd", XSD_NS));
     }
 
+    
+    public void testNamespaces11 ()  {
+		
+	List<org.openprovenance.prov.model.Entry> ll = new LinkedList<org.openprovenance.prov.model.Entry>();
+	      
+	
 
+	org.openprovenance.prov.model.Entry p1 = pFactory.newEntry(pFactory.newKey(pFactory.newQualifiedName("http://example4.org/", "zabcd", "other"),
+	                                                                           name.XSD_QNAME),
+	                                                           q("e0"));
+	ll.add(p1);
+	org.openprovenance.prov.model.DerivedByInsertionFrom a = pFactory.newDerivedByInsertionFrom(q("dinsert"), 
+	                                                              q("d2"), 
+	                                                              q("d1"), 
+	                                                              ll, null);
+	
 
+	Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(a);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        
+        assertTrue(nss.getPrefixes().size()==4);
+ 
+    }
 }

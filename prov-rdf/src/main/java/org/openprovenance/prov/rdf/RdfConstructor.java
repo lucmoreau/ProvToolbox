@@ -4,16 +4,18 @@ import java.util.List;
 import java.util.Collection;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.ActedOnBehalfOf;
+import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.DerivedByInsertionFrom;
+import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.HadMember;
-import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.ProvFactory;
@@ -21,6 +23,7 @@ import org.openprovenance.prov.model.Entry;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
@@ -68,7 +71,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     }
 
     @Override
-    public org.openprovenance.prov.xml.Entity newEntity(QualifiedName id,
+    public Entity newEntity(QualifiedName id,
 							Collection<Attribute> attributes) {
 	assertType(id, onto.QNAME_PROVO_Entity);
 	processAttributes(id, attributes);
@@ -76,7 +79,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     }
 
     @Override
-    public org.openprovenance.prov.xml.Activity newActivity(QualifiedName id,
+    public Activity newActivity(QualifiedName id,
 							    XMLGregorianCalendar startTime,
 							    XMLGregorianCalendar endTime,
 							    Collection<Attribute> attributes) {
@@ -96,7 +99,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     }
 
     @Override
-    public org.openprovenance.prov.xml.Agent newAgent(QualifiedName id,
+    public Agent newAgent(QualifiedName id,
 						      Collection<Attribute> attributes) {
 	assertType(id, onto.QNAME_PROVO_Agent);
 	processAttributes(id, attributes);
@@ -180,21 +183,21 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	int knownSubtypes = 0;
 	QualifiedName der = id;
-	if (org.openprovenance.prov.xml.Helper.hasType(onto.QNAME_PROVO_Revision,
-						       attributes)) {
+	if (ProvUtilities.hasType(onto.QNAME_PROVO_Revision,
+					     attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, onto.QNAME_PROVO_Revision);
 
 	}
-	if (org.openprovenance.prov.xml.Helper.hasType(onto.QNAME_PROVO_Quotation,
+	if (ProvUtilities.hasType(onto.QNAME_PROVO_Quotation,
 						       attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
 			       attributes, onto.QNAME_PROVO_Quotation);
 
 	}
-	if (org.openprovenance.prov.xml.Helper.hasType(onto.QNAME_PROVO_PrimarySource,
+	if (ProvUtilities.hasType(onto.QNAME_PROVO_PrimarySource,
 						       attributes)) {
 	    knownSubtypes++;
 	    der = addInfluence(der, entity2, entity1, null, activity, false,
@@ -389,8 +392,8 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 		}
 		*/
 
-		if (attr.getValue() instanceof InternationalizedString) {
-		    InternationalizedString iString = (InternationalizedString) attr.getValue();
+		if (attr.getValue() instanceof LangString) {
+		    LangString iString = (LangString) attr.getValue();
 		    value = iString.getValue();
 		    lit = gb.newLiteral(value, iString.getLang());
 		    gb.assertStatement(gb.createDataProperty(r, pred, lit));
@@ -435,13 +438,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	    }
     }
 
-    public QualifiedName addInfluence(QualifiedName infl, QualifiedName subject, QualifiedName object,
-        			      XMLGregorianCalendar time, QualifiedName other,
-        			      boolean someOther,
-        			      Collection<Attribute> attributes,
-        			      QName qualifiedClass) {
-	return addInfluence(infl,subject,object,time,other,someOther,attributes,pFactory.newQualifiedName(qualifiedClass));
-    }
+
     public QualifiedName addInfluence(QualifiedName infl, QualifiedName subject, QualifiedName object,
         			      XMLGregorianCalendar time, QualifiedName other,
         			      boolean someOther,
@@ -523,12 +520,6 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 						   onto.qualifiedInfluenceTable.get(qualifiedClass),
 						   infl));
     }
-
-    public void assertInfluencer(QualifiedName infl, QualifiedName object, QName qualifiedClass) {
- 	gb.assertStatement(gb.createObjectProperty(infl,
- 						   onto.influencerTable.get(qualifiedClass),
- 						   object));
-     }
     
     public void assertInfluencer(QualifiedName infl, QualifiedName object, QualifiedName qualifiedClass) {
  	gb.assertStatement(gb.createObjectProperty(infl,
@@ -610,6 +601,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 						       onto.QNAME_PROVO_insertedKeyEntityPair,
 						       thePair));
 
+
 	    LITERAL lit = valueToLiteral(p.getKey());
 
 	    gb.assertStatement(gb.createDataProperty(thePair,
@@ -628,14 +620,19 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
  	String value;
  	if (val.getValue() instanceof QualifiedName) {
  	    value = Namespace.qualifiedNameToStringWithNamespace((QualifiedName) val.getValue());
+ 	 	lit = gb.newLiteral(value, val.getType());
+
+ 	} else if (val.getValue() instanceof LangString) {
+ 	    LangString iString=(LangString) val.getValue();
+	    lit = gb.newLiteral(iString.getValue(), iString.getLang());
+
  	} else {
- 	    value = val.getValue().toString(); //FIXME: what about Internatioanlized string.
+ 	    value = val.getValue().toString();
+ 	    lit = gb.newLiteral(value, val.getType());
+
  	}
- 	lit = gb.newLiteral(value, val.getType());
  	return lit;
      }
-
-    
 
 
     @Override

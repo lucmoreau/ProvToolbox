@@ -1,7 +1,7 @@
 package org.openprovenance.prov.model;
 
 /**
- * <p>Java class for PROV Derivation association.
+ * <p>Interface for PROV Derivation association.
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-derivation">PROV-DM Definition for Derivation</a>: A derivation is a transformation of an entity into another, 
  *  an update of an entity resulting in a new one, or the construction of a new entity based on a pre-existing entity.
  *  
@@ -14,7 +14,7 @@ package org.openprovenance.prov.model;
  * QualifiedName effectId= ... ;  // some qualified name
  * QualifiedName causeId= ... ;   // some qualified name
  * WasDerivedFrom myWasDerivedFrom=provFactory.newWasDerivedFrom(myId,effectId,causeId)
- * myWasDerivedFrom.getType().add(provFactory.newType(Name.QNAME_PROV_REVISION))
+ * myWasDerivedFrom.getType().add(provFactory.newType(Name.PROV_REVISION))
  * </pre>
  * 
  * <p><span class="strong">Relevant Factory Methods:</span>

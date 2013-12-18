@@ -34,7 +34,7 @@ public class Location extends TypedValue
 {
 
     private static final AttributeKind PROV_LOCATION_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_LOCATION;
-    private static final QualifiedName PROV_LOCATION_QNAME = ProvFactory.getFactory().getName().QNAME_PROV_LOCATION;
+    private static final QualifiedName PROV_LOCATION_QNAME = ProvFactory.getFactory().getName().PROV_LOCATION;
  
     @Override
     public QualifiedName getElementName() {
@@ -48,7 +48,7 @@ public class Location extends TypedValue
 
     @Override
     public String toNotationString() {
-        return DOMProcessing.qualifiedNameToString(getElementName()) + " = " + Helper.valueToNotationString(getValue(), getType());
+        return DOMProcessing.qualifiedNameToString(getElementName()) + " = " + ProvUtilities.valueToNotationString(getValue(), getType());
     }
    
 }

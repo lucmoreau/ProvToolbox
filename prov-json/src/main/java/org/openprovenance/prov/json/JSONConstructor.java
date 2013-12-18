@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.openprovenance.prov.json;
 
 import java.util.ArrayList;
@@ -25,13 +22,13 @@ import org.openprovenance.prov.model.DictionaryMembership;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HadMember;
-import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.ModelConstructor;
+import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.QualifiedNameExport;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
@@ -71,11 +68,12 @@ public class JSONConstructor implements ModelConstructor {
     private Map<String, String> documentNamespaces = null;
     private List<JsonProvRecord> currentRecords = documentRecords;
     private Map<String, String> currentNamespaces = null;
+    final private Name name;
 
-    private final ProvFactory pf = new ProvFactory();
 
-    public JSONConstructor(QualifiedNameExport qnExport) {
+    public JSONConstructor(QualifiedNameExport qnExport, Name name) {
 	this.qnExport = qnExport;
+	this.name=name;
     }
 
     public Map<String, Object> getJSONStructure() {
@@ -183,18 +181,22 @@ public class JSONConstructor implements ModelConstructor {
 	return result;
     }
 
-    private String convertValueToString(Object value) {
-	if (value instanceof String) {
-	    return (String) value;
+    private String convertValueToString(Object value, Object convertedValue) {
+	if (convertedValue instanceof String) {
+	    return (String) convertedValue;
 	}
 
-	if (value instanceof QualifiedName)
-	    return qnExport.qualifiedNameToString((QualifiedName) value);
-	if (value instanceof InternationalizedString) {
-	    InternationalizedString iStr = (InternationalizedString) value;
+	if (convertedValue instanceof QualifiedName)
+	    return qnExport.qualifiedNameToString((QualifiedName) convertedValue);
+	if (convertedValue instanceof LangString) {
+	    LangString iStr = (LangString) convertedValue;
 	    return iStr.getValue();
 	}
-	return value.toString();
+	if (convertedValue instanceof byte[]) {
+	    return (String) value;
+	}
+	
+	return (String) value;
     }
 
     private Object convertValue(Object value) {
@@ -206,8 +208,8 @@ public class JSONConstructor implements ModelConstructor {
 	    return typedLiteral(qnExport.qualifiedNameToString((QualifiedName) value),
 				"xsd:QName", null);
 	}
-	if (value instanceof InternationalizedString) {
-	    InternationalizedString iStr = (InternationalizedString) value;
+	if (value instanceof LangString) {
+	    LangString iStr = (LangString) value;
 	    String lang = iStr.getLang();
 	    if (lang != null)
 		// If 'lang' is defined
@@ -230,8 +232,8 @@ public class JSONConstructor implements ModelConstructor {
 
 	    attrValue = typedLiteral(qnExport.qualifiedNameToString((QualifiedName) value),
 				     "xsd:QName", null);
-	} else  if (value instanceof InternationalizedString) {
-	    InternationalizedString iStr = (InternationalizedString) value;
+	} else  if (value instanceof LangString) {
+	    LangString iStr = (LangString) value;
 	    String lang = iStr.getLang();
 	    if (lang != null) {
 		// If 'lang' is defined
@@ -623,12 +625,20 @@ public class JSONConstructor implements ModelConstructor {
 	boolean isAllKeyOfSameDatatype = true;
 	Key firstKey = keyEntitySet.get(0).getKey();
 	QualifiedName firstKeyClass = firstKey.getType();
-	for (Entry pair : keyEntitySet) {
-	    QualifiedName keyClass = pair.getKey().getType();
-
-	    if (keyClass != firstKeyClass) {
-		isAllKeyOfSameDatatype = false;
-		break;
+	
+	if (name.PROV_LANG_STRING.equals(firstKeyClass)) {
+	    // LangString cannot be encoded in the compact form
+	    isAllKeyOfSameDatatype=false;
+	}
+	
+	if (isAllKeyOfSameDatatype) {
+	    for (Entry pair : keyEntitySet) {
+		QualifiedName keyClass = pair.getKey().getType();
+		
+		if (keyClass != firstKeyClass) {
+		    isAllKeyOfSameDatatype = false;
+		    break;
+		}
 	    }
 	}
 
@@ -639,7 +649,7 @@ public class JSONConstructor implements ModelConstructor {
 	    dictionary.put("$key-datatype", keyDatatype);
 	    for (Entry pair : keyEntitySet) {
 		// String key = convertValueToString(pair.key);
-		String key = convertValueToString(pair.getKey().getValueAsObject());
+		String key = convertValueToString(pair.getKey().getValue(), pair.getKey().getConvertedValue());
 		String entity = qnExport.qualifiedNameToString(pair.getEntity());
 		dictionary.put(key, entity);
 	    }
@@ -653,7 +663,7 @@ public class JSONConstructor implements ModelConstructor {
 	    Object entity = qnExport.qualifiedNameToString(pair.getEntity());
 	    Map<String, Object> item = new Hashtable<String, Object>();
 	    item.put("$", entity);
-	    item.put("key", convertValue(pair.getKey().getValueAsObject()));
+	    item.put("key", convertValue(pair.getKey().getConvertedValue()));
 	    values.add(item);
 	}
 	return values;

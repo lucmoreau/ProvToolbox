@@ -15,6 +15,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.openprovenance.prov.model.DOMProcessing;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 
 /**
@@ -45,7 +46,7 @@ public class Label extends TypedValue implements
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_LABEL_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_LABEL;
-    private static final QualifiedName PROV_LABEL_QNAME = ProvFactory.getFactory().getName().QNAME_PROV_LABEL;
+    private static final QualifiedName PROV_LABEL_QNAME = ProvFactory.getFactory().getName().PROV_LABEL;
 
     @Transient
     public QualifiedName getElementName() {
@@ -60,8 +61,8 @@ public class Label extends TypedValue implements
     public String toNotationString() {
 	return DOMProcessing.qualifiedNameToString(getElementName())
 		+ " = "
-		+ org.openprovenance.prov.xml.Helper.valueToNotationString(getValue(),
-									      getType());
+		+ ProvUtilities.valueToNotationString(getValue(),
+		                                      getType());
     }
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator,

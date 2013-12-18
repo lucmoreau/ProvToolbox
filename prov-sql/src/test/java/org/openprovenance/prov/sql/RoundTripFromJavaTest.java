@@ -169,6 +169,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
     public void writeXMLDocument(Document doc, String file) throws JAXBException {
         
 	ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
+	Namespace.withThreadNamespace(doc.getNamespace());
 	serial.serialiseDocument(new File(file), (org.openprovenance.prov.sql.Document)doc, true);
 	StringWriter sw = new StringWriter();
 	serial.serialiseDocument(sw, (org.openprovenance.prov.sql.Document)doc, true);

@@ -81,7 +81,7 @@ public class WasStartedBy implements Equals, HashCode, ToString, org.openprovena
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar time;
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
-    protected List<org.openprovenance.prov.model.InternationalizedString> label;
+    protected List<org.openprovenance.prov.model.LangString> label;
     
     transient protected List<org.openprovenance.prov.model.Location> location;
     transient protected List<org.openprovenance.prov.model.Role> role;
@@ -94,7 +94,7 @@ public class WasStartedBy implements Equals, HashCode, ToString, org.openprovena
 
     
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QualifiedNameAdapter.class)
     protected org.openprovenance.prov.model.QualifiedName id;
 
 
@@ -216,9 +216,9 @@ public class WasStartedBy implements Equals, HashCode, ToString, org.openprovena
      * 
      * 
      */
-    public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
+    public List<org.openprovenance.prov.model.LangString> getLabel() {
         if (label == null) {
-            label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
+            label = new ArrayList<org.openprovenance.prov.model.LangString>();
         }
         return this.label;
     }
@@ -435,7 +435,7 @@ public class WasStartedBy implements Equals, HashCode, ToString, org.openprovena
             toStringBuilder.append("time", theTime);
         }
         {
-            List<org.openprovenance.prov.model.InternationalizedString> theLabel;
+            List<org.openprovenance.prov.model.LangString> theLabel;
             theLabel = this.getLabel();
             toStringBuilder.append("label", theLabel);
         }

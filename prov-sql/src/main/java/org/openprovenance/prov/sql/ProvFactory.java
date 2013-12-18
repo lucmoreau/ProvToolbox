@@ -116,37 +116,37 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     public Location newLocation(Object value, QualifiedName type) {
         Location loc=new Location();
         loc.type=type;
-        loc.setValueAsObject(value);
+        loc.setValueFromObject(value);
         return loc;
     }
     public Type newType(Object value, QualifiedName type) {
         Type typ=new Type();
         typ.type=type;
-        typ.setValueAsObject(value);
+        typ.setValueFromObject(value);
         return typ;
     }
     public Value newValue(Object value, QualifiedName type) {
         Value res=new Value();
         res.type=type;
-        res.setValueAsObject(value);
+        res.setValueFromObject(value);
         return res;
     }
     public Role newRole(Object value, QualifiedName type) {
         Role res=new Role();
         res.type=type;
-        res.setValueAsObject(value);
+        res.setValueFromObject(value);
         return res;
     }
     public Label newLabel(Object value, QualifiedName type) {
         Label res=new Label();
         res.type=type;
-        res.setValueAsObject(value);
+        res.setValueFromObject(value);
         return res;
     }
     public Other newOther(QualifiedName elementName, Object value, QualifiedName type) {
         Other res=new Other();
         res.type=type;
-        res.setValueAsObject(value);
+        res.setValueFromObject(value);
         res.setElementName(elementName);
         return res;
     }
@@ -154,19 +154,19 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     @Override
     public Attribute newAttribute(QualifiedName elementName, Object value, QualifiedName type) {
 	// TODO: use TypedValue.getAttributeKind and switch on a kind
-	if (elementName.equals(getName().QNAME_PROV_LOCATION)) {
+	if (elementName.equals(getName().PROV_LOCATION)) {
 	    return newLocation(value,type);
 	}
-	if (elementName.equals(getName().QNAME_PROV_TYPE)) {
+	if (elementName.equals(getName().PROV_TYPE)) {
 	    return newType(value,type);
 	}
-	if (elementName.equals(getName().QNAME_PROV_VALUE)) {
+	if (elementName.equals(getName().PROV_VALUE)) {
 	    return newValue(value,type);
 	}
-	if (elementName.equals(getName().QNAME_PROV_ROLE)) {
+	if (elementName.equals(getName().PROV_ROLE)) {
 	    return newRole(value,type);
 	}
-	if (elementName.equals(getName().QNAME_PROV_LABEL)) {
+	if (elementName.equals(getName().PROV_LABEL)) {
 	    return newLabel(value,type);
 	}
 	return newOther(elementName, value, type);

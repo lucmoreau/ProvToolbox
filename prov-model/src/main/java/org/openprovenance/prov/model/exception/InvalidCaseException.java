@@ -7,24 +7,25 @@ package org.openprovenance.prov.model.exception;
  * @author lavm
  *
  */
-public class QualifiedNameException extends RuntimeException {
+public class InvalidCaseException extends RuntimeException {
+
 
     /**
      * 
      */
-    private static final long serialVersionUID = -2683382479059721612L;
+    private static final long serialVersionUID = -2443740480287709699L;
 
     /**
      * 
      */
-    public QualifiedNameException() {
+    public InvalidCaseException() {
 	// TODO Auto-generated constructor stub
     }
 
     /**
      * @param message
      */
-    public QualifiedNameException(String message) {
+    public InvalidCaseException(String message) {
 	super(message);
 	// TODO Auto-generated constructor stub
     }
@@ -32,7 +33,7 @@ public class QualifiedNameException extends RuntimeException {
     /**
      * @param cause
      */
-    public QualifiedNameException(Throwable cause) {
+    public InvalidCaseException(Throwable cause) {
 	super(cause);
 	// TODO Auto-generated constructor stub
     }
@@ -41,7 +42,7 @@ public class QualifiedNameException extends RuntimeException {
      * @param message
      * @param cause
      */
-    public QualifiedNameException(String message, Throwable cause) {
+    public InvalidCaseException(String message, Throwable cause) {
 	super(message, cause);
 	// TODO Auto-generated constructor stub
     }

@@ -20,12 +20,11 @@ import javax.persistence.Transient;
 import javax.persistence.ManyToOne;
 
 import org.openprovenance.prov.sql.AValue;
-import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.sql.ProvFactory;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.QNameConstructor;
 import org.openprovenance.prov.model.ValueConverter;
 
 import javax.xml.transform.TransformerConfigurationException;
@@ -47,13 +46,13 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 @Table(name = "TYPEDVALUE")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class TypedValue implements org.openprovenance.prov.model.TypedValue {
-    private static final QualifiedName QNAME_PROV_TYPE = ProvFactory.getFactory().getName().QNAME_PROV_TYPE;
-    private static final QualifiedName QNAME_PROV_LABEL = ProvFactory.getFactory().getName().QNAME_PROV_LABEL;
-    private static final QualifiedName QNAME_PROV_VALUE = ProvFactory.getFactory().getName().QNAME_PROV_VALUE;
-    private static final QualifiedName QNAME_PROV_LOCATION = ProvFactory.getFactory().getName().QNAME_PROV_LOCATION;
-    private static final QualifiedName QNAME_PROV_ROLE = ProvFactory.getFactory().getName().QNAME_PROV_ROLE;
-    private static final QualifiedName QNAME_XSD_HEX_BINARY = ProvFactory.getFactory().getName().QNAME_XSD_HEX_BINARY;
-    private static final QualifiedName QNAME_XSD_BASE64_BINARY = ProvFactory.getFactory().getName().QNAME_XSD_BASE64_BINARY;
+    private static final QualifiedName QNAME_PROV_TYPE = ProvFactory.getFactory().getName().PROV_TYPE;
+    private static final QualifiedName QNAME_PROV_LABEL = ProvFactory.getFactory().getName().PROV_LABEL;
+    private static final QualifiedName QNAME_PROV_VALUE = ProvFactory.getFactory().getName().PROV_VALUE;
+    private static final QualifiedName QNAME_PROV_LOCATION = ProvFactory.getFactory().getName().PROV_LOCATION;
+    private static final QualifiedName QNAME_PROV_ROLE = ProvFactory.getFactory().getName().PROV_ROLE;
+    private static final QualifiedName QNAME_XSD_HEX_BINARY = ProvFactory.getFactory().getName().XSD_HEX_BINARY;
+    private static final QualifiedName QNAME_XSD_BASE64_BINARY = ProvFactory.getFactory().getName().XSD_BASE64_BINARY;
     
     
     @XmlValue
@@ -131,22 +130,20 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
 	return value;
     }
 
-    public void setValue(Object value) {
-	this.value=value;
+    public void setValue(String value) {
+ 	this.value=value;
+    }
+
+    public void setValue(QualifiedName value) {
+ 	this.value=value;
+    }
+
+    public void setValue(LangString value) {
+ 	this.value=value;
     }
 
     
-    
-    static ValueConverter vc=new ValueConverter(ProvFactory.getFactory(),
-    		new QNameConstructor() {
-
-				@Override
-				public Object newQName(String value) {
-				    System.out.println("QNameConstructo.newQName() " + value);
-					return ProvFactory.getFactory().newQualifiedName("",value,null); //FIXME
-				}
-    	
-    });
+    static ValueConverter vc=new ValueConverter(ProvFactory.getFactory());
 	
     transient AValue avalue;
     
@@ -165,8 +162,8 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     		if (type==null) {
     			avalue=SQLValueConverter.convertToAValue(vc.getXsdType(value), value); //TODO, I am not using the one saved!
     			//System.out.println("##---> getValueItem() reading found " + avalue);
-    		} else if (value instanceof InternationalizedString) {
-    			avalue=SQLValueConverter.convertToAValue(type,  ((InternationalizedString) value).getValue());
+    		} else if (value instanceof LangString) {
+    			avalue=SQLValueConverter.convertToAValue(type,  ((LangString) value).getValue());
     		} else if (value instanceof org.openprovenance.prov.model.QualifiedName) {
     			avalue=SQLValueConverter.convertToAValue(type,  (QualifiedName) value);
     		} else {
@@ -239,14 +236,14 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      *     {@link Object }
      *     
      */
-    public Object getValueAsObject(ValueConverter vconv) {
+    public Object convertValueToObject(ValueConverter vconv) {
     	if (valueAsJava==null) {
     		valueAsJava=vconv.convertToJava(getType(), (String)value);
     	}
         return valueAsJava;
     }
     @Transient
-    public Object getValueAsObject() {
+    public Object getConvertedValue() {
         return valueAsJava;
     }
 
@@ -289,11 +286,11 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
      *     {@link Object }
      *     
      */
-    public void setValueAsObject(Object valueAsJava) {
+    public void setValueFromObject(Object valueAsJava) {
  	if ((valueAsJava!=null) && (value==null)) {
  	    if (valueAsJava instanceof QualifiedName) { 
  		this.value=valueAsJava;
- 	    } else if (valueAsJava instanceof InternationalizedString) { 
+ 	    } else if (valueAsJava instanceof LangString) { 
  		this.value=valueAsJava;
  	    } else if (valueAsJava instanceof byte[]) {
  		setValueAsJava((byte[]) valueAsJava);

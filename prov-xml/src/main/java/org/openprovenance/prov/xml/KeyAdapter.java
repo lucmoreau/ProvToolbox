@@ -17,17 +17,17 @@ public class KeyAdapter extends XmlAdapter<Element, TypedValue> {
     public KeyAdapter() {
 	pFactory= new ProvFactory();
 	domProcessor=new DOMProcessing(pFactory);
-	qname_PROV_KEY = pFactory.getName().QNAME_PROV_KEY;
-	vconv=new ValueConverter(pFactory,null);
+	qname_PROV_KEY = pFactory.getName().PROV_KEY;
+	vconv=new ValueConverter(pFactory);
     }
 
 
     public KeyAdapter(org.openprovenance.prov.model.ProvFactory pFactory) {
 	this.pFactory=pFactory;
 	domProcessor=new DOMProcessing(pFactory);
-	qname_PROV_KEY = pFactory.getName().QNAME_PROV_KEY;
+	qname_PROV_KEY = pFactory.getName().PROV_KEY;
 
-	vconv=new ValueConverter(pFactory,null);
+	vconv=new ValueConverter(pFactory);
     }
 
 

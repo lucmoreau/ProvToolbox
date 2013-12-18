@@ -1,10 +1,5 @@
-/**
- * 
- */
 package org.openprovenance.prov.json;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +11,6 @@ import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Entry;
 import org.openprovenance.prov.model.QualifiedName;
@@ -32,13 +26,13 @@ import org.openprovenance.prov.model.HasLocation;
 import org.openprovenance.prov.model.HasRole;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.HasValue;
-import org.openprovenance.prov.model.InternationalizedString;
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
@@ -50,8 +44,6 @@ import org.openprovenance.prov.model.WasGeneratedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -69,30 +61,20 @@ import com.google.gson.JsonParseException;
 public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     Namespace ns;
 
-    public static void main(String[] args) {
-	GsonBuilder gsonBuilder = new GsonBuilder();
-	gsonBuilder.registerTypeAdapter(Document.class,
-					new ProvDocumentDeserializer());
-	Gson gson = gsonBuilder.create();
-
-	try {
-	    Document provDoc = gson.fromJson(new BufferedReader(
-								new FileReader(
-									       args[0])),
-					     Document.class);
-	    Utility u = new Utility();
-	    String provN = u.convertBeanToASN(provDoc);
-	    System.out.println(provN);
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
-    }
 
     private static final String PROV_JSON_PREFIX = "prefix";
 
-    private final ProvFactory pf = new ProvFactory();
-    private final Name name=pf.getName();
-    private final ValueConverter vconv = new ValueConverter(pf, null);
+    
+    private final ProvFactory pf;
+    private final Name name;
+    private final ValueConverter vconv;
+
+    public ProvDocumentDeserializer(ProvFactory pf) {
+	this.pf=pf;
+	this.name=pf.getName();
+	this.vconv = new ValueConverter(pf);
+    }
+    
 
     @Override
     public Document deserialize(JsonElement json, Type typeOfT,
@@ -399,7 +381,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List<org.openprovenance.prov.model.Type> types = ((HasType) statement).getType();
 		for (JsonElement value : values) {
 		    types.add((org.openprovenance.prov.model.Type) decodeAttributeValue(value,
-											name.QNAME_PROV_TYPE));
+											name.PROV_TYPE));
 		}
 	    } else {
 		throw new UnsupportedOperationException(
@@ -413,7 +395,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	values = popMultiValAttribute("prov:label", attributeMap);
 	if (!values.isEmpty()) {
 	    if (statement instanceof HasLabel) {
-		List<InternationalizedString> labels = ((HasLabel) statement).getLabel();
+		List<LangString> labels = ((HasLabel) statement).getLabel();
 		for (JsonElement value : values) {
 		    labels.add(decodeInternationalizedString(value));
 		}
@@ -432,7 +414,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List<Location> locations = ((HasLocation) statement).getLocation();
 		for (JsonElement value : values) {
 		    locations.add((org.openprovenance.prov.model.Location) decodeAttributeValue(value,
-												name.QNAME_PROV_LOCATION));
+												name.PROV_LOCATION));
 		}
 	    } else {
 		throw new UnsupportedOperationException(
@@ -449,7 +431,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List<Role> roles = ((HasRole) statement).getRole();
 		for (JsonElement value : values) {
 		    roles.add((org.openprovenance.prov.model.Role) decodeAttributeValue(value,
-											name.QNAME_PROV_ROLE));
+											name.PROV_ROLE));
 		}
 	    } else {
 		throw new UnsupportedOperationException(
@@ -470,7 +452,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    }
 	    if (statement instanceof HasValue) {
 		((HasValue) statement).setValue((org.openprovenance.prov.model.Value) decodeAttributeValue(values.get(0),
-													   name.QNAME_PROV_VALUE));
+													   name.PROV_VALUE));
 	    } else {
 		throw new UnsupportedOperationException(
 							"prov:value is not allowed in a "
@@ -510,8 +492,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	return statement;
     }
 
-    private InternationalizedString decodeInternationalizedString(JsonElement element) {
-	InternationalizedString iString = pf.getObjectFactory()
+    private LangString decodeInternationalizedString(JsonElement element) {
+	LangString iString = pf.getObjectFactory()
 					    .createInternationalizedString();
 	if (element.isJsonPrimitive()) {
 	    iString.setValue(element.getAsString());
@@ -538,17 +520,17 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    if (struct.has("lang")) {
 		// Internationalized strings
 		String lang = struct.get("lang").getAsString();
-		InternationalizedString iString = pf.getObjectFactory()
+		LangString iString = pf.getObjectFactory()
 						    .createInternationalizedString();
 		iString.setValue(value);
 		iString.setLang(lang);
 		return pf.newAttribute(elementName,
 				       iString,
-				       name.QNAME_PROV_INTERNATIONALIZED_STRING);
+				       name.PROV_LANG_STRING);
 	    } else if (struct.has("type")) {
 		String datatypeAsString = struct.get("type").getAsString();
 		QualifiedName xsdType = ns.stringToQualifiedName(datatypeAsString, pf);
-		if (xsdType.equals(name.QNAME_XSD_QNAME)) {
+		if (xsdType.equals(name.XSD_QNAME)) {
 		    return pf.newAttribute(elementName,
 					   ns.stringToQualifiedName(value,pf), xsdType);
 		} else {
@@ -557,12 +539,12 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    } else {
 		// if no type or lang information, decode as an
 		// Internationalized string without lang
-		InternationalizedString iString = pf.getObjectFactory()
+		LangString iString = pf.getObjectFactory()
 						    .createInternationalizedString();
 		iString.setValue(value);
 		return pf.newAttribute(elementName,
 				       iString,
-				       name.QNAME_PROV_INTERNATIONALIZED_STRING);
+				       name.PROV_LANG_STRING);
 	    }
 	}
     }
@@ -681,7 +663,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    for (JsonElement element : elements) {
 		JsonObject item = element.getAsJsonObject();
 		Entry pair = pf.newEntry((Key) decodeAttributeValue(item.remove("key"),
-		                                                    name.QNAME_PROV_KEY),
+		                                                    name.PROV_KEY),
 		                                                    
 		                         ns.stringToQualifiedName(this.popString(item, "$"),pf));
 		results.add(pair);
@@ -693,16 +675,34 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 					   .getAsString();
 	    QualifiedName datatype = ns.stringToQualifiedName(keyDatatype,pf);
 	    for (Map.Entry<String, JsonElement> entry : dictionary.entrySet()) {
-		Object o = vconv.convertToJava(datatype, entry.getKey());
-		
-		Entry pair = pf.newEntry(pf.newKey(o, vconv.getXsdType(o)), // TODO remove use
-		
-							      // of vconv
-		                         ns.stringToQualifiedName(entry.getValue().getAsString(), pf));
+		String entryKey = entry.getKey();
+		JsonElement entryValue = entry.getValue();
+
+		Entry pair = decodeDictionaryEntry(datatype, entryKey,
+						   entryValue);
 		results.add(pair);
 	    }
 	}
 	return results;
+    }
+
+
+    public Entry decodeDictionaryEntry(QualifiedName datatype,
+				       String entryKey,
+				       JsonElement entryValue) {
+
+	Key kk;
+	if (datatype.equals(name.XSD_QNAME)) {
+	    kk=(Key) pf.newAttribute(name.PROV_KEY,
+	                             ns.stringToQualifiedName(entryKey,pf), datatype);
+	} else {
+	    kk=(Key) pf.newAttribute(name.PROV_KEY, entryKey, datatype);
+	}
+
+	
+	Entry pair = pf.newEntry(kk,
+	                         ns.stringToQualifiedName(entryValue.getAsString(), pf));
+	return pair;
     }
 
     
@@ -720,7 +720,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	List<JsonElement> elements = popMultiValAttribute(attributeName,
 							  attributeMap);
 	for (JsonElement element : elements) {
-	    Key key = (Key) decodeAttributeValue(element, name.QNAME_PROV_KEY);
+	    Key key = (Key) decodeAttributeValue(element, name.PROV_KEY);
 	    results.add(key);
 	}
 	return results;

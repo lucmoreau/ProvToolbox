@@ -15,6 +15,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.openprovenance.prov.model.DOMProcessing;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 
 
@@ -45,7 +46,7 @@ public class Value
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_VALUE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_VALUE;
-    private static final QualifiedName PROV_VALUE_QNAME = ProvFactory.getFactory().getName().QNAME_PROV_VALUE;
+    private static final QualifiedName PROV_VALUE_QNAME = ProvFactory.getFactory().getName().PROV_VALUE;
     
     @Transient   
     public QualifiedName getElementName() {
@@ -59,7 +60,7 @@ public class Value
     
     public String toNotationString() {
 	return DOMProcessing.qualifiedNameToString(getElementName()) + " = "
-		+ org.openprovenance.prov.xml.Helper.valueToNotationString(getValue(), getType());
+		+ ProvUtilities.valueToNotationString(getValue(), getType());
     }
     
 

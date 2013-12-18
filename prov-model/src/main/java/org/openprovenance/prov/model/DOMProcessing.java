@@ -226,8 +226,8 @@ final public class DOMProcessing {
 	Object value = attribute.getValue();
 	QualifiedName type = attribute.getType();
 	
-	if (value instanceof InternationalizedString) {
-	    InternationalizedString istring = ((InternationalizedString) value);
+	if (value instanceof LangString) {
+	    LangString istring = ((LangString) value);
 	    return newElement(elementName, 
 	                      istring.getValue(),
 			      attribute.getType(), 
@@ -239,7 +239,7 @@ final public class DOMProcessing {
 	} else if (type.getNamespaceURI().equals(RDF_NAMESPACE)
 		&& type.getLocalPart().equals(XML_LITERAL)) {
 	    return newElement(elementName,
-			      (org.w3c.dom.Element) attribute.getValueAsObject());
+			      (org.w3c.dom.Element) attribute.getConvertedValue());
 
 	} else {
 	    return newElement(elementName, 
@@ -264,12 +264,12 @@ final public class DOMProcessing {
                 : stringToQualifiedName(typeAsString, el);
         Name name=pFactory.getName();
         if (type == null)
-            type = name.QNAME_XSD_STRING;
-        if (type.equals(name.QNAME_XSD_QNAME)) {
+            type = name.XSD_STRING;
+        if (type.equals(name.XSD_QNAME)) {
             QualifiedName qn = stringToQualifiedName(child, el);
             Attribute x= pFactory.newAttribute(namespace, local, prefix, qn, type);
             return x;
-        } else if (type.equals(name.QNAME_RDF_LITERAL)) {
+        } else if (type.equals(name.RDF_LITERAL)) {
             NodeList nodes=el.getChildNodes();
             org.w3c.dom.Element content=null;
             for (int i=0; i<nodes.getLength(); i++) {

@@ -1,9 +1,18 @@
 package org.openprovenance.prov.model;
 
+/** 
+ * Interface for a PROV Statement ({@link Statement}) (a unit of provenance description) or a Bundle ({@link NamedBundle}) (a named set of provenance statements)
+ * @author lavm
+ *
+ */
 public interface StatementOrBundle {
-    
+
+    /** Gets the type of a provenance statement
+     * @return {@link Kind}
+     */
     public Kind getKind();
-    
+
+    /** Enumerated type for each type of provenance statement or bundle. */
     public enum Kind {
 	
 	PROV_ENTITY,

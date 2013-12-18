@@ -7,7 +7,7 @@ package org.openprovenance.prov.model.exception;
  * @author lavm
  *
  */
-public class QualifiedNameException extends RuntimeException {
+public class ConverterException extends RuntimeException {
 
     /**
      * 
@@ -17,14 +17,14 @@ public class QualifiedNameException extends RuntimeException {
     /**
      * 
      */
-    public QualifiedNameException() {
+    public ConverterException() {
 	// TODO Auto-generated constructor stub
     }
 
     /**
      * @param message
      */
-    public QualifiedNameException(String message) {
+    public ConverterException(String message) {
 	super(message);
 	// TODO Auto-generated constructor stub
     }
@@ -32,7 +32,7 @@ public class QualifiedNameException extends RuntimeException {
     /**
      * @param cause
      */
-    public QualifiedNameException(Throwable cause) {
+    public ConverterException(Throwable cause) {
 	super(cause);
 	// TODO Auto-generated constructor stub
     }
@@ -41,7 +41,7 @@ public class QualifiedNameException extends RuntimeException {
      * @param message
      * @param cause
      */
-    public QualifiedNameException(String message, Throwable cause) {
+    public ConverterException(String message, Throwable cause) {
 	super(message, cause);
 	// TODO Auto-generated constructor stub
     }

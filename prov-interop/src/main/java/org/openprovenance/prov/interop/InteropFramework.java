@@ -187,8 +187,8 @@ public class InteropFramework {
 
 	public void provn2html(String file, String file2)
 			throws java.io.IOException, JAXBException, Throwable {
-		Document doc = (Document) u.convertASNToJavaBean(file);
-		String s = u.convertBeanToHTML(doc);
+		Document doc = (Document) u.convertASNToJavaBean(file,pFactory);
+		String s = u.convertBeanToHTML(doc,pFactory);
 		u.writeTextToFile(s, file2);
 
 	}
@@ -263,7 +263,7 @@ public class InteropFramework {
 			setNamespaces(doc);
 			switch (format) {
 			case PROVN: {
-				u.writeDocument(doc, filename);
+				u.writeDocument(doc, filename,pFactory);
 				break;
 			}
 			case XML: {
@@ -289,7 +289,7 @@ public class InteropFramework {
 				break;
 			}
 			case JSON: {
-				new org.openprovenance.prov.json.Converter().writeDocument(doc,
+				new org.openprovenance.prov.json.Converter(pFactory).writeDocument(doc,
 						filename);
 				break;
 			}
@@ -393,13 +393,13 @@ public class InteropFramework {
 															// from these
 															// formats
 			case JSON: {
-				return new org.openprovenance.prov.json.Converter()
+				return new org.openprovenance.prov.json.Converter(pFactory)
 						.readDocument(filename);
 			}
 			case PROVN: {
 				Utility u = new Utility();
 				CommonTree tree = u.convertASNToTree(filename);
-				Object o = u.convertTreeToJavaBean(tree);
+				Object o = u.convertTreeToJavaBean(tree,pFactory);
 				Document doc=(Document)o;
 				Namespace ns=Namespace.gatherNamespaces(doc);
                                 doc.setNamespace(ns);
@@ -442,7 +442,7 @@ public class InteropFramework {
 		try {
 			Utility u = new Utility();
 			CommonTree tree = u.convertASNToTree(filename);
-			Object o = u.convertTreeToJavaBean(tree);
+			Object o = u.convertTreeToJavaBean(tree,pFactory);
 			if (o != null) {
 				return o;
 			}
@@ -462,7 +462,7 @@ public class InteropFramework {
 		}
 
 		try {
-			Object o = new org.openprovenance.prov.json.Converter()
+			Object o = new org.openprovenance.prov.json.Converter(pFactory)
 					.readDocument(filename);
 			if (o != null) {
 				return o;

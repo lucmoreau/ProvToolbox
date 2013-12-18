@@ -18,13 +18,13 @@ public class AnyAdapter extends
     public AnyAdapter() {
 	pFactory= new ProvFactory();
 	domProcessor=new DOMProcessing(pFactory);
-	vconv=new ValueConverter(pFactory,null);
+	vconv=new ValueConverter(pFactory);
     }
 
     public AnyAdapter(org.openprovenance.prov.model.ProvFactory pFactory) {
 	this.pFactory= pFactory;
 	domProcessor=new DOMProcessing(pFactory);
-	vconv=new ValueConverter(pFactory,null);
+	vconv=new ValueConverter(pFactory);
     }
 
     final ValueConverter vconv;

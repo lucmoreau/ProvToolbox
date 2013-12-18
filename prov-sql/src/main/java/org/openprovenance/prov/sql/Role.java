@@ -16,6 +16,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.openprovenance.prov.model.DOMProcessing;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 
 /**
@@ -46,7 +47,7 @@ public class Role extends TypedValue implements
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_ROLE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_ROLE;
-    private static final QualifiedName PROV_ROLE_QNAME = ProvFactory.getFactory().getName().QNAME_PROV_ROLE;
+    private static final QualifiedName PROV_ROLE_QNAME = ProvFactory.getFactory().getName().PROV_ROLE;
 
     @Transient
     public QualifiedName getElementName() {
@@ -61,7 +62,7 @@ public class Role extends TypedValue implements
     public String toNotationString() {
 	return DOMProcessing.qualifiedNameToString(getElementName())
 		+ " = "
-		+ org.openprovenance.prov.xml.Helper.valueToNotationString(getValue(),
+		+ ProvUtilities.valueToNotationString(getValue(),
 									      getType());
     }
 

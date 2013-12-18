@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -82,7 +81,7 @@ public class WasEndedBy implements Equals, HashCode, ToString, org.openprovenanc
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar time;
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
-    protected List<org.openprovenance.prov.model.InternationalizedString> label;
+    protected List<org.openprovenance.prov.model.LangString> label;
     
     transient protected List<org.openprovenance.prov.model.Location> location;
     transient protected List<org.openprovenance.prov.model.Role> role;
@@ -94,7 +93,7 @@ public class WasEndedBy implements Equals, HashCode, ToString, org.openprovenanc
     
 
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QualifiedNameAdapter.class)
     protected org.openprovenance.prov.model.QualifiedName id;
 
 
@@ -216,9 +215,9 @@ public class WasEndedBy implements Equals, HashCode, ToString, org.openprovenanc
      * 
      * 
      */
-    public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
+    public List<org.openprovenance.prov.model.LangString> getLabel() {
         if (label == null) {
-            label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
+            label = new ArrayList<org.openprovenance.prov.model.LangString>();
         }
         return this.label;
     }
@@ -342,7 +341,7 @@ public class WasEndedBy implements Equals, HashCode, ToString, org.openprovenanc
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
     public org.openprovenance.prov.model.QualifiedName getId() {
@@ -354,7 +353,7 @@ public class WasEndedBy implements Equals, HashCode, ToString, org.openprovenanc
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
     public void setId(org.openprovenance.prov.model.QualifiedName value) {
@@ -435,7 +434,7 @@ public class WasEndedBy implements Equals, HashCode, ToString, org.openprovenanc
             toStringBuilder.append("time", theTime);
         }
         {
-            List<org.openprovenance.prov.model.InternationalizedString> theLabel;
+            List<org.openprovenance.prov.model.LangString> theLabel;
             theLabel = this.getLabel();
             toStringBuilder.append("label", theLabel);
         }

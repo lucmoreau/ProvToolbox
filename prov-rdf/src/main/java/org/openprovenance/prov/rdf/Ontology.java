@@ -8,7 +8,7 @@ import java.util.Set;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.xml.NamespacePrefixMapper;
+import org.openprovenance.prov.model.NamespacePrefixMapper;
 
 
 public class Ontology {
@@ -412,11 +412,11 @@ public class Ontology {
 	otherTable.put(QNAME_PROVO_Insertion, QNAME_PROVO_insertedKeyEntityPair);
 	otherTable.put(QNAME_PROVO_Removal, QNAME_PROVO_insertedKeyEntityPair);
 
-	convertTable.put(name.QNAME_PROV_LABEL, QNAME_RDFS_LABEL);
-	convertTable.put(name.QNAME_PROV_TYPE, QNAME_RDF_TYPE);
-	convertTable.put(name.QNAME_PROV_LOCATION, QNAME_PROVO_atLocation);
-	convertTable.put(name.QNAME_PROV_VALUE, QNAME_PROVO_value);
-	convertTable.put(name.QNAME_PROV_ROLE, QNAME_PROVO_hadRole);
+	convertTable.put(name.PROV_LABEL, QNAME_RDFS_LABEL);
+	convertTable.put(name.PROV_TYPE, QNAME_RDF_TYPE);
+	convertTable.put(name.PROV_LOCATION, QNAME_PROVO_atLocation);
+	convertTable.put(name.PROV_VALUE, QNAME_PROVO_value);
+	convertTable.put(name.PROV_ROLE, QNAME_PROVO_hadRole);
     }
     
     void initRangeTables() {

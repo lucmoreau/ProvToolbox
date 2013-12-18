@@ -80,7 +80,7 @@ public class Entity
 {
 
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
-    protected List<org.openprovenance.prov.model.InternationalizedString> label;
+    protected List<org.openprovenance.prov.model.LangString> label;
  
     //@XmlElement(type = org.openprovenance.prov.sql.Location.class)
     transient protected List<org.openprovenance.prov.model.Location> location;
@@ -123,9 +123,9 @@ public class Entity
         CascadeType.ALL
     })
     @JoinColumn(name = "LABEL_ENTITY_PK")
-    public List<org.openprovenance.prov.model.InternationalizedString> getLabel() {
+    public List<org.openprovenance.prov.model.LangString> getLabel() {
         if (label == null) {
-            label = new ArrayList<org.openprovenance.prov.model.InternationalizedString>();
+            label = new ArrayList<org.openprovenance.prov.model.LangString>();
         }
         return this.label;
     }
@@ -134,7 +134,7 @@ public class Entity
      * 
      * 
      */
-    public void setLabel(List<org.openprovenance.prov.model.InternationalizedString> label) {
+    public void setLabel(List<org.openprovenance.prov.model.LangString> label) {
         this.label = label;
     }
 
@@ -357,9 +357,9 @@ public class Entity
         }
         final Entity that = ((Entity) object);
         {
-            List<org.openprovenance.prov.model.InternationalizedString> lhsLabel;
+            List<org.openprovenance.prov.model.LangString> lhsLabel;
             lhsLabel = (((this.label!= null)&&(!this.label.isEmpty()))?this.getLabel():null);
-            List<org.openprovenance.prov.model.InternationalizedString> rhsLabel;
+            List<org.openprovenance.prov.model.LangString> rhsLabel;
             rhsLabel = (((that.label!= null)&&(!that.label.isEmpty()))?that.getLabel():null);
             if (!strategy.equals(LocatorUtils.property(thisLocator, "label", lhsLabel), LocatorUtils.property(thatLocator, "label", rhsLabel), lhsLabel, rhsLabel)) {
                 return false;
@@ -421,7 +421,7 @@ public class Entity
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = super.hashCode(locator, strategy);
         {
-            List<org.openprovenance.prov.model.InternationalizedString> theLabel;
+            List<org.openprovenance.prov.model.LangString> theLabel;
             theLabel = (((this.label!= null)&&(!this.label.isEmpty()))?this.getLabel():null);
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "label", theLabel), currentHashCode, theLabel);
         }
@@ -462,7 +462,7 @@ public class Entity
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            List<org.openprovenance.prov.model.InternationalizedString> theLabel;
+            List<org.openprovenance.prov.model.LangString> theLabel;
             theLabel = this.getLabel();
             toStringBuilder.append("label", theLabel);
         }

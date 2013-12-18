@@ -1,20 +1,29 @@
 package org.openprovenance.prov.model;
 
-import javax.xml.bind.JAXBElement;
+
+/**
+ * This interface specifies core functionality similar to the JAXB ObjectFactory.
+ * It contains a factory method for each 
+ * Java element interface 
+ * in the org.openprovenance.prov.model package. 
+ * <p>An ObjectFactory allows you to programatically 
+ * construct new org.openprovenance.prov.model.instances of the Java representation.
+ * for XML content. These factory methods create empty instances, in which
+ * no field has been initialized yet.
+ * 
+ * <p>Note that this interface differs from the ObjectFactory in prov-xml since
+ * it returns instance of classes defined in package org.openprovenance.prov.model
+ * 
+ */
 
 public interface ObjectFactory {
 
     ActedOnBehalfOf createActedOnBehalfOf();
 
-    JAXBElement<ActedOnBehalfOf> createActedOnBehalfOf(ActedOnBehalfOf u);
 
     Activity createActivity();
+     Agent createAgent();
 
-    JAXBElement<Activity> createActivity(Activity u);
-
-    Agent createAgent();
-
-    JAXBElement<Agent> createAgent(Agent u);
 
     AlternateOf createAlternateOf();
 
@@ -28,14 +37,13 @@ public interface ObjectFactory {
 
     Entity createEntity();
 
-    JAXBElement<Entity> createEntity(Entity u);
 
     Entry createEntry();
 
     HadMember createHadMember();   
     
 
-    InternationalizedString createInternationalizedString();
+    LangString createInternationalizedString();
 
     Key createKey();
 
@@ -43,7 +51,6 @@ public interface ObjectFactory {
 
     MentionOf createMentionOf();
 
-    JAXBElement<MentionOf> createMentionOf(MentionOf u);
 
     NamedBundle createNamedBundle();
 
@@ -62,53 +69,70 @@ public interface ObjectFactory {
      * 
      */
     Used createUsed();
-    
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link Used }{@code >}}
-     * 
-     */
-    JAXBElement<Used> createUsed(Used u);
 
     Value createValue();
 
     WasAssociatedWith createWasAssociatedWith();
-
-    JAXBElement<WasAssociatedWith> createWasAssociatedWith(WasAssociatedWith u);
-
+    
     WasAttributedTo createWasAttributedTo();
-
-    JAXBElement<WasAttributedTo> createWasAttributedTo(WasAttributedTo u);
 
     WasDerivedFrom createWasDerivedFrom();
 
-    JAXBElement<WasDerivedFrom> createWasDerivedFrom(WasDerivedFrom u);
-
     WasEndedBy createWasEndedBy();
 
-    JAXBElement<WasEndedBy> createWasEndedBy(WasEndedBy u);
-
     WasGeneratedBy createWasGeneratedBy();
-
-    JAXBElement<WasGeneratedBy> createWasGeneratedBy(WasGeneratedBy u);
-
+   
     WasInfluencedBy createWasInfluencedBy();
-
-    JAXBElement<WasInfluencedBy> createWasInfluencedBy(WasInfluencedBy u);
 
     WasInformedBy createWasInformedBy();
 
+    WasInvalidatedBy createWasInvalidatedBy();
+
+    WasStartedBy createWasStartedBy();
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link Used }{@code >}}
+     * 
+     */
+    
+    /*
+     * 
+     *     
+     JAXBElement<MentionOf> createMentionOf(MentionOf u);
+
+    JAXBElement<Used> createUsed(Used u);
+    JAXBElement<Entity> createEntity(Entity u);
+
+    //JAXBElement<WasAssociatedWith> createWasAssociatedWith(WasAssociatedWith u);
+
+   
+    JAXBElement<ActedOnBehalfOf> createActedOnBehalfOf(ActedOnBehalfOf u);
+
+    JAXBElement<Activity> createActivity(Activity u);
+    JAXBElement<Agent> createAgent(Agent u);
+
+
+    JAXBElement<WasAttributedTo> createWasAttributedTo(WasAttributedTo u);
+
+
+    JAXBElement<WasDerivedFrom> createWasDerivedFrom(WasDerivedFrom u);
+
+    JAXBElement<WasEndedBy> createWasEndedBy(WasEndedBy u);
+
+    JAXBElement<WasGeneratedBy> createWasGeneratedBy(WasGeneratedBy u);
+
+    JAXBElement<WasInfluencedBy> createWasInfluencedBy(WasInfluencedBy u);
+
     JAXBElement<WasInformedBy> createWasInformedBy(WasInformedBy u);
 
-    WasInvalidatedBy createWasInvalidatedBy();
 
     JAXBElement<WasInvalidatedBy> createWasInvalidatedBy(WasInvalidatedBy u);
 
-    WasStartedBy createWasStartedBy();
 
     JAXBElement<WasStartedBy> createWasStartedBy(WasStartedBy u);
     
     
-
+*/
 
     
    

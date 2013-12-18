@@ -11,8 +11,7 @@ public class NamespaceGatherer implements StatementAction {
     private Namespace ns=new Namespace();
     
     public NamespaceGatherer() {
-	ns.getPrefixes().put("prov",NamespacePrefixMapper.PROV_NS);
-	ns.getNamespaces().put(NamespacePrefixMapper.PROV_NS,"prov");
+	ns.addKnownNamespaces();
 	ns.setDefaultNamespace(null);
     }
     
@@ -24,8 +23,6 @@ public class NamespaceGatherer implements StatementAction {
     }
     
     
-
-    //String defaultNamespace;
 
     public Namespace getNamespace() {
 	return ns;
@@ -83,6 +80,8 @@ public class NamespaceGatherer implements StatementAction {
 	}
 
     }
+    
+ 
 
     public void register(Other other) {
 	register(other.getType());
@@ -99,7 +98,6 @@ public class NamespaceGatherer implements StatementAction {
 	}
     }
 
-    final String stringForDefault="::";
 
     void register(QualifiedName name) {
 	if (name==null) return;
@@ -291,11 +289,9 @@ public class NamespaceGatherer implements StatementAction {
 	register(r.getOldDictionary());
 	registerType(r.getType());
 	registerOther(r.getOther());
-	if (!r.getKey().isEmpty()) {
-	    ns.register("xsd", NamespacePrefixMapper.XSD_NS);
-	    // make sure xsd is registered!
+	for (Key k: r.getKey()) {
+	    register(k);
 	}
-	
     }
 
     @Override
@@ -311,11 +307,16 @@ public class NamespaceGatherer implements StatementAction {
     void registerEntry(List<Entry> keyEntityPairs) {
 	for (Entry e: keyEntityPairs) {
 	    register(e.getEntity());
-	    //Object key=e.getKey();
-	    ns.register("xsd", NamespacePrefixMapper.XSD_NS);
-
+	    Key key=e.getKey();
+	    register(key);
+	    //ns.register("xsd", NamespacePrefixMapper.XSD_NS);
 	    //make sure xsd is registered!
 	}	
+    }
+
+     void register(Key key) {
+	 registerPotentialQualifiedName(key.getValue());
+	 register(key.getType());	
     }
 
     @Override

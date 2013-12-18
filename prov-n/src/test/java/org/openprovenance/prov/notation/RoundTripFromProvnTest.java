@@ -5,10 +5,12 @@ import junit.framework.TestCase;
 
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.xml.DocumentEquality;
+import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
 
 public class RoundTripFromProvnTest extends TestCase {
     final Utility u = new Utility();
+    static ProvFactory pFactory=ProvFactory.getFactory();
 
     public RoundTripFromProvnTest(String name) {
 	super(name);
@@ -23,10 +25,10 @@ public class RoundTripFromProvnTest extends TestCase {
 	org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility();
 	DocumentEquality de = new DocumentEquality(true);
 
-	Document doc1 = u.readDocument("src/test/resources/" + file);
+	Document doc1 = u.readDocument("src/test/resources/" + file,pFactory);
 	file = file.replace('/', '_');
-	u.writeDocument(doc1, "target/" + file);
-	Document doc2 = u.readDocument("target/" + file);
+	u.writeDocument(doc1, "target/" + file,pFactory);
+	Document doc2 = u.readDocument("target/" + file,pFactory);
 
 	boolean result = de.check(doc1, doc2);
 
@@ -43,7 +45,7 @@ public class RoundTripFromProvnTest extends TestCase {
 	ProvSerialiser.getThreadProvSerialiser()
 		      .serialiseDocument(new File("target/" + file + ".xml"),
 					 doc2, true);
-	u2.writeDocument(doc2, "target/" + file + ".provn");
+	u2.writeDocument(doc2, "target/" + file + ".provn",pFactory);
 
     }
 

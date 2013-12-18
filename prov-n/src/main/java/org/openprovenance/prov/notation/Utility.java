@@ -17,7 +17,7 @@ import  org.antlr.runtime.tree.CommonTreeAdaptor;
 import  org.antlr.runtime.tree.TreeAdaptor;
 
 import org.openprovenance.prov.model.BeanTraversal;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedNameExport;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Document;
@@ -65,17 +65,15 @@ public  class Utility {
     }
 
    
-    public Object convertTreeToJavaBean(CommonTree tree) {
+    public Object convertTreeToJavaBean(CommonTree tree, ProvFactory pFactory) {
   	if (tree==null) return null;
-  	ProvFactory pFactory=new ProvFactory();
           Object o=new TreeTraversal(pFactory,pFactory).convert(tree);
           return o;
       }
 
 
 
-    public String convertBeanToHTML(final Document doc) {
-	ProvFactory pFactory=new ProvFactory();
+    public String convertBeanToHTML(final Document doc, ProvFactory pFactory) {
 	StringWriter writer=new StringWriter();
 	QualifiedNameExport qExport = new QualifiedNameExport() {
 	    @Override
@@ -92,15 +90,14 @@ public  class Utility {
         return s;
     }
     
-    public Object convertASNToJavaBean(String file) throws java.io.IOException, Throwable {
+    public Object convertASNToJavaBean(String file, ProvFactory pFactory) throws java.io.IOException, Throwable {
         CommonTree tree=convertASNToTree(file);
-        Object o=convertTreeToJavaBean(tree);
+        Object o=convertTreeToJavaBean(tree,pFactory);
         return o;
     }
 
     /** A conversion function that copies a Java Bean deeply. */
-    public Object convertJavaBeanToJavaBean(Document doc) {
-        ProvFactory pFactory=new ProvFactory();
+    public Object convertJavaBeanToJavaBean(Document doc, ProvFactory pFactory) {
         BeanTraversal bt=new BeanTraversal(pFactory, pFactory);
         Document o=bt.convert(doc);
         return o;
@@ -108,8 +105,7 @@ public  class Utility {
 
 
 
-    public String convertBeanToASN(final Document doc) {
-	ProvFactory pFactory=new ProvFactory();
+    public String convertBeanToASN(final Document doc, ProvFactory pFactory) {
 	StringWriter writer=new StringWriter();
 	QualifiedNameExport qExport = new QualifiedNameExport() {
 	    @Override
@@ -157,15 +153,15 @@ public  class Utility {
         }
     }
     
-    public void writeDocument(Document doc, String filename){
-	String s=convertBeanToASN(doc);
+    public void writeDocument(Document doc, String filename, ProvFactory pFactory){
+	String s=convertBeanToASN(doc, pFactory);
 	//System.out.println("printing" + s);
         writeTextToFile(s,filename);
     }
     
-    public Document readDocument(String filename) throws IOException, Throwable {
+    public Document readDocument(String filename, ProvFactory pFactory) throws IOException, Throwable {
 	 CommonTree tree = convertASNToTree(filename);
-         Object doc=convertTreeToJavaBean(tree);
+         Object doc=convertTreeToJavaBean(tree,pFactory);
          return (Document)doc;
     }
     

@@ -5,6 +5,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.LinkedList;
 
+import org.openprovenance.prov.model.exception.InvalidCaseException;
+
 
 /** Utilities for manipulating PROV Descriptions. */
 
@@ -293,76 +295,127 @@ public class ProvUtilities {
     }
 
     public void doAction(StatementOrBundle s, StatementAction action) {
-	switch (s.getKind()) {
-	case PROV_ACTIVITY: 
-	    action.doAction((Activity) s);
-	    break;
-	case PROV_AGENT:
-	    action.doAction((Agent) s);
-	    break;
-	case PROV_ALTERNATE:
-	    action.doAction((AlternateOf) s);
-	    break;
-	case PROV_ASSOCIATION:
-	    action.doAction((WasAssociatedWith) s);
-	    break;
-	case PROV_ATTRIBUTION:
-	    action.doAction((WasAttributedTo) s);
-	    break;
-	case PROV_BUNDLE: 
-	    action.doAction((NamedBundle) s, this);
-	    break;
-	case PROV_COMMUNICATION:
-	    action.doAction((WasInformedBy) s);
-	    break;
-	case PROV_DELEGATION:
-	    action.doAction((ActedOnBehalfOf) s);
-	    break;
-	case PROV_DERIVATION:
-	    action.doAction((WasDerivedFrom) s);
-	    break;
-	case PROV_DICTIONARY_INSERTION:
-	    action.doAction((DerivedByInsertionFrom) s);
-	    break;
-	case PROV_DICTIONARY_MEMBERSHIP:
-	    action.doAction((DictionaryMembership) s);
-	    break;
-	case PROV_DICTIONARY_REMOVAL:
-	    action.doAction((DerivedByRemovalFrom) s);
-	    break;
-	case PROV_END:
-	    action.doAction((WasEndedBy) s);
-	    break;
-	case PROV_ENTITY:
-	    action.doAction((Entity) s);
-	    break;
-	case PROV_GENERATION:
-	    action.doAction((WasGeneratedBy) s);
-	    break;
-	case PROV_INFLUENCE:
-	    action.doAction((WasInfluencedBy) s);
-	    break;
-	case PROV_INVALIDATION:
-	    action.doAction((WasInvalidatedBy) s);
-	    break;
-	case PROV_MEMBERSHIP:
-	    action.doAction((HadMember) s);
-	    break;
-	case PROV_MENTION:
-	    action.doAction((MentionOf) s);
-	    break;
-	case PROV_SPECIALIZATION:
-	    action.doAction((SpecializationOf) s);
-	    break;
-	case PROV_START:
-	    action.doAction((WasStartedBy) s);
-	    break;
-	case PROV_USAGE:
-	    action.doAction((Used) s);
-	    break;	
-	}
-    }
-    
+  	switch (s.getKind()) {
+  	case PROV_ACTIVITY: 
+  	    action.doAction((Activity) s);
+  	    break;
+  	case PROV_AGENT:
+  	    action.doAction((Agent) s);
+  	    break;
+  	case PROV_ALTERNATE:
+  	    action.doAction((AlternateOf) s);
+  	    break;
+  	case PROV_ASSOCIATION:
+  	    action.doAction((WasAssociatedWith) s);
+  	    break;
+  	case PROV_ATTRIBUTION:
+  	    action.doAction((WasAttributedTo) s);
+  	    break;
+  	case PROV_BUNDLE: 
+  	    action.doAction((NamedBundle) s, this);
+  	    break;
+  	case PROV_COMMUNICATION:
+  	    action.doAction((WasInformedBy) s);
+  	    break;
+  	case PROV_DELEGATION:
+  	    action.doAction((ActedOnBehalfOf) s);
+  	    break;
+  	case PROV_DERIVATION:
+  	    action.doAction((WasDerivedFrom) s);
+  	    break;
+  	case PROV_DICTIONARY_INSERTION:
+  	    action.doAction((DerivedByInsertionFrom) s);
+  	    break;
+  	case PROV_DICTIONARY_MEMBERSHIP:
+  	    action.doAction((DictionaryMembership) s);
+  	    break;
+  	case PROV_DICTIONARY_REMOVAL:
+  	    action.doAction((DerivedByRemovalFrom) s);
+  	    break;
+  	case PROV_END:
+  	    action.doAction((WasEndedBy) s);
+  	    break;
+  	case PROV_ENTITY:
+  	    action.doAction((Entity) s);
+  	    break;
+  	case PROV_GENERATION:
+  	    action.doAction((WasGeneratedBy) s);
+  	    break;
+  	case PROV_INFLUENCE:
+  	    action.doAction((WasInfluencedBy) s);
+  	    break;
+  	case PROV_INVALIDATION:
+  	    action.doAction((WasInvalidatedBy) s);
+  	    break;
+  	case PROV_MEMBERSHIP:
+  	    action.doAction((HadMember) s);
+  	    break;
+  	case PROV_MENTION:
+  	    action.doAction((MentionOf) s);
+  	    break;
+  	case PROV_SPECIALIZATION:
+  	    action.doAction((SpecializationOf) s);
+  	    break;
+  	case PROV_START:
+  	    action.doAction((WasStartedBy) s);
+  	    break;
+  	case PROV_USAGE:
+  	    action.doAction((Used) s);
+  	    break;	
+  	}
+      }
+
+    public Object doAction(StatementOrBundle s, StatementActionValue action) {
+  	switch (s.getKind()) {
+  	case PROV_ACTIVITY: 
+  	    return action.doAction((Activity) s);
+  	case PROV_AGENT:
+  	    return action.doAction((Agent) s);
+  	case PROV_ALTERNATE:
+  	    return action.doAction((AlternateOf) s);
+  	case PROV_ASSOCIATION:
+  	    return action.doAction((WasAssociatedWith) s);
+  	case PROV_ATTRIBUTION:
+  	    return action.doAction((WasAttributedTo) s);
+  	case PROV_BUNDLE: 
+  	    return action.doAction((NamedBundle) s, this);
+  	case PROV_COMMUNICATION:
+  	    return action.doAction((WasInformedBy) s);
+  	case PROV_DELEGATION:
+  	    return action.doAction((ActedOnBehalfOf) s);
+  	case PROV_DERIVATION:
+  	    return action.doAction((WasDerivedFrom) s);
+  	case PROV_DICTIONARY_INSERTION:
+  	    return action.doAction((DerivedByInsertionFrom) s);
+  	case PROV_DICTIONARY_MEMBERSHIP:
+  	    return action.doAction((DictionaryMembership) s);
+  	case PROV_DICTIONARY_REMOVAL:
+  	    return action.doAction((DerivedByRemovalFrom) s);
+  	case PROV_END:
+  	    return action.doAction((WasEndedBy) s);
+  	case PROV_ENTITY:
+  	    return action.doAction((Entity) s);
+  	case PROV_GENERATION:
+  	    return action.doAction((WasGeneratedBy) s);
+  	case PROV_INFLUENCE:
+  	    return action.doAction((WasInfluencedBy) s);
+  	case PROV_INVALIDATION:
+  	    return action.doAction((WasInvalidatedBy) s);
+  	case PROV_MEMBERSHIP:
+  	    return action.doAction((HadMember) s);
+  	case PROV_MENTION:
+  	    return action.doAction((MentionOf) s);
+  	case PROV_SPECIALIZATION:
+  	    return action.doAction((SpecializationOf) s);
+  	case PROV_START:
+  	    return action.doAction((WasStartedBy) s);
+  	case PROV_USAGE:
+  	    return action.doAction((Used) s);
+  	default: 
+  	    throw new InvalidCaseException("Statement Kind: " + s.getKind());
+  	}
+      }
+
     public static String unescape (String s) {
   	return s.replace("\\\"","\"");
       }

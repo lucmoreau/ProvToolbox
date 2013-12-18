@@ -6,8 +6,6 @@ import java.util.Hashtable;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-import org.openprovenance.prov.model.RecordAction;
-import org.openprovenance.prov.model.RecordValue;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.QualifiedName;
 
@@ -382,6 +380,7 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         return types.length - 1;
     }
 
+    /*
     public void forAllRecords(List<Statement> records, RecordAction action) {
         for (Statement o : records) {
             run(o, action);
@@ -546,7 +545,7 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         else throw new UnsupportedOperationException();
 
     }
-    
+    */
 
    
 

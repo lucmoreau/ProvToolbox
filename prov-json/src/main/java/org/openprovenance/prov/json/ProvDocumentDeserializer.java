@@ -72,7 +72,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     public ProvDocumentDeserializer(ProvFactory pf) {
 	this.pf=pf;
 	this.name=pf.getName();
-	this.vconv = new ValueConverter(pf, null);
+	this.vconv = new ValueConverter(pf);
     }
     
 

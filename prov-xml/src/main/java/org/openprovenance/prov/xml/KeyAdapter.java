@@ -18,7 +18,7 @@ public class KeyAdapter extends XmlAdapter<Element, TypedValue> {
 	pFactory= new ProvFactory();
 	domProcessor=new DOMProcessing(pFactory);
 	qname_PROV_KEY = pFactory.getName().PROV_KEY;
-	vconv=new ValueConverter(pFactory,null);
+	vconv=new ValueConverter(pFactory);
     }
 
 
@@ -27,7 +27,7 @@ public class KeyAdapter extends XmlAdapter<Element, TypedValue> {
 	domProcessor=new DOMProcessing(pFactory);
 	qname_PROV_KEY = pFactory.getName().PROV_KEY;
 
-	vconv=new ValueConverter(pFactory,null);
+	vconv=new ValueConverter(pFactory);
     }
 
 

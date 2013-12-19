@@ -5,23 +5,37 @@ import java.math.BigInteger;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.exception.ConverterException;
 
+/**
+ * Conversion from String to Object and vice-versa for common xsd types.
+ * 
+ * @author lavm
+ *
+ */
 
 public class ValueConverter  {
     
 
     final private LiteralConstructor pFactory;
-    final QNameConstructor qnConst;
     final private Name name;
     
-    public ValueConverter(ProvFactory pFactory, QNameConstructor qnConst) {
+    public ValueConverter(ProvFactory pFactory) {
 	this.pFactory=pFactory;
-	this.qnConst=qnConst;
 	this.name=pFactory.getName();
     }
     
     
     // should be implemented with a hash table of converters
+    
+    /** 
+     * Converts a string into a Java object, according to type provided.
+     * This function does not convert to QualifiedName since this requires 
+     * access to a prefix-namespace mapping. 
+     * @param datatype any xsd datatype, provided it is not xsd:QName
+     * @param value is a String
+     * @return an object
+     */
     
     public Object convertToJava(QualifiedName datatype, String value) {
 	if (datatype.equals(name.XSD_STRING) || datatype.equals(name.QNAME_XSD_HASH_STRING))
@@ -62,7 +76,7 @@ public class ValueConverter  {
 	    return value;
 	}
 	if (datatype.equals(name.XSD_QNAME) || datatype.equals(name.QNAME_XSD_HASH_QNAME)) {
-	    return qnConst.newQName(value);
+	    throw new ConverterException("Not conversion to xsd:QName");
 	}
 	if (datatype.equals(name.XSD_DATETIME) || datatype.equals(name.QNAME_XSD_HASH_DATETIME)) {
 	    return pFactory.newISOTime(value);

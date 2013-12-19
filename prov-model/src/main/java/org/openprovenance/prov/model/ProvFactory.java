@@ -532,6 +532,11 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
 
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newDocument(org.openprovenance.prov.model.Namespace, java.util.Collection, java.util.Collection)
+     */
+    @Override
     public Document newDocument(Namespace namespace,
                                 Collection<Statement> statements,
                                 Collection<NamedBundle> bundles) {
@@ -587,6 +592,11 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
+    /** Factory method for Key-entity entries. Key-entity entries are used to identify the members of a dictionary.
+     * @param key indexing the entity in the dictionary
+     * @param entity a {@link QualifiedName} denoting an entity
+     * @return an instance of {@link Entry}
+     */
     public Entry newEntry(Key key, QualifiedName entity) {
 	Entry res = of.createEntry();
 	res.setKey(key);

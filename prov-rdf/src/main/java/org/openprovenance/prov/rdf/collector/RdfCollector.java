@@ -68,7 +68,7 @@ public class RdfCollector extends RDFHandlerBase {
    	this.collators = new HashMap<QualifiedName, HashMap<QualifiedName, List<Statement>>>();
    	this.revnss = new Hashtable<String, String>();
    	this.document = pFactory.newDocument();
-   	this.valueConverter = new ValueConverter(pFactory,null);
+   	this.valueConverter = new ValueConverter(pFactory);
    	this.bundles = new Hashtable<QualifiedName, BundleHolder>();
    	this.namespace=new Namespace();
    	document.setNamespace(this.namespace);

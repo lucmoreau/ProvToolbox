@@ -4,7 +4,7 @@
   <parent>
     <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.5.0</version>
+    <version>0.5.1-SNAPSHOT</version>
   </parent>
 
 
@@ -22,13 +22,13 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-model</artifactId>
-      <version>0.5.0</version>
+      <version>0.5.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.5.0</version>
+      <version>0.5.1-SNAPSHOT</version>
 
       <exclusions> 
 	<exclusion><!-- Equals defined in this jar is incompatible with one used by hyperjaxb. Instead, use jaxb2-basics-runtime below -->
@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.5.0</version>
+      <version>0.5.1-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
 
@@ -761,72 +761,72 @@
 
 
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
   	          <arg value="Entity.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
   	          <arg value="Agent.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
   	          <arg value="Activity.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
   	          <arg value="WasDerivedFrom.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
   	          <arg value="ActedOnBehalfOf.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
   	          <arg value="WasGeneratedBy.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
   	          <arg value="Used.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
   	          <arg value="WasInvalidatedBy.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
   	          <arg value="WasStartedBy.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
   	          <arg value="WasEndedBy.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
   	          <arg value="WasInformedBy.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
   	          <arg value="WasAssociatedWith.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
   	          <arg value="WasAttributedTo.java" />
                 </exec>
                 <exec executable="sed" dir="${project.build.directory}/generated-sources/xjc/org/openprovenance/prov/sql">
-  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n    })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
+  	          <arg value="-e s/^}$/\n\n transient IDRef idRef;\n @javax.persistence.ManyToOne(targetEntity = org.openprovenance.prov.sql.IDRef.class, cascade = {\n CascadeType.ALL\n })\n    @JoinColumn(name = &quot;IDREF&quot;)\n    public IDRef getIdRef() {\n        return idRef;\n    }\n\n    public void setIdRef(IDRef target) {\n        if (target!=null) { setId(target.getRef());\n        idRef=target;}\n    }\n\n}/" />
   	          <arg value="-iBAK" />
   	          <arg value="WasInfluencedBy.java" />
                 </exec>

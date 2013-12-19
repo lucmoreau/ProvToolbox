@@ -1,17 +1,28 @@
 package org.openprovenance.prov.json;
 
 
+import java.io.IOException;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.fge.jackson.JsonLoader;
+import com.github.fge.jsonschema.exceptions.ProcessingException;
+import com.github.fge.jsonschema.main.JsonSchema;
+import com.github.fge.jsonschema.main.JsonSchemaFactory;
+import com.github.fge.jsonschema.report.ProcessingReport;
 
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.xml.UncheckedTestException;
 
 public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
         final Converter convert=new Converter(pFactory);
+        final JsonSchema schema;
 
-
-	public AttributeTest(String testName) {
+	public AttributeTest(String testName) throws ProcessingException, IOException {
 		super(testName);
+		final JsonNode schemaJSON = JsonLoader.fromPath("schema/prov-json-schema-v4.js");
+	        final JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
+	        this.schema = factory.getJsonSchema(schemaJSON);
 	}
 	
 	
@@ -22,9 +33,9 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 
 	@Override	
 	public boolean checkSchema(String name)  {
-	    if(name.startsWith("target/attr_dict_insert_")) {
-		return false;
-	    }
+//	    if(name.startsWith("target/attr_dict_insert_")) {
+//		return false;
+//	    }
 	    return true;
 	}
 	   
@@ -56,20 +67,15 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 	public void doCheckSchema1(String file) {
 	    
 	    try {
-		RhinoValidator validator = new RhinoValidator();
-		List<String> errors = validator.validate(file,false);
-		if (errors.size() == 0)	{
-		    //System.out.println("JSON is compliant with the PROV-JS Schema");
-		    assertTrue(true);
-		} else {
-		    System.err.println("validation error(s) for " + file);
-		    System.err.println(errors.size() + " validation error(s):");
-		    for (String error : errors) {
-			System.out.println(error);
-		    }
-		    assertTrue(false);
-		}
-	    } catch (Exception e) {
+		final JsonNode fileJSON = JsonLoader.fromPath(file);
+	        ProcessingReport report = schema.validate(fileJSON);
+	        if (!report.isSuccess())
+	            System.err.println(report);
+	        assertTrue(report.isSuccess());
+
+	    } catch (IOException e) {
+		System.err.println("Cannot load file: " + e.getMessage());
+	    } catch (ProcessingException e) {
 		System.err.println("Parsing failed: " + e.getMessage());
 	    }
 	}

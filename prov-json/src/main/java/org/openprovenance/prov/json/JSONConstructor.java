@@ -646,6 +646,7 @@ public class JSONConstructor implements ModelConstructor {
 	    // encode as a dictionary
 	    Map<Object, String> dictionary = new HashMap<Object, String>();
 	    String keyDatatype = qnExport.qualifiedNameToString(keyEntitySet.get(0).getKey().getType());
+	    // TODO This does not conform with PROV-JSON !!! 
 	    dictionary.put("$key-datatype", keyDatatype);
 	    for (Entry pair : keyEntitySet) {
 		// String key = convertValueToString(pair.key);

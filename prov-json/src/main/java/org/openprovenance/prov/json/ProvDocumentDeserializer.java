@@ -671,6 +671,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	} else if (kESElement.isJsonObject()) {
 	    // decode it as a dictionary whose keys are of the same datatype
 	    JsonObject dictionary = kESElement.getAsJsonObject();
+	    // TODO This does not conform with PROV-JSON !!! 
 	    String keyDatatype = dictionary.remove("$key-datatype")
 					   .getAsString();
 	    QualifiedName datatype = ns.stringToQualifiedName(keyDatatype,pf);

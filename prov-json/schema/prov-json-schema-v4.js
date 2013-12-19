@@ -1,95 +1,16 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
-  "properties": {
-    "prefix": {
-      "type": "object",
-      "description": "A map of prefixes and URIs",
-      "patternProperties": {
-        "^[a-zA-Z0-9_\\-]+$": {
-          "type" : "string",
-          "format": "uri"
+  "allOf": [
+    { "$ref": "#/definitions/bundle" },
+    { "properties": {
+        "bundle": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/bundle" }
         }
-      },
-      "additionalProperties": false
-    },
-    "entity": {
-      "type": "object",
-      "description": "Map of entities by ids. TODO: use patternProperties instead of additionalProperties as the keys are required to be valid ids.",
-      "additionalProperties": { "$ref": "#/definitions/entity" }
-    },
-    
-    "agent": {
-      "type": "object",
-      "description": "Map of ids of agents",
-      "additionalProperties": { "$ref": "#/definitions/agent" }
-    },
-    "activity":{
-      "type": "object",
-      "description": "Map of activities by ids",
-      "additionalProperties": { "$ref": "#/definitions/activity" }
-    },
-    "wasGeneratedBy": {
-       "type": "object",
-       "additionalProperties": { "$ref": "#/definitions/generation" }
-    },
-    "used": {
-       "type": "object",
-       "additionalProperties": { "$ref": "#/definitions/usage" }
-     },
-     "wasStartedBy": {
-       "type":"object",
-       "additionalProperties": { "$ref": "#/definitions/start" }
-     },
-     "wasEndedBy": {
-       "type":"object",
-       "additionalProperties": { "$ref": "#/definitions/end" }
-     },
-     "wasInformedBy": {
-       "type": "object",
-       "additionalProperties": { "$ref": "#/definitions/communication" }
-    },
-    "wasInvalidatedBy": {
-      "type": "object",
-      "additionalProperties": { "$ref": "#/definitions/invalidation" }
-    },
-    "wasDerivedFrom": {
-      "type": "object",
-      "additionalProperties": { "$ref": "#/definitions/derivation" }
-    },
-    "wasAttributedTo": {
-      "type": "object",
-      "additionalProperties": { "$ref": "#/definitions/attribution" }
-    },
-    "wasAssociatedWith": {
-      "type": "object",
-      "additionalProperties": { "$ref": "#/definitions/association" }
-    },
-    "actedOnBehalfOf": {
-      "type": "object",
-      "additionalProperties": { "$ref": "#/definitions/delegation" }
-    },
-    "wasInfluencedBy": {
-      "type": "object",
-      "additionalProperties": { "$ref": "#/definitions/influence" }
-    },
-    "hadMember": {
-      "type": "object",
-      "additionalProperties": { "$ref": "#/definitions/membership" }
-    },
-    "hadDictionaryMember": {
-      "type": "object",
-      "additionalProperties": { "$ref": "#/definitions/dictionary-membership" }
-    },
-    "derivedByInsertionFrom": {
-      "type": "object",
-      "additionalProperties": { "$ref": "#/definitions/dictionary-insertion" }
-    },
-    "derivedByRemovalFrom": {
-      "type": "object",
-      "additionalProperties": { "$ref": "#/definitions/dictionary-removal" }
+      }
     }
-  },
+  ],
   "definitions": {
     "literal-simple": {
       "title": "Simple data types",
@@ -306,16 +227,6 @@
       "required": ["prov:collection", "prov:entity"],
       "additionalProperties": false
     },
-    "dictionary-membership": {
-      "type":"object",
-      "properties": {
-        "prov:dictionary": {"type": "string", "format": "uri" },
-        "prov:entity": {"type": "string", "format": "uri" },
-        "prov:key": {"type": "string"}
-      },
-      "required": ["prov:dictionary", "prov:entity", "prov:key"],
-      "additionalProperties": false
-    },
     "key-entity-set-standard": {
       "type": "array",
       "items": {
@@ -344,6 +255,15 @@
         { "$ref": "#/definitions/key-entity-set-compact" }
       ]
     },
+    "dictionary-membership": {
+      "type":"object",
+      "properties": {
+        "prov:dictionary": {"type": "string", "format": "uri" },
+        "prov:key-entity-set": { "$ref": "#/definitions/key-entity-set" }
+      },
+      "required": ["prov:dictionary", "prov:key-entity-set"],
+      "additionalProperties": false
+    },
     "dictionary-insertion": {
       "type":"object",
       "properties": {
@@ -367,7 +287,119 @@
       },
       "required": ["prov:after", "prov:before", "prov:key-set"],
       "additionalProperties": { "$ref": "#/definitions/literal" }
+    },
+    "mention": {
+      "type": "object",
+      "properties": {
+        "prov:specificEntity": {"type": "string", "format": "uri" },
+        "prov:generalEntity": {"type": "string", "format": "uri" },
+        "prov:bundle": {"type": "string", "format": "uri" }
+      },
+      "required": ["prov:specificEntity", "prov:generalEntity", "prov:bundle"],
+      "additionalProperties": false
+    },
+    "bundle": {
+      "type": "object",
+      "properties": {
+        "prefix": {
+          "type": "object",
+          "description": "A map of prefixes and URIs",
+          "patternProperties": {
+            "^[a-zA-Z0-9_\\-]+$": {
+              "type" : "string",
+              "format": "uri"
+            }
+          },
+          "additionalProperties": false
+        },
+        "entity": {
+          "type": "object",
+          "description": "Map of entities by ids. TODO: use patternProperties instead of additionalProperties as the keys are required to be valid ids.",
+          "additionalProperties": { "$ref": "#/definitions/entity" }
+        },
+        "agent": {
+          "type": "object",
+          "description": "Map of ids of agents",
+          "additionalProperties": { "$ref": "#/definitions/agent" }
+        },
+        "activity":{
+          "type": "object",
+          "description": "Map of activities by ids",
+          "additionalProperties": { "$ref": "#/definitions/activity" }
+        },
+        "wasGeneratedBy": {
+           "type": "object",
+           "additionalProperties": { "$ref": "#/definitions/generation" }
+        },
+        "used": {
+           "type": "object",
+           "additionalProperties": { "$ref": "#/definitions/usage" }
+         },
+         "wasStartedBy": {
+           "type":"object",
+           "additionalProperties": { "$ref": "#/definitions/start" }
+         },
+         "wasEndedBy": {
+           "type":"object",
+           "additionalProperties": { "$ref": "#/definitions/end" }
+         },
+         "wasInformedBy": {
+           "type": "object",
+           "additionalProperties": { "$ref": "#/definitions/communication" }
+        },
+        "wasInvalidatedBy": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/invalidation" }
+        },
+        "wasDerivedFrom": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/derivation" }
+        },
+        "wasAttributedTo": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/attribution" }
+        },
+        "wasAssociatedWith": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/association" }
+        },
+        "actedOnBehalfOf": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/delegation" }
+        },
+        "wasInfluencedBy": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/influence" }
+        },
+        "specializationOf": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/specialization" }
+        },
+        "alternateOf": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/alternate" }
+        },
+        "hadMember": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/membership" }
+        },
+        "hadDictionaryMember": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/dictionary-membership" }
+        },
+        "derivedByInsertionFrom": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/dictionary-insertion" }
+        },
+        "derivedByRemovalFrom": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/dictionary-removal" }
+        },
+        "mentionOf": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/mention" }
+        }
+      }
     }
-  },
-  "additionalProperties": false
+  }
 }

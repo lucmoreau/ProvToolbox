@@ -79,7 +79,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     @Override
     public Document deserialize(JsonElement json, Type typeOfT,
 				JsonDeserializationContext context)
-								   throws JsonParseException {
+					throws JsonParseException {
 	JsonObject provJSONDoc = json.getAsJsonObject();
 
 	// Initialise namespaces
@@ -467,6 +467,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		&& !attributeMap.entrySet().isEmpty()) {
 	    if (statement instanceof HasOther) {
 		// TODO: to clean up this casting
+		@SuppressWarnings("rawtypes")
 		List ll = ((HasOther) statement).getOther();
 		List<Attribute> attributes = (List<Attribute>) ll;
 		for (Map.Entry<String, JsonElement> aPair : attributeMap.entrySet()) {
@@ -671,6 +672,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	} else if (kESElement.isJsonObject()) {
 	    // decode it as a dictionary whose keys are of the same datatype
 	    JsonObject dictionary = kESElement.getAsJsonObject();
+	    // TODO This does not conform with PROV-JSON !!! 
 	    String keyDatatype = dictionary.remove("$key-datatype")
 					   .getAsString();
 	    QualifiedName datatype = ns.stringToQualifiedName(keyDatatype,pf);

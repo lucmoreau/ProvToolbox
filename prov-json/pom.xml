@@ -22,11 +22,6 @@
     	<artifactId>gson</artifactId>
     	<version>2.1</version>
     </dependency>
-    <dependency>
-    	<groupId>org.mozilla</groupId>
-    	<artifactId>rhino</artifactId>
-    	<version>1.7R3</version>
-    </dependency>
 
 
     <!-- testing -->
@@ -47,6 +42,12 @@
     	<classifier>tests</classifier>
     </dependency>
 
+    <dependency>
+    	<groupId>com.github.fge</groupId>
+    	<artifactId>json-schema-validator</artifactId>
+    	<version>2.1.7</version>
+    	<scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

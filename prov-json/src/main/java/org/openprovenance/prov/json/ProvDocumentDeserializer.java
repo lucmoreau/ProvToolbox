@@ -79,7 +79,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     @Override
     public Document deserialize(JsonElement json, Type typeOfT,
 				JsonDeserializationContext context)
-								   throws JsonParseException {
+					throws JsonParseException {
 	JsonObject provJSONDoc = json.getAsJsonObject();
 
 	// Initialise namespaces
@@ -467,6 +467,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		&& !attributeMap.entrySet().isEmpty()) {
 	    if (statement instanceof HasOther) {
 		// TODO: to clean up this casting
+		@SuppressWarnings("rawtypes")
 		List ll = ((HasOther) statement).getOther();
 		List<Attribute> attributes = (List<Attribute>) ll;
 		for (Map.Entry<String, JsonElement> aPair : attributeMap.entrySet()) {

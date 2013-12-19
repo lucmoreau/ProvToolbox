@@ -97,6 +97,7 @@ public class JSONConstructor implements ModelConstructor {
 	    JsonProvRecord record = (JsonProvRecord) o;
 	    String type = record.type;
 
+	    @SuppressWarnings("unchecked")
 	    Map<Object, Object> structure = (Map<Object, Object>) bundle.get(type);
 	    if (structure == null) {
 		structure = new HashMap<Object, Object>();
@@ -111,6 +112,7 @@ public class JSONConstructor implements ModelConstructor {
 		    Object existing = hash.get(attribute);
 		    if (existing instanceof List) {
 			// Already a multi-value attribute
+			@SuppressWarnings("unchecked")
 			List<Object> values = (List<Object>) existing;
 			values.add(value);
 		    } else {
@@ -127,6 +129,7 @@ public class JSONConstructor implements ModelConstructor {
 	    if (structure.containsKey(record.id)) {
 		Object existing = structure.get(record.id);
 		if (existing instanceof List) {
+		    @SuppressWarnings("unchecked")
 		    List<Object> values = (List<Object>) existing;
 		    values.add(hash);
 		} else {
@@ -160,7 +163,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     private Object typedLiteral(String value, String datatype, String lang) {
-	// TODO: Converting default types to JSON primitives
+	// Converting default types to JSON primitives
 	if (datatype == "xsd:string" && lang == null)
 	    return value;
 	if (datatype == "xsd:double")
@@ -170,6 +173,7 @@ public class JSONConstructor implements ModelConstructor {
 	if (datatype == "xsd:boolean")
 	    return Boolean.parseBoolean(value);
 
+	// Creating a typed literal structure
 	Map<String, String> result = new HashMap<String, String>();
 	result.put("$", value);
 	if (datatype != null) {
@@ -219,8 +223,7 @@ public class JSONConstructor implements ModelConstructor {
 	    else
 		return iStr.getValue();
 	}
-	// TODO: Raise an exception?
-	return null;
+	throw new RuntimeException("Cannot convert this value: " + value.toString());
     }
 
     private Object[] convertAttribute(Attribute attr) {
@@ -568,10 +571,7 @@ public class JSONConstructor implements ModelConstructor {
 		entityList.add(qnExport.qualifiedNameToString(entity));
 	    attrs.add(tuple("prov:entity", entityList));
 	}
-	// TODO Add id to the interface
-	QualifiedName id = null;
-	String recordID = (id != null) ? qnExport.qualifiedNameToString(id)
-		: getBlankID("hM");
+	String recordID = getBlankID("hM");
 	JsonProvRecord record = new JsonProvRecord("hadMember", recordID, attrs);
 	this.currentRecords.add(record);
 	return null;
@@ -581,7 +581,8 @@ public class JSONConstructor implements ModelConstructor {
     public Document newDocument(Namespace namespaces,
 				Collection<Statement> statements,
 				Collection<NamedBundle> bundles) {
-	// TODO Auto-generated method stub
+	// This class only collect statements into a structure ready for JSON conversion
+	// No new document will be returned
 	return null;
     }
 

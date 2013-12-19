@@ -5,7 +5,7 @@
   <groupId>org.openprovenance.prov</groupId>
   <artifactId>ProvToolbox</artifactId>
   <name>W3C PROV Specifications</name>
-  <version>0.4.1-SNAPSHOT</version>
+  <version>0.5.0</version>
   <url>http://openprovenance.org/java/site/prov1_0</url>
   <packaging>pom</packaging>
   <description>Some Java code related to the W3C PROV specifications.</description>
@@ -15,7 +15,7 @@
     <connection>scm:git:git://github.com/lucmoreau/ProvToolbox.git</connection>
 <!--    <developerConnection>scm:git:git://github.com/lucmoreau/OpenProvenanceModel.git</developerConnection> -->
     <developerConnection>scm:git:git@github.com:lucmoreau/ProvToolbox.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>ProvToolbox-0.5.0</tag>
   </scm>   
 
 

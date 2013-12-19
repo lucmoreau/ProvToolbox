@@ -2,7 +2,6 @@ package org.openprovenance.prov.json;
 
 
 import java.io.IOException;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jackson.JsonLoader;
@@ -33,9 +32,6 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 
 	@Override	
 	public boolean checkSchema(String name)  {
-//	    if(name.startsWith("target/attr_dict_insert_")) {
-//		return false;
-//	    }
 	    return true;
 	}
 	   

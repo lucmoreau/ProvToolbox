@@ -143,7 +143,6 @@ public class ValueConverter  {
             return pFactory.base64Decoding(value);
         }
 
-	//transform to qname!!
 	if (datatype.equals(name.RDF_LITERAL)) {
 	    return value;
 	}
@@ -156,29 +155,29 @@ public class ValueConverter  {
 
     public QualifiedName getXsdType(Object o) {
 	if (o instanceof Integer)
-	    return name.XSD_INT; //"xsd:int";
+	    return name.XSD_INT; 
 	if (o instanceof String)
-	    return name.XSD_STRING; //"xsd:string";
+	    return name.XSD_STRING; 
 	if (o instanceof LangString)
-	    return name.XSD_STRING; //"xsd:string";
+	    return name.XSD_STRING;
 	if (o instanceof BigInteger)
 	    return name.XSD_INTEGER;
 	if (o instanceof Long)
-	    return name.XSD_LONG; //"xsd:long";
+	    return name.XSD_LONG; 
 	if (o instanceof Short)
-	    return name.XSD_SHORT; //"xsd:short";
+	    return name.XSD_SHORT; 
 	if (o instanceof Double)
-	    return name.XSD_DOUBLE; //"xsd:double";
+	    return name.XSD_DOUBLE; 
 	if (o instanceof Float)
-	    return name.XSD_FLOAT; //"xsd:float";
+	    return name.XSD_FLOAT; 
 	if (o instanceof java.math.BigDecimal)
-	    return name.XSD_DECIMAL; //"xsd:decimal";
+	    return name.XSD_DECIMAL; 
 	if (o instanceof Boolean)
-	    return name.XSD_BOOLEAN; //"xsd:boolean";
+	    return name.XSD_BOOLEAN; 
 	if (o instanceof Byte)
-	    return name.XSD_BYTE; //"xsd:byte";
+	    return name.XSD_BYTE;
 	if (o instanceof QName)
-	    return name.XSD_QNAME; //"xsd:QName";
+	    return name.XSD_QNAME; 
 	if (o instanceof XMLGregorianCalendar) {
 	    XMLGregorianCalendar cal=(XMLGregorianCalendar)o;
 	    QName t=cal.getXMLSchemaType();
@@ -188,8 +187,11 @@ public class ValueConverter  {
             // default, return xsd:datetime
             return name.XSD_DATETIME;
 	}
-	//FIXME: see issue #54, value can be an element, when xsi:type was unspecified.
-	System.out.println("getXsdType() " + o.getClass());
+	//issue #54 flagged a concern: value can be an element, when xsi:type was unspecified.
+	// this is no longer the case
+	//System.out.println("getXsdType() " + o.getClass());
+	
+	// Let's be permissive, and return the unknown qualified name
 	return name.QNAME_UNKNOWN;
     }
 

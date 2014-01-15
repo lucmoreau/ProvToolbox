@@ -86,6 +86,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	Hashtable<String, String> namespaces = decodePrefixes(provJSONDoc);
 
 	ns = new Namespace();
+	// prefixes prov and xsd are implicit in prov-json
+	ns.addKnownNamespaces();
 	if (namespaces != null) {
 	    for (String prefix : namespaces.keySet()) {
 		String aNamespace = namespaces.get(prefix);

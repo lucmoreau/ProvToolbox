@@ -54,7 +54,7 @@ public class RdfCollector extends RDFHandlerBase {
     protected HashMap<QualifiedName, HashMap<QualifiedName, List<Statement>>> collators;
     private Hashtable<QualifiedName, BundleHolder> bundles;
     protected Document document;
-    private Hashtable<String, String> revnss;
+   // private Hashtable<String, String> revnss;
     private ValueConverter valueConverter;
     final protected Ontology onto;
     protected static String BNODE_NS = "http://openprovenance.org/provtoolbox/bnode/";
@@ -66,7 +66,7 @@ public class RdfCollector extends RDFHandlerBase {
    	this.name=pFactory.getName();
    	this.onto=onto;
    	this.collators = new HashMap<QualifiedName, HashMap<QualifiedName, List<Statement>>>();
-   	this.revnss = new Hashtable<String, String>();
+   	//this.revnss = new Hashtable<String, String>();
    	this.document = pFactory.newDocument();
    	this.valueConverter = new ValueConverter(pFactory);
    	this.bundles = new Hashtable<QualifiedName, BundleHolder>();
@@ -375,14 +375,6 @@ public class RdfCollector extends RDFHandlerBase {
 	}
     }
     
-    //FIXME make a map
-    
-    public QualifiedName getTypeForLiteral(String uri) {
-	if (uri.equals(NamespacePrefixMapper.XSD_HASH_NS + "unsignedInt")) {
-	    return name.XSD_UNSIGNED_INT;
-	}
-	return name.QNAME_UNKNOWN;
-    }
 
 
     private void handleTypes(Types.ProvType[] types, QualifiedName context, QualifiedName subject) {
@@ -895,7 +887,7 @@ public class RdfCollector extends RDFHandlerBase {
 	}
 	this.document.getNamespace().register(prefix, namespace);
 	//pFactory.setNamespaces(this.document.getNss());
-	this.revnss.put(namespace, prefix);
+	//this.revnss.put(namespace, prefix);
     }
 
   

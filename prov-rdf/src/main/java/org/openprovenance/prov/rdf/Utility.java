@@ -45,7 +45,11 @@ public class Utility {
 	RdfCollector rdfCollector = new QualifiedCollector(pFactory,onto);
 	rdfParser.setRDFHandler(rdfCollector);
 	rdfParser.parse(inputStream, documentURL.toString());
-	return rdfCollector.getDocument();
+	Document doc=rdfCollector.getDocument();
+	Namespace ns=doc.getNamespace();
+	ns.unregister("xsd", "http://www.w3.org/2001/XMLSchema#");
+	ns.register("xsd", "http://www.w3.org/2001/XMLSchema");
+	return doc;
     }
 
     public void dumpRDF(Document document,

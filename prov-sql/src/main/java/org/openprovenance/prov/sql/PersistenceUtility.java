@@ -17,7 +17,7 @@ import org.openprovenance.prov.model.ProvUtilities;
 public class PersistenceUtility {
     static Logger logger = Logger.getLogger(PersistenceUtility.class);
     static private EntityManagerFactory emf;                                                                                                                   
-    static private EntityManager entityManager;      
+    static private EntityManager entityManager;
 
     public PersistenceUtility() {
        
@@ -114,7 +114,7 @@ public class PersistenceUtility {
 
 
     public String getEntityManagerFactoryPropertiesResourceName() {
-        return "persistence.properties";
+        return DB_PROPERTIES_FILE;
     }
 
              
@@ -192,6 +192,28 @@ public class PersistenceUtility {
     }            
     
    
+
+    private static Properties getPropertiesFromClasspath(String propFileName) {
+	Properties props = new Properties();
+	InputStream inputStream = PersistenceUtility.class.getClassLoader()
+		.getResourceAsStream(propFileName);
+	
+	if (inputStream == null) {
+	    // throw new FileNotFoundException("property file '" + propFileName
+	    // + "' not found in the classpath");
+	    return null;
+	}
+	try {
+	    props.load(inputStream);
+	} catch (IOException ee) {
+	    return null;
+	}
+	return props;
+    }
+    
+    final static private String configFilename="db.properties";      
+    public final static String DB_PROPERTIES_FILE = getPropertiesFromClasspath(configFilename).getProperty("persistence.properties");
+
 
     
 

@@ -21,7 +21,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  */
 @Entity(name = "QualifiedName")
 @javax.persistence.Cacheable 
-@Table(name = "QUALIFIEDNAME") //, uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"URI"}))
+@Table(name = "QUALIFIEDNAME", uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"URI"}))
 @Inheritance(strategy = InheritanceType.JOINED)
 public class QualifiedName
  implements org.openprovenance.prov.model.QualifiedName

@@ -44,7 +44,9 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 //@XmlJavaTypeAdapter(TypedValueAdapter.class)
 @javax.persistence.Entity(name = "TypedValue")
 @Table(name = "TYPEDVALUE")
-@Inheritance(strategy = InheritanceType.JOINED)
+//@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+
 public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     private static final QualifiedName QNAME_PROV_TYPE = ProvFactory.getFactory().getName().PROV_TYPE;
     private static final QualifiedName QNAME_PROV_LABEL = ProvFactory.getFactory().getName().PROV_LABEL;

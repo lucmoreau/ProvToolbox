@@ -66,7 +66,9 @@ import org.openprovenance.prov.model.StatementOrBundle;
 })
 @javax.persistence.Entity(name = "AStatement")
 @Table(name = "ASTATEMENT")
-@Inheritance(strategy = InheritanceType.JOINED)
+//@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+
 public class AStatement
     implements Equals, HashCode, StatementOrBundle
 {

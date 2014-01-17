@@ -49,6 +49,7 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 			      String file) {
 	Namespace.withThreadNamespace(doc.getNamespace());
 
+	System.out.println("saving document ... ");
 	@SuppressWarnings("unused")
 	Document doc2 = u.persist((org.openprovenance.prov.sql.Document) doc);
 	dbKeys.put(file, ((org.openprovenance.prov.sql.Document) doc).getPk());

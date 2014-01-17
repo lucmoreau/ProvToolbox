@@ -1,6 +1,7 @@
 package org.openprovenance.prov.sql;
 
 import javax.persistence.Basic;
+import javax.persistence.NamedQuery;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,6 +21,9 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  * 
  */
 @Entity(name = "QualifiedName")
+@NamedQuery(name="QualifiedName.Find", query="SELECT e FROM QualifiedName e WHERE e.uri LIKE :uri")
+
+
 @javax.persistence.Cacheable 
 @Table(name = "QUALIFIEDNAME", uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"URI"}))
 @Inheritance(strategy = InheritanceType.JOINED)

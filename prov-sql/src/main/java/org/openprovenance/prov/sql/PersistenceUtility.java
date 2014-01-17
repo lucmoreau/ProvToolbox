@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Properties;
 
 import javax.persistence.EntityManager;
@@ -12,21 +13,23 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ProvUtilities;
 
 public class PersistenceUtility {
     static Logger logger = Logger.getLogger(PersistenceUtility.class);
     static private EntityManagerFactory emf;                                                                                                                   
     static private EntityManager entityManager;
-
+    static Hashtable<String, QualifiedName> table;
     public PersistenceUtility() {
        
     }
     
     public void setUp() {
 	if (emf==null) emf=createEntityManagerFactory();  
-	if (entityManager==null) entityManager=createEntityManager();  
-	
+	if (entityManager==null) entityManager=createEntityManager(); 
+	if (table==null) table=new Hashtable<String, QualifiedName>();
+	 
 	//System.out.println("**** merging IdentifierManagement");
         //entityManager.persist(IdentifierManagement.it);
 	//entityManager.merge(IdentifierManagement.it);
@@ -43,8 +46,7 @@ public class PersistenceUtility {
                while (resources.hasMoreElements()) {
                  final URL resource = resources.nextElement();
                  //logger.debug("Detected [" + resource + "].");
-               }
-         
+               }         
              }
              catch (IOException ignored) {
          
@@ -163,7 +165,7 @@ public class PersistenceUtility {
     public Document persist(Document doc) {
 	try {
             beginTransaction();
-            Dagify dagifier=new Dagify(entityManager);
+            Dagify dagifier=new Dagify(entityManager,table);
             ProvUtilities u=new ProvUtilities();
             u.forAllStatementOrBundle(doc.getStatementOrBundle(), dagifier);
             entityManager.persist(doc);

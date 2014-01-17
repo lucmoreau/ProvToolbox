@@ -32,23 +32,25 @@ import org.openprovenance.prov.model.Role;
 public class Dagify implements StatementAction {
 
     private EntityManager em;
+    private Hashtable<String, QualifiedName> table;
 
-    public Dagify(EntityManager em) {
+    public Dagify(EntityManager em, Hashtable<String, QualifiedName> table) {
         this.em=em;
+        this.table=table;
     }
     
-    Hashtable<String, QualifiedName> table=new Hashtable<String, QualifiedName>();
     
 
 
     public QualifiedName uniquify(QualifiedName q) {
         if (q==null) return null;
-        String uri=q.getNamespaceURI()+q.getLocalPart();
+        String uri=q.getUri();
         org.openprovenance.prov.model.QualifiedName found=table.get(uri);
         if (found!=null) {
             return found;
         }
-        Query qq=em.createQuery("SELECT e FROM QualifiedName e WHERE e.uri LIKE :uri");
+        //Query qq=em.createQuery("SELECT e FROM QualifiedName e WHERE e.uri LIKE :uri");
+        Query qq=em.createNamedQuery("QualifiedName.Find");
         qq.setParameter("uri", uri);
         @SuppressWarnings("unchecked")
 	List<QualifiedName> ll=(List<QualifiedName>) qq.getResultList();

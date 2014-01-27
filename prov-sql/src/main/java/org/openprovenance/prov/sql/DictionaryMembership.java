@@ -57,7 +57,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 })
 @Entity(name = "DictionaryMembership")
 @Table(name = "DICTIONARYMEMBERSHIP")
-@Inheritance(strategy = InheritanceType.JOINED)
+//@Inheritance(strategy = InheritanceType.JOINED)
 public class DictionaryMembership extends AStatement
     implements Equals, HashCode, org.openprovenance.prov.model.DictionaryMembership
 {

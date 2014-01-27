@@ -1,4 +1,11 @@
 
+saved document 128367 for target/attr_entity_one_value_attr30.xml
+The sql table VALUE does not seem to contain a value??
+   gday is not converted???
+
+
+
+----------------------------------------------------------------------
 xml:lang xml namespace not declared!
 
 ----------------------------------------------------------------------

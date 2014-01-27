@@ -311,7 +311,10 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
 
     @Id
     @Column(name = "PK")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    // see http://stackoverflow.com/questions/916169/cannot-use-identity-column-key-generation-with-union-subclass-table-per-clas
+
     public Long getPk() {
         return pk;
     }

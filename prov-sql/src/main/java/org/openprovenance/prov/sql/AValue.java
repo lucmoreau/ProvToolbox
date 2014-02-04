@@ -125,32 +125,7 @@ public class AValue
     protected XMLGregorianCalendar gYear;
     protected BigInteger integer;
 
-    /**
-     * Gets the value of the int property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    @Basic
-    @Column(name = "INT_", precision = 10, scale = 0)
-    public Integer getInt() {
-        return _int;
-    }
-
-    /**
-     * Sets the value of the int property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setInt(Integer value) {
-        this._int = value;
-    }
-
+    
     /**
      * Gets the value of the string property.
      * 
@@ -203,31 +178,6 @@ public class AValue
         this._long = value;
     }
 
-    /**
-     * Gets the value of the short property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Short }
-     *     
-     */
-    @Basic
-    @Column(name = "SHORT", precision = 5, scale = 0)
-    public Short getShort() {
-        return _short;
-    }
-
-    /**
-     * Sets the value of the short property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Short }
-     *     
-     */
-    public void setShort(Short value) {
-        this._short = value;
-    }
 
     /**
      * Gets the value of the double property.
@@ -281,110 +231,8 @@ public class AValue
         this._float = value;
     }
 
-    /**
-     * Gets the value of the decimal property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigDecimal }
-     *     
-     */
-    @Basic
-    @Column(name = "DECIMAL_", precision = 20, scale = 10)
-    public BigDecimal getDecimal() {
-        return decimal;
-    }
 
-    /**
-     * Sets the value of the decimal property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigDecimal }
-     *     
-     */
-    public void setDecimal(BigDecimal value) {
-        this.decimal = value;
-    }
-
-    /**
-     * Gets the value of the boolean property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    @Basic
-    @Column(name = "BOOLEAN_")
-    public Boolean isBoolean() {
-        return _boolean;
-    }
-
-    /**
-     * Sets the value of the boolean property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setBoolean(Boolean value) {
-        this._boolean = value;
-    }
-
-    /**
-     * Gets the value of the byte property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Byte }
-     *     
-     */
-    @Basic
-    @Column(name = "BYTE", precision = 3, scale = 0)
-    public Byte getByte() {
-        return _byte;
-    }
-
-    /**
-     * Sets the value of the byte property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Byte }
-     *     
-     */
-    public void setByte(Byte value) {
-        this._byte = value;
-    }
-
-    /**
-     * Gets the value of the anyURI property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    @Basic
-    @Column(name = "ANYURI")
-    public String getAnyURI() {
-        return anyURI;
-    }
-
-    /**
-     * Sets the value of the anyURI property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAnyURI(String value) {
-        this.anyURI = value;
-    }
-
+    
     /**
      * Gets the value of the qname property.
      * 
@@ -410,58 +258,7 @@ public class AValue
         this.qname = value;
     }
 
-    /**
-     * Gets the value of the unsignedInt property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Long }
-     *     
-     */
-    @Basic
-    @Column(name = "UNSIGNEDINT", precision = 10, scale = 0)
-    public Long getUnsignedInt() {
-        return unsignedInt;
-    }
-
-    /**
-     * Sets the value of the unsignedInt property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Long }
-     *     
-     */
-    public void setUnsignedInt(Long value) {
-        this.unsignedInt = value;
-    }
-
-    /**
-     * Gets the value of the unsignedLong property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    @Basic
-    @Column(name = "UNSIGNEDLONG", precision = 20, scale = 0)
-    public BigInteger getUnsignedLong() {
-        return unsignedLong;
-    }
-
-    /**
-     * Sets the value of the unsignedLong property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setUnsignedLong(BigInteger value) {
-        this.unsignedLong = value;
-    }
-
+   
     /**
      * Gets the value of the dateTime property.
      * 
@@ -512,31 +309,7 @@ public class AValue
         this.gYear = value;
     }
 
-    /**
-     * Gets the value of the integer property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    @Basic
-    @Column(name = "INTEGER_", precision = 20, scale = 0)
-    public BigInteger getInteger() {
-        return integer;
-    }
-
-    /**
-     * Sets the value of the integer property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setInteger(BigInteger value) {
-        this.integer = value;
-    }
+ 
 
     @Basic
     @Column(name = "QNAMEITEM")
@@ -581,15 +354,7 @@ public class AValue
             return true;
         }
         final AValue that = ((AValue) object);
-        {
-            Integer lhsInt;
-            lhsInt = this.getInt();
-            Integer rhsInt;
-            rhsInt = that.getInt();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "_int", lhsInt), LocatorUtils.property(thatLocator, "_int", rhsInt), lhsInt, rhsInt)) {
-                return false;
-            }
-        }
+   
         {
             String lhsString;
             lhsString = this.getString();
@@ -605,15 +370,6 @@ public class AValue
             Long rhsLong;
             rhsLong = that.getLong();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "_long", lhsLong), LocatorUtils.property(thatLocator, "_long", rhsLong), lhsLong, rhsLong)) {
-                return false;
-            }
-        }
-        {
-            Short lhsShort;
-            lhsShort = this.getShort();
-            Short rhsShort;
-            rhsShort = that.getShort();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "_short", lhsShort), LocatorUtils.property(thatLocator, "_short", rhsShort), lhsShort, rhsShort)) {
                 return false;
             }
         }
@@ -635,43 +391,7 @@ public class AValue
                 return false;
             }
         }
-        {
-            BigDecimal lhsDecimal;
-            lhsDecimal = this.getDecimal();
-            BigDecimal rhsDecimal;
-            rhsDecimal = that.getDecimal();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "decimal", lhsDecimal), LocatorUtils.property(thatLocator, "decimal", rhsDecimal), lhsDecimal, rhsDecimal)) {
-                return false;
-            }
-        }
-        {
-            Boolean lhsBoolean;
-            lhsBoolean = this.isBoolean();
-            Boolean rhsBoolean;
-            rhsBoolean = that.isBoolean();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "_boolean", lhsBoolean), LocatorUtils.property(thatLocator, "_boolean", rhsBoolean), lhsBoolean, rhsBoolean)) {
-                return false;
-            }
-        }
-        {
-            Byte lhsByte;
-            lhsByte = this.getByte();
-            Byte rhsByte;
-            rhsByte = that.getByte();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "_byte", lhsByte), LocatorUtils.property(thatLocator, "_byte", rhsByte), lhsByte, rhsByte)) {
-                return false;
-            }
-        }
-        {
-            String lhsAnyURI;
-            lhsAnyURI = this.getAnyURI();
-            String rhsAnyURI;
-            rhsAnyURI = that.getAnyURI();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "anyURI", lhsAnyURI), LocatorUtils.property(thatLocator, "anyURI", rhsAnyURI), lhsAnyURI, rhsAnyURI)) {
-                return false;
-            }
-        }
-        {
+         {
             QualifiedName lhsQname;
             lhsQname = this.getQname();
             QualifiedName rhsQname;
@@ -680,25 +400,7 @@ public class AValue
                 return false;
             }
         }
-        {
-            Long lhsUnsignedInt;
-            lhsUnsignedInt = this.getUnsignedInt();
-            Long rhsUnsignedInt;
-            rhsUnsignedInt = that.getUnsignedInt();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "unsignedInt", lhsUnsignedInt), LocatorUtils.property(thatLocator, "unsignedInt", rhsUnsignedInt), lhsUnsignedInt, rhsUnsignedInt)) {
-                return false;
-            }
-        }
-        {
-            BigInteger lhsUnsignedLong;
-            lhsUnsignedLong = this.getUnsignedLong();
-            BigInteger rhsUnsignedLong;
-            rhsUnsignedLong = that.getUnsignedLong();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "unsignedLong", lhsUnsignedLong), LocatorUtils.property(thatLocator, "unsignedLong", rhsUnsignedLong), lhsUnsignedLong, rhsUnsignedLong)) {
-                return false;
-            }
-        }
-        {
+         {
             XMLGregorianCalendar lhsDateTime;
             lhsDateTime = this.getDateTime();
             XMLGregorianCalendar rhsDateTime;
@@ -716,15 +418,6 @@ public class AValue
                 return false;
             }
         }
-        {
-            BigInteger lhsInteger;
-            lhsInteger = this.getInteger();
-            BigInteger rhsInteger;
-            rhsInteger = that.getInteger();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "integer", lhsInteger), LocatorUtils.property(thatLocator, "integer", rhsInteger), lhsInteger, rhsInteger)) {
-                return false;
-            }
-        }
         return true;
     }
 
@@ -735,11 +428,7 @@ public class AValue
 
     public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = 1;
-        {
-            Integer theInt;
-            theInt = this.getInt();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "_int", theInt), currentHashCode, theInt);
-        }
+       
         {
             String theString;
             theString = this.getString();
@@ -749,11 +438,6 @@ public class AValue
             Long theLong;
             theLong = this.getLong();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "_long", theLong), currentHashCode, theLong);
-        }
-        {
-            Short theShort;
-            theShort = this.getShort();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "_short", theShort), currentHashCode, theShort);
         }
         {
             Double theDouble;
@@ -766,39 +450,9 @@ public class AValue
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "_float", theFloat), currentHashCode, theFloat);
         }
         {
-            BigDecimal theDecimal;
-            theDecimal = this.getDecimal();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "decimal", theDecimal), currentHashCode, theDecimal);
-        }
-        {
-            Boolean theBoolean;
-            theBoolean = this.isBoolean();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "_boolean", theBoolean), currentHashCode, theBoolean);
-        }
-        {
-            Byte theByte;
-            theByte = this.getByte();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "_byte", theByte), currentHashCode, theByte);
-        }
-        {
-            String theAnyURI;
-            theAnyURI = this.getAnyURI();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "anyURI", theAnyURI), currentHashCode, theAnyURI);
-        }
-        {
             QualifiedName theQname;
             theQname = this.getQname();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "qname", theQname), currentHashCode, theQname);
-        }
-        {
-            Long theUnsignedInt;
-            theUnsignedInt = this.getUnsignedInt();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "unsignedInt", theUnsignedInt), currentHashCode, theUnsignedInt);
-        }
-        {
-            BigInteger theUnsignedLong;
-            theUnsignedLong = this.getUnsignedLong();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "unsignedLong", theUnsignedLong), currentHashCode, theUnsignedLong);
         }
         {
             XMLGregorianCalendar theDateTime;
@@ -810,11 +464,7 @@ public class AValue
             theGYear = this.getGYear();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "gYear", theGYear), currentHashCode, theGYear);
         }
-        {
-            BigInteger theInteger;
-            theInteger = this.getInteger();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "integer", theInteger), currentHashCode, theInteger);
-        }
+  
         return currentHashCode;
     }
 

@@ -15,7 +15,7 @@ public class SQLValueConverter {
 	}
 	if (datatype.equals(name.XSD_INT)) {
 	    AValue res=new AValue();
-	    res.setInt((Integer) value);
+	    res.setLong(((Integer) value).longValue());
 	    return res;
 	}
 	if (datatype.equals(name.XSD_LONG)) {
@@ -25,7 +25,7 @@ public class SQLValueConverter {
 	}
 	if (datatype.equals(name.XSD_SHORT)) {
 	    AValue res=new AValue();
-	    res.setShort((Short) value);
+	    res.setLong(((Short) value).longValue());
 	    return res;
 	}
 	if (datatype.equals(name.XSD_DOUBLE)) {
@@ -40,22 +40,22 @@ public class SQLValueConverter {
 	}
 	if (datatype.equals(name.XSD_DECIMAL)) {
 	    AValue res=new AValue();
-	    res.setDecimal((java.math.BigDecimal) value);
+//	    res.setDecimal((java.math.BigDecimal) value);
 	    return res;
 	}
 	if (datatype.equals(name.XSD_BOOLEAN)) {
 	    AValue res=new AValue();
-	    res.setBoolean((Boolean) value);
+//	    res.setBoolean((Boolean) value);
 	    return res;
 	}
 	if (datatype.equals(name.XSD_BYTE)) {
 	    AValue res=new AValue();
-	    res.setByte((Byte) value);
+	    res.setLong(((Byte) value).longValue());
 	    return res;
 	}
 	if (datatype.equals(name.XSD_UNSIGNED_INT)) {
 	    AValue res=new AValue();
-	    res.setUnsignedInt((Long) value);
+	    res.setLong((Long) value);
 	    return res;
 	}
 	if (datatype.equals(name.XSD_UNSIGNED_SHORT)) {
@@ -95,7 +95,7 @@ public class SQLValueConverter {
 	}
 	if (datatype.equals(name.XSD_ANY_URI)) {
 	    AValue res=new AValue();
-	    res.setAnyURI( value.toString());
+//	    res.setAnyURI( value.toString());
 	    return res;
 	}
 	if (datatype.equals(name.XSD_QNAME)) {
@@ -143,9 +143,6 @@ public class SQLValueConverter {
 
     public static Object convertFromAValue(AValue target) {
 	Object o;
-	if ((o=target.getInt())!=null) {
-	    return o;
-	}
 	if ((o=target.getString())!=null) {
 	    return o;
 	}
@@ -156,15 +153,6 @@ public class SQLValueConverter {
 	    return o;
 	}
 	if ((o=target.getDouble())!=null) {
-	    return o;
-	}
-	if ((o=target.getUnsignedInt())!=null) {
-	    return o;
-	}
-	if ((o=target.getUnsignedLong())!=null) {
-	    return o;
-	}
-	if ((o=target.isBoolean())!=null) {
 	    return o;
 	}
 

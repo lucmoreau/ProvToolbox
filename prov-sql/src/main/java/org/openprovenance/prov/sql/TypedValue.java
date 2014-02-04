@@ -69,11 +69,6 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     public TypedValue() {
     }
     
-    public TypedValue(Object val, QualifiedName xsdType) {
- 	this.value = val;
- 	this.type = xsdType;
-     }
-
    
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
         if (!(object instanceof TypedValue)) {
@@ -162,16 +157,13 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
 
     	if ((avalue==null) && (value!=null)) {
     		if (type==null) {
-    			avalue=SQLValueConverter.convertToAValue(vc.getXsdType(value), value); //TODO, I am not using the one saved!
-    			//System.out.println("##---> getValueItem() reading found " + avalue);
+    			avalue=SQLValueConverter.convertToAValue(vc.getXsdType(value), value);
     		} else if (value instanceof LangString) {
     			avalue=SQLValueConverter.convertToAValue(type,  ((LangString) value).getValue());
     		} else if (value instanceof org.openprovenance.prov.model.QualifiedName) {
     			avalue=SQLValueConverter.convertToAValue(type,  (QualifiedName) value);
     		} else {
     			avalue=SQLValueConverter.convertToAValue(type, vc.convertToJava(type, (String)value));
-    			//System.out.println("###--> getValueItem() reading found " + avalue);
-    			//System.out.println("###--> getValueItem() reading found - " + SQLValueConverter.convertFromAValue(avalue));
     		}
     	}
     	return avalue;

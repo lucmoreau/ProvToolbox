@@ -14,6 +14,7 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -135,7 +136,10 @@ public class AValue
      *     
      */
     @Basic
-    @Column(name = "STRING", length = 255)
+    @Column(name = "STRING")
+    @Lob
+//   @Column(name = "STRING", length = 255)
+ //   @Column(name = "STRING", columnDefinition="TEXT")
     public String getString() {
         return string;
     }

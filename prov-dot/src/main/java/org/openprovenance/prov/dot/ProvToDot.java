@@ -47,6 +47,7 @@ import org.openprovenance.prov.model.WasStartedBy;
 
 /** Serialisation of  Prov representation to DOT format. */
 public class ProvToDot {
+    private static final String TOOLBOX_DOT_NS = "http://openprovenance.org/Toolbox/dot#";
     public final static String DEFAULT_CONFIGURATION_FILE="defaultConfig.xml";
     public final static String DEFAULT_CONFIGURATION_FILE_WITH_ROLE="defaultConfigWithRole.xml";
     public final static String DEFAULT_CONFIGURATION_FILE_WITH_ROLE_NO_LABEL="defaultConfigWithRoleNoLabel.xml";
@@ -379,7 +380,9 @@ public class ProvToDot {
 
     public void emitAnnotations(String id, HasOther ann, PrintStream out) {
 
-        if ((ann.getOther()==null) || (ann.getOther().isEmpty())
+        if (((ann.getOther()==null) 
+        	|| (ann.getOther().isEmpty()) 
+        	|| (countOthers(ann)==0))	
             &&
             (((HasType)ann).getType().isEmpty())) return;
 
@@ -452,10 +455,10 @@ public class ProvToDot {
         return properties;
     }
 
-    public  HashMap<String,String> addColors(HasOther e, HashMap<String,String> properties) {
-        Hashtable<String,List<Attribute>> table=u.attributesWithNamespace(e,"http://openprovenance.org/Toolbox/dot#");
+    public  HashMap<String,String> addColors(HasOther object, HashMap<String,String> properties) {
+        Hashtable<String,List<Other>> table=u.attributesWithNamespace(object,TOOLBOX_DOT_NS);
 
-        List<Attribute> o=table.get("fillcolor");
+        List<Other> o=table.get("fillcolor");
         if (o!=null && !o.isEmpty()) {
             properties.put("fillcolor", o.get(0).getValue().toString());
             properties.put("style", "filled");
@@ -467,6 +470,12 @@ public class ProvToDot {
         o=table.get("url");
         if (o!=null && !o.isEmpty()) {
             properties.put("URL", o.get(0).getValue().toString());
+        }
+        o=table.get("size");
+        if (o!=null && !o.isEmpty()) {
+            if (object instanceof Influence) {
+        	properties.put("penwidth", o.get(0).getValue().toString());
+            }
         }
         return properties;
     }
@@ -534,31 +543,49 @@ public class ProvToDot {
         properties.put("shape","note");
         return properties;
     }
+
     public HashMap<String,String> addAnnotationLabel(HasOther ann, HashMap<String,String> properties) {
-        String label="";
-        label=label+"<<TABLE cellpadding=\"0\" border=\"0\">\n";
-        for (Type type: ((HasType)ann).getType()) {
-            label=label+"	<TR>\n";
-            label=label+"	    <TD align=\"left\">" + "type" + ":</TD>\n";
-            label=label+"	    <TD align=\"left\">" + getPropertyValueFromAny(type) + "</TD>\n";
-            label=label+"	</TR>\n";
-        }
-        for (Other prop: ann.getOther()) {
-
-            if ("fillcolor".equals(prop.getElementName().getLocalPart())) {
-                    // no need to display this attribute
-                    break;
-            }
-
-            label=label+"	<TR>\n";
-            label=label+"	    <TD align=\"left\">" + convertProperty((Attribute)prop) + ":</TD>\n";
-            label=label+"	    <TD align=\"left\">" + convertValue((Attribute)prop) + "</TD>\n";
-            label=label+"	</TR>\n";
-        }
-        label=label+"    </TABLE>>\n";
-        properties.put("label",label);
-        properties.put("fontsize","10");
+	
+	    String label="";
+	    label=label+"<<TABLE cellpadding=\"0\" border=\"0\">\n";
+	    for (Type type: ((HasType)ann).getType()) {
+		label=label+"	<TR>\n";
+		label=label+"	    <TD align=\"left\">" + "type" + ":</TD>\n";
+		label=label+"	    <TD align=\"left\">" + getPropertyValueFromAny(type) + "</TD>\n";
+		label=label+"	</TR>\n";
+	    }
+	    for (Other prop: ann.getOther()) {
+		
+		if ("fillcolor".equals(prop.getElementName().getLocalPart())) {
+		    // no need to display this attribute
+		    continue;
+		}
+		
+		if ("size".equals(prop.getElementName().getLocalPart())) {
+		    // no need to display this attribute
+		    continue;
+		}
+		
+		label=label+"	<TR>\n";
+		label=label+"	    <TD align=\"left\">" + convertProperty((Attribute)prop) + ":</TD>\n";
+		label=label+"	    <TD align=\"left\">" + convertValue((Attribute)prop) + "</TD>\n";
+		label=label+"	</TR>\n";
+	    }
+	    label=label+"    </TABLE>>\n";
+	    properties.put("label",label);
+	    properties.put("fontsize","10");
+	
         return properties;
+    }
+
+    public int countOthers(HasOther ann) {
+	int count=0;
+	for (Other obj: ann.getOther()) {
+	    if (!(TOOLBOX_DOT_NS.equals(obj.getElementName().getNamespaceURI()))) {
+		count++;
+	    }
+	}
+	return count;
     }
 
    public String convertValue(Attribute v) {
@@ -739,7 +766,9 @@ public class ProvToDot {
         	properties2.put("arrowtail",arrowTail);
         	properties2.put("dir","back");
             }
-
+	    if (e instanceof HasOther) {
+        	addColors((HasOther)e,properties2);
+            }
             HashMap<String,String> properties3=new HashMap<String, String>();
 
 
@@ -750,6 +779,9 @@ public class ProvToDot {
                           true);
 
             relationName(e, properties3);
+            if (e instanceof HasOther) {
+        	addColors((HasOther)e,properties3);
+            }
 
             if (e instanceof DerivedByInsertionFrom) {
                 properties3.put("arrowhead","onormal");
@@ -764,7 +796,9 @@ public class ProvToDot {
             }
 
             HashMap<String,String> properties4=new HashMap<String, String>();
-
+            if (e instanceof HasOther) {
+        	addColors((HasOther)e,properties4);
+            }
             for (QualifiedName other: others) {
 		if (other!=null) {
 		    emitRelation( bnid,

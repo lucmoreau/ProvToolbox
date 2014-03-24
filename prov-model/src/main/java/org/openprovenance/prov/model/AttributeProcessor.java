@@ -9,34 +9,34 @@ import java.util.Hashtable;
 public class AttributeProcessor {
 
     
-    final private Hashtable<String,Hashtable<String,List<Attribute>>> namespaceIndex=
-        new Hashtable<String,Hashtable<String,List<Attribute>>>();
+    final private Hashtable<String,Hashtable<String,List<Other>>> namespaceIndex=
+        new Hashtable<String,Hashtable<String,List<Other>>>();
     
     
-    final private List<Attribute> attributes;
+    final private List<Other> attributes;
 
-    public AttributeProcessor(List<Attribute> attributes) {
+    public AttributeProcessor(List<Other> attributes) {
         this.attributes=attributes;
     }
               
     /* Processing of attributes */
     
-    public Hashtable<String,List<Attribute>> attributesWithNamespace(String namespace) {
+    public Hashtable<String,List<Other>> attributesWithNamespace(String namespace) {
 
 
-        Hashtable<String,List<Attribute>> result=namespaceIndex.get(namespace);
+        Hashtable<String,List<Other>> result=namespaceIndex.get(namespace);
         if (result==null) {
-            result=new Hashtable<String,List<Attribute>>();
+            result=new Hashtable<String,List<Other>>();
             namespaceIndex.put(namespace,result);
         }
 
-        for (Attribute attribute: attributes) {
+        for (Other attribute: attributes) {
             
             QualifiedName name=attribute.getElementName();
             if (namespace.equals(name.getNamespaceURI())) {
-                List<Attribute> ll=result.get(name.getLocalPart());
+                List<Other> ll=result.get(name.getLocalPart());
                 if (ll==null) {
-                    List<Attribute> tmp=new LinkedList<Attribute>();
+                    List<Other> tmp=new LinkedList<Other>();
                     tmp.add(attribute);
                     result.put(name.getLocalPart(),tmp);
                 } else {

@@ -477,6 +477,10 @@ public class ProvToDot {
         	properties.put("penwidth", o.get(0).getValue().toString());
             }
         }
+        o=table.get("tooltip");
+        if (o!=null && !o.isEmpty()) {
+            properties.put("tooltip", o.get(0).getValue().toString());
+        }
         return properties;
     }
 

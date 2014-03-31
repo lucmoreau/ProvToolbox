@@ -264,11 +264,12 @@ public class Namespace implements QualifiedNameExport {
  		return pref + ":" + name.getLocalPart();
  	    } else {
  		if (parent!=null) {
- 		    parent.qualifiedNameToString(name,this);
+ 		    return parent.qualifiedNameToString(name,this);
  		}
- 		throw new QualifiedNameException("unknown qualified name " + name 
- 		                                 + " with namespace " + toString()
- 		                                 + ((child==null)? "" : (" and " + child)));
+ 		else 
+ 		    throw new QualifiedNameException("unknown qualified name " + name 
+ 		                                     + " with namespace " + toString()
+ 		                                     + ((child==null)? "" : (" and " + child)));
  	    }
  	}
      }

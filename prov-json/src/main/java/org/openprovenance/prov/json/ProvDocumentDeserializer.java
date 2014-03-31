@@ -59,7 +59,9 @@ import com.google.gson.JsonParseException;
  * 
  */
 public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
-    Namespace ns;
+    Namespace documentNamespace;
+    Namespace currentNamespace;
+    
 
 
     private static final String PROV_JSON_PREFIX = "prefix";
@@ -83,43 +85,38 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	JsonObject provJSONDoc = json.getAsJsonObject();
 
 	// Initialise namespaces
-	Hashtable<String, String> namespaces = decodePrefixes(provJSONDoc);
-
-	ns = new Namespace();
-	// prefixes prov and xsd are implicit in prov-json
-	ns.addKnownNamespaces();
-	if (namespaces != null) {
-	    for (String prefix : namespaces.keySet()) {
-		String aNamespace = namespaces.get(prefix);
-		if (prefix.equals("default")) {
-		    ns.registerDefault(aNamespace);
-		} else {
-		    ns.register(prefix, aNamespace);
-		}
-	    }
-	}
+	currentNamespace = decodePrefixes(provJSONDoc);
+	documentNamespace = currentNamespace;
 
 	// Decoding structures
 	List<StatementOrBundle> statements = decodeBundle(provJSONDoc);
 
 	// Create the document
 	Document doc = pf.newDocument();
-	doc.setNamespace(ns);
+	doc.setNamespace(currentNamespace);
 
 	doc.getStatementOrBundle().addAll(statements);
 	return doc;
     }
 
-    private Hashtable<String, String> decodePrefixes(JsonObject bundleStructure) {
-	Hashtable<String, String> namespaces = new Hashtable<String, String>();
+    private Namespace decodePrefixes(JsonObject bundleStructure) {
+	Namespace ns = new Namespace();
+	// prefixes prov and xsd are implicit in prov-json
+	ns.addKnownNamespaces();
 	JsonObject prefixes = getObjectAndRemove(bundleStructure,
 						 PROV_JSON_PREFIX);
 	if (prefixes != null) {
-	    for (Map.Entry<String, JsonElement> pair : prefixes.entrySet())
-		namespaces.put(pair.getKey(), pair.getValue().getAsString());
-	    return namespaces;
-	} else
-	    return null;
+	    for (Map.Entry<String, JsonElement> pair : prefixes.entrySet()) {
+		String prefix = pair.getKey();
+		String uri = pair.getValue().getAsString();
+		if (prefix.equals("default")) {
+		    ns.registerDefault(uri);
+		} else {
+		    ns.register(prefix, uri);
+		}
+	    }
+	}
+	return ns;
     }
 
     private List<StatementOrBundle> decodeBundle(JsonObject bundleStructure) {
@@ -169,7 +166,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    // Ignore all blank node IDs
 	    id = null;
 	} else {
-	    id = ns.stringToQualifiedName(idStr,pf);
+	    id = currentNamespace.stringToQualifiedName(idStr, pf);
 	}
 	// Decoding attributes
 	ProvJSONStatement provStatement = ProvJSONStatement.valueOf(statementType);
@@ -214,10 +211,10 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    statement = pf.newWasAttributedTo(id, entity, agent);
 	    break;
 	case bundle:
-	    @SuppressWarnings("unused")
-	    Hashtable<String, String> localNamespaces = decodePrefixes(attributeMap);
-	    // TODO: Use the local namespace while preserving the top-level
-	    // namespace
+	    currentNamespace = decodePrefixes(attributeMap);
+	    currentNamespace.setParent(documentNamespace);
+	    // Re-resolve the bundle's id with the bundle's namespace
+	    id = currentNamespace.stringToQualifiedName(idStr, pf);
 	    @SuppressWarnings("rawtypes")
 	    Collection statements = decodeBundle(attributeMap);
 	    NamedBundle namedBundle = pf.getObjectFactory().createNamedBundle();
@@ -225,6 +222,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    namedBundle.getStatement()
 		       .addAll((Collection<? extends Statement>) statements);
 	    statement = namedBundle;
+	    // Restore the document's namespace as the current one
+	    currentNamespace = documentNamespace;
 	    break;
 	case wasInformedBy:
 	    QualifiedName informed = optionalQualifiedName("prov:informed", attributeMap);
@@ -473,7 +472,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List ll = ((HasOther) statement).getOther();
 		List<Attribute> attributes = (List<Attribute>) ll;
 		for (Map.Entry<String, JsonElement> aPair : attributeMap.entrySet()) {
-		    QualifiedName attributeName = ns.stringToQualifiedName(aPair.getKey(),pf);
+		    QualifiedName attributeName = currentNamespace.stringToQualifiedName(aPair.getKey(),pf);
 		    JsonElement element = aPair.getValue();
 		    values = pickMultiValues(element);
 		    for (JsonElement value : values) {
@@ -524,7 +523,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		// Internationalized strings
 		String lang = struct.get("lang").getAsString();
 		LangString iString = pf.getObjectFactory()
-						    .createInternationalizedString();
+			.createInternationalizedString();
 		iString.setValue(value);
 		iString.setLang(lang);
 		return pf.newAttribute(elementName,
@@ -532,10 +531,10 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 				       name.PROV_LANG_STRING);
 	    } else if (struct.has("type")) {
 		String datatypeAsString = struct.get("type").getAsString();
-		QualifiedName xsdType = ns.stringToQualifiedName(datatypeAsString, pf);
-		if (xsdType.equals(name.XSD_QNAME)) {
+		QualifiedName xsdType = currentNamespace.stringToQualifiedName(datatypeAsString, pf);
+		if (xsdType.equals(name.XSD_QNAME) || xsdType.equals(name.PROV_QUALIFIED_NAME)) {
 		    return pf.newAttribute(elementName,
-					   ns.stringToQualifiedName(value,pf), xsdType);
+					   currentNamespace.stringToQualifiedName(value,pf), xsdType);
 		} else {
 		    return pf.newAttribute(elementName, value, xsdType);
 		}
@@ -604,15 +603,15 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 
 
     private QualifiedName qualifiedName(String attributeName, JsonObject attributeMap) {
-	return ns.stringToQualifiedName(popString(attributeMap,
-	                                               attributeName),
-	                                               pf);
+	return currentNamespace.stringToQualifiedName(popString(attributeMap,
+	                                                        attributeName),
+	                                              pf);
     }
 
     // TODO: this name is legacy, what should it be?
     private QualifiedName anyRef(String attributeName, JsonObject attributeMap) {
 	if (attributeMap.has(attributeName))
-	    return ns.stringToQualifiedName(popString(attributeMap,
+	    return currentNamespace.stringToQualifiedName(popString(attributeMap,
 	                                              attributeName),
 	                                              pf);
 	else
@@ -642,7 +641,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	List<JsonElement> elements = popMultiValAttribute(attributeName,
 							  attributeMap);
 	for (JsonElement element : elements) {
-	    results.add(ns.stringToQualifiedName(element.getAsString(),pf));
+	    results.add(currentNamespace.stringToQualifiedName(element.getAsString(),pf));
 	}
 	return results;
     }
@@ -668,7 +667,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		Entry pair = pf.newEntry((Key) decodeAttributeValue(item.remove("key"),
 		                                                    name.PROV_KEY),
 		                                                    
-		                         ns.stringToQualifiedName(this.popString(item, "$"),pf));
+		                         currentNamespace.stringToQualifiedName(this.popString(item, "$"),pf));
 		results.add(pair);
 	    }
 	} else if (kESElement.isJsonObject()) {
@@ -677,7 +676,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    // TODO This does not conform with PROV-JSON !!! 
 	    String keyDatatype = dictionary.remove("$key-datatype")
 					   .getAsString();
-	    QualifiedName datatype = ns.stringToQualifiedName(keyDatatype,pf);
+	    QualifiedName datatype = currentNamespace.stringToQualifiedName(keyDatatype,pf);
 	    for (Map.Entry<String, JsonElement> entry : dictionary.entrySet()) {
 		String entryKey = entry.getKey();
 		JsonElement entryValue = entry.getValue();
@@ -698,14 +697,14 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	Key kk;
 	if (datatype.equals(name.XSD_QNAME)) {
 	    kk=(Key) pf.newAttribute(name.PROV_KEY,
-	                             ns.stringToQualifiedName(entryKey,pf), datatype);
+	                             currentNamespace.stringToQualifiedName(entryKey,pf), datatype);
 	} else {
 	    kk=(Key) pf.newAttribute(name.PROV_KEY, entryKey, datatype);
 	}
 
 	
 	Entry pair = pf.newEntry(kk,
-	                         ns.stringToQualifiedName(entryValue.getAsString(), pf));
+	                         currentNamespace.stringToQualifiedName(entryValue.getAsString(), pf));
 	return pair;
     }
 

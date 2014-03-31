@@ -23,13 +23,7 @@ public class ProvDocumentSerializer implements JsonSerializer<Document> {
     public JsonElement serialize(final Document doc, 
                                  Type typeOfSrc,
 				 JsonSerializationContext context) {
-	QualifiedNameExport qExport = new QualifiedNameExport() {
-	    @Override
-	    public String qualifiedNameToString(QualifiedName qname) {
-		return doc.getNamespace().qualifiedNameToString(qname);
-	    }
-	};
-	JSONConstructor jsonConstructor = new JSONConstructor(qExport, pFactory.getName());
+	JSONConstructor jsonConstructor = new JSONConstructor(pFactory.getName());
 	BeanTraversal bt = new BeanTraversal(jsonConstructor, 
 	                                     pFactory);
 	bt.convert(doc);

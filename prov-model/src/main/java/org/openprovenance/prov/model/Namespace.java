@@ -204,7 +204,8 @@ public class Namespace implements QualifiedNameExport {
 	    return null;
 	int index = id.indexOf(':');
 	if (index == -1) {
-	    String tmp=getDefaultNamespace();
+	    String tmp = getDefaultNamespace();
+	    if (tmp == null && parent != null) tmp = parent.getDefaultNamespace();
 	    if (tmp==null) throw new NullPointerException("Namespace.stringToQualifiedName(: Null namespace for "+id);
 	    return pFactory.newQualifiedName(tmp, id, null);
 	}
@@ -263,11 +264,12 @@ public class Namespace implements QualifiedNameExport {
  		return pref + ":" + name.getLocalPart();
  	    } else {
  		if (parent!=null) {
- 		    parent.qualifiedNameToString(name,this);
+ 		    return parent.qualifiedNameToString(name,this);
  		}
- 		throw new QualifiedNameException("unknown qualified name " + name 
- 		                                 + " with namespace " + toString()
- 		                                 + ((child==null)? "" : (" and " + child)));
+ 		else 
+ 		    throw new QualifiedNameException("unknown qualified name " + name 
+ 		                                     + " with namespace " + toString()
+ 		                                     + ((child==null)? "" : (" and " + child)));
  	    }
  	}
      }

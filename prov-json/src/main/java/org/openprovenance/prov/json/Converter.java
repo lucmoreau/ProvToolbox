@@ -34,6 +34,7 @@ public class Converter {
 
     }
     
+	@SuppressWarnings("unchecked")
 	public Document readDocument(String file) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
 	    Document doc = (Document) gson.fromJson(new BufferedReader(new FileReader(file)), class1);
 	    return doc;
@@ -43,6 +44,15 @@ public class Converter {
 	    BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 	    gson.toJson(doc, writer);
 	    writer.close();
+	}
+	
+	public String getString(Document doc) {
+	    return gson.toJson(doc);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Document fromString(String jsonStr) {
+	    return (Document) gson.fromJson(jsonStr, class1);
 	}
 
 }

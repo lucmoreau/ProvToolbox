@@ -9,7 +9,7 @@ public class Name {
     public Name(ProvFactory pFactory) {
 	this.pFactory=pFactory;
 	PROV_LANG_STRING = newProvQualifiedName("InternationalizedString");
-	
+	PROV_QUALIFIED_NAME = newProvQualifiedName("QualifiedName");
 	PROV_REVISION = newProvQualifiedName("Revision");
 	PROV_QUOTATION = newProvQualifiedName("Quotation");
 	PROV_PRIMARY_SOURCE = newProvQualifiedName("PrimarySource");
@@ -114,6 +114,7 @@ public class Name {
     
     
     final public QualifiedName PROV_LANG_STRING ;
+    final public QualifiedName PROV_QUALIFIED_NAME ;
     final public QualifiedName PROV_REVISION ;
     final public QualifiedName PROV_QUOTATION ;
     final public QualifiedName PROV_PRIMARY_SOURCE ;

@@ -1,5 +1,6 @@
 package org.openprovenance.prov.dot;
 import junit.framework.TestCase;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.Document;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
@@ -17,6 +18,8 @@ public class SculptureTest extends TestCase {
 
 
         Document o= (Document) u.convertASNToJavaBean(asnFile,pFactory);
+
+        Namespace.withThreadNamespace(o.getNamespace());
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
         

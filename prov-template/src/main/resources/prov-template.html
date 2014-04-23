@@ -5,6 +5,8 @@
 </head>
 <body>
 
+<section id="algorithm">
+
 Basic algorithm:
 <ol>
 <li> create a mapping of 'group' to list of variables
@@ -27,6 +29,9 @@ Basic algorithm:
 </li>
 </ol>
 
+</section>
+
+<section id="examples">
 
 <pre>
 
@@ -105,14 +110,22 @@ statement 3:
     wasAttributedTo(uriA, uri1, [app:order="1"])
     wasAttributedTo(uriB, uri2, [app:order="2"])
 </pre>
+</section>
+
+<section id="issues">
 
 Issues:
-- when reloading back into a template/binding, we have no way of linking
+<ul>
+<li> when reloading back into a template/binding, we have no way of linking
   statements in the bundle back to statements in the template. I'm
   wondering if we need to name each statement in the template and refer to
   that in the generated.
-- dealing with attributes. I dont think what we have in our current
+<li> dealing with attributes. I dont think what we have in our current
   template examples is sufficient here. 
+</ul>
+</section>
+
+
 </body>
 </html>
 

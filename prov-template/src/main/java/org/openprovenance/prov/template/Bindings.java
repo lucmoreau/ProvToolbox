@@ -1,11 +1,8 @@
 package org.openprovenance.prov.template;
 
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
-
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
 

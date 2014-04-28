@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template;
 
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +28,16 @@ public class Groupings implements Iterable<Binding> {
     public void addVariable(int group, QualifiedName name) {
 	List<QualifiedName> v=variables.get(group);
 	v.add(name);
+    }
+    
+    public List<QualifiedName> get(List<Integer> index) {
+	List<QualifiedName> result=new LinkedList<QualifiedName>();
+	int count=0;
+	for (int i: index) {
+	    result.add(variables.get(count).get(i));
+	    count++;
+	}
+	return result;
     }
     
     class GroupingIterator implements Iterator<Binding> {

@@ -40,6 +40,11 @@ public class Groupings implements Iterable<Binding> {
 	return result;
     }
     
+    public List<List<Integer>> enumerateAll(List<Integer> index) {
+	//TODO: here
+	return null;
+    }
+    
     class GroupingIterator implements Iterator<Binding> {
 	
 

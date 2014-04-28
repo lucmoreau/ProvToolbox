@@ -1,34 +1,59 @@
 package org.openprovenance.prov.template;
 
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
 
 public class Bindings {
     
-    final private Hashtable<QualifiedName, List<TypedValue>> variables;
-    final private Hashtable<QualifiedName, List<List<TypedValue>>> parameters;
+    final private Hashtable<QualifiedName, List<QualifiedName>> variables;
+    final private Hashtable<QualifiedName, List<List<TypedValue>>> attributes;
     
     
-
-    public Bindings(Hashtable<QualifiedName, List<TypedValue>> variables,
-                   Hashtable<QualifiedName, List<List<TypedValue>>> parameters) {
+    public Bindings() {
+	this(new Hashtable<QualifiedName, List<QualifiedName>>(), 
+	     new Hashtable<QualifiedName, List<List<TypedValue>>>());
+    }
+    
+    public Bindings(Hashtable<QualifiedName, List<QualifiedName>> variables,
+                    Hashtable<QualifiedName, List<List<TypedValue>>> attributes) {
 	this.variables=variables;
-	this.parameters=parameters;
+	this.attributes=attributes;
     }
 
 
 
-    public Hashtable<QualifiedName, List<TypedValue>> getVariables() {
+    public Hashtable<QualifiedName, List<QualifiedName>> getVariables() {
 	return variables;
     }
 
 
 
-    public Hashtable<QualifiedName, List<List<TypedValue>>> getParameters() {
-	return parameters;
+    public Hashtable<QualifiedName, List<List<TypedValue>>> getAttributes() {
+	return attributes;
+    }
+    
+    
+    public void addVariable(QualifiedName name, QualifiedName val) {
+	List<QualifiedName> v=variables.get(name);
+	if (v==null) {
+	    variables.put(name, new LinkedList<QualifiedName>());
+	}
+	variables.get(name).add(val);
+    }
+    
+
+    @Override
+    public String toString () {
+	return "[" + getVariables() + " -- " + getAttributes() + "]";
     }
 
+
+    
+	
 }

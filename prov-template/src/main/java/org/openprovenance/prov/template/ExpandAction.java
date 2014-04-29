@@ -98,6 +98,11 @@ public class ExpandAction implements StatementAction {
 	WasAttributedTo res=pf.newWasAttributedTo(s);
 	QualifiedName id=res.getId();
 	setExpand(res, id, 0);	
+	QualifiedName en=res.getEntity();
+	setExpand(res, en, 1);	
+	QualifiedName ag=res.getAgent();
+	setExpand(res, ag, 2);	
+
 	ll.add(res);
 	addOrderAttribute(res);	
     }

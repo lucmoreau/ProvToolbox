@@ -95,6 +95,7 @@ public class Using implements Iterable<List<Integer>> {
 		QualifiedName val=b.getVariables().get(var).get(ind);
 		result.put(var, val);
 	    }
+	    count++;
 	}
 	
 	return result;

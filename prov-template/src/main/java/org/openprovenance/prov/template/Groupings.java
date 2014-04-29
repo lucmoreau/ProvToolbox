@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
 
-public class Groupings implements Iterable<Binding> {
+public class Groupings /* implements Iterable<Binding> */ {
     final private List<List<QualifiedName>> variables;
 
     
@@ -16,6 +16,9 @@ public class Groupings implements Iterable<Binding> {
 	variables=new LinkedList<List<QualifiedName>>();
     }
     
+    public List<QualifiedName> get(int group) {
+	return variables.get(group);
+    }
    
     public void addVariable(QualifiedName name) {
 	List<QualifiedName> ll=new LinkedList<QualifiedName>();
@@ -29,6 +32,7 @@ public class Groupings implements Iterable<Binding> {
 	v.add(name);
     }
     
+    
     public List<QualifiedName> get(List<Integer> index) {
 	List<QualifiedName> result=new LinkedList<QualifiedName>();
 	int count=0;
@@ -38,7 +42,7 @@ public class Groupings implements Iterable<Binding> {
 	}
 	return result;
     }
-    
+    /*
     public List<List<Integer>> enumerateAll(List<Integer> index) {
 	//TODO: here
 	return null;
@@ -82,17 +86,19 @@ public class Groupings implements Iterable<Binding> {
 	   // iterator2=b.getAttributes().entrySet().iterator();
 	}
 	
-    }
+    } */
+    
     @Override
     public String toString () {
 	return "" + variables;
     }
-
+/*
 
     @Override
     public Iterator<Binding> iterator() {
 	return new GroupingIterator(this);
     }
+    */
     
 	
 }

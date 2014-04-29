@@ -1,9 +1,12 @@
 package org.openprovenance.prov.template;
 
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import org.openprovenance.prov.model.QualifiedName;
 
 public class Using implements Iterable<List<Integer>> {
     
@@ -78,6 +81,23 @@ public class Using implements Iterable<List<Integer>> {
     @Override
     public String toString () {
 	return "<using:" + groups + "," + lengths + ">";
+    }
+    
+    Hashtable<QualifiedName, QualifiedName> get(Bindings b,
+                                                Groupings gr,
+                                                List<Integer> index) {
+	Hashtable<QualifiedName,QualifiedName> result=new Hashtable<QualifiedName, QualifiedName>();
+	
+	int count=0;
+	for (int ind: index) {
+	    int group=groups.get(count);
+	    for (QualifiedName var: gr.get(group)) {
+		QualifiedName val=b.getVariables().get(var).get(ind);
+		result.put(var, val);
+	    }
+	}
+	
+	return result;
     }
 
 

@@ -25,7 +25,7 @@ public class ExpandTest extends TestCase {
     QualifiedName var_b=pf.newQualifiedName(VAR_NS, "b", "var");
     QualifiedName var_c=pf.newQualifiedName(VAR_NS, "c", "var");
  
-    public void testBinding1() {
+    public void NOtestBinding1() {
 	Bindings bindings1=new Bindings();
 
 	bindings1.addVariable(var_a,
@@ -118,7 +118,7 @@ public class ExpandTest extends TestCase {
     }
     
     public void testExpand1() {
-	System.out.println("expand1 ==> ");
+	System.out.println("expand1 ==========================================> ");
 	Document doc=pf.newDocument();
 	doc.getStatementOrBundle().add(pf.newEntity(var_b));
 	doc.getStatementOrBundle().add(pf.newAgent(var_a));
@@ -150,12 +150,33 @@ public class ExpandTest extends TestCase {
 	us1.addGroup(1, 2);
 	System.out.println(us1);
 	
+	
+	Using us2=new Using();
+	us2.addGroup(0, 3);
+	System.out.println(us2);
+	
+	
+	Using us3=new Using();
+	us3.addGroup(0, 3);
+	us3.addGroup(1, 2);  // FIXME: it complains if groups are added in opposite order, why?
+	System.out.println(us3);
+	
 	new Expand().expand((Statement)doc.getStatementOrBundle().get(0),
 	                    bindings1,
 	                    grp1,
 	                    us1);
 
-	
+	new Expand().expand((Statement)doc.getStatementOrBundle().get(1),
+	                    bindings1,
+	                    grp1,
+	                    us2);
+	new Expand().expand((Statement)doc.getStatementOrBundle().get(2),
+	                    bindings1,
+	                    grp1,
+	                    us3);
+
+	System.out.println("expand1 ==========================================> ");
+
     }
 
 

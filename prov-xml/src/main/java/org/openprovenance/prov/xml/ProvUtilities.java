@@ -105,6 +105,8 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
 
     static {
         fields.put(Activity.class, new String[] { "Id", "StartTime", "EndTime", "Other" });
+        fields.put(Entity.class, new String[] { "Id", "Other" });
+        fields.put(Agent.class, new String[] { "Id", "Other" });
 
         fields.put(Used.class, new String[] { "Id", "Activity", "Entity",
                                              "Time", "Other" });
@@ -155,10 +157,14 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
 						   "Bundle" });
         
 
+        types.put(Entity.class, new Class[] { QualifiedName.class, 
+            Object.class });
+        types.put(Agent.class, new Class[] { QualifiedName.class, 
+            Object.class });
         types.put(Activity.class, new Class[] { QualifiedName.class, 
-                                           XMLGregorianCalendar.class,
-                                           XMLGregorianCalendar.class,
-                                           Object.class });
+            XMLGregorianCalendar.class,
+            XMLGregorianCalendar.class,
+            Object.class });
         types.put(Used.class, new Class[] { QualifiedName.class, QualifiedName.class,
                                            QualifiedName.class,
                                            XMLGregorianCalendar.class,

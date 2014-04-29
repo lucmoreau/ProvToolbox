@@ -4,8 +4,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.Statement;
 
 import junit.framework.TestCase;
 
@@ -19,12 +21,12 @@ public class ExpandTest extends TestCase {
     }
     
     ProvFactory pf=new org.openprovenance.prov.xml.ProvFactory();
-    
+    QualifiedName var_a=pf.newQualifiedName(VAR_NS, "a", "var");
+    QualifiedName var_b=pf.newQualifiedName(VAR_NS, "b", "var");
+    QualifiedName var_c=pf.newQualifiedName(VAR_NS, "c", "var");
+ 
     public void testBinding1() {
 	Bindings bindings1=new Bindings();
-	QualifiedName var_a=pf.newQualifiedName(VAR_NS, "a", "var");
-	QualifiedName var_b=pf.newQualifiedName(VAR_NS, "b", "var");
-	QualifiedName var_c=pf.newQualifiedName(VAR_NS, "c", "var");
 
 	bindings1.addVariable(var_a,
 	                      pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -114,5 +116,47 @@ public class ExpandTest extends TestCase {
 
 	
     }
+    
+    public void testExpand1() {
+	System.out.println("expand1 ==> ");
+	Document doc=pf.newDocument();
+	doc.getStatementOrBundle().add(pf.newEntity(var_b));
+	doc.getStatementOrBundle().add(pf.newAgent(var_a));
+	doc.getStatementOrBundle().add(pf.newWasAttributedTo(null, var_b, var_a));
+	
+	Bindings bindings1=new Bindings();
+
+	bindings1.addVariable(var_a,
+	                      pf.newQualifiedName(EX_NS, "av1", "ex"));
+	bindings1.addVariable(var_a,
+	                      pf.newQualifiedName(EX_NS, "av2", "ex"));
+	bindings1.addVariable(var_a,
+	                      pf.newQualifiedName(EX_NS, "av3", "ex"));
+	
+	bindings1.addVariable(var_b,
+	                      pf.newQualifiedName(EX_NS, "bv1", "ex"));
+	bindings1.addVariable(var_b,
+	                      pf.newQualifiedName(EX_NS, "bv2", "ex"));
+	System.out.println(bindings1);
+
+	
+	Groupings grp1=new Groupings();
+	grp1.addVariable(var_a);
+	grp1.addVariable(var_b);
+	System.out.println(grp1);
+	
+	
+	Using us1=new Using();
+	us1.addGroup(1, 2);
+	System.out.println(us1);
+	
+	new Expand().expand((Statement)doc.getStatementOrBundle().get(0),
+	                    bindings1,
+	                    grp1,
+	                    us1);
+
+	
+    }
+
 
 }

@@ -19,6 +19,10 @@ public class Groupings /* implements Iterable<Binding> */ {
     public List<QualifiedName> get(int group) {
 	return variables.get(group);
     }
+    
+    public int size() {
+	return variables.size();
+    }
    
     public void addVariable(QualifiedName name) {
 	List<QualifiedName> ll=new LinkedList<QualifiedName>();

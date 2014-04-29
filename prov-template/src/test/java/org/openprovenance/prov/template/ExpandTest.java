@@ -157,8 +157,8 @@ public class ExpandTest extends TestCase {
 	
 	
 	Using us3=new Using();
+	us3.addGroup(1, 2);  
 	us3.addGroup(0, 3);
-	us3.addGroup(1, 2);  // FIXME: it complains if groups are added in opposite order, why?
 	System.out.println(us3);
 	
 	new Expand().expand((Statement)doc.getStatementOrBundle().get(0),

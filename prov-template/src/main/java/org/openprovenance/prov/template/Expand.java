@@ -1,8 +1,11 @@
 package org.openprovenance.prov.template;
 
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
@@ -32,6 +35,8 @@ public class Expand {
 	while (iter.hasNext()) {
 	    List<Integer> index=iter.next();
 	    System.out.println("$$ " + index);
+	    System.out.println("$$ - " + usedGroups(statement, grp1));
+
 	    
 	    Hashtable<QualifiedName, QualifiedName> env=us1.get(bindings1, grp1, index);
 	    
@@ -50,7 +55,34 @@ public class Expand {
 	}
 	
     }
+    
+    Set<QualifiedName> freeVariables(Statement statement) {
+	HashSet<QualifiedName> result=new HashSet<QualifiedName>();
+	 for (int i = 0; i < u.getFirstTimeIndex(statement); i++) {
+	     QualifiedName name=(QualifiedName) u.getter(statement, i);
+	     if (name!=null) result.add(name);
+	 }
+	 return result;	
+    }
 
+    List<Integer> usedGroups(Statement statement,
+                             Groupings groupings) {
+	Set<QualifiedName> vars=freeVariables(statement);
+	System.out.println("Vars" + vars);
+	Set<Integer> groups=new HashSet<Integer>();
+	for (QualifiedName var: vars) {
+	    for (int grp=0; grp<groupings.size(); grp++) {
+		List<QualifiedName> names=groupings.get(grp);
+		if (names.contains(var)) {
+		    groups.add(grp);
+		}
+	    }
+	}
+	// TODO: generate a Using Structure.
+	// For each group, get the length of bindings for their variables.
+	return new LinkedList<Integer>(groups);
+    }
+    
     public boolean isVariable(QualifiedName id) {
 	return (id!=null) && (VAR_NS.equals(id.getNamespaceURI()));
     }

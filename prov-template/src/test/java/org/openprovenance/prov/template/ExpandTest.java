@@ -1,6 +1,8 @@
 package org.openprovenance.prov.template;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
@@ -82,7 +84,33 @@ public class ExpandTest extends TestCase {
 	             var_b);
 	
 
-	
+	Using us1=new Using();
+	us1.addGroup(1, 2);
+	us1.addGroup(2, 3);
+        System.out.println(us1);
+        assertTrue(us1.checkIndex(Arrays.asList(new Integer[]{0,0})));
+        assertTrue(us1.checkIndex(Arrays.asList(new Integer[]{1,2})));
+        assertFalse(us1.checkIndex(Arrays.asList(new Integer[]{1,3})));
+        assertFalse(us1.checkIndex(Arrays.asList(new Integer[]{2,2})));
+        assertFalse(us1.checkIndex(Arrays.asList(new Integer[]{2,2,4})));
+        assertFalse(us1.checkIndex(Arrays.asList(new Integer[]{2})));
+        
+        assertEquals(us1.nextIndex(Arrays.asList(new Integer[]{0,0})),
+                     Arrays.asList(new Integer[]{1,0}));
+        assertEquals(us1.nextIndex(Arrays.asList(new Integer[]{1,0})),
+                     Arrays.asList(new Integer[]{0,1}));
+        assertEquals(us1.nextIndex(Arrays.asList(new Integer[]{0,1})),
+                     Arrays.asList(new Integer[]{1,1}));
+        assertEquals(us1.nextIndex(Arrays.asList(new Integer[]{1,1})),
+                     Arrays.asList(new Integer[]{0,2}));
+        assertNull(us1.nextIndex(Arrays.asList(new Integer[]{1,2})));
+        
+        Iterator<List<Integer>> it=us1.iterator();
+        
+        while (it.hasNext()) {
+            System.out.println("next is " + it.next());
+        }
+        
 
 	
     }

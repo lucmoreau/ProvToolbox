@@ -12,6 +12,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.xml.ProvUtilities;
+import org.openrdf.query.algebra.In;
 
 public class Expand {
     static final String VAR_NS = "http://openprovenance.org/var#";

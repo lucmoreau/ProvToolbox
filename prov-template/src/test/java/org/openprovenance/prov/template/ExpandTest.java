@@ -9,11 +9,12 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 
+import static org.openprovenance.prov.template.Expand.VAR_NS;
+
 import junit.framework.TestCase;
 
 public class ExpandTest extends TestCase {
 
-    static final String VAR_NS = "http://openprovenance.org/var#";
     static final String EX_NS = "http://example.org/";
 
     public ExpandTest(String testName) {

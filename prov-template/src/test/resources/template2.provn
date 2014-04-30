@@ -1,0 +1,15 @@
+
+document
+
+prefix var <http://openprovenance.org/var#>
+prefix bun <http://example.org/bun#>
+
+bundle bun:123
+entity(var:a)
+entity(var:b)
+entity(var:c)
+wasAttributedTo(var:b, var:a)
+wasAttributedTo(var:c, var:a)
+endBundle
+
+endDocument

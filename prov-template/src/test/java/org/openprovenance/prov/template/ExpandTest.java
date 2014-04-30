@@ -164,17 +164,14 @@ public class ExpandTest extends TestCase {
 	
 	new Expand().expand((Statement)doc.getStatementOrBundle().get(0),
 	                    bindings1,
-	                    grp1,
-	                    us1);
+	                    grp1);
 
 	new Expand().expand((Statement)doc.getStatementOrBundle().get(1),
 	                    bindings1,
-	                    grp1,
-	                    us2);
+	                    grp1);
 	new Expand().expand((Statement)doc.getStatementOrBundle().get(2),
 	                    bindings1,
-	                    grp1,
-	                    us3);
+	                    grp1);
 
 	System.out.println("expand1 ==========================================> ");
 

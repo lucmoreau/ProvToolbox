@@ -1,5 +1,6 @@
 package org.openprovenance.prov.template;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -30,14 +31,20 @@ public class Expand {
 
     public void expand(Statement statement, 
                        Bindings bindings1,
-		       Groupings grp1, 
-		       Using us1) {
+		       Groupings grp1) {
+	Using us1=usedGroups(statement, grp1,bindings1);
+	expand(statement, bindings1,grp1,us1);
+    }
+    
+    public void expand(Statement statement, 
+                       Bindings bindings1,
+		       Groupings grp1,
+		       Using us1){
+	
 	Iterator<List<Integer>> iter=us1.iterator();
 	while (iter.hasNext()) {
 	    List<Integer> index=iter.next();
 	    System.out.println("$$ " + index);
-	    System.out.println("$$ - " + usedGroups(statement, grp1));
-
 	    
 	    Hashtable<QualifiedName, QualifiedName> env=us1.get(bindings1, grp1, index);
 	    
@@ -66,8 +73,9 @@ public class Expand {
 	 return result;	
     }
 
-    List<Integer> usedGroups(Statement statement,
-                             Groupings groupings) {
+    Using usedGroups(Statement statement,
+                             Groupings groupings,
+                             Bindings bindings) {
 	Set<QualifiedName> vars=freeVariables(statement);
 	System.out.println("Vars" + vars);
 	Set<Integer> groups=new HashSet<Integer>();
@@ -79,9 +87,25 @@ public class Expand {
 		}
 	    }
 	}
+	
+	Using u=new Using();
+	Integer [] sorted=groups.toArray(new Integer[0]);
+	Arrays.sort(sorted);
+	
+	System.out.println("Found sorted " + groups);
+	System.out.println("Found groupings " + groupings);
+	
+	
+	for (Integer g: sorted) {
+	    List<QualifiedName> vs=groupings.get(g);
+	    List<QualifiedName> vals=bindings.getVariables().get(vs.get(0));
+	    int len=(vals==null) ? 0 : vals.size();
+	    u.addGroup(g, len);    
+	}
 	// TODO: generate a Using Structure.
 	// For each group, get the length of bindings for their variables.
-	return new LinkedList<Integer>(groups);
+	//return new LinkedList<Integer>(groups);
+	return u;
     }
     
     public boolean isVariable(QualifiedName id) {

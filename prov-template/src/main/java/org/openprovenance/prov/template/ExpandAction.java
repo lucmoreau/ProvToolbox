@@ -74,11 +74,9 @@ public class ExpandAction implements StatementAction {
     public void doAction(Agent e) {
 	Agent res=pf.newAgent(e);
 	QualifiedName id=res.getId();
-	setExpand(res, id, 0);	
+	boolean updated=setExpand(res, id, 0);	
 	ll.add(res);
-	addOrderAttribute(res);
-	// TODO Auto-generated method stub
-	
+	if (updated) addOrderAttribute(res);	
     }
 
     @Override
@@ -97,14 +95,14 @@ public class ExpandAction implements StatementAction {
     public void doAction(WasAttributedTo s) {
 	WasAttributedTo res=pf.newWasAttributedTo(s);
 	QualifiedName id=res.getId();
-	setExpand(res, id, 0);	
+	boolean updated1=setExpand(res, id, 0);	
 	QualifiedName en=res.getEntity();
-	setExpand(res, en, 1);	
+	boolean updated2=setExpand(res, en, 1);	
 	QualifiedName ag=res.getAgent();
-	setExpand(res, ag, 2);	
-
+	boolean updated3=setExpand(res, ag, 2);	
+	boolean updated=updated1 || updated2 || updated3;
 	ll.add(res);
-	addOrderAttribute(res);	
+	if (updated) addOrderAttribute(res);	
     }
 
     @Override
@@ -147,22 +145,24 @@ public class ExpandAction implements StatementAction {
     public void doAction(Entity e) {
 	Entity res=pf.newEntity(e);
 	QualifiedName id=res.getId();
-	setExpand(res, id, 0);	
+	boolean updated=setExpand(res, id, 0);	
 	ll.add(res);
-	addOrderAttribute(res);
+	if (updated) addOrderAttribute(res);
     }
 
     private void addOrderAttribute(HasOther res) {
 	res.getOther().add(pf.newOther(APP_NS, "order", "app", index, pf.getName().XSD_STRING));
     }
 
-    private void setExpand(Statement res, QualifiedName id, int position) {
+    private boolean setExpand(Statement res, QualifiedName id, int position) {
 	if (expand.isVariable(id)) {
 	    QualifiedName val=env.get(id);
 	    if (val!=null) {
 		u.setter(res, position, val);
+		return true;
 	    }
 	}
+	return false;
     }
 
     @Override

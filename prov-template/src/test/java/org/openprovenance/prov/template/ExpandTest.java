@@ -2,15 +2,19 @@ package org.openprovenance.prov.template;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 
 import static org.openprovenance.prov.template.Expand.VAR_NS;
-
+import static org.openprovenance.prov.template.Expand.APP_NS;
 import junit.framework.TestCase;
 
 public class ExpandTest extends TestCase {
@@ -121,9 +125,14 @@ public class ExpandTest extends TestCase {
     public void testExpand1() {
 	System.out.println("expand1 ==========================================> ");
 	Document doc=pf.newDocument();
-	doc.getStatementOrBundle().add(pf.newEntity(var_b));
-	doc.getStatementOrBundle().add(pf.newAgent(var_a));
-	doc.getStatementOrBundle().add(pf.newWasAttributedTo(null, var_b, var_a));
+	List<Statement> statements=new LinkedList<Statement>();
+	
+	statements.add(pf.newEntity(var_b));
+	statements.add(pf.newAgent(var_a));
+	statements.add(pf.newWasAttributedTo(null, var_b, var_a));
+	NamedBundle bun=pf.newNamedBundle(pf.newQualifiedName(EX_NS+"bun", "123", "bun"), statements);
+	doc.getStatementOrBundle().add(bun);
+
 	
 	Bindings bindings1=new Bindings();
 
@@ -162,17 +171,26 @@ public class ExpandTest extends TestCase {
 	us3.addGroup(0, 3);
 	System.out.println(us3);
 	
-	new Expand().expand((Statement)doc.getStatementOrBundle().get(0),
-	                    bindings1,
-	                    grp1);
-
-	new Expand().expand((Statement)doc.getStatementOrBundle().get(1),
-	                    bindings1,
-	                    grp1);
-	new Expand().expand((Statement)doc.getStatementOrBundle().get(2),
-	                    bindings1,
-	                    grp1);
-
+	NamedBundle bun1=(NamedBundle) new Expand().expand(bun, bindings1, grp1).get(0);
+	Document doc1=pf.newDocument();
+	doc1.getStatementOrBundle().add(bun1);
+	
+	
+	bun1.setNamespace(Namespace.gatherNamespaces(bun1));
+	//bun1.getNamespace().getNamespaces().put("ex", EX_NS);
+	//bun1.getNamespace().getNamespaces().put("bun", EX_NS+"bun#");
+	//bun1.getNamespace().getNamespaces().put("app", APP_NS);
+	
+	doc1.setNamespace(bun1.getNamespace());
+	
+	System.out.println(bun1.getNamespace());
+		
+	//System.out.println("doc1" + doc1);
+	
+	InteropFramework inf=new InteropFramework();
+	inf.writeDocument("target/expanded1.provn", doc1);
+	
+	
 	System.out.println("expand1 ==========================================> ");
 
     }

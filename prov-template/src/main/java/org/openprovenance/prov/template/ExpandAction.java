@@ -22,6 +22,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementAction;
+import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
@@ -41,15 +42,19 @@ public class ExpandAction implements StatementAction {
     final private Expand expand;
     final private Hashtable<QualifiedName, QualifiedName> env;
     final private ProvUtilities u;
-    final private List<Statement> ll=new LinkedList<Statement>();
+    final private List<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
     final private List<Integer> index;
+    final private Bindings bindings;
+    final private Groupings grp1;
 
-    public ExpandAction(ProvFactory pf, ProvUtilities u, Expand expand, Hashtable<QualifiedName, QualifiedName> env, List<Integer> index) {
+    public ExpandAction(ProvFactory pf, ProvUtilities u, Expand expand, Hashtable<QualifiedName, QualifiedName> env, List<Integer> index, Bindings bindings1, Groupings grp1) {
 	this.pf=pf;
 	this.expand=expand;
 	this.env=env;
 	this.u=u;
 	this.index=index;
+	this.bindings=bindings1;
+	this.grp1=grp1;
     }
 
     @Override
@@ -208,12 +213,21 @@ public class ExpandAction implements StatementAction {
     }
 
     @Override
-    public void doAction(NamedBundle s, ProvUtilities provUtilities) {
-	// TODO Auto-generated method stub
+    public void doAction(NamedBundle bun, ProvUtilities provUtilities) {
+	List<Statement> statements=bun.getStatement();
+	List<Statement> newStatements=new LinkedList<Statement>();
+		
+	for (Statement s: statements) {
+	    for (StatementOrBundle sb: expand.expand(s, bindings, grp1)) {
+		newStatements.add((Statement)sb);
+	    }
+	    
+	}
+	ll.add(pf.newNamedBundle(bun.getId(), newStatements));
 	
     }
 
-    public List<Statement> getList() {
+    public List<StatementOrBundle> getList() {
 	return ll;
     }
 

@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.xml.ProvUtilities;
 import org.openrdf.query.algebra.In;
 
@@ -29,18 +31,27 @@ public class Expand {
     ProvUtilities u=new ProvUtilities();
     ProvFactory pf=new org.openprovenance.prov.xml.ProvFactory();
 
-    public void expand(Statement statement, 
+    public List<StatementOrBundle> expand(Statement statement, 
                        Bindings bindings1,
 		       Groupings grp1) {
 	Using us1=usedGroups(statement, grp1,bindings1);
-	expand(statement, bindings1,grp1,us1);
+	return expand(statement, bindings1,grp1,us1);
     }
     
-    public void expand(Statement statement, 
-                       Bindings bindings1,
-		       Groupings grp1,
-		       Using us1){
-	
+    public List<StatementOrBundle> expand(NamedBundle bun, 
+                                          Bindings bindings1,
+                                          Groupings grp1) {
+	Hashtable<QualifiedName, QualifiedName> env0=new Hashtable<QualifiedName, QualifiedName>();
+	ExpandAction action=new ExpandAction(pf, u, this, env0, null, bindings1, grp1);
+	u.doAction(bun, action);
+	return action.getList();
+    }
+    
+    public List<StatementOrBundle> expand(Statement statement, 
+                                          Bindings bindings1,
+                                          Groupings grp1,
+                                          Using us1){
+	List<StatementOrBundle> results=new LinkedList<StatementOrBundle>();
 	Iterator<List<Integer>> iter=us1.iterator();
 	while (iter.hasNext()) {
 	    List<Integer> index=iter.next();
@@ -56,13 +67,18 @@ public class Expand {
 		    System.out.println("Found " + qual + " --> " + env.get(qual));
 		}
 	    }
-	    ExpandAction action=new ExpandAction(pf, u, this, env, index);
+	    ExpandAction action=new ExpandAction(pf, u, this, env, index, bindings1, grp1);
 	    u.doAction(statement, action);
+	    
 	    System.out.println(action.getList());
+	    results.addAll(action.getList());
 	    
 	}
+	return results;
 	
     }
+    
+    
     
     Set<QualifiedName> freeVariables(Statement statement) {
 	HashSet<QualifiedName> result=new HashSet<QualifiedName>();

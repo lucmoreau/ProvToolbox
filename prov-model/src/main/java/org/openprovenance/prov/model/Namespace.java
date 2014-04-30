@@ -194,6 +194,7 @@ public class Namespace implements QualifiedNameExport {
     static public Namespace gatherNamespaces(NamedBundle bundle) {
    	NamespaceGatherer gatherer=new NamespaceGatherer();	
    	u.forAllStatement(bundle.getStatement(), gatherer);
+   	gatherer.register(bundle.getId());
    	Namespace ns=gatherer.getNamespace();
    	return ns;
     }

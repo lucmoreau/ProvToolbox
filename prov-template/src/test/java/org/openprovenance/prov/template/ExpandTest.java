@@ -1,9 +1,12 @@
 package org.openprovenance.prov.template;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
@@ -12,6 +15,7 @@ import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.xml.ProvDeserialiser;
 
 import static org.openprovenance.prov.template.Expand.VAR_NS;
 import static org.openprovenance.prov.template.Expand.APP_NS;
@@ -101,18 +105,43 @@ public class ExpandTest extends TestCase {
 
 	
     }
-    
-    public void testExpand1() {
-	System.out.println("expand1 ==========================================> ");
-	Document doc=pf.newDocument();
-	List<Statement> statements=new LinkedList<Statement>();
-	
-	statements.add(pf.newEntity(var_b));
-	statements.add(pf.newAgent(var_a));
-	statements.add(pf.newWasAttributedTo(null, var_b, var_a));
-	NamedBundle bun=pf.newNamedBundle(pf.newQualifiedName(EX_NS+"bun", "123", "bun"), statements);
-	doc.getStatementOrBundle().add(bun);
 
+    public void expander (String in,
+                          String out,
+                          Bindings bindings1,
+                          Groupings grp1) {
+	System.out.println("expander ==========================================> ");
+	
+	Document doc= new InteropFramework().loadProvKnownGraph(in);
+	
+	NamedBundle bun=(NamedBundle) doc.getStatementOrBundle().get(0);
+
+	
+
+	
+	NamedBundle bun1=(NamedBundle) new Expand().expand(bun, bindings1, grp1).get(0);
+	Document doc1=pf.newDocument();
+	doc1.getStatementOrBundle().add(bun1);
+	
+	
+	bun1.setNamespace(Namespace.gatherNamespaces(bun1));
+
+	doc1.setNamespace(bun1.getNamespace());
+	
+	System.out.println(bun1.getNamespace());
+		
+	
+	InteropFramework inf=new InteropFramework();
+	inf.writeDocument(out, doc1);
+	
+	
+	System.out.println("expander ==========================================> ");
+
+    }
+
+    
+
+    public void testExpand1() {
 	
 	Bindings bindings1=new Bindings();
 
@@ -135,30 +164,12 @@ public class ExpandTest extends TestCase {
 	grp1.addVariable(var_b);
 	System.out.println(grp1);
 	
+	expander("src/test/resources/template1.provn",
+	         "target/expanded1.provn",
+	         bindings1,
+	         grp1);
 	
 	
-	NamedBundle bun1=(NamedBundle) new Expand().expand(bun, bindings1, grp1).get(0);
-	Document doc1=pf.newDocument();
-	doc1.getStatementOrBundle().add(bun1);
-	
-	
-	bun1.setNamespace(Namespace.gatherNamespaces(bun1));
-	//bun1.getNamespace().getNamespaces().put("ex", EX_NS);
-	//bun1.getNamespace().getNamespaces().put("bun", EX_NS+"bun#");
-	//bun1.getNamespace().getNamespaces().put("app", APP_NS);
-	
-	doc1.setNamespace(bun1.getNamespace());
-	
-	System.out.println(bun1.getNamespace());
-		
-	//System.out.println("doc1" + doc1);
-	
-	InteropFramework inf=new InteropFramework();
-	inf.writeDocument("target/expanded1.provn", doc1);
-	
-	
-	System.out.println("expand1 ==========================================> ");
-
     }
 
 

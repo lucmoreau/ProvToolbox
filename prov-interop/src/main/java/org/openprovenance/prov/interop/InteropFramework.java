@@ -376,7 +376,7 @@ public class InteropFramework {
 
 	}
 
-	public Object loadProvKnownGraph(String filename) {
+	public Document loadProvKnownGraph(String filename) {
 		try {
 
 			ProvFormat format = getTypeForFile(filename);
@@ -403,7 +403,7 @@ public class InteropFramework {
 				Document doc=(Document)o;
 				Namespace ns=Namespace.gatherNamespaces(doc);
                                 doc.setNamespace(ns);
-				return o;
+				return doc;
 			}
 			case RDFXML:
 			case TRIG:

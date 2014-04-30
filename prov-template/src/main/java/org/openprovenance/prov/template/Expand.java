@@ -116,5 +116,8 @@ public class Expand {
     public boolean isVariable(QualifiedName id) {
 	return (id!=null) && (VAR_NS.equals(id.getNamespaceURI()));
     }
+    
+    
+    
 
 }

@@ -53,10 +53,6 @@ public class ExpandTest extends TestCase {
 	grp1.addVariable(var_b);
 	System.out.println(grp1);
 	
-	assertEquals(grp1.get(Arrays.asList(new Integer[]{0,0})).get(0),
-	             var_a);
-	assertEquals(grp1.get(Arrays.asList(new Integer[]{0,0})).get(1),
-	             var_b);
 
 	
 
@@ -65,13 +61,6 @@ public class ExpandTest extends TestCase {
 	grp2.addVariable(0,var_b);
 	System.out.println(grp2);
 
-	assertEquals(grp2.get(Arrays.asList(new Integer[]{0})).get(0),
-	             var_a);
-	
-
-	assertEquals(grp2.get(Arrays.asList(new Integer[]{1})).get(0),
-	             var_b);
-	
 
 	Groupings grp3=new Groupings();
 	grp3.addVariable(var_a);
@@ -80,16 +69,7 @@ public class ExpandTest extends TestCase {
 
 	System.out.println(grp3);
 
-	assertEquals(grp3.get(Arrays.asList(new Integer[]{0,0})).get(0),
-	             var_a);
-	
-	assertEquals(grp3.get(Arrays.asList(new Integer[]{0,0})).get(1),
-	             var_c);
-	
 
-	assertEquals(grp3.get(Arrays.asList(new Integer[]{1,0})).get(0),
-	             var_b);
-	
 
 	Using us1=new Using();
 	us1.addGroup(1, 2);
@@ -156,20 +136,6 @@ public class ExpandTest extends TestCase {
 	System.out.println(grp1);
 	
 	
-	Using us1=new Using();
-	us1.addGroup(1, 2);
-	System.out.println(us1);
-	
-	
-	Using us2=new Using();
-	us2.addGroup(0, 3);
-	System.out.println(us2);
-	
-	
-	Using us3=new Using();
-	us3.addGroup(1, 2);  
-	us3.addGroup(0, 3);
-	System.out.println(us3);
 	
 	NamedBundle bun1=(NamedBundle) new Expand().expand(bun, bindings1, grp1).get(0);
 	Document doc1=pf.newDocument();

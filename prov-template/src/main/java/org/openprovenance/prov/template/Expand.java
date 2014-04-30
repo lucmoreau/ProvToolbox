@@ -54,23 +54,12 @@ public class Expand {
 	List<StatementOrBundle> results=new LinkedList<StatementOrBundle>();
 	Iterator<List<Integer>> iter=us1.iterator();
 	while (iter.hasNext()) {
-	    List<Integer> index=iter.next();
-	    System.out.println("$$ " + index);
-	    
+	    List<Integer> index=iter.next();	    
 	    Hashtable<QualifiedName, QualifiedName> env=us1.get(bindings1, grp1, index);
 	    
-	    System.out.println("" + env);
 
-	    for (int i = 0; i < u.getFirstTimeIndex(statement); i++) {
-		QualifiedName qual=(QualifiedName) u.getter(statement, i);
-		if (qual!=null) {
-		    System.out.println("Found " + qual + " --> " + env.get(qual));
-		}
-	    }
 	    ExpandAction action=new ExpandAction(pf, u, this, env, index, bindings1, grp1);
 	    u.doAction(statement, action);
-	    
-	    System.out.println(action.getList());
 	    results.addAll(action.getList());
 	    
 	}

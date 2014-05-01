@@ -238,6 +238,47 @@ public class ExpandTest extends TestCase {
  	
  	
      }
+    
+
+    public void testExpand10() {
+        
+        Bindings bindings1=new Bindings();
+
+        bindings1.addVariable(var_a,
+                              pf.newQualifiedName(EX_NS, "av1", "ex"));
+        bindings1.addVariable(var_a,
+                              pf.newQualifiedName(EX_NS, "av2", "ex"));
+        bindings1.addVariable(var_a,
+                              pf.newQualifiedName(EX_NS, "av3", "ex"));
+        
+        bindings1.addVariable(var_b,
+                              pf.newQualifiedName(EX_NS, "bv1", "ex"));
+        bindings1.addVariable(var_b,
+                              pf.newQualifiedName(EX_NS, "bv2", "ex"));
+        
+        bindings1.addVariable(var_c,
+                              pf.newQualifiedName(EX_NS, "cv1", "ex"));
+        bindings1.addVariable(var_c,
+                              pf.newQualifiedName(EX_NS, "cv2", "ex"));
+        
+        
+        System.out.println(bindings1);
+
+        
+        Groupings grp1=new Groupings();
+        grp1.addVariable(var_a);
+        grp1.addVariable(var_b);
+        grp1.addVariable(1,var_c);
+        System.out.println(grp1);
+        
+        expander("src/test/resources/template10.provn",
+                 "target/expanded10.provn",
+                 bindings1,
+                 grp1);
+        
+        
+    }
+    
      
 
 }

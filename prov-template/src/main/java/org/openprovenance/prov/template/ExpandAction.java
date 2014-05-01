@@ -1,5 +1,6 @@
 package org.openprovenance.prov.template;
 
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,6 +9,7 @@ import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.AlternateOf;
+import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.DerivedByInsertionFrom;
 import org.openprovenance.prov.model.DerivedByRemovalFrom;
 import org.openprovenance.prov.model.DictionaryMembership;
@@ -98,14 +100,16 @@ public class ExpandAction implements StatementAction {
 
     @Override
     public void doAction(WasAttributedTo s) {
-	WasAttributedTo res=pf.newWasAttributedTo(s);
+	WasAttributedTo res=pf.newWasAttributedTo(s.getId(),s.getEntity(), s.getAgent());
 	QualifiedName id=res.getId();
 	boolean updated1=setExpand(res, id, 0);	
 	QualifiedName en=res.getEntity();
 	boolean updated2=setExpand(res, en, 1);	
 	QualifiedName ag=res.getAgent();
 	boolean updated3=setExpand(res, ag, 2);	
-	boolean updated=updated1 || updated2 || updated3;
+	boolean updated4=expandAttributes(s,res);
+
+	boolean updated=updated1 || updated2 || updated3 || updated4;
 	ll.add(res);
 	if (updated) addOrderAttribute(res);	
     }
@@ -148,14 +152,42 @@ public class ExpandAction implements StatementAction {
 
     @Override
     public void doAction(Entity e) {
-	Entity res=pf.newEntity(e);
+	Entity res=pf.newEntity(e.getId());
 	QualifiedName id=res.getId();
-	boolean updated=setExpand(res, id, 0);	
+	boolean updated1=setExpand(res, id, 0);	
+	boolean updated2=expandAttributes(e,res);
+	boolean updated=updated1 || updated2;
 	ll.add(res);
 	if (updated) addOrderAttribute(res);
     }
 
-    private void addOrderAttribute(HasOther res) {
+    public boolean expandAttributes(Statement srcStatement, Statement dstStatement) {
+        boolean found=false;
+        if (dstStatement instanceof HasOther) {
+
+            Collection<Attribute> attributes=pf.getAttributes(srcStatement);
+            Collection<Attribute> dstAttributes=new LinkedList<Attribute>();
+            for (Attribute attribute: attributes) {
+                if (pf.getName().XSD_QNAME.equals(attribute.getType())) {
+                    Object o=attribute.getValue();
+                    if (o instanceof QualifiedName) {
+                        QualifiedName qn1=(QualifiedName)o;
+                        QualifiedName qn2=env.get(qn1);
+                        if (qn2==null) {
+                            dstAttributes.add(attribute);
+                        } else {
+                            found=true;
+                            dstAttributes.add(pf.newAttribute(attribute.getElementName(), qn2, attribute.getType()));
+                        }
+                    }
+                }
+            }
+            pf.setAttributes((HasOther) dstStatement, dstAttributes);
+        }       
+        return found;
+    }
+
+    public void addOrderAttribute(HasOther res) {
 	res.getOther().add(pf.newOther(APP_NS, "order", "app", index, pf.getName().XSD_STRING));
     }
 

@@ -1410,6 +1410,18 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         res.setYear(year);
         return res;
     }
+    public Collection<Attribute> getAttributes(Statement statement) {
+	Collection<Attribute> result=new LinkedList<Attribute>();
+	if (statement instanceof HasType) result.addAll(((HasType)statement).getType());
+	if (statement instanceof HasLocation) result.addAll(((HasLocation)statement).getLocation());
+	if (statement instanceof HasRole) result.addAll(((HasRole)statement).getRole());
+	if (statement instanceof HasOther) {
+	    for (Other o: ((HasOther)statement).getOther()) {
+		result.add((Attribute)o);
+	    }
+	}	
+	return result;
+    }
 
     public void setAttributes(HasOther res, Collection<Attribute> attributes) {
 	if (attributes==null) return;

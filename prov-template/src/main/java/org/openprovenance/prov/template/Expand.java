@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -8,14 +9,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.xml.ProvUtilities;
-import org.openrdf.query.algebra.In;
 
 public class Expand {
     static final String VAR_NS = "http://openprovenance.org/var#";
@@ -73,7 +75,17 @@ public class Expand {
 	HashSet<QualifiedName> result=new HashSet<QualifiedName>();
 	 for (int i = 0; i < u.getFirstTimeIndex(statement); i++) {
 	     QualifiedName name=(QualifiedName) u.getter(statement, i);
-	     if (name!=null) result.add(name);
+	     if (name!=null && isVariable(name)) result.add(name);
+	 }
+	 Collection<Attribute> ll=pf.getAttributes(statement);
+	 for (Attribute attr: ll) {
+	     if (pf.getName().XSD_QNAME.equals(attr.getType())) {
+	         Object o=attr.getValue();
+	         if (o instanceof QualifiedName) {
+	             QualifiedName qn=(QualifiedName)o;
+	             if (isVariable(qn)) result.add(qn);
+	         }
+	     }
 	 }
 	 return result;	
     }

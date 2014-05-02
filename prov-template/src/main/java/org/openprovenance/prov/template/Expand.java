@@ -95,7 +95,6 @@ public class Expand {
                              Groupings groupings,
                              Bindings bindings) {
 	Set<QualifiedName> vars=freeVariables(statement);
-	System.out.println("Vars" + vars);
 	Set<Integer> groups=new HashSet<Integer>();
 	for (QualifiedName var: vars) {
 	    for (int grp=0; grp<groupings.size(); grp++) {
@@ -109,9 +108,6 @@ public class Expand {
 	Using u=new Using();
 	Integer [] sorted=groups.toArray(new Integer[0]);
 	Arrays.sort(sorted);
-	
-	System.out.println("Found sorted " + groups);
-	System.out.println("Found groupings " + groupings);
 	
 	
 	for (Integer g: sorted) {

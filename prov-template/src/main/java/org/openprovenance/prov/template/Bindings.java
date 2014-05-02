@@ -141,8 +141,6 @@ public class Bindings {
                 if (uri.startsWith(APP_VALUE)) {
                     Integer i=Integer.valueOf(uri.substring(APP_VALUE.length()));
                     if (attr.getValue() instanceof QualifiedName) {
-                        System.out.println("i: " + i );
-
                         map.put(i, (QualifiedName) attr.getValue());
                     }
                 } else {
@@ -158,8 +156,6 @@ public class Bindings {
                     }
                 }
             }
-            System.out.println("Found attrs " + map);
-            System.out.println("Found attrs " + map2);
             ArrayList<QualifiedName> ll=new ArrayList<QualifiedName>(); 
             int size=map.entrySet().size();
             if (size>0) {

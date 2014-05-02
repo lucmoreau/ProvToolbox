@@ -125,7 +125,7 @@ public class ExpandTest extends TestCase {
 
 	doc1.setNamespace(bun1.getNamespace());
 	
-	System.out.println(bun1.getNamespace());
+	//System.out.println(bun1.getNamespace());
 		
 	
 	InteropFramework inf=new InteropFramework();
@@ -154,13 +154,13 @@ public class ExpandTest extends TestCase {
 	                      pf.newQualifiedName(EX_NS, "bv1", "ex"));
 	bindings1.addVariable(var_b,
 	                      pf.newQualifiedName(EX_NS, "bv2", "ex"));
-	System.out.println(bindings1);
+	//System.out.println(bindings1);
 
 	
 	Groupings grp1=new Groupings();
 	grp1.addVariable(var_a);
 	grp1.addVariable(var_b);
-	System.out.println(grp1);
+	//System.out.println(grp1);
 	
 	expander("src/test/resources/template1.provn",
 	         "target/expanded1.provn",
@@ -184,13 +184,13 @@ public class ExpandTest extends TestCase {
 	                      pf.newQualifiedName(EX_NS, "bv1", "ex"));
 	bindings1.addVariable(var_b,
 	                      pf.newQualifiedName(EX_NS, "bv2", "ex"));
-	System.out.println(bindings1);
+	//System.out.println(bindings1);
 
 	
 	Groupings grp1=new Groupings();
 	grp1.addVariable(var_a);
 	grp1.addVariable(0,var_b);
-	System.out.println(grp1);
+	//System.out.println(grp1);
 	
 	expander("src/test/resources/template1.provn",
 	         "target/expanded2.provn",
@@ -222,14 +222,14 @@ public class ExpandTest extends TestCase {
  	bindings1.addVariable(var_c,
  	                      pf.newQualifiedName(EX_NS, "cv2", "ex"));
  	
- 	System.out.println(bindings1);
+ 	//System.out.println(bindings1);
 
  	
  	Groupings grp1=new Groupings();
  	grp1.addVariable(var_a);
  	grp1.addVariable(var_b);
  	grp1.addVariable(1,var_c);
- 	System.out.println(grp1);
+ 	//System.out.println(grp1);
  	
  	expander("src/test/resources/template2.provn",
  	         "target/expanded3.provn",
@@ -263,14 +263,14 @@ public class ExpandTest extends TestCase {
                               pf.newQualifiedName(EX_NS, "cv2", "ex"));
         
         
-        System.out.println(bindings1);
+        //System.out.println(bindings1);
 
         
         Groupings grp1=new Groupings();
         grp1.addVariable(var_a);
         grp1.addVariable(var_b);
         grp1.addVariable(1,var_c);
-        System.out.println(grp1);
+        //System.out.println(grp1);
         
         expander("src/test/resources/template10.provn",
                  "target/expanded10.provn",
@@ -305,14 +305,14 @@ public class ExpandTest extends TestCase {
                               pf.newQualifiedName(EX_NS, "cv2", "ex"));
         
         
-        System.out.println(bindings1);
+        //System.out.println(bindings1);
 
         
         Groupings grp1=new Groupings();
         grp1.addVariable(var_a);
         grp1.addVariable(var_b);
         grp1.addVariable(var_c);
-        System.out.println(grp1);
+        //System.out.println(grp1);
         
         expander("src/test/resources/template10.provn",
                  "target/expanded11.provn",
@@ -351,7 +351,7 @@ public class ExpandTest extends TestCase {
         bindings1.addAttribute(var_d, ll);
         
         
-        System.out.println(bindings1);
+        //System.out.println(bindings1);
 
         
         Groupings grp1=new Groupings();
@@ -360,7 +360,7 @@ public class ExpandTest extends TestCase {
         grp1.addVariable(1,var_c);
         grp1.addVariable(var_d);
 
-        System.out.println(grp1);
+        //System.out.println(grp1);
         
         expander("src/test/resources/template20.provn",
                  "target/expanded20.provn",
@@ -405,7 +405,6 @@ public class ExpandTest extends TestCase {
         bindings1.addAttribute(var_d, ll2);
         
         
-        System.out.println(bindings1);
         
 
         
@@ -415,7 +414,6 @@ public class ExpandTest extends TestCase {
         grp1.addVariable(1,var_c);
         grp1.addVariable(1, var_d);
 
-        System.out.println(grp1);
         
         expander("src/test/resources/template20.provn",
                  "target/expanded21.provn",

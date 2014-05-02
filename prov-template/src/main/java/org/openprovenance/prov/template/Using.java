@@ -37,16 +37,11 @@ public class Using implements Iterable<List<Integer>> {
         return result;
     }
     
-    public boolean checkIndex(List<Integer> index) {
-        System.out.println("checkIndex " + index);
-        System.out.println("checkIndex " + groups);
-        
+    public boolean checkIndex(List<Integer> index) {        
         if (index==null) return groups.isEmpty();
         if (index.size()==groups.size()) {
             int count=0;
             for (Integer in: index) {
-                System.out.println("checkIndex: " + in + " " + count + " " + lengths);
-
                 if (in >= lengths.get(count)) {
                     return false;
                 }

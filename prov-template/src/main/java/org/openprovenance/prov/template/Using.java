@@ -38,10 +38,15 @@ public class Using implements Iterable<List<Integer>> {
     }
     
     public boolean checkIndex(List<Integer> index) {
+        System.out.println("checkIndex " + index);
+        System.out.println("checkIndex " + groups);
+        
         if (index==null) return groups.isEmpty();
         if (index.size()==groups.size()) {
             int count=0;
             for (Integer in: index) {
+                System.out.println("checkIndex: " + in + " " + count + " " + lengths);
+
                 if (in >= lengths.get(count)) {
                     return false;
                 }
@@ -93,8 +98,11 @@ public class Using implements Iterable<List<Integer>> {
 	for (int ind: index) {
 	    int group=groups.get(count);
 	    for (QualifiedName var: gr.get(group)) {
-		QualifiedName val=b.getVariables().get(var).get(ind);
-		result.put(var, val);
+	        List<QualifiedName> ll=b.getVariables().get(var);
+	        if (ll!=null) {
+	            QualifiedName val=ll.get(ind);
+	            result.put(var, val);
+	        }
 	    }
 	    count++;
 	}

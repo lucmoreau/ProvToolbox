@@ -358,12 +358,65 @@ public class ExpandTest extends TestCase {
         grp1.addVariable(var_a);
         grp1.addVariable(var_b);
         grp1.addVariable(1,var_c);
-       // grp1.addVariable(var_d);
+        grp1.addVariable(var_d);
 
         System.out.println(grp1);
         
         expander("src/test/resources/template20.provn",
                  "target/expanded20.provn",
+                 bindings1,
+                 grp1);
+        
+        
+    }
+    
+    
+    
+    public void testExpand21() {
+        
+        Bindings bindings1=new Bindings();
+
+        bindings1.addVariable(var_a,
+                              pf.newQualifiedName(EX_NS, "av1", "ex"));
+        bindings1.addVariable(var_a,
+                              pf.newQualifiedName(EX_NS, "av2", "ex"));
+        bindings1.addVariable(var_a,
+                              pf.newQualifiedName(EX_NS, "av3", "ex"));
+        
+        bindings1.addVariable(var_b,
+                              pf.newQualifiedName(EX_NS, "bv1", "ex"));
+        bindings1.addVariable(var_b,
+                              pf.newQualifiedName(EX_NS, "bv2", "ex"));
+        
+        bindings1.addVariable(var_c,
+                              pf.newQualifiedName(EX_NS, "cv1", "ex"));
+        bindings1.addVariable(var_c,
+                              pf.newQualifiedName(EX_NS, "cv2", "ex"));
+        
+        List<TypedValue> ll1=new LinkedList<TypedValue>();
+        ll1.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc@example", pf.getName().XSD_STRING));
+        
+        List<TypedValue> ll2=new LinkedList<TypedValue>();
+
+        ll2.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "lm@soton", pf.getName().XSD_STRING));
+        
+        bindings1.addAttribute(var_d, ll1);
+        bindings1.addAttribute(var_d, ll2);
+        
+        
+        System.out.println(bindings1);
+
+        
+        Groupings grp1=new Groupings();
+        grp1.addVariable(var_a);
+        grp1.addVariable(var_b);
+        grp1.addVariable(1,var_c);
+        grp1.addVariable(1, var_d);
+
+        System.out.println(grp1);
+        
+        expander("src/test/resources/template20.provn",
+                 "target/expanded21.provn",
                  bindings1,
                  grp1);
         

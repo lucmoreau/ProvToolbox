@@ -49,6 +49,7 @@ public class ExpandAction implements StatementAction {
     final private List<Integer> index;
     final private Bindings bindings;
     final private Groupings grp1;
+    final private Hashtable<QualifiedName, List<TypedValue>> env2;
 
     public ExpandAction(ProvFactory pf, ProvUtilities u, Expand expand, Hashtable<QualifiedName, QualifiedName> env, Hashtable<QualifiedName, List<TypedValue>> env2, List<Integer> index, Bindings bindings1, Groupings grp1) {
 	this.pf=pf;
@@ -58,6 +59,7 @@ public class ExpandAction implements StatementAction {
 	this.index=index;
 	this.bindings=bindings1;
 	this.grp1=grp1;
+	this.env2=env2;
     }
 
     @Override
@@ -173,12 +175,16 @@ public class ExpandAction implements StatementAction {
                     Object o=attribute.getValue();
                     if (o instanceof QualifiedName) {
                         QualifiedName qn1=(QualifiedName)o;
-                        QualifiedName qn2=env.get(qn1);
-                        if (qn2==null) {
+                        List<TypedValue> vals=env2.get(qn1);
+                        if (vals==null) {
                             dstAttributes.add(attribute);
                         } else {
                             found=true;
-                            dstAttributes.add(pf.newAttribute(attribute.getElementName(), qn2, attribute.getType()));
+                            for (TypedValue val: vals) {
+                                dstAttributes.add(pf.newAttribute(attribute.getElementName(), 
+                                                                  val.getValue(), 
+                                                                  val.getType()));
+                            }
                         }
                     } else {
                         dstAttributes.add(attribute); 

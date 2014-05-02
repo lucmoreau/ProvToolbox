@@ -118,12 +118,18 @@ public class Expand {
 	for (Integer g: sorted) {
 	    List<QualifiedName> vs=groupings.get(g);
 	    List<QualifiedName> vals=bindings.getVariables().get(vs.get(0));
-	    int len=(vals==null) ? 0 : vals.size();
-	    u.addGroup(g, len);    
+	    if (vals!=null) {
+	           u.addGroup(g, vals.size());    
+
+	    } else {
+	        List<List<TypedValue>> attrs=bindings.getAttributes().get(vs.get(0));
+	        if (attrs!=null) {
+	            u.addGroup(g, attrs.size());
+	        }
+
+	    }
 	}
-	// TODO: generate a Using Structure.
-	// For each group, get the length of bindings for their variables.
-	//return new LinkedList<Integer>(groups);
+
 	return u;
     }
     

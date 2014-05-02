@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;

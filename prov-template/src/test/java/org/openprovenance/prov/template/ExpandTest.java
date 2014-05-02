@@ -1,24 +1,17 @@
 package org.openprovenance.prov.template;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.TypedValue;
-import org.openprovenance.prov.xml.ProvDeserialiser;
-
 import static org.openprovenance.prov.template.Expand.VAR_NS;
 import static org.openprovenance.prov.template.Expand.APP_NS;
 import junit.framework.TestCase;
@@ -112,7 +105,8 @@ public class ExpandTest extends TestCase {
     public void expander (String in,
                           String out,
                           Bindings bindings1,
-                          Groupings grp1) {
+                          Groupings grp1,       
+                          String outBindings) {
 	System.out.println("expander ==========================================> " + in);
 	
 	Document doc= new InteropFramework().loadProvKnownGraph(in);
@@ -137,6 +131,7 @@ public class ExpandTest extends TestCase {
 	InteropFramework inf=new InteropFramework();
 	inf.writeDocument(out, doc1);
 	
+	new InteropFramework().writeDocument(outBindings, bindings1.toDocument());
 	
 	System.out.println("expander ==========================================> ");
 
@@ -170,7 +165,8 @@ public class ExpandTest extends TestCase {
 	expander("src/test/resources/template1.provn",
 	         "target/expanded1.provn",
 	         bindings1,
-	         grp1);
+	         grp1,
+	         "target/bindings1.provn");
 	
 	
     }
@@ -199,7 +195,8 @@ public class ExpandTest extends TestCase {
 	expander("src/test/resources/template1.provn",
 	         "target/expanded2.provn",
 	         bindings1,
-	         grp1);
+	         grp1,
+	         "target/bindings2.provn");
 	
 	
     }
@@ -237,7 +234,8 @@ public class ExpandTest extends TestCase {
  	expander("src/test/resources/template2.provn",
  	         "target/expanded3.provn",
  	         bindings1,
- 	         grp1);
+ 	         grp1,
+ 	        "target/bindings3.provn");
  	
  	
      }
@@ -277,7 +275,8 @@ public class ExpandTest extends TestCase {
         expander("src/test/resources/template10.provn",
                  "target/expanded10.provn",
                  bindings1,
-                 grp1);
+                 grp1,
+                 "target/bindings10.provn");
         
         
     }
@@ -318,7 +317,8 @@ public class ExpandTest extends TestCase {
         expander("src/test/resources/template10.provn",
                  "target/expanded11.provn",
                  bindings1,
-                 grp1);
+                 grp1,
+                 "target/bindings11.provn");
         
         
     }
@@ -365,7 +365,8 @@ public class ExpandTest extends TestCase {
         expander("src/test/resources/template20.provn",
                  "target/expanded20.provn",
                  bindings1,
-                 grp1);
+                 grp1,
+                 "target/bindings20.provn");
         
         
     }
@@ -405,6 +406,7 @@ public class ExpandTest extends TestCase {
         
         
         System.out.println(bindings1);
+        
 
         
         Groupings grp1=new Groupings();
@@ -418,7 +420,8 @@ public class ExpandTest extends TestCase {
         expander("src/test/resources/template20.provn",
                  "target/expanded21.provn",
                  bindings1,
-                 grp1);
+                 grp1,
+                 "target/bindings21.provn");
         
         
     }

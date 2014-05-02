@@ -82,9 +82,11 @@ public class ExpandAction implements StatementAction {
 
     @Override
     public void doAction(Agent e) {
-	Agent res=pf.newAgent(e);
+	Agent res=pf.newAgent(e.getId());
 	QualifiedName id=res.getId();
-	boolean updated=setExpand(res, id, 0);	
+	boolean updated1=setExpand(res, id, 0);	
+	boolean updated2=expandAttributes(e,res);
+	boolean updated=updated1 || updated2;
 	ll.add(res);
 	if (updated) addOrderAttribute(res);	
     }

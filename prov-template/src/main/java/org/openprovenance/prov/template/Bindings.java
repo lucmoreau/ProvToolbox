@@ -94,18 +94,16 @@ public class Bindings {
         
         List<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
         
-        for (Entry<QualifiedName, List<QualifiedName>> entry: variables.entrySet()) {
-            Entity e=pf.newEntity(entry.getKey());
-            int count=0;
-            List<Attribute> attrs=new LinkedList<Attribute>();
-            for (QualifiedName qn: entry.getValue()) {
-                attrs.add(pf.newAttribute(APP_NS, VALUE+count, APP, qn, pf.getName().XSD_QNAME));
-                count++;
-            }
-            pf.setAttributes(e, attrs);
-            ll.add(e);       
-        }
+        add1DValues(ll,variables);  
+        add2Dvalues(ll,attributes);
         
+        result.getStatementOrBundle().addAll(ll);
+        result.setNamespace(Namespace.gatherNamespaces(result));
+        
+        return result;
+    }
+
+    public void add2Dvalues(List<StatementOrBundle> ll, Hashtable<QualifiedName, List<List<TypedValue>>> attributes) {
         for (Entry<QualifiedName, List<List<TypedValue>>> entry: attributes.entrySet()) {
             Entity e=pf.newEntity(entry.getKey());
             int count1=0;
@@ -121,11 +119,20 @@ public class Bindings {
             e.getOther().addAll(attrs);
             ll.add(e);       
         }
-        
-        result.getStatementOrBundle().addAll(ll);
-        result.setNamespace(Namespace.gatherNamespaces(result));
-        
-        return result;
+    }
+
+    public void add1DValues(List<StatementOrBundle> ll, Hashtable<QualifiedName, List<QualifiedName>> variables) {
+        for (Entry<QualifiedName, List<QualifiedName>> entry: variables.entrySet()) {
+            Entity e=pf.newEntity(entry.getKey());
+            int count=0;
+            List<Attribute> attrs=new LinkedList<Attribute>();
+            for (QualifiedName qn: entry.getValue()) {
+                attrs.add(pf.newAttribute(APP_NS, VALUE+count, APP, qn, pf.getName().XSD_QNAME));
+                count++;
+            }
+            pf.setAttributes(e, attrs);
+            ll.add(e);       
+        }
     }
     
     

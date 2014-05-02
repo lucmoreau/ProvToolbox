@@ -44,6 +44,14 @@ public class Bindings {
 	variables.get(name).add(val);
     }
     
+    public void addAttribute(QualifiedName name, List<TypedValue> values) {
+        List<List<TypedValue>> v=attributes.get(name);
+        if (v==null) {
+            attributes.put(name, new LinkedList<List<TypedValue>>());
+        }
+        attributes.get(name).add(values);
+    }
+    
 
     @Override
     public String toString () {

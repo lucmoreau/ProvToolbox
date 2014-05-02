@@ -12,9 +12,11 @@ import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 
 import static org.openprovenance.prov.template.Expand.VAR_NS;
@@ -33,6 +35,7 @@ public class ExpandTest extends TestCase {
     QualifiedName var_a=pf.newQualifiedName(VAR_NS, "a", "var");
     QualifiedName var_b=pf.newQualifiedName(VAR_NS, "b", "var");
     QualifiedName var_c=pf.newQualifiedName(VAR_NS, "c", "var");
+    QualifiedName var_d=pf.newQualifiedName(VAR_NS, "d", "var");
  
     public void NOtestBinding1() {
 	Bindings bindings1=new Bindings();
@@ -341,6 +344,12 @@ public class ExpandTest extends TestCase {
         bindings1.addVariable(var_c,
                               pf.newQualifiedName(EX_NS, "cv2", "ex"));
         
+        List<TypedValue> ll=new LinkedList<TypedValue>();
+        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "lm@soton", pf.getName().XSD_STRING));
+        
+        bindings1.addAttribute(var_d, ll);
+        
         
         System.out.println(bindings1);
 
@@ -349,6 +358,8 @@ public class ExpandTest extends TestCase {
         grp1.addVariable(var_a);
         grp1.addVariable(var_b);
         grp1.addVariable(1,var_c);
+       // grp1.addVariable(var_d);
+
         System.out.println(grp1);
         
         expander("src/test/resources/template20.provn",

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.TypedValue;
 
 public class Using implements Iterable<List<Integer>> {
     
@@ -102,6 +103,27 @@ public class Using implements Iterable<List<Integer>> {
     }
 
 
+
+
+    public Hashtable<QualifiedName, List<TypedValue>> getAttr(Bindings b,
+                                                              Groupings gr,
+                                                              List<Integer> index) {
+        Hashtable<QualifiedName,List<TypedValue>> result=new Hashtable<QualifiedName, List<TypedValue>>();
+
+        int count=0;
+        for (int ind: index) {
+            int group=groups.get(count);
+            for (QualifiedName var: gr.get(group)) {
+                List<List<TypedValue>> val=b.getAttributes().get(var);
+                if (val!=null) {
+                    result.put(var, val.get(ind));
+                }
+            }
+            count++;
+        }
+        return result;
+    }
+
     class UsingIterator implements Iterator<List<Integer>> {
         List<Integer> currentIndex;
         boolean initialized;
@@ -150,6 +172,7 @@ public class Using implements Iterable<List<Integer>> {
     public Iterator<List<Integer>> iterator() {
         return new UsingIterator(this);
     }
+
 
 	
 }

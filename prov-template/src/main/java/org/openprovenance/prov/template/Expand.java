@@ -17,6 +17,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.xml.ProvUtilities;
 
 public class Expand {
@@ -43,8 +44,9 @@ public class Expand {
     public List<StatementOrBundle> expand(NamedBundle bun, 
                                           Bindings bindings1,
                                           Groupings grp1) {
-	Hashtable<QualifiedName, QualifiedName> env0=new Hashtable<QualifiedName, QualifiedName>();
-	ExpandAction action=new ExpandAction(pf, u, this, env0, null, bindings1, grp1);
+        Hashtable<QualifiedName, QualifiedName> env0=new Hashtable<QualifiedName, QualifiedName>();
+        Hashtable<QualifiedName, List<TypedValue>> env1=new Hashtable<QualifiedName, List<TypedValue>>();
+	ExpandAction action=new ExpandAction(pf, u, this, env0, env1, null, bindings1, grp1);
 	u.doAction(bun, action);
 	return action.getList();
     }
@@ -57,10 +59,10 @@ public class Expand {
 	Iterator<List<Integer>> iter=us1.iterator();
 	while (iter.hasNext()) {
 	    List<Integer> index=iter.next();	    
-	    Hashtable<QualifiedName, QualifiedName> env=us1.get(bindings1, grp1, index);
-	    
+	    Hashtable<QualifiedName, QualifiedName> env=us1.get(bindings1, grp1, index);	    
+            Hashtable<QualifiedName, List<TypedValue>> env2=us1.getAttr(bindings1, grp1, index);
 
-	    ExpandAction action=new ExpandAction(pf, u, this, env, index, bindings1, grp1);
+	    ExpandAction action=new ExpandAction(pf, u, this, env, env2, index, bindings1, grp1);
 	    u.doAction(statement, action);
 	    results.addAll(action.getList());
 	    

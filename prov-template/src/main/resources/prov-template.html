@@ -125,6 +125,22 @@ Issues:
 </ul>
 </section>
 
+<section id="environment">
+<pre>
+document
+prefix app <http://a/>
+prefix var <http://v/>
+prefix ex <http://ex/>
+
+entity(var:a,[app:value0='ex:foo',app:value1='ex:bar'])
+
+entity(var:b,[prov:value='ex:foo', app:order=0])
+entity(var:b,[prov:value='ex:bar', app:order=1])
+
+endDocument
+</pre>
+</section>
+
 
 </body>
 </html>

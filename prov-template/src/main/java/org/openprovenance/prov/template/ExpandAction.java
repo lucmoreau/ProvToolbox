@@ -25,6 +25,7 @@ import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementAction;
 import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
@@ -49,7 +50,7 @@ public class ExpandAction implements StatementAction {
     final private Bindings bindings;
     final private Groupings grp1;
 
-    public ExpandAction(ProvFactory pf, ProvUtilities u, Expand expand, Hashtable<QualifiedName, QualifiedName> env, List<Integer> index, Bindings bindings1, Groupings grp1) {
+    public ExpandAction(ProvFactory pf, ProvUtilities u, Expand expand, Hashtable<QualifiedName, QualifiedName> env, Hashtable<QualifiedName, List<TypedValue>> env2, List<Integer> index, Bindings bindings1, Groupings grp1) {
 	this.pf=pf;
 	this.expand=expand;
 	this.env=env;
@@ -179,7 +180,12 @@ public class ExpandAction implements StatementAction {
                             found=true;
                             dstAttributes.add(pf.newAttribute(attribute.getElementName(), qn2, attribute.getType()));
                         }
+                    } else {
+                        dstAttributes.add(attribute); 
                     }
+                } else {
+                    dstAttributes.add(attribute);
+
                 }
             }
             pf.setAttributes((HasOther) dstStatement, dstAttributes);

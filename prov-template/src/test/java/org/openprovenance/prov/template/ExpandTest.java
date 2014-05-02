@@ -423,7 +423,6 @@ public class ExpandTest extends TestCase {
                  grp1,
                  "target/bindings21.provn");
         
-        
     }
     
     

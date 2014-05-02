@@ -2,6 +2,7 @@ package org.openprovenance.prov.template;
 
 import java.util.Hashtable;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -10,7 +11,9 @@ import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.TypedValue;
@@ -19,10 +22,17 @@ import static org.openprovenance.prov.template.Expand.APP_NS;
 
 public class Bindings {
     
+    private static final String APP = "app";
+    public static final String VALUE = "value_";
+    public static final String VALUE2 = "2dvalue_";
+    public static final String APP_VALUE = APP_NS+VALUE;
+    public static final String APP_VALUE2 = APP_NS+VALUE2;
+    
     final private Hashtable<QualifiedName, List<QualifiedName>> variables;
     final private Hashtable<QualifiedName, List<List<TypedValue>>> attributes;
     
     ProvFactory pf=new org.openprovenance.prov.xml.ProvFactory();
+    static ProvUtilities u= new ProvUtilities();
 
     public Bindings() {
 	this(new Hashtable<QualifiedName, List<QualifiedName>>(), 
@@ -35,6 +45,14 @@ public class Bindings {
 	this.attributes=attributes;
     }
 
+    @Override
+    public boolean equals (Object o) {
+        if (!(o instanceof Bindings)) return false;
+        Bindings b=(Bindings)o;
+        return b.variables.equals(this.variables)
+                && b.attributes.equals(this.attributes);
+        
+    }
 
 
     public Hashtable<QualifiedName, List<QualifiedName>> getVariables() {
@@ -81,7 +99,7 @@ public class Bindings {
             int count=0;
             List<Attribute> attrs=new LinkedList<Attribute>();
             for (QualifiedName qn: entry.getValue()) {
-                attrs.add(pf.newAttribute(APP_NS, "value"+count, "app", qn, pf.getName().XSD_QNAME));
+                attrs.add(pf.newAttribute(APP_NS, VALUE+count, APP, qn, pf.getName().XSD_QNAME));
                 count++;
             }
             pf.setAttributes(e, attrs);
@@ -91,16 +109,16 @@ public class Bindings {
         for (Entry<QualifiedName, List<List<TypedValue>>> entry: attributes.entrySet()) {
             Entity e=pf.newEntity(entry.getKey());
             int count1=0;
-            List<Attribute> attrs=new LinkedList<Attribute>();
+            List<Other> attrs=new LinkedList<Other>();
             for (List<TypedValue> vals: entry.getValue()) {
                 int count2=0;
                 for (TypedValue val: vals) {
-                    attrs.add(pf.newAttribute(APP_NS, "value"+count1+","+count2, "app", val.getValue(), val.getType()));
+                    attrs.add(pf.newOther(APP_NS, VALUE2+count1+"_"+count2, APP, val.getValue(), val.getType()));
                     count2++;
                 }
                 count1++;
             }
-            pf.setAttributes(e, attrs);
+            e.getOther().addAll(attrs);
             ll.add(e);       
         }
         
@@ -110,5 +128,74 @@ public class Bindings {
         return result;
     }
     
+    
+    public static Bindings fromDocument(Document doc) {
+        Bindings result=new Bindings();
+        
+        List<Entity> entities=u.getEntity(doc);
+        for (Entity entity: entities) {
+            Hashtable<Integer,QualifiedName> map=new Hashtable<Integer, QualifiedName>();
+            Hashtable<Integer, Hashtable<Integer,TypedValue>> map2=new Hashtable<Integer, Hashtable<Integer,TypedValue>>();
+            for (Other attr: entity.getOther()) {
+                String uri = attr.getElementName().getUri();
+                if (uri.startsWith(APP_VALUE)) {
+                    Integer i=Integer.valueOf(uri.substring(APP_VALUE.length()));
+                    if (attr.getValue() instanceof QualifiedName) {
+                        System.out.println("i: " + i );
+
+                        map.put(i, (QualifiedName) attr.getValue());
+                    }
+                } else {
+                    if (uri.startsWith(APP_VALUE2)) {
+                        String index=uri.substring(APP_VALUE2.length());
+                        String [] nums=index.split("_");
+                        Integer i=Integer.valueOf(nums[0]);
+                        Integer j=Integer.valueOf(nums[1]);
+                        
+                        Hashtable<Integer, TypedValue> row=map2.get(i);
+                        if (row==null) map2.put(i, new Hashtable<Integer, TypedValue>());
+                        map2.get(i).put(j,attr);
+                    }
+                }
+            }
+            System.out.println("Found attrs " + map);
+            System.out.println("Found attrs " + map2);
+            ArrayList<QualifiedName> ll=new ArrayList<QualifiedName>(); 
+            int size=map.entrySet().size();
+            if (size>0) {
+                for (Entry<Integer, QualifiedName> entry: map.entrySet()) {
+                    set(entry.getKey(),ll,entry.getValue());
+                }
+                result.getVariables().put(entity.getId(),ll);
+            } 
+            
+            int size2=map2.entrySet().size();
+            if (size2>0) {
+                List<List<TypedValue>> allvalues= new LinkedList<List<TypedValue>>();
+
+                for (Entry<Integer, Hashtable<Integer, TypedValue>> entry1: map2.entrySet()) {
+                    List<TypedValue> values= new LinkedList<TypedValue>();
+                    for (Entry<Integer, TypedValue> entry2: entry1.getValue().entrySet()) {
+                        set(entry2.getKey(),values,entry2.getValue());
+                    }
+                    set(entry1.getKey(),allvalues,values);
+                }
+                result.getAttributes().put(entity.getId(),allvalues);
+
+            } 
+            
+            
+        }
+        
+        return result;
+    }
+    
+    static public <E> void set(int pos, List<E> ll, E val) {
+        int size=ll.size();
+        for (int i=size; i<=pos; i++) {
+            ll.add(null);
+        }
+        ll.set(pos,val);
+    }
 	
 }

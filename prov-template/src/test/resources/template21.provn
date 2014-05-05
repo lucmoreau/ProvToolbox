@@ -10,8 +10,8 @@ prefix tmpl <http://openprovenance.org/tmpl#>
 bundle bun:123
 entity(bun:123, [prov:type='prov:Bundle', app:binding='var:unknown'])
 entity(var:a, [tmpl:linked='var:b'])
-entity(var:b, [prov:type='var:c', prov:location='var:c', ex:foo='var:c', ex:email='var:d'])
-wasAttributedTo(var:b, var:a, [prov:type='var:c', prov:location='var:c', ex:foo='var:e'])
+entity(var:b, [ex:email='var:d'])
+wasAttributedTo(var:b, var:a, [ex:foo='var:e'])
 endBundle
 
 endDocument

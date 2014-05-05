@@ -7,9 +7,12 @@ prefix tmpl <http://openprovenance.org/tmpl#>
 
 
 bundle bun:123
-entity(var:a, [tmpl:linked='var:b'])
+entity(var:a)
 entity(var:b)
+entity(var:c, [tmpl:linked='var:b'])
 wasAttributedTo(var:b, var:a)
+wasAttributedTo(var:c, var:a)
+wasAttributedTo(var:b, var:c)
 endBundle
 
 endDocument

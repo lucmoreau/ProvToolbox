@@ -11,6 +11,7 @@ import org.apache.commons.cli.ParseException;
 
 public class CommandLineArguments {
     
+    public static final String BINDINGS = "bindings";
     public static final String OUTFILE = "outfile";
     public static final String VERBOSE = "verbose";
     public static final String NAMESPACES = "namespaces";
@@ -52,7 +53,12 @@ public class CommandLineArguments {
                 .hasArg()
                 .withDescription("use given file as declaration of prefix namespaces")
                 .create(NAMESPACES);
-        
+
+        Option bindings = OptionBuilder
+                .withArgName("file")
+                .hasArg()
+                .withDescription("use given file as bindings for template expansion (template is provided as infile)")
+                .create(BINDINGS);
  
         Option title = OptionBuilder
                 .withArgName("string")
@@ -71,6 +77,7 @@ public class CommandLineArguments {
         options.addOption(outfile);
         options.addOption(namespaces);
         options.addOption(title);
+        options.addOption(bindings);
 
         return options;
 
@@ -88,6 +95,7 @@ public class CommandLineArguments {
         String outfile = null;
         String namespaces = null;
         String title = null;
+        String bindings = null;
 
 
         try {
@@ -104,6 +112,7 @@ public class CommandLineArguments {
 	    if (line.hasOption(OUTFILE))    outfile    = line.getOptionValue(OUTFILE);
             if (line.hasOption(NAMESPACES)) namespaces = line.getOptionValue(NAMESPACES);
             if (line.hasOption(TITLE))      title = line.getOptionValue(TITLE);
+            if (line.hasOption(BINDINGS))   bindings = line.getOptionValue(BINDINGS);
 	    
 	    if (help!=null) {
 		HelpFormatter formatter = new HelpFormatter();
@@ -123,7 +132,8 @@ public class CommandLineArguments {
                                                           infile,
                                                           outfile,
                                                           namespaces,
-                                                          title);
+                                                          title,
+                                                          bindings);
             interop.run();
 
         }

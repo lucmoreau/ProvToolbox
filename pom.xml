@@ -27,11 +27,13 @@
     <module>prov-dot</module>    
     <module>prov-json</module>
 
-    <module>prov-interop</module>    
     <module>prov-rdf</module>    
+    <module>prov-template</module>    
+    <module>prov-interop</module>    
+
     <module>toolbox</module>
     <module>prov-sql</module>    
-    <module>prov-template</module>    
+
 
 
   </modules>

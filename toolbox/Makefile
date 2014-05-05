@@ -102,3 +102,10 @@ license:
 
 missing:
 	mvn license:add-third-party -Dlicense.useMissingFile
+
+
+exp20:
+	target/appassembler/bin/provconvert -infile ../prov-template/src/test/resources/template20.provn -outfile target/expanded20.provn -bindings ../prov-template/target/bindings20.provn 
+
+exp21:
+	target/appassembler/bin/provconvert -infile ../prov-template/src/test/resources/template21.provn -outfile target/expanded21.provn -bindings ../prov-template/target/bindings21.provn 

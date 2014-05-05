@@ -12,6 +12,7 @@ import java.util.Set;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
@@ -33,6 +34,31 @@ public class Expand {
                     Bindings bindings) {
 	return null;
 	
+    }
+    
+    
+    public Document expander (Document docIn,
+                          String out,
+                          Document docBindings) {
+	
+	
+	NamedBundle bun=(NamedBundle) docIn.getStatementOrBundle().get(0);
+	
+	Bindings bindings1=Bindings.fromDocument(docBindings);
+
+	Groupings grp1=Groupings.fromDocument(docIn);
+	System.out.println("expander: Found groupings " + grp1);
+	
+	NamedBundle bun1=(NamedBundle) expand(bun, bindings1, grp1).get(0);
+	Document doc1=pf.newDocument();
+	doc1.getStatementOrBundle().add(bun1);
+	
+	
+	bun1.setNamespace(Namespace.gatherNamespaces(bun1));
+
+	doc1.setNamespace(bun1.getNamespace());
+
+	return doc1;
     }
     
     static ProvUtilities u=new ProvUtilities();

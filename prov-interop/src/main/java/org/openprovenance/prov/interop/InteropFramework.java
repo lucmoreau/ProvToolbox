@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Variant;
 import javax.xml.bind.JAXBException;
+
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.ProvDeserialiser;
@@ -21,12 +22,10 @@ import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.rdf.Ontology;
-
+import org.openprovenance.prov.template.Expand;
 import org.antlr.runtime.tree.CommonTree;
-
 import org.openrdf.rio.RDFFormat;
 import org.openprovenance.prov.dot.ProvToDot;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -52,18 +51,18 @@ public class InteropFramework {
 	final private String outfile;
         final private String namespaces;
         final private String title;
+	final private String bindings;
+
 	public final Hashtable<ProvFormat, String> extensionMap;
 	public final Hashtable<String, ProvFormat> extensionRevMap;
 	public final Hashtable<ProvFormat, String> mimeTypeMap;
 	public final Hashtable<String, ProvFormat> mimeTypeRevMap;
 	public final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
 
-	public InteropFramework() {
-		this(null, null, null, null, null, null,null);
-	}
+
 
 	public InteropFramework(String verbose, String debug, String logfile,
-			String infile, String outfile, String namespaces, String title) {
+			String infile, String outfile, String namespaces, String title, String bindings) {
 		this.verbose = verbose;
 		this.debug = debug;
 		this.logfile = logfile;
@@ -71,6 +70,7 @@ public class InteropFramework {
 		this.outfile = outfile;
 		this.namespaces = namespaces;
 		this.title=title;
+		this.bindings=bindings;
 		extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
 		extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
 		mimeTypeMap = new Hashtable<InteropFramework.ProvFormat, String>();
@@ -587,15 +587,14 @@ public class InteropFramework {
 			return;
 		try {
 			Document doc = (Document) loadProvKnownGraph(infile);
-			// doc.setNss(new Hashtable<String, String>());
-			// doc.getNss().put("pc1",PC1_NS);
-			// doc.getNss().put("prim",PRIM_NS);
-			// doc.getNss().put("prov","http://www.w3.org/ns/prov#");
-			// doc.getNss().put("xsd","http://www.w3.org/2001/XMLSchema");
-			// doc.getNss().put("xsi","http://www.w3.org/2001/XMLSchema-instance");
+			if (bindings!=null) {
+			    Document docBindings = (Document) loadProvKnownGraph(bindings);
+			    Document expanded=new Expand().expander(doc, outfile, docBindings);
+			    writeDocument(outfile, expanded);
 
-			// System.out.println("InteropFramework run() -> " + doc.getNss());
-			writeDocument(outfile, doc);
+			} else {
+			    writeDocument(outfile, doc);
+			}
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.TypedValue;
 
 public class Using implements Iterable<List<Integer>> {

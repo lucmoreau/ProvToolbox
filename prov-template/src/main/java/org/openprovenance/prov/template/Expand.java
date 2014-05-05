@@ -23,6 +23,10 @@ import org.openprovenance.prov.xml.ProvUtilities;
 public class Expand {
     static final String VAR_NS = "http://openprovenance.org/var#";
     static final String APP_NS = "http://openprovenance.org/app#";
+    static final String TMPL_NS = "http://openprovenance.org/tmpl#";
+    static final String LINKED = "linked";
+    
+    static final String LINKED_URI = TMPL_NS + "linked";
 
     
     Document expand(Document template,
@@ -31,8 +35,8 @@ public class Expand {
 	
     }
     
-    ProvUtilities u=new ProvUtilities();
-    ProvFactory pf=new org.openprovenance.prov.xml.ProvFactory();
+    static ProvUtilities u=new ProvUtilities();
+    static ProvFactory pf=new org.openprovenance.prov.xml.ProvFactory();
 
     public List<StatementOrBundle> expand(Statement statement, 
                        Bindings bindings1,
@@ -82,7 +86,7 @@ public class Expand {
     static public boolean IGNORE_ATTRIBUTES=true;
     
     
-    Set<QualifiedName> freeVariables(Statement statement) {
+    static public Set<QualifiedName> freeVariables(Statement statement) {
 	HashSet<QualifiedName> result=new HashSet<QualifiedName>();
 	 for (int i = 0; i < u.getFirstTimeIndex(statement); i++) {
 	     QualifiedName name=(QualifiedName) u.getter(statement, i);
@@ -94,7 +98,7 @@ public class Expand {
 	 return result;	
     }
 
-    private HashSet<QualifiedName> freeAttributeVariables(Statement statement) {
+    static public  HashSet<QualifiedName> freeAttributeVariables(Statement statement) {
 	HashSet<QualifiedName> result=new HashSet<QualifiedName>();
 	Collection<Attribute> ll=pf.getAttributes(statement);
 	for (Attribute attr: ll) {
@@ -147,7 +151,7 @@ public class Expand {
 	return u;
     }
     
-    public boolean isVariable(QualifiedName id) {
+    static public boolean isVariable(QualifiedName id) {
 	return (id!=null) && (VAR_NS.equals(id.getNamespaceURI()));
     }
     

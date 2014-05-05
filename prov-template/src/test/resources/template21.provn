@@ -7,7 +7,7 @@ prefix ex <http://example.org/>
 prefix tmpl <http://openprovenance.org/tmpl#>
 
 bundle bun:123
-entity(bun:123, [prov:type='prov:Bundle])
+entity(bun:123, [prov:type='prov:Bundle'])
 entity(var:a, [tmpl:linked='var:b'])
 entity(var:b, [ex:email='var:d'])
 wasAttributedTo(var:b, var:a, [ex:foo='var:e'])

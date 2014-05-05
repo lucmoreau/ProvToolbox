@@ -1,17 +1,19 @@
 package org.openprovenance.prov.template;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
+import org.openprovenance.prov.notation.Utility;
+
 import static org.openprovenance.prov.template.Expand.VAR_NS;
 import static org.openprovenance.prov.template.Expand.APP_NS;
 import junit.framework.TestCase;
@@ -30,16 +32,47 @@ public class ExpandTest extends TestCase {
     QualifiedName var_c=pf.newQualifiedName(VAR_NS, "c", "var");
     QualifiedName var_d=pf.newQualifiedName(VAR_NS, "d", "var");
     QualifiedName var_e=pf.newQualifiedName(VAR_NS, "e", "var");
+    QualifiedName var_ag=pf.newQualifiedName(VAR_NS, "ag", "var");
+    QualifiedName var_pl=pf.newQualifiedName(VAR_NS, "pl", "var");
  
 
+    public  void expander(String in, String inBindings, String out) throws IOException, Throwable {
+	System.out.println("expander ==========================================> " + in);
+	
+	Document doc= new Utility().readDocument(in, pf);
+	Document docBindings= new Utility().readDocument(inBindings,pf);
+	Bindings bindings1=Bindings.fromDocument(docBindings);
+	
+	NamedBundle bun=(NamedBundle) doc.getStatementOrBundle().get(0);
+
+	Groupings grp1=Groupings.fromDocument(doc);
+
+	System.out.println("Found groupings " + grp1);
+	
+	NamedBundle bun1=(NamedBundle) new Expand().expand(bun, bindings1, grp1).get(0);
+	Document doc1=pf.newDocument();
+	doc1.getStatementOrBundle().add(bun1);
+	
+	
+	bun1.setNamespace(Namespace.gatherNamespaces(bun1));
+
+	doc1.setNamespace(bun1.getNamespace());
+	
+	new Utility().writeDocument(doc1, out, pf);
+	//InteropFramework inf=new InteropFramework();
+	//inf.writeDocument(out, doc1);
+	
+	System.out.println("expander ==========================================> ");
+    }
+    
 
     public void expander (String in,
                           String out,
                           Bindings bindings1,
-                          String outBindings) {
+                          String outBindings) throws IOException, Throwable {
 	System.out.println("expander ==========================================> " + in);
 	
-	Document doc= new InteropFramework().loadProvKnownGraph(in);
+	Document doc= new Utility().readDocument(in, pf);
 	
 	NamedBundle bun=(NamedBundle) doc.getStatementOrBundle().get(0);
 
@@ -59,10 +92,11 @@ public class ExpandTest extends TestCase {
 	//System.out.println(bun1.getNamespace());
 		
 	
-	InteropFramework inf=new InteropFramework();
-	inf.writeDocument(out, doc1);
-	
-	new InteropFramework().writeDocument(outBindings, bindings1.toDocument());
+	Namespace.withThreadNamespace(doc1.getNamespace());
+	new Utility().writeDocument(doc1, out, pf);	
+	Document doc2=bindings1.toDocument();
+	Namespace.withThreadNamespace(doc2.getNamespace());
+	new Utility().writeDocument(doc2,outBindings,pf);
 	
 	System.out.println("expander ==========================================> ");
 
@@ -70,7 +104,7 @@ public class ExpandTest extends TestCase {
 
     
 
-    public void testExpand1() {
+    public void testExpand1() throws IOException, Throwable {
 	
 	Bindings bindings1=new Bindings();
 
@@ -95,7 +129,7 @@ public class ExpandTest extends TestCase {
 	
     }
     
-    public void testExpand2() {
+    public void testExpand2() throws IOException, Throwable {
 	
 	Bindings bindings1=new Bindings();
 
@@ -118,7 +152,7 @@ public class ExpandTest extends TestCase {
 	
     }
     
-    public void testExpand3() {
+    public void testExpand3() throws IOException, Throwable {
 	
  	Bindings bindings1=new Bindings();
 
@@ -151,7 +185,7 @@ public class ExpandTest extends TestCase {
 
     
     
-    public void testExpand20() {
+    public void testExpand20() throws IOException, Throwable {
         
         Bindings bindings1=new Bindings();
 
@@ -222,7 +256,7 @@ public class ExpandTest extends TestCase {
     
     
     
-    public void testExpand21() {
+    public void testExpand21() throws IOException, Throwable {
         
         Bindings bindings1=new Bindings();
 
@@ -287,7 +321,7 @@ public class ExpandTest extends TestCase {
     
     
     
-    public void testExpand22() {
+    public void testExpand22() throws IOException, Throwable {
         
         Bindings bindings1=new Bindings();
 
@@ -349,6 +383,43 @@ public class ExpandTest extends TestCase {
     }
     
     
+
+    
+    public void testExpand10() throws IOException, Throwable {
+        
+        Bindings bindings1=new Bindings();
+
+        bindings1.addVariable(var_a,
+                              pf.newQualifiedName(EX_NS, "av1", "ex"));
+        
+        
+        bindings1.addVariable(var_e,
+                              pf.newQualifiedName(EX_NS, "ev1", "ex"));
+        
+        bindings1.addVariable(var_ag,
+                              pf.newQualifiedName(EX_NS, "agv1", "ex"));
+        bindings1.addVariable(var_pl,
+                              pf.newQualifiedName(EX_NS, "pl1", "ex"));
+        
+        
+        List<TypedValue> ll=new LinkedList<TypedValue>();
+        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "m22@example", pf.getName().XSD_STRING));
+        bindings1.addAttribute(var_e, ll);
+
+    
+
+  
+  
+        expander("src/test/resources/template10.provn",
+                 "src/test/resources/bindings10.provn",
+                 "target/expanded10.provn");
+        
+        
+    }
+
+
+
     
     
     

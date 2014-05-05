@@ -1,23 +1,14 @@
 package org.openprovenance.prov.template;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import javax.xml.bind.JAXBException;
 
-import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.NamedBundle;
-import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.TypedValue;
+import org.openprovenance.prov.notation.Utility;
 
 import static org.openprovenance.prov.template.Expand.VAR_NS;
-import static org.openprovenance.prov.template.Expand.APP_NS;
 import junit.framework.TestCase;
 
 public class GroupingsTest extends TestCase {
@@ -39,8 +30,8 @@ public class GroupingsTest extends TestCase {
 
 
 
-    public Groupings getGroupings(String filename) throws IOException, JAXBException, Throwable {
-        Document doc=(Document) new InteropFramework().loadProvUnknownGraph(filename);
+    public Groupings getGroupings(String filename) throws IOException, Throwable  {
+        Document doc=(Document) new Utility().readDocument(filename, pf);
         
         Groupings grps=Groupings.fromDocument(doc);
 

@@ -1,17 +1,14 @@
 package org.openprovenance.prov.template;
 
-import java.util.Arrays;
-import java.util.Iterator;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.NamedBundle;
-import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
+import org.openprovenance.prov.notation.Utility;
+
 import static org.openprovenance.prov.template.Expand.VAR_NS;
 import static org.openprovenance.prov.template.Expand.APP_NS;
 import junit.framework.TestCase;
@@ -102,7 +99,7 @@ public class BindingTest extends TestCase {
     
     
     
-    public void testBindings21() {
+    public void testBindings21() throws IOException, Throwable {
         
         Bindings bindings1=new Bindings();
 
@@ -141,11 +138,10 @@ public class BindingTest extends TestCase {
 
 
 
-    public void bindingsTest(Bindings bindings1, String filename) {
-        new InteropFramework().writeDocument(filename, bindings1.toDocument());
-        
+    public void bindingsTest(Bindings bindings1, String filename) throws IOException, Throwable {
+        new Utility().writeDocument(bindings1.toDocument(), filename, pf);        
 
-        Bindings bindings2=Bindings.fromDocument(new InteropFramework().loadProvKnownGraph(filename));
+        Bindings bindings2=Bindings.fromDocument(new Utility().readDocument(filename, pf));
 
         
         assertEquals(bindings1, bindings2);

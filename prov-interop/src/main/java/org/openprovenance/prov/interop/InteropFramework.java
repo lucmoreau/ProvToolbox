@@ -60,6 +60,9 @@ public class InteropFramework {
 	public final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
 
 
+	public InteropFramework () {
+	    this(null, null, null, null, null, null, null, null);
+	}
 
 	public InteropFramework(String verbose, String debug, String logfile,
 			String infile, String outfile, String namespaces, String title, String bindings) {

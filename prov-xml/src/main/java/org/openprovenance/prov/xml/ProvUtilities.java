@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.QualifiedName;
 
@@ -145,8 +146,10 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
                                                         "Responsible",
                                                         "Activity", "Others" });
         fields.put(SpecializationOf.class, new String[] { "SpecificEntity",
-                                                          "GeneralEntity" });
-        
+        "GeneralEntity" });
+        fields.put(AlternateOf.class, new String[] { "Alternate2",
+        "Alternate2" });
+
 	// never use the accessor id for Mention, since it is not defined.
 	// However, this allows iterations over this data structure to be performed
 	//  like others.
@@ -224,6 +227,8 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
 						 QualifiedName.class,
 						 QualifiedName.class,
 						 QualifiedName.class });
+        types.put(AlternateOf.class, new Class[] { QualifiedName.class,
+            QualifiedName.class });
     }
 
     @SuppressWarnings("unchecked")
@@ -296,7 +301,11 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         if (o instanceof Activity) {
             return types.length - 3;
         } else if (hasNoTime(o)) {
-            return types.length - 1;
+            if (o instanceof HasOther) {
+        	return types.length - 1;
+            } else {
+        	return types.length;
+            }
         } else {
             return types.length - 2;
         }

@@ -66,20 +66,48 @@ public class ExpandAction implements StatementAction {
 
     @Override
     public void doAction(Activity s) {
-	// TODO Auto-generated method stub
-	
+	Activity res=pf.newActivity(s.getId(), s.getStartTime(), s.getEndTime(), null);
+	QualifiedName id=res.getId();
+	boolean updated1=setExpand(res, id, 0);	
+	boolean updated2=expandAttributes(s,res);
+	boolean updated=updated1 || updated2;
+	ll.add(res);
+	if (updated) addOrderAttribute(res);
     }
 
     @Override
     public void doAction(Used s) {
-	// TODO Auto-generated method stub
-	
+	Used res=pf.newUsed(s.getId(),s.getActivity(), s.getEntity());
+	res.setTime(s.getTime());
+	QualifiedName id=res.getId();
+	boolean updated1=setExpand(res, id, 0);	
+	QualifiedName en=res.getActivity();
+	boolean updated2=setExpand(res, en, 1);	
+	QualifiedName ag=res.getEntity();
+	boolean updated3=setExpand(res, ag, 2);	
+	boolean updated4=expandAttributes(s,res);
+
+	boolean updated=updated1 || updated2 || updated3 || updated4;
+	ll.add(res);
+	if (updated) addOrderAttribute(res);		
     }
 
     @Override
     public void doAction(WasStartedBy s) {
-	// TODO Auto-generated method stub
-	
+	WasStartedBy res=pf.newWasStartedBy(s.getId(),s.getActivity(), s.getTrigger(), s.getStarter());
+	QualifiedName id=res.getId();
+	boolean updated1=setExpand(res, id, 0);	
+	QualifiedName en=res.getActivity();
+	boolean updated2=setExpand(res, en, 1);	
+	QualifiedName ag=res.getTrigger();
+	boolean updated3=setExpand(res, ag, 2);	
+	QualifiedName st=res.getStarter();
+	boolean updated4=setExpand(res,st,3);	
+	boolean updated5=expandAttributes(s,res);
+
+	boolean updated=updated1 || updated2 || updated3 || updated4 || updated5;
+	ll.add(res);
+	if (updated) addOrderAttribute(res);			
     }
 
     @Override
@@ -95,14 +123,34 @@ public class ExpandAction implements StatementAction {
 
     @Override
     public void doAction(AlternateOf s) {
-	// TODO Auto-generated method stub
+	AlternateOf res=pf.newAlternateOf(s.getAlternate1(), s.getAlternate2());
 	
+	QualifiedName alt1=res.getAlternate1();
+	boolean updated0=setExpand(res, alt1, 0);	
+	QualifiedName alt2=res.getAlternate2();
+	boolean updated1=setExpand(res, alt2, 1);	
+
+	boolean updated=updated0 || updated1;
+	ll.add(res);
+	//if (updated) addOrderAttribute(res);		
     }
 
     @Override
     public void doAction(WasAssociatedWith s) {
-	// TODO Auto-generated method stub
-	
+	WasAssociatedWith res=pf.newWasAssociatedWith(s.getId(),s.getActivity(), s.getAgent());
+	res.setPlan(s.getPlan());
+	QualifiedName id=res.getId();
+	boolean updated1=setExpand(res, id, 0);	
+	QualifiedName en=res.getActivity();
+	boolean updated2=setExpand(res, en, 1);	
+	QualifiedName ag=res.getAgent();
+	boolean updated3=setExpand(res, ag, 2);	
+	QualifiedName pl=res.getPlan();
+	boolean updated4=setExpand(res, pl, 3);	
+	boolean updated5=expandAttributes(s,res);
+	boolean updated=updated1 || updated2 || updated3 || updated4|| updated5;
+	ll.add(res);
+	if (updated) addOrderAttribute(res);	
     }
 
     @Override
@@ -115,7 +163,6 @@ public class ExpandAction implements StatementAction {
 	QualifiedName ag=res.getAgent();
 	boolean updated3=setExpand(res, ag, 2);	
 	boolean updated4=expandAttributes(s,res);
-
 	boolean updated=updated1 || updated2 || updated3 || updated4;
 	ll.add(res);
 	if (updated) addOrderAttribute(res);	
@@ -129,13 +176,48 @@ public class ExpandAction implements StatementAction {
 
     @Override
     public void doAction(ActedOnBehalfOf s) {
-	// TODO Auto-generated method stub
+	ActedOnBehalfOf res=pf.newActedOnBehalfOf(s.getId(),s.getDelegate(), s.getResponsible(), s.getActivity());
+	QualifiedName id=res.getId();
+	boolean updated1=setExpand(res, id, 0);	
+	QualifiedName del=res.getDelegate();
+	boolean updated2=setExpand(res, del, 1);	
+	QualifiedName resp=res.getResponsible();
+	boolean updated3=setExpand(res, resp, 2);
+	QualifiedName act=res.getActivity();
+	boolean updated4=setExpand(res, act, 3);
 	
+	
+	boolean updated5=expandAttributes(s,res);
+	boolean updated=updated1 || updated2 || updated3 || updated4|| updated5;
+	ll.add(res);
+	if (updated) addOrderAttribute(res);		
     }
 
     @Override
     public void doAction(WasDerivedFrom s) {
-	// TODO Auto-generated method stub
+	WasDerivedFrom res=pf.newWasDerivedFrom(s.getId(), s.getGeneratedEntity(), s.getUsedEntity());
+	res.setActivity(s.getActivity());
+	res.setUsage(s.getUsage());
+	res.setGeneration(s.getGeneration());
+	QualifiedName id=res.getId();
+	boolean updated1=setExpand(res, id, 0);	
+	QualifiedName en2=res.getGeneratedEntity();
+	boolean updated2=setExpand(res, en2, 1);	
+	QualifiedName en1=res.getUsedEntity();
+	boolean updated3=setExpand(res, en1, 2);	
+	QualifiedName act=res.getActivity();
+	boolean updated4=setExpand(res,act,3);
+	QualifiedName gen=res.getGeneration();
+	boolean updated5=setExpand(res,gen,4);
+	QualifiedName use=res.getUsage();
+	boolean updated6=setExpand(res,use,5);
+	
+	boolean updated7=expandAttributes(s,res);
+
+	boolean updated=updated1 || updated2 || updated3 || updated4 || updated5|| updated6|| updated7;
+	ll.add(res);
+	if (updated) addOrderAttribute(res);			
+	
 	
     }
 
@@ -153,8 +235,20 @@ public class ExpandAction implements StatementAction {
 
     @Override
     public void doAction(WasEndedBy s) {
-	// TODO Auto-generated method stub
-	
+	WasEndedBy res=pf.newWasEndedBy(s.getId(),s.getActivity(), s.getTrigger(), s.getEnder());
+	QualifiedName id=res.getId();
+	boolean updated1=setExpand(res, id, 0);	
+	QualifiedName en=res.getActivity();
+	boolean updated2=setExpand(res, en, 1);	
+	QualifiedName ag=res.getTrigger();
+	boolean updated3=setExpand(res, ag, 2);	
+	QualifiedName st=res.getEnder();
+	boolean updated4=setExpand(res,st,3);	
+	boolean updated5=expandAttributes(s,res);
+
+	boolean updated=updated1 || updated2 || updated3 || updated4 || updated5;
+	ll.add(res);
+	if (updated) addOrderAttribute(res);		
     }
 
     @Override
@@ -208,7 +302,7 @@ public class ExpandAction implements StatementAction {
     }
 
     private boolean setExpand(Statement res, QualifiedName id, int position) {
-	if (expand.isVariable(id)) {
+	if (Expand.isVariable(id)) {
 	    QualifiedName val=env.get(id);
 	    if (val!=null) {
 		u.setter(res, position, val);
@@ -220,18 +314,50 @@ public class ExpandAction implements StatementAction {
 
     @Override
     public void doAction(WasGeneratedBy s) {
-	// TODO Auto-generated method stub
-	
+	WasGeneratedBy res=pf.newWasGeneratedBy(s.getId(),s.getEntity(), s.getActivity());
+	res.setTime(s.getTime());
+	QualifiedName id=res.getId();
+	boolean updated1=setExpand(res, id, 0);	
+	QualifiedName en=res.getEntity();
+	boolean updated2=setExpand(res, en, 1);	
+	QualifiedName act=res.getActivity();
+	boolean updated3=setExpand(res, act, 2);	
+	boolean updated4=expandAttributes(s,res);
+
+	boolean updated=updated1 || updated2 || updated3 || updated4;
+	ll.add(res);
+	if (updated) addOrderAttribute(res);			
     }
 
     @Override
     public void doAction(WasInvalidatedBy s) {
-	// TODO Auto-generated method stub
-	
+	WasInvalidatedBy res=pf.newWasInvalidatedBy(s.getId(),s.getEntity(), s.getActivity());
+	res.setTime(s.getTime());
+	QualifiedName id=res.getId();
+	boolean updated1=setExpand(res, id, 0);	
+	QualifiedName en=res.getEntity();
+	boolean updated2=setExpand(res, en, 1);	
+	QualifiedName act=res.getActivity();
+	boolean updated3=setExpand(res, act, 2);	
+	boolean updated4=expandAttributes(s,res);
+
+	boolean updated=updated1 || updated2 || updated3 || updated4;
+	ll.add(res);
+	if (updated) addOrderAttribute(res);			
     }
 
     @Override
     public void doAction(HadMember s) {
+	HadMember res=pf.newHadMember(s.getCollection(), s.getEntity());
+	
+	QualifiedName col=res.getCollection();
+	boolean updated0=setExpand(res, col, 0);	
+	List<QualifiedName> gen=res.getEntity();
+	System.out.println("FIXME: to do , expand entities");
+	
+	boolean updated=updated0 ;
+	ll.add(res);
+	//if (updated) addOrderAttribute(res);		
 	// TODO Auto-generated method stub
 	
     }
@@ -244,7 +370,16 @@ public class ExpandAction implements StatementAction {
 
     @Override
     public void doAction(SpecializationOf s) {
-	// TODO Auto-generated method stub
+	SpecializationOf res=pf.newSpecializationOf(s.getSpecificEntity(), s.getGeneralEntity());
+	
+	QualifiedName spe=res.getSpecificEntity();
+	boolean updated0=setExpand(res, spe, 0);	
+	QualifiedName gen=res.getGeneralEntity();
+	boolean updated1=setExpand(res, gen, 1);	
+
+	boolean updated=updated0 || updated1;
+	ll.add(res);
+	//if (updated) addOrderAttribute(res);		
 	
     }
 
@@ -256,7 +391,19 @@ public class ExpandAction implements StatementAction {
 
     @Override
     public void doAction(WasInformedBy s) {
-	// TODO Auto-generated method stub
+	WasInformedBy res=pf.newWasInformedBy(s.getId(),s.getInformed(), s.getInformant());
+	
+	QualifiedName id=res.getId();
+	boolean updated1=setExpand(res, id, 0);	
+	QualifiedName a2=res.getInformed();
+	boolean updated2=setExpand(res, a2, 1);	
+	QualifiedName a1=res.getInformant();
+	boolean updated3=setExpand(res, a1, 2);	
+	boolean updated4=expandAttributes(s,res);
+
+	boolean updated=updated1 || updated2 || updated3 || updated4;
+	ll.add(res);
+	if (updated) addOrderAttribute(res);		
 	
     }
 

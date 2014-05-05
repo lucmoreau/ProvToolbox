@@ -2,11 +2,12 @@ document
 prefix xsd <http://www.w3.org/2001/XMLSchema>
 prefix var <http://openprovenance.org/var#>
 prefix ex <http://example.org/>
-prefix app <http://openprovenance.org/app#>
-entity(var:e,[app:value_0 = 'ex:e1'])
-entity(var:e2,[app:value_0 = 'ex:e2'])
-entity(var:ag,[app:value_0 = 'ex:ag1'])
-entity(var:a,[app:value_0 = 'ex:a1'])
-entity(var:pl,[app:value_0 = 'ex:pl1'])
-entity(var:d,[app:2dvalue_0_0 = "me1@example" %% xsd:string, app:2dvalue_1_0 = "m22@example" %% xsd:string])
+prefix tmpl <http://openprovenance.org/tmpl#>
+
+entity(var:e,[tmpl:value_0 = 'ex:e1'])
+entity(var:e2,[tmpl:value_0 = 'ex:e2'])
+entity(var:ag,[tmpl:value_0 = 'ex:ag1'])
+entity(var:a,[tmpl:value_0 = 'ex:a1'])
+entity(var:pl,[tmpl:value_0 = 'ex:pl1'])
+entity(var:d,[tmpl:2dvalue_0_0 = "me1@example" %% xsd:string, tmpl:2dvalue_1_0 = "m22@example" %% xsd:string])
 endDocument

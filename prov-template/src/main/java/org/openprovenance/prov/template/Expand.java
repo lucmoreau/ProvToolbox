@@ -25,6 +25,7 @@ public class Expand {
     static final String VAR_NS = "http://openprovenance.org/var#";
     static final String APP_NS = "http://openprovenance.org/app#";
     static final String TMPL_NS = "http://openprovenance.org/tmpl#";
+    static final String TMPL_PREFIX = "tmpl";
     static final String LINKED = "linked";
     
     static final String LINKED_URI = TMPL_NS + "linked";

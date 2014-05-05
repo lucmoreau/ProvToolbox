@@ -37,7 +37,8 @@ import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
 
-import static org.openprovenance.prov.template.Expand.APP_NS;
+import static org.openprovenance.prov.template.Expand.TMPL_NS;
+import static org.openprovenance.prov.template.Expand.TMPL_PREFIX;
 
 public class ExpandAction implements StatementAction {
     
@@ -298,7 +299,7 @@ public class ExpandAction implements StatementAction {
     }
 
     public void addOrderAttribute(HasOther res) {
-	res.getOther().add(pf.newOther(APP_NS, "order", "app", index, pf.getName().XSD_STRING));
+	res.getOther().add(pf.newOther(TMPL_NS, "order", TMPL_PREFIX, index, pf.getName().XSD_STRING));
     }
 
     private boolean setExpand(Statement res, QualifiedName id, int position) {

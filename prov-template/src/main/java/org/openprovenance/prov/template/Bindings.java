@@ -18,15 +18,15 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.TypedValue;
 
-import static org.openprovenance.prov.template.Expand.APP_NS;
+import static org.openprovenance.prov.template.Expand.TMPL_NS;
+import static org.openprovenance.prov.template.Expand.TMPL_PREFIX;
 
 public class Bindings {
     
-    private static final String APP = "app";
     public static final String VALUE = "value_";
     public static final String VALUE2 = "2dvalue_";
-    public static final String APP_VALUE = APP_NS+VALUE;
-    public static final String APP_VALUE2 = APP_NS+VALUE2;
+    public static final String APP_VALUE = TMPL_NS+VALUE;
+    public static final String APP_VALUE2 = TMPL_NS+VALUE2;
     
     final private Hashtable<QualifiedName, List<QualifiedName>> variables;
     final private Hashtable<QualifiedName, List<List<TypedValue>>> attributes;
@@ -111,7 +111,7 @@ public class Bindings {
             for (List<TypedValue> vals: entry.getValue()) {
                 int count2=0;
                 for (TypedValue val: vals) {
-                    attrs.add(pf.newOther(APP_NS, VALUE2+count1+"_"+count2, APP, val.getValue(), val.getType()));
+                    attrs.add(pf.newOther(TMPL_NS, VALUE2+count1+"_"+count2, TMPL_PREFIX, val.getValue(), val.getType()));
                     count2++;
                 }
                 count1++;
@@ -127,7 +127,7 @@ public class Bindings {
             int count=0;
             List<Attribute> attrs=new LinkedList<Attribute>();
             for (QualifiedName qn: entry.getValue()) {
-                attrs.add(pf.newAttribute(APP_NS, VALUE+count, APP, qn, pf.getName().XSD_QNAME));
+                attrs.add(pf.newAttribute(TMPL_NS, VALUE+count, TMPL_PREFIX, qn, pf.getName().XSD_QNAME));
                 count++;
             }
             pf.setAttributes(e, attrs);

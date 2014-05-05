@@ -110,6 +110,33 @@ statement 3:
     wasAttributedTo(uriA, uri1, [app:order="1"])
     wasAttributedTo(uriB, uri2, [app:order="2"])
 </pre>
+
+<pre>
+Template:
+  entity(var:x)
+  agent(var:ag)
+  wasAttributedTo(var:x, var:ag, [ my:attr='var:a' ])
+Bindings:
+  var:x = [uri1, uri2, uri2]
+  var:ag = [uriA, uriB]
+  var:a = [[attr1], [attr2], [attr3], [attr4], [attr5], [attr6a, attr6b]]
+
+Expands to:
+
+  entity(uri1, [app:order="1"])
+  entity(uri2, [app:order="2"])
+  entity(uri3, [app:order="3"])
+
+  entity(uriA, [app:order="1"])
+  entity(uriB, [app:order="2"])
+
+  wasAttributedTo(uri1, uriA, [my:attr='attr1', app:order="1,1"])
+  wasAttributedTo(uri1, uriB, [my:attr='attr2', app:order="1,2"])
+  wasAttributedTo(uri2, uriA, [my:attr='attr3', app:order="2,1"])
+  wasAttributedTo(uri2, uriB, [my:attr='attr4', app:order="2,2"])
+  wasAttributedTo(uri3, uriA, [my:attr='attr5', app:order="3,1"])
+  wasAttributedTo(uri3, uriB, [my:attr='attr6a', my:attr='attr6b', app:order="3,2"])
+</pre>
 </section>
 
 <section id="issues">

@@ -6,7 +6,6 @@ import org.openprovenance.prov.model.QualifiedName;
 
 public class Groupings /* implements Iterable<Binding> */ {
     final private List<List<QualifiedName>> variables;
-
     
     public Groupings() {
 	variables=new LinkedList<List<QualifiedName>>();

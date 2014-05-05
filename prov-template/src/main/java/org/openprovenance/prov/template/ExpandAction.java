@@ -50,8 +50,9 @@ public class ExpandAction implements StatementAction {
     final private Bindings bindings;
     final private Groupings grp1;
     final private Hashtable<QualifiedName, List<TypedValue>> env2;
+    final private int attrIndex;
 
-    public ExpandAction(ProvFactory pf, ProvUtilities u, Expand expand, Hashtable<QualifiedName, QualifiedName> env, Hashtable<QualifiedName, List<TypedValue>> env2, List<Integer> index, Bindings bindings1, Groupings grp1) {
+    public ExpandAction(ProvFactory pf, ProvUtilities u, Expand expand, Hashtable<QualifiedName, QualifiedName> env, Hashtable<QualifiedName, List<TypedValue>> env2, List<Integer> index, Bindings bindings1, Groupings grp1, int attrIndex) {
 	this.pf=pf;
 	this.expand=expand;
 	this.env=env;
@@ -60,6 +61,7 @@ public class ExpandAction implements StatementAction {
 	this.bindings=bindings1;
 	this.grp1=grp1;
 	this.env2=env2;
+	this.attrIndex=attrIndex;
     }
 
     @Override

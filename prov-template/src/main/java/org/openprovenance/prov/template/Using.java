@@ -1,5 +1,6 @@
 package org.openprovenance.prov.template;
 
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.TypedValue;
 
 public class Using implements Iterable<List<Integer>> {
@@ -105,6 +107,20 @@ public class Using implements Iterable<List<Integer>> {
 	return result;
     }
 
+    public Hashtable<QualifiedName, List<TypedValue>> getAttr(HashSet<QualifiedName> variables,
+                                                              Bindings b,
+                                                              UsingIterator iter) {
+        Hashtable<QualifiedName,List<TypedValue>> result=new Hashtable<QualifiedName, List<TypedValue>>();
+        int ind=iter.getCount();
+        
+	for (QualifiedName var: variables) {
+	    List<List<TypedValue>> val=b.getAttributes().get(var);
+            if (val!=null) {
+                result.put(var, val.get(ind));
+            }
+	}
+	return result;
+    }
 
 
 
@@ -127,15 +143,20 @@ public class Using implements Iterable<List<Integer>> {
         return result;
     }
 
-    class UsingIterator implements Iterator<List<Integer>> {
+    public class UsingIterator implements Iterator<List<Integer>> {
         List<Integer> currentIndex;
         boolean initialized;
         private Using u;
+	private int count;
 
         @Override
         public boolean hasNext() {     
             if (!initialized) return true;
             return (currentIndex!=null) && nextIndex(currentIndex)!=null;
+        }
+        
+        public int getCount() {
+            return count;
         }
          
 
@@ -144,6 +165,7 @@ public class Using implements Iterable<List<Integer>> {
             if (!initialized) {
                 currentIndex=u.zeroIndex();
                 initialized=true;
+                count=0;
                 return currentIndex;
             }
             if (currentIndex!=null) {
@@ -151,6 +173,7 @@ public class Using implements Iterable<List<Integer>> {
                 if (currentIndex==null) {
                     throw new NoSuchElementException();
                 }
+                count++;
                 return currentIndex;
             } else {
                 throw new NoSuchElementException();
@@ -165,6 +188,7 @@ public class Using implements Iterable<List<Integer>> {
         
         public UsingIterator(Using u) {
             initialized=false;
+            count = -1;
             this.u=u;
         }
         

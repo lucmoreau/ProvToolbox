@@ -17,6 +17,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.TypedValue;
+import org.openprovenance.prov.template.Using.UsingIterator;
 import org.openprovenance.prov.xml.ProvUtilities;
 
 public class Expand {
@@ -45,7 +46,7 @@ public class Expand {
                                           Groupings grp1) {
         Hashtable<QualifiedName, QualifiedName> env0=new Hashtable<QualifiedName, QualifiedName>();
         Hashtable<QualifiedName, List<TypedValue>> env1=new Hashtable<QualifiedName, List<TypedValue>>();
-	ExpandAction action=new ExpandAction(pf, u, this, env0, env1, null, bindings1, grp1);
+	ExpandAction action=new ExpandAction(pf, u, this, env0, env1, null, bindings1, grp1,-1);
 	u.doAction(bun, action);
 	return action.getList();
     }
@@ -58,10 +59,17 @@ public class Expand {
 	Iterator<List<Integer>> iter=us1.iterator();
 	while (iter.hasNext()) {
 	    List<Integer> index=iter.next();	    
+	    int attrIndex=((Using.UsingIterator)iter).getCount();
 	    Hashtable<QualifiedName, QualifiedName> env=us1.get(bindings1, grp1, index);	    
-            Hashtable<QualifiedName, List<TypedValue>> env2=us1.getAttr(bindings1, grp1, index);
+            Hashtable<QualifiedName, List<TypedValue>> env2;
+            
+            if (IGNORE_ATTRIBUTES) {
+        	env2=us1.getAttr(freeAttributeVariables(statement), bindings1, (UsingIterator) iter);
+            } else {
+        	env2=us1.getAttr(bindings1, grp1, index);
+            }
 
-	    ExpandAction action=new ExpandAction(pf, u, this, env, env2, index, bindings1, grp1);
+	    ExpandAction action=new ExpandAction(pf, u, this, env, env2, index, bindings1, grp1, attrIndex);
 	    u.doAction(statement, action);
 	    results.addAll(action.getList());
 	    
@@ -71,6 +79,8 @@ public class Expand {
     }
     
     
+    static public boolean IGNORE_ATTRIBUTES=true;
+    
     
     Set<QualifiedName> freeVariables(Statement statement) {
 	HashSet<QualifiedName> result=new HashSet<QualifiedName>();
@@ -78,18 +88,27 @@ public class Expand {
 	     QualifiedName name=(QualifiedName) u.getter(statement, i);
 	     if (name!=null && isVariable(name)) result.add(name);
 	 }
-	 Collection<Attribute> ll=pf.getAttributes(statement);
-	 for (Attribute attr: ll) {
-	     if (pf.getName().XSD_QNAME.equals(attr.getType())) {
-	         Object o=attr.getValue();
-	         if (o instanceof QualifiedName) {
-	             QualifiedName qn=(QualifiedName)o;
-	             if (isVariable(qn)) result.add(qn);
-	         }
-	     }
+	 if (!IGNORE_ATTRIBUTES) {
+	     result.addAll(freeAttributeVariables(statement));
 	 }
 	 return result;	
     }
+
+    private HashSet<QualifiedName> freeAttributeVariables(Statement statement) {
+	HashSet<QualifiedName> result=new HashSet<QualifiedName>();
+	Collection<Attribute> ll=pf.getAttributes(statement);
+	for (Attribute attr: ll) {
+	    if (pf.getName().XSD_QNAME.equals(attr.getType())) {
+		Object o=attr.getValue();
+		if (o instanceof QualifiedName) {
+		    QualifiedName qn=(QualifiedName)o;
+		    if (isVariable(qn)) result.add(qn);
+		}
+	    }
+	}
+	return result;
+    }
+    
 
     Using usedGroups(Statement statement,
                              Groupings groupings,

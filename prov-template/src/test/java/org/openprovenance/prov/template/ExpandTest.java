@@ -1,8 +1,6 @@
 package org.openprovenance.prov.template;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,7 +13,7 @@ import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.notation.Utility;
 
 import static org.openprovenance.prov.template.Expand.VAR_NS;
-import static org.openprovenance.prov.template.Expand.APP_NS;
+import static org.openprovenance.prov.template.Expand.TMPL_NS;
 import junit.framework.TestCase;
 
 public class ExpandTest extends TestCase {
@@ -207,39 +205,39 @@ public class ExpandTest extends TestCase {
                               pf.newQualifiedName(EX_NS, "cv2", "ex"));
         
         List<TypedValue> ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_d, ll);
 
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "m22@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "m22@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_d, ll);
     
 
         
 
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc1@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc1@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_e, ll);
 
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc2@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc2@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_e, ll);
     
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc3@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc3@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_e, ll);
       
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc4@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc4@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_e, ll);
        
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc5@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc5@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_e, ll);
        
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc6@example", pf.getName().XSD_STRING));
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc7@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc6@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc7@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_e, ll);
       
         
@@ -277,33 +275,33 @@ public class ExpandTest extends TestCase {
         
         
         List<TypedValue> ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_d, ll);
 
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "me2@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me2@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_d, ll);
     
 
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "me3@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me3@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_d, ll);
     
 
         
 
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc1@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc1@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_e, ll);
 
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc2@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc2@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_e, ll);
     
       
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc6@example", pf.getName().XSD_STRING));
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc7@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc6@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc7@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_e, ll);
       
         
@@ -342,33 +340,33 @@ public class ExpandTest extends TestCase {
         
         
         List<TypedValue> ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_d, ll);
 
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "me2@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me2@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_d, ll);
     
 
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "me3@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me3@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_d, ll);
     
 
         
 
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc1@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc1@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_e, ll);
 
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc2@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc2@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_e, ll);
     
       
         ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc6@example", pf.getName().XSD_STRING));
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "Luc7@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc6@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc7@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_e, ll);
       
         
@@ -403,8 +401,8 @@ public class ExpandTest extends TestCase {
         
         
         List<TypedValue> ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
-        ll.add(pf.newOther(pf.newQualifiedName(APP_NS, "ignore", "app"), "m22@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "m22@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_e, ll);
 
     

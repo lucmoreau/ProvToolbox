@@ -120,16 +120,18 @@ public class GraphGenerator {
 						nd = 0;
 						break;
 					case 0:
-						int nn = list.size()
-								- randomGenerator.nextInt(list.size());
-						if (nn < list.size()) {
-							node = "*" + list.get(nn);
-						} else
-							node = "*" + list.peek();
-						Collection<String> c = graph.getSuccessors(root_);
-						if (!c.contains(node.substring(1)))
-							graph.addLeaf(root_, node);
-						nd = ENTITY;
+					        if (list.size()>0) { //added by Luc
+					            int nn = list.size()
+					        	    - randomGenerator.nextInt(list.size());
+					            if (nn < list.size()) {
+					        	node = "*" + list.get(nn);
+					            } else
+					        	node = "*" + list.peek();
+					            Collection<String> c = graph.getSuccessors(root_);
+					            if (!c.contains(node.substring(1)))
+					        	graph.addLeaf(root_, node);
+					            nd = ENTITY;
+					        }
 						break;
 					}
 				}

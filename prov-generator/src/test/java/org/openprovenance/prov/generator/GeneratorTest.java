@@ -47,6 +47,19 @@ public class GeneratorTest extends TestCase {
         
         
     }
+
+    public void testGenerator3() {
+	
+	for (int i=0; i<50; i++) {
+    	
+	    GraphGenerator gg=new GraphGenerator(500, 8, GraphGenerator.FIRST_NODE_AS_ENTITY, EX_NS, pf, null, "e1");
+	    gg.generateElements();
+	    Document doc=gg.getDocument();
+	    Namespace.withThreadNamespace(doc.getNamespace());
+	    new Utility().writeDocument(doc, "target/graph50-4-test" + i + ".provn", pf);
+	}
+    }
     
+
 
 }

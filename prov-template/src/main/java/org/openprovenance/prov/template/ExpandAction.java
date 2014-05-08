@@ -287,9 +287,15 @@ public class ExpandAction implements StatementAction {
                         } else {
                             found=true;
                             for (TypedValue val: vals) {
-                                dstAttributes.add(pf.newAttribute(attribute.getElementName(), 
-                                                                  val.getValue(), 
-                                                                  val.getType()));
+                        	if (Expand.LABEL_URI.equals(attribute.getElementName().getUri())) {
+                        	    dstAttributes.add(pf.newAttribute(pf.getName().PROV_LABEL, 
+                        	                                      val.getValue(), 
+                        	                                      val.getType()));
+                        	} else {
+                        	    dstAttributes.add(pf.newAttribute(attribute.getElementName(), 
+                        	                                      val.getValue(), 
+                        	                                      val.getType()));
+                        	}
                             }
                         }
                     } else {

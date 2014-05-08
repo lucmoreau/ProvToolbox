@@ -32,7 +32,7 @@ public class ExpandTest extends TestCase {
     QualifiedName var_e=pf.newQualifiedName(VAR_NS, "e", "var");
     QualifiedName var_ag=pf.newQualifiedName(VAR_NS, "ag", "var");
     QualifiedName var_pl=pf.newQualifiedName(VAR_NS, "pl", "var");
- 
+    QualifiedName var_label=pf.newQualifiedName(VAR_NS, "label", "var");
 
     public  void expander(String in, String inBindings, String out) throws IOException, Throwable {
 	System.out.println("expander ==========================================> " + in);
@@ -428,11 +428,26 @@ public class ExpandTest extends TestCase {
         ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc2@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_e, ll);
     
-      
+
         ll=new LinkedList<TypedValue>();
         ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc6@example", pf.getName().XSD_STRING));
         ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc7@example", pf.getName().XSD_STRING));
         bindings1.addAttribute(var_e, ll);
+      
+        
+
+        ll=new LinkedList<TypedValue>();
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "label1", pf.getName().XSD_STRING));
+        bindings1.addAttribute(var_label, ll);
+
+        ll=new LinkedList<TypedValue>();
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "label2", pf.getName().XSD_STRING));
+        bindings1.addAttribute(var_label, ll);
+
+        ll=new LinkedList<TypedValue>();
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "label3", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "label3b", pf.getName().XSD_STRING));
+        bindings1.addAttribute(var_label, ll);
       
         
         

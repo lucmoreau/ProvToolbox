@@ -30,7 +30,9 @@ public class Expand {
     static final String VARGEN_PREFIX = "vargen";
     
     static final String LINKED = "linked";
-    static final String LINKED_URI = TMPL_NS + "linked";
+    static final String LINKED_URI = TMPL_NS + LINKED;
+    static final String LABEL = "label";
+    static final String LABEL_URI = TMPL_NS + LABEL;
 
     Document expand(Document template, Bindings bindings) {
 	return null;
@@ -77,7 +79,8 @@ public class Expand {
     }
 
     public List<StatementOrBundle> expand(Statement statement,
-					  Bindings bindings1, Groupings grp1,
+					  Bindings bindings1, 
+					  Groupings grp1,
 					  Using us1) {
 	List<StatementOrBundle> results = new LinkedList<StatementOrBundle>();
 	Iterator<List<Integer>> iter = us1.iterator();
@@ -146,7 +149,7 @@ public class Expand {
 
 	for (Integer g : sorted) {
 	    List<QualifiedName> vs = groupings.get(g);
-	    List<QualifiedName> vals = bindings.getVariables().get(vs.get(0));
+	    List<QualifiedName> vals = bindings.getVariables().get(vs.get(0)); //FIXME: if vs.get(0) returns an uninitialized vargen, this does not work
 	    if (vals != null) {
 		u.addGroup(g, vals.size());
 

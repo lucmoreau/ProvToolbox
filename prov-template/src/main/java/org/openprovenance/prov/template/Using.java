@@ -115,7 +115,11 @@ public class Using implements Iterable<List<Integer>> {
 	for (QualifiedName var: variables) {
 	    List<List<TypedValue>> val=b.getAttributes().get(var);
             if (val!=null) {
-                result.put(var, val.get(ind));
+        	try {
+        	    result.put(var, val.get(ind));
+        	} catch (IndexOutOfBoundsException excp) {
+        	    throw new MissingAttributeValue("Missing attribute value for variable " + var + ": index is " + ind + " and values are " + val, excp);
+        	}
             }
 	}
 	return result;

@@ -132,6 +132,7 @@ public class ExpandAction implements StatementAction {
 	QualifiedName alt2=res.getAlternate2();
 	boolean updated1=setExpand(res, alt2, 1);	
 
+	@SuppressWarnings("unused")
 	boolean updated=updated0 || updated1;
 	ll.add(res);
 	//if (updated) addOrderAttribute(res);		
@@ -377,9 +378,11 @@ public class ExpandAction implements StatementAction {
 	
 	QualifiedName col=res.getCollection();
 	boolean updated0=setExpand(res, col, 0);	
+	@SuppressWarnings("unused")
 	List<QualifiedName> gen=res.getEntity();
-	System.out.println("FIXME: to do , expand entities");
+	System.out.println("FIXME: to do , expand entities"); //FIXME
 	
+	@SuppressWarnings("unused")
 	boolean updated=updated0 ;
 	ll.add(res);
 	//if (updated) addOrderAttribute(res);		
@@ -402,6 +405,7 @@ public class ExpandAction implements StatementAction {
 	QualifiedName gen=res.getGeneralEntity();
 	boolean updated1=setExpand(res, gen, 1);	
 
+	@SuppressWarnings("unused")
 	boolean updated=updated0 || updated1;
 	ll.add(res);
 	//if (updated) addOrderAttribute(res);		

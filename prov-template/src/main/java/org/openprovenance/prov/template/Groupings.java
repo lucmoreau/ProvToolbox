@@ -18,7 +18,6 @@ import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 
-import static org.openprovenance.prov.template.Expand.TMPL_NS;
 import static org.openprovenance.prov.template.Expand.LINKED_URI;;
 
 public class Groupings {

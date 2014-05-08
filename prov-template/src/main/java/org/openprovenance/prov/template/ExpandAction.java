@@ -443,10 +443,55 @@ public class ExpandAction implements StatementAction {
 	    }
 	    
 	}
-	ll.add(pf.newNamedBundle(bun.getId(), newStatements));
+	
+	updateEnvironmentForBundleId(bun, bindings, env);
+
+	
+	QualifiedName newId;
+	final QualifiedName bunId = bun.getId();
+	if (Expand.isVariable(bunId)) {
+	    //System.out.println("===> bundle " + env + " " + bindings);
+	    QualifiedName val=env.get(bunId);
+	    if (val!=null) {
+		newId=val;
+	    } else {
+		if (Expand.isGensymVariable(bunId)) {
+		    QualifiedName uuid=getUUIDQualifiedName();
+		    newId=uuid;
+		    bindings.addVariable(bunId, uuid);
+		} else {
+		    newId=bunId;
+		}
+	    }
+	} else {
+	    newId=bunId;
+	}
+	ll.add(pf.newNamedBundle(newId, newStatements));
 	
     }
 
+
+     public void updateEnvironmentForBundleId(NamedBundle bun,
+					     Bindings bindings1,
+					     Hashtable<QualifiedName, QualifiedName> env0) {
+	final QualifiedName id = bun.getId();
+	if (Expand.isVariable(id)) {
+	    List<QualifiedName> vals=bindings1.getVariables().get(id);
+	    if (vals==null) {
+		if (Expand.isGensymVariable(id)) {
+		    // OK, we'll generate a uuid later
+		} else {
+		    throw new BundleVariableHasNoValue(id);
+		}
+	    } else {
+		if (vals.size()>1) {
+		    throw new BundleVariableHasMultipleValues(id,vals);
+		} else {
+		    env0.put(id, vals.get(0));
+		}
+	    }
+	}
+    }
     public List<StatementOrBundle> getList() {
 	return ll;
     }

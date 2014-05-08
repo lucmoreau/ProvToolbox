@@ -72,11 +72,13 @@ public class Expand {
 					  Groupings grp1) {
 	Hashtable<QualifiedName, QualifiedName> env0 = new Hashtable<QualifiedName, QualifiedName>();
 	Hashtable<QualifiedName, List<TypedValue>> env1 = new Hashtable<QualifiedName, List<TypedValue>>();
+	
 	ExpandAction action = new ExpandAction(pf, u, this, env0, env1, null,
 					       bindings1, grp1);
 	u.doAction(bun, action);
 	return action.getList();
     }
+
 
     public List<StatementOrBundle> expand(Statement statement,
 					  Bindings bindings1, 
@@ -84,8 +86,14 @@ public class Expand {
 					  Using us1) {
 	List<StatementOrBundle> results = new LinkedList<StatementOrBundle>();
 	Iterator<List<Integer>> iter = us1.iterator();
+	/*System.out.println(" --------------------- " );
+	System.out.println(" Statement " + statement);
+	System.out.println(" Using " + us1);
+	System.out.println(" Groupings " + grp1);*/
 	while (iter.hasNext()) {
 	    List<Integer> index = iter.next();
+		//System.out.println(" Index " + index);
+
 	    Hashtable<QualifiedName, QualifiedName> env = us1.get(bindings1,
 								  grp1, index);
 	    Hashtable<QualifiedName, List<TypedValue>> env2;
@@ -112,6 +120,14 @@ public class Expand {
 		result.add(name);
 	}
 
+	return result;
+    }
+    static public Set<QualifiedName> freeVariables(NamedBundle statement) {
+	HashSet<QualifiedName> result = new HashSet<QualifiedName>();
+	QualifiedName name=statement.getId();
+	if (name != null && isVariable(name)) {
+	    result.add(name);
+	}
 	return result;
     }
 
@@ -149,15 +165,20 @@ public class Expand {
 
 	for (Integer g : sorted) {
 	    List<QualifiedName> vs = groupings.get(g);
-	    List<QualifiedName> vals = bindings.getVariables().get(vs.get(0)); //FIXME: if vs.get(0) returns an uninitialized vargen, this does not work
+	    QualifiedName qn=vs.get(0);
+	    List<QualifiedName> vals = bindings.getVariables().get(qn);
 	    if (vals != null) {
 		u.addGroup(g, vals.size());
 
 	    } else {
-		List<List<TypedValue>> attrs = bindings.getAttributes()
-						       .get(vs.get(0));
-		if (attrs != null) {
-		    u.addGroup(g, attrs.size());
+		if (isGensymVariable(qn)) {
+		    u.addGroup(g,1); // uuid to be generated for this gensym variable
+		} else {
+		    List<List<TypedValue>> attrs = bindings.getAttributes()
+			    .get(vs.get(0));
+		    if (attrs != null) {
+			u.addGroup(g, attrs.size());
+		    }
 		}
 
 	    }

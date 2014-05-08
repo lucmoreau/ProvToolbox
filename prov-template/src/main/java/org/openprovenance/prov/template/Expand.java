@@ -71,7 +71,7 @@ public class Expand {
 	Hashtable<QualifiedName, QualifiedName> env0 = new Hashtable<QualifiedName, QualifiedName>();
 	Hashtable<QualifiedName, List<TypedValue>> env1 = new Hashtable<QualifiedName, List<TypedValue>>();
 	ExpandAction action = new ExpandAction(pf, u, this, env0, env1, null,
-					       bindings1, grp1, -1);
+					       bindings1, grp1);
 	u.doAction(bun, action);
 	return action.getList();
     }
@@ -83,21 +83,15 @@ public class Expand {
 	Iterator<List<Integer>> iter = us1.iterator();
 	while (iter.hasNext()) {
 	    List<Integer> index = iter.next();
-	    int attrIndex = ((Using.UsingIterator) iter).getCount();
 	    Hashtable<QualifiedName, QualifiedName> env = us1.get(bindings1,
 								  grp1, index);
 	    Hashtable<QualifiedName, List<TypedValue>> env2;
 
-	    if (IGNORE_ATTRIBUTES) {
-		env2 = us1.getAttr(freeAttributeVariables(statement),
+	    env2 = us1.getAttr(freeAttributeVariables(statement),
 				   bindings1, (UsingIterator) iter);
-	    } else {
-		env2 = us1.getAttr(bindings1, grp1, index);
-	    }
 
 	    ExpandAction action = new ExpandAction(pf, u, this, env, env2,
-						   index, bindings1, grp1,
-						   attrIndex);
+						   index, bindings1, grp1);
 	    u.doAction(statement, action);
 	    results.addAll(action.getList());
 
@@ -106,7 +100,6 @@ public class Expand {
 
     }
 
-    static public boolean IGNORE_ATTRIBUTES = true;
 
     static public Set<QualifiedName> freeVariables(Statement statement) {
 	HashSet<QualifiedName> result = new HashSet<QualifiedName>();
@@ -115,9 +108,7 @@ public class Expand {
 	    if (name != null && isVariable(name))
 		result.add(name);
 	}
-	if (!IGNORE_ATTRIBUTES) {
-	    result.addAll(freeAttributeVariables(statement));
-	}
+
 	return result;
     }
 

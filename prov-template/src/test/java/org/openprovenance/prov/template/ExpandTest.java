@@ -383,6 +383,71 @@ public class ExpandTest extends TestCase {
     
 
     
+    
+    public void testExpand23() throws IOException, Throwable {
+        
+        Bindings bindings1=new Bindings();
+
+        bindings1.addVariable(var_a,
+                              pf.newQualifiedName(EX_NS, "av1", "ex"));
+        bindings1.addVariable(var_a,
+                              pf.newQualifiedName(EX_NS, "av2", "ex"));
+        bindings1.addVariable(var_a,
+                              pf.newQualifiedName(EX_NS, "av3", "ex"));
+        
+        bindings1.addVariable(var_b,
+                              pf.newQualifiedName(EX_NS, "bv1", "ex"));
+        bindings1.addVariable(var_b,
+                              pf.newQualifiedName(EX_NS, "bv2", "ex"));
+        
+        bindings1.addVariable(var_b,
+                              pf.newQualifiedName(EX_NS, "bv3", "ex"));
+        
+        
+        List<TypedValue> ll=new LinkedList<TypedValue>();
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
+        bindings1.addAttribute(var_d, ll);
+
+        ll=new LinkedList<TypedValue>();
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me2@example", pf.getName().XSD_STRING));
+        bindings1.addAttribute(var_d, ll);
+    
+
+        ll=new LinkedList<TypedValue>();
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me3@example", pf.getName().XSD_STRING));
+        bindings1.addAttribute(var_d, ll);
+    
+
+        
+
+        ll=new LinkedList<TypedValue>();
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc1@example", pf.getName().XSD_STRING));
+        bindings1.addAttribute(var_e, ll);
+
+        ll=new LinkedList<TypedValue>();
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc2@example", pf.getName().XSD_STRING));
+        bindings1.addAttribute(var_e, ll);
+    
+      
+        ll=new LinkedList<TypedValue>();
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc6@example", pf.getName().XSD_STRING));
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc7@example", pf.getName().XSD_STRING));
+        bindings1.addAttribute(var_e, ll);
+      
+        
+        
+  
+        expander("src/test/resources/template23.provn",
+                 "target/expanded23.provn",
+                 bindings1,
+                 "target/bindings23.provn");
+        
+        
+    }
+    
+    
+
+    
     public void testExpand10() throws IOException, Throwable {
         
         Bindings bindings1=new Bindings();

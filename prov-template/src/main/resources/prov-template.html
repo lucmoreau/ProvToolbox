@@ -1,11 +1,119 @@
-
+<!DOCTYPE html>
 <html>
-<head> 
-<title>PROV-TEMPLATE: A TEMPLATE SYSTEM FOR PROV DOCUMENTS</title> 
-</head>
-<body>
+  <head>
+    <title>PROV-TEMPLATE: A Template System for PROV Documents</title>
+    <meta charset='utf-8'>
+    <script src='http://www.w3.org/Tools/respec/respec-w3c-common'
+            async class='remove'></script>
+    <script class='remove'>
+      var respecConfig = {
+          specStatus: "unofficial",
+          shortName:  "prov-template",
+          editors: [
+                {   name:       "Danius Michaelides",
+                    url:        "http://www.ecs.soton.ac.uk/~dtm/",
+                    company:    "University of Southampton",
+                    companyURL: "http://www.ecs.soton.ac.uk/" },
+                {   name:       "Trung Dong Huynh",
+                    url:        "http://www.ecs.soton.ac.uk/~tdf/",
+                    company:    "University of Southampton",
+                    companyURL: "http://www.ecs.soton.ac.uk/" },
+                {   name:       "Luc Moreau",
+                    url:        "http://www.ecs.soton.ac.uk/~lavm/",
+                    company:    "University of Southampton",
+                    companyURL: "http://www.ecs.soton.ac.uk/" }
+          ],
+          //previousMaturity: "FPWD",
+          //previousPublishDate:  "1977-03-15",
+          //wg:           "Cryptozoology Working Group",
+          //wgURI:        "http://www.w3.org/2017/cryptozoology/",
+          //wgPublicList: "public-animals",
+          //wgPatentURI:  "http://www.w3.org/2004/01/pp-impl/424242/status",
+      };
+    </script>
+
+ 
+<style type="text/css">
+.note { font-size:small; margin-left:50px }
+
+.diamond {
+    font-weight: normal;
+    font-style: normal;
+    font-size:100%;
+    font-family: sans-serif;
+}
+
+table.thinborder {
+	border-width: 1px;
+	border-spacing: 0px;
+	border-style: none;
+	border-color: gray;
+	border-collapse: collapse;
+}
+
+table.thinborder th {
+	border-width: 1px;
+	padding: 0px;
+	border-style: solid;
+	border-color: gray;
+}
+
+table.thinborder td {
+	border-width: 1px;
+	padding: 2px;
+	border-style: solid;
+	border-color: gray;
+}
+</style>
+
+  </head>
+  <body>
+    <section id='abstract'>
+      <p>
+        This document describes a templating system to generate PROV.
+      </p>
+    </section>
+
+    <section id='sotd'>
+      <p>
+        This is probably the froodiest document that you will read all year. It has
+        been authored using new means of achieving consensus that have been made 
+        possible through nanoethanol implants.
+      </p>
+    </section>
+
+<section id="introduction">
+      <h2>Introduction</h2>
+
+
+</section>
+
+<section id="namespaces">
+      <h2>namespaces</h2>
+
+
+<table class="thinborder" style="margin-left: auto; margin-right: auto;">
+<caption id="namespace-table"><span>Table 1</span> Prefix and Namespaces used in this specification</caption>
+<tbody>
+<tr><td><b>prefix</b></td>
+    <td><b>namespace IRI</b></td>
+    <td><b>definition</b></td></tr>
+<tr><td><tt>tmpl</tt></td>
+    <td><tt>http://openprovenance.org/tmpl#</tt></td>
+    <td>the prov-template namespace</td></tr>
+<tr><td><tt>var</tt></td>
+    <td><tt>http://openprovenance.org/var#</tt></td>
+    <td>the namespace for template variables</td></tr>
+<tr><td><tt>vargen</tt></td>
+    <td><tt>http://openprovenance.org/vargen#</tt></td>
+    <td>the namespace for template gensym variables</td></tr>
+</tbody>
+</table>
+
+</section>
 
 <section id="algorithm">
+      <h2>Algorithm</h2>
 
 Basic algorithm:
 <ol>
@@ -24,7 +132,7 @@ Basic algorithm:
     generate a multi-dimensional index</li>
 <li> for each point in the index, write out the statement using the
    appropiate
-    values in the variable bindings; app:order is the point index</li>
+    values in the variable bindings; tmpl:order is the point index</li>
 </ol>
 </li>
 </ol>
@@ -32,11 +140,9 @@ Basic algorithm:
 </section>
 
 <section id="examples">
+      <h2>Examples</h2>
 
-<pre>
-
-Example A:
-
+<pre class="example">
 Template:
   entity(var:a)
   entity(var:b)
@@ -52,32 +158,32 @@ statement 1:
   uses: group 1 (length 3)
   index: [(1),(2),(3)]
   write:
-    entity(uri1, [app:order="1"])
-    entity(uri2, [app:order="2"])
-    entity(uri3, [app:order="3"])
+    entity(uri1, [tmpl:order="1"])
+    entity(uri2, [tmpl:order="2"])
+    entity(uri3, [tmpl:order="3"])
 
 statement 2:
   variables: var:b
   uses: group 2 (length 2)
   index: [(1),(2)]
   write:
-    entity(uriA, [app:order="1"])
-    entity(uriB, [app:order="2"])
+    entity(uriA, [tmpl:order="1"])
+    entity(uriB, [tmpl:order="2"])
 
 statement 3:
   variables: var:b, var:a
   uses: group 2 (length 2), group 1 (length 3)
   index: [(1,1),(1,2)(1,3),(2,1),(2,2),(2,3)]
   write:
-    wasAttributedTo(uriA, uri1, [app:order="1,1"])
-    wasAttributedTo(uriA, uri2, [app:order="1,2"])
-    wasAttributedTo(uriA, uri3, [app:order="1,3"])
-    wasAttributedTo(uriB, uri1, [app:order="2,1"])
-    wasAttributedTo(uriB, uri2, [app:order="2,2"])
-    wasAttributedTo(uriB, uri3, [app:order="2,3"])
+    wasAttributedTo(uriA, uri1, [tmpl:order="1,1"])
+    wasAttributedTo(uriA, uri2, [tmpl:order="1,2"])
+    wasAttributedTo(uriA, uri3, [tmpl:order="1,3"])
+    wasAttributedTo(uriB, uri1, [tmpl:order="2,1"])
+    wasAttributedTo(uriB, uri2, [tmpl:order="2,2"])
+    wasAttributedTo(uriB, uri3, [tmpl:order="2,3"])
+</pre>
 
-Example B:
-
+<pre class="example">
 Template:
   entity(var:a, [app:group='1'])
   entity(var:b, [app:group='1'])
@@ -91,27 +197,27 @@ statement 1:
   uses: group 1 (length 2)
   index: [(1),(2)]
   write:
-    entity(uri1, [app:order="1"])
-    entity(uri2, [app:order="2"])
+    entity(uri1, [tmpl:order="1"])
+    entity(uri2, [tmpl:order="2"])
 
 statement 2:
   variables: var:b
   uses: group 2 (length 2)
   index: [(1),(2)]
   write:
-    entity(uriA, [app:order="1"])
-    entity(uriB, [app:order="2"])
+    entity(uriA, [tmpl:order="1"])
+    entity(uriB, [tmpl:order="2"])
 
 statement 3:
   variables: var:b, var:a
   uses: group 1 (length 2)
   index: [(1),(2)]
   write:
-    wasAttributedTo(uriA, uri1, [app:order="1"])
-    wasAttributedTo(uriB, uri2, [app:order="2"])
+    wasAttributedTo(uriA, uri1, [tmpl:order="1"])
+    wasAttributedTo(uriB, uri2, [tmpl:order="2"])
 </pre>
 
-<pre>
+<pre class="example">
 Template:
   entity(var:x)
   agent(var:ag)
@@ -123,36 +229,27 @@ Bindings:
 
 Expands to:
 
-  entity(uri1, [app:order="1"])
-  entity(uri2, [app:order="2"])
-  entity(uri3, [app:order="3"])
+  entity(uri1, [tmpl:order="1"])
+  entity(uri2, [tmpl:order="2"])
+  entity(uri3, [tmpl:order="3"])
 
-  entity(uriA, [app:order="1"])
-  entity(uriB, [app:order="2"])
+  entity(uriA, [tmpl:order="1"])
+  entity(uriB, [tmpl:order="2"])
 
-  wasAttributedTo(uri1, uriA, [my:attr='attr1', app:order="1,1"])
-  wasAttributedTo(uri1, uriB, [my:attr='attr2', app:order="1,2"])
-  wasAttributedTo(uri2, uriA, [my:attr='attr3', app:order="2,1"])
-  wasAttributedTo(uri2, uriB, [my:attr='attr4', app:order="2,2"])
-  wasAttributedTo(uri3, uriA, [my:attr='attr5', app:order="3,1"])
-  wasAttributedTo(uri3, uriB, [my:attr='attr6a', my:attr='attr6b', app:order="3,2"])
+  wasAttributedTo(uri1, uriA, [my:attr='attr1', tmpl:order="1,1"])
+  wasAttributedTo(uri1, uriB, [my:attr='attr2', tmpl:order="1,2"])
+  wasAttributedTo(uri2, uriA, [my:attr='attr3', tmpl:order="2,1"])
+  wasAttributedTo(uri2, uriB, [my:attr='attr4', tmpl:order="2,2"])
+  wasAttributedTo(uri3, uriA, [my:attr='attr5', tmpl:order="3,1"])
+  wasAttributedTo(uri3, uriB, [my:attr='attr6a', my:attr='attr6b', tmpl:order="3,2"])
 </pre>
 </section>
 
-<section id="issues">
-
-Issues:
-<ul>
-<li> when reloading back into a template/binding, we have no way of linking
-  statements in the bundle back to statements in the template. I'm
-  wondering if we need to name each statement in the template and refer to
-  that in the generated.
-<li> dealing with attributes. I dont think what we have in our current
-  template examples is sufficient here. 
-</ul>
-</section>
 
 <section id="environment">
+      <h2>Environment</h2>
+
+<div class="example">
 <pre>
 document
 prefix app <http://a/>
@@ -161,14 +258,51 @@ prefix ex <http://ex/>
 
 entity(var:a,[app:value0='ex:foo',app:value1='ex:bar'])
 
-entity(var:b,[prov:value='ex:foo', app:order=0])
-entity(var:b,[prov:value='ex:bar', app:order=1])
+entity(var:b,[prov:value='ex:foo', tmpl:order=0])
+entity(var:b,[prov:value='ex:bar', tmpl:order=1])
 
 endDocument
 </pre>
+</div>
 </section>
+
+
+
+<section id="variables">
+      <h2>Variables</h2>
+
+
+<table class="thinborder" style="margin-left: auto; margin-right: auto;">
+<caption id="variable-table"><span>Table xx</span> Kinds of variables supported by the templating system</caption>
+<tbody>
+<tr><td><b>variable</b></td><td><b>definition</b></td></tr>
+<tr><td><tt>tmpl:order</tt></td><td>an attribute added to a statement by the expansion process to specify the index used to compute the actual binding that defined the current instantiation.</td></tr>
+<tr><td><tt>tmpl:label</tt></td><td> an attribute ...</td></tr>
+<tr><td><tt>tmpl:linked</tt></td><td> an attribute ...</td></tr>
+<tr><td><tt>tmpl:value_0</tt></td><td> an attribute ...</td></tr>
+<tr><td><tt>tmpl:value_1</tt></td><td> an attribute ...</td></tr>
+<tr><td><tt>tmpl:value_</tt><em>n</em></td><td> an attribute ...</td></tr>
+<tr><td><tt>tmpl:2dvalue_0_0</tt></td><td> an attribute ...</td></tr>
+<tr><td><tt>tmpl:2dvalue_<em>x</em>_<em>y</em></tt></td><td> an attribute ...</td></tr>
+<tr><td><tt>var:x</tt></td><td> a variable ...</td></tr>
+<tr><td><tt>vargen:x</tt></td><td> a variable</td></tr>
+</tbody>
+</table>
+
+</section>
+
+
+
+
+<section id="implementation" class="informative">
+      <h2>Implementation</h2>
+
+
+<p>ProvToolbox provconvert command line ... </p>
+
+</section>
+
 
 
 </body>
 </html>
-

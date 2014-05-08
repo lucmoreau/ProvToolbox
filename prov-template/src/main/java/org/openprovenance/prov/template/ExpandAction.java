@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.Activity;
@@ -42,6 +43,8 @@ import static org.openprovenance.prov.template.Expand.TMPL_PREFIX;
 
 public class ExpandAction implements StatementAction {
     
+    public static final String UUID_PREFIX = "uuid";
+    public static final String URN_UUID_NS = "urn:uuid:";
     final private ProvFactory pf;
     final private Expand expand;
     final private Hashtable<QualifiedName, QualifiedName> env;
@@ -276,7 +279,14 @@ public class ExpandAction implements StatementAction {
                         QualifiedName qn1=(QualifiedName)o;
                         List<TypedValue> vals=env2.get(qn1);
                         if (vals==null) {
-                            dstAttributes.add(attribute);
+                            if (Expand.isGensymVariable(qn1)) {
+                        	UUID uuid=UUID.randomUUID();
+                        	dstAttributes.add(pf.newAttribute(attribute.getElementName(),
+                        	                                  getUUIDQualifiedName(),
+                        	                                  pf.getName().XSD_QNAME));
+                            }
+                            // if not a vargen, then simply drop this attribute
+                            //dstAttributes.add(attribute);
                         } else {
                             found=true;
                             for (TypedValue val: vals) {
@@ -296,6 +306,11 @@ public class ExpandAction implements StatementAction {
             pf.setAttributes((HasOther) dstStatement, dstAttributes);
         }       
         return found;
+    }
+
+    public QualifiedName getUUIDQualifiedName() {
+	UUID uuid=UUID.randomUUID();
+	return pf.newQualifiedName(URN_UUID_NS, uuid.toString(), UUID_PREFIX);
     }
 
     public void addOrderAttribute(HasOther res) {

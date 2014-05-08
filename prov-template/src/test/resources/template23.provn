@@ -10,8 +10,18 @@ prefix tmpl <http://openprovenance.org/tmpl#>
 bundle bun:123
 entity(bun:123, [prov:type='prov:Bundle'])
 entity(var:a)
+
+wasDerivedFrom(var:a,vargen:e)
+entity(vargen:e)
+
+entity(vargen:f)
+wasDerivedFrom(var:a,vargen:f)
+
+
 entity(var:b, [ex:email='var:d', tmpl:linked='var:a',ex:hi='vargen:hi'])
 wasAttributedTo(var:b, var:a, [ex:foo='var:e'])
+
+
 endBundle
 
 endDocument

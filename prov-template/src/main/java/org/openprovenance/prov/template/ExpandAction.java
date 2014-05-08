@@ -280,7 +280,6 @@ public class ExpandAction implements StatementAction {
                         List<TypedValue> vals=env2.get(qn1);
                         if (vals==null) {
                             if (Expand.isGensymVariable(qn1)) {
-                        	UUID uuid=UUID.randomUUID();
                         	dstAttributes.add(pf.newAttribute(attribute.getElementName(),
                         	                                  getUUIDQualifiedName(),
                         	                                  pf.getName().XSD_QNAME));
@@ -323,6 +322,12 @@ public class ExpandAction implements StatementAction {
 	    if (val!=null) {
 		u.setter(res, position, val);
 		return true;
+	    } else {
+		if (Expand.isGensymVariable(id)) {
+		    QualifiedName uuid=getUUIDQualifiedName();
+		    u.setter(res,position,uuid);
+		    bindings.addVariable(id, uuid);
+		}
 	    }
 	}
 	return false;

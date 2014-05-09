@@ -276,7 +276,7 @@ endDocument
 <caption id="variable-table"><span>Table xx</span> Kinds of parameters and variables supported by the templating system</caption>
 <tbody>
 <tr><td><b>template variable</b></td><td><b>definition</b></td></tr>
-<tr><td><tt>var:<em>x</em></tt></td><td> a variable ...</td></tr>
+<tr><td><tt>var:<em>x</em></tt></td><td> a variable <em>x</em> to be replaced by its value according to the expansion algorithm. If no binding is found, if the variable occurs in attribute position, the attribute is dropped. If in optional position, the variable is dropped. If in mandatory position, it is an error situation. </td></tr>
 <tr><td><tt>vargen:<em>x</em></tt></td><td> a variable</td></tr>
 <tr><td><b>template parameter</b></td><td><b>definition</b></td></tr>
 <tr><td><tt>tmpl:label</tt></td><td> an attribute ...</td></tr>

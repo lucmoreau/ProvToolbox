@@ -21,6 +21,7 @@ public class CommandLineArguments {
     public static final String LOGFILE = "logfile";
     public static final String INFILE = "infile";
     public static final String TITLE = "title";
+    public static final String GENERATOR = "generator";
 
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
@@ -66,6 +67,12 @@ public class CommandLineArguments {
                 .withDescription("document title")
                 .create(TITLE);
 
+        Option generator = OptionBuilder
+                .withArgName("string")
+                .hasArg()
+                .withDescription("graph generator N:n:first:seed:e1")
+                .create(GENERATOR);
+
         Options options = new Options();
 
         options.addOption(help);
@@ -78,6 +85,7 @@ public class CommandLineArguments {
         options.addOption(namespaces);
         options.addOption(title);
         options.addOption(bindings);
+        options.addOption(generator);
 
         return options;
 
@@ -96,6 +104,7 @@ public class CommandLineArguments {
         String namespaces = null;
         String title = null;
         String bindings = null;
+        String generator = null;
 
 
         try {
@@ -113,6 +122,7 @@ public class CommandLineArguments {
             if (line.hasOption(NAMESPACES)) namespaces = line.getOptionValue(NAMESPACES);
             if (line.hasOption(TITLE))      title = line.getOptionValue(TITLE);
             if (line.hasOption(BINDINGS))   bindings = line.getOptionValue(BINDINGS);
+            if (line.hasOption(GENERATOR))  generator = line.getOptionValue(GENERATOR);
 	    
 	    if (help!=null) {
 		HelpFormatter formatter = new HelpFormatter();
@@ -133,7 +143,8 @@ public class CommandLineArguments {
                                                           outfile,
                                                           namespaces,
                                                           title,
-                                                          bindings);
+                                                          bindings,
+                                                          generator);
             interop.run();
 
         }

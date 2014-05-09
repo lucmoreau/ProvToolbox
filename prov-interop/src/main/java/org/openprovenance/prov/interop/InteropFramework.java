@@ -26,6 +26,8 @@ import org.openprovenance.prov.template.Expand;
 import org.antlr.runtime.tree.CommonTree;
 import org.openrdf.rio.RDFFormat;
 import org.openprovenance.prov.dot.ProvToDot;
+import org.openprovenance.prov.generator.GeneratorDetails;
+import org.openprovenance.prov.generator.GraphGenerator;
 import org.apache.log4j.Logger;
 
 /**
@@ -59,13 +61,15 @@ public class InteropFramework {
 	public final Hashtable<String, ProvFormat> mimeTypeRevMap;
 	public final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
 
+	final private String generator;
+
 
 	public InteropFramework () {
-	    this(null, null, null, null, null, null, null, null);
+	    this(null, null, null, null, null, null, null, null,null);
 	}
 
 	public InteropFramework(String verbose, String debug, String logfile,
-			String infile, String outfile, String namespaces, String title, String bindings) {
+			String infile, String outfile, String namespaces, String title, String bindings, String generator) {
 		this.verbose = verbose;
 		this.debug = debug;
 		this.logfile = logfile;
@@ -74,6 +78,7 @@ public class InteropFramework {
 		this.namespaces = namespaces;
 		this.title=title;
 		this.bindings=bindings;
+		this.generator=generator;
 		extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
 		extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
 		mimeTypeMap = new Hashtable<InteropFramework.ProvFormat, String>();
@@ -582,27 +587,60 @@ public class InteropFramework {
 		}
 		return conn;
 	}
-
-	public void run() {
-		if (infile == null)
-			return;
-		if (outfile == null)
-			return;
-		try {
-			Document doc = (Document) loadProvKnownGraph(infile);
-			if (bindings!=null) {
-			    Document docBindings = (Document) loadProvKnownGraph(bindings);
-			    Document expanded=new Expand().expander(doc, outfile, docBindings);
-			    writeDocument(outfile, expanded);
-
-			} else {
-			    writeDocument(outfile, doc);
-			}
-		} catch (Throwable e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+	String option(String [] options, int index) {
+	    if ((options!=null) && (options.length>index)) {
+	        return options[index];
+	    }
+	    return null;
 	}
+    public void run() {
+        if (outfile == null)
+            return;
+        if (infile == null && generator==null)
+            return;
+
+        try {
+            Document doc;
+            if (infile!=null) {
+                doc= (Document) loadProvKnownGraph(infile);
+            } else {
+                String [] options=generator.split(":");
+                String noOfNodes=option(options,0);
+                String noOfEdges=option(options,1);
+                String firstNode=option(options,2);
+                String namespace="http://expample.org/";
+                String seed=option(options,3);
+                String term=option(options,4);
+                
+                if (term==null) term="e1";
+                
+                
+                GeneratorDetails gd=new GeneratorDetails(Integer.valueOf(noOfNodes), 
+                                                         Integer.valueOf(noOfEdges), 
+                                                         firstNode, 
+                                                         namespace, 
+                                                         (seed==null)?null:Long.valueOf(seed),
+                                                         term);
+                System.out.println(gd);
+                GraphGenerator gg=new GraphGenerator(gd, pFactory);
+                gg.generateElements();
+
+                doc=gg.getDetails().getDocument();                
+            }
+            if (bindings != null) {
+                Document docBindings = (Document) loadProvKnownGraph(bindings);
+                Document expanded = new Expand().expander(doc, outfile,
+                                                          docBindings);
+                writeDocument(outfile, expanded);
+
+            } else {
+                writeDocument(outfile, doc);
+            }
+        } catch (Throwable e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
 
 }

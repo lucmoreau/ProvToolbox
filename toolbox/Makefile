@@ -112,3 +112,10 @@ exp20:
 
 exp21:
 	target/appassembler/bin/provconvert -infile ../prov-template/src/test/resources/template21.provn -outfile target/expanded21.provn -bindings ../prov-template/target/bindings21.provn 
+
+
+rand1:
+	target/appassembler/bin/provconvert -generator 50:4:entity -outfile target/random1.svg
+
+rand2:
+	target/appassembler/bin/provconvert -generator 50:4:entity:-6386918869486095322 -outfile target/random2.svg

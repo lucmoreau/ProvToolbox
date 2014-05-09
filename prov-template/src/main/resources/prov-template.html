@@ -23,6 +23,22 @@
                     company:    "University of Southampton",
                     companyURL: "http://www.ecs.soton.ac.uk/" }
           ],
+      localBiblio:  {
+      "prov-json": {
+      title:    "The PROV-JSON Serialization. A JSON Representation for the PROV Data Model"
+      ,   href:     "http://www.w3.org/Submission/2013/SUBM-prov-json-20130424/"
+      ,   authors:  [
+      "Trung Dong Huynh",
+      "Michael O. Jewell",
+      "Amir Sezavar Keshavarz",
+      "Danius T. Michaelides",
+      "Huanjia Yang",
+      "Luc Moreau"
+      ]
+      ,   status:   "Member-SUBM"
+      ,   publisher:  "W3C"
+      }
+      }
           //previousMaturity: "FPWD",
           //previousPublishDate:  "1977-03-15",
           //wg:           "Cryptozoology Working Group",
@@ -85,11 +101,40 @@ table.thinborder td {
 <section id="introduction">
       <h2>Introduction</h2>
 
+<p>
+It is still challenging to generate provenance compatible to the PROV
+data model [[prov-dm]]. Indeed, all serializations of PROV, whether in
+RDF [[prov-o]], in XML [[prov-xml]], in text from [[prov-n]], or in json
+[[prov-json]] have got their own syntactic quirks, which makes them
+difficult to generate directly. Likewise, specialized toolkits such as
+ProvToolbox and ProvPy require non trivial programming expertise.
+</p>
 
-</section>
+<p>Thus, recognizing that very often provenance follows patterns that are repeated during
+the lifetime of an application, we propose a template system for PROV, with the following characteristics:
+<ul>
+<li> It follows a declarative approach, according to which a pattern
+of provenance graph can be declared, specifying some variables acting as placeholder for values to be specified; the
+pattern can be instantiated multiple times by providing bindings for
+these variables.
+<li> It allows a decoupling of the code that instruments the
+application and the provenance generation part, the latter being
+handled automatically by means of patterns.
+<li> To avoid the proliferation of languages and serializations, patterns and bindings are themselves
+expressed as PROV documents, allowing tools to be applied to them, to
+analyse, check or validate them.
+</ul>
+</p>
+
+
+
+
 
 <section id="namespaces">
-      <h2>namespaces</h2>
+      <h2>Namespaces</h2>
+
+<p>The following namespaces prefixes are used throughout this document.</p>
+
 
 
 <table class="thinborder" style="margin-left: auto; margin-right: auto;">
@@ -107,13 +152,88 @@ table.thinborder td {
 <tr><td><tt>vargen</tt></td>
     <td><tt>http://openprovenance.org/vargen#</tt></td>
     <td>the namespace for template gensym variables</td></tr>
+<tr><td><tt>prov</tt></td><td><tt>http://www.w3.org/ns/prov#</tt></td><td>The PROV namespace</td></tr>
 </tbody>
 </table>
+
+<p>All other namespace prefixes are used in examples only. In
+particular, IRIs starting with <tt>http://example.org</tt> represent
+some application-dependent IRI [<cite><a class="bibref"
+href="#bib-RFC3987">RFC3987</a></cite>].
+</section>
+
+<section id="conventions">
+      <h2>Conventions</h2>
+
+<p>In this specification, we use the
+term <a href="http://www.w3.org/TR/prov-dm/#term-qualified-name">Qualified
+Name</a> in accordance to [[prov-dm]], and use the [[prov-n]] syntax
+(see
+production <a href="http://www.w3.org/TR/prov-n/#prod-QUALIFIED_NAME">prod-QUALIFIED_NAME</a>.
+In compliance to [[prov-dm]], we note that a qualified name can be
+mapped to an IRI by concatenating the IRI associated with the prefix
+and the local part. </p>
+
+</section>
+</section>
+
+<section id="template-definition">
+ <h2>Template Definition</h2>
+
+<p>A PROV-template is a PROV document that:
+<ul>
+<li> contains a single bundle;
+<li> accepts variables in the form of qualified names <tt>var:<em>x</em></tt> and <tt>vargen:<em>x</em></tt> in any position where such qualified names are allowed in PROV;
+<li> contains attributes in the prov-template namespace (prefix <tt>tmpl</tt>).
+</ul>
+
+
+<p>Table 1 summarizes the syntax and meaning of variables and attributes accepted in a PROV template. Their roles will be discussed in detail in the expansion algorithm.</p>
+
+<table class="thinborder" style="margin-left: auto; margin-right: auto;">
+<caption id="variable-table"><span>Table 1</span> Kinds of parameters and variables supported by the templating system</caption>
+<tbody>
+<tr><td><b>template variable</b></td><td><b>definition</b></td></tr>
+<tr><td><tt>var:<em>x</em></tt></td><td> a variable <em>x</em> to be replaced by its value according to the expansion algorithm. If no binding is found, if the variable occurs in attribute position, the attribute is dropped. If in optional position, the variable is dropped. If in mandatory position, it is an error situation. </td></tr>
+<tr><td><tt>vargen:<em>x</em></tt></td><td> a variable</td></tr>
+<tr><td><b>template parameter</b></td><td><b>definition</b></td></tr>
+<tr><td><tt>tmpl:label</tt></td><td> an attribute ...</td></tr>
+<tr><td><tt>tmpl:linked</tt></td><td> an attribute ...</td></tr>
+<tr><td><tt>tmpl:time</tt></td><td> an attribute ...</td></tr>
+<tr><td><tt>tmpl:startTime</tt></td><td> an attribute ...</td></tr>
+<tr><td><tt>tmpl:endTime</tt></td><td> an attribute ...</td></tr>
+</tbody>
+</table>
+
 
 </section>
 
 <section id="algorithm">
       <h2>Algorithm</h2>
+
+
+<section id="grouping">
+      <h2>Variable Grouping</h2>
+</section>
+
+<section id="using">
+      <h2>Group Using</h2>
+</section>
+
+
+<section id="binding">
+      <h2>Binding Structure</h2>
+</section>
+
+<section id="indexing">
+      <h2>Variable Value Indexing</h2>
+</section>
+
+
+<section id="expansion">
+      <h2>Expansion</h2>
+</section>
+
 
 Basic algorithm:
 <ol>

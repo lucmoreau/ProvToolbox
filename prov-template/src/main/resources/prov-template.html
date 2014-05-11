@@ -220,6 +220,90 @@ generated.</td></tr>
 </tbody>
 </table>
 
+<div class="anexample">
+<p>The following template contains two variables <tt>var:a</tt> and <tt>var:b</tt>.</p>
+<div class="example">
+<pre>
+document
+ prefix ex: &lt;http://example.org&gt;
+ prefix var: &lt;http://openprovenance.org/var#&gt;
+ bundle ex:b 
+  agent(var:a)
+  entity(var:b)
+  wasAttributedTo(var:b, var:a)
+ endBundle
+endDocument
+<pre>
+</div>
+With the following values, <tt>ex:ag</tt> and <tt>ex:en</tt>, for <tt>var:a</tt> and <tt>var:b</tt>, respectively, the template expands to the following document:
+<div class="example">
+<pre>
+document
+ prefix ex: &lt;http://example.org&gt;
+ prefix tmpl: &lt;http://openprovenance.org/tmpl#&gt;
+ bundle ex:b 
+  agent(ex:ag, [tmpl:order=""})
+  entity(ex:en, [tmpl:order=""])
+  wasAttributedTo(ex:en, ex:ag, [tmpl:order=""})
+ endBundle
+endDocument
+<pre>
+</div>
+</div>
+
+<div class="anexample">
+<p>Multiple values are allowed for each variable, for instance <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for  <tt>var:a</tt>, and <tt>ex:en1</tt>, <tt>ex:en2</tt>, <tt>ex:en3</tt>, for <tt>var:b</tt>. By default, the cartesian product of the values set forms the set of all possibilities to instantiate each statement in the template. We obtain:</p>
+<div class="example">
+<pre>
+document
+ prefix ex: &lt;http://example.org&gt;
+ prefix tmpl: &lt;http://openprovenance.org/tmpl#&gt;
+ bundle ex:b 
+  agent(ex:ag1, [tmpl:order=""})
+  agent(ex:ag2, [tmpl:order=""})
+  entity(ex:en1, [tmpl:order=""])
+  entity(ex:en2, [tmpl:order=""])
+  entity(ex:en3, [tmpl:order=""])
+  wasAttributedTo(ex:en1, ex:ag1, [tmpl:order=""})
+  wasAttributedTo(ex:en2, ex:ag1, [tmpl:order=""})
+  wasAttributedTo(ex:en3, ex:ag1, [tmpl:order=""})
+  wasAttributedTo(ex:en1, ex:ag2, [tmpl:order=""})
+  wasAttributedTo(ex:en2, ex:ag2, [tmpl:order=""})
+  wasAttributedTo(ex:en3, ex:ag2, [tmpl:order=""})
+ endBundle
+endDocument
+<pre>
+</div>
+In the expanded document, the attribute <tt>tmpl:order</tt> indicates which combination of variable value is used to instantiate the current statement.
+</div>
+
+
+<div class="anexample">
+<p>In some cases, the cartesian product of possibilities is not desirable. Instance, one wants the values are allowed for each variable, for instance <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for  <tt>var:a</tt>, and <tt>ex:en1</tt>, <tt>ex:en2</tt>, <tt>ex:en3</tt>, for <tt>var:b</tt>. By default, the cartesian product of the values set forms the set of all possibilities to instantiate each statement in the template. We obtain:</p>
+<div class="example">
+<pre>
+document
+ prefix ex: &lt;http://example.org&gt;
+ prefix tmpl: &lt;http://openprovenance.org/tmpl#&gt;
+ bundle ex:b 
+  agent(ex:ag1, [tmpl:order=""})
+  agent(ex:ag2, [tmpl:order=""})
+  entity(ex:en1, [tmpl:order=""])
+  entity(ex:en2, [tmpl:order=""])
+  entity(ex:en3, [tmpl:order=""])
+  wasAttributedTo(ex:en1, ex:ag1, [tmpl:order=""})
+  wasAttributedTo(ex:en2, ex:ag1, [tmpl:order=""})
+  wasAttributedTo(ex:en3, ex:ag1, [tmpl:order=""})
+  wasAttributedTo(ex:en1, ex:ag2, [tmpl:order=""})
+  wasAttributedTo(ex:en2, ex:ag2, [tmpl:order=""})
+  wasAttributedTo(ex:en3, ex:ag2, [tmpl:order=""})
+ endBundle
+endDocument
+<pre>
+In the expanded document, the attribute <tt>tmpl:order</tt> indicates which combination of variable value is used to instantiate the current statement.
+</div>
+</div>
+
 
 </section>
 

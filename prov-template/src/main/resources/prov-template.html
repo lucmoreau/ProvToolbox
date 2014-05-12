@@ -348,7 +348,7 @@ document
 endDocument
 <pre>
 </div>
-In the expanded document, the attribute <tt>tmpl:order</tt> indicates which combination of variable value is used to instantiate the current statement.
+In the expanded document, the attribute <tt>tmpl:order</tt> indicates which combination of variable values is used to instantiate the current statement.  In the <tt>wasAttributedTo</tt> statement, it indicates that two independent groups of variables are considered.  There are two possible values (denoted by index 0 and 1) for the first group (i.e., variable <tt>var:b</tt>) and three possible values (denoted by index 0, 1, and 2) for the second group (i.e., variable <tt>var:a</tt>).
 </div>
 
 
@@ -368,12 +368,12 @@ document
 endDocument
 <pre>
 </div>
-The expansion now looks like:
+The expansion now looks like the following. We see that the value <tt>ex:en1</tt> is used  at the same time as <tt>ex:ag1</tt>.
 <div class="example">
 <pre>
 document
- prefix ex: &lt;http://example.org&gt;
- prefix tmpl: &lt;http://openprovenance.org/tmpl#&gt;
+ prefix ex &lt;http://example.org&gt;
+ prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
  prefix xsd &lt;http://www.w3.org/2001/XMLSchema&gt;
  bundle ex:b 
   agent(ex:ag1,[tmpl:order = "[0]" %% xsd:string])
@@ -386,6 +386,7 @@ document
 endDocument
 <pre>
 </div>
+In the expanded document, the attribute <tt>tmpl:order</tt> indicates that a single group of variables is used for the <tt>wasAttributedTo</tt> statement:  it has two possible values (denoted by index 0 and 1).
 </div>
 
 

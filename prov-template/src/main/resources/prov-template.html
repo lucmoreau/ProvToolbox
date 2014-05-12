@@ -234,8 +234,16 @@ some application-dependent IRI [<cite><a class="bibref"
 href="#bib-RFC3987">RFC3987</a></cite>].
 </section>
 
+
+
 <section id="conventions">
       <h2>Conventions</h2>
+
+
+<p>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [[RFC2119]].</p>
+
+<p>Examples throughout this document use the PROV-N Provenance Notation [[PROV-N]].</p>
+
 
 <p>In this specification, we use the
 term <a href="http://www.w3.org/TR/prov-dm/#term-qualified-name">Qualified
@@ -252,7 +260,7 @@ and the local part. </p>
 <section id="template-definition">
  <h2>Template Definition</h2>
 
-<p>A PROV-template is a PROV document that:
+<p>A <dfn>PROV-template</dfn> is a PROV document that:
 <ul>
 <li> MUST contain a single bundle;
 <li> MAY contain variables in the form of qualified names <tt>var:<em>x</em></tt> and <tt>vargen:<em>x</em></tt> in any position where such qualified names are allowed in PROV;
@@ -294,7 +302,7 @@ generated.</td></tr>
 <div class="anexample" id="example-1">
 <p>The following template contains two variables <tt>var:a</tt> and <tt>var:b</tt>.</p>
 <div class="example">
-<pre>
+<pre class="highlight">
 document
  prefix ex &lt;http://example.org&gt;
  prefix var &lt;http://openprovenance.org/var#&gt;
@@ -309,7 +317,7 @@ endDocument
 </div>
 With the following values, <tt>ex:ag</tt> and <tt>ex:en</tt>, for <tt>var:a</tt> and <tt>var:b</tt>, respectively, the template expands to the following document:
 <div class="example">
-<pre>
+<pre class="highlight">
 document
  prefix ex &lt;http://example.org&gt;
  prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
@@ -327,7 +335,7 @@ endDocument
 <div class="anexample"  id="example-2">
 <p>Multiple values are allowed for each variable, for instance <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for  <tt>var:a</tt>, and <tt>ex:en1</tt>, <tt>ex:en2</tt>, <tt>ex:en3</tt>, for <tt>var:b</tt>. By default, the cartesian product of the values set forms the set of all possibilities to instantiate each statement in the template. We obtain:</p>
 <div class="example">
-<pre>
+<pre class="highlight">
 document
  prefix ex &lt;http://example.org&gt;
  prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
@@ -355,7 +363,7 @@ In the expanded document, the attribute <tt>tmpl:order</tt> indicates which comb
 <div class="anexample"  id="example-3">
 <p>In some cases, the cartesian product of possibilities is not desirable. Instance, one wants the values are allowed for each variable, for instance <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for  <tt>var:a</tt>, and <tt>ex:en1</tt>, <tt>ex:en2</tt> for <tt>var:b</tt>. By default, the cartesian product of the values set forms the set of all possibilities to instantiate each statement in the template. Hence, we modify the template of <a href="#example-1" class="anexample-ref"><span>Example REF</span></a> by adding the <tt>tmpl:linked</tt> attribute in the template.</p>
 <div class="example">
-<pre>
+<pre class="highlight">
 document
  prefix ex &lt;http://example.org&gt;
  prefix var &lt;http://openprovenance.org/var#&gt;
@@ -370,7 +378,7 @@ endDocument
 </div>
 The expansion now looks like the following. We see that the value <tt>ex:en1</tt> is used  at the same time as <tt>ex:ag1</tt>.
 <div class="example">
-<pre>
+<pre class="highlight">
 document
  prefix ex &lt;http://example.org&gt;
  prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
@@ -398,6 +406,61 @@ In the expanded document, the attribute <tt>tmpl:order</tt> indicates that a sin
 
 <section id="grouping">
       <h2>Variable Grouping</h2>
+
+<p>We define a <em>variable group</em>, or <dfn>group</dfn> for short, a set of variables that are expected to change values in lockstep with each other. Groups are identified by a natural number. A <dfn>pattern's grouping of variables</dfn> is a partitioning of the set of variables occurring in a pattern; each partition forms a group and is allocated a natural number.  </p>
+
+<p>A <dfn>binding</dfn> is an association between a variable and some values. If there is a binding for a variable, it is said to be <dfn>bound</dfn>.</p>
+
+<p>All variables belonging to a given group MUST be bound to the same number of values, since their values have to change in lockstep manner. If this condition is not satisfied, it is an error situation (see error
+<a href="#IncorrectNumberOfBindingsForGroupVariable">IncorrectNumberOfBindingsForGroupVariable</a>).</p>
+
+<p>A variable SHALL NOT belong to more than one group.</p>
+
+<p>The algorithm to deterministically create a  grouping of variables for a pattern P is as follows.</p>
+<pre class="highlight">
+Grouping function (Pattern: P) {
+  List&lt;Variable&gt; variable_list=sort(extract_variables(P));
+
+  Hashtable &lt;Variable,Set&lt;Variable&gt;&gt; linked = extract_linked_variables(P); // includes transitive closure
+  
+  Grouping g=new Grouping();
+  int count=0;
+  for (Variable v: variable_list) {
+    if (!(belong v g)) {
+       add v and linked.get(v) to g as group identified by count;
+    }
+    count++;
+  }	
+  return g;
+}
+</pre>
+
+<p>First all variables are extracted from the pattern and sorted (based on an alphabetical sort of their uris).  Then, all linked variables are computed, in the form of a hashmap, associating a variable to the variables it is linked with. It is assumed that the transitive closure of this relation is computed here.  Then, each variable (if not already inserted in the grouping) is added to the grouping with the variables it is linked with.</p>
+
+<p>In the absence of <tt>tmpl:linked</tt> attribute, we have as many groups as variables. </p>
+
+<div class="anexample"  id="example-4">
+
+<p>In <a href="#example-1" class="anexample-ref"><span>Example REF</span></a> and <a href="#example-2" class="anexample-ref"><span>Example REF</span></a>,  the grouping is as follows:</p>
+
+<table class="thinborder" >
+<tbody>
+<tr><td><b>groups</b></td><td><b>variables</b></td></tr>
+<tr><td>0</td><td><tt>var:a</tt></td></tr>
+<tr><td>1</td><td><tt>var:b</tt></td></tr>
+</tbody>
+</table>
+
+
+<p>In <a href="#example-3" class="anexample-ref"><span>Example REF</span></a>,  the grouping consists of a single group:</p>
+
+<table class="thinborder">
+<tbody>
+<tr><td><b>groups</b></td><td><b>variables</b></td></tr>
+<tr><td>0</td><td><tt>var:a</tt>, <tt>var:b</tt></td></tr>
+</tbody>
+</table>
+</div>
 </section>
 
 <section id="using">
@@ -595,7 +658,9 @@ endDocument
 
 <section id="errors">
 <h2>Errors</h2>
-UnboundMandatoryVariable
+<p id="UnboundMandatoryVariable">UnboundMandatoryVariable</p>
+
+<p id="IncorrectNumberOfBindingsForGroupVariable">IncorrectNumberOfBindingsForGroupVariable</p>
 </section>
 
 <section id="implementation" class="informative">

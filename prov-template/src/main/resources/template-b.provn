@@ -1,0 +1,12 @@
+document
+  prefix ex <http://example.org/>
+  prefix tmpl <http://openprovenance.org/tmpl#>
+  prefix var <http://openprovenance.org/var#>
+
+  bundle ex:b 
+   agent(var:a, [tmpl:linked='var:b'])
+   entity(var:b)
+   wasAttributedTo(var:b, var:a)
+  endBundle
+endDocument
+

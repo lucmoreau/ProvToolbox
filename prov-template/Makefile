@@ -12,3 +12,7 @@ expand3:
 expand4:
 	../toolbox/target/appassembler/bin/provconvert -infile src/main/resources/template-c.provn -outfile src/main/resources/expanded-a4.provn -bindings src/main/resources/bindings4.provn 
 
+bindings4:
+	../toolbox/target/appassembler/bin/provconvert -infile src/main/resources/bindings4.provn -outfile src/main/resources/bindings4.ttl
+	../toolbox/target/appassembler/bin/provconvert -infile src/main/resources/bindings4.provn -outfile src/main/resources/bindings4.json
+

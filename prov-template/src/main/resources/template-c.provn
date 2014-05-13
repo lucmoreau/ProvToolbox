@@ -1,0 +1,11 @@
+document
+  prefix ex <http://example.org/>
+  prefix var <http://openprovenance.org/var#>
+
+  bundle ex:b 
+   agent(var:a)
+   entity(var:b)
+   wasAttributedTo(var:b, var:a, [prov:type='var:c'])
+  endBundle
+endDocument
+

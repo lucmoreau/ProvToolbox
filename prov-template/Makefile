@@ -9,3 +9,6 @@ expand2:
 expand3:
 	../toolbox/target/appassembler/bin/provconvert -infile src/main/resources/template-b.provn -outfile src/main/resources/expanded-a3.provn -bindings src/main/resources/bindings3.provn 
 
+expand4:
+	../toolbox/target/appassembler/bin/provconvert -infile src/main/resources/template-c.provn -outfile src/main/resources/expanded-a4.provn -bindings src/main/resources/bindings4.provn 
+

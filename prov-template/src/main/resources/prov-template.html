@@ -242,7 +242,7 @@ href="#bib-RFC3987">RFC3987</a></cite>].
 
 <p>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [[RFC2119]].</p>
 
-<p>Examples throughout this document use the PROV-N Provenance Notation [[PROV-N]].</p>
+<p>Examples throughout this document use the PROV-N Provenance Notation [[prov-n]].</p>
 
 
 <p>In this specification, we use the
@@ -361,7 +361,7 @@ In the expanded document, the attribute <tt>tmpl:order</tt> indicates which comb
 
 
 <div class="anexample"  id="example-3">
-<p>In some cases, the cartesian product of possibilities is not desirable. Instance, one wants the values are allowed for each variable, for instance <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for  <tt>var:a</tt>, and <tt>ex:en1</tt>, <tt>ex:en2</tt> for <tt>var:b</tt>. By default, the cartesian product of the values set forms the set of all possibilities to instantiate each statement in the template. Hence, we modify the template of <a href="#example-1" class="anexample-ref"><span>Example REF</span></a> by adding the <tt>tmpl:linked</tt> attribute in the template.</p>
+<p>In some cases, the cartesian product of possibilities is not desirable. For instance, one may want the following values: <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for  <tt>var:a</tt>, and <tt>ex:en1</tt>, <tt>ex:en2</tt> for <tt>var:b</tt>. By default, the cartesian product of the values set forms the set of all possibilities to instantiate each statement in the template. Hence, we modify the template of <a href="#example-1" class="anexample-ref"><span>Example REF</span></a> by adding the <tt>tmpl:linked</tt> attribute in the template.</p>
 <div class="example">
 <pre class="highlight">
 document
@@ -397,6 +397,69 @@ endDocument
 In the expanded document, the attribute <tt>tmpl:order</tt> indicates that a single group of variables is used for the <tt>wasAttributedTo</tt> statement:  it has two possible values (denoted by index 0 and 1).
 </div>
 
+<p>An <dfn>attribute variable</dfn> is a variable that occurs in an attribute-value pair, either in attribute position or in value position.</p>
+
+<p>A <dfn>non-attribute variable</dfn> is a variable that is not an <a>attribute variable</a>.</p>
+
+
+
+<div class="anexample"  id="example-4">
+<p>A template may contain an <a>attribute variable</a>. For instance, <tt>var:c</tt> is an attribute variable occurring in value position, in the attribute-value pair <tt>prov:type='var:c'</tt>.</p>
+
+<div class="example">
+<pre class="highlight">
+document
+ prefix ex &lt;http://example.org&gt;
+ prefix var &lt;http://openprovenance.org/var#&gt;
+
+ bundle ex:b 
+  agent(var:a)
+  entity(var:b)
+  wasAttributedTo(var:b, var:a,[prov:type='var:c'])
+ endBundle
+endDocument
+<pre>
+</div>
+
+<p>The variables occurring in non-attribute position determines the number of instantiations according to the cartesian product. So, 
+following <a href="#example-1" class="anexample-ref"><span>Example REF</span></a>, we consider values 
+<tt>ex:ag1</tt>, <tt>ex:ag2</tt> for <tt>var:a</tt>,
+and <tt>ex:en1</tt>, <tt>ex:en2</tt>, <tt>ex:en3</tt>,
+for <tt>var:b</tt>.  This leads to six different possibilities.  It is
+expect that <tt>var:c</tt> is bound to six different values, one for
+each combination of values for <tt>var:a</tt> and <tt>var:b</tt>.
+However, attributes can be repeated in a statement, so <tt>var:c</tt> should be bound to six groups of values.
+For instance, for the following groups of values
+[[<tt>ex:t1</tt>],
+ [<tt>ex:t2a</tt>,  <tt>ex:t2b</tt>],
+ [<tt>ex:t3</tt>],
+ [<tt>ex:t4</tt>],
+ [<tt>ex:t5a</tt>, <tt>ex:t5b</tt>, <tt>ex:t5c</tt>],
+ [<tt>ex:t6</tt>]], we obtain the following expansion.</p>
+<div class="example">
+<pre class="highlight">
+document
+ prefix ex &lt;http://example.org&gt;
+ prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
+ prefix xsd &lt;http://www.w3.org/2001/XMLSchema&gt;
+ bundle ex:b 
+  agent(ex:ag1,[tmpl:order = "[0]" %% xsd:string])
+  agent(ex:ag2,[tmpl:order = "[1]" %% xsd:string])
+  entity(ex:en1,[tmpl:order = "[0]" %% xsd:string])
+  entity(ex:en2,[tmpl:order = "[1]" %% xsd:string])
+  entity(ex:en3,[tmpl:order = "[2]" %% xsd:string])
+  wasAttributedTo(ex:en1, ex:ag1,[prov:type = 'ex:t1', tmpl:order = "[0, 0]" %% xsd:string])
+  wasAttributedTo(ex:en1, ex:ag2,[prov:type = 'ex:t2a', prov:type = 'ex:t2b', tmpl:order = "[1, 0]" %% xsd:string])
+  wasAttributedTo(ex:en2, ex:ag1,[prov:type = 'ex:t3', tmpl:order = "[0, 1]" %% xsd:string])
+  wasAttributedTo(ex:en2, ex:ag2,[prov:type = 'ex:t4', tmpl:order = "[1, 1]" %% xsd:string])
+  wasAttributedTo(ex:en3, ex:ag1,[prov:type = 'ex:t5a', prov:type = 'ex:t5b', prov:type = 'ex:t5c', tmpl:order = "[0, 2]" %% xsd:string])
+  wasAttributedTo(ex:en3, ex:ag2,[prov:type = 'ex:t6', tmpl:order = "[1, 2]" %% xsd:string])
+ endBundle
+endDocument
+<pre>
+</div>
+</div>
+
 
 </section>
 
@@ -407,7 +470,8 @@ In the expanded document, the attribute <tt>tmpl:order</tt> indicates that a sin
 <section id="grouping">
       <h2>Variable Grouping</h2>
 
-<p>We define a <em>variable group</em>, or <dfn>group</dfn> for short, a set of variables that are expected to change values in lockstep with each other. Groups are identified by a natural number. A <dfn>pattern's grouping of variables</dfn> is a partitioning of the set of variables occurring in a pattern; each partition forms a group and is allocated a natural number.  </p>
+
+<p>We define a <em>variable group</em>, or <dfn>group</dfn> for short, a set of <a>non-attribute variables</a> that are expected to change values in lockstep with each other. Groups are identified by a natural number. A <dfn>pattern's grouping of non-attribute variables</dfn> is a partitioning of the set of variables occurring in a pattern; each partition forms a group and is allocated a natural number.  </p>
 
 <p>A <dfn>binding</dfn> is an association between a variable and some values. If there is a binding for a variable, it is said to be <dfn>bound</dfn>.</p>
 
@@ -435,11 +499,11 @@ Grouping function (Pattern: P) {
 }
 </pre>
 
-<p>First, all variables are extracted from the pattern and sorted (based on an alphabetical sort of their uris).  Then, all linked variables are computed, in the form of a hashmap, associating a variable to the variables it is linked with. It is assumed that the transitive closure of this relation is computed here.  Then, each variable (if not already inserted in the grouping) is added to the grouping with the variables it is linked with. Groups are deterministically identified, starting with value 0.</p>
+<p>First, all <a>non-attribute variables</a> are extracted from the pattern and sorted (by alphabetical order of their uris).  Then, all linked variables are computed, in the form of a hashmap, associating a variable to the variables it is linked with. It is assumed that the transitive closure of this relation is computed here.  Then, each variable (if not already inserted in the grouping) is added to the grouping with the variables it is linked with. Groups are deterministically identified, starting with value 0.</p>
 
 <p>In the absence of <tt>tmpl:linked</tt> attribute, we have as many groups as variables. </p>
 
-<div class="anexample"  id="example-4">
+<div class="anexample"  id="example-5">
 
 <p>In <a href="#example-1" class="anexample-ref"><span>Example REF</span></a> and <a href="#example-2" class="anexample-ref"><span>Example REF</span></a>,  the grouping is as follows:</p>
 
@@ -463,17 +527,76 @@ Grouping function (Pattern: P) {
 </div>
 </section>
 
-<section id="using">
-      <h2>Group Using</h2>
+<section id="group-usage">
+      <h2>Group Usage</h2>
+
+<p>A PROV statement MAY contain a set of <a>non-attribute variables</a>. A statement's <dfn>group usage</dfn> is the list of group identifiers corresponding to these variables; the list of group identifiers is ordered in ascending order. The group usage for a statement without variable is the empty list []. A list is noted by integers separated by commas occurring in square brackets. </p>
+
+<div class="anexample"  id="example-6">
+<p>In <a href="#example-1" class="anexample-ref"><span>Example REF</span></a>, <a href="#example-2" class="anexample-ref"><span>Example REF</span></a>, and <a href="#example-5" class="anexample-ref"><span>Example REF</span></a>,  the only variable in <tt>agent(var:a)</tt> is <tt>var:a</tt>; since <tt>var:a</tt> belongs to group 0, the current statement's group usage is  [0].</p>
+
+<p>Likewise, the only variable in <tt>entity(var:b)</tt> and <tt>var:b</tt> belongs to group 1; so, the group usage is [1].</p>
+
+<p>Finally, the non-attribute variables in <tt>wasAttributedTo(var:b, var:a)</tt> and
+<tt>wasAttributedTo(var:b, var:a, [prov:type='var:c'])</tt>
+are <tt>var:a</tt> and <tt>var:b</tt>, with respective groups 0 and 1. So, the group usage is [0,1].</p>
+
+<p>In <a href="#example-3" class="anexample-ref"><span>Example REF</span></a>,  since there is a single group, group usage is [0] for every statement. </p>
+</tbody>
+</table>
+</div>
 </section>
 
 
 <section id="binding">
       <h2>Binding Structure</h2>
+
+<p>Examples have shown that <a>non-attribute variables</a> belonging to a same group evolve in a lockstep manner, whereas the <a>attribute variables</a> should be bound to as many group of values as the statement they occur in as possible instantiations.</p>
+
+<p>Thus, a <a>non-attribute variable<a> is bound to a list of values, and an <a>attribute variable<a> is bound to a list of list of values.</p>
+
+<p>Since all <a>non-attribute variables</a> of a group <em>g</em> in a set of bindings <em><b>B</b></em> MUST be associated with lists of values having the same length; this length is given by <em>number_of_variable_values(<b>B</b>,g)</em>. Otherwise, it is an error, see
+<a href="#IncorrectNumberOfBindingsForGroupVariable">IncorrectNumberOfBindingsForGroupVariable</a>.</p>
+
+<p>Section xyz specifies how a set of bindings can be expressed as a PROV document. </p>
+
+<div class="anexample"  id="example-7">
+<p>Symbolically, the bindings for <a href="#example-4" class="anexample-ref"><span>Example REF</span></a>, can be expressed as follows:
+
+<table class="thinborder" >
+<tbody>
+<tr><td><b>variable</b></td><td><b>values</b></td></tr>
+<tr><td><tt>var:a</tt></td><td>[<tt>ex:ag1</tt>, <tt>ex:ag2</tt>]</td></tr>
+<tr><td><tt>var:b</tt></td><td>[<tt>ex:en1</tt>, <tt>ex:en2</tt>, <tt>ex:en3</tt>]</td></tr>
+<tr><td><tt>var:c</tt></td><td>[[<tt>ex:t1</tt>],
+ [<tt>ex:t2a</tt>,  <tt>ex:t2b</tt>],
+ [<tt>ex:t3</tt>],
+ [<tt>ex:t4</tt>],
+ [<tt>ex:t5a</tt>, <tt>ex:t5b</tt>, <tt>ex:t5c</tt>],
+ [<tt>ex:t6</tt>]]</td></tr>
+</tbody>
+</table>
+</div>
 </section>
+
+
 
 <section id="indexing">
       <h2>Variable Value Indexing</h2>
+
+<p>Let us consider a set of bindings <em><b>B</b></em> and a statement's <a>group usage</a> [<em>g<sub>1</sub>, ..., g<sub>n</sub></em>], where <em>g<sub>1</sub>, ..., g<sub>n</sub></em> are group identifiers, with <em>n &geq;1</em> (meaning that the statement contains at least one <a>non-attribute variable</a>). A <dfn>variable value index</dfn> is a list [<em>i<sub>1</sub>, ..., i<sub>n</sub></em>] of naturals of length <em>n</em>, such that each <em>0 &leq; i<sub>j</sub> &lt; number_of_variable_values(<b>B</b>, g<sub>j</sub>)</em>.</p>
+
+<p>A <a>variable value index</a> for a <a>group usage</a> and a set of bindings <em><b>B</b></em> denotes a particular combination of variable values. </p>
+
+
+<div class="anexample"  id="example-8">
+<p>Let us consider the bindings   <a href="#example-8" class="anexample-ref"><span>Example REF</span></a>.</p>
+
+<p>The first statement of expansion <a href="#example-4" class="anexample-ref"><span>Example REF</span></a> has index [0] for group usage xyz, denoting ...</p>
+
+<p>The second statement of expansion <a href="#example-4" class="anexample-ref"><span>Example REF</span></a> has index [0] for group usage xyz, denoting ...</p>
+</div>
+
 </section>
 
 
@@ -504,117 +627,38 @@ Basic algorithm:
 </li>
 </ol>
 
+
+
+<table class="thinborder" style="margin-left: auto; margin-right: auto;">
+<caption id="variable-table"><span>Table xx</span> Kinds of parameters and variables supported by the templating system</caption>
+<tbody>
+<tr><td><b>expanded instance parameter</b></td><td><b>definition</b></td></tr>
+<tr><td><tt>tmpl:order</tt></td><td>an attribute added to a statement by the expansion process; <br>its value is the index used to compute the actual binding that defined the current instantiation.</td></tr>
+</tbody>
+</table>
+
+
 </section>
 
-<section id="examples">
-      <h2>Examples</h2>
-
-<pre class="example">
-Template:
-  entity(var:a)
-  entity(var:b)
-  wasAttributedTo(var:b, var:a)
-Bindings:
-  var:a = [uri1, uri2, uri3]
-  var:b = [uriA, uriB]
-
-groups = { 1: [var:a], 2: [var:b] }
-
-statement 1:
-  variables: var:a
-  uses: group 1 (length 3)
-  index: [(1),(2),(3)]
-  write:
-    entity(uri1, [tmpl:order="1"])
-    entity(uri2, [tmpl:order="2"])
-    entity(uri3, [tmpl:order="3"])
-
-statement 2:
-  variables: var:b
-  uses: group 2 (length 2)
-  index: [(1),(2)]
-  write:
-    entity(uriA, [tmpl:order="1"])
-    entity(uriB, [tmpl:order="2"])
-
-statement 3:
-  variables: var:b, var:a
-  uses: group 2 (length 2), group 1 (length 3)
-  index: [(1,1),(1,2)(1,3),(2,1),(2,2),(2,3)]
-  write:
-    wasAttributedTo(uriA, uri1, [tmpl:order="1,1"])
-    wasAttributedTo(uriA, uri2, [tmpl:order="1,2"])
-    wasAttributedTo(uriA, uri3, [tmpl:order="1,3"])
-    wasAttributedTo(uriB, uri1, [tmpl:order="2,1"])
-    wasAttributedTo(uriB, uri2, [tmpl:order="2,2"])
-    wasAttributedTo(uriB, uri3, [tmpl:order="2,3"])
-</pre>
-
-<pre class="example">
-Template:
-  entity(var:a, [app:group='1'])
-  entity(var:b, [app:group='1'])
-  wasAttributedTo(var:b, var:a)
-Bindings:
-  var:a = [uri1, uri2]
-  var:b = [uriA, uriB]
-groups = { 1: [var:a, var:b] }
-statement 1:
-  variables: var:a
-  uses: group 1 (length 2)
-  index: [(1),(2)]
-  write:
-    entity(uri1, [tmpl:order="1"])
-    entity(uri2, [tmpl:order="2"])
-
-statement 2:
-  variables: var:b
-  uses: group 2 (length 2)
-  index: [(1),(2)]
-  write:
-    entity(uriA, [tmpl:order="1"])
-    entity(uriB, [tmpl:order="2"])
-
-statement 3:
-  variables: var:b, var:a
-  uses: group 1 (length 2)
-  index: [(1),(2)]
-  write:
-    wasAttributedTo(uriA, uri1, [tmpl:order="1"])
-    wasAttributedTo(uriB, uri2, [tmpl:order="2"])
-</pre>
-
-<pre class="example">
-Template:
-  entity(var:x)
-  agent(var:ag)
-  wasAttributedTo(var:x, var:ag, [ my:attr='var:a' ])
-Bindings:
-  var:x = [uri1, uri2, uri2]
-  var:ag = [uriA, uriB]
-  var:a = [[attr1], [attr2], [attr3], [attr4], [attr5], [attr6a, attr6b]]
-
-Expands to:
-
-  entity(uri1, [tmpl:order="1"])
-  entity(uri2, [tmpl:order="2"])
-  entity(uri3, [tmpl:order="3"])
-
-  entity(uriA, [tmpl:order="1"])
-  entity(uriB, [tmpl:order="2"])
-
-  wasAttributedTo(uri1, uriA, [my:attr='attr1', tmpl:order="1,1"])
-  wasAttributedTo(uri1, uriB, [my:attr='attr2', tmpl:order="1,2"])
-  wasAttributedTo(uri2, uriA, [my:attr='attr3', tmpl:order="2,1"])
-  wasAttributedTo(uri2, uriB, [my:attr='attr4', tmpl:order="2,2"])
-  wasAttributedTo(uri3, uriA, [my:attr='attr5', tmpl:order="3,1"])
-  wasAttributedTo(uri3, uriB, [my:attr='attr6a', my:attr='attr6b', tmpl:order="3,2"])
-</pre>
-</section>
 
 
 <section id="environment">
       <h2>Environment</h2>
+
+
+<table class="thinborder" style="margin-left: auto; margin-right: auto;">
+<caption id="variable-table"><span>Table xx</span> Kinds of parameters and variables supported by the templating system</caption>
+<tbody>
+<tr><td><b>binding parameter</b></td><td><b>definition</b></td></tr>
+<tr><td><tt>tmpl:value_0</tt></td><td> an attribute ...</td></tr>
+<tr><td><tt>tmpl:value_1</tt></td><td> an attribute ...</td></tr>
+<tr><td><tt>tmpl:value_</tt><em>n</em></td><td> an attribute ...</td></tr>
+<tr><td><tt>tmpl:2dvalue_0_0</tt></td><td> an attribute ...</td></tr>
+<tr><td><tt>tmpl:2dvalue_<em>x</em>_<em>y</em></tt></td><td> an attribute ...</td></tr>
+</tbody>
+</table>
+
+
 
 <div class="example">
 <pre>
@@ -635,25 +679,7 @@ endDocument
 
 
 
-<section id="variables">
-      <h2>Variables</h2>
 
-
-<table class="thinborder" style="margin-left: auto; margin-right: auto;">
-<caption id="variable-table"><span>Table xx</span> Kinds of parameters and variables supported by the templating system</caption>
-<tbody>
-<tr><td><b>expanded instance parameter</b></td><td><b>definition</b></td></tr>
-<tr><td><tt>tmpl:order</tt></td><td>an attribute added to a statement by the expansion process to specify the index used to compute the actual binding that defined the current instantiation.</td></tr>
-<tr><td><b>binding parameter</b></td><td><b>definition</b></td></tr>
-<tr><td><tt>tmpl:value_0</tt></td><td> an attribute ...</td></tr>
-<tr><td><tt>tmpl:value_1</tt></td><td> an attribute ...</td></tr>
-<tr><td><tt>tmpl:value_</tt><em>n</em></td><td> an attribute ...</td></tr>
-<tr><td><tt>tmpl:2dvalue_0_0</tt></td><td> an attribute ...</td></tr>
-<tr><td><tt>tmpl:2dvalue_<em>x</em>_<em>y</em></tt></td><td> an attribute ...</td></tr>
-</tbody>
-</table>
-
-</section>
 
 
 <section id="errors">

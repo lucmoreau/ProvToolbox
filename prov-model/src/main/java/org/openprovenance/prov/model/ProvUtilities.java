@@ -437,7 +437,7 @@ public class ProvUtilities {
   	    LangString istring = (LangString) val;
   	    return "\"" + istring.getValue() + 
   		    ((istring.getLang()==null) ? "\"" : "\"@" + istring.getLang())
-  		    + " %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType);
+  		    + ((xsdType==null)? "" : " %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType));
   	} else if (val instanceof QualifiedName) {
   	    QualifiedName qn = (QualifiedName) val;	    
   	    return "'" + Namespace.qualifiedNameToStringWithNamespace(qn) + "'";
@@ -447,7 +447,7 @@ public class ProvUtilities {
  		// return "\"\"\"" + val + "\"\"\" %% " + qnameToString(xsdType);
  		return "\"\"\"" + escape(s) + "\"\"\"" ;
  	    } else {
- 		return "\"" + escape(s) + "\" %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType);
+ 		return "\"" + escape(s) + ((xsdType==null)? "" : "\" %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType));
  	    }
   	} else {
  	    // We should never be here!

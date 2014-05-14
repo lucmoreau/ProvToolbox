@@ -49,7 +49,7 @@ public class Label extends TypedValue implements Equals, HashCode, ToString,
     @Override
     public String toNotationString() {
 	return DOMProcessing.qualifiedNameToString(getElementName()) + " = "
-		+ ProvUtilities.valueToNotationString(getValue(), getType());
+		+ ProvUtilities.valueToNotationString(getValue(), null); //getType());
     }
 
 }

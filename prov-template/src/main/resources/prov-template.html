@@ -3,7 +3,7 @@
   <head>
     <title>PROV-TEMPLATE: A Template System for PROV Documents</title>
     <meta charset='utf-8'>
-    <script src='http://www.w3.org/Tools/respec/respec-w3c-common'
+    <script src='https://www.w3.org/Tools/respec/respec-w3c-common'
             async class='remove'></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" class="remove"></script>
@@ -176,7 +176,7 @@ table.thinborder td {
 Generating provenance compatible with the PROV
 data model [[prov-dm]] remains challenging. Indeed, all serializations of PROV, whether 
 RDF [[prov-o]],  XML [[prov-xml]],  text [[prov-n]], or JSON
-[[prov-json]] have got their own syntactic quirks, which makes them
+[[prov-json]] have got their own syntactic quirks, which make them
 difficult to generate directly. Likewise, specialized toolkits such as
 ProvToolbox and ProvPy require non trivial programming expertise.
 </p>
@@ -190,7 +190,7 @@ pattern can be instantiated multiple times by providing bindings for
 these variables.
 <li> It allows a decoupling of the code that instruments the
 application and the provenance generation component, the latter being
-handled automatically by means of patterns.
+handled automatically by means of pattern expansion.
 <li> To avoid the proliferation of languages and serializations, patterns and bindings are themselves
 expressed as PROV documents, allowing tools to be applied to them, to
 analyse, check or validate them.
@@ -224,12 +224,12 @@ analyse, check or validate them.
     <td><tt>http://openprovenance.org/vargen#</tt></td>
     <td>The namespace for template gensym variables</td></tr>
 <tr><td><tt>prov</tt></td><td><tt>http://www.w3.org/ns/prov#</tt></td><td>The PROV namespace</td></tr>
-<tr><td><tt>xsd</tt></td><td><tt>http://www.w3.org/TR/xmlschema11-2/#</tt></td><td>The XSD namespace</td></tr>
+<tr><td><tt>xsd</tt></td><td><tt>http://www.w3.org/2001/XMLSchema#</tt></td><td>The XSD namespace</td></tr>
 </tbody>
 </table>
 
 <p>All other namespace prefixes are used in examples only. In
-particular, IRIs starting with <tt>http://example.org</tt> represent
+particular, IRIs starting with <tt>http://example.org/</tt> represent
 some application-dependent IRI [<cite><a class="bibref"
 href="#bib-RFC3987">RFC3987</a></cite>].
 </section>
@@ -242,7 +242,7 @@ href="#bib-RFC3987">RFC3987</a></cite>].
 
 <p>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [[RFC2119]].</p>
 
-<p>Examples throughout this document use the PROV-N Provenance Notation [[prov-n]].</p>
+<p>Unless otherwise stated, examples throughout this document use the PROV-N Provenance Notation [[prov-n]].</p>
 
 
 <p>In this specification, we use the
@@ -268,10 +268,10 @@ and the local part. </p>
 </ul>
 
 
-<p>Table 1 summarizes the syntax and meaning of variables and attributes accepted in a PROV template. Their roles will be discussed in detail in the expansion algorithm.</p>
+<p>Table 2 summarizes the syntax and meaning of variables and attributes accepted in a PROV template. Their roles will be discussed in detail in the expansion algorithm.</p>
 
 <table class="thinborder" style="margin-left: auto; margin-right: auto;">
-<caption id="variable-table"><span>Table 1</span> Kinds of parameters and variables supported by the templating system</caption>
+<caption id="variable-table"> Kinds of parameters and variables supported by the templating system</caption>
 <tbody>
 <tr><td><b>template variable</b></td><td><b>definition</b></td></tr>
 <tr><td><tt>var:<em>x</em></tt></td><td>A variable <em>x</em> to be
@@ -291,7 +291,7 @@ generated. If in optional position of a statement (see
 statement, a unique qualified name (uuid)  is 
 generated.</td></tr>
 <tr><td><b>template parameter</b></td><td><b>definition</b></td></tr>
-<tr><td><tt>tmpl:linked</tt></td><td>An attribute associated with a value that MUST be a qualified name also acting as a template variable <tt>v2</tt> (with either <tt>var</tt> or <tt>vargen</tt> namespace prefix). Its presence in a term with identifier <tt>v1</tt>  indicates that the variable <tt>v2</tt>  changes value synchronously with the value of <tt>v1</tt>.</td></tr>
+<tr><td><tt>tmpl:linked</tt></td><td>An attribute associated with a value that MUST be a qualified name also acting as a template variable <tt>v2</tt> (with either <tt>var</tt> or <tt>vargen</tt> namespace prefix). Its presence in a term with identifier <tt>v1</tt>  indicates that the variable <tt>v2</tt>  changes value synchronously with <tt>v1</tt>.</td></tr>
 <tr><td><tt>tmpl:label</tt></td><td>An attribute associated with a value that MUST be a qualified name  <tt>var:v</tt> also acting as a template variable. If bound, variable <tt>var:v</tt> MUST be bound to <a href="http://www.w3.org/TR/xmlschema11-2/#string"><span class="name">xsd:string</span></a> values. The expanded current term will contain  a <tt>prov:label</tt> for each value.</td></tr>
 <tr><td><tt>tmpl:time</tt></td><td>An attribute associated with a value that MUST be a qualified name  <tt>var:<em>v</em></tt> also acting as a template variable. This attribute may only occur in a Generation, Usage, Invalidation, Start, or End term. If <tt>var:<em>v</em></tt> is bound, variable <tt>var:<em>v</em></tt> MUST be bound to <a href="http://www.w3.org/TR/xmlschema11-2/#dateTime"><span class="name">xsd:dateTime</span></a> values. The expanded current term will be provided the corresponding time information.</td></tr>
 <tr><td><tt>tmpl:startTime</tt></td><td>An attribute associated with a value that MUST be a qualified name  <tt>var:<em>v</em></tt> also acting as a template variable. This attribute may only occur in an Activity term. If <tt>var:<em>v</em></tt> is bound, variable <tt>var:<em>v</em></tt> MUST be bound to <a href="http://www.w3.org/TR/xmlschema11-2/#dateTime"><span class="name">xsd:dateTime</span></a> values. The expanded current activity will be provided the corresponding start time information.</td></tr>
@@ -304,7 +304,7 @@ generated.</td></tr>
 <div class="example">
 <pre class="highlight">
 document
- prefix ex &lt;http://example.org&gt;
+ prefix ex &lt;http://example.org/&gt;
  prefix var &lt;http://openprovenance.org/var#&gt;
 
  bundle ex:b 
@@ -319,9 +319,8 @@ With the following values, <tt>ex:ag</tt> and <tt>ex:en</tt>, for <tt>var:a</tt>
 <div class="example">
 <pre class="highlight">
 document
- prefix ex &lt;http://example.org&gt;
+ prefix ex &lt;http://example.org/&gt;
  prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
- prefix xsd &lt;http://www.w3.org/2001/XMLSchema&gt;
  bundle ex:b 
   agent(ex:ag,[tmpl:order = "[0]" %% xsd:string])
   entity(ex:en,[tmpl:order = "[0]" %% xsd:string])
@@ -330,16 +329,16 @@ document
 endDocument
 <pre>
 </div>
+<p>The role of the attribute <tt>tmpl:order</tt> is explained below.</p>
 </div>
 
 <div class="anexample"  id="example-2">
-<p>Multiple values are allowed for each variable, for instance <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for  <tt>var:a</tt>, and <tt>ex:en1</tt>, <tt>ex:en2</tt>, <tt>ex:en3</tt>, for <tt>var:b</tt>. By default, the cartesian product of the values set forms the set of all possibilities to instantiate each statement in the template. We obtain:</p>
+<p>Multiple values are allowed for each variable, for instance <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for  <tt>var:a</tt>, and <tt>ex:en1</tt>, <tt>ex:en2</tt>, <tt>ex:en3</tt>, for <tt>var:b</tt>. By default, the cartesian product of the value sets forms the set of all possibilities to instantiate each statement in the template. We obtain:</p>
 <div class="example">
 <pre class="highlight">
 document
- prefix ex &lt;http://example.org&gt;
+ prefix ex &lt;http://example.org/&gt;
  prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
- prefix xsd &lt;http://www.w3.org/2001/XMLSchema&gt;
  bundle ex:b 
   agent(ex:ag1,[tmpl:order = "[0]" %% xsd:string])
   agent(ex:ag2,[tmpl:order = "[1]" %% xsd:string])
@@ -356,20 +355,20 @@ document
 endDocument
 <pre>
 </div>
-In the expanded document, the attribute <tt>tmpl:order</tt> indicates which combination of variable values is used to instantiate the current statement.  In the <tt>wasAttributedTo</tt> statement, it indicates that two independent groups of variables are considered.  There are two possible values (denoted by index 0 and 1) for the first group (i.e., variable <tt>var:b</tt>) and three possible values (denoted by index 0, 1, and 2) for the second group (i.e., variable <tt>var:a</tt>).
+In the expanded document, the attribute <tt>tmpl:order</tt> indicates which combination of variable values is used to instantiate the current statement.  In the <tt>wasAttributedTo</tt> statement, it indicates that two independent groups of variables are considered.  There are two possible values (denoted by index 0 and 1) for the first group (i.e., variable <tt>var:a</tt>) and three possible values (denoted by index 0, 1, and 2) for the second group (i.e., variable <tt>var:b</tt>).
 </div>
 
 
 <div class="anexample"  id="example-3">
-<p>In some cases, the cartesian product of possibilities is not desirable. For instance, one may want the following values: <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for  <tt>var:a</tt>, and <tt>ex:en1</tt>, <tt>ex:en2</tt> for <tt>var:b</tt>. By default, the cartesian product of the values set forms the set of all possibilities to instantiate each statement in the template. Hence, we modify the template of <a href="#example-1" class="anexample-ref"><span>Example REF</span></a> by adding the <tt>tmpl:linked</tt> attribute in the template.</p>
+<p>In some cases, the cartesian product of possibilities is not desirable. For instance, one may want the following values: <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for  <tt>var:a</tt>, and <tt>ex:en1</tt>, <tt>ex:en2</tt> for <tt>var:b</tt>. By default, the cartesian product of the value sets forms the set of all possibilities to instantiate each statement in the template. Instead, here, we want <tt>var:b</tt> to be associated with <tt>ex:en1</tt> whenever <tt>var:a</tt> is associated with <tt>ex:ag1</tt>. Hence, we modify the template of <a href="#example-1" class="anexample-ref"><span>Example REF</span></a> by adding the <tt>tmpl:linked</tt> attribute in the template, which indicates that variables <tt>var:b</tt>, <tt>var:a</tt> belong to a same group, change value in lockstep manner.</p>
 <div class="example">
 <pre class="highlight">
 document
- prefix ex &lt;http://example.org&gt;
+ prefix ex &lt;http://example.org/&gt;
  prefix var &lt;http://openprovenance.org/var#&gt;
 
  bundle ex:b 
-  agent(var:a)
+  agent(var:a, [tmpl:linked='var:b'])
   entity(var:b)
   wasAttributedTo(var:b, var:a)
  endBundle
@@ -380,9 +379,8 @@ The expansion now looks like the following. We see that the value <tt>ex:en1</tt
 <div class="example">
 <pre class="highlight">
 document
- prefix ex &lt;http://example.org&gt;
+ prefix ex &lt;http://example.org/&gt;
  prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
- prefix xsd &lt;http://www.w3.org/2001/XMLSchema&gt;
  bundle ex:b 
   agent(ex:ag1,[tmpl:order = "[0]" %% xsd:string])
   agent(ex:ag2,[tmpl:order = "[1]" %% xsd:string])
@@ -397,23 +395,30 @@ endDocument
 In the expanded document, the attribute <tt>tmpl:order</tt> indicates that a single group of variables is used for the <tt>wasAttributedTo</tt> statement:  it has two possible values (denoted by index 0 and 1).
 </div>
 
+<p>As we describe the expansion algorithm, it is useful to distinguish two types of variables. </p>
+
 <p>A <dfn>group variable</dfn> is a variable that occurs in influencer or influencee position, in secondary position (e.g., plan in association, activity in delegation and derivation), or in mandatory identifier position (in entity, agent, or activity).    The idea of a <a>group variable</a> is that it is instantiated as part of the cartesian product of all possible groups in the current statement. </p>
 
 
-<p>An <dfn>statement-level variable</dfn> is a variable that occurs in an attribute-value pair, either in attribute position or in value position, or that occurs in optional identifier position. The idea of a <a>statement-level variable</a> is that it is instantiated after <a title="group variable">group variables</a> have been instantiated, as part of one possible combination of the cartesian product of the possible groups in the current statement. </p>
+<p>An <dfn>statement-level variable</dfn> is a variable that occurs in an attribute-value pair (either in attribute position or in value position), or that occurs in optional identifier position. While the cartesian product of a statement's applicable groups dictates the number of instances of that statement, for each such statement we will find a value of <a title="statement-level variable">statement-level variables</a>. </p>
+
+<p>A <dfn>bundle variable</dfn> is a variable that occurs as identifier of a bundle.  A <a>bundle variable</a> is intended to be associated with one value only. </p>
+
 
 
 <p>For a template to be valid, a variable MUST NOT be both an <a>statement-level variable</a> and <a>group variable</a>.</p>
 
+<p>A <a>bundle variable</a> MAY also be a <a>group variable</a> in some statement, but a <a>bundle variable</a> MUST NOT be a <a>statement-level variable</a>.</p>
+
 
 
 <div class="anexample"  id="example-4">
-<p>A template may contain an <a>statement-level variable</a>. For instance, <tt>var:c</tt> is an statement-level variable occurring in value position, in the attribute-value pair <tt>prov:type='var:c'</tt>.</p>
+<p>A template may contain a <a>statement-level variable</a>. For instance, <tt>var:c</tt> is a <a>statement-level variable</a> occurring in value position, in the attribute-value pair <tt>prov:type='var:c'</tt>.</p>
 
 <div class="example">
 <pre class="highlight">
 document
- prefix ex &lt;http://example.org&gt;
+ prefix ex &lt;http://example.org/&gt;
  prefix var &lt;http://openprovenance.org/var#&gt;
 
  bundle ex:b 
@@ -425,12 +430,12 @@ endDocument
 <pre>
 </div>
 
-<p>The variables occurring in non-attribute position determines the number of instantiations according to the cartesian product. So, 
+<p>The <a title="group variable">group variables</a> determine the number of instantiations of a given statement according to their group's cartesian product. So, 
 following <a href="#example-1" class="anexample-ref"><span>Example REF</span></a>, we consider values 
 <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for <tt>var:a</tt>,
 and <tt>ex:en1</tt>, <tt>ex:en2</tt>, <tt>ex:en3</tt>,
 for <tt>var:b</tt>.  This leads to six different possibilities.  It is
-expect that <tt>var:c</tt> is bound to six different values, one for
+expected that <tt>var:c</tt> is bound to six different values, one for
 each combination of values for <tt>var:a</tt> and <tt>var:b</tt>.
 However, attributes can be repeated in a statement, so <tt>var:c</tt> should be bound to six groups of values.
 For instance, for the following groups of values
@@ -443,9 +448,8 @@ For instance, for the following groups of values
 <div class="example">
 <pre class="highlight">
 document
- prefix ex &lt;http://example.org&gt;
+ prefix ex &lt;http://example.org/&gt;
  prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
- prefix xsd &lt;http://www.w3.org/2001/XMLSchema&gt;
  bundle ex:b 
   agent(ex:ag1,[tmpl:order = "[0]" %% xsd:string])
   agent(ex:ag2,[tmpl:order = "[1]" %% xsd:string])
@@ -482,12 +486,12 @@ endDocument
 <p>All <a title="group variable">group variables</a> belonging to a given group MUST be bound to the same number of values, since their values have to change in lockstep manner. If this condition is not satisfied, it is an error situation (see error
 <a href="#IncorrectNumberOfBindingsForGroupVariable">IncorrectNumberOfBindingsForGroupVariable</a>).</p>
 
-<p>An <a>group variable</a> SHALL NOT belong to more than one group.</p>
+<p>A <a>group variable</a> SHALL NOT belong to more than one group.</p>
 
 <p>The algorithm to deterministically create a  grouping of variables for a pattern P is as follows.</p>
 <pre class="highlight">
 Grouping function (Pattern: P) {
-  List&lt;Variable&gt; variable_list=sort(extract_individual_variables(P));
+  List&lt;Variable&gt; variable_list=sort(extract_group_variables(P));
 
   Hashtable &lt;Variable,Set&lt;Variable&gt;&gt; linked = extract_linked_variables(P); // includes transitive closure
   
@@ -503,7 +507,7 @@ Grouping function (Pattern: P) {
 }
 </pre>
 
-<p>First, all <a title="group variable">group variables</a> are extracted from the pattern and sorted (by alphabetical order of their uris).  Then, all linked variables are computed, in the form of a hashmap, associating a variable to the variables it is linked with. It is assumed that the transitive closure of this relation is computed here.  Then, each variable (if not already inserted in the grouping) is added to the grouping with the variables it is linked with. Groups are deterministically identified, starting with value 0.</p>
+<p>First, all <a title="group variable">group variables</a> are extracted from the pattern and sorted by alphabetical order of their uris.  Then, all linked variables are computed, in the form of a hashmap, associating a variable to the variables it is linked with. It is assumed that the transitive closure of this relation is computed here.  Then, each variable (if not already inserted in the grouping) is added to the grouping with the variables it is linked with. Groups are deterministically identified, starting with value 0. This procedure is deterministic since it relies on the alphabetical sorting of <a title="group variable">group variables</a>.</p>
 
 <p>In the absence of <tt>tmpl:linked</tt> attribute, we have as many groups as variables. </p>
 
@@ -682,7 +686,6 @@ this is possible with the current representation.
 <p>The set of bindings in <a href="#example-7" class="anexample-ref"><span>Example REF</span></a> can be expressed as a PROV document as follows:</p>
 <pre class="highlight">
 document
- prefix xsd &lt;http://www.w3.org/2001/XMLSchema&gt;
  prefix var &lt;http://openprovenance.org/var#&gt;
  prefix ex &lt;http://example.org/&gt;
  prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;

@@ -27,6 +27,8 @@
                     company:    "University of Southampton",
                     companyURL: "http://www.ecs.soton.ac.uk/" }
           ],
+      postProcess: [updateSectionRefs, updateDfn, updateFigures],
+
       localBiblio:  {
       "prov-json": {
       title:    "The PROV-JSON Serialization. A JSON Representation for the PROV Data Model"
@@ -50,6 +52,7 @@
           //wgPublicList: "public-animals",
           //wgPatentURI:  "http://www.w3.org/2004/01/pp-impl/424242/status",
       };
+
     </script>
 
 
@@ -57,6 +60,7 @@
 $(document).ready(function(){
 // if glossary is in a string:
   //      $('#glossary_div').html(glossary_string)
+        updateFigCaptions();
         updateFigCaptions();
         updateCaptions();
         updateExamples();
@@ -258,7 +262,7 @@ and the local part. </p>
 </section>
 
 <section id="template-definition">
- <h2>Template Definition</h2>
+ <h2>Template Definition and Examples</h2>
 
 <p>A <dfn>PROV-template</dfn> is a PROV document that:
 <ul>
@@ -268,36 +272,6 @@ and the local part. </p>
 </ul>
 
 
-<p>Table 2 summarizes the syntax and meaning of variables and attributes accepted in a PROV template. Their roles will be discussed in detail in the expansion algorithm.</p>
-
-<table class="thinborder" style="margin-left: auto; margin-right: auto;">
-<caption id="variable-table"> Kinds of parameters and variables supported by the templating system</caption>
-<tbody>
-<tr><td><b>template variable</b></td><td><b>definition</b></td></tr>
-<tr><td><tt>var:<em>x</em></tt></td><td>A variable <em>x</em> to be
-replaced by its value according to the expansion algorithm. If no
-binding is found, the following rules are applied.  If the variable occurs in attribute position, the
-attribute is dropped. If in optional position of a statement (see
-[[prov-n]], <a href="http://www.w3.org/TR/prov-n/#prov-n-optionals">section
-2.4</a>), the variable is dropped. If in mandatory position of a
-statement, it is an error situation (see error
-<a href="#UnboundMandatoryVariable">UnboundMandatoryVariable</a>). </td></tr>
-<tr><td><tt>vargen:<em>x</em></tt></td><td>A variable <em>x</em> to be
-replaced by its value according to the expansion algorithm. If no
-binding is found, the following rules are applied. If the variable occurs in attribute position, a unique qualified name (uuid)  is 
-generated. If in optional position of a statement (see
-[[prov-n]], <a href="http://www.w3.org/TR/prov-n/#prov-n-optionals">section
-2.4</a>), the variable is dropped. If in mandatory position of a
-statement, a unique qualified name (uuid)  is 
-generated.</td></tr>
-<tr><td><b>template parameter</b></td><td><b>definition</b></td></tr>
-<tr><td><tt>tmpl:linked</tt></td><td>An attribute associated with a value that MUST be a qualified name also acting as a template variable <tt>v2</tt> (with either <tt>var</tt> or <tt>vargen</tt> namespace prefix). Its presence in a term with identifier <tt>v1</tt>  indicates that the variable <tt>v2</tt>  changes value synchronously with <tt>v1</tt>.</td></tr>
-<tr><td><tt>tmpl:label</tt></td><td>An attribute associated with a value that MUST be a qualified name  <tt>var:v</tt> also acting as a template variable. If bound, variable <tt>var:v</tt> MUST be bound to <a href="http://www.w3.org/TR/xmlschema11-2/#string"><span class="name">xsd:string</span></a> values. The expanded current term will contain  a <tt>prov:label</tt> for each value.</td></tr>
-<tr><td><tt>tmpl:time</tt></td><td>An attribute associated with a value that MUST be a qualified name  <tt>var:<em>v</em></tt> also acting as a template variable. This attribute may only occur in a Generation, Usage, Invalidation, Start, or End term. If <tt>var:<em>v</em></tt> is bound, variable <tt>var:<em>v</em></tt> MUST be bound to <a href="http://www.w3.org/TR/xmlschema11-2/#dateTime"><span class="name">xsd:dateTime</span></a> values. The expanded current term will be provided the corresponding time information.</td></tr>
-<tr><td><tt>tmpl:startTime</tt></td><td>An attribute associated with a value that MUST be a qualified name  <tt>var:<em>v</em></tt> also acting as a template variable. This attribute may only occur in an Activity term. If <tt>var:<em>v</em></tt> is bound, variable <tt>var:<em>v</em></tt> MUST be bound to <a href="http://www.w3.org/TR/xmlschema11-2/#dateTime"><span class="name">xsd:dateTime</span></a> values. The expanded current activity will be provided the corresponding start time information.</td></tr>
-<tr><td><tt>tmpl:endTime</tt></td><td>An attribute associated with a value that MUST be a qualified name  <tt>var:<em>v</em></tt> also acting as a template variable. This attribute may only occur in an Activity term. If <tt>var:<em>v</em></tt> is bound, variable <tt>var:<em>v</em></tt> MUST be bound to <a href="http://www.w3.org/TR/xmlschema11-2/#dateTime"><span class="name">xsd:dateTime</span></a> values. The expanded current activity will be provided the corresponding end time information.</td></tr>
-</tbody>
-</table>
 
 <div class="anexample" id="example-1">
 <p>The following template contains two variables <tt>var:a</tt> and <tt>var:b</tt>.</p>
@@ -481,10 +455,11 @@ endDocument
 
 <p>We define a <dfn>group of variables</dfn>, or <dfn>group</dfn> for short, as a set of <a title="group variable">group variables</a> that are expected to change values in lockstep with each other. Groups are identified by a natural number. A <dfn>pattern's grouping of group variables</dfn> is a partitioning of the set of variables occurring in a pattern; each partition forms a group and is allocated a natural number.  </p>
 
-<p>A <dfn>binding</dfn> is an association between a variable and some values. If there is a binding for a variable, it is said to be <dfn>bound</dfn>.</p>
+<p>A <dfn>binding</dfn> is an association between a variable and some values. If there is a binding for a variable, the variable is said to be <dfn>bound</dfn>.
+If there is no binding for a variable, the variable is said to be <dfn>unbound</dfn>.</p>
 
 <p>All <a title="group variable">group variables</a> belonging to a given group MUST be bound to the same number of values, since their values have to change in lockstep manner. If this condition is not satisfied, it is an error situation (see error
-<a href="#IncorrectNumberOfBindingsForGroupVariable">IncorrectNumberOfBindingsForGroupVariable</a>).</p>
+<a>IncorrectNumberOfBindingsForGroupVariable</a>).</p>
 
 <p>A <a>group variable</a> SHALL NOT belong to more than one group.</p>
 
@@ -543,9 +518,9 @@ Grouping function (Pattern: P) {
 <div class="anexample"  id="example-6">
 <p>In <a href="#example-1" class="anexample-ref"><span>Example REF</span></a>, <a href="#example-2" class="anexample-ref"><span>Example REF</span></a>, and <a href="#example-5" class="anexample-ref"><span>Example REF</span></a>,  the only variable in <tt>agent(var:a)</tt> is <tt>var:a</tt>; since <tt>var:a</tt> belongs to group 0, the current statement's group usage is  [0].</p>
 
-<p>Likewise, the only variable in <tt>entity(var:b)</tt> and <tt>var:b</tt> belongs to group 1; so, the group usage is [1].</p>
+<p>Likewise, the only variable in <tt>entity(var:b)</tt> is <tt>var:b</tt>, which belongs to group 1; so, the group usage is [1].</p>
 
-<p>Finally, the group variables in <tt>wasAttributedTo(var:b, var:a)</tt> and
+<p>Finally, the <a title="group variable">group variables</a> in <tt>wasAttributedTo(var:b, var:a)</tt> and
 <tt>wasAttributedTo(var:b, var:a, [prov:type='var:c'])</tt>
 are <tt>var:a</tt> and <tt>var:b</tt>, with respective groups 0 and 1. So, the group usage is [0,1].</p>
 
@@ -561,12 +536,12 @@ are <tt>var:a</tt> and <tt>var:b</tt>, with respective groups 0 and 1. So, the g
 
 <p>Examples have shown that <a title="group variable">group variables</a> belonging to a same group evolve in a lockstep manner, whereas the <a title="statement-level variable">statement-level variables</a> should be bound to as many group of values as the number of possible instantiations of the statement they occur in.</p>
 
-<p>Thus, an <a>group variable</a> is bound to a list of values, and an <a>statement-level variable</a> is bound to a list of list of values.</p>
+<p>A <a>group variable</a> or a <a>statement-level variable</a> occurring in optional identifier position is bound to a list of values. A <a>bundle variable</a> is bound to a single value (i.e. a list of length 1). A <a>statement-level variable</a> (not occurring optional identifier position) is bound to a <em>list of</em> list of values: this allows a given attributes to be have 0, 1, or more occurrences in a given statement. </p>
 
 <p>Since all <a title="group variable">group variables</a> of a group <em>g</em> in a set of bindings <em><b>B</b></em> MUST be associated with lists of values having the same length; this length is given by <em>number_of_variable_values(<b>B</b>,g)</em>. Otherwise, it is an error, see
-<a href="#IncorrectNumberOfBindingsForGroupVariable">IncorrectNumberOfBindingsForGroupVariable</a>.</p>
+<a>IncorrectNumberOfBindingsForGroupVariable</a>.</p>
 
-<p>Section xyz specifies how a set of bindings can be expressed as a PROV document. </p>
+<p><a class="section-ref" href="#environment"><span>TBD</span></a> specifies how a set of bindings can be expressed as a PROV document. </p>
 
 <div class="anexample"  id="example-7">
 <p>Symbolically, the bindings for <a href="#example-4" class="anexample-ref"><span>Example REF</span></a>, can be expressed as follows:
@@ -597,7 +572,8 @@ are <tt>var:a</tt> and <tt>var:b</tt>, with respective groups 0 and 1. So, the g
 <p>A <a>variable value index</a> for a <a>group usage</a> and a set of bindings <em><b>B</b></em> denotes a particular combination of variable values. </p>
 
 
-
+<p>The expansion algorithm (see <a class="section-ref" href="#expansion"><span>TBD</span></a>) enumerates and sorts all possible <a title="variable value index">variable values indices</a> for a given <a>group usage</a>.  For that, we rely on the following <dfn>index order</dfn>: in [<em>i<sub>1</sub>, ..., i<sub>n</sub></em>], <em>i<sub>1</sub></em> is the least significant integer, and <em>i<sub>n</sub></em> is the most significant integer.
+So, [0,0] precedes [1,0], which precedes [0,1], which precedes [1,1].
 
 
 <div class="anexample"  id="example-8">
@@ -640,8 +616,8 @@ Bundle expansion(Set of bindings: <em><b>B</b></em>, Bundle <em>b</em>) {
   for each statement <em>s</em> in bundle <em>b</em> {
     <em>u</em> = the <a>group usage</a> for <em>s</em>;
     <em>count</em> =0;
-    for all possible <a>variable value index</a> <em>i</em> (sorted by lexicographic order) for <em>u</em>  {
-      <em>env</em> = the effective environment for <em><b>B</b></em> and <em>i</em>;
+    for all possible <a>variable value index</a> <em>i</em> (sorted by increasing <a>index order</a>) for <em>u</em>  {
+      <em>env</em> = the effective bindings for <em><b>B</b></em> and <em>i</em>;
       <em>s<sub>2</sub></em> = substitution_group_variable(<em>s</em>,<em>env</em>);
       <em>s<sub>3</sub></em> = substitution_statement_level_variable(<em>s<sub>2</sub></em>,<em><b>B</b></em>,<em>count</em>);
       <em>s<sub>4</sub></em> = set_tmpl_order_attribute(<em>s<sub>3</sub></em>,<em>i</em>);
@@ -652,9 +628,58 @@ Bundle expansion(Set of bindings: <em><b>B</b></em>, Bundle <em>b</em>) {
   return new bundle with <em>bid</em> and <em>l</em>;
 }
 </pre>
+
+
+<p>Table 2 summarizes the syntax and meaning of variables and attributes accepted in a PROV template. </p>
+
+<table class="thinborder" style="margin-left: auto; margin-right: auto;">
+<caption id="variable-table"> Kinds of parameters and variables supported by the templating system</caption>
+<tbody>
+<tr><td><b>template variable</b></td><td><b>definition</b></td></tr>
+<tr><td><tt>var:<em>x</em></tt></td><td>A variable <em>x</em> to be
+replaced by its value according to the expansion algorithm. If no
+binding is found, the following rules are applied.  If the variable occurs in attribute position, the
+attribute is dropped. If in optional position of a statement (see
+[[prov-n]], <a href="http://www.w3.org/TR/prov-n/#prov-n-optionals">section
+2.4</a>), the variable is dropped. If in mandatory position of a
+statement, it is an error situation (see error
+<a>UnboundMandatoryVariable</a>). </td></tr>
+<tr><td><tt>vargen:<em>x</em></tt></td><td>A variable <em>x</em> to be
+replaced by its value according to the expansion algorithm. If no
+binding is found, the following rules are applied. If the variable occurs in attribute position, a unique qualified name (uuid)  is 
+generated. If in optional position of a statement (see
+[[prov-n]], <a href="http://www.w3.org/TR/prov-n/#prov-n-optionals">section
+2.4</a>), the variable is dropped. If in mandatory position of a
+statement, a unique qualified name (uuid)  is 
+generated.</td></tr>
+<tr><td><b>template parameter</b></td><td><b>definition</b></td></tr>
+<tr><td><tt>tmpl:linked</tt></td><td>An attribute associated with a value that MUST be a qualified name also acting as a template variable <tt>v2</tt> (with either <tt>var</tt> or <tt>vargen</tt> namespace prefix). Its presence in a term with identifier <tt>v1</tt>  indicates that the variable <tt>v2</tt>  changes value synchronously with <tt>v1</tt>.</td></tr>
+<tr><td><tt>tmpl:label</tt></td><td>An attribute associated with a value that MUST be a qualified name  <tt>var:v</tt> also acting as a template variable. If bound, variable <tt>var:v</tt> MUST be bound to <a href="http://www.w3.org/TR/xmlschema11-2/#string"><span class="name">xsd:string</span></a> values. The expanded current term will contain  a <tt>prov:label</tt> for each value.</td></tr>
+<tr><td><tt>tmpl:time</tt></td><td>An attribute associated with a value that MUST be a qualified name  <tt>var:<em>v</em></tt> also acting as a template variable. This attribute may only occur in a Generation, Usage, Invalidation, Start, or End term. If <tt>var:<em>v</em></tt> is bound, variable <tt>var:<em>v</em></tt> MUST be bound to <a href="http://www.w3.org/TR/xmlschema11-2/#dateTime"><span class="name">xsd:dateTime</span></a> values. The expanded current term will be provided the corresponding time information.</td></tr>
+<tr><td><tt>tmpl:startTime</tt></td><td>An attribute associated with a value that MUST be a qualified name  <tt>var:<em>v</em></tt> also acting as a template variable. This attribute may only occur in an Activity term. If <tt>var:<em>v</em></tt> is bound, variable <tt>var:<em>v</em></tt> MUST be bound to <a href="http://www.w3.org/TR/xmlschema11-2/#dateTime"><span class="name">xsd:dateTime</span></a> values. The expanded current activity will be provided the corresponding start time information.</td></tr>
+<tr><td><tt>tmpl:endTime</tt></td><td>An attribute associated with a value that MUST be a qualified name  <tt>var:<em>v</em></tt> also acting as a template variable. This attribute may only occur in an Activity term. If <tt>var:<em>v</em></tt> is bound, variable <tt>var:<em>v</em></tt> MUST be bound to <a href="http://www.w3.org/TR/xmlschema11-2/#dateTime"><span class="name">xsd:dateTime</span></a> values. The expanded current activity will be provided the corresponding end time information.</td></tr>
+</tbody>
+</table>
+
+
+
 </section>
 
 
+
+
+
+<div class="note">
+The idea of the <tt>tmpl:order</tt> attribute is that it should help
+the reconstruction of the set of bindings from an expanded document
+and the corresponding template. It is an open question as to whether
+this is possible with the current representation.
+</div>
+
+
+<div class="note">
+Should we rename <tt>tmpl:order</tt> to <tt>tmpl:index</tt>?
+</div>
 
 
 <table class="thinborder" style="margin-left: auto; margin-right: auto;">
@@ -664,14 +689,6 @@ Bundle expansion(Set of bindings: <em><b>B</b></em>, Bundle <em>b</em>) {
 <tr><td><tt>tmpl:order</tt></td><td>an attribute added to a statement by the expansion process; <br>its value is the index used to compute the actual binding that defined the current instantiation.</td></tr>
 </tbody>
 </table>
-
-
-<div class="note">
-The idea of the <tt>tmpl:order</tt> attribute is that it should help
-the reconstruction of the set of bindings from an expanded document
-and the corresponding template. It is an open question as to whether
-this is possible with the current representation.
-</div>
 
 </section>
 
@@ -712,9 +729,9 @@ the <tt>tmpl</tt> namespace.</p>
 <caption id="binding-parameter-table">Attributes for Bindings</caption>
 <tbody>
 <tr><td><b>binding parameter</b></td><td><b>definition</b></td></tr>
-<tr><td><tt>tmpl:value_0</tt></td><td>attribute of a <a>group variable</a> to provide value '0' for this variable</td></tr>
-<tr><td><tt>tmpl:value_1</tt></td><td>attribute of a <a>group variable</a> to provide value '1' for this variable</td></tr>
-<tr><td><tt>tmpl:value_</tt><em>n</em></td><td>attribute of a <a>group variable</a> to provide value '<em>n</em>' for this variable</td></tr>
+<tr><td><tt>tmpl:value_0</tt></td><td>attribute of a <a>group variable</a> (or variable occurring in optional identifier position) to provide value '0' for this variable</td></tr>
+<tr><td><tt>tmpl:value_1</tt></td><td>attribute of a <a>group variable</a> (or variable occurring in optional identifier position) to provide value '1' for this variable</td></tr>
+<tr><td><tt>tmpl:value_</tt><em>n</em></td><td>attribute of a <a>group variable</a> (or variable occurring in optional identifier position) to provide value '<em>n</em>' for this variable</td></tr>
 <tr><td><tt>tmpl:2dvalue_0_0</tt></td><td>attribute of a <a>statement-level variable</a> to provide value '0,0' for this variable</td></tr>
 <tr><td><tt>tmpl:2dvalue_<em>x</em>_<em>y</em></tt></td><td>attribute of a <a>statement-level variable</a> to provide value '<em>x</em>,<em>y</em>' for this variable</td></tr>
 </tbody>
@@ -840,9 +857,16 @@ Alternatively, users of the template expander may user the [[prov-json]] represe
 
 <section id="errors">
 <h2>Errors</h2>
-<p id="UnboundMandatoryVariable">UnboundMandatoryVariable</p>
 
-<p id="IncorrectNumberOfBindingsForGroupVariable">IncorrectNumberOfBindingsForGroupVariable</p>
+<p> The following error situations have been identified in the specification prov-template.
+
+
+<p id="UnboundMandatoryVariable"><dfn>UnboundMandatoryVariable</dfn>: when a <tt>var:<em>x</em></tt> variable occurs in mandatory position of a statement and is <a>unbound</a>.</p>
+
+<p id="IncorrectNumberOfBindingsForGroupVariable"><dfn>IncorrectNumberOfBindingsForGroupVariable</dfn>:  when  <a title="group variable">group variables</a> of a given group are not bound to the same number of values.</p>
+
+
+<p id="IncorrectNumberOfBindingsForStatementVariable"><dfn>IncorrectNumberOfBindingsForStatementVariable</dfn>:  when a <a>statement-level variable</a> is not bound to the same number of value lists as their are instantiations for the statement it occurs in.</p>
 </section>
 
 <section id="implementation" class="informative">

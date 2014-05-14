@@ -397,16 +397,18 @@ endDocument
 In the expanded document, the attribute <tt>tmpl:order</tt> indicates that a single group of variables is used for the <tt>wasAttributedTo</tt> statement:  it has two possible values (denoted by index 0 and 1).
 </div>
 
-<p>An <dfn>attribute variable</dfn> is a variable that occurs in an attribute-value pair, either in attribute position or in value position.</p>
+<p>A <dfn>group variable</dfn> is a variable that occurs in influencer or influencee position, in secondary position (e.g., plan in association, activity in delegation and derivation), or in mandatory identifier position (in entity, agent, or activity).    The idea of a <a>group variable</a> is that it is instantiated as part of the cartesian product of all possible groups in the current statement. </p>
 
-<p>A <dfn>non-attribute variable</dfn> is a variable that occurs in a statement but not in an attribute-value pair.  </p>
 
-<p>For a template to be valid, a variable MUST NOT be both an <a>attribute variable</a> and <a>non-attribute variable</a>.</p>
+<p>An <dfn>statement-level variable</dfn> is a variable that occurs in an attribute-value pair, either in attribute position or in value position, or that occurs in optional identifier position. The idea of a <a>statement-level variable</a> is that it is instantiated after <a title="group variable">group variables</a> have been instantiated, as part of one possible combination of the cartesian product of the possible groups in the current statement. </p>
+
+
+<p>For a template to be valid, a variable MUST NOT be both an <a>statement-level variable</a> and <a>group variable</a>.</p>
 
 
 
 <div class="anexample"  id="example-4">
-<p>A template may contain an <a>attribute variable</a>. For instance, <tt>var:c</tt> is an attribute variable occurring in value position, in the attribute-value pair <tt>prov:type='var:c'</tt>.</p>
+<p>A template may contain an <a>statement-level variable</a>. For instance, <tt>var:c</tt> is an statement-level variable occurring in value position, in the attribute-value pair <tt>prov:type='var:c'</tt>.</p>
 
 <div class="example">
 <pre class="highlight">
@@ -473,19 +475,19 @@ endDocument
       <h2>Variable Grouping</h2>
 
 
-<p>We define a <dfn>variable group</dfn>, or <dfn>group</dfn> for short, as a set of <a title="non-attribute variable">non-attribute variables</a> that are expected to change values in lockstep with each other. Groups are identified by a natural number. A <dfn>pattern's grouping of non-attribute variables</dfn> is a partitioning of the set of variables occurring in a pattern; each partition forms a group and is allocated a natural number.  </p>
+<p>We define a <dfn>group of variables</dfn>, or <dfn>group</dfn> for short, as a set of <a title="group variable">group variables</a> that are expected to change values in lockstep with each other. Groups are identified by a natural number. A <dfn>pattern's grouping of group variables</dfn> is a partitioning of the set of variables occurring in a pattern; each partition forms a group and is allocated a natural number.  </p>
 
 <p>A <dfn>binding</dfn> is an association between a variable and some values. If there is a binding for a variable, it is said to be <dfn>bound</dfn>.</p>
 
-<p>All variables belonging to a given group MUST be bound to the same number of values, since their values have to change in lockstep manner. If this condition is not satisfied, it is an error situation (see error
+<p>All <a title="group variable">group variables</a> belonging to a given group MUST be bound to the same number of values, since their values have to change in lockstep manner. If this condition is not satisfied, it is an error situation (see error
 <a href="#IncorrectNumberOfBindingsForGroupVariable">IncorrectNumberOfBindingsForGroupVariable</a>).</p>
 
-<p>A variable SHALL NOT belong to more than one group.</p>
+<p>An <a>group variable</a> SHALL NOT belong to more than one group.</p>
 
 <p>The algorithm to deterministically create a  grouping of variables for a pattern P is as follows.</p>
 <pre class="highlight">
 Grouping function (Pattern: P) {
-  List&lt;Variable&gt; variable_list=sort(extract_variables(P));
+  List&lt;Variable&gt; variable_list=sort(extract_individual_variables(P));
 
   Hashtable &lt;Variable,Set&lt;Variable&gt;&gt; linked = extract_linked_variables(P); // includes transitive closure
   
@@ -501,7 +503,7 @@ Grouping function (Pattern: P) {
 }
 </pre>
 
-<p>First, all <a title="non-attribute variable">non-attribute variables</a> are extracted from the pattern and sorted (by alphabetical order of their uris).  Then, all linked variables are computed, in the form of a hashmap, associating a variable to the variables it is linked with. It is assumed that the transitive closure of this relation is computed here.  Then, each variable (if not already inserted in the grouping) is added to the grouping with the variables it is linked with. Groups are deterministically identified, starting with value 0.</p>
+<p>First, all <a title="group variable">group variables</a> are extracted from the pattern and sorted (by alphabetical order of their uris).  Then, all linked variables are computed, in the form of a hashmap, associating a variable to the variables it is linked with. It is assumed that the transitive closure of this relation is computed here.  Then, each variable (if not already inserted in the grouping) is added to the grouping with the variables it is linked with. Groups are deterministically identified, starting with value 0.</p>
 
 <p>In the absence of <tt>tmpl:linked</tt> attribute, we have as many groups as variables. </p>
 
@@ -532,14 +534,14 @@ Grouping function (Pattern: P) {
 <section id="group-usage">
       <h2>Group Usage</h2>
 
-<p>A PROV statement MAY contain a set of <a title="non-attribute variable">non-attribute variables</a>. A statement's <dfn>group usage</dfn> is the list of group identifiers corresponding to these variables; the list of group identifiers is ordered in ascending order. The group usage for a statement without variable is the empty list []. A list is noted by integers separated by commas occurring in square brackets. </p>
+<p>A PROV statement MAY contain a set of <a title="group variable">group variables</a>. A statement's <dfn>group usage</dfn> is the list of group identifiers corresponding to these variables; the list of group identifiers is ordered in ascending order. The group usage for a statement without <a>group variable</a> is the empty list []. A list is noted by integers separated by commas occurring in square brackets. </p>
 
 <div class="anexample"  id="example-6">
 <p>In <a href="#example-1" class="anexample-ref"><span>Example REF</span></a>, <a href="#example-2" class="anexample-ref"><span>Example REF</span></a>, and <a href="#example-5" class="anexample-ref"><span>Example REF</span></a>,  the only variable in <tt>agent(var:a)</tt> is <tt>var:a</tt>; since <tt>var:a</tt> belongs to group 0, the current statement's group usage is  [0].</p>
 
 <p>Likewise, the only variable in <tt>entity(var:b)</tt> and <tt>var:b</tt> belongs to group 1; so, the group usage is [1].</p>
 
-<p>Finally, the non-attribute variables in <tt>wasAttributedTo(var:b, var:a)</tt> and
+<p>Finally, the group variables in <tt>wasAttributedTo(var:b, var:a)</tt> and
 <tt>wasAttributedTo(var:b, var:a, [prov:type='var:c'])</tt>
 are <tt>var:a</tt> and <tt>var:b</tt>, with respective groups 0 and 1. So, the group usage is [0,1].</p>
 
@@ -553,11 +555,11 @@ are <tt>var:a</tt> and <tt>var:b</tt>, with respective groups 0 and 1. So, the g
 <section id="binding">
       <h2>Binding Structure</h2>
 
-<p>Examples have shown that <a title="non-attribute variable">non-attribute variables</a> belonging to a same group evolve in a lockstep manner, whereas the <a title="attribute variable">attribute variables</a> should be bound to as many group of values as the statement they occur in as possible instantiations.</p>
+<p>Examples have shown that <a title="group variable">group variables</a> belonging to a same group evolve in a lockstep manner, whereas the <a title="statement-level variable">statement-level variables</a> should be bound to as many group of values as the number of possible instantiations of the statement they occur in.</p>
 
-<p>Thus, a <a>non-attribute variable</a> is bound to a list of values, and an <a>attribute variable</a> is bound to a list of list of values.</p>
+<p>Thus, an <a>group variable</a> is bound to a list of values, and an <a>statement-level variable</a> is bound to a list of list of values.</p>
 
-<p>Since all <a title="non-attribute variable">non-attribute variables</a> of a group <em>g</em> in a set of bindings <em><b>B</b></em> MUST be associated with lists of values having the same length; this length is given by <em>number_of_variable_values(<b>B</b>,g)</em>. Otherwise, it is an error, see
+<p>Since all <a title="group variable">group variables</a> of a group <em>g</em> in a set of bindings <em><b>B</b></em> MUST be associated with lists of values having the same length; this length is given by <em>number_of_variable_values(<b>B</b>,g)</em>. Otherwise, it is an error, see
 <a href="#IncorrectNumberOfBindingsForGroupVariable">IncorrectNumberOfBindingsForGroupVariable</a>.</p>
 
 <p>Section xyz specifies how a set of bindings can be expressed as a PROV document. </p>
@@ -586,7 +588,7 @@ are <tt>var:a</tt> and <tt>var:b</tt>, with respective groups 0 and 1. So, the g
 <section id="indexing">
       <h2>Variable Value Indexing</h2>
 
-<p>Let us consider a set of bindings <em><b>B</b></em> and a statement's <a>group usage</a> [<em>g<sub>1</sub>, ..., g<sub>n</sub></em>], where <em>g<sub>1</sub>, ..., g<sub>n</sub></em> are group identifiers, with <em>n &geq;1</em> (meaning that the statement contains at least one <a>non-attribute variable</a>). A <dfn>variable value index</dfn> is a list [<em>i<sub>1</sub>, ..., i<sub>n</sub></em>] of naturals of length <em>n</em>, such that each <em>0 &leq; i<sub>j</sub> &lt; number_of_variable_values(<b>B</b>, g<sub>j</sub>)</em>.</p>
+<p>Let us consider a set of bindings <em><b>B</b></em> and a statement's <a>group usage</a> [<em>g<sub>1</sub>, ..., g<sub>n</sub></em>], where <em>g<sub>1</sub>, ..., g<sub>n</sub></em> are group identifiers, with <em>n &geq;1</em> (meaning that the statement contains at least one <a>group variable</a>). A <dfn>variable value index</dfn> is a list [<em>i<sub>1</sub>, ..., i<sub>n</sub></em>] of naturals of length <em>n</em>, such that each <em>0 &leq; i<sub>j</sub> &lt; number_of_variable_values(<b>B</b>, g<sub>j</sub>)</em>.</p>
 
 <p>A <a>variable value index</a> for a <a>group usage</a> and a set of bindings <em><b>B</b></em> denotes a particular combination of variable values. </p>
 
@@ -624,41 +626,48 @@ in the expansion of <a href="#example-4" class="anexample-ref"><span>Example REF
 
 <section id="expansion">
       <h2>Expansion</h2>
+
+<p>Expansion proceeds by processing each statement in turn, instanting variables according to the following algorithm.</p>
+
+<pre class="highlight">
+Bundle expansion(Set of bindings: <em><b>B</b></em>, Bundle <em>b</em>) {
+  <em>bid</em> = substitution(bundle_variable(<em>b</em>),<em><b>B</b></em>);
+  <em>l</em> = empty list of statements;
+  for each statement <em>s</em> in bundle <em>b</em> {
+    <em>u</em> = the <a>group usage</a> for <em>s</em>;
+    <em>count</em> =0;
+    for all possible <a>variable value index</a> <em>i</em> (sorted by lexicographic order) for <em>u</em>  {
+      <em>env</em> = the effective environment for <em><b>B</b></em> and <em>i</em>;
+      <em>s<sub>2</sub></em> = substitution_group_variable(<em>s</em>,<em>env</em>);
+      <em>s<sub>3</sub></em> = substitution_statement_level_variable(<em>s<sub>2</sub></em>,<em><b>B</b></em>,<em>count</em>);
+      <em>s<sub>4</sub></em> = set_tmpl_order_attribute(<em>s<sub>3</sub></em>,<em>i</em>);
+      <em>count</em>++;
+      add <em>s<sub>4</sub></em> to <em>l</em>
+    }
+  }
+  return new bundle with <em>bid</em> and <em>l</em>;
+}
+</pre>
 </section>
 
-
-Basic algorithm:
-<ol>
-<li> create a mapping of 'group' to list of variables
-<ul>
-<li> for each variable, put it into a group:
-      if specified use that group
-      else create a new group (name used needs to be deterministic)
-</ul>
-</li>
-
-<li> for each statement:
-<ol>
-<li> from the variables in that statement determine which groups it involves</li>
-<li> use the list of involved groups and number of bindings in each to
-    generate a multi-dimensional index</li>
-<li> for each point in the index, write out the statement using the
-   appropiate
-    values in the variable bindings; tmpl:order is the point index</li>
-</ol>
-</li>
-</ol>
 
 
 
 <table class="thinborder" style="margin-left: auto; margin-right: auto;">
-<caption id="expanded-parameter-table"> Kinds of parameters and variables supported by the templating system</caption>
+<caption id="expanded-parameter-table">Attribute in expanded document</caption>
 <tbody>
 <tr><td><b>expanded instance parameter</b></td><td><b>definition</b></td></tr>
 <tr><td><tt>tmpl:order</tt></td><td>an attribute added to a statement by the expansion process; <br>its value is the index used to compute the actual binding that defined the current instantiation.</td></tr>
 </tbody>
 </table>
 
+
+<div class="note">
+The idea of the <tt>tmpl:order</tt> attribute is that it should help
+the reconstruction of the set of bindings from an expanded document
+and the corresponding template. It is an open question as to whether
+this is possible with the current representation.
+</div>
 
 </section>
 
@@ -700,11 +709,11 @@ the <tt>tmpl</tt> namespace.</p>
 <caption id="binding-parameter-table">Attributes for Bindings</caption>
 <tbody>
 <tr><td><b>binding parameter</b></td><td><b>definition</b></td></tr>
-<tr><td><tt>tmpl:value_0</tt></td><td> an attribute ...</td></tr>
-<tr><td><tt>tmpl:value_1</tt></td><td> an attribute ...</td></tr>
-<tr><td><tt>tmpl:value_</tt><em>n</em></td><td> an attribute ...</td></tr>
-<tr><td><tt>tmpl:2dvalue_0_0</tt></td><td> an attribute ...</td></tr>
-<tr><td><tt>tmpl:2dvalue_<em>x</em>_<em>y</em></tt></td><td> an attribute ...</td></tr>
+<tr><td><tt>tmpl:value_0</tt></td><td>attribute of a <a>group variable</a> to provide value '0' for this variable</td></tr>
+<tr><td><tt>tmpl:value_1</tt></td><td>attribute of a <a>group variable</a> to provide value '1' for this variable</td></tr>
+<tr><td><tt>tmpl:value_</tt><em>n</em></td><td>attribute of a <a>group variable</a> to provide value '<em>n</em>' for this variable</td></tr>
+<tr><td><tt>tmpl:2dvalue_0_0</tt></td><td>attribute of a <a>statement-level variable</a> to provide value '0,0' for this variable</td></tr>
+<tr><td><tt>tmpl:2dvalue_<em>x</em>_<em>y</em></tt></td><td>attribute of a <a>statement-level variable</a> to provide value '<em>x</em>,<em>y</em>' for this variable</td></tr>
 </tbody>
 </table>
 
@@ -837,7 +846,17 @@ Alternatively, users of the template expander may user the [[prov-json]] represe
       <h2>Implementation</h2>
 
 
-<p>ProvToolbox provconvert command line ... </p>
+<p><a href="https://github.com/lucmoreau/ProvToolbox/">ProvToolbox</a>'s
+executable <tt>provconvert</tt> can be called from the command line to
+perform template expansion as follows:
+<pre>	
+ provconvert -infile template.provn -outfile expanded.provn -bindings bindings.provn 
+</pre>
+The input file <tt>template.provn</tt>, the output
+file <tt>template.provn</tt>, and the bindings
+file <tt>bindings.provn</tt> may can be encoded according to any
+serialization supproted by ProvToolbox.
+ </p>
 
 </section>
 

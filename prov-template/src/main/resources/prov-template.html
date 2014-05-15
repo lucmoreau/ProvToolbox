@@ -296,9 +296,9 @@ document
  prefix ex &lt;http://example.org/&gt;
  prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
  bundle ex:b 
-  agent(ex:ag,[tmpl:order = "[0]" %% xsd:string])
-  entity(ex:en,[tmpl:order = "[0]" %% xsd:string])
-  wasAttributedTo(ex:en, ex:ag,[tmpl:order = "[0, 0]" %% xsd:string])
+  agent(ex:ag,[tmpl:order = "[0]"])
+  entity(ex:en,[tmpl:order = "[0]"])
+  wasAttributedTo(ex:en, ex:ag,[tmpl:order = "[0, 0]"])
  endBundle
 endDocument
 <pre>
@@ -307,24 +307,24 @@ endDocument
 </div>
 
 <div class="anexample"  id="example-2">
-<p>Multiple values are allowed for each variable, for instance <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for  <tt>var:a</tt>, and <tt>ex:en1</tt>, <tt>ex:en2</tt>, <tt>ex:en3</tt>, for <tt>var:b</tt>. By default, the cartesian product of the value sets forms the set of all possibilities to instantiate each statement in the template. We obtain:</p>
+<p>Multiple values are allowed for each variable, for instance <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for  <tt>var:a</tt>, and <tt>ex:en1</tt>, <tt>ex:en2</tt>, <tt>ex:en3</tt>, for <tt>var:b</tt>. By default, the Cartesian product of the value sets forms the set of all possibilities to instantiate each statement in the template. We obtain:</p>
 <div class="example">
 <pre class="highlight">
 document
  prefix ex &lt;http://example.org/&gt;
  prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
  bundle ex:b 
-  agent(ex:ag1,[tmpl:order = "[0]" %% xsd:string])
-  agent(ex:ag2,[tmpl:order = "[1]" %% xsd:string])
-  entity(ex:en1,[tmpl:order = "[0]" %% xsd:string])
-  entity(ex:en2,[tmpl:order = "[1]" %% xsd:string])
-  entity(ex:en3,[tmpl:order = "[2]" %% xsd:string])
-  wasAttributedTo(ex:en1, ex:ag1,[tmpl:order = "[0, 0]" %% xsd:string])
-  wasAttributedTo(ex:en1, ex:ag2,[tmpl:order = "[1, 0]" %% xsd:string])
-  wasAttributedTo(ex:en2, ex:ag1,[tmpl:order = "[0, 1]" %% xsd:string])
-  wasAttributedTo(ex:en2, ex:ag2,[tmpl:order = "[1, 1]" %% xsd:string])
-  wasAttributedTo(ex:en3, ex:ag1,[tmpl:order = "[0, 2]" %% xsd:string])
-  wasAttributedTo(ex:en3, ex:ag2,[tmpl:order = "[1, 2]" %% xsd:string])
+  agent(ex:ag1,[tmpl:order = "[0]"])
+  agent(ex:ag2,[tmpl:order = "[1]"])
+  entity(ex:en1,[tmpl:order = "[0]"])
+  entity(ex:en2,[tmpl:order = "[1]"])
+  entity(ex:en3,[tmpl:order = "[2]"])
+  wasAttributedTo(ex:en1, ex:ag1,[tmpl:order = "[0, 0]"])
+  wasAttributedTo(ex:en1, ex:ag2,[tmpl:order = "[1, 0]"])
+  wasAttributedTo(ex:en2, ex:ag1,[tmpl:order = "[0, 1]"])
+  wasAttributedTo(ex:en2, ex:ag2,[tmpl:order = "[1, 1]"])
+  wasAttributedTo(ex:en3, ex:ag1,[tmpl:order = "[0, 2]"])
+  wasAttributedTo(ex:en3, ex:ag2,[tmpl:order = "[1, 2]"])
   endBundle
 endDocument
 <pre>
@@ -334,7 +334,7 @@ In the expanded document, the attribute <tt>tmpl:order</tt> indicates which comb
 
 
 <div class="anexample"  id="example-3">
-<p>In some cases, the cartesian product of possibilities is not desirable. For instance, one may want the following values: <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for  <tt>var:a</tt>, and <tt>ex:en1</tt>, <tt>ex:en2</tt> for <tt>var:b</tt>. By default, the cartesian product of the value sets forms the set of all possibilities to instantiate each statement in the template. Instead, here, we want <tt>var:b</tt> to be associated with <tt>ex:en1</tt> whenever <tt>var:a</tt> is associated with <tt>ex:ag1</tt>. Hence, we modify the template of <a href="#example-1" class="anexample-ref"><span>Example REF</span></a> by adding the <tt>tmpl:linked</tt> attribute in the template, which indicates that variables <tt>var:b</tt>, <tt>var:a</tt> belong to a same group, change value in lockstep manner.</p>
+<p>In some cases, the Cartesian product of possibilities is not desirable. For instance, one may want the following values: <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for  <tt>var:a</tt>, and <tt>ex:en1</tt>, <tt>ex:en2</tt> for <tt>var:b</tt>. By default, the Cartesian product of the value sets forms the set of all possibilities to instantiate each statement in the template. Instead, here, we want <tt>var:b</tt> to be associated with <tt>ex:en1</tt> whenever <tt>var:a</tt> is associated with <tt>ex:ag1</tt>. Hence, we modify the template of <a href="#example-1" class="anexample-ref"><span>Example REF</span></a> by adding the <tt>tmpl:linked</tt> attribute in the template, which indicates that variables <tt>var:b</tt>, <tt>var:a</tt> belong to a same group, change value in a lockstep manner.</p>
 <div class="example">
 <pre class="highlight">
 document
@@ -356,12 +356,12 @@ document
  prefix ex &lt;http://example.org/&gt;
  prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
  bundle ex:b 
-  agent(ex:ag1,[tmpl:order = "[0]" %% xsd:string])
-  agent(ex:ag2,[tmpl:order = "[1]" %% xsd:string])
-  entity(ex:en1,[tmpl:order = "[0]" %% xsd:string])
-  entity(ex:en2,[tmpl:order = "[1]" %% xsd:string])
-  wasAttributedTo(ex:en1, ex:ag1,[tmpl:order = "[0]" %% xsd:string])
-  wasAttributedTo(ex:en2, ex:ag2,[tmpl:order = "[1]" %% xsd:string])
+  agent(ex:ag1,[tmpl:order = "[0]"])
+  agent(ex:ag2,[tmpl:order = "[1]"])
+  entity(ex:en1,[tmpl:order = "[0]"])
+  entity(ex:en2,[tmpl:order = "[1]"])
+  wasAttributedTo(ex:en1, ex:ag1,[tmpl:order = "[0]"])
+  wasAttributedTo(ex:en2, ex:ag2,[tmpl:order = "[1]"])
  endBundle
 endDocument
 <pre>
@@ -371,10 +371,10 @@ In the expanded document, the attribute <tt>tmpl:order</tt> indicates that a sin
 
 <p>As we describe the expansion algorithm, it is useful to distinguish two types of variables. </p>
 
-<p>A <dfn>group variable</dfn> is a variable that occurs in influencer or influencee position, in secondary position (e.g., plan in association, activity in delegation and derivation), or in mandatory identifier position (in entity, agent, or activity).    The idea of a <a>group variable</a> is that it is instantiated as part of the cartesian product of all possible groups in the current statement. </p>
+<p>A <dfn>group variable</dfn> is a variable that occurs in influencer or influencee position, in secondary position (e.g., plan in association, activity in delegation and derivation), or in mandatory identifier position (in entity, agent, or activity).    The idea of a <a>group variable</a> is that it is instantiated as part of the Cartesian product of all possible groups in the current statement. </p>
 
 
-<p>An <dfn>statement-level variable</dfn> is a variable that occurs in an attribute-value pair (either in attribute position or in value position), or that occurs in optional identifier position. While the cartesian product of a statement's applicable groups dictates the number of instances of that statement, for each such statement we will find a value of <a title="statement-level variable">statement-level variables</a>. </p>
+<p>A <dfn>statement-level variable</dfn> is a variable that occurs in an attribute-value pair (either in attribute position or in value position), or that occurs in optional identifier position. While the Cartesian product of a statement's applicable groups dictates the number of instances of that statement, for each such statement we will find a value of <a title="statement-level variable">statement-level variables</a>. </p>
 
 <p>A <dfn>bundle variable</dfn> is a variable that occurs as identifier of a bundle.  A <a>bundle variable</a> is intended to be associated with one value only. </p>
 
@@ -404,7 +404,7 @@ endDocument
 <pre>
 </div>
 
-<p>The <a title="group variable">group variables</a> determine the number of instantiations of a given statement according to their group's cartesian product. So, 
+<p>The <a title="group variable">group variables</a> determine the number of instantiations of a given statement according to their group's Cartesian product. So, 
 following <a href="#example-1" class="anexample-ref"><span>Example REF</span></a>, we consider values 
 <tt>ex:ag1</tt>, <tt>ex:ag2</tt> for <tt>var:a</tt>,
 and <tt>ex:en1</tt>, <tt>ex:en2</tt>, <tt>ex:en3</tt>,
@@ -425,17 +425,17 @@ document
  prefix ex &lt;http://example.org/&gt;
  prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
  bundle ex:b 
-  agent(ex:ag1,[tmpl:order = "[0]" %% xsd:string])
-  agent(ex:ag2,[tmpl:order = "[1]" %% xsd:string])
-  entity(ex:en1,[tmpl:order = "[0]" %% xsd:string])
-  entity(ex:en2,[tmpl:order = "[1]" %% xsd:string])
-  entity(ex:en3,[tmpl:order = "[2]" %% xsd:string])
-  wasAttributedTo(ex:en1, ex:ag1,[prov:type = 'ex:t1', tmpl:order = "[0, 0]" %% xsd:string])
-  wasAttributedTo(ex:en1, ex:ag2,[prov:type = 'ex:t2a', prov:type = 'ex:t2b', tmpl:order = "[1, 0]" %% xsd:string])
-  wasAttributedTo(ex:en2, ex:ag1,[prov:type = 'ex:t3', tmpl:order = "[0, 1]" %% xsd:string])
-  wasAttributedTo(ex:en2, ex:ag2,[prov:type = 'ex:t4', tmpl:order = "[1, 1]" %% xsd:string])
-  wasAttributedTo(ex:en3, ex:ag1,[prov:type = 'ex:t5a', prov:type = 'ex:t5b', prov:type = 'ex:t5c', tmpl:order = "[0, 2]" %% xsd:string])
-  wasAttributedTo(ex:en3, ex:ag2,[prov:type = 'ex:t6', tmpl:order = "[1, 2]" %% xsd:string])
+  agent(ex:ag1,[tmpl:order = "[0]"])
+  agent(ex:ag2,[tmpl:order = "[1]"])
+  entity(ex:en1,[tmpl:order = "[0]"])
+  entity(ex:en2,[tmpl:order = "[1]"])
+  entity(ex:en3,[tmpl:order = "[2]"])
+  wasAttributedTo(ex:en1, ex:ag1,[prov:type = 'ex:t1', tmpl:order = "[0, 0]"])
+  wasAttributedTo(ex:en1, ex:ag2,[prov:type = 'ex:t2a', prov:type = 'ex:t2b', tmpl:order = "[1, 0]"])
+  wasAttributedTo(ex:en2, ex:ag1,[prov:type = 'ex:t3', tmpl:order = "[0, 1]"])
+  wasAttributedTo(ex:en2, ex:ag2,[prov:type = 'ex:t4', tmpl:order = "[1, 1]"])
+  wasAttributedTo(ex:en3, ex:ag1,[prov:type = 'ex:t5a', prov:type = 'ex:t5b', prov:type = 'ex:t5c', tmpl:order = "[0, 2]"])
+  wasAttributedTo(ex:en3, ex:ag2,[prov:type = 'ex:t6', tmpl:order = "[1, 2]"])
  endBundle
 endDocument
 <pre>
@@ -470,8 +470,8 @@ Grouping function (Pattern: P) {
 
   Hashtable &lt;Variable,Set&lt;Variable&gt;&gt; linked = extract_linked_variables(P); // includes transitive closure
   
-  Grouping g=new Grouping();
-  int count=0;
+  Grouping g = new Grouping();
+  int count = 0;
   for (Variable v: variable_list) {
     if (!(belong v g)) {
        add v and linked.get(v) to g as group identified by count;
@@ -482,7 +482,7 @@ Grouping function (Pattern: P) {
 }
 </pre>
 
-<p>First, all <a title="group variable">group variables</a> are extracted from the pattern and sorted by alphabetical order of their uris.  Then, all linked variables are computed, in the form of a hashmap, associating a variable to the variables it is linked with. It is assumed that the transitive closure of this relation is computed here.  Then, each variable (if not already inserted in the grouping) is added to the grouping with the variables it is linked with. Groups are deterministically identified, starting with value 0. This procedure is deterministic since it relies on the alphabetical sorting of <a title="group variable">group variables</a>.</p>
+<p>First, all <a title="group variable">group variables</a> are extracted from the pattern and sorted by alphabetical order of their URIs.  Then, all linked variables are computed, in the form of a map, associating a variable to the variables it is linked with. It is assumed that the transitive closure of this relation is computed here.  Then, each variable (if not already inserted in the grouping) is added to the grouping with the variables it is linked with. Groups are deterministically identified, starting with value 0. This procedure is deterministic since it relies on the alphabetical sorting of <a title="group variable">group variables</a>.</p>
 
 <p>In the absence of <tt>tmpl:linked</tt> attribute, we have as many groups as variables. </p>
 
@@ -534,7 +534,7 @@ are <tt>var:a</tt> and <tt>var:b</tt>, with respective groups 0 and 1. So, the g
 <section id="binding">
       <h2>Binding Structure</h2>
 
-<p>Examples have shown that <a title="group variable">group variables</a> belonging to a same group evolve in a lockstep manner, whereas the <a title="statement-level variable">statement-level variables</a> should be bound to as many group of values as the number of possible instantiations of the statement they occur in.</p>
+<p>The examples above have shown that <a title="group variable">group variables</a> belonging to a same group evolve in a lockstep manner, whereas the <a title="statement-level variable">statement-level variables</a> should be bound to as many group of values as the number of possible instantiations of the statement they occur in.</p>
 
 <p>A <a>group variable</a> or a <a>statement-level variable</a> occurring in optional identifier position is bound to a list of values. A <a>bundle variable</a> is bound to a single value (i.e. a list of length 1). A <a>statement-level variable</a> (not occurring optional identifier position) is bound to a <em>list of</em> list of values: this allows a given attributes to be have 0, 1, or more occurrences in a given statement. </p>
 
@@ -581,20 +581,20 @@ So, [0,0] precedes [1,0], which precedes [0,1], which precedes [1,1].
 
 <p>The statement
 <pre>
-  agent(ex:ag1,[tmpl:order = "[0]" %% xsd:string])
+  agent(ex:ag1,[tmpl:order = "[0]"])
 </pre>
 in the expansion of <a href="#example-4" class="anexample-ref"><span>Example REF</span></a> has index [0] for group usage [0], denoting value <tt>ex:ag1</tt>.</p>
 
 <p>The statement
 <pre>
-  entity(ex:en3,[tmpl:order = "[2]" %% xsd:string])
+  entity(ex:en3,[tmpl:order = "[2]"])
 </pre>
 in the expansion of <a href="#example-4" class="anexample-ref"><span>Example REF</span></a> has index [2] for group usage [1], denoting value <tt>ex:en3</tt>.</p>
 
 
 <p>The statement
 <pre>
-  wasAttributedTo(ex:en2, ex:ag2,[prov:type = 'ex:t4', tmpl:order = "[1, 1]" %% xsd:string])
+  wasAttributedTo(ex:en2, ex:ag2,[prov:type = 'ex:t4', tmpl:order = "[1, 1]"])
 </pre>
 in the expansion of <a href="#example-4" class="anexample-ref"><span>Example REF</span></a> has index [1,1] for group usage [0,1], denoting values <tt>ex:en2</tt> and <tt>ex:ag2</tt>.</p>
 
@@ -607,7 +607,7 @@ in the expansion of <a href="#example-4" class="anexample-ref"><span>Example REF
 <section id="expansion">
       <h2>Expansion</h2>
 
-<p>Expansion proceeds by processing each statement in turn, instanting variables according to the following algorithm.</p>
+<p>Expansion proceeds by processing each statement in turn, instantiating variables according to the following algorithm.</p>
 
 <pre class="highlight">
 Bundle expansion(Set of bindings: <em><b>B</b></em>, Bundle <em>b</em>) {
@@ -615,7 +615,7 @@ Bundle expansion(Set of bindings: <em><b>B</b></em>, Bundle <em>b</em>) {
   <em>l</em> = empty list of statements;
   for each statement <em>s</em> in bundle <em>b</em> {
     <em>u</em> = the <a>group usage</a> for <em>s</em>;
-    <em>count</em> =0;
+    <em>count</em> = 0;
     for all possible <a>variable value index</a> <em>i</em> (sorted by increasing <a>index order</a>) for <em>u</em>  {
       <em>env</em> = the effective bindings for <em><b>B</b></em> and <em>i</em>;
       <em>s<sub>2</sub></em> = substitution_group_variable(<em>s</em>,<em>env</em>);
@@ -674,11 +674,13 @@ The idea of the <tt>tmpl:order</tt> attribute is that it should help
 the reconstruction of the set of bindings from an expanded document
 and the corresponding template. It is an open question as to whether
 this is possible with the current representation.
+<br>
+Dong: Regardless of the feasibility of reconstructing the original bindings, I think this attribute should be optional as it would clutter the resulted provenance, making it look untidy. One could argue that the attributes are artifacts of the templating system and not really asked for.
 </div>
 
 
 <div class="note">
-Should we rename <tt>tmpl:order</tt> to <tt>tmpl:index</tt>?
+Should we rename <tt>tmpl:order</tt> to <tt>tmpl:index</tt>? Dong: +1
 </div>
 
 
@@ -697,7 +699,7 @@ Should we rename <tt>tmpl:order</tt> to <tt>tmpl:index</tt>?
 <section id="environment" class="informative">
       <h2>Set of Bindings</h2>
 
-<p><a href="#example-7" class="anexample-ref"><span>Example REF</span></a> shows a symbolic representation of bindings.  One should note that to be self-containted a set of bindings should also contain prefix declarations for all qualified names. Hence, to mimize the amount of new syntax required by the templating system, an encoding of a set of bindings as a PROV document is proposed.</p>
+<p><a href="#example-7" class="anexample-ref"><span>Example REF</span></a> shows a symbolic representation of bindings.  One should note that to be self-contained a set of bindings should also contain prefix declarations for all qualified names. Hence, to minimize the amount of new syntax required by the templating system, an encoding of a set of bindings as a PROV document is proposed.</p>
 
 <div class="anexample"  id="example-9">
 <p>The set of bindings in <a href="#example-7" class="anexample-ref"><span>Example REF</span></a> can be expressed as a PROV document as follows:</p>
@@ -739,7 +741,7 @@ the <tt>tmpl</tt> namespace.</p>
 
 
 <div class="anexample"  id="example-10">
-<p>The set of bindings in <a href="#example-9" class="anexample-ref"><span>Example REF</span></a> can elegantly be expressed using the turtle notation [[turtle]] as follows:</p>
+<p>The set of bindings in <a href="#example-9" class="anexample-ref"><span>Example REF</span></a> can elegantly be expressed using the Turtle notation [[turtle]] as follows:</p>
 <pre class="highlight">
 @prefix prov: &lt;http://www.w3.org/ns/prov#&gt; .
 @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
@@ -882,7 +884,7 @@ perform template expansion as follows:
 The input file <tt>template.provn</tt>, the output
 file <tt>template.provn</tt>, and the bindings
 file <tt>bindings.provn</tt> may can be encoded according to any
-serialization supproted by ProvToolbox.
+serialization supported by ProvToolbox.
  </p>
 
 </section>

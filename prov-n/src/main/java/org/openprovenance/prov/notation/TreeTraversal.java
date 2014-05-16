@@ -371,7 +371,7 @@ public class TreeTraversal {
             List<Key> keys=new LinkedList<Key>();
             for (int i=0; i< ast.getChildCount(); i++) {
                 Object o=convert(ast.getChild(i));
-                Object [] pair=(Object[]) o;
+                Object [] pair=(Object[]) o;         
                 keys.add(pFactory.newKey(pair[0], (QualifiedName)pair[1]));
 
             }
@@ -513,7 +513,17 @@ public class TreeTraversal {
             	return pFactory.newAttribute(stringToQualifiedName(attr1),
             	                             val1,
             	                             name.XSD_STRING);	
-            } else { // TODO what case is it?
+            } else if (val1 instanceof Integer) {
+            	return pFactory.newAttribute(stringToQualifiedName(attr1),
+            	                             val1,
+            	                             name.XSD_INT);	
+            } else if (val1 instanceof String) {
+            	return pFactory.newAttribute(stringToQualifiedName(attr1),
+            	                             val1,
+            	                             name.XSD_STRING);	
+            } else {
+        	System.out.println("****** " + val1); // TODO what case is it?
+        	System.out.println("****** " + val1.getClass());
                 return pFactory.newAttribute(stringToQualifiedName(attr1),
                                              val1,
                                              name.XSD_STRING);	            	

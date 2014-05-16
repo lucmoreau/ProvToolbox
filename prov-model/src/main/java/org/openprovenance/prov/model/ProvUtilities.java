@@ -419,16 +419,18 @@ public class ProvUtilities {
     public static String unescape (String s) {
   	return s.replace("\\\"","\"");
       }
-    
+
     public static String valueToNotationString(org.openprovenance.prov.model.Key key) {
  	return valueToNotationString(key.getValue(), key.getType());
      }
+
 
      
      public static String escape (String s) {
    	return s.replace("\"", "\\\"");
        }
      
+ 
 
      //TODO: move this code to ValueConverter
      //TODO: what else should be escaped?
@@ -447,7 +449,13 @@ public class ProvUtilities {
  		// return "\"\"\"" + val + "\"\"\" %% " + qnameToString(xsdType);
  		return "\"\"\"" + escape(s) + "\"\"\"" ;
  	    } else {
- 		return "\"" + escape(s) + ((xsdType==null)? "" : "\" %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType));
+ 		//FIXME: It's here that we should detect an int and generate the compact form: e.g. 1 instand of 1 %% xsd:int
+ 		// However dictionaries failed to be parsed then
+ 		//if (xsdType.getLocalPart().equals("int")) { //FIXME:need to properly compare with xsd:int
+ 		//    return s;
+ 		//} else {
+ 		    return "\"" + escape(s) + ((xsdType==null)? "" : "\" %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType));
+ 		//}
  	    }
   	} else {
  	    // We should never be here!

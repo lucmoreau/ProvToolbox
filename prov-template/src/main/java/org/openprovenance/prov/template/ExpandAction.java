@@ -277,35 +277,42 @@ public class ExpandAction implements StatementAction {
                     Object o=attribute.getValue();
                     if (o instanceof QualifiedName) {
                         QualifiedName qn1=(QualifiedName)o;
-                        List<TypedValue> vals=env2.get(qn1);
-                        if (vals==null) {
-                            if (Expand.isGensymVariable(qn1)) {
-                        	dstAttributes.add(pf.newAttribute(attribute.getElementName(),
-                        	                                  getUUIDQualifiedName(),
-                        	                                  pf.getName().XSD_QNAME));
-                            }
-                            // if not a vargen, then simply drop this attribute
-                            //dstAttributes.add(attribute);
-                        } else {
-                            found=true;
-                            for (TypedValue val: vals) {
-                        	if (Expand.LABEL_URI.equals(attribute.getElementName().getUri())) {
-                        	    dstAttributes.add(pf.newAttribute(pf.getName().PROV_LABEL, 
-                        	                                      val.getValue(), 
-                        	                                      val.getType()));
-                        	} else {
-                        	    dstAttributes.add(pf.newAttribute(attribute.getElementName(), 
-                        	                                      val.getValue(), 
-                        	                                      val.getType()));
+                        if (Expand.isVariable(qn1)) {
+                            List<TypedValue> vals=env2.get(qn1);
+                            if (vals==null) {
+                        	if (Expand.isGensymVariable(qn1)) {
+                        	    dstAttributes.add(pf.newAttribute(attribute.getElementName(),
+                        	                                      getUUIDQualifiedName(),
+                        	                                      pf.getName().XSD_QNAME));
+                        	}
+                        	// if not a vargen, then simply drop this attribute
+                        	//dstAttributes.add(attribute);
+
+                        
+                            } else {
+                        	found=true;
+                        	for (TypedValue val: vals) {
+                        	    if (Expand.LABEL_URI.equals(attribute.getElementName().getUri())) {
+                        		dstAttributes.add(pf.newAttribute(pf.getName().PROV_LABEL, 
+                        		                                  val.getValue(), 
+                        		                                  val.getType()));
+                        	    } else {
+                        		dstAttributes.add(pf.newAttribute(attribute.getElementName(), 
+                        		                                  val.getValue(), 
+                        		                                  val.getType()));
+                        	    }
                         	}
                             }
+                        } else {
+                            dstAttributes.add(attribute); 
+
                         }
                     } else {
-                        dstAttributes.add(attribute); 
+                	dstAttributes.add(attribute); 
                     }
                 } else {
                     dstAttributes.add(attribute);
-
+                    
                 }
             }
             pf.setAttributes((HasOther) dstStatement, dstAttributes);

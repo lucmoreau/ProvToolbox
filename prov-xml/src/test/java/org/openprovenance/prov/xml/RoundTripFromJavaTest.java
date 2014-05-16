@@ -2268,6 +2268,7 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(statements, opt, "target/dictionaryMembership3");
 
     }
+    
 
     public void testDictionaryMembership4() {
         List<org.openprovenance.prov.model.Entry> ll = new LinkedList<Entry>();

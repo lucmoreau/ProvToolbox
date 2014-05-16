@@ -6,7 +6,6 @@ import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 
-
 public class JAXBEqualsBuilder extends EqualsBuilder {
 
 	@Override

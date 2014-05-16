@@ -303,14 +303,14 @@ public class ExpandAction implements StatementAction {
                         	    }
                         	}
                             }
-                        } else {
+                        } else { // no variable here
                             dstAttributes.add(attribute); 
 
                         }
-                    } else {
+                    } else { // not even a qualified name
                 	dstAttributes.add(attribute); 
                     }
-                } else {
+                } else { //not xsd_qname
                     dstAttributes.add(attribute);
                     
                 }

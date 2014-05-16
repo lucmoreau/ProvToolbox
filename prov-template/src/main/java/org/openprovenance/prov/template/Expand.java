@@ -115,9 +115,20 @@ public class Expand {
     static public Set<QualifiedName> freeVariables(Statement statement) {
 	HashSet<QualifiedName> result = new HashSet<QualifiedName>();
 	for (int i = 0; i < u.getFirstTimeIndex(statement); i++) {
-	    QualifiedName name = (QualifiedName) u.getter(statement, i);
-	    if (name != null && isVariable(name))
-		result.add(name);
+	    Object o=u.getter(statement, i);
+	    if (o instanceof QualifiedName) {
+		QualifiedName name = (QualifiedName) o;
+		if (name != null && isVariable(name))
+		    result.add(name);
+	    } else {
+		if (o instanceof List) {
+		    List<QualifiedName> ll=(List<QualifiedName>) o;
+		    for (QualifiedName name: ll) {
+			if (name != null && isVariable(name))
+			    result.add(name);
+		    }
+		}
+	    }
 	}
 
 	return result;

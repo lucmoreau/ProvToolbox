@@ -1,5 +1,6 @@
 package org.openprovenance.prov.template;
 
+import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -379,11 +380,16 @@ public class ExpandAction implements StatementAction {
 	QualifiedName col=res.getCollection();
 	boolean updated0=setExpand(res, col, 0);	
 	@SuppressWarnings("unused")
-	List<QualifiedName> gen=res.getEntity();
-	System.out.println("FIXME: to do , expand entities"); //FIXME
+	List<QualifiedName> ent=res.getEntity();
+	if (ent.size()>1) {
+	    throw new UnsupportedOperationException("can't expand HadMember with more than one members");
+	}
+	boolean updated1=setExpand(res, ent.get(0), 1);	
+
+	//.out.println("FIXME: to do , expand entities"); //FIXME
 	
 	@SuppressWarnings("unused")
-	boolean updated=updated0 ;
+	boolean updated=updated0||updated1 ;
 	ll.add(res);
 	//if (updated) addOrderAttribute(res);		
 	// TODO Auto-generated method stub

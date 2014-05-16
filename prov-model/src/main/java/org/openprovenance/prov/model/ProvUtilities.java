@@ -626,7 +626,12 @@ public class ProvUtilities {
  	    }
  	}
  	case PROV_MEMBERSHIP: {
- 	    throw new InvalidCaseException("ProvUtilities.setter() for " + kind);
+ 	   final org.openprovenance.prov.model.HadMember a=(org.openprovenance.prov.model.HadMember) s;
+	    switch (i) {
+	    case 0: return a.getCollection();
+	    case 1: return a.getEntity();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+	    }
  	}
  	case PROV_MENTION: {
  	    final org.openprovenance.prov.model.MentionOf a=(org.openprovenance.prov.model.MentionOf) s;
@@ -811,7 +816,13 @@ public class ProvUtilities {
  	    }
  	}
  	case PROV_MEMBERSHIP: {
- 	    throw new InvalidCaseException("ProvUtilities.setter() for " + kind);
+ 	   final org.openprovenance.prov.model.HadMember a=(org.openprovenance.prov.model.HadMember) s;
+	    switch (i) {
+	    case 0: a.setCollection((QualifiedName)val); return;
+	    case 1: a.getEntity().remove(0);
+	            a.getEntity().add((QualifiedName)val); return; //FIXME: only supporting one value in the membership
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+	    }
  	}
  	case PROV_MENTION: {
  	    final org.openprovenance.prov.model.MentionOf a=(org.openprovenance.prov.model.MentionOf) s;

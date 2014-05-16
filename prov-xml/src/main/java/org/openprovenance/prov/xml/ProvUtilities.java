@@ -149,6 +149,8 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         "GeneralEntity" });
         fields.put(AlternateOf.class, new String[] { "Alternate2",
         "Alternate2" });
+        fields.put(HadMember.class, new String[] { "Collection",
+        "Entity" });
 
 	// never use the accessor id for Mention, since it is not defined.
 	// However, this allows iterations over this data structure to be performed
@@ -229,6 +231,9 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
 						 QualifiedName.class });
         types.put(AlternateOf.class, new Class[] { QualifiedName.class,
             QualifiedName.class });
+        
+        types.put(HadMember.class, new Class[] { QualifiedName.class,
+            Object.class });
     }
 
     @SuppressWarnings("unchecked")

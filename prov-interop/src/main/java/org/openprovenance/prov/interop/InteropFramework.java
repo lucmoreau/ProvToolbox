@@ -35,13 +35,34 @@ import org.apache.log4j.Logger;
  */
 public class InteropFramework {
 
+	public static final String EXTENSION_TRIG = "trig";
+	public static final String EXTENSION_XML = "xml";
+	public static final String EXTENSION_PROVX = "provx";
+	public static final String EXTENSION_TTL = "ttl";
+	public static final String EXTENSION_SVG = "svg";
+	public static final String EXTENSION_PROVN = "provn";
+	public static final String EXTENSION_RDF = "rdf";
+	public static final String EXTENSION_JSON = "json";
+	public static final String EXTENSION_DOT = "dot";
+	public static final String EXTENSION_PDF = "pdf";
+	public static final String EXTENSION_JPEG = "jpeg";
+	public static final String EXTENSION_JPG = "jpg";
+
+	public static final String MEDIA_IMAGE_JPEG = "image/jpeg";
+	public static final String MEDIA_APPLICATION_PROVENANCE_XML = "application/provenance+xml";
+	public static final String MEDIA_TEXT_TURTLE = "text/turtle";
+	public static final String MEDIA_APPLICATION_X_TRIG = "application/x-trig";	
+	public static final String MEDIA_IMAGE_SVG_XML = "image/svg+xml";
+	public static final String MEDIA_APPLICATION_RDF_XML = "application/rdf+xml";
+	public static final String MEDIA_TEXT_PROVENANCE_NOTATION = "text/provenance-notation";
+
 	static Logger logger = Logger.getLogger(InteropFramework.class);
 
 	public static final String UNKNOWN = "unknown";
-	public static final String PC1_NS = "http://www.ipaw.info/pc1/";
-	public static final String PC1_PREFIX = "pc1";
-	public static final String PRIM_NS = "http://openprovenance.org/primitives#";
-	public static final String PRIM_PREFIX = "prim";
+//	public static final String PC1_NS = "http://www.ipaw.info/pc1/";
+//	public static final String PC1_PREFIX = "pc1";
+//	public static final String PRIM_NS = "http://openprovenance.org/primitives#";
+//	public static final String PRIM_PREFIX = "prim";
 
 	final Utility u = new Utility();
 	final ProvFactory pFactory = ProvFactory.getFactory();
@@ -51,8 +72,8 @@ public class InteropFramework {
 	final private String logfile;
 	final private String infile;
 	final private String outfile;
-        final private String namespaces;
-        final private String title;
+	final private String namespaces;
+	final private String title;
 	final private String bindings;
 
 	public final Hashtable<ProvFormat, String> extensionMap;
@@ -94,80 +115,80 @@ public class InteropFramework {
 		for (ProvFormat f : ProvFormat.values()) {
 			switch (f) {
 			case DOT:
-				extensionMap.put(ProvFormat.DOT, "dot");
-				extensionRevMap.put("dot", ProvFormat.DOT);
+				extensionMap.put(ProvFormat.DOT, EXTENSION_DOT);
+				extensionRevMap.put(EXTENSION_DOT, ProvFormat.DOT);
 				extensionRevMap.put("gv", ProvFormat.DOT);
 				mimeTypeMap.put(ProvFormat.DOT, "text/vnd.graphviz");
 				mimeTypeRevMap.put("text/vnd.graphviz", ProvFormat.DOT);
 				provTypeMap.put(ProvFormat.DOT, ProvFormatType.OUTPUT);
 				break;
 			case JPEG:
-				extensionMap.put(ProvFormat.JPEG, "jpg");
-				extensionRevMap.put("jpeg", ProvFormat.JPEG);
-				extensionRevMap.put("jpg", ProvFormat.JPEG);
-				mimeTypeMap.put(ProvFormat.JPEG, "image/jpeg");
-				mimeTypeRevMap.put("image/jpeg", ProvFormat.JPEG);
+				extensionMap.put(ProvFormat.JPEG, EXTENSION_JPG);
+				extensionRevMap.put(EXTENSION_JPEG, ProvFormat.JPEG);
+				extensionRevMap.put(EXTENSION_JPG, ProvFormat.JPEG);
+				mimeTypeMap.put(ProvFormat.JPEG, MEDIA_IMAGE_JPEG);
+				mimeTypeRevMap.put(MEDIA_IMAGE_JPEG, ProvFormat.JPEG);
 				provTypeMap.put(ProvFormat.JPEG, ProvFormatType.OUTPUT);
 				break;
 			case JSON:
-				extensionMap.put(ProvFormat.JSON, "json");
-				extensionRevMap.put("json", ProvFormat.JSON);
-				mimeTypeMap.put(ProvFormat.JSON, "application/json");
-				mimeTypeRevMap.put("application/json", ProvFormat.JSON);
+				extensionMap.put(ProvFormat.JSON, EXTENSION_JSON);
+				extensionRevMap.put(EXTENSION_JSON, ProvFormat.JSON);
+				mimeTypeMap.put(ProvFormat.JSON, MediaType.APPLICATION_JSON);
+				mimeTypeRevMap.put(MediaType.APPLICATION_JSON, ProvFormat.JSON);
 				provTypeMap.put(ProvFormat.JSON, ProvFormatType.INPUTOUTPUT);
 				break;
 			case PDF:
-				extensionMap.put(ProvFormat.PDF, "pdf");
-				extensionRevMap.put("pdf", ProvFormat.PDF);
+				extensionMap.put(ProvFormat.PDF, EXTENSION_PDF);
+				extensionRevMap.put(EXTENSION_PDF, ProvFormat.PDF);
 				mimeTypeMap.put(ProvFormat.PDF, "application/pdf");
 				mimeTypeRevMap.put("application/pdf", ProvFormat.PDF);
 				provTypeMap.put(ProvFormat.PDF, ProvFormatType.OUTPUT);
 				break;
 			case PROVN:
-				extensionMap.put(ProvFormat.PROVN, "provn");
-				extensionRevMap.put("provn", ProvFormat.PROVN);
+				extensionMap.put(ProvFormat.PROVN, EXTENSION_PROVN);
+				extensionRevMap.put(EXTENSION_PROVN, ProvFormat.PROVN);
 				extensionRevMap.put("pn", ProvFormat.PROVN);
 				extensionRevMap.put("asn", ProvFormat.PROVN);
 				extensionRevMap.put("prov-asn", ProvFormat.PROVN);
-				mimeTypeMap.put(ProvFormat.PROVN, "text/provenance-notation");
+				mimeTypeMap.put(ProvFormat.PROVN, MEDIA_TEXT_PROVENANCE_NOTATION);
 				mimeTypeRevMap
-						.put("text/provenance-notation", ProvFormat.PROVN);
+						.put(MEDIA_TEXT_PROVENANCE_NOTATION, ProvFormat.PROVN);
 				provTypeMap.put(ProvFormat.PROVN, ProvFormatType.INPUTOUTPUT);
 				break;
 			case RDFXML:
-				extensionMap.put(ProvFormat.RDFXML, "rdf");
-				extensionRevMap.put("rdf", ProvFormat.RDFXML);
-				mimeTypeMap.put(ProvFormat.RDFXML, "application/rdf+xml");
-				mimeTypeRevMap.put("application/rdf+xml", ProvFormat.RDFXML);
+				extensionMap.put(ProvFormat.RDFXML, EXTENSION_RDF);
+				extensionRevMap.put(EXTENSION_RDF, ProvFormat.RDFXML);
+				mimeTypeMap.put(ProvFormat.RDFXML, MEDIA_APPLICATION_RDF_XML);
+				mimeTypeRevMap.put(MEDIA_APPLICATION_RDF_XML, ProvFormat.RDFXML);
 				provTypeMap.put(ProvFormat.RDFXML, ProvFormatType.INPUTOUTPUT);
 				break;
 			case SVG:
-				extensionMap.put(ProvFormat.SVG, "svg");
-				extensionRevMap.put("svg", ProvFormat.SVG);
-				mimeTypeMap.put(ProvFormat.SVG, "image/svg+xml");
-				mimeTypeRevMap.put("image/svg+xml", ProvFormat.SVG);
+				extensionMap.put(ProvFormat.SVG, EXTENSION_SVG);
+				extensionRevMap.put(EXTENSION_SVG, ProvFormat.SVG);
+				mimeTypeMap.put(ProvFormat.SVG, MEDIA_IMAGE_SVG_XML);
+				mimeTypeRevMap.put(MEDIA_IMAGE_SVG_XML, ProvFormat.SVG);
 				provTypeMap.put(ProvFormat.SVG, ProvFormatType.OUTPUT);
 				break;
 			case TRIG:
-				extensionMap.put(ProvFormat.TRIG, "trig");
-				extensionRevMap.put("trig", ProvFormat.TRIG);
-				mimeTypeMap.put(ProvFormat.TRIG, "application/x-trig");
-				mimeTypeRevMap.put("application/x-trig", ProvFormat.TRIG);
+				extensionMap.put(ProvFormat.TRIG, EXTENSION_TRIG);
+				extensionRevMap.put(EXTENSION_TRIG, ProvFormat.TRIG);
+				mimeTypeMap.put(ProvFormat.TRIG, MEDIA_APPLICATION_X_TRIG);
+				mimeTypeRevMap.put(MEDIA_APPLICATION_X_TRIG, ProvFormat.TRIG);
 				provTypeMap.put(ProvFormat.TRIG, ProvFormatType.INPUTOUTPUT);
 				break;
 			case TURTLE:
-				extensionMap.put(ProvFormat.TURTLE, "ttl");
-				extensionRevMap.put("ttl", ProvFormat.TURTLE);
-				mimeTypeMap.put(ProvFormat.TURTLE, "text/turtle");
-				mimeTypeRevMap.put("text/turtle", ProvFormat.TURTLE);
+				extensionMap.put(ProvFormat.TURTLE, EXTENSION_TTL);
+				extensionRevMap.put(EXTENSION_TTL, ProvFormat.TURTLE);
+				mimeTypeMap.put(ProvFormat.TURTLE, MEDIA_TEXT_TURTLE);
+				mimeTypeRevMap.put(MEDIA_TEXT_TURTLE, ProvFormat.TURTLE);
 				provTypeMap.put(ProvFormat.TURTLE, ProvFormatType.INPUTOUTPUT);
 				break;
 			case XML:
-				extensionMap.put(ProvFormat.XML, "provx");
-				extensionRevMap.put("provx", ProvFormat.XML);
-				extensionRevMap.put("xml", ProvFormat.XML);
-				mimeTypeMap.put(ProvFormat.XML, "application/provenance+xml");
-				mimeTypeRevMap.put("application/provenance+xml", ProvFormat.XML);
+				extensionMap.put(ProvFormat.XML, EXTENSION_PROVX);
+				extensionRevMap.put(EXTENSION_PROVX, ProvFormat.XML);
+				extensionRevMap.put(EXTENSION_XML, ProvFormat.XML);
+				mimeTypeMap.put(ProvFormat.XML, MEDIA_APPLICATION_PROVENANCE_XML);
+				mimeTypeRevMap.put(MEDIA_APPLICATION_PROVENANCE_XML, ProvFormat.XML);
 				provTypeMap.put(ProvFormat.XML, ProvFormatType.INPUTOUTPUT);
 				break;
 			default:
@@ -186,7 +207,7 @@ public class InteropFramework {
 		return extension;
 	}
 
-	public String convertToMimeType(String type) {
+	public String convertExtensionToMediaType(String type) {
 		ProvFormat format = extensionRevMap.get(type);
 		if (format == null)
 			return null;
@@ -203,7 +224,7 @@ public class InteropFramework {
 
 	public static final String RDF_TURTLE = "turtle";
 	public static final String RDF_XML = "rdf/xml";
-	public static final String RDF_TRIG = "trig";
+	public static final String RDF_TRIG = EXTENSION_TRIG;
 	public static final String RDF_N3 = "n3";
 
 	public RDFFormat convert(String type) {
@@ -336,7 +357,7 @@ public class InteropFramework {
 					toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
 				}
 
-				toDot.convert(doc, dotFileOut, filename, "jpg", title);
+				toDot.convert(doc, dotFileOut, filename, EXTENSION_JPG, title);
 				tmp.delete();
 				break;
 			}
@@ -357,7 +378,7 @@ public class InteropFramework {
 					toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
 				}
 
-				toDot.convert(doc, dotFileOut, filename, "svg", title);
+				toDot.convert(doc, dotFileOut, filename, EXTENSION_SVG, title);
 				tmp.delete();
 				break;
 			}
@@ -593,6 +614,9 @@ public class InteropFramework {
 	    }
 	    return null;
 	}
+	
+	
+	
     public void run() {
         if (outfile == null)
             return;

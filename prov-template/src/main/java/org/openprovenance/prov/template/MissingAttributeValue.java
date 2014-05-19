@@ -26,10 +26,10 @@ public class MissingAttributeValue extends RuntimeException {
 	// TODO Auto-generated constructor stub
     }
 
-    public MissingAttributeValue(String message, Throwable cause,
+   /* public MissingAttributeValue(String message, Throwable cause,
 	    boolean enableSuppression, boolean writableStackTrace) {
 	super(message, cause, enableSuppression, writableStackTrace);
 	// TODO Auto-generated constructor stub
     }
-
+*/
 }

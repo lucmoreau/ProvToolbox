@@ -1,8 +1,12 @@
 package org.openprovenance.prov.notation;
+import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,7 +19,6 @@ import org.antlr.runtime.TokenStream;
 import  org.antlr.runtime.tree.CommonTree;
 import  org.antlr.runtime.tree.CommonTreeAdaptor;
 import  org.antlr.runtime.tree.TreeAdaptor;
-
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedNameExport;
@@ -122,6 +125,23 @@ public  class Utility {
         return s;
     }
 
+
+
+
+    public void convertBeanToASN(final Document doc, Writer writer, ProvFactory pFactory) {
+	QualifiedNameExport qExport = new QualifiedNameExport() {
+	    @Override
+	    public String qualifiedNameToString(QualifiedName qname) {
+		return doc.getNamespace().qualifiedNameToString(qname);
+	    }
+	};
+	NotationConstructor nc=new NotationConstructor(writer, qExport);
+        BeanTraversal bt=new BeanTraversal(nc, pFactory);
+        bt.convert(doc);
+        nc.flush();
+        nc.close();
+    }
+
     /* from http://www.antlr.org/wiki/display/ANTLR3/Interfacing+AST+with+Java */
     public void printTree(CommonTree t, int indent) {
         if ( t != null ) {
@@ -137,9 +157,19 @@ public  class Utility {
     
     public void writeTextToFile(String text,
                                 String filename) {
+	try {
+	    writeTextToFile(text, new FileWriter(filename));
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+    }
+	
+	
+    public void writeTextToFile(String text,
+                                Writer out) {	
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(filename));
+            writer = new BufferedWriter(out);
             writer.write(text);
         }
         catch (IOException e) {
@@ -157,6 +187,17 @@ public  class Utility {
 	String s=convertBeanToASN(doc, pFactory);
 	//System.out.println("printing" + s);
         writeTextToFile(s,filename);
+    }
+    
+    public void writeDocument(Document doc, OutputStream os, ProvFactory pFactory){
+	Writer writer=new OutputStreamWriter(os);
+	convertBeanToASN(doc, writer, pFactory);
+	try {
+	    writer.close();
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
     }
     
     public Document readDocument(String filename, ProvFactory pFactory) throws IOException, Throwable {

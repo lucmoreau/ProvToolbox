@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
@@ -42,6 +43,11 @@ public class Converter {
 
 	public void writeDocument(Document doc, String file) throws IOException {
 	    BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+	    gson.toJson(doc, writer);
+	    writer.close();
+	}
+	public void writeDocument(Document doc, Writer out) throws IOException {
+	    BufferedWriter writer = new BufferedWriter(out);
 	    gson.toJson(doc, writer);
 	    writer.close();
 	}

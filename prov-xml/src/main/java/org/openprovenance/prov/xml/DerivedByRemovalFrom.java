@@ -200,7 +200,7 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
         }
         return this.label;
     }
-
+    
     /**
      * Gets the value of the type property.
      * 

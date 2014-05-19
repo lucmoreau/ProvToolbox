@@ -2,6 +2,8 @@ package org.openprovenance.prov.interop;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -320,6 +322,129 @@ public class InteropFramework {
 			case JSON: {
 				new org.openprovenance.prov.json.Converter(pFactory).writeDocument(doc,
 						filename);
+				break;
+			}
+			case PDF: {
+				String configFile = null; // TODO: get it as option
+				File tmp = File.createTempFile("viz-", ".dot");
+
+				String dotFileOut = tmp.getAbsolutePath(); // give it as option,
+															// if not available
+															// create tmp file
+				ProvToDot toDot = (configFile == null) ? new ProvToDot(
+						ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
+						configFile);
+				toDot.convert(doc, dotFileOut, filename,title);
+				break;
+			}
+			case DOT: {
+				String configFile = null; // TODO: get it as option
+				ProvToDot toDot = (configFile == null) ? new ProvToDot(
+						ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
+						configFile);
+				toDot.convert(doc, filename,title);
+				break;
+			}
+			case JPEG: {
+				String configFile = null; // give it as option
+				File tmp = File.createTempFile("viz-", ".dot");
+
+				String dotFileOut = tmp.getAbsolutePath(); // give it as option,
+															// if not available
+															// create tmp file
+				ProvToDot toDot;
+				if (configFile != null) {
+					toDot = new ProvToDot(configFile);
+				} else {
+					toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
+				}
+
+				toDot.convert(doc, dotFileOut, filename, EXTENSION_JPG, title);
+				tmp.delete();
+				break;
+			}
+			case SVG: {
+				String configFile = null; // give it as option
+				File tmp = File.createTempFile("viz-", ".dot");
+
+				String dotFileOut = tmp.getAbsolutePath(); // give it as option,
+															// if not available
+															// create tmp file
+				// ProvToDot toDot=new ProvToDot((configFile==null)?
+				// "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml"
+				// : configFile);
+				ProvToDot toDot;
+				if (configFile != null) {
+					toDot = new ProvToDot(configFile);
+				} else {
+					toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
+				}
+
+				toDot.convert(doc, dotFileOut, filename, EXTENSION_SVG, title);
+				tmp.delete();
+				break;
+			}
+
+			default:
+				break;
+			}
+		} catch (JAXBException e) {
+			if (verbose != null)
+				e.printStackTrace();
+			throw new InteropException(e);
+
+		} catch (Exception e) {
+			if (verbose != null)
+				e.printStackTrace();
+			throw new InteropException(e);
+		}
+
+	}
+	
+	public void writeDocument(OutputStream os, MediaType mt, Document doc) {
+	    Namespace.withThreadNamespace(doc.getNamespace());
+	    
+	    String filename=null; //FIXME, must not use filename anylonger!
+		try {
+			ProvFormat format = mimeTypeRevMap.get(mt.toString());
+			if (format == null) {
+			    System.err.println("Unknown output format: " + mt);
+			    return;
+			}
+			logger.debug("writing " + format);
+			setNamespaces(doc);
+			switch (format) {
+			case PROVN: {
+			       System.out.println("now writing provn");
+				u.writeDocument(doc, os,pFactory);
+				       System.out.println("done writing provn");
+				break;
+			}
+			case XML: {
+				ProvSerialiser serial = ProvSerialiser
+						.getThreadProvSerialiser();
+				logger.debug("namespaces " + doc.getNamespace());
+				serial.serialiseDocument(os, doc, true);
+				break;
+			}
+			case TURTLE: {
+				new org.openprovenance.prov.rdf.Utility(pFactory,onto).dumpRDF(
+						doc, RDFFormat.TURTLE, filename);
+				break;
+			}
+			case RDFXML: {
+				new org.openprovenance.prov.rdf.Utility(pFactory,onto).dumpRDF(
+						doc, RDFFormat.RDFXML, filename);
+				break;
+			}
+			case TRIG: {
+				new org.openprovenance.prov.rdf.Utility(pFactory,onto).dumpRDF(
+						doc, RDFFormat.TRIG, filename);
+				break;
+			}
+			case JSON: {
+				new org.openprovenance.prov.json.Converter(pFactory).writeDocument(doc,
+						new OutputStreamWriter(os));
 				break;
 			}
 			case PDF: {

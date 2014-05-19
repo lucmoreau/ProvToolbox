@@ -353,7 +353,7 @@ public class Activity implements Equals, HashCode, ToString, org.openprovenance.
             toStringBuilder.append("id", theId);
         }
     }
-
+    
     public String toString() {
         final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
         toString(toStringBuilder);

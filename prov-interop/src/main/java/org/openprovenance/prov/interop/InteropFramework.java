@@ -57,6 +57,17 @@ public class InteropFramework {
 	public static final String MEDIA_IMAGE_SVG_XML = "image/svg+xml";
 	public static final String MEDIA_APPLICATION_RDF_XML = "application/rdf+xml";
 	public static final String MEDIA_TEXT_PROVENANCE_NOTATION = "text/provenance-notation";
+	
+	
+	public final static String [] ALL_PROV_MEDIA_TYPES= 
+		    new String[] { "text/turtle", 
+		                   "text/provenance-notation",
+		                   "application/provenance+xml",
+		                   "application/x-trig",
+		                   "application/rdf+xml", 
+		                   "application/json", 
+		                   "image/svg+xml"};
+	    
 
 	static Logger logger = Logger.getLogger(InteropFramework.class);
 

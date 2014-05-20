@@ -116,7 +116,6 @@ public  class Utility {
 		return doc.getNamespace().qualifiedNameToString(qname);
 	    }
 	};
-	System.out.println("***** covnertBeanToASN " +doc);
 	NotationConstructor nc=new NotationConstructor(writer, qExport);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
         bt.convert(doc);

@@ -549,7 +549,6 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	   .addAll(statements);
 	res.getStatementOrBundle()
 	   .addAll(bundles);
-	System.out.println("**** new Document " + res);
 	return res;
     }
 

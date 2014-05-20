@@ -596,7 +596,6 @@ public class TreeTraversal {
             for (int i=0; i< ast.getChildCount(); i++) {
                 Object o=convert(ast.getChild(i));            
             }
-            System.out.println("***** in parser " + namespace);
             return namespace;
 
 

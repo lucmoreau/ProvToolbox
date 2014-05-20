@@ -4,7 +4,6 @@ import java.util.Hashtable;
 
 import javax.xml.XMLConstants;
 
-
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.exception.QualifiedNameException;
 
@@ -40,6 +39,7 @@ public class Namespace implements QualifiedNameExport {
 	this.prefixes=tmp1;
 	this.namespaces=tmp2;
 	this.defaultNamespace=ns.defaultNamespace;
+	this.parent=ns.parent;
 	return this;
     }
     
@@ -276,7 +276,7 @@ public class Namespace implements QualifiedNameExport {
      }
 
     public String toString() {
-	return "[Namespace (" + defaultNamespace + ") " + prefixes + "]";
+	return "[Namespace (" + defaultNamespace + ") " + prefixes + ", parent: " + parent + "]";
     }
 
 

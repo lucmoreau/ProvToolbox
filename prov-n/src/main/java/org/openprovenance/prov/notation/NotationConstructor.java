@@ -289,10 +289,7 @@ public class NotationConstructor implements ModelConstructor {
         String s = "";
         s = s + keyword("endBundle");
         writeln(s);
-        
-        Namespace old=Namespace.getThreadNamespace();
-        Namespace.withThreadNamespace(old.getParent());
-        
+      
         return null;
     }
 

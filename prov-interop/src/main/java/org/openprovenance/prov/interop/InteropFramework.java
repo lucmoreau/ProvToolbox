@@ -25,8 +25,11 @@ import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.template.Expand;
+import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
 import org.openprovenance.prov.dot.ProvToDot;
 import org.openprovenance.prov.generator.GeneratorDetails;
 import org.openprovenance.prov.generator.GraphGenerator;
@@ -232,7 +235,7 @@ public class InteropFramework {
 	}
 
 	public void provn2html(String file, String file2)
-			throws java.io.IOException, JAXBException, Throwable {
+			throws java.io.IOException, JAXBException, RecognitionException {
 		Document doc = (Document) u.convertASNToJavaBean(file,pFactory);
 		String s = u.convertBeanToHTML(doc,pFactory);
 		u.writeTextToFile(s, file2);
@@ -257,15 +260,9 @@ public class InteropFramework {
 	}
 
 	/** Reads a file into java bean. */
-	public Object loadProvGraph(String filename) throws java.io.IOException,
-			JAXBException, Throwable {
-		try {
-			return loadProvKnownGraph(filename);
-		} catch (Throwable e) {
-			e.printStackTrace();
-			return null;
-			// return loadProvUnknownGraph(filename);
-		}
+	public Object loadProvGraph(String filename) {
+	    return loadProvKnownGraph(filename);
+		
 	}
 
 	public enum ProvFormat {
@@ -408,7 +405,7 @@ public class InteropFramework {
 				e.printStackTrace();
 			throw new InteropException(e);
 
-		} catch (Exception e) {
+		} catch (IOException e) {
 			if (verbose != null)
 				e.printStackTrace();
 			throw new InteropException(e);
@@ -596,16 +593,20 @@ public class InteropFramework {
 			}
 		} catch (IOException e) {
 			throw new InteropException(e);
-		} catch (Throwable e) {
-			e.printStackTrace();
+		} catch (RDFParseException e) {
 			throw new InteropException(e);
-
-		}
+		} catch (RDFHandlerException e) {
+			throw new InteropException(e);
+		} catch (JAXBException e) {
+			throw new InteropException(e);
+		} catch (RecognitionException e) {
+			throw new InteropException(e);
+		} 
 
 	}
 
 	public Object loadProvUnknownGraph(String filename)
-			throws java.io.IOException, JAXBException, Throwable {
+			 {
 
 		try {
 			Utility u = new Utility();
@@ -614,7 +615,9 @@ public class InteropFramework {
 			if (o != null) {
 				return o;
 			}
-		} catch (Throwable t1) {
+		} catch (RecognitionException t1) {
+			// OK, we failed, let's try next format.
+		} catch (IOException e) {
 			// OK, we failed, let's try next format.
 		}
 		try {
@@ -625,7 +628,7 @@ public class InteropFramework {
 			if (c != null) {
 				return c;
 			}
-		} catch (Throwable t2) {
+		} catch (JAXBException t2) {
 			// OK, we failed, let's try next format.
 		}
 
@@ -635,7 +638,7 @@ public class InteropFramework {
 			if (o != null) {
 				return o;
 			}
-		} catch (RuntimeException e) {
+		} catch (IOException e) {
 			// OK, we failed, let's try next format.
 
 		}
@@ -645,8 +648,10 @@ public class InteropFramework {
 			if (doc != null) {
 				return doc;
 			}
-		} catch (RuntimeException e) {
-			// OK, we failed, let's try next format
+		} catch (RDFParseException e) {
+		} catch (RDFHandlerException e) {
+		} catch (IOException e) {
+		} catch (JAXBException e) {
 		}
 		System.out.println("Unparseable format " + filename);
 		throw new UnsupportedOperationException();
@@ -754,55 +759,49 @@ public class InteropFramework {
 	    return null;
 	}
 	
-	
-	
     public void run() {
-        if (outfile == null)
-            return;
-        if (infile == null && generator==null)
-            return;
+	if (outfile == null)
+	    return;
+	if (infile == null && generator == null)
+	    return;
 
-        try {
-            Document doc;
-            if (infile!=null) {
-                doc= (Document) loadProvKnownGraph(infile);
-            } else {
-                String [] options=generator.split(":");
-                String noOfNodes=option(options,0);
-                String noOfEdges=option(options,1);
-                String firstNode=option(options,2);
-                String namespace="http://expample.org/";
-                String seed=option(options,3);
-                String term=option(options,4);
-                
-                if (term==null) term="e1";
-                
-                
-                GeneratorDetails gd=new GeneratorDetails(Integer.valueOf(noOfNodes), 
-                                                         Integer.valueOf(noOfEdges), 
-                                                         firstNode, 
-                                                         namespace, 
-                                                         (seed==null)?null:Long.valueOf(seed),
-                                                         term);
-                System.out.println(gd);
-                GraphGenerator gg=new GraphGenerator(gd, pFactory);
-                gg.generateElements();
+	Document doc;
+	if (infile != null) {
+	    doc = (Document) loadProvKnownGraph(infile);
+	} else {
+	    String[] options = generator.split(":");
+	    String noOfNodes = option(options, 0);
+	    String noOfEdges = option(options, 1);
+	    String firstNode = option(options, 2);
+	    String namespace = "http://expample.org/";
+	    String seed = option(options, 3);
+	    String term = option(options, 4);
 
-                doc=gg.getDetails().getDocument();                
-            }
-            if (bindings != null) {
-                Document docBindings = (Document) loadProvKnownGraph(bindings);
-                Document expanded = new Expand().expander(doc, outfile,
-                                                          docBindings);
-                writeDocument(outfile, expanded);
+	    if (term == null)
+		term = "e1";
 
-            } else {
-                writeDocument(outfile, doc);
-            }
-        } catch (Throwable e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+	    GeneratorDetails gd = new GeneratorDetails(
+						       Integer.valueOf(noOfNodes),
+						       Integer.valueOf(noOfEdges),
+						       firstNode,
+						       namespace,
+						       (seed == null) ? null
+							       : Long.valueOf(seed),
+						       term);
+	    System.out.println(gd);
+	    GraphGenerator gg = new GraphGenerator(gd, pFactory);
+	    gg.generateElements();
+
+	    doc = gg.getDetails().getDocument();
+	}
+	if (bindings != null) {
+	    Document docBindings = (Document) loadProvKnownGraph(bindings);
+	    Document expanded = new Expand().expander(doc, outfile, docBindings);
+	    writeDocument(outfile, expanded);
+
+	} else {
+	    writeDocument(outfile, doc);
+	}
 
     }
 

@@ -1,5 +1,4 @@
 package org.openprovenance.prov.notation;
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -42,7 +41,7 @@ public  class Utility {
 	
     }
 
-    public PROV_NParser getParserForFile(String file) throws java.io.IOException, Throwable {
+    public PROV_NParser getParserForFile(String file) throws java.io.IOException {
         CharStream input = new ANTLRFileStream(file);
         PROV_NLexer lex = new PROV_NLexer(input);
         CommonTokenStream tokens = new  CommonTokenStream(lex);
@@ -58,7 +57,7 @@ public  class Utility {
             }
         };
 
-    public CommonTree convertASNToTree(String file) throws java.io.IOException, Throwable {
+    public CommonTree convertASNToTree(String file) throws java.io.IOException, RecognitionException {
         PROV_NParser parser=getParserForFile(file);
 
         parser.setTreeAdaptor(adaptor);
@@ -93,7 +92,7 @@ public  class Utility {
         return s;
     }
     
-    public Object convertASNToJavaBean(String file, ProvFactory pFactory) throws java.io.IOException, Throwable {
+    public Object convertASNToJavaBean(String file, ProvFactory pFactory) throws java.io.IOException, RecognitionException {
         CommonTree tree=convertASNToTree(file);
         Object o=convertTreeToJavaBean(tree,pFactory);
         return o;

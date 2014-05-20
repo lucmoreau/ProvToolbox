@@ -528,6 +528,9 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	Document res = of.createDocument();
 	res.getStatementOrBundle()
 	   .addAll(graph.getStatementOrBundle());
+	if (graph.getNamespace()!=null) {
+	    res.setNamespace(new Namespace(graph.getNamespace()));
+	}
 	return res;
     }
 
@@ -546,6 +549,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	   .addAll(statements);
 	res.getStatementOrBundle()
 	   .addAll(bundles);
+	System.out.println("**** new Document " + res);
 	return res;
     }
 

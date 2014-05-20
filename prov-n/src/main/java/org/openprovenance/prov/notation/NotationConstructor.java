@@ -289,6 +289,10 @@ public class NotationConstructor implements ModelConstructor {
         String s = "";
         s = s + keyword("endBundle");
         writeln(s);
+        
+        Namespace old=Namespace.getThreadNamespace();
+        Namespace.withThreadNamespace(old.getParent());
+        
         return null;
     }
 
@@ -488,15 +492,29 @@ public class NotationConstructor implements ModelConstructor {
 
     @Override
     public void startBundle(QualifiedName bundleId, Namespace namespaces) {
+        
+        Namespace old=Namespace.getThreadNamespace();
+        Namespace bundleNamespace=new Namespace(namespaces);
+        bundleNamespace.setParent(old);
+        Namespace.withThreadNamespace(bundleNamespace);
+        
+        System.out.println("**** In startBundle " + bundleNamespace);
+        
         String s = keyword("bundle") + " " + qnExport.qualifiedNameToString(bundleId)
                 + breakline();
         s = s + processNamespaces(namespaces);
         writeln(s);
 
+
     }
 
     @Override
     public void startDocument(Namespace namespaces) {
+	Namespace docNamespace=new Namespace(namespaces);
+        Namespace.withThreadNamespace(docNamespace);
+        System.out.println("**** In startDocument " + namespaces);
+        System.out.println("**** In startDocument " + docNamespace);
+
         String s = keyword("document") + breakline();
         s = s + processNamespaces(namespaces);
         write(s);

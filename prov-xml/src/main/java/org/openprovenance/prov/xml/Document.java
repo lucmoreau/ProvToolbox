@@ -191,6 +191,8 @@ public class Document
             List<StatementOrBundle> theStatementOrBundle;
             theStatementOrBundle = this.getStatementOrBundle();
             toStringBuilder.append("statementOrBundle", theStatementOrBundle);
+            Namespace theNamespace=this.getNamespace();
+            toStringBuilder.append("namespace", theNamespace);
         }
     }
 

@@ -566,8 +566,8 @@ public class InteropFramework {
 				CommonTree tree = u.convertASNToTree(filename);
 				Object o = u.convertTreeToJavaBean(tree,pFactory);
 				Document doc=(Document)o;
-				Namespace ns=Namespace.gatherNamespaces(doc);
-                                doc.setNamespace(ns);
+				//Namespace ns=Namespace.gatherNamespaces(doc);
+                                //doc.setNamespace(ns);
 				return doc;
 			}
 			case RDFXML:

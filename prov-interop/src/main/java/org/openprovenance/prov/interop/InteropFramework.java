@@ -51,13 +51,17 @@ public class InteropFramework {
 	public static final String EXTENSION_JPG = "jpg";
 
 	public static final String MEDIA_IMAGE_JPEG = "image/jpeg";
+	public static final String MEDIA_IMAGE_SVG_XML = "image/svg+xml";
 	public static final String MEDIA_APPLICATION_PROVENANCE_XML = "application/provenance+xml";
 	public static final String MEDIA_TEXT_TURTLE = "text/turtle";
 	public static final String MEDIA_APPLICATION_X_TRIG = "application/x-trig";	
-	public static final String MEDIA_IMAGE_SVG_XML = "image/svg+xml";
 	public static final String MEDIA_APPLICATION_RDF_XML = "application/rdf+xml";
 	public static final String MEDIA_TEXT_PROVENANCE_NOTATION = "text/provenance-notation";
-	
+	public static final String MEDIA_APPLICATION_PDF = "application/pdf";
+	public static final String MEDIA_APPLICATION_JSON = MediaType.APPLICATION_JSON;
+	public static final String MEDIA_TEXT_HTML = MediaType.TEXT_HTML;
+	public static final String MEDIA_TEXT_PLAIN = MediaType.TEXT_PLAIN;
+
 	
 	public final static String [] ALL_PROV_MEDIA_TYPES= 
 		    new String[] { "text/turtle", 
@@ -153,8 +157,8 @@ public class InteropFramework {
 			case PDF:
 				extensionMap.put(ProvFormat.PDF, EXTENSION_PDF);
 				extensionRevMap.put(EXTENSION_PDF, ProvFormat.PDF);
-				mimeTypeMap.put(ProvFormat.PDF, "application/pdf");
-				mimeTypeRevMap.put("application/pdf", ProvFormat.PDF);
+				mimeTypeMap.put(ProvFormat.PDF, MEDIA_APPLICATION_PDF);
+				mimeTypeRevMap.put(MEDIA_APPLICATION_PDF, ProvFormat.PDF);
 				provTypeMap.put(ProvFormat.PDF, ProvFormatType.OUTPUT);
 				break;
 			case PROVN:
@@ -415,7 +419,6 @@ public class InteropFramework {
 	public void writeDocument(OutputStream os, MediaType mt, Document doc) {
 	    Namespace.withThreadNamespace(doc.getNamespace());
 	    
-	    String filename=null; //FIXME, must not use filename anylonger!
 		try {
 			ProvFormat format = mimeTypeRevMap.get(mt.toString());
 			if (format == null) {
@@ -440,17 +443,17 @@ public class InteropFramework {
 			}
 			case TURTLE: {
 				new org.openprovenance.prov.rdf.Utility(pFactory,onto).dumpRDF(
-						doc, RDFFormat.TURTLE, filename);
+						doc, RDFFormat.TURTLE, os);
 				break;
 			}
 			case RDFXML: {
 				new org.openprovenance.prov.rdf.Utility(pFactory,onto).dumpRDF(
-						doc, RDFFormat.RDFXML, filename);
+						doc, RDFFormat.RDFXML, os);
 				break;
 			}
 			case TRIG: {
 				new org.openprovenance.prov.rdf.Utility(pFactory,onto).dumpRDF(
-						doc, RDFFormat.TRIG, filename);
+						doc, RDFFormat.TRIG, os);
 				break;
 			}
 			case JSON: {
@@ -468,7 +471,7 @@ public class InteropFramework {
 				ProvToDot toDot = (configFile == null) ? new ProvToDot(
 						ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
 						configFile);
-				toDot.convert(doc, dotFileOut, filename,title);
+				toDot.convert(doc, dotFileOut, os,title);
 				break;
 			}
 			case DOT: {
@@ -476,7 +479,7 @@ public class InteropFramework {
 				ProvToDot toDot = (configFile == null) ? new ProvToDot(
 						ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
 						configFile);
-				toDot.convert(doc, filename,title);
+				toDot.convert(doc, os,title);
 				break;
 			}
 			case JPEG: {
@@ -493,7 +496,7 @@ public class InteropFramework {
 					toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
 				}
 
-				toDot.convert(doc, dotFileOut, filename, EXTENSION_JPG, title);
+				toDot.convert(doc, dotFileOut, os, EXTENSION_JPG, title);
 				tmp.delete();
 				break;
 			}
@@ -514,7 +517,7 @@ public class InteropFramework {
 					toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
 				}
 
-				toDot.convert(doc, dotFileOut, filename, EXTENSION_SVG, title);
+				toDot.convert(doc, dotFileOut, os, EXTENSION_SVG, title);
 				tmp.delete();
 				break;
 			}

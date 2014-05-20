@@ -1,10 +1,13 @@
 package org.openprovenance.prov.dot;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -227,17 +230,26 @@ public class ProvToDot {
     }
 
     public void convert(Document graph, String dotFile, String pdfFile, String title)
-        throws java.io.FileNotFoundException, java.io.IOException {
-        convert(graph,new File(dotFile), title);
-        Runtime runtime = Runtime.getRuntime();
-        @SuppressWarnings("unused")
-        java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
+	        throws java.io.FileNotFoundException, java.io.IOException {
+	        convert(graph,new File(dotFile), title);
+	        Runtime runtime = Runtime.getRuntime();
+	        @SuppressWarnings("unused")
+	        java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
+    }
+    
+    public void convert(Document graph, String dotFile, OutputStream pdfStream, String title)
+	        throws java.io.FileNotFoundException, java.io.IOException {
+	        convert(graph,new File(dotFile), title);
+	        Runtime runtime = Runtime.getRuntime();
+	        @SuppressWarnings("unused")
+	        java.lang.Process proc = runtime.exec("dot  -Tpdf " + dotFile);
+	        InputStream is=proc.getInputStream();
+                org.apache.commons.io.IOUtils.copy(is, pdfStream);            
     }
     public void convert(Document graph, String dotFile, String title)
 	        throws java.io.FileNotFoundException, java.io.IOException {
-	        convert(graph,new File(dotFile),title);
-	        
-	    }
+	        convert(graph,new File(dotFile),title);        
+    }
 	     
     public void convert(Document graph, String dotFile, String aFile, String type, String title)
 	        throws java.io.FileNotFoundException, java.io.IOException {
@@ -253,10 +265,24 @@ public class ProvToDot {
 			proc.waitFor();
 			System.err.println("exit value " + proc.exitValue());
 		} catch (InterruptedException e){};
+}
+
+    public void convert(Document graph, String dotFile, OutputStream os, String type, String title)
+	        throws java.io.FileNotFoundException, java.io.IOException {
+	        convert(graph,new File(dotFile),title);
+	        Runtime runtime = Runtime.getRuntime();
+	        
+	        java.lang.Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
+	        InputStream is=proc.getInputStream();
+                org.apache.commons.io.IOUtils.copy(is, os);         
+
     }
-    
+
     public void convert(Document graph, File file, String title) throws java.io.FileNotFoundException{
         OutputStream os=new FileOutputStream(file);
+        convert(graph, new PrintStream(os), title);
+    }
+    public void convert(Document graph, OutputStream os, String title) {
         convert(graph, new PrintStream(os), title);
     }
 

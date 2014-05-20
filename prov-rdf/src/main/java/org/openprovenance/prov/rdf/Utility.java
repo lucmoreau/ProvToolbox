@@ -3,17 +3,20 @@ package org.openprovenance.prov.rdf;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.URL;
+
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.rdf.collector.QualifiedCollector;
 import org.openprovenance.prov.rdf.collector.RdfCollector;
-
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.contextaware.ContextAwareRepository;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
@@ -53,11 +56,24 @@ public class Utility {
     }
 
     public void dumpRDF(Document document,
-			RDFFormat format, String filename) throws Exception {
+			RDFFormat format, String filename) {
+	dumpRDFInternal(document, format, filename);
+    }
+    
+    public void dumpRDF(Document document,
+			RDFFormat format, OutputStream os) {
+	dumpRDFInternal(document, format, os);
 	
+    }
 	
+    private void dumpRDFInternal(Document document,
+                         RDFFormat format, Object out) {
 	Repository myRepository = new SailRepository(new MemoryStore());
-	myRepository.initialize();
+	try {
+	    myRepository.initialize();
+	} catch (RepositoryException e) {
+	    throw new RdfConverterException("failed to initialize repository", e);
+	}
 	ContextAwareRepository rep=new ContextAwareRepository(myRepository); // was it necessary to create that?
 
 	RepositoryHelper rHelper = new RepositoryHelper();
@@ -75,9 +91,13 @@ public class Utility {
 	BeanTraversal bt = new BeanTraversal(rdfc,pFactory);
 	bt.convert(document);
 	
-
-	rHelper.dumpToRDF(filename, rep, format, 
-			  rdfc.getNamespace());
+	if (out instanceof String) {
+	    rHelper.dumpToRDF((String)out, rep, format, 
+	                      rdfc.getNamespace());
+	} else {
+	    rHelper.dumpToRDF(new OutputStreamWriter((OutputStream)out), rep, format, 
+	                      rdfc.getNamespace());
+	}
     }
     
 

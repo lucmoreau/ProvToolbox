@@ -64,6 +64,8 @@ public class InteropFramework {
 	public static final String MEDIA_APPLICATION_JSON = MediaType.APPLICATION_JSON;
 	public static final String MEDIA_TEXT_HTML = MediaType.TEXT_HTML;
 	public static final String MEDIA_TEXT_PLAIN = MediaType.TEXT_PLAIN;
+	public static final String MEDIA_TEXT_XML = MediaType.TEXT_XML;
+	public static final String MEDIA_APPLICATION_XML = MediaType.APPLICATION_XML;
 
 	
 	public final static String [] ALL_PROV_MEDIA_TYPES= 

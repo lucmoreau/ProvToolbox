@@ -2,6 +2,7 @@ package org.openprovenance.prov.interop;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -806,5 +807,96 @@ public class InteropFramework {
 	}
 
     }
+    
+    public Document readDocument(InputStream is, ProvFormat format) {
+	try {
+
+	    switch (format) {
+	    case DOT:
+	    case JPEG:
+	    case SVG:
+		throw new UnsupportedOperationException(); // we don't load PROV
+		// from these
+		// formats
+	    case JSON: {
+		return new org.openprovenance.prov.json.Converter(pFactory).readDocument(is);
+	    }
+	    case PROVN: {
+		Utility u = new Utility();
+		CommonTree tree = u.convertASNToTree(is);
+		Object o = u.convertTreeToJavaBean(tree, pFactory);
+		Document doc = (Document) o;
+		// Namespace ns=Namespace.gatherNamespaces(doc);
+		// doc.setNamespace(ns);
+		return doc;
+	    }
+	    case RDFXML:
+	    case TRIG:
+	    case TURTLE: {
+		throw new UnsupportedOperationException(); // FIXME: need to
+							   // support streams
+	    }
+	    case XML: {
+		ProvDeserialiser deserial = ProvDeserialiser.getThreadProvDeserialiser();
+		Document doc = deserial.deserialiseDocument(is);
+		Namespace ns = Namespace.gatherNamespaces(doc);
+		doc.setNamespace(ns);
+		return doc;
+	    }
+	    default: {
+		System.out.println("Unknown format " + format);
+		throw new UnsupportedOperationException();
+	    }
+	    }
+	} catch (IOException e) {
+	    throw new InteropException(e);
+	} catch (JAXBException e) {
+	    throw new InteropException(e);
+	} catch (RecognitionException e) {
+	    throw new InteropException(e);
+	}
+
+    }
+
+    
+    public Document readDocument(String url) throws IOException {
+	URL theURL = new URL(url);
+	URLConnection conn = connectWithRedirect(theURL);
+	if (conn==null) return null;
+
+
+	ProvFormat format = null;
+	String content_type = conn.getContentType();
+
+	logger.debug("Content-type: " + content_type);
+	if (content_type != null) {
+		// Need to trim optional parameters
+		// Content-Type: text/plain; charset=UTF-8
+		int end = content_type.indexOf(";");
+		if (end < 0) {
+			end = content_type.length();
+		}
+		String actual_content_type = content_type.substring(0, end)
+				.trim();
+		logger.debug("Found Content-type: " + actual_content_type);
+		// TODO: might be worth skipping if text/plain as that seems
+		// to be the
+		// default returned by unconfigured web servers
+		format = mimeTypeRevMap.get(actual_content_type);
+	}
+	logger.debug("Format after Content-type: " + format);
+
+	if (format == null) {
+		format = getTypeForFile(theURL.toString());
+	}
+	logger.debug("Format after extension: " + format);
+
+	
+
+	InputStream content_stream = conn.getInputStream();
+	
+	return readDocument(content_stream, format);
+    }
+    
 
 }

@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Writer;
 
 import org.openprovenance.prov.model.Document;
@@ -38,6 +40,12 @@ public class Converter {
 	@SuppressWarnings("unchecked")
 	public Document readDocument(String file) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
 	    Document doc = (Document) gson.fromJson(new BufferedReader(new FileReader(file)), class1);
+	    return doc;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Document readDocument(InputStream is) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
+	    Document doc = (Document) gson.fromJson(new BufferedReader(new InputStreamReader(is)), class1);
 	    return doc;
 	}
 

@@ -2,6 +2,7 @@ package org.openprovenance.prov.notation;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
@@ -9,6 +10,7 @@ import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.antlr.runtime.ANTLRInputStream;
 import  org.antlr.runtime.CommonTokenStream;
 import  org.antlr.runtime.ANTLRFileStream;
 import  org.antlr.runtime.CharStream;
@@ -43,6 +45,15 @@ public  class Utility {
 
     public PROV_NParser getParserForFile(String file) throws java.io.IOException {
         CharStream input = new ANTLRFileStream(file);
+        return getParserForCharStream(input);     
+    }
+    
+    public PROV_NParser getParserForStream(InputStream is) throws java.io.IOException {
+        CharStream input = new ANTLRInputStream(is);
+        return getParserForCharStream(input);     
+    }
+    public PROV_NParser getParserForCharStream(CharStream input) throws java.io.IOException {
+
         PROV_NLexer lex = new PROV_NLexer(input);
         CommonTokenStream tokens = new  CommonTokenStream(lex);
         //PROV_NParser parser = new PROV_NParser(tokens);
@@ -55,15 +66,22 @@ public  class Utility {
             public Object create(Token payload) {
                 return new CommonTree(payload);
             }
-        };
+    };
 
     public CommonTree convertASNToTree(String file) throws java.io.IOException, RecognitionException {
-        PROV_NParser parser=getParserForFile(file);
-
-        parser.setTreeAdaptor(adaptor);
-        PROV_NParser.document_return ret = parser.document();
-        CommonTree tree = (CommonTree)ret.getTree();
-        return tree;
+	PROV_NParser parser=getParserForFile(file);
+	return convertASNToTree(parser);
+    }
+    
+    public CommonTree convertASNToTree(InputStream is) throws java.io.IOException, RecognitionException {
+	PROV_NParser parser=getParserForStream(is);
+	return convertASNToTree(parser);
+    }
+    private CommonTree convertASNToTree(PROV_NParser parser) throws java.io.IOException, RecognitionException {
+	parser.setTreeAdaptor(adaptor);
+	PROV_NParser.document_return ret = parser.document();
+	CommonTree tree = (CommonTree)ret.getTree();
+	return tree;
     }
 
    

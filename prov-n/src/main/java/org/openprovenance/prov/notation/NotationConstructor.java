@@ -50,13 +50,11 @@ public class NotationConstructor implements ModelConstructor {
     boolean abbrev = false;
     final private BufferedWriter buffer;
 
-    final private QualifiedNameExport qnExport;
 
     public boolean standaloneExpression = false;
 
-    public NotationConstructor(Writer writer, QualifiedNameExport qnExport) {
+    public NotationConstructor(Writer writer) {
         this.buffer = new BufferedWriter(writer);
-        this.qnExport = qnExport;
     }
 
     public String breakline() {
@@ -106,7 +104,7 @@ public class NotationConstructor implements ModelConstructor {
     }
 
     public String idOrMarker(QualifiedName qn) {
-        return ((qn == null) ? MARKER : qnExport.qualifiedNameToString(qn));
+        return ((qn == null) ? MARKER : Namespace.getThreadNamespace().qualifiedNameToString(qn));
     }
 
     private String keyEntitySet(List<Entry> kes) {
@@ -455,7 +453,7 @@ public class NotationConstructor implements ModelConstructor {
     }
 
     private String optionalId(QualifiedName id) {
-        return ((id == null) ? "" : (qnExport.qualifiedNameToString(id) + ";"));
+        return ((id == null) ? "" : (Namespace.getThreadNamespace().qualifiedNameToString(id) + ";"));
     }
 
     public String processNamespaces(Namespace namespace) {
@@ -490,7 +488,7 @@ public class NotationConstructor implements ModelConstructor {
     @Override
     public void startBundle(QualifiedName bundleId, Namespace namespaces) {
    
-        String s = keyword("bundle") + " " + qnExport.qualifiedNameToString(bundleId)
+        String s = keyword("bundle") + " " + namespaces.qualifiedNameToString(bundleId)
                 + breakline();
         s = s + processNamespaces(namespaces);
         writeln(s);

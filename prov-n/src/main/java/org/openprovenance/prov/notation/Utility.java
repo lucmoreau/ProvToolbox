@@ -77,13 +77,7 @@ public  class Utility {
 
     public String convertBeanToHTML(final Document doc, ProvFactory pFactory) {
 	StringWriter writer=new StringWriter();
-	QualifiedNameExport qExport = new QualifiedNameExport() {
-	    @Override
-	    public String qualifiedNameToString(QualifiedName qname) {
-		return doc.getNamespace().qualifiedNameToString(qname);
-	    }
-	};
-	NotationConstructor nc=new HTMLConstructor(writer,qExport);
+	NotationConstructor nc=new HTMLConstructor(writer);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
         bt.convert(doc);
         nc.flush();
@@ -109,13 +103,7 @@ public  class Utility {
 
     public String convertBeanToASN(final Document doc, ProvFactory pFactory) {
 	StringWriter writer=new StringWriter();
-	QualifiedNameExport qExport = new QualifiedNameExport() {
-	    @Override
-	    public String qualifiedNameToString(QualifiedName qname) {
-		return doc.getNamespace().qualifiedNameToString(qname);
-	    }
-	};
-	NotationConstructor nc=new NotationConstructor(writer, qExport);
+	NotationConstructor nc=new NotationConstructor(writer);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
         bt.convert(doc);
         nc.flush();
@@ -128,13 +116,7 @@ public  class Utility {
 
 
     public void convertBeanToASN(final Document doc, Writer writer, ProvFactory pFactory) {
-	QualifiedNameExport qExport = new QualifiedNameExport() {
-	    @Override
-	    public String qualifiedNameToString(QualifiedName qname) {
-		return doc.getNamespace().qualifiedNameToString(qname);
-	    }
-	};
-	NotationConstructor nc=new NotationConstructor(writer, qExport);
+	NotationConstructor nc=new NotationConstructor(writer);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
         bt.convert(doc);
         nc.flush();

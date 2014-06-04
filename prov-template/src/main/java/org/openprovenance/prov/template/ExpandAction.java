@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template;
 
-import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedList;

@@ -97,6 +97,7 @@ public class InteropFramework {
 	final private String outfile;
 	final private String namespaces;
 	final private String title;
+	final private String layout;
 	final private String bindings;
 
 	public final Hashtable<ProvFormat, String> extensionMap;
@@ -108,12 +109,8 @@ public class InteropFramework {
 	final private String generator;
 
 
-	public InteropFramework () {
-	    this(null, null, null, null, null, null, null, null,null);
-	}
-
 	public InteropFramework(String verbose, String debug, String logfile,
-			String infile, String outfile, String namespaces, String title, String bindings, String generator) {
+			String infile, String outfile, String namespaces, String title, String layout, String bindings, String generator) {
 		this.verbose = verbose;
 		this.debug = debug;
 		this.logfile = logfile;
@@ -121,6 +118,7 @@ public class InteropFramework {
 		this.outfile = outfile;
 		this.namespaces = namespaces;
 		this.title=title;
+		this.layout=layout;
 		this.bindings=bindings;
 		this.generator=generator;
 		extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
@@ -349,6 +347,7 @@ public class InteropFramework {
 				ProvToDot toDot = (configFile == null) ? new ProvToDot(
 						ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
 						configFile);
+				toDot.setLayout(layout);
 				toDot.convert(doc, dotFileOut, filename,title);
 				break;
 			}
@@ -357,6 +356,7 @@ public class InteropFramework {
 				ProvToDot toDot = (configFile == null) ? new ProvToDot(
 						ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
 						configFile);
+				toDot.setLayout(layout);		
 				toDot.convert(doc, filename,title);
 				break;
 			}
@@ -373,7 +373,7 @@ public class InteropFramework {
 				} else {
 					toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
 				}
-
+				toDot.setLayout(layout);
 				toDot.convert(doc, dotFileOut, filename, EXTENSION_JPG, title);
 				tmp.delete();
 				break;
@@ -394,7 +394,7 @@ public class InteropFramework {
 				} else {
 					toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
 				}
-
+				toDot.setLayout(layout);
 				toDot.convert(doc, dotFileOut, filename, EXTENSION_SVG, title);
 				tmp.delete();
 				break;

@@ -21,6 +21,7 @@ public class CommandLineArguments {
     public static final String LOGFILE = "logfile";
     public static final String INFILE = "infile";
     public static final String TITLE = "title";
+    public static final String LAYOUT = "layout";
     public static final String GENERATOR = "generator";
 
     // see http://commons.apache.org/cli/usage.html
@@ -67,6 +68,12 @@ public class CommandLineArguments {
                 .withDescription("document title")
                 .create(TITLE);
 
+        Option layout = OptionBuilder
+                .withArgName("string")
+                .hasArg()
+                .withDescription("dot layout: circo, dot (default), fdp, neato, osage, sfdp, twopi ")
+                .create(LAYOUT);
+        
         Option generator = OptionBuilder
                 .withArgName("string")
                 .hasArg()
@@ -84,6 +91,7 @@ public class CommandLineArguments {
         options.addOption(outfile);
         options.addOption(namespaces);
         options.addOption(title);
+        options.addOption(layout);
         options.addOption(bindings);
         options.addOption(generator);
 
@@ -103,6 +111,7 @@ public class CommandLineArguments {
         String outfile = null;
         String namespaces = null;
         String title = null;
+        String layout = null;
         String bindings = null;
         String generator = null;
 
@@ -121,6 +130,7 @@ public class CommandLineArguments {
 	    if (line.hasOption(OUTFILE))    outfile    = line.getOptionValue(OUTFILE);
             if (line.hasOption(NAMESPACES)) namespaces = line.getOptionValue(NAMESPACES);
             if (line.hasOption(TITLE))      title = line.getOptionValue(TITLE);
+            if (line.hasOption(LAYOUT))      layout = line.getOptionValue(LAYOUT);
             if (line.hasOption(BINDINGS))   bindings = line.getOptionValue(BINDINGS);
             if (line.hasOption(GENERATOR))  generator = line.getOptionValue(GENERATOR);
 	    
@@ -143,6 +153,7 @@ public class CommandLineArguments {
                                                           outfile,
                                                           namespaces,
                                                           title,
+                                                          layout,
                                                           bindings,
                                                           generator);
             interop.run();

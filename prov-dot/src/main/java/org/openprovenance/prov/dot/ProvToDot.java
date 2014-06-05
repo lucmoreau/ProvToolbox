@@ -1,13 +1,10 @@
 package org.openprovenance.prov.dot;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -999,6 +996,7 @@ public class ProvToDot {
     String name;
     String defaultAccountLabel;
     String defaultAccountColor;
+    private String layout;
 
     /* make name compatible with dot notation*/
     
@@ -1062,6 +1060,9 @@ public class ProvToDot {
 
     void prelude(Document doc, PrintStream out) {
         out.println("digraph \"" + name + "\" { size=\"16,12\"; rankdir=\"BT\"; ");
+        if (layout!=null) {
+            out.println("layout=\"" + layout + "\"; ");
+        }
     }
 
     void postlude(Document doc, PrintStream out) {
@@ -1077,6 +1078,11 @@ public class ProvToDot {
 
     void postlude(NamedBundle doc, PrintStream out) {
         out.println("}");
+    }
+
+    public void setLayout(String layout) {
+	this.layout=layout;
+	
     }
 
 

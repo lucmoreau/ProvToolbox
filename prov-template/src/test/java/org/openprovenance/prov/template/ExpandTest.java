@@ -54,7 +54,8 @@ public class ExpandTest extends TestCase {
 	
 	bun1.setNamespace(Namespace.gatherNamespaces(bun1));
 
-	doc1.setNamespace(bun1.getNamespace());
+	//doc1.setNamespace(bun1.getNamespace());
+	doc1.setNamespace(new Namespace());
 	
 	new Utility().writeDocument(doc1, out, pf);
 	//InteropFramework inf=new InteropFramework();
@@ -85,7 +86,8 @@ public class ExpandTest extends TestCase {
 	
 	bun1.setNamespace(Namespace.gatherNamespaces(bun1));
 
-	doc1.setNamespace(bun1.getNamespace());
+	//doc1.setNamespace(bun1.getNamespace());
+	doc1.setNamespace(new Namespace());
 	
 	//System.out.println(bun1.getNamespace());
 		

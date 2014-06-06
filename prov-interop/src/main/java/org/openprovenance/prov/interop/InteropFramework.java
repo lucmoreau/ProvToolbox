@@ -130,7 +130,11 @@ public class InteropFramework {
 		initializeExtensionMap(extensionMap, extensionRevMap);
 	}
 
-	public void initializeExtensionMap(
+	public InteropFramework() {
+	    this(null, null, null, null, null, null, null, null, null, null);
+	}
+
+    public void initializeExtensionMap(
 			Hashtable<ProvFormat, String> extensionMap,
 			Hashtable<String, InteropFramework.ProvFormat> extensionRevMap) {
 		for (ProvFormat f : ProvFormat.values()) {

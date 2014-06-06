@@ -54,7 +54,8 @@ public class Expand {
 
 	bun1.setNamespace(Namespace.gatherNamespaces(bun1));
 
-	doc1.setNamespace(bun1.getNamespace());
+	//doc1.setNamespace(bun1.getNamespace());
+	doc1.setNamespace(new Namespace());
 
 	return doc1;
     }

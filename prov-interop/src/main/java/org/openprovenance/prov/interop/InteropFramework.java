@@ -22,7 +22,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.template.Expand;
@@ -88,7 +88,7 @@ public class InteropFramework {
 //	public static final String PRIM_PREFIX = "prim";
 
 	final Utility u = new Utility();
-	final ProvFactory pFactory = ProvFactory.getFactory();
+	final ProvFactory pFactory = org.openprovenance.prov.xml.ProvFactory.getFactory();
 	final Ontology onto=new Ontology(pFactory);
 	final private String verbose;
 	final private String debug;
@@ -813,6 +813,9 @@ public class InteropFramework {
     }
     
     public Document readDocument(InputStream is, ProvFormat format) {
+    	return readDocument(is,format,pFactory);
+    }
+        public Document readDocument(InputStream is, ProvFormat format, ProvFactory pFactory) {
 	try {
 
 	    switch (format) {

@@ -22,8 +22,6 @@ import  org.antlr.runtime.tree.CommonTreeAdaptor;
 import  org.antlr.runtime.tree.TreeAdaptor;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.QualifiedNameExport;
-import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Document;
 
 

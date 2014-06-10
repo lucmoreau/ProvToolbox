@@ -4,8 +4,6 @@ import java.lang.reflect.Type;
 
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.QualifiedNameExport;
-import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ProvFactory;
 
 import com.google.gson.JsonElement;

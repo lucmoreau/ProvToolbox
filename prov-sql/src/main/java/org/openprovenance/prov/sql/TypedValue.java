@@ -183,8 +183,13 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
         this.avalue=value;
 	if (value!=null) {
 	    Object o=SQLValueConverter.convertFromAValue(value);
-	    if (o!=null)
-		this.value = o.toString();
+	    if (o!=null) {
+	    	if (o instanceof QualifiedName) {
+	    		this.value=o;
+	    	} else {
+	    		this.value = o.toString();
+	    	}
+	    }
 	}
     }
 

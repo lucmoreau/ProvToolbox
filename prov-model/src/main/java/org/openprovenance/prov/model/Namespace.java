@@ -1,6 +1,7 @@
 package org.openprovenance.prov.model;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
 
@@ -54,8 +55,8 @@ public class Namespace  {
     }
 
 
-    private Hashtable<String, String> prefixes=new Hashtable<String, String>();
-    private Hashtable<String, String> namespaces=new Hashtable<String, String>();
+    protected Map<String, String> prefixes=new Hashtable<String, String>();
+    protected Map<String, String> namespaces=new Hashtable<String, String>();
     private String defaultNamespace=null;
     
     private Namespace parent=null;
@@ -98,10 +99,10 @@ public class Namespace  {
 	this.defaultNamespace=defaultNamespace;
     }
     
-    public Hashtable<String, String> getPrefixes() {
+    public Map<String, String> getPrefixes() {
 	return prefixes;
     }
-    public Hashtable<String, String> getNamespaces() {
+    public Map<String, String> getNamespaces() {
 	return namespaces;
     }
      
@@ -197,6 +198,15 @@ public class Namespace  {
    	gatherer.register(bundle.getId());
    	Namespace ns=gatherer.getNamespace();
    	return ns;
+    }
+    
+    static public Namespace gatherNamespaces(NamedBundle bundle, ProvFactory pFactory) {
+   	NamespaceGatherer gatherer=new NamespaceGatherer();	
+   	u.forAllStatement(bundle.getStatement(), gatherer);
+   	gatherer.register(bundle.getId());
+   	Namespace ns=gatherer.getNamespace();
+   	Namespace ns2=pFactory.newNamespace(ns);
+   	return ns2;
     }
     
    

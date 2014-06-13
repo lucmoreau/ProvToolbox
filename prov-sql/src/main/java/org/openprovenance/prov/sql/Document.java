@@ -12,6 +12,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -244,13 +245,18 @@ public class Document
     
     transient Namespace namespace;
     
-    @Transient
-    public void setNamespace(Namespace ns) {
-        namespace=ns;       
-    }
-    @Transient
+
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.Namespace.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "NS")
     public Namespace getNamespace() {
         return namespace;
     }
+    
+    public void setNamespace(Namespace ns) {
+        namespace=ns;       
+    }
+    
 
 }

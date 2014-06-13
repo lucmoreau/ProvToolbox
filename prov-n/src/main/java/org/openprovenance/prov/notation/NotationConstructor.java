@@ -4,8 +4,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -458,7 +458,7 @@ public class NotationConstructor implements ModelConstructor {
     public String processNamespaces(Namespace namespace) {
         String s = "";
 
-        Hashtable<String, String> nss = namespace.getPrefixes();
+        Map<String, String> nss = namespace.getPrefixes();
         String def;
         if ((def = namespace.getDefaultNamespace()) != null) {
             s = s + convertDefaultNamespace("<" + def + ">") + breakline();

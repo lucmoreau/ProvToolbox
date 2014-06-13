@@ -11,6 +11,7 @@ import org.openprovenance.prov.model.Attribute.AttributeKind;
 
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.LiteralConstructor;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -202,6 +203,16 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 			String prefix) {
 		return new org.openprovenance.prov.sql.QualifiedName(namespace, local, prefix);
 	}
+	
+
+    public Namespace newNamespace(Namespace ns) {
+    	return new org.openprovenance.prov.sql.Namespace(ns);
+    }
+    
+    public Namespace newNamespace() {
+    	return new org.openprovenance.prov.sql.Namespace();
+    }
+    
 
 
 }

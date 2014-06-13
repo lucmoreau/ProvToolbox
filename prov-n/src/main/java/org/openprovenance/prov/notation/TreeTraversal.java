@@ -33,7 +33,7 @@ public class TreeTraversal {
         this.c=c;
         this.pFactory=pFactory;
         this.name=pFactory.getName();
-        this.namespace=new Namespace();
+        this.namespace=pFactory.newNamespace();
         this.namespace.addKnownNamespaces();
         
         //this.vconv=new ValueConverter(pFactory,null);
@@ -462,7 +462,7 @@ public class TreeTraversal {
 
         case PROV_NParser.BUNDLE:
 	    
-	    Namespace localNamespace=new Namespace();
+	    Namespace localNamespace=pFactory.newNamespace();
 	    localNamespace.addKnownNamespaces();
             localNamespace.setParent(namespace);
 

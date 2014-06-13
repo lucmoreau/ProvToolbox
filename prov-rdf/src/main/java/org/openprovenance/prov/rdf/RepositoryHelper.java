@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.openprovenance.prov.model.Namespace;
 import org.openrdf.repository.RepositoryException;
@@ -22,7 +23,7 @@ public class RepositoryHelper {
 
 
     public void setPrefixes(RDFHandler serialiser,
-                            Hashtable<String,String> prefixes) throws org.openrdf.rio.RDFHandlerException {
+                            Map<String,String> prefixes) throws org.openrdf.rio.RDFHandlerException {
             serialiser.handleNamespace("prov","http://www.w3.org/ns/prov#");
             for (String key: prefixes.keySet()) {
                 serialiser.handleNamespace(key,prefixes.get(key));
@@ -49,7 +50,7 @@ public class RepositoryHelper {
 	                          ContextAwareRepository manager,
 	                          RDFFormat format,
 	                          Namespace namespace) {	
-	Hashtable<String,String> prefixes=namespace.getPrefixes();
+	Map<String,String> prefixes=namespace.getPrefixes();
 	if (namespace.getDefaultNamespace()!=null) {
 	    // TODO not sure how to handle this?
 	}

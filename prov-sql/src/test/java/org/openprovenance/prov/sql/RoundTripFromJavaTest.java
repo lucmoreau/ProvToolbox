@@ -51,11 +51,6 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
      * @return the suite of tests being tested
      */
 
-    public void updateNamespaces(Document doc) {
-	Namespace ns=Namespace.gatherNamespaces(doc);
-	doc.setNamespace(ns);
-    }
-   
     public String extension() {
 	return ".xml";
     }
@@ -183,6 +178,12 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
     }
     ///////////////////////////////////////////////////////////////////////
 
- 
+    @Override
+    public void updateNamespaces(org.openprovenance.prov.model.Document doc) {
+	Namespace ns=Namespace.gatherNamespaces(doc);
+	Namespace ns2=new org.openprovenance.prov.sql.Namespace(ns);
+	doc.setNamespace(ns2);
+    }
+
 
 }

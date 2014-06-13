@@ -1490,4 +1490,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         
     }
 
+    public Namespace newNamespace(Namespace ns) {
+	return new Namespace(ns);
+    }
+
+    public Namespace newNamespace() {
+	return new Namespace();
+    }
+
 }

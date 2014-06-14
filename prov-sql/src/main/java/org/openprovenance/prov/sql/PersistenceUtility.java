@@ -188,6 +188,11 @@ public class PersistenceUtility {
         commitTransaction();
         return doc;
     }
+    
+    public <DOC> DOC findInTransaction(Class<DOC> cl, Long id) {
+        DOC doc=entityManager.find(cl, id);
+        return doc;
+    }
 
     public Query createQuery(String q) {
 	return entityManager.createQuery(q);

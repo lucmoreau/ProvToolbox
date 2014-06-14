@@ -103,6 +103,13 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
                 .getDeclaredMethod("set" + field, types.get(o.getClass())[i]);
         return method;
     }
+    
+    static public void putFields(Class cl, String[] str) {
+	fields.put(cl,str);
+    }
+    static public void putTypes(Class cl, Class[] str) {
+	types.put(cl,str);
+    }
 
     static {
         fields.put(Activity.class, new String[] { "Id", "StartTime", "EndTime", "Other" });
@@ -110,47 +117,47 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         fields.put(Agent.class, new String[] { "Id", "Other" });
 
         fields.put(Used.class, new String[] { "Id", "Activity", "Entity",
-                                             "Time", "Other" });
+					      "Time", "Other" });
         fields.put(WasGeneratedBy.class, new String[] { "Id", "Entity",
-                                                       "Activity", "Time",
-                                                       "Other" });
+							"Activity", "Time",
+							"Other" });
         fields.put(WasInvalidatedBy.class, new String[] { "Id", "Entity",
-                                                         "Activity", "Time",
-                                                         "Other" });
+							  "Activity", "Time",
+							  "Other" });
         fields.put(WasStartedBy.class, new String[] { "Id", "Activity",
-                                                     "Trigger", "Starter",
-                                                     "Time", "Other" });
+						      "Trigger", "Starter",
+						      "Time", "Other" });
         // 0 , 1 , 2 , 3 , 4 , 5
         // length=6
         // firstTimeIndex=4
         // last index=5
         fields.put(WasEndedBy.class, new String[] { "Id", "Activity",
-                                                   "Trigger", "Ender", "Time",
-                                                   "Other" });
+						    "Trigger", "Ender", "Time",
+						    "Other" });
         fields.put(WasInformedBy.class, new String[] { "Id", "Informed", "Informant",
-                                                      "Other" });
+						       "Other" });
         fields.put(WasDerivedFrom.class, new String[] { "Id",
-                                                       "GeneratedEntity",
-                                                       "UsedEntity",
-                                                       "Activity",
-                                                       "Generation", "Usage",
-                                                       "Other" });
+							"GeneratedEntity",
+							"UsedEntity",
+							"Activity",
+							"Generation", "Usage",
+							"Other" });
         fields.put(WasInfluencedBy.class, new String[] { "Id", "Influencee",
-                                                        "Influencer", "Others" });
+							 "Influencer", "Others" });
         fields.put(WasAttributedTo.class, new String[] { "Id", "Entity",
-                                                        "Agent", "Other" });
+							 "Agent", "Other" });
         fields.put(WasAssociatedWith.class, new String[] { "Id", "Activity",
-                                                          "Agent", "Plan",
-                                                          "Other" });
+							   "Agent", "Plan",
+							   "Other" });
         fields.put(ActedOnBehalfOf.class, new String[] { "Id", "Delegate",
-                                                        "Responsible",
-                                                        "Activity", "Others" });
+							 "Responsible",
+							 "Activity", "Others" });
         fields.put(SpecializationOf.class, new String[] { "SpecificEntity",
-        "GeneralEntity" });
+							  "GeneralEntity" });
         fields.put(AlternateOf.class, new String[] { "Alternate2",
-        "Alternate2" });
+						     "Alternate2" });
         fields.put(HadMember.class, new String[] { "Collection",
-        "Entity" });
+						   "Entity" });
 
 	// never use the accessor id for Mention, since it is not defined.
 	// However, this allows iterations over this data structure to be performed
@@ -163,77 +170,77 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         
 
         types.put(Entity.class, new Class[] { QualifiedName.class, 
-            Object.class });
+					      Object.class });
         types.put(Agent.class, new Class[] { QualifiedName.class, 
-            Object.class });
+					     Object.class });
         types.put(Activity.class, new Class[] { QualifiedName.class, 
-            XMLGregorianCalendar.class,
-            XMLGregorianCalendar.class,
-            Object.class });
+						XMLGregorianCalendar.class,
+						XMLGregorianCalendar.class,
+						Object.class });
         types.put(Used.class, new Class[] { QualifiedName.class, QualifiedName.class,
-                                           QualifiedName.class,
-                                           XMLGregorianCalendar.class,
-                                           Object.class });
+					    QualifiedName.class,
+					    XMLGregorianCalendar.class,
+					    Object.class });
         types.put(WasGeneratedBy.class,
                   new Class[] { QualifiedName.class, QualifiedName.class,
-                               QualifiedName.class, XMLGregorianCalendar.class,
-                               Object.class });
+				QualifiedName.class, XMLGregorianCalendar.class,
+				Object.class });
         types.put(WasInvalidatedBy.class,
                   new Class[] { QualifiedName.class, QualifiedName.class,
-                               QualifiedName.class, XMLGregorianCalendar.class,
-                               Object.class });
+				QualifiedName.class, XMLGregorianCalendar.class,
+				Object.class });
         types.put(WasStartedBy.class, new Class[] { QualifiedName.class,
-                                                   QualifiedName.class,
-                                                   QualifiedName.class,
-                                                   QualifiedName.class,
-                                                   XMLGregorianCalendar.class,
-                                                   Object.class });
+						    QualifiedName.class,
+						    QualifiedName.class,
+						    QualifiedName.class,
+						    XMLGregorianCalendar.class,
+						    Object.class });
         types.put(WasEndedBy.class, new Class[] { QualifiedName.class,
-                                                 QualifiedName.class,
-                                                 QualifiedName.class,
-                                                 QualifiedName.class,
-                                                 XMLGregorianCalendar.class,
-                                                 Object.class });
+						  QualifiedName.class,
+						  QualifiedName.class,
+						  QualifiedName.class,
+						  XMLGregorianCalendar.class,
+						  Object.class });
         types.put(WasInformedBy.class, new Class[] { QualifiedName.class,
-                                                    QualifiedName.class,
-                                                    QualifiedName.class,
-                                                    Object.class });
+						     QualifiedName.class,
+						     QualifiedName.class,
+						     Object.class });
         types.put(WasDerivedFrom.class, new Class[] { QualifiedName.class,
-                                                     QualifiedName.class,
-                                                     QualifiedName.class,
-                                                     QualifiedName.class,
-                                                     QualifiedName.class,
-                                                     QualifiedName.class,
-                                                     Object.class });
+						      QualifiedName.class,
+						      QualifiedName.class,
+						      QualifiedName.class,
+						      QualifiedName.class,
+						      QualifiedName.class,
+						      Object.class });
         types.put(WasInfluencedBy.class, new Class[] { QualifiedName.class,
-                                                      QualifiedName.class,
-                                                      QualifiedName.class,
-                                                      Object.class });
+						       QualifiedName.class,
+						       QualifiedName.class,
+						       Object.class });
         types.put(WasAttributedTo.class, new Class[] { QualifiedName.class,
-                                                      QualifiedName.class,
-                                                      QualifiedName.class,
-                                                      Object.class });
+						       QualifiedName.class,
+						       QualifiedName.class,
+						       Object.class });
         types.put(WasAssociatedWith.class, new Class[] { QualifiedName.class,
-                                                        QualifiedName.class,
-                                                        QualifiedName.class,
-                                                        QualifiedName.class,
-                                                        Object.class });
+							 QualifiedName.class,
+							 QualifiedName.class,
+							 QualifiedName.class,
+							 Object.class });
         types.put(ActedOnBehalfOf.class, new Class[] { QualifiedName.class,
-                                                      QualifiedName.class,
-                                                      QualifiedName.class,
-                                                      QualifiedName.class,
-                                                      Object.class });
+						       QualifiedName.class,
+						       QualifiedName.class,
+						       QualifiedName.class,
+						       Object.class });
         types.put(SpecializationOf.class, new Class[] { QualifiedName.class,
-                                                       QualifiedName.class });
+							QualifiedName.class });
         types.put(MentionOf.class, new Class[] { QualifiedName.class,
 						 QualifiedName.class,
 						 QualifiedName.class,
 						 QualifiedName.class });
         types.put(AlternateOf.class, new Class[] { QualifiedName.class,
-            QualifiedName.class });
+						   QualifiedName.class });
         
         types.put(HadMember.class, new Class[] { QualifiedName.class,
-            Object.class });
+						 Object.class });
     }
 
     @SuppressWarnings("unchecked")

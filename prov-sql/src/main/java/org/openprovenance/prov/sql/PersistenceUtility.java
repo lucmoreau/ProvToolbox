@@ -7,6 +7,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import javax.management.RuntimeErrorException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -173,7 +174,7 @@ public class PersistenceUtility {
             return doc;
 	} catch (RuntimeException re) {
 	    re.printStackTrace();
-	    return null;
+	    return null;  // FIXME: why not re-throw exception
 	}
 	finally {
             commitTransaction();
@@ -181,6 +182,21 @@ public class PersistenceUtility {
      
     }            
     
+    public IncrementalDocument persist(IncrementalDocument doc) {
+    	try {
+                beginTransaction();
+                entityManager.persist(doc);   
+                return doc;
+    	} catch (RuntimeException re) {
+    	    re.printStackTrace();
+    	    throw re;
+    	}
+    	finally {
+                commitTransaction();
+    	}
+         
+        }            
+        
     
     public <DOC> DOC find(Class<DOC> cl, Long id) {
         beginTransaction();

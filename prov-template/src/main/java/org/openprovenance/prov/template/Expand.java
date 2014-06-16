@@ -32,7 +32,13 @@ public class Expand {
     static final String LINKED = "linked";
     static final String LINKED_URI = TMPL_NS + LINKED;
     static final String LABEL = "label";
+    static final String TIME = "time";
     static final String LABEL_URI = TMPL_NS + LABEL;
+    static final String TIME_URI = TMPL_NS + TIME;
+    
+    public Expand(ProvFactory pf) {
+    	this.pf=pf;
+    }
 
     Document expand(Document template, Bindings bindings) {
 	return null;
@@ -43,7 +49,7 @@ public class Expand {
 
 	NamedBundle bun = (NamedBundle) docIn.getStatementOrBundle().get(0);
 
-	Bindings bindings1 = Bindings.fromDocument(docBindings);
+	Bindings bindings1 = Bindings.fromDocument(docBindings,pf);
 
 	Groupings grp1 = Groupings.fromDocument(docIn);
 	System.out.println("expander: Found groupings " + grp1);
@@ -60,8 +66,10 @@ public class Expand {
 	return doc1;
     }
 
+    private final ProvFactory pf ;
+
+    
     static ProvUtilities u = new ProvUtilities();
-    static ProvFactory pf = new org.openprovenance.prov.xml.ProvFactory();
 
     public List<StatementOrBundle> expand(Statement statement,
 					  Bindings bindings1, Groupings grp1) {
@@ -99,7 +107,7 @@ public class Expand {
 								  grp1, index);
 	    Hashtable<QualifiedName, List<TypedValue>> env2;
 
-	    env2 = us1.getAttr(freeAttributeVariables(statement),
+	    env2 = us1.getAttr(freeAttributeVariables(statement,pf),
 				   bindings1, (UsingIterator) iter);
 
 	    ExpandAction action = new ExpandAction(pf, u, this, env, env2,
@@ -143,7 +151,7 @@ public class Expand {
 	return result;
     }
 
-    static public HashSet<QualifiedName> freeAttributeVariables(Statement statement) {
+    static public HashSet<QualifiedName> freeAttributeVariables(Statement statement,ProvFactory pf) {
 	HashSet<QualifiedName> result = new HashSet<QualifiedName>();
 	Collection<Attribute> ll = pf.getAttributes(statement);
 	for (Attribute attr : ll) {

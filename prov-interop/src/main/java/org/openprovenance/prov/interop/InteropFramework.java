@@ -803,7 +803,7 @@ public class InteropFramework {
 	}
 	if (bindings != null) {
 	    Document docBindings = (Document) loadProvKnownGraph(bindings);
-	    Document expanded = new Expand().expander(doc, outfile, docBindings);
+	    Document expanded = new Expand(pFactory).expander(doc, outfile, docBindings);
 	    writeDocument(outfile, expanded);
 
 	} else {

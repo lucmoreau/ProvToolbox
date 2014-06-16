@@ -24,9 +24,7 @@ public class Groupings {
     final private List<List<QualifiedName>> variables;
     
     
-    
-    ProvFactory pf=new org.openprovenance.prov.xml.ProvFactory();
-    static ProvUtilities u= new ProvUtilities();
+        static ProvUtilities u= new ProvUtilities();
 
     
     public Groupings() {

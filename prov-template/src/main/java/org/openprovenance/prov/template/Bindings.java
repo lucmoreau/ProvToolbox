@@ -31,18 +31,21 @@ public class Bindings {
     final private Hashtable<QualifiedName, List<QualifiedName>> variables;
     final private Hashtable<QualifiedName, List<List<TypedValue>>> attributes;
     
-    ProvFactory pf=new org.openprovenance.prov.xml.ProvFactory();
+    final ProvFactory pf;
     static ProvUtilities u= new ProvUtilities();
 
-    public Bindings() {
+    public Bindings( ProvFactory pf) {
 	this(new Hashtable<QualifiedName, List<QualifiedName>>(), 
-	     new Hashtable<QualifiedName, List<List<TypedValue>>>());
+	     new Hashtable<QualifiedName, List<List<TypedValue>>>(),
+	     pf);
     }
     
     public Bindings(Hashtable<QualifiedName, List<QualifiedName>> variables,
-                    Hashtable<QualifiedName, List<List<TypedValue>>> attributes) {
+                    Hashtable<QualifiedName, List<List<TypedValue>>> attributes,
+                    ProvFactory pf) {
 	this.variables=variables;
 	this.attributes=attributes;
+	this.pf=pf;
     }
 
     @Override
@@ -136,8 +139,8 @@ public class Bindings {
     }
     
     
-    public static Bindings fromDocument(Document doc) {
-        Bindings result=new Bindings();
+    public static Bindings fromDocument(Document doc,ProvFactory pf) {
+        Bindings result=new Bindings(pf);
         
         List<Entity> entities=u.getEntity(doc);
         for (Entity entity: entities) {

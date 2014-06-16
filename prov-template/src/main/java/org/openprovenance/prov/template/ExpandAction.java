@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
@@ -17,6 +19,7 @@ import org.openprovenance.prov.model.DictionaryMembership;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.HasOther;
+import org.openprovenance.prov.model.HasTime;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.ProvFactory;
@@ -271,53 +274,77 @@ public class ExpandAction implements StatementAction {
 
             Collection<Attribute> attributes=pf.getAttributes(srcStatement);
             Collection<Attribute> dstAttributes=new LinkedList<Attribute>();
+            String xsdQNameUri = pf.getName().XSD_QNAME.getUri();
+
             for (Attribute attribute: attributes) {
-                if (pf.getName().XSD_QNAME.equals(attribute.getType())) {
+            	System.out.println("***** processing " + attribute + " " + attribute.getType().getUri() + " " + xsdQNameUri);
+				if (xsdQNameUri.equals(attribute.getType().getUri())) {
+	            	System.out.println("   ***** processing " + attribute + " " + attribute.getType().getUri() + " " + xsdQNameUri);
+
                     Object o=attribute.getValue();
                     if (o instanceof QualifiedName) {
                         QualifiedName qn1=(QualifiedName)o;
+                        
+                        System.out.println("   ***** processing " + qn1);
+                        
                         if (Expand.isVariable(qn1)) {
                             List<TypedValue> vals=env2.get(qn1);
-                            if (vals==null) {
-                        	if (Expand.isGensymVariable(qn1)) {
-                        	    dstAttributes.add(pf.newAttribute(attribute.getElementName(),
-                        	                                      getUUIDQualifiedName(),
-                        	                                      pf.getName().XSD_QNAME));
-                        	}
-                        	// if not a vargen, then simply drop this attribute
-                        	//dstAttributes.add(attribute);
+                            System.out.println("    !***** processing " + qn1 + " " + vals + " env2 " + env2);
 
-                        
+                            if (vals==null) {
+                            	if (Expand.isGensymVariable(qn1)) {
+                            		dstAttributes.add(pf.newAttribute(attribute.getElementName(),
+                            				                          getUUIDQualifiedName(),
+                            				                          pf.getName().XSD_QNAME));
+                            	}
+                            	// 	if not a vargen, then simply drop this attribute
+                            	//dstAttributes.add(attribute);                        
                             } else {
-                        	found=true;
-                        	for (TypedValue val: vals) {
-                        	    if (Expand.LABEL_URI.equals(attribute.getElementName().getUri())) {
-                        		dstAttributes.add(pf.newAttribute(pf.getName().PROV_LABEL, 
-                        		                                  val.getValue(), 
-                        		                                  val.getType()));
-                        	    } else {
-                        		dstAttributes.add(pf.newAttribute(attribute.getElementName(), 
-                        		                                  val.getValue(), 
-                        		                                  val.getType()));
-                        	    }
-                        	}
+                            	found=true;
+                        		processTemplateAttributes(dstStatement, 
+                        								  dstAttributes, 
+                        								  attribute,
+                        								  vals);
                             }
                         } else { // no variable here
                             dstAttributes.add(attribute); 
-
                         }
                     } else { // not even a qualified name
-                	dstAttributes.add(attribute); 
+                		dstAttributes.add(attribute); 
                     }
                 } else { //not xsd_qname
                     dstAttributes.add(attribute);
-                    
                 }
             }
             pf.setAttributes((HasOther) dstStatement, dstAttributes);
         }       
         return found;
     }
+
+	public void processTemplateAttributes(Statement dstStatement, 
+			                              Collection<Attribute> dstAttributes,
+			                              Attribute attribute, 
+			                              List<TypedValue> vals) {
+
+		for (TypedValue val: vals) {
+		    String elementName = attribute.getElementName().getUri();
+			if (Expand.LABEL_URI.equals(elementName)) {
+				dstAttributes.add(pf.newAttribute(pf.getName().PROV_LABEL, 
+						                         val.getValue(), 
+						                         val.getType()));
+		    } else {
+			    if (Expand.TIME_URI.equals(elementName)) {
+			    	if (dstStatement instanceof HasTime) {
+			    		((HasTime)dstStatement).setTime(pf.newISOTime((String)val.getValue()));
+			    	}
+				    } else {
+				    	dstAttributes.add(pf.newAttribute(attribute.getElementName(), 
+                                val.getValue(), 
+                                val.getType()));
+				    }
+		    }
+		}
+	}
 
     public QualifiedName getUUIDQualifiedName() {
 	UUID uuid=UUID.randomUUID();

@@ -35,7 +35,7 @@ public class BindingTest extends TestCase {
 
     public void testBindings1() {
         
-        Bindings bindings1=new Bindings();
+        Bindings bindings1=new Bindings(pf);
 
         bindings1.addVariable(var_a,
                               pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -68,7 +68,7 @@ public class BindingTest extends TestCase {
     
     public void testBindings20() {
         
-        Bindings bindings1=new Bindings();
+        Bindings bindings1=new Bindings(pf);
 
         bindings1.addVariable(var_a,
                               pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -103,7 +103,7 @@ public class BindingTest extends TestCase {
     
     public void testBindings21() throws IOException, Throwable {
         
-        Bindings bindings1=new Bindings();
+        Bindings bindings1=new Bindings(pf);
 
         bindings1.addVariable(var_a,
                               pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -145,7 +145,7 @@ public class BindingTest extends TestCase {
 	Namespace.withThreadNamespace(doc1.getNamespace());
         new Utility().writeDocument(doc1, filename, pf);        
 
-        Bindings bindings2=Bindings.fromDocument(new Utility().readDocument(filename, pf));
+        Bindings bindings2=Bindings.fromDocument(new Utility().readDocument(filename, pf),pf);
 
         
         assertEquals(bindings1, bindings2);

@@ -39,7 +39,7 @@ public class ExpandTest extends TestCase {
 	
 	Document doc= new Utility().readDocument(in, pf);
 	Document docBindings= new Utility().readDocument(inBindings,pf);
-	Bindings bindings1=Bindings.fromDocument(docBindings);
+	Bindings bindings1=Bindings.fromDocument(docBindings,pf);
 	
 	NamedBundle bun=(NamedBundle) doc.getStatementOrBundle().get(0);
 
@@ -47,7 +47,7 @@ public class ExpandTest extends TestCase {
 
 	System.out.println("Found groupings " + grp1);
 	
-	NamedBundle bun1=(NamedBundle) new Expand().expand(bun, bindings1, grp1).get(0);
+	NamedBundle bun1=(NamedBundle) new Expand(pf).expand(bun, bindings1, grp1).get(0);
 	Document doc1=pf.newDocument();
 	doc1.getStatementOrBundle().add(bun1);
 	
@@ -79,7 +79,7 @@ public class ExpandTest extends TestCase {
 
 	System.out.println("Found groupings " + grp1);
 	
-	NamedBundle bun1=(NamedBundle) new Expand().expand(bun, bindings1, grp1).get(0);
+	NamedBundle bun1=(NamedBundle) new Expand(pf).expand(bun, bindings1, grp1).get(0);
 	Document doc1=pf.newDocument();
 	doc1.getStatementOrBundle().add(bun1);
 	
@@ -106,7 +106,7 @@ public class ExpandTest extends TestCase {
 
     public void testExpand1() throws IOException, Throwable {
 	
-	Bindings bindings1=new Bindings();
+	Bindings bindings1=new Bindings(pf);
 
 	bindings1.addVariable(var_a,
 	                      pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -131,7 +131,7 @@ public class ExpandTest extends TestCase {
     
     public void testExpand2() throws IOException, Throwable {
 	
-	Bindings bindings1=new Bindings();
+	Bindings bindings1=new Bindings(pf);
 
 	bindings1.addVariable(var_a,
 	                      pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -154,7 +154,7 @@ public class ExpandTest extends TestCase {
     
     public void testExpand3() throws IOException, Throwable {
 	
- 	Bindings bindings1=new Bindings();
+ 	Bindings bindings1=new Bindings(pf);
 
  	bindings1.addVariable(var_a,
  	                      pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -187,7 +187,7 @@ public class ExpandTest extends TestCase {
     
     public void testExpand20() throws IOException, Throwable {
         
-        Bindings bindings1=new Bindings();
+        Bindings bindings1=new Bindings(pf);
 
         bindings1.addVariable(var_a,
                               pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -258,7 +258,7 @@ public class ExpandTest extends TestCase {
     
     public void testExpand21() throws IOException, Throwable {
         
-        Bindings bindings1=new Bindings();
+        Bindings bindings1=new Bindings(pf);
 
         bindings1.addVariable(var_a,
                               pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -323,7 +323,7 @@ public class ExpandTest extends TestCase {
     
     public void testExpand22() throws IOException, Throwable {
         
-        Bindings bindings1=new Bindings();
+        Bindings bindings1=new Bindings(pf);
 
         bindings1.addVariable(var_a,
                               pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -388,7 +388,7 @@ public class ExpandTest extends TestCase {
     
     public void testExpand23() throws IOException, Throwable {
         
-        Bindings bindings1=new Bindings();
+        Bindings bindings1=new Bindings(pf);
 
         bindings1.addVariable(var_a,
                               pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -467,7 +467,7 @@ public class ExpandTest extends TestCase {
     
     public void testExpand10() throws IOException, Throwable {
         
-        Bindings bindings1=new Bindings();
+        Bindings bindings1=new Bindings(pf);
 
         bindings1.addVariable(var_a,
                               pf.newQualifiedName(EX_NS, "av1", "ex"));

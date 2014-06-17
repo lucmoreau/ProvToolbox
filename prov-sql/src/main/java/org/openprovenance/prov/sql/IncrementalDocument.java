@@ -1,5 +1,6 @@
 package org.openprovenance.prov.sql;
 
+import org.openprovenance.prov.model.Document;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -79,10 +80,64 @@ public class IncrementalDocument {
     public IncrementalDocument getPrevious() {
     	return previous;
     }
-    public void setPrevious(IncrementalDocument latest) {
+    public void setPrevious(IncrementalDocument previous) {
     	this.previous=previous;
     }
     
+  
+    
+    ////////
+    
+   
+    
+    private Document bindings;
+    public void setBindings(Document bindings) {
+    	this.bindings=bindings;
+    }
+    
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.Document.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "BINDINGS")
+    public Document getBindings() {
+    	return bindings;
+    }
+   
+    ///////////
+
+
+    
+    
+    private Document template;
+    public void setTemplate(Document template) {
+    	this.template=template;
+    }
+    
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.Document.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "TEMPLATE")
+    public Document getTemplate() {
+    	return template;
+    }
+    
+    
+    /////////////
+    
     
 
+    
+    private Document logBinding;
+    public void setLog(Document logBinding) {
+    	this.logBinding=logBinding;
+    }
+    
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.Document.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "LOG")
+    
+    public Document getLog() {
+    	return logBinding;
+    }
 }

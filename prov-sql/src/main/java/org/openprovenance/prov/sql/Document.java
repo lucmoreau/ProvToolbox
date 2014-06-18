@@ -213,7 +213,14 @@ public class Document
         return equals(null, null, object, strategy);
     }
 
-   /* added in pom.xml */@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable<String,String> nss=null; public java.util.Hashtable<String,String> getNss() { return nss;} public void setNss(java.util.Hashtable<String,String> s) { nss=s; };public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
+
+    /*@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable<String,String> nss=null; 
+    
+    public java.util.Hashtable<String,String> getNss() { return nss;} 
+    public void setNss(java.util.Hashtable<String,String> s) { nss=s; };
+   */
+   
+   public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = 1;
         {
             List<StatementOrBundle> theStatementOrBundle;

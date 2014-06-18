@@ -182,6 +182,23 @@ public class PersistenceUtility {
      
     }            
     
+
+    public Document persistInTransaction(Document doc) {
+	try {
+            Dagify dagifier=new Dagify(entityManager,table);
+            ProvUtilities u=new ProvUtilities();
+            u.forAllStatementOrBundle(doc.getStatementOrBundle(), dagifier);
+            entityManager.persist(doc);
+            
+            return doc;
+	} catch (RuntimeException re) {
+	    re.printStackTrace();
+	    return null;  // FIXME: why not re-throw exception
+	}
+	
+    }            
+    
+    
     public IncrementalDocument persist(IncrementalDocument doc) {
     	try {
                 beginTransaction();
@@ -195,6 +212,14 @@ public class PersistenceUtility {
                 commitTransaction();
     	}
          
+        }            
+        
+    
+
+    public IncrementalDocument persistInTransaction(IncrementalDocument doc) {
+                entityManager.persist(doc);   
+                return doc;
+    	
         }            
         
     

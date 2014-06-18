@@ -88,8 +88,9 @@ public class InteropFramework {
 //	public static final String PRIM_PREFIX = "prim";
 
 	final Utility u = new Utility();
-	final ProvFactory pFactory = org.openprovenance.prov.xml.ProvFactory.getFactory();
-	final Ontology onto=new Ontology(pFactory);
+	final ProvFactory pFactory;
+	final Ontology onto;
+	
 	final private String verbose;
 	final private String debug;
 	final private String logfile;
@@ -110,7 +111,7 @@ public class InteropFramework {
 
 
 	public InteropFramework(String verbose, String debug, String logfile,
-			String infile, String outfile, String namespaces, String title, String layout, String bindings, String generator) {
+			String infile, String outfile, String namespaces, String title, String layout, String bindings, String generator, ProvFactory pFactory) {
 		this.verbose = verbose;
 		this.debug = debug;
 		this.logfile = logfile;
@@ -121,6 +122,9 @@ public class InteropFramework {
 		this.layout=layout;
 		this.bindings=bindings;
 		this.generator=generator;
+		this.pFactory=pFactory;
+		this.onto=new Ontology(pFactory);
+
 		extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
 		extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
 		mimeTypeMap = new Hashtable<InteropFramework.ProvFormat, String>();
@@ -131,7 +135,11 @@ public class InteropFramework {
 	}
 
 	public InteropFramework() {
-	    this(null, null, null, null, null, null, null, null, null, null);
+	    this(null, null, null, null, null, null, null, null, null, null, org.openprovenance.prov.xml.ProvFactory.getFactory());
+	}
+	
+	public InteropFramework(ProvFactory pFactory) {
+	    this(null, null, null, null, null, null, null, null, null, null, pFactory);
 	}
 
     public void initializeExtensionMap(
@@ -811,6 +819,7 @@ public class InteropFramework {
 	}
 
     }
+   
     
     public Document readDocument(InputStream is, ProvFormat format) {
     	return readDocument(is,format,pFactory);

@@ -155,7 +155,8 @@ public class CommandLineArguments {
                                                           title,
                                                           layout,
                                                           bindings,
-                                                          generator);
+                                                          generator,
+                                                          org.openprovenance.prov.xml.ProvFactory.getFactory());
             interop.run();
 
         }

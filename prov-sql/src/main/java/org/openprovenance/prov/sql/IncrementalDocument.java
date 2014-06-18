@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 
-@javax.persistence.Entity(name = "IDocument")
+@javax.persistence.Entity(name = "IncrementalDocument")
 @Table(name = "IDOCUMENT")
 @Inheritance(strategy = InheritanceType.JOINED)
 

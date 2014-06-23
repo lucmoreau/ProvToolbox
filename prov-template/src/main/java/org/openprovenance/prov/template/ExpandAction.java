@@ -277,19 +277,15 @@ public class ExpandAction implements StatementAction {
             String xsdQNameUri = pf.getName().XSD_QNAME.getUri();
 
             for (Attribute attribute: attributes) {
-            	System.out.println("***** processing " + attribute + " " + attribute.getType().getUri() + " " + xsdQNameUri);
 				if (xsdQNameUri.equals(attribute.getType().getUri())) {
-	            	System.out.println("   ***** processing " + attribute + " " + attribute.getType().getUri() + " " + xsdQNameUri);
 
                     Object o=attribute.getValue();
                     if (o instanceof QualifiedName) {
                         QualifiedName qn1=(QualifiedName)o;
-                        
-                        System.out.println("   ***** processing " + qn1);
+
                         
                         if (Expand.isVariable(qn1)) {
                             List<TypedValue> vals=env2.get(qn1);
-                            System.out.println("    !***** processing " + qn1 + " " + vals + " env2 " + env2);
 
                             if (vals==null) {
                             	if (Expand.isGensymVariable(qn1)) {

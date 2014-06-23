@@ -22,19 +22,19 @@ import org.openprovenance.prov.template.Using.UsingIterator;
 import org.openprovenance.prov.xml.ProvUtilities;
 
 public class Expand {
-    static final String VAR_NS = "http://openprovenance.org/var#";
-    static final String VARGEN_NS = "http://openprovenance.org/vargen#";
-    static final String TMPL_NS = "http://openprovenance.org/tmpl#";
-    static final String TMPL_PREFIX = "tmpl";
-    static final String VAR_PREFIX = "var";
-    static final String VARGEN_PREFIX = "vargen";
+    public static final String VAR_NS = "http://openprovenance.org/var#";
+    public static final String VARGEN_NS = "http://openprovenance.org/vargen#";
+    public static final String TMPL_NS = "http://openprovenance.org/tmpl#";
+    public static final String TMPL_PREFIX = "tmpl";
+    public static final String VAR_PREFIX = "var";
+    public static final String VARGEN_PREFIX = "vargen";
     
-    static final String LINKED = "linked";
-    static final String LINKED_URI = TMPL_NS + LINKED;
-    static final String LABEL = "label";
-    static final String TIME = "time";
-    static final String LABEL_URI = TMPL_NS + LABEL;
-    static final String TIME_URI = TMPL_NS + TIME;
+    public static final String LINKED = "linked";
+    public static final String LINKED_URI = TMPL_NS + LINKED;
+    public static final String LABEL = "label";
+    public static final String TIME = "time";
+    public static final String LABEL_URI = TMPL_NS + LABEL;
+    public static final String TIME_URI = TMPL_NS + TIME;
     
     public Expand(ProvFactory pf) {
     	this.pf=pf;

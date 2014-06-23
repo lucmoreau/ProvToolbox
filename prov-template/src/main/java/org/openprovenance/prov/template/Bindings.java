@@ -34,7 +34,7 @@ public class Bindings {
     final ProvFactory pf;
     static ProvUtilities u= new ProvUtilities();
 
-    public Bindings( ProvFactory pf) {
+    public Bindings(ProvFactory pf) {
 	this(new Hashtable<QualifiedName, List<QualifiedName>>(), 
 	     new Hashtable<QualifiedName, List<List<TypedValue>>>(),
 	     pf);
@@ -101,7 +101,7 @@ public class Bindings {
         add2Dvalues(ll,attributes);
         
         result.getStatementOrBundle().addAll(ll);
-        result.setNamespace(Namespace.gatherNamespaces(result));
+        result.setNamespace(pf.newNamespace(Namespace.gatherNamespaces(result)));
         
         return result;
     }

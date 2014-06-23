@@ -1,6 +1,12 @@
 package org.openprovenance.prov.sql;
 
+import java.util.Date;
+
+import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
+import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 import org.openprovenance.prov.model.Document;
+
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -11,6 +17,10 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 
 @javax.persistence.Entity(name = "IncrementalDocument")
@@ -20,7 +30,6 @@ import javax.persistence.Table;
 public class IncrementalDocument {
 
 	public IncrementalDocument() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	Long pk;
@@ -68,7 +77,7 @@ public class IncrementalDocument {
     
     
 
-    
+ 
 
     private IncrementalDocument previous;
     
@@ -140,4 +149,47 @@ public class IncrementalDocument {
     public Document getLog() {
     	return logBinding;
     }
+    
+    
+    ///////////
+    protected XMLGregorianCalendar dateTime;
+
+
+    /**
+     * Gets the value of the dateTime property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    @Transient
+    public XMLGregorianCalendar getDateTime() {
+        return dateTime;
+    }
+
+    /**
+     * Sets the value of the dateTime property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public void setDateTime(XMLGregorianCalendar value) {
+        this.dateTime = value;
+    }
+    @Basic
+    @Column(name = "DATETIMEITEM")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getDateTimeItem() {
+        return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getDateTime());
+    }
+
+    public void setDateTimeItem(Date target) {
+        setDateTime(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
+    }
+
+    
+    
 }

@@ -215,6 +215,7 @@ public class RoundTripFromXmlTest extends TestCase {
     public void testIssue() throws Exception {
   	Document doc=testFile("issue-type", false);
   	
+	@SuppressWarnings("unused")
 	Agent ag=(Agent)doc.getStatementOrBundle().get(0);
 	/*
 	System.out.println("-agent" +ag);
@@ -244,7 +245,8 @@ public class RoundTripFromXmlTest extends TestCase {
       }
 
     public void NOtestTypedObject() throws Exception {
-  	Document doc=testFile("typedObject", true);
+  	@SuppressWarnings("unused")
+	Document doc=testFile("typedObject", true);
   	
 	/*	Agent ag=(Agent)doc.getEntityAndActivityAndWasGeneratedBy().get(0);
 	System.out.println("agent" +ag);

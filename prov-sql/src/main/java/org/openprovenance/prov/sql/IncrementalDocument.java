@@ -190,6 +190,20 @@ public class IncrementalDocument {
         setDateTime(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
     }
 
+
+    private IncrementalDocument provenance;
     
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.IncrementalDocument.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "PROVENANCE")
+    
+    public IncrementalDocument getProvenance() {
+    	return provenance;
+    }
+    public void setProvenance(IncrementalDocument provenance) {
+    	this.provenance=provenance;
+    }
+ 
     
 }

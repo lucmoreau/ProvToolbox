@@ -1,5 +1,6 @@
 ProvToolbox
 ===========
+[![Build Status](https://travis-ci.org/lucmoreau/ProvToolbox.svg)](https://travis-ci.org/lucmoreau/ProvToolbox)
 
 What is it?
 -----------

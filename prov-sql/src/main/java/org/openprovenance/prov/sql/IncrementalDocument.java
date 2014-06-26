@@ -134,7 +134,7 @@ public class IncrementalDocument {
     /////////////
     
     
-
+/*
     
     private Document logBinding;
     public void setLog(Document logBinding) {
@@ -149,7 +149,7 @@ public class IncrementalDocument {
     public Document getLog() {
     	return logBinding;
     }
-    
+    */
     
     ///////////
     protected XMLGregorianCalendar dateTime;

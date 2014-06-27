@@ -219,7 +219,20 @@ public class PersistenceUtility {
     public IncrementalDocument persistInTransaction(IncrementalDocument doc) {
                 entityManager.persist(doc);   
                 return doc;
-    	
+        
+        }            
+        
+
+    public NamedDocument persistInTransaction(NamedDocument doc) {
+                entityManager.persist(doc);   
+                return doc;
+        
+        }            
+
+    public PutableDocument persistInTransaction(PutableDocument doc) {
+                entityManager.persist(doc);   
+                return doc;
+        
         }            
         
     
@@ -236,7 +249,12 @@ public class PersistenceUtility {
     }
 
     public Query createQuery(String q) {
-	return entityManager.createQuery(q);
+        return entityManager.createQuery(q);
+    }            
+    
+
+    public Query createNamedQuery(String q) {
+        return entityManager.createNamedQuery(q);
     }            
     
    

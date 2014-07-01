@@ -198,7 +198,9 @@ public class PersistenceUtility {
 	
     }            
     
-    
+    public Dagify getDagifyer () {
+    	return new Dagify(entityManager,table);
+    }
     public IncrementalDocument persist(IncrementalDocument doc) {
     	try {
                 beginTransaction();

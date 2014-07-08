@@ -12,9 +12,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -245,7 +248,11 @@ public class AValue
      *     {@link QName }
      *     
      */
-    @Transient
+    
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "QN")
     public QualifiedName getQname() {
         return qname;
     }
@@ -313,7 +320,7 @@ public class AValue
         this.gYear = value;
     }
 
- 
+ /*
 
     @Basic
     @Column(name = "QNAMEITEM")
@@ -327,7 +334,7 @@ public class AValue
     	QualifiedName qn=(qname==null)? null : new QualifiedName(qname.getNamespaceURI(),qname.getLocalPart(),qname.getPrefix());
         setQname(qn);
     }
-
+*/
     @Basic
     @Column(name = "DATETIMEITEM")
     @Temporal(TemporalType.TIMESTAMP)

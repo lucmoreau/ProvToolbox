@@ -22,7 +22,6 @@ import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
 import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 
 
-
 /**
  * <p>Java class for EmptyCollection complex type.
  * 

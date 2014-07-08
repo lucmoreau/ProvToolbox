@@ -221,14 +221,17 @@ public class NamedBundle
     @javax.xml.bind.annotation.XmlTransient 
     private Namespace namespace=null; 
     
-    @Transient
+    
     @Override
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.Namespace.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "NAMESPACE")
     public Namespace getNamespace() { 
 	return namespace;
     } 
     
-    @Transient
-    @Override
+    
     public void setNamespace(Namespace namespace) { 
 	this.namespace=namespace; 
     }
@@ -258,4 +261,6 @@ public class NamedBundle
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_BUNDLE;
     }
+    
+    
 }

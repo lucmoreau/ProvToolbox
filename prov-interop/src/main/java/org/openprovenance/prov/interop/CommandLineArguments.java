@@ -11,6 +11,7 @@ import org.apache.commons.cli.ParseException;
 
 public class CommandLineArguments {
     
+    public static final String BINDINGS = "bindings";
     public static final String OUTFILE = "outfile";
     public static final String VERBOSE = "verbose";
     public static final String NAMESPACES = "namespaces";
@@ -20,6 +21,8 @@ public class CommandLineArguments {
     public static final String LOGFILE = "logfile";
     public static final String INFILE = "infile";
     public static final String TITLE = "title";
+    public static final String LAYOUT = "layout";
+    public static final String GENERATOR = "generator";
 
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
@@ -52,13 +55,30 @@ public class CommandLineArguments {
                 .hasArg()
                 .withDescription("use given file as declaration of prefix namespaces")
                 .create(NAMESPACES);
-        
+
+        Option bindings = OptionBuilder
+                .withArgName("file")
+                .hasArg()
+                .withDescription("use given file as bindings for template expansion (template is provided as infile)")
+                .create(BINDINGS);
  
         Option title = OptionBuilder
                 .withArgName("string")
                 .hasArg()
                 .withDescription("document title")
                 .create(TITLE);
+
+        Option layout = OptionBuilder
+                .withArgName("string")
+                .hasArg()
+                .withDescription("dot layout: circo, dot (default), fdp, neato, osage, sfdp, twopi ")
+                .create(LAYOUT);
+        
+        Option generator = OptionBuilder
+                .withArgName("string")
+                .hasArg()
+                .withDescription("graph generator N:n:first:seed:e1")
+                .create(GENERATOR);
 
         Options options = new Options();
 
@@ -71,6 +91,9 @@ public class CommandLineArguments {
         options.addOption(outfile);
         options.addOption(namespaces);
         options.addOption(title);
+        options.addOption(layout);
+        options.addOption(bindings);
+        options.addOption(generator);
 
         return options;
 
@@ -88,6 +111,9 @@ public class CommandLineArguments {
         String outfile = null;
         String namespaces = null;
         String title = null;
+        String layout = null;
+        String bindings = null;
+        String generator = null;
 
 
         try {
@@ -104,6 +130,9 @@ public class CommandLineArguments {
 	    if (line.hasOption(OUTFILE))    outfile    = line.getOptionValue(OUTFILE);
             if (line.hasOption(NAMESPACES)) namespaces = line.getOptionValue(NAMESPACES);
             if (line.hasOption(TITLE))      title = line.getOptionValue(TITLE);
+            if (line.hasOption(LAYOUT))      layout = line.getOptionValue(LAYOUT);
+            if (line.hasOption(BINDINGS))   bindings = line.getOptionValue(BINDINGS);
+            if (line.hasOption(GENERATOR))  generator = line.getOptionValue(GENERATOR);
 	    
 	    if (help!=null) {
 		HelpFormatter formatter = new HelpFormatter();
@@ -123,7 +152,11 @@ public class CommandLineArguments {
                                                           infile,
                                                           outfile,
                                                           namespaces,
-                                                          title);
+                                                          title,
+                                                          layout,
+                                                          bindings,
+                                                          generator,
+                                                          org.openprovenance.prov.xml.ProvFactory.getFactory());
             interop.run();
 
         }

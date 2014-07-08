@@ -1,0 +1,9 @@
+document
+prefix xsd <http://www.w3.org/2001/XMLSchema>
+prefix var <http://openprovenance.org/var#>
+prefix ex <http://example.org/>
+prefix tmpl <http://openprovenance.org/tmpl#>
+
+entity(var:a,[tmpl:value_0 = 'ex:ag'])
+entity(var:b,[tmpl:value_0 = 'ex:en'])
+endDocument

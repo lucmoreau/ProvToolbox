@@ -227,17 +227,26 @@ public class ProvToDot {
     }
 
     public void convert(Document graph, String dotFile, String pdfFile, String title)
-        throws java.io.FileNotFoundException, java.io.IOException {
-        convert(graph,new File(dotFile), title);
-        Runtime runtime = Runtime.getRuntime();
-        @SuppressWarnings("unused")
-        java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
+	        throws java.io.FileNotFoundException, java.io.IOException {
+	        convert(graph,new File(dotFile), title);
+	        Runtime runtime = Runtime.getRuntime();
+	        @SuppressWarnings("unused")
+	        java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
+    }
+    
+    public void convert(Document graph, String dotFile, OutputStream pdfStream, String title)
+	        throws java.io.FileNotFoundException, java.io.IOException {
+	        convert(graph,new File(dotFile), title);
+	        Runtime runtime = Runtime.getRuntime();
+	        @SuppressWarnings("unused")
+	        java.lang.Process proc = runtime.exec("dot  -Tpdf " + dotFile);
+	        InputStream is=proc.getInputStream();
+                org.apache.commons.io.IOUtils.copy(is, pdfStream);            
     }
     public void convert(Document graph, String dotFile, String title)
 	        throws java.io.FileNotFoundException, java.io.IOException {
-	        convert(graph,new File(dotFile),title);
-	        
-	    }
+	        convert(graph,new File(dotFile),title);        
+    }
 	     
     public void convert(Document graph, String dotFile, String aFile, String type, String title)
 	        throws java.io.FileNotFoundException, java.io.IOException {
@@ -253,10 +262,24 @@ public class ProvToDot {
 			proc.waitFor();
 			System.err.println("exit value " + proc.exitValue());
 		} catch (InterruptedException e){};
+}
+
+    public void convert(Document graph, String dotFile, OutputStream os, String type, String title)
+	        throws java.io.FileNotFoundException, java.io.IOException {
+	        convert(graph,new File(dotFile),title);
+	        Runtime runtime = Runtime.getRuntime();
+	        
+	        java.lang.Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
+	        InputStream is=proc.getInputStream();
+                org.apache.commons.io.IOUtils.copy(is, os);         
+
     }
-    
+
     public void convert(Document graph, File file, String title) throws java.io.FileNotFoundException{
         OutputStream os=new FileOutputStream(file);
+        convert(graph, new PrintStream(os), title);
+    }
+    public void convert(Document graph, OutputStream os, String title) {
         convert(graph, new PrintStream(os), title);
     }
 
@@ -973,6 +996,7 @@ public class ProvToDot {
     String name;
     String defaultAccountLabel;
     String defaultAccountColor;
+    private String layout;
 
     /* make name compatible with dot notation*/
     
@@ -1036,6 +1060,9 @@ public class ProvToDot {
 
     void prelude(Document doc, PrintStream out) {
         out.println("digraph \"" + name + "\" { size=\"16,12\"; rankdir=\"BT\"; ");
+        if (layout!=null) {
+            out.println("layout=\"" + layout + "\"; ");
+        }
     }
 
     void postlude(Document doc, PrintStream out) {
@@ -1051,6 +1078,11 @@ public class ProvToDot {
 
     void postlude(NamedBundle doc, PrintStream out) {
         out.println("}");
+    }
+
+    public void setLayout(String layout) {
+	this.layout=layout;
+	
     }
 
 

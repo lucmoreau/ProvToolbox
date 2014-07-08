@@ -20,6 +20,9 @@ public class BeanTraversal {
 
 	List<Statement> sRecords = new LinkedList<Statement>();
 	
+	Namespace docNamespace=doc.getNamespace();
+        Namespace.withThreadNamespace(docNamespace);
+
         c.startDocument(doc.getNamespace());
 
 	for (Statement s : u.getStatement(doc)) {
@@ -36,6 +39,7 @@ public class BeanTraversal {
 	}
 
 	for (NamedBundle bu : u.getNamedBundle(doc)) {
+	    Namespace.withThreadNamespace(new Namespace(docNamespace));
 	    NamedBundle o = convert(bu);
 	    if (o != null)
 		bRecords.add(o);
@@ -48,6 +52,19 @@ public class BeanTraversal {
     public NamedBundle convert(NamedBundle b) {
 	List<Statement> sRecords = new LinkedList<Statement>();
 	QualifiedName bundleId=b.getId();
+	
+	     
+	Namespace old=Namespace.getThreadNamespace();
+	Namespace bundleNamespace;
+	if (b.getNamespace()!=null) {
+	    bundleNamespace=new Namespace(b.getNamespace());
+	} else {
+	    bundleNamespace=new Namespace();
+	}
+	bundleNamespace.setParent(new Namespace(old)); //ensure to make a copy of old, since setting might otherwise create a loop
+	Namespace.withThreadNamespace(bundleNamespace);
+
+
         c.startBundle(bundleId, b.getNamespace());
 
 	for (Statement s : u.getStatement(b)) {

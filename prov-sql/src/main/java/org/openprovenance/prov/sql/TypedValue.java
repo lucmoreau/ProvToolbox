@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -183,8 +184,13 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
         this.avalue=value;
 	if (value!=null) {
 	    Object o=SQLValueConverter.convertFromAValue(value);
-	    if (o!=null)
-		this.value = o.toString();
+	    if (o!=null) {
+	    	if (o instanceof QualifiedName) {
+	    		this.value=o;
+	    	} else {
+	    		this.value = o.toString();
+	    	}
+	    }
 	}
     }
 

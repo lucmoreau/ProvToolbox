@@ -3,7 +3,7 @@ import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.QualifiedName;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-public class SQLValueConverter {
+public class SQLValueConverter  {
     
     static Name name=ProvFactory.getFactory().getName();
 
@@ -153,6 +153,9 @@ public class SQLValueConverter {
 	    return o;
 	}
 	if ((o=target.getDouble())!=null) {
+	    return o;
+	}
+	if ((o=target.getDateTime())!=null) {
 	    return o;
 	}
 

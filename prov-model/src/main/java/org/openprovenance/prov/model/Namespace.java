@@ -1,9 +1,9 @@
 package org.openprovenance.prov.model;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
-
 
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.exception.QualifiedNameException;
@@ -12,7 +12,7 @@ import org.openprovenance.prov.model.exception.QualifiedNameException;
  * @author Luc Moreau 
  * */
 
-public class Namespace implements QualifiedNameExport {
+public class Namespace  {
     
     private static ThreadLocal<Namespace> threadNamespace =
 	    new ThreadLocal<Namespace> () {
@@ -40,6 +40,7 @@ public class Namespace implements QualifiedNameExport {
 	this.prefixes=tmp1;
 	this.namespaces=tmp2;
 	this.defaultNamespace=ns.defaultNamespace;
+	this.parent=ns.parent;
 	return this;
     }
     
@@ -54,8 +55,8 @@ public class Namespace implements QualifiedNameExport {
     }
 
 
-    private Hashtable<String, String> prefixes=new Hashtable<String, String>();
-    private Hashtable<String, String> namespaces=new Hashtable<String, String>();
+    protected Map<String, String> prefixes=new Hashtable<String, String>();
+    protected Map<String, String> namespaces=new Hashtable<String, String>();
     private String defaultNamespace=null;
     
     private Namespace parent=null;
@@ -98,10 +99,10 @@ public class Namespace implements QualifiedNameExport {
 	this.defaultNamespace=defaultNamespace;
     }
     
-    public Hashtable<String, String> getPrefixes() {
+    public Map<String, String> getPrefixes() {
 	return prefixes;
     }
-    public Hashtable<String, String> getNamespaces() {
+    public Map<String, String> getNamespaces() {
 	return namespaces;
     }
      
@@ -194,8 +195,18 @@ public class Namespace implements QualifiedNameExport {
     static public Namespace gatherNamespaces(NamedBundle bundle) {
    	NamespaceGatherer gatherer=new NamespaceGatherer();	
    	u.forAllStatement(bundle.getStatement(), gatherer);
+   	gatherer.register(bundle.getId());
    	Namespace ns=gatherer.getNamespace();
    	return ns;
+    }
+    
+    static public Namespace gatherNamespaces(NamedBundle bundle, ProvFactory pFactory) {
+   	NamespaceGatherer gatherer=new NamespaceGatherer();	
+   	u.forAllStatement(bundle.getStatement(), gatherer);
+   	gatherer.register(bundle.getId());
+   	Namespace ns=gatherer.getNamespace();
+   	Namespace ns2=pFactory.newNamespace(ns);
+   	return ns2;
     }
     
    
@@ -240,10 +251,7 @@ public class Namespace implements QualifiedNameExport {
  	return ns.qualifiedNameToString(name);
      }
      
-    /*
-     * (non-Javadoc)
-     * @see org.openprovenance.prov.model.QualifiedNameExport#qualifiedNameToString(org.openprovenance.prov.model.QualifiedName)
-     */
+ 
     public String qualifiedNameToString(QualifiedName name) {
 	return qualifiedNameToString(name,null);
     }
@@ -275,7 +283,7 @@ public class Namespace implements QualifiedNameExport {
      }
 
     public String toString() {
-	return "[Namespace (" + defaultNamespace + ") " + prefixes + "]";
+	return "[Namespace (" + defaultNamespace + ") " + prefixes + ", parent: " + parent + "]";
     }
 
 

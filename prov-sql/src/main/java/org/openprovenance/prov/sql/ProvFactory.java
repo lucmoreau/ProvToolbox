@@ -4,13 +4,16 @@ package org.openprovenance.prov.sql;
 import java.util.Properties;
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.openprovenance.prov.sql.ObjectFactory2;
+import org.openprovenance.prov.xml.ProvUtilities;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
-
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.LiteralConstructor;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -33,6 +36,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
     static {
 	initBuilder();
+	initializeTables();
     }
 
     private static String fileName = "toolbox.properties";
@@ -202,6 +206,151 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 			String prefix) {
 		return new org.openprovenance.prov.sql.QualifiedName(namespace, local, prefix);
 	}
+	
+
+    public Namespace newNamespace(Namespace ns) {
+    	return new org.openprovenance.prov.sql.Namespace(ns);
+    }
+    
+    public Namespace newNamespace() {
+    	return new org.openprovenance.prov.sql.Namespace();
+    }
+    
+
+
+
+    static public void initializeTables () {
+          ProvUtilities.putFields(Activity.class, new String[] { "Id", "StartTime", "EndTime", "Other" });
+          ProvUtilities.putFields(Entity.class, new String[] { "Id", "Other" });
+          ProvUtilities.putFields(Agent.class, new String[] { "Id", "Other" });
+
+          ProvUtilities.putFields(Used.class, new String[] { "Id", "Activity", "Entity",
+  					      "Time", "Other" });
+          ProvUtilities.putFields(WasGeneratedBy.class, new String[] { "Id", "Entity",
+  							"Activity", "Time",
+  							"Other" });
+          ProvUtilities.putFields(WasInvalidatedBy.class, new String[] { "Id", "Entity",
+  							  "Activity", "Time",
+  							  "Other" });
+          ProvUtilities.putFields(WasStartedBy.class, new String[] { "Id", "Activity",
+  						      "Trigger", "Starter",
+  						      "Time", "Other" });
+          // 0 , 1 , 2 , 3 , 4 , 5
+          // length=6
+          // firstTimeIndex=4
+          // last index=5
+          ProvUtilities.putFields(WasEndedBy.class, new String[] { "Id", "Activity",
+  						    "Trigger", "Ender", "Time",
+  						    "Other" });
+          ProvUtilities.putFields(WasInformedBy.class, new String[] { "Id", "Informed", "Informant",
+  						       "Other" });
+          ProvUtilities.putFields(WasDerivedFrom.class, new String[] { "Id",
+  							"GeneratedEntity",
+  							"UsedEntity",
+  							"Activity",
+  							"Generation", "Usage",
+  							"Other" });
+          ProvUtilities.putFields(WasInfluencedBy.class, new String[] { "Id", "Influencee",
+  							 "Influencer", "Others" });
+          ProvUtilities.putFields(WasAttributedTo.class, new String[] { "Id", "Entity",
+  							 "Agent", "Other" });
+          ProvUtilities.putFields(WasAssociatedWith.class, new String[] { "Id", "Activity",
+  							   "Agent", "Plan",
+  							   "Other" });
+          ProvUtilities.putFields(ActedOnBehalfOf.class, new String[] { "Id", "Delegate",
+  							 "Responsible",
+  							 "Activity", "Others" });
+          ProvUtilities.putFields(SpecializationOf.class, new String[] { "SpecificEntity",
+  							  "GeneralEntity" });
+          ProvUtilities.putFields(AlternateOf.class, new String[] { "Alternate2",
+  						     "Alternate2" });
+          ProvUtilities.putFields(HadMember.class, new String[] { "Collection",
+  						   "Entity" });
+
+  	// never use the accessor id for Mention, since it is not defined.
+  	// However, this allows iterations over this data structure to be performed
+  	//  like others.
+
+          ProvUtilities.putFields(MentionOf.class, new String[] { "Id", 
+  						   "SpecificEntity",
+  						   "GeneralEntity",
+  						   "Bundle" });
+          
+
+          ProvUtilities.putTypes(Entity.class, new Class[] { QualifiedName.class, 
+  					      Object.class });
+          ProvUtilities.putTypes(Agent.class, new Class[] { QualifiedName.class, 
+  					     Object.class });
+          ProvUtilities.putTypes(Activity.class, new Class[] { QualifiedName.class, 
+  						XMLGregorianCalendar.class,
+  						XMLGregorianCalendar.class,
+  						Object.class });
+          ProvUtilities.putTypes(Used.class, new Class[] { QualifiedName.class, QualifiedName.class,
+  					    QualifiedName.class,
+  					    XMLGregorianCalendar.class,
+  					    Object.class });
+          ProvUtilities.putTypes(WasGeneratedBy.class,
+                    new Class[] { QualifiedName.class, QualifiedName.class,
+  				QualifiedName.class, XMLGregorianCalendar.class,
+  				Object.class });
+          ProvUtilities.putTypes(WasInvalidatedBy.class,
+                    new Class[] { QualifiedName.class, QualifiedName.class,
+  				QualifiedName.class, XMLGregorianCalendar.class,
+  				Object.class });
+          ProvUtilities.putTypes(WasStartedBy.class, new Class[] { QualifiedName.class,
+  						    QualifiedName.class,
+  						    QualifiedName.class,
+  						    QualifiedName.class,
+  						    XMLGregorianCalendar.class,
+  						    Object.class });
+          ProvUtilities.putTypes(WasEndedBy.class, new Class[] { QualifiedName.class,
+  						  QualifiedName.class,
+  						  QualifiedName.class,
+  						  QualifiedName.class,
+  						  XMLGregorianCalendar.class,
+  						  Object.class });
+          ProvUtilities.putTypes(WasInformedBy.class, new Class[] { QualifiedName.class,
+  						     QualifiedName.class,
+  						     QualifiedName.class,
+  						     Object.class });
+          ProvUtilities.putTypes(WasDerivedFrom.class, new Class[] { QualifiedName.class,
+  						      QualifiedName.class,
+  						      QualifiedName.class,
+  						      QualifiedName.class,
+  						      QualifiedName.class,
+  						      QualifiedName.class,
+  						      Object.class });
+          ProvUtilities.putTypes(WasInfluencedBy.class, new Class[] { QualifiedName.class,
+  						       QualifiedName.class,
+  						       QualifiedName.class,
+  						       Object.class });
+          ProvUtilities.putTypes(WasAttributedTo.class, new Class[] { QualifiedName.class,
+  						       QualifiedName.class,
+  						       QualifiedName.class,
+  						       Object.class });
+          ProvUtilities.putTypes(WasAssociatedWith.class, new Class[] { QualifiedName.class,
+  							 QualifiedName.class,
+  							 QualifiedName.class,
+  							 QualifiedName.class,
+  							 Object.class });
+          ProvUtilities.putTypes(ActedOnBehalfOf.class, new Class[] { QualifiedName.class,
+  						       QualifiedName.class,
+  						       QualifiedName.class,
+  						       QualifiedName.class,
+  						       Object.class });
+          ProvUtilities.putTypes(SpecializationOf.class, new Class[] { QualifiedName.class,
+  							QualifiedName.class });
+          ProvUtilities.putTypes(MentionOf.class, new Class[] { QualifiedName.class,
+  						 QualifiedName.class,
+  						 QualifiedName.class,
+  						 QualifiedName.class });
+          ProvUtilities.putTypes(AlternateOf.class, new Class[] { QualifiedName.class,
+  						   QualifiedName.class });
+          
+          ProvUtilities.putTypes(HadMember.class, new Class[] { QualifiedName.class,
+  						 Object.class });
+      }
+    
 
 
 }

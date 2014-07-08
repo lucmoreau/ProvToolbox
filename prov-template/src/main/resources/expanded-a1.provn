@@ -1,0 +1,14 @@
+document
+prefix xsd <http://www.w3.org/2001/XMLSchema>
+prefix tmpl <http://openprovenance.org/tmpl#>
+prefix ex <http://example.org/>
+bundle ex:b
+prefix xsd <http://www.w3.org/2001/XMLSchema>
+prefix tmpl <http://openprovenance.org/tmpl#>
+prefix ex <http://example.org/>
+
+agent(ex:ag,[tmpl:order = "[0]" %% xsd:string])
+entity(ex:en,[tmpl:order = "[0]" %% xsd:string])
+wasAttributedTo(ex:en, ex:ag,[tmpl:order = "[0, 0]" %% xsd:string])
+endBundle
+endDocument

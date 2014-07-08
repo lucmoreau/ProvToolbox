@@ -2,6 +2,9 @@ package org.openprovenance.prov.interop;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -14,19 +17,23 @@ import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Variant;
 import javax.xml.bind.JAXBException;
+
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.rdf.Ontology;
-
+import org.openprovenance.prov.template.Expand;
+import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
-
 import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
 import org.openprovenance.prov.dot.ProvToDot;
-
+import org.openprovenance.prov.generator.GeneratorDetails;
+import org.openprovenance.prov.generator.GraphGenerator;
 import org.apache.log4j.Logger;
 
 /**
@@ -34,36 +41,77 @@ import org.apache.log4j.Logger;
  */
 public class InteropFramework {
 
+	public static final String EXTENSION_TRIG = "trig";
+	public static final String EXTENSION_XML = "xml";
+	public static final String EXTENSION_PROVX = "provx";
+	public static final String EXTENSION_TTL = "ttl";
+	public static final String EXTENSION_SVG = "svg";
+	public static final String EXTENSION_PROVN = "provn";
+	public static final String EXTENSION_RDF = "rdf";
+	public static final String EXTENSION_JSON = "json";
+	public static final String EXTENSION_DOT = "dot";
+	public static final String EXTENSION_PDF = "pdf";
+	public static final String EXTENSION_JPEG = "jpeg";
+	public static final String EXTENSION_JPG = "jpg";
+
+	public static final String MEDIA_IMAGE_JPEG = "image/jpeg";
+	public static final String MEDIA_IMAGE_SVG_XML = "image/svg+xml";
+	public static final String MEDIA_APPLICATION_PROVENANCE_XML = "application/provenance+xml";
+	public static final String MEDIA_TEXT_TURTLE = "text/turtle";
+	public static final String MEDIA_APPLICATION_X_TRIG = "application/x-trig";	
+	public static final String MEDIA_APPLICATION_RDF_XML = "application/rdf+xml";
+	public static final String MEDIA_TEXT_PROVENANCE_NOTATION = "text/provenance-notation";
+	public static final String MEDIA_APPLICATION_PDF = "application/pdf";
+	public static final String MEDIA_APPLICATION_JSON = MediaType.APPLICATION_JSON;
+	public static final String MEDIA_TEXT_HTML = MediaType.TEXT_HTML;
+	public static final String MEDIA_TEXT_PLAIN = MediaType.TEXT_PLAIN;
+	public static final String MEDIA_TEXT_XML = MediaType.TEXT_XML;
+	public static final String MEDIA_APPLICATION_XML = MediaType.APPLICATION_XML;
+	public static final String MEDIA_APPLICATION_FORM_URLENCODED=MediaType.APPLICATION_FORM_URLENCODED;
+	
+	public final static String [] ALL_PROV_MEDIA_TYPES= 
+		    new String[] { "text/turtle", 
+		                   "text/provenance-notation",
+		                   "application/provenance+xml",
+		                   "application/x-trig",
+		                   "application/rdf+xml", 
+		                   "application/json", 
+		                   "image/svg+xml"};
+	    
+
 	static Logger logger = Logger.getLogger(InteropFramework.class);
 
 	public static final String UNKNOWN = "unknown";
-	public static final String PC1_NS = "http://www.ipaw.info/pc1/";
-	public static final String PC1_PREFIX = "pc1";
-	public static final String PRIM_NS = "http://openprovenance.org/primitives#";
-	public static final String PRIM_PREFIX = "prim";
+//	public static final String PC1_NS = "http://www.ipaw.info/pc1/";
+//	public static final String PC1_PREFIX = "pc1";
+//	public static final String PRIM_NS = "http://openprovenance.org/primitives#";
+//	public static final String PRIM_PREFIX = "prim";
 
 	final Utility u = new Utility();
-	final ProvFactory pFactory = ProvFactory.getFactory();
-	final Ontology onto=new Ontology(pFactory);
+	final ProvFactory pFactory;
+	final Ontology onto;
+	
 	final private String verbose;
 	final private String debug;
 	final private String logfile;
 	final private String infile;
 	final private String outfile;
-        final private String namespaces;
-        final private String title;
+	final private String namespaces;
+	final private String title;
+	final private String layout;
+	final private String bindings;
+
 	public final Hashtable<ProvFormat, String> extensionMap;
 	public final Hashtable<String, ProvFormat> extensionRevMap;
 	public final Hashtable<ProvFormat, String> mimeTypeMap;
 	public final Hashtable<String, ProvFormat> mimeTypeRevMap;
 	public final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
 
-	public InteropFramework() {
-		this(null, null, null, null, null, null,null);
-	}
+	final private String generator;
+
 
 	public InteropFramework(String verbose, String debug, String logfile,
-			String infile, String outfile, String namespaces, String title) {
+			String infile, String outfile, String namespaces, String title, String layout, String bindings, String generator, ProvFactory pFactory) {
 		this.verbose = verbose;
 		this.debug = debug;
 		this.logfile = logfile;
@@ -71,6 +119,12 @@ public class InteropFramework {
 		this.outfile = outfile;
 		this.namespaces = namespaces;
 		this.title=title;
+		this.layout=layout;
+		this.bindings=bindings;
+		this.generator=generator;
+		this.pFactory=pFactory;
+		this.onto=new Ontology(pFactory);
+
 		extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
 		extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
 		mimeTypeMap = new Hashtable<InteropFramework.ProvFormat, String>();
@@ -80,86 +134,94 @@ public class InteropFramework {
 		initializeExtensionMap(extensionMap, extensionRevMap);
 	}
 
-	public void initializeExtensionMap(
+	public InteropFramework() {
+	    this(null, null, null, null, null, null, null, null, null, null, org.openprovenance.prov.xml.ProvFactory.getFactory());
+	}
+	
+	public InteropFramework(ProvFactory pFactory) {
+	    this(null, null, null, null, null, null, null, null, null, null, pFactory);
+	}
+
+    public void initializeExtensionMap(
 			Hashtable<ProvFormat, String> extensionMap,
 			Hashtable<String, InteropFramework.ProvFormat> extensionRevMap) {
 		for (ProvFormat f : ProvFormat.values()) {
 			switch (f) {
 			case DOT:
-				extensionMap.put(ProvFormat.DOT, "dot");
-				extensionRevMap.put("dot", ProvFormat.DOT);
+				extensionMap.put(ProvFormat.DOT, EXTENSION_DOT);
+				extensionRevMap.put(EXTENSION_DOT, ProvFormat.DOT);
 				extensionRevMap.put("gv", ProvFormat.DOT);
 				mimeTypeMap.put(ProvFormat.DOT, "text/vnd.graphviz");
 				mimeTypeRevMap.put("text/vnd.graphviz", ProvFormat.DOT);
 				provTypeMap.put(ProvFormat.DOT, ProvFormatType.OUTPUT);
 				break;
 			case JPEG:
-				extensionMap.put(ProvFormat.JPEG, "jpg");
-				extensionRevMap.put("jpeg", ProvFormat.JPEG);
-				extensionRevMap.put("jpg", ProvFormat.JPEG);
-				mimeTypeMap.put(ProvFormat.JPEG, "image/jpeg");
-				mimeTypeRevMap.put("image/jpeg", ProvFormat.JPEG);
+				extensionMap.put(ProvFormat.JPEG, EXTENSION_JPG);
+				extensionRevMap.put(EXTENSION_JPEG, ProvFormat.JPEG);
+				extensionRevMap.put(EXTENSION_JPG, ProvFormat.JPEG);
+				mimeTypeMap.put(ProvFormat.JPEG, MEDIA_IMAGE_JPEG);
+				mimeTypeRevMap.put(MEDIA_IMAGE_JPEG, ProvFormat.JPEG);
 				provTypeMap.put(ProvFormat.JPEG, ProvFormatType.OUTPUT);
 				break;
 			case JSON:
-				extensionMap.put(ProvFormat.JSON, "json");
-				extensionRevMap.put("json", ProvFormat.JSON);
-				mimeTypeMap.put(ProvFormat.JSON, "application/json");
-				mimeTypeRevMap.put("application/json", ProvFormat.JSON);
+				extensionMap.put(ProvFormat.JSON, EXTENSION_JSON);
+				extensionRevMap.put(EXTENSION_JSON, ProvFormat.JSON);
+				mimeTypeMap.put(ProvFormat.JSON, MediaType.APPLICATION_JSON);
+				mimeTypeRevMap.put(MediaType.APPLICATION_JSON, ProvFormat.JSON);
 				provTypeMap.put(ProvFormat.JSON, ProvFormatType.INPUTOUTPUT);
 				break;
 			case PDF:
-				extensionMap.put(ProvFormat.PDF, "pdf");
-				extensionRevMap.put("pdf", ProvFormat.PDF);
-				mimeTypeMap.put(ProvFormat.PDF, "application/pdf");
-				mimeTypeRevMap.put("application/pdf", ProvFormat.PDF);
+				extensionMap.put(ProvFormat.PDF, EXTENSION_PDF);
+				extensionRevMap.put(EXTENSION_PDF, ProvFormat.PDF);
+				mimeTypeMap.put(ProvFormat.PDF, MEDIA_APPLICATION_PDF);
+				mimeTypeRevMap.put(MEDIA_APPLICATION_PDF, ProvFormat.PDF);
 				provTypeMap.put(ProvFormat.PDF, ProvFormatType.OUTPUT);
 				break;
 			case PROVN:
-				extensionMap.put(ProvFormat.PROVN, "provn");
-				extensionRevMap.put("provn", ProvFormat.PROVN);
+				extensionMap.put(ProvFormat.PROVN, EXTENSION_PROVN);
+				extensionRevMap.put(EXTENSION_PROVN, ProvFormat.PROVN);
 				extensionRevMap.put("pn", ProvFormat.PROVN);
 				extensionRevMap.put("asn", ProvFormat.PROVN);
 				extensionRevMap.put("prov-asn", ProvFormat.PROVN);
-				mimeTypeMap.put(ProvFormat.PROVN, "text/provenance-notation");
+				mimeTypeMap.put(ProvFormat.PROVN, MEDIA_TEXT_PROVENANCE_NOTATION);
 				mimeTypeRevMap
-						.put("text/provenance-notation", ProvFormat.PROVN);
+						.put(MEDIA_TEXT_PROVENANCE_NOTATION, ProvFormat.PROVN);
 				provTypeMap.put(ProvFormat.PROVN, ProvFormatType.INPUTOUTPUT);
 				break;
 			case RDFXML:
-				extensionMap.put(ProvFormat.RDFXML, "rdf");
-				extensionRevMap.put("rdf", ProvFormat.RDFXML);
-				mimeTypeMap.put(ProvFormat.RDFXML, "application/rdf+xml");
-				mimeTypeRevMap.put("application/rdf+xml", ProvFormat.RDFXML);
+				extensionMap.put(ProvFormat.RDFXML, EXTENSION_RDF);
+				extensionRevMap.put(EXTENSION_RDF, ProvFormat.RDFXML);
+				mimeTypeMap.put(ProvFormat.RDFXML, MEDIA_APPLICATION_RDF_XML);
+				mimeTypeRevMap.put(MEDIA_APPLICATION_RDF_XML, ProvFormat.RDFXML);
 				provTypeMap.put(ProvFormat.RDFXML, ProvFormatType.INPUTOUTPUT);
 				break;
 			case SVG:
-				extensionMap.put(ProvFormat.SVG, "svg");
-				extensionRevMap.put("svg", ProvFormat.SVG);
-				mimeTypeMap.put(ProvFormat.SVG, "image/svg+xml");
-				mimeTypeRevMap.put("image/svg+xml", ProvFormat.SVG);
+				extensionMap.put(ProvFormat.SVG, EXTENSION_SVG);
+				extensionRevMap.put(EXTENSION_SVG, ProvFormat.SVG);
+				mimeTypeMap.put(ProvFormat.SVG, MEDIA_IMAGE_SVG_XML);
+				mimeTypeRevMap.put(MEDIA_IMAGE_SVG_XML, ProvFormat.SVG);
 				provTypeMap.put(ProvFormat.SVG, ProvFormatType.OUTPUT);
 				break;
 			case TRIG:
-				extensionMap.put(ProvFormat.TRIG, "trig");
-				extensionRevMap.put("trig", ProvFormat.TRIG);
-				mimeTypeMap.put(ProvFormat.TRIG, "application/x-trig");
-				mimeTypeRevMap.put("application/x-trig", ProvFormat.TRIG);
+				extensionMap.put(ProvFormat.TRIG, EXTENSION_TRIG);
+				extensionRevMap.put(EXTENSION_TRIG, ProvFormat.TRIG);
+				mimeTypeMap.put(ProvFormat.TRIG, MEDIA_APPLICATION_X_TRIG);
+				mimeTypeRevMap.put(MEDIA_APPLICATION_X_TRIG, ProvFormat.TRIG);
 				provTypeMap.put(ProvFormat.TRIG, ProvFormatType.INPUTOUTPUT);
 				break;
 			case TURTLE:
-				extensionMap.put(ProvFormat.TURTLE, "ttl");
-				extensionRevMap.put("ttl", ProvFormat.TURTLE);
-				mimeTypeMap.put(ProvFormat.TURTLE, "text/turtle");
-				mimeTypeRevMap.put("text/turtle", ProvFormat.TURTLE);
+				extensionMap.put(ProvFormat.TURTLE, EXTENSION_TTL);
+				extensionRevMap.put(EXTENSION_TTL, ProvFormat.TURTLE);
+				mimeTypeMap.put(ProvFormat.TURTLE, MEDIA_TEXT_TURTLE);
+				mimeTypeRevMap.put(MEDIA_TEXT_TURTLE, ProvFormat.TURTLE);
 				provTypeMap.put(ProvFormat.TURTLE, ProvFormatType.INPUTOUTPUT);
 				break;
 			case XML:
-				extensionMap.put(ProvFormat.XML, "provx");
-				extensionRevMap.put("provx", ProvFormat.XML);
-				extensionRevMap.put("xml", ProvFormat.XML);
-				mimeTypeMap.put(ProvFormat.XML, "application/provenance+xml");
-				mimeTypeRevMap.put("application/provenance+xml", ProvFormat.XML);
+				extensionMap.put(ProvFormat.XML, EXTENSION_PROVX);
+				extensionRevMap.put(EXTENSION_PROVX, ProvFormat.XML);
+				extensionRevMap.put(EXTENSION_XML, ProvFormat.XML);
+				mimeTypeMap.put(ProvFormat.XML, MEDIA_APPLICATION_PROVENANCE_XML);
+				mimeTypeRevMap.put(MEDIA_APPLICATION_PROVENANCE_XML, ProvFormat.XML);
 				provTypeMap.put(ProvFormat.XML, ProvFormatType.INPUTOUTPUT);
 				break;
 			default:
@@ -178,7 +240,7 @@ public class InteropFramework {
 		return extension;
 	}
 
-	public String convertToMimeType(String type) {
+	public String convertExtensionToMediaType(String type) {
 		ProvFormat format = extensionRevMap.get(type);
 		if (format == null)
 			return null;
@@ -186,7 +248,7 @@ public class InteropFramework {
 	}
 
 	public void provn2html(String file, String file2)
-			throws java.io.IOException, JAXBException, Throwable {
+			throws java.io.IOException, JAXBException, RecognitionException {
 		Document doc = (Document) u.convertASNToJavaBean(file,pFactory);
 		String s = u.convertBeanToHTML(doc,pFactory);
 		u.writeTextToFile(s, file2);
@@ -195,7 +257,7 @@ public class InteropFramework {
 
 	public static final String RDF_TURTLE = "turtle";
 	public static final String RDF_XML = "rdf/xml";
-	public static final String RDF_TRIG = "trig";
+	public static final String RDF_TRIG = EXTENSION_TRIG;
 	public static final String RDF_N3 = "n3";
 
 	public RDFFormat convert(String type) {
@@ -211,15 +273,9 @@ public class InteropFramework {
 	}
 
 	/** Reads a file into java bean. */
-	public Object loadProvGraph(String filename) throws java.io.IOException,
-			JAXBException, Throwable {
-		try {
-			return loadProvKnownGraph(filename);
-		} catch (Throwable e) {
-			e.printStackTrace();
-			return null;
-			// return loadProvUnknownGraph(filename);
-		}
+	public Object loadProvGraph(String filename) {
+	    return loadProvKnownGraph(filename);
+		
 	}
 
 	public enum ProvFormat {
@@ -303,6 +359,7 @@ public class InteropFramework {
 				ProvToDot toDot = (configFile == null) ? new ProvToDot(
 						ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
 						configFile);
+				toDot.setLayout(layout);
 				toDot.convert(doc, dotFileOut, filename,title);
 				break;
 			}
@@ -311,6 +368,7 @@ public class InteropFramework {
 				ProvToDot toDot = (configFile == null) ? new ProvToDot(
 						ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
 						configFile);
+				toDot.setLayout(layout);		
 				toDot.convert(doc, filename,title);
 				break;
 			}
@@ -327,8 +385,130 @@ public class InteropFramework {
 				} else {
 					toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
 				}
+				toDot.setLayout(layout);
+				toDot.convert(doc, dotFileOut, filename, EXTENSION_JPG, title);
+				tmp.delete();
+				break;
+			}
+			case SVG: {
+				String configFile = null; // give it as option
+				File tmp = File.createTempFile("viz-", ".dot");
 
-				toDot.convert(doc, dotFileOut, filename, "jpg", title);
+				String dotFileOut = tmp.getAbsolutePath(); // give it as option,
+															// if not available
+															// create tmp file
+				// ProvToDot toDot=new ProvToDot((configFile==null)?
+				// "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml"
+				// : configFile);
+				ProvToDot toDot;
+				if (configFile != null) {
+					toDot = new ProvToDot(configFile);
+				} else {
+					toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
+				}
+				toDot.setLayout(layout);
+				toDot.convert(doc, dotFileOut, filename, EXTENSION_SVG, title);
+				tmp.delete();
+				break;
+			}
+
+			default:
+				break;
+			}
+		} catch (JAXBException e) {
+			if (verbose != null)
+				e.printStackTrace();
+			throw new InteropException(e);
+
+		} catch (IOException e) {
+			if (verbose != null)
+				e.printStackTrace();
+			throw new InteropException(e);
+		}
+
+	}
+	
+	public void writeDocument(OutputStream os, MediaType mt, Document doc) {
+	    Namespace.withThreadNamespace(doc.getNamespace());
+	    
+		try {
+			ProvFormat format = mimeTypeRevMap.get(mt.toString());
+			if (format == null) {
+			    System.err.println("Unknown output format: " + mt);
+			    return;
+			}
+			logger.debug("writing " + format);
+			setNamespaces(doc);
+			switch (format) {
+			case PROVN: {
+			       System.out.println("now writing provn");
+				u.writeDocument(doc, os,pFactory);
+				       System.out.println("done writing provn");
+				break;
+			}
+			case XML: {
+				ProvSerialiser serial = ProvSerialiser
+						.getThreadProvSerialiser();
+				logger.debug("namespaces " + doc.getNamespace());
+				serial.serialiseDocument(os, doc, true);
+				break;
+			}
+			case TURTLE: {
+				new org.openprovenance.prov.rdf.Utility(pFactory,onto).dumpRDF(
+						doc, RDFFormat.TURTLE, os);
+				break;
+			}
+			case RDFXML: {
+				new org.openprovenance.prov.rdf.Utility(pFactory,onto).dumpRDF(
+						doc, RDFFormat.RDFXML, os);
+				break;
+			}
+			case TRIG: {
+				new org.openprovenance.prov.rdf.Utility(pFactory,onto).dumpRDF(
+						doc, RDFFormat.TRIG, os);
+				break;
+			}
+			case JSON: {
+				new org.openprovenance.prov.json.Converter(pFactory).writeDocument(doc,
+						new OutputStreamWriter(os));
+				break;
+			}
+			case PDF: {
+				String configFile = null; // TODO: get it as option
+				File tmp = File.createTempFile("viz-", ".dot");
+
+				String dotFileOut = tmp.getAbsolutePath(); // give it as option,
+															// if not available
+															// create tmp file
+				ProvToDot toDot = (configFile == null) ? new ProvToDot(
+						ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
+						configFile);
+				toDot.convert(doc, dotFileOut, os,title);
+				break;
+			}
+			case DOT: {
+				String configFile = null; // TODO: get it as option
+				ProvToDot toDot = (configFile == null) ? new ProvToDot(
+						ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
+						configFile);
+				toDot.convert(doc, os,title);
+				break;
+			}
+			case JPEG: {
+				String configFile = null; // give it as option
+				File tmp = File.createTempFile("viz-", ".dot");
+
+				String dotFileOut = tmp.getAbsolutePath(); // give it as option,
+															// if not available
+															// create tmp file
+				ProvToDot toDot;
+				if (configFile != null) {
+					toDot = new ProvToDot(configFile);
+				} else {
+					toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
+				}
+
+				toDot.convert(doc, dotFileOut, os, EXTENSION_JPG, title);
 				tmp.delete();
 				break;
 			}
@@ -349,7 +529,7 @@ public class InteropFramework {
 					toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
 				}
 
-				toDot.convert(doc, dotFileOut, filename, "svg", title);
+				toDot.convert(doc, dotFileOut, os, EXTENSION_SVG, title);
 				tmp.delete();
 				break;
 			}
@@ -376,7 +556,7 @@ public class InteropFramework {
 
 	}
 
-	public Object loadProvKnownGraph(String filename) {
+	public Document loadProvKnownGraph(String filename) {
 		try {
 
 			ProvFormat format = getTypeForFile(filename);
@@ -401,9 +581,9 @@ public class InteropFramework {
 				CommonTree tree = u.convertASNToTree(filename);
 				Object o = u.convertTreeToJavaBean(tree,pFactory);
 				Document doc=(Document)o;
-				Namespace ns=Namespace.gatherNamespaces(doc);
-                                doc.setNamespace(ns);
-				return o;
+				//Namespace ns=Namespace.gatherNamespaces(doc);
+                                //doc.setNamespace(ns);
+				return doc;
 			}
 			case RDFXML:
 			case TRIG:
@@ -428,16 +608,20 @@ public class InteropFramework {
 			}
 		} catch (IOException e) {
 			throw new InteropException(e);
-		} catch (Throwable e) {
-			e.printStackTrace();
+		} catch (RDFParseException e) {
 			throw new InteropException(e);
-
-		}
+		} catch (RDFHandlerException e) {
+			throw new InteropException(e);
+		} catch (JAXBException e) {
+			throw new InteropException(e);
+		} catch (RecognitionException e) {
+			throw new InteropException(e);
+		} 
 
 	}
 
 	public Object loadProvUnknownGraph(String filename)
-			throws java.io.IOException, JAXBException, Throwable {
+			 {
 
 		try {
 			Utility u = new Utility();
@@ -446,7 +630,9 @@ public class InteropFramework {
 			if (o != null) {
 				return o;
 			}
-		} catch (Throwable t1) {
+		} catch (RecognitionException t1) {
+			// OK, we failed, let's try next format.
+		} catch (IOException e) {
 			// OK, we failed, let's try next format.
 		}
 		try {
@@ -457,7 +643,7 @@ public class InteropFramework {
 			if (c != null) {
 				return c;
 			}
-		} catch (Throwable t2) {
+		} catch (JAXBException t2) {
 			// OK, we failed, let's try next format.
 		}
 
@@ -467,7 +653,7 @@ public class InteropFramework {
 			if (o != null) {
 				return o;
 			}
-		} catch (RuntimeException e) {
+		} catch (IOException e) {
 			// OK, we failed, let's try next format.
 
 		}
@@ -477,8 +663,10 @@ public class InteropFramework {
 			if (doc != null) {
 				return doc;
 			}
-		} catch (RuntimeException e) {
-			// OK, we failed, let's try next format
+		} catch (RDFParseException e) {
+		} catch (RDFHandlerException e) {
+		} catch (IOException e) {
+		} catch (JAXBException e) {
 		}
 		System.out.println("Unparseable format " + filename);
 		throw new UnsupportedOperationException();
@@ -579,28 +767,152 @@ public class InteropFramework {
 		}
 		return conn;
 	}
-
-	public void run() {
-		if (infile == null)
-			return;
-		if (outfile == null)
-			return;
-		try {
-			Document doc = (Document) loadProvKnownGraph(infile);
-			// doc.setNss(new Hashtable<String, String>());
-			// doc.getNss().put("pc1",PC1_NS);
-			// doc.getNss().put("prim",PRIM_NS);
-			// doc.getNss().put("prov","http://www.w3.org/ns/prov#");
-			// doc.getNss().put("xsd","http://www.w3.org/2001/XMLSchema");
-			// doc.getNss().put("xsi","http://www.w3.org/2001/XMLSchema-instance");
-
-			// System.out.println("InteropFramework run() -> " + doc.getNss());
-			writeDocument(outfile, doc);
-		} catch (Throwable e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+	String option(String [] options, int index) {
+	    if ((options!=null) && (options.length>index)) {
+	        return options[index];
+	    }
+	    return null;
 	}
+	
+    public void run() {
+	if (outfile == null)
+	    return;
+	if (infile == null && generator == null)
+	    return;
+
+	Document doc;
+	if (infile != null) {
+	    doc = (Document) loadProvKnownGraph(infile);
+	} else {
+	    String[] options = generator.split(":");
+	    String noOfNodes = option(options, 0);
+	    String noOfEdges = option(options, 1);
+	    String firstNode = option(options, 2);
+	    String namespace = "http://expample.org/";
+	    String seed = option(options, 3);
+	    String term = option(options, 4);
+
+	    if (term == null)
+		term = "e1";
+
+	    GeneratorDetails gd = new GeneratorDetails(
+						       Integer.valueOf(noOfNodes),
+						       Integer.valueOf(noOfEdges),
+						       firstNode,
+						       namespace,
+						       (seed == null) ? null
+							       : Long.valueOf(seed),
+						       term);
+	    System.out.println(gd);
+	    GraphGenerator gg = new GraphGenerator(gd, pFactory);
+	    gg.generateElements();
+
+	    doc = gg.getDetails().getDocument();
+	}
+	if (bindings != null) {
+	    Document docBindings = (Document) loadProvKnownGraph(bindings);
+	    Document expanded = new Expand(pFactory).expander(doc, outfile, docBindings);
+	    writeDocument(outfile, expanded);
+
+	} else {
+	    writeDocument(outfile, doc);
+	}
+
+    }
+   
+    
+    public Document readDocument(InputStream is, ProvFormat format) {
+    	return readDocument(is,format,pFactory);
+    }
+        public Document readDocument(InputStream is, ProvFormat format, ProvFactory pFactory) {
+	try {
+
+	    switch (format) {
+	    case DOT:
+	    case JPEG:
+	    case SVG:
+		throw new UnsupportedOperationException(); // we don't load PROV
+		// from these
+		// formats
+	    case JSON: {
+		return new org.openprovenance.prov.json.Converter(pFactory).readDocument(is);
+	    }
+	    case PROVN: {
+		Utility u = new Utility();
+		CommonTree tree = u.convertASNToTree(is);
+		Object o = u.convertTreeToJavaBean(tree, pFactory);
+		Document doc = (Document) o;
+		// Namespace ns=Namespace.gatherNamespaces(doc);
+		// doc.setNamespace(ns);
+		return doc;
+	    }
+	    case RDFXML:
+	    case TRIG:
+	    case TURTLE: {
+		throw new UnsupportedOperationException(); // FIXME: need to
+							   // support streams
+	    }
+	    case XML: {
+		ProvDeserialiser deserial = ProvDeserialiser.getThreadProvDeserialiser();
+		Document doc = deserial.deserialiseDocument(is);
+		Namespace ns = Namespace.gatherNamespaces(doc);
+		doc.setNamespace(ns);
+		return doc;
+	    }
+	    default: {
+		System.out.println("Unknown format " + format);
+		throw new UnsupportedOperationException();
+	    }
+	    }
+	} catch (IOException e) {
+	    throw new InteropException(e);
+	} catch (JAXBException e) {
+	    throw new InteropException(e);
+	} catch (RecognitionException e) {
+	    throw new InteropException(e);
+	}
+
+    }
+
+    
+    public Document readDocument(String url) throws IOException {
+	URL theURL = new URL(url);
+	URLConnection conn = connectWithRedirect(theURL);
+	if (conn==null) return null;
+
+
+	ProvFormat format = null;
+	String content_type = conn.getContentType();
+
+	logger.debug("Content-type: " + content_type);
+	if (content_type != null) {
+		// Need to trim optional parameters
+		// Content-Type: text/plain; charset=UTF-8
+		int end = content_type.indexOf(";");
+		if (end < 0) {
+			end = content_type.length();
+		}
+		String actual_content_type = content_type.substring(0, end)
+				.trim();
+		logger.debug("Found Content-type: " + actual_content_type);
+		// TODO: might be worth skipping if text/plain as that seems
+		// to be the
+		// default returned by unconfigured web servers
+		format = mimeTypeRevMap.get(actual_content_type);
+	}
+	logger.debug("Format after Content-type: " + format);
+
+	if (format == null) {
+		format = getTypeForFile(theURL.toString());
+	}
+	logger.debug("Format after extension: " + format);
+
+	
+
+	InputStream content_stream = conn.getInputStream();
+	
+	return readDocument(content_stream, format);
+    }
+    
 
 }

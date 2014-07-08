@@ -1,0 +1,27 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix tmpl: <http://openprovenance.org/tmpl#> .
+@prefix var: <http://openprovenance.org/var#> .
+@prefix ex: <http://example.org/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+
+var:a a prov:Entity ;
+	tmpl:value_0 ex:ag1 ;
+	tmpl:value_1 ex:ag2 .
+
+var:b a prov:Entity ;
+	tmpl:value_0 ex:en1 ;
+	tmpl:value_1 ex:en2 ;
+	tmpl:value_2 ex:en3 .
+
+var:c a prov:Entity ;
+	tmpl:2dvalue_0_0 ex:t1 ;
+	tmpl:2dvalue_1_0 ex:t2a ;
+	tmpl:2dvalue_1_1 ex:t2b ;
+	tmpl:2dvalue_2_0 ex:t3 ;
+	tmpl:2dvalue_3_0 ex:t4 ;
+	tmpl:2dvalue_4_0 ex:t5a ;
+	tmpl:2dvalue_4_1 ex:t5b ;
+	tmpl:2dvalue_4_2 ex:t5c ;
+	tmpl:2dvalue_5_0 ex:t6 .

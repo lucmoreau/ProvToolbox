@@ -7,6 +7,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import javax.management.RuntimeErrorException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -173,7 +174,7 @@ public class PersistenceUtility {
             return doc;
 	} catch (RuntimeException re) {
 	    re.printStackTrace();
-	    return null;
+	    return null;  // FIXME: why not re-throw exception
 	}
 	finally {
             commitTransaction();
@@ -181,6 +182,61 @@ public class PersistenceUtility {
      
     }            
     
+
+    public Document persistInTransaction(Document doc) {
+	try {
+            Dagify dagifier=new Dagify(entityManager,table);
+            ProvUtilities u=new ProvUtilities();
+            u.forAllStatementOrBundle(doc.getStatementOrBundle(), dagifier);
+            entityManager.persist(doc);
+            
+            return doc;
+	} catch (RuntimeException re) {
+	    re.printStackTrace();
+	    return null;  // FIXME: why not re-throw exception
+	}
+	
+    }            
+    
+    public Dagify getDagifyer () {
+    	return new Dagify(entityManager,table);
+    }
+    public IncrementalDocument persist(IncrementalDocument doc) {
+    	try {
+                beginTransaction();
+                entityManager.persist(doc);   
+                return doc;
+    	} catch (RuntimeException re) {
+    	    re.printStackTrace();
+    	    throw re;
+    	}
+    	finally {
+                commitTransaction();
+    	}
+         
+        }            
+        
+    
+
+    public IncrementalDocument persistInTransaction(IncrementalDocument doc) {
+                entityManager.persist(doc);   
+                return doc;
+        
+        }            
+        
+
+    public NamedDocument persistInTransaction(NamedDocument doc) {
+                entityManager.persist(doc);   
+                return doc;
+        
+        }            
+
+    public PutableDocument persistInTransaction(PutableDocument doc) {
+                entityManager.persist(doc);   
+                return doc;
+        
+        }            
+        
     
     public <DOC> DOC find(Class<DOC> cl, Long id) {
         beginTransaction();
@@ -188,9 +244,19 @@ public class PersistenceUtility {
         commitTransaction();
         return doc;
     }
+    
+    public <DOC> DOC findInTransaction(Class<DOC> cl, Long id) {
+        DOC doc=entityManager.find(cl, id);
+        return doc;
+    }
 
     public Query createQuery(String q) {
-	return entityManager.createQuery(q);
+        return entityManager.createQuery(q);
+    }            
+    
+
+    public Query createNamedQuery(String q) {
+        return entityManager.createNamedQuery(q);
     }            
     
    

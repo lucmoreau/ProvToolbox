@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EnumType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,8 +13,9 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.Enumerated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -212,7 +214,14 @@ public class Document
         return equals(null, null, object, strategy);
     }
 
-   /* added in pom.xml */@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable<String,String> nss=null; public java.util.Hashtable<String,String> getNss() { return nss;} public void setNss(java.util.Hashtable<String,String> s) { nss=s; };public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
+
+    /*@javax.xml.bind.annotation.XmlTransient private java.util.Hashtable<String,String> nss=null; 
+    
+    public java.util.Hashtable<String,String> getNss() { return nss;} 
+    public void setNss(java.util.Hashtable<String,String> s) { nss=s; };
+   */
+   
+   public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
         int currentHashCode = 1;
         {
             List<StatementOrBundle> theStatementOrBundle;
@@ -244,13 +253,42 @@ public class Document
     
     transient Namespace namespace;
     
-    @Transient
-    public void setNamespace(Namespace ns) {
-        namespace=ns;       
-    }
-    @Transient
+
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.Namespace.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "NS")
     public Namespace getNamespace() {
         return namespace;
     }
+    
+    public void setNamespace(Namespace ns) {
+        namespace=ns;       
+    }
+    
+    
+    public enum Kind {
+        DOCUMENT,  //0
+        TEMPLATE,  //1
+        BINDINGS,  //2
+        LOG        //3
+    }
+    
+    
+    @Enumerated(EnumType.ORDINAL)
+    transient private Kind kind;
+    
+    public Kind getKind() {
+        return kind;
+    }
+    
+    public void setKind(Kind kind) {
+        this.kind=kind;
+    }
+    
+    public Document () {
+        kind=Kind.DOCUMENT; // default value
+    }
+
 
 }

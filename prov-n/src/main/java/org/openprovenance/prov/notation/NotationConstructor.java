@@ -4,8 +4,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -25,7 +25,6 @@ import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvUtilities;
-import org.openprovenance.prov.model.QualifiedNameExport;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
@@ -50,13 +49,11 @@ public class NotationConstructor implements ModelConstructor {
     boolean abbrev = false;
     final private BufferedWriter buffer;
 
-    final private QualifiedNameExport qnExport;
 
     public boolean standaloneExpression = false;
 
-    public NotationConstructor(Writer writer, QualifiedNameExport qnExport) {
+    public NotationConstructor(Writer writer) {
         this.buffer = new BufferedWriter(writer);
-        this.qnExport = qnExport;
     }
 
     public String breakline() {
@@ -106,7 +103,7 @@ public class NotationConstructor implements ModelConstructor {
     }
 
     public String idOrMarker(QualifiedName qn) {
-        return ((qn == null) ? MARKER : qnExport.qualifiedNameToString(qn));
+        return ((qn == null) ? MARKER : Namespace.getThreadNamespace().qualifiedNameToString(qn));
     }
 
     private String keyEntitySet(List<Entry> kes) {
@@ -289,6 +286,7 @@ public class NotationConstructor implements ModelConstructor {
         String s = "";
         s = s + keyword("endBundle");
         writeln(s);
+      
         return null;
     }
 
@@ -454,13 +452,13 @@ public class NotationConstructor implements ModelConstructor {
     }
 
     private String optionalId(QualifiedName id) {
-        return ((id == null) ? "" : (qnExport.qualifiedNameToString(id) + ";"));
+        return ((id == null) ? "" : (Namespace.getThreadNamespace().qualifiedNameToString(id) + ";"));
     }
 
     public String processNamespaces(Namespace namespace) {
         String s = "";
 
-        Hashtable<String, String> nss = namespace.getPrefixes();
+        Map<String, String> nss = namespace.getPrefixes();
         String def;
         if ((def = namespace.getDefaultNamespace()) != null) {
             s = s + convertDefaultNamespace("<" + def + ">") + breakline();
@@ -488,16 +486,18 @@ public class NotationConstructor implements ModelConstructor {
 
     @Override
     public void startBundle(QualifiedName bundleId, Namespace namespaces) {
-        String s = keyword("bundle") + " " + qnExport.qualifiedNameToString(bundleId)
+   
+        String s = keyword("bundle") + " " + namespaces.qualifiedNameToString(bundleId)
                 + breakline();
         s = s + processNamespaces(namespaces);
         writeln(s);
+
 
     }
 
     @Override
     public void startDocument(Namespace namespaces) {
-        String s = keyword("document") + breakline();
+	String s = keyword("document") + breakline();
         s = s + processNamespaces(namespaces);
         write(s);
     }

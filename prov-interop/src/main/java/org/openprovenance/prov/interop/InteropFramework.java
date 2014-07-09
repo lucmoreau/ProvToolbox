@@ -441,9 +441,7 @@ public class InteropFramework {
 			setNamespaces(doc);
 			switch (format) {
 			case PROVN: {
-			       System.out.println("now writing provn");
 				u.writeDocument(doc, os,pFactory);
-				       System.out.println("done writing provn");
 				break;
 			}
 			case XML: {

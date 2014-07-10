@@ -798,12 +798,14 @@ public class ProvToDot {
             }
             HashMap<String,String> properties3=new HashMap<String, String>();
 
-
-            emitRelation( qualifiedNameToString(u.getEffect(e)),
-                          bnid,
-                          properties2,
-                          out,
-                          true);
+            QualifiedName effect=u.getEffect(e);
+            if (effect!=null) {
+        	emitRelation( qualifiedNameToString(effect),
+        	              bnid,
+        	              properties2,
+        	              out,
+        	              true);
+            }
 
             relationName(e, properties3);
             if (e instanceof HasOther) {
@@ -849,11 +851,15 @@ public class ProvToDot {
 		    properties.put("dir","both");
 		}
 
-		emitRelation( qualifiedNameToString(u.getEffect(e)),
-			      qualifiedNameToString(u.getCause(e)),
-			      properties,
-			      out,
-			      true);
+		QualifiedName effect=u.getEffect(e);
+		QualifiedName cause=u.getCause(e);
+		if (effect!=null && cause!=null) {
+		    emitRelation( qualifiedNameToString(effect),
+		                  qualifiedNameToString(cause),
+		                  properties,
+		                  out,
+		                  true);
+		}
 	    }
         }
     }

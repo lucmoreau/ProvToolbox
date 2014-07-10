@@ -158,6 +158,12 @@ public class SQLValueConverter  {
 	if ((o=target.getDateTime())!=null) {
 	    return o;
 	}
+	if ((o=target.getLong())!=null) {
+		return o;
+	}
+	if ((o=target.getGYear())!=null) {
+		return o;
+	}
 
 	return null;
     }

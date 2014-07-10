@@ -42,12 +42,29 @@ public class Utility {
 					     JAXBException {
     	//System.out.println("**** Parse "+filename);
 	File file = new File(filename);
-	RDFParser rdfParser = Rio.createParser(Rio.getParserFormatForFileName(file.getName()));
 	URL documentURL = file.toURI().toURL();
 	InputStream inputStream = documentURL.openStream();
+	RDFParser rdfParser = Rio.createParser(Rio.getParserFormatForFileName(file.getName()));
+	String streamName=documentURL.toString();
+	
+	return parseRDF(inputStream, rdfParser, streamName);
+    }
+
+    public Document parseRDF(InputStream inputStream, RDFFormat format) throws RDFParseException,
+    							RDFHandlerException, IOException,
+    							JAXBException {
+	RDFParser rdfParser=Rio.createParser(format);
+	String streamName="inputstream";
+	return parseRDF(inputStream, rdfParser, streamName);
+    }	
+
+    public Document parseRDF(InputStream inputStream, RDFParser rdfParser,
+			     String streamName) throws IOException,
+					       RDFParseException,
+					       RDFHandlerException {
 	RdfCollector rdfCollector = new QualifiedCollector(pFactory,onto);
 	rdfParser.setRDFHandler(rdfCollector);
-	rdfParser.parse(inputStream, documentURL.toString());
+	rdfParser.parse(inputStream, streamName);
 	Document doc=rdfCollector.getDocument();
 	Namespace ns=doc.getNamespace();
 	ns.unregister("xsd", "http://www.w3.org/2001/XMLSchema#");

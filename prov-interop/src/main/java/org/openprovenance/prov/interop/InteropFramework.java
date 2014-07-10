@@ -844,11 +844,17 @@ public class InteropFramework {
 		// doc.setNamespace(ns);
 		return doc;
 	    }
-	    case RDFXML:
-	    case TRIG:
+	    case RDFXML: {
+	    	org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory,onto);
+	    	return rdfU.parseRDF(is,RDFFormat.RDFXML);
+	    }
+	    case TRIG: {
+	    	org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory,onto);
+	    	return rdfU.parseRDF(is,RDFFormat.TRIG);
+	    }
 	    case TURTLE: {
-		throw new UnsupportedOperationException(); // FIXME: need to
-							   // support streams
+	    	org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory,onto);
+	    	return rdfU.parseRDF(is,RDFFormat.TURTLE);
 	    }
 	    case XML: {
 		ProvDeserialiser deserial = ProvDeserialiser.getThreadProvDeserialiser();
@@ -867,6 +873,10 @@ public class InteropFramework {
 	} catch (JAXBException e) {
 	    throw new InteropException(e);
 	} catch (RecognitionException e) {
+	    throw new InteropException(e);
+	} catch (RDFParseException e) {
+	    throw new InteropException(e);
+	} catch (RDFHandlerException e) {
 	    throw new InteropException(e);
 	}
 

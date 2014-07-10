@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.GregorianCalendar;
+
+import javax.xml.bind.JAXBException;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
@@ -269,6 +271,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return packageList;
     }
 
+    abstract public ProvSerialiser getSerializer() throws JAXBException;
   
 
     public String getRole(HasOther e) {

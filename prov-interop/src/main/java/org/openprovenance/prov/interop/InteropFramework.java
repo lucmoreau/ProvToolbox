@@ -445,8 +445,7 @@ public class InteropFramework {
 				break;
 			}
 			case XML: {
-				ProvSerialiser serial = ProvSerialiser
-						.getThreadProvSerialiser();
+				org.openprovenance.prov.model.ProvSerialiser serial = pFactory.getSerializer();
 				logger.debug("namespaces " + doc.getNamespace());
 				serial.serialiseDocument(os, doc, true);
 				break;

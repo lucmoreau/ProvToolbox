@@ -5,6 +5,7 @@ import java.util.Properties;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -14,6 +15,7 @@ import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.LiteralConstructor;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.ProvSerialiser;
 import org.openprovenance.prov.model.QualifiedName;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -350,6 +352,11 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
           ProvUtilities.putTypes(HadMember.class, new Class[] { QualifiedName.class,
   						 Object.class });
       }
+
+	@Override
+	public ProvSerialiser getSerializer() throws JAXBException {
+		return new org.openprovenance.prov.sql.ProvSerialiser();
+	}
     
 
 

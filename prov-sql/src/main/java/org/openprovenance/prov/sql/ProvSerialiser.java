@@ -21,7 +21,7 @@ import java.io.File;
 
 /** Serialiser of PROV Graphs. */
 
-public class ProvSerialiser {
+public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser {
     private ObjectFactory2 of=new ObjectFactory2();
 	static DocumentBuilder docBuilder;
 

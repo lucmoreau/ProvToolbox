@@ -573,6 +573,7 @@ public class InteropFramework {
 				return new org.openprovenance.prov.json.Converter(pFactory)
 						.readDocument(filename);
 			}
+			
 			case PROVN: {
 				Utility u = new Utility();
 				CommonTree tree = u.convertASNToTree(filename);

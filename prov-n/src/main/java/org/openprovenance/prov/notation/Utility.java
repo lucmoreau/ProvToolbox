@@ -26,7 +26,7 @@ import org.openprovenance.prov.model.Document;
 
 
 public  class Utility {
-    
+   
     class ParserWithErrorHandling extends PROV_NParser {
 	public void reportError(RecognitionException re) {
 	    super.reportError(re);

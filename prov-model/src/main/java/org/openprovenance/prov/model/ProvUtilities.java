@@ -1,18 +1,27 @@
 package org.openprovenance.prov.model;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.LinkedList;
 
 import org.openprovenance.prov.model.StatementOrBundle.Kind;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
+import org.openprovenance.prov.model.exception.UncheckedException;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /** Utilities for manipulating PROV Descriptions. */
 
 public class ProvUtilities {
+    
+
+
     /*
      * public List<Element> getElements(Bundle g) { List<Element> res = new
      * LinkedList<Element>(); res.addAll(g.getRecords().getEntity());
@@ -902,5 +911,32 @@ public class ProvUtilities {
                  */
      } 
    
+     
+     public static XMLGregorianCalendar toXMLGregorianCalendar(Date date){
+	 if (date==null) return null;
+	 GregorianCalendar gCalendar = new GregorianCalendar();
+	 gCalendar.setTime(date);
+	 XMLGregorianCalendar xmlCalendar = null;
+	 try {
+	     xmlCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gCalendar);
+	 } catch (DatatypeConfigurationException ex) {
+	     ex.printStackTrace();
+	     throw new UncheckedException(ex);
+	 }
+	 return xmlCalendar;
+     }
+     
+     
+
+     public static Date toDate(XMLGregorianCalendar calendar) {
+	 if (calendar == null) {
+	     return null;
+	 }
+	 return calendar.toGregorianCalendar().getTime();
+     }
+
+
+
+
 
 }

@@ -37,6 +37,7 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Other;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.xml.AttributeList;
@@ -368,24 +369,25 @@ public class Activity
     @Column(name = "START_TIME")
     @Temporal(TemporalType.TIMESTAMP)
     public Date getStartTimeItem() {
-        return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getStartTime());
+        return ProvUtilities.toDate(this.getStartTime());
     }
 
     public void setStartTimeItem(Date target) {
-        setStartTime(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
+        setStartTime(ProvUtilities.toXMLGregorianCalendar(target));
     }
 
     @Basic
     @Column(name = "END_TIME")
     @Temporal(TemporalType.TIMESTAMP)
     public Date getEndTimeItem() {
-        return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getEndTime());
+        return ProvUtilities.toDate(this.getEndTime());
     }
 
     public void setEndTimeItem(Date target) {
-        setEndTime(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
+        setEndTime(ProvUtilities.toXMLGregorianCalendar(target));
     }
 
+    
     
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {

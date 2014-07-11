@@ -1826,13 +1826,13 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testScruffyEnd4() {
-        WasEndedBy end1 = pFactory.newWasEndedBy(q("end1"), q("a1"), q("e1"));
+        WasEndedBy end1 = pFactory.newWasEndedBy(q("end4"), q("a1"), q("e1"));
         end1.setTime(pFactory.newTimeNow());
         end1.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX,
                                               "hello", name.XSD_STRING));
         end1.setEnder(q("a1s"));
 
-        WasEndedBy end2 = pFactory.newWasEndedBy(q("end1"), q("a2"), q("e2"));
+        WasEndedBy end2 = pFactory.newWasEndedBy(q("end4"), q("a2"), q("e2"));
         end2.setTime(pFactory.newISOTime("2012-12-03T21:08:16.686Z"));
         end2.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "hi",
                                               name.XSD_STRING));

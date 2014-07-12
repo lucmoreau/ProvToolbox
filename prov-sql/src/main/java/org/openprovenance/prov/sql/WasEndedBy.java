@@ -154,7 +154,7 @@ public class WasEndedBy
     @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "TRIGGER")
+    @JoinColumn(name = "TRIGGER_")
     public org.openprovenance.prov.model.QualifiedName getTrigger() {
         return trigger;
     }

@@ -12,8 +12,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAttribute;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.QNameAsString;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
+import javax.xml.namespace.QName;
+
 
 
 /**
@@ -102,17 +102,22 @@ public class QualifiedName
     
     @Basic@Column(name = "REFITEM")
     public String getRefItem() {
-        return XmlAdapterUtils.unmarshall(QNameAsString.class, this.toQName());
+    	javax.xml.namespace.QName qname=this.toQName();
+    	if (qname==null) return null;
+    	return qname.toString();
+        //return XmlAdapterUtils.unmarshall(QNameAsString.class, this.toQName());
 	//return Helper2.QNameToString(this.toQName());
     }
 
     public void setRefItem(String target) {
-	javax.xml.namespace.QName qname=XmlAdapterUtils.marshall(QNameAsString.class, target);
+    	if (target!=null) {
+    		javax.xml.namespace.QName qname=QName.valueOf(target);
+    		setNamespaceURI(qname.getNamespaceURI());
+            setLocalPart(qname.getLocalPart());
+            setPrefix(qname.getPrefix());
+    	}
+	//javax.xml.namespace.QName qname=XmlAdapterUtils.marshall(QNameAsString.class, target);
 	//javax.xml.namespace.QName qname=Helper2.stringToQName(target);
-        setNamespaceURI(qname.getNamespaceURI());
-        setLocalPart(qname.getLocalPart());
-        setPrefix(qname.getPrefix());
-        //System.out.println("      initialized to " + this);
     }
 
     transient String local;

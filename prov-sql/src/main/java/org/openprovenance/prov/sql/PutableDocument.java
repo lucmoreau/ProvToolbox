@@ -2,9 +2,8 @@ package org.openprovenance.prov.sql;
 
 import java.util.Date;
 
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.ProvUtilities;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -146,12 +145,21 @@ public class PutableDocument {
     @Column(name = "DATETIMEITEM")
     @Temporal(TemporalType.TIMESTAMP)
     public Date getDateTimeItem() {
+        return ProvUtilities.toDate(this.getDateTime());
+
+    }
+
+    public void setDateTimeItem(Date target) {
+        setDateTime(ProvUtilities.toXMLGregorianCalendar(target));
+    }
+    /*
+    public Date getDateTimeItem() {
         return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getDateTime());
     }
 
     public void setDateTimeItem(Date target) {
         setDateTime(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
-    }
+    }*/
 
 
     // Same provenance information as IncrementalDocument, obtained by template expansion. 

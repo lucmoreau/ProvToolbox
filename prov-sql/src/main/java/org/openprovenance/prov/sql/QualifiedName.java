@@ -88,7 +88,7 @@ public class QualifiedName
      */
     @Override
     @Basic
-    @Column(name = "URI")
+    @Column(name = "URI", columnDefinition="TEXT")
     public String getUri() {
 	return this.getNamespaceURI()
 		+ this.getLocalPart();

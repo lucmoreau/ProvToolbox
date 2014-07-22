@@ -40,6 +40,7 @@ public class PersistenceUtility {
     }
 
 
+
     protected EntityManagerFactory createEntityManagerFactory() {
          
              try {
@@ -158,7 +159,7 @@ public class PersistenceUtility {
     }                                                                                                                                                                                    
              
     public void close() {                                                                                                                                                                
-        entityManager.close();                                                                                                                                                           
+        if (entityManager!=null) entityManager.close();                                                                                                                                                           
     }          
     
     

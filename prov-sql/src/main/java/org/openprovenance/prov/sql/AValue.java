@@ -139,10 +139,10 @@ public class AValue
      *     
      */
     @Basic
-    @Column(name = "STRING")
-    @Lob
+    //    @Column(name = "STRING")
+    //    @Lob
 //   @Column(name = "STRING", length = 255)
- //   @Column(name = "STRING", columnDefinition="TEXT")
+   @Column(name = "STRING", columnDefinition="TEXT")
     public String getString() {
         return string;
     }

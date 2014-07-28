@@ -429,12 +429,17 @@ public class InteropFramework {
 	}
 	
 	public void writeDocument(OutputStream os, MediaType mt, Document doc) {
+	    ProvFormat format = mimeTypeRevMap.get(mt.toString());
+	    writeDocument(os,format,doc);
+	}
+	
+	public void writeDocument(OutputStream os, ProvFormat format, Document doc) {
+
 	    Namespace.withThreadNamespace(doc.getNamespace());
 	    
 		try {
-			ProvFormat format = mimeTypeRevMap.get(mt.toString());
 			if (format == null) {
-			    System.err.println("Unknown output format: " + mt);
+			    System.err.println("Unknown output format: " + format);
 			    return;
 			}
 			logger.debug("writing " + format);

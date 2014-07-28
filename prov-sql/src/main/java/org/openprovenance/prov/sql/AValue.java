@@ -28,10 +28,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.QNameAsString;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsGYear;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -40,6 +36,7 @@ import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.openprovenance.prov.model.ProvUtilities;
 
 
 /**
@@ -339,22 +336,36 @@ public class AValue
     @Column(name = "DATETIMEITEM")
     @Temporal(TemporalType.TIMESTAMP)
     public Date getDateTimeItem() {
+        return ProvUtilities.toDate(this.getDateTime());
+
+    }
+
+    public void setDateTimeItem(Date target) {
+        setDateTime(ProvUtilities.toXMLGregorianCalendar(target));
+    }
+
+    /*
+    public Date getDateTimeItem() {
         return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getDateTime());
     }
 
     public void setDateTimeItem(Date target) {
         setDateTime(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
-    }
+    }*/
 
     @Basic
     @Column(name = "GYEARITEM")
     @Temporal(TemporalType.DATE)
     public Date getGYearItem() {
-        return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsGYear.class, this.getGYear());
+        //return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsGYear.class, this.getGYear());
+        return ProvUtilities.toDate(this.getGYear());
+
     }
 
     public void setGYearItem(Date target) {
-        setGYear(XmlAdapterUtils.marshall(XMLGregorianCalendarAsGYear.class, target));
+        //setGYear(XmlAdapterUtils.marshall(XMLGregorianCalendarAsGYear.class, target));
+        setGYear(ProvUtilities.toXMLGregorianCalendar(target));
+
     }
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {

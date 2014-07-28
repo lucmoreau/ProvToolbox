@@ -322,6 +322,9 @@
     <maven.jaxb.plugin.version>0.8.2</maven.jaxb.plugin.version>
     <xerces.version>2.9.1</xerces.version>
 
+    <hibernate.version>4.3.5.Final</hibernate.version>
+
+
     
   </properties>
 

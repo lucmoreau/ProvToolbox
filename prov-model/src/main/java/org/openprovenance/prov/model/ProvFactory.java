@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.GregorianCalendar;
+
+import javax.xml.bind.JAXBException;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
@@ -269,6 +271,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return packageList;
     }
 
+    abstract public ProvSerialiser getSerializer() throws JAXBException;
   
 
     public String getRole(HasOther e) {
@@ -528,6 +531,9 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	Document res = of.createDocument();
 	res.getStatementOrBundle()
 	   .addAll(graph.getStatementOrBundle());
+	if (graph.getNamespace()!=null) {
+	    res.setNamespace(new Namespace(graph.getNamespace()));
+	}
 	return res;
     }
 
@@ -1410,6 +1416,18 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         res.setYear(year);
         return res;
     }
+    public Collection<Attribute> getAttributes(Statement statement) {
+	Collection<Attribute> result=new LinkedList<Attribute>();
+	if (statement instanceof HasType) result.addAll(((HasType)statement).getType());
+	if (statement instanceof HasLocation) result.addAll(((HasLocation)statement).getLocation());
+	if (statement instanceof HasRole) result.addAll(((HasRole)statement).getRole());
+	if (statement instanceof HasOther) {
+	    for (Other o: ((HasOther)statement).getOther()) {
+		result.add((Attribute)o);
+	    }
+	}	
+	return result;
+    }
 
     public void setAttributes(HasOther res, Collection<Attribute> attributes) {
 	if (attributes==null) return;
@@ -1473,6 +1491,14 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     @Override
     public void startDocument(Namespace namespace) {
         
+    }
+
+    public Namespace newNamespace(Namespace ns) {
+	return new Namespace(ns);
+    }
+
+    public Namespace newNamespace() {
+	return new Namespace();
     }
 
 }

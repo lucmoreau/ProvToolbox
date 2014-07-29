@@ -24,7 +24,7 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 		try {
 			return (Document) u.convertASNToJavaBean(file1,pFactory);
 		} catch (IOException e) {
-			throw new UncheckedTestException(e);
+		    throw new UncheckedTestException(e);
 		} catch (Throwable e) {
 			throw new UncheckedTestException(e);
 		}

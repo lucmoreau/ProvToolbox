@@ -69,6 +69,11 @@
 	  <artifactId>runtime</artifactId>
    	  <version>${jaxb.common.version}</version>
     </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.0.1</version>
+    </dependency>
 
 
 

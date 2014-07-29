@@ -1,18 +1,27 @@
 package org.openprovenance.prov.model;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.LinkedList;
 
 import org.openprovenance.prov.model.StatementOrBundle.Kind;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
+import org.openprovenance.prov.model.exception.UncheckedException;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /** Utilities for manipulating PROV Descriptions. */
 
 public class ProvUtilities {
+    
+
+
     /*
      * public List<Element> getElements(Bundle g) { List<Element> res = new
      * LinkedList<Element>(); res.addAll(g.getRecords().getEntity());
@@ -419,16 +428,18 @@ public class ProvUtilities {
     public static String unescape (String s) {
   	return s.replace("\\\"","\"");
       }
-    
+
     public static String valueToNotationString(org.openprovenance.prov.model.Key key) {
  	return valueToNotationString(key.getValue(), key.getType());
      }
+
 
      
      public static String escape (String s) {
    	return s.replace("\"", "\\\"");
        }
      
+ 
 
      //TODO: move this code to ValueConverter
      //TODO: what else should be escaped?
@@ -437,7 +448,7 @@ public class ProvUtilities {
   	    LangString istring = (LangString) val;
   	    return "\"" + istring.getValue() + 
   		    ((istring.getLang()==null) ? "\"" : "\"@" + istring.getLang())
-  		    + " %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType);
+  		    + ((xsdType==null)? "" : " %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType));
   	} else if (val instanceof QualifiedName) {
   	    QualifiedName qn = (QualifiedName) val;	    
   	    return "'" + Namespace.qualifiedNameToStringWithNamespace(qn) + "'";
@@ -447,7 +458,13 @@ public class ProvUtilities {
  		// return "\"\"\"" + val + "\"\"\" %% " + qnameToString(xsdType);
  		return "\"\"\"" + escape(s) + "\"\"\"" ;
  	    } else {
- 		return "\"" + escape(s) + "\" %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType);
+ 		//FIXME: It's here that we should detect an int and generate the compact form: e.g. 1 instand of 1 %% xsd:int
+ 		// However dictionaries failed to be parsed then
+ 		//if (xsdType.getLocalPart().equals("int")) { //FIXME:need to properly compare with xsd:int
+ 		//    return s;
+ 		//} else {
+ 		    return "\"" + escape(s) + ((xsdType==null)? "" : "\" %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType));
+ 		//}
  	    }
   	} else {
  	    // We should never be here!
@@ -626,7 +643,12 @@ public class ProvUtilities {
  	    }
  	}
  	case PROV_MEMBERSHIP: {
- 	    throw new InvalidCaseException("ProvUtilities.setter() for " + kind);
+ 	   final org.openprovenance.prov.model.HadMember a=(org.openprovenance.prov.model.HadMember) s;
+	    switch (i) {
+	    case 0: return a.getCollection();
+	    case 1: return a.getEntity();
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind + " and index " + i);
+	    }
  	}
  	case PROV_MENTION: {
  	    final org.openprovenance.prov.model.MentionOf a=(org.openprovenance.prov.model.MentionOf) s;
@@ -811,7 +833,13 @@ public class ProvUtilities {
  	    }
  	}
  	case PROV_MEMBERSHIP: {
- 	    throw new InvalidCaseException("ProvUtilities.setter() for " + kind);
+ 	   final org.openprovenance.prov.model.HadMember a=(org.openprovenance.prov.model.HadMember) s;
+	    switch (i) {
+	    case 0: a.setCollection((QualifiedName)val); return;
+	    case 1: a.getEntity().remove(0);
+	            a.getEntity().add((QualifiedName)val); return; //FIXME: only supporting one value in the membership
+ 	    default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+	    }
  	}
  	case PROV_MENTION: {
  	    final org.openprovenance.prov.model.MentionOf a=(org.openprovenance.prov.model.MentionOf) s;
@@ -883,5 +911,32 @@ public class ProvUtilities {
                  */
      } 
    
+     
+     public static XMLGregorianCalendar toXMLGregorianCalendar(Date date){
+	 if (date==null) return null;
+	 GregorianCalendar gCalendar = new GregorianCalendar();
+	 gCalendar.setTime(date);
+	 XMLGregorianCalendar xmlCalendar = null;
+	 try {
+	     xmlCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gCalendar);
+	 } catch (DatatypeConfigurationException ex) {
+	     ex.printStackTrace();
+	     throw new UncheckedException(ex);
+	 }
+	 return xmlCalendar;
+     }
+     
+     
+
+     public static Date toDate(XMLGregorianCalendar calendar) {
+	 if (calendar == null) {
+	     return null;
+	 }
+	 return calendar.toGregorianCalendar().getTime();
+     }
+
+
+
+
 
 }

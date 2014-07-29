@@ -1,6 +1,7 @@
 package org.openprovenance.prov.xml;
 import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.openprovenance.prov.model.Namespace;
 
@@ -30,7 +31,7 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
         public static final String TOOLBOX_NS = "http://openprovenance.org/toolbox/";
 
 
-    private Hashtable<String,String> nss=null;
+    private Map<String,String> nss=null;
 
         // Must use 'internal' for Java 6
 /* This file is a modification of the NamespacePrefixMapper from docx4j,

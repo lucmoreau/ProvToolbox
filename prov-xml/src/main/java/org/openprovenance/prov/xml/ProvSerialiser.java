@@ -20,7 +20,7 @@ import java.io.File;
 
 /** Serialiser of PROV Graphs. */
 
-public class ProvSerialiser {
+public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser {
     private ObjectFactory2 of=new ObjectFactory2();
     //private org.openprovenance.prov.xml.validation.ObjectFactory vof=new org.openprovenance.prov.xml.validation.ObjectFactory();
 	static DocumentBuilder docBuilder;
@@ -62,7 +62,7 @@ public class ProvSerialiser {
     }
     protected JAXBContext jc;
 
-    public ProvSerialiser () throws JAXBException {
+    public ProvSerialiser ()  throws JAXBException {
         jc = JAXBContext.newInstance( ProvFactory.packageList );
         //System.out.println("JAXBContext => " + jc.getClass());
     }

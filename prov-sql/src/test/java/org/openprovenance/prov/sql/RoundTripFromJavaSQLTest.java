@@ -69,5 +69,11 @@ public class RoundTripFromJavaSQLTest extends RoundTripFromJavaTest {
 		return new QualifiedName(EX_NS, n, EX_PREFIX);
        }
 
+    @Override
+    public void updateNamespaces(org.openprovenance.prov.model.Document doc) {
+	Namespace ns=Namespace.gatherNamespaces(doc);
+	Namespace ns2=new org.openprovenance.prov.sql.Namespace(ns);
+	doc.setNamespace(ns2);
+    }
 
 }

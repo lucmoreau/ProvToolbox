@@ -22,8 +22,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
+
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -38,6 +37,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.xml.AttributeList;
 import org.openprovenance.prov.xml.HasAllAttributes;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.xml.SortedAttributeList;
 
 
@@ -152,7 +152,7 @@ public class WasEndedBy
     @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "TRIGGER")
+    @JoinColumn(name = "TRIGGER_")
     public org.openprovenance.prov.model.QualifiedName getTrigger() {
         return trigger;
     }
@@ -475,11 +475,12 @@ public class WasEndedBy
     @Column(name = "TIMEITEM")
     @Temporal(TemporalType.TIMESTAMP)
     public Date getTimeItem() {
-        return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getTime());
+        return ProvUtilities.toDate(this.getTime());
+
     }
 
     public void setTimeItem(Date target) {
-        setTime(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
+        setTime(ProvUtilities.toXMLGregorianCalendar(target));
     }
 
     

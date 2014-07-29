@@ -2,6 +2,7 @@
 <persistence version="1.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd
 http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <persistence-unit name="org.openprovenance.prov.sql">
+        <class>org.openprovenance.prov.sql.IncrementalDocument</class>
         <class>org.openprovenance.prov.sql.AStatement</class>
         <class>org.openprovenance.prov.sql.AValue</class>
         <class>org.openprovenance.prov.sql.ActedOnBehalfOf</class>

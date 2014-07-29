@@ -61,12 +61,21 @@ public class ProvDeserialiser {
 
 
     public Document deserialiseDocument (File serialised)
-        throws JAXBException {
-        Unmarshaller u=jc.createUnmarshaller();
-        Object root= u.unmarshal(serialised);
-        @SuppressWarnings("unchecked")
-        Document res=(Document)((JAXBElement<Document>) root).getValue();
-        return res;
+	        throws JAXBException {
+	        Unmarshaller u=jc.createUnmarshaller();
+	        Object root= u.unmarshal(serialised);
+	        @SuppressWarnings("unchecked")
+	        Document res=(Document)((JAXBElement<Document>) root).getValue();
+	        return res;
+    }
+
+    public Document deserialiseDocument (InputStream is)
+	        throws JAXBException {
+	        Unmarshaller u=jc.createUnmarshaller();
+	        Object root= u.unmarshal(is);
+	        @SuppressWarnings("unchecked")
+	        Document res=(Document)((JAXBElement<Document>) root).getValue();
+	        return res;
     }
 
     public Document validateDocument (String[] schemaFiles, File serialised)throws JAXBException,SAXException, IOException {

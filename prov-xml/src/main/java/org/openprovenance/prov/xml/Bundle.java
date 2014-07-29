@@ -46,7 +46,6 @@ public class Bundle
     implements Equals, HashCode, ToString
 {
 
-
     public void equals(Object object, EqualsBuilder equalsBuilder) {
         if (!(object instanceof Bundle)) {
             equalsBuilder.appendSuper(false);

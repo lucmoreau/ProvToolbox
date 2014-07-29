@@ -1,0 +1,22 @@
+document
+prefix xsd <http://www.w3.org/2001/XMLSchema>
+prefix tmpl <http://openprovenance.org/tmpl#>
+prefix ex <http://example.org/>
+bundle ex:b
+prefix xsd <http://www.w3.org/2001/XMLSchema>
+prefix tmpl <http://openprovenance.org/tmpl#>
+prefix ex <http://example.org/>
+
+agent(ex:ag1,[tmpl:order = "[0]" %% xsd:string])
+agent(ex:ag2,[tmpl:order = "[1]" %% xsd:string])
+entity(ex:en1,[tmpl:order = "[0]" %% xsd:string])
+entity(ex:en2,[tmpl:order = "[1]" %% xsd:string])
+entity(ex:en3,[tmpl:order = "[2]" %% xsd:string])
+wasAttributedTo(ex:en1, ex:ag1,[tmpl:order = "[0, 0]" %% xsd:string])
+wasAttributedTo(ex:en1, ex:ag2,[tmpl:order = "[1, 0]" %% xsd:string])
+wasAttributedTo(ex:en2, ex:ag1,[tmpl:order = "[0, 1]" %% xsd:string])
+wasAttributedTo(ex:en2, ex:ag2,[tmpl:order = "[1, 1]" %% xsd:string])
+wasAttributedTo(ex:en3, ex:ag1,[tmpl:order = "[0, 2]" %% xsd:string])
+wasAttributedTo(ex:en3, ex:ag2,[tmpl:order = "[1, 2]" %% xsd:string])
+endBundle
+endDocument

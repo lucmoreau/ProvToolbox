@@ -41,15 +41,50 @@ import java.util.List;
  * @see <a href="http://www.w3.org/TR/prov-n/#expression-collection-membership">PROV-N Membership</a>
  * @see <a href="http://www.w3.org/TR/prov-xml/#term-Membership">PROV-XML Membership</a>
  * @see <a href="http://www.w3.org/Submission/2013/SUBM-prov-json-20130424/#term-membership">PROV-JSON Membership</a>
- 
  */
 
 public interface HadMember extends Relation0 {
 
-    void setCollection(QualifiedName collection);
+    /**
+     * Get an identifier for the collection whose member is asserted
+     * @return QualifiedName for the collection
+     * @see <a href="http://www.w3.org/TR/prov-dm/#membership.collection">membership collection</a>
+     */
+    QualifiedName getCollection();
 
+    /**
+     * Get the list of identifiers of entities that are member of the collection.
+     * @return a list of {@link QualifiedName}
+     * @see <a href="http://www.w3.org/TR/prov-dm/#membership.entity">membership entity</a>
+     * 
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the entity property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getEntity().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link QualifiedName }
+     * 
+     * 
+     */
     List<QualifiedName> getEntity();
 
-    QualifiedName getCollection();
+    /**
+     * Set an identifier for the collection whose member is asserted
+     * @param collection QualifiedName for the collection
+     * @see <a href="http://www.w3.org/TR/prov-dm/#membership.collection">membership collection</a>
+     * 
+     */
+    void setCollection(QualifiedName collection);
     
 }

@@ -391,78 +391,13 @@ public class InteropFramework {
                 .equals(ProvFormatType.INPUTOUTPUT));
     }
 
-    /** Reads a file into java bean. */
-    public Object loadProvGraph(String filename) {
-        return loadProvKnownGraph(filename);
+ 
 
-    }
-
-    public Document loadProvKnownGraph(String filename) {
-        try {
-
-            ProvFormat format = getTypeForFile(filename);
-            if (format == null) {
-                throw new InteropException("Unknown output file format: "
-                        + filename);
-            }
-
-            switch (format) {
-            case DOT:
-            case JPEG:
-            case SVG:
-                throw new UnsupportedOperationException(); // we don't load PROV
-                                                           // from these
-                                                           // formats
-            case JSON: {
-                return new org.openprovenance.prov.json.Converter(pFactory)
-                        .readDocument(filename);
-            }
-
-            case PROVN: {
-                Utility u = new Utility();
-                CommonTree tree = u.convertASNToTree(filename);
-                Object o = u.convertTreeToJavaBean(tree, pFactory);
-                Document doc = (Document) o;
-                // Namespace ns=Namespace.gatherNamespaces(doc);
-                // doc.setNamespace(ns);
-                return doc;
-            }
-            case RDFXML:
-            case TRIG:
-            case TURTLE: {
-                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
-                        pFactory, onto);
-                Document doc = rdfU.parseRDF(filename);
-                return doc;
-            }
-            case XML: {
-                File in = new File(filename);
-                ProvDeserialiser deserial = ProvDeserialiser
-                        .getThreadProvDeserialiser();
-                Document doc = deserial.deserialiseDocument(in);
-                Namespace ns = Namespace.gatherNamespaces(doc);
-                doc.setNamespace(ns);
-                return doc;
-            }
-            default: {
-                System.out.println("Unknown format " + filename);
-                throw new UnsupportedOperationException();
-            }
-            }
-        } catch (IOException e) {
-            throw new InteropException(e);
-        } catch (RDFParseException e) {
-            throw new InteropException(e);
-        } catch (RDFHandlerException e) {
-            throw new InteropException(e);
-        } catch (JAXBException e) {
-            throw new InteropException(e);
-        } catch (RecognitionException e) {
-            throw new InteropException(e);
-        }
-
-    }
-
+    /** Experimental code, trying to load a document without knowing its serialization format. 
+     * First parser that succeeds returns a results. Not a robust method!
+     * @param filename a file to load the provenance document from
+     * @return a document
+     */
     public Object loadProvUnknownGraph(String filename) {
 
         try {
@@ -490,7 +425,7 @@ public class InteropFramework {
         }
 
         try {
-            Object o = new org.openprovenance.prov.json.Converter(pFactory)
+            Document o = new org.openprovenance.prov.json.Converter(pFactory)
                     .readDocument(filename);
             if (o != null) {
                 return o;
@@ -530,12 +465,29 @@ public class InteropFramework {
         u.writeTextToFile(s, file2);
 
     }
+    
+    /**
+     * Reads a Document from an input stream, using the parser specified by the format argument.
+     * @param is an input stream
+     * @param format one of the input formats supported by ProvToolbox
+     * @return a Document
+     */
 
     public Document readDocument(InputStream is, ProvFormat format) {
         return readDocument(is, format, pFactory);
     }
 
-    public Document readDocument(InputStream is, ProvFormat format,
+    /**
+     * Reads a Document from an input stream, using the parser specified by the format argument.
+     * @param is an input stream
+     * @param format one of the input formats supported by ProvToolbox
+     * @param pFactory a provenance factory used to construct the Document
+     * @return a Document
+     */
+
+  
+    public Document readDocument(InputStream is, 
+                                 ProvFormat format,
                                  ProvFactory pFactory) {
         try {
 
@@ -601,6 +553,12 @@ public class InteropFramework {
 
     }
 
+    /**
+     * Reads a document from a URL. Uses the Content-type header field to determine the 
+     * mime-type of the resource, and therefore the parser to read the document. 
+     * @param url a URL
+     * @return a Document
+     */
     public Document readDocument(String url) {
         try {
             URL theURL = new URL(url);
@@ -641,6 +599,78 @@ public class InteropFramework {
             throw new InteropException(e);
         }
     }
+    
+
+    /**
+     * Reads a document from a file, using the file extension to decide which parser to read the file with.
+     * @param filename the file to read a document from
+     * @return a Document
+     */
+    public Document readDocumentFromFile(String filename) {
+        try {
+
+            ProvFormat format = getTypeForFile(filename);
+            if (format == null) {
+                throw new InteropException("Unknown output file format: "
+                        + filename);
+            }
+
+            switch (format) {
+            case DOT:
+            case JPEG:
+            case SVG:
+                throw new UnsupportedOperationException(); // we don't load PROV
+                                                           // from these
+                                                           // formats
+            case JSON: {
+                return new org.openprovenance.prov.json.Converter(pFactory)
+                        .readDocument(filename);
+            }
+
+            case PROVN: {
+                Utility u = new Utility();
+                CommonTree tree = u.convertASNToTree(filename);
+                Object o = u.convertTreeToJavaBean(tree, pFactory);
+                Document doc = (Document) o;
+                // Namespace ns=Namespace.gatherNamespaces(doc);
+                // doc.setNamespace(ns);
+                return doc;
+            }
+            case RDFXML:
+            case TRIG:
+            case TURTLE: {
+                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
+                        pFactory, onto);
+                Document doc = rdfU.parseRDF(filename);
+                return doc;
+            }
+            case XML: {
+                File in = new File(filename);
+                ProvDeserialiser deserial = ProvDeserialiser
+                        .getThreadProvDeserialiser();
+                Document doc = deserial.deserialiseDocument(in);
+                Namespace ns = Namespace.gatherNamespaces(doc);
+                doc.setNamespace(ns);
+                return doc;
+            }
+            default: {
+                System.out.println("Unknown format " + filename);
+                throw new UnsupportedOperationException();
+            }
+            }
+        } catch (IOException e) {
+            throw new InteropException(e);
+        } catch (RDFParseException e) {
+            throw new InteropException(e);
+        } catch (RDFHandlerException e) {
+            throw new InteropException(e);
+        } catch (JAXBException e) {
+            throw new InteropException(e);
+        } catch (RecognitionException e) {
+            throw new InteropException(e);
+        }
+
+    }
 
     public void run() {
         if (outfile == null)
@@ -650,7 +680,7 @@ public class InteropFramework {
 
         Document doc;
         if (infile != null) {
-            doc = (Document) loadProvKnownGraph(infile);
+            doc = (Document) readDocumentFromFile(infile);
         } else {
             String[] options = generator.split(":");
             String noOfNodes = option(options, 0);
@@ -674,7 +704,7 @@ public class InteropFramework {
             doc = gg.getDetails().getDocument();
         }
         if (bindings != null) {
-            Document docBindings = (Document) loadProvKnownGraph(bindings);
+            Document docBindings = (Document) readDocumentFromFile(bindings);
             Document expanded = new Expand(pFactory).expander(doc, outfile,
                                                               docBindings);
             writeDocument(outfile, expanded);

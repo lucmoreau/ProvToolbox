@@ -65,10 +65,18 @@ public interface InteropMediaType {
     /**
      * All Media Types accepted as input for PROV. 
      */
-    public final static String[] ALL_PROV_MEDIA_TYPES = new String[] {
+    public final static String[] ALL_PROV_INPUT_MEDIA_TYPES = new String[] {
 	    MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
 	    MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_TRIG,
 	    MEDIA_APPLICATION_RDF_XML, MEDIA_APPLICATION_JSON,
 	    MEDIA_APPLICATION_PDF };
+    
+    public static final String[] ALL_PROV_OUTPUT_MEDIA_TYPES = new String[] {
+	    MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
+	    MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_TRIG,
+	    MEDIA_APPLICATION_RDF_XML, MEDIA_APPLICATION_JSON,
+	    MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF };
+
+    
 
 }

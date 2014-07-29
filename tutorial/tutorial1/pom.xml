@@ -86,6 +86,16 @@
       <artifactId>prov-model</artifactId>
       <version>0.5.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-interop</artifactId>
+      <version>0.5.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-xml</artifactId>
+      <version>0.5.1-SNAPSHOT</version>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
@@ -118,5 +128,28 @@
     
   </properties>
 
+  <build>  
+    <plugins>  
+      <plugin>  
+	<groupId>org.codehaus.mojo</groupId>  
+	<artifactId>exec-maven-plugin</artifactId>  
+	<version>1.1.1</version>  
+	<executions>  
+	  <execution>  
+	    <phase>test</phase>  
+	    <goals>  
+	      <goal>java</goal>  
+	    </goals>  
+	    <configuration>  
+	      <mainClass>org.openprovenance.prov.tutorial.tutorial1.Little</mainClass>  
+	      <arguments>  
+		<argument>target/little.svg</argument>  
+	      </arguments>  
+	    </configuration>  
+	  </execution>  
+	</executions>  
+      </plugin>  
+    </plugins>  
+  </build>  
 
 </project>

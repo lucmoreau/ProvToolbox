@@ -243,6 +243,36 @@ public class Namespace  {
 	    return pFactory.newQualifiedName(tmp, local, prefix);
 	}
     }
+    
+    public QualifiedName qualifiedName(String prefix, String local, ProvFactory pFactory) {
+	
+	if (prefix == null) {
+	    String tmp = getDefaultNamespace();
+	    if (tmp == null && parent != null) tmp = parent.getDefaultNamespace();
+	    if (tmp==null) throw new NullPointerException("Namespace.stringToQualifiedName(: Null namespace for "+ local);
+	    return pFactory.newQualifiedName(tmp, local, null);
+	}
+	
+	//TODO: why have special cases here, prov and xsd are now declared prefixes in namespaces
+	if ("prov".equals(prefix)) {
+	    return pFactory.newQualifiedName(NamespacePrefixMapper.PROV_NS, local, prefix);
+	} else if ("xsd".equals(prefix)) {
+	    return pFactory.newQualifiedName(NamespacePrefixMapper.XSD_NS, // + "#", // RDF ns ends
+								 // in #, not
+								 // XML ns.
+			     local, prefix);
+	} else {
+	    String tmp=prefixes.get(prefix);
+	    if (tmp==null) {
+		if (parent!=null) {
+		    return parent.qualifiedName(prefix, local, pFactory);
+		} else {
+		    throw new QualifiedNameException("Namespace.stringToQualifiedName(): Null namespace for " + prefix + ":"  + local + " namespace " + this);
+		}
+	    }
+	    return pFactory.newQualifiedName(tmp, local, prefix);
+	}
+    }
 
 
      

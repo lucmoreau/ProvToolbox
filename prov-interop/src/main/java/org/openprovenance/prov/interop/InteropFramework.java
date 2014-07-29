@@ -56,27 +56,60 @@ public class InteropFramework {
     public static final String EXTENSION_JPG = "jpg";
     public static final String EXTENSION_JSON = "json";
     public static final String EXTENSION_PDF = "pdf";
+    
+    /** The recommended extension for PROV-N files.
+     * @see <a href="http://www.w3.org/TR/prov-n/#media-type">Media Type for PROV-N</a> */
     public static final String EXTENSION_PROVN = "provn";
+    
+    /** The recommended extension for PROV-XML files.
+     * @see <a href="http://www.w3.org/TR/prov-xml/#media-type">Media Type for PROV-XML</a> */
     public static final String EXTENSION_PROVX = "provx";
+    
+    /** The recommended extension for RDF/XML files.
+     * @see <a href="http://www.w3.org/TR/REC-rdf-syntax/#section-MIME-Type">Media Type for RDF/XML</a> */
     public static final String EXTENSION_RDF = "rdf";
     public static final String EXTENSION_SVG = "svg";
+    
+    /** The recommended extension for TRIG files.
+     * @see <a href="http://www.w3.org/TR/trig/#sec-mediaReg">Media Type for Turtle</a> */    
     public static final String EXTENSION_TRIG = "trig";
+    
+    /** The recommended extension for Turtle files.
+      * @see <a href="http://www.w3.org/TR/turtle/#sec-mediaReg">Media Type for Turtle</a> */
     public static final String EXTENSION_TTL = "ttl";
     public static final String EXTENSION_XML = "xml";
 
     public static final String MEDIA_APPLICATION_FORM_URLENCODED = MediaType.APPLICATION_FORM_URLENCODED;
     public static final String MEDIA_APPLICATION_JSON = MediaType.APPLICATION_JSON;
     public static final String MEDIA_APPLICATION_PDF = "application/pdf";
+    
+    /** The Internet Media type for PROV-XML
+     * @see <a href="http://www.w3.org/TR/prov-xml/#media-type">Media Type for PROV-XML</a> */
     public static final String MEDIA_APPLICATION_PROVENANCE_XML = "application/provenance+xml";
+    
+ 
+    /** The Internet Media type for RDF/XML
+     * @see <a href="http://www.w3.org/TR/REC-rdf-syntax/#section-MIME-Type">Media Type for RDF/XML</a> */
     public static final String MEDIA_APPLICATION_RDF_XML = "application/rdf+xml";
     public static final String MEDIA_APPLICATION_XML = MediaType.APPLICATION_XML;
-    public static final String MEDIA_APPLICATION_X_TRIG = "application/x-trig";
+    
+    /** The Internet Media type for TRIG
+     * @see <a href="http://www.w3.org/TR/trig/#sec-mediaReg">Media Type for TRIG</a> */
+    public static final String MEDIA_APPLICATION_X_TRIG = "application/trig";
+    
     public static final String MEDIA_IMAGE_JPEG = "image/jpeg";
     public static final String MEDIA_IMAGE_SVG_XML = "image/svg+xml";
     public static final String MEDIA_TEXT_HTML = MediaType.TEXT_HTML;
     public static final String MEDIA_TEXT_PLAIN = MediaType.TEXT_PLAIN;
+    
+    /** The Internet Media type for PROV-N
+     * @see <a href="http://www.w3.org/TR/prov-n/#media-type">Media Type for PROV-N</a> */
     public static final String MEDIA_TEXT_PROVENANCE_NOTATION = "text/provenance-notation";
+    
+    /** The Internet Media type for Turtle
+     * @see <a href="http://www.w3.org/TR/turtle/#sec-mediaReg">Media Type for Turtle</a> */
     public static final String MEDIA_TEXT_TURTLE = "text/turtle";
+    
     public static final String MEDIA_TEXT_XML = MediaType.TEXT_XML;
 
     public final static String[] ALL_PROV_MEDIA_TYPES = new String[] {
@@ -88,11 +121,6 @@ public class InteropFramework {
                                                                       "application/json",
                                                                       "image/svg+xml" };
     
-    public static final String RDF_TURTLE = "turtle";
-    public static final String RDF_XML = "rdf/xml";
-    public static final String RDF_TRIG = EXTENSION_TRIG;
-    public static final String RDF_N3 = "n3";
-
 
     static Logger logger = Logger.getLogger(InteropFramework.class);
     public static final String UNKNOWN = "unknown";
@@ -157,6 +185,10 @@ public class InteropFramework {
         initializeExtensionMap(extensionMap, extensionRevMap);
     }
 
+    /**
+     * Create a list of mime types supported by ProvToolbox in view of constructing an Accept Header. 
+     * @return a string representing the mime types.
+     */
     public String buildAcceptHeader() {
         StringBuffer mimetypes = new StringBuffer();
         Enumeration<ProvFormat> e = mimeTypeMap.keys();
@@ -176,6 +208,12 @@ public class InteropFramework {
         return mimetypes.toString();
     }
 
+    /**
+     * A method to connect to a URL and follow redirects if any.
+     * @param theURL a URL to connect to
+     * @return a {@link URLConnection}
+     * @throws IOException if connection cannot be opened and no response is received.
+     */
     public URLConnection connectWithRedirect(URL theURL) throws IOException {
         URLConnection conn = null;
 
@@ -233,18 +271,9 @@ public class InteropFramework {
         return conn;
     }
 
-    public RDFFormat convert(String type) {
-        if (RDF_TURTLE.equals(type))
-            return RDFFormat.TURTLE;
-        if (RDF_XML.equals(type))
-            return RDFFormat.RDFXML;
-        if (RDF_N3.equals(type))
-            return RDFFormat.N3;
-        if (RDF_TRIG.equals(type))
-            return RDFFormat.TRIG;
-        return null;
-    }
+  
 
+    
     public String convertExtensionToMediaType(String type) {
         ProvFormat format = extensionRevMap.get(type);
         if (format == null)

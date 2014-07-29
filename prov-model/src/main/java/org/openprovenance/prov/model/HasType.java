@@ -16,7 +16,7 @@ import java.util.List;
 
 public interface HasType {
     /**
-     * Gets the value of the type property.
+     * Gets the value of the <CODE>prov:type</CODE> property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
@@ -37,5 +37,5 @@ public interface HasType {
      * 
      * 
      */
-    public abstract List<Type> getType();
+    public List<Type> getType();
 } 

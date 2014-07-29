@@ -136,7 +136,7 @@ public  class Utility {
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
         bt.convert(doc);
         nc.flush();
-        nc.close();
+       // nc.close();
     }
 
     /* from http://www.antlr.org/wiki/display/ANTLR3/Interfacing+AST+with+Java */
@@ -186,15 +186,17 @@ public  class Utility {
         writeTextToFile(s,filename);
     }
     
+
     public void writeDocument(Document doc, OutputStream os, ProvFactory pFactory){
 	Writer writer=new OutputStreamWriter(os);
 	convertBeanToASN(doc, writer, pFactory);
+	/*
 	try {
 	    writer.close();
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
-	}
+	}*/
     }
     
     public Document readDocument(String filename, ProvFactory pFactory) throws IOException, Throwable {

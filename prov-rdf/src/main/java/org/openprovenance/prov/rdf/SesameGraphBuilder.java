@@ -1,6 +1,5 @@
 package org.openprovenance.prov.rdf;
 
-
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.NamespacePrefixMapper;

@@ -6,6 +6,13 @@ import java.util.List;
 import javax.xml.XMLConstants;
 
 
+/**
+ * Utility class to traverse a document, register all namespaces occurring in {@link QualifiedName}s 
+ * and attributes as well as associated prefixes, and create a {@link Namespace} datastructure.
+ * 
+ * @author lavm
+ *
+ */
 public class NamespaceGatherer implements StatementAction {
     
     private Namespace ns=new Namespace();

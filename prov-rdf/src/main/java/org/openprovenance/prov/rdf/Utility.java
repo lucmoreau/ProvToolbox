@@ -97,7 +97,6 @@ public class Utility {
 	
 	RdfConstructor rdfc = new RdfConstructor(new SesameGraphBuilder(rep, pFactory), pFactory);
 			
-	
 	Namespace ns=new Namespace(document.getNamespace());	
 	ns.unregister("xsd", "http://www.w3.org/2001/XMLSchema");
 	ns.register("xsd", "http://www.w3.org/2001/XMLSchema#");
@@ -106,7 +105,7 @@ public class Utility {
 
 	Namespace.withThreadNamespace(document.getNamespace());
 	BeanTraversal bt = new BeanTraversal(rdfc,pFactory);
-	bt.convert(document);
+	bt.doAction(document);
 	
 	if (out instanceof String) {
 	    rHelper.dumpToRDF((String)out, rep, format, 

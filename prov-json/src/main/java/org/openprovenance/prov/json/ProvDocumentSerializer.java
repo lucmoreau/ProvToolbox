@@ -16,7 +16,7 @@ public class ProvDocumentSerializer implements JsonSerializer<Document> {
     public ProvDocumentSerializer(ProvFactory pFactory) {
 	this.pFactory=pFactory;
     }
-    
+
     @Override
     public JsonElement serialize(final Document doc, 
                                  Type typeOfSrc,
@@ -24,7 +24,7 @@ public class ProvDocumentSerializer implements JsonSerializer<Document> {
 	JSONConstructor jsonConstructor = new JSONConstructor(pFactory.getName());
 	BeanTraversal bt = new BeanTraversal(jsonConstructor, 
 	                                     pFactory);
-	bt.convert(doc);
+	bt.doAction(doc);
 	Object jsonStructure = jsonConstructor.getJSONStructure();
 	return context.serialize(jsonStructure);
     }

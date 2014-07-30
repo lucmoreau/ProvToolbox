@@ -95,7 +95,7 @@ public  class Utility {
 	StringWriter writer=new StringWriter();
 	NotationConstructor nc=new HTMLConstructor(writer);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
-        bt.convert(doc);
+        bt.doAction(doc);
         nc.flush();
         String s=writer.toString();
         nc.close();
@@ -111,7 +111,7 @@ public  class Utility {
     /** A conversion function that copies a Java Bean deeply. */
     public Object convertJavaBeanToJavaBean(Document doc, ProvFactory pFactory) {
         BeanTraversal bt=new BeanTraversal(pFactory, pFactory);
-        Document o=bt.convert(doc);
+        Document o=bt.doAction(doc);
         return o;
     }
 
@@ -121,7 +121,7 @@ public  class Utility {
 	StringWriter writer=new StringWriter();
 	NotationConstructor nc=new NotationConstructor(writer);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
-        bt.convert(doc);
+        bt.doAction(doc);
         nc.flush();
         String s=writer.toString();
         nc.close();
@@ -134,7 +134,7 @@ public  class Utility {
     public void convertBeanToASN(final Document doc, Writer writer, ProvFactory pFactory) {
 	NotationConstructor nc=new NotationConstructor(writer);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
-        bt.convert(doc);
+        bt.doAction(doc);
         nc.flush();
        // nc.close();
     }

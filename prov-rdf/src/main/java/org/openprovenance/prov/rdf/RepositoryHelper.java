@@ -3,7 +3,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Hashtable;
 import java.util.Map;
 
 import org.openprovenance.prov.model.Namespace;

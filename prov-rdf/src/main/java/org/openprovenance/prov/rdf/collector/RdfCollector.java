@@ -130,7 +130,7 @@ public class RdfCollector extends RDFHandlerBase {
     }
 
     protected void store(QualifiedName context,
-			 org.openprovenance.prov.model.Relation0 relation0) {
+			 org.openprovenance.prov.model.Relation relation0) {
 	getBundleHolder(context).addStatement((org.openprovenance.prov.model.Statement) relation0);
     }
 

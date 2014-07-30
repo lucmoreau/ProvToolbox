@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * 
  */
-public interface DictionaryMembership extends Relation0 {
+public interface DictionaryMembership extends Relation {
 
     /**
      * Get an identifier for the dictionary whose members are asserted.

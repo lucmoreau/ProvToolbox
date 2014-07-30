@@ -29,8 +29,8 @@ public class ProvUtilities {
      * res.addAll(g.getRecords().getAgent()); return res; }
      */
 
-    public List<Relation0> getRelations(Document d) {
-        return getObject(Relation0.class,
+    public List<Relation> getRelations(Document d) {
+        return getObject(Relation.class,
                          d.getStatementOrBundle());
     }
 
@@ -51,8 +51,8 @@ public class ProvUtilities {
         return getObject(NamedBundle.class, d.getStatementOrBundle());
     }
 
-    public List<Relation0> getRelations(NamedBundle d) {
-        return getObject2(Relation0.class,
+    public List<Relation> getRelations(NamedBundle d) {
+        return getObject2(Relation.class,
                          d.getStatement());
     }
 
@@ -109,7 +109,7 @@ public class ProvUtilities {
     }
  
 
-    public QualifiedName getEffect(Relation0 r) {
+    public QualifiedName getEffect(Relation r) {
         if (r instanceof Used) {
             return ((Used) r).getActivity();
         }
@@ -167,7 +167,7 @@ public class ProvUtilities {
     }
     
 
-    public QualifiedName getCause(Relation0 r) {
+    public QualifiedName getCause(Relation r) {
         if (r instanceof Used) {
             return ((Used) r).getEntity();
         }
@@ -221,7 +221,7 @@ public class ProvUtilities {
         throw new UnsupportedOperationException();
     }
 
-    public List<QualifiedName> getOtherCauses(Relation0 r) {
+    public List<QualifiedName> getOtherCauses(Relation r) {
         if (r instanceof WasAssociatedWith) {
             List<QualifiedName> res = new LinkedList<QualifiedName>();
             QualifiedName e = ((WasAssociatedWith) r).getPlan();

@@ -33,7 +33,7 @@ public class BeanTraversal {
 	    } else if (s instanceof Agent) {
 		sRecords.add(convert((Agent)s));
 	    } else {
-		sRecords.add(convertRelation((Relation0)s));
+		sRecords.add(convertRelation((Relation)s));
 	    }
 
 	}
@@ -75,7 +75,7 @@ public class BeanTraversal {
 	    } else if (s instanceof Agent) {
 		sRecords.add(convert((Agent)s));
 	    } else {
-		sRecords.add(convertRelation((Relation0)s));
+		sRecords.add(convertRelation((Relation)s));
 	    }
 
 	}
@@ -171,7 +171,7 @@ public class BeanTraversal {
 	return c.newAgent(e.getId(), attrs);
     }
 
-    public Relation0 convertRelation(Relation0 o) {
+    public Relation convertRelation(Relation o) {
 	// no visitors, so ...
 	if (o instanceof Used) {
 	    return convert((Used) o);
@@ -370,7 +370,7 @@ public class BeanTraversal {
 	                        	             o.getEntity().get(0).getRef()))); */
     }
     
-    public Relation0 convert(DerivedByRemovalFrom o) {
+    public Relation convert(DerivedByRemovalFrom o) {
     	List<Attribute> attrs=new LinkedList<Attribute>();      
         convertTypeAttributes(o,attrs);
         convertLabelAttributes(o,attrs);
@@ -385,7 +385,7 @@ public class BeanTraversal {
 	                                 
     }
 
-    public Relation0 convert(DerivedByInsertionFrom o) {
+    public Relation convert(DerivedByInsertionFrom o) {
     	List<Attribute> attrs=new LinkedList<Attribute>();      
         convertTypeAttributes(o,attrs);
         convertLabelAttributes(o,attrs);
@@ -401,7 +401,7 @@ public class BeanTraversal {
     }
     
 
-    public Relation0 convert(DictionaryMembership o) {
+    public Relation convert(DictionaryMembership o) {
 	return c.newDictionaryMembership(o.getDictionary(),  o.getKeyEntityPair());
     }
 

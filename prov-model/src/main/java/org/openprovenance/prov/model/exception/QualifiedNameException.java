@@ -3,7 +3,10 @@
  */
 package org.openprovenance.prov.model.exception;
 
+import org.openprovenance.prov.model.QualifiedName;
+
 /**
+ * An exception thrown when {@link QualifiedName} processing is problematic.
  * @author lavm
  *
  */

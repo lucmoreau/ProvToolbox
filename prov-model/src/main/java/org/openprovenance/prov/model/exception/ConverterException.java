@@ -1,9 +1,7 @@
-/**
- * 
- */
 package org.openprovenance.prov.model.exception;
 
 /**
+ * An exception occurring during value conversion.
  * @author lavm
  *
  */

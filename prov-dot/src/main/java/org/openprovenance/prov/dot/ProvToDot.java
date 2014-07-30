@@ -25,7 +25,7 @@ import org.openprovenance.prov.model.Influence;
 import org.openprovenance.prov.model.NamedBundle;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.Relation0;
+import org.openprovenance.prov.model.Relation;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.AlternateOf;
@@ -285,7 +285,7 @@ public class ProvToDot {
 
     public void convert(Document doc, PrintStream out, String title) {
         if (title!=null) name=title;
-        List<Relation0> edges=u.getRelations(doc);
+        List<Relation> edges=u.getRelations(doc);
 
         prelude(doc, out);
 
@@ -313,7 +313,7 @@ public class ProvToDot {
             }
         }
 
-        for (Relation0 e: edges) {
+        for (Relation e: edges) {
             emitDependency(e,out);
         }
         
@@ -323,7 +323,7 @@ public class ProvToDot {
     }
 
     public void convert(NamedBundle bun, PrintStream out) {
-        List<Relation0> edges=u.getRelations(bun);
+        List<Relation> edges=u.getRelations(bun);
 
         prelude(bun, out);
 
@@ -345,7 +345,7 @@ public class ProvToDot {
             }
         }
 
-        for (Relation0 e: edges) {
+        for (Relation e: edges) {
             emitDependency(e,out);
         }
         
@@ -775,7 +775,7 @@ public class ProvToDot {
     ///
     //////////////////////////////////////////////////////////////////////
 
-    public void emitDependency(Relation0 e, PrintStream out) {
+    public void emitDependency(Relation e, PrintStream out) {
         HashMap<String,String> properties=new HashMap<String, String>();
 
         List<QualifiedName> others=u.getOtherCauses(e);
@@ -864,7 +864,7 @@ public class ProvToDot {
         }
     }
 
-    void relationName(Relation0 e, HashMap<String,String> properties) {
+    void relationName(Relation e, HashMap<String,String> properties) {
 	String l=getShortLabelForRelation(e);
 	if (l!=null) {
 	    properties.put("taillabel",l);
@@ -875,7 +875,7 @@ public class ProvToDot {
 	}
     }
     
-    String getArrowShapeForRelation(Relation0 e) {
+    String getArrowShapeForRelation(Relation e) {
   	if (e instanceof WasStartedBy)      return "oinv";
  	if (e instanceof WasEndedBy)        return "odiamond";
  	if (e instanceof WasInvalidatedBy)  return "odiamond";
@@ -883,7 +883,7 @@ public class ProvToDot {
     }
      
 
-    String getLabelForRelation(Relation0 e) {
+    String getLabelForRelation(Relation e) {
 	if (e instanceof Used)              return "used";
 	if (e instanceof WasGeneratedBy)    return "wasGeneratedBy";
 	if (e instanceof WasDerivedFrom)    return "wasDerivedFrom";
@@ -899,7 +899,7 @@ public class ProvToDot {
 	if (e instanceof AlternateOf)       return "alternateOf";
 	return null;
     }
-    String getShortLabelForRelation(Relation0 e) {
+    String getShortLabelForRelation(Relation e) {
 	if (e instanceof Used)              return "use";
 	if (e instanceof WasGeneratedBy)    return "gen";
 	if (e instanceof WasDerivedFrom)    return "der";
@@ -919,7 +919,7 @@ public class ProvToDot {
     
 
     public HashMap<String,String> addRelationAttributes(String accountLabel,
-                                                        Relation0 e,
+                                                        Relation e,
                                                         HashMap<String,String> properties) {
         String colour=convertAccount(accountLabel);
         properties.put("color",colour);
@@ -931,7 +931,7 @@ public class ProvToDot {
 
 
     /* Displays type if any, role otherwise. */
-    public void addRelationLabel(Relation0 e0, HashMap<String,String> properties) {
+    public void addRelationLabel(Relation e0, HashMap<String,String> properties) {
         String label=null;
         if (!(e0 instanceof Influence)) return;
         Influence e=(Influence)e0;
@@ -972,14 +972,14 @@ public class ProvToDot {
     String defaultRelationStyle;
     HashMap<String,RelationStyleMapEntry> edgeStyleMap=new HashMap<String,RelationStyleMapEntry>();
     
-    public String getRelationStyle(Relation0 edge) {
+    public String getRelationStyle(Relation edge) {
         String name=edge.getClass().getName();
         RelationStyleMapEntry style=edgeStyleMap.get(name);
         if (style!=null) return style.getStyle();
         return defaultRelationStyle;
     }
 
-    public boolean getRelationPrintRole(Relation0 edge) {
+    public boolean getRelationPrintRole(Relation edge) {
         String name=edge.getClass().getName();
         RelationStyleMapEntry style=edgeStyleMap.get(name);
         if (style!=null) {

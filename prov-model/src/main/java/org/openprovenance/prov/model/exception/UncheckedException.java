@@ -1,5 +1,10 @@
 package org.openprovenance.prov.model.exception;
 
+/**
+ * A generic unchecked exception.
+ * @author lavm
+ *
+ */
 public class UncheckedException extends RuntimeException {
     
     public UncheckedException(Exception e) {

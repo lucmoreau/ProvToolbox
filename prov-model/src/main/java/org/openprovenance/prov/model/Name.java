@@ -112,7 +112,7 @@ public class Name {
         return pFactory.newQualifiedName(NamespacePrefixMapper.PROV_NS,local,"prov");
     }
     
-    
+ 
     final public QualifiedName PROV_LANG_STRING ;
     final public QualifiedName PROV_QUALIFIED_NAME ;
     final public QualifiedName PROV_REVISION ;
@@ -127,26 +127,47 @@ public class Name {
     final public QualifiedName PROV_VALUE;
     final public QualifiedName PROV_KEY;
 
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#string">xsd:string</a>  */
     final public QualifiedName XSD_STRING;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#int">xsd:int</a>  */
     final public QualifiedName XSD_INT;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#long">xsd:long</a>  */
     final public QualifiedName XSD_LONG;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#short">xsd:short</a>  */
     final public QualifiedName XSD_SHORT;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#double">xsd:double</a>  */
     final public QualifiedName XSD_DOUBLE;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#float">xsd:float</a>  */
     final public QualifiedName XSD_FLOAT;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#decimal">xsd:decimal</a>  */
     final public QualifiedName XSD_DECIMAL;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#boolean">xsd:boolean</a>  */
     final public QualifiedName XSD_BOOLEAN;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#byte">xsd:byte</a>  */
     final public QualifiedName XSD_BYTE;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#unsignedInt">xsd:unsignedInt</a>  */
     final public QualifiedName XSD_UNSIGNED_INT;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#unsignedLong">xsd:unsignedLong</a>  */
     final public QualifiedName XSD_UNSIGNED_LONG;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#integer">xsd:integer</a>  */
     final public QualifiedName XSD_INTEGER;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#unsignedShort">xsd:unsignedShort</a>  */
     final public QualifiedName XSD_UNSIGNED_SHORT;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger">xsd:nonNegativeInteger</a>  */
     final public QualifiedName XSD_NON_NEGATIVE_INTEGER;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger">xsd:nonPositiveInteger</a>  */
     final public QualifiedName XSD_NON_POSITIVE_INTEGER;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#positiveInteger">xsd:positiveInteger</a>  */
     final public QualifiedName XSD_POSITIVE_INTEGER;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#unsignedByte">xsd:unsignedByte</a>  */
     final public QualifiedName XSD_UNSIGNED_BYTE;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#anyURI">xsd:anyURI</a>  */
     final public QualifiedName XSD_ANY_URI;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#QName">xsd:QName</a>  */
     final public QualifiedName XSD_QNAME;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#dateTime">xsd:dateTime</a>  */
     final public QualifiedName XSD_DATETIME;
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#gYear">xsd:gYear</a>  */
     final public QualifiedName XSD_GYEAR;
 
     final public QualifiedName XSD_GMONTH;

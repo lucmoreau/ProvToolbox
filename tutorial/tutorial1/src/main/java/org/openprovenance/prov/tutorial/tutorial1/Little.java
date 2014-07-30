@@ -36,9 +36,9 @@ public class Little {
     public Little(ProvFactory pFactory) {
         this.pFactory = pFactory;
         ns=new Namespace();
+        ns.addKnownNamespaces();
         ns.register(PROVBOOK_PREFIX, PROVBOOK_NS);
         ns.register(JIM_PREFIX, JIM_NS);
-
     }
 
     public QualifiedName qn(String n) {
@@ -76,7 +76,7 @@ public class Little {
                                                                 original,
                                                                 wdf }));
 
-        document.setNamespace(Namespace.gatherNamespaces(document));
+        document.setNamespace(ns);
 
         return document;
     }

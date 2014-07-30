@@ -89,6 +89,9 @@ public class InteropFramework implements InteropMediaType {
     final private String generator;
 
 
+    /** Default constructor for the ProvToolbox interoperability framework.
+     * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
+     */
     public InteropFramework() {
         this(null, null, null, null, null, null, null, null, null, null,
                 org.openprovenance.prov.xml.ProvFactory.getFactory());

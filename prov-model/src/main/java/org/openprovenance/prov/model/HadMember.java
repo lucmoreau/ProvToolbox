@@ -55,7 +55,6 @@ public interface HadMember extends Relation {
     /**
      * Get the list of identifiers of entities that are member of the collection.
      * @return a list of {@link QualifiedName}
-     * @see <a href="http://www.w3.org/TR/prov-dm/#membership.entity">membership entity</a>
      * 
      * 
      * <p>
@@ -74,6 +73,7 @@ public interface HadMember extends Relation {
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link QualifiedName }
+     * @see <a href="http://www.w3.org/TR/prov-dm/#membership.entity">membership entity</a>
      * 
      * 
      */

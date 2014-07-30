@@ -244,6 +244,18 @@ public class Namespace  {
 	}
     }
     
+    /**
+     * Creates a qualified name, with given prefix and local name. The prefix needs to have been pre-registered. 
+     * Prefix is allowed to be null: in that case, the intended namespace is the default namespace 
+     * (see {@link Namespace#getDefaultNamespace()}) which must have been pre-registered.
+     * @param prefix the prefix for the {@link QualifiedName}
+     * @param local the local name for the {@link QualifiedName}
+     * @param pFactory the factory method used to construct the {@link QualifiedName}
+     * @return a {@link QualifiedName}
+     * @throws QualifiedNameException if prefix is not pre-registered.
+     * @throws NullPointerException if prefix is null and defaultnamespace has not been registered.
+     */
+    
     public QualifiedName qualifiedName(String prefix, String local, ProvFactory pFactory) {
 	
 	if (prefix == null) {

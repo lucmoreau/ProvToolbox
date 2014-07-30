@@ -407,6 +407,13 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
 
     }
+    
+    
+    /**
+     * Creates a copy of an agent. The copy is shallow in the sense that the new Agent shares the same attributes as the original Agent.
+     * @param a an {@link Agent} to copy
+     * @return a copy of the input {@link Agent}
+     */
 
     public Agent newAgent(Agent a) {
 	Agent res = newAgent(a.getId());
@@ -415,11 +422,23 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
+    /**
+     * Creates a new {@link Agent} with provided identifier
+     * @param ag a {@link QualifiedName} for the agent
+     * @return an object of type {@link Agent}
+     */
     public Agent newAgent(QualifiedName ag) {
 	Agent res = of.createAgent();
 	res.setId(ag);
 	return res;
     }
+
+    /**
+     * Creates a new {@link Agent} with provided identifier and attributes
+     * @param id a {@link QualifiedName} for the agent
+     * @param attributes a collection of {@link Attribute} for the agent
+     * @return an object of type {@link Agent}
+     */
 
     public Agent newAgent(QualifiedName id, Collection<Attribute> attributes) {
 	Agent res = newAgent(id);
@@ -427,6 +446,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
+    /**
+     * Creates a new {@link Agent} with provided identifier and label
+     * @param ag a {@link QualifiedName} for the agent
+     * @param label a String for the label property (see {@link HasLabel#getLabel()} 
+     * @return an object of type {@link Agent}
+     */
     public Agent newAgent(QualifiedName ag, String label) {
 	Agent res = newAgent(ag);
 	if (label != null)
@@ -503,6 +528,10 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
+    /**
+     * Factory method to construct a {@link Document}
+     * @return a new instance of {@link Document}
+     */
     public Document newDocument() {
 	Document res = of.createDocument();
 	return res;
@@ -571,26 +600,48 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
     
+    /**
+     * Creates a copy of an entity. The copy is shallow in the sense that the new Entity shares the same attributes as the original Entity.
+     * @param e an {@link Entity} to copy
+     * @return a copy of the input {@link Entity}
+     */
     public Entity newEntity(Entity e) {
 	Entity res = newEntity(e.getId());
+	res.getOther().addAll(e.getOther());
 	res.getType().addAll(e.getType());
 	res.getLabel().addAll(e.getLabel());
 	res.getLocation().addAll(e.getLocation());
 	return res;
     }
 
+    /**
+     * Creates a new {@link Entity} with provided identifier
+     * @param id a {@link QualifiedName} for the entity
+     * @return an object of type {@link Entity}
+     */
     public Entity newEntity(QualifiedName id) {
 	Entity res = of.createEntity();
 	res.setId(id);
 	return res;
     }
 
+    /**
+     * Creates a new {@link Entity} with provided identifier and attributes
+     * @param id a {@link QualifiedName} for the entity
+     * @param attributes a collection of {@link Attribute} for the entity
+     * @return an object of type {@link Entity}
+     */
     public Entity newEntity(QualifiedName id, Collection<Attribute> attributes) {
 	Entity res = newEntity(id);
 	setAttributes(res, attributes);
 	return res;
     }
-
+    /**
+     * Creates a new {@link Entity} with provided identifier and label
+     * @param id a {@link QualifiedName} for the entity
+     * @param label a String for the label property (see {@link HasLabel#getLabel()} 
+     * @return an object of type {@link Entity}
+     */
     public Entity newEntity(QualifiedName id, String label) {
 	Entity res = newEntity(id);
 	if (label != null)
@@ -790,7 +841,11 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return newOther(elementName,value,type);
     }
     
-    
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newQualifiedName(java.lang.String, java.lang.String, java.lang.String)
+     */
+
     abstract public QualifiedName newQualifiedName(String namespace, String local, String prefix);
     
     /* A convenience function. */
@@ -920,9 +975,31 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return u1;
     }
 
+    /**
+     * Factory method to create an instance of  of the PROV-DM prov:value attribute (see {@link Value}).
+     * @param value a String
+     * @return a new {@link Value} with type xsd:string (see {@link Name#XSD_STRING})
+     */
+    public Value newValue(String value) {
+	return newValue(value,getName().XSD_STRING);
+    }  
     
-    
+    /**
+     * Factory method to create an instance of the PROV-DM prov:value attribute (see {@link Value}).
+     * @param value an integer
+     * @return a new {@link Value} with type xsd:int (see {@link Name#XSD_INT})
+     */
+    public Value newValue(int value) {
+	return newValue(value,getName().XSD_INT);
+    }  
 
+    /**
+     * Factory method to create an instance of the PROV-DM prov:value attribute (see {@link Value}).
+     * Use class {@link Name} for predefined {@link QualifiedName}s for the common types.
+     * @param value an {@link Object}
+     * @param type a {@link QualifiedName} to denote the type of value
+     * @return a new {@link Value}
+     */
     public Value newValue(Object value, QualifiedName type) {
 	if (value==null) return null;
         Value res =  of.createValue();
@@ -1047,11 +1124,17 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	res.setGeneratedEntity(e2);
 	return res;
     }    
-    public WasDerivedFrom newWasDerivedFrom(QualifiedName aid1,
-					    QualifiedName aid2) {
+    
+    /** A factory method to create an instance of a derivation {@link WasDerivedFrom}
+     * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation 
+     * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
+     * @return an instance of {@link WasDerivedFrom}
+     */
+    public WasDerivedFrom newWasDerivedFrom(QualifiedName e2,
+					    QualifiedName e1) {
 	WasDerivedFrom res = of.createWasDerivedFrom();
-	res.setUsedEntity(aid2);
-	res.setGeneratedEntity(aid1);
+	res.setUsedEntity(e1);
+	res.setGeneratedEntity(e2);
 	return res;
     }    
    

@@ -327,7 +327,7 @@
 
     <hibernate.version>4.3.5.Final</hibernate.version>
 
-
+    <hibernate3.plugin.version>3.0</hibernate3.plugin.version>                           
     
   </properties>
 

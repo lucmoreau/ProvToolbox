@@ -6,3 +6,6 @@ atest:
 
 ui:
 	java -cp $(HOME)/.m2/repository/org/hsqldb/hsqldb/2.3.2/hsqldb-2.3.2.jar org.hsqldb.util.DatabaseManagerSwing
+
+sql.doc:
+	mvn hibernate3:run

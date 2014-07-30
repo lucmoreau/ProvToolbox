@@ -174,7 +174,7 @@ public class Agent implements Equals, HashCode, ToString, org.openprovenance.pro
 	return this.others;
     }
     /** Gets the List of all attributes
-     * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
+     * @see org.openprovenance.prov.xml.HasAllAttributes#getAllAttributes()
      */
     @Override
     public List<Attribute> getAllAttributes() {

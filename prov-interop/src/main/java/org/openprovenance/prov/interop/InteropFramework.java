@@ -266,7 +266,7 @@ public class InteropFramework implements InteropMediaType {
     /**
      * Support for content negotiation, jax-rs style. Create a list of media
      * type supported by the framework.
-     * @see http://docs.oracle.com/javaee/6/tutorial/doc/gkqbq.html
+     * @see <a href="http://docs.oracle.com/javaee/6/tutorial/doc/gkqbq.html">Content Negotiation</a>
      */
     
     public List<Variant> getVariants() {

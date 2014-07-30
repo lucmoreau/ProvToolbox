@@ -294,7 +294,7 @@ public class Used implements Equals, HashCode, ToString, org.openprovenance.prov
     
     
     /** Gets the List of all attributes
-     * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
+     * @see org.openprovenance.prov.xml.HasAllAttributes#getAllAttributes()
      */
     @Override
     public List<Attribute> getAllAttributes() {

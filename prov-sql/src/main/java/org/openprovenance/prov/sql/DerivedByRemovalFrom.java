@@ -290,7 +290,7 @@ public class DerivedByRemovalFrom
     }
     
     /** Gets the List of all attributes
-     * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
+     * @see org.openprovenance.prov.xml.HasAllAttributes#getAllAttributes()
      */
     public List<Attribute> getAllAttributes() {
         if (all == null) {

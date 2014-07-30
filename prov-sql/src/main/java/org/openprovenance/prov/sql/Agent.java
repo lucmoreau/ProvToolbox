@@ -262,7 +262,7 @@ public class Agent
 
 
     /** Gets the List of all attributes
-     * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
+     * @see org.openprovenance.prov.xml.HasAllAttributes#getAllAttributes()
      */
     @Transient
     public List<Attribute> getAllAttributes() {

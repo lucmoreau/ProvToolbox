@@ -12,6 +12,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
+
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Location;

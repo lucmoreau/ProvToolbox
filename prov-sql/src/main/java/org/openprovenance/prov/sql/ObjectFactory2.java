@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName; 
 
 import org.openprovenance.prov.model.Key;
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.Document;

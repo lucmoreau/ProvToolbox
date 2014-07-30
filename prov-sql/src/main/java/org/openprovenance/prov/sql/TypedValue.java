@@ -281,7 +281,7 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     /**
      * Sets the value of the value property.
      * 
-     * @param value
+     * @param valueAsJava
      *     allowed object is
      *     {@link Object }
      *     

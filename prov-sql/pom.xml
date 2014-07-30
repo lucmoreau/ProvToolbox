@@ -233,64 +233,87 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>hibernate3-maven-plugin</artifactId>
         <version>${hibernate3.plugin.version}</version>
-
+	<executions>
+          <execution>
+            <phase>package</phase>
             <configuration>
-	      <hibernatetool  destdir="${project.build.directory}/hibernate-out">
-                <classpath>
-                  <path location="${project.build.directory}/classes"/>
-                  <path location="${project.build.directory}/test-classes"/>
-                </classpath>
+	      <hibernatetool  destdir="${project.build.directory}/hibernate">
+		<classpath>
+		  <path location="${project.build.directory}/classes"/>
+		  <path location="${project.build.directory}/test-classes"/>
+		</classpath>
 		<jpaconfiguration persistenceunit="org.openprovenance.prov.sql" 
 				  propertyfile="${project.build.directory}/test-classes/persistence.hsqldb.properties"/>
-<!--		<hbm2ddl export="true"
-			 create="true"
-			 outputfilename="${project.build.directory}/luc.ddl"/> -->
 		<hbm2doc/>
-                <hbm2hbmxml/>
+		<!-- <hbm2hbmxml/> -->
 		<hbm2ddl outputfilename="sql.ddl"/>
-
-              </hibernatetool>
-
+		
+              </hibernatetool>	  
             </configuration>
 	    <goals>
               <goal>run</goal>
             </goals>
+          </execution>
 
 
-
-	  <dependencies>
-
-	    <dependency>
-	      <groupId>org.hibernate.javax.persistence</groupId>
-	      <artifactId>hibernate-jpa-2.0-api</artifactId>
-	      <version>1.0.0.Final</version>
-	    </dependency>
-
-	    <dependency>
-	      <groupId>org.hibernate</groupId>
-	      <artifactId>hibernate-entitymanager</artifactId>
-	      <version>3.6.5.Final</version> 
-	    </dependency>
-
-	    <dependency>
-	      <groupId>org.hibernate</groupId>
-	      <artifactId>hibernate</artifactId>
-	      <version>3.2.5.ga</version>
-	    </dependency>
-
-            <dependency>
-              <groupId>hsqldb</groupId>
-              <artifactId>hsqldb</artifactId>
-              <version>1.8.0.7</version>
-              <scope>runtime</scope>
-            </dependency>
-          </dependencies>
-
-	</plugin>
+          <execution>
+	    <id>default-cli</id>
+            <configuration>
+	      <hibernatetool  destdir="${project.build.directory}/site/hibernate">
+		<classpath>
+		  <path location="${project.build.directory}/classes"/>
+		  <path location="${project.build.directory}/test-classes"/>
+		</classpath>
+		<jpaconfiguration persistenceunit="org.openprovenance.prov.sql" 
+				  propertyfile="${project.build.directory}/test-classes/persistence.hsqldb.properties"/>
+		<hbm2doc/>
+		<!-- <hbm2hbmxml/> -->
+		<hbm2ddl outputfilename="sql.ddl"/>
+		
+              </hibernatetool>	  
+            </configuration>
+	    <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+	</executions> 
+	<dependencies>
+	  <dependency>
+	    <groupId>org.apache.ant</groupId>
+	    <artifactId>ant</artifactId>
+	    <version>1.9.4</version>
+	  </dependency>
+	  
+	  <dependency>
+	    <groupId>org.hibernate</groupId>
+	    <artifactId>hibernate-core</artifactId>
+	    <version>${hibernate.version}</version> 
+	  </dependency>
+	  
+	  <dependency>
+	    <groupId>org.hibernate</groupId>
+	    <artifactId>hibernate-tools</artifactId>
+	    <version>4.3.1.CR1</version> 
+	  </dependency>
+	  
+	  <dependency>
+	    <groupId>org.hsqldb</groupId>
+	    <artifactId>hsqldb</artifactId>
+	    <version>2.3.2</version>
+	  </dependency>
+	  
+	  <dependency>
+	    <groupId>org.postgresql</groupId>
+	    <artifactId>postgresql</artifactId>
+	    <version>9.3-1101-jdbc41</version>
+	  </dependency>
+        </dependencies>
+      </plugin>
      </plugins>
 
 
    </pluginManagement>
+
             
     <resources>
       <resource>
@@ -306,7 +329,5 @@
        </testResource>
     </testResources>
   </build>
-
-
 
 </project>

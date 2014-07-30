@@ -65,12 +65,6 @@
       <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/maven-snapshots</url>
     </snapshotRepository>
 
-    <site>
-      <id>websites1.ecs.soton.ac.uk</id>
-      <name>Site Deployment location</name>
-      <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/site/prov</url>
-    </site>
-
  </distributionManagement>
 
  <licenses>
@@ -143,7 +137,7 @@
 	    <configuration>  
 	      <mainClass>org.openprovenance.prov.tutorial.tutorial1.Little</mainClass>  
 	      <arguments>  
-		<argument>target/little.svg</argument>  
+		<argument>out/little.svg</argument>  
 	      </arguments>  
 	    </configuration>  
 	  </execution>  

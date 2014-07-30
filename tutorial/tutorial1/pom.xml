@@ -137,7 +137,7 @@
 	    <configuration>  
 	      <mainClass>org.openprovenance.prov.tutorial.tutorial1.Little</mainClass>  
 	      <arguments>  
-		<argument>out/little.svg</argument>  
+		<argument>little.svg</argument>  
 	      </arguments>  
 	    </configuration>  
 	  </execution>  

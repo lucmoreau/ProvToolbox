@@ -157,7 +157,6 @@ public class TreeTraversal {
             return c.newWasInvalidatedBy(uid,id2,id1,time,rAttrs);
 
 
-
         case PROV_NParser.WIB:
             uidTree=ast.getChild(0);
             if (uidTree.getChildCount()>0) {

@@ -2,15 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <parent>
-    <artifactId>ProvToolbox</artifactId>
-    <groupId>org.openprovenance.prov</groupId>
-    <version>0.5.1-SNAPSHOT</version>
-  </parent>
-
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openprovenance.prov.tutorial</groupId>
   <artifactId>ProvToolbox-Tutorial1</artifactId>
+  <version>${pom.version}</version>
   <name>ProvToolbox Tutorial 1</name>
   <description>ProvToolbox Tutorial 1</description>
 
@@ -62,12 +57,12 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-model</artifactId>
-      <version>0.5.1-SNAPSHOT</version>
+      <version>${pom.version}</version>
     </dependency>
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-interop</artifactId>
-      <version>0.5.1-SNAPSHOT</version>
+      <version>${pom.version}</version>
     </dependency>
   </dependencies>
 
@@ -96,38 +91,8 @@
 	  </execution>
 	</executions>
       </plugin>
-
-      <plugin>                       
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-assembly-plugin</artifactId>
-	<version>2.2-beta-3</version>  
-	<!-- there exists a more recent version, but it sets wrong
-	     permission on directory
-	     https://jira.codehaus.org/browse/MASSEMBLY-449 -->
-        <configuration>
-          <descriptors>
-            <descriptor>${project.build.directory}/classes/assembly.xml</descriptor>
-          </descriptors>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <id>make-assembly</id>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
 
-
-    <resources>
-      <resource>
-	<directory>src/main/resources</directory>
-	<filtering>true</filtering>
-      </resource>
-    </resources>
 
   </build>
 </project>

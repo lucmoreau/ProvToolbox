@@ -19,7 +19,6 @@ public class ParserTest extends TestCase {
         testBundle("src/test/resources/prov/bundles1.provn");
     }
 
-
     public void testBundle4() {
         testBundle("src/test/resources/prov/bundles2.provn");
     }

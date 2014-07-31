@@ -7,7 +7,7 @@
 	<artifactId>ProvToolbox</artifactId>
 	<name>W3C PROV Specifications</name>
 	<version>0.5.1-SNAPSHOT</version>
-	<url>http://openprovenance.org/java/site/prov1_0</url>
+	<url>http://openprovenance.org/java/site/latest</url>
 	<packaging>pom</packaging>
 	<description>Some Java code related to the W3C PROV specifications.</description>
 

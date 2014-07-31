@@ -103,7 +103,7 @@ public class Little {
         if (args.length!=1) throw new UnsupportedOperationException("main to be called with filename");
         String file=args[0];
         
-        Little little=new Little(org.openprovenance.prov.xml.ProvFactory.getFactory());
+        Little little=new Little(InteropFramework.newXMLProvFactory());
         little.openingBanner();
         little.doConversions(little.makeLittle(), file);
         little.closingBanner();

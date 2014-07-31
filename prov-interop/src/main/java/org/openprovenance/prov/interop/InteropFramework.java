@@ -462,7 +462,16 @@ public class InteropFramework implements InteropMediaType {
         throw new UnsupportedOperationException();
 
     }
-
+    
+    /** Creates a factory for the XML Java beans. 
+     * 
+     * @return a {@link ProvFactory}
+     */
+    
+    static public ProvFactory newXMLProvFactory() {
+        return org.openprovenance.prov.xml.ProvFactory.getFactory();
+    }
+    
     public void provn2html(String file, String file2)
             throws java.io.IOException, JAXBException, RecognitionException {
         Document doc = (Document) u.convertASNToJavaBean(file, pFactory);

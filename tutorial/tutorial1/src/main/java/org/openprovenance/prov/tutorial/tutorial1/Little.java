@@ -45,11 +45,12 @@ public class Little {
         return ns.qualifiedName(PROVBOOK_PREFIX, n, pFactory);
     }
 
-    public Document makeLittle() {     
-       
+    public Document makeDocument() {     
         Entity quote = pFactory.newEntity(qn("a-little-provenance-goes-a-long-way"));
         quote.setValue(pFactory.newValue("A little provenance goes a long way",
                                          pFactory.getName().XSD_STRING));
+        
+        Entity original = pFactory.newEntity(ns.qualifiedName(JIM_PREFIX,"LittleSemanticsWeb.html",pFactory));
 
         Agent paul = pFactory.newAgent(qn("Paul"), "Paul Groth");
         Agent luc = pFactory.newAgent(qn("Luc"), "Luc Moreau");
@@ -60,8 +61,6 @@ public class Little {
         WasAttributedTo attr2 = pFactory.newWasAttributedTo(null,
                                                             quote.getId(),
                                                             luc.getId());
-
-        Entity original = pFactory.newEntity(ns.qualifiedName(JIM_PREFIX,"LittleSemanticsWeb.html",pFactory));
 
         WasDerivedFrom wdf = pFactory.newWasDerivedFrom(quote.getId(),
                                                         original.getId());
@@ -75,9 +74,7 @@ public class Little {
                                                                 attr2, 
                                                                 original,
                                                                 wdf }));
-
         document.setNamespace(ns);
-
         return document;
     }
     
@@ -85,7 +82,6 @@ public class Little {
         InteropFramework intF=new InteropFramework();
         intF.writeDocument(file, document);     
         intF.writeDocument(System.out, ProvFormat.PROVN, document);
-
     }
 
     public void closingBanner() {
@@ -105,7 +101,8 @@ public class Little {
         
         Little little=new Little(InteropFramework.newXMLProvFactory());
         little.openingBanner();
-        little.doConversions(little.makeLittle(), file);
+        Document document = little.makeDocument();
+        little.doConversions(document, file);
         little.closingBanner();
 
     }

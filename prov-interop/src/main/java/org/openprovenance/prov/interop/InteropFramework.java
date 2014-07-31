@@ -543,8 +543,6 @@ public class InteropFramework implements InteropMediaType {
                 ProvDeserialiser deserial = ProvDeserialiser
                         .getThreadProvDeserialiser();
                 Document doc = deserial.deserialiseDocument(is);
-                Namespace ns = Namespace.gatherNamespaces(doc);
-                doc.setNamespace(ns);
                 return doc;
             }
             default: {
@@ -662,8 +660,6 @@ public class InteropFramework implements InteropMediaType {
                 ProvDeserialiser deserial = ProvDeserialiser
                         .getThreadProvDeserialiser();
                 Document doc = deserial.deserialiseDocument(in);
-                Namespace ns = Namespace.gatherNamespaces(doc);
-                doc.setNamespace(ns);
                 return doc;
             }
             default: {

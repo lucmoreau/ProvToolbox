@@ -44,6 +44,10 @@ public class Namespace  {
 	return this;
     }
     
+    /**
+     * Extends this Namespace with all the prefix/namespace registration of the Namespace received as argument. 
+     * @param ns the {@link Namespace} whose prefix/namespace registration are added to this {@link Namespace}.
+     */
     public void extendWith(Namespace ns) {
 	if (ns==null) return;
 	if (ns.getDefaultNamespace()!=null) {

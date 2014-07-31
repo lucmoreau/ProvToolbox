@@ -1,0 +1,95 @@
+{
+   "wasDerivedFrom": {
+      "id1": {
+         "prov:usedEntity": "bindings:631",
+         "prov:generatedEntity": "b:1265"
+      },
+      "id2": {
+         "prov:usedEntity": "template:1",
+         "prov:generatedEntity": "b:1265"
+      }
+   },
+   "wasAttributedTo": {
+      "id3": {
+         "prov:entity": "bindings:631",
+         "prov:agent": "u:1"
+      }
+   },
+   "bundle": {
+      "b:1265": {
+         "prefix": { //inherits default
+            "doi": "http://dx.doi.org/",
+            "b": "https://provenance.ecs.soton.ac.uk/picaso/bundles/",
+            "people": "http://www.ipaw.info/data/people/"
+         },
+         "wasAttributedTo": {
+            "id1": {
+               "prov:entity": "doi:10.1109/MCSE.2008.78",
+               "prov:type": {
+                  "type": "xsd:QName",
+                  "$": "pic:Author"
+               },
+               "prov:agent": "people:CorchoOscar"
+            },
+            "id2": {
+               "prov:entity": "doi:10.1109/MCSE.2008.78",
+               "prov:type": {
+                  "type": "xsd:QName",
+                  "$": "pic:Author"
+               },
+               "prov:agent": "people:GomezPerezJoseManuel"
+            }
+         },
+         "agent": {
+            "people:CorchoOscar": {
+               "prov:type": {
+                  "type": "xsd:QName",
+                  "$": "prov:Person"
+               },
+               "prov:label": "Oscar Corcho"
+            },
+            "people:GomezPerezJoseManuel": {
+               "prov:type": {
+                  "type": "xsd:QName",
+                  "$": "prov:Person"
+               },
+               "prov:label": "Jose Manuel Gomez-Perez"
+            }
+         },
+         "entity": {
+            "doi:10.1109/MCSE.2008.78": {
+               "prov:type": {
+                  "type": "xsd:QName",
+                  "$": "pic:Article"
+               },
+               "prov:label": "Problem-Solving Methods for Understanding Process Executions"
+            }
+         }
+      }
+   },
+   "entity": {
+      "b:1265": {
+         "prov:type": "prov:Bundle"
+      }
+   },
+   "prefix": {
+      "tmpl": "http://openprovenance.org/tmpl#",
+      "b": "https://provenance.ecs.soton.ac.uk/picaso/bundles/",
+      "people": "http://www.ipaw.info/data/people/",
+      "pic": "http://www.ipaw.info/ns/picaso#",
+      "doi": "http://dx.doi.org/",
+      "xsd_1": "http://www.w3.org/2001/XMLSchema",
+      "template": "https://provenance.ecs.soton.ac.uk/picaso/templates/",
+      "ui": "http://openprovenance.org/ui#",
+      "bindings": "https://provenance.ecs.soton.ac.uk/picaso/bindings/",
+      "u": "https://provenance.ecs.soton.ac.uk/picaso/account/",
+      "default": "http://example1.com/"
+   },
+   "wasGeneratedBy": {
+      "id4": {
+         "prov:time": "2014-06-06T16:25:54.473714+00:00",
+         "prov:entity": "b:1265"
+      }
+   }
+}
+

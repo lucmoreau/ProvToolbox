@@ -1,5 +1,9 @@
 ProvToolbox
 ===========
+
+Continuous Integration
+----------------------
+
 [![Build Status](https://travis-ci.org/lucmoreau/ProvToolbox.svg)](https://travis-ci.org/lucmoreau/ProvToolbox)
 
 What is it?
@@ -12,6 +16,13 @@ Wiki
 ----
 
 https://github.com/lucmoreau/ProvToolbox/wiki
+
+Installation Instructions
+-------------------------
+
+Requirements: https://github.com/lucmoreau/ProvToolbox/wiki/ProvToolbox-Home#requirements
+
+Installation: https://github.com/lucmoreau/ProvToolbox/wiki/ProvToolbox-Home#installation
 
 
 Contributors

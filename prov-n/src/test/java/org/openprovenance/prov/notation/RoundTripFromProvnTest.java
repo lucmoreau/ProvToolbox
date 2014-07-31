@@ -59,13 +59,16 @@ public class RoundTripFromProvnTest extends TestCase {
 	Document doc1 = u.readDocument("src/test/resources/" + file,pFactory);
 	file = file.replace('/', '_');
 	ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-	serial.serialiseDocument(new File("target/xml_" + file), doc1, true);
+
+	System.out.println("1. xxx");
+
+	serial.serialiseDocument(new File("target/xml_" + file + ".xml"), doc1, true);
 	ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
 	
-	Document doc2 = deserial.deserialiseDocument(new File("target/xml_" + file));
-	Namespace ns = Namespace.gatherNamespaces(doc2);
-	doc2.setNamespace(ns);
+	Document doc2 = deserial.deserialiseDocument(new File("target/xml_" + file + ".xml"));
 	
+	System.out.println("2. xxx");
+
 	boolean result = de.check(doc1, doc2);
 
 	if (!result && compare) {
@@ -77,10 +80,13 @@ public class RoundTripFromProvnTest extends TestCase {
 	    assertTrue(result);
 	}
 	System.out.println("result is " + result);
+	System.out.println("3. xxx");
 
 	ProvSerialiser.getThreadProvSerialiser()
 		      .serialiseDocument(new File("target/" + file + ".xml"),
 					 doc2, true);
+	System.out.println("4. xxx");
+
 	u2.writeDocument(doc2, "target/" + file + ".provn",pFactory);
 
     }
@@ -99,9 +105,9 @@ public class RoundTripFromProvnTest extends TestCase {
     }
 
     public void testBundles() throws Throwable {
-	testCrossIssue("unification-membership-f1-FAIL-DM");
+	//testCrossIssue("unification-membership-f1-FAIL-DM");
 
-	//testCrossIssue("picaso-file");
+	testCrossIssue("picaso-file");
     }
 
 }

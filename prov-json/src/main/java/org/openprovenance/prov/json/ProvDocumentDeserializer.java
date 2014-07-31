@@ -211,7 +211,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    statement = pf.newWasAttributedTo(id, entity, agent);
 	    break;
 	case bundle:
-	    currentNamespace = decodePrefixes(attributeMap);
+	    Namespace ns = decodePrefixes(attributeMap);
+	    currentNamespace = ns;
 	    currentNamespace.setParent(documentNamespace);
 	    // Re-resolve the bundle's id with the bundle's namespace
 	    id = currentNamespace.stringToQualifiedName(idStr, pf);
@@ -219,9 +220,11 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    Collection statements = decodeBundle(attributeMap);
 	    NamedBundle namedBundle = pf.getObjectFactory().createNamedBundle();
 	    namedBundle.setId(id);
+	    namedBundle.setNamespace(ns);
 	    namedBundle.getStatement()
 		       .addAll((Collection<? extends Statement>) statements);
 	    statement = namedBundle;
+	    
 	    // Restore the document's namespace as the current one
 	    currentNamespace = documentNamespace;
 	    break;

@@ -4,7 +4,7 @@ ProvToolbox
 What is it?
 -----------
 
-ProvToolbox is a Java toolbox to create and convert W3C PROV representations between Java, PROV-XML, PROV-N, RDF, and PROV-JSON. 
+ProvToolbox is a Java library to create and convert W3C PROV representations between Java, PROV-XML, PROV-N, RDF, and PROV-JSON. 
 
 Continuous Integration
 ----------------------

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.openprovenance.prov</groupId>
   <artifactId>ProvToolbox</artifactId>
   <name>ProvToolbox: Java for W3C PROV</name>
-  <version>0.5.1-SNAPSHOT</version>
+  <version>0.6.0</version>
   <url>http://openprovenance.org/java/site/latest</url>
   <packaging>pom</packaging>
   <description>Java toolbox to create and convert W3C PROV data model representations.</description>
@@ -15,7 +13,7 @@
   <scm>
     <connection>scm:git:git://github.com/lucmoreau/ProvToolbox.git</connection>
     <developerConnection>scm:git:git@github.com:lucmoreau/ProvToolbox.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>ProvToolbox-0.6.0</tag>
   </scm>
 
   <modules>

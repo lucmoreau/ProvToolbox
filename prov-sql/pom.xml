@@ -4,7 +4,7 @@
   <parent>
     <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.6.0</version>
   </parent>
 
 
@@ -22,13 +22,13 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-model</artifactId>
-      <version>0.5.1-SNAPSHOT</version>
+      <version>0.6.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.5.1-SNAPSHOT</version>
+      <version>0.6.0</version>
 
       <exclusions> 
 	<exclusion><!-- Equals defined in this jar is incompatible with one used by hyperjaxb. Instead, use jaxb2-basics-runtime below -->
@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.5.1-SNAPSHOT</version>
+      <version>0.6.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
 
@@ -193,16 +193,15 @@
           <execution>
             <phase>package</phase>
             <configuration>
-	      <hibernatetool  destdir="${project.build.directory}/hibernate">
+	      <hibernatetool destdir="${project.build.directory}/hibernate">
 		<classpath>
-		  <path location="${project.build.directory}/classes"/>
-		  <path location="${project.build.directory}/test-classes"/>
+		  <path location="${project.build.directory}/classes" />
+		  <path location="${project.build.directory}/test-classes" />
 		</classpath>
-		<jpaconfiguration persistenceunit="org.openprovenance.prov.sql" 
-				  propertyfile="${project.build.directory}/test-classes/persistence.hsqldb.properties"/>
-		<hbm2doc/>
-		<!-- <hbm2hbmxml/> -->
-		<hbm2ddl outputfilename="sql.ddl"/>
+		<jpaconfiguration persistenceunit="org.openprovenance.prov.sql" propertyfile="${project.build.directory}/test-classes/persistence.hsqldb.properties" />
+		<hbm2doc />
+		<!-- <hbm2hbmxml /> -->
+		<hbm2ddl outputfilename="sql.ddl" />
 		
               </hibernatetool>	  
             </configuration>
@@ -215,16 +214,15 @@
           <execution>
 	    <id>default-cli</id>
             <configuration>
-	      <hibernatetool  destdir="${project.build.directory}/site/hibernate">
+	      <hibernatetool destdir="${project.build.directory}/site/hibernate">
 		<classpath>
-		  <path location="${project.build.directory}/classes"/>
-		  <path location="${project.build.directory}/test-classes"/>
+		  <path location="${project.build.directory}/classes" />
+		  <path location="${project.build.directory}/test-classes" />
 		</classpath>
-		<jpaconfiguration persistenceunit="org.openprovenance.prov.sql" 
-				  propertyfile="${project.build.directory}/test-classes/persistence.hsqldb.properties"/>
-		<hbm2doc/>
-		<!-- <hbm2hbmxml/> -->
-		<hbm2ddl outputfilename="sql.ddl"/>
+		<jpaconfiguration persistenceunit="org.openprovenance.prov.sql" propertyfile="${project.build.directory}/test-classes/persistence.hsqldb.properties" />
+		<hbm2doc />
+		<!-- <hbm2hbmxml /> -->
+		<hbm2ddl outputfilename="sql.ddl" />
 		
               </hibernatetool>	  
             </configuration>

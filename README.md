@@ -22,9 +22,10 @@ https://github.com/lucmoreau/ProvToolbox/wiki
 Installation Instructions
 -------------------------
 
-Requirements: https://github.com/lucmoreau/ProvToolbox/wiki/ProvToolbox-Home#requirements
+Requirements: https://github.com/lucmoreau/ProvToolbox/wiki/Installation#requirements
 
-Installation: https://github.com/lucmoreau/ProvToolbox/wiki/ProvToolbox-Home#installation
+Installation: https://github.com/lucmoreau/ProvToolbox/wiki/Installation#building-from-source
+
 
 Release Notes
 -------------

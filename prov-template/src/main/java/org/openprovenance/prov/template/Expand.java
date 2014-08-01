@@ -33,8 +33,12 @@ public class Expand {
     public static final String LINKED_URI = TMPL_NS + LINKED;
     public static final String LABEL = "label";
     public static final String TIME = "time";
+    public static final String STARTTIME = "startTime";
+    public static final String ENDTIME = "endTime";
     public static final String LABEL_URI = TMPL_NS + LABEL;
     public static final String TIME_URI = TMPL_NS + TIME;
+    public static final String STARTTIME_URI = TMPL_NS + STARTTIME;
+    public static final String ENDTIME_URI = TMPL_NS + ENDTIME;
     
     public Expand(ProvFactory pf) {
     	this.pf=pf;

@@ -26,6 +26,11 @@ Requirements: https://github.com/lucmoreau/ProvToolbox/wiki/ProvToolbox-Home#req
 
 Installation: https://github.com/lucmoreau/ProvToolbox/wiki/ProvToolbox-Home#installation
 
+Release Notes
+-------------
+
+[[Release]]
+
 
 Contributors
 ------------

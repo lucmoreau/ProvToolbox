@@ -9,7 +9,7 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openprovenance.prov.tutorial</groupId>
+  <groupId>org.openprovenance.prov</groupId>
   <artifactId>ProvToolbox-Tutorial1</artifactId>
   <name>ProvToolbox Tutorial 1</name>
   <description>ProvToolbox Tutorial 1</description>

@@ -328,17 +328,26 @@ public class ExpandAction implements StatementAction {
 				dstAttributes.add(pf.newAttribute(pf.getName().PROV_LABEL, 
 						                         val.getValue(), 
 						                         val.getType()));
-		    } else {
-			    if (Expand.TIME_URI.equals(elementName)) {
-			    	if (dstStatement instanceof HasTime) {
-			    		((HasTime)dstStatement).setTime(pf.newISOTime((String)val.getValue()));
-			    	}
-				    } else {
-				    	dstAttributes.add(pf.newAttribute(attribute.getElementName(), 
-                                val.getValue(), 
-                                val.getType()));
-				    }
-		    }
+			} else
+			if (Expand.TIME_URI.equals(elementName)) {
+				if (dstStatement instanceof HasTime) {
+					((HasTime)dstStatement).setTime(pf.newISOTime((String)val.getValue()));
+				}
+			} else
+			if (Expand.STARTTIME_URI.equals(elementName)) {
+				if (dstStatement instanceof Activity) {
+					((Activity)dstStatement).setStartTime(pf.newISOTime((String)val.getValue()));
+				}
+			} else
+			if (Expand.ENDTIME_URI.equals(elementName)) {
+				if (dstStatement instanceof Activity) {
+					((Activity)dstStatement).setEndTime(pf.newISOTime((String)val.getValue()));
+				}
+			} else {
+				dstAttributes.add(pf.newAttribute(attribute.getElementName(), 
+				                                val.getValue(), 
+				                                val.getType()));
+			}
 		}
 	}
 

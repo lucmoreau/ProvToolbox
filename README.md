@@ -29,7 +29,7 @@ Installation: https://github.com/lucmoreau/ProvToolbox/wiki/ProvToolbox-Home#ins
 Release Notes
 -------------
 
-[[Release]]
+https://github.com/lucmoreau/ProvToolbox/wiki/Releases
 
 
 Contributors

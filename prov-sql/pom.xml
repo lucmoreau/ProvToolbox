@@ -4,7 +4,7 @@
   <parent>
     <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.6.0</version>
+    <version>0.6.1-SNAPSHOT</version>
   </parent>
 
 
@@ -22,13 +22,13 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-model</artifactId>
-      <version>0.6.0</version>
+      <version>0.6.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.6.0</version>
+      <version>0.6.1-SNAPSHOT</version>
 
       <exclusions> 
 	<exclusion><!-- Equals defined in this jar is incompatible with one used by hyperjaxb. Instead, use jaxb2-basics-runtime below -->
@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.6.0</version>
+      <version>0.6.1-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
 

@@ -41,7 +41,7 @@ https://lucmoreau.wordpress.com/2014/08/01/provtoolbox-tutorial-1-creating-and-s
 Blog posts
 ----------
 
-* http://lucmoreau.wordpress.com/2013/11/24/what-is-in-provtoolbox-0-5-0/ 
+* http://lucmoreau.wordpress.com/2013/12/20/what-is-in-provtoolbox-0-5-0/ 
 * http://lucmoreau.wordpress.com/2013/11/24/what-is-in-provtoolbox-0-4-0/ 
 
 

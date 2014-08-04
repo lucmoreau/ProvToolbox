@@ -101,11 +101,12 @@
 
   <distributionManagement>
     <!-- use the following if you're not using a snapshot version. -->
-    <repository>
+<!--    <repository>
       <id>repo</id>
       <name>Repository Name</name>
       <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/maven-releases</url>
     </repository>
+-->
 
     <!-- use the following if you ARE using a snapshot version. -->
     <!-- <snapshotRepository>

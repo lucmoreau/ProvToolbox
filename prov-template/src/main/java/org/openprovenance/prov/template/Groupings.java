@@ -11,7 +11,7 @@ import java.util.Set;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.Identifiable;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
@@ -63,7 +63,7 @@ public class Groupings {
 	Hashtable<QualifiedName,Set<QualifiedName>> linked=new Hashtable<QualifiedName, Set<QualifiedName>>();
 	Hashtable<QualifiedName,Integer> linkedGroups=new Hashtable<QualifiedName, Integer>();
 		
-	NamedBundle bun=u.getBundle(doc).get(0);
+	Bundle bun=u.getBundle(doc).get(0);
 	Groupings grps=new Groupings();
 	Set<QualifiedName> allVars=new HashSet<QualifiedName>();
 	for (Statement statement: bun.getStatement()) {

@@ -21,7 +21,7 @@ import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasTime;
 import org.openprovenance.prov.model.MentionOf;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
@@ -481,7 +481,7 @@ public class ExpandAction implements StatementAction {
     }
 
     @Override
-    public void doAction(NamedBundle bun, ProvUtilities provUtilities) {
+    public void doAction(Bundle bun, ProvUtilities provUtilities) {
 	List<Statement> statements=bun.getStatement();
 	List<Statement> newStatements=new LinkedList<Statement>();
 		
@@ -519,7 +519,7 @@ public class ExpandAction implements StatementAction {
     }
 
 
-     public void updateEnvironmentForBundleId(NamedBundle bun,
+     public void updateEnvironmentForBundleId(Bundle bun,
 					     Bindings bindings1,
 					     Hashtable<QualifiedName, QualifiedName> env0) {
 	final QualifiedName id = bun.getId();

@@ -11,7 +11,7 @@ import java.util.Set;
 
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
@@ -51,14 +51,14 @@ public class Expand {
 
     public Document expander(Document docIn, String out, Document docBindings) {
 
-	NamedBundle bun = (NamedBundle) docIn.getStatementOrBundle().get(0);
+	Bundle bun = (Bundle) docIn.getStatementOrBundle().get(0);
 
 	Bindings bindings1 = Bindings.fromDocument(docBindings,pf);
 
 	Groupings grp1 = Groupings.fromDocument(docIn);
 	System.out.println("expander: Found groupings " + grp1);
 
-	NamedBundle bun1 = (NamedBundle) expand(bun, bindings1, grp1).get(0);
+	Bundle bun1 = (Bundle) expand(bun, bindings1, grp1).get(0);
 	Document doc1 = pf.newDocument();
 	doc1.getStatementOrBundle().add(bun1);
 
@@ -81,7 +81,7 @@ public class Expand {
 	return expand(statement, bindings1, grp1, us1);
     }
 
-    public List<StatementOrBundle> expand(NamedBundle bun, Bindings bindings1,
+    public List<StatementOrBundle> expand(Bundle bun, Bindings bindings1,
 					  Groupings grp1) {
 	Hashtable<QualifiedName, QualifiedName> env0 = new Hashtable<QualifiedName, QualifiedName>();
 	Hashtable<QualifiedName, List<TypedValue>> env1 = new Hashtable<QualifiedName, List<TypedValue>>();
@@ -146,7 +146,7 @@ public class Expand {
 
 	return result;
     }
-    static public Set<QualifiedName> freeVariables(NamedBundle statement) {
+    static public Set<QualifiedName> freeVariables(Bundle statement) {
 	HashSet<QualifiedName> result = new HashSet<QualifiedName>();
 	QualifiedName name=statement.getId();
 	if (name != null && isVariable(name)) {

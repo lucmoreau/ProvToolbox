@@ -76,7 +76,7 @@ public class Document
         @XmlElement(name = "person", type = Person.class),
         @XmlElement(name = "organization", type = Organization.class),
         @XmlElement(name = "softwareAgent", type = SoftwareAgent.class),
-        @XmlElement(name = "bundle", type = Bundle.class),
+        @XmlElement(name = "bundle", type = BundleEntity.class),
         @XmlElement(name = "collection", type = Collection.class),
         @XmlElement(name = "emptyCollection", type = EmptyCollection.class),
         @XmlElement(name = "dictionary", type = Dictionary.class),
@@ -85,7 +85,7 @@ public class Document
         @XmlElement(name = "derivedByInsertionFrom", type = DerivedByInsertionFrom.class),
         @XmlElement(name = "derivedByRemovalFrom", type = DerivedByRemovalFrom.class),
         @XmlElement(name = "others", type = Others.class),
-        @XmlElement(name = "bundleContent", type = NamedBundle.class)
+        @XmlElement(name = "bundleContent", type = Bundle.class)
     })
     protected List<StatementOrBundle> statementOrBundle;
 
@@ -132,7 +132,7 @@ public class Document
      * {@link Person }
      * {@link Organization }
      * {@link SoftwareAgent }
-     * {@link Bundle }
+     * {@link BundleEntity }
      * {@link Collection }
      * {@link EmptyCollection }
      * {@link Dictionary }
@@ -141,7 +141,7 @@ public class Document
      * {@link DerivedByInsertionFrom }
      * {@link DerivedByRemovalFrom }
      * {@link Others }
-     * {@link NamedBundle }
+     * {@link Bundle }
      * 
      * 
      */

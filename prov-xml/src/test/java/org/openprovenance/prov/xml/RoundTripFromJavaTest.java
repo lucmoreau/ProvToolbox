@@ -30,7 +30,7 @@ import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.HasValue;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.MentionOf;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.SpecializationOf;
@@ -117,7 +117,7 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(stment, null, file, opt, check);
     }
 
-    public void makeDocAndTest(Statement[] stment, NamedBundle[] bundles,
+    public void makeDocAndTest(Statement[] stment, Bundle[] bundles,
                                String file, Statement[] opt, boolean check) {
         Document doc = pFactory.newDocument();
         for (int i = 0; i < stment.length; i++) {
@@ -1858,7 +1858,7 @@ public class RoundTripFromJavaTest extends TestCase {
         st1.add(e1);
         st1.add(use1);
 
-        NamedBundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
+        Bundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
 
         Used use2 = pFactory.newUsed(q("use2"), q("aa1"), null, q("ee1"));
         Entity ee1 = pFactory.newEntity(q("ee1"));
@@ -1870,7 +1870,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
         b1.setNamespace(Namespace.gatherNamespaces(b1,pFactory));
 
-        NamedBundle b2 = pFactory.newNamedBundle(q("bundle2"), st2);
+        Bundle b2 = pFactory.newNamedBundle(q("bundle2"), st2);
 
         Entity eb1 = pFactory.newEntity(q("bundle1"));
         pFactory.addBundleType(eb1);
@@ -1881,7 +1881,7 @@ public class RoundTripFromJavaTest extends TestCase {
         b2.setNamespace(Namespace.gatherNamespaces(b2,pFactory));
 
         Statement[] statements = new Statement[] { eb1, eb2, };
-        NamedBundle[] bundles = new NamedBundle[] { b1, b2 };
+        Bundle[] bundles = new Bundle[] { b1, b2 };
 
         makeDocAndTest(statements, bundles, "target/bundle1", null, true);
 
@@ -1896,7 +1896,7 @@ public class RoundTripFromJavaTest extends TestCase {
         st1.add(e1);
         st1.add(use1);
 
-        NamedBundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
+        Bundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
         b1.setNamespace(Namespace.gatherNamespaces(b1,pFactory));
 
         Used use2 = pFactory.newUsed(q("use2"), q("e1"), null, q("a1"));
@@ -1907,7 +1907,7 @@ public class RoundTripFromJavaTest extends TestCase {
         st2.add(ee1);
         st2.add(use2);
 
-        NamedBundle b2 = pFactory.newNamedBundle(q("bundle2"), st2);
+        Bundle b2 = pFactory.newNamedBundle(q("bundle2"), st2);
         b2.setNamespace(Namespace.gatherNamespaces(b2,pFactory));
 
         Entity eb1 = pFactory.newEntity(q("bundle1"));
@@ -1917,7 +1917,7 @@ public class RoundTripFromJavaTest extends TestCase {
         pFactory.addBundleType(eb2);
 
         Statement[] statements = new Statement[] { eb1, eb2, };
-        NamedBundle[] bundles = new NamedBundle[] { b1, b2 };
+        Bundle[] bundles = new Bundle[] { b1, b2 };
 
         makeDocAndTest(statements, bundles, "target/bundle2", null, true);
 
@@ -1934,7 +1934,7 @@ public class RoundTripFromJavaTest extends TestCase {
         st1.add(e1);
         st1.add(use1);
 
-        NamedBundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
+        Bundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
 
         Used use2 = pFactory.newUsed(q("use2"), q("aa1"), null, q("ee1"));
         Entity ee1 = pFactory.newEntity(q("ee1"));
@@ -1947,7 +1947,7 @@ public class RoundTripFromJavaTest extends TestCase {
         Namespace ns1 = Namespace.gatherNamespaces(b1,pFactory);
         b1.setNamespace(ns1);
 
-        NamedBundle b2 = pFactory.newNamedBundle(q("bundle2"), st2);
+        Bundle b2 = pFactory.newNamedBundle(q("bundle2"), st2);
 
         Entity eb1 = pFactory.newEntity(q("bundle1"));
         pFactory.addBundleType(eb1);
@@ -1959,7 +1959,7 @@ public class RoundTripFromJavaTest extends TestCase {
         b2.setNamespace(ns2);
 
         Statement[] statements = new Statement[] { eb1, eb2, };
-        NamedBundle[] bundles = new NamedBundle[] { b1, b2 };
+        Bundle[] bundles = new Bundle[] { b1, b2 };
 
         makeDocAndTest(statements, bundles, "target/bundle3", null, true);
 
@@ -1980,7 +1980,7 @@ public class RoundTripFromJavaTest extends TestCase {
         st1.add(a1);
         st1.add(e1);
         st1.add(use1);
-        NamedBundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
+        Bundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
         Namespace ns1 = Namespace.gatherNamespaces(b1,pFactory);
         b1.setNamespace(ns1);
         //System.out.println("bundle 1 ns " + ns1);
@@ -1993,7 +1993,7 @@ public class RoundTripFromJavaTest extends TestCase {
         st2.add(aa1);
         st2.add(ee1);
         st2.add(use2);
-        NamedBundle b2 = pFactory.newNamedBundle(another("bundle2"), st2);
+        Bundle b2 = pFactory.newNamedBundle(another("bundle2"), st2);
         Namespace ns2 = Namespace.gatherNamespaces(b2,pFactory);
         b2.setNamespace(ns2);
         //.out.println("bundle 2 ns " + ns2);
@@ -2007,7 +2007,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
 
         Statement[] statements = new Statement[] { eb1, eb2, };
-        NamedBundle[] bundles = new NamedBundle[] { b1, b2 };
+        Bundle[] bundles = new Bundle[] { b1, b2 };
 
         makeDocAndTest(statements, bundles, "target/bundle4", null, true);
 

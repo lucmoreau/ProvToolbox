@@ -41,7 +41,7 @@ public interface ModelConstructor {
      */
     public Document newDocument(Namespace namespace,
                                 Collection<Statement> statements, 
-                                Collection<NamedBundle> bundles);
+                                Collection<Bundle> bundles);
     
     
     public Entity newEntity(QualifiedName id, Collection<Attribute> attributes);
@@ -49,13 +49,13 @@ public interface ModelConstructor {
     public MentionOf newMentionOf(QualifiedName e2, QualifiedName e1, QualifiedName b);
     
     /**
-     * A factory method to create an instance of a Bundle {@link NamedBundle}
+     * A factory method to create an instance of a Bundle {@link Bundle}
      * @param id an identifier for the bundle
      * @param namespace a {@link Namespace} object mapping prefix to namespace URIs
      * @param statements a set of provenance descriptions 
-     * @return {@link NamedBundle}
+     * @return {@link Bundle}
      */
-    public NamedBundle newNamedBundle(QualifiedName id, 
+    public Bundle newNamedBundle(QualifiedName id, 
                                       Namespace namespace, 
                                       Collection<Statement> statements);
     /** A factory method for {@link QualifiedName}. A qualified name consists of a namespace, denoted by an optional prefix, and a local name.

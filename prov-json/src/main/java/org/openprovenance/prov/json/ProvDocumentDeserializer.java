@@ -30,7 +30,7 @@ import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.Name;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.Role;
@@ -218,7 +218,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    id = currentNamespace.stringToQualifiedName(idStr, pf);
 	    @SuppressWarnings("rawtypes")
 	    Collection statements = decodeBundle(attributeMap);
-	    NamedBundle namedBundle = pf.getObjectFactory().createNamedBundle();
+	    Bundle namedBundle = pf.getObjectFactory().createNamedBundle();
 	    namedBundle.setId(id);
 	    namedBundle.setNamespace(ns);
 	    namedBundle.getStatement()

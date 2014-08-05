@@ -1,7 +1,7 @@
 package org.openprovenance.prov.model;
 
 /** 
- * Interface for a PROV Statement ({@link Statement}) (a unit of provenance description) or a Bundle ({@link NamedBundle}) (a named set of provenance statements)
+ * Interface for a PROV Statement ({@link Statement}) (a unit of provenance description) or a Bundle ({@link Bundle}) (a named set of provenance statements)
  * @author lavm
  *
  */

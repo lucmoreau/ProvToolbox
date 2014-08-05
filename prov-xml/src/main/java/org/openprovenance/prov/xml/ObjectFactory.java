@@ -259,11 +259,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Bundle }
+     * Create an instance of {@link BundleEntity }
      * 
      */
-    public Bundle createBundle() {
-        return new Bundle();
+    public BundleEntity createBundle() {
+        return new BundleEntity();
     }
 
     /**
@@ -419,11 +419,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link NamedBundle }
+     * Create an instance of {@link Bundle }
      * 
      */
-    public NamedBundle createNamedBundle() {
-        return new NamedBundle();
+    public Bundle createNamedBundle() {
+        return new Bundle();
     }
 
     /**
@@ -588,12 +588,12 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link Bundle }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link BundleEntity }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "bundle")
-    public JAXBElement<Bundle> createBundle(Bundle value) {
-        return new JAXBElement<Bundle>(_Bundle_QNAME, Bundle.class, null, value);
+    public JAXBElement<BundleEntity> createBundle(BundleEntity value) {
+        return new JAXBElement<BundleEntity>(_Bundle_QNAME, BundleEntity.class, null, value);
     }
 
     /**

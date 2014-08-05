@@ -196,7 +196,7 @@ public class Namespace  {
    	return ns;
     }
     
-    static public Namespace gatherNamespaces(NamedBundle bundle) {
+    static public Namespace gatherNamespaces(Bundle bundle) {
    	NamespaceGatherer gatherer=new NamespaceGatherer();	
    	u.forAllStatement(bundle.getStatement(), gatherer);
    	gatherer.register(bundle.getId());
@@ -204,7 +204,7 @@ public class Namespace  {
    	return ns;
     }
     
-    static public Namespace gatherNamespaces(NamedBundle bundle, ProvFactory pFactory) {
+    static public Namespace gatherNamespaces(Bundle bundle, ProvFactory pFactory) {
    	NamespaceGatherer gatherer=new NamespaceGatherer();	
    	u.forAllStatement(bundle.getStatement(), gatherer);
    	gatherer.register(bundle.getId());

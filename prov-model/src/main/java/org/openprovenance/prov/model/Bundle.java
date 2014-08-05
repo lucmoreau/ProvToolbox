@@ -39,7 +39,7 @@ import java.util.List;
  * @author lavm
  *
  */
-public interface NamedBundle extends Identifiable, StatementOrBundle {
+public interface Bundle extends Identifiable, StatementOrBundle {
 
     List<Statement> getStatement();
 

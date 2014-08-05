@@ -43,7 +43,7 @@ public class NamespaceGatherer implements StatementAction {
      */
     static public Namespace accumulateAllNamespaces(Document document) {
 	Namespace res=new Namespace(document.getNamespace());
-	for (NamedBundle b: pu.getNamedBundle(document)) {
+	for (Bundle b: pu.getNamedBundle(document)) {
 	    Namespace ns=b.getNamespace();
 	    if (ns!=null) res.extendWith(ns);
 	}
@@ -350,7 +350,7 @@ public class NamespaceGatherer implements StatementAction {
      * @see org.openprovenance.prov.model.StatementAction#doAction(org.openprovenance.prov.model.NamedBundle, org.openprovenance.prov.model.ProvUtilities)
      */
     @Override
-    public void doAction(NamedBundle bu, ProvUtilities u) {
+    public void doAction(Bundle bu, ProvUtilities u) {
 	register(bu.getId());
 	for (Statement s2: bu.getStatement()) {
 	    u.doAction(s2, this);

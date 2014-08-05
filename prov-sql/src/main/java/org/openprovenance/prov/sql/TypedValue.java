@@ -31,11 +31,16 @@ import org.openprovenance.prov.model.ValueConverter;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.openprovenance.prov.xml.builder.Equals;
+import org.openprovenance.prov.xml.builder.HashCode;
+import org.openprovenance.prov.xml.builder.ToString;
+import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
+import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
+import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
+
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -48,7 +53,8 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 //@Inheritance(strategy = InheritanceType.JOINED)
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 
-public class TypedValue implements org.openprovenance.prov.model.TypedValue {
+public class TypedValue implements Equals, 
+				   ToString, org.openprovenance.prov.model.TypedValue {
     private static final QualifiedName QNAME_PROV_TYPE = ProvFactory.getFactory().getName().PROV_TYPE;
     private static final QualifiedName QNAME_PROV_LABEL = ProvFactory.getFactory().getName().PROV_LABEL;
     private static final QualifiedName QNAME_PROV_VALUE = ProvFactory.getFactory().getName().PROV_VALUE;
@@ -71,40 +77,65 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
     }
     
    
-    public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
+    //TODO: need to check types.
+
+    public void equals(Object object, EqualsBuilder equalsBuilder) {
+        if (!(object instanceof TypedValue)) {
+            equalsBuilder.appendSuper(false);
+            return ;
+        }
+        if (this == object) {
+            return ;
+        }
+        final TypedValue that = ((TypedValue) object);      
+        equalsBuilder.append(this.getValue(), that.getValue());
+        equalsBuilder.append(this.getType(), that.getType());
+    }
+   
+    public boolean equals(Object object) {
         if (!(object instanceof TypedValue)) {
             return false;
         }
         if (this == object) {
             return true;
         }
-        final TypedValue that = ((TypedValue) object);
-        {
-            Object lhsValue;
-            lhsValue = this.getValue();
-            Object rhsValue;
-            rhsValue = that.getValue();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "value", lhsValue), LocatorUtils.property(thatLocator, "value", rhsValue), lhsValue, rhsValue)) {
-                return false;
-            }
-        }
-        {
-            QualifiedName lhsType;
-            lhsType = this.getType();
-            QualifiedName rhsType;
-            rhsType = that.getType();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "type", lhsType), LocatorUtils.property(thatLocator, "type", rhsType), lhsType, rhsType)) {
-                return false;
-            }
-        }
-        return true;
+        final EqualsBuilder equalsBuilder = new JAXBEqualsBuilder();
+        equals(object, equalsBuilder);
+        return equalsBuilder.isEquals();
+    }
+    public void hashCode(HashCodeBuilder hashCodeBuilder) {}
+
+    
+    /*
+    public void hashCode(HashCodeBuilder hashCodeBuilder) {
+        hashCodeBuilder.append(this.getValue());
+        hashCodeBuilder.append(this.getType());
     }
 
-    public boolean equals(Object object) {
-        final EqualsStrategy strategy = JAXBEqualsStrategy.INSTANCE;
-        return equals(null, null, object, strategy);
+    public int hashCode() {
+        final HashCodeBuilder hashCodeBuilder = new JAXBHashCodeBuilder();
+        hashCode(hashCodeBuilder);
+        return hashCodeBuilder.toHashCode();
+    }
+    */
+    public void toString(ToStringBuilder toStringBuilder) {
+        {
+            Object theValue;
+            theValue = this.getValue();
+            toStringBuilder.append("value", theValue);
+        }
+        {
+            QualifiedName theType;
+            theType = this.getType();
+            toStringBuilder.append("type", theType);
+        }
     }
 
+    public String toString() {
+        final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
+        toString(toStringBuilder);
+        return toStringBuilder.toString();
+    }
 
 
     
@@ -203,21 +234,6 @@ public class TypedValue implements org.openprovenance.prov.model.TypedValue {
 	if (type != null)
 	    hash ^= type.hashCode();
 	return hash;
-    }
-
-    public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
-        int currentHashCode = 1;
-        {
-            Object theValue;
-            theValue = this.getValue();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "value", theValue), currentHashCode, theValue);
-        }
-        {
-            QualifiedName theType;
-            theType = this.getType();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "type", theType), currentHashCode, theType);
-        }
-        return currentHashCode;
     }
 
 

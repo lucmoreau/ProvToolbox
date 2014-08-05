@@ -574,7 +574,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     @Override
     public Document newDocument(Namespace namespace,
                                 Collection<Statement> statements,
-                                Collection<NamedBundle> bundles) {
+                                Collection<Bundle> bundles) {
 	Document res = of.createDocument();
 	res.setNamespace(namespace);
 	res.getStatementOrBundle()
@@ -782,12 +782,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
    
     
-    public NamedBundle newNamedBundle(QualifiedName id, 
+    public Bundle newNamedBundle(QualifiedName id, 
                                       Collection<Activity> ps,
 				      Collection<Entity> as,
 				      Collection<Agent> ags,
 				      Collection<Statement> lks) {
-	NamedBundle res = of.createNamedBundle();
+	Bundle res = of.createNamedBundle();
 	res.setId(id);
 	
 	if (ps != null) {
@@ -806,8 +806,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
   
-    public NamedBundle newNamedBundle(QualifiedName id, Collection<Statement> lks) {
-	NamedBundle res = of.createNamedBundle();
+    public Bundle newNamedBundle(QualifiedName id, Collection<Statement> lks) {
+	Bundle res = of.createNamedBundle();
 	res.setId(id);
 
 	if (lks != null) {
@@ -815,8 +815,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}
 	return res;
     }
-    public NamedBundle newNamedBundle(QualifiedName id, Namespace namespace, Collection<Statement> statements) {
-	NamedBundle res = of.createNamedBundle();
+    public Bundle newNamedBundle(QualifiedName id, Namespace namespace, Collection<Statement> statements) {
+	Bundle res = of.createNamedBundle();
 	res.setId(id);
 	res.setNamespace(namespace);
 	if (statements != null) {

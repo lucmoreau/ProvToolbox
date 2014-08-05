@@ -97,7 +97,7 @@ public interface Document {
      * {@link DictionaryMembership }
      * {@link DerivedByInsertionFrom }
      * {@link DerivedByRemovalFrom }
-     * {@link NamedBundle }
+     * {@link Bundle }
      * 
      * 
      */  

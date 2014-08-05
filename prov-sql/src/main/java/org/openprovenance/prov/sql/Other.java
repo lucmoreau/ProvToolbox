@@ -10,13 +10,12 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import org.jvnet.jaxb2_commons.lang.Equals;
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
+import org.openprovenance.prov.xml.builder.Equals;
+import org.openprovenance.prov.xml.builder.HashCode;
+import org.openprovenance.prov.xml.builder.ToString;
+import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
+import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
+import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
@@ -44,7 +43,7 @@ import org.openprovenance.prov.model.QualifiedName;
 @Table(name = "OTHER")
 public class Other
     extends TypedValue
-    implements Equals, HashCode, org.openprovenance.prov.model.Other, org.openprovenance.prov.model.Attribute
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Other, org.openprovenance.prov.model.Attribute
 {
 
     QualifiedName elementName;
@@ -77,32 +76,5 @@ public class Other
 
 
 
-    public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
-        if (!(object instanceof Other)) {
-            return false;
-        }
-        if (this == object) {
-            return true;
-        }
-        if (!super.equals(thisLocator, thatLocator, object, strategy)) {
-            return false;
-        }
-        return true;
-    }
-
-    public boolean equals(Object object) {
-        final EqualsStrategy strategy = JAXBEqualsStrategy.INSTANCE;
-        return equals(null, null, object, strategy);
-    }
-
-    public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
-        int currentHashCode = super.hashCode(locator, strategy);
-        return currentHashCode;
-    }
-
-    public int hashCode() {
-        final HashCodeStrategy strategy = JAXBHashCodeStrategy.INSTANCE;
-        return this.hashCode(null, strategy);
-    }
 
 }

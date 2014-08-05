@@ -18,7 +18,7 @@ import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.WasGeneratedBy;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.MentionOf;
@@ -131,7 +131,7 @@ public class ContextualizationPC1Test extends TestCase {
 
 	String bName = "b123"; // needs to be generated
 
-	NamedBundle bun = makePC1FullGraph(pFactory, bName);
+	Bundle bun = makePC1FullGraph(pFactory, bName);
 	graph.getStatementOrBundle().add(bun);
 	
 	
@@ -160,7 +160,7 @@ public class ContextualizationPC1Test extends TestCase {
 	return graph;
     }
 
-    public NamedBundle makePC1FullGraph(ProvFactory pFactory, String bName) {
+    public Bundle makePC1FullGraph(ProvFactory pFactory, String bName) {
 	if (urlFlag) {
 	    return makePC1FullGraph(pFactory, URL_LOCATION, URL_LOCATION, bName);
 	} else {
@@ -196,7 +196,7 @@ public class ContextualizationPC1Test extends TestCase {
     }
     
 
-    public NamedBundle makePC1FullGraph(ProvFactory pFactory,
+    public Bundle makePC1FullGraph(ProvFactory pFactory,
 	                                String inputLocation,
 	                                String outputLocation, String bName) {
 
@@ -482,7 +482,7 @@ public class ContextualizationPC1Test extends TestCase {
 
 	WasAssociatedWith waw1 = pFactory.newWasAssociatedWith(q("waw1"), p1.getId(), ag1.getId());
 
-	NamedBundle graph = pFactory.newNamedBundle(q(bName),
+	Bundle graph = pFactory.newNamedBundle(q(bName),
 	                                            Arrays.asList( p1, p2,
 	                                                            p3, p4, p5,
 	                                                            p6, p7, p8,

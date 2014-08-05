@@ -13,13 +13,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-import org.jvnet.jaxb2_commons.lang.Equals;
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.openprovenance.prov.model.StatementOrBundle;
 
 
@@ -62,15 +55,15 @@ import org.openprovenance.prov.model.StatementOrBundle;
     WasDerivedFrom.class,
     WasGeneratedBy.class,
     WasStartedBy.class,
-    NamedBundle.class
+    Bundle.class
 })
 @javax.persistence.Entity(name = "AStatement")
 @Table(name = "ASTATEMENT")
 //@Inheritance(strategy = InheritanceType.JOINED)
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 
-public class AStatement
-    implements Equals, HashCode, StatementOrBundle
+abstract public class AStatement
+    implements  StatementOrBundle
 {
 
     @XmlAttribute(name = "pk")
@@ -105,31 +98,7 @@ public class AStatement
         this.pk = value;
     }
 
-    public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
-        if (!(object instanceof AStatement)) {
-            return false;
-        }
-        if (this == object) {
-            return true;
-        }
-        return true;
-    }
 
-    public boolean equals(Object object) {
-        final EqualsStrategy strategy = JAXBEqualsStrategy.INSTANCE;
-        return equals(null, null, object, strategy);
-    }
-
-    public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
-        int currentHashCode = 1;
-        return currentHashCode;
-    }
-
-    public int hashCode() {
-        final HashCodeStrategy strategy = JAXBHashCodeStrategy.INSTANCE;
-        return this.hashCode(null, strategy);
-    }
-    
     @Transient
     public Kind getKind() {
         throw new UnsupportedOperationException();

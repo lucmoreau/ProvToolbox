@@ -83,7 +83,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
     "all"
 })
 @XmlSeeAlso({
-    Bundle.class,
+    BundleEntity.class,
     Collection.class,
     Plan.class
 })

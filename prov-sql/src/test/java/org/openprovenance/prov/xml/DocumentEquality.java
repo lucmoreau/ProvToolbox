@@ -12,7 +12,7 @@ import java.util.List;
 import org.apache.commons.collections.bag.HashBag;
 import org.apache.log4j.Logger;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.StatementOrBundle;
 
 /**
@@ -49,10 +49,10 @@ public class DocumentEquality {
 	private boolean statementEqual(StatementOrBundle r1,
 			StatementOrBundle r2) {
 		// If one of the statemens is a named bundle
-		if (r1 instanceof NamedBundle || r2 instanceof NamedBundle) {
-			if (r1 instanceof NamedBundle && r2 instanceof NamedBundle) {
-				NamedBundle b1 = (NamedBundle) r1;
-				NamedBundle b2 = (NamedBundle) r2;
+		if (r1 instanceof Bundle || r2 instanceof Bundle) {
+			if (r1 instanceof Bundle && r2 instanceof Bundle) {
+				Bundle b1 = (Bundle) r1;
+				Bundle b2 = (Bundle) r2;
 				if (!b1.getId().equals(b2.getId()))
 					return false;
 				List<?> stmts1 = b1.getStatement();

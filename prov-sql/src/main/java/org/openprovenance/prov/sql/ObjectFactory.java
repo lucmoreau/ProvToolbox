@@ -421,10 +421,10 @@ public class ObjectFactory {
      * Create an instance of {@link AStatement }
      * 
      */
-    public AStatement createAStatement() {
+    /*    public AStatement createAStatement() {
         return new AStatement();
     }
-
+    */
     /**
      * Create an instance of {@link NamedBundle }
      * 

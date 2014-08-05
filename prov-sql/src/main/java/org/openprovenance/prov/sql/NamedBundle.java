@@ -15,14 +15,15 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
-import org.jvnet.jaxb2_commons.lang.Equals;
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.openprovenance.prov.xml.builder.Equals;
+import org.openprovenance.prov.xml.builder.HashCode;
+import org.openprovenance.prov.xml.builder.ToString;
+import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
+import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
+import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
@@ -57,7 +58,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 @Table(name = "BUNDLE")
 public class NamedBundle
     extends AStatement
-    implements Equals, HashCode, org.openprovenance.prov.model.NamedBundle
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.NamedBundle
 {
 
     @XmlElements({
@@ -179,49 +180,66 @@ public class NamedBundle
         this.id = value;
     }
 
-    public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
+    public void equals(Object object, EqualsBuilder equalsBuilder) {
+        if (!(object instanceof NamedBundle)) {
+            equalsBuilder.appendSuper(false);
+            return ;
+        }
+        if (this == object) {
+            return ;
+        }
+        final NamedBundle that = ((NamedBundle) object);
+        equalsBuilder.append(this.getStatement(), that.getStatement());
+        equalsBuilder.append(this.getId(), that.getId());
+    }
+
+    public boolean equals(Object object) {
         if (!(object instanceof NamedBundle)) {
             return false;
         }
         if (this == object) {
             return true;
         }
-        if (!super.equals(thisLocator, thatLocator, object, strategy)) {
-            return false;
-        }
-        final NamedBundle that = ((NamedBundle) object);
-        {
-            List<Statement> lhsStatement;
-            lhsStatement = (((this.statement!= null)&&(!this.statement.isEmpty()))?this.getStatement():null);
-            List<Statement> rhsStatement;
-            rhsStatement = (((that.statement!= null)&&(!that.statement.isEmpty()))?that.getStatement():null);
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "statement", lhsStatement), LocatorUtils.property(thatLocator, "statement", rhsStatement), lhsStatement, rhsStatement)) {
-                return false;
-            }
-        }
-        {
-            QualifiedName lhsId;
-            lhsId = this.getId();
-            QualifiedName rhsId;
-            rhsId = that.getId();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "id", lhsId), LocatorUtils.property(thatLocator, "id", rhsId), lhsId, rhsId)) {
-                return false;
-            }
-        }
-        return true;
+        final EqualsBuilder equalsBuilder = new JAXBEqualsBuilder();
+        equals(object, equalsBuilder);
+        return equalsBuilder.isEquals();
     }
 
-    public boolean equals(Object object) {
-        final EqualsStrategy strategy = JAXBEqualsStrategy.INSTANCE;
-        return equals(null, null, object, strategy);
+    public void hashCode(HashCodeBuilder hashCodeBuilder) {
+        hashCodeBuilder.append(this.getStatement());
+        hashCodeBuilder.append(this.getId());
     }
 
+    public int hashCode() {
+        final HashCodeBuilder hashCodeBuilder = new JAXBHashCodeBuilder();
+        hashCode(hashCodeBuilder);
+        return hashCodeBuilder.toHashCode();
+    }
+
+    public void toString(ToStringBuilder toStringBuilder) {
+        {
+            List<Statement> theStatement;
+            theStatement = this.getStatement();
+            toStringBuilder.append("statement", theStatement);
+        }
+        {
+            org.openprovenance.prov.model.QualifiedName theId;
+            theId = this.getId();
+            toStringBuilder.append("id", theId);
+        }
+    }
+
+    public String toString() {
+	final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
+	toString(toStringBuilder);
+	return toStringBuilder.toString();
+    }
    
     
     @javax.xml.bind.annotation.XmlTransient 
     private Namespace namespace=null; 
-    
-    
+
+
     @Override
     @ManyToOne(targetEntity = org.openprovenance.prov.sql.Namespace.class, cascade = {
         CascadeType.ALL
@@ -237,26 +255,6 @@ public class NamedBundle
     }
    
     
-    
-    public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
-	int currentHashCode = super.hashCode(locator, strategy);
-	{
-	    List<Statement> theStatement;
-            theStatement = (((this.statement!= null)&&(!this.statement.isEmpty()))?this.getStatement():null);
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "statement", theStatement), currentHashCode, theStatement);
-        }
-        {
-            QualifiedName theId;
-            theId = this.getId();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "id", theId), currentHashCode, theId);
-        }
-        return currentHashCode;
-    }
-
-    public int hashCode() {
-        final HashCodeStrategy strategy = JAXBHashCodeStrategy.INSTANCE;
-        return this.hashCode(null, strategy);
-    }
     @Transient
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_BUNDLE;

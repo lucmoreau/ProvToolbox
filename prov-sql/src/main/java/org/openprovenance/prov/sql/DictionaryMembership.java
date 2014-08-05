@@ -19,14 +19,15 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import org.jvnet.jaxb2_commons.lang.Equals;
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.openprovenance.prov.xml.builder.Equals;
+import org.openprovenance.prov.xml.builder.HashCode;
+import org.openprovenance.prov.xml.builder.ToString;
+import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
+import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
+import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.StatementOrBundle;
 
 
@@ -59,7 +60,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 @Table(name = "DICTIONARYMEMBERSHIP")
 //@Inheritance(strategy = InheritanceType.JOINED)
 public class DictionaryMembership extends AStatement
-    implements Equals, HashCode, org.openprovenance.prov.model.DictionaryMembership
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.DictionaryMembership
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
@@ -133,59 +134,61 @@ public class DictionaryMembership extends AStatement
         this.keyEntityPair = keyEntityPair;
     }
 
-    public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
+    public void equals(Object object, EqualsBuilder equalsBuilder) {
+        if (!(object instanceof DictionaryMembership)) {
+            equalsBuilder.appendSuper(false);
+            return ;
+        }
+        if (this == object) {
+            return ;
+        }
+        final DictionaryMembership that = ((DictionaryMembership) object);
+        equalsBuilder.append(this.getDictionary(), that.getDictionary());
+        equalsBuilder.append(this.getKeyEntityPair(), that.getKeyEntityPair());
+    }
+
+    public boolean equals(Object object) {
         if (!(object instanceof DictionaryMembership)) {
             return false;
         }
         if (this == object) {
             return true;
         }
-        final DictionaryMembership that = ((DictionaryMembership) object);
-        {
-            org.openprovenance.prov.model.QualifiedName lhsDictionary;
-            lhsDictionary = this.getDictionary();
-            org.openprovenance.prov.model.QualifiedName rhsDictionary;
-            rhsDictionary = that.getDictionary();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "dictionary", lhsDictionary), LocatorUtils.property(thatLocator, "dictionary", rhsDictionary), lhsDictionary, rhsDictionary)) {
-                return false;
-            }
-        }
-        {
-            List<org.openprovenance.prov.model.Entry> lhsKeyEntityPair;
-            lhsKeyEntityPair = (((this.keyEntityPair!= null)&&(!this.keyEntityPair.isEmpty()))?this.getKeyEntityPair():null);
-            List<org.openprovenance.prov.model.Entry> rhsKeyEntityPair;
-            rhsKeyEntityPair = (((that.keyEntityPair!= null)&&(!that.keyEntityPair.isEmpty()))?that.getKeyEntityPair():null);
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "keyEntityPair", lhsKeyEntityPair), LocatorUtils.property(thatLocator, "keyEntityPair", rhsKeyEntityPair), lhsKeyEntityPair, rhsKeyEntityPair)) {
-                return false;
-            }
-        }
-        return true;
+        final EqualsBuilder equalsBuilder = new JAXBEqualsBuilder();
+        equals(object, equalsBuilder);
+        return equalsBuilder.isEquals();
     }
 
-    public boolean equals(Object object) {
-        final EqualsStrategy strategy = JAXBEqualsStrategy.INSTANCE;
-        return equals(null, null, object, strategy);
-    }
-
-    public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
-        int currentHashCode = 1;
-        {
-            org.openprovenance.prov.model.QualifiedName theDictionary;
-            theDictionary = this.getDictionary();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "dictionary", theDictionary), currentHashCode, theDictionary);
-        }
-        {
-            List<org.openprovenance.prov.model.Entry> theKeyEntityPair;
-            theKeyEntityPair = (((this.keyEntityPair!= null)&&(!this.keyEntityPair.isEmpty()))?this.getKeyEntityPair():null);
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "keyEntityPair", theKeyEntityPair), currentHashCode, theKeyEntityPair);
-        }
-        return currentHashCode;
+    public void hashCode(HashCodeBuilder hashCodeBuilder) {
+        hashCodeBuilder.append(this.getDictionary());
+        hashCodeBuilder.append(this.getKeyEntityPair());
     }
 
     public int hashCode() {
-        final HashCodeStrategy strategy = JAXBHashCodeStrategy.INSTANCE;
-        return this.hashCode(null, strategy);
+        final HashCodeBuilder hashCodeBuilder = new JAXBHashCodeBuilder();
+        hashCode(hashCodeBuilder);
+        return hashCodeBuilder.toHashCode();
     }
+
+    public void toString(ToStringBuilder toStringBuilder) {
+        {
+            org.openprovenance.prov.model.QualifiedName theDictionary;
+            theDictionary = this.getDictionary();
+            toStringBuilder.append("dictionary", theDictionary);
+        }
+        {
+            List<org.openprovenance.prov.model.Entry> theKeyEntityPair;
+            theKeyEntityPair = this.getKeyEntityPair();
+            toStringBuilder.append("keyEntityPair", theKeyEntityPair);
+        }
+    }
+
+    public String toString() {
+        final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
+        toString(toStringBuilder);
+        return toStringBuilder.toString();
+    }
+
     @Transient 
     public Kind getKind() {
         return StatementOrBundle.Kind.PROV_DICTIONARY_MEMBERSHIP;

@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
@@ -41,13 +41,13 @@ public class ExpandTest extends TestCase {
 	Document docBindings= new Utility().readDocument(inBindings,pf);
 	Bindings bindings1=Bindings.fromDocument(docBindings,pf);
 	
-	NamedBundle bun=(NamedBundle) doc.getStatementOrBundle().get(0);
+	Bundle bun=(Bundle) doc.getStatementOrBundle().get(0);
 
 	Groupings grp1=Groupings.fromDocument(doc);
 
 	System.out.println("Found groupings " + grp1);
 	
-	NamedBundle bun1=(NamedBundle) new Expand(pf).expand(bun, bindings1, grp1).get(0);
+	Bundle bun1=(Bundle) new Expand(pf).expand(bun, bindings1, grp1).get(0);
 	Document doc1=pf.newDocument();
 	doc1.getStatementOrBundle().add(bun1);
 	
@@ -73,13 +73,13 @@ public class ExpandTest extends TestCase {
 	
 	Document doc= new Utility().readDocument(in, pf);
 	
-	NamedBundle bun=(NamedBundle) doc.getStatementOrBundle().get(0);
+	Bundle bun=(Bundle) doc.getStatementOrBundle().get(0);
 
 	Groupings grp1=Groupings.fromDocument(doc);
 
 	System.out.println("Found groupings " + grp1);
 	
-	NamedBundle bun1=(NamedBundle) new Expand(pf).expand(bun, bindings1, grp1).get(0);
+	Bundle bun1=(Bundle) new Expand(pf).expand(bun, bindings1, grp1).get(0);
 	Document doc1=pf.newDocument();
 	doc1.getStatementOrBundle().add(bun1);
 	

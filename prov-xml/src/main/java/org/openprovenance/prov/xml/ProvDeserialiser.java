@@ -80,7 +80,7 @@ public class ProvDeserialiser {
     public void updateNamespaces(Document document) {
 	Namespace rootNamespace = Namespace.gatherNamespaces(document);
 	document.setNamespace(rootNamespace);
-	for (org.openprovenance.prov.model.NamedBundle bu: utils.getBundle(document)) {
+	for (org.openprovenance.prov.model.Bundle bu: utils.getBundle(document)) {
 	    Namespace ns=bu.getNamespace();
 	    if (ns!=null) {
 		ns.setParent(rootNamespace);

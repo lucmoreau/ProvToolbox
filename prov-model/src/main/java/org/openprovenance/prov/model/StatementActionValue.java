@@ -59,6 +59,6 @@ public interface StatementActionValue {
 
     Object doAction(WasInformedBy s);
 
-    Object doAction(NamedBundle s, ProvUtilities provUtilities);
+    Object doAction(Bundle s, ProvUtilities provUtilities);
 
 }

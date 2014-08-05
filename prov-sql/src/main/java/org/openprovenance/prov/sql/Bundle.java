@@ -56,9 +56,9 @@ import org.openprovenance.prov.model.StatementOrBundle;
 })
 @javax.persistence.Entity(name = "NamedBundle")
 @Table(name = "BUNDLE")
-public class NamedBundle
+public class Bundle
     extends AStatement
-    implements Equals, HashCode, ToString, org.openprovenance.prov.model.NamedBundle
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Bundle
 {
 
     @XmlElements({
@@ -181,20 +181,20 @@ public class NamedBundle
     }
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {
-        if (!(object instanceof NamedBundle)) {
+        if (!(object instanceof Bundle)) {
             equalsBuilder.appendSuper(false);
             return ;
         }
         if (this == object) {
             return ;
         }
-        final NamedBundle that = ((NamedBundle) object);
+        final Bundle that = ((Bundle) object);
         equalsBuilder.append(this.getStatement(), that.getStatement());
         equalsBuilder.append(this.getId(), that.getId());
     }
 
     public boolean equals(Object object) {
-        if (!(object instanceof NamedBundle)) {
+        if (!(object instanceof Bundle)) {
             return false;
         }
         if (this == object) {

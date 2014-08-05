@@ -22,7 +22,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.MentionOf;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
@@ -236,7 +236,7 @@ public class NotationConstructor implements ModelConstructor {
     @Override
     public Document newDocument(Namespace namespaces,
                                 Collection<Statement> statements,
-                                Collection<NamedBundle> bundles) {
+                                Collection<Bundle> bundles) {
         String s = "";
 
         s = s + keyword("endDocument");
@@ -281,7 +281,7 @@ public class NotationConstructor implements ModelConstructor {
     }
 
     @Override
-    public NamedBundle newNamedBundle(QualifiedName id, Namespace namespace,
+    public Bundle newNamedBundle(QualifiedName id, Namespace namespace,
                                       Collection<Statement> statements) {
         String s = "";
         s = s + keyword("endBundle");

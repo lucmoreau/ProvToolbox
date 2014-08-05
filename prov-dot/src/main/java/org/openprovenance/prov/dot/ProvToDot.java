@@ -22,7 +22,7 @@ import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.model.Influence;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Relation;
@@ -308,7 +308,7 @@ public class ProvToDot {
         }
         
         if (u.getBundle(doc)!=null) {
-            for (NamedBundle bun: u.getBundle(doc)) {
+            for (Bundle bun: u.getBundle(doc)) {
                 convert(bun,out);
             }
         }
@@ -322,7 +322,7 @@ public class ProvToDot {
        
     }
 
-    public void convert(NamedBundle bun, PrintStream out) {
+    public void convert(Bundle bun, PrintStream out) {
         List<Relation> edges=u.getRelations(bun);
 
         prelude(bun, out);
@@ -1076,13 +1076,13 @@ public class ProvToDot {
         out.close();
     }
 
-    void prelude(NamedBundle doc, PrintStream out) {
+    void prelude(Bundle doc, PrintStream out) {
         out.println("subgraph " + "cluster" + dotify(qualifiedNameToString(doc.getId())) + " { ");
         out.println("  label=\"" + localnameToString(doc.getId()) + "\";");
         out.println("  URL=\"" + qualifiedNameToString(doc.getId()) + "\";");
     }
 
-    void postlude(NamedBundle doc, PrintStream out) {
+    void postlude(Bundle doc, PrintStream out) {
         out.println("}");
     }
 

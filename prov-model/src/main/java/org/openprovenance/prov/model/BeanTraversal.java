@@ -90,7 +90,7 @@ public class BeanTraversal implements StatementActionValue {
 
     public Document doAction(Document doc) {
 
-	List<NamedBundle> bRecords = new LinkedList<NamedBundle>();
+	List<Bundle> bRecords = new LinkedList<Bundle>();
 
 	List<Statement> sRecords = new LinkedList<Statement>();
 	
@@ -103,9 +103,9 @@ public class BeanTraversal implements StatementActionValue {
 	    sRecords.add((Statement) u.doAction(s, this));
 	}
 
-	for (NamedBundle bu : u.getNamedBundle(doc)) {
+	for (Bundle bu : u.getNamedBundle(doc)) {
 	    Namespace.withThreadNamespace(new Namespace(docNamespace));
-	    NamedBundle o = doAction(bu,u);
+	    Bundle o = doAction(bu,u);
 	    if (o != null)
 		bRecords.add(o);
 
@@ -153,7 +153,7 @@ public class BeanTraversal implements StatementActionValue {
                               o.getBundle());
     }
 
-    public NamedBundle doAction(NamedBundle b, ProvUtilities u) {
+    public Bundle doAction(Bundle b, ProvUtilities u) {
 	List<Statement> sRecords = new LinkedList<Statement>();
 	QualifiedName bundleId=b.getId();
 	

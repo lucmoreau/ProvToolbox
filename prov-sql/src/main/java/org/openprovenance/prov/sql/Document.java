@@ -90,7 +90,7 @@ public class Document
         @XmlElement(name = "emptyCollection", type = EmptyCollection.class),
         @XmlElement(name = "hadMember", type = HadMember.class),
         @XmlElement(name = "mentionOf", type = MentionOf.class),
-        @XmlElement(name = "bundleContent", type = NamedBundle.class)
+        @XmlElement(name = "bundleContent", type = Bundle.class)
     })
     protected List<StatementOrBundle> statementOrBundle;
     @XmlAttribute(name = "pk")
@@ -134,7 +134,7 @@ public class Document
      * {@link EmptyCollection }
      * {@link HadMember }
      * {@link MentionOf }
-     * {@link NamedBundle }
+     * {@link Bundle }
      * 
      * 
      */

@@ -426,11 +426,11 @@ public class ObjectFactory {
     }
     */
     /**
-     * Create an instance of {@link NamedBundle }
+     * Create an instance of {@link Bundle }
      * 
      */
-    public NamedBundle createNamedBundle() {
-        return new NamedBundle();
+    public Bundle createNamedBundle() {
+        return new Bundle();
     }
 
     /**

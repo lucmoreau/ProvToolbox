@@ -13,7 +13,7 @@ import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.Name;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.ProvFactory;
@@ -451,10 +451,10 @@ public class TreeTraversal {
             //System.out.println("+++ namespace" + nss);
             @SuppressWarnings("unchecked")
             List<Statement> records2=(List<Statement>)convert(ast.getChild(1));
-            List<NamedBundle> bundles=null;
+            List<Bundle> bundles=null;
             if (ast.getChild(2)!=null) {
 	        @SuppressWarnings("unchecked")
-                List<NamedBundle> tmp = (List<NamedBundle>)convert(ast.getChild(2));
+                List<Bundle> tmp = (List<Bundle>)convert(ast.getChild(2));
 	        bundles=tmp;
             }
             return c.newDocument(nss,records2, bundles);

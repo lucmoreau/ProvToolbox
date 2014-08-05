@@ -447,11 +447,11 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     }
 
     /**
-     * Create an instance of {@link NamedBundle }
+     * Create an instance of {@link Bundle }
      * 
      */
-    public NamedBundle createNamedBundle() {
-        return new org.openprovenance.prov.sql.NamedBundle();
+    public Bundle createNamedBundle() {
+        return new org.openprovenance.prov.sql.Bundle();
     }
 
     /**

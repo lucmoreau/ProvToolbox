@@ -19,15 +19,15 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
     private ProvFactory p = new ProvFactory();
 
     
-    public MentionOf getMentionForRemoteEntity(NamedBundle local,
+    public MentionOf getMentionForRemoteEntity(Bundle local,
                                                Entity remoteEntity,
-                                               NamedBundle remote) {        
+                                               Bundle remote) {        
         return getMentionForLocalEntity(local.getStatement(),
                                          remoteEntity, remote);
     }
 
     MentionOf getMentionForRemoteEntity(List<Object> objects,
-                                        Entity remoteEntity, NamedBundle remote) {
+                                        Entity remoteEntity, Bundle remote) {
         for (Object o : objects) {
             if (o instanceof MentionOf) {
                 MentionOf ctxt = (MentionOf) o;
@@ -48,15 +48,15 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
      */
     
 
-    public MentionOf getMentionForLocalEntity(NamedBundle local,
+    public MentionOf getMentionForLocalEntity(Bundle local,
                                               Entity localEntity,
-                                              NamedBundle remote) {
+                                              Bundle remote) {
         return getMentionForLocalEntity(local.getStatement(),
                                         localEntity, remote);
     }
 
     MentionOf getMentionForLocalEntity(List<Statement> records,
-                                       Entity localEntity, NamedBundle remote) {
+                                       Entity localEntity, Bundle remote) {
         for (Statement o : records) {
             if (o instanceof MentionOf) {
                 MentionOf ctxt = (MentionOf) o;

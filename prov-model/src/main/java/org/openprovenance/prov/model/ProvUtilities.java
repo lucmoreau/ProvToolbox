@@ -47,30 +47,30 @@ public class ProvUtilities {
         return getObject(Agent.class, d.getStatementOrBundle());
     }
 
-    public List<NamedBundle> getBundle(Document d) {
-        return getObject(NamedBundle.class, d.getStatementOrBundle());
+    public List<Bundle> getBundle(Document d) {
+        return getObject(Bundle.class, d.getStatementOrBundle());
     }
 
-    public List<Relation> getRelations(NamedBundle d) {
+    public List<Relation> getRelations(Bundle d) {
         return getObject2(Relation.class,
                          d.getStatement());
     }
 
-    public List<Entity> getEntity(NamedBundle d) {
+    public List<Entity> getEntity(Bundle d) {
         return getObject2(Entity.class, d.getStatement());
     }
 
-    public List<Activity> getActivity(NamedBundle d) {
+    public List<Activity> getActivity(Bundle d) {
         return getObject2(Activity.class,
                          d.getStatement());
     }
 
-    public List<Agent> getAgent(NamedBundle d) {
+    public List<Agent> getAgent(Bundle d) {
         return getObject2(Agent.class, d.getStatement());
     }
 
-    public List<NamedBundle> getNamedBundle(Document d) {
-        return getObject(NamedBundle.class,
+    public List<Bundle> getNamedBundle(Document d) {
+        return getObject(Bundle.class,
                          d.getStatementOrBundle());
     }
 
@@ -80,7 +80,7 @@ public class ProvUtilities {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Statement> getStatement(NamedBundle d) {
+    public List<Statement> getStatement(Bundle d) {
         List<?> res = d.getStatement();
         return (List<Statement>) res;
     }
@@ -321,7 +321,7 @@ public class ProvUtilities {
   	    action.doAction((WasAttributedTo) s);
   	    break;
   	case PROV_BUNDLE: 
-  	    action.doAction((NamedBundle) s, this);
+  	    action.doAction((Bundle) s, this);
   	    break;
   	case PROV_COMMUNICATION:
   	    action.doAction((WasInformedBy) s);
@@ -387,7 +387,7 @@ public class ProvUtilities {
   	case PROV_ATTRIBUTION:
   	    return action.doAction((WasAttributedTo) s);
   	case PROV_BUNDLE: 
-  	    return action.doAction((NamedBundle) s, this);
+  	    return action.doAction((Bundle) s, this);
   	case PROV_COMMUNICATION:
   	    return action.doAction((WasInformedBy) s);
   	case PROV_DELEGATION:

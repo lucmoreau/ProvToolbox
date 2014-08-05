@@ -82,7 +82,7 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
     public void testDictionaryMembership3() {}
     public void testDictionaryMembership4() {}
 
-    public void makeDocAndTest(Statement []stment, NamedBundle[] bundles, String file, Statement[] opt, boolean check) {
+    public void makeDocAndTest(Statement []stment, Bundle[] bundles, String file, Statement[] opt, boolean check) {
 	Document doc = pFactory.newDocument();
 	for (int i=0; i< stment.length; i++) {
 	   doc.getStatementOrBundle().add(stment[i]);

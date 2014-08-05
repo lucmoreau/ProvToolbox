@@ -55,7 +55,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
     WasDerivedFrom.class,
     WasGeneratedBy.class,
     WasStartedBy.class,
-    NamedBundle.class
+    Bundle.class
 })
 @javax.persistence.Entity(name = "AStatement")
 @Table(name = "ASTATEMENT")

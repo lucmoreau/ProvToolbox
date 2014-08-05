@@ -17,7 +17,7 @@ import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.MentionOf;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.Entry;
@@ -444,7 +444,7 @@ public class RdfCollector extends RDFHandlerBase {
 	    statements.addAll(bundleHolder.getEntities());
 	    statements.addAll(bundleHolder.getAgents());
 	    statements.addAll(bundleHolder.getStatements());
-	    NamedBundle bundle = pFactory.newNamedBundle(key, null, statements);
+	    Bundle bundle = pFactory.newNamedBundle(key, null, statements);
 	    document.getStatementOrBundle().add(bundle);
 	}
 

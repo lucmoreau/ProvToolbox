@@ -65,12 +65,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jvnet.jaxb2_commons</groupId>
-      <artifactId>runtime</artifactId>
-      <version>${jaxb.common.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.0.1</version>
@@ -89,7 +83,7 @@
 
 
     <plugins>
-
+<!-- disabled
       <plugin>
         <groupId>org.jvnet.jaxb2.maven2</groupId>
 	<artifactId>maven-jaxb2-plugin</artifactId>
@@ -125,15 +119,13 @@
 		<arg>-Xequals</arg>
   		<arg>-XhashCode</arg>
 		<arg>-XtoString</arg>
- 		<!-- <arg>-Xhyperjaxb3-ejb</arg>
-		     <arg>-Xhyperjaxb3-ejb-roundtripTestClassName=RoundtripTest</arg> -->
               </args>
             </configuration>
           </execution>
         </executions>
       </plugin>
 
-
+-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>

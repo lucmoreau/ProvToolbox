@@ -1,4 +1,6 @@
 
+rpm:
+	mvn rpm:rpm
 
 
 t1:

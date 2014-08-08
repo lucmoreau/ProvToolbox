@@ -232,7 +232,7 @@
           <license>MIT License</license>
           <distribution>provconvert</distribution>
           <group>Application/Provenance</group>
-          <icon>src/main/resources/icon.gif</icon>
+          <!-- <icon>src/main/resources/icon.gif</icon> -->
           <packager>Luc Moreau</packager>
           <prefix>/usr/local</prefix>
           <changelogFile>src/changelog</changelogFile>

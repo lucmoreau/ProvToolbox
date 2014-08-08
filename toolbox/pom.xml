@@ -229,11 +229,11 @@
         <version>2.1-alpha-4</version>
 	
         <configuration>
-          <license>GPL (c) 2005, SWWDC</license>
-          <distribution>Trash 2005</distribution>
-          <group>Application/Collectors</group>
+          <license>MIT License</license>
+          <distribution>provconvert</distribution>
+          <group>Application/Provenance</group>
           <icon>src/main/resources/icon.gif</icon>
-          <packager>SWWDC</packager>
+          <packager>Luc Moreau</packager>
           <prefix>/usr/local</prefix>
           <changelogFile>src/changelog</changelogFile>
           <defineStatements>
@@ -241,18 +241,18 @@
           </defineStatements>
           <mappings>
             <mapping>
-              <directory>/usr/local/bin/landfill</directory>
+              <directory>/usr/local/bin/provconvert</directory>
               <filemode>440</filemode>
-              <username>dumper</username>
-              <groupname>dumpgroup</groupname>
+              <username>root</username>
+              <groupname>root</groupname>
               <sources>
                 <source>
-                  <location>target/classes</location>
+                  <location>target/appassembler/</location>
                 </source>
               </sources>
             </mapping>
             <mapping>
-              <directory>/usr/local/doc/landfill</directory>
+              <directory>/usr/local/doc/provconvert</directory>
               <documentation>true</documentation>
               <filemode>444</filemode>
               <username>dumper</username>
@@ -292,35 +292,6 @@
                   <destination>old.sh</destination>
                 </softlinkSource>
               </sources>
-            </mapping>
-            <mapping>
-              <directory>/usr/local/oldbin</directory>
-              <filemode>750</filemode>
-              <username>dumper</username>
-              <groupname>dumpgroup</groupname>
-              <sources>
-                <softlinkSource>
-                  <location>/usr/local/bin</location>
-                </softlinkSource>
-              </sources>
-            </mapping>
-            <mapping>
-              <directory>/usr/local/conf/landfill</directory>
-              <configuration>true</configuration>
-              <filemode>640</filemode>
-              <username>dumper</username>
-              <groupname>dumpgroup</groupname>
-              <sources>
-                <source>
-                  <location>src/main/conf</location>
-                </source>
-              </sources>
-            </mapping>
-            <mapping>
-              <directory>/usr/local/log/landfill</directory>
-              <filemode>750</filemode>
-              <username>dumper</username>
-              <groupname>dumpgroup</groupname>
             </mapping>
           </mappings>
           <preinstallScriptlet>

@@ -243,8 +243,8 @@
             <mapping>
               <directory>/usr/local/bin/provconvert</directory>
               <filemode>440</filemode>
-              <username>root</username>
-              <groupname>root</groupname>
+              <username>provconvert</username>
+              <groupname>provconvert</groupname>
               <sources>
                 <source>
                   <location>target/appassembler/</location>
@@ -255,11 +255,14 @@
               <directory>/usr/local/doc/provconvert</directory>
               <documentation>true</documentation>
               <filemode>444</filemode>
-              <username>dumper</username>
-              <groupname>dumpgroup</groupname>
+              <username>provconvert</username>
+              <groupname>provconvert</groupname>
               <sources>
                 <source>
-                  <location>target/site</location>
+                  <location>target/classes/README-provconvert.txt</location>
+                </source>
+                <source>
+                  <location>target/classes/README-licenses.txt</location>
                 </source>
               </sources>
             </mapping>

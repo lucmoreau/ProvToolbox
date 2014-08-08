@@ -241,7 +241,7 @@
           </defineStatements>
           <mappings>
             <mapping>
-              <directory>/usr/local/bin/provconvert</directory>
+              <directory>/usr/local/lib/provconvert</directory>
               <filemode>440</filemode>
               <username>provconvert</username>
               <groupname>provconvert</groupname>
@@ -284,15 +284,12 @@
             <mapping>
               <directory>/usr/local/bin</directory>
               <filemode>750</filemode>
-              <username>dumper</username>
-              <groupname>dumpgroup</groupname>
+              <username>root</username>
+              <groupname>root</groupname>
               <sources>
-                <source>
-                  <location>src/main/bin</location>
-                </source>
                 <softlinkSource>
-                  <location>/usr/local/bin/new.sh</location>
-                  <destination>old.sh</destination>
+                  <location>/usr/local/lib/provconvert/bin/provconvert</location>
+                  <destination>provconvert</destination>
                 </softlinkSource>
               </sources>
             </mapping>

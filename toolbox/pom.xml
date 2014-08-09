@@ -266,8 +266,9 @@
                 </source>
               </sources>
             </mapping>
+	    <!--
             <mapping>
-              <directory>/usr/local/lib</directory>
+              <directory>/usr/local/lib/something</directory>
               <filemode>750</filemode>
               <username>dumper</username>
               <groupname>dumpgroup</groupname>
@@ -280,7 +281,7 @@
                   <exclude>junit:junit</exclude>
                 </excludes>
               </dependency>
-            </mapping>
+            </mapping> -->
             <mapping>
               <directory>/usr/local/bin</directory>
               <filemode>750</filemode>

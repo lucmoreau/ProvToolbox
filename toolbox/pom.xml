@@ -242,7 +242,7 @@
           <mappings>
             <mapping>
               <directory>/usr/local/lib/provconvert</directory>
-              <filemode>440</filemode>
+              <filemode>555</filemode>
               <username>provconvert</username>
               <groupname>provconvert</groupname>
               <sources>

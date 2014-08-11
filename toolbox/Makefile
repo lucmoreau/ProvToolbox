@@ -1,9 +1,10 @@
 
-dmg:
-	mvn package osxappbundle:bundle
 
 rpm:
 	mvn rpm:rpm
+
+dmg:
+	mvn package osxappbundle:bundle
 
 
 t1:

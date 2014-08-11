@@ -199,6 +199,76 @@
   	              <arg value="provconvert.bat" />
                 </exec>
 
+                <exec executable="echo" dir="${project.build.directory}" output="${basedir}/target/provconvert.1">
+  	              <arg value=".\&quot;  Manpage for provconvert." />
+                </exec>
+
+
+                <exec executable="echo"
+		      dir="${project.build.directory}"
+		      output="${basedir}/target/provconvert.1"
+		      append="true">
+  	              <arg value=".TH man 1 &quot;${maven.build.timestamp}&quot; &quot;${project.version}&quot; &quot;provconvert man page&quot;" />
+                </exec>
+
+
+
+                <exec executable="echo"
+		      dir="${project.build.directory}"
+		      output="${basedir}/target/provconvert.1"
+		      append="true">
+  	              <arg value=".SH NAME" />
+                </exec>
+
+                <exec executable="echo"
+		      dir="${project.build.directory}"
+		      output="${basedir}/target/provconvert.1"
+		      append="true">
+  	              <arg value="provconvert \- converts PROV representations" />
+                </exec>
+
+                <exec executable="echo"
+		      dir="${project.build.directory}"
+		      output="${basedir}/target/provconvert.1"
+		      append="true">
+  	              <arg value=".SH SYNOPSIS" />
+                </exec>
+
+                <exec executable="provconvert"
+		      dir="${project.build.directory}/appassembler/bin"
+		      output="${basedir}/target/provconvert.1"
+		      append="true">
+  	          <arg value="-help" />
+                </exec>
+
+                <exec executable="echo"
+		      dir="${project.build.directory}"
+		      output="${basedir}/target/provconvert.1"
+		      append="true">
+  	              <arg value=".SH BUGS" />
+                </exec>
+
+                <exec executable="echo"
+		      dir="${project.build.directory}"
+		      output="${basedir}/target/provconvert.1"
+		      append="true">
+  	              <arg value="See https://github.com/lucmoreau/ProvToolbox/issues" />
+                </exec>
+
+                <exec executable="echo"
+		      dir="${project.build.directory}"
+		      output="${basedir}/target/provconvert.1"
+		      append="true">
+  	              <arg value=".SH AUTHOR" />
+                </exec>
+                <exec executable="echo"
+		      dir="${project.build.directory}"
+		      output="${basedir}/target/provconvert.1"
+		      append="true">
+  	              <arg value="Luc Moreau" />
+                </exec>
+
+
               </tasks>
             </configuration>
           </execution>
@@ -243,8 +313,8 @@
             <mapping>
               <directory>/usr/local/lib/provconvert</directory>
               <filemode>555</filemode>
-              <username>provconvert</username>
-              <groupname>provconvert</groupname>
+              <username>root</username>
+              <groupname>root</groupname>
               <sources>
                 <source>
                   <location>target/appassembler/</location>
@@ -252,11 +322,11 @@
               </sources>
             </mapping>
             <mapping>
-              <directory>/usr/local/doc/provconvert</directory>
+              <directory>/usr/share/doc/provconvert</directory>
               <documentation>true</documentation>
               <filemode>444</filemode>
-              <username>provconvert</username>
-              <groupname>provconvert</groupname>
+              <username>root</username>
+              <groupname>root</groupname>
               <sources>
                 <source>
                   <location>target/classes/README-provconvert.txt</location>
@@ -266,6 +336,19 @@
                 </source>
               </sources>
             </mapping>
+            <mapping>
+              <directory>/usr/local/man/man1</directory>
+              <documentation>true</documentation>
+              <username>root</username>
+              <groupname>root</groupname>
+              <sources>
+                <source>
+                  <location>target/provconvert.1</location>
+                </source>
+              </sources>
+            </mapping>
+
+
 	    <!--
             <mapping>
               <directory>/usr/local/lib/something</directory>
@@ -425,6 +508,7 @@
   <properties>
     <izpack.standalone-compiler.version>4.3.5</izpack.standalone-compiler.version>
     <izpackplugin.version>5.0.0-rc2</izpackplugin.version>
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
   </properties>
 
 

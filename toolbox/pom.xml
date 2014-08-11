@@ -373,7 +373,7 @@
 		  <classpath dir="${basedir}/target/appassembler/repo/"/>
 		  <!-- <classpath dir="${basedir}/target/${project.artifactId}-${project.version}/PROV Toolbox.app/Contents/Resources/Java/"/> -->
                   <option value="-Dapple.laf.useScreenMenuBar=true"/>
-		  <argument value="-help"/>
+		  <!-- <argument value="-help"/> -->
                 </bundleapp>
               </target>
             </configuration>

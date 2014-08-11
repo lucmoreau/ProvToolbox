@@ -308,6 +308,108 @@
           </preremoveScriptlet>
         </configuration>
       </plugin>
+
+      <!--
+      <plugin>
+	<groupId>com.agiliumlabs.osxappbundle</groupId>
+	<artifactId>osxappbundle-maven-plugin</artifactId>
+	<version>1.0.1</version>
+        <configuration>
+          <mainClass>org.openprovenance.prov.interop.CommandLineArguments</mainClass>
+	  <additionalResources>
+            <fileSet>
+              <directory>${basedir}/target/classes/</directory>
+              <includes>
+                <include>README-provconvert.txt</include>
+              </includes>
+            </fileSet>
+          </additionalResources>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>bundle</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      -->
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>run</id>
+            <phase>install</phase>
+            <configuration>
+              <target>
+                <property environment="env"/>
+
+                <taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask"
+                         classpath="${basedir}/lib/appbundler-1.0.jar"/>
+
+                <mkdir dir="${basedir}/target/app"/>
+                <bundleapp outputdirectory="${basedir}/target/app"
+                           name="provconvert"
+                           displayname="provconvert"
+                           identifier="org.openprovenance.prov.toolbox.provconvert"
+                           shortversion="${project.version}"
+                           applicationCategory="public.app-category.developer-tools"
+                           mainclassname="org.openprovenance.prov.interop.CommandLineArguments">
+
+		  <!--                    icon="${basedir}/../logo/logo.icns" -->
+
+                  <!-- TODO this is a bit big :) -->
+		  <!--
+                      <runtime dir="${env.JAVA_HOME}"/>
+		  -->
+		  <!--
+                      <runtime dir="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin"/>
+		  -->
+                  <!-- <classpath file="${basedir}/target/${project.artifactId}-${project.version}.jar"/> -->
+		  <classpath dir="${basedir}/target/appassembler/repo/"/>
+		  <!-- <classpath dir="${basedir}/target/${project.artifactId}-${project.version}/PROV Toolbox.app/Contents/Resources/Java/"/> -->
+                  <option value="-Dapple.laf.useScreenMenuBar=true"/>
+		  <argument value="-help"/>
+                </bundleapp>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+      <plugin>
+        <groupId>org.codehaus.izpack</groupId>
+        <artifactId>izpack-maven-plugin</artifactId>
+        <version>${izpackplugin.version}</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>izpack</goal>
+            </goals>
+            <configuration>
+              <izpackBasedir>${basedir}/target/appassembler/</izpackBasedir>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.izpack</groupId>
+            <artifactId>izpack-standalone-compiler</artifactId>
+            <version>${izpack.standalone-compiler.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      -->
+
     </plugins>
 
 
@@ -320,6 +422,10 @@
     </testResources>
   </build>
 
+  <properties>
+    <izpack.standalone-compiler.version>4.3.5</izpack.standalone-compiler.version>
+    <izpackplugin.version>5.0.0-rc2</izpackplugin.version>
+  </properties>
 
 
 </project>

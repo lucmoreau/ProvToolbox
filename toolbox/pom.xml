@@ -128,45 +128,9 @@
             </goals>
             <configuration>
               <tasks>
-
                 <!-- patch the shell script to avoid changing current directory, so that
                      relative files are understood as relative to the current directory. -->
-<!--
 
-                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
-  	              <arg value="-e s/^cd/#### no CD ### Luc/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="opm2dot" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
-  	              <arg value="-e s/^cd/#### no CD ### Luc/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="opmconvert" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
-  	              <arg value="-e s/^cd/#### no CD ### Luc/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="opmxml2rdf" />
-                </exec>
-
-                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
-  	              <arg value="-e s/^cd/#### no CD ### Luc/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="opmrdf2xml" />
-                </exec>
-
-
-                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
-  	              <arg value="-e s/^cd/#### no CD ### Luc/" />
-  	              <arg value="-iBAK" />
-  	              <arg value="opmxml-validate" />
-                </exec>
-
--->
                 <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
   	              <arg value="-e s/^cd/#### no CD ### Luc/" />
   	              <arg value="-iBAK" />
@@ -179,25 +143,14 @@
   	              <arg value="provconvert" />
                 </exec>
 
-<!--
-                <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
-  	              <arg value="a+x" />
-  	              <arg value="prov2dot" />
-  	              <arg value="prov2dot.bat" />
-                </exec>
 
-
-                <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
-  	              <arg value="a+x" />
-  	              <arg value="provxml-validate" />
-  	              <arg value="provxml-validate.bat" />
-                </exec>
--->
                 <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
   	              <arg value="a+x" />
   	              <arg value="provconvert" />
   	              <arg value="provconvert.bat" />
                 </exec>
+
+		<!-- man page generation -->
 
                 <exec executable="echo" dir="${project.build.directory}" output="${basedir}/target/provconvert.1">
   	              <arg value=".\&quot;  Manpage for provconvert." />
@@ -261,13 +214,13 @@
 		      append="true">
   	              <arg value=".SH AUTHOR" />
                 </exec>
+
                 <exec executable="echo"
 		      dir="${project.build.directory}"
 		      output="${basedir}/target/provconvert.1"
 		      append="true">
   	              <arg value="Luc Moreau" />
                 </exec>
-
 
               </tasks>
             </configuration>

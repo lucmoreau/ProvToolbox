@@ -87,11 +87,6 @@
         <artifactId>appassembler-maven-plugin</artifactId>
         <configuration>
           <programs>
-<!--            <program>
-              <mainClass>org.openprovenance.prov.xml.OPMDeserialiser</mainClass>
-              <name>provxml-validate</name>
-            </program>
--->
             <program>
               <mainClass>org.openprovenance.prov.interop.CommandLineArguments</mainClass>
               <name>provconvert</name>
@@ -146,7 +141,7 @@
         <executions>
 
           <execution>
-            <id>patch.executable</id>
+            <id>create.provconvert.1</id>
             <phase>package</phase>
             <goals>
              <goal>run</goal>
@@ -212,7 +207,7 @@
   	              <arg value=".SH SYNOPSIS" />
                 </exec>
 
-                <exec executable="provconvert"
+                <exec executable="${project.build.directory}/appassembler/bin/provconvert"
 		      dir="${project.build.directory}/appassembler/bin"
 		      output="${basedir}/target/provconvert.1"
 		      append="true">

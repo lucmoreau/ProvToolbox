@@ -54,7 +54,32 @@
 
      <plugins>
 
-      <!-- executable to be run as target/appassembler/bin/opm2dot src/test/resources/example2.xml file.dot file.pdf -->
+	<plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+          <version>1.5</version>
+          <executions>
+            <execution>
+              <id>package</id>
+              <goals>
+               <goal>add-third-party</goal>
+              </goals>
+              <configuration>
+		<useMissingFile>true</useMissingFile>
+		<sortArtifactByName>true</sortArtifactByName>
+                <licenseMerges>
+                  <licenseMerge>Apache License version 2.0|Apache License, Version 2.0|The Apache Software License, Version 2.0|Apache License|Apache Public License 2.0|Apache 2|Apache 2.0|Apache License 2.0</licenseMerge>
+                  <licenseMerge>CDDL|CDDL License|Common Development and Distribution License</licenseMerge>
+                  <licenseMerge>BSD License|BSD licence|The BSD License|BSD|Aduna BSD license|BSD-like|BSD-Style License</licenseMerge>
+                  <licenseMerge>MIT License|MIT</licenseMerge>
+                  <licenseMerge>LGPL|GNU Lesser General Public License|GNU LESSER GENERAL PUBLIC LICENSE</licenseMerge>
+                  <licenseMerge>GPLv2+CE|GNU General Public License, Version 2 with the Classpath Exception|GPL2 w/ CPE</licenseMerge>
+                </licenseMerges>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+
 
 
       <plugin>

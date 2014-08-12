@@ -172,14 +172,14 @@
 
 		<!-- man page generation -->
 
-                <exec executable="echo" dir="${project.build.directory}" output="${basedir}/target/provconvert.1">
+                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provconvert.1">
   	              <arg value=".\&quot;  Manpage for provconvert." />
                 </exec>
 
 
                 <exec executable="echo"
 		      dir="${project.build.directory}"
-		      output="${basedir}/target/provconvert.1"
+		      output="${project.build.directory}/provconvert.1"
 		      append="true">
   	              <arg value=".TH man 1 &quot;${maven.build.timestamp}&quot; &quot;${project.version}&quot; &quot;provconvert man page&quot;" />
                 </exec>
@@ -188,58 +188,65 @@
 
                 <exec executable="echo"
 		      dir="${project.build.directory}"
-		      output="${basedir}/target/provconvert.1"
+		      output="${project.build.directory}/provconvert.1"
 		      append="true">
   	              <arg value=".SH NAME" />
                 </exec>
 
                 <exec executable="echo"
 		      dir="${project.build.directory}"
-		      output="${basedir}/target/provconvert.1"
+		      output="${project.build.directory}/provconvert.1"
 		      append="true">
   	              <arg value="provconvert \- converts PROV representations" />
                 </exec>
 
                 <exec executable="echo"
 		      dir="${project.build.directory}"
-		      output="${basedir}/target/provconvert.1"
+		      output="${project.build.directory}/provconvert.1"
 		      append="true">
   	              <arg value=".SH SYNOPSIS" />
                 </exec>
 
                 <exec executable="${project.build.directory}/appassembler/bin/provconvert"
 		      dir="${project.build.directory}/appassembler/bin"
-		      output="${basedir}/target/provconvert.1"
+		      output="${project.build.directory}/provconvert.1"
 		      append="true">
   	          <arg value="-help" />
                 </exec>
 
                 <exec executable="echo"
 		      dir="${project.build.directory}"
-		      output="${basedir}/target/provconvert.1"
+		      output="${project.build.directory}/provconvert.1"
 		      append="true">
   	              <arg value=".SH BUGS" />
                 </exec>
 
                 <exec executable="echo"
 		      dir="${project.build.directory}"
-		      output="${basedir}/target/provconvert.1"
+		      output="${project.build.directory}/provconvert.1"
 		      append="true">
   	              <arg value="See https://github.com/lucmoreau/ProvToolbox/issues" />
                 </exec>
 
                 <exec executable="echo"
 		      dir="${project.build.directory}"
-		      output="${basedir}/target/provconvert.1"
+		      output="${project.build.directory}/provconvert.1"
 		      append="true">
   	              <arg value=".SH AUTHOR" />
                 </exec>
 
                 <exec executable="echo"
 		      dir="${project.build.directory}"
-		      output="${basedir}/target/provconvert.1"
+		      output="${project.build.directory}/provconvert.1"
 		      append="true">
   	              <arg value="Luc Moreau" />
+                </exec>
+
+                <exec executable="man"
+		      dir="${project.build.directory}"
+		      output="${project.build.directory}/provconvert.txt"
+		      append="true">
+  	              <arg value="${project.build.directory}/provconvert.1" />
                 </exec>
 
               </tasks>
@@ -276,7 +283,7 @@
           <mainClass>org.openprovenance.prov.interop.CommandLineArguments</mainClass>
 	  <additionalResources>
             <fileSet>
-              <directory>${basedir}/target/classes/</directory>
+              <directory>${project.build.directory}/classes/</directory>
               <includes>
                 <include>README-provconvert.txt</include>
               </includes>
@@ -309,8 +316,8 @@
                 <taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask"
                          classpath="${basedir}/lib/appbundler-1.0.jar"/>
 
-                <mkdir dir="${basedir}/target/app"/>
-                <bundleapp outputdirectory="${basedir}/target/app"
+                <mkdir dir="${project.build.directory}/app"/>
+                <bundleapp outputdirectory="${project.build.directory}/app"
                            name="provconvert"
                            displayname="provconvert"
                            identifier="org.openprovenance.prov.toolbox.provconvert"
@@ -327,9 +334,9 @@
 		  //
                       <runtime dir="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin"/>
 		  //
-                  // <classpath file="${basedir}/target/${project.artifactId}-${project.version}.jar"/> //
-		  <classpath dir="${basedir}/target/appassembler/repo/"/>
-		  // <classpath dir="${basedir}/target/${project.artifactId}-${project.version}/PROV Toolbox.app/Contents/Resources/Java/"/> //
+                  // <classpath file="${project.build.directory}/${project.artifactId}-${project.version}.jar"/> //
+		  <classpath dir="${project.build.directory}/appassembler/repo/"/>
+		  // <classpath dir="${project.build.directory}/${project.artifactId}-${project.version}/PROV Toolbox.app/Contents/Resources/Java/"/> //
                   <option value="-Dapple.laf.useScreenMenuBar=true"/>
 		  // <argument value="-help"/> //
                 </bundleapp>
@@ -354,7 +361,7 @@
               <goal>izpack</goal>
             </goals>
             <configuration>
-              <izpackBasedir>${basedir}/target/appassembler/</izpackBasedir>
+              <izpackBasedir>${project.build.directory}/appassembler/</izpackBasedir>
             </configuration>
           </execution>
         </executions>
@@ -435,15 +442,21 @@
 		<mapping>
 		  <directory>/usr/share/doc/provconvert</directory>
 		  <documentation>true</documentation>
-		  <filemode>444</filemode>
+		  <filemode>555</filemode>
 		  <username>root</username>
 		  <groupname>root</groupname>
 		  <sources>
                     <source>
-                      <location>target/classes/README-provconvert.txt</location>
+                      <location>target/classes/README.txt</location>
                     </source>
                     <source>
-                      <location>target/classes/README-licenses.txt</location>
+                      <location>target/provconvert.txt</location>
+                    </source>
+                    <source>
+                      <location>../license.txt</location>
+                    </source>
+                    <source>
+                      <location>target/generated-sources/license/THIRD-PARTY.txt</location>
                     </source>
 		  </sources>
 		</mapping>

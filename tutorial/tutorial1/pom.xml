@@ -91,7 +91,7 @@
 	    <configuration>
 	      <mainClass>org.openprovenance.prov.tutorial.tutorial1.Little</mainClass>
 	      <arguments>
-		<argument>{project.build.directory}/little.svg</argument>
+		<argument>${project.build.directory}/little.svg</argument>
 	      </arguments>
 	    </configuration>
 	  </execution>

@@ -8,29 +8,28 @@
   <files>
     <file>
       <source>../license.txt</source>
-      <outputDirectory>/provToolbox/</outputDirectory>
+      <outputDirectory>/ProvToolbox/</outputDirectory>
       <fileMode>644</fileMode>
     </file>
-    
+
     <file>
-      <source>target/classes/8-prov-toolbox.pdf</source>
-      <outputDirectory>/provToolbox</outputDirectory>
-      <destName>prov-toolbox-tutorial.pdf</destName>
-      <fileMode>644</fileMode>
-    </file>
-    <file>
-      <source>target/classes/README-provconvert.txt</source>
-      <outputDirectory>/provToolbox</outputDirectory>
+      <source>target/provconvert.1</source>
+      <outputDirectory>/ProvToolbox/doc</outputDirectory>
       <fileMode>644</fileMode>
     </file>
     <file>
-      <source>target/classes/README-provxml-validate.txt</source>
-      <outputDirectory>/provToolbox</outputDirectory>
+      <source>target/provconvert.txt</source>
+      <outputDirectory>/ProvToolbox/doc</outputDirectory>
       <fileMode>644</fileMode>
     </file>
     <file>
-      <source>target/classes/README-licenses.txt</source>
-      <outputDirectory>/provToolbox</outputDirectory>
+      <source>target/classes/README.txt</source>
+      <outputDirectory>/ProvToolbox</outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+    <file>
+      <source>target/generated-sources/license/THIRD-PARTY.txt</source>
+      <outputDirectory>/ProvToolbox/doc</outputDirectory>
       <fileMode>644</fileMode>
     </file>
 
@@ -39,7 +38,7 @@
   <fileSets>
     <fileSet>
       <directory>${project.build.directory}/appassembler/bin</directory>
-      <outputDirectory>/provToolbox/bin</outputDirectory>
+      <outputDirectory>/ProvToolbox/bin</outputDirectory>
       <fileMode>755</fileMode>
       <excludes>
         <exclude>prov2dotBAK</exclude>
@@ -47,20 +46,13 @@
     </fileSet>
     <fileSet>
       <directory>${project.build.directory}/appassembler/repo</directory>
-      <outputDirectory>/provToolbox/repo</outputDirectory>
+      <outputDirectory>/ProvToolbox/repo</outputDirectory>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>${project.build.directory}/classes/licenses</directory>
-      <outputDirectory>/provToolbox/repo/licenses</outputDirectory>
+      <outputDirectory>/ProvToolbox/doc/licenses</outputDirectory>
       <fileMode>644</fileMode>
-    </fileSet>
-    <fileSet>
-      <directory>../prov/src/test/resources/</directory>
-      <outputDirectory>/provToolbox/examples</outputDirectory>
-      <includes>
-        <include>*Config.xml</include>
-      </includes>
     </fileSet>
   </fileSets>
 

@@ -618,12 +618,12 @@ public class ProvToDot {
    public String convertValue(Attribute v) {
        if (v.getValue() instanceof QualifiedName) {
            QualifiedName name=(QualifiedName) v.getValue();
-           return name.getLocalPart();
+           return htmlify(name.getLocalPart());
        }
        String label=getPropertyValueFromAny(v);
        int i=label.lastIndexOf("#");
        int j=label.lastIndexOf("/");
-       return label.substring(Math.max(i,j)+1, label.length());
+       return htmlify(label.substring(Math.max(i,j)+1, label.length()));
    }
 
 
@@ -1007,7 +1007,11 @@ public class ProvToDot {
     /* make name compatible with dot notation*/
     
     public String dotify(String name) {
-        return "n" + name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_').replace('~','_');
+        return "n" + name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_').replace('~','_').replace('&','_').replace('=','_').replace('?','_');
+    }
+
+    public String htmlify(String name) {
+        return "n" + name.replace("&","&amp;");
     }
 
     public void emitElement(QualifiedName name, HashMap<String,String> properties, PrintStream out) {

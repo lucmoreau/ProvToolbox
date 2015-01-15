@@ -37,20 +37,20 @@ document
    wasGeneratedBy(ex:chart2, ex:compile2, 2012-04-01T15:21:00)
     
 
-   agent(ex:derek, [ prov:type="prov:Person", foaf:givenName = "Derek", 
+   agent(ex:derek, [ prov:type='prov:Person', foaf:givenName = "Derek", 
           foaf:mbox= "<mailto:derek@example.org>"])
    wasAssociatedWith(ex:compose, ex:derek, -)
    wasAssociatedWith(ex:illustrate, ex:derek, -)
 
-   agent(ex:chartgen, [ prov:type="prov:Organization",
+   agent(ex:chartgen, [ prov:type='prov:Organization',
           foaf:name = "Chart Generators Inc"])
    actedOnBehalfOf(ex:derek, ex:chartgen, ex:compose)
 
    wasAttributedTo(ex:chart1, ex:derek)
 
 
-   used(ex:compose, ex:dataSet1, -,   [ prov:role = "ex:dataToCompose"])
-   used(ex:compose, ex:regionList, -, [ prov:role = "ex:regionsToAggregateBy"])
+   used(ex:compose, ex:dataSet1, -,   [ prov:role = 'ex:dataToCompose'])
+   used(ex:compose, ex:regionList, -, [ prov:role = 'ex:regionsToAggregateBy'])
 
    wasGeneratedBy(ex:dataSet2, ex:correct, -)
    used(ex:correct, ex:dataSet1, -)

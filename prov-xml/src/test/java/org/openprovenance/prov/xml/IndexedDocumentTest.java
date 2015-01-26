@@ -2,6 +2,8 @@ package org.openprovenance.prov.xml;
 
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Used;
+import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Document;
@@ -118,6 +120,60 @@ public class IndexedDocumentTest extends TestCase {
     }
 
 
+    public Document makeDoc202() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Entity e2=pFactory.newEntity(q("e1"));
+	e2.getLabel().add(pFactory.newInternationalizedString("hello"));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(e1);
+	doc.getStatementOrBundle().add(e2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+    
+    public void testDoc202() {
+	Document idoc202=new IndexedDocument(pFactory,makeDoc202()).toDocument();
+	assertEquals(idoc202.getStatementOrBundle().size(),1);
+	Entity e=(Entity)idoc202.getStatementOrBundle().get(0);
+	assertEquals(e.getLabel().size(),1);
+    }
+
+    public Document makeDoc203() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Entity e2=pFactory.newEntity(q("e1"));
+	e2.getLabel().add(pFactory.newInternationalizedString("hello"));
+	e2.getLabel().add(pFactory.newInternationalizedString("hello"));
+	e2.getLocation().add(pFactory.newLocation("liege", pFactory.getName().XSD_STRING));
+	e2.getLocation().add(pFactory.newLocation("liege", pFactory.getName().XSD_STRING));
+	e2.getLocation().add(pFactory.newLocation("liege", pFactory.getName().XSD_STRING));
+
+	e2.getType().add(pFactory.newType(q("TYPE"), pFactory.getName().XSD_QNAME));
+	e2.getType().add(pFactory.newType(q("TYPE"), pFactory.getName().XSD_QNAME));
+
+	e2.getOther().add(pFactory.newOther(q("ELEMENT"), 1, pFactory.getName().XSD_INT));
+	e2.getOther().add(pFactory.newOther(q("ELEMENT"), 1, pFactory.getName().XSD_INT));
+
+	
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(e1);
+	doc.getStatementOrBundle().add(e2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+    
+    public void testDoc203() {
+	Document idoc203=new IndexedDocument(pFactory,makeDoc203()).toDocument();
+	assertEquals(idoc203.getStatementOrBundle().size(),1);
+	Entity e=(Entity)idoc203.getStatementOrBundle().get(0);
+	assertEquals("label", e.getLabel().size(),1);
+	assertEquals("location", e.getLocation().size(),1);
+	assertEquals("type", e.getType().size(),1);
+	assertEquals("other", e.getOther().size(),1);
+    }
+
+
     public Document makeDoc300() {
         Agent ag1=pFactory.newAgent(q("ag1"));
         Document doc=pFactory.newDocument();
@@ -190,6 +246,45 @@ public class IndexedDocumentTest extends TestCase {
     public void testDoc401() {
 	Document idoc401=new IndexedDocument(pFactory,makeDoc401()).toDocument();
 	assertEquals(idoc401.getStatementOrBundle().size(),2);
+    }
+
+
+    public Document makeDoc500() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	WasGeneratedBy wgb1=pFactory.newWasGeneratedBy(null,e1.getId(),a1.getId());
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(wgb1);
+        doc.getStatementOrBundle().add(wgb1);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc500() {
+	Document idoc500=new IndexedDocument(pFactory,makeDoc500()).toDocument();
+	assertEquals(idoc500.getStatementOrBundle().size(),1);
+    }
+
+    public Document makeDoc501() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	WasGeneratedBy wgb1=pFactory.newWasGeneratedBy(null,e1.getId(),a1.getId());
+	WasGeneratedBy wgb2=pFactory.newWasGeneratedBy(null,e1.getId(),a1.getId());
+	wgb2.getLabel().add(pFactory.newInternationalizedString("hello"));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(wgb1);
+        doc.getStatementOrBundle().add(wgb1);
+        doc.getStatementOrBundle().add(wgb2);
+        doc.getStatementOrBundle().add(wgb2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc501() {
+	Document idoc501=new IndexedDocument(pFactory,makeDoc501()).toDocument();
+	assertEquals(idoc501.getStatementOrBundle().size(),2);
     }
 
     

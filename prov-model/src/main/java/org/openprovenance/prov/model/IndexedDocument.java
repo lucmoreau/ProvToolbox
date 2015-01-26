@@ -1,8 +1,10 @@
 package org.openprovenance.prov.model;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.HashMap;
+import java.util.Set;
 
 
 /** This class provides a set of indexes over information contained in
@@ -165,10 +167,24 @@ public class IndexedDocument implements StatementAction {
 
 
 
-    void mergeAttributes(Element existing, Element entity) {
-	// TODO Auto-generated method stub
+    void mergeAttributes(Element existing, Element newElement) {
+	Set<LangString> set=new HashSet<LangString>(newElement.getLabel());
+	set.removeAll(existing.getLabel());
+	existing.getLabel().addAll(set);
 	
+	Set<Location> set2=new HashSet<Location>(newElement.getLocation());
+	set2.removeAll(existing.getLocation());
+	existing.getLocation().addAll(set2);
+	
+	Set<Type> set3=new HashSet<Type>(newElement.getType());
+	set3.removeAll(existing.getType());
+	existing.getType().addAll(set3);
+	
+	Set<Other> set4=new HashSet<Other>(newElement.getOther());
+	set4.removeAll(existing.getOther());
+	existing.getOther().addAll(set4);	
     }
+    
     public Agent add(Agent agent) {
         return add(agent.getId(),agent);
     }
@@ -247,10 +263,8 @@ public class IndexedDocument implements StatementAction {
 
 
     /** Add a used edge to the graph. Update activityUsedMap and
-        entityUsedMap accordingly.  By doing so, aggregate all used
-        edges (p,r,a) with different accounts in a single edge.
-        Return the used edge itself (if it had not been encountered
-        before), or the instance encountered before.*/
+        entityUsedMap accordingly.  Used edges with different attributes are considered distinct.
+        */
 
     public Used add(Used used) {
         QualifiedName aid=used.getActivity();
@@ -268,6 +282,7 @@ public class IndexedDocument implements StatementAction {
             for (Used u: ucoll) {               
                 if (u.equals(used)) {               
                     found=true;
+                    used=u;
                     break;
                 }
             }
@@ -295,7 +310,51 @@ public class IndexedDocument implements StatementAction {
         return used;
    }
 
+    public WasGeneratedBy add(WasGeneratedBy wgb) {
+	QualifiedName aid = wgb.getActivity();
+	QualifiedName eid = wgb.getEntity();
 
+	wgb = pFactory.newWasGeneratedBy(wgb);
+
+	boolean found = false;
+	Collection<WasGeneratedBy> gcoll = activityWasGeneratedByMap.get(aid);
+	if (gcoll == null) {
+	    gcoll = new LinkedList<WasGeneratedBy>();
+	    gcoll.add(wgb);
+	    activityWasGeneratedByMap.put(aid, gcoll);
+	} else {
+
+	    for (WasGeneratedBy u : gcoll) {
+
+		if (u.equals(wgb)) {
+		    found = true;
+		    wgb=u; 
+		    break;
+		}
+	    }
+	    if (!found) {
+		gcoll.add(wgb);
+	    }
+	}
+
+	gcoll = entityWasGeneratedByMap.get(eid);
+	if (gcoll == null) {
+	    gcoll = new LinkedList<WasGeneratedBy>();
+	    gcoll.add(wgb);
+	    entityWasGeneratedByMap.put(eid, gcoll);
+	} else {
+	    if (!found) {
+		// if we had not found it in the first table, then we
+		// have to add it here too
+		gcoll.add(wgb);
+	    }
+	}
+
+	if (!found) {
+	    allWasGeneratedBy.add(wgb);
+	}
+	return wgb;
+    }
 
 
 
@@ -359,7 +418,7 @@ public class IndexedDocument implements StatementAction {
     }
     @Override
     public void doAction(WasGeneratedBy s) {
-	throw new UnsupportedOperationException();	
+	add(s);
     }
     @Override
     public void doAction(WasInvalidatedBy s) {

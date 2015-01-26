@@ -8,6 +8,6 @@ package org.openprovenance.prov.model;
  * 
  *  @author lavm
  */ 
-public interface Element extends HasType, HasLabel, HasLocation, Identifiable,  Statement {
+public interface Element extends HasType, HasLabel, HasLocation, HasOther, Identifiable,  Statement {
     
 } 

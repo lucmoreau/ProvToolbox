@@ -74,6 +74,7 @@ public class IndexedDocument implements StatementAction {
     private HashMap<QualifiedName,Collection<WasInformedBy>> activityEffectWasInformedByMap=new HashMap<QualifiedName, Collection<WasInformedBy>>();
     private Collection<WasInformedBy> allWasInformedBy=new LinkedList<WasInformedBy>();
     private Namespace nss;
+    private boolean flatten;
 
 
     /** Return all used edges for this graph. */
@@ -228,6 +229,7 @@ public class IndexedDocument implements StatementAction {
     public IndexedDocument(ProvFactory pFactory, Document doc) {
         this.pFactory=pFactory;
         this.nss=doc.getNamespace();
+        this.flatten=true;
         
         u.forAllStatementOrBundle(doc.getStatementOrBundle(), this);
 
@@ -446,8 +448,12 @@ public class IndexedDocument implements StatementAction {
 	throw new UnsupportedOperationException();	
     }
     @Override
-    public void doAction(Bundle s, ProvUtilities provUtilities) {
-	throw new UnsupportedOperationException();	
+    public void doAction(Bundle bun, ProvUtilities provUtilities) {
+	if (flatten) {
+	    provUtilities.forAllStatement(bun.getStatement(), this);
+	} else {
+	    throw new UnsupportedOperationException("can't handle bundles without flattening");
+	}
     }
     
     public Document toDocument() {

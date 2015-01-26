@@ -162,14 +162,24 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 					      JsonObject attributeMap) {
 	StatementOrBundle statement;
 	QualifiedName id;
-	if (idStr.startsWith("_:")) {
-	    // Ignore all blank node IDs
-	    id = null;
-	} else {
-	    id = currentNamespace.stringToQualifiedName(idStr, pf);
-	}
-	// Decoding attributes
+
 	ProvJSONStatement provStatement = ProvJSONStatement.valueOf(statementType);
+	switch (provStatement) {
+	case bundle: {
+	    id=null; //we will deal with it later, when we have setup the namespace for the bundle
+	    break;
+	}
+	default: {
+	    if (idStr.startsWith("_:")) {
+		// Ignore all blank node IDs
+		id = null;
+	    } else {
+		id = currentNamespace.stringToQualifiedName(idStr, pf);
+	    }
+	}
+	}
+
+	// Decoding attributes
 	switch (provStatement) {
 	case entity:
 	    statement = pf.newEntity(id);

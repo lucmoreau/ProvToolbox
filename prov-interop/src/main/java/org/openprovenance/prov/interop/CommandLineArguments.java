@@ -23,6 +23,8 @@ public class CommandLineArguments {
     public static final String TITLE = "title";
     public static final String LAYOUT = "layout";
     public static final String GENERATOR = "generator";
+    public static final String INDEX = "index";
+    public static final String FLATTEN = "flatten";
 
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
@@ -32,6 +34,9 @@ public class CommandLineArguments {
                 "print the version information and exit");
         Option verbose = new Option(VERBOSE, "be verbose");
         Option debug = new Option(DEBUG, "print debugging information");
+
+        Option index = new Option(INDEX, "index all elements and edges, merging them where appropriate");
+        Option flatten = new Option(FLATTEN, "flatten all bundles in a single document (used with index option)");
 
         Option logfile = OptionBuilder
                 .withArgName("file")
@@ -80,12 +85,15 @@ public class CommandLineArguments {
                 .withDescription("graph generator N:n:first:seed:e1")
                 .create(GENERATOR);
 
+
         Options options = new Options();
 
         options.addOption(help);
         options.addOption(version);
         options.addOption(verbose);
         options.addOption(debug);
+        options.addOption(index);
+        options.addOption(flatten);
         options.addOption(logfile);
         options.addOption(infile);
         options.addOption(outfile);
@@ -114,6 +122,8 @@ public class CommandLineArguments {
         String layout = null;
         String bindings = null;
         String generator = null;
+        String index=null;
+        String flatten=null;
 
 
         try {
@@ -125,6 +135,8 @@ public class CommandLineArguments {
 	    if (line.hasOption(VERSION))    version    = VERSION;
 	    if (line.hasOption(VERBOSE))    verbose    = VERBOSE;
 	    if (line.hasOption(DEBUG))      debug      = DEBUG;
+	    if (line.hasOption(INDEX))      index      = INDEX;
+	    if (line.hasOption(FLATTEN))    flatten    = FLATTEN;
 	    if (line.hasOption(LOGFILE))    logfile    = line.getOptionValue(LOGFILE);
             if (line.hasOption(INFILE))     infile     = line.getOptionValue(INFILE);
 	    if (line.hasOption(OUTFILE))    outfile    = line.getOptionValue(OUTFILE);
@@ -156,6 +168,8 @@ public class CommandLineArguments {
                                                           layout,
                                                           bindings,
                                                           generator,
+                                                          index,
+                                                          flatten,
                                                           org.openprovenance.prov.xml.ProvFactory.getFactory());
             interop.run();
 

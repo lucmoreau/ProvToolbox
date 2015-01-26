@@ -87,25 +87,27 @@ public class InteropFramework implements InteropMediaType {
     public final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
 
     final private String generator;
+    final private String index;
+    final private String flatten;
 
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
      */
     public InteropFramework() {
-        this(null, null, null, null, null, null, null, null, null, null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null,
                 org.openprovenance.prov.xml.ProvFactory.getFactory());
     }
 
     public InteropFramework(ProvFactory pFactory) {
-        this(null, null, null, null, null, null, null, null, null, null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null,
                 pFactory);
     }
 
     public InteropFramework(String verbose, String debug, String logfile,
             String infile, String outfile, String namespaces, String title,
             String layout, String bindings, String generator,
-            ProvFactory pFactory) {
+            String index, String flatten, ProvFactory pFactory) {
         this.verbose = verbose;
         this.debug = debug;
         this.logfile = logfile;
@@ -116,6 +118,8 @@ public class InteropFramework implements InteropMediaType {
         this.layout = layout;
         this.bindings = bindings;
         this.generator = generator;
+        this.index=index;
+        this.flatten=flatten;
         this.pFactory = pFactory;
         this.onto = new Ontology(pFactory);
 

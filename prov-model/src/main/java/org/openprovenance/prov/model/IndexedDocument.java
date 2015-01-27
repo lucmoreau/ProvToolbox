@@ -192,14 +192,17 @@ public class IndexedDocument implements StatementAction {
 	existing.getOther().addAll(set4);	
     }
     
-    void mergeAttributes(Used existing, Used newElement) {
+    void mergeAttributes(Influence existing, Influence newElement) {
 	Set<LangString> set=new HashSet<LangString>(newElement.getLabel());
 	set.removeAll(existing.getLabel());
 	existing.getLabel().addAll(set);
 	
-	Set<Location> set2=new HashSet<Location>(newElement.getLocation());
-	set2.removeAll(existing.getLocation());
-	existing.getLocation().addAll(set2);
+	if (existing instanceof HasLocation) {
+	    HasLocation existing2=(HasLocation) existing;
+	    Set<Location> set2=new HashSet<Location>(((HasLocation)newElement).getLocation());
+	    set2.removeAll(existing2.getLocation());
+	    existing2.getLocation().addAll(set2);
+	}
 	
 	Set<Type> set3=new HashSet<Type>(newElement.getType());
 	set3.removeAll(existing.getType());
@@ -320,8 +323,9 @@ public class IndexedDocument implements StatementAction {
 
 	used = pFactory.newUsed(used); // clone
 	
+	QualifiedName id=used.getId();
 
-	if (used.getId() == null) {
+	if (id == null) {
 
 	    boolean found = false;
 	    Collection<Used> ucoll = activityUsedMap.get(aid);
@@ -359,7 +363,6 @@ public class IndexedDocument implements StatementAction {
 		anonUsed.add(used);
 	    }
 	} else {
-	    QualifiedName id=used.getId();
 	    Collection<Used> colu=namedUsedMap.get(id);
 	    if (colu==null) {
 		colu=new LinkedList<Used>();
@@ -388,42 +391,66 @@ public class IndexedDocument implements StatementAction {
 
 	wgb = pFactory.newWasGeneratedBy(wgb);
 
-	boolean found = false;
-	Collection<WasGeneratedBy> gcoll = activityWasGeneratedByMap.get(aid);
-	if (gcoll == null) {
-	    gcoll = new LinkedList<WasGeneratedBy>();
-	    gcoll.add(wgb);
-	    activityWasGeneratedByMap.put(aid, gcoll);
-	} else {
+	QualifiedName id = wgb.getId();
 
-	    for (WasGeneratedBy u : gcoll) {
+	if (id == null) {
 
-		if (u.equals(wgb)) {
-		    found = true;
-		    wgb=u; 
-		    break;
+	    boolean found = false;
+	    Collection<WasGeneratedBy> gcoll = activityWasGeneratedByMap.get(aid);
+	    if (gcoll == null) {
+		gcoll = new LinkedList<WasGeneratedBy>();
+		gcoll.add(wgb);
+		activityWasGeneratedByMap.put(aid, gcoll);
+	    } else {
+
+		for (WasGeneratedBy u : gcoll) {
+
+		    if (u.equals(wgb)) {
+			found = true;
+			wgb = u;
+			break;
+		    }
+		}
+		if (!found) {
+		    gcoll.add(wgb);
 		}
 	    }
-	    if (!found) {
-		gcoll.add(wgb);
-	    }
-	}
 
-	gcoll = entityWasGeneratedByMap.get(eid);
-	if (gcoll == null) {
-	    gcoll = new LinkedList<WasGeneratedBy>();
-	    gcoll.add(wgb);
-	    entityWasGeneratedByMap.put(eid, gcoll);
+	    gcoll = entityWasGeneratedByMap.get(eid);
+	    if (gcoll == null) {
+		gcoll = new LinkedList<WasGeneratedBy>();
+		gcoll.add(wgb);
+		entityWasGeneratedByMap.put(eid, gcoll);
+	    } else {
+		if (!found) {
+		    // if we had not found it in the first table, then we
+		    // have to add it here too
+		    gcoll.add(wgb);
+		}
+	    }
+
+	    if (!found) {
+		anonWasGeneratedBy.add(wgb);
+	    }
 	} else {
-	    if (!found) {
-		// if we had not found it in the first table, then we
-		// have to add it here too
-		gcoll.add(wgb);
+	    Collection<WasGeneratedBy> colg=namedWasGeneratedByMap.get(id);
+	    if (colg==null) {
+		colg=new LinkedList<WasGeneratedBy>();
+		colg.add(wgb);
+		namedWasGeneratedByMap.put(id, colg);
+	    } else {
+		boolean found=false;
+		for (WasGeneratedBy g1: colg) {
+		    if (sameEdge(g1,wgb,2)) {
+			found=true;
+			mergeAttributes(g1, wgb);
+			break;			
+		    }
+		}
+		if (!found) {
+		    colg.add(wgb);
+		}
 	    }
-	}
-
-	if (!found) {
-	    anonWasGeneratedBy.add(wgb);
 	}
 	return wgb;
     }
@@ -536,6 +563,9 @@ public class IndexedDocument implements StatementAction {
 	    res.getStatementOrBundle().addAll(c);
 	}
 	res.getStatementOrBundle().addAll(anonWasGeneratedBy);
+	for (Collection<WasGeneratedBy> c: namedWasGeneratedByMap.values()) {
+	    res.getStatementOrBundle().addAll(c);
+	}
 	res.getStatementOrBundle().addAll(anonWasDerivedFrom);
 	res.setNamespace(nss);
 	return res;

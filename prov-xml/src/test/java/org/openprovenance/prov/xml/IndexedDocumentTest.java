@@ -332,6 +332,56 @@ public class IndexedDocumentTest extends TestCase {
         return doc;
     }
 
+    public Document makeDoc502() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	QualifiedName uid=q("g1");
+	WasGeneratedBy u1=pFactory.newWasGeneratedBy(uid,e1.getId(),a1.getId());
+	WasGeneratedBy u2=pFactory.newWasGeneratedBy(uid,e1.getId(),a1.getId());
+	u2.getLabel().add(pFactory.newInternationalizedString("hello"));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u2);
+        doc.getStatementOrBundle().add(u2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc502() {
+	Document idoc502=new IndexedDocument(pFactory,makeDoc502()).toDocument();
+	assertEquals(idoc502.getStatementOrBundle().size(),1);
+	WasGeneratedBy u=(WasGeneratedBy) idoc502.getStatementOrBundle().get(0);
+	assertEquals("label",1,u.getLabel().size());
+    }
+
+    public Document makeDoc503() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	QualifiedName uid=q("g2");
+	WasGeneratedBy u1=pFactory.newWasGeneratedBy(uid,e1.getId(),a1.getId());
+	WasGeneratedBy u2=pFactory.newWasGeneratedBy(uid,e1.getId(),a1.getId());
+	u2.getLabel().add(pFactory.newInternationalizedString("hello"));
+	u1.getOther().add(pFactory.newOther(q("ELEMENT"), 1, pFactory.getName().XSD_INT));
+	u2.getOther().add(pFactory.newOther(q("ELEMENT"), 2, pFactory.getName().XSD_INT));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u2);
+        doc.getStatementOrBundle().add(u2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc503() {
+	Document idoc503=new IndexedDocument(pFactory,makeDoc503()).toDocument();
+	assertEquals(idoc503.getStatementOrBundle().size(),1);
+	WasGeneratedBy u=(WasGeneratedBy) idoc503.getStatementOrBundle().get(0);
+	assertEquals("label",1,u.getLabel().size());
+	assertEquals("other",2,u.getOther().size());
+    }
     public void testDoc501() {
 	Document idoc501=new IndexedDocument(pFactory,makeDoc501()).toDocument();
 	assertEquals(idoc501.getStatementOrBundle().size(),2);

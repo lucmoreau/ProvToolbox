@@ -58,7 +58,7 @@ public class IndexedDocument implements StatementAction {
 
     /* Collection of WasDerivedFrom edges that have a given entity as an
      * effect. */
-    private HashMap<String,Collection<WasDerivedFrom>> entityEffectWasDerivedFromMap=new HashMap<String, Collection<WasDerivedFrom>>();
+    private HashMap<QualifiedName,Collection<WasDerivedFrom>> entityEffectWasDerivedFromMap=new HashMap<QualifiedName, Collection<WasDerivedFrom>>();
     private Collection<WasDerivedFrom> anonWasDerivedFrom=new LinkedList<WasDerivedFrom>();
     private HashMap<QualifiedName,Collection<WasDerivedFrom>> namedWasDerivedFromMap=new HashMap<QualifiedName, Collection<WasDerivedFrom>>();
 
@@ -223,12 +223,17 @@ public class IndexedDocument implements StatementAction {
 
 		} else {
 		    ok=false;
+		    break;
 		}
 	    } else {
 		if (qn2==null) {
 		    ok=false;
+		    break;
 		} else {
-		    return qn1.equals(qn2);
+		    if (!qn1.equals(qn2)) {
+			ok=false;
+			break;
+		    }
 		}
 	    }
 	}
@@ -273,12 +278,14 @@ public class IndexedDocument implements StatementAction {
     public Agent getAgent(String name) {
         return agentMap.get(name);
     }
-
-            
     public IndexedDocument(ProvFactory pFactory, Document doc) {
+	this(pFactory,doc,true);
+    }
+            
+    public IndexedDocument(ProvFactory pFactory, Document doc, boolean flatten) {
         this.pFactory=pFactory;
         this.nss=doc.getNamespace();
-        this.flatten=true;
+        this.flatten=flatten;
         
         u.forAllStatementOrBundle(doc.getStatementOrBundle(), this);
 
@@ -455,7 +462,81 @@ public class IndexedDocument implements StatementAction {
 	return wgb;
     }
 
+  /** Add a wasDerivedFrom edge to the graph. Update activityWasDerivedFromMap and
+      entityWasDerivedFromMap accordingly.  By doing so, aggregate all wasDerivedFrom
+      edges (a1,r,a2) with different accounts in a single edge.
+      Return the wasDerivedFrom edge itself (if it had not been encountered
+      before), or the instance encountered before.*/
 
+  public WasDerivedFrom add(WasDerivedFrom wdf) {
+      QualifiedName e2=wdf.getGeneratedEntity();
+      QualifiedName e1=wdf.getUsedEntity();
+      
+      wdf=pFactory.newWasDerivedFrom(wdf);
+      
+      QualifiedName id=wdf.getId();
+      
+      if (id==null) {
+	  boolean found=false;
+	  Collection<WasDerivedFrom> dcoll=entityCauseWasDerivedFromMap.get(e1);
+	  if (dcoll==null) {
+	      dcoll=new LinkedList<WasDerivedFrom>();
+	      dcoll.add(wdf);
+	      entityCauseWasDerivedFromMap.put(e1,dcoll);
+	  } else {	      
+	      for (WasDerivedFrom d: dcoll) {
+		  if (d.equals(wdf)) {
+		      found=true;
+		      wdf=d;
+		      break;
+		  }
+	      }
+	      if (!found) {
+		  dcoll.add(wdf);
+	      }
+	  }
+
+	  dcoll=entityEffectWasDerivedFromMap.get(e2);
+	  if (dcoll==null) {
+	      dcoll=new LinkedList<WasDerivedFrom>();
+	      dcoll.add(wdf);
+	      entityEffectWasDerivedFromMap.put(e2,dcoll);
+	  } else {
+	      if (!found) {
+		  // if we had not found it in the first table, then we
+		  // have to add it here too
+		  dcoll.add(wdf);
+	      }
+	  }
+	  
+	  if (!found) {
+	      anonWasDerivedFrom.add(wdf);
+	  }
+      } else {
+	  Collection<WasDerivedFrom> colg=namedWasDerivedFromMap.get(id);
+	    if (colg==null) {
+		colg=new LinkedList<WasDerivedFrom>();
+		colg.add(wdf);
+		namedWasDerivedFromMap.put(id, colg);
+	    } else {
+		boolean found=false;
+		for (WasDerivedFrom d1: colg) {
+		    if (sameEdge(d1,wdf,5)) {
+			found=true;
+			mergeAttributes(d1, wdf);
+			break;			
+		    }
+		}
+		if (!found) {
+		    colg.add(wdf);
+		}
+	    }
+      }
+      return wdf;
+  }
+
+
+    boolean strict=false;
 
     @Override
     public void doAction(Activity s) {
@@ -477,15 +558,15 @@ public class IndexedDocument implements StatementAction {
     }
     @Override
     public void doAction(AlternateOf s) {
-	throw new UnsupportedOperationException();		
+	if (strict) throw new UnsupportedOperationException();		
     }
     @Override
     public void doAction(WasAssociatedWith s) {
-	throw new UnsupportedOperationException();		
+	if (strict) throw new UnsupportedOperationException();		
     }
     @Override
     public void doAction(WasAttributedTo s) {
-	throw new UnsupportedOperationException();		
+	if (strict) throw new UnsupportedOperationException();		
     }
     @Override
     public void doAction(WasInfluencedBy s) {
@@ -493,11 +574,11 @@ public class IndexedDocument implements StatementAction {
     }
     @Override
     public void doAction(ActedOnBehalfOf s) {
-	throw new UnsupportedOperationException();		
+	if (strict) throw new UnsupportedOperationException();		
     }
     @Override
     public void doAction(WasDerivedFrom s) {
-	throw new UnsupportedOperationException();		
+	add(s);
     }
     @Override
     public void doAction(DictionaryMembership s) {
@@ -509,7 +590,7 @@ public class IndexedDocument implements StatementAction {
     }
     @Override
     public void doAction(WasEndedBy s) {
-	throw new UnsupportedOperationException();	
+	if (strict) throw new UnsupportedOperationException();	
     }
     @Override
     public void doAction(Entity s) {
@@ -521,11 +602,11 @@ public class IndexedDocument implements StatementAction {
     }
     @Override
     public void doAction(WasInvalidatedBy s) {
-	throw new UnsupportedOperationException();	
+	if (strict) throw new UnsupportedOperationException();	
     }
     @Override
     public void doAction(HadMember s) {
-	throw new UnsupportedOperationException();		
+	if (strict) throw new UnsupportedOperationException();		
     }
     @Override
     public void doAction(MentionOf s) {
@@ -533,7 +614,7 @@ public class IndexedDocument implements StatementAction {
     }
     @Override
     public void doAction(SpecializationOf s) {
-	throw new UnsupportedOperationException();			
+	if (strict) throw new UnsupportedOperationException();			
 	
     }
     @Override
@@ -542,7 +623,7 @@ public class IndexedDocument implements StatementAction {
     }
     @Override
     public void doAction(WasInformedBy s) {
-	throw new UnsupportedOperationException();	
+	if (strict) throw new UnsupportedOperationException();	
     }
     @Override
     public void doAction(Bundle bun, ProvUtilities provUtilities) {
@@ -567,7 +648,10 @@ public class IndexedDocument implements StatementAction {
 	    res.getStatementOrBundle().addAll(c);
 	}
 	res.getStatementOrBundle().addAll(anonWasDerivedFrom);
-	res.setNamespace(nss);
+	for (Collection<WasDerivedFrom> c: namedWasDerivedFromMap.values()) {
+	    res.getStatementOrBundle().addAll(c);
+	}
+	res.setNamespace(Namespace.gatherNamespaces(res));
 	return res;
     }
 
@@ -634,62 +718,6 @@ public class IndexedDocument implements StatementAction {
    // }
 
 
-   //  /** Add a wasDerivedFrom edge to the graph. Update activityWasDerivedFromMap and
-   //      entityWasDerivedFromMap accordingly.  By doing so, aggregate all wasDerivedFrom
-   //      edges (a1,r,a2) with different accounts in a single edge.
-   //      Return the wasDerivedFrom edge itself (if it had not been encountered
-   //      before), or the instance encountered before.*/
-
-   //  public WasDerivedFrom addWasDerivedFrom(WasDerivedFrom wasDerivedFrom) {
-   //      EntityRef aid2=wasDerivedFrom.getEffect();
-   //      Entity a2=(Entity)(aid2.getRef());
-   //      EntityRef aid1=wasDerivedFrom.getCause();
-   //      Entity a1=(Entity)(aid1.getRef());
-   //      Collection<AccountRef> accs=wasDerivedFrom.getAccount();
-
-   //      WasDerivedFrom result=wasDerivedFrom;
-
-   //      boolean found=false;
-   //      Collection<WasDerivedFrom> dcoll=entityCauseWasDerivedFromMap.get(a1.getId());
-   //      if (dcoll==null) {
-   //          dcoll=new LinkedList();
-   //          dcoll.add(wasDerivedFrom);
-   //          entityCauseWasDerivedFromMap.put(a1.getId(),dcoll);
-   //      } else {
-
-   //          for (WasDerivedFrom d: dcoll) {
-                
-   //              if ((aid1.equals(d.getCause())) && (aid2.equals(d.getEffect()))) {
-   //                  addNewAccounts(d.getAccount(),accs);
-   //                  result=d;
-   //                  found=true;
-   //              }
-   //          }
-   //          if (!found) {
-   //              dcoll.add(wasDerivedFrom);
-   //          }
-   //      }
-
-   //      dcoll=entityEffectWasDerivedFromMap.get(a2.getId());
-   //      if (dcoll==null) {
-   //          dcoll=new LinkedList();
-   //          dcoll.add(wasDerivedFrom);
-   //          entityEffectWasDerivedFromMap.put(a2.getId(),dcoll);
-   //      } else {
-   //          if (!found) {
-   //              // if we had not found it in the first table, then we
-   //              // have to add it here too
-   //              dcoll.add(wasDerivedFrom);
-   //          }
-   //      }
-
-   //      if (!found) {
-   //          allWasDerivedFrom.add(wasDerivedFrom);
-   //          getDependencies().getUsedOrWasGeneratedByOrWasInformedBy().add(wasDerivedFrom);
-   //      }
-
-   //      return result;
-   // }
 
 
    //  /** Add a wasControlledBy edge to the graph. Update activityWasAssociatedWithMap and

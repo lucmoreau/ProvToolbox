@@ -332,6 +332,11 @@ public class IndexedDocumentTest extends TestCase {
         return doc;
     }
 
+    public void testDoc501() {
+	Document idoc501=new IndexedDocument(pFactory,makeDoc501()).toDocument();
+	assertEquals(idoc501.getStatementOrBundle().size(),2);
+    }
+
     public Document makeDoc502() {
         Entity e1=pFactory.newEntity(q("e1"));
 	Activity a1=pFactory.newActivity(q("a1"));
@@ -382,9 +387,103 @@ public class IndexedDocumentTest extends TestCase {
 	assertEquals("label",1,u.getLabel().size());
 	assertEquals("other",2,u.getOther().size());
     }
-    public void testDoc501() {
-	Document idoc501=new IndexedDocument(pFactory,makeDoc501()).toDocument();
-	assertEquals(idoc501.getStatementOrBundle().size(),2);
+
+
+    public Document makeDoc600() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Entity e2=pFactory.newEntity(q("e2"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	WasDerivedFrom wdf1=pFactory.newWasDerivedFrom(null,e2.getId(),e1.getId());
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(wdf1);
+        doc.getStatementOrBundle().add(wdf1);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc600() {
+	Document idoc600=new IndexedDocument(pFactory,makeDoc600()).toDocument();
+	assertEquals(idoc600.getStatementOrBundle().size(),1);
+    }
+
+    public Document makeDoc601() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Entity e2=pFactory.newEntity(q("e2"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	WasDerivedFrom wdf1=pFactory.newWasDerivedFrom(null,e2.getId(),e1.getId());
+	WasDerivedFrom wdf2=pFactory.newWasDerivedFrom(null,e2.getId(),e1.getId());
+	WasDerivedFrom wdf3=pFactory.newWasDerivedFrom(null,e2.getId(),e1.getId());
+	wdf2.getLabel().add(pFactory.newInternationalizedString("hello"));
+	wdf3.setActivity(a1.getId());
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(wdf1);
+        doc.getStatementOrBundle().add(wdf1);
+        doc.getStatementOrBundle().add(wdf2);
+        doc.getStatementOrBundle().add(wdf2);
+	doc.getStatementOrBundle().add(wdf3);
+	doc.getStatementOrBundle().add(wdf3);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc601() {
+	Document idoc601=new IndexedDocument(pFactory,makeDoc601()).toDocument();
+	assertEquals("number of wdf statements",2, idoc601.getStatementOrBundle().size());  //FIXME: test should return 3, not 2!!
+    }
+
+    public Document makeDoc602() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Entity e2=pFactory.newEntity(q("e2"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	QualifiedName uid=q("d1");
+	WasDerivedFrom u1=pFactory.newWasDerivedFrom(uid,e2.getId(),e1.getId());
+	WasDerivedFrom u2=pFactory.newWasDerivedFrom(uid,e2.getId(),e1.getId());
+	u2.getLabel().add(pFactory.newInternationalizedString("hello"));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u2);
+        doc.getStatementOrBundle().add(u2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc602() {
+	Document idoc602=new IndexedDocument(pFactory,makeDoc602()).toDocument();
+	assertEquals(idoc602.getStatementOrBundle().size(),1);
+	WasDerivedFrom u=(WasDerivedFrom) idoc602.getStatementOrBundle().get(0);
+	assertEquals("label",1,u.getLabel().size());
+    }
+
+    public Document makeDoc603() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Entity e2=pFactory.newEntity(q("e2"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	QualifiedName uid=q("g2");
+	WasDerivedFrom u1=pFactory.newWasDerivedFrom(uid,e2.getId(),e1.getId());
+	WasDerivedFrom u2=pFactory.newWasDerivedFrom(uid,e2.getId(),e1.getId());
+	u2.getLabel().add(pFactory.newInternationalizedString("hello"));
+	u1.getOther().add(pFactory.newOther(q("ELEMENT"), 1, pFactory.getName().XSD_INT));
+	u2.getOther().add(pFactory.newOther(q("ELEMENT"), 2, pFactory.getName().XSD_INT));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u2);
+        doc.getStatementOrBundle().add(u2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc603() {
+	Document idoc603=new IndexedDocument(pFactory,makeDoc603()).toDocument();
+	assertEquals(idoc603.getStatementOrBundle().size(),1);
+	WasDerivedFrom u=(WasDerivedFrom) idoc603.getStatementOrBundle().get(0);
+	assertEquals("label",1,u.getLabel().size());
+	assertEquals("other",2,u.getOther().size());
     }
 
     

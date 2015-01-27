@@ -19,6 +19,7 @@ import javax.ws.rs.core.Variant;
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
@@ -719,6 +720,11 @@ public class InteropFramework implements InteropMediaType {
             gg.generateElements();
 
             doc = gg.getDetails().getDocument();
+        }
+        
+        if (index!=null) {
+            Document indexedDoc=new IndexedDocument(pFactory, doc, (flatten!=null)).toDocument();
+            doc=indexedDoc;
         }
         if (bindings != null) {
             Document docBindings = (Document) readDocumentFromFile(bindings);

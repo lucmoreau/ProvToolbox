@@ -38,7 +38,9 @@ public class IndexedDocument implements StatementAction {
     /* Collection of Used edges that have a given entity as a
      * cause. */
     private HashMap<QualifiedName,Collection<Used>> entityUsedMap=new HashMap<QualifiedName, Collection<Used>>();
-    private Collection<Used> allUsed=new LinkedList<Used>();
+    private Collection<Used> anonUsed=new LinkedList<Used>();
+    private HashMap<QualifiedName,Collection<Used>> namedUsedMap=new HashMap<QualifiedName, Collection<Used>>();
+
 
     /* Collection of WasGeneratedBy edges that have a given activity as a
      * cause. */
@@ -47,7 +49,9 @@ public class IndexedDocument implements StatementAction {
     /* Collection of WasGeneratedBy edges that have a given entity as an
      * effect. */
     private HashMap<QualifiedName,Collection<WasGeneratedBy>> entityWasGeneratedByMap=new HashMap<QualifiedName, Collection<WasGeneratedBy>>();
-    private Collection<WasGeneratedBy> allWasGeneratedBy=new LinkedList<WasGeneratedBy>();
+    private Collection<WasGeneratedBy> anonWasGeneratedBy=new LinkedList<WasGeneratedBy>();
+    private HashMap<QualifiedName,Collection<WasGeneratedBy>> namedWasGeneratedByMap=new HashMap<QualifiedName, Collection<WasGeneratedBy>>();
+
 
     /* Collection of WasDerivedFrom edges that have a given entity as a cause. */
     private HashMap<QualifiedName,Collection<WasDerivedFrom>> entityCauseWasDerivedFromMap=new HashMap<QualifiedName, Collection<WasDerivedFrom>>();
@@ -55,7 +59,9 @@ public class IndexedDocument implements StatementAction {
     /* Collection of WasDerivedFrom edges that have a given entity as an
      * effect. */
     private HashMap<String,Collection<WasDerivedFrom>> entityEffectWasDerivedFromMap=new HashMap<String, Collection<WasDerivedFrom>>();
-    private Collection<WasDerivedFrom> allWasDerivedFrom=new LinkedList<WasDerivedFrom>();
+    private Collection<WasDerivedFrom> anonWasDerivedFrom=new LinkedList<WasDerivedFrom>();
+    private HashMap<QualifiedName,Collection<WasDerivedFrom>> namedWasDerivedFromMap=new HashMap<QualifiedName, Collection<WasDerivedFrom>>();
+
 
     /* Collection of WasAssociatedWith edges that have a given activity as an
      * effect. */
@@ -79,7 +85,7 @@ public class IndexedDocument implements StatementAction {
 
     /** Return all used edges for this graph. */
     public Collection<Used> getUsed() {
-        return allUsed;
+        return anonUsed;
     }
     /** Return all used edges with activity p as an effect. */
     public Collection<Used> getUsed(Activity p) {
@@ -93,7 +99,7 @@ public class IndexedDocument implements StatementAction {
 
     /** Return all WasGeneratedBy edges for this graph. */
     public Collection<WasGeneratedBy> getWasGeneratedBy() {
-        return allWasGeneratedBy;
+        return anonWasGeneratedBy;
     }
     /** Return all WasGeneratedBy edges with activity p as an effect. */
     public Collection<WasGeneratedBy> getWasGeneratedBy(Activity p) {
@@ -107,7 +113,7 @@ public class IndexedDocument implements StatementAction {
 
     /** Return all WasDerivedFrom edges for this graph. */
     public Collection<WasDerivedFrom> getWasDerivedFrom() {
-        return allWasDerivedFrom;
+        return anonWasDerivedFrom;
     }
     /** Return all WasDerivedFrom edges with entity a as a cause. */
     public Collection<WasDerivedFrom> getWasDerivedFromWithCause(Entity a) {
@@ -186,6 +192,51 @@ public class IndexedDocument implements StatementAction {
 	existing.getOther().addAll(set4);	
     }
     
+    void mergeAttributes(Used existing, Used newElement) {
+	Set<LangString> set=new HashSet<LangString>(newElement.getLabel());
+	set.removeAll(existing.getLabel());
+	existing.getLabel().addAll(set);
+	
+	Set<Location> set2=new HashSet<Location>(newElement.getLocation());
+	set2.removeAll(existing.getLocation());
+	existing.getLocation().addAll(set2);
+	
+	Set<Type> set3=new HashSet<Type>(newElement.getType());
+	set3.removeAll(existing.getType());
+	existing.getType().addAll(set3);
+	
+	Set<Other> set4=new HashSet<Other>(newElement.getOther());
+	System.out.println("set4 " + set4);
+	set4.removeAll(existing.getOther());
+	System.out.println("set4 (2)" + set4);
+	System.out.println("set4 (3)" + existing.getOther());
+
+	existing.getOther().addAll(set4);	
+	System.out.println("set4 (4)" + existing.getOther());
+
+    }
+    boolean sameEdge(Statement existing, Statement newElement, int count) {
+	boolean ok=true;
+	for (int i=1; i<=count; i++) {
+	    QualifiedName qn1 = (QualifiedName)u.getter(existing,i);
+	    QualifiedName qn2 = (QualifiedName)u.getter(newElement,i);
+	    if (qn1==null) {
+		if (qn2==null) {
+
+		} else {
+		    ok=false;
+		}
+	    } else {
+		if (qn2==null) {
+		    ok=false;
+		} else {
+		    return qn1.equals(qn2);
+		}
+	    }
+	}
+	return ok;
+    }
+   
     public Agent add(Agent agent) {
         return add(agent.getId(),agent);
     }
@@ -269,48 +320,73 @@ public class IndexedDocument implements StatementAction {
         */
 
     public Used add(Used used) {
-        QualifiedName aid=used.getActivity();
-        QualifiedName eid=used.getEntity();
+	QualifiedName aid = used.getActivity();
+	QualifiedName eid = used.getEntity();
 
-        used=pFactory.newUsed(used); //clone
+	used = pFactory.newUsed(used); // clone
 
-        boolean found=false;
-        Collection<Used> ucoll=activityUsedMap.get(aid);
-        if (ucoll==null) {
-            ucoll=new LinkedList<Used>();
-            ucoll.add(used);
-            activityUsedMap.put(aid,ucoll);
-        } else {
-            for (Used u: ucoll) {               
-                if (u.equals(used)) {               
-                    found=true;
-                    used=u;
-                    break;
-                }
-            }
-            if (!found) {
-                ucoll.add(used);
-            }
-        }
+	if (used.getId() == null) {
 
-        ucoll=entityUsedMap.get(eid);
-        if (ucoll==null) {
-            ucoll=new LinkedList<Used>();
-            ucoll.add(used);
-            entityUsedMap.put(eid,ucoll);
-        } else {
-            if (!found) {
-                // if we had not found it in the first table, then we
-                // have to add it here too
-                ucoll.add(used);
-            }
-        }
+	    boolean found = false;
+	    Collection<Used> ucoll = activityUsedMap.get(aid);
+	    if (ucoll == null) {
+		ucoll = new LinkedList<Used>();
+		ucoll.add(used);
+		activityUsedMap.put(aid, ucoll);
+	    } else {
+		for (Used u : ucoll) {
+		    if (u.equals(used)) {
+			found = true;
+			used = u;
+			break;
+		    }
+		}
+		if (!found) {
+		    ucoll.add(used);
+		}
+	    }
 
-        if (!found) {
-            allUsed.add(used);
-        }
-        return used;
-   }
+	    ucoll = entityUsedMap.get(eid);
+	    if (ucoll == null) {
+		ucoll = new LinkedList<Used>();
+		ucoll.add(used);
+		entityUsedMap.put(eid, ucoll);
+	    } else {
+		if (!found) {
+		    // if we had not found it in the first table, then we
+		    // have to add it here too
+		    ucoll.add(used);
+		}
+	    }
+
+	    if (!found) {
+		anonUsed.add(used);
+	    }
+	} else {
+	    QualifiedName id=used.getId();
+	    Collection<Used> colu=namedUsedMap.get(id);
+	    if (colu==null) {
+		colu=new LinkedList<Used>();
+		colu.add(used);
+		namedUsedMap.put(id, colu);
+	    } else {
+		boolean found=false;
+		for (Used u1: colu) {
+		    if (sameEdge(u1,used,2)) {
+			found=true;
+			System.out.println("=== Found " + u1);
+			mergeAttributes(u1, used);
+			System.out.println("=== Found " + u1);
+			break;			
+		    }
+		}
+		if (!found) {
+		    colu.add(used);
+		}
+	    }
+	}
+	return used;
+    }
 
     public WasGeneratedBy add(WasGeneratedBy wgb) {
 	QualifiedName aid = wgb.getActivity();
@@ -353,7 +429,7 @@ public class IndexedDocument implements StatementAction {
 	}
 
 	if (!found) {
-	    allWasGeneratedBy.add(wgb);
+	    anonWasGeneratedBy.add(wgb);
 	}
 	return wgb;
     }
@@ -461,9 +537,12 @@ public class IndexedDocument implements StatementAction {
 	res.getStatementOrBundle().addAll(entityMap.values());
 	res.getStatementOrBundle().addAll(activityMap.values());
 	res.getStatementOrBundle().addAll(agentMap.values());
-	res.getStatementOrBundle().addAll(allUsed);
-	res.getStatementOrBundle().addAll(allWasGeneratedBy);
-	res.getStatementOrBundle().addAll(allWasDerivedFrom);
+	res.getStatementOrBundle().addAll(anonUsed);
+	for (Collection<Used> c: namedUsedMap.values()) {
+	    res.getStatementOrBundle().addAll(c);
+	}
+	res.getStatementOrBundle().addAll(anonWasGeneratedBy);
+	res.getStatementOrBundle().addAll(anonWasDerivedFrom);
 	res.setNamespace(nss);
 	return res;
     }

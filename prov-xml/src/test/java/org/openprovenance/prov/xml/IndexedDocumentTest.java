@@ -248,6 +248,56 @@ public class IndexedDocumentTest extends TestCase {
 	assertEquals(idoc401.getStatementOrBundle().size(),2);
     }
 
+    public Document makeDoc402() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	QualifiedName uid=q("u1");
+	Used u1=pFactory.newUsed(uid,a1.getId(),e1.getId());
+	Used u2=pFactory.newUsed(uid,a1.getId(),e1.getId());
+	u2.getLabel().add(pFactory.newInternationalizedString("hello"));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u2);
+        doc.getStatementOrBundle().add(u2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc402() {
+	Document idoc402=new IndexedDocument(pFactory,makeDoc402()).toDocument();
+	assertEquals(idoc402.getStatementOrBundle().size(),1);
+	Used u=(Used) idoc402.getStatementOrBundle().get(0);
+	assertEquals("label",1,u.getLabel().size());
+    }
+
+    public Document makeDoc403() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	QualifiedName uid=q("u1");
+	Used u1=pFactory.newUsed(uid,a1.getId(),e1.getId());
+	Used u2=pFactory.newUsed(uid,a1.getId(),e1.getId());
+	u2.getLabel().add(pFactory.newInternationalizedString("hello"));
+	u1.getOther().add(pFactory.newOther(q("ELEMENT"), 1, pFactory.getName().XSD_INT));
+	u2.getOther().add(pFactory.newOther(q("ELEMENT"), 2, pFactory.getName().XSD_INT));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u2);
+        doc.getStatementOrBundle().add(u2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc403() {
+	Document idoc403=new IndexedDocument(pFactory,makeDoc403()).toDocument();
+	assertEquals(idoc403.getStatementOrBundle().size(),1);
+	Used u=(Used) idoc403.getStatementOrBundle().get(0);
+	assertEquals("label",1,u.getLabel().size());
+	assertEquals("other",2,u.getOther().size());
+    }
 
     public Document makeDoc500() {
         Entity e1=pFactory.newEntity(q("e1"));

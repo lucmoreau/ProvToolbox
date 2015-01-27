@@ -275,7 +275,7 @@ public class IndexedDocumentTest extends TestCase {
     public Document makeDoc403() {
         Entity e1=pFactory.newEntity(q("e1"));
 	Activity a1=pFactory.newActivity(q("a1"));
-	QualifiedName uid=q("u1");
+	QualifiedName uid=q("u2");
 	Used u1=pFactory.newUsed(uid,a1.getId(),e1.getId());
 	Used u2=pFactory.newUsed(uid,a1.getId(),e1.getId());
 	u2.getLabel().add(pFactory.newInternationalizedString("hello"));

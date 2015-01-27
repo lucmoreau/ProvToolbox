@@ -966,7 +966,6 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
     public Used newUsed(Used u) {
 	Used u1 = newUsed(u.getId(), u.getActivity(), u.getEntity());
-	u1.getOther().addAll(u.getOther());
 	u1.setTime(u.getTime());
 	u1.getType().addAll(u.getType());
 	u1.getLabel().addAll(u.getLabel());

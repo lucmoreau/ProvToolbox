@@ -206,15 +206,10 @@ public class IndexedDocument implements StatementAction {
 	existing.getType().addAll(set3);
 	
 	Set<Other> set4=new HashSet<Other>(newElement.getOther());
-	System.out.println("set4 " + set4);
 	set4.removeAll(existing.getOther());
-	System.out.println("set4 (2)" + set4);
-	System.out.println("set4 (3)" + existing.getOther());
-
 	existing.getOther().addAll(set4);	
-	System.out.println("set4 (4)" + existing.getOther());
-
     }
+    
     boolean sameEdge(Statement existing, Statement newElement, int count) {
 	boolean ok=true;
 	for (int i=1; i<=count; i++) {
@@ -324,6 +319,7 @@ public class IndexedDocument implements StatementAction {
 	QualifiedName eid = used.getEntity();
 
 	used = pFactory.newUsed(used); // clone
+	
 
 	if (used.getId() == null) {
 
@@ -374,9 +370,7 @@ public class IndexedDocument implements StatementAction {
 		for (Used u1: colu) {
 		    if (sameEdge(u1,used,2)) {
 			found=true;
-			System.out.println("=== Found " + u1);
 			mergeAttributes(u1, used);
-			System.out.println("=== Found " + u1);
 			break;			
 		    }
 		}

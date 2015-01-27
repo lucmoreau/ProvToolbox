@@ -1165,6 +1165,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	WasDerivedFrom wdf = newWasDerivedFrom(d.getId(),
 					       d.getGeneratedEntity(),
 					       d.getUsedEntity());
+	wdf.setActivity(d.getActivity());
 	wdf.setGeneration(d.getGeneration());
 	wdf.setUsage(d.getUsage());
 	wdf.getOther().addAll(d.getOther());

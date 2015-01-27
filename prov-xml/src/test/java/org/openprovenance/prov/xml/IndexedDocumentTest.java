@@ -1,5 +1,7 @@
 package org.openprovenance.prov.xml;
 
+import javax.xml.bind.JAXBException;
+
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasGeneratedBy;
@@ -430,7 +432,7 @@ public class IndexedDocumentTest extends TestCase {
 
     public void testDoc601() {
 	Document idoc601=new IndexedDocument(pFactory,makeDoc601()).toDocument();
-	assertEquals("number of wdf statements",2, idoc601.getStatementOrBundle().size());  //FIXME: test should return 3, not 2!!
+	assertEquals("number of wdf statements",3, idoc601.getStatementOrBundle().size());
     }
 
     public Document makeDoc602() {

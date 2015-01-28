@@ -5,6 +5,7 @@ import javax.xml.bind.JAXBException;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Agent;
@@ -487,6 +488,131 @@ public class IndexedDocumentTest extends TestCase {
 	assertEquals("label",1,u.getLabel().size());
 	assertEquals("other",2,u.getOther().size());
     }
+
+    public Document makeDoc700() {
+        Agent e1=pFactory.newAgent(q("ag1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	WasAssociatedWith u1=pFactory.newWasAssociatedWith(null,a1.getId(),e1.getId());
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u1);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc700() {
+	Document idoc700=new IndexedDocument(pFactory,makeDoc700()).toDocument();
+	assertEquals(idoc700.getStatementOrBundle().size(),1);
+    }
+
+    public Document makeDoc701() {
+        Agent e1=pFactory.newAgent(q("ag1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	WasAssociatedWith u1=pFactory.newWasAssociatedWith(null,a1.getId(),e1.getId());
+	WasAssociatedWith u2=pFactory.newWasAssociatedWith(null,a1.getId(),e1.getId());
+	u2.getLabel().add(pFactory.newInternationalizedString("hello"));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u2);
+        doc.getStatementOrBundle().add(u2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc701() {
+	Document idoc701=new IndexedDocument(pFactory,makeDoc701()).toDocument();
+	assertEquals(idoc701.getStatementOrBundle().size(),2);
+    }
+
+    public Document makeDoc702() {
+        Agent e1=pFactory.newAgent(q("ag1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	QualifiedName uid=q("waw1");
+	WasAssociatedWith u1=pFactory.newWasAssociatedWith(uid,a1.getId(),e1.getId());
+	WasAssociatedWith u2=pFactory.newWasAssociatedWith(uid,a1.getId(),e1.getId());
+	u2.getLabel().add(pFactory.newInternationalizedString("hello"));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u2);
+        doc.getStatementOrBundle().add(u2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc702() {
+	Document idoc702=new IndexedDocument(pFactory,makeDoc702()).toDocument();
+	assertEquals(idoc702.getStatementOrBundle().size(),1);
+	WasAssociatedWith u=(WasAssociatedWith) idoc702.getStatementOrBundle().get(0);
+	assertEquals("label",1,u.getLabel().size());
+    }
+
+    public Document makeDoc703() {
+        Agent e1=pFactory.newAgent(q("ag1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	QualifiedName uid=q("waw2");
+	WasAssociatedWith u1=pFactory.newWasAssociatedWith(uid,a1.getId(),e1.getId());
+	WasAssociatedWith u2=pFactory.newWasAssociatedWith(uid,a1.getId(),e1.getId());
+	u2.getLabel().add(pFactory.newInternationalizedString("hello"));
+	u1.getOther().add(pFactory.newOther(q("ELEMENT"), 1, pFactory.getName().XSD_INT));
+	u2.getOther().add(pFactory.newOther(q("ELEMENT"), 2, pFactory.getName().XSD_INT));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u2);
+        doc.getStatementOrBundle().add(u2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc703() {
+	Document idoc703=new IndexedDocument(pFactory,makeDoc703()).toDocument();
+	assertEquals(idoc703.getStatementOrBundle().size(),1);
+	WasAssociatedWith u=(WasAssociatedWith) idoc703.getStatementOrBundle().get(0);
+	assertEquals("label",1,u.getLabel().size());
+	assertEquals("other",2,u.getOther().size());
+    }
+
+    public Document makeDoc704() {
+        Agent e1=pFactory.newAgent(q("ag1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+        Entity pl=pFactory.newEntity(q("pl1"));
+	QualifiedName uid=q("waw2");
+	WasAssociatedWith u1=pFactory.newWasAssociatedWith(uid,a1.getId(),e1.getId());
+	WasAssociatedWith u2=pFactory.newWasAssociatedWith(uid,a1.getId(),e1.getId());
+	WasAssociatedWith u3=pFactory.newWasAssociatedWith(uid,a1.getId(),e1.getId());
+	u2.getLabel().add(pFactory.newInternationalizedString("hello"));
+	u1.getOther().add(pFactory.newOther(q("ELEMENT"), 1, pFactory.getName().XSD_INT));
+	u2.getOther().add(pFactory.newOther(q("ELEMENT"), 2, pFactory.getName().XSD_INT));
+	u3.setActivity(pl.getId());
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u2);
+        doc.getStatementOrBundle().add(u2);
+        doc.getStatementOrBundle().add(u2);
+        doc.getStatementOrBundle().add(u3);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc704() {
+	Document idoc704=new IndexedDocument(pFactory,makeDoc704()).toDocument();
+	assertEquals(idoc704.getStatementOrBundle().size(),2);
+	WasAssociatedWith u=(WasAssociatedWith) idoc704.getStatementOrBundle().get(0);
+	assertEquals("label",1,u.getLabel().size());
+	assertEquals("other",2,u.getOther().size());
+	WasAssociatedWith u2=(WasAssociatedWith) idoc704.getStatementOrBundle().get(1);
+	assertTrue("activity",u2.getActivity()!=null);
+    }
+
+
 
     
 }

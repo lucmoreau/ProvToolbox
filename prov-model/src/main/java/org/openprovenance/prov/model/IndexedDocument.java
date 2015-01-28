@@ -70,7 +70,9 @@ public class IndexedDocument implements StatementAction {
     /* Collection of WasAssociatedWith edges that have a given agent as a
      * cause. */
     private HashMap<QualifiedName,Collection<WasAssociatedWith>> agentWasAssociatedWithMap=new HashMap<QualifiedName, Collection<WasAssociatedWith>>();
-    private Collection<WasAssociatedWith> allWasAssociatedWith=new LinkedList<WasAssociatedWith>();
+    private Collection<WasAssociatedWith> anonWasAssociatedWith=new LinkedList<WasAssociatedWith>();
+    private HashMap<QualifiedName,Collection<WasAssociatedWith>> namedWasAssociatedWithMap=new HashMap<QualifiedName, Collection<WasAssociatedWith>>();
+
 
     /* Collection of WasInformedBy edges that have a given activity as a cause. */
     private HashMap<QualifiedName,Collection<WasInformedBy>> activityCauseWasInformedByMap=new HashMap<QualifiedName, Collection<WasInformedBy>>();
@@ -142,7 +144,7 @@ public class IndexedDocument implements StatementAction {
 
     /** Return all WasAssociatedWith edges for this graph. */
     public Collection<WasAssociatedWith> getWasAssociatedWith() {
-        return allWasAssociatedWith;
+        return anonWasAssociatedWith;
     }
     /** Return all WasAssociatedWith edges with activity p as an effect. */
     public Collection<WasAssociatedWith> getWasAssociatedWith(Activity p) {
@@ -535,6 +537,80 @@ public class IndexedDocument implements StatementAction {
       return wdf;
   }
 
+    /** Add a waw edge to the graph. Update activityWasAssociatedWithMap and
+        agentWasAssociatedWithMap accordingly.  WasAssociatedWith edges with different attributes are considered distinct.
+        */
+
+    public WasAssociatedWith add(WasAssociatedWith waw) {
+	QualifiedName aid = waw.getActivity();
+	QualifiedName agid = waw.getAgent();
+
+	waw = pFactory.newWasAssociatedWith(waw); // clone
+	
+	QualifiedName id=waw.getId();
+
+	if (id == null) {
+
+	    boolean found = false;
+	    Collection<WasAssociatedWith> assoccoll = activityWasAssociatedWithMap.get(aid);
+	    if (assoccoll == null) {
+		assoccoll = new LinkedList<WasAssociatedWith>();
+		assoccoll.add(waw);
+		activityWasAssociatedWithMap.put(aid, assoccoll);
+	    } else {
+		for (WasAssociatedWith u : assoccoll) {
+		    if (u.equals(waw)) {
+			found = true;
+			waw = u;
+			break;
+		    }
+		}
+		if (!found) {
+		    assoccoll.add(waw);
+		}
+	    }
+
+	    assoccoll = agentWasAssociatedWithMap.get(agid);
+	    if (assoccoll == null) {
+		assoccoll = new LinkedList<WasAssociatedWith>();
+		assoccoll.add(waw);
+		agentWasAssociatedWithMap.put(agid, assoccoll);
+	    } else {
+		if (!found) {
+		    // if we had not found it in the first table, then we
+		    // have to add it here too
+		    assoccoll.add(waw);
+		}
+	    }
+
+	    if (!found) {
+		anonWasAssociatedWith.add(waw);
+	    }
+	} else {
+	    Collection<WasAssociatedWith> assoccoll=namedWasAssociatedWithMap.get(id);
+	    if (assoccoll==null) {
+		assoccoll=new LinkedList<WasAssociatedWith>();
+		assoccoll.add(waw);
+		namedWasAssociatedWithMap.put(id, assoccoll);
+	    } else {
+		boolean found=false;
+		for (WasAssociatedWith u1: assoccoll) {
+		    if (sameEdge(u1,waw,3)) { // include plan
+			found=true;
+			mergeAttributes(u1, waw);
+			break;			
+		    }
+		}
+		if (!found) {
+		    assoccoll.add(waw);
+		}
+	    }
+	}
+	return waw;
+    }
+
+
+
 
     boolean strict=false;
 
@@ -562,7 +638,7 @@ public class IndexedDocument implements StatementAction {
     }
     @Override
     public void doAction(WasAssociatedWith s) {
-	if (strict) throw new UnsupportedOperationException();		
+	add(s);
     }
     @Override
     public void doAction(WasAttributedTo s) {
@@ -651,6 +727,11 @@ public class IndexedDocument implements StatementAction {
 	for (Collection<WasDerivedFrom> c: namedWasDerivedFromMap.values()) {
 	    res.getStatementOrBundle().addAll(c);
 	}
+	res.getStatementOrBundle().addAll(anonWasAssociatedWith);
+	for (Collection<WasAssociatedWith> c: namedWasAssociatedWithMap.values()) {
+	    res.getStatementOrBundle().addAll(c);
+	}
+
 	res.setNamespace(Namespace.gatherNamespaces(res));
 	return res;
     }

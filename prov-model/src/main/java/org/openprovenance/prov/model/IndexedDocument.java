@@ -893,6 +893,10 @@ public class IndexedDocument implements StatementAction {
 	for (Collection<WasAttributedTo> c: namedWasAttributedToMap.values()) {
 	    res.getStatementOrBundle().addAll(c);
 	}
+	res.getStatementOrBundle().addAll(anonWasInformedBy);
+	for (Collection<WasInformedBy> c: namedWasInformedByMap.values()) {
+	    res.getStatementOrBundle().addAll(c);
+	}
 
 	res.setNamespace(Namespace.gatherNamespaces(res));
 	return res;

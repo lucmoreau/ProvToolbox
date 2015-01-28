@@ -7,6 +7,7 @@ import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasGeneratedBy;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
+import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Agent;
@@ -702,6 +703,95 @@ public class IndexedDocumentTest extends TestCase {
 	assertEquals("other",2,u.getOther().size());
     }
 
+
+    public Document makeDoc900() {
+        Agent a1=pFactory.newAgent(q("a1"));
+	Activity a2=pFactory.newActivity(q("a2"));
+	WasInformedBy wib1=pFactory.newWasInformedBy(null,a2.getId(),a1.getId());
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(wib1);
+        doc.getStatementOrBundle().add(wib1);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc900() {
+	Document idoc900=new IndexedDocument(pFactory,makeDoc900()).toDocument();
+	assertEquals(idoc900.getStatementOrBundle().size(),1);
+    }
+
+    public Document makeDoc901() {
+        Activity a1=pFactory.newActivity(q("a1"));
+	Activity a2=pFactory.newActivity(q("a2"));
+	WasInformedBy wib1=pFactory.newWasInformedBy(null,a2.getId(),a1.getId());
+	WasInformedBy wib2=pFactory.newWasInformedBy(null,a2.getId(),a1.getId());
+	wib2.getLabel().add(pFactory.newInternationalizedString("hello"));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(wib1);
+        doc.getStatementOrBundle().add(wib1);
+        doc.getStatementOrBundle().add(wib2);
+        doc.getStatementOrBundle().add(wib2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc901() {
+	Document idoc901=new IndexedDocument(pFactory,makeDoc901()).toDocument();
+	assertEquals(idoc901.getStatementOrBundle().size(),2);
+    }
+
+    public Document makeDoc902() {
+        Activity a1=pFactory.newActivity(q("a1"));
+	Activity a2=pFactory.newActivity(q("a2"));
+	QualifiedName uid=q("wib1");
+	WasInformedBy wib1=pFactory.newWasInformedBy(uid,a2.getId(),a1.getId());
+	WasInformedBy wib2=pFactory.newWasInformedBy(uid,a2.getId(),a1.getId());
+	wib2.getLabel().add(pFactory.newInternationalizedString("hello"));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(wib1);
+        doc.getStatementOrBundle().add(wib1);
+        doc.getStatementOrBundle().add(wib2);
+        doc.getStatementOrBundle().add(wib2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc902() {
+	Document idoc902=new IndexedDocument(pFactory,makeDoc902()).toDocument();
+	assertEquals(idoc902.getStatementOrBundle().size(),1);
+	WasInformedBy u=(WasInformedBy) idoc902.getStatementOrBundle().get(0);
+	assertEquals("label",1,u.getLabel().size());
+    }
+
+    public Document makeDoc903() {
+        Activity a1=pFactory.newActivity(q("a1"));
+	Activity a2=pFactory.newActivity(q("a2"));
+	QualifiedName uid=q("wib2");
+	WasInformedBy wib1=pFactory.newWasInformedBy(uid,a2.getId(),a1.getId());
+	WasInformedBy wib2=pFactory.newWasInformedBy(uid,a2.getId(),a1.getId());
+	wib2.getLabel().add(pFactory.newInternationalizedString("hello"));
+	wib1.getOther().add(pFactory.newOther(q("ELEMENT"), 1, pFactory.getName().XSD_INT));
+	wib2.getOther().add(pFactory.newOther(q("ELEMENT"), 2, pFactory.getName().XSD_INT));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(wib1);
+        doc.getStatementOrBundle().add(wib1);
+        doc.getStatementOrBundle().add(wib2);
+        doc.getStatementOrBundle().add(wib2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc903() {
+	Document idoc903=new IndexedDocument(pFactory,makeDoc903()).toDocument();
+	assertEquals(idoc903.getStatementOrBundle().size(),1);
+	WasInformedBy u=(WasInformedBy) idoc903.getStatementOrBundle().get(0);
+	assertEquals("label",1,u.getLabel().size());
+	assertEquals("other",2,u.getOther().size());
+    }
 
     
 }

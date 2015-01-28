@@ -74,6 +74,17 @@ public class IndexedDocument implements StatementAction {
     private HashMap<QualifiedName,Collection<WasAssociatedWith>> namedWasAssociatedWithMap=new HashMap<QualifiedName, Collection<WasAssociatedWith>>();
 
 
+    /* Collection of WasAttributedTo edges that have a given entiy as an
+     * effect. */
+    private HashMap<QualifiedName,Collection<WasAttributedTo>> entityWasAttributedToMap=new HashMap<QualifiedName, Collection<WasAttributedTo>>();
+
+    /* Collection of WasAttributedTo edges that have a given agent as a
+     * cause. */
+    private HashMap<QualifiedName,Collection<WasAttributedTo>> agentWasAttributedToMap=new HashMap<QualifiedName, Collection<WasAttributedTo>>();
+    private Collection<WasAttributedTo> anonWasAttributedTo=new LinkedList<WasAttributedTo>();
+    private HashMap<QualifiedName,Collection<WasAttributedTo>> namedWasAttributedToMap=new HashMap<QualifiedName, Collection<WasAttributedTo>>();
+
+
     /* Collection of WasInformedBy edges that have a given activity as a cause. */
     private HashMap<QualifiedName,Collection<WasInformedBy>> activityCauseWasInformedByMap=new HashMap<QualifiedName, Collection<WasInformedBy>>();
 
@@ -611,6 +622,80 @@ public class IndexedDocument implements StatementAction {
 
 
 
+    /** Add a waw edge to the graph. Update activityWasAttributedToMap and
+        agentWasAttributedToMap accordingly.  WasAttributedTo edges with different attributes are considered distinct.
+        */
+
+    public WasAttributedTo add(WasAttributedTo wat) {
+	QualifiedName aid = wat.getEntity();
+	QualifiedName agid = wat.getAgent();
+
+	wat = pFactory.newWasAttributedTo(wat); // clone
+	
+	QualifiedName id=wat.getId();
+
+	if (id == null) {
+
+	    boolean found = false;
+	    Collection<WasAttributedTo> attrcoll = entityWasAttributedToMap.get(aid);
+	    if (attrcoll == null) {
+		attrcoll = new LinkedList<WasAttributedTo>();
+		attrcoll.add(wat);
+		entityWasAttributedToMap.put(aid, attrcoll);
+	    } else {
+		for (WasAttributedTo u : attrcoll) {
+		    if (u.equals(wat)) {
+			found = true;
+			wat = u;
+			break;
+		    }
+		}
+		if (!found) {
+		    attrcoll.add(wat);
+		}
+	    }
+
+	    attrcoll = agentWasAttributedToMap.get(agid);
+	    if (attrcoll == null) {
+		attrcoll = new LinkedList<WasAttributedTo>();
+		attrcoll.add(wat);
+		agentWasAttributedToMap.put(agid, attrcoll);
+	    } else {
+		if (!found) {
+		    // if we had not found it in the first table, then we
+		    // have to add it here too
+		    attrcoll.add(wat);
+		}
+	    }
+
+	    if (!found) {
+		anonWasAttributedTo.add(wat);
+	    }
+	} else {
+	    Collection<WasAttributedTo> attrcoll=namedWasAttributedToMap.get(id);
+	    if (attrcoll==null) {
+		attrcoll=new LinkedList<WasAttributedTo>();
+		attrcoll.add(wat);
+		namedWasAttributedToMap.put(id, attrcoll);
+	    } else {
+		boolean found=false;
+		for (WasAttributedTo u1: attrcoll) {
+		    if (sameEdge(u1,wat,2)) {
+			found=true;
+			mergeAttributes(u1, wat);
+			break;			
+		    }
+		}
+		if (!found) {
+		    attrcoll.add(wat);
+		}
+	    }
+	}
+	return wat;
+    }
+
+
+
 
     boolean strict=false;
 
@@ -642,7 +727,7 @@ public class IndexedDocument implements StatementAction {
     }
     @Override
     public void doAction(WasAttributedTo s) {
-	if (strict) throw new UnsupportedOperationException();		
+	add(s);
     }
     @Override
     public void doAction(WasInfluencedBy s) {
@@ -729,6 +814,10 @@ public class IndexedDocument implements StatementAction {
 	}
 	res.getStatementOrBundle().addAll(anonWasAssociatedWith);
 	for (Collection<WasAssociatedWith> c: namedWasAssociatedWithMap.values()) {
+	    res.getStatementOrBundle().addAll(c);
+	}
+	res.getStatementOrBundle().addAll(anonWasAttributedTo);
+	for (Collection<WasAttributedTo> c: namedWasAttributedToMap.values()) {
 	    res.getStatementOrBundle().addAll(c);
 	}
 

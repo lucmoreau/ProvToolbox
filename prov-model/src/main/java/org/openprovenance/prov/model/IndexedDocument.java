@@ -91,7 +91,9 @@ public class IndexedDocument implements StatementAction {
     /* Collection of WasInformedBy edges that have a given activity as an
      * effect. */
     private HashMap<QualifiedName,Collection<WasInformedBy>> activityEffectWasInformedByMap=new HashMap<QualifiedName, Collection<WasInformedBy>>();
-    private Collection<WasInformedBy> allWasInformedBy=new LinkedList<WasInformedBy>();
+    private Collection<WasInformedBy> anonWasInformedBy=new LinkedList<WasInformedBy>();
+    private HashMap<QualifiedName,Collection<WasInformedBy>> namedWasInformedByMap=new HashMap<QualifiedName, Collection<WasInformedBy>>();
+
     private Namespace nss;
     private boolean flatten;
 
@@ -141,7 +143,7 @@ public class IndexedDocument implements StatementAction {
 
     /** Return all WasInformedBy edges for this graph. */
     public Collection<WasInformedBy> getWasInformedBy() {
-        return allWasInformedBy;
+        return anonWasInformedBy;
     }
     /** Return all WasInformedBy edges with activity p as a cause. */
     public Collection<WasInformedBy> getWasInformedByWithCause(Activity a) {
@@ -695,6 +697,77 @@ public class IndexedDocument implements StatementAction {
     }
 
 
+    /** Add a wib edge to the graph. Update activityWasInformedByMap and
+        agentWasInformedByMap accordingly.  WasInformedBy edges with different attributes are considered distinct.
+        */
+
+    public WasInformedBy add(WasInformedBy wib) {
+	QualifiedName aid2 = wib.getInformed();
+	QualifiedName aid1 = wib.getInformant();
+
+	wib = pFactory.newWasInformedBy(wib); // clone
+	
+	QualifiedName id=wib.getId();
+
+	if (id == null) {
+
+	    boolean found = false;
+	    Collection<WasInformedBy> wibcoll = activityEffectWasInformedByMap.get(aid2);
+	    if (wibcoll == null) {
+		wibcoll = new LinkedList<WasInformedBy>();
+		wibcoll.add(wib);
+		activityEffectWasInformedByMap.put(aid2, wibcoll);
+	    } else {
+		for (WasInformedBy u : wibcoll) {
+		    if (u.equals(wib)) {
+			found = true;
+			wib = u;
+			break;
+		    }
+		}
+		if (!found) {
+		    wibcoll.add(wib);
+		}
+	    }
+
+	    wibcoll = activityCauseWasInformedByMap.get(aid1);
+	    if (wibcoll == null) {
+		wibcoll = new LinkedList<WasInformedBy>();
+		wibcoll.add(wib);
+		activityCauseWasInformedByMap.put(aid1, wibcoll);
+	    } else {
+		if (!found) {
+		    // if we had not found it in the first table, then we
+		    // have to add it here too
+		    wibcoll.add(wib);
+		}
+	    }
+
+	    if (!found) {
+		anonWasInformedBy.add(wib);
+	    }
+	} else {
+	    Collection<WasInformedBy> wibcoll=namedWasInformedByMap.get(id);
+	    if (wibcoll==null) {
+		wibcoll=new LinkedList<WasInformedBy>();
+		wibcoll.add(wib);
+		namedWasInformedByMap.put(id, wibcoll);
+	    } else {
+		boolean found=false;
+		for (WasInformedBy u1: wibcoll) {
+		    if (sameEdge(u1,wib,2)) {
+			found=true;
+			mergeAttributes(u1, wib);
+			break;			
+		    }
+		}
+		if (!found) {
+		    wibcoll.add(wib);
+		}
+	    }
+	}
+	return wib;
+    }
 
 
     boolean strict=false;
@@ -784,7 +857,7 @@ public class IndexedDocument implements StatementAction {
     }
     @Override
     public void doAction(WasInformedBy s) {
-	if (strict) throw new UnsupportedOperationException();	
+	add(s);
     }
     @Override
     public void doAction(Bundle bun, ProvUtilities provUtilities) {
@@ -999,7 +1072,7 @@ public class IndexedDocument implements StatementAction {
    //      }
 
    //      if (!found) {
-   //          allWasInformedBy.add(wasTriggeredBy);
+   //          noneWasInformedBy.add(wasTriggeredBy);
    //          getDependencies().getUsedOrWasGeneratedByOrWasInformedBy().add(wasTriggeredBy);
    //      }
    //      return result;

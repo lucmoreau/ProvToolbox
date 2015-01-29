@@ -417,7 +417,7 @@ public class IndexedDocument implements StatementAction {
 	return used;
     }
 
-    public WasGeneratedBy add(WasGeneratedBy wgb) {
+    public WasGeneratedBy OLD_add(WasGeneratedBy wgb) {
 	QualifiedName aid = wgb.getActivity();
 	QualifiedName eid = wgb.getEntity();
 
@@ -493,7 +493,7 @@ public class IndexedDocument implements StatementAction {
       Return the wasDerivedFrom edge itself (if it had not been encountered
       before), or the instance encountered before.*/
 
-  public WasDerivedFrom add(WasDerivedFrom wdf) {
+  public WasDerivedFrom OLD_add(WasDerivedFrom wdf) {
       QualifiedName e2=wdf.getGeneratedEntity();
       QualifiedName e1=wdf.getUsedEntity();
       
@@ -564,7 +564,7 @@ public class IndexedDocument implements StatementAction {
         agentWasAssociatedWithMap accordingly.  WasAssociatedWith edges with different attributes are considered distinct.
         */
 
-    public WasAssociatedWith add(WasAssociatedWith waw) {
+    public WasAssociatedWith OLDadd(WasAssociatedWith waw) {
 	QualifiedName aid = waw.getActivity();
 	QualifiedName agid = waw.getAgent();
 
@@ -638,7 +638,7 @@ public class IndexedDocument implements StatementAction {
         agentWasAttributedToMap accordingly.  WasAttributedTo edges with different attributes are considered distinct.
         */
 
-    public WasAttributedTo add(WasAttributedTo wat) {
+    public WasAttributedTo OLDadd(WasAttributedTo wat) {
 	QualifiedName aid = wat.getEntity();
 	QualifiedName agid = wat.getAgent();
 
@@ -784,6 +784,18 @@ public class IndexedDocument implements StatementAction {
     }
     public Used add(Used used) {
 	return add(used, 2, anonUsed, namedUsedMap, activityUsedMap, entityUsedMap);
+    }
+    public WasGeneratedBy add(WasGeneratedBy wgb) {
+	return add(wgb, 2, anonWasGeneratedBy, namedWasGeneratedByMap, entityWasGeneratedByMap, activityWasGeneratedByMap);
+    }
+    public WasDerivedFrom add(WasDerivedFrom wdf) {
+	return add(wdf, 5, anonWasDerivedFrom, namedWasDerivedFromMap, entityEffectWasDerivedFromMap, entityCauseWasDerivedFromMap);
+    }
+    public WasAssociatedWith add(WasAssociatedWith waw) {
+	return add(waw, 3, anonWasAssociatedWith, namedWasAssociatedWithMap, activityWasAssociatedWithMap, agentWasAssociatedWithMap);
+    }
+    public WasAttributedTo add(WasAttributedTo wat) {
+	return add(wat, 2, anonWasAttributedTo, namedWasAttributedToMap, entityWasAttributedToMap, agentWasAttributedToMap);
     }
 
 
@@ -1003,179 +1015,3 @@ public class IndexedDocument implements StatementAction {
 }
 
 
-   //  /** Add a wasGeneratedBy edge to the graph. Update activityWasGeneratedByMap and
-   //      entityWasGeneratedByMap accordingly.  By doing so, aggregate all wasGeneratedBy
-   //      edges (a,r,p) with different accounts in a single edge.
-   //      Return the wasGeneratedBy edge itself (if it had not been encountered
-   //      before), or the instance encountered before.*/
-
-   //  public WasGeneratedBy addWasGeneratedBy(WasGeneratedBy wasGeneratedBy) {
-   //      ActivityRef pid=wasGeneratedBy.getCause();
-   //      Activity p=(Activity)(pid.getRef());
-   //      EntityRef aid=wasGeneratedBy.getEffect();
-   //      Entity a=(Entity)(aid.getRef());
-   //      Role r=wasGeneratedBy.getRole();
-   //      Collection<AccountRef> accs=wasGeneratedBy.getAccount();
-
-   //      WasGeneratedBy result=wasGeneratedBy;
-
-   //      boolean found=false;
-   //      Collection<WasGeneratedBy> gcoll=activityWasGeneratedByMap.get(p.getId());
-   //      if (gcoll==null) {
-   //          gcoll=new LinkedList();
-   //          gcoll.add(wasGeneratedBy);
-   //          activityWasGeneratedByMap.put(p.getId(),gcoll);
-   //      } else {
-
-   //          for (WasGeneratedBy u: gcoll) {
-                
-   //              if (aid.equals(u.getEffect())
-   //                  &&
-   //                  r.equals(u.getRole())) {
-   //                  addNewAccounts(u.getAccount(),accs);
-   //                  result=u;
-   //                  found=true;
-   //              }
-   //          }
-   //          if (!found) {
-   //              gcoll.add(wasGeneratedBy);
-   //          }
-   //      }
-
-   //      gcoll=entityWasGeneratedByMap.get(a.getId());
-   //      if (gcoll==null) {
-   //          gcoll=new LinkedList();
-   //          gcoll.add(wasGeneratedBy);
-   //          entityWasGeneratedByMap.put(a.getId(),gcoll);
-   //      } else {
-   //          if (!found) {
-   //              // if we had not found it in the first table, then we
-   //              // have to add it here too
-   //              gcoll.add(wasGeneratedBy);
-   //          }
-   //      }
-
-   //      if (!found) {
-   //          allWasGeneratedBy.add(wasGeneratedBy);
-   //          getDependencies().getUsedOrWasGeneratedByOrWasInformedBy().add(wasGeneratedBy);
-   //      }
-   //      return result;
-   // }
-
-
-
-
-   //  /** Add a wasControlledBy edge to the graph. Update activityWasAssociatedWithMap and
-   //      agentWasAssociatedWithMap accordingly.  By doing so, aggregate all wasControlledBy
-   //      edges (p,r,a) with different accounts in a single edge.
-   //      Return the wasControlledBy edge itself (if it had not been encountered
-   //      before), or the instance encountered before.*/
-
-   //  public WasAssociatedWith addWasAssociatedWith(WasAssociatedWith wasControlledBy) {
-   //      ActivityRef pid=wasControlledBy.getEffect();
-   //      Activity p=(Activity)(pid.getRef());
-   //      AgentRef aid=wasControlledBy.getCause();
-   //      Agent a=(Agent)(aid.getRef());
-   //      Role r=wasControlledBy.getRole();
-   //      Collection<AccountRef> accs=wasControlledBy.getAccount();
-
-   //      WasAssociatedWith result=wasControlledBy;
-
-   //      boolean found=false;
-   //      Collection<WasAssociatedWith> ccoll=activityWasAssociatedWithMap.get(p.getId());
-   //      if (ccoll==null) {
-   //          ccoll=new LinkedList();
-   //          ccoll.add(wasControlledBy);
-   //          activityWasAssociatedWithMap.put(p.getId(),ccoll);
-   //      } else {
-
-   //          for (WasAssociatedWith u: ccoll) {
-                
-   //              if (aid.equals(u.getCause())
-   //                  &&
-   //                  r.equals(u.getRole())) {
-   //                  addNewAccounts(u.getAccount(),accs);
-   //                  result=u;
-   //                  found=true;
-   //              }
-   //          }
-   //          if (!found) {
-   //              ccoll.add(wasControlledBy);
-   //          }
-   //      }
-
-   //      ccoll=agentWasAssociatedWithMap.get(a.getId());
-   //      if (ccoll==null) {
-   //          ccoll=new LinkedList();
-   //          ccoll.add(wasControlledBy);
-   //          agentWasAssociatedWithMap.put(p.getId(),ccoll);
-   //      } else {
-   //          if (!found) {
-   //              // if we had not found it in the first table, then we
-   //              // have to add it here too
-   //              ccoll.add(wasControlledBy);
-   //          }
-   //      }
-
-   //      if (!found) {
-   //          allWasAssociatedWith.add(wasControlledBy);
-   //          getDependencies().getUsedOrWasGeneratedByOrWasInformedBy().add(wasControlledBy);
-   //      }
-   //      return result;
-   // }
-
-   //  /** Add a wasTriggeredBy edge to the graph. Update activityWasInformedByMap and
-   //      entityWasInformedByMap accordingly.  By doing so, aggregate all wasTriggeredBy
-   //      edges (p1,r,p2) with different accounts in a single edge.
-   //      Return the wasTriggeredBy edge itself (if it had not been encountered
-   //      before), or the instance encountered before.*/
-
-   //  public WasInformedBy addWasInformedBy(WasInformedBy wasTriggeredBy) {
-   //      ActivityRef pid2=wasTriggeredBy.getEffect();
-   //      Activity p2=(Activity)(pid2.getRef());
-   //      ActivityRef pid1=wasTriggeredBy.getCause();
-   //      Activity p1=(Activity)(pid1.getRef());
-   //      Collection<AccountRef> accs=wasTriggeredBy.getAccount();
-
-   //      WasInformedBy result=wasTriggeredBy;
-
-   //      boolean found=false;
-   //      Collection<WasInformedBy> dcoll=activityCauseWasInformedByMap.get(p1.getId());
-   //      if (dcoll==null) {
-   //          dcoll=new LinkedList();
-   //          dcoll.add(wasTriggeredBy);
-   //          activityCauseWasInformedByMap.put(p1.getId(),dcoll);
-   //      } else {
-
-   //          for (WasInformedBy d: dcoll) {
-                
-   //              if ( (pid1.equals(d.getCause())) && (pid2.equals(d.getEffect()))) {
-   //                  addNewAccounts(d.getAccount(),accs);
-   //                  result=d;
-   //                  found=true;
-   //              }
-   //          }
-   //          if (!found) {
-   //              dcoll.add(wasTriggeredBy);
-   //          }
-   //      }
-
-   //      dcoll=activityEffectWasInformedByMap.get(p2.getId());
-   //      if (dcoll==null) {
-   //          dcoll=new LinkedList();
-   //          dcoll.add(wasTriggeredBy);
-   //          activityEffectWasInformedByMap.put(p2.getId(),dcoll);
-   //      } else {
-   //          if (!found) {
-   //              // if we had not found it in the first table, then we
-   //              // have to add it here too
-   //              dcoll.add(wasTriggeredBy);
-   //          }
-   //      }
-
-   //      if (!found) {
-   //          noneWasInformedBy.add(wasTriggeredBy);
-   //          getDependencies().getUsedOrWasGeneratedByOrWasInformedBy().add(wasTriggeredBy);
-   //      }
-   //      return result;
-   // }

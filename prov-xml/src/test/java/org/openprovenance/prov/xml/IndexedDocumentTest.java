@@ -303,6 +303,31 @@ public class IndexedDocumentTest extends TestCase {
 	assertEquals("label",1,u.getLabel().size());
 	assertEquals("other",2,u.getOther().size());
     }
+    
+    public Document makeDoc404() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	QualifiedName uid=q("u2");
+	Used u1=pFactory.newUsed(uid,a1.getId(),e1.getId());
+	Used u2=pFactory.newUsed(uid,a1.getId(),e1.getId());
+	u1.getOther().add(pFactory.newOther(q("ELEMENT"), 1, pFactory.getName().XSD_INT));
+	u2.getOther().add(pFactory.newOther(q("ELEMENT"), 2, pFactory.getName().XSD_INT));
+	u1.setTime(pFactory.newTimeNow());
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u2);
+        doc.getStatementOrBundle().add(u2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc404() {
+	Document idoc404=new IndexedDocument(pFactory,makeDoc404()).toDocument();
+	assertEquals(idoc404.getStatementOrBundle().size(),2);
+
+    }
 
     public Document makeDoc500() {
         Entity e1=pFactory.newEntity(q("e1"));

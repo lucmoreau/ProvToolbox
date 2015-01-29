@@ -274,8 +274,8 @@ public class IndexedDocument implements StatementAction {
     boolean sameEdge(Statement existing, Statement newElement, int count) {
 	boolean ok=true;
 	for (int i=1; i<=count; i++) {
-	    QualifiedName qn1 = (QualifiedName)u.getter(existing,i);
-	    QualifiedName qn2 = (QualifiedName)u.getter(newElement,i);
+	    Object qn1 = u.getter(existing,i);
+	    Object qn2 = u.getter(newElement,i);
 	    if (qn1==null) {
 		if (qn2==null) {
 
@@ -355,10 +355,10 @@ public class IndexedDocument implements StatementAction {
 	return add(wib, 2, anonWasInformedBy, namedWasInformedByMap, activityEffectWasInformedByMap, activityCauseWasInformedByMap);
     }
     public Used add(Used used) {
-	return add(used, 2, anonUsed, namedUsedMap, activityUsedMap, entityUsedMap);
+	return add(used, 3, anonUsed, namedUsedMap, activityUsedMap, entityUsedMap);
     }
     public WasGeneratedBy add(WasGeneratedBy wgb) {
-	return add(wgb, 2, anonWasGeneratedBy, namedWasGeneratedByMap, entityWasGeneratedByMap, activityWasGeneratedByMap);
+	return add(wgb, 3, anonWasGeneratedBy, namedWasGeneratedByMap, entityWasGeneratedByMap, activityWasGeneratedByMap);
     }
     public WasDerivedFrom add(WasDerivedFrom wdf) {
 	return add(wdf, 5, anonWasDerivedFrom, namedWasDerivedFromMap, entityEffectWasDerivedFromMap, entityCauseWasDerivedFromMap);
@@ -373,7 +373,7 @@ public class IndexedDocument implements StatementAction {
 	return add(act, 3, anonActedOnBehalfOf, namedActedOnBehalfOfMap, delegateActedOnBehalfOfMap, responsibleActedOnBehalfOfMap);
     }
     public WasInvalidatedBy add(WasInvalidatedBy wib) {
-	return add(wib, 2, anonWasInvalidatedBy, namedWasInvalidatedByMap, entityWasInvalidatedByMap, activityWasInvalidatedByMap);
+	return add(wib, 3, anonWasInvalidatedBy, namedWasInvalidatedByMap, entityWasInvalidatedByMap, activityWasInvalidatedByMap);
     }
     public SpecializationOf add(SpecializationOf wib) {
 	return add(wib, 2, anonSpecializationOf, namedSpecializationOfMap, specificEntitySpecializationOfMap, genericEntitySpecializationOfMap);
@@ -385,10 +385,10 @@ public class IndexedDocument implements StatementAction {
 	return add(winf, 2, anonWasInfluencedBy, namedWasInfluencedByMap, influenceeWasInfluencedByMap, influencerWasInfluencedByMap);
     }
     public WasStartedBy add(WasStartedBy wsb) {
-	return add(wsb, 3, anonWasStartedBy, namedWasStartedByMap, activityWasStartedByMap, entityWasStartedByMap);
+	return add(wsb, 4, anonWasStartedBy, namedWasStartedByMap, activityWasStartedByMap, entityWasStartedByMap);
     }
     public WasEndedBy add(WasEndedBy web) {
-	return add(web, 3, anonWasEndedBy, namedWasEndedByMap, activityWasEndedByMap, entityWasEndedByMap);
+	return add(web, 4, anonWasEndedBy, namedWasEndedByMap, activityWasEndedByMap, entityWasEndedByMap);
     }
     public HadMember add(HadMember hm) {
 	return add(hm, 2, anonHadMember, namedHadMemberMap, entityHadMemberMap, collHadMemberMap);

@@ -227,7 +227,17 @@ public class IndexedDocument implements StatementAction {
 	set4.removeAll(existing.getOther());
 	existing.getOther().addAll(set4);	
     }
-    
+    <T extends Statement> void mergeAttributes(T existing, T newElement) {
+	if (existing instanceof Element) {
+	     mergeAttributes((Element) existing, (Element) newElement);
+	     return;
+	}
+	if (existing instanceof Influence) {
+	     mergeAttributes((Influence) existing, (Influence) newElement);
+	     return;
+	}
+	throw new UnsupportedOperationException();
+    }
     boolean sameEdge(Statement existing, Statement newElement, int count) {
 	boolean ok=true;
 	for (int i=1; i<=count; i++) {
@@ -339,7 +349,7 @@ public class IndexedDocument implements StatementAction {
         entityUsedMap accordingly.  Used edges with different attributes are considered distinct.
         */
 
-    public Used add(Used used) {
+    public Used OLD_add(Used used) {
 	QualifiedName aid = used.getActivity();
 	QualifiedName eid = used.getEntity();
 
@@ -701,7 +711,7 @@ public class IndexedDocument implements StatementAction {
         agentWasInformedByMap accordingly.  WasInformedBy edges with different attributes are considered distinct.
         */
 
-    public WasInformedBy add(WasInformedBy wib) {
+    public WasInformedBy OLD_add(WasInformedBy wib) {
 	QualifiedName aid2 = wib.getInformed();
 	QualifiedName aid1 = wib.getInformant();
 
@@ -768,9 +778,94 @@ public class IndexedDocument implements StatementAction {
 	}
 	return wib;
     }
+    
+    public WasInformedBy add(WasInformedBy wib) {
+	return add(wib, 2, anonWasInformedBy, namedWasInformedByMap, activityEffectWasInformedByMap, activityCauseWasInformedByMap);
+    }
+    public Used add(Used used) {
+	return add(used, 2, anonUsed, namedUsedMap, activityUsedMap, entityUsedMap);
+    }
 
 
-    boolean strict=false;
+    /** Add a wib edge to the graph. Update activityWasInformedByMap and
+    agentWasInformedByMap accordingly.  WasInformedBy edges with different attributes are considered distinct.
+    */
+
+   public <T extends Relation> T add(T statement,
+                                     int num,
+                                     Collection<T> anonWasInformedBy,
+                                     HashMap<QualifiedName, Collection<T>> namedWasInformedByMap,
+                                     HashMap<QualifiedName, Collection<T>> activityEffectWasInformedByMap,
+                                     HashMap<QualifiedName, Collection<T>> activityCauseWasInformedByMap) {
+	QualifiedName aid2 = u.getEffect(statement); //wib.getInformed();
+	QualifiedName aid1 = u.getCause(statement); //wib.getInformant();
+
+	statement = pFactory.newStatement(statement); // clone
+	
+	QualifiedName id=((Identifiable)statement).getId();
+
+	if (id == null) {
+
+	    boolean found = false;
+	    Collection<T> wibcoll = activityEffectWasInformedByMap.get(aid2);
+	    if (wibcoll == null) {
+		wibcoll = new LinkedList<T>();
+		wibcoll.add(statement);
+		activityEffectWasInformedByMap.put(aid2, wibcoll);
+	    } else {
+		for (T u : wibcoll) {
+		    if (u.equals(statement)) {
+			found = true;
+			statement = u;
+			break;
+		    }
+		}
+		if (!found) {
+		    wibcoll.add(statement);
+		}
+	    }
+
+	    wibcoll = activityCauseWasInformedByMap.get(aid1);
+	    if (wibcoll == null) {
+		wibcoll = new LinkedList<T>();
+		wibcoll.add(statement);
+		activityCauseWasInformedByMap.put(aid1, wibcoll);
+	    } else {
+		if (!found) {
+		    // if we had not found it in the first table, then we
+		    // have to add it here too
+		    wibcoll.add(statement);
+		}
+	    }
+
+	    if (!found) {
+		anonWasInformedBy.add(statement);
+	    }
+	} else {
+	    Collection<T> wibcoll=namedWasInformedByMap.get(id);
+	    if (wibcoll==null) {
+		wibcoll=new LinkedList<T>();
+		wibcoll.add(statement);
+		namedWasInformedByMap.put(id, wibcoll);
+	    } else {
+		boolean found=false;
+		for (T u1: wibcoll) {
+		    if (sameEdge(u1,statement,num)) {
+			found=true;
+			mergeAttributes(u1, statement);
+			break;			
+		    }
+		}
+		if (!found) {
+		    wibcoll.add(statement);
+		}
+	    }
+	}
+	return statement;
+}
+
+
+    boolean strict=true;
 
     @Override
     public void doAction(Activity s) {
@@ -814,14 +909,7 @@ public class IndexedDocument implements StatementAction {
     public void doAction(WasDerivedFrom s) {
 	add(s);
     }
-    @Override
-    public void doAction(DictionaryMembership s) {
-	throw new UnsupportedOperationException();	
-    }
-    @Override
-    public void doAction(DerivedByRemovalFrom s) {
-	throw new UnsupportedOperationException();	
-    }
+    
     @Override
     public void doAction(WasEndedBy s) {
 	if (strict) throw new UnsupportedOperationException();	
@@ -852,13 +940,23 @@ public class IndexedDocument implements StatementAction {
 	
     }
     @Override
+    public void doAction(WasInformedBy s) {
+	add(s);
+    }
+    
+    @Override
     public void doAction(DerivedByInsertionFrom s) {
 	throw new UnsupportedOperationException();
     }
     @Override
-    public void doAction(WasInformedBy s) {
-	add(s);
+    public void doAction(DictionaryMembership s) {
+	throw new UnsupportedOperationException();	
     }
+    @Override
+    public void doAction(DerivedByRemovalFrom s) {
+	throw new UnsupportedOperationException();	
+    }
+
     @Override
     public void doAction(Bundle bun, ProvUtilities provUtilities) {
 	if (flatten) {

@@ -401,23 +401,23 @@ public class ProvToDot {
 
     }
 
-    public void emitAnnotations(String id, HasOther ann, PrintStream out) {
+    public void emitAnnotations(String id, HasOther statement, PrintStream out) {
 
-        if (((ann.getOther()==null) 
-        	|| (ann.getOther().isEmpty()) 
-        	|| (countOthers(ann)==0))	
+        if (((statement.getOther()==null) 
+        	|| (statement.getOther().isEmpty()) 
+        	|| (countOthers(statement)==0))	
             &&
-            (((HasType)ann).getType().isEmpty())) return;
+            (((HasType)statement).getType().isEmpty())) return;
 
         HashMap<String,String> properties=new HashMap<String, String>();
-        QualifiedName newId=annotationId(((Identifiable)ann).getId(),id);
+        QualifiedName newId=annotationId(((Identifiable)statement).getId(),id);
         emitElement(newId,
-                    addAnnotationShape(ann,addAnnotationColor(ann,addAnnotationLabel(ann,properties))),
+                    addAnnotationShape(statement,addAnnotationColor(statement,addAnnotationLabel(statement,properties))),
                     out);
         HashMap<String,String> linkProperties=new HashMap<String, String>();
         emitRelation(qualifiedNameToString(newId),
-                     qualifiedNameToString(((Identifiable)ann).getId()),
-                     addAnnotationLinkProperties(ann,linkProperties),out,true);
+                     qualifiedNameToString(((Identifiable)statement).getId()),
+                     addAnnotationLinkProperties(statement,linkProperties),out,true);
     }
 
 
@@ -427,7 +427,7 @@ public class ProvToDot {
     public QualifiedName annotationId(QualifiedName id,String node) {
 	
         if (true || id==null) {
-            return of.newQualifiedName("http://annot/","ann" + node + (annotationCount++),null);
+            return of.newQualifiedName("-","attrs" + node + (annotationCount++),null);
         } else {
             return id;
         }
@@ -578,7 +578,7 @@ public class ProvToDot {
 	    for (Type type: ((HasType)ann).getType()) {
 		label=label+"	<TR>\n";
 		label=label+"	    <TD align=\"left\">" + "type" + ":</TD>\n";
-		label=label+"	    <TD align=\"left\">" + getPropertyValueFromAny(type) + "</TD>\n";
+		label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(type) + "</TD>\n";  //FIXME: could we have URL in <a></a>?
 		label=label+"	</TR>\n";
 	    }
 	    for (Other prop: ann.getOther()) {
@@ -595,7 +595,7 @@ public class ProvToDot {
 		
 		label=label+"	<TR>\n";
 		label=label+"	    <TD align=\"left\">" + convertProperty((Attribute)prop) + ":</TD>\n";
-		label=label+"	    <TD align=\"left\">" + convertValue((Attribute)prop) + "</TD>\n";
+		label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl((Attribute)prop) + "</TD>\n";
 		label=label+"	</TR>\n";
 	    }
 	    label=label+"    </TABLE>>\n";
@@ -645,6 +645,18 @@ public class ProvToDot {
             return q.getNamespaceURI() + q.getLocalPart();
         } else {
                 return "" +  val;
+        }
+    }
+    
+    public String getPropertyValueWithUrl (Attribute t) {
+        Object val=t.getValue();
+        if (val instanceof QualifiedName) {
+            QualifiedName q=(QualifiedName)val;
+            return q.getPrefix() +  ":" + q.getLocalPart();
+            //return "<a xlink:href='" + q.getNamespaceURI() + q.getLocalPart() + "'>" + q.getLocalPart() + "</a>";
+            //return "&lt;a href=\"" + q.getPrefix() + ":" + q.getLocalPart() + "\"&gt;" + q.getLocalPart() + "&lt;/a&gt;";
+        } else {
+                return htmlify(""+val);
         }
     }
     public String getPropertyValueFromAny (Attribute o) {
@@ -1006,12 +1018,19 @@ public class ProvToDot {
 
     /* make name compatible with dot notation*/
     
-    public String dotify(String name) {
+    public String OLDdotify(String name) {
         return "n" + name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_').replace('~','_').replace('&','_').replace('=','_').replace('?','_');
+    }
+    public String dotify(String name) {
+        //return name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_').replace('~','_').replace("&","&amp;").replace('=','_').replace('?','_');
+        //return htmlify(name);
+	return "\"" + name + "\"";
     }
 
     public String htmlify(String name) {
-        return "n" + name.replace("&","&amp;");
+        return name.replace("&","&amp;")
+        	.replace("<","&lt;")
+        	.replace(">","&gt;");
     }
 
     public void emitElement(QualifiedName name, HashMap<String,String> properties, PrintStream out) {
@@ -1081,7 +1100,7 @@ public class ProvToDot {
     }
 
     void prelude(Bundle doc, PrintStream out) {
-        out.println("subgraph " + "cluster" + dotify(qualifiedNameToString(doc.getId())) + " { ");
+        out.println("subgraph " + dotify("cluster" + qualifiedNameToString(doc.getId())) + " { ");
         out.println("  label=\"" + localnameToString(doc.getId()) + "\";");
         out.println("  URL=\"" + qualifiedNameToString(doc.getId()) + "\";");
     }

@@ -96,6 +96,39 @@ public class IndexedDocument implements StatementAction {
 
     private Namespace nss;
     private boolean flatten;
+    private Collection<ActedOnBehalfOf> anonActedOnBehalfOf;
+    private HashMap<QualifiedName, Collection<ActedOnBehalfOf>> namedActedOnBehalfOfMap;
+    private HashMap<QualifiedName, Collection<ActedOnBehalfOf>> responsibleActedOnBehalfOfMap;
+    private HashMap<QualifiedName, Collection<ActedOnBehalfOf>> delegateActedOnBehalfOfMap;
+    private HashMap<QualifiedName, Collection<WasInvalidatedBy>> namedWasInvalidatedByMap;
+    private HashMap<QualifiedName, Collection<WasInvalidatedBy>> entityWasInvalidatedByMap;
+    private Collection<WasInvalidatedBy> anonWasInvalidatedBy;
+    private HashMap<QualifiedName, Collection<WasInvalidatedBy>> activityWasInvalidatedByMap;
+    private HashMap<QualifiedName, Collection<SpecializationOf>> namedSpecializationOfMap;
+    private HashMap<QualifiedName, Collection<SpecializationOf>> specificEntitySpecializationOfMap;
+    private Collection<SpecializationOf> anonSpecializationOf;
+    private HashMap<QualifiedName, Collection<SpecializationOf>> genericEntitySpecializationOfMap;
+    private Collection<AlternateOf> anonAlternateOf;
+    private HashMap<QualifiedName, Collection<AlternateOf>> namedAlternateOfMap;
+    private HashMap<QualifiedName, Collection<AlternateOf>> entityCauseAlternateOfMap;
+    private HashMap<QualifiedName, Collection<AlternateOf>> entityEffectAlternateOfMap;
+    private HashMap<QualifiedName, Collection<WasInfluencedBy>> influenceeWasInfluencedByMap;
+    private HashMap<QualifiedName, Collection<WasInfluencedBy>> influencerWasInfluencedByMap;
+    private Collection<WasInfluencedBy> anonWasInfluencedBy;
+    private HashMap<QualifiedName, Collection<WasInfluencedBy>> namedWasInfluencedByMap;
+    private HashMap<QualifiedName, Collection<WasStartedBy>> activityWasStartedByMap;
+    private HashMap<QualifiedName, Collection<WasStartedBy>> entityWasStartedByMap;
+    private Collection<WasStartedBy> anonWasStartedBy;
+    private HashMap<QualifiedName, Collection<WasStartedBy>> namedWasStartedByMap;
+    private Collection<WasEndedBy> anonWasEndedBy;
+    private HashMap<QualifiedName, Collection<WasEndedBy>> activityWasEndedByMap;
+    private HashMap<QualifiedName, Collection<WasEndedBy>> namedWasEndedByMap;
+    private HashMap<QualifiedName, Collection<WasEndedBy>> entityWasEndedByMap;
+    private Collection<HadMember> anonHadMember;
+    private HashMap<QualifiedName, Collection<HadMember>> collHadMemberMap;
+    private HashMap<QualifiedName, Collection<HadMember>> namedHadMemberMap;
+    private HashMap<QualifiedName, Collection<HadMember>> entityHadMemberMap;
+    
 
 
     /** Return all used edges for this graph. */
@@ -336,6 +369,30 @@ public class IndexedDocument implements StatementAction {
     public WasAttributedTo add(WasAttributedTo wat) {
 	return add(wat, 2, anonWasAttributedTo, namedWasAttributedToMap, entityWasAttributedToMap, agentWasAttributedToMap);
     }
+    public ActedOnBehalfOf add(ActedOnBehalfOf act) {
+	return add(act, 3, anonActedOnBehalfOf, namedActedOnBehalfOfMap, delegateActedOnBehalfOfMap, responsibleActedOnBehalfOfMap);
+    }
+    public WasInvalidatedBy add(WasInvalidatedBy wib) {
+	return add(wib, 2, anonWasInvalidatedBy, namedWasInvalidatedByMap, entityWasInvalidatedByMap, activityWasInvalidatedByMap);
+    }
+    public SpecializationOf add(SpecializationOf wib) {
+	return add(wib, 2, anonSpecializationOf, namedSpecializationOfMap, specificEntitySpecializationOfMap, genericEntitySpecializationOfMap);
+    }
+    public AlternateOf add(AlternateOf wib) {
+	return add(wib, 2, anonAlternateOf, namedAlternateOfMap, entityEffectAlternateOfMap,entityCauseAlternateOfMap);
+    }
+    public WasInfluencedBy add(WasInfluencedBy winf) {
+	return add(winf, 2, anonWasInfluencedBy, namedWasInfluencedByMap, influenceeWasInfluencedByMap, influencerWasInfluencedByMap);
+    }
+    public WasStartedBy add(WasStartedBy wsb) {
+	return add(wsb, 3, anonWasStartedBy, namedWasStartedByMap, activityWasStartedByMap, entityWasStartedByMap);
+    }
+    public WasEndedBy add(WasEndedBy web) {
+	return add(web, 3, anonWasEndedBy, namedWasEndedByMap, activityWasEndedByMap, entityWasEndedByMap);
+    }
+    public HadMember add(HadMember hm) {
+	return add(hm, 2, anonHadMember, namedHadMemberMap, entityHadMemberMap, collHadMemberMap);
+    }
 
 
     /** Add a wib edge to the graph. Update activityWasInformedByMap and
@@ -416,8 +473,6 @@ public class IndexedDocument implements StatementAction {
 }
 
 
-    boolean strict=true;
-
     @Override
     public void doAction(Activity s) {
 	add(s);
@@ -426,11 +481,10 @@ public class IndexedDocument implements StatementAction {
     @Override
     public void doAction(Used s) {
 	add(s);
-    }
-    
+    }  
     @Override
     public void doAction(WasStartedBy s) {
-	throw new UnsupportedOperationException();	
+	add(s);
     }
     @Override
     public void doAction(Agent s) {
@@ -438,7 +492,7 @@ public class IndexedDocument implements StatementAction {
     }
     @Override
     public void doAction(AlternateOf s) {
-	if (strict) throw new UnsupportedOperationException();		
+	add(s);
     }
     @Override
     public void doAction(WasAssociatedWith s) {
@@ -450,20 +504,19 @@ public class IndexedDocument implements StatementAction {
     }
     @Override
     public void doAction(WasInfluencedBy s) {
-	throw new UnsupportedOperationException();		
+	add(s);
     }
     @Override
     public void doAction(ActedOnBehalfOf s) {
-	if (strict) throw new UnsupportedOperationException();		
+        add(s);
     }
     @Override
     public void doAction(WasDerivedFrom s) {
 	add(s);
     }
-    
     @Override
     public void doAction(WasEndedBy s) {
-	if (strict) throw new UnsupportedOperationException();	
+	add(s);
     }
     @Override
     public void doAction(Entity s) {
@@ -475,11 +528,11 @@ public class IndexedDocument implements StatementAction {
     }
     @Override
     public void doAction(WasInvalidatedBy s) {
-	if (strict) throw new UnsupportedOperationException();	
+	add(s);
     }
     @Override
     public void doAction(HadMember s) {
-	if (strict) throw new UnsupportedOperationException();		
+	add(s);		
     }
     @Override
     public void doAction(MentionOf s) {
@@ -487,14 +540,12 @@ public class IndexedDocument implements StatementAction {
     }
     @Override
     public void doAction(SpecializationOf s) {
-	if (strict) throw new UnsupportedOperationException();			
-	
+	add(s);
     }
     @Override
     public void doAction(WasInformedBy s) {
 	add(s);
     }
-    
     @Override
     public void doAction(DerivedByInsertionFrom s) {
 	throw new UnsupportedOperationException();

@@ -104,14 +104,17 @@ public class IndexedDocument implements StatementAction {
     private HashMap<QualifiedName, Collection<WasInvalidatedBy>> entityWasInvalidatedByMap;
     private Collection<WasInvalidatedBy> anonWasInvalidatedBy;
     private HashMap<QualifiedName, Collection<WasInvalidatedBy>> activityWasInvalidatedByMap;
-    private HashMap<QualifiedName, Collection<SpecializationOf>> namedSpecializationOfMap;
-    private HashMap<QualifiedName, Collection<SpecializationOf>> specificEntitySpecializationOfMap;
-    private Collection<SpecializationOf> anonSpecializationOf;
-    private HashMap<QualifiedName, Collection<SpecializationOf>> genericEntitySpecializationOfMap;
-    private Collection<AlternateOf> anonAlternateOf;
-    private HashMap<QualifiedName, Collection<AlternateOf>> namedAlternateOfMap;
-    private HashMap<QualifiedName, Collection<AlternateOf>> entityCauseAlternateOfMap;
-    private HashMap<QualifiedName, Collection<AlternateOf>> entityEffectAlternateOfMap;
+    
+    private HashMap<QualifiedName, Collection<SpecializationOf>> namedSpecializationOfMap=new HashMap<QualifiedName, Collection<SpecializationOf>>();
+    private HashMap<QualifiedName, Collection<SpecializationOf>> specificEntitySpecializationOfMap=new HashMap<QualifiedName, Collection<SpecializationOf>>();
+    private Collection<SpecializationOf> anonSpecializationOf=new LinkedList<SpecializationOf>();
+    private HashMap<QualifiedName, Collection<SpecializationOf>> genericEntitySpecializationOfMap=new HashMap<QualifiedName, Collection<SpecializationOf>>();
+    
+    private Collection<AlternateOf> anonAlternateOf=new LinkedList<AlternateOf>();
+    private HashMap<QualifiedName, Collection<AlternateOf>> namedAlternateOfMap=new HashMap<QualifiedName, Collection<AlternateOf>>();
+    private HashMap<QualifiedName, Collection<AlternateOf>> entityCauseAlternateOfMap=new HashMap<QualifiedName, Collection<AlternateOf>>();
+    private HashMap<QualifiedName, Collection<AlternateOf>> entityEffectAlternateOfMap=new HashMap<QualifiedName, Collection<AlternateOf>>();
+    
     private HashMap<QualifiedName, Collection<WasInfluencedBy>> influenceeWasInfluencedByMap;
     private HashMap<QualifiedName, Collection<WasInfluencedBy>> influencerWasInfluencedByMap;
     private Collection<WasInfluencedBy> anonWasInfluencedBy;
@@ -375,8 +378,8 @@ public class IndexedDocument implements StatementAction {
     public WasInvalidatedBy add(WasInvalidatedBy wib) {
 	return add(wib, 3, anonWasInvalidatedBy, namedWasInvalidatedByMap, entityWasInvalidatedByMap, activityWasInvalidatedByMap);
     }
-    public SpecializationOf add(SpecializationOf wib) {
-	return add(wib, 2, anonSpecializationOf, namedSpecializationOfMap, specificEntitySpecializationOfMap, genericEntitySpecializationOfMap);
+    public SpecializationOf add(SpecializationOf spec) {
+	return add(spec, 2, anonSpecializationOf, namedSpecializationOfMap, specificEntitySpecializationOfMap, genericEntitySpecializationOfMap);
     }
     public AlternateOf add(AlternateOf wib) {
 	return add(wib, 2, anonAlternateOf, namedAlternateOfMap, entityEffectAlternateOfMap,entityCauseAlternateOfMap);
@@ -401,25 +404,30 @@ public class IndexedDocument implements StatementAction {
 
    public <T extends Relation> T add(T statement,
                                      int num,
-                                     Collection<T> anonWasInformedBy,
-                                     HashMap<QualifiedName, Collection<T>> namedWasInformedByMap,
-                                     HashMap<QualifiedName, Collection<T>> activityEffectWasInformedByMap,
-                                     HashMap<QualifiedName, Collection<T>> activityCauseWasInformedByMap) {
+                                     Collection<T> anonRelationCollection,
+                                     HashMap<QualifiedName, Collection<T>> namedRelationMap,
+                                     HashMap<QualifiedName, Collection<T>> effectRelationMap,
+                                     HashMap<QualifiedName, Collection<T>> causeRelationMap) {
 	QualifiedName aid2 = u.getEffect(statement); //wib.getInformed();
 	QualifiedName aid1 = u.getCause(statement); //wib.getInformant();
 
 	statement = pFactory.newStatement(statement); // clone
 	
-	QualifiedName id=((Identifiable)statement).getId();
+	QualifiedName id;
+	if (statement instanceof Identifiable) {
+	    id=((Identifiable)statement).getId();	
+	} else {
+	    id=null;
+	}
 
 	if (id == null) {
 
 	    boolean found = false;
-	    Collection<T> wibcoll = activityEffectWasInformedByMap.get(aid2);
+	    Collection<T> wibcoll = effectRelationMap.get(aid2);
 	    if (wibcoll == null) {
 		wibcoll = new LinkedList<T>();
 		wibcoll.add(statement);
-		activityEffectWasInformedByMap.put(aid2, wibcoll);
+		effectRelationMap.put(aid2, wibcoll);
 	    } else {
 		for (T u : wibcoll) {
 		    if (u.equals(statement)) {
@@ -433,11 +441,11 @@ public class IndexedDocument implements StatementAction {
 		}
 	    }
 
-	    wibcoll = activityCauseWasInformedByMap.get(aid1);
+	    wibcoll = causeRelationMap.get(aid1);
 	    if (wibcoll == null) {
 		wibcoll = new LinkedList<T>();
 		wibcoll.add(statement);
-		activityCauseWasInformedByMap.put(aid1, wibcoll);
+		causeRelationMap.put(aid1, wibcoll);
 	    } else {
 		if (!found) {
 		    // if we had not found it in the first table, then we
@@ -447,14 +455,14 @@ public class IndexedDocument implements StatementAction {
 	    }
 
 	    if (!found) {
-		anonWasInformedBy.add(statement);
+		anonRelationCollection.add(statement);
 	    }
 	} else {
-	    Collection<T> wibcoll=namedWasInformedByMap.get(id);
+	    Collection<T> wibcoll=namedRelationMap.get(id);
 	    if (wibcoll==null) {
 		wibcoll=new LinkedList<T>();
 		wibcoll.add(statement);
-		namedWasInformedByMap.put(id, wibcoll);
+		namedRelationMap.put(id, wibcoll);
 	    } else {
 		boolean found=false;
 		for (T u1: wibcoll) {
@@ -573,6 +581,7 @@ public class IndexedDocument implements StatementAction {
 	res.getStatementOrBundle().addAll(entityMap.values());
 	res.getStatementOrBundle().addAll(activityMap.values());
 	res.getStatementOrBundle().addAll(agentMap.values());
+	
 	res.getStatementOrBundle().addAll(anonUsed);
 	for (Collection<Used> c: namedUsedMap.values()) {
 	    res.getStatementOrBundle().addAll(c);
@@ -597,6 +606,10 @@ public class IndexedDocument implements StatementAction {
 	for (Collection<WasInformedBy> c: namedWasInformedByMap.values()) {
 	    res.getStatementOrBundle().addAll(c);
 	}
+	
+	res.getStatementOrBundle().addAll(anonSpecializationOf);
+	res.getStatementOrBundle().addAll(anonAlternateOf);
+	
 
 	res.setNamespace(Namespace.gatherNamespaces(res));
 	return res;

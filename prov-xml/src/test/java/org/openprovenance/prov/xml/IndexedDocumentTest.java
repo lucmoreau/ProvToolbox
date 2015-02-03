@@ -3,6 +3,8 @@ package org.openprovenance.prov.xml;
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.AlternateOf;
+import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasGeneratedBy;
 import org.openprovenance.prov.model.WasAssociatedWith;
@@ -817,6 +819,40 @@ public class IndexedDocumentTest extends TestCase {
 	assertEquals("label",1,u.getLabel().size());
 	assertEquals("other",2,u.getOther().size());
     }
+
+    public Document makeDoc1000() {
+        Entity e1=pFactory.newEntity(q("e1"));
+        Entity e2=pFactory.newEntity(q("e2"));
+	SpecializationOf spec=pFactory.newSpecializationOf(e1.getId(),e2.getId());
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(spec);
+        doc.getStatementOrBundle().add(spec);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc1000() {
+	Document idoc1000=new IndexedDocument(pFactory,makeDoc1000()).toDocument();
+	assertEquals(idoc1000.getStatementOrBundle().size(),1);
+    }
+    public Document makeDoc1001() {
+        Entity e1=pFactory.newEntity(q("e1"));
+        Entity e2=pFactory.newEntity(q("e2"));
+	AlternateOf alt=pFactory.newAlternateOf(e1.getId(),e2.getId());
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(alt);
+        doc.getStatementOrBundle().add(alt);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc1001() {
+	Document idoc1001=new IndexedDocument(pFactory,makeDoc1001()).toDocument();
+	assertEquals(idoc1001.getStatementOrBundle().size(),1);
+    }
+
 
     
 }

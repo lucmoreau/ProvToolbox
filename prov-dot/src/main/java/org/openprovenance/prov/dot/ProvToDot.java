@@ -62,7 +62,8 @@ public class ProvToDot {
     }
 
     public String localnameToString(QualifiedName qName) {
-        return qName.getLocalPart();
+        //return qName.getLocalPart();
+        return nonEmptyLocalName(qName);
     }
 
     public enum Config { DEFAULT, ROLE, ROLE_NO_LABEL };
@@ -238,7 +239,6 @@ public class ProvToDot {
 	        throws java.io.FileNotFoundException, java.io.IOException {
 	        convert(graph,new File(dotFile), title);
 	        Runtime runtime = Runtime.getRuntime();
-	        @SuppressWarnings("unused")
 	        java.lang.Process proc = runtime.exec("dot  -Tpdf " + dotFile);
 	        InputStream is=proc.getInputStream();
                 org.apache.commons.io.IOUtils.copy(is, pdfStream);            
@@ -618,12 +618,27 @@ public class ProvToDot {
    public String convertValue(Attribute v) {
        if (v.getValue() instanceof QualifiedName) {
            QualifiedName name=(QualifiedName) v.getValue();
-           return htmlify(name.getLocalPart());
+           return htmlify(nonEmptyLocalName(name));
        }
        String label=getPropertyValueFromAny(v);
        int i=label.lastIndexOf("#");
        int j=label.lastIndexOf("/");
        return htmlify(label.substring(Math.max(i,j)+1, label.length()));
+   }
+
+   public String nonEmptyLocalName(QualifiedName name) {
+       final String localPart = name.getLocalPart();
+       if ("".equals(localPart)) {
+	   // we are in this case for url finishing with /
+	   String uri=name.getNamespaceURI();
+	   String label=uri.substring(0, uri.length()-1);
+	   int i=label.lastIndexOf("#");
+	   int j=label.lastIndexOf("/");
+	   return uri.substring(Math.max(i,j)+1, uri.length());
+	   
+       } else {
+	   return localPart;
+       }
    }
 
 

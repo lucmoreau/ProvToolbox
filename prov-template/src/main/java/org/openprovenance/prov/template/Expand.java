@@ -40,9 +40,17 @@ public class Expand {
     public static final String STARTTIME_URI = TMPL_NS + STARTTIME;
     public static final String ENDTIME_URI = TMPL_NS + ENDTIME;
     
-    public Expand(ProvFactory pf) {
-    	this.pf=pf;
+    final private boolean addOrderp;
+    
+    private Expand(ProvFactory pf) {
+    	this(pf,false);
     }
+    public Expand(ProvFactory pf, boolean addOrderp) {
+    	this.pf=pf;
+    	this.addOrderp=addOrderp;
+    }
+    
+    
 
     Document expand(Document template, Bindings bindings) {
 	return null;
@@ -81,13 +89,14 @@ public class Expand {
 	return expand(statement, bindings1, grp1, us1);
     }
 
-    public List<StatementOrBundle> expand(Bundle bun, Bindings bindings1,
+    public List<StatementOrBundle> expand(Bundle bun, 
+                                          Bindings bindings1,
 					  Groupings grp1) {
 	Hashtable<QualifiedName, QualifiedName> env0 = new Hashtable<QualifiedName, QualifiedName>();
 	Hashtable<QualifiedName, List<TypedValue>> env1 = new Hashtable<QualifiedName, List<TypedValue>>();
 	
 	ExpandAction action = new ExpandAction(pf, u, this, env0, env1, null,
-					       bindings1, grp1);
+					       bindings1, grp1,addOrderp);
 	u.doAction(bun, action);
 	return action.getList();
     }
@@ -115,7 +124,7 @@ public class Expand {
 				   bindings1, (UsingIterator) iter);
 
 	    ExpandAction action = new ExpandAction(pf, u, this, env, env2,
-						   index, bindings1, grp1);
+						   index, bindings1, grp1,addOrderp);
 	    u.doAction(statement, action);
 	    results.addAll(action.getList());
 

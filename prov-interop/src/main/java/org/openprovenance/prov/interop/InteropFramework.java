@@ -90,24 +90,25 @@ public class InteropFramework implements InteropMediaType {
     final private String generator;
     final private String index;
     final private String flatten;
+    final private boolean addOrderp;
 
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
      */
     public InteropFramework() {
-        this(null, null, null, null, null, null, null, null, null, null, null, null,
+        this(null, null, null, null, null, null, null, null, null, false, null, null, null,
                 org.openprovenance.prov.xml.ProvFactory.getFactory());
     }
 
     public InteropFramework(ProvFactory pFactory) {
-        this(null, null, null, null, null, null, null, null, null, null, null, null,
+        this(null, null, null, null, null, null, null, null, null, false, null, null, null,
                 pFactory);
     }
 
     public InteropFramework(String verbose, String debug, String logfile,
             String infile, String outfile, String namespaces, String title,
-            String layout, String bindings, String generator,
+            String layout, String bindings, boolean addOrderp, String generator,
             String index, String flatten, ProvFactory pFactory) {
         this.verbose = verbose;
         this.debug = debug;
@@ -122,6 +123,7 @@ public class InteropFramework implements InteropMediaType {
         this.index=index;
         this.flatten=flatten;
         this.pFactory = pFactory;
+        this.addOrderp=addOrderp;
         this.onto = new Ontology(pFactory);
 
         extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
@@ -728,8 +730,8 @@ public class InteropFramework implements InteropMediaType {
         }
         if (bindings != null) {
             Document docBindings = (Document) readDocumentFromFile(bindings);
-            Document expanded = new Expand(pFactory).expander(doc, outfile,
-                                                              docBindings);
+            Document expanded = new Expand(pFactory, addOrderp).expander(doc, outfile,
+                                                                         docBindings);
             writeDocument(outfile, expanded);
 
         } else {

@@ -25,6 +25,7 @@ public class CommandLineArguments {
     public static final String GENERATOR = "generator";
     public static final String INDEX = "index";
     public static final String FLATTEN = "flatten";
+    private static final String GENORDER = "genorder";
 
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
@@ -84,8 +85,8 @@ public class CommandLineArguments {
                 .hasArg()
                 .withDescription("graph generator N:n:first:seed:e1")
                 .create(GENERATOR);
-
-
+        Option genorder = new Option(GENORDER, "In template expansion, generate order attribute. By default does not.");
+        
         Options options = new Options();
 
         options.addOption(help);
@@ -102,6 +103,7 @@ public class CommandLineArguments {
         options.addOption(layout);
         options.addOption(bindings);
         options.addOption(generator);
+        options.addOption(genorder);
 
         return options;
 
@@ -124,6 +126,7 @@ public class CommandLineArguments {
         String generator = null;
         String index=null;
         String flatten=null;
+        boolean addOrderp=false;
 
 
         try {
@@ -145,6 +148,7 @@ public class CommandLineArguments {
             if (line.hasOption(LAYOUT))      layout = line.getOptionValue(LAYOUT);
             if (line.hasOption(BINDINGS))   bindings = line.getOptionValue(BINDINGS);
             if (line.hasOption(GENERATOR))  generator = line.getOptionValue(GENERATOR);
+            if (line.hasOption(GENORDER))   addOrderp=true;
 	    
 	    if (help!=null) {
 		HelpFormatter formatter = new HelpFormatter();
@@ -158,6 +162,7 @@ public class CommandLineArguments {
 	    }
 	    
 	    
+	    
             InteropFramework interop=new InteropFramework(verbose,
                                                           debug,
                                                           logfile,
@@ -167,6 +172,7 @@ public class CommandLineArguments {
                                                           title,
                                                           layout,
                                                           bindings,
+                                                          addOrderp,
                                                           generator,
                                                           index,
                                                           flatten,

@@ -10,6 +10,7 @@ import org.openprovenance.prov.model.WasGeneratedBy;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasInformedBy;
+import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Agent;
@@ -852,6 +853,96 @@ public class IndexedDocumentTest extends TestCase {
 	Document idoc1001=new IndexedDocument(pFactory,makeDoc1001()).toDocument();
 	assertEquals(idoc1001.getStatementOrBundle().size(),1);
     }
+
+    public Document makeDoc1100() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	WasInvalidatedBy wgb1=pFactory.newWasInvalidatedBy(null,e1.getId(),a1.getId());
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(wgb1);
+        doc.getStatementOrBundle().add(wgb1);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc1100() {
+	Document idoc1100=new IndexedDocument(pFactory,makeDoc1100()).toDocument();
+	assertEquals(idoc1100.getStatementOrBundle().size(),1);
+    }
+
+    public Document makeDoc1101() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	WasInvalidatedBy wgb1=pFactory.newWasInvalidatedBy(null,e1.getId(),a1.getId());
+	WasInvalidatedBy wgb2=pFactory.newWasInvalidatedBy(null,e1.getId(),a1.getId());
+	wgb2.getLabel().add(pFactory.newInternationalizedString("hello"));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(wgb1);
+        doc.getStatementOrBundle().add(wgb1);
+        doc.getStatementOrBundle().add(wgb2);
+        doc.getStatementOrBundle().add(wgb2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc1101() {
+	Document idoc1101=new IndexedDocument(pFactory,makeDoc1101()).toDocument();
+	assertEquals(idoc1101.getStatementOrBundle().size(),2);
+    }
+
+    public Document makeDoc1102() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	QualifiedName uid=q("g1");
+	WasInvalidatedBy u1=pFactory.newWasInvalidatedBy(uid,e1.getId(),a1.getId());
+	WasInvalidatedBy u2=pFactory.newWasInvalidatedBy(uid,e1.getId(),a1.getId());
+	u2.getLabel().add(pFactory.newInternationalizedString("hello"));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u2);
+        doc.getStatementOrBundle().add(u2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc1102() {
+	Document idoc1102=new IndexedDocument(pFactory,makeDoc1102()).toDocument();
+	assertEquals(idoc1102.getStatementOrBundle().size(),1);
+	WasInvalidatedBy u=(WasInvalidatedBy) idoc1102.getStatementOrBundle().get(0);
+	assertEquals("label",1,u.getLabel().size());
+    }
+
+    public Document makeDoc1103() {
+        Entity e1=pFactory.newEntity(q("e1"));
+	Activity a1=pFactory.newActivity(q("a1"));
+	QualifiedName uid=q("g2");
+	WasInvalidatedBy u1=pFactory.newWasInvalidatedBy(uid,e1.getId(),a1.getId());
+	WasInvalidatedBy u2=pFactory.newWasInvalidatedBy(uid,e1.getId(),a1.getId());
+	u2.getLabel().add(pFactory.newInternationalizedString("hello"));
+	u1.getOther().add(pFactory.newOther(q("ELEMENT"), 1, pFactory.getName().XSD_INT));
+	u2.getOther().add(pFactory.newOther(q("ELEMENT"), 2, pFactory.getName().XSD_INT));
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u1);
+        doc.getStatementOrBundle().add(u2);
+        doc.getStatementOrBundle().add(u2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc1103() {
+	Document idoc1103=new IndexedDocument(pFactory,makeDoc1103()).toDocument();
+	assertEquals(idoc1103.getStatementOrBundle().size(),1);
+	WasInvalidatedBy u=(WasInvalidatedBy) idoc1103.getStatementOrBundle().get(0);
+	assertEquals("label",1,u.getLabel().size());
+	assertEquals("other",2,u.getOther().size());
+    }
+
 
 
     

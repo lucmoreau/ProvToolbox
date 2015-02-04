@@ -100,10 +100,11 @@ public class IndexedDocument implements StatementAction {
     private HashMap<QualifiedName, Collection<ActedOnBehalfOf>> namedActedOnBehalfOfMap;
     private HashMap<QualifiedName, Collection<ActedOnBehalfOf>> responsibleActedOnBehalfOfMap;
     private HashMap<QualifiedName, Collection<ActedOnBehalfOf>> delegateActedOnBehalfOfMap;
-    private HashMap<QualifiedName, Collection<WasInvalidatedBy>> namedWasInvalidatedByMap;
-    private HashMap<QualifiedName, Collection<WasInvalidatedBy>> entityWasInvalidatedByMap;
-    private Collection<WasInvalidatedBy> anonWasInvalidatedBy;
-    private HashMap<QualifiedName, Collection<WasInvalidatedBy>> activityWasInvalidatedByMap;
+    
+    private HashMap<QualifiedName, Collection<WasInvalidatedBy>> namedWasInvalidatedByMap=new HashMap<QualifiedName, Collection<WasInvalidatedBy>>();
+    private HashMap<QualifiedName, Collection<WasInvalidatedBy>> entityWasInvalidatedByMap=new HashMap<QualifiedName, Collection<WasInvalidatedBy>>();
+    private Collection<WasInvalidatedBy> anonWasInvalidatedBy=new LinkedList<WasInvalidatedBy>();
+    private HashMap<QualifiedName, Collection<WasInvalidatedBy>> activityWasInvalidatedByMap=new HashMap<QualifiedName, Collection<WasInvalidatedBy>>();
     
     private HashMap<QualifiedName, Collection<SpecializationOf>> namedSpecializationOfMap=new HashMap<QualifiedName, Collection<SpecializationOf>>();
     private HashMap<QualifiedName, Collection<SpecializationOf>> specificEntitySpecializationOfMap=new HashMap<QualifiedName, Collection<SpecializationOf>>();
@@ -610,7 +611,10 @@ public class IndexedDocument implements StatementAction {
 	res.getStatementOrBundle().addAll(anonSpecializationOf);
 	res.getStatementOrBundle().addAll(anonAlternateOf);
 	
-
+	res.getStatementOrBundle().addAll(anonWasInvalidatedBy);
+	for (Collection<WasInvalidatedBy> c: namedWasInvalidatedByMap.values()) {
+	    res.getStatementOrBundle().addAll(c);
+	}
 	res.setNamespace(Namespace.gatherNamespaces(res));
 	return res;
     }

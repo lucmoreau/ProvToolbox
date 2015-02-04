@@ -33,6 +33,8 @@ public class ExpandTest extends TestCase {
     QualifiedName var_ag=pf.newQualifiedName(VAR_NS, "ag", "var");
     QualifiedName var_pl=pf.newQualifiedName(VAR_NS, "pl", "var");
     QualifiedName var_label=pf.newQualifiedName(VAR_NS, "label", "var");
+    QualifiedName var_start=pf.newQualifiedName(VAR_NS, "start", "var");
+    QualifiedName var_end=pf.newQualifiedName(VAR_NS, "end", "var");
 
     public  void expander(String in, String inBindings, String out) throws IOException, Throwable {
 	System.out.println("expander ==========================================> " + in);
@@ -480,12 +482,22 @@ public class ExpandTest extends TestCase {
                               pf.newQualifiedName(EX_NS, "agv1", "ex"));
         bindings1.addVariable(var_pl,
                               pf.newQualifiedName(EX_NS, "pl1", "ex"));
-        
+
         
         List<TypedValue> ll=new LinkedList<TypedValue>();
         ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
         ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "m22@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
+
+	
+
+
+	List<TypedValue> ll2=new LinkedList<TypedValue>();
+        ll2.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), pf.newTimeNow(), pf.getName().XSD_DATETIME));
+        bindings1.addAttribute(var_start, ll2);
+
+	List<TypedValue> ll3=new LinkedList<TypedValue>();
+        ll3.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), pf.newTimeNow(), pf.getName().XSD_DATETIME));
+        bindings1.addAttribute(var_end, ll3);
 
     
 

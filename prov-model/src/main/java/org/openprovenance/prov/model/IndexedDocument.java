@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 
@@ -568,55 +569,84 @@ public class IndexedDocument implements StatementAction {
 	throw new UnsupportedOperationException();	
     }
 
+    HashMap<QualifiedName,IndexedDocument> bundleMap=new HashMap<QualifiedName,IndexedDocument>();
+    
     @Override
     public void doAction(Bundle bun, ProvUtilities provUtilities) {
 	if (flatten) {
 	    provUtilities.forAllStatement(bun.getStatement(), this);
 	} else {
-	    throw new UnsupportedOperationException("can't handle bundles without flattening");
+	    IndexedDocument iDoc=bundleMap.get(bun.getId());
+	    if (iDoc==null) {
+		iDoc=new IndexedDocument(pFactory, null,flatten);
+		bundleMap.put(bun.getId(),iDoc);
+	    }	    
+	    u.forAllStatement(bun.getStatement(), iDoc);
 	}
     }
     
     public Document toDocument() {
 	Document res=pFactory.newDocument();
-	res.getStatementOrBundle().addAll(entityMap.values());
-	res.getStatementOrBundle().addAll(activityMap.values());
-	res.getStatementOrBundle().addAll(agentMap.values());
+	List<StatementOrBundle> statementOrBundle = res.getStatementOrBundle();
 	
-	res.getStatementOrBundle().addAll(anonUsed);
-	for (Collection<Used> c: namedUsedMap.values()) {
-	    res.getStatementOrBundle().addAll(c);
-	}
-	res.getStatementOrBundle().addAll(anonWasGeneratedBy);
-	for (Collection<WasGeneratedBy> c: namedWasGeneratedByMap.values()) {
-	    res.getStatementOrBundle().addAll(c);
-	}
-	res.getStatementOrBundle().addAll(anonWasDerivedFrom);
-	for (Collection<WasDerivedFrom> c: namedWasDerivedFromMap.values()) {
-	    res.getStatementOrBundle().addAll(c);
-	}
-	res.getStatementOrBundle().addAll(anonWasAssociatedWith);
-	for (Collection<WasAssociatedWith> c: namedWasAssociatedWithMap.values()) {
-	    res.getStatementOrBundle().addAll(c);
-	}
-	res.getStatementOrBundle().addAll(anonWasAttributedTo);
-	for (Collection<WasAttributedTo> c: namedWasAttributedToMap.values()) {
-	    res.getStatementOrBundle().addAll(c);
-	}
-	res.getStatementOrBundle().addAll(anonWasInformedBy);
-	for (Collection<WasInformedBy> c: namedWasInformedByMap.values()) {
-	    res.getStatementOrBundle().addAll(c);
-	}
+	toContainer(statementOrBundle);
 	
-	res.getStatementOrBundle().addAll(anonSpecializationOf);
-	res.getStatementOrBundle().addAll(anonAlternateOf);
-	
-	res.getStatementOrBundle().addAll(anonWasInvalidatedBy);
-	for (Collection<WasInvalidatedBy> c: namedWasInvalidatedByMap.values()) {
-	    res.getStatementOrBundle().addAll(c);
+	if (!flatten) {
+	    for (QualifiedName bunId: bundleMap.keySet()) {
+		IndexedDocument idoc=bundleMap.get(bunId);
+		Bundle bun=pFactory.newNamedBundle(bunId, null);
+		List<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
+		toContainer(ll);
+		for (StatementOrBundle s: ll) {
+		    bun.getStatement().add((Statement) s);
+		}
+		bun.setNamespace(Namespace.gatherNamespaces(bun));
+
+		statementOrBundle.add(bun);
+	    }
 	}
 	res.setNamespace(Namespace.gatherNamespaces(res));
 	return res;
+    }
+    private void toContainer(List<StatementOrBundle> statementOrBundle) {
+	statementOrBundle.addAll(entityMap.values());
+	statementOrBundle.addAll(activityMap.values());
+	statementOrBundle.addAll(agentMap.values());
+	
+	statementOrBundle.addAll(anonUsed);
+	for (Collection<Used> c: namedUsedMap.values()) {
+	    statementOrBundle.addAll(c);
+	}
+	statementOrBundle.addAll(anonWasGeneratedBy);
+	for (Collection<WasGeneratedBy> c: namedWasGeneratedByMap.values()) {
+	    statementOrBundle.addAll(c);
+	}
+	statementOrBundle.addAll(anonWasDerivedFrom);
+	for (Collection<WasDerivedFrom> c: namedWasDerivedFromMap.values()) {
+	    statementOrBundle.addAll(c);
+	}
+	statementOrBundle.addAll(anonWasAssociatedWith);
+	for (Collection<WasAssociatedWith> c: namedWasAssociatedWithMap.values()) {
+	    statementOrBundle.addAll(c);
+	}
+	statementOrBundle.addAll(anonWasAttributedTo);
+	for (Collection<WasAttributedTo> c: namedWasAttributedToMap.values()) {
+	    statementOrBundle.addAll(c);
+	}
+	statementOrBundle.addAll(anonWasInformedBy);
+	for (Collection<WasInformedBy> c: namedWasInformedByMap.values()) {
+	    statementOrBundle.addAll(c);
+	}
+	
+	statementOrBundle.addAll(anonSpecializationOf);
+	statementOrBundle.addAll(anonAlternateOf);
+	
+	statementOrBundle.addAll(anonWasInvalidatedBy);
+	for (Collection<WasInvalidatedBy> c: namedWasInvalidatedByMap.values()) {
+	    statementOrBundle.addAll(c);
+	}
+	
+	
     }
 
 }

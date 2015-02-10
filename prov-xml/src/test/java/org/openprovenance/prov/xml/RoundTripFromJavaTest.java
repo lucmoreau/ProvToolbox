@@ -372,6 +372,10 @@ public class RoundTripFromJavaTest extends TestCase {
         he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX,
                                             "hello\nover\nmore\nlines",
                                             name.XSD_STRING));
+        he.getOther().add(pFactory.newOther(EX_NS, "0tagWithDigit", EX_PREFIX,
+                                            "hello",
+                                            name.XSD_STRING));
+
 
     }
 

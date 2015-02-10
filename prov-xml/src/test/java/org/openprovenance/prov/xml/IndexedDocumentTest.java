@@ -1,5 +1,8 @@
 package org.openprovenance.prov.xml;
 
+
+import java.io.File;
+
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.model.Activity;
@@ -17,6 +20,7 @@ import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.Bundle;
 
 import junit.framework.TestCase;
 
@@ -943,7 +947,81 @@ public class IndexedDocumentTest extends TestCase {
 	assertEquals("other",2,u.getOther().size());
     }
 
+    public Document makeDoc2000() {
+	Bundle bun1=pFactory.newNamedBundle(q("b1"), null);
+	Bundle bun2=pFactory.newNamedBundle(q("b2"), null);
 
+        Entity e1=pFactory.newEntity(q("e1"));
+	Entity e2=pFactory.newEntity(q("e2"));
+	bun1.getStatement().add(e1);
+	bun1.getStatement().add(e1);
+	bun2.getStatement().add(e2);
+	bun2.getStatement().add(e2);
+	bun2.getStatement().add(e2);
+	
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(bun1);
+        bun1.setNamespace(Namespace.gatherNamespaces(bun1));
+        doc.getStatementOrBundle().add(bun2);
+        bun2.setNamespace(Namespace.gatherNamespaces(bun2));
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc2000() throws JAXBException {
+	Document doc=makeDoc2000();
+	ProvSerialiser.getThreadProvSerialiser().serialiseDocument(new File("target/doc2000a.xml"), doc, true);
+
+	Document idoc2000=new IndexedDocument(pFactory,doc,false).toDocument();
+	ProvSerialiser.getThreadProvSerialiser().serialiseDocument(new File("target/doc2000b.xml"), idoc2000, true);
+	assertEquals(idoc2000.getStatementOrBundle().size(),2);
+    }
+
+    public Document makeDoc2001() {
+	Bundle bun1=pFactory.newNamedBundle(q("b1"), null);
+	Bundle bun2=pFactory.newNamedBundle(q("b1"), null);
+
+        Entity e1=pFactory.newEntity(q("e1"));
+	Entity e2=pFactory.newEntity(q("e2"));
+	
+	bun1.getStatement().add(e1);
+	bun1.getStatement().add(e2);	
+	bun2.getStatement().add(e1);
+	bun2.getStatement().add(e2);
+	
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(bun1);
+        doc.getStatementOrBundle().add(bun2);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc2001() throws JAXBException {
+	Document idoc2001=new IndexedDocument(pFactory,makeDoc2001(),false).toDocument();
+	assertEquals(idoc2001.getStatementOrBundle().size(),1);
+	ProvSerialiser.getThreadProvSerialiser().serialiseDocument(new File("target/doc2001.xml"), idoc2001, true);
+
+    }
+    
+    public void testDoc2002() throws JAXBException {
+   	Document doc=makeDoc2000();
+   	// flattening!
+   	Document idoc2000=new IndexedDocument(pFactory,doc,true).toDocument();
+   	ProvSerialiser.getThreadProvSerialiser().serialiseDocument(new File("target/doc2002.xml"), idoc2000, true);
+   	assertEquals(idoc2000.getStatementOrBundle().size(),2);
+       }
+
+    
+
+    public void testDoc2003() throws JAXBException {
+   	Document doc=makeDoc2000();
+   	// flattening!
+   	Document idoc2001=new IndexedDocument(pFactory,doc,true).toDocument();
+   	ProvSerialiser.getThreadProvSerialiser().serialiseDocument(new File("target/doc2003.xml"), idoc2001, true);
+   	assertEquals(idoc2001.getStatementOrBundle().size(),2);
+       }
 
     
 }

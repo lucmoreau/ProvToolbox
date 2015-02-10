@@ -347,10 +347,12 @@ public class IndexedDocument implements StatementAction {
             
     public IndexedDocument(ProvFactory pFactory, Document doc, boolean flatten) {
         this.pFactory=pFactory;
-        this.nss=doc.getNamespace();
         this.flatten=flatten;
         
-        u.forAllStatementOrBundle(doc.getStatementOrBundle(), this);
+        if (doc!=null) {
+            this.nss=doc.getNamespace();          
+            u.forAllStatementOrBundle(doc.getStatementOrBundle(), this);
+        }
 
     }
 
@@ -596,7 +598,7 @@ public class IndexedDocument implements StatementAction {
 		IndexedDocument idoc=bundleMap.get(bunId);
 		Bundle bun=pFactory.newNamedBundle(bunId, null);
 		List<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
-		toContainer(ll);
+		idoc.toContainer(ll);
 		for (StatementOrBundle s: ll) {
 		    bun.getStatement().add((Statement) s);
 		}

@@ -829,42 +829,8 @@ public class InteropFramework implements InteropMediaType {
                 toDot.convert(document, os, title);
                 break;
             }
-            case JPEG: {
-                String configFile = null; // give it as option
-                File tmp = File.createTempFile("viz-", ".dot");
-
-                String dotFileOut = tmp.getAbsolutePath(); // give it as option,
-                                                           // if not available
-                                                           // create tmp file
-                ProvToDot toDot;
-                if (configFile != null) {
-                    toDot = new ProvToDot(configFile);
-                } else {
-                    toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
-                }
-
-                toDot.convert(document, dotFileOut, os, EXTENSION_JPG, title);
-                tmp.delete();
-                break;
-            }
-            case PNG: {
-                String configFile = null; // give it as option
-                File tmp = File.createTempFile("viz-", ".dot");
-
-                String dotFileOut = tmp.getAbsolutePath(); // give it as option,
-                                                           // if not available
-                                                           // create tmp file
-                ProvToDot toDot;
-                if (configFile != null) {
-                    toDot = new ProvToDot(configFile);
-                } else {
-                    toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
-                }
-
-                toDot.convert(document, dotFileOut, os, EXTENSION_PNG, title);
-                tmp.delete();
-                break;
-            }
+            case JPEG:
+            case PNG:
             case SVG: {
                 String configFile = null; // give it as option
                 File tmp = File.createTempFile("viz-", ".dot");
@@ -872,9 +838,6 @@ public class InteropFramework implements InteropMediaType {
                 String dotFileOut = tmp.getAbsolutePath(); // give it as option,
                                                            // if not available
                                                            // create tmp file
-                // ProvToDot toDot=new ProvToDot((configFile==null)?
-                // "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml"
-                // : configFile);
                 ProvToDot toDot;
                 if (configFile != null) {
                     toDot = new ProvToDot(configFile);
@@ -882,7 +845,7 @@ public class InteropFramework implements InteropMediaType {
                     toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
                 }
 
-                toDot.convert(document, dotFileOut, os, EXTENSION_SVG, title);
+                toDot.convert(document, dotFileOut, os, extensionMap.get(format), title);
                 tmp.delete();
                 break;
             }
@@ -976,42 +939,8 @@ public class InteropFramework implements InteropMediaType {
                 toDot.convert(document, filename, title);
                 break;
             }
-            case JPEG: {
-                String configFile = null; // give it as option
-                File tmp = File.createTempFile("viz-", ".dot");
-
-                String dotFileOut = tmp.getAbsolutePath(); // give it as option,
-                                                           // if not available
-                                                           // create tmp file
-                ProvToDot toDot;
-                if (configFile != null) {
-                    toDot = new ProvToDot(configFile);
-                } else {
-                    toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
-                }
-                toDot.setLayout(layout);
-                toDot.convert(document, dotFileOut, filename, EXTENSION_JPG, title);
-                tmp.delete();
-                break;
-            }
-            case PNG: {
-                String configFile = null; // give it as option
-                File tmp = File.createTempFile("viz-", ".dot");
-
-                String dotFileOut = tmp.getAbsolutePath(); // give it as option,
-                                                           // if not available
-                                                           // create tmp file
-                ProvToDot toDot;
-                if (configFile != null) {
-                    toDot = new ProvToDot(configFile);
-                } else {
-                    toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
-                }
-                toDot.setLayout(layout);
-                toDot.convert(document, dotFileOut, filename, EXTENSION_PNG, title);
-                tmp.delete();
-                break;
-            }
+            case JPEG:
+            case PNG:
             case SVG: {
                 String configFile = null; // give it as option
                 File tmp = File.createTempFile("viz-", ".dot");
@@ -1019,9 +948,6 @@ public class InteropFramework implements InteropMediaType {
                 String dotFileOut = tmp.getAbsolutePath(); // give it as option,
                                                            // if not available
                                                            // create tmp file
-                // ProvToDot toDot=new ProvToDot((configFile==null)?
-                // "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml"
-                // : configFile);
                 ProvToDot toDot;
                 if (configFile != null) {
                     toDot = new ProvToDot(configFile);
@@ -1029,7 +955,7 @@ public class InteropFramework implements InteropMediaType {
                     toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
                 }
                 toDot.setLayout(layout);
-                toDot.convert(document, dotFileOut, filename, EXTENSION_SVG, title);
+                toDot.convert(document, dotFileOut, filename, extensionMap.get(format), title);
                 tmp.delete();
                 break;
             }

@@ -54,7 +54,7 @@ public class InteropFramework implements InteropMediaType {
      * Some of these serializations can be input, output, or both. */
     
     static public enum ProvFormat {
-        PROVN, XML, TURTLE, RDFXML, TRIG, JSON, DOT, JPEG, SVG, PDF
+        PROVN, XML, TURTLE, RDFXML, TRIG, JSON, DOT, JPEG, PNG, SVG, PDF
     }
 
     static public enum ProvFormatType {
@@ -308,6 +308,13 @@ public class InteropFramework implements InteropMediaType {
                 mimeTypeRevMap.put(MEDIA_IMAGE_JPEG, ProvFormat.JPEG);
                 provTypeMap.put(ProvFormat.JPEG, ProvFormatType.OUTPUT);
                 break;
+            case PNG:
+                extensionMap.put(ProvFormat.PNG, EXTENSION_PNG);
+                extensionRevMap.put(EXTENSION_PNG, ProvFormat.PNG);
+                mimeTypeMap.put(ProvFormat.PNG, MEDIA_IMAGE_PNG);
+                mimeTypeRevMap.put(MEDIA_IMAGE_PNG, ProvFormat.PNG);
+                provTypeMap.put(ProvFormat.PNG, ProvFormatType.OUTPUT);
+                break;
             case JSON:
                 extensionMap.put(ProvFormat.JSON, EXTENSION_JSON);
                 extensionRevMap.put(EXTENSION_JSON, ProvFormat.JSON);
@@ -507,6 +514,7 @@ public class InteropFramework implements InteropMediaType {
             switch (format) {
             case DOT:
             case JPEG:
+            case PNG:
             case SVG:
                 throw new UnsupportedOperationException(); // we don't load PROV
                 // from these
@@ -629,6 +637,7 @@ public class InteropFramework implements InteropMediaType {
             switch (format) {
             case DOT:
             case JPEG:
+            case PNG:
             case SVG:
                 throw new UnsupportedOperationException(); // we don't load PROV
                                                            // from these
@@ -838,6 +847,24 @@ public class InteropFramework implements InteropMediaType {
                 tmp.delete();
                 break;
             }
+            case PNG: {
+                String configFile = null; // give it as option
+                File tmp = File.createTempFile("viz-", ".dot");
+
+                String dotFileOut = tmp.getAbsolutePath(); // give it as option,
+                                                           // if not available
+                                                           // create tmp file
+                ProvToDot toDot;
+                if (configFile != null) {
+                    toDot = new ProvToDot(configFile);
+                } else {
+                    toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
+                }
+
+                toDot.convert(document, dotFileOut, os, EXTENSION_PNG, title);
+                tmp.delete();
+                break;
+            }
             case SVG: {
                 String configFile = null; // give it as option
                 File tmp = File.createTempFile("viz-", ".dot");
@@ -964,6 +991,24 @@ public class InteropFramework implements InteropMediaType {
                 }
                 toDot.setLayout(layout);
                 toDot.convert(document, dotFileOut, filename, EXTENSION_JPG, title);
+                tmp.delete();
+                break;
+            }
+            case PNG: {
+                String configFile = null; // give it as option
+                File tmp = File.createTempFile("viz-", ".dot");
+
+                String dotFileOut = tmp.getAbsolutePath(); // give it as option,
+                                                           // if not available
+                                                           // create tmp file
+                ProvToDot toDot;
+                if (configFile != null) {
+                    toDot = new ProvToDot(configFile);
+                } else {
+                    toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
+                }
+                toDot.setLayout(layout);
+                toDot.convert(document, dotFileOut, filename, EXTENSION_PNG, title);
                 tmp.delete();
                 break;
             }

@@ -3,7 +3,6 @@ package org.openprovenance.prov.xml;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -11,7 +10,7 @@ import javax.xml.bind.PropertyException;
 
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
-
+import org.openprovenance.prov.model.NamespaceGatherer;
 import org.w3c.dom.Node;
 
 import java.io.OutputStream;
@@ -20,9 +19,8 @@ import java.io.File;
 
 /** Serialiser of PROV Graphs. */
 
-public class ProvSerialiser {
+public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser {
     private ObjectFactory2 of=new ObjectFactory2();
-    //private org.openprovenance.prov.xml.validation.ObjectFactory vof=new org.openprovenance.prov.xml.validation.ObjectFactory();
 	static DocumentBuilder docBuilder;
 
 
@@ -62,26 +60,17 @@ public class ProvSerialiser {
     }
     protected JAXBContext jc;
 
-    public ProvSerialiser () throws JAXBException {
+    public ProvSerialiser ()  throws JAXBException {
         jc = JAXBContext.newInstance( ProvFactory.packageList );
-        //System.out.println("JAXBContext => " + jc.getClass());
     }
 
     public ProvSerialiser (String packageList) throws JAXBException {
         jc = JAXBContext.newInstance( packageList );
-        //System.out.println("JAXBContext => " + jc.getClass());
-    }
-
-    public void configurePrefixes(Marshaller m) throws PropertyException {
-        configurePrefixes(m,new Namespace());
     }
 
     public void configurePrefixes(Marshaller m, Namespace namespaces) throws PropertyException {
         m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
-                             new NamespacePrefixMapper(namespaces));
-	//System.out.println("--------------> ");
-	//m.setAdapter(new org.w3._2001.xmlschema.Adapter1());
-        //m.setAdapter(new AttributeAdapter());
+                      new NamespacePrefixMapper(namespaces));
     }
 
     /** By default we use a document provided by the DocumentBuilder
@@ -100,41 +89,43 @@ public class ProvSerialiser {
         return (org.w3c.dom.Document) serialiseDocument (defaultEmptyDocument(), request);
     }
     
-    public Node serialiseDocument (Node addTo, Document graph)
+    public Node serialiseDocument (Node addTo, Document document)
         throws JAXBException {
         Marshaller m=jc.createMarshaller();
-        m.marshal(of.createDocument(graph),addTo);
+        prepareNamespaces(m, document);
+        m.marshal(of.createDocument(document),addTo);
         return addTo;
     }
-    public String serialiseDocument (StringWriter sw, Document graph)
-        throws JAXBException {
-        Marshaller m=jc.createMarshaller();
-        m.marshal(of.createDocument(graph),sw);
-        return sw.toString();
-    }
 
-    public String serialiseDocument (StringWriter sw, Document graph, boolean format)
+    public void prepareNamespaces(Marshaller m, Document document) throws PropertyException {
+	final Namespace superNamespace = NamespaceGatherer.accumulateAllNamespaces(document);
+	configurePrefixes(m,superNamespace);
+	Namespace.withThreadNamespace(superNamespace);
+    }
+ 
+
+    public String serialiseDocument (StringWriter sw, Document document, boolean format)
         throws JAXBException {
         Marshaller m=jc.createMarshaller();
         m.setProperty("jaxb.formatted.output",format);
-        configurePrefixes(m,graph.getNamespace());
-        m.marshal(of.createDocument(graph),sw);
+        prepareNamespaces(m, document);
+        m.marshal(of.createDocument(document),sw);
         return sw.toString();
     }
 
-    public void serialiseDocument (OutputStream out, Document graph, boolean format)
+    public void serialiseDocument (OutputStream out, Document document, boolean format)
         throws JAXBException {
         Marshaller m=jc.createMarshaller();
         m.setProperty("jaxb.formatted.output",format);
-        configurePrefixes(m,graph.getNamespace());
-        m.marshal(of.createDocument(graph),out);
+        prepareNamespaces(m, document);
+        m.marshal(of.createDocument(document),out);
     }
-    public void serialiseDocument (File file, Document graph, boolean format)
+    public void serialiseDocument (File file, Document document, boolean format)
 	        throws JAXBException {
 	Marshaller m=jc.createMarshaller();
 	m.setProperty("jaxb.formatted.output",format);
-	configurePrefixes(m,graph.getNamespace());
-	m.marshal(of.createDocument(graph),file);
+	prepareNamespaces(m, document);
+	m.marshal(of.createDocument(document),file);
     }
 
 

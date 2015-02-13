@@ -1,6 +1,6 @@
 language: java
 
-before_script:
+before_install:
  - sudo apt-get -qq update > /dev/null
  - sudo apt-get -qq install graphviz > /dev/null
  

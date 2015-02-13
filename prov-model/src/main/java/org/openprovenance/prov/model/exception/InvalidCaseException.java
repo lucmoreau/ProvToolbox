@@ -1,9 +1,8 @@
-/**
- * 
- */
 package org.openprovenance.prov.model.exception;
 
 /**
+ * An exception thrown when an invalid case occurs.
+ * 
  * @author lavm
  *
  */

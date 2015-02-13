@@ -13,7 +13,7 @@ import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.Name;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.ProvFactory;
@@ -33,7 +33,7 @@ public class TreeTraversal {
         this.c=c;
         this.pFactory=pFactory;
         this.name=pFactory.getName();
-        this.namespace=new Namespace();
+        this.namespace=pFactory.newNamespace();
         this.namespace.addKnownNamespaces();
         
         //this.vconv=new ValueConverter(pFactory,null);
@@ -155,7 +155,6 @@ public class TreeTraversal {
             time=(XMLGregorianCalendar) convert(ast.getChild(3));
             rAttrs=(List<Attribute>) convert(ast.getChild(4));
             return c.newWasInvalidatedBy(uid,id2,id1,time,rAttrs);
-
 
 
         case PROV_NParser.WIB:
@@ -371,7 +370,7 @@ public class TreeTraversal {
             List<Key> keys=new LinkedList<Key>();
             for (int i=0; i< ast.getChildCount(); i++) {
                 Object o=convert(ast.getChild(i));
-                Object [] pair=(Object[]) o;
+                Object [] pair=(Object[]) o;         
                 keys.add(pFactory.newKey(pair[0], (QualifiedName)pair[1]));
 
             }
@@ -452,17 +451,17 @@ public class TreeTraversal {
             //System.out.println("+++ namespace" + nss);
             @SuppressWarnings("unchecked")
             List<Statement> records2=(List<Statement>)convert(ast.getChild(1));
-            List<NamedBundle> bundles=null;
+            List<Bundle> bundles=null;
             if (ast.getChild(2)!=null) {
 	        @SuppressWarnings("unchecked")
-                List<NamedBundle> tmp = (List<NamedBundle>)convert(ast.getChild(2));
+                List<Bundle> tmp = (List<Bundle>)convert(ast.getChild(2));
 	        bundles=tmp;
             }
             return c.newDocument(nss,records2, bundles);
 
         case PROV_NParser.BUNDLE:
 	    
-	    Namespace localNamespace=new Namespace();
+	    Namespace localNamespace=pFactory.newNamespace();
 	    localNamespace.addKnownNamespaces();
             localNamespace.setParent(namespace);
 
@@ -513,7 +512,17 @@ public class TreeTraversal {
             	return pFactory.newAttribute(stringToQualifiedName(attr1),
             	                             val1,
             	                             name.XSD_STRING);	
-            } else { // TODO what case is it?
+            } else if (val1 instanceof Integer) {
+            	return pFactory.newAttribute(stringToQualifiedName(attr1),
+            	                             val1,
+            	                             name.XSD_INT);	
+            } else if (val1 instanceof String) {
+            	return pFactory.newAttribute(stringToQualifiedName(attr1),
+            	                             val1,
+            	                             name.XSD_STRING);	
+            } else {
+        	System.out.println("****** " + val1); // TODO what case is it?
+        	System.out.println("****** " + val1.getClass());
                 return pFactory.newAttribute(stringToQualifiedName(attr1),
                                              val1,
                                              name.XSD_STRING);	            	

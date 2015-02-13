@@ -15,7 +15,7 @@ import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasRole;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.HasValue;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
@@ -296,7 +296,7 @@ public class Dagify implements StatementAction {
 
 
     @Override
-    public void doAction(NamedBundle bun, ProvUtilities provUtilities) {
+    public void doAction(Bundle bun, ProvUtilities provUtilities) {
 	bun.setId(uniquify(bun.getId()));
 	provUtilities.forAllStatement(bun.getStatement(), this);
     }

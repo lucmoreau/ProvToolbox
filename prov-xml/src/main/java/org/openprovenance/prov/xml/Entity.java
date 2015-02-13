@@ -83,7 +83,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
     "all"
 })
 @XmlSeeAlso({
-    Bundle.class,
+    BundleEntity.class,
     Collection.class,
     Plan.class
 })
@@ -248,7 +248,7 @@ public class Entity implements Equals, HashCode, ToString, org.openprovenance.pr
     
     
     /** Gets the List of all attributes
-     * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
+     * @see org.openprovenance.prov.xml.HasAllAttributes#getAllAttributes()
      */
     @Override
     public List<Attribute> getAllAttributes() {

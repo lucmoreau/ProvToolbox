@@ -1,9 +1,9 @@
 package org.openprovenance.prov.model;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
-
 
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.exception.QualifiedNameException;
@@ -12,7 +12,7 @@ import org.openprovenance.prov.model.exception.QualifiedNameException;
  * @author Luc Moreau 
  * */
 
-public class Namespace implements QualifiedNameExport {
+public class Namespace  {
     
     private static ThreadLocal<Namespace> threadNamespace =
 	    new ThreadLocal<Namespace> () {
@@ -40,9 +40,14 @@ public class Namespace implements QualifiedNameExport {
 	this.prefixes=tmp1;
 	this.namespaces=tmp2;
 	this.defaultNamespace=ns.defaultNamespace;
+	this.parent=ns.parent;
 	return this;
     }
     
+    /**
+     * Extends this Namespace with all the prefix/namespace registration of the Namespace received as argument. 
+     * @param ns the {@link Namespace} whose prefix/namespace registration are added to this {@link Namespace}.
+     */
     public void extendWith(Namespace ns) {
 	if (ns==null) return;
 	if (ns.getDefaultNamespace()!=null) {
@@ -54,8 +59,8 @@ public class Namespace implements QualifiedNameExport {
     }
 
 
-    private Hashtable<String, String> prefixes=new Hashtable<String, String>();
-    private Hashtable<String, String> namespaces=new Hashtable<String, String>();
+    protected Map<String, String> prefixes=new Hashtable<String, String>();
+    protected Map<String, String> namespaces=new Hashtable<String, String>();
     private String defaultNamespace=null;
     
     private Namespace parent=null;
@@ -98,10 +103,10 @@ public class Namespace implements QualifiedNameExport {
 	this.defaultNamespace=defaultNamespace;
     }
     
-    public Hashtable<String, String> getPrefixes() {
+    public Map<String, String> getPrefixes() {
 	return prefixes;
     }
-    public Hashtable<String, String> getNamespaces() {
+    public Map<String, String> getNamespaces() {
 	return namespaces;
     }
      
@@ -191,11 +196,21 @@ public class Namespace implements QualifiedNameExport {
    	return ns;
     }
     
-    static public Namespace gatherNamespaces(NamedBundle bundle) {
+    static public Namespace gatherNamespaces(Bundle bundle) {
    	NamespaceGatherer gatherer=new NamespaceGatherer();	
    	u.forAllStatement(bundle.getStatement(), gatherer);
+   	gatherer.register(bundle.getId());
    	Namespace ns=gatherer.getNamespace();
    	return ns;
+    }
+    
+    static public Namespace gatherNamespaces(Bundle bundle, ProvFactory pFactory) {
+   	NamespaceGatherer gatherer=new NamespaceGatherer();	
+   	u.forAllStatement(bundle.getStatement(), gatherer);
+   	gatherer.register(bundle.getId());
+   	Namespace ns=gatherer.getNamespace();
+   	Namespace ns2=pFactory.newNamespace(ns);
+   	return ns2;
     }
     
    
@@ -232,6 +247,48 @@ public class Namespace implements QualifiedNameExport {
 	    return pFactory.newQualifiedName(tmp, local, prefix);
 	}
     }
+    
+    /**
+     * Creates a qualified name, with given prefix and local name. The prefix needs to have been pre-registered. 
+     * Prefix is allowed to be null: in that case, the intended namespace is the default namespace 
+     * (see {@link Namespace#getDefaultNamespace()}) which must have been pre-registered.
+     * @param prefix the prefix for the {@link QualifiedName}
+     * @param local the local name for the {@link QualifiedName}
+     * @param pFactory the factory method used to construct the {@link QualifiedName}
+     * @return a {@link QualifiedName}
+     * @throws QualifiedNameException if prefix is not pre-registered.
+     * @throws NullPointerException if prefix is null and defaultnamespace has not been registered.
+     */
+    
+    public QualifiedName qualifiedName(String prefix, String local, ProvFactory pFactory) {
+	
+	if (prefix == null) {
+	    String tmp = getDefaultNamespace();
+	    if (tmp == null && parent != null) tmp = parent.getDefaultNamespace();
+	    if (tmp==null) throw new NullPointerException("Namespace.stringToQualifiedName(: Null namespace for "+ local);
+	    return pFactory.newQualifiedName(tmp, local, null);
+	}
+	
+	//TODO: why have special cases here, prov and xsd are now declared prefixes in namespaces
+	if ("prov".equals(prefix)) {
+	    return pFactory.newQualifiedName(NamespacePrefixMapper.PROV_NS, local, prefix);
+	} else if ("xsd".equals(prefix)) {
+	    return pFactory.newQualifiedName(NamespacePrefixMapper.XSD_NS, // + "#", // RDF ns ends
+								 // in #, not
+								 // XML ns.
+			     local, prefix);
+	} else {
+	    String tmp=prefixes.get(prefix);
+	    if (tmp==null) {
+		if (parent!=null) {
+		    return parent.qualifiedName(prefix, local, pFactory);
+		} else {
+		    throw new QualifiedNameException("Namespace.stringToQualifiedName(): Null namespace for " + prefix + ":"  + local + " namespace " + this);
+		}
+	    }
+	    return pFactory.newQualifiedName(tmp, local, prefix);
+	}
+    }
 
 
      
@@ -240,10 +297,7 @@ public class Namespace implements QualifiedNameExport {
  	return ns.qualifiedNameToString(name);
      }
      
-    /*
-     * (non-Javadoc)
-     * @see org.openprovenance.prov.model.QualifiedNameExport#qualifiedNameToString(org.openprovenance.prov.model.QualifiedName)
-     */
+ 
     public String qualifiedNameToString(QualifiedName name) {
 	return qualifiedNameToString(name,null);
     }
@@ -275,7 +329,7 @@ public class Namespace implements QualifiedNameExport {
      }
 
     public String toString() {
-	return "[Namespace (" + defaultNamespace + ") " + prefixes + "]";
+	return "[Namespace (" + defaultNamespace + ") " + prefixes + ", parent: " + parent + "]";
     }
 
 

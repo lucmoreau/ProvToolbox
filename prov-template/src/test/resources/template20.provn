@@ -1,0 +1,15 @@
+
+document
+
+prefix var <http://openprovenance.org/var#>
+prefix bun <http://example.org/bun#>
+prefix ex <http://example.org/>
+
+bundle bun:123
+entity(bun:123, [prov:type='prov:Bundle'])
+entity(var:a)
+entity(var:b, [ex:email='var:d'])
+wasAttributedTo(var:b, var:a, [ex:foo='var:e'])
+endBundle
+
+endDocument

@@ -5,14 +5,16 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
-import org.jvnet.jaxb2_commons.lang.Equals;
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.openprovenance.prov.xml.builder.Equals;
+import org.openprovenance.prov.xml.builder.HashCode;
+import org.openprovenance.prov.xml.builder.ToString;
+import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
+import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
+import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
+
 
 
 /**
@@ -35,7 +37,7 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IDRef")
 public class IDRef
-    implements Equals, HashCode
+    implements Equals, HashCode, ToString
 {
 
     @XmlAttribute(name = "ref", namespace = "http://www.w3.org/ns/prov#", required = true)
@@ -66,44 +68,53 @@ public class IDRef
     }
 
     
-    public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
+    public void equals(Object object, EqualsBuilder equalsBuilder) {
+        if (!(object instanceof IDRef)) {
+            equalsBuilder.appendSuper(false);
+            return ;
+        }
+        if (this == object) {
+            return ;
+        }
+        final IDRef that = ((IDRef) object);
+        equalsBuilder.append(this.getRef(), that.getRef());
+    }
+
+    public boolean equals(Object object) {
         if (!(object instanceof IDRef)) {
             return false;
         }
         if (this == object) {
             return true;
         }
-        final IDRef that = ((IDRef) object);
-        {
-            QName lhsRef;
-            lhsRef = this.getRef();
-            QName rhsRef;
-            rhsRef = that.getRef();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "ref", lhsRef), LocatorUtils.property(thatLocator, "ref", rhsRef), lhsRef, rhsRef)) {
-                return false;
-            }
-        }
-        return true;
+        final EqualsBuilder equalsBuilder = new JAXBEqualsBuilder();
+        equals(object, equalsBuilder);
+        return equalsBuilder.isEquals();
     }
 
-    public boolean equals(Object object) {
-        final EqualsStrategy strategy = JAXBEqualsStrategy.INSTANCE;
-        return equals(null, null, object, strategy);
-    }
-
-    public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
-        int currentHashCode = 1;
-        {
-            QName theRef;
-            theRef = this.getRef();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "ref", theRef), currentHashCode, theRef);
-        }
-        return currentHashCode;
+    public void hashCode(HashCodeBuilder hashCodeBuilder) {
+        hashCodeBuilder.append(this.getRef());
     }
 
     public int hashCode() {
-        final HashCodeStrategy strategy = JAXBHashCodeStrategy.INSTANCE;
-        return this.hashCode(null, strategy);
+        final HashCodeBuilder hashCodeBuilder = new JAXBHashCodeBuilder();
+        hashCode(hashCodeBuilder);
+        return hashCodeBuilder.toHashCode();
     }
+
+    public void toString(ToStringBuilder toStringBuilder) {
+        {
+            QName theRef;
+            theRef = this.getRef();
+            toStringBuilder.append("ref", theRef);
+        }
+    }
+
+    public String toString() {
+        final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
+        toString(toStringBuilder);
+        return toStringBuilder.toString();
+    }
+
 
 }

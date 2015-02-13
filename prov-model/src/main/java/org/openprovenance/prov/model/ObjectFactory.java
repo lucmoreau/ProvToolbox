@@ -52,7 +52,7 @@ public interface ObjectFactory {
     MentionOf createMentionOf();
 
 
-    NamedBundle createNamedBundle();
+    Bundle createNamedBundle();
 
     Other createOther();
 

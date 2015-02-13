@@ -70,5 +70,13 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
     public org.openprovenance.prov.model.QualifiedName q(String n) {
 		return new QualifiedName(EX_NS, n, EX_PREFIX);
        }
+    
+    @Override
+    public void updateNamespaces(Document doc) {
+	Namespace ns=Namespace.gatherNamespaces(doc);
+	Namespace ns2=new org.openprovenance.prov.sql.Namespace(ns);
+	doc.setNamespace(ns2);
+    }
+
 
 }

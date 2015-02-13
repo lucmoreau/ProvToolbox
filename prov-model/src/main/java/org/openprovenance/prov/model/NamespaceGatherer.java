@@ -6,7 +6,15 @@ import java.util.List;
 import javax.xml.XMLConstants;
 
 
+/**
+ * Utility class to traverse a document, register all namespaces occurring in {@link QualifiedName}s 
+ * and attributes as well as associated prefixes, and create a {@link Namespace} datastructure.
+ * 
+ * @author lavm
+ *
+ */
 public class NamespaceGatherer implements StatementAction {
+    static ProvUtilities pu=new ProvUtilities();
     
     private Namespace ns=new Namespace();
     
@@ -22,7 +30,25 @@ public class NamespaceGatherer implements StatementAction {
 	ns.setDefaultNamespace(defaultNamespace);
     }
     
-    
+    /** 
+     * Accumulate all namespace declarations in a single {@link Namespace} instance. 
+     * This includes the Document-level {@link Namespace} but also all Bundle-level {@link Namespace}s.
+     * 
+     * <p>This method is particular useful before serialization to XML since JAXB doesn't offer us the 
+     * means to generate prefix declaration in inner Elements. Hence, all namespaces need to be declared 
+     * at the root of the xml document.
+     * 
+     * @param document Document from which Namespaces are accumulated
+     * @return a new instance of {@link Namespace}
+     */
+    static public Namespace accumulateAllNamespaces(Document document) {
+	Namespace res=new Namespace(document.getNamespace());
+	for (Bundle b: pu.getNamedBundle(document)) {
+	    Namespace ns=b.getNamespace();
+	    if (ns!=null) res.extendWith(ns);
+	}
+	return res;
+    }
 
     public Namespace getNamespace() {
 	return ns;
@@ -319,12 +345,16 @@ public class NamespaceGatherer implements StatementAction {
 	 register(key.getType());	
     }
 
+    /* Note how the same NamespaceGatherer is kept, and namespaces are not registered at their local bundle.
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.StatementAction#doAction(org.openprovenance.prov.model.NamedBundle, org.openprovenance.prov.model.ProvUtilities)
+     */
     @Override
-    public void doAction(NamedBundle bu, ProvUtilities u) {
-	//register(bu.getId());
-	//for (Statement s2: bu.getStatement()) {
-	//    u.doAction(s2, this);
-	//}
+    public void doAction(Bundle bu, ProvUtilities u) {
+	register(bu.getId());
+	for (Statement s2: bu.getStatement()) {
+	    u.doAction(s2, this);
+	}
     }
 
 

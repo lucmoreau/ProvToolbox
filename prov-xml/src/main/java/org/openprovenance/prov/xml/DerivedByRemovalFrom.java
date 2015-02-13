@@ -18,6 +18,7 @@ import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
 import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
 import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.LangString;
 
 
 /**
@@ -200,7 +201,7 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
         }
         return this.label;
     }
-
+    
     /**
      * Gets the value of the type property.
      * 
@@ -241,7 +242,7 @@ public class DerivedByRemovalFrom implements Equals, HashCode, ToString, org.ope
      
     
     /** Gets the List of all attributes
-     * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
+     * @see org.openprovenance.prov.xml.HasAllAttributes#getAllAttributes()
      */
     @Override
     public List<Attribute> getAllAttributes() {

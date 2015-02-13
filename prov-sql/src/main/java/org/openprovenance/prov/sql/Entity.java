@@ -15,16 +15,15 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.jvnet.jaxb2_commons.lang.Equals;
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.openprovenance.prov.xml.builder.Equals;
+import org.openprovenance.prov.xml.builder.HashCode;
+import org.openprovenance.prov.xml.builder.ToString;
+import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
+import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
+import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.StatementOrBundle;
@@ -76,7 +75,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 @Table(name = "ENTITY") //, uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"ID"}))
 public class Entity
     extends AStatement
-    implements Equals, HashCode, org.openprovenance.prov.model.Entity, HasAllAttributes
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Entity, HasAllAttributes
 {
 
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)
@@ -304,7 +303,7 @@ public class Entity
 
 
     /** Gets the List of all attributes
-     * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
+     * @see org.openprovenance.prov.xml.HasAllAttributes#getAllAttributes()
      */
     @Transient
     public List<Attribute> getAllAttributes() {
@@ -345,120 +344,49 @@ public class Entity
 
    
 
-    public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
+    public void equals(Object object, EqualsBuilder equalsBuilder) {
+        if (!(object instanceof Entity)) {
+            equalsBuilder.appendSuper(false);
+            return ;
+        }
+        if (this == object) {
+            return ;
+        }
+        final Entity that = ((Entity) object);
+        equalsBuilder.append(this.getLabel(), that.getLabel());
+        equalsBuilder.append(this.getLocation(), that.getLocation());
+        equalsBuilder.append(this.getType(), that.getType());
+        equalsBuilder.append(this.getValue(), that.getValue());
+        equalsBuilder.append(this.getOther(), that.getOther());
+        equalsBuilder.append(this.getId(), that.getId());
+    }
+
+    public boolean equals(Object object) {
         if (!(object instanceof Entity)) {
             return false;
         }
         if (this == object) {
             return true;
         }
-        if (!super.equals(thisLocator, thatLocator, object, strategy)) {
-            return false;
-        }
-        final Entity that = ((Entity) object);
-        {
-            List<org.openprovenance.prov.model.LangString> lhsLabel;
-            lhsLabel = (((this.label!= null)&&(!this.label.isEmpty()))?this.getLabel():null);
-            List<org.openprovenance.prov.model.LangString> rhsLabel;
-            rhsLabel = (((that.label!= null)&&(!that.label.isEmpty()))?that.getLabel():null);
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "label", lhsLabel), LocatorUtils.property(thatLocator, "label", rhsLabel), lhsLabel, rhsLabel)) {
-                return false;
-            }
-        }
-        {
-            List<org.openprovenance.prov.model.Location> lhsLocation;
-            lhsLocation = (((this.location!= null)&&(!this.location.isEmpty()))?this.getLocation():null);
-            List<org.openprovenance.prov.model.Location> rhsLocation;
-            rhsLocation = (((that.location!= null)&&(!that.location.isEmpty()))?that.getLocation():null);
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "location", lhsLocation), LocatorUtils.property(thatLocator, "location", rhsLocation), lhsLocation, rhsLocation)) {
-                return false;
-            }
-        }
-        {
-            List<org.openprovenance.prov.model.Type> lhsType;
-            lhsType = (((this.type!= null)&&(!this.type.isEmpty()))?this.getType():null);
-            List<org.openprovenance.prov.model.Type> rhsType;
-            rhsType = (((that.type!= null)&&(!that.type.isEmpty()))?that.getType():null);
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "type", lhsType), LocatorUtils.property(thatLocator, "type", rhsType), lhsType, rhsType)) {
-                return false;
-            }
-        }
-        {
-            org.openprovenance.prov.model.Value lhsValue;
-            lhsValue = this.getValue();
-            org.openprovenance.prov.model.Value rhsValue;
-            rhsValue = that.getValue();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "value", lhsValue), LocatorUtils.property(thatLocator, "value", rhsValue), lhsValue, rhsValue)) {
-                return false;
-            }
-        }
-        {
-            List<Other> lhsOthers;
-            lhsOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOther():null);
-            List<Other> rhsOthers;
-            rhsOthers = (((that.others!= null)&&(!that.others.isEmpty()))?that.getOther():null);
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "others", lhsOthers), LocatorUtils.property(thatLocator, "others", rhsOthers), lhsOthers, rhsOthers)) {
-                return false;
-            }
-        }
-        {
-            QualifiedName lhsId;
-            lhsId = this.getId();
-            QualifiedName rhsId;
-            rhsId = that.getId();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "id", lhsId), LocatorUtils.property(thatLocator, "id", rhsId), lhsId, rhsId)) {
-                return false;
-            }
-        }
-        return true;
+        final EqualsBuilder equalsBuilder = new JAXBEqualsBuilder();
+        equals(object, equalsBuilder);
+        return equalsBuilder.isEquals();
     }
 
-    public boolean equals(Object object) {
-        final EqualsStrategy strategy = JAXBEqualsStrategy.INSTANCE;
-        return equals(null, null, object, strategy);
-    }
-
-    public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
-        int currentHashCode = super.hashCode(locator, strategy);
-        {
-            List<org.openprovenance.prov.model.LangString> theLabel;
-            theLabel = (((this.label!= null)&&(!this.label.isEmpty()))?this.getLabel():null);
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "label", theLabel), currentHashCode, theLabel);
-        }
-        {
-            List<org.openprovenance.prov.model.Location> theLocation;
-            theLocation = (((this.location!= null)&&(!this.location.isEmpty()))?this.getLocation():null);
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "location", theLocation), currentHashCode, theLocation);
-        }
-        {
-            List<org.openprovenance.prov.model.Type> theType;
-            theType = (((this.type!= null)&&(!this.type.isEmpty()))?this.getType():null);
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "type", theType), currentHashCode, theType);
-        }
-        {
-            org.openprovenance.prov.model.Value theValue;
-            theValue = this.getValue();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "value", theValue), currentHashCode, theValue);
-        }
-        {
-            List<Other> theOthers;
-            theOthers = (((this.others!= null)&&(!this.others.isEmpty()))?this.getOther():null);
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
-        }
-        {
-            QualifiedName theId;
-            theId = this.getId();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "id", theId), currentHashCode, theId);
-        }
-        return currentHashCode;
+    public void hashCode(HashCodeBuilder hashCodeBuilder) {
+        hashCodeBuilder.append(this.getLabel());
+        hashCodeBuilder.append(this.getLocation());
+        hashCodeBuilder.append(this.getType());
+        hashCodeBuilder.append(this.getValue());
+        hashCodeBuilder.append(this.getOther());
+        hashCodeBuilder.append(this.getId());
     }
 
     public int hashCode() {
-        final HashCodeStrategy strategy = JAXBHashCodeStrategy.INSTANCE;
-        return this.hashCode(null, strategy);
+        final HashCodeBuilder hashCodeBuilder = new JAXBHashCodeBuilder();
+        hashCode(hashCodeBuilder);
+        return hashCodeBuilder.toHashCode();
     }
-
-   
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
@@ -488,14 +416,10 @@ public class Entity
             toStringBuilder.append("others", theOthers);
         }
         {
-            QualifiedName theId;
+            org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
         }
-        { //TODO: only now, for debugging.
-            toStringBuilder.append("all", getAllAttributes());
-        }
-
     }
 
     public String toString() {
@@ -503,6 +427,7 @@ public class Entity
         toString(toStringBuilder);
         return toStringBuilder.toString();
     }
+    
 
     @Transient
     public Kind getKind() {

@@ -3,8 +3,11 @@ package org.openprovenance.prov.xml;
 import java.util.Properties;
 import java.io.IOException;
 import java.io.InputStream;
+
+import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeFactory;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
+import org.openprovenance.prov.model.ProvSerialiser;
 import org.openprovenance.prov.model.QualifiedName;
 
 /** A stateless factory for PROV objects. */
@@ -133,6 +136,10 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 									String prefix) {
 	return new org.openprovenance.prov.xml.QualifiedName(namespace, local, prefix);
     }
-    
+	@Override
+	public ProvSerialiser getSerializer() throws JAXBException {
+		return new org.openprovenance.prov.xml.ProvSerialiser();
+	}
+
 
 }

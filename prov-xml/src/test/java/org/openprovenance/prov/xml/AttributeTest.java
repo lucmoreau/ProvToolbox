@@ -26,7 +26,7 @@ import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasRole;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.Used;
@@ -117,7 +117,7 @@ public class AttributeTest extends TestCase {
         makeDocAndTest(stment, null, file, opt, check);
     }
 
-    public void makeDocAndTest(Statement []stment, NamedBundle[] bundles, String file, Statement[] opt, boolean check) {
+    public void makeDocAndTest(Statement []stment, Bundle[] bundles, String file, Statement[] opt, boolean check) {
 	Document doc = pFactory.newDocument();
 	for (int i=0; i< stment.length; i++) {
 	   doc.getStatementOrBundle().add(stment[i]);
@@ -257,6 +257,7 @@ public class AttributeTest extends TestCase {
             throw new UncheckedTestException(e);
         }
     }
+    
     
 
     public void compareDocuments(Document doc, Document doc2, boolean check) {

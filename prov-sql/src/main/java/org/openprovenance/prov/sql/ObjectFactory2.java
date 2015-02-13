@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName; 
 
 import org.openprovenance.prov.model.Key;
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.Document;
@@ -446,11 +447,11 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     }
 
     /**
-     * Create an instance of {@link NamedBundle }
+     * Create an instance of {@link Bundle }
      * 
      */
-    public NamedBundle createNamedBundle() {
-        return new org.openprovenance.prov.sql.NamedBundle();
+    public Bundle createNamedBundle() {
+        return new org.openprovenance.prov.sql.Bundle();
     }
 
     /**

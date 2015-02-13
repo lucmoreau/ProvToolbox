@@ -1,36 +1,16 @@
 package org.openprovenance.prov.xml;
-import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.openprovenance.prov.model.Namespace;
 
 
 /** Prefix definition for PROV serialisations. */
 
-public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.NamespacePrefixMapper {
-    
-        static final public String PROV_NS="http://www.w3.org/ns/prov#";
-        static final public String XSI_NS="http://www.w3.org/2001/XMLSchema-instance";
-        static final public String XSD_NS="http://www.w3.org/2001/XMLSchema";
-        static final public String XSD_HASH_NS="http://www.w3.org/2001/XMLSchema#";
-        static final public String PRINTER_NS="http://openprovenance.org/model/opmPrinterConfig";
-        static final public String XML_NS="http://www.w3.org/XML/1998/namespace";
-        static final public String PROV_PREFIX = "prov";
-        static final public String XSD_PREFIX = "xsd";
-        
-        static final public String RDF_NS = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-        static final public String RDF_PREFIX = "rdf";
-        static final public String RDFS_NS = "http://www.w3.org/2000/01/rdf-schema#";
-        static final public String RDFS_PREFIX = "rdfs";
-        
-        static final public String BOOK_PREFIX = "bk";
-        static final public String BOOK_NS = "http://www.provbook.org/ns/#";
-    
-        
-        public static final String TOOLBOX_NS = "http://openprovenance.org/toolbox/";
+public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.NamespacePrefixMapper 
+                                   implements org.openprovenance.prov.model.NamespacePrefixMapper {
 
-
-    private Hashtable<String,String> nss=null;
+    private Map<String,String> nss=null;
 
         // Must use 'internal' for Java 6
 /* This file is a modification of the NamespacePrefixMapper from docx4j,
@@ -50,7 +30,7 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
 
        
     /* (non-Javadoc)
-     * @see org.openprovenance.prov.model.NAIN#getPreferredPrefix(java.lang.String, java.lang.String, boolean)
+     * @see org.openprovenance.prov.model.NamespacePrefixMapper#getPreferredPrefix(java.lang.String, java.lang.String, boolean)
      */
     @Override
     public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {

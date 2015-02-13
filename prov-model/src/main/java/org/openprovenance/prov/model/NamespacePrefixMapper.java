@@ -1,5 +1,10 @@
 package org.openprovenance.prov.model;
 
+/** Namespace and prefix declarations for common namespaces manipulated by ProvToolbox. API to
+ *  Sun's NamespacePrefixMapper  
+ * @author lavm
+ * @see <a href="http://grepcode.com/file/repo1.maven.org/maven2/com.sun.xml.bind/jaxb-impl/2.1.11/com/sun/xml/bind/marshaller/NamespacePrefixMapper.java">JAXB NamespacePrefixMapper</a>
+ */
 public interface NamespacePrefixMapper {
 
     static final public String PROV_NS = "http://www.w3.org/ns/prov#";
@@ -16,7 +21,7 @@ public interface NamespacePrefixMapper {
     static final public String RDFS_PREFIX = "rdfs";
     static final public String BOOK_PREFIX = "bk";
     static final public String BOOK_NS = "http://www.provbook.org/ns/#";
-    public static final String TOOLBOX_NS = "http://openprovenance.org/toolbox/";
+    static final public String TOOLBOX_NS = "http://openprovenance.org/toolbox/";
 
     /**
      * Returns a preferred prefix for the given namespace URI.
@@ -73,7 +78,7 @@ public interface NamespacePrefixMapper {
      *   <ns3:child xmlns:ns3="urn:foo"> ... </ns3:child>
      *   ...
      * </root>
-     * <xmp></pre>
+     * </xmp></pre>
      * <p>
      * If you know in advance that you are going to use a certain set of
      * namespace URIs, you can override this method and have the marshaller
@@ -89,7 +94,7 @@ public interface NamespacePrefixMapper {
      *   <ns1:child> ... </ns1:child>
      *   ...
      * </root>
-     * <xmp></pre>
+     * </xmp></pre>
      * <p>
      * To control prefixes assigned to those namespace URIs, use the
      * {@link #getPreferredPrefix} method.

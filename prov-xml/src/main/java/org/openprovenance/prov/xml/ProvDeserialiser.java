@@ -10,6 +10,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBElement;
 
+import org.openprovenance.prov.model.Namespace;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
@@ -22,6 +23,8 @@ import javax.xml.transform.Source;
 
 /** Deserialiser of OPM Graphs. */
 public class ProvDeserialiser {
+    
+    static ProvUtilities utils=new ProvUtilities();
 
 
     // it is recommended by the Jaxb documentation that one JAXB
@@ -61,12 +64,42 @@ public class ProvDeserialiser {
 
 
     public Document deserialiseDocument (File serialised)
-        throws JAXBException {
-        Unmarshaller u=jc.createUnmarshaller();
-        Object root= u.unmarshal(serialised);
-        @SuppressWarnings("unchecked")
-        Document res=(Document)((JAXBElement<Document>) root).getValue();
-        return res;
+	        throws JAXBException {
+	        Unmarshaller u=jc.createUnmarshaller();
+	        Object root= u.unmarshal(serialised);
+	        @SuppressWarnings("unchecked")
+	        Document res=(Document)((JAXBElement<Document>) root).getValue();
+	        updateNamespaces(res);
+		return res;
+    }
+
+    /**
+     * After reading a document, this method should be called to ensure that Namespaces are properly chained.
+     * @param document a {@link Document} to update
+     */
+    public void updateNamespaces(Document document) {
+	Namespace rootNamespace = Namespace.gatherNamespaces(document);
+	document.setNamespace(rootNamespace);
+	for (org.openprovenance.prov.model.Bundle bu: utils.getBundle(document)) {
+	    Namespace ns=bu.getNamespace();
+	    if (ns!=null) {
+		ns.setParent(rootNamespace);
+	    } else {
+		ns=new Namespace();
+		ns.setParent(rootNamespace);
+		bu.setNamespace(ns);
+	    }
+	}
+    }
+
+    public Document deserialiseDocument (InputStream is)
+	        throws JAXBException {
+	        Unmarshaller u=jc.createUnmarshaller();
+	        Object root= u.unmarshal(is);
+	        @SuppressWarnings("unchecked")
+	        Document res=(Document)((JAXBElement<Document>) root).getValue();
+	        updateNamespaces(res);
+	        return res;
     }
 
     public Document validateDocument (String[] schemaFiles, File serialised)throws JAXBException,SAXException, IOException {

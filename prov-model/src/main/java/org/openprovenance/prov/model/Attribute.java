@@ -10,6 +10,13 @@ package org.openprovenance.prov.model;
  */
 public interface Attribute extends TypedValue {
 
+    /**
+     * Enumerated type for all types of attributes. Some are predefined PROV attributes. 
+     * All the others are classed as "OTHER".
+     * 
+     * @author lavm
+     *
+     */
     public enum AttributeKind {
 	PROV_TYPE,
 	PROV_LABEL,

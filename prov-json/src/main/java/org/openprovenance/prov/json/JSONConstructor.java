@@ -26,10 +26,9 @@ import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.Name;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.QualifiedNameExport;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.Used;
@@ -582,14 +581,14 @@ public class JSONConstructor implements ModelConstructor {
     @Override
     public Document newDocument(Namespace namespaces,
 				Collection<Statement> statements,
-				Collection<NamedBundle> bundles) {
+				Collection<Bundle> bundles) {
 	// This class only collect statements into a structure ready for JSON conversion
 	// No new document will be returned
 	return null;
     }
 
     @Override
-    public NamedBundle newNamedBundle(QualifiedName id, Namespace namespaces,
+    public Bundle newNamedBundle(QualifiedName id, Namespace namespaces,
 				      Collection<Statement> statements) {
 	Object bundle = getJSONStructure(currentRecords, currentNamespace);
 	documentBundles.put(currentNamespace.qualifiedNameToString(id), bundle);

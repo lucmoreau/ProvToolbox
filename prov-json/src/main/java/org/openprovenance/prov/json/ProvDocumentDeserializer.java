@@ -30,7 +30,7 @@ import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.Name;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.Role;
@@ -162,14 +162,24 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 					      JsonObject attributeMap) {
 	StatementOrBundle statement;
 	QualifiedName id;
-	if (idStr.startsWith("_:")) {
-	    // Ignore all blank node IDs
-	    id = null;
-	} else {
-	    id = currentNamespace.stringToQualifiedName(idStr, pf);
-	}
-	// Decoding attributes
+
 	ProvJSONStatement provStatement = ProvJSONStatement.valueOf(statementType);
+	switch (provStatement) {
+	case bundle: {
+	    id=null; //we will deal with it later, when we have setup the namespace for the bundle
+	    break;
+	}
+	default: {
+	    if (idStr.startsWith("_:")) {
+		// Ignore all blank node IDs
+		id = null;
+	    } else {
+		id = currentNamespace.stringToQualifiedName(idStr, pf);
+	    }
+	}
+	}
+
+	// Decoding attributes
 	switch (provStatement) {
 	case entity:
 	    statement = pf.newEntity(id);
@@ -211,17 +221,20 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    statement = pf.newWasAttributedTo(id, entity, agent);
 	    break;
 	case bundle:
-	    currentNamespace = decodePrefixes(attributeMap);
+	    Namespace ns = decodePrefixes(attributeMap);
+	    currentNamespace = ns;
 	    currentNamespace.setParent(documentNamespace);
 	    // Re-resolve the bundle's id with the bundle's namespace
 	    id = currentNamespace.stringToQualifiedName(idStr, pf);
 	    @SuppressWarnings("rawtypes")
 	    Collection statements = decodeBundle(attributeMap);
-	    NamedBundle namedBundle = pf.getObjectFactory().createNamedBundle();
+	    Bundle namedBundle = pf.getObjectFactory().createNamedBundle();
 	    namedBundle.setId(id);
+	    namedBundle.setNamespace(ns);
 	    namedBundle.getStatement()
 		       .addAll((Collection<? extends Statement>) statements);
 	    statement = namedBundle;
+	    
 	    // Restore the document's namespace as the current one
 	    currentNamespace = documentNamespace;
 	    break;

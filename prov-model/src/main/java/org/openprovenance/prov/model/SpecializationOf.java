@@ -42,7 +42,7 @@ package org.openprovenance.prov.model;
  *
  */
 
-public interface SpecializationOf extends Relation0 {
+public interface SpecializationOf extends Relation {
 
     /** Mutator for the  entity that is a specialization of the general entity.
      * @param specific the entity that is a specialization of the general one*/

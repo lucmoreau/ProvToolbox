@@ -22,10 +22,10 @@ import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.model.Influence;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.Relation0;
+import org.openprovenance.prov.model.Relation;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.AlternateOf;
@@ -227,17 +227,26 @@ public class ProvToDot {
     }
 
     public void convert(Document graph, String dotFile, String pdfFile, String title)
-        throws java.io.FileNotFoundException, java.io.IOException {
-        convert(graph,new File(dotFile), title);
-        Runtime runtime = Runtime.getRuntime();
-        @SuppressWarnings("unused")
-        java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
+	        throws java.io.FileNotFoundException, java.io.IOException {
+	        convert(graph,new File(dotFile), title);
+	        Runtime runtime = Runtime.getRuntime();
+	        @SuppressWarnings("unused")
+	        java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
+    }
+    
+    public void convert(Document graph, String dotFile, OutputStream pdfStream, String title)
+	        throws java.io.FileNotFoundException, java.io.IOException {
+	        convert(graph,new File(dotFile), title);
+	        Runtime runtime = Runtime.getRuntime();
+	        @SuppressWarnings("unused")
+	        java.lang.Process proc = runtime.exec("dot  -Tpdf " + dotFile);
+	        InputStream is=proc.getInputStream();
+                org.apache.commons.io.IOUtils.copy(is, pdfStream);            
     }
     public void convert(Document graph, String dotFile, String title)
 	        throws java.io.FileNotFoundException, java.io.IOException {
-	        convert(graph,new File(dotFile),title);
-	        
-	    }
+	        convert(graph,new File(dotFile),title);        
+    }
 	     
     public void convert(Document graph, String dotFile, String aFile, String type, String title)
 	        throws java.io.FileNotFoundException, java.io.IOException {
@@ -253,16 +262,30 @@ public class ProvToDot {
 			proc.waitFor();
 			System.err.println("exit value " + proc.exitValue());
 		} catch (InterruptedException e){};
+}
+
+    public void convert(Document graph, String dotFile, OutputStream os, String type, String title)
+	        throws java.io.FileNotFoundException, java.io.IOException {
+	        convert(graph,new File(dotFile),title);
+	        Runtime runtime = Runtime.getRuntime();
+	        
+	        java.lang.Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
+	        InputStream is=proc.getInputStream();
+                org.apache.commons.io.IOUtils.copy(is, os);         
+
     }
-    
+
     public void convert(Document graph, File file, String title) throws java.io.FileNotFoundException{
         OutputStream os=new FileOutputStream(file);
+        convert(graph, new PrintStream(os), title);
+    }
+    public void convert(Document graph, OutputStream os, String title) {
         convert(graph, new PrintStream(os), title);
     }
 
     public void convert(Document doc, PrintStream out, String title) {
         if (title!=null) name=title;
-        List<Relation0> edges=u.getRelations(doc);
+        List<Relation> edges=u.getRelations(doc);
 
         prelude(doc, out);
 
@@ -285,12 +308,12 @@ public class ProvToDot {
         }
         
         if (u.getBundle(doc)!=null) {
-            for (NamedBundle bun: u.getBundle(doc)) {
+            for (Bundle bun: u.getBundle(doc)) {
                 convert(bun,out);
             }
         }
 
-        for (Relation0 e: edges) {
+        for (Relation e: edges) {
             emitDependency(e,out);
         }
         
@@ -299,8 +322,8 @@ public class ProvToDot {
        
     }
 
-    public void convert(NamedBundle bun, PrintStream out) {
-        List<Relation0> edges=u.getRelations(bun);
+    public void convert(Bundle bun, PrintStream out) {
+        List<Relation> edges=u.getRelations(bun);
 
         prelude(bun, out);
 
@@ -322,7 +345,7 @@ public class ProvToDot {
             }
         }
 
-        for (Relation0 e: edges) {
+        for (Relation e: edges) {
             emitDependency(e,out);
         }
         
@@ -752,7 +775,7 @@ public class ProvToDot {
     ///
     //////////////////////////////////////////////////////////////////////
 
-    public void emitDependency(Relation0 e, PrintStream out) {
+    public void emitDependency(Relation e, PrintStream out) {
         HashMap<String,String> properties=new HashMap<String, String>();
 
         List<QualifiedName> others=u.getOtherCauses(e);
@@ -775,12 +798,14 @@ public class ProvToDot {
             }
             HashMap<String,String> properties3=new HashMap<String, String>();
 
-
-            emitRelation( qualifiedNameToString(u.getEffect(e)),
-                          bnid,
-                          properties2,
-                          out,
-                          true);
+            QualifiedName effect=u.getEffect(e);
+            if (effect!=null) {
+        	emitRelation( qualifiedNameToString(effect),
+        	              bnid,
+        	              properties2,
+        	              out,
+        	              true);
+            }
 
             relationName(e, properties3);
             if (e instanceof HasOther) {
@@ -826,16 +851,20 @@ public class ProvToDot {
 		    properties.put("dir","both");
 		}
 
-		emitRelation( qualifiedNameToString(u.getEffect(e)),
-			      qualifiedNameToString(u.getCause(e)),
-			      properties,
-			      out,
-			      true);
+		QualifiedName effect=u.getEffect(e);
+		QualifiedName cause=u.getCause(e);
+		if (effect!=null && cause!=null) {
+		    emitRelation( qualifiedNameToString(effect),
+		                  qualifiedNameToString(cause),
+		                  properties,
+		                  out,
+		                  true);
+		}
 	    }
         }
     }
 
-    void relationName(Relation0 e, HashMap<String,String> properties) {
+    void relationName(Relation e, HashMap<String,String> properties) {
 	String l=getShortLabelForRelation(e);
 	if (l!=null) {
 	    properties.put("taillabel",l);
@@ -846,7 +875,7 @@ public class ProvToDot {
 	}
     }
     
-    String getArrowShapeForRelation(Relation0 e) {
+    String getArrowShapeForRelation(Relation e) {
   	if (e instanceof WasStartedBy)      return "oinv";
  	if (e instanceof WasEndedBy)        return "odiamond";
  	if (e instanceof WasInvalidatedBy)  return "odiamond";
@@ -854,7 +883,7 @@ public class ProvToDot {
     }
      
 
-    String getLabelForRelation(Relation0 e) {
+    String getLabelForRelation(Relation e) {
 	if (e instanceof Used)              return "used";
 	if (e instanceof WasGeneratedBy)    return "wasGeneratedBy";
 	if (e instanceof WasDerivedFrom)    return "wasDerivedFrom";
@@ -870,7 +899,7 @@ public class ProvToDot {
 	if (e instanceof AlternateOf)       return "alternateOf";
 	return null;
     }
-    String getShortLabelForRelation(Relation0 e) {
+    String getShortLabelForRelation(Relation e) {
 	if (e instanceof Used)              return "use";
 	if (e instanceof WasGeneratedBy)    return "gen";
 	if (e instanceof WasDerivedFrom)    return "der";
@@ -890,7 +919,7 @@ public class ProvToDot {
     
 
     public HashMap<String,String> addRelationAttributes(String accountLabel,
-                                                        Relation0 e,
+                                                        Relation e,
                                                         HashMap<String,String> properties) {
         String colour=convertAccount(accountLabel);
         properties.put("color",colour);
@@ -902,7 +931,7 @@ public class ProvToDot {
 
 
     /* Displays type if any, role otherwise. */
-    public void addRelationLabel(Relation0 e0, HashMap<String,String> properties) {
+    public void addRelationLabel(Relation e0, HashMap<String,String> properties) {
         String label=null;
         if (!(e0 instanceof Influence)) return;
         Influence e=(Influence)e0;
@@ -943,14 +972,14 @@ public class ProvToDot {
     String defaultRelationStyle;
     HashMap<String,RelationStyleMapEntry> edgeStyleMap=new HashMap<String,RelationStyleMapEntry>();
     
-    public String getRelationStyle(Relation0 edge) {
+    public String getRelationStyle(Relation edge) {
         String name=edge.getClass().getName();
         RelationStyleMapEntry style=edgeStyleMap.get(name);
         if (style!=null) return style.getStyle();
         return defaultRelationStyle;
     }
 
-    public boolean getRelationPrintRole(Relation0 edge) {
+    public boolean getRelationPrintRole(Relation edge) {
         String name=edge.getClass().getName();
         RelationStyleMapEntry style=edgeStyleMap.get(name);
         if (style!=null) {
@@ -973,6 +1002,7 @@ public class ProvToDot {
     String name;
     String defaultAccountLabel;
     String defaultAccountColor;
+    private String layout;
 
     /* make name compatible with dot notation*/
     
@@ -1036,6 +1066,9 @@ public class ProvToDot {
 
     void prelude(Document doc, PrintStream out) {
         out.println("digraph \"" + name + "\" { size=\"16,12\"; rankdir=\"BT\"; ");
+        if (layout!=null) {
+            out.println("layout=\"" + layout + "\"; ");
+        }
     }
 
     void postlude(Document doc, PrintStream out) {
@@ -1043,14 +1076,19 @@ public class ProvToDot {
         out.close();
     }
 
-    void prelude(NamedBundle doc, PrintStream out) {
+    void prelude(Bundle doc, PrintStream out) {
         out.println("subgraph " + "cluster" + dotify(qualifiedNameToString(doc.getId())) + " { ");
         out.println("  label=\"" + localnameToString(doc.getId()) + "\";");
         out.println("  URL=\"" + qualifiedNameToString(doc.getId()) + "\";");
     }
 
-    void postlude(NamedBundle doc, PrintStream out) {
+    void postlude(Bundle doc, PrintStream out) {
         out.println("}");
+    }
+
+    public void setLayout(String layout) {
+	this.layout=layout;
+	
     }
 
 

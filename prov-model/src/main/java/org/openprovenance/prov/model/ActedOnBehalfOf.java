@@ -8,7 +8,7 @@ package org.openprovenance.prov.model;
  *  to carry out a specific activity as a delegate or representative, while the agent it acts on behalf of 
  *  retains some responsibility for the outcome of the delegated work.
  *  
- *  <p>
+ * <p>
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
  * <li> {@link ProvFactory#newActedOnBehalfOf(QualifiedName, QualifiedName, QualifiedName)}
@@ -53,16 +53,42 @@ package org.openprovenance.prov.model;
 
 public interface ActedOnBehalfOf extends Identifiable, HasLabel, HasType, HasOther, Influence {
 
+    /** Get the activity identifier. This is the activity for which the delegation link holds.
+     * @return the activity QualifiedName
+     * @see <a href="http://www.w3.org/TR/prov-dm/#delegation.activity">delegation activity</a>
+     */
+    QualifiedName getActivity();
+    
+    /** Get the delegate identifier. The delegate is the agent associated with an activity, acting on behalf of the responsible agent.
+     * @return a QualifiedName
+     * @see <a href="http://www.w3.org/TR/prov-dm/#delegation.delegate">delegation delegate</a>
+     */
     QualifiedName getDelegate();
 
-    void setActivity(QualifiedName eid2);
+    /** Get the responsible identifier. The responsible is the agent, on behalf of which the delegate agent acted.
+     * @return a QualifiedName
+     * @see <a href="http://www.w3.org/TR/prov-dm/#delegation.responsible">delegation responsible</a>
+     */
+    QualifiedName getResponsible();
+    
 
+    /** Set the activity identifier.
+     * @param activity QualifiedName of the activity
+     * @see <a href="http://www.w3.org/TR/prov-dm/#delegation.activity">delegation activity</a>
+     */
+
+    void setActivity(QualifiedName activity);
+    
+    /** Set the delegate identifier. 
+     * @param delegate QualifiedName of the delegate agent.
+     * @see <a href="http://www.w3.org/TR/prov-dm/#delegation.delegate">delegation delegate</a>
+     */
     void setDelegate(QualifiedName delegate);
 
+    /**Set the responsible identifier
+     * @param responsible QualifiedName of the responsible agent.
+     * @see <a href="http://www.w3.org/TR/prov-dm/#delegation.responsible">delegation responsible</a>
+     */
     void setResponsible(QualifiedName responsible);
-
-    QualifiedName getResponsible();
-
-    QualifiedName getActivity();
 
 }

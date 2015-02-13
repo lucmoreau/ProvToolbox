@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.LangString;
+
 
 /**
  * This object contains factory methods for each 
@@ -419,16 +421,16 @@ public class ObjectFactory {
      * Create an instance of {@link AStatement }
      * 
      */
-    public AStatement createAStatement() {
+    /*    public AStatement createAStatement() {
         return new AStatement();
     }
-
+    */
     /**
-     * Create an instance of {@link NamedBundle }
+     * Create an instance of {@link Bundle }
      * 
      */
-    public NamedBundle createNamedBundle() {
-        return new NamedBundle();
+    public Bundle createNamedBundle() {
+        return new Bundle();
     }
 
     /**

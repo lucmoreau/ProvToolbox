@@ -1,7 +1,14 @@
-package org.openprovenance.prov.xml;
+package org.openprovenance.prov.sql;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -18,7 +25,9 @@ import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
 import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
 import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.StatementOrBundle;
 
 
 /**
@@ -29,12 +38,12 @@ import org.openprovenance.prov.model.Statement;
  * <pre>
  * &lt;complexType name="NamedBundle">
  *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *     &lt;extension base="{http://www.w3.org/ns/prov#}AStatement">
  *       &lt;sequence maxOccurs="unbounded">
  *         &lt;group ref="{http://www.w3.org/ns/prov#}documentElements"/>
  *       &lt;/sequence>
  *       &lt;attribute ref="{http://www.w3.org/ns/prov#}id"/>
- *     &lt;/restriction>
+ *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
@@ -45,12 +54,15 @@ import org.openprovenance.prov.model.Statement;
 @XmlType(name = "NamedBundle", propOrder = {
     "statement"
 })
-public class NamedBundle
-    implements Equals, HashCode, ToString, org.openprovenance.prov.model.NamedBundle
+@javax.persistence.Entity(name = "NamedBundle")
+@Table(name = "BUNDLE")
+public class Bundle
+    extends AStatement
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Bundle
 {
 
     @XmlElements({
-        @XmlElement(name = "entity", type = Entity.class),
+        @XmlElement(name = "entity", type = org.openprovenance.prov.sql.Entity.class),
         @XmlElement(name = "activity", type = Activity.class),
         @XmlElement(name = "wasGeneratedBy", type = WasGeneratedBy.class),
         @XmlElement(name = "used", type = Used.class),
@@ -66,31 +78,15 @@ public class NamedBundle
         @XmlElement(name = "wasInfluencedBy", type = WasInfluencedBy.class),
         @XmlElement(name = "specializationOf", type = SpecializationOf.class),
         @XmlElement(name = "alternateOf", type = AlternateOf.class),
-        @XmlElement(name = "hadMember", type = HadMember.class),
-        @XmlElement(name = "mentionOf", type = MentionOf.class),
-        @XmlElement(name = "plan", type = Plan.class),
-        @XmlElement(name = "wasRevisionOf", type = Revision.class),
-        @XmlElement(name = "wasQuotedFrom", type = Quotation.class),
-        @XmlElement(name = "hadPrimarySource", type = PrimarySource.class),
-        @XmlElement(name = "person", type = Person.class),
-        @XmlElement(name = "organization", type = Organization.class),
-        @XmlElement(name = "softwareAgent", type = SoftwareAgent.class),
-        @XmlElement(name = "bundle", type = Bundle.class),
         @XmlElement(name = "collection", type = Collection.class),
         @XmlElement(name = "emptyCollection", type = EmptyCollection.class),
-        @XmlElement(name = "dictionary", type = Dictionary.class),
-        @XmlElement(name = "emptyDictionary", type = EmptyDictionary.class),
-        @XmlElement(name = "hadDictionaryMember", type = DictionaryMembership.class),
-        @XmlElement(name = "derivedByInsertionFrom", type = DerivedByInsertionFrom.class),
-        @XmlElement(name = "derivedByRemovalFrom", type = DerivedByRemovalFrom.class),
-        @XmlElement(name = "others", type = Others.class)
+        @XmlElement(name = "hadMember", type = HadMember.class),
+        @XmlElement(name = "mentionOf", type = MentionOf.class)
     })
     protected List<Statement> statement;
-
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QualifiedNameAdapter.class)
-    protected org.openprovenance.prov.model.QualifiedName id;
-
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    protected QualifiedName id;
 
     /**
      * Gets the value of the statement property.
@@ -110,7 +106,7 @@ public class NamedBundle
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Entity }
+     * {@link org.openprovenance.prov.sql.Entity }
      * {@link Activity }
      * {@link WasGeneratedBy }
      * {@link Used }
@@ -126,27 +122,21 @@ public class NamedBundle
      * {@link WasInfluencedBy }
      * {@link SpecializationOf }
      * {@link AlternateOf }
-     * {@link HadMember }
-     * {@link MentionOf }
-     * {@link Plan }
-     * {@link Revision }
-     * {@link Quotation }
-     * {@link PrimarySource }
-     * {@link Person }
-     * {@link Organization }
-     * {@link SoftwareAgent }
-     * {@link Bundle }
      * {@link Collection }
      * {@link EmptyCollection }
-     * {@link Dictionary }
-     * {@link EmptyDictionary }
-     * {@link DictionaryMembership }
-     * {@link DerivedByInsertionFrom }
-     * {@link DerivedByRemovalFrom }
-     * {@link Others }
+     * {@link HadMember }
+     * {@link MentionOf }
      * 
      * 
      */
+    @ManyToMany(targetEntity = AStatement.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinTable(name = "BUNDLE_STATEMENT_JOIN", joinColumns = {
+        @JoinColumn(name = "BUNDLE")
+    }, inverseJoinColumns = {
+        @JoinColumn(name = "STATEMENT")
+    })
     public List<Statement> getStatement() {
         if (statement == null) {
             statement = new ArrayList<Statement>();
@@ -155,14 +145,26 @@ public class NamedBundle
     }
 
     /**
+     * 
+     * 
+     */
+    public void setStatement(List<Statement> statement) {
+        this.statement = statement;
+    }
+
+    /**
      * Gets the value of the id property.
      * 
      * @return
      *     possible object is
-     *     {@link org.openprovenance.prov.model.QualifiedName }
+     *     {@link QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.QualifiedName getId() {
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "ID")
+    public QualifiedName getId() {
         return id;
     }
 
@@ -171,28 +173,28 @@ public class NamedBundle
      * 
      * @param value
      *     allowed object is
-     *     {@link org.openprovenance.prov.model.QualifiedName }
+     *     {@link QualifiedName }
      *     
      */
-    public void setId(org.openprovenance.prov.model.QualifiedName value) {
+    public void setId(QualifiedName value) {
         this.id = value;
     }
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {
-        if (!(object instanceof NamedBundle)) {
+        if (!(object instanceof Bundle)) {
             equalsBuilder.appendSuper(false);
             return ;
         }
         if (this == object) {
             return ;
         }
-        final NamedBundle that = ((NamedBundle) object);
+        final Bundle that = ((Bundle) object);
         equalsBuilder.append(this.getStatement(), that.getStatement());
         equalsBuilder.append(this.getId(), that.getId());
     }
 
     public boolean equals(Object object) {
-        if (!(object instanceof NamedBundle)) {
+        if (!(object instanceof Bundle)) {
             return false;
         }
         if (this == object) {
@@ -227,31 +229,36 @@ public class NamedBundle
         }
     }
 
-    
-    @javax.xml.bind.annotation.XmlTransient 
-    private Namespace namespace=null; 
-
-    @Override
-    public Namespace getNamespace() { 
-	return namespace;
-    } 
-    
-    @Override
-    public void setNamespace(Namespace namespace) { 
-	this.namespace=namespace; 
-    }
-   
-    
     public String toString() {
 	final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
 	toString(toStringBuilder);
 	return toStringBuilder.toString();
     }
+   
     
-
-   public Kind getKind() {
-  	return org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_BUNDLE;
-   }
+    @javax.xml.bind.annotation.XmlTransient 
+    private Namespace namespace=null; 
 
 
+    @Override
+    @ManyToOne(targetEntity = org.openprovenance.prov.sql.Namespace.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "NAMESPACE")
+    public Namespace getNamespace() { 
+	return namespace;
+    } 
+    
+    
+    public void setNamespace(Namespace namespace) { 
+	this.namespace=namespace; 
+    }
+   
+    
+    @Transient
+    public Kind getKind() {
+        return StatementOrBundle.Kind.PROV_BUNDLE;
+    }
+    
+    
 }

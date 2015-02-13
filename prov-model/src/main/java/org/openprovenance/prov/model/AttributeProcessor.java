@@ -5,6 +5,11 @@ import java.util.LinkedList;
 import java.util.Hashtable;
 
 
+/** Helper class to process attributes of a Statement. 
+ * 
+ * @author lavm
+ *
+ */
 
 public class AttributeProcessor {
 

@@ -17,7 +17,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.MentionOf;
-import org.openprovenance.prov.model.NamedBundle;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.Entry;
 import org.openprovenance.prov.model.Key;
@@ -338,13 +338,13 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     @Override
     public Document newDocument(Namespace namespaces,
 				Collection<Statement> statements,
-				Collection<NamedBundle> bundles) {
+				Collection<Bundle> bundles) {
 	// At this stage nothing left to do
 	return null;
     }
 
     @Override
-    public NamedBundle newNamedBundle(QualifiedName id,
+    public Bundle newNamedBundle(QualifiedName id,
 				      Namespace namespaces,
 				      Collection<Statement> statements) {
 	// At this stage nothing left to do

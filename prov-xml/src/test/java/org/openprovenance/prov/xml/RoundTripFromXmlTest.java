@@ -28,6 +28,7 @@ public class RoundTripFromXmlTest extends TestCase {
     public static final String EX2_PREFIX = "ex2";
     public static final String EX3_NS = "http://example3.org/";
 
+  
     static final ProvUtilities util=new ProvUtilities();
 
 
@@ -87,7 +88,7 @@ public class RoundTripFromXmlTest extends TestCase {
         makeDocAndTest(stment, null, file, opt, check);
     }
 
-    public void makeDocAndTest(Statement []stment, NamedBundle[] bundles, String file, Statement[] opt, boolean check) {
+    public void makeDocAndTest(Statement []stment, Bundle[] bundles, String file, Statement[] opt, boolean check) {
 	Document doc = pFactory.newDocument();
 	for (int i=0; i< stment.length; i++) {
 	   doc.getStatementOrBundle().add(stment[i]);
@@ -214,6 +215,7 @@ public class RoundTripFromXmlTest extends TestCase {
     public void testIssue() throws Exception {
   	Document doc=testFile("issue-type", false);
   	
+	@SuppressWarnings("unused")
 	Agent ag=(Agent)doc.getStatementOrBundle().get(0);
 	/*
 	System.out.println("-agent" +ag);
@@ -243,7 +245,8 @@ public class RoundTripFromXmlTest extends TestCase {
       }
 
     public void NOtestTypedObject() throws Exception {
-  	Document doc=testFile("typedObject", true);
+  	@SuppressWarnings("unused")
+	Document doc=testFile("typedObject", true);
   	
 	/*	Agent ag=(Agent)doc.getEntityAndActivityAndWasGeneratedBy().get(0);
 	System.out.println("agent" +ag);

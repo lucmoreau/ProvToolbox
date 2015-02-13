@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.GregorianCalendar;
+
+import javax.xml.bind.JAXBException;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
@@ -269,6 +271,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return packageList;
     }
 
+    abstract public ProvSerialiser getSerializer() throws JAXBException;
   
 
     public String getRole(HasOther e) {
@@ -404,6 +407,13 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
 
     }
+    
+    
+    /**
+     * Creates a copy of an agent. The copy is shallow in the sense that the new Agent shares the same attributes as the original Agent.
+     * @param a an {@link Agent} to copy
+     * @return a copy of the input {@link Agent}
+     */
 
     public Agent newAgent(Agent a) {
 	Agent res = newAgent(a.getId());
@@ -412,11 +422,23 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
+    /**
+     * Creates a new {@link Agent} with provided identifier
+     * @param ag a {@link QualifiedName} for the agent
+     * @return an object of type {@link Agent}
+     */
     public Agent newAgent(QualifiedName ag) {
 	Agent res = of.createAgent();
 	res.setId(ag);
 	return res;
     }
+
+    /**
+     * Creates a new {@link Agent} with provided identifier and attributes
+     * @param id a {@link QualifiedName} for the agent
+     * @param attributes a collection of {@link Attribute} for the agent
+     * @return an object of type {@link Agent}
+     */
 
     public Agent newAgent(QualifiedName id, Collection<Attribute> attributes) {
 	Agent res = newAgent(id);
@@ -424,6 +446,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
+    /**
+     * Creates a new {@link Agent} with provided identifier and label
+     * @param ag a {@link QualifiedName} for the agent
+     * @param label a String for the label property (see {@link HasLabel#getLabel()} 
+     * @return an object of type {@link Agent}
+     */
     public Agent newAgent(QualifiedName ag, String label) {
 	Agent res = newAgent(ag);
 	if (label != null)
@@ -500,6 +528,10 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
+    /**
+     * Factory method to construct a {@link Document}
+     * @return a new instance of {@link Document}
+     */
     public Document newDocument() {
 	Document res = of.createDocument();
 	return res;
@@ -528,6 +560,9 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	Document res = of.createDocument();
 	res.getStatementOrBundle()
 	   .addAll(graph.getStatementOrBundle());
+	if (graph.getNamespace()!=null) {
+	    res.setNamespace(new Namespace(graph.getNamespace()));
+	}
 	return res;
     }
 
@@ -539,7 +574,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     @Override
     public Document newDocument(Namespace namespace,
                                 Collection<Statement> statements,
-                                Collection<NamedBundle> bundles) {
+                                Collection<Bundle> bundles) {
 	Document res = of.createDocument();
 	res.setNamespace(namespace);
 	res.getStatementOrBundle()
@@ -565,26 +600,48 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
     
+    /**
+     * Creates a copy of an entity. The copy is shallow in the sense that the new Entity shares the same attributes as the original Entity.
+     * @param e an {@link Entity} to copy
+     * @return a copy of the input {@link Entity}
+     */
     public Entity newEntity(Entity e) {
 	Entity res = newEntity(e.getId());
+	res.getOther().addAll(e.getOther());
 	res.getType().addAll(e.getType());
 	res.getLabel().addAll(e.getLabel());
 	res.getLocation().addAll(e.getLocation());
 	return res;
     }
 
+    /**
+     * Creates a new {@link Entity} with provided identifier
+     * @param id a {@link QualifiedName} for the entity
+     * @return an object of type {@link Entity}
+     */
     public Entity newEntity(QualifiedName id) {
 	Entity res = of.createEntity();
 	res.setId(id);
 	return res;
     }
 
+    /**
+     * Creates a new {@link Entity} with provided identifier and attributes
+     * @param id a {@link QualifiedName} for the entity
+     * @param attributes a collection of {@link Attribute} for the entity
+     * @return an object of type {@link Entity}
+     */
     public Entity newEntity(QualifiedName id, Collection<Attribute> attributes) {
 	Entity res = newEntity(id);
 	setAttributes(res, attributes);
 	return res;
     }
-
+    /**
+     * Creates a new {@link Entity} with provided identifier and label
+     * @param id a {@link QualifiedName} for the entity
+     * @param label a String for the label property (see {@link HasLabel#getLabel()} 
+     * @return an object of type {@link Entity}
+     */
     public Entity newEntity(QualifiedName id, String label) {
 	Entity res = newEntity(id);
 	if (label != null)
@@ -725,12 +782,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
    
     
-    public NamedBundle newNamedBundle(QualifiedName id, 
+    public Bundle newNamedBundle(QualifiedName id, 
                                       Collection<Activity> ps,
 				      Collection<Entity> as,
 				      Collection<Agent> ags,
 				      Collection<Statement> lks) {
-	NamedBundle res = of.createNamedBundle();
+	Bundle res = of.createNamedBundle();
 	res.setId(id);
 	
 	if (ps != null) {
@@ -749,8 +806,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
   
-    public NamedBundle newNamedBundle(QualifiedName id, Collection<Statement> lks) {
-	NamedBundle res = of.createNamedBundle();
+    public Bundle newNamedBundle(QualifiedName id, Collection<Statement> lks) {
+	Bundle res = of.createNamedBundle();
 	res.setId(id);
 
 	if (lks != null) {
@@ -758,8 +815,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}
 	return res;
     }
-    public NamedBundle newNamedBundle(QualifiedName id, Namespace namespace, Collection<Statement> statements) {
-	NamedBundle res = of.createNamedBundle();
+    public Bundle newNamedBundle(QualifiedName id, Namespace namespace, Collection<Statement> statements) {
+	Bundle res = of.createNamedBundle();
 	res.setId(id);
 	res.setNamespace(namespace);
 	if (statements != null) {
@@ -784,7 +841,11 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return newOther(elementName,value,type);
     }
     
-    
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newQualifiedName(java.lang.String, java.lang.String, java.lang.String)
+     */
+
     abstract public QualifiedName newQualifiedName(String namespace, String local, String prefix);
     
     /* A convenience function. */
@@ -914,9 +975,31 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return u1;
     }
 
+    /**
+     * Factory method to create an instance of  of the PROV-DM prov:value attribute (see {@link Value}).
+     * @param value a String
+     * @return a new {@link Value} with type xsd:string (see {@link Name#XSD_STRING})
+     */
+    public Value newValue(String value) {
+	return newValue(value,getName().XSD_STRING);
+    }  
     
-    
+    /**
+     * Factory method to create an instance of the PROV-DM prov:value attribute (see {@link Value}).
+     * @param value an integer
+     * @return a new {@link Value} with type xsd:int (see {@link Name#XSD_INT})
+     */
+    public Value newValue(int value) {
+	return newValue(value,getName().XSD_INT);
+    }  
 
+    /**
+     * Factory method to create an instance of the PROV-DM prov:value attribute (see {@link Value}).
+     * Use class {@link Name} for predefined {@link QualifiedName}s for the common types.
+     * @param value an {@link Object}
+     * @param type a {@link QualifiedName} to denote the type of value
+     * @return a new {@link Value}
+     */
     public Value newValue(Object value, QualifiedName type) {
 	if (value==null) return null;
         Value res =  of.createValue();
@@ -1041,11 +1124,17 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	res.setGeneratedEntity(e2);
 	return res;
     }    
-    public WasDerivedFrom newWasDerivedFrom(QualifiedName aid1,
-					    QualifiedName aid2) {
+    
+    /** A factory method to create an instance of a derivation {@link WasDerivedFrom}
+     * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation 
+     * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
+     * @return an instance of {@link WasDerivedFrom}
+     */
+    public WasDerivedFrom newWasDerivedFrom(QualifiedName e2,
+					    QualifiedName e1) {
 	WasDerivedFrom res = of.createWasDerivedFrom();
-	res.setUsedEntity(aid2);
-	res.setGeneratedEntity(aid1);
+	res.setUsedEntity(e1);
+	res.setGeneratedEntity(e2);
 	return res;
     }    
    
@@ -1410,6 +1499,18 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         res.setYear(year);
         return res;
     }
+    public Collection<Attribute> getAttributes(Statement statement) {
+	Collection<Attribute> result=new LinkedList<Attribute>();
+	if (statement instanceof HasType) result.addAll(((HasType)statement).getType());
+	if (statement instanceof HasLocation) result.addAll(((HasLocation)statement).getLocation());
+	if (statement instanceof HasRole) result.addAll(((HasRole)statement).getRole());
+	if (statement instanceof HasOther) {
+	    for (Other o: ((HasOther)statement).getOther()) {
+		result.add((Attribute)o);
+	    }
+	}	
+	return result;
+    }
 
     public void setAttributes(HasOther res, Collection<Attribute> attributes) {
 	if (attributes==null) return;
@@ -1473,6 +1574,14 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     @Override
     public void startDocument(Namespace namespace) {
         
+    }
+
+    public Namespace newNamespace(Namespace ns) {
+	return new Namespace(ns);
+    }
+
+    public Namespace newNamespace() {
+	return new Namespace();
     }
 
 }

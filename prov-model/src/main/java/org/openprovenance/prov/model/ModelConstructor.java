@@ -41,7 +41,7 @@ public interface ModelConstructor {
      */
     public Document newDocument(Namespace namespace,
                                 Collection<Statement> statements, 
-                                Collection<NamedBundle> bundles);
+                                Collection<Bundle> bundles);
     
     
     public Entity newEntity(QualifiedName id, Collection<Attribute> attributes);
@@ -49,17 +49,25 @@ public interface ModelConstructor {
     public MentionOf newMentionOf(QualifiedName e2, QualifiedName e1, QualifiedName b);
     
     /**
-     * A factory method to create an instance of a Bundle {@link NamedBundle}
+     * A factory method to create an instance of a Bundle {@link Bundle}
      * @param id an identifier for the bundle
      * @param namespace a {@link Namespace} object mapping prefix to namespace URIs
      * @param statements a set of provenance descriptions 
-     * @return {@link NamedBundle}
+     * @return {@link Bundle}
      */
-    public NamedBundle newNamedBundle(QualifiedName id, 
+    public Bundle newNamedBundle(QualifiedName id, 
                                       Namespace namespace, 
                                       Collection<Statement> statements);
-    public SpecializationOf newSpecializationOf(QualifiedName e2, QualifiedName e1);
+    /** A factory method for {@link QualifiedName}. A qualified name consists of a namespace, denoted by an optional prefix, and a local name.
+     * @param namespace a URI for the namespace
+     * @param local a local name 
+     * @param prefix a string, which can be null.
+     * @return an instance of {@link QualifiedName}
+     */
+    public QualifiedName newQualifiedName(String namespace, String local, String prefix);
     
+    public SpecializationOf newSpecializationOf(QualifiedName e2, QualifiedName e1);
+ 
     /** A factory method to create an instance of a Usage {@link Used}
      * @param id an optional identifier for a usage
      * @param activity the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an entity
@@ -69,7 +77,8 @@ public interface ModelConstructor {
      * @return an instance of {@link Used}
      */
     public Used newUsed(QualifiedName id, QualifiedName activity, QualifiedName entity, XMLGregorianCalendar time, Collection<Attribute> attributes);
- 
+    
+    
     /** A factory method to create an instance of an Association {@link WasAssociatedWith}
      * @param id an optional identifier for the association between an activity and an agent
      * @param activity an identifier for the activity
@@ -79,8 +88,7 @@ public interface ModelConstructor {
      * @return an instance of {@link WasAssociatedWith}
      */
     public WasAssociatedWith newWasAssociatedWith(QualifiedName id, QualifiedName activity, QualifiedName agent, QualifiedName plan, Collection<Attribute> attributes);
-    
-    
+ 
     /** A factory method to create an instance of an attribution {@link WasAttributedTo}
      * @param id  an optional identifier for the relation
      * @param entity an entity identifier
@@ -89,7 +97,8 @@ public interface ModelConstructor {
      * @return an instance of {@link WasAttributedTo}
      */
     public WasAttributedTo newWasAttributedTo(QualifiedName id, QualifiedName entity, QualifiedName agent,  Collection<Attribute> attributes);
- 
+
+    
     /** A factory method to create an instance of a derivation {@link WasDerivedFrom}
      * @param id an optional identifier for a derivation
      * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation 
@@ -102,7 +111,6 @@ public interface ModelConstructor {
      */
     public WasDerivedFrom newWasDerivedFrom(QualifiedName id, QualifiedName e2, QualifiedName e1, QualifiedName activity, QualifiedName generation, QualifiedName usage,  Collection<Attribute> attributes);
 
-    
     /** A factory method to create an instance of an end {@link WasEndedBy}
      * @param id
      * @param activity an identifier for the ended <a href="http://www.w3.org/TR/prov-dm/#end.activity">activity</a>
@@ -137,6 +145,7 @@ public interface ModelConstructor {
      */
     public WasInfluencedBy newWasInfluencedBy(QualifiedName id, QualifiedName influencee, QualifiedName influencer, Collection<Attribute> attributes);
 
+
     /** A factory method to create an instance of an communication {@link WasInformedBy}
      * @param id an optional identifier identifying the association;
      * @param informed the identifier of the informed activity;
@@ -145,8 +154,7 @@ public interface ModelConstructor {
      * @return an instance of {@link WasInformedBy}
      */
     public WasInformedBy newWasInformedBy(QualifiedName id, QualifiedName informed, QualifiedName informant, Collection<Attribute> attributes);
-
-
+    
     /** A factory method to create an instance of an invalidation {@link WasInvalidatedBy}
      * @param id an optional identifier for a usage
      * @param entity an identifier for the created <a href="http://www.w3.org/TR/prov-dm/#invalidation.entity">entity</a>
@@ -157,7 +165,7 @@ public interface ModelConstructor {
      */    
 
     public WasInvalidatedBy newWasInvalidatedBy(QualifiedName id, QualifiedName entity, QualifiedName activity, XMLGregorianCalendar time, Collection<Attribute> attributes);
-    
+
     /** A factory method to create an instance of a start {@link WasStartedBy}
      * @param id
      * @param activity an identifier for the started <a href="http://www.w3.org/TR/prov-dm/#start.activity">activity</a>
@@ -168,12 +176,9 @@ public interface ModelConstructor {
      * @return an instance of {@link WasStartedBy}
      */
     public WasStartedBy newWasStartedBy(QualifiedName id, QualifiedName activity, QualifiedName trigger, QualifiedName starter, XMLGregorianCalendar time, Collection<Attribute> attributes);
-
     public void startBundle(QualifiedName bundleId, Namespace namespace);
+    
     public void startDocument(Namespace namespace);
-    
-    
-    public QualifiedName newQualifiedName(String namespace, String local, String prefix);
 
 
 }

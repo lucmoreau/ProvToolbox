@@ -21,6 +21,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/** Utility class for processing DOM {@link Element}, in particular conversion from a PROV attribute to an {@link Element} and vice-versa.
+ * 
+ * @author lavm
+ *
+ */
 final public class DOMProcessing {
     private static final String XML_LITERAL = "XMLLiteral";
     private static final String RDF_PREFIX = NamespacePrefixMapper.RDF_PREFIX;
@@ -85,7 +90,12 @@ final public class DOMProcessing {
     }
 
     
-    
+    /** Creates a DOM {@link Element} for a {@link QualifiedName} and content given by value
+     * 
+     * @param elementName a {@link QualifiedName} to denote the element name
+     * @param value for the created {@link Element}
+     * @return a new {@link Element}
+     */
     
     final static public Element newElement(QualifiedName elementName, QualifiedName value) {
 	org.w3c.dom.Document doc = builder.newDocument();
@@ -115,6 +125,13 @@ final public class DOMProcessing {
 	return el;
     }
 
+    /**
+     * Creates a DOM {@link Element} for a {@link QualifiedName} and content given by value and type
+     * @param name a {@link QualifiedName} to denote the element name
+     * @param value for the created {@link Element}
+     * @param type of the value
+     * @return a new {@link Element}
+     */
     final static public Element newElement(QualifiedName name, String value, QualifiedName type) {
 	org.w3c.dom.Document doc = builder.newDocument();
 	Element el = doc.createElementNS(name.getNamespaceURI(),

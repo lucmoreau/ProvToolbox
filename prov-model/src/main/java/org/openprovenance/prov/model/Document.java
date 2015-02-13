@@ -50,11 +50,65 @@ import org.openprovenance.prov.model.Namespace;
  *
  */
 public interface Document {
+    
+    /** Accessor for the {@link Namespace} object containing registered prefix/namespaces for the current document.#
+     * 
+     * @return an instance of {@link Namespace}
+     */
+
+    Namespace getNamespace();
+    
+    /**
+     * Gets the value of the statementOrBundle property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the statementOrBundle property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getStatementOrBundle().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link Entity }
+     * {@link Activity }
+     * {@link WasGeneratedBy }
+     * {@link Used }
+     * {@link WasInformedBy }
+     * {@link WasStartedBy }
+     * {@link WasEndedBy }
+     * {@link WasInvalidatedBy }
+     * {@link WasDerivedFrom }
+     * {@link Agent }
+     * {@link WasAttributedTo }
+     * {@link WasAssociatedWith }
+     * {@link ActedOnBehalfOf }
+     * {@link WasInfluencedBy }
+     * {@link SpecializationOf }
+     * {@link AlternateOf }
+     * {@link HadMember }
+     * {@link MentionOf }
+     * {@link DictionaryMembership }
+     * {@link DerivedByInsertionFrom }
+     * {@link DerivedByRemovalFrom }
+     * {@link Bundle }
+     * 
+     * 
+     */  
 
     List<StatementOrBundle> getStatementOrBundle();
-
-    void setNamespace(Namespace ns);
     
-    Namespace getNamespace();
+    /**
+     * Sets the {@link Namespace} of this document
+     * @param namespace an instance {@link Namespace}
+     */
+    
+    void setNamespace(Namespace namespace);
 
 }

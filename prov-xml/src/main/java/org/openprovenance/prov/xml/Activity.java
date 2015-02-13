@@ -235,7 +235,7 @@ public class Activity implements Equals, HashCode, ToString, org.openprovenance.
      
     
     /** Gets the List of all attributes
-     * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
+     * @see org.openprovenance.prov.xml.HasAllAttributes#getAllAttributes()
      */
     @Override
     public List<Attribute> getAllAttributes() {
@@ -353,7 +353,7 @@ public class Activity implements Equals, HashCode, ToString, org.openprovenance.
             toStringBuilder.append("id", theId);
         }
     }
-
+    
     public String toString() {
         final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
         toString(toStringBuilder);

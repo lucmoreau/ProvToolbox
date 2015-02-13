@@ -2,7 +2,7 @@
   <parent>
     <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.6.2-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -18,19 +18,19 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-model</artifactId>
-      <version>0.5.1-SNAPSHOT</version>
+      <version>0.6.2-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.5.1-SNAPSHOT</version>
+      <version>0.6.2-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.5.1-SNAPSHOT</version>
+      <version>0.6.2-SNAPSHOT</version>
       <scope>test</scope>
       <classifier>tests</classifier>
     </dependency>
@@ -38,7 +38,7 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-n</artifactId>
-      <version>0.5.1-SNAPSHOT</version>
+      <version>0.6.2-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -47,7 +47,7 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-n</artifactId>
-      <version>0.5.1-SNAPSHOT</version>
+      <version>0.6.2-SNAPSHOT</version>
       <scope>test</scope>
       <classifier>tests</classifier>
     </dependency>
@@ -59,23 +59,17 @@
     </dependency>
 
     <dependency>
-     <groupId>com.sun.xml.bind</groupId>
-     <artifactId>jaxb-impl</artifactId>
-     <version>${jaxb.impl.version}</version>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>${jaxb.impl.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.jvnet.jaxb2_commons</groupId>
-	  <artifactId>runtime</artifactId>
-   	  <version>${jaxb.common.version}</version>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.0.1</version>
     </dependency>
-
-
-
-
-
-
- </dependencies>
+  </dependencies>
 
   <build>
 
@@ -88,11 +82,11 @@
 
 
 
-     <plugins>
-
+    <plugins>
+<!-- disabled
       <plugin>
         <groupId>org.jvnet.jaxb2.maven2</groupId>
-	    <artifactId>maven-jaxb2-plugin</artifactId>
+	<artifactId>maven-jaxb2-plugin</artifactId>
         <executions>
           <execution>
             <id>go1</id>
@@ -101,39 +95,37 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-               <schemaDirectory>src/main/resources</schemaDirectory>
-               <plugins>
-			     <plugin>
-				   <groupId>org.jvnet.hyperjaxb3</groupId>
-				   <artifactId>hyperjaxb3-ejb-plugin</artifactId>
-				   <version>0.2.RC1</version>
-			     </plugin>
-		       </plugins>
-               <schemaIncludes>
-                 <schemaInclude>**/prov_printer_config.xsd</schemaInclude>
+              <schemaDirectory>src/main/resources</schemaDirectory>
+              <plugins>
+		<plugin>
+		  <groupId>org.jvnet.hyperjaxb3</groupId>
+		  <artifactId>hyperjaxb3-ejb-plugin</artifactId>
+		  <version>0.2.RC1</version>
+		</plugin>
+	      </plugins>
+              <schemaIncludes>
+                <schemaInclude>**/prov_printer_config.xsd</schemaInclude>
 
-               </schemaIncludes>
-               <bindingDirectory>src/main/resources</bindingDirectory>
-               <bindingIncludes>
-                  <bindingInclude>bindings.xjb</bindingInclude>
-               </bindingIncludes> 
-               <strict>true</strict> 
-               <verbose>true</verbose>     
-               <extension>true</extension>     
-               <args>
-                 <arg>-npa</arg>
-			     <arg>-Xequals</arg>
-  			     <arg>-XhashCode</arg>
-			     <arg>-XtoString</arg>
- 			     <!-- <arg>-Xhyperjaxb3-ejb</arg>
-			          <arg>-Xhyperjaxb3-ejb-roundtripTestClassName=RoundtripTest</arg> -->
-               </args>
+              </schemaIncludes>
+              <bindingDirectory>src/main/resources</bindingDirectory>
+              <bindingIncludes>
+                <bindingInclude>bindings.xjb</bindingInclude>
+              </bindingIncludes> 
+              <strict>true</strict> 
+              <verbose>true</verbose>     
+              <extension>true</extension>     
+              <args>
+                <arg>-npa</arg>
+		<arg>-Xequals</arg>
+  		<arg>-XhashCode</arg>
+		<arg>-XtoString</arg>
+              </args>
             </configuration>
           </execution>
         </executions>
       </plugin>
 
-
+-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -149,74 +141,69 @@
       </plugin>
     </plugins>
 
-   <pluginManagement>
-     <plugins>
-       <plugin>
-         <groupId>org.jvnet.jaxb2.maven2</groupId>
-         <artifactId>maven-jaxb2-plugin</artifactId>
-         <!-- <version>0.4.M1</version> -->
-         <version>0.8.1</version> 
-       </plugin>
-       
-       <plugin> 
-            <!--  This plugin's configuration is used to store Eclipse m2e settings 
-                only. It has no influence on the Maven build itself. --> 
-        <groupId>org.eclipse.m2e</groupId>
-        <artifactId>lifecycle-mapping</artifactId>
-        <version>1.0.0</version>
-      <configuration>
-        <lifecycleMappingMetadata>
-          <pluginExecutions>
-            <pluginExecution>
-              <pluginExecutionFilter>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <versionRange>[0.7.0,)</versionRange>
-                <goals>
-                  <goal>generate</goal>
-                </goals>
-              </pluginExecutionFilter>
-              <action>
-                <execute>
-                  <runOnIncremental>false</runOnIncremental>
-                </execute>
-              </action>
-            </pluginExecution>
-            
-            <pluginExecution>
-              <pluginExecutionFilter>
-                              <groupId>org.apache.maven.plugins</groupId>
-              
-                <artifactId>maven-antrun-plugin</artifactId>
-                                <versionRange>[1.3,)</versionRange>
-                
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </pluginExecutionFilter>
-              <action>
-                <execute>
-                  <runOnIncremental>false</runOnIncremental>
-                </execute>
-              </action>
-            </pluginExecution>
-          </pluginExecutions>
-        </lifecycleMappingMetadata>
-      </configuration>
-      </plugin>
-     </plugins>
-     
-     
-   </pluginManagement>
-   
+    <pluginManagement>
+      <plugins>
+	<plugin>
+          <groupId>org.jvnet.jaxb2.maven2</groupId>
+          <artifactId>maven-jaxb2-plugin</artifactId>
+          <!-- <version>0.4.M1</version> -->
+          <version>0.8.1</version> 
+	</plugin>
+	
+	<plugin> 
+          <!--  This plugin's configuration is used to store Eclipse m2e settings 
+               only. It has no influence on the Maven build itself. --> 
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+	  <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+		<pluginExecution>
+		  <pluginExecutionFilter>
+                    <groupId>org.jvnet.jaxb2.maven2</groupId>
+                    <artifactId>maven-jaxb2-plugin</artifactId>
+                    <versionRange>[0.7.0,)</versionRange>
+                    <goals>
+                      <goal>generate</goal>
+                    </goals>
+		  </pluginExecutionFilter>
+		  <action>
+                    <execute>
+                      <runOnIncremental>false</runOnIncremental>
+                    </execute>
+		  </action>
+		</pluginExecution>
+		
+		<pluginExecution>
+		  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+		    
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <versionRange>[1.3,)</versionRange>
+                    
+                    <goals>
+                      <goal>run</goal>
+                    </goals>
+		  </pluginExecutionFilter>
+		  <action>
+                    <execute>
+                      <runOnIncremental>false</runOnIncremental>
+                    </execute>
+		  </action>
+		</pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+	  </configuration>
+	</plugin>
+      </plugins>
+    </pluginManagement>
+    
     <testResources>
-       <testResource>
-         <directory>src/test/resources</directory>
-         <filtering>true</filtering>
-       </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
     </testResources>
   </build>
-
-
-
 </project>

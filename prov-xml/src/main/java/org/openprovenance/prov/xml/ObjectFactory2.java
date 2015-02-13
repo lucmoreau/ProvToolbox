@@ -12,6 +12,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
+
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Location;
@@ -286,11 +288,11 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     }
 
     /**
-     * Create an instance of {@link Bundle }
+     * Create an instance of {@link BundleEntity }
      * 
      */
-    public Bundle createBundle() {
-        return new org.openprovenance.prov.xml.Bundle();
+    public BundleEntity createBundle() {
+        return new org.openprovenance.prov.xml.BundleEntity();
     }
 
     /**
@@ -455,11 +457,11 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
 
     
     /**
-     * Create an instance of {@link NamedBundle }
+     * Create an instance of {@link Bundle }
      * 
      */
-    public NamedBundle createNamedBundle() {
-        return new org.openprovenance.prov.xml.NamedBundle();
+    public Bundle createNamedBundle() {
+        return new org.openprovenance.prov.xml.Bundle();
     }
 
     /**
@@ -616,12 +618,12 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link Bundle }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link BundleEntity }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "bundle")
-    public JAXBElement<Bundle> createBundle(Bundle value) {
-        return new JAXBElement<Bundle>(_Bundle_QNAME, Bundle.class, null, value);
+    public JAXBElement<BundleEntity> createBundle(BundleEntity value) {
+        return new JAXBElement<BundleEntity>(_Bundle_QNAME, BundleEntity.class, null, value);
     }
 
     /**

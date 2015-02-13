@@ -14,7 +14,7 @@ package org.openprovenance.prov.model;
  *
  */
 
-public interface Influence extends Identifiable, HasOther, Relation0  {
+public interface Influence extends Identifiable, HasOther, Relation  {
     //    Ref getCause();
     //    Ref getEffect();
 } 

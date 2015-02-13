@@ -196,7 +196,7 @@ public class WasInfluencedBy implements Equals, HashCode, ToString, org.openprov
      
     
     /** Gets the List of all attributes
-     * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
+     * @see org.openprovenance.prov.xml.HasAllAttributes#getAllAttributes()
      */
     @Override
     public List<Attribute> getAllAttributes() {

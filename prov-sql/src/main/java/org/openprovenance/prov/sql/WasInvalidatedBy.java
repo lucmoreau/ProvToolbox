@@ -22,22 +22,23 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
-import org.jvnet.jaxb2_commons.lang.Equals;
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.openprovenance.prov.xml.builder.Equals;
+import org.openprovenance.prov.xml.builder.HashCode;
+import org.openprovenance.prov.xml.builder.ToString;
+import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
+import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
+import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.xml.AttributeList;
 import org.openprovenance.prov.xml.HasAllAttributes;
 import org.openprovenance.prov.xml.SortedAttributeList;
+
 
 
 /**
@@ -85,7 +86,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 @Table(name = "WASINVALIDATEDBY")
 public class WasInvalidatedBy
     extends AStatement
-    implements Equals, HashCode, org.openprovenance.prov.model.WasInvalidatedBy, HasAllAttributes
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.WasInvalidatedBy, HasAllAttributes
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)
@@ -400,7 +401,7 @@ public class WasInvalidatedBy
 
 
     /** Gets the List of all attributes
-     * @see org.openprovenance.prov.xml.HasAllAttributes#getAll()
+     * @see org.openprovenance.prov.xml.HasAllAttributes#getAllAttributes()
      */
     @Transient
     public List<Attribute> getAllAttributes() {
@@ -444,168 +445,117 @@ public class WasInvalidatedBy
     @Column(name = "TIMEITEM")
     @Temporal(TemporalType.TIMESTAMP)
     public Date getTimeItem() {
-        return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getTime());
+        return ProvUtilities.toDate(this.getTime());
+
     }
 
     public void setTimeItem(Date target) {
-        setTime(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
+        setTime(ProvUtilities.toXMLGregorianCalendar(target));
     }
 
 
 
-    public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
+
+    public void equals(Object object, EqualsBuilder equalsBuilder) {
+        if (!(object instanceof WasInvalidatedBy)) {
+            equalsBuilder.appendSuper(false);
+            return ;
+        }
+        if (this == object) {
+            return ;
+        }
+        final WasInvalidatedBy that = ((WasInvalidatedBy) object);
+        equalsBuilder.append(this.getEntity(), that.getEntity());
+        equalsBuilder.append(this.getActivity(), that.getActivity());
+        equalsBuilder.append(this.getTime(), that.getTime());
+        equalsBuilder.append(this.getLabel(), that.getLabel());
+        equalsBuilder.append(this.getType(), that.getType());
+        equalsBuilder.append(this.getLocation(), that.getLocation());
+        equalsBuilder.append(this.getRole(), that.getRole());
+        equalsBuilder.append(this.getId(), that.getId());
+    }
+
+    public boolean equals(Object object) {
         if (!(object instanceof WasInvalidatedBy)) {
             return false;
         }
         if (this == object) {
             return true;
         }
-        if (!super.equals(thisLocator, thatLocator, object, strategy)) {
-            return false;
-        }
-        final WasInvalidatedBy that = ((WasInvalidatedBy) object);
-        {
-            org.openprovenance.prov.model.QualifiedName lhsEntity;
-            lhsEntity = this.getEntity();
-            org.openprovenance.prov.model.QualifiedName rhsEntity;
-            rhsEntity = that.getEntity();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "entity", lhsEntity), LocatorUtils.property(thatLocator, "entity", rhsEntity), lhsEntity, rhsEntity)) {
-                return false;
-            }
-        }
-        {
-            org.openprovenance.prov.model.QualifiedName lhsActivity;
-            lhsActivity = this.getActivity();
-            org.openprovenance.prov.model.QualifiedName rhsActivity;
-            rhsActivity = that.getActivity();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "activity", lhsActivity), LocatorUtils.property(thatLocator, "activity", rhsActivity), lhsActivity, rhsActivity)) {
-                return false;
-            }
-        }
-        {
-            XMLGregorianCalendar lhsTime;
-            lhsTime = this.getTime();
-            XMLGregorianCalendar rhsTime;
-            rhsTime = that.getTime();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "time", lhsTime), LocatorUtils.property(thatLocator, "time", rhsTime), lhsTime, rhsTime)) {
-                return false;
-            }
-        }
-        {
-            List<org.openprovenance.prov.model.LangString> lhsLabel;
-            lhsLabel = (((this.label!= null)&&(!this.label.isEmpty()))?this.getLabel():null);
-            List<org.openprovenance.prov.model.LangString> rhsLabel;
-            rhsLabel = (((that.label!= null)&&(!that.label.isEmpty()))?that.getLabel():null);
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "label", lhsLabel), LocatorUtils.property(thatLocator, "label", rhsLabel), lhsLabel, rhsLabel)) {
-                return false;
-            }
-        }
-        {
-            List<org.openprovenance.prov.model.Type> lhsType;
-            lhsType = (((this.type!= null)&&(!this.type.isEmpty()))?this.getType():null);
-            List<org.openprovenance.prov.model.Type> rhsType;
-            rhsType = (((that.type!= null)&&(!that.type.isEmpty()))?that.getType():null);
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "type", lhsType), LocatorUtils.property(thatLocator, "type", rhsType), lhsType, rhsType)) {
-                return false;
-            }
-        }
-        {
-            List<org.openprovenance.prov.model.Location> lhsLocation;
-            lhsLocation = (((this.location!= null)&&(!this.location.isEmpty()))?this.getLocation():null);
-            List<org.openprovenance.prov.model.Location> rhsLocation;
-            rhsLocation = (((that.location!= null)&&(!that.location.isEmpty()))?that.getLocation():null);
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "location", lhsLocation), LocatorUtils.property(thatLocator, "location", rhsLocation), lhsLocation, rhsLocation)) {
-                return false;
-            }
-        }
-        {
-            List<org.openprovenance.prov.model.Role> lhsRole;
-            lhsRole = (((this.role!= null)&&(!this.role.isEmpty()))?this.getRole():null);
-            List<org.openprovenance.prov.model.Role> rhsRole;
-            rhsRole = (((that.role!= null)&&(!that.role.isEmpty()))?that.getRole():null);
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "role", lhsRole), LocatorUtils.property(thatLocator, "role", rhsRole), lhsRole, rhsRole)) {
-                return false;
-            }
-        }
-        {
-            List<org.openprovenance.prov.model.Other> lhsOthers;
-            lhsOthers = (((this.other!= null)&&(!this.other.isEmpty()))?this.getOther():null);
-            List<org.openprovenance.prov.model.Other> rhsOthers;
-            rhsOthers = (((that.other!= null)&&(!that.other.isEmpty()))?that.getOther():null);
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "others", lhsOthers), LocatorUtils.property(thatLocator, "others", rhsOthers), lhsOthers, rhsOthers)) {
-                return false;
-            }
-        }
-        {
-            QualifiedName lhsId;
-            lhsId = this.getId();
-            QualifiedName rhsId;
-            rhsId = that.getId();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "id", lhsId), LocatorUtils.property(thatLocator, "id", rhsId), lhsId, rhsId)) {
-                return false;
-            }
-        }
-        return true;
+        final EqualsBuilder equalsBuilder = new JAXBEqualsBuilder();
+        equals(object, equalsBuilder);
+        return equalsBuilder.isEquals();
     }
 
-    public boolean equals(Object object) {
-        final EqualsStrategy strategy = JAXBEqualsStrategy.INSTANCE;
-        return equals(null, null, object, strategy);
+    public void hashCode(HashCodeBuilder hashCodeBuilder) {
+        hashCodeBuilder.append(this.getEntity());
+        hashCodeBuilder.append(this.getActivity());
+        hashCodeBuilder.append(this.getTime());
+        hashCodeBuilder.append(this.getLabel());
+        hashCodeBuilder.append(this.getType());
+        hashCodeBuilder.append(this.getLocation());
+        hashCodeBuilder.append(this.getRole());
+        hashCodeBuilder.append(this.getId());
     }
 
-    public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
-        int currentHashCode = super.hashCode(locator, strategy);
+    public int hashCode() {
+        final HashCodeBuilder hashCodeBuilder = new JAXBHashCodeBuilder();
+        hashCode(hashCodeBuilder);
+        return hashCodeBuilder.toHashCode();
+    }
+
+    public void toString(ToStringBuilder toStringBuilder) {
         {
             org.openprovenance.prov.model.QualifiedName theEntity;
             theEntity = this.getEntity();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "entity", theEntity), currentHashCode, theEntity);
+            toStringBuilder.append("entity", theEntity);
         }
         {
             org.openprovenance.prov.model.QualifiedName theActivity;
             theActivity = this.getActivity();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "activity", theActivity), currentHashCode, theActivity);
+            toStringBuilder.append("activity", theActivity);
         }
         {
             XMLGregorianCalendar theTime;
             theTime = this.getTime();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "time", theTime), currentHashCode, theTime);
+            toStringBuilder.append("time", theTime);
         }
         {
             List<org.openprovenance.prov.model.LangString> theLabel;
-            theLabel = (((this.label!= null)&&(!this.label.isEmpty()))?this.getLabel():null);
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "label", theLabel), currentHashCode, theLabel);
+            theLabel = this.getLabel();
+            toStringBuilder.append("label", theLabel);
         }
         {
             List<org.openprovenance.prov.model.Type> theType;
-            theType = (((this.type!= null)&&(!this.type.isEmpty()))?this.getType():null);
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "type", theType), currentHashCode, theType);
+            theType = this.getType();
+            toStringBuilder.append("type", theType);
         }
         {
             List<org.openprovenance.prov.model.Location> theLocation;
-            theLocation = (((this.location!= null)&&(!this.location.isEmpty()))?this.getLocation():null);
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "location", theLocation), currentHashCode, theLocation);
+            theLocation = this.getLocation();
+            toStringBuilder.append("location", theLocation);
         }
         {
             List<org.openprovenance.prov.model.Role> theRole;
-            theRole = (((this.role!= null)&&(!this.role.isEmpty()))?this.getRole():null);
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "role", theRole), currentHashCode, theRole);
+            theRole = this.getRole();
+            toStringBuilder.append("role", theRole);
         }
         {
             List<org.openprovenance.prov.model.Other> theOthers;
-            theOthers = (((this.other!= null)&&(!this.other.isEmpty()))?this.getOther():null);
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "others", theOthers), currentHashCode, theOthers);
+            theOthers = this.getOther();
+            toStringBuilder.append("others", theOthers);
         }
         {
-            QualifiedName theId;
+            org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "id", theId), currentHashCode, theId);
+            toStringBuilder.append("id", theId);
         }
-        return currentHashCode;
     }
 
-    public int hashCode() {
-        final HashCodeStrategy strategy = JAXBHashCodeStrategy.INSTANCE;
-        return this.hashCode(null, strategy);
+    public String toString() {
+        final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
+        toString(toStringBuilder);
+        return toStringBuilder.toString();
     }
 
    

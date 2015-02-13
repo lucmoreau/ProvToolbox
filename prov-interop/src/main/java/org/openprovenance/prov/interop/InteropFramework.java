@@ -808,19 +808,6 @@ public class InteropFramework implements InteropMediaType {
                         .writeDocument(document, new OutputStreamWriter(os));
                 break;
             }
-            case PDF: {
-                String configFile = null; // TODO: get it as option
-                File tmp = File.createTempFile("viz-", ".dot");
-
-                String dotFileOut = tmp.getAbsolutePath(); // give it as option,
-                                                           // if not available
-                                                           // create tmp file
-                ProvToDot toDot = (configFile == null) ? new ProvToDot(
-                        ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
-                        configFile);
-                toDot.convert(document, dotFileOut, os, title);
-                break;
-            }
             case DOT: {
                 String configFile = null; // TODO: get it as option
                 ProvToDot toDot = (configFile == null) ? new ProvToDot(
@@ -829,6 +816,7 @@ public class InteropFramework implements InteropMediaType {
                 toDot.convert(document, os, title);
                 break;
             }
+            case PDF:
             case JPEG:
             case PNG:
             case SVG: {
@@ -916,20 +904,6 @@ public class InteropFramework implements InteropMediaType {
                         .writeDocument(document, filename);
                 break;
             }
-            case PDF: {
-                String configFile = null; // TODO: get it as option
-                File tmp = File.createTempFile("viz-", ".dot");
-
-                String dotFileOut = tmp.getAbsolutePath(); // give it as option,
-                                                           // if not available
-                                                           // create tmp file
-                ProvToDot toDot = (configFile == null) ? new ProvToDot(
-                        ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
-                        configFile);
-                toDot.setLayout(layout);
-                toDot.convert(document, dotFileOut, filename, title);
-                break;
-            }
             case DOT: {
                 String configFile = null; // TODO: get it as option
                 ProvToDot toDot = (configFile == null) ? new ProvToDot(
@@ -939,6 +913,7 @@ public class InteropFramework implements InteropMediaType {
                 toDot.convert(document, filename, title);
                 break;
             }
+            case PDF:
             case JPEG:
             case PNG:
             case SVG: {

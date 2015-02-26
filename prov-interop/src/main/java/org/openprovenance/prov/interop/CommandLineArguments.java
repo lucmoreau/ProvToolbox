@@ -26,6 +26,7 @@ public class CommandLineArguments {
     public static final String INDEX = "index";
     public static final String FLATTEN = "flatten";
     private static final String GENORDER = "genorder";
+    public static final String FORMATS = "formats";
 
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
@@ -87,6 +88,8 @@ public class CommandLineArguments {
                 .create(GENERATOR);
         Option genorder = new Option(GENORDER, "In template expansion, generate order attribute. By default does not.");
         
+        Option formats = new Option(FORMATS, "list supported formats");
+
         Options options = new Options();
 
         options.addOption(help);
@@ -104,6 +107,7 @@ public class CommandLineArguments {
         options.addOption(bindings);
         options.addOption(generator);
         options.addOption(genorder);
+        options.addOption(formats);
 
         return options;
 
@@ -127,6 +131,7 @@ public class CommandLineArguments {
         String index=null;
         String flatten=null;
         boolean addOrderp=false;
+        boolean listFormatsp = false;
 
 
         try {
@@ -149,6 +154,7 @@ public class CommandLineArguments {
             if (line.hasOption(BINDINGS))   bindings = line.getOptionValue(BINDINGS);
             if (line.hasOption(GENERATOR))  generator = line.getOptionValue(GENERATOR);
             if (line.hasOption(GENORDER))   addOrderp=true;
+            if (line.hasOption(FORMATS))      listFormatsp = true;
 	    
 	    if (help!=null) {
 		HelpFormatter formatter = new HelpFormatter();
@@ -177,6 +183,13 @@ public class CommandLineArguments {
                                                           index,
                                                           flatten,
                                                           org.openprovenance.prov.xml.ProvFactory.getFactory());
+            if (listFormatsp) {
+                java.util.List<java.util.Map<String, String>> formats = interop.getSupportedFormats();
+                for (java.util.Map<String, String> e: formats) {
+                    System.out.println(e.get("extension") +'\t'+ e.get("mediatype") +'\t'+ e.get("type"));
+                }
+                return;
+            }
             interop.run();
 
         }

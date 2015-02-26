@@ -696,6 +696,35 @@ public class InteropFramework implements InteropMediaType {
         }
 
     }
+    public java.util.List<java.util.Map<String, String>>getSupportedFormats() {
+        java.util.List<java.util.Map<String, String>> tripleList = new java.util.ArrayList<>();
+        java.util.Map<String, String>trip;
+        for (InteropFramework.ProvFormat pt:  provTypeMap.keySet()) {
+            for (String mt:  mimeTypeRevMap.keySet()) {
+                if (mimeTypeRevMap.get(mt) == pt) {
+                    for (String ext: extensionRevMap.keySet()) {
+                        if (extensionRevMap.get(ext) == pt) {
+                            if (isInputFormat(pt)) {
+                                trip = new java.util.HashMap<String, String>();
+                                trip.put("extension", ext);
+                                trip.put("mediatype", mt);
+                                trip.put("type", "input");
+                                tripleList.add(trip);
+                            }
+                            if (isOutputFormat(pt)) {
+                                trip = new java.util.HashMap<String, String>();
+                                trip.put("extension", ext);
+                                trip.put("mediatype", mt);
+                                trip.put("type", "output");
+                                tripleList.add(trip);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return tripleList;
+    }
 
     /** Top level entry point of this class, when called from the command line.
      * <p>

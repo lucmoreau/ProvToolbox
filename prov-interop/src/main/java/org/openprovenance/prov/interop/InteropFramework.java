@@ -110,7 +110,7 @@ public class InteropFramework implements InteropMediaType {
     }
 
     /* backwards compatibility with pre-format version*/
-    public InteropFramework(String verbose, String debug, String logfile,
+    @Deprecated public InteropFramework(String verbose, String debug, String logfile,
             String infile, String outfile, String namespaces, String title,
             String layout, String bindings, boolean addOrderp, String generator,
             String index, String flatten, ProvFactory pFactory) {

@@ -205,55 +205,36 @@ public class JSONConstructor implements ModelConstructor {
 	return (String) value;
     }
 
-    private Object convertValue(Object value) {
-	if (value instanceof String || value instanceof Double
-		|| value instanceof Integer || value instanceof Boolean)
-	    return value;
+	private Object convertTypedValue(Object value, QualifiedName type) {
+		String datatype = currentNamespace.qualifiedNameToString(type);
+		Object result;
+		if (value instanceof QualifiedName) {
+			result = typedLiteral(currentNamespace.qualifiedNameToString((QualifiedName) value), datatype, null);
+		} else if (value instanceof LangString) {
+			LangString iStr = (LangString) value;
+			String lang = iStr.getLang();
+			if (lang != null) {
+				// If 'lang' is defined
+				result = typedLiteral(iStr.getValue(), "prov:InternationalizedString", lang);
+			} else {
+				// Otherwise, just return the string
+				result = iStr.getValue();
+			}
+		} else {
+			result = typedLiteral(value.toString(), datatype, null);
+		}
+		return result;
+	}
 
-	if (value instanceof QualifiedName) {
-	    return typedLiteral(currentNamespace.qualifiedNameToString((QualifiedName) value),
-				"xsd:QName", null);
-	}
-	if (value instanceof LangString) {
-	    LangString iStr = (LangString) value;
-	    String lang = iStr.getLang();
-	    if (lang != null)
-		// If 'lang' is defined
-		return typedLiteral(iStr.getValue(),
-				    "prov:InternationalizedString",
-				    lang);
-	    else
-		return iStr.getValue();
-	}
-	throw new RuntimeException("Cannot convert this value: " + value.toString());
-    }
+	private Object[] convertAttribute(Attribute attr) {
+		String attrName = currentNamespace.qualifiedNameToString(attr.getElementName());
+		Object value = attr.getValue();
+		QualifiedName type = attr.getType();
 
-    private Object[] convertAttribute(Attribute attr) {
-	String attrName = currentNamespace.qualifiedNameToString(attr.getElementName());
-	Object value = attr.getValue();
-	QualifiedName type = attr.getType();
-	String datatype = currentNamespace.qualifiedNameToString(type);
-	Object attrValue;
- 	if (value instanceof QualifiedName) {
-	    attrValue = typedLiteral(currentNamespace.qualifiedNameToString((QualifiedName) value),
-				     datatype, null);
-	} else  if (value instanceof LangString) {
-	    LangString iStr = (LangString) value;
-	    String lang = iStr.getLang();
-	    if (lang != null) {
-		// If 'lang' is defined
-		attrValue = typedLiteral(iStr.getValue(),
-					 "prov:InternationalizedString",
-					 lang);
-	    } else {
-		// Otherwise, just return the string
-		attrValue = iStr.getValue();
-	    }
-	} else {
-	    attrValue = typedLiteral(value.toString(), datatype, null);
+		Object attrValue = convertTypedValue(value, type);
+
+		return tuple(attrName, attrValue);
 	}
-	return tuple(attrName, attrValue);
-    }
 
     private List<Object[]> convertAttributes(Collection<Attribute> attrs) {
 	List<Object[]> result = new ArrayList<Object[]>();
@@ -654,8 +635,9 @@ public class JSONConstructor implements ModelConstructor {
 	for (Entry pair : keyEntitySet) {
 	    Object entity = currentNamespace.qualifiedNameToString(pair.getEntity());
 	    Map<String, Object> item = new Hashtable<String, Object>();
-	    item.put("$", entity);
-	    item.put("key", convertValue(pair.getKey().getConvertedValue()));
+		item.put("$", entity);
+		Key key = pair.getKey();
+		item.put("key", convertTypedValue(key.getValue(), key.getType()));
 	    values.add(item);
 	}
 	return values;
@@ -698,9 +680,7 @@ public class JSONConstructor implements ModelConstructor {
 	if (keys != null && !keys.isEmpty()) {
 	    List<Object> values = new ArrayList<Object>(keys.size());
 	    for (Key key : keys) {
-
-		values.add(convertValue(key.getValue()));
-
+			values.add(convertTypedValue(key.getValue(), key.getType()));
 	    }
 	    attrs.add(tuple("prov:key-set", values));
 	}

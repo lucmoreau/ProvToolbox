@@ -196,19 +196,19 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
     public void addPrimarySourceType(HasType a) {
 	a.getType().add(newType(getName().PROV_PRIMARY_SOURCE,
-	                        getName().XSD_QNAME));
+	                        getName().PROV_QUALIFIED_NAME));
     }
 
     public void addQuotationType(HasType a) {
-	a.getType().add(newType(getName().PROV_QUOTATION,getName().XSD_QNAME));
+	a.getType().add(newType(getName().PROV_QUOTATION,getName().PROV_QUALIFIED_NAME));
     }
 
     public void addRevisionType(HasType a) {
-	a.getType().add(newType(getName().PROV_REVISION,getName().XSD_QNAME));
+	a.getType().add(newType(getName().PROV_REVISION,getName().PROV_QUALIFIED_NAME));
     }
 
     public void addBundleType(HasType a) {
-	a.getType().add(newType(getName().PROV_BUNDLE,getName().XSD_QNAME));
+	a.getType().add(newType(getName().PROV_BUNDLE,getName().PROV_QUALIFIED_NAME));
     }
 
     public void addRole(HasRole a, Role role) {

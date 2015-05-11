@@ -400,17 +400,17 @@ public class AttributeTest extends TestCase {
          // - undeclared namespace, with other prefix
          // - undeclared namespace, as default namespace
 
-         {pFactory.newQualifiedName(EX_NS, "abc", EX_PREFIX), name.XSD_QNAME},
+         {pFactory.newQualifiedName(EX_NS, "abc", EX_PREFIX), name.PROV_QUALIFIED_NAME},
          
-         {pFactory.newQualifiedName(EX_NS, "abcd", "other"), name.XSD_QNAME},
+         {pFactory.newQualifiedName(EX_NS, "abcd", "other"), name.PROV_QUALIFIED_NAME},
          
-         {pFactory.newQualifiedName(EX_NS, "abcde",null), name.XSD_QNAME},
+         {pFactory.newQualifiedName(EX_NS, "abcde",null), name.PROV_QUALIFIED_NAME},
          
-         {pFactory.newQualifiedName("http://example4.org/", "zabc", EX_PREFIX), name.XSD_QNAME},
+         {pFactory.newQualifiedName("http://example4.org/", "zabc", EX_PREFIX), name.PROV_QUALIFIED_NAME},
          
-         {pFactory.newQualifiedName("http://example4.org/", "zabcd", "other"), name.XSD_QNAME},
+         {pFactory.newQualifiedName("http://example4.org/", "zabcd", "other"), name.PROV_QUALIFIED_NAME},
              
-         {pFactory.newQualifiedName("http://example4.org/", "zabcde",null), name.XSD_QNAME},
+         {pFactory.newQualifiedName("http://example4.org/", "zabcde",null), name.PROV_QUALIFIED_NAME},
          
          
          {pFactory.newTimeNow(),name.XSD_DATETIME},

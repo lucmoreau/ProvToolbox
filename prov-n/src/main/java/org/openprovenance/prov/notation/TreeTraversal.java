@@ -558,7 +558,7 @@ public class TreeTraversal {
             QualifiedName v2;
             
             if (ast.getChild(1)==null) {
-                v2=name.XSD_QNAME;
+                v2=name.PROV_QUALIFIED_NAME;
                 //v1="\"" + v1 + "\"";
                 Object ooo=stringToQualifiedName(v1);
                 return convertTypedLiteral(v2,ooo);

@@ -130,7 +130,7 @@ public class Bindings {
             int count=0;
             List<Attribute> attrs=new LinkedList<Attribute>();
             for (QualifiedName qn: entry.getValue()) {
-                attrs.add(pf.newAttribute(TMPL_NS, VALUE+count, TMPL_PREFIX, qn, pf.getName().XSD_QNAME));
+                attrs.add(pf.newAttribute(TMPL_NS, VALUE+count, TMPL_PREFIX, qn, pf.getName().PROV_QUALIFIED_NAME));
                 count++;
             }
             pf.setAttributes(e, attrs);

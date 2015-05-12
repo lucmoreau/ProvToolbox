@@ -286,43 +286,37 @@ public class ExpandAction implements StatementAction {
 
             Collection<Attribute> attributes=pf.getAttributes(srcStatement);
             Collection<Attribute> dstAttributes=new LinkedList<Attribute>();
-            String xsdQNameUri = pf.getName().XSD_QNAME.getUri();
 
             for (Attribute attribute: attributes) {
-				if (xsdQNameUri.equals(attribute.getType().getUri())) {
+                Object o=attribute.getValue();
+				if (o instanceof QualifiedName) {
+					QualifiedName qn1=(QualifiedName)o;
 
-                    Object o=attribute.getValue();
-                    if (o instanceof QualifiedName) {
-                        QualifiedName qn1=(QualifiedName)o;
 
-                        
-                        if (Expand.isVariable(qn1)) {
-                            List<TypedValue> vals=env2.get(qn1);
+					if (Expand.isVariable(qn1)) {
+						List<TypedValue> vals=env2.get(qn1);
 
-                            if (vals==null) {
-                            	if (Expand.isGensymVariable(qn1)) {
-                            		dstAttributes.add(pf.newAttribute(attribute.getElementName(),
-                            				                          getUUIDQualifiedName(),
-                            				                          pf.getName().XSD_QNAME));
-                            	}
-                            	// 	if not a vargen, then simply drop this attribute
-                            	//dstAttributes.add(attribute);                        
-                            } else {
-                            	found=true;
-                        		processTemplateAttributes(dstStatement, 
-                        								  dstAttributes, 
-                        								  attribute,
-                        								  vals);
-                            }
-                        } else { // no variable here
-                            dstAttributes.add(attribute); 
-                        }
-                    } else { // not even a qualified name
-                		dstAttributes.add(attribute); 
-                    }
-                } else { //not xsd_qname
-                    dstAttributes.add(attribute);
-                }
+						if (vals==null) {
+							if (Expand.isGensymVariable(qn1)) {
+								dstAttributes.add(pf.newAttribute(attribute.getElementName(),
+																  getUUIDQualifiedName(),
+																  pf.getName().PROV_QUALIFIED_NAME));
+							}
+							// 	if not a vargen, then simply drop this attribute
+							//dstAttributes.add(attribute);
+						} else {
+							found=true;
+							processTemplateAttributes(dstStatement,
+													  dstAttributes,
+													  attribute,
+													  vals);
+						}
+					} else { // no variable here
+						dstAttributes.add(attribute);
+					}
+				} else { // not even a qualified name
+					dstAttributes.add(attribute);
+				}
             }
             pf.setAttributes((HasOther) dstStatement, dstAttributes);
         }       

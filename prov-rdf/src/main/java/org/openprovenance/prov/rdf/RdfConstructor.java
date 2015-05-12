@@ -600,13 +600,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	    gb.assertStatement(gb.createObjectProperty(der,
 						       onto.QNAME_PROVO_insertedKeyEntityPair,
 						       thePair));
-
-
-	    LITERAL lit = valueToLiteral(p.getKey());
-
-	    gb.assertStatement(gb.createDataProperty(thePair,
-						     onto.QNAME_PROVO_pairKey,
-						     lit));
+	    gb.assertStatement(createKeyStatement(thePair, onto.QNAME_PROVO_pairKey, p.getKey()));
 	    gb.assertStatement(gb.createObjectProperty(thePair,
 						       onto.QNAME_PROVO_pairEntity,
 						       p.getEntity()));
@@ -615,25 +609,24 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 	return null;
     }
-    private LITERAL valueToLiteral(TypedValue val) {
- 	LITERAL lit = null;
- 	String value;
- 	if (val.getValue() instanceof QualifiedName) {
- 	    value = Namespace.qualifiedNameToStringWithNamespace((QualifiedName) val.getValue());
- 	 	lit = gb.newLiteral(value, val.getType());
 
- 	} else if (val.getValue() instanceof LangString) {
- 	    LangString iString=(LangString) val.getValue();
-	    lit = gb.newLiteral(iString.getValue(), iString.getLang());
 
- 	} else {
- 	    value = val.getValue().toString();
- 	    lit = gb.newLiteral(value, val.getType());
+	private STATEMENT createKeyStatement(QualifiedName record, QualifiedName property, Key key) {
+		Object keyValue = key.getValue();
+		if (keyValue instanceof QualifiedName) {
+			return gb.createObjectProperty(record, property, (QualifiedName) keyValue);
+		} else {
+			LITERAL lit;
+			if (keyValue instanceof LangString) {
+				LangString iString=(LangString) keyValue;
+				lit = gb.newLiteral(iString.getValue(), iString.getLang());
+			} else {
+				lit = gb.newLiteral(keyValue.toString(), key.getType());
+			}
 
- 	}
- 	return lit;
-     }
-
+			return gb.createDataProperty(record, property, lit);
+		}
+	}
 
     @Override
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QualifiedName id,
@@ -644,13 +637,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	QualifiedName der = addInfluence(id, after, before, null, null, true,
 				 attributes, onto.QNAME_PROVO_Removal);
 	for (Key k : keys) {
-
-	    LITERAL lit = valueToLiteral(k);
-
-	    gb.assertStatement(gb.createDataProperty(der,
-						     onto.QNAME_PROVO_removedKey,
-						     lit));
-
+	    gb.assertStatement(createKeyStatement(der, onto.QNAME_PROVO_removedKey, k));
 	}
 
 	return null;
@@ -665,11 +652,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	    gb.assertStatement(gb.createObjectProperty(dict,
 						       onto.QNAME_PROVO_hadDictionaryMember,
 						       thePair));
-	    LITERAL lit = valueToLiteral(p.getKey());
-
-	    gb.assertStatement(gb.createDataProperty(thePair,
-						     onto.QNAME_PROVO_pairKey,
-						     lit));
+	    gb.assertStatement(createKeyStatement(thePair, onto.QNAME_PROVO_pairKey, p.getKey()));
 	    gb.assertStatement(gb.createObjectProperty(thePair,
 						       onto.QNAME_PROVO_pairEntity,
 						       p.getEntity()));

@@ -53,5 +53,10 @@ public class GroupingsTest extends TestCase {
 	assertTrue(grps.size()==1);
     }
 
+    public void testGroupings3() throws IOException, JAXBException, Throwable {
+	Groupings grps=getGroupings("src/test/resources/template24.provn");
+	assertTrue(grps.size()==1);
+    }
+
 
 }

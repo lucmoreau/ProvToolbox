@@ -27,6 +27,9 @@ public class CommandLineArguments {
     public static final String FLATTEN = "flatten";
     private static final String GENORDER = "genorder";
     public static final String FORMATS = "formats";
+    public static final String INFORMAT = "informat";
+    public static final String OUTFORMAT = "outformat";
+    public static final String BINDFORMAT = "bindformat";
 
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
@@ -90,6 +93,25 @@ public class CommandLineArguments {
         
         Option formats = new Option(FORMATS, "list supported formats");
 
+        Option informat = OptionBuilder
+                .withArgName("string")
+                .hasArg()
+                .withDescription("specify the format of the input")
+                .create(INFORMAT);
+
+        Option outformat = OptionBuilder
+                .withArgName("string")
+                .hasArg()
+                .withDescription("specify the format of the output")
+                .create(OUTFORMAT);
+
+        Option bindformat = OptionBuilder
+                .withArgName("string")
+                .hasArg()
+                .withDescription("specify the format of the bindings")
+                .create(BINDFORMAT);
+
+
         Options options = new Options();
 
         options.addOption(help);
@@ -108,6 +130,9 @@ public class CommandLineArguments {
         options.addOption(generator);
         options.addOption(genorder);
         options.addOption(formats);
+        options.addOption(informat);
+        options.addOption(outformat);
+        options.addOption(bindformat);
 
         return options;
 
@@ -122,11 +147,14 @@ public class CommandLineArguments {
         String debug = null;
         String logfile = null;
         String infile = null;
+        String informat = null;
         String outfile = null;
+        String outformat = null;
         String namespaces = null;
         String title = null;
         String layout = null;
         String bindings = null;
+        String bindingformat = null;
         String generator = null;
         String index=null;
         String flatten=null;
@@ -147,11 +175,14 @@ public class CommandLineArguments {
 	    if (line.hasOption(FLATTEN))    flatten    = FLATTEN;
 	    if (line.hasOption(LOGFILE))    logfile    = line.getOptionValue(LOGFILE);
             if (line.hasOption(INFILE))     infile     = line.getOptionValue(INFILE);
+            if (line.hasOption(INFORMAT))   informat = line.getOptionValue(INFORMAT);
 	    if (line.hasOption(OUTFILE))    outfile    = line.getOptionValue(OUTFILE);
+            if (line.hasOption(OUTFORMAT)) outformat = line.getOptionValue(OUTFORMAT);
             if (line.hasOption(NAMESPACES)) namespaces = line.getOptionValue(NAMESPACES);
             if (line.hasOption(TITLE))      title = line.getOptionValue(TITLE);
             if (line.hasOption(LAYOUT))      layout = line.getOptionValue(LAYOUT);
             if (line.hasOption(BINDINGS))   bindings = line.getOptionValue(BINDINGS);
+            if (line.hasOption(BINDFORMAT)) bindingformat = line.getOptionValue(BINDFORMAT);
             if (line.hasOption(GENERATOR))  generator = line.getOptionValue(GENERATOR);
             if (line.hasOption(GENORDER))   addOrderp=true;
             if (line.hasOption(FORMATS))      listFormatsp = true;
@@ -173,11 +204,14 @@ public class CommandLineArguments {
                                                           debug,
                                                           logfile,
                                                           infile,
+                                                          informat,
                                                           outfile,
+                                                          outformat,
                                                           namespaces,
                                                           title,
                                                           layout,
                                                           bindings,
+                                                          bindingformat,
                                                           addOrderp,
                                                           generator,
                                                           index,

@@ -64,7 +64,7 @@ public class Expand {
 	Bindings bindings1 = Bindings.fromDocument(docBindings,pf);
 
 	Groupings grp1 = Groupings.fromDocument(docIn);
-	System.out.println("expander: Found groupings " + grp1);
+	System.err.println("expander: Found groupings " + grp1);
 
 	Bundle bun1 = (Bundle) expand(bun, bindings1, grp1).get(0);
 	Document doc1 = pf.newDocument();

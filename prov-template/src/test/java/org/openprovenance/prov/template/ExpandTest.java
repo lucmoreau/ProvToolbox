@@ -37,7 +37,7 @@ public class ExpandTest extends TestCase {
     QualifiedName var_end=pf.newQualifiedName(VAR_NS, "end", "var");
 
     public  void expander(String in, String inBindings, String out) throws IOException, Throwable {
-	System.out.println("expander ==========================================> " + in);
+	System.err.println("expander ==========================================> " + in);
 	
 	Document doc= new Utility().readDocument(in, pf);
 	Document docBindings= new Utility().readDocument(inBindings,pf);
@@ -47,7 +47,7 @@ public class ExpandTest extends TestCase {
 
 	Groupings grp1=Groupings.fromDocument(doc);
 
-	System.out.println("Found groupings " + grp1);
+	System.err.println("Found groupings " + grp1);
 	
 	Bundle bun1=(Bundle) new Expand(pf,addOrderp).expand(bun, bindings1, grp1).get(0);
 	Document doc1=pf.newDocument();
@@ -63,7 +63,7 @@ public class ExpandTest extends TestCase {
 	//InteropFramework inf=new InteropFramework();
 	//inf.writeDocument(out, doc1);
 	
-	System.out.println("expander ==========================================> ");
+	System.err.println("expander ==========================================> ");
     }
     
     boolean addOrderp=true;
@@ -72,7 +72,7 @@ public class ExpandTest extends TestCase {
                           String out,
                           Bindings bindings1,
                           String outBindings) throws IOException, Throwable {
-	System.out.println("expander ==========================================> " + in);
+	System.err.println("expander ==========================================> " + in);
 	
 	Document doc= new Utility().readDocument(in, pf);
 	
@@ -80,7 +80,7 @@ public class ExpandTest extends TestCase {
 
 	Groupings grp1=Groupings.fromDocument(doc);
 
-	System.out.println("Found groupings " + grp1);
+	System.err.println("Found groupings " + grp1);
 	
 	Bundle bun1=(Bundle) new Expand(pf,addOrderp).expand(bun, bindings1, grp1).get(0);
 	Document doc1=pf.newDocument();
@@ -101,7 +101,7 @@ public class ExpandTest extends TestCase {
 	Namespace.withThreadNamespace(doc2.getNamespace());
 	new Utility().writeDocument(doc2,outBindings,pf);
 	
-	System.out.println("expander ==========================================> ");
+	System.err.println("expander ==========================================> ");
 
     }
 

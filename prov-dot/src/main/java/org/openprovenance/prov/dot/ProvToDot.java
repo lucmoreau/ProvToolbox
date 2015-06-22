@@ -415,8 +415,8 @@ public class ProvToDot {
                     addAnnotationShape(ann,addAnnotationColor(ann,addAnnotationLabel(ann,properties))),
                     out);
         HashMap<String,String> linkProperties=new HashMap<String, String>();
-        emitRelation(qualifiedNameToString(newId),
-                     qualifiedNameToString(((Identifiable)ann).getId()),
+        emitRelation(qualifiedNameToString(((Identifiable)ann).getId()),
+                     qualifiedNameToString(newId),
                      addAnnotationLinkProperties(ann,linkProperties),out,true);
     }
 

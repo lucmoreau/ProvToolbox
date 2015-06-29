@@ -402,8 +402,8 @@ public class IndexedDocument implements StatementAction {
     }
 
 
-    /** Add a wib edge to the graph. Update activityWasInformedByMap and
-    agentWasInformedByMap accordingly.  WasInformedBy edges with different attributes are considered distinct.
+    /** Add an  edge to the graph. Update namedRelationMap, effectRelationMap and causeRelationMap, accordingly.
+      Edges with different attributes are considered distinct.
     */
 
    public <T extends Relation> T add(T statement,
@@ -427,13 +427,13 @@ public class IndexedDocument implements StatementAction {
 	if (id == null) {
 
 	    boolean found = false;
-	    Collection<T> wibcoll = effectRelationMap.get(aid2);
-	    if (wibcoll == null) {
-		wibcoll = new LinkedList<T>();
-		wibcoll.add(statement);
-		effectRelationMap.put(aid2, wibcoll);
+	    Collection<T> relationCollection = effectRelationMap.get(aid2);
+	    if (relationCollection == null) {
+		relationCollection = new LinkedList<T>();
+		relationCollection.add(statement);
+		effectRelationMap.put(aid2, relationCollection);
 	    } else {
-		for (T u : wibcoll) {
+		for (T u : relationCollection) {
 		    if (u.equals(statement)) {
 			found = true;
 			statement = u;
@@ -441,20 +441,20 @@ public class IndexedDocument implements StatementAction {
 		    }
 		}
 		if (!found) {
-		    wibcoll.add(statement);
+		    relationCollection.add(statement);
 		}
 	    }
 
-	    wibcoll = causeRelationMap.get(aid1);
-	    if (wibcoll == null) {
-		wibcoll = new LinkedList<T>();
-		wibcoll.add(statement);
-		causeRelationMap.put(aid1, wibcoll);
+	    relationCollection = causeRelationMap.get(aid1);
+	    if (relationCollection == null) {
+		relationCollection = new LinkedList<T>();
+		relationCollection.add(statement);
+		causeRelationMap.put(aid1, relationCollection);
 	    } else {
 		if (!found) {
 		    // if we had not found it in the first table, then we
 		    // have to add it here too
-		    wibcoll.add(statement);
+		    relationCollection.add(statement);
 		}
 	    }
 
@@ -462,14 +462,14 @@ public class IndexedDocument implements StatementAction {
 		anonRelationCollection.add(statement);
 	    }
 	} else {
-	    Collection<T> wibcoll=namedRelationMap.get(id);
-	    if (wibcoll==null) {
-		wibcoll=new LinkedList<T>();
-		wibcoll.add(statement);
-		namedRelationMap.put(id, wibcoll);
+	    Collection<T> relationCollection=namedRelationMap.get(id);
+	    if (relationCollection==null) {
+		relationCollection=new LinkedList<T>();
+		relationCollection.add(statement);
+		namedRelationMap.put(id, relationCollection);
 	    } else {
 		boolean found=false;
-		for (T u1: wibcoll) {
+		for (T u1: relationCollection) {
 		    if (sameEdge(u1,statement,num)) {
 			found=true;
 			mergeAttributes(u1, statement);
@@ -477,7 +477,7 @@ public class IndexedDocument implements StatementAction {
 		    }
 		}
 		if (!found) {
-		    wibcoll.add(statement);
+		    relationCollection.add(statement);
 		}
 	    }
 	}
@@ -649,6 +649,15 @@ public class IndexedDocument implements StatementAction {
 	}
 	
 	
+    }
+    
+    /** This function allows a document to be merged with this IndexedDocument. If flatten is true, bundles include in the document will be flattend into this one.
+     * 
+     * 
+     * @param doc the document to be merge into this
+     */
+    public void merge(Document doc) {
+	u.forAllStatementOrBundle(doc.getStatementOrBundle(), this);
     }
 
 }

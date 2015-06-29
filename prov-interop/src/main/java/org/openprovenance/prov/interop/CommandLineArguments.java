@@ -1,5 +1,9 @@
 package org.openprovenance.prov.interop;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -25,6 +29,7 @@ public class CommandLineArguments {
     public static final String GENERATOR = "generator";
     public static final String INDEX = "index";
     public static final String FLATTEN = "flatten";
+    public static final String MERGE = "merge";
     private static final String GENORDER = "genorder";
     public static final String FORMATS = "formats";
     public static final String INFORMAT = "informat";
@@ -40,8 +45,15 @@ public class CommandLineArguments {
         Option verbose = new Option(VERBOSE, "be verbose");
         Option debug = new Option(DEBUG, "print debugging information");
 
-        Option index = new Option(INDEX, "index all elements and edges, merging them where appropriate");
-        Option flatten = new Option(FLATTEN, "flatten all bundles in a single document (used with index option)");
+        Option index = new Option(INDEX, "index all elements and edges of a document, merging them where appropriate");
+        Option flatten = new Option(FLATTEN, "flatten all bundles in a single document (to used with -index option or -merge option)");
+         
+
+        Option merge = OptionBuilder
+                .withArgName("file")
+                .hasArg()
+                .withDescription("merge all documents (listed in file argument) into a single document")
+                .create(MERGE);
 
         Option logfile = OptionBuilder
                 .withArgName("file")
@@ -119,8 +131,8 @@ public class CommandLineArguments {
         options.addOption(verbose);
         options.addOption(debug);
         options.addOption(index);
+        options.addOption(merge);
         options.addOption(flatten);
-        options.addOption(logfile);
         options.addOption(infile);
         options.addOption(outfile);
         options.addOption(namespaces);
@@ -138,6 +150,27 @@ public class CommandLineArguments {
 
     }
     
+    private static String fileName = "config.properties";
+    
+    private static Properties getPropertiesFromClasspath(String propFileName) {
+        Properties props = new Properties();
+        InputStream inputStream = CommandLineArguments.class.getClassLoader()
+                .getResourceAsStream(propFileName);
+        if (inputStream == null) {
+            return null;
+        }
+        try {
+            props.load(inputStream);
+        } catch (IOException ee) {
+            return null;
+        }
+        return props;
+    }
+
+    
+    static final String toolboxVersion = getPropertiesFromClasspath(fileName)
+            .getProperty("toolbox.version");
+
     public static void main(String[] args) {
         // create the parser
         CommandLineParser parser = new GnuParser();
@@ -158,6 +191,7 @@ public class CommandLineArguments {
         String generator = null;
         String index=null;
         String flatten=null;
+        String merge=null;
         boolean addOrderp=false;
         boolean listFormatsp = false;
 
@@ -167,16 +201,17 @@ public class CommandLineArguments {
             Options options=buildOptions();
             CommandLine line = parser.parse( options, args );
 
-	    if (line.hasOption(HELP))       help       = HELP;
-	    if (line.hasOption(VERSION))    version    = VERSION;
-	    if (line.hasOption(VERBOSE))    verbose    = VERBOSE;
-	    if (line.hasOption(DEBUG))      debug      = DEBUG;
-	    if (line.hasOption(INDEX))      index      = INDEX;
-	    if (line.hasOption(FLATTEN))    flatten    = FLATTEN;
-	    if (line.hasOption(LOGFILE))    logfile    = line.getOptionValue(LOGFILE);
+            if (line.hasOption(HELP))       help       = HELP;
+            if (line.hasOption(VERSION))    version    = VERSION;
+            if (line.hasOption(VERBOSE))    verbose    = VERBOSE;
+            if (line.hasOption(DEBUG))      debug      = DEBUG;
+            if (line.hasOption(INDEX))      index      = INDEX;
+            if (line.hasOption(FLATTEN))    flatten    = FLATTEN;
+            if (line.hasOption(MERGE))      merge    = line.getOptionValue(MERGE);
+            if (line.hasOption(LOGFILE))    logfile    = line.getOptionValue(LOGFILE);
             if (line.hasOption(INFILE))     infile     = line.getOptionValue(INFILE);
             if (line.hasOption(INFORMAT))   informat = line.getOptionValue(INFORMAT);
-	    if (line.hasOption(OUTFILE))    outfile    = line.getOptionValue(OUTFILE);
+            if (line.hasOption(OUTFILE))    outfile    = line.getOptionValue(OUTFILE);
             if (line.hasOption(OUTFORMAT)) outformat = line.getOptionValue(OUTFORMAT);
             if (line.hasOption(NAMESPACES)) namespaces = line.getOptionValue(NAMESPACES);
             if (line.hasOption(TITLE))      title = line.getOptionValue(TITLE);
@@ -186,17 +221,17 @@ public class CommandLineArguments {
             if (line.hasOption(GENERATOR))  generator = line.getOptionValue(GENERATOR);
             if (line.hasOption(GENORDER))   addOrderp=true;
             if (line.hasOption(FORMATS))      listFormatsp = true;
-	    
-	    if (help!=null) {
-		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp( "prov-convert", options, true );
-		return;
-	    }
-	    
-	    if (version!=null) {
-		System.out.println("prov-convert:  version x.y.z");
-		return;
-	    }
+
+            if (help!=null) {
+            	HelpFormatter formatter = new HelpFormatter();
+            	formatter.printHelp( "provconvert", options, true );
+            	return;
+            }
+
+            if (version!=null) {
+            	System.out.println("provconvert version " + toolboxVersion);
+            	return;
+            }
 	    
 	    
 	    
@@ -215,6 +250,7 @@ public class CommandLineArguments {
                                                           addOrderp,
                                                           generator,
                                                           index,
+                                                          merge,
                                                           flatten,
                                                           org.openprovenance.prov.xml.ProvFactory.getFactory());
             if (listFormatsp) {

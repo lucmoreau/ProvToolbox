@@ -91,7 +91,7 @@
 	    <configuration>
 	      <mainClass>org.openprovenance.prov.tutorial.tutorial2.ReadWrite</mainClass>
 	      <arguments>
-		<argument>src/main/resources/a-little.provn</argument>
+		<argument>${basedir}/src/main/resources/a-little.provn</argument>
 		<argument>${project.build.directory}/a-little.svg</argument>
 	      </arguments>
 	    </configuration>

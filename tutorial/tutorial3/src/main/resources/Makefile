@@ -6,6 +6,7 @@ do.all:
 	$(MAKE) merge1-2
 	$(MAKE) vis.doc1b1
 	$(MAKE) vis.doc2b2
+	$(MAKE) vis.doc2b1
 	$(MAKE) merge1b1-2b2
 	$(MAKE) merge1b1-2b1
 
@@ -26,6 +27,8 @@ vis.doc1b1:
 	provconvert -infile src/main/resources/doc1b1.provn -outfile target/doc1b1.png
 vis.doc2b2:
 	provconvert -infile src/main/resources/doc2b2.provn -outfile target/doc2b2.png
+vis.doc2b1:
+	provconvert -infile src/main/resources/doc2b1.provn -outfile target/doc2b1.png
 
 merge1b1-2b2:
 	provconvert -merge src/main/resources/doc1b1-2b2-listing.txt -outfile target/doc1b1-2b2.provn

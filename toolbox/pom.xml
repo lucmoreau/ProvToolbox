@@ -2,7 +2,7 @@
   <parent>
     <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.6.2-SNAPSHOT</version>
+    <version>0.6.2</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -18,25 +18,25 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.6.2-SNAPSHOT</version>
+      <version>0.6.2</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-rdf</artifactId>
-      <version>0.6.2-SNAPSHOT</version>
+      <version>0.6.2</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-n</artifactId>
-      <version>0.6.2-SNAPSHOT</version>
+      <version>0.6.2</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-interop</artifactId>
-      <version>0.6.2-SNAPSHOT</version>
+      <version>0.6.2</version>
     </dependency>
 
  </dependencies>
@@ -173,79 +173,49 @@
 		<!-- man page generation -->
 
                 <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provconvert.1">
-  	              <arg value=".\&quot;  Manpage for provconvert." />
+  	              <arg value=".\&quot; Manpage for provconvert." />
                 </exec>
 
 
-                <exec executable="echo"
-		      dir="${project.build.directory}"
-		      output="${project.build.directory}/provconvert.1"
-		      append="true">
+                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provconvert.1" append="true">
   	              <arg value=".TH man 1 &quot;${maven.build.timestamp}&quot; &quot;${project.version}&quot; &quot;provconvert man page&quot;" />
                 </exec>
 
 
 
-                <exec executable="echo"
-		      dir="${project.build.directory}"
-		      output="${project.build.directory}/provconvert.1"
-		      append="true">
+                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provconvert.1" append="true">
   	              <arg value=".SH NAME" />
                 </exec>
 
-                <exec executable="echo"
-		      dir="${project.build.directory}"
-		      output="${project.build.directory}/provconvert.1"
-		      append="true">
+                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provconvert.1" append="true">
   	              <arg value="provconvert \- converts PROV representations" />
                 </exec>
 
-                <exec executable="echo"
-		      dir="${project.build.directory}"
-		      output="${project.build.directory}/provconvert.1"
-		      append="true">
+                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provconvert.1" append="true">
   	              <arg value=".SH SYNOPSIS" />
                 </exec>
 
-                <exec executable="${project.build.directory}/appassembler/bin/provconvert"
-		      dir="${project.build.directory}/appassembler/bin"
-		      output="${project.build.directory}/provconvert.1"
-		      append="true">
+                <exec executable="${project.build.directory}/appassembler/bin/provconvert" dir="${project.build.directory}/appassembler/bin" output="${project.build.directory}/provconvert.1" append="true">
   	          <arg value="-help" />
                 </exec>
 
-                <exec executable="echo"
-		      dir="${project.build.directory}"
-		      output="${project.build.directory}/provconvert.1"
-		      append="true">
+                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provconvert.1" append="true">
   	              <arg value=".SH BUGS" />
                 </exec>
 
-                <exec executable="echo"
-		      dir="${project.build.directory}"
-		      output="${project.build.directory}/provconvert.1"
-		      append="true">
+                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provconvert.1" append="true">
   	              <arg value="See https://github.com/lucmoreau/ProvToolbox/issues" />
                 </exec>
 
-                <exec executable="echo"
-		      dir="${project.build.directory}"
-		      output="${project.build.directory}/provconvert.1"
-		      append="true">
+                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provconvert.1" append="true">
   	              <arg value=".SH AUTHOR" />
                 </exec>
 
-                <exec executable="echo"
-		      dir="${project.build.directory}"
-		      output="${project.build.directory}/provconvert.1"
-		      append="true">
+                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provconvert.1" append="true">
   	              <arg value="Luc Moreau" />
                 </exec>
 
-                <exec executable="man"
-		      dir="${project.build.directory}"
-		      output="${project.build.directory}/provconvert.txt"
-		      append="true">
+                <exec executable="man" dir="${project.build.directory}" output="${project.build.directory}/provconvert.txt" append="true">
   	              <arg value="${project.build.directory}/provconvert.1" />
                 </exec>
 
@@ -311,14 +281,12 @@
             <phase>install</phase>
             <configuration>
               <target>
-                <property environment="env"/>
+                <property environment="env" />
 
-                <taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask"
-                         classpath="${basedir}/lib/appbundler-1.0.jar"/>
+                <taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask" classpath="${basedir}/lib/appbundler-1.0.jar" />
 
-                <mkdir dir="${project.build.directory}/app"/>
-                <bundleapp outputdirectory="${project.build.directory}/app"
-                           name="provconvert"
+                <mkdir dir="${project.build.directory}/app" />
+                <bundleapp outputdirectory="${project.build.directory}/app" name="provconvert"
                            displayname="provconvert"
                            identifier="org.openprovenance.prov.toolbox.provconvert"
                            shortversion="${project.version}"
@@ -329,16 +297,16 @@
 
                   // TODO this is a bit big :) //
 		  //
-                      <runtime dir="${env.JAVA_HOME}"/>
+                      <runtime dir="${env.JAVA_HOME}" />
 		  //
 		  //
-                      <runtime dir="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin"/>
+                      <runtime dir="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin" />
 		  //
-                  // <classpath file="${project.build.directory}/${project.artifactId}-${project.version}.jar"/> //
-		  <classpath dir="${project.build.directory}/appassembler/repo/"/>
-		  // <classpath dir="${project.build.directory}/${project.artifactId}-${project.version}/PROV Toolbox.app/Contents/Resources/Java/"/> //
-                  <option value="-Dapple.laf.useScreenMenuBar=true"/>
-		  // <argument value="-help"/> //
+                  // <classpath file="${project.build.directory}/${project.artifactId}-${project.version}.jar" /> //
+		  <classpath dir="${project.build.directory}/appassembler/repo/" />
+		  // <classpath dir="${project.build.directory}/${project.artifactId}-${project.version}/PROV Toolbox.app/Contents/Resources/Java/" /> //
+                  <option value="-Dapple.laf.useScreenMenuBar=true" />
+		  // <argument value="-help" /> //
                 </bundleapp>
               </target>
             </configuration>

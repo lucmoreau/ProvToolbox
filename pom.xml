@@ -31,6 +31,7 @@
     <module>prov-sql</module>
     <module>tutorial/tutorial1</module>
     <module>tutorial/tutorial2</module>
+    <module>tutorial/tutorial3</module>
   </modules>
 
 

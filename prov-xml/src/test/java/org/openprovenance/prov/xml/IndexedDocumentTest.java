@@ -1022,6 +1022,32 @@ public class IndexedDocumentTest extends TestCase {
    	ProvSerialiser.getThreadProvSerialiser().serialiseDocument(new File("target/doc2003.xml"), idoc2001, true);
    	assertEquals(idoc2001.getStatementOrBundle().size(),2);
        }
+    
+    public void testConcat1() throws JAXBException {
+	IndexedDocument idoc=new IndexedDocument(pFactory, pFactory.newDocument(),false);
+	idoc.merge(makeDoc100());
+	idoc.merge(makeDoc200());
+	idoc.merge(makeDoc200());
+	idoc.merge(makeDoc300());
+	idoc.merge(makeDoc400());
+	idoc.merge(makeDoc2000());
+	
+	Document cDoc1=idoc.toDocument();
+   	ProvSerialiser.getThreadProvSerialiser().serialiseDocument(new File("target/concat1.xml"), cDoc1, true);
+    }
+
+    public void testConcat2() throws JAXBException {
+	IndexedDocument idoc=new IndexedDocument(pFactory, pFactory.newDocument(),true);
+	idoc.merge(makeDoc100());
+	idoc.merge(makeDoc200());
+	idoc.merge(makeDoc200());
+	idoc.merge(makeDoc300());
+	idoc.merge(makeDoc400());
+	idoc.merge(makeDoc2000());
+	
+	Document cDoc2=idoc.toDocument();
+   	ProvSerialiser.getThreadProvSerialiser().serialiseDocument(new File("target/concat2.xml"), cDoc2, true);
+    }
 
     
 }

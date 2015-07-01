@@ -1,8 +1,11 @@
 package org.openprovenance.prov.interop;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -11,6 +14,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -92,6 +96,7 @@ public class InteropFramework implements InteropMediaType {
 
     final private String generator;
     final private String index;
+    final private String merge;
     final private String flatten;
     final private boolean addOrderp;
 
@@ -100,12 +105,12 @@ public class InteropFramework implements InteropMediaType {
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
      */
     public InteropFramework() {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null,
                 org.openprovenance.prov.xml.ProvFactory.getFactory());
     }
 
     public InteropFramework(ProvFactory pFactory) {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null,
                 pFactory);
     }
 
@@ -113,15 +118,15 @@ public class InteropFramework implements InteropMediaType {
     @Deprecated public InteropFramework(String verbose, String debug, String logfile,
             String infile, String outfile, String namespaces, String title,
             String layout, String bindings, boolean addOrderp, String generator,
-            String index, String flatten, ProvFactory pFactory) {
-        this(verbose, debug, logfile, infile, null, outfile, null, namespaces, title, layout, bindings, null, addOrderp, generator, index, flatten,
+            String index, String merge, String flatten, ProvFactory pFactory) {
+        this(verbose, debug, logfile, infile, null, outfile, null, namespaces, title, layout, bindings, null, addOrderp, generator, index, merge, flatten,
                 pFactory);
     }
 
     public InteropFramework(String verbose, String debug, String logfile,
             String infile, String informat, String outfile, String outformat, String namespaces, String title,
             String layout, String bindings, String bindingformat, boolean addOrderp, String generator,
-            String index, String flatten, ProvFactory pFactory) {
+            String index, String merge, String flatten, ProvFactory pFactory) {
         this.verbose = verbose;
         this.debug = debug;
         this.logfile = logfile;
@@ -133,6 +138,7 @@ public class InteropFramework implements InteropMediaType {
         this.bindings = bindings;
         this.generator = generator;
         this.index=index;
+        this.merge=merge;
         this.flatten=flatten;
         this.pFactory = pFactory;
         this.addOrderp=addOrderp;
@@ -821,6 +827,68 @@ public class InteropFramework implements InteropMediaType {
             writeDocument(filename, outformat, doc);
         }
     }
+    
+    static String SEPARATOR=",";
+    enum FileKind { FILE , URL };
+    
+    class ToRead {
+    	FileKind kind;
+    	String url;
+    	ProvFormat format;
+
+    	public String toString () {
+    		return "[" + kind + "," + url + "," + format + "]"; 
+    	}
+    	
+		ToRead(FileKind kind, String url, ProvFormat format) {
+    		this.kind=kind;
+    		this.url=url;
+    		this.format=format;
+    	}
+    }
+    
+    public Document readDocument(ToRead something) {
+    	Document doc=null;
+    	switch (something.kind) {
+		case FILE:
+			doc=readDocumentFromFile(something.url, something.format);
+			break;
+		case URL:
+			doc=readDocument(something.url);// note: ignore format?
+			break;
+    	}
+    	return doc;
+    }
+    
+    private List<ToRead> readIndexFile(File fin) throws IOException {
+    	FileInputStream fis = new FileInputStream(fin);
+    	return readIndexFile(fin);
+    }
+    
+    
+    private List<ToRead> readIndexFile(InputStream is) throws IOException {
+    	List<ToRead> res=new LinkedList<InteropFramework.ToRead>();
+     
+    	BufferedReader br = new BufferedReader(new InputStreamReader(is));
+     
+    	String line = null;
+    	while ((line = br.readLine()) != null) {
+    		String [] parts=line.split(SEPARATOR);
+    		if (parts.length>=3) {
+    			FileKind kind=parts[0].trim().equals("URL") ? FileKind.URL : FileKind.FILE;
+    			String path=parts[1].trim();
+    			ProvFormat format=getTypeForFormat(parts[2].trim());
+    			ToRead elem=new ToRead(kind, path, format);
+    			res.add(elem);
+    		} else if (parts.length==1) {
+    			String filename=parts[0].trim();
+    			ToRead elem=new ToRead(FileKind.FILE, filename, getTypeForFile(filename));
+    			res.add(elem);
+    		}
+    	}     
+    	br.close();
+    	return res;
+    }
 
 
     /** Top level entry point of this class, when called from the command line.
@@ -830,7 +898,7 @@ public class InteropFramework implements InteropMediaType {
     public void run() {
         if (outfile == null)
             return;
-        if (infile == null && generator == null)
+        if (infile == null && generator == null && merge ==null)
             return;
 
         if ((infile == "-") && (bindings == "-"))
@@ -839,7 +907,29 @@ public class InteropFramework implements InteropMediaType {
         Document doc;
         if (infile != null) {
             doc = doReadDocument(infile, informat);
+        } else if (merge != null) {
+         	IndexedDocument iDoc=new IndexedDocument(pFactory, pFactory.newDocument(), flatten!=null);
+        	try {
+				List<ToRead> files;
+				if (merge.equals("-")) {
+					files=readIndexFile(System.in);
+				} else {
+					files=readIndexFile(new File(merge));					
+				}
+				System.out.println("files to merge " + files);
+				for (ToRead something: files) {
+					iDoc.merge(readDocument(something));
+				}
+				
+			} catch (IOException e) {
+				System.err.println("problem reading index file");
+				e.printStackTrace();
+
+			}
+        	doc=iDoc.toDocument();
+        	
         } else {
+        
             String[] options = generator.split(":");
             String noOfNodes = getOption(options, 0);
             String noOfEdges = getOption(options, 1);

@@ -240,8 +240,7 @@ public class NotationConstructor implements ModelConstructor {
         String s = "";
 
         s = s + keyword("endDocument");
-
-        write(s);
+        writeln(s);
         return null;
     }
 

@@ -11,6 +11,7 @@ public interface InteropMediaType {
     public static final String EXTENSION_DOT = "dot";
     public static final String EXTENSION_JPEG = "jpeg";
     public static final String EXTENSION_JPG = "jpg";
+    public static final String EXTENSION_PNG = "png";
     public static final String EXTENSION_JSON = "json";
     public static final String EXTENSION_PDF = "pdf";
     /** The recommended extension for PROV-N files.
@@ -47,6 +48,7 @@ public interface InteropMediaType {
      * @see <a href="http://www.w3.org/TR/trig/#sec-mediaReg">Media Type for TRIG</a> */
     public static final String MEDIA_APPLICATION_TRIG = "application/trig";
     public static final String MEDIA_IMAGE_JPEG = "image/jpeg";
+    public static final String MEDIA_IMAGE_PNG = "image/png";
     /** The Internet Media type for SVG
      * @see <a href="http://www.w3.org/TR/SVGTiny12/mimereg.html#mime-registration">Media Type for SVG</a> */
     public static final String MEDIA_IMAGE_SVG_XML = "image/svg+xml";

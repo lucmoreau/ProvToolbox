@@ -14,6 +14,7 @@ activity(var:a,-,-)
 activity(var:a,2014-04-29T22:02:13.975+01:00,-)
 activity(var:a,-,2014-04-29T22:02:13.975+01:00)
 activity(var:a,2014-04-29T22:02:13.975+01:00,2014-04-29T22:02:13.975+01:00)
+activity(var:a,-,-,[tmpl:startTime='var:start',tmpl:endTime='var:end'])
 wasAttributedTo(var:e, var:ag, [ex:email='var:d'])
 
 used(var:a, var:e,-, [ex:email='var:d'])

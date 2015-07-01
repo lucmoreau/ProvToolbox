@@ -1,0 +1,16 @@
+document
+  prefix var <http://openprovenance.org/var#>
+  prefix vargen <http://openprovenance.org/vargen#>
+  prefix tmpl <http://openprovenance.org/tmpl#>
+
+  bundle vargen:a_bundle
+    //using var:aa instead of var:j works
+    entity(var:j)
+    entity(var:b, [tmpl:linked='var:j'])
+    entity(var:c, [tmpl:linked='var:j'])
+
+    specializationOf(var:b, var:j)
+    specializationOf(var:c, var:j)
+    wasDerivedFrom(var:c, var:b)
+  endBundle
+endDocument

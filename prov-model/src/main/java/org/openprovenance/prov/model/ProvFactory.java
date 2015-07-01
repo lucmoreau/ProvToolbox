@@ -966,7 +966,6 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
     public Used newUsed(Used u) {
 	Used u1 = newUsed(u.getId(), u.getActivity(), u.getEntity());
-	u1.getOther().addAll(u.getOther());
 	u1.setTime(u.getTime());
 	u1.getType().addAll(u.getType());
 	u1.getLabel().addAll(u.getLabel());
@@ -1166,6 +1165,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	WasDerivedFrom wdf = newWasDerivedFrom(d.getId(),
 					       d.getGeneratedEntity(),
 					       d.getUsedEntity());
+	wdf.setActivity(d.getActivity());
 	wdf.setGeneration(d.getGeneration());
 	wdf.setUsage(d.getUsage());
 	wdf.getOther().addAll(d.getOther());
@@ -1582,6 +1582,142 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
     public Namespace newNamespace() {
 	return new Namespace();
+    }
+    
+    public AlternateOf newAlternateOf(AlternateOf s) {
+	AlternateOf res=newAlternateOf(s.getAlternate1(), s.getAlternate2());
+	return res;
+    }
+    
+    public SpecializationOf newSpecializationOf(SpecializationOf s) {
+	SpecializationOf res=newSpecializationOf(s.getSpecificEntity(), s.getGeneralEntity());
+	return res;
+    }
+    
+    public HadMember newHadMember(HadMember s) {
+	HadMember res=newHadMember(s.getCollection(), s.getCollection()); //FIXME: clone collection
+	return res;
+    }
+    
+    ProvUtilities util=new ProvUtilities();
+    
+    @SuppressWarnings("unchecked")
+    public <T extends Statement> T newStatement(T s) {
+	 return (T) util.doAction(s,new Cloner());
+    }
+    
+    public class Cloner implements StatementActionValue {
+
+	@Override
+	public Object doAction(Activity s) {
+	    return newActivity(s);
+	}
+
+	@Override
+	public Object doAction(Used s) {
+	    return newUsed(s);
+	}
+
+	@Override
+	public Object doAction(WasStartedBy s) {
+	    return newWasStartedBy(s);
+	}
+
+	@Override
+	public Object doAction(Agent s) {
+	    return newAgent(s);
+	}
+
+	@Override
+	public Object doAction(AlternateOf s) {
+	    return newAlternateOf(s);
+	}	
+
+	@Override
+	public Object doAction(WasAssociatedWith s) {
+	    return newWasAssociatedWith(s);
+	}
+
+	@Override
+	public Object doAction(WasAttributedTo s) {
+	    return newWasAttributedTo(s);
+	}
+
+	@Override
+	public Object doAction(WasInfluencedBy s) {
+	    return newWasInfluencedBy(s);
+	}
+
+	@Override
+	public Object doAction(ActedOnBehalfOf s) {
+	    return newActedOnBehalfOf(s);
+	}
+
+	@Override
+	public Object doAction(WasDerivedFrom s) {
+	    return newWasDerivedFrom(s);
+	}
+
+	@Override
+	public Object doAction(DictionaryMembership s) {
+	    throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object doAction(DerivedByRemovalFrom s) {
+	    throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object doAction(WasEndedBy s) {
+	    return newWasEndedBy(s);
+	}
+
+	@Override
+	public Object doAction(Entity s) {
+	    return newEntity(s);
+	}
+
+	@Override
+	public Object doAction(WasGeneratedBy s) {
+	    return newWasGeneratedBy(s);
+	}
+
+	@Override
+	public Object doAction(WasInvalidatedBy s) {
+	    return newWasInvalidatedBy(s);
+	}
+
+	@Override
+	public Object doAction(HadMember s) {
+	    return newHadMember(s);
+	}
+
+	@Override
+	public Object doAction(MentionOf s) {
+	    return newMentionOf(s);
+	}
+
+	@Override
+	public Object doAction(SpecializationOf s) {
+	    return newSpecializationOf(s);
+	}
+
+	@Override
+	public Object doAction(DerivedByInsertionFrom s) {
+	    throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object doAction(WasInformedBy s) {
+	    return newWasInformedBy(s);
+	}
+
+	@Override
+	public Object doAction(Bundle s, ProvUtilities provUtilities) {
+	    throw new UnsupportedOperationException();
+	}
+	
     }
 
 }

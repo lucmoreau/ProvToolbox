@@ -116,6 +116,10 @@ public class Using implements Iterable<List<Integer>> {
 	    List<List<TypedValue>> val=b.getAttributes().get(var);
             if (val!=null) {
         	try {
+        	    List<TypedValue> attVal = val.get(ind);
+        	    if (attVal==null){
+        	        throw new MissingAttributeValue("Missing attribute value for variable " + var + ": index is " + ind + " and values are " + val);
+        	    }
         	    result.put(var, val.get(ind));
         	} catch (IndexOutOfBoundsException excp) {
         	    throw new MissingAttributeValue("Missing attribute value for variable " + var + ": index is " + ind + " and values are " + val, excp);

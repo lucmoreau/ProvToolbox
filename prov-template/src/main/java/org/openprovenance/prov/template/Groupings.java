@@ -7,6 +7,9 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
+import java.util.Collections;
+import java.util.Collection;
 
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.HasOther;
@@ -81,6 +84,23 @@ public class Groupings {
 		}
 	    }
 	}
+	// Compute transitive closure
+	for(QualifiedName visit: Collections.list(linked.keys())) {
+		Stack<QualifiedName> toVisit = new Stack<QualifiedName>();
+		toVisit.push(visit);
+		Collection<QualifiedName> reachable = new HashSet<QualifiedName>();
+		while(toVisit.size()>0) {
+			QualifiedName local_qn = toVisit.pop();
+			for(QualifiedName neighbour: linked.get(local_qn)) {
+				if (!reachable.contains(neighbour)) {
+					reachable.add(neighbour);
+					toVisit.push(neighbour);
+				}
+			}
+		}
+		linked.get(visit).addAll(reachable);
+	}
+
 	QualifiedName [] sorted=allVars.toArray(new QualifiedName[0]);
 	Arrays.sort(sorted, new Comparator<QualifiedName>() {
 	    @Override

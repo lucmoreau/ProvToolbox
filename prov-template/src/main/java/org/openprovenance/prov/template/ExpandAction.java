@@ -57,8 +57,19 @@ public class ExpandAction implements StatementAction {
     final private Bindings bindings;
     final private Groupings grp1;
     final private Hashtable<QualifiedName, List<TypedValue>> env2;
+    final private boolean addOrderp;
 
-    public ExpandAction(ProvFactory pf, ProvUtilities u, Expand expand, Hashtable<QualifiedName, QualifiedName> env, Hashtable<QualifiedName, List<TypedValue>> env2, List<Integer> index, Bindings bindings1, Groupings grp1) {
+    public ExpandAction(ProvFactory pf, 
+                        ProvUtilities u, 
+                        Expand expand, 
+                        Hashtable<QualifiedName, 
+                        QualifiedName> env, 
+                        Hashtable<QualifiedName, 
+                        List<TypedValue>> env2, 
+                        List<Integer> index, 
+                        Bindings bindings1, 
+                        Groupings grp1,
+                        boolean addOrderp) {
 	this.pf=pf;
 	this.expand=expand;
 	this.env=env;
@@ -67,6 +78,7 @@ public class ExpandAction implements StatementAction {
 	this.bindings=bindings1;
 	this.grp1=grp1;
 	this.env2=env2;
+	this.addOrderp=addOrderp;
     }
 
     @Override
@@ -357,7 +369,9 @@ public class ExpandAction implements StatementAction {
     }
 
     public void addOrderAttribute(HasOther res) {
-	res.getOther().add(pf.newOther(TMPL_NS, "order", TMPL_PREFIX, index, pf.getName().XSD_STRING));
+	if (addOrderp) {
+	    res.getOther().add(pf.newOther(TMPL_NS, "order", TMPL_PREFIX, index, pf.getName().XSD_STRING));
+	}
     }
 
     private boolean setExpand(Statement res, QualifiedName id, int position) {

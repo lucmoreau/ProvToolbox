@@ -33,9 +33,11 @@ public class ExpandTest extends TestCase {
     QualifiedName var_ag=pf.newQualifiedName(VAR_NS, "ag", "var");
     QualifiedName var_pl=pf.newQualifiedName(VAR_NS, "pl", "var");
     QualifiedName var_label=pf.newQualifiedName(VAR_NS, "label", "var");
+    QualifiedName var_start=pf.newQualifiedName(VAR_NS, "start", "var");
+    QualifiedName var_end=pf.newQualifiedName(VAR_NS, "end", "var");
 
     public  void expander(String in, String inBindings, String out) throws IOException, Throwable {
-	System.out.println("expander ==========================================> " + in);
+	System.err.println("expander ==========================================> " + in);
 	
 	Document doc= new Utility().readDocument(in, pf);
 	Document docBindings= new Utility().readDocument(inBindings,pf);
@@ -45,9 +47,9 @@ public class ExpandTest extends TestCase {
 
 	Groupings grp1=Groupings.fromDocument(doc);
 
-	System.out.println("Found groupings " + grp1);
+	System.err.println("Found groupings " + grp1);
 	
-	Bundle bun1=(Bundle) new Expand(pf).expand(bun, bindings1, grp1).get(0);
+	Bundle bun1=(Bundle) new Expand(pf,addOrderp).expand(bun, bindings1, grp1).get(0);
 	Document doc1=pf.newDocument();
 	doc1.getStatementOrBundle().add(bun1);
 	
@@ -61,15 +63,16 @@ public class ExpandTest extends TestCase {
 	//InteropFramework inf=new InteropFramework();
 	//inf.writeDocument(out, doc1);
 	
-	System.out.println("expander ==========================================> ");
+	System.err.println("expander ==========================================> ");
     }
     
-
+    boolean addOrderp=true;
+    
     public void expander (String in,
                           String out,
                           Bindings bindings1,
                           String outBindings) throws IOException, Throwable {
-	System.out.println("expander ==========================================> " + in);
+	System.err.println("expander ==========================================> " + in);
 	
 	Document doc= new Utility().readDocument(in, pf);
 	
@@ -77,9 +80,9 @@ public class ExpandTest extends TestCase {
 
 	Groupings grp1=Groupings.fromDocument(doc);
 
-	System.out.println("Found groupings " + grp1);
+	System.err.println("Found groupings " + grp1);
 	
-	Bundle bun1=(Bundle) new Expand(pf).expand(bun, bindings1, grp1).get(0);
+	Bundle bun1=(Bundle) new Expand(pf,addOrderp).expand(bun, bindings1, grp1).get(0);
 	Document doc1=pf.newDocument();
 	doc1.getStatementOrBundle().add(bun1);
 	
@@ -98,7 +101,7 @@ public class ExpandTest extends TestCase {
 	Namespace.withThreadNamespace(doc2.getNamespace());
 	new Utility().writeDocument(doc2,outBindings,pf);
 	
-	System.out.println("expander ==========================================> ");
+	System.err.println("expander ==========================================> ");
 
     }
 
@@ -463,6 +466,52 @@ public class ExpandTest extends TestCase {
     }
     
     
+    public void testExpand25() throws IOException, Throwable {
+        Bindings bindings1=new Bindings(pf);
+
+        bindings1.addVariable(var_a, pf.newQualifiedName(EX_NS, "apple", "ex"));
+        bindings1.addVariable(var_a, pf.newQualifiedName(EX_NS, "orange", "ex"));
+        bindings1.addVariable(var_a, pf.newQualifiedName(EX_NS, "pear", "ex"));
+
+        List<TypedValue> ll=new LinkedList<TypedValue>();
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "apples", pf.getName().XSD_STRING));
+
+        bindings1.addAttribute(var_b, ll);
+
+        ll=new LinkedList<TypedValue>();
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "oranges", pf.getName().XSD_STRING));
+        bindings1.addAttribute(var_b, ll);
+
+        boolean threw = false;
+        try {
+            expander("src/test/resources/template25.provn",
+                     "target/expanded25.provn",
+                     bindings1,
+                     "target/bindings25.provn");
+        } catch (org.openprovenance.prov.template.MissingAttributeValue e) {
+            threw = true;
+        }
+        if (!threw) { fail("Exception not raised."); }
+
+        ll=new LinkedList<TypedValue>();
+        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "pears", pf.getName().XSD_STRING));
+        bindings1.addAttribute(var_b, ll);
+
+        expander("src/test/resources/template25.provn",
+                 "target/expanded25.provn",
+                 bindings1,
+                 "target/bindings25.provn");
+
+        threw = false;
+        try {
+            expander("src/test/resources/template25.provn",
+                     "src/test/resources/bindings25.provn",
+                     "target/expanded25.provn");
+        } catch (org.openprovenance.prov.template.MissingAttributeValue e) {
+            threw = true;
+        }
+        if (!threw) { fail("Exception not raised."); }
+    }
 
     
     public void testExpand10() throws IOException, Throwable {
@@ -480,12 +529,22 @@ public class ExpandTest extends TestCase {
                               pf.newQualifiedName(EX_NS, "agv1", "ex"));
         bindings1.addVariable(var_pl,
                               pf.newQualifiedName(EX_NS, "pl1", "ex"));
-        
+
         
         List<TypedValue> ll=new LinkedList<TypedValue>();
         ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
         ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "m22@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
+
+	
+
+
+	List<TypedValue> ll2=new LinkedList<TypedValue>();
+        ll2.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), pf.newTimeNow(), pf.getName().XSD_DATETIME));
+        bindings1.addAttribute(var_start, ll2);
+
+	List<TypedValue> ll3=new LinkedList<TypedValue>();
+        ll3.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), pf.newTimeNow(), pf.getName().XSD_DATETIME));
+        bindings1.addAttribute(var_end, ll3);
 
     
 

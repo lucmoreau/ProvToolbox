@@ -134,9 +134,32 @@ final public class DOMProcessing {
      */
     final static public Element newElement(QualifiedName name, String value, QualifiedName type) {
 	org.w3c.dom.Document doc = builder.newDocument();
+	String qualifiedNameString;
+	
+	boolean withDigit=false;
+	boolean withNullLocal=false;
+	String localPart = name.getLocalPart();
+	if (localPart==null) {
+	    withNullLocal=true;
+	} else if (Character.isDigit(localPart.charAt(0))) {
+	    withDigit=true;
+	}
+	qualifiedNameString= qualifiedNameToString(name);
+	if (withNullLocal ) {
+	    qualifiedNameString=qualifiedNameString.replace(":", ":_");
+	} else if (withDigit) {
+	    qualifiedNameString=qualifiedNameString.replace(":", ":_");
+	} else {    
+	}
+	
+	    //System.out.println(" newElement " + qualifiedNameString + " " + withDigit);
+
 	Element el = doc.createElementNS(name.getNamespaceURI(),
-	                                 qualifiedNameToString(name));
+	                                 qualifiedNameString);
 	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qualifiedNameToString(type));
+	//if (withNullLocal || withDigit) {
+	//    el.setAttributeNS(NamespacePrefixMapper.PROV_NS, "prov:local", localPart);
+	//}
 	el.appendChild(doc.createTextNode(value));
 	doc.appendChild(el);
 	return el;

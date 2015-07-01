@@ -20,6 +20,8 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasType;
+import org.openprovenance.prov.model.HasLabel;
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.model.Influence;
 import org.openprovenance.prov.model.Bundle;
@@ -62,7 +64,8 @@ public class ProvToDot {
     }
 
     public String localnameToString(QualifiedName qName) {
-        return qName.getLocalPart();
+        //return qName.getLocalPart();
+        return nonEmptyLocalName(qName);
     }
 
     public enum Config { DEFAULT, ROLE, ROLE_NO_LABEL };
@@ -238,7 +241,6 @@ public class ProvToDot {
 	        throws java.io.FileNotFoundException, java.io.IOException {
 	        convert(graph,new File(dotFile), title);
 	        Runtime runtime = Runtime.getRuntime();
-	        @SuppressWarnings("unused")
 	        java.lang.Process proc = runtime.exec("dot  -Tpdf " + dotFile);
 	        InputStream is=proc.getInputStream();
                 org.apache.commons.io.IOUtils.copy(is, pdfStream);            
@@ -401,23 +403,26 @@ public class ProvToDot {
 
     }
 
-    public void emitAnnotations(String id, HasOther ann, PrintStream out) {
+    public void emitAnnotations(String id, HasOther statement, PrintStream out) {
 
-        if (((ann.getOther()==null) 
-        	|| (ann.getOther().isEmpty()) 
-        	|| (countOthers(ann)==0))	
+        if (((statement.getOther()==null) 
+        	|| (statement.getOther().isEmpty()) 
+        	|| (countOthers(statement)==0))	
             &&
-            (((HasType)ann).getType().isEmpty())) return;
+            (((HasType)statement).getType().isEmpty())
+	    &&
+            (((HasLabel)statement).getLabel().isEmpty())
+	    ) return;
 
         HashMap<String,String> properties=new HashMap<String, String>();
-        QualifiedName newId=annotationId(((Identifiable)ann).getId(),id);
+        QualifiedName newId=annotationId(((Identifiable)statement).getId(),id);
         emitElement(newId,
-                    addAnnotationShape(ann,addAnnotationColor(ann,addAnnotationLabel(ann,properties))),
+                    addAnnotationShape(statement,addAnnotationColor(statement,addAnnotationLabel(statement,properties))),
                     out);
         HashMap<String,String> linkProperties=new HashMap<String, String>();
         emitRelation(qualifiedNameToString(newId),
-                     qualifiedNameToString(((Identifiable)ann).getId()),
-                     addAnnotationLinkProperties(ann,linkProperties),out,true);
+                     qualifiedNameToString(((Identifiable)statement).getId()),
+                     addAnnotationLinkProperties(statement,linkProperties),out,true);
     }
 
 
@@ -427,7 +432,7 @@ public class ProvToDot {
     public QualifiedName annotationId(QualifiedName id,String node) {
 	
         if (true || id==null) {
-            return of.newQualifiedName("http://annot/","ann" + node + (annotationCount++),null);
+            return of.newQualifiedName("-","attrs" + node + (annotationCount++),null);
         } else {
             return id;
         }
@@ -578,7 +583,13 @@ public class ProvToDot {
 	    for (Type type: ((HasType)ann).getType()) {
 		label=label+"	<TR>\n";
 		label=label+"	    <TD align=\"left\">" + "type" + ":</TD>\n";
-		label=label+"	    <TD align=\"left\">" + getPropertyValueFromAny(type) + "</TD>\n";
+		label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(type) + "</TD>\n";  //FIXME: could we have URL in <a></a>?
+		label=label+"	</TR>\n";
+	    }
+	    for (LangString lab: ((HasLabel)ann).getLabel()) {
+		label=label+"	<TR>\n";
+		label=label+"	    <TD align=\"left\">" + "label" + ":</TD>\n";
+		label=label+"	    <TD align=\"left\">" + lab.getValue() + "</TD>\n";
 		label=label+"	</TR>\n";
 	    }
 	    for (Other prop: ann.getOther()) {
@@ -595,7 +606,7 @@ public class ProvToDot {
 		
 		label=label+"	<TR>\n";
 		label=label+"	    <TD align=\"left\">" + convertProperty((Attribute)prop) + ":</TD>\n";
-		label=label+"	    <TD align=\"left\">" + convertValue((Attribute)prop) + "</TD>\n";
+		label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl((Attribute)prop) + "</TD>\n";
 		label=label+"	</TR>\n";
 	    }
 	    label=label+"    </TABLE>>\n";
@@ -618,12 +629,27 @@ public class ProvToDot {
    public String convertValue(Attribute v) {
        if (v.getValue() instanceof QualifiedName) {
            QualifiedName name=(QualifiedName) v.getValue();
-           return name.getLocalPart();
+           return htmlify(nonEmptyLocalName(name));
        }
        String label=getPropertyValueFromAny(v);
        int i=label.lastIndexOf("#");
        int j=label.lastIndexOf("/");
-       return label.substring(Math.max(i,j)+1, label.length());
+       return htmlify(label.substring(Math.max(i,j)+1, label.length()));
+   }
+
+   public String nonEmptyLocalName(QualifiedName name) {
+       final String localPart = name.getLocalPart();
+       if ("".equals(localPart)) {
+	   // we are in this case for url finishing with /
+	   String uri=name.getNamespaceURI();
+	   String label=uri.substring(0, uri.length()-1);
+	   int i=label.lastIndexOf("#");
+	   int j=label.lastIndexOf("/");
+	   return uri.substring(Math.max(i,j)+1, uri.length());
+	   
+       } else {
+	   return localPart;
+       }
    }
 
 
@@ -645,6 +671,18 @@ public class ProvToDot {
             return q.getNamespaceURI() + q.getLocalPart();
         } else {
                 return "" +  val;
+        }
+    }
+    
+    public String getPropertyValueWithUrl (Attribute t) {
+        Object val=t.getValue();
+        if (val instanceof QualifiedName) {
+            QualifiedName q=(QualifiedName)val;
+            return q.getPrefix() +  ":" + q.getLocalPart();
+            //return "<a xlink:href='" + q.getNamespaceURI() + q.getLocalPart() + "'>" + q.getLocalPart() + "</a>";
+            //return "&lt;a href=\"" + q.getPrefix() + ":" + q.getLocalPart() + "\"&gt;" + q.getLocalPart() + "&lt;/a&gt;";
+        } else {
+                return htmlify(""+val);
         }
     }
     public String getPropertyValueFromAny (Attribute o) {
@@ -1006,8 +1044,19 @@ public class ProvToDot {
 
     /* make name compatible with dot notation*/
     
+    public String OLDdotify(String name) {
+        return "n" + name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_').replace('~','_').replace('&','_').replace('=','_').replace('?','_');
+    }
     public String dotify(String name) {
-        return "n" + name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_').replace('~','_');
+        //return name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_').replace('~','_').replace("&","&amp;").replace('=','_').replace('?','_');
+        //return htmlify(name);
+	return "\"" + name + "\"";
+    }
+
+    public String htmlify(String name) {
+        return name.replace("&","&amp;")
+        	.replace("<","&lt;")
+        	.replace(">","&gt;");
     }
 
     public void emitElement(QualifiedName name, HashMap<String,String> properties, PrintStream out) {
@@ -1077,7 +1126,7 @@ public class ProvToDot {
     }
 
     void prelude(Bundle doc, PrintStream out) {
-        out.println("subgraph " + "cluster" + dotify(qualifiedNameToString(doc.getId())) + " { ");
+        out.println("subgraph " + dotify("cluster" + qualifiedNameToString(doc.getId())) + " { ");
         out.println("  label=\"" + localnameToString(doc.getId()) + "\";");
         out.println("  URL=\"" + qualifiedNameToString(doc.getId()) + "\";");
     }

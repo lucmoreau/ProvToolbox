@@ -1,8 +1,11 @@
 package org.openprovenance.prov.interop;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -11,6 +14,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +23,7 @@ import javax.ws.rs.core.Variant;
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
@@ -54,7 +59,7 @@ public class InteropFramework implements InteropMediaType {
      * Some of these serializations can be input, output, or both. */
     
     static public enum ProvFormat {
-        PROVN, XML, TURTLE, RDFXML, TRIG, JSON, DOT, JPEG, SVG, PDF
+        PROVN, XML, TURTLE, RDFXML, TRIG, JSON, DOT, JPEG, PNG, SVG, PDF
     }
 
     static public enum ProvFormatType {
@@ -72,12 +77,15 @@ public class InteropFramework implements InteropMediaType {
     final private String debug;
     final private String logfile;
     final private String infile;
+    final private String informat;
     final private String outfile;
+    final private String outformat;
     final private String namespaces;
     final private String title;
 
     final private String layout;
     final private String bindings;
+    final private String bindingformat;
     public final Hashtable<ProvFormat, String> extensionMap;
     public final Hashtable<String, ProvFormat> extensionRevMap;
     public final Hashtable<ProvFormat, String> mimeTypeMap;
@@ -87,25 +95,38 @@ public class InteropFramework implements InteropMediaType {
     public final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
 
     final private String generator;
+    final private String index;
+    final private String merge;
+    final private String flatten;
+    final private boolean addOrderp;
 
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
      */
     public InteropFramework() {
-        this(null, null, null, null, null, null, null, null, null, null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null,
                 org.openprovenance.prov.xml.ProvFactory.getFactory());
     }
 
     public InteropFramework(ProvFactory pFactory) {
-        this(null, null, null, null, null, null, null, null, null, null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null,
+                pFactory);
+    }
+
+    /* backwards compatibility with pre-format version*/
+    @Deprecated public InteropFramework(String verbose, String debug, String logfile,
+            String infile, String outfile, String namespaces, String title,
+            String layout, String bindings, boolean addOrderp, String generator,
+            String index, String merge, String flatten, ProvFactory pFactory) {
+        this(verbose, debug, logfile, infile, null, outfile, null, namespaces, title, layout, bindings, null, addOrderp, generator, index, merge, flatten,
                 pFactory);
     }
 
     public InteropFramework(String verbose, String debug, String logfile,
-            String infile, String outfile, String namespaces, String title,
-            String layout, String bindings, String generator,
-            ProvFactory pFactory) {
+            String infile, String informat, String outfile, String outformat, String namespaces, String title,
+            String layout, String bindings, String bindingformat, boolean addOrderp, String generator,
+            String index, String merge, String flatten, ProvFactory pFactory) {
         this.verbose = verbose;
         this.debug = debug;
         this.logfile = logfile;
@@ -116,8 +137,15 @@ public class InteropFramework implements InteropMediaType {
         this.layout = layout;
         this.bindings = bindings;
         this.generator = generator;
+        this.index=index;
+        this.merge=merge;
+        this.flatten=flatten;
         this.pFactory = pFactory;
+        this.addOrderp=addOrderp;
         this.onto = new Ontology(pFactory);
+        this.informat = informat;
+        this.outformat = outformat;
+        this.bindingformat = bindingformat;
 
         extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
         extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
@@ -267,6 +295,20 @@ public class InteropFramework implements InteropMediaType {
     }
 
     /**
+     * Get a {@link ProvFormat} given a format string
+     * @param format the format for which the {@link ProvFormat} is sought
+     * @return a {@link ProvFormat}
+     */
+    public ProvFormat getTypeForFormat(String format) {
+        ProvFormat result;
+        // try as mimetype and then as an extension
+        result = mimeTypeRevMap.get(format);
+        if (result == null)
+            result = extensionRevMap.get(format);
+        return result;
+    }
+
+    /**
      * Support for content negotiation, jax-rs style. Create a list of media
      * type supported by the framework.
      * @see <a href="http://docs.oracle.com/javaee/6/tutorial/doc/gkqbq.html">Content Negotiation</a>
@@ -307,6 +349,13 @@ public class InteropFramework implements InteropMediaType {
                 mimeTypeMap.put(ProvFormat.JPEG, MEDIA_IMAGE_JPEG);
                 mimeTypeRevMap.put(MEDIA_IMAGE_JPEG, ProvFormat.JPEG);
                 provTypeMap.put(ProvFormat.JPEG, ProvFormatType.OUTPUT);
+                break;
+            case PNG:
+                extensionMap.put(ProvFormat.PNG, EXTENSION_PNG);
+                extensionRevMap.put(EXTENSION_PNG, ProvFormat.PNG);
+                mimeTypeMap.put(ProvFormat.PNG, MEDIA_IMAGE_PNG);
+                mimeTypeRevMap.put(MEDIA_IMAGE_PNG, ProvFormat.PNG);
+                provTypeMap.put(ProvFormat.PNG, ProvFormatType.OUTPUT);
                 break;
             case JSON:
                 extensionMap.put(ProvFormat.JSON, EXTENSION_JSON);
@@ -507,6 +556,7 @@ public class InteropFramework implements InteropMediaType {
             switch (format) {
             case DOT:
             case JPEG:
+            case PNG:
             case SVG:
                 throw new UnsupportedOperationException(); // we don't load PROV
                 // from these
@@ -618,17 +668,28 @@ public class InteropFramework implements InteropMediaType {
      * @return a Document
      */
     public Document readDocumentFromFile(String filename) {
-        try {
 
             ProvFormat format = getTypeForFile(filename);
             if (format == null) {
                 throw new InteropException("Unknown output file format: "
                         + filename);
             }
+            return readDocumentFromFile(filename, format);
+    }
 
+    /**
+     * Reads a document from a file, using the format to decide which parser to read the file with.
+     * @param filename the file to read a document from
+     * @param format the format of the file
+     * @return a Document
+     */
+    public Document readDocumentFromFile(String filename, ProvFormat format) {
+
+        try {
             switch (format) {
             case DOT:
             case JPEG:
+            case PNG:
             case SVG:
                 throw new UnsupportedOperationException(); // we don't load PROV
                                                            // from these
@@ -680,6 +741,155 @@ public class InteropFramework implements InteropMediaType {
         }
 
     }
+    public java.util.List<java.util.Map<String, String>>getSupportedFormats() {
+        java.util.List<java.util.Map<String, String>> tripleList = new java.util.ArrayList<>();
+        java.util.Map<String, String>trip;
+        for (InteropFramework.ProvFormat pt:  provTypeMap.keySet()) {
+            for (String mt:  mimeTypeRevMap.keySet()) {
+                if (mimeTypeRevMap.get(mt) == pt) {
+                    for (String ext: extensionRevMap.keySet()) {
+                        if (extensionRevMap.get(ext) == pt) {
+                            if (isInputFormat(pt)) {
+                                trip = new java.util.HashMap<String, String>();
+                                trip.put("extension", ext);
+                                trip.put("mediatype", mt);
+                                trip.put("type", "input");
+                                tripleList.add(trip);
+                            }
+                            if (isOutputFormat(pt)) {
+                                trip = new java.util.HashMap<String, String>();
+                                trip.put("extension", ext);
+                                trip.put("mediatype", mt);
+                                trip.put("type", "output");
+                                tripleList.add(trip);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return tripleList;
+    }
+
+    private Document doReadDocument(String filename, String format)
+    {
+        Document doc;
+        ProvFormat informat;
+        if (format != null) {
+            informat = getTypeForFormat(format);
+            if (informat == null) {
+                throw new InteropException("Unknown format: "
+                        + format);
+            }
+        } else {
+            informat = getTypeForFile(filename);
+            if (informat == null) {
+                throw new InteropException("Unknown file format for: "
+                        + filename);
+            }
+        }
+
+        if (filename == "-") {
+            if (informat == null) {
+                throw new InteropException("File format for standard input not specified");
+            }
+            doc = (Document) readDocument(System.in, informat);
+        } else {
+            doc = (Document) readDocumentFromFile(filename, informat);
+        }
+
+        return doc;
+    }
+
+    private void doWriteDocument(String filename, String format, Document doc)
+    {
+        ProvFormat outformat;
+        if (format != null) {
+            outformat = getTypeForFormat(format);
+            if (outformat == null) {
+                throw new InteropException("Unknown format: "
+                        + format);
+            }
+        } else {
+            outformat = getTypeForFile(filename);
+            if (outformat == null) {
+                throw new InteropException("Unknown file format for: "
+                        + filename);
+            }
+        }
+
+        if (filename == "-") {
+            if (outformat == null) {
+                throw new InteropException("File format for standard output not specified");
+            }
+            writeDocument(System.out, outformat, doc);
+        } else {
+            writeDocument(filename, outformat, doc);
+        }
+    }
+    
+    static String SEPARATOR=",";
+    enum FileKind { FILE , URL };
+    
+    class ToRead {
+    	FileKind kind;
+    	String url;
+    	ProvFormat format;
+
+    	public String toString () {
+    		return "[" + kind + "," + url + "," + format + "]"; 
+    	}
+    	
+		ToRead(FileKind kind, String url, ProvFormat format) {
+    		this.kind=kind;
+    		this.url=url;
+    		this.format=format;
+    	}
+    }
+    
+    public Document readDocument(ToRead something) {
+    	Document doc=null;
+    	switch (something.kind) {
+		case FILE:
+			doc=readDocumentFromFile(something.url, something.format);
+			break;
+		case URL:
+			doc=readDocument(something.url);// note: ignore format?
+			break;
+    	}
+    	return doc;
+    }
+    
+    private List<ToRead> readIndexFile(File fin) throws IOException {
+    	FileInputStream fis = new FileInputStream(fin);
+    	return readIndexFile(fis);
+    }
+    
+    
+    private List<ToRead> readIndexFile(InputStream is) throws IOException {
+    	List<ToRead> res=new LinkedList<InteropFramework.ToRead>();
+     
+    	BufferedReader br = new BufferedReader(new InputStreamReader(is));
+     
+    	String line = null;
+    	while ((line = br.readLine()) != null) {
+    		String [] parts=line.split(SEPARATOR);
+    		if (parts.length>=3) {
+    			FileKind kind=parts[0].trim().equals("URL") ? FileKind.URL : FileKind.FILE;
+    			String path=parts[1].trim();
+    			ProvFormat format=getTypeForFormat(parts[2].trim());
+    			ToRead elem=new ToRead(kind, path, format);
+    			res.add(elem);
+    		} else if (parts.length==1) {
+    			String filename=parts[0].trim();
+    			ToRead elem=new ToRead(FileKind.FILE, filename, getTypeForFile(filename));
+    			res.add(elem);
+    		}
+    	}     
+    	br.close();
+    	return res;
+    }
+
 
     /** Top level entry point of this class, when called from the command line.
      * <p>
@@ -688,13 +898,38 @@ public class InteropFramework implements InteropMediaType {
     public void run() {
         if (outfile == null)
             return;
-        if (infile == null && generator == null)
+        if (infile == null && generator == null && merge ==null)
             return;
+
+        if ((infile == "-") && (bindings == "-"))
+            throw new InteropException("Cannot use standard input for both infile and bindings");
 
         Document doc;
         if (infile != null) {
-            doc = (Document) readDocumentFromFile(infile);
+            doc = doReadDocument(infile, informat);
+        } else if (merge != null) {
+         	IndexedDocument iDoc=new IndexedDocument(pFactory, pFactory.newDocument(), flatten!=null);
+        	try {
+				List<ToRead> files;
+				if (merge.equals("-")) {
+					files=readIndexFile(System.in);
+				} else {
+					files=readIndexFile(new File(merge));					
+				}
+				System.out.println("files to merge " + files);
+				for (ToRead something: files) {
+					iDoc.merge(readDocument(something));
+				}
+				
+			} catch (IOException e) {
+				System.err.println("problem reading index file");
+				e.printStackTrace();
+
+			}
+        	doc=iDoc.toDocument();
+        	
         } else {
+        
             String[] options = generator.split(":");
             String noOfNodes = getOption(options, 0);
             String noOfEdges = getOption(options, 1);
@@ -716,14 +951,19 @@ public class InteropFramework implements InteropMediaType {
 
             doc = gg.getDetails().getDocument();
         }
+        
+        if (index!=null) {
+            Document indexedDoc=new IndexedDocument(pFactory, doc, (flatten!=null)).toDocument();
+            doc=indexedDoc;
+        }
         if (bindings != null) {
-            Document docBindings = (Document) readDocumentFromFile(bindings);
-            Document expanded = new Expand(pFactory).expander(doc, outfile,
-                                                              docBindings);
-            writeDocument(outfile, expanded);
+            Document docBindings = (Document) doReadDocument(bindings, bindingformat);
+            Document expanded = new Expand(pFactory, addOrderp).expander(doc, outfile,
+                                                                         docBindings);
+            doWriteDocument(outfile, outformat, expanded);
 
         } else {
-            writeDocument(outfile, doc);
+            doWriteDocument(outfile, outformat, doc);
         }
 
     }
@@ -799,19 +1039,6 @@ public class InteropFramework implements InteropMediaType {
                         .writeDocument(document, new OutputStreamWriter(os));
                 break;
             }
-            case PDF: {
-                String configFile = null; // TODO: get it as option
-                File tmp = File.createTempFile("viz-", ".dot");
-
-                String dotFileOut = tmp.getAbsolutePath(); // give it as option,
-                                                           // if not available
-                                                           // create tmp file
-                ProvToDot toDot = (configFile == null) ? new ProvToDot(
-                        ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
-                        configFile);
-                toDot.convert(document, dotFileOut, os, title);
-                break;
-            }
             case DOT: {
                 String configFile = null; // TODO: get it as option
                 ProvToDot toDot = (configFile == null) ? new ProvToDot(
@@ -820,24 +1047,9 @@ public class InteropFramework implements InteropMediaType {
                 toDot.convert(document, os, title);
                 break;
             }
-            case JPEG: {
-                String configFile = null; // give it as option
-                File tmp = File.createTempFile("viz-", ".dot");
-
-                String dotFileOut = tmp.getAbsolutePath(); // give it as option,
-                                                           // if not available
-                                                           // create tmp file
-                ProvToDot toDot;
-                if (configFile != null) {
-                    toDot = new ProvToDot(configFile);
-                } else {
-                    toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
-                }
-
-                toDot.convert(document, dotFileOut, os, EXTENSION_JPG, title);
-                tmp.delete();
-                break;
-            }
+            case PDF:
+            case JPEG:
+            case PNG:
             case SVG: {
                 String configFile = null; // give it as option
                 File tmp = File.createTempFile("viz-", ".dot");
@@ -845,9 +1057,6 @@ public class InteropFramework implements InteropMediaType {
                 String dotFileOut = tmp.getAbsolutePath(); // give it as option,
                                                            // if not available
                                                            // create tmp file
-                // ProvToDot toDot=new ProvToDot((configFile==null)?
-                // "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml"
-                // : configFile);
                 ProvToDot toDot;
                 if (configFile != null) {
                     toDot = new ProvToDot(configFile);
@@ -855,7 +1064,7 @@ public class InteropFramework implements InteropMediaType {
                     toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
                 }
 
-                toDot.convert(document, dotFileOut, os, EXTENSION_SVG, title);
+                toDot.convert(document, dotFileOut, os, extensionMap.get(format), title);
                 tmp.delete();
                 break;
             }
@@ -884,13 +1093,22 @@ public class InteropFramework implements InteropMediaType {
      */
 
     public void writeDocument(String filename, Document document) {
-        Namespace.withThreadNamespace(document.getNamespace());
-        try {
             ProvFormat format = getTypeForFile(filename);
             if (format == null) {
                 System.err.println("Unknown output file format: " + filename);
                 return;
             }
+        writeDocument(filename, format, document);
+    }
+    /**
+     * Write a {@link Document} to file, serialized according to the file extension
+     * @param filename path of the file to write the Document to
+     * @param document a {@link Document} to serialize
+     */
+
+    public void writeDocument(String filename, ProvFormat format, Document document) {
+        Namespace.withThreadNamespace(document.getNamespace());
+        try {
             logger.debug("writing " + format);
             logger.debug("writing " + filename);
             setNamespaces(document);
@@ -926,20 +1144,6 @@ public class InteropFramework implements InteropMediaType {
                         .writeDocument(document, filename);
                 break;
             }
-            case PDF: {
-                String configFile = null; // TODO: get it as option
-                File tmp = File.createTempFile("viz-", ".dot");
-
-                String dotFileOut = tmp.getAbsolutePath(); // give it as option,
-                                                           // if not available
-                                                           // create tmp file
-                ProvToDot toDot = (configFile == null) ? new ProvToDot(
-                        ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
-                        configFile);
-                toDot.setLayout(layout);
-                toDot.convert(document, dotFileOut, filename, title);
-                break;
-            }
             case DOT: {
                 String configFile = null; // TODO: get it as option
                 ProvToDot toDot = (configFile == null) ? new ProvToDot(
@@ -949,24 +1153,9 @@ public class InteropFramework implements InteropMediaType {
                 toDot.convert(document, filename, title);
                 break;
             }
-            case JPEG: {
-                String configFile = null; // give it as option
-                File tmp = File.createTempFile("viz-", ".dot");
-
-                String dotFileOut = tmp.getAbsolutePath(); // give it as option,
-                                                           // if not available
-                                                           // create tmp file
-                ProvToDot toDot;
-                if (configFile != null) {
-                    toDot = new ProvToDot(configFile);
-                } else {
-                    toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
-                }
-                toDot.setLayout(layout);
-                toDot.convert(document, dotFileOut, filename, EXTENSION_JPG, title);
-                tmp.delete();
-                break;
-            }
+            case PDF:
+            case JPEG:
+            case PNG:
             case SVG: {
                 String configFile = null; // give it as option
                 File tmp = File.createTempFile("viz-", ".dot");
@@ -974,9 +1163,6 @@ public class InteropFramework implements InteropMediaType {
                 String dotFileOut = tmp.getAbsolutePath(); // give it as option,
                                                            // if not available
                                                            // create tmp file
-                // ProvToDot toDot=new ProvToDot((configFile==null)?
-                // "../../ProvToolbox/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml"
-                // : configFile);
                 ProvToDot toDot;
                 if (configFile != null) {
                     toDot = new ProvToDot(configFile);
@@ -984,7 +1170,7 @@ public class InteropFramework implements InteropMediaType {
                     toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
                 }
                 toDot.setLayout(layout);
-                toDot.convert(document, dotFileOut, filename, EXTENSION_SVG, title);
+                toDot.convert(document, dotFileOut, filename, extensionMap.get(format), title);
                 tmp.delete();
                 break;
             }

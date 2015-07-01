@@ -1,8 +1,11 @@
 package org.openprovenance.prov.interop;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -11,6 +14,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -73,12 +77,15 @@ public class InteropFramework implements InteropMediaType {
     final private String debug;
     final private String logfile;
     final private String infile;
+    final private String informat;
     final private String outfile;
+    final private String outformat;
     final private String namespaces;
     final private String title;
 
     final private String layout;
     final private String bindings;
+    final private String bindingformat;
     public final Hashtable<ProvFormat, String> extensionMap;
     public final Hashtable<String, ProvFormat> extensionRevMap;
     public final Hashtable<ProvFormat, String> mimeTypeMap;
@@ -89,6 +96,7 @@ public class InteropFramework implements InteropMediaType {
 
     final private String generator;
     final private String index;
+    final private String merge;
     final private String flatten;
     final private boolean addOrderp;
 
@@ -97,19 +105,28 @@ public class InteropFramework implements InteropMediaType {
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
      */
     public InteropFramework() {
-        this(null, null, null, null, null, null, null, null, null, false, null, null, null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null,
                 org.openprovenance.prov.xml.ProvFactory.getFactory());
     }
 
     public InteropFramework(ProvFactory pFactory) {
-        this(null, null, null, null, null, null, null, null, null, false, null, null, null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null,
+                pFactory);
+    }
+
+    /* backwards compatibility with pre-format version*/
+    @Deprecated public InteropFramework(String verbose, String debug, String logfile,
+            String infile, String outfile, String namespaces, String title,
+            String layout, String bindings, boolean addOrderp, String generator,
+            String index, String merge, String flatten, ProvFactory pFactory) {
+        this(verbose, debug, logfile, infile, null, outfile, null, namespaces, title, layout, bindings, null, addOrderp, generator, index, merge, flatten,
                 pFactory);
     }
 
     public InteropFramework(String verbose, String debug, String logfile,
-            String infile, String outfile, String namespaces, String title,
-            String layout, String bindings, boolean addOrderp, String generator,
-            String index, String flatten, ProvFactory pFactory) {
+            String infile, String informat, String outfile, String outformat, String namespaces, String title,
+            String layout, String bindings, String bindingformat, boolean addOrderp, String generator,
+            String index, String merge, String flatten, ProvFactory pFactory) {
         this.verbose = verbose;
         this.debug = debug;
         this.logfile = logfile;
@@ -121,10 +138,14 @@ public class InteropFramework implements InteropMediaType {
         this.bindings = bindings;
         this.generator = generator;
         this.index=index;
+        this.merge=merge;
         this.flatten=flatten;
         this.pFactory = pFactory;
         this.addOrderp=addOrderp;
         this.onto = new Ontology(pFactory);
+        this.informat = informat;
+        this.outformat = outformat;
+        this.bindingformat = bindingformat;
 
         extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
         extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
@@ -271,6 +292,20 @@ public class InteropFramework implements InteropMediaType {
             return null;
         String extension = filename.substring(count + 1);
         return extensionRevMap.get(extension);
+    }
+
+    /**
+     * Get a {@link ProvFormat} given a format string
+     * @param format the format for which the {@link ProvFormat} is sought
+     * @return a {@link ProvFormat}
+     */
+    public ProvFormat getTypeForFormat(String format) {
+        ProvFormat result;
+        // try as mimetype and then as an extension
+        result = mimeTypeRevMap.get(format);
+        if (result == null)
+            result = extensionRevMap.get(format);
+        return result;
     }
 
     /**
@@ -633,14 +668,24 @@ public class InteropFramework implements InteropMediaType {
      * @return a Document
      */
     public Document readDocumentFromFile(String filename) {
-        try {
 
             ProvFormat format = getTypeForFile(filename);
             if (format == null) {
                 throw new InteropException("Unknown output file format: "
                         + filename);
             }
+            return readDocumentFromFile(filename, format);
+    }
 
+    /**
+     * Reads a document from a file, using the format to decide which parser to read the file with.
+     * @param filename the file to read a document from
+     * @param format the format of the file
+     * @return a Document
+     */
+    public Document readDocumentFromFile(String filename, ProvFormat format) {
+
+        try {
             switch (format) {
             case DOT:
             case JPEG:
@@ -726,6 +771,126 @@ public class InteropFramework implements InteropMediaType {
         return tripleList;
     }
 
+    private Document doReadDocument(String filename, String format)
+    {
+        Document doc;
+        ProvFormat informat;
+        if (format != null) {
+            informat = getTypeForFormat(format);
+            if (informat == null) {
+                throw new InteropException("Unknown format: "
+                        + format);
+            }
+        } else {
+            informat = getTypeForFile(filename);
+            if (informat == null) {
+                throw new InteropException("Unknown file format for: "
+                        + filename);
+            }
+        }
+
+        if (filename == "-") {
+            if (informat == null) {
+                throw new InteropException("File format for standard input not specified");
+            }
+            doc = (Document) readDocument(System.in, informat);
+        } else {
+            doc = (Document) readDocumentFromFile(filename, informat);
+        }
+
+        return doc;
+    }
+
+    private void doWriteDocument(String filename, String format, Document doc)
+    {
+        ProvFormat outformat;
+        if (format != null) {
+            outformat = getTypeForFormat(format);
+            if (outformat == null) {
+                throw new InteropException("Unknown format: "
+                        + format);
+            }
+        } else {
+            outformat = getTypeForFile(filename);
+            if (outformat == null) {
+                throw new InteropException("Unknown file format for: "
+                        + filename);
+            }
+        }
+
+        if (filename == "-") {
+            if (outformat == null) {
+                throw new InteropException("File format for standard output not specified");
+            }
+            writeDocument(System.out, outformat, doc);
+        } else {
+            writeDocument(filename, outformat, doc);
+        }
+    }
+    
+    static String SEPARATOR=",";
+    enum FileKind { FILE , URL };
+    
+    class ToRead {
+    	FileKind kind;
+    	String url;
+    	ProvFormat format;
+
+    	public String toString () {
+    		return "[" + kind + "," + url + "," + format + "]"; 
+    	}
+    	
+		ToRead(FileKind kind, String url, ProvFormat format) {
+    		this.kind=kind;
+    		this.url=url;
+    		this.format=format;
+    	}
+    }
+    
+    public Document readDocument(ToRead something) {
+    	Document doc=null;
+    	switch (something.kind) {
+		case FILE:
+			doc=readDocumentFromFile(something.url, something.format);
+			break;
+		case URL:
+			doc=readDocument(something.url);// note: ignore format?
+			break;
+    	}
+    	return doc;
+    }
+    
+    private List<ToRead> readIndexFile(File fin) throws IOException {
+    	FileInputStream fis = new FileInputStream(fin);
+    	return readIndexFile(fin);
+    }
+    
+    
+    private List<ToRead> readIndexFile(InputStream is) throws IOException {
+    	List<ToRead> res=new LinkedList<InteropFramework.ToRead>();
+     
+    	BufferedReader br = new BufferedReader(new InputStreamReader(is));
+     
+    	String line = null;
+    	while ((line = br.readLine()) != null) {
+    		String [] parts=line.split(SEPARATOR);
+    		if (parts.length>=3) {
+    			FileKind kind=parts[0].trim().equals("URL") ? FileKind.URL : FileKind.FILE;
+    			String path=parts[1].trim();
+    			ProvFormat format=getTypeForFormat(parts[2].trim());
+    			ToRead elem=new ToRead(kind, path, format);
+    			res.add(elem);
+    		} else if (parts.length==1) {
+    			String filename=parts[0].trim();
+    			ToRead elem=new ToRead(FileKind.FILE, filename, getTypeForFile(filename));
+    			res.add(elem);
+    		}
+    	}     
+    	br.close();
+    	return res;
+    }
+
+
     /** Top level entry point of this class, when called from the command line.
      * <p>
      * See method {@link CommandLineArguments#main(String[])}*/
@@ -733,13 +898,38 @@ public class InteropFramework implements InteropMediaType {
     public void run() {
         if (outfile == null)
             return;
-        if (infile == null && generator == null)
+        if (infile == null && generator == null && merge ==null)
             return;
+
+        if ((infile == "-") && (bindings == "-"))
+            throw new InteropException("Cannot use standard input for both infile and bindings");
 
         Document doc;
         if (infile != null) {
-            doc = (Document) readDocumentFromFile(infile);
+            doc = doReadDocument(infile, informat);
+        } else if (merge != null) {
+         	IndexedDocument iDoc=new IndexedDocument(pFactory, pFactory.newDocument(), flatten!=null);
+        	try {
+				List<ToRead> files;
+				if (merge.equals("-")) {
+					files=readIndexFile(System.in);
+				} else {
+					files=readIndexFile(new File(merge));					
+				}
+				System.out.println("files to merge " + files);
+				for (ToRead something: files) {
+					iDoc.merge(readDocument(something));
+				}
+				
+			} catch (IOException e) {
+				System.err.println("problem reading index file");
+				e.printStackTrace();
+
+			}
+        	doc=iDoc.toDocument();
+        	
         } else {
+        
             String[] options = generator.split(":");
             String noOfNodes = getOption(options, 0);
             String noOfEdges = getOption(options, 1);
@@ -767,13 +957,13 @@ public class InteropFramework implements InteropMediaType {
             doc=indexedDoc;
         }
         if (bindings != null) {
-            Document docBindings = (Document) readDocumentFromFile(bindings);
+            Document docBindings = (Document) doReadDocument(bindings, bindingformat);
             Document expanded = new Expand(pFactory, addOrderp).expander(doc, outfile,
                                                                          docBindings);
-            writeDocument(outfile, expanded);
+            doWriteDocument(outfile, outformat, expanded);
 
         } else {
-            writeDocument(outfile, doc);
+            doWriteDocument(outfile, outformat, doc);
         }
 
     }
@@ -903,13 +1093,22 @@ public class InteropFramework implements InteropMediaType {
      */
 
     public void writeDocument(String filename, Document document) {
-        Namespace.withThreadNamespace(document.getNamespace());
-        try {
             ProvFormat format = getTypeForFile(filename);
             if (format == null) {
                 System.err.println("Unknown output file format: " + filename);
                 return;
             }
+        writeDocument(filename, format, document);
+    }
+    /**
+     * Write a {@link Document} to file, serialized according to the file extension
+     * @param filename path of the file to write the Document to
+     * @param document a {@link Document} to serialize
+     */
+
+    public void writeDocument(String filename, ProvFormat format, Document document) {
+        Namespace.withThreadNamespace(document.getNamespace());
+        try {
             logger.debug("writing " + format);
             logger.debug("writing " + filename);
             setNamespaces(document);

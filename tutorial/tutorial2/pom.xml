@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>ProvToolbox</artifactId>
+    <groupId>org.openprovenance.prov</groupId>
+    <version>0.6.2-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openprovenance.prov</groupId>
+  <artifactId>ProvToolbox-Tutorial2</artifactId>
+  <name>ProvToolbox Tutorial 2</name>
+  <description>ProvToolbox Tutorial 2</description>
+
+  <developers>
+    <developer>
+      <id>lucmoreau</id>
+      <name>Luc Moreau</name>
+      <email>l.moreau@ecs.soton.ac.uk</email>
+      <roles>
+	<role>Developer</role>
+      </roles>
+      <organization>University of Southampton</organization>
+      <timezone>0</timezone>
+    </developer>
+    <developer>
+      <id>lavm</id>
+      <name>Luc Moreau</name>
+      <email>lavm@ecs.soton.ac.uk</email>
+      <roles>
+	<role>Developer</role>
+      </roles>
+      <organization>University of Southampton</organization>
+      <timezone>0</timezone>
+    </developer>
+  </developers>
+
+  <repositories>
+<!--
+    <repository>
+      <id>mvn.prov.toolbox</id>
+      <name>maven repository for PROV toolbox</name>
+      <url>http://openprovenance.org/java/maven-releases/</url>
+    </repository>
+-->
+
+    <repository>
+      <id>mvn.prov.toolbox.snapshots</id>
+      <name>maven snapshot repository for PROV toolbox</name>
+      <url>http://openprovenance.org/java/maven-snapshots/</url>
+    </repository>
+  </repositories>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>license.txt</url>
+    </license>
+  </licenses>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-model</artifactId>
+      <version>0.6.2-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-interop</artifactId>
+      <version>0.6.2-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+	<groupId>org.codehaus.mojo</groupId>
+	<artifactId>exec-maven-plugin</artifactId>
+	<version>1.3.2</version>
+	<executions>
+	  <execution>
+	    <phase>test</phase>
+	    <goals>
+	      <goal>java</goal>
+	    </goals>
+	    <configuration>
+	      <mainClass>org.openprovenance.prov.tutorial.tutorial2.ReadWrite</mainClass>
+	      <arguments>
+		<argument>${basedir}/src/main/resources/a-little.provn</argument>
+		<argument>${project.build.directory}/a-little.svg</argument>
+	      </arguments>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+
+      <plugin>                       
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-assembly-plugin</artifactId>
+	<version>2.2-beta-3</version>  
+	<!-- there exists a more recent version, but it sets wrong
+	     permission on directory
+	     https://jira.codehaus.org/browse/MASSEMBLY-449 -->
+        <configuration>
+          <descriptors>
+            <descriptor>${project.build.directory}/classes/assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <id>make-assembly</id>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+
+    <resources>
+      <resource>
+	<directory>src/main/resources</directory>
+	<filtering>true</filtering>
+      </resource>
+    </resources>
+
+  </build>
+</project>

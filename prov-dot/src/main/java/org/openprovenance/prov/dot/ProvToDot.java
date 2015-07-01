@@ -20,6 +20,8 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasType;
+import org.openprovenance.prov.model.HasLabel;
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.model.Influence;
 import org.openprovenance.prov.model.Bundle;
@@ -407,7 +409,10 @@ public class ProvToDot {
         	|| (statement.getOther().isEmpty()) 
         	|| (countOthers(statement)==0))	
             &&
-            (((HasType)statement).getType().isEmpty())) return;
+            (((HasType)statement).getType().isEmpty())
+	    &&
+            (((HasLabel)statement).getLabel().isEmpty())
+	    ) return;
 
         HashMap<String,String> properties=new HashMap<String, String>();
         QualifiedName newId=annotationId(((Identifiable)statement).getId(),id);
@@ -579,6 +584,12 @@ public class ProvToDot {
 		label=label+"	<TR>\n";
 		label=label+"	    <TD align=\"left\">" + "type" + ":</TD>\n";
 		label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(type) + "</TD>\n";  //FIXME: could we have URL in <a></a>?
+		label=label+"	</TR>\n";
+	    }
+	    for (LangString lab: ((HasLabel)ann).getLabel()) {
+		label=label+"	<TR>\n";
+		label=label+"	    <TD align=\"left\">" + "label" + ":</TD>\n";
+		label=label+"	    <TD align=\"left\">" + lab.getValue() + "</TD>\n";
 		label=label+"	</TR>\n";
 	    }
 	    for (Other prop: ann.getOther()) {

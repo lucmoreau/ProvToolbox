@@ -33,6 +33,8 @@
       <outputDirectory>/${project.artifactId}-${pom.version}/src</outputDirectory>
       <fileMode>755</fileMode>
       <excludes>
+	<exclude>**/Makefile</exclude>	
+	<exclude>**/log4.xml</exclude>
         <exclude>**/assembly.xml</exclude>
         <exclude>**/README.txt</exclude>
         <exclude>**/standalone-pom.xml</exclude>

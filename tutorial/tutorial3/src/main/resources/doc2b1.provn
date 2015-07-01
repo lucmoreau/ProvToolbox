@@ -1,0 +1,17 @@
+document
+
+ prefix ex <http://example.org/#>
+
+ entity(ex:e1,[ex:attr1="val2"])
+ entity(ex:e0) 
+ wasDerivedFrom(ex:e1, ex:e0)
+
+ bundle ex:bun1
+   entity(ex:e3)
+   activity(ex:a2,-,-)
+   wasGeneratedBy(ex:e3,ex:a2,-)
+ endBundle
+
+
+endDocument
+

@@ -1,0 +1,29 @@
+
+format for index file
+
+----------------------------------------------------------------------
+doc1:
+
+entity(ex:e1,[ex:attr1="val1"])
+agent(ex:ag1)
+wasAttributedTo(ex:ex1. ex:ag1)
+
+
+doc 2:
+entity(ex:e1,[ex:attr2="val2"])
+entity(ex:e0)
+wasDerivedFrom(ex:ex1, ex:e0)
+
+----------------------------------------------------------------------
+
+same, doc1 with bun1, doc2 with bun2, no flatten
+
+same with flatten
+
+----------------------------------------------------------------------
+
+same, doc1 with bun, doc2 with bun, no flatten
+
+same with flatten
+
+

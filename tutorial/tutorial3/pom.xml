@@ -9,9 +9,9 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openprovenance.prov</groupId>
-  <artifactId>ProvToolbox-Tutorial1</artifactId>
-  <name>ProvToolbox Tutorial 1</name>
-  <description>ProvToolbox Tutorial 1</description>
+  <artifactId>ProvToolbox-Tutorial3</artifactId>
+  <name>ProvToolbox Tutorial 3</name>
+  <description>ProvToolbox Tutorial 2</description>
 
   <developers>
     <developer>
@@ -78,26 +78,6 @@
 
   <build>
     <plugins>
-      <plugin>
-	<groupId>org.codehaus.mojo</groupId>
-	<artifactId>exec-maven-plugin</artifactId>
-	<version>1.3.2</version>
-	<executions>
-	  <execution>
-	    <phase>test</phase>
-	    <goals>
-	      <goal>java</goal>
-	    </goals>
-	    <configuration>
-	      <mainClass>org.openprovenance.prov.tutorial.tutorial1.Little</mainClass>
-	      <arguments>
-		<argument>${project.build.directory}/little.svg</argument>
-	      </arguments>
-	    </configuration>
-	  </execution>
-	</executions>
-      </plugin>
-
       <plugin>                       
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-assembly-plugin</artifactId>

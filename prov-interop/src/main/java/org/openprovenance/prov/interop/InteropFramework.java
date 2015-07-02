@@ -862,7 +862,7 @@ public class InteropFramework implements InteropMediaType {
     
     private List<ToRead> readIndexFile(File fin) throws IOException {
     	FileInputStream fis = new FileInputStream(fin);
-    	return readIndexFile(fin);
+    	return readIndexFile(fis);
     }
     
     

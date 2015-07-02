@@ -1,0 +1,10 @@
+document
+
+ prefix ex <http://example.org/#>
+
+ entity(ex:e1,[ex:attr1="val2"])
+ entity(ex:e0) 
+ wasDerivedFrom(ex:e1, ex:e0)
+
+endDocument
+

@@ -1,0 +1,2 @@
+file, src/main/resources/doc1.provn, provn
+file, src/main/resources/doc2.provn, provn

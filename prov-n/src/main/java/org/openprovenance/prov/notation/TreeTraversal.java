@@ -557,20 +557,20 @@ public class TreeTraversal {
             String typedLiteral_string=convertToken(getTokenString(ast.getChild(0)));
             QualifiedName typedLiteral_datatype;
             
-            if (ast.getChild(1)==null) {
+            Tree tree_datatype=ast.getChild(1);
+            if (tree_datatype==null) {
                 typedLiteral_datatype=name.PROV_QUALIFIED_NAME;
-                //v1="\"" + v1 + "\"";
-                Object ooo=stringToQualifiedName(typedLiteral_string);
-                return convertTypedLiteral(typedLiteral_datatype,ooo);
+                return convertTypedLiteral(typedLiteral_string,typedLiteral_datatype);
             } else {
-        	typedLiteral_datatype=(QualifiedName)convert(ast.getChild(1));
-                if (ast.getChild(2)!=null) {
-                    Object iv1=pFactory.newInternationalizedString(unescape(unwrap(typedLiteral_string)),
-                                                                   stripAmpersand(convertToken(getTokenString(ast.getChild(2)))));
-                    return convertTypedLiteral(typedLiteral_datatype,iv1);
+        	typedLiteral_datatype=(QualifiedName)convert(tree_datatype);
+        	Tree tree_langtag=ast.getChild(2);
+                if (tree_langtag!=null) {
+                    LangString lstring=pFactory.newInternationalizedString(unescape(unwrap(typedLiteral_string)),
+                                                                   stripAmpersand(convertToken(getTokenString(tree_langtag))));
+                    return convertTypedLiteral(lstring,typedLiteral_datatype);
                 } else {
                     typedLiteral_string=unescape(unwrap(typedLiteral_string));
-                    return convertTypedLiteral(typedLiteral_datatype,typedLiteral_string);
+                    return convertTypedLiteral(typedLiteral_string,typedLiteral_datatype);
                 }
             }
 
@@ -624,22 +624,23 @@ public class TreeTraversal {
     Namespace namespace;
     
 
-    public Object convertTypedLiteral(QualifiedName datatype, Object value) {
-	if (datatype.equals(name.PROV_QUALIFIED_NAME) && !(value instanceof QualifiedName))
-	    value = stringToQualifiedName(value.toString());
+    public Object convertTypedLiteral(String literal, QualifiedName datatype) {
+	Object value=literal;
+	if (datatype.equals(name.PROV_QUALIFIED_NAME))
+	    value = stringToQualifiedName(literal);
 
     	Object [] valueTypePair=new Object[] {value,datatype};
     	return valueTypePair;
-    /*	
-        if (value instanceof String) {
-            Object val=vconv.convertToJava(datatype,(String)value);
-            return val;
-        } else {
-            return value;
-        }
-        */
     }
 
+    public Object convertTypedLiteral(LangString literal, QualifiedName datatype) {
+	Object value=literal;
+	if (datatype.equals(name.PROV_QUALIFIED_NAME)) {
+	    // I could throw an exception since this doesn't make sense, LangString literal cannot go with QUALIFIED_NAME datatype
+	}
+    	Object [] valueTypePair=new Object[] {value,datatype};
+    	return valueTypePair;
+    }
 
 
     public String unwrap (String s) {

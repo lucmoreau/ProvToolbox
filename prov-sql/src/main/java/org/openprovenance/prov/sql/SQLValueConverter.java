@@ -98,7 +98,7 @@ public class SQLValueConverter  {
 //	    res.setAnyURI( value.toString());
 	    return res;
 	}
-	if (datatype.equals(name.XSD_QNAME)) {
+	if (datatype.equals(name.PROV_QUALIFIED_NAME)) {
 	    AValue res=new AValue();
 	    res.setQname((org.openprovenance.prov.sql.QualifiedName) value); 
 	    return res;

@@ -329,7 +329,7 @@ public class RoundTripFromJavaTest extends TestCase {
         ht.getType().add(pFactory.newType(1.0, name.XSD_FLOAT));
         ht.getType().add(pFactory.newType(true, name.XSD_STRING));
         ht.getType().add(pFactory.newType(pFactory.newQualifiedName(EX_NS, "abc", EX_PREFIX),
-                                          name.XSD_QNAME));
+                                          name.PROV_QUALIFIED_NAME));
         ht.getType().add(pFactory.newType(pFactory.newTimeNow(),
                                           name.XSD_DATETIME));
 
@@ -346,7 +346,7 @@ public class RoundTripFromJavaTest extends TestCase {
           .add(pFactory.newLocation(true, name.XSD_BOOLEAN));
         hl.getLocation().add(pFactory.newLocation(pFactory.newQualifiedName(EX_NS, "london",
                                                             EX_PREFIX),
-                                                  name.XSD_QNAME));
+                                                  name.PROV_QUALIFIED_NAME));
         hl.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),
                                                   name.XSD_DATETIME));
         hl.getLocation().add(pFactory.newLocation(EX_NS + "london",
@@ -357,7 +357,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void addValue(HasValue hl) {
         hl.setValue(pFactory.newValue(pFactory.newQualifiedName(EX_NS, "avalue", EX_PREFIX),
-                                      name.XSD_QNAME));
+                                      name.PROV_QUALIFIED_NAME));
     }
 
     public void addFurtherAttributes(HasOther he) {
@@ -429,14 +429,14 @@ public class RoundTripFromJavaTest extends TestCase {
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                                             pFactory.newQualifiedName(EX2_NS, "newyork",
                                                       EX2_PREFIX),
-                                            name.XSD_QNAME));
+                                            name.PROV_QUALIFIED_NAME));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                                             pFactory.newQualifiedName(EX_NS, "london",
                                                       EX_PREFIX),
-                                            name.XSD_QNAME));
+                                            name.PROV_QUALIFIED_NAME));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                                             pFactory.newQualifiedName(EX3_NS, "london",null),
-                                            name.XSD_QNAME));
+                                            name.PROV_QUALIFIED_NAME));
 
     }
 
@@ -2091,7 +2091,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
         ll.add(p2);
         Entry p3 = pFactory.newEntry(pFactory.newKey(q("a"),
-                                                     name.XSD_QNAME),
+                                                     name.PROV_QUALIFIED_NAME),
                                      q("e2"));
 
         ll.add(p3);
@@ -2118,7 +2118,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
         ll.add(p2);
         Entry p3 = pFactory.newEntry(pFactory.newKey(q("a"),
-                                                     name.XSD_QNAME),
+                                                     name.PROV_QUALIFIED_NAME),
                                      q("e2"));
 
         ll.add(p3);
@@ -2144,7 +2144,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
         ll.add(p2);
         Entry p3 = pFactory.newEntry(pFactory.newKey(q("a"),
-                                                     name.XSD_QNAME),
+                                                     name.PROV_QUALIFIED_NAME),
                                      q("e2"));
 
         ll.add(p3);
@@ -2218,7 +2218,7 @@ public class RoundTripFromJavaTest extends TestCase {
         List<org.openprovenance.prov.model.Key> ll = new LinkedList<org.openprovenance.prov.model.Key>();
         ll.add(pFactory.newKey("a", name.XSD_STRING));
         ll.add(pFactory.newKey("1", name.XSD_INT));
-        ll.add(pFactory.newKey(q("a"), name.XSD_QNAME));
+        ll.add(pFactory.newKey(q("a"), name.PROV_QUALIFIED_NAME));
 
         DerivedByRemovalFrom d5 = pFactory.newDerivedByRemovalFrom(q("removal5"),
                                                                    q("d2"),
@@ -2285,7 +2285,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
         ll.add(p2);
         Entry p3 = pFactory.newEntry(pFactory.newKey(q("a"),
-                                                     name.XSD_QNAME),
+                                                     name.PROV_QUALIFIED_NAME),
                                      q("e2"));
 
         ll.add(p3);

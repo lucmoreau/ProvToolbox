@@ -554,23 +554,23 @@ public class TreeTraversal {
             return URI.create(unwrap(iri));
 
         case PROV_NParser.TYPEDLITERAL:
-            String v1=convertToken(getTokenString(ast.getChild(0)));
-            QualifiedName v2;
+            String typedLiteral_string=convertToken(getTokenString(ast.getChild(0)));
+            QualifiedName typedLiteral_datatype;
             
             if (ast.getChild(1)==null) {
-                v2=name.PROV_QUALIFIED_NAME;
+                typedLiteral_datatype=name.PROV_QUALIFIED_NAME;
                 //v1="\"" + v1 + "\"";
-                Object ooo=stringToQualifiedName(v1);
-                return convertTypedLiteral(v2,ooo);
+                Object ooo=stringToQualifiedName(typedLiteral_string);
+                return convertTypedLiteral(typedLiteral_datatype,ooo);
             } else {
-        	v2=(QualifiedName)convert(ast.getChild(1));
+        	typedLiteral_datatype=(QualifiedName)convert(ast.getChild(1));
                 if (ast.getChild(2)!=null) {
-                    Object iv1=pFactory.newInternationalizedString(unescape(unwrap(v1)),
+                    Object iv1=pFactory.newInternationalizedString(unescape(unwrap(typedLiteral_string)),
                                                                    stripAmpersand(convertToken(getTokenString(ast.getChild(2)))));
-                    return convertTypedLiteral(v2,iv1);
+                    return convertTypedLiteral(typedLiteral_datatype,iv1);
                 } else {
-                    v1=unescape(unwrap(v1));
-                    return convertTypedLiteral(v2,v1);
+                    typedLiteral_string=unescape(unwrap(typedLiteral_string));
+                    return convertTypedLiteral(typedLiteral_datatype,typedLiteral_string);
                 }
             }
 
@@ -625,6 +625,9 @@ public class TreeTraversal {
     
 
     public Object convertTypedLiteral(QualifiedName datatype, Object value) {
+	if (datatype.equals(name.PROV_QUALIFIED_NAME) && !(value instanceof QualifiedName))
+	    value = stringToQualifiedName(value.toString());
+
     	Object [] valueTypePair=new Object[] {value,datatype};
     	return valueTypePair;
     /*	

@@ -212,7 +212,7 @@ public class JSONConstructor implements ModelConstructor {
 
 	if (value instanceof QualifiedName) {
 	    return typedLiteral(currentNamespace.qualifiedNameToString((QualifiedName) value),
-				"prov:QualifiedName", null);
+				"prov:QUALIFIED_NAME", null);
 	}
 	if (value instanceof LangString) {
 	    LangString iStr = (LangString) value;

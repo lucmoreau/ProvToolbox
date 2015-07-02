@@ -708,7 +708,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 				       JsonElement entryValue) {
 
 	Key kk;
-	if (datatype.equals(name.XSD_QNAME)) {
+	if (datatype.equals(name.PROV_QUALIFIED_NAME)) {
 	    kk=(Key) pf.newAttribute(name.PROV_KEY,
 	                             currentNamespace.stringToQualifiedName(entryKey,pf), datatype);
 	} else {

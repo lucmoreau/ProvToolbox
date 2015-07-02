@@ -279,7 +279,7 @@ public class RdfCollector extends RDFHandlerBase {
     protected Key valueToKey(Value value) {
 	if (value instanceof Resource) {
 	    return pFactory.newKey(convertResourceToQualifiedName((Resource) value),
-	                           name.XSD_QNAME);
+	                           name.PROV_QUALIFIED_NAME);
 	} else if (value instanceof Literal) {
 	    Literal lit=(Literal) value;
 	    QualifiedName type;
@@ -293,7 +293,7 @@ public class RdfCollector extends RDFHandlerBase {
 		    
 	    Object o=decodeLiteral(lit);
 	    if (o instanceof QualifiedName) {
-		return pFactory.newKey(o, name.XSD_QNAME);
+		return pFactory.newKey(o, name.PROV_QUALIFIED_NAME);
 	    }
 	    // Was old code, relying on converter
 	    //return pFactory.newKey(o, this.valueConverter.getXsdType(o));
@@ -301,10 +301,10 @@ public class RdfCollector extends RDFHandlerBase {
 
 	} else if (value instanceof URI) {
 	    URI uri = (URI) (value);
-	    return pFactory.newKey(uri.toString(), name.XSD_QNAME);
+	    return pFactory.newKey(uri.toString(), name.PROV_QUALIFIED_NAME);
 	} else if (value instanceof BNode) {
 	    return pFactory.newKey(bnodeToQualifiedName(value), //FIXME
-	                           name.XSD_QNAME);
+	                           name.PROV_QUALIFIED_NAME);
 	} else {
 	    return null;
 	}
@@ -513,7 +513,7 @@ public class RdfCollector extends RDFHandlerBase {
 			    } else {
 				attributes.add(pFactory.newAttribute(name.PROV_TYPE,
 								     typeQ,
-								     name.XSD_QNAME));
+								     name.PROV_QUALIFIED_NAME));
 			    }
 
 			} else if (statement.getObject() instanceof Literal) {	   
@@ -569,7 +569,7 @@ public class RdfCollector extends RDFHandlerBase {
 	} else if (obj instanceof Resource) {
 	    attr=pFactory.newAttribute(type,
 	                               convertResourceToQualifiedName((Resource) obj),
-	                               name.XSD_QNAME);
+	                               name.PROV_QUALIFIED_NAME);
 	} else {
 	    throw new UnsupportedOperationException();
 	}
@@ -580,7 +580,7 @@ public class RdfCollector extends RDFHandlerBase {
 	Object theValue;
 	if (lit.getLanguage() != null) {
 	    theValue = pFactory.newInternationalizedString(lit.stringValue(),
-							   lit.getLanguage());
+				lit.getLanguage());
 	} else {
 	    theValue = lit.stringValue();
 	}
@@ -786,22 +786,33 @@ public class RdfCollector extends RDFHandlerBase {
 	return objects;
     }
 
+	protected List<Key> getDictionaryKeys(QualifiedName context,
+										  QualifiedName subject,
+										  QualifiedName pred) {
+		List<Statement> statements = collators.get(context).get(subject);
+		List<Key> keys = new ArrayList<Key>();
+		for (Statement statement : statements) {
+			QualifiedName predQ = convertURIToQualifiedName(statement.getPredicate());
+			Value value = statement.getObject();
+			if (pred.equals(predQ)) {
+				keys.add(valueToKey(value));
+			}
+		}
+		return keys;
+	}
+
     protected List<Entry> createKeyEntityPairs(QualifiedName context,
 						      List<QualifiedName> pairs) {
 	List<Entry> result = new LinkedList<Entry>();
 	for (QualifiedName pair : pairs) {
-	    List<Value> keys = getDataObjects(context, pair,
-					      onto.QNAME_PROVO_pairKey); // key
-									     // is
-									     // data
-									     // property!
+	    List<Key> keys = getDictionaryKeys(context, pair, onto.QNAME_PROVO_pairKey);
 
 	    List<QualifiedName> entities = getObjects(context, pair,
 					      onto.QNAME_PROVO_pairEntity);
 	    Key key=null;
 	    QualifiedName name=null;
 	    if (!keys.isEmpty())
-		key = valueToKey(keys.get(0)); // we ignore the others
+			key = keys.get(0); // we ignore the others
 	    if (!entities.isEmpty())
 		name = entities.get(0); // we ignore the others
 	    Entry p=pFactory.newEntry(key, name);

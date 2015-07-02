@@ -42,7 +42,7 @@ public class PC1FullTest
     public void testReadXMLGraph() throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
         
         ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-        Document c=deserial.deserialiseDocument(new File("../prov-xml/target/pc1-full.xml"));
+        // Document c=deserial.deserialiseDocument(new File("../prov-xml/target/pc1-full.xml"));
         Utility u=new Utility();
 
 
@@ -57,13 +57,13 @@ public class PC1FullTest
 
         ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
 
-        c.setNamespace(Namespace.gatherNamespaces(c));
+        // c.setNamespace(Namespace.gatherNamespaces(c));
 
-        Document c2=(Document)u.convertJavaBeanToJavaBean(c, pFactory);
-        c2.setNamespace(c.getNamespace());
+        // Document c2=(Document)u.convertJavaBeanToJavaBean(c, pFactory);
+        // c2.setNamespace(c.getNamespace());
 
-        Namespace.withThreadNamespace(c2.getNamespace());
-        serial.serialiseDocument(new File("target/pc1-full-2.xml"),c2,true);
+        // Namespace.withThreadNamespace(c2.getNamespace());
+        // serial.serialiseDocument(new File("target/pc1-full-2.xml"),c2,true);
 
     }
         

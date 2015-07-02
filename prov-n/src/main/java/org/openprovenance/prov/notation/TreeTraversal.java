@@ -501,7 +501,7 @@ public class TreeTraversal {
             	Object [] values2=(Object[])val1;
             	Object theValue=values2[0];
             	QualifiedName theType=(QualifiedName)values2[1];
-		    
+
 
             	return pFactory.newAttribute(stringToQualifiedName(attr1),
                 	                             theValue,
@@ -558,7 +558,7 @@ public class TreeTraversal {
             QualifiedName v2;
             
             if (ast.getChild(1)==null) {
-                v2=name.XSD_QNAME;
+                v2=name.PROV_QUALIFIED_NAME;
                 //v1="\"" + v1 + "\"";
                 Object ooo=stringToQualifiedName(v1);
                 return convertTypedLiteral(v2,ooo);
@@ -625,6 +625,8 @@ public class TreeTraversal {
     
 
     public Object convertTypedLiteral(QualifiedName datatype, Object value) {
+        if (datatype.equals(name.PROV_QUALIFIED_NAME) && !(value instanceof QualifiedName))
+            value = stringToQualifiedName(value.toString());
     	Object [] valueTypePair=new Object[] {value,datatype};
     	return valueTypePair;
     /*	

@@ -44,6 +44,9 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 	return false;
 	
     }
+    public void testDictionaryInsertionWithOneKey21 () {
+	System.out.println(" --- not dealing with QualifiedName as key");
+    } 
     public void testDictionaryInsertionWithOneKey22 () {
 	System.out.println(" --- not dealing with QName as key");
     }    
@@ -53,6 +56,11 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
     public void testDictionaryInsertionWithOneKey26 () {
 	System.out.println(" --- not dealing with QName as key");	
     }
-    
+    public void testDictionaryInsertionWithOneKey24 () {
+   	System.out.println(" --- not dealing with QualifiedName as key");
+    } 
+    public void testDictionaryInsertionWithOneKey25 () {
+   	System.out.println(" --- not dealing with QualifiedName as key");
+    }    
 
 }

@@ -71,9 +71,9 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
     }
 
     /** TODO: should \-unescape local part */
-    public String toURI(QName qname) {
-        return qname.getNamespaceURI() + qname.getLocalPart();
-    }
+ //   public String toURI(QName qname) {
+ //       return qname.getNamespaceURI() + qname.getLocalPart();
+ //   }
 
     @SuppressWarnings("rawtypes")
     final static private Hashtable<Class, String[]> fields = new Hashtable<Class, String[]>();

@@ -176,7 +176,7 @@ public class ValueConverter  {
 	    return name.XSD_BOOLEAN; 
 	if (o instanceof Byte)
 	    return name.XSD_BYTE;
-	if (o instanceof QName)
+	if (o instanceof QualifiedName)
 	    return name.XSD_QNAME; 
 	if (o instanceof XMLGregorianCalendar) {
 	    XMLGregorianCalendar cal=(XMLGregorianCalendar)o;

@@ -39,7 +39,10 @@ public class Name {
 	XSD_POSITIVE_INTEGER=newXsdQualifiedName("positiveInteger");
 	XSD_UNSIGNED_BYTE=newXsdQualifiedName("unsignedByte");
 	XSD_ANY_URI=newXsdQualifiedName("anyURI");
-	XSD_QNAME=newXsdQualifiedName("QName");
+	//XSD_QNAME=newXsdQualifiedName("QName");  //LUC
+	XSD_QNAME=PROV_QUALIFIED_NAME;
+	FOR_XML_XSD_QNAME=newXsdQualifiedName("QName");  
+
 	XSD_DATETIME=newXsdQualifiedName("dateTime");
 	XSD_GYEAR=newXsdQualifiedName("gYear"); 
 
@@ -165,6 +168,8 @@ public class Name {
     final public QualifiedName XSD_ANY_URI;
     /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#QName">xsd:QName</a>  */
     final public QualifiedName XSD_QNAME;
+    final public QualifiedName FOR_XML_XSD_QNAME;
+
     /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#dateTime">xsd:dateTime</a>  */
     final public QualifiedName XSD_DATETIME;
     /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#gYear">xsd:gYear</a>  */

@@ -9,7 +9,7 @@ public class Name {
     public Name(ProvFactory pFactory) {
 	this.pFactory=pFactory;
 	PROV_LANG_STRING = newProvQualifiedName("InternationalizedString");
-	PROV_QUALIFIED_NAME = newProvQualifiedName("QualifiedName");
+	PROV_QUALIFIED_NAME = newProvQualifiedName("QUALIFIED_NAME");
 	PROV_REVISION = newProvQualifiedName("Revision");
 	PROV_QUOTATION = newProvQualifiedName("Quotation");
 	PROV_PRIMARY_SOURCE = newProvQualifiedName("PrimarySource");
@@ -39,7 +39,10 @@ public class Name {
 	XSD_POSITIVE_INTEGER=newXsdQualifiedName("positiveInteger");
 	XSD_UNSIGNED_BYTE=newXsdQualifiedName("unsignedByte");
 	XSD_ANY_URI=newXsdQualifiedName("anyURI");
-	XSD_QNAME=newXsdQualifiedName("QName");
+
+	
+	FOR_XML_XSD_QNAME=newXsdQualifiedName("QName");  
+
 	XSD_DATETIME=newXsdQualifiedName("dateTime");
 	XSD_GYEAR=newXsdQualifiedName("gYear"); 
 
@@ -163,8 +166,8 @@ public class Name {
     final public QualifiedName XSD_UNSIGNED_BYTE;
     /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#anyURI">xsd:anyURI</a>  */
     final public QualifiedName XSD_ANY_URI;
-    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#QName">xsd:QName</a>  */
-    final public QualifiedName XSD_QNAME;
+    
+  
     /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#dateTime">xsd:dateTime</a>  */
     final public QualifiedName XSD_DATETIME;
     /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#gYear">xsd:gYear</a>  */
@@ -219,5 +222,11 @@ public class Name {
 
     
     final public QualifiedName QNAME_UNKNOWN;
+    
+    
+    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#QName">xsd:QName</a>  
+     */
+    final public QualifiedName FOR_XML_XSD_QNAME;
+
 
 }

@@ -75,7 +75,7 @@ public class ValueConverter  {
 	if (datatype.equals(name.XSD_ANY_URI) || datatype.equals(name.QNAME_XSD_HASH_ANY_URI)) {
 	    return value;
 	}
-	if (datatype.equals(name.XSD_QNAME) || datatype.equals(name.QNAME_XSD_HASH_QNAME)) {
+	if (datatype.equals(name.PROV_QUALIFIED_NAME) || datatype.equals(name.QNAME_XSD_HASH_QNAME)) {
 	    throw new ConverterException("Not conversion to xsd:QName");
 	}
 	if (datatype.equals(name.XSD_DATETIME) || datatype.equals(name.QNAME_XSD_HASH_DATETIME)) {
@@ -176,8 +176,8 @@ public class ValueConverter  {
 	    return name.XSD_BOOLEAN; 
 	if (o instanceof Byte)
 	    return name.XSD_BYTE;
-	if (o instanceof QName)
-	    return name.XSD_QNAME; 
+	if (o instanceof QualifiedName)
+	    return name.PROV_QUALIFIED_NAME; 
 	if (o instanceof XMLGregorianCalendar) {
 	    XMLGregorianCalendar cal=(XMLGregorianCalendar)o;
 	    QName t=cal.getXMLSchemaType();

@@ -558,6 +558,17 @@ public class ExpandTest extends TestCase {
     }
 
 
+    public void testExpandQualifiedName() throws IOException, Throwable {
+        
+  
+        expander("src/test/resources/a_template.provn",
+                 "src/test/resources/a_binding.provn",
+                 "target/a_expanded_template.provn");
+        
+        
+    }
+
+
 
     
     

@@ -545,7 +545,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    } else if (struct.has("type")) {
 		String datatypeAsString = struct.get("type").getAsString();
 		QualifiedName xsdType = currentNamespace.stringToQualifiedName(datatypeAsString, pf);
-		if (xsdType.equals(name.XSD_QNAME) || xsdType.equals(name.PROV_QUALIFIED_NAME)) {
+		if (xsdType.equals(name.PROV_QUALIFIED_NAME)) { /* we ignore xsdType.equals(name.FOR_XML_XSD_QNAME)  */
 		    return pf.newAttribute(elementName,
 					   currentNamespace.stringToQualifiedName(value,pf), xsdType);
 		} else {
@@ -708,7 +708,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 				       JsonElement entryValue) {
 
 	Key kk;
-	if (datatype.equals(name.XSD_QNAME)) {
+	if (datatype.equals(name.PROV_QUALIFIED_NAME)) {
 	    kk=(Key) pf.newAttribute(name.PROV_KEY,
 	                             currentNamespace.stringToQualifiedName(entryKey,pf), datatype);
 	} else {

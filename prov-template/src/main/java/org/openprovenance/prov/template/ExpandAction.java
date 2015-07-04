@@ -286,7 +286,7 @@ public class ExpandAction implements StatementAction {
 
             Collection<Attribute> attributes=pf.getAttributes(srcStatement);
             Collection<Attribute> dstAttributes=new LinkedList<Attribute>();
-            String xsdQNameUri = pf.getName().XSD_QNAME.getUri();
+            String xsdQNameUri = pf.getName().PROV_QUALIFIED_NAME.getUri();
 
             for (Attribute attribute: attributes) {
 				if (xsdQNameUri.equals(attribute.getType().getUri())) {
@@ -303,7 +303,7 @@ public class ExpandAction implements StatementAction {
                             	if (Expand.isGensymVariable(qn1)) {
                             		dstAttributes.add(pf.newAttribute(attribute.getElementName(),
                             				                          getUUIDQualifiedName(),
-                            				                          pf.getName().XSD_QNAME));
+                            				                          pf.getName().PROV_QUALIFIED_NAME));
                             	}
                             	// 	if not a vargen, then simply drop this attribute
                             	//dstAttributes.add(attribute);                        

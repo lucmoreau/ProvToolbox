@@ -109,5 +109,9 @@ public class RoundTripFromProvnTest extends TestCase {
 
 	testCrossIssue("picaso-file");
     }
+    
+    public void testQualifiedName() throws Throwable {
+	testIssue("issue-qualified-name");
+    }
 
 }

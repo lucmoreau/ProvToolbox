@@ -160,8 +160,8 @@ public class IndexedDocumentTest extends TestCase {
 	e2.getLocation().add(pFactory.newLocation("liege", pFactory.getName().XSD_STRING));
 	e2.getLocation().add(pFactory.newLocation("liege", pFactory.getName().XSD_STRING));
 
-	e2.getType().add(pFactory.newType(q("TYPE"), pFactory.getName().XSD_QNAME));
-	e2.getType().add(pFactory.newType(q("TYPE"), pFactory.getName().XSD_QNAME));
+	e2.getType().add(pFactory.newType(q("TYPE"), pFactory.getName().PROV_QUALIFIED_NAME));
+	e2.getType().add(pFactory.newType(q("TYPE"), pFactory.getName().PROV_QUALIFIED_NAME));
 
 	e2.getOther().add(pFactory.newOther(q("ELEMENT"), 1, pFactory.getName().XSD_INT));
 	e2.getOther().add(pFactory.newOther(q("ELEMENT"), 1, pFactory.getName().XSD_INT));

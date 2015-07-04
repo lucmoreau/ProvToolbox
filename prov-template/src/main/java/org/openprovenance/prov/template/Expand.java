@@ -168,7 +168,7 @@ public class Expand {
 	HashSet<QualifiedName> result = new HashSet<QualifiedName>();
 	Collection<Attribute> ll = pf.getAttributes(statement);
 	for (Attribute attr : ll) {
-	    if (pf.getName().XSD_QNAME.equals(attr.getType())) {
+	    if (pf.getName().PROV_QUALIFIED_NAME.equals(attr.getType())) {
 		Object o = attr.getValue();
 		if (o instanceof QualifiedName) {
 		    QualifiedName qn = (QualifiedName) o;

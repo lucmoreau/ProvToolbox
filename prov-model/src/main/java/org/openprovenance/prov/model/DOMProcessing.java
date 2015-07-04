@@ -305,9 +305,9 @@ final public class DOMProcessing {
         Name name=pFactory.getName();
         if (type == null)
             type = name.XSD_STRING;
-        if (type.equals(name.XSD_QNAME)) {
+        if (type.equals(name.FOR_XML_XSD_QNAME)) {  // xsd:QName in xml serialization maps to prov:QualifiedName
             QualifiedName qn = stringToQualifiedName(child, el);
-            Attribute x= pFactory.newAttribute(namespace, local, prefix, qn, type);
+            Attribute x= pFactory.newAttribute(namespace, local, prefix, qn, name.PROV_QUALIFIED_NAME);
             return x;
         } else if (type.equals(name.RDF_LITERAL)) {
             NodeList nodes=el.getChildNodes();

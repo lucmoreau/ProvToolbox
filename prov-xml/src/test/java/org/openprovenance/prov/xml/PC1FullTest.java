@@ -173,9 +173,9 @@ public class PC1FullTest extends TestCase {
 	Activity p1 = pFactory.newActivity(q("00000p1"), "align_warp 1");
 	List<Type> o = p1.getType();
 
-	o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,name.XSD_QNAME));
+	o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,name.PROV_QUALIFIED_NAME));
 
-	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, name.XSD_QNAME);
+	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
 	pFactory.addType(p1, 10, name.XSD_INT);
 	pFactory.addType(p1, -10, name.XSD_INT);
 	pFactory.addType(p1, -10.55, name.XSD_FLOAT);
@@ -187,10 +187,10 @@ public class PC1FullTest extends TestCase {
 	p1.getLabel().add(pFactory.newInternationalizedString("hello", "en"));
 
 	Activity p2 = pFactory.newActivity(q("a2"), "align_warp 2");
-	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, name.XSD_QNAME);
+	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
 
 	Activity p3 = pFactory.newActivity(q("a3"), "align_warp 3");
-	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP, name.XSD_QNAME);
+	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
 
 	Activity p4 = pFactory.newActivity(q("a4"), "align_warp 4");
 

@@ -554,23 +554,23 @@ public class TreeTraversal {
             return URI.create(unwrap(iri));
 
         case PROV_NParser.TYPEDLITERAL:
-            String v1=convertToken(getTokenString(ast.getChild(0)));
-            QualifiedName v2;
+            String typedLiteral_string=convertToken(getTokenString(ast.getChild(0)));
+            QualifiedName typedLiteral_datatype;
             
-            if (ast.getChild(1)==null) {
-                v2=name.XSD_QNAME;
-                //v1="\"" + v1 + "\"";
-                Object ooo=stringToQualifiedName(v1);
-                return convertTypedLiteral(v2,ooo);
+            Tree tree_datatype=ast.getChild(1);
+            if (tree_datatype==null) {
+                typedLiteral_datatype=name.PROV_QUALIFIED_NAME;
+                return convertTypedLiteral(typedLiteral_string,typedLiteral_datatype);
             } else {
-        	v2=(QualifiedName)convert(ast.getChild(1));
-                if (ast.getChild(2)!=null) {
-                    Object iv1=pFactory.newInternationalizedString(unescape(unwrap(v1)),
-                                                                   stripAmpersand(convertToken(getTokenString(ast.getChild(2)))));
-                    return convertTypedLiteral(v2,iv1);
+        	typedLiteral_datatype=(QualifiedName)convert(tree_datatype);
+        	Tree tree_langtag=ast.getChild(2);
+                if (tree_langtag!=null) {
+                    LangString lstring=pFactory.newInternationalizedString(unescape(unwrap(typedLiteral_string)),
+                                                                   stripAmpersand(convertToken(getTokenString(tree_langtag))));
+                    return convertTypedLiteral(lstring,typedLiteral_datatype);
                 } else {
-                    v1=unescape(unwrap(v1));
-                    return convertTypedLiteral(v2,v1);
+                    typedLiteral_string=unescape(unwrap(typedLiteral_string));
+                    return convertTypedLiteral(typedLiteral_string,typedLiteral_datatype);
                 }
             }
 
@@ -624,19 +624,23 @@ public class TreeTraversal {
     Namespace namespace;
     
 
-    public Object convertTypedLiteral(QualifiedName datatype, Object value) {
+    public Object convertTypedLiteral(String literal, QualifiedName datatype) {
+	Object value=literal;
+	if (datatype.equals(name.PROV_QUALIFIED_NAME))
+	    value = stringToQualifiedName(literal);
+
     	Object [] valueTypePair=new Object[] {value,datatype};
     	return valueTypePair;
-    /*	
-        if (value instanceof String) {
-            Object val=vconv.convertToJava(datatype,(String)value);
-            return val;
-        } else {
-            return value;
-        }
-        */
     }
 
+    public Object convertTypedLiteral(LangString literal, QualifiedName datatype) {
+	Object value=literal;
+	if (datatype.equals(name.PROV_QUALIFIED_NAME)) {
+	    // I could throw an exception since this doesn't make sense, LangString literal cannot go with QUALIFIED_NAME datatype
+	}
+    	Object [] valueTypePair=new Object[] {value,datatype};
+    	return valueTypePair;
+    }
 
 
     public String unwrap (String s) {

@@ -643,9 +643,30 @@ public class IndexedDocument implements StatementAction {
 	
 	statementOrBundle.addAll(anonSpecializationOf);
 	statementOrBundle.addAll(anonAlternateOf);
+	statementOrBundle.addAll(anonHadMember);
 	
 	statementOrBundle.addAll(anonWasInvalidatedBy);
 	for (Collection<WasInvalidatedBy> c: namedWasInvalidatedByMap.values()) {
+	    statementOrBundle.addAll(c);
+	}
+	
+	statementOrBundle.addAll(anonWasStartedBy);
+	for (Collection<WasStartedBy> c: namedWasStartedByMap.values()) {
+	    statementOrBundle.addAll(c);
+	}
+	
+	statementOrBundle.addAll(anonWasEndedBy);
+	for (Collection<WasEndedBy> c: namedWasEndedByMap.values()) {
+	    statementOrBundle.addAll(c);
+	}
+	
+	statementOrBundle.addAll(anonActedOnBehalfOf);
+	for (Collection<ActedOnBehalfOf> c: namedActedOnBehalfOfMap.values()) {
+	    statementOrBundle.addAll(c);
+	}
+	
+	statementOrBundle.addAll(anonWasInfluencedBy);
+	for (Collection<WasInfluencedBy> c: namedWasInfluencedByMap.values()) {
 	    statementOrBundle.addAll(c);
 	}
 	

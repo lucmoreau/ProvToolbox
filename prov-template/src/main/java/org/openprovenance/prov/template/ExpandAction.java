@@ -292,7 +292,7 @@ public class ExpandAction implements StatementAction {
 				if (xsdQNameUri.equals(attribute.getType().getUri())) {
 
                     Object o=attribute.getValue();
-                    if (o instanceof QualifiedName) {
+                    if (o instanceof QualifiedName) { // if attribute is constructed properly, this test should always return true
                         QualifiedName qn1=(QualifiedName)o;
 
                         

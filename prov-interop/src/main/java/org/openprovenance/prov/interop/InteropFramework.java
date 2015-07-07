@@ -916,7 +916,7 @@ public class InteropFramework implements InteropMediaType {
 				} else {
 					files=readIndexFile(new File(merge));					
 				}
-				System.out.println("files to merge " + files);
+				System.err.println("files to merge " + files);
 				for (ToRead something: files) {
 					iDoc.merge(readDocument(something));
 				}
@@ -945,7 +945,7 @@ public class InteropFramework implements InteropMediaType {
                     Integer.valueOf(noOfNodes), Integer.valueOf(noOfEdges),
                     firstNode, namespace, (seed == null) ? null
                             : Long.valueOf(seed), term);
-            System.out.println(gd);
+            System.err.println(gd);
             GraphGenerator gg = new GraphGenerator(gd, pFactory);
             gg.generateElements();
 

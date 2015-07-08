@@ -567,13 +567,8 @@ public class Ontology {
     }
     
     
-    public QualifiedName convertFromRdf(QualifiedName qname) {
-	if (NamespacePrefixMapper.XSD_HASH_NS.equals(qname.getNamespaceURI())) {
-	    return pFactory.newQualifiedName(NamespacePrefixMapper.XSD_NS,
-	                                     qname.getLocalPart(),
-	                                     qname.getPrefix());
-	} else {
+    public QualifiedName convertFromRdf_NO_NEED(QualifiedName qname) {
 	    return qname;
 	}
-    }
+  
 }

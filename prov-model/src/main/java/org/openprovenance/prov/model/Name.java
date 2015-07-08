@@ -68,6 +68,7 @@ public class Name {
 	XSD_DATE=newXsdQualifiedName("date");
 	XSD_DATETIMESTAMP=newXsdQualifiedName("dateTimeStamp"); 
 
+	/*
 	QNAME_XSD_HASH_STRING=newXsdHashQualifiedName("string");
 	QNAME_XSD_HASH_INT=newXsdHashQualifiedName("int");
 	QNAME_XSD_HASH_LONG=newXsdHashQualifiedName("long");
@@ -89,7 +90,7 @@ public class Name {
 	QNAME_XSD_HASH_QNAME=newXsdHashQualifiedName("QName");
 	QNAME_XSD_HASH_DATETIME=newXsdHashQualifiedName("dateTime");
 	QNAME_XSD_HASH_GYEAR=newXsdQualifiedName("gYear");
-
+*/
 
 	RDF_LITERAL=newRdfQualifiedName("XMLLiteral");
 
@@ -102,9 +103,9 @@ public class Name {
         return pFactory.newQualifiedName(NamespacePrefixMapper.XSD_NS, local, NamespacePrefixMapper.XSD_PREFIX);
     }
 
-    public QualifiedName newXsdHashQualifiedName(String local) {
-	return pFactory.newQualifiedName(NamespacePrefixMapper.XSD_HASH_NS, local, NamespacePrefixMapper.XSD_PREFIX);
-    }
+   // public QualifiedName newXsdHashQualifiedName(String local) {
+//	return pFactory.newQualifiedName(NamespacePrefixMapper.XSD_HASH_NS, local, NamespacePrefixMapper.XSD_PREFIX);
+   // }
     
     
     public QualifiedName newRdfQualifiedName(String local) {
@@ -195,6 +196,7 @@ public class Name {
     final public QualifiedName XSD_DATE;
     final public QualifiedName XSD_DATETIMESTAMP;
 
+    /*
     final public QualifiedName QNAME_XSD_HASH_STRING;
     final public QualifiedName QNAME_XSD_HASH_INT;
     final public QualifiedName QNAME_XSD_HASH_LONG;
@@ -216,7 +218,7 @@ public class Name {
     final public QualifiedName QNAME_XSD_HASH_QNAME;
     final public QualifiedName QNAME_XSD_HASH_DATETIME;
     final public QualifiedName QNAME_XSD_HASH_GYEAR;
-
+*/
     
     final public QualifiedName RDF_LITERAL;
 

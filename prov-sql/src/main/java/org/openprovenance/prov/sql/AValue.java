@@ -235,7 +235,7 @@ public class AValue
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
     

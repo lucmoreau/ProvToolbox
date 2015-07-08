@@ -73,7 +73,7 @@ public class RdfCollector extends RDFHandlerBase {
    	this.namespace=new Namespace();
    	document.setNamespace(this.namespace);
    	handleNamespace(NamespacePrefixMapper.XSD_PREFIX,
-   	                NamespacePrefixMapper.XSD_HASH_NS);
+   	                NamespacePrefixMapper.XSD_NS);
    	handleNamespace("bnode", BNODE_NS);
    	this.types=new Types(onto);
    	
@@ -286,7 +286,7 @@ public class RdfCollector extends RDFHandlerBase {
 	    QualifiedName xsdtype;
 	    if (lit.getDatatype()!=null) {
 		type= convertURIToQualifiedName(lit.getDatatype());
-		xsdtype=onto.convertFromRdf(type);
+		xsdtype=onto.convertFromRdf_NO_NEED(type);
 	    } else {
 		xsdtype=name.PROV_LANG_STRING;
 	    }
@@ -315,7 +315,7 @@ public class RdfCollector extends RDFHandlerBase {
 	
 	//System.out.println("+++-----> Literal " + literal.getDatatype());
 	    //System.out.println("+++--------> Literal " + obj2);
-	String dataType = NamespacePrefixMapper.XSD_HASH_NS + "string";
+	String dataType = NamespacePrefixMapper.XSD_NS + "string";
 	if (literal.getLanguage() != null) {
 	    return pFactory.newInternationalizedString(literal.stringValue(),
 						       literal.getLanguage());
@@ -331,44 +331,43 @@ public class RdfCollector extends RDFHandlerBase {
 	    }
 	}
 
-	if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "QName")) {
+	if (dataType.equals(NamespacePrefixMapper.XSD_NS + "QName")) {
 	    return namespace.stringToQualifiedName(literal.stringValue(), pFactory);
-	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "string")) {
+	} else if (dataType.equals(NamespacePrefixMapper.XSD_NS + "string")) {
 	    return literal.stringValue();
-	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
+	} else if (dataType.equals(NamespacePrefixMapper.XSD_NS
 		+ "dateTime")
-		|| dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "time")
-		|| dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "date")
-		|| dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
+		|| dataType.equals(NamespacePrefixMapper.XSD_NS + "time")
+		|| dataType.equals(NamespacePrefixMapper.XSD_NS + "date")
+		|| dataType.equals(NamespacePrefixMapper.XSD_NS
 			+ "gYearMonth")
-		|| dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
+		|| dataType.equals(NamespacePrefixMapper.XSD_NS
 			+ "gMonthDay")
-		|| dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "gYear")
-		|| dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "gMonth")
-		|| dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "gDay")) {
+		|| dataType.equals(NamespacePrefixMapper.XSD_NS + "gYear")
+		|| dataType.equals(NamespacePrefixMapper.XSD_NS + "gMonth")
+		|| dataType.equals(NamespacePrefixMapper.XSD_NS + "gDay")) {
 	    return literal.calendarValue();
-	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "int")) {
+	} else if (dataType.equals(NamespacePrefixMapper.XSD_NS + "int")) {
 	    return literal.intValue();
-	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
+	} else if (dataType.equals(NamespacePrefixMapper.XSD_NS
 		+ "integer")) {
 	    return literal.integerValue();
-	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
+	} else if (dataType.equals(NamespacePrefixMapper.XSD_NS
 		+ "boolean")) {
 	    return literal.booleanValue();
-	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "double")) {
+	} else if (dataType.equals(NamespacePrefixMapper.XSD_NS + "double")) {
 	    return literal.doubleValue();
-	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "float")) {
+	} else if (dataType.equals(NamespacePrefixMapper.XSD_NS + "float")) {
 	    return literal.floatValue();
-	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "long")) {
+	} else if (dataType.equals(NamespacePrefixMapper.XSD_NS + "long")) {
 	    return literal.longValue();
-	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "short")) {
+	} else if (dataType.equals(NamespacePrefixMapper.XSD_NS + "short")) {
 	    return literal.shortValue();
-	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "byte")) {
+	} else if (dataType.equals(NamespacePrefixMapper.XSD_NS + "byte")) {
 	    return literal.byteValue();
-	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS
-		+ "decimal")) {
+	} else if (dataType.equals(NamespacePrefixMapper.XSD_NS + "decimal")) {
 	    return literal.decimalValue();
-	} else if (dataType.equals(NamespacePrefixMapper.XSD_HASH_NS + "anyURI")) {
+	} else if (dataType.equals(NamespacePrefixMapper.XSD_NS + "anyURI")) {
 	    return literal.stringValue();
 	} else {
 	    return literal.stringValue();
@@ -590,7 +589,7 @@ public class RdfCollector extends RDFHandlerBase {
 					               ((lit.getLanguage()==null)
 					                       ? name.XSD_STRING
 					                       : name.PROV_LANG_STRING)
-						       : onto.convertFromRdf(convertURIToQualifiedName(lit.getDatatype()))));
+						       : onto.convertFromRdf_NO_NEED(convertURIToQualifiedName(lit.getDatatype()))));
 	return attr;
     }
 

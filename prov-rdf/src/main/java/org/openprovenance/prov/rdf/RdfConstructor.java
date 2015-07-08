@@ -510,7 +510,7 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
     private LITERAL newLiteral(XMLGregorianCalendar time) {
 	return gb.newLiteral(time.toString(),
-			     name.QNAME_XSD_HASH_DATETIME);
+			     name.XSD_DATETIME);
     }
 
     public void assertQualifiedInfluence(QualifiedName subject, 

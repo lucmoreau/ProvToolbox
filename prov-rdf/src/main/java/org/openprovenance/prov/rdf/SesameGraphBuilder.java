@@ -88,13 +88,7 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
      */
     @Override
     public URIImpl qualifiedNameToURI(QualifiedName qname) {
-	if (qname.getNamespaceURI().equals(NamespacePrefixMapper.XSD_NS)) {
-	    return new URIImpl(NamespacePrefixMapper.XSD_HASH_NS
-		    + qname.getLocalPart());
-	} else {
 	    return new URIImpl(qname.getNamespaceURI() + qname.getLocalPart());
-
-	}
     }
 
     /* (non-Javadoc)
@@ -102,10 +96,7 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
      */
     @Override
     public Resource qualifiedNameToResource(QualifiedName qname) {
-	if (qname.getNamespaceURI().equals(NamespacePrefixMapper.XSD_NS)) {
-	    return new URIImpl(NamespacePrefixMapper.XSD_HASH_NS
-		    + qname.getLocalPart());
-	}
+
 	if (isBlankName(qname)) {
 	    return new BNodeImpl(qname.getLocalPart());
 	} else {

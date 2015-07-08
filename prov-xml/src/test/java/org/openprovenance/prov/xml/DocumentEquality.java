@@ -19,6 +19,7 @@ import org.openprovenance.prov.model.Document;
  * 
  */
 
+
 public class DocumentEquality {
     static Logger logger = Logger.getLogger(DocumentEquality.class);
 

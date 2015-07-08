@@ -85,11 +85,28 @@ final public class DOMProcessing {
         }
         String prefix = str.substring(0, index);
         String local = str.substring(index + 1, str.length());
-        QualifiedName qn = pFactory.newQualifiedName(el.lookupNamespaceURI(prefix), local, prefix);
+        QualifiedName qn = pFactory.newQualifiedName(convertNsFromXml(el.lookupNamespaceURI(prefix)), local, prefix);
         return qn;
     }
 
-    
+    public static String convertNsToXml(String uri) {
+	if (NamespacePrefixMapper.XSD_NS.equals(uri)) {
+	    return NamespacePrefixMapper.XSD_NS_FOR_XML;
+	}
+	return uri;
+    }
+
+  
+    final public String convertNsFromXml(String uri) {
+	if (NamespacePrefixMapper.XSD_NS_FOR_XML.equals(uri)) {
+	    return NamespacePrefixMapper.XSD_NS;
+	}
+	return uri;
+    }
+
+
+
+
     /** Creates a DOM {@link Element} for a {@link QualifiedName} and content given by value
      * 
      * @param elementName a {@link QualifiedName} to denote the element name
@@ -105,7 +122,7 @@ final public class DOMProcessing {
 	// 1. we add an xsi:type="xsd:QName" attribute
 	//   making sure xsi and xsd prefixes are appropriately declared.
 	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", "xsd:QName");
-	el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsd", NamespacePrefixMapper.XSD_NS);
+	el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsd", NamespacePrefixMapper.XSD_NS_FOR_XML);
 
 	// 2. We add the QualifiedName's string representation as child of the element
 	//    This representation depends on the extant prefix-namespace mapping
@@ -116,14 +133,17 @@ final public class DOMProcessing {
 	int index=valueAsString.indexOf(":");
 	if (index!=-1) {
 	    String prefix = valueAsString.substring(0, index);
-	    el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:"+prefix, value.getNamespaceURI());
+	    el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:"+prefix, convertNsToXml(value.getNamespaceURI()));
 	} else {
-	    el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns", value.getNamespaceURI());
+	    el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns", convertNsToXml(value.getNamespaceURI()));
 	}
 	
 	doc.appendChild(el);
 	return el;
     }
+
+
+
 
     /**
      * Creates a DOM {@link Element} for a {@link QualifiedName} and content given by value and type

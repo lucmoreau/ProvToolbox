@@ -41,12 +41,6 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         return null;
     }
 
-    /*
-     * public MentionOf getMentionForLocalEntity(Bundle local, Entity
-     * localEntity, NamedBundle remote) { return
-     * getMentionForLocalEntity(local.getRecords(), localEntity, remote); }
-     */
-    
 
     public MentionOf getMentionForLocalEntity(Bundle local,
                                               Entity localEntity,
@@ -70,10 +64,7 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         return null;
     }
 
-    /** TODO: should \-unescape local part */
- //   public String toURI(QName qname) {
- //       return qname.getNamespaceURI() + qname.getLocalPart();
- //   }
+
 
     @SuppressWarnings("rawtypes")
     final static private Hashtable<Class, String[]> fields = new Hashtable<Class, String[]>();

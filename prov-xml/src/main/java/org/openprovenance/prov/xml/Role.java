@@ -7,9 +7,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.openprovenance.prov.xml.builder.Equals;
 import org.openprovenance.prov.xml.builder.HashCode;
 import org.openprovenance.prov.xml.builder.ToString;
-import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
-import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
-import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.QualifiedName;
 
@@ -38,11 +35,11 @@ public class Role extends TypedValue implements Equals, HashCode, ToString,
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_ROLE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_ROLE;
-    private static final QualifiedName PROV_ROLE_QNAME = ProvFactory.getFactory().getName().PROV_ROLE;
+    private static final QualifiedName PROV_ROLE_QualifiedName = ProvFactory.getFactory().getName().PROV_ROLE;
 
     @Override
     public QualifiedName getElementName() {
-	return PROV_ROLE_QNAME;
+	return PROV_ROLE_QualifiedName;
     }
 
     @Override

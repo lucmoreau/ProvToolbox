@@ -237,9 +237,9 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
             pe=convert(ast.getChild(3));
             q2=convert(ast.getChild(4));
             q1=convert(ast.getChild(5));
@@ -251,9 +251,9 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
             pe=convert(ast.getChild(3));
             q2=convert(ast.getChild(4));
             q1=convert(ast.getChild(5));
@@ -265,9 +265,9 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
             pe=convert(ast.getChild(3));
             q2=convert(ast.getChild(4));
             q1=convert(ast.getChild(5));
@@ -393,12 +393,12 @@ public class TreeTraversal {
             List<Object> keys2 = (List<Object>)keys1;
 	    
             @SuppressWarnings("unchecked")
-            List<QualifiedName> qnames = (List<QualifiedName>)entities;
+            List<QualifiedName> qualifiedNames = (List<QualifiedName>)entities;
 	    
             List<Entry> entries=new LinkedList<Entry>();
             int ii=0;
             for (Object o : keys2) {
-                QualifiedName value=qnames.get(ii);
+                QualifiedName value=qualifiedNames.get(ii);
                 Entry p=pFactory.newEntry((org.openprovenance.prov.model.Key)o, value);
                 
                 entries.add(p);

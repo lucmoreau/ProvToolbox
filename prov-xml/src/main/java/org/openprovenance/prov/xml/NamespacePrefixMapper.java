@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.Namespace;
 
 
@@ -25,7 +26,7 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
         }
         String xsd_prefix=nss.getNamespaces().get(XSD_NS);
         this.nss=new HashMap<String, String>(nss.getPrefixes()); // don't modify the received map
-        this.nss.put(xsd_prefix, XSD_NS_FOR_XML);
+        this.nss.put(xsd_prefix, DOMProcessing.XSD_NS_FOR_XML);
         
         //System.out.println("PREFIXES IS " + nss);
         //System.out.println("DEFAULT " + defaultNamespace);
@@ -51,7 +52,7 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
    //     if (namespaceUri.equals(XSD_NS)) {
    //         return "xsd";
    //     }
-        if (namespaceUri.equals(XSD_NS_FOR_XML)) { // TODO: TO CHECK that's the one we need
+        if (namespaceUri.equals(DOMProcessing.XSD_NS_FOR_XML)) { // TODO: TO CHECK that's the one we need
             return "xsd";
         }
         if (namespaceUri.equals(XML_NS)) {
@@ -69,7 +70,7 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
     }
    
     /* (non-Javadoc)
-     * @see org.openprovenance.prov.model.NAIN#getPreDeclaredNamespaceUris()
+     * @see org.openprovenance.prov.model.NamespacePrefixMapper#getPreDeclaredNamespaceUris()
      */
     @Override
     public String[] getPreDeclaredNamespaceUris() {
@@ -78,7 +79,7 @@ public class NamespacePrefixMapper extends com.sun.xml.bind.marshaller.Namespace
             ll.addAll(nss.values());
         }
         ll.add(XSI_NS);
-        ll.add(XSD_NS_FOR_XML);
+        ll.add(DOMProcessing.XSD_NS_FOR_XML);
         ll.add(XML_NS);
         ll.add(PROV_NS);
         //System.out.println("namespaceprefixmapper " + ll);

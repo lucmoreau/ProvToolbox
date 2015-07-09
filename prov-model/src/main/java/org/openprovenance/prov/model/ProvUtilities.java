@@ -455,7 +455,6 @@ public class ProvUtilities {
   	} else if (val instanceof String) {
  	    String s=(String)val;
  	    if (s.contains("\n")) {
- 		// return "\"\"\"" + val + "\"\"\" %% " + qnameToString(xsdType);
  		return "\"\"\"" + escape(s) + "\"\"\"" ;
  	    } else {
  		//FIXME: It's here that we should detect an int and generate the compact form: e.g. 1 instand of 1 %% xsd:int

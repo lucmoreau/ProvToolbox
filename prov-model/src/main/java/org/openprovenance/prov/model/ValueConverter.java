@@ -192,7 +192,7 @@ public class ValueConverter  {
 	//System.out.println("getXsdType() " + o.getClass());
 	
 	// Let's be permissive, and return the unknown qualified name
-	return name.QNAME_UNKNOWN;
+	return name.QUALIFIED_NAME_UNKNOWN_TYPE;
     }
 
 

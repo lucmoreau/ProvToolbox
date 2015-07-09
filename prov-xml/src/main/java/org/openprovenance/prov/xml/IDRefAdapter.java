@@ -6,12 +6,11 @@ public class IDRefAdapter extends XmlAdapter<IDRef, org.openprovenance.prov.mode
     final ProvFactory pf=new ProvFactory();
 
     @Override
-    public IDRef marshal(org.openprovenance.prov.model.QualifiedName qname) throws Exception {
-        if (qname==null) {
+    public IDRef marshal(org.openprovenance.prov.model.QualifiedName qualifiedName) throws Exception {
+        if (qualifiedName==null) {
             return null;
         } else {
-            //System.out.println("marshalling " + qname);
-            return new IDRef(qname.toQName());
+            return new IDRef(qualifiedName.toQName());
         }
     }
 

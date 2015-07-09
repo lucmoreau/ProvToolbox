@@ -31,6 +31,10 @@ final public class DOMProcessing {
     private static final String RDF_PREFIX = NamespacePrefixMapper.RDF_PREFIX;
     private static final String RDF_NAMESPACE = NamespacePrefixMapper.RDF_NS;
     private static final String RDF_LITERAL = RDF_PREFIX + ":" + XML_LITERAL;
+    
+    public static final String XSD_NS_FOR_XML = "http://www.w3.org/2001/XMLSchema"; //Note, this is the xml schema namespace URI without #
+    private final static String FOR_XML_XSD_QNAME=NamespacePrefixMapper.XSD_NS + "QName";  
+
     private final ProvFactory pFactory;
     
     public DOMProcessing(ProvFactory pFactory) {
@@ -91,14 +95,14 @@ final public class DOMProcessing {
 
     public static String convertNsToXml(String uri) {
 	if (NamespacePrefixMapper.XSD_NS.equals(uri)) {
-	    return NamespacePrefixMapper.XSD_NS_FOR_XML;
+	    return XSD_NS_FOR_XML;
 	}
 	return uri;
     }
 
   
     final public String convertNsFromXml(String uri) {
-	if (NamespacePrefixMapper.XSD_NS_FOR_XML.equals(uri)) {
+	if (XSD_NS_FOR_XML.equals(uri)) {
 	    return NamespacePrefixMapper.XSD_NS;
 	}
 	return uri;
@@ -122,7 +126,7 @@ final public class DOMProcessing {
 	// 1. we add an xsi:type="xsd:QName" attribute
 	//   making sure xsi and xsd prefixes are appropriately declared.
 	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", "xsd:QName");
-	el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsd", NamespacePrefixMapper.XSD_NS_FOR_XML);
+	el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsd", XSD_NS_FOR_XML);
 
 	// 2. We add the QualifiedName's string representation as child of the element
 	//    This representation depends on the extant prefix-namespace mapping
@@ -307,7 +311,7 @@ final public class DOMProcessing {
 			      attribute.getType());
 	}
     }
-    
+
     final
     public org.openprovenance.prov.model.Attribute unmarshallAttribute(org.w3c.dom.Element el,
                                                                               ProvFactory pFactory,
@@ -325,7 +329,7 @@ final public class DOMProcessing {
         Name name=pFactory.getName();
         if (type == null)
             type = name.XSD_STRING;
-        if (type.equals(name.FOR_XML_XSD_QNAME)) {  // xsd:QName in xml serialization maps to prov:QualifiedName
+        if (FOR_XML_XSD_QNAME.equals(type.getUri())) { 
             QualifiedName qn = stringToQualifiedName(child, el);
             Attribute x= pFactory.newAttribute(namespace, local, prefix, qn, name.PROV_QUALIFIED_NAME);
             return x;

@@ -6,8 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
@@ -58,6 +56,8 @@ public class ExpandAction implements StatementAction {
     final private Groupings grp1;
     final private Hashtable<QualifiedName, List<TypedValue>> env2;
     final private boolean addOrderp;
+    final private String qualifiedNameURI;
+
 
     public ExpandAction(ProvFactory pf, 
                         ProvUtilities u, 
@@ -79,6 +79,7 @@ public class ExpandAction implements StatementAction {
 	this.grp1=grp1;
 	this.env2=env2;
 	this.addOrderp=addOrderp;
+	this.qualifiedNameURI = pf.getName().PROV_QUALIFIED_NAME.getUri();
     }
 
     @Override
@@ -280,16 +281,16 @@ public class ExpandAction implements StatementAction {
 	if (updated) addOrderAttribute(res);
     }
 
+
     public boolean expandAttributes(Statement srcStatement, Statement dstStatement) {
         boolean found=false;
         if (dstStatement instanceof HasOther) {
 
             Collection<Attribute> attributes=pf.getAttributes(srcStatement);
             Collection<Attribute> dstAttributes=new LinkedList<Attribute>();
-            String xsdQNameUri = pf.getName().PROV_QUALIFIED_NAME.getUri();
 
             for (Attribute attribute: attributes) {
-				if (xsdQNameUri.equals(attribute.getType().getUri())) {
+				if (qualifiedNameURI.equals(attribute.getType().getUri())) {
 
                     Object o=attribute.getValue();
                     if (o instanceof QualifiedName) { // if attribute is constructed properly, this test should always return true
@@ -320,7 +321,7 @@ public class ExpandAction implements StatementAction {
                     } else { // not even a qualified name
                 		dstAttributes.add(attribute); 
                     }
-                } else { //not xsd_qname
+                } else { //not a qualified name
                     dstAttributes.add(attribute);
                 }
             }
@@ -431,7 +432,6 @@ public class ExpandAction implements StatementAction {
 	
 	QualifiedName col=res.getCollection();
 	boolean updated0=setExpand(res, col, 0);	
-	@SuppressWarnings("unused")
 	List<QualifiedName> ent=res.getEntity();
 	if (ent.size()>1) {
 	    throw new UnsupportedOperationException("can't expand HadMember with more than one members");

@@ -24,9 +24,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 /** A stateless factory for PROV objects. */
 
-//TODO: move the QNameExport capability outside the factory, and make it purely stateless, without namespace. 
-
-public class ProvFactory extends org.openprovenance.prov.model.ProvFactory implements LiteralConstructor { //implements ModelConstructor, QNameExport {
+public class ProvFactory extends org.openprovenance.prov.model.ProvFactory implements LiteralConstructor { 
 
     static public DocumentBuilder builder;
 
@@ -96,26 +94,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 	super(of);
 	init();
     }
-
-    /*
-    @Override
-    public org.openprovenance.prov.model.Attribute createAttribute(QName qname,
-								   Object value,
-								   QName type) {
-	return new Attribute(qname,value,type);
-    }
-
-    @Override
-    public org.openprovenance.prov.model.Attribute createAttribute(AttributeKind kind,
-								   Object value,
-								   QName type) {
-	// TODO Auto-generated method stub
-	return null;
-    }
-    */
-
-   
-
 
 
     

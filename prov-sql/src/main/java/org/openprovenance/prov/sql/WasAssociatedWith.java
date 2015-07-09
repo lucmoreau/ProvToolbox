@@ -26,7 +26,6 @@ import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
 import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Other;
-import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.xml.AttributeList;
 import org.openprovenance.prov.xml.HasAllAttributes;
@@ -94,7 +93,7 @@ public class WasAssociatedWith
     
     @XmlAnyElement
     protected List<Attribute> all;
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QualifiedNameAdapter.class)
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
     protected QualifiedName id;
     

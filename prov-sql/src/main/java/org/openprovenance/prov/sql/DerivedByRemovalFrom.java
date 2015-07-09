@@ -23,7 +23,6 @@ import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
 import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
 import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.StatementOrBundle;
@@ -88,7 +87,7 @@ public class DerivedByRemovalFrom
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QualifiedNameAdapter.class)
     protected QualifiedName id;
 
     /**

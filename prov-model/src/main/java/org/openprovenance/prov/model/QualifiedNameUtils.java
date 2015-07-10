@@ -57,5 +57,42 @@ public class QualifiedNameUtils {
     public String unescapeProvLocalName(String localName) {
 	return UNESCAPE_PROV_LOCAL_NAME.translate(localName);
     }
+    
+    
+    public static final CharSequenceTranslator ESCAPE_TO_XML_QNAME_LOCAL_NAME = 
+	    new AggregateTranslator(
+	                            new LookupTranslator(
+	                                                 new String[][] { 
+	                                                	 {"=", "-3D"},
+	                                                	 {"'", "-27"},
+	                                                	 {"(", "-28"},
+	                                                	 {")", "-29"},
+	                                                	 {",", "-2C"},
+	                                                	 {"-", "--"},
+	                                                	 {":", "-3A"},
+	                                                	 {";", "-3B"},
+	                                                	 {"[", "-5B"},
+	                                                	 {"]", "-5D"},
+	                                                	 {"/", "-2F"},
+	                                                	 {"\\", "-5C"},
+	                                                	 {"?", "-3F"},
+	                                                	 {"@", "-40"},
+	                                                	 {"~", "-7E"},
+	                                                	 {"&", "-26"},
+	                                                	 {"+", "-2B"},
+	                                                	 {"*", "-2A"},
+	                                                	 {"#", "-23"},
+	                                                	 {"$", "-24"},
+	                                                	 {"!", "-21"},
+	                                                 }),
+	                                                 JavaUnicodeEscaper.outsideOf(32, 0x7f) 
+		    );
+
+    public String escapeToXsdLocalName(String localName) {
+	if ("".equals(localName)) return "-";
+	String s=ESCAPE_TO_XML_QNAME_LOCAL_NAME.translate(localName);
+	if (Character.isDigit(s.charAt(0))) return "-" + s;
+	return s;
+    }
 
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.openprovenance.prov.rdf.Ontology;
@@ -25,6 +26,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.QualifiedNameUtils;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.ValueConverter;
@@ -74,6 +76,8 @@ public class RdfCollector extends RDFHandlerBase {
    	document.setNamespace(this.namespace);
    	handleNamespace(NamespacePrefixMapper.XSD_PREFIX,
    	                NamespacePrefixMapper.XSD_NS);
+	handleNamespace(NamespacePrefixMapper.RDF_PREFIX,
+   	                NamespacePrefixMapper.RDF_NS);
    	handleNamespace("bnode", BNODE_NS);
    	this.types=new Types(onto);
    	
@@ -264,15 +268,13 @@ public class RdfCollector extends RDFHandlerBase {
 	    URI uri = (URI) (value);
 	    return uri.toString();
 	} else if (value instanceof BNode) {
-	    return bnodeToQualifiedName(value); //FIXME
+	    return bnodeToQualifiedName((BNode)value); 
 	} else {
 	    return null;
 	}
     }
-
-    public QualifiedName bnodeToQualifiedName(Value value) {
-	return pFactory.newQualifiedName("http://bnodeNS/", ((BNode) (value)).getID(), null);
-    }
+    
+    
 
 
     // code replicated from valueToObject
@@ -302,7 +304,7 @@ public class RdfCollector extends RDFHandlerBase {
 	    URI uri = (URI) (value);
 	    return pFactory.newKey(uri.toString(), name.PROV_QUALIFIED_NAME);
 	} else if (value instanceof BNode) {
-	    return pFactory.newKey(bnodeToQualifiedName(value), //FIXME
+	    return pFactory.newKey(bnodeToQualifiedName((BNode)value), 
 	                           name.PROV_QUALIFIED_NAME);
 	} else {
 	    return null;
@@ -452,13 +454,13 @@ public class RdfCollector extends RDFHandlerBase {
 	return pFactory.newQualifiedName("","",null);//FIXME
     }
 
-
+    final QualifiedNameUtils qnU=new QualifiedNameUtils();
     
     protected QualifiedName convertURIToQualifiedName(URI uri) {
 	QualifiedName qualifiedName;
 	String uriNamespace = uri.getNamespace();
 	String prefix=namespace.getNamespaces().get(uriNamespace);
-	String uriLocalName = uri.getLocalName();
+	String uriLocalName = qnU.escapeProvLocalName(uri.getLocalName());
 	if (prefix!=null) {
 	    qualifiedName = pFactory.newQualifiedName(uriNamespace, uriLocalName, prefix);
 	} else {

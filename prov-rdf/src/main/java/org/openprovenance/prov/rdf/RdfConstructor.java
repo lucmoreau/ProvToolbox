@@ -398,20 +398,24 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 		    lit = gb.newLiteral(value, iString.getLang());
 		    gb.assertStatement(gb.createDataProperty(r, pred, lit));
 		} else if (attr.getValue() instanceof QualifiedName) {
-		    QualifiedName qn = (QualifiedName) attr.getValue();
+		    QualifiedName name = (QualifiedName) attr.getValue();
+		    /*
 		    String qnAsString;
-		    if ((qn.getPrefix() == null) || (qn.getPrefix().equals(""))) {
-			qnAsString = qn.getLocalPart();
+		    if ((name.getPrefix() == null) || (name.getPrefix().equals(""))) {
+			qnAsString = name.getLocalPart();
 		    } else {
-			qnAsString = qn.getPrefix() + ":" + qn.getLocalPart();
+			qnAsString = name.getPrefix() + ":" + name.getLocalPart();
 		    }
 		    if (false) { // That's here the code to generate resource or
 				 // literal.
 			lit = gb.newLiteral(qnAsString, type);
 			gb.assertStatement(gb.createDataProperty(r, pred, lit));
 		    } else {
-			gb.assertStatement(gb.createObjectProperty(r, pred, qn));
+			gb.assertStatement(gb.createObjectProperty(r, pred, name));
 		    }
+		    */
+		    gb.assertStatement(gb.createObjectProperty(r, pred, name));
+
 
 		} else {
 		    value = attr.getValue().toString();

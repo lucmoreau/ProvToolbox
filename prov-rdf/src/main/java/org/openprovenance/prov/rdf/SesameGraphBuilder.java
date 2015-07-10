@@ -3,6 +3,7 @@ package org.openprovenance.prov.rdf;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
+import org.openprovenance.prov.model.QualifiedNameUtils;
 import org.openrdf.model.Resource;
 import org.openrdf.model.impl.BNodeImpl;
 import org.openrdf.model.impl.LiteralImpl;
@@ -24,9 +25,12 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
     final ContextAwareRepository manager;
     private final ProvFactory pFactory;
 
+    final QualifiedNameUtils qnU;
+
     public SesameGraphBuilder(ContextAwareRepository manager, ProvFactory pFactory) {
 	this.manager = manager;
 	this.pFactory=pFactory;
+	this.qnU=new QualifiedNameUtils();
     }
 
     /* (non-Javadoc)
@@ -96,7 +100,8 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
      */
     @Override
     public URIImpl qualifiedNameToURI(QualifiedName name) {
-	    return new URIImpl(name.getNamespaceURI() + name.getLocalPart());
+	String unescapedLocalName = qnU.unescapeProvLocalName(name.getLocalPart());
+	return new URIImpl(name.getNamespaceURI() + unescapedLocalName);
     }
 
 
@@ -105,11 +110,11 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
      */
     @Override
     public Resource qualifiedNameToResource(QualifiedName name) {
-
+	String unescapedLocalName = qnU.unescapeProvLocalName(name.getLocalPart());
 	if (isBlankName(name)) {
-	    return new BNodeImpl(name.getLocalPart());
+	    return new BNodeImpl(unescapedLocalName);
 	} else {
-	    return new URIImpl(name.getNamespaceURI() + name.getLocalPart());
+	    return new URIImpl(name.getNamespaceURI() + unescapedLocalName);
 
 	}
     }
@@ -145,7 +150,7 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
 	currentContext=uri;
 	
     }
-
+    
     @Override
     public LiteralImpl newLiteral(String value, QualifiedName type) {
 	 return new LiteralImpl(value,

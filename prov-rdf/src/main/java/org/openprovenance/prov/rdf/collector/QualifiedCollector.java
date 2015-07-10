@@ -119,61 +119,61 @@ public class QualifiedCollector extends RdfCollector {
 		for (QualifiedName contextQ : collators.keySet())
 		{
 			HashMap<QualifiedName, List<Statement>> collator = collators.get(contextQ);
-			for (QualifiedName qname : collator.keySet())
+			for (QualifiedName qualifiedName : collator.keySet())
 			{
-				Types.ProvType[] types = getExplicitTypes(contextQ, qname);
+				Types.ProvType[] types = getExplicitTypes(contextQ, qualifiedName);
 				for (Types.ProvType type : types)
 				{
 					switch (type)
 					{
 					case GENERATION:
-						createGeneration(contextQ, qname);
+						createGeneration(contextQ, qualifiedName);
 						break;
 					case USAGE:
-						createUsage(contextQ, qname);
+						createUsage(contextQ, qualifiedName);
 						break;
 					case ASSOCIATION:
-						createAssociation(contextQ, qname);
+						createAssociation(contextQ, qualifiedName);
 						break;
 					case ATTRIBUTION:
-						createAttribution(contextQ, qname);
+						createAttribution(contextQ, qualifiedName);
 						break;
 					case COMMUNICATION:
-						createCommunication(contextQ, qname);
+						createCommunication(contextQ, qualifiedName);
 						break;
 					case DELEGATION:
-						createDelegation(contextQ, qname);
+						createDelegation(contextQ, qualifiedName);
 						break;
 					case DERIVATION:
-						createDerivation(contextQ, qname,
-								onto.QNAME_PROVO_qualifiedDerivation);
+						createDerivation(contextQ, qualifiedName,
+								onto.QualifiedName_PROVO_qualifiedDerivation);
 						break;
 					case PRIMARYSOURCE:
-						createPrimarySource(contextQ, qname);
+						createPrimarySource(contextQ, qualifiedName);
 						break;
 					case QUOTATION:
-						createQuotation(contextQ, qname);
+						createQuotation(contextQ, qualifiedName);
 						break;
 					case REVISION:
-						createRevision(contextQ, qname);
+						createRevision(contextQ, qualifiedName);
 						break;
 					case END:
-						createEnd(contextQ, qname);
+						createEnd(contextQ, qualifiedName);
 						break;
 					case INVALIDATION:
-						createInvalidation(contextQ, qname);
+						createInvalidation(contextQ, qualifiedName);
 						break;
 					case START:
-						createStart(contextQ, qname);
+						createStart(contextQ, qualifiedName);
 						break;
 					case INFLUENCE:
-						createInfluence(contextQ, qname);
+						createInfluence(contextQ, qualifiedName);
 						break;
 					case INSERTION:
-						createInsertion(contextQ, qname);
+						createInsertion(contextQ, qualifiedName);
 						break;
 					case REMOVAL:
-						createRemoval(contextQ,qname);
+						createRemoval(contextQ,qualifiedName);
 						break;
 					default:
 						break;
@@ -225,7 +225,7 @@ public class QualifiedCollector extends RdfCollector {
 
 			if (value instanceof Literal)
 			{
-				if (predQ.equals(onto.QNAME_PROVO_atTime))
+				if (predQ.equals(onto.QualifiedName_PROVO_atTime))
 				{
 					times.add((XMLGregorianCalendar) super
 							.decodeLiteral((Literal) value));
@@ -235,12 +235,11 @@ public class QualifiedCollector extends RdfCollector {
 		return times;
 	}
 
-	private void createRevision(QualifiedName contextQ, QualifiedName qname)
+	private void createRevision(QualifiedName contextQ, QualifiedName qualifiedName)
 	{
-		List<WasDerivedFrom> wdfs = createDerivation(contextQ, qname,
-				onto.QNAME_PROVO_qualifiedRevision);
-		//QualifiedName q = pFactory.newQName("prov:Revision");
-		QualifiedName q = onto.QNAME_PROVO_Revision;
+		List<WasDerivedFrom> wdfs = createDerivation(contextQ, qualifiedName,
+				onto.QualifiedName_PROVO_qualifiedRevision);
+		QualifiedName q = onto.QualifiedName_PROVO_Revision;
 		Type type=pFactory.newType(q, name.PROV_QUALIFIED_NAME);
 		for (WasDerivedFrom wdf : wdfs)
 		{
@@ -251,12 +250,11 @@ public class QualifiedCollector extends RdfCollector {
 		}
 	}
 
-	private void createQuotation(QualifiedName contextQ, QualifiedName qname)
+	private void createQuotation(QualifiedName contextQ, QualifiedName qualifiedName)
 	{
-		List<WasDerivedFrom> wdfs = createDerivation(contextQ, qname,
-				onto.QNAME_PROVO_qualifiedQuotation);
-		//Object q = pFactory.newQName("prov:Quotation");
-		QualifiedName q = onto.QNAME_PROVO_Quotation;
+		List<WasDerivedFrom> wdfs = createDerivation(contextQ, qualifiedName,
+				onto.QualifiedName_PROVO_qualifiedQuotation);
+		QualifiedName q = onto.QualifiedName_PROVO_Quotation;
 		Type type=pFactory.newType(q, name.PROV_QUALIFIED_NAME);
 		for (WasDerivedFrom wdf : wdfs)
 		{
@@ -267,12 +265,11 @@ public class QualifiedCollector extends RdfCollector {
 		}
 	}
 
-	private void createPrimarySource(QualifiedName context, QualifiedName qname)
+	private void createPrimarySource(QualifiedName context, QualifiedName qualifiedName)
 	{
-		List<WasDerivedFrom> wdfs = createDerivation(context, qname,
-				onto.QNAME_PROVO_qualifiedPrimarySource);
-		//Object q = pFactory.newQName("prov:PrimarySource");
-		QualifiedName q = onto.QNAME_PROVO_PrimarySource;
+		List<WasDerivedFrom> wdfs = createDerivation(context, qualifiedName,
+				onto.QualifiedName_PROVO_qualifiedPrimarySource);
+		QualifiedName q = onto.QualifiedName_PROVO_PrimarySource;
 		Type type=pFactory.newType(q, name.PROV_QUALIFIED_NAME);
 
 		for (WasDerivedFrom wdf : wdfs)
@@ -284,33 +281,33 @@ public class QualifiedCollector extends RdfCollector {
 		}
 	}
 
-	private List<WasDerivedFrom> createDerivation(QualifiedName context, QualifiedName qname,
+	private List<WasDerivedFrom> createDerivation(QualifiedName context, QualifiedName qualifiedName,
 			QualifiedName pred)
 	{
 
-		List<QualifiedName> entities = getObjects(context, qname,
-				onto.QNAME_PROVO_entity);
-		List<QualifiedName> activities = getObjects(context, qname,
-				onto.QNAME_PROVO_hadActivity);
-		List<QualifiedName> generations = getObjects(context, qname,
-				onto.QNAME_PROVO_hadGeneration);
-		List<QualifiedName> usages = getObjects(context, qname,
-				onto.QNAME_PROVO_hadUsage);
+		List<QualifiedName> entities = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_entity);
+		List<QualifiedName> activities = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_hadActivity);
+		List<QualifiedName> generations = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_hadGeneration);
+		List<QualifiedName> usages = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_hadUsage);
 
-		List<QualifiedName> generated = getSubjects(context, pred, qname);
+		List<QualifiedName> generated = getSubjects(context, pred, qualifiedName);
 
 		List<Attribute> attributes = collectAttributes(context, 
-		                                               qname,
+		                                               qualifiedName,
 		                                               Types.ProvType.DERIVATION);
 
-		qname = getQualQName(qname);
+		qualifiedName = getQualqualifiedName(qualifiedName);
 
 		List<WasDerivedFrom> wdfs = new ArrayList<WasDerivedFrom>();
 		List<List<?>> perms = permute(generated, entities, activities,
 				generations, usages);
 		for (List<?> perm : perms)
 		{
-			WasDerivedFrom wdf = pFactory.newWasDerivedFrom(qname,
+			WasDerivedFrom wdf = pFactory.newWasDerivedFrom(qualifiedName,
 					(QualifiedName) perm.get(0), (QualifiedName) perm.get(1),
 					(QualifiedName) perm.get(2), (QualifiedName) perm.get(3),
 					(QualifiedName) perm.get(4), attributes);
@@ -320,36 +317,36 @@ public class QualifiedCollector extends RdfCollector {
 		return wdfs;
 	}
 
-	private List<WasInfluencedBy> createInfluence(QualifiedName context, QualifiedName qname)
+	private List<WasInfluencedBy> createInfluence(QualifiedName context, QualifiedName qualifiedName)
 	{
 		HashSet<QualifiedName> all_influencers = new HashSet<QualifiedName>();
-		List<QualifiedName> influencers = getObjects(context, qname,
-				onto.QNAME_PROVO_influencer);
-		List<QualifiedName> agents = getObjects(context, qname,
-				onto.QNAME_PROVO_agent);
-		List<QualifiedName> entities = getObjects(context, qname,
-				onto.QNAME_PROVO_entity);
-		List<QualifiedName> activities = getObjects(context, qname,
-				onto.QNAME_PROVO_activity);
+		List<QualifiedName> influencers = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_influencer);
+		List<QualifiedName> agents = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_agent);
+		List<QualifiedName> entities = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_entity);
+		List<QualifiedName> activities = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_activity);
 		all_influencers.addAll(influencers);
 		all_influencers.addAll(agents);
 		all_influencers.addAll(entities);
 		all_influencers.addAll(activities);
 		List<QualifiedName> influencees = getSubjects(context,
-				onto.QNAME_PROVO_qualifiedInfluence, qname);
+				onto.QualifiedName_PROVO_qualifiedInfluence, qualifiedName);
 
 		List<Attribute> attributes = collectAttributes(context, 
-		                                               qname,
+		                                               qualifiedName,
 		                                               Types.ProvType.INFLUENCE);
 
-		qname = getQualQName(qname);
+		qualifiedName = getQualqualifiedName(qualifiedName);
 
 		List<WasInfluencedBy> wibs = new ArrayList<WasInfluencedBy>();
 		List<List<?>> perms = permute(influencees, new ArrayList<QualifiedName>(
 				all_influencers));
 		for (List<?> perm : perms)
 		{
-			WasInfluencedBy wib = pFactory.newWasInfluencedBy(qname,
+			WasInfluencedBy wib = pFactory.newWasInfluencedBy(qualifiedName,
 					(QualifiedName) perm.get(0), (QualifiedName) perm.get(1), attributes);
 			store(context, wib);
 			wibs.add(wib);
@@ -357,50 +354,50 @@ public class QualifiedCollector extends RdfCollector {
 		return wibs;
 	}
 
-	private void createEnd(QualifiedName context, QualifiedName qname)
+	private void createEnd(QualifiedName context, QualifiedName qualifiedName)
 	{
-		List<Statement> statements = collators.get(context).get(qname);
+		List<Statement> statements = collators.get(context).get(qualifiedName);
 		List<XMLGregorianCalendar> times = getInstantaneousTimes(statements);
-		List<QualifiedName> triggers = getObjects(context, qname,
-				onto.QNAME_PROVO_entity);
-		List<QualifiedName> enders = getObjects(context, qname,
-				onto.QNAME_PROVO_hadActivity);
+		List<QualifiedName> triggers = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_entity);
+		List<QualifiedName> enders = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_hadActivity);
 		List<QualifiedName> activities = getSubjects(context,
-				onto.QNAME_PROVO_qualifiedEnd, qname);
+				onto.QualifiedName_PROVO_qualifiedEnd, qualifiedName);
 
-		List<Attribute> attributes = collectAttributes(context, qname,
+		List<Attribute> attributes = collectAttributes(context, qualifiedName,
 				Types.ProvType.END);
 
-		qname = getQualQName(qname);
+		qualifiedName = getQualqualifiedName(qualifiedName);
 
 		List<List<?>> perms = permute(activities, triggers, enders, times);
 		for (List<?> perm : perms)
 		{
-			WasEndedBy web = pFactory.newWasEndedBy(qname, (QualifiedName) perm.get(0),
+			WasEndedBy web = pFactory.newWasEndedBy(qualifiedName, (QualifiedName) perm.get(0),
 					(QualifiedName) perm.get(1), (QualifiedName) perm.get(2),
 					(XMLGregorianCalendar) perm.get(3), attributes);
 			store(context, web);
 		}
 	}
 
-	private void createInsertion(QualifiedName context, QualifiedName qname)
+	private void createInsertion(QualifiedName context, QualifiedName qualifiedName)
 	{
-		List<QualifiedName> objectDictionaries = getObjects(context, qname,
-				onto.QNAME_PROVO_dictionary);
-		List<QualifiedName> pairs = getObjects(context, qname,
-				onto.QNAME_PROVO_insertedKeyEntityPair);
+		List<QualifiedName> objectDictionaries = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_dictionary);
+		List<QualifiedName> pairs = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_insertedKeyEntityPair);
 		List<QualifiedName> subjectDictionaries = getSubjects(context,
-				onto.QNAME_PROVO_qualifiedInsertion, qname);
+				onto.QualifiedName_PROVO_qualifiedInsertion, qualifiedName);
 
-		List<Attribute> attributes = collectAttributes(context, qname,
+		List<Attribute> attributes = collectAttributes(context, qualifiedName,
 				Types.ProvType.INSERTION);
 
-		qname = getQualQName(qname);
+		qualifiedName = getQualqualifiedName(qualifiedName);
 
 		List<List<?>> perms = permute(subjectDictionaries, objectDictionaries);
 		for (List<?> perm : perms)
 		{
-			DerivedByInsertionFrom dbif = pFactory.newDerivedByInsertionFrom(qname, 
+			DerivedByInsertionFrom dbif = pFactory.newDerivedByInsertionFrom(qualifiedName, 
 					(QualifiedName) perm.get(0),
 					(QualifiedName) perm.get(1),
 					createKeyEntityPairs(context, pairs), 
@@ -411,20 +408,20 @@ public class QualifiedCollector extends RdfCollector {
 	}
 
 	
-	private void createRemoval(QualifiedName context, QualifiedName qname)
+	private void createRemoval(QualifiedName context, QualifiedName qualifiedName)
 	{
-		List<QualifiedName> objectDictionaries = getObjects(context, qname,
-				onto.QNAME_PROVO_dictionary);
+		List<QualifiedName> objectDictionaries = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_dictionary);
 		List<Value> keys = getDataObjects(context, 
-		                                  qname,
-		                                  onto.QNAME_PROVO_removedKey);
+		                                  qualifiedName,
+		                                  onto.QualifiedName_PROVO_removedKey);
 		List<QualifiedName> subjectDictionaries = getSubjects(context,
-				onto.QNAME_PROVO_qualifiedRemoval, qname);
+				onto.QualifiedName_PROVO_qualifiedRemoval, qualifiedName);
 
-		List<Attribute> attributes = collectAttributes(context, qname,
+		List<Attribute> attributes = collectAttributes(context, qualifiedName,
 				Types.ProvType.REMOVAL);
 
-		qname = getQualQName(qname);
+		qualifiedName = getQualqualifiedName(qualifiedName);
 		
 		List<Key> theKeys=new LinkedList<Key>();
 		for (Value key: keys) {
@@ -433,7 +430,7 @@ public class QualifiedCollector extends RdfCollector {
 
 		List<List<?>> perms = permute(subjectDictionaries, objectDictionaries);
 		for (List<?> perm : perms) {
-		    DerivedByRemovalFrom dbif = pFactory.newDerivedByRemovalFrom(qname, 
+		    DerivedByRemovalFrom dbif = pFactory.newDerivedByRemovalFrom(qualifiedName, 
 		                                                                 (QualifiedName) perm.get(0),
 					(QualifiedName) perm.get(1),
 					theKeys,
@@ -444,26 +441,26 @@ public class QualifiedCollector extends RdfCollector {
 	}
 
 
-	private void createStart(QualifiedName context, QualifiedName qname)
+	private void createStart(QualifiedName context, QualifiedName qualifiedName)
 	{
-		List<Statement> statements = collators.get(context).get(qname);
+		List<Statement> statements = collators.get(context).get(qualifiedName);
 		List<XMLGregorianCalendar> times = getInstantaneousTimes(statements);
-		List<QualifiedName> triggers = getObjects(context, qname,
-				onto.QNAME_PROVO_entity);
-		List<QualifiedName> starters = getObjects(context, qname,
-				onto.QNAME_PROVO_hadActivity);
+		List<QualifiedName> triggers = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_entity);
+		List<QualifiedName> starters = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_hadActivity);
 		List<QualifiedName> activities = getSubjects(context,
-				onto.QNAME_PROVO_qualifiedStart, qname);
+				onto.QualifiedName_PROVO_qualifiedStart, qualifiedName);
 
-		List<Attribute> attributes = collectAttributes(context, qname,
+		List<Attribute> attributes = collectAttributes(context, qualifiedName,
 				Types.ProvType.START);
 
-		qname = getQualQName(qname);
+		qualifiedName = getQualqualifiedName(qualifiedName);
 
 		List<List<?>> perms = permute(activities, triggers, starters, times);
 		for (List<?> perm : perms)
 		{
-			WasStartedBy wsb = pFactory.newWasStartedBy(qname,
+			WasStartedBy wsb = pFactory.newWasStartedBy(qualifiedName,
 					(QualifiedName) perm.get(0), (QualifiedName) perm.get(1),
 					(QualifiedName) perm.get(2), (XMLGregorianCalendar) perm.get(3),
 					attributes);
@@ -471,49 +468,49 @@ public class QualifiedCollector extends RdfCollector {
 		}
 	}
 
-	private void createInvalidation(QualifiedName context, QualifiedName qname)
+	private void createInvalidation(QualifiedName context, QualifiedName qualifiedName)
 	{
-		List<Statement> statements = collators.get(context).get(qname);
+		List<Statement> statements = collators.get(context).get(qualifiedName);
 		List<XMLGregorianCalendar> times = getInstantaneousTimes(statements);
 
-		List<QualifiedName> activities = getObjects(context, qname,
-				onto.QNAME_PROVO_activity);
+		List<QualifiedName> activities = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_activity);
 		List<QualifiedName> entities = getSubjects(context,
-				onto.QNAME_PROVO_qualifiedInvalidation, qname);
+				onto.QualifiedName_PROVO_qualifiedInvalidation, qualifiedName);
 
-		List<Attribute> attributes = collectAttributes(context, qname,
+		List<Attribute> attributes = collectAttributes(context, qualifiedName,
 				Types.ProvType.INVALIDATION);
 
-		qname = getQualQName(qname);
+		qualifiedName = getQualqualifiedName(qualifiedName);
 
 		List<List<?>> perms = permute(entities, activities, times);
 		for (List<?> perm : perms)
 		{
-			WasInvalidatedBy wib = pFactory.newWasInvalidatedBy(qname,
+			WasInvalidatedBy wib = pFactory.newWasInvalidatedBy(qualifiedName,
 					(QualifiedName) perm.get(0), (QualifiedName) perm.get(1),
 					(XMLGregorianCalendar) perm.get(2), attributes);
 			store(context, wib);
 		}
 	}
 
-	private void createDelegation(QualifiedName context, QualifiedName qname)
+	private void createDelegation(QualifiedName context, QualifiedName qualifiedName)
 	{
-		List<QualifiedName> activities = getObjects(context, qname,
-				onto.QNAME_PROVO_hadActivity);
-		List<QualifiedName> agents = getObjects(context, qname,
-				onto.QNAME_PROVO_agent);
+		List<QualifiedName> activities = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_hadActivity);
+		List<QualifiedName> agents = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_agent);
 		List<QualifiedName> subordinates = getSubjects(context,
-				onto.QNAME_PROVO_qualifiedDelegation, qname);
+				onto.QualifiedName_PROVO_qualifiedDelegation, qualifiedName);
 
-		List<Attribute> attributes = collectAttributes(context, qname,
+		List<Attribute> attributes = collectAttributes(context, qualifiedName,
 				Types.ProvType.DELEGATION);
 
-		qname = getQualQName(qname);
+		qualifiedName = getQualqualifiedName(qualifiedName);
 
 		List<List<?>> perms = permute(subordinates, agents, activities);
 		for (List<?> perm : perms)
 		{
-			ActedOnBehalfOf aobo = pFactory.newActedOnBehalfOf(qname,
+			ActedOnBehalfOf aobo = pFactory.newActedOnBehalfOf(qualifiedName,
 					(QualifiedName) perm.get(0), (QualifiedName) perm.get(1),
 					(QualifiedName) perm.get(2), attributes);
 			store(context, aobo);
@@ -521,90 +518,90 @@ public class QualifiedCollector extends RdfCollector {
 
 	}
 
-	private void createCommunication(QualifiedName context, QualifiedName qname)
+	private void createCommunication(QualifiedName context, QualifiedName qualifiedName)
 	{
-		List<QualifiedName> activities = getObjects(context, qname,
-				onto.QNAME_PROVO_activity);
+		List<QualifiedName> activities = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_activity);
 		List<QualifiedName> effects = getSubjects(context,
-				onto.QNAME_PROVO_qualifiedCommunication, qname);
+				onto.QualifiedName_PROVO_qualifiedCommunication, qualifiedName);
 
-		List<Attribute> attributes = collectAttributes(context, qname,
+		List<Attribute> attributes = collectAttributes(context, qualifiedName,
 				Types.ProvType.COMMUNICATION);
 
-		qname = getQualQName(qname);
+		qualifiedName = getQualqualifiedName(qualifiedName);
 
 		List<List<?>> perms = permute(effects, activities);
 		for (List<?> perm : perms)
 		{
-			WasInformedBy wib = pFactory.newWasInformedBy(qname,
+			WasInformedBy wib = pFactory.newWasInformedBy(qualifiedName,
 					(QualifiedName) perm.get(0), (QualifiedName) perm.get(1), attributes);
 			store(context, wib);
 		}
 	}
 
-	private void createAttribution(QualifiedName context, QualifiedName qname)
+	private void createAttribution(QualifiedName context, QualifiedName qualifiedName)
 	{
-		List<QualifiedName> agents = getObjects(context, qname,
-				onto.QNAME_PROVO_agent);
+		List<QualifiedName> agents = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_agent);
 		List<QualifiedName> entities = getSubjects(context,
-				onto.QNAME_PROVO_qualifiedAttribution, qname);
+				onto.QualifiedName_PROVO_qualifiedAttribution, qualifiedName);
 
-		List<Attribute> attributes = collectAttributes(context, qname,
+		List<Attribute> attributes = collectAttributes(context, qualifiedName,
 				Types.ProvType.ATTRIBUTION);
 
-		qname = getQualQName(qname);
+		qualifiedName = getQualqualifiedName(qualifiedName);
 
 		List<List<?>> perms = permute(entities, agents);
 		for (List<?> perm : perms)
 		{
-			WasAttributedTo wat = pFactory.newWasAttributedTo(qname,
+			WasAttributedTo wat = pFactory.newWasAttributedTo(qualifiedName,
 					(QualifiedName) perm.get(0), (QualifiedName) perm.get(1), attributes);
 			store(context, wat);
 		}
 	}
 
-	private void createAssociation(QualifiedName context, QualifiedName qname)
+	private void createAssociation(QualifiedName context, QualifiedName qualifiedName)
 	{
-		List<QualifiedName> plans = getObjects(context, qname,
-				onto.QNAME_PROVO_hadPlan);
-		List<QualifiedName> agents = getObjects(context, qname,
-				onto.QNAME_PROVO_agent);
+		List<QualifiedName> plans = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_hadPlan);
+		List<QualifiedName> agents = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_agent);
 		List<QualifiedName> activities = getSubjects(context,
-				onto.QNAME_PROVO_qualifiedAssociation, qname);
+				onto.QualifiedName_PROVO_qualifiedAssociation, qualifiedName);
 
-		List<Attribute> attributes = collectAttributes(context, qname,
+		List<Attribute> attributes = collectAttributes(context, qualifiedName,
 				Types.ProvType.ASSOCIATION);
 
-		qname = getQualQName(qname);
+		qualifiedName = getQualqualifiedName(qualifiedName);
 
 		List<List<?>> perms = permute(activities, agents, plans);
 		for (List<?> perm : perms)
 		{
-			WasAssociatedWith waw = pFactory.newWasAssociatedWith(qname,
+			WasAssociatedWith waw = pFactory.newWasAssociatedWith(qualifiedName,
 					(QualifiedName) perm.get(0), (QualifiedName) perm.get(1),
 					(QualifiedName) perm.get(2), attributes);
 			store(context, waw);
 		}
 	}
 
-	private void createUsage(QualifiedName context, QualifiedName qname)
+	private void createUsage(QualifiedName context, QualifiedName qualifiedName)
 	{
-		List<Statement> statements = collators.get(context).get(qname);
+		List<Statement> statements = collators.get(context).get(qualifiedName);
 		List<XMLGregorianCalendar> times = getInstantaneousTimes(statements);
-		List<QualifiedName> entities = getObjects(context, qname,
-				onto.QNAME_PROVO_entity);
+		List<QualifiedName> entities = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_entity);
 		List<QualifiedName> activities = getSubjects(context,
-				onto.QNAME_PROVO_qualifiedUsage, qname);
+				onto.QualifiedName_PROVO_qualifiedUsage, qualifiedName);
 
-		List<Attribute> attributes = collectAttributes(context, qname,
+		List<Attribute> attributes = collectAttributes(context, qualifiedName,
 				Types.ProvType.USAGE);
 
-		qname = getQualQName(qname);
+		qualifiedName = getQualqualifiedName(qualifiedName);
 
 		List<List<?>> perms = permute(activities, entities, times);
 		for (List<?> perm : perms)
 		{
-			Used used = pFactory.newUsed(qname, 
+			Used used = pFactory.newUsed(qualifiedName, 
 			                             (QualifiedName) perm.get(0),
 			                             (QualifiedName) perm.get(1), 
 			                             (XMLGregorianCalendar) perm.get(2),
@@ -616,38 +613,38 @@ public class QualifiedCollector extends RdfCollector {
 	
 	 
 
-	private QualifiedName getQualQName(QualifiedName qname)
+	private QualifiedName getQualqualifiedName(QualifiedName qualifiedName)
 	{
-		if (qname.getNamespaceURI() == "" || qname.getNamespaceURI().equals(BNODE_NS))
+		if (qualifiedName.getNamespaceURI() == "" || qualifiedName.getNamespaceURI().equals(BNODE_NS))
 		{
-			BNode bnode = new BNodeImpl(qname.getLocalPart());
+			BNode bnode = new BNodeImpl(qualifiedName.getLocalPart());
 			if (!isBNodeReferenced(bnode))
 			{
 				return null;
 			}
-			return pFactory.newQualifiedName(BNODE_NS, qname.getLocalPart(), "bnode");
+			return pFactory.newQualifiedName(BNODE_NS, qualifiedName.getLocalPart(), "bnode");
 		}
-		return qname;
+		return qualifiedName;
 	}
 
-	private void createGeneration(QualifiedName context, QualifiedName qname)
+	private void createGeneration(QualifiedName context, QualifiedName qualifiedName)
 	{
-		List<Statement> statements = collators.get(context).get(qname);
+		List<Statement> statements = collators.get(context).get(qualifiedName);
 		List<XMLGregorianCalendar> times = getInstantaneousTimes(statements);
-		List<QualifiedName> activities = getObjects(context, qname,
-				onto.QNAME_PROVO_activity);
+		List<QualifiedName> activities = getObjects(context, qualifiedName,
+				onto.QualifiedName_PROVO_activity);
 		List<QualifiedName> entities = getSubjects(context,
-				onto.QNAME_PROVO_qualifiedGeneration, qname);
+				onto.QualifiedName_PROVO_qualifiedGeneration, qualifiedName);
 
-		List<Attribute> attributes = collectAttributes(context, qname,
+		List<Attribute> attributes = collectAttributes(context, qualifiedName,
 				Types.ProvType.GENERATION);
 
-		qname = getQualQName(qname);
+		qualifiedName = getQualqualifiedName(qualifiedName);
 
 		List<List<?>> perms = permute(entities, activities, times);
 		for (List<?> perm : perms)
 		{
-			WasGeneratedBy wgb = pFactory.newWasGeneratedBy(qname,
+			WasGeneratedBy wgb = pFactory.newWasGeneratedBy(qualifiedName,
 					(QualifiedName) perm.get(0), (QualifiedName) perm.get(1),
 					(XMLGregorianCalendar) perm.get(2), attributes);
 			store(context, wgb);

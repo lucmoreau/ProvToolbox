@@ -451,33 +451,6 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	return infl;
     }
 
-    public QualifiedName addInfluenceDELETEME(QualifiedName infl, QualifiedName subject, QualifiedName object,
-			      XMLGregorianCalendar time, QualifiedName other,
-			      boolean someOther,
-			      Collection<Attribute> attributes,
-			      QualifiedName qualifiedClass) {
-	if ((infl != null) || (time != null) || (other != null) || someOther
-		|| ((attributes != null) && !(attributes.isEmpty()))) {
-	    infl = assertType(infl, qualifiedClass);
-	    if (object != null)
-		assertInfluencer(infl, object, qualifiedClass);
-	    if (subject != null) // scruffy provenance: subject may not be
-				 // defined
-		assertQualifiedInfluence(subject, infl, qualifiedClass);
-	    if (time != null)
-		assertAtTime(infl, time);
-	    if (other != null)
-		asserterOther(infl, other, qualifiedClass);
-	    processAttributes(infl, attributes);
-	}
-
-	if ((binaryProp(infl, subject)) && (object != null))
-	    gb.assertStatement(gb.createObjectProperty(subject,
-						       onto.unqualifiedTable.get(qualifiedClass),
-						       object));
-
-	return infl;
-    }
 
     public void asserterOther(QualifiedName subject, QualifiedName other, QualifiedName qualifiedClass) {
 	gb.assertStatement(gb.createObjectProperty(subject,

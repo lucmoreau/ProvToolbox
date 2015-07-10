@@ -67,8 +67,6 @@ public class Utility {
 	rdfParser.parse(inputStream, streamName);
 	Document doc=rdfCollector.getDocument();
 	Namespace ns=doc.getNamespace();
-	ns.unregister("xsd", "http://www.w3.org/2001/XMLSchema#");
-	ns.register("xsd", "http://www.w3.org/2001/XMLSchema");
 	return doc;
     }
 
@@ -98,8 +96,6 @@ public class Utility {
 	RdfConstructor rdfc = new RdfConstructor(new SesameGraphBuilder(rep, pFactory), pFactory);
 			
 	Namespace ns=new Namespace(document.getNamespace());	
-	ns.unregister("xsd", "http://www.w3.org/2001/XMLSchema");
-	ns.register("xsd", "http://www.w3.org/2001/XMLSchema#");
 	ns.register("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 	rdfc.setNamespace(ns);
 

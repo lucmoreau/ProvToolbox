@@ -23,6 +23,7 @@ import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.QualifiedNameUtils;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementAction;
@@ -363,10 +364,12 @@ public class ExpandAction implements StatementAction {
 			}
 		}
 	}
+	
+	final QualifiedNameUtils qnU=new QualifiedNameUtils();
 
     public QualifiedName getUUIDQualifiedName() {
 	UUID uuid=UUID.randomUUID();
-	return pf.newQualifiedName(URN_UUID_NS, uuid.toString(), UUID_PREFIX);
+	return pf.newQualifiedName(URN_UUID_NS, qnU.escapeProvLocalName(uuid.toString()), UUID_PREFIX);
     }
 
     public void addOrderAttribute(HasOther res) {

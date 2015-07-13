@@ -597,14 +597,23 @@ public class RoundTripFromJavaTest extends TestCase {
     
     public void testEntity100() {
         Entity e = pFactory.newEntity(q("100\\-entity"), "entity10");
-   /*     e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
+        e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
                                            pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,\\-\\:\\;\\[\\]\\.",
                                                      EX2_PREFIX),
-                                           name.PROV_QUALIFIED_NAME));       */ 
+                                           name.PROV_QUALIFIED_NAME));      
         e.getOther().add(pFactory.newOther(EX_NS, "a01bc", EX_PREFIX,
                                            pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,\\-\\:\\;\\[\\]\\.",
                                                      EX2_PREFIX),
-                                           name.PROV_QUALIFIED_NAME));        
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "?a\\=b", EX_PREFIX,
+                                           1,
+                                           name.XSD_INT));  
+        e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
+                                           "mystring",
+                                           name.XSD_STRING));  
+        e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
+                                           pFactory.newInternationalizedString("ma chaine", "fr"),
+                                           name.PROV_LANG_STRING));  
         makeDocAndTest(e, "target/entity100");
     }
 

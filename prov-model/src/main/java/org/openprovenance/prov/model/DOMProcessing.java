@@ -128,7 +128,7 @@ final public class DOMProcessing {
     final static public Element newElement(QualifiedName elementName, QualifiedName value) {
 	org.w3c.dom.Document doc = builder.newDocument();
 	Element el = doc.createElementNS(elementName.getNamespaceURI(),
-					 qualifiedNameToString(elementName));
+					 qualifiedNameToString(elementName.toQName()));
 	
 	// 1. we add an xsi:type="xsd:QName" attribute
 	//   making sure xsi and xsd prefixes are appropriately declared.
@@ -158,34 +158,19 @@ final public class DOMProcessing {
 
     /**
      * Creates a DOM {@link Element} for a {@link QualifiedName} and content given by value and type
-     * @param name a {@link QualifiedName} to denote the element name
+     * @param elementName a {@link QualifiedName} to denote the element name
      * @param value for the created {@link Element}
      * @param type of the value
      * @return a new {@link Element}
      */
-    final static public Element newElement(QualifiedName name, String value, QualifiedName type) {
+    final static public Element newElement(QualifiedName elementName, String value, QualifiedName type) {
 	org.w3c.dom.Document doc = builder.newDocument();
 	String qualifiedNameString;
 	
-	boolean withDigit=false;
-	boolean withNullLocal=false;
-	String localPart = name.getLocalPart();
-	if (localPart==null) {
-	    withNullLocal=true;
-	} else if (Character.isDigit(localPart.charAt(0))) {
-	    withDigit=true;
-	}
-	qualifiedNameString= qualifiedNameToString(name);
-	if (withNullLocal ) {
-	    qualifiedNameString=qualifiedNameString.replace(":", ":_");
-	} else if (withDigit) {
-	    qualifiedNameString=qualifiedNameString.replace(":", ":_");
-	} else {    
-	}
-	
-	    //System.out.println(" newElement " + qualifiedNameString + " " + withDigit);
 
-	Element el = doc.createElementNS(name.getNamespaceURI(),
+	qualifiedNameString= qualifiedNameToString(elementName.toQName());
+
+	Element el = doc.createElementNS(elementName.getNamespaceURI(),
 	                                 qualifiedNameString);
 	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qualifiedNameToString(type));
 	//if (withNullLocal || withDigit) {
@@ -197,13 +182,13 @@ final public class DOMProcessing {
     }
 
 
-    final public static Element newElement(QualifiedName name, 
+    final public static Element newElement(QualifiedName qualifiedName, 
                                            String value, 
                                            QualifiedName type,
                                            String lang) {
 	org.w3c.dom.Document doc = builder.newDocument();
-	Element el = doc.createElementNS(name.getNamespaceURI(),
-	                                 qualifiedNameToString(name));				 
+	Element el = doc.createElementNS(qualifiedName.getNamespaceURI(),
+	                                 qualifiedNameToString(qualifiedName.toQName()));				 
 	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qualifiedNameToString(type));
 	el.setAttributeNS(NamespacePrefixMapper.XML_NS, "xml:lang", lang);
         el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xml", NamespacePrefixMapper.XML_NS);

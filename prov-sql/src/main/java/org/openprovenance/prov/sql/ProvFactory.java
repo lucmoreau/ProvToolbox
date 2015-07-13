@@ -17,6 +17,8 @@ import org.openprovenance.prov.model.LiteralConstructor;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvSerialiser;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.QualifiedNameUtils;
+import org.openprovenance.prov.model.exception.QualifiedNameException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,6 +27,8 @@ import javax.xml.parsers.ParserConfigurationException;
 /** A stateless factory for PROV objects. */
 
 public class ProvFactory extends org.openprovenance.prov.model.ProvFactory implements LiteralConstructor { 
+    
+    final private QualifiedNameUtils qnU=new QualifiedNameUtils();
 
     static public DocumentBuilder builder;
 
@@ -181,11 +185,17 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 	return null;
     }
 
-	@Override
-	public QualifiedName newQualifiedName(String namespace, String local,
-			String prefix) {
-		return new org.openprovenance.prov.sql.QualifiedName(namespace, local, prefix);
+    @Override
+    public QualifiedName newQualifiedName(String namespace, String local,
+                                          String prefix) {
+	//FIXME: make this test optional
+	if (qnU.patternExactMatch(local)) {
+	    return new org.openprovenance.prov.sql.QualifiedName(namespace, local, prefix);
+	} else {
+	    throw new QualifiedNameException("local not valid " + local);
 	}
+
+    }
 	
 
     public Namespace newNamespace(Namespace ns) {

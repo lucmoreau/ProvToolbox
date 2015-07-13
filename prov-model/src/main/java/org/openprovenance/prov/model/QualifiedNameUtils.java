@@ -1,8 +1,9 @@
 package org.openprovenance.prov.model;
-import org.apache.commons.lang3.StringEscapeUtils;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.text.translate.AggregateTranslator;
 import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
-import org.apache.commons.lang3.text.translate.EntityArrays;
 import org.apache.commons.lang3.text.translate.JavaUnicodeEscaper;
 import org.apache.commons.lang3.text.translate.LookupTranslator;
 import org.apache.commons.lang3.text.translate.UnicodeUnescaper;
@@ -18,12 +19,15 @@ public class QualifiedNameUtils {
 	                                                	 {"(", "\\("},
 	                                                	 {")", "\\)"},
 	                                                	 {",", "\\,"},
-	                                                	 {"-", "\\-"},
+	                                                	// {"-", "\\-"}, Should not be escaped since - is accepted by PN_CHARS
 	                                                	 {":", "\\:"},
 	                                                	 {";", "\\;"},
 	                                                	 {"[", "\\["},
 	                                                	 {"]", "\\]"},
 	                                                	 {".", "\\."},
+	                                                	// {"%", "\\%"}, // This is not in PROV-N but is required for <percent> production
+	                                                	// {"<", "%3C"},
+	                                                	// {">", "%3E"},
 	                                                 }),
 	                                                 //new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE()),
 	                                                 JavaUnicodeEscaper.outsideOf(32, 0x7f) 
@@ -38,12 +42,15 @@ public class QualifiedNameUtils {
 	                                                	 {"\\(", "("},
 	                                                	 {"\\)", ")"},
 	                                                	 {"\\,", ","},
-	                                                	 {"\\-", "-"},
+	                                                	 {"\\-", "-"}, // - is a PN_CHARS_ESC
 	                                                	 {"\\:", ":"},
 	                                                	 {"\\;", ";"},
 	                                                	 {"\\[", "["},
 	                                                	 {"\\]", "]"},
 	                                                	 {"\\.", "."},
+	                                                	// {"\\%", "%"},  // This is not in PROV-N but is required for <percent> production
+	                                                	// {"%3C", "<"},
+	                                                	// {"%3E", ">"},
 	                                                 }),
 	                                                 new UnicodeUnescaper() 
 		    );
@@ -51,6 +58,7 @@ public class QualifiedNameUtils {
 
     
     public String escapeProvLocalName(String localName) {
+	if ("-".equals(localName)) return "\\-";
 	return ESCAPE_PROV_LOCAL_NAME.translate(localName);
     }
 
@@ -140,4 +148,29 @@ public class QualifiedNameUtils {
 	String s=UNESCAPE_FROM_XML_QNAME_LOCAL_NAME.translate(localName);
 	return s;
     }
+    
+    static final String PN_CHARS_U="[A-Za-z_]";  //TODO: [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+    static final String PN_CHARS="[A-Za-z_\\-0-9]"; //TODO: | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+    static final String PN_CHARS_ESC="((\\\\)([\\=\\'\\(\\)\\,\\-\\:\\;\\[\\]\\.\\%]))";
+    static final String HEX="[0-9A-Fa-f]";
+    static final String PERCENT="(%(" + HEX + ")(" + HEX +"))"; 
+    static final String PN_CHARS_OTHERS="(([/@~&\\+\\*\\?#$!])|" + PN_CHARS_ESC + "|" + PERCENT + ")"; // Percent
+    
+    static final String PN_LOCAL= "(((" + PN_CHARS_U + ")|([0-9])|(" + PN_CHARS_OTHERS + ")))" 
+	                       + "((((" + PN_CHARS + ")|(\\.)|(" + PN_CHARS_OTHERS + ")))*"
+	                        + "(((" + PN_CHARS + ")|(" + PN_CHARS_OTHERS + "))))?";
+    
+    final Pattern pat=Pattern.compile(QualifiedNameUtils.PN_LOCAL);
+    
+    public boolean patternExactMatch (String input) {
+	if ("".equals(input)) return true;
+	Matcher match=pat.matcher(input);
+	if (match.find()) {
+	    System.out.println("found " + input.substring(match.start(),match.end()));
+	    return match.start()==0 && match.end()==input.length();
+	} else {
+	    return false;
+	}
+    }
+
 }

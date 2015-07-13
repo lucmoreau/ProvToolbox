@@ -6,15 +6,20 @@ import java.io.InputStream;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeFactory;
+
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.ProvSerialiser;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.QualifiedNameUtils;
+import org.openprovenance.prov.model.exception.QualifiedNameException;
 
 /** A stateless factory for PROV objects. */
 
 //TODO: move the QNameExport capability outside the factory, and make it purely stateless, without namespace. 
 
 public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
+    
+    final private QualifiedNameUtils qnU=new QualifiedNameUtils();
 
     private static String fileName = "toolbox.properties";
 
@@ -134,12 +139,18 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     public org.openprovenance.prov.model.QualifiedName newQualifiedName(String namespace,
 									String local,
 									String prefix) {
-	return new org.openprovenance.prov.xml.QualifiedName(namespace, local, prefix);
-    }
-	@Override
-	public ProvSerialiser getSerializer() throws JAXBException {
-		return new org.openprovenance.prov.xml.ProvSerialiser();
+	//FIXME: make this test optional
+	if (qnU.patternExactMatch(local)) {
+	    return new org.openprovenance.prov.xml.QualifiedName(namespace, local, prefix);
+	} else {
+	    throw new QualifiedNameException("local not valid " + local);
 	}
+    }
+    
+    @Override
+    public ProvSerialiser getSerializer() throws JAXBException {
+	return new org.openprovenance.prov.xml.ProvSerialiser();
+    }
 
 
 }

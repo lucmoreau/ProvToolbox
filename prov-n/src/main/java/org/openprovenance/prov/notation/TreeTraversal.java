@@ -370,8 +370,12 @@ public class TreeTraversal {
             List<Key> keys=new LinkedList<Key>();
             for (int i=0; i< ast.getChildCount(); i++) {
                 Object o=convert(ast.getChild(i));
-                Object [] pair=(Object[]) o;         
-                keys.add(pFactory.newKey(pair[0], (QualifiedName)pair[1]));
+                if (o instanceof LangString) {
+                    keys.add(pFactory.newKey(o, name.PROV_LANG_STRING));
+                } else {
+                    Object [] pair=(Object[]) o;         
+                    keys.add(pFactory.newKey(pair[0], (QualifiedName)pair[1]));
+                }
 
             }
             return keys;
@@ -511,7 +515,7 @@ public class TreeTraversal {
             } else if (val1 instanceof LangString) {
             	return pFactory.newAttribute(stringToQualifiedName(attr1),
             	                             val1,
-            	                             name.XSD_STRING);	
+            	                             name.PROV_LANG_STRING);	
             } else if (val1 instanceof Integer) {
             	return pFactory.newAttribute(stringToQualifiedName(attr1),
             	                             val1,
@@ -567,7 +571,7 @@ public class TreeTraversal {
                 if (tree_langtag!=null) {
                     LangString lstring=pFactory.newInternationalizedString(unescape(unwrap(typedLiteral_string)),
                                                                    stripAmpersand(convertToken(getTokenString(tree_langtag))));
-                    return convertTypedLiteral(lstring,typedLiteral_datatype);
+                    return convertTypedLiteral(lstring,name.PROV_LANG_STRING);
                 } else {
                     typedLiteral_string=unescape(unwrap(typedLiteral_string));
                     return convertTypedLiteral(typedLiteral_string,typedLiteral_datatype);

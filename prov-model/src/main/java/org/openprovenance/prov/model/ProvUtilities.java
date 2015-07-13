@@ -439,7 +439,7 @@ public class ProvUtilities {
    	return s.replace("\"", "\\\"");
        }
      
- 
+     public final static String internationalizedStringUri=NamespacePrefixMapper.PROV_NS+"InternationalizedString";
 
      //TODO: move this code to ValueConverter
      //TODO: what else should be escaped?
@@ -448,7 +448,7 @@ public class ProvUtilities {
   	    LangString istring = (LangString) val;
   	    return "\"" + istring.getValue() + 
   		    ((istring.getLang()==null) ? "\"" : "\"@" + istring.getLang())
-  		    + ((xsdType==null)? "" : " %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType));
+  		    + (((xsdType==null)||(xsdType.getUri().equals(internationalizedStringUri)))? "" : " %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType));
   	} else if (val instanceof QualifiedName) {
   	    QualifiedName qn = (QualifiedName) val;	    
   	    return "'" + Namespace.qualifiedNameToStringWithNamespace(qn) + "'";

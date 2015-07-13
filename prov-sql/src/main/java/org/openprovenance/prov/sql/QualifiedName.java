@@ -12,6 +12,9 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.namespace.QName;
+
+import org.openprovenance.prov.model.QualifiedNameUtils;
 
 
 
@@ -30,6 +33,8 @@ public class QualifiedName
  implements org.openprovenance.prov.model.QualifiedName
     
 {
+	
+	static final QualifiedNameUtils qnU=new QualifiedNameUtils();
 
     public QualifiedName() {} // for the purpose of persistence
 	
@@ -38,6 +43,13 @@ public class QualifiedName
         this.local=localPart;
         this.prefix=prefix;
     }
+    
+    public QualifiedName(QName id) {
+    	this.namespace=id.getNamespaceURI();
+    	this.local=qnU.escapeProvLocalName(qnU.unescapeFromXsdLocalName(id.getLocalPart()));
+    	this.prefix=id.getPrefix();
+    }
+
 
     @XmlAttribute(name = "pk")
     protected Long pk;
@@ -47,12 +59,15 @@ public class QualifiedName
      */
     @Override
     public javax.xml.namespace.QName toQName () {
+    	String escapedLocal=qnU.escapeToXsdLocalName(qnU.unescapeProvLocalName(local));
     	if (prefix==null) {
-    		return new javax.xml.namespace.QName(namespace,local);		
+    		return new javax.xml.namespace.QName(namespace,escapedLocal);		
     	} else {
-    		return new javax.xml.namespace.QName(namespace,local,prefix);
+    		return new javax.xml.namespace.QName(namespace,escapedLocal,prefix);
     	}
     }
+
+        
 
     /**
      * Gets the value of the pk property.
@@ -89,7 +104,7 @@ public class QualifiedName
     @Column(name = "URI", columnDefinition="TEXT")
     public String getUri() {
 	return this.getNamespaceURI()
-		+ this.getLocalPart();
+		+ qnU.unescapeProvLocalName(getLocalPart());
     } 
     
     /* (non-Javadoc)
@@ -107,10 +122,10 @@ public class QualifiedName
 
     public void setRefItem(String target) {
     	if (target!=null) {
-	    javax.xml.namespace.QName qname=javax.xml.namespace.QName.valueOf(target);
-	    setNamespaceURI(qname.getNamespaceURI());
-            setLocalPart(qname.getLocalPart());
-            setPrefix(qname.getPrefix());
+    		javax.xml.namespace.QName qname=javax.xml.namespace.QName.valueOf(target);
+    		setNamespaceURI(qname.getNamespaceURI());
+    		setLocalPart(qname.getLocalPart());
+    		setPrefix(qname.getPrefix());
     	}
     }
 

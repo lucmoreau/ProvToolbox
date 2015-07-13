@@ -46,6 +46,8 @@ public class QualifiedNameTest extends TestCase {
 	assertTrue(doEscape("a01b.c","a01b\\.c"));
 	assertTrue(doEscape("='(),-:;[].","\\=\\'\\(\\)\\,\\-\\:\\;\\[\\]\\."));
 	assertTrue(doEscape("?a\\=b","?a\\\\=b"));
+	assertTrue(doEscape("55348dff-4fcc-4ac2-ab56-641798c64400","55348dff\\-4fcc\\-4ac2\\-ab56\\-641798c64400"));
+
 
    }
 
@@ -65,6 +67,7 @@ public class QualifiedNameTest extends TestCase {
 	assertTrue(doUnescape("a01b.c","a01b\\.c"));
 	assertTrue(doUnescape("='(),-:;[].","\\=\\'\\(\\)\\,\\-\\:\\;\\[\\]\\."));
 	assertTrue(doUnescape("?a\\=b","?a\\\\=b"));
+	assertTrue(doUnescape("55348dff-4fcc-4ac2-ab56-641798c64400","55348dff\\-4fcc\\-4ac2\\-ab56\\-641798c64400"));
 
    }
     
@@ -83,11 +86,13 @@ public class QualifiedNameTest extends TestCase {
 	assertTrue(doRT1("a01b]c"));
 	assertTrue(doRT1("a01b.c"));
 	assertTrue(doRT1("='(),-:;[]."));
-	assertTrue(doRT1("?a\\=b"));
+	assertTrue(doRT1("?a=b"));
+	assertTrue(doRT1("55348dff-4fcc-4ac2-ab56-641798c64400"));
+
 
    }
 
-    public void testRoundTripFromUnescaped2 () {
+    public void testRoundTripFromEscaped2 () {
 	assertTrue(doRT2("a01bc"));
 	assertTrue(doRT2("a01b\\c"));
 	assertTrue(doRT2("a01b\\=c"));
@@ -102,6 +107,10 @@ public class QualifiedNameTest extends TestCase {
 	assertTrue(doRT2("a01b\\]c"));
 	assertTrue(doRT2("a01b\\.c"));
 	assertTrue(doRT2("\\=\\'\\(\\)\\,\\-\\:\\;\\[\\]\\."));
+	assertTrue(doRT2("?a\\=b"));
+	assertTrue(doRT2("55348dff\\-4fcc\\-4ac2\\-ab56\\-641798c64400"));
+
+	
    }
 
  

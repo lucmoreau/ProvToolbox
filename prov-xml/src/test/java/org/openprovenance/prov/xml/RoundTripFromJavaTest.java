@@ -594,6 +594,19 @@ public class RoundTripFromJavaTest extends TestCase {
         addFurtherAttributes(a);
         makeDocAndTest(a, "target/entity10");
     }
+    
+    public void testEntity100() {
+        Entity e = pFactory.newEntity(q("100\\-entity"), "entity10");
+   /*     e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,\\-\\:\\;\\[\\]\\.",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));       */ 
+        e.getOther().add(pFactory.newOther(EX_NS, "a01bc", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,\\-\\:\\;\\[\\]\\.",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));        
+        makeDocAndTest(e, "target/entity100");
+    }
 
     // /////////////////////////////////////////////////////////////////////
 

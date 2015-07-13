@@ -3,6 +3,8 @@ package org.openprovenance.prov.xml;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.namespace.QName;
 
+import org.openprovenance.prov.model.QualifiedNameUtils;
+
 
 /**
  * <p>Java class for QualifiedName complex type.
@@ -15,6 +17,8 @@ public class QualifiedName
  implements org.openprovenance.prov.model.QualifiedName
     
 {
+    
+    final QualifiedNameUtils qnU=new QualifiedNameUtils();
 
     public QualifiedName(String namespaceURI, String localPart, String prefix) {
         this.namespace=namespaceURI;
@@ -24,7 +28,7 @@ public class QualifiedName
 
     public QualifiedName(QName id) {
 	this.namespace=id.getNamespaceURI();
-	this.local=id.getLocalPart();
+	this.local=qnU.escapeProvLocalName(qnU.unescapeFromXsdLocalName(id.getLocalPart()));
 	this.prefix=id.getPrefix();
     }
 
@@ -36,11 +40,16 @@ public class QualifiedName
      */
     @Override
     public javax.xml.namespace.QName toQName () {
+	String escapedLocal=qnU.escapeToXsdLocalName(getUnescapedLocalPart());
 	if (prefix==null) {
-	    return new javax.xml.namespace.QName(namespace,local);
+	    return new javax.xml.namespace.QName(namespace,escapedLocal);
 	} else {
-	    return new javax.xml.namespace.QName(namespace,local,prefix);
+	    return new javax.xml.namespace.QName(namespace,escapedLocal,prefix);
 	}
+    }
+
+    public String getUnescapedLocalPart() {
+	return qnU.unescapeProvLocalName(local);
     }
     
 
@@ -50,7 +59,7 @@ public class QualifiedName
     @Override
     public String getUri() {
 	return this.getNamespaceURI()
-		+ this.getLocalPart();
+		+ this.getUnescapedLocalPart();
     } 
     
     /* (non-Javadoc)

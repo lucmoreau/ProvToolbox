@@ -39,7 +39,7 @@ public class PC1FullTest extends org.openprovenance.prov.xml.PC1FullTest {
     }
 
     @Override
-    public void subtestSchemaValidateXML() {
+    public void TODOtestSchemaValidateXML() {
         // no need to do it here
     }
 

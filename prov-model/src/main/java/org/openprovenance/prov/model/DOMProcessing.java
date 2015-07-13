@@ -34,6 +34,8 @@ final public class DOMProcessing {
     
     public static final String XSD_NS_FOR_XML = "http://www.w3.org/2001/XMLSchema"; //Note, this is the xml schema namespace URI without #
     private final static String FOR_XML_XSD_QNAME=NamespacePrefixMapper.XSD_NS + "QName";  
+    
+    private final QualifiedNameUtils qnU=new QualifiedNameUtils();
 
     private final ProvFactory pFactory;
     
@@ -63,11 +65,17 @@ final public class DOMProcessing {
 	return ns.qualifiedNameToString(name);
     }
     
+    static public String qualifiedNameToString(javax.xml.namespace.QName name) {
+	Namespace ns=Namespace.getThreadNamespace();
+	return ns.qualifiedNameToString(name);
+    }
+    
 
     
 
     /**
-     * Converts a string to a QualifiedName, extracting namespace from the DOM.
+     * Converts a string to a QualifiedName, extracting namespace from the DOM.  Ensures that the generated qualified name is 
+     * properly escaped, according to PROV-N syntax.
      * 
      * @param str
      *            string to convert to QualifiedName
@@ -89,7 +97,8 @@ final public class DOMProcessing {
         }
         String prefix = str.substring(0, index);
         String local = str.substring(index + 1, str.length());
-        QualifiedName qn = pFactory.newQualifiedName(convertNsFromXml(el.lookupNamespaceURI(prefix)), local, prefix);
+        String escapedLocal=qnU.escapeProvLocalName(qnU.unescapeFromXsdLocalName(local));
+        QualifiedName qn = pFactory.newQualifiedName(convertNsFromXml(el.lookupNamespaceURI(prefix)), escapedLocal, prefix);
         return qn;
     }
 
@@ -107,8 +116,6 @@ final public class DOMProcessing {
 	}
 	return uri;
     }
-
-
 
 
     /** Creates a DOM {@link Element} for a {@link QualifiedName} and content given by value
@@ -130,7 +137,7 @@ final public class DOMProcessing {
 
 	// 2. We add the QualifiedName's string representation as child of the element
 	//    This representation depends on the extant prefix-namespace mapping
-	String valueAsString=qualifiedNameToString(value);
+	String valueAsString=qualifiedNameToString(value.toQName());
 	el.appendChild(doc.createTextNode(valueAsString));
 	
 	// 3. We make sure that the QualifiedName's prefix is given the right namespace, or the default namespace is declared if there is no prefix

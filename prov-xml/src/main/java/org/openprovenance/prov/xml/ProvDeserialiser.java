@@ -111,21 +111,11 @@ public class ProvDeserialiser {
 	        SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	        Source [] sources=new Source[2+schemaFiles.length];
 	        int schemaCount;
-	        if (withCurie) {
-	            schemaCount=3;
-	            sources=new Source[schemaCount+schemaFiles.length];
-	            sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"curie.xsd"));
-	            sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"xml.xsd"));
-	            sources[2]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20130307.xsd")); //TODO: here to use: prov-20130307-curie.xsd
-	        } else {
-	            schemaCount=3;
-	            sources=new Source[schemaCount+schemaFiles.length];
-	            sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"curie.xsd"));
-	            sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"xml.xsd"));
-	            sources[2]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20130307.xsd"));
-	        }
-
-
+	        schemaCount=2;
+	        sources=new Source[schemaCount+schemaFiles.length];
+	        sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"xml.xsd"));
+	        sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20130307.xsd")); //TODO: here to use: prov-20130307-curie.xsd
+	       
 	        int i=0;
 	        for (String schemaFile: schemaFiles) {
 	            sources[schemaCount+i]=new StreamSource(new File(schemaFile));

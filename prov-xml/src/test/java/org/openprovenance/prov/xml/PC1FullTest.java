@@ -529,14 +529,15 @@ public class PC1FullTest extends TestCase {
 
     }
 
-    public void subtestSchemaValidateXML() throws javax.xml.bind.JAXBException,
+    public void TODOtestSchemaValidateXML() throws javax.xml.bind.JAXBException,
 	    org.xml.sax.SAXException, java.io.IOException {
 
 	ProvDeserialiser deserial = ProvDeserialiser
 	        .getThreadProvDeserialiser();
 
-	String[] schemaFiles = new String[1];
+	String[] schemaFiles = new String[2];
 	schemaFiles[0] = "src/test/resources/pc1.xsd";
+	schemaFiles[1] = "src/test/resources/prim.xsd";
 	deserial.validateDocument(schemaFiles, new File("target/pc1-full.xml"));
 
     }

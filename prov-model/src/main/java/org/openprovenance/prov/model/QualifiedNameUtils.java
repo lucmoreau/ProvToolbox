@@ -6,6 +6,7 @@ import org.apache.commons.lang3.text.translate.AggregateTranslator;
 import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
 import org.apache.commons.lang3.text.translate.JavaUnicodeEscaper;
 import org.apache.commons.lang3.text.translate.LookupTranslator;
+import org.apache.commons.lang3.text.translate.UnicodeEscaper;
 import org.apache.commons.lang3.text.translate.UnicodeUnescaper;
 
 public class QualifiedNameUtils {
@@ -30,7 +31,7 @@ public class QualifiedNameUtils {
 	                                                	// {">", "%3E"},
 	                                                 }),
 	                                                 //new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE()),
-	                                                 JavaUnicodeEscaper.outsideOf(32, 0x7f) 
+	                                                 UnicodeEscaper.outsideOf(32, 0xFFFD) // 0x7f
 		    );
 
     public static final CharSequenceTranslator UNESCAPE_PROV_LOCAL_NAME = 
@@ -52,7 +53,7 @@ public class QualifiedNameUtils {
 	                                                	// {"%3C", "<"},
 	                                                	// {"%3E", ">"},
 	                                                 }),
-	                                                 new UnicodeUnescaper() 
+	                                                 new UnicodeUnescaper()
 		    );
 
 
@@ -95,7 +96,7 @@ public class QualifiedNameUtils {
 	                                                	 {"$", INNER_ESCAPE + "24"},
 	                                                	 {"!", INNER_ESCAPE + "21"},
 	                                                 }),
-	                                                 JavaUnicodeEscaper.outsideOf(32, 0x7f) 
+	                                                 JavaUnicodeEscaper.outsideOf(32, 0x1FFF) // 0x7f
 		    );
 
     public static final CharSequenceTranslator UNESCAPE_FROM_XML_QNAME_LOCAL_NAME = 
@@ -125,7 +126,7 @@ public class QualifiedNameUtils {
 	                                                	 {INNER_ESCAPE + "24", "$"},
 	                                                	 {INNER_ESCAPE + "21", "!"},
 	                                                 }),
-	                                                 JavaUnicodeEscaper.outsideOf(32, 0x7f) 
+	                                                 JavaUnicodeEscaper.outsideOf(32, 0xFFF) // 0x7f 
 		    );
     
     public static final boolean isNCNameStartCharToEscape (char c) { // what about unicode?
@@ -149,12 +150,12 @@ public class QualifiedNameUtils {
 	return s;
     }
     
-    static final String PN_CHARS_U="[A-Za-z_]";  //TODO: [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
-    static final String PN_CHARS="[A-Za-z_\\-0-9]"; //TODO: | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+    static final String PN_CHARS_U="[A-Za-z_\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD]";  // [#x10000-#xEFFFF]
+    static final String PN_CHARS="(" + PN_CHARS_U + "|[0-9\\-\\u00B7\\u0300-\\u036F\\u203F-\\u2040])"; 
     static final String PN_CHARS_ESC="((\\\\)([\\=\\'\\(\\)\\,\\-\\:\\;\\[\\]\\.\\%]))";
     static final String HEX="[0-9A-Fa-f]";
     static final String PERCENT="(%(" + HEX + ")(" + HEX +"))"; 
-    static final String PN_CHARS_OTHERS="(([/@~&\\+\\*\\?#$!])|" + PN_CHARS_ESC + "|" + PERCENT + ")"; // Percent
+    static final String PN_CHARS_OTHERS="(([/@~&\\+\\*\\?#$!])|" + PN_CHARS_ESC + "|" + PERCENT + ")";
     
     static final String PN_LOCAL= "(((" + PN_CHARS_U + ")|([0-9])|(" + PN_CHARS_OTHERS + ")))" 
 	                       + "((((" + PN_CHARS + ")|(\\.)|(" + PN_CHARS_OTHERS + ")))*"

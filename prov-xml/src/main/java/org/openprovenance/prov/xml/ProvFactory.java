@@ -143,7 +143,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 	if (qnU.patternExactMatch(local)) {
 	    return new org.openprovenance.prov.xml.QualifiedName(namespace, local, prefix);
 	} else {
-	    throw new QualifiedNameException("local not valid " + local);
+	    throw new QualifiedNameException("PROV-N QualifiedName: local not valid " + local);
 	}
     }
     

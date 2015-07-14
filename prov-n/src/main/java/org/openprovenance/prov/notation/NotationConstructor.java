@@ -45,7 +45,6 @@ import org.openprovenance.prov.model.exception.UncheckedException;
 /** For testing purpose, conversion back to ASN. */
 
 public class NotationConstructor implements ModelConstructor {
-
     public static final String MARKER = "-";
     boolean abbrev = false;
     final private BufferedWriter buffer;

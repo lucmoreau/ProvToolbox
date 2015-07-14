@@ -124,6 +124,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 	        throws JAXBException {
 	Marshaller m=jc.createMarshaller();
 	m.setProperty("jaxb.formatted.output",format);
+	m.setProperty("jaxb.encoding","UTF-16");
 	prepareNamespaces(m, document);
 	m.marshal(of.createDocument(document),file);
     }

@@ -21,6 +21,16 @@ public class QualifiedNameTest extends TestCase {
 	assertTrue(u.patternExactMatch(in));
 	return val.equals(out);
     }
+    boolean doEscapeUnicode(String in, String out) {
+	String val=u.escapeUnicode(in);
+	System.err.println("Escape Unicode " + in + " " + val);
+	return val.equals(out);
+    }
+    boolean doUnescapeUnicode(String out, String in) {
+	String val=u.unescapeUnicode(in);
+	System.err.println("Unescape " + in + " " + val);
+	return val.equals(out);
+    }
     boolean doRT1(String in) {
 	String val=u.unescapeProvLocalName(u.escapeProvLocalName(in));
 	System.err.println("RT1 " + in + " " + val);
@@ -58,6 +68,7 @@ public class QualifiedNameTest extends TestCase {
 	assertTrue(doEscape("À-ÖØ-öø-˿Ͱͽ","À-ÖØ-öø-˿Ͱͽ"));
 
    }
+ 
 
     public void testUnescape1 () {
 	assertTrue(doUnescape("a01bc","a01bc"));
@@ -153,5 +164,12 @@ public class QualifiedNameTest extends TestCase {
 
     }
 
- 
+    
+    public void testEscapeUnicode1 () {
+	assertTrue(doEscapeUnicode("À-ÖØ-öø-˿Ͱͽ","À-ÖØ-öø-\\u02FF\\u0370\\u037D"));
+    }
+    public void testUnescapeUnicode1 () {
+ 	assertTrue(doUnescapeUnicode("À-ÖØ-öø-˿Ͱͽ","À-ÖØ-öø-\\u02FF\\u0370\\u037D"));
+     }
+
 }

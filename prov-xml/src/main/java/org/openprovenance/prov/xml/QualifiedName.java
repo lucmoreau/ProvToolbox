@@ -4,6 +4,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.QualifiedNameUtils;
+import org.openprovenance.prov.model.exception.QualifiedNameException;
 
 
 /**
@@ -41,10 +42,15 @@ public class QualifiedName
     @Override
     public javax.xml.namespace.QName toQName () {
 	String escapedLocal=qnU.escapeToXsdLocalName(getUnescapedLocalPart());
-	if (prefix==null) {
-	    return new javax.xml.namespace.QName(namespace,escapedLocal);
+	if (qnU.is_NC_Name(escapedLocal)) {
+	    if (prefix==null) {
+		return new javax.xml.namespace.QName(namespace,escapedLocal);
+	    } else {
+		return new javax.xml.namespace.QName(namespace,escapedLocal,prefix);
+	    }
 	} else {
-	    return new javax.xml.namespace.QName(namespace,escapedLocal,prefix);
+	    throw new QualifiedNameException("PROV-XML QName: local not valid " + local);
+
 	}
     }
 

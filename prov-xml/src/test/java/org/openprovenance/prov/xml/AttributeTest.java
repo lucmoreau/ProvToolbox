@@ -421,7 +421,7 @@ public class AttributeTest extends TestCase {
 
          {pFactory.newGDay(30),name.XSD_GDAY},
          
-         {pFactory.newGMonthDay(12,07),name.XSD_GMONTH_DAY},
+         {pFactory.newGMonthDay(11,07),name.XSD_GMONTH_DAY},  // month 0-11
 
          
          {pFactory.newDuration(12225),name.XSD_DURATION},

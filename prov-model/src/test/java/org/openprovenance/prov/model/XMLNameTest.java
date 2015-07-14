@@ -11,7 +11,9 @@ public class XMLNameTest extends TestCase {
     
     boolean doEscape(String in, String out) {
 	String val=u.escapeToXsdLocalName(in);
+	
 	System.err.println("Escape " + in + " " + val);
+	assertTrue(u.is_NC_Name(out));
 	return val.equals(out);
     }
     boolean doUnescape(String out, String in) {
@@ -63,7 +65,8 @@ public class XMLNameTest extends TestCase {
 	assertTrue(doEscape("?a\\=b","__3Fa_5C_3Db"));
 	assertTrue(doEscape("55348dff-4fcc-4ac2-ab56-641798c64400","_55348dff-4fcc-4ac2-ab56-641798c64400"));
 
-	
+	assertTrue(doEscape("À-ÖØ-öø-˿Ͱͽ","À-ÖØ-öø-˿Ͱͽ"));
+
 
    }
 
@@ -99,6 +102,7 @@ public class XMLNameTest extends TestCase {
 	assertTrue(doUnescape("='(),_:;[].@~","__3D_27_28_29_2C___3A_3B_5B_5D._40_7E"));
 	assertTrue(doUnescape("?a\\=b","__3Fa_5C_3Db"));
 	assertTrue(doUnescape("55348dff-4fcc-4ac2-ab56-641798c64400","_55348dff-4fcc-4ac2-ab56-641798c64400"));
+	assertTrue(doUnescape("À-ÖØ-öø-˿Ͱͽ","À-ÖØ-öø-˿Ͱͽ"));
 
 	
    }
@@ -137,7 +141,8 @@ public class XMLNameTest extends TestCase {
 	assertTrue(doRT1("?a\\=b"));
 	assertTrue(doRT1("55348dff-4fcc-4ac2-ab56-641798c64400"));
 
-	
+	assertTrue(doRT1("À-ÖØ-öø-˿Ͱͽ"));
+
    }
 
     public void testRoundTripFromUnescaped2 () {
@@ -173,6 +178,7 @@ public class XMLNameTest extends TestCase {
 	assertTrue(doRT2("_3Fa_5C_3Db"));
 	assertTrue(doRT2("_55348dff-4fcc-4ac2-ab56-641798c64400"));
 
+	assertTrue(doRT2("À-ÖØ-öø-˿Ͱͽ"));
 
 
    }

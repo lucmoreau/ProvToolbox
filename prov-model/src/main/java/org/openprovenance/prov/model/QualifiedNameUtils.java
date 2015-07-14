@@ -152,7 +152,7 @@ public class QualifiedNameUtils {
     
     static final String PN_CHARS_U="[A-Za-z_\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD]";  // [#x10000-#xEFFFF]
     static final String PN_CHARS="(" + PN_CHARS_U + "|[0-9\\-\\u00B7\\u0300-\\u036F\\u203F-\\u2040])"; 
-    static final String PN_CHARS_ESC="((\\\\)([\\=\\'\\(\\)\\,\\-\\:\\;\\[\\]\\.\\%]))";
+    static final String PN_CHARS_ESC="((\\\\)([\\=\\'\\(\\)\\,\\-\\:\\;\\[\\]\\.]))";
     static final String HEX="[0-9A-Fa-f]";
     static final String PERCENT="(%(" + HEX + ")(" + HEX +"))"; 
     static final String PN_CHARS_OTHERS="(([/@~&\\+\\*\\?#$!])|" + PN_CHARS_ESC + "|" + PERCENT + ")";
@@ -173,5 +173,26 @@ public class QualifiedNameUtils {
 	    return false;
 	}
     }
+    
+    static final String XML_NameStartChar="[:A-Za-z_\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD]";  // [#x10000-#xEFFFF]
+    static final String XML_NameChar="(" + XML_NameStartChar + "|[\\-\\.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040])"; 
+    static final String XML_Name=XML_NameStartChar + "(" + XML_NameChar + ")*";
+    
+    static final String NC_NameChar=XML_NameChar + "[^\\:]";
+    static final String NC_NameStartChar=XML_NameStartChar + "[^\\:]";
+    static final String NC_Name=NC_NameStartChar + "(" + NC_NameChar + ")*";
 
+    final Pattern NC_pat=Pattern.compile(QualifiedNameUtils.NC_Name);
+    
+    public boolean is_NC_Name (String input) {
+	if ("".equals(input)) return true;
+	Matcher match=NC_pat.matcher(input);
+	if (match.find()) {
+	    System.out.println("found " + input.substring(match.start(),match.end()));
+	    return match.start()==0 && match.end()==input.length();
+	} else {
+	    return false;
+	}
+    }
+    
 }

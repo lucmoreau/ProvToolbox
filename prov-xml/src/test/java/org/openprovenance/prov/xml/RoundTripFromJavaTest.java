@@ -605,6 +605,14 @@ public class RoundTripFromJavaTest extends TestCase {
                                            pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
                                                      EX2_PREFIX),
                                            name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "unicode", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-˿Ͱͽ",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "À-ÖØ-öø-˿Ͱͽ", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS,"unicode",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
         e.getOther().add(pFactory.newOther(EX_NS, "?a\\=b", EX_PREFIX,
                                            1,
                                            name.XSD_INT));  

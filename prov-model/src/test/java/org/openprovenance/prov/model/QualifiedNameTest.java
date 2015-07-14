@@ -55,7 +55,7 @@ public class QualifiedNameTest extends TestCase {
 	assertTrue(doEscape("?a=b","?a\\=b"));
 	assertTrue(doEscape("55348dff-4fcc-4ac2-ab56-641798c64400","55348dff-4fcc-4ac2-ab56-641798c64400"));
 	assertTrue(doEscape("news/world-asia-17507976","news/world-asia-17507976")); 
-	assertTrue(doEscape("À-Ö","À-Ö"));
+	assertTrue(doEscape("À-ÖØ-öø-˿Ͱͽ","À-ÖØ-öø-˿Ͱͽ"));
 
    }
 
@@ -79,7 +79,7 @@ public class QualifiedNameTest extends TestCase {
 	assertTrue(doUnescape("='(),-:;[].","\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\."));
 	assertTrue(doUnescape("?a=b","?a\\=b"));
 	assertTrue(doUnescape("55348dff-4fcc-4ac2-ab56-641798c64400","55348dff-4fcc-4ac2-ab56-641798c64400"));
-	assertTrue(doUnescape("À-Ö","À-Ö"));
+	assertTrue(doUnescape("À-ÖØ-öø-˿Ͱͽ","À-ÖØ-öø-˿Ͱͽ"));
 
    }
     
@@ -105,7 +105,7 @@ public class QualifiedNameTest extends TestCase {
 	assertTrue(doRT1("55348dff-4fcc-4ac2-ab56-641798c64400"));
 	assertTrue(doRT1("news/world-asia1-17507976"));
 	
-	assertTrue(doRT1("À-Ö"));
+	assertTrue(doRT1("À-ÖØ-öø-˿Ͱͽ"));
 
 
    }
@@ -136,7 +136,7 @@ public class QualifiedNameTest extends TestCase {
 	assertTrue(doRT2("?fred\\=fish%20soup"));
 	assertTrue(doRT2("news/world-asia-17507976"));
 	
-	//assertTrue(doRT2("À-Ö"));
+	assertTrue(doRT2("À-ÖØ-öø-˿Ͱͽ"));
 
 	
    }

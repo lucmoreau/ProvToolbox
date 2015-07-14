@@ -203,7 +203,7 @@ public class RoundTripFromJavaTest extends TestCase {
         schemaFiles[0] = "src/main/resources/ex.xsd";
         try {
             ProvDeserialiser.getThreadProvDeserialiser()
-                            .validateDocumentNew(schemaFiles, new File(file));
+                            .validateDocument(schemaFiles, new File(file));
         } catch (JAXBException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -606,7 +606,7 @@ public class RoundTripFromJavaTest extends TestCase {
                                                      EX2_PREFIX),
                                            name.PROV_QUALIFIED_NAME));    
         e.getOther().add(pFactory.newOther(EX_NS, "unicode", EX_PREFIX,
-                                           pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-˿Ͱͽ",
+                                           pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-", //˿Ͱͽ not valid
                                                      EX2_PREFIX),
                                            name.PROV_QUALIFIED_NAME));    
         e.getOther().add(pFactory.newOther(EX_NS, "À-ÖØ-öø-", EX_PREFIX,

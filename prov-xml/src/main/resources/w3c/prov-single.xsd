@@ -520,10 +520,6 @@
 
 
 
-  <!-- document container and allowable PROV elements -->
-
-  <xs:element name="document" type="prov:Document" />
-
   <xs:complexType name="Document">
     <xs:choice minOccurs="0" maxOccurs="unbounded">
 	  <xs:element ref="prov:entity"/>
@@ -563,6 +559,12 @@
       <xs:element name="bundleContent" type="prov:BundleConstructor"/>
     </xs:choice>
   </xs:complexType>
+
+    <!-- document container and allowable PROV elements -->
+
+  <xs:element name="document" type="prov:Document" />
+
+
 
   <!-- 'others' element used to contain non-PROV elements -->
 

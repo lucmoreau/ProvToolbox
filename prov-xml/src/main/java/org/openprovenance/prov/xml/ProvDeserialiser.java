@@ -102,11 +102,11 @@ public class ProvDeserialiser {
 	        return res;
     }
 
-    public Document validateDocument (String[] schemaFiles, File serialised)throws JAXBException,SAXException, IOException {
-	return validateDocument(schemaFiles,serialised,true);
+    public Document validateDocumentOld (String[] schemaFiles, File serialised)throws JAXBException,SAXException, IOException {
+	return validateDocumentOld(schemaFiles,serialised,true);
     }
 
-    public Document validateDocument (String[] schemaFiles, File serialised, boolean withCurie)
+    public Document validateDocumentOld (String[] schemaFiles, File serialised, boolean withCurie)
 	        throws JAXBException,SAXException, IOException {
 	        SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	        Source [] sources=new Source[2+schemaFiles.length];
@@ -240,7 +240,7 @@ public class ProvDeserialiser {
 	     this.inputStream = new BufferedInputStream(input);
 	 }
       }
-    public Document validateDocumentNew(String[] schemaFiles, File serialised) throws JAXBException,
+    public Document validateDocument(String[] schemaFiles, File serialised) throws JAXBException,
 						       SAXException,
 						       IOException {
 	int schemaCount;
@@ -274,36 +274,12 @@ public class ProvDeserialiser {
 	Unmarshaller u = jc.createUnmarshaller();
 	// u.setValidating(true); was jaxb1.0
 	u.setSchema(schema);
+	System.err.println("Checking schema for" + serialised);
 	Object root = u.unmarshal(serialised);
 	@SuppressWarnings("unchecked")
 	Document res = (Document) ((JAXBElement<Document>) root).getValue();
 	return res;
     }
 
-    public static void main(String [] args) {
-        ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-        if ((args==null) ||  (args.length==0)) {
-            System.out.println("Usage: opmxml-validate <filename> {schemaFiles}*");
-            return;
-        }
-        File f=new File(args[0]);
-        String [] schemas=new String[args.length-1];
-        for (int i=1; i< args.length; i++) {
-            schemas[i-1]=args[i];
-        }
-        try {
-            deserial.validateDocument(schemas,f);
-            System.out.println(args[0] + " IS a valid OPM graph");
-            return ;
-        } catch (JAXBException je) {
-            je.printStackTrace();
-            System.out.println(args[0] + " IS NOT a valid OPM graph");
-        } catch (SAXException je) {
-            je.printStackTrace();
-            System.out.println(args[0] + " IS NOT a valid OPM graph");
-        } catch (IOException io) {
-            io.printStackTrace();
-            System.out.println(args[0] + " IS NOT a valid OPM graph");
-        }
-    }
+
 }

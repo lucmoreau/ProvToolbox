@@ -182,7 +182,7 @@ public class QualifiedNameUtils {
 	if ("".equals(input)) return true;
 	Matcher match=pat.matcher(input);
 	if (match.find()) {
-	    System.out.println("found " + input.substring(match.start(),match.end()));
+	    //System.out.println("found " + input.substring(match.start(),match.end()));
 	    return match.start()==0 && match.end()==input.length();
 	} else {
 	    return false;
@@ -208,10 +208,10 @@ public class QualifiedNameUtils {
     final Pattern NC_pat=Pattern.compile(QualifiedNameUtils.NC_Name);
     
     public boolean is_NC_Name (String input) {
-	if ("".equals(input)) return true;
+	if ("".equals(input)) return false;
 	Matcher match=NC_pat.matcher(input);
 	if (match.matches()) {
-	    System.out.println("found " + input.substring(match.start(),match.end()));
+	    //System.out.println("found " + input.substring(match.start(),match.end()));
 	    return match.start()==0 && match.end()==input.length();
 	} else {
 	    return false;

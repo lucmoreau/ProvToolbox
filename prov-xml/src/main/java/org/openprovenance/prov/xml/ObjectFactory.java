@@ -67,7 +67,6 @@ public class ObjectFactory {
     private final static QName _Agent_QNAME = new QName(PROV_NS, "agent");
     private final static QName _WasInvalidatedBy_QNAME = new QName(PROV_NS, "wasInvalidatedBy");
     private final static QName _MentionOf_QNAME = new QName(PROV_NS, "mentionOf");
-    private final static QName _Others_QNAME = new QName(PROV_NS, "others");
     private final static QName _WasAttributedTo_QNAME = new QName(PROV_NS, "wasAttributedTo");
     private final static QName _SpecializationOf_QNAME = new QName(PROV_NS, "specializationOf");
     private final static QName _WasStartedBy_QNAME = new QName(PROV_NS, "wasStartedBy");
@@ -293,13 +292,6 @@ public class ObjectFactory {
         return new Activity();
     }
 
-    /**
-     * Create an instance of {@link Others }
-     * 
-     */
-    public Others createOthers() {
-        return new Others();
-    }
 
     /**
      * Create an instance of {@link SpecializationOf }
@@ -716,14 +708,6 @@ public class ObjectFactory {
         return new JAXBElement<MentionOf>(_MentionOf_QNAME, MentionOf.class, null, value);
     }
 
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link Others }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = PROV_NS, name = "others")
-    public JAXBElement<Others> createOthers(Others value) {
-        return new JAXBElement<Others>(_Others_QNAME, Others.class, null, value);
-    }
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link WasAttributedTo }{@code >}}

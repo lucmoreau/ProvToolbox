@@ -7,8 +7,11 @@ xerces:
 	src/main/resources/xerces.sh -a src/main/resources/ex.xsd -i target/attr_entity0.xml
 
 xmllint:
-	xmllint --noout --schema src/main/resources/ex.xsd target/attr_entity0.xml 
+	xmllint --noout --schema src/main/resources/ex.xsd --schema src/main/resources/ex2.xsd  --schema src/main/resources/w3c/prov.xsd target/entity100.xml 
 
 
 xerces.all:
 	src/main/resources/xerces.sh -a src/main/resources/ex.xsd -i target/*.xml
+
+xmllint.pc1:
+	xmllint --noout --schema src/main/resources/ex.xsd --schema src/main/resources/ex2.xsd --schema src/main/resources/w3c/prov.xsd target/pc1-full.xml

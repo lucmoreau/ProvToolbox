@@ -190,7 +190,7 @@ public class AttributeTest extends TestCase {
 	String[] schemaFiles = new String[1];
 	schemaFiles[0] = "src/main/resources/ex.xsd";
 	try {
-	    ProvDeserialiser.getThreadProvDeserialiser().validateDocumentNew(schemaFiles, new File(file));
+	    ProvDeserialiser.getThreadProvDeserialiser().validateDocument(schemaFiles, new File(file));
 	    assertTrue(true);
 	} catch (JAXBException e) {
 	    // TODO Auto-generated catch block

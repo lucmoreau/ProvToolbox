@@ -15,3 +15,7 @@ xerces.all:
 
 xmllint.pc1:
 	xmllint --noout --schema src/main/resources/ex.xsd --schema src/main/resources/ex2.xsd --schema src/main/resources/w3c/prov.xsd target/pc1-full.xml
+
+
+xmllint.all:
+	xmllint --noout --schema src/main/resources/ex.xsd --schema src/main/resources/ex2.xsd --schema src/main/resources/w3c/prov.xsd target/*.xml

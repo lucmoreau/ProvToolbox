@@ -934,7 +934,8 @@ public class ProvUtilities {
 	 return calendar.toGregorianCalendar().getTime();
      }
 
-
+     public enum BuildFlag { NOCHEK, WARN, STRICT }
+     
 
 
 

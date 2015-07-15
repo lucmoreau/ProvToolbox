@@ -26,6 +26,7 @@ import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
@@ -534,6 +535,12 @@ public class NotationConstructor implements ModelConstructor {
     @Override
     public QualifiedName newQualifiedName(String namespace, String local,
 					  String prefix) {
+	return null;
+    }
+
+    @Override
+    public QualifiedName newQualifiedName(String namespace, String local, String prefix,
+					  BuildFlag flag) {
 	return null;
     }
 

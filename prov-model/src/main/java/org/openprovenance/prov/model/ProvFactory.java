@@ -848,6 +848,9 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
     abstract public QualifiedName newQualifiedName(String namespace, String local, String prefix);
     
+    abstract public QualifiedName newQualifiedName(String namespace, String local, String prefix, ProvUtilities.BuildFlag flag);
+
+    
     /* A convenience function. */
     public QualifiedName newQualifiedName(javax.xml.namespace.QName qname) {
 	return newQualifiedName(qname.getNamespaceURI(), qname.getLocalPart(), qname.getPrefix());

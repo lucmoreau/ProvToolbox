@@ -40,6 +40,7 @@ import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
 import org.openprovenance.prov.model.DerivedByRemovalFrom;
 import org.openprovenance.prov.model.DictionaryMembership;
+import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
 
 /**
  * A Converter to RDF
@@ -646,5 +647,10 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 	// TODO Auto-generated method stub
 	return null;
     }
-
+    @Override
+    public QualifiedName newQualifiedName(String namespace, String local,
+					  String prefix, BuildFlag flag) {
+	// TODO Auto-generated method stub
+	return null;
+    }
 }

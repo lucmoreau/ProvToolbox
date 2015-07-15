@@ -16,6 +16,7 @@ import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.LiteralConstructor;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvSerialiser;
+import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.QualifiedNameUtils;
 import org.openprovenance.prov.model.exception.QualifiedNameException;
@@ -185,18 +186,32 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 	return null;
     }
 
+ 
     @Override
-    public QualifiedName newQualifiedName(String namespace, String local,
-                                          String prefix) {
-	//FIXME: make this test optional
-	if (qnU.patternExactMatch(local)) {
+    public org.openprovenance.prov.model.QualifiedName newQualifiedName(String namespace,
+									String local,
+									String prefix) {
+	return newQualifiedName(namespace,local,prefix, BuildFlag.STRICT);
+    }
+    @Override
+    public org.openprovenance.prov.model.QualifiedName newQualifiedName(String namespace,
+									String local,
+									String prefix,
+									BuildFlag flag) {
+	if (BuildFlag.NOCHEK.equals(flag) || qnU.patternExactMatch(local)) {
 	    return new org.openprovenance.prov.sql.QualifiedName(namespace, local, prefix);
 	} else {
-	    throw new QualifiedNameException("local not valid " + local);
+	    switch(flag){
+	    case STRICT:
+		throw new QualifiedNameException("PROV-N QualifiedName: local name not valid " + local);
+	    case WARN:
+		System.out.println("ProvToolbox Warning: PROV-N QualifiedName: local name not valid " + local);
+	    default:
+		return new org.openprovenance.prov.sql.QualifiedName(namespace, local, prefix);
+	    
+	    }
 	}
-
-    }
-	
+    }	
 
     public Namespace newNamespace(Namespace ns) {
     	return new org.openprovenance.prov.sql.Namespace(ns);

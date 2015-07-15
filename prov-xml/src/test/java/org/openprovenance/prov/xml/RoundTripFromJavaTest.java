@@ -596,7 +596,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
     
     public void testEntity100() {
-        Entity e = pFactory.newEntity(q("100-entity"), "entity10");
+        Entity e = pFactory.newEntity(q("100-entity"), "entity100");
         e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
                                            pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
                                                      EX2_PREFIX),
@@ -606,10 +606,10 @@ public class RoundTripFromJavaTest extends TestCase {
                                                      EX2_PREFIX),
                                            name.PROV_QUALIFIED_NAME));    
         e.getOther().add(pFactory.newOther(EX_NS, "unicode", EX_PREFIX,
-                                           pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-˿Ͱͽ", //˿Ͱͽ not valid
+                                           pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-", //˿Ͱͽ not valid
                                                      EX2_PREFIX),
                                            name.PROV_QUALIFIED_NAME));    
-        e.getOther().add(pFactory.newOther(EX_NS, "À-ÖØ-öø-", EX_PREFIX,
+        e.getOther().add(pFactory.newOther(EX_NS, "À-ÖØ-öø-", EX_PREFIX, //˿Ͱͽ not valid
                                            pFactory.newQualifiedName(EX2_NS,"unicode",
                                                      EX2_PREFIX),
                                            name.PROV_QUALIFIED_NAME));    
@@ -623,6 +623,36 @@ public class RoundTripFromJavaTest extends TestCase {
                                            pFactory.newInternationalizedString("ma chaine", "fr"),
                                            name.PROV_LANG_STRING));  
         makeDocAndTest(e, "target/entity100");
+    }
+    
+    public void testEntity101() {
+        Entity e = pFactory.newEntity(q("101-entity"), "entity101");
+        e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));      
+        e.getOther().add(pFactory.newOther(EX_NS, "a01bc", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "unicode", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-", //˿Ͱͽ not valid
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "À-ÖØ-öø-", EX_PREFIX, //˿Ͱͽ not valid
+                                           pFactory.newQualifiedName(EX2_NS,"unicode",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "?a\\=b", EX_PREFIX,
+                                           1,
+                                           name.XSD_INT));  
+        e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
+                                           "mystring",
+                                           name.XSD_STRING));  
+        e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
+                                           pFactory.newInternationalizedString("ma chaine", "fr"),
+                                           name.PROV_LANG_STRING));  
+        makeDocAndTest(e, "target/entity101");
     }
 
     // /////////////////////////////////////////////////////////////////////

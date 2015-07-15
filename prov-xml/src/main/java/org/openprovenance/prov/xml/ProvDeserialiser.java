@@ -102,35 +102,7 @@ public class ProvDeserialiser {
 	        return res;
     }
 
-    public Document validateDocumentOld (String[] schemaFiles, File serialised)throws JAXBException,SAXException, IOException {
-	return validateDocumentOld(schemaFiles,serialised,true);
-    }
-
-    public Document validateDocumentOld (String[] schemaFiles, File serialised, boolean withCurie)
-	        throws JAXBException,SAXException, IOException {
-	        SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-	        Source [] sources=new Source[2+schemaFiles.length];
-	        int schemaCount;
-	        schemaCount=2;
-	        sources=new Source[schemaCount+schemaFiles.length];
-	        sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"xml.xsd"));
-	        sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20130307.xsd")); //TODO: here to use: prov-20130307-curie.xsd
-	       
-	        int i=0;
-	        for (String schemaFile: schemaFiles) {
-	            sources[schemaCount+i]=new StreamSource(new File(schemaFile));
-	            i++;
-	        }
-	        Schema schema = sf.newSchema(sources);  
-	        Unmarshaller u=jc.createUnmarshaller();
-	        //u.setValidating(true); was jaxb1.0
-	        u.setSchema(schema);
-	        Object root= u.unmarshal(serialised);
-	        @SuppressWarnings("unchecked")
-	        Document res=(Document)((JAXBElement<Document>) root).getValue();
-	        return res;
-	    }
-    
+ 
     
     class ResourceResolver implements LSResourceResolver {
 
@@ -250,7 +222,7 @@ public class ProvDeserialiser {
 	 //System.setProperty("javax.xml.validation.SchemaFactory:http://www.w3.org/XML/XMLSchema/v1.1",
            //      "org.apache.xerces.jaxp.validation.XMLSchema11Factory");
 	 
-		SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+	SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			  //  "http://www.w3.org/XML/XMLSchema/v1.1");
 
 	 
@@ -272,9 +244,8 @@ public class ProvDeserialiser {
 	}
 	Schema schema = sf.newSchema(sources);
 	Unmarshaller u = jc.createUnmarshaller();
-	// u.setValidating(true); was jaxb1.0
 	u.setSchema(schema);
-	System.err.println("Checking schema for" + serialised);
+
 	Object root = u.unmarshal(serialised);
 	@SuppressWarnings("unchecked")
 	Document res = (Document) ((JAXBElement<Document>) root).getValue();

@@ -41,6 +41,7 @@ import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
+import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
 
 /**
  * @author Trung Dong Huynh
@@ -731,7 +732,13 @@ public class JSONConstructor implements ModelConstructor {
 
     @Override
     public QualifiedName newQualifiedName(String namespace, String local,
-					  String prefix) {	return null;
+					  String prefix) {	
+	return null;
+    }
+    @Override
+    public QualifiedName newQualifiedName(String namespace, String local,
+					  String prefix, BuildFlag flag) {	
+	return null;
     }
 
 }

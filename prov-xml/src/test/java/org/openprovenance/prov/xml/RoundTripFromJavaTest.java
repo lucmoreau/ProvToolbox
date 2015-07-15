@@ -606,7 +606,7 @@ public class RoundTripFromJavaTest extends TestCase {
                                                      EX2_PREFIX),
                                            name.PROV_QUALIFIED_NAME));    
         e.getOther().add(pFactory.newOther(EX_NS, "unicode", EX_PREFIX,
-                                           pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-", //˿Ͱͽ not valid
+                                           pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-˿Ͱͽ", //˿Ͱͽ not valid
                                                      EX2_PREFIX),
                                            name.PROV_QUALIFIED_NAME));    
         e.getOther().add(pFactory.newOther(EX_NS, "À-ÖØ-öø-", EX_PREFIX,

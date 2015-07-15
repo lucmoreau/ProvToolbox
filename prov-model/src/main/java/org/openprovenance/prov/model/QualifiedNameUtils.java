@@ -2,6 +2,7 @@ package org.openprovenance.prov.model;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.text.translate.AggregateTranslator;
 import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
 import org.apache.commons.lang3.text.translate.JavaUnicodeEscaper;
@@ -101,6 +102,7 @@ public class QualifiedNameUtils {
 	                                                	 {"$", INNER_ESCAPE + "24"},
 	                                                	 {"!", INNER_ESCAPE + "21"},
 	                                                 }),
+	                                                 //StringEscapeUtils.ESCAPE_XML10
 	                                                 JavaUnicodeEscaper.outsideOf(32, 0xFFFF) // 0x7f
 		    );
 

@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Hashtable;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
-
 import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.QualifiedName;

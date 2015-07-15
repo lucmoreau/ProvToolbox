@@ -122,6 +122,9 @@ public class RoundTripFromJavaTest extends
                                            pFactory.newInternationalizedString("ma chaine", "fr"),
                                            name.PROV_LANG_STRING));  
         makeDocAndTest(e, "target/entity101");
+        
+        System.out.println("*** test " + pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-Ͱͽ", 
+                                  EX2_PREFIX).getUri());
     }
     
 

@@ -357,7 +357,8 @@ public class ExpandAction implements StatementAction {
 				if (dstStatement instanceof Activity) {
 					((Activity)dstStatement).setEndTime(pf.newISOTime((String)val.getValue()));
 				}
-			} else {
+			}
+			else {
 				dstAttributes.add(pf.newAttribute(attribute.getElementName(), 
 				                                val.getValue(), 
 				                                val.getType()));

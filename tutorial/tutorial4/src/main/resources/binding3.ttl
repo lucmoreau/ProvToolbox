@@ -1,20 +1,18 @@
-
-
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix tmpl: <http://openprovenance.org/tmpl#> .
 @prefix var: <http://openprovenance.org/var#> .
 @prefix ex: <http://example.com/#> .
-@prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix vargen: <http://openprovenance.org/vargen#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 var:author a prov:Entity;
            tmpl:value_0 <http://orcid.org/0000-0002-3494-120X>;
-	   tmpl:value_1 <http://orcid.org/0000-0003-0183-6910>.
+           tmpl:value_1 <http://orcid.org/0000-0003-0183-6910>.
 var:name   a prov:Entity;
-	   tmpl:2dvalue_0_0 "Luc Moreau";
-	   tmpl:2dvalue_1_0 "Paul Groth";
-	   tmpl:2dvalue_1_1 "pgroth".
-var:quote a prov:Entity; tmpl:value_0 ex:quote1.
-var:value  a prov:Entity; tmpl:2dvalue_0_0 "a little provenance helps".
+           tmpl:2dvalue_0_0 "Luc Moreau";
+           tmpl:2dvalue_1_0 "Paul Groth";
+           tmpl:2dvalue_1_1 "pgroth".
+var:quote  a prov:Entity;
+           tmpl:value_0 ex:quote1.
+var:value  a prov:Entity;
+           tmpl:2dvalue_0_0 "A Little Provenance Goes a Long Way".
 

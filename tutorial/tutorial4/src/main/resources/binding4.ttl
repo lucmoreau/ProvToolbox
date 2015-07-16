@@ -18,8 +18,8 @@ var:quote a prov:Entity;
           tmpl:value_0 ex:quote1;
 	  tmpl:value_1 ex:quote2.
 var:value  a prov:Entity;
-           tmpl:2dvalue_0_0 "a little provenance helps";
-           tmpl:2dvalue_1_0 "and more provenance helps even more".	   
+           tmpl:2dvalue_0_0 "A Little Provenance Goes a Long Way";
+           tmpl:2dvalue_1_0 "... and More Provenance Goes Even Further".	   
 var:institution a prov:Entity;
            tmpl:value_0 <http://www.soton.ac.uk/>;
 	   tmpl:value_1 <http://labs.elsevier.com/>.

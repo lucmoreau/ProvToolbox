@@ -26,7 +26,10 @@ expand3:
 expand4:
 	provconvert -infile src/main/resources/template2.provn -bindings src/main/resources/binding4.ttl -outfile target/doc4.provn
 	provconvert -infile target/doc4.provn -outfile target/doc4.png
+	provconvert -infile src/main/resources/template2.provn -outfile target/template2.png
+
 
 expand5:
 	provconvert -infile src/main/resources/template3.provn -bindings src/main/resources/binding4.ttl -outfile target/doc5.provn
 	provconvert -infile target/doc5.provn -outfile target/doc5.png
+	provconvert -infile src/main/resources/template3.provn -outfile target/template3.png

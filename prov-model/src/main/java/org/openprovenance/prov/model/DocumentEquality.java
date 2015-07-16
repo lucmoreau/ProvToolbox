@@ -1,7 +1,5 @@
-/**
- * 
- */
-package org.openprovenance.prov.xml;
+
+package org.openprovenance.prov.model;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -11,11 +9,10 @@ import java.util.List;
 
 import org.apache.commons.collections.bag.HashBag;
 import org.apache.log4j.Logger;
-import org.openprovenance.prov.model.StatementOrBundle;
-import org.openprovenance.prov.model.Document;
 
 /**
  * @author Trung Dong Huynh <tdh@ecs.soton.ac.uk>
+ * Comparator Class
  * 
  */
 

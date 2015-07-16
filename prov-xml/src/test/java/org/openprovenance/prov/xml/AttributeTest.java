@@ -19,6 +19,7 @@ import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.DerivedByInsertionFrom;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.DocumentEquality;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HasLabel;
 import org.openprovenance.prov.model.HasLocation;

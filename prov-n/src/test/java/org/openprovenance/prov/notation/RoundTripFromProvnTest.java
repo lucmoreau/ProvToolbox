@@ -1,11 +1,12 @@
 package org.openprovenance.prov.notation;
 
 import java.io.File;
+
 import junit.framework.TestCase;
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.DocumentEquality;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.xml.DocumentEquality;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;

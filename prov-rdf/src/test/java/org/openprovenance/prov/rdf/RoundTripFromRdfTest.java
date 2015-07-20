@@ -73,7 +73,7 @@ public class RoundTripFromRdfTest extends TestCase {
 		Utility u = new Utility(pFactory,onto);
 
 
-		DocumentEquality de = new DocumentEquality(true);
+		DocumentEquality de = new DocumentEquality(true,null);
 		Document doc1 = u.parseRDF("src/test/resources/" + file);
 		file = file.replace('/', '_');
 		RDFFormat format = Rio.getParserFormatForFileName(file,

@@ -42,9 +42,7 @@ public class Expand {
     
     final private boolean addOrderp;
     
-    private Expand(ProvFactory pf) {
-    	this(pf,false);
-    }
+
     public Expand(ProvFactory pf, boolean addOrderp) {
     	this.pf=pf;
     	this.addOrderp=addOrderp;

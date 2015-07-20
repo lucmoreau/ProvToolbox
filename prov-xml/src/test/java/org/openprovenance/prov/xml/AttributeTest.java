@@ -77,7 +77,7 @@ public class AttributeTest extends TestCase {
      */
     public AttributeTest(String testName) {
 	super(testName);
-	this.documentEquality = new DocumentEquality(mergeDuplicateProperties());
+	this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),null);
     }
 
     public boolean urlFlag = true;

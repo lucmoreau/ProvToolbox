@@ -74,7 +74,7 @@ public class RoundTripFromJavaTest extends TestCase {
      */
     public RoundTripFromJavaTest(String testName) {
         super(testName);
-        this.documentEquality = new DocumentEquality(mergeDuplicateProperties());
+        this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),null);
     }
 
     public boolean urlFlag = true;

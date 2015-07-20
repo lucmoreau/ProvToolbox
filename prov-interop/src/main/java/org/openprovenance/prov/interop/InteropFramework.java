@@ -3,11 +3,13 @@ package org.openprovenance.prov.interop;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -988,15 +990,23 @@ public class InteropFramework implements InteropMediaType {
 	if (doc1==null) return CommandLineArguments.STATUS_COMPARE_NO_ARG1;
 	if (doc2==null) return CommandLineArguments.STATUS_COMPARE_NO_ARG2;
 	
-	System.out.println("doCompare()");
-	DocumentEquality comparator=new DocumentEquality();
+	//System.out.println("doCompare()");
+	PrintStream ps=System.out;
+	try {
+	    if (!(compareOut==null || compareOut.equals("-"))) {
+		ps=new PrintStream(compareOut);
+	    }
+	} catch (FileNotFoundException e) {
+	    // ok, we ignore the exception, we continue with stdout
+	}
+	DocumentEquality comparator=new DocumentEquality(false,ps);
 	logger.debug("about to compare two docs");
 	if (comparator.check(doc1, doc2)) {
-	    System.out.println("doCompare(): Success");
+	    //System.out.println("doCompare(): Success");
 
 	    return CommandLineArguments.STATUS_OK;
 	}	    
-	System.out.println("doCompare(): Failure");
+	//System.out.println("doCompare(): Failure");
 	return CommandLineArguments.STATUS_COMPARE_DIFFERENT;
     }
 

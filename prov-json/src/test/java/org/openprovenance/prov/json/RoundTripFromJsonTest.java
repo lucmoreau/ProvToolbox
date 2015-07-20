@@ -1,12 +1,11 @@
 package org.openprovenance.prov.json;
 
 import java.io.File;
+
 import junit.framework.TestCase;
 
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.xml.DocumentEquality;
-import org.openprovenance.prov.xml.ProvDeserialiser;
+import org.openprovenance.prov.model.DocumentEquality;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
 
@@ -21,7 +20,7 @@ public class RoundTripFromJsonTest extends TestCase {
 
     public void loadFromJsonSaveAndReload(String file, Boolean compare) throws Throwable {
 	System.out.println("-------------- File: " + file);
-	DocumentEquality de = new DocumentEquality(true);
+	DocumentEquality de = new DocumentEquality(true,null);
 
 	Document doc1 = convert.readDocument("src/test/resources/" + file);
 	file = file.replace('/', '_');

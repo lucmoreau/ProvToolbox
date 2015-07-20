@@ -237,9 +237,9 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
             pe=convert(ast.getChild(3));
             q2=convert(ast.getChild(4));
             q1=convert(ast.getChild(5));
@@ -251,9 +251,9 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
             pe=convert(ast.getChild(3));
             q2=convert(ast.getChild(4));
             q1=convert(ast.getChild(5));
@@ -265,9 +265,9 @@ public class TreeTraversal {
             if (uidTree.getChildCount()>0) {
                 uidTree=uidTree.getChild(0);
             }
-            uid=(QName)convert(uidTree);
-            id2=(QName)convert(ast.getChild(1));
-            id1=(QName)convert(ast.getChild(2));
+            uid=(QualifiedName)convert(uidTree);
+            id2=(QualifiedName)convert(ast.getChild(1));
+            id1=(QualifiedName)convert(ast.getChild(2));
             pe=convert(ast.getChild(3));
             q2=convert(ast.getChild(4));
             q1=convert(ast.getChild(5));
@@ -370,8 +370,12 @@ public class TreeTraversal {
             List<Key> keys=new LinkedList<Key>();
             for (int i=0; i< ast.getChildCount(); i++) {
                 Object o=convert(ast.getChild(i));
-                Object [] pair=(Object[]) o;         
-                keys.add(pFactory.newKey(pair[0], (QualifiedName)pair[1]));
+                if (o instanceof LangString) {
+                    keys.add(pFactory.newKey(o, name.PROV_LANG_STRING));
+                } else {
+                    Object [] pair=(Object[]) o;         
+                    keys.add(pFactory.newKey(pair[0], (QualifiedName)pair[1]));
+                }
 
             }
             return keys;
@@ -393,12 +397,12 @@ public class TreeTraversal {
             List<Object> keys2 = (List<Object>)keys1;
 	    
             @SuppressWarnings("unchecked")
-            List<QualifiedName> qnames = (List<QualifiedName>)entities;
+            List<QualifiedName> qualifiedNames = (List<QualifiedName>)entities;
 	    
             List<Entry> entries=new LinkedList<Entry>();
             int ii=0;
             for (Object o : keys2) {
-                QualifiedName value=qnames.get(ii);
+                QualifiedName value=qualifiedNames.get(ii);
                 Entry p=pFactory.newEntry((org.openprovenance.prov.model.Key)o, value);
                 
                 entries.add(p);
@@ -511,7 +515,7 @@ public class TreeTraversal {
             } else if (val1 instanceof LangString) {
             	return pFactory.newAttribute(stringToQualifiedName(attr1),
             	                             val1,
-            	                             name.XSD_STRING);	
+            	                             name.PROV_LANG_STRING);	
             } else if (val1 instanceof Integer) {
             	return pFactory.newAttribute(stringToQualifiedName(attr1),
             	                             val1,
@@ -567,7 +571,7 @@ public class TreeTraversal {
                 if (tree_langtag!=null) {
                     LangString lstring=pFactory.newInternationalizedString(unescape(unwrap(typedLiteral_string)),
                                                                    stripAmpersand(convertToken(getTokenString(tree_langtag))));
-                    return convertTypedLiteral(lstring,typedLiteral_datatype);
+                    return convertTypedLiteral(lstring,name.PROV_LANG_STRING);
                 } else {
                     typedLiteral_string=unescape(unwrap(typedLiteral_string));
                     return convertTypedLiteral(typedLiteral_string,typedLiteral_datatype);

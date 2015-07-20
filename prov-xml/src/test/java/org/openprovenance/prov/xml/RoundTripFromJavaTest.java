@@ -20,6 +20,7 @@ import org.openprovenance.prov.model.DerivedByInsertionFrom;
 import org.openprovenance.prov.model.DerivedByRemovalFrom;
 import org.openprovenance.prov.model.DictionaryMembership;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.DocumentEquality;
 import org.openprovenance.prov.model.Entry;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HadMember;
@@ -73,7 +74,7 @@ public class RoundTripFromJavaTest extends TestCase {
      */
     public RoundTripFromJavaTest(String testName) {
         super(testName);
-        this.documentEquality = new DocumentEquality(mergeDuplicateProperties());
+        this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),null);
     }
 
     public boolean urlFlag = true;
@@ -166,6 +167,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public boolean checkSchema(String name) {
         if (name.endsWith("association2" + extension())
+                || name.endsWith("entity101" + extension())  // fails on unicode
                 || name.endsWith("end1" + extension())
                 || name.endsWith("end4" + extension())
                 || name.endsWith("delegation1" + extension())
@@ -203,7 +205,7 @@ public class RoundTripFromJavaTest extends TestCase {
         schemaFiles[0] = "src/main/resources/ex.xsd";
         try {
             ProvDeserialiser.getThreadProvDeserialiser()
-                            .validateDocumentNew(schemaFiles, new File(file));
+                            .validateDocument(schemaFiles, new File(file));
         } catch (JAXBException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -593,6 +595,67 @@ public class RoundTripFromJavaTest extends TestCase {
         addLabels(a);
         addFurtherAttributes(a);
         makeDocAndTest(a, "target/entity10");
+    }
+    
+    public void testEntity100() {
+        Entity e = pFactory.newEntity(q("100-entity"), "entity100");
+        e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));      
+        e.getOther().add(pFactory.newOther(EX_NS, "a01bc", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "unicode", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-", //˿Ͱͽ not valid
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "À-ÖØ-öø-", EX_PREFIX, //˿Ͱͽ not valid
+                                           pFactory.newQualifiedName(EX2_NS,"unicode",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "?a\\=b", EX_PREFIX,
+                                           1,
+                                           name.XSD_INT));  
+        e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
+                                           "mystring",
+                                           name.XSD_STRING));  
+        e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
+                                           pFactory.newInternationalizedString("ma chaine", "fr"),
+                                           name.PROV_LANG_STRING));  
+        makeDocAndTest(e, "target/entity100");
+    }
+    
+    
+    public void testEntity101() {
+        Entity e = pFactory.newEntity(q("101-entity"), "entity101");
+        e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));      
+        e.getOther().add(pFactory.newOther(EX_NS, "a01bc", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "unicode", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-˿Ͱͽ", //validator disabled for this
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "À-ÖØ-öø-", EX_PREFIX, //˿Ͱͽ not supported by jaxb marshaller
+                                           pFactory.newQualifiedName(EX2_NS,"unicode",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "?a\\=b", EX_PREFIX,
+                                           1,
+                                           name.XSD_INT));  
+        e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
+                                           "mystring",
+                                           name.XSD_STRING));  
+        e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
+                                           pFactory.newInternationalizedString("ma chaine", "fr"),
+                                           name.PROV_LANG_STRING));  
+        makeDocAndTest(e, "target/entity101");
     }
 
     // /////////////////////////////////////////////////////////////////////

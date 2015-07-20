@@ -24,7 +24,9 @@ import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
@@ -44,7 +46,6 @@ import org.openprovenance.prov.model.exception.UncheckedException;
 /** For testing purpose, conversion back to ASN. */
 
 public class NotationConstructor implements ModelConstructor {
-
     public static final String MARKER = "-";
     boolean abbrev = false;
     final private BufferedWriter buffer;
@@ -465,7 +466,9 @@ public class NotationConstructor implements ModelConstructor {
 
         for (String key : nss.keySet()) {
             String uri = nss.get(key);
-            if ((key.equals("_") || (key.equals("prov")))) {
+            if ((key.equals("_") 
+        	    || (key.equals("prov"))
+        	    || (key.equals("xsd") && NamespacePrefixMapper.XSD_NS.equals(uri)))) {
                 // IGNORE, we have just handled it
             } else {
                 s = s + convertNamespace(key, "<" + uri + ">") + breakline();
@@ -532,6 +535,12 @@ public class NotationConstructor implements ModelConstructor {
     @Override
     public QualifiedName newQualifiedName(String namespace, String local,
 					  String prefix) {
+	return null;
+    }
+
+    @Override
+    public QualifiedName newQualifiedName(String namespace, String local, String prefix,
+					  BuildFlag flag) {
 	return null;
     }
 

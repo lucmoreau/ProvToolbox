@@ -8,7 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -19,7 +18,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -27,7 +25,6 @@ import org.openprovenance.prov.xml.builder.Equals;
 import org.openprovenance.prov.xml.builder.HashCode;
 import org.openprovenance.prov.xml.builder.ToString;
 import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
-import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
 import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.model.ProvUtilities;
 
@@ -78,7 +75,7 @@ import org.openprovenance.prov.model.ProvUtilities;
     "_boolean",
     "_byte",
     "anyURI",
-    "qname",
+    "qualifiedName",
     "unsignedInt",
     "unsignedLong",
     "dateTime",
@@ -108,7 +105,7 @@ public class AValue
     protected Byte _byte;
     @XmlSchemaType(name = "anyURI")
     protected String anyURI;
-    protected QualifiedName qname;
+    protected QualifiedName qualifiedName;
     @XmlSchemaType(name = "unsignedInt")
     protected Long unsignedInt;
     @XmlSchemaType(name = "unsignedLong")
@@ -231,11 +228,11 @@ public class AValue
 
     
     /**
-     * Gets the value of the qname property.
+     * Gets the value of the qualifiedName property.
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
     
@@ -243,20 +240,20 @@ public class AValue
         CascadeType.ALL
     })
     @JoinColumn(name = "QN")
-    public QualifiedName getQname() {
-        return qname;
+    public QualifiedName getQualifiedName() {
+        return qualifiedName;
     }
 
     /**
-     * Sets the value of the qname property.
+     * Sets the value of the qualifiedName property.
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
-    public void setQname(QualifiedName value) {
-        this.qname = value;
+    public void setQualifiedName(QualifiedName value) {
+        this.qualifiedName = value;
     }
 
    
@@ -310,21 +307,6 @@ public class AValue
         this.gYear = value;
     }
 
- /*
-
-    @Basic
-    @Column(name = "QNAMEITEM")
-    public String getQnameItem() {
-    	QName qn=(this.getQname()==null)? null : this.getQname().toQName();
-        return XmlAdapterUtils.unmarshall(QNameAsString.class, qn);
-    }
-
-    public void setQnameItem(String target) {
-    	QName qname=XmlAdapterUtils.marshall(QNameAsString.class, target);
-    	QualifiedName qn=(qname==null)? null : new QualifiedName(qname.getNamespaceURI(),qname.getLocalPart(),qname.getPrefix());
-        setQname(qn);
-    }
-*/
     @Basic
     @Column(name = "DATETIMEITEM")
     @Temporal(TemporalType.TIMESTAMP)
@@ -374,7 +356,7 @@ public class AValue
         equalsBuilder.append(this.getLong(), that.getLong());
         equalsBuilder.append(this.getDouble(), that.getDouble());
         equalsBuilder.append(this.getFloat(), that.getFloat());
-        equalsBuilder.append(this.getQname(), that.getQname());
+        equalsBuilder.append(this.getQualifiedName(), that.getQualifiedName());
         equalsBuilder.append(this.getDateTime(), that.getDateTime());
         equalsBuilder.append(this.getGYear(), that.getGYear());
     }
@@ -396,7 +378,7 @@ public class AValue
         hashCodeBuilder.append(this.getLong());
         hashCodeBuilder.append(this.getDouble());
         hashCodeBuilder.append(this.getFloat());
-        hashCodeBuilder.append(this.getQname());
+        hashCodeBuilder.append(this.getQualifiedName());
         hashCodeBuilder.append(this.getDateTime());
         hashCodeBuilder.append(this.getGYear());
     }
@@ -406,7 +388,7 @@ public class AValue
         toStringBuilder.append("long", this.getLong());
         toStringBuilder.append("double", this.getDouble());
         toStringBuilder.append("float", this.getFloat());
-        toStringBuilder.append("qname", this.getQname());
+        toStringBuilder.append("qualifiedName", this.getQualifiedName());
         toStringBuilder.append("dateTime", this.getDateTime());
         toStringBuilder.append("gyear", this.getGYear());
     }

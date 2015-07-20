@@ -100,7 +100,7 @@ public class SQLValueConverter  {
 	}
 	if (datatype.equals(name.PROV_QUALIFIED_NAME)) {
 	    AValue res=new AValue();
-	    res.setQname((org.openprovenance.prov.sql.QualifiedName) value); 
+	    res.setQualifiedName((org.openprovenance.prov.sql.QualifiedName) value); 
 	    return res;
 	}
 	if (datatype.equals(name.XSD_DATETIME)) {
@@ -115,7 +115,6 @@ public class SQLValueConverter  {
         }
 	
 	
-	//transform to qname!!
 	if ((datatype.equals("rdf:XMLLiteral"))
 	    || (datatype.equals("xsd:normalizedString"))
 	    || (datatype.equals("xsd:token"))
@@ -132,21 +131,14 @@ public class SQLValueConverter  {
 	return null;
     }
 
-/*
-    static AValue convert(Object o) {
-	if (o==null) return null;
-	QName type=conv.getXsdType(o);
-	
-	return convertToAValue(type,o);
-    }
-*/
+
 
     public static Object convertFromAValue(AValue target) {
 	Object o;
 	if ((o=target.getString())!=null) {
 	    return o;
 	}
-	if ((o=target.getQname())!=null) {
+	if ((o=target.getQualifiedName())!=null) {
 	    return o;
 	}
 	if ((o=target.getFloat())!=null) {

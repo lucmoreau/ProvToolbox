@@ -13,6 +13,7 @@ import org.apache.commons.collections.bag.HashBag;
 import org.apache.log4j.Logger;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Bundle;
+//import org.openprovenance.prov.model.DocumentEquality;
 import org.openprovenance.prov.model.StatementOrBundle;
 
 /**

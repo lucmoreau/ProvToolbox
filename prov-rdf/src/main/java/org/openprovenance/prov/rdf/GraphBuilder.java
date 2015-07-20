@@ -26,9 +26,9 @@ public interface GraphBuilder<RESOURCE, LITERAL, STATEMENT> {
 
     public abstract LITERAL newLiteral(String value, String lang);
 
-    public abstract RESOURCE qualifiedNameToURI(QualifiedName qname);
+    public abstract RESOURCE qualifiedNameToURI(QualifiedName qualifiedName);
 
-    public abstract RESOURCE qualifiedNameToResource(QualifiedName qname);
+    public abstract RESOURCE qualifiedNameToResource(QualifiedName qualifiedName);
 
     public abstract QualifiedName newBlankName();
 

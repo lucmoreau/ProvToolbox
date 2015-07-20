@@ -617,7 +617,7 @@ public class ContextualizationPC1Test extends TestCase {
 
     }
 
-    public void NOtestSchemaValidateXML2() throws javax.xml.bind.JAXBException,
+    public void testSchemaValidateXML2() throws javax.xml.bind.JAXBException,
 	    org.xml.sax.SAXException, java.io.IOException {
 
 	ProvDeserialiser deserial = ProvDeserialiser

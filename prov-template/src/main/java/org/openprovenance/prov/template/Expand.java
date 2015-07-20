@@ -42,9 +42,7 @@ public class Expand {
     
     final private boolean addOrderp;
     
-    private Expand(ProvFactory pf) {
-    	this(pf,false);
-    }
+
     public Expand(ProvFactory pf, boolean addOrderp) {
     	this.pf=pf;
     	this.addOrderp=addOrderp;
@@ -170,7 +168,7 @@ public class Expand {
 	for (Attribute attr : ll) {
 	    if (pf.getName().PROV_QUALIFIED_NAME.equals(attr.getType())) {
 		Object o = attr.getValue();
-		if (o instanceof QualifiedName) {
+		if (o instanceof QualifiedName) { // if attribute is constructed properly, this test should always return true
 		    QualifiedName qn = (QualifiedName) o;
 		    if (isVariable(qn))
 			result.add(qn);

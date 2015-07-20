@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.xml.DocumentEquality;
+import org.openprovenance.prov.model.DocumentEquality;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.Rio;
@@ -73,7 +73,7 @@ public class RoundTripFromRdfTest extends TestCase {
 		Utility u = new Utility(pFactory,onto);
 
 
-		DocumentEquality de = new DocumentEquality(true);
+		DocumentEquality de = new DocumentEquality(true,null);
 		Document doc1 = u.parseRDF("src/test/resources/" + file);
 		file = file.replace('/', '_');
 		RDFFormat format = Rio.getParserFormatForFileName(file,

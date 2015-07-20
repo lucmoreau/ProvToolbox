@@ -68,11 +68,11 @@ public class HTMLConstructor extends NotationConstructor {
     }
 
     public Object convertTypedLiteral(String datatype, Object value) {
-        if ("xsd:QName".equals(datatype)) {
+        if ("xsd:QName".equals(datatype)) { //TODO: probably, never satisfied
             String val=(String)value;
             return "'" + convertId(val.substring(1, val.length() -1 )) + "'";
         } else {
-	    if ("prov:Qualified_Name".equals(datatype)) {
+	    if ("prov:QUALIFIED_NAME".equals(datatype)) {
 		String val=(String)value;
 		return "'" + val.substring(1, val.length() -1 ) + "'";
 	    } else {
@@ -101,11 +101,10 @@ public class HTMLConstructor extends NotationConstructor {
         return ((id==null)? "" : (id + ";"));
     }            
 
-
-
-    public Object convertQualifiedName(String qname) {
-        return qname;
+    public Object convertQualifiedName(String qualifedName) {
+        return qualifedName;
     }
+    
     public Object convertIRI(String iri) {
         return iri;
     }

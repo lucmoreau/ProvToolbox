@@ -22,7 +22,7 @@ public class NamespacesTest
     public static final String EXAMPLE_NS = "http://example.com/";
     public static final String EXAMPLE2_NS = "http://example2.com/";
     public static final String EXAMPLE3_NS = "http://example3.com/";
-    public static final String XSD_NS = "http://www.w3.org/2001/XMLSchema";
+    public static final String XSD_NS = org.openprovenance.prov.model.NamespacePrefixMapper.XSD_NS;
 
     public static ProvFactory pFactory;
     public static Name name;

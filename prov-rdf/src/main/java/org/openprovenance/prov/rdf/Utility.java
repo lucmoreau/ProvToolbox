@@ -11,6 +11,7 @@ import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.rdf.collector.QualifiedCollector;
 import org.openprovenance.prov.rdf.collector.RdfCollector;
 import org.openprovenance.prov.model.Document;
@@ -67,8 +68,6 @@ public class Utility {
 	rdfParser.parse(inputStream, streamName);
 	Document doc=rdfCollector.getDocument();
 	Namespace ns=doc.getNamespace();
-	ns.unregister("xsd", "http://www.w3.org/2001/XMLSchema#");
-	ns.register("xsd", "http://www.w3.org/2001/XMLSchema");
 	return doc;
     }
 
@@ -98,9 +97,8 @@ public class Utility {
 	RdfConstructor rdfc = new RdfConstructor(new SesameGraphBuilder(rep, pFactory), pFactory);
 			
 	Namespace ns=new Namespace(document.getNamespace());	
-	ns.unregister("xsd", "http://www.w3.org/2001/XMLSchema");
-	ns.register("xsd", "http://www.w3.org/2001/XMLSchema#");
-	ns.register("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+	ns.register(NamespacePrefixMapper.RDFS_PREFIX, NamespacePrefixMapper.RDFS_NS); // RDF Schema
+	ns.register(NamespacePrefixMapper.RDF_PREFIX, NamespacePrefixMapper.RDF_NS); // RDF Concepts
 	rdfc.setNamespace(ns);
 
 	Namespace.withThreadNamespace(document.getNamespace());

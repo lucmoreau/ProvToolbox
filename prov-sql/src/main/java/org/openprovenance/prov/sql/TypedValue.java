@@ -5,7 +5,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -35,10 +34,8 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openprovenance.prov.xml.builder.Equals;
-import org.openprovenance.prov.xml.builder.HashCode;
 import org.openprovenance.prov.xml.builder.ToString;
 import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
-import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
 import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 
 
@@ -55,20 +52,20 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 
 public class TypedValue implements Equals, 
 				   ToString, org.openprovenance.prov.model.TypedValue {
-    private static final QualifiedName QNAME_PROV_TYPE = ProvFactory.getFactory().getName().PROV_TYPE;
-    private static final QualifiedName QNAME_PROV_LABEL = ProvFactory.getFactory().getName().PROV_LABEL;
-    private static final QualifiedName QNAME_PROV_VALUE = ProvFactory.getFactory().getName().PROV_VALUE;
-    private static final QualifiedName QNAME_PROV_LOCATION = ProvFactory.getFactory().getName().PROV_LOCATION;
-    private static final QualifiedName QNAME_PROV_ROLE = ProvFactory.getFactory().getName().PROV_ROLE;
-    private static final QualifiedName QNAME_XSD_HEX_BINARY = ProvFactory.getFactory().getName().XSD_HEX_BINARY;
-    private static final QualifiedName QNAME_XSD_BASE64_BINARY = ProvFactory.getFactory().getName().XSD_BASE64_BINARY;
+    private static final QualifiedName QualifiedName_PROV_TYPE = ProvFactory.getFactory().getName().PROV_TYPE;
+    private static final QualifiedName QualifiedName_PROV_LABEL = ProvFactory.getFactory().getName().PROV_LABEL;
+    private static final QualifiedName QualifiedName_PROV_VALUE = ProvFactory.getFactory().getName().PROV_VALUE;
+    private static final QualifiedName QualifiedName_PROV_LOCATION = ProvFactory.getFactory().getName().PROV_LOCATION;
+    private static final QualifiedName QualifiedName_PROV_ROLE = ProvFactory.getFactory().getName().PROV_ROLE;
+    private static final QualifiedName QualifiedName_XSD_HEX_BINARY = ProvFactory.getFactory().getName().XSD_HEX_BINARY;
+    private static final QualifiedName QualifiedName_XSD_BASE64_BINARY = ProvFactory.getFactory().getName().XSD_BASE64_BINARY;
     
     
     @XmlValue
     @XmlSchemaType(name = "anySimpleType")
     protected Object value;
     
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QualifiedNameAdapter.class)
     @XmlAttribute(name = "type", namespace = "http://www.w3.org/2001/XMLSchema-instance")
     protected QualifiedName type;
 
@@ -270,9 +267,9 @@ public class TypedValue implements Equals,
      */
 
     public void setValueAsJava(final byte[] bytes) {
-	if (type.equals(QNAME_XSD_BASE64_BINARY)) {
+	if (type.equals(QualifiedName_XSD_BASE64_BINARY)) {
 	    this.value=ProvFactory.getFactory().base64Encoding(bytes);
-	} else if (type.equals(QNAME_XSD_HEX_BINARY)) {
+	} else if (type.equals(QualifiedName_XSD_HEX_BINARY)) {
 	    this.value=ProvFactory.getFactory().hexEncoding(bytes);
 	}
     }
@@ -341,11 +338,11 @@ public class TypedValue implements Equals,
     
     public QualifiedName getQualifiedName(AttributeKind kind) {
         switch (kind) {
-        case  PROV_TYPE: return QNAME_PROV_TYPE;
-        case  PROV_LABEL: return QNAME_PROV_LABEL;
-        case  PROV_VALUE: return QNAME_PROV_VALUE;
-        case  PROV_LOCATION: return QNAME_PROV_LOCATION;
-        case  PROV_ROLE: return QNAME_PROV_ROLE;
+        case  PROV_TYPE: return QualifiedName_PROV_TYPE;
+        case  PROV_LABEL: return QualifiedName_PROV_LABEL;
+        case  PROV_VALUE: return QualifiedName_PROV_VALUE;
+        case  PROV_LOCATION: return QualifiedName_PROV_LOCATION;
+        case  PROV_ROLE: return QualifiedName_PROV_ROLE;
         case OTHER:
         default: 
                 return null;
@@ -353,15 +350,15 @@ public class TypedValue implements Equals,
     }
     
     /* (non-Javadoc)
-     * @see org.openprovenance.prov.xml.AttrIN#getAttributeKind(javax.xml.namespace.QName)
+     * @see org.openprovenance.prov.model.Attribute#getAttributeKind(org.openprovenance.prov.model.QualifiedName)
      */
     
     public AttributeKind getAttributeKind(QualifiedName q) {
-        if (q.equals(QNAME_PROV_TYPE)) return AttributeKind.PROV_TYPE;
-        if (q.equals(QNAME_PROV_LABEL)) return AttributeKind.PROV_LABEL;
-        if (q.equals(QNAME_PROV_VALUE)) return AttributeKind.PROV_VALUE;
-        if (q.equals(QNAME_PROV_LOCATION)) return AttributeKind.PROV_LOCATION;
-        if (q.equals(QNAME_PROV_ROLE)) return AttributeKind.PROV_ROLE;
+        if (q.equals(QualifiedName_PROV_TYPE)) return AttributeKind.PROV_TYPE;
+        if (q.equals(QualifiedName_PROV_LABEL)) return AttributeKind.PROV_LABEL;
+        if (q.equals(QualifiedName_PROV_VALUE)) return AttributeKind.PROV_VALUE;
+        if (q.equals(QualifiedName_PROV_LOCATION)) return AttributeKind.PROV_LOCATION;
+        if (q.equals(QualifiedName_PROV_ROLE)) return AttributeKind.PROV_ROLE;
         return AttributeKind.OTHER;
     }
 

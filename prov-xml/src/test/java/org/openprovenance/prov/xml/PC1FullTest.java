@@ -74,8 +74,8 @@ public class PC1FullTest extends TestCase {
 	    IOException, SAXException {
 	subtestPC1Full();
 	subtestCopyPC1Full();
-	//subtestSchemaValidateXML(); now failing, since no curie version
-	subtestSchemaFailValidateXML();
+	subtestSchemaValidateXML(); //now failing, since no curie version
+	//subtestSchemaFailValidateXML();
     }
 
     public void subtestPC1Full() throws JAXBException {
@@ -535,8 +535,9 @@ public class PC1FullTest extends TestCase {
 	ProvDeserialiser deserial = ProvDeserialiser
 	        .getThreadProvDeserialiser();
 
-	String[] schemaFiles = new String[1];
+	String[] schemaFiles = new String[2];
 	schemaFiles[0] = "src/test/resources/pc1.xsd";
+	schemaFiles[1] = "src/test/resources/prim.xsd";
 	deserial.validateDocument(schemaFiles, new File("target/pc1-full.xml"));
 
     }
@@ -553,7 +554,7 @@ public class PC1FullTest extends TestCase {
 	    deserial.validateDocument(schemaFiles,
 		                    new File("target/pc1-full.xml"));
 	} catch (Exception e) {
-	    //e.printStackTrace();
+	    e.printStackTrace();
 	    assertTrue(e instanceof javax.xml.bind.UnmarshalException);
 	    return;
 	}

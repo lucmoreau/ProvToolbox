@@ -3,11 +3,13 @@ package org.openprovenance.prov.interop;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -23,6 +25,7 @@ import javax.ws.rs.core.Variant;
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.DocumentEquality;
 import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.ProvDeserialiser;
@@ -33,6 +36,7 @@ import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.template.Expand;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
+import org.openrdf.query.algebra.Exists;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -99,34 +103,28 @@ public class InteropFramework implements InteropMediaType {
     final private String merge;
     final private String flatten;
     final private boolean addOrderp;
+    final private String compare;
+    final private String compareOut;
 
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
      */
     public InteropFramework() {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null,null,null,
                 org.openprovenance.prov.xml.ProvFactory.getFactory());
     }
 
     public InteropFramework(ProvFactory pFactory) {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null,null,null,
                 pFactory);
     }
 
-    /* backwards compatibility with pre-format version*/
-    @Deprecated public InteropFramework(String verbose, String debug, String logfile,
-            String infile, String outfile, String namespaces, String title,
-            String layout, String bindings, boolean addOrderp, String generator,
-            String index, String merge, String flatten, ProvFactory pFactory) {
-        this(verbose, debug, logfile, infile, null, outfile, null, namespaces, title, layout, bindings, null, addOrderp, generator, index, merge, flatten,
-                pFactory);
-    }
 
     public InteropFramework(String verbose, String debug, String logfile,
             String infile, String informat, String outfile, String outformat, String namespaces, String title,
             String layout, String bindings, String bindingformat, boolean addOrderp, String generator,
-            String index, String merge, String flatten, ProvFactory pFactory) {
+            String index, String merge, String flatten, String compare, String compareOut, ProvFactory pFactory) {
         this.verbose = verbose;
         this.debug = debug;
         this.logfile = logfile;
@@ -146,6 +144,8 @@ public class InteropFramework implements InteropMediaType {
         this.informat = informat;
         this.outformat = outformat;
         this.bindingformat = bindingformat;
+        this.compare=compare;
+        this.compareOut=compareOut;
 
         extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
         extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
@@ -891,81 +891,123 @@ public class InteropFramework implements InteropMediaType {
     }
 
 
-    /** Top level entry point of this class, when called from the command line.
-     * <p>
-     * See method {@link CommandLineArguments#main(String[])}*/
     
-    public void run() {
-        if (outfile == null)
-            return;
-        if (infile == null && generator == null && merge ==null)
-            return;
+    /**
+     * Top level entry point of this class, when called from the command line.
+     * <p>
+     * See method {@link CommandLineArguments#main(String[])}
+     */
 
-        if ((infile == "-") && (bindings == "-"))
-            throw new InteropException("Cannot use standard input for both infile and bindings");
+    public int run() {
+	if (outfile == null && compare == null)
+	    return CommandLineArguments.STATUS_NO_OUTPUT_OR_COMPARISON;
+	if (infile == null && generator == null && merge == null)
+	    return CommandLineArguments.STATUS_NO_INPUT;
 
-        Document doc;
-        if (infile != null) {
-            doc = doReadDocument(infile, informat);
-        } else if (merge != null) {
-         	IndexedDocument iDoc=new IndexedDocument(pFactory, pFactory.newDocument(), flatten!=null);
-        	try {
-				List<ToRead> files;
-				if (merge.equals("-")) {
-					files=readIndexFile(System.in);
-				} else {
-					files=readIndexFile(new File(merge));					
-				}
-				System.err.println("files to merge " + files);
-				for (ToRead something: files) {
-					iDoc.merge(readDocument(something));
-				}
-				
-			} catch (IOException e) {
-				System.err.println("problem reading index file");
-				e.printStackTrace();
+	if ((infile == "-") && (bindings == "-"))
+	    throw new InteropException(
+				       "Cannot use standard input for both infile and bindings");
 
-			}
-        	doc=iDoc.toDocument();
-        	
-        } else {
-        
-            String[] options = generator.split(":");
-            String noOfNodes = getOption(options, 0);
-            String noOfEdges = getOption(options, 1);
-            String firstNode = getOption(options, 2);
-            String namespace = "http://expample.org/";
-            String seed = getOption(options, 3);
-            String term = getOption(options, 4);
+	Document doc;
+	if (infile != null) {
+	    doc = doReadDocument(infile, informat);
+	} else if (merge != null) {
+	    IndexedDocument iDoc = new IndexedDocument(pFactory,
+						       pFactory.newDocument(),
+						       flatten != null);
+	    try {
+		List<ToRead> files;
+		if (merge.equals("-")) {
+		    files = readIndexFile(System.in);
+		} else {
+		    files = readIndexFile(new File(merge));
+		}
+		System.err.println("files to merge " + files);
+		for (ToRead something : files) {
+		    iDoc.merge(readDocument(something));
+		}
 
-            if (term == null)
-                term = "e1";
+	    } catch (IOException e) {
+		System.err.println("problem reading index file");
+		e.printStackTrace();
 
-            GeneratorDetails gd = new GeneratorDetails(
-                    Integer.valueOf(noOfNodes), Integer.valueOf(noOfEdges),
-                    firstNode, namespace, (seed == null) ? null
-                            : Long.valueOf(seed), term);
-            System.err.println(gd);
-            GraphGenerator gg = new GraphGenerator(gd, pFactory);
-            gg.generateElements();
+	    }
+	    doc = iDoc.toDocument();
 
-            doc = gg.getDetails().getDocument();
-        }
-        
-        if (index!=null) {
-            Document indexedDoc=new IndexedDocument(pFactory, doc, (flatten!=null)).toDocument();
-            doc=indexedDoc;
-        }
-        if (bindings != null) {
-            Document docBindings = (Document) doReadDocument(bindings, bindingformat);
-            Document expanded = new Expand(pFactory, addOrderp).expander(doc, outfile,
-                                                                         docBindings);
-            doWriteDocument(outfile, outformat, expanded);
+	} else {
 
-        } else {
-            doWriteDocument(outfile, outformat, doc);
-        }
+	    String[] options = generator.split(":");
+	    String noOfNodes = getOption(options, 0);
+	    String noOfEdges = getOption(options, 1);
+	    String firstNode = getOption(options, 2);
+	    String namespace = "http://expample.org/";
+	    String seed = getOption(options, 3);
+	    String term = getOption(options, 4);
 
+	    if (term == null)
+		term = "e1";
+
+	    GeneratorDetails gd = new GeneratorDetails(
+						       Integer.valueOf(noOfNodes),
+						       Integer.valueOf(noOfEdges),
+						       firstNode,
+						       namespace,
+						       (seed == null) ? null
+							       : Long.valueOf(seed),
+						       term);
+	    System.err.println(gd);
+	    GraphGenerator gg = new GraphGenerator(gd, pFactory);
+	    gg.generateElements();
+
+	    doc = gg.getDetails().getDocument();
+	}
+
+	if (compare!=null) {
+	    return doCompare(doc,doReadDocument(compare, informat));
+	} 
+	
+	if (index != null) {
+	    Document indexedDoc = new IndexedDocument(pFactory, doc,
+						      (flatten != null)).toDocument();
+	    doc = indexedDoc;
+	}
+	if (bindings != null) {
+	    Document docBindings = (Document) doReadDocument(bindings,
+							     bindingformat);
+	    Document expanded = new Expand(pFactory, addOrderp).expander(doc,
+									 outfile,
+									 docBindings);
+	    doWriteDocument(outfile, outformat, expanded);
+
+	} else {
+	    doWriteDocument(outfile, outformat, doc);
+	}
+	return CommandLineArguments.STATUS_OK;
+
+    }
+
+    private int doCompare(Document doc1, Document doc2) {
+	if (doc1==null) return CommandLineArguments.STATUS_COMPARE_NO_ARG1;
+	if (doc2==null) return CommandLineArguments.STATUS_COMPARE_NO_ARG2;
+	
+	//System.out.println("doCompare()");
+	PrintStream ps=System.out;
+	try {
+	    if (!(compareOut==null || compareOut.equals("-"))) {
+		ps=new PrintStream(compareOut);
+	    }
+	} catch (FileNotFoundException e) {
+	    // ok, we ignore the exception, we continue with stdout
+	}
+	DocumentEquality comparator=new DocumentEquality(false,ps);
+	logger.debug("about to compare two docs");
+	if (comparator.check(doc1, doc2)) {
+	    //System.out.println("doCompare(): Success");
+
+	    return CommandLineArguments.STATUS_OK;
+	}	    
+	//System.out.println("doCompare(): Failure");
+	return CommandLineArguments.STATUS_COMPARE_DIFFERENT;
     }
 
     /** Initializes a Document's namespace. */

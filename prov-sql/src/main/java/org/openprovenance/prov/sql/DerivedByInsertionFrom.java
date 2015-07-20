@@ -83,7 +83,7 @@ public class DerivedByInsertionFrom
     @XmlAnyElement(lax = true)
     protected List<Attribute> any;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QualifiedNameAdapter.class)
     protected QualifiedName id;
 
     /**

@@ -102,45 +102,7 @@ public class ProvDeserialiser {
 	        return res;
     }
 
-    public Document validateDocument (String[] schemaFiles, File serialised)throws JAXBException,SAXException, IOException {
-	return validateDocument(schemaFiles,serialised,true);
-    }
-
-    public Document validateDocument (String[] schemaFiles, File serialised, boolean withCurie)
-	        throws JAXBException,SAXException, IOException {
-	        SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-	        Source [] sources=new Source[2+schemaFiles.length];
-	        int schemaCount;
-	        if (withCurie) {
-	            schemaCount=3;
-	            sources=new Source[schemaCount+schemaFiles.length];
-	            sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"curie.xsd"));
-	            sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"xml.xsd"));
-	            sources[2]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20130307.xsd")); //TODO: here to use: prov-20130307-curie.xsd
-	        } else {
-	            schemaCount=3;
-	            sources=new Source[schemaCount+schemaFiles.length];
-	            sources[0]=new StreamSource(this.getClass().getResourceAsStream("/"+"curie.xsd"));
-	            sources[1]=new StreamSource(this.getClass().getResourceAsStream("/"+"xml.xsd"));
-	            sources[2]=new StreamSource(this.getClass().getResourceAsStream("/"+"prov-20130307.xsd"));
-	        }
-
-
-	        int i=0;
-	        for (String schemaFile: schemaFiles) {
-	            sources[schemaCount+i]=new StreamSource(new File(schemaFile));
-	            i++;
-	        }
-	        Schema schema = sf.newSchema(sources);  
-	        Unmarshaller u=jc.createUnmarshaller();
-	        //u.setValidating(true); was jaxb1.0
-	        u.setSchema(schema);
-	        Object root= u.unmarshal(serialised);
-	        @SuppressWarnings("unchecked")
-	        Document res=(Document)((JAXBElement<Document>) root).getValue();
-	        return res;
-	    }
-    
+ 
     
     class ResourceResolver implements LSResourceResolver {
 
@@ -250,7 +212,7 @@ public class ProvDeserialiser {
 	     this.inputStream = new BufferedInputStream(input);
 	 }
       }
-    public Document validateDocumentNew(String[] schemaFiles, File serialised) throws JAXBException,
+    public Document validateDocument(String[] schemaFiles, File serialised) throws JAXBException,
 						       SAXException,
 						       IOException {
 	int schemaCount;
@@ -260,7 +222,7 @@ public class ProvDeserialiser {
 	 //System.setProperty("javax.xml.validation.SchemaFactory:http://www.w3.org/XML/XMLSchema/v1.1",
            //      "org.apache.xerces.jaxp.validation.XMLSchema11Factory");
 	 
-		SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+	SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			  //  "http://www.w3.org/XML/XMLSchema/v1.1");
 
 	 
@@ -282,38 +244,13 @@ public class ProvDeserialiser {
 	}
 	Schema schema = sf.newSchema(sources);
 	Unmarshaller u = jc.createUnmarshaller();
-	// u.setValidating(true); was jaxb1.0
 	u.setSchema(schema);
+
 	Object root = u.unmarshal(serialised);
 	@SuppressWarnings("unchecked")
 	Document res = (Document) ((JAXBElement<Document>) root).getValue();
 	return res;
     }
 
-    public static void main(String [] args) {
-        ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-        if ((args==null) ||  (args.length==0)) {
-            System.out.println("Usage: opmxml-validate <filename> {schemaFiles}*");
-            return;
-        }
-        File f=new File(args[0]);
-        String [] schemas=new String[args.length-1];
-        for (int i=1; i< args.length; i++) {
-            schemas[i-1]=args[i];
-        }
-        try {
-            deserial.validateDocument(schemas,f);
-            System.out.println(args[0] + " IS a valid OPM graph");
-            return ;
-        } catch (JAXBException je) {
-            je.printStackTrace();
-            System.out.println(args[0] + " IS NOT a valid OPM graph");
-        } catch (SAXException je) {
-            je.printStackTrace();
-            System.out.println(args[0] + " IS NOT a valid OPM graph");
-        } catch (IOException io) {
-            io.printStackTrace();
-            System.out.println(args[0] + " IS NOT a valid OPM graph");
-        }
-    }
+
 }

@@ -41,7 +41,6 @@ public class Name {
 	XSD_ANY_URI=newXsdQualifiedName("anyURI");
 
 	
-	FOR_XML_XSD_QNAME=newXsdQualifiedName("QName");  
 
 	XSD_DATETIME=newXsdQualifiedName("dateTime");
 	XSD_GYEAR=newXsdQualifiedName("gYear"); 
@@ -68,44 +67,20 @@ public class Name {
 	XSD_DATE=newXsdQualifiedName("date");
 	XSD_DATETIMESTAMP=newXsdQualifiedName("dateTimeStamp"); 
 
-	QNAME_XSD_HASH_STRING=newXsdHashQualifiedName("string");
-	QNAME_XSD_HASH_INT=newXsdHashQualifiedName("int");
-	QNAME_XSD_HASH_LONG=newXsdHashQualifiedName("long");
-	QNAME_XSD_HASH_SHORT=newXsdHashQualifiedName("short");
-	QNAME_XSD_HASH_DOUBLE=newXsdHashQualifiedName("double");
-	QNAME_XSD_HASH_FLOAT=newXsdHashQualifiedName("float");
-	QNAME_XSD_HASH_DECIMAL=newXsdHashQualifiedName("decimal");
-	QNAME_XSD_HASH_BOOLEAN=newXsdHashQualifiedName("boolean");
-	QNAME_XSD_HASH_BYTE=newXsdHashQualifiedName("byte");
-	QNAME_XSD_HASH_UNSIGNED_INT=newXsdHashQualifiedName("unsignedInt");
-	QNAME_XSD_HASH_UNSIGNED_LONG=newXsdHashQualifiedName("unsignedLong");
-	QNAME_XSD_HASH_INTEGER=newXsdHashQualifiedName("integer");
-	QNAME_XSD_HASH_UNSIGNED_SHORT=newXsdHashQualifiedName("unsignedShort");
-	QNAME_XSD_HASH_NON_NEGATIVE_INTEGER=newXsdHashQualifiedName("nonNegativeInteger");
-	QNAME_XSD_HASH_NON_POSITIVE_INTEGER=newXsdHashQualifiedName("nonPositiveInteger");
-	QNAME_XSD_HASH_POSITIVE_INTEGER=newXsdHashQualifiedName("positiveInteger");
-	QNAME_XSD_HASH_UNSIGNED_BYTE=newXsdHashQualifiedName("unsignedByte");
-	QNAME_XSD_HASH_ANY_URI=newXsdHashQualifiedName("anyURI");
-	QNAME_XSD_HASH_QNAME=newXsdHashQualifiedName("QName");
-	QNAME_XSD_HASH_DATETIME=newXsdHashQualifiedName("dateTime");
-	QNAME_XSD_HASH_GYEAR=newXsdQualifiedName("gYear");
-
-
 	RDF_LITERAL=newRdfQualifiedName("XMLLiteral");
 
 
-	QNAME_UNKNOWN=newXsdQualifiedName("UNKNOWN");
+	QUALIFIED_NAME_UNKNOWN_TYPE=newToolboxQualifiedName("UNKNOWN_TYPE");
 
     }
 
     public QualifiedName newXsdQualifiedName(String local) {
         return pFactory.newQualifiedName(NamespacePrefixMapper.XSD_NS, local, NamespacePrefixMapper.XSD_PREFIX);
     }
-
-    public QualifiedName newXsdHashQualifiedName(String local) {
-	return pFactory.newQualifiedName(NamespacePrefixMapper.XSD_HASH_NS, local, NamespacePrefixMapper.XSD_PREFIX);
+    public QualifiedName newToolboxQualifiedName(String local) {
+        return pFactory.newQualifiedName(NamespacePrefixMapper.TOOLBOX_NS, local, NamespacePrefixMapper.TOOLBOX_PREFIX);
     }
-    
+
     
     public QualifiedName newRdfQualifiedName(String local) {
         return pFactory.newQualifiedName(NamespacePrefixMapper.RDF_NS, local, "rdf");
@@ -195,38 +170,14 @@ public class Name {
     final public QualifiedName XSD_DATE;
     final public QualifiedName XSD_DATETIMESTAMP;
 
-    final public QualifiedName QNAME_XSD_HASH_STRING;
-    final public QualifiedName QNAME_XSD_HASH_INT;
-    final public QualifiedName QNAME_XSD_HASH_LONG;
-    final public QualifiedName QNAME_XSD_HASH_SHORT;
-    final public QualifiedName QNAME_XSD_HASH_DOUBLE;
-    final public QualifiedName QNAME_XSD_HASH_FLOAT;
-    final public QualifiedName QNAME_XSD_HASH_DECIMAL;
-    final public QualifiedName QNAME_XSD_HASH_BOOLEAN;
-    final public QualifiedName QNAME_XSD_HASH_BYTE;
-    final public QualifiedName QNAME_XSD_HASH_UNSIGNED_INT;
-    final public QualifiedName QNAME_XSD_HASH_UNSIGNED_LONG;
-    final public QualifiedName QNAME_XSD_HASH_INTEGER;
-    final public QualifiedName QNAME_XSD_HASH_UNSIGNED_SHORT;
-    final public QualifiedName QNAME_XSD_HASH_NON_NEGATIVE_INTEGER;
-    final public QualifiedName QNAME_XSD_HASH_NON_POSITIVE_INTEGER;
-    final public QualifiedName QNAME_XSD_HASH_POSITIVE_INTEGER;
-    final public QualifiedName QNAME_XSD_HASH_UNSIGNED_BYTE;
-    final public QualifiedName QNAME_XSD_HASH_ANY_URI;
-    final public QualifiedName QNAME_XSD_HASH_QNAME;
-    final public QualifiedName QNAME_XSD_HASH_DATETIME;
-    final public QualifiedName QNAME_XSD_HASH_GYEAR;
-
     
     final public QualifiedName RDF_LITERAL;
 
     
-    final public QualifiedName QNAME_UNKNOWN;
+    final public QualifiedName QUALIFIED_NAME_UNKNOWN_TYPE;
     
     
-    /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#QName">xsd:QName</a>  
-     */
-    final public QualifiedName FOR_XML_XSD_QNAME;
+
 
 
 }

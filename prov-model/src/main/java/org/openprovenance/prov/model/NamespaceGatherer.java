@@ -252,6 +252,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(inv.getId());
 	register(inv.getEntity());
 	register(inv.getActivity());
+	registerLocation(inv.getLocation());
 	registerRole(inv.getRole());
 	registerType(inv.getType());
 	registerOther(inv.getOther());
@@ -262,6 +263,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(use.getId());
 	register(use.getEntity());
 	register(use.getActivity());
+	registerLocation(use.getLocation());
 	registerRole(use.getRole());
 	registerType(use.getType());
 	registerOther(use.getOther());
@@ -272,6 +274,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(gen.getId());
 	register(gen.getEntity());
 	register(gen.getActivity());
+	registerLocation(gen.getLocation());	
 	registerRole(gen.getRole());
 	registerType(gen.getType());
 	registerOther(gen.getOther());

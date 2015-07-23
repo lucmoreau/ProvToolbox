@@ -36,7 +36,6 @@ import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.template.Expand;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
-import org.openrdf.query.algebra.Exists;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -532,11 +531,12 @@ public class InteropFramework implements InteropMediaType {
      * Reads a Document from an input stream, using the parser specified by the format argument.
      * @param is an input stream
      * @param format one of the input formats supported by ProvToolbox
+     * @param baseuri a base uri for the input stream document	
      * @return a Document
      */
 
-    public Document readDocument(InputStream is, ProvFormat format) {
-        return readDocument(is, format, pFactory);
+    public Document readDocument(InputStream is, ProvFormat format, String baseuri) {
+        return readDocument(is, format, pFactory, baseuri);
     }
 
     /**
@@ -544,13 +544,15 @@ public class InteropFramework implements InteropMediaType {
      * @param is an input stream
      * @param format one of the input formats supported by ProvToolbox
      * @param pFactory a provenance factory used to construct the Document
+     * @param baseuri a base uri for the input stream document
      * @return a Document
      */
 
   
     public Document readDocument(InputStream is, 
                                  ProvFormat format,
-                                 ProvFactory pFactory) {
+                                 ProvFactory pFactory,
+                                 String baseuri) {
         try {
 
             switch (format) {
@@ -577,17 +579,17 @@ public class InteropFramework implements InteropMediaType {
             case RDFXML: {
                 org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
                         pFactory, onto);
-                return rdfU.parseRDF(is, RDFFormat.RDFXML);
+                return rdfU.parseRDF(is, RDFFormat.RDFXML, baseuri);
             }
             case TRIG: {
                 org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
                         pFactory, onto);
-                return rdfU.parseRDF(is, RDFFormat.TRIG);
+                return rdfU.parseRDF(is, RDFFormat.TRIG,baseuri);
             }
             case TURTLE: {
                 org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
                         pFactory, onto);
-                return rdfU.parseRDF(is, RDFFormat.TURTLE);
+                return rdfU.parseRDF(is, RDFFormat.TURTLE,baseuri);
             }
             case XML: {
                 ProvDeserialiser deserial = ProvDeserialiser
@@ -655,7 +657,7 @@ public class InteropFramework implements InteropMediaType {
 
             InputStream content_stream = conn.getInputStream();
 
-            return readDocument(content_stream, format);
+            return readDocument(content_stream, format,url);
         } catch (IOException e) {
             throw new InteropException(e);
         }
@@ -793,7 +795,7 @@ public class InteropFramework implements InteropMediaType {
             if (informat == null) {
                 throw new InteropException("File format for standard input not specified");
             }
-            doc = (Document) readDocument(System.in, informat);
+            doc = (Document) readDocument(System.in, informat,"file://stdin/");
         } else {
             doc = (Document) readDocumentFromFile(filename, informat);
         }

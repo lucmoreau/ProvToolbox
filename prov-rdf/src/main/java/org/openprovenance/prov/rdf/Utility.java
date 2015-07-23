@@ -51,21 +51,24 @@ public class Utility {
 	return parseRDF(inputStream, rdfParser, streamName);
     }
 
-    public Document parseRDF(InputStream inputStream, RDFFormat format) throws RDFParseException,
+    /** Parse from input stream, no base uri specified. */
+    
+    public Document parseRDF(InputStream inputStream, RDFFormat format, String baseuri) throws RDFParseException,
     							RDFHandlerException, IOException,
     							JAXBException {
 	RDFParser rdfParser=Rio.createParser(format);
-	String streamName="inputstream";
-	return parseRDF(inputStream, rdfParser, streamName);
+	return parseRDF(inputStream, rdfParser, baseuri);
     }	
+    /** Parse from input stream passing base uri . */
+    
 
     public Document parseRDF(InputStream inputStream, RDFParser rdfParser,
-			     String streamName) throws IOException,
+			     String baseuri) throws IOException,
 					       RDFParseException,
 					       RDFHandlerException {
 	RdfCollector rdfCollector = new QualifiedCollector(pFactory,onto);
 	rdfParser.setRDFHandler(rdfCollector);
-	rdfParser.parse(inputStream, streamName);
+	rdfParser.parse(inputStream, baseuri);
 	Document doc=rdfCollector.getDocument();
 	Namespace ns=doc.getNamespace();
 	return doc;

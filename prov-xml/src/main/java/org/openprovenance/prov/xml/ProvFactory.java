@@ -7,11 +7,13 @@ import java.io.InputStream;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeFactory;
 
+import org.apache.log4j.Logger;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
 import org.openprovenance.prov.model.ProvSerialiser;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.QualifiedNameUtils;
+import org.openprovenance.prov.model.exception.InvalidAttributeValueException;
 import org.openprovenance.prov.model.exception.QualifiedNameException;
 
 /** A stateless factory for PROV objects. */
@@ -20,6 +22,8 @@ import org.openprovenance.prov.model.exception.QualifiedNameException;
 
 public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     
+    static Logger logger = Logger.getLogger(ProvFactory.class);
+        
     final private QualifiedNameUtils qnU=new QualifiedNameUtils();
 
     private static String fileName = "toolbox.properties";
@@ -118,9 +122,31 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         return key;
     }
     public Label newLabel(Object value, QualifiedName type) {
+	return newLabel(value,type,BuildFlag.WARN);
+	
+    }
+    public Label newLabel(Object value, QualifiedName type, BuildFlag flag) {
         Label res=new Label();
         res.type=type;
         res.setValueFromObject(value);
+        
+	if ((BuildFlag.NOCHEK.equals(flag)) 
+		||
+		(value instanceof org.openprovenance.prov.model.LangString)
+		||
+		(value instanceof String)) {
+	    return res;
+	}
+	
+	if (BuildFlag.STRICT.equals(flag)) {
+	    String msg="label value is not a string " + value;
+	    logger.fatal(msg);
+	    throw new InvalidAttributeValueException(msg);
+	}
+	
+	logger.warn("label value is not a string " + value);
+
+
         return res;
     }
     public Location newLocation(Object value, QualifiedName type) {

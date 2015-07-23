@@ -25,7 +25,7 @@ public class QualifiedNameUtils {
 	                                                	 {";", "\\;"},
 	                                                	 {"[", "\\["},
 	                                                	 {"]", "\\]"},
-	                                                	 {".", "\\."},
+	                                                	 //{".", "\\."}, Should not be escaped since - is accepted by PN_CHARS, except for the last one
 	                                                	// {"%", "\\%"}, // This is not in PROV-N but is required for <percent> production
 	                                                	// {"<", "%3C"},
 	                                                	// {">", "%3E"},
@@ -65,7 +65,13 @@ public class QualifiedNameUtils {
     
     public String escapeProvLocalName(String localName) {
 	if ("-".equals(localName)) return "\\-";
-	return ESCAPE_PROV_LOCAL_NAME.translate(localName);
+	String tmp=ESCAPE_PROV_LOCAL_NAME.translate(localName);
+	int len = tmp.length();
+	if (len>0 && tmp.charAt(len-1)=='.') {
+	    return (tmp.substring(0,len-1)) + "\\.";
+	} else {
+	    return tmp;
+	}
     }
 
     public String unescapeProvLocalName(String localName) {

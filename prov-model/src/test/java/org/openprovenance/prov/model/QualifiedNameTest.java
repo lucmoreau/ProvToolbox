@@ -56,12 +56,13 @@ public class QualifiedNameTest extends TestCase {
 	assertTrue(doEscape("a01b;c","a01b\\;c"));
 	assertTrue(doEscape("a01b[c","a01b\\[c"));
 	assertTrue(doEscape("a01b]c","a01b\\]c"));
-	assertTrue(doEscape("a01b.c","a01b\\.c"));
+	assertTrue(doEscape("a01b.c","a01b.c"));
+	assertTrue(doEscape("a01bc.","a01bc\\."));
 	assertTrue(doEscape("-","\\-"));
 
 	//assertTrue(doEscape("a01b<.>c","a01b%3C\\.%3Ec"));
 
-	assertTrue(doEscape("='(),-:;[].","\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\."));
+	assertTrue(doEscape("='(),-:;[].a","\\=\\'\\(\\)\\,-\\:\\;\\[\\].a"));
 	assertTrue(doEscape("?a=b","?a\\=b"));
 	assertTrue(doEscape("55348dff-4fcc-4ac2-ab56-641798c64400","55348dff-4fcc-4ac2-ab56-641798c64400"));
 	assertTrue(doEscape("news/world-asia-17507976","news/world-asia-17507976")); 
@@ -84,7 +85,9 @@ public class QualifiedNameTest extends TestCase {
 	assertTrue(doUnescape("a01b[c","a01b\\[c"));
 	assertTrue(doUnescape("a01b]c","a01b\\]c"));
 	assertTrue(doUnescape("a01b.c","a01b\\.c"));
-	
+	assertTrue(doUnescape("a01b.c","a01b.c"));
+	assertTrue(doUnescape("a01bc.","a01bc\\."));
+
 	//assertTrue(doUnescape("a01b<.>c","a01b%3C\\.%3Ec"));
 
 	assertTrue(doUnescape("='(),-:;[].","\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\."));
@@ -133,11 +136,11 @@ public class QualifiedNameTest extends TestCase {
 	assertTrue(doRT2("a01b\\;c"));
 	assertTrue(doRT2("a01b\\[c"));
 	assertTrue(doRT2("a01b\\]c"));
-	assertTrue(doRT2("a01b\\.c"));
+	assertTrue(doRT2("a01b.c"));
 	
 	//assertTrue(doRT2("a01b%3C\\.%3Ec"));
 
-	assertTrue(doRT2("\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\."));
+	assertTrue(doRT2("\\=\\'\\(\\)\\,-\\:\\;\\[\\].a"));
 	assertTrue(doRT2("?a\\=b"));
 	assertTrue(doRT2("55348dff-4fcc-4ac2-ab56-641798c64400"));
 	

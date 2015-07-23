@@ -61,6 +61,8 @@ public class XMLNameTest extends TestCase {
 	assertTrue(doEscape("a01b[c","a01b_5Bc"));
 	assertTrue(doEscape("a01b]c","a01b_5Dc"));
 	assertTrue(doEscape("a01b.c","a01b.c"));
+	assertTrue(doEscape("a01bc.","a01bc."));
+
 	assertTrue(doEscape("='(),_:;[].@~","__3D_27_28_29_2C___3A_3B_5B_5D._40_7E"));
 	assertTrue(doEscape("?a\\=b","__3Fa_5C_3Db"));
 	assertTrue(doEscape("55348dff-4fcc-4ac2-ab56-641798c64400","_55348dff-4fcc-4ac2-ab56-641798c64400"));

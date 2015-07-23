@@ -66,7 +66,7 @@
        <plugin>
 	 <groupId>org.antlr</groupId>
 	 <artifactId>antlr3-maven-plugin</artifactId>
-	 <version>3.4</version>
+	 <version>3.5.2</version>
 
 	 <executions>
            
@@ -83,7 +83,26 @@
 
        </plugin>
 
+<!--       <plugin>
+	 <groupId>org.antlr</groupId>
+	 <artifactId>antlr4-maven-plugin</artifactId>
+	 <version>4.5.1</version>
 
+	 <executions>
+           
+           <execution>
+	     <phase>generate-sources</phase>
+             <goals>
+               <goal>antlr4</goal>
+             </goals>
+             <configuration>
+
+             </configuration>
+           </execution>
+	 </executions>
+
+       </plugin>
+-->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

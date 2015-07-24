@@ -38,50 +38,50 @@ public class ValueConverter  {
      */
     
     public Object convertToJava(QualifiedName datatype, String value) {
-	if (datatype.equals(name.XSD_STRING) || datatype.equals(name.QNAME_XSD_HASH_STRING))
+	if (datatype.equals(name.XSD_STRING))
 	    return value;
-	if (datatype.equals(name.XSD_INT) || datatype.equals(name.QNAME_XSD_HASH_INT))
+	if (datatype.equals(name.XSD_INT))
 	    return Integer.parseInt(value);
-	if (datatype.equals(name.XSD_LONG) || datatype.equals(name.QNAME_XSD_HASH_LONG))
+	if (datatype.equals(name.XSD_LONG))
 	    return Long.parseLong(value);
-	if (datatype.equals(name.XSD_SHORT) || datatype.equals(name.QNAME_XSD_HASH_SHORT))
+	if (datatype.equals(name.XSD_SHORT))
 	    return Short.parseShort(value);
-	if (datatype.equals(name.XSD_DOUBLE) || datatype.equals(name.QNAME_XSD_HASH_DOUBLE))
+	if (datatype.equals(name.XSD_DOUBLE))
 	    return Double.parseDouble(value);
-	if (datatype.equals(name.XSD_FLOAT) || datatype.equals(name.QNAME_XSD_HASH_FLOAT))
+	if (datatype.equals(name.XSD_FLOAT))
 	    return Float.parseFloat(value);
-	if (datatype.equals(name.XSD_DECIMAL) || datatype.equals(name.QNAME_XSD_HASH_DECIMAL))
+	if (datatype.equals(name.XSD_DECIMAL))
 	    return new java.math.BigDecimal(value);
-	if (datatype.equals(name.XSD_BOOLEAN) || datatype.equals(name.QNAME_XSD_HASH_BOOLEAN))
+	if (datatype.equals(name.XSD_BOOLEAN))
 	    return Boolean.parseBoolean(value);
-	if (datatype.equals(name.XSD_BYTE) || datatype.equals(name.QNAME_XSD_HASH_BYTE))
+	if (datatype.equals(name.XSD_BYTE))
 	    return Byte.parseByte(value);
-	if (datatype.equals(name.XSD_UNSIGNED_INT) || datatype.equals(name.QNAME_XSD_HASH_UNSIGNED_INT))
+	if (datatype.equals(name.XSD_UNSIGNED_INT))
 	    return Long.parseLong(value);
-	if (datatype.equals(name.XSD_UNSIGNED_SHORT) || datatype.equals(name.QNAME_XSD_HASH_UNSIGNED_SHORT))
+	if (datatype.equals(name.XSD_UNSIGNED_SHORT))
 	    return Integer.parseInt(value);
-	if (datatype.equals(name.XSD_UNSIGNED_BYTE) || datatype.equals(name.QNAME_XSD_HASH_UNSIGNED_BYTE))
+	if (datatype.equals(name.XSD_UNSIGNED_BYTE))
 	    return Short.parseShort(value);
-	if (datatype.equals(name.XSD_UNSIGNED_LONG) || datatype.equals(name.QNAME_XSD_HASH_UNSIGNED_LONG))
+	if (datatype.equals(name.XSD_UNSIGNED_LONG))
 	    return new java.math.BigInteger(value);
-	if (datatype.equals(name.XSD_INTEGER) || datatype.equals(name.QNAME_XSD_HASH_INTEGER))
+	if (datatype.equals(name.XSD_INTEGER) )
 	    return new java.math.BigInteger(value);
-	if (datatype.equals(name.XSD_NON_NEGATIVE_INTEGER) || datatype.equals(name.QNAME_XSD_HASH_NON_NEGATIVE_INTEGER))
+	if (datatype.equals(name.XSD_NON_NEGATIVE_INTEGER))
 	    return new java.math.BigInteger(value);
-	if (datatype.equals(name.XSD_NON_POSITIVE_INTEGER) || datatype.equals(name.QNAME_XSD_HASH_NON_POSITIVE_INTEGER))
+	if (datatype.equals(name.XSD_NON_POSITIVE_INTEGER))
 	    return new java.math.BigInteger(value);
-	if (datatype.equals(name.XSD_POSITIVE_INTEGER) || datatype.equals(name.QNAME_XSD_HASH_POSITIVE_INTEGER))
+	if (datatype.equals(name.XSD_POSITIVE_INTEGER))
 	    return new java.math.BigInteger(value);
-	if (datatype.equals(name.XSD_ANY_URI) || datatype.equals(name.QNAME_XSD_HASH_ANY_URI)) {
+	if (datatype.equals(name.XSD_ANY_URI)) {
 	    return value;
 	}
-	if (datatype.equals(name.XSD_QNAME) || datatype.equals(name.QNAME_XSD_HASH_QNAME)) {
+	if (datatype.equals(name.PROV_QUALIFIED_NAME) ) {
 	    throw new ConverterException("Not conversion to xsd:QName");
 	}
-	if (datatype.equals(name.XSD_DATETIME) || datatype.equals(name.QNAME_XSD_HASH_DATETIME)) {
+	if (datatype.equals(name.XSD_DATETIME)) {
 	    return pFactory.newISOTime(value);
 	}
-        if (datatype.equals(name.XSD_GYEAR) || datatype.equals(name.QNAME_XSD_HASH_GYEAR)) {
+        if (datatype.equals(name.XSD_GYEAR)) {
             return pFactory.newGYear(new Integer(value));
         }
 
@@ -176,8 +176,8 @@ public class ValueConverter  {
 	    return name.XSD_BOOLEAN; 
 	if (o instanceof Byte)
 	    return name.XSD_BYTE;
-	if (o instanceof QName)
-	    return name.XSD_QNAME; 
+	if (o instanceof QualifiedName)
+	    return name.PROV_QUALIFIED_NAME; 
 	if (o instanceof XMLGregorianCalendar) {
 	    XMLGregorianCalendar cal=(XMLGregorianCalendar)o;
 	    QName t=cal.getXMLSchemaType();
@@ -192,7 +192,7 @@ public class ValueConverter  {
 	//System.out.println("getXsdType() " + o.getClass());
 	
 	// Let's be permissive, and return the unknown qualified name
-	return name.QNAME_UNKNOWN;
+	return name.QUALIFIED_NAME_UNKNOWN_TYPE;
     }
 
 

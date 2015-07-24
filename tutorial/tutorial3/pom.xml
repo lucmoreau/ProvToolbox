@@ -3,7 +3,7 @@
   <parent>
     <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.6.3-SNAPSHOT</version>
+    <version>0.7.1-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -11,7 +11,7 @@
   <groupId>org.openprovenance.prov</groupId>
   <artifactId>ProvToolbox-Tutorial3</artifactId>
   <name>ProvToolbox Tutorial 3</name>
-  <description>ProvToolbox Tutorial 2</description>
+  <description>ProvToolbox Tutorial 3</description>
 
   <developers>
     <developer>
@@ -63,12 +63,12 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-model</artifactId>
-      <version>0.6.3-SNAPSHOT</version>
+      <version>0.7.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-interop</artifactId>
-      <version>0.6.3-SNAPSHOT</version>
+      <version>0.7.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

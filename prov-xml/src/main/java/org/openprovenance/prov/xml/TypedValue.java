@@ -50,13 +50,13 @@ public class TypedValue
 {
     
 
-    private static final QualifiedName QNAME_PROV_TYPE = ProvFactory.getFactory().getName().PROV_TYPE;
-    private static final QualifiedName QNAME_PROV_LABEL = ProvFactory.getFactory().getName().PROV_LABEL;
-    private static final QualifiedName QNAME_PROV_VALUE = ProvFactory.getFactory().getName().PROV_VALUE;
-    private static final QualifiedName QNAME_PROV_LOCATION = ProvFactory.getFactory().getName().PROV_LOCATION;
-    private static final QualifiedName QNAME_PROV_ROLE = ProvFactory.getFactory().getName().PROV_ROLE;
-    private static final QualifiedName QNAME_XSD_HEX_BINARY = ProvFactory.getFactory().getName().XSD_HEX_BINARY;
-    private static final QualifiedName QNAME_XSD_BASE64_BINARY = ProvFactory.getFactory().getName().XSD_BASE64_BINARY;
+    private static final QualifiedName QualifiedName_PROV_TYPE = ProvFactory.getFactory().getName().PROV_TYPE;
+    private static final QualifiedName QualifiedName_PROV_LABEL = ProvFactory.getFactory().getName().PROV_LABEL;
+    private static final QualifiedName QualifiedName_PROV_VALUE = ProvFactory.getFactory().getName().PROV_VALUE;
+    private static final QualifiedName QualifiedName_PROV_LOCATION = ProvFactory.getFactory().getName().PROV_LOCATION;
+    private static final QualifiedName QualifiedName_PROV_ROLE = ProvFactory.getFactory().getName().PROV_ROLE;
+    private static final QualifiedName QualifiedName_XSD_HEX_BINARY = ProvFactory.getFactory().getName().XSD_HEX_BINARY;
+    private static final QualifiedName QualifiedName_XSD_BASE64_BINARY = ProvFactory.getFactory().getName().XSD_BASE64_BINARY;
 
     @XmlValue
     @XmlSchemaType(name = "anySimpleType")
@@ -130,9 +130,9 @@ public class TypedValue
      */
 
     private void setValueFromObject(byte[] bytes) {
-	if (type.equals(QNAME_XSD_BASE64_BINARY)) {
+	if (type.equals(QualifiedName_XSD_BASE64_BINARY)) {
 	    setValue(ProvFactory.getFactory().base64Encoding(bytes));
-	} else if (type.equals(QNAME_XSD_HEX_BINARY)) {
+	} else if (type.equals(QualifiedName_XSD_HEX_BINARY)) {
 	    setValue(ProvFactory.getFactory().hexEncoding(bytes));
 	}
     }
@@ -185,7 +185,7 @@ public class TypedValue
      *     
      */
     /* (non-Javadoc)
-     * @see org.openprovenance.prov.xml.TypedValue#setType(javax.xml.namespace.QualifiedName)
+     * @see org.openprovenance.prov.xml.TypedValue#setType(org.openprovenance.model.QualifiedName)
      */
     @Override
     public void setType(QualifiedName value) {
@@ -254,11 +254,11 @@ public class TypedValue
     
     public QualifiedName getQualifiedName(AttributeKind kind) {
         switch (kind) {
-        case  PROV_TYPE: return QNAME_PROV_TYPE;
-        case  PROV_LABEL: return QNAME_PROV_LABEL;
-        case  PROV_VALUE: return QNAME_PROV_VALUE;
-        case  PROV_LOCATION: return QNAME_PROV_LOCATION;
-        case  PROV_ROLE: return QNAME_PROV_ROLE;
+        case  PROV_TYPE: return QualifiedName_PROV_TYPE;
+        case  PROV_LABEL: return QualifiedName_PROV_LABEL;
+        case  PROV_VALUE: return QualifiedName_PROV_VALUE;
+        case  PROV_LOCATION: return QualifiedName_PROV_LOCATION;
+        case  PROV_ROLE: return QualifiedName_PROV_ROLE;
         case OTHER:
         default: 
                 return null;
@@ -266,15 +266,15 @@ public class TypedValue
     }
     
     /* (non-Javadoc)
-     * @see org.openprovenance.prov.xml.AttrIN#getAttributeKind(javax.xml.namespace.QName)
+     * @see org.openprovenance.prov.model.Attribute#getAttributeKind(org.openprovenance.prov.model.QualifiedName)
      */
     
     public AttributeKind getAttributeKind(QualifiedName q) {
-        if (q.equals(QNAME_PROV_TYPE)) return AttributeKind.PROV_TYPE;
-        if (q.equals(QNAME_PROV_LABEL)) return AttributeKind.PROV_LABEL;
-        if (q.equals(QNAME_PROV_VALUE)) return AttributeKind.PROV_VALUE;
-        if (q.equals(QNAME_PROV_LOCATION)) return AttributeKind.PROV_LOCATION;
-        if (q.equals(QNAME_PROV_ROLE)) return AttributeKind.PROV_ROLE;
+        if (q.equals(QualifiedName_PROV_TYPE)) return AttributeKind.PROV_TYPE;
+        if (q.equals(QualifiedName_PROV_LABEL)) return AttributeKind.PROV_LABEL;
+        if (q.equals(QualifiedName_PROV_VALUE)) return AttributeKind.PROV_VALUE;
+        if (q.equals(QualifiedName_PROV_LOCATION)) return AttributeKind.PROV_LOCATION;
+        if (q.equals(QualifiedName_PROV_ROLE)) return AttributeKind.PROV_ROLE;
         return AttributeKind.OTHER;
     }
 

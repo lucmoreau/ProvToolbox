@@ -196,19 +196,19 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
     public void addPrimarySourceType(HasType a) {
 	a.getType().add(newType(getName().PROV_PRIMARY_SOURCE,
-	                        getName().XSD_QNAME));
+	                        getName().PROV_QUALIFIED_NAME));
     }
 
     public void addQuotationType(HasType a) {
-	a.getType().add(newType(getName().PROV_QUOTATION,getName().XSD_QNAME));
+	a.getType().add(newType(getName().PROV_QUOTATION,getName().PROV_QUALIFIED_NAME));
     }
 
     public void addRevisionType(HasType a) {
-	a.getType().add(newType(getName().PROV_REVISION,getName().XSD_QNAME));
+	a.getType().add(newType(getName().PROV_REVISION,getName().PROV_QUALIFIED_NAME));
     }
 
     public void addBundleType(HasType a) {
-	a.getType().add(newType(getName().PROV_BUNDLE,getName().XSD_QNAME));
+	a.getType().add(newType(getName().PROV_BUNDLE,getName().PROV_QUALIFIED_NAME));
     }
 
     public void addRole(HasRole a, Role role) {
@@ -847,6 +847,9 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      */
 
     abstract public QualifiedName newQualifiedName(String namespace, String local, String prefix);
+    
+    abstract public QualifiedName newQualifiedName(String namespace, String local, String prefix, ProvUtilities.BuildFlag flag);
+
     
     /* A convenience function. */
     public QualifiedName newQualifiedName(javax.xml.namespace.QName qname) {
@@ -1504,6 +1507,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	if (statement instanceof HasType) result.addAll(((HasType)statement).getType());
 	if (statement instanceof HasLocation) result.addAll(((HasLocation)statement).getLocation());
 	if (statement instanceof HasRole) result.addAll(((HasRole)statement).getRole());
+	if (statement instanceof HasValue) {
+	    Value val=((HasValue)statement).getValue();
+	    if (val!=null) {
+		result.add(val);
+	    }
+	}
 	if (statement instanceof HasOther) {
 	    for (Other o: ((HasOther)statement).getOther()) {
 		result.add((Attribute)o);

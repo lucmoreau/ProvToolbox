@@ -20,12 +20,23 @@ import org.antlr.runtime.TokenStream;
 import  org.antlr.runtime.tree.CommonTree;
 import  org.antlr.runtime.tree.CommonTreeAdaptor;
 import  org.antlr.runtime.tree.TreeAdaptor;
+import org.apache.log4j.Logger;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.Document;
 
 
 public  class Utility {
+    
+    static Logger logger=Logger.getLogger(Utility.class);
+    
+    public static void warn(String s) {
+	logger.warn(s);
+    }
+    
+    public static void warn(Exception e) {
+	logger.warn(e.getMessage());
+    }
    
     class ParserWithErrorHandling extends PROV_NParser {
 	public void reportError(RecognitionException re) {

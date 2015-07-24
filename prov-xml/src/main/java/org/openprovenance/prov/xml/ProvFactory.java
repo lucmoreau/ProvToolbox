@@ -6,15 +6,25 @@ import java.io.InputStream;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeFactory;
+
+import org.apache.log4j.Logger;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
+import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
 import org.openprovenance.prov.model.ProvSerialiser;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.QualifiedNameUtils;
+import org.openprovenance.prov.model.exception.InvalidAttributeValueException;
+import org.openprovenance.prov.model.exception.QualifiedNameException;
 
 /** A stateless factory for PROV objects. */
 
 //TODO: move the QNameExport capability outside the factory, and make it purely stateless, without namespace. 
 
 public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
+    
+    static Logger logger = Logger.getLogger(ProvFactory.class);
+        
+    final private QualifiedNameUtils qnU=new QualifiedNameUtils();
 
     private static String fileName = "toolbox.properties";
 
@@ -112,9 +122,31 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         return key;
     }
     public Label newLabel(Object value, QualifiedName type) {
+	return newLabel(value,type,BuildFlag.WARN);
+	
+    }
+    public Label newLabel(Object value, QualifiedName type, BuildFlag flag) {
         Label res=new Label();
         res.type=type;
         res.setValueFromObject(value);
+        
+	if ((BuildFlag.NOCHEK.equals(flag)) 
+		||
+		(value instanceof org.openprovenance.prov.model.LangString)
+		||
+		(value instanceof String)) {
+	    return res;
+	}
+	
+	if (BuildFlag.STRICT.equals(flag)) {
+	    String msg="label value is not a string " + value;
+	    logger.fatal(msg);
+	    throw new InvalidAttributeValueException(msg);
+	}
+	
+	logger.warn("label value is not a string " + value);
+
+
         return res;
     }
     public Location newLocation(Object value, QualifiedName type) {
@@ -134,12 +166,32 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     public org.openprovenance.prov.model.QualifiedName newQualifiedName(String namespace,
 									String local,
 									String prefix) {
-	return new org.openprovenance.prov.xml.QualifiedName(namespace, local, prefix);
+	return newQualifiedName(namespace,local,prefix, BuildFlag.STRICT);
     }
-	@Override
-	public ProvSerialiser getSerializer() throws JAXBException {
-		return new org.openprovenance.prov.xml.ProvSerialiser();
+    @Override
+    public org.openprovenance.prov.model.QualifiedName newQualifiedName(String namespace,
+									String local,
+									String prefix,
+									BuildFlag flag) {
+	if (BuildFlag.NOCHEK.equals(flag) || qnU.patternExactMatch(local)) {
+	    return new org.openprovenance.prov.xml.QualifiedName(namespace, local, prefix);
+	} else {
+	    switch(flag){
+	    case STRICT:
+		throw new QualifiedNameException("PROV-N QualifiedName: local name not valid " + local);
+	    case WARN:
+		System.out.println("ProvToolbox Warning: PROV-N QualifiedName: local name not valid " + local);
+	    default:
+		return new org.openprovenance.prov.xml.QualifiedName(namespace, local, prefix);
+	    
+	    }
 	}
+    }
+    
+    @Override
+    public ProvSerialiser getSerializer() throws JAXBException {
+	return new org.openprovenance.prov.xml.ProvSerialiser();
+    }
 
 
 }

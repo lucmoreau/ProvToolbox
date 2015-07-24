@@ -43,11 +43,11 @@ public class Role extends TypedValue implements
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_ROLE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_ROLE;
-    private static final QualifiedName PROV_ROLE_QNAME = ProvFactory.getFactory().getName().PROV_ROLE;
+    private static final QualifiedName PROV_ROLE_QualifiedName = ProvFactory.getFactory().getName().PROV_ROLE;
 
     @Transient
     public QualifiedName getElementName() {
-	return PROV_ROLE_QNAME;
+	return PROV_ROLE_QualifiedName;
     }
 
     @Transient

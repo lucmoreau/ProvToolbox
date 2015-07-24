@@ -1,0 +1,8 @@
+document
+
+prefix ex <http://example.org/>
+
+entity(ex:e, [ex:attr1='ex:foo', ex:attr2="ex:bar" %% prov:QUALIFIED_NAME])
+
+endDocument
+

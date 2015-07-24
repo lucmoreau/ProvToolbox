@@ -26,7 +26,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openprovenance.prov.xml.builder.Equals;
 import org.openprovenance.prov.xml.builder.HashCode;
 import org.openprovenance.prov.xml.builder.ToString;
@@ -101,7 +100,7 @@ public class Activity
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QualifiedNameAdapter.class)
     protected QualifiedName id;
     
 

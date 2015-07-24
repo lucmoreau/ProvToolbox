@@ -160,8 +160,8 @@ public class IndexedDocumentTest extends TestCase {
 	e2.getLocation().add(pFactory.newLocation("liege", pFactory.getName().XSD_STRING));
 	e2.getLocation().add(pFactory.newLocation("liege", pFactory.getName().XSD_STRING));
 
-	e2.getType().add(pFactory.newType(q("TYPE"), pFactory.getName().XSD_QNAME));
-	e2.getType().add(pFactory.newType(q("TYPE"), pFactory.getName().XSD_QNAME));
+	e2.getType().add(pFactory.newType(q("TYPE"), pFactory.getName().PROV_QUALIFIED_NAME));
+	e2.getType().add(pFactory.newType(q("TYPE"), pFactory.getName().PROV_QUALIFIED_NAME));
 
 	e2.getOther().add(pFactory.newOther(q("ELEMENT"), 1, pFactory.getName().XSD_INT));
 	e2.getOther().add(pFactory.newOther(q("ELEMENT"), 1, pFactory.getName().XSD_INT));
@@ -429,7 +429,7 @@ public class IndexedDocumentTest extends TestCase {
     public Document makeDoc600() {
         Entity e1=pFactory.newEntity(q("e1"));
 	Entity e2=pFactory.newEntity(q("e2"));
-	Activity a1=pFactory.newActivity(q("a1"));
+	//Activity a1=pFactory.newActivity(q("a1"));
 	WasDerivedFrom wdf1=pFactory.newWasDerivedFrom(null,e2.getId(),e1.getId());
         Document doc=pFactory.newDocument();
         doc.getStatementOrBundle().add(wdf1);
@@ -473,7 +473,7 @@ public class IndexedDocumentTest extends TestCase {
     public Document makeDoc602() {
         Entity e1=pFactory.newEntity(q("e1"));
 	Entity e2=pFactory.newEntity(q("e2"));
-	Activity a1=pFactory.newActivity(q("a1"));
+	//Activity a1=pFactory.newActivity(q("a1"));
 	QualifiedName uid=q("d1");
 	WasDerivedFrom u1=pFactory.newWasDerivedFrom(uid,e2.getId(),e1.getId());
 	WasDerivedFrom u2=pFactory.newWasDerivedFrom(uid,e2.getId(),e1.getId());
@@ -498,7 +498,7 @@ public class IndexedDocumentTest extends TestCase {
     public Document makeDoc603() {
         Entity e1=pFactory.newEntity(q("e1"));
 	Entity e2=pFactory.newEntity(q("e2"));
-	Activity a1=pFactory.newActivity(q("a1"));
+	//Activity a1=pFactory.newActivity(q("a1"));
 	QualifiedName uid=q("g2");
 	WasDerivedFrom u1=pFactory.newWasDerivedFrom(uid,e2.getId(),e1.getId());
 	WasDerivedFrom u2=pFactory.newWasDerivedFrom(uid,e2.getId(),e1.getId());

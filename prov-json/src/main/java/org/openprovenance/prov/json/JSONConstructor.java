@@ -41,6 +41,7 @@ import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
+import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
 
 /**
  * @author Trung Dong Huynh
@@ -212,7 +213,7 @@ public class JSONConstructor implements ModelConstructor {
 
 	if (value instanceof QualifiedName) {
 	    return typedLiteral(currentNamespace.qualifiedNameToString((QualifiedName) value),
-				"xsd:QName", null);
+				"prov:QUALIFIED_NAME", null);
 	}
 	if (value instanceof LangString) {
 	    LangString iStr = (LangString) value;
@@ -731,7 +732,13 @@ public class JSONConstructor implements ModelConstructor {
 
     @Override
     public QualifiedName newQualifiedName(String namespace, String local,
-					  String prefix) {	return null;
+					  String prefix) {	
+	return null;
+    }
+    @Override
+    public QualifiedName newQualifiedName(String namespace, String local,
+					  String prefix, BuildFlag flag) {	
+	return null;
     }
 
 }

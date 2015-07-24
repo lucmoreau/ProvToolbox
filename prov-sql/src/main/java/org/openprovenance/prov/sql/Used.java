@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -111,7 +110,7 @@ public class Used
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QualifiedNameAdapter.class)
     protected QualifiedName id;
     
    
@@ -423,7 +422,7 @@ public class Used
      * 
      * @return
      *     possible object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
     @ManyToOne(targetEntity = org.openprovenance.prov.sql.QualifiedName.class, cascade = {
@@ -439,7 +438,7 @@ public class Used
      * 
      * @param value
      *     allowed object is
-     *     {@link QName }
+     *     {@link QualifiedName }
      *     
      */
     public void setId(QualifiedName value) {

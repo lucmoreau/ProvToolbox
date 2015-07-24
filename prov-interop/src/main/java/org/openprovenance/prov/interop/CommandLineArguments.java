@@ -12,9 +12,12 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.log4j.Logger;
 import org.openrdf.query.algebra.Exists;
 
-public class CommandLineArguments {
+public class CommandLineArguments implements ErrorCodes {
+	
+	static Logger logger=Logger.getLogger(CommandLineArguments.class);
     
     public static final String BINDINGS = "bindings";
     public static final String OUTFILE = "outfile";
@@ -188,13 +191,6 @@ public class CommandLineArguments {
     static final String toolboxVersion = getPropertiesFromClasspath(fileName)
             .getProperty("toolbox.version");
     
-    static final int STATUS_OK=0;
-    static final int STATUS_PARSING_FAIL=1;
-    static final int STATUS_NO_INPUT=2;
-    static final int STATUS_NO_OUTPUT_OR_COMPARISON=3;
-    static final int STATUS_COMPARE_NO_ARG1=4;
-    static final int STATUS_COMPARE_NO_ARG2=5;
-    static final int STATUS_COMPARE_DIFFERENT=6;
 
 
     public static void main(String[] args) {
@@ -298,7 +294,7 @@ public class CommandLineArguments {
 
         catch (ParseException exp) {
             // oops, something went wrong
-            System.err.println( "Parsing failed.  Reason: " + exp.getMessage() );
+        	logger.fatal("Parsing failed.  Reason: " + exp.getMessage() );
             System.exit(STATUS_PARSING_FAIL);
 
         }

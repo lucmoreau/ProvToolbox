@@ -2,7 +2,7 @@
   <parent>
     <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.7.0</version>
+    <version>0.7.1-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -18,25 +18,25 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.7.0</version>
+      <version>0.7.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-rdf</artifactId>
-      <version>0.7.0</version>
+      <version>0.7.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-n</artifactId>
-      <version>0.7.0</version>
+      <version>0.7.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-interop</artifactId>
-      <version>0.7.0</version>
+      <version>0.7.1-SNAPSHOT</version>
     </dependency>
 
     <!-- required by sesame openrdf, to avoid slf4j warning -->
@@ -294,8 +294,7 @@
                 <taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask" classpath="${basedir}/lib/appbundler-1.0.jar" />
 
                 <mkdir dir="${project.build.directory}/app" />
-                <bundleapp outputdirectory="${project.build.directory}/app" name="provconvert" displayname="provconvert" identifier="org.openprovenance.prov.toolbox.provconvert"
-                           shortversion="${project.version}"
+                <bundleapp outputdirectory="${project.build.directory}/app" name="provconvert" displayname="provconvert" identifier="org.openprovenance.prov.toolbox.provconvert" shortversion="${project.version}"
                            applicationCategory="public.app-category.developer-tools"
                            mainclassname="org.openprovenance.prov.interop.CommandLineArguments">
 

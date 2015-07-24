@@ -84,7 +84,6 @@ public class Document
         @XmlElement(name = "hadDictionaryMember", type = DictionaryMembership.class),
         @XmlElement(name = "derivedByInsertionFrom", type = DerivedByInsertionFrom.class),
         @XmlElement(name = "derivedByRemovalFrom", type = DerivedByRemovalFrom.class),
-        @XmlElement(name = "others", type = Others.class),
         @XmlElement(name = "bundleContent", type = Bundle.class)
     })
     protected List<StatementOrBundle> statementOrBundle;

@@ -66,6 +66,15 @@ public interface ModelConstructor {
      */
     public QualifiedName newQualifiedName(String namespace, String local, String prefix);
     
+    /** A factory method for {@link QualifiedName}. A qualified name consists of a namespace, denoted by an optional prefix, and a local name.
+     * @param namespace a URI for the namespace
+     * @param local a local name 
+     * @param prefix a string, which can be null
+     * @param build flag.
+     * @return an instance of {@link QualifiedName}
+     */
+    public QualifiedName newQualifiedName(String namespace, String local, String prefix, ProvUtilities.BuildFlag flag);
+       
     public SpecializationOf newSpecializationOf(QualifiedName e2, QualifiedName e1);
  
     /** A factory method to create an instance of a Usage {@link Used}

@@ -82,8 +82,7 @@ public class Bundle
         @XmlElement(name = "emptyDictionary", type = EmptyDictionary.class),
         @XmlElement(name = "hadDictionaryMember", type = DictionaryMembership.class),
         @XmlElement(name = "derivedByInsertionFrom", type = DerivedByInsertionFrom.class),
-        @XmlElement(name = "derivedByRemovalFrom", type = DerivedByRemovalFrom.class),
-        @XmlElement(name = "others", type = Others.class)
+        @XmlElement(name = "derivedByRemovalFrom", type = DerivedByRemovalFrom.class)
     })
     protected List<Statement> statement;
 

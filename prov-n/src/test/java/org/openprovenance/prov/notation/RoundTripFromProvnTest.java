@@ -1,11 +1,11 @@
 package org.openprovenance.prov.notation;
 
 import java.io.File;
+
 import junit.framework.TestCase;
 
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.xml.DocumentEquality;
+import org.openprovenance.prov.model.DocumentEquality;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
@@ -25,7 +25,7 @@ public class RoundTripFromProvnTest extends TestCase {
     public void loadFromProvnSaveAndReload(String file, Boolean compare) throws Throwable {
 	System.out.println("-------------- File: " + file);
 	org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility();
-	DocumentEquality de = new DocumentEquality(true);
+	DocumentEquality de = new DocumentEquality(true,null);
 
 	Document doc1 = u.readDocument("src/test/resources/" + file,pFactory);
 	file = file.replace('/', '_');
@@ -54,7 +54,7 @@ public class RoundTripFromProvnTest extends TestCase {
     public void loadFromProvnSaveToXmlAndReload(String file, Boolean compare) throws Throwable {
 	System.out.println("-------------- File: " + file);
 	org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility();
-	DocumentEquality de = new DocumentEquality(true);
+	DocumentEquality de = new DocumentEquality(true,null);
 
 	Document doc1 = u.readDocument("src/test/resources/" + file,pFactory);
 	file = file.replace('/', '_');
@@ -108,6 +108,10 @@ public class RoundTripFromProvnTest extends TestCase {
 	//testCrossIssue("unification-membership-f1-FAIL-DM");
 
 	testCrossIssue("picaso-file");
+    }
+    
+    public void testQualifiedName() throws Throwable {
+	testIssue("issue-qualified-name");
     }
 
 }

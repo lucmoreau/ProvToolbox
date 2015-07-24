@@ -27,6 +27,10 @@ package org.openprovenance.prov.model;
  */
 public interface QualifiedName {
 
+    /** Converts this QualifiedName to a valid xsd:QName by unescaping \-characters in the local names, and _-encoding the local name.
+     * @see https://github.com/lucmoreau/ProvToolbox/wiki/Mapping-PROV-Qualified-Names-to-xsd:QName#2-a-reversible-encoding
+     * @return a valid javax.xml.namespace.QName
+     */
     public javax.xml.namespace.QName toQName();
 
 

@@ -131,3 +131,6 @@ merge:
 	printf "file, ../prov-xml/target/activity7.xml, xml\n../prov-xml/target/bundle1.xml\n" |	target/appassembler/bin/provconvert -merge - -outfile target/merge1.svg
 	printf "file, ../prov-xml/target/activity7.xml, xml\n../prov-xml/target/bundle1.xml\n" |	target/appassembler/bin/provconvert -merge - -flatten -outfile target/merge2.svg
 	printf "file, ../prov-xml/target/activity1.xml, xml\n../prov-xml/target/bundle1.xml\n" |	target/appassembler/bin/provconvert -merge - -flatten -outfile target/merge3.provn
+
+comp1:
+	target/appassembler/bin/provconvert -infile ../prov-template/src/test/resources/template10.provn -compare ../prov-template/src/test/resources/template10.provn -outcompare target/compare1.txt

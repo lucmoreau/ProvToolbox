@@ -19,8 +19,10 @@ import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HasOther;
+import org.openprovenance.prov.model.HasRole;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.HasLabel;
+import org.openprovenance.prov.model.HasValue;
 import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.model.Influence;
@@ -28,10 +30,12 @@ import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Relation;
+import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.DerivedByInsertionFrom;
+import org.openprovenance.prov.model.Value;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
@@ -410,6 +414,10 @@ public class ProvToDot {
         	|| (countOthers(statement)==0))	
             &&
             (((HasType)statement).getType().isEmpty())
+            &&
+            (! (statement instanceof HasValue) || ((HasValue)statement).getValue()==null)
+            &&
+            (! (statement instanceof HasRole) || ((HasRole)statement).getRole().isEmpty())
 	    &&
             (((HasLabel)statement).getLabel().isEmpty())
 	    ) return;
@@ -591,6 +599,24 @@ public class ProvToDot {
 		label=label+"	    <TD align=\"left\">" + "label" + ":</TD>\n";
 		label=label+"	    <TD align=\"left\">" + lab.getValue() + "</TD>\n";
 		label=label+"	</TR>\n";
+	    }
+	    if (ann instanceof HasValue) {
+		Value val=((HasValue)ann).getValue();
+		if (val!=null) {
+		    label=label+"	<TR>\n";
+		    label=label+"	    <TD align=\"left\">" + "value" + ":</TD>\n";
+		    label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(val) + "</TD>\n";
+		    label=label+"	</TR>\n";
+		}
+		
+	    }
+	    if (ann instanceof HasRole) {
+		for (Role role: ((HasRole)ann).getRole()) {
+			label=label+"	<TR>\n";
+			label=label+"	    <TD align=\"left\">" + "role" + ":</TD>\n";
+			label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(role) + "</TD>\n";
+			label=label+"	</TR>\n";
+		    }
 	    }
 	    for (Other prop: ann.getOther()) {
 		

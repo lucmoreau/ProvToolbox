@@ -43,7 +43,31 @@ package org.openprovenance.prov.notation;
 package org.openprovenance.prov.notation;
 }
 
+/* See        https://theantlrguy.atlassian.net/wiki/display/ANTLR3/Error+reporting+and+recovery */     
+
+
+@lexer::members {
+  @Override
+  public void displayRecognitionError(String [] tokenNames,
+                                      RecognitionException e) {
+      String hdr = getErrorHeader(e);
+      String msg = getErrorMessage(e, tokenNames);
+      org.openprovenance.prov.notation.Utility.warn(hdr + " " + msg);
+  }
+}        
+
+        
 @members{
+
+            
+  @Override
+  public void displayRecognitionError(String [] tokenNames,
+                                      RecognitionException e) {
+      String hdr = getErrorHeader(e);
+      String msg = getErrorMessage(e, tokenNames);
+      org.openprovenance.prov.notation.Utility.warn(hdr + " " + msg);
+  }
+            
  public static boolean qnameDisabled=false; }
 
 document

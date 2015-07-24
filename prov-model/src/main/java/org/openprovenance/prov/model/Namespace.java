@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.exception.QualifiedNameException;
@@ -296,7 +297,13 @@ public class Namespace  {
  	Namespace ns=Namespace.getThreadNamespace();
  	return ns.qualifiedNameToString(name);
      }
-     
+
+
+    public String qualifiedNameToString(QName name) {
+	return qualifiedNameToString(name,null);
+   }
+
+  
  
     public String qualifiedNameToString(QualifiedName name) {
 	return qualifiedNameToString(name,null);
@@ -327,11 +334,35 @@ public class Namespace  {
  	    }
  	}
      }
+    /**
+     * @param name the QName to convert to string
+     * @param child argument used just for the purpose of debugging when throwing an exception
+     * @return a string representation of the QualifiedName
+     */
+  
+    public String qualifiedNameToString(QName name, Namespace child) {
+ 	if ((getDefaultNamespace()!=null) 
+ 		&& (getDefaultNamespace().equals(name.getNamespaceURI()))) {
+ 	    return name.getLocalPart();
+ 	} else {
+ 	    String pref=getNamespaces().get(name.getNamespaceURI());
+ 	    if (pref!=null)  {
+ 		return pref + ":" + name.getLocalPart();
+ 	    } else {
+ 		if (parent!=null) {
+ 		    return parent.qualifiedNameToString(name,this);
+ 		}
+ 		else 
+ 		    throw new QualifiedNameException("unknown qualified name " + name 
+ 		                                     + " with namespace " + toString()
+ 		                                     + ((child==null)? "" : (" and " + child)));
+ 	    }
+ 	}
+     }
 
     public String toString() {
 	return "[Namespace (" + defaultNamespace + ") " + prefixes + ", parent: " + parent + "]";
     }
-
 
 
 

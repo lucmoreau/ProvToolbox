@@ -12,8 +12,12 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.log4j.Logger;
+import org.openrdf.query.algebra.Exists;
 
-public class CommandLineArguments {
+public class CommandLineArguments implements ErrorCodes {
+	
+	static Logger logger=Logger.getLogger(CommandLineArguments.class);
     
     public static final String BINDINGS = "bindings";
     public static final String OUTFILE = "outfile";
@@ -28,6 +32,7 @@ public class CommandLineArguments {
     public static final String LAYOUT = "layout";
     public static final String GENERATOR = "generator";
     public static final String INDEX = "index";
+    public static final String COMPARE = "compare";
     public static final String FLATTEN = "flatten";
     public static final String MERGE = "merge";
     private static final String GENORDER = "genorder";
@@ -35,6 +40,7 @@ public class CommandLineArguments {
     public static final String INFORMAT = "informat";
     public static final String OUTFORMAT = "outformat";
     public static final String BINDFORMAT = "bindformat";
+    public static final String COMPAREOUT = "outcompare";
 
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
@@ -123,6 +129,18 @@ public class CommandLineArguments {
                 .withDescription("specify the format of the bindings")
                 .create(BINDFORMAT);
 
+        Option compare = OptionBuilder
+                .withArgName("file")
+                .hasArg()
+                .withDescription("compare with given file")
+                .create(COMPARE);
+        Option compareOut = OptionBuilder
+                .withArgName("file")
+                .hasArg()
+                .withDescription("output file for log of comparison")
+                .create(COMPAREOUT);
+
+
 
         Options options = new Options();
 
@@ -145,6 +163,8 @@ public class CommandLineArguments {
         options.addOption(informat);
         options.addOption(outformat);
         options.addOption(bindformat);
+        options.addOption(compare);
+        options.addOption(compareOut);
 
         return options;
 
@@ -170,6 +190,8 @@ public class CommandLineArguments {
     
     static final String toolboxVersion = getPropertiesFromClasspath(fileName)
             .getProperty("toolbox.version");
+    
+
 
     public static void main(String[] args) {
         // create the parser
@@ -192,6 +214,8 @@ public class CommandLineArguments {
         String index=null;
         String flatten=null;
         String merge=null;
+        String compare=null;
+        String compareOut=null;
         boolean addOrderp=false;
         boolean listFormatsp = false;
 
@@ -221,6 +245,8 @@ public class CommandLineArguments {
             if (line.hasOption(GENERATOR))  generator = line.getOptionValue(GENERATOR);
             if (line.hasOption(GENORDER))   addOrderp=true;
             if (line.hasOption(FORMATS))      listFormatsp = true;
+            if (line.hasOption(COMPARE))      compare    = line.getOptionValue(COMPARE);
+            if (line.hasOption(COMPAREOUT))   compareOut    = line.getOptionValue(COMPAREOUT);
 
             if (help!=null) {
             	HelpFormatter formatter = new HelpFormatter();
@@ -252,6 +278,8 @@ public class CommandLineArguments {
                                                           index,
                                                           merge,
                                                           flatten,
+                                                          compare,
+                                                          compareOut,
                                                           org.openprovenance.prov.xml.ProvFactory.getFactory());
             if (listFormatsp) {
                 java.util.List<java.util.Map<String, String>> formats = interop.getSupportedFormats();
@@ -260,13 +288,15 @@ public class CommandLineArguments {
                 }
                 return;
             }
-            interop.run();
+            System.exit(interop.run());
 
         }
 
         catch (ParseException exp) {
             // oops, something went wrong
-            System.err.println( "Parsing failed.  Reason: " + exp.getMessage() );
+        	logger.fatal("Parsing failed.  Reason: " + exp.getMessage() );
+            System.exit(STATUS_PARSING_FAIL);
+
         }
     }
 }

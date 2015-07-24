@@ -88,7 +88,7 @@ public class WasAttributedTo
     @XmlAnyElement
     protected List<Attribute> all;
     @XmlAttribute(name = "id", namespace = "http://www.w3.org/ns/prov#")
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QNameAdapter.class)
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QualifiedNameAdapter.class)
     protected QualifiedName id;
     
 

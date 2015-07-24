@@ -1,8 +1,7 @@
-/**
- * 
- */
-package org.openprovenance.prov.xml;
 
+package org.openprovenance.prov.model;
+
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,25 +10,39 @@ import java.util.List;
 
 import org.apache.commons.collections.bag.HashBag;
 import org.apache.log4j.Logger;
-import org.openprovenance.prov.model.StatementOrBundle;
-import org.openprovenance.prov.model.Document;
 
 /**
  * @author Trung Dong Huynh <tdh@ecs.soton.ac.uk>
+ * @author lavm
+ * Comparator Class
  * 
  */
+
 
 public class DocumentEquality {
     static Logger logger = Logger.getLogger(DocumentEquality.class);
 
     private boolean mergeDuplicates;
 
+    final private PrintStream out;
+
     public DocumentEquality() {
 	this.mergeDuplicates = false;
+	this.out=null;
     }
+    
 
-    public DocumentEquality(boolean mergeDuplicates) {
+    public DocumentEquality(boolean mergeDuplicates, PrintStream out) {
 	this.mergeDuplicates = mergeDuplicates;
+	this.out=out;
+    }
+    
+    public void log(Object s) {
+	if (out!=null) {
+	    out.println(s);
+	} else {
+	    logger.debug(s);
+	}
     }
 
     private boolean collectionEqual(Collection<?> c1, Collection<?> c2) {
@@ -95,7 +108,7 @@ public class DocumentEquality {
 		    return false;
 		} catch (Exception e) {
 		    // Any exception means no equality
-		    logger.debug(e);
+		    log(e);
 		    return false;
 		}
 	    }
@@ -122,9 +135,15 @@ public class DocumentEquality {
 		}
 	    }
 	    if (found == null) {
-		logger.debug("Cannot find the following statement in the second document");
-		logger.debug("statement: " + stmt1);
-		logger.debug("list of statements: " + stmts2);
+		log("---------------------------");
+		log("Cannot find the following statement in the second document");
+		log("---------------------------");
+		log("statement: " + stmt1);
+		log("---------------------------");
+		log("list of statements: ");
+		log(stmts2);
+		log("---------------------------");
+
 		return false;
 	    }
 	    list2.remove(found);

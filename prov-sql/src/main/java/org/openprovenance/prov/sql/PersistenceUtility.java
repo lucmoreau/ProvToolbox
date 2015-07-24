@@ -7,7 +7,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
-import javax.management.RuntimeErrorException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -27,16 +26,9 @@ public class PersistenceUtility {
     }
     
     public void setUp() {
-	if (emf==null) emf=createEntityManagerFactory();  
-	if (entityManager==null) entityManager=createEntityManager(); 
-	if (table==null) table=new Hashtable<String, QualifiedName>();
-	 
-	//System.out.println("**** merging IdentifierManagement");
-        //entityManager.persist(IdentifierManagement.it);
-	//entityManager.merge(IdentifierManagement.it);
-	
-	//entityManager.refresh(IdentifierManagement.it);
-	//IdentifierManagement.it=entityManager.find(IdentifierManagement.class, 1);
+    	if (emf==null) emf=createEntityManagerFactory();  
+    	if (entityManager==null) entityManager=createEntityManager(); 
+    	if (table==null) table=new Hashtable<String, QualifiedName>();
     }
 
 

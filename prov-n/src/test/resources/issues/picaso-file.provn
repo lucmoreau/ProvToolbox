@@ -1,7 +1,6 @@
 
 document
 bundle uuid:55348dff-4fcc-4ac2-ab56-641798c64400
-prefix xsd <http://www.w3.org/2001/XMLSchema>
 prefix tmpl <http://openprovenance.org/tmpl#>
 prefix eprint <http://eprints.soton.ac.uk/id/eprint/>
 prefix pic <http://www.ipaw.info/ns/picaso#>

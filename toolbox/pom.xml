@@ -39,6 +39,14 @@
       <version>0.6.3-SNAPSHOT</version>
     </dependency>
 
+    <!-- required by sesame openrdf, to avoid slf4j warning -->
+    <dependency>
+	<groupId>org.slf4j</groupId>
+	<artifactId>slf4j-nop</artifactId>
+	<version>1.7.12</version>
+    </dependency>
+
+
  </dependencies>
 
   <build>

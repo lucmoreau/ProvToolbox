@@ -12,8 +12,6 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.xml.builder.Equals;
 import org.openprovenance.prov.xml.builder.HashCode;
 import org.openprovenance.prov.xml.builder.ToString;
-import org.openprovenance.prov.model.DOMProcessing;
-import org.openprovenance.prov.model.QualifiedName;
 
 
 
@@ -25,11 +23,11 @@ public class Key extends TypedValue implements Equals, HashCode, ToString, org.o
 	org.openprovenance.prov.model.Attribute {
 
     private static final AttributeKind PROV_KEY_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_KEY;
-    private static final QualifiedName PROV_KEY_QNAME = ProvFactory.getFactory().getName().PROV_KEY;
+    private static final QualifiedName PROV_KEY_QualifiedName = ProvFactory.getFactory().getName().PROV_KEY;
 
     @Transient
     public QualifiedName getElementName() {
-	return PROV_KEY_QNAME;
+	return PROV_KEY_QualifiedName;
     }
     
     @Transient

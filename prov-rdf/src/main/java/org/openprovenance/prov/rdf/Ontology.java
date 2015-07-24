@@ -21,136 +21,136 @@ public class Ontology {
 	this.pFactory=pFactory;
 	this.name=pFactory.getName();
 	
-	QNAME_PROVO_atLocation = newProvQName("atLocation");
-	QNAME_PROVO_atTime = newProvQName("atTime");
-	QNAME_PROVO_startedAtTime = newProvQName("startedAtTime");
-	QNAME_PROVO_endedAtTime = newProvQName("endedAtTime");
-	QNAME_PROVO_influencer = newProvQName("influencer");
-	QNAME_PROVO_activity = newProvQName("activity");
-	QNAME_PROVO_entity = newProvQName("entity");
-	QNAME_PROVO_agent = newProvQName("agent");
-	QNAME_PROVO_hadActivity = newProvQName("hadActivity");
-	QNAME_PROVO_hadEntity = newProvQName("hadEntity");
-	QNAME_PROVO_hadPlan = newProvQName("hadPlan");
-	QNAME_PROVO_hadGeneration = newProvQName("hadGeneration");
-	QNAME_PROVO_hadUsage = newProvQName("hadUsage");
-	QNAME_PROVO_hadRole = newProvQName("hadRole");
-	QNAME_PROVO_value = newProvQName("value");
-	QNAME_PROVO_generated = newProvQName("generated");
+	QualifiedName_PROVO_atLocation = name.newProvQualifiedName("atLocation");
+	QualifiedName_PROVO_atTime = name.newProvQualifiedName("atTime");
+	QualifiedName_PROVO_startedAtTime = name.newProvQualifiedName("startedAtTime");
+	QualifiedName_PROVO_endedAtTime = name.newProvQualifiedName("endedAtTime");
+	QualifiedName_PROVO_influencer = name.newProvQualifiedName("influencer");
+	QualifiedName_PROVO_activity = name.newProvQualifiedName("activity");
+	QualifiedName_PROVO_entity = name.newProvQualifiedName("entity");
+	QualifiedName_PROVO_agent = name.newProvQualifiedName("agent");
+	QualifiedName_PROVO_hadActivity = name.newProvQualifiedName("hadActivity");
+	QualifiedName_PROVO_hadEntity = name.newProvQualifiedName("hadEntity");
+	QualifiedName_PROVO_hadPlan = name.newProvQualifiedName("hadPlan");
+	QualifiedName_PROVO_hadGeneration = name.newProvQualifiedName("hadGeneration");
+	QualifiedName_PROVO_hadUsage = name.newProvQualifiedName("hadUsage");
+	QualifiedName_PROVO_hadRole = name.newProvQualifiedName("hadRole");
+	QualifiedName_PROVO_value = name.newProvQualifiedName("value");
+	QualifiedName_PROVO_generated = name.newProvQualifiedName("generated");
     
-	QNAME_PROVO_generatedAtTime = newProvQName("generatedAtTime");
-	QNAME_PROVO_influenced = newProvQName("influenced");
-	QNAME_PROVO_invalidated = newProvQName("invalidated");
-	QNAME_PROVO_invalidatedAtTime = newProvQName("invalidatedAtTime");
+	QualifiedName_PROVO_generatedAtTime = name.newProvQualifiedName("generatedAtTime");
+	QualifiedName_PROVO_influenced = name.newProvQualifiedName("influenced");
+	QualifiedName_PROVO_invalidated = name.newProvQualifiedName("invalidated");
+	QualifiedName_PROVO_invalidatedAtTime = name.newProvQualifiedName("invalidatedAtTime");
 
-	QNAME_PROVO_Activity = newProvQName("Activity");
-	QNAME_PROVO_Entity = newProvQName("Entity");
-	QNAME_PROVO_Agent = newProvQName("Agent");
+	QualifiedName_PROVO_Activity = name.newProvQualifiedName("Activity");
+	QualifiedName_PROVO_Entity = name.newProvQualifiedName("Entity");
+	QualifiedName_PROVO_Agent = name.newProvQualifiedName("Agent");
 
-	QNAME_PROVO_Influence = newProvQName("Influence");
-	QNAME_PROVO_qualifiedInfluence = newProvQName("qualifiedInfluence");
-	QNAME_PROVO_wasInfluencedBy = newProvQName("wasInfluencedBy");
+	QualifiedName_PROVO_Influence = name.newProvQualifiedName("Influence");
+	QualifiedName_PROVO_qualifiedInfluence = name.newProvQualifiedName("qualifiedInfluence");
+	QualifiedName_PROVO_wasInfluencedBy = name.newProvQualifiedName("wasInfluencedBy");
 
-	QNAME_PROVO_Generation = newProvQName("Generation");
-	QNAME_PROVO_qualifiedGeneration = newProvQName("qualifiedGeneration");
-	QNAME_PROVO_wasGeneratedBy = newProvQName("wasGeneratedBy");
+	QualifiedName_PROVO_Generation = name.newProvQualifiedName("Generation");
+	QualifiedName_PROVO_qualifiedGeneration = name.newProvQualifiedName("qualifiedGeneration");
+	QualifiedName_PROVO_wasGeneratedBy = name.newProvQualifiedName("wasGeneratedBy");
 
-	QNAME_PROVO_Usage = newProvQName("Usage");
-	QNAME_PROVO_qualifiedUsage = newProvQName("qualifiedUsage");
-	QNAME_PROVO_used = newProvQName("used");
+	QualifiedName_PROVO_Usage = name.newProvQualifiedName("Usage");
+	QualifiedName_PROVO_qualifiedUsage = name.newProvQualifiedName("qualifiedUsage");
+	QualifiedName_PROVO_used = name.newProvQualifiedName("used");
 
-	QNAME_PROVO_Invalidation = newProvQName("Invalidation");
-	QNAME_PROVO_qualifiedInvalidation = newProvQName("qualifiedInvalidation");
-	QNAME_PROVO_wasInvalidatedBy = newProvQName("wasInvalidatedBy");
+	QualifiedName_PROVO_Invalidation = name.newProvQualifiedName("Invalidation");
+	QualifiedName_PROVO_qualifiedInvalidation = name.newProvQualifiedName("qualifiedInvalidation");
+	QualifiedName_PROVO_wasInvalidatedBy = name.newProvQualifiedName("wasInvalidatedBy");
 
-	QNAME_PROVO_Start = newProvQName("Start");
-	QNAME_PROVO_qualifiedStart = newProvQName("qualifiedStart");
-	QNAME_PROVO_wasStartedBy = newProvQName("wasStartedBy");
+	QualifiedName_PROVO_Start = name.newProvQualifiedName("Start");
+	QualifiedName_PROVO_qualifiedStart = name.newProvQualifiedName("qualifiedStart");
+	QualifiedName_PROVO_wasStartedBy = name.newProvQualifiedName("wasStartedBy");
 
-	QNAME_PROVO_End = newProvQName("End");
-	QNAME_PROVO_qualifiedEnd = newProvQName("qualifiedEnd");
-	QNAME_PROVO_wasEndedBy = newProvQName("wasEndedBy");
+	QualifiedName_PROVO_End = name.newProvQualifiedName("End");
+	QualifiedName_PROVO_qualifiedEnd = name.newProvQualifiedName("qualifiedEnd");
+	QualifiedName_PROVO_wasEndedBy = name.newProvQualifiedName("wasEndedBy");
 
-	QNAME_PROVO_Association = newProvQName("Association");
-	QNAME_PROVO_qualifiedAssociation = newProvQName("qualifiedAssociation");
-	QNAME_PROVO_wasAssociatedWith = newProvQName("wasAssociatedWith");
+	QualifiedName_PROVO_Association = name.newProvQualifiedName("Association");
+	QualifiedName_PROVO_qualifiedAssociation = name.newProvQualifiedName("qualifiedAssociation");
+	QualifiedName_PROVO_wasAssociatedWith = name.newProvQualifiedName("wasAssociatedWith");
 
-	QNAME_PROVO_Attribution = newProvQName("Attribution");
-	QNAME_PROVO_qualifiedAttribution = newProvQName("qualifiedAttribution");
-	QNAME_PROVO_wasAttributedTo = newProvQName("wasAttributedTo");
+	QualifiedName_PROVO_Attribution = name.newProvQualifiedName("Attribution");
+	QualifiedName_PROVO_qualifiedAttribution = name.newProvQualifiedName("qualifiedAttribution");
+	QualifiedName_PROVO_wasAttributedTo = name.newProvQualifiedName("wasAttributedTo");
 
-	QNAME_PROVO_Delegation = newProvQName("Delegation");
-	QNAME_PROVO_qualifiedDelegation = newProvQName("qualifiedDelegation");
-	QNAME_PROVO_actedOnBehalfOf = newProvQName("actedOnBehalfOf");
+	QualifiedName_PROVO_Delegation = name.newProvQualifiedName("Delegation");
+	QualifiedName_PROVO_qualifiedDelegation = name.newProvQualifiedName("qualifiedDelegation");
+	QualifiedName_PROVO_actedOnBehalfOf = name.newProvQualifiedName("actedOnBehalfOf");
 
-	QNAME_PROVO_Derivation = newProvQName("Derivation");
-	QNAME_PROVO_qualifiedDerivation = newProvQName("qualifiedDerivation");
-	QNAME_PROVO_wasDerivedFrom = newProvQName("wasDerivedFrom");
+	QualifiedName_PROVO_Derivation = name.newProvQualifiedName("Derivation");
+	QualifiedName_PROVO_qualifiedDerivation = name.newProvQualifiedName("qualifiedDerivation");
+	QualifiedName_PROVO_wasDerivedFrom = name.newProvQualifiedName("wasDerivedFrom");
 
-	QNAME_PROVO_Revision = newProvQName("Revision");
-	QNAME_PROVO_qualifiedRevision = newProvQName("qualifiedRevision");
-	QNAME_PROVO_wasRevisionOf = newProvQName("wasRevisionOf");
+	QualifiedName_PROVO_Revision = name.newProvQualifiedName("Revision");
+	QualifiedName_PROVO_qualifiedRevision = name.newProvQualifiedName("qualifiedRevision");
+	QualifiedName_PROVO_wasRevisionOf = name.newProvQualifiedName("wasRevisionOf");
 
-	QNAME_PROVO_Quotation = newProvQName("Quotation");
-	QNAME_PROVO_qualifiedQuotation = newProvQName("qualifiedQuotation");
-	QNAME_PROVO_wasQuotedFrom = newProvQName("wasQuotedFrom");
+	QualifiedName_PROVO_Quotation = name.newProvQualifiedName("Quotation");
+	QualifiedName_PROVO_qualifiedQuotation = name.newProvQualifiedName("qualifiedQuotation");
+	QualifiedName_PROVO_wasQuotedFrom = name.newProvQualifiedName("wasQuotedFrom");
     
-	QNAME_PROVO_PrimarySource = newProvQName("PrimarySource");
-	QNAME_PROVO_qualifiedPrimarySource = newProvQName("qualifiedPrimarySource");
-	QNAME_PROVO_hadPrimarySource = newProvQName("hadPrimarySource");
+	QualifiedName_PROVO_PrimarySource = name.newProvQualifiedName("PrimarySource");
+	QualifiedName_PROVO_qualifiedPrimarySource = name.newProvQualifiedName("qualifiedPrimarySource");
+	QualifiedName_PROVO_hadPrimarySource = name.newProvQualifiedName("hadPrimarySource");
 
-	QNAME_PROVO_Communication = newProvQName("Communication");
-	QNAME_PROVO_qualifiedCommunication = newProvQName("qualifiedCommunication");
-	QNAME_PROVO_wasInformedBy = newProvQName("wasInformedBy");
+	QualifiedName_PROVO_Communication = name.newProvQualifiedName("Communication");
+	QualifiedName_PROVO_qualifiedCommunication = name.newProvQualifiedName("qualifiedCommunication");
+	QualifiedName_PROVO_wasInformedBy = name.newProvQualifiedName("wasInformedBy");
 
-	QNAME_PROVO_specializationOf = newProvQName("specializationOf");
-	QNAME_PROVO_alternateOf = newProvQName("alternateOf");
-	QNAME_PROVO_mentionOf = newProvQName("mentionOf");
-	QNAME_PROVO_asInBundle = newProvQName("asInBundle");
-	QNAME_PROVO_hadMember = newProvQName("hadMember");
+	QualifiedName_PROVO_specializationOf = name.newProvQualifiedName("specializationOf");
+	QualifiedName_PROVO_alternateOf = name.newProvQualifiedName("alternateOf");
+	QualifiedName_PROVO_mentionOf = name.newProvQualifiedName("mentionOf");
+	QualifiedName_PROVO_asInBundle = name.newProvQualifiedName("asInBundle");
+	QualifiedName_PROVO_hadMember = name.newProvQualifiedName("hadMember");
 
 
-	QNAME_PROVO_Bundle = newProvQName("Bundle");
-	QNAME_PROVO_Organization = newProvQName("Organization");
-	QNAME_PROVO_Person = newProvQName("Person");
-	QNAME_PROVO_SoftwareAgent = newProvQName("SoftwareAgent");
-	QNAME_PROVO_Location = newProvQName("Location");
-	QNAME_PROVO_Plan = newProvQName("Plan");
-	QNAME_PROVO_Role = newProvQName("Role");
-	QNAME_PROVO_Collection = newProvQName("Collection");
-	QNAME_PROVO_EmptyCollection = newProvQName("EmptyCollection");
+	QualifiedName_PROVO_Bundle = name.newProvQualifiedName("Bundle");
+	QualifiedName_PROVO_Organization = name.newProvQualifiedName("Organization");
+	QualifiedName_PROVO_Person = name.newProvQualifiedName("Person");
+	QualifiedName_PROVO_SoftwareAgent = name.newProvQualifiedName("SoftwareAgent");
+	QualifiedName_PROVO_Location = name.newProvQualifiedName("Location");
+	QualifiedName_PROVO_Plan = name.newProvQualifiedName("Plan");
+	QualifiedName_PROVO_Role = name.newProvQualifiedName("Role");
+	QualifiedName_PROVO_Collection = name.newProvQualifiedName("Collection");
+	QualifiedName_PROVO_EmptyCollection = name.newProvQualifiedName("EmptyCollection");
 
-	QNAME_PROVO_InstantaneousEvent = newProvQName("InstantaneousEvent");
-	QNAME_PROVO_EntityInfluence = newProvQName("EntityInfluence");
-	QNAME_PROVO_ActivityInfluence = newProvQName("ActivityInfluence");
-	QNAME_PROVO_AgentInfluence = newProvQName("AgentInfluence");
+	QualifiedName_PROVO_InstantaneousEvent = name.newProvQualifiedName("InstantaneousEvent");
+	QualifiedName_PROVO_EntityInfluence = name.newProvQualifiedName("EntityInfluence");
+	QualifiedName_PROVO_ActivityInfluence = name.newProvQualifiedName("ActivityInfluence");
+	QualifiedName_PROVO_AgentInfluence = name.newProvQualifiedName("AgentInfluence");
     
-	QNAME_PROVDC_Contributor = newProvQName("Contributor");
+	QualifiedName_PROVDC_Contributor = name.newProvQualifiedName("Contributor");
 
     
-	QNAME_RDF_TYPE = newRdfQName("type");
-	QNAME_RDFS_LABEL = newRdfsQName("label");
-    
-    
+	QualifiedName_RDF_TYPE = newRdfQualifiedName("type");
+	QualifiedName_RDFS_LABEL = newRdfsQualifiedName("label");
     
     
-	QNAME_PROVO_Dictionary = newProvQName("Dictionary");
-	QNAME_PROVO_EmptyDictionary = newProvQName("EmptyDictionary");
-	QNAME_PROVO_derivedByInsertion = newProvQName("derivedByInsertion");
-	QNAME_PROVO_Insertion = newProvQName("Insertion");
-	QNAME_PROVO_qualifiedInsertion = newProvQName("qualifiedInsertion");
-	QNAME_PROVO_dictionary = newProvQName("dictionary");
-	QNAME_PROVO_derivedByRemoval = newProvQName("derivedByRemoval");
-	QNAME_PROVO_Removal = newProvQName("Removal");
-	QNAME_PROVO_qualifiedRemoval = newProvQName("qualifiedRemoval");
-	QNAME_PROVO_hadDictionaryMember = newProvQName("hadDictionaryMember");
-	QNAME_PROVO_insertedKeyEntityPair = newProvQName("insertedKeyEntityPair");
-	QNAME_PROVO_removedKey = newProvQName("removedKey");
-	QNAME_PROVO_KeyValuePair = newProvQName("KeyValuePair");
-	QNAME_PROVO_pairKey = newProvQName("pairKey");
-	QNAME_PROVO_pairEntity = newProvQName("pairEntity");
+    
+    
+	QualifiedName_PROVO_Dictionary = name.newProvQualifiedName("Dictionary");
+	QualifiedName_PROVO_EmptyDictionary = name.newProvQualifiedName("EmptyDictionary");
+	QualifiedName_PROVO_derivedByInsertion = name.newProvQualifiedName("derivedByInsertion");
+	QualifiedName_PROVO_Insertion = name.newProvQualifiedName("Insertion");
+	QualifiedName_PROVO_qualifiedInsertion = name.newProvQualifiedName("qualifiedInsertion");
+	QualifiedName_PROVO_dictionary = name.newProvQualifiedName("dictionary");
+	QualifiedName_PROVO_derivedByRemoval = name.newProvQualifiedName("derivedByRemoval");
+	QualifiedName_PROVO_Removal = name.newProvQualifiedName("Removal");
+	QualifiedName_PROVO_qualifiedRemoval = name.newProvQualifiedName("qualifiedRemoval");
+	QualifiedName_PROVO_hadDictionaryMember = name.newProvQualifiedName("hadDictionaryMember");
+	QualifiedName_PROVO_insertedKeyEntityPair = name.newProvQualifiedName("insertedKeyEntityPair");
+	QualifiedName_PROVO_removedKey = name.newProvQualifiedName("removedKey");
+	QualifiedName_PROVO_KeyValuePair = name.newProvQualifiedName("KeyValuePair");
+	QualifiedName_PROVO_pairKey = name.newProvQualifiedName("pairKey");
+	QualifiedName_PROVO_pairEntity = name.newProvQualifiedName("pairEntity");
 
-	QNAME_BK_topicIn = newBookQName("topicIn");
+	QualifiedName_BK_topicIn = newBookQualifiedName("topicIn");
 
 	initInfluenceTables();
 	initDomainTables();
@@ -168,304 +168,298 @@ public class Ontology {
     
     public Set<QualifiedName> asObjectProperty=new HashSet<QualifiedName>();
     
-    public QualifiedName newProvQName(String local) {
-	return pFactory.newQualifiedName(NamespacePrefixMapper.PROV_NS,
-					 local,
-					 NamespacePrefixMapper.PROV_PREFIX);
-    }
-
-    public QualifiedName newBookQName(String local) {
+    public QualifiedName newBookQualifiedName(String local) {
 	return pFactory.newQualifiedName(NamespacePrefixMapper.BOOK_NS,
 					 local,
 					 NamespacePrefixMapper.BOOK_PREFIX);
     }
 
-    public QualifiedName newRdfQName(String local) {
+    public QualifiedName newRdfQualifiedName(String local) {
 	return pFactory.newQualifiedName(NamespacePrefixMapper.RDF_NS,
 					 local,
 					 NamespacePrefixMapper.RDF_PREFIX);
     }
     
-    public QualifiedName newRdfsQName(String local) {
+    public QualifiedName newRdfsQualifiedName(String local) {
 	return pFactory.newQualifiedName(NamespacePrefixMapper.RDFS_NS,
 					 local,
 					 NamespacePrefixMapper.RDFS_PREFIX);
     }
 
-    final public QualifiedName QNAME_PROVO_atLocation;
-    final public QualifiedName QNAME_PROVO_atTime;
-    final public QualifiedName QNAME_PROVO_startedAtTime;
-    final public QualifiedName QNAME_PROVO_endedAtTime;
-    final public QualifiedName QNAME_PROVO_influencer;
-    final public QualifiedName QNAME_PROVO_activity;
-    final public QualifiedName QNAME_PROVO_entity;
-    final public QualifiedName QNAME_PROVO_agent;
-    final public QualifiedName QNAME_PROVO_hadActivity;
-    final public QualifiedName QNAME_PROVO_hadEntity;
-    final public QualifiedName QNAME_PROVO_hadPlan;
-    final public QualifiedName QNAME_PROVO_hadGeneration;
-    final public QualifiedName QNAME_PROVO_hadUsage;
-    final public QualifiedName QNAME_PROVO_hadRole;
-    final public QualifiedName QNAME_PROVO_value;
-    final public QualifiedName QNAME_PROVO_generated;
-    final public QualifiedName QNAME_PROVO_generatedAtTime;
-    final public QualifiedName QNAME_PROVO_influenced;
-    final public QualifiedName QNAME_PROVO_invalidated;
-    final public QualifiedName QNAME_PROVO_invalidatedAtTime;
+    final public QualifiedName QualifiedName_PROVO_atLocation;
+    final public QualifiedName QualifiedName_PROVO_atTime;
+    final public QualifiedName QualifiedName_PROVO_startedAtTime;
+    final public QualifiedName QualifiedName_PROVO_endedAtTime;
+    final public QualifiedName QualifiedName_PROVO_influencer;
+    final public QualifiedName QualifiedName_PROVO_activity;
+    final public QualifiedName QualifiedName_PROVO_entity;
+    final public QualifiedName QualifiedName_PROVO_agent;
+    final public QualifiedName QualifiedName_PROVO_hadActivity;
+    final public QualifiedName QualifiedName_PROVO_hadEntity;
+    final public QualifiedName QualifiedName_PROVO_hadPlan;
+    final public QualifiedName QualifiedName_PROVO_hadGeneration;
+    final public QualifiedName QualifiedName_PROVO_hadUsage;
+    final public QualifiedName QualifiedName_PROVO_hadRole;
+    final public QualifiedName QualifiedName_PROVO_value;
+    final public QualifiedName QualifiedName_PROVO_generated;
+    final public QualifiedName QualifiedName_PROVO_generatedAtTime;
+    final public QualifiedName QualifiedName_PROVO_influenced;
+    final public QualifiedName QualifiedName_PROVO_invalidated;
+    final public QualifiedName QualifiedName_PROVO_invalidatedAtTime;
 
-    final public QualifiedName QNAME_PROVO_Activity;
-    final public QualifiedName QNAME_PROVO_Entity;
-    final public QualifiedName QNAME_PROVO_Agent;
+    final public QualifiedName QualifiedName_PROVO_Activity;
+    final public QualifiedName QualifiedName_PROVO_Entity;
+    final public QualifiedName QualifiedName_PROVO_Agent;
 
-    final public QualifiedName QNAME_PROVO_Influence;
-    final public QualifiedName QNAME_PROVO_qualifiedInfluence;
-    final public QualifiedName QNAME_PROVO_wasInfluencedBy;
+    final public QualifiedName QualifiedName_PROVO_Influence;
+    final public QualifiedName QualifiedName_PROVO_qualifiedInfluence;
+    final public QualifiedName QualifiedName_PROVO_wasInfluencedBy;
 
-    final public QualifiedName QNAME_PROVO_Generation;
-    final public QualifiedName QNAME_PROVO_qualifiedGeneration;
-    final public QualifiedName QNAME_PROVO_wasGeneratedBy;
+    final public QualifiedName QualifiedName_PROVO_Generation;
+    final public QualifiedName QualifiedName_PROVO_qualifiedGeneration;
+    final public QualifiedName QualifiedName_PROVO_wasGeneratedBy;
 
-    final public QualifiedName QNAME_PROVO_Usage;
-    final public QualifiedName QNAME_PROVO_qualifiedUsage;
-    final public QualifiedName QNAME_PROVO_used;
+    final public QualifiedName QualifiedName_PROVO_Usage;
+    final public QualifiedName QualifiedName_PROVO_qualifiedUsage;
+    final public QualifiedName QualifiedName_PROVO_used;
 
-    final public QualifiedName QNAME_PROVO_Invalidation;
-    final public QualifiedName QNAME_PROVO_qualifiedInvalidation;
-    final public QualifiedName QNAME_PROVO_wasInvalidatedBy;
+    final public QualifiedName QualifiedName_PROVO_Invalidation;
+    final public QualifiedName QualifiedName_PROVO_qualifiedInvalidation;
+    final public QualifiedName QualifiedName_PROVO_wasInvalidatedBy;
 
-    final public QualifiedName QNAME_PROVO_Start;
-    final public QualifiedName QNAME_PROVO_qualifiedStart;
-    final public QualifiedName QNAME_PROVO_wasStartedBy;
+    final public QualifiedName QualifiedName_PROVO_Start;
+    final public QualifiedName QualifiedName_PROVO_qualifiedStart;
+    final public QualifiedName QualifiedName_PROVO_wasStartedBy;
 
-    final public QualifiedName QNAME_PROVO_End;
-    final public QualifiedName QNAME_PROVO_qualifiedEnd;
-    final public QualifiedName QNAME_PROVO_wasEndedBy;
+    final public QualifiedName QualifiedName_PROVO_End;
+    final public QualifiedName QualifiedName_PROVO_qualifiedEnd;
+    final public QualifiedName QualifiedName_PROVO_wasEndedBy;
 
-    final public QualifiedName QNAME_PROVO_Association;
-    final public QualifiedName QNAME_PROVO_qualifiedAssociation;
-    final public QualifiedName QNAME_PROVO_wasAssociatedWith;
+    final public QualifiedName QualifiedName_PROVO_Association;
+    final public QualifiedName QualifiedName_PROVO_qualifiedAssociation;
+    final public QualifiedName QualifiedName_PROVO_wasAssociatedWith;
 
-    final public QualifiedName QNAME_PROVO_Attribution;
-    final public QualifiedName QNAME_PROVO_qualifiedAttribution;
-    final public QualifiedName QNAME_PROVO_wasAttributedTo;
+    final public QualifiedName QualifiedName_PROVO_Attribution;
+    final public QualifiedName QualifiedName_PROVO_qualifiedAttribution;
+    final public QualifiedName QualifiedName_PROVO_wasAttributedTo;
 
-    final public QualifiedName QNAME_PROVO_Delegation;
-    final public QualifiedName QNAME_PROVO_qualifiedDelegation;
-    final public QualifiedName QNAME_PROVO_actedOnBehalfOf;
+    final public QualifiedName QualifiedName_PROVO_Delegation;
+    final public QualifiedName QualifiedName_PROVO_qualifiedDelegation;
+    final public QualifiedName QualifiedName_PROVO_actedOnBehalfOf;
 
-    final public QualifiedName QNAME_PROVO_Derivation;
-    final public QualifiedName QNAME_PROVO_qualifiedDerivation;
-    final public QualifiedName QNAME_PROVO_wasDerivedFrom;
+    final public QualifiedName QualifiedName_PROVO_Derivation;
+    final public QualifiedName QualifiedName_PROVO_qualifiedDerivation;
+    final public QualifiedName QualifiedName_PROVO_wasDerivedFrom;
 
-    final public QualifiedName QNAME_PROVO_Revision;
-    final public QualifiedName QNAME_PROVO_qualifiedRevision;
-    final public QualifiedName QNAME_PROVO_wasRevisionOf;
+    final public QualifiedName QualifiedName_PROVO_Revision;
+    final public QualifiedName QualifiedName_PROVO_qualifiedRevision;
+    final public QualifiedName QualifiedName_PROVO_wasRevisionOf;
 
-    final public QualifiedName QNAME_PROVO_Quotation;
-    final public QualifiedName QNAME_PROVO_qualifiedQuotation;
-    final public QualifiedName QNAME_PROVO_wasQuotedFrom;
+    final public QualifiedName QualifiedName_PROVO_Quotation;
+    final public QualifiedName QualifiedName_PROVO_qualifiedQuotation;
+    final public QualifiedName QualifiedName_PROVO_wasQuotedFrom;
     
-    final public QualifiedName QNAME_PROVO_PrimarySource;
-    final public QualifiedName QNAME_PROVO_qualifiedPrimarySource;
-    final public QualifiedName QNAME_PROVO_hadPrimarySource;
+    final public QualifiedName QualifiedName_PROVO_PrimarySource;
+    final public QualifiedName QualifiedName_PROVO_qualifiedPrimarySource;
+    final public QualifiedName QualifiedName_PROVO_hadPrimarySource;
 
-    final public QualifiedName QNAME_PROVO_Communication;
-    final public QualifiedName QNAME_PROVO_qualifiedCommunication;
-    final public QualifiedName QNAME_PROVO_wasInformedBy;
+    final public QualifiedName QualifiedName_PROVO_Communication;
+    final public QualifiedName QualifiedName_PROVO_qualifiedCommunication;
+    final public QualifiedName QualifiedName_PROVO_wasInformedBy;
 
-    final public QualifiedName QNAME_PROVO_specializationOf;
-    final public QualifiedName QNAME_PROVO_alternateOf;
-    final public QualifiedName QNAME_PROVO_mentionOf;
-    final public QualifiedName QNAME_PROVO_asInBundle;
-    final public QualifiedName QNAME_PROVO_hadMember;
+    final public QualifiedName QualifiedName_PROVO_specializationOf;
+    final public QualifiedName QualifiedName_PROVO_alternateOf;
+    final public QualifiedName QualifiedName_PROVO_mentionOf;
+    final public QualifiedName QualifiedName_PROVO_asInBundle;
+    final public QualifiedName QualifiedName_PROVO_hadMember;
 
 
-    final public QualifiedName QNAME_PROVO_Bundle;
-    final public QualifiedName QNAME_PROVO_Organization;
-    final public QualifiedName QNAME_PROVO_Person;
-    final public QualifiedName QNAME_PROVO_SoftwareAgent;
-    final public QualifiedName QNAME_PROVO_Location;
-    final public QualifiedName QNAME_PROVO_Plan;
-    final public QualifiedName QNAME_PROVO_Role;
-    final public QualifiedName QNAME_PROVO_Collection;
-    final public QualifiedName QNAME_PROVO_EmptyCollection;
+    final public QualifiedName QualifiedName_PROVO_Bundle;
+    final public QualifiedName QualifiedName_PROVO_Organization;
+    final public QualifiedName QualifiedName_PROVO_Person;
+    final public QualifiedName QualifiedName_PROVO_SoftwareAgent;
+    final public QualifiedName QualifiedName_PROVO_Location;
+    final public QualifiedName QualifiedName_PROVO_Plan;
+    final public QualifiedName QualifiedName_PROVO_Role;
+    final public QualifiedName QualifiedName_PROVO_Collection;
+    final public QualifiedName QualifiedName_PROVO_EmptyCollection;
 
-    final public QualifiedName QNAME_PROVO_InstantaneousEvent;
-    final public QualifiedName QNAME_PROVO_EntityInfluence;
-    final public QualifiedName QNAME_PROVO_ActivityInfluence;
-    final public QualifiedName QNAME_PROVO_AgentInfluence;
+    final public QualifiedName QualifiedName_PROVO_InstantaneousEvent;
+    final public QualifiedName QualifiedName_PROVO_EntityInfluence;
+    final public QualifiedName QualifiedName_PROVO_ActivityInfluence;
+    final public QualifiedName QualifiedName_PROVO_AgentInfluence;
     
-    final public QualifiedName QNAME_PROVDC_Contributor;
+    final public QualifiedName QualifiedName_PROVDC_Contributor;
 
     
-    final public QualifiedName QNAME_RDF_TYPE;
-    final public QualifiedName QNAME_RDFS_LABEL;
+    final public QualifiedName QualifiedName_RDF_TYPE;
+    final public QualifiedName QualifiedName_RDFS_LABEL;
     
     // dictionary stuff
     
-    final public QualifiedName QNAME_PROVO_Dictionary;
-    final public QualifiedName QNAME_PROVO_EmptyDictionary;
-    final public QualifiedName QNAME_PROVO_derivedByInsertion;
-    final public QualifiedName QNAME_PROVO_Insertion;
-    final public QualifiedName QNAME_PROVO_qualifiedInsertion;
-    final public QualifiedName QNAME_PROVO_dictionary;
-    final public QualifiedName QNAME_PROVO_derivedByRemoval;
-    final public QualifiedName QNAME_PROVO_Removal;
-    final public QualifiedName QNAME_PROVO_qualifiedRemoval;
-    final public QualifiedName QNAME_PROVO_hadDictionaryMember;
-    final public QualifiedName QNAME_PROVO_insertedKeyEntityPair;
-    final public QualifiedName QNAME_PROVO_removedKey;
-    final public QualifiedName QNAME_PROVO_KeyValuePair;
-    final public QualifiedName QNAME_PROVO_pairKey;
-    final public QualifiedName QNAME_PROVO_pairEntity;
+    final public QualifiedName QualifiedName_PROVO_Dictionary;
+    final public QualifiedName QualifiedName_PROVO_EmptyDictionary;
+    final public QualifiedName QualifiedName_PROVO_derivedByInsertion;
+    final public QualifiedName QualifiedName_PROVO_Insertion;
+    final public QualifiedName QualifiedName_PROVO_qualifiedInsertion;
+    final public QualifiedName QualifiedName_PROVO_dictionary;
+    final public QualifiedName QualifiedName_PROVO_derivedByRemoval;
+    final public QualifiedName QualifiedName_PROVO_Removal;
+    final public QualifiedName QualifiedName_PROVO_qualifiedRemoval;
+    final public QualifiedName QualifiedName_PROVO_hadDictionaryMember;
+    final public QualifiedName QualifiedName_PROVO_insertedKeyEntityPair;
+    final public QualifiedName QualifiedName_PROVO_removedKey;
+    final public QualifiedName QualifiedName_PROVO_KeyValuePair;
+    final public QualifiedName QualifiedName_PROVO_pairKey;
+    final public QualifiedName QualifiedName_PROVO_pairEntity;
 
     // prov book
 
-    final public QualifiedName QNAME_BK_topicIn;
+    final public QualifiedName QualifiedName_BK_topicIn;
 
 
 	
     void initInfluenceTables() {
-	qualifiedInfluenceTable.put(QNAME_PROVO_Influence,
-				    QNAME_PROVO_qualifiedInfluence);
-	qualifiedInfluenceTable.put(QNAME_PROVO_Generation,
-				    QNAME_PROVO_qualifiedGeneration);
-	qualifiedInfluenceTable.put(QNAME_PROVO_Usage,
-				    QNAME_PROVO_qualifiedUsage);
-	qualifiedInfluenceTable.put(QNAME_PROVO_Invalidation,
-				    QNAME_PROVO_qualifiedInvalidation);
-	qualifiedInfluenceTable.put(QNAME_PROVO_Start,
-				    QNAME_PROVO_qualifiedStart);
-	qualifiedInfluenceTable.put(QNAME_PROVO_End, QNAME_PROVO_qualifiedEnd);
-	qualifiedInfluenceTable.put(QNAME_PROVO_Association,
-				    QNAME_PROVO_qualifiedAssociation);
-	qualifiedInfluenceTable.put(QNAME_PROVO_Attribution,
-				    QNAME_PROVO_qualifiedAttribution);
-	qualifiedInfluenceTable.put(QNAME_PROVO_Delegation,
-				    QNAME_PROVO_qualifiedDelegation);
-	qualifiedInfluenceTable.put(QNAME_PROVO_Derivation,
-				    QNAME_PROVO_qualifiedDerivation);
-	qualifiedInfluenceTable.put(QNAME_PROVO_Quotation,
-				    QNAME_PROVO_qualifiedQuotation);
-	qualifiedInfluenceTable.put(QNAME_PROVO_Revision,
-				    QNAME_PROVO_qualifiedRevision);
-	qualifiedInfluenceTable.put(QNAME_PROVO_PrimarySource,
-				    QNAME_PROVO_qualifiedPrimarySource);
-	qualifiedInfluenceTable.put(QNAME_PROVO_Communication,
-		    QNAME_PROVO_qualifiedCommunication);
-	qualifiedInfluenceTable.put(QNAME_PROVO_Insertion,
-		    QNAME_PROVO_qualifiedInsertion);
-	qualifiedInfluenceTable.put(QNAME_PROVO_Removal,
-		    QNAME_PROVO_qualifiedRemoval);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_Influence,
+				    QualifiedName_PROVO_qualifiedInfluence);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_Generation,
+				    QualifiedName_PROVO_qualifiedGeneration);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_Usage,
+				    QualifiedName_PROVO_qualifiedUsage);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_Invalidation,
+				    QualifiedName_PROVO_qualifiedInvalidation);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_Start,
+				    QualifiedName_PROVO_qualifiedStart);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_End, QualifiedName_PROVO_qualifiedEnd);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_Association,
+				    QualifiedName_PROVO_qualifiedAssociation);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_Attribution,
+				    QualifiedName_PROVO_qualifiedAttribution);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_Delegation,
+				    QualifiedName_PROVO_qualifiedDelegation);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_Derivation,
+				    QualifiedName_PROVO_qualifiedDerivation);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_Quotation,
+				    QualifiedName_PROVO_qualifiedQuotation);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_Revision,
+				    QualifiedName_PROVO_qualifiedRevision);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_PrimarySource,
+				    QualifiedName_PROVO_qualifiedPrimarySource);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_Communication,
+		    QualifiedName_PROVO_qualifiedCommunication);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_Insertion,
+		    QualifiedName_PROVO_qualifiedInsertion);
+	qualifiedInfluenceTable.put(QualifiedName_PROVO_Removal,
+		    QualifiedName_PROVO_qualifiedRemoval);
 
-	influencerTable.put(QNAME_PROVO_Influence, QNAME_PROVO_influencer);
-	activityInfluence(QNAME_PROVO_Generation);
-	entityInfluence(QNAME_PROVO_Usage);
-	activityInfluence(QNAME_PROVO_Invalidation);
-	entityInfluence(QNAME_PROVO_Start);
-	entityInfluence(QNAME_PROVO_End);
-	agentInfluence(QNAME_PROVO_Association);
-	agentInfluence(QNAME_PROVO_Attribution);
-	agentInfluence(QNAME_PROVO_Delegation);
-	entityInfluence(QNAME_PROVO_Derivation);
-	entityInfluence(QNAME_PROVO_Quotation);
-	entityInfluence(QNAME_PROVO_Revision);
-	entityInfluence(QNAME_PROVO_PrimarySource);
-	activityInfluence(QNAME_PROVO_Communication);
+	influencerTable.put(QualifiedName_PROVO_Influence, QualifiedName_PROVO_influencer);
+	activityInfluence(QualifiedName_PROVO_Generation);
+	entityInfluence(QualifiedName_PROVO_Usage);
+	activityInfluence(QualifiedName_PROVO_Invalidation);
+	entityInfluence(QualifiedName_PROVO_Start);
+	entityInfluence(QualifiedName_PROVO_End);
+	agentInfluence(QualifiedName_PROVO_Association);
+	agentInfluence(QualifiedName_PROVO_Attribution);
+	agentInfluence(QualifiedName_PROVO_Delegation);
+	entityInfluence(QualifiedName_PROVO_Derivation);
+	entityInfluence(QualifiedName_PROVO_Quotation);
+	entityInfluence(QualifiedName_PROVO_Revision);
+	entityInfluence(QualifiedName_PROVO_PrimarySource);
+	activityInfluence(QualifiedName_PROVO_Communication);
 	
-	dictionaryInfluence(QNAME_PROVO_Insertion);
-	dictionaryInfluence(QNAME_PROVO_Removal);
+	dictionaryInfluence(QualifiedName_PROVO_Insertion);
+	dictionaryInfluence(QualifiedName_PROVO_Removal);
 
-	unqualifiedTable.put(QNAME_PROVO_Influence, QNAME_PROVO_wasInfluencedBy);
-	unqualifiedTable.put(QNAME_PROVO_Generation, QNAME_PROVO_wasGeneratedBy);
-	unqualifiedTable.put(QNAME_PROVO_Usage, QNAME_PROVO_used);
-	unqualifiedTable.put(QNAME_PROVO_Invalidation,
-			     QNAME_PROVO_wasInvalidatedBy);
-	unqualifiedTable.put(QNAME_PROVO_Start, QNAME_PROVO_wasStartedBy);
-	unqualifiedTable.put(QNAME_PROVO_End, QNAME_PROVO_wasEndedBy);
-	unqualifiedTable.put(QNAME_PROVO_Association,
-			     QNAME_PROVO_wasAssociatedWith);
-	unqualifiedTable.put(QNAME_PROVO_Attribution,
-			     QNAME_PROVO_wasAttributedTo);
-	unqualifiedTable.put(QNAME_PROVO_Delegation,
-			     QNAME_PROVO_actedOnBehalfOf);
-	unqualifiedTable.put(QNAME_PROVO_Derivation, QNAME_PROVO_wasDerivedFrom);
-	unqualifiedTable.put(QNAME_PROVO_Revision, QNAME_PROVO_wasRevisionOf);
-	unqualifiedTable.put(QNAME_PROVO_Quotation, QNAME_PROVO_wasQuotedFrom);
-	unqualifiedTable.put(QNAME_PROVO_PrimarySource,
-			     QNAME_PROVO_hadPrimarySource);
-	unqualifiedTable.put(QNAME_PROVO_Communication,
-		     QNAME_PROVO_wasInformedBy);
-	unqualifiedTable.put(QNAME_PROVO_Insertion,
-		     QNAME_PROVO_derivedByInsertion);
-	unqualifiedTable.put(QNAME_PROVO_Removal,
-		     QNAME_PROVO_derivedByRemoval);
+	unqualifiedTable.put(QualifiedName_PROVO_Influence, QualifiedName_PROVO_wasInfluencedBy);
+	unqualifiedTable.put(QualifiedName_PROVO_Generation, QualifiedName_PROVO_wasGeneratedBy);
+	unqualifiedTable.put(QualifiedName_PROVO_Usage, QualifiedName_PROVO_used);
+	unqualifiedTable.put(QualifiedName_PROVO_Invalidation,
+			     QualifiedName_PROVO_wasInvalidatedBy);
+	unqualifiedTable.put(QualifiedName_PROVO_Start, QualifiedName_PROVO_wasStartedBy);
+	unqualifiedTable.put(QualifiedName_PROVO_End, QualifiedName_PROVO_wasEndedBy);
+	unqualifiedTable.put(QualifiedName_PROVO_Association,
+			     QualifiedName_PROVO_wasAssociatedWith);
+	unqualifiedTable.put(QualifiedName_PROVO_Attribution,
+			     QualifiedName_PROVO_wasAttributedTo);
+	unqualifiedTable.put(QualifiedName_PROVO_Delegation,
+			     QualifiedName_PROVO_actedOnBehalfOf);
+	unqualifiedTable.put(QualifiedName_PROVO_Derivation, QualifiedName_PROVO_wasDerivedFrom);
+	unqualifiedTable.put(QualifiedName_PROVO_Revision, QualifiedName_PROVO_wasRevisionOf);
+	unqualifiedTable.put(QualifiedName_PROVO_Quotation, QualifiedName_PROVO_wasQuotedFrom);
+	unqualifiedTable.put(QualifiedName_PROVO_PrimarySource,
+			     QualifiedName_PROVO_hadPrimarySource);
+	unqualifiedTable.put(QualifiedName_PROVO_Communication,
+		     QualifiedName_PROVO_wasInformedBy);
+	unqualifiedTable.put(QualifiedName_PROVO_Insertion,
+		     QualifiedName_PROVO_derivedByInsertion);
+	unqualifiedTable.put(QualifiedName_PROVO_Removal,
+		     QualifiedName_PROVO_derivedByRemoval);
 
-	otherTable.put(QNAME_PROVO_Start, QNAME_PROVO_hadActivity);
-	otherTable.put(QNAME_PROVO_End, QNAME_PROVO_hadActivity);
-	otherTable.put(QNAME_PROVO_Derivation, QNAME_PROVO_hadActivity);
-	otherTable.put(QNAME_PROVO_Revision, QNAME_PROVO_hadActivity);
-	otherTable.put(QNAME_PROVO_Quotation, QNAME_PROVO_hadActivity);
-	otherTable.put(QNAME_PROVO_PrimarySource, QNAME_PROVO_hadActivity);
-	otherTable.put(QNAME_PROVO_Association, QNAME_PROVO_hadPlan);
-	otherTable.put(QNAME_PROVO_Delegation, QNAME_PROVO_hadActivity);
-	otherTable.put(QNAME_PROVO_Insertion, QNAME_PROVO_insertedKeyEntityPair);
-	otherTable.put(QNAME_PROVO_Removal, QNAME_PROVO_insertedKeyEntityPair);
+	otherTable.put(QualifiedName_PROVO_Start, QualifiedName_PROVO_hadActivity);
+	otherTable.put(QualifiedName_PROVO_End, QualifiedName_PROVO_hadActivity);
+	otherTable.put(QualifiedName_PROVO_Derivation, QualifiedName_PROVO_hadActivity);
+	otherTable.put(QualifiedName_PROVO_Revision, QualifiedName_PROVO_hadActivity);
+	otherTable.put(QualifiedName_PROVO_Quotation, QualifiedName_PROVO_hadActivity);
+	otherTable.put(QualifiedName_PROVO_PrimarySource, QualifiedName_PROVO_hadActivity);
+	otherTable.put(QualifiedName_PROVO_Association, QualifiedName_PROVO_hadPlan);
+	otherTable.put(QualifiedName_PROVO_Delegation, QualifiedName_PROVO_hadActivity);
+	otherTable.put(QualifiedName_PROVO_Insertion, QualifiedName_PROVO_insertedKeyEntityPair);
+	otherTable.put(QualifiedName_PROVO_Removal, QualifiedName_PROVO_insertedKeyEntityPair);
 
-	convertTable.put(name.PROV_LABEL, QNAME_RDFS_LABEL);
-	convertTable.put(name.PROV_TYPE, QNAME_RDF_TYPE);
-	convertTable.put(name.PROV_LOCATION, QNAME_PROVO_atLocation);
-	convertTable.put(name.PROV_VALUE, QNAME_PROVO_value);
-	convertTable.put(name.PROV_ROLE, QNAME_PROVO_hadRole);
+	convertTable.put(name.PROV_LABEL, QualifiedName_RDFS_LABEL);
+	convertTable.put(name.PROV_TYPE, QualifiedName_RDF_TYPE);
+	convertTable.put(name.PROV_LOCATION, QualifiedName_PROVO_atLocation);
+	convertTable.put(name.PROV_VALUE, QualifiedName_PROVO_value);
+	convertTable.put(name.PROV_ROLE, QualifiedName_PROVO_hadRole);
     }
     
     void initRangeTables() {
-    	this.ranges.put(QNAME_PROVO_actedOnBehalfOf, QNAME_PROVO_Agent);
-    	this.ranges.put(QNAME_PROVO_used, QNAME_PROVO_Entity);
-    	this.ranges.put(QNAME_PROVO_wasAssociatedWith, QNAME_PROVO_Agent);
-    	this.ranges.put(QNAME_PROVO_wasAttributedTo, QNAME_PROVO_Agent);
-    	this.ranges.put(QNAME_PROVO_wasDerivedFrom, QNAME_PROVO_Entity);
-    	this.ranges.put(QNAME_PROVO_wasGeneratedBy, QNAME_PROVO_Activity);
-    	this.ranges.put(QNAME_PROVO_wasInformedBy, QNAME_PROVO_Activity);
-    	this.ranges.put(QNAME_PROVO_alternateOf, QNAME_PROVO_Entity);
-    	this.ranges.put(QNAME_PROVO_atLocation, QNAME_PROVO_Location);
-    	this.ranges.put(QNAME_PROVO_generated, QNAME_PROVO_Entity);
-    	this.ranges.put(QNAME_PROVO_hadMember, QNAME_PROVO_Entity);
-    	this.ranges.put(QNAME_PROVO_hadPrimarySource, QNAME_PROVO_Entity);
-    	this.ranges.put(QNAME_PROVO_invalidated, QNAME_PROVO_Entity);
-    	this.ranges.put(QNAME_PROVO_specializationOf, QNAME_PROVO_Entity);
-    	this.ranges.put(QNAME_PROVO_wasEndedBy, QNAME_PROVO_Entity);
-    	this.ranges.put(QNAME_PROVO_wasInvalidatedBy, QNAME_PROVO_Activity);
-    	this.ranges.put(QNAME_PROVO_wasQuotedFrom, QNAME_PROVO_Entity);
-    	this.ranges.put(QNAME_PROVO_wasRevisionOf, QNAME_PROVO_Entity);
-    	this.ranges.put(QNAME_PROVO_wasStartedBy, QNAME_PROVO_Entity);
-    	this.ranges.put(QNAME_PROVO_activity, QNAME_PROVO_Activity);
-    	this.ranges.put(QNAME_PROVO_agent, QNAME_PROVO_Agent);
-    	this.ranges.put(QNAME_PROVO_entity, QNAME_PROVO_Entity);
-    	this.ranges.put(QNAME_PROVO_hadActivity, QNAME_PROVO_Activity);
-    	this.ranges.put(QNAME_PROVO_hadGeneration, QNAME_PROVO_Generation);
-    	this.ranges.put(QNAME_PROVO_hadPlan, QNAME_PROVO_Plan);
-    	this.ranges.put(QNAME_PROVO_hadUsage, QNAME_PROVO_Usage);
-    	this.ranges.put(QNAME_PROVO_qualifiedAssociation, QNAME_PROVO_Association);
-    	this.ranges.put(QNAME_PROVO_qualifiedAttribution, QNAME_PROVO_Attribution);
-    	this.ranges.put(QNAME_PROVO_qualifiedCommunication, QNAME_PROVO_Communication);
-    	this.ranges.put(QNAME_PROVO_qualifiedDelegation, QNAME_PROVO_Delegation);
-    	this.ranges.put(QNAME_PROVO_qualifiedDerivation, QNAME_PROVO_Derivation);
-    	this.ranges.put(QNAME_PROVO_qualifiedEnd, QNAME_PROVO_End);
-    	this.ranges.put(QNAME_PROVO_qualifiedGeneration, QNAME_PROVO_Generation);
-    	this.ranges.put(QNAME_PROVO_qualifiedInfluence, QNAME_PROVO_Influence);
-    	this.ranges.put(QNAME_PROVO_qualifiedInvalidation, QNAME_PROVO_Invalidation);
-    	this.ranges.put(QNAME_PROVO_qualifiedPrimarySource, QNAME_PROVO_PrimarySource);
-    	this.ranges.put(QNAME_PROVO_qualifiedQuotation, QNAME_PROVO_Quotation);
-    	this.ranges.put(QNAME_PROVO_qualifiedRevision, QNAME_PROVO_Revision);
-    	this.ranges.put(QNAME_PROVO_qualifiedStart, QNAME_PROVO_Start);
-    	this.ranges.put(QNAME_PROVO_qualifiedUsage, QNAME_PROVO_Usage);
-    	this.ranges.put(QNAME_PROVO_qualifiedInsertion, QNAME_PROVO_Insertion);
-    	this.ranges.put(QNAME_PROVO_derivedByInsertion, QNAME_PROVO_Dictionary);
-    	this.ranges.put(QNAME_PROVO_qualifiedRemoval, QNAME_PROVO_Removal);
-    	this.ranges.put(QNAME_PROVO_derivedByRemoval, QNAME_PROVO_Dictionary);
-    	this.ranges.put(QNAME_PROVO_insertedKeyEntityPair, QNAME_PROVO_KeyValuePair);
-        this.ranges.put(QNAME_BK_topicIn, QNAME_PROVO_Bundle);
+    	this.ranges.put(QualifiedName_PROVO_actedOnBehalfOf, QualifiedName_PROVO_Agent);
+    	this.ranges.put(QualifiedName_PROVO_used, QualifiedName_PROVO_Entity);
+    	this.ranges.put(QualifiedName_PROVO_wasAssociatedWith, QualifiedName_PROVO_Agent);
+    	this.ranges.put(QualifiedName_PROVO_wasAttributedTo, QualifiedName_PROVO_Agent);
+    	this.ranges.put(QualifiedName_PROVO_wasDerivedFrom, QualifiedName_PROVO_Entity);
+    	this.ranges.put(QualifiedName_PROVO_wasGeneratedBy, QualifiedName_PROVO_Activity);
+    	this.ranges.put(QualifiedName_PROVO_wasInformedBy, QualifiedName_PROVO_Activity);
+    	this.ranges.put(QualifiedName_PROVO_alternateOf, QualifiedName_PROVO_Entity);
+    	this.ranges.put(QualifiedName_PROVO_atLocation, QualifiedName_PROVO_Location);
+    	this.ranges.put(QualifiedName_PROVO_generated, QualifiedName_PROVO_Entity);
+    	this.ranges.put(QualifiedName_PROVO_hadMember, QualifiedName_PROVO_Entity);
+    	this.ranges.put(QualifiedName_PROVO_hadPrimarySource, QualifiedName_PROVO_Entity);
+    	this.ranges.put(QualifiedName_PROVO_invalidated, QualifiedName_PROVO_Entity);
+    	this.ranges.put(QualifiedName_PROVO_specializationOf, QualifiedName_PROVO_Entity);
+    	this.ranges.put(QualifiedName_PROVO_wasEndedBy, QualifiedName_PROVO_Entity);
+    	this.ranges.put(QualifiedName_PROVO_wasInvalidatedBy, QualifiedName_PROVO_Activity);
+    	this.ranges.put(QualifiedName_PROVO_wasQuotedFrom, QualifiedName_PROVO_Entity);
+    	this.ranges.put(QualifiedName_PROVO_wasRevisionOf, QualifiedName_PROVO_Entity);
+    	this.ranges.put(QualifiedName_PROVO_wasStartedBy, QualifiedName_PROVO_Entity);
+    	this.ranges.put(QualifiedName_PROVO_activity, QualifiedName_PROVO_Activity);
+    	this.ranges.put(QualifiedName_PROVO_agent, QualifiedName_PROVO_Agent);
+    	this.ranges.put(QualifiedName_PROVO_entity, QualifiedName_PROVO_Entity);
+    	this.ranges.put(QualifiedName_PROVO_hadActivity, QualifiedName_PROVO_Activity);
+    	this.ranges.put(QualifiedName_PROVO_hadGeneration, QualifiedName_PROVO_Generation);
+    	this.ranges.put(QualifiedName_PROVO_hadPlan, QualifiedName_PROVO_Plan);
+    	this.ranges.put(QualifiedName_PROVO_hadUsage, QualifiedName_PROVO_Usage);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedAssociation, QualifiedName_PROVO_Association);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedAttribution, QualifiedName_PROVO_Attribution);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedCommunication, QualifiedName_PROVO_Communication);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedDelegation, QualifiedName_PROVO_Delegation);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedDerivation, QualifiedName_PROVO_Derivation);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedEnd, QualifiedName_PROVO_End);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedGeneration, QualifiedName_PROVO_Generation);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedInfluence, QualifiedName_PROVO_Influence);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedInvalidation, QualifiedName_PROVO_Invalidation);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedPrimarySource, QualifiedName_PROVO_PrimarySource);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedQuotation, QualifiedName_PROVO_Quotation);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedRevision, QualifiedName_PROVO_Revision);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedStart, QualifiedName_PROVO_Start);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedUsage, QualifiedName_PROVO_Usage);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedInsertion, QualifiedName_PROVO_Insertion);
+    	this.ranges.put(QualifiedName_PROVO_derivedByInsertion, QualifiedName_PROVO_Dictionary);
+    	this.ranges.put(QualifiedName_PROVO_qualifiedRemoval, QualifiedName_PROVO_Removal);
+    	this.ranges.put(QualifiedName_PROVO_derivedByRemoval, QualifiedName_PROVO_Dictionary);
+    	this.ranges.put(QualifiedName_PROVO_insertedKeyEntityPair, QualifiedName_PROVO_KeyValuePair);
+        this.ranges.put(QualifiedName_BK_topicIn, QualifiedName_PROVO_Bundle);
 
     	
     }
@@ -476,104 +470,95 @@ public class Ontology {
     	 * that it excludes atLocation, influenced, hadRole, hadActivity, qualifiedInfluence, wasInfluencedBy
     	 * It is not possible to infer a single type from those predicates.
     	 */
-    	this.domains.put(QNAME_PROVO_actedOnBehalfOf, QNAME_PROVO_Agent);
-    	this.domains.put(QNAME_PROVO_qualifiedInfluence, QNAME_PROVO_Agent);
+    	this.domains.put(QualifiedName_PROVO_actedOnBehalfOf, QualifiedName_PROVO_Agent);
+    	this.domains.put(QualifiedName_PROVO_qualifiedInfluence, QualifiedName_PROVO_Agent);
     	
-    	this.domains.put(QNAME_PROVO_agent, QNAME_PROVO_AgentInfluence);
+    	this.domains.put(QualifiedName_PROVO_agent, QualifiedName_PROVO_AgentInfluence);
     	
-    	this.domains.put(QNAME_PROVO_startedAtTime, QNAME_PROVO_Activity);
-    	this.domains.put(QNAME_PROVO_endedAtTime, QNAME_PROVO_Activity);
-    	this.domains.put(QNAME_PROVO_used, QNAME_PROVO_Activity);
-    	this.domains.put(QNAME_PROVO_wasAssociatedWith, QNAME_PROVO_Activity);
-    	this.domains.put(QNAME_PROVO_wasInformedBy, QNAME_PROVO_Activity);
-    	this.domains.put(QNAME_PROVO_wasEndedBy, QNAME_PROVO_Activity);
-    	this.domains.put(QNAME_PROVO_wasStartedBy, QNAME_PROVO_Activity);
-    	this.domains.put(QNAME_PROVO_generated, QNAME_PROVO_Activity);
-    	this.domains.put(QNAME_PROVO_invalidated, QNAME_PROVO_Activity);
-    	this.domains.put(QNAME_PROVO_qualifiedAssociation, QNAME_PROVO_Activity);
-    	this.domains.put(QNAME_PROVO_qualifiedCommunication, QNAME_PROVO_Activity);
-    	this.domains.put(QNAME_PROVO_qualifiedEnd, QNAME_PROVO_Activity);
-    	this.domains.put(QNAME_PROVO_qualifiedStart, QNAME_PROVO_Activity);
-    	this.domains.put(QNAME_PROVO_qualifiedUsage, QNAME_PROVO_Activity);
+    	this.domains.put(QualifiedName_PROVO_startedAtTime, QualifiedName_PROVO_Activity);
+    	this.domains.put(QualifiedName_PROVO_endedAtTime, QualifiedName_PROVO_Activity);
+    	this.domains.put(QualifiedName_PROVO_used, QualifiedName_PROVO_Activity);
+    	this.domains.put(QualifiedName_PROVO_wasAssociatedWith, QualifiedName_PROVO_Activity);
+    	this.domains.put(QualifiedName_PROVO_wasInformedBy, QualifiedName_PROVO_Activity);
+    	this.domains.put(QualifiedName_PROVO_wasEndedBy, QualifiedName_PROVO_Activity);
+    	this.domains.put(QualifiedName_PROVO_wasStartedBy, QualifiedName_PROVO_Activity);
+    	this.domains.put(QualifiedName_PROVO_generated, QualifiedName_PROVO_Activity);
+    	this.domains.put(QualifiedName_PROVO_invalidated, QualifiedName_PROVO_Activity);
+    	this.domains.put(QualifiedName_PROVO_qualifiedAssociation, QualifiedName_PROVO_Activity);
+    	this.domains.put(QualifiedName_PROVO_qualifiedCommunication, QualifiedName_PROVO_Activity);
+    	this.domains.put(QualifiedName_PROVO_qualifiedEnd, QualifiedName_PROVO_Activity);
+    	this.domains.put(QualifiedName_PROVO_qualifiedStart, QualifiedName_PROVO_Activity);
+    	this.domains.put(QualifiedName_PROVO_qualifiedUsage, QualifiedName_PROVO_Activity);
     	
-    	this.domains.put(QNAME_PROVO_activity, QNAME_PROVO_ActivityInfluence);
+    	this.domains.put(QualifiedName_PROVO_activity, QualifiedName_PROVO_ActivityInfluence);
     	
-    	this.domains.put(QNAME_PROVO_wasAttributedTo, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_wasDerivedFrom, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_wasGeneratedBy, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_alternateOf, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_generatedAtTime, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_hadMember, QNAME_PROVO_Collection);
-    	this.domains.put(QNAME_PROVO_hadPrimarySource, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_invalidatedAtTime, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_wasInvalidatedBy, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_specializationOf, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_wasQuotedFrom, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_wasRevisionOf, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_value, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_qualifiedAttribution, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_qualifiedDerivation, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_qualifiedGeneration, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_qualifiedInvalidation, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_qualifiedPrimarySource, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_qualifiedQuotation, QNAME_PROVO_Entity);
-    	this.domains.put(QNAME_PROVO_qualifiedRevision, QNAME_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_wasAttributedTo, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_wasDerivedFrom, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_wasGeneratedBy, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_alternateOf, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_generatedAtTime, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_hadMember, QualifiedName_PROVO_Collection);
+    	this.domains.put(QualifiedName_PROVO_hadPrimarySource, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_invalidatedAtTime, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_wasInvalidatedBy, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_specializationOf, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_wasQuotedFrom, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_wasRevisionOf, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_value, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_qualifiedAttribution, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_qualifiedDerivation, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_qualifiedGeneration, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_qualifiedInvalidation, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_qualifiedPrimarySource, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_qualifiedQuotation, QualifiedName_PROVO_Entity);
+    	this.domains.put(QualifiedName_PROVO_qualifiedRevision, QualifiedName_PROVO_Entity);
     	
-    	this.domains.put(QNAME_PROVO_entity, QNAME_PROVO_EntityInfluence);
+    	this.domains.put(QualifiedName_PROVO_entity, QualifiedName_PROVO_EntityInfluence);
     	
-    	this.domains.put(QNAME_PROVO_atTime, QNAME_PROVO_InstantaneousEvent);
+    	this.domains.put(QualifiedName_PROVO_atTime, QualifiedName_PROVO_InstantaneousEvent);
     	
-    	this.domains.put(QNAME_PROVO_influencer, QNAME_PROVO_Influence);
-    	this.domains.put(QNAME_PROVO_hadGeneration, QNAME_PROVO_Derivation);
-    	this.domains.put(QNAME_PROVO_hadPlan, QNAME_PROVO_Association);
-    	this.domains.put(QNAME_PROVO_hadUsage, QNAME_PROVO_Derivation);
+    	this.domains.put(QualifiedName_PROVO_influencer, QualifiedName_PROVO_Influence);
+    	this.domains.put(QualifiedName_PROVO_hadGeneration, QualifiedName_PROVO_Derivation);
+    	this.domains.put(QualifiedName_PROVO_hadPlan, QualifiedName_PROVO_Association);
+    	this.domains.put(QualifiedName_PROVO_hadUsage, QualifiedName_PROVO_Derivation);
     	
     	
-    	this.domains.put(QNAME_PROVO_qualifiedInsertion, QNAME_PROVO_Dictionary);
-    	this.domains.put(QNAME_PROVO_derivedByInsertion, QNAME_PROVO_Dictionary);
-    	this.domains.put(QNAME_PROVO_qualifiedRemoval, QNAME_PROVO_Dictionary);
-    	this.domains.put(QNAME_PROVO_derivedByRemoval, QNAME_PROVO_Dictionary);
-    	this.domains.put(QNAME_PROVO_insertedKeyEntityPair, QNAME_PROVO_Insertion);
+    	this.domains.put(QualifiedName_PROVO_qualifiedInsertion, QualifiedName_PROVO_Dictionary);
+    	this.domains.put(QualifiedName_PROVO_derivedByInsertion, QualifiedName_PROVO_Dictionary);
+    	this.domains.put(QualifiedName_PROVO_qualifiedRemoval, QualifiedName_PROVO_Dictionary);
+    	this.domains.put(QualifiedName_PROVO_derivedByRemoval, QualifiedName_PROVO_Dictionary);
+    	this.domains.put(QualifiedName_PROVO_insertedKeyEntityPair, QualifiedName_PROVO_Insertion);
     	
     }
     
     void initAttributeAsResourceTables() {
-        asObjectProperty.add(QNAME_BK_topicIn);
-        asObjectProperty.add(QNAME_PROVO_atLocation);
+        asObjectProperty.add(QualifiedName_BK_topicIn);
+        asObjectProperty.add(QualifiedName_PROVO_atLocation);
     }
 
     void activityInfluence(QualifiedName name) {
-	influencerTable.put(name, QNAME_PROVO_activity);
+	influencerTable.put(name, QualifiedName_PROVO_activity);
     }
 
     void entityInfluence(QualifiedName name) {
-    	influencerTable.put(name, QNAME_PROVO_entity);
+    	influencerTable.put(name, QualifiedName_PROVO_entity);
         }
     void dictionaryInfluence(QualifiedName name) {
-    	influencerTable.put(name, QNAME_PROVO_dictionary);
+    	influencerTable.put(name, QualifiedName_PROVO_dictionary);
         }
 
     void agentInfluence(QualifiedName name) {
-	influencerTable.put(name, QNAME_PROVO_agent);
+	influencerTable.put(name, QualifiedName_PROVO_agent);
     }
     
     
 
-    public QualifiedName convertToRdf(QualifiedName qname) {
-	QualifiedName res = convertTable.get(qname);
+    public QualifiedName convertToRdf(QualifiedName qualifiedName) {
+	QualifiedName res = convertTable.get(qualifiedName);
 	if (res != null)
 	    return res;
-	return qname;
+	return qualifiedName;
     }
     
-    
-    public QualifiedName convertFromRdf(QualifiedName qname) {
-	if (NamespacePrefixMapper.XSD_HASH_NS.equals(qname.getNamespaceURI())) {
-	    return pFactory.newQualifiedName(NamespacePrefixMapper.XSD_NS,
-	                                     qname.getLocalPart(),
-	                                     qname.getPrefix());
-	} else {
-	    return qname;
-	}
-    }
+      
 }

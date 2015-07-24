@@ -1,10 +1,9 @@
 package org.openprovenance.prov.xml;
 
 import java.io.File;
-
-
 import java.io.StringWriter;
 import java.util.Arrays;
+
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -12,6 +11,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.openprovenance.prov.model.DocumentEquality;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.Document;
@@ -50,7 +50,7 @@ public class RoundTripFromXmlTest extends TestCase {
      */
     public RoundTripFromXmlTest(String testName) {
 	super(testName);
-	this.documentEquality = new DocumentEquality(mergeDuplicateProperties());
+	this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),null);
     }
 
     public boolean urlFlag = true;

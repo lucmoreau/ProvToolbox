@@ -99,6 +99,14 @@ public class RoundTripFromJavaTest extends
 		return true;
 	}
 
+	// no support for QUalifiedName in Key
+	public void testDictionaryRemoval5() {}
+	public void testDictionaryMembership4() {}
+	public void testDictionaryInsertion5() {}
+	public void testDictionaryInsertion6() {}
+	public void testDictionaryInsertion7() {}
+
+
 
 	public void testScruffyGeneration2()
 	{

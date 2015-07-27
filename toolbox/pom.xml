@@ -368,7 +368,7 @@
 
   <profiles>
     <profile>
-      <id>linux</id>
+      <id>linux-only</id>
       <activation>
         <os>
           <family>linux</family>
@@ -488,6 +488,20 @@
               </preremoveScriptlet>
             </configuration>
 	  </plugin>
+
+	</plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>unix</id>
+      <activation>
+        <os>
+	  <family>unix</family>
+        </os>
+      </activation>
+      <build>
+	<plugins>
 
 	  <plugin>
 	    <artifactId>jdeb</artifactId>

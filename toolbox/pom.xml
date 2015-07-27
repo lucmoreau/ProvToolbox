@@ -502,8 +502,6 @@
 		<configuration>
 		  <verbose>true</verbose>
 		  <snapshotExpand>true</snapshotExpand>
-		  <!-- expand "SNAPSHOT" to what is in the "USER" env variable -->
-		  <snapshotEnv>USER</snapshotEnv>
 		  <verbose>true</verbose>
 		  <controlDir>${basedir}/src/deb/control</controlDir>
 		  <dataSet>

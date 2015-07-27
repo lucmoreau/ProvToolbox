@@ -253,30 +253,6 @@
 
 
       <!--
-      <plugin>
-	<groupId>com.agiliumlabs.osxappbundle</groupId>
-	<artifactId>osxappbundle-maven-plugin</artifactId>
-	<version>1.0.1</version>
-        <configuration>
-          <mainClass>org.openprovenance.prov.interop.CommandLineArguments</mainClass>
-	  <additionalResources>
-            <fileSet>
-              <directory>${project.build.directory}/classes/</directory>
-              <includes>
-                <include>README-provconvert.txt</include>
-              </includes>
-            </fileSet>
-          </additionalResources>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>bundle</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       -->
 <!--
       <plugin>
@@ -609,6 +585,87 @@
 	</plugins>
       </build>
     </profile>
+
+    <profile>
+      <id>macosx-only</id>
+      <activation>
+        <os>
+	  <name>mac os x</name>
+        </os>
+      </activation>
+      <build>
+	<plugins>
+	  
+<!--	  <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
+            <executions>
+              <execution>
+		<id>run</id>
+		<phase>install</phase>
+		<configuration>
+		  <target>
+                    <property environment="env" />
+
+                    <taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask" classpath="${basedir}/lib/appbundler-1.0.jar" />
+
+                    <mkdir dir="${project.build.directory}/app" />
+                    <bundleapp outputdirectory="${project.build.directory}/app" name="provconvert" displayname="provconvert" identifier="org.openprovenance.prov.toolbox.provconvert" shortversion="${project.version}"
+                               applicationCategory="public.app-category.developer-tools"
+                               mainclassname="org.openprovenance.prov.interop.CommandLineArguments">
+
+
+                      <runtime dir="${env.JAVA_HOME}" />
+
+
+		      <classpath dir="${project.build.directory}/appassembler/repo/" />
+
+
+                      <option value="-Dapple.laf.useScreenMenuBar=true" />
+		      <argument value="-help" /> 
+                    </bundleapp>
+		  </target>
+		</configuration>
+		<goals>
+		  <goal>run</goal>
+		</goals>
+              </execution>
+            </executions>
+	  </plugin>
+-->
+
+<!-- This does not seem to be able to launch Oracle java
+	  <plugin>
+	    <groupId>com.agiliumlabs.osxappbundle</groupId>
+	    <artifactId>osxappbundle-maven-plugin</artifactId>
+	    <version>1.0.1</version>
+            <configuration>
+	      <mainClass>org.openprovenance.prov.interop.CommandLineArguments</mainClass>
+	      <additionalResources>
+		<fileSet>
+		  <directory>${project.build.directory}/classes/</directory>
+		  <includes>
+                    <include>README-provconvert.txt</include>
+		  </includes>
+		</fileSet>
+	      </additionalResources>
+            </configuration>
+            <executions>
+	      <execution>
+		<phase>package</phase>
+		<goals>
+		  <goal>bundle</goal>
+		</goals>
+	      </execution>
+            </executions>
+	  </plugin>
+-->
+
+	</plugins>
+      </build>
+    </profile>
+
   </profiles>
 
 </project>

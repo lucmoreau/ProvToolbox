@@ -188,7 +188,7 @@ public class CommandLineArguments implements ErrorCodes {
     }
 
     
-    static final String toolboxVersion = getPropertiesFromClasspath(fileName)
+    static public final String toolboxVersion = getPropertiesFromClasspath(fileName)
             .getProperty("toolbox.version");
     
 

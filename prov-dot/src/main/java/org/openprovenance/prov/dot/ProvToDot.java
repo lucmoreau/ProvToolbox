@@ -266,7 +266,7 @@ public class ProvToDot {
 			    System.out.println("Error:  " + s_error);
 			}
 			proc.waitFor();
-			System.err.println("exit value " + proc.exitValue());
+			//System.err.println("exit value " + proc.exitValue());
 		} catch (InterruptedException e){};
 }
 

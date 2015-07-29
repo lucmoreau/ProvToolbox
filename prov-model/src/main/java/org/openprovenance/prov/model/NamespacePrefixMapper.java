@@ -21,8 +21,11 @@ public interface NamespacePrefixMapper {
     static final public String RDFS_PREFIX = "rdfs";
     static final public String BOOK_PREFIX = "bk";
     static final public String BOOK_NS = "http://www.provbook.org/ns/#";
-    static final public String TOOLBOX_NS = "http://openprovenance.org/provtoolbox/ns#";
+    static final public String SHARED_PROV_TOOLBOX_PREFIX="http://openprovenance.org/provtoolbox/";
+    static final public String TOOLBOX_NS = SHARED_PROV_TOOLBOX_PREFIX + "ns#";
     static final public String TOOLBOX_PREFIX = "box";
+    static final public String DOT_NS = SHARED_PROV_TOOLBOX_PREFIX + "dot/ns#";
+    static final public String DOT_PREFIX = "dot";
 
 
     /**

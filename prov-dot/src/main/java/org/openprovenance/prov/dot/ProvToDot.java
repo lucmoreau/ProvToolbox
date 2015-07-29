@@ -494,7 +494,7 @@ public class ProvToDot {
     }
 
     public  HashMap<String,String> addColors(HasOther object, HashMap<String,String> properties) {
-        Hashtable<String,List<Other>> table=u.attributesWithNamespace(object,NamespacePrefixMapper.TOOLBOX_NS);
+        Hashtable<String,List<Other>> table=u.attributesWithNamespace(object,NamespacePrefixMapper.DOT_NS);
 
         List<Other> o=table.get("fillcolor");
         if (o!=null && !o.isEmpty()) {
@@ -622,6 +622,12 @@ public class ProvToDot {
 	    }
 	    for (Other prop: ann.getOther()) {
 		
+		if (prop.getElementName().getNamespaceURI().startsWith(NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX)) {
+		    // no need to display this attribute
+		    continue;
+		}
+		
+		/*
 		if ("fillcolor".equals(prop.getElementName().getLocalPart())) {
 		    // no need to display this attribute
 		    continue;
@@ -631,6 +637,11 @@ public class ProvToDot {
 		    // no need to display this attribute
 		    continue;
 		}
+		if ("tooltip".equals(prop.getElementName().getLocalPart())) {
+		    // no need to display this attribute
+		    continue;
+		}
+		*/
 		
 		label=label+"	<TR>\n";
 		label=label+"	    <TD align=\"left\">" + convertProperty((Attribute)prop) + ":</TD>\n";
@@ -647,7 +658,7 @@ public class ProvToDot {
     public int countOthers(HasOther ann) {
 	int count=0;
 	for (Other obj: ann.getOther()) {
-	    if (!(NamespacePrefixMapper.TOOLBOX_NS.equals(obj.getElementName().getNamespaceURI()))) {
+	    if (!(obj.getElementName().getNamespaceURI().startsWith(NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX))) {
 		count++;
 	    }
 	}

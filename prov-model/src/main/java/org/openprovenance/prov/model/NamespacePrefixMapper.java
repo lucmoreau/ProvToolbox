@@ -26,6 +26,8 @@ public interface NamespacePrefixMapper {
     static final public String TOOLBOX_PREFIX = "box";
     static final public String DOT_NS = SHARED_PROV_TOOLBOX_PREFIX + "dot/ns#";
     static final public String DOT_PREFIX = "dot";
+    static final public String SUMMARY_NS = NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX + "summary/ns#";
+    static final public String SUMMARY_PREFIX = "sum";
 
 
     /**

@@ -1,6 +1,5 @@
 package org.openprovenance.prov.dot;
 import java.io.BufferedReader;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -14,8 +13,8 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import org.openprovenance.prov.model.Element;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
-
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Attribute;
@@ -63,7 +62,9 @@ public class ProvToDot {
     public final static String USAGE="prov2dot provFile.xml out.dot out.pdf [configuration.xml]";
 
     ProvUtilities u=new ProvUtilities();
-    ProvFactory of=new ProvFactory();
+    ProvFactory pf=new ProvFactory();
+    
+    QualifiedName SUM_SIZE=pf.newQualifiedName(NamespacePrefixMapper.SUMMARY_NS, "size", NamespacePrefixMapper.SUMMARY_PREFIX); 
 
     public String qualifiedNameToString(QualifiedName qName) {
         return qName.getNamespaceURI()+qName.getLocalPart();
@@ -442,7 +443,7 @@ public class ProvToDot {
     public QualifiedName annotationId(QualifiedName id,String node) {
 	
         if (true || id==null) {
-            return of.newQualifiedName("-","attrs" + node + (annotationCount++),null);
+            return pf.newQualifiedName("-","attrs" + node + (annotationCount++),null);
         } else {
             return id;
         }
@@ -476,7 +477,7 @@ public class ProvToDot {
     }
 
     public HashMap<String,String> addActivityLabel(Activity p, HashMap<String,String> properties) {
-        properties.put("label",processLabel(p));
+        properties.put("label",activityLabel(p) + displaySize(p));
         return properties;
     }
 
@@ -494,32 +495,36 @@ public class ProvToDot {
     }
 
     public  HashMap<String,String> addColors(HasOther object, HashMap<String,String> properties) {
-        Hashtable<String,List<Other>> table=u.attributesWithNamespace(object,NamespacePrefixMapper.DOT_NS);
+	Hashtable<String,List<Other>> table=u.attributesWithNamespace(object,NamespacePrefixMapper.DOT_NS);
 
-        List<Other> o=table.get("fillcolor");
-        if (o!=null && !o.isEmpty()) {
-            properties.put("fillcolor", o.get(0).getValue().toString());
-            properties.put("style", "filled");
-        }
-        o=table.get("color");
-        if (o!=null && !o.isEmpty()) {
-            properties.put("color", o.get(0).getValue().toString());
-        }
-        o=table.get("url");
-        if (o!=null && !o.isEmpty()) {
-            properties.put("URL", o.get(0).getValue().toString());
-        }
-        o=table.get("size");
-        if (o!=null && !o.isEmpty()) {
-            if (object instanceof Influence) {
-        	properties.put("penwidth", o.get(0).getValue().toString());
-            }
-        }
-        o=table.get("tooltip");
-        if (o!=null && !o.isEmpty()) {
-            properties.put("tooltip", o.get(0).getValue().toString());
-        }
-        return properties;
+	List<Other> o=table.get("fillcolor");
+	if (o!=null && !o.isEmpty()) {
+	    properties.put("fillcolor", o.get(0).getValue().toString());
+	    properties.put("style", "filled");
+	}
+	o=table.get("color");
+	if (o!=null && !o.isEmpty()) {
+	    properties.put("color", o.get(0).getValue().toString());
+	}
+	o=table.get("url");
+	if (o!=null && !o.isEmpty()) {
+	    properties.put("URL", o.get(0).getValue().toString());
+	}
+	o=table.get("size");
+	if (o!=null && !o.isEmpty()) {
+	    if (object instanceof Influence) {
+		properties.put("penwidth", o.get(0).getValue().toString());
+	    } else {
+		if (object instanceof Element) {
+		    properties.put("width", "" + Float.valueOf(o.get(0).getValue().toString()) * 0.75);
+		}
+	    }
+	}
+	o=table.get("tooltip");
+	if (o!=null && !o.isEmpty()) {
+	    properties.put("tooltip", o.get(0).getValue().toString());
+	}
+	return properties;
     }
 
 
@@ -554,8 +559,17 @@ public class ProvToDot {
     }
 
     public HashMap<String,String> addEntityLabel(Entity p, HashMap<String,String> properties) {
-        properties.put("label",entityLabel(p));
+        properties.put("label",entityLabel(p) + displaySize(p));
         return properties;
+    }
+
+    public String displaySize(HasOther p) {
+	for (Other o: p.getOther()) {
+	    if (SUM_SIZE.equals(o.getElementName())) {
+		return " (" + o.getConvertedValue() + ")";
+	    }
+	}
+	return null;
     }
 
     public HashMap<String,String> addAgentShape(Agent p, HashMap<String,String> properties) {
@@ -565,7 +579,7 @@ public class ProvToDot {
     }
 
     public HashMap<String,String> addAgentLabel(Agent p, HashMap<String,String> properties) {
-        properties.put("label",agentLabel(p));
+        properties.put("label",agentLabel(p) + displaySize(p));
         return properties;
     }
 
@@ -753,9 +767,9 @@ public class ProvToDot {
     boolean displayAgentValue=false;
     boolean displayAnnotationColor=true;
 
-    public String processLabel(Activity p) {
+    public String activityLabel(Activity p) {
         if (displayActivityValue) {
-            return convertActivityName(""+of.getLabel(p));
+            return convertActivityName(""+pf.getLabel(p));
         } else {
             return localnameToString(p.getId());
         }
@@ -783,7 +797,7 @@ public class ProvToDot {
         
     public String entityLabel(Entity p) {
         if (displayEntityValue) {
-            return convertEntityName(""+of.getLabel(p));
+            return convertEntityName(""+pf.getLabel(p));
         } else {
             return localnameToString(p.getId());
         }
@@ -818,7 +832,7 @@ public class ProvToDot {
 
     public String agentLabel(Agent p) {
         if (displayAgentValue) {
-            return convertAgentName(""+of.getLabel(p));
+            return convertAgentName(""+pf.getLabel(p));
         } else {
             return localnameToString(p.getId());
         }
@@ -1012,11 +1026,11 @@ public class ProvToDot {
         String label=null;
         if (!(e0 instanceof Influence)) return;
         Influence e=(Influence)e0;
-        List<Type> type=of.getType(e);
+        List<Type> type=pf.getType(e);
         if ((type!=null) && (!type.isEmpty())) {
             label=type.get(0).getValue().toString();
         } else if (getRelationPrintRole(e)) {
-            String role=of.getRole(e);
+            String role=pf.getRole(e);
             if (role!=null) {
                 label=displayRole(role);
                 properties.put("fontsize","8");

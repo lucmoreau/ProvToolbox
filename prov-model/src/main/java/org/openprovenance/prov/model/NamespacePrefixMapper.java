@@ -1,5 +1,6 @@
 package org.openprovenance.prov.model;
 
+
 /** Namespace and prefix declarations for common namespaces manipulated by ProvToolbox. API to
  *  Sun's NamespacePrefixMapper  
  * @author lavm
@@ -20,8 +21,9 @@ public interface NamespacePrefixMapper {
     static final public String RDFS_PREFIX = "rdfs";
     static final public String BOOK_PREFIX = "bk";
     static final public String BOOK_NS = "http://www.provbook.org/ns/#";
-    static final public String TOOLBOX_NS = "http://openprovenance.org/toolbox/";
+    static final public String TOOLBOX_NS = "http://openprovenance.org/provtoolbox/ns#";
     static final public String TOOLBOX_PREFIX = "box";
+
 
     /**
      * Returns a preferred prefix for the given namespace URI.

@@ -1,5 +1,6 @@
 package org.openprovenance.prov.dot;
 import java.io.BufferedReader;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -12,6 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
+
+import org.openprovenance.prov.model.NamespacePrefixMapper;
 
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
@@ -53,7 +56,6 @@ import org.openprovenance.prov.model.WasStartedBy;
 
 /** Serialisation of  Prov representation to DOT format. */
 public class ProvToDot {
-    private static final String TOOLBOX_DOT_NS = "http://openprovenance.org/Toolbox/dot#";
     public final static String DEFAULT_CONFIGURATION_FILE="defaultConfig.xml";
     public final static String DEFAULT_CONFIGURATION_FILE_WITH_ROLE="defaultConfigWithRole.xml";
     public final static String DEFAULT_CONFIGURATION_FILE_WITH_ROLE_NO_LABEL="defaultConfigWithRoleNoLabel.xml";
@@ -492,7 +494,7 @@ public class ProvToDot {
     }
 
     public  HashMap<String,String> addColors(HasOther object, HashMap<String,String> properties) {
-        Hashtable<String,List<Other>> table=u.attributesWithNamespace(object,TOOLBOX_DOT_NS);
+        Hashtable<String,List<Other>> table=u.attributesWithNamespace(object,NamespacePrefixMapper.TOOLBOX_NS);
 
         List<Other> o=table.get("fillcolor");
         if (o!=null && !o.isEmpty()) {
@@ -645,7 +647,7 @@ public class ProvToDot {
     public int countOthers(HasOther ann) {
 	int count=0;
 	for (Other obj: ann.getOther()) {
-	    if (!(TOOLBOX_DOT_NS.equals(obj.getElementName().getNamespaceURI()))) {
+	    if (!(NamespacePrefixMapper.TOOLBOX_NS.equals(obj.getElementName().getNamespaceURI()))) {
 		count++;
 	    }
 	}

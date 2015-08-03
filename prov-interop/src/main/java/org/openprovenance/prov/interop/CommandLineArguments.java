@@ -13,7 +13,6 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
-import org.openrdf.query.algebra.Exists;
 
 public class CommandLineArguments implements ErrorCodes {
 	
@@ -172,10 +171,9 @@ public class CommandLineArguments implements ErrorCodes {
     
     private static String fileName = "config.properties";
     
-    private static Properties getPropertiesFromClasspath(String propFileName) {
+    public static Properties getPropertiesFromClasspath(@SuppressWarnings("rawtypes") Class clazz, String propFileName) {
         Properties props = new Properties();
-        InputStream inputStream = CommandLineArguments.class.getClassLoader()
-                .getResourceAsStream(propFileName);
+        InputStream inputStream = clazz.getResourceAsStream(propFileName);
         if (inputStream == null) {
             return null;
         }
@@ -187,9 +185,16 @@ public class CommandLineArguments implements ErrorCodes {
         return props;
     }
 
+    public static Properties getPropertiesFromClasspath(String propFileName) {
+        return getPropertiesFromClasspath(CommandLineArguments.class, propFileName);
+    }
+
     
     static public final String toolboxVersion = getPropertiesFromClasspath(fileName)
             .getProperty("toolbox.version");
+    
+    static public final String longToolboxVersion = toolboxVersion + " (" + 
+            getPropertiesFromClasspath(fileName).getProperty("timestamp") + ")";
     
 
 
@@ -255,7 +260,7 @@ public class CommandLineArguments implements ErrorCodes {
             }
 
             if (version!=null) {
-            	System.out.println("provconvert version " + toolboxVersion);
+            	System.out.println("provconvert version " + longToolboxVersion);
             	return;
             }
 	    

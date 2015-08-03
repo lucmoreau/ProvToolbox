@@ -516,7 +516,7 @@ public class ProvToDot {
 		properties.put("penwidth", o.get(0).getValue().toString());
 	    } else {
 		if (object instanceof Element) {
-		    properties.put("width", "" + Float.valueOf(o.get(0).getValue().toString()) * 0.75);
+		    properties.put("width", "" + Double.valueOf(o.get(0).getValue().toString()) * 0.75);
 		}
 	    }
 	}

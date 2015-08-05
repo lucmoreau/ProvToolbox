@@ -569,7 +569,7 @@ public class ProvToDot {
 		return " (" + o.getConvertedValue() + ")";
 	    }
 	}
-	return null;
+	return "";
     }
 
     public HashMap<String,String> addAgentShape(Agent p, HashMap<String,String> properties) {

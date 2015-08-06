@@ -60,6 +60,7 @@ public class ProvToDot {
     public final static String DEFAULT_CONFIGURATION_FILE_WITH_ROLE_NO_LABEL="defaultConfigWithRoleNoLabel.xml";
 
     public final static String USAGE="prov2dot provFile.xml out.dot out.pdf [configuration.xml]";
+    public int MAX_TOOLTIP_LENGTH = 2000;
 
     ProvUtilities u=new ProvUtilities();
     ProvFactory pf=new ProvFactory();
@@ -513,7 +514,8 @@ public class ProvToDot {
 	o=table.get("size");
 	if (o!=null && !o.isEmpty()) {
 	    if (object instanceof Influence) {
-		properties.put("penwidth", o.get(0).getValue().toString());
+		String val=o.get(0).getValue().toString();
+		properties.put("penwidth", val);
 	    } else {
 		if (object instanceof Element) {
 		    properties.put("width", "" + Double.valueOf(o.get(0).getValue().toString()) * 0.75);
@@ -522,7 +524,11 @@ public class ProvToDot {
 	}
 	o=table.get("tooltip");
 	if (o!=null && !o.isEmpty()) {
-	    properties.put("tooltip", o.get(0).getValue().toString());
+	    String val=o.get(0).getValue().toString();
+	    if (val.length()>MAX_TOOLTIP_LENGTH) {
+		val=val.substring(0,Integer.min(val.length(), MAX_TOOLTIP_LENGTH))+" ...";
+	    }
+	    properties.put("tooltip", val);
 	}
 	return properties;
     }

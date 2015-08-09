@@ -526,7 +526,7 @@ public class ProvToDot {
 	if (o!=null && !o.isEmpty()) {
 	    String val=o.get(0).getValue().toString();
 	    if (val.length()>MAX_TOOLTIP_LENGTH) {
-		val=val.substring(0,Integer.min(val.length(), MAX_TOOLTIP_LENGTH))+" ...";
+		val=val.substring(0,Math.min(val.length(), MAX_TOOLTIP_LENGTH))+" ...";
 	    }
 	    properties.put("tooltip", val);
 	}

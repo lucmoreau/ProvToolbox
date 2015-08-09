@@ -16,7 +16,6 @@ import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.Identifiable;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Other;
-import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;

@@ -316,7 +316,7 @@
     <maven.jaxb.plugin.version>0.8.2</maven.jaxb.plugin.version>
 
     <!-- hibernate -->
-    <hibernate.version>4.3.8.Final</hibernate.version>
+    <hibernate.version>4.3.10.Final</hibernate.version>
     <hibernate3.plugin.version>3.0</hibernate3.plugin.version>
 
     <!-- hsqldb -->

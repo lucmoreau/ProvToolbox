@@ -130,7 +130,7 @@ public class QualifiedName
     	if (target!=null) {
     		javax.xml.namespace.QName qname=javax.xml.namespace.QName.valueOf(target);
     		setNamespaceURI(qname.getNamespaceURI());
-    		setLocalPart(qname.getLocalPart());
+    		setLocalPart(qnU.escapeProvLocalName(qnU.unescapeFromXsdLocalName(qname.getLocalPart())));
     		setPrefix(qname.getPrefix());
     	}
     }

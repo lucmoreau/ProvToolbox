@@ -22,7 +22,8 @@ public class IDRefAdapter extends XmlAdapter<IDRef, org.openprovenance.prov.mode
             return null;
         } else {
             javax.xml.namespace.QName q=  ref.getRef();
-            QualifiedName qq=new QualifiedName(q.getNamespaceURI(), q.getLocalPart(), q.getPrefix());
+	    //            QualifiedName qq=new QualifiedName(q.getNamespaceURI(), q.getLocalPart(), q.getPrefix());
+	    QualifiedName qq=new QualifiedName(q);
             return qq;
         }
     }

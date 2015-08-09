@@ -1,0 +1,7 @@
+Package: provconvert
+Version: [[version]]
+Section: Application/Provenance
+Priority: low
+Architecture: all
+Description: [[description]]
+Maintainer: LucMoreau

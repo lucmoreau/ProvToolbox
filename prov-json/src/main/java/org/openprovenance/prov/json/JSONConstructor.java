@@ -217,7 +217,7 @@ public class JSONConstructor implements ModelConstructor {
             String lang = iStr.getLang();
             if (lang != null) {
                 // If 'lang' is defined
-                result = typedLiteral(iStr.getValue(), "prov:InternationalizedString", lang);
+                result = typedLiteral(iStr.getValue(), null, lang);
             }
             else {
                 // Otherwise, just return the string

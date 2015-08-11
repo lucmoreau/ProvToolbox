@@ -30,7 +30,7 @@ $(TEST_TTLS): %.ttl: %.provn
 	-$(PROVCONVERT) -infile $< -outfile $@
 $(TEST_TRIGS): %.trig: %.provn
 	-$(PROVCONVERT) -infile $< -outfile $@
-$(TEST_PROX): %.provx: %.provn
+$(TEST_PROVX): %.provx: %.provn
 	-$(PROVCONVERT) -infile $< -outfile $@
 
 $(TEST_PROVNS):
@@ -45,6 +45,7 @@ testcases:
 	$(MAKE) testcases.files.ttl
 	$(MAKE) testcases.files.trig
 	$(MAKE) testcases.files.provx
+	tar zcvf target/ssi-testcases.tar.gz target/testcases
 
 testcases.files.json: $(TEST_JSONS)
 

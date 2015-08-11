@@ -38,8 +38,8 @@ $(TEST_PROVNS):
 
 
 testcases:
-	rm -r -f target/testcases;
-	mkdir target/testcases
+	rm -r -f target/testcases
+	mkdir -p target/testcases
 	mkdir $(TEST_DIRS)
 	$(MAKE) testcases.files.json
 	$(MAKE) testcases.files.ttl

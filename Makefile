@@ -25,13 +25,13 @@ TEST_PROVXS=$(addsuffix .provx, $(join $(addsuffix /, $(TEST_DIRS)) , $(PROVNS))
 	provconvert -infile $< -outfile $<.json
 
 $(TEST_JSONS): %.json: %.provn
-	$(PROVCONVERT) -infile $< -outfile $@
+	-$(PROVCONVERT) -infile $< -outfile $@
 $(TEST_TTLS): %.ttl: %.provn
-	$(PROVCONVERT) -infile $< -outfile $@
+	-$(PROVCONVERT) -infile $< -outfile $@
 $(TEST_TRIGS): %.trig: %.provn
-	$(PROVCONVERT) -infile $< -outfile $@
+	-$(PROVCONVERT) -infile $< -outfile $@
 $(TEST_PROX): %.provx: %.provn
-	$(PROVCONVERT) -infile $< -outfile $@
+	-$(PROVCONVERT) -infile $< -outfile $@
 
 $(TEST_PROVNS):
 	cp prov-n/target/$(notdir $@) $@
@@ -42,6 +42,9 @@ testcases:
 	mkdir target/testcases
 	mkdir $(TEST_DIRS)
 	$(MAKE) testcases.files.json
+	$(MAKE) testcases.files.ttl
+	$(MAKE) testcases.files.trig
+	$(MAKE) testcases.files.provx
 
 testcases.files.json: $(TEST_JSONS)
 

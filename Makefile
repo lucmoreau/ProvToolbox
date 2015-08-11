@@ -30,7 +30,7 @@ $(TEST_TTLS): %.ttl: %.provn
 	-$(PROVCONVERT) -infile $< -outfile $@
 $(TEST_TRIGS): %.trig: %.provn
 	-$(PROVCONVERT) -infile $< -outfile $@
-$(TEST_PROVX): %.provx: %.provn
+$(TEST_PROVXS): %.provx: %.provn
 	-$(PROVCONVERT) -infile $< -outfile $@
 
 $(TEST_PROVNS):
@@ -53,6 +53,6 @@ testcases.files.ttl: $(TEST_TTLS)
 
 testcases.files.trig: $(TEST_TRIGS)
 
-testcases.files.prox: $(TEST_PROVX)
+testcases.files.provx: $(TEST_PROVXS)
 
 

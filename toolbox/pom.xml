@@ -424,7 +424,7 @@
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
-		<id>IzPack-Platform-Executable</id>
+		<id>IzPack-Mac-Executable</id>
 		<phase>install</phase>
 		<configuration>
 		  <tasks>
@@ -444,7 +444,9 @@
 		<goals>
 		  <goal>run</goal>
 		</goals>
-              </execution>
+              </execution> 
+
+
             </executions>
 	  </plugin>
 	</plugins>

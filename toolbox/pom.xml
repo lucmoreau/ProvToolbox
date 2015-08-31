@@ -481,12 +481,24 @@
 		<phase>install</phase>
 		<configuration>
 		  <tasks>
-                    <exec executable="python" dir="${project.build.directory}">
+		    <exec executable="chmod" dir="${izpack.staging}/utils/wrappers/izpack2exe/">
+  	              <arg value="a+x" />
+  	              <arg value="7za" />
+                    </exec>
+
+		    <exec executable="chmod" dir="${izpack.staging}/utils/wrappers/izpack2exe/">
+  	              <arg value="a+x" />
+  	              <arg value="upx" />
+                    </exec>
+
+                    <exec executable="python" dir="${izpack.staging}/utils/wrappers/izpack2exe/">
                       <arg value="${izpack.staging}/utils/wrappers/izpack2exe/izpack2exe.py" />
                       <arg value="--file" />
-                      <arg value="${project.build.finalName}.jar" />
+                      <arg value="${project.build.directory}/${project.build.finalName}.jar" />
+		      <arg value="--with-7z=7za" />
+		      <arg value="--no-upx" />
                       <arg value="--output" />
-                      <arg value="provconvert-Installer.exe" />
+                      <arg value="${project.build.directory}/provconvert-Installer.exe" />
                     </exec>
 		    
 		  </tasks>

@@ -292,6 +292,33 @@
       </plugin>
 
       <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.7</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <!-- here the phase you need -->
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${izpack.staging}</outputDirectory>
+              <resources>          
+                <resource>
+                  <directory>${basedir}/src/izpack</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+	      <filters>
+		<filter>${basedir}/../prov-interop/target/classes/org/openprovenance/prov/interop/config.properties</filter>
+	      </filters>
+            </configuration>            
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
 	<artifactId>maven-antrun-plugin</artifactId>
 	<executions>
           <execution>
@@ -302,9 +329,10 @@
             </goals>
             <configuration>
               <tasks>
-		<copy todir="${izpack.staging}">
+		<!--<copy todir="${izpack.staging}">
                   <fileset dir="${basedir}/src/izpack"/>
 		</copy>
+		-->
 		<copy file="${basedir}/../license.txt" tofile="${izpack.staging}/license.txt">
 		</copy>
 		<copy file="${project.build.directory}/provconvert.txt" tofile="${izpack.staging}/Readme.txt">

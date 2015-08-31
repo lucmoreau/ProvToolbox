@@ -34,10 +34,10 @@
   <variables>
     <variable name="InstallerFrame.logfilePath" value="Default"/>
     <variable name="WELCOME_TEXT" value="provconvert installer"/>
-    <variable name="WELCOME_VERSION" value="Version: $APP_VER"/>
+    <variable name="WELCOME_VERSION" value="Version: ${project.version}"/>
     <variable name="TargetPanel.dir.windows" value="/usr/local/provconvert"/>
-    <variable name="TargetPanel.dir.unix" value="/usr/local/provconvert"/>
-    <variable name="TargetPanel.dir.macosx" value="/usr/local/provconvert"/>
+    <variable name="TargetPanel.dir.unix" value="/Applications/provconvert"/>
+    <variable name="TargetPanel.dir.macosx" value="/Applications/provconvert"/>
   </variables>
   <!-- pull in the built jar file for our custom panel 
   <jar src="custom/izpack-panels.jar" stage="both"/>-->

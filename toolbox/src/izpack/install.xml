@@ -7,7 +7,7 @@
       <author name="Luc Moreau" email="l.moreau@ecs.soton.ac.uk"/>
     </authors>
   </info>
-  <guiprefs height="400" resizable="no" width="640">
+  <guiprefs height="400" resizable="no" width="700">
     <modifier key="useButtonIcons" value="yes"/>
     <modifier key="useLabelIcons" value="no"/>
     <modifier key="labelGap" value="2"/>
@@ -28,7 +28,7 @@
     <res id="InfoPanel.info" src="Readme.txt"/>
     <res id="HTMLHelloPanel.welcome" src="welcome.html"/>
     <res id="HTMLInfoPanel.welcome" src="welcome.html"/>
-    <res id="IZPackLogo" src="izpack-logo-medium.png"/>
+    <res id="PROV-Primer" src="primer-part.png"/>
     <res id="Installer.image" src="graph1447.png"/>
   </resources>
 
@@ -39,16 +39,14 @@
     <variable name="TargetPanel.dir.windows" value="/usr/local/provconvert"/>
     <variable name="TargetPanel.dir.unix" value="/Applications/provconvert"/>
     <variable name="TargetPanel.dir.macosx" value="/Applications/provconvert"/>
+    <variable name="installer.madewith" value="NONE"/>
   </variables>
 
   <!-- pull in the built jar file for our custom panel 
   <jar src="custom/izpack-panels.jar" stage="both"/>-->
 
   <panels>
-    <!-- FIXME why doesn't HTMLHelloPanel work any more?  it is nice not to have the "Please read the following information" text ... -->
-    <panel classname="HTMLInfoPanel" id="welcome"/>
-    <!-- this is our custom panel, loaded from the izpack-panels.jar file 
-    <panel classname="com.izforge.izpack.panels.mypanels.MyHelloPanel" id="myHello"/>-->
+    <panel classname="HTMLHelloPanel" id="welcome"/>
     <panel classname="TargetPanel" id="install_dir"/>
     <panel classname="PacksPanel" id="sdk_pack_select"/>
     <panel classname="InstallPanel" id="install"/>

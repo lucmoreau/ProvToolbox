@@ -124,29 +124,6 @@
           </execution>
         </executions>
       </plugin>
-<!-- 
- 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-dependencies</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <includeArtifactIds>opm-xml</includeArtifactIds>
-              <outputDirectory>${project.build.directory}/appassembler/repo/org/openprovenance/opm-xml/${project.version}</outputDirectory>
-              <overWriteReleases>true</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-              <excludeTransitive>true</excludeTransitive>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
--->
 
 
       <plugin>
@@ -333,9 +310,11 @@
                   <fileset dir="${basedir}/src/izpack"/>
 		</copy>
 		-->
-		<copy file="${basedir}/../license.txt" tofile="${izpack.staging}/license.txt">
+		<copy file="${basedir}/../license.txt"
+		      tofile="${izpack.staging}/license.txt">
 		</copy>
-		<copy file="${project.build.directory}/provconvert.txt" tofile="${izpack.staging}/Readme.txt">
+		<copy file="${project.build.directory}/provconvert.txt" 
+		      tofile="${izpack.staging}/Readme.txt">
 		</copy>
 		<copy todir="${izpack.staging}">
                   <fileset dir="${project.build.directory}/appassembler"/>
@@ -373,52 +352,6 @@
 
 
 
-      <!--
-      -->
-<!--
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.7</version>
-        <executions>
-          <execution>
-            <id>run</id>
-            <phase>install</phase>
-            <configuration>
-              <target>
-                <property environment="env" />
-
-                <taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask" classpath="${basedir}/lib/appbundler-1.0.jar" />
-
-                <mkdir dir="${project.build.directory}/app" />
-                <bundleapp outputdirectory="${project.build.directory}/app" name="provconvert" displayname="provconvert" identifier="org.openprovenance.prov.toolbox.provconvert" shortversion="${project.version}" applicationCategory="public.app-category.developer-tools" mainclassname="org.openprovenance.prov.interop.CommandLineArguments">
-
-		  //                    icon="${basedir}/../logo/logo.icns" //
-
-                  // TODO this is a bit big :) //
-		  //
-                      <runtime dir="${env.JAVA_HOME}" />
-		  //
-		  //
-                      <runtime dir="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin" />
-		  //
-                  // <classpath file="${project.build.directory}/${project.artifactId}-${project.version}.jar" /> //
-		  <classpath dir="${project.build.directory}/appassembler/repo/" />
-		  // <classpath dir="${project.build.directory}/${project.artifactId}-${project.version}/PROV Toolbox.app/Contents/Resources/Java/" /> //
-                  <option value="-Dapple.laf.useScreenMenuBar=true" />
-		  // <argument value="-help" /> //
-                </bundleapp>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
--->
-
-
     </plugins>
    
     <testResources>
@@ -447,15 +380,23 @@
       </activation>
       <build>
 	<plugins>
+
 	  <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
-		<id>IzPack-Mac-Executable</id>
+		<id>IzPack-Mac-Executable-From-UNIX</id>
 		<phase>install</phase>
+		<goals>
+		  <goal>run</goal>
+		</goals>
 		<configuration>
 		  <tasks>
+		    <exec executable="touch" dir="${izpack.staging}/utils/wrappers/izpack2app/">
+  	              <arg value="Mac-App-Template" />
+                    </exec>
+
                     <exec executable="python" dir="${project.build.directory}">
                       <arg value="${izpack.staging}/utils/wrappers/izpack2app/izpack2app.py" />
                       <arg value="${project.build.finalName}.jar" />
@@ -466,21 +407,39 @@
   	              <arg value="a+x" />
   	              <arg value="JavaApplicationStub" />
                     </exec>
-		    
 		  </tasks>
 		</configuration>
-		<goals>
-		  <goal>run</goal>
-		</goals>
               </execution> 
 
+            </executions>
+	  </plugin>
 
+
+
+	</plugins>
+      </build>
+    </profile>
+
+
+    <profile>
+      <id>linux-only</id>
+      <activation>
+        <os>
+          <family>linux</family>
+        </os>
+      </activation>
+      <build>
+	<plugins>
+	  <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
 
               <execution>
-		<id>IzPack-Win-Executable</id>
+		<id>IzPack-Win-Executable-From-Linux</id>
 		<phase>install</phase>
 		<configuration>
-		  <tasks>
+		  <tasks> 
 		    <exec executable="chmod" dir="${izpack.staging}/utils/wrappers/izpack2exe/">
   	              <arg value="a+x" />
   	              <arg value="7za" />
@@ -490,6 +449,7 @@
   	              <arg value="a+x" />
   	              <arg value="upx" />
                     </exec>
+
 
                     <exec executable="python" dir="${izpack.staging}/utils/wrappers/izpack2exe/">
                       <arg value="${izpack.staging}/utils/wrappers/izpack2exe/izpack2exe.py" />
@@ -511,20 +471,7 @@
 
             </executions>
 	  </plugin>
-	</plugins>
-      </build>
-    </profile>
 
-
-    <profile>
-      <id>linux-only</id>
-      <activation>
-        <os>
-          <family>linux</family>
-        </os>
-      </activation>
-      <build>
-	<plugins>
 	  <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>rpm-maven-plugin</artifactId>
@@ -594,23 +541,6 @@
 		  </sources>
 		</mapping>
 
-
-		<!--
-		    <mapping>
-		    <directory>/usr/local/lib/something</directory>
-		    <filemode>750</filemode>
-		    <username>dumper</username>
-		    <groupname>dumpgroup</groupname>
-		    <dependency>
-                    <includes>
-                    <include>jmock:jmock</include>
-                    <include>javax.servlet:servlet-api:2.4</include>
-                    </includes>
-                    <excludes>
-                    <exclude>junit:junit</exclude>
-                    </excludes>
-		    </dependency>
-		    </mapping> -->
 		<mapping>
 		  <directory>/usr/local/bin</directory>
 		  <filemode>750</filemode>
@@ -734,22 +664,6 @@
 			<group>root</group>
 		      </mapper>
 		      </data>
-		      <!--
-		    <data>
-		      <type>template</type>
-		      <paths>
-			<path>etc/${project.artifactId}</path>
-			<path>var/lib/${project.artifactId}</path>
-			<path>var/log/${project.artifactId}</path>
-			<path>var/run/${project.artifactId}</path>
-		      </paths>
-		      <mapper>
-			<type>perm</type>
-			<user>loader</user>
-			<group>loader</group>
-		      </mapper>
-		      </data>
-		      -->
 		  </dataSet>
 		</configuration>
 	      </execution>
@@ -769,69 +683,49 @@
       <build>
 	<plugins>
 	  
-<!--	  <plugin>
+
+	  <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.7</version>
             <executions>
+
               <execution>
-		<id>run</id>
+		<id>IzPack-Win-Executable-From-Mac</id>
 		<phase>install</phase>
 		<configuration>
-		  <target>
-                    <property environment="env" />
+		  <tasks> 
+		    <exec executable="rm" dir="${izpack.staging}/utils/wrappers/izpack2exe/">
+  	              <arg value="7za" />
+                    </exec>
 
-                    <taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask" classpath="${basedir}/lib/appbundler-1.0.jar" />
-
-                    <mkdir dir="${project.build.directory}/app" />
-                    <bundleapp outputdirectory="${project.build.directory}/app" name="provconvert" displayname="provconvert" identifier="org.openprovenance.prov.toolbox.provconvert" shortversion="${project.version}" applicationCategory="public.app-category.developer-tools" mainclassname="org.openprovenance.prov.interop.CommandLineArguments">
-
-
-                      <runtime dir="${env.JAVA_HOME}" />
-
-
-		      <classpath dir="${project.build.directory}/appassembler/repo/" />
+		    <exec executable="ln" dir="${izpack.staging}/utils/wrappers/izpack2exe/">
+  	              <arg value="-s" />
+  	              <arg value="/Applications/7zX.app/Contents/Resources/7za" />
+  	              <arg value="7za" />
+                    </exec>
 
 
-                      <option value="-Dapple.laf.useScreenMenuBar=true" />
-		      <argument value="-help" /> 
-                    </bundleapp>
-		  </target>
+                    <exec executable="python" dir="${izpack.staging}/utils/wrappers/izpack2exe/">
+                      <arg value="${izpack.staging}/utils/wrappers/izpack2exe/izpack2exe.py" />
+                      <arg value="--file" />
+                      <arg value="${project.build.directory}/${project.build.finalName}.jar" />
+		      <arg value="--with-7z=7za" />
+		      <arg value="--no-upx" />
+                      <arg value="--output" />
+                      <arg value="${project.build.directory}/provconvert-Installer.exe" />
+                    </exec>
+		    
+		  </tasks>
 		</configuration>
 		<goals>
 		  <goal>run</goal>
 		</goals>
-              </execution>
-            </executions>
-	  </plugin>
--->
+              </execution> 
 
-<!-- This does not seem to be able to launch Oracle java
-	  <plugin>
-	    <groupId>com.agiliumlabs.osxappbundle</groupId>
-	    <artifactId>osxappbundle-maven-plugin</artifactId>
-	    <version>1.0.1</version>
-            <configuration>
-	      <mainClass>org.openprovenance.prov.interop.CommandLineArguments</mainClass>
-	      <additionalResources>
-		<fileSet>
-		  <directory>${project.build.directory}/classes/</directory>
-		  <includes>
-                    <include>README-provconvert.txt</include>
-		  </includes>
-		</fileSet>
-	      </additionalResources>
-            </configuration>
-            <executions>
-	      <execution>
-		<phase>package</phase>
-		<goals>
-		  <goal>bundle</goal>
-		</goals>
-	      </execution>
+
             </executions>
 	  </plugin>
--->
+
 
 	</plugins>
       </build>

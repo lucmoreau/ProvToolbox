@@ -31,6 +31,7 @@
     <res id="IZPackLogo" src="izpack-logo-medium.png"/>
     <res id="Installer.image" src="graph1447.png"/>
   </resources>
+
   <variables>
     <variable name="InstallerFrame.logfilePath" value="Default"/>
     <variable name="WELCOME_TEXT" value="provconvert installer"/>
@@ -39,8 +40,10 @@
     <variable name="TargetPanel.dir.unix" value="/Applications/provconvert"/>
     <variable name="TargetPanel.dir.macosx" value="/Applications/provconvert"/>
   </variables>
+
   <!-- pull in the built jar file for our custom panel 
   <jar src="custom/izpack-panels.jar" stage="both"/>-->
+
   <panels>
     <!-- FIXME why doesn't HTMLHelloPanel work any more?  it is nice not to have the "Please read the following information" text ... -->
     <panel classname="HTMLInfoPanel" id="welcome"/>
@@ -51,19 +54,31 @@
     <panel classname="InstallPanel" id="install"/>
     <panel classname="FinishPanel" id="finish"/>
   </panels>
+
   <packs>
     <pack name="provconvert-libs" preselected="yes" required="yes">
-      <description>provconvert jar dependencies.</description>
+      <description>provconvert jar dependencies</description>
+      
       <fileset dir="repo" targetdir="$INSTALL_PATH/repo"/>
     </pack>
+
     <pack name="provconvert-exec" preselected="yes" required="yes">
-      <description>provconvert binary.</description>
+      <description>provconvert binary</description>
+      
       <fileset dir="bin" targetdir="$INSTALL_PATH/bin"/>
+      
       <executable targetfile="$INSTALL_PATH/bin/provconvert"
 		  stage="never"
 		  keep="true">
+	<os family="unix"/>
       </executable>
-
+      
+      <executable targetfile="$INSTALL_PATH/bin/provconvert.bat"
+		  stage="never"
+		  keep="true">
+	<os family="windows"/>
+      </executable>
+      
       <executable targetfile="/bin/ln"
 		  stage="postinstall"
 		  keep="true">
@@ -72,7 +87,18 @@
           <arg value="$INSTALL_PATH/bin/provconvert"/>
           <arg value="/usr/local/bin/provconvert"/>
         </args>
+	<os family="unix"/>
       </executable>
+
+      <executable keep="true" failure="ask" stage="uninstall" targetfile="/bin/rm">
+        <args>
+          <arg value="-f"/>
+          <arg value="/usr/local/bin/provconvert"/>
+        </args>
+        <os family="unix"/>
+      </executable>
+      
+      
     </pack>
   </packs>
 </installation>

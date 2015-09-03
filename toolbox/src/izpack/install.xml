@@ -81,7 +81,8 @@
       
       <executable targetfile="/bin/ln"
 		  stage="postinstall"
-		  keep="true">
+		  keep="true"
+		  failure="warn">
         <args>
           <arg value="-s"/>
           <arg value="$INSTALL_PATH/bin/provconvert"/>
@@ -92,7 +93,8 @@
 
       <executable targetfile="/usr/bin/ln"
 		  stage="postinstall"
-		  keep="true">
+		  keep="true"
+		  failure="warn">
         <args>
           <arg value="-s"/>
           <arg value="$INSTALL_PATH/bin/provconvert"/>

@@ -30,6 +30,7 @@
     <res id="HTMLInfoPanel.welcome" src="welcome.html"/>
     <res id="PROV-Primer" src="primer-part.png"/>
     <res id="Installer.image" src="provconvert-logo.png"/>
+    <res id="SW-PROV-BLUE" src="sw-prov-blue.png"/>
   </resources>
 
   <variables>

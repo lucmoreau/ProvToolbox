@@ -5,15 +5,22 @@
        viewBox = "0 0 800 300" 
       version="1.1">
   <style type="text/css">
-.activity { 
-    fill: #9FB1FC;
-    stroke: #0000ff;
-    stroke-width: 2.5;
+.frame {
+    fill: #ffffff;
+    stroke: #ffffff;
+    stroke-width: 0.0;
 }
+
 .bundle {
     fill: #ffffff;
     stroke: #000000;
     stroke-width: 1.0;
+}
+
+.activity { 
+    fill: #9FB1FC;
+    stroke: #0000ff;
+    stroke-width: 2.5;
 }
 
 .entity { 
@@ -28,11 +35,7 @@
     stroke: #000000;
     stroke-width: 1.5;
 }
-.qualified { 
-    fill: #c6e9af;
-    stroke: #000000;
-    stroke-width: 1;
-}
+
 .arrow {
     stroke:rgb(0,0,0);
     stroke-width:1;
@@ -61,12 +64,18 @@
 
     <rect id="bundle" width="160" height="150" class="bundle"/>
 
+    <rect id="frame" width="170" height="300" class="frame"/>
+
   </defs>
+
+  <g>
+    <use xlink:href="#frame" x="5" y="0"/>
+  </g>
+
 
   <g>
     <use xlink:href="#bundle" x="10" y="5"/>
   </g>
-
 
   <g>
     <polygon points="60,40 60,75 155,75 155,40 105,17 60,40"

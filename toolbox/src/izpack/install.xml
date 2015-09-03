@@ -87,7 +87,18 @@
           <arg value="$INSTALL_PATH/bin/provconvert"/>
           <arg value="/usr/local/bin/provconvert"/>
         </args>
-	<os family="unix"/>
+	<os family="mac"/>
+      </executable>
+
+      <executable targetfile="/usr/bin/ln"
+		  stage="postinstall"
+		  keep="true">
+        <args>
+          <arg value="-s"/>
+          <arg value="$INSTALL_PATH/bin/provconvert"/>
+          <arg value="/usr/local/bin/provconvert"/>
+        </args>
+	<os family="linux"/>
       </executable>
 
       <executable keep="true" failure="ask" stage="uninstall" targetfile="/bin/rm">

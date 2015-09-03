@@ -29,7 +29,7 @@
     <res id="HTMLHelloPanel.welcome" src="welcome.html"/>
     <res id="HTMLInfoPanel.welcome" src="welcome.html"/>
     <res id="PROV-Primer" src="primer-part.png"/>
-    <res id="Installer.image" src="graph1447.png"/>
+    <res id="Installer.image" src="provconvert-logo.png"/>
   </resources>
 
   <variables>
@@ -47,6 +47,7 @@
 
   <panels>
     <panel classname="HTMLHelloPanel" id="welcome"/>
+<!--    <panel classname="LicencePanel" id="license"/> -->
     <panel classname="TargetPanel" id="install_dir"/>
     <panel classname="PacksPanel" id="sdk_pack_select"/>
     <panel classname="InstallPanel" id="install"/>

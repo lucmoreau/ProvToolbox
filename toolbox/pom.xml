@@ -6,10 +6,10 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>toolbox</artifactId>
-  <name>PROV Toolbox</name>
+  <artifactId>provconvert</artifactId>
+  <name>provconvert tool</name>
   <packaging>jar</packaging>
-  <description>A series of tools to manipulate PROV representations from the command line.</description>
+  <description>A tool to manipulate PROV representations from the command line.</description>
 
 
 
@@ -400,10 +400,10 @@
                     <exec executable="python" dir="${project.build.directory}">
                       <arg value="${izpack.staging}/utils/wrappers/izpack2app/izpack2app.py" />
                       <arg value="${project.build.finalName}.jar" />
-                      <arg value="provconvert-Installer.app" />
+                      <arg value="${project.build.finalName}-Installer.app" />
                     </exec>
 
-                    <exec executable="chmod" dir="${project.build.directory}/provconvert-Installer.app/Contents/MacOS">
+                    <exec executable="chmod" dir="${project.build.directory}/${project.build.finalName}-Installer.app/Contents/MacOS">
   	              <arg value="a+x" />
   	              <arg value="JavaApplicationStub" />
                     </exec>
@@ -412,17 +412,22 @@
   	              <arg value="dmgdir" />
                     </exec>
                     <exec executable="mkdir" dir="${project.build.directory}/dmgdir">
-  	              <arg value="provconvert-Installer.app" />
+  	              <arg value="${project.build.finalName}-Installer.app" />
                     </exec>
 		
-		    <copy todir="${project.build.directory}/dmgdir/provconvert-Installer.app">
-                      <fileset dir="${project.build.directory}/provconvert-Installer.app"/>
+		    <copy todir="${project.build.directory}/dmgdir/${project.build.finalName}-Installer.app">
+                      <fileset dir="${project.build.directory}/${project.build.finalName}-Installer.app"/>
 		    </copy>
 
-		    <exec executable="chmod" dir="${project.build.directory}/dmgdir/provconvert-Installer.app/Contents/MacOS">
+		    <exec executable="chmod" dir="${project.build.directory}/dmgdir/${project.build.finalName}-Installer.app/Contents/MacOS">
   	              <arg value="a+x" />
   	              <arg value="JavaApplicationStub" />
                     </exec>
+
+		    <exec executable="echo" dir="${project.build.directory}/dmgdir" output="${project.build.directory}/dmgdir/README.txt">
+  	              <arg value="Please run installer to install provconvert." />
+                    </exec>
+
 
                     <exec executable="genisoimage" dir="${project.build.directory}">
   	              <arg value="-V" />
@@ -432,7 +437,7 @@
   	              <arg value="-apple" />
   	              <arg value="-no-pad" />
   	              <arg value="-o" />
-  	              <arg value="provconvert-Installer.dmg" />
+  	              <arg value="${project.build.finalName}.dmg" />
   	              <arg value="dmgdir" />
                     </exec>
 
@@ -487,7 +492,7 @@
 		      <arg value="--with-7z=7za" />
 		      <arg value="--no-upx" />
                       <arg value="--output" />
-                      <arg value="${project.build.directory}/provconvert-Installer.exe" />
+                      <arg value="${project.build.directory}/${project.build.finalName}-Installer.exe" />
                     </exec>
 		    
 		  </tasks>
@@ -741,7 +746,7 @@
 		      <arg value="--with-7z=7za" />
 		      <arg value="--no-upx" />
                       <arg value="--output" />
-                      <arg value="${project.build.directory}/provconvert-Installer.exe" />
+                      <arg value="${project.build.directory}/${project.build.finalName}-Installer.exe" />
                     </exec>
 		    
 		  </tasks>

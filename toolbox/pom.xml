@@ -407,6 +407,35 @@
   	              <arg value="a+x" />
   	              <arg value="JavaApplicationStub" />
                     </exec>
+
+                    <exec executable="mkdir" dir="${project.build.directory}">
+  	              <arg value="dmgdir" />
+                    </exec>
+                    <exec executable="mkdir" dir="${project.build.directory}/dmgdir">
+  	              <arg value="provconvert-Installer.app" />
+                    </exec>
+		
+		    <copy todir="${project.build.directory}/dmgdir/provconvert-Installer.app">
+                      <fileset dir="${project.build.directory}/provconvert-Installer.app"/>
+		    </copy>
+
+		    <exec executable="chmod" dir="${project.build.directory}/dmgdir/provconvert-Installer.app/Contents/MacOS">
+  	              <arg value="a+x" />
+  	              <arg value="JavaApplicationStub" />
+                    </exec>
+
+                    <exec executable="genisoimage" dir="${project.build.directory}">
+  	              <arg value="-V" />
+  	              <arg value="provconvert" />
+  	              <arg value="-D" />
+  	              <arg value="-R" />
+  	              <arg value="-apple" />
+  	              <arg value="-no-pad" />
+  	              <arg value="-o" />
+  	              <arg value="provconvert-Installer.dmg" />
+  	              <arg value="dmgdir" />
+                    </exec>
+
 		  </tasks>
 		</configuration>
               </execution> 

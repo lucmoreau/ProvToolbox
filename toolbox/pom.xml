@@ -429,7 +429,7 @@
                     </exec>
 
 
-                    <exec executable="genisoimage" dir="${project.build.directory}">
+                    <exec executable="genisoimage" dir="${project.build.directory}" os="linux">
   	              <arg value="-V" />
   	              <arg value="provconvert" />
   	              <arg value="-D" />

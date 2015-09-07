@@ -381,12 +381,30 @@
       <build>
 	<plugins>
 
+
+
+
+	</plugins>
+      </build>
+    </profile>
+
+
+    <profile>
+      <id>linux-only</id>
+      <activation>
+        <os>
+          <family>linux</family>
+        </os>
+      </activation>
+      <build>
+	<plugins>
 	  <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
+
               <execution>
-		<id>IzPack-Mac-Executable-From-UNIX</id>
+		<id>IzPack-Mac-Executable-From-LINUX</id>
 		<phase>install</phase>
 		<goals>
 		  <goal>run</goal>
@@ -429,7 +447,7 @@
                     </exec>
 
 
-                    <exec executable="genisoimage" dir="${project.build.directory}" osfamily="linux">
+                    <exec executable="genisoimage" dir="${project.build.directory}">
   	              <arg value="-V" />
   	              <arg value="provconvert" />
   	              <arg value="-D" />
@@ -441,45 +459,12 @@
   	              <arg value="dmgdir" />
                     </exec>
 
-                    <exec executable="hdiutil" dir="${project.build.directory}" osfamily="mac">
-  	              <arg value="create" />
-  	              <arg value="-volname" />
-  	              <arg value="provconvert" />
-  	              <arg value="-srcfolder" />
-  	              <arg value="dmgdir" />
-  	              <arg value="-ov" />
-  	              <arg value="-format" />
-  	              <arg value="UDZO" />
-  	              <arg value="${project.build.finalName}.dmg" />
-                    </exec>
 
 		  </tasks>
 		</configuration>
               </execution> 
 
-            </executions>
-	  </plugin>
 
-
-
-	</plugins>
-      </build>
-    </profile>
-
-
-    <profile>
-      <id>linux-only</id>
-      <activation>
-        <os>
-          <family>linux</family>
-        </os>
-      </activation>
-      <build>
-	<plugins>
-	  <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
 
               <execution>
 		<id>IzPack-Win-Executable-From-Linux</id>
@@ -734,6 +719,66 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
+
+              <execution>
+		<id>IzPack-Mac-Executable-From-MAC</id>
+		<phase>install</phase>
+		<goals>
+		  <goal>run</goal>
+		</goals>
+		<configuration>
+		  <tasks>
+		    <exec executable="touch" dir="${izpack.staging}/utils/wrappers/izpack2app/">
+  	              <arg value="Mac-App-Template" />
+                    </exec>
+
+                    <exec executable="python" dir="${project.build.directory}">
+                      <arg value="${izpack.staging}/utils/wrappers/izpack2app/izpack2app.py" />
+                      <arg value="${project.build.finalName}.jar" />
+                      <arg value="${project.build.finalName}-Installer.app" />
+                    </exec>
+
+                    <exec executable="chmod" dir="${project.build.directory}/${project.build.finalName}-Installer.app/Contents/MacOS">
+  	              <arg value="a+x" />
+  	              <arg value="JavaApplicationStub" />
+                    </exec>
+
+                    <exec executable="mkdir" dir="${project.build.directory}">
+  	              <arg value="dmgdir" />
+                    </exec>
+                    <exec executable="mkdir" dir="${project.build.directory}/dmgdir">
+  	              <arg value="${project.build.finalName}-Installer.app" />
+                    </exec>
+		
+		    <copy todir="${project.build.directory}/dmgdir/${project.build.finalName}-Installer.app">
+                      <fileset dir="${project.build.directory}/${project.build.finalName}-Installer.app"/>
+		    </copy>
+
+		    <exec executable="chmod" dir="${project.build.directory}/dmgdir/${project.build.finalName}-Installer.app/Contents/MacOS">
+  	              <arg value="a+x" />
+  	              <arg value="JavaApplicationStub" />
+                    </exec>
+
+		    <exec executable="echo" dir="${project.build.directory}/dmgdir" output="${project.build.directory}/dmgdir/README.txt">
+  	              <arg value="Please run installer to install provconvert." />
+                    </exec>
+
+                    <exec executable="hdiutil" dir="${project.build.directory}">
+  	              <arg value="create" />
+  	              <arg value="-volname" />
+  	              <arg value="provconvert" />
+  	              <arg value="-srcfolder" />
+  	              <arg value="dmgdir" />
+  	              <arg value="-ov" />
+  	              <arg value="-format" />
+  	              <arg value="UDZO" />
+  	              <arg value="${project.build.finalName}.dmg" />
+                    </exec>
+
+		  </tasks>
+		</configuration>
+              </execution> 
+
 
               <execution>
 		<id>IzPack-Win-Executable-From-Mac</id>

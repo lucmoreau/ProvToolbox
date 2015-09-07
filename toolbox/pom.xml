@@ -441,6 +441,18 @@
   	              <arg value="dmgdir" />
                     </exec>
 
+                    <exec executable="hdiutil" dir="${project.build.directory}" osfamily="mac">
+  	              <arg value="create" />
+  	              <arg value="-volname" />
+  	              <arg value="provconvert" />
+  	              <arg value="-srcfolder" />
+  	              <arg value="dmgdir" />
+  	              <arg value="-ov" />
+  	              <arg value="-format" />
+  	              <arg value="UDZO" />
+  	              <arg value="${project.build.finalName}.dmg" />
+                    </exec>
+
 		  </tasks>
 		</configuration>
               </execution> 

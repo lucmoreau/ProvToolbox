@@ -744,14 +744,22 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return newTime(javax.xml.bind.DatatypeConverter.parseDateTime(time)
                                                        .getTime());
     }
+    /*ValueConverter vconv=new ValueConverter(this);
 
     public Key newKey(Object o, QualifiedName type) {
+        
+        if (getName().RDF_LITERAL.equals(type)&& (o instanceof String)) {
+            o=vconv.convertToJava(type,(String)o);
+        }
+            
     	Key res=of.createKey();
     	res.setType(type);
     	res.setValueFromObject(o);
     	return res;
        }
 
+*/
+    public abstract Key newKey(Object o, QualifiedName type);
 
     public Location newLocation(Object value, QualifiedName type) {
             Location res =  of.createLocation();

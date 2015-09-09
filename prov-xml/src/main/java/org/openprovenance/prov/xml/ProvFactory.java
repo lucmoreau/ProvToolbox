@@ -137,6 +137,9 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     }
 
     public Key newKey(Object value, QualifiedName type) {
+        if (getName().RDF_LITERAL.equals(type)&& (value instanceof String)) {
+            value=vconv.convertToJava(type,(String)value);
+        }
         Key key = new Key();
         key.type = type;
         key.setValueFromObject(value);

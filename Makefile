@@ -6,7 +6,7 @@ release-oss-sign:
 	mvn release:prepare 
 
 yum:
-	sudo yum install -y repolist disabled toolbox/target/rpm/toolbox/RPMS/noarch/toolbox-*.noarch.rpm
+	sudo yum install -y repolist disabled toolbox/target/rpm/provconvert/RPMS/noarch/provconvert-*.noarch.rpm
 
 PROVCONVERT=toolbox/target/appassembler/bin/provconvert
 

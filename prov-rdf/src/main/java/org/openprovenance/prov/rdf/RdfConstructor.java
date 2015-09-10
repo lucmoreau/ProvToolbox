@@ -328,12 +328,14 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
     @Override
     public HadMember newHadMember(QualifiedName collection, Collection<QualifiedName> ll) {
-	for (QualifiedName entity : ll) {
-	    gb.assertStatement(gb.createObjectProperty(collection,
-						       onto.QualifiedName_PROVO_hadMember,
-						       entity));
-	}
-	return null;
+        if (collection!=null) {
+            for (QualifiedName entity : ll) {
+                gb.assertStatement(gb.createObjectProperty(collection,
+                                                           onto.QualifiedName_PROVO_hadMember,
+                                                           entity));
+            }
+        }
+        return null;
     }
 
     @Override

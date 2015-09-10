@@ -44,10 +44,12 @@ public class Expand {
     public static final String ENDTIME_URI = TMPL_NS + ENDTIME;
 
     final private boolean addOrderp;
+    final private boolean allUpdatedRequired;
 
-    public Expand(ProvFactory pf, boolean addOrderp) {
+    public Expand(ProvFactory pf, boolean addOrderp, boolean allUpdatedRequired) {
         this.pf = pf;
         this.addOrderp = addOrderp;
+        this.allUpdatedRequired = allUpdatedRequired;
     }
 
     Document expand(Document template, Bindings bindings) {
@@ -97,7 +99,8 @@ public class Expand {
                                                null,
                                                bindings1,
                                                grp1,
-                                               addOrderp);
+                                               addOrderp,
+                                               allUpdatedRequired);
         u.doAction(bun, action);
         return action.getList();
     }
@@ -133,7 +136,8 @@ public class Expand {
                                                    index,
                                                    bindings1,
                                                    grp1,
-                                                   addOrderp);
+                                                   addOrderp,
+                                                   allUpdatedRequired);
             u.doAction(statement, action);
             results.addAll(action.getList());
 

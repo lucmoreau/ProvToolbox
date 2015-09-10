@@ -34,7 +34,8 @@ public class CommandLineArguments implements ErrorCodes {
     public static final String COMPARE = "compare";
     public static final String FLATTEN = "flatten";
     public static final String MERGE = "merge";
-    private static final String GENORDER = "genorder";
+    public static final String GENORDER = "genorder";
+    public static final String ALLEXPANDED = "allexpanded";
     public static final String FORMATS = "formats";
     public static final String INFORMAT = "informat";
     public static final String OUTFORMAT = "outformat";
@@ -107,7 +108,8 @@ public class CommandLineArguments implements ErrorCodes {
                 .withDescription("graph generator N:n:first:seed:e1")
                 .create(GENERATOR);
         Option genorder = new Option(GENORDER, "In template expansion, generate order attribute. By default does not.");
-        
+        Option allexpanded = new Option(ALLEXPANDED, "In template expansion, generate term if all variables are bound.");
+
         Option formats = new Option(FORMATS, "list supported formats");
 
         Option informat = OptionBuilder
@@ -158,6 +160,7 @@ public class CommandLineArguments implements ErrorCodes {
         options.addOption(bindings);
         options.addOption(generator);
         options.addOption(genorder);
+        options.addOption(allexpanded);
         options.addOption(formats);
         options.addOption(informat);
         options.addOption(outformat);
@@ -223,6 +226,7 @@ public class CommandLineArguments implements ErrorCodes {
         String compareOut=null;
         boolean addOrderp=false;
         boolean listFormatsp = false;
+        boolean allexpanded=false;
 
 
         try {
@@ -249,6 +253,8 @@ public class CommandLineArguments implements ErrorCodes {
             if (line.hasOption(BINDFORMAT)) bindingformat = line.getOptionValue(BINDFORMAT);
             if (line.hasOption(GENERATOR))  generator = line.getOptionValue(GENERATOR);
             if (line.hasOption(GENORDER))   addOrderp=true;
+            if (line.hasOption(ALLEXPANDED)) allexpanded=true;
+
             if (line.hasOption(FORMATS))      listFormatsp = true;
             if (line.hasOption(COMPARE))      compare    = line.getOptionValue(COMPARE);
             if (line.hasOption(COMPAREOUT))   compareOut    = line.getOptionValue(COMPAREOUT);
@@ -279,6 +285,7 @@ public class CommandLineArguments implements ErrorCodes {
                                                           bindings,
                                                           bindingformat,
                                                           addOrderp,
+                                                          allexpanded,
                                                           generator,
                                                           index,
                                                           merge,

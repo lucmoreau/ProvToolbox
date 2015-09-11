@@ -978,11 +978,16 @@ public class InteropFramework implements InteropMediaType {
 	if (bindings != null) {
 	    Document docBindings = (Document) doReadDocument(bindings,
 							     bindingformat);
-	    Document expanded = new Expand(pFactory, addOrderp,allExpanded).expander(doc,
-									 outfile,
-									 docBindings);
+	    Expand myExpand=new Expand(pFactory, addOrderp,allExpanded);
+	    Document expanded = myExpand.expander(doc,
+	    		                              outfile,
+									          docBindings);
+	    boolean flag=myExpand.getAllExpanded();
 	    doWriteDocument(outfile, outformat, expanded);
-
+	
+	    if (!flag) {
+	    	return CommandLineArguments.STATUS_TEMPLATE_UNBOUND_VARIABLE;
+	    }
 	} else {
 	    doWriteDocument(outfile, outformat, doc);
 	}

@@ -86,6 +86,11 @@ public class Expand {
         Using us1 = usedGroups(statement, grp1, bindings1);
         return expand(statement, bindings1, grp1, us1);
     }
+    
+    boolean allExpanded=true;
+    public boolean getAllExpanded() {
+    	return allExpanded;
+    }
 
     public List<StatementOrBundle> expand(Bundle bun, Bindings bindings1, Groupings grp1) {
         Hashtable<QualifiedName, QualifiedName> env0 = new Hashtable<QualifiedName, QualifiedName>();
@@ -102,6 +107,7 @@ public class Expand {
                                                addOrderp,
                                                allUpdatedRequired);
         u.doAction(bun, action);
+        allExpanded=allExpanded && action.getAllExpanded();
         return action.getList();
     }
 
@@ -139,6 +145,8 @@ public class Expand {
                                                    addOrderp,
                                                    allUpdatedRequired);
             u.doAction(statement, action);
+            allExpanded=allExpanded && action.getAllExpanded();
+
             results.addAll(action.getList());
 
         }

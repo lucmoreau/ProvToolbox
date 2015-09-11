@@ -59,6 +59,12 @@ public class ExpandAction implements StatementAction {
     final private boolean addOrderp;
     final private String qualifiedNameURI;
     final private boolean allUpdatedRequired;
+    
+    private boolean allExpanded=true;
+    
+    public boolean getAllExpanded() {
+    	return allExpanded;
+    }
 
     public ExpandAction(ProvFactory pf,
             ProvUtilities u,
@@ -91,6 +97,7 @@ public class ExpandAction implements StatementAction {
         boolean updated2 = expandAttributes(s, res);
         boolean updated = updated1 || updated2;
         boolean allUpdated = updated1 ;
+        allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }
@@ -112,6 +119,7 @@ public class ExpandAction implements StatementAction {
 
         boolean updated = updated1 || updated2 || updated3 || updated4;
         boolean allUpdated = updated1 && updated2 && updated3;
+        allExpanded=allExpanded && allUpdated;
 
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
@@ -138,6 +146,7 @@ public class ExpandAction implements StatementAction {
 
         boolean updated = updated1 || updated2 || updated3 || updated4 || updated5;
         boolean allUpdated = updated1 && updated2 && updated3 && updated4 ;
+        allExpanded=allExpanded && allUpdated;
 
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
@@ -154,6 +163,7 @@ public class ExpandAction implements StatementAction {
         boolean updated2 = expandAttributes(e, res);
         boolean updated = updated1 || updated2;
         boolean allUpdated = updated1;
+        allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }
@@ -173,6 +183,7 @@ public class ExpandAction implements StatementAction {
         @SuppressWarnings("unused")
         boolean updated = updated0 || updated1;
         boolean allUpdated = updated1 ;
+        allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }
@@ -194,6 +205,7 @@ public class ExpandAction implements StatementAction {
         boolean updated5 = expandAttributes(s, res);
         boolean updated = updated1 || updated2 || updated3 || updated4 || updated5;
         boolean allUpdated = updated1 && updated2 && updated3 && updated4 ;
+        allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }
@@ -213,6 +225,7 @@ public class ExpandAction implements StatementAction {
         boolean updated4 = expandAttributes(s, res);
         boolean updated = updated1 || updated2 || updated3 || updated4;
         boolean allUpdated = updated1 && updated2 && updated3 ;
+        allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }
@@ -244,6 +257,7 @@ public class ExpandAction implements StatementAction {
         boolean updated5 = expandAttributes(s, res);
         boolean updated = updated1 || updated2 || updated3 || updated4 || updated5;
         boolean allUpdated = updated1 && updated2 && updated3 && updated4 ;
+        allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }
@@ -277,6 +291,7 @@ public class ExpandAction implements StatementAction {
         boolean updated = updated1 || updated2 || updated3 || updated4 || updated5 || updated6
                 || updated7;
         boolean allUpdated = updated1 && updated2 && updated3 && updated4 && updated5 && updated6;
+        allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }
@@ -312,6 +327,7 @@ public class ExpandAction implements StatementAction {
 
         boolean updated = updated1 || updated2 || updated3 || updated4 || updated5;
         boolean allUpdated = updated1 && updated2 && updated3 && updated4 ;
+        allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }
@@ -327,6 +343,7 @@ public class ExpandAction implements StatementAction {
         boolean updated2 = expandAttributes(e, res);
         boolean updated = updated1 || updated2;
         boolean allUpdated = updated1 ;
+        allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }
@@ -471,6 +488,7 @@ public class ExpandAction implements StatementAction {
 
         boolean updated = updated1 || updated2 || updated3 || updated4;
         boolean allUpdated = updated1 && updated2 && updated3 ;
+        allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }
@@ -492,6 +510,7 @@ public class ExpandAction implements StatementAction {
 
         boolean updated = updated1 || updated2 || updated3 || updated4;
         boolean allUpdated = updated1 && updated2 && updated3 ;
+        allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }
@@ -517,6 +536,7 @@ public class ExpandAction implements StatementAction {
         @SuppressWarnings("unused")
         boolean updated = updated0 || updated1;
         boolean allUpdated = updated0 && updated1 ;
+        allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }
@@ -543,6 +563,7 @@ public class ExpandAction implements StatementAction {
         @SuppressWarnings("unused")
         boolean updated = updated0 || updated1;
         boolean allUpdated = updated0 && updated1;
+        allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }
@@ -570,6 +591,7 @@ public class ExpandAction implements StatementAction {
 
         boolean updated = updated1 || updated2 || updated3 || updated4;
         boolean allUpdated = updated1 && updated2 && updated3;
+        allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }

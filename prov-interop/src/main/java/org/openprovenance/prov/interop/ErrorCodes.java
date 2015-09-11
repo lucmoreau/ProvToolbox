@@ -12,5 +12,6 @@ public interface ErrorCodes {
     static final int STATUS_COMPARE_NO_ARG1=4;
     static final int STATUS_COMPARE_NO_ARG2=5;
     static final int STATUS_COMPARE_DIFFERENT=6;
+    static final int STATUS_TEMPLATE_UNBOUND_VARIABLE=7;
 
 }

@@ -386,8 +386,8 @@ public class IndexedDocument implements StatementAction {
     public SpecializationOf add(SpecializationOf spec) {
 	return add(spec, 2, anonSpecializationOf, namedSpecializationOfMap, specificEntitySpecializationOfMap, genericEntitySpecializationOfMap);
     }
-    public AlternateOf add(AlternateOf wib) {
-	return add(wib, 2, anonAlternateOf, namedAlternateOfMap, entityEffectAlternateOfMap,entityCauseAlternateOfMap);
+    public AlternateOf add(AlternateOf alt) {
+	return add(alt, 2, anonAlternateOf, namedAlternateOfMap, entityEffectAlternateOfMap,entityCauseAlternateOfMap);
     }
     public WasInfluencedBy add(WasInfluencedBy winf) {
 	return add(winf, 2, anonWasInfluencedBy, namedWasInfluencedByMap, influenceeWasInfluencedByMap, influencerWasInfluencedByMap);
@@ -399,7 +399,7 @@ public class IndexedDocument implements StatementAction {
 	return add(web, 4, anonWasEndedBy, namedWasEndedByMap, activityWasEndedByMap, entityWasEndedByMap);
     }
     public HadMember add(HadMember hm) {
-	return add(hm, 2, anonHadMember, namedHadMemberMap, entityHadMemberMap, collHadMemberMap);
+	return add(hm, 2, anonHadMember, namedHadMemberMap, collHadMemberMap, entityHadMemberMap);
     }
 
 

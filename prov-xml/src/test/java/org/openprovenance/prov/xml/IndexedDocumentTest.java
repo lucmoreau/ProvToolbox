@@ -15,6 +15,7 @@ import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasDerivedFrom;
+import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Document;
@@ -946,6 +947,28 @@ public class IndexedDocumentTest extends TestCase {
 	assertEquals("label",1,u.getLabel().size());
 	assertEquals("other",2,u.getOther().size());
     }
+
+    public Document makeDoc1301() {
+        Entity e1=pFactory.newEntity(q("e1"));
+        Entity e2=pFactory.newEntity(q("e2"));
+        HadMember mem=pFactory.newHadMember(e1.getId(),e2.getId());
+        Document doc=pFactory.newDocument();
+        doc.getStatementOrBundle().add(mem);
+        doc.getStatementOrBundle().add(mem);
+        Namespace nss=Namespace.gatherNamespaces(doc);
+        doc.setNamespace(nss);
+        return doc;
+    }
+
+    public void testDoc1301() {
+	final Document doc = makeDoc1301();
+    Document idoc1301=new IndexedDocument(pFactory,doc).toDocument();
+
+	assertEquals(idoc1301.getStatementOrBundle().size(),1);
+
+    }
+
+
 
     public Document makeDoc2000() {
 	Bundle bun1=pFactory.newNamedBundle(q("b1"), null);

@@ -1622,7 +1622,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
     
     public HadMember newHadMember(HadMember s) {
-	HadMember res=newHadMember(s.getCollection(), s.getCollection()); //FIXME: clone collection
+	HadMember res=newHadMember(s.getCollection(), s.getEntity()); //FIXME: clone collection
 	return res;
     }
     

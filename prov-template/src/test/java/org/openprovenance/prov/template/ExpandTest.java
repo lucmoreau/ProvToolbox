@@ -49,7 +49,7 @@ public class ExpandTest extends TestCase {
 
 	System.err.println("Found groupings " + grp1);
 	
-	Bundle bun1=(Bundle) new Expand(pf,addOrderp).expand(bun, bindings1, grp1).get(0);
+	Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, bindings1, grp1).get(0);
 	Document doc1=pf.newDocument();
 	doc1.getStatementOrBundle().add(bun1);
 	
@@ -82,7 +82,7 @@ public class ExpandTest extends TestCase {
 
 	System.err.println("Found groupings " + grp1);
 	
-	Bundle bun1=(Bundle) new Expand(pf,addOrderp).expand(bun, bindings1, grp1).get(0);
+	Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, bindings1, grp1).get(0);
 	Document doc1=pf.newDocument();
 	doc1.getStatementOrBundle().add(bun1);
 	

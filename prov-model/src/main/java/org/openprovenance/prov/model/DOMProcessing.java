@@ -275,39 +275,40 @@ final public class DOMProcessing {
     public org.w3c.dom.Element marshalAttribute(org.openprovenance.prov.model.Attribute attribute) {
 	return marshalTypedValue(attribute, attribute.getElementName());
     }
-    
+
     final static
     public org.w3c.dom.Element marshalTypedValue(org.openprovenance.prov.model.TypedValue attribute,
                                                  QualifiedName elementName) {	
-	Object value = attribute.getValue();
-	QualifiedName type = attribute.getType();
-	
-	if (value instanceof LangString) {
-	    LangString istring = ((LangString) value);
-	    return newElement(elementName, 
-	                      istring.getValue(),
-			      attribute.getType(), 
-			      istring.getLang());
-	} else if (value instanceof QualifiedName) {
-	    return newElement(elementName, 
-	                      (QualifiedName) value);
+        Object value = attribute.getValue();
+        QualifiedName type = attribute.getType();
 
-	} else if (type.getNamespaceURI().equals(RDF_NAMESPACE)
-		&& type.getLocalPart().equals(XML_LITERAL)) {
-	    return newElement(elementName,
-			      (org.w3c.dom.Element) attribute.getConvertedValue());
+        if (value instanceof LangString) {
+            LangString istring = ((LangString) value);
+            return newElement(elementName, 
+                              istring.getValue(),
+                              attribute.getType(), 
+                              istring.getLang());
+        } else if (value instanceof QualifiedName) {
+            return newElement(elementName, 
+                              (QualifiedName) value);
 
-	} else {
-	    return newElement(elementName, 
-	                      value.toString(),
-			      attribute.getType());
-	}
+        } else if (type.getNamespaceURI().equals(RDF_NAMESPACE)
+                && type.getLocalPart().equals(XML_LITERAL)) {
+
+            return newElement(elementName,
+                              (org.w3c.dom.Element) attribute.getConvertedValue());
+
+        } else {
+            return newElement(elementName, 
+                              value.toString(),
+                              attribute.getType());
+        }
     }
 
     final
     public org.openprovenance.prov.model.Attribute unmarshallAttribute(org.w3c.dom.Element el,
-                                                                              ProvFactory pFactory,
-                                                                              ValueConverter vconv) {
+                                                                       ProvFactory pFactory,
+                                                                       ValueConverter vconv) {
         String prefix = el.getPrefix();
         String namespace = el.getNamespaceURI();
         String local = el.getLocalName();

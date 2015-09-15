@@ -477,13 +477,13 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
    abstract public org.openprovenance.prov.model.Attribute newAttribute(QualifiedName elementName, Object value, QualifiedName type) ;
    
     abstract public org.openprovenance.prov.model.Attribute newAttribute(Attribute.AttributeKind kind, Object value, QualifiedName type);
- 
+
     public Attribute newAttribute(String namespace, String localName,
-				  String prefix, Object value, QualifiedName type) {
-	Attribute res;
-	res = newAttribute(newQualifiedName(namespace, localName, prefix),
-	                   value, type);	
-	return res;
+                                  String prefix, Object value, QualifiedName type) {
+        Attribute res;
+        res = newAttribute(newQualifiedName(namespace, localName, prefix),
+                           value, type);	
+        return res;
     }
 
     public DerivedByInsertionFrom newDerivedByInsertionFrom(QualifiedName id,
@@ -744,14 +744,22 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return newTime(javax.xml.bind.DatatypeConverter.parseDateTime(time)
                                                        .getTime());
     }
+    /*ValueConverter vconv=new ValueConverter(this);
 
     public Key newKey(Object o, QualifiedName type) {
+        
+        if (getName().RDF_LITERAL.equals(type)&& (o instanceof String)) {
+            o=vconv.convertToJava(type,(String)o);
+        }
+            
     	Key res=of.createKey();
     	res.setType(type);
     	res.setValueFromObject(o);
     	return res;
        }
 
+*/
+    public abstract Key newKey(Object o, QualifiedName type);
 
     public Location newLocation(Object value, QualifiedName type) {
             Location res =  of.createLocation();
@@ -1520,6 +1528,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}	
 	return result;
     }
+    
 
     public void setAttributes(HasOther res, Collection<Attribute> attributes) {
 	if (attributes==null) return;
@@ -1530,7 +1539,16 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	HasRole rol=(res instanceof HasRole)? (HasRole)res : null;
 
 	for (Attribute attr: attributes) {
+	    
 	    Object aValue=attr.getValue();
+	    
+	    ValueConverter vconv=new ValueConverter(this);
+        if (getName().RDF_LITERAL.equals(attr.getType())&& (aValue instanceof String)) {
+            aValue=vconv.convertToJava(attr.getType(),(String)aValue);
+        }
+            
+	    
+	    
 	    switch (attr.getKind()) {
 	    case PROV_LABEL:
 		if (lab!=null) {
@@ -1604,7 +1622,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
     
     public HadMember newHadMember(HadMember s) {
-	HadMember res=newHadMember(s.getCollection(), s.getCollection()); //FIXME: clone collection
+	HadMember res=newHadMember(s.getCollection(), s.getEntity()); //FIXME: clone collection
 	return res;
     }
     

@@ -44,10 +44,12 @@ public class Expand {
     public static final String ENDTIME_URI = TMPL_NS + ENDTIME;
 
     final private boolean addOrderp;
+    final private boolean allUpdatedRequired;
 
-    public Expand(ProvFactory pf, boolean addOrderp) {
+    public Expand(ProvFactory pf, boolean addOrderp, boolean allUpdatedRequired) {
         this.pf = pf;
         this.addOrderp = addOrderp;
+        this.allUpdatedRequired = allUpdatedRequired;
     }
 
     Document expand(Document template, Bindings bindings) {
@@ -84,6 +86,11 @@ public class Expand {
         Using us1 = usedGroups(statement, grp1, bindings1);
         return expand(statement, bindings1, grp1, us1);
     }
+    
+    boolean allExpanded=true;
+    public boolean getAllExpanded() {
+    	return allExpanded;
+    }
 
     public List<StatementOrBundle> expand(Bundle bun, Bindings bindings1, Groupings grp1) {
         Hashtable<QualifiedName, QualifiedName> env0 = new Hashtable<QualifiedName, QualifiedName>();
@@ -97,8 +104,10 @@ public class Expand {
                                                null,
                                                bindings1,
                                                grp1,
-                                               addOrderp);
+                                               addOrderp,
+                                               allUpdatedRequired);
         u.doAction(bun, action);
+        allExpanded=allExpanded && action.getAllExpanded();
         return action.getList();
     }
 
@@ -133,8 +142,11 @@ public class Expand {
                                                    index,
                                                    bindings1,
                                                    grp1,
-                                                   addOrderp);
+                                                   addOrderp,
+                                                   allUpdatedRequired);
             u.doAction(statement, action);
+            allExpanded=allExpanded && action.getAllExpanded();
+
             results.addAll(action.getList());
 
         }

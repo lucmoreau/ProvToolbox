@@ -102,6 +102,7 @@ public class InteropFramework implements InteropMediaType {
     final private String merge;
     final private String flatten;
     final private boolean addOrderp;
+    final private boolean allExpanded;
     final private String compare;
     final private String compareOut;
 
@@ -110,19 +111,19 @@ public class InteropFramework implements InteropMediaType {
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
      */
     public InteropFramework() {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null,null,null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, false, false, null, null, null, null,null,null,
                 org.openprovenance.prov.xml.ProvFactory.getFactory());
     }
 
     public InteropFramework(ProvFactory pFactory) {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null,null,null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, false, false, null, null, null, null,null,null,
                 pFactory);
     }
 
 
     public InteropFramework(String verbose, String debug, String logfile,
             String infile, String informat, String outfile, String outformat, String namespaces, String title,
-            String layout, String bindings, String bindingformat, boolean addOrderp, String generator,
+            String layout, String bindings, String bindingformat, boolean addOrderp, boolean allExpanded, String generator,
             String index, String merge, String flatten, String compare, String compareOut, ProvFactory pFactory) {
         this.verbose = verbose;
         this.debug = debug;
@@ -139,6 +140,7 @@ public class InteropFramework implements InteropMediaType {
         this.flatten=flatten;
         this.pFactory = pFactory;
         this.addOrderp=addOrderp;
+        this.allExpanded=allExpanded;
         this.onto = new Ontology(pFactory);
         this.informat = informat;
         this.outformat = outformat;
@@ -976,11 +978,16 @@ public class InteropFramework implements InteropMediaType {
 	if (bindings != null) {
 	    Document docBindings = (Document) doReadDocument(bindings,
 							     bindingformat);
-	    Document expanded = new Expand(pFactory, addOrderp).expander(doc,
-									 outfile,
-									 docBindings);
+	    Expand myExpand=new Expand(pFactory, addOrderp,allExpanded);
+	    Document expanded = myExpand.expander(doc,
+	    		                              outfile,
+									          docBindings);
+	    boolean flag=myExpand.getAllExpanded();
 	    doWriteDocument(outfile, outformat, expanded);
-
+	
+	    if (!flag) {
+	    	return CommandLineArguments.STATUS_TEMPLATE_UNBOUND_VARIABLE;
+	    }
 	} else {
 	    doWriteDocument(outfile, outformat, doc);
 	}

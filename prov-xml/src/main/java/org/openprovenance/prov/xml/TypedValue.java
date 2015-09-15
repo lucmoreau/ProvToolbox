@@ -105,16 +105,16 @@ public class TypedValue
         return type;
     }
 
- 
+
     @Override
     public Object convertValueToObject(org.openprovenance.prov.model.ValueConverter vconv) {
-    	if (valueAsJavaObject==null) {
-    	    if (value instanceof String) {
-    		valueAsJavaObject=vconv.convertToJava(getType(), (String)value);
-    	    } else {
-    		valueAsJavaObject=value;
-    	    }
-    	}
+        if (valueAsJavaObject==null) {
+            if (value instanceof String) {
+                valueAsJavaObject=vconv.convertToJava(getType(), (String)value);
+            } else {
+                valueAsJavaObject=value;
+            }
+        }
         return valueAsJavaObject;
     }
 
@@ -130,11 +130,11 @@ public class TypedValue
      */
 
     private void setValueFromObject(byte[] bytes) {
-	if (type.equals(QualifiedName_XSD_BASE64_BINARY)) {
-	    setValue(ProvFactory.getFactory().base64Encoding(bytes));
-	} else if (type.equals(QualifiedName_XSD_HEX_BINARY)) {
-	    setValue(ProvFactory.getFactory().hexEncoding(bytes));
-	}
+        if (type.equals(QualifiedName_XSD_BASE64_BINARY)) {
+            setValue(ProvFactory.getFactory().base64Encoding(bytes));
+        } else if (type.equals(QualifiedName_XSD_HEX_BINARY)) {
+            setValue(ProvFactory.getFactory().hexEncoding(bytes));
+        }
     }
 
 
@@ -143,34 +143,34 @@ public class TypedValue
      * @param n DOM Node to convert.
      */
     private void setValueFromObject(org.w3c.dom.Node n) {
-	DOMProcessing.trimNode(n);
-	try {
-	    setValue(DOMProcessing.writeToString(n));
-	} catch (TransformerConfigurationException e) {
-	    setValue(n.toString());  // TODO: not the most compelling handling
-	} catch (TransformerException e) {
-	    setValue(n.toString()); //TODO: not the most compelling handling
-	}
+        DOMProcessing.trimNode(n);
+        try {
+            setValue(DOMProcessing.writeToString(n));
+        } catch (TransformerConfigurationException e) {
+            setValue(n.toString());  // TODO: not the most compelling handling
+        } catch (TransformerException e) {
+            setValue(n.toString()); //TODO: not the most compelling handling
+        }
     }
-    
+
     /* (non-Javadoc)
      * @see org.openprovenance.prov.xml.TypIN#setValueAsJava(java.lang.Object)
      */
     @Override
     public void setValueFromObject(Object anObject) {
-	if ((anObject!=null) && (value==null)) {
-	    if(anObject instanceof QualifiedName) {
-		setValue((QualifiedName)anObject);
-	    } else if (anObject instanceof org.openprovenance.prov.model.LangString) { 
-		setValue((org.openprovenance.prov.model.LangString)anObject);
-	    } else if (anObject instanceof byte[]) {
-		setValueFromObject((byte[]) anObject);
-	    } else if (anObject instanceof org.w3c.dom.Node) {
-		setValueFromObject((org.w3c.dom.Node)anObject);
-	    } else {
-		setValue(anObject.toString());
-	    }
-	}
+        if ((anObject!=null) && (value==null)) {
+            if(anObject instanceof QualifiedName) {
+                setValue((QualifiedName)anObject);
+            } else if (anObject instanceof org.openprovenance.prov.model.LangString) { 
+                setValue((org.openprovenance.prov.model.LangString)anObject);
+            } else if (anObject instanceof byte[]) {
+                setValueFromObject((byte[]) anObject);
+            } else if (anObject instanceof org.w3c.dom.Node) {
+                setValueFromObject((org.w3c.dom.Node)anObject);
+            } else {
+                setValue(anObject.toString());
+            }
+        }
         this.valueAsJavaObject = anObject;
     }
 

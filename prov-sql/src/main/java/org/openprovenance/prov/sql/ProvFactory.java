@@ -11,6 +11,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.openprovenance.prov.sql.ObjectFactory2;
 import org.openprovenance.prov.xml.ProvUtilities;
+import org.openprovenance.prov.xml.ValueConverter;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.LiteralConstructor;
@@ -221,7 +222,17 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     	return new org.openprovenance.prov.sql.Namespace();
     }
     
+    ValueConverter vconv=new ValueConverter(this);
 
+    public Key newKey(Object value, QualifiedName type) {
+        if (getName().RDF_LITERAL.equals(type)&& (value instanceof String)) {
+            value=vconv.convertToJava(type,(String)value);
+        }
+        Key key = new Key();
+        key.type = type;
+        key.setValueFromObject(value);
+        return key;
+    }
 
 
     static public void initializeTables () {

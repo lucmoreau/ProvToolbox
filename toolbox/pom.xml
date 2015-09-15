@@ -2,7 +2,7 @@
   <parent>
     <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.7.2-SNAPSHOT</version>
+    <version>0.7.2</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -18,25 +18,25 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.7.2-SNAPSHOT</version>
+      <version>0.7.2</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-rdf</artifactId>
-      <version>0.7.2-SNAPSHOT</version>
+      <version>0.7.2</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-n</artifactId>
-      <version>0.7.2-SNAPSHOT</version>
+      <version>0.7.2</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-interop</artifactId>
-      <version>0.7.2-SNAPSHOT</version>
+      <version>0.7.2</version>
     </dependency>
 
     <!-- required by sesame openrdf, to avoid slf4j warning -->
@@ -307,17 +307,15 @@
             <configuration>
               <tasks>
 		<!--<copy todir="${izpack.staging}">
-                  <fileset dir="${basedir}/src/izpack"/>
+                  <fileset dir="${basedir}/src/izpack" />
 		</copy>
 		-->
-		<copy file="${basedir}/../license.txt"
-		      tofile="${izpack.staging}/license.txt">
+		<copy file="${basedir}/../license.txt" tofile="${izpack.staging}/license.txt">
 		</copy>
-		<copy file="${project.build.directory}/provconvert.txt" 
-		      tofile="${izpack.staging}/Readme.txt">
+		<copy file="${project.build.directory}/provconvert.txt" tofile="${izpack.staging}/Readme.txt">
 		</copy>
 		<copy todir="${izpack.staging}">
-                  <fileset dir="${project.build.directory}/appassembler"/>
+                  <fileset dir="${project.build.directory}/appassembler" />
 		</copy>
               </tasks>
             </configuration>
@@ -435,7 +433,7 @@
                     </exec>
 		
 		    <copy todir="${project.build.directory}/dmgdir/${project.build.finalName}-Installer.app">
-                      <fileset dir="${project.build.directory}/${project.build.finalName}-Installer.app"/>
+                      <fileset dir="${project.build.directory}/${project.build.finalName}-Installer.app" />
 		    </copy>
 
 		    <exec executable="chmod" dir="${project.build.directory}/dmgdir/${project.build.finalName}-Installer.app/Contents/MacOS">
@@ -753,7 +751,7 @@
                     </exec>
 		
 		    <copy todir="${project.build.directory}/dmgdir/${project.build.finalName}-Installer.app">
-                      <fileset dir="${project.build.directory}/${project.build.finalName}-Installer.app"/>
+                      <fileset dir="${project.build.directory}/${project.build.finalName}-Installer.app" />
 		    </copy>
 
 		    <exec executable="chmod" dir="${project.build.directory}/dmgdir/${project.build.finalName}-Installer.app/Contents/MacOS">

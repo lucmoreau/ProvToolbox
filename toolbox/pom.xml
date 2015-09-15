@@ -337,6 +337,7 @@
 	    <configuration>
               <!-- base for relative paths in izpack descriptor -->
               <baseDir>${izpack.staging}</baseDir>
+	      <finalName>${project.build.finalName}-Installer</finalName>
               <installFile>${basedir}/src/izpack/install.xml</installFile>
 	    </configuration>
 	  </execution>

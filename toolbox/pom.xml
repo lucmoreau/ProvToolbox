@@ -352,6 +352,63 @@
 
 
     </plugins>
+
+    <pluginManagement>
+      <plugins>
+	
+	<plugin> 
+          <!--  This plugin's configuration is used to store Eclipse m2e settings 
+               only. It has no influence on the Maven build itself. --> 
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+	  <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+		<pluginExecution>
+		  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+		    <versionRange>1.5</versionRange>
+                    <goals>
+                      <goal>add-third-party</goal>
+                    </goals>
+		  </pluginExecutionFilter>
+		  <action>
+                    <execute>
+                      <runOnIncremental>false</runOnIncremental>
+                    </execute>
+		  </action>
+		</pluginExecution>
+
+		<pluginExecution>
+		  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <versionRange>2.8</versionRange>
+                    <goals>
+                      <goal>unpack-dependencies</goal>
+                    </goals>
+		  </pluginExecutionFilter>
+		  <action>
+                    <execute>
+                      <runOnIncremental>false</runOnIncremental>
+                    </execute>
+		  </action>
+		</pluginExecution>
+
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+	  </configuration>
+	</plugin>
+
+
+
+      </plugins>
+      
+      
+    </pluginManagement>
+
    
     <testResources>
        <testResource>
@@ -367,6 +424,8 @@
 
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
   </properties>
+
+
 
   <profiles>
     <profile>
@@ -823,5 +882,10 @@
     </profile>
 
   </profiles>
+
+
+
+       
+
 
 </project>

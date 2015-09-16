@@ -297,6 +297,8 @@
 	</plugin>
       </plugins>
     </pluginManagement>
+
+
   </build>
 
   <properties>

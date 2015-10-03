@@ -619,7 +619,7 @@ public class ProvToDot {
 	    for (LangString lab: ((HasLabel)ann).getLabel()) {
 		label=label+"	<TR>\n";
 		label=label+"	    <TD align=\"left\">" + "label" + ":</TD>\n";
-		label=label+"	    <TD align=\"left\">" + lab.getValue() + "</TD>\n";
+		label=label+"	    <TD align=\"left\">" + htmlify(lab.getValue()) + "</TD>\n";
 		label=label+"	</TR>\n";
 	    }
 	    if (ann instanceof HasValue) {

@@ -19,6 +19,7 @@ import org.openprovenance.prov.xml.IDRefAdapter;
 import org.openprovenance.prov.xml.QualifiedName;
 import org.openprovenance.prov.xml.QualifiedNameAdapter;
 import org.openprovenance.prov.xml.SortedAttributeList;
+import org.openprovenance.prov.xml.SpecializationOf;
 import org.openprovenance.prov.xml.builder.Equals;
 import org.openprovenance.prov.xml.builder.HashCode;
 import org.openprovenance.prov.xml.builder.ToString;
@@ -54,23 +55,23 @@ import org.openprovenance.prov.model.Attribute;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Specialization", propOrder = {
-    "specificEntity",
-    "generalEntity",
+  //  "specificEntity",
+  //  "generalEntity",
     "label",
     //"type",
     //"any"
     "all"
 })
-public class QualifiedSpecializationOf implements Equals, HashCode, ToString, org.openprovenance.prov.model.extension.QualifiedSpecializationOf, HasAllAttributes 
+public class QualifiedSpecializationOf extends SpecializationOf implements Equals, HashCode, ToString, org.openprovenance.prov.model.extension.QualifiedSpecializationOf, HasAllAttributes 
 {
 
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
-    @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.QualifiedName specificEntity;
+ //   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
+ //   @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
+ //   protected org.openprovenance.prov.model.QualifiedName specificEntity;
 
-    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
-    @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
-    protected org.openprovenance.prov.model.QualifiedName generalEntity;
+//    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
+//    @XmlElement(required = true, type = org.openprovenance.prov.xml.IDRef.class)
+//    protected org.openprovenance.prov.model.QualifiedName generalEntity;
 
     @XmlElement(type = org.openprovenance.prov.xml.InternationalizedString.class)
     protected List<org.openprovenance.prov.model.LangString> label;
@@ -95,9 +96,9 @@ public class QualifiedSpecializationOf implements Equals, HashCode, ToString, or
      *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.QualifiedName getSpecificEntity() {
-        return specificEntity;
-    }
+ //   public org.openprovenance.prov.model.QualifiedName getSpecificEntity() {
+ //       return specificEntity;
+ //   }
 
     /**
      * Sets the value of the specific property.
@@ -107,9 +108,9 @@ public class QualifiedSpecializationOf implements Equals, HashCode, ToString, or
      *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setSpecificEntity(org.openprovenance.prov.model.QualifiedName value) {
-        this.specificEntity = value;
-    }
+//    public void setSpecificEntity(org.openprovenance.prov.model.QualifiedName value) {
+//        this.specificEntity = value;
+//    }
 
     /**
      * Gets the value of the informant property.
@@ -119,9 +120,9 @@ public class QualifiedSpecializationOf implements Equals, HashCode, ToString, or
      *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public org.openprovenance.prov.model.QualifiedName getGeneralEntity() {
-        return generalEntity;
-    }
+  //  public org.openprovenance.prov.model.QualifiedName getGeneralEntity() {
+ //       return generalEntity;
+ //   }
 
     /**
      * Sets the value of the general entity property.
@@ -131,9 +132,9 @@ public class QualifiedSpecializationOf implements Equals, HashCode, ToString, or
      *     {@link org.openprovenance.prov.xml.QualifiedName }
      *     
      */
-    public void setGeneralEntity(org.openprovenance.prov.model.QualifiedName value) {
-        this.generalEntity = value;
-    }
+  //  public void setGeneralEntity(org.openprovenance.prov.model.QualifiedName value) {
+  //      this.generalEntity = value;
+ //   }
 
     /**
      * Gets the value of the label property.

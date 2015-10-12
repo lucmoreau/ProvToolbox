@@ -86,6 +86,7 @@ public class ExtensionRoundTripFromJavaTest extends TestCase {
 
     public void updateNamespaces(Document doc) {
         Namespace ns = Namespace.gatherNamespaces(doc);
+        ns.register("provext", "http://openprovenance.org/prov/extension#");
         doc.setNamespace(ns);
     }
 

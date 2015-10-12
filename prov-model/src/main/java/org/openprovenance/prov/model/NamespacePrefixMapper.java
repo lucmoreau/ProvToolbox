@@ -7,7 +7,7 @@ package org.openprovenance.prov.model;
  * @see <a href="http://grepcode.com/file/repo1.maven.org/maven2/com.sun.xml.bind/jaxb-impl/2.1.11/com/sun/xml/bind/marshaller/NamespacePrefixMapper.java">JAXB NamespacePrefixMapper</a>
  */
 public interface NamespacePrefixMapper {
-
+    static final public String PROV_EXT_NS = "http://openprovenance.org/prov/extension#";
     static final public String PROV_NS = "http://www.w3.org/ns/prov#";
     static final public String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
     static final public String XSD_NS = "http://www.w3.org/2001/XMLSchema#";

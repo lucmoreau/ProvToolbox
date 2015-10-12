@@ -1,5 +1,6 @@
 package org.openprovenance.prov.template;
 
+import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -39,6 +40,8 @@ import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 import static org.openprovenance.prov.template.Expand.TMPL_NS;
 import static org.openprovenance.prov.template.Expand.TMPL_PREFIX;
@@ -569,6 +572,32 @@ public class ExpandAction implements StatementAction {
         }
         // if (updated) addOrderAttribute(res);
 
+    }
+    
+    @Override
+    public void doAction(QualifiedSpecializationOf s) {
+        QualifiedSpecializationOf res = pf.newQualifiedSpecializationOf(s.getId(),s.getSpecificEntity(), s.getGeneralEntity(),null);
+
+        QualifiedName spe = res.getSpecificEntity();
+        boolean updated0 = setExpand(res, spe, 0);
+        QualifiedName gen = res.getGeneralEntity();
+        boolean updated1 = setExpand(res, gen, 1);
+        boolean updated2 = expandAttributes(s, res);
+
+        @SuppressWarnings("unused")
+        boolean updated = updated0 || updated1 || updated2;
+        boolean allUpdated = updated0 && updated1 && updated2;
+        allExpanded=allExpanded && allUpdated;
+        if (!allUpdatedRequired || allUpdated) {
+            ll.add(res);
+        }
+        if (updated) addOrderAttribute(res);
+
+    }
+    
+    @Override
+    public void doAction(QualifiedAlternateOf s) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -3,6 +3,8 @@ package org.openprovenance.prov.model;
 import java.util.List;
 import java.util.LinkedList;
 
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
+
 
 /** Generic Traversal of a PROV model bean.
  * Makes use of the "visitor" in {@link ProvUtilities#doAction(StatementOrBundle, StatementActionValue)}
@@ -183,6 +185,16 @@ public class BeanTraversal implements StatementActionValue {
 
     public SpecializationOf doAction(SpecializationOf o) {
         return c.newSpecializationOf(o.getSpecificEntity(), o.getGeneralEntity());
+    }
+    
+
+    public SpecializationOf doAction(QualifiedSpecializationOf o) {
+        List<Attribute> attrs=new LinkedList<Attribute>();  
+        convertTypeAttributes(o,attrs);
+        convertLabelAttributes(o,attrs);
+        convertAttributes(o,attrs);
+        ModelConstructorExtension c2=(ModelConstructorExtension)c;
+        return c2.newQualifiedSpecializationOf(o.getId(), o.getSpecificEntity(), o.getGeneralEntity(), attrs);
     }
     
     public Used doAction(Used use) {

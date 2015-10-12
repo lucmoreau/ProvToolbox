@@ -17,13 +17,16 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
+
 
 
 
 /** A stateless factory for PROV objects. */
 
 
-public abstract class ProvFactory implements LiteralConstructor, ModelConstructor {
+public abstract class ProvFactory implements LiteralConstructor, ModelConstructor, ModelConstructorExtension {
  
     public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.validation";
 
@@ -885,7 +888,18 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	res.setGeneralEntity(general);
 	return res;
     }
-
+    
+    public QualifiedSpecializationOf newQualifiedSpecializationOf(QualifiedName id, QualifiedName specific, QualifiedName general, Collection<Attribute> attributes) {
+        QualifiedSpecializationOf res = of.createQualifiedSpecializationOf();
+        res.setSpecificEntity(specific);
+        res.setGeneralEntity(general);
+        setAttributes(res, attributes);
+        return res;
+    }
+    public QualifiedAlternateOf newQualifiedAlternateOf(QualifiedName id, QualifiedName specific, QualifiedName general, Collection<Attribute> attributes) {
+        throw new UnsupportedOperationException();
+    }
+    
     public XMLGregorianCalendar newTime(Date date) {
 	GregorianCalendar gc = new GregorianCalendar();
 	gc.setTime(date);
@@ -1729,6 +1743,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	public Object doAction(SpecializationOf s) {
 	    return newSpecializationOf(s);
 	}
+	@Override
+	public Object doAction(QualifiedSpecializationOf s) {
+	    //return newQualifiedSpecializationOf(s);
+	    throw new UnsupportedOperationException();
+	}
+	
 
 	@Override
 	public Object doAction(DerivedByInsertionFrom s) {

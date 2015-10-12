@@ -27,10 +27,10 @@ import org.openprovenance.prov.model.HasLabel;
 import org.openprovenance.prov.model.HasValue;
 import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Identifiable;
-import org.openprovenance.prov.model.Influence;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.QualifiedRelation;
 import org.openprovenance.prov.model.Relation;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.Type;
@@ -52,6 +52,7 @@ import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
+
 
 /** Serialisation of  Prov representation to DOT format. */
 public class ProvToDot {
@@ -513,7 +514,7 @@ public class ProvToDot {
 	}
 	o=table.get("size");
 	if (o!=null && !o.isEmpty()) {
-	    if (object instanceof Influence) {
+	    if ((object instanceof QualifiedRelation)) {
 		String val=o.get(0).getValue().toString();
 		properties.put("penwidth", val);
 	    } else {
@@ -873,6 +874,7 @@ public class ProvToDot {
     //////////////////////////////////////////////////////////////////////
 
     public void emitDependency(Relation e, PrintStream out) {
+
         HashMap<String,String> properties=new HashMap<String, String>();
 
         List<QualifiedName> others=u.getOtherCauses(e);
@@ -938,8 +940,8 @@ public class ProvToDot {
         } else { // binary case
 	    if (u.getCause(e)!=null) { // make sure there is a cuase
 		relationName(e, properties);
-		if (e instanceof Influence) {
-		    addColors((Influence)e,properties);
+		if (e instanceof QualifiedRelation) {
+		    addColors((QualifiedRelation)e,properties);
 		}
 		
 		String arrowTail=getArrowShapeForRelation(e);
@@ -1030,8 +1032,8 @@ public class ProvToDot {
     /* Displays type if any, role otherwise. */
     public void addRelationLabel(Relation e0, HashMap<String,String> properties) {
         String label=null;
-        if (!(e0 instanceof Influence)) return;
-        Influence e=(Influence)e0;
+        if (!(e0 instanceof QualifiedRelation)) return;
+        QualifiedRelation e=(QualifiedRelation)e0;
         List<Type> type=pf.getType(e);
         if ((type!=null) && (!type.isEmpty())) {
             label=type.get(0).getValue().toString();

@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import org.openprovenance.prov.model.StatementOrBundle.Kind;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
 import org.openprovenance.prov.model.exception.UncheckedException;
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -312,7 +314,11 @@ public class ProvUtilities {
   	    action.doAction((Agent) s);
   	    break;
   	case PROV_ALTERNATE:
-  	    action.doAction((AlternateOf) s);
+  	    if (s instanceof QualifiedAlternateOf) {
+  	        action.doAction((QualifiedAlternateOf) s);
+  	    } else {  	        
+  	        action.doAction((AlternateOf) s);
+  	    }
   	    break;
   	case PROV_ASSOCIATION:
   	    action.doAction((WasAssociatedWith) s);
@@ -363,7 +369,11 @@ public class ProvUtilities {
   	    action.doAction((MentionOf) s);
   	    break;
   	case PROV_SPECIALIZATION:
-  	    action.doAction((SpecializationOf) s);
+  	    if (s instanceof QualifiedSpecializationOf) {
+            action.doAction((QualifiedSpecializationOf) s);
+  	    } else {
+  	        action.doAction((SpecializationOf) s);
+  	    }
   	    break;
   	case PROV_START:
   	    action.doAction((WasStartedBy) s);
@@ -415,7 +425,11 @@ public class ProvUtilities {
   	case PROV_MENTION:
   	    return action.doAction((MentionOf) s);
   	case PROV_SPECIALIZATION:
-  	    return action.doAction((SpecializationOf) s);
+  	    if (s instanceof QualifiedSpecializationOf) {
+            return action.doAction((QualifiedSpecializationOf) s);
+  	    } else {
+  	        return action.doAction((SpecializationOf) s);
+  	    }
   	case PROV_START:
   	    return action.doAction((WasStartedBy) s);
   	case PROV_USAGE:

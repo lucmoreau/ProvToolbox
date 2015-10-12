@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.xml.XMLConstants;
 
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
+
 
 /**
  * Utility class to traverse a document, register all namespaces occurring in {@link QualifiedName}s 
@@ -148,6 +151,24 @@ public class NamespaceGatherer implements StatementAction {
     public void doAction(SpecializationOf spec) {
 	register(spec.getGeneralEntity());
 	register(spec.getSpecificEntity());
+    }
+    
+    @Override
+    public void doAction(QualifiedSpecializationOf spec) {
+        register(spec.getId());
+        register(spec.getGeneralEntity());
+        register(spec.getSpecificEntity());
+        registerType(spec.getType());
+        registerOther(spec.getOther());
+    }
+    
+    @Override
+    public void doAction(QualifiedAlternateOf alt) {
+        register(alt.getId());
+        register(alt.getAlternate1());
+        register(alt.getAlternate2());
+        registerType(alt.getType());
+        registerOther(alt.getOther());
     }
 
     @Override

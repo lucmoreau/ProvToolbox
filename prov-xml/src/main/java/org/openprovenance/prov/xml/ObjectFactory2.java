@@ -36,6 +36,7 @@ import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.WasAssociatedWith;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 /**
  * This object contains factory methods for each 
@@ -56,6 +57,7 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     
 
     private final static String PROV_NS = NamespacePrefixMapper.PROV_NS;
+    private final static String PROV_EXT_NS = NamespacePrefixMapper.PROV_EXT_NS;
 
 
     private final static QName _HadPrimarySource_QNAME = new QName(PROV_NS, "hadPrimarySource");
@@ -98,6 +100,7 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     private final static QName _KeyEntityPair_QNAME = new QName(PROV_NS, "keyEntityPair");
     private final static QName _Plan_QNAME = new QName(PROV_NS, "plan");
     private final static QName _WasGeneratedBy_QNAME = new QName(PROV_NS, "wasGeneratedBy");
+    private final static QName _QualifiedSpecializationOf_QNAME = new QName(PROV_EXT_NS, "specializationOf");
 
     /**
      * Create a new org.openprovenance.prov.xml.ObjectFactory that can be used to create new instances of schema derived classes for package: org.openprovenance.prov.xml
@@ -330,6 +333,14 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
      */
     public SpecializationOf createSpecializationOf() {
         return new org.openprovenance.prov.xml.SpecializationOf();
+    }
+    
+    /**
+     * Create an instance of {@link SpecializationOf }
+     * 
+     */
+    public QualifiedSpecializationOf createQualifiedSpecializationOf() {
+        return new org.openprovenance.prov.xml.extension.QualifiedSpecializationOf();
     }
 
     /**
@@ -759,6 +770,16 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
         return new JAXBElement<SpecializationOf>(_SpecializationOf_QNAME, SpecializationOf.class, null, value);
     }
 
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link QualifiedSpecializationOf }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = PROV_EXT_NS, name = "specializationOf")
+    public JAXBElement<QualifiedSpecializationOf> createQualifiedSpecializationOf(QualifiedSpecializationOf value) {
+        return new JAXBElement<QualifiedSpecializationOf>(_QualifiedSpecializationOf_QNAME, QualifiedSpecializationOf.class, null, value);
+    }
+
+    
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link WasStartedBy }{@code >}}
      * 

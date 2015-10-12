@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
+
 
 /** This class provides a set of indexes over information contained in
  * an Document, facilitating its navigation.  Its constructor takes an
@@ -554,6 +557,13 @@ public class IndexedDocument implements StatementAction {
     @Override
     public void doAction(SpecializationOf s) {
 	add(s);
+    }
+    @Override
+    public void doAction(QualifiedSpecializationOf s) {
+    add(s);
+    }
+    public void doAction(QualifiedAlternateOf s) {
+    add(s);
     }
     @Override
     public void doAction(WasInformedBy s) {

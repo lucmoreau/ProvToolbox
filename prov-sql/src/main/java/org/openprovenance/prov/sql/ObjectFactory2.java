@@ -8,8 +8,6 @@
 
 package org.openprovenance.prov.sql;
 
-import java.nio.channels.UnsupportedAddressTypeException;
-
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
@@ -39,6 +37,8 @@ import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.WasAssociatedWith; 
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 
@@ -827,7 +827,17 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
 
     @Override
     public QualifiedSpecializationOf createQualifiedSpecializationOf() {
-    throw new UnsupportedAddressTypeException();
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public QualifiedAlternateOf createQualifiedAlternateOf() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public QualifiedHadMember createQualifiedHadMember() {
+        throw new UnsupportedOperationException();
     }
 
 

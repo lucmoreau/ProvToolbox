@@ -44,6 +44,7 @@ import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 /** For testing purpose, conversion back to ASN. */
@@ -567,6 +568,28 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
         String s = keyword("provext:specializationOf") + "(" + optionalId(id)
                 + idOrMarker(e2) + "," + idOrMarker(e1) +  optionalAttributes(attributes) + ")";
         writeln(s);
+        return null;
+    }
+
+    @Override
+    public QualifiedHadMember newQualifiedHadMember(QualifiedName id,
+                                                    QualifiedName c,
+                                                    Collection<QualifiedName> ll,
+                                                    Collection<Attribute> attributes) {
+        if ((ll == null) || (ll.size() == 0)) {
+            // strictly speaking it is not a syntactically correct expression,
+            // but we print something to support scruffiness
+            String s = keyword("provext:hadMember") + "(" + optionalId(id) + idOrMarker(c) + ","
+                    + idOrMarker((QualifiedName) null)+  optionalAttributes(attributes) + ")";
+            writeln(s);
+        } else {
+            for (QualifiedName e : ll) {
+                String s = keyword("provext:hadMember") + "(" + optionalId(id) + idOrMarker(c) + ","
+                        + idOrMarker(e) +  optionalAttributes(attributes) + ")";
+                writeln(s);
+            }
+        }
+        // TODO Auto-generated method stub
         return null;
     }
 

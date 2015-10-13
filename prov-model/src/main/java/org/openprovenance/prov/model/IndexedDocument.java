@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 
@@ -563,6 +564,9 @@ public class IndexedDocument implements StatementAction {
     add(s);
     }
     public void doAction(QualifiedAlternateOf s) {
+    add(s);
+    }
+    public void doAction(QualifiedHadMember s) {
     add(s);
     }
     @Override

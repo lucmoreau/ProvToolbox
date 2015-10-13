@@ -6,6 +6,7 @@ import java.util.List;
 import javax.xml.XMLConstants;
 
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 
@@ -145,6 +146,17 @@ public class NamespaceGatherer implements StatementAction {
 	for (QualifiedName i: mem.getEntity()) {
 	    register(i);
 	}
+    }
+    @Override
+    public void doAction(QualifiedHadMember mem) {
+        register(mem.getId());
+        register(mem.getCollection());
+        for (QualifiedName i: mem.getEntity()) {
+            register(i);
+        } 
+        registerType(mem.getType());
+        registerOther(mem.getOther());
+        
     }
 
     @Override

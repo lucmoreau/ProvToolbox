@@ -1,6 +1,7 @@
 package org.openprovenance.prov.model;
 
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 
@@ -59,6 +60,7 @@ public interface StatementAction {
     void doAction(SpecializationOf s);
     void doAction(QualifiedSpecializationOf s);
     void doAction(QualifiedAlternateOf s);
+    void doAction(QualifiedHadMember s);
 
     void doAction(DerivedByInsertionFrom s);
 

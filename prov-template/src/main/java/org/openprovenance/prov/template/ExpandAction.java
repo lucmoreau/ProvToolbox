@@ -41,6 +41,7 @@ import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 import static org.openprovenance.prov.template.Expand.TMPL_NS;
@@ -597,7 +598,49 @@ public class ExpandAction implements StatementAction {
     
     @Override
     public void doAction(QualifiedAlternateOf s) {
-        throw new UnsupportedOperationException();
+        QualifiedAlternateOf res = pf.newQualifiedAlternateOf(s.getId(),s.getAlternate1(), s.getAlternate2(),null);
+
+        QualifiedName alt1 = res.getAlternate1();
+        boolean updated0 = setExpand(res, alt1, 0);
+        QualifiedName alt2 = res.getAlternate2();
+        boolean updated1 = setExpand(res, alt2, 1);
+        boolean updated2 = expandAttributes(s, res);
+
+        boolean updated = updated0 || updated1 || updated2;
+        boolean allUpdated = updated0 && updated1 && updated2;
+        allExpanded=allExpanded && allUpdated;
+        if (!allUpdatedRequired || allUpdated) {
+            ll.add(res);
+        }
+        if (updated) addOrderAttribute(res);
+
+    }
+    
+    @Override
+    public void doAction(QualifiedHadMember s) {
+        QualifiedHadMember res = pf.newQualifiedHadMember(s.getId(),s.getCollection(), s.getEntity(),null);
+
+        QualifiedName col = res.getCollection();
+        boolean updated0 = setExpand(res, col, 0);
+        List<QualifiedName> ent = res.getEntity();
+        if (ent.size() > 1) {
+            throw new UnsupportedOperationException(
+                                                    "can't expand QualfiedHadMember with more than one members");
+        }
+        boolean updated1 = setExpand(res, ent.get(0), 1);
+        boolean updated2 = expandAttributes(s, res);
+
+        // .out.println("FIXME: to do , expand entities"); //FIXME
+
+        boolean updated = updated0 || updated1|| updated2;
+        boolean allUpdated = updated0 && updated1 && updated2;
+        allExpanded=allExpanded && allUpdated;
+        if (!allUpdatedRequired || allUpdated) {
+            ll.add(res);
+        }
+        if (updated) addOrderAttribute(res);
+        // TODO Auto-generated method stub
+
     }
 
     @Override

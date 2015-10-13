@@ -278,6 +278,19 @@ public class Dagify implements StatementAction {
         doActionAttributes(alt);        
     }
     
+    public void doAction(org.openprovenance.prov.model.extension.QualifiedHadMember mem) {
+        if (mem.getId()!=null) mem.setId(uniquify(mem.getId()));                
+        List<org.openprovenance.prov.model.QualifiedName> ll=new LinkedList<org.openprovenance.prov.model.QualifiedName>();
+        for (org.openprovenance.prov.model.QualifiedName er: mem.getEntity()) {
+            ll.add(uniquify(er));
+        }
+        mem.getEntity().clear();
+        mem.getEntity().addAll(ll);
+        
+        mem.setCollection(uniquify(mem.getCollection()));     
+        doActionAttributes(mem);        
+
+    }
     
     public void doAction(org.openprovenance.prov.model.HadMember mem) {
         List<org.openprovenance.prov.model.QualifiedName> ll=new LinkedList<org.openprovenance.prov.model.QualifiedName>();

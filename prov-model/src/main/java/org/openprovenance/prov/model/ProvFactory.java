@@ -18,6 +18,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 
@@ -882,6 +883,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      * @param general an identifier  ({@link QualifiedName}) for the general {@link Entity}
      * @return an instance of {@link SpecializationOf}
      */       
+    @Override
     public SpecializationOf newSpecializationOf(QualifiedName specific, QualifiedName general) {
 	SpecializationOf res = of.createSpecializationOf();
 	res.setSpecificEntity(specific);
@@ -889,16 +891,39 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
     
+    @Override
     public QualifiedSpecializationOf newQualifiedSpecializationOf(QualifiedName id, QualifiedName specific, QualifiedName general, Collection<Attribute> attributes) {
         QualifiedSpecializationOf res = of.createQualifiedSpecializationOf();
+        res.setId(id);
         res.setSpecificEntity(specific);
         res.setGeneralEntity(general);
         setAttributes(res, attributes);
         return res;
     }
-    public QualifiedAlternateOf newQualifiedAlternateOf(QualifiedName id, QualifiedName specific, QualifiedName general, Collection<Attribute> attributes) {
-        throw new UnsupportedOperationException();
+    @Override
+    public QualifiedAlternateOf newQualifiedAlternateOf(QualifiedName id, QualifiedName alt1, QualifiedName alt2, Collection<Attribute> attributes) {
+        QualifiedAlternateOf res=of.createQualifiedAlternateOf();
+        res.setId(id);
+        res.setAlternate1(alt1);
+        res.setAlternate2(alt2);
+        setAttributes(res, attributes);
+        return res;
     }
+    @Override
+    public QualifiedHadMember newQualifiedHadMember(QualifiedName id, QualifiedName c, Collection<QualifiedName> e, Collection<Attribute> attributes) {
+        List<QualifiedName> ll=new LinkedList<QualifiedName>();
+        if (e!=null) {
+            for (QualifiedName q: e) {
+            ll.add(q);
+            }
+        }
+        QualifiedHadMember res=of.createQualifiedHadMember();
+        res.setId(id);
+        res.setCollection(c);
+        res.getEntity().addAll(e);
+        return res;
+    }   
+ 
     
     public XMLGregorianCalendar newTime(Date date) {
 	GregorianCalendar gc = new GregorianCalendar();
@@ -1749,7 +1774,11 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	    throw new UnsupportedOperationException();
 	}
 	
-
+    @Override
+    public Object doAction(QualifiedHadMember s) {
+        throw new UnsupportedOperationException();
+    }
+    
 	@Override
 	public Object doAction(DerivedByInsertionFrom s) {
 	    throw new UnsupportedOperationException();
@@ -1764,6 +1793,11 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	public Object doAction(Bundle s, ProvUtilities provUtilities) {
 	    throw new UnsupportedOperationException();
 	}
+
+    @Override
+    public Object doAction(QualifiedAlternateOf s) {
+        throw new UnsupportedOperationException();
+    }
 	
     }
 

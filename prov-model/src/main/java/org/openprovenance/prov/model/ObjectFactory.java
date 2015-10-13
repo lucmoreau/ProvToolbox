@@ -1,5 +1,7 @@
 package org.openprovenance.prov.model;
 
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 
@@ -93,7 +95,8 @@ public interface ObjectFactory {
     WasStartedBy createWasStartedBy();
     
     QualifiedSpecializationOf createQualifiedSpecializationOf();
-
+    QualifiedAlternateOf createQualifiedAlternateOf();
+    QualifiedHadMember createQualifiedHadMember();
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link Used }{@code >}}

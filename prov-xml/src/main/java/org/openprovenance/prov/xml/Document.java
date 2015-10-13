@@ -18,6 +18,8 @@ import org.openprovenance.prov.xml.builder.ToString;
 import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
 import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
 import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
+import org.openprovenance.prov.xml.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.xml.extension.QualifiedHadMember;
 import org.openprovenance.prov.xml.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.StatementOrBundle;
@@ -71,7 +73,10 @@ public class Document
         @XmlElement(name = "specializationOf", type = SpecializationOf.class),
         @XmlElement(name = "specializationOf", namespace="http://openprovenance.org/prov/extension#", type = QualifiedSpecializationOf.class),	    
         @XmlElement(name = "alternateOf", type = AlternateOf.class),
+        @XmlElement(name = "alternateOf", namespace="http://openprovenance.org/prov/extension#", type = QualifiedAlternateOf.class),      
         @XmlElement(name = "hadMember", type = HadMember.class),
+        @XmlElement(name = "hadMember", namespace="http://openprovenance.org/prov/extension#", type = QualifiedHadMember.class),      
+
         @XmlElement(name = "mentionOf", type = MentionOf.class),
         @XmlElement(name = "plan", type = Plan.class),
         @XmlElement(name = "wasRevisionOf", type = Revision.class),

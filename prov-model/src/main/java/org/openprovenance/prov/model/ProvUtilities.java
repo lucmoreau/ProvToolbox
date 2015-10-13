@@ -11,6 +11,7 @@ import org.openprovenance.prov.model.StatementOrBundle.Kind;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -363,7 +364,12 @@ public class ProvUtilities {
   	    action.doAction((WasInvalidatedBy) s);
   	    break;
   	case PROV_MEMBERSHIP:
-  	    action.doAction((HadMember) s);
+  	    if (s instanceof QualifiedHadMember) {
+  	        action.doAction((QualifiedHadMember) s);
+  	    } else {
+            action.doAction((HadMember) s);
+
+  	    }
   	    break;
   	case PROV_MENTION:
   	    action.doAction((MentionOf) s);
@@ -391,7 +397,11 @@ public class ProvUtilities {
   	case PROV_AGENT:
   	    return action.doAction((Agent) s);
   	case PROV_ALTERNATE:
-  	    return action.doAction((AlternateOf) s);
+  	    if (s instanceof QualifiedAlternateOf) {
+  	      return action.doAction((QualifiedAlternateOf) s);
+  	    } else {
+  	      return action.doAction((AlternateOf) s);
+  	    }
   	case PROV_ASSOCIATION:
   	    return action.doAction((WasAssociatedWith) s);
   	case PROV_ATTRIBUTION:
@@ -421,7 +431,11 @@ public class ProvUtilities {
   	case PROV_INVALIDATION:
   	    return action.doAction((WasInvalidatedBy) s);
   	case PROV_MEMBERSHIP:
-  	    return action.doAction((HadMember) s);
+  	    if (s instanceof QualifiedHadMember) {
+  	        return action.doAction((QualifiedHadMember) s);
+  	    } else {
+            return action.doAction((HadMember) s);
+  	    }
   	case PROV_MENTION:
   	    return action.doAction((MentionOf) s);
   	case PROV_SPECIALIZATION:

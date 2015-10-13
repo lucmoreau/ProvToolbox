@@ -12,40 +12,18 @@ import javax.xml.bind.JAXBException;
 
 import junit.framework.TestCase;
 
-import org.openprovenance.prov.model.ActedOnBehalfOf;
-import org.openprovenance.prov.model.Activity;
-import org.openprovenance.prov.model.Agent;
-import org.openprovenance.prov.model.AlternateOf;
-import org.openprovenance.prov.model.DerivedByInsertionFrom;
-import org.openprovenance.prov.model.DerivedByRemovalFrom;
-import org.openprovenance.prov.model.DictionaryMembership;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.DocumentEquality;
-import org.openprovenance.prov.model.Entry;
-import org.openprovenance.prov.model.Entity;
-import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.HasLabel;
 import org.openprovenance.prov.model.HasLocation;
 import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.HasType;
 import org.openprovenance.prov.model.HasValue;
-import org.openprovenance.prov.model.Location;
-import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.Role;
-import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.Used;
-import org.openprovenance.prov.model.WasAssociatedWith;
-import org.openprovenance.prov.model.WasAttributedTo;
-import org.openprovenance.prov.model.WasDerivedFrom;
-import org.openprovenance.prov.model.WasEndedBy;
-import org.openprovenance.prov.model.WasGeneratedBy;
-import org.openprovenance.prov.model.WasInfluencedBy;
-import org.openprovenance.prov.model.WasInformedBy;
-import org.openprovenance.prov.model.WasInvalidatedBy;
-import org.openprovenance.prov.model.WasStartedBy;
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.xml.sax.SAXException;
 
@@ -445,4 +423,51 @@ public class ExtensionRoundTripFromJavaTest extends TestCase {
         }
     }
 
+    
+    
+
+    public void testQualifiedAlternateOf1() {
+        QualifiedAlternateOf gen = pFactory.newQualifiedAlternateOf(q("alt1"), q("e1"),q("e2"), null);
+        try {
+            makeDocAndTest(gen, "target/qualified-alternate1");
+        } catch (RuntimeException e) {
+            assertTrue(true);
+        }
+    }
+
+    public void testQualifiedAlternateOf2() {
+        QualifiedAlternateOf gen = pFactory.newQualifiedAlternateOf(null, q("e1"),q("e2"), null);
+        try {
+            makeDocAndTest(gen, "target/qualified-alternate2");
+        } catch (RuntimeException e) {
+            assertTrue(true);
+        }
+    }
+    
+    
+    
+
+    public void testQualifiedHadMemberf1() {
+        List<org.openprovenance.prov.model.QualifiedName> entities=new LinkedList<org.openprovenance.prov.model.QualifiedName>();
+        entities.add(q("e2"));
+        
+        QualifiedHadMember gen = pFactory.newQualifiedHadMember(q("mem"), q("e1"),entities, null);
+        try {
+            makeDocAndTest(gen, "target/qualified-member1");
+        } catch (RuntimeException e) {
+            assertTrue(true);
+        }
+    }
+
+    public void testQualifiedHadMember2() {
+        List<org.openprovenance.prov.model.QualifiedName> entities=new LinkedList<org.openprovenance.prov.model.QualifiedName>();
+        entities.add(q("e2"));
+        QualifiedHadMember gen = pFactory.newQualifiedHadMember(null, q("e1"),entities, null);
+        try {
+            makeDocAndTest(gen, "target/qualified-member2");
+        } catch (RuntimeException e) {
+            assertTrue(true);
+        }
+    }
+    
 }

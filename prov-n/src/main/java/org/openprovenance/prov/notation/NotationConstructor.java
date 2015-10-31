@@ -553,6 +553,10 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
                                                         QualifiedName e2,
                                                         QualifiedName e1,
                                                         Collection<Attribute> attributes) {
+        if ((id==null) && (attributes==null || attributes.isEmpty())) {
+             newAlternateOf(e2,e1);
+             return null;
+        }
         String s = keyword("provext:alternateOf") + "(" + optionalId(id)
                 + idOrMarker(e2) + "," + idOrMarker(e1) +  optionalAttributes(attributes) + ")";
         writeln(s);
@@ -564,6 +568,10 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
                                                                   QualifiedName e2,
                                                                   QualifiedName e1,
                                                                   Collection<Attribute> attributes) {
+        if ((id==null) && (attributes==null || attributes.isEmpty())) {
+            newSpecializationOf(e2,e1);
+            return null;
+        }
        
         String s = keyword("provext:specializationOf") + "(" + optionalId(id)
                 + idOrMarker(e2) + "," + idOrMarker(e1) +  optionalAttributes(attributes) + ")";
@@ -576,6 +584,10 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
                                                     QualifiedName c,
                                                     Collection<QualifiedName> ll,
                                                     Collection<Attribute> attributes) {
+        if ((id==null) && (attributes==null || attributes.isEmpty())) {
+            newHadMember(c,ll);
+            return null;
+        }
         if ((ll == null) || (ll.size() == 0)) {
             // strictly speaking it is not a syntactically correct expression,
             // but we print something to support scruffiness

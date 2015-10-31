@@ -490,7 +490,7 @@ public class ProvUtilities {
  		//if (xsdType.getLocalPart().equals("int")) { //FIXME:need to properly compare with xsd:int
  		//    return s;
  		//} else {
- 		    return "\"" + escape(s) + ((xsdType==null)? "" : "\" %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType));
+ 		    return "\"" + escape(s) + ((xsdType==null)? "\"" : "\" %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType));
  		//}
  	    }
   	} else {

@@ -1770,13 +1770,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}
 	@Override
 	public Object doAction(QualifiedSpecializationOf s) {
-	    //return newQualifiedSpecializationOf(s);
-	    throw new UnsupportedOperationException();
+        return newQualifiedSpecializationOf(s.getId(),s.getSpecificEntity(),s.getGeneralEntity(),getAttributes(s));
 	}
 	
     @Override
     public Object doAction(QualifiedHadMember s) {
-        throw new UnsupportedOperationException();
+        return newQualifiedHadMember(s.getId(),s.getCollection(),s.getEntity(),getAttributes(s));
     }
     
 	@Override
@@ -1796,7 +1795,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
     @Override
     public Object doAction(QualifiedAlternateOf s) {
-        throw new UnsupportedOperationException();
+        return newQualifiedAlternateOf(s.getId(),s.getAlternate1(),s.getAlternate2(),getAttributes(s));        
     }
 	
     }

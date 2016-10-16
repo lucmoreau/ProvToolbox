@@ -408,6 +408,10 @@ public class ProvenanceChallenge1Template {
         
         bindings1.addAttribute(b_var("consumed_name"),makeAttributeValue(prim_val("Img")));
         bindings1.addAttribute(b_var("consumed_name"),makeAttributeValue(prim_val("Hdr")));
+        bindings1.addAttribute(b_var("block_type"),makeAttributeValue(prim_val("Align_warp")));
+        bindings1.addAttribute(b_var("consumed_type"),makeAttributeValue(prim_val("File")));
+        bindings1.addAttribute(b_var("consumed_type"),makeAttributeValue(prim_val("File")));
+        bindings1.addAttribute(b_var("produced_type"),makeAttributeValue(prim_val("File")));
         
         return bindings1;
     }
@@ -451,7 +455,7 @@ public class ProvenanceChallenge1Template {
     
     public Document expander(Document docIn, Bindings bindings1) {
         
-        Expand expand=new Expand(pFactory, true, true);
+        Expand expand=new Expand(pFactory, false, true);
 
         Bundle bun = (Bundle) docIn.getStatementOrBundle().get(0);
 

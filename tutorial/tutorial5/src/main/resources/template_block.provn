@@ -2,6 +2,7 @@ document
  prefix tmpl <http://openprovenance.org/tmpl#>
  prefix var <http://openprovenance.org/var#>
  prefix vargen <http://openprovenance.org/vargen#>
+ prefix prim <http://openprovenance.org/primitives#>
  prefix estat <http://purl.org/net/statjr/ns#>
  prefix estatwf <http://purl.org/net/statjr/wf#>
 
@@ -17,14 +18,14 @@ document
   wasAttributedTo(var:parent,var:agent)
   wasStartedBy(var:block_instance, -, var:parent, -,
               [tmpl:time='var:starttime'])
-  entity(var:consumed)
+  entity(var:consumed,[prov:type='var:consumed_type'])
   used(var:block_instance, var:consumed, -,
        [ tmpl:time='var:consumed_at',
          prov:role='var:consumed_name'] )
-  entity(var:produced)
+  entity(var:produced,[prov:type='var:produced_type'])
   wasGeneratedBy(var:produced, var:block_instance, -,
        [ tmpl:time='var:produced_at',
-         estat:bindingname='var:produced_name'] )
+         prov:role='var:produced_name'] )
   wasDerivedFrom(var:produced, var:consumed)
  endBundle
 endDocument

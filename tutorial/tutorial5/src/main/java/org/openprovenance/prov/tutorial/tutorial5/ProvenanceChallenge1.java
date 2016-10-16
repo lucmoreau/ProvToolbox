@@ -1,6 +1,5 @@
 package org.openprovenance.prov.tutorial.tutorial5;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,12 +14,9 @@ import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
-import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasAssociatedWith;
-import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasGeneratedBy;
 
@@ -120,7 +116,9 @@ public class ProvenanceChallenge1 {
                                      String inputLocation,
                                      String outputLocation) {
 
-
+        Document graph = pFactory.newDocument();
+        List<StatementOrBundle> ll=graph.getStatementOrBundle();
+        
 
         Activity a1 = pFactory.newActivity(q("a#align_warp1"));
         pFactory.addType(a1, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
@@ -166,8 +164,12 @@ public class ProvenanceChallenge1 {
 
         Activity a15 = pFactory.newActivity(q("a#convert3"));
         pFactory.addType(a15, PRIMITIVE_CONVERT, name.PROV_QUALIFIED_NAME);
+        
+        ll.addAll(Arrays.asList(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15));
 
         Agent ag1 = pFactory.newAgent(q("ag1"), "John Doe");
+        
+        ll.add(ag1);
 
         Entity e1 = newFile(pFactory, "reference.img", "Reference Image");
 
@@ -219,149 +221,137 @@ public class ProvenanceChallenge1 {
         Entity e28 = newFile(pFactory, "atlas-x.gif", "Atlas X Graphic");
         Entity e29 = newFile(pFactory, "atlas-y.gif", "Atlas Y Graphic");
         Entity e30 = newFile(pFactory, "atlas-z.gif", "Atlas Z Graphic");
+        
+        ll.addAll(Arrays.asList(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10));
+        ll.addAll(Arrays.asList(e11, e12, e13, e14, e15, e16, e17, e18, e19, e20));
+        ll.addAll(Arrays.asList(e21, e22, e23, e24, e25, e25p, e26, e26p, e27, e27p, e28, e29, e30));
 
-        Used u1 = newUsed(a1, "img", e3);
-        Used u2 = newUsed(a1, "hdr", e4);
-        Used u3 = newUsed(a1, "imgRef", e1);
-        Used u4 = newUsed(a1, "hdrRef", e2);
-        Used u5 = newUsed(a2, "img", e5);
-        Used u6 = newUsed(a2, "hdr", e6);
-        Used u7 = newUsed(a2, "imgRef", e1);
-        Used u8 = newUsed(a2, "hdrRef", e2);
-        Used u9 = newUsed(a3, "img", e7);
-        Used u10 = newUsed(a3, "hdr", e8);
-        Used u11 = newUsed(a3, "imgRef", e1);
-        Used u12 = newUsed(a3, "hdrRef", e2);
-        Used u13 = newUsed(a4, "img", e9);
-        Used u14 = newUsed(a4, "hdr", e10);
-        Used u15 = newUsed(a4, "imgRef", e1);
-        Used u16 = newUsed(a4, "hdrRef", e2);
+        ll.add(newUsed(a1, "img", e3));
+        ll.add(newUsed(a1, "hdr", e4));
+        ll.add(newUsed(a1, "imgRef", e1));
+        ll.add(newUsed(a1, "hdrRef", e2));
+        ll.add(newUsed(a2, "img", e5));
+        ll.add(newUsed(a2, "hdr", e6));
+        ll.add(newUsed(a2, "imgRef", e1));
+        ll.add(newUsed(a2, "hdrRef", e2));
+        ll.add(newUsed(a3, "img", e7));
+        ll.add(newUsed(a3, "hdr", e8));
+        ll.add(newUsed(a3, "imgRef", e1));
+        ll.add(newUsed(a3, "hdrRef", e2));
+        ll.add(newUsed(a4, "img", e9));
+        ll.add(newUsed(a4, "hdr", e10));
+        ll.add(newUsed(a4, "imgRef", e1));
+        ll.add(newUsed(a4, "hdrRef", e2));
 
-        Used u17 = newUsed(a5, "in", e11);
-        Used u18 = newUsed(a6, "in", e12);
-        Used u19 = newUsed(a7, "in", e13);
-        Used u20 = newUsed(a8, "in", e14);
+        ll.add(newUsed(a5, "in", e11));
+        ll.add(newUsed(a6, "in", e12));
+        ll.add(newUsed(a7, "in", e13));
+        ll.add(newUsed(a8, "in", e14));
 
-        Used u21 = newUsed(a9, "i1", e15);
-        Used u22 = newUsed(a9, "h1", e16);
-        Used u23 = newUsed(a9, "i2", e17);
-        Used u24 = newUsed(a9, "h2", e18);
-        Used u25 = newUsed(a9, "i3", e19);
-        Used u26 = newUsed(a9, "h3", e20);
-        Used u27 = newUsed(a9, "i4", e21);
-        Used u28 = newUsed(a9, "h4", e22);
+        ll.add(newUsed(a9, "i1", e15));
+        ll.add(newUsed(a9, "h1", e16));
+        ll.add(newUsed(a9, "i2", e17));
+        ll.add(newUsed(a9, "h2", e18));
+        ll.add(newUsed(a9, "i3", e19));
+        ll.add(newUsed(a9, "h3", e20));
+        ll.add(newUsed(a9, "i4", e21));
+        ll.add(newUsed(a9, "h4", e22));
 
-        Used u29 = newUsed(a10, "img", e23);
-        Used u30 = newUsed(a10, "hdr", e24);
-        Used u30p = newUsed(a10, "param", e25p);
-        Used u31 = newUsed(a11, "img", e23);
-        Used u32 = newUsed(a11, "hdr", e24);
-        Used u32p = newUsed(a11, "param", e26p);
-        Used u33 = newUsed(a12, "img", e23);
-        Used u34 = newUsed(a12, "hdr", e24);
-        Used u34p = newUsed(a12, "param", e27p);
+        ll.add(newUsed(a10, "img", e23));
+        ll.add(newUsed(a10, "hdr", e24));
+        ll.add(newUsed(a10, "param", e25p));
+        ll.add(newUsed(a11, "img", e23));
+        ll.add(newUsed(a11, "hdr", e24));
+        ll.add(newUsed(a11, "param", e26p));
+        ll.add(newUsed(a12, "img", e23));
+        ll.add(newUsed(a12, "hdr", e24));
+        ll.add(newUsed(a12, "param", e27p));
 
-        Used u35 = newUsed(a13, "in", e25);
-        Used u36 = newUsed(a14, "in", e26);
-        Used u37 = newUsed(a15, "in", e27);
+        ll.add(newUsed(a13, "in", e25));
+        ll.add(newUsed(a14, "in", e26));
+        ll.add(newUsed(a15, "in", e27));
 
-        WasGeneratedBy wg1 = pFactory.newWasGeneratedBy(e11, "out", a1);
-        WasGeneratedBy wg2 = pFactory.newWasGeneratedBy(e12, "out", a2);
-        WasGeneratedBy wg3 = pFactory.newWasGeneratedBy(e13, "out", a3);
-        WasGeneratedBy wg4 = pFactory.newWasGeneratedBy(e14, "out", a4);
+        ll.add(newWasGeneratedBy(e11, "out", a1));
+        ll.add(newWasGeneratedBy(e12, "out", a2));
+        ll.add(newWasGeneratedBy(e13, "out", a3));
+        ll.add(newWasGeneratedBy(e14, "out", a4));
 
-        WasGeneratedBy wg5 = pFactory.newWasGeneratedBy(e15, "img", a5);
-        WasGeneratedBy wg6 = pFactory.newWasGeneratedBy(e16, "hdr", a5);
-        WasGeneratedBy wg7 = pFactory.newWasGeneratedBy(e17, "img", a6);
-        WasGeneratedBy wg8 = pFactory.newWasGeneratedBy(e18, "hdr", a6);
-        WasGeneratedBy wg9 = pFactory.newWasGeneratedBy(e19, "img", a7);
-        WasGeneratedBy wg10 = pFactory.newWasGeneratedBy(e20, "hdr", a7);
-        WasGeneratedBy wg11 = pFactory.newWasGeneratedBy(e21, "img", a8);
-        WasGeneratedBy wg12 = pFactory.newWasGeneratedBy(e22, "hdr", a8);
+        ll.add(newWasGeneratedBy(e15, "img", a5));
+        ll.add(newWasGeneratedBy(e16, "hdr", a5));
+        ll.add(newWasGeneratedBy(e17, "img", a6));
+        ll.add(newWasGeneratedBy(e18, "hdr", a6));
+        ll.add(newWasGeneratedBy(e19, "img", a7));
+        ll.add(newWasGeneratedBy(e20, "hdr", a7));
+        ll.add(newWasGeneratedBy(e21, "img", a8));
+        ll.add(newWasGeneratedBy(e22, "hdr", a8));
 
-        WasGeneratedBy wg13 = pFactory.newWasGeneratedBy(e23, "img", a9);
-        WasGeneratedBy wg14 = pFactory.newWasGeneratedBy(e24, "hdr", a9);
+        ll.add(newWasGeneratedBy(e23, "img", a9));
+        ll.add(newWasGeneratedBy(e24, "hdr", a9));
 
-        WasGeneratedBy wg15 = pFactory.newWasGeneratedBy(e25, "out", a10);
-        WasGeneratedBy wg16 = pFactory.newWasGeneratedBy(e26, "out", a11);
-        WasGeneratedBy wg17 = pFactory.newWasGeneratedBy(e27, "out", a12);
+        ll.add(newWasGeneratedBy(e25, "out", a10));
+        ll.add(newWasGeneratedBy(e26, "out", a11));
+        ll.add(newWasGeneratedBy(e27, "out", a12));
 
-        WasGeneratedBy wg18 = pFactory.newWasGeneratedBy(e28, "out", a13);
-        WasGeneratedBy wg19 = pFactory.newWasGeneratedBy(e29, "out", a14);
-        WasGeneratedBy wg20 = pFactory.newWasGeneratedBy(e30, "out", a15);
+        WasGeneratedBy wg18 = newWasGeneratedBy(e28, "out", a13);
+        WasGeneratedBy wg19 = newWasGeneratedBy(e29, "out", a14);
+        WasGeneratedBy wg20 = newWasGeneratedBy(e30, "out", a15);
         wg18.setTime(pFactory.newTimeNow());
         wg19.setTime(pFactory.newTimeNow());
         wg20.setTime(pFactory.newTimeNow());
+        ll.addAll(Arrays.asList(wg18,wg19,wg20));
 
-        WasDerivedFrom wd1 = newWasDerivedFrom(e11, e1);
-        WasDerivedFrom wd2 = newWasDerivedFrom(e11, e2);
-        WasDerivedFrom wd3 = newWasDerivedFrom(e11, e3);
-        WasDerivedFrom wd4 = newWasDerivedFrom(e11, e4);
-        WasDerivedFrom wd5 = newWasDerivedFrom(e12, e1);
-        WasDerivedFrom wd6 = newWasDerivedFrom(e12, e2);
-        WasDerivedFrom wd7 = newWasDerivedFrom(e12, e5);
-        WasDerivedFrom wd8 = newWasDerivedFrom(e12, e6);
-        WasDerivedFrom wd9 = newWasDerivedFrom(e13, e1);
-        WasDerivedFrom wd10 = newWasDerivedFrom(e13, e2);
-        WasDerivedFrom wd11 = newWasDerivedFrom(e13, e7);
-        WasDerivedFrom wd12 = newWasDerivedFrom(e13, e8);
-        WasDerivedFrom wd13 = newWasDerivedFrom(e14, e1);
-        WasDerivedFrom wd14 = newWasDerivedFrom(e14, e2);
-        WasDerivedFrom wd15 = newWasDerivedFrom(e14, e9);
-        WasDerivedFrom wd16 = newWasDerivedFrom(e14, e10);
-
-        WasDerivedFrom wd17 = newWasDerivedFrom(e15, e11);
-        WasDerivedFrom wd18 = newWasDerivedFrom(e16, e11);
-        WasDerivedFrom wd19 = newWasDerivedFrom(e17, e12);
-        WasDerivedFrom wd20 = newWasDerivedFrom(e18, e12);
-        WasDerivedFrom wd21 = newWasDerivedFrom(e19, e13);
-        WasDerivedFrom wd22 = newWasDerivedFrom(e20, e13);
-        WasDerivedFrom wd23 = newWasDerivedFrom(e21, e14);
-        WasDerivedFrom wd24 = newWasDerivedFrom(e22, e14);
-
-        WasDerivedFrom wd25 = newWasDerivedFrom(e23, e15);
-        WasDerivedFrom wd26 = newWasDerivedFrom(e23, e16);
-        WasDerivedFrom wd27 = newWasDerivedFrom(e23, e17);
-        WasDerivedFrom wd28 = newWasDerivedFrom(e23, e18);
-        WasDerivedFrom wd29 = newWasDerivedFrom(e23, e19);
-        WasDerivedFrom wd30 = newWasDerivedFrom(e23, e20);
-        WasDerivedFrom wd31 = newWasDerivedFrom(e23, e21);
-        WasDerivedFrom wd32 = newWasDerivedFrom(e23, e22);
-
-        WasDerivedFrom wd33 = newWasDerivedFrom(e24, e15);
-        WasDerivedFrom wd34 = newWasDerivedFrom(e24, e16);
-        WasDerivedFrom wd35 = newWasDerivedFrom(e24, e17);
-        WasDerivedFrom wd36 = newWasDerivedFrom(e24, e18);
-        WasDerivedFrom wd37 = newWasDerivedFrom(e24, e19);
-        WasDerivedFrom wd38 = newWasDerivedFrom(e24, e20);
-        WasDerivedFrom wd39 = newWasDerivedFrom(e24, e21);
-        WasDerivedFrom wd40 = newWasDerivedFrom(e24, e22);
-
-        WasDerivedFrom wd41 = newWasDerivedFrom(e25, e23);
-        WasDerivedFrom wd42 = newWasDerivedFrom(e25, e24);
-        WasDerivedFrom wd43 = newWasDerivedFrom(e26, e23);
-        WasDerivedFrom wd44 = newWasDerivedFrom(e26, e24);
-        WasDerivedFrom wd45 = newWasDerivedFrom(e27, e23);
-        WasDerivedFrom wd46 = newWasDerivedFrom(e27, e24);
-
-        WasDerivedFrom wd47 = newWasDerivedFrom(e28, e25);
-        WasDerivedFrom wd48 = newWasDerivedFrom(e29, e26);
-        WasDerivedFrom wd49 = newWasDerivedFrom(e30, e27);
+        ll.add(newWasDerivedFrom(e11, e1));
+        ll.add(newWasDerivedFrom(e11, e2));
+        ll.add(newWasDerivedFrom(e11, e3));
+        ll.add(newWasDerivedFrom(e11, e4));
+        ll.add(newWasDerivedFrom(e12, e1));
+        ll.add(newWasDerivedFrom(e12, e2));
+        ll.add(newWasDerivedFrom(e12, e5));
+        ll.add(newWasDerivedFrom(e12, e6));
+        ll.add(newWasDerivedFrom(e13, e1));
+        ll.add(newWasDerivedFrom(e13, e2));
+        ll.add(newWasDerivedFrom(e13, e7));
+        ll.add(newWasDerivedFrom(e13, e8));
+        ll.add(newWasDerivedFrom(e14, e1));
+        ll.add(newWasDerivedFrom(e14, e2));
+        ll.add(newWasDerivedFrom(e14, e9));
+        ll.add(newWasDerivedFrom(e14, e10));
+        ll.add(newWasDerivedFrom(e15, e11));
+        ll.add(newWasDerivedFrom(e16, e11));
+        ll.add(newWasDerivedFrom(e17, e12));
+        ll.add(newWasDerivedFrom(e18, e12));
+        ll.add(newWasDerivedFrom(e19, e13));
+        ll.add(newWasDerivedFrom(e20, e13));
+        ll.add(newWasDerivedFrom(e21, e14));
+        ll.add(newWasDerivedFrom(e22, e14));
+        ll.add(newWasDerivedFrom(e23, e15));
+        ll.add(newWasDerivedFrom(e23, e16));
+        ll.add(newWasDerivedFrom(e23, e17));
+        ll.add(newWasDerivedFrom(e23, e18));
+        ll.add(newWasDerivedFrom(e23, e19));
+        ll.add(newWasDerivedFrom(e23, e20));
+        ll.add(newWasDerivedFrom(e23, e21));
+        ll.add(newWasDerivedFrom(e23, e22));
+        ll.add(newWasDerivedFrom(e24, e15));
+        ll.add(newWasDerivedFrom(e24, e16));
+        ll.add(newWasDerivedFrom(e24, e17));
+        ll.add(newWasDerivedFrom(e24, e18));
+        ll.add(newWasDerivedFrom(e24, e19));
+        ll.add(newWasDerivedFrom(e24, e20));
+        ll.add(newWasDerivedFrom(e24, e21));
+        ll.add(newWasDerivedFrom(e24, e22));
+        ll.add(newWasDerivedFrom(e25, e23));
+        ll.add(newWasDerivedFrom(e25, e24));
+        ll.add(newWasDerivedFrom(e26, e23));
+        ll.add(newWasDerivedFrom(e26, e24));
+        ll.add(newWasDerivedFrom(e27, e23));
+        ll.add(newWasDerivedFrom(e27, e24));
+        ll.add(newWasDerivedFrom(e28, e25));
+        ll.add(newWasDerivedFrom(e29, e26));
+        ll.add(newWasDerivedFrom(e30, e27));
 
         WasAssociatedWith waw1 = pFactory.newWasAssociatedWith(q("waw1"), a1.getId(), ag1.getId());
-
-        Document graph = pFactory.newDocument(new Activity[] { a1, a2, a3, a4, a5, a6, a7, a8, a9,
-                a10, a11, a12, a13, a14, a15 }, new Entity[] { e1, e2, e5, e6, e3, e4, e7, e8, e9,
-                e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25,
-                e25p, e26, e26p, e27, e27p, e28, e29, e30 }, new Agent[] { ag1 }, new Statement[] {
-                u1, u2, u3, u4, u5, u6, u7, u8, u9, u10, u11, u12, u13, u14, u15, u16, u17, u18,
-                u19, u20, u21, u22, u23, u24, u25, u26, u27, u28, u29, u30, u31, u32, u33, u34,
-                u30p, u32p, u34p, u35, u36, u37, wg1, wg2, wg3, wg4, wg5, wg6, wg7, wg8, wg9, wg10,
-                wg11, wg12, wg13, wg14, wg15, wg16, wg17, wg18, wg19, wg20, wd1, wd2, wd3, wd4,
-                wd5, wd6, wd7, wd8, wd9, wd10, wd11, wd12, wd13, wd14, wd15, wd16, wd17, wd18,
-                wd19, wd20, wd21, wd22, wd23, wd24, wd25, wd26, wd27, wd28, wd29, wd30, wd31, wd32,
-                wd33, wd34, wd35, wd36, wd37, wd38, wd39, wd40, wd41, wd42, wd43, wd44, wd45, wd46,
-                wd47, wd48, wd49, waw1 });
+        ll.add(waw1);
 
         graph.setNamespace(Namespace.gatherNamespaces(graph));
 

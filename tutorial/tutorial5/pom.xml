@@ -89,7 +89,7 @@
 	      <goal>java</goal>
 	    </goals>
 	    <configuration>
-	      <mainClass>org.openprovenance.prov.tutorial.tutorial5.ProvenanceChallenge1</mainClass>
+	      <mainClass>org.openprovenance.prov.tutorial.tutorial5.ProvenanceChallenge1Template</mainClass>
 	      <arguments>
 		<argument>${project.build.directory}/pc1.svg</argument>
 	      </arguments>

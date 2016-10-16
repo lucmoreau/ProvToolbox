@@ -1,6 +1,7 @@
 package org.openprovenance.prov.tutorial.tutorial5;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.openprovenance.prov.interop.InteropFramework;
@@ -16,6 +17,7 @@ import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasDerivedFrom;
@@ -379,6 +381,21 @@ public class ProvenanceChallenge1Template {
         return pFactory.newQualifiedName(PRIM_NS, name, PRIM_PREFIX);
     }
     
+    
+
+    public List<TypedValue> makeAttributeValue(String s) {
+        List<TypedValue> ll=new LinkedList<TypedValue>();
+        ll.add(pFactory.newOther(pFactory.newQualifiedName(TMPL_NS, "ignore", "app"), s, name.XSD_STRING));
+        return ll;
+    }
+    
+    public List<TypedValue> makeAttributeValue(QualifiedName s) {
+        List<TypedValue> ll=new LinkedList<TypedValue>();
+        ll.add(pFactory.newOther(pFactory.newQualifiedName(TMPL_NS, "ignore", "app"), s, name.PROV_QUALIFIED_NAME));
+        return ll;
+    }
+    
+
     public Bindings makeBindings1()  {
 	
         Bindings bindings1=new Bindings(pFactory);
@@ -389,9 +406,8 @@ public class ProvenanceChallenge1Template {
         bindings1.addVariable(b_var("parent"),prim_val("a#pcworkflow"));      
         bindings1.addVariable(b_var("agent"),prim_val("ag1"));      
         
-        
-       // bindings1.addAttribute(b_var("consumed_name"),Arrays.asList(pFactory.newRole("img",name.XSD_STRING)));
-        
+        bindings1.addAttribute(b_var("consumed_name"),makeAttributeValue(prim_val("Img")));
+        bindings1.addAttribute(b_var("consumed_name"),makeAttributeValue(prim_val("Hdr")));
         
         return bindings1;
     }

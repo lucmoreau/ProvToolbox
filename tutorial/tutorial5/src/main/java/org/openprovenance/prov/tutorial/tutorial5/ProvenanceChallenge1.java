@@ -47,13 +47,17 @@ public class ProvenanceChallenge1 {
     static String FILE_LOCATION = "/shomewhere/pc1/";
     static String URL_LOCATION = "http://www.ipaw.info/challenge/";
 
-    static URI PRIMITIVE_RESLICE = URI.create("http://openprovenance.org/primitives#Reslice");
-    static URI PRIMITIVE_SOFTMEAN = URI.create("http://openprovenance.org/primitives#Softmean");
-    static URI PRIMITIVE_CONVERT = URI.create("http://openprovenance.org/primitives#Convert");
-    static URI PRIMITIVE_SLICER = URI.create("http://openprovenance.org/primitives#Slicer");
+ //   static URI PRIMITIVE_RESLICE = URI.create("http://openprovenance.org/primitives#Reslice");
+ //   static URI PRIMITIVE_SOFTMEAN = URI.create("http://openprovenance.org/primitives#Softmean");
+ //   static URI PRIMITIVE_CONVERT = URI.create("http://openprovenance.org/primitives#Convert");
+    //static URI PRIMITIVE_SLICER = URI.create("http://openprovenance.org/primitives#Slicer");
 
     QualifiedName PRIMITIVE_ALIGN_WARP;
-
+    QualifiedName PRIMITIVE_CONVERT;
+    QualifiedName PRIMITIVE_SLICER;
+    QualifiedName PRIMITIVE_RESLICE;
+    QualifiedName PRIMITIVE_SOFTMEAN;
+    
     Name name;
 
     private final ProvFactory pFactory;
@@ -65,6 +69,10 @@ public class ProvenanceChallenge1 {
         ns.addKnownNamespaces();
 
         PRIMITIVE_ALIGN_WARP = pFactory.newQualifiedName(PRIM_NS, "Align_warp", PRIM_PREFIX);
+        PRIMITIVE_CONVERT    = pFactory.newQualifiedName(PRIM_NS, "Convert", PRIM_PREFIX);
+        PRIMITIVE_SLICER     = pFactory.newQualifiedName(PRIM_NS, "Slicer", PRIM_PREFIX);
+        PRIMITIVE_RESLICE    = pFactory.newQualifiedName(PRIM_NS, "Reslice", PRIM_PREFIX);
+        PRIMITIVE_SOFTMEAN   = pFactory.newQualifiedName(PRIM_NS, "Softmean", PRIM_PREFIX);
         name = pFactory.getName();
 
     }
@@ -78,29 +86,16 @@ public class ProvenanceChallenge1 {
                              String label) {
 
            Entity a = pFactory.newEntity(q(id), label);
-           pFactory.addType(a, URI.create("http://openprovenance.org/primitives#File"));
-
+           pFactory.addType(a, pFactory.newType(pFactory.newQualifiedName(PRIM_NS, "FILE", PRIM_PREFIX),name.PROV_QUALIFIED_NAME));
            return a;
     }
 
-    public Entity newFileOld(ProvFactory pFactory,
-                          String id,
-                          String label,
-                          String file,
-                          String location) {
+    Entity newParameter(ProvFactory pFactory, String id, String label, String value) {
 
         Entity a = pFactory.newEntity(q(id), label);
-        pFactory.addType(a, URI.create("http://openprovenance.org/primitives#File"));
+        //pFactory.addType(a, URI.create("http://openprovenance.org/primitives#String"));
+        pFactory.addType(a, pFactory.newType(pFactory.newQualifiedName(PRIM_NS, "String", PRIM_PREFIX),name.PROV_QUALIFIED_NAME));
 
-        addUrl(a, location + file);
-
-        return a;
-    }
-
-    public Entity newParameter(ProvFactory pFactory, String id, String label, String value) {
-
-        Entity a = pFactory.newEntity(q(id), label);
-        pFactory.addType(a, URI.create("http://openprovenance.org/primitives#String"));
 
         addValue(a, value);
 
@@ -137,40 +132,40 @@ public class ProvenanceChallenge1 {
         pFactory.addType(a3, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
 
         Activity a4 = pFactory.newActivity(q("a#align_warp4"));
-        pFactory.addType(a4, PRIMITIVE_ALIGN_WARP, name.XSD_ANY_URI);
+        pFactory.addType(a4, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
 
         Activity a5 = pFactory.newActivity(q("a#reslice1"));
-        pFactory.addType(a5, PRIMITIVE_RESLICE, name.XSD_ANY_URI);
+        pFactory.addType(a5, PRIMITIVE_RESLICE, name.PROV_QUALIFIED_NAME);
 
         Activity a6 = pFactory.newActivity(q("a#reslice2"));
-        pFactory.addType(a6, PRIMITIVE_RESLICE, name.XSD_ANY_URI);
+        pFactory.addType(a6, PRIMITIVE_RESLICE, name.PROV_QUALIFIED_NAME);
 
         Activity a7 = pFactory.newActivity(q("a#reslice3"));
-        pFactory.addType(a7, PRIMITIVE_RESLICE, name.XSD_ANY_URI);
+        pFactory.addType(a7, PRIMITIVE_RESLICE, name.PROV_QUALIFIED_NAME);
 
         Activity a8 = pFactory.newActivity(q("a#reslice4"));
-        pFactory.addType(a8, PRIMITIVE_RESLICE, name.XSD_ANY_URI);
+        pFactory.addType(a8, PRIMITIVE_RESLICE, name.PROV_QUALIFIED_NAME);
 
         Activity a9 = pFactory.newActivity(q("a#softmean"));
-        pFactory.addType(a9, PRIMITIVE_SOFTMEAN, name.XSD_ANY_URI);
+        pFactory.addType(a9, PRIMITIVE_SOFTMEAN, name.PROV_QUALIFIED_NAME);
 
         Activity a10 = pFactory.newActivity(q("a#slicer1"));
-        pFactory.addType(a10, PRIMITIVE_SLICER, name.XSD_ANY_URI);
+        pFactory.addType(a10, PRIMITIVE_SLICER, name.PROV_QUALIFIED_NAME);
 
         Activity a11 = pFactory.newActivity(q("a#slicer2"));
-        pFactory.addType(a11, PRIMITIVE_SLICER, name.XSD_ANY_URI);
+        pFactory.addType(a11, PRIMITIVE_SLICER, name.PROV_QUALIFIED_NAME);
 
         Activity a12 = pFactory.newActivity(q("a#slicer3"));
-        pFactory.addType(a12, PRIMITIVE_SLICER, name.XSD_ANY_URI);
+        pFactory.addType(a12, PRIMITIVE_SLICER, name.PROV_QUALIFIED_NAME);
 
         Activity a13 = pFactory.newActivity(q("a#convert1"));
-        pFactory.addType(a13, PRIMITIVE_CONVERT, name.XSD_ANY_URI);
+        pFactory.addType(a13, PRIMITIVE_CONVERT, name.PROV_QUALIFIED_NAME);
 
         Activity a14 = pFactory.newActivity(q("a#convert2"));
-        pFactory.addType(a14, PRIMITIVE_CONVERT, name.XSD_ANY_URI);
+        pFactory.addType(a14, PRIMITIVE_CONVERT, name.PROV_QUALIFIED_NAME);
 
         Activity a15 = pFactory.newActivity(q("a#convert3"));
-        pFactory.addType(a15, PRIMITIVE_CONVERT, name.XSD_ANY_URI);
+        pFactory.addType(a15, PRIMITIVE_CONVERT, name.PROV_QUALIFIED_NAME);
 
         Agent ag1 = pFactory.newAgent(q("ag1"), "John Doe");
 

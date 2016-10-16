@@ -399,16 +399,16 @@ public class ProvenanceChallenge1Template {
     public Bindings makeBindings1()  {
 	
         Bindings bindings1=new Bindings(pFactory);
-        bindings1.addVariable(b_var("consumed"),file_val("anatomy1.img"));
-        bindings1.addVariable(b_var("consumed"),file_val("anatomy1.hdr"));      
-        bindings1.addVariable(b_var("block_instance"),prim_val("a#align_warp1"));      
-        bindings1.addVariable(b_var("produced"),file_val("warp1.warp"));      
-        bindings1.addVariable(b_var("parent"),prim_val("a#pcworkflow"));      
-        bindings1.addVariable(b_var("agent"),prim_val("ag1"));      
+        bindings1.addVariable(b_var("consumed"),       file_val("anatomy1.img"));
+        bindings1.addVariable(b_var("consumed"),       file_val("anatomy1.hdr"));      
+        bindings1.addVariable(b_var("block_instance"), prim_val("a#align_warp1"));      
+        bindings1.addVariable(b_var("produced"),       file_val("warp1.warp"));      
+        bindings1.addVariable(b_var("parent"),         prim_val("a#pcworkflow"));      
+        bindings1.addVariable(b_var("agent"),          prim_val("ag1"));      
         
         bindings1.addAttribute(b_var("consumed_name"),makeAttributeValue(prim_val("Img")));
         bindings1.addAttribute(b_var("consumed_name"),makeAttributeValue(prim_val("Hdr")));
-        bindings1.addAttribute(b_var("block_type"),makeAttributeValue(prim_val("Align_warp")));
+        bindings1.addAttribute(b_var("block_type"),   makeAttributeValue(prim_val("Align_warp")));
         bindings1.addAttribute(b_var("consumed_type"),makeAttributeValue(prim_val("File")));
         bindings1.addAttribute(b_var("consumed_type"),makeAttributeValue(prim_val("File")));
         bindings1.addAttribute(b_var("produced_type"),makeAttributeValue(prim_val("File")));

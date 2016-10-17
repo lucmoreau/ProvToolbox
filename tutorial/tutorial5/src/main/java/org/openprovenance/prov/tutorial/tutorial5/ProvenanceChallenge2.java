@@ -30,7 +30,7 @@ import org.openprovenance.prov.model.WasGeneratedBy;
  *      href="http://twiki.ipaw.info/bin/view/Challenge/FirstProvenanceChallenge">provenance
  *      challenge</a>
  */
-public class ProvenanceChallenge1 {
+public class ProvenanceChallenge2 {
 
     public static final String PC1_NS = "http://www.ipaw.info/challenge/";
     public static final String PC1_PREFIX = "pc1";
@@ -59,7 +59,7 @@ public class ProvenanceChallenge1 {
     private final ProvFactory pFactory;
     private final Namespace ns;
 
-    public ProvenanceChallenge1(ProvFactory pFactory) {
+    public ProvenanceChallenge2(ProvFactory pFactory) {
         this.pFactory = pFactory;
         ns = new Namespace();
         ns.addKnownNamespaces();
@@ -112,7 +112,97 @@ public class ProvenanceChallenge1 {
     // return ns.qualifiedName(PROVBOOK_PREFIX, n, pFactory);
     // }
     
+    public void align(ProvFactory pFactory,
+                      Document doc,
+                      String imgfile, String imglabel, 
+                      String hdrfile, String hdrlabel,
+                      String imgreffile1, String imgreflabel, 
+                      String hdrreffile1, String hdrreflabel, 
+                      String activity,
+                      String warpfile, String warplabel,
+                      String workflow, String agent) {
+        
+        List<StatementOrBundle> ll=doc.getStatementOrBundle();
+        Activity a1 = pFactory.newActivity(q(activity));
+        pFactory.addType(a1, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
+        
+        Entity e1 = newFile(pFactory, imgreffile1, imgreflabel);
+        Entity e2 = newFile(pFactory, hdrreffile1, hdrreflabel);
+        Entity e3 = newFile(pFactory, imgfile, imglabel);
+        Entity e4 = newFile(pFactory, hdrfile, hdrlabel);
+        
+        ll.addAll(Arrays.asList(a1,e1,e2,e3,e4));
 
+        ll.add(newUsed(a1, "img", e3));
+        ll.add(newUsed(a1, "hdr", e4));
+        ll.add(newUsed(a1, "imgRef", e1));
+        ll.add(newUsed(a1, "hdrRef", e2));
+        
+        Entity e11 = newFile(pFactory, warpfile, warplabel);
+        
+        ll.add(e11);
+
+        ll.add(newWasGeneratedBy(e11, "out", a1));
+        
+        ll.add(newWasDerivedFrom(e11, e1));
+        ll.add(newWasDerivedFrom(e11, e2));
+        ll.add(newWasDerivedFrom(e11, e3));
+        ll.add(newWasDerivedFrom(e11, e4));
+        
+    }
+    
+    public void reslice(ProvFactory pFactory,
+                        Document doc,
+                        String warp, 
+                        String activity, 
+                        String imgfile, String imglabel,
+                        String hdrfile, String hdrlabel,
+                        String workflow, String agent)  {
+        
+        List<StatementOrBundle> ll=doc.getStatementOrBundle();
+        
+        Activity a5 = pFactory.newActivity(q(activity));
+        pFactory.addType(a5, PRIMITIVE_RESLICE, name.PROV_QUALIFIED_NAME);
+
+        Entity e15 = newFile(pFactory, imgfile, imglabel);
+        Entity e16 = newFile(pFactory, hdrfile, hdrlabel);
+        
+        Entity e11 = pFactory.newEntity(q(warp));
+        ll.add(newUsed(a5, "in", e11));
+        ll.add(newWasGeneratedBy(e15, "img", a5));
+        ll.add(newWasGeneratedBy(e16, "hdr", a5));
+        
+        ll.add(newWasDerivedFrom(e15, e11));
+        ll.add(newWasDerivedFrom(e16, e11));
+        
+        ll.addAll(Arrays.asList(a5,e15,e16,e11));
+
+        ll.add(newUsed(a5, "in", e11));
+
+    }
+    
+    public Document makePC1FullGraph(ProvFactory pFactory) {
+        Document graph = pFactory.newDocument();
+        align(pFactory,graph,"anatomy1.img", "Anatomy I1", "anatomy1.hdr", "Anatomy H1", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp1","warp1.warp", "Warp Params1", "a#pcworkflow","ag1");
+        align(pFactory,graph,"anatomy2.img", "Anatomy I2", "anatomy2.hdr", "Anatomy H2", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp2","warp2.warp", "Warp Params2", "a#pcworkflow","ag1");
+        align(pFactory,graph,"anatomy3.img", "Anatomy I3", "anatomy3.hdr", "Anatomy H3", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp3","warp3.warp", "Warp Params3", "a#pcworkflow","ag1");
+        align(pFactory,graph,"anatomy4.img", "Anatomy I4", "anatomy4.hdr", "Anatomy H4", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp4","warp4.warp", "Warp Params4", "a#pcworkflow","ag1");
+
+
+        reslice(pFactory,graph,"warp1.warp", "a#reslice1", "reslice1.img", "Resliced I1", "reslice1.hdr", "Resliced H1", "a#pcworkflow","ag1");
+        reslice(pFactory,graph,"warp2.warp", "a#reslice2", "reslice2.img", "Resliced I2", "reslice2.hdr", "Resliced H2", "a#pcworkflow","ag1");
+        reslice(pFactory,graph,"warp3.warp", "a#reslice3", "reslice3.img", "Resliced I3", "reslice3.hdr", "Resliced H3", "a#pcworkflow","ag1");
+        reslice(pFactory,graph,"warp4.warp", "a#reslice4", "reslice4.img", "Resliced I4", "reslice4.hdr", "Resliced H4", "a#pcworkflow","ag1");
+
+        
+        
+        graph.setNamespace(Namespace.gatherNamespaces(graph));
+
+        return graph;
+
+    }
+
+/*
     public Document makePC1FullGraph(ProvFactory pFactory,
                                      String inputLocation,
                                      String outputLocation) {
@@ -121,8 +211,8 @@ public class ProvenanceChallenge1 {
         List<StatementOrBundle> ll=graph.getStatementOrBundle();
         
 
-        Activity a1 = pFactory.newActivity(q("a#align_warp1"));
-        pFactory.addType(a1, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
+ //       Activity a1 = pFactory.newActivity(q("a#align_warp1"));
+ //       pFactory.addType(a1, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
 
         Activity a2 = pFactory.newActivity(q("a#align_warp2"));
         pFactory.addType(a2, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
@@ -166,19 +256,25 @@ public class ProvenanceChallenge1 {
         Activity a15 = pFactory.newActivity(q("a#convert3"));
         pFactory.addType(a15, PRIMITIVE_CONVERT, name.PROV_QUALIFIED_NAME);
         
-        ll.addAll(Arrays.asList(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15));
+        ll.addAll(Arrays.asList(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15));
+        
+        align(pFactory,graph,"anatomy1.img", "Anatomy I1", "anatomy1.hdr", "Anatomy H1", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp1","warp1.warp", "Warp Params1", "a#pcworkflow","ag1");
+        align(pFactory,graph,"anatomy2.img", "Anatomy I2", "anatomy2.hdr", "Anatomy H2", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp2","warp2.warp", "Warp Params2", "a#pcworkflow","ag1");
+        align(pFactory,graph,"anatomy3.img", "Anatomy I3", "anatomy3.hdr", "Anatomy H3", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp3","warp3.warp", "Warp Params3", "a#pcworkflow","ag1");
+        align(pFactory,graph,"anatomy4.img", "Anatomy I4", "anatomy4.hdr", "Anatomy H4", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp4","warp4.warp", "Warp Params4", "a#pcworkflow","ag1");
+
 
         Agent ag1 = pFactory.newAgent(q("ag1"), "John Doe");
         
         ll.add(ag1);
 
-        Entity e1 = newFile(pFactory, "reference.img", "Reference Image");
+  //      Entity e1 = newFile(pFactory, "reference.img", "Reference Image");
 
-        Entity e2 = newFile(pFactory, "reference.hdr", "Reference Header");
+  //      Entity e2 = newFile(pFactory, "reference.hdr", "Reference Header");
 
-        Entity e3 = newFile(pFactory, "anatomy1.img", "Anatomy I1");
+  //      Entity e3 = newFile(pFactory, "anatomy1.img", "Anatomy I1");
 
-        Entity e4 = newFile(pFactory, "anatomy1.hdr", "Anatomy H1");
+  //      Entity e4 = newFile(pFactory, "anatomy1.hdr", "Anatomy H1");
 
         Entity e5 = newFile(pFactory, "anatomy2.img", "Anatomy I2");
 
@@ -192,7 +288,6 @@ public class ProvenanceChallenge1 {
 
         Entity e10 = newFile(pFactory, "anatomy4.hdr", "Anatomy H4");
 
-        Entity e11 = newFile(pFactory, "warp1.warp", "Warp Params1");
 
         Entity e12 = newFile(pFactory, "warp2.warp", "Warp Params2");
 
@@ -223,14 +318,11 @@ public class ProvenanceChallenge1 {
         Entity e29 = newFile(pFactory, "atlas-y.gif", "Atlas Y Graphic");
         Entity e30 = newFile(pFactory, "atlas-z.gif", "Atlas Z Graphic");
         
-        ll.addAll(Arrays.asList(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10));
-        ll.addAll(Arrays.asList(e11, e12, e13, e14, e15, e16, e17, e18, e19, e20));
+        ll.addAll(Arrays.asList( e5, e6, e7, e8, e9, e10));
+        ll.addAll(Arrays.asList( e12, e13, e14, e15, e16, e17, e18, e19, e20));
         ll.addAll(Arrays.asList(e21, e22, e23, e24, e25, e25p, e26, e26p, e27, e27p, e28, e29, e30));
 
-        ll.add(newUsed(a1, "img", e3));
-        ll.add(newUsed(a1, "hdr", e4));
-        ll.add(newUsed(a1, "imgRef", e1));
-        ll.add(newUsed(a1, "hdrRef", e2));
+
         ll.add(newUsed(a2, "img", e5));
         ll.add(newUsed(a2, "hdr", e6));
         ll.add(newUsed(a2, "imgRef", e1));
@@ -272,7 +364,6 @@ public class ProvenanceChallenge1 {
         ll.add(newUsed(a14, "in", e26));
         ll.add(newUsed(a15, "in", e27));
 
-        ll.add(newWasGeneratedBy(e11, "out", a1));
         ll.add(newWasGeneratedBy(e12, "out", a2));
         ll.add(newWasGeneratedBy(e13, "out", a3));
         ll.add(newWasGeneratedBy(e14, "out", a4));
@@ -301,10 +392,7 @@ public class ProvenanceChallenge1 {
         wg20.setTime(pFactory.newTimeNow());
         ll.addAll(Arrays.asList(wg18,wg19,wg20));
 
-        ll.add(newWasDerivedFrom(e11, e1));
-        ll.add(newWasDerivedFrom(e11, e2));
-        ll.add(newWasDerivedFrom(e11, e3));
-        ll.add(newWasDerivedFrom(e11, e4));
+
         ll.add(newWasDerivedFrom(e12, e1));
         ll.add(newWasDerivedFrom(e12, e2));
         ll.add(newWasDerivedFrom(e12, e5));
@@ -358,6 +446,9 @@ public class ProvenanceChallenge1 {
 
         return graph;
     }
+    
+    */
+    
 
     public Used newUsed(Activity activity, String role, Entity entity) {
         return newUsed(activity.getId(), role, entity.getId());
@@ -392,7 +483,7 @@ public class ProvenanceChallenge1 {
 
     public Document makeDocument() {
 
-        return makePC1FullGraph(pFactory, URL_LOCATION, URL_LOCATION);
+        return makePC1FullGraph(pFactory);
 
     }
 
@@ -418,7 +509,7 @@ public class ProvenanceChallenge1 {
             throw new UnsupportedOperationException("main to be called with filename");
         String file = args[0];
 
-        ProvenanceChallenge1 little = new ProvenanceChallenge1(InteropFramework.newXMLProvFactory());
+        ProvenanceChallenge2 little = new ProvenanceChallenge2(InteropFramework.newXMLProvFactory());
         little.openingBanner();
         Document document = little.makeDocument();
         little.doConversions(document, file);

@@ -439,12 +439,47 @@ public class ProvenanceChallenge1Template {
         return bindings1;
     }
     
+    public Bindings makeBindings2(String warp, 
+                                  String activity, 
+                                  String imgfile, String imglabel,
+                                  String hdrfile, String hdrlabel,
+                                  String workflow, String agent)  {
+    
+        Bindings bindings=new Bindings(pFactory);
+        bindings.addVariable(b_var("consumed"),       file_val(warp));
+        bindings.addVariable(b_var("block_instance"), prim_val(activity));      
+        bindings.addVariable(b_var("produced"),       file_val(imgfile));      
+        bindings.addVariable(b_var("produced"),       file_val(hdrfile));      
+
+        if (workflow!=null) bindings.addVariable(b_var("parent"),         prim_val(workflow));      
+        if (agent!=null)    bindings.addVariable(b_var("agent"),          prim_val(agent));      
+        
+        bindings.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("Warp")));
+        bindings.addAttribute(b_var("consumed_type"), makeAttributeValue(prim_val("File")));
+        bindings.addAttribute(b_var("block_type"),    makeAttributeValue(prim_val("Align_warp")));
+        bindings.addAttribute(t_var("produced_label"),makeAttributeValue(imglabel));
+        bindings.addAttribute(t_var("produced_label"),makeAttributeValue(hdrlabel));
+        bindings.addAttribute(t_var("produced_name"),makeAttributeValue(prim_val("Img")));
+        bindings.addAttribute(t_var("produced_name"),makeAttributeValue(prim_val("Hdr")));
+        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val("File")));
+        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val("File")));
+        
+        
+        return bindings;
+    }
+    
     public List<Bindings> makeBindings() {
         List<Bindings> res=new LinkedList<Bindings>();
         res.add(makeBindings1("anatomy1.img", "Anatomy I1", "anatomy1.hdr", "Anatomy H1", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp1","warp1.warp", "Warp Params1", "a#pcworkflow","ag1"));
         res.add(makeBindings1("anatomy2.img", "Anatomy I2", "anatomy2.hdr", "Anatomy H2", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp2","warp2.warp", "Warp Params2", "a#pcworkflow","ag1"));
         res.add(makeBindings1("anatomy3.img", "Anatomy I3", "anatomy3.hdr", "Anatomy H3", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp3","warp3.warp", "Warp Params3", "a#pcworkflow","ag1"));
         res.add(makeBindings1("anatomy4.img", "Anatomy I4", "anatomy4.hdr", "Anatomy H4", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp4","warp4.warp", "Warp Params4", "a#pcworkflow","ag1"));
+
+        
+        res.add(makeBindings2("warp1.warp", "a#reslice1", "reslice1.img", "Resliced I1", "reslice1.hdr", "Resliced H1", "a#pcworkflow","ag1"));
+        res.add(makeBindings2("warp2.warp", "a#reslice2", "reslice2.img", "Resliced I2", "reslice2.hdr", "Resliced H2", "a#pcworkflow","ag1"));
+        res.add(makeBindings2("warp3.warp", "a#reslice3", "reslice3.img", "Resliced I3", "reslice3.hdr", "Resliced H3", "a#pcworkflow","ag1"));
+        res.add(makeBindings2("warp4.warp", "a#reslice4", "reslice4.img", "Resliced I4", "reslice4.hdr", "Resliced H4", "a#pcworkflow","ag1"));
         return res;
     }
 

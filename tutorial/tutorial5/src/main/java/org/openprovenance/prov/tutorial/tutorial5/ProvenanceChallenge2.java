@@ -6,20 +6,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.interop.InteropFramework.ProvFormat;
 import org.openprovenance.prov.model.Activity;
-import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
-import org.openprovenance.prov.model.HasOther;
-import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.StatementOrBundle;
-import org.openprovenance.prov.model.Used;
-import org.openprovenance.prov.model.WasAssociatedWith;
-import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasGeneratedBy;
 
 /**
@@ -32,82 +24,23 @@ import org.openprovenance.prov.model.WasGeneratedBy;
  *      href="http://twiki.ipaw.info/bin/view/Challenge/FirstProvenanceChallenge">provenance
  *      challenge</a>
  */
-public class ProvenanceChallenge2 implements Challenge {
+public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Collection<StatementOrBundle>> {
 
-    static String PATH_PROPERTY = "http://openprovenance.org/primitives#path";
-    static String URL_PROPERTY = "http://openprovenance.org/primitives#url";
-    static String PRIMITIVE_PROPERTY = "http://openprovenance.org/primitives#primitive";
-    static String FILE_LOCATION = "/shomewhere/pc1/";
-    static String URL_LOCATION = "http://www.ipaw.info/challenge/";
 
- //   static URI PRIMITIVE_RESLICE = URI.create("http://openprovenance.org/primitives#Reslice");
- //   static URI PRIMITIVE_SOFTMEAN = URI.create("http://openprovenance.org/primitives#Softmean");
- //   static URI PRIMITIVE_CONVERT = URI.create("http://openprovenance.org/primitives#Convert");
-    //static URI PRIMITIVE_SLICER = URI.create("http://openprovenance.org/primitives#Slicer");
 
-    QualifiedName PRIMITIVE_ALIGN_WARP;
-    QualifiedName PRIMITIVE_CONVERT;
-    QualifiedName PRIMITIVE_SLICER;
-    QualifiedName PRIMITIVE_RESLICE;
-    QualifiedName PRIMITIVE_SOFTMEAN;
-    
-    Name name;
-
-    private final ProvFactory pFactory;
     private final Namespace ns;
 
     public ProvenanceChallenge2(ProvFactory pFactory) {
-        this.pFactory = pFactory;
+        super(pFactory);
+        
         ns = new Namespace();
         ns.addKnownNamespaces();
 
-        PRIMITIVE_ALIGN_WARP = pFactory.newQualifiedName(PRIM_NS, "Align_warp", PRIM_PREFIX);
-        PRIMITIVE_CONVERT    = pFactory.newQualifiedName(PRIM_NS, "Convert", PRIM_PREFIX);
-        PRIMITIVE_SLICER     = pFactory.newQualifiedName(PRIM_NS, "Slicer", PRIM_PREFIX);
-        PRIMITIVE_RESLICE    = pFactory.newQualifiedName(PRIM_NS, "Reslice", PRIM_PREFIX);
-        PRIMITIVE_SOFTMEAN   = pFactory.newQualifiedName(PRIM_NS, "Softmean", PRIM_PREFIX);
-        name = pFactory.getName();
+      
 
     }
 
-    public void addUrl(HasOther p1, String val) {
-        p1.getOther().add(pFactory.newOther(PC1_NS, "url", PC1_PREFIX, val, name.XSD_STRING));
-    }
-    
-    public Entity newFile(ProvFactory pFactory,
-                             String id,
-                             String label) {
-
-           Entity a = pFactory.newEntity(q(id), label);
-           pFactory.addType(a, pFactory.newType(pFactory.newQualifiedName(PRIM_NS, "File", PRIM_PREFIX),name.PROV_QUALIFIED_NAME));
-           return a;
-    }
-
-    Entity newParameter(ProvFactory pFactory, String id, String label, String value) {
-
-        Entity a = pFactory.newEntity(q(id), label);
-        //pFactory.addType(a, URI.create("http://openprovenance.org/primitives#String"));
-        pFactory.addType(a, pFactory.newType(pFactory.newQualifiedName(PRIM_NS, "String", PRIM_PREFIX),name.PROV_QUALIFIED_NAME));
-
-
-        addValue(a, value);
-
-        return a;
-    }
-
-    public void addValue(HasOther p1, String val) {
-        p1.getOther().add(pFactory.newOther(PC1_NS, "value", PC1_PREFIX, val, name.XSD_STRING));
-    }
-
-    public QualifiedName q(String n) {
-        // return new org.openprovenance.prov.xml.QualifiedName(PC1_NS, n,
-        // PC1_PREFIX);
-        return pFactory.newQualifiedName(PC1_NS, n, PC1_PREFIX);
-    }
-
-    // public QualifiedName qn(String n) {
-    // return ns.qualifiedName(PROVBOOK_PREFIX, n, pFactory);
-    // }
+   
     
     /* (non-Javadoc)
      * @see org.openprovenance.prov.tutorial.tutorial5.Challenge#align(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
@@ -123,7 +56,7 @@ public class ProvenanceChallenge2 implements Challenge {
         
         Collection<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
         Activity a1 = pFactory.newActivity(q(activity));
-        pFactory.addType(a1, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
+        pFactory.addType(a1, pFactory.newQualifiedName(PRIM_NS, ALIGN_WARP, PRIM_PREFIX), name.PROV_QUALIFIED_NAME);
         
         Entity e1 = newFile(pFactory, imgreffile1, imgreflabel);
         Entity e2 = newFile(pFactory, hdrreffile1, hdrreflabel);
@@ -165,7 +98,7 @@ public class ProvenanceChallenge2 implements Challenge {
         Collection<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
         
         Activity a5 = pFactory.newActivity(q(activity));
-        pFactory.addType(a5, PRIMITIVE_RESLICE, name.PROV_QUALIFIED_NAME);
+        pFactory.addType(a5, pFactory.newQualifiedName(PRIM_NS, RESLICE,    PRIM_PREFIX), name.PROV_QUALIFIED_NAME);
 
         Entity e15 = newFile(pFactory, imgfile, imglabel);
         Entity e16 = newFile(pFactory, hdrfile, hdrlabel);
@@ -202,8 +135,8 @@ public class ProvenanceChallenge2 implements Challenge {
         Collection<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
 
         
-        Activity a9 = pFactory.newActivity(q("a#softmean"));
-        pFactory.addType(a9, PRIMITIVE_SOFTMEAN, name.PROV_QUALIFIED_NAME);
+        Activity a9 = pFactory.newActivity(q(activity));
+        pFactory.addType(a9, pFactory.newQualifiedName(PRIM_NS, SOFTMEAN,    PRIM_PREFIX), name.PROV_QUALIFIED_NAME);
         
         Entity e15 = pFactory.newEntity(q(imgfile1));
         Entity e16 = pFactory.newEntity(q(hdrfile1));
@@ -267,7 +200,7 @@ public class ProvenanceChallenge2 implements Challenge {
         Collection<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
         
         Activity a10 = pFactory.newActivity(q(activity));
-        pFactory.addType(a10, PRIMITIVE_SLICER, name.PROV_QUALIFIED_NAME);
+        pFactory.addType(a10, pFactory.newQualifiedName(PRIM_NS, SLICER,    PRIM_PREFIX), name.PROV_QUALIFIED_NAME);
         
         Entity e23 = pFactory.newEntity(q(imgatlas));
         Entity e24 = pFactory.newEntity(q(hdratlas));
@@ -302,7 +235,7 @@ public class ProvenanceChallenge2 implements Challenge {
         Collection<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
 
         Activity a13 = pFactory.newActivity(q(activity));
-        pFactory.addType(a13, PRIMITIVE_CONVERT, name.PROV_QUALIFIED_NAME);
+        pFactory.addType(a13, pFactory.newQualifiedName(PRIM_NS, CONVERT,    PRIM_PREFIX), name.PROV_QUALIFIED_NAME);
         
         Entity e25 = pFactory.newEntity(q(pgmfile));
 
@@ -320,7 +253,7 @@ public class ProvenanceChallenge2 implements Challenge {
         
     
     
-    public Document makePC1FullGraph(ProvFactory pFactory) {
+    public Document makeDocument() {
         Document graph = pFactory.newDocument();
         List<StatementOrBundle> ll=graph.getStatementOrBundle();
         
@@ -354,61 +287,7 @@ public class ProvenanceChallenge2 implements Challenge {
 
     }
 
-    
 
-    public Used newUsed(Activity activity, String role, Entity entity) {
-        return newUsed(activity.getId(), role, entity.getId());
-    }
-
-    public Used newUsed(org.openprovenance.prov.model.QualifiedName activity,
-                        String role,
-                        org.openprovenance.prov.model.QualifiedName entity) {
-        Used u1 = pFactory.newUsed(activity, entity);
-        u1.getRole().add(pFactory.newRole(role, name.XSD_STRING));
-        return u1;
-
-    }
-
-    public WasGeneratedBy newWasGeneratedBy(Entity entity, String role, Activity activity) {
-        return newWasGeneratedBy(entity.getId(), role, activity.getId());
-    }
-
-    public WasGeneratedBy newWasGeneratedBy(org.openprovenance.prov.model.QualifiedName entity,
-                                            String role,
-                                            org.openprovenance.prov.model.QualifiedName activity) {
-        WasGeneratedBy u1 = pFactory.newWasGeneratedBy(null, entity, activity);
-        u1.getRole().add(pFactory.newRole(role, name.XSD_STRING));
-        return u1;
-
-    }
-
-    public WasDerivedFrom newWasDerivedFrom(Entity entity2, Entity entity1) {
-        WasDerivedFrom wdf = pFactory.newWasDerivedFrom(null, entity2.getId(), entity1.getId());
-        return wdf;
-    }
-
-    public Document makeDocument() {
-
-        return makePC1FullGraph(pFactory);
-
-    }
-
-    public void doConversions(Document document, String file) {
-        InteropFramework intF = new InteropFramework();
-        intF.writeDocument(file, document);
-        intF.writeDocument(System.out, ProvFormat.PROVN, document);
-    }
-
-    public void closingBanner() {
-        System.out.println("");
-        System.out.println("*************************");
-    }
-
-    public void openingBanner() {
-        System.out.println("*************************");
-        System.out.println("* Converting document  ");
-        System.out.println("*************************");
-    }
 
     public static void main(String[] args) {
         if (args.length != 1)

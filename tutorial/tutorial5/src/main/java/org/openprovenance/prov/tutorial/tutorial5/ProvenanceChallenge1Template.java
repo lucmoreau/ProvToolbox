@@ -468,6 +468,51 @@ public class ProvenanceChallenge1Template {
         return bindings;
     }
     
+    public Bindings makeBindings3(String imgfile1, String hdrfile1,
+                                  String imgfile2, String hdrfile2,
+                                  String imgfile3, String hdrfile3,
+                                  String imgfile4, String hdrfile4,
+                                  String activity, 
+                                  String imgatlas, String imglabel,
+                                  String hdratlas, String hdrlabel,
+                                  String workflow, String agent)  {
+    
+        Bindings bindings=new Bindings(pFactory);
+        bindings.addVariable(b_var("consumed"),       file_val(imgfile1));
+        bindings.addVariable(b_var("consumed"),       file_val(hdrfile1));
+        bindings.addVariable(b_var("consumed"),       file_val(imgfile2));
+        bindings.addVariable(b_var("consumed"),       file_val(hdrfile2));
+        bindings.addVariable(b_var("consumed"),       file_val(imgfile3));
+        bindings.addVariable(b_var("consumed"),       file_val(hdrfile3));
+        bindings.addVariable(b_var("consumed"),       file_val(imgfile4));
+        bindings.addVariable(b_var("consumed"),       file_val(hdrfile4));
+        bindings.addVariable(b_var("block_instance"), prim_val(activity));      
+        bindings.addVariable(b_var("produced"),       file_val(imgatlas));      
+        bindings.addVariable(b_var("produced"),       file_val(hdratlas));      
+
+        if (workflow!=null) bindings.addVariable(b_var("parent"),         prim_val(workflow));      
+        if (agent!=null)    bindings.addVariable(b_var("agent"),          prim_val(agent));      
+        
+        bindings.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("i1")));
+        bindings.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("h1")));
+        bindings.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("i2")));
+        bindings.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("h3")));
+        bindings.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("i3")));
+        bindings.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("h3")));
+        bindings.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("i4")));
+        bindings.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("h4")));
+        bindings.addAttribute(b_var("block_type"),    makeAttributeValue(prim_val("Align_warp")));
+        bindings.addAttribute(t_var("produced_label"),makeAttributeValue(imglabel));
+        bindings.addAttribute(t_var("produced_label"),makeAttributeValue(hdrlabel));
+        bindings.addAttribute(t_var("produced_name"),makeAttributeValue(prim_val("Img")));
+        bindings.addAttribute(t_var("produced_name"),makeAttributeValue(prim_val("Hdr")));
+        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val("File")));
+        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val("File")));
+        
+        
+        return bindings;
+    }
+    
     public List<Bindings> makeBindings() {
         List<Bindings> res=new LinkedList<Bindings>();
         res.add(makeBindings1("anatomy1.img", "Anatomy I1", "anatomy1.hdr", "Anatomy H1", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp1","warp1.warp", "Warp Params1", "a#pcworkflow","ag1"));
@@ -480,6 +525,11 @@ public class ProvenanceChallenge1Template {
         res.add(makeBindings2("warp2.warp", "a#reslice2", "reslice2.img", "Resliced I2", "reslice2.hdr", "Resliced H2", "a#pcworkflow","ag1"));
         res.add(makeBindings2("warp3.warp", "a#reslice3", "reslice3.img", "Resliced I3", "reslice3.hdr", "Resliced H3", "a#pcworkflow","ag1"));
         res.add(makeBindings2("warp4.warp", "a#reslice4", "reslice4.img", "Resliced I4", "reslice4.hdr", "Resliced H4", "a#pcworkflow","ag1"));
+
+        
+        
+        res.add(makeBindings3("reslice1.img", "reslice1.hdr", "reslice2.img", "reslice2.hdr", "reslice3.img", "reslice3.hdr", "reslice4.img", "reslice4.hdr", "a#softmean", "atlas.img", "Atlas Image", "atlas.hdr", "Atlas Header H4", "a#pcworkflow","ag1"));
+
         return res;
     }
 

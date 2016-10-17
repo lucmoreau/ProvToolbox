@@ -82,7 +82,7 @@ public class ProvenanceChallenge1 {
                              String label) {
 
            Entity a = pFactory.newEntity(q(id), label);
-           pFactory.addType(a, pFactory.newType(pFactory.newQualifiedName(PRIM_NS, "FILE", PRIM_PREFIX),name.PROV_QUALIFIED_NAME));
+           pFactory.addType(a, pFactory.newType(pFactory.newQualifiedName(PRIM_NS, "File", PRIM_PREFIX),name.PROV_QUALIFIED_NAME));
            return a;
     }
 

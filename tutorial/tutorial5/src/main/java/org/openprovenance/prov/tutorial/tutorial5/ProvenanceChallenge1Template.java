@@ -12,6 +12,7 @@ import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HasOther;
+import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
@@ -369,8 +370,12 @@ public class ProvenanceChallenge1Template {
         return graph;
     }
 
-
+    /** Binding variable */
     public QualifiedName b_var(String name) {
+        return pFactory.newQualifiedName(VAR_NS, name, "var");
+    }
+    /** Template Variable */
+    public QualifiedName t_var(String name) {
         return pFactory.newQualifiedName(VAR_NS, name, "var");
     }
     
@@ -396,24 +401,51 @@ public class ProvenanceChallenge1Template {
     }
     
 
-    public Bindings makeBindings1()  {
+    public Bindings makeBindings1(String imgfile1, String imglabel, 
+                                  String hdrfile1, String hdrlabel,
+                                  String imgreffile1, String imgreflabel, 
+                                  String hdrreffile1, String hdrreflabel, 
+                                  String activity, 
+                                  String warpfile, String warplabel,
+                                  String workflow, String agent)  {
 	
         Bindings bindings1=new Bindings(pFactory);
-        bindings1.addVariable(b_var("consumed"),       file_val("anatomy1.img"));
-        bindings1.addVariable(b_var("consumed"),       file_val("anatomy1.hdr"));      
-        bindings1.addVariable(b_var("block_instance"), prim_val("a#align_warp1"));      
-        bindings1.addVariable(b_var("produced"),       file_val("warp1.warp"));      
-        bindings1.addVariable(b_var("parent"),         prim_val("a#pcworkflow"));      
-        bindings1.addVariable(b_var("agent"),          prim_val("ag1"));      
+        bindings1.addVariable(b_var("consumed"),       file_val(imgfile1));
+        bindings1.addVariable(b_var("consumed"),       file_val(hdrfile1));      
+        bindings1.addVariable(b_var("consumed"),       file_val(imgreffile1));
+        bindings1.addVariable(b_var("consumed"),       file_val(hdrreffile1));      
+        bindings1.addVariable(b_var("block_instance"), prim_val(activity));      
+        bindings1.addVariable(b_var("produced"),       file_val(warpfile));      
+
+        if (workflow!=null) bindings1.addVariable(b_var("parent"),         prim_val(workflow));      
+        if (agent!=null)    bindings1.addVariable(b_var("agent"),          prim_val(agent));      
         
-        bindings1.addAttribute(b_var("consumed_name"),makeAttributeValue(prim_val("Img")));
-        bindings1.addAttribute(b_var("consumed_name"),makeAttributeValue(prim_val("Hdr")));
-        bindings1.addAttribute(b_var("block_type"),   makeAttributeValue(prim_val("Align_warp")));
-        bindings1.addAttribute(b_var("consumed_type"),makeAttributeValue(prim_val("File")));
-        bindings1.addAttribute(b_var("consumed_type"),makeAttributeValue(prim_val("File")));
-        bindings1.addAttribute(b_var("produced_type"),makeAttributeValue(prim_val("File")));
+        bindings1.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("Img")));
+        bindings1.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("Hdr")));
+        bindings1.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("ImgRef")));
+        bindings1.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("HdrRef")));
+        bindings1.addAttribute(b_var("block_type"),    makeAttributeValue(prim_val("Align_warp")));
+        bindings1.addAttribute(b_var("consumed_type"), makeAttributeValue(prim_val("File")));
+        bindings1.addAttribute(b_var("consumed_type"), makeAttributeValue(prim_val("File")));
+        bindings1.addAttribute(b_var("consumed_type"), makeAttributeValue(prim_val("File")));
+        bindings1.addAttribute(b_var("consumed_type"), makeAttributeValue(prim_val("File")));
+        bindings1.addAttribute(b_var("produced_type"), makeAttributeValue(prim_val("File")));
+        bindings1.addAttribute(t_var("produced_label"),makeAttributeValue(warplabel));
+        bindings1.addAttribute(t_var("consumed_label"),makeAttributeValue(imglabel));
+        bindings1.addAttribute(t_var("consumed_label"),makeAttributeValue(hdrlabel));
+        bindings1.addAttribute(t_var("consumed_label"),makeAttributeValue(hdrreflabel));
+        bindings1.addAttribute(t_var("consumed_label"),makeAttributeValue(hdrreflabel));
         
         return bindings1;
+    }
+    
+    public List<Bindings> makeBindings() {
+        List<Bindings> res=new LinkedList<Bindings>();
+        res.add(makeBindings1("anatomy1.img", "Anatomy I1", "anatomy1.hdr", "Anatomy H1", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp1","warp1.warp", "Warp Params1", "a#pcworkflow","ag1"));
+        res.add(makeBindings1("anatomy2.img", "Anatomy I2", "anatomy2.hdr", "Anatomy H2", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp2","warp2.warp", "Warp Params2", "a#pcworkflow","ag1"));
+        res.add(makeBindings1("anatomy3.img", "Anatomy I3", "anatomy3.hdr", "Anatomy H3", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp3","warp3.warp", "Warp Params3", "a#pcworkflow","ag1"));
+        res.add(makeBindings1("anatomy4.img", "Anatomy I4", "anatomy4.hdr", "Anatomy H4", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp4","warp4.warp", "Warp Params4", "a#pcworkflow","ag1"));
+        return res;
     }
 
     
@@ -478,13 +510,21 @@ public class ProvenanceChallenge1Template {
     public Document makeDocument() {
         
         System.out.println("******************");
+        
+        IndexedDocument iDoc=new IndexedDocument(pFactory, pFactory.newDocument(), true);
 
         //return makePC1FullGraph(pFactory, URL_LOCATION, URL_LOCATION);
         try {
         
             Document doc= new Utility().readDocument("src/main/resources/template_block.provn", pFactory);
-            Bindings bindings1=makeBindings1();
-            return expander(doc, bindings1);
+            
+            
+            for (Bindings bindings : makeBindings()) {
+            
+                Document eDoc=expander(doc, bindings);
+                iDoc.merge(eDoc);
+            }
+            return iDoc.toDocument();
             
         } catch (Throwable t) {
             t.printStackTrace();

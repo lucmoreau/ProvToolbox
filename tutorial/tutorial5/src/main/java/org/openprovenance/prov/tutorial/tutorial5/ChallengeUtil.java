@@ -26,15 +26,14 @@ public class ChallengeUtil implements ChallengeConstants {
     public Entity newFile(ProvFactory pFactory, String id, String label) {
     
            Entity a = pFactory.newEntity(q(id), label);
-           pFactory.addType(a, pFactory.newType(pFactory.newQualifiedName(PRIM_NS, "File", PRIM_PREFIX),name.PROV_QUALIFIED_NAME));
+           pFactory.addType(a, pFactory.newType(pFactory.newQualifiedName(PRIM_NS, FILE, PRIM_PREFIX),name.PROV_QUALIFIED_NAME));
            return a;
     }
 
     protected Entity newParameter(ProvFactory pFactory, String id, String label, String value) {
     
         Entity a = pFactory.newEntity(q(id), label);
-        //pFactory.addType(a, URI.create("http://openprovenance.org/primitives#String"));
-        pFactory.addType(a, pFactory.newType(pFactory.newQualifiedName(PRIM_NS, "String", PRIM_PREFIX),name.PROV_QUALIFIED_NAME));
+        pFactory.addType(a, pFactory.newType(pFactory.newQualifiedName(PRIM_NS, STRING, PRIM_PREFIX),name.PROV_QUALIFIED_NAME));
     
     
         addValue(a, value);
@@ -43,14 +42,23 @@ public class ChallengeUtil implements ChallengeConstants {
     }
 
     public void addValue(HasOther p1, String val) {
-        p1.getOther().add(pFactory.newOther(PC1_NS, "value", PC1_PREFIX, val, name.XSD_STRING));
+        p1.getOther().add(pFactory.newOther(PC1_NS, VALUE, PC1_PREFIX, val, name.XSD_STRING));
     }
 
     public QualifiedName q(String n) {
     
         return pFactory.newQualifiedName(PC1_NS, n, PC1_PREFIX);
     }
+    
+    public QualifiedName file_val(String name) {
+        return pFactory.newQualifiedName(PC1_NS, name, PC1_PREFIX);
+    }
 
+    public QualifiedName prim_val(String name) {
+        return pFactory.newQualifiedName(PRIM_NS, name, PRIM_PREFIX);
+    }
+    
+    
     public Used newUsed(Activity activity, String role, Entity entity) {
         return newUsed(activity.getId(), role, entity.getId());
     }

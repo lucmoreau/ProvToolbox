@@ -35,19 +35,15 @@ public class ProvenanceChallenge1 extends ChallengeUtil implements ChallengeCons
     QualifiedName PRIMITIVE_RESLICE;
     QualifiedName PRIMITIVE_SOFTMEAN;
     
-    private final Namespace ns;
 
     public ProvenanceChallenge1(ProvFactory pFactory) {
         super(pFactory);
-        
-        ns = new Namespace();
-        ns.addKnownNamespaces();
 
-        PRIMITIVE_ALIGN_WARP = pFactory.newQualifiedName(PRIM_NS, "Align_warp", PRIM_PREFIX);
-        PRIMITIVE_CONVERT    = pFactory.newQualifiedName(PRIM_NS, "Convert", PRIM_PREFIX);
-        PRIMITIVE_SLICER     = pFactory.newQualifiedName(PRIM_NS, "Slicer", PRIM_PREFIX);
-        PRIMITIVE_RESLICE    = pFactory.newQualifiedName(PRIM_NS, "Reslice", PRIM_PREFIX);
-        PRIMITIVE_SOFTMEAN   = pFactory.newQualifiedName(PRIM_NS, "Softmean", PRIM_PREFIX);
+        PRIMITIVE_ALIGN_WARP = pFactory.newQualifiedName(PRIM_NS, ALIGN_WARP, PRIM_PREFIX);
+        PRIMITIVE_CONVERT    = pFactory.newQualifiedName(PRIM_NS, CONVERT, PRIM_PREFIX);
+        PRIMITIVE_SLICER     = pFactory.newQualifiedName(PRIM_NS, SLICER, PRIM_PREFIX);
+        PRIMITIVE_RESLICE    = pFactory.newQualifiedName(PRIM_NS, RESLICE, PRIM_PREFIX);
+        PRIMITIVE_SOFTMEAN   = pFactory.newQualifiedName(PRIM_NS, SOFTMEAN, PRIM_PREFIX);
 
     }
 

@@ -28,15 +28,9 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
 
 
 
-    private final Namespace ns;
-
     public ProvenanceChallenge2(ProvFactory pFactory) {
         super(pFactory);
-        
-        ns = new Namespace();
-        ns.addKnownNamespaces();
-
-      
+    
 
     }
 

@@ -62,6 +62,24 @@ public class ProvenanceChallenge1Template  extends ChallengeUtil implements Chal
         return ll;
     }
     
+    
+    /** These attributes "partially" instantiate a template for align, with a set of constants */
+    void align_static(Bindings bindings1) {
+        bindings1.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("Img")));
+        bindings1.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("Hdr")));
+        bindings1.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("ImgRef")));
+        bindings1.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("HdrRef")));     
+        bindings1.addAttribute(b_var("consumed_type"), makeAttributeValue(prim_val(FILE)));
+        bindings1.addAttribute(b_var("consumed_type"), makeAttributeValue(prim_val(FILE)));
+        bindings1.addAttribute(b_var("consumed_type"), makeAttributeValue(prim_val(FILE)));
+        bindings1.addAttribute(b_var("consumed_type"), makeAttributeValue(prim_val(FILE)));
+        
+        bindings1.addAttribute(b_var("block_type"),    makeAttributeValue(prim_val(ALIGN_WARP)));
+        bindings1.addAttribute(b_var("produced_type"), makeAttributeValue(prim_val(FILE)));
+
+
+        
+    }
 
     public Bindings align(String imgfile1, String imglabel, 
                           String hdrfile1, String hdrlabel,
@@ -72,34 +90,25 @@ public class ProvenanceChallenge1Template  extends ChallengeUtil implements Chal
                           String workflow, String agent)  {
 	
         Bindings bindings1=new Bindings(pFactory);
+        align_static(bindings1);
+        
         bindings1.addVariable(b_var("consumed"),       file_val(imgfile1));
         bindings1.addVariable(b_var("consumed"),       file_val(hdrfile1));      
         bindings1.addVariable(b_var("consumed"),       file_val(imgreffile1));
         bindings1.addVariable(b_var("consumed"),       file_val(hdrreffile1));      
-        bindings1.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("Img")));
-        bindings1.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("Hdr")));
-        bindings1.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("ImgRef")));
-        bindings1.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("HdrRef")));     
-        bindings1.addAttribute(b_var("consumed_type"), makeAttributeValue(prim_val("File")));
-        bindings1.addAttribute(b_var("consumed_type"), makeAttributeValue(prim_val("File")));
-        bindings1.addAttribute(b_var("consumed_type"), makeAttributeValue(prim_val("File")));
-        bindings1.addAttribute(b_var("consumed_type"), makeAttributeValue(prim_val("File")));
+
         bindings1.addAttribute(t_var("consumed_label"),makeAttributeValue(imglabel));
         bindings1.addAttribute(t_var("consumed_label"),makeAttributeValue(hdrlabel));
         bindings1.addAttribute(t_var("consumed_label"),makeAttributeValue(hdrreflabel));
         bindings1.addAttribute(t_var("consumed_label"),makeAttributeValue(hdrreflabel));
         
         bindings1.addVariable(b_var("block_instance"), prim_val(activity));      
-        bindings1.addAttribute(b_var("block_type"),    makeAttributeValue(prim_val(ALIGN_WARP)));
    
         bindings1.addVariable(b_var("produced"),       file_val(warpfile));      
-        bindings1.addAttribute(b_var("produced_type"), makeAttributeValue(prim_val("File")));
         bindings1.addAttribute(t_var("produced_label"),makeAttributeValue(warplabel));
         
         if (workflow!=null) bindings1.addVariable(b_var("parent"),         prim_val(workflow));      
         if (agent!=null)    bindings1.addVariable(b_var("agent"),          prim_val(agent));      
-        
-
         
         return bindings1;
     }
@@ -114,7 +123,7 @@ public class ProvenanceChallenge1Template  extends ChallengeUtil implements Chal
         
         bindings.addVariable(b_var("consumed"),       file_val(warp));
         bindings.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("Warp")));
-        bindings.addAttribute(b_var("consumed_type"), makeAttributeValue(prim_val("File")));
+        bindings.addAttribute(b_var("consumed_type"), makeAttributeValue(prim_val(FILE)));
         
         bindings.addVariable(b_var("block_instance"), prim_val(activity));      
         bindings.addAttribute(b_var("block_type"),    makeAttributeValue(prim_val(RESLICE)));
@@ -125,8 +134,8 @@ public class ProvenanceChallenge1Template  extends ChallengeUtil implements Chal
         bindings.addAttribute(t_var("produced_label"),makeAttributeValue(hdrlabel));
         bindings.addAttribute(t_var("produced_name"),makeAttributeValue(prim_val("Img")));
         bindings.addAttribute(t_var("produced_name"),makeAttributeValue(prim_val("Hdr")));
-        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val("File")));
-        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val("File")));
+        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val(FILE)));
+        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val(FILE)));
         
         if (workflow!=null) bindings.addVariable(b_var("parent"),         prim_val(workflow));      
         if (agent!=null)    bindings.addVariable(b_var("agent"),          prim_val(agent));      
@@ -172,8 +181,8 @@ public class ProvenanceChallenge1Template  extends ChallengeUtil implements Chal
         bindings.addAttribute(t_var("produced_label"),makeAttributeValue(hdrlabel));
         bindings.addAttribute(t_var("produced_name"),makeAttributeValue(prim_val("Img")));
         bindings.addAttribute(t_var("produced_name"),makeAttributeValue(prim_val("Hdr")));
-        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val("File")));
-        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val("File")));
+        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val(FILE)));
+        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val(FILE)));
 
         if (workflow!=null) bindings.addVariable(b_var("parent"),         prim_val(workflow));      
         if (agent!=null)    bindings.addVariable(b_var("agent"),          prim_val(agent));      
@@ -209,7 +218,7 @@ public class ProvenanceChallenge1Template  extends ChallengeUtil implements Chal
         bindings.addVariable(b_var("produced"),       file_val(pgmfile));      
         bindings.addAttribute(t_var("produced_label"),makeAttributeValue(pgmlabel));
         bindings.addAttribute(t_var("produced_name"),makeAttributeValue(prim_val("Out")));
-        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val("File")));
+        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val(FILE)));
         
         if (workflow!=null) bindings.addVariable(b_var("parent"),         prim_val(workflow));      
         if (agent!=null)    bindings.addVariable(b_var("agent"),          prim_val(agent));      
@@ -234,7 +243,7 @@ public class ProvenanceChallenge1Template  extends ChallengeUtil implements Chal
         bindings.addVariable(b_var("produced"),       file_val(giffile));      
         bindings.addAttribute(t_var("produced_label"),makeAttributeValue(giflabel));
         bindings.addAttribute(t_var("produced_name"),makeAttributeValue(prim_val("Out")));
-        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val("File")));
+        bindings.addAttribute(t_var("produced_type"),makeAttributeValue(prim_val(FILE)));
 
         if (workflow!=null) bindings.addVariable(b_var("parent"),         prim_val(workflow));      
         if (agent!=null)    bindings.addVariable(b_var("agent"),          prim_val(agent));              

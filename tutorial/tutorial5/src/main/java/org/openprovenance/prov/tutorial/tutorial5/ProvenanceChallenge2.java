@@ -181,6 +181,131 @@ public class ProvenanceChallenge2 {
 
     }
     
+    public void softmean(ProvFactory pFactory,
+                         Document doc,
+                         String imgfile1, String hdrfile1,
+                         String imgfile2, String hdrfile2,
+                         String imgfile3, String hdrfile3,
+                         String imgfile4, String hdrfile4,
+                         String activity, 
+                         String imgatlas, String imglabel,
+                         String hdratlas, String hdrlabel,
+                         String workflow, String agent) {
+        
+        List<StatementOrBundle> ll=doc.getStatementOrBundle();
+
+        
+        Activity a9 = pFactory.newActivity(q("a#softmean"));
+        pFactory.addType(a9, PRIMITIVE_SOFTMEAN, name.PROV_QUALIFIED_NAME);
+        
+        Entity e15 = pFactory.newEntity(q(imgfile1));
+        Entity e16 = pFactory.newEntity(q(hdrfile1));
+        Entity e17 = pFactory.newEntity(q(imgfile2));
+        Entity e18 = pFactory.newEntity(q(hdrfile2));
+        Entity e19 = pFactory.newEntity(q(imgfile3));
+        Entity e20 = pFactory.newEntity(q(hdrfile3));
+        Entity e21 = pFactory.newEntity(q(imgfile4));
+        Entity e22 = pFactory.newEntity(q(hdrfile4));
+
+        
+        ll.add(newUsed(a9, "i1", e15));
+        ll.add(newUsed(a9, "h1", e16));
+        ll.add(newUsed(a9, "i2", e17));
+        ll.add(newUsed(a9, "h2", e18));
+        ll.add(newUsed(a9, "i3", e19));
+        ll.add(newUsed(a9, "h3", e20));
+        ll.add(newUsed(a9, "i4", e21));
+        ll.add(newUsed(a9, "h4", e22));
+        
+        Entity e23 = newFile(pFactory, imgatlas, imglabel);
+        Entity e24 = newFile(pFactory, hdratlas, hdrlabel);
+        
+        ll.addAll(Arrays.asList(a9,e15,e16,e17,e18,e19,e20,e21,e22,e23,e24));
+
+        
+        ll.add(newWasGeneratedBy(e23, "img", a9));
+        ll.add(newWasGeneratedBy(e24, "hdr", a9));
+        
+        ll.add(newWasDerivedFrom(e23, e15));
+        ll.add(newWasDerivedFrom(e23, e16));
+        ll.add(newWasDerivedFrom(e23, e17));
+        ll.add(newWasDerivedFrom(e23, e18));
+        ll.add(newWasDerivedFrom(e23, e19));
+        ll.add(newWasDerivedFrom(e23, e20));
+        ll.add(newWasDerivedFrom(e23, e21));
+        ll.add(newWasDerivedFrom(e23, e22));
+        ll.add(newWasDerivedFrom(e24, e15));
+        ll.add(newWasDerivedFrom(e24, e16));
+        ll.add(newWasDerivedFrom(e24, e17));
+        ll.add(newWasDerivedFrom(e24, e18));
+        ll.add(newWasDerivedFrom(e24, e19));
+        ll.add(newWasDerivedFrom(e24, e20));
+        ll.add(newWasDerivedFrom(e24, e21));
+        ll.add(newWasDerivedFrom(e24, e22));
+
+        
+    }
+    public void slice(ProvFactory pFactory,
+                      Document doc,
+                      String imgatlas, 
+                      String hdratlas, 
+                      String params, String paramslabel, String paramsvalue,
+                      String activity, 
+                      String pgmfile, String pgmlabel,
+                      String workflow, String agent)  {
+        List<StatementOrBundle> ll=doc.getStatementOrBundle();
+        
+        Activity a10 = pFactory.newActivity(q(activity));
+        pFactory.addType(a10, PRIMITIVE_SLICER, name.PROV_QUALIFIED_NAME);
+        
+        Entity e23 = pFactory.newEntity(q(imgatlas));
+        Entity e24 = pFactory.newEntity(q(hdratlas));
+        Entity e25p = newParameter(pFactory, "params#slicer1", "slicer param 1", "-x .5");
+        
+        Entity e25 = newFile(pFactory, pgmfile, pgmlabel);
+        
+        ll.addAll(Arrays.asList(a10,e23,e24,e25p,e25));
+
+        
+        ll.add(newUsed(a10, "img", e23));
+        ll.add(newUsed(a10, "hdr", e24));
+        ll.add(newUsed(a10, "param", e25p));
+        
+        ll.add(newWasGeneratedBy(e25, "out", a10));
+        
+        ll.add(newWasDerivedFrom(e25, e23));
+        ll.add(newWasDerivedFrom(e25, e24));
+        
+    }
+    
+    public void convert(ProvFactory pFactory,
+                        Document doc,
+                        String pgmfile, 
+                        String activity, 
+                        String giffile, String giflabel,
+                        String workflow, String agent)  {
+        
+        List<StatementOrBundle> ll=doc.getStatementOrBundle();
+
+        Activity a13 = pFactory.newActivity(q(activity));
+        pFactory.addType(a13, PRIMITIVE_CONVERT, name.PROV_QUALIFIED_NAME);
+        
+        Entity e25 = pFactory.newEntity(q(pgmfile));
+
+        Entity e28 = newFile(pFactory, giffile, giflabel);
+        
+        ll.add(newUsed(a13, "in", e25));
+        
+        WasGeneratedBy wg18 = newWasGeneratedBy(e28, "out", a13);
+        wg18.setTime(pFactory.newTimeNow());
+        
+        ll.addAll(Arrays.asList(a13,e25,e28,wg18));
+
+        
+    }
+        
+    
+    
     public Document makePC1FullGraph(ProvFactory pFactory) {
         Document graph = pFactory.newDocument();
         align(pFactory,graph,"anatomy1.img", "Anatomy I1", "anatomy1.hdr", "Anatomy H1", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp1","warp1.warp", "Warp Params1", "a#pcworkflow","ag1");
@@ -194,7 +319,18 @@ public class ProvenanceChallenge2 {
         reslice(pFactory,graph,"warp3.warp", "a#reslice3", "reslice3.img", "Resliced I3", "reslice3.hdr", "Resliced H3", "a#pcworkflow","ag1");
         reslice(pFactory,graph,"warp4.warp", "a#reslice4", "reslice4.img", "Resliced I4", "reslice4.hdr", "Resliced H4", "a#pcworkflow","ag1");
 
+
+        softmean(pFactory,graph,"reslice1.img", "reslice1.hdr", "reslice2.img", "reslice2.hdr", "reslice3.img", "reslice3.hdr", "reslice4.img", "reslice4.hdr", "a#softmean", "atlas.img", "Atlas Image", "atlas.hdr", "Atlas Header", "a#pcworkflow","ag1");
+
+
+        slice(pFactory,graph,"atlas.img", "atlas.hdr",  "params#slicer1", "slicer param 1", "-x .5", "a#slice1", "atlas-x.pgm", "Atlas X slice", "a#pcworkflow","ag1");
+        slice(pFactory,graph,"atlas.img", "atlas.hdr",  "params#slicer2", "slicer param 2", "-y .5", "a#slice2", "atlas-y.pgm", "Atlas Y slice", "a#pcworkflow","ag1");
+        slice(pFactory,graph,"atlas.img", "atlas.hdr",  "params#slicer3", "slicer param 3", "-z .5", "a#slice3", "atlas-z.pgm", "Atlas Z slice", "a#pcworkflow","ag1");
+
         
+        convert(pFactory,graph,"atlas-x.pgm", "a#convert1", "atlas-x.gif", "Atlas X Graphic", "a#pcworkflow","ag1");
+        convert(pFactory,graph,"atlas-y.pgm", "a#convert2", "atlas-y.gif", "Atlas Y Graphic", "a#pcworkflow","ag1");
+        convert(pFactory,graph,"atlas-z.pgm", "a#convert3", "atlas-z.gif", "Atlas Z Graphic", "a#pcworkflow","ag1");
         
         graph.setNamespace(Namespace.gatherNamespaces(graph));
 

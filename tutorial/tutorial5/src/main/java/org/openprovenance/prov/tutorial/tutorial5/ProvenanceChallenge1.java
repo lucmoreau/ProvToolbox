@@ -212,11 +212,11 @@ public class ProvenanceChallenge1 {
         Entity e24 = newFile(pFactory, "atlas.hdr", "Atlas Header");
 
         Entity e25 = newFile(pFactory, "atlas-x.pgm", "Atlas X Slice");
-        Entity e25p = newParameter(pFactory, "params#slider1", "slicer param 1", "-x .5");
+        Entity e25p = newParameter(pFactory, "params#slicer1", "slicer param 1", "-x .5");
         Entity e26 = newFile(pFactory, "atlas-y.pgm", "Atlas Y Slice");
-        Entity e26p = newParameter(pFactory, "params#slider2", "slicer param 2", "-y .5");
+        Entity e26p = newParameter(pFactory, "params#slicer2", "slicer param 2", "-y .5");
         Entity e27 = newFile(pFactory, "atlas-z.pgm", "Atlas Z Slice");
-        Entity e27p = newParameter(pFactory, "params#slider3", "slicer param 3", "-z .5");
+        Entity e27p = newParameter(pFactory, "params#slicer3", "slicer param 3", "-z .5");
 
         Entity e28 = newFile(pFactory, "atlas-x.gif", "Atlas X Graphic");
         Entity e29 = newFile(pFactory, "atlas-y.gif", "Atlas Y Graphic");

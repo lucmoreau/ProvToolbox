@@ -21,7 +21,7 @@ document
   wasAttributedTo(var:parent,var:agent)
   wasStartedBy(var:block_instance, -, var:parent, -,
               [tmpl:time='var:starttime'])
-  entity(var:consumed,[prov:type='var:consumed_type',tmpl:label='var:consumed_label'])
+  entity(var:consumed,[prov:type='var:consumed_type',tmpl:label='var:consumed_label',prov:value='var:consumed_value'])
   used(var:block_instance, var:consumed, -,
        [ tmpl:time='var:consumed_at',
          estat:role='var:consumed_name'] )

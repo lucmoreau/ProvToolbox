@@ -417,7 +417,7 @@ public class ProvenanceChallenge1Template {
         bindings1.addVariable(b_var("block_instance"), prim_val(activity));      
         bindings1.addVariable(b_var("produced"),       file_val(warpfile));      
 
-  //      if (workflow!=null) bindings1.addVariable(b_var("parent"),         prim_val(workflow));      
+        if (workflow!=null) bindings1.addVariable(b_var("parent"),         prim_val(workflow));      
         if (agent!=null)    bindings1.addVariable(b_var("agent"),          prim_val(agent));      
         
         bindings1.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("Img")));
@@ -451,7 +451,7 @@ public class ProvenanceChallenge1Template {
         bindings.addVariable(b_var("produced"),       file_val(imgfile));      
         bindings.addVariable(b_var("produced"),       file_val(hdrfile));      
 
- //       if (workflow!=null) bindings.addVariable(b_var("parent"),         prim_val(workflow));      
+        if (workflow!=null) bindings.addVariable(b_var("parent"),         prim_val(workflow));      
         if (agent!=null)    bindings.addVariable(b_var("agent"),          prim_val(agent));      
         
         bindings.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("Warp")));
@@ -490,7 +490,7 @@ public class ProvenanceChallenge1Template {
         bindings.addVariable(b_var("produced"),       file_val(imgatlas));      
         bindings.addVariable(b_var("produced"),       file_val(hdratlas));      
 
-  //      if (workflow!=null) bindings.addVariable(b_var("parent"),         prim_val(workflow));      
+        if (workflow!=null) bindings.addVariable(b_var("parent"),         prim_val(workflow));      
         if (agent!=null)    bindings.addVariable(b_var("agent"),          prim_val(agent));      
         
         bindings.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("i1")));
@@ -527,7 +527,7 @@ public class ProvenanceChallenge1Template {
         bindings.addVariable(b_var("block_instance"), prim_val(activity));      
         bindings.addVariable(b_var("produced"),       file_val(pgmfile));      
 
-    //    if (workflow!=null) bindings.addVariable(b_var("parent"),         prim_val(workflow));      
+        if (workflow!=null) bindings.addVariable(b_var("parent"),         prim_val(workflow));      
         if (agent!=null)    bindings.addVariable(b_var("agent"),          prim_val(agent));      
         
         bindings.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("Img")));
@@ -559,7 +559,7 @@ public class ProvenanceChallenge1Template {
         bindings.addVariable(b_var("block_instance"), prim_val(activity));      
         bindings.addVariable(b_var("produced"),       file_val(giffile));      
 
-   //     if (workflow!=null) bindings.addVariable(b_var("parent"),         prim_val(workflow));      
+        if (workflow!=null) bindings.addVariable(b_var("parent"),         prim_val(workflow));      
         if (agent!=null)    bindings.addVariable(b_var("agent"),          prim_val(agent));      
         
         bindings.addAttribute(b_var("consumed_name"), makeAttributeValue(prim_val("In")));
@@ -591,9 +591,9 @@ public class ProvenanceChallenge1Template {
         res.add(makeBindings3("reslice1.img", "reslice1.hdr", "reslice2.img", "reslice2.hdr", "reslice3.img", "reslice3.hdr", "reslice4.img", "reslice4.hdr", "a#softmean", "atlas.img", "Atlas Image", "atlas.hdr", "Atlas Header", "a#pcworkflow","ag1"));
 
         
-        res.add(makeBindings4("atlas.img", "atlas.hdr",  "params#slicer1", "slicer param 1", "-x .5", "a#reslice1", "atlas-x.pgm", "Atlas X slice", "a#pcworkflow","ag1"));
-        res.add(makeBindings4("atlas.img", "atlas.hdr",  "params#slicer2", "slicer param 2", "-y .5", "a#reslice2", "atlas-y.pgm", "Atlas Y slice", "a#pcworkflow","ag1"));
-        res.add(makeBindings4("atlas.img", "atlas.hdr",  "params#slicer3", "slicer param 3", "-z .5", "a#reslice3", "atlas-z.pgm", "Atlas Z slice", "a#pcworkflow","ag1"));
+        res.add(makeBindings4("atlas.img", "atlas.hdr",  "params#slicer1", "slicer param 1", "-x .5", "a#slice1", "atlas-x.pgm", "Atlas X slice", "a#pcworkflow","ag1"));
+        res.add(makeBindings4("atlas.img", "atlas.hdr",  "params#slicer2", "slicer param 2", "-y .5", "a#slice2", "atlas-y.pgm", "Atlas Y slice", "a#pcworkflow","ag1"));
+        res.add(makeBindings4("atlas.img", "atlas.hdr",  "params#slicer3", "slicer param 3", "-z .5", "a#slice3", "atlas-z.pgm", "Atlas Z slice", "a#pcworkflow","ag1"));
 
         
         res.add(makeBindings5("atlas-x.pgm", "a#convert1", "atlas-x.gif", "Atlas X Graphic", "a#pcworkflow","ag1"));

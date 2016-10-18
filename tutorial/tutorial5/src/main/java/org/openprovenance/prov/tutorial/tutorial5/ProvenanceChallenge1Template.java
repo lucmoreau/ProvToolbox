@@ -121,7 +121,7 @@ public class ProvenanceChallenge1Template  extends ChallengeUtil implements Chal
         Bindings bindings=new Bindings(pFactory);
         
         bindings.addVariable(b_var(VAR_CONSUMED),       file_val(warp));
-        bindings.addAttribute(b_var(VAR_CONSUMED_NAME), makeAttributeValue(prim_val("Warp"))); //WHAT is this constant?
+        bindings.addAttribute(b_var(VAR_CONSUMED_NAME), makeAttributeValue(prim_val(ROLE_IN)));
         bindings.addAttribute(b_var(VAR_CONSUMED_TYPE), makeAttributeValue(prim_val(FILE)));
         
         bindings.addVariable(b_var(VAR_BLOCK_INSTANCE), prim_val(activity));      

@@ -1015,13 +1015,14 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      */    
 
     public Used newUsed(Used u) {
-	Used u1 = newUsed(u.getId(), u.getActivity(), u.getEntity());
-	u1.setTime(u.getTime());
-	u1.getType().addAll(u.getType());
-	u1.getLabel().addAll(u.getLabel());
-	u1.getLocation().addAll(u.getLocation());
-	u1.getOther().addAll(u.getOther());
-	return u1;
+        Used u1 = newUsed(u.getId(), u.getActivity(), u.getEntity());
+        u1.setTime(u.getTime());
+        u1.getType().addAll(u.getType());
+        u1.getLabel().addAll(u.getLabel());
+        u1.getRole().addAll(u.getRole());
+        u1.getLocation().addAll(u.getLocation());
+        u1.getOther().addAll(u.getOther());
+        return u1;
     }
 
     /**
@@ -1030,7 +1031,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      * @return a new {@link Value} with type xsd:string (see {@link Name#XSD_STRING})
      */
     public Value newValue(String value) {
-	return newValue(value,getName().XSD_STRING);
+        return newValue(value,getName().XSD_STRING);
     }  
     
     /**
@@ -1281,6 +1282,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	u1.setTime(u.getTime());
 	u1.getType().addAll(u.getType());
 	u1.getLabel().addAll(u.getLabel());
+	u1.getRole().addAll(u1.getRole());
 	u1.getLocation().addAll(u.getLocation());
 	u1.getOther().addAll(u.getOther());
 	return u1;
@@ -1344,15 +1346,16 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
     public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
-	WasGeneratedBy wgb = newWasGeneratedBy(g.getId(), g.getEntity(), null,
-					       g.getActivity());
-	wgb.setId(g.getId());
-	wgb.setTime(g.getTime());
-	wgb.getOther().addAll(g.getOther());
-	wgb.getType().addAll(g.getType());
-	wgb.getLabel().addAll(g.getLabel());
-	wgb.getLocation().addAll(g.getLocation());
-	return wgb;
+        WasGeneratedBy wgb = newWasGeneratedBy(g.getId(), g.getEntity(), null,
+                                               g.getActivity());
+        wgb.setId(g.getId());
+        wgb.setTime(g.getTime());
+        wgb.getOther().addAll(g.getOther());
+        wgb.getRole().addAll(g.getRole());
+        wgb.getType().addAll(g.getType());
+        wgb.getLabel().addAll(g.getLabel());
+        wgb.getLocation().addAll(g.getLocation());
+        return wgb;
     }
 
 
@@ -1478,6 +1481,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	u1.setTime(u.getTime());
 	u1.getOther().addAll(u.getOther());
 	u1.getType().addAll(u.getType());
+	u.getRole().addAll(u.getRole());
 	u1.getLabel().addAll(u.getLabel());
 	u1.getLocation().addAll(u.getLocation());
 	return u1;
@@ -1534,6 +1538,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	u1.setStarter(u.getStarter());
 	u1.setTime(u.getTime());
 	u1.getType().addAll(u.getType());
+	u1.getRole().addAll(u.getRole());
 	u1.getLabel().addAll(u.getLabel());
 	u1.getLocation().addAll(u.getLocation());
 	u1.getOther().addAll(u.getOther());

@@ -24,11 +24,11 @@ document
   entity(var:consumed,[prov:type='var:consumed_type',tmpl:label='var:consumed_label',prov:value='var:consumed_value'])
   used(var:block_instance, var:consumed, -,
        [ tmpl:time='var:consumed_at',
-         estat:role='var:consumed_name'] )
+         prov:role='var:consumed_name'] )
   entity(var:produced,[prov:type='var:produced_type',tmpl:label='var:produced_label'])
   wasGeneratedBy(var:produced, var:block_instance, -,
        [ tmpl:time='var:produced_at',
-         estat:role='var:produced_name'] )
+         prov:role='var:produced_name'] )
   wasDerivedFrom(var:produced, var:consumed)
  endBundle
 endDocument

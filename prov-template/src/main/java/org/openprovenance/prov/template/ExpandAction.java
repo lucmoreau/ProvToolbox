@@ -124,7 +124,7 @@ public class ExpandAction implements StatementAction {
         boolean updated = updated1 || updated2 || updated3 || updated4;
         boolean allUpdated = updated1 && updated2 && updated3;
         allExpanded=allExpanded && allUpdated;
-
+        
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }

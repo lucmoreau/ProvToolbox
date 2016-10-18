@@ -105,9 +105,9 @@ public class ProvenanceChallenge1 extends ChallengeUtil implements ChallengeCons
         
         ll.addAll(Arrays.asList(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15));
 
-        Agent ag1 = pFactory.newAgent(q("ag1"), "John Doe");
+//        Agent ag1 = pFactory.newAgent(q("ag1"), "John Doe");
         
-        ll.add(ag1);
+        //ll.add(ag1);
 
         Entity e1 = newFile(pFactory, "reference.img", "Reference Image");
 
@@ -233,9 +233,10 @@ public class ProvenanceChallenge1 extends ChallengeUtil implements ChallengeCons
         WasGeneratedBy wg18 = newWasGeneratedBy(e28, ROLE_OUT, a13);
         WasGeneratedBy wg19 = newWasGeneratedBy(e29, ROLE_OUT, a14);
         WasGeneratedBy wg20 = newWasGeneratedBy(e30, ROLE_OUT, a15);
-        wg18.setTime(pFactory.newTimeNow());
-        wg19.setTime(pFactory.newTimeNow());
-        wg20.setTime(pFactory.newTimeNow());
+        //wg18.setTime(pFactory.newTimeNow());
+        //wg19.setTime(pFactory.newTimeNow());
+        //wg20.setTime(pFactory.newTimeNow());
+        
         ll.addAll(Arrays.asList(wg18,wg19,wg20));
 
         ll.add(newWasDerivedFrom(e11, e1));
@@ -288,8 +289,8 @@ public class ProvenanceChallenge1 extends ChallengeUtil implements ChallengeCons
         ll.add(newWasDerivedFrom(e29, e26));
         ll.add(newWasDerivedFrom(e30, e27));
 
-        WasAssociatedWith waw1 = pFactory.newWasAssociatedWith(q("waw1"), a1.getId(), ag1.getId());
-        ll.add(waw1);
+//        WasAssociatedWith waw1 = pFactory.newWasAssociatedWith(q("waw1"), a1.getId(), ag1.getId());
+        //ll.add(waw1);
 
         graph.setNamespace(Namespace.gatherNamespaces(graph));
 
@@ -303,16 +304,18 @@ public class ProvenanceChallenge1 extends ChallengeUtil implements ChallengeCons
     }
 
     public static void main(String[] args) {
-        if (args.length != 1)
+        if (args.length != 2)
             throw new UnsupportedOperationException("main to be called with filename");
-        String file = args[0];
+        String file1 = args[0];
+        String file2 = args[1];
 
-        ProvenanceChallenge1 little = new ProvenanceChallenge1(InteropFramework.newXMLProvFactory());
-        little.openingBanner();
-        Document document = little.makeDocument();
-        little.doConversions(document, file);
-        little.closingBanner();
-
+        ProvenanceChallenge1 pc1 = new ProvenanceChallenge1(InteropFramework.newXMLProvFactory());
+        pc1.openingBanner();
+        Document document = pc1.makeDocument();
+        pc1.doConversions(document, file1);
+        pc1.doConversions(document, file2);
+        pc1.closingBanner();
+        
     }
 
 }

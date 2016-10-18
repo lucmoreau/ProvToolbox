@@ -12,6 +12,7 @@ import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasGeneratedBy;
 
 /**
@@ -238,7 +239,9 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
         ll.add(newUsed(a13, ROLE_IN, e25));
         
         WasGeneratedBy wg18 = newWasGeneratedBy(e28, ROLE_OUT, a13);
-        wg18.setTime(pFactory.newTimeNow());
+        //wg18.setTime(pFactory.newTimeNow());
+        
+        ll.add(newWasDerivedFrom(e28, e25));
         
         ll.addAll(Arrays.asList(a13,e25,e28,wg18));
         return ll;
@@ -257,18 +260,18 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
         ll.addAll(align("anatomy4.img", "Anatomy I4", "anatomy4.hdr", "Anatomy H4", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp4","warp4.warp", "Warp Params4", "a#pcworkflow","ag1"));
 
 
-        ll.addAll(reslice("warp1.warp", "a#reslice1", "reslice1.img", "Resliced I1", "reslice1.hdr", "Resliced H1", "a#pcworkflow","ag1"));
-        ll.addAll(reslice("warp2.warp", "a#reslice2", "reslice2.img", "Resliced I2", "reslice2.hdr", "Resliced H2", "a#pcworkflow","ag1"));
-        ll.addAll(reslice("warp3.warp", "a#reslice3", "reslice3.img", "Resliced I3", "reslice3.hdr", "Resliced H3", "a#pcworkflow","ag1"));
-        ll.addAll(reslice("warp4.warp", "a#reslice4", "reslice4.img", "Resliced I4", "reslice4.hdr", "Resliced H4", "a#pcworkflow","ag1"));
+        ll.addAll(reslice("warp1.warp", "a#reslice1", "resliced1.img", "Resliced I1", "resliced1.hdr", "Resliced H1", "a#pcworkflow","ag1"));
+        ll.addAll(reslice("warp2.warp", "a#reslice2", "resliced2.img", "Resliced I2", "resliced2.hdr", "Resliced H2", "a#pcworkflow","ag1"));
+        ll.addAll(reslice("warp3.warp", "a#reslice3", "resliced3.img", "Resliced I3", "resliced3.hdr", "Resliced H3", "a#pcworkflow","ag1"));
+        ll.addAll(reslice("warp4.warp", "a#reslice4", "resliced4.img", "Resliced I4", "resliced4.hdr", "Resliced H4", "a#pcworkflow","ag1"));
 
 
-        ll.addAll(softmean("reslice1.img", "reslice1.hdr", "reslice2.img", "reslice2.hdr", "reslice3.img", "reslice3.hdr", "reslice4.img", "reslice4.hdr", "a#softmean", "atlas.img", "Atlas Image", "atlas.hdr", "Atlas Header", "a#pcworkflow","ag1"));
+        ll.addAll(softmean("resliced1.img", "resliced1.hdr", "resliced2.img", "resliced2.hdr", "resliced3.img", "resliced3.hdr", "resliced4.img", "resliced4.hdr", "a#softmean", "atlas.img", "Atlas Image", "atlas.hdr", "Atlas Header", "a#pcworkflow","ag1"));
 
 
-        ll.addAll(slice("atlas.img", "atlas.hdr",  "params#slicer1", "slicer param 1", "-x .5", "a#slice1", "atlas-x.pgm", "Atlas X slice", "a#pcworkflow","ag1"));
-        ll.addAll(slice("atlas.img", "atlas.hdr",  "params#slicer2", "slicer param 2", "-y .5", "a#slice2", "atlas-y.pgm", "Atlas Y slice", "a#pcworkflow","ag1"));
-        ll.addAll(slice("atlas.img", "atlas.hdr",  "params#slicer3", "slicer param 3", "-z .5", "a#slice3", "atlas-z.pgm", "Atlas Z slice", "a#pcworkflow","ag1"));
+        ll.addAll(slice("atlas.img", "atlas.hdr",  "params#slicer1", "slicer param 1", "-x .5", "a#slicer1", "atlas-x.pgm", "Atlas X Slice", "a#pcworkflow","ag1"));
+        ll.addAll(slice("atlas.img", "atlas.hdr",  "params#slicer2", "slicer param 2", "-y .5", "a#slicer2", "atlas-y.pgm", "Atlas Y Slice", "a#pcworkflow","ag1"));
+        ll.addAll(slice("atlas.img", "atlas.hdr",  "params#slicer3", "slicer param 3", "-z .5", "a#slicer3", "atlas-z.pgm", "Atlas Z Slice", "a#pcworkflow","ag1"));
 
         
         ll.addAll(convert("atlas-x.pgm", "a#convert1", "atlas-x.gif", "Atlas X Graphic", "a#pcworkflow","ag1"));
@@ -284,15 +287,17 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
 
 
     public static void main(String[] args) {
-        if (args.length != 1)
-            throw new UnsupportedOperationException("main to be called with filename");
-        String file = args[0];
+        if (args.length != 2)
+            throw new UnsupportedOperationException("main to be called with 2 filenames");
+        String file1 = args[0];
+        String file2 = args[1];
 
-        ProvenanceChallenge2 little = new ProvenanceChallenge2(InteropFramework.newXMLProvFactory());
-        little.openingBanner();
-        Document document = little.makeDocument();
-        little.doConversions(document, file);
-        little.closingBanner();
+        ProvenanceChallenge2 pc1 = new ProvenanceChallenge2(InteropFramework.newXMLProvFactory());
+        pc1.openingBanner();
+        Document document = pc1.makeDocument();
+        pc1.doConversions(document, file1);
+        pc1.doConversions(document, file2);
+        pc1.closingBanner();
 
     }
 

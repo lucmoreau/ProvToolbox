@@ -93,6 +93,7 @@
 	      <mainClass>org.openprovenance.prov.tutorial.tutorial5.ProvenanceChallenge1</mainClass>
 	      <arguments>
 		<argument>${project.build.directory}/pc1.svg</argument>
+		<argument>${project.build.directory}/pc1.provn</argument>
 	      </arguments>
 	    </configuration>
 	  </execution>
@@ -106,6 +107,7 @@
 	      <mainClass>org.openprovenance.prov.tutorial.tutorial5.ProvenanceChallenge2</mainClass>
 	      <arguments>
 		<argument>${project.build.directory}/pc2.svg</argument>
+		<argument>${project.build.directory}/pc2.provn</argument>
 	      </arguments>
 	    </configuration>
 	  </execution>
@@ -119,6 +121,7 @@
 	      <mainClass>org.openprovenance.prov.tutorial.tutorial5.ProvenanceChallenge1Template</mainClass>
 	      <arguments>
 		<argument>${project.build.directory}/pc3.svg</argument>
+		<argument>${project.build.directory}/pc3.provn</argument>
 	      </arguments>
 	    </configuration>
 	  </execution>

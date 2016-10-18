@@ -65,7 +65,7 @@ public class ChallengeUtil implements ChallengeConstants {
 
     public Used newUsed(org.openprovenance.prov.model.QualifiedName activity, String role, org.openprovenance.prov.model.QualifiedName entity) {
         Used u1 = pFactory.newUsed(activity, entity);
-        u1.getRole().add(pFactory.newRole(role, name.XSD_STRING));
+        u1.getRole().add(pFactory.newRole(prim_val(role), name.PROV_QUALIFIED_NAME));
         return u1;
     
     }
@@ -76,7 +76,7 @@ public class ChallengeUtil implements ChallengeConstants {
 
     public WasGeneratedBy newWasGeneratedBy(org.openprovenance.prov.model.QualifiedName entity, String role, org.openprovenance.prov.model.QualifiedName activity) {
         WasGeneratedBy u1 = pFactory.newWasGeneratedBy(null, entity, activity);
-        u1.getRole().add(pFactory.newRole(role, name.XSD_STRING));
+        u1.getRole().add(pFactory.newRole(prim_val(role), name.PROV_QUALIFIED_NAME));
         return u1;
     
     }

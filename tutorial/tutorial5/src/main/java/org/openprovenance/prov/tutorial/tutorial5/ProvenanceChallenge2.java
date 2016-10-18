@@ -59,16 +59,16 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
         
         ll.addAll(Arrays.asList(a1,e1,e2,e3,e4));
 
-        ll.add(newUsed(a1, "img", e3));
-        ll.add(newUsed(a1, "hdr", e4));
-        ll.add(newUsed(a1, "imgRef", e1));
-        ll.add(newUsed(a1, "hdrRef", e2));
+        ll.add(newUsed(a1, ROLE_IMG, e3));
+        ll.add(newUsed(a1, ROLE_HDR, e4));
+        ll.add(newUsed(a1, ROLE_IMG_REF, e1));
+        ll.add(newUsed(a1, ROLE_HDR_REF, e2));
         
         Entity e11 = newFile(pFactory, warpfile, warplabel);
         
         ll.add(e11);
 
-        ll.add(newWasGeneratedBy(e11, "out", a1));
+        ll.add(newWasGeneratedBy(e11, ROLE_OUT, a1));
         
         ll.add(newWasDerivedFrom(e11, e1));
         ll.add(newWasDerivedFrom(e11, e2));
@@ -98,16 +98,16 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
         Entity e16 = newFile(pFactory, hdrfile, hdrlabel);
         
         Entity e11 = pFactory.newEntity(q(warp));
-        ll.add(newUsed(a5, "in", e11));
-        ll.add(newWasGeneratedBy(e15, "img", a5));
-        ll.add(newWasGeneratedBy(e16, "hdr", a5));
+        ll.add(newUsed(a5, ROLE_IN, e11));
+        ll.add(newWasGeneratedBy(e15, ROLE_IMG, a5));
+        ll.add(newWasGeneratedBy(e16, ROLE_HDR, a5));
         
         ll.add(newWasDerivedFrom(e15, e11));
         ll.add(newWasDerivedFrom(e16, e11));
         
         ll.addAll(Arrays.asList(a5,e15,e16,e11));
 
-        ll.add(newUsed(a5, "in", e11));
+        ll.add(newUsed(a5, ROLE_IN, e11));
         
         return ll;
 
@@ -142,14 +142,14 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
         Entity e22 = pFactory.newEntity(q(hdrfile4));
 
         
-        ll.add(newUsed(a9, "i1", e15));
-        ll.add(newUsed(a9, "h1", e16));
-        ll.add(newUsed(a9, "i2", e17));
-        ll.add(newUsed(a9, "h2", e18));
-        ll.add(newUsed(a9, "i3", e19));
-        ll.add(newUsed(a9, "h3", e20));
-        ll.add(newUsed(a9, "i4", e21));
-        ll.add(newUsed(a9, "h4", e22));
+        ll.add(newUsed(a9, ROLE_I1, e15));
+        ll.add(newUsed(a9, ROLE_H1, e16));
+        ll.add(newUsed(a9, ROLE_I2, e17));
+        ll.add(newUsed(a9, ROLE_H2, e18));
+        ll.add(newUsed(a9, ROLE_I3, e19));
+        ll.add(newUsed(a9, ROLE_H3, e20));
+        ll.add(newUsed(a9, ROLE_I4, e21));
+        ll.add(newUsed(a9, ROLE_H4, e22));
         
         Entity e23 = newFile(pFactory, imgatlas, imglabel);
         Entity e24 = newFile(pFactory, hdratlas, hdrlabel);
@@ -157,8 +157,8 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
         ll.addAll(Arrays.asList(a9,e15,e16,e17,e18,e19,e20,e21,e22,e23,e24));
 
         
-        ll.add(newWasGeneratedBy(e23, "img", a9));
-        ll.add(newWasGeneratedBy(e24, "hdr", a9));
+        ll.add(newWasGeneratedBy(e23, ROLE_IMG, a9));
+        ll.add(newWasGeneratedBy(e24, ROLE_HDR, a9));
         
         ll.add(newWasDerivedFrom(e23, e15));
         ll.add(newWasDerivedFrom(e23, e16));
@@ -198,18 +198,18 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
         
         Entity e23 = pFactory.newEntity(q(imgatlas));
         Entity e24 = pFactory.newEntity(q(hdratlas));
-        Entity e25p = newParameter(pFactory, "params#slicer1", "slicer param 1", "-x .5");
+        Entity e25p = newParameter(pFactory, params, paramslabel, paramsvalue);
         
         Entity e25 = newFile(pFactory, pgmfile, pgmlabel);
         
         ll.addAll(Arrays.asList(a10,e23,e24,e25p,e25));
 
         
-        ll.add(newUsed(a10, "img", e23));
-        ll.add(newUsed(a10, "hdr", e24));
-        ll.add(newUsed(a10, "param", e25p));
+        ll.add(newUsed(a10, ROLE_IMG, e23));
+        ll.add(newUsed(a10, ROLE_HDR, e24));
+        ll.add(newUsed(a10, ROLE_PARAM, e25p));
         
-        ll.add(newWasGeneratedBy(e25, "out", a10));
+        ll.add(newWasGeneratedBy(e25, ROLE_OUT, a10));
         
         ll.add(newWasDerivedFrom(e25, e23));
         ll.add(newWasDerivedFrom(e25, e24));
@@ -235,9 +235,9 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
 
         Entity e28 = newFile(pFactory, giffile, giflabel);
         
-        ll.add(newUsed(a13, "in", e25));
+        ll.add(newUsed(a13, ROLE_IN, e25));
         
-        WasGeneratedBy wg18 = newWasGeneratedBy(e28, "out", a13);
+        WasGeneratedBy wg18 = newWasGeneratedBy(e28, ROLE_OUT, a13);
         wg18.setTime(pFactory.newTimeNow());
         
         ll.addAll(Arrays.asList(a13,e25,e28,wg18));

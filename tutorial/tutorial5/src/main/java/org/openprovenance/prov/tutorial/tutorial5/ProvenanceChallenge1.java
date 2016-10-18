@@ -29,6 +29,7 @@ import org.openprovenance.prov.model.WasGeneratedBy;
 public class ProvenanceChallenge1 extends ChallengeUtil implements ChallengeConstants{
 
 
+
     QualifiedName PRIMITIVE_ALIGN_WARP;
     QualifiedName PRIMITIVE_CONVERT;
     QualifiedName PRIMITIVE_SLICER;
@@ -163,75 +164,75 @@ public class ProvenanceChallenge1 extends ChallengeUtil implements ChallengeCons
         ll.addAll(Arrays.asList(e11, e12, e13, e14, e15, e16, e17, e18, e19, e20));
         ll.addAll(Arrays.asList(e21, e22, e23, e24, e25, e25p, e26, e26p, e27, e27p, e28, e29, e30));
 
-        ll.add(newUsed(a1, "img", e3));
-        ll.add(newUsed(a1, "hdr", e4));
-        ll.add(newUsed(a1, "imgRef", e1));
-        ll.add(newUsed(a1, "hdrRef", e2));
-        ll.add(newUsed(a2, "img", e5));
-        ll.add(newUsed(a2, "hdr", e6));
-        ll.add(newUsed(a2, "imgRef", e1));
-        ll.add(newUsed(a2, "hdrRef", e2));
-        ll.add(newUsed(a3, "img", e7));
-        ll.add(newUsed(a3, "hdr", e8));
-        ll.add(newUsed(a3, "imgRef", e1));
-        ll.add(newUsed(a3, "hdrRef", e2));
-        ll.add(newUsed(a4, "img", e9));
-        ll.add(newUsed(a4, "hdr", e10));
-        ll.add(newUsed(a4, "imgRef", e1));
-        ll.add(newUsed(a4, "hdrRef", e2));
+        ll.add(newUsed(a1, ROLE_IMG, e3));
+        ll.add(newUsed(a1, ROLE_HDR, e4));
+        ll.add(newUsed(a1, ROLE_IMG_REF, e1));
+        ll.add(newUsed(a1, ROLE_HDR_REF, e2));
+        ll.add(newUsed(a2, ROLE_IMG, e5));
+        ll.add(newUsed(a2, ROLE_HDR, e6));
+        ll.add(newUsed(a2, ROLE_IMG_REF, e1));
+        ll.add(newUsed(a2, ROLE_HDR_REF, e2));
+        ll.add(newUsed(a3, ROLE_IMG, e7));
+        ll.add(newUsed(a3, ROLE_HDR, e8));
+        ll.add(newUsed(a3, ROLE_IMG_REF, e1));
+        ll.add(newUsed(a3, ROLE_HDR_REF, e2));
+        ll.add(newUsed(a4, ROLE_IMG, e9));
+        ll.add(newUsed(a4, ROLE_HDR, e10));
+        ll.add(newUsed(a4, ROLE_IMG_REF, e1));
+        ll.add(newUsed(a4, ROLE_HDR_REF, e2));
 
-        ll.add(newUsed(a5, "in", e11));
-        ll.add(newUsed(a6, "in", e12));
-        ll.add(newUsed(a7, "in", e13));
-        ll.add(newUsed(a8, "in", e14));
+        ll.add(newUsed(a5, ROLE_IN, e11));
+        ll.add(newUsed(a6, ROLE_IN, e12));
+        ll.add(newUsed(a7, ROLE_IN, e13));
+        ll.add(newUsed(a8, ROLE_IN, e14));
 
-        ll.add(newUsed(a9, "i1", e15));
-        ll.add(newUsed(a9, "h1", e16));
-        ll.add(newUsed(a9, "i2", e17));
-        ll.add(newUsed(a9, "h2", e18));
-        ll.add(newUsed(a9, "i3", e19));
-        ll.add(newUsed(a9, "h3", e20));
-        ll.add(newUsed(a9, "i4", e21));
-        ll.add(newUsed(a9, "h4", e22));
+        ll.add(newUsed(a9, ROLE_I1, e15));
+        ll.add(newUsed(a9, ROLE_H1, e16));
+        ll.add(newUsed(a9, ROLE_I2, e17));
+        ll.add(newUsed(a9, ROLE_H2, e18));
+        ll.add(newUsed(a9, ROLE_I3, e19));
+        ll.add(newUsed(a9, ROLE_H3, e20));
+        ll.add(newUsed(a9, ROLE_I4, e21));
+        ll.add(newUsed(a9, ROLE_H4, e22));
 
-        ll.add(newUsed(a10, "img", e23));
-        ll.add(newUsed(a10, "hdr", e24));
-        ll.add(newUsed(a10, "param", e25p));
-        ll.add(newUsed(a11, "img", e23));
-        ll.add(newUsed(a11, "hdr", e24));
-        ll.add(newUsed(a11, "param", e26p));
-        ll.add(newUsed(a12, "img", e23));
-        ll.add(newUsed(a12, "hdr", e24));
-        ll.add(newUsed(a12, "param", e27p));
+        ll.add(newUsed(a10, ROLE_IMG, e23));
+        ll.add(newUsed(a10, ROLE_HDR, e24));
+        ll.add(newUsed(a10, ROLE_PARAM, e25p));
+        ll.add(newUsed(a11, ROLE_IMG, e23));
+        ll.add(newUsed(a11, ROLE_HDR, e24));
+        ll.add(newUsed(a11, ROLE_PARAM, e26p));
+        ll.add(newUsed(a12, ROLE_IMG, e23));
+        ll.add(newUsed(a12, ROLE_HDR, e24));
+        ll.add(newUsed(a12, ROLE_PARAM, e27p));
 
-        ll.add(newUsed(a13, "in", e25));
-        ll.add(newUsed(a14, "in", e26));
-        ll.add(newUsed(a15, "in", e27));
+        ll.add(newUsed(a13, ROLE_IN, e25));
+        ll.add(newUsed(a14, ROLE_IN, e26));
+        ll.add(newUsed(a15, ROLE_IN, e27));
 
-        ll.add(newWasGeneratedBy(e11, "out", a1));
-        ll.add(newWasGeneratedBy(e12, "out", a2));
-        ll.add(newWasGeneratedBy(e13, "out", a3));
-        ll.add(newWasGeneratedBy(e14, "out", a4));
+        ll.add(newWasGeneratedBy(e11, ROLE_OUT, a1));
+        ll.add(newWasGeneratedBy(e12, ROLE_OUT, a2));
+        ll.add(newWasGeneratedBy(e13, ROLE_OUT, a3));
+        ll.add(newWasGeneratedBy(e14, ROLE_OUT, a4));
 
-        ll.add(newWasGeneratedBy(e15, "img", a5));
-        ll.add(newWasGeneratedBy(e16, "hdr", a5));
-        ll.add(newWasGeneratedBy(e17, "img", a6));
-        ll.add(newWasGeneratedBy(e18, "hdr", a6));
-        ll.add(newWasGeneratedBy(e19, "img", a7));
-        ll.add(newWasGeneratedBy(e20, "hdr", a7));
-        ll.add(newWasGeneratedBy(e21, "img", a8));
-        ll.add(newWasGeneratedBy(e22, "hdr", a8));
+        ll.add(newWasGeneratedBy(e15, ROLE_IMG, a5));
+        ll.add(newWasGeneratedBy(e16, ROLE_HDR, a5));
+        ll.add(newWasGeneratedBy(e17, ROLE_IMG, a6));
+        ll.add(newWasGeneratedBy(e18, ROLE_HDR, a6));
+        ll.add(newWasGeneratedBy(e19, ROLE_IMG, a7));
+        ll.add(newWasGeneratedBy(e20, ROLE_HDR, a7));
+        ll.add(newWasGeneratedBy(e21, ROLE_IMG, a8));
+        ll.add(newWasGeneratedBy(e22, ROLE_HDR, a8));
 
-        ll.add(newWasGeneratedBy(e23, "img", a9));
-        ll.add(newWasGeneratedBy(e24, "hdr", a9));
+        ll.add(newWasGeneratedBy(e23, ROLE_IMG, a9));
+        ll.add(newWasGeneratedBy(e24, ROLE_HDR, a9));
 
-        ll.add(newWasGeneratedBy(e25, "out", a10));
-        ll.add(newWasGeneratedBy(e26, "out", a11));
-        ll.add(newWasGeneratedBy(e27, "out", a12));
+        ll.add(newWasGeneratedBy(e25, ROLE_OUT, a10));
+        ll.add(newWasGeneratedBy(e26, ROLE_OUT, a11));
+        ll.add(newWasGeneratedBy(e27, ROLE_OUT, a12));
 
-        WasGeneratedBy wg18 = newWasGeneratedBy(e28, "out", a13);
-        WasGeneratedBy wg19 = newWasGeneratedBy(e29, "out", a14);
-        WasGeneratedBy wg20 = newWasGeneratedBy(e30, "out", a15);
+        WasGeneratedBy wg18 = newWasGeneratedBy(e28, ROLE_OUT, a13);
+        WasGeneratedBy wg19 = newWasGeneratedBy(e29, ROLE_OUT, a14);
+        WasGeneratedBy wg20 = newWasGeneratedBy(e30, ROLE_OUT, a15);
         wg18.setTime(pFactory.newTimeNow());
         wg19.setTime(pFactory.newTimeNow());
         wg20.setTime(pFactory.newTimeNow());

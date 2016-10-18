@@ -8,3 +8,4 @@ PROVMAN=~/workspace/prov-scala/provman/target/appassembler/bin/provmanagement
 
 do.comp:
 	$(PROVMAN) compare --infile target/pc1.provn  --withfile target/pc2.provn --outfile -
+	$(PROVMAN) compare --infile target/pc2.provn  --withfile target/pc3.provn --outfile -

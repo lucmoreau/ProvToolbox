@@ -34,25 +34,17 @@ public class ChallengeUtil implements ChallengeConstants {
     
         Entity a = pFactory.newEntity(q(id), label);
         pFactory.addType(a, pFactory.newType(pFactory.newQualifiedName(PRIM_NS, STRING, PRIM_PREFIX),name.PROV_QUALIFIED_NAME));
-    
-    
-        addValue(a, value);
-    
+        a.setValue(pFactory.newValue(value));
         return a;
     }
 
-    public void addValue(HasOther p1, String val) {
-        p1.getOther().add(pFactory.newOther(PC1_NS, VALUE, PC1_PREFIX, val, name.XSD_STRING));
-    }
-
+    
     public QualifiedName q(String n) {
     
         return pFactory.newQualifiedName(PC1_NS, n, PC1_PREFIX);
     }
     
-    public QualifiedName file_val(String name) {
-        return pFactory.newQualifiedName(PC1_NS, name, PC1_PREFIX);
-    }
+
 
     public QualifiedName prim_val(String name) {
         return pFactory.newQualifiedName(PRIM_NS, name, PRIM_PREFIX);

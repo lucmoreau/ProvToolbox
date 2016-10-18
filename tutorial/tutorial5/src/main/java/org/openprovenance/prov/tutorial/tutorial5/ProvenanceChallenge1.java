@@ -281,10 +281,13 @@ public class ProvenanceChallenge1 extends ChallengeUtil implements ChallengeCons
         ll.add(newWasDerivedFrom(e24, e22));
         ll.add(newWasDerivedFrom(e25, e23));
         ll.add(newWasDerivedFrom(e25, e24));
+        ll.add(newWasDerivedFrom(e25, e25p));
         ll.add(newWasDerivedFrom(e26, e23));
         ll.add(newWasDerivedFrom(e26, e24));
+        ll.add(newWasDerivedFrom(e26, e26p));
         ll.add(newWasDerivedFrom(e27, e23));
         ll.add(newWasDerivedFrom(e27, e24));
+        ll.add(newWasDerivedFrom(e27, e27p));
         ll.add(newWasDerivedFrom(e28, e25));
         ll.add(newWasDerivedFrom(e29, e26));
         ll.add(newWasDerivedFrom(e30, e27));

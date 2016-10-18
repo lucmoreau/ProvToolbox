@@ -214,6 +214,7 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
         
         ll.add(newWasDerivedFrom(e25, e23));
         ll.add(newWasDerivedFrom(e25, e24));
+        ll.add(newWasDerivedFrom(e25, e25p));
         return ll;
         
     }

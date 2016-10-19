@@ -280,13 +280,13 @@ public class ProvenanceChallenge2 extends ChallengeCommon<Collection<StatementOr
         Document graph = pFactory.newDocument();
         List<StatementOrBundle> ll=graph.getStatementOrBundle();
         Collection<Collection<StatementOrBundle>> acc=new LinkedList<Collection<StatementOrBundle>>();
-        populateGraph(acc);      
+        overallWorkflow(acc);      
         for (Collection<StatementOrBundle> col: acc) ll.addAll(col);
         graph.setNamespace(Namespace.gatherNamespaces(graph));
         return graph;
     }
     
-    public void populateGraph(Collection<Collection<StatementOrBundle>> ll) {
+    public void overallWorkflow(Collection<Collection<StatementOrBundle>> ll) {
         ll.add(align("anatomy1.img", "Anatomy I1", "anatomy1.hdr", "Anatomy H1", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp1","warp1.warp", "Warp Params1", "a#pcworkflow","ag1"));
         ll.add(align("anatomy2.img", "Anatomy I2", "anatomy2.hdr", "Anatomy H2", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp2","warp2.warp", "Warp Params2", "a#pcworkflow","ag1"));
         ll.add(align("anatomy3.img", "Anatomy I3", "anatomy3.hdr", "Anatomy H3", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp3","warp3.warp", "Warp Params3", "a#pcworkflow","ag1"));

@@ -325,7 +325,7 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
     public List<Bindings> makeBindings() {
         List<Bindings> res=new LinkedList<Bindings>();
         List<Collection<Bindings>> acc=new LinkedList<Collection<Bindings>>();
-        populateGraph(acc);
+        overallWorkflow(acc);
         for (Collection<Bindings> col:acc) res.addAll(col);
         return res;
     }

@@ -1,7 +1,6 @@
 package org.openprovenance.prov.tutorial.tutorial5;
 
 import java.util.Collection;
-import java.util.List;
 
 
 
@@ -64,7 +63,7 @@ public interface Challenge<T> extends ChallengeConstants {
                                String workflow,
                                String agent);
     
-    public abstract void populateGraph(Collection<T> ll);
+    public abstract void overallWorkflow(Collection<T> ll);
 
     
 

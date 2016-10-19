@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Activity;
-import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HasOther;
@@ -13,7 +12,6 @@ import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.StatementOrBundle;
-import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasGeneratedBy;
 
 /**

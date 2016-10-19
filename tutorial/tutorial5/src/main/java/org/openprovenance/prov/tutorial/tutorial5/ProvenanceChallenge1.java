@@ -56,49 +56,49 @@ public class ProvenanceChallenge1 extends ChallengeUtil implements ChallengeCons
         List<StatementOrBundle> ll=graph.getStatementOrBundle();
         
 
-        Activity a1 = pFactory.newActivity(q("a#align_warp1"));
+        Activity a1 = pFactory.newActivity(pc("a#align_warp1"));
         pFactory.addType(a1, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
 
-        Activity a2 = pFactory.newActivity(q("a#align_warp2"));
+        Activity a2 = pFactory.newActivity(pc("a#align_warp2"));
         pFactory.addType(a2, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
 
-        Activity a3 = pFactory.newActivity(q("a#align_warp3"));
+        Activity a3 = pFactory.newActivity(pc("a#align_warp3"));
         pFactory.addType(a3, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
 
-        Activity a4 = pFactory.newActivity(q("a#align_warp4"));
+        Activity a4 = pFactory.newActivity(pc("a#align_warp4"));
         pFactory.addType(a4, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
 
-        Activity a5 = pFactory.newActivity(q("a#reslice1"));
+        Activity a5 = pFactory.newActivity(pc("a#reslice1"));
         pFactory.addType(a5, PRIMITIVE_RESLICE, name.PROV_QUALIFIED_NAME);
 
-        Activity a6 = pFactory.newActivity(q("a#reslice2"));
+        Activity a6 = pFactory.newActivity(pc("a#reslice2"));
         pFactory.addType(a6, PRIMITIVE_RESLICE, name.PROV_QUALIFIED_NAME);
 
-        Activity a7 = pFactory.newActivity(q("a#reslice3"));
+        Activity a7 = pFactory.newActivity(pc("a#reslice3"));
         pFactory.addType(a7, PRIMITIVE_RESLICE, name.PROV_QUALIFIED_NAME);
 
-        Activity a8 = pFactory.newActivity(q("a#reslice4"));
+        Activity a8 = pFactory.newActivity(pc("a#reslice4"));
         pFactory.addType(a8, PRIMITIVE_RESLICE, name.PROV_QUALIFIED_NAME);
 
-        Activity a9 = pFactory.newActivity(q("a#softmean"));
+        Activity a9 = pFactory.newActivity(pc("a#softmean"));
         pFactory.addType(a9, PRIMITIVE_SOFTMEAN, name.PROV_QUALIFIED_NAME);
 
-        Activity a10 = pFactory.newActivity(q("a#slicer1"));
+        Activity a10 = pFactory.newActivity(pc("a#slicer1"));
         pFactory.addType(a10, PRIMITIVE_SLICER, name.PROV_QUALIFIED_NAME);
 
-        Activity a11 = pFactory.newActivity(q("a#slicer2"));
+        Activity a11 = pFactory.newActivity(pc("a#slicer2"));
         pFactory.addType(a11, PRIMITIVE_SLICER, name.PROV_QUALIFIED_NAME);
 
-        Activity a12 = pFactory.newActivity(q("a#slicer3"));
+        Activity a12 = pFactory.newActivity(pc("a#slicer3"));
         pFactory.addType(a12, PRIMITIVE_SLICER, name.PROV_QUALIFIED_NAME);
 
-        Activity a13 = pFactory.newActivity(q("a#convert1"));
+        Activity a13 = pFactory.newActivity(pc("a#convert1"));
         pFactory.addType(a13, PRIMITIVE_CONVERT, name.PROV_QUALIFIED_NAME);
 
-        Activity a14 = pFactory.newActivity(q("a#convert2"));
+        Activity a14 = pFactory.newActivity(pc("a#convert2"));
         pFactory.addType(a14, PRIMITIVE_CONVERT, name.PROV_QUALIFIED_NAME);
 
-        Activity a15 = pFactory.newActivity(q("a#convert3"));
+        Activity a15 = pFactory.newActivity(pc("a#convert3"));
         pFactory.addType(a15, PRIMITIVE_CONVERT, name.PROV_QUALIFIED_NAME);
         
         ll.addAll(Arrays.asList(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15));
@@ -292,24 +292,24 @@ public class ProvenanceChallenge1 extends ChallengeUtil implements ChallengeCons
 
 
         
-        ll.add(pFactory.newAgent(q("ag1")));
-        ll.add(pFactory.newActivity(q("a#pcworkflow")));
-        ll.add(pFactory.newWasAssociatedWith(null,q("a#pcworkflow"), q("ag1")));
-        ll.add(pFactory.newWasStartedBy(null, q("a#align_warp1"), null, q("a#pcworkflow")));
-        ll.add(pFactory.newWasStartedBy(null, q("a#align_warp2"), null, q("a#pcworkflow")));
-        ll.add(pFactory.newWasStartedBy(null, q("a#align_warp3"), null, q("a#pcworkflow")));
-        ll.add(pFactory.newWasStartedBy(null, q("a#align_warp4"), null, q("a#pcworkflow")));
-        ll.add(pFactory.newWasStartedBy(null, q("a#reslice1"), null, q("a#pcworkflow")));
-        ll.add(pFactory.newWasStartedBy(null, q("a#reslice2"), null, q("a#pcworkflow")));
-        ll.add(pFactory.newWasStartedBy(null, q("a#reslice3"), null, q("a#pcworkflow")));
-        ll.add(pFactory.newWasStartedBy(null, q("a#reslice4"), null, q("a#pcworkflow")));
-        ll.add(pFactory.newWasStartedBy(null, q("a#softmean"), null, q("a#pcworkflow")));
-        ll.add(pFactory.newWasStartedBy(null, q("a#slicer1"), null, q("a#pcworkflow")));
-        ll.add(pFactory.newWasStartedBy(null, q("a#slicer2"), null, q("a#pcworkflow")));
-        ll.add(pFactory.newWasStartedBy(null, q("a#slicer3"), null, q("a#pcworkflow")));
-        ll.add(pFactory.newWasStartedBy(null, q("a#convert1"), null, q("a#pcworkflow")));
-        ll.add(pFactory.newWasStartedBy(null, q("a#convert2"), null, q("a#pcworkflow")));
-        ll.add(pFactory.newWasStartedBy(null, q("a#convert3"), null, q("a#pcworkflow")));
+        ll.add(pFactory.newAgent(pc("ag1")));
+        ll.add(pFactory.newActivity(pc("a#pcworkflow")));
+        ll.add(pFactory.newWasAssociatedWith(null,pc("a#pcworkflow"), pc("ag1")));
+        ll.add(pFactory.newWasStartedBy(null, pc("a#align_warp1"), null, pc("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, pc("a#align_warp2"), null, pc("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, pc("a#align_warp3"), null, pc("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, pc("a#align_warp4"), null, pc("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, pc("a#reslice1"), null, pc("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, pc("a#reslice2"), null, pc("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, pc("a#reslice3"), null, pc("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, pc("a#reslice4"), null, pc("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, pc("a#softmean"), null, pc("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, pc("a#slicer1"), null, pc("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, pc("a#slicer2"), null, pc("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, pc("a#slicer3"), null, pc("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, pc("a#convert1"), null, pc("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, pc("a#convert2"), null, pc("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, pc("a#convert3"), null, pc("a#pcworkflow")));
         
        
 

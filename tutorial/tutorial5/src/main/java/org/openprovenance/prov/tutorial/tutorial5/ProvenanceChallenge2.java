@@ -49,7 +49,7 @@ public class ProvenanceChallenge2 extends ChallengeCommon<Collection<StatementOr
                                                String workflow, String agent) {
         
         Collection<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
-        Activity a1 = pFactory.newActivity(q(activity));
+        Activity a1 = pFactory.newActivity(pc(activity));
         pFactory.addType(a1, pFactory.newQualifiedName(PRIM_NS, ALIGN_WARP, PRIM_PREFIX), name.PROV_QUALIFIED_NAME);
         
         Entity e1 = newFile(pFactory, imgreffile1, imgreflabel);
@@ -75,10 +75,10 @@ public class ProvenanceChallenge2 extends ChallengeCommon<Collection<StatementOr
         ll.add(newWasDerivedFrom(e11, e3));
         ll.add(newWasDerivedFrom(e11, e4));
         
-        ll.add(pFactory.newAgent(q(agent)));
-        ll.add(pFactory.newActivity(q(workflow)));
-        ll.add(pFactory.newWasAssociatedWith(null,q(workflow), q(agent)));
-        ll.add(pFactory.newWasStartedBy(null, q(activity), null, q(workflow)));
+        ll.add(pFactory.newAgent(pc(agent)));
+        ll.add(pFactory.newActivity(pc(workflow)));
+        ll.add(pFactory.newWasAssociatedWith(null,pc(workflow), pc(agent)));
+        ll.add(pFactory.newWasStartedBy(null, pc(activity), null, pc(workflow)));
         
         return ll;
         
@@ -96,13 +96,13 @@ public class ProvenanceChallenge2 extends ChallengeCommon<Collection<StatementOr
         
         Collection<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
         
-        Activity a5 = pFactory.newActivity(q(activity));
+        Activity a5 = pFactory.newActivity(pc(activity));
         pFactory.addType(a5, pFactory.newQualifiedName(PRIM_NS, RESLICE,    PRIM_PREFIX), name.PROV_QUALIFIED_NAME);
 
         Entity e15 = newFile(pFactory, imgfile, imglabel);
         Entity e16 = newFile(pFactory, hdrfile, hdrlabel);
         
-        Entity e11 = pFactory.newEntity(q(warp));
+        Entity e11 = pFactory.newEntity(pc(warp));
         ll.add(newUsed(a5, ROLE_IN, e11));
         ll.add(newWasGeneratedBy(e15, ROLE_IMG, a5));
         ll.add(newWasGeneratedBy(e16, ROLE_HDR, a5));
@@ -114,10 +114,10 @@ public class ProvenanceChallenge2 extends ChallengeCommon<Collection<StatementOr
 
         ll.add(newUsed(a5, ROLE_IN, e11));
         
-        ll.add(pFactory.newAgent(q(agent)));
-        ll.add(pFactory.newActivity(q(workflow)));
-        ll.add(pFactory.newWasAssociatedWith(null,q(workflow), q(agent)));
-        ll.add(pFactory.newWasStartedBy(null, q(activity), null, q(workflow)));
+        ll.add(pFactory.newAgent(pc(agent)));
+        ll.add(pFactory.newActivity(pc(workflow)));
+        ll.add(pFactory.newWasAssociatedWith(null,pc(workflow), pc(agent)));
+        ll.add(pFactory.newWasStartedBy(null, pc(activity), null, pc(workflow)));
         
         return ll;
 
@@ -139,17 +139,17 @@ public class ProvenanceChallenge2 extends ChallengeCommon<Collection<StatementOr
         Collection<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
 
         
-        Activity a9 = pFactory.newActivity(q(activity));
+        Activity a9 = pFactory.newActivity(pc(activity));
         pFactory.addType(a9, pFactory.newQualifiedName(PRIM_NS, SOFTMEAN,    PRIM_PREFIX), name.PROV_QUALIFIED_NAME);
         
-        Entity e15 = pFactory.newEntity(q(imgfile1));
-        Entity e16 = pFactory.newEntity(q(hdrfile1));
-        Entity e17 = pFactory.newEntity(q(imgfile2));
-        Entity e18 = pFactory.newEntity(q(hdrfile2));
-        Entity e19 = pFactory.newEntity(q(imgfile3));
-        Entity e20 = pFactory.newEntity(q(hdrfile3));
-        Entity e21 = pFactory.newEntity(q(imgfile4));
-        Entity e22 = pFactory.newEntity(q(hdrfile4));
+        Entity e15 = pFactory.newEntity(pc(imgfile1));
+        Entity e16 = pFactory.newEntity(pc(hdrfile1));
+        Entity e17 = pFactory.newEntity(pc(imgfile2));
+        Entity e18 = pFactory.newEntity(pc(hdrfile2));
+        Entity e19 = pFactory.newEntity(pc(imgfile3));
+        Entity e20 = pFactory.newEntity(pc(hdrfile3));
+        Entity e21 = pFactory.newEntity(pc(imgfile4));
+        Entity e22 = pFactory.newEntity(pc(hdrfile4));
 
         
         ll.add(newUsed(a9, ROLE_I1, e15));
@@ -187,10 +187,10 @@ public class ProvenanceChallenge2 extends ChallengeCommon<Collection<StatementOr
         ll.add(newWasDerivedFrom(e24, e21));
         ll.add(newWasDerivedFrom(e24, e22));
         
-        ll.add(pFactory.newAgent(q(agent)));
-        ll.add(pFactory.newActivity(q(workflow)));
-        ll.add(pFactory.newWasAssociatedWith(null,q(workflow), q(agent)));
-        ll.add(pFactory.newWasStartedBy(null, q(activity), null, q(workflow)));
+        ll.add(pFactory.newAgent(pc(agent)));
+        ll.add(pFactory.newActivity(pc(workflow)));
+        ll.add(pFactory.newWasAssociatedWith(null,pc(workflow), pc(agent)));
+        ll.add(pFactory.newWasStartedBy(null, pc(activity), null, pc(workflow)));
         
         return ll;
 
@@ -208,11 +208,11 @@ public class ProvenanceChallenge2 extends ChallengeCommon<Collection<StatementOr
                                                String workflow, String agent)  {
         Collection<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
         
-        Activity a10 = pFactory.newActivity(q(activity));
+        Activity a10 = pFactory.newActivity(pc(activity));
         pFactory.addType(a10, pFactory.newQualifiedName(PRIM_NS, SLICER,    PRIM_PREFIX), name.PROV_QUALIFIED_NAME);
         
-        Entity e23 = pFactory.newEntity(q(imgatlas));
-        Entity e24 = pFactory.newEntity(q(hdratlas));
+        Entity e23 = pFactory.newEntity(pc(imgatlas));
+        Entity e24 = pFactory.newEntity(pc(hdratlas));
         Entity e25p = newParameter(pFactory, params, paramslabel, paramsvalue);
         
         Entity e25 = newFile(pFactory, pgmfile, pgmlabel);
@@ -230,10 +230,10 @@ public class ProvenanceChallenge2 extends ChallengeCommon<Collection<StatementOr
         ll.add(newWasDerivedFrom(e25, e24));
         ll.add(newWasDerivedFrom(e25, e25p));
         
-        ll.add(pFactory.newAgent(q(agent)));
-        ll.add(pFactory.newActivity(q(workflow)));
-        ll.add(pFactory.newWasAssociatedWith(null,q(workflow), q(agent)));
-        ll.add(pFactory.newWasStartedBy(null, q(activity), null, q(workflow)));
+        ll.add(pFactory.newAgent(pc(agent)));
+        ll.add(pFactory.newActivity(pc(workflow)));
+        ll.add(pFactory.newWasAssociatedWith(null,pc(workflow), pc(agent)));
+        ll.add(pFactory.newWasStartedBy(null, pc(activity), null, pc(workflow)));
         
         return ll;
         
@@ -250,10 +250,10 @@ public class ProvenanceChallenge2 extends ChallengeCommon<Collection<StatementOr
         
         Collection<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
 
-        Activity a13 = pFactory.newActivity(q(activity));
+        Activity a13 = pFactory.newActivity(pc(activity));
         pFactory.addType(a13, pFactory.newQualifiedName(PRIM_NS, CONVERT,    PRIM_PREFIX), name.PROV_QUALIFIED_NAME);
         
-        Entity e25 = pFactory.newEntity(q(pgmfile));
+        Entity e25 = pFactory.newEntity(pc(pgmfile));
 
         Entity e28 = newFile(pFactory, giffile, giflabel);
         
@@ -264,10 +264,10 @@ public class ProvenanceChallenge2 extends ChallengeCommon<Collection<StatementOr
         
         ll.add(newWasDerivedFrom(e28, e25));
         
-        ll.add(pFactory.newAgent(q(agent)));
-        ll.add(pFactory.newActivity(q(workflow)));
-        ll.add(pFactory.newWasAssociatedWith(null,q(workflow), q(agent)));
-        ll.add(pFactory.newWasStartedBy(null, q(activity), null, q(workflow)));
+        ll.add(pFactory.newAgent(pc(agent)));
+        ll.add(pFactory.newActivity(pc(workflow)));
+        ll.add(pFactory.newWasAssociatedWith(null,pc(workflow), pc(agent)));
+        ll.add(pFactory.newWasStartedBy(null, pc(activity), null, pc(workflow)));
         
         ll.addAll(Arrays.asList(a13,e25,e28,wg18));
         return ll;

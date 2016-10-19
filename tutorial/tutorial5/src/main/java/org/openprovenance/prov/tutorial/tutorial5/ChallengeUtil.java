@@ -25,28 +25,25 @@ public class ChallengeUtil implements ChallengeConstants {
 
     public Entity newFile(ProvFactory pFactory, String id, String label) {
     
-           Entity a = pFactory.newEntity(q(id), label);
+           Entity a = pFactory.newEntity(pc(id), label);
            pFactory.addType(a, pFactory.newType(pFactory.newQualifiedName(PRIM_NS, FILE, PRIM_PREFIX),name.PROV_QUALIFIED_NAME));
            return a;
     }
 
     protected Entity newParameter(ProvFactory pFactory, String id, String label, String value) {
     
-        Entity a = pFactory.newEntity(q(id), label);
+        Entity a = pFactory.newEntity(pc(id), label);
         pFactory.addType(a, pFactory.newType(pFactory.newQualifiedName(PRIM_NS, STRING, PRIM_PREFIX),name.PROV_QUALIFIED_NAME));
         a.setValue(pFactory.newValue(value));
         return a;
     }
 
     
-    public QualifiedName q(String n) {
-    
+    public QualifiedName pc(String n) {
         return pFactory.newQualifiedName(PC1_NS, n, PC1_PREFIX);
     }
-    
 
-
-    public QualifiedName prim_val(String name) {
+    public QualifiedName prim(String name) {
         return pFactory.newQualifiedName(PRIM_NS, name, PRIM_PREFIX);
     }
     
@@ -57,7 +54,7 @@ public class ChallengeUtil implements ChallengeConstants {
 
     public Used newUsed(org.openprovenance.prov.model.QualifiedName activity, String role, org.openprovenance.prov.model.QualifiedName entity) {
         Used u1 = pFactory.newUsed(activity, entity);
-        u1.getRole().add(pFactory.newRole(prim_val(role), name.PROV_QUALIFIED_NAME));
+        u1.getRole().add(pFactory.newRole(prim(role), name.PROV_QUALIFIED_NAME));
         return u1;
     
     }
@@ -68,7 +65,7 @@ public class ChallengeUtil implements ChallengeConstants {
 
     public WasGeneratedBy newWasGeneratedBy(org.openprovenance.prov.model.QualifiedName entity, String role, org.openprovenance.prov.model.QualifiedName activity) {
         WasGeneratedBy u1 = pFactory.newWasGeneratedBy(null, entity, activity);
-        u1.getRole().add(pFactory.newRole(prim_val(role), name.PROV_QUALIFIED_NAME));
+        u1.getRole().add(pFactory.newRole(prim(role), name.PROV_QUALIFIED_NAME));
         return u1;
     
     }

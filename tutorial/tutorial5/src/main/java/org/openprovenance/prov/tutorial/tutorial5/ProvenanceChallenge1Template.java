@@ -348,7 +348,6 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
 
         bun1.setNamespace(Namespace.gatherNamespaces(bun1));
 
-        // doc1.setNamespace(bun1.getNamespace());
         doc1.setNamespace(new Namespace());
 
         return doc1;

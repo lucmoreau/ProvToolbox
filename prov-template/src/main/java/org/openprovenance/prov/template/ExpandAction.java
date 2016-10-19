@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template;
 
-import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -44,8 +43,8 @@ import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
-import static org.openprovenance.prov.template.Expand.TMPL_NS;
-import static org.openprovenance.prov.template.Expand.TMPL_PREFIX;
+import static org.openprovenance.prov.template.ExpandUtil.TMPL_NS;
+import static org.openprovenance.prov.template.ExpandUtil.TMPL_PREFIX;
 
 public class ExpandAction implements StatementAction {
 
@@ -372,7 +371,7 @@ public class ExpandAction implements StatementAction {
                                                       // return true
                         QualifiedName qn1 = (QualifiedName) o;
 
-                        if (Expand.isVariable(qn1)) {
+                        if (ExpandUtil.isVariable(qn1)) {
                             List<TypedValue> vals = env2.get(qn1);
 
                             if (vals == null) {
@@ -413,19 +412,19 @@ public class ExpandAction implements StatementAction {
 
         for (TypedValue val : vals) {
             String elementName = attribute.getElementName().getUri();
-            if (Expand.LABEL_URI.equals(elementName)) {
+            if (ExpandUtil.LABEL_URI.equals(elementName)) {
                 dstAttributes.add(pf.newAttribute(pf.getName().PROV_LABEL,
                                                   val.getValue(),
                                                   val.getType()));
-            } else if (Expand.TIME_URI.equals(elementName)) {
+            } else if (ExpandUtil.TIME_URI.equals(elementName)) {
                 if (dstStatement instanceof HasTime) {
                     ((HasTime) dstStatement).setTime(pf.newISOTime((String) val.getValue()));
                 }
-            } else if (Expand.STARTTIME_URI.equals(elementName)) {
+            } else if (ExpandUtil.STARTTIME_URI.equals(elementName)) {
                 if (dstStatement instanceof Activity) {
                     ((Activity) dstStatement).setStartTime(pf.newISOTime((String) val.getValue()));
                 }
-            } else if (Expand.ENDTIME_URI.equals(elementName)) {
+            } else if (ExpandUtil.ENDTIME_URI.equals(elementName)) {
                 if (dstStatement instanceof Activity) {
                     ((Activity) dstStatement).setEndTime(pf.newISOTime((String) val.getValue()));
                 }
@@ -457,7 +456,7 @@ public class ExpandAction implements StatementAction {
     }
 
     private boolean setExpand(Statement res, QualifiedName id, int position) {
-        if (Expand.isVariable(id)) {
+        if (ExpandUtil.isVariable(id)) {
             QualifiedName val = env.get(id);
             if (val != null) {
                 u.setter(res, position, val);
@@ -688,7 +687,7 @@ public class ExpandAction implements StatementAction {
 
         QualifiedName newId;
         final QualifiedName bunId = bun.getId();
-        if (Expand.isVariable(bunId)) {
+        if (ExpandUtil.isVariable(bunId)) {
             // System.out.println("===> bundle " + env + " " + bindings);
             QualifiedName val = env.get(bunId);
             if (val != null) {
@@ -713,7 +712,7 @@ public class ExpandAction implements StatementAction {
                                              Bindings bindings1,
                                              Hashtable<QualifiedName, QualifiedName> env0) {
         final QualifiedName id = bun.getId();
-        if (Expand.isVariable(id)) {
+        if (ExpandUtil.isVariable(id)) {
             List<QualifiedName> vals = bindings1.getVariables().get(id);
             if (vals == null) {
                 if (Expand.isGensymVariable(id)) {

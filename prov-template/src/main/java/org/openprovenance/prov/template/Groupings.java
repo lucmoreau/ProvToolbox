@@ -20,7 +20,7 @@ import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 
-import static org.openprovenance.prov.template.Expand.LINKED_URI;;
+import static org.openprovenance.prov.template.ExpandUtil.LINKED_URI;;
 
 public class Groupings {
     final private List<List<QualifiedName>> variables;
@@ -69,7 +69,7 @@ public class Groupings {
 	Groupings grps=new Groupings();
 	Set<QualifiedName> allVars=new HashSet<QualifiedName>();
 	for (Statement statement: bun.getStatement()) {
-	    Set<QualifiedName> vars=Expand.freeVariables(statement);
+	    Set<QualifiedName> vars=ExpandUtil.freeVariables(statement);
 	    allVars.addAll(vars);
 	    if (statement instanceof HasOther) {
 		HasOther stmt2=(HasOther)statement;

@@ -8,7 +8,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.notation.Utility;
 
-import static org.openprovenance.prov.template.Expand.VAR_NS;
+import static org.openprovenance.prov.template.ExpandUtil.VAR_NS;
 import junit.framework.TestCase;
 
 public class GroupingsTest extends TestCase {

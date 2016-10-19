@@ -292,8 +292,28 @@ public class ProvenanceChallenge1 extends ChallengeUtil implements ChallengeCons
         ll.add(newWasDerivedFrom(e29, e26));
         ll.add(newWasDerivedFrom(e30, e27));
 
-//        WasAssociatedWith waw1 = pFactory.newWasAssociatedWith(q("waw1"), a1.getId(), ag1.getId());
-        //ll.add(waw1);
+
+        
+        ll.add(pFactory.newAgent(q("ag1")));
+        ll.add(pFactory.newActivity(q("a#pcworkflow")));
+        ll.add(pFactory.newWasAssociatedWith(null,q("a#pcworkflow"), q("ag1")));
+        ll.add(pFactory.newWasStartedBy(null, q("a#align_warp1"), null, q("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, q("a#align_warp2"), null, q("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, q("a#align_warp3"), null, q("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, q("a#align_warp4"), null, q("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, q("a#reslice1"), null, q("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, q("a#reslice2"), null, q("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, q("a#reslice3"), null, q("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, q("a#reslice4"), null, q("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, q("a#softmean"), null, q("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, q("a#slicer1"), null, q("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, q("a#slicer2"), null, q("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, q("a#slicer3"), null, q("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, q("a#convert1"), null, q("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, q("a#convert2"), null, q("a#pcworkflow")));
+        ll.add(pFactory.newWasStartedBy(null, q("a#convert3"), null, q("a#pcworkflow")));
+        
+       
 
         graph.setNamespace(Namespace.gatherNamespaces(graph));
 

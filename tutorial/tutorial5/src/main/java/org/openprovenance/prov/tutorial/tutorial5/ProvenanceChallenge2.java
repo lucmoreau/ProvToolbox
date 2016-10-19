@@ -7,13 +7,16 @@ import java.util.List;
 
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasStartedBy;
 
 /**
  * 
@@ -76,6 +79,11 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
         ll.add(newWasDerivedFrom(e11, e3));
         ll.add(newWasDerivedFrom(e11, e4));
         
+        ll.add(pFactory.newAgent(q(agent)));
+        ll.add(pFactory.newActivity(q(workflow)));
+        ll.add(pFactory.newWasAssociatedWith(null,q(workflow), q(agent)));
+        ll.add(pFactory.newWasStartedBy(null, q(activity), null, q(workflow)));
+        
         return ll;
         
     }
@@ -109,6 +117,11 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
         ll.addAll(Arrays.asList(a5,e15,e16,e11));
 
         ll.add(newUsed(a5, ROLE_IN, e11));
+        
+        ll.add(pFactory.newAgent(q(agent)));
+        ll.add(pFactory.newActivity(q(workflow)));
+        ll.add(pFactory.newWasAssociatedWith(null,q(workflow), q(agent)));
+        ll.add(pFactory.newWasStartedBy(null, q(activity), null, q(workflow)));
         
         return ll;
 
@@ -178,6 +191,11 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
         ll.add(newWasDerivedFrom(e24, e21));
         ll.add(newWasDerivedFrom(e24, e22));
         
+        ll.add(pFactory.newAgent(q(agent)));
+        ll.add(pFactory.newActivity(q(workflow)));
+        ll.add(pFactory.newWasAssociatedWith(null,q(workflow), q(agent)));
+        ll.add(pFactory.newWasStartedBy(null, q(activity), null, q(workflow)));
+        
         return ll;
 
         
@@ -215,6 +233,12 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
         ll.add(newWasDerivedFrom(e25, e23));
         ll.add(newWasDerivedFrom(e25, e24));
         ll.add(newWasDerivedFrom(e25, e25p));
+        
+        ll.add(pFactory.newAgent(q(agent)));
+        ll.add(pFactory.newActivity(q(workflow)));
+        ll.add(pFactory.newWasAssociatedWith(null,q(workflow), q(agent)));
+        ll.add(pFactory.newWasStartedBy(null, q(activity), null, q(workflow)));
+        
         return ll;
         
     }
@@ -243,6 +267,11 @@ public class ProvenanceChallenge2 extends ChallengeUtil implements Challenge<Col
         //wg18.setTime(pFactory.newTimeNow());
         
         ll.add(newWasDerivedFrom(e28, e25));
+        
+        ll.add(pFactory.newAgent(q(agent)));
+        ll.add(pFactory.newActivity(q(workflow)));
+        ll.add(pFactory.newWasAssociatedWith(null,q(workflow), q(agent)));
+        ll.add(pFactory.newWasStartedBy(null, q(activity), null, q(workflow)));
         
         ll.addAll(Arrays.asList(a13,e25,e28,wg18));
         return ll;

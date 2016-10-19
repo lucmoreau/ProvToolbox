@@ -1,5 +1,7 @@
 package org.openprovenance.prov.tutorial.tutorial5;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,7 +32,7 @@ import static org.openprovenance.prov.template.Expand.TMPL_NS;
  *      href="http://twiki.ipaw.info/bin/view/Challenge/FirstProvenanceChallenge">provenance
  *      challenge</a>
  */
-public class ProvenanceChallenge1Template  extends ChallengeUtil implements Challenge<Bindings>, Variables {
+public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bindings>> implements Variables {   
 
 
 
@@ -82,70 +84,70 @@ public class ProvenanceChallenge1Template  extends ChallengeUtil implements Chal
     }
 
     public class alignBindingBean {
-	private String imgfile1;
-	private String imglabel; 
-	private String hdrfile1;
-	private String hdrlabel;
-	private String imgreffile1;
-	private String imgreflabel; 
-	private String hdrreffile1;
-	private String hdrreflabel; 
-	private String activity; 
-	private String warpfile;
-	private String warplabel;
-	private String workflow;
-	private String agent;
-	public Bindings export() {
-	    return align(imgfile1, imglabel,
-			 hdrfile1, hdrlabel,
-			 imgreffile1, imgreflabel,
-			 hdrreffile1, hdrreflabel,
-			 activity,
-			 warpfile, warplabel,
-			 workflow, agent);
-	}
-	public void setImgFile(String imgfile1) {
-	    this.imgfile1=imgfile1;
-	}
-	public void setImgLabel(String imglabel) {
-	    this.imglabel=imglabel;
-	}
-	public void setHdrFile(String hdrfile1) {
-	    this.hdrfile1=hdrfile1;
-	}
-	public void setHdrLabel(String hdrlabel) {
-	    this.hdrlabel=hdrlabel;
-	}
-	public void setImgRefFile(String imgreffile1) {
-	    this.imgreffile1=imgreffile1;
-	}
-	public void setImgRefLabel(String imgreflabel) {
-	    this.imgreflabel=imgreflabel;
-	}
-	public void setHdrRefFile(String hdrreffile1) {
-	    this.hdrreffile1=hdrreffile1;
-	}
-	public void setHdrRefLabel(String hdrreflabel) {
-	    this.hdrreflabel=hdrreflabel;
-	}
-	public void setActivity(String activity) {
-	    this.activity=activity;
-	}
-	public void setWarpfile(String warpfile) {
-	    this.warpfile=warpfile;
-	}
-	public void setWarplabel(String warplabel) {
-	    this.warplabel=warplabel;
-	}
-	public void setWorkflow(String workflow) {
-	    this.workflow=workflow;
-	}
-	public void setAgent(String agent) {
-	    this.agent=agent;
-	}
+        private String imgfile1;
+        private String imglabel; 
+        private String hdrfile1;
+        private String hdrlabel;
+        private String imgreffile1;
+        private String imgreflabel; 
+        private String hdrreffile1;
+        private String hdrreflabel; 
+        private String activity; 
+        private String warpfile;
+        private String warplabel;
+        private String workflow;
+        private String agent;
+        public Collection<Bindings> export() {
+            return align(imgfile1, imglabel,
+                         hdrfile1, hdrlabel,
+                         imgreffile1, imgreflabel,
+                         hdrreffile1, hdrreflabel,
+                         activity,
+                         warpfile, warplabel,
+                         workflow, agent);
+        }
+        public void setImgFile(String imgfile1) {
+            this.imgfile1=imgfile1;
+        }
+        public void setImgLabel(String imglabel) {
+            this.imglabel=imglabel;
+        }
+        public void setHdrFile(String hdrfile1) {
+            this.hdrfile1=hdrfile1;
+        }
+        public void setHdrLabel(String hdrlabel) {
+            this.hdrlabel=hdrlabel;
+        }
+        public void setImgRefFile(String imgreffile1) {
+            this.imgreffile1=imgreffile1;
+        }
+        public void setImgRefLabel(String imgreflabel) {
+            this.imgreflabel=imgreflabel;
+        }
+        public void setHdrRefFile(String hdrreffile1) {
+            this.hdrreffile1=hdrreffile1;
+        }
+        public void setHdrRefLabel(String hdrreflabel) {
+            this.hdrreflabel=hdrreflabel;
+        }
+        public void setActivity(String activity) {
+            this.activity=activity;
+        }
+        public void setWarpfile(String warpfile) {
+            this.warpfile=warpfile;
+        }
+        public void setWarplabel(String warplabel) {
+            this.warplabel=warplabel;
+        }
+        public void setWorkflow(String workflow) {
+            this.workflow=workflow;
+        }
+        public void setAgent(String agent) {
+            this.agent=agent;
+        }
     }
 
-    public Bindings align(String imgfile1, String imglabel, 
+    public Collection<Bindings> align(String imgfile1, String imglabel, 
                           String hdrfile1, String hdrlabel,
                           String imgreffile1, String imgreflabel, 
                           String hdrreffile1, String hdrreflabel, 
@@ -174,14 +176,14 @@ public class ProvenanceChallenge1Template  extends ChallengeUtil implements Chal
         if (workflow!=null) bindings1.addVariable(b_var(VAR_PARENT),         q(workflow));      
         if (agent!=null)    bindings1.addVariable(b_var(VAR_AGENT),          q(agent));      
         
-        return bindings1;
+        return Collections.singleton(bindings1);
     }
     
-    public Bindings reslice(String warp, 
-                            String activity, 
-                            String imgfile, String imglabel,
-                            String hdrfile, String hdrlabel,
-                            String workflow, String agent)  {
+    public Collection<Bindings> reslice(String warp, 
+                                        String activity, 
+                                        String imgfile, String imglabel,
+                                        String hdrfile, String hdrlabel,
+                                        String workflow, String agent)  {
     
         Bindings bindings=new Bindings(pFactory);
         
@@ -204,17 +206,17 @@ public class ProvenanceChallenge1Template  extends ChallengeUtil implements Chal
         if (workflow!=null) bindings.addVariable(b_var(VAR_PARENT),         q(workflow));      
         if (agent!=null)    bindings.addVariable(b_var(VAR_AGENT),          q(agent));      
 
-        return bindings;
+        return Collections.singleton(bindings);
     }
     
-    public Bindings softmean(String imgfile1, String hdrfile1,
-                             String imgfile2, String hdrfile2,
-                             String imgfile3, String hdrfile3,
-                             String imgfile4, String hdrfile4,
-                             String activity, 
-                             String imgatlas, String imglabel,
-                             String hdratlas, String hdrlabel,
-                             String workflow, String agent)  {
+    public Collection<Bindings> softmean(String imgfile1, String hdrfile1,
+                                         String imgfile2, String hdrfile2,
+                                         String imgfile3, String hdrfile3,
+                                         String imgfile4, String hdrfile4,
+                                         String activity, 
+                                         String imgatlas, String imglabel,
+                                         String hdratlas, String hdrlabel,
+                                         String workflow, String agent)  {
 
         Bindings bindings=new Bindings(pFactory);
         
@@ -252,16 +254,16 @@ public class ProvenanceChallenge1Template  extends ChallengeUtil implements Chal
         if (agent!=null)    bindings.addVariable(b_var(VAR_AGENT),          q(agent));      
         
         
-        return bindings;
+        return Collections.singleton(bindings);
     }
     
-    public Bindings slice(String imgatlas, 
-                          String hdratlas, 
-                          String params, String paramslabel, String paramsvalue,
-                          String activity, 
-                          String pgmfile, String pgmlabel,
-                          String workflow, String agent)  {
-    
+    public Collection<Bindings> slice(String imgatlas, 
+                                      String hdratlas, 
+                                      String params, String paramslabel, String paramsvalue,
+                                      String activity, 
+                                      String pgmfile, String pgmlabel,
+                                      String workflow, String agent)  {
+
         Bindings bindings=new Bindings(pFactory);
         bindings.addVariable(b_var(VAR_CONSUMED),       q(imgatlas));
         bindings.addVariable(b_var(VAR_CONSUMED),       q(hdratlas));
@@ -291,15 +293,15 @@ public class ProvenanceChallenge1Template  extends ChallengeUtil implements Chal
         if (workflow!=null) bindings.addVariable(b_var(VAR_PARENT),         q(workflow));      
         if (agent!=null)    bindings.addVariable(b_var(VAR_AGENT),          q(agent));      
         
-        return bindings;
+        return Collections.singleton(bindings);
     }
     
     
-    public Bindings convert(String pgmfile, 
-                            String activity, 
-                            String giffile, String giflabel,
-                            String workflow, String agent)  {
-    
+    public Collection<Bindings> convert(String pgmfile, 
+                                        String activity, 
+                                        String giffile, String giflabel,
+                                        String workflow, String agent)  {
+
         Bindings bindings=new Bindings(pFactory);
         
         bindings.addVariable(b_var(VAR_CONSUMED),       q(pgmfile));
@@ -316,33 +318,15 @@ public class ProvenanceChallenge1Template  extends ChallengeUtil implements Chal
         if (workflow!=null) bindings.addVariable(b_var(VAR_PARENT),         q(workflow));      
         if (agent!=null)    bindings.addVariable(b_var(VAR_AGENT),          q(agent));              
         
-        return bindings;
+        return Collections.singleton(bindings);
     }
     
     
     public List<Bindings> makeBindings() {
         List<Bindings> res=new LinkedList<Bindings>();
-        res.add(align("anatomy1.img", "Anatomy I1", "anatomy1.hdr", "Anatomy H1", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp1","warp1.warp", "Warp Params1", "a#pcworkflow","ag1"));
-        res.add(align("anatomy2.img", "Anatomy I2", "anatomy2.hdr", "Anatomy H2", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp2","warp2.warp", "Warp Params2", "a#pcworkflow","ag1"));
-        res.add(align("anatomy3.img", "Anatomy I3", "anatomy3.hdr", "Anatomy H3", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp3","warp3.warp", "Warp Params3", "a#pcworkflow","ag1"));
-        res.add(align("anatomy4.img", "Anatomy I4", "anatomy4.hdr", "Anatomy H4", "reference.img", "Reference Image", "reference.hdr", "Reference Header", "a#align_warp4","warp4.warp", "Warp Params4", "a#pcworkflow","ag1"));
-
-        res.add(reslice("warp1.warp", "a#reslice1", "resliced1.img", "Resliced I1", "resliced1.hdr", "Resliced H1", "a#pcworkflow","ag1"));
-        res.add(reslice("warp2.warp", "a#reslice2", "resliced2.img", "Resliced I2", "resliced2.hdr", "Resliced H2", "a#pcworkflow","ag1"));
-        res.add(reslice("warp3.warp", "a#reslice3", "resliced3.img", "Resliced I3", "resliced3.hdr", "Resliced H3", "a#pcworkflow","ag1"));
-        res.add(reslice("warp4.warp", "a#reslice4", "resliced4.img", "Resliced I4", "resliced4.hdr", "Resliced H4", "a#pcworkflow","ag1"));
-
-        res.add(softmean("resliced1.img", "resliced1.hdr", "resliced2.img", "resliced2.hdr", "resliced3.img", "resliced3.hdr", "resliced4.img", "resliced4.hdr", "a#softmean", "atlas.img", "Atlas Image", "atlas.hdr", "Atlas Header", "a#pcworkflow","ag1"));
-
-        res.add(slice("atlas.img", "atlas.hdr",  "params#slicer1", "slicer param 1", "-x .5", "a#slicer1", "atlas-x.pgm", "Atlas X Slice", "a#pcworkflow","ag1"));
-        res.add(slice("atlas.img", "atlas.hdr",  "params#slicer2", "slicer param 2", "-y .5", "a#slicer2", "atlas-y.pgm", "Atlas Y Slice", "a#pcworkflow","ag1"));
-        res.add(slice("atlas.img", "atlas.hdr",  "params#slicer3", "slicer param 3", "-z .5", "a#slicer3", "atlas-z.pgm", "Atlas Z Slice", "a#pcworkflow","ag1"));
-
-        
-        res.add(convert("atlas-x.pgm", "a#convert1", "atlas-x.gif", "Atlas X Graphic", "a#pcworkflow","ag1"));
-        res.add(convert("atlas-y.pgm", "a#convert2", "atlas-y.gif", "Atlas Y Graphic", "a#pcworkflow","ag1"));
-        res.add(convert("atlas-z.pgm", "a#convert3", "atlas-z.gif", "Atlas Z Graphic", "a#pcworkflow","ag1"));
-        
+        List<Collection<Bindings>> acc=new LinkedList<Collection<Bindings>>();
+        populateGraph(acc);
+        for (Collection<Bindings> col:acc) res.addAll(col);
         return res;
     }
 

@@ -1,11 +1,11 @@
 package org.openprovenance.prov.tutorial.tutorial5;
 
+
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.interop.InteropFramework.ProvFormat;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
-import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
@@ -95,4 +95,7 @@ public class ChallengeUtil implements ChallengeConstants {
         intF.writeDocument(file, document);
         intF.writeDocument(System.out, ProvFormat.PROVN, document);
     }
+    
+    
+   
 }

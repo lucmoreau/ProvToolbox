@@ -12,6 +12,7 @@ import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
+import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.ProvFactory;
@@ -36,22 +37,24 @@ public class Bindings {
     
     final private Hashtable<QualifiedName, List<QualifiedName>> variables;
     final private Hashtable<QualifiedName, List<List<TypedValue>>> attributes;
-    
-    final ProvFactory pf;
+
+    final private ProvFactory pf;
+    final private Name name;
     static ProvUtilities u= new ProvUtilities();
 
     public Bindings(ProvFactory pf) {
-	this(new Hashtable<QualifiedName, List<QualifiedName>>(), 
-	     new Hashtable<QualifiedName, List<List<TypedValue>>>(),
-	     pf);
+        this(new Hashtable<QualifiedName, List<QualifiedName>>(), 
+             new Hashtable<QualifiedName, List<List<TypedValue>>>(),
+             pf);
     }
-    
+
     public Bindings(Hashtable<QualifiedName, List<QualifiedName>> variables,
                     Hashtable<QualifiedName, List<List<TypedValue>>> attributes,
                     ProvFactory pf) {
-	this.variables=variables;
-	this.attributes=attributes;
-	this.pf=pf;
+        this.variables=variables;
+        this.attributes=attributes;
+        this.pf=pf;
+        this.name=pf.getName();
     }
 
     @Override
@@ -60,36 +63,67 @@ public class Bindings {
         Bindings b=(Bindings)o;
         return b.variables.equals(this.variables)
                 && b.attributes.equals(this.attributes);
-        
+
     }
 
 
     public Hashtable<QualifiedName, List<QualifiedName>> getVariables() {
-	return variables;
+        return variables;
     }
 
 
 
     public Hashtable<QualifiedName, List<List<TypedValue>>> getAttributes() {
-	return attributes;
+        return attributes;
     }
-    
-    
+
+
     public void addVariable(QualifiedName name, QualifiedName val) {
-	List<QualifiedName> v=variables.get(name);
-	if (v==null) {
-	    variables.put(name, new LinkedList<QualifiedName>());
-	}
-	variables.get(name).add(val);
+        List<QualifiedName> v=variables.get(name);
+        if (v==null) {
+            variables.put(name, new LinkedList<QualifiedName>());
+        }
+        variables.get(name).add(val);
     }
     
+    public void addVariable(String name, QualifiedName val) {
+        addVariable(b_var(name),val);
+    }
+
+
     public void addAttribute(QualifiedName name, List<TypedValue> values) {
         List<List<TypedValue>> v=attributes.get(name);
         if (v==null) {
             attributes.put(name, new LinkedList<List<TypedValue>>());
         }
         attributes.get(name).add(values);
+    }    
+    public void addAttribute(String name, QualifiedName value) {
+        addAttribute(b_var(name),a_val(value));
+    }    
+    
+    public void addAttribute(String name, String value) {
+        addAttribute(b_var(name),a_val(value));
     }
+    
+    /* binding variable */
+    public QualifiedName b_var(String name) {
+        return pf.newQualifiedName(ExpandUtil.VAR_NS, name, ExpandUtil.VAR_PREFIX);
+    }
+    
+    /** Attribute value */
+    public List<TypedValue> a_val(String s) {
+        List<TypedValue> ll=new LinkedList<TypedValue>();
+        ll.add(pf.newAttribute(pf.newQualifiedName(TMPL_NS, "ignore", "app"), s, name.XSD_STRING));
+        return ll;
+    }
+    
+    public List<TypedValue> a_val(QualifiedName s) {
+        List<TypedValue> ll=new LinkedList<TypedValue>();
+        ll.add(pf.newAttribute(pf.newQualifiedName(TMPL_NS, "ignore", "app"), s, name.PROV_QUALIFIED_NAME));
+        return ll;
+    }
+    
     
 
     @Override

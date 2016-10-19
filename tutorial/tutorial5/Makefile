@@ -4,6 +4,7 @@ test.zip:
 
 
 PROVMAN=~/workspace/prov-scala/provman/target/appassembler/bin/provmanagement
+PROVMAN=~/Documents/workspace/prov-scala/provman/target/appassembler/bin/provmanagement
 
 
 do.comp:

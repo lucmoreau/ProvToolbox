@@ -45,6 +45,17 @@
       "Huanjia Yang",
       "Luc Moreau"
       ]
+      ,   status:   "Recommendation"
+      ,   publisher:  "W3C"
+      },
+      "json-ld": {
+      title:    "JSON-LD 1.0. A JSON-based Serialization for Linked Data"
+      ,   href:     "https://www.w3.org/TR/2014/REC-json-ld-20140116/"
+      ,   authors:  [
+      "Manu Sporny",
+      "Gregg Kellogg",
+      "Markus Lanthaler"
+      ]
       ,   status:   "Member-SUBM"
       ,   publisher:  "W3C"
       }
@@ -162,7 +173,7 @@ table.thinborder td {
 
 </style>
 
-  </head>
+v  </head>
   <body>
     <section id='abstract'>
       <p>
@@ -414,12 +425,12 @@ expected that <tt>var:c</tt> is bound to six different values, one for
 each combination of values for <tt>var:a</tt> and <tt>var:b</tt>.
 However, attributes can be repeated in a statement, so <tt>var:c</tt> should be bound to six groups of values.
 For instance, for the following groups of values
-[[<tt>ex:t1</tt>],
- [<tt>ex:t2a</tt>,  <tt>ex:t2b</tt>],
- [<tt>ex:t3</tt>],
- [<tt>ex:t4</tt>],
- [<tt>ex:t5a</tt>, <tt>ex:t5b</tt>, <tt>ex:t5c</tt>],
- [<tt>ex:t6</tt>]], we obtain the following expansion.</p>
+[{<tt>ex:t1</tt>},
+ {<tt>ex:t2a</tt>,  <tt>ex:t2b</tt>},
+ {<tt>ex:t3</tt>},
+ {<tt>ex:t4</tt>},
+ {<tt>ex:t5a</tt>, <tt>ex:t5b</tt>, <tt>ex:t5c</tt>},
+ {<tt>ex:t6</tt>}], we obtain the following expansion.</p>
 <div class="example">
 <pre class="highlight">
 document
@@ -552,12 +563,12 @@ are <tt>var:a</tt> and <tt>var:b</tt>, with respective groups 0 and 1. So, the g
 <tr><td><b>variable</b></td><td><b>values</b></td></tr>
 <tr><td><tt>var:a</tt></td><td>[<tt>ex:ag1</tt>, <tt>ex:ag2</tt>]</td></tr>
 <tr><td><tt>var:b</tt></td><td>[<tt>ex:en1</tt>, <tt>ex:en2</tt>, <tt>ex:en3</tt>]</td></tr>
-<tr><td><tt>var:c</tt></td><td>[[<tt>ex:t1</tt>],
- [<tt>ex:t2a</tt>,  <tt>ex:t2b</tt>],
- [<tt>ex:t3</tt>],
- [<tt>ex:t4</tt>],
- [<tt>ex:t5a</tt>, <tt>ex:t5b</tt>, <tt>ex:t5c</tt>],
- [<tt>ex:t6</tt>]]</td></tr>
+<tr><td><tt>var:c</tt></td><td>[{<tt>ex:t1</tt>},
+ {<tt>ex:t2a</tt>,  <tt>ex:t2b</tt>},
+ {<tt>ex:t3</tt>},
+ {<tt>ex:t4</tt>},
+ {<tt>ex:t5a</tt>, <tt>ex:t5b</tt>, <tt>ex:t5c</tt>},
+ {<tt>ex:t6</tt>}]</td></tr>
 </tbody>
 </table>
 </div>
@@ -700,154 +711,50 @@ Should we rename <tt>tmpl:order</tt> to <tt>tmpl:index</tt>? Dong: +1
 <section id="environment" class="informative">
       <h2>Set of Bindings</h2>
 
-<p><a href="#example-7" class="anexample-ref"><span>Example REF</span></a> shows a symbolic representation of bindings.  One should note that to be self-contained a set of bindings should also contain prefix declarations for all qualified names. Hence, to minimize the amount of new syntax required by the templating system, an encoding of a set of bindings as a PROV document is proposed.</p>
+<p><a href="#example-7" class="anexample-ref"><span>Example REF</span></a> shows a symbolic representation of bindings.  One should note that to be self-contained a set of bindings should also contain prefix declarations for all qualified names. </p>
 
 <div class="anexample"  id="example-9">
-<p>The set of bindings in <a href="#example-7" class="anexample-ref"><span>Example REF</span></a> can be expressed as a PROV document as follows:</p>
-<pre class="highlight">
-document
- prefix var &lt;http://openprovenance.org/var#&gt;
- prefix ex &lt;http://example.org/&gt;
- prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
-
- entity(var:a,[tmpl:value_0 = 'ex:ag1', tmpl:value_1 = 'ex:ag2'])
- entity(var:b,[tmpl:value_0 = 'ex:en1', tmpl:value_1 = 'ex:en2', tmpl:value_2 = 'ex:en3'])
- entity(var:c,[tmpl:2dvalue_0_0 = 'ex:t1',
-               tmpl:2dvalue_1_0 = 'ex:t2a', tmpl:2dvalue_1_1 = 'ex:t2b',
- 	       tmpl:2dvalue_2_0 = 'ex:t3',
- 	       tmpl:2dvalue_3_0 = 'ex:t4',
- 	       tmpl:2dvalue_4_0 = 'ex:t5a', tmpl:2dvalue_4_1 = 'ex:t5b', tmpl:2dvalue_4_2 = 'ex:t5c',
- 	       tmpl:2dvalue_5_0 = 'ex:t6'])
-  
-endDocument
-</pre>
-<p>Each variable is represented by an entity, and the bound values are
-encoded with attribute-value pairs, using some reserved attributes in
-the <tt>tmpl</tt> namespace.</p>
-</div>
-
-<p>The reserved parameters are defined according to Table 4.</p>
-
-<table class="thinborder" style="margin-left: auto; margin-right: auto;">
-<caption id="binding-parameter-table">Attributes for Bindings</caption>
-<tbody>
-<tr><td><b>binding parameter</b></td><td><b>definition</b></td></tr>
-<tr><td><tt>tmpl:value_0</tt></td><td>attribute of a <a>group variable</a> (or variable occurring in optional identifier position) to provide value '0' for this variable</td></tr>
-<tr><td><tt>tmpl:value_1</tt></td><td>attribute of a <a>group variable</a> (or variable occurring in optional identifier position) to provide value '1' for this variable</td></tr>
-<tr><td><tt>tmpl:value_</tt><em>n</em></td><td>attribute of a <a>group variable</a> (or variable occurring in optional identifier position) to provide value '<em>n</em>' for this variable</td></tr>
-<tr><td><tt>tmpl:2dvalue_0_0</tt></td><td>attribute of a <a>statement-level variable</a> to provide value '0,0' for this variable</td></tr>
-<tr><td><tt>tmpl:2dvalue_<em>x</em>_<em>y</em></tt></td><td>attribute of a <a>statement-level variable</a> to provide value '<em>x</em>,<em>y</em>' for this variable</td></tr>
-</tbody>
-</table>
-
-
-<div class="anexample"  id="example-10">
-<p>The set of bindings in <a href="#example-9" class="anexample-ref"><span>Example REF</span></a> can elegantly be expressed using the Turtle notation [[turtle]] as follows:</p>
-<pre class="highlight">
-@prefix prov: &lt;http://www.w3.org/ns/prov#&gt; .
-@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
-@prefix tmpl: &lt;http://openprovenance.org/tmpl#&gt; .
-@prefix var: &lt;http://openprovenance.org/var#&gt; .
-@prefix ex: &lt;http://example.org/&gt; .
-@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
-
-
-var:a a prov:Entity ;
-	tmpl:value_0 ex:ag1 ;
-	tmpl:value_1 ex:ag2 .
-
-var:b a prov:Entity ;
-	tmpl:value_0 ex:en1 ;
-	tmpl:value_1 ex:en2 ;
-	tmpl:value_2 ex:en3 .
-
-var:c a prov:Entity ;
-	tmpl:2dvalue_0_0 ex:t1 ;
-	tmpl:2dvalue_1_0 ex:t2a ;
-	tmpl:2dvalue_1_1 ex:t2b ;
-	tmpl:2dvalue_2_0 ex:t3 ;
-	tmpl:2dvalue_3_0 ex:t4 ;
-	tmpl:2dvalue_4_0 ex:t5a ;
-	tmpl:2dvalue_4_1 ex:t5b ;
-	tmpl:2dvalue_4_2 ex:t5c ;
-	tmpl:2dvalue_5_0 ex:t6 .
-</pre>
-Alternatively, users of the template expander may user the [[prov-json]] representation.
+<p>The set of bindings in <a href="#example-7" class="anexample-ref"><span>Example REF</span></a> can be expressed as a sinmple JSON dictionary as follows:</p>
 <pre class="highlight">
 {
-  "entity": {
-    "var:c": {
-      "tmpl:2dvalue_4_1": {
-        "$": "ex:t5b",
-        "type": "xsd:QName"
-      },
-      "tmpl:2dvalue_4_0": {
-        "$": "ex:t5a",
-        "type": "xsd:QName"
-      },
-      "tmpl:2dvalue_3_0": {
-        "$": "ex:t4",
-        "type": "xsd:QName"
-      },
-      "tmpl:2dvalue_0_0": {
-        "$": "ex:t1",
-        "type": "xsd:QName"
-      },
-      "tmpl:2dvalue_4_2": {
-        "$": "ex:t5c",
-        "type": "xsd:QName"
-      },
-      "tmpl:2dvalue_2_0": {
-        "$": "ex:t3",
-        "type": "xsd:QName"
-      },
-      "tmpl:2dvalue_5_0": {
-        "$": "ex:t6",
-        "type": "xsd:QName"
-      },
-      "tmpl:2dvalue_1_1": {
-        "$": "ex:t2b",
-        "type": "xsd:QName"
-      },
-      "tmpl:2dvalue_1_0": {
-        "$": "ex:t2a",
-        "type": "xsd:QName"
-      }
-    },
-    "var:a": {
-      "tmpl:value_0": {
-        "$": "ex:ag1",
-        "type": "xsd:QName"
-      },
-      "tmpl:value_1": {
-        "$": "ex:ag2",
-        "type": "xsd:QName"
-      }
-    },
-    "var:b": {
-      "tmpl:value_0": {
-        "$": "ex:en1",
-        "type": "xsd:QName"
-      },
-      "tmpl:value_2": {
-        "$": "ex:en3",
-        "type": "xsd:QName"
-      },
-      "tmpl:value_1": {
-        "$": "ex:en2",
-        "type": "xsd:QName"
-      }
-    }
-  },
-  "prefix": {
-    "xsd": "http://www.w3.org/2001/XMLSchema",
-    "tmpl": "http://openprovenance.org/tmpl#",
-    "var": "http://openprovenance.org/var#",
-    "prov": "http://www.w3.org/ns/prov#",
-    "ex": "http://example.org/"
-  }
+   "var": {
+      "b": [  { "@id": "ex:en1" },
+              { "@id": "ex:en2" },
+              { "@id": "ex:en3" } ],
+      "a": [  { "@id": "ex:ag1" },
+              { "@id": "ex:ag2" } ],
+      "c": [  { "@id": "ex:t1" },
+              [  { "@id": "ex:t2a" },
+                 { "@id": "ex:t2b" } ],
+              { "@id": "ex:t3" },
+              { "@id": "ex:t4" },
+              [  { "@id": "ex:t5a" },
+                 { "@id": "ex:t5b" },
+                 { "@id": "ex:t5c" } ],
+              { "@id": "ex:t6" }  ]   },
+   "vargen": {},
+   "context": {
+      "ex": "http://example.org/"
+   }
 }
 </pre>
+<p>At the top level, we find entries for variables <tt>var</tt>, vargen variables <tt>vargen</tt> and a prefix declaration <tt>context</tt>.</p>
+
+<p>For each variable (whether var or vargen), we find an entry for that variable (using its local name as key). Possible values are expressed as an array. </p>
+
+<p>The syntax for values borrows from [[json-ld]] to encode values and their types, where apropriate:
+<ul>
+<li> strings: <tt>"abc"</tt>
+<li> integers: <tt>123</tt>
+<li> float: <tt>3.1415</tt>
+<li> qualified names: <tt>{ "@id": "ex:t5a" }</tt> with prefix <tt>ex</tt> expected to be declared in <tt>context</tt>.
+<li> string with language: <tt>{ "@value": "bonjour", "@language@": "french" }</tt> with prefix <tt>ex</tt> expected to be declared in <tt>context</tt>.
+<li> arbitrary xsd type: <tt>{ "@type": "xsd:dateTime", "@value": "2002-05-30T09:30:10.5" }</tt> with prefix <tt>xsd</tt> known to the template expander
+</ul>
+
+<p>The element <tt>context</tt> maps prefixes to namespace URIs. The prefixes <tt>xsd</tt> and <tt>prov</tt> are reserved and therefore MUST not be declared in that dictionary. They have the same meaning as in the PROV-N specification.</p>
+
+
 </div>
 
 

@@ -122,6 +122,7 @@
 	      <arguments>
 		<argument>${project.build.directory}/pc3.svg</argument>
 		<argument>${project.build.directory}/pc3.provn</argument>
+		<argument>${project.build.directory}/bind</argument>
 	      </arguments>
 	    </configuration>
 	  </execution>

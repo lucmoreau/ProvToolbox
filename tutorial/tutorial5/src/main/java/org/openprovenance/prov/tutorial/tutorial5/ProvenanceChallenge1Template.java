@@ -1,5 +1,6 @@
 package org.openprovenance.prov.tutorial.tutorial5;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -18,8 +19,8 @@ import org.openprovenance.prov.template.Bindings;
 import org.openprovenance.prov.template.Expand;
 import org.openprovenance.prov.template.Groupings;
 
-import static org.openprovenance.prov.template.Expand.VAR_NS;
-import static org.openprovenance.prov.template.Expand.TMPL_NS;
+import static org.openprovenance.prov.template.ExpandUtil.VAR_NS;
+import static org.openprovenance.prov.template.ExpandUtil.TMPL_NS;
 
 
 /**
@@ -32,6 +33,7 @@ import static org.openprovenance.prov.template.Expand.TMPL_NS;
  *      href="http://twiki.ipaw.info/bin/view/Challenge/FirstProvenanceChallenge">provenance
  *      challenge</a>
  */
+
 public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bindings>> implements Variables {   
 
 
@@ -286,7 +288,7 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
     }
 
 
-    public Document makeDocument() {
+    public Document makeDocument(String bind) {
         
         System.out.println("******************");
         
@@ -294,12 +296,14 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
 
         //return makePC1FullGraph(pFactory, URL_LOCATION, URL_LOCATION);
         try {
-        
-            Document doc= new Utility().readDocument("src/main/resources/template_block.provn", pFactory);
+            InputStream is=getClass().getClassLoader().getResourceAsStream("template_block.provn");
+            Document doc= new Utility().readDocument(is, pFactory);
             
-            
+            int count=0;
             for (Bindings bindings : makeBindings()) {
-            
+                bindings.addVariableBindingsAsAttributeBindings();
+                bindings.exportToJson(bind + count + ".json");
+                count++;
                 Document eDoc=expander(doc, bindings);
                 iDoc.merge(eDoc);
             }
@@ -314,14 +318,15 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
 
     }
     public static void main(String[] args) {
-        if (args.length != 2)
+        if (args.length != 3)
             throw new UnsupportedOperationException("main to be called with filename");
         String file1 = args[0];
         String file2 = args[1];
+        String bind = args[2];
 
         ProvenanceChallenge1Template pc1 = new ProvenanceChallenge1Template(InteropFramework.newXMLProvFactory());
         pc1.openingBanner();
-        Document document = pc1.makeDocument();
+        Document document = pc1.makeDocument(bind);
         pc1.doConversions(document, file1);
         pc1.doConversions(document, file2);
         pc1.closingBanner();

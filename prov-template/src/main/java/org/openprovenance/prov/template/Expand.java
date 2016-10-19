@@ -41,6 +41,10 @@ public class Expand {
     }
 
     public Document expander(Document docIn, String out, Document docBindings) {
+        return expander(docIn,docBindings);
+    }
+        
+    public Document expander(Document docIn, Document docBindings) {        
 
         Bundle bun = (Bundle) docIn.getStatementOrBundle().get(0);
 
@@ -60,6 +64,27 @@ public class Expand {
 
         return doc1;
     }
+    
+
+    public Document expander(Document docIn, Bindings bindings1) {
+        
+        Bundle bun = (Bundle) docIn.getStatementOrBundle().get(0);
+
+
+        Groupings grp1 = Groupings.fromDocument(docIn);
+
+        Bundle bun1 = (Bundle) expand(bun, bindings1, grp1).get(0);
+        Document doc1 = pf.newDocument();
+        doc1.getStatementOrBundle().add(bun1);
+
+        bun1.setNamespace(Namespace.gatherNamespaces(bun1));
+
+        doc1.setNamespace(new Namespace());
+
+        return doc1;
+    }
+
+
 
     private final ProvFactory pf;
 

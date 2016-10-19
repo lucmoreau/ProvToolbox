@@ -33,6 +33,8 @@ import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.rdf.Ontology;
+import org.openprovenance.prov.template.Bindings;
+import org.openprovenance.prov.template.BindingsJson;
 import org.openprovenance.prov.template.Expand;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
@@ -105,25 +107,26 @@ public class InteropFramework implements InteropMediaType {
     final private boolean allExpanded;
     final private String compare;
     final private String compareOut;
+    final private int bindingsVersion;
 
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
      */
     public InteropFramework() {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, false, false, null, null, null, null,null,null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, null, null, null,null,null,
                 org.openprovenance.prov.xml.ProvFactory.getFactory());
     }
 
     public InteropFramework(ProvFactory pFactory) {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, false, false, null, null, null, null,null,null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, null, null, null,null,null,
                 pFactory);
     }
 
 
     public InteropFramework(String verbose, String debug, String logfile,
             String infile, String informat, String outfile, String outformat, String namespaces, String title,
-            String layout, String bindings, String bindingformat, boolean addOrderp, boolean allExpanded, String generator,
+            String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String generator,
             String index, String merge, String flatten, String compare, String compareOut, ProvFactory pFactory) {
         this.verbose = verbose;
         this.debug = debug;
@@ -147,6 +150,7 @@ public class InteropFramework implements InteropMediaType {
         this.bindingformat = bindingformat;
         this.compare=compare;
         this.compareOut=compareOut;
+        this.bindingsVersion=bindingsVersion;
 
         extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
         extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
@@ -976,12 +980,21 @@ public class InteropFramework implements InteropMediaType {
 	    doc = indexedDoc;
 	}
 	if (bindings != null) {
-	    Document docBindings = (Document) doReadDocument(bindings,
-							     bindingformat);
-	    Expand myExpand=new Expand(pFactory, addOrderp,allExpanded);
-	    Document expanded = myExpand.expander(doc,
-	    		                              outfile,
-									          docBindings);
+        Expand myExpand=new Expand(pFactory, addOrderp,allExpanded);
+        Document expanded;
+        System.err.println("bindings version is " + bindingsVersion);
+	    if (bindingsVersion==3) {
+	        Bindings bb=BindingsJson.fromBean(BindingsJson.importBean(new File(bindings)),pFactory);
+	        expanded = myExpand.expander(doc,
+                                         bb);
+	        
+	    } else {
+	        Document docBindings = (Document) doReadDocument(bindings,
+	                                                         bindingformat);
+	        expanded = myExpand.expander(doc,
+	                                     outfile,
+	                                     docBindings);
+	    }
 	    boolean flag=myExpand.getAllExpanded();
 	    doWriteDocument(outfile, outformat, expanded);
 	

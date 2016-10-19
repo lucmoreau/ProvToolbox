@@ -35,7 +35,7 @@ public class BindingsJson {
 		if (o instanceof QualifiedName) {
 			QualifiedName qn=(QualifiedName)o;
 			Hashtable<String,String> table=new Hashtable<String,String>();
-			table.put("@id",qn.toString());
+			table.put("@id",qn.getPrefix() + ":" + qn.getLocalPart());
 			context.put(qn.getPrefix(),qn.getNamespaceURI());
 			return table;
 		}		

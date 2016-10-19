@@ -20,6 +20,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.TypedValue;
+import org.openprovenance.prov.template.BindingsJson.BindingsBean;
 
 import static org.openprovenance.prov.template.ExpandUtil.TMPL_NS;
 import static org.openprovenance.prov.template.ExpandUtil.TMPL_PREFIX;
@@ -368,12 +369,31 @@ public class Bindings {
     }
 
     
+    public void addVariableBindingsAsAttributeBindings() {
+    	Hashtable<QualifiedName, List<QualifiedName>> vb=getVariables();
+    	for(Entry<QualifiedName,List<QualifiedName>> entry: vb.entrySet()) {
+    		int count=0;
+    		for (QualifiedName qn: entry.getValue()) {
+    			List<TypedValue> ll=new LinkedList<TypedValue>();
+    			ll.add(pf.newAttribute(TMPL_NS, VALUE2+count+"_"+0, TMPL_PREFIX, qn, pf.getName().PROV_QUALIFIED_NAME));
+    			count++;
+    			addAttribute(entry.getKey(),ll);
+    		}
+    	}
+    	
+    }
+
     static public <E> void set(int pos, List<E> ll, E val) {
         int size=ll.size();
         for (int i=size; i<=pos; i++) {
             ll.add(null);
         }
         ll.set(pos,val);
+    }
+    
+    public void exportToJson(String filename) {
+        BindingsBean bb=BindingsJson.toBean(this);
+        BindingsJson.exportBean(filename,bb,true);
     }
 	
 }

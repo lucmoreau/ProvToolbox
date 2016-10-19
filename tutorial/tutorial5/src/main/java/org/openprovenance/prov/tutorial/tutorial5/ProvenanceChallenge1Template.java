@@ -79,13 +79,13 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
     }
 
   
-    public Collection<Bindings> align(String imgfile1, String imglabel, 
-                          String hdrfile1, String hdrlabel,
-                          String imgreffile1, String imgreflabel, 
-                          String hdrreffile1, String hdrreflabel, 
-                          String activity, 
-                          String warpfile, String warplabel,
-                          String workflow, String agent)  {
+    public Collection<Bindings> align(String imgfile1,    String imglabel, 
+                                      String hdrfile1,    String hdrlabel,
+                                      String imgreffile1, String imgreflabel, 
+                                      String hdrreffile1, String hdrreflabel, 
+                                      String activity, 
+                                      String warpfile,    String warplabel,
+                                      String workflow,    String agent)  {
 	
         Bindings bindings1=new Bindings(pFactory);
         align_static(bindings1);

@@ -1,12 +1,14 @@
 {
   "var" : {
     "consumed_label" : [ "Anatomy I1", "Anatomy H1", "Reference Image", "Reference Header" ],
-    "produced_label" : [ "Warp Params1" ],
+    "produced_label" : [ {
+      "@id" : "var:produced_label"
+    } ],
     "produced_type" : [ {
       "@id" : "prim:File"
     } ],
     "agent" : [ {
-      "@id" : "pc1:ag1"
+      "@id" : "var:agent"
     } ],
     "consumed_type" : [ {
       "@id" : "prim:File"

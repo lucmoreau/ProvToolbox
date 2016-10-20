@@ -73,7 +73,6 @@ public class Expand {
 
     public Document expander(Document docIn, Bindings bindings1) {
         
-        new BindingsBeanGenerator(pf).fromDocument(docIn);  //TODO: move elsewhere
 
         Bundle bun = (Bundle) docIn.getStatementOrBundle().get(0);
 

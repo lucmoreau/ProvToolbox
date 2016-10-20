@@ -48,6 +48,13 @@
       <version>${jackson.version}</version>  <!-- 2.7.3??? -->
     </dependency>
 
+    <dependency>
+      <groupId>com.squareup</groupId>
+      <artifactId>javapoet</artifactId>
+      <version>1.7.0</version>
+    </dependency>
+
+
  </dependencies>
 
   <build>

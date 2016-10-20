@@ -1,6 +1,14 @@
 {
   "var" : {
-    "consumed_label" : [ "Anatomy I1", "Anatomy H1", "Reference Image", "Reference Header" ],
+    "consumed_label" : [ {
+	"@id" : "var:consumed_label1"
+    }, {
+	"@id" : "var:consumed_label2"
+    }, {
+	"@id" : "var:consumed_label3"
+    }, {
+	"@id" : "var:consumed_label4"
+    } ],
     "produced_label" : [ {
       "@id" : "var:produced_label"
     } ],
@@ -21,6 +29,9 @@
     } ],
     "produced" : [ {
       "@id" : "var:produced"
+    } ],
+    "produced_at" : [ {
+      "@id" : "var:produced_at"
     } ],
     "produced_name" : [ {
       "@id" : "prim:Out"
@@ -48,6 +59,15 @@
       "@id" : "prim:ImgRef"
     }, {
       "@id" : "prim:HdrRef"
+    } ],
+    "consumed_at" : [ {
+      "@id" : "var:consumed_at1"
+    }, {
+      "@id" : "var:consumed_at2"
+    }, {
+      "@id" : "var:consumed_at3"
+    }, {
+      "@id" : "var:consumed_at4"
     } ],
     "block_type" : [ {
       "@id" : "prim:Align_warp"

@@ -70,15 +70,15 @@ public class ExpandAction implements StatementAction {
     }
 
     public ExpandAction(ProvFactory pf,
-            ProvUtilities u,
-            Expand expand,
-            Hashtable<QualifiedName, QualifiedName> env,
-            Hashtable<QualifiedName, List<TypedValue>> env2,
-            List<Integer> index,
-            Bindings bindings1,
-            Groupings grp1,
-            boolean addOrderp,
-            boolean allUpdatedRequired) {
+                        ProvUtilities u,
+                        Expand expand,
+                        Hashtable<QualifiedName, QualifiedName> env,
+                        Hashtable<QualifiedName, List<TypedValue>> env2,
+                        List<Integer> index,
+                        Bindings bindings1,
+                        Groupings grp1,
+                        boolean addOrderp,
+                        boolean allUpdatedRequired) {
         this.pf = pf;
         this.expand = expand;
         this.env = env;
@@ -404,6 +404,8 @@ public class ExpandAction implements StatementAction {
         }
         return found;
     }
+    
+    boolean allowVariableInLabelAndTime=true;
 
     public void processTemplateAttributes(Statement dstStatement,
                                           Collection<Attribute> dstAttributes,
@@ -413,12 +415,24 @@ public class ExpandAction implements StatementAction {
         for (TypedValue val : vals) {
             String elementName = attribute.getElementName().getUri();
             if (ExpandUtil.LABEL_URI.equals(elementName)) {
-                dstAttributes.add(pf.newAttribute(pf.getName().PROV_LABEL,
-                                                  val.getValue(),
-                                                  val.getType()));
+                Object value=val.getValue();
+                if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && ((QualifiedName)value).getNamespaceURI().equals(ExpandUtil.VAR_NS)) {
+                    dstAttributes.add(pf.newAttribute(attribute.getElementName(),
+                                                      value,
+                                                      val.getType()));
+                } else {
+                    dstAttributes.add(pf.newAttribute(pf.getName().PROV_LABEL,
+                                                      value,
+                                                      val.getType()));
+                }
             } else if (ExpandUtil.TIME_URI.equals(elementName)) {
-                if (dstStatement instanceof HasTime) {
-                    ((HasTime) dstStatement).setTime(pf.newISOTime((String) val.getValue()));
+                Object value=val.getValue();
+                if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && ((QualifiedName)value).getNamespaceURI().equals(ExpandUtil.VAR_NS)) {
+                    dstAttributes.add(pf.newAttribute(attribute.getElementName(),
+                                                      value,
+                                                      val.getType()));
+                } else if (dstStatement instanceof HasTime) {
+                    ((HasTime) dstStatement).setTime(pf.newISOTime((String) value));
                 }
             } else if (ExpandUtil.STARTTIME_URI.equals(elementName)) {
                 if (dstStatement instanceof Activity) {

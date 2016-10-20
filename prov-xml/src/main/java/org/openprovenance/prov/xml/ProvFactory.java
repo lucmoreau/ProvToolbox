@@ -162,13 +162,14 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
             return res;
         }
 
+        String msg = "label value is not a string " + value;
+        
         if (BuildFlag.STRICT.equals(flag)) {
-            String msg = "label value is not a string " + value;
             logger.fatal(msg);
             throw new InvalidAttributeValueException(msg);
         }
 
-        logger.warn("label value is not a string " + value);
+        logger.warn(msg);
 
         return res;
     }

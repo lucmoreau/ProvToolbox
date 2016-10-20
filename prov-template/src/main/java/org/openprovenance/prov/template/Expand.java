@@ -46,9 +46,13 @@ public class Expand {
         
     public Document expander(Document docIn, Document docBindings) {        
 
+        Bindings bindings1 = Bindings.fromDocument(docBindings, pf);
+        
+
+        return expander(docIn,bindings1);
+        /*
         Bundle bun = (Bundle) docIn.getStatementOrBundle().get(0);
 
-        Bindings bindings1 = Bindings.fromDocument(docBindings, pf);
 
         Groupings grp1 = Groupings.fromDocument(docIn);
         logger.debug("expander: Found groupings " + grp1);
@@ -63,15 +67,19 @@ public class Expand {
         doc1.setNamespace(new Namespace());
 
         return doc1;
+        */
     }
     
 
     public Document expander(Document docIn, Bindings bindings1) {
         
+        new BindingsBeanGenerator(pf).fromDocument(docIn);  //TODO: move elsewhere
+
         Bundle bun = (Bundle) docIn.getStatementOrBundle().get(0);
 
 
         Groupings grp1 = Groupings.fromDocument(docIn);
+        logger.debug("expander: Found groupings " + grp1);
 
         Bundle bun1 = (Bundle) expand(bun, bindings1, grp1).get(0);
         Document doc1 = pf.newDocument();

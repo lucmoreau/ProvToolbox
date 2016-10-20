@@ -14,3 +14,5 @@ do.comp:
 
 do.expand:
 	provconvert -infile src/main/resources/template_block.provn -bindings src/main/resources/bind-align.json -bindver 3 -outfile target/template_align.provn
+	provconvert -infile target/template_align.provn -template Align -package org.example -outfile target/
+

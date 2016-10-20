@@ -14,6 +14,7 @@ import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 
+import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -131,11 +132,14 @@ public class BindingsBeanGenerator {
                 .build();
     }
     
-    public String ok(String s) { return s; }
+    public String camelcase(String s) { 
+        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s); 
+    }
     
     public MethodSpec generateVarMutator(QualifiedName v) {
-        final String local = ok(v.getLocalPart());
-        MethodSpec method = MethodSpec.methodBuilder("add" + local.toUpperCase())
+        final String local=v.getLocalPart();
+        final String localCamel= camelcase(local);
+        MethodSpec method = MethodSpec.methodBuilder("add" + localCamel)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)
                 .addParameter(QualifiedName.class, "arg")
@@ -146,8 +150,9 @@ public class BindingsBeanGenerator {
     }
     
     public MethodSpec generateAttMutator(QualifiedName v, Class typ) {
-        final String local = ok(v.getLocalPart());
-        MethodSpec method = MethodSpec.methodBuilder("add" + local.toUpperCase())
+        final String local=v.getLocalPart();
+        final String localCamel= camelcase(local);
+        MethodSpec method = MethodSpec.methodBuilder("add" + localCamel)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)
                 .addParameter(typ, "arg")

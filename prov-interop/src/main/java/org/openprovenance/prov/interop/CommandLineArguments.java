@@ -42,6 +42,8 @@ public class CommandLineArguments implements ErrorCodes {
     public static final String BINDFORMAT = "bindformat";
     public static final String COMPAREOUT = "outcompare";
     public static final String BINDINGS_VERSION = "bindver";
+    public static final String TEMPLATE = "template";
+    public static final String PACKAGE = "package";
 
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
@@ -148,7 +150,17 @@ public class CommandLineArguments implements ErrorCodes {
                 .withDescription("bindings version")
                 .create(BINDINGS_VERSION);
 
- 
+        Option template = OptionBuilder
+                .withArgName("string")
+                .hasArg()
+                .withDescription("template name")
+                .create(TEMPLATE);
+
+        Option packge = OptionBuilder
+                .withArgName("package")
+                .hasArg()
+                .withDescription("package")
+                .create(PACKAGE);
 
         Options options = new Options();
 
@@ -175,6 +187,8 @@ public class CommandLineArguments implements ErrorCodes {
         options.addOption(compare);
         options.addOption(compareOut);
         options.addOption(bindingsVersion);
+        options.addOption(template);
+        options.addOption(packge);
 
         return options;
 
@@ -232,6 +246,8 @@ public class CommandLineArguments implements ErrorCodes {
         String merge=null;
         String compare=null;
         String compareOut=null;
+        String template=null;
+        String packge=null;
         int bindingsVersion=1;
         boolean addOrderp=false;
         boolean listFormatsp = false;
@@ -277,6 +293,10 @@ public class CommandLineArguments implements ErrorCodes {
                 }
                 
             }
+            
+            if (line.hasOption(TEMPLATE))  template = line.getOptionValue(TEMPLATE);
+            if (line.hasOption(PACKAGE))  packge = line.getOptionValue(PACKAGE);
+
 
             if (help!=null) {
             	HelpFormatter formatter = new HelpFormatter();
@@ -306,6 +326,8 @@ public class CommandLineArguments implements ErrorCodes {
                                                           bindingsVersion,
                                                           addOrderp,
                                                           allexpanded,
+                                                          template,
+                                                          packge,
                                                           generator,
                                                           index,
                                                           merge,

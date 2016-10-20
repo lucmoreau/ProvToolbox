@@ -34,6 +34,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.template.Bindings;
+import org.openprovenance.prov.template.BindingsBeanGenerator;
 import org.openprovenance.prov.template.BindingsJson;
 import org.openprovenance.prov.template.Expand;
 import org.antlr.runtime.RecognitionException;
@@ -108,25 +109,27 @@ public class InteropFramework implements InteropMediaType {
     final private String compare;
     final private String compareOut;
     final private int bindingsVersion;
+    final private String template;
+    final private String packge;
 
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
      */
     public InteropFramework() {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, null, null, null,null,null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, null, null, null, null, null,null,null,
                 org.openprovenance.prov.xml.ProvFactory.getFactory());
     }
 
     public InteropFramework(ProvFactory pFactory) {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, null, null, null,null,null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, null, null, null, null, null,null,null,
                 pFactory);
     }
 
 
     public InteropFramework(String verbose, String debug, String logfile,
             String infile, String informat, String outfile, String outformat, String namespaces, String title,
-            String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String generator,
+            String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String template, String packge, String generator,
             String index, String merge, String flatten, String compare, String compareOut, ProvFactory pFactory) {
         this.verbose = verbose;
         this.debug = debug;
@@ -151,6 +154,8 @@ public class InteropFramework implements InteropMediaType {
         this.compare=compare;
         this.compareOut=compareOut;
         this.bindingsVersion=bindingsVersion;
+        this.template=template;
+        this.packge=packge;
 
         extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
         extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
@@ -907,133 +912,140 @@ public class InteropFramework implements InteropMediaType {
      */
 
     public int run() {
-	if (outfile == null && compare == null)
-	    return CommandLineArguments.STATUS_NO_OUTPUT_OR_COMPARISON;
-	if (infile == null && generator == null && merge == null)
-	    return CommandLineArguments.STATUS_NO_INPUT;
+        if (outfile == null && compare == null)
+            return CommandLineArguments.STATUS_NO_OUTPUT_OR_COMPARISON;
+        if (infile == null && generator == null && merge == null)
+            return CommandLineArguments.STATUS_NO_INPUT;
 
-	if ((infile == "-") && (bindings == "-"))
-	    throw new InteropException(
-				       "Cannot use standard input for both infile and bindings");
+        if ((infile == "-") && (bindings == "-"))
+            throw new InteropException(
+                    "Cannot use standard input for both infile and bindings");
 
-	Document doc;
-	if (infile != null) {
-	    doc = doReadDocument(infile, informat);
-	} else if (merge != null) {
-	    IndexedDocument iDoc = new IndexedDocument(pFactory,
-						       pFactory.newDocument(),
-						       flatten != null);
-	    try {
-		List<ToRead> files;
-		if (merge.equals("-")) {
-		    files = readIndexFile(System.in);
-		} else {
-		    files = readIndexFile(new File(merge));
-		}
-		System.err.println("files to merge " + files);
-		for (ToRead something : files) {
-		    iDoc.merge(readDocument(something));
-		}
+        Document doc;
+        if (infile != null) {
+            doc = doReadDocument(infile, informat);
+        } else if (merge != null) {
+            IndexedDocument iDoc = new IndexedDocument(pFactory,
+                                                       pFactory.newDocument(),
+                                                       flatten != null);
+            try {
+                List<ToRead> files;
+                if (merge.equals("-")) {
+                    files = readIndexFile(System.in);
+                } else {
+                    files = readIndexFile(new File(merge));
+                }
+                System.err.println("files to merge " + files);
+                for (ToRead something : files) {
+                    iDoc.merge(readDocument(something));
+                }
 
-	    } catch (IOException e) {
-		System.err.println("problem reading index file");
-		e.printStackTrace();
+            } catch (IOException e) {
+                System.err.println("problem reading index file");
+                e.printStackTrace();
 
-	    }
-	    doc = iDoc.toDocument();
+            }
+            doc = iDoc.toDocument();
 
-	} else {
+        } else {
 
-	    String[] options = generator.split(":");
-	    String noOfNodes = getOption(options, 0);
-	    String noOfEdges = getOption(options, 1);
-	    String firstNode = getOption(options, 2);
-	    String namespace = "http://expample.org/";
-	    String seed = getOption(options, 3);
-	    String term = getOption(options, 4);
+            String[] options = generator.split(":");
+            String noOfNodes = getOption(options, 0);
+            String noOfEdges = getOption(options, 1);
+            String firstNode = getOption(options, 2);
+            String namespace = "http://expample.org/";
+            String seed = getOption(options, 3);
+            String term = getOption(options, 4);
 
-	    if (term == null)
-		term = "e1";
+            if (term == null)
+                term = "e1";
 
-	    GeneratorDetails gd = new GeneratorDetails(
-						       Integer.valueOf(noOfNodes),
-						       Integer.valueOf(noOfEdges),
-						       firstNode,
-						       namespace,
-						       (seed == null) ? null
-							       : Long.valueOf(seed),
-						       term);
-	    System.err.println(gd);
-	    GraphGenerator gg = new GraphGenerator(gd, pFactory);
-	    gg.generateElements();
+            GeneratorDetails gd = new GeneratorDetails(
+                                                       Integer.valueOf(noOfNodes),
+                                                       Integer.valueOf(noOfEdges),
+                                                       firstNode,
+                                                       namespace,
+                                                       (seed == null) ? null
+                                                               : Long.valueOf(seed),
+                                                               term);
+            System.err.println(gd);
+            GraphGenerator gg = new GraphGenerator(gd, pFactory);
+            gg.generateElements();
 
-	    doc = gg.getDetails().getDocument();
-	}
+            doc = gg.getDetails().getDocument();
+        }
 
-	if (compare!=null) {
-	    return doCompare(doc,doReadDocument(compare, informat));
-	} 
-	
-	if (index != null) {
-	    Document indexedDoc = new IndexedDocument(pFactory, doc,
-						      (flatten != null)).toDocument();
-	    doc = indexedDoc;
-	}
-	if (bindings != null) {
-        Expand myExpand=new Expand(pFactory, addOrderp,allExpanded);
-        Document expanded;
-        System.err.println("bindings version is " + bindingsVersion);
-	    if (bindingsVersion==3) {
-	        Bindings bb=BindingsJson.fromBean(BindingsJson.importBean(new File(bindings)),pFactory);
-	        expanded = myExpand.expander(doc,
-                                         bb);
-	        
-	    } else {
-	        Document docBindings = (Document) doReadDocument(bindings,
-	                                                         bindingformat);
-	        expanded = myExpand.expander(doc,
-	                                     outfile,
-	                                     docBindings);
-	    }
-	    boolean flag=myExpand.getAllExpanded();
-	    doWriteDocument(outfile, outformat, expanded);
-	
-	    if (!flag) {
-	    	return CommandLineArguments.STATUS_TEMPLATE_UNBOUND_VARIABLE;
-	    }
-	} else {
-	    doWriteDocument(outfile, outformat, doc);
-	}
-	return CommandLineArguments.STATUS_OK;
+        if (compare!=null) {
+            return doCompare(doc,doReadDocument(compare, informat));
+        } 
+        
+        if (template!=null) {
+            BindingsBeanGenerator bbgen=new BindingsBeanGenerator(pFactory);
+            
+            boolean val=bbgen.generate(doc, template, packge, outfile);
+            return (val) ? 0 : CommandLineArguments.STATUS_BEAN_GENERATION;
+        }
+
+        if (index != null) {
+            Document indexedDoc = new IndexedDocument(pFactory, doc,
+                                                      (flatten != null)).toDocument();
+            doc = indexedDoc;
+        }
+        if (bindings != null) {
+            Expand myExpand=new Expand(pFactory, addOrderp,allExpanded);
+            Document expanded;
+            System.err.println("bindings version is " + bindingsVersion);
+            if (bindingsVersion==3) {
+                Bindings bb=BindingsJson.fromBean(BindingsJson.importBean(new File(bindings)),pFactory);
+                expanded = myExpand.expander(doc,
+                                             bb);
+
+            } else {
+                Document docBindings = (Document) doReadDocument(bindings,
+                                                                 bindingformat);
+                expanded = myExpand.expander(doc,
+                                             outfile,
+                                             docBindings);
+            }
+            boolean flag=myExpand.getAllExpanded();
+            doWriteDocument(outfile, outformat, expanded);
+
+            if (!flag) {
+                return CommandLineArguments.STATUS_TEMPLATE_UNBOUND_VARIABLE;
+            }
+        } else {
+            doWriteDocument(outfile, outformat, doc);
+        }
+        return CommandLineArguments.STATUS_OK;
 
     }
 
     private int doCompare(Document doc1, Document doc2) {
-	if (doc1==null) return CommandLineArguments.STATUS_COMPARE_NO_ARG1;
-	if (doc2==null) return CommandLineArguments.STATUS_COMPARE_NO_ARG2;
-	
-	//System.out.println("doCompare()");
-	PrintStream ps=System.out;
-	try {
-	    if (!(compareOut==null || compareOut.equals("-"))) {
-		ps=new PrintStream(compareOut);
-	    }
-	} catch (FileNotFoundException e) {
-	    // ok, we ignore the exception, we continue with stdout
-	}
-	DocumentEquality comparator=new DocumentEquality(false,ps);
-	logger.debug("about to compare two docs");
-	if (comparator.check(doc1, doc2)) {
-	    //System.out.println("doCompare(): Success");
+        if (doc1==null) return CommandLineArguments.STATUS_COMPARE_NO_ARG1;
+        if (doc2==null) return CommandLineArguments.STATUS_COMPARE_NO_ARG2;
 
-	    return CommandLineArguments.STATUS_OK;
-	}	    
-	//System.out.println("doCompare(): Failure");
-	return CommandLineArguments.STATUS_COMPARE_DIFFERENT;
+        //System.out.println("doCompare()");
+        PrintStream ps=System.out;
+        try {
+            if (!(compareOut==null || compareOut.equals("-"))) {
+                ps=new PrintStream(compareOut);
+            }
+        } catch (FileNotFoundException e) {
+            // ok, we ignore the exception, we continue with stdout
+        }
+        DocumentEquality comparator=new DocumentEquality(false,ps);
+        logger.debug("about to compare two docs");
+        if (comparator.check(doc1, doc2)) {
+            //System.out.println("doCompare(): Success");
+
+            return CommandLineArguments.STATUS_OK;
+        }	    
+        //System.out.println("doCompare(): Failure");
+        return CommandLineArguments.STATUS_COMPARE_DIFFERENT;
     }
 
     /** Initializes a Document's namespace. */
-    
+
     public void setNamespaces(Document doc) {
         if (doc.getNamespace() == null)
             doc.setNamespace(new Namespace());

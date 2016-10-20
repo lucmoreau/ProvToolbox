@@ -50,7 +50,7 @@ public class ProvenanceChallenge2 extends ChallengeCommon<Collection<StatementOr
         
         Collection<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
         Activity a1 = pFactory.newActivity(pc(activity));
-        pFactory.addType(a1, pFactory.newQualifiedName(PRIM_NS, ALIGN_WARP, PRIM_PREFIX), name.PROV_QUALIFIED_NAME);
+        pFactory.addType(a1,prim(ALIGN_WARP), name.PROV_QUALIFIED_NAME);
         
         Entity e1 = newFile(pFactory, imgreffile1, imgreflabel);
         Entity e2 = newFile(pFactory, hdrreffile1, hdrreflabel);

@@ -1,4 +1,4 @@
-package org.openprovenance.prov.tutorial.tutorial5;
+package org.openprovenance.prov.tutorial.tutorial6;
 
 import java.util.Collection;
 

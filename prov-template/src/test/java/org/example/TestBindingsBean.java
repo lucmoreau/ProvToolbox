@@ -1,17 +1,18 @@
-// Generated Automatically by ProvToolbox for template "luc"
+// Generated Automatically by ProvToolbox for template "test"
 package org.example;
 
 import java.lang.String;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.template.Bindings;
+import org.openprovenance.prov.template.BindingsBean;
 
-public class TestBean {
+public class TestBindingsBean implements BindingsBean {
   private final Bindings bindings;
 
   private final ProvFactory pf;
 
-  public TestBean(ProvFactory pf) {
+  public TestBindingsBean(ProvFactory pf) {
     this.pf = pf;
     this.bindings = new Bindings(pf);
   }

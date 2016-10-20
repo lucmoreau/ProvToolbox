@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.HashSet;
@@ -58,7 +57,7 @@ public class BindingsBeanGenerator {
 
 
     public String beanName(String templateName) {
-        return capitalize(templateName)+"Bean";
+        return capitalize(templateName)+"BindingsBean";
     }
 
 
@@ -118,6 +117,7 @@ public class BindingsBeanGenerator {
     public Builder generateClassBuilder(String name) {
         return TypeSpec.classBuilder(name)
                 .addModifiers(Modifier.PUBLIC)
+                .addSuperinterface(BindingsBean.class)
                 .addField(Bindings.class, "bindings", Modifier.PRIVATE, Modifier.FINAL)
                 .addField(ProvFactory.class, "pf", Modifier.PRIVATE, Modifier.FINAL);
     }

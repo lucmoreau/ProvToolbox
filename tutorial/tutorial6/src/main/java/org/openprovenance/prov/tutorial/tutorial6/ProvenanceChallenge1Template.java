@@ -103,32 +103,21 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
                                         String imgfile, String imglabel,
                                         String hdrfile, String hdrlabel,
                                         String workflow, String agent)  {
-        return null;
-        /*
-    
-        Bindings bindings=new Bindings(pFactory);
+        ResliceBindingsBean bean=new ResliceBindingsBean(pFactory);
         
-        bindings.addVariable(b_var(VAR_CONSUMED),       pc(warp));
-        bindings.addAttribute(b_var(VAR_CONSUMED_NAME), a_val(prim(ROLE_IN)));
-        bindings.addAttribute(b_var(VAR_CONSUMED_TYPE), a_val(prim(FILE)));
+        bean.addConsumed(pc(warp));
         
-        bindings.addVariable(b_var(VAR_BLOCK_INSTANCE), pc(activity));      
-        bindings.addAttribute(b_var(VAR_BLOCK_TYPE),    a_val(prim(RESLICE)));
+        bean.addBlockInstance(pc(activity));
         
-        bindings.addVariable(b_var(VAR_PRODUCED),       pc(imgfile));      
-        bindings.addVariable(b_var(VAR_PRODUCED),       pc(hdrfile));      
-        bindings.addAttribute(b_var(VAR_PRODUCED_LABEL),a_val(imglabel));
-        bindings.addAttribute(b_var(VAR_PRODUCED_LABEL),a_val(hdrlabel));
-        bindings.addAttribute(b_var(VAR_PRODUCED_NAME),a_val(prim(ROLE_IMG)));
-        bindings.addAttribute(b_var(VAR_PRODUCED_NAME),a_val(prim(ROLE_HDR)));
-        bindings.addAttribute(b_var(VAR_PRODUCED_TYPE),a_val(prim(FILE)));
-        bindings.addAttribute(b_var(VAR_PRODUCED_TYPE),a_val(prim(FILE)));
+        bean.addProduced1(pc(imgfile));
+        bean.addProduced2(pc(hdrfile));
+        bean.addProducedLabel1(imglabel);
+        bean.addProducedLabel2(hdrlabel);
+        bean.addParent(pc(workflow));
+        Collection<?> col=Collections.singleton(bean);
         
-        bindings.addVariable(b_var(VAR_PARENT),         pc(workflow));      
-        bindings.addVariable(b_var(VAR_AGENT),          pc(agent));      
-
-        return Collections.singleton(bindings);
-        */
+        return (Collection<BindingsBean>)col;
+        
     }
     
     public Collection<BindingsBean> softmean(String imgfile1, String hdrfile1,

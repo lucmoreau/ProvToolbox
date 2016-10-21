@@ -135,10 +135,22 @@
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-align.json -bindver 3 -outfile target/resources/templates/template_align.provn" />
                 </exec>
                 <exec
+                    dir="${project.basedir}"
+                    executable="provconvert"
+                    failonerror="true">
+                  <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-reslice.json -bindver 3 -outfile target/resources/templates/template_reslice.provn" />
+                </exec>
+                <exec
                     dir="${project.build.directory}"
                     executable="provconvert"
                     failonerror="true">
                   <arg line="-infile resources/templates/template_align.provn -template Align -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_align.provn" />
+                </exec>
+                <exec
+                    dir="${project.build.directory}"
+                    executable="provconvert"
+                    failonerror="true">
+                  <arg line="-infile resources/templates/template_reslice.provn -template Reslice -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_reslice.provn" />
                 </exec>
               </tasks>
             </configuration>

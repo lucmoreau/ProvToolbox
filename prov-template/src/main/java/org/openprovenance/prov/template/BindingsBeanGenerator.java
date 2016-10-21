@@ -43,7 +43,8 @@ public class BindingsBeanGenerator {
             JavaFile spec=generateSpecification(doc,bn,templateName,packge, resource);
             PrintWriter out;
             try {
-                if (!new File(destinationDir).mkdirs()) {
+                File dir=new File(destinationDir);
+                if (!dir.exists() && !dir.mkdirs()) {
                     System.err.println("failed to create directory " + destinationDir);
                     return false;
                 };

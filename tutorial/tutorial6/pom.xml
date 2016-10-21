@@ -116,42 +116,42 @@
             <phase>generate-sources</phase>
             <configuration>
               <tasks>
-                <exec
-                    dir="${project.build.directory}"
-                    executable="mkdir"
-                    failonerror="true">
+                <exec dir="${project.build.directory}" executable="mkdir" failonerror="true">
                   <arg line="-p generated-sources/provconvert" />
                 </exec>
-                <exec
-                    dir="${project.build.directory}"
-                    executable="mkdir"
-                    failonerror="true">
+                <exec dir="${project.build.directory}" executable="mkdir" failonerror="true">
                   <arg line="-p resources/templates" />
                 </exec>
-                <exec
-                    dir="${project.basedir}"
-                    executable="provconvert"
-                    failonerror="true">
+
+		<!-- customized templates -->
+		
+                <exec dir="${project.basedir}" executable="provconvert" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-align.json -bindver 3 -outfile target/resources/templates/template_align.provn" />
                 </exec>
-                <exec
-                    dir="${project.basedir}"
-                    executable="provconvert"
-                    failonerror="true">
+                <exec dir="${project.basedir}" executable="provconvert" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-reslice.json -bindver 3 -outfile target/resources/templates/template_reslice.provn" />
                 </exec>
-                <exec
-                    dir="${project.build.directory}"
-                    executable="provconvert"
-                    failonerror="true">
+                <exec dir="${project.basedir}" executable="provconvert" failonerror="true">
+                  <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-softmean.json -bindver 3 -outfile target/resources/templates/template_softmean.provn" />
+                </exec>
+
+
+		<exec dir="${project.basedir}" executable="echo" failonerror="true">
+		  <arg line="hello, helo, hel"/>
+		</exec>
+
+		<!-- customized templates -->
+		
+                <exec dir="${project.build.directory}" executable="provconvert" failonerror="true">
                   <arg line="-infile resources/templates/template_align.provn -template Align -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_align.provn" />
                 </exec>
-                <exec
-                    dir="${project.build.directory}"
-                    executable="provconvert"
-                    failonerror="true">
+                <exec dir="${project.build.directory}" executable="provconvert" failonerror="true">
                   <arg line="-infile resources/templates/template_reslice.provn -template Reslice -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_reslice.provn" />
                 </exec>
+                <exec dir="${project.build.directory}" executable="provconvert" failonerror="true">
+                  <arg line="-infile resources/templates/template_softmean.provn -template Softmean -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_softmean.provn" />
+                </exec>
+		
               </tasks>
             </configuration>
             <goals>

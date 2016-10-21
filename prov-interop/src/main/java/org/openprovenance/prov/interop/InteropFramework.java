@@ -111,25 +111,26 @@ public class InteropFramework implements InteropMediaType {
     final private int bindingsVersion;
     final private String template;
     final private String packge;
+    final private String location;
 
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
      */
     public InteropFramework() {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, null, null, null, null, null,null,null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, null, null, null, null, null, null,null,null,
                 org.openprovenance.prov.xml.ProvFactory.getFactory());
     }
 
     public InteropFramework(ProvFactory pFactory) {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, null, null, null, null, null,null,null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, null, null, null, null, null, null,null,null,
                 pFactory);
     }
 
 
     public InteropFramework(String verbose, String debug, String logfile,
             String infile, String informat, String outfile, String outformat, String namespaces, String title,
-            String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String template, String packge, String generator,
+            String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String template, String packge, String location, String generator,
             String index, String merge, String flatten, String compare, String compareOut, ProvFactory pFactory) {
         this.verbose = verbose;
         this.debug = debug;
@@ -156,6 +157,7 @@ public class InteropFramework implements InteropMediaType {
         this.bindingsVersion=bindingsVersion;
         this.template=template;
         this.packge=packge;
+        this.location=location;
 
         extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
         extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
@@ -982,7 +984,7 @@ public class InteropFramework implements InteropMediaType {
         if (template!=null) {
             BindingsBeanGenerator bbgen=new BindingsBeanGenerator(pFactory);
             
-            boolean val=bbgen.generate(doc, template, packge, outfile);
+            boolean val=bbgen.generate(doc, template, packge, outfile, location);
             return (val) ? 0 : CommandLineArguments.STATUS_BEAN_GENERATION;
         }
 

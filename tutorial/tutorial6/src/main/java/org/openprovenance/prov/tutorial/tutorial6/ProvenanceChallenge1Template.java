@@ -16,6 +16,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.Bindings;
+import org.openprovenance.prov.template.BindingsBean;
 import org.openprovenance.prov.template.Expand;
 import org.openprovenance.prov.template.Groupings;
 
@@ -34,7 +35,7 @@ import static org.openprovenance.prov.template.ExpandUtil.TMPL_NS;
  *      challenge</a>
  */
 
-public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bindings>> implements Variables {   
+public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<BindingsBean>> implements Variables {   
 
 
 
@@ -62,62 +63,48 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
     
     
     /** These attributes "partially" instantiate a template for align, with a set of constants */
-    void align_static(Bindings bindings1) {
-        bindings1.addAttribute(VAR_CONSUMED_NAME, prim(ROLE_IMG));
-        bindings1.addAttribute(VAR_CONSUMED_NAME, prim(ROLE_HDR));
-        bindings1.addAttribute(VAR_CONSUMED_NAME, prim(ROLE_IMG_REF));
-        bindings1.addAttribute(VAR_CONSUMED_NAME, prim(ROLE_HDR_REF));     
-        bindings1.addAttribute(VAR_CONSUMED_TYPE, prim(FILE));
-        bindings1.addAttribute(VAR_CONSUMED_TYPE, prim(FILE));
-        bindings1.addAttribute(VAR_CONSUMED_TYPE, prim(FILE));
-        bindings1.addAttribute(VAR_CONSUMED_TYPE, prim(FILE));
-        
-        bindings1.addAttribute(VAR_BLOCK_TYPE,    prim(ALIGN_WARP));
-        bindings1.addAttribute(VAR_PRODUCED_TYPE, prim(FILE));
-        bindings1.addAttribute(VAR_PRODUCED_NAME, prim(ROLE_OUT));
-
-
-        
-    }
 
   
-    public Collection<Bindings> align(String imgfile1,    String imglabel, 
+    public Collection<BindingsBean> align(String imgfile1,    String imglabel, 
                                       String hdrfile1,    String hdrlabel,
                                       String imgreffile1, String imgreflabel, 
                                       String hdrreffile1, String hdrreflabel, 
                                       String activity, 
                                       String warpfile,    String warplabel,
                                       String workflow,    String agent)  {
-	
-        Bindings bindings1=new Bindings(pFactory);
-        align_static(bindings1);
         
-        bindings1.addVariable(VAR_CONSUMED,        pc(imgfile1));
-        bindings1.addVariable(VAR_CONSUMED,        pc(hdrfile1));      
-        bindings1.addVariable(VAR_CONSUMED,        pc(imgreffile1));
-        bindings1.addVariable(VAR_CONSUMED,        pc(hdrreffile1));      
-
-        bindings1.addAttribute(VAR_CONSUMED_LABEL, imglabel);
-        bindings1.addAttribute(VAR_CONSUMED_LABEL, hdrlabel);
-        bindings1.addAttribute(VAR_CONSUMED_LABEL, imgreflabel);
-        bindings1.addAttribute(VAR_CONSUMED_LABEL, hdrreflabel);
+        AlignBindingsBean bean=new AlignBindingsBean(pFactory);
         
-        bindings1.addVariable(VAR_BLOCK_INSTANCE,  pc(activity));      
-   
-        bindings1.addVariable(VAR_PRODUCED,        pc(warpfile));      
-        bindings1.addAttribute(VAR_PRODUCED_LABEL, warplabel);
+        bean.addConsumed1(pc(imgfile1));
+        bean.addConsumed2(pc(hdrfile1));
+        bean.addConsumed3(pc(imgreffile1));
+        bean.addConsumed4(pc(hdrreffile1));
         
-        bindings1.addVariable(VAR_PARENT,          pc(workflow));      
-        bindings1.addVariable(VAR_AGENT,           pc(agent));      
+        bean.addConsumedLabel1(imglabel);
+        bean.addConsumedLabel2(hdrlabel);
+        bean.addConsumedLabel3(imgreflabel);
+        bean.addConsumedLabel4(hdrreflabel);
         
-        return Collections.singleton(bindings1);
+        bean.addBlockInstance(pc(activity));
+        
+        bean.addProduced(pc(warpfile));
+        bean.addProducedLabel(warplabel);
+        
+        bean.addParent(pc(workflow));
+        bean.addAgent(pc(agent));
+                
+        Collection<?> col=Collections.singleton(bean);
+         
+        return (Collection<BindingsBean>)col;
     }
     
-    public Collection<Bindings> reslice(String warp, 
+    public Collection<BindingsBean> reslice(String warp, 
                                         String activity, 
                                         String imgfile, String imglabel,
                                         String hdrfile, String hdrlabel,
                                         String workflow, String agent)  {
+        return null;
+        /*
     
         Bindings bindings=new Bindings(pFactory);
         
@@ -141,9 +128,10 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
         bindings.addVariable(b_var(VAR_AGENT),          pc(agent));      
 
         return Collections.singleton(bindings);
+        */
     }
     
-    public Collection<Bindings> softmean(String imgfile1, String hdrfile1,
+    public Collection<BindingsBean> softmean(String imgfile1, String hdrfile1,
                                          String imgfile2, String hdrfile2,
                                          String imgfile3, String hdrfile3,
                                          String imgfile4, String hdrfile4,
@@ -151,6 +139,8 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
                                          String imgatlas, String imglabel,
                                          String hdratlas, String hdrlabel,
                                          String workflow, String agent)  {
+        return null;
+        /**
 
         Bindings bindings=new Bindings(pFactory);
         
@@ -188,16 +178,21 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
         bindings.addVariable(b_var(VAR_AGENT),          pc(agent));      
         
         
+        
         return Collections.singleton(bindings);
+        */
     }
     
-    public Collection<Bindings> slice(String imgatlas, 
+    public Collection<BindingsBean> slice(String imgatlas, 
                                       String hdratlas, 
                                       String params, String paramslabel, String paramsvalue,
                                       String activity, 
                                       String pgmfile, String pgmlabel,
                                       String workflow, String agent)  {
 
+        return null;
+        
+        /*
         Bindings bindings=new Bindings(pFactory);
         bindings.addVariable(b_var(VAR_CONSUMED),       pc(imgatlas));
         bindings.addVariable(b_var(VAR_CONSUMED),       pc(hdratlas));
@@ -228,14 +223,17 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
         bindings.addVariable(b_var(VAR_AGENT),          pc(agent));      
         
         return Collections.singleton(bindings);
+        */
     }
     
     
-    public Collection<Bindings> convert(String pgmfile, 
+    public Collection<BindingsBean> convert(String pgmfile, 
                                         String activity, 
                                         String giffile, String giflabel,
                                         String workflow, String agent)  {
+        return null;
 
+        /*
         Bindings bindings=new Bindings(pFactory);
         
         bindings.addVariable(b_var(VAR_CONSUMED),       pc(pgmfile));
@@ -253,14 +251,19 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
         bindings.addVariable(b_var(VAR_AGENT),          pc(agent));              
         
         return Collections.singleton(bindings);
+        */
     }
     
     
-    public List<Bindings> makeBindings() {
-        List<Bindings> res=new LinkedList<Bindings>();
-        List<Collection<Bindings>> acc=new LinkedList<Collection<Bindings>>();
+    public List<BindingsBean> makeBindingsBean() {
+        List<BindingsBean> res=new LinkedList<BindingsBean>();
+        List<Collection<BindingsBean>> acc=new LinkedList<Collection<BindingsBean>>();
         overallWorkflow(acc);
-        for (Collection<Bindings> col:acc) res.addAll(col);
+        for (Collection<BindingsBean> col:acc) {
+            if (col!=null) { //TODO: temporary till all beans are created
+                res.addAll(col);
+            }
+        }
         return res;
     }
 
@@ -296,11 +299,13 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
 
         //return makePC1FullGraph(pFactory, URL_LOCATION, URL_LOCATION);
         try {
-            InputStream is=getClass().getClassLoader().getResourceAsStream("templates/template_align.provn");
-            Document doc= new Utility().readDocument(is, pFactory);
             
             int count=0;
-            for (Bindings bindings : makeBindings()) {
+            for (BindingsBean bb : makeBindingsBean()) {
+                InputStream is=getClass().getClassLoader().getResourceAsStream(bb.getTemplate());
+                Document doc= new Utility().readDocument(is, pFactory);
+                Bindings bindings=bb.getBindings();
+
                 bindings.addVariableBindingsAsAttributeBindings();
                 bindings.exportToJson(bind + count + ".json");
                 count++;

@@ -21,7 +21,7 @@ public class BindingGenerationTest extends TestCase {
         
         
         System.out.println("++++++++++++++++++++++++");
-        assertTrue(new BindingsBeanGenerator(pf).generate(doc,"test","org.example", "target")); 
+        assertTrue(new BindingsBeanGenerator(pf).generate(doc,"test","org.example", "target", "my/template")); 
 
 
         System.out.println("++++++++++++++++++++++++");

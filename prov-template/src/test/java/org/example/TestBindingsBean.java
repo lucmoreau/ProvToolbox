@@ -36,4 +36,8 @@ public class TestBindingsBean implements BindingsBean {
   public Bindings getBindings() {
     return bindings;
   }
+
+  public String getTemplate() {
+    return "my/template";
+  }
 }

@@ -44,6 +44,7 @@ public class CommandLineArguments implements ErrorCodes {
     public static final String BINDINGS_VERSION = "bindver";
     public static final String TEMPLATE = "template";
     public static final String PACKAGE = "package";
+    public static final String LOCATION = "location";
 
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
@@ -153,14 +154,21 @@ public class CommandLineArguments implements ErrorCodes {
         Option template = OptionBuilder
                 .withArgName("string")
                 .hasArg()
-                .withDescription("template name")
+                .withDescription("template name, used to create bindings bean class name")
                 .create(TEMPLATE);
 
         Option packge = OptionBuilder
                 .withArgName("package")
                 .hasArg()
-                .withDescription("package")
+                .withDescription("package in which bindings bean class is generated")
                 .create(PACKAGE);
+
+        
+        Option location = OptionBuilder
+                .withArgName("location")
+                .hasArg()
+                .withDescription("location of where the template resource is to be found at runtime")
+                .create(LOCATION);
 
         Options options = new Options();
 
@@ -189,6 +197,7 @@ public class CommandLineArguments implements ErrorCodes {
         options.addOption(bindingsVersion);
         options.addOption(template);
         options.addOption(packge);
+        options.addOption(location);
 
         return options;
 
@@ -248,6 +257,7 @@ public class CommandLineArguments implements ErrorCodes {
         String compareOut=null;
         String template=null;
         String packge=null;
+        String location=null;
         int bindingsVersion=1;
         boolean addOrderp=false;
         boolean listFormatsp = false;
@@ -296,6 +306,7 @@ public class CommandLineArguments implements ErrorCodes {
             
             if (line.hasOption(TEMPLATE))  template = line.getOptionValue(TEMPLATE);
             if (line.hasOption(PACKAGE))  packge = line.getOptionValue(PACKAGE);
+            if (line.hasOption(LOCATION))  location = line.getOptionValue(LOCATION);
 
 
             if (help!=null) {
@@ -328,6 +339,7 @@ public class CommandLineArguments implements ErrorCodes {
                                                           allexpanded,
                                                           template,
                                                           packge,
+                                                          location,
                                                           generator,
                                                           index,
                                                           merge,

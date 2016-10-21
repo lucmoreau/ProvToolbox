@@ -1,5 +1,6 @@
 package org.openprovenance.prov.template;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.HashSet;
@@ -33,14 +34,19 @@ public class BindingsBeanGenerator {
 
     
     
-    public boolean generate(Document doc, String templateName, String packge, String location) {
+    public boolean generate(Document doc, String templateName, String packge, String location, String resource) {
         try {
             String bn=beanName(templateName);
-            String destination=location + "/" + bn + ".java";
-            JavaFile spec=generateSpecification(doc,bn,templateName,packge);
-            System.out.println(spec);
+            String destinationDir=location + "/" + packge.replace('.', '/') + "/";
+            
+            String destination=destinationDir + bn + ".java";
+            JavaFile spec=generateSpecification(doc,bn,templateName,packge, resource);
             PrintWriter out;
             try {
+                if (!new File(destinationDir).mkdirs()) {
+                    System.err.println("failed to create directory " + destinationDir);
+                    return false;
+                };
                 out = new PrintWriter(destination);
                 out.print(spec);
                 out.close();
@@ -67,7 +73,7 @@ public class BindingsBeanGenerator {
     }
 
     
-    public JavaFile generateSpecification(Document doc, String name, String templateName, String packge) {
+    public JavaFile generateSpecification(Document doc, String name, String templateName, String packge, String resource) {
 
 
         Bundle bun=u.getBundle(doc).get(0);
@@ -82,11 +88,11 @@ public class BindingsBeanGenerator {
             allAtts.addAll(vars2);
         }
         
-        return generate(allVars,allAtts,name, templateName, packge);
+        return generate(allVars,allAtts,name, templateName, packge, resource);
         
     }
     
-    public JavaFile generate(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge) {
+    public JavaFile generate(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource) {
         
         
         Builder builder = generateClassBuilder(name);
@@ -103,6 +109,8 @@ public class BindingsBeanGenerator {
         }
         
         builder.addMethod(generateBindingsGetter());
+        
+        builder.addMethod(generateTemplateResourceGetter(resource));
         
         TypeSpec bean=builder.build();
         
@@ -165,6 +173,16 @@ public class BindingsBeanGenerator {
                 .addModifiers(Modifier.PUBLIC)
                 .returns(Bindings.class)
                 .addStatement("return bindings")
+                .build();
+        
+        return method;
+    }
+    
+    public MethodSpec generateTemplateResourceGetter(String resource) {
+        MethodSpec method = MethodSpec.methodBuilder("getTemplate")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(String.class)
+                .addStatement("return $S",resource)
                 .build();
         
         return method;

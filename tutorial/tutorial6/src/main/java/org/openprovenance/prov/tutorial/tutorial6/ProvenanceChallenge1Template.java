@@ -296,7 +296,7 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
 
         //return makePC1FullGraph(pFactory, URL_LOCATION, URL_LOCATION);
         try {
-            InputStream is=getClass().getClassLoader().getResourceAsStream("template_block.provn");
+            InputStream is=getClass().getClassLoader().getResourceAsStream("templates/template_align.provn");
             Document doc= new Utility().readDocument(is, pFactory);
             
             int count=0;

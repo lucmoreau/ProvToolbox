@@ -110,8 +110,6 @@ public class BindingsBeanGenerator {
                 .addFileComment("Generated Automatically by ProvToolbox for template $S",templateName)
                 .build();
 
-
-        System.out.println(bean);
         return myfile;
     }
 

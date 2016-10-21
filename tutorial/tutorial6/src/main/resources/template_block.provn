@@ -9,7 +9,7 @@ document
 // Note:
 //  prov:role not expanded, temporarily estat:role
 
- bundle vargen:b
+ bundle var:b
   activity(var:block_instance,
            [ tmpl:startTime='var:starttime', 
              tmpl:endTime='var:endtime',

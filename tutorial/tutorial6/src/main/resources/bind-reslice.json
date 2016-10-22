@@ -3,7 +3,7 @@
     "b" :              [ { "@id" : "vargen:b" } ],
     "agent" :          [ { "@id" : "var:agent" } ],
     "block_instance" : [ { "@id" : "var:block_instance" } ],
-    "block_type" :     [ { "@id" : "prim:Align_warp"  } ] ,
+    "block_type" :     [ { "@id" : "prim:Reslice"  } ] ,
     "parent" :         [ { "@id" : "var:parent" } ],
     "produced" :       [ { "@id" : "var:produced1" },
 			 { "@id" : "var:produced2" }] ,

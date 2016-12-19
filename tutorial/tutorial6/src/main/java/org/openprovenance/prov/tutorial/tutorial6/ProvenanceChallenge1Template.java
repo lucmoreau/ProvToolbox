@@ -93,10 +93,8 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
         bean.addParent(pc(workflow));
         bean.addAgent(pc(agent));
                 
-        Collection<?> col=Collections.singleton(bean);
-         
-        return (Collection<BindingsBean>)col;
-    }
+        return Collections.singleton((BindingsBean) bean);
+     }
     
     public Collection<BindingsBean> reslice(String warp, 
                                         String activity, 
@@ -114,9 +112,8 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
         bean.addProducedLabel1(imglabel);
         bean.addProducedLabel2(hdrlabel);
         bean.addParent(pc(workflow));
-        Collection<?> col=Collections.singleton(bean);
-        
-        return (Collection<BindingsBean>)col;
+      
+        return Collections.singleton((BindingsBean) bean);
         
     }
     

@@ -9,8 +9,8 @@ PROVMAN=~/workspace/prov-scala/provman/target/appassembler/bin/provmanagement
 
 
 do.comp:
-	$(PROVMAN) compare --infile target/pc1.provn  --withfile target/pc2.provn --outfile -
-	$(PROVMAN) compare --infile target/pc2.provn  --withfile target/pc3.provn --outfile -
+	$(PROVMAN) compare --infile ../tutorial5/target/pc3.provn  --withfile target/pc3.provn --outfile -
+	$(PROVMAN) compare --infile ../tutorial5/target/pc2.provn  --withfile target/pc3.provn --outfile -
 
 do.expand:
 	provconvert -infile src/main/resources/template_block.provn -bindings src/main/resources/bind-align.json -bindver 3 -outfile target/template_align.provn

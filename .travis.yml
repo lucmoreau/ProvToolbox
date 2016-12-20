@@ -6,4 +6,4 @@ before_install:
  - sudo apt-get -qq install rpm > /dev/null
  - sudo apt-get -qq install genisoimage > /dev/null
  - sudo wget https://repo1.maven.org/maven2/org/openprovenance/prov/provconvert/0.7.3/provconvert-0.7.3.deb > /dev/null
- - sudo dpkg install provconvert-0.7.3.deb > /dev/null
+ - sudo dpkg --install provconvert-0.7.3.deb > /dev/null

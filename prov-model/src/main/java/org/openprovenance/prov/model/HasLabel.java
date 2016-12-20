@@ -36,7 +36,7 @@ public interface HasLabel {
      * Objects of the following type(s) are allowed in the list
      * {@link LangString }
      * 
-     * 
+     * @return a List of strings
      */
     public abstract List<LangString> getLabel();
 } 

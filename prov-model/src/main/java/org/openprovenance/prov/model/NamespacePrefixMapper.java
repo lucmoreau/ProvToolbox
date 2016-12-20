@@ -77,15 +77,15 @@ public interface NamespacePrefixMapper {
      * they are necessary, only at where they are used. Because of this
      * lack of look-ahead, sometimes the marshaller produces a lot of
      * namespace declarations that look redundant to human eyes. For example,
-     * <pre><xmp>
-     * <?xml version="1.0"?>
-     * <root>
-     *   <ns1:child xmlns:ns1="urn:foo"> ... </ns1:child>
-     *   <ns2:child xmlns:ns2="urn:foo"> ... </ns2:child>
-     *   <ns3:child xmlns:ns3="urn:foo"> ... </ns3:child>
+     * <pre>&lt;xmp&gt;
+     * &lt;?xml version="1.0"?&gt;
+     * &lt;root&gt;
+     *   &lt;ns1:child xmlns:ns1="urn:foo"&gt; ... &lt;/ns1:child&gt;
+     *   &lt;ns2:child xmlns:ns2="urn:foo"&gt; ... &lt;/ns2:child&gt;
+     *   &lt;ns3:child xmlns:ns3="urn:foo"&gt; ... &lt;/ns3:child&gt;
      *   ...
-     * </root>
-     * </xmp></pre>
+     * &lt;/root&gt;
+     * &lt;/xmp&gt;</pre>
      * <p>
      * If you know in advance that you are going to use a certain set of
      * namespace URIs, you can override this method and have the marshaller
@@ -93,15 +93,15 @@ public interface NamespacePrefixMapper {
      * <p>
      * For example, by returning <code>new String[]{"urn:foo"}</code>,
      * the marshaller will produce:
-     * <pre><xmp>
-     * <?xml version="1.0"?>
-     * <root xmlns:ns1="urn:foo">
-     *   <ns1:child> ... </ns1:child>
-     *   <ns1:child> ... </ns1:child>
-     *   <ns1:child> ... </ns1:child>
+     * <pre>&lt;xmp&gt;
+     * &lt;?xml version="1.0"?&gt;
+     * &lt;root xmlns:ns1="urn:foo"&gt;
+     *   &lt;ns1:child&gt; ... &lt;/ns1:child&gt;
+     *   &lt;ns1:child&gt; ... &lt;/ns1:child&gt;
+     *   &lt;ns1:child&gt; ... &lt;/ns1:child&gt;
      *   ...
-     * </root>
-     * </xmp></pre>
+     * &lt;/root&gt;
+     * &lt;/xmp&gt;</pre>
      * <p>
      * To control prefixes assigned to those namespace URIs, use the
      * {@link #getPreferredPrefix} method.

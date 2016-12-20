@@ -49,7 +49,7 @@
     <dependency>
       <groupId>org.codehaus.izpack</groupId>
       <artifactId>izpack-wrapper</artifactId>
-      <version>5.0.3</version>
+      <version>5.0.10</version>
       <scope>provided</scope>
     </dependency>
  </dependencies>
@@ -502,6 +502,7 @@
 
 		    <exec executable="echo" dir="${project.build.directory}/dmgdir" output="${project.build.directory}/dmgdir/README.txt">
   	              <arg value="Please run installer to install provconvert." />
+		      <arg value="Make sure you can install applications from anywhere: see http://osxdaily.com/2016/09/27/allow-apps-from-anywhere-macos-gatekeeper/" />
                     </exec>
 
 
@@ -820,6 +821,7 @@
 
 		    <exec executable="echo" dir="${project.build.directory}/dmgdir" output="${project.build.directory}/dmgdir/README.txt">
   	              <arg value="Please run installer to install provconvert." />
+		      <arg value="Make sure you can install applications from anywhere: see http://osxdaily.com/2016/09/27/allow-apps-from-anywhere-macos-gatekeeper/" />
                     </exec>
 
                     <exec executable="hdiutil" dir="${project.build.directory}">

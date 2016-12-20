@@ -35,6 +35,7 @@ public interface HasType {
      * Objects of the following type(s) are allowed in the list
      * {@link Type }
      * 
+     * @return a List of Type values
      * 
      */
     public List<Type> getType();

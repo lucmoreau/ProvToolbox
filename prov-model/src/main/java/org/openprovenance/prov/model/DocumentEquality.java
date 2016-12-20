@@ -12,7 +12,7 @@ import org.apache.commons.collections.bag.HashBag;
 import org.apache.log4j.Logger;
 
 /**
- * @author Trung Dong Huynh <tdh@ecs.soton.ac.uk>
+ * @author Trung Dong Huynh &lt;tdh@ecs.soton.ac.uk&gt;
  * @author lavm
  * Comparator Class
  * 

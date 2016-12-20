@@ -3,7 +3,7 @@
   <parent>
     <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.7.3-SNAPSHOT</version>
+    <version>0.7.3</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -47,12 +47,12 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-model</artifactId>
-      <version>0.7.3-SNAPSHOT</version>
+      <version>0.7.3</version>
     </dependency>
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-interop</artifactId>
-      <version>0.7.3-SNAPSHOT</version>
+      <version>0.7.3</version>
     </dependency>
   </dependencies>
 
@@ -82,7 +82,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
+                    <ignore />
                   </action>
                 </pluginExecution>
               </pluginExecutions>
@@ -128,7 +128,7 @@
 
 
 		<exec dir="${project.basedir}" executable="echo" failonerror="true">
-		  <arg line="And now bean from templates ..."/>
+		  <arg line="And now bean from templates ..." />
 		</exec>
 
 		<!-- customized templates -->

@@ -4,10 +4,10 @@
 	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openprovenance.prov.tutorial</groupId>
-  <artifactId>ProvToolbox-Tutorial1</artifactId>
+  <artifactId>ProvToolbox-Tutorial5</artifactId>
   <version>${pom.version}</version>
-  <name>ProvToolbox Tutorial 1</name>
-  <description>ProvToolbox Tutorial 1</description>
+  <name>ProvToolbox Tutorial 5</name>
+  <description>ProvToolbox Tutorial 5</description>
 
   <developers>
     <developer>

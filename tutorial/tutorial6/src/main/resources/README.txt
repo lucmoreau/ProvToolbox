@@ -1,4 +1,4 @@
 
-The source code of ProvToolbox Tutorial 1 (${pom.version})
+The source code of ProvToolbox Tutorial 6 (${pom.version})
 
 

@@ -16,6 +16,16 @@ dry:
 rel.clean:
 	mvn release:clean
 
+RELEASE_VERSION=ProvToolbox-0.7.3
+
+release.doc:
+	rm -r -f target/$(RELEASE_VERSION)
+	mkdir -p target
+	cd target; git clone git@github.com:lucmoreau/ProvToolbox.git  $(RELEASE_VERSION)
+	cd target/$(RELEASE_VERSION); git checkout tags/$(RELEASE_VERSION); mvn site-deploy
+	echo "rename scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/site/prov to version number"
+
+
 
 yum:
 	sudo yum install -y repolist disabled toolbox/target/rpm/provconvert/RPMS/noarch/provconvert-*.noarch.rpm

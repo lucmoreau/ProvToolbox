@@ -80,14 +80,45 @@
 	<version>1.3.2</version>
 	<executions>
 	  <execution>
+	    <id>test1</id>
 	    <phase>test</phase>
 	    <goals>
 	      <goal>java</goal>
 	    </goals>
 	    <configuration>
-	      <mainClass>org.openprovenance.prov.tutorial.tutorial1.Little</mainClass>
+	      <mainClass>org.openprovenance.prov.tutorial.tutorial5.ProvenanceChallenge1</mainClass>
 	      <arguments>
-		<argument>target/little.svg</argument>
+		<argument>${project.build.directory}/pc1.svg</argument>
+		<argument>${project.build.directory}/pc1.provn</argument>
+	      </arguments>
+	    </configuration>
+	  </execution>
+	  <execution>
+	    <id>test2</id>
+	    <phase>test</phase>
+	    <goals>
+	      <goal>java</goal>
+	    </goals>
+	    <configuration>
+	      <mainClass>org.openprovenance.prov.tutorial.tutorial5.ProvenanceChallenge2</mainClass>
+	      <arguments>
+		<argument>${project.build.directory}/pc2.svg</argument>
+		<argument>${project.build.directory}/pc2.provn</argument>
+	      </arguments>
+	    </configuration>
+	  </execution>
+	  <execution>
+	    <id>test3</id>
+	    <phase>test</phase>
+	    <goals>
+	      <goal>java</goal>
+	    </goals>
+	    <configuration>
+	      <mainClass>org.openprovenance.prov.tutorial.tutorial5.ProvenanceChallenge1Template</mainClass>
+	      <arguments>
+		<argument>${project.build.directory}/pc3.svg</argument>
+		<argument>${project.build.directory}/pc3.provn</argument>
+		<argument>${project.build.directory}/bind</argument>
 	      </arguments>
 	    </configuration>
 	  </execution>

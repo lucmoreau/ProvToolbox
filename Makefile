@@ -1,9 +1,21 @@
 
+### See http://central.sonatype.org/pages/apache-maven.html#performing-a-release-deployment-with-the-maven-release-plugin
+### make dry
+### make rel.clean release-oss-sign
+### make release:perform
+
+
 install-sign:
 	mvn clean install -P release
 
 release-oss-sign:
-	mvn release:prepare 
+	mvn release:prepare
+dry:
+	mvn release:prepare -DdryRun=true
+
+rel.clean:
+	mvn release:clean
+
 
 yum:
 	sudo yum install -y repolist disabled toolbox/target/rpm/provconvert/RPMS/noarch/provconvert-*.noarch.rpm

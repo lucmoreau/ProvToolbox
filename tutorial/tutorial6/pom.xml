@@ -3,7 +3,7 @@
   <parent>
     <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.7.3-SNAPSHOT</version>
+    <version>0.7.4-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -35,21 +35,6 @@
     </developer>
   </developers>
 
-  <repositories>
-<!--
-    <repository>
-      <id>mvn.prov.toolbox</id>
-      <name>maven repository for PROV toolbox</name>
-      <url>http://openprovenance.org/java/maven-releases/</url>
-    </repository>
--->
-
-    <repository>
-      <id>mvn.prov.toolbox.snapshots</id>
-      <name>maven snapshot repository for PROV toolbox</name>
-      <url>http://openprovenance.org/java/maven-snapshots/</url>
-    </repository>
-  </repositories>
 
   <licenses>
     <license>
@@ -62,12 +47,12 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-model</artifactId>
-      <version>0.7.3-SNAPSHOT</version>
+      <version>0.7.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-interop</artifactId>
-      <version>0.7.3-SNAPSHOT</version>
+      <version>0.7.4-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
@@ -97,7 +82,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
+                    <ignore />
                   </action>
                 </pluginExecution>
               </pluginExecutions>
@@ -115,7 +100,7 @@
           <execution>
             <phase>generate-sources</phase>
             <configuration>
-              <tasks>
+              <target>
                 <exec dir="${project.build.directory}" executable="mkdir" failonerror="true">
                   <arg line="-p generated-sources/provconvert" />
                 </exec>
@@ -143,7 +128,7 @@
 
 
 		<exec dir="${project.basedir}" executable="echo" failonerror="true">
-		  <arg line="And now bean from templates ..."/>
+		  <arg line="And now bean from templates ..." />
 		</exec>
 
 		<!-- customized templates -->
@@ -164,7 +149,7 @@
                   <arg line="-infile resources/templates/template_convert.provn -template Convert -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_convert.provn" />
                 </exec>
 		
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>

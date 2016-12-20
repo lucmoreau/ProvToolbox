@@ -39,9 +39,12 @@ import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
-import static org.openprovenance.prov.template.Expand.TMPL_NS;
-import static org.openprovenance.prov.template.Expand.TMPL_PREFIX;
+import static org.openprovenance.prov.template.ExpandUtil.TMPL_NS;
+import static org.openprovenance.prov.template.ExpandUtil.TMPL_PREFIX;
 
 public class ExpandAction implements StatementAction {
 
@@ -67,15 +70,15 @@ public class ExpandAction implements StatementAction {
     }
 
     public ExpandAction(ProvFactory pf,
-            ProvUtilities u,
-            Expand expand,
-            Hashtable<QualifiedName, QualifiedName> env,
-            Hashtable<QualifiedName, List<TypedValue>> env2,
-            List<Integer> index,
-            Bindings bindings1,
-            Groupings grp1,
-            boolean addOrderp,
-            boolean allUpdatedRequired) {
+                        ProvUtilities u,
+                        Expand expand,
+                        Hashtable<QualifiedName, QualifiedName> env,
+                        Hashtable<QualifiedName, List<TypedValue>> env2,
+                        List<Integer> index,
+                        Bindings bindings1,
+                        Groupings grp1,
+                        boolean addOrderp,
+                        boolean allUpdatedRequired) {
         this.pf = pf;
         this.expand = expand;
         this.env = env;
@@ -120,7 +123,7 @@ public class ExpandAction implements StatementAction {
         boolean updated = updated1 || updated2 || updated3 || updated4;
         boolean allUpdated = updated1 && updated2 && updated3;
         allExpanded=allExpanded && allUpdated;
-
+        
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
         }
@@ -368,7 +371,7 @@ public class ExpandAction implements StatementAction {
                                                       // return true
                         QualifiedName qn1 = (QualifiedName) o;
 
-                        if (Expand.isVariable(qn1)) {
+                        if (ExpandUtil.isVariable(qn1)) {
                             List<TypedValue> vals = env2.get(qn1);
 
                             if (vals == null) {
@@ -401,6 +404,8 @@ public class ExpandAction implements StatementAction {
         }
         return found;
     }
+    
+    boolean allowVariableInLabelAndTime=true;
 
     public void processTemplateAttributes(Statement dstStatement,
                                           Collection<Attribute> dstAttributes,
@@ -409,19 +414,31 @@ public class ExpandAction implements StatementAction {
 
         for (TypedValue val : vals) {
             String elementName = attribute.getElementName().getUri();
-            if (Expand.LABEL_URI.equals(elementName)) {
-                dstAttributes.add(pf.newAttribute(pf.getName().PROV_LABEL,
-                                                  val.getValue(),
-                                                  val.getType()));
-            } else if (Expand.TIME_URI.equals(elementName)) {
-                if (dstStatement instanceof HasTime) {
-                    ((HasTime) dstStatement).setTime(pf.newISOTime((String) val.getValue()));
+            if (ExpandUtil.LABEL_URI.equals(elementName)) {
+                Object value=val.getValue();
+                if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && ((QualifiedName)value).getNamespaceURI().equals(ExpandUtil.VAR_NS)) {
+                    dstAttributes.add(pf.newAttribute(attribute.getElementName(),
+                                                      value,
+                                                      val.getType()));
+                } else {
+                    dstAttributes.add(pf.newAttribute(pf.getName().PROV_LABEL,
+                                                      value,
+                                                      val.getType()));
                 }
-            } else if (Expand.STARTTIME_URI.equals(elementName)) {
+            } else if (ExpandUtil.TIME_URI.equals(elementName)) {
+                Object value=val.getValue();
+                if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && ((QualifiedName)value).getNamespaceURI().equals(ExpandUtil.VAR_NS)) {
+                    dstAttributes.add(pf.newAttribute(attribute.getElementName(),
+                                                      value,
+                                                      val.getType()));
+                } else if (dstStatement instanceof HasTime) {
+                    ((HasTime) dstStatement).setTime(pf.newISOTime((String) value));
+                }
+            } else if (ExpandUtil.STARTTIME_URI.equals(elementName)) {
                 if (dstStatement instanceof Activity) {
                     ((Activity) dstStatement).setStartTime(pf.newISOTime((String) val.getValue()));
                 }
-            } else if (Expand.ENDTIME_URI.equals(elementName)) {
+            } else if (ExpandUtil.ENDTIME_URI.equals(elementName)) {
                 if (dstStatement instanceof Activity) {
                     ((Activity) dstStatement).setEndTime(pf.newISOTime((String) val.getValue()));
                 }
@@ -453,7 +470,7 @@ public class ExpandAction implements StatementAction {
     }
 
     private boolean setExpand(Statement res, QualifiedName id, int position) {
-        if (Expand.isVariable(id)) {
+        if (ExpandUtil.isVariable(id)) {
             QualifiedName val = env.get(id);
             if (val != null) {
                 u.setter(res, position, val);
@@ -570,6 +587,74 @@ public class ExpandAction implements StatementAction {
         // if (updated) addOrderAttribute(res);
 
     }
+    
+    @Override
+    public void doAction(QualifiedSpecializationOf s) {
+        QualifiedSpecializationOf res = pf.newQualifiedSpecializationOf(s.getId(),s.getSpecificEntity(), s.getGeneralEntity(),null);
+
+        QualifiedName spe = res.getSpecificEntity();
+        boolean updated0 = setExpand(res, spe, 0);
+        QualifiedName gen = res.getGeneralEntity();
+        boolean updated1 = setExpand(res, gen, 1);
+        boolean updated2 = expandAttributes(s, res);
+
+        @SuppressWarnings("unused")
+        boolean updated = updated0 || updated1 || updated2;
+        boolean allUpdated = updated0 && updated1 && updated2;
+        allExpanded=allExpanded && allUpdated;
+        if (!allUpdatedRequired || allUpdated) {
+            ll.add(res);
+        }
+        if (updated) addOrderAttribute(res);
+
+    }
+    
+    @Override
+    public void doAction(QualifiedAlternateOf s) {
+        QualifiedAlternateOf res = pf.newQualifiedAlternateOf(s.getId(),s.getAlternate1(), s.getAlternate2(),null);
+
+        QualifiedName alt1 = res.getAlternate1();
+        boolean updated0 = setExpand(res, alt1, 0);
+        QualifiedName alt2 = res.getAlternate2();
+        boolean updated1 = setExpand(res, alt2, 1);
+        boolean updated2 = expandAttributes(s, res);
+
+        boolean updated = updated0 || updated1 || updated2;
+        boolean allUpdated = updated0 && updated1 && updated2;
+        allExpanded=allExpanded && allUpdated;
+        if (!allUpdatedRequired || allUpdated) {
+            ll.add(res);
+        }
+        if (updated) addOrderAttribute(res);
+
+    }
+    
+    @Override
+    public void doAction(QualifiedHadMember s) {
+        QualifiedHadMember res = pf.newQualifiedHadMember(s.getId(),s.getCollection(), s.getEntity(),null);
+
+        QualifiedName col = res.getCollection();
+        boolean updated0 = setExpand(res, col, 0);
+        List<QualifiedName> ent = res.getEntity();
+        if (ent.size() > 1) {
+            throw new UnsupportedOperationException(
+                                                    "can't expand QualfiedHadMember with more than one members");
+        }
+        boolean updated1 = setExpand(res, ent.get(0), 1);
+        boolean updated2 = expandAttributes(s, res);
+
+        // .out.println("FIXME: to do , expand entities"); //FIXME
+
+        boolean updated = updated0 || updated1|| updated2;
+        boolean allUpdated = updated0 && updated1 && updated2;
+        allExpanded=allExpanded && allUpdated;
+        if (!allUpdatedRequired || allUpdated) {
+            ll.add(res);
+        }
+        if (updated) addOrderAttribute(res);
+        // TODO Auto-generated method stub
+
+    }
 
     @Override
     public void doAction(DerivedByInsertionFrom s) {
@@ -616,7 +701,7 @@ public class ExpandAction implements StatementAction {
 
         QualifiedName newId;
         final QualifiedName bunId = bun.getId();
-        if (Expand.isVariable(bunId)) {
+        if (ExpandUtil.isVariable(bunId)) {
             // System.out.println("===> bundle " + env + " " + bindings);
             QualifiedName val = env.get(bunId);
             if (val != null) {
@@ -641,7 +726,7 @@ public class ExpandAction implements StatementAction {
                                              Bindings bindings1,
                                              Hashtable<QualifiedName, QualifiedName> env0) {
         final QualifiedName id = bun.getId();
-        if (Expand.isVariable(id)) {
+        if (ExpandUtil.isVariable(id)) {
             List<QualifiedName> vals = bindings1.getVariables().get(id);
             if (vals == null) {
                 if (Expand.isGensymVariable(id)) {

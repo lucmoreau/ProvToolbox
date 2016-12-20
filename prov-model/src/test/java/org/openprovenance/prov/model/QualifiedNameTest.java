@@ -120,6 +120,8 @@ public class QualifiedNameTest extends TestCase {
 	assertTrue(doRT1("news/world-asia1-17507976"));
 	
 	assertTrue(doRT1("À-ÖØ-öø-˿Ͱͽ"));
+	
+	assertTrue(doRT1("application/6/subject/byURI/smartshare%2Fdirk/"));
 
 
    }

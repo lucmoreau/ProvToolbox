@@ -17,13 +17,17 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
+
 
 
 
 /** A stateless factory for PROV objects. */
 
 
-public abstract class ProvFactory implements LiteralConstructor, ModelConstructor {
+public abstract class ProvFactory implements LiteralConstructor, ModelConstructor, ModelConstructorExtension {
  
     public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.validation";
 
@@ -879,13 +883,48 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      * @param general an identifier  ({@link QualifiedName}) for the general {@link Entity}
      * @return an instance of {@link SpecializationOf}
      */       
+    @Override
     public SpecializationOf newSpecializationOf(QualifiedName specific, QualifiedName general) {
 	SpecializationOf res = of.createSpecializationOf();
 	res.setSpecificEntity(specific);
 	res.setGeneralEntity(general);
 	return res;
     }
-
+    
+    @Override
+    public QualifiedSpecializationOf newQualifiedSpecializationOf(QualifiedName id, QualifiedName specific, QualifiedName general, Collection<Attribute> attributes) {
+        QualifiedSpecializationOf res = of.createQualifiedSpecializationOf();
+        res.setId(id);
+        res.setSpecificEntity(specific);
+        res.setGeneralEntity(general);
+        setAttributes(res, attributes);
+        return res;
+    }
+    @Override
+    public QualifiedAlternateOf newQualifiedAlternateOf(QualifiedName id, QualifiedName alt1, QualifiedName alt2, Collection<Attribute> attributes) {
+        QualifiedAlternateOf res=of.createQualifiedAlternateOf();
+        res.setId(id);
+        res.setAlternate1(alt1);
+        res.setAlternate2(alt2);
+        setAttributes(res, attributes);
+        return res;
+    }
+    @Override
+    public QualifiedHadMember newQualifiedHadMember(QualifiedName id, QualifiedName c, Collection<QualifiedName> e, Collection<Attribute> attributes) {
+        List<QualifiedName> ll=new LinkedList<QualifiedName>();
+        if (e!=null) {
+            for (QualifiedName q: e) {
+            ll.add(q);
+            }
+        }
+        QualifiedHadMember res=of.createQualifiedHadMember();
+        res.setId(id);
+        res.setCollection(c);
+        res.getEntity().addAll(e);
+        return res;
+    }   
+ 
+    
     public XMLGregorianCalendar newTime(Date date) {
 	GregorianCalendar gc = new GregorianCalendar();
 	gc.setTime(date);
@@ -976,13 +1015,14 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      */    
 
     public Used newUsed(Used u) {
-	Used u1 = newUsed(u.getId(), u.getActivity(), u.getEntity());
-	u1.setTime(u.getTime());
-	u1.getType().addAll(u.getType());
-	u1.getLabel().addAll(u.getLabel());
-	u1.getLocation().addAll(u.getLocation());
-	u1.getOther().addAll(u.getOther());
-	return u1;
+        Used u1 = newUsed(u.getId(), u.getActivity(), u.getEntity());
+        u1.setTime(u.getTime());
+        u1.getType().addAll(u.getType());
+        u1.getLabel().addAll(u.getLabel());
+        u1.getRole().addAll(u.getRole());
+        u1.getLocation().addAll(u.getLocation());
+        u1.getOther().addAll(u.getOther());
+        return u1;
     }
 
     /**
@@ -991,7 +1031,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      * @return a new {@link Value} with type xsd:string (see {@link Name#XSD_STRING})
      */
     public Value newValue(String value) {
-	return newValue(value,getName().XSD_STRING);
+        return newValue(value,getName().XSD_STRING);
     }  
     
     /**
@@ -1242,6 +1282,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	u1.setTime(u.getTime());
 	u1.getType().addAll(u.getType());
 	u1.getLabel().addAll(u.getLabel());
+	u1.getRole().addAll(u1.getRole());
 	u1.getLocation().addAll(u.getLocation());
 	u1.getOther().addAll(u.getOther());
 	return u1;
@@ -1305,15 +1346,16 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
     public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
-	WasGeneratedBy wgb = newWasGeneratedBy(g.getId(), g.getEntity(), null,
-					       g.getActivity());
-	wgb.setId(g.getId());
-	wgb.setTime(g.getTime());
-	wgb.getOther().addAll(g.getOther());
-	wgb.getType().addAll(g.getType());
-	wgb.getLabel().addAll(g.getLabel());
-	wgb.getLocation().addAll(g.getLocation());
-	return wgb;
+        WasGeneratedBy wgb = newWasGeneratedBy(g.getId(), g.getEntity(), null,
+                                               g.getActivity());
+        wgb.setId(g.getId());
+        wgb.setTime(g.getTime());
+        wgb.getOther().addAll(g.getOther());
+        wgb.getRole().addAll(g.getRole());
+        wgb.getType().addAll(g.getType());
+        wgb.getLabel().addAll(g.getLabel());
+        wgb.getLocation().addAll(g.getLocation());
+        return wgb;
     }
 
 
@@ -1439,6 +1481,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	u1.setTime(u.getTime());
 	u1.getOther().addAll(u.getOther());
 	u1.getType().addAll(u.getType());
+	u.getRole().addAll(u.getRole());
 	u1.getLabel().addAll(u.getLabel());
 	u1.getLocation().addAll(u.getLocation());
 	return u1;
@@ -1495,6 +1538,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	u1.setStarter(u.getStarter());
 	u1.setTime(u.getTime());
 	u1.getType().addAll(u.getType());
+	u1.getRole().addAll(u.getRole());
 	u1.getLabel().addAll(u.getLabel());
 	u1.getLocation().addAll(u.getLocation());
 	u1.getOther().addAll(u.getOther());
@@ -1729,7 +1773,16 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	public Object doAction(SpecializationOf s) {
 	    return newSpecializationOf(s);
 	}
-
+	@Override
+	public Object doAction(QualifiedSpecializationOf s) {
+        return newQualifiedSpecializationOf(s.getId(),s.getSpecificEntity(),s.getGeneralEntity(),getAttributes(s));
+	}
+	
+    @Override
+    public Object doAction(QualifiedHadMember s) {
+        return newQualifiedHadMember(s.getId(),s.getCollection(),s.getEntity(),getAttributes(s));
+    }
+    
 	@Override
 	public Object doAction(DerivedByInsertionFrom s) {
 	    throw new UnsupportedOperationException();
@@ -1744,6 +1797,11 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	public Object doAction(Bundle s, ProvUtilities provUtilities) {
 	    throw new UnsupportedOperationException();
 	}
+
+    @Override
+    public Object doAction(QualifiedAlternateOf s) {
+        return newQualifiedAlternateOf(s.getId(),s.getAlternate1(),s.getAlternate2(),getAttributes(s));        
+    }
 	
     }
 

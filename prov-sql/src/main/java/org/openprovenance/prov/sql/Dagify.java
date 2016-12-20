@@ -262,7 +262,36 @@ public class Dagify implements StatementAction {
         spec.setSpecificEntity(uniquify(spec.getSpecificEntity()));
         spec.setGeneralEntity(uniquify(spec.getGeneralEntity()));
     }
+    
+   
+    public void doAction(org.openprovenance.prov.model.extension.QualifiedSpecializationOf spec) {
+    if (spec.getId()!=null) spec.setId(uniquify(spec.getId()));                
+        spec.setGeneralEntity(uniquify(spec.getGeneralEntity()));    
+        spec.setSpecificEntity(uniquify(spec.getSpecificEntity()));    
+       doActionAttributes(spec);        
+    }
+    
+    public void doAction(org.openprovenance.prov.model.extension.QualifiedAlternateOf alt) {
+        if (alt.getId()!=null) alt.setId(uniquify(alt.getId()));                
+        alt.setAlternate1(uniquify(alt.getAlternate1()));    
+        alt.setAlternate2(uniquify(alt.getAlternate2()));    
+        doActionAttributes(alt);        
+    }
+    
+    public void doAction(org.openprovenance.prov.model.extension.QualifiedHadMember mem) {
+        if (mem.getId()!=null) mem.setId(uniquify(mem.getId()));                
+        List<org.openprovenance.prov.model.QualifiedName> ll=new LinkedList<org.openprovenance.prov.model.QualifiedName>();
+        for (org.openprovenance.prov.model.QualifiedName er: mem.getEntity()) {
+            ll.add(uniquify(er));
+        }
+        mem.getEntity().clear();
+        mem.getEntity().addAll(ll);
+        
+        mem.setCollection(uniquify(mem.getCollection()));     
+        doActionAttributes(mem);        
 
+    }
+    
     public void doAction(org.openprovenance.prov.model.HadMember mem) {
         List<org.openprovenance.prov.model.QualifiedName> ll=new LinkedList<org.openprovenance.prov.model.QualifiedName>();
         for (org.openprovenance.prov.model.QualifiedName er: mem.getEntity()) {

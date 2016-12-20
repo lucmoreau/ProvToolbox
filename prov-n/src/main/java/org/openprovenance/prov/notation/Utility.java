@@ -78,33 +78,34 @@ public  class Utility {
     };
 
     public CommonTree convertASNToTree(String file) throws java.io.IOException, RecognitionException {
-	PROV_NParser parser=getParserForFile(file);
-	return convertASNToTree(parser);
+        PROV_NParser parser=getParserForFile(file);
+        return convertASNToTree(parser);
     }
-    
+   
+
     public CommonTree convertASNToTree(InputStream is) throws java.io.IOException, RecognitionException {
-	PROV_NParser parser=getParserForStream(is);
-	return convertASNToTree(parser);
+        PROV_NParser parser=getParserForStream(is);
+        return convertASNToTree(parser);
     }
     private CommonTree convertASNToTree(PROV_NParser parser) throws java.io.IOException, RecognitionException {
-	parser.setTreeAdaptor(adaptor);
-	PROV_NParser.document_return ret = parser.document();
-	CommonTree tree = (CommonTree)ret.getTree();
-	return tree;
+        parser.setTreeAdaptor(adaptor);
+        PROV_NParser.document_return ret = parser.document();
+        CommonTree tree = (CommonTree)ret.getTree();
+        return tree;
     }
 
-   
+
     public Object convertTreeToJavaBean(CommonTree tree, ProvFactory pFactory) {
-  	if (tree==null) return null;
-          Object o=new TreeTraversal(pFactory,pFactory).convert(tree);
-          return o;
-      }
+        if (tree==null) return null;
+        Object o=new TreeTraversal(pFactory,pFactory).convert(tree);
+        return o;
+    }
 
 
 
     public String convertBeanToHTML(final Document doc, ProvFactory pFactory) {
-	StringWriter writer=new StringWriter();
-	NotationConstructor nc=new HTMLConstructor(writer);
+        StringWriter writer=new StringWriter();
+        NotationConstructor nc=new HTMLConstructor(writer);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
         bt.doAction(doc);
         nc.flush();
@@ -112,7 +113,7 @@ public  class Utility {
         nc.close();
         return s;
     }
-    
+
     public Object convertASNToJavaBean(String file, ProvFactory pFactory) throws java.io.IOException, RecognitionException {
         CommonTree tree=convertASNToTree(file);
         Object o=convertTreeToJavaBean(tree,pFactory);
@@ -211,9 +212,15 @@ public  class Utility {
     }
     
     public Document readDocument(String filename, ProvFactory pFactory) throws IOException, Throwable {
-	 CommonTree tree = convertASNToTree(filename);
-         Object doc=convertTreeToJavaBean(tree,pFactory);
-         return (Document)doc;
+        CommonTree tree = convertASNToTree(filename);
+            Object doc=convertTreeToJavaBean(tree,pFactory);
+            return (Document)doc;
+       }
+    
+    public Document readDocument(InputStream is, ProvFactory pFactory) throws IOException, Throwable {
+        CommonTree tree = convertASNToTree(is);
+        Object doc=convertTreeToJavaBean(tree,pFactory);
+        return (Document)doc;
     }
     
     

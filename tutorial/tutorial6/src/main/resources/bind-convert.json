@@ -1,0 +1,25 @@
+{
+  "var" : {
+    "b" :              [ { "@id" : "vargen:b" } ],
+    "agent" :          [ { "@id" : "var:agent" } ],
+    "block_instance" : [ { "@id" : "var:block_instance" } ],
+    "block_type" :     [ { "@id" : "prim:Convert"  } ] ,
+    "parent" :         [ { "@id" : "var:parent" } ],
+    "produced" :       [ { "@id" : "var:produced" }] ,
+    "produced_label" : [ { "@id" : "var:produced_label"  } ],
+    "produced_name" :  [ { "@id" : "prim:Out"  } ],
+    "produced_type" :  [ { "@id" : "prim:File" } ],
+    "produced_at" :    [ { "@id" : "var:produced_at" } ],
+    "produced_name" :  [ { "@id" : "prim:Out" } ],
+    "consumed" :       [ { "@id" : "var:consumed" }],
+    "consumed_type" :  [ { "@id" : "prim:File" } ],
+    "consumed_name" :  [ { "@id" : "prim:In" } ],
+    "consumed_at" :    [ { "@id" : "var:consumed_at" } ]  },
+    "vargen" : { },
+    "context" : {
+        "prim" : "http://openprovenance.org/primitives#",
+        "pc1" : "http://www.ipaw.info/challenge/",
+        "var" :  "http://openprovenance.org/var#",
+        "vargen" :  "http://openprovenance.org/vargen#"
+    }
+}

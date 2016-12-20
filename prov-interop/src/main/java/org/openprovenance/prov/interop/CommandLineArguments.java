@@ -41,6 +41,10 @@ public class CommandLineArguments implements ErrorCodes {
     public static final String OUTFORMAT = "outformat";
     public static final String BINDFORMAT = "bindformat";
     public static final String COMPAREOUT = "outcompare";
+    public static final String BINDINGS_VERSION = "bindver";
+    public static final String TEMPLATE = "template";
+    public static final String PACKAGE = "package";
+    public static final String LOCATION = "location";
 
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
@@ -141,7 +145,30 @@ public class CommandLineArguments implements ErrorCodes {
                 .withDescription("output file for log of comparison")
                 .create(COMPAREOUT);
 
+        Option bindingsVersion = OptionBuilder
+                .withArgName("int")
+                .hasArg()
+                .withDescription("bindings version")
+                .create(BINDINGS_VERSION);
 
+        Option template = OptionBuilder
+                .withArgName("string")
+                .hasArg()
+                .withDescription("template name, used to create bindings bean class name")
+                .create(TEMPLATE);
+
+        Option packge = OptionBuilder
+                .withArgName("package")
+                .hasArg()
+                .withDescription("package in which bindings bean class is generated")
+                .create(PACKAGE);
+
+        
+        Option location = OptionBuilder
+                .withArgName("location")
+                .hasArg()
+                .withDescription("location of where the template resource is to be found at runtime")
+                .create(LOCATION);
 
         Options options = new Options();
 
@@ -167,6 +194,10 @@ public class CommandLineArguments implements ErrorCodes {
         options.addOption(bindformat);
         options.addOption(compare);
         options.addOption(compareOut);
+        options.addOption(bindingsVersion);
+        options.addOption(template);
+        options.addOption(packge);
+        options.addOption(location);
 
         return options;
 
@@ -224,6 +255,10 @@ public class CommandLineArguments implements ErrorCodes {
         String merge=null;
         String compare=null;
         String compareOut=null;
+        String template=null;
+        String packge=null;
+        String location=null;
+        int bindingsVersion=1;
         boolean addOrderp=false;
         boolean listFormatsp = false;
         boolean allexpanded=false;
@@ -258,6 +293,21 @@ public class CommandLineArguments implements ErrorCodes {
             if (line.hasOption(FORMATS))      listFormatsp = true;
             if (line.hasOption(COMPARE))      compare    = line.getOptionValue(COMPARE);
             if (line.hasOption(COMPAREOUT))   compareOut    = line.getOptionValue(COMPAREOUT);
+            if (line.hasOption(BINDINGS_VERSION))   {
+                String tmp= line.getOptionValue(BINDINGS_VERSION);
+                try {
+                    bindingsVersion    =new Integer(tmp);
+                } catch (Exception e){
+                    System.err.println("bindings version not an integer (using 1) " + tmp);
+                    bindingsVersion=1;
+                }
+                
+            }
+            
+            if (line.hasOption(TEMPLATE))  template = line.getOptionValue(TEMPLATE);
+            if (line.hasOption(PACKAGE))  packge = line.getOptionValue(PACKAGE);
+            if (line.hasOption(LOCATION))  location = line.getOptionValue(LOCATION);
+
 
             if (help!=null) {
             	HelpFormatter formatter = new HelpFormatter();
@@ -284,8 +334,12 @@ public class CommandLineArguments implements ErrorCodes {
                                                           layout,
                                                           bindings,
                                                           bindingformat,
+                                                          bindingsVersion,
                                                           addOrderp,
                                                           allexpanded,
+                                                          template,
+                                                          packge,
+                                                          location,
                                                           generator,
                                                           index,
                                                           merge,

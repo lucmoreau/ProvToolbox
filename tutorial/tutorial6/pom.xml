@@ -35,21 +35,6 @@
     </developer>
   </developers>
 
-  <repositories>
-<!--
-    <repository>
-      <id>mvn.prov.toolbox</id>
-      <name>maven repository for PROV toolbox</name>
-      <url>http://openprovenance.org/java/maven-releases/</url>
-    </repository>
--->
-
-    <repository>
-      <id>mvn.prov.toolbox.snapshots</id>
-      <name>maven snapshot repository for PROV toolbox</name>
-      <url>http://openprovenance.org/java/maven-snapshots/</url>
-    </repository>
-  </repositories>
 
   <licenses>
     <license>
@@ -115,7 +100,7 @@
           <execution>
             <phase>generate-sources</phase>
             <configuration>
-              <tasks>
+              <target>
                 <exec dir="${project.build.directory}" executable="mkdir" failonerror="true">
                   <arg line="-p generated-sources/provconvert" />
                 </exec>
@@ -164,7 +149,7 @@
                   <arg line="-infile resources/templates/template_convert.provn -template Convert -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_convert.provn" />
                 </exec>
 		
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>

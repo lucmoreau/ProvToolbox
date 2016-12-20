@@ -39,6 +39,7 @@
         <exclude>**/resources</exclude>
       </excludes>
     </fileSet>
+
   </fileSets>
 
 

@@ -32,22 +32,6 @@
     </developer>
   </developers>
 
-  <repositories>
-<!--
-    <repository>
-      <id>mvn.prov.toolbox</id>
-      <name>maven repository for PROV toolbox</name>
-      <url>http://openprovenance.org/java/maven-releases/</url>
-    </repository>
--->
-
-    <repository>
-      <id>mvn.prov.toolbox.snapshots</id>
-      <name>maven snapshot repository for PROV toolbox</name>
-      <url>http://openprovenance.org/java/maven-snapshots/</url>
-    </repository>
-  </repositories>
-
   <licenses>
     <license>
       <name>MIT License</name>
@@ -88,8 +72,8 @@
 	    <configuration>
 	      <mainClass>org.openprovenance.prov.tutorial.tutorial5.ProvenanceChallenge1</mainClass>
 	      <arguments>
-		<argument>${project.build.directory}/pc1.svg</argument>
-		<argument>${project.build.directory}/pc1.provn</argument>
+		<argument>target/pc1.svg</argument>
+		<argument>target/pc1.provn</argument>
 	      </arguments>
 	    </configuration>
 	  </execution>
@@ -102,8 +86,8 @@
 	    <configuration>
 	      <mainClass>org.openprovenance.prov.tutorial.tutorial5.ProvenanceChallenge2</mainClass>
 	      <arguments>
-		<argument>${project.build.directory}/pc2.svg</argument>
-		<argument>${project.build.directory}/pc2.provn</argument>
+		<argument>target/pc2.svg</argument>
+		<argument>target/pc2.provn</argument>
 	      </arguments>
 	    </configuration>
 	  </execution>
@@ -116,9 +100,9 @@
 	    <configuration>
 	      <mainClass>org.openprovenance.prov.tutorial.tutorial5.ProvenanceChallenge1Template</mainClass>
 	      <arguments>
-		<argument>${project.build.directory}/pc3.svg</argument>
-		<argument>${project.build.directory}/pc3.provn</argument>
-		<argument>${project.build.directory}/bind</argument>
+		<argument>target/pc3.svg</argument>
+		<argument>target/pc3.provn</argument>
+		<argument>target/bind</argument>
 	      </arguments>
 	    </configuration>
 	  </execution>

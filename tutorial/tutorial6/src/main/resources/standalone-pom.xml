@@ -32,22 +32,6 @@
     </developer>
   </developers>
 
-  <repositories>
-<!--
-    <repository>
-      <id>mvn.prov.toolbox</id>
-      <name>maven repository for PROV toolbox</name>
-      <url>http://openprovenance.org/java/maven-releases/</url>
-    </repository>
--->
-
-    <repository>
-      <id>mvn.prov.toolbox.snapshots</id>
-      <name>maven snapshot repository for PROV toolbox</name>
-      <url>http://openprovenance.org/java/maven-snapshots/</url>
-    </repository>
-  </repositories>
-
   <licenses>
     <license>
       <name>MIT License</name>
@@ -81,56 +65,56 @@
           <execution>
             <phase>generate-sources</phase>
             <configuration>
-              <tasks>
-                <exec dir="${project.build.directory}" executable="mkdir" failonerror="true">
+              <target>
+                <exec dir="target/" executable="mkdir" failonerror="true">
                   <arg line="-p generated-sources/provconvert" />
                 </exec>
-                <exec dir="${project.build.directory}" executable="mkdir" failonerror="true">
+                <exec dir="target/" executable="mkdir" failonerror="true">
                   <arg line="-p resources/templates" />
                 </exec>
 
 		<!-- customized templates -->
 		
-                <exec dir="${project.basedir}" executable="provconvert" failonerror="true">
+                <exec dir="." executable="provconvert" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-align.json -bindver 3 -outfile target/resources/templates/template_align.provn" />
                 </exec>
-                <exec dir="${project.basedir}" executable="provconvert" failonerror="true">
+                <exec dir="." executable="provconvert" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-reslice.json -bindver 3 -outfile target/resources/templates/template_reslice.provn" />
                 </exec>
-                <exec dir="${project.basedir}" executable="provconvert" failonerror="true">
+                <exec dir="." executable="provconvert" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-softmean.json -bindver 3 -outfile target/resources/templates/template_softmean.provn" />
                 </exec>
-                <exec dir="${project.basedir}" executable="provconvert" failonerror="true">
+                <exec dir="." executable="provconvert" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-slicer.json -bindver 3 -outfile target/resources/templates/template_slicer.provn" />
                 </exec>
-                <exec dir="${project.basedir}" executable="provconvert" failonerror="true">
+                <exec dir="." executable="provconvert" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-convert.json -bindver 3 -outfile target/resources/templates/template_convert.provn" />
                 </exec>
 
 
-		<exec dir="${project.basedir}" executable="echo" failonerror="true">
+		<exec dir="." executable="echo" failonerror="true">
 		  <arg line="And now bean from templates ..."/>
 		</exec>
 
 		<!-- customized templates -->
 		
-                <exec dir="${project.build.directory}" executable="provconvert" failonerror="true">
+                <exec dir="target/" executable="provconvert" failonerror="true">
                   <arg line="-infile resources/templates/template_align.provn -template Align -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_align.provn" />
                 </exec>
-                <exec dir="${project.build.directory}" executable="provconvert" failonerror="true">
+                <exec dir="target/" executable="provconvert" failonerror="true">
                   <arg line="-infile resources/templates/template_reslice.provn -template Reslice -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_reslice.provn" />
                 </exec>
-                <exec dir="${project.build.directory}" executable="provconvert" failonerror="true">
+                <exec dir="target/" executable="provconvert" failonerror="true">
                   <arg line="-infile resources/templates/template_softmean.provn -template Softmean -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_softmean.provn" />
                 </exec>
-                <exec dir="${project.build.directory}" executable="provconvert" failonerror="true">
+                <exec dir="target/" executable="provconvert" failonerror="true">
                   <arg line="-infile resources/templates/template_slicer.provn -template Slicer -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_slicer.provn" />
                 </exec>
-                <exec dir="${project.build.directory}" executable="provconvert" failonerror="true">
+                <exec dir="target/" executable="provconvert" failonerror="true">
                   <arg line="-infile resources/templates/template_convert.provn -template Convert -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_convert.provn" />
                 </exec>
 		
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>
@@ -152,7 +136,7 @@
             </goals>
             <configuration>
               <sources>
-                <source>${project.build.directory}/generated-sources/provconvert</source>
+                <source>target/generated-sources/provconvert</source>
               </sources>
             </configuration>
           </execution>
@@ -173,15 +157,26 @@
 	    <configuration>
 	      <mainClass>org.openprovenance.prov.tutorial.tutorial6.ProvenanceChallenge1Template</mainClass>
 	      <arguments>
-		<argument>${project.build.directory}/pc3.svg</argument>
-		<argument>${project.build.directory}/pc3.provn</argument>
-		<argument>${project.build.directory}/bind</argument>
+		<argument>target/pc3.svg</argument>
+		<argument>target/pc3.provn</argument>
+		<argument>target/bind</argument>
 	      </arguments>
 	    </configuration>
 	  </execution>
 	</executions>
       </plugin>
     </plugins>
+
+    <resources>
+      <resource>
+	<directory>src/main/resources</directory>
+	<filtering>true</filtering>
+      </resource>
+      <resource> <!-- ensures that generated templates are included in the jar file -->
+	<directory>target/resources</directory>
+	<filtering>true</filtering>
+      </resource>
+    </resources>
 
 
   </build>

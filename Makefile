@@ -23,7 +23,9 @@ release.doc:
 	mkdir -p target
 	cd target; git clone git@github.com:lucmoreau/ProvToolbox.git  $(RELEASE_VERSION)
 	cd target/$(RELEASE_VERSION); git checkout tags/$(RELEASE_VERSION); mvn site-deploy
-	echo "rename scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/site/prov to version number"
+	echo "rename scp://openprovenance@websites1.ecs.soton.ac.uk:/home/openprovenance/openprovenance.org/htdocs/java/site/prov to version number"
+	cd target/$(RELEASE_VERSION); scp toolbox/target/provconvert-0.7.3.dmg openprovenance@websites1.ecs.soton.ac.uk:/home/openprovenance/openprovenance.org/htdocs/java/installer
+
 
 
 

@@ -357,8 +357,9 @@
 
       <plugin>
 	<artifactId>maven-javadoc-plugin</artifactId>
-	<version>2.8.1</version>
+	<version>2.10.4</version>
 	<configuration>
+          <additionalparam>-Xdoclint:none</additionalparam> <!-- see http://blog.joda.org/2014/02/turning-off-doclint-in-jdk-8-javadoc.html -->
 
 	  <aggregate>true</aggregate>
 

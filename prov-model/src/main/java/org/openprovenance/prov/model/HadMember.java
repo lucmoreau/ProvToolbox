@@ -22,16 +22,16 @@ import java.util.List;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Membership">
- *   &lt;complexContent>
- *     &lt;extension base="{http://www.w3.org/ns/prov#}AStatement">
- *       &lt;sequence>
- *         &lt;element name="collection" type="{http://www.w3.org/ns/prov#}IDRef"/>
- *         &lt;element name="entity" type="{http://www.w3.org/ns/prov#}IDRef" maxOccurs="unbounded"/>
- *       &lt;/sequence>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="Membership"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;extension base="{http://www.w3.org/ns/prov#}AStatement"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="collection" type="{http://www.w3.org/ns/prov#}IDRef"/&gt;
+ *         &lt;element name="entity" type="{http://www.w3.org/ns/prov#}IDRef" maxOccurs="unbounded"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/extension&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

@@ -18,16 +18,16 @@ package org.openprovenance.prov.model;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Specialization">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="specificEntity" type="{http://www.w3.org/ns/prov#}IDRef"/>
- *         &lt;element name="generalEntity" type="{http://www.w3.org/ns/prov#}IDRef"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="Specialization"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="specificEntity" type="{http://www.w3.org/ns/prov#}IDRef"/&gt;
+ *         &lt;element name="generalEntity" type="{http://www.w3.org/ns/prov#}IDRef"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

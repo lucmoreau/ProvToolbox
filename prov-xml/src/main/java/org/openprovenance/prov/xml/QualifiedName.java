@@ -19,7 +19,7 @@ public class QualifiedName
     
 {
     
-    final QualifiedNameUtils qnU=new QualifiedNameUtils();
+    static final QualifiedNameUtils qnU=new QualifiedNameUtils();
 
     public QualifiedName(String namespaceURI, String localPart, String prefix) {
         this.namespace=namespaceURI;

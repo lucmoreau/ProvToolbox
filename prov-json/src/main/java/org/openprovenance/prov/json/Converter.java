@@ -40,18 +40,20 @@ public class Converter {
     @SuppressWarnings("unchecked")
     public Document readDocument(String file) throws JsonSyntaxException,
 					     JsonIOException,
-					     FileNotFoundException {
-	Document doc = (Document) gson.fromJson(new BufferedReader(new FileReader(file)),
-						class1);
+					     IOException {
+	final BufferedReader buf = new BufferedReader(new FileReader(file));
+    Document doc = (Document) gson.fromJson(buf,class1);
+    buf.close();
 	return doc;
     }
 
     @SuppressWarnings("unchecked")
     public Document readDocument(InputStream is) throws JsonSyntaxException,
 						JsonIOException,
-						FileNotFoundException {
-	Document doc = (Document) gson.fromJson(new BufferedReader(new InputStreamReader(is)),
-						class1);
+						IOException {
+	final BufferedReader buf = new BufferedReader(new InputStreamReader(is));
+    Document doc = (Document) gson.fromJson(buf,class1);
+    buf.close();
 	return doc;
     }
 

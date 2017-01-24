@@ -1,0 +1,8 @@
+document
+
+prefix ex <http://example.org/>
+
+entity(ex:e, [ex:attr1="J\"org "])
+
+endDocument
+

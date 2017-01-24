@@ -113,5 +113,8 @@ public class RoundTripFromProvnTest extends TestCase {
     public void testQualifiedName() throws Throwable {
 	testIssue("issue-qualified-name");
     }
+    public void testEscape() throws Throwable {
+	testIssue("issue-string");
+    }
 
 }

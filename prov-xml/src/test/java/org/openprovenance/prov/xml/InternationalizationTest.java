@@ -296,11 +296,20 @@ public class InternationalizationTest extends TestCase {
         makeDocAndTest(e, "target/international_Escape1");
     }
 
-    public void PROBLEMtestInternationalEscape2() {
+    public void testInternationalEscape2() {
         Entity e = pFactory.newEntity(q("entity-escape2"));
 	e.getOther().add(pFactory.newOther(EX_NS, "title1", EX_PREFIX,
-                                           "a string with escaped \" quotes \" ",
+                                            pFactory.newInternationalizedString("a string with escaped \" quotes \" ", "en"),
                                            name.PROV_LANG_STRING));
+	// e.getOther().add(pFactory.newOther(EX_NS, "title2", EX_PREFIX,
+        //                                     pFactory.newInternationalizedString("a string with escaped \" quotes \" ", null),
+        //                                    name.PROV_LANG_STRING));
+
+	//DOES IT MAKE SENSE?
+		e.getOther().add(pFactory.newOther(EX_NS, "title3", EX_PREFIX,
+	 				   "and another one \" withquotes \" ",
+                                            name.XSD_STRING));
+	
         makeDocAndTest(e, "target/international_Escape2");
     }
 

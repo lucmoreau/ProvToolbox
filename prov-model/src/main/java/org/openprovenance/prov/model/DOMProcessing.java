@@ -190,7 +190,9 @@ final public class DOMProcessing {
 	Element el = doc.createElementNS(qualifiedName.getNamespaceURI(),
 	                                 qualifiedNameToString(qualifiedName.toQName()));				 
 	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qualifiedNameToString(type));
-	el.setAttributeNS(NamespacePrefixMapper.XML_NS, "xml:lang", lang);
+	if ((lang!=null) && (lang!="")) {
+	    el.setAttributeNS(NamespacePrefixMapper.XML_NS, "xml:lang", lang);
+	}
         el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xml", NamespacePrefixMapper.XML_NS);
 
 	el.appendChild(doc.createTextNode(value));
@@ -284,10 +286,16 @@ final public class DOMProcessing {
 
         if (value instanceof LangString) {
             LangString istring = ((LangString) value);
-            return newElement(elementName, 
-                              istring.getValue(),
-                              attribute.getType(), 
-                              istring.getLang());
+	    if (istring.getLang()!=null) {
+		return newElement(elementName, 
+				  istring.getValue(),
+				  attribute.getType(), 
+				  istring.getLang());
+	    } else {
+		return newElement(elementName, 
+				  istring.getValue(),
+				  attribute.getType());
+	    }
         } else if (value instanceof QualifiedName) {
             return newElement(elementName, 
                               (QualifiedName) value);
@@ -340,9 +348,15 @@ final public class DOMProcessing {
                     .newAttribute(namespace, local, prefix,
                                   content, type);
         } else if ((lang == null) || (lang.equals(""))) {
-            return pFactory
+	    if (type.equals(name.PROV_LANG_STRING)) {
+		return pFactory.newAttribute(namespace, local, prefix, pFactory
+					     .newInternationalizedString(child), type);
+
+	    } else {
+		return pFactory
                     .newAttribute(namespace, local, prefix,
                                   vconv.convertToJava(type, child), type);
+	    }
         } else {
             return pFactory.newAttribute(namespace, local, prefix, pFactory
                     .newInternationalizedString(child, lang), type);

@@ -290,6 +290,19 @@ public class InternationalizationTest extends TestCase {
     }
 
      
+    public void testInternationalEscape1() {
+        Entity e = pFactory.newEntity(q("entity-escape1"));
+        pFactory.addLabel(e,"a label with escaped \" quotes \" ");
+        makeDocAndTest(e, "target/international_Escape1");
+    }
+
+    public void PROBLEMtestInternationalEscape2() {
+        Entity e = pFactory.newEntity(q("entity-escape2"));
+	e.getOther().add(pFactory.newOther(EX_NS, "title1", EX_PREFIX,
+                                           "a string with escaped \" quotes \" ",
+                                           name.PROV_LANG_STRING));
+        makeDocAndTest(e, "target/international_Escape2");
+    }
 
     
     public void testInternationalFR() {

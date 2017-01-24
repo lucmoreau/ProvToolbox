@@ -474,7 +474,7 @@ public class ProvUtilities {
     public static String valueToNotationString(Object val, org.openprovenance.prov.model.QualifiedName xsdType) {
         if (val instanceof LangString) {
             LangString istring = (LangString) val;
-            return "\"" + istring.getValue() + 
+            return "\"" + escape(istring.getValue()) + 
                     ((istring.getLang()==null) ? "\"" : "\"@" + istring.getLang())
                     + (((xsdType==null)||(xsdType.getUri().equals(internationalizedStringUri)))? "" : " %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType));
         } else if (val instanceof QualifiedName) {

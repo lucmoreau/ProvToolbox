@@ -183,7 +183,7 @@ public class QualifiedNameUtils {
 	                       + "((((" + PN_CHARS + ")|(\\.)|(" + PN_CHARS_OTHERS + ")))*"
 	                        + "(((" + PN_CHARS + ")|(" + PN_CHARS_OTHERS + "))))?";
     
-    final Pattern pat=Pattern.compile(QualifiedNameUtils.PN_LOCAL);
+    static final Pattern pat=Pattern.compile(QualifiedNameUtils.PN_LOCAL);
     
     public boolean patternExactMatch (String input) {
 	if ("".equals(input)) return true;

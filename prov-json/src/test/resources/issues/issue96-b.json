@@ -26,7 +26,7 @@
             "id1": {
                "prov:entity": "doi:10.1109/MCSE.2008.78",
                "prov:type": {
-                  "type": "xsd:QName",
+                  "type": "prov:QUALIFIED_NAME",
                   "$": "pic:Author"
                },
                "prov:agent": "people:CorchoOscar"
@@ -34,7 +34,7 @@
             "id2": {
                "prov:entity": "doi:10.1109/MCSE.2008.78",
                "prov:type": {
-                  "type": "xsd:QName",
+                  "type": "prov:QUALIFIED_NAME",
                   "$": "pic:Author"
                },
                "prov:agent": "people:GomezPerezJoseManuel"
@@ -43,14 +43,14 @@
          "agent": {
             "people:CorchoOscar": {
                "prov:type": {
-                  "type": "xsd:QName",
+                  "type": "prov:QUALIFIED_NAME",
                   "$": "prov:Person"
                },
                "prov:label": "Oscar Corcho"
             },
             "people:GomezPerezJoseManuel": {
                "prov:type": {
-                  "type": "xsd:QName",
+                  "type": "prov:QUALIFIED_NAME",
                   "$": "prov:Person"
                },
                "prov:label": "Jose Manuel Gomez-Perez"
@@ -59,7 +59,7 @@
          "entity": {
             "doi:10.1109/MCSE.2008.78": {
                "prov:type": {
-                  "type": "xsd:QName",
+                  "type": "prov:QUALIFIED_NAME",
                   "$": "pic:Article"
                },
                "prov:label": "Problem-Solving Methods for Understanding Process Executions"

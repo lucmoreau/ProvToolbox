@@ -937,7 +937,7 @@ public class InteropFramework implements InteropMediaType {
                 } else {
                     files = readIndexFile(new File(merge));
                 }
-                System.err.println("files to merge " + files);
+                //System.err.println("files to merge " + files);
                 for (ToRead something : files) {
                     iDoc.merge(readDocument(something));
                 }

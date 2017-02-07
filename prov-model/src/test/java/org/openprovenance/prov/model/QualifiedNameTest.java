@@ -64,6 +64,7 @@ public class QualifiedNameTest extends TestCase {
 
 	assertTrue(doEscape("='(),-:;[].a","\\=\\'\\(\\)\\,-\\:\\;\\[\\].a"));
 	assertTrue(doEscape("?a=b","?a\\=b"));
+	assertTrue(doEscape("?user=ima3","?user\\=ima3"));
 	assertTrue(doEscape("55348dff-4fcc-4ac2-ab56-641798c64400","55348dff-4fcc-4ac2-ab56-641798c64400"));
 	assertTrue(doEscape("news/world-asia-17507976","news/world-asia-17507976")); 
 	assertTrue(doEscape("À-ÖØ-öø-˿Ͱͽ","À-ÖØ-öø-˿Ͱͽ"));

@@ -57,6 +57,7 @@ public class RoundTripFromJsonTest extends TestCase {
     public void testBundles() throws Throwable {
 	testIssue("issue96");
 	testIssue("issue96-b");
+	testIssue("issue");
     }
 
 }

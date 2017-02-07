@@ -7,6 +7,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.openprovenance.prov.model.Entry;
@@ -29,6 +31,7 @@ import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.QualifiedNameUtils;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.Used;
@@ -165,6 +168,19 @@ public class JSONConstructor implements ModelConstructor {
 	return tuple;
     }
 
+    static final QualifiedNameUtils qnU=new QualifiedNameUtils();
+
+    public String qualifiedNameToString(Namespace namespace, QualifiedName id) {
+	QName tmp;
+	String prefix=id.getPrefix();
+	if (prefix==null) {
+	    tmp=new QName(id.getNamespaceURI(),qnU.unescapeProvLocalName(id.getLocalPart()));
+	} else {
+	    tmp=new QName(id.getNamespaceURI(),qnU.unescapeProvLocalName(id.getLocalPart()),prefix);
+	}
+	return namespace.qualifiedNameToString(tmp);
+    }
+
     private Object typedLiteral(String value, String datatype, String lang) {
 	// Converting default types to JSON primitives
 	if (datatype == "xsd:string" && lang == null)
@@ -194,7 +210,7 @@ public class JSONConstructor implements ModelConstructor {
 	}
 
 	if (convertedValue instanceof QualifiedName)
-	    return currentNamespace.qualifiedNameToString((QualifiedName) convertedValue);
+	    return qualifiedNameToString(currentNamespace,(QualifiedName) convertedValue);
 	if (convertedValue instanceof LangString) {
 	    LangString iStr = (LangString) convertedValue;
 	    return iStr.getValue();
@@ -207,10 +223,10 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     private Object convertTypedValue(Object value, QualifiedName type) {
-        String datatype = currentNamespace.qualifiedNameToString(type);
+        String datatype = qualifiedNameToString(currentNamespace,type);
         Object result;
         if (value instanceof QualifiedName) {
-            result = typedLiteral(currentNamespace.qualifiedNameToString((QualifiedName) value), datatype, null);
+            result = typedLiteral(qualifiedNameToString(currentNamespace,(QualifiedName) value), datatype, null);
         }
         else if (value instanceof LangString) {
             LangString iStr = (LangString) value;
@@ -231,7 +247,7 @@ public class JSONConstructor implements ModelConstructor {
     }
 
     private Object[] convertAttribute(Attribute attr) {
-        String attrName = currentNamespace.qualifiedNameToString(attr.getElementName());
+        String attrName = qualifiedNameToString(currentNamespace,attr.getElementName());
         Object value = attr.getValue();
         QualifiedName type = attr.getType();
 
@@ -253,7 +269,7 @@ public class JSONConstructor implements ModelConstructor {
     public Entity newEntity(QualifiedName id, Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	JsonProvRecord record = new JsonProvRecord("entity",
-	                                           currentNamespace.qualifiedNameToString(id),
+	                                           qualifiedNameToString(currentNamespace,id),
 						   attrs);
 	this.currentRecords.add(record);
 	return null;
@@ -271,7 +287,7 @@ public class JSONConstructor implements ModelConstructor {
 	    attrs.add(tuple("prov:endTime", endTime.toXMLFormat()));
 	}
 	JsonProvRecord record = new JsonProvRecord("activity",
-						   currentNamespace.qualifiedNameToString(id),
+						   qualifiedNameToString(currentNamespace,id),
 						   attrs);
 	this.currentRecords.add(record);
 	return null;
@@ -281,7 +297,7 @@ public class JSONConstructor implements ModelConstructor {
     public Agent newAgent(QualifiedName id, Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	JsonProvRecord record = new JsonProvRecord("agent",
-						   currentNamespace.qualifiedNameToString(id),
+						   qualifiedNameToString(currentNamespace,id),
 						   attrs);
 	this.currentRecords.add(record);
 	return null;
@@ -293,12 +309,12 @@ public class JSONConstructor implements ModelConstructor {
 			Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (activity != null)
-	    attrs.add(tuple("prov:activity", currentNamespace.qualifiedNameToString(activity)));
+	    attrs.add(tuple("prov:activity", qualifiedNameToString(currentNamespace,activity)));
 	if (entity != null)
-	    attrs.add(tuple("prov:entity", currentNamespace.qualifiedNameToString(entity)));
+	    attrs.add(tuple("prov:entity", qualifiedNameToString(currentNamespace,entity)));
 	if (time != null)
 	    attrs.add(tuple("prov:time", time.toXMLFormat()));
-	String recordID = (id != null) ? currentNamespace.qualifiedNameToString(id)
+	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
 		: getBlankID("u");
 	JsonProvRecord record = new JsonProvRecord("used", recordID, attrs);
 	this.currentRecords.add(record);
@@ -312,12 +328,12 @@ public class JSONConstructor implements ModelConstructor {
 					    Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (entity != null)
-	    attrs.add(tuple("prov:entity", currentNamespace.qualifiedNameToString(entity)));
+	    attrs.add(tuple("prov:entity", qualifiedNameToString(currentNamespace,entity)));
 	if (activity != null)
-	    attrs.add(tuple("prov:activity", currentNamespace.qualifiedNameToString(activity)));
+	    attrs.add(tuple("prov:activity", qualifiedNameToString(currentNamespace,activity)));
 	if (time != null)
 	    attrs.add(tuple("prov:time", time.toXMLFormat()));
-	String recordID = (id != null) ? currentNamespace.qualifiedNameToString(id)
+	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
 		: getBlankID("wGB");
 	JsonProvRecord record = new JsonProvRecord("wasGeneratedBy", recordID,
 						   attrs);
@@ -333,12 +349,12 @@ public class JSONConstructor implements ModelConstructor {
 						Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (entity != null)
-	    attrs.add(tuple("prov:entity", currentNamespace.qualifiedNameToString(entity)));
+	    attrs.add(tuple("prov:entity", qualifiedNameToString(currentNamespace,entity)));
 	if (activity != null)
-	    attrs.add(tuple("prov:activity", currentNamespace.qualifiedNameToString(activity)));
+	    attrs.add(tuple("prov:activity", qualifiedNameToString(currentNamespace,activity)));
 	if (time != null)
 	    attrs.add(tuple("prov:time", time.toXMLFormat()));
-	String recordID = (id != null) ? currentNamespace.qualifiedNameToString(id)
+	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
 		: getBlankID("wIB");
 	JsonProvRecord record = new JsonProvRecord("wasInvalidatedBy",
 						   recordID, attrs);
@@ -353,14 +369,14 @@ public class JSONConstructor implements ModelConstructor {
 					Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (activity != null)
-	    attrs.add(tuple("prov:activity", currentNamespace.qualifiedNameToString(activity)));
+	    attrs.add(tuple("prov:activity", qualifiedNameToString(currentNamespace,activity)));
 	if (trigger != null)
-	    attrs.add(tuple("prov:trigger", currentNamespace.qualifiedNameToString(trigger)));
+	    attrs.add(tuple("prov:trigger", qualifiedNameToString(currentNamespace,trigger)));
 	if (starter != null)
-	    attrs.add(tuple("prov:starter", currentNamespace.qualifiedNameToString(starter)));
+	    attrs.add(tuple("prov:starter", qualifiedNameToString(currentNamespace,starter)));
 	if (time != null)
 	    attrs.add(tuple("prov:time", time.toXMLFormat()));
-	String recordID = (id != null) ? currentNamespace.qualifiedNameToString(id)
+	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
 		: getBlankID("wSB");
 	JsonProvRecord record = new JsonProvRecord("wasStartedBy", recordID,
 						   attrs);
@@ -374,14 +390,14 @@ public class JSONConstructor implements ModelConstructor {
 				    Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (activity != null)
-	    attrs.add(tuple("prov:activity", currentNamespace.qualifiedNameToString(activity)));
+	    attrs.add(tuple("prov:activity", qualifiedNameToString(currentNamespace,activity)));
 	if (trigger != null)
-	    attrs.add(tuple("prov:trigger", currentNamespace.qualifiedNameToString(trigger)));
+	    attrs.add(tuple("prov:trigger", qualifiedNameToString(currentNamespace,trigger)));
 	if (ender != null)
-	    attrs.add(tuple("prov:ender", currentNamespace.qualifiedNameToString(ender)));
+	    attrs.add(tuple("prov:ender", qualifiedNameToString(currentNamespace,ender)));
 	if (time != null)
 	    attrs.add(tuple("prov:time", time.toXMLFormat()));
-	String recordID = (id != null) ? currentNamespace.qualifiedNameToString(id)
+	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
 		: getBlankID("wEB");
 	JsonProvRecord record = new JsonProvRecord("wasEndedBy", recordID,
 						   attrs);
@@ -396,18 +412,18 @@ public class JSONConstructor implements ModelConstructor {
 					    Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (e2 != null)
-	    attrs.add(tuple("prov:generatedEntity", currentNamespace.qualifiedNameToString(e2)));
+	    attrs.add(tuple("prov:generatedEntity", qualifiedNameToString(currentNamespace,e2)));
 	if (e1 != null)
-	    attrs.add(tuple("prov:usedEntity", currentNamespace.qualifiedNameToString(e1)));
+	    attrs.add(tuple("prov:usedEntity", qualifiedNameToString(currentNamespace,e1)));
 	if (activity != null)
-	    attrs.add(tuple("prov:activity", currentNamespace.qualifiedNameToString(activity)));
+	    attrs.add(tuple("prov:activity", qualifiedNameToString(currentNamespace,activity)));
 	if (generation != null)
 	    attrs.add(tuple("prov:generation",
-			    currentNamespace.qualifiedNameToString(generation)));
+			    qualifiedNameToString(currentNamespace,generation)));
 	if (usage != null)
-	    attrs.add(tuple("prov:usage", currentNamespace.qualifiedNameToString(usage)));
+	    attrs.add(tuple("prov:usage", qualifiedNameToString(currentNamespace,usage)));
 
-	String recordID = (id != null) ? currentNamespace.qualifiedNameToString(id)
+	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
 		: getBlankID("wDF");
 	JsonProvRecord record = new JsonProvRecord("wasDerivedFrom", recordID,
 						   attrs);
@@ -423,12 +439,12 @@ public class JSONConstructor implements ModelConstructor {
 						  Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (a != null)
-	    attrs.add(tuple("prov:activity", currentNamespace.qualifiedNameToString(a)));
+	    attrs.add(tuple("prov:activity", qualifiedNameToString(currentNamespace,a)));
 	if (ag != null)
-	    attrs.add(tuple("prov:agent", currentNamespace.qualifiedNameToString(ag)));
+	    attrs.add(tuple("prov:agent", qualifiedNameToString(currentNamespace,ag)));
 	if (plan != null)
-	    attrs.add(tuple("prov:plan", currentNamespace.qualifiedNameToString(plan)));
-	String recordID = (id != null) ? currentNamespace.qualifiedNameToString(id)
+	    attrs.add(tuple("prov:plan", qualifiedNameToString(currentNamespace,plan)));
+	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
 		: getBlankID("wAW");
 	JsonProvRecord record = new JsonProvRecord("wasAssociatedWith",
 						   recordID, attrs);
@@ -441,10 +457,10 @@ public class JSONConstructor implements ModelConstructor {
 					      Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (e != null)
-	    attrs.add(tuple("prov:entity", currentNamespace.qualifiedNameToString(e)));
+	    attrs.add(tuple("prov:entity", qualifiedNameToString(currentNamespace,e)));
 	if (ag != null)
-	    attrs.add(tuple("prov:agent", currentNamespace.qualifiedNameToString(ag)));
-	String recordID = (id != null) ? currentNamespace.qualifiedNameToString(id)
+	    attrs.add(tuple("prov:agent", qualifiedNameToString(currentNamespace,ag)));
+	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
 		: getBlankID("wAT");
 	JsonProvRecord record = new JsonProvRecord("wasAttributedTo", recordID,
 						   attrs);
@@ -458,12 +474,12 @@ public class JSONConstructor implements ModelConstructor {
 					      Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (ag2 != null)
-	    attrs.add(tuple("prov:delegate", currentNamespace.qualifiedNameToString(ag2)));
+	    attrs.add(tuple("prov:delegate", qualifiedNameToString(currentNamespace,ag2)));
 	if (ag1 != null)
-	    attrs.add(tuple("prov:responsible", currentNamespace.qualifiedNameToString(ag1)));
+	    attrs.add(tuple("prov:responsible", qualifiedNameToString(currentNamespace,ag1)));
 	if (a != null)
-	    attrs.add(tuple("prov:activity", currentNamespace.qualifiedNameToString(a)));
-	String recordID = (id != null) ? currentNamespace.qualifiedNameToString(id)
+	    attrs.add(tuple("prov:activity", qualifiedNameToString(currentNamespace,a)));
+	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
 		: getBlankID("aOBO");
 	JsonProvRecord record = new JsonProvRecord("actedOnBehalfOf", recordID,
 						   attrs);
@@ -476,10 +492,10 @@ public class JSONConstructor implements ModelConstructor {
 					  Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (a2 != null)
-	    attrs.add(tuple("prov:informed", currentNamespace.qualifiedNameToString(a2)));
+	    attrs.add(tuple("prov:informed", qualifiedNameToString(currentNamespace,a2)));
 	if (a1 != null)
-	    attrs.add(tuple("prov:informant", currentNamespace.qualifiedNameToString(a1)));
-	String recordID = (id != null) ? currentNamespace.qualifiedNameToString(id)
+	    attrs.add(tuple("prov:informant", qualifiedNameToString(currentNamespace,a1)));
+	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
 		: getBlankID("Infm");
 	JsonProvRecord record = new JsonProvRecord("wasInformedBy", recordID,
 						   attrs);
@@ -492,10 +508,10 @@ public class JSONConstructor implements ModelConstructor {
 					      Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (a2 != null)
-	    attrs.add(tuple("prov:influencee", currentNamespace.qualifiedNameToString(a2)));
+	    attrs.add(tuple("prov:influencee", qualifiedNameToString(currentNamespace,a2)));
 	if (a1 != null)
-	    attrs.add(tuple("prov:influencer", currentNamespace.qualifiedNameToString(a1)));
-	String recordID = (id != null) ? currentNamespace.qualifiedNameToString(id)
+	    attrs.add(tuple("prov:influencer", qualifiedNameToString(currentNamespace,a1)));
+	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
 		: getBlankID("Infl");
 	JsonProvRecord record = new JsonProvRecord("wasInfluencedBy", recordID,
 						   attrs);
@@ -507,9 +523,9 @@ public class JSONConstructor implements ModelConstructor {
     public AlternateOf newAlternateOf(QualifiedName e2, QualifiedName e1) {
 	List<Object[]> attrs = new ArrayList<Object[]>();
 	if (e2 != null)
-	    attrs.add(tuple("prov:alternate2", currentNamespace.qualifiedNameToString(e2)));
+	    attrs.add(tuple("prov:alternate2", qualifiedNameToString(currentNamespace,e2)));
 	if (e1 != null)
-	    attrs.add(tuple("prov:alternate1", currentNamespace.qualifiedNameToString(e1)));
+	    attrs.add(tuple("prov:alternate1", qualifiedNameToString(currentNamespace,e1)));
 	String recordID = getBlankID("aO");
 	JsonProvRecord record = new JsonProvRecord("alternateOf", recordID,
 						   attrs);
@@ -521,9 +537,9 @@ public class JSONConstructor implements ModelConstructor {
     public SpecializationOf newSpecializationOf(QualifiedName e2, QualifiedName e1) {
 	List<Object[]> attrs = new ArrayList<Object[]>();
 	if (e2 != null)
-	    attrs.add(tuple("prov:specificEntity", currentNamespace.qualifiedNameToString(e2)));
+	    attrs.add(tuple("prov:specificEntity", qualifiedNameToString(currentNamespace,e2)));
 	if (e1 != null)
-	    attrs.add(tuple("prov:generalEntity", currentNamespace.qualifiedNameToString(e1)));
+	    attrs.add(tuple("prov:generalEntity", qualifiedNameToString(currentNamespace,e1)));
 	String recordID = getBlankID("sO");
 	JsonProvRecord record = new JsonProvRecord("specializationOf",
 						   recordID, attrs);
@@ -535,11 +551,11 @@ public class JSONConstructor implements ModelConstructor {
     public MentionOf newMentionOf(QualifiedName e2, QualifiedName e1, QualifiedName b) {
 	List<Object[]> attrs = new ArrayList<Object[]>();
 	if (e2 != null)
-	    attrs.add(tuple("prov:specificEntity", currentNamespace.qualifiedNameToString(e2)));
+	    attrs.add(tuple("prov:specificEntity", qualifiedNameToString(currentNamespace,e2)));
 	if (e1 != null)
-	    attrs.add(tuple("prov:generalEntity", currentNamespace.qualifiedNameToString(e1)));
+	    attrs.add(tuple("prov:generalEntity", qualifiedNameToString(currentNamespace,e1)));
 	if (b != null)
-	    attrs.add(tuple("prov:bundle", currentNamespace.qualifiedNameToString(b)));
+	    attrs.add(tuple("prov:bundle", qualifiedNameToString(currentNamespace,b)));
 	String recordID = getBlankID("mO");
 	JsonProvRecord record = new JsonProvRecord("mentionOf", recordID, attrs);
 	this.currentRecords.add(record);
@@ -550,11 +566,11 @@ public class JSONConstructor implements ModelConstructor {
     public HadMember newHadMember(QualifiedName c, Collection<QualifiedName> e) {
 	List<Object[]> attrs = new ArrayList<Object[]>();
 	if (c != null)
-	    attrs.add(tuple("prov:collection", currentNamespace.qualifiedNameToString(c)));
+	    attrs.add(tuple("prov:collection", qualifiedNameToString(currentNamespace,c)));
 	if (e != null && !e.isEmpty()) {
 	    List<String> entityList = new ArrayList<String>();
 	    for (QualifiedName entity : e)
-		entityList.add(currentNamespace.qualifiedNameToString(entity));
+		entityList.add(qualifiedNameToString(currentNamespace,entity));
 	    attrs.add(tuple("prov:entity", entityList));
 	}
 	String recordID = getBlankID("hM");
@@ -576,7 +592,7 @@ public class JSONConstructor implements ModelConstructor {
     public Bundle newNamedBundle(QualifiedName id, Namespace namespaces,
 				      Collection<Statement> statements) {
 	Object bundle = getJSONStructure(currentRecords, currentNamespace);
-	documentBundles.put(currentNamespace.qualifiedNameToString(id), bundle);
+	documentBundles.put(qualifiedNameToString(currentNamespace,id), bundle);
 	// Reset to document-level records and namespaces
 	currentRecords = documentRecords;
 	currentNamespace = documentNamespace;
@@ -621,13 +637,13 @@ public class JSONConstructor implements ModelConstructor {
 	if (isAllKeyOfSameDatatype) {
 	    // encode as a dictionary
 	    Map<Object, String> dictionary = new HashMap<Object, String>();
-	    String keyDatatype = currentNamespace.qualifiedNameToString(keyEntitySet.get(0).getKey().getType());
+	    String keyDatatype = qualifiedNameToString(currentNamespace,keyEntitySet.get(0).getKey().getType());
 	    // TODO This does not conform with PROV-JSON !!! 
 	    dictionary.put("$key-datatype", keyDatatype);
 	    for (Entry pair : keyEntitySet) {
 		// String key = convertValueToString(pair.key);
 		String key = convertValueToString(pair.getKey().getValue(), pair.getKey().getConvertedValue());
-		String entity = currentNamespace.qualifiedNameToString(pair.getEntity());
+		String entity = qualifiedNameToString(currentNamespace,pair.getEntity());
 		dictionary.put(key, entity);
 	    }
 	    return dictionary;
@@ -637,7 +653,7 @@ public class JSONConstructor implements ModelConstructor {
 	List<Map<String, Object>> values = new ArrayList<Map<String, Object>>(
 									      keyEntitySet.size());
 	for (Entry pair : keyEntitySet) {
-	    Object entity = currentNamespace.qualifiedNameToString(pair.getEntity());
+	    Object entity = qualifiedNameToString(currentNamespace,pair.getEntity());
 	    Map<String, Object> item = new Hashtable<String, Object>();
 	    item.put("$", entity);
         Key key = pair.getKey();
@@ -655,14 +671,14 @@ public class JSONConstructor implements ModelConstructor {
 							    Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (after != null)
-	    attrs.add(tuple("prov:after", currentNamespace.qualifiedNameToString(after)));
+	    attrs.add(tuple("prov:after", qualifiedNameToString(currentNamespace,after)));
 	if (before != null)
-	    attrs.add(tuple("prov:before", currentNamespace.qualifiedNameToString(before)));
+	    attrs.add(tuple("prov:before", qualifiedNameToString(currentNamespace,before)));
 	if (keyEntitySet != null && !keyEntitySet.isEmpty()) {
 	    attrs.add(tuple("prov:key-entity-set",
 			    encodeKeyEntitySet(keyEntitySet)));
 	}
-	String recordID = (id != null) ? currentNamespace.qualifiedNameToString(id)
+	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
 		: getBlankID("dBIF");
 	JsonProvRecord record = new JsonProvRecord("derivedByInsertionFrom",
 						   recordID, attrs);
@@ -678,9 +694,9 @@ public class JSONConstructor implements ModelConstructor {
 							Collection<Attribute> attributes) {
 	List<Object[]> attrs = convertAttributes(attributes);
 	if (after != null)
-	    attrs.add(tuple("prov:after", currentNamespace.qualifiedNameToString(after)));
+	    attrs.add(tuple("prov:after", qualifiedNameToString(currentNamespace,after)));
 	if (before != null)
-	    attrs.add(tuple("prov:before", currentNamespace.qualifiedNameToString(before)));
+	    attrs.add(tuple("prov:before", qualifiedNameToString(currentNamespace,before)));
 	if (keys != null && !keys.isEmpty()) {
 	    List<Object> values = new ArrayList<Object>(keys.size());
 	    for (Key key : keys) {
@@ -688,7 +704,7 @@ public class JSONConstructor implements ModelConstructor {
 	    }
 	    attrs.add(tuple("prov:key-set", values));
 	}
-	String recordID = (id != null) ? currentNamespace.qualifiedNameToString(id)
+	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
 		: getBlankID("dBRF");
 	JsonProvRecord record = new JsonProvRecord("derivedByRemovalFrom",
 						   recordID, attrs);
@@ -701,7 +717,7 @@ public class JSONConstructor implements ModelConstructor {
 							List<Entry> keyEntitySet) {
 	List<Object[]> attrs = new ArrayList<Object[]>();
 	if (dict != null)
-	    attrs.add(tuple("prov:dictionary", currentNamespace.qualifiedNameToString(dict)));
+	    attrs.add(tuple("prov:dictionary", qualifiedNameToString(currentNamespace,dict)));
 	if (keyEntitySet != null && !keyEntitySet.isEmpty()) {
 	    attrs.add(tuple("prov:key-entity-set",
 			    encodeKeyEntitySet(keyEntitySet)));

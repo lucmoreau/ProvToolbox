@@ -7,6 +7,7 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
 import org.openprovenance.prov.model.exception.QualifiedNameException;
 
 /** A class to manipulate Namespaces when creating, serializing and converting prov documents. 
@@ -214,8 +215,13 @@ public class Namespace  {
    	return ns2;
     }
     
-   
     public QualifiedName stringToQualifiedName(String id, ProvFactory pFactory) {
+	return stringToQualifiedName(id,pFactory,true);
+    }
+
+    static QualifiedNameUtils qnU = new QualifiedNameUtils();
+   
+    public QualifiedName stringToQualifiedName(String id, ProvFactory pFactory, boolean isEscaped) {
 	if (id == null)
 	    return null;
 	int index = id.indexOf(':');
@@ -240,12 +246,19 @@ public class Namespace  {
 	    String tmp=prefixes.get(prefix);
 	    if (tmp==null) {
 		if (parent!=null) {
-		    return parent.stringToQualifiedName(id, pFactory);
+		    return parent.stringToQualifiedName(id, pFactory,isEscaped);
 		} else {
 		    throw new QualifiedNameException("Namespace.stringToQualifiedName(): Null namespace for " + id + " namespace " + this);
 		}
 	    }
-	    return pFactory.newQualifiedName(tmp, local, prefix);
+	    if (isEscaped) {
+		return pFactory.newQualifiedName(tmp, local, prefix);
+	    } else {
+		return pFactory.newQualifiedName(tmp, qnU.escapeProvLocalName(local)
+						 //local.replace("=","\\=")
+						 , prefix);
+	    }		
+		
 	}
     }
     

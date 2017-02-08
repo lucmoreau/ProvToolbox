@@ -1,0 +1,14 @@
+{
+   "prefix": {
+      "rs": "http://doc.example.com/rideshare/#"
+   },
+   "wasGeneratedBy": {
+      "_:id8": {
+         "prov:entity": "rs:update_rideplans_1->2",
+         "prov:activity": "rs:post_agreement<d=pa,c=[pa]>"
+      }
+   }
+}
+
+
+

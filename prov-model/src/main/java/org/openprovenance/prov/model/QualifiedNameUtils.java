@@ -27,8 +27,8 @@ public class QualifiedNameUtils {
 	                                                	 {"]", "\\]"},
 	                                                	 //{".", "\\."}, Should not be escaped since - is accepted by PN_CHARS, except for the last one
 	                                                	// {"%", "\\%"}, // This is not in PROV-N but is required for <percent> production
-	                                                	// {"<", "%3C"},
-	                                                	// {">", "%3E"},
+	                                                	 {"<", "%3C"},
+	                                                	 {">", "%3E"}
 	                                                 }),
 	                                                 //new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE()),
 	                                                 UnicodeEscaper.outsideOf(32, 0xFFFF) // 0x7f
@@ -50,8 +50,10 @@ public class QualifiedNameUtils {
 	                                                	 {"\\]", "]"},
 	                                                	 {"\\.", "."},
 	                                                	// {"\\%", "%"},  // This is not in PROV-N but is required for <percent> production
-	                                                	// {"%3C", "<"},
-	                                                	// {"%3E", ">"},
+								 {"%3C", "<"},
+								 {"%3E", ">"},
+								 {"%3c", "<"},
+								 {"%3e", ">"}
 	                                                 }),
 	                                                 new UnicodeUnescaper()
 		    );
@@ -106,6 +108,8 @@ public class QualifiedNameUtils {
 	                                                	 {"#", INNER_ESCAPE + "23"},
 	                                                	 {"$", INNER_ESCAPE + "24"},
 	                                                	 {"!", INNER_ESCAPE + "21"},
+								 {"<", INNER_ESCAPE + "3C"},
+								 {">", INNER_ESCAPE + "3E"},
 	                                                 }),
 	                                                 //StringEscapeUtils.ESCAPE_XML10
 	                                                 JavaUnicodeEscaper.outsideOf(32, 0xFFFF) // 0x7f
@@ -137,6 +141,8 @@ public class QualifiedNameUtils {
 	                                                	 {INNER_ESCAPE + "23", "#"},
 	                                                	 {INNER_ESCAPE + "24", "$"},
 	                                                	 {INNER_ESCAPE + "21", "!"},
+	                                                	 {INNER_ESCAPE + "3C", "<"},
+	                                                	 {INNER_ESCAPE + "3E", ">"},
 	                                                 }),
 	                                                 new UnicodeUnescaper()
 );

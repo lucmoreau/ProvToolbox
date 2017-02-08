@@ -27,8 +27,9 @@ public class QualifiedNameUtils {
 	                                                	 {"]", "\\]"},
 	                                                	 //{".", "\\."}, Should not be escaped since - is accepted by PN_CHARS, except for the last one
 	                                                	// {"%", "\\%"}, // This is not in PROV-N but is required for <percent> production
-	                                                	 {"<", "%3C"},
-	                                                	 {">", "%3E"}
+	                                                	 {"<", "%3C"},								 
+	                                                	 {">", "%3E"},
+								 {"\\", "%5C"},
 	                                                 }),
 	                                                 //new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE()),
 	                                                 UnicodeEscaper.outsideOf(32, 0xFFFF) // 0x7f
@@ -53,7 +54,9 @@ public class QualifiedNameUtils {
 								 {"%3C", "<"},
 								 {"%3E", ">"},
 								 {"%3c", "<"},
-								 {"%3e", ">"}
+								 {"%3e", ">"},
+								 {"%5C", "\\"},
+								 {"%5c", "\\"},
 	                                                 }),
 	                                                 new UnicodeUnescaper()
 		    );

@@ -464,7 +464,7 @@ public class ProvUtilities {
 
 
     public static String escape (String s) {
-        return s.replace("\"", "\\\"");
+        return s.replace("\\", "\\\\").replace("\"", "\\\"");  //TODO: use char translation as in QualifiedNameUtil
     }
 
     public final static String internationalizedStringUri=NamespacePrefixMapper.PROV_NS+"InternationalizedString";

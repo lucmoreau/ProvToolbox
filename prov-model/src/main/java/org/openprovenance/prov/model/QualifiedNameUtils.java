@@ -25,7 +25,7 @@ public class QualifiedNameUtils {
 	                                                	 {";", "\\;"},
 	                                                	 {"[", "\\["},
 	                                                	 {"]", "\\]"},
-	                                                	 //{".", "\\."}, Should not be escaped since - is accepted by PN_CHARS, except for the last one
+	                                                	 //{".", "\\."}, Should not be escaped since . is accepted by PN_CHARS, except for the last one
 	                                                	// {"%", "\\%"}, // This is not in PROV-N but is required for <percent> production
 	                                                	 {"<", "%3C"},								 
 	                                                	 {">", "%3E"},
@@ -74,6 +74,8 @@ public class QualifiedNameUtils {
 	int len = tmp.length();
 	if (len>0 && tmp.charAt(len-1)=='.') {
 	    return (tmp.substring(0,len-1)) + "\\.";
+	} else 	if (len>0 && tmp.charAt(0)=='.') {
+	    return ("\\." + tmp.substring(1)) ;
 	} else {
 	    return tmp;
 	}
@@ -113,6 +115,7 @@ public class QualifiedNameUtils {
 	                                                	 {"!", INNER_ESCAPE + "21"},
 								 {"<", INNER_ESCAPE + "3C"},
 								 {">", INNER_ESCAPE + "3E"},
+								 {"%", INNER_ESCAPE + "25"},
 	                                                 }),
 	                                                 //StringEscapeUtils.ESCAPE_XML10
 	                                                 JavaUnicodeEscaper.outsideOf(32, 0xFFFF) // 0x7f
@@ -146,6 +149,7 @@ public class QualifiedNameUtils {
 	                                                	 {INNER_ESCAPE + "21", "!"},
 	                                                	 {INNER_ESCAPE + "3C", "<"},
 	                                                	 {INNER_ESCAPE + "3E", ">"},
+	                                                	 {INNER_ESCAPE + "25", "%"},
 	                                                 }),
 	                                                 new UnicodeUnescaper()
 );

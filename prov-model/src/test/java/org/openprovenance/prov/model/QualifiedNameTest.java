@@ -112,6 +112,7 @@ public class QualifiedNameTest extends TestCase {
 	assertTrue(doRT1("a01b[c"));
 	assertTrue(doRT1("a01b]c"));
 	assertTrue(doRT1("a01b.c"));
+	assertTrue(doRT1(".a01bc"));
 	assertTrue(doRT1("-"));
 
 	assertTrue(doRT1("='(),-:;[]."));

@@ -78,11 +78,11 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     }
     
     public QualifiedName stringToQualifiedName(Namespace namespace,String val, ProvFactory pf, boolean flag) {
-	try {
-	    val=URLDecoder.decode(val,"UTF-8");
-	} catch (java.io.UnsupportedEncodingException e) {
+	//	try {
+	    //	    val=URLDecoder.decode(val,"UTF-8");
+	//	} catch (java.io.UnsupportedEncodingException e) {
 	    // encoding known to be correct
-	}
+	//	}
 	return namespace.stringToQualifiedName(val,pf,flag);
     }
     

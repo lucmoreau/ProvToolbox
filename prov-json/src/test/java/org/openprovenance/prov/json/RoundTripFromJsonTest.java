@@ -61,6 +61,7 @@ public class RoundTripFromJsonTest extends TestCase {
 	testIssue("issue2");
 	testIssue("issue3");
 	testIssue("issue4");
+	testIssue("issue5");
     }
 
 }

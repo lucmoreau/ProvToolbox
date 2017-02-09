@@ -49,7 +49,7 @@ public class QualifiedName
 		return new javax.xml.namespace.QName(namespace,escapedLocal,prefix);
 	    }
 	} else {
-	    throw new QualifiedNameException("PROV-XML QName: local not valid " + local);
+	    throw new QualifiedNameException("PROV-XML QName: local not valid " + escapedLocal);
 
 	}
     }

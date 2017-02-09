@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.net.URLDecoder;
 
 import javax.xml.namespace.QName;
 
@@ -173,10 +174,11 @@ public class JSONConstructor implements ModelConstructor {
     public String qualifiedNameToString(Namespace namespace, QualifiedName id) {
 	QName tmp;
 	String prefix=id.getPrefix();
+	String local=id.getLocalPart();
 	if (prefix==null) {
-	    tmp=new QName(id.getNamespaceURI(),qnU.unescapeProvLocalName(id.getLocalPart()));
+	    tmp=new QName(id.getNamespaceURI(),qnU.unescapeProvLocalName(local));
 	} else {
-	    tmp=new QName(id.getNamespaceURI(),qnU.unescapeProvLocalName(id.getLocalPart()),prefix);
+	    tmp=new QName(id.getNamespaceURI(),qnU.unescapeProvLocalName(local),prefix);
 	}
 	return namespace.qualifiedNameToString(tmp);
     }

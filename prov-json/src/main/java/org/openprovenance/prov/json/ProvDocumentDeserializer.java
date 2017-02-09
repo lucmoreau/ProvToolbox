@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.net.URLDecoder;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -76,7 +77,15 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	this.vconv = new ValueConverter(pf);
     }
     
-
+    public QualifiedName stringToQualifiedName(Namespace namespace,String val, ProvFactory pf, boolean flag) {
+	try {
+	    val=URLDecoder.decode(val,"UTF-8");
+	} catch (java.io.UnsupportedEncodingException e) {
+	    // encoding known to be correct
+	}
+	return namespace.stringToQualifiedName(val,pf,flag);
+    }
+    
     @Override
     public Document deserialize(JsonElement json, Type typeOfT,
 				JsonDeserializationContext context)
@@ -173,7 +182,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		// Ignore all blank node IDs
 		id = null;
 	    } else {
-		id = currentNamespace.stringToQualifiedName(idStr, pf, false);
+		id = stringToQualifiedName(currentNamespace,idStr, pf, false);
 	    }
 	}
 	}
@@ -224,7 +233,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    currentNamespace = ns;
 	    currentNamespace.setParent(documentNamespace);
 	    // Re-resolve the bundle's id with the bundle's namespace
-	    id = currentNamespace.stringToQualifiedName(idStr, pf, false);
+	    id = stringToQualifiedName(currentNamespace,idStr, pf, false);
 	    @SuppressWarnings("rawtypes")
 	    Collection statements = decodeBundle(attributeMap);
 	    Bundle namedBundle = pf.getObjectFactory().createNamedBundle();
@@ -484,7 +493,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		List ll = ((HasOther) statement).getOther();
 		List<Attribute> attributes = (List<Attribute>) ll;
 		for (Map.Entry<String, JsonElement> aPair : attributeMap.entrySet()) {
-		    QualifiedName attributeName = currentNamespace.stringToQualifiedName(aPair.getKey(),pf,false);
+		    QualifiedName attributeName = stringToQualifiedName(currentNamespace,aPair.getKey(),pf,false);
 		    JsonElement element = aPair.getValue();
 		    values = pickMultiValues(element);
 		    for (JsonElement value : values) {
@@ -543,10 +552,10 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 				       name.PROV_LANG_STRING);
 	    } else if (struct.has("type")) {
 		String datatypeAsString = struct.get("type").getAsString();
-		QualifiedName xsdType = currentNamespace.stringToQualifiedName(datatypeAsString, pf, false);
+		QualifiedName xsdType = stringToQualifiedName(currentNamespace,datatypeAsString, pf, false);
 		if (xsdType.equals(name.PROV_QUALIFIED_NAME)) { /* we ignore xsdType.equals(name.FOR_XML_XSD_QNAME)  */
 		    return pf.newAttribute(elementName,
-					   currentNamespace.stringToQualifiedName(value,pf,false), xsdType);
+					   stringToQualifiedName(currentNamespace,value,pf,false), xsdType);
 		} else {
 		    return pf.newAttribute(elementName, value, xsdType);
 		}
@@ -615,8 +624,8 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 
 
     private QualifiedName qualifiedName(String attributeName, JsonObject attributeMap) {
-	return currentNamespace.stringToQualifiedName(popString(attributeMap,
-	                                                        attributeName),
+	return stringToQualifiedName(currentNamespace,popString(attributeMap,
+								attributeName),
 						      pf,
 	                                              false);
     }
@@ -624,7 +633,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     // TODO: this name is legacy, what should it be?
     private QualifiedName anyRef(String attributeName, JsonObject attributeMap) {
 	if (attributeMap.has(attributeName))
-	    return currentNamespace.stringToQualifiedName(popString(attributeMap,
+	    return stringToQualifiedName(currentNamespace,popString(attributeMap,
 								    attributeName),
 							  pf,
 							  false);
@@ -655,7 +664,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	List<JsonElement> elements = popMultiValAttribute(attributeName,
 							  attributeMap);
 	for (JsonElement element : elements) {
-	    results.add(currentNamespace.stringToQualifiedName(element.getAsString(),pf,false));
+	    results.add(stringToQualifiedName(currentNamespace,element.getAsString(),pf,false));
 	}
 	return results;
     }
@@ -681,7 +690,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		Entry pair = pf.newEntry((Key) decodeAttributeValue(item.remove("key"),
 		                                                    name.PROV_KEY),
 		                                                    
-		                         currentNamespace.stringToQualifiedName(this.popString(item, "$"),pf,false));
+		                         stringToQualifiedName(currentNamespace,this.popString(item, "$"),pf,false));
 		results.add(pair);
 	    }
 	} else if (kESElement.isJsonObject()) {
@@ -690,7 +699,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    // TODO This does not conform with PROV-JSON !!! 
 	    String keyDatatype = dictionary.remove("$key-datatype")
 					   .getAsString();
-	    QualifiedName datatype = currentNamespace.stringToQualifiedName(keyDatatype,pf,false);
+	    QualifiedName datatype = stringToQualifiedName(currentNamespace,keyDatatype,pf,false);
 	    for (Map.Entry<String, JsonElement> entry : dictionary.entrySet()) {
 		String entryKey = entry.getKey();
 		JsonElement entryValue = entry.getValue();
@@ -711,14 +720,14 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	Key kk;
 	if (datatype.equals(name.PROV_QUALIFIED_NAME)) {
 	    kk=(Key) pf.newAttribute(name.PROV_KEY,
-	                             currentNamespace.stringToQualifiedName(entryKey,pf,false), datatype);
+	                             stringToQualifiedName(currentNamespace,entryKey,pf,false), datatype);
 	} else {
 	    kk=(Key) pf.newAttribute(name.PROV_KEY, entryKey, datatype);
 	}
 
 	
 	Entry pair = pf.newEntry(kk,
-	                         currentNamespace.stringToQualifiedName(entryValue.getAsString(), pf, false));
+	                         stringToQualifiedName(currentNamespace,entryValue.getAsString(), pf, false));
 	return pair;
     }
 

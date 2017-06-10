@@ -48,7 +48,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 @Table(name = "REVISION")
 public class Revision
     extends WasDerivedFrom
-    implements Equals, HashCode, ToStringBuilder
+    implements Equals, HashCode, ToString
 {
 
 

@@ -87,7 +87,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 @Table(name = "WASINVALIDATEDBY")
 public class WasInvalidatedBy
     extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.WasInvalidatedBy, HasAllAttributes
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.WasInvalidatedBy, HasAllAttributes
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)

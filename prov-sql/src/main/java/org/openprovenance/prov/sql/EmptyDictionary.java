@@ -48,7 +48,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 @Table(name = "EMPTYDICTIONARY")
 public class EmptyDictionary
     extends Dictionary
-    implements Equals, HashCode, ToStringBuilder
+    implements Equals, HashCode, ToString
 {
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {

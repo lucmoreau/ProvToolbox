@@ -54,7 +54,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 @Table(name = "MENTIONOF")
 public class MentionOf
     extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.MentionOf
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.MentionOf
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)

@@ -73,7 +73,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 @Table(name = "WASINFLUENCEDBY")
 public class WasInfluencedBy
     extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.WasInfluencedBy, HasAllAttributes
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.WasInfluencedBy, HasAllAttributes
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)

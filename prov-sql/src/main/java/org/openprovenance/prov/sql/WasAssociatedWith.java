@@ -76,7 +76,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 @Table(name = "WASASSOCIATEDWITH")
 public class WasAssociatedWith
     extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.WasAssociatedWith, HasAllAttributes
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.WasAssociatedWith, HasAllAttributes
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)

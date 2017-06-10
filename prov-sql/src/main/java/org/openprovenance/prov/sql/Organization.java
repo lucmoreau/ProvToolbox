@@ -47,7 +47,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 @Table(name = "ORGANIZATION")
 public class Organization
     extends Agent
-    implements Equals, HashCode, ToStringBuilder
+    implements Equals, HashCode, ToString
 {
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {

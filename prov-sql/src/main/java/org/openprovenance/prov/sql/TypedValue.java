@@ -51,7 +51,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 
 public class TypedValue implements Equals, 
-				   ToStringBuilder, org.openprovenance.prov.model.TypedValue {
+				   ToString, org.openprovenance.prov.model.TypedValue {
     private static final QualifiedName QualifiedName_PROV_TYPE = ProvFactory.getFactory().getName().PROV_TYPE;
     private static final QualifiedName QualifiedName_PROV_LABEL = ProvFactory.getFactory().getName().PROV_LABEL;
     private static final QualifiedName QualifiedName_PROV_VALUE = ProvFactory.getFactory().getName().PROV_VALUE;

@@ -77,7 +77,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 @Table(name = "AGENT")
 public class Agent
     extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.Agent, HasAllAttributes
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Agent, HasAllAttributes
 {
 
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)

@@ -38,7 +38,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IDRef")
 public class IDRef
-    implements Equals, HashCode, ToStringBuilder
+    implements Equals, HashCode, ToString
 {
 
     @XmlAttribute(name = "ref", namespace = "http://www.w3.org/ns/prov#", required = true)

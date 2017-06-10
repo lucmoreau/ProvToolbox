@@ -76,7 +76,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 @Table(name = "ENTITY") //, uniqueConstraints=@javax.persistence.UniqueConstraint(columnNames={"ID"}))
 public class Entity
     extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.Entity, HasAllAttributes
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Entity, HasAllAttributes
 {
 
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)

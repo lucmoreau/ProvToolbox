@@ -87,7 +87,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 @Table(name = "USED")
 public class Used
     extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.Used, HasAllAttributes
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Used, HasAllAttributes
 {
     @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)

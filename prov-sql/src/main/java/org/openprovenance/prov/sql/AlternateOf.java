@@ -52,7 +52,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 @Table(name = "ALTERNATEOF")
 public class AlternateOf
     extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.AlternateOf
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.AlternateOf
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)

@@ -48,7 +48,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 @Table(name = "EMPTYCOLLECTION")
 public class EmptyCollection
     extends Collection
-    implements Equals, HashCode, ToStringBuilder
+    implements Equals, HashCode, ToString
 {
 
 

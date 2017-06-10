@@ -51,7 +51,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
     "map"
 })
 public class Map
-    implements Equals, HashCode, ToStringBuilder
+    implements Equals, HashCode, ToString
 {
 
     @XmlElement(namespace = "http://openprovenance.org/model/opmPrinterConfig")

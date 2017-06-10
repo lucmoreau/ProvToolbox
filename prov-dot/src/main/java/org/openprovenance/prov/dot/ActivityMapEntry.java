@@ -45,7 +45,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ActivityMapEntry", namespace = "http://openprovenance.org/model/opmPrinterConfig")
 public class ActivityMapEntry
-    implements Equals, HashCode, ToStringBuilder
+    implements Equals, HashCode, ToString
 {
 
     @XmlAttribute(name = "value")

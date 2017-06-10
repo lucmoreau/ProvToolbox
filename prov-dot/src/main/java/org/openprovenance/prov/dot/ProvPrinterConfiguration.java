@@ -61,7 +61,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
     "graphName"
 })
 public class ProvPrinterConfiguration
-    implements Equals, HashCode, ToStringBuilder
+    implements Equals, HashCode, ToString
 {
 
     @XmlElement(namespace = "http://openprovenance.org/model/opmPrinterConfig")

@@ -66,7 +66,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 @Table(name = "DOCUMENT")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Document
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.Document
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Document
 {
 
     @XmlElements({

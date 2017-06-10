@@ -52,7 +52,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 @Table(name = "SPECIALIZATIONOF")
 public class SpecializationOf
     extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.SpecializationOf
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.SpecializationOf
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)

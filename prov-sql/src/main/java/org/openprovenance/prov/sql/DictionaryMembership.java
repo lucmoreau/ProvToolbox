@@ -54,7 +54,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 @Table(name = "DICTIONARYMEMBERSHIP")
 //@Inheritance(strategy = InheritanceType.JOINED)
 public class DictionaryMembership extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.DictionaryMembership
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.DictionaryMembership
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)

@@ -84,7 +84,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 @Table(name = "ACTIVITY")
 public class Activity
     extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.Activity, HasAllAttributes
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Activity, HasAllAttributes
 {
 
     @XmlSchemaType(name = "dateTime")

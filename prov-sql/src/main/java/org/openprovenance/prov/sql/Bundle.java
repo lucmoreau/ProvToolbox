@@ -59,7 +59,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 @Table(name = "BUNDLE")
 public class Bundle
     extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.Bundle
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Bundle
 {
 
     @XmlElements({

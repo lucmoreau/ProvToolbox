@@ -44,7 +44,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
     "entity"
 })
 public class Entry
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.Entry
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Entry
 {
 
    

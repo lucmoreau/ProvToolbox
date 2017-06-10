@@ -55,7 +55,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 @Table(name = "HADMEMBER")
 public class HadMember
     extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.HadMember
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.HadMember
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)

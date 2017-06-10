@@ -66,7 +66,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 })
 public class DerivedByInsertionFrom
     extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.DerivedByInsertionFrom
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.DerivedByInsertionFrom
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)

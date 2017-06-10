@@ -42,7 +42,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 @Table(name = "COLLECTION")
 public class Collection
     extends org.openprovenance.prov.sql.Entity
-    implements Equals, HashCode, ToStringBuilder
+    implements Equals, HashCode, ToString
 {
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {

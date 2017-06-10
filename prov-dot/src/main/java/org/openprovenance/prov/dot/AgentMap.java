@@ -54,7 +54,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
     "agent"
 })
 public class AgentMap
-    implements Equals, HashCode, ToStringBuilder
+    implements Equals, HashCode, ToString
 {
 
     @XmlElement(namespace = "http://openprovenance.org/model/opmPrinterConfig")

@@ -48,7 +48,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 @Table(name = "SOFTWAREAGENT")
 public class SoftwareAgent
     extends Agent
-    implements Equals, HashCode, ToStringBuilder
+    implements Equals, HashCode, ToString
 {
 
 

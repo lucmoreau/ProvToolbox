@@ -84,7 +84,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 @Table(name = "WASDERIVEDFROM")
 public class WasDerivedFrom
     extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.WasDerivedFrom, HasAllAttributes
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.WasDerivedFrom, HasAllAttributes
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)

@@ -88,7 +88,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 @Table(name = "WASSTARTEDBY")
 public class WasStartedBy
     extends AStatement
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.WasStartedBy, HasAllAttributes
+    implements Equals, HashCode, ToString, org.openprovenance.prov.model.WasStartedBy, HasAllAttributes
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)

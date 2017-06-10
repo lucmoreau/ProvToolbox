@@ -52,7 +52,8 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 @Table(name = "INTERNATIONALIZEDSTRING")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class InternationalizedString
-    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.LangString
+    implements Equals, HashCode, ToString,
+	       org.openprovenance.prov.model.LangString
 {
 
     @XmlValue

@@ -47,7 +47,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 @Table(name = "PLAN")
 public class Plan
     extends org.openprovenance.prov.sql.Entity
-    implements Equals, HashCode, ToStringBuilder
+    implements Equals, HashCode, ToString
 {
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {

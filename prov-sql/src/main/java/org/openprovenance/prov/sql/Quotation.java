@@ -47,7 +47,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 @Table(name = "QUOTATION")
 public class Quotation
     extends WasDerivedFrom
-    implements Equals, HashCode, ToStringBuilder
+    implements Equals, HashCode, ToString
 {
     public void equals(Object object, EqualsBuilder equalsBuilder) {
         if (!(object instanceof Quotation)) {

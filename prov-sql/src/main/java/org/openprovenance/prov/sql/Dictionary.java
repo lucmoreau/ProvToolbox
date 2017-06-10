@@ -52,7 +52,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 @Table(name = "DICTIONARY_")
 public class Dictionary
     extends Collection
-    implements Equals, HashCode, ToStringBuilder
+    implements Equals, HashCode, ToString
 {
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {

@@ -85,7 +85,7 @@ import org.openprovenance.prov.model.ProvUtilities;
 })
 @Embeddable
 public class AValue
-    implements Equals, HashCode, ToStringBuilder
+    implements Equals, HashCode, ToString
 {
 
     @XmlElement(name = "int")

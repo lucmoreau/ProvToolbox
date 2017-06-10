@@ -30,7 +30,7 @@ release.doc:
 
 
 yum:
-	sudo yum install -y repolist disabled toolbox/target/rpm/provconvert/RPMS/noarch/provconvert-*.noarch.rpm
+	sudo yum install -y toolbox/target/rpm/provconvert/RPMS/noarch/provconvert-*.noarch.rpm
 
 PROVCONVERT=toolbox/target/appassembler/bin/provconvert
 

@@ -1,6 +1,6 @@
 package org.openprovenance.prov.xml.builder;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
+import org.openprovenance.apache.commons.lang.builder.EqualsBuilder;
 
 public interface Equals {
 

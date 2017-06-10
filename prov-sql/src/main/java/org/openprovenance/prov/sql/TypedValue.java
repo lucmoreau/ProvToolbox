@@ -23,6 +23,9 @@ import org.openprovenance.prov.sql.AValue;
 import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.sql.ProvFactory;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
+import org.openprovenance.apache.commons.lang.builder.EqualsBuilder;
+import org.openprovenance.apache.commons.lang.builder.HashCodeBuilder;
+import org.openprovenance.apache.commons.lang.builder.ToStringBuilder;
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ValueConverter;
@@ -30,9 +33,6 @@ import org.openprovenance.prov.model.ValueConverter;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openprovenance.prov.xml.builder.Equals;
 import org.openprovenance.prov.xml.builder.ToString;
 import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
@@ -51,7 +51,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 
 public class TypedValue implements Equals, 
-				   ToString, org.openprovenance.prov.model.TypedValue {
+				   ToStringBuilder, org.openprovenance.prov.model.TypedValue {
     private static final QualifiedName QualifiedName_PROV_TYPE = ProvFactory.getFactory().getName().PROV_TYPE;
     private static final QualifiedName QualifiedName_PROV_LABEL = ProvFactory.getFactory().getName().PROV_LABEL;
     private static final QualifiedName QualifiedName_PROV_VALUE = ProvFactory.getFactory().getName().PROV_VALUE;

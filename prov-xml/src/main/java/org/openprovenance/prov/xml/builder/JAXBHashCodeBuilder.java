@@ -2,7 +2,7 @@ package org.openprovenance.prov.xml.builder;
 
 import javax.xml.bind.JAXBElement;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.openprovenance.apache.commons.lang.builder.HashCodeBuilder;
 
 public class JAXBHashCodeBuilder extends HashCodeBuilder {
 

@@ -5,9 +5,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
+
+import org.openprovenance.apache.commons.lang.builder.EqualsBuilder;
+import org.openprovenance.apache.commons.lang.builder.HashCodeBuilder;
+import org.openprovenance.apache.commons.lang.builder.ToStringBuilder;
 import org.openprovenance.prov.xml.builder.Equals;
 import org.openprovenance.prov.xml.builder.HashCode;
 import org.openprovenance.prov.xml.builder.ToString;
@@ -43,7 +44,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
     "entity"
 })
 public class Entry
-    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Entry
+    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.Entry
 {
 
    

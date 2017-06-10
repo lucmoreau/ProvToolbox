@@ -9,15 +9,15 @@ import javax.xml.bind.annotation.XmlValue;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openprovenance.prov.xml.builder.Equals;
 import org.openprovenance.prov.xml.builder.HashCode;
 import org.openprovenance.prov.xml.builder.ToString;
 import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
 import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
 import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
+import org.openprovenance.apache.commons.lang.builder.EqualsBuilder;
+import org.openprovenance.apache.commons.lang.builder.HashCodeBuilder;
+import org.openprovenance.apache.commons.lang.builder.ToStringBuilder;
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.QualifiedName;

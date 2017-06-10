@@ -14,15 +14,16 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
+
 import org.openprovenance.prov.xml.builder.Equals;
 import org.openprovenance.prov.xml.builder.HashCode;
 import org.openprovenance.prov.xml.builder.ToString;
 import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
 import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
 import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
+import org.openprovenance.apache.commons.lang.builder.EqualsBuilder;
+import org.openprovenance.apache.commons.lang.builder.HashCodeBuilder;
+import org.openprovenance.apache.commons.lang.builder.ToStringBuilder;
 import org.openprovenance.prov.model.StatementOrBundle;
 
 /**
@@ -54,7 +55,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 @Table(name = "HADMEMBER")
 public class HadMember
     extends AStatement
-    implements Equals, HashCode, ToString, org.openprovenance.prov.model.HadMember
+    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.HadMember
 {
 
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)

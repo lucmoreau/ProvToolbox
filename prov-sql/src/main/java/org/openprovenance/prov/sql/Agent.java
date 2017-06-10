@@ -16,15 +16,16 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
+
 import org.openprovenance.prov.xml.builder.Equals;
 import org.openprovenance.prov.xml.builder.HashCode;
 import org.openprovenance.prov.xml.builder.ToString;
 import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
 import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
 import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
+import org.openprovenance.apache.commons.lang.builder.EqualsBuilder;
+import org.openprovenance.apache.commons.lang.builder.HashCodeBuilder;
+import org.openprovenance.apache.commons.lang.builder.ToStringBuilder;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Other;
@@ -76,7 +77,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 @Table(name = "AGENT")
 public class Agent
     extends AStatement
-    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Agent, HasAllAttributes
+    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.Agent, HasAllAttributes
 {
 
     @XmlElement(type = org.openprovenance.prov.sql.InternationalizedString.class)

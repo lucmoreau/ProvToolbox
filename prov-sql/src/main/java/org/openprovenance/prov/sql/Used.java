@@ -23,15 +23,15 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openprovenance.prov.xml.builder.Equals;
 import org.openprovenance.prov.xml.builder.HashCode;
 import org.openprovenance.prov.xml.builder.ToString;
 import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
 import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
 import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
+import org.openprovenance.apache.commons.lang.builder.EqualsBuilder;
+import org.openprovenance.apache.commons.lang.builder.HashCodeBuilder;
+import org.openprovenance.apache.commons.lang.builder.ToStringBuilder;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
@@ -87,7 +87,7 @@ import org.openprovenance.prov.xml.SortedAttributeList;
 @Table(name = "USED")
 public class Used
     extends AStatement
-    implements Equals, HashCode, ToString, org.openprovenance.prov.model.Used, HasAllAttributes
+    implements Equals, HashCode, ToStringBuilder, org.openprovenance.prov.model.Used, HasAllAttributes
 {
     @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(IDRefAdapter.class)
     @XmlElement(required = true, type = org.openprovenance.prov.sql.IDRef.class)

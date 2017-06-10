@@ -1,7 +1,7 @@
 package org.openprovenance.prov.xml.builder;
 
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.openprovenance.apache.commons.lang.builder.HashCodeBuilder;
 
 public interface HashCode {
 

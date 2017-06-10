@@ -2,9 +2,9 @@ package org.openprovenance.prov.xml.builder;
 
 import javax.xml.bind.JAXBElement;
 
-import org.apache.commons.lang.SystemUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import org.openprovenance.apache.commons.lang.SystemUtils;
+import org.openprovenance.apache.commons.lang.builder.ToStringBuilder;
+import org.openprovenance.apache.commons.lang.builder.ToStringStyle;
 
 public class JAXBToStringBuilder extends ToStringBuilder {
 

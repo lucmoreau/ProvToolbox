@@ -9,9 +9,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openprovenance.prov.xml.builder.Equals;
 import org.openprovenance.prov.xml.builder.HashCode;
 import org.openprovenance.prov.xml.builder.ToString;
@@ -21,6 +18,9 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 import org.openprovenance.prov.xml.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.xml.extension.QualifiedHadMember;
 import org.openprovenance.prov.xml.extension.QualifiedSpecializationOf;
+import org.openprovenance.apache.commons.lang.builder.EqualsBuilder;
+import org.openprovenance.apache.commons.lang.builder.HashCodeBuilder;
+import org.openprovenance.apache.commons.lang.builder.ToStringBuilder;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.StatementOrBundle;
 

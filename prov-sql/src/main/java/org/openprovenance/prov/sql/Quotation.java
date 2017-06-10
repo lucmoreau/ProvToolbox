@@ -13,9 +13,10 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
+
+import org.openprovenance.apache.commons.lang.builder.EqualsBuilder;
+import org.openprovenance.apache.commons.lang.builder.HashCodeBuilder;
+import org.openprovenance.apache.commons.lang.builder.ToStringBuilder;
 import org.openprovenance.prov.xml.builder.Equals;
 import org.openprovenance.prov.xml.builder.HashCode;
 import org.openprovenance.prov.xml.builder.ToString;
@@ -46,7 +47,7 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
 @Table(name = "QUOTATION")
 public class Quotation
     extends WasDerivedFrom
-    implements Equals, HashCode, ToString
+    implements Equals, HashCode, ToStringBuilder
 {
     public void equals(Object object, EqualsBuilder equalsBuilder) {
         if (!(object instanceof Quotation)) {

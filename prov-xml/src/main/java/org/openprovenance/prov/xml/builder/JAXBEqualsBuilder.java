@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import javax.xml.bind.JAXBElement;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
+import org.openprovenance.apache.commons.lang.builder.EqualsBuilder;
 
 public class JAXBEqualsBuilder extends EqualsBuilder {
 

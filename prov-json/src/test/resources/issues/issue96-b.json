@@ -17,7 +17,7 @@
    },
    "bundle": {
       "b:1265": {
-         "prefix": { //inherits default
+         "prefix": {
             "doi": "http://dx.doi.org/",
             "b": "https://provenance.ecs.soton.ac.uk/picaso/bundles/",
             "people": "http://www.ipaw.info/data/people/"

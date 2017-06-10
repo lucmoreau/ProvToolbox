@@ -16,3 +16,15 @@ bindings4:
 	../toolbox/target/appassembler/bin/provconvert -infile src/main/resources/bindings4.provn -outfile src/main/resources/bindings4.ttl
 	../toolbox/target/appassembler/bin/provconvert -infile src/main/resources/bindings4.provn -outfile src/main/resources/bindings4.json
 
+LINE=4
+
+do.csv:
+	cat src/test/resources/csv/csv1.csv | awk -v line=$(LINE) -f src/main/resources/awk/tobindings.awk  > target/bindings$(LINE).json
+	provconvert -bindver 3 -infile src/test/resources/csv/template_block.provn -bindings target/bindings$(LINE).json -outfile target/block$(LINE).provn
+
+
+wfl:
+	$(MAKE) LINE=3 do.csv
+	$(MAKE) LINE=4 do.csv
+	$(MAKE) LINE=5 do.csv
+	printf "file, target/block3.provn, provn\nfile, target/block4.provn, provn\nfile, target/block5.provn, provn\n" | provconvert -merge - -flatten -outfile target/wfl.png

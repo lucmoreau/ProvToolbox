@@ -179,7 +179,7 @@ public class Document
         if (this == object) {
             return true;
         }
-        final EqualsBuilder equalsBuilder = new JAXBEqualsBuilder();
+        final EqualsBuilder equalsBuilder = new EqualsBuilder(); //new JAXBEqualsBuilder();
         equals(object, equalsBuilder);
         return equalsBuilder.isEquals();
     }
@@ -189,7 +189,7 @@ public class Document
     }
 
     public int hashCode() {
-        final HashCodeBuilder hashCodeBuilder = new JAXBHashCodeBuilder();
+        final HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(); //new JAXBHashCodeBuilder();
         hashCode(hashCodeBuilder);
         return hashCodeBuilder.toHashCode();
     }
@@ -205,7 +205,7 @@ public class Document
     }
 
     public String toString() {
-        final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
+        final ToStringBuilder toStringBuilder = new ToStringBuilder(this); //JAXBToStringBuilder(this);
         toString(toStringBuilder);
         return toStringBuilder.toString();
     }

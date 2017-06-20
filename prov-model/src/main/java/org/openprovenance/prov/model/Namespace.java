@@ -75,12 +75,12 @@ public class Namespace  {
     }
 
     public void addKnownNamespaces() {
-	getPrefixes().put("prov",NamespacePrefixMapper.PROV_NS);
-	getNamespaces().put(NamespacePrefixMapper.PROV_NS,"prov");
-	getPrefixes().put("xsd",NamespacePrefixMapper.XSD_NS);
-	getNamespaces().put(NamespacePrefixMapper.XSD_NS,"xsd");
+        getPrefixes().put("prov",NamespacePrefixMapper.PROV_NS);
+        getNamespaces().put(NamespacePrefixMapper.PROV_NS,"prov");
+        getPrefixes().put("xsd",NamespacePrefixMapper.XSD_NS);
+        getNamespaces().put(NamespacePrefixMapper.XSD_NS,"xsd");
     }
-	    
+
     public Namespace() {}
     
     public Namespace(Hashtable<String,String> pref) {
@@ -102,44 +102,44 @@ public class Namespace  {
     }
     
     public void setDefaultNamespace(String defaultNamespace) {
-	this.defaultNamespace=defaultNamespace;
+        this.defaultNamespace=defaultNamespace;
     }
-    
+
     public Map<String, String> getPrefixes() {
-	return prefixes;
+        return prefixes;
     }
     public Map<String, String> getNamespaces() {
-	return namespaces;
+        return namespaces;
     }
-     
+
     public boolean check(String prefix, String namespace) {
-	String knownAs=prefixes.get(prefix);
-	return namespace==knownAs;
+        String knownAs=prefixes.get(prefix);
+        return namespace==knownAs;
     }
     public void registerDefault(String namespace) {
-	register(null,namespace);
+        register(null,namespace);
     }
 
     public void register(String prefix, String namespace) {
- 	if ((prefix == null) || (prefix.equals(XMLConstants.DEFAULT_NS_PREFIX))) {
- 	    if (defaultNamespace == null) {
- 		defaultNamespace = namespace;
- 	    } else {
- 		newPrefix(namespace);
- 	    }
- 	} else {
- 	    String old = prefixes.get(prefix);
- 	    if (old == null) {
- 		prefixes.put(prefix, namespace);
- 		if (namespaces.get(namespace)==null) {
- 		    // make sure we don't overwrite an existing namespace
- 		    namespaces.put(namespace,prefix);
- 		}
- 	    } else {
- 		newPrefix(namespace);
- 	    }
- 	}
-     }
+        if ((prefix == null) || (prefix.equals(XMLConstants.DEFAULT_NS_PREFIX))) {
+            if (defaultNamespace == null) {
+                defaultNamespace = namespace;
+            } else {
+                newPrefix(namespace);
+            }
+        } else {
+            String old = prefixes.get(prefix);
+            if (old == null) {
+                prefixes.put(prefix, namespace);
+                if (namespaces.get(namespace)==null) {
+                    // make sure we don't overwrite an existing namespace
+                    namespaces.put(namespace,prefix);
+                }
+            } else {
+                newPrefix(namespace);
+            }
+        }
+    }
 
      static final public String xmlns = "pre_";
      int prefixCount = 0;

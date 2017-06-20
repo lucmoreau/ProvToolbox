@@ -27,6 +27,7 @@ public class BindingsJson {
 		public Hashtable<String, List<Object>> var;
 		public Hashtable<String, List<Object>> vargen;
 		public Hashtable<String, String> context;
+	    public String template;
 	}
 	
 	public static Object convertValueToBean(Object o, QualifiedName type, Hashtable<String, String> context) {

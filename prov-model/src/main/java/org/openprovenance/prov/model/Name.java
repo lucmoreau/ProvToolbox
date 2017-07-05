@@ -89,7 +89,10 @@ public class Name {
     public QualifiedName newProvQualifiedName(String local) {
         return pFactory.newQualifiedName(NamespacePrefixMapper.PROV_NS,local,"prov");
     }
-    
+    public QualifiedName newProvExtQualifiedName(String local) {
+        return pFactory.newQualifiedName(NamespacePrefixMapper.PROV_EXT_NS,local,"provext");
+    }
+       
  
     final public QualifiedName PROV_LANG_STRING ;
     final public QualifiedName PROV_QUALIFIED_NAME ;

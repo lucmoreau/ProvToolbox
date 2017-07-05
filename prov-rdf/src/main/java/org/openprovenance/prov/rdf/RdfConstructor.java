@@ -13,6 +13,7 @@ import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.DerivedByInsertionFrom;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.ModelConstructor;
+import org.openprovenance.prov.model.ModelConstructorExtension;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.LangString;
@@ -38,6 +39,9 @@ import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.model.DerivedByRemovalFrom;
 import org.openprovenance.prov.model.DictionaryMembership;
 import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
@@ -46,7 +50,7 @@ import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
  * A Converter to RDF
  */
 public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
-	ModelConstructor {
+	ModelConstructor, ModelConstructorExtension {
 
     private Namespace namespace ;
 
@@ -246,84 +250,84 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
     @Override
     public WasAttributedTo newWasAttributedTo(QualifiedName id, QualifiedName e, QualifiedName ag,
-					      Collection<Attribute> attributes) {
-	@SuppressWarnings("unused")
-	QualifiedName a = addInfluence(id, e, ag, null, null, false, attributes,
-			       onto.QualifiedName_PROVO_Attribution);
+                                              Collection<Attribute> attributes) {
+        @SuppressWarnings("unused")
+        QualifiedName a = addInfluence(id, e, ag, null, null, false, attributes,
+                                       onto.QualifiedName_PROVO_Attribution);
 
-	return null;
+        return null;
     }
 
     @Override
     public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QualifiedName agent2,
-					      QualifiedName agent1, QualifiedName a,
-					      Collection<Attribute> attributes) {
+                                              QualifiedName agent1, QualifiedName a,
+                                              Collection<Attribute> attributes) {
 
-	@SuppressWarnings("unused")
-	QualifiedName d = addInfluence(id, agent2, agent1, null, a, false, attributes,
-			       onto.QualifiedName_PROVO_Delegation);
+        @SuppressWarnings("unused")
+        QualifiedName d = addInfluence(id, agent2, agent1, null, a, false, attributes,
+                                       onto.QualifiedName_PROVO_Delegation);
 
-	return null;
+        return null;
     }
 
     @Override
     public WasInformedBy newWasInformedBy(QualifiedName id, QualifiedName activity2,
-					  QualifiedName activity1,
-					  Collection<Attribute> attributes) {
+                                          QualifiedName activity1,
+                                          Collection<Attribute> attributes) {
 
-	@SuppressWarnings("unused")
-	QualifiedName com = addInfluence(id, activity2, activity1, null, null, false,
-				 attributes, onto.QualifiedName_PROVO_Communication);
+        @SuppressWarnings("unused")
+        QualifiedName com = addInfluence(id, activity2, activity1, null, null, false,
+                                         attributes, onto.QualifiedName_PROVO_Communication);
 
-	return null;
+        return null;
     }
 
     @Override
     public WasInfluencedBy newWasInfluencedBy(QualifiedName id, QualifiedName qn2, QualifiedName qn1,
-					      Collection<Attribute> attributes) {
+                                              Collection<Attribute> attributes) {
 
-	@SuppressWarnings("unused")
-	QualifiedName u = addInfluence(id, qn2, qn1, null, null, false, attributes,
-			       onto.QualifiedName_PROVO_Influence);
+        @SuppressWarnings("unused")
+        QualifiedName u = addInfluence(id, qn2, qn1, null, null, false, attributes,
+                                       onto.QualifiedName_PROVO_Influence);
 
-	return null;
+        return null;
     }
 
     @Override
     public AlternateOf newAlternateOf(QualifiedName entity2, QualifiedName entity1) {
 
-	if ((entity2 != null) && (entity1 != null))
-	    gb.assertStatement(gb.createObjectProperty(entity2,
-						       onto.QualifiedName_PROVO_alternateOf,
-						       entity1));
+        if ((entity2 != null) && (entity1 != null))
+            gb.assertStatement(gb.createObjectProperty(entity2,
+                                                       onto.QualifiedName_PROVO_alternateOf,
+                                                       entity1));
 
-	return null;
+        return null;
     }
 
     @Override
     public SpecializationOf newSpecializationOf(QualifiedName entity2, QualifiedName entity1) {
 
-	if ((entity2 != null) && (entity1 != null))
-	    gb.assertStatement(gb.createObjectProperty(entity2,
-						       onto.QualifiedName_PROVO_specializationOf,
-						       entity1));
+        if ((entity2 != null) && (entity1 != null))
+            gb.assertStatement(gb.createObjectProperty(entity2,
+                                                       onto.QualifiedName_PROVO_specializationOf,
+                                                       entity1));
 
-	return null;
+        return null;
     }
 
     @Override
     public MentionOf newMentionOf(QualifiedName entity2, QualifiedName entity1, QualifiedName b) {
 
-	if ((entity2 != null) && (entity1 != null))
-	    gb.assertStatement(gb.createObjectProperty(entity2,
-						       onto.QualifiedName_PROVO_mentionOf,
-						       entity1));
-	if ((entity2 != null) && (b != null))
-	    gb.assertStatement(gb.createObjectProperty(entity2,
-						       onto.QualifiedName_PROVO_asInBundle,
-						       b));
+        if ((entity2 != null) && (entity1 != null))
+            gb.assertStatement(gb.createObjectProperty(entity2,
+                                                       onto.QualifiedName_PROVO_mentionOf,
+                                                       entity1));
+        if ((entity2 != null) && (b != null))
+            gb.assertStatement(gb.createObjectProperty(entity2,
+                                                       onto.QualifiedName_PROVO_asInBundle,
+                                                       b));
 
-	return null;
+        return null;
     }
 
     @Override
@@ -460,50 +464,50 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 
 
     public void asserterOther(QualifiedName subject, QualifiedName other, QualifiedName qualifiedClass) {
-	gb.assertStatement(gb.createObjectProperty(subject,
-						   onto.otherTable.get(qualifiedClass),
-						   other));
+        gb.assertStatement(gb.createObjectProperty(subject,
+                                                   onto.otherTable.get(qualifiedClass),
+                                                   other));
     }
 
     public void assertAtTime(QualifiedName subject, XMLGregorianCalendar time) {
-	gb.assertStatement(gb.createDataProperty(subject,
-						 onto.QualifiedName_PROVO_atTime,
-						 newLiteral(time)));
+        gb.assertStatement(gb.createDataProperty(subject,
+                                                 onto.QualifiedName_PROVO_atTime,
+                                                 newLiteral(time)));
 
     }
 
     private LITERAL newLiteral(XMLGregorianCalendar time) {
-	return gb.newLiteral(time.toString(),
-			     name.XSD_DATETIME);
+        return gb.newLiteral(time.toString(),
+                             name.XSD_DATETIME);
     }
 
     public void assertQualifiedInfluence(QualifiedName subject, 
                                          QualifiedName infl,
-					 QualifiedName qualifiedClass) {
-	gb.assertStatement(gb.createObjectProperty(subject,
-						   onto.qualifiedInfluenceTable.get(qualifiedClass),
-						   infl));
+                                         QualifiedName qualifiedClass) {
+        gb.assertStatement(gb.createObjectProperty(subject,
+                                                   onto.qualifiedInfluenceTable.get(qualifiedClass),
+                                                   infl));
     }
-    
+
     public void assertInfluencer(QualifiedName infl, QualifiedName object, QualifiedName qualifiedClass) {
- 	gb.assertStatement(gb.createObjectProperty(infl,
- 						   onto.influencerTable.get(qualifiedClass),
- 						   object));
-     }
+        gb.assertStatement(gb.createObjectProperty(infl,
+                                                   onto.influencerTable.get(qualifiedClass),
+                                                   object));
+    }
 
     public QualifiedName assertType(QualifiedName infl, QualifiedName qualifiedClass) {
-	if (infl == null) {
-	    infl = gb.newBlankName();
-	}
-	gb.assertStatement(gb.createObjectProperty(infl,
-						   onto.QualifiedName_RDF_TYPE,
-						   qualifiedClass));
-	return infl;
+        if (infl == null) {
+            infl = gb.newBlankName();
+        }
+        gb.assertStatement(gb.createObjectProperty(infl,
+                                                   onto.QualifiedName_RDF_TYPE,
+                                                   qualifiedClass));
+        return infl;
     }
 
     public Object convertExtension(Object name, Object id, Object args,
-				   Object dAttrs) {
-	return null;
+                                   Object dAttrs) {
+        return null;
     }
 
     /* Component 5 */
@@ -654,5 +658,37 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
 					  String prefix, BuildFlag flag) {
 	// TODO Auto-generated method stub
 	return null;
+    }
+
+    @Override
+    public QualifiedAlternateOf newQualifiedAlternateOf(QualifiedName id,
+                                                        QualifiedName e2,
+                                                        QualifiedName e1,
+                                                        Collection<Attribute> attributes) {
+        @SuppressWarnings("unused")
+        QualifiedName com = addInfluence(id, e2, e1, null, null, false,
+                                         attributes, onto.QualifiedName_PROVEXT_Alternate);
+
+       return null;
+    }
+
+    @Override
+    public QualifiedSpecializationOf newQualifiedSpecializationOf(QualifiedName id,
+                                                                  QualifiedName e2,
+                                                                  QualifiedName e1,
+                                                                  Collection<Attribute> attributes) {
+        @SuppressWarnings("unused")
+        QualifiedName com = addInfluence(id, e2, e1, null, null, false,
+                                         attributes, onto.QualifiedName_PROVEXT_Specialization);
+
+        return null;
+    }
+
+    @Override
+    public QualifiedHadMember newQualifiedHadMember(QualifiedName id,
+                                                    QualifiedName c,
+                                                    Collection<QualifiedName> e,
+                                                    Collection<Attribute> attributes) {
+        throw new UnsupportedOperationException();
     }
 }

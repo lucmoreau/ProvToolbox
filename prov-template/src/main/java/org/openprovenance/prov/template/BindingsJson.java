@@ -82,7 +82,7 @@ public class BindingsJson {
         if (v instanceof HashMap) {
             HashMap<String,String> table=(HashMap<String,String>)v;
             String lang =table.get("@language");
-            String value=table.get("@value");
+            String value=table.get("@value"); 
             String type =table.get("@type");
             String id   =table.get("@id");
             if (lang!=null) {
@@ -91,7 +91,7 @@ public class BindingsJson {
             if (id!=null) {              
                 return new Object[]{ns.stringToQualifiedName(id,pf),pf.getName().PROV_QUALIFIED_NAME};
             }
-            return new Object[] {value , pf.newQualifiedName("xa","xb","cx")};
+            return new Object[] {value , pf.newQualifiedName("xa","xb","cx")};  //TODO
         }
         throw new UnsupportedOperationException("bean is " + v.getClass());
 	}

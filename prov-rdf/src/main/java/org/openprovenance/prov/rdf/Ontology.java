@@ -18,142 +18,152 @@ public class Ontology {
     final private Name name;
 
     public Ontology(ProvFactory pFactory) {
-	this.pFactory=pFactory;
-	this.name=pFactory.getName();
-	
-	QualifiedName_PROVO_atLocation = name.newProvQualifiedName("atLocation");
-	QualifiedName_PROVO_atTime = name.newProvQualifiedName("atTime");
-	QualifiedName_PROVO_startedAtTime = name.newProvQualifiedName("startedAtTime");
-	QualifiedName_PROVO_endedAtTime = name.newProvQualifiedName("endedAtTime");
-	QualifiedName_PROVO_influencer = name.newProvQualifiedName("influencer");
-	QualifiedName_PROVO_activity = name.newProvQualifiedName("activity");
-	QualifiedName_PROVO_entity = name.newProvQualifiedName("entity");
-	QualifiedName_PROVO_agent = name.newProvQualifiedName("agent");
-	QualifiedName_PROVO_hadActivity = name.newProvQualifiedName("hadActivity");
-	QualifiedName_PROVO_hadEntity = name.newProvQualifiedName("hadEntity");
-	QualifiedName_PROVO_hadPlan = name.newProvQualifiedName("hadPlan");
-	QualifiedName_PROVO_hadGeneration = name.newProvQualifiedName("hadGeneration");
-	QualifiedName_PROVO_hadUsage = name.newProvQualifiedName("hadUsage");
-	QualifiedName_PROVO_hadRole = name.newProvQualifiedName("hadRole");
-	QualifiedName_PROVO_value = name.newProvQualifiedName("value");
-	QualifiedName_PROVO_generated = name.newProvQualifiedName("generated");
-    
-	QualifiedName_PROVO_generatedAtTime = name.newProvQualifiedName("generatedAtTime");
-	QualifiedName_PROVO_influenced = name.newProvQualifiedName("influenced");
-	QualifiedName_PROVO_invalidated = name.newProvQualifiedName("invalidated");
-	QualifiedName_PROVO_invalidatedAtTime = name.newProvQualifiedName("invalidatedAtTime");
+        this.pFactory=pFactory;
+        this.name=pFactory.getName();
 
-	QualifiedName_PROVO_Activity = name.newProvQualifiedName("Activity");
-	QualifiedName_PROVO_Entity = name.newProvQualifiedName("Entity");
-	QualifiedName_PROVO_Agent = name.newProvQualifiedName("Agent");
+        QualifiedName_PROVO_atLocation = name.newProvQualifiedName("atLocation");
+        QualifiedName_PROVO_atTime = name.newProvQualifiedName("atTime");
+        QualifiedName_PROVO_startedAtTime = name.newProvQualifiedName("startedAtTime");
+        QualifiedName_PROVO_endedAtTime = name.newProvQualifiedName("endedAtTime");
+        QualifiedName_PROVO_influencer = name.newProvQualifiedName("influencer");
+        QualifiedName_PROVO_activity = name.newProvQualifiedName("activity");
+        QualifiedName_PROVO_entity = name.newProvQualifiedName("entity");
+        QualifiedName_PROVO_agent = name.newProvQualifiedName("agent");
+        QualifiedName_PROVO_hadActivity = name.newProvQualifiedName("hadActivity");
+        QualifiedName_PROVO_hadEntity = name.newProvQualifiedName("hadEntity");
+        QualifiedName_PROVO_hadPlan = name.newProvQualifiedName("hadPlan");
+        QualifiedName_PROVO_hadGeneration = name.newProvQualifiedName("hadGeneration");
+        QualifiedName_PROVO_hadUsage = name.newProvQualifiedName("hadUsage");
+        QualifiedName_PROVO_hadRole = name.newProvQualifiedName("hadRole");
+        QualifiedName_PROVO_value = name.newProvQualifiedName("value");
+        QualifiedName_PROVO_generated = name.newProvQualifiedName("generated");
 
-	QualifiedName_PROVO_Influence = name.newProvQualifiedName("Influence");
-	QualifiedName_PROVO_qualifiedInfluence = name.newProvQualifiedName("qualifiedInfluence");
-	QualifiedName_PROVO_wasInfluencedBy = name.newProvQualifiedName("wasInfluencedBy");
+        QualifiedName_PROVO_generatedAtTime = name.newProvQualifiedName("generatedAtTime");
+        QualifiedName_PROVO_influenced = name.newProvQualifiedName("influenced");
+        QualifiedName_PROVO_invalidated = name.newProvQualifiedName("invalidated");
+        QualifiedName_PROVO_invalidatedAtTime = name.newProvQualifiedName("invalidatedAtTime");
 
-	QualifiedName_PROVO_Generation = name.newProvQualifiedName("Generation");
-	QualifiedName_PROVO_qualifiedGeneration = name.newProvQualifiedName("qualifiedGeneration");
-	QualifiedName_PROVO_wasGeneratedBy = name.newProvQualifiedName("wasGeneratedBy");
+        QualifiedName_PROVO_Activity = name.newProvQualifiedName("Activity");
+        QualifiedName_PROVO_Entity = name.newProvQualifiedName("Entity");
+        QualifiedName_PROVO_Agent = name.newProvQualifiedName("Agent");
 
-	QualifiedName_PROVO_Usage = name.newProvQualifiedName("Usage");
-	QualifiedName_PROVO_qualifiedUsage = name.newProvQualifiedName("qualifiedUsage");
-	QualifiedName_PROVO_used = name.newProvQualifiedName("used");
+        QualifiedName_PROVO_Influence = name.newProvQualifiedName("Influence");
+        QualifiedName_PROVO_qualifiedInfluence = name.newProvQualifiedName("qualifiedInfluence");
+        QualifiedName_PROVO_wasInfluencedBy = name.newProvQualifiedName("wasInfluencedBy");
 
-	QualifiedName_PROVO_Invalidation = name.newProvQualifiedName("Invalidation");
-	QualifiedName_PROVO_qualifiedInvalidation = name.newProvQualifiedName("qualifiedInvalidation");
-	QualifiedName_PROVO_wasInvalidatedBy = name.newProvQualifiedName("wasInvalidatedBy");
+        QualifiedName_PROVO_Generation = name.newProvQualifiedName("Generation");
+        QualifiedName_PROVO_qualifiedGeneration = name.newProvQualifiedName("qualifiedGeneration");
+        QualifiedName_PROVO_wasGeneratedBy = name.newProvQualifiedName("wasGeneratedBy");
 
-	QualifiedName_PROVO_Start = name.newProvQualifiedName("Start");
-	QualifiedName_PROVO_qualifiedStart = name.newProvQualifiedName("qualifiedStart");
-	QualifiedName_PROVO_wasStartedBy = name.newProvQualifiedName("wasStartedBy");
+        QualifiedName_PROVO_Usage = name.newProvQualifiedName("Usage");
+        QualifiedName_PROVO_qualifiedUsage = name.newProvQualifiedName("qualifiedUsage");
+        QualifiedName_PROVO_used = name.newProvQualifiedName("used");
 
-	QualifiedName_PROVO_End = name.newProvQualifiedName("End");
-	QualifiedName_PROVO_qualifiedEnd = name.newProvQualifiedName("qualifiedEnd");
-	QualifiedName_PROVO_wasEndedBy = name.newProvQualifiedName("wasEndedBy");
+        QualifiedName_PROVO_Invalidation = name.newProvQualifiedName("Invalidation");
+        QualifiedName_PROVO_qualifiedInvalidation = name.newProvQualifiedName("qualifiedInvalidation");
+        QualifiedName_PROVO_wasInvalidatedBy = name.newProvQualifiedName("wasInvalidatedBy");
 
-	QualifiedName_PROVO_Association = name.newProvQualifiedName("Association");
-	QualifiedName_PROVO_qualifiedAssociation = name.newProvQualifiedName("qualifiedAssociation");
-	QualifiedName_PROVO_wasAssociatedWith = name.newProvQualifiedName("wasAssociatedWith");
+        QualifiedName_PROVO_Start = name.newProvQualifiedName("Start");
+        QualifiedName_PROVO_qualifiedStart = name.newProvQualifiedName("qualifiedStart");
+        QualifiedName_PROVO_wasStartedBy = name.newProvQualifiedName("wasStartedBy");
 
-	QualifiedName_PROVO_Attribution = name.newProvQualifiedName("Attribution");
-	QualifiedName_PROVO_qualifiedAttribution = name.newProvQualifiedName("qualifiedAttribution");
-	QualifiedName_PROVO_wasAttributedTo = name.newProvQualifiedName("wasAttributedTo");
+        QualifiedName_PROVO_End = name.newProvQualifiedName("End");
+        QualifiedName_PROVO_qualifiedEnd = name.newProvQualifiedName("qualifiedEnd");
+        QualifiedName_PROVO_wasEndedBy = name.newProvQualifiedName("wasEndedBy");
 
-	QualifiedName_PROVO_Delegation = name.newProvQualifiedName("Delegation");
-	QualifiedName_PROVO_qualifiedDelegation = name.newProvQualifiedName("qualifiedDelegation");
-	QualifiedName_PROVO_actedOnBehalfOf = name.newProvQualifiedName("actedOnBehalfOf");
+        QualifiedName_PROVO_Association = name.newProvQualifiedName("Association");
+        QualifiedName_PROVO_qualifiedAssociation = name.newProvQualifiedName("qualifiedAssociation");
+        QualifiedName_PROVO_wasAssociatedWith = name.newProvQualifiedName("wasAssociatedWith");
 
-	QualifiedName_PROVO_Derivation = name.newProvQualifiedName("Derivation");
-	QualifiedName_PROVO_qualifiedDerivation = name.newProvQualifiedName("qualifiedDerivation");
-	QualifiedName_PROVO_wasDerivedFrom = name.newProvQualifiedName("wasDerivedFrom");
+        QualifiedName_PROVO_Attribution = name.newProvQualifiedName("Attribution");
+        QualifiedName_PROVO_qualifiedAttribution = name.newProvQualifiedName("qualifiedAttribution");
+        QualifiedName_PROVO_wasAttributedTo = name.newProvQualifiedName("wasAttributedTo");
 
-	QualifiedName_PROVO_Revision = name.newProvQualifiedName("Revision");
-	QualifiedName_PROVO_qualifiedRevision = name.newProvQualifiedName("qualifiedRevision");
-	QualifiedName_PROVO_wasRevisionOf = name.newProvQualifiedName("wasRevisionOf");
+        QualifiedName_PROVO_Delegation = name.newProvQualifiedName("Delegation");
+        QualifiedName_PROVO_qualifiedDelegation = name.newProvQualifiedName("qualifiedDelegation");
+        QualifiedName_PROVO_actedOnBehalfOf = name.newProvQualifiedName("actedOnBehalfOf");
 
-	QualifiedName_PROVO_Quotation = name.newProvQualifiedName("Quotation");
-	QualifiedName_PROVO_qualifiedQuotation = name.newProvQualifiedName("qualifiedQuotation");
-	QualifiedName_PROVO_wasQuotedFrom = name.newProvQualifiedName("wasQuotedFrom");
-    
-	QualifiedName_PROVO_PrimarySource = name.newProvQualifiedName("PrimarySource");
-	QualifiedName_PROVO_qualifiedPrimarySource = name.newProvQualifiedName("qualifiedPrimarySource");
-	QualifiedName_PROVO_hadPrimarySource = name.newProvQualifiedName("hadPrimarySource");
+        QualifiedName_PROVO_Derivation = name.newProvQualifiedName("Derivation");
+        QualifiedName_PROVO_qualifiedDerivation = name.newProvQualifiedName("qualifiedDerivation");
+        QualifiedName_PROVO_wasDerivedFrom = name.newProvQualifiedName("wasDerivedFrom");
 
-	QualifiedName_PROVO_Communication = name.newProvQualifiedName("Communication");
-	QualifiedName_PROVO_qualifiedCommunication = name.newProvQualifiedName("qualifiedCommunication");
-	QualifiedName_PROVO_wasInformedBy = name.newProvQualifiedName("wasInformedBy");
+        QualifiedName_PROVO_Revision = name.newProvQualifiedName("Revision");
+        QualifiedName_PROVO_qualifiedRevision = name.newProvQualifiedName("qualifiedRevision");
+        QualifiedName_PROVO_wasRevisionOf = name.newProvQualifiedName("wasRevisionOf");
 
-	QualifiedName_PROVO_specializationOf = name.newProvQualifiedName("specializationOf");
-	QualifiedName_PROVO_alternateOf = name.newProvQualifiedName("alternateOf");
-	QualifiedName_PROVO_mentionOf = name.newProvQualifiedName("mentionOf");
-	QualifiedName_PROVO_asInBundle = name.newProvQualifiedName("asInBundle");
-	QualifiedName_PROVO_hadMember = name.newProvQualifiedName("hadMember");
+        QualifiedName_PROVO_Quotation = name.newProvQualifiedName("Quotation");
+        QualifiedName_PROVO_qualifiedQuotation = name.newProvQualifiedName("qualifiedQuotation");
+        QualifiedName_PROVO_wasQuotedFrom = name.newProvQualifiedName("wasQuotedFrom");
+
+        QualifiedName_PROVO_PrimarySource = name.newProvQualifiedName("PrimarySource");
+        QualifiedName_PROVO_qualifiedPrimarySource = name.newProvQualifiedName("qualifiedPrimarySource");
+        QualifiedName_PROVO_hadPrimarySource = name.newProvQualifiedName("hadPrimarySource");
+
+        QualifiedName_PROVO_Communication = name.newProvQualifiedName("Communication");
+        QualifiedName_PROVO_qualifiedCommunication = name.newProvQualifiedName("qualifiedCommunication");
+        QualifiedName_PROVO_wasInformedBy = name.newProvQualifiedName("wasInformedBy");
+
+        QualifiedName_PROVO_specializationOf = name.newProvQualifiedName("specializationOf");
+        QualifiedName_PROVEXT_Specialization = name.newProvExtQualifiedName("Specialization");
+        QualifiedName_PROVEXT_qualifiedSpecialization = name.newProvExtQualifiedName("qualifiedSpecialization");
+
+        QualifiedName_PROVO_alternateOf = name.newProvQualifiedName("alternateOf");
+        QualifiedName_PROVEXT_Alternate = name.newProvExtQualifiedName("Alternate");
+        QualifiedName_PROVEXT_qualifiedAlternate = name.newProvExtQualifiedName("qualifiedAlternate");
+
+        QualifiedName_PROVO_mentionOf = name.newProvQualifiedName("mentionOf");
+        QualifiedName_PROVO_asInBundle = name.newProvQualifiedName("asInBundle");
+        
+        QualifiedName_PROVO_hadMember = name.newProvQualifiedName("hadMember");
+        QualifiedName_PROVEXT_Membership = name.newProvExtQualifiedName("Membership");
+        QualifiedName_PROVEXT_qualifiedMembership = name.newProvExtQualifiedName("qualifiedMembership");
 
 
-	QualifiedName_PROVO_Bundle = name.newProvQualifiedName("Bundle");
-	QualifiedName_PROVO_Organization = name.newProvQualifiedName("Organization");
-	QualifiedName_PROVO_Person = name.newProvQualifiedName("Person");
-	QualifiedName_PROVO_SoftwareAgent = name.newProvQualifiedName("SoftwareAgent");
-	QualifiedName_PROVO_Location = name.newProvQualifiedName("Location");
-	QualifiedName_PROVO_Plan = name.newProvQualifiedName("Plan");
-	QualifiedName_PROVO_Role = name.newProvQualifiedName("Role");
-	QualifiedName_PROVO_Collection = name.newProvQualifiedName("Collection");
-	QualifiedName_PROVO_EmptyCollection = name.newProvQualifiedName("EmptyCollection");
 
-	QualifiedName_PROVO_InstantaneousEvent = name.newProvQualifiedName("InstantaneousEvent");
-	QualifiedName_PROVO_EntityInfluence = name.newProvQualifiedName("EntityInfluence");
-	QualifiedName_PROVO_ActivityInfluence = name.newProvQualifiedName("ActivityInfluence");
-	QualifiedName_PROVO_AgentInfluence = name.newProvQualifiedName("AgentInfluence");
-    
-	QualifiedName_PROVDC_Contributor = name.newProvQualifiedName("Contributor");
+        QualifiedName_PROVO_Bundle = name.newProvQualifiedName("Bundle");
+        QualifiedName_PROVO_Organization = name.newProvQualifiedName("Organization");
+        QualifiedName_PROVO_Person = name.newProvQualifiedName("Person");
+        QualifiedName_PROVO_SoftwareAgent = name.newProvQualifiedName("SoftwareAgent");
+        QualifiedName_PROVO_Location = name.newProvQualifiedName("Location");
+        QualifiedName_PROVO_Plan = name.newProvQualifiedName("Plan");
+        QualifiedName_PROVO_Role = name.newProvQualifiedName("Role");
+        QualifiedName_PROVO_Collection = name.newProvQualifiedName("Collection");
+        QualifiedName_PROVO_EmptyCollection = name.newProvQualifiedName("EmptyCollection");
 
-    
-	QualifiedName_RDF_TYPE = newRdfQualifiedName("type");
-	QualifiedName_RDFS_LABEL = newRdfsQualifiedName("label");
-    
-    
-    
-    
-	QualifiedName_PROVO_Dictionary = name.newProvQualifiedName("Dictionary");
-	QualifiedName_PROVO_EmptyDictionary = name.newProvQualifiedName("EmptyDictionary");
-	QualifiedName_PROVO_derivedByInsertion = name.newProvQualifiedName("derivedByInsertion");
-	QualifiedName_PROVO_Insertion = name.newProvQualifiedName("Insertion");
-	QualifiedName_PROVO_qualifiedInsertion = name.newProvQualifiedName("qualifiedInsertion");
-	QualifiedName_PROVO_dictionary = name.newProvQualifiedName("dictionary");
-	QualifiedName_PROVO_derivedByRemoval = name.newProvQualifiedName("derivedByRemoval");
-	QualifiedName_PROVO_Removal = name.newProvQualifiedName("Removal");
-	QualifiedName_PROVO_qualifiedRemoval = name.newProvQualifiedName("qualifiedRemoval");
-	QualifiedName_PROVO_hadDictionaryMember = name.newProvQualifiedName("hadDictionaryMember");
-	QualifiedName_PROVO_insertedKeyEntityPair = name.newProvQualifiedName("insertedKeyEntityPair");
-	QualifiedName_PROVO_removedKey = name.newProvQualifiedName("removedKey");
-	QualifiedName_PROVO_KeyValuePair = name.newProvQualifiedName("KeyValuePair");
-	QualifiedName_PROVO_pairKey = name.newProvQualifiedName("pairKey");
-	QualifiedName_PROVO_pairEntity = name.newProvQualifiedName("pairEntity");
+        QualifiedName_PROVO_InstantaneousEvent = name.newProvQualifiedName("InstantaneousEvent");
+        QualifiedName_PROVO_EntityInfluence = name.newProvQualifiedName("EntityInfluence");
+        QualifiedName_PROVO_ActivityInfluence = name.newProvQualifiedName("ActivityInfluence");
+        QualifiedName_PROVO_AgentInfluence = name.newProvQualifiedName("AgentInfluence");
 
-	QualifiedName_BK_topicIn = newBookQualifiedName("topicIn");
+        QualifiedName_PROVDC_Contributor = name.newProvQualifiedName("Contributor");
 
-	initInfluenceTables();
-	initDomainTables();
+
+        QualifiedName_RDF_TYPE = newRdfQualifiedName("type");
+        QualifiedName_RDFS_LABEL = newRdfsQualifiedName("label");
+
+
+
+
+        QualifiedName_PROVO_Dictionary = name.newProvQualifiedName("Dictionary");
+        QualifiedName_PROVO_EmptyDictionary = name.newProvQualifiedName("EmptyDictionary");
+        QualifiedName_PROVO_derivedByInsertion = name.newProvQualifiedName("derivedByInsertion");
+        QualifiedName_PROVO_Insertion = name.newProvQualifiedName("Insertion");
+        QualifiedName_PROVO_qualifiedInsertion = name.newProvQualifiedName("qualifiedInsertion");
+        QualifiedName_PROVO_dictionary = name.newProvQualifiedName("dictionary");
+        QualifiedName_PROVO_derivedByRemoval = name.newProvQualifiedName("derivedByRemoval");
+        QualifiedName_PROVO_Removal = name.newProvQualifiedName("Removal");
+        QualifiedName_PROVO_qualifiedRemoval = name.newProvQualifiedName("qualifiedRemoval");
+        QualifiedName_PROVO_hadDictionaryMember = name.newProvQualifiedName("hadDictionaryMember");
+        QualifiedName_PROVO_insertedKeyEntityPair = name.newProvQualifiedName("insertedKeyEntityPair");
+        QualifiedName_PROVO_removedKey = name.newProvQualifiedName("removedKey");
+        QualifiedName_PROVO_KeyValuePair = name.newProvQualifiedName("KeyValuePair");
+        QualifiedName_PROVO_pairKey = name.newProvQualifiedName("pairKey");
+        QualifiedName_PROVO_pairEntity = name.newProvQualifiedName("pairEntity");
+
+        QualifiedName_BK_topicIn = newBookQualifiedName("topicIn");
+
+        initInfluenceTables();
+        initDomainTables();
         initRangeTables();
         initAttributeAsResourceTables();
     }
@@ -268,10 +278,20 @@ public class Ontology {
     final public QualifiedName QualifiedName_PROVO_wasInformedBy;
 
     final public QualifiedName QualifiedName_PROVO_specializationOf;
+    final public QualifiedName QualifiedName_PROVEXT_Specialization;
+    final public QualifiedName QualifiedName_PROVEXT_qualifiedSpecialization;
+
     final public QualifiedName QualifiedName_PROVO_alternateOf;
+    final public QualifiedName QualifiedName_PROVEXT_Alternate;
+    final public QualifiedName QualifiedName_PROVEXT_qualifiedAlternate;
+
     final public QualifiedName QualifiedName_PROVO_mentionOf;
     final public QualifiedName QualifiedName_PROVO_asInBundle;
+    
     final public QualifiedName QualifiedName_PROVO_hadMember;
+    final public QualifiedName QualifiedName_PROVEXT_Membership;
+    final public QualifiedName QualifiedName_PROVEXT_qualifiedMembership;
+
 
 
     final public QualifiedName QualifiedName_PROVO_Bundle;
@@ -320,99 +340,114 @@ public class Ontology {
 
 	
     void initInfluenceTables() {
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_Influence,
-				    QualifiedName_PROVO_qualifiedInfluence);
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_Generation,
-				    QualifiedName_PROVO_qualifiedGeneration);
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_Usage,
-				    QualifiedName_PROVO_qualifiedUsage);
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_Invalidation,
-				    QualifiedName_PROVO_qualifiedInvalidation);
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_Start,
-				    QualifiedName_PROVO_qualifiedStart);
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_End, QualifiedName_PROVO_qualifiedEnd);
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_Association,
-				    QualifiedName_PROVO_qualifiedAssociation);
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_Attribution,
-				    QualifiedName_PROVO_qualifiedAttribution);
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_Delegation,
-				    QualifiedName_PROVO_qualifiedDelegation);
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_Derivation,
-				    QualifiedName_PROVO_qualifiedDerivation);
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_Quotation,
-				    QualifiedName_PROVO_qualifiedQuotation);
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_Revision,
-				    QualifiedName_PROVO_qualifiedRevision);
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_PrimarySource,
-				    QualifiedName_PROVO_qualifiedPrimarySource);
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_Communication,
-		    QualifiedName_PROVO_qualifiedCommunication);
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_Insertion,
-		    QualifiedName_PROVO_qualifiedInsertion);
-	qualifiedInfluenceTable.put(QualifiedName_PROVO_Removal,
-		    QualifiedName_PROVO_qualifiedRemoval);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_Influence,
+                                    QualifiedName_PROVO_qualifiedInfluence);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_Generation,
+                                    QualifiedName_PROVO_qualifiedGeneration);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_Usage,
+                                    QualifiedName_PROVO_qualifiedUsage);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_Invalidation,
+                                    QualifiedName_PROVO_qualifiedInvalidation);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_Start,
+                                    QualifiedName_PROVO_qualifiedStart);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_End, 
+                                    QualifiedName_PROVO_qualifiedEnd);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_Association,
+                                    QualifiedName_PROVO_qualifiedAssociation);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_Attribution,
+                                    QualifiedName_PROVO_qualifiedAttribution);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_Delegation,
+                                    QualifiedName_PROVO_qualifiedDelegation);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_Derivation,
+                                    QualifiedName_PROVO_qualifiedDerivation);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_Quotation,
+                                    QualifiedName_PROVO_qualifiedQuotation);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_Revision,
+                                    QualifiedName_PROVO_qualifiedRevision);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_PrimarySource,
+                                    QualifiedName_PROVO_qualifiedPrimarySource);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_Communication,
+                                    QualifiedName_PROVO_qualifiedCommunication);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_Insertion,
+                                    QualifiedName_PROVO_qualifiedInsertion);
+        qualifiedInfluenceTable.put(QualifiedName_PROVO_Removal,
+                                    QualifiedName_PROVO_qualifiedRemoval);
+        qualifiedInfluenceTable.put(QualifiedName_PROVEXT_Alternate,
+                                    QualifiedName_PROVEXT_qualifiedAlternate);
+        qualifiedInfluenceTable.put(QualifiedName_PROVEXT_Specialization,
+                                    QualifiedName_PROVEXT_qualifiedSpecialization);
+        qualifiedInfluenceTable.put(QualifiedName_PROVEXT_Membership,
+                                    QualifiedName_PROVEXT_qualifiedMembership);
 
-	influencerTable.put(QualifiedName_PROVO_Influence, QualifiedName_PROVO_influencer);
-	activityInfluence(QualifiedName_PROVO_Generation);
-	entityInfluence(QualifiedName_PROVO_Usage);
-	activityInfluence(QualifiedName_PROVO_Invalidation);
-	entityInfluence(QualifiedName_PROVO_Start);
-	entityInfluence(QualifiedName_PROVO_End);
-	agentInfluence(QualifiedName_PROVO_Association);
-	agentInfluence(QualifiedName_PROVO_Attribution);
-	agentInfluence(QualifiedName_PROVO_Delegation);
-	entityInfluence(QualifiedName_PROVO_Derivation);
-	entityInfluence(QualifiedName_PROVO_Quotation);
-	entityInfluence(QualifiedName_PROVO_Revision);
-	entityInfluence(QualifiedName_PROVO_PrimarySource);
-	activityInfluence(QualifiedName_PROVO_Communication);
-	
-	dictionaryInfluence(QualifiedName_PROVO_Insertion);
-	dictionaryInfluence(QualifiedName_PROVO_Removal);
+        influencerTable.put(QualifiedName_PROVO_Influence, QualifiedName_PROVO_influencer);
+        activityInfluence(QualifiedName_PROVO_Generation);
+        entityInfluence(QualifiedName_PROVO_Usage);
+        activityInfluence(QualifiedName_PROVO_Invalidation);
+        entityInfluence(QualifiedName_PROVO_Start);
+        entityInfluence(QualifiedName_PROVO_End);
+        agentInfluence(QualifiedName_PROVO_Association);
+        agentInfluence(QualifiedName_PROVO_Attribution);
+        agentInfluence(QualifiedName_PROVO_Delegation);
+        entityInfluence(QualifiedName_PROVO_Derivation);
+        entityInfluence(QualifiedName_PROVO_Quotation);
+        entityInfluence(QualifiedName_PROVO_Revision);
+        entityInfluence(QualifiedName_PROVO_PrimarySource);
+        activityInfluence(QualifiedName_PROVO_Communication);
+        entityInfluence(QualifiedName_PROVEXT_Alternate);
+        entityInfluence(QualifiedName_PROVEXT_Specialization);
 
-	unqualifiedTable.put(QualifiedName_PROVO_Influence, QualifiedName_PROVO_wasInfluencedBy);
-	unqualifiedTable.put(QualifiedName_PROVO_Generation, QualifiedName_PROVO_wasGeneratedBy);
-	unqualifiedTable.put(QualifiedName_PROVO_Usage, QualifiedName_PROVO_used);
-	unqualifiedTable.put(QualifiedName_PROVO_Invalidation,
-			     QualifiedName_PROVO_wasInvalidatedBy);
-	unqualifiedTable.put(QualifiedName_PROVO_Start, QualifiedName_PROVO_wasStartedBy);
-	unqualifiedTable.put(QualifiedName_PROVO_End, QualifiedName_PROVO_wasEndedBy);
-	unqualifiedTable.put(QualifiedName_PROVO_Association,
-			     QualifiedName_PROVO_wasAssociatedWith);
-	unqualifiedTable.put(QualifiedName_PROVO_Attribution,
-			     QualifiedName_PROVO_wasAttributedTo);
-	unqualifiedTable.put(QualifiedName_PROVO_Delegation,
-			     QualifiedName_PROVO_actedOnBehalfOf);
-	unqualifiedTable.put(QualifiedName_PROVO_Derivation, QualifiedName_PROVO_wasDerivedFrom);
-	unqualifiedTable.put(QualifiedName_PROVO_Revision, QualifiedName_PROVO_wasRevisionOf);
-	unqualifiedTable.put(QualifiedName_PROVO_Quotation, QualifiedName_PROVO_wasQuotedFrom);
-	unqualifiedTable.put(QualifiedName_PROVO_PrimarySource,
-			     QualifiedName_PROVO_hadPrimarySource);
-	unqualifiedTable.put(QualifiedName_PROVO_Communication,
-		     QualifiedName_PROVO_wasInformedBy);
-	unqualifiedTable.put(QualifiedName_PROVO_Insertion,
-		     QualifiedName_PROVO_derivedByInsertion);
-	unqualifiedTable.put(QualifiedName_PROVO_Removal,
-		     QualifiedName_PROVO_derivedByRemoval);
 
-	otherTable.put(QualifiedName_PROVO_Start, QualifiedName_PROVO_hadActivity);
-	otherTable.put(QualifiedName_PROVO_End, QualifiedName_PROVO_hadActivity);
-	otherTable.put(QualifiedName_PROVO_Derivation, QualifiedName_PROVO_hadActivity);
-	otherTable.put(QualifiedName_PROVO_Revision, QualifiedName_PROVO_hadActivity);
-	otherTable.put(QualifiedName_PROVO_Quotation, QualifiedName_PROVO_hadActivity);
-	otherTable.put(QualifiedName_PROVO_PrimarySource, QualifiedName_PROVO_hadActivity);
-	otherTable.put(QualifiedName_PROVO_Association, QualifiedName_PROVO_hadPlan);
-	otherTable.put(QualifiedName_PROVO_Delegation, QualifiedName_PROVO_hadActivity);
-	otherTable.put(QualifiedName_PROVO_Insertion, QualifiedName_PROVO_insertedKeyEntityPair);
-	otherTable.put(QualifiedName_PROVO_Removal, QualifiedName_PROVO_insertedKeyEntityPair);
+        dictionaryInfluence(QualifiedName_PROVO_Insertion);
+        dictionaryInfluence(QualifiedName_PROVO_Removal);
 
-	convertTable.put(name.PROV_LABEL, QualifiedName_RDFS_LABEL);
-	convertTable.put(name.PROV_TYPE, QualifiedName_RDF_TYPE);
-	convertTable.put(name.PROV_LOCATION, QualifiedName_PROVO_atLocation);
-	convertTable.put(name.PROV_VALUE, QualifiedName_PROVO_value);
-	convertTable.put(name.PROV_ROLE, QualifiedName_PROVO_hadRole);
+        unqualifiedTable.put(QualifiedName_PROVO_Influence, QualifiedName_PROVO_wasInfluencedBy);
+        unqualifiedTable.put(QualifiedName_PROVO_Generation, QualifiedName_PROVO_wasGeneratedBy);
+        unqualifiedTable.put(QualifiedName_PROVO_Usage, QualifiedName_PROVO_used);
+        unqualifiedTable.put(QualifiedName_PROVO_Invalidation,
+                             QualifiedName_PROVO_wasInvalidatedBy);
+        unqualifiedTable.put(QualifiedName_PROVO_Start, QualifiedName_PROVO_wasStartedBy);
+        unqualifiedTable.put(QualifiedName_PROVO_End, QualifiedName_PROVO_wasEndedBy);
+        unqualifiedTable.put(QualifiedName_PROVO_Association,
+                             QualifiedName_PROVO_wasAssociatedWith);
+        unqualifiedTable.put(QualifiedName_PROVO_Attribution,
+                             QualifiedName_PROVO_wasAttributedTo);
+        unqualifiedTable.put(QualifiedName_PROVO_Delegation,
+                             QualifiedName_PROVO_actedOnBehalfOf);
+        unqualifiedTable.put(QualifiedName_PROVO_Derivation, QualifiedName_PROVO_wasDerivedFrom);
+        unqualifiedTable.put(QualifiedName_PROVO_Revision, QualifiedName_PROVO_wasRevisionOf);
+        unqualifiedTable.put(QualifiedName_PROVO_Quotation, QualifiedName_PROVO_wasQuotedFrom);
+        unqualifiedTable.put(QualifiedName_PROVO_PrimarySource,
+                             QualifiedName_PROVO_hadPrimarySource);
+        unqualifiedTable.put(QualifiedName_PROVO_Communication,
+                             QualifiedName_PROVO_wasInformedBy);
+        unqualifiedTable.put(QualifiedName_PROVO_Insertion,
+                             QualifiedName_PROVO_derivedByInsertion);
+        unqualifiedTable.put(QualifiedName_PROVO_Removal,
+                             QualifiedName_PROVO_derivedByRemoval);
+        unqualifiedTable.put(QualifiedName_PROVEXT_Alternate,
+                             QualifiedName_PROVO_alternateOf);
+        unqualifiedTable.put(QualifiedName_PROVEXT_Specialization,
+                             QualifiedName_PROVO_specializationOf);
+        
+        
+        otherTable.put(QualifiedName_PROVO_Start, QualifiedName_PROVO_hadActivity);
+        otherTable.put(QualifiedName_PROVO_End, QualifiedName_PROVO_hadActivity);
+        otherTable.put(QualifiedName_PROVO_Derivation, QualifiedName_PROVO_hadActivity);
+        otherTable.put(QualifiedName_PROVO_Revision, QualifiedName_PROVO_hadActivity);
+        otherTable.put(QualifiedName_PROVO_Quotation, QualifiedName_PROVO_hadActivity);
+        otherTable.put(QualifiedName_PROVO_PrimarySource, QualifiedName_PROVO_hadActivity);
+        otherTable.put(QualifiedName_PROVO_Association, QualifiedName_PROVO_hadPlan);
+        otherTable.put(QualifiedName_PROVO_Delegation, QualifiedName_PROVO_hadActivity);
+        otherTable.put(QualifiedName_PROVO_Insertion, QualifiedName_PROVO_insertedKeyEntityPair);
+        otherTable.put(QualifiedName_PROVO_Removal, QualifiedName_PROVO_insertedKeyEntityPair);
+
+        convertTable.put(name.PROV_LABEL, QualifiedName_RDFS_LABEL);
+        convertTable.put(name.PROV_TYPE, QualifiedName_RDF_TYPE);
+        convertTable.put(name.PROV_LOCATION, QualifiedName_PROVO_atLocation);
+        convertTable.put(name.PROV_VALUE, QualifiedName_PROVO_value);
+        convertTable.put(name.PROV_ROLE, QualifiedName_PROVO_hadRole);
     }
-    
+
     void initRangeTables() {
     	this.ranges.put(QualifiedName_PROVO_actedOnBehalfOf, QualifiedName_PROVO_Agent);
     	this.ranges.put(QualifiedName_PROVO_used, QualifiedName_PROVO_Entity);
@@ -537,28 +572,28 @@ public class Ontology {
     }
 
     void activityInfluence(QualifiedName name) {
-	influencerTable.put(name, QualifiedName_PROVO_activity);
+        influencerTable.put(name, QualifiedName_PROVO_activity);
     }
 
     void entityInfluence(QualifiedName name) {
-    	influencerTable.put(name, QualifiedName_PROVO_entity);
-        }
+        influencerTable.put(name, QualifiedName_PROVO_entity);
+    }
     void dictionaryInfluence(QualifiedName name) {
-    	influencerTable.put(name, QualifiedName_PROVO_dictionary);
-        }
+        influencerTable.put(name, QualifiedName_PROVO_dictionary);
+    }
 
     void agentInfluence(QualifiedName name) {
-	influencerTable.put(name, QualifiedName_PROVO_agent);
+        influencerTable.put(name, QualifiedName_PROVO_agent);
     }
-    
-    
+
+
 
     public QualifiedName convertToRdf(QualifiedName qualifiedName) {
-	QualifiedName res = convertTable.get(qualifiedName);
-	if (res != null)
-	    return res;
-	return qualifiedName;
+        QualifiedName res = convertTable.get(qualifiedName);
+        if (res != null)
+            return res;
+        return qualifiedName;
     }
-    
+
       
 }

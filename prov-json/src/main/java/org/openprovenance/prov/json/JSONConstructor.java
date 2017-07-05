@@ -28,6 +28,7 @@ import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.ModelConstructor;
+import org.openprovenance.prov.model.ModelConstructorExtension;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
@@ -45,6 +46,9 @@ import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
 
 /**
@@ -54,7 +58,7 @@ import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
  *         follows the PROV-JSON representation.
  * 
  */
-public class JSONConstructor implements ModelConstructor {
+public class JSONConstructor implements ModelConstructor, ModelConstructorExtension {
     private class JsonProvRecord {
 	String type;
 	String id;
@@ -507,78 +511,78 @@ public class JSONConstructor implements ModelConstructor {
 
     @Override
     public WasInfluencedBy newWasInfluencedBy(QualifiedName id, QualifiedName a2, QualifiedName a1,
-					      Collection<Attribute> attributes) {
-	List<Object[]> attrs = convertAttributes(attributes);
-	if (a2 != null)
-	    attrs.add(tuple("prov:influencee", qualifiedNameToString(currentNamespace,a2)));
-	if (a1 != null)
-	    attrs.add(tuple("prov:influencer", qualifiedNameToString(currentNamespace,a1)));
-	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
-		: getBlankID("Infl");
-	JsonProvRecord record = new JsonProvRecord("wasInfluencedBy", recordID,
-						   attrs);
-	this.currentRecords.add(record);
-	return null;
+                                              Collection<Attribute> attributes) {
+        List<Object[]> attrs = convertAttributes(attributes);
+        if (a2 != null)
+            attrs.add(tuple("prov:influencee", qualifiedNameToString(currentNamespace,a2)));
+        if (a1 != null)
+            attrs.add(tuple("prov:influencer", qualifiedNameToString(currentNamespace,a1)));
+        String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
+                : getBlankID("Infl");
+        JsonProvRecord record = new JsonProvRecord("wasInfluencedBy", recordID,
+                                                   attrs);
+        this.currentRecords.add(record);
+        return null;
     }
 
     @Override
     public AlternateOf newAlternateOf(QualifiedName e2, QualifiedName e1) {
-	List<Object[]> attrs = new ArrayList<Object[]>();
-	if (e2 != null)
-	    attrs.add(tuple("prov:alternate2", qualifiedNameToString(currentNamespace,e2)));
-	if (e1 != null)
-	    attrs.add(tuple("prov:alternate1", qualifiedNameToString(currentNamespace,e1)));
-	String recordID = getBlankID("aO");
-	JsonProvRecord record = new JsonProvRecord("alternateOf", recordID,
-						   attrs);
-	this.currentRecords.add(record);
-	return null;
+        List<Object[]> attrs = new ArrayList<Object[]>();
+        if (e2 != null)
+            attrs.add(tuple("prov:alternate2", qualifiedNameToString(currentNamespace,e2)));
+        if (e1 != null)
+            attrs.add(tuple("prov:alternate1", qualifiedNameToString(currentNamespace,e1)));
+        String recordID = getBlankID("aO");
+        JsonProvRecord record = new JsonProvRecord("alternateOf", recordID,
+                                                   attrs);
+        this.currentRecords.add(record);
+        return null;
     }
 
     @Override
     public SpecializationOf newSpecializationOf(QualifiedName e2, QualifiedName e1) {
-	List<Object[]> attrs = new ArrayList<Object[]>();
-	if (e2 != null)
-	    attrs.add(tuple("prov:specificEntity", qualifiedNameToString(currentNamespace,e2)));
-	if (e1 != null)
-	    attrs.add(tuple("prov:generalEntity", qualifiedNameToString(currentNamespace,e1)));
-	String recordID = getBlankID("sO");
-	JsonProvRecord record = new JsonProvRecord("specializationOf",
-						   recordID, attrs);
-	this.currentRecords.add(record);
-	return null;
+        List<Object[]> attrs = new ArrayList<Object[]>();
+        if (e2 != null)
+            attrs.add(tuple("prov:specificEntity", qualifiedNameToString(currentNamespace,e2)));
+        if (e1 != null)
+            attrs.add(tuple("prov:generalEntity", qualifiedNameToString(currentNamespace,e1)));
+        String recordID = getBlankID("sO");
+        JsonProvRecord record = new JsonProvRecord("specializationOf",
+                                                   recordID, attrs);
+        this.currentRecords.add(record);
+        return null;
     }
 
     @Override
     public MentionOf newMentionOf(QualifiedName e2, QualifiedName e1, QualifiedName b) {
-	List<Object[]> attrs = new ArrayList<Object[]>();
-	if (e2 != null)
-	    attrs.add(tuple("prov:specificEntity", qualifiedNameToString(currentNamespace,e2)));
-	if (e1 != null)
-	    attrs.add(tuple("prov:generalEntity", qualifiedNameToString(currentNamespace,e1)));
-	if (b != null)
-	    attrs.add(tuple("prov:bundle", qualifiedNameToString(currentNamespace,b)));
-	String recordID = getBlankID("mO");
-	JsonProvRecord record = new JsonProvRecord("mentionOf", recordID, attrs);
-	this.currentRecords.add(record);
-	return null;
+        List<Object[]> attrs = new ArrayList<Object[]>();
+        if (e2 != null)
+            attrs.add(tuple("prov:specificEntity", qualifiedNameToString(currentNamespace,e2)));
+        if (e1 != null)
+            attrs.add(tuple("prov:generalEntity", qualifiedNameToString(currentNamespace,e1)));
+        if (b != null)
+            attrs.add(tuple("prov:bundle", qualifiedNameToString(currentNamespace,b)));
+        String recordID = getBlankID("mO");
+        JsonProvRecord record = new JsonProvRecord("mentionOf", recordID, attrs);
+        this.currentRecords.add(record);
+        return null;
     }
 
     @Override
     public HadMember newHadMember(QualifiedName c, Collection<QualifiedName> e) {
-	List<Object[]> attrs = new ArrayList<Object[]>();
-	if (c != null)
-	    attrs.add(tuple("prov:collection", qualifiedNameToString(currentNamespace,c)));
-	if (e != null && !e.isEmpty()) {
-	    List<String> entityList = new ArrayList<String>();
-	    for (QualifiedName entity : e)
-		entityList.add(qualifiedNameToString(currentNamespace,entity));
-	    attrs.add(tuple("prov:entity", entityList));
-	}
-	String recordID = getBlankID("hM");
-	JsonProvRecord record = new JsonProvRecord("hadMember", recordID, attrs);
-	this.currentRecords.add(record);
-	return null;
+        List<Object[]> attrs = new ArrayList<Object[]>();
+        if (c != null)
+            attrs.add(tuple("prov:collection", qualifiedNameToString(currentNamespace,c)));
+        if (e != null && !e.isEmpty()) {
+            List<String> entityList = new ArrayList<String>();
+            for (QualifiedName entity : e)
+                entityList.add(qualifiedNameToString(currentNamespace,entity));
+            attrs.add(tuple("prov:entity", entityList));
+        }
+        String recordID = getBlankID("hM");
+        JsonProvRecord record = new JsonProvRecord("hadMember", recordID, attrs);
+        this.currentRecords.add(record);
+        return null;
     }
 
     @Override
@@ -667,68 +671,68 @@ public class JSONConstructor implements ModelConstructor {
 
     @Override
     public DerivedByInsertionFrom newDerivedByInsertionFrom(QualifiedName id,
-							    QualifiedName after,
-							    QualifiedName before,
-							    List<Entry> keyEntitySet,
-							    Collection<Attribute> attributes) {
-	List<Object[]> attrs = convertAttributes(attributes);
-	if (after != null)
-	    attrs.add(tuple("prov:after", qualifiedNameToString(currentNamespace,after)));
-	if (before != null)
-	    attrs.add(tuple("prov:before", qualifiedNameToString(currentNamespace,before)));
-	if (keyEntitySet != null && !keyEntitySet.isEmpty()) {
-	    attrs.add(tuple("prov:key-entity-set",
-			    encodeKeyEntitySet(keyEntitySet)));
-	}
-	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
-		: getBlankID("dBIF");
-	JsonProvRecord record = new JsonProvRecord("derivedByInsertionFrom",
-						   recordID, attrs);
-	this.currentRecords.add(record);
-	return null;
+                                                            QualifiedName after,
+                                                            QualifiedName before,
+                                                            List<Entry> keyEntitySet,
+                                                            Collection<Attribute> attributes) {
+        List<Object[]> attrs = convertAttributes(attributes);
+        if (after != null)
+            attrs.add(tuple("prov:after", qualifiedNameToString(currentNamespace,after)));
+        if (before != null)
+            attrs.add(tuple("prov:before", qualifiedNameToString(currentNamespace,before)));
+        if (keyEntitySet != null && !keyEntitySet.isEmpty()) {
+            attrs.add(tuple("prov:key-entity-set",
+                            encodeKeyEntitySet(keyEntitySet)));
+        }
+        String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
+                : getBlankID("dBIF");
+        JsonProvRecord record = new JsonProvRecord("derivedByInsertionFrom",
+                                                   recordID, attrs);
+        this.currentRecords.add(record);
+        return null;
     }
 
     @Override
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QualifiedName id,
-							QualifiedName after,
-							QualifiedName before,
-							List<Key> keys,
-							Collection<Attribute> attributes) {
-	List<Object[]> attrs = convertAttributes(attributes);
-	if (after != null)
-	    attrs.add(tuple("prov:after", qualifiedNameToString(currentNamespace,after)));
-	if (before != null)
-	    attrs.add(tuple("prov:before", qualifiedNameToString(currentNamespace,before)));
-	if (keys != null && !keys.isEmpty()) {
-	    List<Object> values = new ArrayList<Object>(keys.size());
-	    for (Key key : keys) {
-            values.add(convertTypedValue(key.getValue(), key.getType()));
-	    }
-	    attrs.add(tuple("prov:key-set", values));
-	}
-	String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
-		: getBlankID("dBRF");
-	JsonProvRecord record = new JsonProvRecord("derivedByRemovalFrom",
-						   recordID, attrs);
-	this.currentRecords.add(record);
-	return null;
+                                                        QualifiedName after,
+                                                        QualifiedName before,
+                                                        List<Key> keys,
+                                                        Collection<Attribute> attributes) {
+        List<Object[]> attrs = convertAttributes(attributes);
+        if (after != null)
+            attrs.add(tuple("prov:after", qualifiedNameToString(currentNamespace,after)));
+        if (before != null)
+            attrs.add(tuple("prov:before", qualifiedNameToString(currentNamespace,before)));
+        if (keys != null && !keys.isEmpty()) {
+            List<Object> values = new ArrayList<Object>(keys.size());
+            for (Key key : keys) {
+                values.add(convertTypedValue(key.getValue(), key.getType()));
+            }
+            attrs.add(tuple("prov:key-set", values));
+        }
+        String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
+                : getBlankID("dBRF");
+        JsonProvRecord record = new JsonProvRecord("derivedByRemovalFrom",
+                                                   recordID, attrs);
+        this.currentRecords.add(record);
+        return null;
     }
 
     @Override
     public DictionaryMembership newDictionaryMembership(QualifiedName dict,
-							List<Entry> keyEntitySet) {
-	List<Object[]> attrs = new ArrayList<Object[]>();
-	if (dict != null)
-	    attrs.add(tuple("prov:dictionary", qualifiedNameToString(currentNamespace,dict)));
-	if (keyEntitySet != null && !keyEntitySet.isEmpty()) {
-	    attrs.add(tuple("prov:key-entity-set",
-			    encodeKeyEntitySet(keyEntitySet)));
-	}
-	String recordID = getBlankID("hDM");
-	JsonProvRecord record = new JsonProvRecord("hadDictionaryMember",
-						   recordID, attrs);
-	this.currentRecords.add(record);
-	return null;
+                                                        List<Entry> keyEntitySet) {
+        List<Object[]> attrs = new ArrayList<Object[]>();
+        if (dict != null)
+            attrs.add(tuple("prov:dictionary", qualifiedNameToString(currentNamespace,dict)));
+        if (keyEntitySet != null && !keyEntitySet.isEmpty()) {
+            attrs.add(tuple("prov:key-entity-set",
+                            encodeKeyEntitySet(keyEntitySet)));
+        }
+        String recordID = getBlankID("hDM");
+        JsonProvRecord record = new JsonProvRecord("hadDictionaryMember",
+                                                   recordID, attrs);
+        this.currentRecords.add(record);
+        return null;
     }
 
     @Override
@@ -740,6 +744,64 @@ public class JSONConstructor implements ModelConstructor {
     public QualifiedName newQualifiedName(String namespace, String local,
 					  String prefix, BuildFlag flag) {	
 	return null;
+    }
+
+    @Override
+    public QualifiedAlternateOf newQualifiedAlternateOf(QualifiedName id,
+                                                        QualifiedName e2,
+                                                        QualifiedName e1,
+                                                        Collection<Attribute> attributes) {
+        List<Object[]> attrs = convertAttributes(attributes);
+        if (e2 != null)
+            attrs.add(tuple("prov:alternate2", qualifiedNameToString(currentNamespace,e2)));
+        if (e1 != null)
+            attrs.add(tuple("prov:alternate1", qualifiedNameToString(currentNamespace,e1)));
+        String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
+                : getBlankID("a0");
+        JsonProvRecord record = new JsonProvRecord("provext:alternateOf", recordID,
+                                                   attrs);
+        this.currentRecords.add(record);
+        return null;
+        
+    }
+
+    @Override
+    public QualifiedSpecializationOf newQualifiedSpecializationOf(QualifiedName id,
+                                                                  QualifiedName e2,
+                                                                  QualifiedName e1,
+                                                                  Collection<Attribute> attributes) {
+        List<Object[]> attrs = convertAttributes(attributes);
+        if (e2 != null)
+            attrs.add(tuple("prov:specificEntity", qualifiedNameToString(currentNamespace,e2)));
+        if (e1 != null)
+            attrs.add(tuple("prov:generalEntity", qualifiedNameToString(currentNamespace,e1)));
+        String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
+                : getBlankID("s0");
+        JsonProvRecord record = new JsonProvRecord("provext:specializationOf",
+                                                   recordID, attrs);
+        this.currentRecords.add(record);
+        return null;
+    }
+
+    @Override
+    public QualifiedHadMember newQualifiedHadMember(QualifiedName id,
+                                                    QualifiedName c,
+                                                    Collection<QualifiedName> e,
+                                                    Collection<Attribute> attributes) {
+        List<Object[]> attrs = convertAttributes(attributes);
+        if (c != null)
+            attrs.add(tuple("prov:collection", qualifiedNameToString(currentNamespace,c)));
+        if (e != null && !e.isEmpty()) {
+            List<String> entityList = new ArrayList<String>();
+            for (QualifiedName entity : e)
+                entityList.add(qualifiedNameToString(currentNamespace,entity));
+            attrs.add(tuple("prov:entity", entityList));
+        }
+        String recordID = (id != null) ? qualifiedNameToString(currentNamespace,id)
+                : getBlankID("hM");
+        JsonProvRecord record = new JsonProvRecord("provext:hadMember", recordID, attrs);
+        this.currentRecords.add(record);
+        return null;
     }
 
 }

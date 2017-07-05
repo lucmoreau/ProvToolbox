@@ -214,7 +214,7 @@ public class TypedValue
         if (this == object) {
             return true;
         }
-        final EqualsBuilder equalsBuilder = new JAXBEqualsBuilder();
+        EqualsBuilder equalsBuilder = new EqualsBuilder(); // new JAXBEqualsBuilder());
         equals(object, equalsBuilder);
         return equalsBuilder.isEquals();
     }
@@ -225,7 +225,7 @@ public class TypedValue
     }
 
     public int hashCode() {
-        final HashCodeBuilder hashCodeBuilder = new JAXBHashCodeBuilder();
+        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(); //new JAXBHashCodeBuilder();
         hashCode(hashCodeBuilder);
         return hashCodeBuilder.toHashCode();
     }
@@ -244,7 +244,7 @@ public class TypedValue
     }
 
     public String toString() {
-        final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
+        final ToStringBuilder toStringBuilder = new ToStringBuilder(this); //new JAXBToStringBuilder(this);
         toString(toStringBuilder);
         return toStringBuilder.toString();
     }

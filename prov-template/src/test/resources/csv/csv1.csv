@@ -1,0 +1,7 @@
+operation, operation_type, consumed1, consumed_value1, consumed2, consumed_value2, produced, produced_value, agent
+prov:QUALIFIED_NAME, prov:QUALIFIED_NAME, prov:QUALIFIED_NAME, xsd:int, prov:QUALIFIED_NAME, xsd:int, prov:QUALIFIED_NAME, xsd:int, prov:QUALIFIED_NAME
+ex:op1, ex:plus, ex:e1, 10, ex:e2, 11, ex:e3, 21, ex:Luc
+ex:op2, ex:times, ex:e4,  5, ex:e5,  7, ex:e6, 35, ex:Luc
+ex:op3, ex:subtraction, ex:e3, 21, ex:e6, 35, ex:e7, -14, ex:Luc
+
+

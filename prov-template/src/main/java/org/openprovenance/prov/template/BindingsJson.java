@@ -33,6 +33,7 @@ public class BindingsJson {
 	public static Object convertValueToBean(Object o, QualifiedName type, Hashtable<String, String> context) {
 		if (o instanceof Integer) return o;
 		if (o instanceof Float) return o;
+		if (o instanceof Boolean) return o;
 		if (o instanceof QualifiedName) {
 			QualifiedName qn=(QualifiedName)o;
 			Hashtable<String,String> table=new Hashtable<String,String>();
@@ -64,6 +65,7 @@ public class BindingsJson {
 	   
         if (v instanceof Integer) return new Object[] {v , pf.getName().XSD_INT};
         if (v instanceof Float)   return new Object[] {v , pf.getName().XSD_FLOAT};
+        if (v instanceof Boolean)   return new Object[] {v , pf.getName().XSD_BOOLEAN};
         if (v instanceof QualifiedName) return new Object[] {v , pf.getName().PROV_QUALIFIED_NAME};
         if (v instanceof String) {
             String s=(String)v;

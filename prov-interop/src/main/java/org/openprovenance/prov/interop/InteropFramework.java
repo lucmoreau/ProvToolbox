@@ -996,7 +996,6 @@ public class InteropFramework implements InteropMediaType {
         if (bindings != null) {
             Expand myExpand=new Expand(pFactory, addOrderp,allExpanded);
             Document expanded;
-            System.err.println("bindings version is " + bindingsVersion);
             if (bindingsVersion==3) {
                 Bindings bb=BindingsJson.fromBean(BindingsJson.importBean(new File(bindings)),pFactory);
                 expanded = myExpand.expander(doc,

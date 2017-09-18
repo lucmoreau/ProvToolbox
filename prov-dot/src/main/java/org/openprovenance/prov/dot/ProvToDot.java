@@ -453,7 +453,7 @@ public class ProvToDot {
     
     public HashMap<String, String> addURL(QualifiedName id,
                                           HashMap<String, String> properties) {
-	if (id!=null) properties.put("URL", id.getNamespaceURI()+id.getLocalPart());
+	if (id!=null) properties.put("URL", htmlify(id.getNamespaceURI()+id.getLocalPart()));
 	return properties;
     }
 
@@ -510,7 +510,7 @@ public class ProvToDot {
 	}
 	o=table.get("url");
 	if (o!=null && !o.isEmpty()) {
-	    properties.put("URL", o.get(0).getValue().toString());
+	    properties.put("URL", htmlify(o.get(0).getValue().toString()));
 	}
 	o=table.get("size");
 	if (o!=null && !o.isEmpty()) {
@@ -738,7 +738,7 @@ public class ProvToDot {
         Object val=t.getValue();
         if (val instanceof QualifiedName) {
             QualifiedName q=(QualifiedName)val;
-            return q.getPrefix() +  ":" + q.getLocalPart();
+            return htmlify(q.getPrefix() +  ":" + q.getLocalPart());
             //return "<a xlink:href='" + q.getNamespaceURI() + q.getLocalPart() + "'>" + q.getLocalPart() + "</a>";
             //return "&lt;a href=\"" + q.getPrefix() + ":" + q.getLocalPart() + "\"&gt;" + q.getLocalPart() + "&lt;/a&gt;";
         } else {

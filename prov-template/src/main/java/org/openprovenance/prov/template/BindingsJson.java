@@ -93,6 +93,21 @@ public class BindingsJson {
             if (id!=null) {              
                 return new Object[]{ns.stringToQualifiedName(id,pf),pf.getName().PROV_QUALIFIED_NAME};
             }
+            if (type!=null) {
+            	String [] strings=type.split(":");
+            	String prefix="";
+            	String local=type;
+            	if (strings.length>1) {
+            		prefix=strings[0];
+            		local=strings[1];
+            	}    	
+            	String namespace="http://foo/";
+            	namespace=context.getOrDefault(prefix, namespace);
+            	if ("xsd".equals(prefix)) {
+            		namespace=NamespacePrefixMapper.XSD_NS;
+            	}
+            	return new Object[] {value , pf.newQualifiedName(namespace,local,prefix)};
+            }
             return new Object[] {value , pf.newQualifiedName("xa","xb","cx")};  //TODO
         }
         throw new UnsupportedOperationException("bean is " + v.getClass());

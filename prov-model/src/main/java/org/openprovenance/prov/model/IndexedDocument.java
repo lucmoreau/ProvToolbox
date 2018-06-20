@@ -364,46 +364,46 @@ public class IndexedDocument implements StatementAction {
 
 
     public WasInformedBy add(WasInformedBy wib) {
-	return add(wib, 2, anonWasInformedBy, namedWasInformedByMap, activityEffectWasInformedByMap, activityCauseWasInformedByMap);
+        return add(wib, 2, anonWasInformedBy, namedWasInformedByMap, activityEffectWasInformedByMap, activityCauseWasInformedByMap);
     }
     public Used add(Used used) {
-	return add(used, 3, anonUsed, namedUsedMap, activityUsedMap, entityUsedMap);
+        return add(used, 3, anonUsed, namedUsedMap, activityUsedMap, entityUsedMap);
     }
     public WasGeneratedBy add(WasGeneratedBy wgb) {
-	return add(wgb, 3, anonWasGeneratedBy, namedWasGeneratedByMap, entityWasGeneratedByMap, activityWasGeneratedByMap);
+        return add(wgb, 3, anonWasGeneratedBy, namedWasGeneratedByMap, entityWasGeneratedByMap, activityWasGeneratedByMap);
     }
     public WasDerivedFrom add(WasDerivedFrom wdf) {
-	return add(wdf, 5, anonWasDerivedFrom, namedWasDerivedFromMap, entityEffectWasDerivedFromMap, entityCauseWasDerivedFromMap);
+        return add(wdf, 5, anonWasDerivedFrom, namedWasDerivedFromMap, entityEffectWasDerivedFromMap, entityCauseWasDerivedFromMap);
     }
     public WasAssociatedWith add(WasAssociatedWith waw) {
-	return add(waw, 3, anonWasAssociatedWith, namedWasAssociatedWithMap, activityWasAssociatedWithMap, agentWasAssociatedWithMap);
+        return add(waw, 3, anonWasAssociatedWith, namedWasAssociatedWithMap, activityWasAssociatedWithMap, agentWasAssociatedWithMap);
     }
     public WasAttributedTo add(WasAttributedTo wat) {
-	return add(wat, 2, anonWasAttributedTo, namedWasAttributedToMap, entityWasAttributedToMap, agentWasAttributedToMap);
+        return add(wat, 2, anonWasAttributedTo, namedWasAttributedToMap, entityWasAttributedToMap, agentWasAttributedToMap);
     }
     public ActedOnBehalfOf add(ActedOnBehalfOf act) {
-	return add(act, 3, anonActedOnBehalfOf, namedActedOnBehalfOfMap, delegateActedOnBehalfOfMap, responsibleActedOnBehalfOfMap);
+        return add(act, 3, anonActedOnBehalfOf, namedActedOnBehalfOfMap, delegateActedOnBehalfOfMap, responsibleActedOnBehalfOfMap);
     }
     public WasInvalidatedBy add(WasInvalidatedBy wib) {
-	return add(wib, 3, anonWasInvalidatedBy, namedWasInvalidatedByMap, entityWasInvalidatedByMap, activityWasInvalidatedByMap);
+        return add(wib, 3, anonWasInvalidatedBy, namedWasInvalidatedByMap, entityWasInvalidatedByMap, activityWasInvalidatedByMap);
     }
     public SpecializationOf add(SpecializationOf spec) {
-	return add(spec, 2, anonSpecializationOf, namedSpecializationOfMap, specificEntitySpecializationOfMap, genericEntitySpecializationOfMap);
+        return add(spec, 2, anonSpecializationOf, namedSpecializationOfMap, specificEntitySpecializationOfMap, genericEntitySpecializationOfMap);
     }
     public AlternateOf add(AlternateOf alt) {
-	return add(alt, 2, anonAlternateOf, namedAlternateOfMap, entityEffectAlternateOfMap,entityCauseAlternateOfMap);
+        return add(alt, 2, anonAlternateOf, namedAlternateOfMap, entityEffectAlternateOfMap,entityCauseAlternateOfMap);
     }
     public WasInfluencedBy add(WasInfluencedBy winf) {
-	return add(winf, 2, anonWasInfluencedBy, namedWasInfluencedByMap, influenceeWasInfluencedByMap, influencerWasInfluencedByMap);
+        return add(winf, 2, anonWasInfluencedBy, namedWasInfluencedByMap, influenceeWasInfluencedByMap, influencerWasInfluencedByMap);
     }
     public WasStartedBy add(WasStartedBy wsb) {
-	return add(wsb, 4, anonWasStartedBy, namedWasStartedByMap, activityWasStartedByMap, entityWasStartedByMap);
+        return add(wsb, 4, anonWasStartedBy, namedWasStartedByMap, activityWasStartedByMap, entityWasStartedByMap);
     }
     public WasEndedBy add(WasEndedBy web) {
-	return add(web, 4, anonWasEndedBy, namedWasEndedByMap, activityWasEndedByMap, entityWasEndedByMap);
+        return add(web, 4, anonWasEndedBy, namedWasEndedByMap, activityWasEndedByMap, entityWasEndedByMap);
     }
     public HadMember add(HadMember hm) {
-	return add(hm, 2, anonHadMember, namedHadMemberMap, collHadMemberMap, entityHadMemberMap);
+        return add(hm, 2, anonHadMember, namedHadMemberMap, collHadMemberMap, entityHadMemberMap);
     }
 
 
@@ -434,20 +434,20 @@ public class IndexedDocument implements StatementAction {
 	    boolean found = false;
 	    Collection<T> relationCollection = effectRelationMap.get(aid2);
 	    if (relationCollection == null) {
-		relationCollection = new LinkedList<T>();
-		relationCollection.add(statement);
-		effectRelationMap.put(aid2, relationCollection);
+	        relationCollection = new LinkedList<T>();
+	        relationCollection.add(statement);
+	        effectRelationMap.put(aid2, relationCollection);
 	    } else {
-		for (T u : relationCollection) {
-		    if (u.equals(statement)) {
-			found = true;
-			statement = u;
-			break;
-		    }
+	        for (T u : relationCollection) {
+	            if (u.equals(statement)) {
+	                found = true;
+	                statement = u;
+	                break;
+	            }
 		}
-		if (!found) {
-		    relationCollection.add(statement);
-		}
+	        if (!found) {
+	            relationCollection.add(statement);
+	        }
 	    }
 
 	    relationCollection = causeRelationMap.get(aid1);
@@ -487,104 +487,104 @@ public class IndexedDocument implements StatementAction {
 	    }
 	}
 	return statement;
-}
+   }
 
 
-    @Override
-    public void doAction(Activity s) {
-	add(s);
-	
-    }
-    @Override
-    public void doAction(Used s) {
-	add(s);
-    }  
-    @Override
-    public void doAction(WasStartedBy s) {
-	add(s);
-    }
-    @Override
-    public void doAction(Agent s) {
-	add(s);	
-    }
-    @Override
-    public void doAction(AlternateOf s) {
-	add(s);
-    }
-    @Override
-    public void doAction(WasAssociatedWith s) {
-	add(s);
-    }
-    @Override
-    public void doAction(WasAttributedTo s) {
-	add(s);
-    }
-    @Override
-    public void doAction(WasInfluencedBy s) {
-	add(s);
-    }
-    @Override
-    public void doAction(ActedOnBehalfOf s) {
-        add(s);
-    }
-    @Override
-    public void doAction(WasDerivedFrom s) {
-	add(s);
-    }
-    @Override
-    public void doAction(WasEndedBy s) {
-	add(s);
-    }
-    @Override
-    public void doAction(Entity s) {
-	add(s);	
-    }
-    @Override
-    public void doAction(WasGeneratedBy s) {
-	add(s);
-    }
-    @Override
-    public void doAction(WasInvalidatedBy s) {
-	add(s);
-    }
-    @Override
-    public void doAction(HadMember s) {
-	add(s);		
-    }
-    @Override
-    public void doAction(MentionOf s) {
-	throw new UnsupportedOperationException();			
-    }
-    @Override
-    public void doAction(SpecializationOf s) {
-	add(s);
-    }
-    @Override
-    public void doAction(QualifiedSpecializationOf s) {
-    add(s);
-    }
-    public void doAction(QualifiedAlternateOf s) {
-    add(s);
-    }
-    public void doAction(QualifiedHadMember s) {
-    add(s);
-    }
-    @Override
-    public void doAction(WasInformedBy s) {
-	add(s);
-    }
-    @Override
-    public void doAction(DerivedByInsertionFrom s) {
-	throw new UnsupportedOperationException();
-    }
-    @Override
-    public void doAction(DictionaryMembership s) {
-	throw new UnsupportedOperationException();	
-    }
-    @Override
-    public void doAction(DerivedByRemovalFrom s) {
-	throw new UnsupportedOperationException();	
-    }
+   @Override
+   public void doAction(Activity s) {
+       add(s);
+
+   }
+   @Override
+   public void doAction(Used s) {
+       add(s);
+   }  
+   @Override
+   public void doAction(WasStartedBy s) {
+       add(s);
+   }
+   @Override
+   public void doAction(Agent s) {
+       add(s);	
+   }
+   @Override
+   public void doAction(AlternateOf s) {
+       add(s);
+   }
+   @Override
+   public void doAction(WasAssociatedWith s) {
+       add(s);
+   }
+   @Override
+   public void doAction(WasAttributedTo s) {
+       add(s);
+   }
+   @Override
+   public void doAction(WasInfluencedBy s) {
+       add(s);
+   }
+   @Override
+   public void doAction(ActedOnBehalfOf s) {
+       add(s);
+   }
+   @Override
+   public void doAction(WasDerivedFrom s) {
+       add(s);
+   }
+   @Override
+   public void doAction(WasEndedBy s) {
+       add(s);
+   }
+   @Override
+   public void doAction(Entity s) {
+       add(s);	
+   }
+   @Override
+   public void doAction(WasGeneratedBy s) {
+       add(s);
+   }
+   @Override
+   public void doAction(WasInvalidatedBy s) {
+       add(s);
+   }
+   @Override
+   public void doAction(HadMember s) {
+       add(s);		
+   }
+   @Override
+   public void doAction(MentionOf s) {
+       throw new UnsupportedOperationException();			
+   }
+   @Override
+   public void doAction(SpecializationOf s) {
+       add(s);
+   }
+   @Override
+   public void doAction(QualifiedSpecializationOf s) {
+       add(s);
+   }
+   public void doAction(QualifiedAlternateOf s) {
+       add(s);
+   }
+   public void doAction(QualifiedHadMember s) {
+       add(s);
+   }
+   @Override
+   public void doAction(WasInformedBy s) {
+       add(s);
+   }
+   @Override
+   public void doAction(DerivedByInsertionFrom s) {
+       throw new UnsupportedOperationException();
+   }
+   @Override
+   public void doAction(DictionaryMembership s) {
+       throw new UnsupportedOperationException();	
+   }
+   @Override
+   public void doAction(DerivedByRemovalFrom s) {
+       throw new UnsupportedOperationException();	
+   }
 
     HashMap<QualifiedName,IndexedDocument> bundleMap=new HashMap<QualifiedName,IndexedDocument>();
     
@@ -693,7 +693,7 @@ public class IndexedDocument implements StatementAction {
      * @param doc the document to be merge into this
      */
     public void merge(Document doc) {
-	u.forAllStatementOrBundle(doc.getStatementOrBundle(), this);
+        u.forAllStatementOrBundle(doc.getStatementOrBundle(), this);
     }
 
 }

@@ -1095,22 +1095,23 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
                                                    QualifiedName ag, 
                                                    QualifiedName plan, 
                                                    Collection<Attribute> attributes) {
-	WasAssociatedWith res= newWasAssociatedWith(id,a,ag);
-	res.setPlan(plan);
-	setAttributes(res, attributes);
-	return res;
+        WasAssociatedWith res= newWasAssociatedWith(id,a,ag);
+        res.setPlan(plan);
+        setAttributes(res, attributes);
+        return res;
     }
+
     
-    
-    
+
     public WasAssociatedWith newWasAssociatedWith(WasAssociatedWith u) {
-	WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(),
-						    u.getAgent());
-	u1.getOther().addAll(u.getOther());
-	u1.setPlan(u.getPlan());
-	u1.getType().addAll(u.getType());
-	u1.getLabel().addAll(u.getLabel());
-	return u1;
+        WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(),
+                                                    u.getAgent());
+        u1.getOther().addAll(u.getOther());
+        u1.setPlan(u.getPlan());
+        u1.getType().addAll(u.getType());
+        u1.getLabel().addAll(u.getLabel());
+        u1.getRole().addAll(u.getRole());
+        return u1;
     }
 
 
@@ -1123,12 +1124,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      */ 
     public WasAttributedTo newWasAttributedTo(QualifiedName id, 
                                               QualifiedName entity,
-					      QualifiedName agent) {
-	WasAttributedTo res = of.createWasAttributedTo();
-	res.setId(id);
-	res.setEntity(entity);
-	res.setAgent(agent);
-	return res;
+                                              QualifiedName agent) {
+        WasAttributedTo res = of.createWasAttributedTo();
+        res.setId(id);
+        res.setEntity(entity);
+        res.setAgent(agent);
+        return res;
     }
 
 
@@ -1138,27 +1139,27 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      */
     public WasAttributedTo newWasAttributedTo(QualifiedName id, 
                                               QualifiedName entity,
-					      QualifiedName agent,
-					      Collection<Attribute> attributes) {
-	WasAttributedTo res = of.createWasAttributedTo();
-	res.setId(id);
-	res.setEntity(entity);
-	res.setAgent(agent);
+                                              QualifiedName agent,
+                                              Collection<Attribute> attributes) {
+        WasAttributedTo res = of.createWasAttributedTo();
+        res.setId(id);
+        res.setEntity(entity);
+        res.setAgent(agent);
         setAttributes(res, attributes);
-	return res;
+        return res;
     }
 
-    
+
 
     public WasAttributedTo newWasAttributedTo(WasAttributedTo u) {
-	WasAttributedTo u1 = newWasAttributedTo(u.getId(), u.getEntity(),
-						u.getAgent());
-	u1.getOther().addAll(u.getOther());
-	u1.getType().addAll(u.getType());
-	u1.getLabel().addAll(u.getLabel());
-	return u1;
+        WasAttributedTo u1 = newWasAttributedTo(u.getId(), u.getEntity(),
+                                                u.getAgent());
+        u1.getOther().addAll(u.getOther());
+        u1.getType().addAll(u.getType());
+        u1.getLabel().addAll(u.getLabel());
+        return u1;
     }
-    
+
     /** A factory method to create an instance of a derivation {@link WasDerivedFrom}
      * @param id an optional identifier for a derivation
      * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation 
@@ -1167,14 +1168,14 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      */
     public WasDerivedFrom newWasDerivedFrom(QualifiedName id, 
                                             QualifiedName e2,
-					    QualifiedName e1) {
-	WasDerivedFrom res = of.createWasDerivedFrom();
-	res.setId(id);
-	res.setUsedEntity(e1);
-	res.setGeneratedEntity(e2);
-	return res;
+                                            QualifiedName e1) {
+        WasDerivedFrom res = of.createWasDerivedFrom();
+        res.setId(id);
+        res.setUsedEntity(e1);
+        res.setGeneratedEntity(e2);
+        return res;
     }    
-    
+
     /** A factory method to create an instance of a derivation {@link WasDerivedFrom}
      * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation 
      * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
@@ -1195,34 +1196,34 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
     public WasDerivedFrom newWasDerivedFrom(QualifiedName id, 
                                             QualifiedName aid1,
-					    QualifiedName aid2, 
-					    QualifiedName aid,
-					    QualifiedName did1, 
-					    QualifiedName did2,
-					    Collection<Attribute> attributes) {
-	WasDerivedFrom res = of.createWasDerivedFrom();
-	res.setId(id);
-	res.setUsedEntity(aid2);
-	res.setGeneratedEntity(aid1);
-	res.setActivity(aid);
-	res.setGeneration(did1);
-	res.setUsage(did2);
+                                            QualifiedName aid2, 
+                                            QualifiedName aid,
+                                            QualifiedName did1, 
+                                            QualifiedName did2,
+                                            Collection<Attribute> attributes) {
+        WasDerivedFrom res = of.createWasDerivedFrom();
+        res.setId(id);
+        res.setUsedEntity(aid2);
+        res.setGeneratedEntity(aid1);
+        res.setActivity(aid);
+        res.setGeneration(did1);
+        res.setUsage(did2);
         setAttributes(res, attributes);
-	return res;
+        return res;
     }
 
 
     public WasDerivedFrom newWasDerivedFrom(WasDerivedFrom d) {
-	WasDerivedFrom wdf = newWasDerivedFrom(d.getId(),
-					       d.getGeneratedEntity(),
-					       d.getUsedEntity());
-	wdf.setActivity(d.getActivity());
-	wdf.setGeneration(d.getGeneration());
-	wdf.setUsage(d.getUsage());
-	wdf.getOther().addAll(d.getOther());
-	wdf.getType().addAll(d.getType());
-	wdf.getLabel().addAll(d.getLabel());
-	return wdf;
+        WasDerivedFrom wdf = newWasDerivedFrom(d.getId(),
+                                               d.getGeneratedEntity(),
+                                               d.getUsedEntity());
+        wdf.setActivity(d.getActivity());
+        wdf.setGeneration(d.getGeneration());
+        wdf.setUsage(d.getUsage());
+        wdf.getOther().addAll(d.getOther());
+        wdf.getType().addAll(d.getType());
+        wdf.getLabel().addAll(d.getLabel());
+        return wdf;
     }
     /** A factory method to create an instance of an end {@link WasEndedBy}
      * @param id

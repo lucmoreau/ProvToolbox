@@ -73,8 +73,7 @@ public class Expand {
 
     public Document expander(Document docIn, Bindings bindings1) {
         
-
-        Bundle bun = (Bundle) docIn.getStatementOrBundle().get(0);
+        Bundle bun = (Bundle) u.getBundle(docIn).get(0);
 
 
         Groupings grp1 = Groupings.fromDocument(docIn);

@@ -17,6 +17,7 @@ import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.model.exception.UncheckedException;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class BindingsJson {
@@ -253,6 +254,19 @@ public class BindingsJson {
         } catch (IOException e) {
             e.printStackTrace();
             throw new UncheckedException("JSON serialization failed", e);
+        }
+    }
+    
+    public static BindingsBean importBean(JsonNode json) {
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            BindingsBean bean=mapper.treeToValue(json,BindingsBean.class);
+            return bean;
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UncheckedException("JSON conversion to bean failed", e);
         }
     }
     

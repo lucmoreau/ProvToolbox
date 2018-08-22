@@ -13,9 +13,7 @@ import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.Statement;
 
-import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -24,6 +22,7 @@ import com.squareup.javapoet.TypeSpec.Builder;
 public class BindingsBeanGenerator {
     
     final private ProvFactory pFactory;
+   
 
 
     public BindingsBeanGenerator(ProvFactory pFactory) {
@@ -31,6 +30,8 @@ public class BindingsBeanGenerator {
     }
     
     static ProvUtilities u= new ProvUtilities();
+    
+    final GeneratorUtil gu=new GeneratorUtil();
 
     
     
@@ -65,13 +66,9 @@ public class BindingsBeanGenerator {
 
 
     public String beanName(String templateName) {
-        return capitalize(templateName)+"BindingsBean";
+        return gu.capitalize(templateName)+"BindingsBean";
     }
 
-
-    public String capitalize(String templateName) {
-        return templateName.substring(0, 1).toUpperCase()+templateName.substring(1);
-    }
 
     
     public JavaFile generateSpecification(Document doc, String name, String templateName, String packge, String resource) {
@@ -82,23 +79,20 @@ public class BindingsBeanGenerator {
         Set<QualifiedName> allVars=new HashSet<QualifiedName>();
         Set<QualifiedName> allAtts=new HashSet<QualifiedName>();
         
-        for (Statement statement: bun.getStatement()) {
-            Set<QualifiedName> vars=ExpandUtil.freeVariables(statement);
-            allVars.addAll(vars);
-            Set<QualifiedName> vars2=ExpandUtil.freeAttributeVariables(statement, pFactory);
-            allAtts.addAll(vars2);
-        }
+        gu.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
         
         return generate(allVars,allAtts,name, templateName, packge, resource);
         
     }
+
+
     
     public JavaFile generate(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource) {
         
         
-        Builder builder = generateClassBuilder(name);
+        Builder builder = gu.generateClassBuilder(name);
         
-        builder.addMethod(generateConstructor());
+        builder.addMethod(gu.generateConstructor());
         
         for (QualifiedName q: allVars) {
             builder.addMethod(generateVarMutator(q));
@@ -122,30 +116,11 @@ public class BindingsBeanGenerator {
         return myfile;
     }
 
-    public Builder generateClassBuilder(String name) {
-        return TypeSpec.classBuilder(name)
-                .addModifiers(Modifier.PUBLIC)
-                .addSuperinterface(BindingsBean.class)
-                .addField(Bindings.class, "bindings", Modifier.PRIVATE, Modifier.FINAL)
-                .addField(ProvFactory.class, "pf", Modifier.PRIVATE, Modifier.FINAL);
-    }
 
-    public MethodSpec generateConstructor() {
-        return MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ProvFactory.class, "pf")
-                .addStatement("this.$N = $N", "pf", "pf")
-                .addStatement("this.bindings = new $T($N)", Bindings.class, "pf")
-                .build();
-    }
-    
-    public String camelcase(String s) { 
-        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s); 
-    }
     
     public MethodSpec generateVarMutator(QualifiedName v) {
         final String local=v.getLocalPart();
-        final String localCamel= camelcase(local);
+        final String localCamel= gu.camelcase(local);
         MethodSpec method = MethodSpec.methodBuilder("add" + localCamel)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)
@@ -158,7 +133,7 @@ public class BindingsBeanGenerator {
     
     public MethodSpec generateAttMutator(QualifiedName v, Class typ) {
         final String local=v.getLocalPart();
-        final String localCamel= camelcase(local);
+        final String localCamel= gu.camelcase(local);
         MethodSpec method = MethodSpec.methodBuilder("add" + localCamel)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)

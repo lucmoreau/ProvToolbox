@@ -46,6 +46,8 @@ public class CommandLineArguments implements ErrorCodes {
     public static final String PACKAGE = "package";
     public static final String LOCATION = "location";
 
+    public static final String BUILDER = "builder";
+
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
 
@@ -156,6 +158,8 @@ public class CommandLineArguments implements ErrorCodes {
                 .hasArg()
                 .withDescription("template name, used to create bindings bean class name")
                 .create(TEMPLATE);
+        
+        Option builder = new Option(BUILDER, "template builder");
 
         Option packge = OptionBuilder
                 .withArgName("package")
@@ -198,6 +202,7 @@ public class CommandLineArguments implements ErrorCodes {
         options.addOption(template);
         options.addOption(packge);
         options.addOption(location);
+        options.addOption(builder);
 
         return options;
 
@@ -262,6 +267,7 @@ public class CommandLineArguments implements ErrorCodes {
         boolean addOrderp=false;
         boolean listFormatsp = false;
         boolean allexpanded=false;
+        boolean builder=false;
 
 
         try {
@@ -307,6 +313,7 @@ public class CommandLineArguments implements ErrorCodes {
             if (line.hasOption(TEMPLATE))  template = line.getOptionValue(TEMPLATE);
             if (line.hasOption(PACKAGE))  packge = line.getOptionValue(PACKAGE);
             if (line.hasOption(LOCATION))  location = line.getOptionValue(LOCATION);
+            if (line.hasOption(BUILDER))  builder = true;
 
 
             if (help!=null) {
@@ -338,6 +345,7 @@ public class CommandLineArguments implements ErrorCodes {
                                                           addOrderp,
                                                           allexpanded,
                                                           template,
+                                                          builder,
                                                           packge,
                                                           location,
                                                           generator,

@@ -988,7 +988,7 @@ public class InteropFramework implements InteropMediaType {
             BindingsBeanGenerator bbgen=new BindingsBeanGenerator(pFactory);
             
             boolean val=bbgen.generate(doc, template, packge, outfile, location);
-            return (val) ? 0 : CommandLineArguments.STATUS_BEAN_GENERATION;
+            return CommandLineArguments.STATUS_OK;
         }
         
         if (template!=null  && builder) {

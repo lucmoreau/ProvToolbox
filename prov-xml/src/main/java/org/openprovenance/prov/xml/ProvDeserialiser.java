@@ -69,7 +69,7 @@ public class ProvDeserialiser {
 	        Object root= u.unmarshal(serialised);
 	        @SuppressWarnings("unchecked")
 	        Document res=(Document)((JAXBElement<Document>) root).getValue();
-	        updateNamespaces(res);
+	        utils.updateNamespaces(res);
 		return res;
     }
 
@@ -77,7 +77,7 @@ public class ProvDeserialiser {
      * After reading a document, this method should be called to ensure that Namespaces are properly chained.
      * @param document a {@link Document} to update
      */
-    public void updateNamespaces(Document document) {
+  /*  public void updateNamespacesxx(Document document) {
 	Namespace rootNamespace = Namespace.gatherNamespaces(document);
 	document.setNamespace(rootNamespace);
 	for (org.openprovenance.prov.model.Bundle bu: utils.getBundle(document)) {
@@ -91,14 +91,14 @@ public class ProvDeserialiser {
 	    }
 	}
     }
-
+  */
     public Document deserialiseDocument (InputStream is)
 	        throws JAXBException {
 	        Unmarshaller u=jc.createUnmarshaller();
 	        Object root= u.unmarshal(is);
 	        @SuppressWarnings("unchecked")
 	        Document res=(Document)((JAXBElement<Document>) root).getValue();
-	        updateNamespaces(res);
+	        utils.updateNamespaces(res);
 	        return res;
     }
 

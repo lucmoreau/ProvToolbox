@@ -1194,6 +1194,24 @@ public class ProvUtilities {
     public enum BuildFlag { NOCHEK, WARN, STRICT }
 
 
-
+    /**
+     * After reading/constructing a document, this method should be called to ensure that Namespaces are properly chained.
+     * @param document a {@link Document} to update
+     */
+  
+    public void updateNamespaces(Document document) {
+        Namespace rootNamespace = Namespace.gatherNamespaces(document);
+        document.setNamespace(rootNamespace);
+        for (org.openprovenance.prov.model.Bundle bu: getBundle(document)) {
+            Namespace ns=bu.getNamespace();
+            if (ns!=null) {
+                ns.setParent(rootNamespace);
+            } else {
+                ns=new Namespace();
+                ns.setParent(rootNamespace);
+                bu.setNamespace(ns);
+            }
+        }
+    }
 
 }

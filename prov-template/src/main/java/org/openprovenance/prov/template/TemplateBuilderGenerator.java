@@ -26,12 +26,15 @@ public class TemplateBuilderGenerator {
 
 
     public TemplateBuilderGenerator(ProvFactory pFactory) {
+        System.out.println("hello");
         this.pFactory=pFactory;
     }
     
     static ProvUtilities u= new ProvUtilities();
     
     final GeneratorUtil gu=new GeneratorUtil();
+    
+    boolean withMain=true; // TODO need to be updatable via command line
    
     public boolean generate(Document doc, String templateName, String packge, String location, String resource) {
         try {
@@ -90,6 +93,8 @@ public class TemplateBuilderGenerator {
         builder.addMethod(gu.generateConstructor2());
         
         builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc));
+        
+        if (withMain) builder.addMethod(generateMain(allVars, allAtts, name));
 
 
         System.out.println(allVars);
@@ -109,21 +114,57 @@ public class TemplateBuilderGenerator {
                .addModifiers(Modifier.PUBLIC)
                .returns(Document.class)
                .addStatement("$T nullqn = null", QualifiedName.class)
+               .addStatement("$T attrs=null", StatementGeneratorAction.cl_collectionOfAttributes)
                .addStatement("$T document = pf.newDocument()", Document.class)
-    //           .addStatement("$T bundle = pf.newBundle()", Bundle.class)
-    //           .addStatement("document.getStatementOrBundle().add(bundle)")
-
+ 
        ;
        for (QualifiedName q: allVars) {
            builder.addParameter(QualifiedName.class, q.getLocalPart());
        }
        
-       StatementGeneratorAction action=new StatementGeneratorAction(allVars, allAtts, builder, "document.getStatementOrBundle()");
+       StatementGeneratorAction action=new StatementGeneratorAction(pFactory, allVars, allAtts, builder, "document.getStatementOrBundle()");
        for (StatementOrBundle s: doc.getStatementOrBundle()) {
            u.doAction(s, action);
            
        }
+       builder.addStatement("new $T().updateNamespaces(document)", ProvUtilities.class);
+
        builder.addStatement("return document");
+
+       MethodSpec method=builder.build();
+       
+       return method;
+   }
+
+   public MethodSpec generateMain(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name) {
+
+       MethodSpec.Builder builder = MethodSpec.methodBuilder("main")
+               .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+               .returns(void.class)
+               .addParameter(String[].class, "args")
+               .addStatement("System.out.println($S + $S)","testing ", name)
+               .addStatement("$T pf=org.openprovenance.prov.xml.ProvFactory.getFactory()",ProvFactory.class)
+               .addStatement("$N me=new $N(pf)",name,name);
+
+       ;
+       for (QualifiedName q: allVars) {
+           builder.addStatement("$T $N=pf.newQualifiedName($S,$S,$S)", QualifiedName.class, q.getLocalPart(), "http://example.org/",q.getLocalPart(), "ex");
+       }
+       
+       String args="";
+       boolean first=true;
+       for (QualifiedName q: allVars) {
+           if (first) {
+               first=false;
+               args=q.getLocalPart();
+           } else {
+               args=args + ", " + q.getLocalPart();
+           } 
+       }
+       builder.addStatement("$T document=me.generator(" + args + ", pf.newQualifiedName($S,$S,$S)" + ")", Document.class, "http://example.org/","bun123","ex");
+       
+       builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,org.openprovenance.prov.interop.InteropFramework.ProvFormat.PROVN,document)");
+            
 
        MethodSpec method=builder.build();
        

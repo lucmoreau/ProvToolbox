@@ -1101,7 +1101,16 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return res;
     }
 
-    
+    public WasAssociatedWith  newWasAssociatedWith(QualifiedName id, 
+                                                   QualifiedName a, 
+                                                   QualifiedName ag, 
+                                                   QualifiedName plan) {
+        WasAssociatedWith res= newWasAssociatedWith(id,a,ag);
+        res.setPlan(plan);
+        return res;
+    }
+
+      
 
     public WasAssociatedWith newWasAssociatedWith(WasAssociatedWith u) {
         WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(),
@@ -1655,6 +1664,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     public Namespace newNamespace() {
 	return new Namespace();
     }
+    
+
     
     public AlternateOf newAlternateOf(AlternateOf s) {
 	AlternateOf res=newAlternateOf(s.getAlternate1(), s.getAlternate2());

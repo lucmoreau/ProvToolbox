@@ -18,6 +18,8 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.MissingNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -96,7 +98,7 @@ public class TemplateBuilderGenerator {
         
         builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc));
         
-        if (withMain) builder.addMethod(generateMain(allVars, allAtts, name));
+        if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindings_schema));
 
         if (bindings_schema!=null) builder.addMethod(generateFactoryMethod(allVars, allAtts, name, bindings_schema));
 
@@ -124,6 +126,13 @@ public class TemplateBuilderGenerator {
        for (QualifiedName q: allVars) {
            builder.addParameter(QualifiedName.class, q.getLocalPart());
        }
+       for (QualifiedName q: allVars) {
+           if (ExpandUtil.isGensymVariable(q)) {
+               final String vgen = q.getLocalPart();
+               builder.addStatement("if ($N==null) $N=org.openprovenance.prov.template.ExpandAction.getUUIDQualifiedName2(pf)",vgen,vgen);
+           }
+       }
+
        
        StatementGeneratorAction action=new StatementGeneratorAction(pFactory, allVars, allAtts, builder, "document.getStatementOrBundle()");
        for (StatementOrBundle s: doc.getStatementOrBundle()) {
@@ -169,10 +178,15 @@ public class TemplateBuilderGenerator {
        for (QualifiedName q: allVars) {
            final String key = q.getLocalPart();
            final String newName = "__"+key;
-           String s=the_var.path(key).get(0).get("@id").textValue();
-           
-           String s2="\"" + s.replace("*","\" + $N + \"") + "\"";
-           builder.addStatement("$T $N=ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key);
+           final JsonNode entry = the_var.path(key);
+           if (entry!=null && !(entry instanceof MissingNode)) {
+               String s=entry.get(0).get("@id").textValue();
+               String s2="\"" + s.replace("*","\" + $N + \"") + "\"";
+               builder.addStatement("$T $N=ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key);
+           } else {
+               // TODO: check if it was a gensym, because then i can generate it!
+               builder.addStatement("$T $N=null", QualifiedName.class, newName);
+           }
            if (first) {
                first=false;
                args=newName;
@@ -181,7 +195,7 @@ public class TemplateBuilderGenerator {
            }
        }
        
-       builder.addStatement("document = generator(" + args + ", null)");//TODO NULL
+       builder.addStatement("document = generator(" + args + ")");
 
                       
        builder.addStatement("return document");
@@ -193,7 +207,7 @@ public class TemplateBuilderGenerator {
        return method;
    }
    
-   public MethodSpec generateMain(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name) {
+   public MethodSpec generateMain(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, JsonNode bindings_schema) {
 
        MethodSpec.Builder builder = MethodSpec.methodBuilder("main")
                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -218,11 +232,35 @@ public class TemplateBuilderGenerator {
                args=args + ", " + q.getLocalPart();
            } 
        }
-       builder.addStatement("$T document=me.generator(" + args + ", pf.newQualifiedName($S,$S,$S)" + ")", Document.class, "http://example.org/","bun123","ex");
+       builder.addStatement("$T document=me.generator(" + args + ")", Document.class);
        
-       builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,org.openprovenance.prov.interop.InteropFramework.ProvFormat.PROVN,document)");
+       builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,org.openprovenance.prov.interop.InteropFramework.ProvFormat.PROVN,document)"); //TODO make it load dynamically
             
 
+       if (bindings_schema!=null) {
+           JsonNode the_var=bindings_schema.get("var");
+
+           Iterator<String> iter=the_var.fieldNames();
+           args="";
+           first=true;
+           int count=0;
+           while(iter.hasNext()){
+               if (first) {
+                   first=false;
+                   args="\"v" + (count++) + "\"";
+               } else {
+                   args=args + ", " +  "\"v" + (count++) + "\"";
+               }
+               iter.next();
+           }
+           
+           builder.addStatement("document=me.make(" + args + ")");
+           builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,org.openprovenance.prov.interop.InteropFramework.ProvFormat.PROVN,document)");
+
+           
+       }
+       
+       
        MethodSpec method=builder.build();
        
        return method;

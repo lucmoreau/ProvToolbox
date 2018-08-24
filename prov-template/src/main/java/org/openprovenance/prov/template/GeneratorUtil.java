@@ -29,6 +29,7 @@ public class GeneratorUtil {
         for (Statement statement: bundle.getStatement()) {
             Set<QualifiedName> vars=ExpandUtil.freeVariables(statement);
             allVars.addAll(vars);
+            allVars.addAll(ExpandUtil.freeVariables(bundle));
             Set<QualifiedName> vars2=ExpandUtil.freeAttributeVariables(statement, pFactory);
             allAtts.addAll(vars2);
         }

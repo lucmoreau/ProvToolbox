@@ -248,7 +248,6 @@ public class StatementGeneratorAction implements StatementAction {
         final String id = bun.getId().getLocalPart();
         final String id_ = id + "_";
         builder.addStatement("$T $N = pf.newNamedBundle($N,pf.newNamespace(),null)", Bundle.class, id_, id);
-        builder.addParameter(QualifiedName.class, id);
         builder.addStatement(target + ".add($N)", id_);
 
         String target2 = id_+".getStatement()";

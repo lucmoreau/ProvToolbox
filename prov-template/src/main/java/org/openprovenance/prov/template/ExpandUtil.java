@@ -96,7 +96,6 @@ public class ExpandUtil {
                 }
             }
         }
-
         return result;
     }
 
@@ -175,7 +174,13 @@ public class ExpandUtil {
         final String namespaceURI = id.getNamespaceURI();
         return (VAR_NS.equals(namespaceURI) || VARGEN_NS.equals(namespaceURI));
     }
-
+    static public boolean isVGensymariable(QualifiedName id) {
+        if (id == null)
+            return false;
+        final String namespaceURI = id.getNamespaceURI();
+        return VARGEN_NS.equals(namespaceURI);
+    }
+    
     static public boolean isGensymVariable(QualifiedName id) {
         if (id == null)
             return false;

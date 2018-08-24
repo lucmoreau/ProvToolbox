@@ -450,7 +450,7 @@ public class ExpandAction implements StatementAction {
         }
     }
 
-    final QualifiedNameUtils qnU = new QualifiedNameUtils();
+    static final QualifiedNameUtils qnU = new QualifiedNameUtils();
 
     public QualifiedName getUUIDQualifiedName() {
         UUID uuid = UUID.randomUUID();
@@ -459,6 +459,12 @@ public class ExpandAction implements StatementAction {
                                    UUID_PREFIX);
     }
 
+    static public QualifiedName getUUIDQualifiedName2(ProvFactory pf) {
+        UUID uuid = UUID.randomUUID();
+        return pf.newQualifiedName(URN_UUID_NS,
+                                   qnU.escapeProvLocalName(uuid.toString()),
+                                   UUID_PREFIX);
+    }
     public void addOrderAttribute(HasOther res) {
         if (addOrderp) {
             res.getOther().add(pf.newOther(TMPL_NS,

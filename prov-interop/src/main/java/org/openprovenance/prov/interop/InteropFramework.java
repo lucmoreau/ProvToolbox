@@ -43,6 +43,10 @@ import org.antlr.runtime.tree.CommonTree;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.openprovenance.prov.dot.ProvToDot;
 import org.openprovenance.prov.generator.GeneratorDetails;
 import org.openprovenance.prov.generator.GraphGenerator;
@@ -988,14 +992,22 @@ public class InteropFramework implements InteropMediaType {
             BindingsBeanGenerator bbgen=new BindingsBeanGenerator(pFactory);
             
             boolean val=bbgen.generate(doc, template, packge, outfile, location);
-            return CommandLineArguments.STATUS_OK;
-        }
+            return (val) ? 0 : CommandLineArguments.STATUS_BEAN_GENERATION;
+      }
         
         if (template!=null  && builder) {
+            JsonNode bindings_schema=null;
+            if (bindings != null && bindingsVersion>=3) {
+                try {
+                    bindings_schema = mapper.readTree(new File(bindings));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             TemplateBuilderGenerator tbg=new TemplateBuilderGenerator(pFactory);
             
-            boolean val=tbg.generate(doc, template, packge, outfile, location);
-            return (val) ? 0 : CommandLineArguments.STATUS_BEAN_GENERATION;
+            tbg.generate(doc, template, packge, outfile, location,bindings_schema);
+            return CommandLineArguments.STATUS_OK;
         }
 
         if (index != null) {
@@ -1030,6 +1042,7 @@ public class InteropFramework implements InteropMediaType {
         return CommandLineArguments.STATUS_OK;
 
     }
+    static ObjectMapper mapper = new ObjectMapper();
 
     private int doCompare(Document doc1, Document doc2) {
         if (doc1==null) return CommandLineArguments.STATUS_COMPARE_NO_ARG1;

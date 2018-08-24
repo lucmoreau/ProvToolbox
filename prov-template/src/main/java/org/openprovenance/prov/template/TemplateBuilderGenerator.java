@@ -6,15 +6,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -26,7 +29,6 @@ public class TemplateBuilderGenerator {
 
 
     public TemplateBuilderGenerator(ProvFactory pFactory) {
-        System.out.println("hello");
         this.pFactory=pFactory;
     }
     
@@ -36,13 +38,13 @@ public class TemplateBuilderGenerator {
     
     boolean withMain=true; // TODO need to be updatable via command line
    
-    public boolean generate(Document doc, String templateName, String packge, String location, String resource) {
+    public boolean generate(Document doc, String templateName, String packge, String location, String resource, JsonNode bindings_schema) {
         try {
             String bn=templateNameClass(templateName);
             String destinationDir=location + "/" + packge.replace('.', '/') + "/";
             
             String destination=destinationDir + bn + ".java";
-            JavaFile spec=generateBuilderSpecification(doc,bn,templateName,packge, resource);
+            JavaFile spec=generateBuilderSpecification(doc,bn,templateName,packge, resource, bindings_schema);
             PrintWriter out;
             try {
                 File dir=new File(destinationDir);
@@ -71,7 +73,7 @@ public class TemplateBuilderGenerator {
     }
 
    
-    public JavaFile generateBuilderSpecification(Document doc, String name, String templateName, String packge, String resource) {
+    public JavaFile generateBuilderSpecification(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
 
 
         Bundle bun=u.getBundle(doc).get(0);
@@ -81,11 +83,11 @@ public class TemplateBuilderGenerator {
         
         gu.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
         
-        return generate(doc, allVars,allAtts,name, templateName, packge, resource);
+        return generateBuilderSpecification2(doc, allVars,allAtts,name, templateName, packge, resource, bindings_schema);
         
     }
     
-   public JavaFile generate(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource) {
+   private JavaFile generateBuilderSpecification2(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
         
         
         Builder builder = gu.generateClassBuilder2(name);
@@ -96,6 +98,7 @@ public class TemplateBuilderGenerator {
         
         if (withMain) builder.addMethod(generateMain(allVars, allAtts, name));
 
+        if (bindings_schema!=null) builder.addMethod(generateFactoryMethod(allVars, allAtts, name, bindings_schema));
 
         System.out.println(allVars);
         
@@ -136,6 +139,60 @@ public class TemplateBuilderGenerator {
        return method;
    }
 
+   public MethodSpec generateFactoryMethod(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, JsonNode bindings_schema) {
+       MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
+               .addModifiers(Modifier.PUBLIC)
+               .returns(Document.class)
+               .addStatement("$T document = null", Document.class)
+               .addStatement("$T ns = new Namespace()", Namespace.class)
+  
+               ;
+       
+       JsonNode the_var=bindings_schema.get("var");
+       JsonNode the_context=bindings_schema.get("context");
+
+       Iterator<String> iter=the_var.fieldNames();
+       while(iter.hasNext()){
+           builder.addParameter(String.class, iter.next());
+       }
+       
+       Iterator<String> iter2=the_context.fieldNames();
+       while(iter2.hasNext()){
+           String prefix=iter2.next();
+           String uri=the_context.get(prefix).textValue();
+           builder.addStatement("ns.register($S,$S)", prefix, uri);  // TODO: needs substitution here, to expand the URI potentially containing * 
+       }
+           
+       
+       String args="";
+       boolean first=true;
+       for (QualifiedName q: allVars) {
+           final String key = q.getLocalPart();
+           final String newName = "__"+key;
+           String s=the_var.path(key).get(0).get("@id").textValue();
+           
+           String s2="\"" + s.replace("*","\" + $N + \"") + "\"";
+           builder.addStatement("$T $N=ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key);
+           if (first) {
+               first=false;
+               args=newName;
+           } else {
+               args=args + ", " + newName; 
+           }
+       }
+       
+       builder.addStatement("document = generator(" + args + ", null)");//TODO NULL
+
+                      
+       builder.addStatement("return document");
+
+ 
+       
+       MethodSpec method=builder.build();
+       
+       return method;
+   }
+   
    public MethodSpec generateMain(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name) {
 
        MethodSpec.Builder builder = MethodSpec.methodBuilder("main")

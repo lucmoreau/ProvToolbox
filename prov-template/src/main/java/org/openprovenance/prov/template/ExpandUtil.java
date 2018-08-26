@@ -127,7 +127,6 @@ public class ExpandUtil {
     }
 
 
-
    public static Using usedGroups(Statement statement, Groupings groupings, Bindings bindings) {
         Set<QualifiedName> vars = freeVariables(statement);
         Set<Integer> groups = new HashSet<Integer>();

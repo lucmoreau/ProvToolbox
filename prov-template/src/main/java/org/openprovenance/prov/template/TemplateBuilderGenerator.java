@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -94,9 +95,12 @@ public class TemplateBuilderGenerator {
         
         Builder builder = gu.generateClassBuilder2(name);
         
-        builder.addMethod(gu.generateConstructor2());
+        Hashtable<QualifiedName, String> vmap=generateQualifiedNames(doc,builder);
+
         
-        builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc));
+        builder.addMethod(gu.generateConstructor2(vmap));
+        
+        builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc,vmap));
         
         if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindings_schema));
 
@@ -113,7 +117,8 @@ public class TemplateBuilderGenerator {
         return myfile;
     }
    
-   public MethodSpec generateTemplateGenerator(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Document doc) {
+   public MethodSpec generateTemplateGenerator(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap) {
+              
 
        MethodSpec.Builder builder = MethodSpec.methodBuilder("generator")
                .addModifiers(Modifier.PUBLIC)
@@ -134,7 +139,7 @@ public class TemplateBuilderGenerator {
        }
 
        
-       StatementGeneratorAction action=new StatementGeneratorAction(pFactory, allVars, allAtts, builder, "document.getStatementOrBundle()");
+       StatementGeneratorAction action=new StatementGeneratorAction(pFactory, allVars, allAtts, vmap, builder, "document.getStatementOrBundle()");
        for (StatementOrBundle s: doc.getStatementOrBundle()) {
            u.doAction(s, action);
            
@@ -146,6 +151,30 @@ public class TemplateBuilderGenerator {
        MethodSpec method=builder.build();
        
        return method;
+   }
+   
+   public Hashtable<QualifiedName, String> generateQualifiedNames(Document doc, Builder builder) {
+       Bundle bun=u.getBundle(doc).get(0);
+       Set<QualifiedName> set=new HashSet<QualifiedName>();
+       gu.allQualifiedNames(bun,set,pFactory);
+       Hashtable<QualifiedName,String> qnVariables=new Hashtable<QualifiedName, String>();
+       for (QualifiedName qn: set) {
+           if (!(ExpandUtil.isVariable(qn))) {
+               final String v = variableForQualifiedName(qn);
+               qnVariables.put(qn,v);
+
+               builder.addField(QualifiedName.class,v, Modifier.PUBLIC, Modifier.FINAL);
+           }
+
+           
+       }
+       return qnVariables;
+
+   }
+
+
+   public String variableForQualifiedName(QualifiedName qn) {
+       return "_Q_" + qn.getPrefix() + "_" + qn.getLocalPart();
    }
 
    public MethodSpec generateFactoryMethod(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, JsonNode bindings_schema) {

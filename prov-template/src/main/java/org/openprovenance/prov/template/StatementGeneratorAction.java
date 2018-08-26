@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template;
 
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -50,6 +51,7 @@ public class StatementGeneratorAction implements StatementAction {
     private Builder builder;
     private String target;
     private ProvFactory pFactory;
+    private Hashtable<QualifiedName, String> vmap;
     
     static final ClassName cl_collection = ClassName.get("java.util", "Collection");
     static final ClassName cl_list = ClassName.get("java.util", "List");
@@ -59,12 +61,13 @@ public class StatementGeneratorAction implements StatementAction {
     static final TypeName  cl_listOfAttributes = ParameterizedTypeName.get(cl_list, cl_attribute);
     static final TypeName  cl_collectionOfAttributes = ParameterizedTypeName.get(cl_collection, cl_attribute);
 
-    public StatementGeneratorAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Builder builder, String target) {
+    public StatementGeneratorAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target) {
         this.pFactory=pFactory;
         this.allVars=allVars;
         this.allAtts=allAtts;
         this.builder=builder;
         this.target=target;
+        this.vmap=vmap;
     }
 
     public String local(QualifiedName id) {
@@ -168,15 +171,24 @@ public class StatementGeneratorAction implements StatementAction {
                 Object value=attribute.getValue();
                 if (value instanceof QualifiedName) {
                     QualifiedName vq=(QualifiedName) value;
-                    builder.addStatement("attrs.add(pf.newAttribute(pf.newQualifiedName($S,$S,$S),pf.newQualifiedName($S,$S,$S),pf.newQualifiedName($S,$S,$S)))",
-                                         element.getNamespaceURI(),element.getLocalPart(), element.getPrefix(),
-                                         vq.getNamespaceURI(),vq.getLocalPart(), vq.getPrefix(),
-                                         typeq.getNamespaceURI(),typeq.getLocalPart(), typeq.getPrefix());
+                    if (ExpandUtil.isVariable(vq)) {
+                        // TODO: need to expand attribute variable
+                        builder.addStatement("attrs.add(pf.newAttribute($N,pf.newQualifiedName($S,$S,$S),$N))",
+                                             vmap.get(element),
+                                             vq.getNamespaceURI(),vq.getLocalPart(), vq.getPrefix(),
+                                             vmap.get(typeq));
+
+                    } else {
+                        builder.addStatement("attrs.add(pf.newAttribute($N,$N,$N))",
+                                             vmap.get(element),
+                                             vmap.get(vq),
+                                             vmap.get(typeq));
+                    }
                 } else {
-                    builder.addStatement("attrs.add(pf.newAttribute(pf.newQualifiedName($S,$S,$S),$S,pf.newQualifiedName($S,$S,$S)))",
-                                         element.getNamespaceURI(),element.getLocalPart(), element.getPrefix(),
+                    builder.addStatement("attrs.add(pf.newAttribute($N,$S,$N))",
+                                         vmap.get(element),
                                          value.toString(),
-                                         typeq.getNamespaceURI(),typeq.getLocalPart(), typeq.getPrefix());
+                                         vmap.get(typeq));
                 }
             }
         }
@@ -250,7 +262,7 @@ public class StatementGeneratorAction implements StatementAction {
         builder.addStatement(target + ".add($N)", id_);
 
         String target2 = id_+".getStatement()";
-        StatementGeneratorAction action2=new StatementGeneratorAction(pFactory, allVars, allAtts, builder, target2);
+        StatementGeneratorAction action2=new StatementGeneratorAction(pFactory, allVars, allAtts, vmap, builder, target2);
         
         for (Statement s: bun.getStatement()) {
             provUtilities.doAction(s, action2);

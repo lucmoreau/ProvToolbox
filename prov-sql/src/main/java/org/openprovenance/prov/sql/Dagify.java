@@ -53,9 +53,9 @@ public class Dagify implements StatementAction {
         Query qq=em.createNamedQuery("QualifiedName.Find");
         qq.setParameter("uri", uri);
         @SuppressWarnings("unchecked")
-	List<QualifiedName> ll=(List<QualifiedName>) qq.getResultList();
+        List<QualifiedName> ll=(List<QualifiedName>) qq.getResultList();
         //System.out.println("found ll " + ll);
-        
+
         QualifiedName newId=q;
         if ((ll!=null) && (!(ll.isEmpty()))) {
             newId=ll.get(0);
@@ -66,18 +66,18 @@ public class Dagify implements StatementAction {
     }
 
     public void doActionAttributes(Statement s) {
-	if (s instanceof HasOther) doActionOthers((HasOther) s);
-	if (s instanceof HasValue) doActionValue((HasValue) s);
-	if (s instanceof HasType) doActionTypes((HasType) s);
-	if (s instanceof HasLocation) doActionLocations((HasLocation) s);
-	if (s instanceof HasRole) doActionRoles((HasRole) s);
+        if (s instanceof HasOther)    doActionOthers((HasOther) s);
+        if (s instanceof HasValue)    doActionValue((HasValue) s);
+        if (s instanceof HasType)     doActionTypes((HasType) s);
+        if (s instanceof HasLocation) doActionLocations((HasLocation) s);
+        if (s instanceof HasRole)     doActionRoles((HasRole) s);
     }
     public void doActionLocations(HasLocation s) {
-	for(org.openprovenance.prov.model.Location loc: s.getLocation()) {
-    	    doAction(loc);
-    	}	
+        for(org.openprovenance.prov.model.Location loc: s.getLocation()) {
+            doAction(loc);
+        }	
     }    
-    
+
     public void doActionRoles(HasRole s) {
 	for(org.openprovenance.prov.model.Role loc: s.getRole()) {
     	    doAction(loc);
@@ -85,8 +85,8 @@ public class Dagify implements StatementAction {
     }
 
     public void doActionValue(HasValue e) {
-	Value val=e.getValue();
-	if (val!=null) doAction(val);
+        Value val=e.getValue();
+        if (val!=null) doAction(val);
     }
     
     public void doActionOthers(HasOther e) {
@@ -95,56 +95,56 @@ public class Dagify implements StatementAction {
     	}
     }
     public void doActionTypes(HasType e) {
-    	for(org.openprovenance.prov.model.Type type: e.getType()) {
-    	    doActionAttributeValue(type);
-    	    type.setType(uniquify(type.getType()));
-    	}
+        for(org.openprovenance.prov.model.Type type: e.getType()) {
+            doActionAttributeValue(type);
+            type.setType(uniquify(type.getType()));
+        }
     }
     public void doActionAttributeValue(TypedValue val) {
-	if (val.getValue() instanceof QualifiedName) {
-	    val.setValue(uniquify((QualifiedName) val.getValue()));
-	}
+        if (val.getValue() instanceof QualifiedName) {
+            val.setValue(uniquify((QualifiedName) val.getValue()));
+        }
     }
 
     public void doAction(Other other) {
-	other.setElementName(uniquify(other.getElementName()));	
-	other.setType(uniquify(other.getType()));
-	doActionAttributeValue(other);
+        other.setElementName(uniquify(other.getElementName()));	
+        other.setType(uniquify(other.getType()));
+        doActionAttributeValue(other);
 
     }
 
     public void doAction(Value val) {
-	val.setType(uniquify(val.getType()));
-	doActionAttributeValue(val);
+        val.setType(uniquify(val.getType()));
+        doActionAttributeValue(val);
     }    
     public void doAction(Location val) {
-	val.setType(uniquify(val.getType()));
-	doActionAttributeValue(val);
+        val.setType(uniquify(val.getType()));
+        doActionAttributeValue(val);
     }
     public void doAction(Role val) {
-	val.setType(uniquify(val.getType()));
-	doActionAttributeValue(val);
+        val.setType(uniquify(val.getType()));
+        doActionAttributeValue(val);
     }
 
     public void doAction(org.openprovenance.prov.model.Entity e) {
-    	e.setId(uniquify(e.getId()));
-    	doActionAttributes(e);    	
+        e.setId(uniquify(e.getId()));
+        doActionAttributes(e);    	
     }
 
 
     public void doAction(org.openprovenance.prov.model.Activity a) {
-	a.setId(uniquify(a.getId())); 
-    	doActionAttributes(a);    	
+        a.setId(uniquify(a.getId())); 
+        doActionAttributes(a);    	
 
     }
 
-  
+
 
 
 
 
     public void doAction(org.openprovenance.prov.model.Agent ag) {
-	ag.setId(uniquify(ag.getId()));        
+        ag.setId(uniquify(ag.getId()));        
     	doActionAttributes(ag);    	
 
     }
@@ -306,19 +306,19 @@ public class Dagify implements StatementAction {
 
     @Override
     public void doAction(DictionaryMembership s) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
 
     @Override
     public void doAction(DerivedByRemovalFrom s) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
 
     @Override
     public void doAction(DerivedByInsertionFrom s) {
-	throw new UnsupportedOperationException();	
+        throw new UnsupportedOperationException();	
     }
 
 
@@ -326,8 +326,8 @@ public class Dagify implements StatementAction {
 
     @Override
     public void doAction(Bundle bun, ProvUtilities provUtilities) {
-	bun.setId(uniquify(bun.getId()));
-	provUtilities.forAllStatement(bun.getStatement(), this);
+        bun.setId(uniquify(bun.getId()));
+        provUtilities.forAllStatement(bun.getStatement(), this);
     }
 
 }

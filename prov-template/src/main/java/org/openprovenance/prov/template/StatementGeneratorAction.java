@@ -196,8 +196,7 @@ public class StatementGeneratorAction implements StatementAction {
 
     @Override
     public void doAction(HadMember s) {
-    //    builder.addStatement(target + ".add(pf.newHadMember($N,$N))", local(s.getCollection()), local(s.getEntity()));             
-     
+        builder.addStatement(target + ".add(pf.newHadMember($N,$N))", local(s.getCollection()), local(s.getEntity().get(0)));              
     }
 
     @Override

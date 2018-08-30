@@ -173,10 +173,10 @@ public class StatementGeneratorAction implements StatementAction {
                     QualifiedName vq=(QualifiedName) value;
                     if (ExpandUtil.isVariable(vq)) {
                         // TODO: need to expand attribute variable
-                        builder.addStatement("attrs.add(pf.newAttribute($N,pf.newQualifiedName($S,$S,$S),$N))",
-                                             vmap.get(element),
-                                             vq.getNamespaceURI(),vq.getLocalPart(), vq.getPrefix(),
-                                             vmap.get(typeq));
+                        builder.addStatement("attrs.add(pf.newAttribute($N,$N,$N))",
+                                             vmap.get(element), //LUC: WRONG: if this is tmpl:label, the attribute element should become prov:label
+                                             vq.getLocalPart(),
+                                             vmap.get(typeq)); //LUC: WRONG, this is the type qualified name of the variable. We need to get the type declared in the bindings_schema file in @type
 
                     } else {
                         builder.addStatement("attrs.add(pf.newAttribute($N,$N,$N))",

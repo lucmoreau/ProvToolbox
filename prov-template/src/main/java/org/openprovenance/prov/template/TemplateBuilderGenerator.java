@@ -20,7 +20,6 @@ import org.openprovenance.prov.model.StatementOrBundle;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
-import com.fasterxml.jackson.databind.node.NullNode;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -131,6 +130,9 @@ public class TemplateBuilderGenerator {
        for (QualifiedName q: allVars) {
            builder.addParameter(QualifiedName.class, q.getLocalPart());
        }
+       for (QualifiedName q: allAtts) {
+           builder.addParameter(String.class, q.getLocalPart()); // TODO: need to use type in binding schema file
+       }
        for (QualifiedName q: allVars) {
            if (ExpandUtil.isGensymVariable(q)) {
                final String vgen = q.getLocalPart();
@@ -224,6 +226,16 @@ public class TemplateBuilderGenerator {
            }
        }
        
+       for (QualifiedName q: allAtts) {
+           final String key = q.getLocalPart();
+           if (first) {
+               first=false;
+               args=key;
+           } else {
+               args=args + ", " + key; 
+           }
+       }
+       
        builder.addStatement("document = generator(" + args + ")");
 
                       
@@ -242,13 +254,15 @@ public class TemplateBuilderGenerator {
                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                .returns(void.class)
                .addParameter(String[].class, "args")
-               .addStatement("System.out.println($S + $S)","testing ", name)
                .addStatement("$T pf=org.openprovenance.prov.xml.ProvFactory.getFactory()",ProvFactory.class)
                .addStatement("$N me=new $N(pf)",name,name);
 
        ;
        for (QualifiedName q: allVars) {
            builder.addStatement("$T $N=pf.newQualifiedName($S,$S,$S)", QualifiedName.class, q.getLocalPart(), "http://example.org/",q.getLocalPart(), "ex");
+       }
+       for (QualifiedName q: allAtts) {
+           builder.addStatement("$T $N=$S", String.class, q.getLocalPart(), "test_" + q.getLocalPart());
        }
        
        String args="";
@@ -261,6 +275,16 @@ public class TemplateBuilderGenerator {
                args=args + ", " + q.getLocalPart();
            } 
        }
+       for (QualifiedName q: allAtts) {
+           final String key = q.getLocalPart();
+           if (first) {
+               first=false;
+               args=key;
+           } else {
+               args=args + ", " + key; 
+           }
+       }
+       
        builder.addStatement("$T document=me.generator(" + args + ")", Document.class);
        
        builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,org.openprovenance.prov.interop.InteropFramework.ProvFormat.PROVN,document)"); //TODO make it load dynamically

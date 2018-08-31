@@ -83,7 +83,9 @@ public class StatementGeneratorAction implements StatementAction {
     @Override
     public void doAction(Used s) {
         //TODO time
-        builder.addStatement(target + ".add(pf.newUsed($N,$N,$N,null" + generateAttributes(s) + "))", local(s.getId()), local(s.getActivity()), local(s.getEntity()));              
+        final String activity = local(s.getActivity());
+        final String entity = local(s.getEntity());
+        builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newUsed($N,$N,$N,null" + generateAttributes(s) + "))", activity, entity, local(s.getId()), activity, entity);              
     }
 
 
@@ -129,7 +131,9 @@ public class StatementGeneratorAction implements StatementAction {
 
     @Override
     public void doAction(WasDerivedFrom s) {
-        builder.addStatement(target + ".add(pf.newWasDerivedFrom($N,$N,$N))", local(s.getId()), local(s.getGeneratedEntity()), local(s.getUsedEntity()));             
+        final String generated = local(s.getGeneratedEntity());
+        final String used = local(s.getUsedEntity());
+        builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newWasDerivedFrom($N,$N,$N))", generated, used, local(s.getId()), generated, used);             
     }
 
     @Override

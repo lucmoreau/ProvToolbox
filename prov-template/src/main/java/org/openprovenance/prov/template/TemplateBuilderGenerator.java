@@ -220,7 +220,7 @@ public class TemplateBuilderGenerator {
            if (entry!=null && !(entry instanceof MissingNode)) {
                String s=entry.get(0).get("@id").textValue();
                String s2="\"" + s.replace("*","\" + $N + \"") + "\"";
-               builder.addStatement("$T $N=ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key);
+               builder.addStatement("$T $N=($N==null)?null:ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key,key);
            } else {
                // TODO: check if it was a gensym, because then i can generate it!
                builder.addStatement("$T $N=null", QualifiedName.class, newName);

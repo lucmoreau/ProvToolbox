@@ -131,7 +131,11 @@ public class TemplateBuilderGenerator {
            builder.addParameter(QualifiedName.class, q.getLocalPart());
        }
        for (QualifiedName q: allAtts) {
-           builder.addParameter(String.class, q.getLocalPart()); // TODO: need to use type in binding schema file
+           if (allVars.contains(q)) {
+               // no need to redeclare
+           } else {
+               builder.addParameter(Object.class, q.getLocalPart()); // without type declaration, any object may be accepted, assuming this is not a q also in allVars.
+           }
        }
        for (QualifiedName q: allVars) {
            if (ExpandUtil.isGensymVariable(q)) {
@@ -159,6 +163,8 @@ public class TemplateBuilderGenerator {
        Bundle bun=u.getBundle(doc).get(0);
        Set<QualifiedName> set=new HashSet<QualifiedName>();
        gu.allQualifiedNames(bun,set,pFactory);
+       set.remove(pFactory.newQualifiedName(ExpandUtil.TMPL_NS,ExpandUtil.LABEL,ExpandUtil.TMPL_PREFIX));
+       set.add(pFactory.getName().PROV_LABEL);
        Hashtable<QualifiedName,String> qnVariables=new Hashtable<QualifiedName, String>();
        for (QualifiedName qn: set) {
            if (!(ExpandUtil.isVariable(qn))) {
@@ -193,7 +199,8 @@ public class TemplateBuilderGenerator {
 
        Iterator<String> iter=the_var.fieldNames();
        while(iter.hasNext()){
-           builder.addParameter(String.class, iter.next());
+           String key=iter.next();
+           builder.addParameter(getDeclaredType(the_var, key), key); 
        }
        
        Iterator<String> iter2=the_context.fieldNames();
@@ -247,6 +254,37 @@ public class TemplateBuilderGenerator {
        
        return method;
    }
+
+
+   public Class<?> getDeclaredType(JsonNode the_var, String key) {
+       if (the_var.get(key).get(0).get("@id")!=null) {
+           return String.class;
+       } else {
+           if (the_var.get(key).get(0).get(0)==null) {
+               System.out.println("key is " + key);
+               System.out.println("decl is " + the_var);
+
+               throw new UnsupportedOperationException();
+           }
+           JsonNode hasType=the_var.get(key).get(0).get(0).get("@type");
+           if (hasType!=null) {
+               String keyType=hasType.textValue();
+               switch (keyType) {
+                 case "xsd:int":
+                   return Integer.class;
+                 case "xsd:string":
+                   return String.class;
+                 default:
+                   throw new UnsupportedOperationException();
+               }
+           } else {
+               System.out.println("key is " + key);
+               System.out.println("decl is " + the_var);
+
+               throw new UnsupportedOperationException();
+           }
+       }
+   }
    
    public MethodSpec generateMain(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, JsonNode bindings_schema) {
 
@@ -298,13 +336,13 @@ public class TemplateBuilderGenerator {
            first=true;
            int count=0;
            while(iter.hasNext()){
+               String key=iter.next();
                if (first) {
                    first=false;
-                   args="\"v" + (count++) + "\"";
+                   args=createExamplar(the_var,key,count++);
                } else {
-                   args=args + ", " +  "\"v" + (count++) + "\"";
+                   args=args + ", " +  createExamplar(the_var,key,count++);
                }
-               iter.next();
            }
            
            builder.addStatement("document=me.make(" + args + ")");
@@ -319,7 +357,34 @@ public class TemplateBuilderGenerator {
        return method;
    }
 
+   public String createExamplar(JsonNode the_var, String key, int num) {
+       if (the_var.get(key).get(0).get("@id")!=null) {
+           return "\"v" + num + "\"";
+       } else {
+           if (the_var.get(key).get(0).get(0)==null) {
+               System.out.println("key is " + key);
+               System.out.println("decl is " + the_var);
 
+               throw new UnsupportedOperationException();
+           }
+           JsonNode hasType=the_var.get(key).get(0).get(0).get("@type");
+           if (hasType!=null) {
+               String keyType=hasType.textValue();
+               switch (keyType) {
+                 case "xsd:int":
+                   return "" + num;
+                 case "xsd:string":
+                   return "\"v" + num + "\"";
+                 default:
+                   throw new UnsupportedOperationException();
+               }
+           } else {
+               System.out.println("key is " + key);
+               System.out.println("decl is " + the_var);
 
+               throw new UnsupportedOperationException();
+           }
+       }
+   }
 
 }

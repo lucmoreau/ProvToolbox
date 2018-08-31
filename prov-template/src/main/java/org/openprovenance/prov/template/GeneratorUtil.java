@@ -1,9 +1,11 @@
 package org.openprovenance.prov.template;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -15,6 +17,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.ValueConverter;
 
 import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.MethodSpec;
@@ -52,7 +55,8 @@ public class GeneratorUtil {
     public Builder generateClassBuilder2(String name) {
         return TypeSpec.classBuilder(name)
                 .addModifiers(Modifier.PUBLIC)
-                .addField(ProvFactory.class, "pf", Modifier.PRIVATE, Modifier.FINAL);
+                .addField(ProvFactory.class, "pf", Modifier.PRIVATE, Modifier.FINAL)
+                .addField(ValueConverter.class, "vc", Modifier.PRIVATE, Modifier.FINAL);
     }
     public MethodSpec generateConstructor() {
         return MethodSpec.constructorBuilder()
@@ -71,6 +75,7 @@ public class GeneratorUtil {
             final QualifiedName q = e.getKey();
             builder.addStatement("this.$N = pf.newQualifiedName($S,$S,$S)", e.getValue(),q.getNamespaceURI(),q.getLocalPart(),q.getPrefix());
         }
+        builder.addStatement("this.vc = new ValueConverter(pf)");
         return builder .build();
     }
       
@@ -79,6 +84,7 @@ public class GeneratorUtil {
     }
     
     static ProvUtilities u = new ProvUtilities();
+        
 
     public Set<QualifiedName> allQualifiedNames(Statement statement) {
         HashSet<QualifiedName> result = new HashSet<QualifiedName>();
@@ -99,6 +105,7 @@ public class GeneratorUtil {
         return result;
     }   
     
+
     public HashSet<QualifiedName> allQualifiedNamesInAttributes(Statement statement, ProvFactory pf) {
         HashSet<QualifiedName> result = new HashSet<QualifiedName>();
         Collection<Attribute> ll = pf.getAttributes(statement);

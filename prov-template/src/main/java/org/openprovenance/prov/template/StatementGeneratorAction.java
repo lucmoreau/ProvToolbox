@@ -172,11 +172,15 @@ public class StatementGeneratorAction implements StatementAction {
                 if (value instanceof QualifiedName) {
                     QualifiedName vq=(QualifiedName) value;
                     if (ExpandUtil.isVariable(vq)) {
-                        // TODO: need to expand attribute variable
-                        builder.addStatement("attrs.add(pf.newAttribute($N,$N,$N))",
-                                             vmap.get(element), //LUC: WRONG: if this is tmpl:label, the attribute element should become prov:label
-                                             vq.getLocalPart(),
-                                             vmap.get(typeq)); //LUC: WRONG, this is the type qualified name of the variable. We need to get the type declared in the bindings_schema file in @type
+                        if (reservedElement(element)) {
+                            doReservedAttributeAction(builder,element,vq,typeq);
+                        } else {
+                            // use attribute variables (expected to be of type Object) and calculates its type as a QualifiedName dynamically.
+                            builder.addStatement("attrs.add(pf.newAttribute($N,$N,vc.getXsdType($N)))",
+                                                 vmap.get(element),
+                                                 vq.getLocalPart(),
+                                                 vq.getLocalPart());
+                        }
 
                     } else {
                         builder.addStatement("attrs.add(pf.newAttribute($N,$N,$N))",
@@ -193,6 +197,39 @@ public class StatementGeneratorAction implements StatementAction {
             }
         }
         return attributes;
+    }
+
+    public void doReservedAttributeAction(Builder builder2,
+                                           QualifiedName element,
+                                           QualifiedName vq,
+                                           QualifiedName typeq) {
+        final String elementName = element.getUri();
+        if (ExpandUtil.LABEL_URI.equals(elementName)) {
+            builder.addStatement("attrs.add(pf.newAttribute($N,$N,vc.getXsdType($N)))",
+                                 vmap.get(pFactory.getName().PROV_LABEL),
+                                 vq.getLocalPart(),
+                                 vq.getLocalPart());
+           
+        } else if (ExpandUtil.TIME_URI.equals(elementName)) {
+            throw new UnsupportedOperationException();
+        } else if (ExpandUtil.STARTTIME_URI.equals(elementName)) {
+            throw new UnsupportedOperationException();
+        } else if (ExpandUtil.ENDTIME_URI.equals(elementName)) {
+            throw new UnsupportedOperationException();
+        } else {
+            // can never be here
+            throw new UnsupportedOperationException();
+        }
+        
+    }
+
+    public boolean reservedElement(QualifiedName element) {
+        final String elementName = element.getUri();
+        return (ExpandUtil.LABEL_URI.equals(elementName)) 
+                || (ExpandUtil.TIME_URI.equals(elementName))
+                || (ExpandUtil.STARTTIME_URI.equals(elementName))
+                || (ExpandUtil.ENDTIME_URI.equals(elementName));
+
     }
 
     @Override

@@ -152,7 +152,8 @@ public class StatementGeneratorAction implements StatementAction {
 
     @Override
     public void doAction(Entity s) {
-        builder.addStatement(target + ".add(pf.newEntity($N" + generateAttributes(s) + "))", s.getId().getLocalPart());         
+        final String var = s.getId().getLocalPart();
+        builder.addStatement("if ($N!=null) " + target + ".add(pf.newEntity($N" + generateAttributes(s) + "))", var, var);         
     }
 
     public String generateAttributes(Statement s) {

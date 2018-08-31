@@ -274,6 +274,8 @@ public class TemplateBuilderGenerator {
                    return Integer.class;
                  case "xsd:string":
                    return String.class;
+                 case "xsd:boolean":
+                     return Boolean.class;
                  default:
                    throw new UnsupportedOperationException();
                }
@@ -375,6 +377,8 @@ public class TemplateBuilderGenerator {
                    return "" + num;
                  case "xsd:string":
                    return "\"v" + num + "\"";
+                 case "xsd:boolean":
+                   return "true";
                  default:
                    throw new UnsupportedOperationException();
                }

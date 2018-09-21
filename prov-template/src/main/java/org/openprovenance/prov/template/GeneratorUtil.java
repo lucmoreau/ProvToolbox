@@ -20,6 +20,7 @@ import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
 
 import com.google.common.base.CaseFormat;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
@@ -45,6 +46,8 @@ public class GeneratorUtil {
         }
     }
     
+
+    
     public Builder generateClassBuilder(String name) {
         return TypeSpec.classBuilder(name)
                 .addModifiers(Modifier.PUBLIC)
@@ -54,6 +57,7 @@ public class GeneratorUtil {
     }
     public Builder generateClassBuilder2(String name) {
         return TypeSpec.classBuilder(name)
+                .superclass(FileBuilder.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addField(ProvFactory.class, "pf", Modifier.PRIVATE, Modifier.FINAL)
                 .addField(ValueConverter.class, "vc", Modifier.PRIVATE, Modifier.FINAL);
@@ -65,6 +69,7 @@ public class GeneratorUtil {
                 .addStatement("this.$N = $N", "pf", "pf")
                 .addStatement("this.bindings = new $T($N)", Bindings.class, "pf")
                 .build();
+        
     }
     public MethodSpec generateConstructor2(Hashtable<QualifiedName, String> vmap) {
         com.squareup.javapoet.MethodSpec.Builder builder= MethodSpec.constructorBuilder()
@@ -76,6 +81,7 @@ public class GeneratorUtil {
             builder.addStatement("this.$N = pf.newQualifiedName($S,$S,$S)", e.getValue(),q.getNamespaceURI(),q.getLocalPart(),q.getPrefix());
         }
         builder.addStatement("this.vc = new ValueConverter(pf)");
+        builder.addStatement("register(this)");
         return builder .build();
     }
       

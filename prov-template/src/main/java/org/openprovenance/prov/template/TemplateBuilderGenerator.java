@@ -101,9 +101,15 @@ public class TemplateBuilderGenerator {
         
         builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc,vmap));
         
+        builder.addMethod(nameAccessorGenerator(templateName));
+        
         if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindings_schema));
 
-        if (bindings_schema!=null) builder.addMethod(generateFactoryMethod(allVars, allAtts, name, bindings_schema));
+        if (bindings_schema!=null) {
+            builder.addMethod(generateFactoryMethod(allVars, allAtts, name, bindings_schema));
+            builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema));
+        }
+        
 
         System.out.println(allVars);
         
@@ -115,6 +121,21 @@ public class TemplateBuilderGenerator {
 
         return myfile;
     }
+   
+   public MethodSpec nameAccessorGenerator(String templateName) {
+
+
+       MethodSpec.Builder builder = MethodSpec.methodBuilder("getName")
+               .addModifiers(Modifier.PUBLIC)
+               .addAnnotation(Override.class)
+
+               .returns(String.class)
+               .addStatement("return $S", templateName);
+       return builder.build();
+   }
+
+ 
+       
    
    public MethodSpec generateTemplateGenerator(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap) {
               
@@ -255,6 +276,41 @@ public class TemplateBuilderGenerator {
        return method;
    }
 
+   public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, JsonNode bindings_schema) {
+       MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
+               .addModifiers(Modifier.PUBLIC)
+               .returns(Document.class)
+  
+               ;
+       
+       JsonNode the_var=bindings_schema.get("var");
+       JsonNode the_context=bindings_schema.get("context");
+       
+       builder.addParameter(Object[].class,"record");
+
+       int count=1;
+       Iterator<String> iter=the_var.fieldNames();
+       String args="";
+       while(iter.hasNext()){
+           String key=iter.next();
+           final Class<?> atype = getDeclaredType(the_var, key);
+           String statement="$T $N=($T)record[" + count + "]";
+           builder.addStatement(statement, atype, key,atype); 
+           if (count > 1) args=args + ", ";
+           args=args+key;
+           count++;
+       }
+       builder.addStatement("return make(" + args + ")");  
+
+      
+                      
+
+ 
+       
+       MethodSpec method=builder.build();
+       
+       return method;
+   }
 
    public Class<?> getDeclaredType(JsonNode the_var, String key) {
        if (the_var.get(key).get(0).get("@id")!=null) {

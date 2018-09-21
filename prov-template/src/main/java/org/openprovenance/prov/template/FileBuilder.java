@@ -1,9 +1,11 @@
 package org.openprovenance.prov.template;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
@@ -55,6 +57,41 @@ abstract public class FileBuilder {
     }
 
     abstract public String getName();
+    
+    public static boolean registerBuilders(String[] builders, org.openprovenance.prov.model.ProvFactory pf) {
+        boolean ok=true;
+        for (String builder: builders) {
+            Class<?> cl;
+            try {
+                cl = Class.forName(builder);
+                cl.getDeclaredConstructor(org.openprovenance.prov.model.ProvFactory.class).newInstance(pf);
+            } catch (ClassNotFoundException e) {
+                ok=false;
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                ok=false;
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                ok=false;
+                e.printStackTrace();
+            } catch (IllegalArgumentException e) {
+                ok=false;
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                ok=false;
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                ok=false;
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                ok=false;
+                e.printStackTrace();
+            }
+
+        }
+        return ok;
+    }
+
 
 
 }

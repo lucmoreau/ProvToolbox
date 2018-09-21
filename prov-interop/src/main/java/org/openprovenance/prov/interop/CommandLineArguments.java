@@ -47,6 +47,7 @@ public class CommandLineArguments implements ErrorCodes {
     public static final String LOCATION = "location";
 
     public static final String BUILDER = "builder";
+    public static final String TEMPLATE_BUILDER = "templatebuilder";
 
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
@@ -174,6 +175,13 @@ public class CommandLineArguments implements ErrorCodes {
                 .withDescription("location of where the template resource is to be found at runtime")
                 .create(LOCATION);
 
+        
+        Option template_builder = OptionBuilder
+                .withArgName("file")
+                .hasArg()
+                .withDescription("template builder configuration")
+                .create(TEMPLATE_BUILDER);
+
         Options options = new Options();
 
         options.addOption(help);
@@ -203,6 +211,7 @@ public class CommandLineArguments implements ErrorCodes {
         options.addOption(packge);
         options.addOption(location);
         options.addOption(builder);
+        options.addOption(template_builder);
 
         return options;
 
@@ -235,9 +244,12 @@ public class CommandLineArguments implements ErrorCodes {
     static public final String longToolboxVersion = toolboxVersion + " (" + 
             getPropertiesFromClasspath(fileName).getProperty("timestamp") + ")";
     
-
-
     public static void main(String[] args) {
+        mainExit(args,true);
+    }
+
+
+    public static void mainExit(String[] args, boolean exit) {
         // create the parser
         CommandLineParser parser = new GnuParser();
         String help = null;      
@@ -268,6 +280,7 @@ public class CommandLineArguments implements ErrorCodes {
         boolean listFormatsp = false;
         boolean allexpanded=false;
         boolean builder=false;
+        String template_builder=null;
 
 
         try {
@@ -314,6 +327,7 @@ public class CommandLineArguments implements ErrorCodes {
             if (line.hasOption(PACKAGE))  packge = line.getOptionValue(PACKAGE);
             if (line.hasOption(LOCATION))  location = line.getOptionValue(LOCATION);
             if (line.hasOption(BUILDER))  builder = true;
+            if (line.hasOption(TEMPLATE_BUILDER))  template_builder = line.getOptionValue(TEMPLATE_BUILDER);
 
 
             if (help!=null) {
@@ -346,6 +360,7 @@ public class CommandLineArguments implements ErrorCodes {
                                                           allexpanded,
                                                           template,
                                                           builder,
+                                                          template_builder,
                                                           packge,
                                                           location,
                                                           generator,
@@ -362,14 +377,16 @@ public class CommandLineArguments implements ErrorCodes {
                 }
                 return;
             }
-            System.exit(interop.run());
+            
+            final int run = interop.run();
+            if (exit) System.exit(run);
 
         }
 
         catch (ParseException exp) {
             // oops, something went wrong
         	logger.fatal("Parsing failed.  Reason: " + exp.getMessage() );
-            System.exit(STATUS_PARSING_FAIL);
+            if (exit) System.exit(STATUS_PARSING_FAIL);
 
         }
     }

@@ -111,7 +111,7 @@ public class TemplateBuilderGenerator {
         }
         
 
-        System.out.println(allVars);
+       // System.out.println(allVars);
         
         TypeSpec bean=builder.build();
         

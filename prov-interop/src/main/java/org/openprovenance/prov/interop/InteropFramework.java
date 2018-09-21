@@ -37,6 +37,8 @@ import org.openprovenance.prov.template.Bindings;
 import org.openprovenance.prov.template.BindingsBeanGenerator;
 import org.openprovenance.prov.template.BindingsJson;
 import org.openprovenance.prov.template.Expand;
+import org.openprovenance.prov.template.FileBuilder;
+import org.openprovenance.prov.template.GeneratorConfig;
 import org.openprovenance.prov.template.TemplateBuilderGenerator;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
@@ -119,24 +121,25 @@ public class InteropFramework implements InteropMediaType {
     final private String location;
 
     final private boolean builder;
+    final private String template_builder;
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
      */
     public InteropFramework() {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, false, null, null, null, null, null, null,null,null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, false, null, null, null, null, null, null, null,null,null,
                 org.openprovenance.prov.xml.ProvFactory.getFactory());
     }
 
     public InteropFramework(ProvFactory pFactory) {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, false, null, null, null, null, null, null,null,null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, false, null, null, null, null, null, null, null,null,null,
                 pFactory);
     }
 
 
     public InteropFramework(String verbose, String debug, String logfile,
             String infile, String informat, String outfile, String outformat, String namespaces, String title,
-            String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String template, boolean builder, String packge, String location, String generator,
+            String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String template, boolean builder, String template_builder, String packge, String location, String generator,
             String index, String merge, String flatten, String compare, String compareOut, ProvFactory pFactory) {
         this.verbose = verbose;
         this.debug = debug;
@@ -165,6 +168,7 @@ public class InteropFramework implements InteropMediaType {
         this.packge=packge;
         this.location=location;
         this.builder=builder;
+        this.template_builder=template_builder;
 
         extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
         extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
@@ -921,9 +925,9 @@ public class InteropFramework implements InteropMediaType {
      */
 
     public int run() {
-        if (outfile == null && compare == null)
+        if (outfile == null && compare == null && template_builder == null)
             return CommandLineArguments.STATUS_NO_OUTPUT_OR_COMPARISON;
-        if (infile == null && generator == null && merge == null)
+        if (infile == null && generator == null && template_builder == null && merge == null)
             return CommandLineArguments.STATUS_NO_INPUT;
 
         if ((infile == "-") && (bindings == "-"))
@@ -956,6 +960,9 @@ public class InteropFramework implements InteropMediaType {
             }
             doc = iDoc.toDocument();
 
+        } else if (template_builder!=null) {
+            return processTemplateGenerationConfig(template_builder);
+            
         } else {
 
             String[] options = generator.split(":");
@@ -1290,5 +1297,23 @@ public class InteropFramework implements InteropMediaType {
         }
 
     }
+    
+    public static int processTemplateGenerationConfig(String template_builder) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        GeneratorConfig[] configs;
+        try {
+            configs = objectMapper.readValue(new File(template_builder), GeneratorConfig[].class);
+            for (GeneratorConfig config: configs) {
+                System.out.println(config.toString());
+                // provconvert -infile templates/grow.provn -template grow -builder -package foo -bindings bindings/grow_bs.json -bindver 3 -outfile src/main/java
+
+                CommandLineArguments.mainExit(new String[]{"-infile", config.template, "-template", config.name, "-builder", "-package", config.package_, "-bindings", config.bindings, "-bindver", "3", "-outfile", config.destination}, false);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
 
 }

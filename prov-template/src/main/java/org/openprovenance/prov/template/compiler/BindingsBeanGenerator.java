@@ -32,7 +32,7 @@ public class BindingsBeanGenerator {
     
     static ProvUtilities u= new ProvUtilities();
     
-    final GeneratorUtil gu=new GeneratorUtil();
+    final CompilerUtil gu=new CompilerUtil();
 
     
     

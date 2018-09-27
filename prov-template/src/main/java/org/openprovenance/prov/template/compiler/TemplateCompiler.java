@@ -26,18 +26,18 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 
-public class TemplateBuilderGenerator {
+public class TemplateCompiler {
     
     final private ProvFactory pFactory;
 
 
-    public TemplateBuilderGenerator(ProvFactory pFactory) {
+    public TemplateCompiler(ProvFactory pFactory) {
         this.pFactory=pFactory;
     }
     
     static ProvUtilities u= new ProvUtilities();
     
-    final GeneratorUtil gu=new GeneratorUtil();
+    final CompilerUtil gu=new CompilerUtil();
     
     boolean withMain=true; // TODO need to be updatable via command line
    
@@ -145,7 +145,7 @@ public class TemplateBuilderGenerator {
                .addModifiers(Modifier.PUBLIC)
                .returns(Document.class)
                .addStatement("$T nullqn = null", QualifiedName.class)
-               .addStatement("$T attrs=null", StatementGeneratorAction.cl_collectionOfAttributes)
+               .addStatement("$T attrs=null", StatementCompilerAction.cl_collectionOfAttributes)
                .addStatement("$T document = pf.newDocument()", Document.class)
  
        ;
@@ -167,7 +167,7 @@ public class TemplateBuilderGenerator {
        }
 
        
-       StatementGeneratorAction action=new StatementGeneratorAction(pFactory, allVars, allAtts, vmap, builder, "document.getStatementOrBundle()");
+       StatementCompilerAction action=new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, "document.getStatementOrBundle()");
        for (StatementOrBundle s: doc.getStatementOrBundle()) {
            u.doAction(s, action);
            

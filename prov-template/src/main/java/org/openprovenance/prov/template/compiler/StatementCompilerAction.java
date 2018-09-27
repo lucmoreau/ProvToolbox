@@ -45,7 +45,7 @@ import com.squareup.javapoet.MethodSpec.Builder;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 
-public class StatementGeneratorAction implements StatementAction {
+public class StatementCompilerAction implements StatementAction {
 
     private Set<QualifiedName> allVars;
     private Set<QualifiedName> allAtts;
@@ -62,7 +62,7 @@ public class StatementGeneratorAction implements StatementAction {
     static final TypeName  cl_listOfAttributes = ParameterizedTypeName.get(cl_list, cl_attribute);
     static final TypeName  cl_collectionOfAttributes = ParameterizedTypeName.get(cl_collection, cl_attribute);
 
-    public StatementGeneratorAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target) {
+    public StatementCompilerAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target) {
         this.pFactory=pFactory;
         this.allVars=allVars;
         this.allAtts=allAtts;
@@ -305,7 +305,7 @@ public class StatementGeneratorAction implements StatementAction {
         builder.addStatement(target + ".add($N)", id_);
 
         String target2 = id_+".getStatement()";
-        StatementGeneratorAction action2=new StatementGeneratorAction(pFactory, allVars, allAtts, vmap, builder, target2);
+        StatementCompilerAction action2=new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, target2);
         
         for (Statement s: bun.getStatement()) {
             provUtilities.doAction(s, action2);

@@ -34,8 +34,8 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
-import org.openprovenance.prov.template.compiler.GeneratorConfig;
-import org.openprovenance.prov.template.compiler.TemplateBuilderGenerator;
+import org.openprovenance.prov.template.compiler.TemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.TemplateCompiler;
 import org.openprovenance.prov.template.expander.Bindings;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
@@ -1011,7 +1011,7 @@ public class InteropFramework implements InteropMediaType {
                     e.printStackTrace();
                 }
             }
-            TemplateBuilderGenerator tbg=new TemplateBuilderGenerator(pFactory);
+            TemplateCompiler tbg=new TemplateCompiler(pFactory);
             
             tbg.generate(doc, template, packge, outfile, location,bindings_schema);
             return CommandLineArguments.STATUS_OK;
@@ -1300,10 +1300,10 @@ public class InteropFramework implements InteropMediaType {
     
     public static int processTemplateGenerationConfig(String template_builder) {
         ObjectMapper objectMapper = new ObjectMapper();
-        GeneratorConfig[] configs;
+        TemplateCompilerConfig[] configs;
         try {
-            configs = objectMapper.readValue(new File(template_builder), GeneratorConfig[].class);
-            for (GeneratorConfig config: configs) {
+            configs = objectMapper.readValue(new File(template_builder), TemplateCompilerConfig[].class);
+            for (TemplateCompilerConfig config: configs) {
                 System.out.println(config.toString());
                 // provconvert -infile templates/grow.provn -template grow -builder -package foo -bindings bindings/grow_bs.json -bindver 3 -outfile src/main/java
 

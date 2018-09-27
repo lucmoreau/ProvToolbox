@@ -30,7 +30,7 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 
 
-public class GeneratorUtil {
+public class CompilerUtil {
     
 
     public String capitalize(String templateName) {

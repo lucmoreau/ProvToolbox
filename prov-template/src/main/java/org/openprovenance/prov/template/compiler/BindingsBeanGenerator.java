@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template;
+package org.openprovenance.prov.template.compiler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,6 +13,7 @@ import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.template.expander.Bindings;
 
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;

@@ -1,4 +1,7 @@
-package org.openprovenance.prov.template;
+package org.openprovenance.prov.template.expander;
+
+import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
+import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_PREFIX;
 
 import java.util.Collection;
 import java.util.Hashtable;
@@ -42,9 +45,6 @@ import org.openprovenance.prov.model.WasStartedBy;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
-
-import static org.openprovenance.prov.template.ExpandUtil.TMPL_NS;
-import static org.openprovenance.prov.template.ExpandUtil.TMPL_PREFIX;
 
 public class ExpandAction implements StatementAction {
 

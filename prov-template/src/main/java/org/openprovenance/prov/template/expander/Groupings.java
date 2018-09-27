@@ -1,4 +1,6 @@
-package org.openprovenance.prov.template;
+package org.openprovenance.prov.template.expander;
+
+import static org.openprovenance.prov.template.expander.ExpandUtil.LINKED_URI;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -18,9 +20,7 @@ import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.Statement;
-
-import static org.openprovenance.prov.template.ExpandUtil.LINKED_URI;;
+import org.openprovenance.prov.model.Statement;;
 
 public class Groupings {
     final private List<List<QualifiedName>> variables;

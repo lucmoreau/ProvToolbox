@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.notation.Utility;
-
+import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 
 import junit.framework.TestCase;
 

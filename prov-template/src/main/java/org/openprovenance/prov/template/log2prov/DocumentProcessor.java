@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template;
+package org.openprovenance.prov.template.log2prov;
 
 import org.openprovenance.prov.model.Document;
 

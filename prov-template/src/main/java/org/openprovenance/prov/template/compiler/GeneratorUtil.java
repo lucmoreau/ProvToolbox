@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template;
+package org.openprovenance.prov.template.compiler;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,6 +18,10 @@ import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.template.expander.Bindings;
+import org.openprovenance.prov.template.expander.BindingsBean;
+import org.openprovenance.prov.template.expander.ExpandUtil;
+import org.openprovenance.prov.template.log2prov.FileBuilder;
 
 import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.ClassName;

@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template;
+package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

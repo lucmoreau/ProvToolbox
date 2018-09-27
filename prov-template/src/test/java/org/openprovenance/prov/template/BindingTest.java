@@ -1,5 +1,8 @@
 package org.openprovenance.prov.template;
 
+import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
+import static org.openprovenance.prov.template.expander.ExpandUtil.VAR_NS;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -11,10 +14,11 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.notation.Utility;
-import org.openprovenance.prov.template.BindingsJson.BindingsBean;
+import org.openprovenance.prov.template.expander.Bindings;
+import org.openprovenance.prov.template.expander.BindingsJson;
+import org.openprovenance.prov.template.expander.Groupings;
+import org.openprovenance.prov.template.expander.BindingsJson.BindingsBean;
 
-import static org.openprovenance.prov.template.ExpandUtil.VAR_NS;
-import static org.openprovenance.prov.template.ExpandUtil.TMPL_NS;
 import junit.framework.TestCase;
 
 public class BindingTest extends TestCase {

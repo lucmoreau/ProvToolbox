@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template;
+package org.openprovenance.prov.template.expander;
 
 import java.io.File;
 import java.io.IOException;

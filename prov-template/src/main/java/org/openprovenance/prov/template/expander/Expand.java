@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template;
+package org.openprovenance.prov.template.expander;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,7 +19,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.TypedValue;
-import org.openprovenance.prov.template.Using.UsingIterator;
+import org.openprovenance.prov.template.expander.Using.UsingIterator;
 import org.openprovenance.prov.xml.ProvUtilities;
 
 public class Expand {

@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template;
+package org.openprovenance.prov.template.compiler;
 
 import java.util.Collection;
 import java.util.Hashtable;
@@ -38,6 +38,7 @@ import org.openprovenance.prov.model.WasStartedBy;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
+import org.openprovenance.prov.template.expander.ExpandUtil;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec.Builder;

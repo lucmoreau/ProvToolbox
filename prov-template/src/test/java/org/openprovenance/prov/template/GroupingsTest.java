@@ -1,5 +1,7 @@
 package org.openprovenance.prov.template;
 
+import static org.openprovenance.prov.template.expander.ExpandUtil.VAR_NS;
+
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
 
@@ -7,8 +9,8 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.notation.Utility;
+import org.openprovenance.prov.template.expander.Groupings;
 
-import static org.openprovenance.prov.template.ExpandUtil.VAR_NS;
 import junit.framework.TestCase;
 
 public class GroupingsTest extends TestCase {

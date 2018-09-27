@@ -1,5 +1,8 @@
 package org.openprovenance.prov.tutorial.tutorial6;
 
+import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
+import static org.openprovenance.prov.template.expander.ExpandUtil.VAR_NS;
+
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,13 +18,10 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.notation.Utility;
-import org.openprovenance.prov.template.Bindings;
-import org.openprovenance.prov.template.BindingsBean;
-import org.openprovenance.prov.template.Expand;
-import org.openprovenance.prov.template.Groupings;
-
-import static org.openprovenance.prov.template.ExpandUtil.VAR_NS;
-import static org.openprovenance.prov.template.ExpandUtil.TMPL_NS;
+import org.openprovenance.prov.template.expander.Bindings;
+import org.openprovenance.prov.template.expander.BindingsBean;
+import org.openprovenance.prov.template.expander.Expand;
+import org.openprovenance.prov.template.expander.Groupings;
 
 
 /**

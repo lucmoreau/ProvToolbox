@@ -4,8 +4,8 @@ package org.example;
 import java.lang.String;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.template.Bindings;
-import org.openprovenance.prov.template.BindingsBean;
+import org.openprovenance.prov.template.expander.Bindings;
+import org.openprovenance.prov.template.expander.BindingsBean;
 
 public class TestBindingsBean implements BindingsBean {
   private final Bindings bindings;

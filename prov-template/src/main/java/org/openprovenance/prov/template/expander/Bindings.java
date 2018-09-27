@@ -1,7 +1,11 @@
-package org.openprovenance.prov.template;
+package org.openprovenance.prov.template.expander;
 
 import java.util.HashSet;
 import java.util.Hashtable;
+
+import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
+import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_PREFIX;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,10 +25,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.TypedValue;
-import org.openprovenance.prov.template.BindingsJson.BindingsBean;
-
-import static org.openprovenance.prov.template.ExpandUtil.TMPL_NS;
-import static org.openprovenance.prov.template.ExpandUtil.TMPL_PREFIX;
+import org.openprovenance.prov.template.expander.BindingsJson.BindingsBean;
 
 public class Bindings {
     

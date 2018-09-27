@@ -1,5 +1,8 @@
 package org.openprovenance.prov.template;
 
+import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
+import static org.openprovenance.prov.template.expander.ExpandUtil.VAR_NS;
+
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,9 +14,10 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.notation.Utility;
+import org.openprovenance.prov.template.expander.Bindings;
+import org.openprovenance.prov.template.expander.Expand;
+import org.openprovenance.prov.template.expander.Groupings;
 
-import static org.openprovenance.prov.template.ExpandUtil.VAR_NS;
-import static org.openprovenance.prov.template.ExpandUtil.TMPL_NS;
 import junit.framework.TestCase;
 
 public class ExpandTest extends TestCase {
@@ -492,7 +496,7 @@ public class ExpandTest extends TestCase {
                      "target/expanded25.provn",
                      bindings1,
                     "target/bindings25.provn");
-        } catch (org.openprovenance.prov.template.MissingAttributeValue e) {
+        } catch (org.openprovenance.prov.template.expander.MissingAttributeValue e) {
             threw = true;
         }
         if (!threw) { fail("Exception not raised."); }
@@ -511,7 +515,7 @@ public class ExpandTest extends TestCase {
             expander("src/test/resources/template25.provn",
                      "src/test/resources/bindings25.provn",
                     "target/expanded25.provn");
-        } catch (org.openprovenance.prov.template.MissingAttributeValue e) {
+        } catch (org.openprovenance.prov.template.expander.MissingAttributeValue e) {
             threw = true;
         }
         if (!threw) { fail("Exception not raised."); }

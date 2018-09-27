@@ -51,14 +51,12 @@ public class CompilerUtil {
     }
     
 
-    
-    public Builder generateClassBuilder(String name) {
+  
+    public Builder generateClassBuilder3(String name) {
         return TypeSpec.classBuilder(name)
-                .addModifiers(Modifier.PUBLIC)
-                .addSuperinterface(BindingsBean.class)
-                .addField(Bindings.class, "bindings", Modifier.PRIVATE, Modifier.FINAL)
-                .addField(ProvFactory.class, "pf", Modifier.PRIVATE, Modifier.FINAL);
+                .addModifiers(Modifier.PUBLIC);
     }
+   
     public Builder generateClassBuilder2(String name) {
         return TypeSpec.classBuilder(name)
                 .superclass(FileBuilder.class)
@@ -66,15 +64,7 @@ public class CompilerUtil {
                 .addField(ProvFactory.class, "pf", Modifier.PRIVATE, Modifier.FINAL)
                 .addField(ValueConverter.class, "vc", Modifier.PRIVATE, Modifier.FINAL);
     }
-    public MethodSpec generateConstructor() {
-        return MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ProvFactory.class, "pf")
-                .addStatement("this.$N = $N", "pf", "pf")
-                .addStatement("this.bindings = new $T($N)", Bindings.class, "pf")
-                .build();
-        
-    }
+    
     public MethodSpec generateConstructor2(Hashtable<QualifiedName, String> vmap) {
         com.squareup.javapoet.MethodSpec.Builder builder= MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)

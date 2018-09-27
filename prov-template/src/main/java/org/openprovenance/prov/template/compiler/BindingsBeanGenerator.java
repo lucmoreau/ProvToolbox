@@ -14,6 +14,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.template.expander.Bindings;
+import org.openprovenance.prov.template.expander.BindingsBean;
 
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -91,9 +92,9 @@ public class BindingsBeanGenerator {
     public JavaFile generate(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource) {
         
         
-        Builder builder = gu.generateClassBuilder(name);
+        Builder builder = generateClassBuilder(name);
         
-        builder.addMethod(gu.generateConstructor());
+        builder.addMethod(generateConstructor());
         
         for (QualifiedName q: allVars) {
             builder.addMethod(generateVarMutator(q));
@@ -117,7 +118,26 @@ public class BindingsBeanGenerator {
         return myfile;
     }
 
+    
+    
+    public Builder generateClassBuilder(String name) {
+        return TypeSpec.classBuilder(name)
+                .addModifiers(Modifier.PUBLIC)
+                .addSuperinterface(BindingsBean.class)
+                .addField(Bindings.class, "bindings", Modifier.PRIVATE, Modifier.FINAL)
+                .addField(ProvFactory.class, "pf", Modifier.PRIVATE, Modifier.FINAL);
+    }
 
+    
+    public MethodSpec generateConstructor() {
+        return MethodSpec.constructorBuilder()
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(ProvFactory.class, "pf")
+                .addStatement("this.$N = $N", "pf", "pf")
+                .addStatement("this.bindings = new $T($N)", Bindings.class, "pf")
+                .build();
+        
+    }
     
     public MethodSpec generateVarMutator(QualifiedName v) {
         final String local=v.getLocalPart();

@@ -17,6 +17,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.template.expander.ExpandAction;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -45,28 +46,42 @@ public class TemplateCompiler {
         try {
             String bn=templateNameClass(templateName);
             String destinationDir=location + "/" + packge.replace('.', '/') + "/";
+            String destinationDir2=destinationDir + "/" + "client" + "/";
             
             String destination=destinationDir + bn + ".java";
-            JavaFile spec=generateBuilderSpecification(doc,bn,templateName,packge, resource, bindings_schema);
-            PrintWriter out;
-            try {
-                File dir=new File(destinationDir);
-                if (!dir.exists() && !dir.mkdirs()) {
-                    System.err.println("failed to create directory " + destinationDir);
-                    return false;
-                };
-                out = new PrintWriter(destination);
-                out.print(spec);
-                out.close();
-                return true;
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                return false;
-            }
+            String destination2=destinationDir2 + bn + ".java";
+           JavaFile spec=generateBuilderSpecification(doc,bn,templateName,packge, resource, bindings_schema);
+            
+            boolean val1=saveToFile(destinationDir, destination, spec);
+            JavaFile spec2=generateClientLib(doc,bn,templateName,packge+ ".client", resource, bindings_schema);
+
+            boolean val2=saveToFile(destinationDir2, destination2, spec2);
+            
+            return val1 & val2;
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
 
+        }
+    }
+
+
+    public boolean saveToFile(String destinationDir, String destination, JavaFile spec) {
+        PrintWriter out;
+        try {
+            File dir=new File(destinationDir);
+            if (!dir.exists() && !dir.mkdirs()) {
+                System.err.println("failed to create directory " + destinationDir);
+                return false;
+            };
+            out = new PrintWriter(destination);
+            out.print(spec);
+            out.close();
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
         }
     }
     
@@ -74,6 +89,8 @@ public class TemplateCompiler {
     public String templateNameClass(String templateName) {
         return gu.capitalize(templateName)+"Builder";
     }
+    
+    
 
    
     public JavaFile generateBuilderSpecification(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
@@ -86,11 +103,25 @@ public class TemplateCompiler {
         
         gu.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
         
-        return generateBuilderSpecification2(doc, allVars,allAtts,name, templateName, packge, resource, bindings_schema);
+        return generateBuilderSpecification_aux(doc, allVars,allAtts,name, templateName, packge, resource, bindings_schema);
         
     }
     
-   private JavaFile generateBuilderSpecification2(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
+    public JavaFile generateClientLib(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
+
+
+        Bundle bun=u.getBundle(doc).get(0);
+        
+        Set<QualifiedName> allVars=new HashSet<QualifiedName>();
+        Set<QualifiedName> allAtts=new HashSet<QualifiedName>();
+        
+        gu.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
+        
+        return generateClientLib_aux(doc, allVars,allAtts,name, templateName, packge, resource, bindings_schema);
+        
+    }
+    
+    private JavaFile generateBuilderSpecification_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
         
         
         Builder builder = gu.generateClassBuilder2(name);
@@ -122,6 +153,34 @@ public class TemplateCompiler {
 
         return myfile;
     }
+    
+    private JavaFile generateClientLib_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
+        
+        
+        Builder builder = gu.generateClassBuilder3(name);
+             
+        
+        
+        
+
+        if (bindings_schema!=null) {
+            builder.addMethod(generateClientMethod(allVars, allAtts, name, templateName, bindings_schema));
+            builder.addMethod(generateClientMethod2(allVars, allAtts, name, templateName, bindings_schema));
+      //      builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema));
+        }
+        
+
+       // System.out.println(allVars);
+        
+        TypeSpec bean=builder.build();
+        
+        JavaFile myfile = JavaFile.builder(packge, bean)
+                .addFileComment("Generated Automatically by ProvToolbox for template $S",templateName)
+                .build();
+
+        return myfile;
+    }
+    
    
    public MethodSpec nameAccessorGenerator(String templateName) {
 
@@ -162,7 +221,7 @@ public class TemplateCompiler {
        for (QualifiedName q: allVars) {
            if (ExpandUtil.isGensymVariable(q)) {
                final String vgen = q.getLocalPart();
-               builder.addStatement("if ($N==null) $N=org.openprovenance.prov.template.ExpandAction.getUUIDQualifiedName2(pf)",vgen,vgen);
+               builder.addStatement("if ($N==null) $N=$T.getUUIDQualifiedName2(pf)",vgen,vgen,ExpandAction.class);
            }
        }
 
@@ -277,7 +336,99 @@ public class TemplateCompiler {
        return method;
    }
 
-   public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, JsonNode bindings_schema) {
+   public MethodSpec generateClientMethod(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
+       final String loggerName = loggerName(template);
+       MethodSpec.Builder builder = MethodSpec.methodBuilder(loggerName)
+               .addModifiers(Modifier.PUBLIC)
+               .returns(String.class)
+      
+               ;
+       
+       JsonNode the_var=bindings_schema.get("var");
+       JsonNode the_context=bindings_schema.get("context");
+       String var="sb"; 
+       builder.addStatement("$T $N=new $T()", StringBuffer.class, var , StringBuffer.class);
+
+       String args="" + var;
+       
+       Iterator<String> iter=the_var.fieldNames();
+       while(iter.hasNext()){
+           String key=iter.next();
+           String newkey="__"+key;
+           builder.addParameter(getDeclaredType(the_var, key), newkey); 
+           args=args + ", " + newkey; 
+       }
+       
+       builder.addStatement("$N(" + args + ")",loggerName);
+       builder.addStatement("return $N.toString()", var);
+
+       MethodSpec method=builder.build();
+
+       return method;
+   }
+
+   public MethodSpec generateClientMethod2(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
+       MethodSpec.Builder builder = MethodSpec.methodBuilder(loggerName(template))
+               .addModifiers(Modifier.PUBLIC)
+               .returns(void.class)
+      
+               ;
+       String var="sb"; 
+     
+       JsonNode the_var=bindings_schema.get("var");
+       JsonNode the_context=bindings_schema.get("context");
+
+       builder.addParameter(StringBuffer.class, var);
+       Iterator<String> iter=the_var.fieldNames();
+       while(iter.hasNext()){
+           String key=iter.next();
+           String newkey="__"+key;
+           builder.addParameter(getDeclaredType(the_var, key), newkey); 
+       }
+       
+
+                     
+       iter=the_var.fieldNames();
+       
+       String constant="[\"" + template + "\"";
+       while(iter.hasNext()){
+           String key=iter.next();
+           final String newName = "__"+key;
+           final Class<?> clazz=getDeclaredType(the_var, key);
+           
+
+           constant=constant+',';
+           
+           if (String.class.equals(clazz)) {
+               constant=constant+'\"';
+               builder.addStatement("$N.append($S)",var,constant);
+               constant="";
+               builder.addStatement("$N.append($N)", var, newName);  
+               constant=constant+'\"';
+           } else {
+               if (!(constant.isEmpty())) {
+                   builder.addStatement("$N.append($S)",var,constant);
+                   constant="";
+               }
+               builder.addStatement("$N.append($N)", var, newName);  
+           }
+       }
+       constant=constant+']';
+       builder.addStatement("$N.append($S)",var,constant);
+
+
+       MethodSpec method=builder.build();
+
+       return method;
+   }
+
+   private String loggerName(String template) {
+       return "log" + gu.capitalize(template);
+
+   }
+
+
+public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, JsonNode bindings_schema) {
        MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
                .addModifiers(Modifier.PUBLIC)
                .returns(Document.class)

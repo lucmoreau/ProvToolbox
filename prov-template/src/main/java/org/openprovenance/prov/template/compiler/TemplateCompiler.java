@@ -50,7 +50,7 @@ public class TemplateCompiler {
             
             String destination=destinationDir + bn + ".java";
             String destination2=destinationDir2 + bn + ".java";
-           JavaFile spec=generateBuilderSpecification(doc,bn,templateName,packge, resource, bindings_schema);
+            JavaFile spec=generateBuilderSpecification(doc,bn,templateName,packge, resource, bindings_schema);
             
             boolean val1=saveToFile(destinationDir, destination, spec);
             JavaFile spec2=generateClientLib(doc,bn,templateName,packge+ ".client", resource, bindings_schema);

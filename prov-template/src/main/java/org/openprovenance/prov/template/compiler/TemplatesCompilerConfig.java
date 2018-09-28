@@ -9,6 +9,7 @@ public class TemplatesCompilerConfig {
     public String name;
     public String group;
     public String description;
+    public String init_package;
     
     public TemplateCompilerConfig [] templates;
    
@@ -16,7 +17,8 @@ public class TemplatesCompilerConfig {
     public String toString() {
         return "TemplatesCompilerConfig [destination=" + destination + ", version=" + version
                 + ", name=" + name + ", group=" + group + ", description=" + description
-                + ", templates=" + Arrays.toString(templates) + "]";
+                + ", init_package=" + init_package + ", templates=" + Arrays.toString(templates)
+                + "]";
     }
     
 

@@ -1,5 +1,8 @@
 package org.openprovenance.prov.template.compiler;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +16,7 @@ import javax.lang.model.element.Modifier;
 
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Bundle;
+import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
@@ -50,7 +54,11 @@ public class CompilerUtil {
         }
     }
     
-
+    public Builder generateClassInit(String name) {
+        return TypeSpec.classBuilder(name)
+                .addModifiers(Modifier.PUBLIC);
+    }
+  
   
     public Builder generateClassBuilder3(String name) {
         return TypeSpec.classBuilder(name)
@@ -128,6 +136,35 @@ public class CompilerUtil {
             result.addAll(vars2);
         }
     }
+
+    public Document readDocumentFromFile(String file) throws ClassNotFoundException,
+                                                             NoSuchMethodException,
+                                                             SecurityException,
+                                                             InstantiationException,
+                                                             IllegalAccessException,
+                                                             IllegalArgumentException,
+                                                             InvocationTargetException {
+        Object interop=getInteropFramework();
+        Method method = interop.getClass().getMethod("readDocumentFromFile", String.class);
+        Document doc=(Document)method.invoke(interop,file);
+        return doc;
+    }
+
+    public void writeDocument(String file, Document doc) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        Object interop=getInteropFramework();
+        Method method = interop.getClass().getMethod("writeDocument", String.class, Document.class);
+        method.invoke(interop,file,doc);
+    }
+
+
+    public Object getInteropFramework() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
+                                               IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        Class<?> clazz = Class.forName("org.openprovenance.prov.interop.InteropFramework");
+        Constructor<?> ctor = clazz.getConstructor();
+        return ctor.newInstance(new Object[] { }); 
+    }
+
+    
     
 
 

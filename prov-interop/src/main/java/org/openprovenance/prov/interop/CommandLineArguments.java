@@ -48,6 +48,7 @@ public class CommandLineArguments implements ErrorCodes {
 
     public static final String BUILDER = "builder";
     public static final String TEMPLATE_BUILDER = "templatebuilder";
+    public static final String LOG2PROV = "log2prov";
 
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
@@ -181,7 +182,13 @@ public class CommandLineArguments implements ErrorCodes {
                 .hasArg()
                 .withDescription("template builder configuration")
                 .create(TEMPLATE_BUILDER);
-
+        
+        Option log2prov = OptionBuilder
+                .withArgName("file")
+                .hasArg()
+                .withDescription("fully qualified ClassName of initialiser in jar file")
+                .create(LOG2PROV);
+        
         Options options = new Options();
 
         options.addOption(help);
@@ -212,6 +219,7 @@ public class CommandLineArguments implements ErrorCodes {
         options.addOption(location);
         options.addOption(builder);
         options.addOption(template_builder);
+        options.addOption(log2prov);
 
         return options;
 
@@ -281,6 +289,7 @@ public class CommandLineArguments implements ErrorCodes {
         boolean allexpanded=false;
         boolean builder=false;
         String template_builder=null;
+        String log2prov=null;
 
 
         try {
@@ -328,6 +337,7 @@ public class CommandLineArguments implements ErrorCodes {
             if (line.hasOption(LOCATION))  location = line.getOptionValue(LOCATION);
             if (line.hasOption(BUILDER))  builder = true;
             if (line.hasOption(TEMPLATE_BUILDER))  template_builder = line.getOptionValue(TEMPLATE_BUILDER);
+            if (line.hasOption(LOG2PROV))  log2prov = line.getOptionValue(LOG2PROV);
 
 
             if (help!=null) {
@@ -369,6 +379,7 @@ public class CommandLineArguments implements ErrorCodes {
                                                           flatten,
                                                           compare,
                                                           compareOut,
+                                                          log2prov,
                                                           org.openprovenance.prov.xml.ProvFactory.getFactory());
             if (listFormatsp) {
                 java.util.List<java.util.Map<String, String>> formats = interop.getSupportedFormats();

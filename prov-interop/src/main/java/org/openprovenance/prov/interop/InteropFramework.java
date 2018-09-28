@@ -10,6 +10,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -123,17 +126,18 @@ public class InteropFramework implements InteropMediaType {
 
     final private boolean builder;
     final private String template_builder;
+    final private String log2prov;
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
      */
     public InteropFramework() {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, false, null, null, null, null, null, null, null,null,null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, false, null, null, null, null, null, null, null,null,null, null,
                 org.openprovenance.prov.xml.ProvFactory.getFactory());
     }
 
     public InteropFramework(ProvFactory pFactory) {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, false, null, null, null, null, null, null, null,null,null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, false, null, null, null, null, null, null, null,null,null, null,
                 pFactory);
     }
 
@@ -141,7 +145,7 @@ public class InteropFramework implements InteropMediaType {
     public InteropFramework(String verbose, String debug, String logfile,
             String infile, String informat, String outfile, String outformat, String namespaces, String title,
             String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String template, boolean builder, String template_builder, String packge, String location, String generator,
-            String index, String merge, String flatten, String compare, String compareOut, ProvFactory pFactory) {
+            String index, String merge, String flatten, String compare, String compareOut, String log2prov, ProvFactory pFactory) {
         this.verbose = verbose;
         this.debug = debug;
         this.logfile = logfile;
@@ -170,7 +174,8 @@ public class InteropFramework implements InteropMediaType {
         this.location=location;
         this.builder=builder;
         this.template_builder=template_builder;
-
+        this.log2prov=log2prov;
+        
         extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
         extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
         mimeTypeMap = new Hashtable<InteropFramework.ProvFormat, String>();
@@ -936,7 +941,7 @@ public class InteropFramework implements InteropMediaType {
                     "Cannot use standard input for both infile and bindings");
 
         Document doc;
-        if (infile != null) {
+        if (infile != null && log2prov==null) {  // if log2prov is set, then the input file is a log, to be converted
             doc = doReadDocument(infile, informat);
         } else if (merge != null) {
             IndexedDocument iDoc = new IndexedDocument(pFactory,
@@ -964,7 +969,35 @@ public class InteropFramework implements InteropMediaType {
         } else if (template_builder!=null) {
             return ConfigProcessor.processTemplateGenerationConfig(template_builder, pFactory);
             
-        } else {
+        } else if (log2prov!=null) {
+            try {
+                Class<?>  clazz = Class.forName(log2prov);
+                Method method = clazz.getMethod("main", String[].class);
+                try {
+                    method.invoke(null, new Object[]{ new String[] { infile, outfile, "-merge"}}); 
+                    return 0;
+             } catch (Throwable e) {
+                    e.printStackTrace();
+                    return -1;
+             }
+            } catch (ClassNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return -1;
+            } catch (NoSuchMethodException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IllegalArgumentException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } 
+            
+            return -1;
+        }
+        else {
 
             String[] options = generator.split(":");
             String noOfNodes = getOption(options, 0);

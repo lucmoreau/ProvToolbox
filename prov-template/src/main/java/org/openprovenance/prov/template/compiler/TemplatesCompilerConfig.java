@@ -12,7 +12,9 @@ public class TemplatesCompilerConfig {
     public String init_package;
     public String logger;
     public String logger_package;
-    
+    public String script;
+    public String script_dir;
+
     public TemplateCompilerConfig [] templates;
    
     @Override
@@ -20,7 +22,8 @@ public class TemplatesCompilerConfig {
         return "TemplatesCompilerConfig [destination=" + destination + ", version=" + version
                 + ", name=" + name + ", group=" + group + ", description=" + description
                 + ", init_package=" + init_package + ", logger=" + logger + ", logger_package="
-                + logger_package + ", templates=" + Arrays.toString(templates) + "]";
+                + logger_package + ", script=" + script + ", templates="
+                + Arrays.toString(templates) + "]";
     }
     
 

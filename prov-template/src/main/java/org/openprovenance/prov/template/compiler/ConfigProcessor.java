@@ -1,11 +1,23 @@
 package org.openprovenance.prov.template.compiler;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.Reader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Iterator;
 
 import org.apache.maven.model.Dependency;
@@ -29,6 +41,7 @@ import com.squareup.javapoet.TypeSpec.Builder;
 import javax.lang.model.element.Modifier;
 
 public class ConfigProcessor {
+    private static final String INIT = "Init";
     public static final String BUILDERS = "builders";
     public static final String PF = "pf";
     static ObjectMapper objectMapper = new ObjectMapper();
@@ -67,13 +80,15 @@ public class ConfigProcessor {
             final String init_dir=l2p_src_dir+ "/" + configs.init_package.replace('.', '/') + "/";;
    
             JavaFile init=cp.generateInitializer(tc, configs);
-            tc.saveToFile(init_dir, init_dir+"Init.java", init);
+            tc.saveToFile(init_dir, init_dir+INIT + ".java", init);
             
             
             final String logger_dir=cli_src_dir+ "/" + configs.logger_package.replace('.', '/') + "/";;
 
             JavaFile logger=cp.generateLogger(tc, configs);
             tc.saveToFile(logger_dir, logger_dir+configs.logger+ ".java", logger);
+            
+            cp.generateScript(configs);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -207,7 +222,7 @@ public class ConfigProcessor {
         
   
     
-        Builder builder = cu.generateClassInit("Init");
+        Builder builder = cu.generateClassInit(INIT);
         
         builder.addField(String[].class,BUILDERS, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
         builder.addField(org.openprovenance.prov.model.ProvFactory.class,PF, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
@@ -322,6 +337,34 @@ public class ConfigProcessor {
         
         return builder.build();
   
+    }
+    
+    public void generateScript(TemplatesCompilerConfig configs) {
+        new File(configs.script_dir).mkdirs(); 
+        try {
+            final String path = configs.script_dir+"/"+configs.script;
+            PrintStream os=new PrintStream(path);
+            InputStream in=this.getClass().getResourceAsStream("script.sh");
+
+            BufferedReader reader=new BufferedReader(new InputStreamReader(in));
+            String line=reader.readLine();
+            while (line!=null) {
+                line=line.replace("${SCRIPT}",configs.script);
+                line=line.replace("${VERSION}",configs.version);
+                line=line.replace("${NAME}",configs.name);
+                line=line.replace("${PACKAGE}",configs.init_package.replace(".","/"));
+                line=line.replace("${INIT}",configs.init_package+"." + INIT);
+                os.println(line);
+                line=reader.readLine();
+            }
+            os.close();
+            in.close();
+            Files.setPosixFilePermissions(new File(path).toPath(), PosixFilePermissions.fromString("rwxr-xr-x"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
     }
     
 

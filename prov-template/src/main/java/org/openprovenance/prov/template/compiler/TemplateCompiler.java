@@ -21,7 +21,9 @@ import org.openprovenance.prov.template.expander.ExpandAction;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -341,14 +343,35 @@ public class TemplateCompiler {
            builder.addParameter(getDeclaredType(the_var, key), key); 
        }
    }
+
+       
    
    public void generateSpecializedParametersJavadoc(MethodSpec.Builder builder, JsonNode the_var) {
        Iterator<String> iter=the_var.fieldNames();
        while(iter.hasNext()){
            String key=iter.next();
-           builder.addJavadoc("@param $N documentation ($T)\n", key, getDeclaredType(the_var, key)); 
+           
+           final JsonNode entry = the_var.path(key);
+           if (entry!=null && !(entry instanceof MissingNode)) {
+               JsonNode firstNode = entry.get(0);
+               if (firstNode instanceof ArrayNode) {
+                   firstNode=((ArrayNode)firstNode).get(0);
+               }
+               final JsonNode jsonNode = firstNode.get("@documentation");
+               String documentation=noNode(jsonNode)? "-- no @documentation" : jsonNode.textValue();
+               final JsonNode jsonNode2 = firstNode.get("@type");
+               String type=noNode(jsonNode2)? "xsd:string" : jsonNode2.textValue();
+               builder.addJavadoc("@param $N $L (expected type: $L)\n", key, documentation, type); 
+           } else {           
+               builder.addJavadoc("@param $N -- no bindings schemas \n", key); 
+           }
        }
    }
+
+
+public boolean noNode(final JsonNode jsonNode2) {
+    return jsonNode2==null || jsonNode2 instanceof MissingNode || jsonNode2 instanceof NullNode;
+}
 
    public MethodSpec generateClientMethod(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
        final String loggerName = loggerName(template);

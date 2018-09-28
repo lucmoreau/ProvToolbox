@@ -57,6 +57,7 @@ public class TemplateCompiler {
 
             boolean val2=saveToFile(destinationDir2, destination2, spec2);
             
+            
             return val1 & val2;
 
         } catch (Exception e) {
@@ -278,11 +279,7 @@ public class TemplateCompiler {
        JsonNode the_var=bindings_schema.get("var");
        JsonNode the_context=bindings_schema.get("context");
 
-       Iterator<String> iter=the_var.fieldNames();
-       while(iter.hasNext()){
-           String key=iter.next();
-           builder.addParameter(getDeclaredType(the_var, key), key); 
-       }
+       generateSpecializedParameters(builder, the_var);
        
        Iterator<String> iter2=the_context.fieldNames();
        while(iter2.hasNext()){
@@ -334,6 +331,23 @@ public class TemplateCompiler {
        MethodSpec method=builder.build();
        
        return method;
+   }
+
+
+   public void generateSpecializedParameters(MethodSpec.Builder builder, JsonNode the_var) {
+       Iterator<String> iter=the_var.fieldNames();
+       while(iter.hasNext()){
+           String key=iter.next();
+           builder.addParameter(getDeclaredType(the_var, key), key); 
+       }
+   }
+   
+   public void generateSpecializedParametersJavadoc(MethodSpec.Builder builder, JsonNode the_var) {
+       Iterator<String> iter=the_var.fieldNames();
+       while(iter.hasNext()){
+           String key=iter.next();
+           builder.addJavadoc("@param $N documentation ($T)\n", key, getDeclaredType(the_var, key)); 
+       }
    }
 
    public MethodSpec generateClientMethod(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
@@ -422,7 +436,7 @@ public class TemplateCompiler {
        return method;
    }
 
-   private String loggerName(String template) {
+   public String loggerName(String template) {
        return "log" + gu.capitalize(template);
 
    }

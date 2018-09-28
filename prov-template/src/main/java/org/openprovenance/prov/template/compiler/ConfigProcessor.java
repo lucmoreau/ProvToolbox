@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
@@ -18,7 +19,9 @@ import org.openprovenance.prov.template.log2prov.Runner;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -50,7 +53,7 @@ public class ConfigProcessor {
             new File(l2p_src_dir).mkdirs(); 
             new File(cli_src_dir).mkdirs(); 
 
-            TemplateCompiler tbg=new TemplateCompiler(pFactory);
+            TemplateCompiler tc=new TemplateCompiler(pFactory);
           
             cp.makeRootPom(configs, root_dir, cli_lib, l2p_lib);
             cp.makeSubPom(configs, cli_dir,  cli_lib, false);
@@ -58,13 +61,19 @@ public class ConfigProcessor {
             for (TemplateCompilerConfig config: configs.templates) {
                 System.out.println(config.toString());
 
-                cp.doProcessEntry(tbg,config,configs,cli_src_dir,l2p_src_dir,pFactory);
+                cp.doProcessEntry(tc,config,configs,cli_src_dir,l2p_src_dir,pFactory);
             }
             
             final String init_dir=l2p_src_dir+ "/" + configs.init_package.replace('.', '/') + "/";;
    
-            JavaFile init=cp.generateInitializer(tbg, configs);
-            tbg.saveToFile(init_dir, init_dir+"Init.java", init);
+            JavaFile init=cp.generateInitializer(tc, configs);
+            tc.saveToFile(init_dir, init_dir+"Init.java", init);
+            
+            
+            final String logger_dir=cli_src_dir+ "/" + configs.logger_package.replace('.', '/') + "/";;
+
+            JavaFile logger=cp.generateLogger(tc, configs);
+            tc.saveToFile(logger_dir, logger_dir+configs.logger+ ".java", logger);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,14 +82,7 @@ public class ConfigProcessor {
     
     
     public void doProcessEntry ( TemplateCompiler tbg, TemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory) {
-        JsonNode bindings_schema=null;
-        if (config.bindings != null) {
-            try {
-                bindings_schema = objectMapper.readTree(new File(config.bindings));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        JsonNode bindings_schema = get_bindings_schema(config);
         
         Document doc;
         try {
@@ -97,6 +99,19 @@ public class ConfigProcessor {
     }
 
 
+    public JsonNode get_bindings_schema(TemplateCompilerConfig config) {
+        JsonNode bindings_schema=null;
+        if (config.bindings != null) {
+            try {
+                bindings_schema = objectMapper.readTree(new File(config.bindings));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return bindings_schema;
+    }
+
+
     public Document readDocumentFromFile(TemplateCompilerConfig config) throws ClassNotFoundException,
                                                                         NoSuchMethodException,
                                                                         SecurityException,
@@ -104,8 +119,7 @@ public class ConfigProcessor {
                                                                         IllegalAccessException,
                                                                         IllegalArgumentException,
                                                                         InvocationTargetException {
-        Object interop=gu.getInteropFramework();
-        return gu.readDocumentFromFile(config.template);
+        return cu.readDocumentFromFile(config.template);
     }
 
 
@@ -184,16 +198,16 @@ public class ConfigProcessor {
         return "0.7.4-SNAPSHOT"; // need to get actual version
     }
     
-    final CompilerUtil gu=new CompilerUtil();
+    final CompilerUtil cu=new CompilerUtil();
 
     
-    private JavaFile generateInitializer(TemplateCompiler tbg, TemplatesCompilerConfig configs) {
+    private JavaFile generateInitializer(TemplateCompiler tc, TemplatesCompilerConfig configs) {
         
         int size=configs.templates.length;
         
   
     
-        Builder builder = gu.generateClassInit("Init");
+        Builder builder = cu.generateClassInit("Init");
         
         builder.addField(String[].class,BUILDERS, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
         builder.addField(org.openprovenance.prov.model.ProvFactory.class,PF, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
@@ -202,7 +216,7 @@ public class ConfigProcessor {
         block.addStatement("$N = new String[$L]",BUILDERS, size);
         int count=0;
         for (TemplateCompilerConfig config: configs.templates) {
-            block.addStatement("$N[$L]=$S",BUILDERS,count,config.package_+"."+tbg.templateNameClass(config.name));
+            block.addStatement("$N[$L]=$S",BUILDERS,count,config.package_+"."+tc.templateNameClass(config.name));
             count++;
         }    
         block.addStatement("pf=$T.getFactory()", org.openprovenance.prov.xml.ProvFactory.class);
@@ -247,5 +261,68 @@ public class ConfigProcessor {
         return builder.build();
   
     }
+    
+    private JavaFile generateLogger(TemplateCompiler tc, TemplatesCompilerConfig configs) {
+        
+        Builder builder = cu.generateClassInit(configs.logger);
+        
+        for (TemplateCompilerConfig config: configs.templates) {
+            final String templateNameClass = tc.templateNameClass(config.name);
+            final ClassName className = ClassName.get(config.package_+".client",templateNameClass);
+            FieldSpec fspec = FieldSpec.builder(className, config.name)
+                    .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
+                    .initializer("new $T()", className)
+                    .build();
+            
+            builder.addField(fspec);
+        }   
+        
+        for (TemplateCompilerConfig config: configs.templates) {
+            builder.addMethod(generateStaticLogMethod(config,tc));
+        }
+   
+        
+        TypeSpec theLogger=builder.build();
+        
+        JavaFile myfile = JavaFile.builder(configs.logger_package, theLogger )
+                .addFileComment("Generated Automatically by ProvToolbox for templates config $S",configs.name)
+                .build();
+        return myfile;
+    }
+
+    
+    
+    public MethodSpec generateStaticLogMethod(TemplateCompilerConfig config, TemplateCompiler tc) {
+        final String loggerName = tc.loggerName(config.name);
+
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(loggerName)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .returns(String.class)
+        ;
+        
+        JsonNode bindings_schema = get_bindings_schema(config);
+    
+        JsonNode the_var=bindings_schema.get("var");
+        JsonNode the_context=bindings_schema.get("context");
+        tc.generateSpecializedParameters(builder, the_var);
+        tc.generateSpecializedParametersJavadoc(builder, the_var);
+        
+        
+        int count=1;
+        Iterator<String> iter=the_var.fieldNames();
+        String args="";
+        while(iter.hasNext()){
+            String key=iter.next();
+            if (count > 1) args=args + ", ";
+            args=args+key;
+            count++;
+        }
+        builder.addStatement("return $N." + loggerName + "(" + args + ")",config.name);  
+
+        
+        return builder.build();
+  
+    }
+    
 
 }

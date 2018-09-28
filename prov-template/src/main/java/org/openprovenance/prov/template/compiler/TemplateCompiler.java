@@ -412,18 +412,19 @@ public class TemplateCompiler {
            
 
            constant=constant+',';
-           
+           builder.addStatement("$N.append($S)",var,constant);
+           constant="";
+
            if (String.class.equals(clazz)) {
-               constant=constant+'\"';
-               builder.addStatement("$N.append($S)",var,constant);
-               constant="";
-               builder.addStatement("$N.append($N)", var, newName);  
-               constant=constant+'\"';
+               builder.beginControlFlow("if ($N==null)",newName)
+                          .addStatement("$N.append($N)", var, newName)
+                      .nextControlFlow("else")
+                          .addStatement("$N.append($S)",var,"\"")
+                          .addStatement("$N.append($N)", var, newName)
+                          .addStatement("$N.append($S)",var,"\"")
+                      .endControlFlow();
            } else {
-               if (!(constant.isEmpty())) {
-                   builder.addStatement("$N.append($S)",var,constant);
-                   constant="";
-               }
+               builder.addStatement("$N.append($S)",var,constant);
                builder.addStatement("$N.append($N)", var, newName);  
            }
        }

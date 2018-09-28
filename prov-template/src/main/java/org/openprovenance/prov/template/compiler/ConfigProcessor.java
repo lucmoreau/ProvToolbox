@@ -296,7 +296,7 @@ public class ConfigProcessor {
         final String loggerName = tc.loggerName(config.name);
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(loggerName)
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
                 .returns(String.class)
         ;
         

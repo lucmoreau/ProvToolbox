@@ -42,11 +42,11 @@ public class TemplateCompiler {
     
     boolean withMain=true; // TODO need to be updatable via command line
    
-    public boolean generate(Document doc, String templateName, String packge, String location, String resource, JsonNode bindings_schema) {
+    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource,  JsonNode bindings_schema) {
         try {
             String bn=templateNameClass(templateName);
-            String destinationDir=location + "/" + packge.replace('.', '/') + "/";
-            String destinationDir2=destinationDir + "/" + "client" + "/";
+            String destinationDir=l2p_src_dir + "/" + packge.replace('.', '/') + "/";
+            String destinationDir2=cli_src_dir + "/" + packge.replace('.', '/') + "/" + "client" + "/";
             
             String destination=destinationDir + bn + ".java";
             String destination2=destinationDir2 + bn + ".java";

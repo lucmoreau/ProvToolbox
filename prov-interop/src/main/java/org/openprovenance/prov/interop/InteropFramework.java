@@ -34,6 +34,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
+import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.TemplateCompiler;
 import org.openprovenance.prov.template.expander.Bindings;
@@ -961,7 +962,7 @@ public class InteropFramework implements InteropMediaType {
             doc = iDoc.toDocument();
 
         } else if (template_builder!=null) {
-            return processTemplateGenerationConfig(template_builder);
+            return ConfigProcessor.processTemplateGenerationConfig(template_builder, pFactory);
             
         } else {
 
@@ -1013,7 +1014,7 @@ public class InteropFramework implements InteropMediaType {
             }
             TemplateCompiler tbg=new TemplateCompiler(pFactory);
             
-            tbg.generate(doc, template, packge, outfile, location,bindings_schema);
+            tbg.generate(doc, template, packge, outfile, location,location,bindings_schema);
             return CommandLineArguments.STATUS_OK;
         }
 
@@ -1298,22 +1299,6 @@ public class InteropFramework implements InteropMediaType {
 
     }
     
-    public static int processTemplateGenerationConfig(String template_builder) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        TemplateCompilerConfig[] configs;
-        try {
-            configs = objectMapper.readValue(new File(template_builder), TemplateCompilerConfig[].class);
-            for (TemplateCompilerConfig config: configs) {
-                System.out.println(config.toString());
-                // provconvert -infile templates/grow.provn -template grow -builder -package foo -bindings bindings/grow_bs.json -bindver 3 -outfile src/main/java
 
-                CommandLineArguments.mainExit(new String[]{"-infile", config.template, "-template", config.name, "-builder", "-package", config.package_, "-bindings", config.bindings, "-bindver", "3", "-outfile", config.destination}, false);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-    
 
 }

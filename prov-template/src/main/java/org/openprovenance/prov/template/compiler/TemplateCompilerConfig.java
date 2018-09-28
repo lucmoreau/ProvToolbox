@@ -9,12 +9,12 @@ public class TemplateCompilerConfig {
     @JsonProperty("package")
     public String package_;
     public String bindings;
-    public String destination;
+    
    
     @Override
     public String toString() {
-        return "TemplateCompilerConfig [name=" + name + ", template=" + template + ", package=" + package_
-                + ", bindings=" + bindings + ", destination=" + destination + "]";
+        return "TemplateCompilerConfig [name=" + name + ", template=" + template + ", package_="
+                + package_ + ", bindings=" + bindings + "]";
     }
     
 

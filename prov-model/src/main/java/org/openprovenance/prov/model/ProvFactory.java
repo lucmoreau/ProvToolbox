@@ -959,12 +959,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     }
 
     public Used newUsed(QualifiedName id, QualifiedName aid, String role, QualifiedName eid) {
-	Used res = newUsed(id);
-	res.setActivity(aid);
-	if (role!=null)
-	addRole(res, newRole(role,getName().XSD_STRING));
-	res.setEntity(eid);
-	return res;
+        Used res = newUsed(id);
+        res.setActivity(aid);
+        if (role!=null)
+            addRole(res, newRole(role,getName().XSD_STRING));
+        res.setEntity(eid);
+        return res;
     }
 
     /** A factory method to create an instance of a usage {@link Used}
@@ -975,11 +975,11 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      */    
 
     public Used newUsed(QualifiedName id, QualifiedName activity, QualifiedName entity) {
- 	Used res = newUsed(id);
-	res.setActivity(activity);
-	res.setEntity(entity);
- 	return res;
-     }
+        Used res = newUsed(id);
+        res.setActivity(activity);
+        res.setEntity(entity);
+        return res;
+    }
 
     
     /** A factory method to create an instance of a usage {@link Used}
@@ -989,25 +989,30 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      */    
 
     public Used newUsed(QualifiedName activity, QualifiedName entity) {
- 	Used res = newUsed((QualifiedName)null);
-	res.setActivity(activity);
-	res.setEntity(entity);
- 	return res;
-     }
+        Used res = newUsed((QualifiedName)null);
+        res.setActivity(activity);
+        res.setEntity(entity);
+        return res;
+    }
 
      /* (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newUsed(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
     public Used newUsed(QualifiedName id, QualifiedName activity, QualifiedName entity,
-			XMLGregorianCalendar time,
-			Collection<Attribute> attributes) {
-	Used res = newUsed(id, activity, null, entity);
-	res.setTime(time);
-	setAttributes(res, attributes);
-	return res;
+                        XMLGregorianCalendar time,
+                        Collection<Attribute> attributes) {
+        Used res = newUsed(id, activity, null, entity);
+        res.setTime(time);
+        setAttributes(res, attributes);
+        return res;
     }
 
-
+    public Used newUsed(QualifiedName id, QualifiedName activity, QualifiedName entity,
+                        XMLGregorianCalendar time) {
+        Used res = newUsed(id, activity, null, entity);
+        res.setTime(time);
+        return res;
+    }
     
     /** A factory method to create an instance of a usage {@link Used} from another
      * @param u an instance of a usage 
@@ -1585,64 +1590,64 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     
 
     public void setAttributes(HasOther res, Collection<Attribute> attributes) {
-	if (attributes==null) return;
-	HasType typ=(res instanceof HasType)? (HasType)res : null;
-	HasLocation loc=(res instanceof HasLocation)? (HasLocation)res : null;
-	HasLabel lab=(res instanceof HasLabel)? (HasLabel)res : null;
-	HasValue aval=(res instanceof HasValue)? (HasValue)res : null;
-	HasRole rol=(res instanceof HasRole)? (HasRole)res : null;
+        if (attributes==null) return;
+        HasType typ=(res instanceof HasType)? (HasType)res : null;
+        HasLocation loc=(res instanceof HasLocation)? (HasLocation)res : null;
+        HasLabel lab=(res instanceof HasLabel)? (HasLabel)res : null;
+        HasValue aval=(res instanceof HasValue)? (HasValue)res : null;
+        HasRole rol=(res instanceof HasRole)? (HasRole)res : null;
 
-	for (Attribute attr: attributes) {
-	    
-	    Object aValue=attr.getValue();
-	    
-	    ValueConverter vconv=new ValueConverter(this);
-        if (getName().RDF_LITERAL.equals(attr.getType())&& (aValue instanceof String)) {
-            aValue=vconv.convertToJava(attr.getType(),(String)aValue);
+        for (Attribute attr: attributes) {
+
+            Object aValue=attr.getValue();
+
+            ValueConverter vconv=new ValueConverter(this);
+            if (getName().RDF_LITERAL.equals(attr.getType())&& (aValue instanceof String)) {
+                aValue=vconv.convertToJava(attr.getType(),(String)aValue);
+            }
+
+
+
+            switch (attr.getKind()) {
+            case PROV_LABEL:
+                if (lab!=null) {
+                    if (aValue instanceof LangString) {
+                        lab.getLabel().add((LangString) aValue);		
+                    } else {
+                        lab.getLabel().add(newInternationalizedString(aValue.toString()));
+                    }
+                }
+                break;
+            case PROV_LOCATION:
+                if (loc!=null) {
+                    loc.getLocation().add(newLocation(aValue,attr.getType()));
+                }
+                break;
+            case PROV_ROLE:
+                if (rol!=null) {
+                    rol.getRole().add(newRole(aValue,attr.getType()));
+                }
+                break;
+            case PROV_TYPE: 
+                if (typ!=null) {
+                    typ.getType().add(newType(aValue,attr.getType()));
+                }
+                break;
+            case PROV_VALUE:
+                if (aval!=null) {
+                    aval.setValue(newValue(aValue,attr.getType()));
+                }
+                break;
+            case OTHER:
+                res.getOther().add(newOther(attr.getElementName(), aValue, attr.getType()));
+                break;
+
+            default:
+                break;
+
+            }
+
         }
-            
-	    
-	    
-	    switch (attr.getKind()) {
-	    case PROV_LABEL:
-		if (lab!=null) {
-		    if (aValue instanceof LangString) {
-			lab.getLabel().add((LangString) aValue);		
-		    } else {
-			lab.getLabel().add(newInternationalizedString(aValue.toString()));
-		    }
-		}
-		break;
-	    case PROV_LOCATION:
-		if (loc!=null) {
-		    loc.getLocation().add(newLocation(aValue,attr.getType()));
-		}
-		break;
-	    case PROV_ROLE:
-		if (rol!=null) {
-		    rol.getRole().add(newRole(aValue,attr.getType()));
-		}
-		break;
-	    case PROV_TYPE: 
-		if (typ!=null) {
-		    typ.getType().add(newType(aValue,attr.getType()));
-		}
-		break;
-	    case PROV_VALUE:
-		if (aval!=null) {
-		    aval.setValue(newValue(aValue,attr.getType()));
-		}
-		break;
-	    case OTHER:
-		res.getOther().add(newOther(attr.getElementName(), aValue, attr.getType()));
-		break;
-	    
-	    default:
-		break;
-	    
-	    }
-	    
-	}
     }
 
     @Override

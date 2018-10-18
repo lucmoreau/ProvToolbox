@@ -5,9 +5,12 @@ import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.openprovenance.prov.model.Bundle;
@@ -24,8 +27,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 
@@ -160,7 +166,7 @@ public class TemplateCompiler {
     private JavaFile generateClientLib_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
         
         
-        Builder builder = gu.generateClassBuilder3(name);
+        Builder builder = gu.generateClassInit(name,packge,"Builder");
              
         
         
@@ -169,7 +175,9 @@ public class TemplateCompiler {
         if (bindings_schema!=null) {
             builder.addMethod(generateClientMethod(allVars, allAtts, name, templateName, bindings_schema));
             builder.addMethod(generateClientMethod2(allVars, allAtts, name, templateName, bindings_schema));
-      //      builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema));
+            builder.addMethod(generateClientMethod3(allVars, allAtts, name, templateName, bindings_schema));
+            builder.addMethod(generateClientMethod4(allVars, allAtts, name, templateName, bindings_schema));
+    //      builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema));
         }
         
 
@@ -455,6 +463,94 @@ public boolean noNode(final JsonNode jsonNode2) {
        builder.addStatement("$N.append($S)",var,constant);
 
 
+       MethodSpec method=builder.build();
+
+       return method;
+   }
+   
+   public MethodSpec generateClientMethod3(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
+       MethodSpec.Builder builder = MethodSpec.methodBuilder("getNodes")
+               .addModifiers(Modifier.PUBLIC)
+               .returns(Integer[].class)
+      
+               ;
+       String var="sb"; 
+     
+       JsonNode the_var=bindings_schema.get("var");
+       JsonNode the_context=bindings_schema.get("context");
+
+       Iterator<String> iter=the_var.fieldNames();
+       
+       int count=0;
+       List<Integer> ll=new LinkedList<Integer>();
+       while(iter.hasNext()){
+           count++;
+           String key=iter.next();
+           if (the_var.get(key).get(0).get("@id")!=null) {
+               ll.add(count);
+           }
+  
+       }
+       
+       String nodes="";
+       boolean first=true;
+       for (int elem: ll) {
+           if (first) {
+               first=false;
+           } else {
+               nodes=nodes+", ";
+           }
+           nodes=nodes + elem;
+       }
+
+       builder.addStatement("return new Integer[] {" + nodes + "}");  
+
+       
+       
+       
+       MethodSpec method=builder.build();
+
+       return method;
+   }
+   
+   static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(Integer[].class));
+
+   
+   public MethodSpec generateClientMethod4(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
+       MethodSpec.Builder builder = MethodSpec.methodBuilder("getSuccessors")
+               .addModifiers(Modifier.PUBLIC)
+               .returns(hashmapType)
+      
+               ;
+       String var="sb"; 
+     
+       JsonNode the_var=bindings_schema.get("var");
+       JsonNode the_context=bindings_schema.get("context");
+
+       Iterator<String> iter=the_var.fieldNames();
+       
+       int count=0;
+       List<Integer> ll=new LinkedList<Integer>();
+       while(iter.hasNext()){
+           count++;
+           String key=iter.next();
+           if (the_var.get(key).get(0).get("@id")!=null) {
+               ll.add(count);
+           }
+  
+       }
+       
+
+
+       builder.addStatement("$T table = new $T()", hashmapType, hashmapType);  
+
+       for (int elem: ll) {
+           builder.addStatement("table.put($L,new Integer[0])", elem);
+       }
+       
+       builder.addStatement("return table");  
+
+       
        MethodSpec method=builder.build();
 
        return method;

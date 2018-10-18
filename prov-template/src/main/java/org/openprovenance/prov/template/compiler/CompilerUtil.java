@@ -58,7 +58,15 @@ public class CompilerUtil {
         return TypeSpec.classBuilder(name)
                 .addModifiers(Modifier.PUBLIC);
     }
-  
+    public Builder generateClassInit(String name, String packge, String supername) {
+        return TypeSpec.classBuilder(name)
+                .addSuperinterface(ClassName.get(packge,supername))
+                .addModifiers(Modifier.PUBLIC);
+    }
+    public Builder generateInterfaceInit(String name) {
+        return TypeSpec.interfaceBuilder(name)
+                .addModifiers(Modifier.PUBLIC);
+    }
   
     public Builder generateClassBuilder3(String name) {
         return TypeSpec.classBuilder(name)

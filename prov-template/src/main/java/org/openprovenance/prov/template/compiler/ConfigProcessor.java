@@ -41,9 +41,12 @@ import com.squareup.javapoet.TypeSpec.Builder;
 import javax.lang.model.element.Modifier;
 
 public class ConfigProcessor {
+    private static final String GET_NODES_METHOD = "getNodes";
+    private static final String BUILDER_INTERFACE = "Builder";
     private static final String INIT = "Init";
     public static final String BUILDERS = "builders";
     public static final String PF = "pf";
+    private static final String GET_SUCCESSOR_METHOD = "getSuccessors";
     static ObjectMapper objectMapper = new ObjectMapper();
 
     public static int processTemplateGenerationConfig(String template_builder, ProvFactory pFactory) {
@@ -87,7 +90,10 @@ public class ConfigProcessor {
 
             JavaFile logger=cp.generateLogger(tc, configs);
             tc.saveToFile(logger_dir, logger_dir+configs.logger+ ".java", logger);
-            
+
+            JavaFile intface=cp.generateBuilderInterface(tc, configs);
+            tc.saveToFile(logger_dir, logger_dir+BUILDER_INTERFACE+ ".java", intface);
+                      
             cp.generateScript(configs);
         } catch (IOException e) {
             e.printStackTrace();
@@ -305,7 +311,33 @@ public class ConfigProcessor {
         return myfile;
     }
 
-    
+    private JavaFile generateBuilderInterface(TemplateCompiler tc, TemplatesCompilerConfig configs) {
+
+        Builder builder = cu.generateInterfaceInit(BUILDER_INTERFACE);
+
+
+
+        MethodSpec.Builder builder2=MethodSpec.methodBuilder(GET_NODES_METHOD)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(Integer[].class);
+        builder.addMethod(builder2.build());
+
+
+        MethodSpec.Builder builder3=MethodSpec.methodBuilder(GET_SUCCESSOR_METHOD)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(TemplateCompiler.hashmapType);
+        builder.addMethod(builder3.build());
+
+
+        TypeSpec theInterface=builder.build();
+
+        JavaFile myfile = JavaFile.builder(configs.logger_package, theInterface )
+                .addFileComment("Generated Automatically by ProvToolbox for templates config $S",configs.name)
+                .build();
+        return myfile;
+    }
+
+     
     
     public MethodSpec generateStaticLogMethod(TemplateCompilerConfig config, TemplateCompiler tc) {
         final String loggerName = tc.loggerName(config.name);

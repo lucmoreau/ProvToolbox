@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -126,7 +128,13 @@ public class TemplateCompiler {
         
         gu.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
         
-        return generateClientLib_aux(doc, allVars,allAtts,name, templateName, packge, resource, bindings_schema);
+        
+        
+        IndexedDocument indexed=new IndexedDocument(pFactory,pFactory.newDocument(),true);
+        u.forAllStatement(bun.getStatement(), indexed);
+        
+        
+        return generateClientLib_aux(doc, allVars,allAtts,name, templateName, packge, resource, bindings_schema, indexed);
         
     }
     
@@ -163,7 +171,7 @@ public class TemplateCompiler {
         return myfile;
     }
     
-    private JavaFile generateClientLib_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
+    private JavaFile generateClientLib_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema, IndexedDocument indexed) {
         
         
         Builder builder = gu.generateClassInit(name,packge,"Builder");
@@ -175,8 +183,22 @@ public class TemplateCompiler {
         if (bindings_schema!=null) {
             builder.addMethod(generateClientMethod(allVars, allAtts, name, templateName, bindings_schema));
             builder.addMethod(generateClientMethod2(allVars, allAtts, name, templateName, bindings_schema));
+            builder.addMethod(generateClientMethod3static(allVars, allAtts, name, templateName, bindings_schema));
             builder.addMethod(generateClientMethod3(allVars, allAtts, name, templateName, bindings_schema));
-            builder.addMethod(generateClientMethod4(allVars, allAtts, name, templateName, bindings_schema));
+            builder.addMethod(generateClientMethod4static(allVars, allAtts, name, templateName, bindings_schema, indexed));
+            
+            builder.addField(FieldSpec.builder(hashmapType, "__successors")
+                      .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                      .initializer("__getSuccessors()")
+                      .build());
+            
+            builder.addField(FieldSpec.builder(Integer[].class, "__nodes")
+                             .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                             .initializer("__getNodes()")
+                             .build());
+                   
+            builder.addMethod(generateClientMethod4(allVars, allAtts, name, templateName, bindings_schema, indexed));
+
     //      builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema));
         }
         
@@ -468,9 +490,9 @@ public boolean noNode(final JsonNode jsonNode2) {
        return method;
    }
    
-   public MethodSpec generateClientMethod3(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
-       MethodSpec.Builder builder = MethodSpec.methodBuilder("getNodes")
-               .addModifiers(Modifier.PUBLIC)
+   public MethodSpec generateClientMethod3static(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
+       MethodSpec.Builder builder = MethodSpec.methodBuilder("__getNodes")
+               .addModifiers(Modifier.PUBLIC,Modifier.STATIC)
                .returns(Integer[].class)
       
                ;
@@ -512,13 +534,42 @@ public boolean noNode(final JsonNode jsonNode2) {
 
        return method;
    }
+     
+   public MethodSpec generateClientMethod3(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
+       MethodSpec.Builder builder = MethodSpec.methodBuilder("getNodes")
+               .addModifiers(Modifier.PUBLIC)
+               .returns(Integer[].class)
+      
+               ;
+       
+
+       builder.addStatement("return __nodes");  
+
+       
+       
+       
+       MethodSpec method=builder.build();
+
+       return method;
+   }
    
    static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(Integer[].class));
 
-   
-   public MethodSpec generateClientMethod4(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
+   public MethodSpec generateClientMethod4(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
        MethodSpec.Builder builder = MethodSpec.methodBuilder("getSuccessors")
                .addModifiers(Modifier.PUBLIC)
+               .returns(hashmapType);
+       
+       builder.addStatement("return __successors");  
+   
+       MethodSpec method=builder.build();
+
+       return method;
+   }
+   
+   public MethodSpec generateClientMethod4static(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
+       MethodSpec.Builder builder = MethodSpec.methodBuilder("__getSuccessors")
+               .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                .returns(hashmapType)
       
                ;
@@ -526,27 +577,60 @@ public boolean noNode(final JsonNode jsonNode2) {
      
        JsonNode the_var=bindings_schema.get("var");
        JsonNode the_context=bindings_schema.get("context");
+       
+       
+       Iterator<String> iter2=the_var.fieldNames();
+       int count2=0;
+       HashMap<QualifiedName,Integer> index=new HashMap<QualifiedName,Integer>();
+       while(iter2.hasNext()){
+           count2++;
+           String key=iter2.next();
+           for (QualifiedName qn: allVars) {
+               if (key.equals(qn.getLocalPart())) {
+                   index.put(qn,count2);
+               }
+           }
+       }
+       
+       builder.addStatement("$T table = new $T()", hashmapType, hashmapType);  
 
        Iterator<String> iter=the_var.fieldNames();
        
        int count=0;
-       List<Integer> ll=new LinkedList<Integer>();
+       
        while(iter.hasNext()){
            count++;
            String key=iter.next();
            if (the_var.get(key).get(0).get("@id")!=null) {
-               ll.add(count);
+
+
+               Set<QualifiedName> successors=null;
+               for (QualifiedName qn: allVars) {
+                   if (key.equals(qn.getLocalPart())) {
+                       successors=indexed.traverseDerivations(qn);
+                       break;
+                   }
+               }
+               String initializer="";
+               boolean first=true;
+               for (QualifiedName successor:successors) {
+                   int i=index.get(successor);
+                   if (first) {
+                       first=false;
+                   } else {
+                       initializer=initializer + ", ";
+                   }
+                   initializer=initializer + i;
+               }
+
+               builder.addStatement("table.put($L,new Integer[] { " + initializer + "})", count);
+
            }
   
        }
        
+       
 
-
-       builder.addStatement("$T table = new $T()", hashmapType, hashmapType);  
-
-       for (int elem: ll) {
-           builder.addStatement("table.put($L,new Integer[0])", elem);
-       }
        
        builder.addStatement("return table");  
 

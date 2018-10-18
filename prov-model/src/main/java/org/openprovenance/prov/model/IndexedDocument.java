@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
@@ -233,81 +234,81 @@ public class IndexedDocument implements StatementAction {
 
 
     void mergeAttributes(Element existing, Element newElement) {
-	Set<LangString> set=new HashSet<LangString>(newElement.getLabel());
-	set.removeAll(existing.getLabel());
-	existing.getLabel().addAll(set);
-	
-	Set<Location> set2=new HashSet<Location>(newElement.getLocation());
-	set2.removeAll(existing.getLocation());
-	existing.getLocation().addAll(set2);
-	
-	Set<Type> set3=new HashSet<Type>(newElement.getType());
-	set3.removeAll(existing.getType());
-	existing.getType().addAll(set3);
-	
-	Set<Other> set4=new HashSet<Other>(newElement.getOther());
-	set4.removeAll(existing.getOther());
-	existing.getOther().addAll(set4);	
+        Set<LangString> set=new HashSet<LangString>(newElement.getLabel());
+        set.removeAll(existing.getLabel());
+        existing.getLabel().addAll(set);
+
+        Set<Location> set2=new HashSet<Location>(newElement.getLocation());
+        set2.removeAll(existing.getLocation());
+        existing.getLocation().addAll(set2);
+
+        Set<Type> set3=new HashSet<Type>(newElement.getType());
+        set3.removeAll(existing.getType());
+        existing.getType().addAll(set3);
+
+        Set<Other> set4=new HashSet<Other>(newElement.getOther());
+        set4.removeAll(existing.getOther());
+        existing.getOther().addAll(set4);	
     }
     
     void mergeAttributes(Influence existing, Influence newElement) {
-	Set<LangString> set=new HashSet<LangString>(newElement.getLabel());
-	set.removeAll(existing.getLabel());
-	existing.getLabel().addAll(set);
-	
-	if (existing instanceof HasLocation) {
-	    HasLocation existing2=(HasLocation) existing;
-	    Set<Location> set2=new HashSet<Location>(((HasLocation)newElement).getLocation());
-	    set2.removeAll(existing2.getLocation());
-	    existing2.getLocation().addAll(set2);
-	}
-	
-	Set<Type> set3=new HashSet<Type>(newElement.getType());
-	set3.removeAll(existing.getType());
-	existing.getType().addAll(set3);
-	
-	Set<Other> set4=new HashSet<Other>(newElement.getOther());
-	set4.removeAll(existing.getOther());
-	existing.getOther().addAll(set4);	
+        Set<LangString> set=new HashSet<LangString>(newElement.getLabel());
+        set.removeAll(existing.getLabel());
+        existing.getLabel().addAll(set);
+
+        if (existing instanceof HasLocation) {
+            HasLocation existing2=(HasLocation) existing;
+            Set<Location> set2=new HashSet<Location>(((HasLocation)newElement).getLocation());
+            set2.removeAll(existing2.getLocation());
+            existing2.getLocation().addAll(set2);
+        }
+
+        Set<Type> set3=new HashSet<Type>(newElement.getType());
+        set3.removeAll(existing.getType());
+        existing.getType().addAll(set3);
+
+        Set<Other> set4=new HashSet<Other>(newElement.getOther());
+        set4.removeAll(existing.getOther());
+        existing.getOther().addAll(set4);	
     }
     <T extends Statement> void mergeAttributes(T existing, T newElement) {
-	if (existing instanceof Element) {
-	     mergeAttributes((Element) existing, (Element) newElement);
-	     return;
-	}
-	if (existing instanceof Influence) {
-	     mergeAttributes((Influence) existing, (Influence) newElement);
-	     return;
-	}
-	throw new UnsupportedOperationException();
+        if (existing instanceof Element) {
+            mergeAttributes((Element) existing, (Element) newElement);
+            return;
+        }
+        if (existing instanceof Influence) {
+            mergeAttributes((Influence) existing, (Influence) newElement);
+            return;
+        }
+        throw new UnsupportedOperationException();
     }
     boolean sameEdge(Statement existing, Statement newElement, int count) {
-	boolean ok=true;
-	for (int i=1; i<=count; i++) {
-	    Object qn1 = u.getter(existing,i);
-	    Object qn2 = u.getter(newElement,i);
-	    if (qn1==null) {
-		if (qn2==null) {
+        boolean ok=true;
+        for (int i=1; i<=count; i++) {
+            Object qn1 = u.getter(existing,i);
+            Object qn2 = u.getter(newElement,i);
+            if (qn1==null) {
+                if (qn2==null) {
 
-		} else {
-		    ok=false;
-		    break;
-		}
-	    } else {
-		if (qn2==null) {
-		    ok=false;
-		    break;
-		} else {
-		    if (!qn1.equals(qn2)) {
-			ok=false;
-			break;
-		    }
-		}
-	    }
-	}
-	return ok;
+                } else {
+                    ok=false;
+                    break;
+                }
+            } else {
+                if (qn2==null) {
+                    ok=false;
+                    break;
+                } else {
+                    if (!qn1.equals(qn2)) {
+                        ok=false;
+                        break;
+                    }
+                }
+            }
+        }
+        return ok;
     }
-   
+
     public Agent add(Agent agent) {
         return add(agent.getId(),agent);
     }
@@ -347,13 +348,13 @@ public class IndexedDocument implements StatementAction {
         return agentMap.get(name);
     }
     public IndexedDocument(ProvFactory pFactory, Document doc) {
-	this(pFactory,doc,true);
+        this(pFactory,doc,true);
     }
-            
+
     public IndexedDocument(ProvFactory pFactory, Document doc, boolean flatten) {
         this.pFactory=pFactory;
         this.flatten=flatten;
-        
+
         if (doc!=null) {
             this.nss=doc.getNamespace();          
             u.forAllStatementOrBundle(doc.getStatementOrBundle(), this);
@@ -603,88 +604,88 @@ public class IndexedDocument implements StatementAction {
     }
     
     public Document toDocument() {
-	Document res=pFactory.newDocument();
-	List<StatementOrBundle> statementOrBundle = res.getStatementOrBundle();
-	
-	toContainer(statementOrBundle);
-	
-	if (!flatten) {
-	    for (QualifiedName bunId: bundleMap.keySet()) {
-		IndexedDocument idoc=bundleMap.get(bunId);
-		Bundle bun=pFactory.newNamedBundle(bunId, null);
-		List<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
-		idoc.toContainer(ll);
-		for (StatementOrBundle s: ll) {
-		    bun.getStatement().add((Statement) s);
-		}
-		bun.setNamespace(Namespace.gatherNamespaces(bun));
+        Document res=pFactory.newDocument();
+        List<StatementOrBundle> statementOrBundle = res.getStatementOrBundle();
 
-		statementOrBundle.add(bun);
-	    }
-	}
-	res.setNamespace(Namespace.gatherNamespaces(res));
-	return res;
+        toContainer(statementOrBundle);
+
+        if (!flatten) {
+            for (QualifiedName bunId: bundleMap.keySet()) {
+                IndexedDocument idoc=bundleMap.get(bunId);
+                Bundle bun=pFactory.newNamedBundle(bunId, null);
+                List<StatementOrBundle> ll=new LinkedList<StatementOrBundle>();
+                idoc.toContainer(ll);
+                for (StatementOrBundle s: ll) {
+                    bun.getStatement().add((Statement) s);
+                }
+                bun.setNamespace(Namespace.gatherNamespaces(bun));
+
+                statementOrBundle.add(bun);
+            }
+        }
+        res.setNamespace(Namespace.gatherNamespaces(res));
+        return res;
     }
     private void toContainer(List<StatementOrBundle> statementOrBundle) {
-	statementOrBundle.addAll(entityMap.values());
-	statementOrBundle.addAll(activityMap.values());
-	statementOrBundle.addAll(agentMap.values());
-	
-	statementOrBundle.addAll(anonUsed);
-	for (Collection<Used> c: namedUsedMap.values()) {
-	    statementOrBundle.addAll(c);
-	}
-	statementOrBundle.addAll(anonWasGeneratedBy);
-	for (Collection<WasGeneratedBy> c: namedWasGeneratedByMap.values()) {
-	    statementOrBundle.addAll(c);
-	}
-	statementOrBundle.addAll(anonWasDerivedFrom);
-	for (Collection<WasDerivedFrom> c: namedWasDerivedFromMap.values()) {
-	    statementOrBundle.addAll(c);
-	}
-	statementOrBundle.addAll(anonWasAssociatedWith);
-	for (Collection<WasAssociatedWith> c: namedWasAssociatedWithMap.values()) {
-	    statementOrBundle.addAll(c);
-	}
-	statementOrBundle.addAll(anonWasAttributedTo);
-	for (Collection<WasAttributedTo> c: namedWasAttributedToMap.values()) {
-	    statementOrBundle.addAll(c);
-	}
-	statementOrBundle.addAll(anonWasInformedBy);
-	for (Collection<WasInformedBy> c: namedWasInformedByMap.values()) {
-	    statementOrBundle.addAll(c);
-	}
-	
-	statementOrBundle.addAll(anonSpecializationOf);
-	statementOrBundle.addAll(anonAlternateOf);
-	statementOrBundle.addAll(anonHadMember);
-	
-	statementOrBundle.addAll(anonWasInvalidatedBy);
-	for (Collection<WasInvalidatedBy> c: namedWasInvalidatedByMap.values()) {
-	    statementOrBundle.addAll(c);
-	}
-	
-	statementOrBundle.addAll(anonWasStartedBy);
-	for (Collection<WasStartedBy> c: namedWasStartedByMap.values()) {
-	    statementOrBundle.addAll(c);
-	}
-	
-	statementOrBundle.addAll(anonWasEndedBy);
-	for (Collection<WasEndedBy> c: namedWasEndedByMap.values()) {
-	    statementOrBundle.addAll(c);
-	}
-	
-	statementOrBundle.addAll(anonActedOnBehalfOf);
-	for (Collection<ActedOnBehalfOf> c: namedActedOnBehalfOfMap.values()) {
-	    statementOrBundle.addAll(c);
-	}
-	
-	statementOrBundle.addAll(anonWasInfluencedBy);
-	for (Collection<WasInfluencedBy> c: namedWasInfluencedByMap.values()) {
-	    statementOrBundle.addAll(c);
-	}
-	
-	
+        statementOrBundle.addAll(entityMap.values());
+        statementOrBundle.addAll(activityMap.values());
+        statementOrBundle.addAll(agentMap.values());
+
+        statementOrBundle.addAll(anonUsed);
+        for (Collection<Used> c: namedUsedMap.values()) {
+            statementOrBundle.addAll(c);
+        }
+        statementOrBundle.addAll(anonWasGeneratedBy);
+        for (Collection<WasGeneratedBy> c: namedWasGeneratedByMap.values()) {
+            statementOrBundle.addAll(c);
+        }
+        statementOrBundle.addAll(anonWasDerivedFrom);
+        for (Collection<WasDerivedFrom> c: namedWasDerivedFromMap.values()) {
+            statementOrBundle.addAll(c);
+        }
+        statementOrBundle.addAll(anonWasAssociatedWith);
+        for (Collection<WasAssociatedWith> c: namedWasAssociatedWithMap.values()) {
+            statementOrBundle.addAll(c);
+        }
+        statementOrBundle.addAll(anonWasAttributedTo);
+        for (Collection<WasAttributedTo> c: namedWasAttributedToMap.values()) {
+            statementOrBundle.addAll(c);
+        }
+        statementOrBundle.addAll(anonWasInformedBy);
+        for (Collection<WasInformedBy> c: namedWasInformedByMap.values()) {
+            statementOrBundle.addAll(c);
+        }
+
+        statementOrBundle.addAll(anonSpecializationOf);
+        statementOrBundle.addAll(anonAlternateOf);
+        statementOrBundle.addAll(anonHadMember);
+
+        statementOrBundle.addAll(anonWasInvalidatedBy);
+        for (Collection<WasInvalidatedBy> c: namedWasInvalidatedByMap.values()) {
+            statementOrBundle.addAll(c);
+        }
+
+        statementOrBundle.addAll(anonWasStartedBy);
+        for (Collection<WasStartedBy> c: namedWasStartedByMap.values()) {
+            statementOrBundle.addAll(c);
+        }
+
+        statementOrBundle.addAll(anonWasEndedBy);
+        for (Collection<WasEndedBy> c: namedWasEndedByMap.values()) {
+            statementOrBundle.addAll(c);
+        }
+
+        statementOrBundle.addAll(anonActedOnBehalfOf);
+        for (Collection<ActedOnBehalfOf> c: namedActedOnBehalfOfMap.values()) {
+            statementOrBundle.addAll(c);
+        }
+
+        statementOrBundle.addAll(anonWasInfluencedBy);
+        for (Collection<WasInfluencedBy> c: namedWasInfluencedByMap.values()) {
+            statementOrBundle.addAll(c);
+        }
+
+
     }
     
     /** This function allows a document to be merged with this IndexedDocument. If flatten is true, bundles include in the document will be flattend into this one.
@@ -694,6 +695,43 @@ public class IndexedDocument implements StatementAction {
      */
     public void merge(Document doc) {
         u.forAllStatementOrBundle(doc.getStatementOrBundle(), this);
+    }
+    
+    public Set<QualifiedName> traverseDerivations(QualifiedName from) {
+        Stack<QualifiedName> s=new Stack<QualifiedName>();
+        s.push(from);
+        return traverseDerivations1(new HashSet<QualifiedName>(),new HashSet<QualifiedName>(),s);
+    }
+    
+    public Set<QualifiedName> traverseDerivations1(Set<QualifiedName> last, Set<QualifiedName> seen, Stack<QualifiedName> todo) {
+    
+        QualifiedName current=null;
+        
+        while (!(todo.isEmpty())) {
+        
+            current=todo.pop();
+            if (seen.contains(current)) {
+                // move on to next
+            } else {
+                seen.add(current);
+                Collection<WasDerivedFrom> successors=entityCauseWasDerivedFromMap.get(current);
+                if (successors==null || successors.isEmpty()) {
+                    //move on next
+                } else {
+                    for (WasDerivedFrom wdf: successors) {
+                        QualifiedName qn=wdf.getGeneratedEntity();
+                        last.add(qn);
+                        todo.push(qn);
+                    }
+                }
+            }
+        
+        }
+        
+        return last;
+        
+        
+        
     }
 
 }

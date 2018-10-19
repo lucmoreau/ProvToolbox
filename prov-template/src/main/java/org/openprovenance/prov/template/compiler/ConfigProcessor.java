@@ -51,6 +51,9 @@ public class ConfigProcessor {
     public static final String PF = "pf";
     public static final String GET_SUCCESSOR_METHOD = "getSuccessors";
     public static final String GET_NAME = "getName";
+    private static final String LOGGER_INTERFACE = "LoggerInterface";
+    private static final String GET_BUILDERS_METHOD = "getBuilders";
+    public static final String CLIENT_PACKAGE = "org.openprovenance.prov.client";
     static ObjectMapper objectMapper = new ObjectMapper();
 
     public static int processTemplateGenerationConfig(String template_builder, ProvFactory pFactory) {
@@ -91,13 +94,17 @@ public class ConfigProcessor {
             
             
             final String logger_dir=cli_src_dir+ "/" + configs.logger_package.replace('.', '/') + "/";;
+            final String openprovenance_dir=cli_src_dir+ "/" + CLIENT_PACKAGE.replace('.', '/') + "/";;
 
             JavaFile logger=cp.generateLogger(tc, configs);
             tc.saveToFile(logger_dir, logger_dir+configs.logger+ ".java", logger);
 
             JavaFile intface=cp.generateBuilderInterface(tc, configs);
-            tc.saveToFile(logger_dir, logger_dir+BUILDER_INTERFACE+ ".java", intface);
-                      
+            tc.saveToFile(openprovenance_dir, openprovenance_dir+BUILDER_INTERFACE+ ".java", intface);
+
+            JavaFile intface2=cp.generateLoggerInterface(tc, configs);
+            tc.saveToFile(openprovenance_dir, openprovenance_dir+LOGGER_INTERFACE+ ".java", intface2);
+                                
             cp.generateScript(configs);
         } catch (IOException e) {
             e.printStackTrace();
@@ -292,6 +299,8 @@ public class ConfigProcessor {
     private JavaFile generateLogger(TemplateCompiler tc, TemplatesCompilerConfig configs) {
         
         Builder builder = cu.generateClassInit(configs.logger);
+        builder.addSuperinterface(ClassName.get(CLIENT_PACKAGE,"LoggerInterface"));
+
         String packge=null;
         for (TemplateCompilerConfig config: configs.templates) {
             final String templateNameClass = tc.templateNameClass(config.name);
@@ -315,15 +324,17 @@ public class ConfigProcessor {
             }
             names=names + config.name;
         }   
-        ClassName cln=ClassName.get(packge,"Builder");
+        ClassName cln=ClassName.get(CLIENT_PACKAGE,"Builder");
         ArrayTypeName builderArrayType = ArrayTypeName.of(cln);
-        FieldSpec fspec = FieldSpec.builder(builderArrayType, "builders")
+        FieldSpec fspec = FieldSpec.builder(builderArrayType, "__builders")
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
                 .initializer("new $T[] {" + names + "}" , cln)
                 .build();
         
         builder.addField(fspec);  
         
+        builder.addMethod(generateGetBuilderMethod(builderArrayType));
+
         
         for (TemplateCompilerConfig config: configs.templates) {
             builder.addMethod(generateStaticLogMethod(config,tc));
@@ -365,13 +376,33 @@ public class ConfigProcessor {
 
         TypeSpec theInterface=builder.build();
 
-        JavaFile myfile = JavaFile.builder(configs.logger_package, theInterface )
+        JavaFile myfile = JavaFile.builder(CLIENT_PACKAGE, theInterface )
                 .addFileComment("Generated Automatically by ProvToolbox for templates config $S",configs.name)
                 .build();
         return myfile;
     }
 
-     
+    private JavaFile generateLoggerInterface(TemplateCompiler tc, TemplatesCompilerConfig configs) {
+
+        Builder builder = cu.generateInterfaceInit(LOGGER_INTERFACE);
+
+        ClassName cln=ClassName.get(CLIENT_PACKAGE,"Builder");
+        ArrayTypeName builderArrayType = ArrayTypeName.of(cln);
+
+        MethodSpec.Builder builder2=MethodSpec.methodBuilder(GET_BUILDERS_METHOD)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(builderArrayType);
+        builder.addMethod(builder2.build());
+
+             
+
+        TypeSpec theInterface=builder.build();
+
+        JavaFile myfile = JavaFile.builder(CLIENT_PACKAGE, theInterface )
+                .addFileComment("Generated Automatically by ProvToolbox for templates config $S",configs.name)
+                .build();
+        return myfile;
+    }   
     
     public MethodSpec generateStaticLogMethod(TemplateCompilerConfig config, TemplateCompiler tc) {
         final String loggerName = tc.loggerName(config.name);
@@ -404,7 +435,21 @@ public class ConfigProcessor {
         return builder.build();
   
     }
-    
+
+    public MethodSpec generateGetBuilderMethod(ArrayTypeName builderArrayType) {
+
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("getBuilders")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(builderArrayType)
+        ;
+        
+        
+        builder.addStatement("return __builders");  
+
+        
+        return builder.build();
+  
+    }  
     public void generateScript(TemplatesCompilerConfig configs) {
         new File(configs.script_dir).mkdirs(); 
         try {

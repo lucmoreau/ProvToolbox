@@ -174,7 +174,7 @@ public class TemplateCompiler {
     private JavaFile generateClientLib_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema, IndexedDocument indexed) {
         
         
-        Builder builder = gu.generateClassInit(name,packge,"Builder");
+        Builder builder = gu.generateClassInit(name,ConfigProcessor.CLIENT_PACKAGE,"Builder");
              
         
         

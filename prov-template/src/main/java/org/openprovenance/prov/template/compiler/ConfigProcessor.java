@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,11 +32,13 @@ import org.openprovenance.prov.template.log2prov.Runner;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 import javax.lang.model.element.Modifier;
@@ -46,7 +49,8 @@ public class ConfigProcessor {
     private static final String INIT = "Init";
     public static final String BUILDERS = "builders";
     public static final String PF = "pf";
-    private static final String GET_SUCCESSOR_METHOD = "getSuccessors";
+    public static final String GET_SUCCESSOR_METHOD = "getSuccessors";
+    public static final String GET_NAME = "getName";
     static ObjectMapper objectMapper = new ObjectMapper();
 
     public static int processTemplateGenerationConfig(String template_builder, ProvFactory pFactory) {
@@ -283,13 +287,16 @@ public class ConfigProcessor {
   
     }
     
+
+    
     private JavaFile generateLogger(TemplateCompiler tc, TemplatesCompilerConfig configs) {
         
         Builder builder = cu.generateClassInit(configs.logger);
-        
+        String packge=null;
         for (TemplateCompilerConfig config: configs.templates) {
             final String templateNameClass = tc.templateNameClass(config.name);
-            final ClassName className = ClassName.get(config.package_+".client",templateNameClass);
+            packge = config.package_+".client";
+            final ClassName className = ClassName.get(packge,templateNameClass);
             FieldSpec fspec = FieldSpec.builder(className, config.name)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
                     .initializer("new $T()", className)
@@ -297,6 +304,26 @@ public class ConfigProcessor {
             
             builder.addField(fspec);
         }   
+        
+        String names="";
+        boolean first=true;
+        for (TemplateCompilerConfig config: configs.templates) {
+            if (first) {
+                first=false;
+            } else {
+                names=names+", ";
+            }
+            names=names + config.name;
+        }   
+        ClassName cln=ClassName.get(packge,"Builder");
+        ArrayTypeName builderArrayType = ArrayTypeName.of(cln);
+        FieldSpec fspec = FieldSpec.builder(builderArrayType, "builders")
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
+                .initializer("new $T[] {" + names + "}" , cln)
+                .build();
+        
+        builder.addField(fspec);  
+        
         
         for (TemplateCompilerConfig config: configs.templates) {
             builder.addMethod(generateStaticLogMethod(config,tc));
@@ -319,7 +346,7 @@ public class ConfigProcessor {
 
         MethodSpec.Builder builder2=MethodSpec.methodBuilder(GET_NODES_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(Integer[].class);
+                .returns(int[].class);
         builder.addMethod(builder2.build());
 
 
@@ -328,6 +355,13 @@ public class ConfigProcessor {
                 .returns(TemplateCompiler.hashmapType);
         builder.addMethod(builder3.build());
 
+        
+        MethodSpec.Builder builder4=MethodSpec.methodBuilder(GET_NAME)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(String.class);
+        builder.addMethod(builder4.build());
+
+             
 
         TypeSpec theInterface=builder.build();
 

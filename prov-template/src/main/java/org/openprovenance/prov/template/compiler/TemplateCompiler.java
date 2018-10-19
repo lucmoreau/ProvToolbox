@@ -178,6 +178,7 @@ public class TemplateCompiler {
              
         
         
+ 
         
 
         if (bindings_schema!=null) {
@@ -187,17 +188,19 @@ public class TemplateCompiler {
             builder.addMethod(generateClientMethod3(allVars, allAtts, name, templateName, bindings_schema));
             builder.addMethod(generateClientMethod4static(allVars, allAtts, name, templateName, bindings_schema, indexed));
             
+            
             builder.addField(FieldSpec.builder(hashmapType, "__successors")
                       .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                       .initializer("__getSuccessors()")
                       .build());
             
-            builder.addField(FieldSpec.builder(Integer[].class, "__nodes")
+            builder.addField(FieldSpec.builder(int[].class, "__nodes")
                              .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                              .initializer("__getNodes()")
                              .build());
                    
             builder.addMethod(generateClientMethod4(allVars, allAtts, name, templateName, bindings_schema, indexed));
+            builder.addMethod(nameAccessorGenerator(templateName));
 
     //      builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema));
         }
@@ -493,7 +496,7 @@ public boolean noNode(final JsonNode jsonNode2) {
    public MethodSpec generateClientMethod3static(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
        MethodSpec.Builder builder = MethodSpec.methodBuilder("__getNodes")
                .addModifiers(Modifier.PUBLIC,Modifier.STATIC)
-               .returns(Integer[].class)
+               .returns(int[].class)
       
                ;
        String var="sb"; 
@@ -525,7 +528,7 @@ public boolean noNode(final JsonNode jsonNode2) {
            nodes=nodes + elem;
        }
 
-       builder.addStatement("return new Integer[] {" + nodes + "}");  
+       builder.addStatement("return new int[] {" + nodes + "}");  
 
        
        
@@ -538,7 +541,7 @@ public boolean noNode(final JsonNode jsonNode2) {
    public MethodSpec generateClientMethod3(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
        MethodSpec.Builder builder = MethodSpec.methodBuilder("getNodes")
                .addModifiers(Modifier.PUBLIC)
-               .returns(Integer[].class)
+               .returns(int[].class)
       
                ;
        
@@ -553,7 +556,7 @@ public boolean noNode(final JsonNode jsonNode2) {
        return method;
    }
    
-   static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(Integer[].class));
+   static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(int[].class));
 
    public MethodSpec generateClientMethod4(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
        MethodSpec.Builder builder = MethodSpec.methodBuilder("getSuccessors")
@@ -623,7 +626,7 @@ public boolean noNode(final JsonNode jsonNode2) {
                    initializer=initializer + i;
                }
 
-               builder.addStatement("table.put($L,new Integer[] { " + initializer + "})", count);
+               builder.addStatement("table.put($L,new int[] { " + initializer + "})", count);
 
            }
   

@@ -256,6 +256,10 @@ public class CommandLineArguments implements ErrorCodes {
         mainExit(args,true);
     }
 
+    
+    public static void mainNoExit(String[] args) {
+        mainExit(args,false);
+    }
 
     public static void mainExit(String[] args, boolean exit) {
         // create the parser

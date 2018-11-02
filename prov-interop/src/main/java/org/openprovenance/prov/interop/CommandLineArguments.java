@@ -6,10 +6,10 @@ import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
@@ -63,131 +63,131 @@ public class CommandLineArguments implements ErrorCodes {
         Option flatten = new Option(FLATTEN, "flatten all bundles in a single document (to used with -index option or -merge option)");
          
 
-        Option merge = OptionBuilder
-                .withArgName("file")
+        Option merge = Option.builder(MERGE)
+                .argName("file")
                 .hasArg()
-                .withDescription("merge all documents (listed in file argument) into a single document")
-                .create(MERGE);
+                .desc("merge all documents (listed in file argument) into a single document")
+                .longOpt(MERGE).build();
 
-        Option logfile = OptionBuilder
-                .withArgName("file")
+        Option logfile = Option.builder(LOGFILE)
+                .argName("file")
                 .hasArg()
-                .withDescription("use given file for log").create(LOGFILE);
+                .desc("use given file for log").longOpt(LOGFILE).build();
 
-        Option infile = OptionBuilder
-                .withArgName("file")
+        Option infile = Option.builder(INFILE)
+                .argName("file")
                 .hasArg()
-                .withDescription("use given file as input")
-                .create(INFILE);
+                .desc("use given file as input")
+                .build();
 
-        Option outfile = OptionBuilder
-                .withArgName("file")
+        Option outfile = Option.builder(OUTFILE)
+                .argName("file")
                 .hasArg()
-                .withDescription("use given file as output")
-                .create(OUTFILE);
+                .desc("use given file as output")
+                .build();
 
-        Option namespaces = OptionBuilder
-                .withArgName("file")
+        Option namespaces = Option.builder(NAMESPACES)
+                .argName("file")
                 .hasArg()
-                .withDescription("use given file as declaration of prefix namespaces")
-                .create(NAMESPACES);
+                .desc("use given file as declaration of prefix namespaces")
+                .build();
 
-        Option bindings = OptionBuilder
-                .withArgName("file")
+        Option bindings = Option.builder(BINDINGS)
+                .argName("file")
                 .hasArg()
-                .withDescription("use given file as bindings for template expansion (template is provided as infile)")
-                .create(BINDINGS);
+                .desc("use given file as bindings for template expansion (template is provided as infile)")
+                .build();
  
-        Option title = OptionBuilder
-                .withArgName("string")
+        Option title = Option.builder(TITLE)
+                .argName("string")
                 .hasArg()
-                .withDescription("document title")
-                .create(TITLE);
+                .desc("document title")
+                .build();
 
-        Option layout = OptionBuilder
-                .withArgName("string")
+        Option layout = Option.builder(LAYOUT)
+                .argName("string")
                 .hasArg()
-                .withDescription("dot layout: circo, dot (default), fdp, neato, osage, sfdp, twopi ")
-                .create(LAYOUT);
+                .desc("dot layout: circo, dot (default), fdp, neato, osage, sfdp, twopi ")
+                .build();
         
-        Option generator = OptionBuilder
-                .withArgName("string")
+        Option generator = Option.builder(GENERATOR)
+                .argName("string")
                 .hasArg()
-                .withDescription("graph generator N:n:first:seed:e1")
-                .create(GENERATOR);
+                .desc("graph generator N:n:first:seed:e1")
+                .build();
         Option genorder = new Option(GENORDER, "In template expansion, generate order attribute. By default does not.");
         Option allexpanded = new Option(ALLEXPANDED, "In template expansion, generate term if all variables are bound.");
 
         Option formats = new Option(FORMATS, "list supported formats");
 
-        Option informat = OptionBuilder
-                .withArgName("string")
+        Option informat = Option.builder(INFORMAT)
+                .argName("string")
                 .hasArg()
-                .withDescription("specify the format of the input")
-                .create(INFORMAT);
+                .desc("specify the format of the input")
+                .build();
 
-        Option outformat = OptionBuilder
-                .withArgName("string")
+        Option outformat = Option.builder(OUTFORMAT)
+                .argName("string")
                 .hasArg()
-                .withDescription("specify the format of the output")
-                .create(OUTFORMAT);
+                .desc("specify the format of the output")
+                .build();
 
-        Option bindformat = OptionBuilder
-                .withArgName("string")
+        Option bindformat = Option.builder(BINDFORMAT)
+                .argName("string")
                 .hasArg()
-                .withDescription("specify the format of the bindings")
-                .create(BINDFORMAT);
+                .desc("specify the format of the bindings")
+                .build();
 
-        Option compare = OptionBuilder
-                .withArgName("file")
+        Option compare = Option.builder(COMPARE)
+                .argName("file")
                 .hasArg()
-                .withDescription("compare with given file")
-                .create(COMPARE);
-        Option compareOut = OptionBuilder
-                .withArgName("file")
+                .desc("compare with given file")
+                .build();
+        Option compareOut = Option.builder(COMPAREOUT)
+                .argName("file")
                 .hasArg()
-                .withDescription("output file for log of comparison")
-                .create(COMPAREOUT);
+                .desc("output file for log of comparison")
+                .build();
 
-        Option bindingsVersion = OptionBuilder
-                .withArgName("int")
+        Option bindingsVersion = Option.builder(BINDINGS_VERSION)
+                .argName("int")
                 .hasArg()
-                .withDescription("bindings version")
-                .create(BINDINGS_VERSION);
+                .desc("bindings version")
+                .build();
 
-        Option template = OptionBuilder
-                .withArgName("string")
+        Option template = Option.builder(TEMPLATE)
+                .argName("string")
                 .hasArg()
-                .withDescription("template name, used to create bindings bean class name")
-                .create(TEMPLATE);
+                .desc("template name, used to create bindings bean class name")
+                .build();
         
         Option builder = new Option(BUILDER, "template builder");
 
-        Option packge = OptionBuilder
-                .withArgName("package")
+        Option packge = Option.builder(PACKAGE)
+                .argName("package")
                 .hasArg()
-                .withDescription("package in which bindings bean class is generated")
-                .create(PACKAGE);
+                .desc("package in which bindings bean class is generated")
+                .build();
 
         
-        Option location = OptionBuilder
-                .withArgName("location")
+        Option location = Option.builder(LOCATION)
+                .argName("location")
                 .hasArg()
-                .withDescription("location of where the template resource is to be found at runtime")
-                .create(LOCATION);
+                .desc("location of where the template resource is to be found at runtime")
+                .build();
 
         
-        Option template_builder = OptionBuilder
-                .withArgName("file")
+        Option template_builder = Option.builder(TEMPLATE_BUILDER)
+                .argName("file")
                 .hasArg()
-                .withDescription("template builder configuration")
-                .create(TEMPLATE_BUILDER);
+                .desc("template builder configuration")
+                .build();
         
-        Option log2prov = OptionBuilder
-                .withArgName("file")
+        Option log2prov = Option.builder(LOG2PROV)
+                .argName("file")
                 .hasArg()
-                .withDescription("fully qualified ClassName of initialiser in jar file")
-                .create(LOG2PROV);
+                .desc("fully qualified ClassName of initialiser in jar file")
+                .build();
         
         Options options = new Options();
 
@@ -263,7 +263,7 @@ public class CommandLineArguments implements ErrorCodes {
 
     public static void mainExit(String[] args, boolean exit) {
         // create the parser
-        CommandLineParser parser = new GnuParser();
+        CommandLineParser parser = new DefaultParser();
         String help = null;      
         String version = null;
         String verbose = null;

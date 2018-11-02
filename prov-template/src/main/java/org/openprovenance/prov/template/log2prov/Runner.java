@@ -11,6 +11,8 @@ import org.openprovenance.prov.template.compiler.CompilerUtil;
 
 public class Runner {
     
+    final static boolean debug=false;
+    
     public Runner (ProvFactory pf) {
         this.pf=pf;
     }
@@ -19,9 +21,9 @@ public class Runner {
         String in=args[0];
         String out=args[1];
         String flag=args[2];
-        System.out.println("Start main"); 
+        if (debug) System.out.println("Start main"); 
         new Runner(org.openprovenance.prov.xml.ProvFactory.getFactory()).processLogWithTime(in, out, flag); 
-        System.out.println("End main"); 
+        if (debug) System.out.println("End main"); 
     }
 
     final private ProvFactory pf;
@@ -33,8 +35,8 @@ public class Runner {
         long currentTime1=System.currentTimeMillis();
         long currentTime2=processLog(in, out, flag); 
         long currentTime3=System.currentTimeMillis();
-        System.out.println("Expand/merge time " + (currentTime2-currentTime1)); 
-        System.out.println("Save time         " + (currentTime3-currentTime2));
+        if (debug) System.out.println("Expand/merge time " + (currentTime2-currentTime1)); 
+        if (debug) System.out.println("Save time         " + (currentTime3-currentTime2));
     }
 
     public long processLog(String in, String out, String flag) throws FileNotFoundException,
@@ -42,8 +44,8 @@ public class Runner {
         org.openprovenance.prov.model.IndexedDocument iDoc=new org.openprovenance.prov.model.IndexedDocument(pf,pf.newDocument(),true);
 
 
-        System.out.println("IN: " + in);
-        InputStream is=new FileInputStream(in);
+        if (debug) System.out.println("IN: " + in);
+        InputStream is= ("-".equals(in))? System.in: new FileInputStream(in);
 
         DocumentProcessor dp=null;
         if ("-merge".equals(flag)) dp=new DocumentMergerProcessor(iDoc);

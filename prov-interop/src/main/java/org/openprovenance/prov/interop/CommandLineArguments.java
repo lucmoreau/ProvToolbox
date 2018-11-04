@@ -9,7 +9,6 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
@@ -54,14 +53,13 @@ public class CommandLineArguments implements ErrorCodes {
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
 
-        Option help = new Option(HELP, "print this message");
-        Option version = new Option(VERSION,
-                "print the version information and exit");
-        Option verbose = new Option(VERBOSE, "be verbose");
-        Option debug = new Option(DEBUG, "print debugging information");
+        Option help = new Option(HELP, HELP, false, "print this message");
+        Option version = new Option(VERSION,VERSION, false, "print the version information and exit");
+        Option verbose = new Option(VERBOSE, VERBOSE, false, "be verbose");
+        Option debug = new Option(DEBUG, DEBUG, false, "print debugging information");
 
-        Option index = new Option(INDEX, "index all elements and edges of a document, merging them where appropriate");
-        Option flatten = new Option(FLATTEN, "flatten all bundles in a single document (to used with -index option or -merge option)");
+        Option index = new Option(INDEX, INDEX, false, "index all elements and edges of a document, merging them where appropriate");
+        Option flatten = new Option(FLATTEN, FLATTEN, false, "flatten all bundles in a single document (to used with -index option or -merge option)");
          
 
         Option merge = Option.builder(MERGE)
@@ -79,95 +77,110 @@ public class CommandLineArguments implements ErrorCodes {
                 .argName("file")
                 .hasArg()
                 .desc("use given file as input")
+                .longOpt(INFILE)
                 .build();
 
         Option outfile = Option.builder(OUTFILE)
                 .argName("file")
                 .hasArg()
                 .desc("use given file as output")
+                .longOpt(OUTFILE)
                 .build();
 
         Option namespaces = Option.builder(NAMESPACES)
                 .argName("file")
                 .hasArg()
                 .desc("use given file as declaration of prefix namespaces")
+                .longOpt(NAMESPACES)
                 .build();
 
         Option bindings = Option.builder(BINDINGS)
                 .argName("file")
                 .hasArg()
                 .desc("use given file as bindings for template expansion (template is provided as infile)")
+                .longOpt(BINDINGS)
                 .build();
  
         Option title = Option.builder(TITLE)
                 .argName("string")
                 .hasArg()
                 .desc("document title")
+                .longOpt(TITLE)
                 .build();
 
         Option layout = Option.builder(LAYOUT)
                 .argName("string")
                 .hasArg()
                 .desc("dot layout: circo, dot (default), fdp, neato, osage, sfdp, twopi ")
+                .longOpt(LAYOUT)
                 .build();
         
         Option generator = Option.builder(GENERATOR)
                 .argName("string")
                 .hasArg()
                 .desc("graph generator N:n:first:seed:e1")
+                .longOpt(GENERATOR)
                 .build();
-        Option genorder = new Option(GENORDER, "In template expansion, generate order attribute. By default does not.");
-        Option allexpanded = new Option(ALLEXPANDED, "In template expansion, generate term if all variables are bound.");
+        Option genorder = new Option(GENORDER, GENORDER, false, "In template expansion, generate order attribute. By default does not.");
+        Option allexpanded = new Option(ALLEXPANDED, ALLEXPANDED, false, "In template expansion, generate term if all variables are bound.");
 
-        Option formats = new Option(FORMATS, "list supported formats");
+        Option formats = new Option(FORMATS, FORMATS, false, "list supported formats");
 
         Option informat = Option.builder(INFORMAT)
                 .argName("string")
                 .hasArg()
                 .desc("specify the format of the input")
+                .longOpt(INFORMAT)
                 .build();
 
         Option outformat = Option.builder(OUTFORMAT)
                 .argName("string")
                 .hasArg()
                 .desc("specify the format of the output")
+                .longOpt(OUTFORMAT)
                 .build();
 
         Option bindformat = Option.builder(BINDFORMAT)
                 .argName("string")
                 .hasArg()
                 .desc("specify the format of the bindings")
+                .longOpt(BINDFORMAT)
                 .build();
 
         Option compare = Option.builder(COMPARE)
                 .argName("file")
                 .hasArg()
                 .desc("compare with given file")
+                .longOpt(COMPARE)
                 .build();
         Option compareOut = Option.builder(COMPAREOUT)
                 .argName("file")
                 .hasArg()
                 .desc("output file for log of comparison")
+                .longOpt(COMPAREOUT)
                 .build();
 
         Option bindingsVersion = Option.builder(BINDINGS_VERSION)
                 .argName("int")
                 .hasArg()
                 .desc("bindings version")
+                .longOpt(BINDINGS_VERSION)
                 .build();
 
         Option template = Option.builder(TEMPLATE)
                 .argName("string")
                 .hasArg()
                 .desc("template name, used to create bindings bean class name")
+                .longOpt(TEMPLATE)
                 .build();
         
-        Option builder = new Option(BUILDER, "template builder");
+        Option builder = new Option(BUILDER, BUILDER, false, "template builder");
 
         Option packge = Option.builder(PACKAGE)
                 .argName("package")
                 .hasArg()
                 .desc("package in which bindings bean class is generated")
+                .longOpt(PACKAGE)
                 .build();
 
         
@@ -175,6 +188,7 @@ public class CommandLineArguments implements ErrorCodes {
                 .argName("location")
                 .hasArg()
                 .desc("location of where the template resource is to be found at runtime")
+                .longOpt(LOCATION)
                 .build();
 
         
@@ -182,14 +196,16 @@ public class CommandLineArguments implements ErrorCodes {
                 .argName("file")
                 .hasArg()
                 .desc("template builder configuration")
+                .longOpt(TEMPLATE_BUILDER)
                 .build();
         
         Option log2prov = Option.builder(LOG2PROV)
                 .argName("file")
                 .hasArg()
                 .desc("fully qualified ClassName of initialiser in jar file")
+                .longOpt(LOG2PROV)
                 .build();
-        Option config = new Option(CONFIG, "get configuration");
+        Option config = new Option(CONFIG, CONFIG, false, "get configuration");
     
         Options options = new Options();
 

@@ -87,21 +87,7 @@ public class InteropFramework implements InteropMediaType {
     final ProvFactory pFactory;
     
     final Ontology onto;
-    
-    /*
-    final private String verbose;
-    final private String debug;
-    final private String logfile;
-    final private String infile;
-    final private String informat;
-    final private String outfile;
-    final private String outformat;
-    final private String namespaces;
-    final private String title;
 
-    final private String layout;
-    final private String bindings;
-    final private String bindingformat; */
     public final Hashtable<ProvFormat, String> extensionMap;
     public final Hashtable<String, ProvFormat> extensionRevMap;
     public final Hashtable<ProvFormat, String> mimeTypeMap;
@@ -109,23 +95,7 @@ public class InteropFramework implements InteropMediaType {
     public final Hashtable<String, ProvFormat> mimeTypeRevMap;
 
     public final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
-/*
-    final private String generator;
-    final private String index;
-    final private String merge;
-    final private String flatten;
-    final private boolean addOrderp;
-    final private boolean allExpanded;
-    final private String compare;
-    final private String compareOut;
-    final private int bindingsVersion;
-    final private String template;
-    final private String packge;
-    final private String location;
 
-    final private boolean builder;
-    final private String template_builder;
-    final private String log2prov; */
     
     final private CommandLineArguments config;
 
@@ -904,7 +874,7 @@ public class InteropFramework implements InteropMediaType {
         if (config.config) {
             String classpath = System.getProperty("java.class.path");
             System.out.println("provconvert.classpath=" + classpath);
-            System.out.println("provconvert.main=" + getClass().getName());
+            System.out.println("provconvert.main=" + CommandLineArguments.class.getName());
             return CommandLineArguments.STATUS_OK;
         }
         if (config.outfile == null && config.compare == null && config.template_builder == null)

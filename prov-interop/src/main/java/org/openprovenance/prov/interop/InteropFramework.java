@@ -132,61 +132,7 @@ public class InteropFramework implements InteropMediaType {
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
      */
-    /*
-    public InteropFramework() {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, false, null, null, null, null, null, null, null,null,null, null,
-                org.openprovenance.prov.xml.ProvFactory.getFactory());
-    }
-
-    public InteropFramework(ProvFactory pFactory) {
-        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, false, null, null, null, null, null, null, null,null,null, null,
-                pFactory);
-    }
-
-
-    public InteropFramework(String verbose, String debug, String logfile,
-            String infile, String informat, String outfile, String outformat, String namespaces, String title,
-            String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String template, boolean builder, String template_builder, String packge, String location, String generator,
-            String index, String merge, String flatten, String compare, String compareOut, String log2prov, ProvFactory pFactory) {
-        this.verbose = verbose;
-        this.debug = debug;
-        this.logfile = logfile;
-        this.infile = infile;
-        this.outfile = outfile;
-        this.namespaces = namespaces;
-        this.title = title;
-        this.layout = layout;
-        this.bindings = bindings;
-        this.generator = generator;
-        this.index=index;
-        this.merge=merge;
-        this.flatten=flatten;
-        this.pFactory = pFactory;
-        this.addOrderp=addOrderp;
-        this.allExpanded=allExpanded;
-        this.onto = new Ontology(pFactory);
-        this.informat = informat;
-        this.outformat = outformat;
-        this.bindingformat = bindingformat;
-        this.compare=compare;
-        this.compareOut=compareOut;
-        this.bindingsVersion=bindingsVersion;
-        this.template=template;
-        this.packge=packge;
-        this.location=location;
-        this.builder=builder;
-        this.template_builder=template_builder;
-        this.log2prov=log2prov;
-        
-        extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
-        extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
-        mimeTypeMap = new Hashtable<InteropFramework.ProvFormat, String>();
-        mimeTypeRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
-        provTypeMap = new Hashtable<InteropFramework.ProvFormat, InteropFramework.ProvFormatType>();
-
-        initializeExtensionMap(extensionMap, extensionRevMap);
-    }
-    */
+ 
     
     public InteropFramework() {
         this(new CommandLineArguments(),
@@ -957,7 +903,8 @@ public class InteropFramework implements InteropMediaType {
     public int run() {
         if (config.config) {
             String classpath = System.getProperty("java.class.path");
-            System.out.print(classpath);
+            System.out.println("provconvert.classpath=" + classpath);
+            System.out.println("provconvert.main=" + getClass().getName());
             return CommandLineArguments.STATUS_OK;
         }
         if (config.outfile == null && config.compare == null && config.template_builder == null)

@@ -85,7 +85,10 @@ public class InteropFramework implements InteropMediaType {
     final Utility u = new Utility();
 
     final ProvFactory pFactory;
+    
     final Ontology onto;
+    
+    /*
     final private String verbose;
     final private String debug;
     final private String logfile;
@@ -98,7 +101,7 @@ public class InteropFramework implements InteropMediaType {
 
     final private String layout;
     final private String bindings;
-    final private String bindingformat;
+    final private String bindingformat; */
     public final Hashtable<ProvFormat, String> extensionMap;
     public final Hashtable<String, ProvFormat> extensionRevMap;
     public final Hashtable<ProvFormat, String> mimeTypeMap;
@@ -106,7 +109,7 @@ public class InteropFramework implements InteropMediaType {
     public final Hashtable<String, ProvFormat> mimeTypeRevMap;
 
     public final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
-
+/*
     final private String generator;
     final private String index;
     final private String merge;
@@ -122,11 +125,14 @@ public class InteropFramework implements InteropMediaType {
 
     final private boolean builder;
     final private String template_builder;
-    final private String log2prov;
+    final private String log2prov; */
+    
+    final private CommandLineArguments config;
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
      */
+    /*
     public InteropFramework() {
         this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, false, null, null, null, null, null, null, null,null,null, null,
                 org.openprovenance.prov.xml.ProvFactory.getFactory());
@@ -171,6 +177,28 @@ public class InteropFramework implements InteropMediaType {
         this.builder=builder;
         this.template_builder=template_builder;
         this.log2prov=log2prov;
+        
+        extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
+        extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
+        mimeTypeMap = new Hashtable<InteropFramework.ProvFormat, String>();
+        mimeTypeRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
+        provTypeMap = new Hashtable<InteropFramework.ProvFormat, InteropFramework.ProvFormatType>();
+
+        initializeExtensionMap(extensionMap, extensionRevMap);
+    }
+    */
+    
+    public InteropFramework() {
+        this(new CommandLineArguments(),
+             org.openprovenance.prov.xml.ProvFactory.getFactory());
+    }
+
+
+    public InteropFramework(CommandLineArguments config,
+                            ProvFactory pFactory) {
+        this.pFactory=pFactory;
+        this.onto = new Ontology(pFactory);
+        this.config=config;
         
         extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
         extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
@@ -927,28 +955,34 @@ public class InteropFramework implements InteropMediaType {
      */
 
     public int run() {
-        if (outfile == null && compare == null && template_builder == null)
+        if (config.config) {
+            String classpath = System.getProperty("java.class.path");
+            System.out.print(classpath);
+            return CommandLineArguments.STATUS_OK;
+        }
+        if (config.outfile == null && config.compare == null && config.template_builder == null)
             return CommandLineArguments.STATUS_NO_OUTPUT_OR_COMPARISON;
-        if (infile == null && generator == null && template_builder == null && merge == null)
+        if (config.infile == null && config.generator == null && config.template_builder == null && config.merge == null)
             return CommandLineArguments.STATUS_NO_INPUT;
 
-        if ((infile == "-") && (bindings == "-"))
+        if ((config.infile == "-") && (config.bindings == "-"))
             throw new InteropException(
                     "Cannot use standard input for both infile and bindings");
+        
 
         Document doc;
-        if (infile != null && log2prov==null) {  // if log2prov is set, then the input file is a log, to be converted
-            doc = doReadDocument(infile, informat);
-        } else if (merge != null) {
+        if (config.infile != null && config.log2prov==null) {  // if log2prov is set, then the input file is a log, to be converted
+            doc = doReadDocument(config.infile, config.informat);
+        } else if (config.merge != null) {
             IndexedDocument iDoc = new IndexedDocument(pFactory,
                                                        pFactory.newDocument(),
-                                                       flatten != null);
+                                                       config.flatten != null);
             try {
                 List<ToRead> files;
-                if (merge.equals("-")) {
+                if (config.merge.equals("-")) {
                     files = readIndexFile(System.in);
                 } else {
-                    files = readIndexFile(new File(merge));
+                    files = readIndexFile(new File(config.merge));
                 }
                 //System.err.println("files to merge " + files);
                 for (ToRead something : files) {
@@ -962,15 +996,15 @@ public class InteropFramework implements InteropMediaType {
             }
             doc = iDoc.toDocument();
 
-        } else if (template_builder!=null) {
-            return ConfigProcessor.processTemplateGenerationConfig(template_builder, pFactory);
+        } else if (config.template_builder!=null) {
+            return ConfigProcessor.processTemplateGenerationConfig(config.template_builder, pFactory);
             
-        } else if (log2prov!=null) {
+        } else if (config.log2prov!=null) {
             try {
-                Class<?>  clazz = Class.forName(log2prov);
+                Class<?>  clazz = Class.forName(config.log2prov);
                 Method method = clazz.getMethod("main", String[].class);
                 try {
-                    method.invoke(null, new Object[]{ new String[] { infile, outfile, "-merge"}}); 
+                    method.invoke(null, new Object[]{ new String[] { config.infile, config.outfile, "-merge"}}); 
                     return 0;
              } catch (Throwable e) {
                     e.printStackTrace();
@@ -995,7 +1029,7 @@ public class InteropFramework implements InteropMediaType {
         }
         else {
 
-            String[] options = generator.split(":");
+            String[] options = config.generator.split(":");
             String noOfNodes = getOption(options, 0);
             String noOfEdges = getOption(options, 1);
             String firstNode = getOption(options, 2);
@@ -1021,60 +1055,60 @@ public class InteropFramework implements InteropMediaType {
             doc = gg.getDetails().getDocument();
         }
 
-        if (compare!=null) {
-            return doCompare(doc,doReadDocument(compare, informat));
+        if (config.compare!=null) {
+            return doCompare(doc,doReadDocument(config.compare, config.informat));
         } 
         
-        if (template!=null  && !builder) {
+        if (config.template!=null  && !config.builder) {
             BindingsBeanGenerator bbgen=new BindingsBeanGenerator(pFactory);
             
-            boolean val=bbgen.generate(doc, template, packge, outfile, location);
+            boolean val=bbgen.generate(doc, config.template, config.packge, config.outfile, config.location);
             return (val) ? 0 : CommandLineArguments.STATUS_BEAN_GENERATION;
       }
         
-        if (template!=null  && builder) {
+        if (config.template!=null  && config.builder) {
             JsonNode bindings_schema=null;
-            if (bindings != null && bindingsVersion>=3) {
+            if (config.bindings != null && config.bindingsVersion>=3) {
                 try {
-                    bindings_schema = mapper.readTree(new File(bindings));
+                    bindings_schema = mapper.readTree(new File(config.bindings));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
             TemplateCompiler tbg=new TemplateCompiler(pFactory);
             
-            tbg.generate(doc, template, packge, outfile, location,location,bindings_schema);
+            tbg.generate(doc, config.template, config.packge, config.outfile, config.location,config.location,bindings_schema);
             return CommandLineArguments.STATUS_OK;
         }
 
-        if (index != null) {
+        if (config.index != null) {
             Document indexedDoc = new IndexedDocument(pFactory, doc,
-                                                      (flatten != null)).toDocument();
+                                                      (config.flatten != null)).toDocument();
             doc = indexedDoc;
         }
-        if (bindings != null) {
-            Expand myExpand=new Expand(pFactory, addOrderp,allExpanded);
+        if (config.bindings != null) {
+            Expand myExpand=new Expand(pFactory, config.addOrderp,config.allExpanded);
             Document expanded;
-            if (bindingsVersion==3) {
-                Bindings bb=BindingsJson.fromBean(BindingsJson.importBean(new File(bindings)),pFactory);
+            if (config.bindingsVersion==3) {
+                Bindings bb=BindingsJson.fromBean(BindingsJson.importBean(new File(config.bindings)),pFactory);
                 expanded = myExpand.expander(doc,
                                              bb);
 
             } else {
-                Document docBindings = (Document) doReadDocument(bindings,
-                                                                 bindingformat);
+                Document docBindings = (Document) doReadDocument(config.bindings,
+                                                                 config.bindingformat);
                 expanded = myExpand.expander(doc,
-                                             outfile,
+                                             config.outfile,
                                              docBindings);
             }
             boolean flag=myExpand.getAllExpanded();
-            doWriteDocument(outfile, outformat, expanded);
+            doWriteDocument(config.outfile, config.outformat, expanded);
 
             if (!flag) {
                 return CommandLineArguments.STATUS_TEMPLATE_UNBOUND_VARIABLE;
             }
         } else {
-            doWriteDocument(outfile, outformat, doc);
+            doWriteDocument(config.outfile, config.outformat, doc);
         }
         return CommandLineArguments.STATUS_OK;
 
@@ -1088,8 +1122,8 @@ public class InteropFramework implements InteropMediaType {
         //System.out.println("doCompare()");
         PrintStream ps=System.out;
         try {
-            if (!(compareOut==null || compareOut.equals("-"))) {
-                ps=new PrintStream(compareOut);
+            if (!(config.compareOut==null || config.compareOut.equals("-"))) {
+                ps=new PrintStream(config.compareOut);
             }
         } catch (FileNotFoundException e) {
             // ok, we ignore the exception, we continue with stdout
@@ -1181,7 +1215,7 @@ public class InteropFramework implements InteropMediaType {
                 ProvToDot toDot = (configFile == null) ? new ProvToDot(
                         ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
                         configFile);
-                toDot.convert(document, os, title);
+                toDot.convert(document, os, config.title);
                 break;
             }
             case PDF:
@@ -1201,7 +1235,7 @@ public class InteropFramework implements InteropMediaType {
                     toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
                 }
 
-                toDot.convert(document, dotFileOut, os, extensionMap.get(format), title);
+                toDot.convert(document, dotFileOut, os, extensionMap.get(format), config.title);
                 tmp.delete();
                 break;
             }
@@ -1210,12 +1244,12 @@ public class InteropFramework implements InteropMediaType {
                 break;
             }
         } catch (JAXBException e) {
-            if (verbose != null)
+            if (config.verbose != null)
                 e.printStackTrace();
             throw new InteropException(e);
 
         } catch (Exception e) {
-            if (verbose != null)
+            if (config.verbose != null)
                 e.printStackTrace();
             throw new InteropException(e);
         }
@@ -1286,8 +1320,8 @@ public class InteropFramework implements InteropMediaType {
                 ProvToDot toDot = (configFile == null) ? new ProvToDot(
                         ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
                         configFile);
-                toDot.setLayout(layout);
-                toDot.convert(document, filename, title);
+                toDot.setLayout(config.layout);
+                toDot.convert(document, filename, config.title);
                 break;
             }
             case PDF:
@@ -1306,8 +1340,8 @@ public class InteropFramework implements InteropMediaType {
                 } else {
                     toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
                 }
-                toDot.setLayout(layout);
-                toDot.convert(document, dotFileOut, filename, extensionMap.get(format), title);
+                toDot.setLayout(config.layout);
+                toDot.convert(document, dotFileOut, filename, extensionMap.get(format), config.title);
                 tmp.delete();
                 break;
             }
@@ -1316,12 +1350,12 @@ public class InteropFramework implements InteropMediaType {
                 break;
             }
         } catch (JAXBException e) {
-            if (verbose != null)
+            if (config.verbose != null)
                 e.printStackTrace();
             throw new InteropException(e);
 
         } catch (IOException e) {
-            if (verbose != null)
+            if (config.verbose != null)
                 e.printStackTrace();
             throw new InteropException(e);
         }

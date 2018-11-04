@@ -49,6 +49,7 @@ public class CommandLineArguments implements ErrorCodes {
     public static final String BUILDER = "builder";
     public static final String TEMPLATE_BUILDER = "templatebuilder";
     public static final String LOG2PROV = "log2prov";
+    public static final String CONFIG = "config";
 
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
@@ -188,7 +189,8 @@ public class CommandLineArguments implements ErrorCodes {
                 .hasArg()
                 .desc("fully qualified ClassName of initialiser in jar file")
                 .build();
-        
+        Option config = new Option(CONFIG, "get configuration");
+    
         Options options = new Options();
 
         options.addOption(help);
@@ -220,6 +222,7 @@ public class CommandLineArguments implements ErrorCodes {
         options.addOption(builder);
         options.addOption(template_builder);
         options.addOption(log2prov);
+        options.addOption(config);
 
         return options;
 
@@ -294,6 +297,7 @@ public class CommandLineArguments implements ErrorCodes {
         boolean builder=false;
         String template_builder=null;
         String log2prov=null;
+        boolean config=false;
 
 
         try {
@@ -343,6 +347,7 @@ public class CommandLineArguments implements ErrorCodes {
             if (line.hasOption(TEMPLATE_BUILDER))  template_builder = line.getOptionValue(TEMPLATE_BUILDER);
             if (line.hasOption(LOG2PROV))  log2prov = line.getOptionValue(LOG2PROV);
 
+            if (line.hasOption(CONFIG))  config = true;
 
             if (help!=null) {
             	HelpFormatter formatter = new HelpFormatter();
@@ -357,33 +362,34 @@ public class CommandLineArguments implements ErrorCodes {
 	    
 	    
 	    
-            InteropFramework interop=new InteropFramework(verbose,
-                                                          debug,
-                                                          logfile,
-                                                          infile,
-                                                          informat,
-                                                          outfile,
-                                                          outformat,
-                                                          namespaces,
-                                                          title,
-                                                          layout,
-                                                          bindings,
-                                                          bindingformat,
-                                                          bindingsVersion,
-                                                          addOrderp,
-                                                          allexpanded,
-                                                          template,
-                                                          builder,
-                                                          template_builder,
-                                                          packge,
-                                                          location,
-                                                          generator,
-                                                          index,
-                                                          merge,
-                                                          flatten,
-                                                          compare,
-                                                          compareOut,
-                                                          log2prov,
+            InteropFramework interop=new InteropFramework(new CommandLineArguments(verbose,
+                                                                                   debug,
+                                                                                   logfile,
+                                                                                   infile,
+                                                                                   informat,
+                                                                                   outfile,
+                                                                                   outformat,
+                                                                                   namespaces,
+                                                                                   title,
+                                                                                   layout,
+                                                                                   bindings,
+                                                                                   bindingformat,
+                                                                                   bindingsVersion,
+                                                                                   addOrderp,
+                                                                                   allexpanded,
+                                                                                   template,
+                                                                                   builder,
+                                                                                   template_builder,
+                                                                                   packge,
+                                                                                   location,
+                                                                                   generator,
+                                                                                   index,
+                                                                                   merge,
+                                                                                   flatten,
+                                                                                   compare,
+                                                                                   compareOut,
+                                                                                   log2prov,
+                                                                                   config),
                                                           org.openprovenance.prov.xml.ProvFactory.getFactory());
             if (listFormatsp) {
                 java.util.List<java.util.Map<String, String>> formats = interop.getSupportedFormats();
@@ -405,4 +411,101 @@ public class CommandLineArguments implements ErrorCodes {
 
         }
     }
+    
+
+    public final  String verbose;
+    public final  String debug;
+    public final  String logfile;
+    public final  String infile;
+    public final  String informat;
+    public final  String outfile;
+    public final  String outformat;
+    public final  String namespaces;
+    public final  String title;
+    public final  String layout;
+    public final  String bindings;
+    public final  String bindingformat;
+    public final  int bindingsVersion;
+    public final  boolean addOrderp;
+    public final  boolean allExpanded;
+    public final  String template;
+    public final  boolean builder;
+    public final  String template_builder;
+    public final  String packge;
+    public final  String location;
+    public final  String generator;
+    public final  String index;
+    public final  String merge;
+    public final  String flatten;
+    public final  String compare;
+    public final  String compareOut;
+    public final  String log2prov;
+    public final  boolean config;
+
+    public CommandLineArguments(String verbose, String debug, String logfile,
+                                String infile, String informat, String outfile, String outformat, String namespaces, String title,
+                                String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String template, boolean builder, String template_builder, String packge, String location, String generator,
+                                String index, String merge, String flatten, String compare, String compareOut, String log2prov, boolean config) {
+        this.verbose=verbose;
+        this.debug=debug;
+        this.logfile=logfile;
+        this.infile=infile;
+        this.informat=informat;
+        this.outfile=outfile;
+        this.outformat=outformat;
+        this.namespaces=namespaces;
+        this.title=title;
+        this.layout=layout;
+        this.bindings=bindings;
+        this.bindingformat=bindingformat;
+        this.bindingsVersion=bindingsVersion;
+        this.addOrderp=addOrderp;
+        this.allExpanded=allExpanded;
+        this.template=template;
+        this.builder=builder;
+        this.template_builder=template_builder;
+        this.packge=packge;
+        this.location=location;
+        this.generator=generator;
+        this.index=index;
+        this.merge=merge;
+        this.flatten=flatten;
+        this.compare=compare;
+        this.compareOut=compareOut;
+        this.log2prov=log2prov;
+        this.config=config;
+        
+    }
+    public CommandLineArguments() {
+        this.verbose = null;
+        this.debug = null;
+        this.logfile = null;
+        this.infile = null;
+        this.informat = null;
+        this.outfile = null;
+        this.outformat = null;
+        this.namespaces = null;
+        this.title = null;
+        this.layout = null;
+        this.bindings = null;
+        this.bindingformat = null;
+        this.generator = null;
+        this.index=null;
+        this.flatten=null;
+        this.merge=null;
+        this.compare=null;
+        this.compareOut=null;
+        this.template=null;
+        this.packge=null;
+        this.location=null;
+        this.bindingsVersion=1;
+        this.addOrderp=false;
+        this.allExpanded=false;
+        this.builder=false;
+        this.template_builder=null;
+        this.log2prov=null;
+        this.config=false;
+
+    }
+    
 }

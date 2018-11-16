@@ -199,6 +199,7 @@ public class StatementCompilerAction implements StatementAction {
                                          vmap.get(element),
                                          value.toString(),
                                          vmap.get(typeq));
+                    
                 }
             }
         }
@@ -211,7 +212,8 @@ public class StatementCompilerAction implements StatementAction {
                                            QualifiedName typeq) {
         final String elementName = element.getUri();
         if (ExpandUtil.LABEL_URI.equals(elementName)) {
-            builder.addStatement("attrs.add(pf.newAttribute($N,$N,vc.getXsdType($N)))",
+            builder.addStatement("if ($N!=null) attrs.add(pf.newAttribute($N,$N,vc.getXsdType($N)))",
+                                 vq.getLocalPart(),
                                  vmap.get(pFactory.getName().PROV_LABEL),
                                  vq.getLocalPart(),
                                  vq.getLocalPart());

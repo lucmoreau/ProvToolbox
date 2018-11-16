@@ -701,10 +701,16 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
                switch (keyType) {
                  case "xsd:int":
                    return Integer.class;
+                 case "xsd:long":
+                     return Long.class; 
                  case "xsd:string":
                    return String.class;
                  case "xsd:boolean":
                      return Boolean.class;
+                 case "xsd:float":
+                     return Float.class;
+                 case "xsd:double":
+                     return Double.class;
                  default:
                    throw new UnsupportedOperationException();
                }
@@ -804,10 +810,16 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
                switch (keyType) {
                  case "xsd:int":
                    return "" + num;
+                 case "xsd:long":
+                     return "" + num + "L";
                  case "xsd:string":
                    return "\"v" + num + "\"";
                  case "xsd:boolean":
                    return "true";
+                 case "xsd:float":
+                     return "" + num + ".01f";
+                 case "xsd:double":
+                     return "" + num + ".01d";
                  default:
                    throw new UnsupportedOperationException();
                }

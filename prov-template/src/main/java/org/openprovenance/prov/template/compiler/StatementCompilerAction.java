@@ -182,7 +182,8 @@ public class StatementCompilerAction implements StatementAction {
                             doReservedAttributeAction(builder,element,vq,typeq);
                         } else {
                             // use attribute variables (expected to be of type Object) and calculates its type as a QualifiedName dynamically.
-                            builder.addStatement("attrs.add(pf.newAttribute($N,$N,vc.getXsdType($N)))",
+                            builder.addStatement("if ($N!=null) attrs.add(pf.newAttribute($N,$N,vc.getXsdType($N)))",
+                                                 vq.getLocalPart(),
                                                  vmap.get(element),
                                                  vq.getLocalPart(),
                                                  vq.getLocalPart());

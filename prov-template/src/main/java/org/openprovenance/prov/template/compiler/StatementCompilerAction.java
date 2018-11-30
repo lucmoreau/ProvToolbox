@@ -243,18 +243,19 @@ public class StatementCompilerAction implements StatementAction {
 
     @Override
     public void doAction(WasGeneratedBy s) {
-        builder.addStatement(target + ".add(pf.newWasGeneratedBy($N,$N,$N))", local(s.getId()), local(s.getEntity()), local(s.getActivity()));              
+        builder.addStatement("if ($N!=null) " + target + ".add(pf.newWasGeneratedBy($N,$N,$N))", local(s.getEntity()), local(s.getId()), local(s.getEntity()), local(s.getActivity()));              
        
     }
 
     @Override
     public void doAction(WasInvalidatedBy s) {
-        builder.addStatement(target + ".add(pf.newWasInvalidatedBy($N,$N,$N))", local(s.getId()), local(s.getEntity()), local(s.getActivity()));              
+        builder.addStatement("if ($N!=null) " + target + ".add(pf.newWasInvalidatedBy($N,$N,$N))", local(s.getEntity()), local(s.getId()), local(s.getEntity()), local(s.getActivity()));              
     }
 
     @Override
     public void doAction(HadMember s) {
-        builder.addStatement(target + ".add(pf.newHadMember($N,$N))", local(s.getCollection()), local(s.getEntity().get(0)));              
+        final String element = local(s.getEntity().get(0));
+        builder.addStatement("if ($N!=null) " + target + ".add(pf.newHadMember($N,$N))", element, local(s.getCollection()), element);              
     }
 
     @Override

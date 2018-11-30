@@ -44,6 +44,7 @@ import com.squareup.javapoet.TypeSpec.Builder;
 import javax.lang.model.element.Modifier;
 
 public class ConfigProcessor {
+    private static final String PREFIX_LOG_VAR = "___";
     private static final String GET_NODES_METHOD = "getNodes";
     private static final String BUILDER_INTERFACE = "Builder";
     private static final String INIT = "Init";
@@ -306,7 +307,7 @@ public class ConfigProcessor {
             final String templateNameClass = tc.templateNameClass(config.name);
             packge = config.package_+".client";
             final ClassName className = ClassName.get(packge,templateNameClass);
-            FieldSpec fspec = FieldSpec.builder(className, config.name)
+            FieldSpec fspec = FieldSpec.builder(className, PREFIX_LOG_VAR + config.name)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
                     .initializer("new $T()", className)
                     .build();
@@ -322,7 +323,7 @@ public class ConfigProcessor {
             } else {
                 names=names+", ";
             }
-            names=names + config.name;
+            names=names + PREFIX_LOG_VAR + config.name;
         }   
         ClassName cln=ClassName.get(CLIENT_PACKAGE,"Builder");
         ArrayTypeName builderArrayType = ArrayTypeName.of(cln);
@@ -429,7 +430,7 @@ public class ConfigProcessor {
             args=args+key;
             count++;
         }
-        builder.addStatement("return $N." + loggerName + "(" + args + ")",config.name);  
+        builder.addStatement("return $N." + loggerName + "(" + args + ")",PREFIX_LOG_VAR+ config.name);  
 
         
         return builder.build();

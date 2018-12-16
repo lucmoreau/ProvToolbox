@@ -255,7 +255,8 @@ public class StatementCompilerAction implements StatementAction {
     @Override
     public void doAction(HadMember s) {
         final String element = local(s.getEntity().get(0));
-        builder.addStatement("if ($N!=null) " + target + ".add(pf.newHadMember($N,$N))", element, local(s.getCollection()), element);              
+        final String set = local(s.getCollection());
+        builder.addStatement("if (($N!=null) && ($N!=null)) " + target + ".add(pf.newHadMember($N,$N))", element, set, set, element);              
     }
 
     @Override

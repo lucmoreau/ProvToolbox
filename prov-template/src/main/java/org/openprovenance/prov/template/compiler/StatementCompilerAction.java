@@ -78,7 +78,8 @@ public class StatementCompilerAction implements StatementAction {
     @Override
     public void doAction(Activity s) {
         // TODO, start and end time
-        builder.addStatement(target + ".add(pf.newActivity($N,null,null" + generateAttributes(s) + "))", s.getId().getLocalPart());        
+        final String var = s.getId().getLocalPart();
+		builder.addStatement("if ($N!=null) " + target + ".add(pf.newActivity($N,null,null" + generateAttributes(s) + "))", var, var);        
     }
 
     @Override
@@ -99,7 +100,8 @@ public class StatementCompilerAction implements StatementAction {
 
     @Override
     public void doAction(Agent s) {
-        builder.addStatement(target + ".add(pf.newAgent($N" + generateAttributes(s) + "))", s.getId().getLocalPart());        
+        final String var = s.getId().getLocalPart();
+		builder.addStatement("if ($N!=null) " + target + ".add(pf.newAgent($N" + generateAttributes(s) + "))", var, var);        
     }
 
     @Override

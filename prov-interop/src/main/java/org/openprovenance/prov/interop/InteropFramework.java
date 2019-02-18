@@ -109,6 +109,9 @@ public class InteropFramework implements InteropMediaType {
              org.openprovenance.prov.xml.ProvFactory.getFactory());
     }
 
+    public InteropFramework(ProvFactory pFactory) {
+        this(new CommandLineArguments(),pFactory);
+    }
 
     public InteropFramework(CommandLineArguments config,
                             ProvFactory pFactory) {

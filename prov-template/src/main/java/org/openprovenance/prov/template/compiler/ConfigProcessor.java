@@ -39,6 +39,7 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 import javax.lang.model.element.Modifier;
@@ -53,6 +54,7 @@ public class ConfigProcessor {
     public static final String GET_SUCCESSOR_METHOD = "getSuccessors";
     public static final String GET_NAME = "getName";
     private static final String LOGGER_INTERFACE = "LoggerInterface";
+    private static final String TESTER_FILE = "ExampleTest";
     private static final String GET_BUILDERS_METHOD = "getBuilders";
     public static final String CLIENT_PACKAGE = "org.openprovenance.prov.client";
     static ObjectMapper objectMapper = new ObjectMapper();
@@ -73,9 +75,11 @@ public class ConfigProcessor {
             new File(l2p_dir).mkdirs(); 
             
             final String l2p_src_dir=l2p_dir+"/src/main/java";
+            final String l2p_test_src_dir=l2p_dir+"/src/test/java";
             final String cli_src_dir=cli_dir+"/src/main/java";
             new File(l2p_src_dir).mkdirs(); 
             new File(cli_src_dir).mkdirs(); 
+            new File(l2p_test_src_dir).mkdirs(); 
 
             TemplateCompiler tc=new TemplateCompiler(pFactory);
           
@@ -89,6 +93,7 @@ public class ConfigProcessor {
             }
             
             final String init_dir=l2p_src_dir+ "/" + configs.init_package.replace('.', '/') + "/";;
+            final String test_dir=l2p_test_src_dir+ "/" + configs.init_package.replace('.', '/') + "/";;
    
             JavaFile init=cp.generateInitializer(tc, configs);
             tc.saveToFile(init_dir, init_dir+INIT + ".java", init);
@@ -105,7 +110,10 @@ public class ConfigProcessor {
 
             JavaFile intface2=cp.generateLoggerInterface(tc, configs);
             tc.saveToFile(openprovenance_dir, openprovenance_dir+LOGGER_INTERFACE+ ".java", intface2);
-                                
+ 
+            JavaFile testfile=cp.generateTestFile(tc, configs);
+            tc.saveToFile(test_dir, test_dir+TESTER_FILE+ ".java", testfile);
+
             cp.generateScript(configs);
         } catch (IOException e) {
             e.printStackTrace();
@@ -114,7 +122,38 @@ public class ConfigProcessor {
     }
     
     
-    public void doProcessEntry ( TemplateCompiler tbg, TemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory) {
+    public JavaFile generateTestFile(TemplateCompiler tc, TemplatesCompilerConfig configs) {
+
+		 Builder builder = cu.generateClassInitExtends(TESTER_FILE,"junit.framework","TestCase");
+		 
+	     MethodSpec.Builder mbuilder = MethodSpec.methodBuilder("testMain")
+	               .addModifiers(Modifier.PUBLIC)
+	                .addException(Exception.class)
+	               .returns(void.class)
+	               .addStatement("$T pf=org.openprovenance.prov.xml.ProvFactory.getFactory()",ProvFactory.class)
+	       ;
+	     
+	     for (TemplateCompilerConfig template: configs.templates) {
+	    	 String bn=tc.templateNameClass(template.name);
+	    	 mbuilder.addStatement("System.setOut(new java.io.PrintStream(\"target/" + template.name + ".provn\"))");
+	    	 mbuilder.addStatement("$T.main(null)", ClassName.get(template.package_, bn));
+	     }
+	     
+	     MethodSpec method=mbuilder.build();
+	     
+	     builder.addMethod(method);
+	     
+	     TypeSpec theInitializer=builder.build();
+		 
+		 JavaFile myfile = JavaFile.builder(configs.init_package, theInitializer)
+	                .addFileComment("Generated Automatically by ProvToolbox for templates config $S",configs.name)
+	                .build();
+
+	     return myfile;	     
+	}
+
+
+	public void doProcessEntry ( TemplateCompiler tbg, TemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory) {
         JsonNode bindings_schema = get_bindings_schema(config);
         
         Document doc;
@@ -198,6 +237,7 @@ public class ConfigProcessor {
             addProvDependency("prov-model", model);
             addProvDependency("prov-template", model);
             addProvDependency("prov-interop", model);
+            addJunitDependency(model);
 
         }
 
@@ -225,7 +265,16 @@ public class ConfigProcessor {
         dep.setGroupId(getProvPackageId());
         dep.setVersion(getProvVersion()); 
         model.addDependency(dep);
-    }   
+    }  
+    
+    public void addJunitDependency(Model model) {
+        Dependency dep=new Dependency();
+        dep.setArtifactId("junit");
+        dep.setGroupId("junit");
+        dep.setVersion("4.11"); 
+        dep.setScope("test");
+        model.addDependency(dep);
+    } 
     
     public String getProvVersion() {
         return "0.7.4-SNAPSHOT"; // need to get actual version

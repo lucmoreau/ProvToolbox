@@ -63,6 +63,12 @@ public class CompilerUtil {
                 .addSuperinterface(ClassName.get(packge,supername))
                 .addModifiers(Modifier.PUBLIC);
     }
+    
+    public Builder generateClassInitExtends(String name, String packge, String supername) {
+        return TypeSpec.classBuilder(name)
+                .superclass(ClassName.get(packge,supername))
+                .addModifiers(Modifier.PUBLIC);
+    }
     public Builder generateInterfaceInit(String name) {
         return TypeSpec.interfaceBuilder(name)
                 .addModifiers(Modifier.PUBLIC);

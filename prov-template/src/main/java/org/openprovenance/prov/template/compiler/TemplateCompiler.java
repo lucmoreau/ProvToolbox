@@ -4,6 +4,7 @@ import javax.lang.model.element.Modifier;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -373,7 +374,7 @@ public class TemplateCompiler {
        Iterator<String> iter=the_var.fieldNames();
        while(iter.hasNext()){
            String key=iter.next();
-           builder.addParameter(getDeclaredType(the_var, key), key); 
+           builder.addParameter(getJavaTypeForDeclaredType(the_var, key), key); 
        }
    }
 
@@ -425,7 +426,7 @@ public boolean noNode(final JsonNode jsonNode2) {
        while(iter.hasNext()){
            String key=iter.next();
            String newkey="__"+key;
-           builder.addParameter(getDeclaredType(the_var, key), newkey); 
+           builder.addParameter(getJavaTypeForDeclaredType(the_var, key), newkey); 
            args=args + ", " + newkey; 
        }
        
@@ -453,7 +454,7 @@ public boolean noNode(final JsonNode jsonNode2) {
        while(iter.hasNext()){
            String key=iter.next();
            String newkey="__"+key;
-           builder.addParameter(getDeclaredType(the_var, key), newkey); 
+           builder.addParameter(getJavaTypeForDeclaredType(the_var, key), newkey); 
        }
        
 
@@ -464,7 +465,7 @@ public boolean noNode(final JsonNode jsonNode2) {
        while(iter.hasNext()){
            String key=iter.next();
            final String newName = "__"+key;
-           final Class<?> clazz=getDeclaredType(the_var, key);
+           final Class<?> clazz=getJavaTypeForDeclaredType(the_var, key);
            
 
            constant=constant+',';
@@ -666,7 +667,7 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
        String args="";
        while(iter.hasNext()){
            String key=iter.next();
-           final Class<?> atype = getDeclaredType(the_var, key);
+           final Class<?> atype = getJavaTypeForDeclaredType(the_var, key);
            String statement="$T $N=($T)record[" + count + "]";
            builder.addStatement(statement, atype, key,atype); 
            if (count > 1) args=args + ", ";
@@ -685,7 +686,7 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
        return method;
    }
 
-   public Class<?> getDeclaredType(JsonNode the_var, String key) {
+   public Class<?> getJavaTypeForDeclaredType(JsonNode the_var, String key) {
        if (the_var.get(key).get(0).get("@id")!=null) {
            return String.class;
        } else {
@@ -711,9 +712,34 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
                      return Float.class;
                  case "xsd:double":
                      return Double.class;
+                 case "xsd:dateTime":
+                     return String.class;
                  default:
                    throw new UnsupportedOperationException();
                }
+           } else {
+               System.out.println("key is " + key);
+               System.out.println("decl is " + the_var);
+
+               throw new UnsupportedOperationException();
+           }
+       }
+   }
+   
+   public String getDeclaredType(JsonNode the_var, String key) {
+       if (the_var.get(key).get(0).get("@id")!=null) {
+           return "prov:QualifiedName";
+       } else {
+           if (the_var.get(key).get(0).get(0)==null) {
+               System.out.println("key is " + key);
+               System.out.println("decl is " + the_var);
+
+               throw new UnsupportedOperationException();
+           }
+           JsonNode hasType=the_var.get(key).get(0).get(0).get("@type");
+           if (hasType!=null) {
+               String keyType=hasType.textValue();
+               return keyType;
            } else {
                System.out.println("key is " + key);
                System.out.println("decl is " + the_var);
@@ -736,8 +762,24 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
        for (QualifiedName q: allVars) {
            builder.addStatement("$T $N=pf.newQualifiedName($S,$S,$S)", QualifiedName.class, q.getLocalPart(), "http://example.org/",q.getLocalPart(), "ex");
        }
+       
+       JsonNode the_var2=(bindings_schema==null)?null:bindings_schema.get("var");
+       
        for (QualifiedName q: allAtts) {
-           builder.addStatement("$T $N=$S", String.class, q.getLocalPart(), "test_" + q.getLocalPart());
+    	   String declaredType=null;
+    	   if (the_var2!=null) {
+    	       Iterator<String> iter=the_var2.fieldNames();
+    	       
+    	       while(iter.hasNext()){
+    	           String key=iter.next();
+	        	   if (q.getLocalPart().equals(key)) {
+    	        	   declaredType=getDeclaredType(the_var2,key);
+    	           }
+    	       }
+    	   }
+	       String example=generateExampleForType(declaredType,q.getLocalPart());
+
+           builder.addStatement("$T $N=$S", String.class, q.getLocalPart(), example);
        }
        
        String args="";
@@ -794,6 +836,20 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
        return method;
    }
 
+   public  String generateExampleForType(String declaredType, String localPart) {
+	   if (declaredType==null) {
+		   return "test_" + localPart;
+	   } else {
+		   switch (declaredType) {
+		     case "xsd:dateTime": return pFactory.newTimeNow().toXMLFormat();
+		     case "xsd:float": return "123.00f";
+		     case "xsd:int": return "12345";	
+		     default: return "test_" + localPart;
+		   }
+	   }
+   }
+
+
    public String createExamplar(JsonNode the_var, String key, int num) {
        if (the_var.get(key).get(0).get("@id")!=null) {
            return "\"v" + num + "\"";
@@ -801,7 +857,6 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
            if (the_var.get(key).get(0).get(0)==null) {
                System.out.println("key is " + key);
                System.out.println("decl is " + the_var);
-
                throw new UnsupportedOperationException();
            }
            JsonNode hasType=the_var.get(key).get(0).get(0).get("@type");
@@ -820,6 +875,8 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
                      return "" + num + ".01f";
                  case "xsd:double":
                      return "" + num + ".01d";
+                 case "xsd:dateTime":
+                     return "\"" + pFactory.newTimeNow().toXMLFormat() + "\"";
                  default:
                    throw new UnsupportedOperationException();
                }

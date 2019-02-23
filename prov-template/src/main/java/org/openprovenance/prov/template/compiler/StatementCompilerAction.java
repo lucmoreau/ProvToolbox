@@ -76,11 +76,35 @@ public class StatementCompilerAction implements StatementAction {
     }
     
     @Override
-    public void doAction(Activity s) {
-        // TODO, start and end time
-        final String var = s.getId().getLocalPart();
-		builder.addStatement("if ($N!=null) " + target + ".add(pf.newActivity($N,null,null" + generateAttributes(s) + "))", var, var);        
-    }
+	public void doAction(Activity s) {
+		// TODO, start and end time
+		final String var = s.getId().getLocalPart();
+		final String start = doCollectElementVariable(s, ExpandUtil.STARTTIME_URI);
+		final String end = doCollectElementVariable(s, ExpandUtil.ENDTIME_URI);
+		if (start == null) {
+			if (end == null) {
+				builder.addStatement(
+						"if ($N!=null) " + target + ".add(pf.newActivity($N,null,null" + generateAttributes(s) + "))",
+						var, var);
+			} else {
+				builder.addStatement("if ($N!=null) " + target
+						+ ".add(pf.newActivity($N,null,($N==null)?null:pf.newISOTime($N.toString())"
+						+ generateAttributes(s) + "))", var, var, end, end);
+			}
+		} else {
+			if (end == null) {
+				builder.addStatement("if ($N!=null) " + target
+						+ ".add(pf.newActivity($N,($N==null)?null:pf.newISOTime($N.toString()),null"
+						+ generateAttributes(s) + "))", var, var, start, start);
+			} else {
+				builder.addStatement("if ($N!=null) " + target
+						+ ".add(pf.newActivity($N,($N==null)?null:pf.newISOTime($N.toString()),"
+						+ "($N==null)?null:pf.newISOTime($N.toString())"
+						+ generateAttributes(s) + "))", var, var, start, start,end,end);
+			}
+		}
+
+	}
 
     @Override
     public void doAction(Used s) {
@@ -224,9 +248,9 @@ public class StatementCompilerAction implements StatementAction {
         } else if (ExpandUtil.TIME_URI.equals(elementName)) {
             throw new UnsupportedOperationException();
         } else if (ExpandUtil.STARTTIME_URI.equals(elementName)) {
-            throw new UnsupportedOperationException();
+            //builder.addStatement("if ($N!=null) $N.setStartTime($N)", name, name,vq.getLocalPart());
         } else if (ExpandUtil.ENDTIME_URI.equals(elementName)) {
-            throw new UnsupportedOperationException();
+            //builder.addStatement("if ($N!=null) $N.setEndTime($N)", name, name,vq.getLocalPart());
         } else {
             // can never be here
             throw new UnsupportedOperationException();
@@ -242,6 +266,27 @@ public class StatementCompilerAction implements StatementAction {
                 || (ExpandUtil.ENDTIME_URI.equals(elementName));
 
     }
+    
+
+    public String doCollectElementVariable(Statement s, String search) {
+        Collection<Attribute> attributes = pFactory.getAttributes(s);
+        if (!(attributes.isEmpty())) {
+            for (Attribute attribute:attributes) {
+                QualifiedName element=attribute.getElementName();
+                Object value=attribute.getValue();
+                if (value instanceof QualifiedName) {
+                    QualifiedName vq=(QualifiedName) value;
+                    if (ExpandUtil.isVariable(vq)) {
+                        if (search.equals(element.getUri())) {
+                            return vq.getLocalPart();
+                        } 
+                    } 
+                } 
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public void doAction(WasGeneratedBy s) {

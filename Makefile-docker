@@ -1,0 +1,9 @@
+build:
+	docker build -t provtoolboxbuild .
+
+extract:
+	docker run --name extract --rm provtoolboxbuild sleep 1000 &
+	sleep 5
+	-docker cp extract:/src/toolbox/target/provconvert-0.7.4-SNAPSHOT-release.zip .
+	docker kill extract
+	[ -e provconvert-0.7.4-SNAPSHOT-release.zip ]
